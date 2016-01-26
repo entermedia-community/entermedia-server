@@ -15,11 +15,10 @@ import org.openedit.page.PageProperty;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
-
 public class ConvertInstructions
 {
 	MediaArchive fieldMediaArchive;
-	
+
 	public ConvertInstructions(MediaArchive inArchive)
 	{
 		setMediaArchive(inArchive);
@@ -35,7 +34,7 @@ public class ConvertInstructions
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	protected int fieldPageNumber = 1;  //This is 1 based
+	protected int fieldPageNumber = 1; //This is 1 based
 	//protected String fieldOutputExtension;
 	//protected String fieldInputType;
 	//protected String fieldWatermarkPlacement; 
@@ -46,6 +45,7 @@ public class ConvertInstructions
 	protected Collection<Data> fieldParameters;
 	protected Asset fieldAsset;
 	protected ContentItem fieldOutputFile;
+
 	public ContentItem getOutputFile()
 	{
 		return fieldOutputFile;
@@ -72,15 +72,16 @@ public class ConvertInstructions
 
 	public Asset getAsset()
 	{
-		if( fieldAsset == null)
+		if (fieldAsset == null)
 		{
 			String assetid = getProperty("assetid");
-			if(assetid != null){
+			if (assetid != null)
+			{
 				fieldAsset = getMediaArchive().getAsset(assetid);
 			}
-			if( fieldAsset == null && getAssetSourcePath() != null)
+			if (fieldAsset == null && getAssetSourcePath() != null)
 			{
-	    		fieldAsset = getMediaArchive().getAssetBySourcePath(getAssetSourcePath());
+				fieldAsset = getMediaArchive().getAssetBySourcePath(getAssetSourcePath());
 			}
 		}
 		return fieldAsset;
@@ -101,48 +102,50 @@ public class ConvertInstructions
 		fieldParameters = inParameters;
 	}
 
-	public boolean isForce() 
+	public boolean isForce()
 	{
-		return Boolean.parseBoolean( getProperty("isforced") );
+		return Boolean.parseBoolean(getProperty("isforced"));
 	}
 
 	public void addProperty(String inName, String inValue)
 	{
 		getProperties().put(inName, inValue);
 	}
-	
-	
+
 	public void setProperty(String inName, String inValue)
 	{
 		addProperty(inName, inValue);
 	}
+
 	public int intValue(String inName, int inDefault)
 	{
 		String val = get(inName);
-		if( val == null)
+		if (val == null)
 		{
 			return inDefault;
 		}
 		return Integer.parseInt(val);
 	}
+
 	public String get(String inName)
 	{
 		return getProperty(inName);
 	}
+
 	public String getProperty(String inName)
 	{
-		if( fieldProperties == null)
+		if (fieldProperties == null)
 		{
 			return null;
 		}
 		String value = getProperties().get(inName);
 		return value;
-		
+
 	}
-	
+
 	public void setForce(boolean force)
 	{
-		setProperty("isforced",String.valueOf(force));
+		setProperty("isforced", String.valueOf(force));
 	}
 
 	public Dimension getMaxScaledSize()
@@ -153,7 +156,7 @@ public class ConvertInstructions
 		if (w != null && h != null) //both must be set
 		{
 			return new Dimension(Integer.parseInt(w), Integer.parseInt(h));
-		}		
+		}
 		return null;
 	}
 
@@ -162,11 +165,11 @@ public class ConvertInstructions
 		setProperty("prefwidth", inMaxScaledSize.width);
 		setProperty("prefheight", inMaxScaledSize.height);
 	}
-	
+
 	private void setProperty(String inName, int inVal)
 	{
 		setProperty(inName, String.valueOf(inVal));
-		
+
 	}
 
 	public void setMaxScaledSize(int width, int height)
@@ -174,20 +177,25 @@ public class ConvertInstructions
 		setProperty("prefwidth", width);
 		setProperty("prefheight", height);
 	}
+
 	/**
 	 * This starts at 1
+	 * 
 	 * @return
 	 */
-	public int getPageNumber() {
+	public int getPageNumber()
+	{
 		return fieldPageNumber;
 	}
 
-	public void setPageNumber(int inPageNumber) {
+	public void setPageNumber(int inPageNumber)
+	{
 		fieldPageNumber = inPageNumber;
 	}
 
-	public void setPageNumber(String inProperty) {
-		if( inProperty != null )
+	public void setPageNumber(String inProperty)
+	{
+		if (inProperty != null)
 		{
 			setPageNumber(Integer.parseInt(inProperty));
 		}
@@ -206,53 +214,50 @@ public class ConvertInstructions
 	public boolean isTransparencyMaintained(String inputtype)
 	{
 		String type = getOutputExtension();
-		if( type == null || inputtype == null)
+		if (type == null || inputtype == null)
 		{
 			return false;
 		}
-		if(( type.equals("png")|| type.equals("gif") ) && (inputtype.equals("gif") || inputtype.equals("png")) )
+		if ((type.equals("png") || type.equals("gif")) && (inputtype.equals("gif") || inputtype.equals("png")))
 		{
 			return true;
 		}
 		return false;
 	}
-	
-	
+
 	public String getOutputExtension()
 	{
 		String ext = getProperty("outputextension");
-		if( ext != null)
+		if (ext != null)
 		{
 			return ext;
 		}
-		if( getOutputFile() != null)
+		if (getOutputFile() != null)
 		{
-			return PathUtilities.extractPageType(getOutputPath());			
+			return PathUtilities.extractPageType(getOutputPath());
 		}
 		return null;
 	}
-
-	
 
 	public String getOutputPath()
 	{
 		return getOutputFile().getPath();
 	}
-	
+
 	public boolean doesConvert()
 	{
 		return (getMaxScaledSize() != null || getPageNumber() > 1 || getOutputExtension() != null);
 	}
-	
-//	public String getInputExtension()
-//	{
-//		return getProperty("inputextension");
-//	}
-//
-//	public void setInputExtension(String inInputExtension)
-//	{
-//		addProperty("inputextension", inInputExtension);
-//	}
+
+	//	public String getInputExtension()
+	//	{
+	//		return getProperty("inputextension");
+	//	}
+	//
+	//	public void setInputExtension(String inInputExtension)
+	//	{
+	//		addProperty("inputextension", inInputExtension);
+	//	}
 
 	public String getWatermarkPlacement()
 	{
@@ -263,15 +268,15 @@ public class ConvertInstructions
 	{
 		addProperty("watermarkplacement", inWatermarkPlacement);
 	}
-	
+
 	public boolean isCrop()
 	{
-		return Boolean.parseBoolean( getProperty("iscrop") );
+		return Boolean.parseBoolean(getProperty("iscrop"));
 	}
 
 	public void setCrop(boolean inFieldCrop)
 	{
-		setProperty("iscrop",String.valueOf(inFieldCrop));
+		setProperty("iscrop", String.valueOf(inFieldCrop));
 
 	}
 
@@ -287,7 +292,7 @@ public class ConvertInstructions
 
 	public String getAssetId()
 	{
-		if( getAsset() != null)
+		if (getAsset() != null)
 		{
 			return getAsset().getId();
 		}
@@ -301,7 +306,7 @@ public class ConvertInstructions
 
 	public String getAssetSourcePath()
 	{
-		if( fieldAsset != null)
+		if (fieldAsset != null)
 		{
 			return fieldAsset.getSourcePath();
 		}
@@ -323,7 +328,6 @@ public class ConvertInstructions
 		addProperty("inputpath", inInputPath);
 	}
 
-	
 	protected Map<String, String> getProperties()
 	{
 		if (fieldProperties == null)
@@ -332,12 +336,13 @@ public class ConvertInstructions
 		}
 		return fieldProperties;
 	}
+
 	public void setProperties(Map<String, String> inProperties)
 	{
 		fieldProperties = inProperties;
 	}
 
-	public void addPageProperties(Page inPage) 
+	public void addPageProperties(Page inPage)
 	{
 		for (Iterator iterator = inPage.getPageSettings().getAllProperties().iterator(); iterator.hasNext();)
 		{
@@ -346,19 +351,19 @@ public class ConvertInstructions
 		}
 	}
 
-	public void addPageValues(Map inPageMap) 
+	public void addPageValues(Map inPageMap)
 	{
 		for (Iterator iterator = inPageMap.keySet().iterator(); iterator.hasNext();)
 		{
 			String key = iterator.next().toString();
 			Object value = inPageMap.get(key);
-			if( value instanceof String || value instanceof Boolean)
+			if (value instanceof String || value instanceof Boolean)
 			{
 				getProperties().put(key, value.toString());
 			}
 		}
 	}
-	
+
 	public void loadSettings(Map inSettings, Data inPreset)
 	{
 		loadSettings(inSettings);
@@ -368,15 +373,15 @@ public class ConvertInstructions
 	protected void loadPreset(Data inPreset)
 	{
 		String presetdataid = get("presetdataid");
-		if( presetdataid == null && inPreset != null)
+		if (presetdataid == null && inPreset != null)
 		{
 			presetdataid = inPreset.get("guid");
 		}
-		if( presetdataid != null )
+		if (presetdataid != null)
 		{
-			Searcher paramsearcher = getMediaArchive().getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "presetparameter" );
-			Collection params = paramsearcher.fieldSearch("parameterdata",presetdataid,"id");
-			if( params.size() > 0 )
+			Searcher paramsearcher = getMediaArchive().getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "presetparameter");
+			Collection params = paramsearcher.fieldSearch("parameterdata", presetdataid, "id");
+			if (params.size() > 0)
 			{
 				setParameters(params);
 				//Is this needed?
@@ -387,14 +392,15 @@ public class ConvertInstructions
 				}
 			}
 		}
-		setProperty("cachefilename",inPreset.get("outputfile"));
+		setProperty("cachefilename", inPreset.get("outputfile"));
 	}
+
 	public void loadSettings(Map inSettings)
 	{
 		setSettings(inSettings);
 		String pageString = getProperty("pagenum");
 		// changed to take a request parameter.
-		if( pageString != null && pageString.length() == 0 )
+		if (pageString != null && pageString.length() == 0)
 		{
 			pageString = null;
 		}
@@ -402,7 +408,7 @@ public class ConvertInstructions
 		{
 			setPageNumber(Integer.parseInt(pageString));
 		}
-		
+
 		// Create temporary location for previews
 		String w = getProperty("prefwidth");
 		String h = getProperty("prefheight");
@@ -419,19 +425,19 @@ public class ConvertInstructions
 			}
 			setMaxScaledSize(new Dimension(Integer.parseInt(w), Integer.parseInt(h)));
 		}
-		
+
 		String crop = getProperty("crop");
-		if(crop != null && Boolean.parseBoolean(crop))
+		if (crop != null && Boolean.parseBoolean(crop))
 		{
 			setCrop(Boolean.parseBoolean(crop));
 		}
-		
+
 		String watermark = getProperty("canforcewatermarkasset");
 		if (watermark != null)
 		{
 			setWatermark(Boolean.valueOf(watermark));
 		}
-		
+
 		String watermarkselected = getProperty("watermark");
 		if (watermarkselected != null)
 		{
@@ -439,33 +445,44 @@ public class ConvertInstructions
 		}
 
 	}
+
 	protected void setSettings(Map inSettings)
 	{
-		if( inSettings != null)
+		if (inSettings != null)
 		{
 			Map settings = new HashMap();
 			for (Iterator iterator = inSettings.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = iterator.next().toString();
 				Object value = inSettings.get(key);
-				if( value instanceof String || value instanceof Boolean)
+				if (value instanceof String || value instanceof Boolean)
 				{
 					settings.put(key, String.valueOf(value));
 				}
 			}
 			getProperties().putAll(settings);
-		}	
+		}
 	}
 
-	public long getConversionTimeout(){
+	public long getConversionTimeout()
+	{
 		long timeout = -1;
-		String fileformat = getAsset().get("fileformat");
-		if (fileformat!=null && !fileformat.isEmpty()){
-			Data format = getMediaArchive().getData("fileformat",fileformat);
-			if (format!=null && format.get("conversiontimeout")!=null){
-				try{
-					timeout = Long.parseLong(format.get("conversiontimeout"));
-				}catch(Exception e){}//not handled
+		if (getAsset() != null)
+		{
+			String fileformat = getAsset().get("fileformat");
+			if (fileformat != null && !fileformat.isEmpty())
+			{
+				Data format = getMediaArchive().getData("fileformat", fileformat);
+				if (format != null && format.get("conversiontimeout") != null)
+				{
+					try
+					{
+						timeout = Long.parseLong(format.get("conversiontimeout"));
+					}
+					catch (Exception e)
+					{
+					} //not handled
+				}
 			}
 		}
 		return timeout;
@@ -482,19 +499,14 @@ public class ConvertInstructions
 		return "document".equals(type);
 	}
 
- 
-	
-	
 	public String getTimeOffset()
 	{
 		return get("timeoffset");
 	}
 
-
 	public void setOutputExtension(String inType)
 	{
-		setProperty("outputextension",inType);
+		setProperty("outputextension", inType);
 	}
 
 }
-
