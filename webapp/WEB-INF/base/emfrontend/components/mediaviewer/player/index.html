@@ -1,4 +1,9 @@
-    #set($currentpreview = $context.findValue('currentpreview'))
+<script src="/openedit/theme/jqueryUI/ui-lightness/development-bundle/ui/jquery.ui.core.js"></script>
+<script src="/openedit/theme/jqueryUI/ui-lightness/development-bundle/ui/jquery.ui.mouse.js"></script>
+<script src="/openedit/theme/jqueryUI/ui-lightness/development-bundle/ui/jquery.ui.widget.js"></script>
+<script src="/openedit/theme/jqueryUI/ui-lightness/development-bundle/ui/jquery.ui.draggable.js"></script>
+	
+	#set($currentpreview = $context.findValue('currentpreview'))
     #set($pagenum = $context.findValue('pagenum'))
     #set($totalpages = $numberutils.toInt($asset.pages))
     #set ( $hitssessionid = $context.findValue("hitssessionid"))
