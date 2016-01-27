@@ -1,11 +1,13 @@
 #if( $librarycol )
+	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
+
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="mediatab" data-targetdiv="collection-tab-content" >
 		  <li class="emtabselected ui-corner-top"><a id="mediatab" data-layouts="2" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Media]]</a></li>
 		  <li class="ui-corner-top " ><a id="addmediatab"   href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
-		  ##<li class="ui-corner-top "><a  id="emannotationstab" data-loadpageonce="true"  href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotations]]</a></li>
+		  <li class="ui-corner-top "><a  id="emannotationstab" data-loadpageonce="true"  href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotations]]</a></li>
 #set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${librarycol.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection")		
-		  ##<li  class="ui-corner-top "><a id="approvalstab"  href="$link" >[[Approvals]]</a></li>
+		  <li  class="ui-corner-top "><a id="approvalstab"  href="$link" >[[Approvals]]</a></li>
 #set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?id=${librarycol.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection")		
 		  <li class="ui-corner-top "><a  id="sharetab"  href="$link" >[[Share]]</a></li>
 		  <li class="ui-corner-top " ><a id="settingstab" href="$editlink" >[[Settings]]</a></li>
