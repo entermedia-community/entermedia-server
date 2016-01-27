@@ -40,7 +40,7 @@
                 #set( $section = $searcherManager.getData($catalogid,"detaileditormenu",$assettab) )
 
                 <div class="title-bar" id="details-title">
-                    <span>$section</span>
+                    <span>$context.getText($section.getName())</span>
                 </div>
                 #if( $canviewassets )
                 

@@ -12,7 +12,7 @@
 <div id="emmediaviewer">
 
 #if( $asset )
-<h2>Asset Details</h2>
+<h2>[[Asset Details]]</h2>
 #set( $olink = $mediaarchive.asLinkToOriginal($asset))
 #set ($mediumend = $mediaarchive.getLinkToMedium($asset.sourcePath, $asset.fileformat))
 #set ($thumbend = $mediaarchive.getLinkToThumb($asset.sourcePath, $asset.fileformat))
@@ -54,7 +54,7 @@ $context.putPageValue("thumbend",$thumbend)
 				$pages.include("$cataloghome/detailviewer/index.html?assetid=$asset.id")
 			#else
 				#if( $asset.getId().startsWith("multiedit:") )
-				<h2>[[Editing across $asset.size() records]]</h2>
+				<h2>[[Editing across]] $asset.size() [[records]]</h2>
 				#end
 				$pages.includeContent()
 			#end

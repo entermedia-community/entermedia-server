@@ -29,8 +29,8 @@ var uploadid;
 	         	
 	         	jQuery("#uploadinstructionsafter").hide();
 	        	var startb = $("#startbutton");
-	        	$(startb).text("Upload");
-    			$(startb).removeAttr('disabled');
+	        	startb.text(startb.data("orig-text"));
+    			startb.removeAttr('disabled');
 	        	jQuery("#uploadinstructionsafter").show();
 	        	 
 	        	 var regex = new RegExp("currentupload", 'g');  
@@ -182,7 +182,7 @@ $(document).ready(function()
 	        	 if( !haderror)
 	        	{
 	        			var startb = $("#startbutton");
-	        			$(startb).text("Upload Complete");
+	        			startb.text(startb.data("alt-text"));
     				   allfiles = new Array();
     				   
 		   				var completed = $("#up-files-list-completed li span");
@@ -190,7 +190,8 @@ $(document).ready(function()
 						{
 							$(this).removeAttr("id");
 						});
-    				   jQuery("#filePicker").text("Pick More Files...");
+						var filepicker = jQuery("#filePicker");
+    				   filepicker.text(filepicker.data("alt-text"));
     				   jQuery("#upload_field").removeAttr('disabled');
     				   
     				   var viewassets = $("#viewassets");

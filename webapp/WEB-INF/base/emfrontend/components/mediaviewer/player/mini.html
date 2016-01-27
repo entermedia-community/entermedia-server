@@ -8,7 +8,7 @@
                     <div class="main-info">
         
  <div class="primary" style="text-align: center">
-						Editing across $asset.size() assets
+						[[Editing across]] $asset.size() [[assets]]
 </div>
 </div>
 		#else            
@@ -70,12 +70,12 @@
                      </p>
                      <p style="line-height: 25px; text-align: left; color: #fff; ">
                         #if ($asset.getCategories().size() > 0)
-                            <strong>Categories</strong><br/>
+                            <strong>[[Categories]]</strong><br/>
                             #foreach ($category in $asset.getCategories())
                                 #if ( $velocityCount <= 8 )
                                 <a href="$home$apphome/views/categories/${category.id}.html">$category</a> 
                                 #elseif ( $velocityCount == 9 )
-                                    <a class="ajax tooltip" title="View All Categories" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                                    <a class="ajax tooltip" title="[[View All Categories]]" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
                         #end
@@ -85,7 +85,7 @@
                      #if($contact)
                       <p style="line-height: 25px; text-align: left; color: #fff; ">
                         
-                            <strong>Contact</strong><br/>
+                            <strong>[[Contact]]</strong><br/>
                                 
                                 <a href="$home$apphome/views/modules/contact/edit/edit.html?id=${contact.id}&viewid=contactcontact_details&viewpath=contact/contactcontact_details&searchtype=contact&detailsreadonly=true&preview=true">$contact</a> 
                                 
@@ -96,7 +96,7 @@
                      #if($canviewshoppingcart)
                      	#if($asset.shoppingcartlink)
                      	<p style="line-height: 25px; text-align: left; color: #fff; ">
-                     		<strong>Shopping Cart</strong><br/>
+                     		<strong>[[Shopping Cart]]</strong><br/>
                             $pages.include("/$applicationid/views/modules/asset/editor/editshoppingcart/shoppingcartbutton.html",$context)
                         </p>
                         #end

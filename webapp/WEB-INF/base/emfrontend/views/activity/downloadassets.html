@@ -3,7 +3,7 @@
 	[[Session expired, Reload browser]]
 #end
 #if( $order.userid != $context.getUserName() )
-Invalid order, username does not match
+[[Invalid order, username does not match]]
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
@@ -30,9 +30,9 @@ $context.putPageValue("view", "order/downloadform")
 <input type="hidden" name="field" value="ordertype" />
 <input type="hidden" name="ordertype.value" value="download" />
 	#if($canconvert)
-	<p><strong>Please choose a download format for each type of asset.</strong></p>
+	<p><strong>[[Please choose a download format for each type of asset.]]</strong></p>
 	#end
-	$orderitems.size() Items
+	$orderitems.size() [[Items]]
 	#set($filetypes = [])
 	#foreach( $item in $orderitems )
 		#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
@@ -65,7 +65,7 @@ $context.putPageValue("view", "order/downloadform")
 			<input type="hidden" name="rendertype.value" value="${rendertypeid}"/>
 			#set($rendertype = $searcherManager.getData($catalogid,"rendertype",$rendertypeid))
 			
-			Downloading $num $rendertype
+			[[Downloading]] $num $context.getText($rendertype.getName())
 			</td>
 			<td>
 			<input type="hidden" name="field" value="presetid"/>
@@ -98,7 +98,7 @@ $context.putPageValue("view", "order/downloadform")
 					#end
 					
 					#if($ok)
-					<option value="$preset.id">$preset
+					<option value="$preset.id">$context.getText($preset.getName())
 					#end
 					#set($ok = false)
 					</option>
@@ -119,7 +119,7 @@ $context.putPageValue("view", "order/downloadform")
 
 
 <div style="text-align: right">
-<input class="btn" id="submitbutton" type="submit" name="submit" value="Next"  /> 
+<input class="btn" id="submitbutton" type="submit" name="submit" value="[[Next]]"  /> 
 </div>
 	
 	<div id="itemsave"></div>
