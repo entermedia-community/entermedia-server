@@ -8,6 +8,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -23,7 +24,16 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
 		manager.loadCollections(inReq);
 	}
-	
+
+	public void loadSelectedLibrary(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
+		Data selected = manager.getCurrentLibrary(inReq.getUserProfile());
+		inReq.putPageValue("selectedlibrary", selected);
+
+	}
+
 //	public void savedCollection(WebPageRequest inReq)
 //	{
 //		MediaArchive archive = getMediaArchive(inReq);
@@ -229,6 +239,42 @@ public class ProjectModule extends BaseMediaModule
 	{
 		UserProfile profile = inReq.getUserProfile();
 		String collectionid = inReq.getRequestParameter("collectionid");
+		if( collectionid == null)
+		{
+			String newcollection = inReq.getRequestParameter("collectionname.value");
+			if( newcollection != null)
+			{
+				MediaArchive archive = getMediaArchive(inReq);
+				Searcher searcher = archive.getSearcher("librarycollection");
+				Data newcol = searcher.createNewData();
+				String libraryid = inReq.getRequestParameter("library.value");
+				if(libraryid == null)
+				{
+					Searcher lsearcher = archive.getSearcher("library");
+					
+					Data lib = (Data)searcher.searchById(inReq.getUserName());
+					if( lib == null)
+					{
+						lib = lsearcher.createNewData();
+						lib.setId(inReq.getUserName());
+						lib.setName(inReq.getUser().getShortDescription());
+						lsearcher.saveData(lib, inReq.getUser());
+					}
+					libraryid = lib.getId();
+					inReq.getUserProfile().setProperty("last_selected_library",libraryid);
+				}
+				newcol.setProperty("library", libraryid);
+				newcol.setName(newcollection);
+				//searcher.updateData(inReq, fields, data);
+				
+				
+				searcher.saveData(newcol, inReq.getUser());
+				inReq.setRequestParameter("collectionid",newcol.getId());
+				inReq.setRequestParameter("emtabid",newcol.getId());
+				collectionid = newcol.getId();
+			}
+		}
+
 		Collection cols = profile.getValues("opencollections");
 		if( cols == null || !cols.contains(collectionid))
 		{

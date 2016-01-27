@@ -316,11 +316,11 @@ onloadselectors = function()
 	jQuery("a.updatebasket").livequery('click', updatebasket);
 //	jQuery("a.updatebasketonasset").livequery('click', updatebasketonasset);
 	
-	//Sorting for views and lists
 	
-	jQuery("form.ajaxform").livequery('submit',	
-		function() 
+	jQuery("form.ajaxform").livequery('submit', //Make sure you use $(this).closest("form").trigger("submit")	
+		function(e) 
 		{
+			e.preventDefault();
 			var form = jQuery(this);
 			form.validate({
 			  ignore: ".ignore"

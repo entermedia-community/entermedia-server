@@ -9,6 +9,9 @@
 	<page-action name="DataEditModule.search" alltypes="true">
 		<property name="hitsname">autocomplete</property>
 	</page-action>
+	<page-action name="DataEditModule.addDefaultValue" alltypes="true">
+		<property name="hitsname">autocomplete</property>
+	</page-action>
 	<property name="enforcesecurity">true</property>
 	<generator name="velocityGenerator" />
 	<property name="hitsperpage">500</property>

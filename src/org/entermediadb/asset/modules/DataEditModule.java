@@ -35,6 +35,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.page.Page;
@@ -128,7 +129,6 @@ public class DataEditModule extends BaseMediaModule
 			if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
 			{
 				hits = searcher.getAllHits(inReq);
-
 			}
 			if (hits != null)
 			{
@@ -139,7 +139,28 @@ public class DataEditModule extends BaseMediaModule
 		}
 		inReq.putPageValue("searcher", searcher);
 	}
-	
+	public void addDefaultValue(WebPageRequest inReq) throws Exception
+	{
+		String defaultvalueid = inReq.getRequestParameter("defaultvalueid");
+		if( defaultvalueid != null)
+		{
+			String name = inReq.findValue("hitsname");
+			HitTracker hits = (HitTracker)inReq.getPageValue(name);
+			Data found = (Data)hits.findData("id", defaultvalueid);
+			if( found == null)
+			{
+				Searcher searcher = loadSearcher(inReq);
+				Data created = searcher.createNewData();
+				created.setId(defaultvalueid);
+				created.setName(inReq.getRequestParameter("defaultvalue"));
+				ListHitTracker tracker = new ListHitTracker();
+				tracker.add(created);
+				tracker.addAll(hits);
+				inReq.putPageValue(name, tracker);
+			}
+		}
+		
+	}
 	public Data createNew(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcherForEdit(inReq);

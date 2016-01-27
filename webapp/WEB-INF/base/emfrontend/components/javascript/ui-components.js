@@ -380,7 +380,7 @@ uiload = function() {
 			loadedpanel.attr("id",activelink.attr("id") + "panel");
 			activelink.data("tabloaded",true);
 		}	
-		activelink.parent("li").addClass("ui-state-active").addClass("emtabselected");
+		activelink.parent("li").addClass("emtabselected");
 		activelink.data("loadpageonce",false);
 		
 		$("a",tabs).livequery("click", function (e)   
@@ -388,8 +388,8 @@ uiload = function() {
 			e.preventDefault();
 			
 	    	var link = $(this); // activated tab
-			$("li",tabs).removeClass("ui-state-active").removeClass("emtabselected");
-	    	link.parent("li").addClass("ui-state-active").addClass("emtabselected");
+			$("li",tabs).removeClass("emtabselected");
+	    	link.parent("li").addClass("emtabselected");
 	    	
 		    var id = link.attr("id");
 
@@ -460,14 +460,23 @@ uiload = function() {
 
 			var foreignkeyid = theinput.data('foreignkeyid');
 			var sortby = theinput.data('sortby');
-			
+
+			var defaulttext = theinput.data('showdefault');
+			if( !defaulttext )
+			{
+				defaulttext = "Search";
+			}
+			var defaultvalue = theinput.data('defaultvalue');
+			var defaultvalueid = theinput.data('defaultvalueid');
+
+
 			//var value = theinput.val();
 			theinput.select2({
-				placeholder : "Search",
+				placeholder : defaulttext,
 				allowClear: true,
 				minimumInputLength : 0,
 				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
-					url : apphome + "/components/xml/types/autocomplete/datasearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype,
+					url : apphome + "/components/xml/types/autocomplete/datasearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype + "&defaultvalue=" + defaultvalue + "&defaultvalueid=" + defaultvalueid,
 					dataType : 'json',
 					data : function(term, page) 
 					{

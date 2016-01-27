@@ -6758,15 +6758,24 @@ select.smalldropdown {
 	border-bottom: 0 !important;
 }
 
+
 #collectiontoplevel .collectionheaderactions
 {
-	padding: 10px 0 5px 10px;
+	padding: 10px 0 0px 10px;
 }
 #collection-tab-content
 {
 	border: 1px solid #eee;
-	margin: 0px 5px 5px 5px;
+	margin: -1px 0 0 0;
+	background-color: white;
 }	
+#emcontent #collection-home-tab-content
+{
+	border: 1px solid #eee;
+	margin: -1px 10px 10px 10px;
+	background-color: white;
+}	
+
 
 #collectiontoplevel  .settings-table .emdatafield
 {
