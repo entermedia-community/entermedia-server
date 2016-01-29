@@ -41,6 +41,7 @@
 	<property id="system_email_application_url" value="">System Email Application URL</property>
 	<property id="startinglatlong" value="39.025818619038375,-95.03089171562499">Starting/Default Lat and Long for Maps</property>
 
+	<property id="log_all_searches" value="false">Log All Searches</property>
 
 
 

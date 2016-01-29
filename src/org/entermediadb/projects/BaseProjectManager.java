@@ -279,7 +279,11 @@ public class BaseProjectManager implements ProjectManager
 //		else
 //		{	
 		//SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
-		SearchQuery assetsearch = searcher.createSearchQuery();
+		SearchQuery assetsearch = searcher.addStandardSearchTerms(inReq);
+		if( assetsearch == null)
+		{
+			assetsearch = searcher.createSearchQuery();
+		}
 		assetsearch.addChildFilter("librarycollectionasset","librarycollection",collectionid);
 		all = archive.getAssetSearcher().search(assetsearch);
 		

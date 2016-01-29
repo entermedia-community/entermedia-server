@@ -19,7 +19,7 @@
 
 #set($facets = $hits.getFilterOptions())
 #if( $librarycol)
-<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+<form class="ajaxform" targetdiv="collectiontoplevel" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
     <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
 
 #else

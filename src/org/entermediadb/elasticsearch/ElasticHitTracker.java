@@ -81,40 +81,8 @@ public class ElasticHitTracker extends HitTracker
 			int start = (inChunk) * fieldHitsPerChunk;
 			int end = (inChunk + 1) * fieldHitsPerChunk;
 
+			refresh();
 			getSearcheRequestBuilder().setFrom(start).setSize(end).setExplain(false);
-			if(getSearchQuery().hasFilters())
-			{
-				BoolQueryBuilder bool = QueryBuilders.boolQuery();
-				bool.must(getTerms());
-				for (Iterator iterator = getSearchQuery().getFilters().iterator(); iterator.hasNext();)
-				{
-					FilterNode node = (FilterNode) iterator.next();
-					QueryBuilder term = QueryBuilders.matchQuery(node.getId(), node.get("value"));
-					bool.must(term);
-				}
-				getSearcheRequestBuilder().setQuery(bool);
-			}
-			
-			if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
-			{
-				String[] fieldSelected = (String[])fieldSelections.toArray(new String[fieldSelections.size()]);
-				BoolQueryBuilder bool = QueryBuilders.boolQuery();
-//				for (int i = 0; i < fieldSelected.length; i++)
-//				{
-//					bool.filter(QueryBuilders.termQuery("_id",fieldSelected[i]));
-//				}
-				QueryBuilder ids = QueryBuilders.termsQuery("_id", fieldSelections);
-//				QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
-//				
-//				FilterBuilder filter = ;//FilterBuilders.idsFilter().ids(fieldSelected);
-//				andFilter.add(filter);
-				getSearcheRequestBuilder().setPostFilter(ids);
-			}
-			else
-			{
-				getSearcheRequestBuilder().setPostFilter((QueryBuilder)null);
-			}
-			
 			response = getSearcheRequestBuilder().execute().actionGet();
 			
 			if (getChunks().size() > 30)
@@ -257,5 +225,41 @@ public class ElasticHitTracker extends HitTracker
 	{
 		setIndexId(getIndexId() + 1);
 		fieldFilterOptions = null;		
+	}
+	public void refresh()
+	{
+		if(getSearchQuery().hasFilters())
+		{
+			BoolQueryBuilder bool = QueryBuilders.boolQuery();
+			bool.must(getTerms());
+			for (Iterator iterator = getSearchQuery().getFilters().iterator(); iterator.hasNext();)
+			{
+				FilterNode node = (FilterNode) iterator.next();
+				QueryBuilder term = QueryBuilders.matchQuery(node.getId(), node.get("value"));
+				bool.must(term);
+			}
+			getSearcheRequestBuilder().setQuery(bool);
+		}
+		
+		if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
+		{
+			String[] fieldSelected = (String[])fieldSelections.toArray(new String[fieldSelections.size()]);
+			BoolQueryBuilder bool = QueryBuilders.boolQuery();
+//			for (int i = 0; i < fieldSelected.length; i++)
+//			{
+//				bool.filter(QueryBuilders.termQuery("_id",fieldSelected[i]));
+//			}
+			QueryBuilder ids = QueryBuilders.termsQuery("_id", fieldSelections);
+//			QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
+//			
+//			FilterBuilder filter = ;//FilterBuilders.idsFilter().ids(fieldSelected);
+//			andFilter.add(filter);
+			getSearcheRequestBuilder().setPostFilter(ids);
+		}
+		else
+		{
+			getSearcheRequestBuilder().setPostFilter((QueryBuilder)null);
+		}
+
 	}
 }

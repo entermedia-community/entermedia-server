@@ -1319,6 +1319,19 @@ public class MediaArchive
 		}
 		return setting.get("value");
 	}
+	public void setCatalogSettingValue(String inId, String inValue)
+	{
+		Searcher search = getSearcher("catalogsettings");
+		Data setting = (Data)search.searchById(inId);
+		if( setting ==  null)
+		{
+			setting = search.createNewData();
+			setting.setId(inId);
+		}
+		setting.setProperty("value", inValue);
+		search.saveData(setting, null);
+	}
+
 	
 	public void loadCategoryPermissions(WebPageRequest inReq)
 	{

@@ -7,7 +7,6 @@
 	<inner-layout>/${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
 	<path-action name="ProfileModule.savePreference"/>
 	
-	<page-action name="ProjectModule.searchForAssetsInLibrary" />
 
 	 <script id="jscroller"  src="/${applicationid}/components/javascript/scroller/jquery.mThumbnailScroller.js">  </script>
      <style id="jscroller-css"  href="/${applicationid}/components/javascript/scroller/jquery.mThumbnailScroller.css" />

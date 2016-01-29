@@ -261,13 +261,15 @@ public class MediaAdminModule extends BaseMediaModule
 	public void toggleSearchLogs(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		if( archive.getNodeManager().getShowSearchLogs(archive.getCatalogId()))
+		if( archive.getSearcherManager().getShowSearchLogs(archive.getCatalogId()))
 		{
-			archive.getNodeManager().setShowSearchLogs(archive.getCatalogId(),false);
+			archive.getSearcherManager().setShowSearchLogs(archive.getCatalogId(),false);
+			archive.setCatalogSettingValue("log_all_searches","false");
 		}
 		else
 		{
-			archive.getNodeManager().setShowSearchLogs(archive.getCatalogId(),true);
+			archive.getSearcherManager().setShowSearchLogs(archive.getCatalogId(),true);
+			archive.setCatalogSettingValue("log_all_searches","true");
 		}
 	}	
 	

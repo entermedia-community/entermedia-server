@@ -205,14 +205,16 @@ public class BaseElasticSearcher extends BaseSearcher
 			hits.setSearcher(this);
 			hits.setSearchQuery(inQuery);
 
-			if( getElasticNodeManager().getShowSearchLogs(getCatalogId()) )
+			//Infinite loop check
+			if( getSearcherManager().getShowSearchLogs(getCatalogId()) )
 			{
-				if (log.isDebugEnabled())
-				//if( true )
+				//if (log.isDebugEnabled())
+				if( true )
 				{
+					long size = hits.size(); //order is important
 					json = search.toString();
 					long end = System.currentTimeMillis() - start;
-					log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + hits.size() + " hits in: " + (double) end / 1000D + " seconds]");
+					log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size + " hits in: " + (double) end / 1000D + " seconds]");
 				}
 				else
 				{
@@ -568,7 +570,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
 	{
 
-		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0)  //Shortcut for common cases
+		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0 && inQuery.getParentJoins() == null)  //Shortcut for common cases
 		{
 			Term term = (Term) inQuery.getTerms().iterator().next();
 

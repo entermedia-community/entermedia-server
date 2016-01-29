@@ -16,7 +16,13 @@ $context.putPageValue("caneditlists","false")
 #if( $edit)
 $context.putPageValue("edit",$edit)
 #end
+
+#if( $librarycol)
+<form  name="advancedsearch" action="$home$apphome/views/modules/librarycollection/search.html" class="em-widget-content" method="POST">
+<input name="collectionid" type="hidden" value="$librarycol.getId()">
+#else
 <form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content" method="POST">
+#end
 ##We need 2 things passed in: $searcher, $view or $searcher $details
 #if (!$details && $userprofile)
 
