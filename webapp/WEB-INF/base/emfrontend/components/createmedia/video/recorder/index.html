@@ -1,15 +1,15 @@
 <div class="ui-widget uipanel" style="margin:20px;">   <div class="ui-widget-header">[[Create Streaming Video]]</div>   <div class="ui-widget-content" style="overflow: hidden;">		    
-<link rel="stylesheet" type="text/css" href="HDFVR-mobile.css"><script type="text/javascript" src="swfobject.js"></script>
+<link rel="stylesheet" type="text/css" href="$apphome/components/createmedia/video/recorder/HDFVR-mobile.css"><script type="text/javascript" src="$apphome/components/createmedia/video/recorder/swfobject.js"></script>
 
 <script type="text/javascript">
 	var flashvars = {
 		userId : "XXY",#set($size =  "1024x768x15x85")#if($asset.bandwidth)	#set( $bandwidth = $mediaarchive.getData("bandwidth",$asset.bandwidth) )	#set( $size = $bandwidth.name )#end
-		qualityurl: "audio_video_quality_profiles/wide/${size}.xml",		recorderId: "$asset.getId()",		sscode: "html",		lstext : "Loading Settings..."	};
+		qualityurl: "$apphome/components/createmedia/video/recorder/audio_video_quality_profiles/wide/${size}.xml",		recorderId: "$asset.getId()",		sscode: "html",		lstext : "Loading Settings..."	};
 	var params = {
 		quality : "high",
 		bgcolor : "#dfdfdf",
 		play : "true",
-		loop : "false",
+		loop : "false",		base : "$apphome/components/createmedia/video/recorder/",
 		allowscriptaccess: "sameDomain",
 		wmode:"transparent"
 	};
@@ -26,7 +26,7 @@
 	}
 	
 	if(mobile == false){
-		swfobject.embedSWF("VideoRecorder.swf", "hdfvr-content", "416", "312", "10.3.0", "", flashvars, params, attributes);
+		swfobject.embedSWF("$apphome/components/createmedia/video/recorder/VideoRecorder.swf", "hdfvr-content", "416", "312", "10.3.0", "", flashvars, params, attributes);
 	}else{
 		//do nothing
 	}
@@ -49,7 +49,7 @@ window.onbeforeunload = function(){
 		<input name="FileInput" id="hdfvr-file-input" type="file" accept="video/*" capture="camcorder" value="Start Recording" />
 		<input type="submit"  id="hdfvr-submit-btn" value="2. Upload"/>
 	</form>
-	<img src="loaderb16.gif" id="hdfvr-loading-img" alt="Uploading please wait..."/>
+	<img src="$apphome/components/createmedia/video/recorder/loaderb16.gif" id="hdfvr-loading-img" alt="Uploading please wait..."/>
 	<div id="output"></div>
 	</div>	<div id="instructions">	<p>Click Red Record button to start live streaming</p>	</div></div>
 <div style="float:right;margin-left: 20px; padding:20px; background-color: #eee; border-radius: 5px;"><h4>Live Stream Link</h4><div style="margin-left:12px"><a  class="btn" target="_new" title="Share this live recording with others" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()">Live Stream Link</a></div><h4>Live Stream Embed Code</h4>$pages.include("$apphome/components/share/embed.html?sourcepath=$asset.sourcePath")<h4>Screen Capture</h4><div style="margin-left:12px"><p>Download <a href="https://manycam.com/">ManyCam</a> (is limited to 720px)</p></div></div>

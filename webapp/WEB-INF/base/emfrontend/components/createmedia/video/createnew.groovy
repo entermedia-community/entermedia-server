@@ -56,8 +56,8 @@ String tosourcepath = context.findValue("redirecttosourcepath");
 
 if (Boolean.parseBoolean(tosourcepath))
 {
-	String path = "$apphome/views/upload/create/video/recorder/index.html?assetid=${asset.id}&edit=true";
+	String path = "$home$apphome/components/createmedia/video/recorder/index.html?assetid=${asset.id}&edit=true";
 	
-	context.redirect(path);
+	//context.redirect(path);
 }
 
