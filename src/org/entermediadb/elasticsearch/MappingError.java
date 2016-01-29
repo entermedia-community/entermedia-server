@@ -3,6 +3,8 @@ package org.entermediadb.elasticsearch;
 public class MappingError
 {
 	protected String fieldSearchType;
+	protected String fieldDetail;
+	
 	public String getSearchType()
 	{
 		return fieldSearchType;
@@ -19,6 +21,14 @@ public class MappingError
 	public void setError(String inError)
 	{
 		fieldError = inError;
+	}
+	public String getDetail()
+	{
+		return fieldDetail;
+	}
+	public void setDetail(String inDetail)
+	{
+		fieldDetail = inDetail;
 	}
 	
 }

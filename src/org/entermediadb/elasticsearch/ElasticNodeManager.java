@@ -60,7 +60,9 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
+import org.entermediadb.asset.search.BaseAssetSearcher;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
+import org.entermediadb.elasticsearch.searchers.ElasticAssetDataConnector;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
@@ -446,6 +448,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		MappingError error = new MappingError();
 		error.setError(inMessage);
 		error.setSearchType(inSearchType);
+		if(inMessage.contains("Mapper for [")){
+			String guessdetail = inMessage.substring("Mapper for [".length(), inMessage.length());
+			guessdetail = guessdetail.substring(0, guessdetail.indexOf("]"));
+			error.setDetail(guessdetail);
+		}
+		
 		getMappingErrors().add(error);
 
 	}
@@ -596,7 +604,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return null;
 	}
 
-	public void reindexInternal(String inCatalogId)
+	public boolean reindexInternal(String inCatalogId)
 	{
 		try
 		{
@@ -605,7 +613,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String tempindex = id + date.getTime();
 			prepareIndex(tempindex);
 			//need to reset/creat the mappings here!
-			
+			getMappingErrors().clear();
 				PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 				List sorted = archive.listSearchTypes();
 				for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
@@ -616,14 +624,30 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					if (searcher instanceof BaseElasticSearcher)
 					{
 						BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-						if(new_name.getAllHits().size() > 0){
+
 							new_name.putMappings(tempindex);
-						}
+
 						
 					}
+					
+					if (searcher instanceof BaseAssetSearcher)
+					{
+						BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
+							ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
+							con.putMappings(tempindex);
+
+						
+					}
+					
+					
+					
 				}
 
-			
+			if(!getMappingErrors().isEmpty()){
+				return false;
+			}
+				
+				
 			
 			SearchResponse searchResponse = getClient().prepareSearch(id).setQuery(QueryBuilders.matchAllQuery()).setSearchType(SearchType.SCAN).setScroll(new TimeValue(600000)).setSize(500).execute().actionGet();
 
@@ -658,6 +682,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			throw new OpenEditException(e);
 		}
+		return true;
 
 	}
 

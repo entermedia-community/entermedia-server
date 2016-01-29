@@ -280,7 +280,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 //			}
 //		}
 		updateIndex(inAll, inUser);
-		getDataArchive().saveAllData(inAll, inUser);
+		//getDataArchive().saveAllData(inAll, inUser);
 	}
 
 	//TODO: Deal with non XML saves
@@ -298,7 +298,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 			inData.setSourcePath(sourcepath);
 			updateElasticIndex(details, inData);
 		}
-		getDataArchive().saveData(inData, inUser);
+		//getDataArchive().saveData(inData, inUser);//Don't save - yikes :)
 	}
 
 	protected DataArchive getDataArchive()

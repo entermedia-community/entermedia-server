@@ -327,14 +327,14 @@ public class BaseElasticSearcher extends BaseSearcher
 	public void putMappings(String indexid)
 	{
 		AdminClient admin = getElasticNodeManager().getClient().admin();
-		
+		if(indexid == null){
+			 indexid = toId(getCatalogId());
+		}
 		boolean alreadyin = admin.indices().typesExists(new TypesExistsRequest(new String[] { indexid }, getSearchType())).actionGet().isExists();
 		if(alreadyin){
 			return;
 		}
-		if(indexid == null){
-			 indexid = toId(getCatalogId());
-		}
+		
 		List dependson = getPropertyDetails().getDependsOn();
 		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
 		{
