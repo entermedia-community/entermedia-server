@@ -189,7 +189,11 @@ public class ElasticHitTracker extends HitTracker
 					}
 					for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
 					{
-						org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
+						
+					//	org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
+						org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket) iterator2.next();
+						
+						
 						long count = entry.getDocCount();
 						String term = entry.getKeyAsString();
 						FilterNode child = new FilterNode();
