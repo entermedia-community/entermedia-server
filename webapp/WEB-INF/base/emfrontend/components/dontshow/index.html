@@ -18,8 +18,14 @@
 </ul>
 
 #set($facets = $hits.getFilterOptions())
+#if( $librarycol)
+<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+    <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
 
+#else
 <form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+#end
+
 #foreach($type in $facets )
 #set( $viewpermission = true)
 #set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )

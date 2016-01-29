@@ -364,16 +364,25 @@ uiload = function() {
 	{
 		var tabs = $(this); 
 		
-		var tabcontent = $("#" + tabs.data("targetdiv") );
+		var tabcontent = $("#" + tabs.data("targetdiv"));
 		
 		//active the right tab
 		var hash = window.location.hash;
+		if( hash )
+		{
+			var activelink = $(hash,tabs);
+			if( activelink.length == 0)
+			{
+				hash = false;
+			}
+		}
+		
 		if( !hash )
 		{
 			hash = "#" + tabs.data("defaulttab");
 		}
-		var activelink = $(hash);
-		var loadedpanel = $(hash + "panel");
+		var activelink = $(hash,tabs);
+		var loadedpanel = $(hash + "panel",tabcontent);
 		if( loadedpanel.length == 0)
 		{
 			loadedpanel = $("#loadedpanel",tabcontent);
@@ -404,7 +413,8 @@ uiload = function() {
 			}	  
 			
 			var reloadpage = link.data("loadpageonce");
-			if( reloadpage )
+			var alwaysreloadpage = link.data("alwaysreloadpage");
+			if( reloadpage || alwaysreloadpage )
 			{
 				if( window.location.href.endsWith( url ) )
 				{

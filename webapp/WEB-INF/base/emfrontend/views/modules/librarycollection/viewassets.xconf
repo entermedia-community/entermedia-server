@@ -1,22 +1,24 @@
 <page>
-	<inner-layout>${themeprefix}/layouts/collectionlayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
 	
-		<property name="hitsname">hits</property>
-	<property name="searchtype">${module}</property>
+	<path-action name="ProjectModule.addCollectionTab" />
+	
+	<property name="hitsname">hits</property>
 	<property name="virtual">true</property>
 	
-    <path-action name="DataEditModule.loadData" >
+    <page-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>
-			<searchtype>${module}</searchtype>
-    </path-action>
-	<path-action name="ProjectModule.loadCollections"/>
-	<path-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>${module}</searchtype>
-	</path-action>
+			<idname>collectionid</idname>
+			<searchtype>librarycollection</searchtype>
+    </page-action>
+	<page-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>librarycollection</searchtype>
+	</page-action>
 	
-	  <permission name="view">
+	 <permission name="view">
     		<action name="ProjectModule.checkLibraryPermission" />
     </permission>
+	 <page-action name="DataEditModule.loadPageOfSearch"/>
 	
 	
 </page>

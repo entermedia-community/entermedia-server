@@ -81,9 +81,10 @@
 		$("#homelayout .ui-icon-newwin").on('click',
 				function(e) 
 				{
+			//http://localhost:8080/emshare/views/modules/librarycollection/media/AVKEl4LO3hU4x6kDdnNI.html
 					e.preventDefault();
 					var colid = $(this).data("collectionid");
-					var nextpage = "$home$apphome/components/collectionfeed/viewassets.html?collectionid=" + colid + "&emtabid=" + colid;
+					var nextpage = "$home$apphome/views/modules/librarycollection/media/" + colid + ".html";
 					jQuery.get(nextpage, {oemaxlayout:2}, function(data) 
 					{
 						//add new tab. reload page

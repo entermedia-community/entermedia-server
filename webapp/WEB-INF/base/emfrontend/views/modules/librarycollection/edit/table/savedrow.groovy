@@ -1,23 +1,12 @@
-
-import org.openedit.data.Searcher 
-import org.entermedia.email.PostMail
-import org.entermedia.email.TemplateWebEmail
+import org.entermediadb.email.PostMail
+import org.entermediadb.email.TemplateWebEmail
 import org.openedit.Data
 import org.openedit.MultiValued
-import org.openedit.data.Searcher
-import org.openedit.entermedia.*
-import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.edit.*
-import org.openedit.entermedia.episode.*
-import org.openedit.entermedia.modules.*
-import org.openedit.entermedia.util.*
-import org.openedit.util.DateStorageUtil;
-import org.openedit.xml.*
+import org.openedit.WebPageRequest
+import org.openedit.page.Page
+import org.openedit.util.DateStorageUtil
 
-import com.openedit.WebPageRequest
-import com.openedit.hittracker.*
-import com.openedit.page.*
-import com.openedit.util.*
+
 
 
 

@@ -1,1 +1,31 @@
-$pages.include("$apphome/views/search/index.html")
+<div id="searchlayout" class="subcolumns">
+
+<div id="left-col">
+$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+<br>
+$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+
+</div>
+<div id="right-col">
+$context.putPageValue("showhover", "false")
+$context.putPageValue("showcaption", "true")
+$context.putPageValue("hideheader", "true")
+
+#if(!$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if($categoryid)
+		#set($category = $mediaarchive.getData("category",$categoryid))
+		#if($category)
+			$context.putPageValue("category",$category)
+		#end
+	#end
+#end
+
+###always go to index - don't care about resultview
+$pages.include("$apphome/components/results/index.html",$context)
+
+</div>
+
+
+
+</div>

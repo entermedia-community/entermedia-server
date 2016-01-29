@@ -238,7 +238,16 @@ public class ProjectModule extends BaseMediaModule
 	public void addCollectionTab(WebPageRequest inReq)
 	{
 		UserProfile profile = inReq.getUserProfile();
-		String collectionid = inReq.getRequestParameter("collectionid");
+		String collectionid = null;
+		Data collection = (Data)inReq.getPageValue("librarycol");
+		if( collection != null)
+		{
+			collectionid = collection.getId();
+		}
+		else
+		{
+			collectionid = inReq.getRequestParameter("collectionid");
+		}
 		if( collectionid == null)
 		{
 			String newcollection = inReq.getRequestParameter("collectionname.value");
@@ -267,10 +276,8 @@ public class ProjectModule extends BaseMediaModule
 				newcol.setName(newcollection);
 				//searcher.updateData(inReq, fields, data);
 				
-				
 				searcher.saveData(newcol, inReq.getUser());
 				inReq.setRequestParameter("collectionid",newcol.getId());
-				inReq.setRequestParameter("emtabid",newcol.getId());
 				collectionid = newcol.getId();
 			}
 		}

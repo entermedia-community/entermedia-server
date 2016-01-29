@@ -1,0 +1,4 @@
+<page>
+	<path-action name="DataEditModule.changeFilters"/> 
+	<path-action name="DataEditModule.loadHits"/> 
+</page>
