@@ -1,6 +1,6 @@
 import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.util.Row
+import org.entermediadb.asset.util.Row
 import model.importer.BaseImporter
 
 class CsvImporter extends BaseImporter
