@@ -96,7 +96,7 @@ public void handleUpload() {
 	itemsearcher.saveAllData(orderitems, null);
 	context.putPageValue("orderitems", orderitems);
 	String from = context.getRequestParameter("email.value");
-	context.putPageValue("fromeemail", from);
+	context.putPageValue("fromemail", from);
 	context.putPageValue("order", order);
 	String to = context.getRequestParameter("destination.value");
 	String sendfrom = context.findValue("quicksharefrom");
