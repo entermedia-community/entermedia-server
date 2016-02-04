@@ -1,12 +1,13 @@
 #set( $apphome = "/${order.applicationid}")
 <p>[[Hello]],</p>
 <br />
+<p>$fromemail sent you these files.</p>
 #if($order.sharenote)
-[[Below is a note that was attached]]:</p>
+<p>[[Below is a note that was attached]]:</p>
 <blockquote>$order.sharenote</blockquote>
 <hr />
 #else 
-</p>
+
 #end
 
 <p>[[Please review the assets at this link]]: <a href="$context.siteRoot$home$apphome/components/quickshare/emailedassets.html?orderid=$order.id" style="font-size: 14px; color: blue;">

@@ -96,9 +96,13 @@ public void handleUpload() {
 	itemsearcher.saveAllData(orderitems, null);
 	context.putPageValue("orderitems", orderitems);
 	String from = context.getRequestParameter("email.value");
+	context.putPageValue("fromeemail", from);
 	context.putPageValue("order", order);
 	String to = context.getRequestParameter("destination.value");
-	sendEmail(context,  to,from, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+	String sendfrom = context.findValue("quicksharefrom");
+	sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+	sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+	
 
 }
 

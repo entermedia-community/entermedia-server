@@ -16,7 +16,8 @@
         <!-- The file input field used as target for the file upload widget -->
         <input id="" type="file" name="files[]" multiple>
     </span>
-    <p></p>
+    <br/><br/>
+    <p  id="readyarea"></p>
    <div class="row">
     <!-- The global progress bar -->
     <div id="progress" class="progress" >
@@ -61,11 +62,10 @@ jQuery(function () {
         dataType: 'json',
         add: function (e, data) {
         	
-        	
+        	jQuery("#readyarea").html("<span class='label label-success'>Your files have been added and are ready for upload</span>");
         	data.context = jQuery('<button/>').text('Start Upload')
                 .appendTo("#upload")
                 .click(function () {
-					alert("here we go...");
                 	var from = jQuery("#fromemail").val();
                 	var to = jQuery("#toemail").val();
                 	if(!from || !to ){
