@@ -1,5 +1,5 @@
 <properties>
 <property id="id" index="true" stored="true">ID</property>
-<property id="settingsgroup" index="true" stored="true">Settings Group</property>
+<property id="settingsgroup" index="true" stored="true" type="list">Settings Group</property>
 <property id="accesslevelchild" index="true" stored="true">Child Settting</property>
 </properties>

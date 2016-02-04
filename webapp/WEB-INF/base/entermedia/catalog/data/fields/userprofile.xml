@@ -34,8 +34,9 @@
 	<property id="screenname" index="true" stored="true" keyword="true" editable="true">Screen Name</property>
 	<property id="firstName" index="true" stored="true" keyword="true" editable="true" required="true">First Name</property>
 	<property id="lastName" index="true" stored="true" keyword="true" editable="true" required="true">Last Name</property>
+	<!-- 
 	<property id="enabled" index="true" stored="true" keyword="true" editable="true" type="boolean">Enabled</property>
-	
+	 -->
 	<property id="password" index="true" stored="true" keyword="true" editable="true" viewtype="password">Password</property>
 	
 	

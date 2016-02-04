@@ -616,9 +616,45 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			getMappingErrors().clear();
 				PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 				List sorted = archive.listSearchTypes();
+				List childtables = archive.findChildTables();
+				
+				//Tables with _parent need to go first.  Hope there is only one level or we need a better sort.
+				for (Iterator iterator = childtables.iterator(); iterator.hasNext();)
+				{
+					String type = (String) iterator.next();
+					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+					//searcher.reIndexAll();
+					if (searcher instanceof BaseElasticSearcher)
+					{
+						BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
+
+							new_name.putMappings(tempindex);
+
+						
+					}
+					
+					if (searcher instanceof BaseAssetSearcher)
+					{
+						BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
+							ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
+							con.putMappings(tempindex);
+
+						
+					}
+					
+					
+					
+				}
+				
+				
+				
+				
 				for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 				{
 					String type = (String) iterator.next();
+					if(childtables.contains(type)){
+						continue;
+					}
 					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
 					//searcher.reIndexAll();
 					if (searcher instanceof BaseElasticSearcher)

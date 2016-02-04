@@ -1,7 +1,7 @@
 <properties prefix="assets"  beanname="transientSearcher">
 	<property id="id" index="true" stored="true">Id</property>
 	<property id="assetid" index="true" keyword="true" stored="true" type="list" listid="asset" viewtype="text">Asset Id</property>
-	<property id="status" editable="true"  index="true"  stored="true" viewtype="list" listid="convertstatus">Status</property>
+	<property id="status" type="list" editable="true"  index="true"  stored="true" viewtype="list" listid="convertstatus">Status</property>
 	<property id="submitted" type="date" searchcomponent="datesearch" viewtype="time" index="true"  stored="true">Submission Date</property>
 	<property id="completed" type="date" searchcomponent="datesearch" viewtype="time" index="true"  stored="true">Completed Date</property>
 	<property id="presetid"  editable="true"  index="true" viewtype="list" listid="convertpreset" stored="true">Preset ID</property>

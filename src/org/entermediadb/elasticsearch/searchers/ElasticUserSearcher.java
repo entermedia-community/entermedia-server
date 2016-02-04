@@ -160,7 +160,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		User user = (User)inData;
 		try
 		{
-			inContent.field("enabled", user.isEnabled() );
+		//	inContent.field("enabled", user.isEnabled() ); //this causes mapping problem... will probably be in here twice.
 			if( user.getGroups().size() > 0)
 			{
 				String[] groups = new String[user.getGroups().size()];
