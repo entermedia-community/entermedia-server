@@ -685,7 +685,7 @@ public class LuceneIndexer
 	{
 		FieldType type = new FieldType();
 		type.setIndexed(true);
-		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_AND_FREQS);  //TODO: Move this to freq check
+		type.setIndexOptions(FieldInfo.IndexOptions.DOCS_AND_FREQS_AND_POSITIONS);  //TODO: Move this to freq check
 		type.setStored(false);
 		type.setTokenized(true);
 		type.setOmitNorms(true); //Norms are nice to have but not really needed
