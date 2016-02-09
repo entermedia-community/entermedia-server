@@ -90,7 +90,14 @@ public class OrderZipGenerator extends BaseGenerator
 				Asset asset = archive.getAssetBySourcePath(orderitem.get("assetsourcepath"));
 				
 				Page target = null;
-				String filename = publishtask.get("exportname");
+				String filename = null;
+				if(publishtask != null){
+					filename = publishtask.get("exportname");
+				}
+				
+				if(filename == null){
+					filename = asset.getPrimaryFile();
+				}
 				if(filename == null){
 					throw new OpenEditException("Filename was not set on publish task:  " + publishtask.getId());					
 				}
@@ -112,7 +119,8 @@ public class OrderZipGenerator extends BaseGenerator
 				} else {
 					fileset.add(filename);
 				}
-				if(preset.getId().equals("0")){
+				
+				if(preset == null || preset.getId().equals("0")){
 					 target = archive.getOriginalDocument(asset);
 					 util.addTozip(target.getContentItem(),filename , zos);
 				}

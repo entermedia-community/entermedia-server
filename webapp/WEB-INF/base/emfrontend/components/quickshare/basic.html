@@ -41,7 +41,7 @@
 <textarea class="form-control" name="sharenote.value"></textarea>  </div>
  
  <div id="upload"></div>
-  
+  <button id="startbutton" type="submit" style="display: none;">Start Upload</button>
  
 </form>
     
@@ -63,8 +63,10 @@ jQuery(function () {
         add: function (e, data) {
         	
         	jQuery("#readyarea").html("<span class='label label-success'>Your files have been added and are ready for upload</span>");
-        	data.context = jQuery('<button/>').text('Start Upload')
-                .appendTo("#upload")
+        	
+        	
+        	data.context = jQuery('#startbutton').show()
+                
                 .click(function () {
                 	var from = jQuery("#fromemail").val();
                 	var to = jQuery("#toemail").val();
@@ -76,6 +78,7 @@ jQuery(function () {
                 	data.context = $('<p/>').text('Uploading...').replaceAll($(this));
                     data.submit();
                 });
+        	
         },
         done: function (e, data) {
         //	alert("All done!");
