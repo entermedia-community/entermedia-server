@@ -7,7 +7,7 @@ $context.putPageValue("asset", $asset)
 <form>
 
 
-Choose Format:
+[[Choose Format]]:
 <select id="sizepicker" name="size">
 <option value=""></option>
 
@@ -40,15 +40,9 @@ Choose Format:
 		
 		jQuery("#selectbutton").bind("click", function () {
 			var html = jQuery("#preview").html();
-			//alert("trying to call some stuff");
+
 			var size = jQuery("#sizepicker").val();
-			//alert("size" + size);
-			
-			//parent.CKEDITOR.instances.content.insertHtml(html);
-			//window.parent.CKEDITOR.instances.content.insertHtml(html);
-			
-			//window.parent.CKEDITOR.tools.callFunction(1,"$home$originalpath"); 
-			//parent.CKEDITOR.tools.callFunction(1,"$home$originalpath"); 
+
 			if(size != "original"){
 			window.opener.CKEDITOR.tools.callFunction( 1, "$home$apphome/views/modules/asset/downloads/preview/" + size + "/${asset.sourcepath}/thumb.jpg" );
 			} else{
@@ -56,11 +50,9 @@ Choose Format:
 				
 				window.opener.CKEDITOR.tools.callFunction( 1, "$url" );
 			}
-			//jQuery("a.openeditdialog").fancybox.close();
-			//	jQuery(this).first().fancybox.close();
-			//var fancybox = jQuery(document).fancybox;
+
 			window.close();
-			//jQuery(document).fancybox.close();
+			
 			parent.jQuery("#fancy_close").trigger("click");
 		}
 		);
