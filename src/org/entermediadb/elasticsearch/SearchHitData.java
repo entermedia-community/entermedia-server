@@ -54,6 +54,9 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	}
 	public String get(String inId)
 	{
+		if(inId == null){
+			return null;
+		}
 		String svalue = super.get(inId);
 		if (svalue != null)
 		{

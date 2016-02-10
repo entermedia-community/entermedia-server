@@ -49,7 +49,24 @@ public void init(){
 				
 					
 				String id = trow.get("id");
-				Data newdata = searcher.searchById(id);
+				
+				PropertyDetail parent = searcher.getDetail("_parent");
+				Data newdata = null;
+				if(parent == null){
+								
+				 newdata = searcher.searchById(id);
+				} else{
+					String parentid = trow.get("_parent");
+					if(parentid == null){
+						
+						 parentid = trow.get("asset");
+					}
+					
+					newdata = searcher.query().match("id", id).match("_parent", parentid).searchOne();
+					
+				
+				}
+				
 				if(newdata == null){
 					newdata = searcher.createNewData();
 					newdata.setId(id);
@@ -90,7 +107,9 @@ public void init(){
 					
 				}
 				
-				
+				if(parent != null && newdata.get("_parent") == null){
+					data.remove(newdata);
+				}
 				
 				if(data.size() > 100){
 					searcher.saveAllData(data, null);

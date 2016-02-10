@@ -68,6 +68,6 @@
 	<classpathentry kind="lib" path="lib/snakeyaml-1.15.jar"/>
 	<classpathentry kind="lib" path="lib/spatial4j-0.5.jar"/>
 	<classpathentry kind="lib" path="lib/t-digest-3.0.jar"/>
-	<classpathentry kind="lib" path="lib/elasticsearch-2.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/elasticsearch-2.1.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

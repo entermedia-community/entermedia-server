@@ -1096,7 +1096,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail parent = details.getDetail("_parent");
 			if( parent != null)
 			{
-				String _parent = data.get(parent.getListId());
+				String _parent = data.get(parent.getId());
 				if( _parent != null)
 				{
 					builder = builder.setParent(_parent);

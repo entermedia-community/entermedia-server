@@ -416,7 +416,7 @@ public class BaseOrderManager implements OrderManager {
 		HitTracker all = itemsearcher.fieldSearch("orderid", inOrder.getId());
 		List tosave = new ArrayList();
 		if(inResetId){
-			inOrder.setId(orderseacher.nextId());
+			inOrder.setId(null);
 			inOrder.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			inOrder.setProperty("basket","false");
 
