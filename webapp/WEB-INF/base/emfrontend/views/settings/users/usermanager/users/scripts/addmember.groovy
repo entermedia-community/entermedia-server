@@ -1,13 +1,11 @@
-import com.openedit.users.Group;
-
 import org.openedit.Data
+import org.openedit.OpenEditException
 import org.openedit.data.Searcher
+import org.openedit.users.Group
+import org.openedit.users.User
+import org.openedit.users.UserManager
 
-import com.openedit.OpenEditException
 import com.openedit.page.manage.*
-import com.openedit.users.Group
-import com.openedit.users.User
-import com.openedit.users.UserManager
 
 public Group getGroup()
 {
