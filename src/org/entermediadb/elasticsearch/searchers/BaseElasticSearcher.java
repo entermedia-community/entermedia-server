@@ -39,6 +39,7 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -973,7 +974,7 @@ public class BaseElasticSearcher extends BaseSearcher
 */
 	public void updateIndex(Collection<Data> inBuffer, User inUser)
 	{
-		if( inBuffer.size() > 99 )
+		if( inBuffer.size() > 999 )
 		{
 			updateInBatch( inBuffer, inUser);  //This is asynchronous
 		}
@@ -1016,6 +1017,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					//request.getFromContext(key)
 					BulkItemResponse res = response.getItems()[i];
+					if(res.isFailed()){
+						log.error(res.getFailureMessage());
+						errors.add( res.getFailureMessage() );
+						
+					}
 					//Data toupdate = toversion.get(res.getId());
 					Data toupdate = toprocess.get(res.getItemId());
 					if( toupdate != null)
@@ -1046,11 +1052,24 @@ public class BaseElasticSearcher extends BaseSearcher
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateIndex(content, data2, details);
+			
+			
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
+				PropertyDetail parent = details.getDetail("_parent");
+				if( parent != null)
+				{
+					//String _parent = data.get(parent.getListId());
+					String _parent = data2.get(parent.getId());
+					if( _parent != null)
+					{
+						req.parent(_parent);
+					}
+				}
 				if( data2.getId() != null)
 				{
 					req = req.id(data2.getId());
+					
 				}
 				req = req.source(content);
 				if( isRefreshSaves() )
@@ -1068,7 +1087,8 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		if( errors.size() > 0)
 		{
-			throw new OpenEditException((Throwable)errors.get(0));
+		//	throw new OpenEditException((Throwable)errors.get(0));
+			
 		}
 		// ConcurrentModificationException
 		//builder = builder.setSource(content).setRefresh(true);
@@ -1101,6 +1121,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				if( _parent != null)
 				{
 					builder = builder.setParent(_parent);
+				} else{
+					return; //Can't save data that doesn't have a parent!
 				}
 			}
 			
@@ -1219,6 +1241,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			try
 			{
 				if ("_id".equals(key) || "_parent".equals(key))
+					
 				{
 					// if( value != null)
 					// {
@@ -1227,6 +1250,10 @@ public class BaseElasticSearcher extends BaseSearcher
 					// }
 					continue;
 				}
+				
+				
+				
+				
 
 				if (detail != null && detail.isDate())
 				{
@@ -1342,6 +1369,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		String id = inData.getId();
 
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
+		if(inData.get("parent") != null){
+			delete.setParent(inData.get("parent"));
+		}
 		delete.setRefresh(true).execute().actionGet();
 
 	}

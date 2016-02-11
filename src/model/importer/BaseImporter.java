@@ -60,9 +60,9 @@ public class BaseImporter extends EnterMediaObject
 				Data target = null;
 				String idCell = trow.get("id");
 				PropertyDetail parent = getSearcher().getDetail("_parent");
-			
+				String parentid = null;
 				if(parent != null){
-					String parentid = trow.get("_parent");
+					 parentid = trow.get("_parent");
 					if(parentid != null){
 						target = findExistingData(idCell, parentid);
 					}					
@@ -78,6 +78,9 @@ public class BaseImporter extends EnterMediaObject
 					{
 						target = getSearcher().createNewData();
 						target.setId(idCell);
+						if(parent != null){
+							target.setProperty("_parent", parentid);
+						}
 					}
 				
 				
@@ -98,7 +101,7 @@ public class BaseImporter extends EnterMediaObject
 				addProperties( trow, target);
 				target.setId( idCell );
 				data.add(target);
-				if ( data.size() == 100 )
+				if ( data.size() == 1000 )
 				{
 					getSearcher().saveAllData(data, context.getUser());
 					data.clear();

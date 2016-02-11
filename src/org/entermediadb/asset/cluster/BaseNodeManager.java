@@ -89,7 +89,7 @@ public class BaseNodeManager implements NodeManager
 			}
 			Element root = getXmlUtil().getXml(page.getInputStream(),"UTF-8");
 			
-			fieldLocalNode = new Node(root);
+			fieldLocalNode = new Node(root, null);
 			String nodeid = getWebServer().getNodeId();
 			if( nodeid != null)
 			{
