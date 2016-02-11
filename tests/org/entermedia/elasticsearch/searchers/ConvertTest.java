@@ -38,10 +38,10 @@ public class ConvertTest extends BaseEnterMediaTest
 		assertTrue(hits.size() > 0);
 		
 		
-		convertSearcher.reindexInternal();
-		q.addMatches("_id",found.getId());
-		 hits  = convertSearcher.search(q);
-		assertTrue(hits.size() > 0);
+//		convertSearcher.reindexInternal();
+//		q.addMatches("_id",found.getId());
+//		 hits  = convertSearcher.search(q);
+//		assertTrue(hits.size() > 0);
 
 	}
 	

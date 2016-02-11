@@ -1,11 +1,19 @@
 package model.importer;
 
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+
 import org.entermediadb.asset.util.CSVReader;
 import org.entermediadb.asset.util.Header;
 import org.entermediadb.asset.util.ImportFile;
 import org.entermediadb.asset.util.Row;
 import org.entermediadb.scripts.EnterMediaObject;
-import org.openedit.*;
+import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
@@ -14,13 +22,6 @@ import org.openedit.util.EmStringUtils;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.URLUtilities;
-
-import java.io.Reader;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 
 public class BaseImporter extends EnterMediaObject
@@ -58,15 +59,28 @@ public class BaseImporter extends EnterMediaObject
 
 				Data target = null;
 				String idCell = trow.get("id");
-				if (idCell != null && idCell.trim().length() > 0) 
+				PropertyDetail parent = getSearcher().getDetail("_parent");
+			
+				if(parent != null){
+					String parentid = trow.get("_parent");
+					if(parentid != null){
+						target = findExistingData(idCell, parentid);
+					}					
+				}
+				
+				if (target == null && idCell != null && idCell.trim().length() > 0) 
 				{
-					target = findExistingData(idCell);
-					if (target == null) 
+					target = findExistingData(idCell, null);
+				}
+				
+				
+				if (target == null) 
 					{
 						target = getSearcher().createNewData();
 						target.setId(idCell);
 					}
-				}
+				
+				
 				else if ( isMakeId() )
 				{
 					target = getSearcher().createNewData();
@@ -103,9 +117,25 @@ public class BaseImporter extends EnterMediaObject
 		return null;
 	}
 	/** Might be overriden by scripts */
-	protected Data findExistingData(String inId )
+	protected Data findExistingData(String inId, String inParent )
 	{
-		return (Data) getSearcher().searchById(inId);
+		
+		Searcher searcher = getSearcher();
+		
+		PropertyDetail parent = searcher.getDetail("_parent");
+		Data newdata = null;
+		if(parent == null){
+		 newdata = (Data) getSearcher().searchById(inId);
+		} else{
+		
+			
+			newdata = searcher.query().match("id", inId).match("_parent", inParent).searchOne();
+			
+		
+		}
+		
+		
+		return newdata;
 	}
 	protected HashMap<String,Map> getLookUps()
 	{

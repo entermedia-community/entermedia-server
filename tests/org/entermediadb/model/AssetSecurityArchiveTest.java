@@ -5,7 +5,6 @@ import java.util.List;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.openedit.WebPageRequest;
-import org.openedit.data.lucene.HitIterator;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 

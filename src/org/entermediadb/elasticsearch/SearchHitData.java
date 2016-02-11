@@ -91,7 +91,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			PropertyDetail detail = getPropertyDetails().getDetail(inId);
 			if( detail != null)
 			{
-				String legacy = detail.get("legacyid");
+				String legacy = detail.get("legacy");
 				if( legacy != null)
 				{
 					value = get(legacy);

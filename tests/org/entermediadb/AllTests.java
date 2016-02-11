@@ -53,7 +53,7 @@ public class AllTests {
 		suite.addTestSuite( MetaDataReaderTest.class );
 		suite.addTestSuite( RelatedAssetsTest.class );
 		suite.addTestSuite( SourcePathTest.class );
-		suite.addTestSuite( ThesaurusTest.class );
+		//suite.addTestSuite( ThesaurusTest.class );
 		suite.addTestSuite( ZipTest.class );
 		
 		suite.addTestSuite( ConvertDocumentGeneratorTest.class );
