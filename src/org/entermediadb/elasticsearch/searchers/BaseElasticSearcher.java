@@ -974,7 +974,7 @@ public class BaseElasticSearcher extends BaseSearcher
 */
 	public void updateIndex(Collection<Data> inBuffer, User inUser)
 	{
-		if( inBuffer.size() > 999 )
+		if( inBuffer.size() > 999 )//100 was too low - caused shard exceptions due to thread pool size on large ingests..
 		{
 			updateInBatch( inBuffer, inUser);  //This is asynchronous
 		}
