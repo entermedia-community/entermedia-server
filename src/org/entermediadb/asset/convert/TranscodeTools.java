@@ -285,6 +285,24 @@ public class TranscodeTools
 		}
 		return handler;		
 	}
+	public ConversionManager getManagerByRenderType(String inTranscoder)
+	{
+		ConversionManager handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
+		if( handler == null)
+		{
+			synchronized (this)
+			{
+				handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
+				if( handler == null)
+				{
+					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inTranscoder + "ConversionManager");
+					handler.setMediaArchive(getMediaArchive());
+					fieldManagerCache.put( inTranscoder, handler);
+				}	
+			}
+		}
+		return handler;		
+	}
 	
 	
 	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath, String inOutputType)

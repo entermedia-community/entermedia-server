@@ -1,0 +1,317 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<beans  projectname="system" >
+	
+	<!-- Note that this bean is a singleton and any beans referenced in the 
+		  constructor args will not change during the life of the engine.  
+		  Consequently, do not put anything in the map that will need to change 
+		  during the life of the engine (unless it is specifically reloaded 
+		  on every request). -->
+     <bean id="OpenEditEngine" class="org.openedit.servlet.BaseOpenEditEngine" >
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+	    <property name="errorHandler"><ref bean="defaultErrorHandler"/></property>
+	    <property name="requestUtils"><ref bean="requestUtils"/></property>
+	    <property name="welcomeFiles">
+			<list>
+				<value>index.html</value>
+				<value>index.htm</value>
+				<value>index.shtml</value>
+				<value>index.jsp</value>
+				<value>index.php</value>
+			</list>
+		</property>
+     </bean>
+     
+	<bean id="WebServer" class="org.openedit.BaseWebServer">
+	</bean>
+
+	<bean id="searcherManager" class="org.openedit.data.SearcherManager" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	<bean id="userManager" class="org.openedit.users.BaseUserManager" scope="prototype">
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="catalogId"><value>system</value></property>
+	</bean>
+	
+	<bean id="xmlUserArchive" class="org.openedit.users.filesystem.XmlUserArchive" scope="prototype">
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="authenticator"><ref bean="authenticator"/></property>
+		<property name="stringEncryption"><ref bean="stringEncryption"/></property>
+		<property name="webEventHandler"><ref bean="userEventHandler"/></property>
+		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
+	</bean>
+	
+	<bean id="exec" class="org.openedit.util.Exec">
+		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
+		<property name="xmlCommandsFilename"><value>/WEB-INF/bin/commandmap.xml</value></property>
+		<property name="root"><ref bean="root"/></property>
+		<property name="executorManager"><ref bean="executorManager"/></property>
+	</bean>
+	
+	<bean id="authenticator" class="org.openedit.users.authenticate.CompositeAuthenticator">
+		<property name="authenticators">
+			<list>
+				<ref bean="fileAuthenticator"/>
+				<ref bean="ldapAuthenticator"/>
+				<ref bean="jaasAuthenticator"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="ldapAuthenticator" class="org.openedit.users.authenticate.LdapAuthenticator" />
+	<bean id="jaasAuthenticator" class="org.openedit.users.authenticate.JaasAuthenticator" />
+
+	<bean id="fileAuthenticator" class="org.openedit.users.authenticate.FileSystemAuthenticator">
+		<property name="stringEncryption"><ref bean="stringEncryption"/></property>
+		
+	</bean>
+	
+	<bean id="pageManager" class="org.openedit.page.manage.PageManager">
+		<property name="repository"><ref bean="repository"/></property>
+		<property name="pageSettingsManager"><ref bean="pageSettingsManager"/></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
+	</bean>
+	
+	<bean id="moduleManager" class="org.openedit.ModuleManager">
+		<property name="beanNameLoader"><ref bean="beanNameLoader"/></property>
+	</bean>
+	
+	<bean id="beanNameLoader" class="org.openedit.BeanNameLoader">
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+        <property name="xmlArchive"><ref bean="xmlArchive"/></property>
+	</bean>
+
+	<bean id="mimeTypeMap" class="org.openedit.page.manage.BaseMimeTypeMap">
+		<property name="rootDirectory"><ref bean="root" /></property>
+	</bean>
+
+	
+	<!-- Repository config -->
+	<bean id="versionRepository" class="org.openedit.repository.filesystem.XmlVersionRepository" scope="prototype">
+	</bean>
+	
+	<bean id="fileRepository" class="org.openedit.repository.filesystem.FileRepository" scope="prototype">
+	</bean>
+	
+	<bean id="repository" class="org.openedit.repository.CompoundRepository">
+		<property name="root"><ref bean="root"/></property>
+	</bean>
+	
+	<bean id="pageSettingsManager" class="org.openedit.page.manage.PageSettingsManager">
+		<property name="repository"><ref bean="repository"/></property>
+		<property name="mimeTypeMap"><ref bean="mimeTypeMap"/></property>
+		
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+		<property name="xconfReader"><ref bean="xConfToPageSettingsConverter"/></property>
+		<property name="pageSettingsWriter"><ref bean="pageSettingsToXconfWriter"/></property>
+		<property name="textLabelManager"><ref bean="textLabelManager"/></property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+	</bean>
+	
+	<bean id="xConfToPageSettingsConverter" class="org.openedit.page.manage.XConfToPageSettingsConverter">
+		<property name="pageSettingsManager"><ref bean="pageSettingsManager"/></property>	
+		<property name="filterReader"><ref bean="filterReader"/></property>	
+	</bean>
+
+	<bean id="filterReader" class="org.openedit.util.strainer.FilterReader">
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+	</bean>
+
+
+	<bean id="pageSettingsToXconfWriter" class="org.openedit.page.manage.PageSettingsToXconfWriter">
+	</bean>
+		
+	<bean id="defaultErrorHandler" class="org.openedit.error.CompoundErrorHandler">
+		<property name="errorHandlers">
+			<list>
+				<!-- ref bean="fileNotFoundErrorHandler"/ -->
+				<ref bean="jsonErrorHandler"/>
+				<ref bean="htmlErrorHandler"/>
+			</list>
+		</property>
+	</bean>
+	<bean id="htmlErrorHandler" class="org.openedit.error.HtmlErrorHandler" />
+	<bean id="jsonErrorHandler" class="org.openedit.error.JsonErrorHandler" />
+	
+	<bean id="velocity" class="org.openedit.generators.VelocityGenerator" >
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
+	</bean>
+	<bean id="velocityGenerator" class="org.openedit.generators.VelocityGenerator" >
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="openEditEngine"><ref bean="OpenEditEngine" /></property>
+	</bean>
+
+	<bean id="file" class="org.openedit.generators.FileGenerator">
+			<property name="pageManager"><ref bean="pageManager"/></property>
+	</bean>
+	<bean id="downloadGenerator" class="org.openedit.generators.DownloadGenerator">
+			<property name="pageManager"><ref bean="pageManager"/></property>
+	</bean>
+	
+	
+		
+	
+	<!-- a page value for testing -->
+	<bean id="uptime" class="org.openedit.util.Uptime" />
+
+	<!-- Load some modules -->
+	<bean id="PageValue" class="org.openedit.modules.PageValueModule" />
+	<bean id="SessionValue" class="org.openedit.modules.SessionValueModule" />
+	<bean id="Reflector" class="org.openedit.modules.reflect.Reflector" />
+
+	<bean id="stringEncryption" class="org.openedit.util.StringEncryption">
+		<property name="rootDirectory"><ref bean="root" /></property>		
+	</bean>	
+	
+	<bean id="requestUtils" class="org.openedit.util.RequestUtils">
+		<property name="webServer"><ref bean="WebServer" /></property>	
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="moduleManager"><ref bean="moduleManager"/></property>	
+		<property name="localeManager"><ref bean="localeManager"/></property>	
+	</bean>	
+
+	<bean id="TestModule" class="org.openedit.modules.TestModule">
+	</bean>
+	
+	<bean id="SecuredTestModule" class="org.openedit.modules.TestModule">
+		<property name="permission">
+			<value>oe.topsecret</value>
+		</property>
+		<property name="restrictedMethods">
+			<list>
+				<value>testRestricted</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="userEventHandler" class="org.openedit.event.WebEventCompositeHandler">
+	</bean>
+	
+	<bean id="xmlUtil" class="org.openedit.util.XmlUtil">
+				
+	</bean>
+	
+	<bean id="xmlArchive" class="org.openedit.xml.XmlArchive" >
+		<property name="pageManager"><ref bean="pageManager"/></property>
+		<property name="xmlUtil"><ref bean="xmlUtil"/></property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>		
+	</bean>
+<!-- 
+	<bean id="generatedResourceLoader" class="org.openedit.generators.GeneratedResourceLoader" >
+		 
+		<property name="generatorLoader"><ref bean="pageSettingsManager"/></property>
+		
+	</bean>
+	-->
+	<!-- ********************************
+	     Stuff recently moved from editor
+	     ******************************** -->
+	     
+
+	<bean id="windowsUtil" name="windowsUtil"
+		class="org.openedit.util.WindowsUtil" abstract="false"
+		 lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="root"><ref bean="root"/></property>
+	</bean>
+
+	<bean id="localeManager" class="org.openedit.util.LocaleManager"  />
+	
+	<bean id="textLabelManager" class="org.openedit.page.manage.TextLabelManager"  >
+		<property name="pageManager"><ref bean="pageManager"/></property>
+	    <property name="localeManager"><ref bean="localeManager"/></property>
+	    <property name="translator"><ref bean="translator"/></property>
+	</bean>
+	 
+<bean id="translationSearcher" name="translationSearcher"
+        class="org.openedit.modules.translations.TranslationSearcher" abstract="false"
+        scope="prototype" lazy-init="default" autowire="default"
+        dependency-check="default">
+        
+       
+        <property name="xmlArchive"><ref bean="xmlArchive"/></property>
+       
+    </bean>
+	<bean id="translator" class="org.openedit.modules.translations.Translation" />
+
+	<bean id="userProfileManager" class="org.openedit.profile.UserProfileManager" >
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="moduleManager"><ref bean="moduleManager"/></property>
+
+	</bean>
+
+	<bean id="userProfile" class="org.openedit.profile.UserProfile" scope="prototype" >
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+	</bean>
+
+	<bean id="lockManager" class="org.openedit.locks.MemoryLockManager"  scope="prototype" >
+		
+	</bean>
+
+	<bean id="lock" class="org.openedit.locks.Lock" scope="prototype" >
+	</bean>
+
+	<bean id="executorManager" class="org.openedit.util.ExecutorManager" >
+	</bean>
+
+	<bean id="permissionManager" class="org.openedit.page.PermissionManager" scope="prototype" >
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+	</bean>
+
+	<bean id="cacheManager" class="org.openedit.cache.CacheManager"  >
+	
+	</bean>
+
+	<bean id="replacer" class="org.openedit.util.Replacer"  scope="prototype">
+			<property name="searcherManager"><ref bean="searcherManager"/></property>
+	</bean>
+	
+	<bean id="propertyDetailsArchive" class="org.openedit.data.PropertyDetailsArchive"
+		scope="prototype">
+		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
+		<property name="textLabelManager"><ref bean="textLabelManager" /></property>
+		<property name="pageManager"><ref bean="pageManager" /></property>
+				<property name="searcherManager"><ref bean="searcherManager" /></property>
+		
+	</bean>
+	<bean id="listSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
+		<property name="xmlArchive">
+			<ref bean="xmlArchive" />
+		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+	</bean>
+		
+	<bean id="userSearcher"
+		class="org.openedit.users.filesystem.FileUserSearcher"
+		scope="prototype"
+		>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>	
+				
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+	<bean id="groupSearcher"
+		class="org.openedit.users.filesystem.FileGroupSearcher"
+		scope="prototype"
+		>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>		
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		
+	</bean>
+	
+	
+</beans>
