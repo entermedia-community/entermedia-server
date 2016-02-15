@@ -1447,7 +1447,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
 			if (response.isExists())
 			{
-				Data data = new BaseData(response.getSource());
+				Data data = new BaseData();
+				updateData(data, response.getSource());
 				if( getNewDataName() != null )
 				{
 					Data typed = createNewData();		
@@ -1618,9 +1619,9 @@ public class BaseElasticSearcher extends BaseSearcher
 				val= String.valueOf((Float) object);
 			}
 			if (object instanceof Collection) {
-				continue;
-//				Collection values = (Collection) object;
-//				inData.setValues(key, (Collection<String>) object);
+				//continue;
+				Collection values = (Collection) object;
+			inData.setValues(key, (Collection<String>) object);
 			}
 			else if(val != null)
 			{

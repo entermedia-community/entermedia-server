@@ -106,6 +106,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 				if( toindex.size() > 100)
 				{
 					updateIndex(toindex,null);
+					toindex.clear();
 				}
 			}
 			updateIndex(toindex,null);
