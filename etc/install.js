@@ -1,9 +1,11 @@
-importPackage( Packages.com.openedit.util );
+importPackage( Packages.org.openedit.util );
 importPackage( Packages.java.util );
 importPackage( Packages.java.lang );
 importPackage( Packages.java.io );
-importPackage( Packages.com.openedit.modules.update );
-importPackage( Packages.com.openedit.modules.scheduler );
+importPackage( Packages.org.entermediadb.modules.update );
+
+
+
 
 var war = "http://dev.entermediasoftware.com/jenkins/job/@BRANCH@entermedia-server/lastSuccessfulBuild/artifact/deploy/ROOT.war";
 
