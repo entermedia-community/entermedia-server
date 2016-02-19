@@ -55,6 +55,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.snapshots.SnapshotInfo;
@@ -88,7 +89,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected Client fieldClient;
 	protected boolean fieldShutdown = false;
 	protected List fieldMappingErrors;
-
+	protected Node fieldNode;
+	
+	
+	
 	public List getMappingErrors()
 	{
 		if (fieldMappingErrors == null)
@@ -138,8 +142,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				//nb.settings().put("index.merge.policy.merge_factor", "20");
 				// nb.settings().put("discovery.zen.ping.unicast.hosts", "localhost:9300");
 				// nb.settings().put("discovery.zen.ping.unicast.hosts", elasticSearchHostsList);
-
-				fieldClient = nb.node().client(); //when this line executes, I get the error in the other node 
+				fieldNode = nb.node();
+				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
 			}
 		}
 		return fieldClient;
@@ -177,9 +181,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				fieldClient.close();
 			}
+			if(fieldNode != null){
+				fieldNode.close();
+			}
 		}
 		fieldShutdown = true;
-		System.out.println("OpenEditEngine shutdown complete");
+		System.out.println("Elastic shutdown complete");
 	}
 
 	protected String toId(String inId)
