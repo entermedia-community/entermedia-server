@@ -18,6 +18,7 @@
 	<input type="hidden" name="view" value="settings/settinggroupedit" />
 	<input type="hidden" name="searchtype" value="$groupSearcher.getSearchType()"/>
 	<input type="hidden" name="settingsgroupid" value="$data.id" />
+	        		<input type="hidden" name="field" value="permissions"/>
 	
 	
 	$context.putPageValue("searcher", $groupSearcher)	 
@@ -44,7 +45,8 @@
 	    #set( $section = "none")
     	#foreach($item in $hits )
         		#set($val = false )
-        		#set($val = $data.get($item.id))
+        		
+        		#set($val = $data.getValues("permissions").contains($item.id))
         		#if( $section != $item.permissiontype )
         			<tr class="sectionlevel">
         			<td colspan="2" style="height: 35px; line-height: 35px;">
@@ -53,10 +55,9 @@
         			</tr>
         		#set( $section = $item.permissiontype)
         		#end
-        		<input type="hidden" name="field" value="$item.id"/>
         		<tr>
         			<td valign="middle" title="$item.description">$item</td>
-        			<td valign="middle" style="text-align: center; width: 35px; background: #f7f7f7;"><input class="permission-radio" type="checkbox" name="${item.id}.value" value="true" #if($val == "true" || $val == "full") checked #end/></td>
+        			<td valign="middle" style="text-align: center; width: 35px; background: #f7f7f7;"><input class="permission-radio" type="checkbox" name="permissions.value" value="$item.id" #if($val == "true" || $val == "full") checked #end/></td>
         		</tr>
     	#end
     	</table>
