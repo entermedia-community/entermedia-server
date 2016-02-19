@@ -44,6 +44,11 @@ files.copyFiles( tmp + "/WEB-INF/base/themes/baseem", root + "/WEB-INF/base/them
 files.copyFiles( tmp + "/WEB-INF/base/themes/rational", root + "/WEB-INF/base/themes/rational");
 
 log.add("4. REPLACE LIBS");
+files.deleteMatch( web + "/lib/em9_entermedia-server*.jar");
+files.deleteMatch( web + "/lib/em9_entermedia-9*.jar");
+
+
+
 files.deleteMatch( web + "/lib/dev_entermedia-server*.jar");
 files.deleteMatch( web + "/lib/dev_entermedia-5*.jar");
 files.deleteMatch( web + "/lib/dev_entermedia-8*.jar");
