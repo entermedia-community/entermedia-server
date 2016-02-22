@@ -117,32 +117,7 @@ public void init(){
 	
 	
 	
-	List allsearchtypes = mediaarchive.getPropertyDetailsArchive().listSearchTypes();
-	allsearchtypes.each{
-		//write all these mappings - then we can check the error page.
-		Searcher searcher  = mediaarchive.getSearcher(it);
-		
-		if (searcher instanceof BaseElasticSearcher)
-		{
-			BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-			if(new_name.getAllHits().size() > 0){
-				new_name.putMappings(null);
-			}
-			
-		}
-		
-		if (searcher instanceof BaseAssetSearcher)
-		{
-			BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
-			if(new_name.getAllHits().size() > 0){
-				ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
-				con.putMappings(null);
-			}
-			
-		}
-		
-		
-	}
+
 	
 	
 	

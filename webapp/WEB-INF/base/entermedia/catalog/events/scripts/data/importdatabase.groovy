@@ -111,7 +111,7 @@ public void init(){
 					data.remove(newdata);
 				}
 				
-				if(data.size() > 100){
+				if(data.size() > 1000){
 					searcher.saveAllData(data, null);
 					data.clear();
 				}
