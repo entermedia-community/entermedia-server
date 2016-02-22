@@ -1,6 +1,6 @@
 <page>
 	<path-action name="PageValue.loadPageVariable"  bean="searcherManager" alltypes="true"/>
-	<page-action bean="replacer" name="PageValue.loadPageVariable" class="com.openedit.util.Replacer" alltypes="true" allowduplicates="true"/>
+	<page-action bean="replacer" name="PageValue.loadPageVariable" class="org.openedit.util.Replacer" alltypes="true" allowduplicates="true"/>
 	<property name="eventname">Export Asset CSV</property>	
 	
 	<path-action name="Script.run" alltypes="true" >

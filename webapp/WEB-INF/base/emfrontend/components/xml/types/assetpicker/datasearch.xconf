@@ -1,7 +1,7 @@
 <page>
 	<layout/>
 	<inner-layout/>
-	<path-action bean="replacer" name="PageValue.loadPageVariable" class="com.openedit.util.Replacer" alltypes="true" allowduplicates="true"/>
+	<path-action bean="replacer" name="PageValue.loadPageVariable" class="org.openedit.util.Replacer" alltypes="true" allowduplicates="true"/>
 	
 	<page-action name="DataEditModule.search" alltypes="true">
 		<property name="hitsname">autocomplete</property>
