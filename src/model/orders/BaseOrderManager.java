@@ -848,6 +848,9 @@ public class BaseOrderManager implements OrderManager {
 
 	public boolean isAssetInOrder(String inCatId, Order inOrder, String inAssetId)
 	{
+		if(inAssetId == null){
+			return false;
+		}
 		if(inAssetId.startsWith("multi")){
 			return false;
 		}

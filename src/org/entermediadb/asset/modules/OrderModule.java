@@ -495,7 +495,7 @@ public class OrderModule extends BaseMediaModule
 		String assetid = inReq.getRequestParameter("assetid");
 
 		Asset asset = archive.getAsset(assetid, inReq);
-
+		inReq.putPageValue("asset", asset);
 		getOrderManager().toggleItemInOrder(archive, basket, asset);
 	}
 
