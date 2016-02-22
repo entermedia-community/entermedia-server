@@ -185,6 +185,8 @@ public class BaseProjectManager implements ProjectManager
 				//found.setSourcePath(libraryid + "/" + librarycollection);
 				found.setProperty("librarycollection", librarycollection);
 				found.setProperty("asset", assetid);
+				found.setProperty("_parent", assetid);
+
 				tosave.add(found);
 				if( tosave.size() > 200)
 				{

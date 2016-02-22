@@ -62,9 +62,10 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 					String id = (String) iterator.next();
 					Group group = getXmlUserArchive().getGroup(id);
 					groups.add(group);
-					if( groups.size() > 50)
+					if( groups.size() > 1000)
 					{
 						updateIndex(groups, null);
+						groups.clear();
 					}
 				}
 				updateIndex(groups, null);

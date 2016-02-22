@@ -513,7 +513,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		if (health.isTimedOut())
 		{
-			throw new OpenEditException("Could not get yellow status");
+			throw new OpenEditException("Could not get yellow status for " + index);
 		}
 		boolean indexexists = false;
 		//		AliasOrIndex indexToAliasesMap = admin.cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(alias);
