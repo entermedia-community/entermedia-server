@@ -44,7 +44,7 @@
 		padding-right: 10px;
 	}
 	#footer {
-		border-top: 4px #90002a;
+		padding-top:10px; 
 	}
 	#header a {
 		font-family: Verdana, Geneva, sans-serif;
