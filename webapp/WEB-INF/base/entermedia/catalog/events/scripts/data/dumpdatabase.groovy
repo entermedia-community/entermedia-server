@@ -85,6 +85,30 @@ public void init(){
 	Page fields = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
 	Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/fields/");
 	mediaarchive.getPageManager().copyPage(fields, target);
+	
+	
+	Page lists = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/");
+	 target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/lists/");
+	mediaarchive.getPageManager().copyPage(lists, target);
+	
+	Page views = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/views/");
+	target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/views/");
+   mediaarchive.getPageManager().copyPage(views, target);
+	
+	
+   String applicationid  = context.findValue("applicationid");
+   if(applicationid != null){
+	   Page page = mediaarchive.getPageManager().getPage("/${applicationid}/");
+	   if (page.exists()){
+		   target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/application/${applicationid}/");
+		   mediaarchive.getPageManager().copyPage(page, target);
+		   
+		   
+	   }
+	   
+   }
+   
+	
 }
 
 
