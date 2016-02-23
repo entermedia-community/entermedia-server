@@ -2,9 +2,9 @@
 	<property id="id" index="true" stored="true">Id</property>
 	<property id="name" index="true" stored="true" editable="true">Name</property>
 	<property id="ordering" type="number" index="true" stored="true" editable="true">Ordering</property>
-	<property id="menulevel" index="true" stored="true" editable="true" legacyid="type">Type</property>
+	<property id="menulevel" index="true" stored="true" editable="true" legacy="type">Type</property>
 	<property id="parentid" index="true" stored="true" editable="true">Parent</property>
-	<property id="moduleid" index="true" stored="true" editable="true" legacyid="module">Module</property>
+	<property id="moduleid" index="true" stored="true" editable="true" legacy="module">Module</property>
 	<property id="sublabel" index="true" stored="true" editable="true">Label Used on Sub</property>
 	<property id="path" index="true" stored="true" editable="true">Path</property>
 </properties>

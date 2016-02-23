@@ -69,7 +69,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 					String userid = (String) iterator.next();
 					User data = getXmlUserArchive().getUser(userid);
 					users.add(data);
-					if( users.size() > 100)//makes it bulk.
+					if( users.size() > 1000)//makes it bulk.
 					{
 						updateIndex(users, null);
 						users.clear();

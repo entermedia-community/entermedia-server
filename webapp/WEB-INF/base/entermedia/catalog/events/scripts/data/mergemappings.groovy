@@ -68,6 +68,7 @@ public void init(){
 						String legacy = it.get("legacy");
 						if(legacy != null && legacy.equals(header)){
 							detail = it;
+							currentdetails.removeDetail(legacy);
 						}
 					}
 				}
@@ -106,8 +107,22 @@ public void init(){
 				
 
 			}
+			
+			currentdetails.each {
+				String legacy = it.get("legacy");
+				if(legacy){
+					currentdetails.removeDetail(legacy);
+					savedetails=true;
+				}
+				
+			}
+			
+			
 
 			if(savedetails){
+			
+				
+				
 				mediaarchive.getPropertyDetailsArchive().savePropertyDetails(currentdetails, searchtype, context.getUser());
 
 			}
