@@ -2138,9 +2138,10 @@ center #addcoment {
     margin: 0;
     padding: 0;
     display: table;
+    table-layout: fixed;
 }
 #left-col {
-    width: 221px;
+    width: 261px;
     max-width: 350px;
     float: none;
     display: table-cell;
