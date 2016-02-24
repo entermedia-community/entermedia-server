@@ -1339,7 +1339,7 @@
 	</bean>
 
 
-	<bean id="transcodeTools" class="org.entermediadb.asset.convert.TranscodeTools" >
+	<bean id="transcodeTools" class="org.entermediadb.asset.convert.TranscodeTools" scope="prototype" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 		<property name="pageManager"><ref bean="pageManager"/></property>
@@ -1732,21 +1732,21 @@
 	</bean>
 
 
-	<bean id="imageCacheLoader" class="org.entermediadb.asset.convert.inputloaders.ImageCacheLoader" >
+	<bean id="imageCacheLoader" class="org.entermediadb.asset.convert.inputloaders.ImageCacheLoader" scope="prototype" >
 		<property name="pageManager"><ref bean="pageManager" /></property>
 	</bean>
 	
-	<bean id="imagemagickTranscoder" class="org.entermediadb.asset.convert.transcoders.ImagemagickTranscoder" >
+	<bean id="imagemagickTranscoder" class="org.entermediadb.asset.convert.transcoders.ImagemagickTranscoder" scope="prototype" >
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
 
-	<bean id="ffmpegimageTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegImageTranscoder" >
+	<bean id="ffmpegimageTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegImageTranscoder" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
 
-	<bean id="ffmpegTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegVideoTranscoder" >
+	<bean id="ffmpegTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegVideoTranscoder" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
