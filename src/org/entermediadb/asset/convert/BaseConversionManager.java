@@ -142,11 +142,11 @@ public abstract class BaseConversionManager implements ConversionManager
 
     public ConvertResult createOutput(ConvertInstructions inStructions, ContentItem input)
     {
-    	if(input == null)
+    	if(input == null || !input.exists())
 		{
 			input = createCacheFile(inStructions, input);
 		}
-    	if(input == null)
+    	if(input == null || !input.exists())
     	{
     		input = inStructions.getOriginalDocument();
     	}
