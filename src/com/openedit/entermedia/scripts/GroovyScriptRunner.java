@@ -44,6 +44,12 @@ public class GroovyScriptRunner implements ScriptRunner
 		if( engine == null )
 		{
 			Collection folders = loadPackages(inPackageRoot);
+			
+			if( log.isDebugEnabled() )
+			{
+				log.debug("Found packages " + inPackageRoot + " " + folders);
+			}
+
 			try
 			{
 				engine = new GroovyScriptEngine((String[])folders.toArray(new String[folders.size()]));
