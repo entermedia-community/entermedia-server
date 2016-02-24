@@ -43,8 +43,10 @@ public void init(){
 	List searchtypes = archive.getPageManager().getChildrenPaths("/WEB-INF/data/" + catalogid + "/dataexport/");
 	
 	Page categories = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/category.csv");
-	populateData(categories);
 	
+	if(categories.exists()){
+		populateData(categories);
+	}
 	
 	searchtypes.each{
 		

@@ -22,15 +22,19 @@ public class ImageCacheLoader implements InputLoader
 		{
 			 cachetype = "png";
 		}
+		
 		String page = null;
 		if( inStructions.getPageNumber() > 1 )
 		{
 			page = "page" + inStructions.getPageNumber();
 		}
+		
 		else
 		{
 			page = "";
 		}
+		
+	
 		ContentItem item = loadFile(inStructions, page, cachetype);
 		if(item == null && isDocument){
 			 item = loadFile(inStructions, page, "jpg");
@@ -53,6 +57,10 @@ public class ImageCacheLoader implements InputLoader
 			if( box.getWidth() < 1025 )
 			{
 				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" +  inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
+				if(!input.exists()){
+					input = null;
+				}
+				
 			}
 		}
 
