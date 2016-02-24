@@ -15,7 +15,7 @@
 	<property id="remotepublish" />
 	
 	<property id="bucket" note="Amazon bucket"/>
-	<property id="accesskey" note="Amazon Key" />
+	<property id="accesskey" note="Amazon / Wordpress Key" />
 	<property id="secretkey" note="Amazon Secret Key" />
 
 	<property id="administrativecontact" />
