@@ -1168,6 +1168,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		catch (Exception ex)
 		{
+			log.error("Problem saving data in " + getCatalogId() + " " + getSearchType() + " " + data.getId() );
 			if (ex instanceof OpenEditException)
 			{
 				throw (OpenEditException) ex;
