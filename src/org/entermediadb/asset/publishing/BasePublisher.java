@@ -25,7 +25,8 @@ public abstract class BasePublisher implements Publisher
 		inPublishRequest.setProperty("status", "error");
 	}
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset) {
-		if( "original".equals( inPreset.get("type") ) )
+		String transcodeid = inPreset.get("transcoderid");
+		if( "original".equals( transcodeid ) )
 		{
 			return mediaArchive.getOriginalDocument(asset);
 		}

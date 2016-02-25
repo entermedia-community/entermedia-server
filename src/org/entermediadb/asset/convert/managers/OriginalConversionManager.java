@@ -38,7 +38,17 @@ public class OriginalConversionManager extends BaseConversionManager
 		return page.getContentItem();
 	}
 
-	
+	@Override
+	public ConvertResult createOutput(ConvertInstructions inStructions)
+	{
+		// TODO Auto-generated method stub
+		ConvertResult result = new ConvertResult();
+		Page page = getMediaArchive().getOriginalDocument(inStructions.getAsset());
+		result.setComplete(true);
+		result.setOutput(page.getContentItem());
+		result.setOk(true);
+		return result;
+	}
 	
 	
 
