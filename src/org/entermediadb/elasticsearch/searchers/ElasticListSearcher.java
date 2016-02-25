@@ -10,6 +10,7 @@ import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Reloadable;
@@ -29,7 +30,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	protected String fieldDataFileName;
 	protected XmlFile fieldXmlFile;
 	protected XmlSearcher fieldXmlSearcher;
-	
+
 	
 	
 	public XmlSearcher getXmlSearcher() {
@@ -198,6 +199,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	}
 	
 	
+public PropertyDetails getPropertyDetails() {
+		return getXmlSearcher().getPropertyDetails();
+		
+	}
 	
 	
 	

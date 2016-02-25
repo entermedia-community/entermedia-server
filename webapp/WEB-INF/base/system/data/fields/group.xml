@@ -2,7 +2,7 @@
 	<property id="id" index="true" stored="true"  keyword="true"  >id</property>
 	<property id="name" index="true" stored="true" editable="true" keyword="true"  >Name</property>
 	<property id="description" index="true" >All Fields</property>
-	<property id="enabled" index="true" stored="true" editable="true" datatype="boolean">Enabled</property>
+	<property id="enabled" index="true" stored="true" editable="true" datatype="boolean" type="boolean">Enabled</property>
 
 	<!-- 
 	<property id="contact" index="true" stored="true" editable="true">Contact</property>
