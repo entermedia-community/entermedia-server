@@ -135,6 +135,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " " + outputFile.getName());
 			result.setComplete(true);
 			result.setOutputPath(outputFile.getAbsolutePath());
+			result.setOutput(outputFile);
 		}
 		else
 		{

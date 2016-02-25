@@ -101,6 +101,8 @@ public class ImageConversionManager extends BaseConversionManager
 
 	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 	{
+			
+		
 			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
 			HashMap map = new HashMap();
 			map.put("prefwidth", "1024");
@@ -112,7 +114,18 @@ public class ImageConversionManager extends BaseConversionManager
 	}
 
 	
-	
+	public ConvertResult transcode(ConvertInstructions inStructions)
+	{
+		
+		if("video".equals(inStructions.getMediaArchive().getMediaRenderType(inStructions.getAsset()))){
+			
+			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
+			ImageConversionManager videot = (ImageConversionManager) creatorManager.getManagerByTranscoder("ffmpegimage");
+			return videot.getMediaTranscoder().convert(inStructions);
+		}
+		
+		return getMediaTranscoder().convert(inStructions);
+	}
 	
 
 }

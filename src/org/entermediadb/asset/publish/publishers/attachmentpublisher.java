@@ -1,13 +1,12 @@
-package publishing.publishers;
+package org.entermediadb.asset.publish.publishers;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.publishing.PublishResult
-import org.entermediadb.asset.publishing.Publisher
-import org.openedit.Data
-import org.openedit.entermedia.publishing.*
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.publishing.PublishResult;
+import org.entermediadb.asset.publishing.Publisher;
+import org.openedit.Data;
 
 public class attachmentpublisher extends filecopypublisher implements Publisher
 {

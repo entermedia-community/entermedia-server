@@ -200,7 +200,7 @@ public class SftpUtil
 		return channel.get(remotePath);
 	}
 
-	protected void makeDirs(String inPath) throws SftpException, JSchException
+	public void makeDirs(String inPath) throws SftpException, JSchException
 	{
 		if (inPath.contains("/"))
 		{

@@ -1,19 +1,18 @@
-package publishing.publishers;
+package org.entermediadb.asset.publish.publishers;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.dom4j.io.SAXReader
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.publishing.BasePublisher
-import org.entermediadb.asset.publishing.PublishResult
-import org.entermediadb.asset.publishing.Publisher
-import org.entermediadb.asset.push.MediaUploader
-import org.openedit.Data
-import org.openedit.entermedia.publishing.*
-import org.openedit.page.Page
-import org.openedit.users.User
-import org.openedit.users.UserManager
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.dom4j.io.SAXReader;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.publishing.BasePublisher;
+import org.entermediadb.asset.publishing.PublishResult;
+import org.entermediadb.asset.publishing.Publisher;
+import org.entermediadb.asset.push.MediaUploader;
+import org.openedit.Data;
+import org.openedit.page.Page;
+import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
 public class entermediapublisher extends BasePublisher implements Publisher
 {
@@ -30,7 +29,7 @@ public class entermediapublisher extends BasePublisher implements Publisher
 		
 		log.info("Publishing ${asset} to EnterMedia server ${servername}, with username ${username}.");
 		
-		UserManager userManager = mediaArchive.getModuleManager().getBean("userManager");
+		UserManager userManager = (UserManager) mediaArchive.getModuleManager().getBean("userManager");
 		User user = userManager.getUser(username);
 		if(user == null)
 		{

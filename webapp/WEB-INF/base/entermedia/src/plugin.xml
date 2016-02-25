@@ -1712,6 +1712,7 @@
 			<ref bean="ffmpegimageTranscoder" />
 		</property>
 	</bean>
+		 <bean id="originalConversionManager" class="org.entermediadb.asset.convert.managers.OriginalConversionManager" scope="prototype"/>
 	
 	
 	 <bean id="imagemagickConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
@@ -1874,24 +1875,24 @@
 	 -->
 
 <!--
-	<groovy id="amazonpublisher" script-source="publishing/publishers/amazonpublisher.groovy" />
-	<groovy id="asperapublisher" script-source="publishing/publishers/asperapublisher.groovy" />
+	<groovy id="amazonpublisher" script-source="org.entermediadb.asset.publish.publishersamazonpublisher.groovy" />
+	<groovy id="asperapublisher" script-source="org.entermediadb.asset.publish.publishersasperapublisher.groovy" />
 -->
 <!--  Not used 
-	<groovy id="entermediapublisher" script-source="publishing/publishers/entermediapublisher.groovy" />
-	<groovy id="attachmentpublisher" script-source="publishing/publishers/attachmentpublisher.groovy" />
-	<groovy id="pushpublisher" script-source="publishing/publishers/pushpublisher.groovy" />
+	<groovy id="entermediapublisher" script-source="org.entermediadb.asset.publish.publishersentermediapublisher.groovy" />
+	<groovy id="attachmentpublisher" script-source="org.entermediadb.asset.publish.publishersattachmentpublisher.groovy" />
+	<groovy id="pushpublisher" script-source="org.entermediadb.asset.publish.publisherspushpublisher.groovy" />
 	
 -->	
-	<groovy id="httppublisher" script-source="publishing/publishers/httppublisher.groovy"  lazy-init="default"/>
-	<groovy id="pushhttppublisher" script-source="publishing/publishers/pushhttppublisher.groovy"  lazy-init="default"/>
-	<groovy id="externalpublisher" script-source="publishing/publishers/externalpublisher.groovy"  lazy-init="default"/>
-	<groovy id="filecopypublisher" script-source="publishing/publishers/filecopypublisher.groovy"   lazy-init="default"/>
-	<groovy id="ftppublisher" script-source="publishing/publishers/ftppublisher.groovy"  lazy-init="default"/>
-	<groovy id="sftppublisher" script-source="publishing/publishers/sftppublisher.groovy"  lazy-init="default" />
-	<groovy id="smbpublisher" script-source="publishing/publishers/smbpublisher.groovy"  lazy-init="default" />
-	<groovy id="fatwirepublisher" script-source="publishing/publishers/fatwirepublisher.groovy"  lazy-init="default" />
-	<groovy id="wordpresspublisher" script-source="publishing/publishers/wordpresspublisher.groovy"  lazy-init="default"/>
+	<bean id="httppublisher" class="org.entermediadb.asset.publish.publishers.httppublisher"  lazy-init="default"/>
+	<bean id="pushhttppublisher" class="org.entermediadb.asset.publish.publishers.pushhttppublisher"  lazy-init="default"/>
+	<bean id="externalpublisher" class="org.entermediadb.asset.publish.publisher.sexternalpublisher"  lazy-init="default"/>
+	<bean id="filecopypublisher" class="org.entermediadb.asset.publish.publishers.filecopypublisher"   lazy-init="default"/>
+	<bean id="ftppublisher" class="org.entermediadb.asset.publish.publishers.ftppublisher"  lazy-init="default"/>
+	<bean id="sftppublisher" class="org.entermediadb.asset.publish.publishers.sftppublisher"  lazy-init="default" />
+	<bean id="smbpublisher" class="org.entermediadb.asset.publish.publishers.smbpublisher"  lazy-init="default" />
+	<bean id="fatwirepublisher" class="org.entermediadb.asset.publish.publishers.fatwirepublisher"  lazy-init="default" />
+	<bean id="wordpresspublisher" class="org.entermediadb.asset.publish.publishers.wordpresspublisher"  lazy-init="default"/>
 	
 	
 	<!-- 

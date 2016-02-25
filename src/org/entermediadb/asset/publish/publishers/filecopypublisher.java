@@ -1,16 +1,18 @@
-package publishing.publishers;
+package org.entermediadb.asset.publish.publishers;
 
-import org.apache.commons.logging.Log
-import org.apache.commons.logging.LogFactory
-import org.entermediadb.asset.Asset
-import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.publishing.BasePublisher
-import org.entermediadb.asset.publishing.PublishResult
-import org.entermediadb.asset.publishing.Publisher
-import org.openedit.Data
-import org.openedit.entermedia.publishing.*
-import org.openedit.page.Page
-import org.openedit.util.FileUtils
+import java.io.File;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.publishing.BasePublisher;
+import org.entermediadb.asset.publishing.PublishResult;
+import org.entermediadb.asset.publishing.Publisher;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
+import org.openedit.page.Page;
+import org.openedit.util.FileUtils;
 
 public class filecopypublisher extends BasePublisher implements Publisher
 {
@@ -36,7 +38,7 @@ public class filecopypublisher extends BasePublisher implements Publisher
 		}
 		String exportname = inPublishRequest.get("exportname");
 		//String guid = inPreset.get("guid");
-		
+		try{
 		FileUtils utils = new FileUtils();
 		File destination = new File(destinationpath);
 		File source = new File(inputpage.getContentItem().getAbsolutePath());
@@ -46,6 +48,9 @@ public class filecopypublisher extends BasePublisher implements Publisher
 		
 		log.info("published ${finalfile}");
 		return result;
+		} catch(Exception e){
+			throw new OpenEditException(e);
+		}
 	}
 	
 }

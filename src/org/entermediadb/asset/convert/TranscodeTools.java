@@ -27,14 +27,6 @@ public class TranscodeTools
 	protected Map<String,String> fieldTranscoderForFileFormatCache = new HashMap<String,String>(5);
 	protected String fieldCatalogId;
 	
-	public String getCatalogId()
-	{
-		return fieldCatalogId;
-	}
-	public void setCatalogId(String inCatalogId)
-	{
-		fieldCatalogId = inCatalogId;
-	}
 	public Map getRenderTypeCache()
 	{
 		return fieldRenderTypeCache;
