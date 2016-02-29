@@ -1450,7 +1450,8 @@ public class AdminModule extends BaseModule
 			}
 
 			user = getUserManager(inReq).createGuestUser(null, null, "guest");
-			String catalogid =user.get("catalogid");
+			String catalogid = getUserManager(inReq).getUserSearcher().getCatalogId();
+			user.setProperty("catalogid", catalogid);
 			inReq.putSessionValue(catalogid + "user", user);
 			inReq.putPageValue("user", user);
 
