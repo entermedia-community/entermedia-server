@@ -1131,9 +1131,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			updateIndex(content, data, details);
 			content.endObject();
-			if( log.isDebugEnabled() )
+			if(true || log.isDebugEnabled() )
 			{
-				log.debug("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
+				log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
 			}
 
 			builder = builder.setSource(content);
@@ -1148,7 +1148,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			IndexResponse response = null;
 
 			response = builder.execute().actionGet();
-
 			if (response.getId() != null)
 			{
 				data.setId(response.getId());
@@ -1445,26 +1444,34 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		if (inField.equals("id") || inField.equals("_id"))
 		{
-			GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
-			if (response.isExists())
+			if( getPropertyDetails().getDetail("_parent") == null)
 			{
-				Data data = new BaseData();
-				updateData(data, response.getSource());
-				if( getNewDataName() != null )
+				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
+				if (response.isExists())
 				{
-					Data typed = createNewData();		
-					copyData(data, typed);
-					data = typed;
-				}	
-				
-				data.setId(inValue);
-				if (response.getVersion() > -1)
-				{
-					data.setProperty(".version", String.valueOf(response.getVersion()));
+					Data data = null;
+					if( getNewDataName() != null )
+					{
+						data = createNewData();		
+						//copyData(data, typed);
+					}	
+					else
+					{
+						data = new BaseData();
+					}
+					updateData(response.getSource(), data);
+					data.setId(inValue);
+					//data.setName(data.getName());
+					//data.setSourcePath(data.getSourcePath());
+					
+					if (response.getVersion() > -1)
+					{
+						data.setProperty(".version", String.valueOf(response.getVersion()));
+					}
+					return data;
 				}
-				return data;
-			}
-			return null;
+				return null;
+			}	
 		}
 		return super.searchByField(inField, inValue);
 	}
@@ -1594,42 +1601,42 @@ public class BaseElasticSearcher extends BaseSearcher
 	
 	
 	
-	
-	public void updateData(Data inData, Map inSource){
+	public void updateData(Map inSource, Data inData){
 		for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
 			Object object = inSource.get(key);
-			if("category-exact".equals(key)){
+			if("category-exact".equals(key)){ //Ian, why is this here?
 				continue;
 			}
-			String val = null;
-			if (object instanceof String) {
-				val= (String) object;
-			}
-			if (object instanceof Date) {
-				val= String.valueOf((Date) object);
-			}
-			if (object instanceof Boolean) {
-				val= String.valueOf((Boolean) object);
-			}
-			if (object instanceof Integer) {
-				val= String.valueOf((Integer) object);
-			}
-			if (object instanceof Float) {
-				val= String.valueOf((Float) object);
-			}
-			if (object instanceof Collection) {
-				//continue;
-				Collection values = (Collection) object;
-			inData.setValues(key, (Collection<String>) object);
-			}
-			else if(val != null)
-			{
-				inData.setProperty(key, val);
-			}
+//			String val = null;
+//			if (object instanceof String) {
+//				val= (String) object;
+//			}
+//			if (object instanceof Date) {
+//				val= String.valueOf((Date) object);
+//			}
+//			if (object instanceof Boolean) {
+//				val= String.valueOf((Boolean) object);
+//			}
+//			if (object instanceof Integer) {
+//				val= String.valueOf((Integer) object);
+//			}
+//			if (object instanceof Float) {
+//				val= String.valueOf((Float) object);
+//			}
+//			if (object instanceof Collection) {
+//				//continue;
+//				Collection values = (Collection) object;
+//			inData.setValues(key, (Collection<String>) object);
+//			}
+//			else if(val != null)
+//			{
+				inData.setValue(key, object);
+//			}
 		}
 	}
+
 	//This is good code, don't delete:
 
 	

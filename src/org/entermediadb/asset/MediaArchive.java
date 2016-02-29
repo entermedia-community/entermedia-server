@@ -1098,7 +1098,7 @@ public class MediaArchive
 			}
 			event.setProperty("assetids", paths.toString());
 		}
-		event.setValues("dataids", inids);
+		event.setValue("dataids", inids);
 		//archive.getWebEventListener()
 		getMediaEventHandler().eventFired(event);
 	}

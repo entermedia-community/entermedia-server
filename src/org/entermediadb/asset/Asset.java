@@ -23,6 +23,7 @@ import org.apache.commons.logging.LogFactory;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.SaveableData;
+import org.openedit.data.ValuesMap;
 import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;
 
@@ -42,7 +43,8 @@ public class Asset implements MultiValued, SaveableData
 	protected String fieldDescription;
 	protected List fieldCategories;
 	//protected Collection<String> fieldLibraries;
-	protected Map fieldProperties;
+	protected ValuesMap fieldMap;
+	
 	protected List<String> fieldKeywords;
 	protected int fieldOrdering = -1; // the order that these asset should
 	protected MediaArchive fieldMediaArchive;
@@ -55,60 +57,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public Collection<String> getValues(String inPreference)
 	{
-		String val = get(inPreference);
-		
-		if (val == null || val.length() == 0)
-		{
-			return null;
-		}
-		String[] vals = null;
-		if( val.contains("|") )
-		{
-			vals = VALUEDELMITER.split(val);
-		}
-		else
-		{
-			vals = val.split("\\s+"); //legacy
-		}
-
-		Collection<String> collection = Arrays.asList(vals);
-		//if null check parent
-		return collection;
-	}
-	public void addValue(String inKey, String inNewValue)
-	{
-		String val = get(inKey);
-		if( val == null )
-		{
-			setProperty(inKey, inNewValue);
-		}
-		else 
-		{
-			Collection values = getValues(inKey);
-			if(values.contains(inNewValue))
-			{
-				return;
-			}
-			else
-			{
-				values = new ArrayList(values);
-				values.add(inNewValue);
-			}
-			setValues(inKey, values);
-//			return;
-//		}
-//		else
-//		{
-//			if( val.length() > 0 )
-//			{
-//				val = val + " | " + inNewValue;
-//			}
-//			else
-//			{
-//				val = inNewValue;
-//			}
-//			setProperty(inKey, val);
-		}
+		return getMap().getValues(inPreference);
 	}
 	public void setValues(String inKey, Collection<String> inValues)
 	{
@@ -116,17 +65,10 @@ public class Asset implements MultiValued, SaveableData
 		{
 			removeProperty(inKey);
 		}
-		StringBuffer values = new StringBuffer();
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+		else
 		{
-			String detail = (String) iterator.next();
-			values.append(detail);
-			if( iterator.hasNext())
-			{
-				values.append(" | ");
-			}
+			getMap().put(inKey, inValues);
 		}
-		setProperty(inKey,values.toString());
 	}
 	
 	
@@ -410,15 +352,18 @@ public class Asset implements MultiValued, SaveableData
 		return libraries;
 				
 	}
-
+	protected ValuesMap getMap()
+	{
+		if (fieldMap == null)
+		{
+			fieldMap = new ValuesMap();
+		}
+		return fieldMap;
+	}
 	
 	public Map getProperties()
 	{
-		if (fieldProperties == null)
-		{
-			fieldProperties = ListOrderedMap.decorate(new HashMap());
-		}
-		return fieldProperties;
+		return getMap();
 	}
 
 	public String getProperty(String inKey)
@@ -456,7 +401,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public void setProperties(Map inAttributes)
 	{
-		fieldProperties = inAttributes;
+		getMap().putAll(inAttributes);
 	}
 
 	public void setProperty(String inKey, String inValue)
@@ -612,20 +557,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public Date getDate(String inField, String inDateFormat)
 	{
-		String date = getProperty(inField);
-		if (date != null)
-		{
-			SimpleDateFormat format = new SimpleDateFormat(inDateFormat);
-			try
-			{
-				return format.parse(date);
-			}
-			catch (ParseException e)
-			{
-				throw new OpenEditRuntimeException(e);
-			}
-		}
-		return null;
+		return getMap().getDate(inField,inDateFormat);
 	}
 
 	public boolean isRelated(Asset inAsset)
@@ -916,12 +848,7 @@ public class Asset implements MultiValued, SaveableData
 	}
 	public BigDecimal getBigDecimal(String inKey)
 	{
-		String val = get(inKey);
-		if( val == null || val.contains(".") )
-		{
-			return new BigDecimal(0);
-		}
-		return new BigDecimal(val);
+		return getMap().getBigDecimal(inKey);
 	}
 	
 	public float getUploadPercentage() {
@@ -937,9 +864,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public boolean isPropertyTrue(String inKey) 
 	{
-		String val = getProperty(inKey);
-		
-		return Boolean.parseBoolean(val);
+		return getMap().getBoolean(inKey);
 	}
 	public void addLibrary(String inLibraryid) {
 		addValue("libraries", inLibraryid);
@@ -949,14 +874,32 @@ public class Asset implements MultiValued, SaveableData
 	{
 		Collection<String> values = new ArrayList( getLibraries() );
 		values.remove(inLibraryid);
-		setValues("libraries", values);
+		setValue("libraries", values);
 		
 	}
 
-//	public String getOriginalAttachment()
-//	{
-//		String name = getAttachmentByType("original");
-//		return name;
-//	}
+	@Override
+	public Object getValue(String inKey)
+	{
+		return getMap().get(inKey);
+	}
+
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		getMap().put(inKey, inValue);
+	}
+
+	@Override
+	public void addValue(String inKey, Object inNewValue)
+	{
+		getMap().addValue(inKey, inNewValue);
+	}
+
+	@Override
+	public void removeValue(String inKey, Object inOldValue)
+	{
+		getMap().removeValue(inKey, inOldValue);
+	}
 
 }

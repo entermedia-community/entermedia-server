@@ -525,18 +525,30 @@ public class TemplateWebEmail extends WebEmail implements Data
 		setSendDate(new Date());
 	}
 	
-	public void setValues(String inKey, Collection<String> inValues)
+//	public void setValues(String inKey, Collection<String> inValues)
+//	{
+//		StringBuffer values = new StringBuffer();
+//		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
+//		{
+//			String detail = (String) iterator.next();
+//			values.append(detail);
+//			if( iterator.hasNext())
+//			{
+//				values.append(" | ");
+//			}
+//		}
+//		setProperty(inKey,values.toString());
+//	}
+
+	@Override
+	public Object getValue(String inKey)
 	{
-		StringBuffer values = new StringBuffer();
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-		{
-			String detail = (String) iterator.next();
-			values.append(detail);
-			if( iterator.hasNext())
-			{
-				values.append(" | ");
-			}
-		}
-		setProperty(inKey,values.toString());
+		return get(inKey);
+	}
+
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		setProperty(inKey, String.valueOf( inValue ) ); 
 	}
 }

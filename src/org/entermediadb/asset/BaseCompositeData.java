@@ -273,6 +273,11 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		//getProperties().put(inKey, inValue);
 		getPropertiesSet().put(inKey,inValue);
 	}
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		//Turn this into a string? Nope
+		getPropertiesSet().put(inKey,inValues);
+	}
 
 	public String getId()
 	{
@@ -407,7 +412,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		//Need to remove any that are missing from combined
 		previousCommonOnes.removeAll(added);
 		existing.removeAll(previousCommonOnes);
-		asset.setValues(key, existing);
+		asset.setValue(key, existing);
 		//System.out.println("Saving old value:" + datavalue + " saved: " + existing);
 	}
 	protected boolean isMulti(String key) 

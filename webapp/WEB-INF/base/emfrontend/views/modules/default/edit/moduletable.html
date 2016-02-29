@@ -28,7 +28,7 @@ $context.putPageValue("canedittable", $caneditdata)
 
 ##TODO: Create a new type of table.html component that runs locally using searchhome and has a TableModel with it passed along with sessionids
 
-#set( $args = "id=$id&parentid=$id&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+#set( $args = "id=$!id&parentid=$id&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
 #if($viewdata.rendercustomview)
 $pages.include("$searchhome/edit/table/${viewdata.rendercustomview}.html?$args", $context)
 

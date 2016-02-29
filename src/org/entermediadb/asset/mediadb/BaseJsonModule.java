@@ -240,7 +240,7 @@ public class BaseJsonModule extends BaseMediaModule
 						}
 					}
 				} 
-				inData.setValues(key, ids);				
+				inData.setValue(key, ids);				
 			}
 			if(value instanceof Map )
 			{

@@ -551,7 +551,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		//Need to remove any that are missing from combined
 		previousCommonOnes.removeAll(added);
 		existing.removeAll(previousCommonOnes);
-		asset.setValues(key, existing);
+		asset.setValue(key, existing);
 		//System.out.println("Saving old value:" + datavalue + " saved: " + existing);
 	}
 	protected boolean isMulti(String key) 

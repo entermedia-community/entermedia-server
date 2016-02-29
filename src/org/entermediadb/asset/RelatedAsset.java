@@ -6,10 +6,14 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.openedit.Data;
-
+import org.openedit.data.ValuesMap;
+/**
+ * What is this class used for?
+ *
+ */
 public class RelatedAsset implements Data
 {
-	protected Map fieldProperties;
+	protected ValuesMap fieldProperties;
 
 	public String getType()
 	{
@@ -47,7 +51,6 @@ public class RelatedAsset implements Data
 					}
 				}
 			}
-
 		}
 		return false;
 	}
@@ -92,11 +95,11 @@ public class RelatedAsset implements Data
 		getProperties().put(inId, inValue);
 	}
 
-	public Map getProperties()
+	public ValuesMap getProperties()
 	{
 		if (fieldProperties == null)
 		{
-			fieldProperties = new HashMap(3);
+			fieldProperties = new ValuesMap();
 		}
 		return fieldProperties;
 	}
@@ -127,24 +130,26 @@ public class RelatedAsset implements Data
 	{
 		setProperty("sourcepath", inSourcepath);
 	}
-	public void setProperties(Map<String,String> inProperties)
+	public void setProperties(Map inProperties)
 	{
 		getProperties().putAll(inProperties);
 	}
 	
 	public void setValues(String inKey, Collection<String> inValues)
 	{
-		StringBuffer values = new StringBuffer();
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-		{
-			String detail = (String) iterator.next();
-			values.append(detail);
-			if( iterator.hasNext())
-			{
-				values.append(" | ");
-			}
-		}
-		setProperty(inKey,values.toString());
+		getProperties().put(inKey, inValues);
+
+	}
+
+	@Override
+	public Object getValue(String inKey)
+	{
+		return getProperties().get(inKey);
+	}
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		getProperties().put(inKey, inValue);
 	}
 
 }

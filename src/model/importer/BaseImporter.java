@@ -179,7 +179,7 @@ public class BaseImporter extends EnterMediaObject
 				}
 				valueids.add(id); //save it
 			}
-			inRow.setValues(inField, valueids);
+			inRow.setValue(inField, valueids);
 		}
 
 	}

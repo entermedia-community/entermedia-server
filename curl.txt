@@ -1,0 +1,23 @@
+curl -XGET 'http://localhost:9200/system/user/_search?q=id:admin' | python -mjson.tool
+curl -XGET 'http://localhost:9200/system/group/_search?q=id:administrators' | python -mjson.tool
+curl -XGET 'http://localhost:9200/media_catalogs_public/settingsgroup/_search?q=id:administrator' | python -mjson.tool
+curl -XGET 'http://localhost:9200/media_catalogs_public/userprofile/_search?q=id:admin' | python -mjson.tool
+curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+curl -XGET 'http://localhost:9200/media_catalogs_public/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
+$userprofile.hasPermission("viewsettings")
+
+$userprofile.getPermissions()
+
+$userprofile.getSettingsGroup().getValues("permissions")
+
+
+##curl -XPUT "http://localhost:9200/media_catalogs_public/settingsgroup/admin" -d ' {"id":"administrator","name":"Administrators","namesorted":"Administrators","profilesearchfilters":"hideassettype","permissions":["viewmap","viewcomments","metadatageneral","convert","converthistory","maximize","download","view","viewmetadatageneral","api-manage-users","deleteasset","asseteditorlibraries","api-load-data","editassettags","api-delete-data","viewbasket","viewcategorynav","filterbyassettype","viewupload","assetpermissions","viewassets","viewlibrarysearch","createnewrecord","editlists","viewuploadmulti","viewsettings","api-manage-events","sharetosocialmedia","addnewcollection","viewattachments","deletecomments","api-create-data","api-search-data","editcategories","multiedit","viewmediaedit","api-update-data","editmetadatasetup","editassetcategories","changeattachment","embedasset","viewassetpreviewhistory","editadvancedsearch","viewconversions","api-manage-list","api-manage-modules","capturehistory","asseteditorpickanylibrary","edittablecolumns","editusersgroups","viewhomelink","publish","shareasset","viewassetedit","viewmyaccount","viewvoting","comment","emaillink","togglesidebar"]}' | python -mjson.tool
+
+
+
+curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
+system/searchtypes/user
+
+curl -XGET 'http://localhost:9200/system/user/_search?q=id:admin' | python -mjson.tool

@@ -603,35 +603,20 @@ public class Category implements Data, SaveableData, Comparable<Category>
 		return false;
 	}
 
-
-	// public String getSourcePath()
-	// {
-	// StringBuffer out = new StringBuffer();
-	// Category parent = this;
-	// while( parent != null)
-	// {
-	// out.append(parent.getName());
-	// }
-	//		
-	// return null;
-	// }
-	public void setValues(String inKey, Collection<String> inValues)
-	{
-		StringBuffer values = new StringBuffer();
-		for (Iterator iterator = inValues.iterator(); iterator.hasNext();)
-		{
-			String detail = (String) iterator.next();
-			values.append(detail);
-			if( iterator.hasNext())
-			{
-				values.append(" | ");
-			}
-		}
-		setProperty(inKey,values.toString());
-	}
-	
 	public boolean isDirty()
 	{
 		return Boolean.valueOf(get("dirty"));
+	}
+
+	@Override
+	public Object getValue(String inKey)
+	{
+		return getProperties().get(inKey);
+	}
+
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		getProperties().put(inKey,inValue);		
 	}
 }

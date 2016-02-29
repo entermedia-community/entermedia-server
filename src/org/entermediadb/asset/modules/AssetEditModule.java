@@ -595,7 +595,7 @@ public class AssetEditModule extends BaseMediaModule
 			if( !existing.contains(value))
 			{
 				existing.add(value);
-				asset.setValues(inFieldName, existing);
+				asset.setValue(inFieldName, existing);
 				getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
 			}
 		}
@@ -1137,13 +1137,9 @@ public class AssetEditModule extends BaseMediaModule
 					asset.addCategory(cat);
 				}				
 			}
-			else if( val instanceof Collection)
+			else 
 			{
-				asset.setValues(field, (Collection)val);
-			}
-			else
-			{
-				asset.setProperty(field, (String)val);
+				asset.setValue(field, val);
 			}
 		}
 		
