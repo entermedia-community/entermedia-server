@@ -187,6 +187,11 @@ public class ProjectModule extends BaseMediaModule
 				}
 			}	
 		}
+		if(collectionid == null){
+			String page = inReq.getPage().getName();
+			page = page.replace(".html", "");
+			collectionid = page;
+		}
 		return collectionid;
 	}	
 
