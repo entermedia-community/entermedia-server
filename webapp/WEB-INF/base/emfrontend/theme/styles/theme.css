@@ -2138,9 +2138,10 @@ center #addcoment {
     margin: 0;
     padding: 0;
     display: table;
+    table-layout: fixed;
 }
 #left-col {
-    width: 221px;
+    width: 261px;
     max-width: 350px;
     float: none;
     display: table-cell;
@@ -2155,6 +2156,7 @@ center #addcoment {
     display: table-cell;
     margin: 0;
     min-height: 600px;
+    width:100%;
     min-width: 100%;
     border-radius: 0 0 5px 0;
     background: #f8fdff;

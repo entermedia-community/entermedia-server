@@ -135,7 +135,6 @@ public class PresetCreator
 					{
 						int pagenum = i + 1;
 						if (!existingtasks.contains(preset.getId() + pagenum))
-							;
 						{
 							missingconversion = true;
 							Data created = createPresetsForPage(tasksearcher, preset, asset, pagenum);

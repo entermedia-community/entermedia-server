@@ -112,7 +112,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		String assetid = inReq.getRequestParameter("assetid");
 		
-		manager.addAssetToCollection(archive, libraryid, assetid);
+		manager.addAssetToCollection(archive, librarycollection, assetid);
 		inReq.putPageValue("added" , "1" );
 	}
 	public void removeAssetFromCollection(WebPageRequest inReq)
