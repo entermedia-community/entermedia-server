@@ -5,14 +5,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Attribute;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
@@ -32,7 +30,6 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
 import org.openedit.data.BaseData;
-import org.openedit.data.FilteredTracker;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
@@ -48,7 +45,6 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathUtilities;
-import org.openedit.xml.ElementData;
 
 public class AssetEditModule extends BaseMediaModule
 {
@@ -2021,13 +2017,25 @@ public class AssetEditModule extends BaseMediaModule
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
+		
 		if(properties == null){
 			properties = (UploadRequest) inReq.getPageValue("properties");
 		}
 		if (properties == null) {
 			return;
 		}
+		String searchtype = inReq.findValue("searchtype");
+		String id = inReq.getRequestParameter("id");
+		
+		Data target = null;
+		
+		
 		MediaArchive archive = getMediaArchive(inReq);
+		if(searchtype != null && id != null){
+			target = archive.getData(searchtype, id);
+		}
+		
+		
 		if (properties.getFirstItem() == null) {
 			properties = (UploadRequest) inReq.getPageValue("properties");
 			if(properties == null || properties.getFirstItem() == null){
@@ -2036,6 +2044,17 @@ public class AssetEditModule extends BaseMediaModule
 
 			
 		}
+		if(id == null && target == null){
+			Searcher searcher = archive.getSearcher(searchtype);			
+			target = searcher.createNewData();
+			searcher.saveData(target, inReq.getUser());
+			id = target.getId();
+			inReq.setRequestParameter("id", id);
+			String[] fields = inReq.getRequestParameters("field");
+			
+			searcher.updateData(inReq, fields, target);
+		}
+		
 		for (Iterator iterator = properties.getUploadItems().iterator(); iterator
 				.hasNext();) {
 			FileUploadItem item = (FileUploadItem) iterator.next();
@@ -2047,8 +2066,29 @@ public class AssetEditModule extends BaseMediaModule
 			String[] splits = name.split("\\.");
 			String detailid = splits[1];
 			//String sourcepath = inReq.getRequestParameter(detailid + ".sourcepath"); //Is this risky?
-			 
-			String sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq,archive,item.getName());
+			String sourcepath = null;
+			HashMap variables = new HashMap();
+			variables.put("userid", inReq.getUser().getId());
+			variables.put("id", id);
+			if(target != null){
+				variables.put("data", target);
+			}
+			
+			
+			
+			
+			if(searchtype != null){
+				Searcher searcher = archive.getSearcher(searchtype);
+				PropertyDetail detail = searcher.getDetail(detailid);
+				if(detail != null){
+					sourcepath = detail.get("sourcepath");
+					sourcepath = archive.getSearcherManager().getValue(archive.getCatalogId(), sourcepath, variables);
+					
+				}
+			}
+			if(sourcepath == null){
+				sourcepath = getAssetImporter().getAssetUtilities().createSourcePath(inReq,archive,item.getName());
+			}
 			String path = "/WEB-INF/data/" + archive.getCatalogId()
 					+ "/originals/" + sourcepath + "/" + item.getName();
 			sourcepath = sourcepath.replace("//", "/"); //in case of missing data
@@ -2057,13 +2097,14 @@ public class AssetEditModule extends BaseMediaModule
 			properties.saveFileAs(item, path, inReq.getUser());
 
 			//MediaArchive inArchive, User inUser, Page inAssetPage)
+			 
 			Asset current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
 			archive.saveAsset(current, inReq.getUser());
-//			current.setPrimaryFile(item.getName());
-//			current.setProperty("name", item.getName());
+			current.setPrimaryFile(item.getName());
+			current.setProperty("name", item.getName());
 //			current.setProperty("owner", inReq.getUser().getId());
-//			archive.removeGeneratedImages(current);
-//			archive.saveAsset(current, null);
+			archive.removeGeneratedImages(current, true);
+			archive.saveAsset(current, null);
 			inReq.putPageValue("newasset", current);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
 			archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),current);

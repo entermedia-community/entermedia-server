@@ -184,7 +184,7 @@ public class BaseProjectManager implements ProjectManager
 				Data found = librarycollectionassetSearcher.createNewData();
 				//found.setSourcePath(libraryid + "/" + librarycollection);
 				found.setProperty("librarycollection", librarycollection);
-				found.setProperty("asset", assetid);
+				//found.setProperty("asset", assetid);
 				found.setProperty("_parent", assetid);
 
 				tosave.add(found);
