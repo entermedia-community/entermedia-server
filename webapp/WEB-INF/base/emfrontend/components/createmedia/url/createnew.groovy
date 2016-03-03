@@ -6,8 +6,8 @@ import org.openedit.entermedia.MediaArchive
 import org.openedit.store.*
 import org.openedit.util.DateStorageUtil
 
-import com.openedit.page.*
-import com.openedit.util.PathUtilities
+import org.openedit.page.*
+import org.openedit.util.PathUtilities
 
 
 MediaArchive mediaarchive = context.getPageValue("mediaarchive");

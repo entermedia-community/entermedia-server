@@ -6,7 +6,7 @@ import org.openedit.data.PropertyDetailsArchive;
 import java.util.*;
 import org.openedit.Data
 import org.openedit.data.Searcher
-import com.openedit.page.manage.*;
+import org.openedit.page.manage.*;
 
 
 Searcher typessearcher = searcherManager.getSearcher(mediaarchive.getCatalogId(), "assettype");

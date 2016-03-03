@@ -4,8 +4,8 @@ import java.util.GregorianCalendar
 import org.openedit.Data
 import org.openedit.data.Searcher
 
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 
 
 Searcher ordersearcher = searcherManager.getSearcher(mediaarchive.getCatalogId(),"order");

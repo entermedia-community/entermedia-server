@@ -2,8 +2,8 @@ import groovy.json.JsonSlurper
 
 import org.openedit.data.Searcher
 
-import com.openedit.entermedia.scripts.EnterMediaObject
-import com.openedit.page.Page
+import org.openedit.entermedia.scripts.EnterMediaObject
+import org.openedit.page.Page
 
 
 class JsonImporter extends EnterMediaObject

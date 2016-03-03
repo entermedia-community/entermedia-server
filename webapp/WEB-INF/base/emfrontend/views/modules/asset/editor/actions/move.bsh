@@ -1,9 +1,9 @@
 import org.apache.commons.logging.*;
-import com.openedit.OpenEditException;
+import org.openedit.OpenEditException;
 import org.openedit.data.*;
-import com.openedit.page.manage.*;
-import com.openedit.page.*;
-import com.openedit.util.*;
+import org.openedit.page.manage.*;
+import org.openedit.page.*;
+import org.openedit.util.*;
 import org.openedit.repository.*;
 import org.openedit.repository.filesystem.*;
 import org.openedit.*;

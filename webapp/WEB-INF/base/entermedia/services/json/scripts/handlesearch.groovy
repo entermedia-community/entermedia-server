@@ -6,8 +6,8 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 
-import com.openedit.WebPageRequest
-import com.openedit.hittracker.HitTracker
+import org.openedit.WebPageRequest
+import org.openedit.hittracker.HitTracker
 
 public void handleSearch(){
 

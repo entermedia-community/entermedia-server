@@ -1,6 +1,6 @@
 import org.openedit.Data
 
-import com.openedit.hittracker.HitTracker
+import org.openedit.hittracker.HitTracker
 
 //see if the hits we have uses any other data elements such as category or collection
 

@@ -1,13 +1,13 @@
 package importing;
 
-import com.openedit.page.Page 
+import org.openedit.page.Page 
 import org.openedit.data.Searcher 
 import org.openedit.entermedia.Asset 
 import org.openedit.entermedia.MediaArchive 
 import org.openedit.*;
 
-import com.openedit.WebPageRequest;
-import com.openedit.hittracker.*;
+import org.openedit.WebPageRequest;
+import org.openedit.hittracker.*;
 import org.openedit.entermedia.creator.*;
 
 import java.sql.Connection;
@@ -36,11 +36,11 @@ import org.openedit.entermedia.MediaArchive;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
-import com.openedit.util.*;
+import org.openedit.util.*;
 import org.openedit.repository.*;
-import com.openedit.users.*;
-import com.openedit.OpenEditException;
-import com.openedit.page.manage.PageManager;
+import org.openedit.users.*;
+import org.openedit.OpenEditException;
+import org.openedit.page.manage.PageManager;
 import org.openedit.entermedia.scanner.AssetImporter;
 
 public void init()

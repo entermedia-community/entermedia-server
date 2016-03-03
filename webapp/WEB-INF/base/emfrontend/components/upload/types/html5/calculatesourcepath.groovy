@@ -1,8 +1,8 @@
 import org.openedit.*
 import org.openedit.entermedia.MediaArchive
 
-import com.openedit.hittracker.*
-import com.openedit.util.Replacer
+import org.openedit.hittracker.*
+import org.openedit.util.Replacer
 
 public void init()
 {

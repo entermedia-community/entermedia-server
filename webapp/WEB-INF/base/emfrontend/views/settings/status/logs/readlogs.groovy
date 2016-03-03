@@ -1,7 +1,7 @@
 import org.openedit.*
 
-import com.openedit.OpenEditException
-import com.openedit.hittracker.*
+import org.openedit.OpenEditException
+import org.openedit.hittracker.*
 
 
 public String readLastLines( String fileName , long chars) {

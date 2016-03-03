@@ -4,8 +4,8 @@ import java.util.GregorianCalendar
 import org.openedit.Data
 import org.openedit.data.Searcher
 
-import com.openedit.hittracker.HitTracker
-import com.openedit.hittracker.SearchQuery
+import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 
 // Find all asset ids viewed in the last month
 Searcher orderitemssearcher = searcherManager.getSearcher(mediaarchive.getCatalogId(),"assetpreviewLog");

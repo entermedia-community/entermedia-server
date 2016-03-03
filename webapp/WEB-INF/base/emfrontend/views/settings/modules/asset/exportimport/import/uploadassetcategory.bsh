@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.Iterator;
 import org.openedit.entermedia.util.*;
 import org.openedit.*;
-import com.openedit.page.*;
+import org.openedit.page.*;
 import org.openedit.entermedia.*;
 
 String path = context.getRequestParameter("path");

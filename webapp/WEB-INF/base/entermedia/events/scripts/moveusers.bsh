@@ -1,5 +1,5 @@
-import com.openedit.users.*;
-import com.openedit.hittracker.*;
+import org.openedit.users.*;
+import org.openedit.hittracker.*;
 
 userManager = moduleManager.getBean("userManager");
 

@@ -5,11 +5,11 @@ import org.openedit.entermedia.orders.Order
 import org.openedit.entermedia.push.PushManager
 import org.openedit.events.PathEventManager
 
-import com.openedit.Test
-import com.openedit.WebPageRequest
-import com.openedit.entermedia.scripts.EnterMediaObject
-import com.openedit.entermedia.scripts.ScriptLogger
-import com.openedit.page.Page
+import org.openedit.Test
+import org.openedit.WebPageRequest
+import org.openedit.entermedia.scripts.EnterMediaObject
+import org.openedit.entermedia.scripts.ScriptLogger
+import org.openedit.page.Page
 
 
 class Test extends EnterMediaObject

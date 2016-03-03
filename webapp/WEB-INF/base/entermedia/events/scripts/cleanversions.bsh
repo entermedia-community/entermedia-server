@@ -1,11 +1,11 @@
-import com.openedit.page.*;
-import com.openedit.*;
+import org.openedit.page.*;
+import org.openedit.*;
 import org.openedit.entermedia.*;
 import org.openedit.data.Searcher;
-import com.openedit.hittracker.*;
+import org.openedit.hittracker.*;
 import org.openedit.*;
 import org.openedit.xml.*;
-import com.openedit.util.*;
+import org.openedit.util.*;
 import java.util.*;
 
 public void processFolder(Page inPage)

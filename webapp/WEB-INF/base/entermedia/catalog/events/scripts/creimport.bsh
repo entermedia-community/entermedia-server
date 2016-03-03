@@ -1,14 +1,14 @@
 import org.openedit.entermedia.modules.*;
 import org.openedit.entermedia.edit.*;
-import com.openedit.page.*;
+import org.openedit.page.*;
 import org.openedit.entermedia.*;
 import org.openedit.data.*;
-import com.openedit.hittracker.*;
+import org.openedit.hittracker.*;
 import org.openedit.entermedia.creator.*;
 import java.util.*;
 import org.openedit.xml.*;
 import org.apache.lucene.document.*;
-import com.openedit.archive.cumulus.*;
+import org.openedit.archive.cumulus.*;
 
 	log.info("CRE Import Starting ");
 	mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos

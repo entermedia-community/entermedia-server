@@ -3,7 +3,7 @@ import org.openedit.data.*
 import org.openedit.entermedia.util.CSVWriter
 import org.openedit.util.DateStorageUtil
 
-import com.openedit.hittracker.HitTracker
+import org.openedit.hittracker.HitTracker
 	
 
 HitTracker hits = (HitTracker) context.getPageValue("hits");

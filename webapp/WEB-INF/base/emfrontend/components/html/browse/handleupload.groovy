@@ -15,10 +15,10 @@ import org.openedit.entermedia.util.*
 import org.openedit.util.DateStorageUtil
 import org.openedit.xml.*
 
-import com.openedit.WebPageRequest
-import com.openedit.hittracker.*
-import com.openedit.page.*
-import com.openedit.util.*
+import org.openedit.WebPageRequest
+import org.openedit.hittracker.*
+import org.openedit.page.*
+import org.openedit.util.*
 
 
 public void handleUpload() {

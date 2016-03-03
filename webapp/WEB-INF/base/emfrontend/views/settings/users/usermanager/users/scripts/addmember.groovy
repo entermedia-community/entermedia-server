@@ -5,7 +5,7 @@ import org.openedit.users.Group
 import org.openedit.users.User
 import org.openedit.users.UserManager
 
-import com.openedit.page.manage.*
+import org.openedit.page.manage.*
 
 public Group getGroup()
 {

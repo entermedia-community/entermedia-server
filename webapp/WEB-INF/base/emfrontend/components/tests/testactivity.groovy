@@ -1,8 +1,8 @@
-import com.openedit.WebPageRequest 
-import com.openedit.entermedia.scripts.EnterMediaObject 
-import com.openedit.entermedia.scripts.ScriptLogger;
-import com.openedit.page.Page 
-import com.openedit.servlet.OpenEditEngine 
+import org.openedit.WebPageRequest 
+import org.openedit.entermedia.scripts.EnterMediaObject 
+import org.openedit.entermedia.scripts.ScriptLogger;
+import org.openedit.page.Page 
+import org.openedit.servlet.OpenEditEngine 
 //import org.junit.Test 
 import org.openedit.Data 
 import org.openedit.entermedia.Asset 

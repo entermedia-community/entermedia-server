@@ -8,8 +8,8 @@ import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.search.AssetSearcher
 
-import com.openedit.OpenEditException
-import com.openedit.WebPageRequest
+import org.openedit.OpenEditException
+import org.openedit.WebPageRequest
 
 public void handleAssetRequest(){
 

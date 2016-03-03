@@ -9,7 +9,7 @@ import java.sql.Statement
 import org.openedit.db.util.ConnectionPool
 import org.openedit.entermedia.util.CSVWriter;
 
-import com.openedit.page.Page
+import org.openedit.page.Page
 
 import model.importer.BaseImporter
 

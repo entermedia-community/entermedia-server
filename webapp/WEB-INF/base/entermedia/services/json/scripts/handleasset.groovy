@@ -13,10 +13,10 @@ import org.openedit.entermedia.search.AssetSearcher
 import org.openedit.util.DateStorageUtil
 import org.openedit.entermedia.Category
 
-import com.openedit.OpenEditException
-import com.openedit.WebPageRequest
-import com.openedit.page.Page
-import com.openedit.util.OutputFiller
+import org.openedit.OpenEditException
+import org.openedit.WebPageRequest
+import org.openedit.page.Page
+import org.openedit.util.OutputFiller
 
 public void handleAssetRequest(){
 

@@ -3,7 +3,7 @@ import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 
-import com.openedit.hittracker.HitTracker
+import org.openedit.hittracker.HitTracker
 
 
 	// this is no longer used: Use BaseCompositeData 
