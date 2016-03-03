@@ -172,11 +172,11 @@ public class BaseProjectManager implements ProjectManager
 				Data asset = (Data)hit;
 				assetids.add(asset.getId());
 			}
-			Collection existing = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).orgroup("asset", assetids).search();
+			Collection existing = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).orgroup("_parent", assetids).search();
 			for (Iterator iterator = existing.iterator(); iterator.hasNext();)
 			{
 				Data collasset = (Data)iterator.next();
-				assetids.remove(collasset.get("asset"));
+				assetids.remove(collasset.get("_parent"));
 			}
 			for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
 			{
@@ -209,14 +209,14 @@ public class BaseProjectManager implements ProjectManager
 	{
 		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
 	
-		Data found = librarycollectionassetSearcher.query().match("librarycollection", collectionid).match("asset", assetid).searchOne();
+		Data found = librarycollectionassetSearcher.query().match("librarycollection", collectionid).match("_parent", assetid).searchOne();
 	
 		if (found == null)
 		{
 			found = librarycollectionassetSearcher.createNewData();
 			//found.setSourcePath(libraryid + "/" + collectionid);
 			found.setProperty("librarycollection", collectionid);
-			found.setProperty("asset", assetid);
+			found.setProperty("_parent", assetid);
 			librarycollectionassetSearcher.saveData(found, null);
 			log.info("Saved " + found.getId());
 		}
@@ -344,7 +344,7 @@ public class BaseProjectManager implements ProjectManager
 		for(Object hit : found)
 		{
 			Data data = (Data)hit;
-			String id = data.get("asset");
+			String id = data.get("_parent");
 			if( id != null)
 			{
 				ids.add(id);
@@ -396,7 +396,7 @@ public class BaseProjectManager implements ProjectManager
 			for(Object hit: inAssets)
 			{
 				Data asset = (Data)hit;
-				Data found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).match("asset", asset.getId()).searchOne();
+				Data found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).match("_parent", asset.getId()).searchOne();
 			
 				if (found != null)
 				{
