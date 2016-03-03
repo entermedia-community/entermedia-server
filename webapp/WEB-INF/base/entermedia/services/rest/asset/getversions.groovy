@@ -1,4 +1,4 @@
-import org.entermedia.attachments.AttachmentManager
+import org.entermediadb.asset.attachments.AttachmentManager
 import org.openedit.entermedia.Asset
 import org.openedit.entermedia.MediaArchive
 

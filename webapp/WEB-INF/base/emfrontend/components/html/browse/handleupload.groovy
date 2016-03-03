@@ -1,9 +1,9 @@
 package player;
 
-import org.entermedia.email.PostMail
-import org.entermedia.email.TemplateWebEmail
-import org.entermedia.upload.FileUpload
-import org.entermedia.upload.UploadRequest
+import org.entermediadb.email.PostMail
+import org.entermediadb.email.TemplateWebEmail
+import org.entermediadb.upload.FileUpload
+import org.entermediadb.upload.UploadRequest
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.entermedia.*

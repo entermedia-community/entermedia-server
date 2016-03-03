@@ -1,7 +1,7 @@
 import groovy.json.JsonSlurper
 
-import org.entermedia.upload.FileUpload
-import org.entermedia.upload.UploadRequest
+import org.entermediadb.upload.FileUpload
+import org.entermediadb.upload.UploadRequest
 import org.json.simple.JSONObject
 import org.openedit.Data
 import org.openedit.data.Searcher
