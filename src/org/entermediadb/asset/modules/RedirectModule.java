@@ -83,7 +83,7 @@ public class RedirectModule extends BaseMediaModule {
 	
 	public void virtualHost(WebPageRequest inReq) {
 		String skipredirect = inReq.findValue("skipvirtualhost");
-		if(Boolean.parseBoolean("skipvirtualhost")){
+		if(Boolean.parseBoolean(skipredirect)){
 			return;
 		}
 		URLUtilities utils = (URLUtilities) inReq
