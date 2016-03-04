@@ -4,7 +4,7 @@
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="searchtype" value="librarycollection" />
 <input name="oemaxlevel"    value="3" type="hidden" />
-<input name="collectionname.value" placeholder="Collection Name"  onkeydown='if (event.keyCode == 13) { $(this).closest("form").trigger("submit"); return false; }'/>
+<input name="collectionname.value" placeholder="Collection Name" class="grabfocus"  onkeydown='if (event.keyCode == 13) { $(this).closest("form").trigger("submit"); return false; }'/>
 <input name="library.value"  id="list-selectlibrary"   value="$!selectedlibrary.getId()" type="hidden" />
 <input class="btn small" type="button" onclick='$(this).closest("form").trigger("submit")' value="[[Save]]" />
 </form>

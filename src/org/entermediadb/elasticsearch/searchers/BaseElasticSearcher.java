@@ -846,7 +846,11 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		else
 		{
-			if ("matches".equals(inTerm.getOperation()))
+			if ("exact".equals(inTerm.getOperation()))
+			{
+				find = QueryBuilders.termQuery(fieldid, valueof);
+			}
+			else if ("matches".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.matchQuery(fieldid, valueof); //this is analyzed
 				//find = QueryBuilders.termQuery(fieldid, valueof);

@@ -360,6 +360,12 @@ uiload = function() {
 
 	});
 
+	jQuery("input.grabfocus").livequery( function() 
+	{
+		var theinput = jQuery(this);
+		theinput.focus();
+	});
+
 	$(".emtabs").livequery( function()   
 	{
 		var tabs = $(this); 

@@ -5,9 +5,9 @@
   <property id="cache" menulevel="toplevel" parentid="cache" moduleid="system" path="/views/settings/status/cache/index.html" ordering="031" sublabel="Cache Status">System Status</property>
   <property id="version" parentid="cache" moduleid="system" path="/views/settings/status/version/index.html" ordering="031">Versions</property>
  -->
-  <property id="version" menulevel="toplevel" parentid="version" moduleid="system" path="/views/settings/status/version/index.html" ordering="031" sublabel="Versions">Server</property>
-  <property id="logs" parentid="version" moduleid="system" path="/views/settings/status/logs/index.html" ordering="032">Logs</property>
-  <property id="tools" parentid="version" moduleid="system" path="/views/settings/status/tools/index.html" ordering="033">Database</property>
+  <property id="tools" menulevel="toplevel"  moduleid="system" path="/views/settings/status/tools/index.html" ordering="031" sublabel="Versions">Server</property>
+  <property id="version" parentid="tools" moduleid="system" path="/views/settings/status/version/index.html" ordering="031">Versions</property>
+  <property id="logs" parentid="tools" moduleid="system" path="/views/settings/status/logs/index.html" ordering="032">Logs</property>
 
 </properties>
 

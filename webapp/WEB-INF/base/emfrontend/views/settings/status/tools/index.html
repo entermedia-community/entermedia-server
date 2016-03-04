@@ -33,16 +33,14 @@
 <a class="btn" href="reloadall.html">[[Reload All Mappings/Index]]</a>
 </p>
 
-
-
-
-
 <p>
-#set($nm = $mediaarchive.getNodeManager())
-<h2>Change Log Level</h2>
-#if($nm.getShowSearchLogs($catalogid) )
-<a class="btn" href="togglesearchlogs.html">[[Ignore Searches]]</a>
+[[Log Search Requests]] 
+
+<a class="btn" href="togglesearchlogs.html">
+#if($mediaarchive.getSearcherManager().getShowSearchLogs($catalogid) )
+[[Enabled]]
 #else
-<a class="btn" href="togglesearchlogs.html">[[Log All Searches]]</a>
+[[Disabled]]
 #end
+</a>
 </p>

@@ -63,7 +63,7 @@
 	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date"  searchcomponent="datesearch"  viewtype="time" >Last Modified</property>
 	<property id="recordmodificationdate" index="true" type="date"  searchcomponent="datesearch"  stored="true" editable="false">Record Edit Date</property> <!--  should be a date -->
 	<property id="assetaddeddate" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
-	<property id="assetowner" index="true" viewtype="user" listcatalogid="system" listid="user" keyword="true" stored="true" sortable="true" editable="true" >Owner</property>
+	<property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" keyword="true" stored="true" sortable="true" editable="true" >Owner</property>
 	<property id="primaryfile" internalfield="true" index="true" stored="true">Primary File Name</property>
 	
 	<property id="importstatus" index="true" stored="true" datatype="list" listid="asset/importstatus" editable="true">Import Status</property>
