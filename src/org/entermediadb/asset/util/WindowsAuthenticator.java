@@ -49,7 +49,16 @@ public class WindowsAuthenticator extends BaseAuthenticator
 			// ip.get
 			// }
 			UniAddress controller = new UniAddress(ip);
-			SmbSession.logon(controller, auth);
+
+			String port = inAReq.get("authenticationserverport");
+			if (port != null)
+			{
+				SmbSession.logon(controller, Integer.parseInt(port), auth);
+			}
+			else
+			{
+				SmbSession.logon(controller, auth);
+			}
 			//password may be different than what's in the xml we should set it
 			//it will get encrypted and saved after login
 			inAReq.getUser().setPassword(inAReq.getPassword());
