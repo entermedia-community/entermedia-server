@@ -3,7 +3,7 @@
 	<property id="assetid" index="true" stored="true">Asset Id</property>
 	<property id="color" index="true" stored="true">Color</property>
 	<property id="collectionid" index="true" stored="true">Collection Id</property>
-	<property id="user" index="true" viewtype="user" stored="true">User Name</property>
+	<property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property>
 	<property id="comment" index="true"  stored="true">Comment</property>
 	<property id="date" datatype="date" index="true" stored="true" >Date</property>
 	<property id="fabricObjects" index="true" stored="true">Fabric Object</property>

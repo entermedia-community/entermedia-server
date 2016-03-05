@@ -498,6 +498,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					jsonproperties = jsonproperties.field("type", "long");
 				}
+				else if (detail.isDataType("double"))
+				{
+					jsonproperties = jsonproperties.field("type", "double");
+				}
+			
+				
 				else if (detail.isList())  //Or multi valued?
 				{
 					//if( detail.isMultiValue() )
@@ -559,6 +565,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.endObject();
 			}	
 			jsonBuilder = jsonproperties.endObject();
+			String content = jsonproperties.string();
 			return jsonproperties;
 		}
 		catch (Throwable ex)

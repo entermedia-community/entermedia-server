@@ -1,7 +1,7 @@
 <properties>
 
 
-<property id="user"  keyword="true" viewtype="user"  index="true" stored="true">User</property>
+<property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property><property id="sourcepath"  index="true" stored="true">Source Path</property>
 <property id="query"  index="true" stored="true">Query</property>
 <property id="hits"  index="true" stored="true" editable="true">Hits</property>
 <property id="date" datatype="date" date="true" viewtype="time" index="true" stored="true" >Date</property>

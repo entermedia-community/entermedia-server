@@ -59,7 +59,6 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 				putMappings(toId(getCatalogId()));
 
 		
-			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetails(getSearchType());
 			Collection usernames = getXmlUserArchive().listUserNames();
 			if( usernames != null)
 			{
