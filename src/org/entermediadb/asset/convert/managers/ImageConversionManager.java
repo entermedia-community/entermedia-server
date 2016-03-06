@@ -7,6 +7,7 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
+import org.entermediadb.asset.scanner.OofficeTextExtractor;
 import org.joda.time.convert.ConverterManager;
 import org.entermediadb.asset.convert.MediaTranscoder;
 import org.openedit.repository.ContentItem;
@@ -123,6 +124,11 @@ public class ImageConversionManager extends BaseConversionManager
 			ImageConversionManager videot = (ImageConversionManager) creatorManager.getManagerByTranscoder("ffmpegimage");
 			return videot.getMediaTranscoder().convert(inStructions);
 		}
+		
+		
+		
+		
+		
 		
 		return getMediaTranscoder().convert(inStructions);
 	}

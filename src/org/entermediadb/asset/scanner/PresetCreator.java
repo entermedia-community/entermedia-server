@@ -64,7 +64,10 @@ public class PresetCreator
 	public int queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean rerun )
 	{
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
-
+		if(rendertype==null){
+			//return?
+			return 0;
+		}
 		int added = 0;
 		Collection hits = getPresets(mediaarchive,rendertype);
 		

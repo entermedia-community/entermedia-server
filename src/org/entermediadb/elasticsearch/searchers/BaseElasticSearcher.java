@@ -503,6 +503,13 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.field("type", "double");
 				}
 			
+				else if (detail.isDataType("geo_point"))
+				{
+					jsonproperties = jsonproperties.field("type", "geo_point");
+				}
+				
+				
+				
 				
 				else if (detail.isList())  //Or multi valued?
 				{
@@ -1312,12 +1319,22 @@ public class BaseElasticSearcher extends BaseSearcher
 						String[] vals = VALUEDELMITER.split(value);
 
 						inContent.field(key, vals);
+						
 					}
 					else
 					{
 						inContent.field(key, value);
 					}
 				}
+				
+				
+				else if (detail != null && detail.isDataType("geo_point"))
+				{
+					inContent.field(key, value);
+				}
+				
+				
+				
 
 				else if (key.equals("description"))
 				{

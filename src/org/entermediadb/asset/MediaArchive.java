@@ -379,6 +379,9 @@ public class MediaArchive
 	}
 	public String getMediaRenderType(Data inAsset)
 	{
+		if(inAsset == null){
+			return "none";
+		}
 		String format = inAsset.get("fileformat");
 		return getMediaRenderType(format);
 	}	

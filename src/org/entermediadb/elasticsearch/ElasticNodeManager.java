@@ -195,6 +195,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return id;
 	}
 
+	
+
+	protected LockManager getLockManager(String inCatalogId)
+	{
+		return getSearcherManager().getLockManager(inCatalogId);
+	}
 	public String createSnapShot(String inCatalogId)
 	{
 		Lock lock = null;
@@ -208,12 +214,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			getLockManager(inCatalogId).release(lock);
 		}
 	}
-
-	protected LockManager getLockManager(String inCatalogId)
-	{
-		return getSearcherManager().getLockManager(inCatalogId);
-	}
-
 	public String createSnapShot(String inCatalogId, Lock inLock)
 	{
 		String indexid = toId(inCatalogId);

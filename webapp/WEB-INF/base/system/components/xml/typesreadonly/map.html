@@ -4,26 +4,23 @@
 #set ($view = $context.getRequestParameter('view')) 
 <!--  This would have the point details in it -->
 
- 
+ #if(!$hit)
+ #set($hit = $data)
+ #end
 <div id="$!{hit.id}_${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
    
-   #set( $lat = $!hit.get("${detail.id}_lat") )
-   #set( $lng = $!hit.get("${detail.id}_lng") )
-    <input type="hidden" name="field" value="${detail.id}_lat"/>
-   Latitude: <input type="text" id="${detail.id}_lat" name="${detail.id}_lat.value" value="$!lat"/>
-    <input type="hidden" name="field" value="${detail.id}_lng"/>
-    Longitude: <input type="text" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!lng"/>
+  
 
-
+$latandlong
 <script type="text/javascript">
 
 $('#$!{hit.id}_${detail.id}_map').gmap({
 	 'center':'$mediaarchive.getCatalogSettingValue("startinglatlong")',
 }).bind('init', function(ev, map) {
-	#if( $lat )
+	#if( $latandlong )
 	$('#$!{hit.id}_${detail.id}_map').gmap('addMarker', 
 			{
-			'position': '$lat,$lng',
+			'position': '$latandlong',
 			'draggable': false, 
 		    'bounds': true
 		    })
