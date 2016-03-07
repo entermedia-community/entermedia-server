@@ -635,14 +635,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					if (searcher instanceof BaseElasticSearcher)
 					{
 						BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-						new_name.putMappings(tempindex);
+						new_name.putMappings(tempindex,true);
 					}
 					
 					if (searcher instanceof BaseAssetSearcher)
 					{
 						BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
 							ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
-							con.putMappings(tempindex);
+							con.putMappings(tempindex,true);
 					}
 				}
 				String index = inCatalogId.replace('/', '_');
@@ -666,7 +666,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					{
 						BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
 
-							new_name.putMappings(tempindex);
+							new_name.putMappings(tempindex,true);
 
 						
 					}
@@ -675,7 +675,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					{
 						BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
 							ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
-							con.putMappings(tempindex);
+							con.putMappings(tempindex,true);
 
 						
 					}
@@ -746,6 +746,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 			}
 		};
+	}
+
+	public void removeMappingError(String inSearchType)
+	{
+		// TODO Auto-generated method stub
+		getMappingErrors().remove(inSearchType);
 	}
 
 }

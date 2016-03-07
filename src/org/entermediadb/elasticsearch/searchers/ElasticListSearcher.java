@@ -90,12 +90,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		{
 			//For now just add things to the index. It never deletes
 		
-				//Someone is forcing a reindex
-				//deleteOldMapping();
-				putMappings(toId(getCatalogId()));
+			//Someone is forcing a reindex
+			//deleteOldMapping();
+			putMappings(toId(getCatalogId()),true);
 
-			
-			 
 			getXmlSearcher().clearIndex();
 			HitTracker settings = getXmlSearcher().getAllHits();
 			Collection toindex = new ArrayList();
@@ -199,11 +197,22 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	}
 	
 	
-public PropertyDetails getPropertyDetails() {
+	public PropertyDetails getPropertyDetails() {
 		return getXmlSearcher().getPropertyDetails();
 		
 	}
 	
+	@Override
+	public boolean initialize()
+	{
+		boolean ok = super.initialize();
+		
+		if( ok && getAllHits().size() == 0 )
+		{
+			reIndexAll();
+		}		
+		return ok;
+	}
 	
 	
 	

@@ -282,13 +282,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{			
-			if( getAllHits().size() == 0 )
-			{
-				reIndexAll();
-//			} else{
-//				putMappings();
-			}
-			log.info(getCatalogId() + " Node is ready for " + getSearchType());
+			putMappings(toId(getCatalogId()),false); 
 		}
 		catch (Exception ex)
 		{
@@ -325,17 +319,19 @@ public class BaseElasticSearcher extends BaseSearcher
 //			log.error(ex);
 //		}
 //	}
-	public void putMappings(String indexid)
+	public void putMappings(String indexid, boolean force)
 	{
 		AdminClient admin = getElasticNodeManager().getClient().admin();
 		if(indexid == null){
 			 indexid = toId(getCatalogId());
 		}
-		boolean alreadyin = admin.indices().typesExists(new TypesExistsRequest(new String[] { indexid }, getSearchType())).actionGet().isExists();
-		if(alreadyin){
-			return;
+		if( !force)
+		{
+			boolean alreadyin = admin.indices().typesExists(new TypesExistsRequest(new String[] { indexid }, getSearchType())).actionGet().isExists();
+			if(alreadyin){
+				return;
+			}
 		}
-		
 		List dependson = getPropertyDetails().getDependsOn();
 		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
 		{
@@ -360,6 +356,10 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			putMapping(admin, indexid, source);
 			admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+			
+			//Remove error warning
+			getElasticNodeManager().removeMappingError(getSearchType());
+			
 			return;
 		}
 		catch( Exception ex)
@@ -1559,7 +1559,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			setReIndexing(true);
-			putMappings(toId(getCatalogId())); //We can only try to put mapping. If this failes then they will
+			putMappings(toId(getCatalogId()),true); //We can only try to put mapping. If this failes then they will
 			//need to export their data and factory reset the fields 
 			//deleteAll(null); //This only deleted the index
 		}
@@ -1575,7 +1575,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
-		putMappings(toId(getCatalogId()));
+		putMappings(toId(getCatalogId()),true);
 	}
 	
 	@Override
@@ -1583,7 +1583,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
-		putMappings(toId(getCatalogId()));
+		putMappings(toId(getCatalogId()),true);
 		
 		
 	}

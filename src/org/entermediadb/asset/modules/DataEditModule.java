@@ -291,6 +291,7 @@ public class DataEditModule extends BaseMediaModule
 		}
 		
 		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		searcher.reloadSettings();
 	}
 
 	public void addToView(WebPageRequest inReq) throws Exception

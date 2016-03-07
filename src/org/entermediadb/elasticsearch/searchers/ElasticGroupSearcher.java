@@ -50,7 +50,8 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 		try
 		{
 			
-				putMappings(toId(getCatalogId()));
+			putMappings(toId(getCatalogId()),true);
+
 		
 			Collection ids = getXmlUserArchive().listGroupIds();
 			if( ids != null)

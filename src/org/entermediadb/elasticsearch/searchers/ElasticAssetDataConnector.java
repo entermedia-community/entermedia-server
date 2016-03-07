@@ -101,7 +101,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			
 				//Someone is forcing a reindex
 				//deleteOldMapping();
-				putMappings(toId(getCatalogId()));
+			putMappings(toId(getCatalogId()),true);
+
 			
 			final List tosave = new ArrayList(500);
 			
