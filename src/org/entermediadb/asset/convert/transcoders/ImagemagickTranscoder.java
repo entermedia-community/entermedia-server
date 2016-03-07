@@ -203,7 +203,10 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				com.add(resizestring.toString());
 			}
 		}
-		else createBackground(inStructions, com, usepng, ext);
+		else 
+		{
+			createBackground(inStructions, com, usepng, ext);
+		}
 
 		setValue("quality", "89", inStructions, com);
 		//add sampling-factor if specified
@@ -212,13 +215,25 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add("-sampling-factor");
 			com.add(inStructions.get("sampling-factor"));
 		}
+		
 		String prestrip = inStructions.get("fixcmyk");
-		if( !"true".equals(prestrip) )
+		if( "true".equals(prestrip) )
 		{
-			com.add("-strip"); //This removes the extra profile info
+			setValue("profile", getPathtoProfile(), inStructions, com);
 		}
-		setValue("profile", getPathtoProfile(), inStructions, com);
-
+		else if( !usepng )
+		{
+			if( "eps".equals(ext) || "pdf".equals(ext) || "ai".equals( ext) )
+			{
+				setValue("colorspace", "sRGB", inStructions, com);
+			}
+			else
+			{
+				com.add("-strip"); //This removes the extra profile info
+				setValue("profile", getPathtoProfile(), inStructions, com);
+			}			
+	    }
+		
 		if (isOnWindows() )
 		{
 			// windows needs quotes if paths have a space
