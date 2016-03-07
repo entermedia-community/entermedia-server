@@ -21,7 +21,7 @@
     
     <property id="business" index="true" stored="true" keyword="true" editable="true">Business / Affiliation Name</property>
     <property id="jobtitle" index="true" stored="true" keyword="true" editable="true">Job Title</property>
-    <property id="country" index="true" stored="true" keyword="true" editable="true">Country</property>
+    <property id="country" index="true" stored="true" keyword="true" editable="true" type="list">Country</property>
     <property id="address1" index="true" stored="true" keyword="true" editable="true">Address 1</property> 
     <property id="address2" index="true" stored="true" keyword="true" editable="true">Address 2</property>
     <property id="city" index="true" stored="true" keyword="true" editable="true">City</property>
