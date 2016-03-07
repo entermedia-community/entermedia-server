@@ -1,9 +1,9 @@
 
 #set($nm = $mediaarchive.getNodeManager())
+#set($errors = $nm.getMappingErrors() )
+#if( $errors.size() > 0 )
 
-$nm
-
-#foreach($error in $nm.getMappingErrors())
+#foreach($error in $errors)
 
 <div class="well">
 <p>
@@ -36,3 +36,6 @@ $error.getError()
 
 #end
 
+#else
+	<p>No errors detected</p>
+#end

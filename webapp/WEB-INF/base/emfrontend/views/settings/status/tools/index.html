@@ -1,8 +1,17 @@
-<h2>[[Tools]]</h2>
 
+<h3>ElasticSearch</h3>
 
+<p>
+[[Snapshots are used by ElasticSearch to store and restore database state]].
+</p>
+<a class="btn" href="./snapshots.html">[[View Snapshots]]</a>
 
+<p>
+[[Knapsack is used to create JSON based backups that can be moved between servers]].
+</p>
+<a class="btn" href="./knapsack.html">[[View Knapsack]]</a>
 
+<h3>XML Management</h3>
 <p>[[Reloading lists should be performed after an upgrade]].
 [[This allows lists loaded from the installation to be integrated with your own lists.]].
 </p>
@@ -12,29 +21,17 @@
 <br><br>
 <br><br>
 
-<p>
-[[Snapshots are used by ElasticSearch to store and restore database state]].
-</p>
-<a class="btn" href="./snapshots.html">[[View Snapshots]]</a>
 
-
-
-<p>
-[[Knapsack snapshots are used to create text based backups that can be moved between servers]].
-</p>
-<a class="btn" href="./knapsack.html">[[View Snapshots]]</a>
-
-
+<h3>Error Logs</h3>
 <p>
 <a class="btn" href="mappingerrors.html">[[View Mapping Errors]]</a>
 </p>
 
 <p>
-<a class="btn" href="reloadall.html">[[Reload All Mappings/Index]]</a>
+<a class="btn" href="reloadall.html">[[Fix Mapping Errors]]</a>
 </p>
 
-<p>
-[[Log Search Requests]] 
+<p>[[Log Search Requests]] 
 
 <a class="btn" href="togglesearchlogs.html">
 #if($mediaarchive.getSearcherManager().getShowSearchLogs($catalogid) )
