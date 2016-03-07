@@ -3,13 +3,9 @@ package org.entermediadb.asset.convert.managers;
 import java.util.HashMap;
 
 import org.entermediadb.asset.convert.BaseConversionManager;
-import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
-import org.entermediadb.asset.scanner.OofficeTextExtractor;
-import org.joda.time.convert.ConverterManager;
-import org.entermediadb.asset.convert.MediaTranscoder;
 import org.openedit.repository.ContentItem;
 
 public class ImageConversionManager extends BaseConversionManager

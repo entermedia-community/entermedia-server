@@ -1827,9 +1827,6 @@
 		</property>
 	</bean>
 	
-	<bean id="oofficeTextExtractor" class="org.entermediadb.asset.scanner.OofficeTextExtractor" >
-		<property name="metadataPdfExtractor"><ref bean="pdfExtractor" /></property>
-	</bean>
 	
 
 
@@ -1960,5 +1957,51 @@
  	<groovy  id="convertQueue" script-source="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
 			<property name="executorManager"><ref bean="executorManager" /></property>
 	</groovy>
+ 	
+ 	
+ 	
+ 	
+ 	 <bean id="oofficeConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
+		<property name="mediaTranscoder">
+			<ref bean="oofficeTranscoder" />
+		</property>
+	
+	</bean>
+	
+	<bean id="oofficeTranscoder" class="org.entermediadb.ooffice.OofficeDocumentTranscoder" >
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
+	
+	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
+		<property name="mediaTranscoder">
+			<ref bean="oofficeTranscoder" />
+		</property>
+	</bean>
+
+
+		
+	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	
+		<property name="metadataExtractors">
+			<list>
+				<ref bean="pdfExtractor" />
+				<ref bean="oofficeTextExtractor" />
+				<ref bean="exiftoolMetadataExtractor" />
+				<ref bean="ffmpegMetadataExtractor" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="oofficeTextExtractor" class="org.entermediadb.ooffice.OofficeTextExtractor" >
+		<property name="metadataPdfExtractor"><ref bean="pdfExtractor" /></property>
+		<property name="mediaCreator"><ref bean="oofficeTranscoder" /></property>
+	</bean>
+ 	
+ 	
+ 	
  	
 </beans>
