@@ -36,6 +36,7 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequest;
 import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
+import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
@@ -472,9 +473,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean connectCatalog(String inCatalogId)
 	{
-		if (!getConnectedCatalogIds().contains(inCatalogId))
+		if (!getConnectedCatalogIds().containsKey(inCatalogId))
 		{
-			getConnectedCatalogIds().add(inCatalogId);
 
 			String alias = toId(inCatalogId);
 			String index = getIndexNameFromAliasName(alias);//see if we already have an index  
@@ -483,6 +483,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				index = alias + "-0";
 			}
+			getConnectedCatalogIds().put(inCatalogId,index);
 
 			boolean createdIndex = prepareIndex(index);
 			if (createdIndex)
@@ -634,10 +635,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					if (searcher instanceof BaseElasticSearcher)
 					{
 						BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-
-							new_name.putMappings(tempindex);
-
-						
+						new_name.putMappings(tempindex);
 					}
 					
 					if (searcher instanceof BaseAssetSearcher)
@@ -645,16 +643,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
 							ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
 							con.putMappings(tempindex);
-
-						
 					}
-					
-					
-					
 				}
-				
-				
-				
+				String index = inCatalogId.replace('/', '_');
 				
 				for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 				{
@@ -662,6 +653,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					if(childtables.contains(type)){
 						continue;
 					}
+					
+					boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { index },type)).actionGet().isExists();
+					if(!used){
+						continue;
+					}
+
+					
 					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
 					//searcher.reIndexAll();
 					if (searcher instanceof BaseElasticSearcher)

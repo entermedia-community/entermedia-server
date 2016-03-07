@@ -1,8 +1,8 @@
 package org.entermediadb.asset.cluster;
 
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
 import org.dom4j.Element;
 import org.openedit.OpenEditException;
@@ -21,21 +21,16 @@ public class BaseNodeManager implements NodeManager
 	protected PageManager fieldPageManager;
 	protected SearcherManager fieldSearcherManager;
 	protected WebServer fieldWebServer;
-	protected Set fieldConnectedCatalogIds;
+	protected Map fieldConnectedCatalogIds;
 
-	public Set getConnectedCatalogIds()
+	public Map getConnectedCatalogIds()
 	{
 		if (fieldConnectedCatalogIds == null)
 		{
-			fieldConnectedCatalogIds = new HashSet();
+			fieldConnectedCatalogIds = new HashMap();
 		}
 
 		return fieldConnectedCatalogIds;
-	}
-
-	public void setConnectedCatalogIds(Set inConnectedCatalogIds)
-	{
-		fieldConnectedCatalogIds = inConnectedCatalogIds;
 	}
 
 	public WebServer getWebServer()

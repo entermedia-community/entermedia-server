@@ -1149,7 +1149,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			updateIndex(content, data, details);
 			content.endObject();
-			if(true || log.isDebugEnabled() )
+			if(log.isDebugEnabled() )
 			{
 				log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
 			}
