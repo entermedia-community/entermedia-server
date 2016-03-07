@@ -149,6 +149,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	{
 		Pattern p = Pattern.compile("(\\w+):\\s+(.+)"); //clean whitespace TODO: handle lower/mixed case
 		boolean foundtextvalues = false;
+		String lat = null;
+		String lng = null;
 		if (numberinfo != null)
 		{
 			String[] numbers = numberinfo.split("\n");
@@ -262,11 +264,13 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 				else if ("GPSLatitude".equals(key))
 				{
-					inAsset.setProperty("position_lat", value);
+					lat = value;
+					//inAsset.setProperty("position_lat", value);
 				}
 				else if ("GPSLongitude".equals(key))
 				{
-					inAsset.setProperty("position_lng", value);
+					lng = value;
+					//inAsset.setProperty("position_lng", value);
 				}
 
 				else if (getTextFields().contains(key))
@@ -321,6 +325,11 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 			}
 		}
+		
+		if(lat != null && lng != null){
+			inAsset.setProperty("geo_position", lat + " , " + lng);
+		}
+		
 		return foundtextvalues;
 	}
 

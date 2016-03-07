@@ -20,7 +20,7 @@ public class ImageCacheLoader implements InputLoader
 		String cachetype = "jpg";
 		if( isDocument )
 		{
-			 cachetype = "png";
+			 cachetype = "pdf";
 		}
 		
 		String page = null;
@@ -61,6 +61,13 @@ public class ImageCacheLoader implements InputLoader
 					input = null;
 				}
 				
+			}
+		}
+		
+		if("pdf".equals(cachetype) ){
+			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/document.pdf");
+			if(!input.exists()){
+				input = null;
 			}
 		}
 
