@@ -784,7 +784,7 @@ public class Asset implements MultiValued, SaveableData
 			String orig = getPrimaryFile();
 			if( orig == null)
 			{
-				orig = getSourcePath();
+				orig = getName();
 			}
 			format = PathUtilities.extractPageType(orig);
 		}

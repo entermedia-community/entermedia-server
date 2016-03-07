@@ -54,8 +54,13 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		String tmpinput = PathUtilities.extractPageType( inStructions.getInputFile().getPath() );
 		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
 		
-		String ext = inStructions.getOutputExtension();
-	
+		String ext = asset.getFileFormat();
+
+		if( ext == null)
+		{
+			ext = tmpinput;
+			
+		}
 		//File inputFile = new File(input.getContentItem().getAbsolutePath());
 //		String newext = PathUtilities.extractPageType( input.getPath() );
 //		if( newext != null && newext.length()> 1)
@@ -111,9 +116,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					}
 				}
 			}
-			
-
-			
 			if (!inStructions.isCrop())
 			{
 			
