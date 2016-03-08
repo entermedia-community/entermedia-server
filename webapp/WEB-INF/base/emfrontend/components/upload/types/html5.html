@@ -49,24 +49,30 @@
 		    <div  class="ui-widget-content">
 				<form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="validate"  >
-				
-				##		<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
-					
-					#set($cols = $mediaarchive.getList("librarycollection"))
-					Choose Collection:</br> <select class="select2" name="currentcollection">
-					<option >&nbsp;</option>
-					#foreach($col in $cols)
-					<option id="$col.id" value="$col.id">$col</option>
-					#end
-					</select>
-					
-										
+
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						$context.putPageValue("view","asset/multipleupload")	
 						$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
 				
-				
-				
+				#if( $collectionid )
+						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
+				#else	
+					#set($cols = $mediaarchive.getList("librarycollection"))
+					<div class="inputformrow">
+					<span class="emdatafield">
+							[[Collection]]
+					</span>	
+					<div class="emdatafieldvalue ">
+						<select class="select2" name="currentcollection">
+						<option >&nbsp;</option>
+						#foreach($col in $cols)
+						<option id="$col.id" value="$col.id">$col</option>
+						#end
+						</select>
+					</div>	
+				#end					
+										
 				##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
 				       <a class="btn" id="startbutton" href="#">[[Upload]]</a>
