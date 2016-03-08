@@ -258,7 +258,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 		{
 			throw new OpenEditException("Cannot delete null data.");
 		}
-		getDataArchive().delete(inData, inUser);
+		//getDataArchive().delete(inData, inUser);
 		super.delete(inData, inUser);
 	}
 
