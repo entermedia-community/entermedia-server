@@ -100,31 +100,34 @@ public class BaseHotFolderManager implements HotFolderManager
 		for (Iterator iterator = folders.iterator(); iterator.hasNext();)
 		{
 			Data folder = (Data) iterator.next();
-			String external = folder.get("externalpath");;
-			String toplevelfolder =  folder.get("subfolder");
-			String type = folder.get("hotfoldertype");
-			
-			if(type == null || type  == "mount" )
+			String external = folder.get("externalpath");
+			if( external != null )
 			{
-				type = "mount";
+				String toplevelfolder =  folder.get("subfolder");
+				String type = folder.get("hotfoldertype");
 				
-			}
-			
-			
-			String fullpath = originalpath + "/" + toplevelfolder;
-			//String versioncontrol = folder.get("versioncontrol");
-			Repository created = createRepo(type);
-			created.setPath(fullpath);
-			created.setExternalPath(external);
-			created.setFilterIn(folder.get("includes"));
-			created.setFilterOut(folder.get("excludes"));
-			//add varliables
-			for (String key:folder.getProperties().keySet()) 
-			{
-				created.setProperty(key,folder.getProperties().get(key))
-			}
-			
-			newrepos.add(created);
+				if(type == null || type  == "mount" )
+				{
+					type = "mount";
+					
+				}
+				
+				
+				String fullpath = originalpath + "/" + toplevelfolder;
+				//String versioncontrol = folder.get("versioncontrol");
+				Repository created = createRepo(type);
+				created.setPath(fullpath);
+				created.setExternalPath(external);
+				created.setFilterIn(folder.get("includes"));
+				created.setFilterOut(folder.get("excludes"));
+				//add varliables
+				for (String key:folder.getProperties().keySet()) 
+				{
+					created.setProperty(key,folder.getProperties().get(key))
+				}
+				
+				newrepos.add(created);
+			}	
 		}		
 		configs = getPageManager().getRepositoryManager().getRepositories();
 		configs.addAll(newrepos);
