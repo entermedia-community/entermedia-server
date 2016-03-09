@@ -1,0 +1,10 @@
+#
+#Thu Jan 28 15:43:52 EST 2016
+Create\ Data\ Record=erstellen Datensatz
+Upload\ Media=Upload Medien
+Create\ empty\ data\ records\ then\ attach\ media\ later=erstellen leere Datens\u00E4tze sp\u00E4ter Medien anh\u00E4ngen
+Add\ Remote\ Media=f\u00FCgen Fernmedien
+Make\ a\ live\ stream\ recording\ from\ your\ webcam=einen Live-Stream Aufzeichnung von Ihrer Webcam
+Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=erstellen Media Assets von einer URL oder Einbettungscode
+Upload\ media\ from\ local\ file\ system\ or\ camera=Upload Medien aus dem lokalen Dateisystem oder einer Kamera
+Live\ Video\ Stream=Live-Videostream

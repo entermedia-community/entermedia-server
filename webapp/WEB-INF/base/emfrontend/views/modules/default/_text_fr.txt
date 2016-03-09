@@ -1,7 +1,9 @@
 #
-#Wed Dec 30 12:35:30 CST 2015
+#Tue Jan 26 16:20:34 EST 2016
+\ and\ some\ other\ data=et certaines autres donn\u00E9es
 Results=R\u00E9sultats
 Export\ results\ with\ Friendly\ values=Exporter les r\u00E9sultats avec les valeurs amicales
+No\ results\ found.=Aucun r\u00E9sultat trouv\u00E9.
 Batch\ Edit=Batch Modifier
 Delete\ Selected\ Items=Supprimer les \u00E9l\u00E9ments s\u00E9lectionn\u00E9s
 Edit\ Columns=Modifier les colonnes

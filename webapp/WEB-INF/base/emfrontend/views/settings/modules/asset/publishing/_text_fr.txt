@@ -1,0 +1,4 @@
+#
+#Tue Jan 26 16:35:04 EST 2016
+Add\ New=Ajouter un nouveau
+Add\ SmartJog=Ajouter SmartJog

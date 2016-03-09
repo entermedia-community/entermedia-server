@@ -1,6 +1,7 @@
 #
-#Wed Feb 04 07:56:03 EST 2015
+#Thu Jan 28 15:08:13 EST 2016
+Drag\ to\ desktop=Ziehen auf den Desktop
 $asset=$asset
+Drag\ into\ applications\ as\ jpeg=Ziehen Sie in Anwendungen wie jpeg
 drag\ to\ download=Ziehen zum Herunterladen
 Preview\ Image=Vorschaubild
-

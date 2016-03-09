@@ -1,0 +1,12 @@
+#
+#Tue Dec 01 11:06:00 EST 2015
+Empty\ Data\ Record=Empty Data Record
+Upload\ media\ from\ local\ file\ system\ or\ camera=T\u00E9l\u00E9chargez m\u00E9dias de syst\u00E8me de fichiers local ou un appareil photo
+Add\ Remote\ Media=Ajouter Media Remote
+Add\ Media=Ajouter des m\u00E9dias
+Live\ Video\ Stream=Live Video Streaming
+Make\ a\ live\ stream\ recording\ from\ your\ webcam=Faire un enregistrement de flux en direct \u00E0 partir de votre webcam
+Create\ empty\ data\ records\ then\ attach\ media\ later=Cr\u00E9er vides enregistrements de donn\u00E9es , puis fixer le m\u00E9dia tard
+Upload\ Media=Transf\u00E9rer multim\u00E9dia
+Next=Suivant
+Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Cr\u00E9er actifs m\u00E9dias \u00E0 partir d'une URL ou un code Int\u00E9grer
