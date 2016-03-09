@@ -372,15 +372,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		try
 		{
+			String indexid = toId(inCatalogId);
+
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
 			Client client = getClient();
 			Date date = new Date();
-			Page target = getPageManager().getPage("/WEB-INF/data" + inCatalogId + "snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
+			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
 			Page folder = getPageManager().getPage(target.getParentPath());
 			File file = new File(folder.getContentItem().getAbsolutePath());
 			file.mkdirs();
 			Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
-			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(inCatalogId);
+			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(indexid);
 			KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
 
 			KnapsackStateRequestBuilder knapsackStateRequestBuilder = new KnapsackStateRequestBuilder(client.admin().indices());
@@ -431,13 +433,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
+			String indexid = toId(inCatalogId);
 
-			Page target = getPageManager().getPage("/WEB-INF/" + inCatalogId + "snapshots/" + inFile);
+			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/" + inFile);
 
 			Client client = getClient();
 			File exportFile = new File(target.getContentItem().getAbsolutePath());
 			Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
-			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(inCatalogId);
+			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(indexid);
 			KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
 
 		}
