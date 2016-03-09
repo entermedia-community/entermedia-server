@@ -260,13 +260,21 @@ public class BaseHotFolderManager implements HotFolderManager
 			//save subfolder with the value of the end of externalpath
 			if( toplevelfolder == null )
 			{
-				String epath =  type = inNewrow.get("externalpath").trim();
-				epath = epath.replace('\\', '/');
-				if( epath.endsWith("/"))
+				String epath =  type = inNewrow.get("externalpath");
+				if(epath!= null )
 				{
-					epath = epath.substring(0,epath.length() - 1);
-				}
-				toplevelfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
+					epath = epath.trim();
+					epath = epath.replace('\\', '/');
+					if( epath.endsWith("/"))
+					{
+						epath = epath.substring(0,epath.length() - 1);
+					}
+					toplevelfolder = PathUtilities.extractDirectoryName(epath + "/junk.html");
+				}	
+				if( toplevelfolder == null )
+				{
+					toplevelfolder = inNewrow.getName();
+				}	
 				inNewrow.setProperty("subfolder",toplevelfolder);
 			}
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
