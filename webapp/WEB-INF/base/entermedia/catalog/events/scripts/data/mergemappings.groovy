@@ -107,16 +107,21 @@ public void init(){
 				
 
 			}
+			ArrayList toremove = new ArrayList();
+			
+			
 			
 			currentdetails.each {
 				String legacy = it.get("legacy");
 				if(legacy){
-					currentdetails.removeDetail(legacy);
+					toremove.add(legacy);
 					savedetails=true;
 				}
 				
 			}
-			
+			toremove.each{
+				currentdetails.removeDetail(it);
+			}
 			
 
 			if(savedetails){

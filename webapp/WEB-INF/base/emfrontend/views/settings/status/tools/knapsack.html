@@ -1,6 +1,6 @@
 <h2>Snapshots</h2>
 
-#set( $snapshots = $nodeManager.listKnapsacks() )
+#set( $snapshots = $nodeManager.listKnapsacks($catalogid) )
 
 #if( $snapshots.size() == 0)
 
