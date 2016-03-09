@@ -120,6 +120,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 				NodeBuilder nb = NodeBuilder.nodeBuilder();//.client(client)local(true);
 
+				//TODO: Move node.xml to system
+				//TODO: add locking file for this node and remove it when done
+				
 				Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
 				if (!config.exists())
 				{
