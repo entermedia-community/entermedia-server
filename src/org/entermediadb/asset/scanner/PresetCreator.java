@@ -3,6 +3,7 @@ package org.entermediadb.asset.scanner;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
@@ -41,6 +42,10 @@ public class PresetCreator
 	}
 	protected Collection getPresets(MediaArchive inArchive, String rendertype)
 	{
+		if(rendertype == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
 		Collection hits = (Collection)getCacheManager().get("preset_lookup",rendertype);
 		if (hits == null)
 		{

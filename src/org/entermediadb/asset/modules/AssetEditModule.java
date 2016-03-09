@@ -945,8 +945,12 @@ public class AssetEditModule extends BaseMediaModule
 	protected void createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
-		final String currentcollection = inReq.getRequestParameter("currentcollection");
-		
+		String currentcollectionid = inReq.getRequestParameter("currentcollection");
+		if( currentcollectionid != null && currentcollectionid.trim().length() == 0 )
+		{
+			currentcollectionid = null;
+		}
+		final String currentcollection = currentcollectionid;
 		final Map pages = savePages(inReq,archive,inPages);
 		final Map metadata = readMetaData(inReq,archive,"");
 		final User user = inReq.getUser();
