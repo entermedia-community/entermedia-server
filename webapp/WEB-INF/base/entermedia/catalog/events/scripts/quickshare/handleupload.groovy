@@ -44,13 +44,18 @@ public void handleUpload() {
 		user.setVirtual(true);
 	}
 	
-	Order order = ordersearcher.createNewData();
+	Order order = context.getSessionValue("quickshareorder");
+	if(order == null){
+		 order = ordersearcher.createNewData();
+	
+	}
 	order.setProperty("orderstatus", "complete");
 	order.setProperty("publishdestination", "0");
 	order.setProperty("applicationid", context.findValue("applicationid"));
 	String sharenote = context.findValue("sharenote.value");
 	order.setProperty("sharenote", sharenote);
 	ordersearcher.saveData(order, null);
+	context.putSessionValue("quickshareorder", order);
 	
 	List orderitems = new ArrayList();
 	properties.getUploadItems().each{
@@ -62,9 +67,6 @@ public void handleUpload() {
 			current = archive.createAsset(sourcepath);
 		}
 		current.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
-		Category target = archive.getCategoryArchive().createCategoryTree("submissions//");
-		current.addCategory(target);
-		archive.getCategoryArchive().saveAll();
 		String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/${file.getName()}";
 		String[] fields = context.getRequestParameters("field");
 		if(fields != null){
@@ -100,8 +102,8 @@ public void handleUpload() {
 	context.putPageValue("order", order);
 	String to = context.getRequestParameter("destination.value");
 	String sendfrom = context.findValue("quicksharefrom");
-	sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
-	sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+	//sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+	//sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
 	
 
 }

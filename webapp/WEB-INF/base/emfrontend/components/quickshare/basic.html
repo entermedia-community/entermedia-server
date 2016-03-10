@@ -97,7 +97,9 @@ jQuery(function () {
                 progress + '%'
             );
 			if(progress == 100){
-				 var url = "$home$apphome/components/quickshare/done.html";
+				var from = jQuery("#fromemail").val();
+            	var to = jQuery("#toemail").val();
+				var url = "$home$apphome/components/quickshare/done.html?destination.value=" + to + "&email.value=" + from;
 		        document.location.href = url;
 			}
 
