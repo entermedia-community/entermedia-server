@@ -63,7 +63,13 @@ public void init(){
 		if(it.endsWith(".csv") && !it.contains("category")) {
 			
 			
-			populateData(upload);
+			try{
+					populateData(upload);
+			} catch (Exception e)
+			{
+			
+			log.info("Exception thrown importing upload: ${upload} " );
+			}
 			
 			
 		}

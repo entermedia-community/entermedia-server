@@ -471,7 +471,7 @@
 			<ref bean="mimeTypeMap" />
 		</property>
 		<property name="cacheManager">
-			<ref bean="cacheManager" />
+			<ref bean="timedCacheManager" />
 		</property>
 <!-- 		<property name="lockManager">
 			<ref bean="lockManager" />
