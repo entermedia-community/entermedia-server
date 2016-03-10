@@ -47,6 +47,7 @@ public void handleUpload() {
 	Order order = context.getSessionValue("quickshareorder");
 	if(order == null){
 		 order = ordersearcher.createNewData();
+		 order.setId(ordersearcher.nextId());
 	
 	}
 	order.setProperty("orderstatus", "complete");
