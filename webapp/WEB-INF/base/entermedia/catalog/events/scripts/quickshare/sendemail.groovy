@@ -23,8 +23,7 @@ import com.openedit.page.*
 import com.openedit.util.*
 
 
-public void handleUpload() {
-	MediaArchive archive = (MediaArchive)context.getPageValue("mediaarchive");
+public void handleUpload() 	MediaArchive archive = (MediaArchive)context.getPageValue("mediaarchive");
 	OrderSearcher ordersearcher = archive.getSearcher("order");
 	Searcher itemsearcher = archive.getSearcher("orderitem");
 	

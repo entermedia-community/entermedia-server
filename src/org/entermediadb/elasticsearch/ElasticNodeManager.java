@@ -1,9 +1,6 @@
 package org.entermediadb.elasticsearch;
 
 import java.io.File;
-import java.net.URI;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -69,19 +66,11 @@ import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
-import org.xbib.elasticsearch.action.knapsack.exp.KnapsackExportRequestBuilder;
-import org.xbib.elasticsearch.action.knapsack.exp.KnapsackExportResponse;
-import org.xbib.elasticsearch.action.knapsack.imp.KnapsackImportRequestBuilder;
-import org.xbib.elasticsearch.action.knapsack.imp.KnapsackImportResponse;
-import org.xbib.elasticsearch.action.knapsack.state.KnapsackStateRequestBuilder;
-import org.xbib.elasticsearch.action.knapsack.state.KnapsackStateResponse;
 
 public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 {
@@ -228,13 +217,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return getSearcherManager().getLockManager(inCatalogId);
 	}
 
-	public String createSnapShot(String inCatalogId)
+	public String createSnapShot(String inCatalogId, boolean wholecluster)
 	{
 		Lock lock = null;
 		try
 		{
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-			return createSnapShot(inCatalogId, lock);
+			return createSnapShot(inCatalogId, lock, wholecluster);
 		}
 		finally
 		{
@@ -242,7 +231,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 	}
 
-	public String createSnapShot(String inCatalogId, Lock inLock)
+	public String createSnapShot(String inCatalogId, Lock inLock, boolean wholecluster)
 	{
 		String indexid = toId(inCatalogId);
 		String path = getSetting("repo.root.location") + "/" + indexid; //Store it someplace unique so we can be isolated?
@@ -266,13 +255,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		CreateSnapshotRequestBuilder builder = new CreateSnapshotRequestBuilder(getClient(), CreateSnapshotAction.INSTANCE);
 		String snapshotid = format.format(new Date());
-		if (indexid != null)
+		if (!wholecluster)
 		{
 			builder.setRepository(indexid).setIndices(indexid).setWaitForCompletion(true).setSnapshot(snapshotid);
 		}
 		else
 		{
-			builder.setRepository(indexid).setIndices(indexid).setWaitForCompletion(true).setSnapshot(snapshotid);
+			builder.setRepository(indexid).setWaitForCompletion(true).setSnapshot(snapshotid);
 		}
 		builder.execute().actionGet();
 
@@ -300,7 +289,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					return recent.name();
 				}
 			}
-			return createSnapShot(inCatalogId, lock);
+			return createSnapShot(inCatalogId, lock, false);
 		}
 		catch (Throwable ex)
 		{
@@ -401,93 +390,93 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 	}
 
-	public void exportKnapsack(String inCatalogId)
-	{
-		Lock lock = null;
-
-		try
-		{
-			String indexid = toId(inCatalogId);
-
-			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-			Client client = getClient();
-			Date date = new Date();
-			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
-			Page folder = getPageManager().getPage(target.getParentPath());
-			File file = new File(folder.getContentItem().getAbsolutePath());
-			file.mkdirs();
-			Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
-			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(indexid);
-			KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
-
-			KnapsackStateRequestBuilder knapsackStateRequestBuilder = new KnapsackStateRequestBuilder(client.admin().indices());
-			KnapsackStateResponse knapsackStateResponse = knapsackStateRequestBuilder.execute().actionGet();
-			knapsackStateResponse.isExportActive(exportPath);
-			Thread.sleep(1000L);
-			// delete index
-			//		        client("1").admin().indices().delete(new DeleteIndexRequest("index1")).actionGet();
-			//		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client("1").admin().indices())
-			//		                .setPath(exportPath);
-			//		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
-			//		        if (!knapsackImportResponse.isRunning()) {
-			//		            logger.error(knapsackImportResponse.getReason());
-			//		        }
-			//		        assertTrue(knapsackImportResponse.isRunning());
-			//		        Thread.sleep(1000L);
-			//		        // count
-			//		        long count = client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
-			//		        assertEquals(1L, count);
-		}
-		catch (Throwable ex)
-		{
-			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			getLockManager(inCatalogId).release(lock);
-		}
-	}
-
-	public HitTracker listKnapsacks(String inCatalogId)
-	{
-		List snaps = getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + inCatalogId + "/snapshots/");
-		ListHitTracker tracker = new ListHitTracker();
-		for (Iterator iterator = snaps.iterator(); iterator.hasNext();)
-		{
-			String path = (String) iterator.next();
-			Page page = getPageManager().getPage(path);
-			tracker.add(page);
-		}
-		return tracker;
-	}
-
-	public void importKnapsack(String inCatalogId, String inFile)
-	{
-		Lock lock = null;
-
-		try
-		{
-			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-			String indexid = toId(inCatalogId);
-
-			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/" + inFile);
-
-			Client client = getClient();
-			File exportFile = new File(target.getContentItem().getAbsolutePath());
-			Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
-			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(indexid);
-			KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
-
-		}
-		catch (Throwable ex)
-		{
-			throw new OpenEditException(ex);
-		}
-		finally
-		{
-			getLockManager(inCatalogId).release(lock);
-		}
-	}
+//	public void exportKnapsack(String inCatalogId)
+//	{
+//		Lock lock = null;
+//
+//		try
+//		{
+//			String indexid = toId(inCatalogId);
+//
+//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
+//			Client client = getClient();
+//			Date date = new Date();
+//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
+//			Page folder = getPageManager().getPage(target.getParentPath());
+//			File file = new File(folder.getContentItem().getAbsolutePath());
+//			file.mkdirs();
+//			Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
+//			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(indexid);
+//			KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
+//
+//			KnapsackStateRequestBuilder knapsackStateRequestBuilder = new KnapsackStateRequestBuilder(client.admin().indices());
+//			KnapsackStateResponse knapsackStateResponse = knapsackStateRequestBuilder.execute().actionGet();
+//			knapsackStateResponse.isExportActive(exportPath);
+//			Thread.sleep(1000L);
+//			// delete index
+//			//		        client("1").admin().indices().delete(new DeleteIndexRequest("index1")).actionGet();
+//			//		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client("1").admin().indices())
+//			//		                .setPath(exportPath);
+//			//		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
+//			//		        if (!knapsackImportResponse.isRunning()) {
+//			//		            logger.error(knapsackImportResponse.getReason());
+//			//		        }
+//			//		        assertTrue(knapsackImportResponse.isRunning());
+//			//		        Thread.sleep(1000L);
+//			//		        // count
+//			//		        long count = client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
+//			//		        assertEquals(1L, count);
+//		}
+//		catch (Throwable ex)
+//		{
+//			throw new OpenEditException(ex);
+//		}
+//		finally
+//		{
+//			getLockManager(inCatalogId).release(lock);
+//		}
+//	}
+//
+//	public HitTracker listKnapsacks(String inCatalogId)
+//	{
+//		List snaps = getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + inCatalogId + "/snapshots/");
+//		ListHitTracker tracker = new ListHitTracker();
+//		for (Iterator iterator = snaps.iterator(); iterator.hasNext();)
+//		{
+//			String path = (String) iterator.next();
+//			Page page = getPageManager().getPage(path);
+//			tracker.add(page);
+//		}
+//		return tracker;
+//	}
+//
+//	public void importKnapsack(String inCatalogId, String inFile)
+//	{
+//		Lock lock = null;
+//
+//		try
+//		{
+//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
+//			String indexid = toId(inCatalogId);
+//
+//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/" + inFile);
+//
+//			Client client = getClient();
+//			File exportFile = new File(target.getContentItem().getAbsolutePath());
+//			Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
+//			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(indexid);
+//			KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
+//
+//		}
+//		catch (Throwable ex)
+//		{
+//			throw new OpenEditException(ex);
+//		}
+//		finally
+//		{
+//			getLockManager(inCatalogId).release(lock);
+//		}
+//	}
 
 	public void addMappingError(String inSearchType, String inMessage)
 	{
