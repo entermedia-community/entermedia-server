@@ -5,10 +5,22 @@
 #set( $sourcepath = $url_util.encode($asset.sourcepath) )
 #set( $source = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/video.mp4/streaming.mp4" )
 #set( $thumb =  "$!prefix$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/image1024x768.jpg/thumb.jpg" )
+#set($video_loop = $context.getRequestParameter("video_loop"))
+#if ($video_loop == '1') 
+	#set($video_loop_param = 'loop')
+#else
+	#set($video_loop_param = '')
+#end
+#set($video_autoplay = $context.getRequestParameter("video_autoplay"))
+#if ($video_autoplay == '1') 
+	#set($video_autoplay_param = 'autopla')
+#else
+	#set($video_autoplay_param = '')
+#end
 
 <div id="play$asset.getId()" class="player is-splash"  style="background-color:#777; background-image:url($thumb);" data-fullscreen="true"
      data-native_fullscreen="true">
-   <video>
+   <video $video_autoplay_param $video_loop_param>
       <source type="video/mp4"  src="$source">
       #set( $short = $url_util.getPathUtilities().extractPagePath($source) )
       <source type="video/flash"  src="mp4:$short"></video>
