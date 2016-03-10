@@ -7,7 +7,7 @@ import java.sql.SQLException
 import java.sql.Statement
 
 import org.openedit.db.util.ConnectionPool
-import org.openedit.entermedia.util.CSVWriter;
+import org.entermediadb.asset.util.CSVWriter;
 
 import org.openedit.page.Page
 

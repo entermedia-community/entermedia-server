@@ -1,6 +1,6 @@
 import org.openedit.Data
 import org.openedit.data.*
-import org.openedit.entermedia.util.CSVWriter
+import org.entermediadb.asset.util.CSVWriter
 import org.openedit.util.DateStorageUtil
 
 import org.openedit.hittracker.HitTracker

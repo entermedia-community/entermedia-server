@@ -7,7 +7,7 @@
 import java.io.*;
 import org.openedit.util.*;
 import org.openedit.tracker.*;
-import org.openedit.entermedia.util.*;
+import org.entermediadb.asset.util.*;
 
 backLog = new StringWriter();
 log = new PrintWriter( backLog ); 

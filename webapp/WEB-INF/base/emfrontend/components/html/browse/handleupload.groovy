@@ -6,12 +6,12 @@ import org.entermediadb.upload.FileUpload
 import org.entermediadb.upload.UploadRequest
 import org.openedit.Data
 import org.openedit.data.Searcher
-import org.openedit.entermedia.*
-import org.openedit.entermedia.creator.*
-import org.openedit.entermedia.edit.*
-import org.openedit.entermedia.episode.*
-import org.openedit.entermedia.modules.*
-import org.openedit.entermedia.util.*
+import org.entermediadb.asset.*
+import org.entermediadb.asset.creator.*
+import org.entermediadb.asset.edit.*
+import org.entermediadb.asset.episode.*
+import org.entermediadb.asset.modules.*
+import org.entermediadb.asset.util.*
 import org.openedit.util.DateStorageUtil
 import org.openedit.xml.*
 

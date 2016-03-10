@@ -2,7 +2,7 @@ import groovy.json.JsonSlurper
 
 import org.openedit.data.Searcher
 
-import org.openedit.entermedia.scripts.EnterMediaObject
+import org.entermediadb.asset.scripts.EnterMediaObject
 import org.openedit.page.Page
 
 
@@ -52,10 +52,10 @@ class JsonImporter extends EnterMediaObject
 	}
 
 
-	public org.openedit.entermedia.Category createTree(Map all, Map one)
+	public org.entermediadb.asset.Category createTree(Map all, Map one)
 	{
 		String id = one.get("id");
-		org.openedit.entermedia.Category child = getMediaArchive().getCategory(id);
+		org.entermediadb.asset.Category child = getMediaArchive().getCategory(id);
 		if( child == null)
 		{
 			child = getMediaArchive().getCategoryArchive().createNewCategory(id);
@@ -65,7 +65,7 @@ class JsonImporter extends EnterMediaObject
 			if( parentid != null)
 			{
 				Map parentmap = all.get(parentid);
-				org.openedit.entermedia.Category parent = createTree(all, parentmap);
+				org.entermediadb.asset.Category parent = createTree(all, parentmap);
 				parent.addChild(child);
 			}
 			else

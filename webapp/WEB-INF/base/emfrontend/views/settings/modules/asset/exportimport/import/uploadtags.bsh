@@ -1,9 +1,9 @@
 import java.io.*;
 import java.util.Iterator;
-import org.openedit.entermedia.util.*;
+import org.entermediadb.asset.util.*;
 import org.openedit.*;
 import org.openedit.page.*;
-import org.openedit.entermedia.*;
+import org.entermediadb.asset.*;
 
 String path = context.getRequestParameter("path");
 

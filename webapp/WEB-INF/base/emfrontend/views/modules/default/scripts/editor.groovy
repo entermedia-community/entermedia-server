@@ -1,7 +1,7 @@
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.MediaArchive
+import org.entermediadb.asset.MediaArchive
 
 import org.openedit.hittracker.HitTracker
 

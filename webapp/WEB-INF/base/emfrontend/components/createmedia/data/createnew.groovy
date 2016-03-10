@@ -1,8 +1,7 @@
 import model.projects.ProjectManager
 
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
-import org.openedit.store.*
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
 import org.openedit.util.DateStorageUtil
 
 import org.openedit.page.*

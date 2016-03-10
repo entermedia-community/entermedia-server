@@ -1,14 +1,14 @@
 import org.openedit.WebPageRequest 
-import org.openedit.entermedia.scripts.EnterMediaObject 
-import org.openedit.entermedia.scripts.ScriptLogger;
+import org.entermediadb.asset.scripts.EnterMediaObject 
+import org.entermediadb.asset.scripts.ScriptLogger;
 import org.openedit.page.Page 
 import org.openedit.servlet.OpenEditEngine 
 //import org.junit.Test 
 import org.openedit.Data 
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive 
-import org.openedit.entermedia.modules.OrderModule 
-import org.openedit.entermedia.orders.Order 
+import org.entermediadb.asset.Asset 
+import org.entermediadb.asset.MediaArchive 
+import org.entermediadb.asset.modules.OrderModule 
+import org.entermediadb.asset.orders.Order 
 
 
 class Test extends EnterMediaObject

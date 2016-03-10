@@ -8,7 +8,7 @@ import org.openedit.repository.*;
 import org.openedit.repository.filesystem.*;
 import org.openedit.*;
 import org.openedit.event.*;
-import org.openedit.entermedia.*;
+import org.entermediadb.asset.*;
 import java.util.*; 
 
 public String createID(String id)

@@ -2,13 +2,13 @@ package importing;
 
 import org.openedit.page.Page 
 import org.openedit.data.Searcher 
-import org.openedit.entermedia.Asset 
-import org.openedit.entermedia.MediaArchive 
+import org.entermediadb.asset.Asset 
+import org.entermediadb.asset.MediaArchive 
 import org.openedit.*;
 
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.*;
-import org.openedit.entermedia.creator.*;
+import org.entermediadb.asset.creator.*;
 
 import java.sql.Connection;
 import java.sql.Driver;
@@ -28,11 +28,11 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
-import org.openedit.entermedia.Asset;
-import org.openedit.entermedia.CatalogConverter;
-import org.openedit.entermedia.Category;
-import org.openedit.entermedia.ConvertStatus;
-import org.openedit.entermedia.MediaArchive;
+import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.CatalogConverter;
+import org.entermediadb.asset.Category;
+import org.entermediadb.asset.ConvertStatus;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
@@ -41,7 +41,7 @@ import org.openedit.repository.*;
 import org.openedit.users.*;
 import org.openedit.OpenEditException;
 import org.openedit.page.manage.PageManager;
-import org.openedit.entermedia.scanner.AssetImporter;
+import org.entermediadb.asset.scanner.AssetImporter;
 
 public void init()
 {

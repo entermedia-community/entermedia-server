@@ -1,5 +1,5 @@
 import org.openedit.*
-import org.openedit.entermedia.MediaArchive
+import org.entermediadb.asset.MediaArchive
 
 import org.openedit.hittracker.*
 import org.openedit.util.Replacer
