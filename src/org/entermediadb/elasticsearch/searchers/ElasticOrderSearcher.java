@@ -2,10 +2,11 @@ package org.entermediadb.elasticsearch.searchers;
 
 import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderManager;
+import org.entermediadb.asset.orders.OrderSearcher;
 import org.openedit.Data;
 import org.openedit.data.PropertyDetails;
 
-public class ElasticOrderSearcher extends BaseElasticSearcher
+public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSearcher
 {
 	
 	protected OrderManager fieldOrderManager;
