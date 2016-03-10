@@ -430,20 +430,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			 * index.analysis.analyzer.lowercase_keyword.tokenizer=keyword
 			 */
 
-//			jsonproperties = jsonproperties.startObject("_all");
-//			jsonproperties = jsonproperties.field("store", "false");
-//			jsonproperties = jsonproperties.field("analyzer", "lowersnowball");
-//			//jsonproperties = jsonproperties.field("index_analyzer", "lowersnowball");
-//			//jsonproperties = jsonproperties.field("search_analyzer", "lowersnowball"); // lower
-//																						// case
-//																						// does
-//																						// not
-//																						// seem
-//																						// to
-//																						// work
-//			jsonproperties = jsonproperties.field("index", "analyzed");
-//			jsonproperties = jsonproperties.field("type", "string");
-//			jsonproperties = jsonproperties.endObject();
+
 
 			// Add in namesorted
 			if (getPropertyDetails().contains("name") && !getPropertyDetails().contains("namesorted"))
