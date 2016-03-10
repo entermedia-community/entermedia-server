@@ -104,6 +104,7 @@ public class BaseImporter extends EnterMediaObject
 				if ( data.size() == 1000 )
 				{
 					getSearcher().saveAllData(data, context.getUser());
+					log.info("imported 1000");
 					data.clear();
 				}
 			}
@@ -114,6 +115,7 @@ public class BaseImporter extends EnterMediaObject
 			getPageManager().removePage(upload);
 		}
 		getSearcher().saveAllData(data, context.getUser());
+		log.info("imported " + data.size());
 	}
 	protected Data findExistingRecord(Row inRow)
 	{

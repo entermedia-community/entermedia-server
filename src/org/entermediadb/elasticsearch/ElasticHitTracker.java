@@ -81,7 +81,8 @@ public class ElasticHitTracker extends HitTracker
 			int start = (inChunk) * fieldHitsPerChunk;
 			int end = (inChunk + 1) * fieldHitsPerChunk;
 
-			refresh();
+			refresh(); //This seems like it should only be done once?
+			
 			getSearcheRequestBuilder().setFrom(start).setSize(end).setExplain(false);
 			response = getSearcheRequestBuilder().execute().actionGet();
 			
@@ -124,7 +125,7 @@ public class ElasticHitTracker extends HitTracker
 		{
 			// we dont support getting results beyond what we have loaded.
 			// User should call setPage(page+1) first
-			throw new OpenEditException("row request falls beyond one page of results");
+			throw new OpenEditException("row request falls beyond one page of results " + indexlocation + ">=" + hits.length);
 		}
 		SearchHit hit = hits[indexlocation];
 		SearchHitData data = new SearchHitData(hit, getSearcher().getPropertyDetails() );

@@ -38,14 +38,18 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	}		
 	count++;
 }
+
+int rowcount = 0;
 writer.writeNext(headers);
 	log.info("about to start: " + hits.size() );
 
 	for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 	{
-		Data hit =  iterator.next();
+		rowcount++;
+		Data hit = null;
 		try
 		{
+				hit =  iterator.next();
 				nextrow = new String[details.size()];//make an extra spot for c
 				int fieldcount = 0;
 				for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
@@ -78,8 +82,9 @@ writer.writeNext(headers);
 				}	
 				writer.writeNext(nextrow);
 		}
-		catch( Exception ex)
+		catch( Throwable ex)
 		{
+			output.write("Could not process row " + rowcount );
 			log.error("Could not process " + hit.getSourcePath() , ex);
 			writer.flush();
 			output.write("Could not process path: " + hit.getSourcePath() + " id:" + hit.getId() );

@@ -1013,6 +1013,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			@Override
 			public void beforeBulk(long executionId, BulkRequest request)
 			{
+				
 			}
 
 			@Override
@@ -1038,6 +1039,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						toupdate.setId(res.getId());
 					}
 				}
+				request.refresh(true);
 			}
 
 			@Override
@@ -1077,10 +1079,10 @@ public class BaseElasticSearcher extends BaseSearcher
 					
 				}
 				req = req.source(content);
-				if( isRefreshSaves() )
-				{
-					req = req.refresh(true);
-				}
+//				if( isRefreshSaves() )
+//				{
+//					req = req.refresh(true);
+//				}
 				bulkProcessor.add(req);
 			}
 			catch (Exception ex)
