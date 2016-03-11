@@ -509,4 +509,10 @@ public class ConvertInstructions
 		setProperty("outputextension", inType);
 	}
 
+	public String getOutputRenderType()
+	{
+		String type = getMediaArchive().getMediaRenderType(getOutputExtension());
+		return type;
+	}
+
 }

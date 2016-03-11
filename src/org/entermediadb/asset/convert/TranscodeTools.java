@@ -306,10 +306,31 @@ public class TranscodeTools
 	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath, String inOutputType)
 	{
 		//Minimal information here. We dont know what kind of input we have
-		ConversionManager handler = getManagerByFileFormat(inOutputType);
+		ConversionManager manager = getManagerByFileFormat(inOutputType);
 		inCreateProperties.put("outputextension", inOutputType);
 
-		ConvertResult result = handler.createOutputIfNeeded(inCreateProperties,inSourcePath);
+//		if(inStructions.getAsset() != null && "video".equals(inStructions.getMediaArchive().getMediaRenderType(inStructions.getAsset()))){
+//		
+//		TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
+//		ImageConversionManager videot = (ImageConversionManager) creatorManager.getManagerByTranscoder("ffmpegimage");
+//		return videot.getMediaTranscoder().convert(inStructions);
+//	}
+//	
+		ConvertResult result = manager.loadExistingOuput(inCreateProperties,inSourcePath);
+		if(result.isComplete()){
+			if( result.getOutput() == null)
+			{
+				throw new OpenEditException("Output not found " + inSourcePath);
+			}
+			return result;
+		}
+		String fileformat = result.getInstructions().getAsset().getFileFormat();
+		
+		manager = getManagerByFileFormat(fileformat);  
+		
+			
+		
+		result = manager.createOutputIfNeeded(inCreateProperties,inSourcePath);
 		if( result.isComplete() )
 		{
 			if( result.getOutput() == null)

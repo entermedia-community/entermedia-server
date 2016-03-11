@@ -261,14 +261,19 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		else
 		{
-			builder.setRepository(indexid).setWaitForCompletion(true).setSnapshot(snapshotid);
+			builder.setRepository(indexid).setWaitForCompletion(true).setSnapshot(snapshotid + "-full");
 		}
 		builder.execute().actionGet();
 
 		return snapshotid;
 	}
 
-	public String createDailySnapShot(String inCatalogId)
+	public String createDailySnapShot(String inCatalogId){
+	return	createDailySnapShot(inCatalogId, false);
+	}
+	
+	
+	public String createDailySnapShot(String inCatalogId, boolean wholedatabase)
 	{
 		Lock lock = null;
 
@@ -289,7 +294,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					return recent.name();
 				}
 			}
-			return createSnapShot(inCatalogId, lock, false);
+			return createSnapShot(inCatalogId, lock, wholedatabase);
 		}
 		catch (Throwable ex)
 		{

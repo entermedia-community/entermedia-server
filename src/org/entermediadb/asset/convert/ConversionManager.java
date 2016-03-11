@@ -21,6 +21,8 @@ public interface ConversionManager
 	public ContentItem findOutputFile(ConvertInstructions inStructions);
 
 	public ConvertResult createOutput(ConvertInstructions inStructions);
+	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath);
+
 	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath);
 	void setInputLoaders(Collection inList);
 

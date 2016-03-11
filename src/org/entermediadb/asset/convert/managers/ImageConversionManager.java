@@ -114,13 +114,13 @@ public class ImageConversionManager extends BaseConversionManager
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
 		
-		if(inStructions.getAsset() != null && "video".equals(inStructions.getMediaArchive().getMediaRenderType(inStructions.getAsset()))){
-			
-			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
-			ImageConversionManager videot = (ImageConversionManager) creatorManager.getManagerByTranscoder("ffmpegimage");
-			return videot.getMediaTranscoder().convert(inStructions);
-		}
-		
+//		if(inStructions.getAsset() != null && "video".equals(inStructions.getMediaArchive().getMediaRenderType(inStructions.getAsset()))){
+//			
+//			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
+//			ImageConversionManager videot = (ImageConversionManager) creatorManager.getManagerByTranscoder("ffmpegimage");
+//			return videot.getMediaTranscoder().convert(inStructions);
+//		}
+//		
 		
 		
 		

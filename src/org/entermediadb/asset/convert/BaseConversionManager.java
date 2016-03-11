@@ -58,6 +58,29 @@ public abstract class BaseConversionManager implements ConversionManager
 		fieldMediaArchive = inMediaArchive;
 	}
 
+	
+	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath){
+		
+		//First thing is first. We need to check out cache and make sure this file is not already in existence
+				ConvertInstructions instructions = createInstructions(inSettings,inSourcePath);
+				ContentItem output = instructions.getOutputFile();
+				ConvertResult result = new ConvertResult();
+				result.setOutput(output);
+				result.setInstructions(instructions);
+				result.setOk(true);
+
+				if( output.getLength() < 2 )
+				{
+					result.setComplete(false);
+				} else{
+					result.setComplete(true);
+				}				
+				return result;
+		
+		
+		
+	}
+	
 	//Come up with the expected output path based on the input parameters
 	//All image handlers will use a standard file saving conversion
 	@Override
