@@ -170,11 +170,13 @@ public class CategoryModule extends BaseMediaModule
 		else
 		{
 			String catid = inReq.getRequestParameter("nodeID");
-			Object target = tree.getModel().getChildById(catid);
-			//tree.getTreeRenderer().expandNode(target);
-			tree.getTreeRenderer().selectNodes(null);
-			tree.getTreeRenderer().selectNode(target);
-			
+			if( catid != null)
+			{
+				Object target = tree.getModel().getChildById(catid);
+				//tree.getTreeRenderer().expandNode(target);
+				tree.getTreeRenderer().selectNodes(null);
+				tree.getTreeRenderer().selectNode(target);
+			}
 		}
 
 		

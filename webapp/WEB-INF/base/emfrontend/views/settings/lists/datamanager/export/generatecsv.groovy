@@ -84,10 +84,11 @@ writer.writeNext(headers);
 		}
 		catch( Throwable ex)
 		{
-			output.write("Could not process row " + rowcount );
-			log.error("Could not process " + hit.getSourcePath() , ex);
+			log.error("Could not process row " + rowcount, ex );
 			writer.flush();
-			output.write("Could not process path: " + hit.getSourcePath() + " id:" + hit.getId() );
+			output.write("Could not process row " + rowcount + " " + ex );
+			//output.write("Could not process path: " + hit.getSourcePath() + " id:" + hit.getId() );
+			writer.flush();
 		}
 	}
 	

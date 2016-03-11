@@ -200,7 +200,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			addSorts(inQuery, search);
 			addFacets(inQuery, search);
 
-			ElasticHitTracker hits = new ElasticHitTracker(search, terms);
+			ElasticHitTracker hits = new ElasticHitTracker(getClient(),search, terms);
 
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
@@ -1373,7 +1373,9 @@ public class BaseElasticSearcher extends BaseSearcher
 //		DeleteByQueryRequestBuilder delete = getClient().prepareDeleteByQuery(toId(getCatalogId()));
 //		delete.setTypes(getSearchType());
 //		delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
-		for (Iterator iterator = getAllHits().iterator(); iterator.hasNext();)
+		HitTracker all = getAllHits();
+		all.setHitsPerPage(500);
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			Data row = (Data) iterator.next();
 			delete(row,null);
@@ -1436,9 +1438,10 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public boolean hasChanged(HitTracker inTracker)
 	{
-		//We dont cache results because another node might have edited a record
-		//We could cache by a timer? risky
-		return true;
+		//We will add a refresh() to the tracker and call it with cachedSearch
+		//We will scroll forward using the scroll
+		//We will scroll backwards using a previous chunck or new search
+		return false;
 	}
 
 	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker) throws OpenEditException

@@ -286,16 +286,17 @@ public class CatalogWebTreeModel extends BaseTreeModel
 		{
 			return inRoot;
 		}
+		//check one level deep
 		for (Iterator iterator = getChildren(inRoot).iterator(); iterator.hasNext();)
 		{
 			Object child = iterator.next();
-			child = findNodeById(child, inId);
-			if (child != null)
+			String id = getId(child);
+			if (id.equals(inId))
 			{
 				return child;
 			}
 		}
-		return null;
+		return getCategorySearcher().searchById(inId);
 	}
 
 	public String getCatalogId()

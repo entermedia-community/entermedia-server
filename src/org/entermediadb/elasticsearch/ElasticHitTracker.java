@@ -8,10 +8,10 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.lucene.queryparser.flexible.standard.QueryParserUtil;
-import org.apache.lucene.queryparser.xml.FilterBuilder;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
+import org.elasticsearch.client.Client;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -23,17 +23,66 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 
 public class ElasticHitTracker extends HitTracker
 {
 	private static final Log log = LogFactory.getLog(ElasticHitTracker.class);
-
 	protected SearchRequestBuilder fieldSearcheRequestBuilder;
 	protected Map fieldChunks;
-	protected int fieldHitsPerChunk = 40;
+	protected int SCROLL_CACHE_TIME = 60000; //millis
+	protected long fieldLastPullTime = -1;
+	protected String fieldLastScrollId;
+	protected Client fieldElasticClient;
+	protected int fieldLastPageLoaded;
+	
+	public int getLastPageLoaded()
+	{
+		return fieldLastPageLoaded;
+	}
+
+	public void setLastPageLoaded(int inLastPageLoaded)
+	{
+		fieldLastPageLoaded = inLastPageLoaded;
+	}
+
+	public ElasticHitTracker()
+	{
+
+	}
+
+	public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms)
+	{
+		setElasticClient(inClient);
+		setTerms(inTerms);
+		setSearcheRequestBuilder(builder);
+		setHitsPerPage(50);
+	}
+
+
+	public Client getElasticClient()
+	{
+		return fieldElasticClient;
+	}
+
+	public void setElasticClient(Client inElasticClient)
+	{
+		fieldElasticClient = inElasticClient;
+	}
+
+	public String getLastScrollId()
+	{
+		return fieldLastScrollId;
+	}
+
+	public void setLastScrollId(String inLastScrollId)
+	{
+		fieldLastScrollId = inLastScrollId;
+	}
+
 	protected QueryBuilder terms;
 	//protected List fieldFilterOptions;
-
+	
 	public QueryBuilder getTerms()
 	{
 		return terms;
@@ -54,46 +103,87 @@ public class ElasticHitTracker extends HitTracker
 		fieldSearcheRequestBuilder = inSearcheRequestBuilder;
 	}
 
-	public ElasticHitTracker()
-	{
-
-	}
-
-	public ElasticHitTracker(SearchRequestBuilder builder, QueryBuilder inTerms)
-	{
-		setTerms(inTerms);
-		setSearcheRequestBuilder(builder);
-	}
-
 	public void setShowOnlySelected(boolean inShowOnlySelected)
 	{
 		fieldShowOnlySelected = inShowOnlySelected;
 		
 		getChunks().clear();
 	}
-
+	
+	@Override
+	public void refresh()
+	{
+		super.refresh();
+		getChunks().clear();  //This is called form cachedSearch
+		fieldLastPullTime = -1;
+		setLastPageLoaded(-100);
+		fieldCurrentPage = null;
+		//log.info(getSearcher().getSearchType() + hashCode() + " clear chunks");
+	}
+	
 	public SearchResponse getSearchResponse(int inChunk)
 	{
 		Integer chunk = Integer.valueOf(inChunk);
 		SearchResponse response = (SearchResponse) getChunks().get(chunk);
 		if (response == null)
 		{
-			int start = (inChunk) * fieldHitsPerChunk;
-			int end = (inChunk + 1) * fieldHitsPerChunk;
-
-			refresh(); //This seems like it should only be done once?
-			
-			getSearcheRequestBuilder().setFrom(start).setSize(end).setExplain(false);
-			response = getSearcheRequestBuilder().execute().actionGet();
-			
-			if (getChunks().size() > 30)
+			synchronized (getChunks())
 			{
-				SearchResponse first = getChunks().get(0);
-				getChunks().clear();
-				getChunks().put(0, first);
-				log.info("Reloaded chunks " + start + " to " + end);
-			}
-			getChunks().put(chunk, response);
+				response = (SearchResponse) getChunks().get(chunk);
+				if (response == null)
+				{
+					int start = (inChunk) * getHitsPerPage();
+					//int size = (inChunk + 1) * getHitsPerPage();
+					int size = getHitsPerPage();
+					long now = System.currentTimeMillis();
+					//If its not the next one in the list, or it has expired then run it again
+					boolean runsearch = false;
+					if( fieldLastPullTime == -1 )
+					{
+						runsearch = true;
+						//log.info(getSearcher().getSearchType() + hashCode() + " First pull");  
+					}
+					else if( inChunk != getLastPageLoaded() + 1)
+					{
+						runsearch = true;
+						//log.info(getSearcher().getSearchType() + hashCode() + " not scroll chunck:" + inChunk + "!=" +  getLastPageLoaded() + "+1");
+					} 
+					else if( now > fieldLastPullTime + SCROLL_CACHE_TIME )
+					{
+						runsearch = true;
+						//log.info(getSearcher().getSearchType()+ hashCode() + "expired " + now + ">" + fieldLastPullTime + "+SCROLL_CACHE_TIME");
+					}	
+					if( runsearch )
+					{
+						if( fieldLastPullTime == -1)
+						{
+							refreshFilters(); //This seems like it should only be done once?
+						}
+						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
+						getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME) );
+						response = getSearcheRequestBuilder().execute().actionGet();
+						setLastScrollId(response.getScrollId());
+						//log.info(getSearcher().getSearchType() + hashCode() + " Search " + inChunk + " total: " + response.getHits().getTotalHits() );
+					}
+					else
+					{
+						//Only call this if we are moving forward in the scroll
+						//scroll to the right place if within timeout 
+						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
+						log.info(getSearcher().getSearchType() + " hash:" + hashCode() + " scrolled to chunk " + inChunk );
+					}
+					setLastPageLoaded(inChunk);
+					fieldLastPullTime = now;
+		
+					if (getChunks().size() > 30)
+					{
+						SearchResponse first = getChunks().get(0);
+						getChunks().clear();
+						getChunks().put(0, first);
+					}
+					getChunks().put(chunk, response);
+				}	
+			}	
 		}
 		return response;
 	}
@@ -113,10 +203,10 @@ public class ElasticHitTracker extends HitTracker
 		// Get the relative location based on the page we are on
 
 		// ie 50 / 40 = 1
-		int chunk = inCount / fieldHitsPerChunk;
+		int chunk = inCount / getHitsPerPage();
 
 		// 50 - (1 * 40) = 10 relative
-		int indexlocation = inCount - (chunk * fieldHitsPerChunk);
+		int indexlocation = inCount - (chunk * getHitsPerPage());
 
 		// get the chunk 1
 		SearchResponse searchResponse = getSearchResponse(chunk);
@@ -231,7 +321,7 @@ public class ElasticHitTracker extends HitTracker
 		setIndexId(getIndexId() + 1);
 		fieldFilterOptions = null;		
 	}
-	public void refresh()
+	public void refreshFilters()
 	{
 		if(getSearchQuery().hasFilters())
 		{
