@@ -18,29 +18,33 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class ImagemagickTranscoder extends BaseTranscoder 
+public class ImagemagickTranscoder extends BaseTranscoder
 {
 	private static final Log log = LogFactory.getLog(ImagemagickTranscoder.class);
 
-	
 	protected String fieldPathToProfile;
 	protected String fieldPathToCMYKProfile;
-	
-	public String getPathtoProfile(){
-		if(fieldPathToProfile == null){
+
+	public String getPathtoProfile()
+	{
+		if (fieldPathToProfile == null)
+		{
 			Page profile = getPageManager().getPage("/system/components/conversions/tinysRGB.icc");
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
 	}
-	public String getPathCMYKProfile(){
-		if(fieldPathToCMYKProfile == null){
+
+	public String getPathCMYKProfile()
+	{
+		if (fieldPathToCMYKProfile == null)
+		{
 			Page profile = getPageManager().getPage("/system/components/conversions/USWebCoatedSWOP.icc");
 			fieldPathToCMYKProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToCMYKProfile;
 	}
-	
+
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
@@ -51,37 +55,36 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		ContentItem inOutFile = inStructions.getOutputFile();
 		String outputpath = inOutFile.getAbsolutePath();
 
-		String tmpinput = PathUtilities.extractPageType( inStructions.getInputFile().getPath() );
+		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath());
 		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
-		
+
 		String ext = asset.getFileFormat();
 
-		if( ext == null)
+		if (ext == null)
 		{
 			ext = tmpinput;
-			
+
 		}
 		//File inputFile = new File(input.getContentItem().getAbsolutePath());
-//		String newext = PathUtilities.extractPageType( input.getPath() );
-//		if( newext != null && newext.length()> 1)
-//		{
-//			ext = newext.toLowerCase();
-//		}
+		//		String newext = PathUtilities.extractPageType( input.getPath() );
+		//		if( newext != null && newext.length()> 1)
+		//		{
+		//			ext = newext.toLowerCase();
+		//		}
 		List<String> com = createCommand(inStructions);
-		
 
 		if (inStructions.getMaxScaledSize() != null)
 		{
 			//be aware ImageMagick writes to a tmp file with a larger version of the file before it is finished
-			if( "eps".equalsIgnoreCase( ext) || "pdf".equalsIgnoreCase( ext) || "ai".equalsIgnoreCase( ext))
+			if ("eps".equalsIgnoreCase(ext) || "pdf".equalsIgnoreCase(ext) || "ai".equalsIgnoreCase(ext))
 			{
 				//check input width
 				int width = asset.getInt("width");
-				if( width > 0 )
+				if (width > 0)
 				{
 					// calculate output width
 					int height = asset.getInt("height");
-					double ratio = height/width;
+					double ratio = height / width;
 
 					int prefw = inStructions.getMaxScaledSize().width;
 					int prefh = inStructions.getMaxScaledSize().height;
@@ -90,40 +93,40 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					int disth = Math.abs(prefh - height);
 
 					int outputw;
-					if(disth < distw)
+					if (disth < distw)
 					{
-						outputw = width*(prefh/height);
+						outputw = width * (prefh / height);
 					}
 					else
 					{
 						outputw = prefw;
 					}
 
-					if( width < outputw)
+					if (width < outputw)
 					{
 						//for small input files we want to scale up the density
-						float density = ((float)outputw / (float)width) * 300f;
-						density = Math.max(density,300);
-						density = Math.min(density,900);						
-						String val = String.valueOf( Math.round(density) );
-						com.add(0,val);
-						com.add(0,"-density");
+						float density = ((float) outputw / (float) width) * 300f;
+						density = Math.max(density, 300);
+						density = Math.min(density, 900);
+						String val = String.valueOf(Math.round(density));
+						com.add(0, val);
+						com.add(0, "-density");
 					}
 					else
 					{
-						com.add(0,"300");
-						com.add(0,"-density");
+						com.add(0, "300");
+						com.add(0, "-density");
 					}
 				}
 			}
 			if (!inStructions.isCrop())
 			{
-			
+
 				com.add("-resize");
 				String prefix = null;
 				String postfix = null;
-				prefix =  String.valueOf( inStructions.getMaxScaledSize().width );
-				postfix =  String.valueOf( inStructions.getMaxScaledSize().height );
+				prefix = String.valueOf(inStructions.getMaxScaledSize().width);
+				postfix = String.valueOf(inStructions.getMaxScaledSize().height);
 				if (isOnWindows())
 				{
 					com.add("\"" + prefix + "x" + postfix + "\"");
@@ -136,11 +139,11 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		}
 
-		if(inStructions.isCrop())
+		if (inStructions.isCrop())
 		{
 			boolean croplast = Boolean.parseBoolean(inStructions.get("croplast"));
 			//resize then cut off edges so end up with a square image
-			if(!croplast)
+			if (!croplast)
 			{
 				com.add("-resize");
 				StringBuffer resizestring = new StringBuffer();
@@ -159,14 +162,16 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
 			String cropwidth = inStructions.get("cropwidth");
-			if(cropwidth == null){
+			if (cropwidth == null)
+			{
 				cropwidth = String.valueOf(inStructions.getMaxScaledSize().getWidth());
 			}
 			cropString.append(cropwidth);
 			cropString.append("x");
 			String cropheight = inStructions.get("cropheight");
 
-			if(cropheight == null){
+			if (cropheight == null)
+			{
 				cropheight = String.valueOf(inStructions.getMaxScaledSize().getHeight());
 			}
 			cropString.append(cropheight);
@@ -175,7 +180,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			String y1 = inStructions.get("y1");
 
 			cropString.append("+");
-			if(x1 == null)
+			if (x1 == null)
 			{
 				cropString.append("0");
 			}
@@ -184,7 +189,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				cropString.append(x1);
 			}
 			cropString.append("+");
-			if(y1 == null)
+			if (y1 == null)
 			{
 				cropString.append("0");
 			}
@@ -194,7 +199,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			com.add(cropString.toString());
 			com.add("+repage");
-			if(croplast)
+			if (croplast)
 			{
 				com.add("-resize");
 				StringBuffer resizestring = new StringBuffer();
@@ -205,27 +210,27 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				com.add(resizestring.toString());
 			}
 		}
-		else 
+		else
 		{
 			createBackground(inStructions, com, usepng, ext);
 		}
 
 		setValue("quality", "89", inStructions, com);
 		//add sampling-factor if specified
-		if (inStructions.get("sampling-factor")!=null)
+		if (inStructions.get("sampling-factor") != null)
 		{
 			com.add("-sampling-factor");
 			com.add(inStructions.get("sampling-factor"));
 		}
-		
+
 		String prestrip = inStructions.get("fixcmyk");
-		if( "true".equals(prestrip) )
+		if ("true".equals(prestrip))
 		{
 			setValue("profile", getPathtoProfile(), inStructions, com);
 		}
-		else if( !usepng )
+		else if (!usepng)
 		{
-			if( "eps".equals(ext) || "pdf".equals(ext) || "ai".equals( ext) )
+			if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
 			{
 				setValue("colorspace", "sRGB", inStructions, com);
 			}
@@ -233,10 +238,10 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			{
 				com.add("-strip"); //This removes the extra profile info
 				setValue("profile", getPathtoProfile(), inStructions, com);
-			}			
-	    }
-		
-		if (isOnWindows() )
+			}
+		}
+
+		if (isOnWindows())
 		{
 			// windows needs quotes if paths have a space
 			com.add("\"" + outputpath + "\"");
@@ -248,7 +253,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
-		
+
 		long timeout = inStructions.getConversionTimeout();
 		ExecResult execresult = getExec().runExec("convert", com, true, timeout);
 
@@ -264,8 +269,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			return result;
 		}
 		//problems
-		log.info("Could not exec: " + execresult.getStandardOut() );
-		if( execresult.getReturnValue() == 124)
+		log.info("Could not exec: " + execresult.getStandardOut());
+		if (execresult.getReturnValue() == 124)
 		{
 			result.setError("Exec timed out after " + timeout);
 		}
@@ -275,47 +280,61 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		return result;
 	}
-	
-	
+
 	protected void createBackground(ConvertInstructions inStructions, List<String> com, boolean usepng, String ext)
 	{
-		if( !usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) ||  "gif".equals(ext)) )
+		if (!usepng && ("eps".equals(ext) || "pdf".equals(ext) || "png".equals(ext) || "gif".equals(ext)))
 		{
 			com.add("-background");
 			com.add("white");
 			com.add("-flatten");
 		}
-		else if ("svg".equals(ext))//add svg support; include transparency
+		else if ("svg".equals(ext)) //add svg support; include transparency
 		{
 			com.add("-background");
 			com.add("transparent");
 			com.add("-flatten");
-		} else {
+		}
+		else
+		{
 			setValue("background", null, inStructions, com);
 			setValue("layers", null, inStructions, com);
 		}
 	}
 
-	
-	protected List<String> createCommand( ConvertInstructions inStructions)
+	protected List<String> createCommand(ConvertInstructions inStructions)
 	{
+
+		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath());
+
+	//			ext = tmpinput;
+
+	
 		List<String> com = new ArrayList<String>();
 
 		String prestrip = inStructions.get("fixcmyk");
-		if( "true".equals(prestrip) )
+		if ("true".equals(prestrip))
 		{
-			com.add("-strip");
-			com.add("-profile");
-			com.add(getPathCMYKProfile());
+
+			if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
+			{
+				setValue("colorspace", "sRGB", inStructions, com);
+			}
+			else
+			{
+				com.add("-strip");
+				com.add("-profile");
+				com.add(getPathCMYKProfile());
+			}
 		}
-		
+
 		int page = inStructions.getPageNumber();
 		page--;
 		page = Math.max(0, page);
 
 		String prefix = "";
 		String extension = "";
-		String filename = inStructions.getInputFile().getName();  //TODO: Remove this old crud?
+		String filename = inStructions.getInputFile().getName(); //TODO: Remove this old crud?
 		int dotIndex = filename.lastIndexOf('.');
 		if (dotIndex > 0)
 		{
@@ -339,6 +358,5 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		com.add("1");
 		return com;
 	}
-	
 
 }
