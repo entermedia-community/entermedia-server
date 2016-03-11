@@ -9,6 +9,7 @@ import java.util.Map;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
@@ -17,7 +18,35 @@ import org.openedit.util.PathUtilities;
 
 public class ConvertInstructions
 {
-	MediaArchive fieldMediaArchive;
+	protected MediaArchive fieldMediaArchive;
+	protected Data fieldConvertPreset;
+	
+	public Data getConvertPreset()
+	{
+		if( fieldConvertPreset == null)
+		{
+			String presetdataid = get("presetdataid");
+			if( presetdataid != null)
+			{
+				fieldConvertPreset = getMediaArchive().getData("convertpreset",presetdataid);
+			}
+			if( fieldConvertPreset == null)
+			{
+				throw new OpenEditException("Convert preset not set");
+			}
+//			else
+//			{
+//				String name = PathUtilities.extractFileName(getOutputPath()); 
+//				fieldConvertPreset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(),name);
+//			}
+		}
+		return fieldConvertPreset;
+	}
+
+	public void setConvertPreset(Data inConvertPreset)
+	{
+		fieldConvertPreset = inConvertPreset;
+	}
 
 	public ConvertInstructions(MediaArchive inArchive)
 	{
@@ -372,6 +401,7 @@ public class ConvertInstructions
 
 	protected void loadPreset(Data inPreset)
 	{
+		setConvertPreset(inPreset);
 		String presetdataid = get("presetdataid");
 		if (presetdataid == null && inPreset != null)
 		{
@@ -393,6 +423,7 @@ public class ConvertInstructions
 			}
 		}
 		setProperty("cachefilename", inPreset.get("outputfile"));
+		
 	}
 
 	public void loadSettings(Map inSettings)

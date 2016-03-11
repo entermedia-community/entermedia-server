@@ -272,8 +272,8 @@ public class PresetCreator
 		}
 	}
 
-	public Data getPresetByOutputName(MediaArchive inArchive, String inFileName)
+	public Data getPresetByOutputName(MediaArchive inArchive, String inRenderType, String inFileName)
 	{
-		return (Data)inArchive.getSearcher("convertpreset").searchByField("outputfile", inFileName);
+		return (Data)inArchive.getSearcher("convertpreset").query().match("outputfile", inFileName).match("inputtype", inRenderType).searchOne();
 	}
 }

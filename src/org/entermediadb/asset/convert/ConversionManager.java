@@ -13,17 +13,16 @@ public interface ConversionManager
 
 	public ConvertInstructions createInstructions();
 
-	public ConvertInstructions createInstructions(Map inSettings, String inSourcePath);
-	
-	//public ConvertInstructions createInstructions(MediaArchive inArchive, Asset inAsset,Data inPreset,String inOutputType);
-	public ConvertInstructions createInstructions(Map inSetings, Asset inAsset, Data inPreset);
+	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset);
+	public ConvertInstructions createInstructions(String inSourcePath, Map inSettings);
+	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset, Map inSetings);
 
 	public ContentItem findOutputFile(ConvertInstructions inStructions);
 
 	public ConvertResult createOutput(ConvertInstructions inStructions);
 	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath);
 
-	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath);
+	public ConvertResult createOutputIfNeeded(String inSourcePath, Map inCreateProperties);
 	void setInputLoaders(Collection inList);
 
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions);

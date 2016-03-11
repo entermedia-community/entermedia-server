@@ -23,21 +23,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	{
 		fieldOutputFilters = inOutputFilters;
 	}
-
-	protected MediaTranscoder fieldMediaTranscoder;
 	
-	
-	
-	public MediaTranscoder getMediaTranscoder()
-	{
-		return fieldMediaTranscoder;
-	}
-
-	public void setMediaTranscoder(MediaTranscoder inMediaTranscoder)
-	{
-		fieldMediaTranscoder = inMediaTranscoder;
-	}
-
 	public Collection getInputLoaders()
 	{
 		return fieldInputLoaders;
@@ -59,35 +45,33 @@ public abstract class BaseConversionManager implements ConversionManager
 	}
 
 	
-	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath){
-		
+	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath)
+	{
 		//First thing is first. We need to check out cache and make sure this file is not already in existence
-				ConvertInstructions instructions = createInstructions(inSettings,inSourcePath);
-				ContentItem output = instructions.getOutputFile();
-				ConvertResult result = new ConvertResult();
-				result.setOutput(output);
-				result.setInstructions(instructions);
-				result.setOk(true);
+		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
+		ContentItem output = instructions.getOutputFile();
+		ConvertResult result = new ConvertResult();
+		result.setOutput(output);
+		result.setInstructions(instructions);
+		result.setOk(true);
 
-				if( output.getLength() < 2 )
-				{
-					result.setComplete(false);
-				} else{
-					result.setComplete(true);
-				}				
-				return result;
-		
-		
+		if( output.getLength() < 2 )
+		{
+			result.setComplete(false);
+		} else{
+			result.setComplete(true);
+		}				
+		return result;
 		
 	}
 	
 	//Come up with the expected output path based on the input parameters
 	//All image handlers will use a standard file saving conversion
 	@Override
-	public ConvertResult createOutputIfNeeded(Map inSettings, String inSourcePath)
+	public ConvertResult createOutputIfNeeded(String inSourcePath, Map inSettings)
 	{
 		//First thing is first. We need to check out cache and make sure this file is not already in existence
-		ConvertInstructions instructions = createInstructions(inSettings,inSourcePath);
+		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
 		ContentItem output = instructions.getOutputFile();
 		if( output.getLength() < 2 )
 		{
@@ -100,7 +84,19 @@ public abstract class BaseConversionManager implements ConversionManager
 		result.setInstructions(instructions);
 		return result;
 	}
-	public ConvertInstructions createInstructions(Map inSettings, Asset inAsset, Data inPreset)
+	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset)
+	{ 
+		ConvertInstructions instructions = createInstructions();
+		instructions.loadPreset(inPreset);
+		instructions.setAsset(inAsset);
+		
+		ContentItem output = findOutputFile(instructions);
+		instructions.setOutputFile(output);
+		return instructions;
+		
+	}
+
+	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset, Map inSettings)
 	{
 		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 		instructions.loadSettings(inSettings);
@@ -112,7 +108,7 @@ public abstract class BaseConversionManager implements ConversionManager
 		return instructions;
 	}
 	
-	public ConvertInstructions createInstructions(Map inSettings, String inSourcePath)
+	public ConvertInstructions createInstructions(String inSourcePath, Map inSettings)
 	{ 
 		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 		instructions.loadSettings(inSettings);
@@ -124,20 +120,8 @@ public abstract class BaseConversionManager implements ConversionManager
 		return instructions;
 		
 	}
+
 	
-	public ConvertInstructions createInstructions(Map inSettings,Asset inAsset)
-	{ 
-		ConvertInstructions instructions = createInstructions();
-		instructions.loadSettings(inSettings);
-		//instructions.loadPreset(inPreset);
-		instructions.setAsset(inAsset);
-		
-		ContentItem output = findOutputFile(instructions);
-		instructions.setOutputFile(output);
-		//calculateOutputPath(inPreset);
-		return instructions;
-		
-	}
     @Override
 	public ConvertResult createOutput(ConvertInstructions inStructions)
 	{
@@ -159,10 +143,27 @@ public abstract class BaseConversionManager implements ConversionManager
 				}
 	    	}
     	}	
-    	
     	return createOutput(inStructions, input);
 	}
+    
+    protected MediaTranscoder findTranscoder(ConvertInstructions inStructions)
+    {
+    	//look at the preset object or output filename and do a search
+    	Data preset = inStructions.getConvertPreset();
+    	if( preset != null)
+    	{
+    		return findTranscoderByPreset(preset);
+    	}
+    	return null;
+    }
 
+	public MediaTranscoder findTranscoderByPreset(Data preset)
+	{
+		String creator = preset.get("creator");
+		MediaTranscoder transcoder = (MediaTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), creator + "Transcoder");
+		return transcoder;
+	}
+    
     public ConvertResult createOutput(ConvertInstructions inStructions, ContentItem input)
     {
     	if(input == null || !input.exists())
@@ -192,13 +193,15 @@ public abstract class BaseConversionManager implements ConversionManager
 
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
-		return getMediaTranscoder().convert(inStructions);
+		MediaTranscoder transcoder = findTranscoder(inStructions);
+		return transcoder.convert(inStructions);
 	}
 
 	@Override
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
 	{
-		return getMediaTranscoder().updateStatus(inTask, inStructions);
+		MediaTranscoder transcoder = findTranscoder(inStructions);
+		return transcoder.convert(inStructions);
 	}
 	
 	protected abstract ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput);

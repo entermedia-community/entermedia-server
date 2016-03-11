@@ -24,7 +24,7 @@ public class TranscodeTools
 	protected ModuleManager fieldModuleManager;
 	protected Map fieldRenderTypeCache = new HashMap(5);
 	protected Map fieldManagerCache = new HashMap(5);
-	protected Map<String,String> fieldTranscoderForFileFormatCache = new HashMap<String,String>(5);
+	//protected Map<String,String> fieldTranscoderForFileFormatCache = new HashMap<String,String>(5);
 	protected String fieldCatalogId;
 	
 	public Map getRenderTypeCache()
@@ -58,29 +58,29 @@ public class TranscodeTools
 
 	// filetype is jpg asset.fileformat
 	
-	public String getRenderTypeByFileFormat(String inFileType)
-	{
-		if( inFileType == null)
-		{
-			return null;
-		}
-		inFileType = inFileType.toLowerCase();
-		String render = (String)getRenderTypeCache().get(inFileType);
-		if( render == null)
-		{
-			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
-			if( row != null)
-			{
-				render = row.get("rendertype");
-			}
-			else
-			{
-				render = "default";
-			}
-			getRenderTypeCache().put( inFileType, render);
-		}
-		return render;
-	}
+//	public String getRenderTypeByFileFormat(String inFileType)
+//	{
+//		if( inFileType == null)
+//		{
+//			return null;
+//		}
+//		inFileType = inFileType.toLowerCase();
+//		String render = (String)getRenderTypeCache().get(inFileType);
+//		if( render == null)
+//		{
+//			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
+//			if( row != null)
+//			{
+//				render = row.get("rendertype");
+//			}
+//			else
+//			{
+//				render = "default";
+//			}
+//			getRenderTypeCache().put( inFileType, render);
+//		}
+//		return render;
+//	}
 /*	public String getTranscoderByFileFormat(String inFileType)
 	{
 		if( inFileType == null)
@@ -232,70 +232,40 @@ public class TranscodeTools
 		{
 			return null;
 		}
-		String renderer = fieldTranscoderForFileFormatCache.get(inFileType);
-		if( renderer == null)
-		{
-			
-			String catid = getMediaArchive().getCatalogId();
-			
-			Searcher searcher = getSearcherManager().getSearcher(catid, "fileformat");
-			Data row = (Data) searcher.searchById(inFileType);
-			if (row == null)
-			{
-				return null;
-			}
-			else
-			{
-				renderer = row.get("transcoder"); 
-				if( renderer == null)
-				{
-					renderer = row.get("converter"); //legacy
-				}
-				if( renderer == null)
-				{
-					renderer = row.get("creator"); //legacy
-				}
-				if( renderer == null)
-				{
-					return null; //TODO: Cache a Null value?
-				}
-			}
-			fieldTranscoderForFileFormatCache.put(inFileType,renderer);
-		}	
-		ConversionManager c = getManagerByTranscoder(renderer);
-		return c;
+		String type = getMediaArchive().getMediaRenderType(inFileType);
+		return getManagerByRenderType(type);
 	}
-	public ConversionManager getManagerByTranscoder(String inTranscoder)
+//	public ConversionManager getManagerByTranscoder(String inTranscoder)
+//	{
+//		ConversionManager handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
+//		if( handler == null)
+//		{
+//			synchronized (this)
+//			{
+//				handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
+//				if( handler == null)
+//				{
+//					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inTranscoder + "ConversionManager");
+//					handler.setMediaArchive(getMediaArchive());
+//					fieldManagerCache.put( inTranscoder, handler);
+//				}	
+//			}
+//		}
+//		return handler;		
+//	}
+	public ConversionManager getManagerByRenderType(String inRenderType)
 	{
-		ConversionManager handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
+		ConversionManager handler = (ConversionManager)fieldManagerCache.get(inRenderType);
 		if( handler == null)
 		{
 			synchronized (this)
 			{
-				handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
+				handler = (ConversionManager)fieldManagerCache.get(inRenderType);
 				if( handler == null)
 				{
-					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inTranscoder + "ConversionManager");
+					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inRenderType + "ConversionManager");
 					handler.setMediaArchive(getMediaArchive());
-					fieldManagerCache.put( inTranscoder, handler);
-				}	
-			}
-		}
-		return handler;		
-	}
-	public ConversionManager getManagerByRenderType(String inTranscoder)
-	{
-		ConversionManager handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
-		if( handler == null)
-		{
-			synchronized (this)
-			{
-				handler = (ConversionManager)fieldManagerCache.get(inTranscoder);
-				if( handler == null)
-				{
-					handler = (ConversionManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), inTranscoder + "ConversionManager");
-					handler.setMediaArchive(getMediaArchive());
-					fieldManagerCache.put( inTranscoder, handler);
+					fieldManagerCache.put( inRenderType, handler);
 				}	
 			}
 		}
@@ -328,9 +298,7 @@ public class TranscodeTools
 		
 		manager = getManagerByFileFormat(fileformat);  
 		
-			
-		
-		result = manager.createOutputIfNeeded(inCreateProperties,inSourcePath);
+		result = manager.createOutput(result.getInstructions());
 		if( result.isComplete() )
 		{
 			if( result.getOutput() == null)

@@ -7,19 +7,13 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.MediaTranscoder;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
 
 public class VideoConversionManager extends BaseConversionManager
 {
-	
-
 	protected MediaTranscoder fieldVideoImageTranscoder;
 	protected MediaTranscoder fieldImageTranscoder;
-	
-	
-	
-	
-	
 	
 	public ContentItem findOutputFile(ConvertInstructions inStructions)
 	{
@@ -98,38 +92,33 @@ public class VideoConversionManager extends BaseConversionManager
 		//if output == jpg and no time offset - standard
 		if(inStructions.getOutputRenderType().equals("video"))
 		{
-			return getMediaTranscoder().convert(inStructions);
+			return findTranscoder(inStructions).convert(inStructions);
 		}
-	
-		ContentItem input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/video.mp4");
-		if (input != null && input.getLength() < 2 && input.exists())
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.mp4");
+		ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
+		if( !proxyinstructions.getOutputFile().exists() )
 		{
-			//TODO: Save the fact that we used a cached file
-			//make some new/better instructions?
-			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video.mp4");
-			HashMap map = new HashMap();
-			ConvertInstructions proxyinstructions = createInstructions(map, inStructions.getAsset(), preset);
-			ConvertResult result = getMediaTranscoder().convert(proxyinstructions);
-			if(result.isOk() && result.isComplete())
+			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
+			if(!result.isComplete())
 			{
-				input = result.getOutput();
+				throw new OpenEditException("Could not create proxy");
 			}
 		}
 		
-		
-		ContentItem imageinput = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768.jpg");
-		if (imageinput != null && imageinput.getLength() < 2 && imageinput.exists())
+		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","image1024x768.jpg");
+		ConvertInstructions instructions2 = createInstructions(inStructions.getAsset(), preset);
+		if( !instructions2.getOutputFile().exists() )
 		{
+			instructions2.setInputFile( proxyinstructions.getOutputFile() );
+			ConvertResult result = findTranscoderByPreset(preset).convert(instructions2);
+			if(!result.isComplete())
+			{
+				throw new OpenEditException("Could not create proxy");
+			}
+		}
 
-			inStructions.setInputFile(input);
-			ConvertResult result = getVideoImageTranscoder().convert(inStructions);
-			if(result.isOk() && result.isComplete())
-			{
-				input = result.getOutput();
-			}
-			
-		}
-		inStructions.setInputFile(imageinput);
-		return getImageTranscoder().convert(inStructions);
+		inStructions.setInputFile(instructions2.getOutputFile());
+		ConvertResult result = findTranscoderByPreset(inStructions.getConvertPreset()).convert(inStructions);
+		return result;
 	}
 }

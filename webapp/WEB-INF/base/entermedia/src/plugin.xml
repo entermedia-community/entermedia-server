@@ -1702,17 +1702,18 @@
 	</bean>
 	
 
-	<bean id="ffmpegConversionManager" class="org.entermediadb.asset.convert.managers.VideoConversionManager" scope="prototype">
+	<bean id="videoConversionManager" class="org.entermediadb.asset.convert.managers.VideoConversionManager" scope="prototype">
 		<property name="mediaTranscoder">
 			<ref bean="ffmpegTranscoder" />
 		</property>
-	</bean>
-	<bean id="ffmpegimageConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
-		<property name="mediaTranscoder">
+		<property name="videoImageTranscoder">
 			<ref bean="ffmpegimageTranscoder" />
 		</property>
+		<property name="imageTranscoder">
+			<ref bean="imagemagickTranscoder" />
+		</property>
 	</bean>
-		 <bean id="originalConversionManager" class="org.entermediadb.asset.convert.managers.OriginalConversionManager" scope="prototype"/>
+	<bean id="originalConversionManager" class="org.entermediadb.asset.convert.managers.OriginalConversionManager" scope="prototype"/>
 	
 	
 	 <bean id="imagemagickConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
