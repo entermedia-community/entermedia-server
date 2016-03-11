@@ -94,12 +94,11 @@ public class VideoConversionManager extends BaseConversionManager
 
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
-	
 		
 		//if output == jpg and no time offset - standard
-		if(inStructions.getOutputRenderType().equals("video")){
+		if(inStructions.getOutputRenderType().equals("video"))
+		{
 			return getMediaTranscoder().convert(inStructions);
-
 		}
 	
 		ContentItem input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/video.mp4");
@@ -107,14 +106,14 @@ public class VideoConversionManager extends BaseConversionManager
 		{
 			//TODO: Save the fact that we used a cached file
 			//make some new/better instructions?
-			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName("video.mp4");
+			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video.mp4");
 			HashMap map = new HashMap();
 			ConvertInstructions proxyinstructions = createInstructions(map, inStructions.getAsset(), preset);
 			ConvertResult result = getMediaTranscoder().convert(proxyinstructions);
-			if(result.isOk() && result.isComplete()){
+			if(result.isOk() && result.isComplete())
+			{
 				input = result.getOutput();
 			}
-			
 		}
 		
 		
@@ -124,29 +123,13 @@ public class VideoConversionManager extends BaseConversionManager
 
 			inStructions.setInputFile(input);
 			ConvertResult result = getVideoImageTranscoder().convert(inStructions);
-			if(result.isOk() && result.isComplete()){
+			if(result.isOk() && result.isComplete())
+			{
 				input = result.getOutput();
 			}
 			
 		}
-		
 		inStructions.setInputFile(imageinput);
-		getImageTranscoder().convert(inStructions);
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-	
-	
+		return getImageTranscoder().convert(inStructions);
 	}
-	
-
 }
