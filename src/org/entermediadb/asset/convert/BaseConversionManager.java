@@ -160,6 +160,9 @@ public abstract class BaseConversionManager implements ConversionManager
 	public MediaTranscoder findTranscoderByPreset(Data preset)
 	{
 		String creator = preset.get("creator");
+		if(creator == null){
+			creator = preset.get("transcoderid");
+		}
 		MediaTranscoder transcoder = (MediaTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), creator + "Transcoder");
 		return transcoder;
 	}

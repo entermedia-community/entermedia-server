@@ -6,6 +6,7 @@ import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
+import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 
 public class ImageConversionManager extends BaseConversionManager
@@ -105,28 +106,21 @@ public class ImageConversionManager extends BaseConversionManager
 			map.put("prefwidth", "1024");
 			map.put("prefheight", "768");
 			map.put("outputextension", "jpg");
-			ConvertInstructions cacheInsructions = createInstructions(map, inStructions.getAsset());
-			inStructions.setInputFile(inStructions.getOriginalDocument());
-	    	return getMediaTranscoder().convert(inStructions).getOutput();
+			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
+
+			ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
+			
+			proxyinstructions.setInputFile(inStructions.getOriginalDocument());
+			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
+			return result.getOutput();
 	}
 
 	
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
 		
-//		if(inStructions.getAsset() != null && "video".equals(inStructions.getMediaArchive().getMediaRenderType(inStructions.getAsset()))){
-//			
-//			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
-//			ImageConversionManager videot = (ImageConversionManager) creatorManager.getManagerByTranscoder("ffmpegimage");
-//			return videot.getMediaTranscoder().convert(inStructions);
-//		}
-//		
 		
-		
-		
-		
-		
-		return getMediaTranscoder().convert(inStructions);
+		return findTranscoder(inStructions).convert(inStructions);
 	}
 	
 

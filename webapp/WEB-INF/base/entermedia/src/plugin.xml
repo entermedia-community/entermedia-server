@@ -1716,7 +1716,7 @@
 	<bean id="originalConversionManager" class="org.entermediadb.asset.convert.managers.OriginalConversionManager" scope="prototype"/>
 	
 	
-	 <bean id="imagemagickConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
+	 <bean id="imageConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
 		<property name="mediaTranscoder">
 			<ref bean="imagemagickTranscoder" />
 		</property>

@@ -9,6 +9,7 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.joda.time.convert.ConverterManager;
 import org.entermediadb.asset.convert.MediaTranscoder;
+import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 
 public class DocumentConversionManager extends BaseConversionManager
@@ -106,9 +107,13 @@ public class DocumentConversionManager extends BaseConversionManager
 			map.put("prefwidth", "1024");
 			map.put("prefheight", "768");
 			map.put("outputextension", "pdf");
-			ConvertInstructions cacheInsructions = createInstructions(map, inStructions.getAsset());
+			
+			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
+			ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
+
 			inStructions.setInputFile(inStructions.getOriginalDocument());
-	    	return getMediaTranscoder().convert(inStructions).getOutput();
+			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
+			return result.getOutput();
 	}
 
 	

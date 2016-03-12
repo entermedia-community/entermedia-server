@@ -30,10 +30,10 @@ public class ConvertInstructions
 			{
 				fieldConvertPreset = getMediaArchive().getData("convertpreset",presetdataid);
 			}
-			if( fieldConvertPreset == null)
-			{
-				throw new OpenEditException("Convert preset not set");
-			}
+//			if( fieldConvertPreset == null)
+//			{
+//				throw new OpenEditException("Convert preset not set");
+//			}
 //			else
 //			{
 //				String name = PathUtilities.extractFileName(getOutputPath()); 

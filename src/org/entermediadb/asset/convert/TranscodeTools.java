@@ -58,29 +58,29 @@ public class TranscodeTools
 
 	// filetype is jpg asset.fileformat
 	
-//	public String getRenderTypeByFileFormat(String inFileType)
-//	{
-//		if( inFileType == null)
-//		{
-//			return null;
-//		}
-//		inFileType = inFileType.toLowerCase();
-//		String render = (String)getRenderTypeCache().get(inFileType);
-//		if( render == null)
-//		{
-//			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
-//			if( row != null)
-//			{
-//				render = row.get("rendertype");
-//			}
-//			else
-//			{
-//				render = "default";
-//			}
-//			getRenderTypeCache().put( inFileType, render);
-//		}
-//		return render;
-//	}
+	public String getRenderTypeByFileFormat(String inFileType)
+	{
+		if( inFileType == null)
+		{
+			return null;
+		}
+		inFileType = inFileType.toLowerCase();
+		String render = (String)getRenderTypeCache().get(inFileType);
+		if( render == null)
+		{
+			Data row = (Data) getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "fileformat").searchById(inFileType);
+			if( row != null)
+			{
+				render = row.get("rendertype");
+			}
+			else
+			{
+				render = "default";
+			}
+			getRenderTypeCache().put( inFileType, render);
+		}
+		return render;
+	}
 /*	public String getTranscoderByFileFormat(String inFileType)
 	{
 		if( inFileType == null)

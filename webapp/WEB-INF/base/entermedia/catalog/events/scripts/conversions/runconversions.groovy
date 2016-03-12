@@ -256,7 +256,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 	String status = inTask.get("status");
 	
 	String type = inPreset.get("transcoderid"); //rhozet, ffmpeg, etc
-	ConversionManager manager = inArchive.getTranscodeTools().getManagerByTranscoder(type);
+	ConversionManager manager = inArchive.getTranscodeTools().getManagerByFileFormat(inAsset.getFileFormat());
 	//log.debug("Converting with type: ${type} using ${creator.class} with status: ${status}");
 	
 	if (manager != null)
@@ -303,7 +303,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 			}
 		}
 
-		ConvertInstructions inStructions = manager.createInstructions(props,inAsset,inPreset);
+		ConvertInstructions inStructions = manager.createInstructions(inAsset,inPreset,props);
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );

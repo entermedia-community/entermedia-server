@@ -84,7 +84,7 @@ public class ConvertStatusModule extends BaseMediaModule
         //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
         
-		ConvertInstructions instructions = manager.createInstructions(settings.getProperties(), asset,preset);
+		ConvertInstructions instructions = manager.createInstructions(asset,preset,settings.getProperties() );
         
 		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("outputfile"));
 		instructions.setOutputFile(outputpage);
