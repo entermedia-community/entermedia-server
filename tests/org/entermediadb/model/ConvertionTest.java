@@ -38,21 +38,34 @@ public class ConvertionTest extends BaseEnterMediaTest
 		assertNotNull(result.getOutput());
 		
 	}
-	public void testVideoOffset() throws Exception
+	public void testVideo() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		Asset asset = archive.getAsset("101"); //mpg
 		assertNotNull(asset);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("video");
 		ConvertInstructions instructions = manager.createInstructions(asset, "video.mp4");
+		ConvertResult result = manager.createOutput(instructions);
+		
+		assertTrue(result.isOk());
+		assertNotNull(result.getOutput());
+	}
+	public void testVideoImageOffset() throws Exception
+	{
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		Asset asset = archive.getAsset("101"); //mpg
+		assertNotNull(asset);
+		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("video");
+		ConvertInstructions instructions = manager.createInstructions(asset, "image1024x768.jpg");
 		instructions.setProperty("timeoffset","3");
 		instructions.setForce(true);
 		ConvertResult result = manager.createOutput(instructions);
 		
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
-		
 	}
+
+	
 	/*
 	public void testPdfToJpeg()
 	{
