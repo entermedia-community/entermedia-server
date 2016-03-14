@@ -215,5 +215,11 @@ public class ConvertStatusModule extends BaseMediaModule
 
 		inReq.putPageValue("asset", current);
 	}
+	public void reloadIndex(WebPageRequest inReq)
+	{
+		Asset asset = getAsset(inReq);
+		String path = inReq.getContentPage().getDirectory();
+		inReq.redirect(path + "/index.html?assetid=" + asset.getId());
+	}
 	
 }
