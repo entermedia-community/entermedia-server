@@ -16,6 +16,12 @@ public class VideoCacheLoader implements InputLoader
 	@Override
 	public ContentItem loadInput(ConvertInstructions inStructions)
 	{
+		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
+    	if(useoriginal)
+    	{
+    		return null;
+    	}
+
 		ContentItem input = null;
 
 		if (inStructions.getOutputRenderType().equals("image"))
@@ -66,13 +72,6 @@ public class VideoCacheLoader implements InputLoader
 		}
 		return input;
 
-	}
-
-	@Override
-	public void setExec(Exec inExec)
-	{
-		// TODO Auto-generated method stub
-		
 	}
 
 }

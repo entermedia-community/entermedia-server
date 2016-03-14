@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.oltu.oauth2.client.response.OAuthErrorResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
 
 public abstract class BaseConversionManager implements ConversionManager
@@ -84,9 +86,33 @@ public abstract class BaseConversionManager implements ConversionManager
 		result.setInstructions(instructions);
 		return result;
 	}
+	protected abstract String getRenderType();
+
+	@Override
+	public ConvertInstructions createInstructions(Asset inAsset)
+	{
+		ConvertInstructions instructions = createNewInstructions();
+		instructions.setAsset(inAsset);
+		return instructions;		
+	}
+
+
+	@Override
+	public ConvertInstructions createInstructions(Asset inAsset, String inFileName)
+	{
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inFileName);
+		ConvertInstructions instructions = createNewInstructions();
+		instructions.setAsset(inAsset);
+		instructions.loadPreset(preset);
+		ContentItem output = findOutputFile(instructions);
+		instructions.setOutputFile(output);
+		return instructions;		
+	}
+
+
 	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset)
 	{ 
-		ConvertInstructions instructions = createInstructions();
+		ConvertInstructions instructions = createNewInstructions();
 		instructions.loadPreset(inPreset);
 		instructions.setAsset(inAsset);
 		
@@ -96,9 +122,14 @@ public abstract class BaseConversionManager implements ConversionManager
 		
 	}
 
+	protected ConvertInstructions createNewInstructions()
+	{
+		return new ConvertInstructions(getMediaArchive());
+	}
+
 	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset, Map inSettings)
 	{
-		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
+		ConvertInstructions instructions = createNewInstructions();
 		instructions.loadSettings(inSettings);
 		instructions.loadPreset(inPreset);
 		//instructions.setAssetSourcePath(inSourcePath);
@@ -110,7 +141,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	
 	public ConvertInstructions createInstructions(String inSourcePath, Map inSettings)
 	{ 
-		ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
+		ConvertInstructions instructions = createNewInstructions();
 		instructions.loadSettings(inSettings);
 		instructions.setAssetSourcePath(inSourcePath);
 		//instructions.loadPreset(inPreset);
@@ -126,24 +157,42 @@ public abstract class BaseConversionManager implements ConversionManager
 	public ConvertResult createOutput(ConvertInstructions inStructions)
 	{
     	ContentItem input = inStructions.getInputFile();
-    	if( input == null)
+    	if( input == null && getInputLoaders() != null)
     	{
-	    	boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
-	    	if(!useoriginal && fieldInputLoaders != null)
-	    	{
-		    	//Load input
-		    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
+	    	//Load input
+	    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
+			{
+				InputLoader loader = (InputLoader) iterator.next();
+				input = loader.loadInput(inStructions);
+				if( input != null)
 				{
-					InputLoader loader = (InputLoader) iterator.next();
-					input = loader.loadInput(inStructions);
-					if( input != null)
-					{
-						break;
-					}
+					break;
 				}
-	    	}
+			}
+			inStructions.setInputFile(input);
     	}	
-    	return createOutput(inStructions, input);
+    	if(input == null || !input.exists())
+		{
+			throw new OpenEditException("Input is null, use input loader ");
+		}
+    	
+    	MediaTranscoder transcoder = findTranscoder(inStructions);
+    	ConvertResult result = transcoder.convert(inStructions);
+
+    	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
+    	{
+    		for (Iterator iterator = getOutputFilters().iterator(); iterator.hasNext();)
+			{
+				OutputFilter filter = (OutputFilter) iterator.next();
+				ConvertResult tmpresult = filter.filterOutput(inStructions);
+				if( tmpresult != null)
+				{
+					result = tmpresult;
+				}
+			}
+    	}
+    	return result;
+
 	}
     
     protected MediaTranscoder findTranscoder(ConvertInstructions inStructions)
@@ -166,39 +215,6 @@ public abstract class BaseConversionManager implements ConversionManager
 		MediaTranscoder transcoder = (MediaTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), creator + "Transcoder");
 		return transcoder;
 	}
-    
-    public ConvertResult createOutput(ConvertInstructions inStructions, ContentItem input)
-    {
-    	if(input == null || !input.exists())
-		{
-			input = createCacheFile(inStructions, input);
-		}
-    	if(input == null || !input.exists())
-    	{
-    		input = inStructions.getOriginalDocument();
-    	}
-		inStructions.setInputFile(input);
-    	ConvertResult result = transcode(inStructions);
-    	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
-    	{
-    		for (Iterator iterator = getOutputFilters().iterator(); iterator.hasNext();)
-			{
-				OutputFilter filter = (OutputFilter) iterator.next();
-				ConvertResult tmpresult = filter.filterOutput(inStructions);
-				if( tmpresult != null)
-				{
-					result = tmpresult;
-				}
-			}
-    	}
-    	return result;
-    }
-
-	public ConvertResult transcode(ConvertInstructions inStructions)
-	{
-		MediaTranscoder transcoder = findTranscoder(inStructions);
-		return transcoder.convert(inStructions);
-	}
 
 	@Override
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions)
@@ -206,14 +222,5 @@ public abstract class BaseConversionManager implements ConversionManager
 		MediaTranscoder transcoder = findTranscoder(inStructions);
 		return transcoder.convert(inStructions);
 	}
-	
-	protected abstract ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput);
-
-	@Override
-	public ConvertInstructions createInstructions()
-	{
-		return new ConvertInstructions(getMediaArchive());
-	}
-	protected abstract String getCacheName();
 
 }

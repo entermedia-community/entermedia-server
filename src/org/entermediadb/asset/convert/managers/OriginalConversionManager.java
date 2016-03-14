@@ -50,6 +50,10 @@ public class OriginalConversionManager extends BaseConversionManager
 		return result;
 	}
 	
+	protected String getRenderType()
+	{
+		return "original";
+	}
 	
 
 }

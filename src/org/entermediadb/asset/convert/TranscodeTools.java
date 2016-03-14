@@ -5,11 +5,11 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.manage.PageManager;
 /**
@@ -294,7 +294,8 @@ public class TranscodeTools
 			}
 			return result;
 		}
-		String fileformat = result.getInstructions().getAsset().getFileFormat();
+		Asset asset = result.getInstructions().getAsset();
+		String fileformat = asset.getFileFormat();
 		
 		manager = getManagerByFileFormat(fileformat);  
 		

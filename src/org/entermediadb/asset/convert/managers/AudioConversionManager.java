@@ -96,17 +96,9 @@ public class AudioConversionManager extends BaseConversionManager
 	}
 
 	@Override
-	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem inInput)
-	{
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	protected String getCacheName()
+	protected String getRenderType()
 	{
 		return "audio";
 	}
-
 
 }

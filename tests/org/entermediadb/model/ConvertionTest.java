@@ -3,14 +3,30 @@ package org.entermediadb.model;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 
 public class ConvertionTest extends BaseEnterMediaTest
 {
-	
-	public void testLoader() throws Exception
+	public void testPreset() throws Exception
+	{
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		archive.getAssetSearcher().reIndexAll();
+		Thread.sleep(1000);
+		Asset asset = archive.getAsset("105");
+		assertNotNull(asset);
+		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("image");
+		ConvertInstructions instructions = manager.createInstructions(asset, "image1024x769.jpg");				
+		ConvertResult result = manager.createOutput(instructions);
+		
+		assertTrue(result.isOk());
+		assertNotNull(result.getOutput());
+	}
+	public void testXLoader() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		Map settings = new HashMap();

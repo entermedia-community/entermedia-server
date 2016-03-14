@@ -62,14 +62,14 @@ public class OofficeTextExtractor extends MetadataExtractor
 		if( !custom.exists() )
 		{
 	        ConversionManager c = inArchive.getTranscodeTools().getManagerByRenderType("document");
-			ConvertInstructions instructions = c.createInstructions();
+			ConvertInstructions instructions = c.createInstructions(inAsset);
 			
 			instructions.setAssetSourcePath(inAsset.getSourcePath());
 			instructions.setAsset(inAsset);
 			instructions.setOutputExtension("pdf");
 			instructions.setInputFile(inputFile);
 			instructions.setOutputFile(custom);
-			c.transcode(instructions);
+			c.createOutput(instructions);
 		}
 	 	//c.(instructions);
 

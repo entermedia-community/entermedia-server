@@ -6,7 +6,4 @@ import org.openedit.util.Exec;
 public interface InputLoader
 {
 	ContentItem loadInput(ConvertInstructions inStructions);
-
-	void setExec(Exec inExec);
-	
 }

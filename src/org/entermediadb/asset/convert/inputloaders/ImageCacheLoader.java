@@ -16,6 +16,12 @@ public class ImageCacheLoader implements InputLoader
 	@Override
 	public ContentItem loadInput(ConvertInstructions inStructions)
 	{
+		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
+    	if(useoriginal)
+    	{
+    		return null;
+    	}
+		
 		boolean isDocument = inStructions.isDocumentFormat();		
 		String cachetype = "jpg";
 		if( isDocument )
@@ -86,13 +92,6 @@ public class ImageCacheLoader implements InputLoader
 		}
 		return null;
 	}
-	@Override
-	public void setExec(Exec inExec)
-	{
-		// TODO Auto-generated method stub
-		
-	}
-	
 
 	
 }

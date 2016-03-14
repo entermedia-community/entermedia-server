@@ -116,6 +116,10 @@ public class DocumentConversionManager extends BaseConversionManager
 			return result.getOutput();
 	}
 
+	protected String getRenderType()
+	{
+		return "document";
+	}
 	
 	
 	

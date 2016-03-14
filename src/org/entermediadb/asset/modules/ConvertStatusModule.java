@@ -168,19 +168,19 @@ public class ConvertStatusModule extends BaseMediaModule
 		String input = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + properties.getFirstItem().getName(); //TODO: Should run a conversion here first to ensure this is a large JPG
 		properties.saveFileAs(properties.getFirstItem(), input, inReq.getUser());
 		
-		String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
+		//String s1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.jpg"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		
-        ConversionManager c = archive.getTranscodeTools().getManagerByFileFormat("jpg");
-		ConvertInstructions instructions = c.createInstructions();
+		//archive.getPresetManager().getPresetByOutputName(archive, "image", "image1024x768");
+		
+        ConversionManager c = archive.getTranscodeTools().getManagerByRenderType("image");
+		ConvertInstructions instructions = c.createInstructions(current,"image1024x768.jpg");
 		instructions.setForce(true);
 		instructions.setInputFile(archive.getContent( input ) );
-		instructions.setOutputFile(archive.getContent( s1024) );
-		instructions.setMaxScaledSize(1024, 768);
-	 	c.transcode(instructions);
+	 	c.createOutput(instructions);
 
 	 	String png1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		instructions.setOutputFile(archive.getContent( png1024) );
-	 	c.transcode(instructions);
+	 	c.createOutput(instructions);
 		
 		 archive.removeGeneratedImages(current, false);
 		 reloadThumbnails( inReq, archive, current);

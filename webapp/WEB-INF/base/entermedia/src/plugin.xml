@@ -1703,15 +1703,6 @@
 	
 
 	<bean id="videoConversionManager" class="org.entermediadb.asset.convert.managers.VideoConversionManager" scope="prototype">
-		<property name="mediaTranscoder">
-			<ref bean="ffmpegTranscoder" />
-		</property>
-		<property name="videoImageTranscoder">
-			<ref bean="ffmpegimageTranscoder" />
-		</property>
-		<property name="imageTranscoder">
-			<ref bean="imagemagickTranscoder" />
-		</property>
 	</bean>
 	<bean id="originalConversionManager" class="org.entermediadb.asset.convert.managers.OriginalConversionManager" scope="prototype"/>
 	
@@ -1723,16 +1714,22 @@
 		<property name="inputLoaders">
 			<list>
 				<ref bean="imageCacheLoader" />
+				<ref bean="originalInputLoader" />
 			</list>
 		</property>
 	</bean>
 
 	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
-		<property name="mediaTranscoder">
-			<ref bean="ffmpegTranscoder" />
+		<property name="inputLoaders">
+			<list>
+				<ref bean="imageCacheLoader" />
+				<ref bean="originalInputLoader" />
+			</list>
 		</property>
 	</bean>
 
+	<bean id="originalInputLoader" class="org.entermediadb.asset.convert.inputloaders.OriginalInputLoader" scope="prototype" >
+	</bean>
 
 	<bean id="imageCacheLoader" class="org.entermediadb.asset.convert.inputloaders.ImageCacheLoader" scope="prototype" >
 		<property name="pageManager"><ref bean="pageManager" /></property>

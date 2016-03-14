@@ -424,13 +424,13 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
 	
 			        ConversionManager c = inArchive.getTranscodeTools().getManagerByFileFormat("png");
-					ConvertInstructions instructions = c.createInstructions();
+					ConvertInstructions instructions = c.createInstructions(inAsset);
 					instructions.setForce(true);
 					//instructions.setMaxScaledSize(1900, height);
 					instructions.setProperty("fixcmyk", "true");
 					instructions.setInputFile(inInputFile);
 					instructions.setOutputFile(custom);
-				 	c.transcode(instructions);
+				 	c.createOutput(instructions);
 				}
 			}
 		}

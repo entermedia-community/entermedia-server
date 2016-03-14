@@ -97,24 +97,24 @@ public class ImageConversionManager extends BaseConversionManager
 		return "image";
 	}
 
-	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
-	{
-			
-		
-			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
-			HashMap map = new HashMap();
-			map.put("prefwidth", "1024");
-			map.put("prefheight", "768");
-			map.put("outputextension", "jpg");
-			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
-
-			ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
-			
-			proxyinstructions.setInputFile(inStructions.getOriginalDocument());
-			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
-			return result.getOutput();
-	}
-
+//	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
+//	{
+//			
+//		
+//			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
+//			HashMap map = new HashMap();
+//			map.put("prefwidth", "1024");
+//			map.put("prefheight", "768");
+//			map.put("outputextension", "jpg");
+//			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
+//
+//			ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
+//			
+//			proxyinstructions.setInputFile(inStructions.getOriginalDocument());
+//			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
+//			return result.getOutput();
+//	}
+//
 	
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
@@ -122,6 +122,11 @@ public class ImageConversionManager extends BaseConversionManager
 		
 		return findTranscoder(inStructions).convert(inStructions);
 	}
-	
+
+	protected String getRenderType()
+	{
+		return "image";
+	}
+
 
 }
