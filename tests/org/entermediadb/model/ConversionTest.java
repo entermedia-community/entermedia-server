@@ -10,9 +10,9 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 
-public class ConvertionTest extends BaseEnterMediaTest
+public class ConversionTest extends BaseEnterMediaTest
 {
-	
+	//conversion convertion  
 	public void testPreset() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");

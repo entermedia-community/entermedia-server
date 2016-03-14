@@ -10,7 +10,7 @@ import org.entermediadb.controller.ArchiveModuleTest;
 import org.entermediadb.controller.MultiSearchModuleTest;
 import org.entermediadb.model.AssetEditTest;
 import org.entermediadb.model.CategoryEditTest;
-import org.entermediadb.model.ConvertionTest;
+import org.entermediadb.model.ConversionTest;
 import org.entermediadb.model.MetaDataReaderTest;
 import org.entermediadb.model.RelatedAssetsTest;
 import org.entermediadb.model.SourcePathTest;
@@ -32,7 +32,7 @@ public class AllTests {
 		//suite.addTestSuite( AlbumTest.class );
 		suite.addTestSuite( AssetEditTest.class );
 		suite.addTestSuite( CategoryEditTest.class );
-		suite.addTestSuite( ConvertionTest.class );
+		suite.addTestSuite( ConversionTest.class );
 		//suite.addTestSuite( XmlFileSearcherTest.class );
 		boolean ffmpeg = true;
 		try
