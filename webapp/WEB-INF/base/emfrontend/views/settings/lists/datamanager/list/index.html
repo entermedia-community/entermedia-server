@@ -24,18 +24,9 @@
 
 	
 
-	<div id="dm-container">
+	<div id="dm-containerx">
 		<div id="emselectable">
-		<table class="striped emdata" id="main-results-table">
-		<tr id="tableheader">
-		#set( $sortby = $datalist.getSearchQuery().getSortBy() )
-		#foreach( $detail in $details )
-		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.getText($context)</th>
-		#end
-		</tr>	
-		
-		
-    <script>
+		<script>
         $('th.sortable').on({
             click: function(){
                 var id = $(this).attr('id');
@@ -53,6 +44,16 @@
             }
         });
     </script>
+		<table class="emdata striped greytxt table tbl-responsive" id="main-results-table">
+		<tr id="tableheader">
+		#set( $sortby = $datalist.getSearchQuery().getSortBy() )
+		#foreach( $detail in $details )
+		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.getText($context)</th>
+		#end
+		</tr>	
+		
+		
+    
 		
 		
 		#set( $origURL = $context.getRequestParameter("origURL" ) )				
@@ -93,11 +94,11 @@
 			&nbsp;&nbsp;
 			
 			#if( $datalist.prevPage() )
-			<a href="$home$page.path?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b>&lt;&lt;  [[Back]]</a>
+			<a href="$home$page.path?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b>&lt;&lt;  [[Back]]</b></a>
 			#end
 			
 			#if ( $datalist.nextPage() )
-			<a style="margin-left: 10px;" href="$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt; </a>
+			<a style="margin-left: 10px;" href="$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt;</b></a>
 			#end
 		#end
 	</div>

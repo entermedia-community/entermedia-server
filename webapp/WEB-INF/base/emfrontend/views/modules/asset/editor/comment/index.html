@@ -14,7 +14,7 @@
 	#set($incrsize = $comments.size() + 1)
 	#if( $cancomment )
 		<form name="addcomment" class="ajaxform user-input-area clearfix" style="margin-bottom: 20px;" targetdiv="detaileditor" action="${home}$apphome/views/modules/asset/editor/comment/addcomment.html" method="post">
-			<textarea id="commenttext" class="initialtext" style="width: 100%; box-sizing: border-box; margin-top: 20px; height: 80px;" initialtext="" name="comment" cols="54" rows="2"></textarea> <br/>
+			<textarea id="commenttext" class="initialtext" style="width: 100%; box-sizing: border-box; margin: 20px 0!important; height: 80px;" initialtext="" name="comment" cols="54" rows="2"></textarea> <br/>
 			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 			<input type="hidden" name="oemaxlevel" value="2"/>
 			<input type="hidden" name="catalogid" value="$catalogid"/>

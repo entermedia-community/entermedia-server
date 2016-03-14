@@ -4,7 +4,7 @@
   	</property>
 	<property name="tab">asseteditorhistory</property>
 	<property name="subtab">viewassetpreviewhistory</property>
-	<property name="assettab">viewassetpreviewhistory</property>
+	<property name="assettab">converthistory</property>
 	<property name="hitsname">loghits</property>
 	<property name="foldername">${catalogid}/asset/previewLog/</property>
 	<property name="sortby">dateDown</property>

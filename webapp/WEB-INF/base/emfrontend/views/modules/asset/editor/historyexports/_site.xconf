@@ -2,5 +2,5 @@
    <page-action name="PageValue.loadPageVariable"  bean="searcherManager" />
 	<property name="tab">asseteditorhistory</property>
 	<property name="subtab">exporthistory</property>
-	<property name="assettab">viewassetpreviewhistory</property>
+	<property name="assettab">converthistory</property>
 </page>

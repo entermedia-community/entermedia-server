@@ -4,10 +4,10 @@
 <div id="emselectable" >
 
 <form name="permissionsform" class="ajaxform" targetdiv="allpermissions" action="edit.html" style="margin: -20px">
-<table  style="width:100%;" class="striped emdata">		
+<table  style="width:100%;" class="striped emdata  settings-table">		
 	<thead>
-	<tr class="tableheader"><th>Name</th>
-	<th>Rule</th>
+	<tr class="tableheader"><th>[[Name]]</th>
+	<th>[[Rule]]</th>
 	</thead>
 	<tbody>
 	#set( $section = "none")
@@ -16,7 +16,7 @@
 	#if( $perm.permissiontype != "internal")
 		#if( $section != $perm.permissiontype )
 			<tr class="sectionlevel">
-			<td colspan="2" style="height: 35px; line-height: 35px;">
+			<td colspan="2"  style="height: 35px; line-height: 35px;">
 				$searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
 			</td>
 			</tr>
@@ -24,7 +24,7 @@
 			
 		#end
 		<tr rowid="$perm.id">
-			<td title="$perm.description">$context.getText($perm.name)
+			<td  #if($perm.description) title="$perm.description" #end>$context.getText($perm.name)
 			<td> 
 			#set( $permission = false )
 			#set( $permission = $settingspage.getPermission($perm.id) )

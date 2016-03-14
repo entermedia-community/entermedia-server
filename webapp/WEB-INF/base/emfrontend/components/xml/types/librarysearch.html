@@ -6,8 +6,7 @@
 	#set( $library = $searcherManager.getData($catalogid,"library",$term.getValue() ) )		
 #end
 
-<tr class="emsearchfieldrow">
-	<td>
+
 		#if($library)
 			$childcontext.putPageValue("val", $library.project)
 			$childcontext.putPageValue("value", $library.project)
@@ -15,10 +14,12 @@
 		
 		$childcontext.putPageValue("detail", $pdetail)
 		$pages.include("/${applicationid}/components/xml/types/list.html", $childcontext)
-	</td>
-</tr>
+
 #end
 
 
 <input name="operation" value="matches" type="hidden" />
 $pages.include("$apphome/components/xml/types/autocomplete.html",$context)
+	
+	</td>
+</tr>
