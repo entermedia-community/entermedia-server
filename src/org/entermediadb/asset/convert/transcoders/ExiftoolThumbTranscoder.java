@@ -18,6 +18,8 @@ public class ExiftoolThumbTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
+		result.setOutput(inStructions.getOutputFile());
+
 		result.setOk(false);
 		
 		ContentItem item = inStructions.getOutputFile();

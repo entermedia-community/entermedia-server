@@ -12,11 +12,12 @@ import org.entermediadb.asset.convert.ConvertResult;
 
 public class ConvertionTest extends BaseEnterMediaTest
 {
+	
 	public void testPreset() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		archive.getAssetSearcher().reIndexAll();
-		Thread.sleep(1000);
+//		archive.getAssetSearcher().reIndexAll();
+//		Thread.sleep(1000);
 		Asset asset = archive.getAsset("105");
 		assertNotNull(asset);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("image");
@@ -26,13 +27,28 @@ public class ConvertionTest extends BaseEnterMediaTest
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
 	}
-	public void testXLoader() throws Exception
+	public void testWidthHeight() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		Map settings = new HashMap();
 		settings.put("prefwidth", "100");
 		settings.put("prefheight", "100");
 		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(settings, "users/admin/105", "jpg");
+		assertTrue(result.isOk());
+		assertNotNull(result.getOutput());
+		
+	}
+	public void testVideoOffset() throws Exception
+	{
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		Asset asset = archive.getAsset("101"); //mpg
+		assertNotNull(asset);
+		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("video");
+		ConvertInstructions instructions = manager.createInstructions(asset, "video.mp4");
+		instructions.setProperty("timeoffset","3");
+		instructions.setForce(true);
+		ConvertResult result = manager.createOutput(instructions);
+		
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
 		

@@ -16,6 +16,18 @@ public abstract class BaseConversionManager implements ConversionManager
 	protected MediaArchive fieldMediaArchive;
 	protected Collection fieldInputLoaders;
 	protected Collection fieldOutputFilters;
+	protected MediaTranscoder fieldDefaultTranscoder;
+	
+	public MediaTranscoder getDefaultTranscoder()
+	{
+		return fieldDefaultTranscoder;
+	}
+
+	public void setDefaultTranscoder(MediaTranscoder inDefaultTranscoder)
+	{
+		fieldDefaultTranscoder = inDefaultTranscoder;
+	}
+
 	public Collection getOutputFilters()
 	{
 		return fieldOutputFilters;
@@ -173,11 +185,10 @@ public abstract class BaseConversionManager implements ConversionManager
     	}	
     	if(input == null || !input.exists())
 		{
-			throw new OpenEditException("Input is null, use input loader ");
+			throw new OpenEditException("Input is " + input + "input loaders failed to load");
 		}
     	
-    	MediaTranscoder transcoder = findTranscoder(inStructions);
-    	ConvertResult result = transcoder.convert(inStructions);
+    	ConvertResult result = transcode(inStructions);
 
     	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
     	{
@@ -192,8 +203,14 @@ public abstract class BaseConversionManager implements ConversionManager
 			}
     	}
     	return result;
-
 	}
+    
+    protected ConvertResult transcode(ConvertInstructions inStructions)
+    {
+    	MediaTranscoder transcoder = findTranscoder(inStructions);
+    	ConvertResult result = transcoder.convert(inStructions);
+    	return result;
+    }
     
     protected MediaTranscoder findTranscoder(ConvertInstructions inStructions)
     {
@@ -203,7 +220,7 @@ public abstract class BaseConversionManager implements ConversionManager
     	{
     		return findTranscoderByPreset(preset);
     	}
-    	return null;
+    	return getDefaultTranscoder();
     }
 
 	public MediaTranscoder findTranscoderByPreset(Data preset)

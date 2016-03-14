@@ -116,13 +116,6 @@ public class ImageConversionManager extends BaseConversionManager
 //	}
 //
 	
-	public ConvertResult transcode(ConvertInstructions inStructions)
-	{
-		
-		
-		return findTranscoder(inStructions).convert(inStructions);
-	}
-
 	protected String getRenderType()
 	{
 		return "image";

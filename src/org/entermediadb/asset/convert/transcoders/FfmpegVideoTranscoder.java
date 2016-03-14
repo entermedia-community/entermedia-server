@@ -24,8 +24,8 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
+		result.setOutput(inStructions.getOutputFile());
 
-		
 		ContentItem inputpage = inStructions.getInputFile();
 
 		if (inputpage == null || !inputpage.exists())

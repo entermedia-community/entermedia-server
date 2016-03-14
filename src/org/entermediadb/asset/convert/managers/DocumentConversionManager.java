@@ -100,21 +100,21 @@ public class DocumentConversionManager extends BaseConversionManager
 		return "document";
 	}
 
-	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
-	{
-			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
-			HashMap map = new HashMap();
-			map.put("prefwidth", "1024");
-			map.put("prefheight", "768");
-			map.put("outputextension", "pdf");
-			
-			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
-			ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
-
-			inStructions.setInputFile(inStructions.getOriginalDocument());
-			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
-			return result.getOutput();
-	}
+//	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
+//	{
+//			TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
+//			HashMap map = new HashMap();
+//			map.put("prefwidth", "1024");
+//			map.put("prefheight", "768");
+//			map.put("outputextension", "pdf");
+//			
+//			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
+//			ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(), preset);
+//
+//			inStructions.setInputFile(inStructions.getOriginalDocument());
+//			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
+//			return result.getOutput();
+//	}
 
 	protected String getRenderType()
 	{

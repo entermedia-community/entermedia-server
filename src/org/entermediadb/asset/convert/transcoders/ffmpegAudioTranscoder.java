@@ -26,6 +26,8 @@ public class ffmpegAudioTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
+		result.setOutput(inStructions.getOutputFile());
+
 		Asset asset = inStructions.getAsset();
 		Page inputpage = inStructions.getMediaArchive().getOriginalDocument(asset);
 

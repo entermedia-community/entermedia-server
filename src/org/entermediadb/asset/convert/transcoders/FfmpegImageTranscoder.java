@@ -37,7 +37,8 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
-		
+		result.setOutput(inStructions.getOutputFile());
+
 		ContentItem outputFile = inStructions.getOutputFile();
 		if(!inStructions.isForce() && outputFile.getLength() > 0 )
 		{
@@ -47,14 +48,14 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		}
 		result.setOk(true);
 		
-		Page customthumb = getPageManager().getPage("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb.jpg");
-		if( customthumb.exists() )
-		{
-			Page destination = getPageManager().getPage(inStructions.getOutputPath());
-			getPageManager().copyPage(customthumb,destination);
-			result.setComplete(true);
-			return result;
-		}
+//		Page customthumb = getPageManager().getPage("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb.jpg");
+//		if( customthumb.exists() )
+//		{
+//			Page destination = getPageManager().getPage(inStructions.getOutputPath());
+//			getPageManager().copyPage(customthumb,destination);
+//			result.setComplete(true);
+//			return result;
+//		}
 		
 
 		// We are going to take frames from the converted flv video
@@ -150,16 +151,16 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		return result;
 	}
 	
-	public String createConvertPath(ConvertInstructions inStructions)
-	{
-		String frame = inStructions.getProperty("frame");
-		if( frame == null )
-		{
-			frame="0";
-		}
-		String path = inStructions.getAssetSourcePath() + "frame" + frame + ".jpg";
-		return path;
-	}
+//	public String createConvertPath(ConvertInstructions inStructions)
+//	{
+//		String frame = inStructions.getProperty("frame");
+//		if( frame == null )
+//		{
+//			frame="0";
+//		}
+//		String path = inStructions.getAssetSourcePath() + "frame" + frame + ".jpg";
+//		return path;
+//	}
 
 	
 }

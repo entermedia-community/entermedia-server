@@ -1,17 +1,11 @@
 package org.entermediadb.asset.convert.managers;
 
-import java.util.Collection;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.ConvertResult;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
-import org.openedit.util.PathUtilities;
 
 public class AudioConversionManager extends BaseConversionManager
 {
@@ -21,7 +15,7 @@ public class AudioConversionManager extends BaseConversionManager
 	{
 		return true;
 	}
-
+/*
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
@@ -36,13 +30,11 @@ public class AudioConversionManager extends BaseConversionManager
 
 			return result;
 		}
-		/*
-		 * 
-		 * <property id="flac" rendertype="audio"
-		 * synctags="false">Flac</property> <property id="m4a"
-		 * rendertype="audio" synctags="false">M4A</property> <property id="aac"
-		 * rendertype="audio" synctags="false">aac</property>
-		 */
+//		 * 
+//		 * <property id="flac" rendertype="audio"
+//		 * synctags="false">Flac</property> <property id="m4a"
+//		 * rendertype="audio" synctags="false">M4A</property> <property id="aac"
+//		 * rendertype="audio" synctags="false">aac</property>
 		String inputExt = PathUtilities.extractPageType(inputpage.getContentItem().getAbsolutePath());
 		String outputExt = inStructions.getOutputExtension();
 //		String useoriginalmediawhenpossible = inStructions.getProperty("useoriginalmediawhenpossible");
@@ -65,7 +57,7 @@ public class AudioConversionManager extends BaseConversionManager
 
 		return result;
 	}
-
+*/
 
 	@Override
 	public ContentItem findOutputFile(ConvertInstructions inStructions)
@@ -86,14 +78,9 @@ public class AudioConversionManager extends BaseConversionManager
 
 		path.append("/audio." + inStructions.getOutputExtension());
 		//inStructions.setOutputPath(path.toString());
-		return getMediaArchive().getContent( path.toString() );	}
-
-	@Override
-	public ConvertResult createOutput(ConvertInstructions inStructions)
-	{
-		// TODO Auto-generated method stub
-		return null;
+		return getMediaArchive().getContent( path.toString() );	
 	}
+
 
 	@Override
 	protected String getRenderType()

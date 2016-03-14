@@ -29,6 +29,7 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 		ContentItem inOut = inStructions.getOutputFile();
 		
 		ConvertResult result = new ConvertResult();
+		result.setOutput(inOut);
 		result.setOk(false);
 		
 		Page input = inArchive.findOriginalMediaByType("document",inAsset);

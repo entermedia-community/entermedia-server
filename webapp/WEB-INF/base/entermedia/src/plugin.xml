@@ -1703,23 +1703,28 @@
 	
 
 	<bean id="videoConversionManager" class="org.entermediadb.asset.convert.managers.VideoConversionManager" scope="prototype">
-	</bean>
-	<bean id="originalConversionManager" class="org.entermediadb.asset.convert.managers.OriginalConversionManager" scope="prototype"/>
-	
-	
-	 <bean id="imageConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
-		<property name="mediaTranscoder">
-			<ref bean="imagemagickTranscoder" />
+		<property name="defaultTranscoder">
+			<ref bean="ffmpegTranscoder" />
 		</property>
 		<property name="inputLoaders">
 			<list>
-				<ref bean="imageCacheLoader" />
+				<ref bean="originalInputLoader" />
+			</list>
+		</property>	
+	</bean>
+	<bean id="originalConversionManager" class="org.entermediadb.asset.convert.managers.OriginalConversionManager" scope="prototype">
+		<property name="inputLoaders">
+			<list>
 				<ref bean="originalInputLoader" />
 			</list>
 		</property>
 	</bean>
-
-	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
+	
+	
+	 <bean id="imageConversionManager" class="org.entermediadb.asset.convert.managers.ImageConversionManager" scope="prototype">
+		<property name="defaultTranscoder">
+			<ref bean="imagemagickTranscoder" />
+		</property>
 		<property name="inputLoaders">
 			<list>
 				<ref bean="imageCacheLoader" />
@@ -1957,28 +1962,23 @@
 	</groovy>
  	
  	
- 	
- 	
- 	 <bean id="oofficeConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
-		<property name="mediaTranscoder">
+	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
+		<property name="defaultTranscoder">
 			<ref bean="oofficeTranscoder" />
 		</property>
-	
+		<property name="inputLoaders">
+			<list>
+				<ref bean="imageCacheLoader" />
+				<ref bean="originalInputLoader" />
+			</list>
+		</property>
 	</bean>
-	
+ 		
 	<bean id="oofficeTranscoder" class="org.entermediadb.ooffice.OofficeDocumentTranscoder" >
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
 	
-	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
-		<property name="mediaTranscoder">
-			<ref bean="oofficeTranscoder" />
-		</property>
-	</bean>
-
-
-		
 	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
 		<property name="pageManager">
 			<ref bean="pageManager" />

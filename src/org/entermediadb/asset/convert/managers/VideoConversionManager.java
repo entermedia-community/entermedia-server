@@ -25,7 +25,17 @@ public class VideoConversionManager extends BaseConversionManager
 			{
 				outputpage.append("wm");
 			}
-			//if( inStructions.get)
+			
+			if( inStructions.get("timeoffset") != null)
+			{
+				//TODO: deal with this
+			}
+			String frame = inStructions.getProperty("frame");
+			if( frame != null)
+			{
+				outputpage.append("frame" + frame );
+			}
+			
 			outputpage.append(".mp4");
 		}
 		else
@@ -45,10 +55,11 @@ public class VideoConversionManager extends BaseConversionManager
 		return getMediaArchive().getContent( outputpage.toString() );
 	}
 
-
+/**
+ * 
+ */
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
-		
 		//if output == jpg and no time offset - standard
 		if(inStructions.getOutputRenderType().equals("video"))
 		{
