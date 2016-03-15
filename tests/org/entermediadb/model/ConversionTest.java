@@ -9,6 +9,10 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.generators.ConvertGenerator;
+import org.openedit.WebPageRequest;
+import org.openedit.generators.Output;
+import org.openedit.page.Page;
 
 public class ConversionTest extends BaseEnterMediaTest
 {
@@ -16,8 +20,8 @@ public class ConversionTest extends BaseEnterMediaTest
 	public void testPreset() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-//		archive.getAssetSearcher().reIndexAll();
-//		Thread.sleep(1000);
+		archive.getAssetSearcher().reIndexAll();
+		Thread.sleep(1000);
 		Asset asset = archive.getAsset("105");
 		assertNotNull(asset);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("image");
@@ -65,6 +69,33 @@ public class ConversionTest extends BaseEnterMediaTest
 		assertNotNull(result.getOutput());
 	}
 
+	public void testDynamicVideoImageOffset() throws Exception
+	{
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		Asset asset = archive.getAsset("101"); //mpg
+		assertNotNull(asset);
+		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalog/generated/" + asset.getSourcePath() + "/image200x200offset3.jpg");
+		
+		archive.getPageManager().removePage(page);
+		
+		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3&assetid=101");
+		getFixture().getEngine().executePageActions(inReq);
+		getFixture().getEngine().executePathActions(inReq);
+		
+		ConvertGenerator generator = (ConvertGenerator) archive.getModuleManager().getBean("ConvertGenerator");
+		Output output = new Output();
+		output.setStream(inReq.getOutputStream());
+		generator.generate(inReq, inReq.getPage(),output );
+		
+		assertTrue(page.exists());
+		
+	}
+	
+	
+	///views/modules/asset/downloads/preview/widethumb/submitted/admin/Broad.City.S01E06.HDTV.x264-EXCELLENCE.mp4/thumb.jpg?timeoffset=407&assetid=102
+	
+	
+	
 	
 	/*
 	public void testPdfToJpeg()
