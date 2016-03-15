@@ -58,7 +58,13 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath());
 		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
 
-		String ext = asset.getFileFormat();
+		String ext = null;
+		
+		if(asset != null){
+		 ext = asset.getFileFormat();
+		}
+		
+		
 
 		if (ext == null)
 		{
