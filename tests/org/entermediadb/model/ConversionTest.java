@@ -87,6 +87,16 @@ public class ConversionTest extends BaseEnterMediaTest
 		output.setStream(inReq.getOutputStream());
 		generator.generate(inReq, inReq.getPage(),output );
 		
+		
+//		 inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/widethumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3&assetid=101");
+//
+//		 getFixture().getEngine().executePageActions(inReq);
+//			getFixture().getEngine().executePathActions(inReq);
+//			
+//			generator.generate(inReq, inReq.getPage(),output );
+//			
+			
+			
 		assertTrue(page.exists());
 		
 	}

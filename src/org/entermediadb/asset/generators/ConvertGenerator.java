@@ -59,7 +59,9 @@ public class ConvertGenerator extends FileGenerator
 			return;
 		}
 		outputype = outputype.toLowerCase();
-		
+		if(outputype.contains("?")){
+			outputype = outputype.substring(0, outputype.indexOf("?"));
+		}
 		String name = inPage.getName();
 		
 		if( name.startsWith("image") && name.length() > 10 && name.contains("x"))
