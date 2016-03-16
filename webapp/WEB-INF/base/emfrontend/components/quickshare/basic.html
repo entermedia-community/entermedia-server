@@ -82,8 +82,8 @@ jQuery(function () {
         },
         done: function (e, data) {
         //	alert("All done!");
-            var url = "$home$apphome/components/quickshare/done.html";
-            document.location.href = url;
+        //    var url = "$home$apphome/components/quickshare/done.html";
+        //    document.location.href = url;
         
         },
         
@@ -100,6 +100,7 @@ jQuery(function () {
 				var from = jQuery("#fromemail").val();
             	var to = jQuery("#toemail").val();
 				var url = "$home$apphome/components/quickshare/done.html?destination.value=" + to + "&email.value=" + from;
+				//alert("100");
 		        document.location.href = url;
 			}
 
