@@ -526,6 +526,7 @@ public class imagemagickCreator extends BaseImageCreator
 			{
 				com.add("-strip"); //This removes the extra profile info
 				setValue("profile", getPathtoProfile(), inStructions, com);
+				com.add("-auto-orient"); 
 			}			
 	    }
 		
