@@ -232,6 +232,7 @@ img {
     border: 0;
     -ms-interpolation-mode: bicubic;
     vertical-align: middle;
+    /*image-orientation: from-image;*/
 }
 svg:not(:root) {
     overflow: hidden;
@@ -362,6 +363,7 @@ body {
 }
 #emselectable {
     margin: 0 auto;
+    overflow: auto;
 }
 #emselectable {
     -webkit-border-radius: 5px 5px;
@@ -4448,12 +4450,13 @@ span.drag-and-drop {
 }
 .tab-actions .field {
     width: 170px;
-    padding: 5px 5px 4px 5px;
+    padding: 2px 5px 2px 5px;
     border-radius: 5px;
     font-size: 12px;
     margin: 0 5px;
+    height: 19px;
     position: relative;
-    top: 2px;
+    
 }
 .emselectabledetails {
     font-size: 12px;
@@ -5786,8 +5789,9 @@ ul.embuttons li a span {
     cursor: pointer;
 }
 .btn.small {
-    padding: 2px 15px;
+    padding: 2px 10px;
     font-size: 11px;
+    
 }
 .btn:hover {
     border-color: #bbb;
@@ -5871,6 +5875,7 @@ ul.embuttons li a span {
     top: 1px;
     box-shadow: none;
 }
+
 
 /* ==|== tool tips ======================================== */
 
@@ -6615,7 +6620,10 @@ div.tableheaderactions a
     white-space: normal;
     vertical-align: top;
 }
-
+.btn-sm {
+	padding:2px 0px;
+	line-height: 11px;
+}
 #advsearchpanel table[width="100%"] select {
     padding: 0px;
     height: 21px;
