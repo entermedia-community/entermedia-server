@@ -244,6 +244,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			{
 				com.add("-strip"); //This removes the extra profile info
 				setValue("profile", getPathtoProfile(), inStructions, com);
+				com.add("-auto-orient");
 			}
 		}
 
