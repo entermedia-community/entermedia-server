@@ -7,6 +7,7 @@
 	<property name="prefheight">200</property>
 	<property name="uselegacythumbimages">false</property>
 	<property name="sourcefile">image</property>
+	
 </page>
 
 

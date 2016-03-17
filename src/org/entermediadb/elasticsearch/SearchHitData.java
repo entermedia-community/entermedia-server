@@ -52,21 +52,24 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		// TODO Auto-generated method stub
 		super.setProperty(inId, inValue);
 	}
-	public String get(String inId)
+
+	@Override
+	public Object getValue(String inId)
 	{
 		if(inId == null){
 			return null;
 		}
-		String svalue = super.get(inId);
+		Object svalue = super.getValue(inId);
 		if (svalue != null)
 		{
 			return svalue;
 		}
 		svalue = getFromDb(inId);
+
 		return svalue;
 	}
-
-	protected String getFromDb(String inId)
+	
+	protected Object getFromDb(String inId)
 	{
 		if (inId.equals(".version"))
 		{
@@ -94,30 +97,11 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				String legacy = detail.get("legacy");
 				if( legacy != null)
 				{
-					value = get(legacy);
+					value = getValue(legacy);
 				}
 			}
 		}
-		if (value != null)
-		{
-			if( value instanceof Collection)
-			{
-				StringBuffer values = new StringBuffer();
-				Collection existingvalues = (Collection)value;
-				for (Iterator iterator = existingvalues.iterator(); iterator.hasNext();)
-				{
-					String detail = (String) iterator.next();
-					values.append(detail);
-					if( iterator.hasNext())
-					{
-						values.append(" | ");
-					}
-				}
-				return values.toString();
-			}
-			return String.valueOf(value);
-		}
-		return null;
+		return value;
 	}
 
 	public Iterator keys()
@@ -131,10 +115,10 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		for (Iterator iterator = getSearchHit().getSource().keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
-			String val = getFromDb(key);
+			String val = get(key);
 			all.put(key, val);
 		}
-		String version = getFromDb(".version");
+		String version = get(".version");
 		if (version != null)
 		{
 			all.put(".version", version);

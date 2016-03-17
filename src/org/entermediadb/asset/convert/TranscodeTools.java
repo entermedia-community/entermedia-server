@@ -12,6 +12,8 @@ import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.manage.PageManager;
+import org.openedit.repository.ContentItem;
+import org.openedit.util.PathUtilities;
 /**
  * This deals with actual conversions from one file to another
  * @author shanti
@@ -273,33 +275,35 @@ public class TranscodeTools
 	}
 	
 	
-	public ConvertResult createOutputIfNeeded(Map inCreateProperties, String inSourcePath, String inOutputType)
+	public ConvertResult createOutputIfNeeded(Map inCreateProperties, Map inParameters, String inSourcePath, String inExportName)
 	{
 		//Minimal information here. We dont know what kind of input we have
-		ConversionManager manager = getManagerByFileFormat(inOutputType);
-		inCreateProperties.put("outputextension", inOutputType);
-
-//		if(inStructions.getAsset() != null && "video".equals(inStructions.getMediaArchive().getMediaRenderType(inStructions.getAsset()))){
-//		
-//		TranscodeTools creatorManager = inStructions.getMediaArchive().getTranscodeTools();
-//		ImageConversionManager videot = (ImageConversionManager) creatorManager.getManagerByTranscoder("ffmpegimage");
-//		return videot.getMediaTranscoder().convert(inStructions);
-//	}
-//	
-		ConvertResult result = manager.loadExistingOuput(inCreateProperties,inSourcePath);
-		if(result.isComplete()){
-			if( result.getOutput() == null)
-			{
-				throw new OpenEditException("Output not found " + inSourcePath);
-			}
-			return result;
+		ConversionManager manager = getManagerByFileFormat(PathUtilities.extractPageType(inExportName));
+		
+		ConvertResult result = null;
+		if( inCreateProperties == null )
+		{
+			inCreateProperties = new HashMap();
 		}
-		Asset asset = result.getInstructions().getAsset();
-		String fileformat = asset.getFileFormat();
 		
-		manager = getManagerByFileFormat(fileformat);  
-		
-		result = manager.createOutput(result.getInstructions());
+		if( inParameters == null || inParameters.isEmpty() )
+		{
+			result = manager.loadExistingOuput(inCreateProperties,inSourcePath, inExportName);
+			if(result.isComplete()){
+				if( result.getOutput() == null)
+				{
+					throw new OpenEditException("Output not found " + inSourcePath);
+				}
+				return result;
+			}
+		}
+		Asset asset = getMediaArchive().getAssetBySourcePath(inSourcePath);
+		manager = getManagerByFileFormat(asset.getFileFormat() ); //video input?
+		if( inParameters != null)
+		{
+			inCreateProperties.putAll(inParameters);
+		}
+		result = manager.createOutputIfNeeded(inSourcePath, inExportName, inCreateProperties);
 		if( result.isComplete() )
 		{
 			if( result.getOutput() == null)

@@ -21,16 +21,12 @@ public class OriginalConversionManager extends BaseConversionManager
 	//video.mp4
 	//Original file
 	
-	public ContentItem findOutputFile(ConvertInstructions inStructions)
-	{
-		Page page = getMediaArchive().getOriginalDocument(inStructions.getAsset());
-		return page.getContentItem();
-	}
+//	public ContentItem findOutputFile(ConvertInstructions inStructions)
+//	{
+//		Page page = getMediaArchive().getOriginalDocument(inStructions.getAsset());
+//		return page.getContentItem();
+//	}
 
-	protected String getCacheName()
-	{
-		return "original";
-	}
 
 	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 	{

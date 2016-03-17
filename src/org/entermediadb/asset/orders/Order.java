@@ -82,7 +82,7 @@ public class Order extends BaseData implements SaveableData
 	}
 	
 	@Override
-	public String get(String inId)
+	public Object getValue(String inId)
 	{
 		if( inId.startsWith("history"))
 		{
@@ -93,7 +93,7 @@ public class Order extends BaseData implements SaveableData
 			}
 			return getRecentOrderHistory().get(key); //may be OrderHistory.EMPTY
 		}
-		return super.get(inId);
+		return super.getValue(inId);
 	}
 
 	@Override

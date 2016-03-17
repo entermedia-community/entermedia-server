@@ -20,6 +20,39 @@ public class ConvertInstructions
 {
 	protected MediaArchive fieldMediaArchive;
 	protected Data fieldConvertPreset;
+	protected int fieldPageNumber = 1; //This is 1 based
+	protected int fieldRotation = 360;
+	protected Map<String, String> fieldProperties;
+	protected Collection<Data> fieldPresetParameters;
+	protected Asset fieldAsset;
+	protected ContentItem fieldOutputFile;
+	protected ContentItem fieldInputFile;
+	
+	public ConvertInstructions copy(Data inNewPreset)
+	{
+		ConvertInstructions copy = new ConvertInstructions(fieldMediaArchive);
+		copy.fieldPageNumber = fieldPageNumber;
+		//copy.fieldRotation = fieldRotation;
+		//copy.fieldProperties = fieldProperties;
+		//copy.fieldPresetParameters = fieldPresetParameters;
+		copy.fieldAsset = fieldAsset;
+		//copy.fieldOutputFile = fieldOutputFile;
+		copy.fieldInputFile = fieldInputFile;
+		copy.setAssetSourcePath(getAssetSourcePath());
+		copy.setAssetId(getAssetId());
+		copy.loadPreset(inNewPreset);
+		return copy;
+	}
+	
+	public Collection<Data> getPresetParameters()
+	{
+		return fieldPresetParameters;
+	}
+
+	public void setPresetParameters(Collection<Data> inPresetParameters)
+	{
+		fieldPresetParameters = inPresetParameters;
+	}
 	
 	public Data getConvertPreset()
 	{
@@ -29,6 +62,7 @@ public class ConvertInstructions
 			if( presetdataid != null)
 			{
 				fieldConvertPreset = getMediaArchive().getData("convertpreset",presetdataid);
+				loadPreset(fieldConvertPreset);
 			}
 //			if( fieldConvertPreset == null)
 //			{
@@ -63,20 +97,99 @@ public class ConvertInstructions
 		fieldMediaArchive = inMediaArchive;
 	}
 
-	protected int fieldPageNumber = 1; //This is 1 based
-	//protected String fieldOutputExtension;
-	//protected String fieldInputType;
-	//protected String fieldWatermarkPlacement; 
-	protected int fieldRotation = 360;
-	//protected String fieldInputSourcePath;
-	//protected String fieldSourceFile;
-	protected Map<String, String> fieldProperties;
-	protected Collection<Data> fieldParameters;
-	protected Asset fieldAsset;
-	protected ContentItem fieldOutputFile;
+	public ContentItem findOutputFile()
+	{
+		StringBuffer path = new StringBuffer();
 
+		//legacy for people who want to keep their images in the old location
+		String prefix = getProperty("pathprefix");
+		if( prefix != null)
+		{
+			path.append(prefix);
+		}
+		else
+		{
+			path.append("/WEB-INF/data");
+			path.append(getMediaArchive().getCatalogHome());
+			path.append("/generated/");
+		}
+		path.append(getAssetSourcePath());
+		path.append("/");
+
+		String postfix = getProperty("pathpostfix");
+		if( postfix != null)
+		{
+			path.append(postfix);
+		}
+//		String cachefilename = get("cachefilename");
+//		if( cachefilename != null)
+//		{
+//			path.append(cachefilename);
+//			return getMediaArchive().getContent( path.toString() );
+//		}
+
+//		if( "pdf".equals(getOutputExtension()) )
+//		{
+//			path.append("document");
+//		}
+//		else
+//		{
+		
+		String rendertype = getOutputRenderType();
+		path.append( rendertype );
+		
+		//path.append(getCacheName()); //part of filename
+//		}
+		if( rendertype.equals("image") )
+		{
+			Dimension maxScaledSize = getMaxScaledSize();
+			if (maxScaledSize != null) // If either is set then
+			{
+				path.append(Math.round(maxScaledSize.getWidth()));
+				path.append("x");
+				path.append(Math.round(maxScaledSize.getHeight()));
+			}
+			if (getPageNumber() > 1)
+			{
+				path.append("page");
+				path.append(getPageNumber());
+			}
+		}
+		if(getProperty("timeoffset") != null)
+		{
+			path.append("offset");
+			path.append(getProperty("timeoffset"));
+		}
+		if(isWatermark())
+		{
+			path.append("wm");
+		}
+		String frame = getProperty("frame");
+		if( frame != null)
+		{
+			path.append("frame" + frame );
+		}
+
+		if(getProperty("colorspace") != null){
+			path.append(getProperty("colorspace"));
+		}
+		if(isCrop())
+		{
+			path.append("cropped");
+		}
+		if (getOutputExtension() != null)
+		{
+			path.append("." + getOutputExtension());
+		}
+		return getMediaArchive().getContent( path.toString() );
+	}
+	
 	public ContentItem getOutputFile()
 	{
+		if( fieldOutputFile == null)
+		{
+			fieldOutputFile = findOutputFile();
+		}
 		return fieldOutputFile;
 	}
 
@@ -85,8 +198,6 @@ public class ConvertInstructions
 		fieldOutputFile = inOutputFile;
 	}
 
-	protected ContentItem fieldInputFile;
-	private String fieldOutputExtension;
 
 	//Should this be a stack?
 	public ContentItem getInputFile()
@@ -121,29 +232,25 @@ public class ConvertInstructions
 		fieldAsset = inAsset;
 	}
 
-	public Collection<Data> getParameters()
-	{
-		return fieldParameters;
-	}
-
-	public void setParameters(Collection<Data> inParameters)
-	{
-		fieldParameters = inParameters;
-	}
+//	public Collection<Data> getParameters()
+//	{
+//		return fieldParameters;
+//	}
+//
+//	public void setParameters(Collection<Data> inParameters)
+//	{
+//		fieldParameters = inParameters;
+//	}
 
 	public boolean isForce()
 	{
 		return Boolean.parseBoolean(getProperty("isforced"));
 	}
 
-	public void addProperty(String inName, String inValue)
-	{
-		getProperties().put(inName, inValue);
-	}
-
 	public void setProperty(String inName, String inValue)
 	{
-		addProperty(inName, inValue);
+		getProperties().put(inName, inValue);
+		fieldOutputFile = null;
 	}
 
 	public int intValue(String inName, int inDefault)
@@ -163,12 +270,32 @@ public class ConvertInstructions
 
 	public String getProperty(String inName)
 	{
-		if (fieldProperties == null)
+		if (fieldProperties != null)
 		{
-			return null;
+			String value = getProperties().get(inName);
+			if( value != null)
+			{
+				return value;
+			}
 		}
-		String value = getProperties().get(inName);
-		return value;
+		if( getPresetParameters() != null )
+		{
+			for (Iterator iterator = fieldPresetParameters.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				String id = data.getName(); 
+				if( id.equals(inName))
+				{
+					String value = data.get("value");
+					if( value != null)
+					{
+						return value;
+					}
+				}
+			}
+		}
+		return null;
+		
 
 	}
 
@@ -198,7 +325,6 @@ public class ConvertInstructions
 	private void setProperty(String inName, int inVal)
 	{
 		setProperty(inName, String.valueOf(inVal));
-
 	}
 
 	public void setMaxScaledSize(int width, int height)
@@ -257,15 +383,7 @@ public class ConvertInstructions
 	public String getOutputExtension()
 	{
 		String ext = getProperty("outputextension");
-		if (ext != null)
-		{
-			return ext;
-		}
-		if (getOutputFile() != null)
-		{
-			return PathUtilities.extractPageType(getOutputPath());
-		}
-		return null;
+		return ext;
 	}
 
 	public String getOutputPath()
@@ -295,17 +413,17 @@ public class ConvertInstructions
 
 	public void setWatermarkPlacement(String inWatermarkPlacement)
 	{
-		addProperty("watermarkplacement", inWatermarkPlacement);
+		setProperty("watermarkplacement", inWatermarkPlacement);
 	}
 
 	public boolean isCrop()
 	{
-		return Boolean.parseBoolean(getProperty("iscrop"));
+		return Boolean.parseBoolean(getProperty("crop"));
 	}
 
 	public void setCrop(boolean inFieldCrop)
 	{
-		setProperty("iscrop", String.valueOf(inFieldCrop));
+		setProperty("crop", String.valueOf(inFieldCrop));
 
 	}
 
@@ -330,7 +448,7 @@ public class ConvertInstructions
 
 	public void setAssetId(String inInd)
 	{
-		addProperty("assetid", inInd);
+		setProperty("assetid", inInd);
 	}
 
 	public String getAssetSourcePath()
@@ -344,7 +462,7 @@ public class ConvertInstructions
 
 	public void setAssetSourcePath(String inInputSourcePath)
 	{
-		addProperty("assetsourcepath", inInputSourcePath);
+		setProperty("assetsourcepath", inInputSourcePath);
 	}
 
 	public String getInputPath()
@@ -354,10 +472,10 @@ public class ConvertInstructions
 
 	public void setInputPath(String inInputPath)
 	{
-		addProperty("inputpath", inInputPath);
+		setProperty("inputpath", inInputPath);
 	}
 
-	protected Map<String, String> getProperties()
+	public Map<String, String> getProperties()
 	{
 		if (fieldProperties == null)
 		{
@@ -402,6 +520,11 @@ public class ConvertInstructions
 	protected void loadPreset(Data inPreset)
 	{
 		setConvertPreset(inPreset);
+		setPresetParameters(null);
+		if( inPreset == null)
+		{
+			return;
+		}
 		String presetdataid = get("presetdataid");
 		if (presetdataid == null && inPreset != null)
 		{
@@ -413,17 +536,14 @@ public class ConvertInstructions
 			Collection params = paramsearcher.fieldSearch("parameterdata", presetdataid, "id");
 			if (params.size() > 0)
 			{
-				setParameters(params);
-				//Is this needed?
-				for (Iterator iterator = params.iterator(); iterator.hasNext();)
-				{
-					Data row = (Data) iterator.next();
-					setProperty(row.getName(), row.get("value"));
-				}
+				setPresetParameters(params);
 			}
 		}
-		setProperty("cachefilename", inPreset.get("outputfile"));
+		String exportname = inPreset.get("outputfile");
 		
+		setProperty("cachefilename", exportname); //TODO: remove this
+		//setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
+		setOutputExtension(PathUtilities.extractPageType(exportname));
 	}
 
 	public void loadSettings(Map inSettings)
@@ -490,6 +610,14 @@ public class ConvertInstructions
 				{
 					settings.put(key, String.valueOf(value));
 				}
+				else if( value instanceof String[] )
+				{
+					String[] vals = (String[])value;
+					if( vals.length > 0)
+					{
+						settings.put(key, vals[0]);
+					}
+				}
 			}
 			getProperties().putAll(settings);
 		}
@@ -546,4 +674,5 @@ public class ConvertInstructions
 		return type;
 	}
 
+	
 }

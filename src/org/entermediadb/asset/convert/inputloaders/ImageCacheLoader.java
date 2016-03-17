@@ -26,7 +26,7 @@ public class ImageCacheLoader implements InputLoader
 		String cachetype = "jpg";
 		if( isDocument )
 		{
-			 cachetype = "pdf";
+			 cachetype = "pdf";  //Only if larger than 1024
 		}
 		
 		String page = null;

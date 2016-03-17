@@ -10,6 +10,11 @@
   <parameter id="imagepreview2" parameterdata="imagepreview" value="768" >prefheight</parameter> 
   <data name="background" value="white" parameterdata="imagepreview" id="1447784755291"/> 
   <data name="layers" value="flatten" parameterdata="imagepreview" id="1447786760361"/>
+
+  <parameter id="imagelarge1" parameterdata="imagelarge" value="640" >prefwidth</parameter> 
+  <parameter id="imagelarge2" parameterdata="imagelarge" value="480" >prefheight</parameter> 
+
+
   <data name="x1" value="0" parameterdata="imagecrop" id="1447788355708"/>  
   <data name="y1" value="0" parameterdata="imagecrop" id="1447788364305"/>
   <data name="crop" value="true" parameterdata="imagecrop" id="1447788371700"/>

@@ -35,10 +35,6 @@ public class Asset implements MultiValued, SaveableData
 {
 	private static final Log log = LogFactory.getLog(Asset.class);
 
-	protected String fieldId;
-	protected String fieldName;
-	protected String fieldSourcePath;
-	protected String fieldCatalogId;
 	protected Page fieldSourcePage;
 	protected String fieldDescription;
 	protected List fieldCategories;
@@ -46,7 +42,6 @@ public class Asset implements MultiValued, SaveableData
 	protected ValuesMap fieldMap;
 	
 	protected List<String> fieldKeywords;
-	protected int fieldOrdering = -1; // the order that these asset should
 	protected MediaArchive fieldMediaArchive;
 	// be shown in a list
 	protected Collection fieldRelatedAssets;
@@ -70,7 +65,6 @@ public class Asset implements MultiValued, SaveableData
 			getMap().put(inKey, inValues);
 		}
 	}
-	
 	
 	public boolean isFolder()
 	{
@@ -99,29 +93,26 @@ public class Asset implements MultiValued, SaveableData
 	
 	public int getOrdering()
 	{
-		return fieldOrdering;
+		return (int)getValue("ordering");
 	}
 
 	public void setOrdering(int inOrdering)
 	{
-		fieldOrdering = inOrdering;
+		setValue("ordering",inOrdering);
 	}
 
 	public String getName()
 	{
-		return fieldName;
+		return get("name");
 	}
 
 	public void setName(String inName)
 	{
 		if (inName != null)
 		{
-			fieldName = inName.trim();
+			inName = inName.trim();
 		}
-		else
-		{
-			fieldName = null;
-		}
+		setProperty("name", inName);
 	}
 
 	/**
@@ -160,12 +151,12 @@ public class Asset implements MultiValued, SaveableData
 
 	public String getId()
 	{
-		return fieldId;
+		return (String)getValue("id");
 	}
 
 	public void setId(String inString)
 	{
-		fieldId = inString;
+		setValue("id",inString);
 	}
 
 	/**
@@ -174,29 +165,14 @@ public class Asset implements MultiValued, SaveableData
 
 	public String get(String inAttribute)
 	{
-		if ("name".equals(inAttribute))
-		{
-			return getName();
-		}
-		else if ("id".equals(inAttribute) || "_id".equals(inAttribute))
-		{
-			return getId();
-		}
-		else if ("sourcepath".equals(inAttribute))
-		{
-			return getSourcePath();
-		}
-		else if ("fulltext".equals(inAttribute))
+		
+		if ("fulltext".equals(inAttribute))
 		{
 			if(getMediaArchive() != null){
 				return getMediaArchive().getAssetSearcher().getFulltext(this);
 			} 
 		}
-		else if ("catalogid".equals(inAttribute))
-		{
-			return getCatalogId();
-		}
-		else if ("keywords".equals(inAttribute))
+		if ("keywords".equals(inAttribute))
 		{
 			List<String> keywords = getKeywords();
 			if( keywords.size() == 0 )
@@ -235,7 +211,12 @@ public class Asset implements MultiValued, SaveableData
 			return out.toString();
 		}
 
-		String value = (String) getProperties().get(inAttribute);
+		Object value = getValue(inAttribute);
+		if( value == null)
+		{
+			return null;
+		}
+		return String.valueOf(value);
 		// if ( value instanceof PageProperty)
 		// {
 		// PageProperty prop = (PageProperty)value;
@@ -254,7 +235,7 @@ public class Asset implements MultiValued, SaveableData
 //				}
 //			}
 //		}
-		return value;
+
 	}
 
 	public void removeProperties(String[] inKeys)
@@ -372,14 +353,10 @@ public class Asset implements MultiValued, SaveableData
 		{
 			return getId();
 		}
-		if ("name".equals(inKey))
-		{
-			return getName();
-		}
-		if ("sourcepath".equals(inKey))
-		{
-			return getSourcePath();
-		}
+//		if ("sourcepath".equals(inKey))
+//		{
+//			return getSourcePath();
+//		}
 		if ("category-exact".equals(inKey))
 		{
 			StringBuffer buffer = new StringBuffer();
@@ -410,14 +387,10 @@ public class Asset implements MultiValued, SaveableData
 		{
 			setId(inValue);
 		}
-		else if ("name".equals(inKey))
-		{
-			setName(inValue);
-		}
-		else if ("sourcepath".equals(inKey))
-		{
-			setSourcePath(inValue);
-		}
+//		else if ("sourcepath".equals(inKey))
+//		{
+//			setSourcePath(inValue);
+//		}
 		else if ("keywords".equals(inKey))
 		{
 			getKeywords().clear();
@@ -651,12 +624,12 @@ public class Asset implements MultiValued, SaveableData
 
 	public String getSourcePath()
 	{
-		return fieldSourcePath;
+		return getProperty("sourcepath");
 	}
 
 	public void setSourcePath(String inSourcePath)
 	{
-		fieldSourcePath = inSourcePath;
+		setProperty("sourcepath", inSourcePath);
 	}
 
 	public String getSaveAsName()
@@ -768,12 +741,12 @@ public class Asset implements MultiValued, SaveableData
 
 	public String getCatalogId()
 	{
-		return fieldCatalogId;
+		return (String)getValue("catalogid");
 	}
 
 	public void setCatalogId(String inCatalogId)
 	{
-		fieldCatalogId = inCatalogId;
+		setValue("catalogid",inCatalogId);
 	}
 
 	public String getFileFormat()

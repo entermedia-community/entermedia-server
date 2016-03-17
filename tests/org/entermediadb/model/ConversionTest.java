@@ -16,12 +16,25 @@ import org.openedit.page.Page;
 
 public class ConversionTest extends BaseEnterMediaTest
 {
+	static boolean reindex = false;
+	
+	protected void setUp() throws Exception
+	{
+	    //executed only once, before the first test
+		if( reindex )
+		{
+			MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+			archive.getAssetSearcher().reIndexAll();
+			Thread.sleep(1000);
+			reindex = false;
+		}
+
+	}
+	
 	//conversion convertion  
 	public void testPreset() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		archive.getAssetSearcher().reIndexAll();
-		Thread.sleep(1000);
 		Asset asset = archive.getAsset("105");
 		assertNotNull(asset);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("image");
@@ -37,9 +50,11 @@ public class ConversionTest extends BaseEnterMediaTest
 		Map settings = new HashMap();
 		settings.put("prefwidth", "100");
 		settings.put("prefheight", "100");
-		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(settings, "users/admin/105", "jpg");
+		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(null, settings, "users/admin/105", "image1024x768.jpg");
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
+		//Make sure we save the right final file output
+		assertEquals("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/users/admin/105/image100x100.jpg",result.getOutput().getPath(), result.getOutput().getPath() );
 		
 	}
 	public void testVideo() throws Exception
@@ -74,11 +89,11 @@ public class ConversionTest extends BaseEnterMediaTest
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		Asset asset = archive.getAsset("101"); //mpg
 		assertNotNull(asset);
-		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalog/generated/" + asset.getSourcePath() + "/image200x200offset3.jpg");
 		
+		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/image200x200offset3.jpg");		
 		archive.getPageManager().removePage(page);
 		
-		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3&assetid=101");
+		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3");
 		getFixture().getEngine().executePageActions(inReq);
 		getFixture().getEngine().executePathActions(inReq);
 		

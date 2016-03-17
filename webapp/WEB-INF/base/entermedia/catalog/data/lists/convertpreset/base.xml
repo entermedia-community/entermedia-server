@@ -18,7 +18,9 @@
     <preset id="2" guid="ffmpeg720p"  display="true" outputfile="video720p.avi" fileexportformat="${shortfilename}HQ.avi" transcoderid="ffmpeg" inputtype="video" extension="avi" ordering="08">Video HQ AVI</preset>
     <preset id="1" guid="ffmpeg1080p" display="true" outputfile="video1080p.mp4" fileexportformat="${shortfilename}1080p.mp4" transcoderid="ffmpeg" inputtype="video"  extension="mp4" ordering="09">Video HQ MP4</preset>
 
-    <preset id="previewffmpegthumb" guid="previewffmpegthumb" display="true" outputfile="image1024x768.jpg" fileexportformat="${shortfilename}1024x768.jpg" transcoderid="ffmpegimage" extension="mp4" inputtype="video" onimport="true" ordering="10">Video Thumb</preset>
+    <preset id="previewffmpegthumb" guid="previewffmpegthumb" display="true" outputfile="image1024x768.jpg" fileexportformat="${shortfilename}1024x768.jpg" transcoderid="ffmpegimage" extension="mp4" inputtype="video" onimport="true" ordering="10">Video Extra Large Image</preset>
+    <preset id="videoimagelarge" guid="imagelarge"  outputfile="image640x480.jpg" display="true" fileexportformat="${shortfilename}640x480.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="11" >Video Large Image</preset>
+    <preset id="videoimagecrop" guid="imagecrop"  outputfile="image110x62cropped.jpg" display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="12" >Video Crop Image</preset>
 
     <preset id="streamserver" display="false" outputfile="video.flv" fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="11">Streaming Video</preset>
 

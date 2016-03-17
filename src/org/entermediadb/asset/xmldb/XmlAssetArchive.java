@@ -91,8 +91,13 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 	{
 		try
 		{
+			if( inAsset == null)
+			{
+				log.info("Asset is null");
+				return;
+			}
 			Page page = getPageManager().getPage(buildXmlPath(inAsset));
-			if( page.exists() )
+			if( page != null && page.exists() )
 			{
 				getPageManager().removePage(page);
 			}

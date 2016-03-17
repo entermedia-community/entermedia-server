@@ -312,8 +312,8 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 			throw new OpenEditException("Could not run conversions on deleted asset ${inAsset.getSourcePath()}");
 		}
 		//inStructions.setAssetSourcePath(asset.getSourcePath());
-		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
-		inStructions.setOutputExtension(extension);
+//		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
+//		inStructions.setOutputExtension(extension);
 
 		//new submitted retry missinginput
 		if("new".equals(status) || "submitted".equals(status) || "retry".equals(status)  || "missinginput".equals(status))

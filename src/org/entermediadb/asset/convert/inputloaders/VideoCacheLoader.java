@@ -65,10 +65,14 @@ public class VideoCacheLoader implements InputLoader
 		} 
 		
 		input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/video.mp4");
-		if (input != null && input.getLength() < 2 && input.exists())
+		if (input == null || input.getLength() < 2 )
 		{
 			//TODO: Save the fact that we used a cached file
-			return input;
+			return null;
+		}
+		else
+		{
+			//instruction.setUsedCache(true)
 		}
 		return input;
 

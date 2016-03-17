@@ -24,7 +24,7 @@ public interface MediaTranscoder
 	 * @return
 	 */
 	ConvertResult convert(ConvertInstructions inStructions);
-
+	ConvertResult convertIfNeeded(ConvertInstructions inStructions);
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions );
 
 	void setPageManager(PageManager inPageManager);

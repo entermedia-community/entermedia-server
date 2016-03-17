@@ -4,15 +4,21 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.oltu.oauth2.client.response.OAuthErrorResponse;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.PathUtilities;
 
 public abstract class BaseConversionManager implements ConversionManager
 {
+	private static final Log log = LogFactory.getLog(BaseConversionManager.class);
+
 	protected MediaArchive fieldMediaArchive;
 	protected Collection fieldInputLoaders;
 	protected Collection fieldOutputFilters;
@@ -59,33 +65,54 @@ public abstract class BaseConversionManager implements ConversionManager
 	}
 
 	
-	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath)
+	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath, String exportName)
 	{
-		//First thing is first. We need to check out cache and make sure this file is not already in existence
-		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
-		ContentItem output = instructions.getOutputFile();
+		ContentItem existing = getMediaArchive().getContent( "/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + inSourcePath + "/" + exportName);
 		ConvertResult result = new ConvertResult();
-		result.setOutput(output);
-		result.setInstructions(instructions);
+		result.setOutput(existing);
 		result.setOk(true);
-
-		if( output.getLength() < 2 )
+		if( existing.exists() )
 		{
-			result.setComplete(false);
-		} else{
 			result.setComplete(true);
-		}				
+		}
 		return result;
+		//Require export name to be set
+		
+//		String outputextension = PathUtilities.extractPageType( exportName );
+//		inSettings.put("outputextension", outputextension);
+//		if( exportName.startsWith("image") && exportName.length() > 10 && exportName.contains("x"))
+//		{
+//			//see if there is a with and height?
+//			String size = exportName.substring(5,exportName.length() - outputextension.length() - 1 );
+//			int cutoff= size.indexOf("x");
+//			String width = size.substring(0,cutoff);
+//			String height = size.substring(cutoff + 1,size.length());	
+//			inSettings.put("prefwidth", width);
+//			inSettings.put("prefheight", height);
+//		}
+//		Data preset = null;
+//		if( exportName.startsWith("image") || exportName.startsWith("video") || exportName.startsWith("document") || exportName.startsWith("audio") ) )
+//		{
+//			preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), exportName);
+//		}
+//
+//		
+//		//First thing is first. We need to check out cache and make sure this file is not already in existence
+//		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
+//		
+//
+//		
+//		return result;
 		
 	}
 	
 	//Come up with the expected output path based on the input parameters
 	//All image handlers will use a standard file saving conversion
 	@Override
-	public ConvertResult createOutputIfNeeded(String inSourcePath, Map inSettings)
+	public ConvertResult createOutputIfNeeded(String inSourcePath,String inExportName, Map inSettings)
 	{
 		//First thing is first. We need to check out cache and make sure this file is not already in existence
-		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
+		ConvertInstructions instructions = createInstructions(inSourcePath, inExportName, inSettings);
 		ContentItem output = instructions.getOutputFile();
 		if( output.getLength() < 2 )
 		{
@@ -110,14 +137,14 @@ public abstract class BaseConversionManager implements ConversionManager
 
 
 	@Override
-	public ConvertInstructions createInstructions(Asset inAsset, String inFileName)
+	public ConvertInstructions createInstructions(Asset inAsset, String inExportName)
 	{
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inFileName);
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inExportName);
 		ConvertInstructions instructions = createNewInstructions();
 		instructions.setAsset(inAsset);
 		instructions.loadPreset(preset);
-		ContentItem output = findOutputFile(instructions);
-		instructions.setOutputFile(output);
+//		ContentItem output = findOutputFile(instructions);
+//		instructions.setOutputFile(output);
 		return instructions;		
 	}
 
@@ -128,8 +155,8 @@ public abstract class BaseConversionManager implements ConversionManager
 		instructions.loadPreset(inPreset);
 		instructions.setAsset(inAsset);
 		
-		ContentItem output = findOutputFile(instructions);
-		instructions.setOutputFile(output);
+//		ContentItem output = findOutputFile(instructions);
+//		instructions.setOutputFile(output);
 		return instructions;
 		
 	}
@@ -146,20 +173,23 @@ public abstract class BaseConversionManager implements ConversionManager
 		instructions.loadPreset(inPreset);
 		//instructions.setAssetSourcePath(inSourcePath);
 		instructions.setAsset(inAsset);
-		ContentItem output = findOutputFile(instructions);
-		instructions.setOutputFile(output);
+//		ContentItem output = findOutputFile(instructions);
+//		instructions.setOutputFile(output);
 		return instructions;
 	}
 	
-	public ConvertInstructions createInstructions(String inSourcePath, Map inSettings)
+	public ConvertInstructions createInstructions(String inSourcePath, String inExportName, Map inSettings)
 	{ 
 		ConvertInstructions instructions = createNewInstructions();
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inExportName);
+		if( preset == null)
+		{
+			//log.error("No preset defined for export file name" + inExportName);
+			instructions.setOutputExtension(PathUtilities.extractPageType(inExportName)); //For cases where the output is not configured
+		}
+		instructions.loadPreset(preset);
 		instructions.loadSettings(inSettings);
 		instructions.setAssetSourcePath(inSourcePath);
-		//instructions.loadPreset(inPreset);
-		ContentItem output = findOutputFile(instructions);
-		instructions.setOutputFile(output);
-		//calculateOutputPath(inPreset);
 		return instructions;
 		
 	}
@@ -223,7 +253,7 @@ public abstract class BaseConversionManager implements ConversionManager
     	return getDefaultTranscoder();
     }
 
-	public MediaTranscoder findTranscoderByPreset(Data preset)
+	protected MediaTranscoder findTranscoderByPreset(Data preset)
 	{
 		String creator = preset.get("creator");
 		if(creator == null){

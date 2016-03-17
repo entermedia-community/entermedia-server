@@ -357,7 +357,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		}
 		
 		long taken = ((new Date().getTime() - started.getTime())/6000L);
-		log.info("${inFolder} Imported ${paths.size()} in ${taken} milli-seconds" );
+		log.info(inFolder + " Imported " + paths.size() + " in " + taken + " milli-seconds" );
 		
 		return paths;
 	}

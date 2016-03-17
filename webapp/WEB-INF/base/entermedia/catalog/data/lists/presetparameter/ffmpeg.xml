@@ -36,6 +36,11 @@
   <parameter id="ffmpegslomo5" parameterdata="ffmpegslomo" value="medium" >preset</parameter> 
   <parameter id="ffmpegslomo6" parameterdata="ffmpegslomo" value=".5" >setpts</parameter> 
   <parameter id="ffmpegslomo7" parameterdata="ffmpegslomo" value="experimental" >strict</parameter>
+  
   <parameter id="previewffmpegthumb1" parameterdata="previewffmpegthumb" value="2" >timeoffset</parameter> 
+  <parameter id="previewffmpegthumb2" parameterdata="previewffmpegthumb" value="1024" >prefwidth</parameter> 
+  <parameter id="previewffmpegthumb3" parameterdata="previewffmpegthumb" value="768" >prefheight</parameter> 
+
+
   
 </properties>

@@ -1711,6 +1711,7 @@
 		</property>
 		<property name="inputLoaders">
 			<list>
+				<ref bean="videoCacheLoader" />
 				<ref bean="originalInputLoader" />
 			</list>
 		</property>	
@@ -1737,6 +1738,9 @@
 	</bean>
 
 	<bean id="originalInputLoader" class="org.entermediadb.asset.convert.inputloaders.OriginalInputLoader" scope="prototype" >
+	</bean>
+
+	<bean id="videoCacheLoader" class="org.entermediadb.asset.convert.inputloaders.VideoCacheLoader" scope="prototype" >
 	</bean>
 
 	<bean id="imageCacheLoader" class="org.entermediadb.asset.convert.inputloaders.ImageCacheLoader" scope="prototype" >

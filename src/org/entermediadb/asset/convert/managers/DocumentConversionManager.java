@@ -1,16 +1,6 @@
 package org.entermediadb.asset.convert.managers;
 
-import java.util.HashMap;
-
 import org.entermediadb.asset.convert.BaseConversionManager;
-import org.entermediadb.asset.convert.ConversionManager;
-import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.TranscodeTools;
-import org.joda.time.convert.ConverterManager;
-import org.entermediadb.asset.convert.MediaTranscoder;
-import org.openedit.Data;
-import org.openedit.repository.ContentItem;
 
 public class DocumentConversionManager extends BaseConversionManager
 {
@@ -21,84 +11,84 @@ public class DocumentConversionManager extends BaseConversionManager
 	//video.mp4
 	//Original file
 	
-	public ContentItem findOutputFile(ConvertInstructions inStructions)
-	{
-		StringBuffer path = new StringBuffer();
-
-		//legacy for people who want to keep their images in the old location
-		String prefix = inStructions.getProperty("pathprefix");
-		if( prefix != null)
-		{
-			path.append(prefix);
-		}
-		else
-		{
-			path.append("/WEB-INF/data");
-			path.append(getMediaArchive().getCatalogHome());
-			path.append("/generated/");
-		}
-		path.append(inStructions.getAssetSourcePath());
-		path.append("/");
-
-		String postfix = inStructions.getProperty("pathpostfix");
-		if( postfix != null)
-		{
-			path.append(postfix);
-		}
-		String cachefilename = inStructions.get("cachefilename");
-		if( cachefilename != null)
-		{
-			path.append(cachefilename);
-			return getMediaArchive().getContent( path.toString() );
-		}
-
-//		if( "pdf".equals(inStructions.getOutputExtension()) )
+//	public ContentItem findOutputFile(ConvertInstructions inStructions)
+//	{
+//		StringBuffer path = new StringBuffer();
+//
+//		//legacy for people who want to keep their images in the old location
+//		String prefix = inStructions.getProperty("pathprefix");
+//		if( prefix != null)
 //		{
-//			path.append("document");
+//			path.append(prefix);
 //		}
 //		else
 //		{
-			path.append(getCacheName()); //part of filename
+//			path.append("/WEB-INF/data");
+//			path.append(getMediaArchive().getCatalogHome());
+//			path.append("/generated/");
 //		}
-//		if (inStructions.getMaxScaledSize() != null) // If either is set then
+//		path.append(inStructions.getAssetSourcePath());
+//		path.append("/");
+//
+//		String postfix = inStructions.getProperty("pathpostfix");
+//		if( postfix != null)
 //		{
-//			path.append(Math.round(inStructions.getMaxScaledSize().getWidth()));
-//			path.append("x");
-//			path.append(Math.round(inStructions.getMaxScaledSize().getHeight()));
+//			path.append(postfix);
 //		}
-		if (inStructions.getPageNumber() > 1)
-		{
-			path.append("page");
-			path.append(inStructions.getPageNumber());
-		}
-//		if(inStructions.getProperty("timeoffset") != null)
+//		String cachefilename = inStructions.get("cachefilename");
+//		if( cachefilename != null)
 //		{
-//			path.append("offset");
-//			path.append(inStructions.getProperty("timeoffset"));
+//			path.append(cachefilename);
+//			return getMediaArchive().getContent( path.toString() );
 //		}
-//		if(inStructions.isWatermark())
+//
+////		if( "pdf".equals(inStructions.getOutputExtension()) )
+////		{
+////			path.append("document");
+////		}
+////		else
+////		{
+//			path.append(getCacheName()); //part of filename
+////		}
+////		if (inStructions.getMaxScaledSize() != null) // If either is set then
+////		{
+////			path.append(Math.round(inStructions.getMaxScaledSize().getWidth()));
+////			path.append("x");
+////			path.append(Math.round(inStructions.getMaxScaledSize().getHeight()));
+////		}
+//		if (inStructions.getPageNumber() > 1)
 //		{
-//			path.append("wm");
+//			path.append("page");
+//			path.append(inStructions.getPageNumber());
 //		}
-//		
-//		if(inStructions.getProperty("colorspace") != null){
-//			path.append(inStructions.getProperty("colorspace"));
-//		}
-//		if(inStructions.isCrop())
+////		if(inStructions.getProperty("timeoffset") != null)
+////		{
+////			path.append("offset");
+////			path.append(inStructions.getProperty("timeoffset"));
+////		}
+////		if(inStructions.isWatermark())
+////		{
+////			path.append("wm");
+////		}
+////		
+////		if(inStructions.getProperty("colorspace") != null){
+////			path.append(inStructions.getProperty("colorspace"));
+////		}
+////		if(inStructions.isCrop())
+////		{
+////			path.append("cropped");
+////		}
+//		if (inStructions.getOutputExtension() != null)
 //		{
-//			path.append("cropped");
+//			path.append("." + inStructions.getOutputExtension());
 //		}
-		if (inStructions.getOutputExtension() != null)
-		{
-			path.append("." + inStructions.getOutputExtension());
-		}
-		return getMediaArchive().getContent( path.toString() );
-	}
+//		return getMediaArchive().getContent( path.toString() );
+//	}
 
-	protected String getCacheName()
-	{
-		return "document";
-	}
+//	protected String getCacheName()
+//	{
+//		return "document";
+//	}
 
 //	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 //	{

@@ -172,27 +172,27 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 			inTosave.clear();
 		}
 	}
-
+	//TODO: remove this
 	public String getProperty(String inKey) 
 	{
 		return get(inKey);
 	}
-	public String get(String inId)
+	public Object getValue(String inId)
 	{	
 		if (size() > 0)
 		{
-			String val = (String)getPropertiesSet().get(inId); //set by the user since last save
+			Object val = (String)getPropertiesSet().get(inId); //set by the user since last save
 //			if( val == null && fieldPropertiesPreviouslySaved != null)
 //			{
 //				val = (String)getPropertiesPreviouslySaved().get(inId);
 //			}
 			if( val == null)
 			{
-				val = super.get(inId); //set by looking over the cached results
+				val = super.getValue(inId); //set by looking over the cached results
 			}
 			if( val != null ) //already set to a value
 			{
-				if( val.length() == 0 )
+				if( (val instanceof String) && ((String)val).length() == 0 )
 				{
 					return null; //set to empty
 				}
@@ -205,7 +205,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 			//return something only if all the values match the first record
 			val = getValueFromResults(inId);
 			//getPropertiesPreviouslySaved().put(inId, val);
-			super.setProperty(inId, val);
+			super.setValue(inId, val);
 			return val;
 		}
 		
@@ -213,8 +213,8 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	}
 	protected String getValueFromResults(String inKey) 
 	{
-		String val;
-		val = ((Data)getSelectedResults().first()).get(inKey);
+		String val = ((Data)getSelectedResults().first()).get(inKey);
+		//Object objectval = ((Data)getSelectedResults().first()).get(inKey);
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -373,6 +373,8 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 						//Need to add any that are set by user in value 
 						Set added = collect(value);
 						Set existing = collect(datavalue);
+						
+						//TODO: Save as objects once we determine the value has changed
 						Set previousCommonOnes = collect(getValueFromResults(key)); 
 						saveMultiValues((MultiValued)loaded, key, added, existing,previousCommonOnes);
 					}

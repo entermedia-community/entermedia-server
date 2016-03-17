@@ -2,6 +2,7 @@ package org.entermediadb.elasticsearch.searchers;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
@@ -71,7 +72,6 @@ import org.openedit.util.IntCounter;
 
 public class BaseElasticSearcher extends BaseSearcher
 {
-
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	protected ElasticNodeManager fieldElasticNodeManager;
 	//protected IntCounter fieldIntCounter;
@@ -1234,21 +1234,23 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 
 			String key = detail.getId();
-			String value = inData.get(key);
+			Object value = inData.getValue(key);
 			
 //			if(key.contains(".")){
 //				log.info("Warning - data id : " + inData.getId() + " of type " + getSearchType() + " contained a . in field " + key);
 //				key = key.replace(".", "_");
 //			}
-			
-			if (value != null && value.trim().length() == 0)
-			{
-				value = null;
-			}
 			try
 			{
-				if ("_id".equals(key) || "_parent".equals(key))
-					
+				if( detail == null)
+				{
+//					if (value != null && value.trim().length() == 0)
+//					{
+//						value = null;
+//					}
+					continue;
+				}
+				if ("_id".equals(key) || "_parent".equals(key) || "_all".equals(key))
 				{
 					// if( value != null)
 					// {
@@ -1257,74 +1259,82 @@ public class BaseElasticSearcher extends BaseSearcher
 					// }
 					continue;
 				}
-				
-				
-				
-				
-
-				if (detail != null && detail.isDate())
+				if (detail.isDate() )
 				{
 					if (value != null)
 					{
-						// ie date =
-						// DateStorageUtil.getStorageUtil().parseFromStorage(value);
-						Date date = DateStorageUtil.getStorageUtil().parseFromStorage(value);
+						Date date = null;
+						if( value instanceof Date)
+						{
+							date = (Date)value;
+						}
+						else
+						{
+							date = DateStorageUtil.getStorageUtil().parseFromStorage((String)value);
+						}
 						if (date != null)
 						{
 							inContent.field(key, date);
 						}
-
 					}
 				}
-				else if (detail != null && detail.isBoolean())
+				else if (detail.isBoolean())
 				{
-					if (value == null)
+					boolean val = false;
+					if( value instanceof Boolean)
 					{
-						inContent.field(key, Boolean.FALSE);
+						val = (Boolean)value;
 					}
-					else
+					if (value != null)
 					{
-						inContent.field(key, Boolean.valueOf(value));
+						val = Boolean.valueOf((String)value);
 					}
+					inContent.field(key, val);
 				}
-				else if (detail != null && detail.isDataType("number"))
+				else if (detail.isDataType("number"))
 				{
-					if (value == null)
+					Number val = 0;
+					
+					if (value instanceof Number)
 					{
-						inContent.field(key, Long.valueOf(0));
+						val = (Number)value;
 					}
-					else
+					else if( value != null)
 					{
-						inContent.field(key, Long.valueOf(value));
+						val = Long.valueOf((String)value);
 					}
+					inContent.field(key, val);
 				}
 
-				else if (detail != null && detail.isList())
+				else if (detail.isMultiValue())
 				{
-
-					ArrayList values = new ArrayList();
-					if (value != null && value.contains("|"))
+					if( value != null)
 					{
-						String[] vals = VALUEDELMITER.split(value);
-
-						inContent.field(key, vals);
-						
-					}
-					else
-					{
-						inContent.field(key, value);
+						Collection values = null;
+						if( value instanceof Collection)
+						{
+							values = (Collection)value;
+						}
+						else if( value != null)
+						{
+							String vs = (String)value;
+							if (vs.contains("|"))
+							{
+								String[] vals = VALUEDELMITER.split(vs);
+								values = Arrays.asList( vals );
+							}
+							else
+							{
+								values = Arrays.asList( value );
+							}
+						}
+						inContent.field(key,values);
 					}
 				}
-				
-				
-				else if (detail != null && detail.isDataType("geo_point"))
+				else if (detail.isDataType("geo_point"))
 				{
 					inContent.field(key, value);
 				}
-				
-				
-				
-
 				else if (key.equals("description"))
 				{
 					StringBuffer desc = new StringBuffer();
@@ -1347,7 +1357,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					if (value == null)
 					{
-						// inContent.field(key, ""); // this ok?
+						//log.info( getSearchType() + "Had null value " + key);
 					}
 					else
 					{
@@ -1474,12 +1484,15 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						data = createNewData();		
 						//copyData(data, typed);
+						updateData(response.getSource(), data);
 					}	
 					else
 					{
 						data = new BaseData();
+						//data.setProperties(response.getSource());
+						updateData(response.getSource(), data);
 					}
-					updateData(response.getSource(), data);
+					//log.info(response.getSourceAsString());
 					data.setId(inValue);
 					//data.setName(data.getName());
 					//data.setSourcePath(data.getSourcePath());
@@ -1617,10 +1630,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		return null;
 	}
-
-	
-	
-	
 	public void updateData(Map inSource, Data inData){
 		for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();)
 		{

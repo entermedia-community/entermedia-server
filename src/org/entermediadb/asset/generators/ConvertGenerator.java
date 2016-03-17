@@ -51,29 +51,11 @@ public class ConvertGenerator extends FileGenerator
 		{
 			sourcePath = archive.getSourcePathForPage(inReq);
 		}
-
 		
-		String outputype = PathUtilities.extractPageType(inPage.getPath());
-		if( outputype == null )
-		{
-			return;
-		}
-		outputype = outputype.toLowerCase();
-		if(outputype.contains("?")){
-			outputype = outputype.substring(0, outputype.indexOf("?"));
-		}
-		String name = inPage.getName();
-		
-		if( name.startsWith("image") && name.length() > 10 && name.contains("x"))
-		{
-			//see if there is a with and height?
-			String size = name.substring(5,name.length() - outputype.length() - 1 );
-			int cutoff= size.indexOf("x");
-			String width = size.substring(0,cutoff);
-			String height = size.substring(cutoff + 1,size.length());	
-			inReq.setRequestParameter("prefwidth", width);
-			inReq.setRequestParameter("prefheight", height);
-		}
+//		outputype = outputype.toLowerCase();
+//		if(outputype.contains("?")){
+//			outputype = outputype.substring(0, outputype.indexOf("?"));
+//		}
 		
 		//TODO: Use hard coded path lookups for these based on media type?
 		
@@ -92,10 +74,18 @@ public class ConvertGenerator extends FileGenerator
 			all.put(type.getName(), type.getValue());
 		}
 		all.putAll( inReq.getPageMap()); //these could be objects, needed?
-		all.putAll( inReq.getParameterMap() );
+		Map args = inReq.getParameterMap();
+		
+		
 		//return calculateInstructions(all, inArchive, inOutputType, inSourcePath);
 		//convert is not null because this generator would not be called with invalid path .jpg or .mp3 only
-		ConvertResult result = transcodetools.createOutputIfNeeded(all,sourcePath, outputype); //String inSourcePath, Data inPreset, String inOutputType);
+		String name = inPage.get("exportname");
+		if( name == null)
+		{
+			//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
+			name = inPage.getName();
+		}
+		ConvertResult result = transcodetools.createOutputIfNeeded(all,args,sourcePath, name); //String inSourcePath, Data inPreset, String inOutputType);
 		
 		if( result.isComplete() )
 		{

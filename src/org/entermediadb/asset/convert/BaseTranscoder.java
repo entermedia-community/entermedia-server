@@ -120,10 +120,21 @@ public abstract class BaseTranscoder implements MediaTranscoder
 	}
 	
 	
-	
-	
+	@Override
+	public ConvertResult convertIfNeeded(ConvertInstructions inStructions)
+	{
+		if( inStructions.isForce() || !inStructions.getOutputFile().exists())
+		{
+			return convert(inStructions);
+		}
+		ConvertResult result = new ConvertResult();
+		result.setInstructions(inStructions);
+		result.setOutput(inStructions.getOutputFile());
+		result.setComplete(true);
+		result.setOk(true);
+		return result;
 
-	
+	}
 
 	/**
 	 * For this to work, inSourcePath needs to have an extention, i.e.

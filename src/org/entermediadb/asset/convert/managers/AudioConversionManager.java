@@ -59,27 +59,27 @@ public class AudioConversionManager extends BaseConversionManager
 	}
 */
 
-	@Override
-	public ContentItem findOutputFile(ConvertInstructions inStructions)
-	{
-		StringBuffer path = new StringBuffer();
-		String prefix = inStructions.getProperty("pathprefix");
-		if (prefix != null)
-		{
-			path.append(prefix);
-		}
-		else
-		{
-			path.append("/WEB-INF/data");
-			path.append(inStructions.getMediaArchive().getCatalogHome());
-			path.append("/generated/");
-		}
-		path.append(inStructions.getAssetSourcePath());
-
-		path.append("/audio." + inStructions.getOutputExtension());
-		//inStructions.setOutputPath(path.toString());
-		return getMediaArchive().getContent( path.toString() );	
-	}
+//	@Override
+//	public ContentItem findOutputFile(ConvertInstructions inStructions)
+//	{
+//		StringBuffer path = new StringBuffer();
+//		String prefix = inStructions.getProperty("pathprefix");
+//		if (prefix != null)
+//		{
+//			path.append(prefix);
+//		}
+//		else
+//		{
+//			path.append("/WEB-INF/data");
+//			path.append(inStructions.getMediaArchive().getCatalogHome());
+//			path.append("/generated/");
+//		}
+//		path.append(inStructions.getAssetSourcePath());
+//
+//		path.append("/audio." + inStructions.getOutputExtension());
+//		//inStructions.setOutputPath(path.toString());
+//		return getMediaArchive().getContent( path.toString() );	
+//	}
 
 
 	@Override
