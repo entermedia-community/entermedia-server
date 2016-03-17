@@ -98,7 +98,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		
 		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
-		#if ($height > 0 && $width > 0)
+		#if ($height && $height > 0 && $width && $width > 0)
 			<h2>$result.name  <span class="h2e">${width}x${height}</span>  <span class="h2e">Aspect Ratio: $aspectratio</span></h2>
 			###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
 		#else

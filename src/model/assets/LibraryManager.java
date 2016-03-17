@@ -43,9 +43,9 @@ public class LibraryManager extends EnterMediaObject
 				{
 					break;
 				}
-				sofar = "${sofar}${split[i]}";
+				sofar = sofar + split[i];
 				String libraryid = getLibraryIdForFolder(librarySearcher,sofar);
-				sofar = "${sofar}/";
+				sofar = sofar + "/";
 		
 				if( libraryid != null )
 				{
@@ -69,13 +69,13 @@ public class LibraryManager extends EnterMediaObject
 			{
 				searcher.saveAllData(tosave, null);
 				savedsofar = tosave.size() + savedsofar;
-				log.info("assets added to library: ${savedsofar} " );
+				log.info("assets added to library: " + savedsofar );
 				tosave.clear();
 			}
 		}
 		searcher.saveAllData(tosave, null);
 		savedsofar = tosave.size() + savedsofar;
-		log.info("completedlibraryadd added : ${savedsofar} " );
+		log.debug("completedlibraryadd added: " + savedsofar );
 		if( fieldLibraryFolders != null)
 		{
 			fieldLibraryFolders.clear();

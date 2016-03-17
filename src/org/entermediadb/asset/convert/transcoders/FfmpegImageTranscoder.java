@@ -39,7 +39,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
 
-		ContentItem outputFile = inStructions.getOutputFile();
+		ContentItem outputFile = result.getOutput();
 		if(!inStructions.isForce() && outputFile.getLength() > 0 )
 		{
 			result.setOk(true);
@@ -63,12 +63,13 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 //		ci.setAssetSourcePath(inAsset.getSourcePath());
 //		ci.setOutputExtension("flv");
 //		inArchive.getCreatorManager().getMediaCreatorByOutputFormat("flv").populateOutputPath(inArchive, ci);
-		Page input = getPageManager().getPage("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/video.mp4");
+		//ContentItem input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/video.mp4");
+		ContentItem input = inStructions.getInputFile();
 		
 //		Page input = getPageManager().getPage(ci.getOutputPath());
 		
 		// Or the original file, if the flv does not exist
-		if( !input.exists() || input.length() == 0)
+		if( !input.exists() || input.getLength() == 0)
 		{
 			result.setOk(false);
             log.info("Input not ready yet" + input.getPath() );
@@ -92,7 +93,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 			log.error(e);
 			offset = "0";
 		}
-		if( input.length() < 1000000 )
+		if( input.getLength() < 1000000 )
 		{
 			offset = "0";
 		}
@@ -109,7 +110,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 
 		//com.add("-deinterlace");
 		com.add("-i");
-		com.add(input.getContentItem().getAbsolutePath()); // TODO: Might need [0] to pick the
+		com.add(input.getAbsolutePath()); // TODO: Might need [0] to pick the
 		// first image only
 		com.add("-y");
 		com.add("-vframes");
