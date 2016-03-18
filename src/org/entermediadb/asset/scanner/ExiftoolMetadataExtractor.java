@@ -421,7 +421,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			{
 				if( !isCMYKProfile(inInputFile) )
 				{
-					ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+					ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 	
 			        ConversionManager c = inArchive.getTranscodeTools().getManagerByFileFormat("png");
 					ConvertInstructions instructions = c.createInstructions(inAsset);

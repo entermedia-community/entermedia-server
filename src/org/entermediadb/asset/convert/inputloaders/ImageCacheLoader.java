@@ -17,81 +17,72 @@ public class ImageCacheLoader implements InputLoader
 	public ContentItem loadInput(ConvertInstructions inStructions)
 	{
 		boolean useoriginal = Boolean.parseBoolean(inStructions.get("useoriginalasinput"));
-    	if(useoriginal)
-    	{
-    		return null;
-    	}
-		
-		boolean isDocument = inStructions.isDocumentFormat();		
-		String cachetype = "jpg";
-		if( isDocument )
+		if (useoriginal)
 		{
-			 cachetype = "pdf";  //Only if larger than 1024
+			return null;
 		}
-		
+
 		String page = null;
-		if( inStructions.getPageNumber() > 1 )
+		if (inStructions.getPageNumber() > 1)
 		{
 			page = "page" + inStructions.getPageNumber();
 		}
-		
+
 		else
 		{
 			page = "";
 		}
-		
-	
-		ContentItem item = loadFile(inStructions, page, cachetype);
-		if(item == null && isDocument){
-			 item = loadFile(inStructions, page, "jpg");
+		ContentItem item = null;
+		boolean isDocument = inStructions.isDocumentFormat();
+		if (isDocument)
+		{
+			item = loadFile(inStructions, page, "png");
 		}
-		
-		
+		if (item == null)
+		{
+			item = loadFile(inStructions, page, "jpg");
+		}
+
 		return item;
-		
 
 	}
-	
-	
+
 	protected ContentItem loadFile(ConvertInstructions inStructions, String page, String cachetype)
 	{
 		ContentItem input = null;
-		if( inStructions.getMaxScaledSize() != null && inStructions.getTimeOffset() == null ) //page numbers are 1 based
-		{
-			Dimension box = inStructions.getMaxScaledSize();
 
-			if( box.getWidth() < 1025 )
-			{
-				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" +  inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
-				if(!input.exists()){
-					input = null;
-				}
-				
-			}
-		}
-		
-		if("pdf".equals(cachetype) ){
-			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/document.pdf");
-			if(!input.exists()){
-				input = null;
-			}
-		}
-
-		if( (input == null || input.getLength() < 2) && inStructions.getPageNumber() == 1 )
+		if (inStructions.getPageNumber() == 1)
 		{
 			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb." + cachetype);
-			if( input != null && input.getLength() < 2 && input.exists())
+			if (input != null && input.getLength() > 2)
 			{
 				//TODO: Save the fact that we used a cached file
 				return input;
 			}
 		}
-		else
+		if (inStructions.getMaxScaledSize() != null && inStructions.getTimeOffset() == null) //page numbers are 1 based
 		{
-			return input;
+			Dimension box = inStructions.getMaxScaledSize();
+
+			if (box.getWidth() < 1025)
+			{
+				input = inStructions.getMediaArchive().getContent("/WEB-INF/data" + inStructions.getMediaArchive().getCatalogHome() + "/generated/" + inStructions.getAssetSourcePath() + "/image1024x768" + page + "." + cachetype);
+				if (input.exists())
+				{
+					return input;
+				}
+
+			}
+		}
+		if ("png".equals(cachetype))
+		{
+			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/document.pdf");
+			if (input.exists())
+			{
+				return input;
+			}
 		}
 		return null;
 	}
 
-	
 }
