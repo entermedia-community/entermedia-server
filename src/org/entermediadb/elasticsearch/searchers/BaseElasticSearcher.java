@@ -1284,7 +1284,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						val = (Boolean)value;
 					}
-					if (value != null)
+					else if (value != null)
 					{
 						val = Boolean.valueOf((String)value);
 					}
