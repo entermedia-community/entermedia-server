@@ -259,12 +259,12 @@ legend {
 }
 button, input, select, textarea {
     font-size: 100%;
-    margin: 0 !important;
+
     vertical-align: baseline;
     *vertical-align: middle;
 }
 button, input {
-    line-height: 21px;
+    line-height: 24px;
     *overflow: visible;
 }
 table button, table input {
@@ -364,15 +364,9 @@ body {
 #emselectable {
     margin: 0 auto;
     overflow: auto;
+    width:100%;
 }
-#emselectable {
-    -webkit-border-radius: 5px 5px;
-    -moz-border-radius: 5px 5px;
-    -o-border-radius: 5px 5px;
-    -ms-border-radius: 5px 5px;
-    -khtml-border-radius: 5px 5px;
-    border-radius: 5px 5px;
-}
+
 #emselectable thead tr {
     font_size: 11px;
     font-weight: bold;
@@ -987,9 +981,9 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
 }
 input[type="text"], input[type="password"], textarea {
     border: 1px solid #ccc;
-    border-radius: 5px;
+    border-radius: 3px;
     padding: 0px 10px;
-    margin: 3px 0 5px 0;
+    
 }
 input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
     border: 1px solid #2790B0;
@@ -1239,7 +1233,7 @@ small {
     margin-left: 10px;
 }
 #login-submit {
-    margin: 10px 20px 0 0;
+    margin: 10px 0 0 0;
 }
 #registration-submit {
     margin-top: 10px;
@@ -1958,9 +1952,6 @@ ul#sub-nav li:hover ul {
 #emcontainer #main-results-table .firstheader {
     width: 28px;
     text-align: right;
-}
-.firstheader input {
-    float: right;
 }
 #main-results-table tr td:last-child {
     padding-right: 5px;
@@ -3550,9 +3541,6 @@ body #emcontainer .emasseteditorarea {
     padding: 10px;
     vertical-align: middle;
 }
-#main-results-table #tableheader th:first-child, #main-results-table #tableheader th:last-child {
-    border: none;
-}
 #main-results-table #tableheader th.sortable:hover {
     background: rgba(0,0,0,0.05);
     cursor: pointer;
@@ -3563,24 +3551,21 @@ body #emcontainer .emasseteditorarea {
     
 }
 #th-checkbox .anchor {
-    position: relative; 
-    top: -8px;
+        
 }
-
+#th-checkbox-left, #th-checkbox-right {float: right; width:15px;height:18px; margin-top:6px;}
 
 
 .select-dropdown-open {
-    width: 20px;
-    height: 28px;
-    position: absolute;
-    left: 27px;
-    top: 0;
+    width: 15px;
+    height: 25px;
+   
 }
 .select-dropdown-open.down {
-    background: url('../images/sort-desc.png') 5px 10px no-repeat;
+    background: url('../images/sort-desc.png') 4px 5px no-repeat;
 }
 .select-dropdown-open.up {
-    background: url('../images/sort-asc.png') 5px 10px no-repeat;
+    background: url('../images/sort-asc.png') 4px 5px no-repeat;
 }
 .select-dropdown {
     position: absolute;
@@ -4236,6 +4221,13 @@ div#folders.add .folder {
 #workarea ul li:nth-child(even) {
     background: #f5f5f5;
 }
+#workarea ul li.subheader {
+	 background: #e1e1e1;
+}
+#workarea .subheader-title {
+	float:left; 
+	line-height: 22px;
+}
 #workarea ul li:hover {
     background: #ededed;
 }
@@ -4650,7 +4642,7 @@ p.info {
 #usersearchresultspanel .tab-actions {
     height: 31px;
     padding-top: 13px;
-    margin-bottom: -15px;
+    
 }
 #advsearchpanel select {
     margin: 5px 0;

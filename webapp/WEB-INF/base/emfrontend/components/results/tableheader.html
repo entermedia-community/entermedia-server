@@ -1,6 +1,8 @@
 <tr id="tableheader">
 #if( $showtoolbar )
-	<th class="firstheader" id="th-checkbox"><input name="pagetoggle" type="checkbox" #if($hits.isPageSelected()) checked #end />
+	<th class="firstheader" id="th-checkbox">
+		
+		<div id="th-checkbox-right">
 	    <div class="anchor">
     	    <div class="select-dropdown-open down"></div>
     	    <ul class="select-dropdown" style="display: none;">
@@ -9,6 +11,10 @@
     	        <li><a class="ajax  deselectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
     	    </ul>
     	</div>
+    	</div>
+    	<div id="th-checkbox-left">
+			<input name="pagetoggle" type="checkbox" #if($hits.isPageSelected()) checked #end />
+		</div>
 	</th>
 #end	
 

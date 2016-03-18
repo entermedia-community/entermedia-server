@@ -137,14 +137,16 @@
 	
 	</li>
 				
-	<li class="no-sort add-to">
+	<li class="no-sort add-to subheader">
 	    #if( $view.rendertable)
             #set($searchtype = $view.rendertable)
         #else
             #set($searchtype = $moduleid)
         #end
         #if( $canviewsettings )
-	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype">Add New</a>
+        <div class="subheader-title">
+	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">Add New</a>
+	    </div>
 	    #end
 	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="addtoview.html">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
@@ -158,13 +160,14 @@
 			#else
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
-            <select name="newone" style="float: right; #if( $canviewsettings ) margin-top: -17px; #else margin-top: -41px;  #end width:150px;" onchange="jQuery('#addtoview').submit()"  >
+            <select name="newone" style="float: right; #if( $canviewsettings ) ; #else display:none;  #end width:150px;" onchange="jQuery('#addtoview').submit()"  >
                 <option value=""> </option>
                 #foreach( $detail in $searcher.getUserPropertyDetails() )
                     <option value="$detail.id">$detail.text</option>
                 #end
             </select>
         </form>
+        <div class="clearfix"></div>
 	</li>
 #end
 
