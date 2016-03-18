@@ -16,6 +16,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Reloadable;
 import org.openedit.data.Searcher;
+import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 import org.openedit.page.manage.PageManager;
@@ -102,6 +103,43 @@ public class MediaAdminModule extends BaseMediaModule
 			destinationid = destinationid.substring(1);
 		}
 		getWorkspaceManager().deployUploadedApp(catid, destinationid, uploaded);
+	}
+
+	public void deleteCatalog(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = getSearcherManager().getSearcher("system", "catalog");
+		//searchtype=catalog&id=$appcatalogid
+		String st = inReq.getRequestParameter("searchtype");
+		String id = inReq.getRequestParameter("id");
+		
+		if( id.length() < 2)
+		{
+			throw new OpenEditException("Invalid ID");
+		}
+		
+		Data catalog = (Data)searcher.searchById(id);
+		if( catalog != null)
+		{
+			searcher.delete(catalog, null);
+		}
+		if( id.endsWith("catalog"))
+		{
+			Page home = getPageManager().getPage("/" + id.substring(0, id.lastIndexOf("/catalog") ), true);
+			getPageManager().removePage(home);
+		}
+		else
+		{
+			Page home = getPageManager().getPage("/" + id, true);
+			getPageManager().removePage(home);			
+		}
+		
+
+		Page data = getPageManager().getPage("/WEB-INF/data/" + id, true);
+		getPageManager().removePage(data);
+
+		NodeManager nodeManager = (NodeManager)getModuleManager().getBean(id,"nodeManager");
+		nodeManager.deleteCatalog(id);
+		
 	}
 
 	public void deployApp(WebPageRequest inReq) throws Exception

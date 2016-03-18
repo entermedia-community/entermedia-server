@@ -783,4 +783,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		getMappingErrors().remove(inSearchType);
 	}
 
+	@Override
+	public void deleteCatalog(String inId)
+	{
+		DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(toId(inId))).actionGet();
+		if (!delete.isAcknowledged()) {
+		    log.error("Index wasn't deleted");
+		}
+		
+	}	
+
+	
 }

@@ -14,7 +14,7 @@ import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.XmlUtil;
 
-public class BaseNodeManager implements NodeManager
+public abstract class BaseNodeManager implements NodeManager
 {
 	protected Node fieldLocalNode;
 	protected XmlUtil fieldXmlUtil;
@@ -123,6 +123,7 @@ public class BaseNodeManager implements NodeManager
 	{
 		// TODO Auto-generated method stub
 		return false;
-	}	
+	}
+
 
 }

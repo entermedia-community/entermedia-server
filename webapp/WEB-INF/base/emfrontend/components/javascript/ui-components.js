@@ -208,6 +208,10 @@ uiload = function() {
 			function(e)
 			{
 				var inText = jQuery(this).attr("confirm");
+				if( !inText )
+				{
+					inText = jQuery(this).data("confirm");
+				}
 				if(confirm(inText) )
 				{
 					return;

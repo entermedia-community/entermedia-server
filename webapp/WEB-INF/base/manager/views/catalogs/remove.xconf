@@ -1,6 +1,6 @@
 <page>
-	<path-action name="DataEditModule.deleteData" >
-		<property name="catalogid">system</property>
+	<path-action name="MediaAdminModule.deleteCatalog" >
+		<property name="applicationid">media</property>
 	</path-action>
-	
+
 </page>
