@@ -218,13 +218,13 @@ public class MediaArchive
 	 * @return "/archive/downloads/originals/1073869002award_border/award
 	 *         border.eps";
 	 */
-	public String asLinkToOriginal(Asset inAsset)
+	public String asLinkToOriginal(Data inAsset)
 	{
 		if (inAsset == null)
 		{
 			return null;
 		}
-		return asLinkToOriginal(inAsset.getSourcePath(), inAsset.getPrimaryFile());
+		return asLinkToOriginal(inAsset.getSourcePath(), inAsset.get("primaryfile"));
 	}
 
 	//TODO: Remove the inName option since that should be the  same as the originalattachment 

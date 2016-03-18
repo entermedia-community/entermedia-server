@@ -19,9 +19,9 @@ import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
-public class ffmpegAudioTranscoder extends BaseTranscoder
+public class FfmpegAudioTranscoder extends BaseTranscoder
 {
-	private static final Log log = LogFactory.getLog(ffmpegAudioTranscoder.class);
+	private static final Log log = LogFactory.getLog(FfmpegAudioTranscoder.class);
 
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
@@ -29,9 +29,8 @@ public class ffmpegAudioTranscoder extends BaseTranscoder
 		result.setOutput(inStructions.getOutputFile());
 
 		Asset asset = inStructions.getAsset();
-		Page inputpage = inStructions.getMediaArchive().getOriginalDocument(asset);
-
-		if (inputpage == null || !inputpage.exists())
+		ContentItem input = inStructions.getInputFile();
+		if (input == null || !input.exists())
 		{
 			//no such original
 			log.info("Original does not exist: " + asset.getSourcePath());
@@ -46,25 +45,26 @@ public class ffmpegAudioTranscoder extends BaseTranscoder
 		 * rendertype="audio" synctags="false">M4A</property> <property id="aac"
 		 * rendertype="audio" synctags="false">aac</property>
 		 */
-		String inputExt = PathUtilities.extractPageType(inputpage.getContentItem().getAbsolutePath());
+		String inputExt = PathUtilities.extractPageType(input.getAbsolutePath());
 		String outputExt = inStructions.getOutputExtension();
-//		String useoriginalmediawhenpossible = inStructions.getProperty("useoriginalmediawhenpossible");
-//		if (Boolean.parseBoolean(useoriginalmediawhenpossible) && outputExt != null && outputExt.equals(inputExt))
-//		{
-//			createFallBackContent(inputpage, inStructions.getOutputFile());
-//			result.setOk(true);
-//		}
+		String useoriginalmediawhenpossible = inStructions.getProperty("useoriginalmediawhenpossible");
+		if (Boolean.parseBoolean(useoriginalmediawhenpossible) && outputExt != null && outputExt.equals(inputExt))
+		{
+			result.setOk(true);
+			result.setComplete(true);
+			return result;
+		}
 //		else
 //		{
 		long timeout = inStructions.getConversionTimeout();
 		String inOutputType = inStructions.getOutputExtension();
 		if ("wma".equalsIgnoreCase(inputExt) || "aac".equalsIgnoreCase(inputExt) || "m4a".equalsIgnoreCase(inputExt) || "flac".equalsIgnoreCase(inputExt) || "ogg".equalsIgnoreCase(inputExt))
 		{
-			runFfmpeg(inputpage, inStructions, result, timeout);
+			runFfmpeg(input, inStructions, result, timeout);
 		}
 		else
 		{
-			runLame(inputpage, inStructions, result, timeout);
+			runLame(input, inStructions, result, timeout);
 		}
 //		}
 		if (result.isOk())
@@ -75,9 +75,9 @@ public class ffmpegAudioTranscoder extends BaseTranscoder
 		return result;
 	}
 
-	private void runLame(Page input, ConvertInstructions inStructions, ConvertResult result, long inTimeout)
+	private void runLame(ContentItem input, ConvertInstructions inStructions, ConvertResult result, long inTimeout)
 	{
-		String inputExt = PathUtilities.extractPageType(input.getContentItem().getAbsolutePath());
+		String inputExt = PathUtilities.extractPageType(input.getAbsolutePath());
 		long start = System.currentTimeMillis();
 
 		//InputStream inputstream = null;
@@ -116,12 +116,12 @@ public class ffmpegAudioTranscoder extends BaseTranscoder
 			ContentItem output = inStructions.getOutputFile();
 			if (isOnWindows())
 			{
-				args.add("\"" + input.getContentItem().getAbsolutePath() + "\"");
+				args.add("\"" + input.getAbsolutePath() + "\"");
 				args.add("\"" + output.getAbsolutePath() + "\"");
 			}
 			else
 			{
-				args.add(input.getContentItem().getAbsolutePath());
+				args.add(input.getAbsolutePath());
 				args.add(output.getAbsolutePath());
 			}
 			//make sure this folder exists
@@ -150,13 +150,13 @@ public class ffmpegAudioTranscoder extends BaseTranscoder
 		log.info(message + " in " + (System.currentTimeMillis() - start) / 1000L + " seconds");
 	}
 
-	private void runFfmpeg(Page input, ConvertInstructions inStructions, ConvertResult result, long inTimeout)
+	private void runFfmpeg(ContentItem input, ConvertInstructions inStructions, ConvertResult result, long inTimeout)
 	{
 		long start = System.currentTimeMillis();
 
 		ArrayList<String> comm = new ArrayList<String>();
 		comm.add("-i");
-		comm.add(input.getContentItem().getAbsolutePath());
+		comm.add(input.getAbsolutePath());
 		comm.add("-y");
 		//audio
 		comm.add("-acodec");

@@ -18,8 +18,6 @@
 			</list>
 		</property>
 	</bean>
-	
-	
 	<bean id="AssetEditModule" class="org.entermediadb.asset.modules.AssetEditModule">
 		<property name="assetImporter"><ref bean="assetImporter" /></property>
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
@@ -1704,6 +1702,16 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 	</bean>
 	
+	<bean id="audioConversionManager" class="org.entermediadb.asset.convert.managers.AudioConversionManager" scope="prototype">
+		<property name="defaultTranscoder">
+			<ref bean="audioTranscoder" />
+		</property>
+		<property name="inputLoaders">
+			<list>
+				<ref bean="originalInputLoader" />
+			</list>
+		</property>	
+	</bean>
 
 	<bean id="videoConversionManager" class="org.entermediadb.asset.convert.managers.VideoConversionManager" scope="prototype">
 		<property name="defaultTranscoder">
@@ -1758,6 +1766,11 @@
 	</bean>
 
 	<bean id="ffmpegTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegVideoTranscoder" scope="prototype">
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
+	
+	<bean id="audioTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegAudioTranscoder" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>

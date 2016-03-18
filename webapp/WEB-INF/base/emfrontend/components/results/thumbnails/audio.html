@@ -1,9 +1,11 @@
     #if ( !$hit )
         #set ( $hit = $asset )
     #end
- 
+#if( $hit.get("fileformat") == "mp3")
+    #set ($path = "$home${mediaarchive.asLinkToOriginal($hit)}")
+#else
     #set ($path = "$home$apphome/views/modules/asset/downloads/mp3/$hit.sourcepath/audio.mp3")
-    
+#end    
     
         <div id="jp_container_$hit.id" class="jp-audio mini">
             <div class="jp-type-single">
@@ -15,7 +17,7 @@
                     </ul>
                    <div class="jp-progress"  >
                         <div class="jp-seek-bar"  style="width:70px">
-                            <div class="jp-play-bar" ></div>
+                            <div class="jp-play-bar" > </div>
                         </div>
                     </div>
                 </div>

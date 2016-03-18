@@ -11,10 +11,6 @@ public class AudioConversionManager extends BaseConversionManager
 {
 	private static final Log log = LogFactory.getLog(AudioConversionManager.class);
 
-	public boolean canReadIn(MediaArchive inArchive, String inOutputType)
-	{
-		return true;
-	}
 /*
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
