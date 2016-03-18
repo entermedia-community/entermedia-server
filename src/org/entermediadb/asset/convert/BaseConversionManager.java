@@ -75,6 +75,25 @@ public abstract class BaseConversionManager implements ConversionManager
 		{
 			result.setComplete(true);
 		}
+		else
+		{
+			String useoriginalmediawhenpossible = (String)inSettings.get("useoriginalmediawhenpossible");
+			if (Boolean.parseBoolean(useoriginalmediawhenpossible) )
+			{
+				Asset asset = getMediaArchive().getAssetBySourcePath(inSourcePath);
+				String type = PathUtilities.extractPageType(exportName);
+				if( asset.getFileFormat().equals(type) )
+				{
+					Page original = getMediaArchive().getOriginalDocument(asset);
+					if( original.exists() )
+					{
+						result.setComplete(true);
+						result.setOutput(original.getContentItem());
+					}
+				}
+			}
+
+		}
 		return result;
 		//Require export name to be set
 		
