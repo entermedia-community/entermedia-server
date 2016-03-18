@@ -1,14 +1,9 @@
 package org.entermediadb.asset.convert.managers;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
-import org.openedit.repository.ContentItem;
 
 public class VideoConversionManager extends BaseConversionManager
 {

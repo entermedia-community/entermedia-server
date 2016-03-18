@@ -90,6 +90,7 @@ public class MediaArchive
 	protected PresetCreator fieldPresetManager;
 	protected CacheManager fieldCacheManager;
 	protected OrderManager fieldOrderManager;
+	protected UserManager fieldUserManager;
 	
 	public CacheManager getCacheManager()
 	{
@@ -116,8 +117,6 @@ public class MediaArchive
 	{
 		fieldPresetManager = inPresetManager;
 	}
-
-	protected UserManager fieldUserManager;
 	
 	public String getMimeTypeIcon(String inFormat)
 	{
@@ -1315,12 +1314,20 @@ public class MediaArchive
 	}
 	public String getCatalogSettingValue(String inId)
 	{
-		Data setting = getSearcherManager().getData(getCatalogId(), "catalogsettings", inId);
+		String value = (String)getCacheManager().get("catalogsettings", inId);
+		if( value != null)
+		{
+			return value;
+		}
+		Data setting = getCatalogSetting(inId);
+		log.info("Loading " + inId);
 		if( setting ==  null)
 		{
 			return null;
 		}
-		return setting.get("value");
+		value = setting.get("value");
+		getCacheManager().put("catalogsettings", inId, value);
+		return value;
 	}
 	public void setCatalogSettingValue(String inId, String inValue)
 	{
