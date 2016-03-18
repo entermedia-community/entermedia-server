@@ -45,9 +45,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 #if($content.isPropertyTrue("showactions"))
 
 	<th class="firstheader" id="th-checkbox">
-	<div>
-	<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end  />
-	</div>
+	<div id="th-checkbox-right">
 	    <div class="anchor">
     	    <div class="select-dropdown-open down"></div>
     	    <ul class="select-dropdown" style="display: none;">
@@ -56,6 +54,11 @@ $pages.include("${searchhome}/resultsactions.html",$context)
     	        <li><a class="ajax  deselectpage" targetdiv="drag-columns-text" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">Deselect All</a></li>
     	    </ul>
     	</div>
+    	</div>
+    	
+    	<div id="th-checkbox-left">
+		<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end  />
+		</div>
 	</th>
 
 
