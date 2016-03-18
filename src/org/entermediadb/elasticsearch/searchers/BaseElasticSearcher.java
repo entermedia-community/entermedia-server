@@ -73,6 +73,7 @@ import org.openedit.util.IntCounter;
 public class BaseElasticSearcher extends BaseSearcher
 {
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
+	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected ElasticNodeManager fieldElasticNodeManager;
 	//protected IntCounter fieldIntCounter;
 	//protected PageManager fieldPageManager;
@@ -81,6 +82,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected boolean fieldReIndexing;
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
+	protected long 	fieldIndexId = System.currentTimeMillis();
 	
 	public boolean isRefreshSaves()
 	{
@@ -91,8 +93,6 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		fieldRefreshSaves = inRefreshSaves;
 	}
-
-	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 
 	public ElasticNodeManager getElasticNodeManager()
 	{
@@ -906,13 +906,12 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public String getIndexId()
 	{
-
-		return "singleton";
+		return String.valueOf(fieldIndexId);
 	}
 
 	public void clearIndex()
 	{
-
+		fieldIndexId = System.currentTimeMillis();
 	}
 
 	public void saveData(Data inData, User inUser)
@@ -1446,18 +1445,18 @@ public class BaseElasticSearcher extends BaseSearcher
 		return "/WEB-INF/data/" + getCatalogId() + "/" + getSearchType() + "s/idcounter.properties";
 	}
 
-	public boolean hasChanged(HitTracker inTracker)
-	{
-		//We will add a refresh() to the tracker and call it with cachedSearch
-		//We will scroll forward using the scroll
-		//We will scroll backwards using a previous chunck or new search
-		return false;
-	}
+//	public boolean hasChanged(HitTracker inTracker)
+//	{
+//		//We will add a refresh() to the tracker and call it with cachedSearch
+//		//We will scroll forward using the scroll
+//		//We will scroll backwards using a previous chunck or new search
+//		return false;
+//	}
 
-	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker) throws OpenEditException
-	{
-		return inTracker;
-	}
+//	public HitTracker checkCurrent(WebPageRequest inReq, HitTracker inTracker) throws OpenEditException
+//	{
+//		return inTracker;
+//	}
 
 	protected boolean flushChanges()
 	{
