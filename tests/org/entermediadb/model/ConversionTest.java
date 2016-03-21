@@ -9,6 +9,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.generators.ConvertGenerator;
 import org.openedit.WebPageRequest;
 import org.openedit.generators.Output;
@@ -115,6 +116,9 @@ public class ConversionTest extends BaseEnterMediaTest
 		assertTrue(page.exists());
 		
 	}
+	
+	
+	
 	
 	
 	///views/modules/asset/downloads/preview/widethumb/submitted/admin/Broad.City.S01E06.HDTV.x264-EXCELLENCE.mp4/thumb.jpg?timeoffset=407&assetid=102

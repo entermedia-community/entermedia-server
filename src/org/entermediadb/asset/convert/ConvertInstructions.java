@@ -41,6 +41,7 @@ public class ConvertInstructions
 		copy.setAssetSourcePath(getAssetSourcePath());
 		copy.setAssetId(getAssetId());
 		copy.loadPreset(inNewPreset);
+		copy.setProperty("timeoffset", getTimeOffset());
 		return copy;
 	}
 	

@@ -90,7 +90,11 @@
 				
 				jQuery.get(inSlide.link, {}, function(data) 
 				{
-					var cell = jQuery("#left-slide");
+					var slidediv = jQuery("#slide" + inSlide.divid);
+					
+					var target = slidediv.data("target");
+					
+					var cell = jQuery("#" + target);
 					cell.html(data);
 					if (typeof(doResize) == "function")
 					{
