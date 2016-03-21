@@ -385,9 +385,15 @@ public void checkforTasks()
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
 	HitTracker newtasks = tasksearcher.search(query);
-	newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
-	log.info("processing ${newtasks.size()} conversions ${newtasks.getHitsPerPage()} at a time");
-	
+	//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
+	if( newtasks.size() > 0)
+	{
+		log.info("processing ${newtasks.size()} new submitted retry missinginput conversions");
+	}
+	else
+	{
+		return;
+	}
 	List runners = new ArrayList();
 
 	ExecutorManager executorQueue = getQueue(mediaarchive.getCatalogId());
