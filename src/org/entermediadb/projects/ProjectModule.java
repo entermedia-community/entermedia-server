@@ -240,6 +240,24 @@ public class ProjectModule extends BaseMediaModule
 		}
 	}
 	
+	
+	public void addOpenCollection(WebPageRequest inReq)
+	{
+		UserProfile profile = inReq.getUserProfile();
+		Collection cols = profile.getValues("opencollections");
+		
+		Data collection = (Data)inReq.getPageValue("data");
+		if( collection != null)
+		{
+			String collectionid = collection.getId();
+			if( cols == null || !cols.contains(collectionid))
+			{
+				profile.addValue("opencollections", collectionid);
+			}
+			profile.setProperty("selectedcollection", collectionid);
+		}
+	}
+	
 	public void addCollectionTab(WebPageRequest inReq)
 	{
 		UserProfile profile = inReq.getUserProfile();

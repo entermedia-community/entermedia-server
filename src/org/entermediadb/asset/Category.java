@@ -4,7 +4,6 @@
 package org.entermediadb.asset;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,24 +11,19 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.openedit.Data;
-import org.openedit.data.SaveableData;
+import org.openedit.data.BaseData;
 
 /**
  * @author cburkey
  * 
  */
-public class Category implements Data, SaveableData, Comparable<Category>
+public class Category extends BaseData
 {
-	protected String fieldName;
-	protected String fieldId;
 	protected String fieldDescription;
 	protected String fieldShortDecription;
 	protected int fieldItemCount;
 	protected List fieldChildren;
 	protected Category fieldParentCategory;
-	//protected String fieldParentId;
-	protected Map fieldProperties;
 	protected List fieldRelatedCategoryIds;
 	protected String fieldLinkedToCategoryId;
 	
@@ -52,7 +46,7 @@ public class Category implements Data, SaveableData, Comparable<Category>
 
 	public Category(String inName)
 	{
-		fieldName = inName;
+		setName(inName);
 	}
 
 	public Category(String inId, String inName)
@@ -76,43 +70,6 @@ public class Category implements Data, SaveableData, Comparable<Category>
 	public void setRelatedCategoryIds(List fieldRelatedCategoryIds)
 	{
 		this.fieldRelatedCategoryIds = fieldRelatedCategoryIds;
-	}
-
-	/*
-	 * This is old, we now use Lucene to find the items public Collection
-	 * getItems() { return getItemMap().values(); }
-	 * 
-	 * public Map getItemMap() { if ( fieldItemMap == null ) { fieldItemMap =
-	 * new HashMap(); } return fieldItemMap; }
-	 * 
-	 * public int getNumItems() { return getItemMap().size(); }
-	 * 
-	 * public void addItem( Asset inItem ) { getItemMap().put( inItem.getId(),
-	 * inItem ); }
-	 * 
-	 * public void removeItem( Asset inItem ) { getItemMap().remove( inItem ); }
-	 * 
-	 * public Asset getItem( String inSkuNumber ) { return (Asset)
-	 * getItemMap().get( inSkuNumber ); }
-	 */
-	public String getName()
-	{
-		return fieldName;
-	}
-
-	public void setName(String inString)
-	{
-		fieldName = inString;
-	}
-
-	public String getId()
-	{
-		return fieldId;
-	}
-
-	public void setId(String inId)
-	{
-		fieldId = inId;
 	}
 
 	public String toString()
@@ -360,25 +317,17 @@ public class Category implements Data, SaveableData, Comparable<Category>
 		fieldDescription = inDescription;
 	}
 
-	public String get(String inKey)
+	public Object getValue(String inKey)
 	{
-		if (inKey.equals("id"))
-		{
-			return getId();
-		}
-		if (inKey.equals("name"))
-		{
-			return getName();
-		}
-		if (inKey.equals("parentid"))
-		{
-			Category parent = getParentCategory();
-			if( parent != null )
-			{
-				return parent.getId();
-			}
-		}
-		String val = getProperty(inKey);
+//		if (inKey.equals("parentid"))
+//		{
+//			Category parent = getParentCategory();
+//			if( parent != null )
+//			{
+//				return parent.getId();
+//			}
+//		}
+		Object val = super.getValue(inKey);
 		if (val != null)
 		{
 			return val;
@@ -386,74 +335,9 @@ public class Category implements Data, SaveableData, Comparable<Category>
 		Category parent = getParentCategory();
 		if (parent != null)
 		{
-			return parent.get(inKey);
+			return parent.getValue(inKey);
 		}
 		return null;
-	}
-
-	public Map getProperties()
-	{
-		if (fieldProperties == null)
-		{
-			fieldProperties = new HashMap();
-		}
-		return fieldProperties;
-	}
-
-	public void setProperties(Map inProperties)
-	{
-		fieldProperties = inProperties;
-	}
-
-	public void setProperty(String inKey, String inValue)
-	{
-		if (inValue != null)
-		{
-			if(inKey.equals("name"))
-			{
-				setName(inValue);
-			}
-			else if( "id".equals(inKey) )
-			{
-				setId(inValue);
-			}
-			else
-			{
-				getProperties().put(inKey, inValue);
-			}
-		}
-		else
-		{
-			getProperties().remove(inKey);
-		}
-	}
-
-	public void setProperty(String inKey, boolean inValue)
-	{
-		setProperty(inKey, String.valueOf(inValue));
-	}
-
-	public boolean isPropertyTrue(String inKey)
-	{
-		String val = getProperty(inKey);
-		if ("true".equalsIgnoreCase(val))
-		{
-			return true;
-		}
-		return false;
-	}
-
-	public String getProperty(String inKey)
-	{
-		return (String) getProperties().get(inKey);
-	}
-
-	/**
-	 * @param inKey
-	 */
-	public void removeProperty(String inKey)
-	{
-		getProperties().remove(inKey);
 	}
 
 	public String getShortDescription()
@@ -486,7 +370,7 @@ public class Category implements Data, SaveableData, Comparable<Category>
 
 	public String getLink()
 	{
-		String path = getProperty("path");
+		String path = get("path");
 		if (path != null)
 		{
 			return path;
@@ -560,7 +444,7 @@ public class Category implements Data, SaveableData, Comparable<Category>
 
 	public void setParentId(String inParentId)
 	{
-		setProperty("parentid", inParentId);
+		setValue("parentid", inParentId);
 	}
 
 	public String getSourcePath()
@@ -593,11 +477,11 @@ public class Category implements Data, SaveableData, Comparable<Category>
 
 	public boolean refresh()
 	{
-		boolean dirty = isPropertyTrue("dirty");
-		if( dirty )
+		Boolean dirty = (Boolean)getValue("dirty");
+		if( dirty != null && dirty )
 		{
 			fieldChildren = null;
-			setProperty("dirty", false);
+			setValue("dirty", false);
 			return true;
 		}
 		return false;
@@ -605,18 +489,12 @@ public class Category implements Data, SaveableData, Comparable<Category>
 
 	public boolean isDirty()
 	{
-		return Boolean.valueOf(get("dirty"));
+		Boolean dirty = (Boolean)getValue("dirty");
+		if( dirty != null && dirty )
+		{
+			return true;
+		}
+		return false;
 	}
 
-	@Override
-	public Object getValue(String inKey)
-	{
-		return getProperties().get(inKey);
-	}
-
-	@Override
-	public void setValue(String inKey, Object inValue)
-	{
-		getProperties().put(inKey,inValue);		
-	}
 }

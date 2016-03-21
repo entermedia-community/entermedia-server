@@ -144,7 +144,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 						fieldRootCategory.setId("index");
 						fieldRootCategory.setName("Index");
 				}
-				fieldRootCategory.setProperty("dirty", true);
+				fieldRootCategory.setValue("dirty", true);
 				saveCategoryTree(fieldRootCategory);
 				//We are going to create a database tool to import categories.xml
 			}
@@ -212,7 +212,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void saveData(Data inData, User inUser)
 	{
 		super.saveData(inData, inUser);
-		getRootCategory().setProperty("dirty", true);
+		getRootCategory().setValue("dirty", true);
 //		cat = (ElasticCategory)cat.getParentCategory();
 //		if( cat == null)
 //		{
@@ -225,7 +225,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void delete(Data inData, User inUser) {
 		// TODO Auto-generated method stub
 		super.delete(inData, inUser);
-		getRootCategory().setProperty("dirty", true);
+		getRootCategory().setValue("dirty", true);
 
 		getRootCategory().refresh();
 	}
