@@ -176,7 +176,7 @@ public class CategoryEditModule extends BaseMediaModule {
 
 		String sortfield = inContext.getRequestParameter("sortfield");
 		if (sortfield == null || sortfield.length() < 1) {
-			currentCatalog.removeProperty("sortfield");
+			currentCatalog.removeValue("sortfield");
 		} else {
 			currentCatalog.setProperty("sortfield", sortfield);
 		}
@@ -199,7 +199,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			if (value != null) {
 				cat.setProperty(field, value);
 			} else {
-				cat.removeProperty(field);
+				cat.removeValue(field);
 			}
 		}
 		editor.getMediaArchive().getCategoryArchive().saveCategory(cat);

@@ -302,7 +302,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 			{
 				Element prop = child.addElement("property");
 				
-				String text = inRootCatalog.getProperty(id);
+				String text = (String)inRootCatalog.getValue(id);
 				
 				prop.addAttribute("id", id);
 				if(text != null){
