@@ -91,7 +91,7 @@ public class BaseImporter extends EnterMediaObject
 				}
 				else
 				{
-					target = findExistingRecord(trow);
+					//target = findExistingRecord(trow);
 					if( target == null)
 					{
 						continue;
