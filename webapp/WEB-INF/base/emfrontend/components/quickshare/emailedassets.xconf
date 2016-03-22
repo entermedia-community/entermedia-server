@@ -6,4 +6,5 @@
 		<boolean value="true" />
 	</permission>
 	<property name="sectiontitle">Shared Assets</property>
+	<path-action name="OrderModule.findOrderAssets"/>
 </page>

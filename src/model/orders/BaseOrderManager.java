@@ -204,7 +204,7 @@ public class BaseOrderManager implements OrderManager {
 		query.addOrsGroup("id", ids.toString());
 		query.setProperty("orderid",inOrder.getId());
 		inReq.setRequestParameter("hitssessionid", "none");
-		HitTracker hits = assetsearcher.cachedSearch(inReq, query);
+		HitTracker hits = assetsearcher.search(query);
 		return hits;
 	}
 

@@ -42,7 +42,7 @@
  
  <div id="upload"></div>
   <button id="startbutton" type="submit" style="display: none;">Start Upload</button>
- 
+ <input type="hidden" id="totalfiles" name="totalfiles" value=""/>
 </form>
     
     
@@ -55,15 +55,18 @@ jQuery(function () {
     'use strict';
     // Change this to the location of your server-side upload handler:
     var url = "$home$apphome/components/quickshare/handleupload.html";
+  	var totalfiles = 0;
     jQuery('#fileupload').fileupload({
         url: url,
         //singleFileUploads: false,
-     //   autoUpload: false,
+        autoUpload: false,
         dataType: 'json',
+        
         add: function (e, data) {
         	
-        	jQuery("#readyarea").html("<span class='label label-success'>Your files have been added and are ready for upload</span>");
-        	
+        	totalfiles += 1;
+        	jQuery("#totalfiles").val(totalfiles);
+        	jQuery("#readyarea").html("<span class='label label-success'>" + totalfiles  + " files have been added and are ready for upload</span>");
         	
         	data.context = jQuery('#startbutton').show()
                 
@@ -81,6 +84,8 @@ jQuery(function () {
         	
         },
         done: function (e, data) {
+        	
+
         //	alert("All done!");
         //    var url = "$home$apphome/components/quickshare/done.html";
         //    document.location.href = url;
