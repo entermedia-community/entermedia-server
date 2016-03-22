@@ -125,6 +125,13 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		reIndexAll();
 	}
 
+	@Override
+	public void reloadSettings()
+	{
+		super.reloadSettings();
+		reIndexAll();
+	} 
+	
 	
 
 	public void delete(Data inData, User inUser)

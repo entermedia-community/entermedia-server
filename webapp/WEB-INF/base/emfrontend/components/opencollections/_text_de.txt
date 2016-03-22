@@ -1,0 +1,8 @@
+#
+#Thu Jan 14 13:10:59 EST 2016
+Libraries=Bibliotheken
+Details=Einzelheiten
+Assets=Assets
+Project\ Tracker=Projekt-Tracker
+Create\ New=neue
+Collections=Sammlungen

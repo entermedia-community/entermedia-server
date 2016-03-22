@@ -1,0 +1,35 @@
+#if ( $canviewlibrarysearch )
+<div class="ui-widget uipanel" id="left-col-libraries" >
+	<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
+		#else class="ui-widget-header" #end data-target="projectscontent">
+		<span class="widget-header-title">[[Open Collections]]</span>
+	</div>
+	<div  class="ui-widget-content"  id="projectscontent" #if($userprofile.minimizeprojectscontent == "true" && $cantogglesidebar) style="display: none;" #end>
+
+##set( $caneditlibrary = $context.getPageStreamer().canDo("editdata","$apphome/views/modules/library/index.html"))
+	<div class="librarylabels">
+	<ul>
+	  	#foreach($col in $userprofile.getValues("opencollections") )
+	  		#set( $collection = false )
+	  		#set( $collection = $mediaarchive.getData("librarycollection",$col))
+	  		#if( $collection )
+			<li>
+				#set( $selected = false )
+				#if( $inmodule && $librarycol && $collection.getId() == $librarycol.id )
+					#set( $selected = true )
+				#end
+				<a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${collection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{collection.getCollection().notes}"><span> $collection.getName()</span></a>
+			</li>
+			#end
+		#end	
+		#if ($canaddnewcollection)
+		<li>
+			<div id="createnewarea"><a class="ajax" targetdivinner="createnewarea" data-oemaxlevel="1" href="$home$apphome/components/opencollections/addnewchild.html?libraryid=$context.getUserName()" ><span> [[Create New]]</span></a></div>
+		</li>
+		#end	
+	</ul>	
+	</div>
+	</div>
+</div>
+#end
+
