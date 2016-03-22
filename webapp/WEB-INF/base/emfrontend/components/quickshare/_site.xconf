@@ -1,4 +1,6 @@
 <page>
 <inner-layout>/${applicationid}/components/quickshare/innerlayout.html</inner-layout>
 <property name="quicksharefrom">ian@netevolved.com</property>
+
+
 </page>

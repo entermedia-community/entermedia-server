@@ -57,7 +57,7 @@ jQuery(function () {
     var url = "$home$apphome/components/quickshare/handleupload.html";
     jQuery('#fileupload').fileupload({
         url: url,
-        singleFileUploads: false,
+        //singleFileUploads: false,
      //   autoUpload: false,
         dataType: 'json',
         add: function (e, data) {
@@ -92,22 +92,39 @@ jQuery(function () {
         
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
+            console.log(progress)
             jQuery('#progress .progress-bar').css(
                 'width',
                 progress + '%'
             );
 			if(progress == 100){
+				sleep(50000);
+
 				var from = jQuery("#fromemail").val();
             	var to = jQuery("#toemail").val();
 				var url = "$home$apphome/components/quickshare/done.html?destination.value=" + to + "&email.value=" + from;
-				//alert("100");
 		        document.location.href = url;
+		        
 			}
 
         }
     }).prop('disabled', !jQuery.support.fileInput)
         .parent().addClass(jQuery.support.fileInput ? undefined : 'disabled');
 });
+
+
+function sleep(milliseconds) {
+	 console.log("starting sleeep");
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+	  console.log("ending sleeep");
+	}
+
+
 </script>
 </div>
 </div>

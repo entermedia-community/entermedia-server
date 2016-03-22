@@ -36,8 +36,8 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 	<th>[[Format]]</th>
 	</tr>
 
-	#foreach( $item in $orderitems )
-		#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+	#foreach( $asset in $orderitems )
+		
 		$context.putPageValue("asset", $asset)
 		$context.putPageValue("item", $item)
 		$context.setRequestParameter("sourcepath", $asset.sourcepath)					

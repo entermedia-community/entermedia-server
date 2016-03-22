@@ -10,6 +10,7 @@ import org.entermediadb.asset.upload.UploadRequest
 import org.entermediadb.email.PostMail
 import org.entermediadb.email.TemplateWebEmail
 import org.openedit.Data
+import org.openedit.OpenEditException
 import org.openedit.WebPageRequest
 import org.openedit.data.Searcher
 import org.openedit.entermedia.*
@@ -29,6 +30,8 @@ import com.openedit.util.*
 
 
 public void handleUpload() {
+	
+	synchronized (this){
 	MediaArchive archive = (MediaArchive)context.getPageValue("mediaarchive");
 	FileUpload command = archive.getSearcherManager().getModuleManager().getBean("fileUpload");
 	UploadRequest properties = command.parseArguments(context);
@@ -46,20 +49,23 @@ public void handleUpload() {
 		user = archive.getUserManager().createGuestUser("anonymous", "anonymous", "anonymous");
 		user.setVirtual(true);
 	}
+	Order order = null
 	
-	Order order = context.getSessionValue("quickshareorder");
-	if(order == null){
-		 order = ordersearcher.createNewData();
-	
-	}
-	order.setProperty("orderstatus", "complete");
-	order.setProperty("publishdestination", "0");
-	order.setProperty("applicationid", context.findValue("applicationid"));
-	String sharenote = context.findValue("sharenote.value");
-	order.setProperty("sharenote", sharenote);
-	ordersearcher.saveData(order, null);
-	context.putSessionValue("quickshareorder", order);
-	
+		log.info("entering");
+		order = context.getSessionValue("quickshareorder");
+		if(order == null){
+			throw new OpenEditException("Error finding order!");
+		
+		}
+		order.setProperty("orderstatus", "complete");
+		order.setProperty("publishdestination", "0");
+		order.setProperty("applicationid", context.findValue("applicationid"));
+		String sharenote = context.findValue("sharenote.value");
+		order.setProperty("sharenote", sharenote);
+		ordersearcher.saveData(order, null);
+		
+		log.info("leaving" + order.getId());
+
 	List orderitems = new ArrayList();
 	properties.getUploadItems().each{
 		FileUploadItem file = it;
@@ -93,12 +99,12 @@ public void handleUpload() {
 		orderitem.setProperty("presetid", "original");
 		orderitem.setProperty("sharenote", context.getRequestParameter("sharenote.value"));
 		orderitems.add(orderitem);
-		
+		itemsearcher.saveData(orderitem, null);
 					
 	
 	}
 	
-	itemsearcher.saveAllData(orderitems, null);
+	//itemsearcher.saveAllData(orderitems, null);
 	context.putPageValue("orderitems", orderitems);
 	String from = context.getRequestParameter("email.value");
 	context.putPageValue("fromemail", from);
@@ -108,7 +114,8 @@ public void handleUpload() {
 	//sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
 	//sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
 	
-
+	}
+	
 }
 
 protected void sendEmail(WebPageRequest context, String email, String from,  String templatePage){
