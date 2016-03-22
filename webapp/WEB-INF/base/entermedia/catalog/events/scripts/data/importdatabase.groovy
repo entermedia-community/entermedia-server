@@ -8,6 +8,7 @@ import org.entermediadb.asset.util.ImportFile
 import org.entermediadb.asset.util.Row
 import org.openedit.Data
 import org.openedit.data.*
+import org.openedit.util.*
 import org.openedit.page.Page
 import org.openedit.util.XmlUtil
 
@@ -147,7 +148,9 @@ public void importPermissions(ImportFile file, Searcher searcher, Collection dat
 
 
 public void importCsv(ImportFile file, Searcher searcher, Collection data)
-{
+{	
+	PropertyDetails details = searcher.getPropertyDetails();
+	
 	while( (trow = file.getNextRow()) != null )
 	{
 		String id = trow.get("id");
@@ -217,7 +220,7 @@ public void importCsv(ImportFile file, Searcher searcher, Collection data)
 			searcher.saveAllData(data, null);
 			data.clear();
 		}
-
+       }
 }
 
 
