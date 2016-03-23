@@ -1,9 +1,9 @@
 <div  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
-<div id="emselectable" class="emselectable" data-clickpath="$clickpath"  data-viewpostfix="$!viewpostfix" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
+<div id="emselectable" class="emselectable" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
 
-<table  id="main-results-table" class="emdata striped greytxt table tbl-responsive"  data-hitssessionid="$!existingrecords.sessionId">
-	<tr id="tableheader">
+<table  id="main-results-table" class="emdata striped greytxt table tbl-responsive"  data-clickpath="$clickpath"  data-viewpostfix="$!viewpostfix" data-hitssessionid="$!existingrecords.sessionId">
+	<tr class="tableheader">
 	#foreach( $detail in $details )
 	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
 	#end

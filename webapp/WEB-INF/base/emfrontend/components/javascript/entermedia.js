@@ -608,9 +608,10 @@ onloadselectors = function()
 							});
 							row.addClass('emhighlight');
 							row.removeClass("emborderhover");
-							//var table = row.closest("table");
+							var table = row.closest("table");
 							var id = row.attr("rowid");
-							var url = emselectable.data("clickpath");
+							//var url = emselectable.data("clickpath");
+							var url = table.data("clickpath");
 							var form = emselectable.find("form");
 							if( form.length > 0 )
 							{
@@ -623,19 +624,19 @@ onloadselectors = function()
 							}
 							else if( url != undefined )
 							{
-								var post = emselectable.data("viewpostfix");
+								var post = table.data("viewpostfix");
 								if( post != undefined )
 								{
-									window.location = url + id + post;
+									parent.document.location.href = url + id + post;
 								}
 								else
 								{
-									window.location = url + id;
+									parent.document.location.href = url + id;
 								}
 							}
 							else
 							{
-								window.location = id;
+								parent.document.location.href = id;
 							}
 						}
 					}
