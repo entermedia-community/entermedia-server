@@ -272,6 +272,153 @@ uiload = function() {
 			}
 		);
 
+		jQuery("form.ajaxform").livequery('submit', //Make sure you use $(this).closest("form").trigger("submit")	
+		function(e) 
+		{
+			e.preventDefault();
+			var form = jQuery(this);
+			form.validate({
+			  ignore: ".ignore"
+			});
+			
+			
+    		var isvalidate = form.valid();
+			if(!isvalidate)
+        	{
+            	e.preventDefault();
+            	//show message
+            	return;
+        	}
+			var targetdiv = form.attr("targetdiv");
+			targetdiv = targetdiv.replace(/\//g, "\\/");
+			// allows for posting to a div in the parent from a fancybox.
+			if(targetdiv.indexOf("parent.") == 0)
+			{
+				targetdiv = targetdiv.substr(7);
+				parent.jQuery(this).ajaxSubmit({target: "#" + targetdiv});
+				// closes the fancybox after submitting
+				parent.jQuery.fancybox.close();
+			}
+			else
+			{
+				jQuery(this).ajaxSubmit( {target:"#" + targetdiv} );
+			}
+			var reset =form.data("reset") 
+			if( reset == true){
+				form.get(0).reset();
+			}
+			return false;
+		}
+	);
+	
+	jQuery("form.autosubmit").livequery( function() 
+	{
+		var form = $(this);
+		var targetdiv = form.data('targetdiv');
+		jQuery(this,"select").change(function() 
+		{
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
+		
+		});
+		jQuery(this,"input").on("keyup",function() 
+		{
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
+		});
+
+	});
+	
+	
+	
+	
+	jQuery("form.ajaxform input.cancel").livequery('click',function()
+	{
+		parent.jQuery.fancybox.close();
+	});
+	
+	jQuery("form.ajaxautosubmit").livequery( function() 
+			{
+				var theform = jQuery(this); 
+				theform.find("select").change( function()
+						{
+							theform.submit();
+						});
+			});
+		jQuery("a.emdialog").livequery(
+			function() 
+			{
+				var dialog = jQuery(this);
+				var height = dialog.data("height");
+				if( !height )
+				{
+					height = "500";
+				}
+	
+				var width = dialog.data("width");
+				if( !width )
+				{
+					width = "650";
+				}
+				
+				dialog.fancybox(
+				{ 
+					'zoomSpeedIn': 0, 'zoomSpeedOut': 0, 'overlayShow': true,
+					enableEscapeButton: true, 
+					type: 'iframe',
+			        height: height,
+			        width: width,
+					autoScale: false,
+			        autoHeight: false,
+			        fitToView: false,
+			        iframe: { preload   : false }
+				});
+			}
+		); 
+	jQuery("a.thickbox").livequery(
+			function() 
+			{
+				jQuery(this).fancybox(
+				{
+			    	openEffect	: 'elastic',
+			    	closeEffect	: 'elastic',
+			    	helpers : {
+			    		title : {
+			    			type : 'inside'
+			    		}
+			    	}
+				});
+			}
+		); 
+	jQuery("#fancy_content .fancyclose").livequery( function() {
+		$(this).parent.fancybox.close();
+	});
+	jQuery("a.slideshow").livequery(
+		function() 
+		{
+			jQuery(this).fancybox(
+			{ 
+				'zoomSpeedIn': 300, 'zoomSpeedOut': 300, 'overlayShow': true , 'slideshowtime': 6000
+			});
+		}
+	);
+
+	jQuery("img.framerotator").livequery(
+		function()
+		{
+			jQuery(this).hover(
+				function() {
+					jQuery(this).data("frame", 0);
+					var path = this.sr$('select#speedC').selectmenu({style:'dropdown'});c.split("?")[0];
+					var intval = setInterval("nextFrame('" +  this.id + "', '" + path + "')", 1000);
+					jQuery(this).data("intval", intval);
+				},
+				function() {
+					var path = this.src.split("?")[0];
+					this.src = path + '?frame=0';
+					var intval = jQuery(this).data("intval");
+					clearInterval(intval);
+				}
+			); 
+		});
 	
 	
 

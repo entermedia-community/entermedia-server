@@ -327,6 +327,7 @@ jQuery(document).ready(function(url,params)
 		gridResize();
 	});
 	gridResize();
+	
 });        //document ready
         
 
