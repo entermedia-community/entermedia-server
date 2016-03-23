@@ -7,11 +7,16 @@
  #if(!$hit)
  #set($hit = $data)
  #end
+
+  #set($latandlong = $data.get("$detail"))
+   #set( $lat = $!data.get("${detail.id}_lat") )
+   #set( $lng = $!data.get("${detail.id}_lng") )
+   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
+
 <div id="$!{hit.id}_${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
    
   
 
-$latandlong
 <script type="text/javascript">
 
 $('#$!{hit.id}_${detail.id}_map').gmap({
@@ -23,7 +28,11 @@ $('#$!{hit.id}_${detail.id}_map').gmap({
 			'position': '$latandlong',
 			'draggable': false, 
 		    'bounds': true
-		    })
+		    #if($icon)
+				,'icon': '$icon.url'
+				#end
+			
+			})
 		    .dragend(function(event) 
 	    	  		{
 	    		 	
