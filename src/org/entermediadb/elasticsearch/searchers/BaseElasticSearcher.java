@@ -1397,8 +1397,8 @@ public class BaseElasticSearcher extends BaseSearcher
 		String id = inData.getId();
 
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-		if(inData.get("parent") != null){
-			delete.setParent(inData.get("parent"));
+		if(inData.get("_parent") != null){
+			delete.setParent(inData.get("_parent"));
 		}
 		delete.setRefresh(true).execute().actionGet();
 
