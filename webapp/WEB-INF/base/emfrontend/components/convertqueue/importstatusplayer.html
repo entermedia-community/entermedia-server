@@ -4,6 +4,9 @@
 
 #if($conversionerrors && $conversionerrors.size() >0)
 	<div style="padding-top:30px;">
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<img title="[[Conversion Error]]" class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/><br/>
 	#if($canviewsettings)
 		<span style="color:red;">Conversion Error</span><br/>
 		<a class="btn" href="$home$apphome/views/modules/asset/editor/converthistory/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
@@ -13,6 +16,9 @@
 	#end
 	</div>
 #elseif($publisherrors && $publisherrors.size() >0)
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<img title="[[Publish Error]]" class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/><br/>
 	<span style="color:red;">Publish Error</span>
 	<a class="btn" href="$home$apphome/views/modules/asset/editor/historyexports/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!hits.getSessionId()">Troubleshoot</a>
 	

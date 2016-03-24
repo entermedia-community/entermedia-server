@@ -11,7 +11,9 @@
 #end
 
 #if($conversionerrors && $conversionerrors.size() >0)
-    <span style="font-size: 10px; position: relative; top: -2px;">Conversion Error</span>
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<img title="[[Conversion Error]]" class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
 #elseif($publisherrors && $publisherrors.size() >0)
     <span style="color:red; font-size: 10px; position: relative; top: -2px;">Publish Error</span>
 #elseif( $hit.previewstatus && $hit.previewstatus == "2")  
