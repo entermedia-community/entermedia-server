@@ -15,6 +15,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
 import org.openedit.event.WebEvent;
+import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.util.RequestUtils;
@@ -305,6 +306,7 @@ public class PathEvent implements Comparable, TextAppender
 		//Thread thread = Thread.currentThread();
 		//ClassLoader oldLoader = thread.getContextClassLoader();
 		ScriptLogger logs = null;
+		StringWriter output = new StringWriter();
 		try
 		{
 			logs = new ScriptLogger();
@@ -312,8 +314,10 @@ public class PathEvent implements Comparable, TextAppender
 			Page page = request.getPage();
 			logs.setPrefix(page.getName());
 			logs.setTextAppender(this);
+			
+			request.putPageValue("log", logs);
 			logs.startCapture();
-			StringWriter output = new StringWriter();
+			
 			try
 			{
 				if( log.isDebugEnabled() )
@@ -374,6 +378,7 @@ public class PathEvent implements Comparable, TextAppender
 		{
 			appendText("Action may have failed to run. Check permissions.");
 		}
+		//appendText(output.toString());
 //		List oldlogs = (List)request.getPageValue("logs");
 //		if( oldlogs != null)
 //		{

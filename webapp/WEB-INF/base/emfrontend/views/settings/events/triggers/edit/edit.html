@@ -14,10 +14,10 @@
 #end 
  	
 </table>
-<a class="btn" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=$pathevent.getPage().getPath()">Refresh</a>
 
 <input class="btn" type="submit" value="[[Save]]"/>
 
+ <a class="btn ajax" targetdivinner="eventstatus" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
 
 </form>
 
@@ -29,7 +29,7 @@
 <br>
 
 <p> 
- <a class="btn ajax" targetdivinner="eventstatus" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
+<a class="btn" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=$pathevent.getPage().getPath()">Refresh</a>
 </p>
 
 

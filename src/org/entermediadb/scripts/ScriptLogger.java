@@ -16,6 +16,7 @@ public class ScriptLogger extends Handler
 	protected List fieldLogs;
 	protected String fieldPrefix = "";
 	protected TextAppender fieldTextAppender;
+	protected boolean fieldAppendLogs;
 	
 	public TextAppender getTextAppender()
 	{
@@ -32,6 +33,46 @@ public class ScriptLogger extends Handler
 		// TODO Auto-generated constructor stub
 	}
 
+	public void saveLog(String intype, String text, Throwable ex)
+	{
+		if( !fieldAppendLogs)
+		{
+			return;
+		}
+		StringBuffer buffer = new StringBuffer();
+		
+		if( getPrefix() != null)
+		{
+			buffer.append(getPrefix());
+			buffer.append(" ");
+		}
+		buffer.append(text);
+//		buffer.append(" ");
+//		buffer.append(intype);
+		if( ex != null)
+		{
+			buffer.append("\n");
+			buffer.append(ex.toString());
+		}
+		
+		if( fieldTextAppender != null )
+		{
+			fieldTextAppender.appendText(buffer.toString());
+		}
+		else
+		{
+			//LogEntry entry = new LogEntry();
+			
+			getLogs().add(buffer.toString());
+			
+			if( getLogs().size() > 10000)
+			{
+				getLogs().remove(0);
+			}
+		}
+
+	}
+	
 	public String getPrefix()
 	{
 		return fieldPrefix;
@@ -42,73 +83,54 @@ public class ScriptLogger extends Handler
 	}
 	public void debug(String inText, Throwable ex)
 	{
-		log.debug(getPrefix() + inText,ex);
+		//log.debug(getPrefix() + inText,ex);
+		saveLog("debug", inText, ex);
 	}
 	
 	public void debug(String inText)
 	{
-		log.debug(getPrefix() + inText);
-		//getLogs().add("debug: " + inText);
+		saveLog("debug", inText, null);
 	}
 	public void info(String inText, Throwable ex)
 	{
-		log.info(getPrefix() + inText,ex);
+		saveLog("info", inText, ex);
 	}
 	public void info(String inText)
 	{
-		log.info(getPrefix() + inText);
-		//getLogs().add("info: " + inText);
+		saveLog("info", inText, null);
 	}
 	public void error(String inText, Throwable ex)
 	{
-		log.error(getPrefix() + inText,ex);
+		saveLog("error", inText, ex);
 	}
 	public void error(String inText)
 	{
-		log.error(getPrefix() + inText);
-		//getLogs().add("error: " + inText);
+		saveLog("info", inText, null);
 	}
 	public void error(Object inObject, Throwable inThrowable)
 	{
-		log.error(inObject, inThrowable);
-		//getLogs().add("error: " + inText);
+		saveLog("info", String.valueOf(inObject), inThrowable);
 	}
 	public void error(Object inObject)
 	{
-		log.error(inObject);
+		saveLog("info", String.valueOf(inObject), null);
 	}
-	public void add(Object inVal)
-	{
-		info(getPrefix() + String.valueOf( inVal ) );
-	}
-	public List<LogEntry> getLogs()
+//	public void add(Object inVal)
+//	{
+//		info(getPrefix() + String.valueOf( inVal ) );
+//	}
+	public List getLogs()
 	{
 		if (fieldLogs == null)
 		{
 			fieldLogs = new ArrayList();
 		}
-
 		return fieldLogs;
 	}
 
 	public void publish(LogRecord inRecord)
 	{
-		//getRealHandler().publish(inRecord);
-		LogEntry entry = new LogEntry(inRecord);
-		if( fieldTextAppender != null )
-		{
-			fieldTextAppender.appendText(toString(entry));
-		}
-		else
-		{
-			getLogs().add(entry);
-			
-			if( getLogs().size() > 10000)
-			{
-				getLogs().remove(0);
-			}
-		}
-		//System.out.println(inRecord.getMessage()); 
+		saveLog(inRecord.getLevel().getName(), inRecord.getMessage(), inRecord.getThrown());
 	}
 
 	public void flush()
@@ -129,8 +151,9 @@ public class ScriptLogger extends Handler
 		//Tomcat - Log dissapear for a moment
 		//If I try to wrap the existing logger terrible things happen
 		//This may be fixed with thread context not set
-		CompositeHandler composite = loadComposite();
-		composite.addChild(this);
+		//CompositeHandler composite = loadComposite();
+		//composite.addChild(this);
+		fieldAppendLogs = true;
 	}
 
 	private CompositeHandler loadComposite()
@@ -158,13 +181,14 @@ public class ScriptLogger extends Handler
 	}
 	public void stopCapture()
 	{
-		CompositeHandler composite = loadComposite();
-		composite.removeChild(this);
-		if( composite.getChildren().size() == 0)
-		{
-			Logger logger = Logger.getLogger("");
-			logger.removeHandler(composite);
-		}
+//		CompositeHandler composite = loadComposite();
+//		composite.removeChild(this);
+//		if( composite.getChildren().size() == 0)
+//		{
+//			Logger logger = Logger.getLogger("");
+//			logger.removeHandler(composite);
+//		}
+		fieldAppendLogs = true;
 	}
 	public List listLogs()
 	{
@@ -172,10 +196,10 @@ public class ScriptLogger extends Handler
 		List all = new ArrayList(getLogs()); //in case another thread is appending to the list
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
-			LogEntry entry = (LogEntry) iterator.next();
+			Object entry = iterator.next();
 			if( entry != null )
 			{
-				text.add(toString(entry) );
+				text.add(String.valueOf( entry) );
 			}
 		}
 		

@@ -577,12 +577,20 @@ public class OrderModule extends BaseMediaModule
 					inReq.putSessionValue("orderbasket", basket);
 			}
 			inReq.putPageValue("order", basket);
+			inReq.putPageValue("orderbasket", basket);
 	
-			HitTracker items = loadOrderManager(inReq).findOrderItems(inReq, archive.getCatalogId(), basket);
-			inReq.putPageValue("orderitems", items);
-	
+			HitTracker items = (HitTracker)inReq.getPageValue("orderitems");
+			if( items != null)
+			{
+				items = loadOrderManager(inReq).findOrderItems(inReq, archive.getCatalogId(), basket);
+				inReq.putPageValue("orderitems", items);
+			}
+			if( items != null)
+			{
+				inReq.putSessionValue(items.getSessionId(), items);
+			}	
 			String check = inReq.findValue("clearmissing");
-			if (Boolean.parseBoolean(check))
+			if (Boolean.parseBoolean(check) && items != null)
 			{
 				//Make sure these have the same number of assets found
 				getOrderManager().removeMissingAssets(inReq, archive, basket, items);
@@ -601,7 +609,14 @@ public class OrderModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 		Order order = loadOrder(inReq);
 
-		return getOrderManager().findAssets(inReq, catalogid, order);
+		HitTracker re = getOrderManager().findAssets(inReq, catalogid, order);
+		if( re != null)
+		{
+			inReq.putPageValue("orderassets", re);
+			inReq.putSessionValue(re.getSessionId(),re);
+			return re;
+		}
+		return null;
 	}
 	
 	public void preprocessOrder(WebPageRequest inReq)

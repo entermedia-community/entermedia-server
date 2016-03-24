@@ -164,7 +164,8 @@ public class BaseOrderManager implements OrderManager {
 		SearchQuery query = itemsearcher.createSearchQuery();
 		query.addExact("orderid", inOrderId);
 		query.setHitsName("orderitems");
-
+		query.setCatalogId(inCatalogid);
+		
 		HitTracker items =  itemsearcher.cachedSearch(inReq, query);
 		return items;
 	}

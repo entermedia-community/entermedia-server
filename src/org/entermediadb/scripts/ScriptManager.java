@@ -119,9 +119,20 @@ public class ScriptManager
 		variableMap.put("pageManager", getPageManager() ); 
 		variableMap.put("root", getModuleManager().getBean( "root" ) ); 
 		
+		Object returned = null;
+		long start = System.currentTimeMillis();
+		try
+		{
+		logger.startCapture();
 		logger.debug("Running "  +inScript.getPage() );
-		
-		Object returned = runner.exec(inScript, variableMap);
+		returned = runner.exec(inScript, variableMap);
+		}
+		finally 
+		{
+			long used = System.currentTimeMillis() - start;
+			logger.debug("Completed in "  + (used / 1000L) + " seconds" );
+			logger.stopCapture();
+		}
 		return returned;
 		
 	}
