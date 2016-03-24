@@ -76,6 +76,9 @@ public class OrderZipGenerator extends BaseGenerator
 			for (Iterator iterator = orderitems.iterator(); iterator.hasNext();) {
 				Data orderitem = (Data) iterator.next();
 				Data preset = archive.getSearcherManager().getData(catalogid, "convertpreset", orderitem.get("presetid"));
+				if(preset == null && "original".equals(orderitem.get("presetid"))){
+					preset = archive.getSearcherManager().getData(catalogid, "convertpreset", "0");
+				}
 				
 				String queid = orderitem.get("publishqueueid");
 				if( queid == null )
@@ -88,7 +91,14 @@ public class OrderZipGenerator extends BaseGenerator
 				Asset asset = archive.getAssetBySourcePath(orderitem.get("assetsourcepath"));
 				
 				Page target = null;
-				String filename = publishtask.get("exportname");
+				String filename = null;
+				if(publishtask != null){
+					filename = publishtask.get("exportname");
+				}
+				
+				if(filename == null){
+					filename = asset.getPrimaryFile();
+				}
 				if(filename == null){
 					throw new OpenEditException("Filename was not set on publish task:  " + publishtask.getId());					
 				}
