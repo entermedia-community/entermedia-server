@@ -417,7 +417,12 @@ public class Asset implements MultiValued, SaveableData
 
 	public List<String> getKeywords()
 	{
-		return (List<String>)getValues("keywords");
+		List<String> keywords =  (List<String>)getValues("keywords");
+		if( keywords == null)
+		{
+			keywords = Collections.EMPTY_LIST;
+		}
+		return keywords;
 	}
 
 	public void removeKeyword(String inKey)
