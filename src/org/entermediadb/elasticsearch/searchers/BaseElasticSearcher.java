@@ -1592,43 +1592,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		
 	}
 	
-	public HitTracker loadHits(WebPageRequest inReq)
-	{
-		String id = inReq.findValue("hitssessionid");
-		if (id != null)
-		{
-			HitTracker tracker = (HitTracker) inReq.getSessionValue(id);
-			boolean runsearch = false;
-			String clear = inReq.getRequestParameter(getSearchType() + "clearselection");
-			if( clear != null)
-			{
-				runsearch = true;
-			}
-			else
-			{
-				String showonly = inReq.getRequestParameter(getSearchType() + "showonlyselections");
-				if(showonly != null)
-				{
-					runsearch = true;
-				}
-			}
-			if (tracker != null)
-			{
-				if( runsearch )
-				{
-					tracker = cachedSearch(inReq, tracker.getSearchQuery()); //only run search when using cachedSearch
-				}
-				String hitsname = inReq.findValue("hitsname");
-				if( hitsname == null)
-				{
-					hitsname = tracker.getHitsName();
-				}
-				inReq.putPageValue(hitsname, tracker);
-			}
-			return tracker;
-		}
-		return null;
-	}
 	public void updateData(Map inSource, Data inData){
 		for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();)
 		{

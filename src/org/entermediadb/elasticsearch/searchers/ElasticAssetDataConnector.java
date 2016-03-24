@@ -479,30 +479,31 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			if("category-exact".equals(key)){
 				continue;
 			}
-			String val = null;
-			if (object instanceof String) {
-				val= (String) object;
-			}
-			if (object instanceof Date) {
-				val= String.valueOf((Date) object);
-			}
-			if (object instanceof Boolean) {
-				val= String.valueOf((Boolean) object);
-			}
-			if (object instanceof Integer) {
-				val= String.valueOf((Integer) object);
-			}
-			if (object instanceof Float) {
-				val= String.valueOf((Float) object);
-			}
-			if (object instanceof Collection) {
-				Collection values = (Collection) object;
-				asset.setValues(key, (Collection<String>) object);
-			}
-			else if(val != null)
-			{
-				asset.setProperty(key, val);
-			}
+			asset.setValue(key, object);
+//			String val = null;
+//			if (object instanceof String) {
+//				val= (String) object;
+//			}
+//			if (object instanceof Date) {
+//				val= String.valueOf((Date) object);
+//			}
+//			if (object instanceof Boolean) {
+//				val= String.valueOf((Boolean) object);
+//			}
+//			if (object instanceof Integer) {
+//				val= String.valueOf((Integer) object);
+//			}
+//			if (object instanceof Float) {
+//				val= String.valueOf((Float) object);
+//			}
+//			if (object instanceof Collection) {
+//				Collection values = (Collection) object;
+//				asset.setValues(key, (Collection<String>) object);
+//			}
+//			else if(val != null)
+//			{
+//				asset.setProperty(key, val);
+//			}
 		}
 		Collection categories = (Collection)inSource.get("category-exact");
 		if( categories != null)

@@ -15,6 +15,7 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -23,7 +24,6 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 
 public class ElasticHitTracker extends HitTracker
 {
@@ -153,17 +153,19 @@ public class ElasticHitTracker extends HitTracker
 						runsearch = true;
 						//log.info(getSearcher().getSearchType()+ hashCode() + "expired " + now + ">" + fieldLastPullTime + "+SCROLL_CACHE_TIME");
 					}	
-					if( runsearch )
+					if( true ) //todo: Allow scrolling for iterators
 					{
 						if( fieldLastPullTime == -1)
 						{
 							refreshFilters(); //This seems like it should only be done once?
 						}
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
-						getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME) );
+						//getSearcheRequestBuilder().setScroll((Scroll)null);
+						//if( isS)
+						//getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME) );
 						response = getSearcheRequestBuilder().execute().actionGet();
 						setLastScrollId(response.getScrollId());
-						//log.info(getSearcher().getSearchType() + hashCode() + " Search " + inChunk + " total: " + response.getHits().getTotalHits() );
+						//log.info(getSearcher().getSearchType() + hashCode() + " search chunk: " + inChunk + " start from:" +  start );
 					}
 					else
 					{

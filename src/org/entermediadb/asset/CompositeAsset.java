@@ -153,6 +153,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	}
 	public List getKeywords()
 	{
+		List fieldKeywords = (List)getValues("keywords");  //TODO: Is this right?
 		if( fieldKeywords == null )
 		{
 			Data first = (Data)getSelectedResults().first();
@@ -636,7 +637,6 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		getPropertiesSet().clear();
 		fieldCategories = null;
-		fieldKeywords = null;
 		
 	}
 	@Override

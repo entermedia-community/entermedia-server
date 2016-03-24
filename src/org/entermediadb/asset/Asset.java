@@ -41,7 +41,6 @@ public class Asset implements MultiValued, SaveableData
 	//protected Collection<String> fieldLibraries;
 	protected ValuesMap fieldMap;
 	
-	protected List<String> fieldKeywords;
 	protected MediaArchive fieldMediaArchive;
 	// be shown in a list
 	protected Collection fieldRelatedAssets;
@@ -159,11 +158,17 @@ public class Asset implements MultiValued, SaveableData
 		setValue("id",inString);
 	}
 
+	
+	public String get(String inKey)
+	{
+		return getMap().getString(inKey);
+	}
+
 	/**
 	 * This will look in all the category objects if needed
 	 */
 
-	public String get(String inAttribute)
+	public Object getValue(String inAttribute)
 	{
 		
 		if ("fulltext".equals(inAttribute))
@@ -172,51 +177,47 @@ public class Asset implements MultiValued, SaveableData
 				return getMediaArchive().getAssetSearcher().getFulltext(this);
 			} 
 		}
-		if ("keywords".equals(inAttribute))
-		{
-			List<String> keywords = getKeywords();
-			if( keywords.size() == 0 )
-			{
-				return null;
-			}
-			StringBuffer out = new StringBuffer();
-			for (Iterator iterator = keywords.iterator(); iterator.hasNext();)
-			{
-				String key = (String) iterator.next();
-				out.append(key);
-				if( iterator.hasNext() )
-				{
-					out.append(" | ");
-				}
-			}
-			return out.toString();
-		}
-		else if ("category".equals(inAttribute))
+//		if ("keywords".equals(inAttribute))
+//		{
+//			List<String> keywords = getKeywords();
+//			if( keywords.size() == 0 )
+//			{
+//				return null;
+//			}
+//			StringBuffer out = new StringBuffer();
+//			for (Iterator iterator = keywords.iterator(); iterator.hasNext();)
+//			{
+//				String key = (String) iterator.next();
+//				out.append(key);
+//				if( iterator.hasNext() )
+//				{
+//					out.append(" | ");
+//				}
+//			}
+//			return out.toString();
+//			return keywords;
+//		}
+		if ("category".equals(inAttribute))
 		{
 			List<Category> categories = getCategories();
-			if( categories.size() == 0 )
-			{
-				return null;
-			}
-			StringBuffer out = new StringBuffer();
-			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-			{
-				Category cat = (Category) iterator.next();
-				out.append(cat.getId());
-				if( iterator.hasNext() )
-				{
-					out.append(" | ");
-				}
-			}
-			return out.toString();
+//			if( categories.size() == 0 )
+//			{
+//				return null;
+//			}
+//			StringBuffer out = new StringBuffer();
+//			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+//			{
+//				Category cat = (Category) iterator.next();
+//				out.append(cat.getId());
+//				if( iterator.hasNext() )
+//				{
+//					out.append(" | ");
+//				}
+//			}
+			//return out.toString();
+			return categories;
 		}
-
-		Object value = getValue(inAttribute);
-		if( value == null)
-		{
-			return null;
-		}
-		return String.valueOf(value);
+		return getMap().get(inAttribute);
 		// if ( value instanceof PageProperty)
 		// {
 		// PageProperty prop = (PageProperty)value;
@@ -349,31 +350,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public String getProperty(String inKey)
 	{
-		if ("id".equals(inKey))
-		{
-			return getId();
-		}
-//		if ("sourcepath".equals(inKey))
-//		{
-//			return getSourcePath();
-//		}
-		if ("category-exact".equals(inKey))
-		{
-			StringBuffer buffer = new StringBuffer();
-			List cats = getCategories();
-			for (Iterator iterator = cats.iterator(); iterator.hasNext();)
-			{
-				Category cat = (Category) iterator.next();
-				buffer.append(cat.getId());
-				if( iterator.hasNext() )
-				{
-					buffer.append(" | ");
-				}
-			}
-			return buffer.toString();
-		}
-		String value = (String) getProperties().get(inKey);
-		return value;
+		return get(inKey);
 	}
 
 	public void setProperties(Map inAttributes)
@@ -383,80 +360,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public void setProperty(String inKey, String inValue)
 	{
-		if ("id".equals(inKey))
-		{
-			setId(inValue);
-		}
-//		else if ("sourcepath".equals(inKey))
-//		{
-//			setSourcePath(inValue);
-//		}
-		else if ("keywords".equals(inKey))
-		{
-			getKeywords().clear();
-			if (inValue != null)
-			{
-				if( inValue.contains("|") )
-				{
-					String[] vals = VALUEDELMITER.split(inValue);
-					for (int i = 0; i < vals.length; i++)
-					{
-						addKeyword(vals[i]);						
-					}
-				}
-//				else if( inValue.contains(",") ) //Removed this because the new tag editor uses | now
-//				{
-//						String[] vals = inValue.split(",");
-//						for (int i = 0; i < vals.length; i++)
-//						{
-//							addKeyword(vals[i]);						
-//						}				
-//				}
-				else
-				{
-					addKeyword(inValue);
-				}
-			}
-		}
-		else if ("category-exact".equals(inKey))
-		{
-			if (inValue != null)
-			{
-				//This is annoying. We will need to fix categories when we save this asset
-				getCategories().clear();
-				if( inValue.contains("|") )
-				{
-					String[] vals = VALUEDELMITER.split(inValue);
-					for (int i = 0; i < vals.length; i++)
-					{
-						Category cat = getMediaArchive().getCategory(vals[i]);
-						if( cat != null)
-						{
-							addCategory(cat);
-						}
-					}
-				}
-				else
-				{
-					Category cat = getMediaArchive().getCategory(inValue);
-					if( cat != null)
-					{
-						addCategory(cat);
-					}
-				}
-			}
-		}
-		else
-		{
-			if (inValue != null && inValue.length() > 0)
-			{
-				getProperties().put(inKey, inValue);
-			}
-			else
-			{
-				getProperties().remove(inKey);
-			}
-		}
+		setValue(inKey,inValue);
 	}
 
 	public void clearCategories()
@@ -479,10 +383,7 @@ public class Asset implements MultiValued, SaveableData
 		{
 			log.debug("Null keyword");
 		}
-		else if( !getKeywords().contains(inString) )
-		{
-			getKeywords().add(inString);
-		}
+		addValue("keywords",inString);
 	}
 	public void addKeywords(String inString)
 	{
@@ -516,11 +417,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public List<String> getKeywords()
 	{
-		if (fieldKeywords == null)
-		{
-			fieldKeywords = new ArrayList<String>();
-		}
-		return fieldKeywords;
+		return (List<String>)getValues("keywords");
 	}
 
 	public void removeKeyword(String inKey)
@@ -548,15 +445,12 @@ public class Asset implements MultiValued, SaveableData
 
 	public void setKeywords(List<String> inKeywords)
 	{
-		fieldKeywords = inKeywords;
+		setValues("keywords",inKeywords);
 	}
 
 	public void clearKeywords()
 	{
-		if (fieldKeywords != null)
-		{
-			fieldKeywords.clear();
-		}
+		setValues("keywords",new ArrayList());
 	}
 
 	public void incrementProperty(String property, int delta) throws Exception
@@ -781,7 +675,7 @@ public class Asset implements MultiValued, SaveableData
 	public boolean hasKeywords()
 	{
 
-		return fieldKeywords != null && fieldKeywords.size() > 0;
+		return getKeywords() != null && getKeywords().size() > 0;
 	}
 
 	public Category getDefaultCategory()
@@ -852,14 +746,37 @@ public class Asset implements MultiValued, SaveableData
 	}
 
 	@Override
-	public Object getValue(String inKey)
-	{
-		return getMap().get(inKey);
-	}
-
-	@Override
 	public void setValue(String inKey, Object inValue)
 	{
+		if ("category-exact".equals(inKey))
+		{
+			if (inValue != null)
+			{
+				//This is annoying. We will need to fix categories when we save this asset
+				getCategories().clear();
+				Collection catids = null;
+				if( inValue instanceof Collection)
+				{
+					catids = (Collection) inValue;
+				}
+				else
+				{
+					String ids = (String)inValue;
+					String[] vals = VALUEDELMITER.split(ids);
+					catids = Arrays.asList(vals);
+				}	
+
+				for (Iterator iterator = catids.iterator(); iterator.hasNext();)
+				{
+					String id = (String) iterator.next();
+					Category cat = getMediaArchive().getCategory(id);
+					if( cat != null)
+					{
+						addCategory(cat);
+					}
+				}
+			}
+		}
 		getMap().put(inKey, inValue);
 	}
 

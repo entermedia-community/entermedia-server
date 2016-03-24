@@ -91,6 +91,10 @@ public class ScriptLogger extends Handler
 	{
 		saveLog("debug", inText, null);
 	}
+	public void info(Object inObj)
+	{
+		saveLog("info", String.valueOf(inObj),null);
+	}
 	public void info(String inText, Throwable ex)
 	{
 		saveLog("info", inText, ex);
