@@ -636,6 +636,7 @@ public class AssetEditModule extends BaseMediaModule
 		asset.addKeywords(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+		inReq.putPageValue("asset", asset);
 	}
 
 	public void removeAssetKeyword(WebPageRequest inReq) throws OpenEditException 
@@ -659,6 +660,7 @@ public class AssetEditModule extends BaseMediaModule
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 
 		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+		inReq.putPageValue("asset", asset);
 
 	}
 	protected XmpWriter getXmpWriter()
