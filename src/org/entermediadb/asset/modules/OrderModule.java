@@ -580,13 +580,13 @@ public class OrderModule extends BaseMediaModule
 			inReq.putPageValue("orderbasket", basket);
 	
 			HitTracker items = (HitTracker)inReq.getPageValue("orderitems");
-			if( items != null)
+			if( items == null)
 			{
 				items = loadOrderManager(inReq).findOrderItems(inReq, archive.getCatalogId(), basket);
-				inReq.putPageValue("orderitems", items);
 			}
 			if( items != null)
 			{
+				inReq.putPageValue("orderitems", items);
 				inReq.putSessionValue(items.getSessionId(), items);
 			}	
 			String check = inReq.findValue("clearmissing");

@@ -153,7 +153,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	}
 	public List getKeywords()
 	{
-		List fieldKeywords = (List)getValues("keywords");  //TODO: Is this right?
+		Collection fieldKeywords = (Collection)super.getValues("keywords");  //TODO: Is this right?
 		if( fieldKeywords == null )
 		{
 			Data first = (Data)getSelectedResults().first();
@@ -188,7 +188,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				fieldKeywords = new ArrayList();
 			}
 		}
-		return fieldKeywords;
+		return new ArrayList(fieldKeywords);
 	}
 
 
@@ -299,7 +299,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			//return something only if all the values match the first record
 			val = getValueFromResults(inId);
 			//getPropertiesPreviouslySaved().put(inId, val);
-			super.setProperty(inId, val);
+			//super.setProperty(inId, val);
 			return val;
 		}
 		
@@ -363,14 +363,14 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		return val;
 	}
-	public void setProperty(String inKey, String inValue)
+	public void setValue(String inKey, Object inValue)
 	{
 		if( inValue == null )
 		{
 			inValue = "";
 		}
-		//getProperties().put(inKey, inValue);
 		getPropertiesSet().put(inKey,inValue);
+		super.setValue(inKey, inValue);
 	}
 
 	public String getId()
