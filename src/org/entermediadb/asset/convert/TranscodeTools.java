@@ -289,7 +289,7 @@ public class TranscodeTools
 		if( inParameters == null || inParameters.isEmpty() )
 		{
 			result = manager.loadExistingOuput(inCreateProperties,inSourcePath, inExportName);
-			if(result.isComplete()){
+			if(result.isComplete()  && result.getOutput().getLength() >2){
 				if( result.getOutput() == null)
 				{
 					throw new OpenEditException("Output not found " + inSourcePath);

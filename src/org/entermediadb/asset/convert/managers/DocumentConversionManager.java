@@ -1,6 +1,10 @@
 package org.entermediadb.asset.convert.managers;
 
 import org.entermediadb.asset.convert.BaseConversionManager;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.convert.MediaTranscoder;
+import org.openedit.Data;
 
 public class DocumentConversionManager extends BaseConversionManager
 {
@@ -105,6 +109,53 @@ public class DocumentConversionManager extends BaseConversionManager
 //			ConvertResult result = findTranscoderByPreset(preset).convert(proxyinstructions);
 //			return result.getOutput();
 //	}
+	
+	
+	
+	public ConvertResult transcode(ConvertInstructions inStructions)
+	{
+		//if output == jpg and no time offset - standard
+		
+		
+		String fileFormat = inStructions.getAsset().getFileFormat();
+		if(!"pdf".equals(fileFormat))
+		{
+			ConvertResult result = findTranscoder(inStructions).convert(inStructions);
+			if(inStructions.getOutputRenderType().equals("document")){
+				return result;
+			}
+			 inStructions.setInputFile(inStructions.getOutputFile());
+			
+		}
+		else {
+			inStructions.setInputFile(getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem());
+		}
+		
+		
+		//Now make the input image needed using the document as the input
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1024x768.jpg");
+		
+		ConvertInstructions instructions2 = inStructions.copy(preset);
+		instructions2.setPageNumber(inStructions.getPageNumber());
+		MediaTranscoder transcoder = findTranscoder(instructions2);
+		
+		ConvertResult result = transcoder.convertIfNeeded(instructions2);
+		
+		inStructions.setInputFile(result.getOutput());
+		
+		result = transcoder.convertIfNeeded(inStructions);
+		if(!result.isComplete())
+		{
+			return result;
+		}
+		return result;
+		
+	}
+	
+	
+	
+	
+	
 
 	protected String getRenderType()
 	{

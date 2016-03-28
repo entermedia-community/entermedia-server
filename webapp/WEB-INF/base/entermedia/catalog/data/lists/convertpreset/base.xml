@@ -7,6 +7,10 @@
     <preset id="thumbimage" guid="imagethumb" 	outputfile="image200x200.jpg" display="true" fileexportformat="${shortfilename}S.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="04">Image Thumbnail</preset>
     <preset id="imagecrop" guid="imagecrop"  outputfile="image110x62cropped.jpg" display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="05" >Small Crop</preset>
     <preset id="imagepreviewfpo" watermark="true" guid="imagepreviewfpo" display="true" outputfile="image1024x768wm.jpg" fileexportformat="${shortfilename}1024x768-fpo.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="false" ordering="06" >Image Large FPO</preset>
+
+
+    <preset id="largedocument" guid="imagepreview" outputfile="document.pdf"  display="true" fileexportformat="${shortfilename}L.jpg" transcoderid="ooffice" extension="pdf" inputtype="document" onimport="true" ordering="04" singlepage="true">Document Preview</preset>
+
     
     <preset id="largedocument" guid="imagepreview" outputfile="image1024x768.jpg"  display="true" fileexportformat="${shortfilename}L.jpg" transcoderid="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="04" singlepage="true">Document Preview</preset>
 <data id="cropdocument" guid="cropdocument" outputfile="image110x62cropped.jpg" display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="05" singlepage="true" name="Document Crop"/>
