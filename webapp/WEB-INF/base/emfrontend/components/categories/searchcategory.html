@@ -1,0 +1,36 @@
+<div id="emcontainer">
+<div class="ui-widget uipanel" id="search-catgories" >
+	<div  class="ui-widget-header" >
+		<span class="widget-header-title">[[Search Category]]</span>
+		<span class="widget-header-edit">
+			<a class="emdialog ir" data-height="80%" data-width="80%" href="$home$apphome/components/categories/searchcategory.html">[[Search]]</a>			
+		</span>
+	</div>
+	<div class="ui-widget-content"  id="searcharea" >
+	#set( $searcher = $mediaarchive.getSearcher("category") )
+	$context.putPageValue("searcher",$searcher)
+	#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
+	<form  class="autosubmit"  data-targetdiv="categoryresults" action="$home$apphome/components/categories/searchcategoryresults.html">
+	
+		<input type="hidden" name="searchtype" value="category" />
+	<table class="inlinesearch" >
+		<tr>
+		#foreach( $detail in $details)
+			<td>
+				$context.putPageValue("detail", $detail)
+				$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+			</td>	
+		#end
+		</tr>
+	</table>
+	
+	</form>
+	
+	
+	<div id="categoryresults">
+	
+	</div>
+	
+	</div>
+</div>	
+</div>

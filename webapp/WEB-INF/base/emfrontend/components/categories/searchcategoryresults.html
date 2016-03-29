@@ -1,0 +1,9 @@
+#set( $searcher = $mediaarchive.getSearcher("category") )
+$context.putPageValue("searcher",$searcher)
+#set ($details = $searcher.getDetailsForView("category/searchcategoryresults", $userprofile))
+$context.putPageValue("details",$details)
+$context.putPageValue("clickpath","$apphome/views/modules/librarycollection/media/")
+$context.putPageValue("viewpostfix",".html")
+
+
+$pages.include("${apphome}/components/table/results.html", $context)
