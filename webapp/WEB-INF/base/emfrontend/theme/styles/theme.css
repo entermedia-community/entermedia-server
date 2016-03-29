@@ -2398,6 +2398,13 @@ tr.odd {
 .widget-header-edit a:hover {
     opacity: 1;
 }
+.widget-header-right {
+	float: right;
+    margin: 3px 8px 0 0;
+}
+.widget-header-right i { opacity: 0.6; top:0; margin-left:3px; }
+.widget-header-right i:hover { opacity: 1; }
+
 /* UPLOAD STYLES */
 
 .right {
@@ -6465,12 +6472,15 @@ text-align:center;
 .librarylabels h2
 {
 	font-size: .9em;
+	padding:8px 6px;
+	font-weight: bold;
+	margin-bottom: 0px;
+	border-bottom:1px solid #ddd;
 }
 
 .librarylabels
 {
 	margin: 4px;
-	padding: 6px;
 	background-color: #eee;
 }
 .librarylabels ul {
@@ -6482,8 +6492,9 @@ text-align:center;
 {
 	padding: 0px;
     list-style-type:none; 
-    padding: 0px 0 4px 4px;
+    padding: 1px 2px 0;
     font-size: 1em;
+   
 }
 
 .librarylabels ul li a:hover
@@ -6493,38 +6504,41 @@ text-align:center;
 
 a.librarylabel
 {
-	display:block;	
-}
-a.librarylabel span 
-{
-	padding-left: 25px;
-	display:inline-block;
-	background: url("../images/icons/box.png") no-repeat scroll left center;
-	padding-top: 4px;
-	padding-bottom: 4px;
-	max-width: 158px;
-}
-a.collectionclose 
-{
-	float: right;
-	margin-top: -20px;
-	padding: 0;
-	background-position: -96px -128px;
+	padding-left: 28px;
+	background: url("../images/icons/box.png") no-repeat scroll 4px 4px;
+	padding-top: 6px;
+	padding-bottom: 10px;
+	width: 100%;
+	display:block;
+	 border-bottom:1px solid #ddd;
 	
 }
-a.librarylabel.selected
-{
-	background: none repeat scroll 0 0 #C9E8F2;
+a.librarylabel .collectionlabel {
+	width: 140px;
+	display: inline-block;
+	
 }
-a.librarylabel:hover
+a.librarylabel .collectionclose
 {
-	background: none repeat scroll 0 0 #C9E8F2;
+	display: inline-block;
+	float:right;
+	margin-right: 4px;
+	opacity: 0.3;
 }
-
+a.librarylabel:hover, a.librarylabel.selected
+{
+	background-color:#C9E8F2;
+}
+a.librarylabel:hover .collectionclose {
+	opacity: 1;
+}
 a.librarylabel.dragoverselected
 {
 	border: 1px dashed #aaa;
 }
+#createnewarea { padding: 10px 5px;}
+.collectionnew { display:block; text-decoration:underline; }
+#createnewarea input[type="text"] { width: 150px; margin-bottom:5px;}
 
 a.librarydetails
 {
@@ -6538,6 +6552,11 @@ a.librarydroparea
 	background: url("../images/icons/lgicn_16x16gray.png") no-repeat scroll left center;
 	padding-left: 24px;
 }
+.libraryheader {  
+	padding:6px 0 8px 28px;
+	margin:5px 0 5px;
+	background: url("../images/icons/box.png") no-repeat scroll 4px 4px;
+	}
 
 
 .initialtext

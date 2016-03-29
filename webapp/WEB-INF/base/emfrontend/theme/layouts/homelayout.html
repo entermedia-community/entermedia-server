@@ -2,14 +2,14 @@
 #set( $emtabid = $librarycol.getId() )
 #if(!$emtabid) #set( $emtabid = "list" ) #end
 	<ul data-targetdiv="collection-home-tab-content" data-defaulttab="mediatab" class="ui-tabs-nav nav pull-left emtabs">	
-		  <li class="ui-corner-top #if(!$emtabid || $emtabid =='list')emtabselected#end "><a href="$home$apphome/index.html?emtabid=collectionlist&oemaxlayout=1" 
+		  <li class="ui-corner-top #if(!$emtabid || $emtabid =='list')emtabselected#end firstab"><a href="$home$apphome/index.html?emtabid=collectionlist&oemaxlayout=1" 
 		  	data-allwaysloadpage="false" data-layouts="2" id="collectionlist">Collections</a></li>
 		  	#foreach($col in $userprofile.getValues("opencollections") )
 		  		#set( $collection = false )
 		  		#set( $collection = $mediaarchive.getData("librarycollection",$col))
 			#if( $collection )		  		
 		  	<li class="ui-corner-top emtab #if( $emtabid && $emtabid == $col)emtabselected#end">
-			  <span class="ui-icon ui-icon-closethick"  data-collectionid="$col"></span>
+			  <span class="ui-icon ui-icon-closethick closetab" data-collectionid="$col" data-closetab="$home$apphome/components/collectionfeed/removetab.html?collectionid=$col"></span>
 			  <a href="$home$apphome/views/modules/librarycollection/viewassets.html?collectionid=${col}" data-alwaysreloadpage="true"  data-layouts="2" id="collection$col">$collection</a> </li>
 			#end  
 			#end  
@@ -23,3 +23,6 @@
 	</div>
 	
 </div>
+<script>
+
+</script>

@@ -167,7 +167,7 @@
 	position: absolute;
 	display: block;
 	right: 3px;
-	z-index: 1000;
+	z-index: 500;
 	top:3px;
 	cursor: pointer; 
 }

@@ -614,7 +614,41 @@ uiload = function() {
 			}	
 		});
 	});
-
+	
+	jQuery(".closetab").livequery('click',
+			function(e) 
+			{
+				e.preventDefault();
+				var tab = $(this);
+				var nextpage = tab.data("closetab");
+				jQuery.get(nextpage, {oemaxlayout:1}, function(data) 
+				{
+					var prevtab = tab.closest('li').prev();
+					prevtab.find('a').click();
+					
+					if (prevtab.hasClass('firstab')) {
+						tab.closest('li').remove();
+					}
+					
+					
+				});
+				return false;
+			}
+	);
+	
+	jQuery(".collectionclose").livequery('click',
+			function(e) 
+			{
+				e.preventDefault();
+				var collection = $(this);
+				var nextpage = collection.data("closecollection");
+				jQuery.get(nextpage, {oemaxlayout:1}, function(data) 
+				{
+					collection.closest('li').remove();
+				});
+				return false;
+			}
+	);
 
 	jQuery("input.listautocomplete").livequery( function() 
 	{
@@ -699,6 +733,10 @@ uiload = function() {
 						letterCase: 'uppercase'
 					});
 	}	
+	
+	jQuery(".sidebarsubmenu").livequery("click", function(e){
+		e.stopPropagation();
+	});
 }
 
 

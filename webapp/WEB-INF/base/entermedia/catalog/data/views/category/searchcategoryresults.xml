@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="category" />
-  <property id="path" />
-  <property id="date" />
-  <property id="type" />
+  <property id="name" />
 </root>
