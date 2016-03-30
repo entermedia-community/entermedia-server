@@ -39,7 +39,7 @@
 	#foreach($entry in $type.children)
 		#if( $velocityCount == 10 )
 		</ul>
-		<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="Show More" data-hidelabel="Show Less"><span>[[Show More]]</span></a>
+		<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="[[Show More]]" data-hidelabel="[[Show Less]]"><span>[[Show More]]</span></a>
 		<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
 		#end
 		<li>
