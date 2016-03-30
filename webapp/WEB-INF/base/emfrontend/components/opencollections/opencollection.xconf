@@ -1,4 +1,4 @@
 <page>
-	<path-action name="ProjectModule.addOpenCollection" />
+	<path-action name="ProjectModule.addCollectionTab" />
 	
 </page>

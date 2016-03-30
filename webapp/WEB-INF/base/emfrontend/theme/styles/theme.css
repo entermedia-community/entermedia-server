@@ -6494,7 +6494,8 @@ text-align:center;
     list-style-type:none; 
     padding: 1px 2px 0;
     font-size: 1em;
-   
+    border-bottom:1px solid #ddd;
+       word-wrap: break-word;
 }
 
 .librarylabels ul li a:hover
@@ -6508,9 +6509,9 @@ a.librarylabel
 	background: url("../images/icons/box.png") no-repeat scroll 4px 4px;
 	padding-top: 6px;
 	padding-bottom: 10px;
-	width: 100%;
-	display:block;
-	 border-bottom:1px solid #ddd;
+	width: 85%;
+	display:inline-block;
+	
 	
 }
 a.librarylabel .collectionlabel {
@@ -6518,18 +6519,18 @@ a.librarylabel .collectionlabel {
 	display: inline-block;
 	
 }
-a.librarylabel .collectionclose
+.collectionclose
 {
 	display: inline-block;
 	float:right;
-	margin-right: 4px;
+	margin: 4px 4px 0 0;
 	opacity: 0.3;
 }
-a.librarylabel:hover, a.librarylabel.selected
+.librarylabels ul li:hover
 {
 	background-color:#C9E8F2;
 }
-a.librarylabel:hover .collectionclose {
+.librarylabels ul li:hover a.collectionclose {
 	opacity: 1;
 }
 a.librarylabel.dragoverselected

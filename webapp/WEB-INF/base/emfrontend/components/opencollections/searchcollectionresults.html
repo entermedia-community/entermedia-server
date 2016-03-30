@@ -2,8 +2,10 @@
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollectionresults", $userprofile))
 $context.putPageValue("details",$details)
-$context.putPageValue("clickpath","$apphome/views/modules/librarycollection/media/")
+$context.putPageValue("clickpath","")
 $context.putPageValue("viewpostfix",".html")
-
+$context.putPageValue("clickruncommand","closecollection")
 
 $pages.include("${apphome}/components/table/results.html", $context)
+
+

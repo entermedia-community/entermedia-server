@@ -438,9 +438,10 @@ onloadselectors = function()
 		});
 		
 	jQuery("div.emtable.striped div.row:nth-child(even)").livequery( function()
-		{
-			jQuery(this).addClass("odd");
-		});
+			{
+				jQuery(this).addClass("odd");
+			});
+	
 	jQuery("#tree div:even").livequery( function(){
 		jQuery(this).addClass("odd");
 	});
@@ -582,7 +583,7 @@ onloadselectors = function()
 			}
 	);
 
-		jQuery('#emselectable table td' ).livequery(	
+	jQuery('#emselectable table td' ).livequery(	
 			function()
 			{
 				var clicked = jQuery(this);
@@ -613,6 +614,7 @@ onloadselectors = function()
 							//var url = emselectable.data("clickpath");
 							var url = table.data("clickpath");
 							var form = emselectable.find("form");
+							
 							if( form.length > 0 )
 							{
 								emselectable.find( '#emselectedrow' ).val(id);
@@ -624,6 +626,9 @@ onloadselectors = function()
 							}
 							else if( url != undefined )
 							{
+								if (url=="") {
+									return true;
+								}
 								var post = table.data("viewpostfix");
 								if( post != undefined )
 								{
@@ -633,6 +638,9 @@ onloadselectors = function()
 								{
 									parent.document.location.href = url + id;
 								}
+							}
+							else if( command != undefined ) {
+								//eval(command)
 							}
 							else
 							{
@@ -1124,11 +1132,10 @@ emcomponents = function() {
 			}
 	);
 	
+	
+}
 
-	
-	
-	
-	
-	
+reloadOpenCollections = function (data) {
+	$("#left-col-libraries").replaceWith(data);
 }
 

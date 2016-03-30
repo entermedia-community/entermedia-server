@@ -34,3 +34,14 @@
 	</div>
 </div>	
 </div>
+
+<script>
+$(".rowclick").livequery('click', function(e){
+    parent.jQuery.fancybox.close();
+    var rowid = $(this).attr("rowid");
+    var nextpage = '$home$apphome/components/opencollections/opencollection.html?collectionid='+rowid;
+    jQuery.get(nextpage, {}, function(data) {
+    	parent.reloadOpenCollections(data);
+    });
+});
+</script>
