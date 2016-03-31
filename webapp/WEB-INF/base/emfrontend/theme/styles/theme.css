@@ -3574,10 +3574,10 @@ body #emcontainer .emasseteditorarea {
    
 }
 .select-dropdown-open.down {
-    background: url('../images/sort-desc.png') 4px 5px no-repeat;
+    background: url('../images/sort-desc.png') 5px 9px no-repeat;
 }
 .select-dropdown-open.up {
-    background: url('../images/sort-asc.png') 4px 5px no-repeat;
+    background: url('../images/sort-asc.png') 5px 8px no-repeat;
 }
 .select-dropdown {
     position: absolute;
@@ -6371,11 +6371,11 @@ a.audio-filename:hover
 	border-radius: 5px 5px 0 0;
 }
 .ui-widget-header.sidetoggle .widget-header-title {
-	background: url('../images/arrow-right.png') left 4px no-repeat;
+	background: url('../images/arrow-down.png') left 4px no-repeat;
 	padding-left: 18px;
 }
 .ui-widget-header.sidetoggle.expanded .widget-header-title {
-	background: url('../images/arrow-down.png') left 6px no-repeat;
+	background: url('../images/arrow-right.png') left 6px no-repeat;
 	padding-left: 18px;
 }
 
