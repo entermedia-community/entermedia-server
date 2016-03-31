@@ -1,8 +1,11 @@
 #set( $searcher = $hits.getSearcher())
 <div class="ui-widget uipanel" id="left-col-search" >
-			<div  #if($userprofile.minimizefilterscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" #else class="ui-widget-header" #end data-target="filterscontent">
-				<span class="widget-header-title">[[Filters]]</span>
-			</div>
+<div  #if($userprofile.minimizefilterscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" 
+      #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
+      #else class="ui-widget-header" #end 
+      data-target="filterscontent">
+	<span class="widget-header-title">[[Filters]]</span>
+</div>
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
  
  <ul id="filters-sidebar-selected">
@@ -18,8 +21,14 @@
 </ul>
 
 #set($facets = $hits.getFilterOptions())
+#if( $librarycol)
+<form class="ajaxform" targetdiv="collectiontoplevel" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+    <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
 
+#else
 <form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+#end
+
 #foreach($type in $facets )
 #set( $viewpermission = true)
 #set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
@@ -30,11 +39,11 @@
 	#foreach($entry in $type.children)
 		#if( $velocityCount == 10 )
 		</ul>
-		<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="Show More" data-hidelabel="Show Less"><span>Show More</span></a>
+		<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="[[Show More]]" data-hidelabel="[[Show Less]]"><span>[[Show More]]</span></a>
 		<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
 		#end
 		<li>
-			<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry" href="#"><span> $entry ($entry.count)</span></a>
+			<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$context.getText($entry.getName())" href="#"><span> $context.getText($entry.getName()) ($entry.count)</span></a>
 		</li>
 	#end
 	</ul>
