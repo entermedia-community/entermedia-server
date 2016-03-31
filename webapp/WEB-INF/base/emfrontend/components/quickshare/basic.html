@@ -42,7 +42,7 @@
  
  <div id="upload"></div>
   <button id="startbutton" type="submit" style="display: none;">Start Upload</button>
- 
+ <input type="hidden" id="totalfiles" name="totalfiles" value=""/>
 </form>
     
     
@@ -55,15 +55,18 @@ jQuery(function () {
     'use strict';
     // Change this to the location of your server-side upload handler:
     var url = "$home$apphome/components/quickshare/handleupload.html";
+  	var totalfiles = 0;
     jQuery('#fileupload').fileupload({
         url: url,
-        singleFileUploads: false,
-     //   autoUpload: false,
+        //singleFileUploads: false,
+        autoUpload: false,
         dataType: 'json',
+        
         add: function (e, data) {
         	
-        	jQuery("#readyarea").html("<span class='label label-success'>Your files have been added and are ready for upload</span>");
-        	
+        	totalfiles += 1;
+        	jQuery("#totalfiles").val(totalfiles);
+        	jQuery("#readyarea").html("<span class='label label-success'>" + totalfiles  + " files have been added and are ready for upload</span>");
         	
         	data.context = jQuery('#startbutton').show()
                 
@@ -81,9 +84,11 @@ jQuery(function () {
         	
         },
         done: function (e, data) {
+        	
+
         //	alert("All done!");
-            var url = "$home$apphome/components/quickshare/done.html";
-            document.location.href = url;
+        //    var url = "$home$apphome/components/quickshare/done.html";
+        //    document.location.href = url;
         
         },
         
@@ -92,21 +97,39 @@ jQuery(function () {
         
         progressall: function (e, data) {
             var progress = parseInt(data.loaded / data.total * 100, 10);
+            console.log(progress)
             jQuery('#progress .progress-bar').css(
                 'width',
                 progress + '%'
             );
 			if(progress == 100){
+				sleep(50000);
+
 				var from = jQuery("#fromemail").val();
             	var to = jQuery("#toemail").val();
 				var url = "$home$apphome/components/quickshare/done.html?destination.value=" + to + "&email.value=" + from;
 		        document.location.href = url;
+		        
 			}
 
         }
     }).prop('disabled', !jQuery.support.fileInput)
         .parent().addClass(jQuery.support.fileInput ? undefined : 'disabled');
 });
+
+
+function sleep(milliseconds) {
+	 console.log("starting sleeep");
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+	    if ((new Date().getTime() - start) > milliseconds){
+	      break;
+	    }
+	  }
+	  console.log("ending sleeep");
+	}
+
+
 </script>
 </div>
 </div>

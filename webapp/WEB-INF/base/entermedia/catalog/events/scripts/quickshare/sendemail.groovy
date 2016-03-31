@@ -9,6 +9,7 @@ import org.openedit.entermedia.edit.*
 import org.openedit.entermedia.episode.*
 import org.openedit.entermedia.modules.*
 import org.openedit.entermedia.orders.Order
+import org.openedit.entermedia.orders.OrderManager
 import org.openedit.entermedia.orders.OrderSearcher
 import org.openedit.entermedia.util.*
 import org.openedit.xml.*
@@ -21,6 +22,8 @@ import com.openedit.util.*
 
 
 public void handleUpload() {
+	
+	log.info("entering send email");
 	MediaArchive archive = (MediaArchive)context.getPageValue("mediaarchive");
 	OrderSearcher ordersearcher = archive.getSearcher("order");
 	Searcher itemsearcher = archive.getSearcher("orderitem");
@@ -35,10 +38,13 @@ public void handleUpload() {
 		return;
 	}	
 	
-	HitTracker orderitems = itemsearcher.query().match("orderid", order.getId()).search();
-//	itemsearcher.saveAllData(orderitems, null);
+	//HitTracker orderitems = itemsearcher.query().match("orderid", order.getId()).search();
+	OrderManager om = archive.getOrderManager()
+	HitTracker assets = om.findAssets(context, archive.getCatalogId(), order);
 	
-	context.putPageValue("orderitems", orderitems);
+	
+	
+	context.putPageValue("orderitems", assets);
 	String from = context.getRequestParameter("email.value");
 	context.putPageValue("fromemail", from);
 	context.putPageValue("order", order);
@@ -48,7 +54,7 @@ public void handleUpload() {
 	sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
 	context.putSessionValue("quickshareorder", null);
 	
-
+log.info("leaving send email ");
 }
 
 protected void sendEmail(WebPageRequest context, String email, String from,  String templatePage){

@@ -13,9 +13,9 @@
 #if( !$cdnprefix )
 #set( $cdnprefix = $context.siteRoot )
 #end
-#foreach( $item in $orderitems )
+#foreach( $asset in $orderassets )
 
-    #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+    ##set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 	#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
 
 	<tr>
@@ -33,16 +33,13 @@
 		#else
 			#set( $rootid = $hits.sessionId )
 		#end
+	#set ($assetsourcepath = $asset.sourcepath)
+
+		##	#set( $tsize = "$home$cataloghome/downloads/preview/thumbsmall/$assetsourcepath/thumb.jpg")
 		
-			<a href="#" alt="$asset" name="$asset" style="text-decoration: none;">
+		##<img src="$tsize"/>
+
 		
-			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-			$context.putPageValue("cell", $asset)
-			$context.putPageValue("showdetails", "false")
-			$context.putPageValue("thumbsize", "crop")
-		   	#set( $sourcepath = $asset.sourcePath )
-			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
-			</a>
 	</td>
 	<td class="asset-name">${asset}</td>
 

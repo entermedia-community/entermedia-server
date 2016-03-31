@@ -1,8 +1,11 @@
 <page>
+	
+	<!--
+	
 	<path-action name="Script.run">
 		<script>/${catalogid}/events/scripts/quickshare/sendemail.groovy</script>
 	</path-action>
-	
+	-->
 	
 	
 	<property name="subject">New Files Shared with you</property>
