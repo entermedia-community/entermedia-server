@@ -4924,6 +4924,10 @@ p.resultsnumber {
     left: 45px;
     font-size: 12px;
     color: #979797;
+    white-space: nowrap;
+    width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 #de-side-nav ul li a .icon {
     float: left;
