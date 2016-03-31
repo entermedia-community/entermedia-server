@@ -1,23 +1,28 @@
 <script src="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/jquery-1.11.1.min.js"></script>
 <script src="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.min.js"></script>
-<link   href="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/skin/entermedia.css" rel="stylesheet" >
+<link   href="$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/skin/functional.css" rel="stylesheet" >
 
 #set( $sourcepath = $url_util.encode($asset.sourcepath) )
 #set( $source = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/video.mp4/streaming.mp4" )
 #set( $thumb =  "$!prefix$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/image1024x768.jpg/thumb.jpg" )
+#set($video_loop = $context.getRequestParameter("video_loop"))
+#if ($video_loop == '1') 
+	#set($video_loop_param = 'loop')
+#else
+	#set($video_loop_param = '')
+#end
+#set($video_autoplay = $context.getRequestParameter("video_autoplay"))
+#if ($video_autoplay == '1') 
+	#set($video_autoplay_param = 'autoplay')
+#else
+	#set($video_autoplay_param = '')
+#end
 
-<div id="play$asset.getId()" class="player is-splash"  style="background-color:#777; background-image:url($thumb);" data-fullscreen="true"
+<div id="play$asset.getId()" class="flowplayer"  style="background-color:#777; background-image:url($thumb);" data-fullscreen="true"
      data-native_fullscreen="true">
-   <video>
+   <video $video_loop_param $video_autoplay_param>
       <source type="video/mp4"  src="$source">
       #set( $short = $url_util.getPathUtilities().extractPagePath($source) )
       <source type="video/flash"  src="mp4:$short"></video>
    </video>
 </div>
-
-<script>
-$(function () {
-  $("#play$asset.getId()").flowplayer({ swf: "$!prefix$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.swf" });
- 
-});
-</script>

@@ -1,9 +1,9 @@
 <div id="createmediapanel" style="padding-top:20px;">
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 
-<div class="row" style="max-width: 800px;margin: auto;">
+<div class="row" style="max-width: 850px;margin: auto;">
 #if( $canviewupload)
-     <div class="col-sm-6 col-md-3">
+     <div class="col-xs-3">
   		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid">
       <img  src="$home$apphome/components/createmedia/upload/add.png" style="height: 100px; width: 100%; display: block;">
       <div class="caption">
@@ -14,7 +14,7 @@
     </div>
   #end	
   #if( $cancreatenewrecord)
-  <div class="col-sm-6 col-md-3">
+  <div class="col-xs-3">
   <a  class="ajax btnthumbnail" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/url/start.html?collectionid=$!collectionid" >
       <img  src="$apphome/components/createmedia/url/add.png" style="height: 100px; width: 100%; display: block;">
       <div class="caption">
@@ -23,7 +23,7 @@
       </div>
    </a>
    </div>
-  <div class="col-sm-6 col-md-3">
+  <div class="col-xs-3">
    <a  class="ajax btnthumbnail" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/data/newdatastart.html?collectionid=$!collectionid">  
 	<img  src="$apphome/components/createmedia/data/add.png" style="height: 100px; width: 100%; display: block;">  
 	 <div class="caption">
@@ -34,7 +34,7 @@
     </div>
   #end
   #if( $cancreatelivemedia)
-  <div class="col-sm-6 col-md-3">
+  <div class="col-xs-3">
   <a  class="ajax" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/video/newvideostart.html?collectionid=$!collectionid" >
      <div class="btnthumbnail">
        <img  src="$apphome/components/createmedia/video/add.png" style="height: 100px; width: 100%; display: block;">
