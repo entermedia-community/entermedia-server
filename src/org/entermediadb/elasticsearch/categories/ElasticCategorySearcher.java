@@ -75,17 +75,33 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		}
 		try
 		{
-			setReIndexing(true);
 		
 			putMappings(toId(getCatalogId()),true); //We can only try to put mapping. If this failes then they will
 				//need to export their data and factory reset the fields 
 			
 			//deleteAll(null); //This only deleted the index
 			//This is the one time we load up the categories from the XML file
-//			Category parent = getCategoryArchive().getRootCategory();
-//			List tosave = new ArrayList();
-//			updateChildren(parent,tosave);
-//			updateIndex(tosave,null);
+			Category parent = getRootCategory();
+			List tosave = new ArrayList();
+			updateChildren(parent,tosave);
+			updateIndex(tosave,null);
+			
+			//resave all the paths?
+//			List tosave = new ArrayList(1000);
+//			
+//			for (Iterator iterator = all.iterator(); iterator.hasNext();)
+//			{
+//				Data row = (Data) iterator.next();
+//				Category parent = (Category)loadData(row);
+//				tosave.add(parent);
+//				if(tosave.size() == 1000)
+//				{
+//					updateIndex(tosave, null);
+//					tosave.clear();
+//				}
+//			}
+//			updateIndex(tosave, null);
+			
 			fieldRootCategory = null;
 			getRootCategory();
 			
@@ -120,6 +136,17 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			try
 			{
 				inContent.field("parentid", parent.getId());
+				
+				StringBuffer path = new StringBuffer();
+				for (Iterator iterator = category.getParentCategories().iterator(); iterator.hasNext();)
+				{
+					Category aparent = (Category) iterator.next();
+					path.append(aparent.getName());
+					path.append("/");
+				}
+				path.append(category.getName());
+				
+				inContent.field("sourcepath", path.toString());
 			}
 			catch (Exception ex)
 			{
@@ -203,6 +230,20 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return super.searchByField(inField, inValue);
 	}
 
+	@Override
+	public Data loadData(Data inHit)
+	{
+		if( inHit instanceof Category)
+		{
+			return inHit;
+		}
+		ElasticCategory data = (ElasticCategory) createNewData();
+		data.setProperties(inHit.getProperties());
+		data.setId(inHit.getId());
+		
+		return super.loadData(inHit);
+	}
+	
 	@Override
 	public void saveCategory(Category inCategory)
 	{

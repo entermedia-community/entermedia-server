@@ -2,7 +2,8 @@
 
 <root>
   <property id="name" />
-  <property id="library" />
   <property id="creationdate" />
+  <property id="owner" />
+  <property id="library" />
   
 </root>
