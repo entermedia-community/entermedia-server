@@ -136,6 +136,47 @@ public class BaseProjectManager implements ProjectManager
 		//HitTracker labels = searcher.query().match("library",$library.getId()).sort("name").search() )
 		
 	}
+	
+	public Collection<UserCollection> loadOpenCollections(WebPageRequest inReq)
+	{
+		//get a library
+		//inReq.putPageValue("selectedlibrary",library);
+
+		
+		Collection<UserCollection> usercollections = (Collection<UserCollection>)inReq.getPageValue("usercollections");
+		if( usercollections != null)
+		{
+			return usercollections;
+		}
+		//enable filters to show the asset count on each collection node
+		
+	  	Collection opencollections = inReq.getUserProfile().getValues("opencollections");
+
+		FilterNode collectionhits = null;
+		if( opencollections.size() > 0 ) //May not have any collections
+		{
+			Searcher collectionassetsearcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollectionasset");
+			
+			//Build list of ID's
+			HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",opencollections).named("sidebar").search(); //todo: Cache?
+			if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
+			{
+				collectionhits = collectionassets.findFilterNode("librarycollection");
+			}
+		}
+		Collection collections = getSearcherManager().getSearcher(getCatalogId(),"librarycollection").query().orgroup("id", opencollections).search(inReq);
+		usercollections = loadUserCollections(collections, collectionhits);
+		inReq.putPageValue("usercollections", usercollections);
+		return usercollections;
+
+//		return Collections.EMPTY_LIST;
+				
+		//search
+		//Searcher searcher = getSearcherManager().getSearcher(getMediaArchive().getCatalogId(),"librarycollection") )
+		//HitTracker labels = searcher.query().match("library",$library.getId()).sort("name").search() )
+		
+	}
+	
 	protected Collection<UserCollection> loadUserCollections(Collection<Data> allcollections, FilterNode collectionhits)
 	{
 		List usercollections = new ArrayList(allcollections.size());

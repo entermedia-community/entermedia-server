@@ -25,6 +25,14 @@ public class ProjectModule extends BaseMediaModule
 		manager.loadCollections(inReq);
 	}
 
+	public void loadOpenCollections(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
+		manager.loadOpenCollections(inReq);
+	}
+
+	
 	public void loadSelectedLibrary(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");
