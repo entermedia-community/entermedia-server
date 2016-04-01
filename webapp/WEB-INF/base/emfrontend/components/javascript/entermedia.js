@@ -639,9 +639,6 @@ onloadselectors = function()
 									parent.document.location.href = url + id;
 								}
 							}
-							else if( command != undefined ) {
-								//eval(command)
-							}
 							else
 							{
 								parent.document.location.href = id;
