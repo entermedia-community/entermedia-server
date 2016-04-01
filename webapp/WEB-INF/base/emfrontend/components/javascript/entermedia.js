@@ -1132,7 +1132,9 @@ emcomponents = function() {
 	
 }
 
-reloadOpenCollections = function (data) {
-	$("#left-col-libraries").replaceWith(data);
+reloadOpenCollections = function (nextpage) {
+	jQuery.get(nextpage, {}, function(data) {
+		$("#left-col-libraries").replaceWith(data);	
+	});
 }
 

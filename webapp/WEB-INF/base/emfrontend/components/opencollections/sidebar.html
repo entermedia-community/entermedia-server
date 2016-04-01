@@ -17,13 +17,18 @@
 	<div class="librarylabels">
 	<ul>
 	  	#foreach($collection in $usercollections )
-			<li>
+			<li
+				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${collection.getId()}"
+				data-targetdiv="left-col-libraries"
+				class="#if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"
+			>
 				#set( $selected = false )
 				#if( $inmodule && $librarycol && $collection.getId() == $librarycol.id )
 					#set( $selected = true )
 				#end
-				<a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${collection.getId()}"
-				 class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{collection.getCollection().notes}"><span> $collection.getName() ($collection.getAssetCount())</span>
+				<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" 
+				 	class="librarylabel #if ($selected ) selected #end"  
+				 	title="$!{collection.getCollection().notes}"><span> $collection.getName() ($collection.getAssetCount())</span>
 				</a> 
 				<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" class="collectionclose ajax" targetdiv="left-col-libraries" title="[[Close Collection]]">
 					<span class="closecollection ui-icon ui-icon-closethick" data-collectionid="${collection.getId()}"></span>
