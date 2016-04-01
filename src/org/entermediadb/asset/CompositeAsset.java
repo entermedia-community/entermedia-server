@@ -432,8 +432,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			for (Iterator iterator2 = getCategories().iterator(); iterator2.hasNext();)
 			{
 				Category cat = (Category) iterator2.next();
-				String cats = data.get("category");
-				if( !cats.contains(cat.getId() ) )
+				Collection cats = (Collection)data.getValue("category");
+				if( cats == null || !cats.contains(cat) )
 				{
 					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
@@ -446,8 +446,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			for (Iterator iterator2 = getRemovedCategories().iterator(); iterator2.hasNext();)
 			{
 				Category cat = (Category) iterator2.next();
-				String cats = data.get("category");
-				if( cats.contains(cat.getId() ) )
+				Collection cats = (Collection)data.getValue("category");
+				if( cats != null && cats.contains(cat) )
 				{
 					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
@@ -461,8 +461,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			for (Iterator iterator2 = getKeywords().iterator(); iterator2.hasNext();)
 			{
 				String inKey = (String) iterator2.next();
-				String existing = data.get("keywords");
-				if( existing == null || !existing.contains(inKey) )
+				Collection keywords = (Collection)data.getValue("keywords");
+				if( keywords != null && !keywords.contains(inKey) )
 				{
 					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
@@ -477,8 +477,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			{
 				String inKey = (String) iterator2.next();
 				inKey = inKey.trim();
-				String existing = data.get("keywords");
-				if( existing != null && existing.contains(inKey) )
+				Collection keywords = (Collection)data.getValue("keywords");
+				if( keywords != null && keywords.contains(inKey) )
 				{
 					Asset asset = loadAsset( inloopasset, data, tosave);
 					if( asset != null )
@@ -614,7 +614,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		if( inFieldCurrentAsset == null )
 		{
-			inFieldCurrentAsset =  getMediaArchive().getAssetBySourcePath(inData.getSourcePath());
+			inFieldCurrentAsset =  (Asset)getMediaArchive().getAssetSearcher().loadData(inData);
 		}
 		else
 		{

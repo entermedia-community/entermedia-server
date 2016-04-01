@@ -52,7 +52,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		// TODO Auto-generated method stub
 		super.setProperty(inId, inValue);
 	}
-
+	@Override
+	public Collection<String> getValues(String inPreference)
+	{
+		Collection result = (Collection)getValue(inPreference);
+		return result;
+	}
 	@Override
 	public Object getValue(String inId)
 	{

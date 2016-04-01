@@ -497,4 +497,24 @@ public class Category extends BaseData
 		return false;
 	}
 
+	 @Override
+	 public boolean equals(Object obj)
+	 {
+		 if( obj == this)
+		 {
+			 return true;
+		 }
+		 if(obj instanceof Category)
+		 {
+			 Category c = (Category)obj;
+			 String id = c.getId();
+			 if( id != null || id.equals(getId()))
+			 {
+				 return true;
+			 }
+		 }
+		 
+		 return false;
+	 }
+	
 }
