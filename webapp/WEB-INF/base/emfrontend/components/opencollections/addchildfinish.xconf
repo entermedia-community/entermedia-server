@@ -1,5 +1,6 @@
 <page>
 	<path-action name="DataEditModule.saveData"/>
+	<path-action name="ProjectModule.createCollection" />
 	<path-action name="ProjectModule.addOpenCollection" />
 	
 </page>

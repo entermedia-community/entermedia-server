@@ -1,6 +1,7 @@
 package org.entermediadb.projects;
 
 import java.util.Collection;
+import java.util.Date;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -247,7 +248,40 @@ public class ProjectModule extends BaseMediaModule
 			profile.getCombinedLibraries().add(saved.getId());
 		}
 	}
-	
+	public void createCollection(WebPageRequest inReq)
+	{
+		createUserLibrary(inReq);
+		Data saved = (Data)inReq.getPageValue("data");
+		saved.setValue("creationdate", new Date());
+		saved.setValue("owner",inReq.getUserName() );
+		getMediaArchive(inReq).getSearcher("librarycollection").saveData(saved,null);
+		
+	}
+	public void createUserLibrary(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Data userlibrary = archive.getData("library", inReq.getUserName());
+		if( userlibrary != null)
+		{
+			return;
+		}
+		
+		userlibrary = archive.getSearcher("library").createNewData();
+		userlibrary.setId(inReq.getUserName());
+		userlibrary.setName(inReq.getUser().getScreenName());
+		archive.getSearcher("library").saveData(userlibrary, null);
+		inReq.setRequestParameter("profilepreference","last_selected_library" );
+		inReq.setRequestParameter("profilepreference.value", userlibrary.getId() );
+		//Make sure I am in the list of users for the library
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		if( manager.addUserToLibrary(archive,userlibrary,inReq.getUser()) )
+		{
+			//reload profile?
+			UserProfile profile = inReq.getUserProfile();
+			profile.getCombinedLibraries().add(userlibrary.getId());
+		}
+	}
+
 	
 	public void addOpenCollection(WebPageRequest inReq)
 	{
@@ -317,6 +351,7 @@ public class ProjectModule extends BaseMediaModule
 		if( cols == null || !cols.contains(collectionid))
 		{
 			profile.addValue("opencollections", collectionid);
+			profile.save(inReq.getUser());
 		}
 		profile.setProperty("selectedcollection", collectionid);
 	}
