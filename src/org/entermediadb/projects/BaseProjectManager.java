@@ -151,6 +151,10 @@ public class BaseProjectManager implements ProjectManager
 		//enable filters to show the asset count on each collection node
 		
 	  	Collection opencollections = inReq.getUserProfile().getValues("opencollections");
+	  	if( opencollections == null)
+	  	{
+	  		return Collections.EMPTY_LIST;
+	  	}
 
 		FilterNode collectionhits = null;
 		if( opencollections.size() > 0 ) //May not have any collections
@@ -169,7 +173,6 @@ public class BaseProjectManager implements ProjectManager
 		inReq.putPageValue("usercollections", usercollections);
 		return usercollections;
 
-//		return Collections.EMPTY_LIST;
 				
 		//search
 		//Searcher searcher = getSearcherManager().getSearcher(getMediaArchive().getCatalogId(),"librarycollection") )
