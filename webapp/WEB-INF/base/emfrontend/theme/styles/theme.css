@@ -4338,6 +4338,11 @@ span.drag-and-drop {
 #nav .flat-left {
     border-radius: 0 5px 5px 0;
 }
+a#module {
+
+	height: 35px;
+
+}
 #module-dropdown {
     padding-left: 8px !important;
     padding-right: 6px !important;
