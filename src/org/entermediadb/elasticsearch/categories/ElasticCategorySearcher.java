@@ -142,9 +142,12 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				{
 					Category aparent = (Category) iterator.next();
 					path.append(aparent.getName());
-					path.append("/");
+					if( iterator.hasNext())
+					{
+						path.append("/");
+					}
 				}
-				path.append(category.getName());
+				//path.append(category.getName());
 				
 				inContent.field("sourcepath", path.toString());
 			}
