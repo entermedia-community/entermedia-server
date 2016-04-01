@@ -68,11 +68,15 @@ public class TranslationModule extends BaseModule {
 	}
 
 	public List gatherTranslations(String inPath, String inlang) {
+		
 		List translations = new ArrayList();
 		List children = getPageManager().getChildrenPaths(inPath);
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			String path = (String) iterator.next();
 			if (path.contains("/.versions")) {
+				continue;
+			}
+			if (path.contains("/WEB-INF/data/")) {
 				continue;
 			}
 			if (path.endsWith("_text_" + inlang + ".txt")) {
