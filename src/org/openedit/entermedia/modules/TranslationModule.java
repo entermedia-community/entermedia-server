@@ -40,7 +40,7 @@ public class TranslationModule extends BaseModule {
 
 	public void listFilesInBase(WebPageRequest inReq) {
 		// get a list
-		String path = "/WEB-INF/base/";
+		String path = "/";
 		String lang = inReq.getRequestParameter("lang");
 		List translations = gatherTranslations(path, lang);
 		StringWriter out = new StringWriter();
