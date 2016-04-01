@@ -98,7 +98,7 @@ public class BaseProjectManager implements ProjectManager
 			}
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"librarycollection");
 			String reloadcollectoin = inReq.getRequestParameter("reloadcollection");
-			HitTracker allcollections = searcher.query().exact("library",library.getId()).sort("name").named("sidebar").search(inReq);
+			HitTracker allcollections = searcher.query().exact("library",library.getId()).sort("name").named("sidebar").search();
 
 			//Show all the collections for a library
 			inReq.putPageValue("allcollections", allcollections);
