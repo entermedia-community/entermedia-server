@@ -1,0 +1,9 @@
+<page>
+	
+	<page-action name="TranslationModule.changeLanguage" />
+	<page-action name="Admin.redirectToOriginal" />
+	
+	
+	<permission name="view" ><blank/></permission>
+	
+</page>
