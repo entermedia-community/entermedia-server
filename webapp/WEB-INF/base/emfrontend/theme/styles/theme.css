@@ -6842,3 +6842,8 @@ select.smalldropdown {
 .fancybox-inner {
     overflow: hidden !important;
   }
+  
+ .archiveassettable
+{
+	vertical-align:middle;
+}

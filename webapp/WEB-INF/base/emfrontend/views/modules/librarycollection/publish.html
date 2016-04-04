@@ -1,0 +1,36 @@
+<div class="ui-widget uipanel" style="padding: 10px 10px 10px 10px;">
+	
+	<div class="ui-widget-header">[[Archive Assets]]</div>
+	
+		<div class="ui-widget-content">
+		
+			<form  name="archiveassets" id="archiveassets" class="ajaxform" targetdiv="collectionfeed" 
+				   method="post" action="$home$apphome/views/search/collections/index.html">
+				   
+				<table >
+					<tr>
+						<td class="archiveassettable">Move To:</td>
+						<td>
+							#set( $lastselectedlibrary = $userprofile.get("last_selected_library") )
+							#if( !$lastselectedlibrary)
+								#set( $lastselectedlibrary = $user.getId())
+							#end
+							
+							#set( $lastselectedlibraryname = $selectedlibrary.getName() )
+							#if( !$lastselectedlibraryname)
+								#set( $lastselectedlibraryname = $user.getShortDescription())
+							#end
+							<input name="archiveassets" id="archiveassets" class="listautocomplete" value="#esc($lastselectedlibraryname)"  
+								   data-searchfield="name" data-searchtype="library" data-showicon="false" data-listcatalogid="$catalogid" 
+								   data-foreignkeyid="" data-defaultvalue="$user.getShortDescription()" data-defaultvalueid="$user.getId()" 
+								   data-sortby="name"/>	
+						</td>
+						<tr>
+							<td colspan="2" align="right"><input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]"></td>
+						</tr>
+					
+				</table>
+			</form>
+	</div>
+</div>	
+		
