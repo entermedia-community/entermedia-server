@@ -11,7 +11,15 @@
 
 <div id="mainholder">
 <img id="mainimage" src="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/$urlenc/${name}?pagenum=$!page" />
+
+<div id="footerholder">
+[[click to pan, scroll to zoom]]
 </div>
+
+
+</div>
+
+
 
 <style>
 
@@ -30,10 +38,11 @@
 	left: 50px;
 }
 
-.fancybox-inner {
-    overflow: hidden !important;
-  }
-
+#footerholder
+{
+	position: absolute;
+	bottom: 20px;
+}
 </style>
 
 <script>
