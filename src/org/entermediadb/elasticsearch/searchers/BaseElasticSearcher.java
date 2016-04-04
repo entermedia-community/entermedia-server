@@ -10,10 +10,12 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.lucene.queryparser.classic.QueryParser;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
@@ -40,10 +42,10 @@ import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
-import org.elasticsearch.index.query.MatchAllQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -56,7 +58,6 @@ import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
@@ -74,6 +75,7 @@ public class BaseElasticSearcher extends BaseSearcher
 {
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
+	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");	
 	protected ElasticNodeManager fieldElasticNodeManager;
 	//protected IntCounter fieldIntCounter;
 	//protected PageManager fieldPageManager;
@@ -765,6 +767,51 @@ public class BaseElasticSearcher extends BaseSearcher
 			text.maxExpansions(10);
 			find = text;
 		}
+		else if ("freeform".equals(inTerm.getOperation()))
+		{
+			boolean expert = false;
+			if( valueof.contains("*")  || valueof.contains("\"") )
+			{
+				expert = true;
+			}
+			if( !expert ) //If there is one * then let them add them all in
+			{
+				//Parse by Operator
+				//Add wildcards
+				//Look for Quotes 
+				String uppercase = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ");
+				
+				Matcher m = operators.matcher(uppercase);
+				if( !m.find() )
+				{
+					//inValue = inValue.replaceAll("  ", " "); //recurse
+					uppercase = uppercase.replaceAll(" ", " AND ");
+				}
+				m = operators.matcher(uppercase);
+				StringBuffer output = new StringBuffer();
+				int location = 0;
+				while (m.find()) 
+				{
+				   String word = uppercase.substring(location, m.start());
+				   String operator = m.group();
+				   wildcard(output, word);
+				   output.append(operator);
+				   location = m.end();
+				}
+				wildcard(output, uppercase.substring(location, uppercase.length()));
+				valueof = output.toString();
+				//tom and nancy   == *tom* AND *nancy*
+				//tom or nancy   == *tom* OR *nancy*
+				//tom nancy => *tom* AND *nancy*
+				//tom*nancy  => tom*nancy
+				//tom AND "Nancy Druew" => *tom* AND "Nancy Druew"
+				//"Big Deal"  => "Big Deal"
+			}
+			String query = "+(" + valueof + ")";
+			QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
+			text.defaultField("description");
+			find = text;			
+		}
 		else if (valueof.endsWith("*"))
 		{
 			valueof = valueof.substring(0, valueof.length() - 1);
@@ -868,6 +915,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		// QueryBuilders.idsQuery(types)
 		return find;
+	}
+
+	private void wildcard(StringBuffer output, String word)
+	{
+	   output.append("*");
+	   output.append(QueryParser.escape(word));
+	   output.append("*");
 	}
 
 	protected void addSorts(SearchQuery inQuery, SearchRequestBuilder search)
