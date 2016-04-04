@@ -529,7 +529,7 @@ public class BaseOrderManager implements OrderManager {
 			Data orderItem = (Data) orderItemSearcher.searchById(orderitemhit.getId());
 			if (orderItem == null)
 			{
-				log.info("Unknown error: unable to find ${orderitemhit.getId()} in orderitem table, skipping");
+				log.info("Unknown error: unable to find " + orderitemhit.getId() + " in orderitem table, skipping");
 				//update what table exactly?
 				continue;
 			}
@@ -803,7 +803,7 @@ public class BaseOrderManager implements OrderManager {
 			Order order = loadOrder(archive.getCatalogId(), hit.getId());
 			if( order == null)
 			{
-				log.error("Invalid order: ${archive.getCatalogId()}" + hit.getId());
+				log.error("Invalid order: " + archive.getCatalogId() + hit.getId());
 				continue;
 			}
 			updateStatus(archive, order);
@@ -964,7 +964,7 @@ public class BaseOrderManager implements OrderManager {
 			Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
 			String email = dest.get("administrativeemail");
 			if(email != null){
-				sendEmail(inArchive.getCatalogId(),context, email, "/${appid}/views/activity/email/admintemplate.html");
+				sendEmail(inArchive.getCatalogId(),context, email, "/" + appid + "/views/activity/email/admintemplate.html");
 				//TODO: Save the fact that email was sent back to the publishtask?
 			}
 		}
@@ -981,7 +981,7 @@ public class BaseOrderManager implements OrderManager {
 					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 				}
 
-				sendEmail(inArchive.getCatalogId(),context, emailto, "/${appid}/views/activity/email/sharetemplate.html");
+				sendEmail(inArchive.getCatalogId(),context, emailto, "/" + appid + "/views/activity/email/sharetemplate.html");
 			}
 		}
 		if( "download" != inOrder.get("ordertype") )
@@ -996,7 +996,7 @@ public class BaseOrderManager implements OrderManager {
 					if(owneremail != null)
 					{
 						context.put("sharewithemail", emailto);
-						sendEmail(inArchive.getCatalogId(),context, owneremail, "/${appid}/views/activity/email/usertemplate.html");
+						sendEmail(inArchive.getCatalogId(),context, owneremail, "/" + appid + "/views/activity/email/usertemplate.html");
 					}
 				}
 			}
@@ -1021,7 +1021,7 @@ public class BaseOrderManager implements OrderManager {
 		//mailer.setMessage(inOrder.get("sharenote"));
 		//mailer.setWebPageContext(context);
 		mailer.send();
-		log.info("email sent to ${email}");
+		log.info("email sent to :" + email);
 	}
 
 	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){
