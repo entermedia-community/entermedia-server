@@ -13,14 +13,8 @@
              #set( $prevthumb = $gotopage - 1)
             <a id="prevpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid"> Previous </a>
         #end
-        #if($currentpreview)
-            #set( $page = $currentpreview + 1)
-        	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/preview.png?pagenum=$page")
-        #else
-        	#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/preview.png")
-        #end
-        <a class="thickbox" href="$home$link" target="_parent"	
-        	title="$asset">
+        #set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$asset.id&pagenum=$pagenum&name=preview.png")
+<a class="emdialog" data-width="90%" data-height="90%" data-hidescrolling="true" href="$home$link" target="_parent" >
         	#set( $page = $currentpreview + 1)
        <div class="emdropshadow">
         	<img id="main-media" class=" #if( $totalpages > 1 ) document #end  assetdragdrop"  draggable="true"  data-sourcepath="$sourcepath" data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.png?pagenum=$!gotopage" alt="[[Preview Image]]"/>

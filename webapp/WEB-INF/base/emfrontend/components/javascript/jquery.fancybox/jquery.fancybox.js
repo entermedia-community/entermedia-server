@@ -75,7 +75,7 @@
 			topRatio    : 0.5,
 			leftRatio   : 0.5,
 
-			scrolling : 'auto', // 'auto', 'yes' or 'no'
+			scrolling : 'no', // 'auto', 'yes' or 'no'
 			wrapCSS   : '',
 
 			arrows     : true,
@@ -94,7 +94,7 @@
 				headers  : { 'X-fancyBox': true }
 			},
 			iframe : {
-				scrolling : 'auto',
+				scrolling : 'no',
 				preload   : true
 			},
 			swf : {
@@ -878,7 +878,7 @@
 			}
 
 			if (type === 'iframe' && isTouch) {
-				coming.scrolling = 'scroll';
+				coming.scrolling = 'no';
 			}
 
 			// Build the neccessary markup
@@ -989,7 +989,7 @@
 		_loadIframe: function() {
 			var coming = F.coming,
 				iframe = $(coming.tpl.iframe.replace(/\{rnd\}/g, new Date().getTime()))
-					.attr('scrolling', isTouch ? 'auto' : coming.iframe.scrolling)
+					.attr('scrolling', coming.iframe.scrolling)
 					.attr('src', coming.href);
 
 			// This helps IE

@@ -349,6 +349,9 @@ uiload = function() {
 			function() 
 			{
 				var dialog = jQuery(this);
+				var hidescrolling = dialog.data("hidescrolling");
+				console.log("Not defined:  " + hidescrolling);
+				
 				var height = dialog.data("height");
 				if( !height )
 				{
@@ -371,7 +374,10 @@ uiload = function() {
 					autoScale: false,
 			        autoHeight: false,
 			        fitToView: false,
-			        iframe: { preload   : false }
+			        iframe: { 
+			        	preload   : false ,
+			        	scrolling: hidescrolling ? "no" : "auto"
+			        }
 				});
 	});
 	

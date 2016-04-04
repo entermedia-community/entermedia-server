@@ -6,7 +6,6 @@
   #header, #header, #nav, #main, #extended, #footer {  min-width: 720px; }
   #application {
 	  background: #fff;
-	  max-width: 1120px;
 	  margin: 0 auto;
 	  padding: 0 0px 10px 0px;
 	  border: 1px solid #c5c5c5;
@@ -4044,8 +4043,6 @@ div#folders.add .folder {
 }
 
 #application {
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 #embody.max #view-picker-content {
@@ -6841,3 +6838,7 @@ select.smalldropdown {
 {
 	top: 70% !important;	
 }
+
+.fancybox-inner {
+    overflow: hidden !important;
+  }

@@ -141,7 +141,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			selecteddata.setSelections(existing.getSelections());
 			selecteddata.setShowOnlySelected(true);
 		}
-		selecteddata.setHitsPerPage(1000);
+		selecteddata.enableBulkOperations();
 		setSelectedResults(selecteddata);			
 
 		getProperties().clear();
