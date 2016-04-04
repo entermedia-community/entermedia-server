@@ -6,11 +6,11 @@
 
 #if(${presetdata.id} != "0") 
 
-<a class="thickbox btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generatedpreview/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)?cache=false">[[Preview]]</a>
+<a class="thickbox btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/${asset.sourcepath}/${presetdata.outputfile}?cache=false">[[Preview]]</a>
 <a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)">[[Download]]</a>
 #if($canembedasset)
 <a class="btn ajax" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" 
-	href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.outputfile}/$mediaarchive.asExportFileName($asset, $presetdata)&oemaxlevel=1">Embed</a>
+	href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.outputfile}&oemaxlevel=1">Embed</a>
 #end
 
 #else

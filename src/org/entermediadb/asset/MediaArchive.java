@@ -340,7 +340,12 @@ public class MediaArchive
 
 	public String getMediaDbId()
 	{
-		return getCatalogSettingValue("mediadbappid");
+		String mediadb = getCatalogSettingValue("mediadbappid");
+		if( ( mediadb == null || mediadb.isEmpty() ) && getCatalogId().endsWith("catalog") )
+		{
+			mediadb = getCatalogId().substring(0, getCatalogId().length() - 7  ) + "mediadb";
+		}
+		return mediadb;
 	}
 	// public HistoryArchive getHistoryArchive()
 	// {
