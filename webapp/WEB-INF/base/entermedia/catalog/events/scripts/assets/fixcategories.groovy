@@ -10,7 +10,7 @@ public void init(){
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	
 	HitTracker hits = archive.getAssetSearcher().query().match("id", "*").sort("id").search();
-	hits.setHitsPerPage(200);
+	hits.enableBulkOperations();
 	List tosave = new ArrayList();
 	int savedsofar = 0;
 	hits.each{

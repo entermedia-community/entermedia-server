@@ -25,7 +25,7 @@ public void init()
 	q = searcher.createSearchQuery().append("editstatus", "7");
 	q.addSortBy("sourcepath");
 	assets = searcher.search(q);
-	assets.setHitsPerPage(1000);
+	assets.enableBulkOperations();
 	int removed = 0;
 	List tosave = new ArrayList();
 	int existed = 0;	

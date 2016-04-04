@@ -23,7 +23,7 @@ public void init()
 		q.addSortBy("id");
 		HitTracker assets = targetsearcher.search(q);
 
-		assets.setHitsPerPage(1000);
+		assets.enableBulkOperations();
 
 		int count = 0;
 		log.info("Starting ${assets.size()} with ${q}"); 

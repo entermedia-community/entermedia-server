@@ -14,7 +14,7 @@ public void init()
 		Searcher searcher = archive.getAssetSearcher();
 		//HitTracker assets = searcher.getAllHits();
 		HitTracker assets = searcher.query().match("category","index").not("editstatus","7").sort("id").search();
-		assets.setHitsPerPage(1000);
+		assets.enableBulkOperations();
 		String ids = context.getRequestParameter("assetids");
 		if( ids != null )
 		{

@@ -19,7 +19,7 @@ public void init()
 		q.addNot("editstatus","7");
 		q.addSortBy("id");
 		HitTracker assets =  assetsearcher.search(q);
-		assets.setHitsPerPage(1000);
+		assets.enableBulkOperations();
 		
 		log.info("Processing ${assets.size()}" + q	);
 		

@@ -16,7 +16,7 @@ public void init()
 		q.addMatches("libraries", "printreadyfinal");
 		HitTracker assets = targetsearcher.search(q);
 
-		assets.setHitsPerPage(100000);
+		assets.enableBulkOperations();
 
 		int count = 0;
 		int edited = 0;

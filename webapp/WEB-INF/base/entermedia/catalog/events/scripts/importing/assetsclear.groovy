@@ -55,7 +55,7 @@ public void init()
 	}
 	q.addSortBy("sourcepath");
 	assets = searcher.search(q);
-	assets.setHitsPerPage(1000);
+	assets.enableBulkOperations();
 	int removed = 0;
 	List tosave = new ArrayList();
 	int existed = 0;	

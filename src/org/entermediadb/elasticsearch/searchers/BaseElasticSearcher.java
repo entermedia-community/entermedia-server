@@ -1438,7 +1438,7 @@ public class BaseElasticSearcher extends BaseSearcher
 //		delete.setTypes(getSearchType());
 //		delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
 		HitTracker all = getAllHits();
-		all.setHitsPerPage(500);
+		all.enableBulkOperations();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			Data row = (Data) iterator.next();

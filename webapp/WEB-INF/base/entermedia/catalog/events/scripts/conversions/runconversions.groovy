@@ -385,6 +385,7 @@ public void checkforTasks()
 	}
 	context.setRequestParameter("assetid", (String)null); //so we clear it out for next time. needed?
 	HitTracker newtasks = tasksearcher.search(query);
+	newtasks.enableBulkOperations();
 	//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
 	if( newtasks.size() > 0)
 	{

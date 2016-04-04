@@ -137,32 +137,23 @@ public class ElasticHitTracker extends HitTracker
 					int size = getHitsPerPage();
 					long now = System.currentTimeMillis();
 					//If its not the next one in the list, or it has expired then run it again
-					boolean runsearch = false;
-					if( fieldLastPullTime == -1 )
+					if( isUseServerCursor() && chunk > 1 &&  now > fieldLastPullTime + SCROLL_CACHE_TIME )
 					{
-						runsearch = true;
-						//log.info(getSearcher().getSearchType() + hashCode() + " First pull");  
-					}
-					else if( inChunk != getLastPageLoaded() + 1)
-					{
-						runsearch = true;
-						//log.info(getSearcher().getSearchType() + hashCode() + " not scroll chunck:" + inChunk + "!=" +  getLastPageLoaded() + "+1");
-					} 
-					else if( now > fieldLastPullTime + SCROLL_CACHE_TIME )
-					{
-						runsearch = true;
-						//log.info(getSearcher().getSearchType()+ hashCode() + "expired " + now + ">" + fieldLastPullTime + "+SCROLL_CACHE_TIME");
+						String error = getSearcher().getSearchType()+ hashCode() + "expired " + now + ">" + fieldLastPullTime + "+SCROLL_CACHE_TIME";
+						log.info(error);
+						throw new OpenEditException(error);
 					}	
-					if( true ) //todo: Allow scrolling for iterators
+					if( !isUseServerCursor() || chunk == 0 ) //todo: Allow scrolling for iterators
 					{
 						if( fieldLastPullTime == -1)
 						{
 							refreshFilters(); //This seems like it should only be done once?
 						}
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
-						//getSearcheRequestBuilder().setScroll((Scroll)null);
-						//if( isS)
-						//getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME) );
+						if( isUseServerCursor() )
+						{
+							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME) );
+						}
 						response = getSearcheRequestBuilder().execute().actionGet();
 						setLastScrollId(response.getScrollId());
 						//log.info(getSearcher().getSearchType() + hashCode() + " search chunk: " + inChunk + " start from:" +  start );

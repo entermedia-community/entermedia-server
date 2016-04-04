@@ -32,7 +32,7 @@ public void init() {
 	
 	HitTracker assets = targetsearcher.search(q);
 
-	assets.setHitsPerPage(100000);
+	assets.enableBulkOperations();
 	String mappingtable = context.findValue("mappingtable");
 	String parentdetail = context.findValue("parentfield");
 	String fields = context.findValue("childfields");
