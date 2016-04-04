@@ -1,7 +1,6 @@
 package org.entermediadb.asset.modules;
 
 import java.io.BufferedReader;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -38,9 +37,9 @@ public class TranslationModule extends BaseModule {
 			"uk", "vi", "cy-GB" };
 	Collection list = Arrays.asList(languages);
 
-	public void listFilesInBase(WebPageRequest inReq) {
+	public void listFilesInBase(WebPageRequest inReq) throws Exception{
 		// get a list
-		String path = "/WEB-INF/base/";
+		String path = "/";
 		String lang = inReq.getRequestParameter("lang");
 		List translations = gatherTranslations(path, lang);
 		StringWriter out = new StringWriter();
@@ -48,6 +47,8 @@ public class TranslationModule extends BaseModule {
 			path = (String) iterator.next();
 			Page page = getPageManager().getPage(path);
 			Properties props = new Properties();
+			String content = page.getContent();
+			
 			Reader reader = page.getReader();
 			try
 			{
@@ -59,7 +60,8 @@ public class TranslationModule extends BaseModule {
 			}
 			out.append(path);
 			out.append("\n");
-			props.list(new PrintWriter(out));
+			//props.list(new PrintWriter(out));  //This doesn't have the / in it - it needs the escape values.
+			props.store(out, null);
 			out.append("\n===\n");
 		}
 		String text = out.toString();
@@ -68,11 +70,15 @@ public class TranslationModule extends BaseModule {
 	}
 
 	public List gatherTranslations(String inPath, String inlang) {
+		
 		List translations = new ArrayList();
 		List children = getPageManager().getChildrenPaths(inPath);
 		for (Iterator iterator = children.iterator(); iterator.hasNext();) {
 			String path = (String) iterator.next();
 			if (path.contains("/.versions")) {
+				continue;
+			}
+			if (path.contains("/WEB-INF/data/")) {
 				continue;
 			}
 			if (path.endsWith("_text_" + inlang + ".txt")) {
@@ -109,11 +115,20 @@ public class TranslationModule extends BaseModule {
 					if (!parent.exists()) {
 						continue;
 					}
+					
 					String existing = "";
 					if (page.exists()) {
-						existing = page.getContent() + "\n";
+						Reader reader = page.getReader();
+						Properties existingprops = new Properties();
+						existingprops.load(reader);
+						StringWriter out = new StringWriter();
+						existingprops.store(out, null);
+						existing = out.toString();
 					}
 					String newcontent = textout.toString();
+					
+					
+					
 					if (!newcontent.equals(existing)) {
 						if (addnew) {
 							// merge together old and new
