@@ -284,6 +284,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{			
+			log.info("initi mapping " + getCatalogId() + "/" + getSearchType() );
 			putMappings(toId(getCatalogId()),false); 
 		}
 		catch (Exception ex)
