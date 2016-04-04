@@ -101,7 +101,7 @@ public void handleUpload() {
 			itemsearcher.saveData(orderitem, null);
 		}
 
-		OrderManager om = archive.getOrderManager()
+		OrderManager om = archive.getModuleManager().getBean(archive.getCatalogId(), "orderManager");
 		HitTracker assets = om.findAssets(context, archive.getCatalogId(), order);
 		HitTracker items = itemsearcher.query().exact("orderid",order.getId()).search();
 		
