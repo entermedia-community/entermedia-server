@@ -1,11 +1,3 @@
-<div id="searchlayout" class="subcolumns">
-<div id="left-col">
-$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
-<br>
-$pages.include("$apphome/components/dontshow/sidebar.html",$context)
-
-</div>
-<div id="right-col">
 $context.putPageValue("showhover", "false")
 $context.putPageValue("showcaption", "true")
 $context.putPageValue("hideheader", "true")
@@ -23,8 +15,3 @@ $context.putPageValue("hideheader", "true")
 ###always go to index - don't care about resultview
 $pages.include("$apphome/components/results/index.html",$context)
 
-</div>
-
-
-
-</div>
