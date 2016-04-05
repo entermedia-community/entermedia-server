@@ -678,10 +678,12 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (int i = 0; i < term.getValues().length; i++)
 			{
 				Object val = term.getValues()[i];
+				if(val != null && !val.equals("")){
 				QueryBuilder aterm = buildTerm(term.getDetail(), term, val);
 				if (aterm != null)
 				{
 					or.should(aterm);
+				}
 				}
 			}
 			return or;
