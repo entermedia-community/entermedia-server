@@ -85,12 +85,15 @@ public class VideoConversionManager extends BaseConversionManager
 			return result;
 		}
 		//Finally use ImageMagick to transform the final image using the image above as the input
-		//preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
-		//ConvertInstructions IMinstructions = inStructions.copy(preset);
-		//IMinstructions.setInputFile(instructions2.getOutputFile());
-		inStructions.setInputFile(result.getOutput());
 		
-		result = findTranscoder(inStructions).convertIfNeeded(inStructions);
+		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
+		ConvertInstructions IMinstructions = inStructions.copy(preset);
+		IMinstructions.setMaxScaledSize(inStructions.getMaxScaledSize());
+		IMinstructions.setInputFile(instructions2.getOutputFile());
+		
+		
+		
+		result = findTranscoder(IMinstructions).convertIfNeeded(IMinstructions);
 		if(!result.isComplete())
 		{
 			return result;
