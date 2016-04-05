@@ -3562,19 +3562,20 @@ body #emcontainer .emasseteditorarea {
 #th-checkbox .anchor {
         
 }
-#th-checkbox-left, #th-checkbox-right {float: right; width:15px;height:18px; margin-top:6px;}
-
+#th-checkbox-left, #th-checkbox-right {float: right; width:15px;height:18px; margin:2px 2px 0 0;}
+#th-checkbox-left input { margin: 0; }
+#th-checkbox-right .anchor { margin-top:5px;} 
 
 .select-dropdown-open {
     width: 15px;
-    height: 25px;
+    height: 10px;
    
 }
 .select-dropdown-open.down {
-    background: url('../images/sort-desc.png') 5px 9px no-repeat;
+    background: url('../images/sort-desc.png') 5px 0 no-repeat;
 }
 .select-dropdown-open.up {
-    background: url('../images/sort-asc.png') 5px 8px no-repeat;
+    background: url('../images/sort-asc.png') 5px 0 no-repeat;
 }
 .select-dropdown {
     position: absolute;
