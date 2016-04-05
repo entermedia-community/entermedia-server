@@ -7,11 +7,6 @@
 			$pages.include("${themeprefix}/layouts/header.html")
 			<div id="site-title">$!content.tagline</div>
 		</div>
-		#if ( $canmaximize )
-		<div id="maximizer">
-			<a id="maximize" class="btn ir tooltip" title="#if ($userprofile.maximize_screen && $userprofile.maximize_screen == "true") Minimize #else Maximize #end the application.">#if ($userprofile.maximize_screen && $userprofile.maximize_screen == "true") Minimize #else Maximize #end</a>
-		</div>
-		#end
 		<div id="nav" role="navigation">
 		    $pages.include("$apphome/theme/layouts/nav.html")
 		</div>
