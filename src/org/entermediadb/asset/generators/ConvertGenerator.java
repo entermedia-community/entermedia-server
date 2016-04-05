@@ -85,6 +85,8 @@ public class ConvertGenerator extends FileGenerator
 			//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
 			name = inPage.getName();
 		}
+		String themeprefix = inReq.findValue("themeprefix");
+		args.put("themeprefix", themeprefix);
 		ConvertResult result = transcodetools.createOutputIfNeeded(all,args,sourcePath, name); //String inSourcePath, Data inPreset, String inOutputType);
 		
 		if( result.isComplete() )
@@ -106,12 +108,13 @@ public class ConvertGenerator extends FileGenerator
 				archive.logDownload(sourcePath, "success", inReq.getUser()); //does this work?
 			}
 		}
+		
+		
 		else 
 		{
 			String missingImage = inReq.getContentProperty("missingimagepath");
 			if(missingImage == null)
 			{
-				String themeprefix = (String) inReq.findValue("themeprefix");
 				missingImage = themeprefix + "/images/missing150.jpg"; //would a 404 be better?
 			}
 			Page missing = archive.getPageManager().getPage(missingImage);			//File temp = new File(missing.getContentItem().getAbsolutePath());

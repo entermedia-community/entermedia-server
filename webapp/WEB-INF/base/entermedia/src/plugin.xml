@@ -2019,7 +2019,13 @@
 		<property name="mediaCreator"><ref bean="oofficeTranscoder" /></property>
 	</bean>
  	
- 	
+ 	<bean id="defaultConversionManager" class="org.entermediadb.asset.convert.managers.DefaultConversionManager" scope="prototype">
+		<property name="inputLoaders">
+			<list>
+				<ref bean="originalInputLoader" />
+			</list>
+		</property>
+	</bean>
  	
  	
 </beans>
