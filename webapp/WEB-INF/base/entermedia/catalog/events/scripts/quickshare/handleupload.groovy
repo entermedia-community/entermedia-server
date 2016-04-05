@@ -58,6 +58,8 @@ public void handleUpload() {
 		}
 		order.setProperty("orderstatus", "complete");
 		order.setProperty("publishdestination", "0");
+		order.setProperty("emailsent", "false");
+		
 		order.setProperty("applicationid", context.findValue("applicationid"));
 		String sharenote = context.findValue("sharenote.value");
 		order.setProperty("sharenote", sharenote);
@@ -105,8 +107,8 @@ public void handleUpload() {
 		HitTracker assets = om.findAssets(context, archive.getCatalogId(), order);
 		HitTracker items = itemsearcher.query().exact("orderid",order.getId()).search();
 		
-		log.info("total files was ${total} and total asset size was ${assets.size()}");
-		if(items.size() >= total){
+		log.info("total files was ${total} and total asset size was ${assets.size()} email send ${order.emailsent}");
+		if(items.size() >= total && (order.emailsent == null || "false".equals(order.emailsent))){
 
 			//itemsearcher.saveAllData(orderitems, null);
 			context.putPageValue("orderitems", assets);
@@ -117,6 +119,8 @@ public void handleUpload() {
 			String sendfrom = context.findValue("quicksharefrom");
 			sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
 			sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+			order.setProperty("emailsent", "true");
+			ordersearcher.saveData(order, null);
 			context.putSessionValue("quickshareorder", null);
 			
 		}

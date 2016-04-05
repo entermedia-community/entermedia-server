@@ -13,9 +13,9 @@
 #if( !$cdnprefix )
 #set( $cdnprefix = $context.siteRoot )
 #end
-#foreach( $asset in $orderassets )
+#foreach( $item in $orderassets )
 
-    ##set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+    #set( $asset = $mediaarchive.getAsset($item.getId()))
 	#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
 
 	<tr>
@@ -52,7 +52,7 @@
 			
 				<td></td>
 				<td>
-					<a class="btn small" href="$!cdnprefix$home$mediaarchive.asLinkToOriginal($asset)">Download</a>
+					<a class="btn small" href="$home$mediaarchive.asLinkToOriginal($asset)">Download </a>
 					#set( $downloadall = true)
 					
 				</td>
