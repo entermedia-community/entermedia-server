@@ -6498,8 +6498,9 @@ text-align:center;
     list-style-type:none; 
     padding: 1px 2px 0;
     font-size: 1em;
+    border: 1px solid #eee;
     border-bottom:1px solid #ddd;
-       word-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .librarylabels ul li a:hover
@@ -6537,10 +6538,12 @@ a.librarylabel .collectionlabel {
 .librarylabels ul li:hover a.collectionclose {
 	opacity: 1;
 }
-a.librarylabel.dragoverselected
+.librarylabels ul li.dragoverselected, .dragoverselected
 {
 	border: 1px dashed #aaa;
+	background-color:#ccc;
 }
+
 #createnewarea { padding: 10px 5px;}
 .collectionnew { display:block; text-decoration:underline; }
 #createnewarea input[type="text"] { width: 150px; margin-bottom:5px;}
@@ -6557,10 +6560,12 @@ a.librarydroparea
 	background: url("../images/icons/lgicn_16x16gray.png") no-repeat scroll left center;
 	padding-left: 24px;
 }
+
 .libraryheader {  
 	padding:6px 0 8px 28px;
 	margin:5px 0 5px;
 	background: url("../images/icons/box.png") no-repeat scroll 4px 4px;
+	font-weight: bold;
 	}
 
 
