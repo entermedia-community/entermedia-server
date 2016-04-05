@@ -350,7 +350,6 @@ uiload = function() {
 			{
 				var dialog = jQuery(this);
 				var hidescrolling = dialog.data("hidescrolling");
-				console.log("Not defined:  " + hidescrolling);
 				
 				var height = dialog.data("height");
 				if( !height )
