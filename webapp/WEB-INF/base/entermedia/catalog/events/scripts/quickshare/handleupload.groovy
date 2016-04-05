@@ -110,9 +110,10 @@ public void handleUpload() {
 		HitTracker items = itemsearcher.query().exact("orderid",order.getId()).search();
 		
 		log.info("total files was ${total} and total asset size was ${assets.size()}");
-		if(items.size() >= total){
+		if(items.size() >= total && "false".equals(order.emailsent)){
 
 			//itemsearcher.saveAllData(orderitems, null);
+			
 			context.putPageValue("orderitems", assets);
 			String from = context.getRequestParameter("email.value");
 			context.putPageValue("fromemail", from);
@@ -121,6 +122,8 @@ public void handleUpload() {
 			String sendfrom = context.findValue("quicksharefrom");
 			sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
 			sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+			order.setProperty("emailsent","true");
+			ordersearcher.saveData(order, null);
 			context.putSessionValue("quickshareorder", null);
 			
 		}
