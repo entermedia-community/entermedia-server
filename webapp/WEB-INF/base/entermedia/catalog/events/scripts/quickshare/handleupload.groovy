@@ -61,6 +61,8 @@ public void handleUpload() {
 			throw new OpenEditException("Error finding order!");
 		}
 		order.setProperty("orderstatus", "complete");
+				order.setProperty("emailsent", "false");
+		
 		order.setProperty("publishdestination", "0");
 		order.setProperty("applicationid", context.findValue("applicationid"));
 		String sharenote = context.findValue("sharenote.value");
