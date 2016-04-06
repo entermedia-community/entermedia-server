@@ -8,26 +8,36 @@ public void init(){
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	HitTracker hits = req.getPageValue("hits");
-	if (hits){
-		org.entermediadb.asset.Category data = req.getPageValue("category");
-		if( data == null)
+	if (hits != null)
+	{
+		Collection categories = (Collection)req.getPageValue("collectioncategories");
+		if( categories == null)
 		{
-			String catid = req.getRequestParameter("category");
-			if( catid != null)
+			org.entermediadb.asset.Category parent = req.getPageValue("category");
+			if( parent == null)
 			{
-				data = archive.getCategory(catid);
+				String catid = req.getRequestParameter("category");
+				if( catid != null)
+				{
+					parent = archive.getCategory(catid);
+				}
+			}
+			if( parent != null)
+			{
+				categories  = parent.getChildren();
 			}
 		}
-		if (data){
-			String categoryid = "${data.id}";
+		
+		if (categories != null)
+		{
 			int max = toInt(archive.getCatalogSettingValue("category_hierarchy_peeknumber"),4);//give it a default of 4 if not specified
 			if (max > 4 || max <= 0) max = 4;//only supports 4 at the most
 			Map<Data,List<Data>> map = new HashMap<Data,List<Data>>();
 			
-			data.getChildren().each
+			categories.each
 			{
 				Data cat = it;
-				HitTracker assets = archive.getAssetSearcher().query().match("category", cat.getId()).sort("uploadeddate").search();
+				HitTracker assets = archive.getAssetSearcher().query().match("category", cat.getId()).sort("uploadeddate").search(context);
 				assets.setHitsPerPage(max);
 				map.put(cat,assets.getPageOfHits());
 			}

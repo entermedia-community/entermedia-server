@@ -4,31 +4,35 @@
 	
 		<div class="ui-widget-content">
 		
-			<form  name="archiveassets" id="archiveassets" class="ajaxform" targetdiv="collectionfeed" 
-				   method="post" action="$home$apphome/views/search/collections/index.html">
+			<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
+				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html#publishtab">
 				   
 				<table >
 					<tr>
 						<td class="archiveassettable">Move To:</td>
 						<td>
-							#set( $lastselectedlibrary = $userprofile.get("last_selected_library") )
-							#if( !$lastselectedlibrary)
-								#set( $lastselectedlibrary = $user.getId())
-							#end
-							
+							#set( $selectedlibrary = $mediaarchive.getData("library",$librarycol.library) )
 							#set( $lastselectedlibraryname = $selectedlibrary.getName() )
 							#if( !$lastselectedlibraryname)
 								#set( $lastselectedlibraryname = $user.getShortDescription())
 							#end
-							<input name="archiveassets" id="archiveassets" class="listautocomplete" value="#esc($lastselectedlibraryname)"  
+							<input name="collectionid" value="$librarycol.getId()" type="hidden" />  
+							<input name="targetlibraryid" id="archiveassets" class="listautocomplete" value="#esc($lastselectedlibraryname)"  
 								   data-searchfield="name" data-searchtype="library" data-showicon="false" data-listcatalogid="$catalogid" 
-								   data-foreignkeyid="" data-defaultvalue="$user.getShortDescription()" data-defaultvalueid="$user.getId()" 
+								   data-foreignkeyid="" data-defaultvalue="$selectedlibrary" data-defaultvalueid="$selectedlibrary.getId()" 
 								   data-sortby="name"/>	
 						</td>
 						<tr>
-							<td colspan="2" align="right"><input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]"></td>
-						</tr>
+							<td colspan="2" align="right"><input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">
+							
+												#if( $movestatus)
 					
+					$movestatus
+					
+					#end
+							
+							</td>
+						</tr>
 				</table>
 			</form>
 	</div>

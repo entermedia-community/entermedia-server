@@ -110,6 +110,14 @@ public class ProjectModule extends BaseMediaModule
 	{
 		//TODO: Support multiple selections
 		MediaArchive archive = getMediaArchive(inReq);
+		
+		String catid = inReq.getRequestParameter("categoryid");
+		if( catid != null)
+		{
+			return;
+		}
+
+		
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("librarycollection");
@@ -186,15 +194,19 @@ public class ProjectModule extends BaseMediaModule
 		String collectionid = inReq.getRequestParameter("collectionid");
 		if( collectionid == null)
 		{
-			collectionid = inReq.getRequestParameter("id");
-			if( collectionid == null)
+			collectionid = inReq.getRequestParameter("librarycollection");
+			if(collectionid == null)
 			{
-				Data coll = (Data)inReq.getPageValue("librarycol");
-				if( coll != null)
+				collectionid = inReq.getRequestParameter("id");
+				if( collectionid == null)
 				{
-					collectionid = coll.getId();
-				}
-			}	
+					Data coll = (Data)inReq.getPageValue("librarycol");
+					if( coll != null)
+					{
+						collectionid = coll.getId();
+					}
+				}	
+			}
 		}
 		if(collectionid == null){
 			String page = inReq.getPage().getName();
@@ -372,9 +384,31 @@ public class ProjectModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
-		String collectionid = inReq.getRequestParameter("collectionid");
+		String collectionid = loadCollectionId(inReq);
 		String categoryid = inReq.getRequestParameter("categoryid");
 		manager.addCategoryToCollection(archive, collectionid, categoryid);
 	}
-	
+	public void loadCategoriesOnCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		String collectionid = loadCollectionId(inReq);
+		if( collectionid == null)
+		{
+			return;
+		}		
+		HitTracker categories = manager.loadCategoriesOnCollection(archive,collectionid);
+		//log.info("Found: " + categories.size());
+		inReq.putPageValue("collectioncategories", categories);
+		//inReq.putSessionValue(all.getSessionId(),all);
+	}
+	public void moveCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		String collectionid = loadCollectionId(inReq);
+		String libraryid = inReq.getRequestParameter("targetlibraryid");
+		manager.moveCollectionTo(inReq,archive,collectionid,libraryid);
+		inReq.putPageValue("movestatus", "completed");
+	}	
 }

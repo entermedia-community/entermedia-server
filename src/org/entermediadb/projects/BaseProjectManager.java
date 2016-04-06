@@ -14,12 +14,14 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 public class BaseProjectManager implements ProjectManager
@@ -503,6 +505,81 @@ public class BaseProjectManager implements ProjectManager
 		librarycollectioncategorySearcher.saveData(newfolder, null);
 		
 	}
-	
+
+	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid)
+	{
+		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+		HitTracker hits = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).search();
+		if( hits.size() > 0)
+		{
+			List catids = new ArrayList();
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
+				Data libcat = (Data) iterator.next();
+				catids.add(libcat.get("categoryid"));
+			}
+			HitTracker cats = inArchive.getCategorySearcher().query().orgroup("id", catids).search();
+			return cats;
+		}	
+		return null;
+	}
+
+	@Override
+	public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
+	{
+		//Find all the assets and move them
+		Collection assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
+		
+		Data library = inArchive.getData("library", inLibraryid);
+		String sourcepath = library.get("folder");
+		if( sourcepath == null)
+		{
+			throw new OpenEditException("No folder set on library");
+		}
+		Data collection = inArchive.getData("librarycollection", inCollectionid);
+		sourcepath = sourcepath + "/" + collection.getName(); 
+		
+		moveAssets(inReq, inArchive, assets, sourcepath);
+		
+		//Find all the categories and move them
+		collection.setProperty("library",inLibraryid);
+		inArchive.getSearcher("librarycollection").saveData(collection, inReq.getUser());
+		//moveAssets(inReq, inArchive, assets, sourcepath);
+		
+		
+	}
+
+	protected void moveAssets(WebPageRequest inReq, MediaArchive inArchive, Collection assets, String sourcepath)
+	{
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			asset = inArchive.getAssetSearcher().loadData(asset);
+			//Change sourcepath
+			//Move images
+			String dest = sourcepath + "/" + asset.getName(); 
+			//TODO: Check for duplicates
+			
+			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getSourcePath();
+			String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + dest;
+			
+			Page oldpage = inArchive.getPageManager().getPage(oldpath);
+			Page newpage = inArchive.getPageManager().getPage(newpath);
+
+			inArchive.getPageManager().movePage(oldpage, newpage);
+
+			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + asset.getSourcePath());
+			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + dest);
+
+			inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+			
+			asset.setSourcePath(dest);
+			
+			//tosave.add(asset);
+			inArchive.getAssetSearcher().saveData(asset, inReq.getUser());
+			
+		}
+	}
+
 }
 

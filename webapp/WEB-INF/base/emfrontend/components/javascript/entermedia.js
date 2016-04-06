@@ -1129,7 +1129,7 @@ emcomponents = function() {
 				jQuery(this).droppable(
 				{
 					drop: function(event, ui) {
-						console.log("Drop" + ui.draggable);
+						//console.log("Drop" + ui.draggable);
 						var categoryid = ui.draggable.data("nodeid");
 						var assetid = ui.draggable.data("assetid");
 						var anode = $(this);

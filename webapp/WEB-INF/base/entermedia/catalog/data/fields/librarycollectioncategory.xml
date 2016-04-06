@@ -1,0 +1,5 @@
+<properties beanname="dataSearcher" >
+  <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
+  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
+  <property id="categoryid" index="true" listid="category" stored="true" editable="true" type="list"  >Category ID</property>
+</properties>

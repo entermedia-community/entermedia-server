@@ -41,6 +41,10 @@ public interface ProjectManager
 	public HitTracker loadAssetsInLibrary(Data inLibrary,  MediaArchive archive, WebPageRequest inReq);
 
 	public Collection<UserCollection> loadOpenCollections(WebPageRequest inReq);
+
+	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
+
+	public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
 	
 	//public void savedCollection(MediaArchive archive, Data inLibrary, User inUser);
 }
