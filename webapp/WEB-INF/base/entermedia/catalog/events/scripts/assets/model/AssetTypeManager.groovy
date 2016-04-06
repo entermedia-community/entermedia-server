@@ -54,7 +54,7 @@ public class AssetTypeManager extends EnterMediaObject {
 		String fileformat = hit.fileformat;
 		//First check to see if we have a path mask for the asset type
 
-		HitTracker types = typesearcher.getAllHits();
+		HitTracker types = typesearcher.query().all().sort("ordering").search(context);
 		types.each{
 			String paths =it.paths;
 			String type = it.id;
