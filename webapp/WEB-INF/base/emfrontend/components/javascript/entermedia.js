@@ -732,11 +732,16 @@ onloadselectors = function()
 			function()
 			{	
 				jQuery(this).draggable( 
-					{ 
+					{
+						
 						helper: function()
 						{
 							var cloned = $(this).clone();
 							
+							
+							$(cloned).css({"border":"1px solid blue",
+										   "background":"#c9e8f2"});
+
 							//var status = jQuery('input[name=pagetoggle]').is(':checked');
 							 var n = $("input.selectionbox:checked").length;
 							 if( n > 1 )
