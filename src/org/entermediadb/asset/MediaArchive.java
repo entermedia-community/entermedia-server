@@ -1320,13 +1320,13 @@ public class MediaArchive
 	public String getCatalogSettingValue(String inId)
 	{
 		String value = (String)getCacheManager().get("catalogsettings", inId);
-		if( value != null)
-		{
-			return value;
-		}
 		if( value ==  CacheManager.NULLVALUE)
 		{
 			return null;
+		}
+		if( value != null)
+		{
+			return value;
 		}
 		Data setting = getCatalogSetting(inId);
 		log.info("Loading " + inId);
