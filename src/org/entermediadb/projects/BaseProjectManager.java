@@ -497,7 +497,10 @@ public class BaseProjectManager implements ProjectManager
 	public void addCategoryToCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
 		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
-		librarycollectioncategorySearcher.createNewData();
+		Data newfolder = librarycollectioncategorySearcher.createNewData();
+		newfolder.setProperty("librarycollection", inCollectionid);
+		newfolder.setProperty("categoryid", inCategoryid);
+		librarycollectioncategorySearcher.saveData(newfolder, null);
 		
 	}
 	

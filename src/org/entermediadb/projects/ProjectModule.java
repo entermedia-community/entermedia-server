@@ -368,4 +368,13 @@ public class ProjectModule extends BaseMediaModule
 		}
 	}
 	
+	public void addCategoryToCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		String collectionid = inReq.getRequestParameter("collectionid");
+		String categoryid = inReq.getRequestParameter("categoryid");
+		manager.addCategoryToCollection(archive, collectionid, categoryid);
+	}
+	
 }
