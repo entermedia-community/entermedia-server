@@ -108,12 +108,12 @@ public void handleUpload() {
 		HitTracker items = itemsearcher.query().exact("orderid",order.getId()).search();
 
 		log.info("total files was ${total} and total asset size was ${assets.size()} email send ${order.emailsent}");
-		Lock lock = archive.getLockManager().lockIfPossible( "order" + order.getId(), user.getUserName());
+		Lock lock = archive.getLockManager().lock( "order" + order.getId(), user.getUserName());
 		if (lock!=null){
+			try{
+				if(items.size() >= total && (order.emailsent == null || "false".equals(order.emailsent))){
+					//itemsearcher.saveAllData(orderitems, null);
 
-			if(items.size() >= total && (order.emailsent == null || "false".equals(order.emailsent))){
-				//itemsearcher.saveAllData(orderitems, null);
-				try{
 					context.putPageValue("orderitems", assets);
 					String from = context.getRequestParameter("email.value");
 					context.putPageValue("fromemail", from);
@@ -126,13 +126,12 @@ public void handleUpload() {
 					sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
 
 					context.putSessionValue("quickshareorder", null);
-				} catch (Exception e){
+				}
+			} catch (Exception e){
 				throw new OpenEditException(e);
-				}
-				finally{
-					archive.releaseLock(lock);
-					
-				}
+			}
+			finally{
+				archive.releaseLock(lock);
 			}
 		}
 	}
