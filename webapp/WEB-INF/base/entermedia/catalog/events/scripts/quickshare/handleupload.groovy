@@ -111,7 +111,7 @@ public void handleUpload() {
 		Lock lock = archive.getLockManager().lock( "order" + order.getId(), user.getUserName());
 		if (lock!=null){
 			try{
-				if(items.size() >= total && (order.emailsent == null || "false".equals(order.emailsent))){
+				if(assets.size() >= total && (order.emailsent == null || "false".equals(order.emailsent))){
 					//itemsearcher.saveAllData(orderitems, null);
 
 					context.putPageValue("orderitems", assets);
