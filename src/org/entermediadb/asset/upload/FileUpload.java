@@ -300,22 +300,26 @@ public class FileUpload
 				{
 					values = (String[])vals;
 				}
-				
-				if( values == null)
+				String tval = tmp.getString(encoding).trim();
+				if( !tval.isEmpty() )
 				{
-					values = new String[1];
+					if( values == null)
+					{
+						values = new String[1];
+					}
+					else
+					{
+						//grow by one
+						String[] newvalues = new String[values.length + 1];
+						System.arraycopy(values,0, newvalues,0, values.length);
+						values = newvalues;
+					}
+					values[values.length -1] = tval;
 				}
-				else
+				if( values != null)
 				{
-					//grow by one
-					String[] newvalues = new String[values.length + 1];
-					System.arraycopy(values,0, newvalues,0, values.length);
-					values = newvalues;
+					arguments.put(tmp.getFieldName(), values);
 				}
-				
-				values[values.length -1] = tmp.getString(encoding).trim();
-				
-				arguments.put(tmp.getFieldName(), values);
 			}
 		}
 		for (Iterator iterator = arguments.keySet().iterator(); iterator.hasNext();)
