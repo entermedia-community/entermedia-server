@@ -791,6 +791,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		    log.error("Index wasn't deleted");
 		}
 		
+	}
+
+	@Override
+	public String createSnapShot(String inCatalogId)
+	{
+		return createDailySnapShot(inCatalogId,false);
 	}	
 
 	

@@ -99,24 +99,24 @@ public abstract class BaseNodeManager implements NodeManager
 	{
 		return getLocalNode().getId();
 	}
-	public String createDailySnapShot(String inCatalogId)
-	{		
-		throw new OpenEditException("Not implemented");
-	}
-	
-	public String createSnapShot(String inCatalogId)
-	{		
-		throw new OpenEditException("Not implemented");
-	}
-	
-	public List listSnapShots(String inCatalogId)
-	{
-		throw new OpenEditException("Not implemented");
-	}
-	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
-	{
-		throw new OpenEditException("Not implemented");
-	}
+//	public String createDailySnapShot(String inCatalogId)
+//	{		
+//		throw new OpenEditException("Not implemented");
+//	}
+//	
+//	public String createSnapShot(String inCatalogId)
+//	{		
+//		throw new OpenEditException("Not implemented");
+//	}
+//	
+//	public List listSnapShots(String inCatalogId)
+//	{
+//		throw new OpenEditException("Not implemented");
+//	}
+//	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
+//	{
+//		throw new OpenEditException("Not implemented");
+//	}
 
 	@Override
 	public boolean connectCatalog(String inCatalogId)
