@@ -1291,6 +1291,13 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			String key = detail.getId();
 			Object value = inData.getValue(key);
+			if( value != null)
+			{
+				if( value instanceof String && ((String)value).isEmpty())
+				{
+					value = null;
+				}
+			}
 			
 //			if(key.contains(".")){
 //				log.info("Warning - data id : " + inData.getId() + " of type " + getSearchType() + " contained a . in field " + key);
@@ -1298,14 +1305,14 @@ public class BaseElasticSearcher extends BaseSearcher
 //			}
 			try
 			{
-				if( detail == null)
-				{
-//					if (value != null && value.trim().length() == 0)
-//					{
-//						value = null;
-//					}
-					continue;
-				}
+//				if( detail == null)
+//				{
+////					if (value != null && value.trim().length() == 0)
+////					{
+////						value = null;
+////					}
+//					continue;
+//				}
 				if ("_id".equals(key) || "_parent".equals(key) || "_all".equals(key))
 				{
 					// if( value != null)
@@ -1361,7 +1368,6 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					inContent.field(key, val);
 				}
-
 				else if (detail.isMultiValue())
 				{
 					if( value != null)
@@ -1391,7 +1397,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					inContent.field(key, value);
 				}
-				else if (key.equals("description"))
+				else if (key.equals("description"))  //TODO: This should be moved to _all searches
 				{
 					StringBuffer desc = new StringBuffer();
 					populateKeywords(desc, inData, inDetails);
