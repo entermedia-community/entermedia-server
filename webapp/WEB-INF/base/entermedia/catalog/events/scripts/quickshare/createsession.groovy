@@ -26,6 +26,8 @@ public void handleUpload() {
 		if(order == null){
 			 order = ordersearcher.createNewData();
 			 context.putSessionValue("quickshareorder", order);
+			 order.setProperty("emailsent", "false");
+			 
 			 ordersearcher.saveData(order, null);
 			 context.putPageValue("quickshareorder", order);
 			 

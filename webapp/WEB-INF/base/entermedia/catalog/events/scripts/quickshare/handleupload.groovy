@@ -2,6 +2,7 @@ package quickshare;
 
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
+import org.entermedia.locks.Lock;
 import org.entermedia.upload.FileUpload
 import org.entermedia.upload.FileUploadItem
 import org.entermedia.upload.UploadRequest
@@ -58,8 +59,7 @@ public void handleUpload() {
 		}
 		order.setProperty("orderstatus", "complete");
 		order.setProperty("publishdestination", "0");
-		order.setProperty("emailsent", "false");
-		
+
 		order.setProperty("applicationid", context.findValue("applicationid"));
 		String sharenote = context.findValue("sharenote.value");
 		order.setProperty("sharenote", sharenote);
@@ -106,23 +106,34 @@ public void handleUpload() {
 		OrderManager om = archive.getModuleManager().getBean(archive.getCatalogId(), "orderManager");
 		HitTracker assets = om.findAssets(context, archive.getCatalogId(), order);
 		HitTracker items = itemsearcher.query().exact("orderid",order.getId()).search();
-		
-		log.info("total files was ${total} and total asset size was ${assets.size()} email send ${order.emailsent}");
-		if(items.size() >= total && (order.emailsent == null || "false".equals(order.emailsent))){
 
-			//itemsearcher.saveAllData(orderitems, null);
-			context.putPageValue("orderitems", assets);
-			String from = context.getRequestParameter("email.value");
-			context.putPageValue("fromemail", from);
-			context.putPageValue("order", order);
-			String to = context.getRequestParameter("destination.value");
-			String sendfrom = context.findValue("quicksharefrom");
-			sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
-			sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
-			order.setProperty("emailsent", "true");
-			ordersearcher.saveData(order, null);
-			context.putSessionValue("quickshareorder", null);
-			
+		log.info("total files was ${total} and total asset size was ${assets.size()} email send ${order.emailsent}");
+		Lock lock = archive.getLockManager().lockIfPossible( "order" + order.getId(), user.getUserName());
+		if (lock!=null){
+
+			if(items.size() >= total && (order.emailsent == null || "false".equals(order.emailsent))){
+				//itemsearcher.saveAllData(orderitems, null);
+				try{
+					context.putPageValue("orderitems", assets);
+					String from = context.getRequestParameter("email.value");
+					context.putPageValue("fromemail", from);
+					context.putPageValue("order", order);
+					String to = context.getRequestParameter("destination.value");
+					String sendfrom = context.findValue("quicksharefrom");
+					order.setProperty("emailsent", "true");
+					ordersearcher.saveData(order, null);
+					sendEmail(context,  to,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+					sendEmail(context,  from,sendfrom, "/${context.findValue('applicationid')}/components/quickshare/sharetemplate.html");
+
+					context.putSessionValue("quickshareorder", null);
+				} catch (Exception e){
+				throw new OpenEditException(e);
+				}
+				finally{
+					archive.releaseLock(lock);
+					
+				}
+			}
 		}
 	}
 }
