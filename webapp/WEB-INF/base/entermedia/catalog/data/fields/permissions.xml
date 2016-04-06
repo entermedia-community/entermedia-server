@@ -1,8 +1,0 @@
-
-<properties lazy-init="true">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true" searchtype="permissions">Id</property>
-  <property id="name" index="true" stored="true" editable="true" searchtype="permissions">Name</property>
-  <property id="asset" index="true" stored="true" editable="true" type="list" internalfield="false" datatype="list" searchtype="permissions">asset</property>
-  <property id="asdf" index="true" stored="true" editable="true" searchtype="permissions">asdf</property>
-  <property id="ff" index="true" stored="true" editable="true">ff</property>
-</properties>
