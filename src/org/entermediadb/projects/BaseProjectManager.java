@@ -198,7 +198,10 @@ public class BaseProjectManager implements ProjectManager
 	}
 	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, HitTracker assets)
 	{
-		addAssetToLibrary(archive, libraryid, assets);
+		if( libraryid != null)
+		{
+			addAssetToLibrary(archive, libraryid, assets);
+		}
 		addAssetToCollection(archive, collectionid, assets);
 	}
 	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets)
@@ -488,6 +491,14 @@ public class BaseProjectManager implements ProjectManager
 		Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
 		inReq.putPageValue("usercollections", usercollections);
 		return usercollections;
+	}
+
+	@Override
+	public void addCategoryToCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
+	{
+		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+		librarycollectioncategorySearcher.createNewData();
+		
 	}
 	
 }

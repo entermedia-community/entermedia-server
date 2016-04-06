@@ -728,6 +728,40 @@ onloadselectors = function()
 			}
 		);
 	
+		jQuery(".categorydraggable").livequery( 
+			function()
+			{	
+				jQuery(this).draggable( 
+					{ 
+						helper: function()
+						{
+							var cloned = $(this).clone();
+							
+							//var status = jQuery('input[name=pagetoggle]').is(':checked');
+							 var n = $("input.selectionbox:checked").length;
+							 if( n > 1 )
+							 {
+									cloned.append('<div class="dragcount">+' + n + '</div>');
+								 
+							 }
+							
+							return cloned;
+						}
+						,
+						revert: 'invalid'
+					}
+				);
+				/*
+				jQuery(this).bind("drag", function(event, ui) {
+				    ui.helper.css("background-color", "red");
+				    ui.helper.css("border", "2px solid red");
+				    ui.helper.append("3");
+				});
+				*/
+			}
+		);
+	
+	
 	jQuery(".headerdroppable").livequery(
 			function()
 			{
@@ -1090,6 +1124,8 @@ emcomponents = function() {
 				jQuery(this).droppable(
 				{
 					drop: function(event, ui) {
+						console.log("Drop" + ui.draggable);
+						var categoryid = ui.draggable.data("nodeid");
 						var assetid = ui.draggable.data("assetid");
 						var anode = $(this);
 						var targetDiv = anode.data("targetdiv");
@@ -1100,7 +1136,16 @@ emcomponents = function() {
 							hitssessionid = $("#main-results-table").data("hitssessionid");
 						}
 						
-						var nextpage= dropsave + "&assetid=" + assetid + "&hitssessionid=" + hitssessionid;
+						var nextpage= dropsave;
+						if( assetid )
+						{
+							 nextpage = nextpage + "&assetid=" + assetid;
+						}
+						nextpage = nextpage + "&hitssessionid=" + hitssessionid;
+						if( categoryid )
+						{
+							nextpage = nextpage + "&categoryid=" + categoryid;
+						}
 						jQuery.get(nextpage, {}, function(data) 
 						{
 							var	cell = jQuery("#" + targetDiv);

@@ -26,7 +26,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 		#set( $open = $haschildren)
 		#set( $expanded = $webtree.isExpanded($cat) )
 		#set( $isselected = $render.isNodeSelected($cat))
-		<li id="${cat.id}_row" class="noderow" data-nodeid="$cat.id" data-depth="$depth">
+		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth">
 			<div class="categorydroparea #if( $isselected ) selected #end" style="padding-left: ${padding}px" title="$cat.name #if($editable) ($cat.id) #end">
 				#set( $checked = $render.isIdSelected($cat.id) )
 			    #if( $showinput )

@@ -18,7 +18,7 @@
 	<ul>
 	  	#foreach($collection in $usercollections )
 			<li
-				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${collection.getId()}"
+				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html?librarycollection=${collection.getId()}"
 				data-targetdiv="left-col-libraries"
 				class="#if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"
 			>
