@@ -449,14 +449,28 @@ public class Category extends BaseData
 
 	public String getSourcePath()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		String vale  = get("sourcepath");
+		if( vale == null)
+		{
+			StringBuffer path = new StringBuffer();
+			for (Iterator iterator = getParentCategories().iterator(); iterator.hasNext();)
+			{
+				Category aparent = (Category) iterator.next();
+				path.append(aparent.getName());
+				if( iterator.hasNext())
+				{
+					path.append("/");
+				}
+			}
+			vale = path.toString();
+		}
+		return vale;
 	}
 
 	public void setSourcePath(String inSourcepath)
 	{
 		// TODO Auto-generated method stub
-		
+		setValue("sourcepath",inSourcepath);
 	}
 	public int compareTo(Category c2)
 	{

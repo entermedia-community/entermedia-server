@@ -136,20 +136,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			try
 			{
 				inContent.field("parentid", parent.getId());
-				
-				StringBuffer path = new StringBuffer();
-				for (Iterator iterator = category.getParentCategories().iterator(); iterator.hasNext();)
-				{
-					Category aparent = (Category) iterator.next();
-					path.append(aparent.getName());
-					if( iterator.hasNext())
-					{
-						path.append("/");
-					}
-				}
-				//path.append(category.getName());
-				
-				inContent.field("sourcepath", path.toString());
+				inContent.field("sourcepath", parent.getSourcePath() );
 			}
 			catch (Exception ex)
 			{
