@@ -496,7 +496,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					continue;
 				}
 					
-				String value = (String)getPropertiesSet().get(key);
+				String value = (String) getPropertiesSet().get(key);
 				String datavalue = data.get(key);
 				
 				if( datavalue == value )
