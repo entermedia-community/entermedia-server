@@ -11,6 +11,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -537,11 +538,55 @@ public class BaseProjectManager implements ProjectManager
 			throw new OpenEditException("No folder set on library");
 		}
 		Data collection = inArchive.getData("librarycollection", inCollectionid);
-		sourcepath = sourcepath + "/" + collection.getName(); 
+		String assetssourcepath = sourcepath + "/" + collection.getName(); 
 		
-		moveAssets(inReq, inArchive, assets, sourcepath);
+		moveAssets(inReq, inArchive, assets, assetssourcepath);
 		
 		//Find all the categories and move them
+		
+		HitTracker categories = loadCategoriesOnCollection(inArchive,inCollectionid);
+		for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+		{
+			Category cat = (Category) iterator.next();
+			String categoryroot = cat.getSourcePath();
+			Collection catassets = inArchive.getAssetSearcher().query().match("category", cat.getId()).search();
+			for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
+			{
+				Data data = (Data) iterator2.next();
+				Asset asset = (Asset)inArchive.getAssetSearcher().loadData(data);
+				for (Iterator iterator3 = asset.getCategories().iterator(); iterator3.hasNext();)
+				{
+					Category assetcat = (Category) iterator3.next();
+					if( assetcat.getSourcePath().startsWith(categoryroot))
+					{
+						asset.removeCategory(assetcat);
+						String newcategorypath = assetssourcepath + "/" + assetcat.getSourcePath().substring(categoryroot.length());
+						
+						Category newcategory = inArchive.getCategoryArchive().createCategoryTree(newcategorypath); //
+						asset.addCategory(newcategory);
+						asset.setSourcePath(newcategorypath + "/" + asset.getName());
+						
+					}
+				}
+			}
+			
+			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + categoryroot;
+			String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + assetssourcepath + "/" + cat.getName();
+			
+			Page oldpage = inArchive.getPageManager().getPage(oldpath);
+			Page newpage = inArchive.getPageManager().getPage(newpath);
+
+			inArchive.getPageManager().movePage(oldpage, newpage);
+
+			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + categoryroot);
+			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + assetssourcepath + "/" + cat.getName());
+
+			inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+	
+			
+		}
+		
+		
 		collection.setProperty("library",inLibraryid);
 		inArchive.getSearcher("librarycollection").saveData(collection, inReq.getUser());
 		//moveAssets(inReq, inArchive, assets, sourcepath);
