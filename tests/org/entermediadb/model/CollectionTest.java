@@ -21,7 +21,9 @@ public class CollectionTest extends BaseEnterMediaTest
 		
 		Searcher csearcher  = getMediaArchive().getSearcher("librarycollection");
 		Data collection = csearcher.createNewData();
+		collection.setId("testcollection");
 		collection.setName("test");
+		collection.setProperty("librarycollection","admin");
 		csearcher.saveData(collection, null);
 		
 		//Searcher lsearcher  = getMediaArchive().getSearcher("librarycollectionasset");
@@ -45,4 +47,16 @@ public class CollectionTest extends BaseEnterMediaTest
 		assertEquals(1, assets.size());
 		
 	}
+	
+	public void testCollectionPublish() throws Exception
+	{
+		ProjectManager manager = (ProjectManager)getFixture().getModuleManager().getBean(getMediaArchive().getCatalogId(),"projectManager");
+		
+		String collectionid = "testcollection"; 
+		String libraryid = "testlibray";
+		
+		manager.moveCollectionTo(getFixture().createPageRequest(),getMediaArchive(),collectionid,libraryid);
+		
+	}
+	
 }
