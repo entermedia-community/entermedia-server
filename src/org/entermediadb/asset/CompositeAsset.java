@@ -151,7 +151,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		return getSelectedResults().size();
 	}
-	public List getKeywords()
+	public Collection<String> getKeywords()
 	{
 		Collection fieldKeywords = (Collection)super.getValues("keywords");  //TODO: Is this right?
 		if( fieldKeywords == null )

@@ -2,6 +2,7 @@ package org.entermediadb.asset.xmp;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -50,7 +51,7 @@ public class XmpWriter
 		return result.isRunOk();
 	}
 	
-	public void addSaveKeywords(List<String> inKeywords, List<String> inComm) throws Exception
+	public void addSaveKeywords(Collection<String> inKeywords, List<String> inComm) throws Exception
 	{
 		for (String key: inKeywords) 
 		{

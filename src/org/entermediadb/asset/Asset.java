@@ -415,9 +415,9 @@ public class Asset implements MultiValued, SaveableData
 		}
 	}
 
-	public List<String> getKeywords()
+	public Collection<String> getKeywords()
 	{
-		List<String> keywords =  (List<String>)getValues("keywords");
+		Collection<String> keywords =  getValues("keywords");
 		if( keywords == null)
 		{
 			keywords = Collections.EMPTY_LIST;
@@ -448,7 +448,7 @@ public class Asset implements MultiValued, SaveableData
 		return false;
 	}
 
-	public void setKeywords(List<String> inKeywords)
+	public void setKeywords(Collection<String> inKeywords)
 	{
 		setValues("keywords",inKeywords);
 	}
