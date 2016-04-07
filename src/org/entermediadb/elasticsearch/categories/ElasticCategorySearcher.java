@@ -136,7 +136,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			try
 			{
 				inContent.field("parentid", parent.getId());
-				inContent.field("sourcepath", parent.getSourcePath() );
+				inContent.field("sourcepath", category.getSourcePath() );
 			}
 			catch (Exception ex)
 			{
