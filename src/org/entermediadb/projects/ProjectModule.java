@@ -49,7 +49,7 @@ public class ProjectModule extends BaseMediaModule
 //		Data collection = (Data)inReq.getPageValue("data");
 //		if( collection != null)
 //		{
-//			ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");	
+//			ProjectManager manager = getProjectManager(inReq);	
 //			manager.savedCollection(archive,collection,inReq.getUser());
 //		}
 //	}
@@ -60,7 +60,7 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String libraryid = inReq.getRequestParameter("libraryid");
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 
 		if( hitssessionid != null )
 		{
@@ -88,7 +88,7 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String libraryid = inReq.getRequestParameter("libraryid");
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 
 		if( hitssessionid != null )
 		{
@@ -121,7 +121,7 @@ public class ProjectModule extends BaseMediaModule
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("librarycollection");
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		if( hitssessionid != null )
 		{
 			HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
@@ -147,7 +147,7 @@ public class ProjectModule extends BaseMediaModule
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String collectionid = loadCollectionId(inReq);
 		
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		if( hitssessionid != null )
 		{
 			HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
@@ -166,7 +166,7 @@ public class ProjectModule extends BaseMediaModule
 	public void searchForAssetsInLibrary(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		Data library = manager.getCurrentLibrary(inReq.getUserProfile());
 		if( library != null)
 		{
@@ -182,7 +182,7 @@ public class ProjectModule extends BaseMediaModule
 		{
 			return;
 		}		
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		//String hitsname = inReq.findValue("hitsname");
@@ -252,7 +252,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		//Make sure I am in the list of users for the library
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
 		{
 			//reload profile?
@@ -285,7 +285,7 @@ public class ProjectModule extends BaseMediaModule
 		inReq.setRequestParameter("profilepreference","last_selected_library" );
 		inReq.setRequestParameter("profilepreference.value", userlibrary.getId() );
 		//Make sure I am in the list of users for the library
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		if( manager.addUserToLibrary(archive,userlibrary,inReq.getUser()) )
 		{
 			//reload profile?
@@ -380,10 +380,18 @@ public class ProjectModule extends BaseMediaModule
 		}
 	}
 	
-	public void addCategoryToCollection(WebPageRequest inReq)
+	public ProjectManager getProjectManager(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		inReq.putPageValue("projectmanager",manager);
+		return manager;
+	}
+	
+	public void addCategoryToCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		String categoryid = inReq.getRequestParameter("categoryid");
 		manager.addCategoryToCollection(archive, collectionid, categoryid);
@@ -391,7 +399,7 @@ public class ProjectModule extends BaseMediaModule
 	public void loadCategoriesOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		if( collectionid == null)
 		{
@@ -405,7 +413,7 @@ public class ProjectModule extends BaseMediaModule
 	public void moveCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		String libraryid = inReq.getRequestParameter("targetlibraryid");
 		manager.moveCollectionTo(inReq,archive,collectionid,libraryid);

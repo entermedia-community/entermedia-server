@@ -574,7 +574,8 @@ public class BaseProjectManager implements ProjectManager
 			{
 				Data data = (Data) iterator2.next();
 				Asset asset = (Asset)inArchive.getAssetSearcher().loadData(data);
-				for (Iterator iterator3 = asset.getCategories().iterator(); iterator3.hasNext();)
+				Collection collections = new ArrayList(asset.getCategories());
+				for (Iterator iterator3 = collections.iterator(); iterator3.hasNext();)
 				{
 					Category assetcat = (Category) iterator3.next();
 					if( assetcat.getSourcePath().startsWith(categoryroot))
@@ -595,13 +596,18 @@ public class BaseProjectManager implements ProjectManager
 			
 			Page oldpage = inArchive.getPageManager().getPage(oldpath);
 			Page newpage = inArchive.getPageManager().getPage(newpath);
-
-			inArchive.getPageManager().movePage(oldpage, newpage);
+			if( oldpage.exists() )
+			{
+				inArchive.getPageManager().movePage(oldpage, newpage);
+			}
 
 			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + categoryroot);
 			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + assetssourcepath + "/" + cat.getName());
 
-			inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+			if( oldthumbs.exists() )
+			{
+				inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+			}
 	
 			
 		}

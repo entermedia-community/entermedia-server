@@ -4,5 +4,7 @@
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
     </path-action>
+    <path-action name="ProjectModule.getProjectManager"/>
+    <path-action name="ProjectModule.searchForAssetsOnCollection"/>
 	<path-action name="ProjectModule.loadCollections"/>	
 </page>

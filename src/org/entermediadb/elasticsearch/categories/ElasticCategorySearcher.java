@@ -230,8 +230,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		ElasticCategory data = (ElasticCategory) createNewData();
 		data.setProperties(inHit.getProperties());
 		data.setId(inHit.getId());
-		
-		return super.loadData(inHit);
+		return data;
+		//return super.loadData(inHit);
 	}
 	
 	@Override
