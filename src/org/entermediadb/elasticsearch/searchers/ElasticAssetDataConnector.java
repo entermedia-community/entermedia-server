@@ -48,6 +48,20 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
 	protected OutputFiller filler = new OutputFiller();
+	
+	protected boolean fieldIncludeFullText = true;
+	
+	
+	public boolean isIncludeFullText()
+	{
+		return fieldIncludeFullText;
+	}
+
+	public void setIncludeFullText(boolean inIncludeFullText)
+	{
+		fieldIncludeFullText = inIncludeFullText;
+	}
+
 	public Data createNewData()
 	{
 		return new Asset(getMediaArchive());
@@ -295,7 +309,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				fullDesc.append(dirs[i]);
 				fullDesc.append(' ');
 			}
-			if( Boolean.parseBoolean(asset.get("hasfulltext")))
+			if( isIncludeFullText() && Boolean.parseBoolean(asset.get("hasfulltext")))
 			{
 				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
 				if( item.exists() )

@@ -32,6 +32,7 @@ public class WindowsAuthenticator extends BaseAuthenticator
 		{
 			inDomainOrBlank = "";
 		}
+		//1433 445
 		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(inDomainOrBlank, inAReq.getUser().getUserName(), inAReq.getPassword());
 		try
 		{
