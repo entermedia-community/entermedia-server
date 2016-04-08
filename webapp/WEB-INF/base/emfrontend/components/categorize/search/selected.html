@@ -1,6 +1,6 @@
 #set ($categories = $context.getRequestParameter("categories") )
 #if( $categories )
-    #set( $selected = $categories.split("\|") )
+    #set( $selected = $categories.split("\|") ) 
 #else
 	#set ($selected = $context.getRequestParameters("categoryid") )
 #end
@@ -10,11 +10,18 @@
     #set( $ids = "" )
     
 	#foreach($categoryid in $selected)
+	#set( $category = $mediaarchive.getCategory($categoryid))
+			#if($category && $category != "")
 		<li class="row" >
+			
+		
 		    #set( $ids = "$categoryid|$ids" )
-			#set( $category = $mediaarchive.getCategory($categoryid))
+			
 			<a class="category"  href="$home$apphome/views/categories/${category.id}.html" >$category.getName()</a>
+			#end
 		</li>
+					#set( $category = "")
+		
 	#end
 	</ul>
 	<input type="hidden" name="category.value" value="$ids" />
