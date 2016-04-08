@@ -146,10 +146,17 @@ public class PathEventModule extends BaseModule
 		HitTracker catalogs = getSearcherManager().getList("system","catalog");
 		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
 		{
-			Data data = (Data) iterator.next();
-			String catalogid = data.getId();
-			PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
-			manager.getPathEvents();
+			try
+			{
+				Data data = (Data) iterator.next();
+				String catalogid = data.getId();
+				PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
+				manager.getPathEvents();
+			}
+			catch ( Exception ex)
+			{
+				log.error(ex);
+			}
 		}
 	}
 	
