@@ -500,10 +500,18 @@ public class BaseProjectManager implements ProjectManager
 	public void addCategoryToCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
 		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
-		Data newfolder = librarycollectioncategorySearcher.createNewData();
-		newfolder.setProperty("librarycollection", inCollectionid);
-		newfolder.setProperty("categoryid", inCategoryid);
-		librarycollectioncategorySearcher.saveData(newfolder, null);
+		
+		Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
+		
+		if(data == null)
+		{
+			Data newfolder = librarycollectioncategorySearcher.createNewData();
+			newfolder.setProperty("librarycollection", inCollectionid);
+			newfolder.setProperty("categoryid", inCategoryid);
+			librarycollectioncategorySearcher.saveData(newfolder, null);
+		}
+		
+		
 		
 	}
 
@@ -520,6 +528,7 @@ public class BaseProjectManager implements ProjectManager
 				catids.add(libcat.get("categoryid"));
 			}
 			HitTracker cats = inArchive.getCategorySearcher().query().orgroup("id", catids).search();
+			
 			return cats;
 		}	
 		return null;
@@ -528,27 +537,38 @@ public class BaseProjectManager implements ProjectManager
 	@Override
 	public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
 	{
-		//Find all the assets and move them
+		//Find all the assets and move them to the library
+		
+		//Get all the assets in collection
 		Collection assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
 		
+		//Get destination library 
 		Data library = inArchive.getData("library", inLibraryid);
+		
+		//Get library hot folder
 		String sourcepath = library.get("folder");
+		
 		if( sourcepath == null)
 		{
 			throw new OpenEditException("No folder set on library");
 		}
+		
 		Data collection = inArchive.getData("librarycollection", inCollectionid);
 		String assetssourcepath = sourcepath + "/" + collection.getName(); 
 		
 		moveAssets(inReq, inArchive, assets, assetssourcepath);
 		
-		//Find all the categories and move them
-		
+		//Find all the categories and move them to the library
 		HitTracker categories = loadCategoriesOnCollection(inArchive,inCollectionid);
+		
 		for (Iterator iterator = categories.iterator(); iterator.hasNext();)
 		{
-			Category cat = (Category) iterator.next();
+			Data catData = (Data) iterator.next();
+			
+			Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
+			
 			String categoryroot = cat.getSourcePath();
+			
 			Collection catassets = inArchive.getAssetSearcher().query().match("category", cat.getId()).search();
 			for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
 			{
@@ -599,7 +619,9 @@ public class BaseProjectManager implements ProjectManager
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			Data asset = (Data) iterator.next();
+			
 			asset = inArchive.getAssetSearcher().loadData(asset);
+			
 			//Change sourcepath
 			//Move images
 			String dest = sourcepath + "/" + asset.getName(); 
@@ -608,15 +630,17 @@ public class BaseProjectManager implements ProjectManager
 			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getSourcePath();
 			String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + dest;
 			
+			//Move to the new page
 			Page oldpage = inArchive.getPageManager().getPage(oldpath);
 			Page newpage = inArchive.getPageManager().getPage(newpath);
-
-			inArchive.getPageManager().movePage(oldpage, newpage);
-
+            inArchive.getPageManager().movePage(oldpage, newpage);
+            
+            
+            //Move the thumbs to the new page
 			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + asset.getSourcePath());
 			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + dest);
-
 			inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+			
 			
 			asset.setSourcePath(dest);
 			
