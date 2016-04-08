@@ -796,7 +796,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	@Override
 	public String createSnapShot(String inCatalogId)
 	{
-		return createDailySnapShot(inCatalogId,false);
+		return createSnapShot(inCatalogId,false);
 	}	
 
 	
