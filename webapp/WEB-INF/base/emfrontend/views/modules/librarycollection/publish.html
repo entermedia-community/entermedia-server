@@ -1,13 +1,21 @@
 <div class="ui-widget uipanel" style="padding: 10px 50px 10px 50px;">
 	<div class="ui-widget-header">[[Categories]]</div>
 	<div class="ui-widget-content">
-		$hits.size() Assets
+		$hits.size() Assets 
+		<br>
+			##$mediaarchive, $librarycol.getId(), $!hits.getSessionId()
+		
+		</br>
 		<br>
 		#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
 		$categories.size() Categories:
 		<ul>
 		#foreach( $cat in $categories)
-			<li>$cat.getSourcePath()    X</li> 
+			<li>$cat.getSourcePath()&nbsp;&nbsp;
+				<a href=""
+				   title="[[Remove Category]]" 
+				   class="confirm" confirm="[[Remove from collection?]]" > X </a>
+			</li> 
 		#end
 		</ul>
 	</div>
