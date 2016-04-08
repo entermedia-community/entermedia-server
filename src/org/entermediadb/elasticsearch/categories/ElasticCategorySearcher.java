@@ -126,7 +126,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			updateChildren(child,inTosave);
 		}
 	}
-
+	@Override
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
 		Category category = (Category)inData;
