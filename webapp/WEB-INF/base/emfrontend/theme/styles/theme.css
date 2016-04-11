@@ -6851,3 +6851,7 @@ select.smalldropdown {
 {
 	vertical-align:middle;
 }
+
+.categoriesonpublish{
+	list-style-type: none;
+}

@@ -3,18 +3,18 @@
 	<div class="ui-widget-content">
 		$hits.size() Assets 
 		<br>
-			##$mediaarchive, $librarycol.getId(), $!hits.getSessionId()
-		
-		</br>
-		<br>
 		#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
+		
 		$categories.size() Categories:
-		<ul>
+		<ul  class="categoriesonpublish">
 		#foreach( $cat in $categories)
-			<li>$cat.getSourcePath()&nbsp;&nbsp;
-				<a href=""
+			<li>
+				$cat.getSourcePath()
+				<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
 				   title="[[Remove Category]]" 
-				   class="confirm" confirm="[[Remove from collection?]]" > X </a>
+				   class="confirm" confirm="[[Remove from collection?]]" > 
+					<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
+				</a>
 			</li> 
 		#end
 		</ul>
