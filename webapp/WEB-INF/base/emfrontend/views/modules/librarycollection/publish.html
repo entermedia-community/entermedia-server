@@ -10,7 +10,7 @@
 						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
 						<b>$categories.size() Categories:</b>  
 						<div class="librarylabels" style="width: 80%;">
-							<table width="100%">
+							<table width="100%" class="categoriescontainer hovertable">
 							#foreach( $cat in $categories)
 									<tr>
 										<td>$cat.getSourcePath()</td>
@@ -19,7 +19,7 @@
 											
 										<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
 								   title="[[Remove $cat.getSourcePath() Category]]" 
-								   class="confirm collectionclose" confirm="[[Remove from collection?]]"> 
+								   class="confirm categoryclose" confirm="[[Remove from collection?]]"> 
 									<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
 								</a>
 									</td>

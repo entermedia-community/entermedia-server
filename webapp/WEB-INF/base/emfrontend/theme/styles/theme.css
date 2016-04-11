@@ -6860,3 +6860,15 @@ select.smalldropdown {
   float: left;
   width: 100%;
 }
+
+.hovertable tr:hover{
+	background-color:#C9E8F2;
+}
+
+a.categoryclose{
+	opacity: 0.3;
+} 
+
+.hovertable tr:hover a.categoryclose {
+	opacity: 1;
+}
