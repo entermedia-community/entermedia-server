@@ -2,20 +2,19 @@
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 50%">
 		<div class="ui-widget-header">[[Archive Assets]]</div>
 		<div class="ui-widget-content">
-			<table>
+			<table width="100%">
 				<tr>
 					<td>
-						<b>$hits.size() Assets:</b> Megabytes 
+						<b>$hits.size() Assets:</b> $sizer.inEnglish( $filesizes.get("assetsize") )
 						<br>
 						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
-						<b>$categories.size() Categories:</b> Megabytes
+						<b>$categories.size() Categories:</b>  
 						<div class="librarylabels" style="width: 80%;">
-						<ul>
+							<table width="100%">
 							#foreach( $cat in $categories)
-							<li>
-								<table width="100%">
 									<tr>
 										<td>$cat.getSourcePath()</td>
+										<td>$sizer.inEnglish( $filesizes.get($cat.getId()) )</td>
 										<td  style="text-align: right;">
 											
 										<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
@@ -23,17 +22,16 @@
 								   class="confirm collectionclose" confirm="[[Remove from collection?]]"> 
 									<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
 								</a>
-										</td>
-									</tr>	
-								</table>
-							</li> 
+									</td>
+								</tr>	
 							#end
-						</ul>
+							</table>
 						</div>
 					</td>
 					</tr>
 					<tr>
 					<td>
+					<br><br>
 						<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
 				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html#publishtab">
 					<table>

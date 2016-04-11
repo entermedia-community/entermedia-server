@@ -2,6 +2,7 @@ package org.entermediadb.projects;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -429,4 +430,13 @@ public class ProjectModule extends BaseMediaModule
 		manager.moveCollectionTo(inReq,archive,collectionid,libraryid);
 		inReq.putPageValue("movestatus", "completed");
 	}	
+	
+	public void loadFileSizes(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		Map sizes = manager.loadFileSizes(inReq, archive, collectionid);
+		inReq.putPageValue("filesizes", sizes);
+	}
 }

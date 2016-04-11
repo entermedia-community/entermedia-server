@@ -3,9 +3,11 @@ package org.entermediadb.projects;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -25,6 +27,8 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
+
+import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 public class BaseProjectManager implements ProjectManager
 {
 	private static final Log log = LogFactory.getLog(BaseProjectManager.class);
@@ -522,7 +526,52 @@ public class BaseProjectManager implements ProjectManager
 
 	}
 	
-	
+	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid)
+	{
+		Map sizes = new HashMap();
+		HitTracker assets = loadAssetsInCollection(inReq,inArchive,inCollectionid);
+		long size = 0;
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			Asset loaded = (Asset)inArchive.getAssetSearcher().loadData(asset);
+			Page orig = inArchive.getOriginalDocument(loaded);
+			size = size + orig.length();
+			
+		}
+		sizes.put("assetsize", size);
+		Collection categories  = loadCategoriesOnCollection(inArchive,inCollectionid);
+		for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+		{
+			Data catData = (Data) iterator.next();
+			Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
+			String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + cat.getSourcePath();
+			long catsize = fileSize(inArchive,path);
+			sizes.put(cat.getId(), catsize);
+		}
+		
+		return sizes;
+	}
+
+	protected long fileSize( MediaArchive inArchive, String inPath)
+	{
+		long size = 0;
+		Collection children = inArchive.getPageManager().getChildrenPaths(inPath);
+		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+		{
+			String child = (String) iterator.next();
+			Page page = inArchive.getPageManager().getPage(child);
+			if( !page.isFolder() )
+			{
+				size = size + page.length();
+			}
+			else
+			{
+				size = size + fileSize(inArchive,child);
+			}
+		}
+		return size;
+	}
 
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid)
 	{

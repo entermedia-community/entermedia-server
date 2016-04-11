@@ -4,7 +4,8 @@
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
     </path-action>
-    <path-action name="ProjectModule.getProjectManager"/>
+    <path-action name="PageValue.loadPageVariable" bean="sizer" class="org.entermediadb.links.FileSize" />
+    <path-action name="ProjectModule.loadFileSizes"/>
     <path-action name="ProjectModule.searchForAssetsOnCollection"/>
 	<path-action name="ProjectModule.loadCollections"/>	
 </page>

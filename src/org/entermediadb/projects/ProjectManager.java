@@ -1,6 +1,7 @@
 package org.entermediadb.projects;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
@@ -47,6 +48,8 @@ public interface ProjectManager
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
 
 	public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
-	
+
+	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
+
 	//public void savedCollection(MediaArchive archive, Data inLibrary, User inUser);
 }
