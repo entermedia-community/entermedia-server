@@ -612,15 +612,11 @@ public class BaseProjectManager implements ProjectManager
 				Data data = (Data) iterator2.next();
 				Asset asset = (Asset)inArchive.getAssetSearcher().loadData(data);
 				String oldsource = asset.getSourcePath();
-				String newsourcepath = assetssourcepath + oldsource.substring(oldcategoryroot.length());
+				String newsourcepath = assetssourcepath + "/" + cat.getName() + oldsource.substring(oldcategoryroot.length()) ;
 				asset.setSourcePath(newsourcepath);
 				inArchive.getAssetSearcher().saveData(asset, null);
 			}
-
-			
 		}
-		
-		
 		collection.setProperty("library",inLibraryid);
 		inArchive.getSearcher("librarycollection").saveData(collection, inReq.getUser());
 		//moveAssets(inReq, inArchive, assets, sourcepath);

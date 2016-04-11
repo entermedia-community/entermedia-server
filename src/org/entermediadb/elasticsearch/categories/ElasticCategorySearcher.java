@@ -129,6 +129,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
+		super.updateIndex(inContent,inData,inDetails);
 		Category category = (Category)inData;
 		Category parent  = category.getParentCategory();
 		if( parent != null)
@@ -136,14 +137,15 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			try
 			{
 				inContent.field("parentid", parent.getId());
-				inContent.field("sourcepath", category.getSourcePath() );
+				String sourcepath = category.getSourcePath();
+				log.info(category.getId() + "=" + sourcepath);
+				inContent.field("sourcepath", sourcepath );
 			}
 			catch (Exception ex)
 			{
 				throw new OpenEditException(ex);
 			}
 		}
-		super.updateIndex(inContent,inData,inDetails);
 	}
 	@Override
 	public Category getRootCategory()

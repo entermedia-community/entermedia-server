@@ -386,8 +386,8 @@ public class Category extends BaseData
 	public List getParentCategories()
 	{
 		List paths = new ArrayList();
-		Category parent = getParentCategory();
 		paths.add(this);
+		Category parent = getParentCategory();
 		while (parent != null)
 		{
 			paths.add(0, parent);
@@ -456,7 +456,7 @@ public class Category extends BaseData
 			boolean first = true;
 			for (Iterator iterator = getParentCategories().iterator(); iterator.hasNext();)
 			{
-				if( first )
+				if( first ) //This takes off the index category
 				{
 					iterator.next();
 					first = false;
