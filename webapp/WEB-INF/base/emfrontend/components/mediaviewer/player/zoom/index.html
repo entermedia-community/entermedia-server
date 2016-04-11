@@ -1,4 +1,4 @@
-#set( $page = $context.getRequestParameter("pagenum") )
+#set( $pagenum = $context.getRequestParameter("pagenum") )
 #set( $name = $context.getRequestParameter("name") )
 
 #set ( $urlutils = $context.getPageValue("url_util"))
@@ -10,7 +10,7 @@
 #end
 
 <div id="mainholder">
-<img id="mainimage" src="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/$urlenc/${name}?pagenum=$!page" />
+<img id="mainimage" src="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/$urlenc/${name}?pagenum=$!pagenum" />
 
 <div id="footerholder">
 [[click to pan, scroll to zoom]]
