@@ -510,10 +510,19 @@ public class BaseProjectManager implements ProjectManager
 			newfolder.setProperty("categoryid", inCategoryid);
 			librarycollectioncategorySearcher.saveData(newfolder, null);
 		}
-		
-		
-		
 	}
+	
+	@Override
+	public void removeCategoryFromCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
+	{
+		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+		
+		Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
+		
+
+	}
+	
+	
 
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid)
 	{

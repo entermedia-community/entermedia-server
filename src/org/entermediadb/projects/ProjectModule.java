@@ -396,6 +396,16 @@ public class ProjectModule extends BaseMediaModule
 		String categoryid = inReq.getRequestParameter("categoryid");
 		manager.addCategoryToCollection(archive, collectionid, categoryid);
 	}
+	
+	public void removeCategoryFromCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		String categoryid = inReq.getRequestParameter("categoryid");
+		manager.removeCategoryFromCollection(archive, collectionid, categoryid);
+	}
+	
 	public void loadCategoriesOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

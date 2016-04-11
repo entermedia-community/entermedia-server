@@ -29,6 +29,8 @@ public interface ProjectManager
 	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid);
 
 	public void addCategoryToCollection(MediaArchive archive, String collectionid, String categoryid );
+	
+	public void removeCategoryFromCollection(MediaArchive archive, String collectionid, String categoryid );
 
 	public void removeAssetFromLibrary(MediaArchive archive, String libraryid, HitTracker inAssets );
 
