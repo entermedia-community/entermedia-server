@@ -48,11 +48,10 @@
 								#if( !$lastselectedlibraryname)
 								#set( $lastselectedlibraryname = $user.getShortDescription())
 								#end
-								<input name="collectionid" value="$librarycol.getId()" type="hidden" />  
-								<input name="targetlibraryid" id="archiveassets" class="listautocomplete" value="#esc($lastselectedlibraryname)"  
-								   data-searchfield="name" data-searchtype="library" data-showicon="false" data-listcatalogid="$catalogid" 
-								   data-foreignkeyid="" data-defaultvalue="$selectedlibrary" data-defaultvalueid="$selectedlibrary.getId()" 
-								   data-sortby="name"/>&nbsp;
+								<input name="collectionid" value="$librarycol.getId()" type="hidden" />
+<input name="completefield" class="listautocomplete" id="libraryvalue" value="#esc($selectedlibrary.getName())"  type="hidden"  
+	data-searchfield="name" data-searchtype="library" data-listcatalogid="$catalogid"  data-sortby="name"/>&nbsp;
+<input name="targetlibraryid"  id="list-libraryvalue"   value="$!librarycol.library" type="hidden" class="listautocompletevalue" />
 								<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
 							</td>
 						<tr>
