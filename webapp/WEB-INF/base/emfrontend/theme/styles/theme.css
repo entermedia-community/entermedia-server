@@ -6855,3 +6855,8 @@ select.smalldropdown {
 .categoriesonpublish{
 	list-style-type: none;
 }
+
+.publishtabcontainer{
+  float: left;
+  width: 33%;
+}

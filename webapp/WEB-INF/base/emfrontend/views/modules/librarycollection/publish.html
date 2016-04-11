@@ -1,64 +1,67 @@
-<div class="ui-widget uipanel" style="padding: 10px 50px 10px 50px;">
-	<div class="ui-widget-header">[[Categories]]</div>
-	<div class="ui-widget-content">
-		$hits.size() Assets 
-		<br>
-		#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
-		
-		$categories.size() Categories:
-		<ul  class="categoriesonpublish">
-		#foreach( $cat in $categories)
-			<li>
-				$cat.getSourcePath()
-				<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
-				   title="[[Remove Category]]" 
-				   class="confirm" confirm="[[Remove from collection?]]" > 
-					<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
-				</a>
-			</li> 
-		#end
-		</ul>
-	</div>
-</div>	
-		
-
-<div class="ui-widget uipanel" style="padding: 10px 50px 10px 50px;">
-	
-	<div class="ui-widget-header">[[Archive Assets]]</div>
-	
+<div class="publishtabcontainer">
+	<div class="ui-widget uipanel" style="padding: 10px 10px 10px 10px;width: 100%">
+		<div class="ui-widget-header">[[Categories]]</div>
 		<div class="ui-widget-content">
+			<b>$hits.size() Assets</b> 
+			<br>
+			#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
+			<b>$categories.size() Categories:</b>
+			<ul  class="categoriesonpublish">
+				#foreach( $cat in $categories)
+				<li>
+				$cat.getSourcePath()
+					<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
+					   title="[[Remove Category]]" 
+					   class="confirm" confirm="[[Remove from collection?]]" > 
+						<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
+					</a>
+				</li> 
+				#end
+			</ul>
+		</div>
+	</div>	
+</div>
+
+<div class="publishtabcontainer">
+	<div class="ui-widget uipanel" style="padding: 10px 10px 10px 10px;width: 95%">
+		<div class="ui-widget-header">[[Megabytes]]</div>
+		<div class="ui-widget-content">
+			<b>Assets :</b> Megabytes
+			<br>
+			<b>Folders :</b> Megabytes
+		</div>
+	</div>	
+</div>
 		
-			<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
+<div class="publishtabcontainer">
+	<div class="ui-widget uipanel" style="padding: 10px 10px 10px 10px; width: 100%">
+		<div class="ui-widget-header">[[Archive Assets]]</div>
+			<div class="ui-widget-content">
+				<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
 				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html#publishtab">
-				   
-				<table >
-					<tr>
-						<td class="archiveassettable">Move To:</td>
-						<td>
-							#set( $selectedlibrary = $mediaarchive.getData("library",$librarycol.library) )
-							#set( $lastselectedlibraryname = $selectedlibrary.getName() )
-							#if( !$lastselectedlibraryname)
+					<table>
+						<tr>
+							<td class="archiveassettable"><b>Move To:</b>&nbsp;</td>
+							<td>
+								#set( $selectedlibrary = $mediaarchive.getData("library",$librarycol.library) )
+								#set( $lastselectedlibraryname = $selectedlibrary.getName() )
+								#if( !$lastselectedlibraryname)
 								#set( $lastselectedlibraryname = $user.getShortDescription())
-							#end
-							<input name="collectionid" value="$librarycol.getId()" type="hidden" />  
-							<input name="targetlibraryid" id="archiveassets" class="listautocomplete" value="#esc($lastselectedlibraryname)"  
+								#end
+								<input name="collectionid" value="$librarycol.getId()" type="hidden" />  
+								<input name="targetlibraryid" id="archiveassets" class="listautocomplete" value="#esc($lastselectedlibraryname)"  
 								   data-searchfield="name" data-searchtype="library" data-showicon="false" data-listcatalogid="$catalogid" 
 								   data-foreignkeyid="" data-defaultvalue="$selectedlibrary" data-defaultvalueid="$selectedlibrary.getId()" 
-								   data-sortby="name"/>	
-						</td>
-						<tr>
-							<td colspan="2" align="right"><input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">
-							
-												#if( $movestatus)
-					
-					$movestatus
-					
-					#end
-							
+								   data-sortby="name"/>&nbsp;
+								<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
 							</td>
+						<tr>
+							<td colspan="3" align="center">#if( $movestatus) $movestatus #end</td>
 						</tr>
 				</table>
 			</form>
-	</div>
-</div>	
-		
+		</div>
+	</div>	
+</div>
+	
+
