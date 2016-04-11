@@ -1,15 +1,15 @@
 <div class="publishtabcontainer">
-	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 50%">
 		<div class="ui-widget-header">[[Archive Assets]]</div>
 		<div class="ui-widget-content">
 			<table>
 				<tr>
-					<td width="50%">
+					<td>
 						<b>$hits.size() Assets:</b> Megabytes 
 						<br>
 						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
 						<b>$categories.size() Categories:</b> Megabytes
-						<div class="librarylabels" style="width: 70%;">
+						<div class="librarylabels" style="width: 80%;">
 						<ul>
 							#foreach( $cat in $categories)
 							<li>
@@ -31,7 +31,9 @@
 						</ul>
 						</div>
 					</td>
-					<td width="50%">
+					</tr>
+					<tr>
+					<td>
 						<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
 				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html#publishtab">
 					<table>
