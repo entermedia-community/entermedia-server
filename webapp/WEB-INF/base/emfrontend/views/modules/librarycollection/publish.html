@@ -8,7 +8,7 @@
 						<b>$hits.size() Assets:</b> $sizer.inEnglish( $filesizes.get("assetsize") )
 						<br>
 						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
-						<b>$categories.size() Categories:</b>  
+						<b>#if(!$categories.size()) 0 #end #if($categories.size())$categories.size()#end Categories:</b>  
 						<div class="librarylabels" style="width: 80%;">
 							<table width="100%" class="categoriescontainer hovertable">
 							#foreach( $cat in $categories)

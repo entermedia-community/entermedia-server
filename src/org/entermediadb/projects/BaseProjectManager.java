@@ -541,14 +541,18 @@ public class BaseProjectManager implements ProjectManager
 		}
 		sizes.put("assetsize", size);
 		Collection categories  = loadCategoriesOnCollection(inArchive,inCollectionid);
-		for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-		{
-			Data catData = (Data) iterator.next();
-			Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
-			String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + cat.getSourcePath();
-			long catsize = fileSize(inArchive,path);
-			sizes.put(cat.getId(), catsize);
+		
+		if(categories != null){
+			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+			{
+				Data catData = (Data) iterator.next();
+				Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
+				String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + cat.getSourcePath();
+				long catsize = fileSize(inArchive,path);
+				sizes.put(cat.getId(), catsize);
+			}
 		}
+		
 		
 		return sizes;
 	}
