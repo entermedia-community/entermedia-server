@@ -24,7 +24,8 @@
   <property id="attachmenttrigger" editable="true" index="true" stored="true">Attachment Trigger</property>
   <property id="enabled" editable="true" index="true" stored="true" type="boolean">Enabled</property>
   <property id="lastscanstart" index="true" stored="true" type="time">Last Scan Start</property>
-
+  <property id="ordering" type="number"  editable="true" index="true" stored="true">Ordering</property>
+  
 <!-- Move to system settings -->
 <!--    
   <property id="automatic" editable="true" index="true" stored="true" type="boolean">Automatic</property>

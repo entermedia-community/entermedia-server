@@ -186,8 +186,8 @@ public class BaseHotFolderManager implements HotFolderManager
 	public Collection loadFolders(String inCatalogId)
 	{
 		Searcher hfsearcher = getFolderSearcher(inCatalogId);
-
-		return hfsearcher.getAllHits();
+		return hfsearcher.query().all().sort("orderingDown").sort("lastscanstart").search();
+		//return hfsearcher.getAllHits();
 	}
 
 
