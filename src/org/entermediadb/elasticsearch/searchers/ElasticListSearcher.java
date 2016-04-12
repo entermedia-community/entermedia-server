@@ -79,7 +79,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	}
 
 
-	public void reIndexAll() throws OpenEditException
+	public synchronized void reIndexAll() throws OpenEditException
 	{		
 		if( isReIndexing())
 		{

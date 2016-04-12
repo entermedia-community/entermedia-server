@@ -146,8 +146,10 @@ class ConvertRunner implements Runnable
 		if (realtask != null)
 		{
 			String presetid = hit.get("presetid");
-			log.debug("starting preset ${presetid}");
+			//log.debug("starting preset ${presetid}");
 			Data preset = presetsearcher.searchById(presetid);
+			Date started = new Date();
+			
 			if(preset != null)
 			{
 				try
@@ -168,6 +170,7 @@ class ConvertRunner implements Runnable
 				
 				if(result != null)
 				{
+					realtask.setValue("submitteddate", started);
 					if(result.isOk())
 					{
 						if(result.isComplete())
@@ -182,8 +185,7 @@ class ConvertRunner implements Runnable
 								itemsearcher.saveData(item, null);
 							}
 							realtask.setProperty("externalid", result.get("externalid"));
-							String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
-							realtask.setProperty("completed",completed);
+							realtask.setValue("completed",new Date());
 							realtask.setProperty("errordetails","");
 							tasksearcher.saveData(realtask, user);
 							//log.info("Marked " + hit.getSourcePath() +  " complete");

@@ -3,7 +3,7 @@
 <div class="panel panel-default">
   <div class="panel-body">
 #foreach( $table in $tables )
-$table<br/>
+$table  $searcherManager.getSearcher($catalogid,$table).getClass()<br/>
 #end
   </div>
 </div>

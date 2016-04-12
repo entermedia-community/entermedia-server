@@ -1623,17 +1623,20 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			return;
 		}
-		try
+		synchronized(this)
 		{
-			setReIndexing(true);
-			putMappings(toId(getCatalogId()),true); //We can only try to put mapping. If this failes then they will
-			//need to export their data and factory reset the fields 
-			//deleteAll(null); //This only deleted the index
-		}
-		finally
-		{
-			setReIndexing(false);
-		}
+			try
+			{
+				setReIndexing(true);
+				putMappings(toId(getCatalogId()),true); //We can only try to put mapping. If this failes then they will
+				//need to export their data and factory reset the fields 
+				//deleteAll(null); //This only deleted the index
+			}
+			finally
+			{
+				setReIndexing(false);
+			}
+		}	
 	}
 	
 	@Override
