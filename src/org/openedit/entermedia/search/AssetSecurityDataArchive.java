@@ -292,7 +292,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 			log.debug("Checking libraries " + values);
 		}
 
-		if( values != null && inType.equals("view")  && inProfile != null )
+		if( values != null   && inProfile != null )
 		{
 			Searcher searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "libraryroles");
 			if( inProfile.getSettingsGroup() != null )
