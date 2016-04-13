@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -11,7 +12,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
@@ -67,6 +70,32 @@ public class AssetControlModule extends BaseMediaModule
 		Boolean cando = archive.getAssetSecurityArchive().canDo(archive,inReq.getUser(),inReq.getUserProfile(),"view",asset);
 		return cando;
 	}
+	
+	public void resetPermissions(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+
+		HitTracker allassets = archive.getAssetSearcher().getAllHits();
+		allassets.enableBulkOperations();
+		
+		
+		ArrayList assets = new ArrayList();
+		for (Iterator iterator = allassets.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Asset asset = archive.getAsset(hit.getId());
+			assets.add(asset);
+			if(assets.size() > 1000){
+				archive.getAssetSearcher().saveAllData(assets, null);
+				assets.clear();
+			}
+			
+		}
+		
+		archive.getAssetSearcher().saveAllData(assets, null);
+
+	}
+	
+	
 	public Boolean canEditAsset(WebPageRequest inReq)
 	{
 		Asset asset = (Asset)inReq.getPageValue("asset"); 
