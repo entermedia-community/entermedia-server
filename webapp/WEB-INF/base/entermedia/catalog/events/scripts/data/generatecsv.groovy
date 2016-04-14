@@ -36,6 +36,7 @@ public void init(){
 	}
 
 	HitTracker hits = searcher.getAllHits(context);
+	hits.enableBulkOperations();
 	String exportpath = context.findValue("exportpath");
 
 	HashMap map = new HashMap();
