@@ -155,7 +155,7 @@ public class AssetPathProcessor extends PathProcessor
 		}
 		protected void processAssetFolder(ContentItem inInput, User inUser)
 		{
-			String sourcepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
+			String sourcepath = getAssetUtilities().extractSourcePath(inInput, true, getMediaArchive());
 			Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(sourcepath);
 			if( asset != null)
 			{
@@ -193,7 +193,7 @@ public class AssetPathProcessor extends PathProcessor
 					}
 
 					//Use the first file that is not a folder
-					String soucepath = getAssetUtilities().extractSourcePath(inInput, getMediaArchive());
+					String soucepath = getAssetUtilities().extractSourcePath(inInput, true, getMediaArchive());
 
 					asset = getMediaArchive().createAsset(soucepath);
 					asset.setFolder(true);
@@ -252,7 +252,7 @@ public class AssetPathProcessor extends PathProcessor
 									if( isSkipModificationCheck() )
 									{
 										//we dont need to load the asset so dont load it
-										String filesourcepath = getAssetUtilities().extractSourcePath(item, getMediaArchive());
+										String filesourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
 										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/assets/" + filesourcepath + "/data.xml";
 										if( !getPageManager().getRepository().doesExist(filepath) )
 										{

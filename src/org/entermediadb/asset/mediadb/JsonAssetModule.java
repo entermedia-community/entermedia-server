@@ -175,7 +175,7 @@ public class JsonAssetModule extends BaseJsonModule
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
 			Page newfile = archive.getPageManager().getPage(path);
 			//THis will append the filename to the source path
-			asset = importer.createAssetFromPage(archive, inReq.getUser(), newfile,id);
+			asset = importer.createAssetFromPage(archive, false, inReq.getUser(), newfile,id);
 		}
 
 
@@ -197,7 +197,7 @@ public class JsonAssetModule extends BaseJsonModule
 				target.getParentFile().mkdirs();
 				if(file.renameTo(new File( realpath) ) )
 				{
-					asset = importer.createAssetFromPage(archive, inReq.getUser(), newfile,id);
+					asset = importer.createAssetFromPage(archive, true, inReq.getUser(), newfile,id);
 				}
 				else
 				{

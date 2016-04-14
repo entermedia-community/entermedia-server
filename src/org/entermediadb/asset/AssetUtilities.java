@@ -47,12 +47,15 @@ public class AssetUtilities
 	}
 	public Asset createAssetIfNeeded(ContentItem inContent, final MediaArchive inArchive, User inUser)
 	{
-		String sourcepath = extractSourcePath(inContent,inArchive);
+		return createAssetIfNeeded(inContent, true, inArchive,  inUser);
+	}
+	public Asset createAssetIfNeeded(ContentItem inContent, boolean includefilename, final MediaArchive inArchive, User inUser)
+	{
+		String sourcepath = extractSourcePath(inContent,includefilename, inArchive);
 		Asset asset = inArchive.getAssetSearcher().getAssetBySourcePath(sourcepath);
 		asset = populateAsset(asset, inContent, inArchive, sourcepath, inUser);
 		return asset;
 	}
-
 	//Main API
 	public Asset createAssetIfNeeded(final MediaArchive inArchive, ContentItem inContent, String inSourcePath, User inUser)
 	{
@@ -61,7 +64,7 @@ public class AssetUtilities
 		return asset;
 	}
 
-	public String extractSourcePath(ContentItem inContent,MediaArchive inArchive)
+	public String extractSourcePath(ContentItem inContent,boolean inIncludeFileName, MediaArchive inArchive)
 	{
 		String	datadir = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 
@@ -69,6 +72,10 @@ public class AssetUtilities
 		if( sourcePath.startsWith("/"))
 		{
 			sourcePath = sourcePath.substring(1);
+		}
+		if( !inIncludeFileName )
+		{
+			return PathUtilities.extractDirectoryPath(sourcePath) + "/";
 		}
 		return sourcePath;
 	}
