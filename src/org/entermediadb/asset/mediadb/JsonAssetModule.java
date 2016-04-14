@@ -30,6 +30,8 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
+import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 import groovy.json.JsonSlurper;
 
@@ -121,24 +123,39 @@ public class JsonAssetModule extends BaseJsonModule
 		Map request = inReq.getJsonRequest(); 
 
 		AssetImporter importer = archive.getAssetImporter();
-		HashMap keys = new HashMap();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
-		String df = format.format(new Date());
-		keys.put("formatteddate", df);
+		HashMap vals = new HashMap();
+		vals.putAll(inReq.getParameterMap());
+		String fileName =  properties.getFirstItem().getName();
+		if(fileName != null)
+		{
+			vals.put("filename", fileName);
+			String ext = PathUtilities.extractPageType(fileName);
+			String render = archive.getMediaRenderType(ext);
+			vals.put("extension", ext);
+			vals.put("rendertype", render);			
+		}
+		//vals.put("filename", item.getName());
+		//vals.put("guid", item.getName());
+		String guid = UUID.randomUUID().toString();
+		String sguid = guid.substring(0,Math.min(guid.length(), 13));
+		vals.put("guid", sguid);
+		vals.put("splitguid", sguid.substring(0,2) + "/" + sguid.substring(3).replace("-", ""));
+		
+		String df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyyMM");//new SimpleDateFormat("yyyyMM");
+		
+		vals.put("formatteddate", df);
 
-		format = new SimpleDateFormat("yyyy/MM");
-		df = format.format(new Date());
-		keys.put("formattedmonth", df);
+		df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
+		vals.put("formattedmonth", df);
 
 		String id = (String)request.get("id");
 		if(id == null)
 		{
-			id = searcher.nextAssetNumber();
+			//id = searcher.nextAssetNumber();
+			vals.put("id",id);		
 		}
-		keys.put("id",id);		
-		keys.put("guid",UUID.randomUUID().toString() );
 		
-		String sourcepath = (String)keys.get("sourcepath");
+		String sourcepath = (String)vals.get("sourcepath");
 
 		if(sourcepath == null)
 		{
@@ -148,7 +165,8 @@ public class JsonAssetModule extends BaseJsonModule
 		{
 			sourcepath = "receivedfiles/${id}";
 		}
-		sourcepath = sm.getValue(catalogid, sourcepath, keys);
+		
+		sourcepath = sm.getValue(catalogid, sourcepath, vals);
 		Asset asset = null;
 
 		if(properties.getFirstItem() != null)
@@ -161,15 +179,15 @@ public class JsonAssetModule extends BaseJsonModule
 		}
 
 
-		if(asset == null && keys.get("fetchURL") != null)
+		if(asset == null && vals.get("fetchURL") != null)
 		{
-			asset = importer.createAssetFromFetchUrl(archive, (String)keys.get("fetchURL"), inReq.getUser(), sourcepath, (String)keys.get("importfilename"));
+			asset = importer.createAssetFromFetchUrl(archive, (String)vals.get("fetchURL"), inReq.getUser(), sourcepath, (String)vals.get("importfilename"));
 		}
 
-		if(asset == null && keys.get("localPath") != null)
+		if(asset == null && vals.get("localPath") != null)
 		{
 			//log.info("HERE!!!");
-			File file = new File((String)keys.get("localPath"));
+			File file = new File((String)vals.get("localPath"));
 			if(file.exists())
 			{
 				String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/" + file.getName();
