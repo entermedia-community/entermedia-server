@@ -10,6 +10,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.autocomplete.AutoCompleteSearcher;
+import org.entermediadb.asset.util.JsonUtil;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -350,7 +351,9 @@ public class AutoCompleteModule extends DataEditModule
 	public HitTracker searchSuggestions(WebPageRequest inReq) throws Exception
 	{
 		AutoCompleteSearcher searcher = (AutoCompleteSearcher) getAutoCompleteSearcher(inReq);
-
+		JsonUtil util = (JsonUtil) searcher.getSearcherManager().getModuleManager().getBean("jsonUtil");
+		inReq.putPageValue("jsonUtil", util);
+		
 		SearchQuery query = searcher.createSearchQuery();
 		String field = inReq.getRequestParameter("field");
 

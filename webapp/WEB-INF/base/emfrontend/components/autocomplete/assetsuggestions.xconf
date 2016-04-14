@@ -8,6 +8,7 @@
 		<property name="searchtype">asset</property>
 	</path-action>
 	
+		<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
 	
 	<generator name="velocityGenerator" />
 	

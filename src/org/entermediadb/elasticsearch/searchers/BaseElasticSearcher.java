@@ -492,7 +492,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					jsonproperties = jsonproperties.field("type", "double");
 				}
-			
+				else if (detail.isDataType("long"))
+				{
+					jsonproperties = jsonproperties.field("type", "long");
+				}
+
 				else if (detail.isDataType("geo_point"))
 				{
 					jsonproperties = jsonproperties.field("type", "geo_point");
@@ -529,6 +533,8 @@ public class BaseElasticSearcher extends BaseSearcher
 						jsonproperties = jsonproperties.field("index", indextype);
 					}
 					jsonproperties = jsonproperties.field("type", "string");
+//					jsonproperties = jsonproperties.field("term_vector", "with_positions_offsets");
+
 				}
 
 				if (detail.isStored())
@@ -761,6 +767,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 				
 			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(fieldid, valueof);
+			
 			//text.maxExpansions(10);
 			find = text;
 		}
@@ -773,7 +780,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
 			boolean expert = false;
-			if( valueof.contains("*")  || valueof.contains("\"") )
+			if( valueof.contains("*")  || valueof.contains("\"") || valueof.contains(":"))
 			{
 				expert = true;
 			}
@@ -782,7 +789,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				//Parse by Operator
 				//Add wildcards
 				//Look for Quotes 
-				String uppercase = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ");
+				String uppercase = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ").replaceAll(" to ", " TO ");
 				
 				Matcher m = operators.matcher(uppercase);
 				if( !m.find() )
@@ -810,10 +817,24 @@ public class BaseElasticSearcher extends BaseSearcher
 				//tom AND "Nancy Druew" => *tom* AND "Nancy Druew"
 				//"Big Deal"  => "Big Deal"
 			}
-			String query = "+(" + valueof + ")";
-			QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
-			text.defaultField("description");
-			find = text;			
+			
+			
+			if(valueof.startsWith("\"") && valueof.endsWith("\"")){
+				valueof = valueof.replace("\"", "");
+				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+				text.analyzer("lowersnowball");
+				find = text;
+				
+			} else{
+				valueof = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ").replaceAll(" to ", " TO ");
+				String query = "+(" + valueof + ")";
+				
+
+				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
+				text.analyzer("lowersnowball");
+				text.defaultField("_all");
+				find = text;
+			}
 		}
 		else if (valueof.endsWith("*"))
 		{
@@ -826,6 +847,14 @@ public class BaseElasticSearcher extends BaseSearcher
 		else if (valueof.contains("*"))
 		{
 			find = QueryBuilders.wildcardQuery(fieldid, valueof);
+		}
+		
+		
+		else if(valueof.startsWith("\"") && valueof.endsWith("\"")){
+			valueof.replaceAll("\"", "");
+			MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+			text.analyzer("lowersnowball");
+			find = text;
 		}
 		else if (inDetail.isBoolean())
 		{
@@ -883,15 +912,69 @@ public class BaseElasticSearcher extends BaseSearcher
 				// it a range query? from 0-24 hours
 			}
 		}
-		else if (inDetail.isDataType("number"))
+		else if (inDetail.isNumber())
 		{
-			find = QueryBuilders.termQuery(fieldid, Long.parseLong(valueof));
+			
+			
+			if("betweennumbers".equals(inTerm.getOperation())){
+				
+				if (inDetail.isDataType("double")){
+					Double lowval = Double.valueOf(inTerm.getParameter("lowval"));
+					Double highval = Double.valueOf(inTerm.getParameter("highval"));
+					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
+				}
+				if (inDetail.isDataType("long") || inDetail.isDataType("number")){
+					Long lowval = Long.valueOf(inTerm.getParameter("lowval"));
+					Long highval = Long.valueOf(inTerm.getParameter("highval"));
+					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
+				}
+			}
+			
+			else if("lessthannumber".equals(inTerm.getOperation())){
+				if (inDetail.isDataType("double")){
+					Double val = Double.valueOf(inTerm.getValue());
+					find = QueryBuilders.rangeQuery(fieldid).lt(val);
+				}
+				if (inDetail.isDataType("long") || inDetail.isDataType("number")){
+					Long val = Long.valueOf(inTerm.getValue());
+					find = QueryBuilders.rangeQuery(fieldid).lt(val);
+				}
+				
+			}
+
+			else if("greaterthannumber".equals(inTerm.getOperation())){
+				if (inDetail.isDataType("double")){
+					Double val = Double.valueOf(inTerm.getValue());
+					find = QueryBuilders.rangeQuery(fieldid).gt(val);
+				}
+				if (inDetail.isDataType("long") || inDetail.isDataType("number")){
+					Long val = Long.valueOf(inTerm.getValue());
+					find = QueryBuilders.rangeQuery(fieldid).gt(val);
+				}
+				
+			}
+			
+			
+			
+			else{
+				if (inDetail.isDataType("double")){
+					find = QueryBuilders.termQuery(fieldid, Double.parseDouble(valueof));	
+
+				
+				} else{
+					find = QueryBuilders.termQuery(fieldid, Long.parseLong(valueof));	
+				}
+			}
+			
+			
+			
 		}
 		else if (fieldid.equals("description"))
 		{
 			// valueof = valueof.substring(0,valueof.length()-1);
 
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery("_all", valueof);
+			text.analyzer("lowersnowball");
 			text.maxExpansions(10);
 			find = text;
 		}

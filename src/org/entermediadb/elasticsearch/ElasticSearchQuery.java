@@ -441,7 +441,7 @@ public class ElasticSearchQuery extends SearchQuery
 			}
 
 		};
-		term.setOperation("greaterthannumber");
+		term.setOperation("exactnumber");
 		term.setDetail(inField);
 		term.setValue(String.valueOf(inParseInt));
 		addTerm(term);
