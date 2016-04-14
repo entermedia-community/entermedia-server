@@ -13,17 +13,17 @@ var root = moduleManager.getBean("root").getAbsolutePath();
 var web = root + "/WEB-INF";
 var tmp = web + "/tmp";
 
-log.add("1. GET THE LATEST WAR FILE");
+log.info("1. GET THE LATEST WAR FILE");
 var downloader = new Downloader();
 downloader.download( war, tmp + "/ROOT.war");
 
-log.add("2. UNZIP WAR FILE");
+log.info("2. UNZIP WAR FILE");
 var unziper = new ZipUtil();
 unziper.unzip(  tmp + "/ROOT.war",  tmp );
 
 var files = new FileUtils();
 
-log.add("3. UPGRADE BASE DIR");
+log.info("3. UPGRADE BASE DIR");
 files.deleteAll( root + "/WEB-INF/base/manager");
 files.deleteAll( root + "/WEB-INF/base/entermedia");
 files.deleteAll( root + "/WEB-INF/base/emfrontend");
@@ -43,7 +43,7 @@ files.copyFiles( tmp + "/WEB-INF/base/emgallery", root + "/WEB-INF/base/emgaller
 files.copyFiles( tmp + "/WEB-INF/base/themes/baseem", root + "/WEB-INF/base/themes/baseem");
 files.copyFiles( tmp + "/WEB-INF/base/themes/rational", root + "/WEB-INF/base/themes/rational");
 
-log.add("4. REPLACE LIBS");
+log.info("4. REPLACE LIBS");
 files.deleteMatch( web + "/lib/em9_entermedia-server*.jar");
 files.deleteMatch( web + "/lib/em9_entermedia-9*.jar");
 
@@ -98,5 +98,5 @@ files.copyFileByMatch( tmp + "/WEB-INF/lib/velocity-tools*.jar", web + "/lib/");
 files.copyFileByMatch( tmp + "/WEB-INF/lib/*.jar", web + "/lib/");
 
 
-log.add("5. CLEAN UP");
+log.info("5. CLEAN UP");
 files.deleteAll(tmp);
