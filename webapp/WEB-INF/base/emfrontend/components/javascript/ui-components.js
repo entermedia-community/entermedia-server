@@ -514,16 +514,20 @@ uiload = function() {
 	});
 	
 	
-	jQuery("input.listtags").livequery( function() 
+	jQuery("select.listtags").livequery( function() 
 	{
-		
+/*
 		var theinput = jQuery(this);
+		theinput.select2({
+		  tags: true
+		  });
+*/
+
 		theinput.select2({tags:[],
 			formatNoMatches: function () { return theinput.data("enterdata") ; },
 			tokenSeparators: [",","|"],
 			separator: '|'
 		}).change(function() { $(this).valid();	});
-
 	});
 
 	jQuery("input.grabfocus").livequery( function() 
@@ -685,14 +689,18 @@ uiload = function() {
 			var defaultvalue = theinput.data('defaultvalue');
 			var defaultvalueid = theinput.data('defaultvalueid');
 
-
+			var url = apphome + "/components/xml/types/autocomplete/datasearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype;
+			if( defaultvalue != undefined )
+			{
+				url =  url + "&defaultvalue=" + defaultvalue + "&defaultvalueid=" + defaultvalueid;
+			}
 			//var value = theinput.val();
 			theinput.select2({
 				placeholder : defaulttext,
 				allowClear: true,
 				minimumInputLength : 0,
 				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
-					url : apphome + "/components/xml/types/autocomplete/datasearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype + "&defaultvalue=" + defaultvalue + "&defaultvalueid=" + defaultvalueid,
+					url : url,
 					dataType : 'json',
 					data : function(term, page) 
 					{
