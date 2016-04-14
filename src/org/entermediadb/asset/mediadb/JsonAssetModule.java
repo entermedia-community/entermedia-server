@@ -153,7 +153,7 @@ public class JsonAssetModule extends BaseJsonModule
 
 		if(properties.getFirstItem() != null)
 		{
-			String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/${properties.getFirstItem().getName()}";
+			String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/" + properties.getFirstItem().getName();
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
 			Page newfile = archive.getPageManager().getPage(path);
 			//THis will append the filename to the source path
@@ -172,7 +172,7 @@ public class JsonAssetModule extends BaseJsonModule
 			File file = new File((String)keys.get("localPath"));
 			if(file.exists())
 			{
-				String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/${file.getName()}";
+				String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/" + file.getName();
 				Page newfile = archive.getPageManager().getPage(path);
 				String realpath = newfile.getContentItem().getAbsolutePath();
 				File target = new File(realpath);
