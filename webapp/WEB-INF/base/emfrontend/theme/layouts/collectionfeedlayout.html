@@ -5,7 +5,7 @@
 		<div class="pull-left libraryheader" >$librarycol (<a class="" href="$home$apphome/views/modules/library/edit/edit.html?id=$library.getId()&viewid=librarygeneral&viewpath=library/librarygeneral&searchtype=library"><span>$library</span></a>)</div>
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="mediatab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Media]]</a></li>
-		  <li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Publish]]</a></li>
+		  <li class="ui-corner-top" id="publish"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Publish]]</a></li>
 		  <li class="ui-corner-top " ><a id="addmediatab"   href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
 		  <li class="ui-corner-top "><a  id="emannotationstab" data-alwaysreloadpage="true" href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotations]]</a></li>
 #set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection")		

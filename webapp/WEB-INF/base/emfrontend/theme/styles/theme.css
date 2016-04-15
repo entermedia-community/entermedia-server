@@ -6872,3 +6872,18 @@ a.categoryclose{
 .hovertable tr:hover a.categoryclose {
 	opacity: 1;
 }
+
+.collectionBox{
+	position: relative;
+    width: 100%;
+}
+
+.collectionIcons{
+	display: inline-block;
+	position: absolute;
+    right: 0px;
+}
+
+.clip{
+  padding-top: 7px;
+}

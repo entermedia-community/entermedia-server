@@ -26,13 +26,29 @@
 				#if( $inmodule && $librarycol && $collection.getId() == $librarycol.id )
 					#set( $selected = true )
 				#end
-				<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" 
-				 	class="librarylabel #if ($selected ) selected #end"  
-				 	title="$!{collection.getCollection().notes}"><span> $collection.getName() ($collection.getAssetCount())</span>
-				</a> 
-				<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" class="collectionclose ajax" targetdiv="left-col-libraries" title="[[Close Collection]]">
-					<span class="closecollection ui-icon ui-icon-closethick" data-collectionid="${collection.getId()}"></span>
-				</a>
+				<div class="collectionBox">
+					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" 
+					 	class="librarylabel #if ($selected ) selected #end"  
+					 	title="$!{collection.getCollection().notes}">
+					 	<span> $collection.getName() ($collection.getAssetCount())</span>
+					</a>
+				 
+					<div class="collectionIcons" style="">
+						
+						<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" class="collectionclose ajax" targetdiv="left-col-libraries" title="[[Close Collection]]">
+							<span class="closecollection ui-icon ui-icon-closethick " data-collectionid="${collection.getId()}"></span>
+						</a>
+						
+						<a href="$home$apphome/views/modules/librarycollection/publish.html?collectionid=${collection.getId()}" 
+							collectionId="${collection.getId()}" 
+							class="categoryInCollection" 
+							title="Publish">
+							<span class="glyphicon glyphicon-paperclip clip" aria-hidden="true"></span>
+						</a>	
+					</div>
+				
+				 </div>
+			
 			</li>
 		#end	
 		#if ($canaddnewcollection)
