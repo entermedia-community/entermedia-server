@@ -81,7 +81,7 @@ public class ConvertTest extends BaseEnterMediaTest
 		assertTrue(hits.size() > 0);
 		
 		Date start = new Date();
-		convertSearcher.reindexInternal();
+		convertSearcher.getElasticNodeManager().reindexInternal(getMediaArchive().getCatalogId());
 		Date end = new Date();
 		long total = end.getTime() - start.getTime();
 		q.addMatches("_id",found.getId());

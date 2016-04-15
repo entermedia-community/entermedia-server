@@ -5,7 +5,7 @@ import java.util.Arrays;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.entermediadb.asset.model.ThesaurusTest;
+//import org.entermediadb.asset.model.ThesaurusTest;
 import org.entermediadb.controller.ArchiveModuleTest;
 import org.entermediadb.controller.MultiSearchModuleTest;
 import org.entermediadb.model.AssetEditTest;

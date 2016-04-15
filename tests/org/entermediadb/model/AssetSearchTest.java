@@ -3,7 +3,7 @@ package org.entermediadb.model;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
+/*	
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.openedit.Data;
@@ -30,7 +30,7 @@ public class AssetSearchTest extends BaseEnterMediaTest
 //		assertEquals( "+(\"Big Deal\")", q.addFreeFormQuery(detail, "\"Big Deal\"").toQuery() );
 //				
 //	}
-	
+
 	public void xtestLuceneIds() throws Exception
 	{
 		WebPageRequest req = getFixture().createPageRequest("/entermedia/index.html");
@@ -187,3 +187,4 @@ public class AssetSearchTest extends BaseEnterMediaTest
 	
 	
 }
+*/
