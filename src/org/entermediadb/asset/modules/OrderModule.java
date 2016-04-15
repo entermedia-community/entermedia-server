@@ -249,18 +249,21 @@ public class OrderModule extends BaseMediaModule
 	public Order loadOrder(WebPageRequest inReq)
 	{
 		Order order = (Order) inReq.getPageValue("order");
-		if (order != null)
-		{
-			return order;
-		}
-
-		String catalogid = inReq.findValue("catalogid");
+		
 		String orderid = inReq.findValue("orderid");
 		if (orderid == null)
 		{
 			orderid = inReq.getRequestParameter("id");
 		}
-		if (orderid == null)
+
+		
+		if (order != null && (order.getId().equals(orderid) || orderid == null))
+		{
+			return order;
+		}
+
+		String catalogid = inReq.findValue("catalogid");
+				if (orderid == null)
 		{
 			return null;
 

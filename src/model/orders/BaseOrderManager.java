@@ -422,6 +422,8 @@ public class BaseOrderManager implements OrderManager {
 			inOrder.setProperty("basket","false");
 
 		}
+		saveOrder(inArchive.getCatalogId(), inReq.getUser(), inOrder);
+
 		//TODO: deal with table of assets
 		String[] fields = inReq.getRequestParameters("field");
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -449,7 +451,6 @@ public class BaseOrderManager implements OrderManager {
 
 		//Change the status and save order
 		//TODO: Add history
-		saveOrder(inArchive.getCatalogId(), inReq.getUser(), inOrder);
 
 		WebEvent event = new WebEvent();
 		event.setSearchType("order");
