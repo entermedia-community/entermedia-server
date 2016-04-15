@@ -30,7 +30,7 @@ public void init()
 		{
 			continue;
 		}
-		log.info("Analysing Hot folder " + path);
+		log.info("Analysing Hot folder: " + name);
 	
 		AssetSearcher searcher = archive.getAssetSearcher();
 		SearchQuery q = searcher.createSearchQuery();
@@ -40,13 +40,12 @@ public void init()
 		if(sourcepath == null)
 		{
 			q = searcher.createSearchQuery().append("category", "index");
-			q.addNot("editstatus","7");
 		}
 		else
 		{
-			q.addStartsWith("sourcepath", sourcepath);
+			q.addStartsWith("sourcepath", name);
 		}
-
+		q.addNot("editstatus","7"); 
 		q.addSortBy("sourcepath");
 		assets = searcher.search(q);
 		assets.setHitsPerPage(1000);
