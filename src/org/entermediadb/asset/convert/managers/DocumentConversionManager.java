@@ -120,7 +120,11 @@ public class DocumentConversionManager extends BaseConversionManager
 		String fileFormat = inStructions.getAsset().getFileFormat();
 		if(!"pdf".equals(fileFormat))
 		{
-			ConvertResult result = findTranscoder(inStructions).convert(inStructions);
+			
+			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
+			ConvertInstructions instructions2 = inStructions.copy(preset);
+
+			ConvertResult result = findTranscoder(instructions2).convert(instructions2);
 			if(inStructions.getOutputRenderType().equals("document")){
 				return result;
 			}
