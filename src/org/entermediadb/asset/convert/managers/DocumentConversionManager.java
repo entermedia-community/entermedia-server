@@ -128,7 +128,7 @@ public class DocumentConversionManager extends BaseConversionManager
 			if(inStructions.getOutputRenderType().equals("document")){
 				return result;
 			}
-			 inStructions.setInputFile(inStructions.getOutputFile());
+			 inStructions.setInputFile(instructions2.getOutputFile());
 			
 		}
 		else {

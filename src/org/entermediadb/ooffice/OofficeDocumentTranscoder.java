@@ -76,6 +76,7 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 				throw new OpenEditException("OpenOffice did not create output file " + tmpfile);
 			}
 			Page output = getPageManager().getPage(inOut.getPath());
+			inStructions.setOutputFile(output.getContentItem());
 			getPageManager().movePage(tmpfile, output);
 			log.info("Completed: " + input.getName());
 		}
