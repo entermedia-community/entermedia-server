@@ -1,11 +1,15 @@
 package org.entermediadb.projects;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import org.openedit.Data;
 
 public class UserCollection
 {
 	protected Data fieldCollection;
 	protected Data fieldLibrary;
+	protected Collection fieldCategories;
 	
 	public Data getLibrary()
 	{
@@ -42,5 +46,36 @@ public class UserCollection
 	public String getId()
 	{
 		return getCollection().getId();
+	}
+	public void clearCategories()
+	{
+		fieldCategories = null;
+	}
+	
+	public Collection<String> getCategories()
+	{
+		if (fieldCategories == null)
+		{
+			fieldCategories = new ArrayList();
+		}
+
+		return fieldCategories;
+	}
+	public void addCategory(String inString)
+	{
+		getCategories().add(inString);
+	}
+	
+	public boolean hasCategories()
+	{
+		return fieldCategories != null && !fieldCategories.isEmpty();
+	}
+	public Integer getCategoryCount()
+	{
+		if( fieldCategories == null || fieldCategories.isEmpty() )
+		{
+			return null;
+		}
+		return getCategories().size();
 	}
 }

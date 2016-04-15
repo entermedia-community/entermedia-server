@@ -2,4 +2,6 @@
 	<property name="virtual">true</property>
 	<page-action name="ProfileModule.savePreference"/>
 	<page-action name="ProjectModule.loadOpenCollections"/>
+	<page-action name="ProjectModule.loadCategoriesOnCollections"/>
+	
 </page>

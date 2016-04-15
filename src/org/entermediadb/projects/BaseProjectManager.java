@@ -596,6 +596,31 @@ public class BaseProjectManager implements ProjectManager
 		return null;
 	}
 
+	public void loadCategoriesOnCollections(MediaArchive inArchive, Collection inCollections)
+	{
+		Map usercollections = new HashMap();
+		for (Iterator iterator = inCollections.iterator(); iterator.hasNext();)
+		{
+			UserCollection collection = (UserCollection) iterator.next();
+			collection.clearCategories();
+			usercollections.put(collection.getId(), collection );
+		}
+		
+		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+		HitTracker hits = librarycollectioncategorySearcher.query().orgroup("librarycollection", usercollections.keySet()).search();
+		if( hits.size() > 0)
+		{
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
+				Data libcat = (Data) iterator.next();
+				UserCollection col = (UserCollection)usercollections.get(libcat.get("librarycollection"));
+				col.addCategory(libcat.get("categoryid"));
+			}
+			
+		}	
+	}
+
+	
 	@Override
 	public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
 	{

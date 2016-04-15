@@ -52,4 +52,7 @@ public interface ProjectManager
 	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
 
 	//public void savedCollection(MediaArchive archive, Data inLibrary, User inUser);
+	
+	public void loadCategoriesOnCollections(MediaArchive inArchive, Collection inCollections);
+	
 }

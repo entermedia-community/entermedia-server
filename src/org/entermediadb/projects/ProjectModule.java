@@ -439,4 +439,14 @@ public class ProjectModule extends BaseMediaModule
 		Map sizes = manager.loadFileSizes(inReq, archive, collectionid);
 		inReq.putPageValue("filesizes", sizes);
 	}
+	
+	public void loadCategoriesOnCollections(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		Collection<UserCollection> collections = manager.loadOpenCollections(inReq);
+		
+		manager.loadCategoriesOnCollections(archive, collections);
+		
+	}
 }
