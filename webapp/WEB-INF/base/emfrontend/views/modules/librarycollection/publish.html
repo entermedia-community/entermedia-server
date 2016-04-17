@@ -1,29 +1,28 @@
 <div class="publishtabcontainer">
-	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 50%">
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
 		<div class="ui-widget-header">[[Archive Assets]]</div>
 		<div class="ui-widget-content">
 			<table width="100%">
 				<tr>
 					<td>
 						<b>$hits.size() Assets:</b> $sizer.inEnglish( $filesizes.get("assetsize") )
-						<br>
+						<br><br>
 						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
 						<b>#if(!$categories.size()) 0 #end #if($categories.size())$categories.size()#end Categories:</b>  
-						<div class="librarylabels" style="width: 80%;">
+						<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 							<table width="100%" class="categoriescontainer hovertable">
 							#foreach( $cat in $categories)
 									<tr>
 										<td>$cat.getSourcePath()</td>
 										<td>$sizer.inEnglish( $filesizes.get($cat.getId()) )</td>
-										<td  style="text-align: right;">
-											
-										<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
-								   title="[[Remove $cat.getSourcePath() Category]]" 
-								   class="confirm categoryclose" confirm="[[Remove from collection?]]"> 
-									<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
-								</a>
-									</td>
-								</tr>	
+										<td style="text-align: right;">
+											<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
+											   title="[[Remove $cat.getSourcePath() Category]]" 
+											   class="confirm categoryclose" confirm="[[Remove from collection?]]"> 
+												<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
+											</a>
+										</td>
+									</tr>	
 							#end
 							</table>
 						</div>

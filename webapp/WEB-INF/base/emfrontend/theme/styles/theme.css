@@ -6859,10 +6859,7 @@ select.smalldropdown {
 .publishtabcontainer{
   float: left;
   width: 100%;
-}
-
-.hovertable tr:hover{
-	background-color:#C9E8F2;
+  padding-top: 50px;
 }
 
 a.categoryclose{
@@ -6888,3 +6885,19 @@ a.categoryclose{
   padding-top: 7px;
   padding-right: 5px;
 }
+
+.categoriescontainer tbody tr:hover{
+	background-color:#C9E8F2;
+}
+
+.categoriescontainer tr:nth-child(odd) {
+  
+   background-color: #eee;
+}
+
+.categoriescontainer tr:nth-child(even) {
+  
+   background-color: #fff;
+}
+
+.categoriescontainer tr { line-height: 22px; }
