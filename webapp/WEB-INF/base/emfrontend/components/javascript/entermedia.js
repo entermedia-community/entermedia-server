@@ -312,6 +312,8 @@ onloadselectors = function()
 {
 	
 	jQuery("a.ajax").livequery('click', runajax);
+	//jQuery(".newcollectiondroparea").bind("drop", runTest);
+	
 	jQuery("a.toggleajax").livequery('click', toggleajax);
 	
 	jQuery("a.updatebasket").livequery('click', updatebasket);
@@ -1123,6 +1125,8 @@ emcomponents = function() {
         this.parentNode.addEventListener('dragstart', handler, false ); //Deal with A tags?
         
 	});
+	
+
 
 	jQuery(".librarycollectiondroparea").livequery(
 			function()
@@ -1130,13 +1134,26 @@ emcomponents = function() {
 				jQuery(this).droppable(
 				{
 					drop: function(event, ui) {
+						
 						//console.log("Drop" + ui.draggable);
+						/*
+						 * Current draggable element
+						 */
 						var categoryid = ui.draggable.data("nodeid");
 						var assetid = ui.draggable.data("assetid");
+						var categoryName = ui.draggable.data("categoryname");
+						
+						/*
+						 * Current droppable element 
+						 */
 						var anode = $(this);
 						var targetDiv = anode.data("targetdiv");
 						var dropsave = anode.data("dropsaveurl");
 						var hitssessionid = $("#resultsdiv").data("hitssessionid");
+						var collectionName = anode.find("a.librarylabel").data("collectionname");
+						
+						confirm("Move "+categoryName+" category to "+collectionName+" collection?");
+						
 						if( !hitssessionid )
 						{
 							hitssessionid = $("#main-results-table").data("hitssessionid");
@@ -1200,4 +1217,75 @@ jQuery(".categoryInCollection").livequery('click',function(e){
 	collectionId= jQuery(this).attr('collectionId');
 		
 });
+
+
+jQuery(".newcollectiondroparea").livequery(
+function()
+{
+	jQuery(this).droppable(
+	{
+		drop: function(event, ui) {
+			
+			/**
+			 * Create an object to open form
+			 */
+			var newForm = {
+				id:jQuery("#createnewarea").find("a").attr('id'),
+				class:jQuery("#createnewarea").find("a").attr('class'), 
+				targetdivinner:jQuery("#createnewarea").find("a").attr('targetdivinner'),
+				dataoemaxlevel:jQuery("#createnewarea").find("a").attr('data-oemaxlevel'),
+				href:jQuery("#createnewarea").find("a").attr('href')
+			};
+			
+//			for(values in newForm){
+//				console.log(values + ":" +newForm[values]);
+//			}
+
+			/*
+			 * Current draggable element
+			 */
+			var categoryid = ui.draggable.data("nodeid");
+			var assetid = ui.draggable.data("assetid");
+			var categoryName = ui.draggable.data("categoryname");
+			var hitssessionid = $("#resultsdiv").data("hitssessionid");
+			
+			/*
+			 * Object used for the new collection  
+			 */
+			var newCollection = {
+					id:"",
+					dropsaleurl:"/assets/emshare/components/opencollections/addassettocollection.html?librarycollection=",
+					targetdiv:"left-col-libraries"
+			};
+			
+			
+			//console.log(hitssessionid);
+			
+			createNewCollection(newForm);
+			return false;
+		},
+		tolerance: 'pointer',
+		over: outlineSelectionCol,
+		out: unoutlineSelectionCol
+	});
+}
+);
+
+createNewCollection = function(newForm){
+	
+	var nextpage= newForm.href;
+	var targetDiv = newForm.targetdivinner;
+	
+	targetDiv = targetDiv.replace(/\//g, "\\/");
+	
+	jQuery.get(nextpage, {}, function(data) 
+			{
+				var cell;
+				cell = jQuery("#" + targetDiv);
+				cell.html(data);
+				$(window).trigger( "resize" );
+			}
+		);
+	
+}
 
