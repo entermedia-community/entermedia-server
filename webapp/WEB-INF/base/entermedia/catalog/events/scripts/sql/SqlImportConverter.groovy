@@ -12,6 +12,7 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.Element
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.CatalogConverter
 import org.entermediadb.asset.ConvertStatus
 import org.entermediadb.asset.MediaArchive
