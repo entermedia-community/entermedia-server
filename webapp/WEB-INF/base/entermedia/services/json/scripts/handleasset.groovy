@@ -6,8 +6,8 @@ import org.json.simple.JSONObject
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
-import org.openedit.entermedia.Asset
-import org.openedit.entermedia.MediaArchive
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.MediaArchive
 import org.openedit.entermedia.scanner.AssetImporter
 import org.openedit.entermedia.search.AssetSearcher
 import org.openedit.util.DateStorageUtil

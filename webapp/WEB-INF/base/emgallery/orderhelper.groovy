@@ -1,5 +1,5 @@
 import org.openedit.Data
-import org.openedit.entermedia.MediaArchive
+import org.entermediadb.asset.MediaArchive
 import org.openedit.entermedia.modules.OrderModule
 import org.openedit.entermedia.orders.Order
 
