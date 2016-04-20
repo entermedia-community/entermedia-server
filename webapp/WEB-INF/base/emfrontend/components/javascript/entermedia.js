@@ -1,6 +1,8 @@
 var ajaxtimerrunning = false;
 var app,home,apphome,themeprefix;
 var collectionId = '';
+var categoryDragged = false;
+var collectionCreatedByDragging = false;
 
 
 openFancybox = function(href) {
@@ -1152,7 +1154,10 @@ emcomponents = function() {
 						var hitssessionid = $("#resultsdiv").data("hitssessionid");
 						var collectionName = anode.find("a.librarylabel").data("collectionname");
 						
-						confirm("Move "+categoryName+" category to "+collectionName+" collection?");
+						var response = confirm("Move "+categoryName+" category to "+collectionName+" collection?");
+						if(response == false){
+							return false;
+						}
 						
 						if( !hitssessionid )
 						{
@@ -1226,6 +1231,8 @@ function()
 	{
 		drop: function(event, ui) {
 			
+			categoryDragged = true;
+			
 			/**
 			 * Create an object to open form
 			 */
@@ -1242,12 +1249,14 @@ function()
 //			}
 
 			/*
-			 * Current draggable element
+			 * Current draggable category
 			 */
 			var categoryid = ui.draggable.data("nodeid");
 			var assetid = ui.draggable.data("assetid");
 			var categoryName = ui.draggable.data("categoryname");
 			var hitssessionid = $("#resultsdiv").data("hitssessionid");
+			
+
 			
 			/*
 			 * Object used for the new collection  
