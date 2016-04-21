@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints>   
-  <data id="creategroup" name="Create New Group" url="/${applicationid}/services/settings/groups/create" docsection="modulegroups" description="Create new group" httpmethod="POST"> 
+  <data id="creategroup" name="Create New Group" url="/${applicationid}/services/settings/groups/create" docsection="modulegroups" caption="Create new group" httpmethod="POST"> 
     <samplerequest><![CDATA[{ "id":"testgroup", "name":"Testers"}]]></samplerequest> 
   </data>  
   <data id="groupsearch" name="Search for Groups" httpmethod="POST" url="/${applicationid}/services/settings/groups/search" docsection="modulegroups"> 
@@ -20,9 +20,9 @@
 	        } 
 	      ]]></samplerequest> 
   </data>  
-  <data id="deletegroup" name="Delete Group" url="/${applicationid}/services/settings/groups/data/testgroup" docsection="modulegroups" description="Delete group by name" httpmethod="DELETE"/>  
-  <data id="updategroup" name="Update Group" url="/${applicationid}/services/settings/groups/data/testgroup" docsection="modulegroups" description="Change group settings" httpmethod="PUT"> 
+  <data id="deletegroup" name="Delete Group" url="/${applicationid}/services/settings/groups/data/testgroup" docsection="modulegroups" caption="Delete group by name" httpmethod="DELETE"/>  
+  <data id="updategroup" name="Update Group" url="/${applicationid}/services/settings/groups/data/testgroup" docsection="modulegroups" caption="Change group settings" httpmethod="PUT"> 
     <samplerequest><![CDATA[{"name":"Test Group"}]]></samplerequest> 
   </data>  
-  <data id="getgroup" name="Load Group" url="/${applicationid}/services/settings/groups/data/testgroup" docsection="modulegroups" description="List group data" httpmethod="GET"/>
+  <data id="getgroup" name="Load Group" url="/${applicationid}/services/settings/groups/data/testgroup" docsection="modulegroups" caption="List group data" httpmethod="GET"/>
 </endpoints>

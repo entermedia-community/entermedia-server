@@ -2,7 +2,7 @@
 <properties beanname="dataSearcher" prefix="assets">
   <property id="id" index="true" stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
-  <property id="description" editable="true" index="true" stored="true">Text</property>
+  <property id="description" editable="false">All Fields</property>
   <property id="assetid" editable="true" index="true" stored="true">Asset ID</property>
  	<property id="fulltext" keyword="true" index="true">Full Text</property> 	<!-- This is for PDFs -->
  	<property id="sourcepath" index="true" stored="true">Asset Source Path</property>

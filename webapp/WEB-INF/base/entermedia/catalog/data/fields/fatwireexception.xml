@@ -5,5 +5,5 @@
   <property id="sourcepath">SourcePath</property>
   <property id="errorcode" index="true" stored="true" editable="true" internalfield="false">Error Code</property>
   <property id="fatwiremessage" index="true" stored="true" editable="true" internalfield="false" legacy="message">Message</property>
-  <property id="description" index="true" stored="true" editable="true">Description</property>
+  <property id="caption" index="true" stored="true" editable="true" legacy="description">Description</property>
 </properties>

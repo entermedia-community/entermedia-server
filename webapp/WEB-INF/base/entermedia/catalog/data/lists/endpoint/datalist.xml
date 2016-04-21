@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="createnewdata" name="Create a new data object" docsection="1418330376263" description="Creates a new entry in any table.  This example is a library, but changing the searchtype argument will allow you to update any arbitrary table" httpmethod="POST" 
+  <endpoint id="createnewdata" name="Create a new data object" docsection="1418330376263" caption="Creates a new entry in any table.  This example is a library, but changing the searchtype argument will allow you to update any arbitrary table" httpmethod="POST" 
   		url="/${applicationid}/services/lists/create/purpose"> 
     <samplerequest><![CDATA[{   "id": "101",  
      "name": "JSON Test"   
@@ -28,10 +28,10 @@
   </endpoint>  
   
   <endpoint id="loaddata" name="Load Data " url="/${applicationid}/services/lists/data/purpose/101" docsection="1418330376263" httpmethod="GET">Load Data</endpoint>  
-  <endpoint id="updatedata" name="Update Data" url="/${applicationid}/services/lists/data/purpose/101" docsection="1418330376263" description="Update data with key/values in request" httpmethod="PUT"> 
+  <endpoint id="updatedata" name="Update Data" url="/${applicationid}/services/lists/data/purpose/101" docsection="1418330376263" caption="Update data with key/values in request" httpmethod="PUT"> 
     <samplerequest><![CDATA[{  "name": "JSON NAME CHANGE"
    }]]></samplerequest>
   </endpoint>  
-  <endpoint id="deletedata" name="Delete Data" url="/${applicationid}/services/lists/data/purpose/101" docsection="1418330376263" description="Delete Data - replace library with the table you wish to work with.  " httpmethod="DELETE">Delete Data</endpoint>
+  <endpoint id="deletedata" name="Delete Data" url="/${applicationid}/services/lists/data/purpose/101" docsection="1418330376263" caption="Delete Data - replace library with the table you wish to work with.  " httpmethod="DELETE">Delete Data</endpoint>
   
 </endpoints>

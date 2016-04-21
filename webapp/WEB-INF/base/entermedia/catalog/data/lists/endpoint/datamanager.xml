@@ -48,6 +48,6 @@
     <samplerequest><![CDATA[{"searchtype":"testtable", "scriptname":"ImportCsvFile.groovy"}]]></samplerequest>
   </endpoint>  
   -->
-  <endpoint id="reload" name="Reload Data" url="/${applicationid}/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" description="Reloads xml lists to update Manager">Reload Data</endpoint>  
+  <endpoint id="reload" name="Reload Data" url="/${applicationid}/services/settings/datamanager/reload" docsection="datamanager" httpmethod="GET" caption="Reloads xml lists to update Manager">Reload Data</endpoint>  
 
 </endpoints>

@@ -1,7 +1,7 @@
 <properties lazy-init="true">
   <property id="id" index="true" stored="true" editable="true" internalfield="true" searchtype="settingsmodulepermissionslibrary">Id</property>
   <property id="name" index="true" stored="true" editable="true" searchtype="settingsmodulepermissionslibrary">Name</property>
-  <property id="label" index="true" stored="true" editable="true" legacy="description" searchtype="settingsmodulepermissionslibrary">description</property>
+  <property id="caption" index="true" stored="true" editable="true" legacy="description" searchtype="settingsmodulepermissionslibrary">Caption</property>
   <property id="ordering" index="true" stored="true" editable="true" sortable="true" type="number" viewtype="number" internalfield="false" datatype="number" searchtype="settingsmodulepermissionslibrary">ordering</property>
   <property id="permissiontype" index="true" stored="true" editable="true" type="list" datatype="list" searchtype="settingsmodulepermissionslibrary" beanname="folderSearcher">Section</property>
 </properties>
