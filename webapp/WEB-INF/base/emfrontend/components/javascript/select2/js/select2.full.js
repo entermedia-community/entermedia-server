@@ -5247,10 +5247,14 @@ S2.define('select2/core',[
       var key = evt.which;
 
       if (self.isOpen()) {
-        if (key === KEYS.ESC || key === KEYS.TAB ||
+        if (key === KEYS.ESC ||
             (key === KEYS.UP && evt.altKey)) {
           self.close();
+          evt.preventDefault();
 
+        } else if (key === KEYS.TAB) {
+          self.trigger('results:select', {});
+          self.close();          
           evt.preventDefault();
         } else if (key === KEYS.ENTER) {
           self.trigger('results:select', {});

@@ -955,14 +955,18 @@ jQuery(document).ready(function()
 	themeprefix = app.data("home") + app.data("themeprefix");	
 
 	$(document).ajaxError(function(e, jqxhr, settings, exception) 
-			{
-				console.log(e,jqxhr,exception);
+	{
+			console.log(e,jqxhr,exception);
+			if (exception == 'abort') {
+				return;
+			}		
+				
 				var errordiv = jQuery("#errordiv")
 				if( errordiv.length > 0)
 				{
 					
 					function fade(elem){
-						$(elem).delay(1).fadeOut(5000, "linear");
+						$(elem).delay(5000).fadeOut(5000, "linear");
 					}
 					
 					$('#errordiv').stop(true, true).show().css('opacity', 1);

@@ -509,27 +509,56 @@ uiload = function() {
 //		container.closest("form").find("#" + id ).val(emdata.id);
 		return selectedoption.name || selectedoption.text;
 	}
-	jQuery("select.select2").livequery( function() 
-	{
-		var theinput = jQuery(this);
-		theinput.select2();
-	});
-	
-	
 	jQuery("select.listtags").livequery( function() 
 	{
-/*
 		var theinput = jQuery(this);
+		var searchtype = theinput.data('searchtype');
+		var searchfield = theinput.data('searchfield');
+		var catalogid = theinput.data('listcatalogid');
+		var sortby = theinput.data('sortby');
+		var defaulttext = theinput.data('showdefault');
+		if( !defaulttext )
+		{
+			defaulttext = "Search";
+		}
+		var url = apphome + "/components/xml/types/autocomplete/tagsearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype;
+	
 		theinput.select2({
-		  tags: true
-		  });
-*/
-
-		theinput.select2({tags:[],
-			formatNoMatches: function () { return theinput.data("enterdata") ; },
+		  	tags: true,
+			placeholder : defaulttext,
+			allowClear: true,
+			delay: 250,
+			minimumInputLength : 1,
+			ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
+				url : url,
+				dataType : 'json',
+				data : function(params) 
+				{
+					var search = {
+						page_limit : 15,
+						page: params.page
+					};
+					search[searchfield+ ".value"] = params.term; //search term
+					search["sortby"] = sortby; //search term
+					return search;
+				},
+				processResults: function(data, params) { // parse the results into the format expected by Select2.
+				 	 params.page = params.page || 1;
+					 return {
+				        results: data.rows,
+				        pagination: {
+				          more: false //(params.page * 30) < data.total_count
+				        }
+				      };
+				}
+			},
+			escapeMarkup: function(m) { return m; },
+			templateResult : select2formatResult, 
+			templateSelection : select2Selected,
 			tokenSeparators: [",","|"],
 			separator: '|'
-		}).change(function() { $(this).valid();	});
+		  }).change(function() { $(this).valid(); });  //is this still needed?
+
 	});
 
 	jQuery("input.grabfocus").livequery( function() 
@@ -743,6 +772,7 @@ uiload = function() {
 				templateSelection : select2Selected
 			});
 			
+			//TODO: Remove this?
 			theinput.on("change", function(e) {
 				if( e.val == "" ) //Work around for a bug with the select2 code
 				{

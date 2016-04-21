@@ -1063,7 +1063,7 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			for (int i = 0; i < fields.length; i++)
 			{
-				Object val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
+				Object val = inReq.getRequestParameters(prefix + fields[i]+ ".value");
 				if( val == null)
 				{
 					String[] array = inReq.getRequestParameters(prefix + fields[i]+ ".values");
@@ -1141,7 +1141,26 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			else 
 			{
-				asset.setValue(field, val);
+				if( val instanceof String[] )
+				{
+					String[] col = (String[])val;
+					if( col.length == 0)
+					{
+						asset.setValue(field, null);
+					}
+					if( col.length == 1)
+					{
+						asset.setValue(field, col[0]);						
+					}
+					else
+					{
+						asset.setValue(field, Arrays.asList((String[])col) );
+					}
+				}
+				else
+				{
+					asset.setValue(field, val);
+				}
 			}
 		}
 		
