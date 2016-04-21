@@ -33,14 +33,13 @@
 	<input type="hidden" name="field" value="profilesearchfilters" />
 	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
 	<div style="margin: 0 -20px;">
-    	<table class="striped emdata settings-table">	
+
         #if ( !$permissiontype )
            #set ( $permissiontype = "*" )
         #end
-	    #set( $query = $permissionsearcher.createSearchQuery().append("permissiontype",$permissiontype) )
-	    $!query.addSortBy("permissiontype")
-	    $!query.addSortBy("name")
-	    #set($hits = $permissionsearcher.search($query))
+        
+	    #set( $hits = $permissionsearcher.query().match("permissiontype",$permissiontype).sort("permissiontype").sort("ordering").search() )
+    	<table class="striped emdata settings-table">	
 	    
 	    #set( $section = "none")
     	#foreach($item in $hits )
@@ -59,7 +58,8 @@
         		<td valign="middle" style="text-align: center; width: 35px;">
         		<input class="permission-radio" type="checkbox" name="permissions.value" value="$item.id" id="checkbox-$item.id" #if($val == "true" || $val == "full") checked #end/>
         		</td>
-        		<td valign="middle" #if($item.description) title="$item.description" #end><label for="checkbox-$item.id" style="padding:5px 0 1px 0;">$item</label></td>
+        		<td valign="middle"><label for="checkbox-$item.id" style="padding:5px 0 1px 0;">$item</label></td>
+        		<td class="caption">$!item.caption</td>
         			
         		</tr>
     	#end

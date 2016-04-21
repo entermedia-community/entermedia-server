@@ -468,7 +468,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.field("type", "string");
 					jsonproperties = jsonproperties.field("index", "analyzed");
 					jsonproperties = jsonproperties.field("store", "no");
-					//jsonproperties = jsonproperties.field("include_in_all", "false");
+					jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
 
 					continue;
@@ -545,14 +545,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					jsonproperties = jsonproperties.field("store", "no");
 				}
-				 if( detail.isKeyword())
-				 {
-					 jsonproperties = jsonproperties.field("include_in_all", "true");
-				 }
-				 else
-				 {
-					 jsonproperties = jsonproperties.field("include_in_all", "false");
-				 }
+//				 if( detail.isKeyword())
+//				 {
+//					 jsonproperties = jsonproperties.field("include_in_all", "true");
+//				 }
+//				 else
+//				 {
+				 jsonproperties = jsonproperties.field("include_in_all", "false"); //Do not use. Use _description
+//				 }
 
 				jsonproperties = jsonproperties.endObject();
 				
@@ -967,15 +967,16 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			
 		}
-		else if (fieldid.equals("description"))
-		{
-			// valueof = valueof.substring(0,valueof.length()-1);
-
-			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery("_all", valueof);
-			text.analyzer("lowersnowball");
-			text.maxExpansions(10);
-			find = text;
-		}
+//DO not use _all use _description
+		//		else if (fieldid.equals("description"))
+//		{
+//			// valueof = valueof.substring(0,valueof.length()-1);
+//
+//			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery("_all", valueof);
+//			text.analyzer("lowersnowball");
+//			text.maxExpansions(10);
+//			find = text;
+//		}
 		else
 		{
 			if ("exact".equals(inTerm.getOperation()))
