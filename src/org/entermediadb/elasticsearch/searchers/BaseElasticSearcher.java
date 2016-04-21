@@ -468,7 +468,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.field("type", "string");
 					jsonproperties = jsonproperties.field("index", "analyzed");
 					jsonproperties = jsonproperties.field("store", "no");
-					jsonproperties = jsonproperties.field("include_in_all", "false");
+					//jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
 
 					continue;
@@ -545,16 +545,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					jsonproperties = jsonproperties.field("store", "no");
 				}
-				// this does not work yet
-				// if( detail.isKeyword())
-				// {
-				// jsonproperties = jsonproperties.field("include_in_all", "true");
-				// }
-				// else
-				// {
-				jsonproperties = jsonproperties.field("include_in_all", "false");
-
-				// }
+				 if( detail.isKeyword())
+				 {
+					 jsonproperties = jsonproperties.field("include_in_all", "true");
+				 }
+				 else
+				 {
+					 jsonproperties = jsonproperties.field("include_in_all", "false");
+				 }
 
 				jsonproperties = jsonproperties.endObject();
 				
