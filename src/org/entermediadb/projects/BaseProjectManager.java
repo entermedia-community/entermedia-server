@@ -518,16 +518,18 @@ public class BaseProjectManager implements ProjectManager
 	@Override
 	public void addCategoryToCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
-		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
-		
-		Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
-		
-		if(data == null)
-		{
-			Data newfolder = librarycollectioncategorySearcher.createNewData();
-			newfolder.setProperty("librarycollection", inCollectionid);
-			newfolder.setProperty("categoryid", inCategoryid);
-			librarycollectioncategorySearcher.saveData(newfolder, null);
+		if(inCategoryid != null){
+			Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+			
+			Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
+			
+			if(data == null)
+			{
+				Data newfolder = librarycollectioncategorySearcher.createNewData();
+				newfolder.setProperty("librarycollection", inCollectionid);
+				newfolder.setProperty("categoryid", inCategoryid);
+				librarycollectioncategorySearcher.saveData(newfolder, null);
+			}
 		}
 	}
 	
