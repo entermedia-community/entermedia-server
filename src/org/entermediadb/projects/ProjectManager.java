@@ -44,6 +44,8 @@ public interface ProjectManager
 	public HitTracker loadAssetsInLibrary(Data inLibrary,  MediaArchive archive, WebPageRequest inReq);
 
 	public Collection<UserCollection> loadOpenCollections(WebPageRequest inReq);
+	
+	public String loadLastCategoryIdCreated(WebPageRequest inReq);
 
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
 

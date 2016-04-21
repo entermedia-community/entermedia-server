@@ -35,6 +35,9 @@ public class BaseProjectManager implements ProjectManager
 	
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCatalogId;
+	protected List<String> lastCollectionIdsCreated = new ArrayList<String>();
+	protected List<String> sourceList = new ArrayList<String>();
+	protected String lastColletionIdCreated = "";
 	/* (non-Javadoc)
 	 * @see model.projects.ProjectManager#getCatalogId()
 	 */
@@ -187,6 +190,12 @@ public class BaseProjectManager implements ProjectManager
 		
 	}
 	
+	public String loadLastCategoryIdCreated(WebPageRequest inReq){
+		
+		inReq.putPageValue("lastColletionIdCreated", lastColletionIdCreated);
+		return lastColletionIdCreated;
+	}
+	
 	protected Collection<UserCollection> loadUserCollections(Collection<Data> allcollections, FilterNode collectionhits)
 	{
 		List usercollections = new ArrayList(allcollections.size());
@@ -199,6 +208,12 @@ public class BaseProjectManager implements ProjectManager
 				int assetcount = collectionhits.getCount(collection.getId());
 				uc.setAssetCount(assetcount);
 			}
+			
+			if(!lastCollectionIdsCreated.contains(collection.getId()) && collection.getId() != null && collection.getId() != ""){
+				lastCollectionIdsCreated.add(collection.getId());
+				lastColletionIdCreated = collection.getId();
+			}
+			
 			usercollections.add(uc);
 		}
 		return usercollections;

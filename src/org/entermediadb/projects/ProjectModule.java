@@ -33,6 +33,12 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
 		manager.loadOpenCollections(inReq);
 	}
+	
+	public void loadLastCategoryIdCreated(WebPageRequest inReq) throws Exception{
+		String catalogid = inReq.findValue("catalogid");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
+		manager.loadLastCategoryIdCreated(inReq);
+	}
 
 	
 	public void loadSelectedLibrary(WebPageRequest inReq) throws Exception
@@ -270,6 +276,7 @@ public class ProjectModule extends BaseMediaModule
 		getMediaArchive(inReq).getSearcher("librarycollection").saveData(saved,null);
 		
 	}
+	
 	public void createUserLibrary(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

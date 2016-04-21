@@ -1,8 +1,10 @@
 var ajaxtimerrunning = false;
 var app,home,apphome,themeprefix;
 var collectionId = '';
-var categoryDragged = false;
-var collectionCreatedByDragging = false;
+var categoryDragged;
+var newCollection;
+var isCategoryDragged = false;
+var isCollectionCreatedByDragging = false;
 
 
 openFancybox = function(href) {
@@ -1154,7 +1156,13 @@ emcomponents = function() {
 						var hitssessionid = $("#resultsdiv").data("hitssessionid");
 						var collectionName = anode.find("a.librarylabel").data("collectionname");
 						
-						var response = confirm("Move "+categoryName+" category to "+collectionName+" collection?");
+						var response;
+						if(!categoryName){
+							response = confirm("Move asset to "+collectionName+" collection?");
+						}else{
+							response = confirm("Move "+categoryName+" category to "+collectionName+" collection?");
+						}
+						
 						if(response == false){
 							return false;
 						}
@@ -1231,7 +1239,7 @@ function()
 	{
 		drop: function(event, ui) {
 			
-			categoryDragged = true;
+			isCategoryDragged = true;
 			
 			/**
 			 * Create an object to open form
@@ -1244,34 +1252,29 @@ function()
 				href:jQuery("#createnewarea").find("a").attr('href')
 			};
 			
-//			for(values in newForm){
-//				console.log(values + ":" +newForm[values]);
-//			}
-
 			/*
 			 * Current draggable category
 			 */
-			var categoryid = ui.draggable.data("nodeid");
-			var assetid = ui.draggable.data("assetid");
-			var categoryName = ui.draggable.data("categoryname");
-			var hitssessionid = $("#resultsdiv").data("hitssessionid");
+			categoryDragged = {
+					categoryid:ui.draggable.data("nodeid"),
+					assetid:ui.draggable.data("assetid"),
+					categoryName:ui.draggable.data("categoryname"),
+					hitssessionid:$("#resultsdiv").data("hitssessionid")
+			};
 			
-
 			
 			/*
 			 * Object used for the new collection  
 			 */
-			var newCollection = {
+			
+			newCollection = {
 					id:"",
-					dropsaleurl:"/assets/emshare/components/opencollections/addassettocollection.html?librarycollection=",
+					dropsaveurl:"/assets/emshare/components/opencollections/addassettocollection.html?librarycollection=",
 					targetdiv:"left-col-libraries"
 			};
 			
-			
-			//console.log(hitssessionid);
-			
+
 			createNewCollection(newForm);
-			return false;
 		},
 		tolerance: 'pointer',
 		over: outlineSelectionCol,
@@ -1298,3 +1301,60 @@ createNewCollection = function(newForm){
 	
 }
 
+
+jQuery(".btn-sm").livequery("click", function(e){
+	
+	setTimeout(function() {
+                
+				isCollectionCreatedByDragging = true;
+				
+				if(isCategoryDragged == true && isCollectionCreatedByDragging == true){
+		
+					var lastCollectionIdCreated = $("#lastCollectionIdCreated").data('collectionid');
+	
+	    			newCollection.id = lastCollectionIdCreated;
+	    			newCollection.dropsaveurl = newCollection.dropsaveurl+lastCollectionIdCreated;
+	    		
+    				var hitssessionid = categoryDragged.hitssessionid;
+    				var assetid = categoryDragged.assetid;
+    				var categoryid = categoryDragged.categoryid;
+    				var dropsaveurl = newCollection.dropsaveurl;
+    				var targetDiv = newCollection.targetdiv;
+    				
+    				if( !hitssessionid )
+					{
+						hitssessionid = $("#main-results-table").data("hitssessionid");
+					}
+    				
+    				var nextpage = dropsaveurl;
+    				
+    				if( assetid )
+					{
+						 nextpage = nextpage + "&assetid=" + assetid;
+					}
+    				
+    				nextpage = nextpage + "&hitssessionid=" + hitssessionid;
+    				
+    				if( categoryid )
+					{
+						nextpage = nextpage + "&categoryid=" + categoryid;
+					}
+    				
+    				console.log(nextpage);
+    				
+    				jQuery.get(nextpage, {}, function(data) 
+    						{
+    							var	cell = jQuery("#" + targetDiv);
+    							cell.replaceWith(data);
+    						});
+    				
+    				
+    				isCategoryDragged == false;
+    				isCollectionCreatedByDragging == false;
+    				
+    			}
+	
+	},1000);
+
+	e.stopPropagation();
+});
