@@ -484,9 +484,9 @@ uiload = function() {
 		$(this).closest('.select-dropdown').hide();
 	});
 	
-	function select2formatResult(emdata, container, query)
+	function select2formatResult(emdata)
 	{
-		var element = $(this.element);
+	/*	var element = $(this.element);
 		var showicon = element.data("showicon");
 		if( showicon )
 		{
@@ -498,14 +498,16 @@ uiload = function() {
 		{
 			return emdata.name;
 		}
+	*/
+		return emdata.name;
 	}
-	function select2Selected(emdata, container) {
+	function select2Selected(selectedoption) {
 
 		//"#list-" + foreignkeyid
-		var id = container.closest(".select2-container").attr("id");
-		id = "list-" + id.substring(5); //remove sid2_
-		container.closest("form").find("#" + id ).val(emdata.id);
-		return select2formatResult(emdata, container);
+//		var id = container.closest(".select2-container").attr("id");
+//		id = "list-" + id.substring(5); //remove sid2_
+//		container.closest("form").find("#" + id ).val(emdata.id);
+		return selectedoption.name || selectedoption.text;
 	}
 	jQuery("select.select2").livequery( function() 
 	{
@@ -669,7 +671,7 @@ uiload = function() {
 			}
 	);
 
-	jQuery("input.listautocomplete").livequery( function() 
+	jQuery("select.listautocomplete").livequery( function()   //select2
 	{
 		var theinput = jQuery(this);
 		var searchtype = theinput.data('searchtype');
@@ -702,7 +704,7 @@ uiload = function() {
 				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
 					url : url,
 					dataType : 'json',
-					data : function(term, page) 
+					data : function(params) 
 					{
 						var fkv = theinput.closest("form").find("#list-" + foreignkeyid + "value").val();
 						if( fkv == undefined )
@@ -711,9 +713,9 @@ uiload = function() {
 						}
 						var search = {
 							page_limit : 15,
-							page: page
+							page: params.page
 						};
-						search[searchfield+ ".value"] = term; //search term
+						search[searchfield+ ".value"] = params.term; //search term
 						if( fkv )
 						{
 							search["field"] = foreignkeyid; //search term
@@ -726,17 +728,19 @@ uiload = function() {
 						}
 						return search;
 					},
-					results : function(data, page) { // parse the results into the format expected by Select2.
-					
-						// since we are using custom formatting functions we do not need to alter remote JSON data
-						return {
-							results : data.rows
-						};
+					processResults: function(data, params) { // parse the results into the format expected by Select2.
+					 	 params.page = params.page || 1;
+						 return {
+					        results: data.rows,
+					        pagination: {
+					          more: false //(params.page * 30) < data.total_count
+					        }
+					      };
 					}
 				},
 				escapeMarkup: function(m) { return m; },
-				formatResult : select2formatResult, 
-				formatSelection : select2Selected
+				templateResult : select2formatResult, 
+				templateSelection : select2Selected
 			});
 			
 			theinput.on("change", function(e) {

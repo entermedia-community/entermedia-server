@@ -1,4 +1,7 @@
-{"rows": [
+{
+  "total_count": $autocomplete.size(),
+  "incomplete_results": false,
+  "rows": [
 	#foreach ($res in $autocomplete.getPageOfHits())
 	#if( $velocityCount > 1 ),#end
 	#set($label = $searcherManager.getLabel($searcher,$res))
