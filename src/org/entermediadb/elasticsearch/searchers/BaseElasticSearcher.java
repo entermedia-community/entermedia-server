@@ -777,12 +777,12 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
-			boolean expert = false;
+			boolean simple = true;
 			if( valueof.contains("*")  || valueof.contains("\"") || valueof.contains(":"))
 			{
-				expert = true;
+				simple = false;
 			}
-			if( !expert ) //If there is one * then let them add them all in
+			if( simple ) //If there is one * then let them add them all in
 			{
 				//Parse by Operator
 				//Add wildcards
@@ -817,21 +817,39 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			
 			
-			if(valueof.startsWith("\"") && valueof.endsWith("\"")){
+			if( (valueof.startsWith("\"") && valueof.endsWith("\"")))
+			{
 				valueof = valueof.replace("\"", "");
 				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 				text.analyzer("lowersnowball");
 				find = text;
 				
-			} else{
-				valueof = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ").replaceAll(" to ", " TO ");
+			} 
+			else
+			{
+				valueof = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ").replaceAll(" to ", " TO "); //Why do this again?
 				String query = "+(" + valueof + ")";
-				
 
 				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
 				text.analyzer("lowersnowball");
-				text.defaultField("_all");
-				find = text;
+				text.defaultField("description");
+				
+				//TODO: Use RegEx to check for this
+				if( valueof.contains("-") || valueof.contains(",") || valueof.contains("/") || valueof.contains("\\") || valueof.contains("#") || valueof.contains("@"))
+				{
+					BoolQueryBuilder or = QueryBuilders.boolQuery();
+					or.should(text);
+					MatchQueryBuilder phrase = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+					phrase.analyzer("lowersnowball");
+					or.should(phrase);
+					find = or;
+				}
+				else
+				{
+					find = text;
+				}
+
+				
 			}
 		}
 		else if (valueof.endsWith("*"))
