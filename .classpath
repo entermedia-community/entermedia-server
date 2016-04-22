@@ -53,7 +53,7 @@
 	<classpathentry kind="lib" path="lib/gson-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/securesm-1.0.jar"/>
-	<classpathentry kind="lib" path="lib/elasticsearch-2.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/elasticsearch-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-analyzers-common-5.5.0.jar"/>
 	<classpathentry kind="lib" path="lib/lucene-backward-codecs-5.5.0.jar"/>
