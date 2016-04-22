@@ -13,9 +13,11 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
@@ -778,16 +780,26 @@ public class BaseElasticSearcher extends BaseSearcher
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
 			boolean simple = true;
-			if( valueof.contains("*")  || valueof.contains("\"") || valueof.contains(":"))
+			if( !StringUtils.isAlphanumericSpace(valueof))
 			{
 				simple = false;
+				
+				//Replace GOOD stuff for now. Then escape whats left then replace back
+				valueof = valueof.replace("*", "_STAR_");
+				valueof = valueof.replace("\"", "_QUOTE_");
+				valueof = valueof.replace(":", "_COLON_");
+				valueof = QueryParser.escape(valueof);
+				valueof = valueof.replace("_STAR_", "*");
+				valueof = valueof.replace("_QUOTE_","\"");
+				valueof = valueof.replace("_COLON_",":");
+				
 			}
 			if( simple ) //If there is one * then let them add them all in
 			{
 				//Parse by Operator
 				//Add wildcards
 				//Look for Quotes 
-				String uppercase = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ").replaceAll(" to ", " TO ");
+				String uppercase = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");
 				
 				Matcher m = operators.matcher(uppercase);
 				if( !m.find() )
@@ -827,24 +839,32 @@ public class BaseElasticSearcher extends BaseSearcher
 			} 
 			else
 			{
-				valueof = valueof.replaceAll(" and ", " AND ").replaceAll(" or ", " OR ").replaceAll(" not ", " NOT ").replaceAll(" to ", " TO "); //Why do this again?
+				if( !simple)
+				{
+					valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); //Why do this again?
+				}
+				
 				String query = "+(" + valueof + ")";
 
 				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
+				text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
 				text.analyzer("lowersnowball");
 				text.defaultField("description");
 				
 				//TODO: Use RegEx to check for this
-				if( valueof.contains("-") || valueof.contains(",") || valueof.contains("/") || valueof.contains("\\") || valueof.contains("#") || valueof.contains("@"))
-				{
-					BoolQueryBuilder or = QueryBuilders.boolQuery();
-					or.should(text);
-					MatchQueryBuilder phrase = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
-					phrase.analyzer("lowersnowball");
-					or.should(phrase);
-					find = or;
-				}
-				else
+				
+
+				
+//				if( valueof.contains("-") || valueof.contains(",") || valueof.contains("/") || valueof.contains("\\") || valueof.contains("#") || valueof.contains("@"))
+//				{
+//					BoolQueryBuilder or = QueryBuilders.boolQuery();
+//					or.should(text);
+//					MatchQueryBuilder phrase = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+//					phrase.analyzer("lowersnowball");
+//					or.should(phrase);
+//					find = or;
+//				}
+//				else
 				{
 					find = text;
 				}
