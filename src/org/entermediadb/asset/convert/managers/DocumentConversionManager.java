@@ -1,13 +1,17 @@
 package org.entermediadb.asset.convert.managers;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.MediaTranscoder;
+import org.entermediadb.users.AllowViewing;
 import org.openedit.Data;
 
 public class DocumentConversionManager extends BaseConversionManager
 {
+	private static final Log log = LogFactory.getLog(DocumentConversionManager.class);
 	//To create the file we need to Look for input in several places
 	//CR 1024x768
 	//Custom thumb
@@ -115,29 +119,28 @@ public class DocumentConversionManager extends BaseConversionManager
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
 		//if output == jpg and no time offset - standard
-		
-		
 		String fileFormat = inStructions.getAsset().getFileFormat();
 		if(!"pdf".equals(fileFormat))
 		{
-			
+			//Lets always have a PDF version of all document formats?
 			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
 			ConvertInstructions instructions2 = inStructions.copy(preset);
 
-			ConvertResult result = findTranscoder(instructions2).convert(instructions2);
+			ConvertResult result = findTranscoder(instructions2).convertIfNeeded(instructions2);
+			//log.info("Created document.pdf");
 			if(inStructions.getOutputRenderType().equals("document")){
-				return result;
+				return result; //Why shortcut?
 			}
-			 inStructions.setInputFile(instructions2.getOutputFile());
-			
+			inStructions.setInputFile(instructions2.getOutputFile());
 		}
-		else {
+		else 
+		{
 			inStructions.setInputFile(getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem());
 		}
 		
 		
 		//Now make the input image needed using the document as the input
-		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1024x768.jpg");
+		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1024x768.png");
 		
 		ConvertInstructions instructions2 = inStructions.copy(preset);
 		instructions2.setPageNumber(inStructions.getPageNumber());

@@ -1329,7 +1329,7 @@ public class MediaArchive
 			return value;
 		}
 		Data setting = getCatalogSetting(inId);
-		log.info("Loading " + inId);
+		//log.info("Loading " + inId);
 		if( setting ==  null)
 		{
 			return null;
@@ -1337,7 +1337,7 @@ public class MediaArchive
 		value = setting.get("value");
 		if( value == null)
 		{
-			log.info("Null value " + inId);
+			log.info("Null value " + getCatalogId() + " " + inId);
 			value = CacheManager.NULLVALUE;
 		}
 		getCacheManager().put("catalogsettings", inId, value);
