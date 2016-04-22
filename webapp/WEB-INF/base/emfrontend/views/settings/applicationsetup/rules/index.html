@@ -14,7 +14,7 @@
 	#foreach($perm in $permissions)
 	<tr rowid="$perm.id">
 		<td >$context.getText($perm.name)
-		<td>$context.getText($perm.description)</td>
+		<td>$context.getText($perm.caption)</td>
 		<td> 
 		#set( $permission = false )
 		#set( $permission = $settingspage.getPermission($perm.id) )

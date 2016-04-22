@@ -28,7 +28,7 @@
 		#else
 			#set( $value = $selectedelement.attributeValue($attrib.id) )
 		#end
-		<tr><td align="right" nowrap="true" >$attrib.description:</td>
+		<tr><td align="right" nowrap="true" >$attrib.caption:</td>
 		<td>
 			#if( $attrib.size > 20)
 			<textarea cols="40" rows="4" name="$attrib.id" >$!value</textarea>

@@ -24,7 +24,7 @@
 			
 		#end
 		<tr rowid="$perm.id">
-			<td  #if($perm.description) title="$perm.description" #end>$context.getText($perm.name)
+			<td  #if($perm.caption) title="$perm.caption" #end>$context.getText($perm.name)
 			<td> 
 			#set( $permission = false )
 			#set( $permission = $settingspage.getPermission($perm.id) )

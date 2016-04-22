@@ -10,7 +10,7 @@
 <table  style="width:100%;">		
 	#foreach($perm in $permissions)
 	<tr rowid="$perm.id">
-		<td ><b>$context.getText($perm.name)</b><div class="emselecttabledetails">$context.getText($perm.description)</div></td>
+		<td ><b>$context.getText($perm.name)</b><div class="emselecttabledetails">$context.getText($perm.caption)</div></td>
 		<td><br> 
 		#set( $permission = false )
 		#set( $permission = $settingspage.getPermission($perm.id) )
