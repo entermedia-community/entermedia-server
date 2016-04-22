@@ -111,6 +111,16 @@ public class ElasticHitTracker extends HitTracker
 	}
 	
 	@Override
+	public void clear()
+	{
+		getChunks().clear();  //This is called form cachedSearch
+		fieldLastPullTime = -1;
+		setLastPageLoaded(-100);
+		fieldCurrentPage = null;
+		fieldLastScrollId = null;
+	}
+	
+	@Override
 	public void refresh()
 	{
 		super.refresh();
@@ -143,7 +153,7 @@ public class ElasticHitTracker extends HitTracker
 						log.info(error);
 						throw new OpenEditException(error);
 					}	
-					if( !isUseServerCursor() || chunk == 0 ) //todo: Allow scrolling for iterators
+					if( !isUseServerCursor() || fieldLastScrollId == null || chunk == 0 ) //todo: Allow scrolling for iterators
 					{
 						if( fieldLastPullTime == -1)
 						{
@@ -162,8 +172,8 @@ public class ElasticHitTracker extends HitTracker
 					{
 						//Only call this if we are moving forward in the scroll
 						//scroll to the right place if within timeout 
+						log.info(getSearcher().getSearchType() + " hash:" + hashCode() + " scrolling to chunk " + inChunk + " " + getLastScrollId());
 						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
-						log.info(getSearcher().getSearchType() + " hash:" + hashCode() + " scrolled to chunk " + inChunk );
 					}
 					setLastPageLoaded(inChunk);
 					fieldLastPullTime = now;
