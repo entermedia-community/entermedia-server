@@ -14,6 +14,7 @@ public void runExport(){
 		String sessionid = context.getRequestParameter("hitssessionid");
 		hits = context.getSessionValue(sessionid);
 	}
+	hits.enableBulkOperations();
 	searcherManager = context.getPageValue("searcherManager");
 	searchtype = context.findValue("searchtype");
 	catalogid = context.findValue("catalogid");
@@ -39,18 +40,13 @@ public void runExport(){
 	writer.writeNext(headers);
 	log.info("about to start: " + hits);
 	Iterator i = null;
-	if(hits.getSelectedHitracker().size() == 0){
-		i = hits.iterator();
-	} else{
-
-		i = hits.getSelectedHitracker().iterator();
-
-	}
-	for (Iterator iterator = i; iterator.hasNext();)
+	HitTracker selectedhits = hits.getSelectedHitracker();
+	selectedhits.enableBulkOperations();
+	
+	for (Iterator iterator = selectedhits.iterator(); iterator.hasNext();)
 	{
 		hit =  iterator.next();
-		tracker = searcher.searchById(hit.get("id"));  //why do we need to load every record?
-
+		tracker = searcher.loadData(hit);
 
 		nextrow = new String[details.size()];//make an extra spot for c
 		int fieldcount = 0;

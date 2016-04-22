@@ -11,6 +11,7 @@ if(hits == null){
  String sessionid = context.getRequestParameter("hitssessionid");
  hits = context.getSessionValue(sessionid);
 }
+hits.enableBulkOperations();
 searcherManager = context.getPageValue("searcherManager");
 searchtype = context.findValue("searchtype");
 catalogid = context.findValue("catalogid");
@@ -18,7 +19,7 @@ searcher = searcherManager.getSearcher(catalogid, searchtype);
 boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"));
  details = searcher.getDetailsForView("csvexport", context.getUser());
 if(details == null){
-	details = searcher.getPropertyDetails();
+	details = searcher.getPropertyDetails().findStoredProperties();
 }
 
 Writer output = context.getPageStreamer().getOutput().getWriter();
