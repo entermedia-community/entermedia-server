@@ -37,9 +37,9 @@
             <select style="position: relative; top: 2px; margin-left: 5px;">
                 <option value="all">Show All</option>
            
-                #foreach($item in $permissionsearcher.query().all().sort("ordering").search($context) )
+                #foreach($item in $permissionsearcher.query().all().sort("permissiontype").sort("ordering").search($context) )
                      #if( $section != $item.permissiontype )
-                         <option #if($permissiontype == $item.permissiontype) selected #end value="$item.permissiontype">$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype) X</option>
+                         <option #if($permissiontype == $item.permissiontype) selected #end value="$item.permissiontype">$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)</option>
                      #set( $section = $item.permissiontype)
                      #end   
                  #end

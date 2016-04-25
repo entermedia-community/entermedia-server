@@ -667,52 +667,54 @@ public class BaseProjectManager implements ProjectManager
 		
 		//Find all the categories and move them to the library
 		HitTracker categories = loadCategoriesOnCollection(inArchive,inCollectionid);
-		
-		for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+		if( categories != null)
 		{
-			Data catData = (Data) iterator.next();
-			
-			Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
-			
-			String oldcategoryroot = cat.getSourcePath();
-			//1. Move the files located here
-			
-			//TODO: Make sure the paths actually changed
-			if( oldcategoryroot.equals(assetssourcepath))
+			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
 			{
-				continue;
-			}
-			Category newparent = inArchive.getCategoryArchive().createCategoryTree(assetssourcepath); 
-			cat.setParentCategory(newparent); //This just moved every category on all the assets
-			inArchive.getCategorySearcher().saveData(cat,null);
-
-			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldcategoryroot;
-			String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + assetssourcepath + "/" + cat.getName();
-			Page oldpage = inArchive.getPageManager().getPage(oldpath);
-			Page newpage = inArchive.getPageManager().getPage(newpath);
-			if( oldpage.exists() )
-			{
-				inArchive.getPageManager().movePage(oldpage, newpage);
-			}
-
-			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldcategoryroot);
-			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + assetssourcepath + "/" + cat.getName());
-
-			if( oldthumbs.exists() )
-			{
-				inArchive.getPageManager().movePage(oldthumbs, newthumbs);
-			}
-
-			//2. Now move the old category parent to the new parent and save it. The assets will just need their sourcepath updated
-			Collection catassets = inArchive.getAssetSearcher().query().match("category", cat.getId()).search();
-			for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
-			{
-				Data data = (Data) iterator2.next();
-				Asset asset = (Asset)inArchive.getAssetSearcher().loadData(data);
-				String oldsource = asset.getSourcePath();
-				String newsourcepath = assetssourcepath + "/" + cat.getName() + oldsource.substring(oldcategoryroot.length()) ;
-				asset.setSourcePath(newsourcepath);
-				inArchive.getAssetSearcher().saveData(asset, null);
+				Data catData = (Data) iterator.next();
+				
+				Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
+				
+				String oldcategoryroot = cat.getSourcePath();
+				//1. Move the files located here
+				
+				//TODO: Make sure the paths actually changed
+				if( oldcategoryroot.equals(assetssourcepath))
+				{
+					continue;
+				}
+				Category newparent = inArchive.getCategoryArchive().createCategoryTree(assetssourcepath); 
+				cat.setParentCategory(newparent); //This just moved every category on all the assets
+				inArchive.getCategorySearcher().saveData(cat,null);
+	
+				String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldcategoryroot;
+				String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + assetssourcepath + "/" + cat.getName();
+				Page oldpage = inArchive.getPageManager().getPage(oldpath);
+				Page newpage = inArchive.getPageManager().getPage(newpath);
+				if( oldpage.exists() )
+				{
+					inArchive.getPageManager().movePage(oldpage, newpage);
+				}
+	
+				Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldcategoryroot);
+				Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + assetssourcepath + "/" + cat.getName());
+	
+				if( oldthumbs.exists() )
+				{
+					inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+				}
+	
+				//2. Now move the old category parent to the new parent and save it. The assets will just need their sourcepath updated
+				Collection catassets = inArchive.getAssetSearcher().query().match("category", cat.getId()).search();
+				for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
+				{
+					Data data = (Data) iterator2.next();
+					Asset asset = (Asset)inArchive.getAssetSearcher().loadData(data);
+					String oldsource = asset.getSourcePath();
+					String newsourcepath = assetssourcepath + "/" + cat.getName() + oldsource.substring(oldcategoryroot.length()) ;
+					asset.setSourcePath(newsourcepath);
+					inArchive.getAssetSearcher().saveData(asset, null);
+				}
 			}
 		}
 		collection.setProperty("library",inLibraryid);

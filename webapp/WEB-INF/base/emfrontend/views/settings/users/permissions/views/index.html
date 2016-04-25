@@ -48,7 +48,7 @@
         		#set($val = $data.getValues("permissions").contains($item.id))
         		#if( $section != $item.permissiontype )
         			<tr class="sectionlevel $item.permissiontype togglesection">
-        			<td colspan="2" style="height: 35px; line-height: 35px;">
+        			<td colspan="3" style="height: 35px; line-height: 35px;">
         				$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)
         			</td>
         			</tr>
