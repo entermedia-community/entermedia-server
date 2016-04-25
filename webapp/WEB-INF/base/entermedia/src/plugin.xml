@@ -1913,6 +1913,7 @@
 	<bean id="smbpublisher" class="org.entermediadb.asset.publish.publishers.smbpublisher"  lazy-init="default" />
 	<bean id="fatwirepublisher" class="org.entermediadb.asset.publish.publishers.fatwirepublisher"  lazy-init="default" />
 	<bean id="wordpresspublisher" class="org.entermediadb.asset.publish.publishers.wordpresspublisher"  lazy-init="default"/>
+	<bean id="vizonepublisher" class="org.entermediadb.asset.publish.publishers.VizOnePublisher"  lazy-init="default"/>
 	
 	
 	<!-- 

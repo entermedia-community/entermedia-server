@@ -22,5 +22,7 @@
 	<location id="pushpublisher">Push Publisher</location>
 	<location id="wordpress">Wordpress CMS</location> 
 		<location id="gallery">Gallery</location>
+				<location id="VizOne">VizOne</location>
+		
 	
 </publishtype>
