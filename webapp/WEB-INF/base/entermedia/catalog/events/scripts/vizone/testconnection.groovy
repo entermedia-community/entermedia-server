@@ -11,14 +11,14 @@ public class VizOne{
 	def authString = "EMDEV:3nterMed1a".getBytes().encodeBase64().toString();
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	public void testLoadAsset(){
-		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item/2101604190011378421"
+		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?num=50"
 		//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?num=1"
 		def conn = addr.toURL().openConnection()
 		conn.setRequestProperty( "Authorization", "Basic ${authString}" )
 		conn.setRequestProperty("Accept", "application/atom+xml;type=feed");
 
 		String content = conn.content.text;
-		//println content;
+		println content;
 
 		if( conn.responseCode == 200 ) {
 			def rss = new XmlSlurper().parseText(content  )
@@ -79,7 +79,7 @@ public class VizOne{
 			
 				
 				
-				String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Entermedia Test</atom:title></atom:entry>";
+				String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Entermedia Test</atom:title><mam:retentionpolicy>oneweek</mam:retentionpolicy></atom:entry>";
 				
 				PostMethod method = new PostMethod(addr);
 				
@@ -156,8 +156,8 @@ public class VizOne{
 VizOne vz = new VizOne();
 
 
-//vz.testCreateRecord();
-vz.testLoadAsset();
+vz.testCreateRecord();
+//vz.testLoadAsset();
 //vz.testUpload(context);
 
 //vz.testSearch();

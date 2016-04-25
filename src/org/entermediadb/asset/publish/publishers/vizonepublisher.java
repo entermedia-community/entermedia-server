@@ -1,6 +1,12 @@
 package org.entermediadb.asset.publish.publishers;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.Map;
+
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -15,7 +21,6 @@ import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
@@ -59,18 +64,24 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				User user = userManager.getUser(username);
 				password = userManager.decryptPassword(user);
 			}
-				
-			byte[] encodedBytes = Base64.encodeBase64("${username}:${password}".getBytes());
+			String enc = username + ":" + password;
+			byte[] encodedBytes = Base64.encodeBase64(enc.getBytes());
 			String authString = new String(encodedBytes);
 			
 			String vizid = inAsset.get("vizid");
 			
 			if(vizid == null){
-				Element results = createAsset(inDestination, inAsset);
+				Element results = createAsset(inMediaArchive, inDestination, inAsset, authString);
 				String id = results.element("id").getText();
-				inAsset.setProperty("vizid", vizid);
+				String[] splits = id.split(":");
+				
+				inAsset.setProperty("vizid", splits[4]);
+				inMediaArchive.saveAsset(inAsset, null);
 			}
 			
+			uploadAsset(inMediaArchive, result, inAsset, inDestination, inPreset, authString);
+			//http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101604250011569821/metadata
+			setMetadata(inMediaArchive, inDestination, inAsset, authString);
 			
 			result.setComplete(true);
 			log.info("publishished  ${asset} to FTP server ${servername}");
@@ -78,6 +89,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		}
 		catch (Exception e)
 		{
+			e.printStackTrace();
 			throw new OpenEditException(e);
 		}
 		
@@ -149,18 +161,79 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	
 	
 	
+	public Element setMetadata(MediaArchive inArchive, Data inDestination, Asset inAsset, String inAuthString) throws Exception{
+		
+		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
+		
+
+		String servername = inDestination.get("url");
+		String addr       = servername + "api/asset/item" + inAsset.get("vizid") + "/metadata";
+
+
+
+		String data = "<payload xmlns='http://www.vizrt.com/types' model='https://vmeserver/api/metadata/form/myform/r1'><field name='asset.retentionpolicy'><value>oneweek</value></field></payload>";
+		Map metadata = inAsset.getProperties();
+		Calendar now = new GregorianCalendar();
+		now.add(now.DAY_OF_YEAR, 7);
+		Date oneweek = now.getTime();
+		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+		String date = format.format(oneweek);
+		
+		
+		metadata.put("${date}",date );
+		
+		data = inArchive.getReplacer().replace(data, metadata);
+		
+		PostMethod method = new PostMethod(addr);
+		
+		//method.setRequestEntity(new ByteArrayEntity(data.bytes));
+		method.setRequestBody(data);
+		
+		
+		method.setRequestHeader( "Authorization", "Basic " + inAuthString);
+		method.setRequestHeader( "Expect", "" );
+		method.setRequestHeader("Content-Type", "application/atom+xml;type=entry");
+		
+		int status = getClient("test").executeMethod(method);
+		
+		Element response = getXmlUtil().getXml(method.getResponseBodyAsStream(), "UTF-8");
+		String xml = response.asXML();
+		return response;
 	
-	public Element createAsset(Data inDestination, Asset inAsset) throws Exception{
+		//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
+}
+	
+	
+	
+	
+	public Element createAsset(MediaArchive inArchive, Data inDestination, Asset inAsset, String inAuthString) throws Exception{
 		
 				//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
 				
 		
-				String servername = inDestination.get("server");
+				String servername = inDestination.get("url");
 				String addr       = servername + "thirdparty/asset/item";
-							
-				String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Entermedia Test</atom:title></atom:entry>";
-			
+//				urn:vme:default:dictionary:retentionpolicy:oneweek
+
+				String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Title: ${title}</atom:title>"
+						+ "<identifier>${name}</identifier>"
+						+ "<retentionpolicy>oneweek</retentionpolicy>"
+						+ "<retentionPolicy>oneweek</retentionPolicy>"
+						+ "<atom:retentionpolicy>oneweek</atom:retentionpolicy>"
+						+ "<atom:retentionPolicy>oneweek</atom:retentionPolicy>"
+
+						+ "</atom:entry>";
+				Map metadata = inAsset.getProperties();
+				Calendar now = new GregorianCalendar();
+				now.add(now.DAY_OF_YEAR, 7);
+				Date oneweek = now.getTime();
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+				String date = format.format(oneweek);
 				
+				
+				metadata.put("${date}",date );
+				
+				data = inArchive.getReplacer().replace(data, metadata);
 				
 				PostMethod method = new PostMethod(addr);
 				
@@ -168,13 +241,14 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				method.setRequestBody(data);
 				
 				
-				method.setRequestHeader( "Authorization", "Basic ${authString}" );
+				method.setRequestHeader( "Authorization", "Basic " + inAuthString);
 				method.setRequestHeader( "Expect", "" );
 				method.setRequestHeader("Content-Type", "application/atom+xml;type=entry");
 				
 				int status = getClient("test").executeMethod(method);
 				
 				Element response = getXmlUtil().getXml(method.getResponseBodyAsStream(), "UTF-8");
+				String xml = response.asXML();
 				return response;
 			
 				//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
@@ -182,15 +256,18 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	
 	
 	
-	public void testUpload(WebPageRequest inReq){
+	public void uploadAsset(MediaArchive archive, PublishResult inResult , Asset inAsset,Data inDestination, Data inPreset, String inAuthString){
 		try
 		{
-			MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+			Page inputpage = findInputPage(archive,inAsset,inPreset);
+
+			String servername = inDestination.get("url");
+			String addr       = servername + "api/asset/item/" + inAsset.get("vizid") + "/upload";
+						
 			
-			String  addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101604190011378421/upload";
 			
 			PutMethod method = new PutMethod(addr);
-			method.setRequestHeader( "Authorization", "Basic ${authString}" );
+			method.setRequestHeader( "Authorization", "Basic " + inAuthString );
 			method.setRequestHeader( "Expect", "" );
 			
 			String response = method.getResponseBodyAsString();
@@ -202,10 +279,9 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			
 			
 			PutMethod upload = new PutMethod(addr2);
-			upload.setRequestHeader( "Authorization", "Basic ${authString}" );
+			upload.setRequestHeader( "Authorization", "Basic " + inAuthString );
 			upload.setRequestHeader( "Expect", "" );
-			Page page = archive.getPageManager().getPage("/EMS1.png");
-			upload.setRequestBody(page.getInputStream());
+			upload.setRequestBody(inputpage.getInputStream());
 			
 			 status = getClient("test").executeMethod(upload);
 		}
