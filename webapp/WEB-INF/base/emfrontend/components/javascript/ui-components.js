@@ -45,6 +45,11 @@ uiload = function() {
 		toggleUserProperty("maximize_screen");
 		
 	});
+	jQuery("select.select2").livequery( function() 
+	{
+		var input = jQuery(this);
+		input.select2();
+	});
 	
 	jQuery("input.select2editable").livequery( function() 
 	{

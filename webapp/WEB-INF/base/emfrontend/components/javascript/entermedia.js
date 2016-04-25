@@ -1162,9 +1162,9 @@ emcomponents = function() {
 						
 						var response;
 						if(!categoryName){
-							response = confirm("Move asset to "+collectionName+" collection?");
+							response = true;//confirm("Move asset to "+collectionName+" collection?");
 						}else{
-							response = confirm("Move "+categoryName+" category to "+collectionName+" collection?");
+							response = confirm("Copy "+categoryName+" category to "+collectionName+" collection?");
 						}
 						
 						if(response == false){
