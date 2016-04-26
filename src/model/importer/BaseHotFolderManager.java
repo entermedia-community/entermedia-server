@@ -116,7 +116,7 @@ public class BaseHotFolderManager implements HotFolderManager
 				String toplevelfolder =  folder.get("subfolder");
 				String type = folder.get("hotfoldertype");
 				
-				if(type == null || type  == "mount" )
+				if(type == null ||"mount".equals(type))
 				{
 					type = "mount";
 					
@@ -151,12 +151,12 @@ public class BaseHotFolderManager implements HotFolderManager
 	protected Repository createRepo(String inType)
 	{
 		Repository repo;
-		if( inType == "version" )
+		if("version".equals(inType) )
 		{
 			repo = new XmlVersionRepository();
 			repo.setRepositoryType("versionRepository");
 		}
-		else if( inType == "s3" )
+		else if( "s3".equals(inType))
 		{
 			repo = new XmlVersionRepository();
 			repo.setRepositoryType("versionRepository");
@@ -220,7 +220,7 @@ public class BaseHotFolderManager implements HotFolderManager
 	{
 		String type = inExisting.get("hotfoldertype");
 		getFolderSearcher(inCatalogId).delete(inExisting, null);
-		if( type == "syncthing")
+		if( "syncthing".equals(type))
 		{
 			updateSyncThingFolders(inCatalogId);
 		}
@@ -235,7 +235,7 @@ public class BaseHotFolderManager implements HotFolderManager
 	public void saveFolder(String inCatalogId, Data inNewrow)
 	{
 		String type = inNewrow.get("hotfoldertype");
-		if( type == "syncthing")
+		if("syncthing".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
 			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
@@ -243,7 +243,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			updateSyncThingFolders(inCatalogId);
 		}
-		else if( type == "googledrive")
+		else if( "googledrive".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
 			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
@@ -368,7 +368,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
 			Data folder = (Data) iterator.next();
 			String type = folder.get("hotfoldertype");
-			if( type != "googledrive")
+			if( "googledrive".equals(type))
 			{
 				continue;
 			}

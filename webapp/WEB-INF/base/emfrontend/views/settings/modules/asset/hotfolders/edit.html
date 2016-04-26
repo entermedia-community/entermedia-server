@@ -62,10 +62,10 @@ $pages.include("./editdetails.html")
 
 
 <!-- 
-#set($searcher = $searcherManager.getSearcher("system", "mount"))
-#set($details = $searcher.getPropertyDetails())
-$context.putPageValue("details", $details)
-$context.putPageValue("data", $mount)
+##set($searcher = $searcherManager.getSearcher("system", "mount"))
+##set($details = $searcher.getPropertyDetails())
+##$context.putPageValue("details", $details)
+##$context.putPageValue("data", $mount)
 ##$pages.include("/system/components/xml/detaileditor.html", $context)
  -->
 
