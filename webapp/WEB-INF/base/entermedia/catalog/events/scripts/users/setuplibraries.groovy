@@ -26,8 +26,13 @@ public void init()
 		
 		
 		//Loop over every user profile and move the userid colum into the id column
-		 
-		HitTracker profiles = searcher.getAllHits();
+		String id = context.getRequestParameter("id");
+		HitTracker profiles = null;
+		if(id != null){
+			profiles = searcher.fieldSearch("id",id);
+		} else{
+		    profiles = searcher.getAllHits();
+		}
 		profiles.enableBulkOperations();
 		int ok = 0;
 		profiles.each
@@ -42,7 +47,7 @@ public void init()
 			{
 				manager.deleteFolder(catalogId,existing);
 			}
-			Searcher hotfolders = mediaArchive.getSearcher("hotfolder").createNewData();
+			Searcher hotfolders = mediaArchive.getSearcher("hotfolder");
 			
 			Data newrow = hotfolders.searchById("user-${it.id}");
 			if(newrow == null){
