@@ -26,6 +26,7 @@ public void init()
 		
 		
 		//Loop over every user profile and move the userid colum into the id column
+		 
 		HitTracker profiles = searcher.getAllHits();
 		profiles.enableBulkOperations();
 		int ok = 0;
@@ -41,14 +42,26 @@ public void init()
 			{
 				manager.deleteFolder(catalogId,existing);
 			}
-			Data newrow = mediaArchive.getSearcher("hotfolder").createNewData();
-			newrow.setName("Hot Folder for ${it} (${it.id})");
-			newrow.setProperty("subfolder", "hotfolders");
-			newrow.setProperty("externalpath", path);
-			newrow.setProperty("includes", path);
-			newrow.setProperty("excludes", path);
-		//	newrow.setProperty("hotfoldertype", "syncthing");			
-			manager.saveFolder(catalogId,newrow);		
+			Searcher hotfolders = mediaArchive.getSearcher("hotfolder").createNewData();
+			
+			Data newrow = hotfolders.searchById("user-${it.id}");
+			if(newrow == null){
+				newrow = hotfolders.createNewData();
+				newrow.setName("Hot Folder for ${it} (${it.id})");
+				newrow.setProperty("subfolder", "hotfolders/${hit.id}");
+				newrow.setProperty("externalpath", path);
+				newrow.setProperty("includes", path);
+				newrow.setProperty("excludes", path);
+				if(hit.get("syncthing") != null){
+					newrow.setProperty("hotfoldertype", "syncthing");
+					newrow.setProperty("deviceid", hit.get("syncthing"));
+					
+					
+				}
+					
+				manager.saveFolder(catalogId,newrow);
+			}
+					
 			
 			
 			//Create a library
