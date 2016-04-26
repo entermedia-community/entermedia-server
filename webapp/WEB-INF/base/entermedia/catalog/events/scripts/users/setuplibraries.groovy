@@ -57,10 +57,9 @@ public void init()
 				newrow.setId("user-${it.id}");
 			}
 				newrow.setName("Hot Folder for ${it} (${it.id})");
-				newrow.setProperty("subfolder", "hotfolders/${hit.id}");
-				newrow.setProperty("externalpath", path);
-				newrow.setProperty("includes", path);
-				newrow.setProperty("excludes", path);
+				newrow.setProperty("subfolder", "${hit.id}");
+				//newrow.setProperty("externalpath", path);
+				
 				if(profile != null && profile.get("syncthing") != null){
 					newrow.setProperty("hotfoldertype", "syncthing");
 					newrow.setProperty("deviceid", profile.get("syncthing"));

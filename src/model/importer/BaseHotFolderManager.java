@@ -238,7 +238,10 @@ public class BaseHotFolderManager implements HotFolderManager
 		if("syncthing".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
-			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
+			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/originals/hotfolders/" + toplevelfolder );
+			if(!toplevel.exists()){
+				getPageManager().putPage(toplevel);
+			}
 			inNewrow.setProperty("externalpath",toplevel.getContentItem().getAbsolutePath() );
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			updateSyncThingFolders(inCatalogId);
@@ -246,7 +249,10 @@ public class BaseHotFolderManager implements HotFolderManager
 		else if( "googledrive".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
-			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder );
+			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/originals/hotfolders/" + toplevelfolder );
+			if(!toplevel.exists()){
+				getPageManager().putPage(toplevel);
+			}
 			inNewrow.setProperty("externalpath",toplevel.getContentItem().getAbsolutePath() );
 			new File(toplevel.getContentItem().getAbsolutePath()).mkdirs();
 			
