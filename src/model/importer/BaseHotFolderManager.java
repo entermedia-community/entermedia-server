@@ -443,13 +443,14 @@ public class BaseHotFolderManager implements HotFolderManager
 			for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
 				Data folder = (Data) iterator.next();
 				String type = folder.get("hotfoldertype");
-				if( type != "syncthing")
+				if( !"syncthing".equals(type))
 				{
 					continue;
 				}
 				//Add self if not already in there
 				String clientdeviceid = folder.get("deviceid");
 				String toplevelfolder = folder.get("subfolder");
+				if(clientdeviceid == null)
 				if( !existingdevices.contains(clientdeviceid))
 				{
 					JSONObject newdevice = new JSONObject();
