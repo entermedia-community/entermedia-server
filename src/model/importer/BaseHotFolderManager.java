@@ -432,8 +432,8 @@ public class BaseHotFolderManager implements HotFolderManager
 			List allfolders = (List) config.get("folders");
 			List folders = new ArrayList(allfolders);
 			for (Iterator iterator = folders.iterator(); iterator.hasNext();) {
-				Data folder = (Data) iterator.next();
-				String folderid = folder.get("id");
+				JSONObject folder = (JSONObject) iterator.next();
+				String folderid = (String) folder.get("id");
 				if( folderid.startsWith("EnterMediaDB/" + inCatalogId + "/") )
 				{
 					allfolders.remove(folder);
