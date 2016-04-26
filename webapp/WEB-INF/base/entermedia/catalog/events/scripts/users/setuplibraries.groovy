@@ -20,7 +20,9 @@ public void init()
 		
 		
 		Searcher searcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "user");
-		Searcher libraries = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "library");
+		Searcher profilesearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "userprofile");
+		
+				Searcher libraries = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "library");
 		Searcher collectionsearcher = mediaArchive.getSearcherManager().getSearcher(mediaArchive.getCatalogId(), "librarycollection");
 		
 		
@@ -40,7 +42,7 @@ public void init()
 		
 			Data hit =  it;
 			//Create a hotfolder
-			
+			Data profile = profilesearcher.searchById(it.id);
 			String path = "/WEB-INF/data/" + catalogId + "/originals/hotfolders/${it.id}/";
 			Data existing = manager.getFolderByPathEnding(catalogId, "test");
 			if( existing != null)
@@ -52,20 +54,22 @@ public void init()
 			Data newrow = hotfolders.searchById("user-${it.id}");
 			if(newrow == null){
 				newrow = hotfolders.createNewData();
+				newrow.setId("user-${it.id}");
+			}
 				newrow.setName("Hot Folder for ${it} (${it.id})");
 				newrow.setProperty("subfolder", "hotfolders/${hit.id}");
 				newrow.setProperty("externalpath", path);
 				newrow.setProperty("includes", path);
 				newrow.setProperty("excludes", path);
-				if(hit.get("syncthing") != null){
+				if(profile != null && profile.get("syncthing") != null){
 					newrow.setProperty("hotfoldertype", "syncthing");
-					newrow.setProperty("deviceid", hit.get("syncthing"));
+					newrow.setProperty("deviceid", profile.get("syncthing"));
 					
 					
 				}
 					
 				manager.saveFolder(catalogId,newrow);
-			}
+			
 					
 			
 			
