@@ -1,6 +1,4 @@
 <permissions name="Application Permissions">
-
-
 	<permission id="view" permissiontype="view" name="Application" description="Enables access to the EnterMedia application." ordering="1000"/>
 	<permission id="viewmetadatageneral" permissiontype="view" name="View General Metadata" description="Enable general metadata viewing." ordering="600" />
 	<permission id="viewassets" permissiontype="view" name="Asset Search" description="Enables access to assets." ordering="601" />
@@ -9,7 +7,6 @@
 	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." ordering="604"/>
 	<permission id="viewhomelink" permissiontype="view" name="Home" description="Enables the home button." ordering="605"/>
 	<permission id="viewmap" permissiontype="view" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="606"/>
-	<permission id="maximize" permissiontype="view" name="Maximize" description="Enables ability to maximize the application within a browser window." ordering="607"/>
 	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool." ordering="608"/>
 	<permission id="viewmyaccount" permissiontype="view" name="My Account Area" description="Enables a page that edit user data and updates passwords." ordering="609"/>
 	<permission id="viewrecentsearches" permissiontype="view" name="Previous Searches" description="Enables access to past searches." ordering="610"/>
