@@ -238,7 +238,7 @@ public class BaseHotFolderManager implements HotFolderManager
 		if("syncthing".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
-			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/originals/hotfolders/" + toplevelfolder );
+			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/originals/hotfolders/" + toplevelfolder +"/" );
 			if(!toplevel.exists()){
 				getPageManager().putPage(toplevel);
 			}
