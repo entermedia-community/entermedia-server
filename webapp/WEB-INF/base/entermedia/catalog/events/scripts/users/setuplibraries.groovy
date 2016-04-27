@@ -80,7 +80,7 @@ public void init()
 				userlibrary.setId("${hit.id}-library");
 				userlibrary.setName("${it}'s Library");
 			}
-			userlibrary.setProperty("folder", "hotfolders/${hit.id}");
+			userlibrary.setProperty("folder", "${hit.id}");
 			
 			libraries.saveData(userlibrary);
 			
