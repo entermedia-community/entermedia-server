@@ -68,8 +68,8 @@ public void init()
 				}
 					
 				manager.saveFolder(catalogId,newrow);
-			
-					
+				manager.saveMounts(catalogId);
+				
 			
 			
 			//Create a library
@@ -93,7 +93,7 @@ public void init()
 			
 			collections.keySet().each {
 				
-				String collectionpath = "/WEB-INF/data/" + catalogId + "/originals/hotfolders/${hit.id}/${it}/";
+				String collectionpath = "/WEB-INF/data/" + catalogId + "/originals/${hit.id}/${it}/";
 				Page colfolder = mediaArchive.getPageManager().getPage(collectionpath);
 				if(!colfolder.exists()){
 					
