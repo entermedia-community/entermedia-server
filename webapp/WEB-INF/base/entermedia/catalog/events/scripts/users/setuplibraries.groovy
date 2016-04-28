@@ -11,7 +11,10 @@ public void init()
 {
 		MediaArchive mediaArchive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		
-		
+		boolean auto = Boolean.parseBoolean(mediaArchive.getCatalogSettingValue("autocreatelibraries"));
+		if(!auto){
+			return;
+		}
 		
 		HotFolderManager manager =mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(), "hotFolderManager");
 		
