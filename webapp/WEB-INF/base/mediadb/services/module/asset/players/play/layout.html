@@ -1,3 +1,3 @@
-#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+#set( $type = $mediaarchive.getMediaRenderType($asset))
 
 $pages.include("$apphome/services/module/asset/players/types/${type}.html", $context)

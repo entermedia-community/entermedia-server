@@ -73,22 +73,24 @@ public class BaseMediaModule extends BaseModule
 	public MediaArchive getMediaArchive(WebPageRequest inReq)
 	{
 		MediaArchive archive = (MediaArchive)inReq.getPageValue("mediaarchive");
-		if( archive != null)
+		String catalogid = null;
+		if( archive == null)
 		{
-			return archive;
+			catalogid = inReq.findValue("catalogid");
+			if (catalogid == null || "$catalogid".equals(catalogid))
+			{
+				return null;
+			}
 		}
-		String catalogid = inReq.findValue("catalogid");
-		if (catalogid == null || "$catalogid".equals(catalogid))
+		if( archive == null)
 		{
-			return null;
+			archive = getMediaArchive(catalogid);
 		}
-		archive = getMediaArchive(catalogid);
 		inReq.putPageValue("mediaarchive", archive);
 		inReq.putPageValue("cataloghome", archive.getCatalogHome());
-		String mediadb = archive.getCatalogSettingValue("mediadbappid");
+		String mediadb = archive.getMediaDbId();
 		inReq.putPageValue("mediadbappid", mediadb);
-		
-		inReq.putPageValue("catalogid", catalogid); // legacy
+		inReq.putPageValue("catalogid", archive.getCatalogId()); // legacy
 		return archive;
 	}
 	public SearcherManager getSearcherManager()

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="ok">
 #set( $mediaarchive = $entermedia.getMediaArchive($context.getRequestParameter("catalogid") ) )
-#set( $mediadbappid = $mediaarchive.getCatalogSettingValue("mediadbappid") )
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
 
 #set( $cataloghome = $mediaarchive.getCatalogHome() )
 #set( $fields = $searcher.getDetailsForView("asset/restsearchresults",$user) )
