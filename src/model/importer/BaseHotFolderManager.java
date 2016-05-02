@@ -456,8 +456,7 @@ public class BaseHotFolderManager implements HotFolderManager
 				//Add self if not already in there
 				String clientdeviceid = folder.get("deviceid");
 				String toplevelfolder = folder.get("subfolder");
-				if(clientdeviceid == null)
-				if( !existingdevices.contains(clientdeviceid))
+				if(clientdeviceid != null && !existingdevices.contains(clientdeviceid))
 				{
 					JSONObject newdevice = new JSONObject();
 					newdevice.put("deviceID", clientdeviceid );
