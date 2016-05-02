@@ -68,7 +68,7 @@
 	<a class="mbtn blue confirm" style="margin-left: 200px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Catalog</a>
 </div>
 <br>
-<p><b>Admin Password</b>: $userManager.decryptPassword( $searcherManager.getData($catalog.id,"user","admin") )
+<p><b>Admin Password</b>: $userManager.decryptPassword( $userManager.getUser("admin") )
 
 </from>
 	

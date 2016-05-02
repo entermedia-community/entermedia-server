@@ -424,7 +424,7 @@ public class AdminModule extends BaseModule
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 				String value = user.getUserName() + "md542" + md5;
 				inReq.putPageValue("entermediakey", value);
-				String catalogid =user.get("catalogid");
+				String catalogid = user.get("catalogid");
 				inReq.putSessionValue(catalogid + "user", user);
 			}
 		}
