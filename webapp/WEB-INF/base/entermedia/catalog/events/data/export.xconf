@@ -11,7 +11,7 @@
 	<property name="exportpath">/WEB-INF/data/${catalogid}/exports/assetexport-${date}.csv</property>
 	<property name="view">asset/export</property>
 	<property name="sendnotifications">true</property>
-	<property name="to">ian@ijsolutions.ca</property>
+	<property name="to">xxx@xxx.ca</property>
 
 	
 </page>

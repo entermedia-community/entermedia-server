@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Export Database CSV</property>	
+	
+	<path-action name="Script.run" alltypes="true" >
+		<script>/${catalogid}/events/scripts/data/dumpdatabase.groovy</script>
+	</path-action>
+	
+</page>
