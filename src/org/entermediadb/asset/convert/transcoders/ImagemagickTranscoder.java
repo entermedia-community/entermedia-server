@@ -1,6 +1,5 @@
 package org.entermediadb.asset.convert.transcoders;
 
-import java.awt.Dimension;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,11 +7,9 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.TranscodeTools;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
@@ -50,26 +47,26 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	{
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
-		MediaArchive archive = inStructions.getMediaArchive();
+		//MediaArchive archive = inStructions.getMediaArchive();
 		Asset asset = inStructions.getAsset();
 		ContentItem inOutFile = inStructions.getOutputFile();
 		String outputpath = inOutFile.getAbsolutePath();
 
-		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath());
+		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath(),true);
 		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
 
 		String ext = null;
-		
-		if(asset != null){
-		 ext = asset.getFileFormat();
-		}
-		
-		
-
-		if (ext == null)
+		if(asset != null)
 		{
-			ext = tmpinput;
-
+			if( tmpinput == null)
+			{
+				tmpinput = asset.getFileFormat();
+			}
+			ext = asset.getFileFormat();
+			if (ext == null)
+			{
+				ext = tmpinput;
+			}
 		}
 		//File inputFile = new File(input.getContentItem().getAbsolutePath());
 		//		String newext = PathUtilities.extractPageType( input.getPath() );
