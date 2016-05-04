@@ -81,17 +81,23 @@ public void init(){
 	}
 	
 	Page fields = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
+	if (fields.exists()) {
 	Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/fields/");
 	mediaarchive.getPageManager().copyPage(fields, target);
-	
+	}
 	
 	Page lists = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/");
-	 target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/lists/");
+	if (lists.exists()) {
+	target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/lists/");
 	mediaarchive.getPageManager().copyPage(lists, target);
+	}
 	
 	Page views = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/views/");
+	if (views.exists()) {
 	target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/views/");
    mediaarchive.getPageManager().copyPage(views, target);
+	}
+	
 	
 	
    String applicationid  = context.findValue("applicationid");
