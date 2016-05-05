@@ -18,6 +18,7 @@ import assets.model.AssetTypeManager
 import assets.model.EmailNotifier
 
 
+
 public void setAssetTypes()
 {
 	log.info("Starting Assets Imported Custom")
@@ -47,6 +48,7 @@ public void setAssetTypes()
 	manager.saveAssetTypes(hits);
 	
 	setupProjects(hits);
+	assignCollections(hits);
 	
 }
 public void sendEmail()
@@ -335,6 +337,50 @@ public void setupCollection(){
 				 req.setRequestParameter("librarycollection", librarycollectionid);
 								 pm.addAssetToCollection(req, archive, librarycollection.get("library"), asset.getId());
 			}
+		 }
+	}
+	if (!assetsToSave.isEmpty()){
+		archive.saveAssets( assetsToSave );
+	}
+}
+
+
+
+
+public void assignCollections(Collection hits){
+	log.info("setting collections");
+	WebPageRequest req = context;
+	MediaArchive archive = req.getPageValue("mediaarchive");
+	
+	
+	ProjectManager pm = archive.getModuleManager().getBean("projectManager");
+	Searcher assetsearcher = archive.getAssetSearcher();
+	Searcher librarysearher = archive.getSearcher("library");
+	Searcher collectionsearcher = archive.getSearcher("librarycollection");
+	
+	
+	List assetsToSave = new ArrayList();
+	hits.each{
+		String id = it.id;
+		 Asset asset = archive.getAsset(id);
+		 
+		 if (asset!=null)
+		 {
+			 String sourcepath = asset.getSourcePath();
+			 
+			 String[] splits = sourcepath.split("/")
+			 if(splits.length > 2){
+				  String topfolder = splits[0];
+				  String subfolder = splits[1];
+				  Data librarycollection = collectionsearcher.searchById("${topfolder}-${subfolder}-collection");
+				  if(librarycollection != null){
+					  req.setRequestParameter("librarycollection", librarycollection.getId());
+					   pm.addAssetToCollection(archive, librarycollection.getId(), asset.getId());
+				  }
+
+				 
+			 }
+			 
 		 }
 	}
 	if (!assetsToSave.isEmpty()){
