@@ -543,7 +543,7 @@ uiload = function() {
 						page_limit : 15,
 						page: params.page
 					};
-					search[searchfield+ ".value"] = params.term; //search term
+					search[searchfield+ ".value"] = params.term.toLowerCase(); //search term
 					search["sortby"] = sortby; //search term
 					return search;
 				},

@@ -12,6 +12,14 @@ curl -XGET 'http://localhost:9200/media_catalogs_public/userprofile/_search?q=id
 curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 curl -XGET 'http://localhost:9200/media_catalogs_public/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
+curl -XGET  'http://localhost:9200/assets_catalog/asset/_mapping?pretty=true'  | python -mjson.tool
+
+curl -XGET 'http://localhost:9200/assets_catalog/_analyze' -d '
+{
+  "field" : "asset.keywords",
+  "text" : "Newtag"
+}'
+
 curl -XGET  'http://localhost:9200/assets_catalog/settingsgroup/_mapping?pretty=true'  | python -mjson.tool
 curl -XGET 'http://localhost:9200/assets_catalog/settingsgroup/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
@@ -28,6 +36,86 @@ curl -XPUT "http://localhost:9200/assets_catalog/settingsgroup/administrator" -d
 
 curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
-system/searchtypes/user
-
 curl -XGET 'http://localhost:9200/system/user/_search?q=id:admin' | python -mjson.tool
+
+
+curl -XGET "http://localhost:9200/assets_catalog/asset/_search' -d '{
+  "from" : 0,
+  "size" : 50,
+  "query" : {
+    "bool" : {
+      "must" : [ {
+        "wildcard" : {
+          "keywords" : "*new*"
+        }
+      }, {
+        "bool" : {
+          "should" : [ {
+            "match" : {
+              "viewasset" : {
+                "query" : "true",
+                "type" : "boolean"
+              }
+            }
+          }, {
+            "match" : {
+              "viewasset" : {
+                "query" : "library_avrtm63d0olgviybqvht",
+                "type" : "boolean"
+              }
+            }
+          }, {
+            "match" : {
+              "viewasset" : {
+                "query" : "group_visualdata",
+                "type" : "boolean"
+              }
+            }
+          }, {
+            "match" : {
+              "viewasset" : {
+                "query" : "group_administrators",
+                "type" : "boolean"
+              }
+            }
+          }, {
+            "match" : {
+              "viewasset" : {
+                "query" : "user_admin",
+                "type" : "boolean"
+              }
+            }
+          } ]
+        }
+      } ]
+    }
+  },
+  "explain" : false,
+  "aggregations" : {
+    "libraries" : {
+      "terms" : {
+        "field" : "libraries",
+        "size" : 10
+      }
+    },
+    "assettype" : {
+      "terms" : {
+        "field" : "assettype",
+        "size" : 10
+      }
+    },
+    "fileformat" : {
+      "terms" : {
+        "field" : "fileformat",
+        "size" : 10
+      }
+    },
+    "editstatus" : {
+      "terms" : {
+        "field" : "editstatus",
+        "size" : 10
+      }
+    }
+  }
+}' 
+1 hits in: 0.002 seconds]
