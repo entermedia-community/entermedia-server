@@ -167,11 +167,14 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		
 
 		String servername = inDestination.get("url");
-		String addr       = servername + "api/asset/item" + inAsset.get("vizid") + "/metadata";
+		String addr       = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
 
 
 
-		String data = "<payload xmlns='http://www.vizrt.com/types' model='https://vmeserver/api/metadata/form/myform/r1'><field name='asset.retentionpolicy'><value>oneweek</value></field></payload>";
+		String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field>   <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
+
+		
+		
 		Map metadata = inAsset.getProperties();
 		Calendar now = new GregorianCalendar();
 		now.add(now.DAY_OF_YEAR, 7);
@@ -180,11 +183,15 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		String date = format.format(oneweek);
 		
 		
-		metadata.put("${date}",date );
+		metadata.put("date",date );
+		metadata.put("policy","oneweek" );
+		metadata.put("title",inAsset.getName() );
+
+		
 		
 		data = inArchive.getReplacer().replace(data, metadata);
 		
-		PostMethod method = new PostMethod(addr);
+		PutMethod method = new PutMethod(addr);
 		
 		//method.setRequestEntity(new ByteArrayEntity(data.bytes));
 		method.setRequestBody(data);
@@ -192,7 +199,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		
 		method.setRequestHeader( "Authorization", "Basic " + inAuthString);
 		method.setRequestHeader( "Expect", "" );
-		method.setRequestHeader("Content-Type", "application/atom+xml;type=entry");
+		method.setRequestHeader("Content-Type", "application/vnd.vizrt.payload+xml");
 		
 		int status = getClient("test").executeMethod(method);
 		
@@ -217,10 +224,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 				String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Title: ${title}</atom:title>"
 						+ "<identifier>${name}</identifier>"
-						+ "<retentionpolicy>oneweek</retentionpolicy>"
-						+ "<retentionPolicy>oneweek</retentionPolicy>"
-						+ "<atom:retentionpolicy>oneweek</atom:retentionpolicy>"
-						+ "<atom:retentionPolicy>oneweek</atom:retentionPolicy>"
+					
 
 						+ "</atom:entry>";
 				Map metadata = inAsset.getProperties();

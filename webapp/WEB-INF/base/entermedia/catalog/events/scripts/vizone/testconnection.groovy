@@ -1,6 +1,7 @@
 package vizone
 
 import org.apache.commons.httpclient.HttpClient
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod
 import org.apache.commons.httpclient.methods.PutMethod
 import org.entermediadb.asset.MediaArchive
@@ -11,7 +12,7 @@ public class VizOne{
 	def authString = "EMDEV:3nterMed1a".getBytes().encodeBase64().toString();
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	public void testLoadAsset(){
-		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?num=50"
+		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?id=50"
 		//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?num=1"
 		def conn = addr.toURL().openConnection()
 		conn.setRequestProperty( "Authorization", "Basic ${authString}" )
@@ -79,7 +80,7 @@ public class VizOne{
 			
 				
 				
-				String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Entermedia Test</atom:title><mam:retentionpolicy>oneweek</mam:retentionpolicy></atom:entry>";
+				String data = "<atom:entry xmlns:atom='http://www.w3.org/2005/Atom'>  <atom:title>Entermedia Test</atom:title></atom:entry>";
 				
 				PostMethod method = new PostMethod(addr);
 				
@@ -108,7 +109,7 @@ public class VizOne{
 	public void testUpload(WebPageRequest inReq){
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		
-		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101604190011378421/upload"
+		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101605090012023821/upload"
 		
 		PutMethod method = new PutMethod(addr);
 		method.setRequestHeader( "Authorization", "Basic ${authString}" );
@@ -138,6 +139,113 @@ public class VizOne{
 	}
 	
 	
+	
+	public void testMetadata(){
+		
+				//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
+				
+		//	##<atom:link rel="models" type="application/atom+xml;type=feed" href="http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form?qType=ASSET.Item&amp;qId=2101605090012023821"/>
+		
+		
+		
+		
+				def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101605090012023821/metadata"
+			
+				
+				
+				String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\">  <field name='asset.title'>    <value>Metadata breakthrough</value>  </field>   <field name='asset.retentionPolicy'>    <value>oneweek</value>  </field>     </payload>";
+				
+				PutMethod method = new PutMethod(addr);
+				
+				//method.setRequestEntity(new ByteArrayEntity(data.bytes));
+				method.setRequestBody(data);
+				
+				
+				method.setRequestHeader( "Authorization", "Basic ${authString}" );
+				method.setRequestHeader( "Expect", "" );
+				method.setRequestHeader("Content-Type", "application/vnd.vizrt.payload+xml");
+				
+				int status = getClient("test").executeMethod(method);
+				
+				//FilePart part = new FilePart(type + count, name, new File( file.getAbsolutePath() ));
+				//	parts.add(part);
+				//	count++;
+				//}
+				String response = method.getResponseBodyAsString();
+				println status;
+			
+				//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
+	}
+	
+	
+	public void testModels(){
+		
+				//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
+				
+		//	##<atom:link rel="models" type="application/atom+xml;type=feed" href="http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form?qType=ASSET.Item&amp;qId=2101605090012023821"/>
+		
+		
+		
+		
+				def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form?qType=ASSET.Item&amp;qId=2101605090012023821"
+			
+				
+				
+			//	String data = "<payload xmlns='http://www.vizrt.com/types' model='https://vmeserver/api/metadata/form/example/r1'>  <field name='asset.title'>    <value>Metadata breakthrough</value>  </field>  <field name='asset.retentionPolicy'>    <value>oneweek</value>  </field>    </payload>";
+				
+				GetMethod method = new GetMethod(addr);
+				
+				//method.setRequestEntity(new ByteArrayEntity(data.bytes));
+				//method.setRequestBody(data);
+				
+				
+				method.setRequestHeader( "Authorization", "Basic ${authString}" );
+				method.setRequestHeader( "Expect", "" );
+				method.setRequestHeader("Content-Type", "application/atom+xml;type=feed");
+				
+				int status = getClient("test").executeMethod(method);
+				
+				//FilePart part = new FilePart(type + count, name, new File( file.getAbsolutePath() ));
+				//	parts.add(part);
+				//	count++;
+				//}
+				String response = method.getResponseBodyAsString();
+				println status;
+			
+				//<atom:link rel="self" type="application/vnd.vizrt.model+xml" href="http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-asset/r1?qId=2101605090012023821"/>
+				
+				
+				 addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-asset/r1?qId=2101605090012023821"
+				
+					
+					
+				//	String data = "<payload xmlns='http://www.vizrt.com/types' model='https://vmeserver/api/metadata/form/example/r1'>  <field name='asset.title'>    <value>Metadata breakthrough</value>  </field>     </payload>";
+					
+					 method = new GetMethod(addr);
+					
+					//method.setRequestEntity(new ByteArrayEntity(data.bytes));
+					//method.setRequestBody(data);
+					
+					
+					method.setRequestHeader( "Authorization", "Basic ${authString}" );
+					method.setRequestHeader( "Expect", "" );
+					method.setRequestHeader("Content-Type", "application/vnd.vizrt.model+xml");
+					
+					 status = getClient("test").executeMethod(method);
+				
+					 
+					 String response2 = method.getResponseBodyAsString();
+					 println status;
+					 
+					 
+				//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
+	}
+	
+	
+	
+	
+	
+	
 	public HttpClient getClient(String inCatalogId)
 	{
 		HttpClient ref = new HttpClient();
@@ -154,10 +262,13 @@ public class VizOne{
 
 
 VizOne vz = new VizOne();
+vz.testModels();
 
+vz.testMetadata();
 
-vz.testCreateRecord();
-//vz.testLoadAsset();
+//vz.testCreateRecord();
+
+vz.testLoadAsset();
 //vz.testUpload(context);
 
 //vz.testSearch();

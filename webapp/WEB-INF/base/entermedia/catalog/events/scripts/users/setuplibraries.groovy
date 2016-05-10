@@ -81,7 +81,9 @@ public void init()
 			if(userlibrary == null){
 				userlibrary = libraries.createNewData();
 				userlibrary.setId("${hit.id}-library");
-				userlibrary.setName("${it.firstname}'s Library");
+				userlibrary.setName("${it.firstName}'s Library");
+				
+				
 			}
 			userlibrary.setProperty("folder", "${hit.id}");
 			
@@ -89,10 +91,10 @@ public void init()
 			
 			// create some collections
 			HashMap collections = new HashMap();
-			collections.put("document", "Documents");
+			collections.put("documents", "Documents");
 			collections.put("audio", "Audio");
-			collections.put("video", "Videos");
-			collections.put("photo", "Photos");
+			collections.put("videos", "Videos");
+			collections.put("photos", "Photos");
 			
 			collections.keySet().each {
 				
