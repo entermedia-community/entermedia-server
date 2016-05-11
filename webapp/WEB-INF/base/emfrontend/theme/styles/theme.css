@@ -6326,7 +6326,7 @@ div.dragcount {
 
 .select2
 {
-	min-width: 180px;
+	min-width: 175px;
 	margin: 5px 0;
 
 }
@@ -6457,7 +6457,7 @@ text-align:center;
 
 .librarymenu
 {
-	margin-top: 3px;
+	margin-top: 10px;
 	margin-bottom: 10px;
 }
 .librarymenu a
@@ -6576,11 +6576,13 @@ a.librarydroparea
 }
 #librarychange div.collectionheaderleft
 {
-	width: 174px;float:left;
+	width: 88%;
+	float:left;
 }
 #librarychange div.collectionheaderright
 {
-	width: 20px;float:left;
+	width: 20px; 
+	float:left;
 	padding: 8px 0px 0px 2px
 }
 
