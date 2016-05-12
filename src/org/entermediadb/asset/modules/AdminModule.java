@@ -284,6 +284,7 @@ public class AdminModule extends BaseModule
 	{
 		//		if( inReq.getPageValue("canedit") == null)
 		//		{
+		createUserSession(inReq);
 		boolean value = false;
 		if (inReq.getUser() != null)
 		{
@@ -296,6 +297,7 @@ public class AdminModule extends BaseModule
 
 	public void allowViewing(WebPageRequest inReq) throws OpenEditException
 	{
+		createUserSession(inReq);
 		AllowViewing command = new AllowViewing();
 		command.setPageManager(getPageManager());
 		command.configure(inReq);
