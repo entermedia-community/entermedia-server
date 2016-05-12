@@ -305,14 +305,14 @@ public class WorkspaceManager
 
 	public void fixFiles(Page inFolder, String inOldCatalogId)
 	{
-		Page upload = getPageManager().getPage(inFolder.getPath() + "/WEB-INF/data/" + inOldCatalogId + "/dataexport/lists/settingsgroup.xml");
+		Page upload = getPageManager().getPage(inFolder.getPath() + "/WEB-INF/data/" + inOldCatalogId + "/lists/settingsgroup.xml");
 		
 		XmlUtil util = new XmlUtil();
 		Element root = util.getXml(upload.getReader(),"utf-8");
 		for(Iterator iterator = root.elementIterator(); iterator.hasNext();)
 		{
 			Element row = (Element)iterator.next();
-			List perms = new ArrayList();
+			StringBuffer perms = new StringBuffer();
 			List atrribs = new ArrayList(row.attributes());
 			
 			for(Iterator iterator2 = row.attributes().iterator(); iterator2.hasNext();)
@@ -321,10 +321,15 @@ public class WorkspaceManager
 				if( Boolean.valueOf(attr.getValue() ) )
 				{
 					atrribs.remove(attr);
-					perms.add(attr.getQualifiedName() );
+					if (perms.length() > 0) {
+						perms.append("|");
+					}
+					perms.append(attr.getQualifiedName() );
 				}
 			}
 			row.setAttributes(atrribs);
+			row.addAttribute("permissions", perms.toString());
+			
 		}
 		OutputStream out = getPageManager().saveToStream(upload);
 		util.saveXml(root, out, "utf-8");
@@ -433,7 +438,7 @@ public class WorkspaceManager
 				catsearcher.saveData(cat, null);
 			}
 			//Reset mapping
-			NodeManager nodemanager = (NodeManager)getSearcherManager().getModuleManager().getBean("nodeManager");
+			NodeManager nodemanager = (NodeManager)getSearcherManager().getModuleManager().getBean(inAppcatalogid, "nodeManager");
 			nodemanager.reindexInternal(inAppcatalogid);
 			//Reset lists
 			getSearcherManager().reloadLoadedSettings(inAppcatalogid);
