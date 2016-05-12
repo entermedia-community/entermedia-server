@@ -88,8 +88,9 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		setReIndexing(true);
 		try
 		{
-			//For now just add things to the index. It never deletes
-		
+			//TODO: delete all before reindexing 
+			
+			
 			//Someone is forcing a reindex
 			//deleteOldMapping();
 			putMappings(toId(getCatalogId()),true);

@@ -1,6 +1,7 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -15,7 +16,6 @@ import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.search.Scroll;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.terms.Terms;
@@ -338,21 +338,31 @@ public class ElasticHitTracker extends HitTracker
 			}
 			getSearcheRequestBuilder().setQuery(bool);
 		}
+		Collection validids = null;
 		
 		if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
 		{
-			String[] fieldSelected = (String[])fieldSelections.toArray(new String[fieldSelections.size()]);
-			BoolQueryBuilder bool = QueryBuilders.boolQuery();
-//			for (int i = 0; i < fieldSelected.length; i++)
-//			{
-//				bool.filter(QueryBuilders.termQuery("_id",fieldSelected[i]));
-//			}
-			QueryBuilder ids = QueryBuilders.termsQuery("_id", fieldSelections);
+			validids = new ArrayList(fieldSelections.size());
+		}
+		Collection ids = getSearchQuery().getSecurityIds();
+		if( ids != null)
+		{
+			if ( validids == null)
+			{
+				validids = ids;
+			}
+			else
+			{
+				validids.addAll(ids);
+			}
+		}
+		if( validids != null)
+		{
+			QueryBuilder fids = QueryBuilders.termsQuery("_id", validids);
 //			QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
-//			
 //			FilterBuilder filter = ;//FilterBuilders.idsFilter().ids(fieldSelected);
 //			andFilter.add(filter);
-			getSearcheRequestBuilder().setPostFilter(ids);
+			getSearcheRequestBuilder().setPostFilter(fids);
 		}
 		else
 		{

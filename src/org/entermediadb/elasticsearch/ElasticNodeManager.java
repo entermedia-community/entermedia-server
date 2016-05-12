@@ -9,9 +9,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +36,8 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
@@ -48,6 +52,8 @@ import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -651,6 +657,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			Date date = new Date();
 			String id = toId(inCatalogId);
+			String oldindex = getIndexNameFromAliasName(id);
+
 			String tempindex = id + date.getTime();
 			prepareIndex(tempindex);
 			//need to reset/creat the mappings here!
@@ -659,6 +667,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			List sorted = archive.listSearchTypes();
 			List childtables = archive.findChildTables();
 
+//			 GetMappingsResponse res = getClient().admin().indices().getMappings(new GetMappingsRequest().indices(oldindex)).get();
+//			 Set loadedtables = new HashSet();
+//			 
+//			for (Iterator iterator = res.mappings().iterator(); iterator.hasNext();)
+//			{
+//				ImmutableOpenMap<String, MappingMetaData> mapping = (ImmutableOpenMap<String, MappingMetaData>) iterator.next();
+//				loadedtables.add(mapping.
+//			} 
+//			
 			//Tables with _parent need to go first.  Hope there is only one level or we need a better sort.
 			for (Iterator iterator = childtables.iterator(); iterator.hasNext();)
 			{
@@ -670,8 +687,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
 					new_name.putMappings(tempindex, true);
 				}
-
-				if (searcher instanceof BaseAssetSearcher)
+				else if (searcher instanceof BaseAssetSearcher)
 				{
 					BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
 					ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
@@ -742,7 +758,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					bulkProcessor.add(request);
 				}
 			}
-			String oldindex = getIndexNameFromAliasName(id);
 
 			getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(tempindex, id).execute().actionGet();
 			DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
