@@ -279,20 +279,9 @@ public class MediaAdminModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		
-		Collection<Searcher> tables = getSearcherManager().listLoadedSearchers(catalogid);
+		Collection tables = getSearcherManager().reloadLoadedSettings(catalogid);
 		
-		List types = new ArrayList();
-		for (Iterator iterator = tables.iterator(); iterator.hasNext();)
-		{
-			Searcher searcher = (Searcher) iterator.next();
-			if (searcher instanceof Reloadable)
-			{
-				searcher.reloadSettings();
-				
-				types.add(searcher.getSearchType());
-			}
-		}
-		inReq.putPageValue("tables", types);
+		inReq.putPageValue("tables", tables);
 
 	}
 

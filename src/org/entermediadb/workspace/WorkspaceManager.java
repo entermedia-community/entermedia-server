@@ -1,9 +1,11 @@
 package org.entermediadb.workspace;
 
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipOutputStream;
 
@@ -17,6 +19,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
@@ -86,7 +89,8 @@ public class WorkspaceManager
 		Element root = DocumentHelper.createElement("application");
 		root.addElement("applicationid").addAttribute("id", appid);
 		root.addElement("catalogid").addAttribute("id", catalogid);
-
+		root.addAttribute("version", "9");
+		
 		Data app = (Data) getSearcherManager().getSearcher(catalogid, "app").searchByField("deploypath", "/" + appid);
 		//Data app = getSearcherManager().getData(catalogid, "app", appid);
 		if (app != null)
@@ -299,6 +303,34 @@ public class WorkspaceManager
 		}
 	}
 
+	public void fixFiles(Page inFolder, String inOldCatalogId)
+	{
+		Page upload = getPageManager().getPage(inFolder.getPath() + "/WEB-INF/data/" + inOldCatalogId + "/dataexport/lists/settingsgroup.xml");
+		
+		XmlUtil util = new XmlUtil();
+		Element root = util.getXml(upload.getReader(),"utf-8");
+		for(Iterator iterator = root.elementIterator(); iterator.hasNext();)
+		{
+			Element row = (Element)iterator.next();
+			List perms = new ArrayList();
+			List atrribs = new ArrayList(row.attributes());
+			
+			for(Iterator iterator2 = row.attributes().iterator(); iterator2.hasNext();)
+			{
+				Attribute attr = (Attribute)iterator2.next();
+				if( Boolean.valueOf(attr.getValue() ) )
+				{
+					atrribs.remove(attr);
+					perms.add(attr.getQualifiedName() );
+				}
+			}
+			row.setAttributes(atrribs);
+		}
+		OutputStream out = getPageManager().saveToStream(upload);
+		util.saveXml(root, out, "utf-8");
+	}
+
+	
 	public void deployUploadedApp(String inAppcatalogid, String inDestinationAppId, Page zip)
 	{
 		Page dest = getPageManager().getPage("/WEB-INF/temp/appunzip");
@@ -313,6 +345,15 @@ public class WorkspaceManager
 			String oldapplicationid = root.element("applicationid").attributeValue("id");
 			String oldcatalogid = root.element("catalogid").attributeValue("id");
 
+			
+			String version = root.attributeValue("version");
+			if( version == null || version.equals("8"))
+			{
+				//fix settingsgroups.xml
+				fixFiles(dest, oldcatalogid);
+			}
+
+			
 			//We need to delete the incoming list of apps
 			Page appdata = getPageManager().getPage(dest.getPath() + "/WEB-INF/data/" + oldcatalogid + "/lists/app/custom.xml" );
 			getPageManager().removePage(appdata);
@@ -391,7 +432,11 @@ public class WorkspaceManager
 				cat.setId(inAppcatalogid);
 				catsearcher.saveData(cat, null);
 			}
-			
+			//Reset mapping
+			NodeManager nodemanager = (NodeManager)getSearcherManager().getModuleManager().getBean("nodeManager");
+			nodemanager.reindexInternal(inAppcatalogid);
+			//Reset lists
+			getSearcherManager().reloadLoadedSettings(inAppcatalogid);
 			
 		}
 		catch (Exception ex)
