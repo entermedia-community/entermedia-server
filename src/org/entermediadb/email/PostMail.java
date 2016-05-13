@@ -222,13 +222,13 @@ public class PostMail
 			{
 				BodyPart messageBodyPart = new MimeBodyPart();
 
-				messageBodyPart.setContent(inText, "text/plain");
+				messageBodyPart.setContent(inText, "text/plain; charset=UTF-8");
 				mp.addBodyPart(messageBodyPart);
 			}
 			if (inHtml != null)
 			{
 				BodyPart messageBodyPart = new MimeBodyPart();
-				messageBodyPart.setContent(inHtml, "text/html");
+				messageBodyPart.setContent(inHtml, "text/html; charset=UTF-8");
 				mp.addBodyPart(messageBodyPart);
 			}
 			if (inAttachments != null)
@@ -259,11 +259,11 @@ public class PostMail
 		}
 		else if (inHtml != null)
 		{
-			msg.setContent(inHtml, "text/html");
+			msg.setContent(inHtml, "text/html; charset=UTF-8");
 		}
 		else
 		{
-			msg.setContent(inText, "text/plain");
+			msg.setContent(inText, "text/plain; charset=UTF-8");
 		}
 		// set the from and to address
 		InternetAddress addressFrom = new InternetAddress(from);
