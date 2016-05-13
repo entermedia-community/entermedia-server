@@ -80,7 +80,7 @@ public abstract class BasePublisher implements Publisher
 	protected PublishResult checkOnConversion(MediaArchive mediaArchive, Data inPublishRequest, Asset inAsset, Data inPreset)
 	{
 		String status = inPublishRequest.get("status");
-		if( inPreset.getId() == "0")// || isremote)
+		if( "0".equals(inPreset.getId()))// || isremote)
 		{
 			return null;
 		}
