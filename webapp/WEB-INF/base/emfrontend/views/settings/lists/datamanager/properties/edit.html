@@ -11,6 +11,13 @@
 	
 	</div>
 </div>
+#set($viewid = $context.getRequestParameter("viewid"))
+
+#set ( $moduleid = $context.findValue("searchtype") )		
+
+
+
+
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )		
 		
@@ -19,6 +26,10 @@
 	<input name="id" type="hidden" value="$!property.id" />
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
+	#if($viewid)
+		<input name="viewpath" type="hidden" value="${moduleid}/${viewid}"/>
+	#end
+
 <div id="edit-data" class="oeinputform validate-inputs">	
 
 
