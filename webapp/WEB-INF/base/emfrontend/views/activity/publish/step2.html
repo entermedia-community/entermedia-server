@@ -24,7 +24,9 @@
 				#set( $omit = $invaliditems.contains("${asset.id}"))
 				#set($found = false)
 				#foreach( $ft in $filetypes)
-					#if ($ft.get(0).equals($filetype))
+
+					#if ($ft.get(0).name.equals($filetype.name))
+						
 						#set($num = $numberutils.toInt("${ft.get(1)}"))
 						#set($num = $num + 1)
 						#set($null = $ft.set(1,"$num"))
