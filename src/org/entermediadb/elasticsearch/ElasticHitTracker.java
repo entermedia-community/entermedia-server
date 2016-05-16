@@ -342,7 +342,7 @@ public class ElasticHitTracker extends HitTracker
 		
 		if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
 		{
-			validids = new ArrayList(fieldSelections.size());
+			validids = new ArrayList(fieldSelections);
 		}
 		Collection ids = getSearchQuery().getSecurityIds();
 		if( ids != null)
