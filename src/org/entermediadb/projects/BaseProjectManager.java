@@ -128,7 +128,7 @@ public class BaseProjectManager implements ProjectManager
 				}
 				if(ids.size() > 0)
 				{
-					HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(inReq); //todo: Cache?
+					HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection",ids).named("sidebar").search(); //todo: Cache?
 					if(collectionassets != null && collectionassets.size() > 0) //No assets found at all
 					{
 						collectionhits = collectionassets.findFilterNode("librarycollection");
@@ -253,7 +253,7 @@ public class BaseProjectManager implements ProjectManager
 				Data found = librarycollectionassetSearcher.createNewData();
 				//found.setSourcePath(libraryid + "/" + librarycollection);
 				found.setProperty("librarycollection", librarycollection);
-				//found.setProperty("asset", assetid);
+				found.setProperty("asset", assetid);
 				found.setProperty("_parent", assetid);
 
 				tosave.add(found);
