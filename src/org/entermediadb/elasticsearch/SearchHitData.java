@@ -1,5 +1,6 @@
 package org.entermediadb.elasticsearch;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -13,6 +14,8 @@ import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
+
+import groovyjarjarantlr.collections.List;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData
 {
@@ -55,8 +58,18 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	@Override
 	public Collection<String> getValues(String inPreference)
 	{
-		Collection result = (Collection)getValue(inPreference);
-		return result;
+		Object result = getValue(inPreference);
+		if( result == null)
+		{
+			return null;
+		}
+		if( result instanceof Collection)
+		{
+			return (Collection)result;
+		}
+		ArrayList one = new ArrayList(1);
+		one.add( result);
+		return one;
 	}
 	@Override
 	public Object getValue(String inId)
