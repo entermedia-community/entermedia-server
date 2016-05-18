@@ -2054,7 +2054,7 @@ ul#sub-nav li:hover ul {
     border-top: none;
     position: absolute;
     z-index: 20;
-    width: auto;
+    width: 400px;
     box-shadow: 0px 3px 4px 0px rgba(0, 0, 0, .1);
 }
 #share-container ul {
@@ -2072,7 +2072,16 @@ ul#sub-nav li:hover ul {
 .addthis_toolbox {
     margin: 10px 0 0 0;
 }
+.embedlinktextarea { margin-bottom:10px; }
 
+.hyphenate {
+	overflow-wrap: break-word;
+    word-wrap: break-word;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    -moz-hyphens: auto;
+    hyphens: auto;
+}
 /* COMMENT STYLES */
 
 #addcomment {
