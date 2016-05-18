@@ -17,8 +17,8 @@
 #foreach($key in $map.keySet())
 #set($detail = $map.get($key))
 <tr>
-
-<td>$key:</td><td> $detail</td><td>$detail.isList()</td><td>$detail.getListId()</td><td>$detail.isStored()</td><td>$detail.getDataType()</td><td><a class="btn" target="_blank" href="convertall.html?searchtype=$key&detail=$detail">Make all like this</a></td>
+#set($type=$detail.getDataType())
+<td>$key:</td><td> $detail</td><td>$detail.isList()</td><td>$detail.getListId()</td><td>$detail.isStored()</td><td>#if($type) $type #else text #end</td><td><a class="btn" target="_blank" href="convertall.html?searchtype=$key&detail=$detail">Make all like this</a></td>
 <td><td><a class="btn" target="_blank" href="legacy.html?searchtype=$key&detail=$detail">Reset this field name and reset other lists</a> </td>
 <td><a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$detail&catalogid=${catalogid}&searchtype=$key">View in DM</a>
 
