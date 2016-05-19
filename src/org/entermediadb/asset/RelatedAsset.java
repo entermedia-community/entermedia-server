@@ -151,5 +151,16 @@ public class RelatedAsset implements Data
 	{
 		getProperties().put(inKey, inValue);
 	}
+	public String get(String inKey, String inLocale)
+	{
+		// TODO Auto-generated method stub
+		return get(inKey + "." + inLocale);
+	}
 
+	@Override
+	public void setValue(String inKey, Object inValue, String inLocale)
+	{
+		setValue(inKey + "." + inLocale, inValue);
+		
+	}
 }

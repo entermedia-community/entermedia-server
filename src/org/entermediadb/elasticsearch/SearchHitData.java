@@ -14,8 +14,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
-
-import groovyjarjarantlr.collections.List;
+import org.openedit.modules.translations.LanguageMap;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData
 {
@@ -117,6 +116,17 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				{
 					value = getValue(legacy);
 				}
+			}
+		}
+		else{
+			if(value instanceof Map){
+				PropertyDetail detail = getPropertyDetails().getDetail(inId);
+				if(detail.isMultiLanguage()){
+					LanguageMap map = new LanguageMap(value);
+					value = map;
+					
+				}
+	
 			}
 		}
 		return value;

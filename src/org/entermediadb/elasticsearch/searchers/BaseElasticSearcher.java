@@ -17,7 +17,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.queryparser.classic.QueryParser;
-import org.apache.lucene.queryparser.classic.QueryParser.Operator;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
@@ -69,6 +68,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.Join;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
@@ -198,7 +198,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				search.setVersion(true);
 			}
 			QueryBuilder terms = buildTerms(inQuery);
-
+			
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
@@ -514,12 +514,15 @@ public class BaseElasticSearcher extends BaseSearcher
 					if (Boolean.parseBoolean(detail.get("nested")))
 					{
 						jsonproperties = jsonproperties.field("type", "nested");
+						
 					}
 					else
 					{
 						jsonproperties = jsonproperties.field("type", "string");
 					}
 				}
+				
+				
 				else
 				{
 					String indextype = detail.get("indextype");
@@ -532,18 +535,44 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					if (indextype != null )
 					{
-						jsonproperties = jsonproperties.field("index", indextype);
+						jsonproperties = jsonproperties.field("type", indextype);
 					}
-					jsonproperties = jsonproperties.field("type", "string");
+					
+					if(detail.isMultiLanguage()){
+					
+					jsonproperties = jsonproperties.field("type", "object");
+					jsonproperties.startObject("properties");
+					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
+					for (Iterator iterator = languages.iterator(); iterator.hasNext();)
+					{
+						Data locale = (Data) iterator.next();
+						String id = locale.getId();
+						jsonproperties.startObject(id);
+						String analyzer = locale.get("analyzer");
+						jsonproperties.field("type", "string");
+						if(analyzer != null){
+							jsonproperties.field("analyzer", analyzer);
+						}
+						jsonproperties = jsonproperties.field("index", "analyzed");
+
+						jsonproperties.endObject();
+					}
+					jsonproperties.endObject();
+					
+					
+					} else{
+						jsonproperties = jsonproperties.field("type", "string");
+
+					}
 //					jsonproperties = jsonproperties.field("term_vector", "with_positions_offsets");
 
 				}
 
-				if (detail.isStored())
+				if (detail.isStored() && !detail.isMultiLanguage())
 				{
 					jsonproperties = jsonproperties.field("store", "yes");
 				}
-				else
+				else if(!detail.isStored() && !detail.isMultiLanguage())
 				{
 					jsonproperties = jsonproperties.field("store", "no");
 				}
@@ -706,6 +735,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			or.mustNot(find);
 			return or;
 		}
+
 		return find;
 	}
 
@@ -770,6 +800,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			//text.maxExpansions(10);
 			find = text;
+			
 		}
 		else if ("startswith".equals(inTerm.getOperation()))
 		{
@@ -1037,6 +1068,13 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 		// QueryBuilders.idsQuery(types)
+		
+		
+		if(fieldid.contains(".")){
+			String []parentpath = fieldid.split(".");
+			
+		}
+		
 		return find;
 	}
 
@@ -1314,6 +1352,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			
 			updateIndex(content, data, details);
 			content.endObject();
+			String source = content.string();
 			if(log.isDebugEnabled() )
 			{
 				log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
@@ -1526,6 +1565,39 @@ public class BaseElasticSearcher extends BaseSearcher
 						inContent.field(key, desc.toString());
 					}
 				}
+				
+				else if (detail.isMultiLanguage())
+				{
+					// This is a nested document
+					inContent.startObject(key); //start first detail object
+					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
+					if(value instanceof String){
+						String target = (String) value;
+						LanguageMap map = new LanguageMap();
+						map.setText(target, "en");
+						value = map;
+						
+					}
+					LanguageMap map = (LanguageMap) value;
+					
+					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
+					{
+						Data locale = (Data) iterator2.next();
+						String id = locale.getId();
+						String localeval = map.getText(id);  //get a location specific value
+						if(localeval != null){
+
+							inContent.field(id, localeval);
+						}			
+
+					}
+					inContent.endObject();
+					
+
+				}
+				
+				
+				
 				else if (key.equals("name"))
 				{
 					// This matches how we do it on Lucene
@@ -1535,6 +1607,8 @@ public class BaseElasticSearcher extends BaseSearcher
 						inContent.field(key + "sorted", value);
 					}
 				}
+				
+				
 				else
 				{
 					if (value == null)
@@ -1783,9 +1857,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			String key = (String) iterator.next();
 			Object object = inSource.get(key);
-			if("category-exact".equals(key)){ //Ian, why is this here?
-				continue;
-			}
+//			if("category-exact".equals(key)){ //Ian, why is this here?
+//				continue;
+//			}
 //			String val = null;
 //			if (object instanceof String) {
 //				val= (String) object;

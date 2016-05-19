@@ -194,7 +194,8 @@ public class ProjectModule extends BaseMediaModule
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
-		inReq.putSessionValue(all.getSessionId(),all);
+		String sessionId = all.getSessionId();
+		inReq.putSessionValue(sessionId,all);
 	}
 	protected String loadCollectionId(WebPageRequest inReq)
 	{

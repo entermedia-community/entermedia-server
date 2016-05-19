@@ -5,8 +5,6 @@ package org.entermediadb.asset;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -17,11 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.collections.map.ListOrderedMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditRuntimeException;
 import org.openedit.data.SaveableData;
 import org.openedit.data.ValuesMap;
 import org.openedit.page.Page;
@@ -217,7 +213,12 @@ public class Asset implements MultiValued, SaveableData
 			//return out.toString();
 			return categories;
 		}
-		return getMap().get(inAttribute);
+		
+		
+		Object object = getMap().get(inAttribute);
+		
+		
+		return object;
 		// if ( value instanceof PageProperty)
 		// {
 		// PageProperty prop = (PageProperty)value;
@@ -785,6 +786,8 @@ public class Asset implements MultiValued, SaveableData
 		getMap().put(inKey, inValue);
 	}
 
+	
+	
 	@Override
 	public void addValue(String inKey, Object inNewValue)
 	{
@@ -796,5 +799,38 @@ public class Asset implements MultiValued, SaveableData
 	{
 		getMap().removeValue(inKey, inOldValue);
 	}
-
+//	public String get(String inKey, String inLocale)
+//	{
+//		// TODO Auto-generated method stub
+//		Object values = getValue(inKey);
+//		if(values instanceof String){
+//			return (String) values;
+//		} else if (values instanceof Map){
+//			Map valmap = (Map) values;
+//			return (String) valmap.get(inLocale);
+//		}
+//		return get(inKey);
+//	}
+//
+//	@Override
+//	public void setValue(String inKey, Object inValue, String inLocale)
+//	{
+//	
+//		Object values = getValue(inKey);
+//		if(values == null){
+//			values = new ValuesMap();
+//			setValue(inKey, values);
+//
+//		}
+//		if(values instanceof String){
+//			ValuesMap map = new ValuesMap();
+//			map.put(inLocale, "en");
+//			values = map;
+//			setValue(inKey, values);
+//		}
+//		else if(values instanceof Map){
+//			 Map vals = (Map) values;
+//			 vals.put(inLocale, inValue);
+//		}
+//	}
 }

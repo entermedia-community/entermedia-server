@@ -294,6 +294,32 @@ public class DataEditModule extends BaseMediaModule
 		searcher.reloadSettings();
 	}
 
+	
+	
+	public void addViewById(WebPageRequest inReq) throws Exception
+	{
+		XmlFile file = (XmlFile)loadView(inReq);
+		String catalogid = resolveCatalogId(inReq);
+		String type = resolveSearchType(inReq);
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
+		file.setPath(path);
+		file.setElementName("property");
+
+		String newone = inReq.getRequestParameter("newone");
+
+		Element element = file.addNewElement();
+		element.addAttribute("id", newone);
+		element.clearContent();
+
+		getXmlArchive().saveXml(file, inReq.getUser());
+		//reload the archive
+		Searcher searcher = loadSearcher(inReq);
+		searcher.getPropertyDetailsArchive().clearCache();
+	}
+	
+	
+	
 	public void addToView(WebPageRequest inReq) throws Exception
 	{
 		XmlFile file = (XmlFile)loadView(inReq);
@@ -934,8 +960,10 @@ public class DataEditModule extends BaseMediaModule
 		
 		Searcher searcher = getSearcherManager().getSearcher(catid, "view");
 		Data data = searcher.createNewData();
+		
 		String module = inReq.findValue("module");
-
+		if(module != null){
+		
 		String id = PathUtilities.makeId(name);
 		id = id.toLowerCase();
 		if( module != null )
@@ -951,10 +979,18 @@ public class DataEditModule extends BaseMediaModule
 		
 		searcher.saveData(data, inReq.getUser());
 		searcher.getPropertyDetailsArchive().clearCache();
-//		String path = "/WEB-INF/data/" + catid + "/views/" + type + "/" + name + ".xml";
-//		XmlFile file = getXmlArchive().getXml(path, "property");
-//
-//		getXmlArchive().saveXml(file, inReq.getUser());
+		} else{
+			
+			String id = PathUtilities.makeId(name);
+			id = id.toLowerCase();
+			String searchtype = inReq.getRequestParameter("searchtype");
+			String path = "/WEB-INF/data/" + catid + "/views/" + searchtype + "/" + id + ".xml";
+			XmlFile file = getXmlArchive().getXml(path, "property");
+			getXmlArchive().saveXml(file, inReq.getUser());
+			
+			
+			
+		}
 	}
 
 	public void deleteView(WebPageRequest inReq)
