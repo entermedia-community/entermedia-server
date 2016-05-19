@@ -157,32 +157,38 @@ public class WorkspaceManager
 		/** APP STUFF **/
 		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
 		PageSettings homesettings = home.getPageSettings();
-		if( !home.exists() )
-		{
-			homesettings.setProperty("module", module.getId());
-			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/" + appid + "/views/modules/default");
-			homesettings.putProperty(prop);
-			getPageManager().getPageSettingsManager().saveSetting(homesettings);
-		}
+		homesettings.setProperty("module", module.getId());
+		PageProperty prop = new PageProperty("fallbackdirectory");
+		prop.setValue("/" + appid + "/views/modules/default");
+		homesettings.putProperty(prop);
+		getPageManager().getPageSettingsManager().saveSetting(homesettings);
+
 		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
 		PageSettings modulesettings = settings.getPageSettings();
-		if( !settings.exists() )
-		{
-			modulesettings.setProperty("module", module.getId());
-			PageProperty prop = new PageProperty("fallbackdirectory");
-			prop.setValue("/" + appid + "/views/settings/modules/default");
-			modulesettings.putProperty(prop);
-			getPageManager().getPageSettingsManager().saveSetting(modulesettings);
-		}
+		modulesettings.setProperty("module", module.getId());
+		prop = new PageProperty("fallbackdirectory");
+		prop.setValue("/" + appid + "/views/settings/modules/default");
+		modulesettings.putProperty(prop);
+		getPageManager().getPageSettingsManager().saveSetting(modulesettings);
 		
 		/** DATABASE STUFF **/
 		String template = "/" + catalogid + "/data/lists/view/default.xml";
 		String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
 		copyXml(catalogid, template, path, module);
 		Searcher views = getSearcherManager().getSearcher(catalogid, "view");
+
+		Collection valuesdir = getPageManager().getChildrenPaths("/" + catalogid + "/data/views/defaults/",true );
+		for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
+		{
+			String copypath = (String) iterator.next();
+			Page input = getPageManager().getPage(copypath);
+			Page destpath = getPageManager().getPage( "/WEB-INF/data/" + catalogid + "/views/" + module.getId() + "/" + module.getId()+ input.getName());
+			getPageManager().copyPage(input, destpath);
+			
+		}
 		views.reIndexAll();
 
+		
 		String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
 		String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
 		copyXml(catalogid, templte2, path2, module);

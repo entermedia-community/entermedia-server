@@ -160,6 +160,7 @@ toggleajax = function(e)
 		jQuery.get(nextpage, {}, function(data) 
 			{
 				cell.html(data);
+				$(document).trigger( "domchanged", cell );
 				cell.addClass("toggle_on");
 				cell.show('fast');
 			}
@@ -204,9 +205,8 @@ runajaxonthis = function(inlink,e)
 				}
 				
 				//Call replacer to pull $scope variables
-				
-				cell.replaceWith(data);
-				
+				cell.replaceWith(data); //Cant get a valid dom element
+				$(document).trigger( "domchanged", "#" + targetDiv );
 				$(window).trigger( "resize" );
 				
 			}
@@ -230,6 +230,7 @@ runajaxonthis = function(inlink,e)
 						cell = jQuery("#" + loaddiv);
 					}
 					cell.html(data);
+					$(document).trigger( "domchanged", "#" + loaddiv );
 					$(window).trigger( "resize" );
 				}
 
@@ -315,7 +316,7 @@ pageload = function(hash)
 onloadselectors = function()
 {
 	
-	jQuery("a.ajax").livequery('click', runajax);
+	jQuery(document).on('click',"a.ajax", runajax);
 	//jQuery(".newcollectiondroparea").bind("drop", runTest);
 	
 	jQuery("a.toggleajax").livequery('click', toggleajax);

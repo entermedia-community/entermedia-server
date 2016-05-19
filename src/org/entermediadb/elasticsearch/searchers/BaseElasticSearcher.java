@@ -47,6 +47,7 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.TermsLookupQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -65,7 +66,8 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.Join;
+import org.openedit.hittracker.JoinFilter;
+import org.openedit.hittracker.ChildFilter;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.modules.translations.LanguageMap;
@@ -610,7 +612,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
 	{
 
-		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0 && inQuery.getParentJoins() == null)  //Shortcut for common cases
+		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0 )  //Shortcut for common cases
 		{
 			Term term = (Term) inQuery.getTerms().iterator().next();
 
@@ -631,50 +633,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
 
-		if (inQuery.isAndTogether())
-		{
-			// TODO: Deal with subqueries, or, and, not
-			for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
-			{
-				Term term = (Term) iterator.next();
-				if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation()))
-				{
-					BoolQueryBuilder or = addOrsGroup(term);
-					bool.must(or);
-				}
-				else
-				{
-					String value = term.getValue();
-					QueryBuilder find = buildTerm(term.getDetail(), term, value);
-					if (find != null)
-					{
-						bool.must(find);
-					}
-				}
-			}
-		}
-		else
-		{
-			for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
-			{
-				Term term = (Term) iterator.next();
-				if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation())) //orsGroup?
-				{
-					BoolQueryBuilder or = addOrsGroup(term);
-					bool.should(or);
-				}
-				else
-				{
-					String value = term.getValue();
-					QueryBuilder find = buildTerm(term.getDetail(), term, value);
-					if (find != null)
-					{
-						bool.should(find);
-					}
-				}
-			}
-		}
-
+		buildBoolTerm(inQuery, bool, inQuery.isAndTogether());
 		if (inQuery.getChildren().size() > 0)
 		{
 			for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();)
@@ -691,18 +650,37 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 			}
 		}
-		if (inQuery.getParentJoins() != null)
-		{
-			for (Iterator iterator = inQuery.getParentJoins().iterator(); iterator.hasNext();)
-			{
-				Join join = (Join) iterator.next();
-				QueryBuilder parent = QueryBuilders.termQuery(join.getChildColumn(), join.getEqualsValue() );
-				QueryBuilder haschild = QueryBuilders.hasChildQuery(join.getChildTable(), parent);
-				bool.must(haschild);
-			}
-		}
 		return bool;
 
+	}
+
+	protected void buildBoolTerm(SearchQuery inQuery, BoolQueryBuilder bool, boolean inAnd)
+	{
+		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
+		{
+			Term term = (Term) iterator.next();
+			if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation()))
+			{
+				BoolQueryBuilder or = addOrsGroup(term);
+				bool.must(or);
+			}
+			else
+			{
+				String value = term.getValue();
+				QueryBuilder find = buildTerm(term.getDetail(), term, value);
+				if (find != null)
+				{
+					if( inAnd)
+					{
+						bool.must(find);
+					}
+					else
+					{
+						bool.should(find);
+					}
+				}
+			}
+		}
 	}
 
 	protected BoolQueryBuilder addOrsGroup(Term term)
@@ -755,6 +733,23 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 
 		String fieldid = inDetail.getId();
+		
+		
+		if ("searchjoin".equals(inDetail.getDataType()))
+		{
+			String fieldname = fieldid.substring(0,fieldid.indexOf( "."));
+			TermsLookupQueryBuilder joinquery = QueryBuilders.termsLookupQuery(fieldname);
+			joinquery.lookupId(inTerm.getValue());
+			joinquery.lookupType(inDetail.getListId());
+			joinquery.lookupIndex(toId( inDetail.getListCatalogId()));
+			
+			joinquery.lookupPath(fieldid.substring(fieldid.indexOf( ".") + 1));
+			
+			find = joinquery;
+			return find;
+		}
+
+		
 		// if( fieldid.equals("description"))
 		// {
 		// //fieldid = "_all";
@@ -807,6 +802,13 @@ public class BaseElasticSearcher extends BaseSearcher
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
+		}
+		else if ("childfilter".equals(inTerm.getOperation()))
+		{
+			ChildFilter filter = (ChildFilter) inTerm;
+			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue() );
+			QueryBuilder haschild = QueryBuilders.hasChildQuery(filter.getChildTable(), parent);
+			find = haschild;
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{

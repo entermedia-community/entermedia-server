@@ -19,11 +19,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.authenticate.AutoLoginProvider;
+import org.entermediadb.authenticate.AutoLoginWithCookie;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
 import org.openedit.OpenEditException;
@@ -55,18 +56,27 @@ import org.openedit.util.URLUtilities;
  */
 public class AdminModule extends BaseModule
 {
-	protected static final String ENTERMEDIAKEY = "entermedia.key"; //username + md542 + md5password + tstamp + timestampenc
+	private static final Log log = LogFactory.getLog(AdminModule.class);
 	protected static final String TIMESTAMP = "tstamp";
-	protected static final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;// milliseconds in one day (used to calculate password expiry)
 
 	protected String fieldImagesRoot; // used by the imagepicker
 	protected String fieldRootFTPURL;
 	protected static final String UNAME = "username";
 	protected static final String EMAIL = "to";
-	private static final Log log = LogFactory.getLog(AdminModule.class);
 	protected StringEncryption fieldCookieEncryption;
 	protected SendMailModule sendMailModule;
 	protected List fieldWelcomeFiles;
+	protected List fieldAutoLoginProviders;
+	
+	public List getAutoLoginProviders()
+	{
+		return fieldAutoLoginProviders;
+	}
+
+	public void setAutoLoginProviders(List inAutoLoginProviders)
+	{
+		fieldAutoLoginProviders = inAutoLoginProviders;
+	}
 
 	public List getWelcomeFiles()
 	{
@@ -626,7 +636,7 @@ public class AdminModule extends BaseModule
 		HttpServletResponse res = inReq.getResponse();
 		if (res != null)
 		{
-			String name = createMd5CookieName(inReq,true);
+			String name = getCookieEncryption().createMd5CookieName(inReq,AutoLoginWithCookie.ENTERMEDIAKEY,true);
 			try
 			{
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
@@ -699,7 +709,7 @@ public class AdminModule extends BaseModule
 
 		inReq.removePageValue("user");
 		inReq.removePageValue("userprofile");
-		removeCookie(inReq);
+		getCookieEncryption().removeCookie(inReq,AutoLoginWithCookie.ENTERMEDIAKEY);
 
 		String referrer = inReq.getRequestParameter("editingPath");
 		if (referrer != null && !referrer.startsWith("http"))
@@ -716,24 +726,6 @@ public class AdminModule extends BaseModule
 		}
 	}
 
-	protected void removeCookie(WebPageRequest inReq)
-	{
-		HttpServletResponse res = inReq.getResponse();
-		if (res != null)
-		{
-			Cookie cookie = new Cookie(createMd5CookieName(inReq,true), "none");
-			cookie.setMaxAge(0);
-			cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm
-			res.addCookie(cookie);
-
-			cookie = new Cookie(createMd5CookieName(inReq,false), "none");
-			cookie.setMaxAge(0);
-			cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm
-			res.addCookie(cookie);
-
-		}
-	}
-
 	public void autoLogin(WebPageRequest inReq) throws OpenEditException
 	{
 		createUserSession(inReq);
@@ -741,34 +733,18 @@ public class AdminModule extends BaseModule
 		{
 			return;
 		}
-		if (Boolean.parseBoolean(inReq.getContentProperty("oe.usernameinheader")))
+		for (Iterator iterator = getAutoLoginProviders().iterator(); iterator.hasNext();)
 		{
-			autoLoginFromRequest(inReq);
-		}
-		if (inReq.getSessionValue("autologindone") == null)
-		{
-			readPasswordFromCookie(inReq);
-		}
-		if (inReq.getUser() == null)
-		{
-			String md5 = inReq.getRequestParameter(ENTERMEDIAKEY);
-			if (md5 != null)
+			AutoLoginProvider login = (AutoLoginProvider) iterator.next();
+			if( login.autoLogin(inReq) )
 			{
-				autoLoginFromMd5Value(inReq, md5);
+				createUserSession(inReq);				
 			}
 		}
-
-		//			
-		//			String login = inReq.getRequestParameter("accountname");
-		//			if (login != null)
-		//			{
-		//				quickLogin(inReq);
-		//			}
-		createUserSession(inReq);
-
 	}
 
-	public User createUserSession(WebPageRequest inReq) {
+	public User createUserSession(WebPageRequest inReq)
+	{
 		UserManager userManager = getUserManager(inReq);
 		String catalogid = userManager.getUserSearcher().getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
@@ -809,185 +785,9 @@ public class AdminModule extends BaseModule
 		}
 	}
 
-	protected void autoLoginFromRequest(WebPageRequest inRequest)
-	{
-		String username = inRequest.getRequest().getRemoteUser();
-		if (username == null)
-		{
-			return;
-		}
-		if (inRequest.getUser() != null)
-		{
-			return;
-		}
-		UserManager userManager = getUserManager(inRequest);
-		User user = userManager.getUser(username);
+	
 
-		if (user == null)
-		{
-			String groupname = inRequest.getPageProperty("autologingroup");
-			if (groupname != null)
-			{
-				user = userManager.createGuestUser(username, null, groupname);
-			}
-		}
-		if (user != null)
-		{
-			inRequest.putProtectedPageValue(PageRequestKeys.USER, user);
-		}
-	}
 
-	String createMd5CookieName(WebPageRequest inReq, boolean withapp)
-	{
-		String home = (String) inReq.getPageValue("home");
-		
-		String name = ENTERMEDIAKEY + home;
-		if( withapp )
-		{
-			String root = PathUtilities.extractRootDirectory(inReq.getPath() );
-			if( root != null && root.length() > 1)
-			{
-				name = name + root.substring(1);
-			}
-		}
-		
-		return name;
-	}
-
-	protected void readPasswordFromCookie(WebPageRequest inReq) throws OpenEditException
-	{
-		// see if we have a coookie for this person with their encrypted password
-		// in it
-		HttpServletRequest req = inReq.getRequest();
-		if (req != null)
-		{
-			Cookie[] cookies = req.getCookies();
-
-			if (cookies != null)
-			{
-				String id = createMd5CookieName(inReq,true);
-				String idold = createMd5CookieName(inReq,false);
-				for (int i = 0; i < cookies.length; i++)
-				{
-					Cookie cook = cookies[i];
-					if (cook.getName() != null)
-					{
-						if( id.equals(cook.getName() ) || idold.equals(cook.getName() ) )
-						{
-							if (autoLoginFromMd5Value(inReq, cook.getValue()))
-							{
-								return;
-							}
-							else
-							{
-								cook.setMaxAge(0); // remove the cookie
-								inReq.getResponse().addCookie(cook);
-							}
-						}
-					}
-				}
-			}
-		}
-	}
-
-	protected boolean autoLoginFromMd5Value(WebPageRequest inReq, String uandpass)
-	{
-		//get the password expiry in days
-		int pwd_expiry_in_days = 1;
-		String str = inReq.getPageProperty("temporary_password_expiry");
-		if (str != null && !str.isEmpty())
-		{
-			try
-			{
-				pwd_expiry_in_days = Integer.parseInt(str);
-			}
-			catch (NumberFormatException e)
-			{
-
-			}
-			if (pwd_expiry_in_days < 1)
-				pwd_expiry_in_days = 1;//default if malformed
-			if (log.isDebugEnabled())
-			{
-				log.debug("Password is set to expire in " + pwd_expiry_in_days + " days");
-			}
-		}
-		//String uandpass = cook.getValue();
-		if (uandpass != null)
-		{
-			int split = uandpass.indexOf("md542");
-			if (split == -1)
-			{
-				return false;
-			}
-			String username = uandpass.substring(0, split);
-
-			User user = getUserManager(inReq).getUser(username);
-			if (user != null && user.getPassword() != null)
-			{
-				String md5 = uandpass.substring(split + 5);
-
-				//if timestamp included, check whether the autologin has expired
-				if ((split = md5.indexOf(TIMESTAMP)) != -1)
-				{
-					String tsenc = md5.substring(split + TIMESTAMP.length());
-					md5 = md5.substring(0, split);
-					try
-					{
-						String ctext = getCookieEncryption().decrypt(tsenc);
-						long ts = Long.parseLong(ctext);
-						long current = new Date().getTime();
-						if ((current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY))
-						{
-							log.debug("Autologin has expired, redirecting to login page");
-							return false;
-						}
-						else
-						{
-							if (log.isDebugEnabled())
-							{
-								log.debug("Autologin has not expired, processing md5 password");
-							}
-						}
-					}
-					catch (Exception oex)
-					{
-						log.error(oex.getMessage(), oex);
-						return false;
-					}
-				}
-				else
-				{
-					if (log.isDebugEnabled())
-					{
-						log.debug("Autologin does not have a timestamp");
-					}
-				}
-
-				try
-				{
-					String hash = getCookieEncryption().getPasswordMd5(user.getPassword());
-					if (md5.equals(hash))
-					{
-						String catalogid =user.get("catalogid");
-						inReq.putSessionValue(catalogid + "user", user);
-						createUserSession(inReq);
-						return true;
-					}
-					else
-					{
-						log.info("Auto login did not work " + username + " md5 " + md5);
-						return false;
-					}
-				}
-				catch (Exception ex)
-				{
-					throw new OpenEditException(ex);
-				}
-			}
-		}
-		return false;
-	}
 
 	public void forwardToSecureSocketsLayer(WebPageRequest inReq)
 	{

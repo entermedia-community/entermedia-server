@@ -172,8 +172,8 @@ uiload = function() {
 		yearRange: '1900:2050'
 	}, jQuery.datepicker.regional[browserlanguage]));  //Move this to the layout?
 	
-	jQuery("input.datepicker").livequery( function() 
-	{
+		jQuery("input.datepicker").livequery( function() 
+		{
 		var targetid = jQuery(this).data("targetid");
 		jQuery(this).datepicker( {
 			altField: "#"+ targetid,
@@ -308,6 +308,8 @@ uiload = function() {
 			{
 				jQuery(this).ajaxSubmit( {target:"#" + targetdiv} );
 			}
+			$(document).trigger( "domchanged", "#" + targetdiv );
+
 			var reset =form.data("reset") 
 			if( reset == true){
 				form.get(0).reset();
@@ -323,11 +325,13 @@ uiload = function() {
 		jQuery(this,"select").change(function() 
 		{
 			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
-		
+			$(document).trigger( "domchanged", "#" + targetdiv );
 		});
 		jQuery(this,"input").on("keyup",function() 
 		{
 			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
+			$(document).trigger( "domchanged", "#" + targetdiv );
+			
 		});
 
 	});
@@ -657,6 +661,7 @@ uiload = function() {
 						link.data("tabloaded",true);
 						$(">.tab-pane",tabcontent).hide();
 						tab.show();
+						$(document).trigger( "domchanged", [">.tab-pane",tabcontent] );
 						$(window).trigger( "resize" );
 					});
 				}
@@ -705,7 +710,8 @@ uiload = function() {
 			}
 	);
 
-	jQuery("select.listautocomplete").livequery( function()   //select2
+	jQuery("select.listautocomplete").livequery(function()   //select2
+	//jQuery.fn.liveajax("select.listautocomplete", function()   //select2
 	{
 		var theinput = jQuery(this);
 		var searchtype = theinput.data('searchtype');
@@ -814,6 +820,7 @@ jQuery(document).ready(function()
 		w3 = ( w2 - 23);
 		$('#commenttext').width(w3);
 	});
+	$(document).trigger( "domchanged", document );
 
 }); 
 

@@ -17,7 +17,22 @@
 				<value>index.php</value>
 			</list>
 		</property>
+		<property name="autoLoginProviders">
+			<list>
+				<ref bean="autoLoginWithCookie" />
+			</list>
+		</property>
 	</bean>
+	<bean id="autoLoginWithCookie" class="org.entermediadb.authenticate.AutoLoginWithCookie">
+		<property name="moduleManager">
+        	<ref bean="moduleManager" />
+        </property>
+		<property name="cookieEncryption">
+			<ref bean="stringEncryption" />
+		</property>
+	</bean>
+	
+	
 	<bean id="AssetEditModule" class="org.entermediadb.asset.modules.AssetEditModule">
 		<property name="assetImporter"><ref bean="assetImporter" /></property>
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
@@ -2028,5 +2043,6 @@
 		</property>
 	</bean>
  	
+getAutoLoginProviders
  	
 </beans>
