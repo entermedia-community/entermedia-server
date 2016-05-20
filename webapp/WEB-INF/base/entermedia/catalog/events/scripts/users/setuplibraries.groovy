@@ -69,7 +69,7 @@ public void init()
 					
 					
 				}
-				newrow.setProperty("excludes", "*tmp*, */.*,*/Thumbs.db,*.old");
+				newrow.setProperty("excludes", "*tmp*, */.*,*/Thumbs.db,*.old, *.ini");
 				manager.saveFolder(catalogId,newrow);
 				manager.saveMounts(catalogId);
 				

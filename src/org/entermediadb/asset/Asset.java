@@ -18,8 +18,10 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.MultiValued;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.SaveableData;
 import org.openedit.data.ValuesMap;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;
 
@@ -754,6 +756,7 @@ public class Asset implements MultiValued, SaveableData
 	@Override
 	public void setValue(String inKey, Object inValue)
 	{
+		
 		if ("category-exact".equals(inKey))
 		{
 			if (inValue != null)
@@ -782,6 +785,14 @@ public class Asset implements MultiValued, SaveableData
 					}
 				}
 			}
+		}
+		if(inValue instanceof Map){
+			PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
+			if( detail != null && detail.isMultiLanguage())
+			{
+				inValue = new LanguageMap((Map) inValue);
+			}
+			
 		}
 		getMap().put(inKey, inValue);
 	}
