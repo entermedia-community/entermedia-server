@@ -1,6 +1,6 @@
 jQuery(document).ready(function() 
 { 
-	$('.emtree-widget ul li div span.arrow').livequery('click', function(event){
+	$('.emtree-widget ul li div span.arrow').on('click', function(event){
 			event.stopPropagation();
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest('.noderow');
@@ -25,7 +25,7 @@ jQuery(document).ready(function()
 			
 	});
 
-	$('.emtree-widget ul li div').livequery('click', function(event) {
+	$('.emtree-widget ul li div').on('click', function(event) {
 		event.stopPropagation();
 		$('.emtree ul li div').removeClass('selected');
 		$(this).addClass("selected");
@@ -55,6 +55,7 @@ jQuery(document).ready(function()
 						{
 							var cell = jQuery("#searchlayout"); //view-picker-content
 							cell.html(data);
+							$(document).trigger("domchanged", "#searchlayout");
 							//window.location.hash="TOP";
 						}
 				);
@@ -68,23 +69,23 @@ jQuery(document).ready(function()
 	
 	var field = $('.emtree .field'); 
 	
-	field.livequery('click', function(event) 	{
+	field.on('click', function(event) 	{
 			event.stopPropagation();
 	});
 	
-	$('.emtree-widget .field.text').livequery('focusin', function(event) 	{
+	$('.emtree-widget .field.text').on('focusin', function(event) 	{
 		if ($(this).val() == this.defaultValue ) { 
 			$(this).val(''); 
 		}
 	});
 	
-	$('.emtree-widget .field.text').livequery('focusout', function(event)	{
+	$('.emtree-widget .field.text').on('focusout', function(event)	{
 		if ($(this).val() == "") { 
 			$(this).val(this.defaultValue); 
 		}
 	});
 	
-	$(".emtree-widget .add").livequery('click', function(event) {
+	$(".emtree-widget .add").on('click', function(event) {
 				event.stopPropagation();
 				var tree = $(this).closest(".emtree");
 				tree = $(tree);
@@ -96,7 +97,7 @@ jQuery(document).ready(function()
 	} );
 	
 	
-	$(".emtree-widget .cancel").livequery('click', function(event) { 
+	$(".emtree-widget .cancel").on('click', function(event) { 
 			
 			event.stopPropagation();
 
@@ -107,7 +108,7 @@ jQuery(document).ready(function()
 			$("#" + id + "_row > div").removeClass('selected');
 	} );
 	
-	$(".emtree-widget .delete").livequery('click', function(event) {
+	$(".emtree-widget .delete").on('click', function(event) {
 			event.stopPropagation();
 
 			var id = $(this).data('parent');
@@ -132,7 +133,7 @@ jQuery(document).ready(function()
 			}
 	} );
 			
-	$(".emtree-widget .save").livequery('click', function(event) {
+	$(".emtree-widget .save").on('click', function(event) {
 					event.stopPropagation();
 					var id = $(this).data("parent");
 					//alert("parent category was: " + id);
@@ -156,7 +157,7 @@ jQuery(document).ready(function()
 	} );
 	
 	
-	$(".emtree-widget .edit").livequery('click', function(event) {
+	$(".emtree-widget .edit").on('click', function(event) {
 				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
@@ -168,7 +169,7 @@ jQuery(document).ready(function()
 	} );
 	
 
-	$(".emtree-widget .editcancel").livequery('click', function(event) {
+	$(".emtree-widget .editcancel").on('click', function(event) {
 				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
@@ -179,7 +180,7 @@ jQuery(document).ready(function()
 				return false;
 	} );
 
-	$(".emtree-widget .editsave").livequery('click', function(event) {
+	$(".emtree-widget .editsave").on('click', function(event) {
 				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
@@ -197,6 +198,7 @@ jQuery(document).ready(function()
 						tree.find("#" + id +"_edit").hide("fast");		
 						tree.find("#" + id +"_display").show("fast");
 						tree.find("#" + id + "_display").html(newname);
+						$(document).trigger("domchanged", ".emtree-widget .editsave");
 						repaintEmTree(tree);
 					}
 				
@@ -204,7 +206,7 @@ jQuery(document).ready(function()
 				return false;
 	} );
 	
-	$('.emtree-widget .checkbox input').livequery('click', function(event){
+	$('.emtree-widget .checkbox input').on('click', function(event){
 		event.stopPropagation();
 	});
 
