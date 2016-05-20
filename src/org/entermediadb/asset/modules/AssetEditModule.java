@@ -469,8 +469,7 @@ public class AssetEditModule extends BaseMediaModule
 				try
 				{
 					CompositeAsset assets = (CompositeAsset) inContext.getSessionValue(assetIds[i]);
-					for (Iterator iterator = assets.iterator(); iterator
-							.hasNext();) {
+					for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
 						asset = (Asset) iterator.next();
 						if( tracker != null)
 						{

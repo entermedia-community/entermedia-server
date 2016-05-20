@@ -13,13 +13,13 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 {
 	public void testMpegToFlv()
 	{
-		ConvertInstructions instructions = new ConvertInstructions();
+		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+		TranscodeTools manager = archive.getTranscodeTools();
+		
+		ConvertInstructions instructions = new ConvertInstructions(archive);
 		instructions.setForce(true);
 		instructions.setAssetSourcePath("users/admin/101");
 		instructions.setOutputExtension("flv");
-
-		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		TranscodeTools manager = archive.getTranscodeTools();
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -30,13 +30,14 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 
 	public void testAviToFlv()
 	{
-		ConvertInstructions instructions = new ConvertInstructions();
-		instructions.setForce(true);
-		instructions.setAssetSourcePath("users/admin/103");
-		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		TranscodeTools manager = archive.getTranscodeTools();
+
+		ConvertInstructions instructions = new ConvertInstructions(archive);
+		instructions.setForce(true);
+		instructions.setAssetSourcePath("users/admin/103");
+		instructions.setOutputExtension("flv");
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -47,13 +48,14 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 
 	public void testWmvToFlv()
 	{
-		ConvertInstructions instructions = new ConvertInstructions();
-		instructions.setForce(true);
-		instructions.setAssetSourcePath("users/admin/102");
-		instructions.setOutputExtension("flv");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		TranscodeTools manager = archive.getTranscodeTools();
+		
+		ConvertInstructions instructions = new ConvertInstructions(archive);
+		instructions.setForce(true);
+		instructions.setAssetSourcePath("users/admin/102");
+		instructions.setOutputExtension("flv");
 
 		Page converted = manager.createOutput(instructions);
 		assertNotNull(converted);
@@ -66,14 +68,15 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 	public void testMpegToJpeg()
 	{
 		
-		ConvertInstructions instructions1 = new ConvertInstructions();
-		instructions1.setForce(true);
-		instructions1.setAssetSourcePath("users/admin/101");
-		instructions1.setOutputExtension("mp4");
 
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		TranscodeTools manager = archive.getTranscodeTools();
 
+		ConvertInstructions instructions1 = new ConvertInstructions(archive);
+		instructions1.setForce(true);
+		instructions1.setAssetSourcePath("users/admin/101");
+		instructions1.setOutputExtension("mp4");
+		
 		Page converted = manager.createOutput(instructions1);
 		assertNotNull(converted);
 		assertTrue(converted.exists());
@@ -81,7 +84,7 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		assertEquals("mp4", PathUtilities.extractPageType(converted.getPath()));
 
 		
-		ConvertInstructions instructions = new ConvertInstructions();
+		ConvertInstructions instructions = new ConvertInstructions(archive);
 		instructions.setForce(true);
 		instructions.setAssetSourcePath("users/admin/101");
 		instructions.setOutputExtension("jpg");
