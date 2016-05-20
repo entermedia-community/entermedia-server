@@ -25,6 +25,7 @@ repaint = function(divid) {
 			{
 				//var toreplace = jQuery("#" + targetDiv);
 				div.replaceWith(data);
+				$(document).trigger( "domchanged", "#" + divid);
 			}
 	);
 }
@@ -385,6 +386,7 @@ onloadselectors = function()
 							jQuery.get(targeturl + ui.item.value, 
 									function(result) {
 										jQuery("#" + targetdiv).html(result);
+										$(document).trigger( "domchanged", "#" + targetdiv);
 							});
 							return false;
 						}
@@ -431,6 +433,7 @@ onloadselectors = function()
 						jQuery.get(targeturl + ui.item.value, 
 								function(result) {
 									jQuery("#" + targetdiv).html(result);
+									$(document).trigger( "domchanged", "#" + targetdiv);
 						});
 						return false;
 					}
@@ -919,6 +922,7 @@ showajaxstatus = function(uid)
 		jQuery.get(path, {}, function(data) {
 			cell.replaceWith(data);
 			cell = jQuery("#" + uid);
+			$(document).trigger( "domchanged", "#" + uid);
 			if( !cell.hasClass("ajaxstatus") )
 			{
 				return;
@@ -1009,6 +1013,7 @@ emcomponents = function() {
 						{
 							var toreplace = jQuery("#searcheditor");
 							toreplace.html(data);
+							$(document).trigger( "domchanged", "#searcheditor");
 							
 							var tmp = jQuery("#savedquerylist #newterm");
 							tmp.remove();
@@ -1021,6 +1026,7 @@ emcomponents = function() {
 							padleft = padleft + a.width() / 2;
 							padleft = padleft  - 42; //arrow width
 							jQuery("#arrow").css("left",padleft);
+
 						}
 				);
 				return false;
@@ -1087,7 +1093,8 @@ emcomponents = function() {
 									function(data) 
 									{
 										var	cell = jQuery("#" + targetDiv);
-										cell.replaceWith(data);									
+										cell.replaceWith(data);	
+										$(document).trigger( "domchanged", "#" + targetDiv);
 									}
 							);
 
@@ -1191,6 +1198,7 @@ emcomponents = function() {
 						{
 							var	cell = jQuery("#" + targetDiv);
 							cell.replaceWith(data);
+							$(document).trigger( "domchanged", "#" + targetDiv);
 						});
 					},
 					tolerance: 'pointer',
@@ -1226,6 +1234,7 @@ reloadOpenCollections = function (nextpage) {
 	
 	jQuery.get(nextpage, {}, function(data) {
 		$("#left-col-libraries").replaceWith(data);	
+		$(document).trigger( "domchanged", "#left-col-libraries");
 	});
 	
 	collectionId='';
@@ -1352,6 +1361,7 @@ jQuery(".btn-sm").livequery("click", function(e){
     						{
     							var	cell = jQuery("#" + targetDiv);
     							cell.replaceWith(data);
+    							$(document).trigger( "domchanged", "#" + targetDiv);
     						});
     				
     				

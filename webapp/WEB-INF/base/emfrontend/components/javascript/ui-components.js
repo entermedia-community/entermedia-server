@@ -662,7 +662,7 @@ uiload = function() {
 						link.data("tabloaded",true);
 						$(">.tab-pane",tabcontent).hide();
 						tab.show();
-						$(document).trigger( "domchanged", tab );
+						$(document).trigger( "domchanged", "#" + panelid );
 						$(window).trigger( "resize" );
 					});
 				}
