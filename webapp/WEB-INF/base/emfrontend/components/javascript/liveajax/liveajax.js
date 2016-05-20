@@ -45,8 +45,13 @@
 	{
 		if( arguments.length == 1 )
 		{
-			var item = {"selector":this.selector,"function":arguments[0]};    
+			var func = arguments[0];
+			var item = {"selector":this.selector,"function":func};    
 	    	regelements.push(item);
+	    	try
+ 			{
+	 			func.call(this);
+	 		} catch ( error ) { console.log("Could not process: " + item.selector , error); }	
 	    } 
 	    else //Note: on does not support scope of selectors 
 	    {
@@ -64,6 +69,7 @@
 				eventlistener["scope"] = document;
 			}
 	    	eventregistry.push(eventlistener);
+	    	$(this).on(eventlistener.event,eventlistener.function);	
 		}
 	    return this;
 	}

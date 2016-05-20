@@ -821,7 +821,6 @@ jQuery(document).ready(function()
 		w3 = ( w2 - 23);
 		$('#commenttext').width(w3);
 	});
-	$(document).trigger( "domchanged", document );
 
 }); 
 
