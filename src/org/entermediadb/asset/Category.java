@@ -254,6 +254,10 @@ public class Category extends BaseData
 		{
 			setParentId(parentCatalog.getId());
 		}
+		else
+		{
+			setParentId(null);
+		}
 	}
 
 	/**
@@ -332,11 +336,14 @@ public class Category extends BaseData
 		{
 			return val;
 		}
-		Category parent = getParentCategory();
-		if (parent != null)
+		if( fieldParentCategory != null)
 		{
-			return parent.getValue(inKey);
-		}
+			Category parent = getParentCategory();
+			if (parent != null)
+			{
+				return parent.getValue(inKey);
+			}
+		}	
 		return null;
 	}
 
