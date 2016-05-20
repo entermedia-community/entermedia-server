@@ -28,7 +28,6 @@ import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-import com.sun.corba.se.spi.legacy.connection.GetEndPointInfoAgainException;
 public class BaseProjectManager implements ProjectManager
 {
 	private static final Log log = LogFactory.getLog(BaseProjectManager.class);
