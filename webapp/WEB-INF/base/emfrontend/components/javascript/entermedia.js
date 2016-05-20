@@ -1300,7 +1300,7 @@ createNewCollection = function(newForm){
 				var cell;
 				cell = jQuery("#" + targetDiv);
 				cell.html(data);
-				$(document).trigger( "domchanged", "#" + targetDiv");
+				$(document).trigger( "domchanged", "#" + targetDiv);
 				$(window).trigger( "resize" );
 			}
 		);
