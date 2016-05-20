@@ -41,23 +41,6 @@
  		
  	});
 
-/*
-	runevent = function(event)
-	{
-		var listeners = eventregistry[event.type];
-		$.each(listeners,function()
- 		{
- 			var listener = this;
-			var loop;
-			loop = $(listener.selector,listener.scope);
-			loop.each(function()
- 			{
- 				listener.function.call(this,event);	
- 				//console.log(event.target,event.target.runfunction);
- 			});
- 		});
-	}
-*/
     $.fn.livequery = function() 
 	{
 		if( arguments.length == 1 )

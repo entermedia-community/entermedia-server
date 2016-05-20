@@ -122,6 +122,7 @@ uiload = function() {
 				{
 					var	cell = jQuery("#" + targetDiv);
 					cell.replaceWith(data);
+					$(document).trigger( "domchanged", "#" + targetDiv);
 					$(window).trigger( "resize" );
 				});	
 			}
@@ -661,7 +662,7 @@ uiload = function() {
 						link.data("tabloaded",true);
 						$(">.tab-pane",tabcontent).hide();
 						tab.show();
-						$(document).trigger( "domchanged", [">.tab-pane",tabcontent] );
+						$(document).trigger( "domchanged", tab );
 						$(window).trigger( "resize" );
 					});
 				}

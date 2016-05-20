@@ -160,7 +160,7 @@ toggleajax = function(e)
 		jQuery.get(nextpage, {}, function(data) 
 			{
 				cell.html(data);
-				$(document).trigger( "domchanged", cell );
+				$(document).trigger( "domchanged", "#" + loaddiv );
 				cell.addClass("toggle_on");
 				cell.show('fast');
 			}
@@ -1037,6 +1037,7 @@ emcomponents = function() {
 					{
 						var toreplace = jQuery("#searcheditor");
 						toreplace.html(data);
+						$(document).trigger( "domchanged", "#searcheditor" );
 						
 						jQuery("#savedquerylist span").append('<span id="newterm">new term</span>');
 						var a = jQuery("#savedquerylist #newterm");
@@ -1299,6 +1300,7 @@ createNewCollection = function(newForm){
 				var cell;
 				cell = jQuery("#" + targetDiv);
 				cell.html(data);
+				$(document).trigger( "domchanged", "#" + targetDiv");
 				$(window).trigger( "resize" );
 			}
 		);
