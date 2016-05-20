@@ -316,8 +316,7 @@ pageload = function(hash)
 onloadselectors = function()
 {
 	
-	jQuery(document).on('click',"a.ajax", runajax);
-	//jQuery(".newcollectiondroparea").bind("drop", runTest);
+	jQuery("a.ajax").livequery('click', runajax);
 	
 	jQuery("a.toggleajax").livequery('click', toggleajax);
 	

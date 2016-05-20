@@ -80,60 +80,11 @@ $lsearcher.addShowOnly($context, $query)
 		#else
    		#set($label = $type.name)
 		#end
-		
-		
-		
 		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
 	#end
-	#if( $caneditlists && "$caneditlists" == "true")
-		<option value="new $listid">-- Add New --</option>
-    #end
    </select>
 #else
 	No values found in data file ${listid}).xml 
 #end
-
-#if( $caneditlists && "$caneditlists" == "true")
-<div class="editfield" id="listeditor-$listid" style="display: none;">
-        <input  class="form-control" type="text" />
-        <input  class="btn btn-default save" type="button" value="Save" />
-        <a class="btn btn-default cancel" style="cursor: pointer; top: 0;">Cancel</a>
-</div>
-#end
-
-
-<script>
-
-    $('#$csslistid').change(function(){
-        if ( $(this).val() == "new $listid" )  {
-            $('#$csslistid').hide();
-            $('#listeditor-$listid').show();
-        }
-    });
-    
-    $('#listeditorbtn-$listid').click(function(){
-        $('#list-$listid').hide();
-        $('#listeditor-$listid').show();
-        $('#listeditorbtn-$listid').hide();
-        
-    });
-    $('#listeditor-$listid .cancel').click(function(){
-        $('#list-$listid').show();
-        $('#listeditor-$listid').hide();
-        $('#listeditorbtn-$listid').show();
-    });
-    $('#listeditor-$listid .save').click(function()
-    {
-    	##required: catalogid, searchtype, view, fieldname
-    	##optional: value, foreignkeyid and foreignkeyvalue
-    	#set( $xmledithome = $context.getPageProperty("xmledithome"))
-		var val = $('#listeditor-$listid input[type="text"]').val();
-       	$("#listdetail_$fieldname").load("$xmledithome/listsave.html?catalogid=$catalogid&listid=${listid}&searchtype=$searchtype&view=$!view&fieldname=$fieldname&foreignkeyid=$!foreignkeyid&foreignkeyvalue=$!foreignkeyvalue&newrow=" + encodeURI(val) )  	
-    	$('#list-$listid').show();
-    	
-    });
-    
-
-</script>
 
 </div>
