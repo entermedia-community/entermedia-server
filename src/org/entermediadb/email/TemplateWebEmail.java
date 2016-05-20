@@ -558,13 +558,4 @@ public class TemplateWebEmail extends WebEmail implements Data
 		// TODO Auto-generated method stub
 		return get(inKey + "." + inLocale);
 	}
-
-	@Override
-	public void setValue(String inKey, Object inValue, String inLocale)
-	{
-		setValue(inKey + "." + inLocale, inValue);
-		
-	}
-	
-	
 }

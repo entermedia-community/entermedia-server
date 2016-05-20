@@ -10,9 +10,22 @@ import javax.crypto.spec.SecretKeySpec;
 
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.util.StringEncryption;
 
 public class AutoLoginLti implements AutoLoginProvider
 {
+		protected StringEncryption fieldStringEncryption;
+
+		public StringEncryption getStringEncryption()
+		{
+			return fieldStringEncryption;
+		}
+
+		public void setStringEncryption(StringEncryption inStringEncryption)
+		{
+			fieldStringEncryption = inStringEncryption;
+		}
+
 		public String encode(String inHtml)
 		{
 			//String encoded = MimeUtility.encodeText(inHtml,"UTF-8","Q");
@@ -45,7 +58,7 @@ public class AutoLoginLti implements AutoLoginProvider
 					base.append("%26");
 				}
 			}
-			String sha1 = calculateRFC2104HMAC(inPrivateKey + "&", base.toString());
+			String sha1 = getStringEncryption().calculateRFC2104HMAC(inPrivateKey + "&", base.toString());
 			//log.info("created " + base);
 			//log.info("sha " + sha1);
 
@@ -53,53 +66,19 @@ public class AutoLoginLti implements AutoLoginProvider
 			return ok;
 		}
 
-		/**
-		 * Computes RFC 2104-compliant HMAC signature. * @param data The data to be
-		 * signed.
-		 * 
-		 * @param key
-		 *            The signing key.
-		 * @return The Base64-encoded RFC 2104-compliant HMAC signature.
-		 * @throws java.security.SignatureException
-		 *             when signature generation fails
-		 */
-		public String calculateRFC2104HMAC(String privatekey, String data)
-		{
-			String HMAC_SHA1_ALGORITHM = "HmacSHA1";
 
-			byte[] result;
-			try
-			{
-				// get an hmac_sha1 key from the raw key bytes
-				SecretKeySpec signingKey = new SecretKeySpec(privatekey.getBytes(), HMAC_SHA1_ALGORITHM);
-
-				// get an hmac_sha1 Mac instance and initialize with the signing key
-				Mac mac = Mac.getInstance(HMAC_SHA1_ALGORITHM);
-				mac.init(signingKey);
-
-				// compute the hmac on input data bytes
-				byte[] rawHmac = mac.doFinal(data.getBytes());
-
-				// base64-encode the hmac
-				org.apache.commons.codec.binary.Base64 base64encoder = new org.apache.commons.codec.binary.Base64();
-				
-				result = base64encoder.encode(rawHmac);
-				return new String(result, "UTF8");
-			}
-			catch (Exception e)
-			{
-				throw new OpenEditException("Failed to generate HMAC : " + e.getMessage(), e);
-			}
-		}
-	}
 
 	@Override
 	public boolean autoLogin(WebPageRequest inReq)
 	{
 	    Map map = inReq.getParameterMap();	
-	    String url = "https://weatherfordcollege.entermediadb.net/lti/index.html";
+	    String url = inReq.getSiteUrl();//"https://weatherfordcollege.entermediadb.net/lti/index.html";
 	    String expected = (String)map.get("oauth_signature");
-		// TODO Auto-generated method stub
+
+	    String inPrivateKey = getStringEncryption().getEncryptionKey();
+	    
+	    compareRequest(inPrivateKey, url, expected, map);
+	    
 		return false;
 	}
 

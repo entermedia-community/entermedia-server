@@ -122,7 +122,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			if(value instanceof Map){
 				PropertyDetail detail = getPropertyDetails().getDetail(inId);
 				if(detail.isMultiLanguage()){
-					LanguageMap map = new LanguageMap(value);
+					LanguageMap map = new LanguageMap((Map)value);
 					value = map;
 					
 				}

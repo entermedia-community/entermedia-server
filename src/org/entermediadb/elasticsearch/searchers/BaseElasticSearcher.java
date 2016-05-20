@@ -742,11 +742,15 @@ public class BaseElasticSearcher extends BaseSearcher
 			joinquery.lookupId(inTerm.getValue());
 			joinquery.lookupType(inDetail.getListId());
 			joinquery.lookupIndex(toId( inDetail.getListCatalogId()));
-			
 			joinquery.lookupPath(fieldid.substring(fieldid.indexOf( ".") + 1));
-			
-			find = joinquery;
-			return find;
+			return joinquery;
+		}
+		else if ("childfilter".equals(inTerm.getOperation()))
+		{
+			ChildFilter filter = (ChildFilter) inTerm;
+			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue() );
+			QueryBuilder haschild = QueryBuilders.hasChildQuery(filter.getChildTable(), parent);
+			return haschild;
 		}
 
 		
@@ -802,13 +806,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
-		}
-		else if ("childfilter".equals(inTerm.getOperation()))
-		{
-			ChildFilter filter = (ChildFilter) inTerm;
-			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue() );
-			QueryBuilder haschild = QueryBuilders.hasChildQuery(filter.getChildTable(), parent);
-			find = haschild;
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
