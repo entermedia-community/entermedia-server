@@ -737,13 +737,34 @@ public class BaseElasticSearcher extends BaseSearcher
 		
 		if ("searchjoin".equals(inDetail.getDataType()))
 		{
-			String fieldname = fieldid.substring(0,fieldid.indexOf( "."));
-			TermsLookupQueryBuilder joinquery = QueryBuilders.termsLookupQuery(fieldname);
-			joinquery.lookupId(inTerm.getValue());
-			joinquery.lookupType(inDetail.getListId());
-			joinquery.lookupIndex(toId( inDetail.getListCatalogId()));
-			joinquery.lookupPath(fieldid.substring(fieldid.indexOf( ".") + 1));
-			return joinquery;
+			//contact.state
+			String fieldname = fieldid.substring(0,fieldid.indexOf( ".")); //contact
+			String path = fieldid.substring(fieldid.indexOf( ".") + 1); //state
+//			TermsLookupQueryBuilder joinquery = QueryBuilders.termsLookupQuery(fieldname);
+//			joinquery.lookupId(inTerm.getValue());
+//			joinquery.lookupType(inDetail.getListId());
+//			joinquery.lookupIndex(toId( inDetail.getListCatalogId()));
+//			joinquery.lookupPath(path);
+//			return joinquery;
+			org.openedit.data.QueryBuilder builder = getSearcherManager().getSearcher(inDetail.getListCatalogId(),inDetail.getListId()).query();
+			HitTracker hits  = builder.match(path, valueof).search();
+			
+			hits.setHitsPerPage(1000);
+			Collection ids = new ArrayList(hits.size());
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
+				Data data = (Data) iterator.next();
+				ids.add(data.getId());
+			}
+			if( ids.size() > 0)
+			{
+				find = QueryBuilders.termsQuery(fieldname, ids);
+				return find;
+			}
+			else
+			{
+				return null;
+			}
 		}
 		else if ("childfilter".equals(inTerm.getOperation()))
 		{
@@ -980,8 +1001,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		else if (inDetail.isNumber())
 		{
-			
-			
 			if("betweennumbers".equals(inTerm.getOperation())){
 				
 				if (inDetail.isDataType("double")){
