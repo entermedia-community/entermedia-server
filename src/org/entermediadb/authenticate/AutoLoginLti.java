@@ -1,14 +1,9 @@
 package org.entermediadb.authenticate;
 
-import java.util.Base64;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
-
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.util.StringEncryption;
 
