@@ -5,7 +5,7 @@
 <strong>[[Select code then right click to copy]]</strong>
 <textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="45">
 #set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
-#if( !$prefix )#set( $prefix = $context.siteRoot ) #end
+#if(!$prefix) #set( $prefix = $context.siteRoot ) #end
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
 #if( $mediadbappid )
 <iframe src="$prefix$home/${mediadbappid}/services/module/asset/players/play/${asset.getId()}.html" width="550" height="400" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true">
