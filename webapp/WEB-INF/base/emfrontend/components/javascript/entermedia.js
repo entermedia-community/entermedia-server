@@ -598,9 +598,9 @@ onloadselectors = function()
 			{
 				var clicked = jQuery(this);
 				
-				if(clicked.attr("noclick") =="true") {
-					return true;
-				}
+//				if(clicked.attr("noclick") =="true") {
+//					return true;
+//				}
 				
 				var emselectable = clicked.closest("#emselectable");
 				var row = $(clicked.closest("tr"));
@@ -1137,8 +1137,9 @@ emcomponents = function() {
 	        return true;
 	    };
         
-        this.addEventListener('dragstart', handler, false ); 
-        this.parentNode.addEventListener('dragstart', handler, false ); //Deal with A tags?
+        //THIS IS NOT QUITE WORKING
+       // this.addEventListener('dragstart', handler, false ); 
+       // this.parentNode.addEventListener('dragstart', handler, false ); //Deal with A tags?
         
 	});
 	

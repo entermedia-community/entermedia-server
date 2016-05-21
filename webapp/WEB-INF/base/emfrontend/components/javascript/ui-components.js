@@ -408,7 +408,10 @@ uiload = function() {
 	
 	
 	jQuery("#fancy_content .fancyclose").livequery( function() {
-		$(this).parent.fancybox.close();
+		//if( $(this).parent.jQuery.fancybox )
+		{
+		//	$(this).parent.jQuery.fancybox.close();
+		}	
 		
 	});
 	

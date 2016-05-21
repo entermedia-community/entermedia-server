@@ -24,8 +24,12 @@
  			{
  				try
  				{
-	 				funct.call(this);
-	 			} catch ( error ) { console.log("Could not process: " + item.selector , error); }		
+	 				funct.call($(this));
+	 			} 
+	 			catch ( error )
+	 			{
+	 				 console.log("Could not process: " + item.selector , error); 
+	 			}		
  			});
  		});
  		
@@ -50,8 +54,11 @@
 	    	regelements.push(item);
 	    	try
  			{
-	 			func.call(this);
-	 		} catch ( error ) { console.log("Could not process: " + item.selector , error); }	
+	 			func.call($(this));
+	 		} catch ( error ) 
+	 		{
+	 			console.log("Could not process: " + item.selector , error); 
+	 		}	
 	    } 
 	    else //Note: on does not support scope of selectors 
 	    {
