@@ -301,15 +301,22 @@ uiload = function() {
 			if(targetdiv.indexOf("parent.") == 0)
 			{
 				targetdiv = targetdiv.substr(7);
-				parent.jQuery(this).ajaxSubmit({target: "#" + targetdiv});
+				parent.jQuery(this).ajaxSubmit({
+					target:"#" + targetdiv, 
+					success: function() { $(document).trigger( "domchanged", "#" + targetdiv ); }
+				 });
+				 
 				// closes the fancybox after submitting
 				parent.jQuery.fancybox.close();
 			}
 			else
 			{
-				jQuery(this).ajaxSubmit( {target:"#" + targetdiv} );
+				jQuery(this).ajaxSubmit({
+					target:"#" + targetdiv, 
+					success: function() { $(document).trigger( "domchanged", "#" + targetdiv ); }
+				 });
 			}
-			$(document).trigger( "domchanged", "#" + targetdiv );
+			
 
 			var reset =form.data("reset") 
 			if( reset == true){
