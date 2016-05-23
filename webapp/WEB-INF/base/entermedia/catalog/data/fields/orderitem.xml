@@ -2,8 +2,8 @@
 	<property id="id" index="true" stored="true">Item Id</property>
 	<property id="orderid" index="true" stored="true">Order Id</property>
 	<property id="sourcepath" index="true" stored="true">Source Path</property>
-	<property id="userid" index="true" stored="true">User Id</property>
-	<property id="assetsourcepath" index="true" stored="true" >Asset SourcePath</property>
+  	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true">User</property>
+  	<property id="assetsourcepath" index="true" stored="true" >Asset SourcePath</property>
 	<property id="assetid" index="true" stored="true" >Asset Id</property>
 	<!--  property id="status" datatype="list" listid="orderitem/status" index="true" stored="true" >Status</property>
 	<property id="errorcount" index="true" stored="true" >Error Count</property>

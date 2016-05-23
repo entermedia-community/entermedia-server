@@ -9,16 +9,15 @@
 <p>
 <h2>$!error.getDetail()  (Table was: $error.searchType)</h2>
 
-
-
 #set($map = $mediaarchive.getPropertyDetailsArchive().findSearchersWithDetail($error.getDetail()))
 <table class="main-results-table" style="width: 100%">
-<tr><td>Table</td><td>Field Name</td><td>Is a list</td><td>List ID</td><td>Is Stored</td><td>Data type</td></tr>
+<tr><td>Table</td><td>Field Name</td><td>Data Type</td><td>Is Stored</td><td>View type</td></tr>
 #foreach($key in $map.keySet())
+#set($detail = false);
 #set($detail = $map.get($key))
 <tr>
-#set($type=$detail.getDataType())
-<td>$key:</td><td> $detail</td><td>$detail.isList()</td><td>$detail.getListId()</td><td>$detail.isStored()</td><td>#if($type) $type #else text #end</td><td><a class="btn" target="_blank" href="convertall.html?searchtype=$key&detail=$detail">Make all like this</a></td>
+<td>$key:</td><td> $detail</td><td>$!detail.getDataType()</td><td>$detail.isStored()</td><td>$!detail.getViewType()</td>
+<td><a class="btn" target="_blank" href="convertall.html?searchtype=$key&detail=$detail">Make all like this</a></td>
 <td><td><a class="btn" target="_blank" href="legacy.html?searchtype=$key&detail=$detail">Reset this field name and reset other lists</a> </td>
 <td><a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$detail&catalogid=${catalogid}&searchtype=$key">View in DM</a>
 

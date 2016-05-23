@@ -1,7 +1,7 @@
 <properties beanname="dataSearcher" >
 	<property id="id" index="true" stored="true" >ID</property>
 	<property id="name" index="true" stored="true" >Name</property>
-	<property id="userid" index="true" stored="true" >User Id</property>
+  	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true">User</property>
 	<property id="usersaved" index="true" type="boolean" stored="true" >User Saved</property>
 	<property id="saveddate" index="true" stored="true" datatype="date" date="true">Saved Date</property>
 	

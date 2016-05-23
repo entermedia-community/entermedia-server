@@ -1,6 +1,6 @@
 <properties>
 	<property id="id" index="true" stored="true"  keyword="true" internalfield="true" >ID</property>
-	<property id="userid" index="true" stored="true"  internalfield="true">User Id</property>
+  	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true">User</property>
 	<property id="settingsgroup" editable="true" index="true" stored="true" datatype="list">Role</property>
 	<property id="view_asset_resultstable" index="true" stored="true"  internalfield="true" >View Table Results</property>
 	<property id="view_asset_advancedsearch" index="true" stored="true"  internalfield="true" >Asset Search</property>
