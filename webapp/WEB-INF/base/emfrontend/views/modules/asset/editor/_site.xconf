@@ -40,8 +40,6 @@
 
 	<property name="section">details</property>
 	
-	<script external="true" id="googlemaps" src="https://maps.google.com/maps/api/js?sensor=false" />
-  	<script id="theme-map" src="/${applicationid}/components/javascript/jquery.ui.map.full.min.js"/>
 	<permission name="editasset">
 		<or>
 			<group name="administrators" />
