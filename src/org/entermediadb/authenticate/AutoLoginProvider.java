@@ -5,6 +5,6 @@ import org.openedit.WebPageRequest;
 public interface AutoLoginProvider
 {
 
-	public boolean autoLogin(WebPageRequest inReq);
+	public AutoLoginResult autoLogin(WebPageRequest inReq);
 	
 }

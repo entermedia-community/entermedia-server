@@ -24,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.authenticate.AutoLoginProvider;
+import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.authenticate.AutoLoginWithCookie;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
@@ -710,6 +711,8 @@ public class AdminModule extends BaseModule
 		inReq.removePageValue("user");
 		inReq.removePageValue("userprofile");
 		getCookieEncryption().removeCookie(inReq,AutoLoginWithCookie.ENTERMEDIAKEY);
+		getCookieEncryption().removeCookie(inReq,"entermedia.keyopenedit");
+		
 
 		String referrer = inReq.getRequestParameter("editingPath");
 		if (referrer != null && !referrer.startsWith("http"))
@@ -736,9 +739,14 @@ public class AdminModule extends BaseModule
 		for (Iterator iterator = getAutoLoginProviders().iterator(); iterator.hasNext();)
 		{
 			AutoLoginProvider login = (AutoLoginProvider) iterator.next();
-			if( login.autoLogin(inReq) )
+			AutoLoginResult result = login.autoLogin(inReq);
+			if( result != null)
 			{
-				createUserSession(inReq);				
+				UserManager userManager = getUserManager(inReq);
+				String catalogid = userManager.getUserSearcher().getCatalogId();
+				inReq.putSessionValue(catalogid + "user", result.getUser());
+				inReq.putPageValue( "user", result.getUser());
+				return;
 			}
 		}
 	}

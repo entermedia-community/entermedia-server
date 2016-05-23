@@ -8,16 +8,12 @@ import org.openedit.users.UserManager;
 public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvider
 {
 
-	protected void autoLoginFromRequest(WebPageRequest inRequest)
+	protected AutoLoginResult autoLoginFromRequest(WebPageRequest inRequest)
 	{
 		String username = inRequest.getRequest().getRemoteUser();
 		if (username == null)
 		{
-			return;
-		}
-		if (inRequest.getUser() != null)
-		{
-			return;
+			return null;
 		}
 		UserManager userManager = getUserManager(inRequest);
 		User user = userManager.getUser(username);
@@ -30,23 +26,20 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 				user = userManager.createGuestUser(username, null, groupname);
 			}
 		}
-		if (user != null)
-		{
-			inRequest.putProtectedPageValue(PageRequestKeys.USER, user);
-		}
+		AutoLoginResult result = new AutoLoginResult();
+		result.setUser(user);
+		return result;
 	}
 	
 	@Override
-	public boolean autoLogin(WebPageRequest inReq)
+	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
 		if (Boolean.parseBoolean(inReq.getContentProperty("oe.usernameinheader")))
 		{
-			autoLoginFromRequest(inReq);
-			return true;
+			return autoLoginFromRequest(inReq);
 		}
 
-		// TODO Auto-generated method stub
-		return false;
+		return null;
 	}
 
 }

@@ -21,7 +21,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 	protected static final long MILLISECONDS_PER_DAY = 24 * 60 * 60 * 1000;// milliseconds in one day (used to calculate password expiry)
 
 	protected StringEncryption fieldCookieEncryption;
-	protected boolean readPasswordFromCookie(WebPageRequest inReq) throws OpenEditException
+	protected User readPasswordFromCookie(WebPageRequest inReq) throws OpenEditException
 	{
 		// see if we have a coookie for this person with their encrypted password
 		// in it
@@ -41,9 +41,10 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 					{
 						if( id.equals(cook.getName() ) || idold.equals(cook.getName() ) )
 						{
-							if (autoLoginFromMd5Value(inReq, cook.getValue()))
+							User user = autoLoginFromMd5Value(inReq, cook.getValue());
+							if( user != null)
 							{
-								return true;
+								return user;
 							}
 							else
 							{
@@ -55,11 +56,11 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 
 
-	protected boolean autoLoginFromMd5Value(WebPageRequest inReq, String uandpass)
+	protected User autoLoginFromMd5Value(WebPageRequest inReq, String uandpass)
 	{
 		//get the password expiry in days
 		int pwd_expiry_in_days = 1;
@@ -87,7 +88,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 			int split = uandpass.indexOf("md542");
 			if (split == -1)
 			{
-				return false;
+				return null;
 			}
 			String username = uandpass.substring(0, split);
 
@@ -109,7 +110,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 						if ((current - ts) > (pwd_expiry_in_days * MILLISECONDS_PER_DAY))
 						{
 							log.debug("Autologin has expired, redirecting to login page");
-							return false;
+							return null;
 						}
 						else
 						{
@@ -122,7 +123,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 					catch (Exception oex)
 					{
 						log.error(oex.getMessage(), oex);
-						return false;
+						return null;
 					}
 				}
 				else
@@ -138,15 +139,14 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 					String hash = getCookieEncryption().getPasswordMd5(user.getPassword());
 					if (md5.equals(hash))
 					{
-						String catalogid =user.get("catalogid");
-						inReq.putSessionValue(catalogid + "user", user);
-						//createUserSession(inReq);
-						return true;
+//						String catalogid =user.get("catalogid");
+//						inReq.putSessionValue(catalogid + "user", user);
+						return user;
 					}
 					else
 					{
 						log.info("Auto login did not work " + username + " md5 " + md5);
-						return false;
+						return null;
 					}
 				}
 				catch (Exception ex)
@@ -155,18 +155,18 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 				}
 			}
 		}
-		return false;
+		return null;
 	}
 
 	@Override
-	public boolean autoLogin(WebPageRequest inReq)
+	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
-		boolean ok = false;
+		User ok = null;
 		if (inReq.getSessionValue("autologindone") == null)
 		{
 			ok = readPasswordFromCookie(inReq);
 		}
-		if (!ok)
+		if (ok == null)
 		{
 			String md5 = inReq.getRequestParameter(ENTERMEDIAKEY);
 			if (md5 != null)
@@ -174,7 +174,15 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 				ok = autoLoginFromMd5Value(inReq, md5);
 			}
 		}
-		return ok;
+		
+		if( ok != null)
+		{
+			AutoLoginResult result = new AutoLoginResult();
+			result.setUser(ok);
+			return result;
+		}
+		
+		return null;
 	}
 
 	public StringEncryption getCookieEncryption()

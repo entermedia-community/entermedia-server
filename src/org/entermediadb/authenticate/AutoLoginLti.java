@@ -5,9 +5,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.openedit.WebPageRequest;
+import org.openedit.users.User;
 import org.openedit.util.StringEncryption;
 
-public class AutoLoginLti implements AutoLoginProvider
+public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 {
 		protected StringEncryption fieldStringEncryption;
 
@@ -64,17 +65,32 @@ public class AutoLoginLti implements AutoLoginProvider
 
 
 	@Override
-	public boolean autoLogin(WebPageRequest inReq)
+	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
 	    Map map = inReq.getParameterMap();	
-	    String url = inReq.getSiteUrl();//"https://weatherfordcollege.entermediadb.net/lti/index.html";
 	    String expected = (String)map.get("oauth_signature");
-
-	    String inPrivateKey = getStringEncryption().getEncryptionKey();
-	    
-	    compareRequest(inPrivateKey, url, expected, map);
-	    
-		return false;
+	    if( expected != null)
+	    {
+		    String url = inReq.getSiteUrl();//"https://weatherfordcollege.entermediadb.net/lti/index.html";
+		    String inPrivateKey = getStringEncryption().getEncryptionKey();
+		    if( compareRequest(inPrivateKey, url, expected, map) )
+		    {
+				AutoLoginResult result = new AutoLoginResult();
+				String username = (String)map.get("ext_user_username");
+				String email = (String)map.get("lis_person_contact_email_primary");
+				User user = getUserManager(inReq).getUser(username);
+				if( user == null)
+				{
+					user = getUserManager(inReq).createUser(username, null);
+				}
+				user.setEmail(email);
+				user.setFirstName( (String)map.get("lis_person_name_given") );
+				user.setLastName( (String)map.get("lis_person_name_family") );
+				result.setUser(user);
+				return result;
+		    }
+	    }    
+		return null;
 	}
 
 }
