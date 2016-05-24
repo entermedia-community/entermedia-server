@@ -85,6 +85,12 @@ public class WaterMarkTranscoder extends BaseTranscoder
 		}
 		
 		String watermarkfile = inStructions.get("watermarkpath");  //Can be anyplace in the webapp
+		
+		if( watermarkfile == null)
+		{
+			watermarkfile = inStructions.getMediaArchive().getCatalogSettingValue("watermarkpath");
+		}
+		
 		if( watermarkfile == null)
 		{
 			watermarkfile = inStructions.getMediaArchive().getThemePrefix() + "/images/watermark.png";
