@@ -137,12 +137,12 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  				if( node.data("livequery" + listener.event) == null )
  				{
  				 	node.data("livequery" + listener.event, true);
- 				 	console.log("reRegistering " + listener.selector );
+ 				 	//console.log("reRegistering " + listener.selector );
  					node.on(listener.event,listener.function);	
  				}	
  				else
  				{
- 					console.log("already Registered " + listener.selector );
+ 					//console.log("already Registered " + listener.selector );
  				}
  			});
  		});
@@ -162,7 +162,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	    	try
  			{
 	 			func.call($(this));
-	    		node.data("livequeryinit", init);
+	    		node.data("livequeryinit", true);
 	 		} catch ( error ) 
 	 		{
 	 			console.log("Could not process: " + item.selector , error); 
@@ -184,7 +184,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 				eventlistener["scope"] = document;
 			}
 	    	eventregistry.push(eventlistener);
-	    	console.log("Initial Registering  event" + eventlistener.selector );
+	    	//console.log("Initial Registering  event" + eventlistener.selector );
 	    	node.data("livequery" + eventlistener.event, true);
 	    	node.on(eventlistener.event,eventlistener.function);
 	    	//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);

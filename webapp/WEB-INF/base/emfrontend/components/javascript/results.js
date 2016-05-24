@@ -39,18 +39,14 @@ jQuery(document).ready(function(url,params)
 		
 	});
 		
-	jQuery("input.selectionbox").livequery( function() 
+	jQuery("input.selectionbox").livequery("change", function(e) 
 	{
-		jQuery(this).change(function(e) 
-		{
-			var hitssessionid = $('#resultsdiv').data('hitssessionid');
-			var dataid = jQuery(this).data('dataid');
-			refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: "asset", hitssessionid: hitssessionid });
-			if(typeof(refreshSelections) != 'undefined'){
-				refreshSelections();
-			}
-			e.preventDefault(); // prevent the default action (scroll / move caret)
-		});
+		var hitssessionid = $('#resultsdiv').data('hitssessionid');
+		var dataid = jQuery(this).data('dataid');
+		refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: "asset", hitssessionid: hitssessionid });
+		if(typeof(refreshSelections) != 'undefined'){
+			refreshSelections();
+		}
 	});
 	
 	jQuery("a.selectpage").livequery( 'click', function() 

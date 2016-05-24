@@ -603,6 +603,12 @@ onloadselectors = function()
 				clicked.click(
 					function(event) 
 					{
+						if( $(event.target).is("input") )
+						{
+							return true;
+						}
+				
+					
 						if ( row.hasClass("thickbox") ) 
 						{
 							var href = row.data("href");
