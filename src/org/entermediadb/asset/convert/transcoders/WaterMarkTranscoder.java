@@ -15,7 +15,6 @@ import org.openedit.util.ExecResult;
 public class WaterMarkTranscoder extends BaseTranscoder
 {
 
-	protected String fieldWatermarkPath;
 	protected PageManager fieldPageManager;
 	public PageManager getPageManager()
 	{
@@ -50,27 +49,10 @@ public class WaterMarkTranscoder extends BaseTranscoder
 
 
 
-	public String getWatermarkPath()
-	{
-		return fieldWatermarkPath;
-	}
-
-
-
-	public void setWatermarkPath(String inWatermarkPath)
-	{
-		fieldWatermarkPath = inWatermarkPath;
-	}
-
-
-
 	public String getWaterMarkPath(String inThemePrefix)
 	{
-		if (fieldWatermarkPath == null)
-		{
-			Page water = getPageManager().getPage(inThemePrefix + "/images/watermark.png");
-			fieldWatermarkPath = water.getContentItem().getAbsolutePath(); // Strings for performance
-		}
+		Page water = getPageManager().getPage(inThemePrefix );
+		String fieldWatermarkPath = water.getContentItem().getAbsolutePath(); // Strings for performance
 		return fieldWatermarkPath;
 	}
 
@@ -83,8 +65,7 @@ public class WaterMarkTranscoder extends BaseTranscoder
 		ContentItem newouput = inStructions.getOutputFile();
 		// composite -dissolve 15 -tile watermark.png src.jpg dst.jpg
 		List<String> com = new ArrayList<String>();
-		com.add("-dissolve");
-		com.add("100");
+		setValue("dissolve", "100", inStructions, com);
 
 		String placement = inStructions.getWatermarkPlacement();
 		if(placement == null)
@@ -102,7 +83,14 @@ public class WaterMarkTranscoder extends BaseTranscoder
 			com.add("-gravity");
 			com.add(placement);
 		}
-		com.add(getWaterMarkPath(inStructions.getMediaArchive().getThemePrefix()));
+		
+		String watermarkfile = inStructions.get("watermarkpath");  //Can be anyplace in the webapp
+		if( watermarkfile == null)
+		{
+			watermarkfile = inStructions.getMediaArchive().getThemePrefix() + "/images/watermark.png";
+		}		
+		String abs = getWaterMarkPath(watermarkfile);
+		com.add(abs);
 		com.add(newinput.getAbsolutePath());
 		com.add(newouput.getAbsolutePath());
 		ExecResult result = getExec().runExec("composite", com, inStructions.getConversionTimeout());
