@@ -11,7 +11,6 @@
 	<a folder="map"  id="viewmap"  moduleid="asset"  useajax="false" multiedit="true" name="Geo Location"  ordering="170"/> 	
 	<!-- <a folder="edit"  id="viewmediaedit" name="Media Editor" /> -->
 	<a folder="attachments" id="viewattachments"   moduleid="asset"  useajax="false" name="Attachments"  ordering="180"/>
-	<a folder="permissions" id="assetpermissions"  moduleid="asset"  useajax="true" multiedit="true" name="Permissions"  ordering="190"/>
     
 	<a folder="converthistory"  id="converthistory"  moduleid="asset"  useajax="true" name="History"  ordering="200"/>
 	
