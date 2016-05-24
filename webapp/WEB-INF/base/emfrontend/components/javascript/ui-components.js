@@ -352,7 +352,7 @@ uiload = function() {
 				var modaldialog = $( "#" + id );
 				if( modaldialog.length == 0 )
 				{
-					$(document.body).append('<div class="modal" id="' + id + '" style="display:none" ></div>');
+					$(document.body).append('<div class="modal" tabindex="-1" id="' + id + '" style="display:none" ></div>');
 					modaldialog = $("#" + id );
 				}
 				var link = dialog.attr("href");
@@ -360,7 +360,7 @@ uiload = function() {
 				// modaldialog.modal("show"); 
 				 
 				modaldialog.load(link, function() { 
-        		 	modaldialog.modal("show"); 
+        		 	modaldialog.modal({keyboard: true, "show":true});
     			});
 				event.preventDefault();
 				return false;
