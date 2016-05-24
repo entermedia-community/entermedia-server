@@ -24,7 +24,7 @@
     #else 
     	<li><a href="$home$apphome/authentication/login.html" class="first">[[Login]]</a></li> 
     #end
-   	<li class="dropdown"><a class="" href="#" data-toggle="dropdown">[[Languages]] <span class="caret"></span></a> 
+   	<li class="dropdown"><a class="" href="#" data-toggle="dropdown">[[Language]] <span class="caret"></span></a> 
   
     <ul id="language-bar-select" class="dropdown-menu">
 		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
@@ -34,6 +34,8 @@
 		#end
     </ul> 
 	</li>
+	
+	
 
     #if($canviewsettings)
     	<li><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 

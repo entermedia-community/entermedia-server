@@ -3618,7 +3618,7 @@ td.checkbox input, th.firstheader input {
     text-shadow: none;
     font-weight: normal !important;
 }
-#header #top-bar-select li a {
+#header .dropdown-menu li a {
     color: #444 !important;
     text-align: left;
     display: block;
@@ -3627,7 +3627,7 @@ td.checkbox input, th.firstheader input {
     text-shadow: none;
     font-weight: normal !important;
 }
-.select-dropdown li a:hover, #header #top-bar-select li a:hover {
+.select-dropdown li a:hover, #header .dropdown-menu li a:hover {
     background: #e9e9e9; 
     text-decoration: none;  
 }
