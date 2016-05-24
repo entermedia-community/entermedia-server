@@ -48,7 +48,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 		{
 			if( oldsucess != null )
 			{
-				oldcuess.call(form);
+				oldsucess.call(form);
 			}	
 			$(document).trigger("domchanged"); //TODO: Put this in the success section	
 		};
