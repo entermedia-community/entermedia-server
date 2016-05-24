@@ -330,9 +330,10 @@ uiload = function() {
 	});
 	
 	
-	jQuery("a.emdialog").livequery(
-			function() 
+	jQuery("a.emdialog").livequery("click",
+			function(event) 
 			{
+				event.stopPropagation();
 				var dialog = jQuery(this);
 				var hidescrolling = dialog.data("hidescrolling");
 				
@@ -347,7 +348,20 @@ uiload = function() {
 				{
 					width = "650";
 				}
+				var id = "#modals";
+				var modaldialog = $( id );
+				if( modaldialog.length == 0 )
+				{
+					$(document).append('<div id="' + id + '" style="display:none" />');
+					modaldialog = $( id );
+				}
+				var link = dialog.attr("href");
+				 
+				modaldialog.load(link, function() { 
+        		 	modaldialog.modal("show"); 
+    			});
 				
+				/*
 				dialog.fancybox(
 				{ 
 					'zoomSpeedIn': 0, 'zoomSpeedOut': 0, 'overlayShow': true,
@@ -363,6 +377,7 @@ uiload = function() {
 			        	scrolling: hidescrolling ? "no" : "auto"
 			        }
 				});
+				*/
 	});
 	
 	

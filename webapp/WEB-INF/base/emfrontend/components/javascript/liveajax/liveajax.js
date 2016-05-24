@@ -26,6 +26,12 @@ If list2 not init: Make sure .html is correct and livequeryrunning
    var oldhtml = $.fn.html;
     $.fn.html = function(arg) 
     {
+    	if( arguments.length == 0 )
+    	{
+			var returned = oldhtml.call($(this));
+			return returned;
+    	}
+    	
 		var returned = oldhtml.call($(this),arg);
 		$(document).trigger("domchanged"); //a component may be adding html that will call this
 		return returned;
@@ -92,7 +98,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  	{
  		if( livequeryrunning )
  		{
- 			console.log("Skipping reload");
+ 			//console.log("Skipping reload");
  			return;
  		}
 		var chunck;
