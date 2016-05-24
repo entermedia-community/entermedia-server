@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<locales> 
+  <locale id="en" name="English" namesorted="English" enabled="true"/>  
+  <locale id="fr" name="French" enabled="true"/>  
+  <locale id="es" name="Español" enabled="true"/>  
+  <locale id="de" name="German" enabled="true"/>
+</locales>

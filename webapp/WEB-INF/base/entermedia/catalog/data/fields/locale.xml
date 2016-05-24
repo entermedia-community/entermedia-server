@@ -1,0 +1,8 @@
+
+<properties lazy-init="true">
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" searchtype="locale">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="locale">Name</property>
+  <property id="sourcepath" searchtype="locale">SourcePath</property>
+  <property id="analyzer" index="true" stored="true" editable="true" type="list" internalfield="false" datatype="list" searchtype="locale">analyzer</property>
+  <property id="enabled" index="true" stored="true" editable="true" sortable="true" type="boolean" internalfield="false" datatype="boolean" searchtype="locale">enabled</property>
+</properties>
