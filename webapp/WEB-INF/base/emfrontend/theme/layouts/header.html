@@ -28,7 +28,7 @@
   
     <ul id="language-bar-select" class="dropdown-menu">
 		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
-		#set( $languages = $localesearcher.query().matches("enabled", "true").search($context) )
+		#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
 		#foreach( $lang in $languages)
 			<li ><a href="$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=$apphome/index.html">$lang </a></li>
 		#end
