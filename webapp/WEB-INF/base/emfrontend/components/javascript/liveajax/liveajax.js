@@ -1,47 +1,71 @@
+/*
+Known bugs:
+If double clicks: Make sure livequeryrunning is correct
+If fancybox errors: Make sure get is correct
+If list2 not init: Make sure .html is correct and livequeryrunning
+*/
+
 
 (function ($) {
     var oldLoad = $.fn.load;
     $.fn.load = function(inArg,inComplete) 
     {
     	var oldscope = this;
-		oldLoad.call($(this),inArg, function()
+		var returned = oldLoad.call($(this),inArg, function()
 		{
 			if( inComplete )
 			{
 				inComplete.call($(this));
 			}
+			console.log("html complete");
 			$(document).trigger("domchanged");
 		});
+		return returned;
     };
-/*
+
    var oldhtml = $.fn.html;
-    $.fn.html = function() 
+    $.fn.html = function(arg) 
     {
-		oldhtml.call($(this));
-		$(document).trigger("domchanged");
+		var returned = oldhtml.call($(this),arg);
+		$(document).trigger("domchanged"); //a component may be adding html that will call this
+		return returned;
     };
-    
+   
     var oldreplaceWith = $.fn.replaceWith;
-    $.fn.replaceWith = function() 
+    $.fn.replaceWith = function(arg) 
     {
-		oldreplaceWith.call($(this));
+		var returned = oldreplaceWith.call($(this),arg);
 		$(document).trigger("domchanged");
+		return returned;
     };
-    
     var oldajaxSubmit = $.fn.ajaxSubmit;
     $.fn.ajaxSubmit = function() 
     {
-		oldajaxSubmit.call($(this));
-		$(document).trigger("domchanged"); //TODO: Put this in the success section
+    	var form = $(this);
+    	var params = arguments[0];
+    	var oldsucess = params.success;
+		params.success = function()
+		{
+			if( oldsucess != null )
+			{
+				oldcuess.call(form);
+			}	
+			$(document).trigger("domchanged"); //TODO: Put this in the success section	
+		};
+		var returned  = oldajaxSubmit.call(form,params);
+		params.success = oldsucess;
+		return returned;
+		
     };
     
+    //This is problematic because we call get for various reasons
     var oldget = $.fn.get;
     $.fn.get = function() 
     {
     	if( arguments.length == 3 )
 		{
 			var oldsucess = arguments[2];
-			oldget.call($(this),arguments[0],arguments[1],function()
+			return oldget.call($(this),arguments[0],arguments[1],function()
 			{
 				oldsucess.call(this);			
 				$(document).trigger("domchanged"); 
@@ -49,10 +73,10 @@
 		}
 		else
 		{
-			oldget.call($(this)); //not sure what this does
+			//console.error("Wrong number of params for get ", arguments);
+			return oldget.call($(this));
 		}
     };
- */   
     
 })(jQuery);
 
@@ -61,11 +85,16 @@
 (function( $ ) { 
  	var regelements = new Array();
  	var eventregistry = new Array();
- 	
+ 	var livequeryrunning = false;
  	//Listener
  	
  	$(document).on( "domchanged", function(event,args)
  	{
+ 		if( livequeryrunning )
+ 		{
+ 			console.log("Skipping reload");
+ 			return;
+ 		}
 		var chunck;
  		if( typeof args == Array )
  		{
@@ -86,7 +115,8 @@
 	 				var node = $(this);
  					if( node.data("lqenabled") == null )
  					{
- 				 		node.data("lqenabled", true);
+ 				 		node.data("lqenabled", "reloaded" + item.selector);
+ 				 		//console.log("Not enabled: " + item.selector );
  					 	funct.call(node);
 	 				}
 	 			}	 
@@ -106,10 +136,14 @@
  				var node = $(this);
  				if( node.data("lqenabled") == null )
  				{
- 				 	node.data("lqenabled", true);
+ 				 	node.data("lqenabled",  "register" + listener.selector);
  				 	console.log("reRegistering " + listener.selector );
  					node.on(listener.event,listener.function);	
  				}	
+ 				else
+ 				{
+ 					console.log("already Registered " + listener.selector );
+ 				}
  			});
  		});
  		
@@ -117,6 +151,9 @@
 
     $.fn.livequery = function() 
 	{
+		this.self = this;
+    	var node = $(this);
+		livequeryrunning  = true;
 		if( arguments.length == 1 )
 		{
 			var func = arguments[0];
@@ -125,6 +162,7 @@
 	    	try
  			{
 	 			func.call($(this));
+		    	node.data("lqenabled", "init selector " + this.selector);
 	 		} catch ( error ) 
 	 		{
 	 			console.log("Could not process: " + item.selector , error); 
@@ -146,10 +184,12 @@
 				eventlistener["scope"] = document;
 			}
 	    	eventregistry.push(eventlistener);
-	    	console.log("Registering " + eventlistener.selector );
-	    	$(this).data("lqenabled", true);
-	    	$(this).on(eventlistener.event,eventlistener.function);	
+	    	console.log("Initial Registering  event" + eventlistener.selector );
+	    	node.data("lqenabled", "initevent " + this.selector);
+	    	node.on(eventlistener.event,eventlistener.function);
+	    	//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
 		}
+		livequeryrunning = false;
 	    return this;
 	}
  	

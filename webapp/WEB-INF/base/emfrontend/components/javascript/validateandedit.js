@@ -125,8 +125,7 @@ postForm = function(inDiv, inFormId)
 	{
 		var targetdiv = inDiv.replace(/\//g, "\\/");
 		jQuery(form).ajaxSubmit({
-					target:"#" + targetdiv, 
-					success: function() { $(document).trigger( "domchanged", "#" + targetdiv ); }
+					target:"#" + targetdiv
 				 });
 	}
 	else

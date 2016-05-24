@@ -25,7 +25,6 @@ repaint = function(divid) {
 			{
 				//var toreplace = jQuery("#" + targetDiv);
 				div.replaceWith(data);
-				$(document).trigger( "domchanged", "#" + divid);
 			}
 	);
 }
@@ -161,7 +160,6 @@ toggleajax = function(e)
 		jQuery.get(nextpage, {}, function(data) 
 			{
 				cell.html(data);
-				$(document).trigger( "domchanged", "#" + loaddiv );
 				cell.addClass("toggle_on");
 				cell.show('fast');
 			}
@@ -207,7 +205,6 @@ runajaxonthis = function(inlink,e)
 				
 				//Call replacer to pull $scope variables
 				cell.replaceWith(data); //Cant get a valid dom element
-				$(document).trigger( "domchanged", "#" + targetDiv );
 				$(window).trigger( "resize" );
 				
 			}
@@ -231,7 +228,6 @@ runajaxonthis = function(inlink,e)
 						cell = jQuery("#" + loaddiv);
 					}
 					cell.html(data);
-					$(document).trigger( "domchanged", "#" + loaddiv );
 					$(window).trigger( "resize" );
 				}
 
@@ -386,8 +382,8 @@ onloadselectors = function()
 							jQuery.get(targeturl + ui.item.value, 
 									function(result) {
 										jQuery("#" + targetdiv).html(result);
-										$(document).trigger( "domchanged", "#" + targetdiv);
-							});
+									}
+							);
 							return false;
 						}
 					});
@@ -433,7 +429,6 @@ onloadselectors = function()
 						jQuery.get(targeturl + ui.item.value, 
 								function(result) {
 									jQuery("#" + targetdiv).html(result);
-									$(document).trigger( "domchanged", "#" + targetdiv);
 						});
 						return false;
 					}
@@ -922,7 +917,6 @@ showajaxstatus = function(uid)
 		jQuery.get(path, {}, function(data) {
 			cell.replaceWith(data);
 			cell = jQuery("#" + uid);
-			$(document).trigger( "domchanged", "#" + uid);
 			if( !cell.hasClass("ajaxstatus") )
 			{
 				return;
@@ -1013,7 +1007,6 @@ emcomponents = function() {
 						{
 							var toreplace = jQuery("#searcheditor");
 							toreplace.html(data);
-							$(document).trigger( "domchanged", "#searcheditor");
 							
 							var tmp = jQuery("#savedquerylist #newterm");
 							tmp.remove();
@@ -1043,7 +1036,6 @@ emcomponents = function() {
 					{
 						var toreplace = jQuery("#searcheditor");
 						toreplace.html(data);
-						$(document).trigger( "domchanged", "#searcheditor" );
 						
 						jQuery("#savedquerylist span").append('<span id="newterm">new term</span>');
 						var a = jQuery("#savedquerylist #newterm");
@@ -1094,7 +1086,6 @@ emcomponents = function() {
 									{
 										var	cell = jQuery("#" + targetDiv);
 										cell.replaceWith(data);	
-										$(document).trigger( "domchanged", "#" + targetDiv);
 									}
 							);
 
@@ -1199,7 +1190,6 @@ emcomponents = function() {
 						{
 							var	cell = jQuery("#" + targetDiv);
 							cell.replaceWith(data);
-							$(document).trigger( "domchanged", "#" + targetDiv);
 						});
 					},
 					tolerance: 'pointer',
@@ -1235,7 +1225,6 @@ reloadOpenCollections = function (nextpage) {
 	
 	jQuery.get(nextpage, {}, function(data) {
 		$("#left-col-libraries").replaceWith(data);	
-		$(document).trigger( "domchanged", "#left-col-libraries");
 	});
 	
 	collectionId='';
@@ -1310,7 +1299,6 @@ createNewCollection = function(newForm){
 				var cell;
 				cell = jQuery("#" + targetDiv);
 				cell.html(data);
-				$(document).trigger( "domchanged", "#" + targetDiv);
 				$(window).trigger( "resize" );
 			}
 		);
@@ -1362,7 +1350,6 @@ jQuery(".btn-sm").livequery("click", function(e){
     						{
     							var	cell = jQuery("#" + targetDiv);
     							cell.replaceWith(data);
-    							$(document).trigger( "domchanged", "#" + targetDiv);
     						});
     				
     				

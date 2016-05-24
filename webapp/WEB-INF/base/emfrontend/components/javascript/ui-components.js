@@ -275,8 +275,7 @@ uiload = function() {
 			{
 				targetdiv = targetdiv.substr(7);
 				parent.jQuery(this).ajaxSubmit({
-					target:"#" + targetdiv, 
-					success: function() { $(document).trigger( "domchanged", "#" + targetdiv ); }
+					target:"#" + targetdiv
 				 });
 				 
 				// closes the fancybox after submitting
@@ -285,8 +284,7 @@ uiload = function() {
 			else
 			{
 				jQuery(this).ajaxSubmit({
-					target:"#" + targetdiv, 
-					success: function() { $(document).trigger( "domchanged", "#" + targetdiv ); }
+					target:"#" + targetdiv
 				 });
 			}
 			
@@ -642,7 +640,6 @@ uiload = function() {
 						link.data("tabloaded",true);
 						$(">.tab-pane",tabcontent).hide();
 						tab.show();
-						$(document).trigger( "domchanged");
 						$(window).trigger( "resize" );
 					});
 				}

@@ -58,7 +58,6 @@ jQuery(document).ready(function()
 						{
 							var cell = jQuery("#searchlayout"); //view-picker-content
 							cell.html(data);
-							$(document).trigger("domchanged", "#searchlayout");
 							//window.location.hash="TOP";
 						}
 				);
@@ -201,7 +200,6 @@ jQuery(document).ready(function()
 						tree.find("#" + id +"_edit").hide("fast");		
 						tree.find("#" + id +"_display").show("fast");
 						tree.find("#" + id + "_display").html(newname);
-						$(document).trigger("domchanged", ".emtree-widget .editsave");
 						repaintEmTree(tree);
 					}
 				
@@ -261,7 +259,5 @@ repaintEmTree = function (tree) {
 	var home = tree.data("home");
 
 	tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );
-	
-	$(document).trigger("domchanged", "#treeholder");
 	
 }

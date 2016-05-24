@@ -21,8 +21,8 @@
    | <a class="select-dropdown-open" href="#">[[Languages]]</a> 
   <div class="select-dropdown-open down" style="position: relative; top: -2px; left: -0; margin: -5px; display: inline-block; width: 20px; height: 20px;"></div>
     <ul id="language-bar-select" class="select-dropdown" style="display: none;">
-		#set( $localesearcher = $searcherManager.getSearcher($catalogid,"locale") )
-		#set( $languages = $localesearcher.fieldSearch("enabled", "true") )
+		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+		#set( $languages = $localesearcher.query().matches("enabled", "true").search($context) )
 		#foreach( $lang in $languages)
 			<li ><a href="$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=$apphome/index.html">$lang </a></li>
 		#end
