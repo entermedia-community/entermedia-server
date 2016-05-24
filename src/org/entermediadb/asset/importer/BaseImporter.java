@@ -1,4 +1,4 @@
-package model.importer;
+package org.entermediadb.asset.importer;
 
 import java.io.Reader;
 import java.util.ArrayList;

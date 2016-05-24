@@ -39,24 +39,25 @@ $pages.include("./editdetails.html")
 <input class="field" name="ordering.value" value="$!data.ordering" />
 <div class="note">[[The order of this hot folder. 0-100 Higher comes first]]</div> 
 
-
+<div class="clearfix" style="margin-bottom: 20px;">
+<input type="hidden" name="field" value="monitortree" />
+<input type="checkbox" style="float: left;"   name="monitortree.value" value="true" #if($data.generatedversioncontrol) checked #end />
+<label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Live Monitor the file system for changes in real time. For less than 100,000 files]]</label> 
+</div>
 <div class="clearfix" style="margin-bottom: 20px;">
 	<input type="hidden" name="field" value="versioncontrol" />
 	<div class="clearfix">
 		<input type="checkbox" style="float: left;" name="versioncontrol.value" value="true" #if($data.versioncontrol) checked #end />
-		<label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Enable Version Control]]</label>
+		<label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Enable Simple Version Control]]</label>
 	</div>
-	<div class="note">[[Will use extra disk space]]</div> 
 </div>
-
 
 <div class="clearfix" style="margin-bottom: 20px;">
 	<input type="hidden" name="field" value="generatedversioncontrol" />
 	<div class="clearfix">
 		<input type="checkbox" style="float: left;" name="generatedversioncontrol.value" value="true" #if($data.generatedversioncontrol) checked #end />
-		<label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Enable Version Control for generated files and cropped images]]</label>
+		<label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Enable Version Control for generated files and cropped images]] [[Will use extra disk space]]</label>
 	</div>
-	<div class="note">[[Will use extra disk space]]</div> 
 </div>
 
 

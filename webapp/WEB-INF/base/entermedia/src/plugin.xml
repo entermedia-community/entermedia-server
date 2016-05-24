@@ -1816,7 +1816,7 @@
 		</property>
 	</bean>
 	<bean id="LibraryManager" class="model.assets.LibraryManager" />
-	<bean id="hotFolderManager" class="model.importer.BaseHotFolderManager" >
+	<bean id="hotFolderManager" class="org.entermediadb.asset.importer.BaseHotFolderManager" >
 			<property name="searcherManager">
 				<ref bean="searcherManager" />
 			</property>
@@ -1826,8 +1826,15 @@
 			<property name="webServer">
 				<ref bean="WebServer" />
 			</property>
+			<property name="folderMonitor">
+				<ref bean="folderMonitor" />
+			</property>
 	</bean>
-	<bean id="Importer" class="model.importer.BaseImporter" />
+	<bean id="folderMonitor" class="org.entermediadb.asset.importer.FolderMonitor" >
+			<property name="executorManager">
+				<ref bean="executorManager" />
+			</property>
+	</bean>		
 	<bean id="OrderManager" class="model.orders.BaseOrderManager" >
 		<property name="searcherManager">
 			<ref bean="searcherManager"/>
@@ -1946,68 +1953,15 @@
 	<bean id="VizOnepublisher" class="org.entermediadb.asset.publish.publishers.vizonepublisher"  lazy-init="default"/>
 	
 	
-	<!-- 
-	<groovy id="orderManager" script-source="model/orders/BaseOrderManager.groovy" lazy-init="default">
-	   	<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
-		<property name="lockManager"><ref bean="lockManager" /></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-	</groovy>
-	 -->
-<!-- 
-
-	<groovy  id="mediaUploader" script-source="model/push/BaseMediaUploader.groovy" lazy-init="default">
-			<property name="moduleManager"><ref bean="moduleManager" /></property>
-	</groovy>
- 
-	<bean id="mediaUploader" class="model.push.BaseMediaUploader" >
-			<property name="userManager"><ref bean="userManager" /></property>
-	</bean>
--->
-	<!-- 
-
- 	<bean  id="ProjectModule" class="org.entermediadb.projects.ProjectModule" lazy-init="default" />
-	<bean  id="projectManager" class="org.entermediadb.projects.BaseProjectManager" lazy-init="default" scope="prototype"  >
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-	</bean>
 	
- 	-->
-
-<!-- 
-	<groovy  id="ProjectModule" script-source="modules/projects/ProjectModule.groovy" lazy-init="default" />
-	<groovy  id="projectManager" script-source="modules/projects/BaseProjectManager.groovy" lazy-init="default"  scope="prototype" >
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-	</groovy>
- -->	
 	<groovy  id="ConvertModule" script-source="modules/convert/ConvertModule.groovy" lazy-init="default" />
 
 	<groovy  id="AnnotationModule" script-source="modules/annotations/AnnotationModule.groovy" lazy-init="default" />
 
-<!-- Compiled Class Version
-
-	<bean id="orderManager" class="model.orders.BaseOrderManager">
-	   	<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
-		<property name="lockManager"><ref bean="lockManager" /></property>
-
-	</bean>
-	
- -->
 	<groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</groovy>
 	
-	<groovy  id="hotFolderManager" script-source="model/importer/BaseHotFolderManager.groovy" lazy-init="default">
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-			<property name="pageManager"><ref bean="pageManager" /></property>
-			<property name="webServer"><ref bean="WebServer" /></property>
-	</groovy>`
-<!-- 
-	<bean  id="pushManager" class="model.push.BasePushManager" >
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-	</bean>
- -->
  	<groovy  id="convertQueue" script-source="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
 			<property name="executorManager"><ref bean="executorManager" /></property>
 	</groovy>

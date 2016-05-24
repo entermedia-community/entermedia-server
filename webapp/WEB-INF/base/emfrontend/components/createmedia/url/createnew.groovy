@@ -1,12 +1,10 @@
 import groovy.json.JsonSlurper
-import model.projects.ProjectManager
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
-import org.openedit.store.*
-import org.openedit.util.DateStorageUtil
-
+import org.entermediadb.projects.ProjectManager
 import org.openedit.page.*
+import org.openedit.util.DateStorageUtil
 import org.openedit.util.PathUtilities
 
 

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 
 public interface HotFolderManager
@@ -19,4 +20,5 @@ public interface HotFolderManager
 	
 	public Data getFolderByPathEnding(String inCatalogId, String inFolder);
 
+	void scanFolders(MediaArchive inArchive,ScriptLogger log);
 }

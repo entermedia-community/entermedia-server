@@ -18,6 +18,7 @@
   <property id="accesskey" editable="true" index="true" stored="true">Access Key</property>
   <property id="secretkey" editable="true" index="true" stored="true">Secret Key</property>
   
+  <property id="monitortree" editable="true" index="true" type="boolean" stored="true">Live Monitor</property>
   
   <property id="includes" editable="true" index="true" stored="true">Includes</property>
   <property id="excludes" editable="true" index="true" stored="true">Excludes</property>

@@ -1,4 +1,4 @@
-package model.importer;
+package org.entermediadb.asset.importer;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -25,6 +25,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.HotFolderManager;
 import org.entermediadb.asset.util.TimeParser;
+import org.entermediadb.scripts.ScriptLogger;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -35,6 +36,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
+import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.XmlVersionRepository;
@@ -51,14 +53,22 @@ public class BaseHotFolderManager implements HotFolderManager
 	protected PageManager fieldPageManager;
 	protected SearcherManager fieldSearcherManager;
 	protected WebServer fieldWebServer;
+	protected FolderMonitor fieldFolderMonitor;
+	
+	public FolderMonitor getFolderMonitor()
+	{
+		return fieldFolderMonitor;
+	}
+
+	public void setFolderMonitor(FolderMonitor inFolderMonitor)
+	{
+		fieldFolderMonitor = inFolderMonitor;
+	}
 
 	public WebServer getWebServer()
 	{
 		return fieldWebServer;
 	}
-
-
-
 
 	public void setWebServer(WebServer inWebServer)
 	{
@@ -287,23 +297,48 @@ public class BaseHotFolderManager implements HotFolderManager
 		}		
 				
 	}	
+	@Override
+	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
+	{
+		return importHotFolder(inArchive,inFolder,null);
+	}
 
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.scanner.HotFolderManager2#importHotFolder(org.entermediadb.asset.MediaArchive, org.openedit.Data)
 	 */
-	@Override
-	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
+	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder, String inSubChangePath)
 	{
-		inFolder = getFolderSearcher(inArchive.getCatalogId()).loadData(inFolder);
 		String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 		String name = inFolder.get("subfolder");
 		String path = base + "/" + name;
 
-//		Page local = getPageManager().getPage(path + "/");
-//		if( !local.exists() )
-//		{
-//			getPageManager().putPage(local);
-//		}
+		AssetImporter importer = createImporter(inArchive,inFolder,path);
+		boolean skipmodcheck = checkMod(inArchive, inFolder);
+
+		Date started = new Date();
+		
+		if( inSubChangePath != null )
+		{
+			path = path + "/" + inSubChangePath;
+		}
+	
+		log.info(path + " scan started. skip mod check = " + skipmodcheck );
+		
+		List<String> paths = importer.processOn(base, path, inArchive, skipmodcheck, null);
+		if( !skipmodcheck )
+		{
+			inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
+			getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
+		}
+
+		long taken = ((new Date().getTime() - started.getTime())/6000L);
+		log.info(inFolder + " Imported " + paths.size() + " in " + taken + " milli-seconds" );
+		
+		return paths;
+	}
+	
+	protected AssetImporter createImporter(MediaArchive inArchive, Data inFolder, String path)
+	{
 		AssetImporter importer = (AssetImporter)getWebServer().getModuleManager().getBean("assetImporter");
 		
 		String excludes = inFolder.get("excludes");
@@ -330,7 +365,11 @@ public class BaseHotFolderManager implements HotFolderManager
 			importer.setAttachmentFilters(attachmentslist);
 		}
 		
-		Date started = new Date();
+		return importer;
+	}
+
+	protected boolean checkMod(MediaArchive inArchive, Data inFolder)
+	{
 		long sincedate = 0;
 		String since = inFolder.get("lastscanstart");
 		if( since != null )
@@ -353,20 +392,9 @@ public class BaseHotFolderManager implements HotFolderManager
 				skipmodcheck = true;
 			}
 		}
-		log.info(path + " scan started. skip mod check = " + skipmodcheck );
-		
-		List<String> paths = importer.processOn(base, path, inArchive, skipmodcheck, null);
-		if( !skipmodcheck )
-		{
-			inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
-			getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
-		}
-		
-		long taken = ((new Date().getTime() - started.getTime())/6000L);
-		log.info(inFolder + " Imported " + paths.size() + " in " + taken + " milli-seconds" );
-		
-		return paths;
+		return skipmodcheck;
 	}
+	
 	public void addGoogleFolders(String inCatalogId)
 	{
 		Collection hotfolders = loadFolders(inCatalogId);
@@ -524,8 +552,108 @@ public class BaseHotFolderManager implements HotFolderManager
 			log.error(ex);
 			throw new OpenEditException(ex);
 		}
-		
-	
-	}			
+	}
 
+
+
+//https://docs.oracle.com/javase/tutorial/displayCode.html?code=https://docs.oracle.com/javase/tutorial/essential/io/examples/WatchDir.java
+	@Override
+	public void scanFolders(final MediaArchive inArchive, ScriptLogger inLog)
+	{
+		Collection hits = loadFolders( inArchive.getCatalogId() );
+		for(Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data)iterator.next();
+			final Data folder = getFolderSearcher(inArchive.getCatalogId()).loadData(data);
+
+			String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
+			String name = folder.get("subfolder");
+			String path = base + "/" + name ;
+			
+			//look for git folders?
+			try
+			{
+				//pullGit(path,1);
+				importHotFolder(inArchive,folder);
+			}
+			catch( Exception ex)
+			{
+				log.error("Could not process folder ${path}",ex);
+			}
+			
+			String monitor = folder.get("monitortree");
+			if(Boolean.valueOf(monitor) )
+			{
+				final ContentItem item = getPageManager().getRepository().getStub(path);
+				if( !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
+				{
+					//will scan each folder once then monitor it from now on
+					getFolderMonitor().addPathChangedListener(item.getAbsolutePath(), new PathChangedListener()
+					{
+						@Override
+						public void pathChanged(String inType, String inAbsolutePath)
+						{
+							String ending = inAbsolutePath.substring( item.getAbsolutePath().length() );
+							importHotFolder(inArchive, folder, ending);
+						}
+					});
+				}
+			}	
+		}
+	
+	/*
+	AssetImporter importer = (AssetImporter)moduleManager.getBean("assetImporter");
+	importer.setExcludeFolders("Fonts,Links");
+	//importer.setIncludeFiles("psd,tif,pdf,eps");
+	importer.setUseFolders(false);
+	
+	String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";
+		
+	List created = importer.processOn(assetRoot, assetRoot, archive, context.getUser());
+	log.info("created images " + created.size() );
+	*/
+	}
+
+/*
+void pullGit(String path, int deep)
+{
+	ContentItem page = getPageManager().getRepository().getStub(path + "/.git");
+	if( page.exists() )
+	{
+		Exec exec = .getBean("exec");
+		List commands = new ArrayList();
+		ContentItem root = pageManager.getRepository().get(path);		
+//		commands.add("--work-tree=" + root.getAbsolutePath());
+//		commands.add("--git-dir=" + page.getAbsolutePath());
+
+		File from = new File( root.getAbsolutePath() );
+		commands.add("pull");
+		ExecResult result = exec.runExec("git",commands, from);
+		if( result.isRunOk() )
+		{
+			log.info("pulled from git "  + root.getAbsolutePath() );
+		}
+		else
+		{
+			log.error("Could not pull from "  + root.getAbsolutePath() );
+		}
+	}
+	else if( deep < 4 )
+	{
+		List paths = pageManager.getChildrenPaths(path);
+		if( paths != null )
+		{
+			deep++;
+			for(String child: paths)
+			{
+				ContentItem childpage = pageManager.getRepository().getStub(child);
+				if( childpage.isFolder() )
+				{
+					pullGit(child,deep);
+				}
+			}	
+		}
+	}
+}
+*/
 }

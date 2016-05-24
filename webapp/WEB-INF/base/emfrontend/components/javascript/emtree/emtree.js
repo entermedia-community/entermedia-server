@@ -180,7 +180,7 @@ jQuery(document).ready(function()
 				return false;
 	} );
 
-	$(".emtree-widget .editsave").on('click', function(event) {
+	$(".emtree-widget .editsave").livequery('click', function(event) {
 				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
@@ -206,7 +206,7 @@ jQuery(document).ready(function()
 				return false;
 	} );
 	
-	$('.emtree-widget .checkbox input').on('click', function(event){
+	$('.emtree-widget .checkbox input').livequery('click', function(event){
 		event.stopPropagation();
 	});
 
@@ -226,7 +226,7 @@ jQuery(document).ready(function()
 	});
 
 	//does this do anything?
-	$(".categorycheckbox").on("click", function()
+	$(".categorycheckbox").livequery("click", function()
 			{
 				var home = $(this).closest(".emtree").data("home");
 				var checkbox = $(this);
@@ -258,4 +258,7 @@ repaintEmTree = function (tree) {
 	var home = tree.data("home");
 
 	tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );
+	
+	$(document).trigger("domchanged", "#treeholder");
+	
 }
