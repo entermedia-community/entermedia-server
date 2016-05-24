@@ -1,16 +1,13 @@
 package org.entermediadb.asset.convert.managers;
 
-import java.util.HashMap;
-
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
-import org.entermediadb.asset.convert.TranscodeTools;
-import org.openedit.Data;
-import org.openedit.repository.ContentItem;
+import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 
 public class ImageConversionManager extends BaseConversionManager
 {
+	protected WaterMarkTranscoder fieldWaterMarkTranscoder;
 	//To create the file we need to Look for input in several places
 	//CR 1024x768
 	//Custom thumb
@@ -18,7 +15,23 @@ public class ImageConversionManager extends BaseConversionManager
 	//video.mp4
 	//Original file
 	
-//	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
+	public WaterMarkTranscoder getWaterMarkTranscoder()
+	{
+		if (fieldWaterMarkTranscoder == null)
+		{
+			fieldWaterMarkTranscoder = 	(WaterMarkTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"waterMarkTranscoder");
+		}
+		return fieldWaterMarkTranscoder;
+	}
+
+
+	public void setWaterMarkTranscoder(WaterMarkTranscoder inWaterMarkTranscoder)
+	{
+		fieldWaterMarkTranscoder = inWaterMarkTranscoder;
+	}
+
+
+	//	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 //	{
 //			
 //		
@@ -36,6 +49,17 @@ public class ImageConversionManager extends BaseConversionManager
 //			return result.getOutput();
 //	}
 //
+    protected ConvertResult transcode(ConvertInstructions inStructions)
+    {
+    	ConvertResult result = super.transcode(inStructions);
+    	if(inStructions.isWatermark())
+    	{
+    		inStructions.setInputFile(inStructions.getOutputFile());
+    		result = getWaterMarkTranscoder().convert(inStructions);
+    	}
+    	return result;
+    }
+
 	
 	protected String getRenderType()
 	{
