@@ -332,14 +332,22 @@ body {
     height: auto;
     padding: 25px 16px 10px 16px;
 }
-#header .navlinks {
+
+ #header .navlinks {
     display: block;
     float: right;
     background: #2790B0;
     border-radius: 0 0 5px 5px;
     padding: 1px 10px 5px 10px;
     margin: -25px -16px 0 0;
+    
+    color: #59bbd9;
 }
+#header .navlinks>ul { list-style: none; margin:0; padding: 0;}
+#header .navlinks>ul li { float:left; padding:1px 8px; border-left:1px solid #fff;}
+#header .navlinks>ul li.first { border-left: none;}
+#header ul.dropdown-menu li { float: none;}
+#header ul.dropdown-menu li a,#header ul.dropdown-menu li a:hover  { color:#111;}
 #header .navlinks a {
     position: relative;
     top: -1px;
@@ -349,9 +357,7 @@ body {
 #header .navlinks a:hover {
     color: #fff;
 }
-#header .navlinks {
-    color: #59bbd9;
-}
+
 .ui-widget {
     -webkit-border-radius: 5px 5px;
     -moz-border-radius: 5px 5px;
@@ -359,11 +365,6 @@ body {
     -ms-border-radius: 5px 5px;
     -khtml-border-radius: 5px 5px;
     border-radius: 5px 5px;
-}
-#emselectable {
-    margin: 0 auto;
-    overflow: auto;
-    width:100%;
 }
 
 #emselectable thead tr {
