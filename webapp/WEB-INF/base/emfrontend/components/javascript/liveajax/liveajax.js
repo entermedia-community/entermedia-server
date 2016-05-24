@@ -113,9 +113,9 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  				try
  				{
 	 				var node = $(this);
- 					if( node.data("lqenabled") == null )
+ 					if( node.data("livequeryinit") == null )
  					{
- 				 		node.data("lqenabled", "reloaded" + item.selector);
+ 				 		node.data("livequeryinit", true);
  				 		//console.log("Not enabled: " + item.selector );
  					 	funct.call(node);
 	 				}
@@ -134,9 +134,9 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  			$(listener.selector,document).each(function()
  			{
  				var node = $(this);
- 				if( node.data("lqenabled") == null )
+ 				if( node.data("livequery" + listener.event) == null )
  				{
- 				 	node.data("lqenabled",  "register" + listener.selector);
+ 				 	node.data("livequery" + listener.event, true);
  				 	console.log("reRegistering " + listener.selector );
  					node.on(listener.event,listener.function);	
  				}	
@@ -162,7 +162,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	    	try
  			{
 	 			func.call($(this));
-		    	node.data("lqenabled", "init selector " + this.selector);
+	    		node.data("livequeryinit", init);
 	 		} catch ( error ) 
 	 		{
 	 			console.log("Could not process: " + item.selector , error); 
@@ -185,7 +185,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 			}
 	    	eventregistry.push(eventlistener);
 	    	console.log("Initial Registering  event" + eventlistener.selector );
-	    	node.data("lqenabled", "initevent " + this.selector);
+	    	node.data("livequery" + eventlistener.event, true);
 	    	node.on(eventlistener.event,eventlistener.function);
 	    	//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
 		}

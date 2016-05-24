@@ -66,6 +66,7 @@ jQuery(document).ready(function()
 		{
 			tree.find(nodeid + "_add").remove();
 			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
+			
 		}
 });
 	

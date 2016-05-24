@@ -41,7 +41,7 @@ jQuery(document).ready(function(url,params)
 		
 	jQuery("input.selectionbox").livequery( function() 
 	{
-		jQuery(this).change(function() 
+		jQuery(this).change(function(e) 
 		{
 			var hitssessionid = $('#resultsdiv').data('hitssessionid');
 			var dataid = jQuery(this).data('dataid');
@@ -49,7 +49,7 @@ jQuery(document).ready(function(url,params)
 			if(typeof(refreshSelections) != 'undefined'){
 				refreshSelections();
 			}
-		
+			e.preventDefault(); // prevent the default action (scroll / move caret)
 		});
 	});
 	
