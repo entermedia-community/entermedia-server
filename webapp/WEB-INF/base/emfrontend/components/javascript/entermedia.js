@@ -469,8 +469,8 @@ onloadselectors = function()
 				button.show();	
 			}
 		});
-		ta.prettyComments();
-		// ta.focus();
+		//ta.prettyComments();
+		 ta.focus();
 	});
 	
 

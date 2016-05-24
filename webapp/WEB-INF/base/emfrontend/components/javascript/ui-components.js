@@ -19,32 +19,6 @@ uiload = function() {
 			$('#module-list').show();
 		}
 	});
-	
-	$('#maximize').click( function(){
-		
-		html = $('#maximize').html()
-		if ( (html == ' Maximize ') || (html == 'Maximize') ) {
-			$('#embody').addClass('max');
-			$('#maximize').html('Minimize');
-			$('#maximize').attr('title', 'Minimize the application.');
-
-		} else {
-			
-			$('#embody').removeClass('max');
-			$('#maximize').html('Maximize');
-			$('#maximize').attr('title', 'Maximize the application.')
-			var w1 = 574;
-			$('#asset-data').width(w1);
-			var w2 = ( $('#main').width() - 261 );
-			$('#right-col .liquid-sizer').width(w2);
-			var w3 = ( 551 );
-			$('#commenttext').width(w3);
-		}
-			$(window).trigger( "resize" );
-		
-		toggleUserProperty("maximize_screen");
-		
-	});
 	jQuery("select.select2").livequery( function() 
 	{
 		var input = jQuery(this);
@@ -824,8 +798,8 @@ jQuery(document).ready(function()
 		$('#right-col .liquid-sizer').width(w1);
 		w2 = ( $('#data').width() - 40 );
 		$('#asset-data').width(w2);
-		w3 = ( w2 - 23);
-		$('#commenttext').width(w3);
+		//w3 = ( w2 - 23);
+		//$('#commenttext').width(w3);
 	});
 
 }); 
