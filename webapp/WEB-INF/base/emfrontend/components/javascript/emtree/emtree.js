@@ -1,11 +1,12 @@
 jQuery(document).ready(function() 
 { 
-	$('.emtree-widget ul li div span.arrow').on('click', function(event){
+	$('.emtree-widget ul li div span.arrow').livequery('click', function(event){
 			event.stopPropagation();
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest('.noderow');
 			var nodeid = node.data('nodeid');
 			var depth = node.data('depth');
+			$('.emtree ul li div').removeClass('selected');
 			
 			var home = $(this).closest(".emtree").data("home");
 			
@@ -20,15 +21,17 @@ jQuery(document).ready(function()
 			}
 			
 			tree.find(nodeid + "_add").remove();
-			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth, function(){ $(window).trigger( "resize" ) });
-			
-			
+			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth, 
+				function()
+				{
+					$(window).trigger( "resize" ) 
+				});
 	});
 
-	$('.emtree-widget ul li div').on('click', function(event) {
+	$('.emtree-widget ul li div').livequery('click', function(event) {
 		event.stopPropagation();
 		$('.emtree ul li div').removeClass('selected');
-		$(this).addClass("selected");
+		//$(this).addClass("selected");
 		var tree = $(this).closest(".emtree");
 		var node = $(this).closest('.noderow');
 		var nodeid = node.data('nodeid');
@@ -69,23 +72,23 @@ jQuery(document).ready(function()
 	
 	var field = $('.emtree .field'); 
 	
-	field.on('click', function(event) 	{
+	field.livequery('click', function(event) 	{
 			event.stopPropagation();
 	});
 	
-	$('.emtree-widget .field.text').on('focusin', function(event) 	{
+	$('.emtree-widget .field.text').livequery('focusin', function(event) 	{
 		if ($(this).val() == this.defaultValue ) { 
 			$(this).val(''); 
 		}
 	});
 	
-	$('.emtree-widget .field.text').on('focusout', function(event)	{
+	$('.emtree-widget .field.text').livequery('focusout', function(event)	{
 		if ($(this).val() == "") { 
 			$(this).val(this.defaultValue); 
 		}
 	});
 	
-	$(".emtree-widget .add").on('click', function(event) {
+	$(".emtree-widget .add").livequery('click', function(event) {
 				event.stopPropagation();
 				var tree = $(this).closest(".emtree");
 				tree = $(tree);
@@ -97,7 +100,7 @@ jQuery(document).ready(function()
 	} );
 	
 	
-	$(".emtree-widget .cancel").on('click', function(event) { 
+	$(".emtree-widget .cancel").livequery('click', function(event) { 
 			
 			event.stopPropagation();
 
@@ -108,7 +111,7 @@ jQuery(document).ready(function()
 			$("#" + id + "_row > div").removeClass('selected');
 	} );
 	
-	$(".emtree-widget .delete").on('click', function(event) {
+	$(".emtree-widget .delete").livequery('click', function(event) {
 			event.stopPropagation();
 
 			var id = $(this).data('parent');
@@ -133,7 +136,7 @@ jQuery(document).ready(function()
 			}
 	} );
 			
-	$(".emtree-widget .save").on('click', function(event) {
+	$(".emtree-widget .save").livequery('click', function(event) {
 					event.stopPropagation();
 					var id = $(this).data("parent");
 					//alert("parent category was: " + id);
@@ -157,7 +160,7 @@ jQuery(document).ready(function()
 	} );
 	
 	
-	$(".emtree-widget .edit").on('click', function(event) {
+	$(".emtree-widget .edit").livequery('click', function(event) {
 				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 
@@ -169,7 +172,7 @@ jQuery(document).ready(function()
 	} );
 	
 
-	$(".emtree-widget .editcancel").on('click', function(event) {
+	$(".emtree-widget .editcancel").livequery('click', function(event) {
 				event.stopPropagation();
 				var id = $(this).parents('.noderow:first').data('nodeid');
 

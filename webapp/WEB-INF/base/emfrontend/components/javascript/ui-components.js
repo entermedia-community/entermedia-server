@@ -122,7 +122,6 @@ uiload = function() {
 				{
 					var	cell = jQuery("#" + targetDiv);
 					cell.replaceWith(data);
-					$(document).trigger( "domchanged", "#" + targetDiv);
 					$(window).trigger( "resize" );
 				});	
 			}
@@ -333,13 +332,10 @@ uiload = function() {
 		jQuery(this,"select").change(function() 
 		{
 			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
-			$(document).trigger( "domchanged", "#" + targetdiv );
 		});
 		jQuery(this,"input").on("keyup",function() 
 		{
 			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
-			$(document).trigger( "domchanged", "#" + targetdiv );
-			
 		});
 
 	});
@@ -672,7 +668,7 @@ uiload = function() {
 						link.data("tabloaded",true);
 						$(">.tab-pane",tabcontent).hide();
 						tab.show();
-						$(document).trigger( "domchanged", "#" + panelid );
+						$(document).trigger( "domchanged");
 						$(window).trigger( "resize" );
 					});
 				}
