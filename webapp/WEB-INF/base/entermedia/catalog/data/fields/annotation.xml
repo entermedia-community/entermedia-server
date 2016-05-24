@@ -1,6 +1,6 @@
 <properties prefix="annotation" beanname="dataSearcher">
 	<property id="id" index="true" stored="true">Annotation Id</property>
-	<property id="assetid" index="true" stored="true">Asset Id</property>
+	<property id="assetid" index="true" type="list" stored="true">Asset Id</property>
 	<property id="color" index="true" stored="true">Color</property>
 	<property id="collectionid" index="true" stored="true">Collection Id</property>
 	<property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property>

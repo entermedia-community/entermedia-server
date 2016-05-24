@@ -4,7 +4,7 @@
 	<property id="status" type="list" editable="true"  index="true"  stored="true" viewtype="list" listid="convertstatus">Status</property>
 	<property id="submitteddate" type="date" searchcomponent="datesearch" viewtype="time" index="true"  stored="true">Submission Date</property>
 	<property id="completed" type="date" searchcomponent="datesearch" viewtype="time" index="true"  stored="true">Completed Date</property>
-	<property id="presetid"  editable="true"  index="true" viewtype="list" listid="convertpreset" stored="true">Preset ID</property>
+	<property id="presetid"  editable="true"  index="true" type="list" viewtype="list" listid="convertpreset" stored="true">Preset ID</property>
 	<property id="externalid"  index="true"  stored="true">Remote Job ID</property>
 	<property id="orderid"  index="true" type="list" stored="true">Associated Order ID</property>
 	<property id="itemid"  index="true" type="list" stored="true">Associated Order Item</property>
