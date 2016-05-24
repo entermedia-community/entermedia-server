@@ -11,13 +11,13 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     $.fn.load = function(inArg,inComplete) 
     {
     	var oldscope = this;
-		var returned = oldLoad.call($(this),inArg, function()
+		var returned = oldLoad.call(oldscope,inArg, function()
 		{
 			if( inComplete )
 			{
-				inComplete.call($(this));
+				inComplete.call(this);
 			}
-			console.log("html complete");
+			//console.log("html complete");
 			$(document).trigger("domchanged");
 		});
 		return returned;

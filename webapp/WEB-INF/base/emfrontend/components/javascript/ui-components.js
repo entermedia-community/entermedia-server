@@ -348,19 +348,22 @@ uiload = function() {
 				{
 					width = "650";
 				}
-				var id = "#modals";
-				var modaldialog = $( id );
+				var id = "modals";
+				var modaldialog = $( "#" + id );
 				if( modaldialog.length == 0 )
 				{
-					$(document).append('<div id="' + id + '" style="display:none" />');
-					modaldialog = $( id );
+					$(document.body).append('<div class="modal" id="' + id + '" style="display:none" ></div>');
+					modaldialog = $("#" + id );
 				}
 				var link = dialog.attr("href");
+				 
+				// modaldialog.modal("show"); 
 				 
 				modaldialog.load(link, function() { 
         		 	modaldialog.modal("show"); 
     			});
-				
+				event.preventDefault();
+				return false;
 				/*
 				dialog.fancybox(
 				{ 

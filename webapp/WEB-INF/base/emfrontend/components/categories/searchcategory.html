@@ -1,9 +1,10 @@
 <div id="emcontainer">
-<div class="ui-widget uipanel" id="search-catgories" >
-	<div  class="ui-widget-header" >
-		<span class="widget-header-title">[[Search Category]]</span>
+<div class="modal-dialog" id="search-catgories" >
+	<div class="modal-content">
+	<div  class="modal-header" >
+		<span class="modal-header-title">[[Search Category]]</span>
 	</div>
-	<div class="ui-widget-content"  id="searcharea" >
+	<div class="modal-body"  id="searcharea" >
 	#set( $searcher = $mediaarchive.getSearcher("category") )
 	$context.putPageValue("searcher",$searcher)
 	#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
@@ -29,5 +30,6 @@
 	</div>
 	
 	</div>
+</div>
 </div>	
 </div>
