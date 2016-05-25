@@ -29,14 +29,17 @@
 
 
 #if( $totalpages > 1 )
-                    <div id="jumpto">
-                        <form method="get" style="float: left;" action="$home$apphome/views/modules/asset/editor/viewer/index.html">
+                    <div id="jumpto" class="row">
+                    	
+                        <form method="get"  action="$home$apphome/views/modules/asset/editor/viewer/index.html">
+                        	<span>[[Jump To Page]] (1 - $totalpages)</span>
                            <input id="pagejumper" name="pagenum" value="$!pagenum" />
                            <input  type="hidden" name="assetid" value="$!asset.getId()" />
                            <input  type="hidden" name="hitssessionid" value="$!hitssessionid" />
                            <input type="submit" id="gotopage" class="btn" value="Go" />
                         </form>
-                        <span style="position: relative; top: 10px; left: 10px;">Jump To Page (1 - $totalpages)</span>
+                        
+                        
                     </div>
                 #end
 

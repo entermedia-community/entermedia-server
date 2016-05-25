@@ -1,22 +1,18 @@
-#if($alreadyvoted)
-	<a class="ajax star full" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1"></a>
-#else
-	<a class="ajax star empty" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1"></a>
-#end
-#set($size = $voteshits.size() )
 
+#set($size = $voteshits.size() )
+<div class="voting-label">
 #if($size > 0) 
 	#set( $first = $voteshits.get(0).username )
 	#if ( $size == 1 )
 	   #if ( $alreadyvoted )
-	       <span>[[You like this]]!</span>
+	       [[You like this]]!
 	   #else
 	       $userManager.getScreenName($first) [[likes this]]!
 	   #end
 	#end
 	#if($size == 2)
 		#if ( $alreadyvoted )
-           <span>[[You]]</span>
+           [[You]]
         #else
           $userManager.getScreenName($first)
         #end 
@@ -30,7 +26,7 @@
 	#if( $size > 2 )
 		#set($size = $size - 1)
 		#if ( $alreadyvoted )
-           <span>[[You]]</span>
+           [[You]]
         #else
            $userManager.getScreenName($first)
         #end 
@@ -39,4 +35,10 @@
 	#end
 #else
     [[Be the first to like this asset!]]
+#end
+</div>
+#if($alreadyvoted)
+	<a class="ajax star full" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1"></a>
+#else
+	<a class="ajax star empty" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1"></a>
 #end
