@@ -47,7 +47,7 @@
   <style id="jquery-fancybox-css" href="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.css"/>
   <script id="jquery-prettycomments" src="/${applicationid}/components/javascript/prettycomments.js"/>
   <script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
-  <script id="jquery-livequery" src="/${applicationid}/components/javascript/jquery.livequery.js"/>
+  <script id="liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
   <script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validation/jquery.validate.js"/>
   <script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
   <script id="validateandedit" src="/${applicationid}/components/javascript/validateandedit.js">     </script>
