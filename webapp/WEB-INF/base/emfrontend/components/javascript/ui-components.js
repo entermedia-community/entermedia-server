@@ -352,7 +352,7 @@ uiload = function() {
 				var modaldialog = $( "#" + id );
 				if( modaldialog.length == 0 )
 				{
-					$(document.body).append('<div class="modal" tabindex="-1" id="' + id + '" style="display:none" ></div>');
+					$("#emcontainer").append('<div class="modal " tabindex="-1" id="' + id + '" style="display:none" ></div>');
 					modaldialog = $("#" + id );
 				}
 				var link = dialog.attr("href");
@@ -360,27 +360,11 @@ uiload = function() {
 				// modaldialog.modal("show"); 
 				 
 				modaldialog.load(link, function() { 
-        		 	modaldialog.modal({keyboard: true, "show":true});
+        		 	modaldialog.modal({keyboard: true,backdrop:true, "show":true});
     			});
+    			
 				event.preventDefault();
 				return false;
-				/*
-				dialog.fancybox(
-				{ 
-					'zoomSpeedIn': 0, 'zoomSpeedOut': 0, 'overlayShow': true,
-					enableEscapeButton: true, 
-					type: 'iframe',
-			        height: height,
-			        width: width,
-					autoScale: false,
-			        autoHeight: false,
-			        fitToView: false,
-			        iframe: { 
-			        	preload   : false ,
-			        	scrolling: hidescrolling ? "no" : "auto"
-			        }
-				});
-				*/
 	});
 	
 	

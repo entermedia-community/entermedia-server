@@ -1,15 +1,4 @@
-<html>
-<head>
-$pages.include("${themeprefix}/layouts/includes.html")
-</head>
-<body  id="emdialogbody" data-hidetoolbar="true">
-<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">
-    #if ( $canviewerrors )
-	<div id="errordiv"></div>
-	#end
-
+#if ( $canviewerrors )
+<div id="errordiv"></div>
+#end
 $pages.includeContent()
-</div>
-
-</body>
-</html>
