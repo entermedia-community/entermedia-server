@@ -40,8 +40,8 @@ $context.putPageValue("showtoolbar", "false")
         #if($!hit.height) #set ($assetheight = $hit.height) #else #set($assetheight = 0) #end
         #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
-		<div class="pull-left masonry-grid-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >
-		    	<a class="playerclink imagearea" id="clickid${hit.id}" href="#">
+		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >
+		    	<a class="stackedplayer imagearea" id="clickid${hit.id}" href="#">
 		    	    <div class="grid-thumbimage assetdraggable"> 
 		    	    	#if( $type =="audio")
 		    	    		#set( $type = "mime" )

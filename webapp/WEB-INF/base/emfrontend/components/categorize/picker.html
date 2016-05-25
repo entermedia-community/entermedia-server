@@ -5,12 +5,6 @@
 #else
 	#set($postfix = $asset.id )
 #end
-<div class="modal-dialog modal-lg" id="searcharea" >
-	<div class="modal-content">
-	<div  class="modal-header" >
-	    <h4 class="modal-title">[[Pick Category]]</h4>
-	</div>
-	<div class="modal-body">
 		<div id="assetdetailscategorylist$postfix">
 		<div id="emcategorypicker" >
 		<div id="empickerbody">
@@ -22,13 +16,7 @@
 		    </div>
 				<input type="hidden" name="save" value="true" />
 				<input type="hidden" name="assetid" value="$!asset.id" />
-				
 			</form>	
 		</div>
 		</div>
 		</div>
-	</div>
-	<div class="modal-footer">
-	      <button type="button" class="btn btn-default" data-dismiss="modal">[[Close]]</button>
-	      <input type="submit" form="saveassetcategories"  value="[[Save]]" id="submit" name="submit" data-dismiss="modal" class="btn btn-primary">
-    </div>

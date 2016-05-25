@@ -1206,18 +1206,6 @@ emcomponents = function() {
 	
 }
 
-reloadOpenCollections = function (nextpage) {
-	
-	if(collectionId != ''){
-		nextpage+collectionId
-	}
-	
-	jQuery.get(nextpage, {}, function(data) {
-		$("#left-col-libraries").replaceWith(data);	
-	});
-	
-	collectionId='';
-}
 
 jQuery(".categoryInCollection").livequery('click',function(e){
 	collectionId= jQuery(this).attr('collectionId');

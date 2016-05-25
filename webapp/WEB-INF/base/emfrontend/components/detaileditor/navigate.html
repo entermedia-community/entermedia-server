@@ -4,8 +4,8 @@
     		#set($previous = $hits.previous($indexOf))
     		#set($next = $hits.next($indexOf))
 		#end
-		
-		<div id="eml-tab-subnav">
+	<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+		<div id="eml-tab-subnav" >
     		<ul style="text-align: center;" id="sub-nav" class="mediaview">
     			#if( $hits )
 	#set( $hitssessionid = $hits.getSessionId() )
@@ -64,7 +64,7 @@
     						</li>	
     					#end
     					<li style="float: right;">
-    					<a href="${home}$apphome/views/search/index.html?hitssessionid=${hitssessionid}">[[Results]]</a>
+    					<a href="${home}$apphome/views/search/index.html?hitssessionid=${hitssessionid}">$hits.size() [[Results]]</a>
     					</li> 
     					#if($previous)
     						 <li style="float: right;"><a href="${home}$apphome/views/modules/asset/editor/$thispage/index.html?assetid=${previous.id}&hitssessionid=${hitssessionid}&roothits=$roothits"><<</a></li>
@@ -72,8 +72,8 @@
     			#end
     						
     		</ul>
-    		
 		</div>
+	</div>	
 		<div id="share-container" style="display: none;">
     
         </div>

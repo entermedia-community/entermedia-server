@@ -287,11 +287,11 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("next");
 		showOverlay(id);
 	});
-	jQuery('div.masonry-grid a.playerclink').livequery('click',function(e)
+	jQuery('a.stackedplayer').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
-		showOverlay(link.parent(".masonry-grid-cell").data("assetid"));
+		showOverlay(link.data("assetid"));
 	});
 	
 	

@@ -1,12 +1,6 @@
 <div id="emcontainer">
-<div class="ui-widget uipanel" id="search-collections" >
-	<div  class="ui-widget-header" >
-		<span class="widget-header-title">[[Search Collections]]</span>
-		<span class="widget-header-edit">
-			##<a class="emdialog ir" data-height="80%" data-width="80%" href="$home$apphome/components/opencollections/searchcollection.html">[[Search]]</a>			
-		</span>
-	</div>
-	<div class="ui-widget-content"  id="searcharea" >
+<div  id="search-collections" >
+	<div id="searcharea" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
 	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
@@ -37,9 +31,12 @@
 
 <script>
 $(".rowclick").livequery('click', function(e){
-    parent.jQuery.fancybox.close();
-    var rowid = $(this).attr("rowid");
-    var nextpage = '$home$apphome/components/opencollections/opencollection.html?collectionid='+rowid;
-    parent.reloadOpenCollections(nextpage);
+	$(this).closest(".modal").modal("hide");
+	var rowid = $(this).attr("rowid");
+    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
+	//$("#left-col-opencollections").load(nextpage);
+	window.location.href = nextpage;
+
+
 });
 </script>

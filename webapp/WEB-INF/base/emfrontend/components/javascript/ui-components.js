@@ -275,11 +275,11 @@ uiload = function() {
 			// closes the fancybox after submitting
 				
 
-			jQuery(this).ajaxSubmit({
+			form.ajaxSubmit({
 				target:"#" + targetdiv
 			 });
 				
-			form.nearest(".modal").modal("close");
+			form.closest(".modal").modal("hide");
 			
 
 			var reset = form.data("reset") 
@@ -349,11 +349,22 @@ uiload = function() {
 					modaldialog = $("#" + id );
 				}
 				var link = dialog.attr("href");
-				 
-				// modaldialog.modal("show"); 
-				 
 				modaldialog.load(link, function() { 
         		 	modaldialog.modal({keyboard: true,backdrop:true, "show":true});
+        		 	//fix submit button
+        		 	var id = $("form",modaldialog).attr("id");
+        		 	$("#submitbutton",modaldialog).attr("form",id);
+        		 	var title = dialog.attr("title");
+        		 	if( title == null)
+        		 	{
+        		 		title = dialog.text();
+        		 	}
+        		 	$(".modal-title",modaldialog).text(title);
+        		 	var hidefooter = dialog.data("hidefooter");
+        		 	if( hidefooter != null)
+        		 	{
+        		 		$(".modal-footer",modaldialog).hide();
+        		 	}
     			});
     			
 				event.preventDefault();
