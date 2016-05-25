@@ -271,25 +271,18 @@ uiload = function() {
 			var targetdiv = form.attr("targetdiv");
 			targetdiv = targetdiv.replace(/\//g, "\\/");
 			// allows for posting to a div in the parent from a fancybox.
-			if(targetdiv.indexOf("parent.") == 0)
-			{
-				targetdiv = targetdiv.substr(7);
-				parent.jQuery(this).ajaxSubmit({
-					target:"#" + targetdiv
-				 });
-				 
-				// closes the fancybox after submitting
-				parent.jQuery.fancybox.close();
-			}
-			else
-			{
-				jQuery(this).ajaxSubmit({
-					target:"#" + targetdiv
-				 });
-			}
+			
+			// closes the fancybox after submitting
+				
+
+			jQuery(this).ajaxSubmit({
+				target:"#" + targetdiv
+			 });
+				
+			form.nearest(".modal").modal("close");
 			
 
-			var reset =form.data("reset") 
+			var reset = form.data("reset") 
 			if( reset == true){
 				form.get(0).reset();
 			}
