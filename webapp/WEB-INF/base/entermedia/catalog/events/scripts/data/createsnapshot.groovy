@@ -113,10 +113,9 @@ public void init() {
 
 
 		boolean notify = Boolean.parseBoolean(context.findValue("sendnotifications"));
-		log.info("Compelte - sending notifications : ${notify}");
+		log.info("Complete - sending notifications : ${notify}");
 		if(notify){
-			Data setting = mediaarchive.getCatalogSetting("events_notify_app");
-			String appid = setting.get("value");
+			String appid = mediaarchive.getCatalogSettingValue("events_notify_app");
 
 			def url = "/${appid}/components/notification/exportcomplete.html"
 			String emails = context.findValue("to");
@@ -127,15 +126,15 @@ public void init() {
 	}
 
 	catch(Exception e){
-		Data setting = mediaarchive.getCatalogSetting("events_notify_app");
-		String appid = setting.get("value");
+		log.error(e);
+		String appid = mediaarchive.getCatalogSettingValue("events_notify_app");
 		context.putPageValue("error", e);
 		String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 		context.putPageValue("date", date)
 		def url = "/${appid}/components/notification/exporterror.html"
 		String emails = context.findValue("to");
 
-		sendEmail(context,emails ,url);
+		sendEmail(context, emails, url);
 	}
 
 

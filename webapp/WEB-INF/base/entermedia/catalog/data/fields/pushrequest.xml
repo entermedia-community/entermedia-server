@@ -1,6 +1,6 @@
 <properties>
 	<property id="id" index="true" stored="true">Id</property>
-	<property id="assetid" index="true"  stored="true">Asset Id</property>
+	<property id="assetid" type="list" index="true"  stored="true">Asset Id</property>
 	<property id="assetname" index="true"  stored="true">Asset Name</property>
 	<property id="assetfilesize" index="true" stored="true">Asset File Size</property>
 	<property id="status" editable="true"  index="true"  stored="true" type="list" viewtype="list" listid="push/pushstatus">Status</property>

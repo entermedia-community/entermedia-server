@@ -7,5 +7,5 @@
   <property id="datereviewed" datatype="date" editable="true" index="true" stored="true">Date Reviewed</property>
   <property id="dateexpires" datatype="date"  editable="true" index="true" stored="true">Valid Till</property>
   <property id="reviewstatus" editable="true" list="true" index="true" stored="true">Status</property>
-  <property id="assetid" editable="true" index="true" stored="true">Asset ID</property>
+  <property id="assetid" type="list" editable="true" index="true" stored="true">Asset ID</property>
 </properties>

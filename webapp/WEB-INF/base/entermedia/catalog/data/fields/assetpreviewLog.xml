@@ -1,7 +1,7 @@
 <properties>
 
 <property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property><property id="sourcepath"  index="true" stored="true">Source Path</property>
-<property id="assetid"  index="true" stored="true">Asset Id</property>
+<property id="assetid" type="list" index="true" stored="true">Asset Id</property>
 <property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>
 
 </properties>
