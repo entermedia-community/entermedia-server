@@ -306,13 +306,6 @@ uiload = function() {
 	});
 	
 	
-	
-	
-	jQuery("form.ajaxform input.cancel").livequery('click',function()
-	{
-		parent.jQuery.fancybox.close();
-	});
-	
 	jQuery("form.ajaxautosubmit").livequery( function() 
 			{
 				var theform = jQuery(this); 
@@ -371,6 +364,88 @@ uiload = function() {
 				return false;
 	});
 	
+		jQuery('#emselectable table td' ).livequery("click", function(event)
+	{
+		var clicked = jQuery(this);
+		if(clicked.attr("noclick") =="true") {
+			return true;
+		}
+		if( $(event.target).is("input") )
+		{
+			return true;
+		}
+		var emselectable = clicked.closest("#emselectable");
+		var row = $(clicked.closest("tr"));
+		if ( row.hasClass("thickbox") ) 
+		{
+			var href = row.data("href");
+			openFancybox(href);
+		}
+		else 
+		{
+			emselectable.find('table tr' ).each(function(index) 
+			{ 
+				clicked.removeClass("emhighlight");
+			});
+			row.addClass('emhighlight');
+			row.removeClass("emborderhover");
+			var table = row.closest("table");
+			var id = row.attr("rowid");
+			//var url = emselectable.data("clickpath");
+			var url = table.data("clickpath");
+			var form = emselectable.find("form");
+				
+			if( form.length > 0 )
+			{
+				emselectable.find( '#emselectedrow' ).val(id);
+				emselectable.find( '.emneedselection').each( function()
+				{
+					clicked.removeAttr('disabled');
+				});	
+				form.submit();
+			}
+			else if( url != undefined )
+			{
+				if (url=="") {
+					return true;
+				}
+				var post = table.data("viewpostfix");
+				if( post != undefined )
+				{
+					parent.document.location.href = url + id + post;
+				}
+				else
+				{
+					parent.document.location.href = url + id;
+				}
+			}
+			else
+			{
+				parent.document.location.href = id;
+			}
+		}	
+	}
+	);
+
+	jQuery('#emselectable table tr' ).livequery(
+	function()
+	{
+		jQuery(this).hover(
+			function () 
+			{
+			  	var row = jQuery(this).closest("tr");
+				var id = jQuery(row).attr("rowid");
+			    if( id != null )
+			    {
+				    jQuery(this).addClass("emborderhover");
+				}
+		 	}, 
+			function () {
+			    jQuery(this).removeClass("emborderhover");
+			}
+		);
+	});
+		
 	
 	jQuery("a.thickbox").livequery(
 			function() 
@@ -396,21 +471,6 @@ uiload = function() {
 		
 	});
 	
-	
-	
-	jQuery("#closemodal").livequery("click", function() {
-		parent.jQuery.fancybox.close(); 
-	});
-	
-	jQuery("a.slideshow").livequery(
-		function() 
-		{
-			jQuery(this).fancybox(
-			{ 
-				'zoomSpeedIn': 300, 'zoomSpeedOut': 300, 'overlayShow': true , 'slideshowtime': 6000
-			});
-	});
-
 	jQuery("img.framerotator").livequery(
 		function()
 		{

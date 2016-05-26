@@ -64,6 +64,7 @@ import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.entermediadb.asset.search.BaseAssetSearcher;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
@@ -530,6 +531,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				AdminClient admin = getClient().admin();
 
 				admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
+				
+				//Now import any data sitting there for importing
+				List children = getPageManager().getRepository().getChildrenNames("/WEB-INF/data/" + inCatalogId + "/dataexport/");
+				if( !children.isEmpty())
+				{
+					MediaArchive archive = (MediaArchive)getWebServer().getModuleManager().getBean(inCatalogId,"mediaArchive");
+					log.info("Loading database from dataexport folder");
+					archive.fireMediaEvent("data/importdatabase", null);
+					
+				}
+				
 			}
 			//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			//			List sorted = archive.listSearchTypes();

@@ -454,7 +454,7 @@ public class Category extends BaseData
 		setValue("parentid", inParentId);
 	}
 
-	public String getSourcePath()
+	public String getCategoryPath()
 	{
 		String vale  = null;//get("sourcepath");
 //		if( vale == null)
@@ -481,12 +481,7 @@ public class Category extends BaseData
 //		}
 		return vale;
 	}
-
-	public void setSourcePath(String inSourcepath)
-	{
-		// TODO Auto-generated method stub
-		setValue("sourcepath",inSourcepath);
-	}
+	
 	public int compareTo(Category c2)
 	{
 		if( getName() == null )

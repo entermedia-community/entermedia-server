@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="sourcepath" />
+  <property id="categorypath" />
   <property id="foldertype" />
   <property id="creationdate" />
 </root>

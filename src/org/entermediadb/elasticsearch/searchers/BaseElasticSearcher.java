@@ -815,7 +815,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				valueof = valueof + "*";
 			}
-				
+			valueof = valueof.toLowerCase(); //Some reason wildcard searches are not run by the analyser
+			//MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid, valueof);
 			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(fieldid, valueof);
 			
 			//text.maxExpansions(10);
