@@ -29,7 +29,7 @@ public interface ProjectManager
 	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid);
 	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid);
 
-	public void addCategoryToCollection(MediaArchive archive, String collectionid, String categoryid );
+	public void addCategoryToCollection(User inUser, MediaArchive archive, String collectionid, String categoryid );
 	
 	public void removeCategoryFromCollection(MediaArchive archive, String collectionid, String categoryid );
 
@@ -45,8 +45,6 @@ public interface ProjectManager
 
 	public Collection<UserCollection> loadOpenCollections(WebPageRequest inReq);
 	
-	public String loadLastCategoryIdCreated(WebPageRequest inReq);
-
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
 
 	public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);

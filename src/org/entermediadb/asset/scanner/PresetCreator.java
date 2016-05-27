@@ -90,7 +90,15 @@ public class PresetCreator
 				page = "1";
 			}
 			existingtasks.add(existing.get("presetid") + page);
-			if( rerun || "error".equals( existing.get("status")) )
+			if( "error".equals( existing.get("status")))
+			{
+				rerun = true;
+			}
+			else if( !"complete".equals( existing.get("status" ) ) && existing.getValue("submitted") == null )
+			{
+				rerun = true;				
+			}
+			if( rerun )
 			{
 				existing = tasksearcher.loadData(existing);
 				existing.setProperty("status","retry");

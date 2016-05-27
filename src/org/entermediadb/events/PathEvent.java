@@ -300,7 +300,7 @@ public class PathEvent implements Comparable, TextAppender
 		//		}
 		//request.putPageValue("home", "");
 
-		long start = System.currentTimeMillis();
+		//long start = System.currentTimeMillis();
 
 
 		//Thread thread = Thread.currentThread();
@@ -325,7 +325,7 @@ public class PathEvent implements Comparable, TextAppender
 					log.info("running " + page.getPath());
 				}
 
-				WebEvent event = (WebEvent)request.getPageValue("webevent");
+				//WebEvent event = (WebEvent)request.getPageValue("webevent");
 				request.setWriter(output);
 				getWebServer().getOpenEditEngine().createPageStreamer(page, request);
 				setLastRun(new Date());

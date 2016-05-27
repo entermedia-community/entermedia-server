@@ -170,13 +170,13 @@ public class PathEventManager implements Shutdownable
 				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 				{
 					TaskRunner task = (TaskRunner) iterator.next();
-					if( name.equals( task.getTask().getName() ) )
+					if( name.equals( task.getPathEvent().getName() ) )
 					{
 //						if( name.equals("Run media conversions") )
 //						{
 //							log.info("Found conversion task " + now + "  "  + name + " " + task.isRepeating());
 //						}
-						if( task.getTask().isRunning() )
+						if( task.getPathEvent().isRunning() )
 						{
 							//task.run();
 							task.setRunAgainSoon(true);
@@ -211,7 +211,7 @@ public class PathEventManager implements Shutdownable
 				}
 				if(runner.isRepeating() && inUpdateRunTimes)
 				{
-					long later  = now.getTime() + runner.getTask().getPeriod();
+					long later  = now.getTime() + runner.getPathEvent().getPeriod();
 					runner.setTimeToStart(new Date(later));
 				}
 			}
@@ -355,7 +355,7 @@ public class PathEventManager implements Shutdownable
 		if (fieldPathActions == null)
 		{
 			fieldPathActions = new ArrayList();
-			loadPathEvents();
+			initialize();
 		}
 		return fieldPathActions;
 	}
@@ -402,21 +402,40 @@ public class PathEventManager implements Shutdownable
 		getPathEvents().remove(inTask);
 	}
 
-	public void loadTask(PathEvent inTask) throws OpenEditException
+	public void loadTasks() throws OpenEditException
 	{
-		//, boolean inRun, boolean inAsync f t
-		if( log.isDebugEnabled() )
+		// TODO Auto-generated method stub
+//		String username = eventpage.get("eventuser");
+//		if( username == null)
+//		{
+//			username = "admin";
+//		}
+//		
+//		String catalogid = eventpage.getProperty("catalogid");
+//		if( catalogid == null)
+//		{
+//			catalogid = "system";
+//		}
+		User user = (User)getSearcherManager().getData(getCatalogId(), "user", "admin");
+//		//UserManager usermanager = (UserManager)getModuleManager().getBean(catalogid,"userManager");
+		if( user == null)
 		{
-			log.debug("Adding new Workflow Task: " + inTask.getPage());
+			throw new OpenEditException("No such user: admin");
 		}
-		getPathEvents().add(inTask);
-		if (inTask.isEnabled())
+		
+		for (Iterator iterator = getPathEvents().iterator(); iterator.hasNext();)
 		{
-			if (inTask.getPeriod() > 0)
+			PathEvent event = (PathEvent) iterator.next();
+			event.setUser(user);
+			
+			if (event.isEnabled())
 			{
-				TaskRunner runner = new TaskRunner(inTask, this);
-				//runner.setRepeating(true);
-				getRunningTasks().push(runner);
+				if (event.getPeriod() > 0)
+				{
+					TaskRunner runner = new TaskRunner(event, this);
+					//runner.setRepeating(true);
+					getRunningTasks().push(runner);
+				}
 			}
 		}
 	}
@@ -437,7 +456,6 @@ public class PathEventManager implements Shutdownable
 		Set duplicates = new HashSet();
 		loadPathEvents(root, duplicates);
 		Collections.sort(getPathEvents());
-		reloadScheduler();
 	}
 
 	protected void loadPathEvents(String inRoot, Set inDuplicates)
@@ -491,26 +509,9 @@ public class PathEventManager implements Shutdownable
 		Page eventpage = getPageManager().getPage(htmlpage, true);
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
-	
-		String username = eventpage.get("eventuser");
-		if( username == null)
-		{
-			username = "admin";
-		}
-		
-		String catalogid = eventpage.getProperty("catalogid");
-		if( catalogid == null)
-		{
-			catalogid = "system";
-		}
-		User user = (User)getSearcherManager().getData(catalogid, "user", username);
-		//UserManager usermanager = (UserManager)getModuleManager().getBean(catalogid,"userManager");
-		if( user == null)
-		{
-			log.error("No such user: " + username);
-		}
-		event.setUser(user);
-		loadTask(event);
+		//loadTask(event);
+		getPathEvents().add(event);
+
 	}
 	
 	public PathEvent getPathEvent(String inPath)
@@ -541,7 +542,7 @@ public class PathEventManager implements Shutdownable
 		for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 		{
 			TaskRunner runner = (TaskRunner) iterator.next();
-			if( event == runner.getTask() )
+			if( event == runner.getPathEvent() )
 			{
 				getRunningTasks().remove(runner);
 //				if(runner.isRepeating())
@@ -594,6 +595,13 @@ public class PathEventManager implements Shutdownable
 		{
 			runSharedPathEvent(path,true);
 		}
+	}
+
+	public void initialize()
+	{
+		loadPathEvents();
+		loadTasks();
+		reloadScheduler();
 	}
 	
 }

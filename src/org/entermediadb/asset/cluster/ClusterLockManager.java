@@ -98,6 +98,10 @@ public class ClusterLockManager implements LockManager
 			HitTracker tracker = inSearcher.search(q); //Make sure there was not a thread waiting
 			tracker.setHitsPerPage(1);
 			Iterator iter = tracker.iterator();
+			if( !iter.hasNext() )
+			{
+				throw new OpenEditException("Searching by sourcepath not working" + inPath);
+			}
 			Data first = (Data)iter.next();
 			if (tracker.size() > 1) //Someone else also locked
 			{
@@ -183,6 +187,10 @@ public class ClusterLockManager implements LockManager
 		
 		HitTracker tracker = searcher.search(q);
 		tracker.setHitsPerPage(1);
+		if( tracker.size() == 0)
+		{
+			return null;
+		}
 		Data first = (Data) tracker.first();
 
 		if (first == null)
@@ -208,7 +216,7 @@ public class ClusterLockManager implements LockManager
 	{
 		Searcher searcher = getLockSearcher();
 		SearchQuery q = searcher.createSearchQuery();
-		q.addExact("sourcepath", inPath);
+		q.addMatches("sourcepath", inPath);
 		q.addSortBy("date");
 		return searcher.search(q);
 	}
@@ -252,14 +260,23 @@ public class ClusterLockManager implements LockManager
 	@Override
 	public Lock lockIfPossible(String inPath, String inOwnerId)
 	{
-		Lock lock = loadLock(inPath);
-
-		if(lock != null && lock.isLocked())
+		try
 		{
+			Lock lock = loadLock(inPath);
+			if(lock != null && lock.isLocked())
+			{
+				log.error("Locked " + lock + " " + inPath);
+				return null;
+			}
+			lock = grabLock(lock, inOwnerId, inPath);
+			return lock;
+		}
+		catch( Throwable ex)
+		{
+			log.error(ex);
 			return null;
 		}
-		lock = grabLock(lock, inOwnerId, inPath);
-		return lock;
+	
 	}
 
 	/*

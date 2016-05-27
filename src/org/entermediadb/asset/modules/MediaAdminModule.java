@@ -10,12 +10,14 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.events.PathEventManager;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Reloadable;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
@@ -299,5 +301,40 @@ public class MediaAdminModule extends BaseMediaModule
 			archive.setCatalogSettingValue("log_all_searches","true");
 		}
 	}	
-	
+	public void initCatalogs(WebPageRequest inReq)
+	{
+		HitTracker catalogs = getSearcherManager().getList("system","catalog");
+		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
+		{
+			try
+			{
+				Data data = (Data) iterator.next();
+				String catalogid = data.getId();
+				
+				NodeManager nodemanager = (NodeManager)getModuleManager().getBean(catalogid,"nodeManager");
+				boolean existed = nodemanager.containsCatalog(catalogid);
+				
+				PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
+				manager.getPathEvents();
+				
+				if( !existed)
+				{
+					//import any data sitting there for importing
+					List children = getPageManager().getRepository().getChildrenNames("/WEB-INF/data/" + catalogid + "/dataexport/");
+					if( !children.isEmpty())
+					{
+						MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive");
+						log.info("Loading database from dataexport folder");
+						archive.fireMediaEvent("data/importdatabase",null);
+					}
+				}
+			}
+			catch ( Exception ex)
+			{
+				log.error(ex);
+			}
+		}
+	}
+
+
 }

@@ -474,9 +474,10 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.field("store", "no");
 					jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
-
 					continue;
 				}
+				
+				//First determine type
 				if (detail.isDate())
 				{
 					jsonproperties = jsonproperties.field("type", "date");
@@ -500,49 +501,50 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					jsonproperties = jsonproperties.field("type", "long");
 				}
-
 				else if (detail.isDataType("geo_point"))
 				{
 					jsonproperties = jsonproperties.field("type", "geo_point");
 				}
-				
-				
-				
-				
 				else if (detail.isList())  //Or multi valued?
 				{
-					//if( detail.isMultiValue() )
-					jsonproperties = jsonproperties.field("index", "not_analyzed");
 					if (Boolean.parseBoolean(detail.get("nested")))
 					{
 						jsonproperties = jsonproperties.field("type", "nested");
-						
 					}
 					else
 					{
 						jsonproperties = jsonproperties.field("type", "string");
 					}
 				}
-				
-				
+				else if(detail.isMultiLanguage())
+				{
+					jsonproperties = jsonproperties.field("type", "object");
+				}
 				else
 				{
-					String indextype = detail.get("indextype");
-					if( indextype == null )
+					jsonproperties = jsonproperties.field("type", "string");
+				}
+
+				//Now determine index
+				String indextype = detail.get("indextype");
+				if( indextype == null)
+				{
+					if(detail.isMultiLanguage())
 					{
-						if( detail.getId().endsWith("id") || detail.getId().contains("sourcepath") )
-						{
-							indextype = "not_analyzed";
-						}
+						indextype = "object";
 					}
-					if (indextype != null )
+					if( detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath") ) 
 					{
-						jsonproperties = jsonproperties.field("type", indextype);
+						indextype = "not_analyzed";
 					}
-					
-					if(detail.isMultiLanguage()){
-					
-					jsonproperties = jsonproperties.field("type", "object");
+				}
+				if (indextype != null )
+				{
+					jsonproperties = jsonproperties.field("index", indextype);
+				}
+
+				if(detail.isMultiLanguage())
+				{					
 					jsonproperties.startObject("properties");
 					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
 					for (Iterator iterator = languages.iterator(); iterator.hasNext();)
@@ -556,37 +558,22 @@ public class BaseElasticSearcher extends BaseSearcher
 							jsonproperties.field("analyzer", analyzer);
 						}
 						jsonproperties = jsonproperties.field("index", "analyzed");
-
 						jsonproperties.endObject();
 					}
 					jsonproperties.endObject();
-					
-					
-					} else{
-						jsonproperties = jsonproperties.field("type", "string");
-
+				}
+				else
+				{
+					if (detail.isStored() )
+					{
+						jsonproperties = jsonproperties.field("store", "yes");
 					}
-//					jsonproperties = jsonproperties.field("term_vector", "with_positions_offsets");
-
-				}
-
-				if (detail.isStored() && !detail.isMultiLanguage())
-				{
-					jsonproperties = jsonproperties.field("store", "yes");
-				}
-				else if(!detail.isStored() && !detail.isMultiLanguage())
-				{
-					jsonproperties = jsonproperties.field("store", "no");
-				}
-//				 if( detail.isKeyword())
-//				 {
-//					 jsonproperties = jsonproperties.field("include_in_all", "true");
-//				 }
-//				 else
-//				 {
-				 jsonproperties = jsonproperties.field("include_in_all", "false"); //Do not use. Use _description
-//				 }
-
+					else
+					{
+						jsonproperties = jsonproperties.field("store", "no");
+					}
+				}	
+				jsonproperties = jsonproperties.field("include_in_all", "false"); //Do not use. Use _description
 				jsonproperties = jsonproperties.endObject();
 				
 			}
@@ -1907,10 +1894,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
-	//This is good code, don't delete:
+	public boolean tableExists()
+	{
+		boolean used = getClient().admin().indices()
+				.typesExists(new TypesExistsRequest(new String[] { toId(getCatalogId()) }, getSearchType())).actionGet().isExists();
+		return used;
 
-	
-	
+	}
 	
 	
 	

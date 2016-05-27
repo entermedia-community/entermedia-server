@@ -1127,7 +1127,6 @@ function()
 			
 			/**
 			 * Create an object to open form
-			 */
 			var newForm = {
 				id:jQuery("#createnewarea").find("a").attr('id'),
 				class:jQuery("#createnewarea").find("a").attr('class'), 
@@ -1136,29 +1135,30 @@ function()
 				href:jQuery("#createnewarea").find("a").attr('href')
 			};
 			
-			/*
-			 * Current draggable category
-			 */
 			categoryDragged = {
 					categoryid:ui.draggable.data("nodeid"),
 					assetid:ui.draggable.data("assetid"),
 					categoryName:ui.draggable.data("categoryname"),
 					hitssessionid:$("#resultsdiv").data("hitssessionid")
 			};
-			
-			
-			/*
-			 * Object used for the new collection  
-			 */
-			
 			newCollection = {
 					id:"",
 					dropsaveurl:"/assets/emshare/components/opencollections/addassettocollection.html?librarycollection=",
 					targetdiv:"left-col-opencollections"
 			};
-			
-
 			createNewCollection(newForm);
+			 */
+			
+				var dropsaveurl = apphome + "/components/opencollections/adddropcategory.html" + 
+	
+				jQuery.get(nextpage, {}, function(data) 
+				{
+					var cell = jQuery("#opencollectioncreatenewarea");
+					cell.html(data);
+				}
+		);
+			
+			
 		},
 		tolerance: 'pointer',
 		over: outlineSelectionCol,
@@ -1166,24 +1166,6 @@ function()
 	});
 }
 );
-
-createNewCollection = function(newForm){
-	
-	var nextpage= newForm.href;
-	var targetDiv = newForm.targetdivinner;
-	
-	targetDiv = targetDiv.replace(/\//g, "\\/");
-	
-	jQuery.get(nextpage, {}, function(data) 
-			{
-				var cell;
-				cell = jQuery("#" + targetDiv);
-				cell.html(data);
-				$(window).trigger( "resize" );
-			}
-		);
-	
-}
 
 
 jQuery(".btn-sm").livequery("click", function(e){

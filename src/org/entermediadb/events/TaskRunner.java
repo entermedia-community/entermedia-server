@@ -12,13 +12,31 @@ import org.openedit.WebPageRequest;
 public class TaskRunner extends java.util.TimerTask
 {
 	protected static final Log log = LogFactory.getLog(TaskRunner.class);
-	protected PathEvent fieldTask;
+	protected PathEvent fieldPathEvent;
 	protected PathEventManager fieldEventManager;
 	protected WebPageRequest fieldWebPageRequest;
 	protected Date fieldTimeToStart;
-	//protected boolean fieldRepeating;
 	protected boolean fieldWithParameters;
 	protected boolean fieldRunAgainSoon;
+	protected Map fieldParams;
+	public Map getParams()
+	{
+		return fieldParams;
+	}
+	public void setParams(Map inParams)
+	{
+		fieldParams = inParams;
+	}
+	public Map getPageValues()
+	{
+		return fieldPageValues;
+	}
+	public void setPageValues(Map inPageValues)
+	{
+		fieldPageValues = inPageValues;
+	}
+	protected Map fieldPageValues;
+	
 	
 	public boolean isRunAgainSoon()
 	{
@@ -36,46 +54,19 @@ public class TaskRunner extends java.util.TimerTask
 	{
 		fieldWithParameters = inWithParameters;
 	}
-	public TaskRunner(PathEvent inTask,PathEventManager inManager)
+	public TaskRunner(PathEvent inPathEvent,PathEventManager inManager)
 	{
-		this( inTask,  null,null,inManager);
+		this( inPathEvent,  null,null,inManager);
 		setWithParameters(false);
 	}
-	public TaskRunner(PathEvent inTask, Map inParams, Map inPageValues, PathEventManager inManager)
+	public TaskRunner(PathEvent inPathEvent, Map inParams, Map inPageValues, PathEventManager inManager)
 	{
-		fieldTask = inTask;
+		fieldPathEvent = inPathEvent;
 		fieldEventManager = inManager;
+		setParams(inParams);
+		setPageValues(inPageValues);
 		setWithParameters(true);
-		
-		WebPageRequest request =  inManager.getRequestUtils().createPageRequest(inTask.getPage().getPath(), inTask.getUser());
-		if( inParams != null)
-		{
-			for (Iterator iterator = inParams.keySet().iterator(); iterator.hasNext();)
-			{
-				String  key = (String ) iterator.next();
-				Object value = inParams.get(key);
-				if( value instanceof String[])
-				{
-					request.setRequestParameter(key, (String[])value);
-				}
-				else
-				{
-					request.setRequestParameter(key, (String)value);
-				}
-			}
-		}
-		if( inPageValues != null)
-		{
-			for (Iterator iterator = inPageValues.keySet().iterator(); iterator.hasNext();)
-			{
-				String  key = (String ) iterator.next();
-				Object value = inPageValues.get(key);
-				request.putPageValue(key, value);
-				request.putSessionValue(key, value);
-			}
-		}
-		fieldWebPageRequest = request; 
-		setTimeToStart(new Date(System.currentTimeMillis() + inTask.getPeriod() ));
+		setTimeToStart(new Date(System.currentTimeMillis() + inPathEvent.getPeriod() ));
 	}
 
 	public Date getTimeToStart()
@@ -89,22 +80,55 @@ public class TaskRunner extends java.util.TimerTask
 	}
 	protected WebPageRequest getWebPageRequest()
 	{
+		if (fieldWebPageRequest == null)
+		{
+			if( getPathEvent().getUser() == null)
+			{
+				throw new OpenEditException("admin User is required");
+			}
+			fieldWebPageRequest =  getEventManager().getRequestUtils().createPageRequest(getPathEvent().getPage().getPath(), getPathEvent().getUser());
+			if( fieldParams != null)
+			{
+				for (Iterator iterator = fieldParams.keySet().iterator(); iterator.hasNext();)
+				{
+					String  key = (String ) iterator.next();
+					Object value = fieldParams.get(key);
+					if( value instanceof String[])
+					{
+						fieldWebPageRequest.setRequestParameter(key, (String[])value);
+					}
+					else
+					{
+						fieldWebPageRequest.setRequestParameter(key, (String)value);
+					}
+				}
+			}
+			if( fieldPageValues != null)
+			{
+				for (Iterator iterator = fieldPageValues.keySet().iterator(); iterator.hasNext();)
+				{
+					String  key = (String ) iterator.next();
+					Object value = fieldPageValues.get(key);
+					fieldWebPageRequest.putPageValue(key, value);
+					fieldWebPageRequest.putSessionValue(key, value); //seems redudant
+				}
+			}
+		}
 		return fieldWebPageRequest;
 	}
 	protected void setWebPageRequest(WebPageRequest inWebPageRequest)
 	{
 		fieldWebPageRequest = inWebPageRequest;
 	}
-
 	
-	public PathEvent getTask()
+	public PathEvent getPathEvent()
 	{
-		return fieldTask;
+		return fieldPathEvent;
 	}
 
-	public void setTask(PathEvent inTask)
+	public void setPathEvent(PathEvent inPathEvent)
 	{
-		fieldTask = inTask;
+		fieldPathEvent = inPathEvent;
 	}
 
 	public PathEventManager getEventManager()
@@ -145,7 +169,7 @@ public class TaskRunner extends java.util.TimerTask
 		// TODO Auto-generated method stub
 		//before we run this make sure our event is still enabled
 		//make sure this event did not get reloaded
-		PathEvent event = getEventManager().getPathEvent(getTask().getPage().getPath());
+		PathEvent event = getEventManager().getPathEvent(getPathEvent().getPage().getPath());
 
 		//make sure nobody is running this
 		try
@@ -160,7 +184,7 @@ public class TaskRunner extends java.util.TimerTask
 			if( isRunAgainSoon() )
 			{
 				setRunAgainSoon(false);
-				getEventManager().runSharedPathEvent(getTask().getPage().getPath());
+				getEventManager().runSharedPathEvent(getPathEvent().getPage().getPath());
 			}
 			else
 			{
@@ -194,7 +218,7 @@ public class TaskRunner extends java.util.TimerTask
 	
 	public boolean isRepeating()
 	{
-		return !isWithParameters() && getTask().getPeriod() > 0 && getTask().isEnabled();
+		return !isWithParameters() && getPathEvent().getPeriod() > 0 && getPathEvent().isEnabled();
 	}
 	protected void executeNow(WebPageRequest inReq, PathEvent event) 
 	{

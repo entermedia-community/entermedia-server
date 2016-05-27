@@ -140,24 +140,5 @@ public class PathEventModule extends BaseModule
 		PathEventManager manager = getPathEventManager(inReq); 
 		manager.shutdown();
 	}
-	
-	public void init(WebPageRequest inReq)
-	{
-		HitTracker catalogs = getSearcherManager().getList("system","catalog");
-		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
-		{
-			try
-			{
-				Data data = (Data) iterator.next();
-				String catalogid = data.getId();
-				PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
-				manager.getPathEvents();
-			}
-			catch ( Exception ex)
-			{
-				log.error(ex);
-			}
-		}
-	}
-	
+		
 }

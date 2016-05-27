@@ -34,9 +34,6 @@ public class BaseProjectManager implements ProjectManager
 	
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCatalogId;
-	protected List<String> lastCollectionIdsCreated = new ArrayList<String>();
-	protected List<String> sourceList = new ArrayList<String>();
-	protected String lastColletionIdCreated = "";
 	/* (non-Javadoc)
 	 * @see model.projects.ProjectManager#getCatalogId()
 	 */
@@ -189,12 +186,6 @@ public class BaseProjectManager implements ProjectManager
 		
 	}
 	
-	public String loadLastCategoryIdCreated(WebPageRequest inReq){
-		
-		inReq.putPageValue("lastColletionIdCreated", lastColletionIdCreated);
-		return lastColletionIdCreated;
-	}
-	
 	protected Collection<UserCollection> loadUserCollections(Collection<Data> allcollections, FilterNode collectionhits)
 	{
 		List usercollections = new ArrayList(allcollections.size());
@@ -207,12 +198,6 @@ public class BaseProjectManager implements ProjectManager
 				int assetcount = collectionhits.getCount(collection.getId());
 				uc.setAssetCount(assetcount);
 			}
-			
-			if(!lastCollectionIdsCreated.contains(collection.getId()) && collection.getId() != null && collection.getId() != ""){
-				lastCollectionIdsCreated.add(collection.getId());
-				lastColletionIdCreated = collection.getId();
-			}
-			
 			usercollections.add(uc);
 		}
 		return usercollections;
@@ -515,11 +500,17 @@ public class BaseProjectManager implements ProjectManager
 	}
 
 	@Override
-	public void addCategoryToCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
+	public void addCategoryToCollection(User inUser, MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
 		if(inCategoryid != null){
 			Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
-			
+			if( inCollectionid == null)
+			{
+				Searcher librarycol = inArchive.getSearcher("librarycollection");
+				Data newcollection = librarycol.createNewData();
+				newcollection.setValue("library", inUser.getId());
+				librarycol.saveData(newcollection,null);
+			}
 			Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
 			
 			if(data == null)

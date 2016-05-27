@@ -407,6 +407,7 @@ public void checkforTasks()
 	String lastassetid = null;
 	Iterator iter = newtasks.iterator();
 	String sourcepath = null;
+	long count = 0;
 	for(Data hit:  iter)
 	{
 		ConvertRunner runner = createRunnable(mediaarchive,tasksearcher,presetsearcher, itemsearcher, hit );
@@ -438,6 +439,7 @@ public void checkforTasks()
 			
 		}
 		byassetid.add(runner);
+		count++;
 		
 	}
 	executorQueue.execute("conversions",runners);
@@ -452,7 +454,7 @@ public void checkforTasks()
 			}
 		}
 	}
-	log.debug("Added ${newtasks.size()} conversion tasks for processing");
+	log.debug("Queued up ${count} of ${newtasks.size()} conversion tasks for processing");
 	
 }
 

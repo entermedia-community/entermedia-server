@@ -213,13 +213,12 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	@Override
 	public boolean initialize()
 	{
-		boolean ok = super.initialize();
-		
-		if( ok && getAllHits().size() == 0 )
+		if( !tableExists())
 		{
 			reIndexAll();
-		}		
-		return ok;
+			return true;
+		}				
+		return false;
 	}
 	
 	

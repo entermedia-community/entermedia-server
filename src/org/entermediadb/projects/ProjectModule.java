@@ -19,7 +19,6 @@ public class ProjectModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(ProjectModule.class);
 	
-	
 	public void loadCollections(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");
@@ -34,12 +33,6 @@ public class ProjectModule extends BaseMediaModule
 		manager.loadOpenCollections(inReq);
 	}
 	
-	public void loadLastCategoryIdCreated(WebPageRequest inReq) throws Exception{
-		String catalogid = inReq.findValue("catalogid");
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
-		manager.loadLastCategoryIdCreated(inReq);
-	}
-
 	
 	public void loadSelectedLibrary(WebPageRequest inReq) throws Exception
 	{
@@ -118,11 +111,11 @@ public class ProjectModule extends BaseMediaModule
 		//TODO: Support multiple selections
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		String catid = inReq.getRequestParameter("categoryid");
-		if( catid != null)
-		{
-			return;
-		}
+//		String catid = inReq.getRequestParameter("categoryid");
+//		if( catid != null)
+//		{
+//			return;
+//		}
 
 		
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
@@ -403,7 +396,7 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		String categoryid = inReq.getRequestParameter("categoryid");
-		manager.addCategoryToCollection(archive, collectionid, categoryid);
+		manager.addCategoryToCollection(inReq.getUser(),archive, collectionid, categoryid);
 	}
 	
 	public void removeCategoryFromCollection(WebPageRequest inReq)

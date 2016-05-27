@@ -510,7 +510,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		return !getMappingErrors().isEmpty();
 	}
-
+	public boolean containsCatalog(String inCatalogId)
+	{
+		if (getConnectedCatalogIds().containsKey(inCatalogId))
+		{
+			return true;
+		}
+		String index = toId(inCatalogId);
+		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index);
+		IndicesExistsResponse res = getClient().admin().indices().exists(existsreq).actionGet();
+		return res.isExists();
+	}	
 	public boolean connectCatalog(String inCatalogId)
 	{
 		if (!getConnectedCatalogIds().containsKey(inCatalogId))
@@ -531,17 +541,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				AdminClient admin = getClient().admin();
 
 				admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
-				
-				//Now import any data sitting there for importing
-				List children = getPageManager().getRepository().getChildrenNames("/WEB-INF/data/" + inCatalogId + "/dataexport/");
-				if( !children.isEmpty())
-				{
-					MediaArchive archive = (MediaArchive)getWebServer().getModuleManager().getBean(inCatalogId,"mediaArchive");
-					log.info("Loading database from dataexport folder");
-					archive.fireMediaEvent("data/importdatabase", null);
-					
-				}
-				
+
 			}
 			//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			//			List sorted = archive.listSearchTypes();
@@ -551,9 +551,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
 			//				searcher.initialize();	
 			//			}
-
+			return true;
 		}
-		return true;//what does this mean?
+		return false;//Created a ne
 	}
 
 	public boolean prepareIndex(String index)
