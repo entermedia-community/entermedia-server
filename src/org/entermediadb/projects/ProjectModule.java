@@ -111,13 +111,6 @@ public class ProjectModule extends BaseMediaModule
 		//TODO: Support multiple selections
 		MediaArchive archive = getMediaArchive(inReq);
 		
-//		String catid = inReq.getRequestParameter("categoryid");
-//		if( catid != null)
-//		{
-//			return;
-//		}
-
-		
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("librarycollection");
@@ -267,8 +260,11 @@ public class ProjectModule extends BaseMediaModule
 		Data saved = (Data)inReq.getPageValue("data");
 		saved.setValue("creationdate", new Date());
 		saved.setValue("owner",inReq.getUserName() );
-		getMediaArchive(inReq).getSearcher("librarycollection").saveData(saved,null);
+		saved.setValue("library",inReq.getUserName() );
 		
+		getMediaArchive(inReq).getSearcher("librarycollection").saveData(saved,null);
+		inReq.setRequestParameter("librarycollection", saved.getId());
+		inReq.setRequestParameter("collectionid", saved.getId());
 	}
 	
 	public void createUserLibrary(WebPageRequest inReq)
@@ -392,12 +388,15 @@ public class ProjectModule extends BaseMediaModule
 	
 	public void addCategoryToCollection(WebPageRequest inReq)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = inReq.getRequestParameter("collectionid");
 		String categoryid = inReq.getRequestParameter("categoryid");
-		Data collection = manager.addCategoryToCollection(inReq.getUser(),archive, collectionid, categoryid);
-		inReq.putPageValue("librarycol",collection);
+		if( categoryid != null)
+		{
+			MediaArchive archive = getMediaArchive(inReq);
+			ProjectManager manager = getProjectManager(inReq);
+			String collectionid = inReq.getRequestParameter("collectionid");
+			Data collection = manager.addCategoryToCollection(inReq.getUser(),archive, collectionid, categoryid);
+			inReq.putPageValue("librarycol",collection);
+		}	
 	}
 	
 	public void removeCategoryFromCollection(WebPageRequest inReq)

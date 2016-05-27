@@ -478,6 +478,10 @@ public class Category extends BaseData
 			}
 			//path.append(getName());
 			vale = path.toString();
+			if( vale.isEmpty())
+			{
+				return getName();
+			}
 //		}
 		return vale;
 	}

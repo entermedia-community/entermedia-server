@@ -12,8 +12,8 @@
 						<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 							<table width="100%" class="categoriescontainer hovertable">
 							#foreach( $cat in $categories)
-									<tr>
-										<td>$cat.categorypath</td>
+									<tr> #set( $categoryloaded=$mediaarchive.getCategorySearcher().loadData($cat))
+										<td><a href="$home$apphome/views/categories/${cat.getId()}.html">$categoryloaded.getCategoryPath()</a></td>
 										<td>$sizer.inEnglish( $filesizes.get($cat.getId()) )</td>
 										<td style="text-align: right;">
 											<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"

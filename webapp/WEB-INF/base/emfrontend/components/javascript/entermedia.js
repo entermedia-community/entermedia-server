@@ -714,9 +714,6 @@ onloadselectors = function()
 							{
 								hitssessionid = $("#main-results-table").data("hitssessionid");
 							}
-//							var tree = this.nearest(".categorytree");
-//							var treeid = tree.data("")
-							//toggleNode('users','categoryPickerTree_media/catalogs/public_admin','users')
 							//this is a category
 							jQuery.get(apphome + "/components/categorize/addassetcategory.html", 
 									{
@@ -1051,15 +1048,16 @@ emcomponents = function() {
 						var collectionName = anode.find("a.librarylabel").data("collectionname");
 						
 						var response;
+						/*
 						if(!categoryName){
 							response = true;//confirm("Move asset to "+collectionName+" collection?");
 						}else{
 							response = confirm("Copy "+categoryName+" category to "+collectionName+" collection?");
 						}
-						
 						if(response == false){
 							return false;
 						}
+						*/
 						
 						if( !hitssessionid )
 						{
@@ -1103,7 +1101,6 @@ emcomponents = function() {
 			}
 	);
 	
-
 	jQuery(".newcollectiondroparea").livequery(
 	function()
 	{
@@ -1112,8 +1109,17 @@ emcomponents = function() {
 			drop: function(event, ui) 
 			{
 				var categortyid = ui.draggable.data("nodeid");
-				var dropsaveurl = apphome + "/components/opencollections/dropcategory.html?categoryid=" + categortyid;
-		
+				var dropsaveurl;
+				if(typeof categortyid != "undefined" )
+				{ 
+					 var categoryName = ui.draggable.data("categoryname");
+					 dropsaveurl = apphome + "/components/opencollections/dropcategory.html?categoryid=" + categortyid + "&categoryname=" + categoryName;
+				}
+				else
+				{
+					var assetid = ui.draggable.data("assetid");
+					dropsaveurl = apphome + "/components/opencollections/addnewchild.html?assetid=" + assetid;
+				}
 				jQuery.get(dropsaveurl, {}, function(data) 
 				{
 					var cell = jQuery("#opencollectioncreatenewarea");
@@ -1126,60 +1132,3 @@ emcomponents = function() {
 		});
 	});	
 }
-
-jQuery(".btn-sm").livequery("click", function(e){
-	
-	setTimeout(function() {
-                
-				isCollectionCreatedByDragging = true;
-				
-				if(isCategoryDragged == true && isCollectionCreatedByDragging == true){
-		
-					var lastCollectionIdCreated = $("#lastCollectionIdCreated").data('collectionid');
-	
-	    			newCollection.id = lastCollectionIdCreated;
-	    			newCollection.dropsaveurl = newCollection.dropsaveurl+lastCollectionIdCreated;
-	    		
-    				var hitssessionid = categoryDragged.hitssessionid;
-    				var assetid = categoryDragged.assetid;
-    				var categoryid = categoryDragged.categoryid;
-    				var dropsaveurl = newCollection.dropsaveurl;
-    				var targetDiv = newCollection.targetdiv;
-    				
-    				if( !hitssessionid )
-					{
-						hitssessionid = $("#main-results-table").data("hitssessionid");
-					}
-    				
-    				var nextpage = dropsaveurl;
-    				
-    				if( assetid )
-					{
-						 nextpage = nextpage + "&assetid=" + assetid;
-					}
-    				
-    				nextpage = nextpage + "&hitssessionid=" + hitssessionid;
-    				
-    				if( categoryid )
-					{
-						nextpage = nextpage + "&categoryid=" + categoryid;
-					}
-    				
-    				console.log(nextpage);
-    				
-    				jQuery.get(nextpage, {}, function(data) 
-    						{
-    							var	cell = jQuery("#" + targetDiv);
-    							cell.replaceWith(data);
-    						});
-    				
-    				
-    				isCategoryDragged == false;
-    				isCollectionCreatedByDragging == false;
-    				
-    			}
-	
-	},1000);
-
-	e.stopPropagation();
-});
