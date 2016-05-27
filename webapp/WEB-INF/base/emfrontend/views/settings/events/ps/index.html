@@ -18,7 +18,7 @@
 		<tbody>
 			#foreach( $runner in $sorted )
 
-			#set( $event = $runner.getTask() )
+			#set( $event = $runner.getPathEvent() )
 			<tr rowid="$event.getPage().getPath()">
 				<td> $patheventmanager.getTimeCalculator().findTimeFrom($runner.getTimeToStart()) </td>
 				<td><b>$context.getText($event.getName())</b></td>
