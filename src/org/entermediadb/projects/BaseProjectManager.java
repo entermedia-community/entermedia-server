@@ -500,19 +500,29 @@ public class BaseProjectManager implements ProjectManager
 	}
 
 	@Override
-	public void addCategoryToCollection(User inUser, MediaArchive inArchive, String inCollectionid, String inCategoryid)
+	public Data addCategoryToCollection(User inUser, MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
-		if(inCategoryid != null){
+		if(inCategoryid != null)
+		{
 			Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+			Data collection = null;
+			Data data = null;
+			Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 			if( inCollectionid == null)
 			{
-				Searcher librarycol = inArchive.getSearcher("librarycollection");
-				Data newcollection = librarycol.createNewData();
-				newcollection.setValue("library", inUser.getId());
-				librarycol.saveData(newcollection,null);
+				collection = librarycolsearcher.createNewData();
+				collection.setValue("library", inUser.getId()); //Make one now?
+				collection.setValue("owner", inUser.getId());
+				Category cat = inArchive.getCategory(inCategoryid);
+				collection.setName(cat.getName());
+				librarycolsearcher.saveData(collection,null);
+				inCollectionid = collection.getId();
 			}
-			Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
-			
+			else
+			{
+				collection = (Data)librarycolsearcher.searchById(inCollectionid);
+				data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
+			}			
 			if(data == null)
 			{
 				Data newfolder = librarycollectioncategorySearcher.createNewData();
@@ -520,7 +530,9 @@ public class BaseProjectManager implements ProjectManager
 				newfolder.setProperty("categoryid", inCategoryid);
 				librarycollectioncategorySearcher.saveData(newfolder, null);
 			}
+			return collection;
 		}
+		return null;
 	}
 	
 	@Override

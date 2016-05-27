@@ -1025,8 +1025,6 @@ emcomponents = function() {
        // this.parentNode.addEventListener('dragstart', handler, false ); //Deal with A tags?
         
 	});
-	
-
 
 	jQuery(".librarycollectiondroparea").livequery(
 			function()
@@ -1091,7 +1089,6 @@ emcomponents = function() {
 			}
 		);
 
-	
 	jQuery(".sidetoggle").livequery("click",
 			function()
 			{
@@ -1106,67 +1103,29 @@ emcomponents = function() {
 			}
 	);
 	
-	
-}
 
-
-jQuery(".categoryInCollection").livequery('click',function(e){
-	collectionId= jQuery(this).attr('collectionId');
-		
-});
-
-
-jQuery(".newcollectiondroparea").livequery(
-function()
-{
-	jQuery(this).droppable(
+	jQuery(".newcollectiondroparea").livequery(
+	function()
 	{
-		drop: function(event, ui) {
-			
-			isCategoryDragged = true;
-			
-			/**
-			 * Create an object to open form
-			var newForm = {
-				id:jQuery("#createnewarea").find("a").attr('id'),
-				class:jQuery("#createnewarea").find("a").attr('class'), 
-				targetdivinner:jQuery("#createnewarea").find("a").attr('targetdivinner'),
-				dataoemaxlevel:jQuery("#createnewarea").find("a").attr('data-oemaxlevel'),
-				href:jQuery("#createnewarea").find("a").attr('href')
-			};
-			
-			categoryDragged = {
-					categoryid:ui.draggable.data("nodeid"),
-					assetid:ui.draggable.data("assetid"),
-					categoryName:ui.draggable.data("categoryname"),
-					hitssessionid:$("#resultsdiv").data("hitssessionid")
-			};
-			newCollection = {
-					id:"",
-					dropsaveurl:"/assets/emshare/components/opencollections/addassettocollection.html?librarycollection=",
-					targetdiv:"left-col-opencollections"
-			};
-			createNewCollection(newForm);
-			 */
-			
-				var dropsaveurl = apphome + "/components/opencollections/adddropcategory.html" + 
-	
-				jQuery.get(nextpage, {}, function(data) 
+		jQuery(this).droppable(
+		{
+			drop: function(event, ui) 
+			{
+				var categortyid = ui.draggable.data("nodeid");
+				var dropsaveurl = apphome + "/components/opencollections/dropcategory.html?categoryid=" + categortyid;
+		
+				jQuery.get(dropsaveurl, {}, function(data) 
 				{
 					var cell = jQuery("#opencollectioncreatenewarea");
 					cell.html(data);
-				}
-		);
-			
-			
-		},
-		tolerance: 'pointer',
-		over: outlineSelectionCol,
-		out: unoutlineSelectionCol
-	});
+				});
+			},
+			tolerance: 'pointer',
+			over: outlineSelectionCol,
+			out: unoutlineSelectionCol
+		});
+	});	
 }
-);
-
 
 jQuery(".btn-sm").livequery("click", function(e){
 	

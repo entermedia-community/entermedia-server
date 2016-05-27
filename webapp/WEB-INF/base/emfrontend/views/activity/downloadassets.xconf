@@ -3,5 +3,5 @@
 	<path-action name="OrderModule.findOrderItems"/>
 	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils"/>
 	<property name="sectiontitle">Download</property>
-	<inner-layout>/${applicationid}/views/activity/activitydialoguelayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout> 
 </page>

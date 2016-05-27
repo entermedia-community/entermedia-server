@@ -21,23 +21,23 @@
     				        <ul style="width: 100px; text-align: left;">
     				        	#if($canprintpreview)
 								<li >
-									<a class="print emdialog" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="Print Preview">[[Print]]</a>
+									<a class="print emdialog" data-hidefooter="true"  href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=#uuencode($asset.sourcepath)&hitssessionid=$!{hitssessionid}" title="Print Preview">[[Print]]</a>
 								</li>
 								#end
 								#if($candownload || $canconvert || $candownloadfpo)
 						#if( $asset.getId().startsWith("multiedit:") )
 							<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
 						#else
-    				            		<li><a class="emdialog"  href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id&oemaxlevel=1">[[Download]]</a></li>
+    				            		<li><a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
 						#end
 					   
     				            #end
     				            #if($candeleteasset)
                                 <li>
                                     #if ( $asset.getId().startsWith("multiedit:") )
-                                        <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">[[Delete Assets]]</a>
+                                        <a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete Assets]]</a>
                                     #else
-                                        <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}&oemaxlevel=1">[[Delete]]</a>
+                                        <a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete]]</a>
                                     #end
                                 </li>
                                 #end

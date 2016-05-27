@@ -18,16 +18,15 @@
 	<ul>
 		
 	  	#foreach($collection in $usercollections )
-	  		<li
+		   #set( $selected = false )
+			#if( $inmodule && $librarycol && $collection.getId() == $librarycol.id )
+				#set( $selected = true )
+			#end
+	  		<li class="librarycollectiondroparea #if ($selected ) selected #end"
 				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html?librarycollection=${collection.getId()}"
 				data-targetdiv="left-col-opencollections"
-				class="#if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"
 				
 			>
-			   #set( $selected = false )
-				#if( $inmodule && $librarycol && $collection.getId() == $librarycol.id )
-					#set( $selected = true )
-				#end
 				<div class="collectionBox">
 					<a  href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" 
 					 	class="librarylabel #if ($selected ) selected #end"  
@@ -56,10 +55,8 @@
 				 </div>
 			</li>
 		#end
-		
-		<span id="lastCollectionIdCreated" data-collectionid="$lastColletionIdCreated"></span> 
 		#if ($canaddnewcollection)
-		<li>
+		<li class="newcollectiondroparea">
 			<div id="opencollectioncreatenewarea" class="newcollectiondroparea">
 					<a id="newCollection" class="ajax collectionnew" 
 					   targetdivinner="opencollectioncreatenewarea" data-oemaxlevel="1"
