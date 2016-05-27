@@ -339,12 +339,16 @@ public class BaseElasticSearcher extends BaseSearcher
 				return;
 			}
 		}
-		List dependson = getPropertyDetails().getDependsOn();
+		List<PropertyDetails> dependson = getPropertyDetailsArchive().findChildTables();
 		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
 		{
-			String searchtype = (String) iterator.next();
-			Searcher child = getSearcherManager().getSearcher(getCatalogId(), searchtype);
-			//child.reloadSettings();
+			PropertyDetails details = (PropertyDetails) iterator.next();
+			PropertyDetail parent = details.getDetail("_parent");
+			if( parent.getListId().equals(getSearchType()))
+			{
+				Searcher child = getSearcherManager().getSearcher(getCatalogId(), details.getId());
+				child.reloadSettings();
+			}	
 		}
 		
 		XContentBuilder source = buildMapping();

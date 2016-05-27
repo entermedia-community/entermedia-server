@@ -36,8 +36,6 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
-import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
-import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
@@ -52,8 +50,6 @@ import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
-import org.elasticsearch.cluster.metadata.MappingMetaData;
-import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
@@ -64,13 +60,13 @@ import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.entermediadb.asset.search.BaseAssetSearcher;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.elasticsearch.searchers.ElasticAssetDataConnector;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
+import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.locks.Lock;
@@ -677,8 +673,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			getMappingErrors().clear();
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			List sorted = archive.listSearchTypes();
-			List childtables = archive.findChildTables();
-
+			List<PropertyDetails> childtables = archive.findChildTables();
+			Set completed = new HashSet();
 //			 GetMappingsResponse res = getClient().admin().indices().getMappings(new GetMappingsRequest().indices(oldindex)).get();
 //			 Set loadedtables = new HashSet();
 //			 
@@ -691,8 +687,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			//Tables with _parent need to go first.  Hope there is only one level or we need a better sort.
 			for (Iterator iterator = childtables.iterator(); iterator.hasNext();)
 			{
-				String type = (String) iterator.next();
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+				PropertyDetails type = (PropertyDetails) iterator.next();
+				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type.getId());
 				//searcher.reIndexAll();
 				if (searcher instanceof BaseElasticSearcher)
 				{
@@ -705,13 +701,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
 					con.putMappings(tempindex, true);
 				}
+				completed.add(type.getId());
 			}
 			String index = inCatalogId.replace('/', '_');
 
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{
 				String type = (String) iterator.next();
-				if (childtables.contains(type))
+				if (completed.contains(type))
 				{
 					continue;
 				}

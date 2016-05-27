@@ -8,12 +8,12 @@
 						<b>$hits.size() Assets:</b> $sizer.inEnglish( $filesizes.get("assetsize") )
 						<br><br>
 						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
-						<b>#if(!$categories.size()) 0 #end #if($categories.size())$categories.size()#end Categories:</b>  
+						<b>#if(!$categories.size()) 0 #end #if($categories.size())$categories.size()#end [[Categories]]:</b>  
 						<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 							<table width="100%" class="categoriescontainer hovertable">
 							#foreach( $cat in $categories)
 									<tr>
-										<td>$cat.getSourcePath()</td>
+										<td>$cat.categorypath</td>
 										<td>$sizer.inEnglish( $filesizes.get($cat.getId()) )</td>
 										<td style="text-align: right;">
 											<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
