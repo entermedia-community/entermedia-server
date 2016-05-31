@@ -183,7 +183,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	public void saveData(Data inData, User inUser)
 	{
 		//update the index
-		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
+		PropertyDetails details = getPropertyDetails();
 
 		try
 		{
@@ -205,10 +205,10 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	}
 	
 	
-	public PropertyDetails getPropertyDetails() {
-		return getXmlSearcher().getPropertyDetails();
-		
-	}
+//	public PropertyDetails getPropertyDetails() {
+//		return getXmlSearcher().getPropertyDetails();
+//		
+//	}
 	
 	@Override
 	public boolean initialize()

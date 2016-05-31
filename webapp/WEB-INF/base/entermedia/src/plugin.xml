@@ -1964,22 +1964,22 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
-	<groovy  id="librarySearchQueryFilter" script-source="org/entermediadb/asset/search/librarySearchQueryFilter.groovy" lazy-init="default" />
-	<groovy  id="librarycollectionSearchQueryFilter" script-source="org/entermediadb/asset/search/librarycollectionSearchQueryFilter.groovy" lazy-init="default" />
-	<groovy  id="assetSearchQueryFilter" script-source="org/entermediadb/asset/search/assetSearchQueryFilter.groovy" lazy-init="default" />
+	<groovy  id="librarySearchQueryFilter" class="org.entermediadb.asset.search.librarySearchQueryFilter" lazy-init="default" />
+	<groovy  id="librarycollectionSearchQueryFilter" class="org.entermediadb.asset.search.librarycollectionSearchQueryFilter" lazy-init="default" />
+	<groovy  id="assetSearchQueryFilter" class="org.entermediadb.asset.search.assetSearchQueryFilter" lazy-init="default" />
 	
 	
-	<groovy  id="ConvertModule" script-source="modules/convert/ConvertModule.groovy" lazy-init="default" />
+	<bean id="ConvertModule" class="modules.convert.ConvertModule" lazy-init="default" />
 
-	<groovy  id="AnnotationModule" script-source="modules/annotations/AnnotationModule.groovy" lazy-init="default" />
+	<bean  id="AnnotationModule" class="modules.annotations.AnnotationModule" lazy-init="default" />
 
-	<groovy  id="pushManager" script-source="model/push/BasePushManager.groovy" lazy-init="default">
+	<bean  id="pushManager" class="model/push/BasePushManager.groovy" lazy-init="default">
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
-	</groovy>
+	</bean>
 	
- 	<groovy  id="convertQueue" script-source="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
+ 	<bean  id="convertQueue" class="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
 			<property name="executorManager"><ref bean="executorManager" /></property>
-	</groovy>
+	</bean>
  	
  	
 	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
