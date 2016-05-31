@@ -4,7 +4,7 @@
   <property id="name" index="true" stored="true" editable="true" sortable="true" >Name</property>
   <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Delivery Date</property>
   <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Update Date</property>
-  <property id="owner" index="true" stored="true" editable="true" type="list" searchtype="user" >Owner</property>
+  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="user" >Owner</property>
   <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date"  datatype="date">Created Date</property>
   <property id="sourcepath" >SourcePath</property>
   <property id="library" index="true" stored="true" editable="true" sortable="true" type="list"   listid="library" datatype="list">Library</property>
