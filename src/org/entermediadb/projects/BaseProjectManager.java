@@ -541,7 +541,7 @@ public class BaseProjectManager implements ProjectManager
 		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
 		
 		Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
-		
+		librarycollectioncategorySearcher.delete(data, null);
 
 	}
 	
