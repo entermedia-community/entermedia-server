@@ -268,7 +268,7 @@
 
 				
 				
-				var newname = $("#" + id + "_edit_field").attr("value");
+				var newname = $("#" + id + "_edit_field").val();
 				jQuery.get("$home$attachmentroot/renamefolder.html", {
 					id: id,
 					fileid: id,
@@ -296,7 +296,7 @@
 				event.stopPropagation();
 				var id = $(this).data('parent');
 				//alert("adding new folder under: " + id);
-				var newname = $("#" + id + "_new").attr("value");
+				var newname = $("#" + id + "_new").val();
 				var parentid = $("#" + id + "_new").data("parent");
 
 				jQuery.get("$home$attachmentroot/createfolder-finish.html", {

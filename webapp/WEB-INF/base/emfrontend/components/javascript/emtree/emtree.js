@@ -140,7 +140,7 @@ jQuery(document).ready(function()
 					event.stopPropagation();
 					var id = $(this).data("parent");
 					//alert("parent category was: " + id);
-					var newname = $("#" + id + "_new").attr("value");
+					var newname = $("#" + id + "_new").val();
 					var tree = $(this).closest(".emtree");
 
 					//alert("New name: " + newname);
@@ -191,7 +191,7 @@ jQuery(document).ready(function()
 				var tree = $(this).closest(".emtree");
 				var home = tree.data("home");
 				
-				var newname = tree.find("#" + id + "_edit_field").attr("value");
+				var newname = $("#" + id + "_edit_field",tree).val();
 				jQuery.get( home + "/components/emtree/savecategory.html", {
 					'id': id,
 					categoryid: id,
@@ -234,7 +234,7 @@ jQuery(document).ready(function()
 				var checkbox = $(this);
 				var checked = checkbox.is(":checked");
 				var assetid = checkbox.data("assetid");
-				var categoryid = checkbox.attr("value");
+				var categoryid = checkbox.val();
 				var treeid = checkbox.data("treeid");
 				if (checked)
 				{

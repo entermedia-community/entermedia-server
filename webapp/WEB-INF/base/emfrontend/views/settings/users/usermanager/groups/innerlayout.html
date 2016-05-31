@@ -8,7 +8,7 @@
 	}
 	selectUser = function(inUser)
 	{
-		var currentUser = $("#selecteduserholder").attr("value");
+		var currentUser = $("#selecteduserholder").val();
 		//console.log("selected user = "+inUser+", current user = "+currentUser);
 		if (currentUser!=undefined){
 			$("#"+currentUser+"_row").css("background-color",'');
@@ -18,7 +18,7 @@
 	}
 	deleteUser = function()
 	{
-		var currentUser = $("#selecteduserholder").attr("value");
+		var currentUser = $("#selecteduserholder").val();
 		if (currentUser!=undefined) {
 			if(confirm("Are you sure you want to delete user: " + currentUser + "?"))
 			{	
@@ -29,14 +29,14 @@
 	}
 	viewUser = function()
 	{
-		var currentUser = $("#selecteduserholder").attr("value");
+		var currentUser = $("#selecteduserholder").val();
 		//console.log("view current user "+currentUser);
 		window.location.href= "$home$apphome/views/settings/users/usermanager/user/index.html?username="+currentUser;
 		return false;
 	}
 	removeMember = function(inGroupId)
 	{
-		var currentUser = $("#selecteduserholder").attr("value");
+		var currentUser = $("#selecteduserholder").val();
 		console.log("remove current user "+currentUser+" from group "+inGroupId);
 		$("#usersearchresultspanel").load("$home$usermanagerhome/groups/removemember.html", {removeUsernames: currentUser, groupid: inGroupId, oemaxlevel: '1'});
 		return false;

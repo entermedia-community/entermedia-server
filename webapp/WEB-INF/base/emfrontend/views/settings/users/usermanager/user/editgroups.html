@@ -44,7 +44,7 @@
 <script language="javascript">
 removegroup = function()
 {
-	var grouptoremove = jQuery("#emselectedrow").attr("value");
+	var grouptoremove = jQuery("#emselectedrow").val();
 	jQuery("#grouparea").load("$home$usermanagerhome/users/editgroups.html", {groupid: grouptoremove, removeUsernames: '$selectedUser.getUserName()', username: '$selectedUser.getUserName()'});
 }
 viewgroup = function()
@@ -54,7 +54,7 @@ viewgroup = function()
 }
 addgroup = function()
 {
-	var grouptoadd = jQuery("#groupselect").attr("value");
+	var grouptoadd = jQuery("#groupselect").val();
 	if(grouptoadd!=null && grouptoadd!="")
 	{
 		jQuery("#grouparea").load("$home$usermanagerhome/users/editgroups.html", { groupid: grouptoadd, addUsernames: '$selectedUser.getUserName()', username: '$selectedUser.getUserName()'}); 
