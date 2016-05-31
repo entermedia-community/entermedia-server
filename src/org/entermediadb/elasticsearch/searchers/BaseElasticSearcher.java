@@ -47,7 +47,6 @@ import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
-import org.elasticsearch.index.query.TermsLookupQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
@@ -65,9 +64,8 @@ import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.JoinFilter;
 import org.openedit.hittracker.ChildFilter;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.modules.translations.LanguageMap;
@@ -215,18 +213,10 @@ public class BaseElasticSearcher extends BaseSearcher
 			//Infinite loop check
 			if( getSearcherManager().getShowSearchLogs(getCatalogId()) )
 			{
-				//if (log.isDebugEnabled())
-				if( true )
-				{
-					long size = hits.size(); //order is important
-					json = search.toString();
-					long end = System.currentTimeMillis() - start;
-					log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size + " hits in: " + (double) end / 1000D + " seconds]");
-				}
-				else
-				{
-					log.info(toId(getCatalogId()) + "/" + getSearchType() + " "  + hits.size() + " hits q=" + inQuery.toQuery() + " sort by " + inQuery.getSorts() );
-				}
+				long size = hits.size(); //order is important
+				json = search.toString();
+				long end = System.currentTimeMillis() - start;
+				log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size + " hits in: " + (double) end / 1000D + " seconds]");
 			}
 			return hits;
 		}
@@ -464,7 +454,7 @@ public class BaseElasticSearcher extends BaseSearcher
 //					jsonproperties = jsonproperties.endObject();
 					continue;
 				}
-				if ("_parent".equals(detail.getId()))
+				if ("_parent".equals(detail.getId()) || detail.getId().contains("."))
 				{
 					continue;
 				}
@@ -603,28 +593,44 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
 	{
 
-		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0 )  //Shortcut for common cases
-		{
-			Term term = (Term) inQuery.getTerms().iterator().next();
-
-			if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation())) //orsGroup? 
-			{
-				return addOrsGroup(term);
-			}
-
-			String value = term.getValue();
-
-			if (value != null && value.equals("*"))
-			{
-				return QueryBuilders.matchAllQuery();
-			}
-			QueryBuilder find = buildTerm(term.getDetail(), term, value);
-			return find;
-		}
+//		if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() == 0 )  //Shortcut for common cases
+//		{
+//			Term term = (Term) inQuery.getTerms().iterator().next();
+//
+//			if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation())) //orsGroup? 
+//			{
+//				return addOrsGroup(term);
+//			}
+//
+//			String value = term.getValue();
+//
+//			if (value != null && value.equals("*"))
+//			{
+//				return QueryBuilders.matchAllQuery();
+//			}
+//			QueryBuilder find = buildTerm(term.getDetail(), term, value);
+//			return find;
+//		}
 
 		BoolQueryBuilder bool = QueryBuilders.boolQuery();
 
 		buildBoolTerm(inQuery, bool, inQuery.isAndTogether());
+		
+//		if( inQuery.isEndUserSearch() )
+//		{
+//			Collection properties = getPropertyDetails().findAutoIncludeProperties();
+//			for (Iterator iterator = properties.iterator(); iterator.hasNext();)
+//			{
+//				PropertyDetail detail = (PropertyDetail) iterator.next();
+//				if( inQuery.getDetail(detail.getId()) == null ) //Not already included
+//				{
+//					//QueryBuilder find = buildTerm(detail, term, value);
+//					
+//					bool.must(find);
+//				}
+//			}
+//		}	
+		
 		if (inQuery.getChildren().size() > 0)
 		{
 			for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();)

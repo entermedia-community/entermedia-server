@@ -327,7 +327,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	{
 		return getMediaArchive().getAssetArchive();
 	}
-	
+/*	
 	public HitTracker cachedSearch(WebPageRequest inPageRequest, SearchQuery inSearch) throws OpenEditException
 	{
 		boolean filterstuff = true;
@@ -341,42 +341,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		{
 			addShowOnly(inPageRequest, inSearch);
 		}
-		if(filterstuff && doesIndexSecurely() && !inSearch.isSecurityAttached())
-		{
-			//TODO: This should be in a child query with 	child.setFilter(true);
-			
-			//viewasset = "admin adminstrators guest designers"
-			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
-			User currentUser = inPageRequest.getUser();
-			StringBuffer buffer = new StringBuffer("true "); //true is for wide open searches
-
-			UserProfile profile = inPageRequest.getUserProfile();
-			if( profile != null)
-			{
-				//Get the libraries
-				Collection libraries = profile.getCombinedLibraries();
-				if( libraries != null)
-				{
-					for (Iterator iterator = libraries.iterator(); iterator	.hasNext();) 
-					{
-						String library = (String) iterator.next();
-						buffer.append( " library_" + library);
-					}
-				}
-			}
-
-			if (currentUser != null)
-			{
-				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
-				{
-					String allow = ((Group)iterator.next()).getId();
-					buffer.append(" group_" + allow);
-				}
-				buffer.append(" user_" + currentUser.getUserName());
-			}
-			inSearch.addOrsGroup("viewasset", buffer.toString().toLowerCase());
-			inSearch.setSecurityAttached(true);
-		}
+	
 		String filter = inPageRequest.findValue("enableprofilefilters");
 		if( filterstuff && Boolean.parseBoolean(filter))
 		{
@@ -390,7 +355,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 
 		return hits;
 	}
-
+*/
 	public SearchQuery createSearchQuery() 
 	{
 		return getDataConnector().createSearchQuery();

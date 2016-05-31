@@ -1956,6 +1956,17 @@
 	<bean id="wordpresspublisher" class="org.entermediadb.asset.publish.publishers.wordpresspublisher"  lazy-init="default"/>
 	<bean id="VizOnepublisher" class="org.entermediadb.asset.publish.publishers.vizonepublisher"  lazy-init="default"/>
 	
+	<bean id="searchQueryFilter" class="org.entermediadb.asset.search.BaseSearchQueryFilter"  lazy-init="default">
+		<property name="cacheManager">
+			<ref bean="timedCacheManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
+	<groovy  id="librarySearchQueryFilter" script-source="org/entermediadb/asset/search/librarySearchQueryFilter.groovy" lazy-init="default" />
+	<groovy  id="librarycollectionSearchQueryFilter" script-source="org/entermediadb/asset/search/librarycollectionSearchQueryFilter.groovy" lazy-init="default" />
+	<groovy  id="assetSearchQueryFilter" script-source="org/entermediadb/asset/search/assetSearchQueryFilter.groovy" lazy-init="default" />
 	
 	
 	<groovy  id="ConvertModule" script-source="modules/convert/ConvertModule.groovy" lazy-init="default" />
@@ -2016,6 +2027,5 @@
 		</property>
 	</bean>
  	
-getAutoLoginProviders
  	
 </beans>

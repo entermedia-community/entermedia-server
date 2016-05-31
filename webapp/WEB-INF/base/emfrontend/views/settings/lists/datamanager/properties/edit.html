@@ -122,10 +122,14 @@
 	<input type="hidden" name="field" value="listid"/>
 
 	<tr> <td>[[External ID]]:</td> <td><input type="text" name="externalid" value="$!property.externalId" /></td> </tr>
-	<tr> <td>[[Used In Keywords]]:</td> <td><input name="keyword" type="checkbox" #if ($property.keyword == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Used In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.filter == true) checked #end value="true"/> </td> </tr>
-	<tr> <td>[[Multi Language Enabled]]:</td> <td><input name="multilanguage.value" type="checkbox" #if ($property.multilanguage == true) checked #end value="true"/> </td> </tr>
-
+	<tr> <td>[[Used In Keywords]]:</td> <td><input name="keyword" type="checkbox" #if ($property.isKeyword() == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Used In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.isFilter() == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Multi Language Enabled]]:</td> <td><input name="multilanguage.value" type="checkbox" #if ($property.isMultiLanguage() == true) checked #end value="true"/> </td> </tr>
+<!--	<tr> <td>[[Auto Include]]:</td> <td>
+		<input type="hidden" name="field" value="autoinclude"/>
+		<input name="autoinclude.value" type="checkbox" #if ($property.isAutoInclude() == true) checked #end value="true"/> </td> </tr>
+	<tr> <td>[[Groovy Procedure]]:</td> <td><textarea  name="query.value" >$!property.query</textarea> </td> </tr>
+-->
 	<input type="hidden" name="field" value="listcatalogid"/>
 	<input type="hidden" name="field" value="sort"/>
 	<input type="hidden" name="field" value="query"/>
@@ -140,7 +144,6 @@
 	<tr> <td>[[List ID]]:</td> <td><input type="text" name="listid.value" value="$!property.listid"/> </td> </tr>
 	<tr> <td>[[List Catalog ID]]:</td> <td><input type="text" name="listcatalogid.value" value="$!property.listcatalogid"/> </td> </tr>
 	<tr> <td>[[List Sort Field]]:</td> <td><input type="text" name="sort.value" value="$!property.sort"/> </td> </tr>
-	<tr> <td>[[List Query]]:</td> <td><input type="text" name="query.value" value="$!property.query"/> </td> </tr>
 	<tr> <td>[[Foreign Key ID]]:</td> <td><input type="text" name="foreignkeyid.value" value="$!property.foreignkeyid"/> </td> </tr>
 
 

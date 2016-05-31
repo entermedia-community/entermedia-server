@@ -1,6 +1,7 @@
 <page>
 
 	<inner-layout />
+	<property name="enforcesecurity">true</property>
 	<page-action name="DataEditModule.search" >
 		<property name="searchtype">librarycollection</property>
 	</page-action>

@@ -9,15 +9,16 @@
 
 <input name="field" type="hidden" value="${detail.id}" />
 <input name="operation" type="hidden" value="matches" />
-
 <select name="${detail.getId()}.value" class="select2">
 <option value=""></option>
 #foreach( $libraryid in $userprofile.getCombinedLibraries() )
 	#set( $library = $searcherManager.getData($catalogid,"library",$libraryid))
-	#set( $project = $searcherManager.getData($catalogid,"project",$library.project))
-	<option value="$libraryid" #if($val && $libraryid == $val) selected #end>$project / $library</option>
+	<option value="$libraryid" #if($val && $libraryid == $val) selected #end>$library</option>
 #end
 </select>
+
+<input name="${detail.getId()}.limitvalues" type="hidden" value="$userprofile.getCombinedLibraries()" />
+
 
 #else
 

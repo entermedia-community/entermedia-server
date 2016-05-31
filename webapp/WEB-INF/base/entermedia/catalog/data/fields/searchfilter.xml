@@ -1,0 +1,5 @@
+<properties beanname="folderSearcher">
+	<property id="id" editable="true" stored="true" index="true">Search Type</property>
+	<property id="name" editable="true" stored="true" index="true">Label</property>	
+	<property id="beanname" editable="true" stored="true" index="true">Bean Name</property>	
+</properties>
