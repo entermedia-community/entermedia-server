@@ -41,7 +41,7 @@ $context.putPageValue("showtoolbar", "false")
         #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
 		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >
-		    	<a class="stackedplayer imagearea" id="clickid${hit.id}" href="#">
+		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
 		    	    <div class="grid-thumbimage assetdraggable"> 
 		    	    	#if( $type =="audio")
 		    	    		#set( $type = "mime" )
