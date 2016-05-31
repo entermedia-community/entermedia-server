@@ -248,7 +248,7 @@ updatebasket = function(e)
 		var targetDiv = jQuery(this).attr("targetdiv");
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 		var action= jQuery(this).data('action');
-		jQuery("#"+targetDiv).load(nextpage, {}, function()
+		jQuery("#"+targetDiv).load(nextpage, function()
 			{
 			    jQuery("#basket-paint").load(apphome + "/components/basket/menuitem.html");
 				if(action == 'remove'){

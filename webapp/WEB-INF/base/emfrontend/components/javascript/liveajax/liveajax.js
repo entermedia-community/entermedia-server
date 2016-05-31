@@ -13,7 +13,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     	var oldscope = this;
 		var returned = oldLoad.call(oldscope,inArg, function()
 		{
-			if( inComplete )
+			if( typeof(inComplete) == "function" )
 			{
 				inComplete.call(this);
 			}
