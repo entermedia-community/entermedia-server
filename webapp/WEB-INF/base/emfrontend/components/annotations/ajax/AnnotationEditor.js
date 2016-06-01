@@ -449,6 +449,7 @@ var AnnotationEditor = function(scope) {
 					$.getJSON(scope.dbhome + '/services/module/user/pickcolor.json', function(data) {
 						scope.annotationEditor.userData = data;
 						editor.loadAssetList();
+						editor.loadSelectors();
 					});
 					
 				};

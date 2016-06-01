@@ -107,7 +107,7 @@ jAngular.addScope = function(scopename, inScope)
 jAngular.processRepeat = function(li , scope)
 {
 	var parent = li.parent();	
-	var element = parent.get(0);
+	var element = parent[0];
 	var vars = li.attr(jAngular.PREFIX + "repeat");
 	var split = vars.indexOf(" in ");
 	
@@ -145,8 +145,8 @@ jAngular.processRepeat = function(li , scope)
 
 jAngular.process = function(div, scope)
 {
-	//console.log("Processing: " + div.get(0).localName, div);
-	var element = div.get(0);
+	//console.log("Processing: " + div[0].localName, div);
+	var element = div[0];
 	var origContent = element.origContent;
 	if( origContent )
 	{
