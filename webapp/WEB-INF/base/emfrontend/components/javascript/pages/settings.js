@@ -1,6 +1,30 @@
 
 	jQuery(document).ready(function() 
 	{ 
+	
+	      $('#datamanager-workarea th.sortable').livequery("click",function()
+	      {
+	      		var table = $("#main-results-table");
+                var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
+                var column = $(this);
+                var fieldid = column.data("fieldid");
+                if ( column.hasClass('currentsort') ) 
+                {
+                    if ( column.hasClass('up') ) {
+						args.sortby=fieldid + 'Down';
+                    } else {
+                    	args.sortby=fieldid + 'Up';
+                    }	         
+                } else {
+                    $('#datamanager-workarea th.sortable').removeClass('currentsort');
+                   column.addClass('currentsort');
+                   column.addClass("up");
+                   args.sortby=fieldid + 'Up';
+                }
+                jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html',args);
+        });
+	
+	
 		jQuery(".metadatadroppable").livequery(
 				function()
 				{

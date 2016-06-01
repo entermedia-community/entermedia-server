@@ -26,29 +26,12 @@
 
 	<div id="dm-containerx">
 		<div id="emselectable">
-		<script>
-        $('th.sortable').on({
-            click: function(){
-                var id = $(this).attr('id');
-                if ( $(this).hasClass('currentsort') ) {
-                    if ( $(this).hasClass('up') ) {
-                        jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html?oemaxlevel=1&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
-                    } else {
-                        jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Up');
-                    }
-                } else {
-                    $('th.sortable').removeClass('currentsort');
-                    $(this).addClass('currentsort');
-                    jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
-                }
-            }
-        });
-    </script>
-		<table class="emdata striped greytxt table tbl-responsive" id="main-results-table">
+		<table class="emdata striped greytxt table tbl-responsive" id="main-results-table" 
+		 data-hitssessionid="$datalist.sessionId" data-origURL="$!origURL" data-catalogid="$searcher.catalogId" data-searchtype="$searcher.searchType" >
 		<tr id="tableheader">
 		#set( $sortby = $datalist.getSearchQuery().getSortBy() )
 		#foreach( $detail in $details )
-		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.getText($context)</th>
+		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">$detail.getText($context)</th>
 		#end
 		</tr>	
 		
