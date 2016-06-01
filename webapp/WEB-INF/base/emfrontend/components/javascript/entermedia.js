@@ -1042,11 +1042,13 @@ emcomponents = function() {
 						 * Current droppable element 
 						 */
 						var anode = $(this);
+						var collectionid = anode.data("collectionid");
 						var targetDiv = anode.data("targetdiv");
 						var dropsave = anode.data("dropsaveurl");
 						var hitssessionid = $("#resultsdiv").data("hitssessionid");
 						var collectionName = anode.find("a.librarylabel").data("collectionname");
 						
+						var params = {librarycollection:collectionid};
 						var response;
 						/*
 						if(!categoryName){
@@ -1067,14 +1069,10 @@ emcomponents = function() {
 						var nextpage= dropsave;
 						if( assetid )
 						{
-							 nextpage = nextpage + "&assetid=" + assetid;
+							 params.assetid= assetid;
 						}
-						nextpage = nextpage + "&hitssessionid=" + hitssessionid;
-						if( categoryid )
-						{
-							nextpage = nextpage + "&categoryid=" + categoryid;
-						}
-						jQuery.get(nextpage, {}, function(data) 
+						params.hitssessionid=hitssessionid;
+						jQuery.get(nextpage, params, function(data) 
 						{
 							var	cell = jQuery("#" + targetDiv);
 							cell.replaceWith(data);

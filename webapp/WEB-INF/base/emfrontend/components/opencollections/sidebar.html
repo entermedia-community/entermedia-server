@@ -21,7 +21,8 @@
 				#set( $selected = true )
 			#end
 	  		<li class="librarycollectiondroparea #if ($selected ) selected #end"
-				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html?collectionid=${collection.getId()}"
+				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html"
+				data-collectionid="$collection.getId()"
 				data-targetdiv="left-col-opencollections"
 			>
 				<div class="collectionBox">

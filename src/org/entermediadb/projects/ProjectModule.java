@@ -114,6 +114,11 @@ public class ProjectModule extends BaseMediaModule
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("librarycollection");
+		if( librarycollection == null)
+		{
+			log.error("librarycollection not found");
+			return;
+		}
 		ProjectManager manager = getProjectManager(inReq);
 		if( hitssessionid != null )
 		{

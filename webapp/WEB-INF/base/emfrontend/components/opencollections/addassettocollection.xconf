@@ -1,5 +1,4 @@
 <page>
 	<path-action name="ProjectModule.addAssetToCollection"/>
 	<path-action name="ProjectModule.addCategoryToCollection"/>
-	<property name="virtual">true</property>
 </page>
