@@ -852,6 +852,10 @@ uiload = function() {
 
 	jQuery("#mainholder").livequery(function(e)
 	{
+		// Zooming code, only makes sense to run this when we actually have the DOM
+		if ($(this).position() == undefined){ // check if the element isn't there (best practice is...?)
+			return;
+		}
 		var clickspot;
 		var imageposition;
 		var zoom = 40;
@@ -869,10 +873,9 @@ uiload = function() {
 	
 		$(window).bind('mousewheel DOMMouseScroll', function(event)
 		{
-			mainimage = $("#mainimage");
-		    if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+			var mainimage = $("#mainimage");
+			if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
 		        // scroll up
-		    	console.log('scrolling up !');
 		        var w = mainimage.width(); 
 		    	mainimage.width(w+zoom);
 		    	var left = 	mainimage.position().left - zoom/2;
@@ -881,7 +884,6 @@ uiload = function() {
 		    }
 		    else {
 		        // scroll down
-		    	console.log('scrolling down !');
 		        var w = mainimage.width(); 
 		    	mainimage.width(w-zoom);
 		    	var left = 	mainimage.position().left + zoom/2;
