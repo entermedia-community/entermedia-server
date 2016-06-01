@@ -849,6 +849,78 @@ uiload = function() {
 	jQuery(".sidebarsubmenu").livequery("click", function(e){
 		e.stopPropagation();
 	});
+
+	jQuery("#mainholder").livequery(function(e)
+	{
+		var clickspot;
+		var imageposition;
+		var zoom = 40;
+		var mainholder = $(this); 	
+		mainholder.height($(window).height());
+		mainholder.width($(window).width());
+		var mainimage = $("#mainimage",mainholder);
+		var centerimage = function()
+		{
+			var left = ( $(window).width() - mainimage.width() - $(".overlay-margin").width() ) / 2;
+			mainimage.css({"left" : left + "px"});
+		};
+		centerimage();
+	 	mainimage.on("load",centerimage);
+	
+		$(window).bind('mousewheel DOMMouseScroll', function(event)
+		{
+			mainimage = $("#mainimage");
+		    if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
+		        // scroll up
+		    	console.log('scrolling up !');
+		        var w = mainimage.width(); 
+		    	mainimage.width(w+zoom);
+		    	var left = 	mainimage.position().left - zoom/2;
+		    	mainimage.css({"left" : left + "px"});
+		    	return false;
+		    }
+		    else {
+		        // scroll down
+		    	console.log('scrolling down !');
+		        var w = mainimage.width(); 
+		    	mainimage.width(w-zoom);
+		    	var left = 	mainimage.position().left + zoom/2;
+		    	mainimage.css({"left" : left + "px"});
+		    	return false;
+		    }
+		});
+		
+		mainimage.on("mousedown", function(event)
+		{
+			clickspot = event;
+			imageposition = mainimage.position();
+			console.log(event);
+			return false;
+		});
+	
+		mainimage.on("mouseup", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		
+		mainimage.on("mousemove", function(event)
+		{
+			//if( isMouseDown() )
+			if( clickspot )
+			{
+				var changetop = clickspot.pageY - event.pageY;
+				var changeleft = clickspot.pageX - event.pageX;
+				
+				var left = imageposition.left - changeleft;
+				var top = imageposition.top - changetop;
+				
+				$(this).css({"left" : left + "px", "top" : top + "px"});
+			}	
+		});		
+	
+	});	
+	
 }
 
 

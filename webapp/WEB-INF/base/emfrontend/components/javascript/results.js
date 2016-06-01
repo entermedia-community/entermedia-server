@@ -185,14 +185,19 @@ jQuery(document).ready(function(url,params)
 				$(inSpan).css("color","rgb(200,200,200)");
 			}
 	}
-	showOverlay = function(assetid)
+	showOverlay = function(assetid,pagenum)
 	{
 		var hidden = getOverlay();
 		var currentasset = $("#main-media-viewer");
 		
 		var href = home + "/components/mediaviewer/fullscreen/currentasset.html";
 		var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
-		jQuery.get(href, {playerareawidth: $(window).width() - 200, assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1}, function(data) 
+		var params = {playerareawidth: $(window).width() - 200, assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
+		if( pagenum != null )
+		{
+			params.pagenum = pagenum;
+		}
+		jQuery.get(href, params, function(data) 
 		{
 			currentasset.replaceWith(data);
 			overlayResize();
@@ -291,7 +296,9 @@ jQuery(document).ready(function(url,params)
 	{
 		e.preventDefault();
 		var link = $(this);
-		showOverlay(link.data("assetid"));
+		var assetid = link.data("assetid");
+		var pagenum = link.data("pagenum"); 
+		showOverlay(assetid,pagenum);
 	});
 	
 	
