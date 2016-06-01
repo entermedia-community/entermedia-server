@@ -874,6 +874,10 @@ uiload = function() {
 		$(window).bind('mousewheel DOMMouseScroll', function(event)
 		{
 			var mainimage = $("#mainimage");
+			if ($("#hiddenoverlay").css("display") == "none") {
+				return true;
+			}
+
 			if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
 		        // scroll up
 		        var w = mainimage.width(); 
