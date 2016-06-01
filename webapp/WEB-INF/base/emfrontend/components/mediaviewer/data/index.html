@@ -17,7 +17,9 @@
 						
 						$context.putPageValue("view",$viewpath)
 						<h3>$target</h3>
+						<div class="asset-data-detail">
 						$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+						</div>
 					#end
 				#end
                 #set($permissionvalue = "")
@@ -30,32 +32,38 @@
 			<div class="" style="padding: 0 0 20px 0">
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
-    				<h3>Libraries</h3>
-    					<p style="line-height: 25px;">
+    				<h3>[[Libraries]]</h3>
+    				<div class="asset-data-detail">
+    				<div class="emtable">
             				#foreach($library in $libraries)
             					  
             					 #set( $ldata = $searcherManager.getData($catalogid,"library",$library) )
             					 #set( $division = $searcherManager.getData($catalogid,"division",$ldata.division ) )
-            					 
-            					<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="">$division / $ldata</a>
+            					 #if($division)
+            					 	#set($ldata = $division + " / " + $ldata)
+            					 #end
+            					<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="row tag">$ldata</a>
             			
             				#end
-    				</p>
+    					</div>
+    				</div>
 				#end
 				#if( $asset.hasKeywords() )
-				<h3>Related Tags</h3>
-					<p style="line-height: 25px;">
+				<h3>[[Related Tags]]</h3>
+					<div class="asset-data-detail">
 						#foreach ($tag in $asset.keywords)
-							<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
+							<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag" class="tag">$tag</a>
 						#end
-					</p>
+					</div>
 				#end	
-				<h3>Categories</h3>
-					<p style="line-height: 25px;">
+				<h3>[[Categories]]</h3>
+					<div class="asset-data-detail">
+					<div class="emtable">
 					#foreach ($category in $asset.categories)
-						<a href="$home$apphome/views/search/category.html?categoryid=${category.id}">$category.name</a> 
+						<a href="$home$apphome/views/search/category.html?categoryid=${category.id}" class="row category">$category.name</a> 
 					#end
-					</p>
+					</div>
+					</div>
 			</div>	
 			#end
 				

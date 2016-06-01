@@ -56,9 +56,10 @@
                     </div>
                 </div>
                 <div class="asset-details-more">
-                    <p style="line-height: 25px; text-align: left; color: #fff;">
+                    <p>
                         #if ($asset.getKeywords().size() > 0)
-                            <strong>Tags</strong><br/>
+                            <h5><strong>[[Tags]]</strong></h5>
+                            <p>
                             #foreach ($tag in $asset.getKeywords())
                                 #if ( $velocityCount <= 10 )
                                 <a href="$home$apphome/views/search/search.html?field=keywords&operation=matches&keywords.value=$tag">$tag</a> 
@@ -66,11 +67,13 @@
                                     <a class="ajax tooltip" title="View All Tags" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
+                            </p>
                         #end
-                     </p>
-                     <p style="line-height: 25px; text-align: left; color: #fff; ">
+                     
+                     
                         #if ($asset.getCategories().size() > 0)
-                            <strong>Categories</strong><br/>
+                            <h5><strong>[[Categories]]</strong></h5>
+                            <p>
                             #foreach ($category in $asset.getCategories())
                                 #if ( $velocityCount <= 8 )
                                 <a href="$home$apphome/views/categories/${category.id}.html">$category</a> 
@@ -78,27 +81,23 @@
                                     <a class="ajax tooltip" title="View All Categories" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
+                            </p>
                         #end
-                     </p>
+                     
                      #set($contact = $mediaarchive.getSearcher("contact").query().exact("thumbnail", $asset.id).searchOne())
-                     <!-- Added for highlights -->
+                     
                      #if($contact)
-                      <p style="line-height: 25px; text-align: left; color: #fff; ">
-                        
-                            <strong>Contact</strong><br/>
-                                
-                                <a href="$home$apphome/views/modules/contact/edit/edit.html?id=${contact.id}&viewid=contactcontact_details&viewpath=contact/contactcontact_details&searchtype=contact&detailsreadonly=true&preview=true">$contact</a> 
-                                
-                        
-
-                     </p>
+                      <h5><strong>[[Contact]]</strong></h5>
+     	                 <p>          
+                         <a href="$home$apphome/views/modules/contact/edit/edit.html?id=${contact.id}&viewid=contactcontact_details&viewpath=contact/contactcontact_details&searchtype=contact&detailsreadonly=true&preview=true">$contact</a> 
+	                     </p>
                      #end
                      #if($canviewshoppingcart)
                      	#if($asset.shoppingcartlink)
-                     	<p style="line-height: 25px; text-align: left; color: #fff; ">
-                     		<strong>Shopping Cart</strong><br/>
+                     		<h5><strong>[[Shopping Cart]]</strong></h5>
+                     		<p>
                             $pages.include("/$applicationid/views/modules/asset/editor/editshoppingcart/shoppingcartbutton.html",$context)
-                        </p>
+                        	</p>
                         #end
                      #end
                 </div>

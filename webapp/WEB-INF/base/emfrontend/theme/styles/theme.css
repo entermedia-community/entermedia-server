@@ -503,9 +503,6 @@ ul.emheaderbuttons li.navselected a {
     border-radius: 8px 8px 8px 8px;
 }
 
-#media-player {
-    text-align: center;
-}
 .asset-details h3 {
     margin: 0;
     padding: 10px 0 10px 0;
@@ -1328,7 +1325,7 @@ small {
 
 #detailarea #cat-list {
     padding: 0;
-    margin: 0 20px;
+    margin: 0;
 }
 #advsearchpanel #cat-list {
     padding: 0;
@@ -1336,7 +1333,7 @@ small {
 }
 
 #cat-list .row {
-    padding: 7px 10px;
+    padding: 7px 0;
     border-bottom: 1px solid #eee;
     list-style: none;
 }
@@ -1424,6 +1421,7 @@ small {
 .asset-data {
     /* background: url('../images/top-shadow.png') top center repeat-x; */
 }
+
 .asset-data ul, #preview-pane ul {
     padding: 0;
     font-size: 12px;
@@ -1431,7 +1429,7 @@ small {
 }
 .asset-data ul li, #preview-pane ul li {
     margin: 0 0 10px 0;
-    padding: 0;
+    /*padding: 0;*/
     list-style: none;
 }
 .asset-data ul li span:first-child, #preview-pane ul li span:first-child {
@@ -1448,6 +1446,7 @@ small {
 	background-color: #eee;
 	
 }
+.asset-data-detail { padding-left:10px;}
 .asset-data ul li .data
 {
     font-weight: bold;
@@ -1469,10 +1468,10 @@ small {
 .asset-details-more a {
     background: #90be5a;
     color: #fff;
-    padding: 3px 8px;
+    padding: 4px 8px;
     font-weight: bold;
-    border-radius: 5px;
-    font-size: 10px;
+    border-radius: 4px;
+    font-size: 11px;
 }
 .asset-details-more a:hover {
     background: #b0df7a;
@@ -1537,12 +1536,13 @@ small {
     width: 100%;
 }
 .row.category {
-    background: #fff url('../images/d.png') left center no-repeat;
+    background: #fff url('../images/folder_16.png') left center no-repeat;
 }
-.row.tag {
+.tag {
     background: #fff url('../images/tag.png') left center no-repeat;
+    padding:7px 10px 7px 20px;
 }
-.emtable a.row {
+ a.row {
     padding: 7px 20px;
     height: 16px;
     line-height: 16px;
@@ -2253,6 +2253,7 @@ tr.odd {
     box-shadow: inset 0px 0px 60px 15px rgba(0, 0, 0, .8);
     position: relative;
     padding: 0;
+        text-align: center;
 }
 #media-player-table {
     background: #000 url('../images/asset-bg.png');
@@ -2269,6 +2270,10 @@ tr.odd {
 #media-player .emdropshadow {
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .8);
 }
+#asset-editor-container { 
+	padding: 0 20px 20px 20px;
+	}
+
 .ui-widget .columns-2 {
     width: 48%;
     margin: 0 1%;
@@ -4445,7 +4450,6 @@ a#module {
 }
 .tab-actions {
     position: relative;
-    z-index: 600;
     border-bottom: 1px solid #ddd;
     padding: 8px 20px;
     background: rgb(255,255,255); /* Old browsers */
@@ -5113,6 +5117,7 @@ p.resultsnumber {
 #mp-player {
     margin: 0 auto;
     width:50%;
+    padding:10px 0;
 }
 #mp-asset-title {
     color: #fff;
@@ -5137,7 +5142,7 @@ p.resultsnumber {
     margin-left: 5px;
 }
 #mp-asset-info {
-    text-align: right;
+    text-align: left;
     margin-top: 8px;
 }
 .image #mp-asset-info {
@@ -5148,7 +5153,7 @@ p.resultsnumber {
     color: #fff;
     margin: 0 10px 0 0;
     opacity: 0.8;
-    float:left;
+    
 }
 #mp-asset-info a:hover {
     opacity: 1;
@@ -5189,9 +5194,6 @@ p.resultsnumber {
 #mediaviewer .main-info .primary {
     color: #fff;
     text-align: left;
-    width: 200px;
-    display: inline-block;
-    text-overflow: ellipsis;
     overflow: hidden;
 }
 #mediaviewer #default-top .secondary a {
@@ -5322,9 +5324,6 @@ p.resultsnumber {
 #mediaviewer .table {
     display: table;
     width: 100%;
-}
-#media-player {
-    diplay: table-cell;
 }
 #pdf-thumbnail-sidebar {
     background: #F7F7F7 url('../images/sidebar-shadow.png') right top repeat-y;
@@ -6031,7 +6030,8 @@ td[title]:hover:before {
 }
 #default-top .main-info {
     float: left;
-    margin: 38px 0 0 39px;
+    margin: 15px 0 0 30px;
+    color:#fff;
 }
 .main-info .primary {
     font-size: 16px;
@@ -6051,6 +6051,7 @@ td[title]:hover:before {
 #default-top .secondary a:hover {
     color: #60bad3;
 }
+#default-top .asset-details-more { text-align: left;}
 #default-tabs {
     box-shadow: 0px 2px 4px 2px rgba(0, 0, 0, 0.04);
     margin: 40px 0 0 0;
@@ -6346,8 +6347,8 @@ a.audio-filename:hover
 
 .multi-value-list
 {
-    margin: 0;
-    padding: 0;
+    margin: 0!important;
+    padding: 0!important;
     width: 100%;
 }
 .multi-value-list li 
@@ -6356,10 +6357,7 @@ a.audio-filename:hover
     margin: 0px 10px 0 0;
     padding: 0 0 0px 20px;
     list-style: none;
-    float: left;
-    display: inline;
     background: url('../images/icons/check.png') left center no-repeat;
-
 }
 
 #metadataarea
