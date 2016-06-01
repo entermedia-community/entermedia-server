@@ -8,13 +8,18 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 
 (function ($) {
     var oldLoad = $.fn.load;
-    $.fn.load = function(inArg,inComplete) 
+    $.fn.load = function(inArg,maybeData,inComplete) 
     {
     	var oldscope = this;
-		var returned = oldLoad.call(oldscope,inArg, function()
+    	if (typeof(maybeData) != "object") {
+    		inComplete = maybeData;
+    		maybeData = {};
+    	}
+		var returned = oldLoad.call(oldscope,inArg, maybeData, function()
 		{
 			if( typeof(inComplete) == "function" )
 			{
+				// They passed in parameters
 				inComplete.call(this);
 			}
 			//console.log("html complete");
