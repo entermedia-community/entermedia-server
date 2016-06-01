@@ -113,7 +113,7 @@ public class ProjectModule extends BaseMediaModule
 		
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		String libraryid = inReq.getRequestParameter("libraryid");
-		String librarycollection = inReq.getRequestParameter("librarycollection");
+		String librarycollection = inReq.getRequestParameter("collectionid");
 		if( librarycollection == null)
 		{
 			log.error("librarycollection not found");
@@ -135,9 +135,11 @@ public class ProjectModule extends BaseMediaModule
 			}
 		}
 		String assetid = inReq.getRequestParameter("assetid");
-		
-		manager.addAssetToCollection(archive, librarycollection, assetid);
-		inReq.putPageValue("added" , "1" );
+		if( assetid != null)
+		{
+			manager.addAssetToCollection(archive, librarycollection, assetid);
+			inReq.putPageValue("added" , "1" );
+		}	
 	}
 	public void removeAssetFromCollection(WebPageRequest inReq)
 	{

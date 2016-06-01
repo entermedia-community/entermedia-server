@@ -1030,14 +1030,6 @@ emcomponents = function() {
 				{
 					drop: function(event, ui) {
 						
-						//console.log("Drop" + ui.draggable);
-						/*
-						 * Current draggable element
-						 */
-						var categoryid = ui.draggable.data("nodeid");
-						var assetid = ui.draggable.data("assetid");
-						var categoryName = ui.draggable.data("categoryname");
-						
 						/*
 						 * Current droppable element 
 						 */
@@ -1048,7 +1040,18 @@ emcomponents = function() {
 						var hitssessionid = $("#resultsdiv").data("hitssessionid");
 						var collectionName = anode.find("a.librarylabel").data("collectionname");
 						
-						var params = {librarycollection:collectionid};
+						var params = {collectionid:collectionid};
+						
+						//console.log("Drop" + ui.draggable);
+						/*
+						 * Current draggable element
+						 */
+						var assetid = ui.draggable.data("assetid");
+						var categoryid = ui.draggable.data("nodeid");
+						var categoryName = ui.draggable.data("categoryname");
+						params.categoryid = categoryid;
+						params.categoryName = categoryName;
+
 						var response;
 						/*
 						if(!categoryName){
