@@ -429,13 +429,13 @@ public class BaseElasticSearcher extends BaseSearcher
 			 */
 
 			// Add in namesorted
-//			if (getPropertyDetails().contains("name") && !getPropertyDetails().contains("namesorted"))
-//			{
-//				props = new ArrayList(props);
-//				PropertyDetail detail = new PropertyDetail();
-//				detail.setId("namesorted");
-//				props.add(detail);
-//			}
+			//			if (getPropertyDetails().contains("name") && !getPropertyDetails().contains("namesorted"))
+			//			{
+			//				props = new ArrayList(props);
+			//				PropertyDetail detail = new PropertyDetail();
+			//				detail.setId("namesorted");
+			//				props.add(detail);
+			//			}
 
 			for (Iterator i = props.iterator(); i.hasNext();)
 			{
@@ -453,6 +453,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
+				
 				jsonproperties = jsonproperties.startObject(detail.getId());
 				if ("description".equals(detail.getId()))
 				{
@@ -512,14 +513,16 @@ public class BaseElasticSearcher extends BaseSearcher
 				else
 				{
 					jsonproperties = jsonproperties.field("type", "string");
-					jsonproperties.startObject("fields");
+					if (detail.isSortable())
+					{
+						jsonproperties.startObject("fields");
 						jsonproperties.startObject("sort");
-							jsonproperties = jsonproperties.field("type", "string");
-							jsonproperties = jsonproperties.field("index", "not_analyzed");
+						jsonproperties = jsonproperties.field("type", "string");
+						jsonproperties = jsonproperties.field("index", "not_analyzed");
 						jsonproperties.endObject();
-					jsonproperties.endObject();
-					
-					
+						jsonproperties.endObject();
+					}
+
 				}
 
 				//Now determine index
@@ -1130,13 +1133,16 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
-			
-			if(detail != null && detail.isString()){
+
+			if (detail != null && detail.isString() && detail.isSortable())
+			{
 				sort = SortBuilders.fieldSort(field + ".sort");
-			} else{
-				 sort = SortBuilders.fieldSort(field );
 			}
-			
+			else
+			{
+				sort = SortBuilders.fieldSort(field);
+			}
+
 			sort.ignoreUnmapped(true);
 			if (direction)
 			{
@@ -1601,7 +1607,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					if (value != null)
 					{
 						inContent.field(key, value);
-						inContent.field(key + "sorted", value);
+						//	inContent.field(key + "sorted", value);
 					}
 				}
 
@@ -1613,6 +1619,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					else
 					{
+
 						inContent.field(key, value);
 					}
 				}
