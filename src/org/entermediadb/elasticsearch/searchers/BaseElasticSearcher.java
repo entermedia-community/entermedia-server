@@ -810,21 +810,28 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			//MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid, valueof);
 			//QueryBuilder text = QueryBuilders.queryString("*" + valueof + "*").field(fieldid);
-			if (!valueof.startsWith("*"))
+			String wildcard = valueof;
+			
+			if (!wildcard.startsWith("*"))
 			{
-				valueof = "*" + valueof;
+				wildcard = "*" + wildcard;
 			}
-			if (!valueof.endsWith("*"))
+			if (!wildcard.endsWith("*"))
 			{
-				valueof = valueof + "*";
+				wildcard = wildcard + "*";
 			}
-			valueof = valueof.toLowerCase(); //Some reason wildcard searches are not run by the analyser
+			wildcard = wildcard.toLowerCase(); //Some reason wildcard searches are not run by the analyser
 			//MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid, valueof);
-			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(fieldid, valueof);
+			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(fieldid, wildcard);
 
-			//text.maxExpansions(10);
-			find = text;
-
+			BoolQueryBuilder or = QueryBuilders.boolQuery();
+			or.should(text);
+			
+			valueof = valueof.replace("*", "");
+			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			phrase.maxExpansions(10);
+			or.should(phrase);
+			find = or;
 		}
 		else if ("startswith".equals(inTerm.getOperation()))
 		{
