@@ -149,7 +149,6 @@ toggleajax = function(e)
 	{
 		jQuery.get(nextpage, {}, function(data) 
 			{
-				cell.html(data);
 				cell.addClass("toggle_on");
 				cell.show('fast');
 			}
@@ -1111,17 +1110,24 @@ emcomponents = function() {
 			{
 				var categortyid = ui.draggable.data("nodeid");
 				var dropsaveurl;
+				var params = {};
 				if(typeof categortyid != "undefined" )
 				{ 
 					 var categoryName = ui.draggable.data("categoryname");
-					 dropsaveurl = apphome + "/components/opencollections/dropcategory.html?categoryid=" + categortyid + "&categoryname=" + categoryName;
+					 dropsaveurl = apphome + "/components/opencollections/dropcategory.html";
+					 params.categoryid = categortyid;
+					 params.categoryname = categoryName;
 				}
 				else
 				{
 					var assetid = ui.draggable.data("assetid");
 					dropsaveurl = apphome + "/components/opencollections/addnewchild.html?assetid=" + assetid;
+					params.assetid = assetid;
+					var hitssessionid = $("#resultsdiv").data("hitssessionid");
+					params.hitssessionid = hitssessionid;
+					
 				}
-				jQuery.get(dropsaveurl, {}, function(data) 
+				jQuery.get(dropsaveurl, params, function(data) 
 				{
 					var cell = jQuery("#opencollectioncreatenewarea");
 					cell.html(data);
