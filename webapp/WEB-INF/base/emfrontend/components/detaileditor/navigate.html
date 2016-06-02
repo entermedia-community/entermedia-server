@@ -35,9 +35,9 @@
     				            #if($candeleteasset)
                                 <li>
                                     #if ( $asset.getId().startsWith("multiedit:") )
-                                        <a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete Assets]]</a>
+                                        <a class="emdialog"   href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete Assets]]</a>
                                     #else
-                                        <a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete]]</a>
+                                        <a class="emdialog"  href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete]]</a>
                                     #end
                                 </li>
                                 #end
