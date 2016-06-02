@@ -51,8 +51,8 @@ jQuery(document).ready(function(url,params)
 	
 	jQuery("a.selectpage").livequery( 'click', function() 
 	{
-		jQuery('input[name=pagetoggle]').attr('checked','checked');
-		jQuery('.selectionbox').attr('checked','checked');
+		jQuery('input[name=pagetoggle]').prop('checked',true);
+		jQuery('.selectionbox').prop('checked',true);
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -64,8 +64,8 @@ jQuery(document).ready(function(url,params)
 		//Uses ajax
 	jQuery("a.deselectpage").livequery( 'click', function() 
 	{
-		jQuery('input[name=pagetoggle]').removeAttr('checked');
-		jQuery('.selectionbox').removeAttr('checked'); //Not firing the page
+		jQuery('input[name=pagetoggle]').removeProp('checked');
+		jQuery('.selectionbox').removeProp('checked'); //Not firing the page
 	//	jQuery("#select-dropdown-open").click();
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
@@ -83,12 +83,12 @@ jQuery(document).ready(function(url,params)
 		   if(status)
 		   {
 			   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"page"});
-			   jQuery('.selectionbox').attr('checked','checked');
+			   jQuery('.selectionbox').prop('checked',true);
 	       }
 	       else
 	       {
 	    	   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"pagenone"});         
-	   	       jQuery('.selectionbox').removeAttr('checked');  
+	   	       jQuery('.selectionbox').removeProp('checked');  
 	   	   }
 		   //jQuery("#select-dropdown-open").click();
 	});

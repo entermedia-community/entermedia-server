@@ -80,7 +80,7 @@
 									function addColumn(inId) {
 										jQuery('#emresultscontent').load("$content.searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
 									}
-									
+									//This should be moved out of here
 									function refreshSelections() {
 										jQuery('#moduleselections').load("$content.searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");
 									}
