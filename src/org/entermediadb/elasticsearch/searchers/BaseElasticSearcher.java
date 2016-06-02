@@ -1439,76 +1439,58 @@ public class BaseElasticSearcher extends BaseSearcher
 		populateDoc(inContent, inData, inDetails);
 	}
 	
-	protected void populateDoc(XContentBuilder inContent, Data inData, PropertyDetails inDetails){
-		
-		
-		
-//		Map props = inData.getProperties();
-//		HashSet everything = new HashSet(props.keySet());
-//		everything.add("id");
-//		everything.add("name");
-//		everything.add("sourcepath");
-//		for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
-//		{
-//			PropertyDetail detail = (PropertyDetail) iterator.next();
-//			everything.add(detail.getId());// We need this to handle booleans
-//											// and potentially other things.
-//
-//		}
-//		everything.remove(".version"); // is this correct?
-		for (Iterator iterator = inDetails.getDetails().iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (!detail.isIndex())
-			{
-				continue;
-			}
+	protected void populateDoc(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	{
 
-			String key = detail.getId();
-			Object value = inData.getValue(key);
-			if( value != null)
+		//		Map props = inData.getProperties();
+		//		HashSet everything = new HashSet(props.keySet());
+		//		everything.add("id");
+		//		everything.add("name");
+		//		everything.add("sourcepath");
+		//		for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
+		//		{
+		//			PropertyDetail detail = (PropertyDetail) iterator.next();
+		//			everything.add(detail.getId());// We need this to handle booleans
+		//											// and potentially other things.
+		//
+		//		}
+		//		everything.remove(".version"); // is this correct?
+		try
+		{
+			for (Iterator iterator = inDetails.getDetails().iterator(); iterator.hasNext();)
 			{
-				if( value instanceof String && ((String)value).isEmpty())
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if (!detail.isIndex())
 				{
-					value = null;
-				}
-			}
-			
-//			if(key.contains(".")){
-//				log.info("Warning - data id : " + inData.getId() + " of type " + getSearchType() + " contained a . in field " + key);
-//				key = key.replace(".", "_");
-//			}
-			try
-			{
-//				if( detail == null)
-//				{
-////					if (value != null && value.trim().length() == 0)
-////					{
-////						value = null;
-////					}
-//					continue;
-//				}
-				if ("_id".equals(key) || "_parent".equals(key) || "_all".equals(key))
-				{
-					// if( value != null)
-					// {
-					// inContent.field("_id", value);
-					// continue;
-					// }
 					continue;
 				}
-				if (detail.isDate() )
+
+				String key = detail.getId();
+				Object value = inData.getValue(key);
+				if (value != null)
+				{
+					if (value instanceof String && ((String) value).isEmpty())
+					{
+						value = null;
+					}
+				}
+
+				if (shoudSkipField(key))
+				{
+					continue;
+				}
+				if (detail.isDate())
 				{
 					if (value != null)
 					{
 						Date date = null;
-						if( value instanceof Date)
+						if (value instanceof Date)
 						{
-							date = (Date)value;
+							date = (Date) value;
 						}
 						else
 						{
-							date = DateStorageUtil.getStorageUtil().parseFromStorage((String)value);
+							date = DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
 						}
 						if (date != null)
 						{
@@ -1519,60 +1501,60 @@ public class BaseElasticSearcher extends BaseSearcher
 				else if (detail.isBoolean())
 				{
 					boolean val = false;
-					if( value instanceof Boolean)
+					if (value instanceof Boolean)
 					{
-						val = (Boolean)value;
+						val = (Boolean) value;
 					}
 					else if (value != null)
 					{
-						val = Boolean.valueOf((String)value);
+						val = Boolean.valueOf((String) value);
 					}
 					inContent.field(key, val);
 				}
 				else if (detail.isDataType("number"))
 				{
 					Number val = 0;
-					
+
 					if (value instanceof Number)
 					{
-						val = (Number)value;
+						val = (Number) value;
 					}
-					else if( value != null)
+					else if (value != null)
 					{
-						val = Long.valueOf((String)value);
+						val = Long.valueOf((String) value);
 					}
 					inContent.field(key, val);
 				}
 				else if (detail.isMultiValue())
 				{
-					if( value != null)
+					if (value != null)
 					{
 						Collection values = null;
-						if( value instanceof Collection)
+						if (value instanceof Collection)
 						{
-							values = (Collection)value;
+							values = (Collection) value;
 						}
-						else if( value != null)
+						else if (value != null)
 						{
-							String vs = (String)value;
+							String vs = (String) value;
 							if (vs.contains("|"))
 							{
 								String[] vals = VALUEDELMITER.split(vs);
-								values = Arrays.asList( vals );
+								values = Arrays.asList(vals);
 							}
 							else
 							{
-								values = Arrays.asList( value );
+								values = Arrays.asList(value);
 							}
 						}
-						inContent.field(key,values);
+						inContent.field(key, values);
 					}
 				}
 				else if (detail.isDataType("geo_point"))
 				{
 					inContent.field(key, value);
 				}
-				else if (key.equals("description"))  //TODO: This should be moved to _all searches
+				else if (key.equals("description")) //TODO: This should be moved to _all searches
 				{
 					StringBuffer desc = new StringBuffer();
 					populateKeywords(desc, inData, inDetails);
@@ -1581,39 +1563,38 @@ public class BaseElasticSearcher extends BaseSearcher
 						inContent.field(key, desc.toString());
 					}
 				}
-				
+
 				else if (detail.isMultiLanguage())
 				{
 					// This is a nested document
 					inContent.startObject(key); //start first detail object
 					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
-					if(value instanceof String){
+					if (value instanceof String)
+					{
 						String target = (String) value;
 						LanguageMap map = new LanguageMap();
 						map.setText(target, "en");
 						value = map;
-						
+
 					}
 					LanguageMap map = (LanguageMap) value;
-					
+
 					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
 					{
 						Data locale = (Data) iterator2.next();
 						String id = locale.getId();
-						String localeval = map.getText(id);  //get a location specific value
-						if(localeval != null){
+						String localeval = map.getText(id); //get a location specific value
+						if (localeval != null)
+						{
 
 							inContent.field(id, localeval);
-						}			
+						}
 
 					}
 					inContent.endObject();
-					
 
 				}
-				
-				
-				
+
 				else if (key.equals("name"))
 				{
 					// This matches how we do it on Lucene
@@ -1623,8 +1604,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						inContent.field(key + "sorted", value);
 					}
 				}
-				
-				
+
 				else
 				{
 					if (value == null)
@@ -1638,13 +1618,44 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				// log.info("Saved" + key + "=" + value );
 			}
-			catch (Exception ex)
+
+			if (inDetails.isAllowDynamicFields())
 			{
-				throw new OpenEditException(ex);
+				Map props = inData.getProperties();
+				for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					if (shoudSkipField(key))
+					{
+						continue;
+					}
+					if (inDetails.getDetail(key) == null)
+					{
+						Object val = props.get(key);
+						if (val != null)
+						{
+							inContent.field(key, val);
+						}
+					}
+				}
+
 			}
 		}
+		catch (Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+
 	}
 
+	private boolean shoudSkipField(String inKey)
+	{
+		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains("."))
+		{
+			return true;
+		}
+		return false;
+	}
 	public void deleteAll(User inUser)
 	{
 		
