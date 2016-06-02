@@ -55,8 +55,9 @@ public class CollectionTest extends BaseEnterMediaTest
 		String collectionid = "testcollection"; 
 		String libraryid = "testlibray";
 
-		manager.addCategoryToCollection(getMediaArchive(),collectionid,"testcategory");
-		manager.moveCollectionTo(getFixture().createPageRequest(),getMediaArchive(),collectionid,libraryid);
+		WebPageRequest req = getFixture().createPageRequest();
+		manager.addCategoryToCollection(req.getUser(),getMediaArchive(),collectionid,"testcategory");
+		manager.moveCollectionTo(req,getMediaArchive(),collectionid,libraryid);
 		
 	}
 	

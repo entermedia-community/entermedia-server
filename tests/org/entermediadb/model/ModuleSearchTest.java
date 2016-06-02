@@ -1,12 +1,9 @@
 package org.entermediadb.model;
 
-import java.util.Iterator;
-import java.util.List;
-
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
-import org.openedit.data.XmlFileSearcher;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
@@ -17,7 +14,7 @@ public class ModuleSearchTest extends BaseEnterMediaTest
 	{
 		WebPageRequest req = getFixture().createPageRequest("/entermedia/index.html");
 		
-		XmlFileSearcher searcher = (XmlFileSearcher) getMediaArchive().getSearcher("order");
+		Searcher searcher = (Searcher) getMediaArchive().getSearcher("order");
 		
 		Data order = searcher.createNewData();
 		order.setId("search101");

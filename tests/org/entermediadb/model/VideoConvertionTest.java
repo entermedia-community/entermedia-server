@@ -2,9 +2,12 @@ package org.entermediadb.model;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.events.PathEventManager;
+import org.joda.time.convert.ConverterManager;
 import org.openedit.WebPageRequest;
 import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;
@@ -21,11 +24,13 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setAssetSourcePath("users/admin/101");
 		instructions.setOutputExtension("flv");
 
-		Page converted = manager.createOutput(instructions);
-		assertNotNull(converted);
-		assertTrue(converted.exists());
-		assertTrue(converted.length() > 0);
-		assertEquals("flv", PathUtilities.extractPageType(converted.getPath()));
+		ConversionManager videotool = manager.getManagerByFileFormat("flv");
+		ConvertResult result = videotool.createOutput(instructions);
+		
+		assertNotNull(result.isComplete());
+		assertTrue(result.getOutput().exists());
+		assertTrue(result.getOutput().getLength() > 0);
+		assertEquals("flv", PathUtilities.extractPageType(result.getOutput().getPath()));
 	}
 
 	public void testAviToFlv()
@@ -39,62 +44,61 @@ public class VideoConvertionTest extends BaseEnterMediaTest
 		instructions.setAssetSourcePath("users/admin/103");
 		instructions.setOutputExtension("flv");
 
-		Page converted = manager.createOutput(instructions);
-		assertNotNull(converted);
-		assertTrue(converted.exists());
-		assertTrue(converted.length() > 0);
-		assertEquals("flv", PathUtilities.extractPageType(converted.getPath()));
-	}
-
-	public void testWmvToFlv()
-	{
-
-		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		TranscodeTools manager = archive.getTranscodeTools();
+		ConversionManager videotool = manager.getManagerByFileFormat("flv");
+		ConvertResult result = videotool.createOutput(instructions);
 		
-		ConvertInstructions instructions = new ConvertInstructions(archive);
-		instructions.setForce(true);
-		instructions.setAssetSourcePath("users/admin/102");
-		instructions.setOutputExtension("flv");
+		assertNotNull(result.isComplete());
+		assertTrue(result.getOutput().exists());
+		assertTrue(result.getOutput().getLength() > 0);
+		assertEquals("flv", PathUtilities.extractPageType(result.getOutput().getPath()));
 
-		Page converted = manager.createOutput(instructions);
-		assertNotNull(converted);
-		assertTrue(converted.exists());
-		assertTrue(converted.length() > 0);
-		assertEquals("flv", PathUtilities.extractPageType(converted.getPath()));
 	}
+
+//	public void testWmvToFlv()
+//	{
+//
+//		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
+//		TranscodeTools manager = archive.getTranscodeTools();
+//		
+//		ConvertInstructions instructions = new ConvertInstructions(archive);
+//		instructions.setForce(true);
+//		instructions.setAssetSourcePath("users/admin/102");
+//		instructions.setOutputExtension("flv");
+//
+//		Page converted = manager.createOutput(instructions);
+//		assertNotNull(converted);
+//		assertTrue(converted.exists());
+//		assertTrue(converted.length() > 0);
+//		assertEquals("flv", PathUtilities.extractPageType(converted.getPath()));
+//	}
 
 	
 	public void testMpegToJpeg()
 	{
-		
-
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		TranscodeTools manager = archive.getTranscodeTools();
 
-		ConvertInstructions instructions1 = new ConvertInstructions(archive);
+		ConversionManager videotool = manager.getManagerByFileFormat("mp4");
+		ConvertInstructions instructions1 = videotool.createInstructions(archive.getAsset("101"), "video.mp4");
 		instructions1.setForce(true);
-		instructions1.setAssetSourcePath("users/admin/101");
-		instructions1.setOutputExtension("mp4");
 		
-		Page converted = manager.createOutput(instructions1);
-		assertNotNull(converted);
-		assertTrue(converted.exists());
-		assertTrue(converted.length() > 0);
-		assertEquals("mp4", PathUtilities.extractPageType(converted.getPath()));
+		ConvertResult result = videotool.createOutput(instructions1);
+		
+		assertNotNull(result.isComplete());
+		assertTrue(result.getOutput().exists());
+		assertTrue(result.getOutput().getLength() > 0);
+		assertEquals("mp4", PathUtilities.extractPageType(result.getOutput().getPath()));
 
-		
-		ConvertInstructions instructions = new ConvertInstructions(archive);
+		ConvertInstructions instructions = videotool.createInstructions(archive.getAsset("101"), "image1024x768.jpg");
 		instructions.setForce(true);
 		instructions.setAssetSourcePath("users/admin/101");
-		instructions.setOutputExtension("jpg");
 
+		result = videotool.createOutput(instructions);
+		assertNotNull(result.isComplete());
+		assertTrue(result.getOutput().exists());
+		assertTrue(result.getOutput().getLength() > 0);
+		assertEquals("jpg", PathUtilities.extractPageType(result.getOutput().getPath()));
 
-		Page converted2 = manager.createOutput(instructions);
-		assertNotNull(converted2);
-		assertTrue(converted2.exists());
-		assertTrue(converted2.length() > 0);
-		assertEquals("jpg", PathUtilities.extractPageType(converted2.getPath()));
 	}
 
 	/* We dont do this any more

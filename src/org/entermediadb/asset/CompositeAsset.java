@@ -14,6 +14,7 @@ import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
@@ -24,7 +25,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	protected HitTracker fieldSelectedResults; 
 	protected List<String> fieldRemovedCategories;
 	protected List<String> fieldRemovedKeywords;
-	protected Map<String,String> fieldPropertiesSet;
+	protected ValuesMap fieldPropertiesSet;
 	protected List<Integer> fieldSelections;
 	protected PropertyDetails fieldPropertyDetails;
 	protected String fieldId;
@@ -79,18 +80,13 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		return getMediaArchive().getAssetPropertyDetails();
 	}
 
-	public Map getPropertiesSet()
+	public ValuesMap getPropertiesSet()
 	{
 		if (fieldPropertiesSet == null)
 		{
-			fieldPropertiesSet = new HashMap();
+			fieldPropertiesSet = new ValuesMap();
 		}
 		return fieldPropertiesSet;
-	}
-
-	public void setPropertiesSet(Map inPropertiesSet)
-	{
-		fieldPropertiesSet = inPropertiesSet;
 	}
 
 	public List getRemovedCategories()
@@ -275,7 +271,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{	
 		if (size() > 0)
 		{
-			String val = (String)getPropertiesSet().get(inId); //set by the user since last save
+			String val = getPropertiesSet().getString(inId); //set by the user since last save
 //			if( val == null && fieldPropertiesPreviouslySaved != null)
 //			{
 //				val = (String)getPropertiesPreviouslySaved().get(inId);
@@ -413,7 +409,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{
 		return new AssetIterator(getSelectedResults().iterator());
 	}
-	
+	@Override
+	public void setValues(String inKey, Collection<String> inValues)
+	{
+		super.setValue(inKey, inValues);
+	}
 
 	/**
 	 * Do not call this more than once!
@@ -495,8 +495,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				{
 					continue;
 				}
-					
-				String value = (String) getPropertiesSet().get(key);
+				String value = getPropertiesSet().getString(key);
 				String datavalue = data.get(key);
 				
 				if( datavalue == value )
@@ -517,7 +516,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 						//Need to add any that are set by user in value 
 						Set added = collect(value);
 						Set existing = collect(datavalue);
-						Set previousCommonOnes = collect(getValueFromResults(key)); 
+						Set previousCommonOnes = collect(getValueFromResults(key)); //Do this only once somehow 
 						saveMultiValues(asset, key, added, existing,previousCommonOnes);
 					}
 					else

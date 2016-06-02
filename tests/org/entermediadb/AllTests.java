@@ -2,17 +2,10 @@ package org.entermediadb;
 
 import java.util.Arrays;
 
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
-//import org.entermediadb.asset.model.ThesaurusTest;
-import org.entermediadb.controller.ArchiveModuleTest;
-import org.entermediadb.controller.MultiSearchModuleTest;
 import org.entermediadb.model.AssetEditTest;
 import org.entermediadb.model.CategoryEditTest;
 import org.entermediadb.model.ConversionTest;
 import org.entermediadb.model.MetaDataReaderTest;
-import org.entermediadb.model.RelatedAssetsTest;
 import org.entermediadb.model.SourcePathTest;
 import org.entermediadb.model.VideoConvertionTest;
 import org.entermediadb.model.ZipTest;
@@ -20,6 +13,9 @@ import org.entermediadb.view.ConvertDocumentGeneratorTest;
 import org.entermediadb.view.OriginalDocumentGeneratorTest;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
+
+import junit.framework.Test;
+import junit.framework.TestSuite;
 
 public class AllTests {
 	public static Test suite()
@@ -51,7 +47,7 @@ public class AllTests {
 		}
 
 		suite.addTestSuite( MetaDataReaderTest.class );
-		suite.addTestSuite( RelatedAssetsTest.class );
+		//suite.addTestSuite( RelatedAssetsTest.class );
 		suite.addTestSuite( SourcePathTest.class );
 		//suite.addTestSuite( ThesaurusTest.class );
 		suite.addTestSuite( ZipTest.class );

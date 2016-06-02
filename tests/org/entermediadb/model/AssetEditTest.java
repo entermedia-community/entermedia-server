@@ -131,13 +131,13 @@ public class AssetEditTest extends BaseEnterMediaTest
 	{
 		String originaltext = "Some weird & whacky product attribute's to \"insert\"";
 		Asset asset = createAsset();
-		asset.setProperty("insertdata", originaltext);
+		asset.setProperty("assettitle", originaltext);
 		
 		User user = getFixture().createPageRequest().getUser();
 		getMediaArchive().saveAsset(asset, user);
 		getMediaArchive().getAssetArchive().clearAssets();
 		asset = getMediaArchive().getAsset(asset.getId());
-		String returntext = asset.getProperty("insertdata");
+		String returntext = asset.getProperty("assettitle");
 		assertEquals(originaltext, returntext);
 	}
 
@@ -149,7 +149,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		assertEquals(3,asset.getKeywords().size());
 		assertEquals(input,asset.get("keywords") );
 	}
-	public void testEditRelatedAssets() throws Exception
+	public void XXXOLDtestEditRelatedAssets() throws Exception
 	{
 		Asset asset = createAsset();
 		assertTrue(asset.getRelatedAssets().size() ==0);
@@ -249,41 +249,49 @@ public class AssetEditTest extends BaseEnterMediaTest
 
 		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
 		//HitTracker hits = getMediaArchive().getAssetSearcher().getAllHits();
-		q.addMatches("category","index");
-		//q.addOrsGroup("id", "1 2 102" );
+		//q.addMatches("id","*");
+		q.addOrsGroup("id", "1 2 102" );
 		q.addSortBy("category");
 		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
 		hits.toggleSelected("1");
 		hits.toggleSelected("2");
 		assertEquals( 2, hits.getSelections().size() );
 		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
-		assertEquals("1",composite.get("libraries"));
-		composite.setProperty("libraries","3"); //We removed 1 (common) and added 3
+		Collection existing = composite.getValues("libraries");
+		assertEquals(existing.size() , 1);
+		assertTrue(existing.contains("1"));
+		existing.add("3");
+		composite.setValue("libraries",existing); //We removed 1 (common) and added 3
 		composite.saveChanges();
+		Collection values = composite.getValues("libraries");
+		assertEquals( 2 , values.size());
+		assertTrue(values.contains("1"));
+		assertTrue(values.contains("3"));
 
-		assertEquals("3",composite.get("libraries"));
 
 		product = getMediaArchive().getAsset("1");
-		Collection values = product.getValues("libraries");
-		assertEquals( 1 , values.size());
+		values = product.getValues("libraries");
+		assertEquals( 2 , values.size());
+		assertTrue(values.contains("1"));
 		assertTrue(values.contains("3"));
 
 		product = getMediaArchive().getAsset("2");
 		values = product.getValues("libraries");
-		assertEquals( 2 , values.size());
-		//assertTrue(values.contains("1"));
+		assertEquals( 3 , values.size());
+		assertTrue(values.contains("1"));
 		assertTrue(values.contains("2"));
 		assertTrue(values.contains("3"));
-		
+
 		//Now set it again and it will fail since results are not updated
-		assertEquals("3",composite.get("libraries"));
-		composite.setValues("libraries" , new ArrayList() );
+		composite.setValue("libraries" , new ArrayList() );
 		composite.saveChanges(); //removed 3
-		
+		values = composite.getValues("libraries");
+		assertEquals( 0 , values.size());
+
+		//We remved all the common ones 1 and 3
 		product = getMediaArchive().getAsset("2");
 		values = product.getValues("libraries");
 		assertEquals( 1 , values.size());
-		//assertTrue(values.contains("1"));
 		assertTrue(values.contains("2"));
 		
 
@@ -299,7 +307,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		getMediaArchive().saveAsset(asset, null);
 
 		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
-		q.addMatches("category","index");
+		q.addMatches("id","*");
 		
 		WebPageRequest req = getFixture().createPageRequest();
 

@@ -54,7 +54,6 @@ public class ConvertResult extends BaseData
 	{
 		return fieldError != null;
 	}
-	protected String fieldOutputPath;
 	
 	public boolean isOk()
 	{
@@ -64,13 +63,4 @@ public class ConvertResult extends BaseData
 	{
 		fieldOk = inOk;
 	}
-	public String getOutputPath()
-	{
-		return fieldOutputPath;
-	}
-	public void setOutputPath(String inOutputPath)
-	{
-		fieldOutputPath = inOutputPath;
-	}
-	
 }

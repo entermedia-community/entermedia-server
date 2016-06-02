@@ -361,6 +361,10 @@ public class Asset implements MultiValued, SaveableData
 		getMap().putAll(inAttributes);
 	}
 
+	/*
+	 * @deprecated
+	 * @see org.openedit.Data#setProperty(java.lang.String, java.lang.String)
+	 */
 	public void setProperty(String inKey, String inValue)
 	{
 		setValue(inKey,inValue);
