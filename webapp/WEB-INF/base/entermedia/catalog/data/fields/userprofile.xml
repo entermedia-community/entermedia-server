@@ -1,4 +1,7 @@
-<properties>
+<properties allowdynamicfields="true">
+	
+	
+	
 	<property id="id" index="true" stored="true"  keyword="true" internalfield="true" >ID</property>
   	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true">User</property>
 	<property id="settingsgroup" editable="true" index="true" stored="true" datatype="list">Role</property>

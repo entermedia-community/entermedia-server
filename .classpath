@@ -50,24 +50,24 @@
 	<classpathentry kind="lib" path="lib/t-digest-3.0.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-over-slf4j-1.7.18.jar"/>
 	<classpathentry kind="lib" path="lib/apache-log4j-extras-1.2.17.jar"/>
-	<classpathentry kind="lib" path="lib/gson-2.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gson-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry kind="lib" path="lib/securesm-1.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/elasticsearch-2.3.1.jar"/>
 	<classpathentry kind="lib" path="lib/guava-18.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-analyzers-common-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-backward-codecs-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-core-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-grouping-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-highlighter-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-join-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-memory-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-misc-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-queries-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-queryparser-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-sandbox-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-spatial-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-spatial3d-5.5.0.jar"/>
-	<classpathentry kind="lib" path="lib/lucene-suggest-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-common-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-backward-codecs-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-core-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-grouping-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-highlighter-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-join-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-memory-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-misc-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-queries-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-queryparser-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-sandbox-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-spatial-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-spatial3d-5.5.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-5.5.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
