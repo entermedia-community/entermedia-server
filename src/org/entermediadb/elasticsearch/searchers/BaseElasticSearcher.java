@@ -1524,6 +1524,21 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					inContent.field(key, val);
 				}
+				else if (detail.isDataType("double"))
+				{
+					Double val = null;
+
+					if (value instanceof Double)
+					{
+						val = (Double) value;
+					}
+					else if (value != null)
+					{
+						val = Double.valueOf((String) value);
+					}
+					inContent.field(key, val);
+				}
+				
 				else if (detail.isDataType("number"))
 				{
 					Number val = 0;
