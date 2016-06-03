@@ -521,7 +521,6 @@ uiload = function() {
 
 
 	$('.select-dropdown-open').livequery("click",function(){
-		
 		if ($(this).hasClass('down')) {
 			$(this).removeClass('down');
 			$(this).addClass('up');
@@ -536,6 +535,7 @@ uiload = function() {
 		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').removeClass('up');
 		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').addClass('down');
 		$(this).closest('.select-dropdown').hide();
+		console.log("Clicked");
 	});
 	
 	function select2formatResult(emdata)

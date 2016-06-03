@@ -46,7 +46,9 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     $.fn.replaceWith = function(arg) 
     {
 		var returned = oldreplaceWith.call($(this),arg);
+		//console.log("Called replacewith on " +	$(this).selector, arg.length );	
 		$(document).trigger("domchanged");
+		
 		return returned;
     };
     var oldajaxSubmit = $.fn.ajaxSubmit;
@@ -69,16 +71,20 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 		
     };
     
+    /*
     //This is problematic because we call get for various reasons
     var oldget = $.fn.get;
     $.fn.get = function() 
-    {
+    {			
     	if( arguments.length == 3 )
 		{
+			console.log("Called FAKE get on " ,arguments );
+		
 			var oldsucess = arguments[2];
 			return oldget.call($(this),arguments[0],arguments[1],function()
 			{
-				oldsucess.call(this);			
+				oldsucess.call(this);	
+				//console.log("Called get on " +	$(this).selector );	
 				$(document).trigger("domchanged"); 
 			});
 		}
@@ -88,6 +94,8 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 			return oldget.call($(this));
 		}
     };
+    */
+    
     
 })(jQuery);
 
@@ -103,9 +111,10 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  	{
  		if( livequeryrunning )
  		{
- 			//console.log("Skipping reload");
+ 			console.log("Skipping reload");
  			return;
  		}
+ 		//console.log("domchanged reload");
 		var chunck;
  		if( typeof args == Array )
  		{
@@ -126,7 +135,6 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	 				var node = $(this);
  					if( node.data("livequeryinit") == null )
  					{
- 				 		node.data("livequeryinit", true);
  				 		//console.log("Not enabled: " + item.selector );
  					 	funct.call(node);
 	 				}
@@ -137,6 +145,19 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	 			}		
  			});
  		});
+ 		$.each(regelements,function()
+ 		{
+ 			var listener = this;
+ 			$(listener.selector,document).each(function()
+ 			{
+ 				var node = $(this);
+ 				if( node.data("livequeryinit") == null )
+ 				{
+ 					node.data("livequeryinit", true);
+ 				}
+			});
+		});
+ 		
  		
  		//TODO: Loop over events ones and register them
  		$.each(eventregistry,function()
@@ -145,10 +166,9 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  			$(listener.selector,document).each(function()
  			{
  				var node = $(this);
- 				if( node.data("livequery" + listener.event) == null )
+ 				if( node.data("livequery") == null )
  				{
- 				 	node.data("livequery" + listener.event, true);
- 				 	//console.log("reRegistering " + listener.selector );
+ 				 	//console.log("Registering " + listener.selector );
  					node.on(listener.event,listener.function);	
  				}	
  				else
@@ -157,6 +177,20 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  				}
  			});
  		});
+		
+		$.each(eventregistry,function()
+ 		{
+ 			var listener = this;
+ 			$(listener.selector,document).each(function()
+ 			{
+ 				var node = $(this);
+ 				if( node.data("livequery") == null )
+ 				{
+ 				 	node.data("livequery", true);
+ 				}
+ 			});
+ 		});
+
  		
  	});
 
@@ -196,7 +230,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 			}
 	    	eventregistry.push(eventlistener);
 	    	//console.log("Initial Registering  event" + eventlistener.selector );
-	    	node.data("livequery" + eventlistener.event, true);
+	    	node.data("livequery", true);
 	    	node.on(eventlistener.event,eventlistener.function);
 	    	//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
 		}

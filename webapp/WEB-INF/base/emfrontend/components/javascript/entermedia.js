@@ -182,6 +182,8 @@ runajaxonthis = function(inlink,e)
 		
 		jQuery.get(nextpage, {}, function(data) 
 			{
+				//console.log("Called REAL get on " ,arguments );
+				
 				var cell;
 				if(useparent && useparent == "true")
 				{
