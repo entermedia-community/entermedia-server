@@ -30,11 +30,18 @@ public class ScriptLogger extends Handler
 
 	public ScriptLogger()
 	{
-		// TODO Auto-generated constructor stub
 	}
 
 	public void saveLog(String intype, String text, Throwable ex)
 	{
+		if( ex != null)
+		{
+			log.info(getPrefix() + " " + intype + " " + text, ex );
+		}
+		else
+		{
+			log.info(getPrefix() + " " + intype + " " + text );
+		}	
 		if( !fieldAppendLogs)
 		{
 			return;

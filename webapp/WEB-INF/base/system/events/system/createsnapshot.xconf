@@ -6,5 +6,6 @@
 		<property name="wholesystem">true</property>
 	</path-action>
 	<property name="enabled">true</property>
+	<property name="period">1d</property>
 	
 </page>

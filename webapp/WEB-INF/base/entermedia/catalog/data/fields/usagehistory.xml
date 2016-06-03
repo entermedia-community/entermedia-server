@@ -1,9 +1,0 @@
-<properties  beanname="dataSearcher">
-  <property id="id" datatype="number" index="true" stored="true">Id</property>
-  <property id="status" editable="true" index="true" stored="true" legacy="description">Status</property>
-  <property id="projectnumber" editable="true" index="true" stored="true">Project Number</property>
-  <property id="formnumber" editable="true" index="true" stored="true">Form Number</property>
-  <property id="date" editable="true" index="true" stored="true" datatype="date">Date</property>
-<property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property><property id="sourcepath"  index="true" stored="true">Source Path</property>
-  <property id="assetid" type="list" editable="true" index="true" stored="true">Asset ID</property>
-</properties>
