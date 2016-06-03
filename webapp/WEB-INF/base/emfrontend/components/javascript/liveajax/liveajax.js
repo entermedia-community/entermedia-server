@@ -133,9 +133,10 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  				try
  				{
 	 				var node = $(this);
- 					if( node.data("livequeryinit") == null )
+ 					if( node.data("livequeryinit" + item.selector) == null )
  					{
  				 		//console.log("Not enabled: " + item.selector );
+ 					 	node.data("livequeryinit" + item.selector, true);
  					 	funct.call(node);
 	 				}
 	 			}	 
@@ -144,19 +145,8 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	 				 console.log("Could not process: " + item.selector , error); 
 	 			}		
  			});
- 		});
- 		$.each(regelements,function()
- 		{
- 			var listener = this;
- 			$(listener.selector,document).each(function()
- 			{
- 				var node = $(this);
- 				if( node.data("livequeryinit") == null )
- 				{
- 					node.data("livequeryinit", true);
- 				}
-			});
 		});
+		 		
  		
  		
  		//TODO: Loop over events ones and register them
@@ -177,7 +167,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  				}
  			});
  		});
-		
+		//We need to do this as the end in case there are more than one click handlers on the same node
 		$.each(eventregistry,function()
  		{
  			var listener = this;
@@ -206,8 +196,8 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	    	regelements.push(item);
 	    	try
  			{
+	    		node.data("livequeryinit" + item.selector, true);
 	 			func.call($(this));
-	    		node.data("livequeryinit", true);
 	 		} catch ( error ) 
 	 		{
 	 			console.log("Could not process: " + item.selector , error); 
