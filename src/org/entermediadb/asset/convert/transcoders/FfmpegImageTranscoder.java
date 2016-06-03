@@ -130,13 +130,11 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		String outputpath = outputFile.getAbsolutePath();
 		new File(outputpath).getParentFile().mkdirs();
 		com.add(outputpath);
-		result.setOutputPath(null);
 		long start = System.currentTimeMillis();
 		if (runExec(getCommandName(), com, timeout))
 		{
 			log.info("Resize complete in:" + (System.currentTimeMillis() - start) + " " + outputFile.getName());
 			result.setComplete(true);
-			result.setOutputPath(outputFile.getAbsolutePath());
 			result.setOutput(outputFile);
 		}
 		else
