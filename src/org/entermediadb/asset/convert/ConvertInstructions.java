@@ -544,7 +544,10 @@ public class ConvertInstructions
 		
 		setProperty("cachefilename", exportname); //TODO: remove this
 		//setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
-		setOutputExtension(PathUtilities.extractPageType(exportname));
+		if( getOutputExtension() == null)
+		{
+			setOutputExtension(PathUtilities.extractPageType(exportname));
+		}	
 	}
 
 	public void loadSettings(Map inSettings)
@@ -671,8 +674,16 @@ public class ConvertInstructions
 
 	public String getOutputRenderType()
 	{
-		String type = getMediaArchive().getMediaRenderType(getOutputExtension());
+		String type =  get("outputrendertype");
+		if( type == null)
+		{
+			type = getMediaArchive().getMediaRenderType(getOutputExtension());
+		}	
 		return type;
+	}
+	public void setOutputRenderType(String inType)
+	{
+		setProperty("outputrendertype", inType);
 	}
 
 	

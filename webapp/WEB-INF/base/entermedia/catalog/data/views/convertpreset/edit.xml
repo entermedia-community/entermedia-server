@@ -1,15 +1,13 @@
 <properties>
 	<property id="name" />
 	<property id="inputtype"/>
-	<property id="outputfile" />
-	<property id="fileexportformat" />
-	<property id="type" />
+	<property id="transcoderid" />
 	<property id="guid" />
+	<property id="fileexportformat" />
 	<property id="onimport" />
 	<property id="ordering" />
-		<property id="display" />
-			<property id="singlepage" />
-	
+	<property id="display" />
+	<property id="singlepage" />
 </properties>
 
    

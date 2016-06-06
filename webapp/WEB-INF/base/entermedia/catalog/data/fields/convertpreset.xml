@@ -5,7 +5,7 @@
 	<property id="outputfile"  index="true" stored="true" editable="true">Generated File Name</property>
 	<property id="fileexportformat"  index="true" stored="true" editable="true" note="${user.id}/${date}${time}-${asset.author||assettitle}-${shortfilename}.mp4">File Download Format</property>
 	<property id="transcoderid" listid="transcoder" index="true" stored="true" editable="true" viewtype="list" type="list" legacy="type" >Transcoder</property>
-	<property id="guid" index="true" type="list" listid="presetdata" stored="true" editable="true">Parameters</property>
+	<property id="guid" index="true" type="list" listid="presetdata" sort="name" stored="true" editable="true">Parameters</property>
 	<property id="onimport" type="boolean" index="true" stored="true" editable="true">On Import</property>
 	<property id="ordering"  type="number" index="true" stored="true" editable="true">Ordering</property>
 	<property id="display" type="boolean" index="true" stored="true" editable="true">Display on Convert/Crop Page</property>

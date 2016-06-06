@@ -182,7 +182,9 @@ public abstract class BaseConversionManager implements ConversionManager
 
 	protected ConvertInstructions createNewInstructions()
 	{
-		return new ConvertInstructions(getMediaArchive());
+		ConvertInstructions ins = new ConvertInstructions(getMediaArchive());
+		ins.setOutputRenderType(getRenderType());
+		return ins;
 	}
 
 	public ConvertInstructions createInstructions(Asset inAsset, Data inPreset, Map inSettings)
@@ -201,12 +203,9 @@ public abstract class BaseConversionManager implements ConversionManager
 	{ 
 		ConvertInstructions instructions = createNewInstructions();
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inExportName);
-		if( preset == null)
-		{
-			//log.error("No preset defined for export file name" + inExportName);
-			instructions.setOutputExtension(PathUtilities.extractPageType(inExportName)); //For cases where the output is not configured
-		}
 		instructions.loadPreset(preset);
+		//log.error("No preset defined for export file name" + inExportName);
+		instructions.setOutputExtension(PathUtilities.extractPageType(inExportName)); //For cases where the output is not configured
 		instructions.loadSettings(inSettings);
 		instructions.setAssetSourcePath(inSourcePath);
 		return instructions;
@@ -274,10 +273,7 @@ public abstract class BaseConversionManager implements ConversionManager
 
 	protected MediaTranscoder findTranscoderByPreset(Data preset)
 	{
-		String creator = preset.get("creator");
-		if(creator == null){
-			creator = preset.get("transcoderid");
-		}
+		String creator = preset.get("transcoderid");
 		MediaTranscoder transcoder = (MediaTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(), creator + "Transcoder");
 		return transcoder;
 	}

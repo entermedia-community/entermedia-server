@@ -2,6 +2,7 @@
 	<property id="inputtype"/>
 	<property id="name" />
 	<property id="type" />
+	<property id="outputfile" />
 	<property id="onimport" />
 </properties>
 

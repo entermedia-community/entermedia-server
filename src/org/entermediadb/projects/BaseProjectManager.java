@@ -677,7 +677,7 @@ public class BaseProjectManager implements ProjectManager
 				
 				Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
 				
-				String oldcategoryroot = cat.getSourcePath();
+				String oldcategoryroot = cat.getCategoryPath();
 				//1. Move the files located here
 				
 				//TODO: Make sure the paths actually changed
