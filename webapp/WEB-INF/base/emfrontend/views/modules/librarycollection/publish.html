@@ -5,7 +5,9 @@
 			<table width="100%">
 				<tr>
 					<td>
+						#if( $hits.size() > 0)
 						<b>$hits.size() Assets:</b> $sizer.inEnglish( $filesizes.get("assetsize") )
+						#end
 						<br><br>
 						#if( $categories.size()  > 0)
 							#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
