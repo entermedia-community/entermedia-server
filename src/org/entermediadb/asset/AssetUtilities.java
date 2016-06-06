@@ -376,7 +376,7 @@ public class AssetUtilities
 		vals.put("guid", sguid);
 		vals.put("splitguid", sguid.substring(0,2) + "/" + sguid.substring(3).replace("-", ""));
 		
-		String date  = new SimpleDateFormat("yyyyMM").format(new Date());
+		String date  = new SimpleDateFormat("yyyy/MM").format(new Date());
 		vals.put("formatteddate",date );
 		vals.put("user",inReq.getUser());
 		Replacer replacer = new Replacer();

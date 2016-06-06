@@ -1,5 +1,5 @@
 <properties>
   <property id="project"/>
-  <property id="libraries"/>
+  <property id="libraries" required="true"/>
   <property id="keywords"/>
 </properties>

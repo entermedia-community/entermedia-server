@@ -453,7 +453,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
-				
+
 				jsonproperties = jsonproperties.startObject(detail.getId());
 				if ("description".equals(detail.getId()))
 				{
@@ -513,7 +513,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				else
 				{
 					jsonproperties = jsonproperties.field("type", "string");
-					if (detail.isSortable() || "name".equals( detail.getName() ) )
+					if (detail.isSortable() || "name".equals(detail.getName()))
 					{
 						jsonproperties.startObject("fields");
 						jsonproperties.startObject("sort");
@@ -811,7 +811,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			//MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid, valueof);
 			//QueryBuilder text = QueryBuilders.queryString("*" + valueof + "*").field(fieldid);
 			String wildcard = valueof;
-			
+
 			if (!wildcard.startsWith("*"))
 			{
 				wildcard = "*" + wildcard;
@@ -826,7 +826,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
 			or.should(text);
-			
+
 			valueof = valueof.replace("*", "");
 			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			phrase.maxExpansions(10);
@@ -1165,12 +1165,16 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public String getIndexId()
 	{
+		if( fieldIndexId == -1)
+		{
+			fieldIndexId = System.currentTimeMillis();
+		}
 		return String.valueOf(fieldIndexId);
 	}
 
 	public void clearIndex()
 	{
-		fieldIndexId = System.currentTimeMillis();
+		fieldIndexId = -1;
 	}
 
 	public void saveData(Data inData, User inUser)
@@ -1181,7 +1185,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		//saveAllData(list, inUser);
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 		updateElasticIndex(details, inData);
-
+		clearIndex();
 	}
 
 	/*
@@ -1237,6 +1241,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				updateElasticIndex(details, data);
 			}
 		}
+		clearIndex();
+		
 		//inBuffer.clear();
 	}
 
@@ -1381,7 +1387,6 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			updateIndex(content, data, details);
 			content.endObject();
-			String source = content.string();
 			if (log.isDebugEnabled())
 			{
 				log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
@@ -1538,7 +1543,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					inContent.field(key, val);
 				}
-				
+
 				else if (detail.isDataType("number"))
 				{
 					Number val = 0;
@@ -1591,7 +1596,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						inContent.field(key, desc.toString());
 					}
 				}
-
 				else if (detail.isMultiLanguage())
 				{
 					// This is a nested document
@@ -1620,19 +1624,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 					}
 					inContent.endObject();
-
 				}
-
-				else if (key.equals("name"))
-				{
-					// This matches how we do it on Lucene
-					if (value != null)
-					{
-						inContent.field(key, value);
-						//	inContent.field(key + "sorted", value);
-					}
-				}
-
 				else
 				{
 					if (value == null)
