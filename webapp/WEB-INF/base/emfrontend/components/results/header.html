@@ -26,7 +26,7 @@ $context.putPageValue("hits",$hits)
 		#set ($enabled=$hits.getSelectionSize() > 0)
 		
 		#if( $candownload || $canconvert || $candownloadfpo )
-			<li><a #if( $enabled )href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" #else style="text-decoration:none;" #end>[[Download]]</a></li>
+			<li><a #if( $enabled )href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" class="emdialog" data-hidefooter="true" #else style="text-decoration:none;" #end>[[Download]]</a></li>
 		#end	
 		##Email and publish should be under share
 		#if($canpublish || $canemaillink )
