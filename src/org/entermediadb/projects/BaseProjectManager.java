@@ -566,7 +566,7 @@ public class BaseProjectManager implements ProjectManager
 			{
 				Data catData = (Data) iterator.next();
 				Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
-				String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + cat.getSourcePath();
+				String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + cat.getCategoryPath();
 				long catsize = fileSize(inArchive,path);
 				sizes.put(cat.getId(), catsize);
 			}
