@@ -8,6 +8,7 @@ import org.openedit.data.SearcherManager
 import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
 import org.openedit.util.DateStorageUtil
+import org.openedit.util.PathUtilities;
 
 
 public void init(){
@@ -112,19 +113,19 @@ public void init(){
 
 	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
 	Collections.reverse(paths);
-	if( paths.size() > 10)
+	int keep = 0;
+	for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 	{
-		int keep = 0;
-		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		String path = (String) iterator.next();
+		if( PathUtilities.extractFileName(path).length() == 19)
 		{
-			String path = (String) iterator.next();
 			keep++;
 			if( keep > 10 )
 			{
 				Page page = mediaarchive.getPageManager().getPage(path);
 				mediaarchive.getPageManager().removePage(page);
 			}
-		}
+		}	
 	}
 
 
