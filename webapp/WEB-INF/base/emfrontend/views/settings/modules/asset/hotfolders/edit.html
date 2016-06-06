@@ -41,7 +41,7 @@ $pages.include("./editdetails.html")
 
 <div class="clearfix" style="margin-bottom: 20px;">
 <input type="hidden" name="field" value="monitortree" />
-<input type="checkbox" style="float: left;"   name="monitortree.value" value="true" #if($data.generatedversioncontrol) checked #end />
+<input type="checkbox" style="float: left;"   name="monitortree.value" value="true" #if($data.monitortree) checked #end />
 <label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Live Monitor the file system for changes in real time. For less than 100,000 files]]</label> 
 </div>
 <div class="clearfix" style="margin-bottom: 20px;">

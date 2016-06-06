@@ -402,12 +402,12 @@ public class BaseHotFolderManager implements HotFolderManager
 		for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
 			Data folder = (Data) iterator.next();
 			String type = folder.get("hotfoldertype");
-			if( "googledrive".equals(type))
+			if( !"googledrive".equals(type))
 			{
 				continue;
 			}
 			String key = folder.get("accesskey");
-			String email = folder.get("email");
+			//String email = folder.get("email");
 			String externalpath = folder.get("externalpath");
 			
 			List<String> com = Arrays.asList("add_account","-a", key,"-p",externalpath,"-e","link");
