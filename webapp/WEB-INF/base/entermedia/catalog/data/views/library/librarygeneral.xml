@@ -3,6 +3,6 @@
 <root>
   <property id="name"/>
   <property id="project"/>
-  <property id="folder"/>
+  <property id="folder" required="true"/>
   
 </root>
