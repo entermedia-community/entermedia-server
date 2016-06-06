@@ -101,87 +101,94 @@ public class ConvertInstructions
 	public ContentItem findOutputFile()
 	{
 		StringBuffer path = new StringBuffer();
-
-		//legacy for people who want to keep their images in the old location
-		String prefix = getProperty("pathprefix");
-		if( prefix != null)
+		String output = getProperty("outputfile");
+		if( output != null)
 		{
-			path.append(prefix);
+			path.append( output );
 		}
 		else
 		{
-			path.append("/WEB-INF/data");
-			path.append(getMediaArchive().getCatalogHome());
-			path.append("/generated/");
-		}
-		path.append(getAssetSourcePath());
-		path.append("/");
-
-		String postfix = getProperty("pathpostfix");
-		if( postfix != null)
-		{
-			path.append(postfix);
-		}
-//		String cachefilename = get("cachefilename");
-//		if( cachefilename != null)
-//		{
-//			path.append(cachefilename);
-//			return getMediaArchive().getContent( path.toString() );
-//		}
-
-//		if( "pdf".equals(getOutputExtension()) )
-//		{
-//			path.append("document");
-//		}
-//		else
-//		{
-		
-		String rendertype = getOutputRenderType();
-		path.append( rendertype );
-		
-		//path.append(getCacheName()); //part of filename
-//		}
-		if( rendertype.equals("image") )
-		{
-			Dimension maxScaledSize = getMaxScaledSize();
-			if (maxScaledSize != null) // If either is set then
+			//legacy for people who want to keep their images in the old location
+			String prefix = getProperty("pathprefix");
+			if( prefix != null)
 			{
-				path.append(Math.round(maxScaledSize.getWidth()));
-				path.append("x");
-				path.append(Math.round(maxScaledSize.getHeight()));
+				path.append(prefix);
 			}
-			if (getPageNumber() > 1)
+			else
 			{
-				path.append("page");
-				path.append(getPageNumber());
+				path.append("/WEB-INF/data");
+				path.append(getMediaArchive().getCatalogHome());
+				path.append("/generated/");
 			}
-		}
-		if(getProperty("timeoffset") != null)
-		{
-			path.append("offset");
-			path.append(getProperty("timeoffset"));
-		}
-		if(isWatermark())
-		{
-			path.append("wm");
-		}
-		String frame = getProperty("frame");
-		if( frame != null)
-		{
-			path.append("frame" + frame );
-		}
-
-		if(getProperty("colorspace") != null){
-			path.append(getProperty("colorspace"));
-		}
-		if(isCrop())
-		{
-			path.append("cropped");
-		}
-		if (getOutputExtension() != null)
-		{
-			path.append("." + getOutputExtension());
-		}
+			path.append(getAssetSourcePath());
+			path.append("/");
+	
+			String postfix = getProperty("pathpostfix");
+			if( postfix != null)
+			{
+				path.append(postfix);
+			}
+	//		String cachefilename = get("cachefilename");
+	//		if( cachefilename != null)
+	//		{
+	//			path.append(cachefilename);
+	//			return getMediaArchive().getContent( path.toString() );
+	//		}
+	
+	//		if( "pdf".equals(getOutputExtension()) )
+	//		{
+	//			path.append("document");
+	//		}
+	//		else
+	//		{
+			
+			String rendertype = getOutputRenderType();
+			path.append( rendertype );
+			
+			//path.append(getCacheName()); //part of filename
+	//		}
+			if( rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
+			{
+				Dimension maxScaledSize = getMaxScaledSize();
+				if (maxScaledSize != null) // If either is set then
+				{
+					path.append(Math.round(maxScaledSize.getWidth()));
+					path.append("x");
+					path.append(Math.round(maxScaledSize.getHeight()));
+				}
+				if (getPageNumber() > 1)
+				{
+					path.append("page");
+					path.append(getPageNumber());
+				}
+			}
+			if(getProperty("timeoffset") != null)
+			{
+				path.append("offset");
+				path.append(getProperty("timeoffset"));
+			}
+			if(isWatermark())
+			{
+				path.append("wm");
+			}
+			String frame = getProperty("frame");
+			if( frame != null)
+			{
+				path.append("frame" + frame );
+			}
+	
+			if(getProperty("colorspace") != null){
+				path.append(getProperty("colorspace"));
+			}
+			if(isCrop())
+			{
+				path.append("cropped");
+			}
+			if (getOutputExtension() != null)
+			{
+				path.append("." + getOutputExtension());
+			}
+		}	
 		return getMediaArchive().getContent( path.toString() );
 	}
 	
@@ -543,7 +550,7 @@ public class ConvertInstructions
 				setPresetParameters(params);
 			}
 		}
-		String exportname = inPreset.get("outputfile");		
+		String exportname = inPreset.get("generatedoutputfile");		
 		setProperty("cachefilename", exportname); //TODO: remove this
 		//setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
 		

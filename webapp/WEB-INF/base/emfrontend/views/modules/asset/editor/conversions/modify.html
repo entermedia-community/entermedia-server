@@ -2,7 +2,7 @@
 
 <h5>
 
-##File Name: $presetdata.outputfile
+##File Name: $presetdata.generatedoutputfile
 
 <span class="h3e">
 	Status: $status
@@ -10,7 +10,7 @@
 
 
 
-#set( $editPath = "/WEB-INF/data/$catalogid/generated/$asset.sourcePath/${presetdata.outputfile}" )
+#set( $editPath = "/WEB-INF/data/$catalogid/generated/$asset.sourcePath/${presetdata.generatedoutputfile}" )
 <span class="h3e">
 $pages.include("$home$apphome/views/modules/asset/editor/conversions/attachmenthistory/revisionslink.html?editPath=$editPath&assetid=${asset.id}&sourcepath=$asset.sourcepath", $context)
 </span>

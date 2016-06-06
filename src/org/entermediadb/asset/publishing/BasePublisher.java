@@ -30,7 +30,7 @@ public abstract class BasePublisher implements Publisher
 		{
 			return mediaArchive.getOriginalDocument(asset);
 		}
-		String input= "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + inPreset.get("outputfile");
+		String input= "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + inPreset.get("generatedoutputfile");
 		Page inputpage= mediaArchive.getPageManager().getPage(input);
 		return inputpage;
 	}

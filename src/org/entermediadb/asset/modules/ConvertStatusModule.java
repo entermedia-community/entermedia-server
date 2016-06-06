@@ -86,7 +86,7 @@ public class ConvertStatusModule extends BaseMediaModule
         
 		ConvertInstructions instructions = manager.createInstructions(asset,preset,settings.getProperties() );
         
-		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("outputfile"));
+		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("generatedoutputfile"));
 		instructions.setOutputFile(outputpage);
 		manager.createOutput(instructions); //This will go back to the original if needed
 
@@ -139,7 +139,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		Asset current = archive.getAsset(assetid);
 	
 		
-		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("outputfile");
+		String generated = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/" + preset.get("generatedoutputfile");
 		properties.saveFileAs(properties.getFirstItem(), generated, inReq.getUser());
 
 		boolean newdefault = Boolean.parseBoolean(inReq.getRequestParameter("replaceall"));

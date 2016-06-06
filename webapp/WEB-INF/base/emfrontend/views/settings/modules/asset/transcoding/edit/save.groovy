@@ -11,7 +11,7 @@ public void init()
 	ConvertInstructions instructions = manager.createInstructions(null, data);
 	instructions.setAssetSourcePath("junk");
 	String name = instructions.getOutputFile().getName();
-	data.setValue("outputfile",name);
+	data.setValue("generatedoutputfile",name);
 
 	mediaarchive.getSearcher("convertpreset").saveData(data,user);
 }

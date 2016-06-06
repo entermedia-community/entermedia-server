@@ -1432,7 +1432,7 @@ public class MediaArchive
 	}
 	public boolean doesAttachmentExist(Data asset, Data inPreset, int inPageNumber) 
 	{
-		String outputfile = inPreset.get("outputfile");
+		String outputfile = inPreset.get("generatedoutputfile");
 		if( inPageNumber > 1 )
 		{
 			String name = PathUtilities.extractPageName(outputfile);
@@ -1456,7 +1456,7 @@ public class MediaArchive
 		String format = inPreset.get("fileexportformat");
 		if( format == null)
 		{
-			String name = inPreset.get("outputfile");
+			String name = inPreset.get("generatedoutputfile");
 			if( name == null)
 			{
 				name = inAsset.getName();

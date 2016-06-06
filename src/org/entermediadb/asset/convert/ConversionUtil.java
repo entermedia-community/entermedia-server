@@ -248,7 +248,7 @@ public class ConversionUtil {
 			String sourcepath, String inPresetId) {
 		PageManager pm = (PageManager) getSearcherManager().getModuleManager().getBean("pageManager");
 		Data preset = getSearcherManager().getData(inCatalogId, "convertpreset", inPresetId);
-		String outputfile = preset.get("outputfile");
+		String outputfile = preset.get("generatedoutputfile");
 		Page outputpage = pm.getPage("/WEB-INF/data/" + inCatalogId + "/generated/" + sourcepath + "/" + outputfile);
 		return outputpage.exists();
 	}

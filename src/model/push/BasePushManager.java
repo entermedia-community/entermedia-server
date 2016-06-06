@@ -379,7 +379,7 @@ public class BasePushManager implements PushManager
 			return mediaArchive.getOriginalDocument(asset);
 
 		}
-		String input = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + inPreset.get("outputfile");
+		String input = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + inPreset.get("generatedoutputfile");
 		Page inputpage = mediaArchive.getPageManager().getPage(input);
 		return inputpage;
 
@@ -801,7 +801,7 @@ public class BasePushManager implements PushManager
 			String type = null;
 			if( !"original".equals(preset.get("type")))
 			{
-				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("outputfile");
+				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile");
 				inputpage= inArchive.getPageManager().getPage(input);
 				type = "generated";
 			}
@@ -854,7 +854,7 @@ public class BasePushManager implements PushManager
 	protected Data convertAndPublish(MediaArchive inArchive, Asset inAsset, String publishqueueid, Data preset, String destinationid, String exportpath) throws Exception
 	{
 		boolean needstobecreated = true;
-		String outputfile = preset.get("outputfile");
+		String outputfile = preset.get("generatedoutputfile");
 
 		//Make sure preset does not already exists?
 		if( needstobecreated && "original".equals( preset.get("type") ) )

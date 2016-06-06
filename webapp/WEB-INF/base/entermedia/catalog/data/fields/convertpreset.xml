@@ -3,7 +3,8 @@
 	<property id="name" index="true" stored="true" editable="true">Conversion</property>
 	<property id="inputtype" index="true" stored="true" type="list" editable="true" listid="rendertype">Media Type</property>
 	<property id="outputextension"  index="true" stored="true" editable="true">File Extension</property>
-	<property id="outputfile"  index="true" stored="true" editable="true">Generated File Name</property>
+	<property id="outputfile"  index="true" stored="true" editable="true">Output Override</property>
+	<property id="generatedoutputfile"  index="true" stored="true" editable="false" legacy="outputfile">Generated File</property>
 	<property id="fileexportformat"  index="true" stored="true" editable="true" note="${user.id}/${date}${time}-${asset.author||assettitle}-${shortfilename}.mp4">File Download Format</property>
 	<property id="transcoderid" listid="transcoder" index="true" stored="true" editable="true" viewtype="list" type="list" legacy="type" >Transcoder</property>
 	<property id="guid" index="true" type="list" listid="presetdata" sort="name" stored="true" editable="true">Parameters</property>

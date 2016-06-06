@@ -9,6 +9,7 @@
 	<property id="ordering" />
 	<property id="display" />
 	<property id="singlepage" />
+	<property id="outputfile" />
 </properties>
 
    

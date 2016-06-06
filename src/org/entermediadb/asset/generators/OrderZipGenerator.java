@@ -125,7 +125,7 @@ public class OrderZipGenerator extends BaseGenerator
 					 util.addTozip(target.getContentItem(),filename , zos);
 				}
 				else{
-					String pathToFile = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + orderitem.get("assetsourcepath") + "/" + preset.get("outputfile");
+					String pathToFile = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + orderitem.get("assetsourcepath") + "/" + preset.get("generatedoutputfile");
 					target = archive.getPageManager().getPage(pathToFile);
 					util.addTozip(target.getContentItem(),filename , zos);
 				}
