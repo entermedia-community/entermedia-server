@@ -54,8 +54,7 @@
                 #end
             </div>
             <div class="tr">
-                #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
-                <div id="de-side-nav" class="#if( $expanded )[[open]] #else [[closed]] #end">
+                <div id="de-side-nav" class="open">
 
                     $pages.include("$apphome/components/detaileditor/assetmenuul.html?moduleid=$moduleid",$context)
 

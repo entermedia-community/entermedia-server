@@ -128,7 +128,7 @@ public class DocumentConversionManager extends BaseConversionManager
 
 			ConvertResult result = findTranscoder(instructions2).convertIfNeeded(instructions2);
 			//log.info("Created document.pdf");
-			if(inStructions.getOutputRenderType().equals("document")){
+			if(inStructions.getOutputExtension().equals("pdf")){
 				return result; //Why shortcut?
 			}
 			inStructions.setInputFile(instructions2.getOutputFile());
@@ -138,7 +138,7 @@ public class DocumentConversionManager extends BaseConversionManager
 			inStructions.setInputFile(getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem());
 		}
 		
-		
+		//Step 2 make PNG
 		//Now make the input image needed using the document as the input
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1024x768.png");
 		
@@ -150,6 +150,7 @@ public class DocumentConversionManager extends BaseConversionManager
 		
 		inStructions.setInputFile(result.getOutput());
 		
+		//Step 3 Make jpg
 		result = transcoder.convertIfNeeded(inStructions);
 		if(!result.isComplete())
 		{

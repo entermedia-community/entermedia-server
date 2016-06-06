@@ -101,33 +101,26 @@ public class ConvertInstructions
 	public ContentItem findOutputFile()
 	{
 		StringBuffer path = new StringBuffer();
-		String output = getProperty("outputfile");
-		if( output != null)
+		//legacy for people who want to keep their images in the old location
+		String prefix = getProperty("pathprefix");
+		if( prefix != null)
 		{
-			path.append( output );
+			path.append(prefix);
 		}
 		else
 		{
-			//legacy for people who want to keep their images in the old location
-			String prefix = getProperty("pathprefix");
-			if( prefix != null)
-			{
-				path.append(prefix);
-			}
-			else
-			{
-				path.append("/WEB-INF/data");
-				path.append(getMediaArchive().getCatalogHome());
-				path.append("/generated/");
-			}
-			path.append(getAssetSourcePath());
-			path.append("/");
+			path.append("/WEB-INF/data");
+			path.append(getMediaArchive().getCatalogHome());
+			path.append("/generated/");
+		}
+		path.append(getAssetSourcePath());
+		path.append("/");
 	
-			String postfix = getProperty("pathpostfix");
-			if( postfix != null)
-			{
-				path.append(postfix);
-			}
+		String postfix = getProperty("pathpostfix");
+		if( postfix != null)
+		{
+			path.append(postfix);
+		}
 	//		String cachefilename = get("cachefilename");
 	//		if( cachefilename != null)
 	//		{
@@ -142,53 +135,60 @@ public class ConvertInstructions
 	//		else
 	//		{
 			
-			String rendertype = getOutputRenderType();
-			path.append( rendertype );
-			
-			//path.append(getCacheName()); //part of filename
-	//		}
-			if( rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
+			String output = getProperty("outputfile");
+			if( output != null)
 			{
-				Dimension maxScaledSize = getMaxScaledSize();
-				if (maxScaledSize != null) // If either is set then
+				path.append( output );
+			}
+			else
+			{
+				String rendertype = getOutputRenderType();
+				path.append( rendertype );
+				
+				//path.append(getCacheName()); //part of filename
+		//		}
+				if( rendertype.equals("image") || rendertype.equals("document") || rendertype.equals("video"))
 				{
-					path.append(Math.round(maxScaledSize.getWidth()));
-					path.append("x");
-					path.append(Math.round(maxScaledSize.getHeight()));
+					Dimension maxScaledSize = getMaxScaledSize();
+					if (maxScaledSize != null) // If either is set then
+					{
+						path.append(Math.round(maxScaledSize.getWidth()));
+						path.append("x");
+						path.append(Math.round(maxScaledSize.getHeight()));
+					}
+					if (getPageNumber() > 1)
+					{
+						path.append("page");
+						path.append(getPageNumber());
+					}
 				}
-				if (getPageNumber() > 1)
+				if(getProperty("timeoffset") != null)
 				{
-					path.append("page");
-					path.append(getPageNumber());
+					path.append("offset");
+					path.append(getProperty("timeoffset"));
+				}
+				if(isWatermark())
+				{
+					path.append("wm");
+				}
+				String frame = getProperty("frame");
+				if( frame != null)
+				{
+					path.append("frame" + frame );
+				}
+		
+				if(getProperty("colorspace") != null){
+					path.append(getProperty("colorspace"));
+				}
+				if(isCrop())
+				{
+					path.append("cropped");
+				}
+				if (getOutputExtension() != null)
+				{
+					path.append("." + getOutputExtension());
 				}
 			}
-			if(getProperty("timeoffset") != null)
-			{
-				path.append("offset");
-				path.append(getProperty("timeoffset"));
-			}
-			if(isWatermark())
-			{
-				path.append("wm");
-			}
-			String frame = getProperty("frame");
-			if( frame != null)
-			{
-				path.append("frame" + frame );
-			}
-	
-			if(getProperty("colorspace") != null){
-				path.append(getProperty("colorspace"));
-			}
-			if(isCrop())
-			{
-				path.append("cropped");
-			}
-			if (getOutputExtension() != null)
-			{
-				path.append("." + getOutputExtension());
-			}
-		}	
 		return getMediaArchive().getContent( path.toString() );
 	}
 	
@@ -302,8 +302,11 @@ public class ConvertInstructions
 				}
 			}
 		}
+		if( fieldConvertPreset != null)
+		{
+			return getConvertPreset().get(inName);
+		}
 		return null;
-		
 
 	}
 
