@@ -2,6 +2,7 @@
 	<property id="id" index="true" stored="true">ID</property>
 	<property id="name" index="true" stored="true" editable="true">Conversion</property>
 	<property id="inputtype" index="true" stored="true" type="list" editable="true" listid="rendertype">Media Type</property>
+	<property id="outputextension"  index="true" stored="true" editable="true">File Extension</property>
 	<property id="outputfile"  index="true" stored="true" editable="true">Generated File Name</property>
 	<property id="fileexportformat"  index="true" stored="true" editable="true" note="${user.id}/${date}${time}-${asset.author||assettitle}-${shortfilename}.mp4">File Download Format</property>
 	<property id="transcoderid" listid="transcoder" index="true" stored="true" editable="true" viewtype="list" type="list" legacy="type" >Transcoder</property>

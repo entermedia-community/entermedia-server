@@ -513,7 +513,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				else
 				{
 					jsonproperties = jsonproperties.field("type", "string");
-					if (detail.isSortable())
+					if (detail.isSortable() || "name".equals( detail.getName() ) )
 					{
 						jsonproperties.startObject("fields");
 						jsonproperties.startObject("sort");

@@ -526,11 +526,14 @@ public class ConvertInstructions
 		{
 			return;
 		}
+		String outputext = inPreset.get("outputextension");
+		setOutputExtension(outputext);
 		String presetdataid = get("presetdataid");
 		if (presetdataid == null && inPreset != null)
 		{
 			presetdataid = inPreset.get("guid");
 		}
+
 		if (presetdataid != null)
 		{
 			Searcher paramsearcher = getMediaArchive().getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "presetparameter");
@@ -540,10 +543,10 @@ public class ConvertInstructions
 				setPresetParameters(params);
 			}
 		}
-		String exportname = inPreset.get("outputfile");
-		
+		String exportname = inPreset.get("outputfile");		
 		setProperty("cachefilename", exportname); //TODO: remove this
 		//setProperty("cachefilename", inPreset.get("outputfile")); //TODO: remove this
+		
 		if( getOutputExtension() == null)
 		{
 			setOutputExtension(PathUtilities.extractPageType(exportname));
