@@ -267,18 +267,14 @@ public class BaseHotFolderManager implements HotFolderManager
 				hotfolderpath = System.getProperty("user.home") + "/HotFolders";
 			}	
 			hotfolderpath =  hotfolderpath + "/" + email + "/";
+			new File( hotfolderpath ).mkdirs();
 			inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);
+
+			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
+
 			
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			//addGoogleFolders(inCatalogId);
-			String key = inNewrow.get("accesskey");
-			List<String> com = Arrays.asList("add_account","-a", key,"-p",hotfolderpath,"-e","link");
-			ExecResult result = getExec().runExec("insync-portable",com,true);
-			if( !result.isRunOk() )
-			{
-				log.info("insync-headless " + com + " =" + result.getStandardError());
-				throw new OpenEditException("Could not save google drive:" + toplevelfolder + " " + email + " " +  result.getStandardError());
-			}	
 
 		}
 		else 
