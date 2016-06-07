@@ -118,7 +118,7 @@ public class FolderMonitor implements Runnable
 				Path child = dir.resolve(name);
 
 				// print out event
-				System.out.format("%s: %s\n", event.kind().name(), child);
+				//System.out.format("%s: %s\n", event.kind().name(), child);
 				String absolutepath = child.toFile().getAbsolutePath();
 
 				for (Iterator iterator = fieldPathChangedListeners.keySet().iterator(); iterator.hasNext();)

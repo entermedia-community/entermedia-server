@@ -37,7 +37,7 @@ public class OriginalFileManager
 		//String fullpath = inAsset.get("originalpath");//absolute path might be a http server
 		originalpath = originalpath + "/" + inAsset.getSourcePath();
 		String primaryname = inAsset.getPrimaryFile();
-		if( primaryname != null)
+		if(inAsset.isFolder() && primaryname != null)
 		{
 			originalpath = originalpath + "/" + primaryname;
 		}

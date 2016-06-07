@@ -730,34 +730,50 @@ public class BaseProjectManager implements ProjectManager
 	{
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
-			Data asset = (Data) iterator.next();
+			Data data = (Data) iterator.next();
 			
-			asset = inArchive.getAssetSearcher().loadData(asset);
+			Asset asset = (Asset)inArchive.getAssetSearcher().loadData(data);
 			
 			//Change sourcepath
-			//Move images
-			String dest = sourcepath + "/" + asset.getName(); 
+			String oldpathprimary = asset.getSourcePath();
+			if( asset.isFolder() )
+			{
+				oldpathprimary =  oldpathprimary + "/" + asset.getPrimaryFile();
+			}
+			String oldgenerated = asset.getSourcePath();
+			String dest = sourcepath + "/" + asset.getPrimaryFile();
+			//use Categories for multiple files
+			//These are single files with conflict checking
+			
+			//Move only the primary file in here as a non folder based asset?
+			asset.setFolder(false);
+			asset.setSourcePath(dest); 
 			//TODO: Check for duplicates
-			
-			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getSourcePath();
+
 			String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + dest;
-			
-			//Move to the new page
-			Page oldpage = inArchive.getPageManager().getPage(oldpath);
 			Page newpage = inArchive.getPageManager().getPage(newpath);
+			if( newpage.exists() )
+			{
+				log.info("Duplicated entry  " + newpath);
+				continue; //Put into a weird sub directory?
+			}
+			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldpathprimary;
+			Page oldpage = inArchive.getPageManager().getPage(oldpath);
+			if( !oldpage.exists() )
+			{
+				log.info("Asset missing   " + oldpath);
+				continue;
+			}
+			inArchive.getAssetSearcher().saveData(asset, inReq.getUser()); //avoid Hot folder detection
+			
             inArchive.getPageManager().movePage(oldpage, newpage);
             
-            
             //Move the thumbs to the new page
-			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + asset.getSourcePath());
+			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldgenerated);
 			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + dest);
 			inArchive.getPageManager().movePage(oldthumbs, newthumbs);
 			
 			
-			asset.setSourcePath(dest);
-			
-			//tosave.add(asset);
-			inArchive.getAssetSearcher().saveData(asset, inReq.getUser());
 			
 		}
 	}

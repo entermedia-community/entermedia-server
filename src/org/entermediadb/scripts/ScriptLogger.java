@@ -38,10 +38,14 @@ public class ScriptLogger extends Handler
 		{
 			log.info(getPrefix() + " " + intype + " " + text, ex );
 		}
+		else if( "debug".equals(intype))
+		{
+			log.debug(getPrefix() + " " + intype + " " + text );
+		}	
 		else
 		{
 			log.info(getPrefix() + " " + intype + " " + text );
-		}	
+		}
 		if( !fieldAppendLogs)
 		{
 			return;

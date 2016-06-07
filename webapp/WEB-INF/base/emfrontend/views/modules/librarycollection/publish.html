@@ -9,7 +9,7 @@
 						<b>$hits.size() Assets:</b> $sizer.inEnglish( $filesizes.get("assetsize") )
 						#end
 						<br><br>
-						#if( $categories.size()  > 0)
+						#if( $categories && $categories.size()  > 0)
 							#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
 							<b>#if(!$categories.size()) 0 #end #if($categories.size())$categories.size()#end [[Categories]]:</b>  
 							<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
@@ -59,7 +59,7 @@
 								<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
 							</td>
 						<tr>
-							<td colspan="3" align="center">#if( $movestatus) $movestatus #end</td>
+							<td colspan="3" align="center">#if(  $movestatus) [[Move to ]] <b>$selectedlibrary.folder/$librarycol.getName()/</b>  $movestatus #end</td>
 						</tr>
 				</table>
 			</form>

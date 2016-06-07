@@ -3622,7 +3622,7 @@ td.checkbox input, th.firstheader input {
     text-shadow: none;
     font-weight: normal !important;
 }
-#header .dropdown-menu li a {
+.dropdown-menu li a {
     color: #444 !important;
     text-align: left;
     display: block;
@@ -6813,6 +6813,7 @@ select.smalldropdown {
 	border: 1px solid #eee;
 	margin: -1px 0 0 0;
 	background-color: white;
+	padding-bottom: 60px;
 }	
 #emcontent #collection-home-tab-content
 {
@@ -6864,9 +6865,8 @@ select.smalldropdown {
 }
 
 .publishtabcontainer{
-  float: left;
   width: 100%;
-  padding-top: 50px;
+  padding-top: 30px;
 }
 
 a.categoryclose{
