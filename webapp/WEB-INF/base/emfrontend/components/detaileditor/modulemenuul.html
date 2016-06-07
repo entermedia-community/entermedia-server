@@ -39,11 +39,6 @@
 	    #end
     #end
     
-    #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
-    <li class="divider"></li>
-    <li id="opener" class="open">
-       <a class="tooltip propertyset" title="#if( $expanded ) Close #else Expand #end" href="$home$apphome/views/asset/$sourcepath/index.html?hitssessionid=$!{hitssessionid}"  propertyvalue=#if( $expanded )"false" #else"true" #end propertyname="expand_media_sidebar"><span class="icon"></span><span class="text">Collapse</span></a>
-    </li>
 </ul>
 
 <script>
