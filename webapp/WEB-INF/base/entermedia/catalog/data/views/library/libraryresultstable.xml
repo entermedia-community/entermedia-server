@@ -2,6 +2,7 @@
 
 <root>
   <property id="name"/>
+  <property id="folder"/>
   <property id="thumbnail"/>
   <property id="project"/>
   <property id="projecttype"/>

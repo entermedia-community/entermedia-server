@@ -286,6 +286,7 @@ public class ProjectModule extends BaseMediaModule
 		userlibrary = archive.getSearcher("library").createNewData();
 		userlibrary.setId(inReq.getUserName());
 		userlibrary.setName(inReq.getUser().getScreenName());
+		userlibrary.setProperty("folder", "User/" + inReq.getUser().getScreenName());
 		archive.getSearcher("library").saveData(userlibrary, null);
 		inReq.setRequestParameter("profilepreference","last_selected_library" );
 		inReq.setRequestParameter("profilepreference.value", userlibrary.getId() );
