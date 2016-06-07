@@ -266,8 +266,8 @@ public class BaseHotFolderManager implements HotFolderManager
 			{
 				hotfolderpath = System.getProperty("user.home") + "/HotFolders";
 			}	
-			hotfolderpath =  hotfolderpath + "/" + email + "/";
-			new File( hotfolderpath ).mkdirs();
+			hotfolderpath =  hotfolderpath + "/" + email ;
+			new File( hotfolderpath + "/").mkdirs();
 			inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);
 
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
@@ -592,7 +592,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			if(Boolean.valueOf(monitor) )
 			{
 				final ContentItem item = getPageManager().getRepository().getStub(path);
-				if( !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
+				if(item.exists() && !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
 				{
 					//will scan each folder once then monitor it from now on
 					getFolderMonitor().addPathChangedListener(item.getAbsolutePath(), new PathChangedListener()
