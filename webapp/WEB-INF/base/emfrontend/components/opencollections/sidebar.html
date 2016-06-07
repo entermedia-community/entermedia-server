@@ -17,7 +17,7 @@
 		
 	  	#foreach($collection in $usercollections )
 		   #set( $selected = false )
-			#if( $inmodule && $librarycol && $collection.getId() == $librarycol.id )
+			#if( $librarycol && $collection.getId() == $librarycol.id )
 				#set( $selected = true )
 			#end
 	  		<li class="librarycollectiondroparea #if ($selected ) selected #end"

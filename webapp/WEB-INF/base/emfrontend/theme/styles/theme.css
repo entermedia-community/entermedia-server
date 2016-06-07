@@ -6544,6 +6544,11 @@ a.librarylabel .collectionlabel {
 	background-color:#ccc;
 }
 
+.librarylabels ul li.selected
+{
+	background-color:#C9E8F2;
+}
+
 #createnewarea { padding: 10px 5px;}
 .collectionnew { display:block; text-decoration:underline; }
 #createnewarea input[type="text"] { width: 150px; margin-bottom:5px;}
