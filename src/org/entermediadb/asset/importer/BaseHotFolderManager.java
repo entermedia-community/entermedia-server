@@ -260,14 +260,26 @@ public class BaseHotFolderManager implements HotFolderManager
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
 			String email = inNewrow.get("email");
-			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + email + "/" + toplevelfolder);
-			if(!toplevel.exists()){
-				getPageManager().putPage(toplevel);
-			}
-			inNewrow.setProperty("externalpath",toplevel.getContentItem().getAbsolutePath());
+			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
+			String hotfolderpath = archive.getCatalogSettingValue("hotfolderoverride");
+			if( hotfolderpath == null)
+			{
+				hotfolderpath = System.getProperty("user.home") + "/HotFolders";
+			}	
+			hotfolderpath =  hotfolderpath + "/" + email + "/";
+			inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);
 			
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
-			addGoogleFolders(inCatalogId);
+			//addGoogleFolders(inCatalogId);
+			String key = inNewrow.get("accesskey");
+			List<String> com = Arrays.asList("add_account","-a", key,"-p",hotfolderpath,"-e","link");
+			ExecResult result = getExec().runExec("insync-portable",com,true);
+			if( !result.isRunOk() )
+			{
+				log.info("insync-headless " + com + " =" + result.getStandardError());
+				throw new OpenEditException("Could not save google drive:" + toplevelfolder + " " + email + " " +  result.getStandardError());
+			}	
+
 		}
 		else 
 		{
@@ -395,30 +407,26 @@ public class BaseHotFolderManager implements HotFolderManager
 		return skipmodcheck;
 	}
 	
-	public void addGoogleFolders(String inCatalogId)
-	{
-		Collection hotfolders = loadFolders(inCatalogId);
-		
-		for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
-			Data folder = (Data) iterator.next();
-			String type = folder.get("hotfoldertype");
-			if( !"googledrive".equals(type))
-			{
-				continue;
-			}
-			String toplevelfolder = folder.get("subfolder");
-			String email = folder.get("email");
-			String key = folder.get("accesskey");
-			//String email = folder.get("email");
-			//String externalpath = folder.get("externalpath");
-			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + email);
-			
-			List<String> com = Arrays.asList("add_account","-a", key,"-p",toplevel.getContentItem().getAbsolutePath(),"-e","link");
-			ExecResult result = getExec().runExec("insync-portable",com,true);
-			log.info("insync-headless " + com + " =" + result.getStandardOut());
-		}
-		//TODO: get
-	}
+//	public void addGoogleFolders(String inCatalogId)
+//	{
+//		Collection hotfolders = loadFolders(inCatalogId);
+//		
+//		for (Iterator iterator = hotfolders.iterator(); iterator.hasNext();) {
+//			Data folder = (Data) iterator.next();
+//			String type = folder.get("hotfoldertype");
+//			if( !"googledrive".equals(type))
+//			{
+//				continue;
+//			}
+//			String toplevelfolder = folder.get("subfolder");
+//			String email = folder.get("email");
+//			String key = folder.get("accesskey");
+//			//String email = folder.get("email");
+//			String externalpath = folder.get("externalpath");
+//			
+//		}
+//		//TODO: get
+//	}
 	protected Exec fieldExec;
 	protected Exec getExec()
 	{
