@@ -258,8 +258,9 @@ public class BaseHotFolderManager implements HotFolderManager
 		}
 		else if( "googledrive".equals(type))
 		{
-			String toplevelfolder = inNewrow.get("subfolder");
-			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + toplevelfolder + "/" );
+			//String toplevelfolder = inNewrow.get("subfolder");
+			String email = inNewrow.get("email");
+			Page toplevel = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/hotfolders/" + email + "/" );
 			if(!toplevel.exists()){
 				getPageManager().putPage(toplevel);
 			}
