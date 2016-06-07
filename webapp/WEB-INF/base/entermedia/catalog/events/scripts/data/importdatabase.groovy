@@ -112,7 +112,12 @@ public void importPermissions(MediaArchive mediaarchive, String rootdrive) {
 		Element root = util.getXml(upload.getReader(),"utf-8");
 		for(Iterator iterator = root.elementIterator(); iterator.hasNext();) {
 			Element row = iterator.next();
-			List perms = new ArrayList();
+			String permsstring = row.attributeValue("permissions");
+			if( permsstring != null) //upgrade?
+			{
+				return;
+			}
+			Set perms = new HashSet();
 			for(Iterator iterator2 = row.attributes().iterator(); iterator2.hasNext();) {
 				Attribute attr = iterator2.next();
 				if( Boolean.valueOf(attr.getValue() ) ) {
