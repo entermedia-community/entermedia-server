@@ -1,16 +1,13 @@
-						<div id="emresultscontent">
-#set( $moduleid = $context.findValue("module") )
+<div id="emresultscontent">
+#set( $moduleid = $page.get("module") )
 #set ( $defaultview = $userprofile.getDefaultViewForModule($moduleid) )
-#set( $searchhome = $context.findValue("searchhome") )
-
+#set( $searchhome = $page.get("searchhome") )
 #if ( $hits.size() == 0 )
 	$pages.include("${searchhome}/resultsactions.html",$context)
 	$pages.stream("/${content.searchhome}/empty.html", $context)	
 #else
 
 	#set( $resultdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}resultstable", $userprofile))
-	
-	
 	##set ( $canedit = $context.getPageValue("${moduleid}edit") )
 	
 	#set($popupdetail = $searcher.getDetailsForView("${moduleid}/${moduleid}popupdetail"))
@@ -75,7 +72,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 	
 		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="th-$detail.id" sortby="$detail.id" data-sortby="$detail.id">
 					
-			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="XXheaderdraggable XXheaderdroppable"> 
+			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
 					#if( $edit)
 						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
@@ -150,7 +147,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
    <div id="navigationrow">
 
- $pages.stream("/${content.searchhome}/navigate.html", $context)		
+ $pages.stream("/${searchhome}/navigate.html", $context)		
 </div>
 
 </div></div>

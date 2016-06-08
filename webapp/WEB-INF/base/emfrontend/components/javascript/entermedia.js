@@ -672,11 +672,12 @@ onloadselectors = function()
 					{
 						drop: function(event, ui) {
 							var source = ui.draggable.attr("id");
+							var node = $(this);
 							var destination = this.id;
 							
-							//searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true
-							
-							var sessionid = ui.draggable.attr("hitssessionid");
+							var rdiv = $("#resultsdiv");
+							var searchtype = rdiv.data("searchtype");
+							var sessionid = rdiv.data("hitssessionid");
 							
 							var editing = ui.draggable.attr("editing")
 							if( !editing )
@@ -688,7 +689,7 @@ onloadselectors = function()
 								"source":source,
 								"destination":destination,
 								editheader:editing,
-								searchtype:"asset",
+								searchtype:searchtype,
 								"hitssessionid":sessionid
 								});
 							//ui.helper.effect("transfer", { to: jQuery(this).children("a") }, 200);

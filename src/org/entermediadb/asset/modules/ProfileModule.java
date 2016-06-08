@@ -74,7 +74,14 @@ public class ProfileModule extends MediaArchiveModule
 		// Collection values =
 		// inReq.getUserProfile().getValues("view_assets_tableresults");
 		MediaArchive archive = getMediaArchive(inReq);
-		List details = archive.getAssetSearcher().getDetailsForView("asset/resultstable", inReq.getUserProfile());
+		String searchtype = inReq.getRequestParameter("searchtype");
+		String view = searchtype + "/" + searchtype + "resultstable";
+		if( searchtype == null)
+		{
+			searchtype = "asset";
+			view = searchtype + "/resultstable";
+		}
+		List details = archive.getAssetSearcher().getDetailsForView(view, inReq.getUserProfile());
 
 		int target = details.size();
 
@@ -107,7 +114,8 @@ public class ProfileModule extends MediaArchiveModule
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			ids.add(detail.getId());
 		}
-		inReq.getUserProfile().setValues("view_asset_resultstable", ids);
+		inReq.getUserProfile().setValues("view_" + searchtype + "_resultstable", ids);
+		//System.out.println(ids);
 		getUserProfileManager().saveUserProfile(inReq.getUserProfile());
 	}
 

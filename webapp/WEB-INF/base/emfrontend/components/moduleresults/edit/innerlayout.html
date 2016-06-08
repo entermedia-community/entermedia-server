@@ -11,28 +11,27 @@ $pages.include("$apphome/components/libraries/sidebar.html",$context)
 
         </div>
         <div id="right-col" class="module-inner">
-                
-            <div id="resultsdiv">
+
+			#if(!$hits)
+			        #set($hitsname = $context.getRequestParameter('hitsname'))
+			        #set($hits = $context.getPageValue($hitsname))
+			#end
+			
+			#if(!$hits)
+			        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
+			        #if($hitssessionid)
+			            #set($hits = $context.getSessionValue($hitssessionid))
+			        #end
+			#end
+			#if(!$hits)
+			#set($hits = $context.getPageValue($content.hitsname))
+			#end
+
+			<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="$moduleid" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">                
                 <div id="emresultscontent">
                     
                     <div id="resultsarea">
                         <div id="resultslist">
-
-				#if(!$hits)
-				        #set($hitsname = $context.getRequestParameter('hitsname'))
-				        #set($hits = $context.getPageValue($hitsname))
-				#end
-				
-				#if(!$hits)
-				        #set($hitssessionid = $context.getRequestParameter('hitssessionid'))
-				        #if($hitssessionid)
-				            #set($hits = $context.getSessionValue($hitssessionid))
-				        #end
-				#end
-				#if(!$hits)
-				#set($hits = $context.getPageValue($content.hitsname))
-				#end
-				
 				$context.putPageValue("hits", $hits)
 				#set( $moduleid = $context.findValue("module") )
 				

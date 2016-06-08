@@ -21,17 +21,10 @@
 	#end
 #end		
 
-
 #set( $searchhome = $context.findValue("searchhome") )
 $context.putPageValue("searchhome",$searchhome)
-
-
 <div id="searchplugin">
-    <div class="subcolumns">
-        <div class="c25l" id="left-col" #if($userprofile.minimizeleft-col == "true") style="display: none;" #end>
-                $pages.include("${searchhome}/sidebar/standard.html", $context)
-		 </div>
-        <div id="right-col" class="module-inner">
+        <div class="module-inner">
                 
             <div id="resultsdiv">
                 <div id="emresultscontent">

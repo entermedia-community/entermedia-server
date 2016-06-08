@@ -5,7 +5,7 @@ No results found
 #set($view = $context.getRequestParameter("view"))
 $context.putPageValue("view", $view)
 #end
-#set( $moduleid = $context.findValue("module") )
+#set( $moduleid = $page.get("module") )
 
 $context.putPageValue("clink", "$apphome/views/modules/${moduleid}/edit/edit.html")
 #set($clink = "$apphome/views/modules/${moduleid}/edit/edit.html")

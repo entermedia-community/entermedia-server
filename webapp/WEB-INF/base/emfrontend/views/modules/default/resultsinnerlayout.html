@@ -9,15 +9,14 @@
             #set($hits = $context.getSessionValue($hitssessionid))
         #end
 #end
-#set( $moduleid = $context.findValue("module") )
-#set( $searchhome = $context.findValue("searchhome") )
+#set( $moduleid = $page.get("module") )
+#set( $searchhome = $page.get("searchhome") )
 $context.putPageValue("searchhome",$searchhome)
 
 #if(!$hits)
 #set($hits = $context.getPageValue($content.hitsname))
 #end
 $context.putPageValue("hits", $hits)
-#set( $moduleid = $context.findValue("module") )
 
 
 <div id="searchplugin">
@@ -29,10 +28,7 @@ $context.putPageValue("hits", $hits)
 				$pages.include("${searchhome}/sidebar/standard.html",$context)
 		</div>
 		<div id="right-col" class="module-inner">
-				
-					<div id="resultsdiv" data-searchhome="$home$content.searchhome" data-hitssessionid="$hits.sessionId">
-							
-							
+				<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="$moduleid" data-searchhome="$home$content.searchhome" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 							<div id="resultsarea">
 								<div id="resultslist">
 										$pages.includeContent()
