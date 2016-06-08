@@ -45,7 +45,7 @@ $pages.include("$apphome/components/libraries/sidebar.html",$context)
            
             <div class="tr">
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
-                <div id="de-side-nav" class="#if( $expanded )open #else closed #end">
+                <div id="de-side-nav" class="open">
                  $pages.include("$apphome/views/modules/${moduleid}/edit/sidebar.html",$context)
 
                  $pages.include("$apphome/components/detaileditor/modulemenuul.html?moduleid=$moduleid",$context)

@@ -19,9 +19,6 @@
 #else
 	#set( $action = "$home$content.searchhome/edit/save.html")
 #end
-<div id="emresultscontent">
-$pages.include("${page.searchhome}/resultsactions.html",$context)
-
 <div id="default-fields">
     <div id="editlayout">
     <form id="dataeditor" name="dataeditor" method="post"  action="$action" enctype="multipart/form-data">
@@ -56,6 +53,8 @@ $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly
     #end
  #end   
     </form>
+    
+    
+    
     </div>
-</div>
 </div>
