@@ -28,6 +28,7 @@ import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
+import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -1691,9 +1692,13 @@ public class MediaArchive
 	
 	public NodeManager getNodeManager(){
 		return (NodeManager)getModuleManager().getBean(getCatalogId(),"nodeManager");
-
-		
 	}
-	
+
+	public ProjectManager getProjectManager()
+	{
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(getCatalogId(),"projectManager");
+		return manager;
+	}
+
 	
 }

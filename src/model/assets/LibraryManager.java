@@ -9,11 +9,14 @@ import java.util.Map;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 
 public class LibraryManager extends EnterMediaObject
 {
@@ -26,9 +29,13 @@ public class LibraryManager extends EnterMediaObject
 		
 		Searcher searcher = mediaarchive.getAssetSearcher();
 		Searcher librarySearcher = mediaarchive.getSearcher("library");
+		Searcher librarycollectionSearcher = mediaarchive.getSearcher("librarycollection");
 		
 		List tosave = new ArrayList();
 		int savedsofar = 0;
+		
+		ProjectManager proj = mediaarchive.getProjectManager();
+		
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
 			MultiValued hit = (MultiValued) iterator.next();
 			
@@ -61,6 +68,18 @@ public class LibraryManager extends EnterMediaObject
 						loaded.addLibrary(libraryid);
 						Data li = (Data) fieldLibraries.get(libraryid);
 						loaded.setProperty("project",li.get("project") );
+						//Now check for collections that have the right name
+						HitTracker hits = librarycollectionSearcher.query().match("library", libraryid).search();
+						for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
+						{
+							Data coll = (Data) iterator2.next();
+							String toppath = li.get("folder") + "/" + coll.getName();
+							if( loaded.getSourcePath().startsWith(toppath) )
+							{
+								proj.addAssetToCollection(mediaarchive, libraryid, coll.getId(), loaded.getId());
+							}
+							
+						}
 						//log.info("found ${sofar}" );
 					}
 				}

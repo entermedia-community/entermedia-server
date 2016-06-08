@@ -1014,12 +1014,14 @@ public class AssetEditModule extends BaseMediaModule
 			if(inputsourcepath == null)
 			{
 				assetsourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePath(inReq,inArchive,filename);
-				path = path + assetsourcepath;
-				if( !path.endsWith("/"))
+				if( assetsourcepath.endsWith("/"))
 				{
-					path  = path + "/";
+					path  = path + assetsourcepath + page.getName();			
 				}
-				path  = path + page.getName();			
+				else
+				{
+					path = path + assetsourcepath;
+				}
 			}
 			else if (inputsourcepath.endsWith("/") ) //EMBridge expects the filename to be added on
 			{

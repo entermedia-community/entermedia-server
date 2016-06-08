@@ -50,14 +50,18 @@
 				<form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="validate"  >
 
-						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-						$context.putPageValue("view","asset/multipleupload")	
-						$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-
-				
-				#if( $collectionid )
+					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+					
+					#if( $collectionid)
+						$context.putPageValue("view","asset/multipleuploadcollection")	
+						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
+						$context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
-				#end
+					#else
+						$context.putPageValue("view","asset/multipleupload")	
+					#end
+					
+					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 				##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
 				       <a class="btn" id="startbutton" href="#">[[Upload]]</a>

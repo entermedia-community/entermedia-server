@@ -19,6 +19,7 @@ import assets.model.EmailNotifier
 
 
 
+
 public void setAssetTypes()
 {
 	log.info("Starting Assets Imported Custom")
@@ -48,7 +49,7 @@ public void setAssetTypes()
 	manager.saveAssetTypes(hits);
 	
 	setupProjects(hits);
-	assignCollections(hits);
+	//assignCollections(hits); //This is a slow way to do this, use Library Manager
 	
 }
 public void sendEmail()

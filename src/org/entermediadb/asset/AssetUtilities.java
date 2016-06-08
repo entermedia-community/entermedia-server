@@ -320,7 +320,17 @@ public class AssetUtilities
 	}
 	public String createSourcePath(WebPageRequest inReq, MediaArchive inArchive, String fileName)
 	{
-		String sourcepath = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+		String sourcepathmask = null;
+		
+		String currentcollectionid = inReq.getRequestParameter("currentcollection");
+		if( currentcollectionid == null)
+		{
+			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+		}
+		else
+		{
+			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}	
+		}
 		
 		Map vals = new HashMap();
 		vals.putAll(inReq.getPageMap());
@@ -355,6 +365,16 @@ public class AssetUtilities
 			vals.put("library", library);
 		}
 
+		if(currentcollectionid != null)
+		{
+			Data coll = inArchive.getData("librarycollection", currentcollectionid);
+			if( coll != null)
+			{
+				vals.put("librarycollection", currentcollectionid);
+				vals.put("library", coll.get("library"));
+			}	
+		}
+		
 		String division = inReq.getRequestParameter("division.value");
 		if(division != null)
 		{
@@ -384,13 +404,13 @@ public class AssetUtilities
 		replacer.setSearcherManager(inArchive.getSearcherManager());
 		replacer.setCatalogId(inArchive.getCatalogId());
 		replacer.setAlwaysReplace(true);
-		sourcepath = replacer.replace(sourcepath, vals);
+		String sourcepath = replacer.replace(sourcepathmask, vals);
 		//sourcepath = sourcepath + "/" + item.getName();
 		if( sourcepath.endsWith("/"))
 		{
 			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
 		}
-		if( !sourcepath.startsWith("/") )
+		if( sourcepathmask.endsWith("/") )
 		{
 			sourcepath = sourcepath + "/";
 		}
