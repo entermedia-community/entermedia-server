@@ -6,12 +6,12 @@
 				<tr>
 					<td>
 						#if( $hits.size() > 0)
-						<b>$hits.size() Assets:</b> $sizer.inEnglish( $filesizes.get("assetsize") )
+						<h5>Assets</h5><div style="padding:10px"> $sizer.inEnglish( $filesizes.get("assetsize") ) -  $hits.size() [[files]]</div>
 						#end
-						<br><br>
+						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
+						
 						#if( $categories && $categories.size()  > 0)
-							#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
-							<b>#if(!$categories.size()) 0 #end #if($categories.size())$categories.size()#end [[Categories]]:</b>  
+							<h5>[[Categories]]</h5>  
 							<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 								<table width="100%" class="categoriescontainer hovertable">
 								#foreach( $cat in $categories)
