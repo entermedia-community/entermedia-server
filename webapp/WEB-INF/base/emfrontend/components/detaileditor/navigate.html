@@ -45,8 +45,29 @@
     				    </li>
     				    #end
     					#if ( $canshareasset )
+    					 <li><a href="#">[[Share]]</a>
+    				        <ul style="width: 100px; text-align: left;">
+    						#if ($canpublish)
                         <li>
-                            <a class="toggleajax" targetdivinner="share-container" href="$home$apphome/components/shareasset/index.html?assetid=$asset.id&oemaxlevel=1" id="share-button">[[Share]]</a>
+                            <a id="publish" class="emdialog" href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id" id="publish-button">[[Publish]]</a>
+                        </li>
+                        	#end
+                        	#if( $canemaillink )
+                        <li>
+                            <a id="email" class="emdialog" href="$home$apphome/views/activity/emailassets.html?assetid=$asset.id" id="email-button">[[Email]]</a>
+                        </li>
+                        	#end
+                        	#if( $canembedasset && !$multi)
+                        <li>
+                            <a id="embed" class="emdialog" href="$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath" id="embed-button">[[Embed]]</a>
+                        </li>
+                        	#end
+                        	#if ( $canaddtoproject )
+						<li id="add-to-collection">
+							<a class="btn ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a>
+						</li>
+						#end
+                        </ul>
                         </li>
                         #end
 
