@@ -1,0 +1,7 @@
+<properties lazy-init="true">
+  <property id="id" index="true" stored="true" searchtype="episode">Id</property>
+  <property id="name" index="true" stored="true" editable="true" >Name</property>
+  <property id="url" index="true" stored="true" editable="true" >URL</property>
+  <property id="httpmethod" index="true" type="list" stored="true" editable="true" >Method</property>
+  <property id="samplerequest" index="true" stored="true" editable="true" >Sample</property>
+</properties>

@@ -14,6 +14,8 @@
 	<property name="showdebug">false</property>
 
 	<property name="applicationid">mediadb</property>
+	<property name="mediadbappid">${applicationid}</property>
+	
 	<property name="catalogid">media/catalogs/public</property>
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
