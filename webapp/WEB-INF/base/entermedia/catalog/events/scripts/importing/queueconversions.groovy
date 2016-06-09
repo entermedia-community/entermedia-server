@@ -58,72 +58,41 @@ public void createTasksForUpload() throws Exception {
 	List assetsave = new ArrayList();
 	hits.each
 	{
-		foundsome = false;
 		//Lock lock = null;
 		try{
 			//lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
 			Asset asset = assetsearcher.loadData(it);
 			//Data asset =  it;
-			
-			String rendertype = mediaarchive.getMediaRenderType(asset);
-			Collection presethits= presets.getPresets(mediaarchive,rendertype);
-			//	log.info("Found ${hits.size()} automatic presets");
-			presethits.each
+			int counted = mediaarchive.getPresetManager().retryConversions(mediaarchive,tasksearcher,asset);
+			if( counted > 0)
 			{
-				//Data preset = (Data) presetsearcher.loadData(it);
-				Data preset = it;
-				Boolean onlyone = Boolean.parseBoolean(preset.singlepage);
-				
-				//TODO: Move this to a new script just for auto publishing
-				Data created = presets.createPresetsForPage(tasksearcher, preset, asset,0,true);
-				tosave.add(created);
-				String pages = asset.get("pages");
-				if( pages != null && !onlyone)
+				String rendertype = mediaarchive.getMediaRenderType(asset);
+				if( foundsome )
 				{
-					
-					int npages = Integer.parseInt(pages);
-					if( npages > 1 )
+					asset.setProperty("importstatus","imported");
+					if( asset.get("previewstatus") == null)
 					{
-						for (int i = 1; i < npages; i++)
-						{
-							created = presets.createPresetsForPage(tasksearcher, preset, asset, i + 1,true);
-							tosave.add(created);
-						}
-					}
-					
-				}
-				foundsome = true;
-			}
-			//Add auto publish queue tasks
-			//saveAutoPublishTasks(publishqueuesearcher,destinationsearcher, presetsearcher, asset, mediaArchive)
-			if( foundsome )
-			{
-				asset.setProperty("importstatus","imported");
-				if( asset.get("previewstatus") == null)
-				{
-					asset.setProperty("previewstatus","converting");
-				}
-				assetsave.add(asset);
-				
-				//runconversions will take care of setting the importstatus
-			}
-			else
-			{
-				if( asset.get("importstatus") != "needsdownload" )
-				{
-					asset.setProperty("importstatus","complete");
-					if(asset.getProperty("fileformat") == "embedded")
-					{
-						asset.setProperty("previewstatus","2");
-					}
-					else
-					{
-						asset.setProperty("previewstatus","mime");
+						asset.setProperty("previewstatus","converting");
 					}
 					assetsave.add(asset);
 				}
-
-			}
+				else
+				{
+					if( asset.get("importstatus") != "needsdownload" )
+					{
+						asset.setProperty("importstatus","complete");
+						if(asset.getProperty("fileformat") == "embedded")
+						{
+							asset.setProperty("previewstatus","2");
+						}
+						else
+						{
+							asset.setProperty("previewstatus","mime");
+						}
+						assetsave.add(asset);
+					}
+				}
+			}	
 		}
 		catch( Throwable ex)
 		{

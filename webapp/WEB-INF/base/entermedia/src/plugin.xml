@@ -847,6 +847,7 @@
 		<property name="webEventListeners">
 			<list>
 				<ref bean="pathEventHandler" />
+				<ref bean="folderMonitor" />
 			</list>
 		</property>
 

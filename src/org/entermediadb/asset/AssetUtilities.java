@@ -175,7 +175,17 @@ public class AssetUtilities
 		}
 		if (importedasset)
 		{
-			asset.setProperty("importstatus", "imported");
+			String status = asset.get("importstatus");
+			if( status == null || !status.equals("complete"))
+			{
+				asset.setProperty("importstatus", "imported");				
+			}
+			String previewstatus = asset.get("previewstatus");
+//			if( previewstatus == null || status.equals("2"))
+//			{
+				asset.setProperty("previewstatus", "0");				
+//			}
+			
 			asset.setProperty("pushstatus", "resend");
 			asset.setProperty("editstatus", "1");
 

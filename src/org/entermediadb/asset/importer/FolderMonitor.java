@@ -14,18 +14,23 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.openedit.OpenEditException;
+import org.openedit.event.WebEvent;
+import org.openedit.event.WebEventListener;
 import org.openedit.util.ExecutorManager;
 
-public class FolderMonitor implements Runnable
+public class FolderMonitor implements Runnable, WebEventListener
 {
 	protected WatchService watcher = null;
 	protected Map<WatchKey, Path> keys = null;
 	protected ExecutorManager fieldExecutorManager;
 	protected Map fieldPathChangedListeners = new HashMap();
+	protected Set fieldIgnoreList = new HashSet();
 	
 	public void addPathChangedListener(String inPrefix, PathChangedListener inPathChangedListener)
 	{
@@ -120,17 +125,18 @@ public class FolderMonitor implements Runnable
 				// print out event
 				//System.out.format("%s: %s\n", event.kind().name(), child);
 				String absolutepath = child.toFile().getAbsolutePath();
-
-				for (Iterator iterator = fieldPathChangedListeners.keySet().iterator(); iterator.hasNext();)
+				if( !fieldIgnoreList.contains( absolutepath) )
 				{
-					String path = (String) iterator.next();
-					if( absolutepath.startsWith(path))
+					for (Iterator iterator = fieldPathChangedListeners.keySet().iterator(); iterator.hasNext();)
 					{
-						PathChangedListener listener = (PathChangedListener)fieldPathChangedListeners.get(path);
-						listener.pathChanged(event.kind().name(), absolutepath);
+						String path = (String) iterator.next();
+						if( absolutepath.startsWith(path))
+						{
+							PathChangedListener listener = (PathChangedListener)fieldPathChangedListeners.get(path);
+							listener.pathChanged(event.kind().name(), absolutepath);
+						}
 					}
 				}
-				
 				// if directory is created, and watching recursively, then
 				// register it and its sub-directories
 				if (kind == StandardWatchEventKinds.ENTRY_CREATE)
@@ -194,6 +200,20 @@ public class FolderMonitor implements Runnable
 	public boolean hasFolderTree(String inAbsolutePath)
 	{
 		return fieldPathChangedListeners.containsKey(inAbsolutePath);
+	}
+
+	@Override
+	public void eventFired(WebEvent inEvent)
+	{
+		if( "savingoriginal".equals( inEvent.getOperation() ))
+		{
+			fieldIgnoreList.add(inEvent.get("absolutepath"));
+		}
+		else if( "savingoriginalcomplete".equals( inEvent.getOperation() ))
+		{
+			fieldIgnoreList.remove(inEvent.get("absolutepath"));
+		}
+		
 	}
 
 	//    public static void main(String[] args) throws IOException {

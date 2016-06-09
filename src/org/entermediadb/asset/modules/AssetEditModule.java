@@ -37,6 +37,7 @@ import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.locks.Lock;
 import org.openedit.page.Page;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
@@ -952,9 +953,10 @@ public class AssetEditModule extends BaseMediaModule
 			currentcollectionid = null;
 		}
 		final String currentcollection = currentcollectionid;
-		final Map pages = savePages(inReq,archive,inPages);
 		final Map metadata = readMetaData(inReq,archive,"");
+		final Map pages = savePages(inReq,archive,inPages);
 		final User user = inReq.getUser();
+		
 		//findUploadTeam(inReq, archive, tracker); TODO:Do this is assetsimportedcustom
 		if( inPages.size() == 0 )
 		{
@@ -970,31 +972,58 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				public void run()
 				{
-					ListHitTracker tracker = new ListHitTracker();
-					for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
-					{
-						String sourcepath = (String) iterator.next();
-						Page page = (Page)pages.get(sourcepath);
-						createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
-					}
-					saveAssetData(archive, tracker, currentcollection, user);
+					saveFilesAndImport(archive, currentcollection, metadata, pages, user);
 				}
 			};
 			manager.execute("importing",runthis);
 		}
 		else
 		{
-			ListHitTracker tracker = new ListHitTracker();
-			for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
-			{
-				String sourcepath = (String) iterator.next();
-				Page page = (Page)pages.get(sourcepath);
-				createAsset(archive,metadata, sourcepath,page, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
-			}
-			saveAssetData(archive, tracker, currentcollection, user);
+			Collection tracker = saveFilesAndImport(archive, currentcollection, metadata, pages, user);
 			inReq.putPageValue("assets", tracker);
 		}
 	}
+	
+	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final Map metadata, final Map pages, final User user)
+	{
+		ListHitTracker tracker = new ListHitTracker();
+		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+		{
+			String sourcepath = (String) iterator.next();
+			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
+			UploadedPage page = (UploadedPage)pages.get(sourcepath);
+			if(!page.inUpload.getPath().equals(page.inDestPage.getPath()))//move from tmp location to final location
+			{
+				Map props = new HashMap();
+				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
+				archive.fireMediaEvent("savingoriginal","asset",sourcepath,props,user);
+				getPageManager().movePage(page.inUpload, page.inDestPage);
+			}
+			page.fieldAsset = createAsset(archive,metadata, sourcepath,page.inDestPage, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+		}
+		saveAssetData(archive, tracker, currentcollection, user);
+		
+		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+		{
+			String sourcepath = (String) iterator.next();
+			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
+			UploadedPage page = (UploadedPage)pages.get(sourcepath);
+			Data asset = page.fieldAsset;
+			Map props = new HashMap();
+			props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
+			archive.fireMediaEvent("savingoriginalcomplete","asset",asset.getSourcePath(),props,user);
+		}
+		return tracker;
+	}
+
+	class UploadedPage
+	{
+		protected Page inUpload;
+		protected Page inDestPage;
+		protected String sourcePath;
+		protected Asset fieldAsset;
+	}
+	
 	protected Map savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
 	{
 		Map pages = new HashMap();
@@ -1035,11 +1064,11 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		
 			Page dest = getPageManager().getPage( path );
-			if(!page.getPath().equals(dest.getPath()))//move from tmp location to final location
-			{
-				getPageManager().movePage(page, dest);
-			}
-			pages.put(assetsourcepath, dest);
+			UploadedPage pagefound = new UploadedPage();
+			pagefound.sourcePath = assetsourcepath;
+			pagefound.inUpload = page;
+			pagefound.inDestPage = dest;
+			pages.put(assetsourcepath, pagefound);
 		}	
 		return pages;
 	}
@@ -1125,7 +1154,7 @@ public class AssetEditModule extends BaseMediaModule
 		return vals;
 	}
 	
-	protected void createAsset(MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+	protected Asset createAsset(MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
 	{
 		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, false, assetsourcepath, inUser);
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
@@ -1187,9 +1216,8 @@ public class AssetEditModule extends BaseMediaModule
 				asset.setProperty("assettype", type.getId());
 			}
 		}
-		
 		output.add(asset);
-		
+		return asset;
 	}
 	public void checkHasPrimary(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
@@ -1989,7 +2017,7 @@ public class AssetEditModule extends BaseMediaModule
 				continue;
 			}
 			
-			mediaArchive.removeGeneratedImages(asset);
+			mediaArchive.removeGeneratedImages(asset,true);
 			
 			missing = missing + presets.retryConversions(mediaArchive, tasksearcher, asset);
 		}
