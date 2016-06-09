@@ -425,7 +425,11 @@ public class AssetUtilities
 			sourcepath = sourcepath + "/";
 		}
 		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
-
+		if( sourcepath.startsWith("/") )
+		{
+			sourcepath = sourcepath.substring(1);
+		}
+		
 		return sourcepath;
 	}
 
