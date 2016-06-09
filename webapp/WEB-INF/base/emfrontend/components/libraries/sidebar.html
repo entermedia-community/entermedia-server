@@ -53,7 +53,8 @@
 			#if( $inmodule && $librarycol && $usercollection.getId() == $librarycol.id )
 				#set( $selected = true )
 			#end
-			<a href="$home$apphome/views/modules/librarycollection/media/${usercollection.getId()}.html" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&librarycollection=${usercollection.getId()}" class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
+			<a href="$home$apphome/views/modules/librarycollection/media/${usercollection.getId()}.html" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&collectionid=${usercollection.getId()}" 
+				class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
 		</li>
 		#end
 		#if ($canaddnewcollection)
