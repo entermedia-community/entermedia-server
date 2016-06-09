@@ -672,6 +672,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			//need to reset/creat the mappings here!
 			getMappingErrors().clear();
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+			archive.clearCache();
 			List sorted = archive.listSearchTypes();
 			List<PropertyDetails> childtables = archive.findChildTables();
 			Set completed = new HashSet();
