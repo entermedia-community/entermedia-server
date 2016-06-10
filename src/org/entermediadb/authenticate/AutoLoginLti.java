@@ -4,12 +4,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.modules.AdminModule;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.StringEncryption;
 
 public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 {
+		private static final Log log = LogFactory.getLog(AutoLoginLti.class);
 		protected StringEncryption fieldStringEncryption;
 
 		public StringEncryption getStringEncryption()
@@ -32,7 +36,7 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 			return encoded;
 		}
 
-		public boolean compareRequest(String inPrivateKey, String inUrl, String sha1expected, Map inParameters)
+		public String createRequest(String inPrivateKey, String inUrl, String sha1expected, Map inParameters)
 		{
 			inParameters.remove("oauth_signature");
 			Map sorted = new TreeMap(inParameters);
@@ -58,10 +62,8 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 			//log.info("created " + base);
 			//log.info("sha " + sha1);
 
-			boolean ok = sha1.equals(sha1expected);
-			return ok;
+			return sha1;
 		}
-
 
 
 	@Override
@@ -73,7 +75,8 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 	    {
 		    String url = inReq.getSiteUrl();//"https://weatherfordcollege.entermediadb.net/lti/index.html";
 		    String inPrivateKey = getStringEncryption().getEncryptionKey();
-		    if( compareRequest(inPrivateKey, url, expected, map) )
+		    String sha1 = createRequest(inPrivateKey, url, expected, map);
+		    if( expected.equals(sha1) )
 		    {
 				AutoLoginResult result = new AutoLoginResult();
 				String username = (String)map.get("ext_user_username");
@@ -88,6 +91,10 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 				user.setLastName( (String)map.get("lis_person_name_family") );
 				result.setUser(user);
 				return result;
+		    }
+		    else
+		    {
+		    	log.info("Trying to login and failing expected: " + expected + " we got " + sha1 + " using private key of " + inPrivateKey);
 		    }
 	    }    
 		return null;
