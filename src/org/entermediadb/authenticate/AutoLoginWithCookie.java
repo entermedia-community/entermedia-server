@@ -151,7 +151,8 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 				}
 				catch (Exception ex)
 				{
-					throw new OpenEditException(ex);
+					//throw new OpenEditException(ex);
+					log.error(ex);
 				}
 			}
 		}
