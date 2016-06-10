@@ -152,6 +152,8 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 				catch (Exception ex)
 				{
 					//throw new OpenEditException(ex);
+					getCookieEncryption().removeCookie(inReq,AutoLoginWithCookie.ENTERMEDIAKEY);
+					getCookieEncryption().removeCookie(inReq,"entermedia.keyopenedit");
 					log.error(ex);
 				}
 			}
