@@ -204,7 +204,7 @@ public class MediaAdminModule extends BaseMediaModule
 			appid = appid.substring(0, appid.length() - 1);
 		}
 		topage.getPageSettings().setProperty("applicationid", appid);
-		topage.getPageSettings().setProperty("appmodule", site.get("module"));
+		//topage.getPageSettings().setProperty("appmodule", site.get("module"));
 
 		getPageManager().saveSettings(topage);
 
