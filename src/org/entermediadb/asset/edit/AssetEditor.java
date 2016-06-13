@@ -1,6 +1,7 @@
 package org.entermediadb.asset.edit;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 
@@ -12,13 +13,14 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.comments.CommentArchive;
 import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;
+import org.openedit.data.ValuesMap;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
 
 public class AssetEditor {
 	protected MediaArchive fieldMediaArchive;
-	protected Asset fieldCurrentAsset;
+	//protected Asset fieldCurrentAsset;
 	protected PageManager fieldPageManager;
 	protected CommentArchive fieldCommentArchive;
 	
@@ -40,10 +42,10 @@ public class AssetEditor {
 		 getMediaArchive().getAssetArchive().deleteAsset(inAsset);
 		 getMediaArchive().getAssetSearcher().deleteFromIndex(inAsset);
 
-		 if (getCurrentAsset() != null && inAsset.getId().equals(getCurrentAsset().getId()))
-		 {
-			 setCurrentAsset(null);
-		 }
+//		 if (getCurrentAsset() != null && inAsset.getId().equals(getCurrentAsset().getId()))
+//		 {
+//			 setCurrentAsset(null);
+//		 }
 	 }
 
 	 public Asset getAsset(String inAssetId) throws OpenEditRuntimeException
@@ -56,15 +58,15 @@ public class AssetEditor {
 		 return prod;
 	 }
 
-	 public Asset getCurrentAsset()
-	 {
-		 return fieldCurrentAsset;
-	 }
-
-	 public void setCurrentAsset(Asset inCurrentAsset)
-	 {
-		 fieldCurrentAsset = inCurrentAsset;
-	 }
+//	 public Asset getCurrentAsset()
+//	 {
+//		 return fieldCurrentAsset;
+//	 }
+//
+//	 public void setCurrentAsset(Asset inCurrentAsset)
+//	 {
+//		 fieldCurrentAsset = inCurrentAsset;
+//	 }
 
 	 public Asset createAssetWithDefaults() throws OpenEditRuntimeException
 	 {
@@ -215,6 +217,60 @@ public class AssetEditor {
 		//getMediaArchive().
 		return true;
 	}
+	
+	public Asset copyAsset(MediaArchive inArchive, Asset inAsset, String inDestSourcePath)
+	{
+		//Keep it a folder? 
+		
+//		if (sourceDirectory.endsWith("/"))
+//		{
+//			sourceDirectory = sourceDirectory.substring(0, sourceDirectory.length() - 2);
+//		}
+//		if(newSourcePath.startsWith("/"))
+//		{
+//			newSourcePath = newSourcePath.substring(1);
+//		}
+//		
+//		if (newSourcePath.equals(originalsourcepath))
+//		{
+//			return; //can't copy to itself
+//		}
+		Asset newasset = inArchive.createAsset(inDestSourcePath);
+		
+		if( inAsset.isFolder() && !inDestSourcePath.endsWith("/"))
+		{
+			inDestSourcePath = inDestSourcePath + "/"; 
+		}
+		newasset.setSourcePath(inDestSourcePath);
+		newasset.setFolder(inAsset.isFolder());
+		newasset.setProperties(new ValuesMap(inAsset.getProperties()));
+		newasset.setCategories(new ArrayList(inAsset.getCategories()));
+		
+		//Copy any images or folders using OE File Manager
+		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + inAsset.getSourcePath(); //If its a folder if will include children
+		String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + newasset.getSourcePath();
+	
+		Page oldpage = inArchive.getPageManager().getPage(oldpath);
+		Page newpage = inArchive.getPageManager().getPage(newpath);
+		if( oldpage.exists() )
+		{
+			inArchive.getPageManager().copyPage(oldpage, newpage);
+		}
+
+		Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath());
+		if( !inDestSourcePath.endsWith("/"))
+		{
+			inDestSourcePath = inDestSourcePath + "/"; 
+		}
+		Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + newasset.getSourcePath());
+		if( oldthumbs.exists() )
+		{
+			inArchive.getPageManager().copyPage(oldthumbs, newthumbs);
+		}
+		return newasset;
+	}
+	
+	
 	
 	public void fullyRemoveAsset(Asset inAsset, User inUser, boolean inKeepReleases)
 	{

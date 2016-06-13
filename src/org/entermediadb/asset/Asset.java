@@ -33,12 +33,11 @@ public class Asset implements MultiValued, SaveableData
 {
 	private static final Log log = LogFactory.getLog(Asset.class);
 
-	protected Page fieldSourcePage;
+	//protected Page fieldSourcePage;
 	protected String fieldDescription;
 	protected List fieldCategories;
 	//protected Collection<String> fieldLibraries;
 	protected ValuesMap fieldMap;
-	
 	protected MediaArchive fieldMediaArchive;
 	// be shown in a list
 	protected Collection fieldRelatedAssets;

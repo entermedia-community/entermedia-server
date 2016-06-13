@@ -430,13 +430,22 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("collectioncategories", categories);
 		//inReq.putSessionValue(all.getSessionId(),all);
 	}
+	public void importCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		String libraryid = inReq.getRequestParameter("targetlibraryid");
+		manager.importCollection(inReq,archive,collectionid,libraryid);
+		inReq.putPageValue("movestatus", "completed");
+	}	
 	public void moveCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		String libraryid = inReq.getRequestParameter("targetlibraryid");
-		manager.moveCollectionTo(inReq,archive,collectionid,libraryid);
+		manager.exportCollectionTo(inReq,archive,collectionid,libraryid);
 		inReq.putPageValue("movestatus", "completed");
 	}	
 	

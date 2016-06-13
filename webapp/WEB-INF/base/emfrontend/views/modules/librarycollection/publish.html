@@ -1,12 +1,15 @@
 <div class="publishtabcontainer">
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Export Media]]</div>
+		<div class="ui-widget-header">[[Import Assets]]</div>
 		<div class="ui-widget-content">
 			<table width="100%">
 				<tr>
 					<td>
+						<h5>
+							[[Create local copies of assets in:]] <b>$selectedlibrary.folder/$librarycol.getName()/</b> 
+						</h5>
 						#if( $hits.size() > 0)
-						<h5>Assets</h5><div style="padding:10px"> $sizer.inEnglish( $filesizes.get("assetsize") ) -  $hits.size() [[files]]</div>
+						Assets</h5><div style="padding:10px"> $sizer.inEnglish( $filesizes.get("assetsize") ) -  $hits.size() [[files]]</div>
 						#end
 						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
 						
@@ -34,40 +37,11 @@
 					</tr>
 					<tr>
 					<td>
-					<br><br>
-						<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
-				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html#publishtab">
-					<table>
-						<tr>
-							<td class="archiveassettable"><b>Move To:</b>&nbsp;</td>
-							<td>
-								#set( $selectedlibrary = $mediaarchive.getData("library",$librarycol.library) )
-								#set( $lastselectedlibraryname = $selectedlibrary.getName() )
-								#if( !$lastselectedlibraryname)
-								#set( $lastselectedlibraryname = $user.getShortDescription())
-								#end
-								<input name="collectionid" value="$librarycol.getId()" type="hidden" />
-
-			<select name="targetlibraryid"  id="libraryvalue"  class="listautocomplete" data-searchfield="name" data-searchtype="library" 
-				data-listcatalogid="$catalogid" onChange='$("#librarychange").submit()' >
-			#if( $selectedlibrary )
-			  <option value="$selectedlibrary.getId()" selected="selected">#esc($selectedlibrary.getName())</option>
-			#end
-			</select>
-
-
-								<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
-							</td>
-						<tr>
-							<td colspan="3" align="center">#if(  $movestatus) [[Move to ]] <b>$selectedlibrary.folder/$librarycol.getName()/</b>  $movestatus #end</td>
-						</tr>
-				</table>
-			</form>
-						
-						
+						<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
 					</td>
 				</tr>	
 			</table>
+			</form>
 		</div>
 		
 	</div>	

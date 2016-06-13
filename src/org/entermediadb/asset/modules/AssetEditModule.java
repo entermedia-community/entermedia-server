@@ -150,7 +150,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 		return editor;
 	}
-
+/*
 	public void copyAsset(WebPageRequest inContext) throws OpenEditException 
 	{
 		Asset asset = getAsset(inContext);
@@ -175,8 +175,6 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			sourceDirectory = sourceDirectory.substring(0, sourceDirectory.length() - 2);
 		}
-		String newId = editor.getMediaArchive().getAssetSearcher()
-		.nextAssetNumber();
 		
 		boolean createAsFolder = Boolean.parseBoolean(inContext.findValue("createasfolder"));
 
@@ -205,7 +203,7 @@ public class AssetEditModule extends BaseMediaModule
 			return; //can't copy to itself
 		}
 		
-		Asset newasset = editor.copyAsset(asset, newId, newSourcePath);
+		Asset newasset = editor.copyAsset(asset, null, newSourcePath);
 		
 		newasset.setFolder(createAsFolder);
 				
@@ -257,7 +255,6 @@ public class AssetEditModule extends BaseMediaModule
 		
 		// Remove the PDF text
 		newasset.removeProperty("fulltext");
-		editor.setCurrentAsset(newasset);
 		editor.getMediaArchive().saveAsset(newasset, inContext.getUser());
 		inContext.setRequestParameter("assetid", newasset.getId());
 		if( inContext.getRequestParameters("field") != null)
@@ -271,7 +268,7 @@ public class AssetEditModule extends BaseMediaModule
 
 		//copyJoinData(asset, newasset);
 	}
-
+*/
 	/*
 	protected void copyJoinData(Asset source, Asset target)
 	{
@@ -425,7 +422,7 @@ public class AssetEditModule extends BaseMediaModule
 //		return composite;
 //	}
 	
-	
+	/*
 	public void selectAsset(WebPageRequest inContext) throws OpenEditException 
 	{
 		AssetEditor editor = getAssetEditor(inContext);
@@ -453,6 +450,7 @@ public class AssetEditModule extends BaseMediaModule
 		editor.setCurrentAsset(asset);
 		inContext.putPageValue("asset", asset);
 	}
+	*/
 	
 	public void deleteAssets(WebPageRequest inContext) throws OpenEditException 
 	{
@@ -510,6 +508,7 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 	}
+	/*
 	public void saveAsset(WebPageRequest inContext) throws OpenEditException {
 		String saveAsNew = inContext.getRequestParameter("saveasnew");
 		AssetEditor editor = getAssetEditor(inContext);
@@ -571,7 +570,7 @@ public class AssetEditModule extends BaseMediaModule
 		inContext.putPageValue("asset", asset);
 		inContext.setRequestParameter("assetid", asset.getId());
 	}
-	
+	*/
 	public void addAssetValues(WebPageRequest inReq) throws OpenEditException 
 	{
 		Asset asset = getAsset(inReq);
@@ -622,17 +621,17 @@ public class AssetEditModule extends BaseMediaModule
 		if (key == null) {
 			return;
 		}
-		Asset asset = null;
-		String id = inReq.getRequestParameter("assetid");
-		
-		if (id == null)
-		{
-			asset = editor.getCurrentAsset();
-		}
-		if( asset == null )
-		{
-			asset = getMediaArchive(inReq).getAsset(id,inReq);
-		}
+		Asset asset = getAsset(inReq);
+//		String id = inReq.getRequestParameter("assetid");
+//		
+//		if (id == null)
+//		{
+//			asset = editor.getCurrentAsset();
+//		}
+//		if( asset == null )
+//		{
+//			asset = getMediaArchive(inReq).getAsset(id,inReq);
+//		}
 		asset.addKeywords(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
@@ -646,16 +645,16 @@ public class AssetEditModule extends BaseMediaModule
 		if (key == null) {
 			return;
 		}
-		Asset asset;
-		String id = inReq.getRequestParameter("assetid");
-		if (id == null)
-		{
-			asset = editor.getCurrentAsset();
-		}
-		else
-		{
-			asset = getMediaArchive(inReq).getAsset(id,inReq);
-		}
+		Asset asset = getAsset(inReq);
+//		String id = inReq.getRequestParameter("assetid");
+//		if (id == null)
+//		{
+//			asset = editor.getCurrentAsset();
+//		}
+//		else
+//		{
+//			asset = getMediaArchive(inReq).getAsset(id,inReq);
+//		}
 		asset.removeKeyword(key);
 		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
 

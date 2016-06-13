@@ -47,7 +47,10 @@ public interface ProjectManager
 	
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
 
-	public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
+	public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
+	
+	public void exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
+	//public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
 
 	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
 
