@@ -16,6 +16,11 @@ public class Sizer
 	{
 		return inEnglish(new Long(inNum));
 	}
+	
+	public String inEnglish(double inNum){
+		return inEnglish((long) inNum);
+	}
+	
 	public String inEnglish(Long inNum)
 	{
 		if ( inNum == null)

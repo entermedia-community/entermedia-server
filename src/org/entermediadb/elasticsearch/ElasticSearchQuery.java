@@ -8,6 +8,7 @@ import java.util.Date;
 
 import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.DateTools.Resolution;
+import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
@@ -15,6 +16,21 @@ import org.openedit.util.DateStorageUtil;
 
 public class ElasticSearchQuery extends SearchQuery
 {	
+	
+	public AggregationBuilder fieldAggregationBuilder;
+	
+	
+	
+	public AggregationBuilder getAggregation()
+	{
+		return fieldAggregationBuilder;
+	}
+
+	public void setAggregation(AggregationBuilder inAggregationBuilder)
+	{
+		fieldAggregationBuilder = inAggregationBuilder;
+	}
+
 	public ElasticSearchQuery()
 	{
 		// TODO Auto-generated constructor stub

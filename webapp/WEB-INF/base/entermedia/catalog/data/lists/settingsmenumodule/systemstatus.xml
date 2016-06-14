@@ -8,6 +8,7 @@
   <property id="tools" parentid="tools"  menulevel="toplevel"  moduleid="system" path="/views/settings/status/tools/index.html" ordering="031" sublabel="Tools">Server</property>
   <property id="version" parentid="tools" moduleid="system" path="/views/settings/status/version/index.html" ordering="031">Versions</property>
   <property id="logs" parentid="tools" moduleid="system" path="/views/settings/status/logs/index.html" ordering="032">Logs</property>
+  <property id="reports" parentid="tools" moduleid="system" path="/views/settings/status/reports/index.html" ordering="032">Reports</property>
 
 </properties>
 

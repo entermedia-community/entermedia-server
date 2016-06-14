@@ -1,0 +1,23 @@
+#if( !$val || $val.length() < 30)
+	<input type="text" class="detail_$detail.id autosubmited #if($detail.isRequired() && !$multiedit) required #end" value="#esc($val)"  id="${detail.getId()}.value" name="$!{detailprefix}${detail.getId()}.value"  onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" />
+#else
+	<textarea name="$!{detailprefix}${detail.getId()}.value" class="autosubmited #if($detail.isRequired() && !$multiedit) required #end" onChange="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" id="${detail.getId()}.value" cols="40" rows="5" >#esc($val)</textarea>
+#end
+
+#if($detail.isMultiLanguage())
+<br/>
+<a href="#" class="${detail.id}-languages" onClick='jQuery(".${detail.id}-languages").toggle("slow"); return false;'>(show languages)</a>
+<a href="#" class="${detail.id}-languages" style="display: none;" onClick='jQuery(".${detail.id}-languages").toggle("slow"); return false;'>(hide languages)</a>
+<div class="${detail.id}-languages" style="display: none;">
+
+#set($languages = $mediaarchive.getList("locale"))
+#set($map = $data.getValue($detail.getId()))
+#foreach($locale in $languages)
+<input type="hidden" name="${detail.id}.language" value="$locale.id"/>
+$locale: <input type=text" name="${detail.id}.${locale.id}" value="$!map.getText($locale.id)" >
+<br/>
+#end
+</div>
+#end
+
+

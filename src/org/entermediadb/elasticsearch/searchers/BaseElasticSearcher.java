@@ -48,8 +48,13 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
+import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
+import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -202,6 +207,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			// search.
 			addSorts(inQuery, search);
 			addFacets(inQuery, search);
+			//addAggregations(inQuery, search);
 
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms);
 
@@ -234,6 +240,8 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
+	
+
 	// protected void addQueryFilters(SearchQuery inQuery, QueryBuilder inTerms)
 	// {
 	//
@@ -262,10 +270,51 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			if (detail.isFilter())
 			{
+				if(detail.isDate()){
+					DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
+					builder.field(detail.getId());
+					builder.interval(DateHistogramInterval.DAY);
+					
+//					DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown");
+//					builder.interval(DateHistogramInterval.DAY);
+					
+					inSearch.addAggregation(builder);
+					
+					 builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+					builder.field("date");
+					builder.interval(DateHistogramInterval.WEEK);
+				} 
+				
+				else if(detail.isNumber()){
+					SumBuilder b = new SumBuilder(detail.getId() + "_sum");
+					b.field(detail.getId());
+					inSearch.addAggregation(b);
+					
+					AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
+					avg.field(detail.getId());
+					
+					
+					
+					
+					
+				}
+				else{
 				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(10);
 				inSearch.addAggregation(b);
+				}
+
+				
 			}
+			
+			
 		}
+		//For reports, we can pass in a custom aggregation from a script or somewhere
+		if(inQuery.getAggregation() != null){
+			inSearch.addAggregation((AggregationBuilder) inQuery.getAggregation());
+			
+		}
+		
+			
 	}
 
 	@SuppressWarnings("rawtypes")
