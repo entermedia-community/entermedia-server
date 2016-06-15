@@ -2,12 +2,7 @@
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
 		<div class="ui-widget-header">[[Import Assets]]</div>
 		<div class="ui-widget-content">
-			<table width="100%">
-				<tr>
-					<td>
-						<h5>
-							[[Create local copies of assets in:]] <b>$selectedlibrary.folder/$librarycol.getName()/</b> 
-						</h5>
+
 						#if( $hits.size() > 0)
 						Assets</h5><div style="padding:10px"> $sizer.inEnglish( $filesizes.get("assetsize") ) -  $hits.size() [[files]]</div>
 						#end
@@ -16,7 +11,7 @@
 						#if( $categories && $categories.size()  > 0)
 							<h5>[[Categories]]</h5>  
 							<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
-								<table width="100%" class="categoriescontainer hovertable">
+								<table width="80%" class="categoriescontainer hovertable" style="margin:auto;">
 								#foreach( $cat in $categories)
 										<tr> #set( $categoryloaded=$mediaarchive.getCategorySearcher().loadData($cat))
 											<td><a href="$home$apphome/views/categories/${cat.getId()}.html">$categoryloaded.getCategoryPath()</a></td>
@@ -33,15 +28,16 @@
 								</table>
 							</div>
 						#end
-					</td>
-					</tr>
-					<tr>
-					<td>
+
+					<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
+				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html#publishtab">
+
+						<h5>
+							[[Save In:]] <b>$selectedlibrary.folder/$librarycol.getName()/</b> 
+						</h5>
+						<input type="hidden" name="collectionid" value="$librarycol.getId()" />
 						<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
-					</td>
-				</tr>	
-			</table>
-			</form>
+					</form>	
 		</div>
 		
 	</div>	

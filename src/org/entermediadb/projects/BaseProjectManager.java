@@ -24,7 +24,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
@@ -37,6 +36,8 @@ public class BaseProjectManager implements ProjectManager
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCatalogId;
 	protected AssetUtilities fieldAssetUtilities;
+	private int COPY = 1;
+	private int MOVE = 2;
 	
 	public AssetUtilities getAssetUtilities()
 	{
@@ -658,12 +659,13 @@ public class BaseProjectManager implements ProjectManager
 	/**
 	 * Import process
 	 */
-	public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
+	public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid)
 	{
 		//Find all the assets and move them to the library
 		
 		//Get destination library 
-		Data library = inArchive.getData("library", inLibraryid);
+		Data collection = inArchive.getData("librarycollection", inCollectionid);
+		Data library = inArchive.getData("library", collection.get("library"));
 		
 		//Get library hot folder
 		String librarysourcepath = library.get("folder");
@@ -672,103 +674,130 @@ public class BaseProjectManager implements ProjectManager
 		{
 			throw new OpenEditException("No folder set on library");
 		}
-		
-		Data collection = inArchive.getData("librarycollection", inCollectionid);
+
 		String collectionpath = librarysourcepath + "/" + collection.getName(); 
 
+		Searcher librarycollectionassetSearcher = inArchive.getSearcher("librarycollectionasset");
+		Collection colassets = librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).search();
+		Map assetrecords = new HashMap();
+		for (Iterator iterator = colassets.iterator(); iterator.hasNext();)
+		{
+			Data colasset = (Data) iterator.next();
+			assetrecords.put(colasset.get("_parent"),colasset);
+		}
+		
+		//1: Check on existing assets
 		Collection assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
-		Set ids = new HashSet();
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
-			Data asset = (Data) iterator.next();
-			ids.add(asset.getId());
-		}
-
-		//Find all the categories and move them to the library
-		HitTracker categories = loadCategoriesOnCollection(inArchive,inCollectionid);
-		if( categories != null)
-		{
-			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+			//Check the existing assets for a move
+			Data assetdata = (Data) iterator.next();
+			Asset asset = (Asset)inArchive.getAssetSearcher().loadData(assetdata);
+			Asset copy = copyAssetIfNeeded(inReq,inArchive,asset,collectionpath);
+			if( copy != asset)
 			{
-				Data catData = (Data) iterator.next();
-				Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
-				
-				String oldcategoryroot = cat.getCategoryPath();
-				//1. Move the files located here
-				
-				//TODO: Make sure the paths actually changed
-				Category newparent = inArchive.getCategoryArchive().createCategoryTree(collectionpath); 
-				cat.setParentCategory(newparent); //This just moved every category on all the assets
-				inArchive.getCategorySearcher().saveData(cat,null);
-	
-				//2. Now move the old category parent to the new parent and save it. The assets will just need their sourcepath updated
-				Collection catassets = inArchive.getAssetSearcher().query().match("category", cat.getId()).search();
-				
-				//this is every asset and the children
-				
-				List toadd = new ArrayList();
-				for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
-				{
-					Data data = (Data) iterator2.next();
-					if( !ids.contains( data.getId() ) )
-					{
-						//toadd.add(data);
-						//Need to make the sourcepath be correct
-					}	
-				}
-				addAssetToCollection(inArchive, inCollectionid, new ListHitTracker(toadd) );
-				
-			}
+				//Move the record
+				Data colasset = (Data)assetrecords.get(assetdata.getId());
+				colasset.setProperty("_parent", copy.getId());
+				colasset.setProperty("asset", copy.getId()); //needed?
+				librarycollectionassetSearcher.saveData(colasset, null);
+			}	
 		}
-		assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
+		//2: Find all the categories and move them to the library
+		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+		HitTracker colcathits = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).search();
+		
+		List tosave = new ArrayList();
+		for (Iterator iterator = colcathits.iterator(); iterator.hasNext();)
+		{
+			Data catData = (Data)librarycollectioncategorySearcher.loadData( (Data)iterator.next());
+			if( "true".equals( catData.get("importedcat")) )
+			{
+				log.info("Already imported this category" + catData.get("categoryid"));
+				continue;
+			}
+			Category parentCat = (Category)inArchive.getCategory(catData.get("categoryid"));
+			//2. Now move the old category parent to the new parent and save it. The assets will just need their sourcepath updated
+			Collection catassets = inArchive.getAssetSearcher().query().match("category", parentCat.getId()).search();
+			
+			String folder = parentCat.getCategoryPath();
+			//this is every asset and the children
+			for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
+			{
+				Data assetdata = (Data) iterator2.next();
+				String oldpathprimary = assetdata.getSourcePath();
+				String newpath = null;
+				if( !oldpathprimary.startsWith(collectionpath) && oldpathprimary.startsWith(folder)) 
+				{
+					newpath = collectionpath + oldpathprimary.substring(folder.length());
+				}
+				else
+				{
+					newpath = collectionpath + oldpathprimary; // //TODO: Deal with weird assets not in the category correctly
+				}
+				//Remove the old category?
+				Asset existingasset = (Asset)inArchive.getAssetSearcher().loadData(assetdata);
+				Asset copy = copyAssetIfNeeded(inReq, inArchive, existingasset, newpath);
+				inArchive.saveAsset(copy, null);
+
+				Data found = librarycollectionassetSearcher.createNewData();
+				//found.setSourcePath(libraryid + "/" + librarycollection);
+				found.setProperty("librarycollection", inCollectionid);
+				found.setProperty("asset", copy.getId()); //legacy
+				found.setProperty("_parent", copy.getId()); 
+				tosave.add(found);
+
+			}
+			//Save the cateory
+			catData.setProperty("importedcat","true");
+			librarycollectioncategorySearcher.saveData(catData, null);
+			//Marked as imported or remove the category?
+			librarycollectionassetSearcher.saveAllData(tosave, null);
+			tosave.clear();
+		}
+//		assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
 		//Get all the assets in collection
-		copyAssets(inReq, inArchive, assets, collectionpath);
 		
 	}
 
 	public void exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
 	{
 		//move the collection root folder
+		importCollection(inReq,inArchive,inCollectionid); //make copies of everything
 		
 		//grab all the assets and update thier sourcepath and move them with images
 //		collection.setProperty("library",inLibraryid);
 //		inArchive.getSearcher("librarycollection").saveData(collection, inReq.getUser());
+		Data collection = inArchive.getData("librarycollection", inCollectionid);
 
-	}
+		//Get destination library 
+		Data oldlibrary = inArchive.getData("library", collection.get("library"));
+		Data newlibrary = inArchive.getData("library", inLibraryid);
+		
+		//Get library hot folder
+		String librarysourcepath = newlibrary.get("folder");
+		
+		if( librarysourcepath == null)
+		{
+			throw new OpenEditException("No folder set on library");
+		}
+		String oldcollectionpath = oldlibrary.get("library") + "/" + collection.getName(); 
+		String collectionpath = librarysourcepath + "/" + collection.getName(); 
+
+		//Move this folder and update all the sourcepaths on assets. Also add a new Category
+		Collection assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
 	
-	protected void copyAssets(WebPageRequest inReq, MediaArchive inArchive, Collection assets, String collectionpath)
-	{
+		
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			
+
+			//Take old path and replace it in the sourcepath
 			Asset existingasset = (Asset)inArchive.getAssetSearcher().loadData(data);
+			String newsourcepath = collectionpath + existingasset.getSourcePath().substring(oldcollectionpath.length());
 			
-			//Change sourcepath
-			String oldsourcepath= existingasset.getSourcePath();
-			if( oldsourcepath.startsWith(collectionpath))
-			{
-				continue;
-			}
 			String oldpathprimary = existingasset.getSourcePath();
-			if( existingasset.isFolder() )
-			{
-				oldpathprimary =  oldpathprimary + "/" + existingasset.getPrimaryFile();
-			}
-			String dest = collectionpath + "/" + existingasset.getPrimaryFile();
-			Asset newasset = inArchive.getAssetBySourcePath(dest);
-			
-			if( newasset != null)
-			{
-				continue;
-			}
-			//Check for duplicates
-			
-			//use Categories for multiple files
-			//These are single files with conflict checking
-			newasset = inArchive.getAssetEditor().copyAsset(existingasset, dest);
-			//Move only the primary file in here as a non folder based asset?
-			
+			//isFolder?
 			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldpathprimary;
 			Page oldpage = inArchive.getPageManager().getPage(oldpath);
 			if( !oldpage.exists() )
@@ -776,7 +805,7 @@ public class BaseProjectManager implements ProjectManager
 				log.info("Asset missing   " + oldpath);
 				continue;
 			}
-			String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + dest;
+			String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + newsourcepath;
 			Page newpage = inArchive.getPageManager().getPage(newpath);
 			if( newpage.exists() )
 			{
@@ -786,20 +815,74 @@ public class BaseProjectManager implements ProjectManager
 			
 			Map props = new HashMap();
 			props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
-			
-			inArchive.fireMediaEvent("savingoriginal","asset",newasset.getSourcePath(),props,inReq.getUser());
-			inArchive.getAssetSearcher().saveData(newasset, inReq.getUser()); //avoid Hot folder detection
-			inArchive.getPageManager().copyPage(oldpage, newpage);
+			inArchive.fireMediaEvent("savingoriginal","asset",existingasset.getSourcePath(),props,inReq.getUser());
+			inArchive.getAssetSearcher().saveData(existingasset, inReq.getUser()); //avoid Hot folder detection
+			inArchive.getPageManager().movePage(oldpage, newpage);
 
-			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldsourcepath);
-			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + dest);
-			inArchive.getPageManager().copyPage(oldthumbs, newthumbs);
-
-			inArchive.fireMediaEvent("savingoriginalcomplete","asset",newasset.getSourcePath(),props,inReq.getUser());
+			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldpathprimary);
+			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + newsourcepath);
+			inArchive.getPageManager().movePage(oldthumbs, newthumbs);
 			
-			
+			inArchive.fireMediaEvent("savingoriginalcomplete","asset",existingasset.getSourcePath(),props,inReq.getUser());
 			
 		}
+	}
+	
+	protected Asset copyAssetIfNeeded(WebPageRequest inReq, MediaArchive inArchive, Asset existingasset, String collectionpath)
+	{
+		//Change sourcepath
+		String oldsourcepath= existingasset.getSourcePath();
+		if( oldsourcepath.startsWith(collectionpath))
+		{
+			return existingasset;
+		}
+		String oldpathprimary = existingasset.getSourcePath();
+		if( existingasset.isFolder() )
+		{
+			oldpathprimary =  oldpathprimary + "/" + existingasset.getPrimaryFile();
+		}
+		String dest = collectionpath + "/" + existingasset.getPrimaryFile();
+		Asset newasset = inArchive.getAssetBySourcePath(dest);
+		
+		if( newasset != null)
+		{
+			return newasset;
+		}
+		//Check for duplicates
+		
+		//use Categories for multiple files
+		//These are single files with conflict checking
+		newasset = inArchive.getAssetEditor().copyAsset(existingasset, dest);
+
+		newasset.clearCategories();
+		Category newparent = inArchive.getCategoryArchive().createCategoryTree(collectionpath);
+		newasset.addCategory(newparent);
+
+		
+		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldpathprimary;
+		Page oldpage = inArchive.getPageManager().getPage(oldpath);
+		if( !oldpage.exists() )
+		{
+			log.info("Original missing   " + oldpath);
+		}
+		String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + dest;
+		Page newpage = inArchive.getPageManager().getPage(newpath);
+		if( newpage.exists() )
+		{
+			log.info("Duplicated entry  " + newpath);
+		}
+		
+		Map props = new HashMap();
+		props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
+		inArchive.fireMediaEvent("savingoriginal","asset",newasset.getSourcePath(),props,inReq.getUser());
+		inArchive.getAssetSearcher().saveData(newasset, inReq.getUser()); //avoid Hot folder detection
+		inArchive.getPageManager().copyPage(oldpage, newpage);
+		Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldsourcepath);
+		Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + dest);
+			inArchive.getPageManager().copyPage(oldthumbs, newthumbs);
+		
+		inArchive.fireMediaEvent("savingoriginalcomplete","asset",newasset.getSourcePath(),props,inReq.getUser());
+		return newasset;
 	}
 
 }

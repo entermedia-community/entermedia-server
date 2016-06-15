@@ -435,8 +435,7 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
-		String libraryid = inReq.getRequestParameter("targetlibraryid");
-		manager.importCollection(inReq,archive,collectionid,libraryid);
+		manager.importCollection(inReq,archive,collectionid);
 		inReq.putPageValue("movestatus", "completed");
 	}	
 	public void moveCollection(WebPageRequest inReq)
