@@ -18,7 +18,7 @@ public interface ProjectManager
 
 	public abstract void setCatalogId(String inCatId);
 
-	public Collection<UserCollection> loadCollections(WebPageRequest inReq);
+	public Collection<UserCollection> loadCollections(WebPageRequest inReq, MediaArchive archive);
 	
 	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid);
 
@@ -58,4 +58,5 @@ public interface ProjectManager
 	
 	public void loadCategoriesOnCollections(MediaArchive inArchive, Collection inCollections);
 	
+	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile);
 }

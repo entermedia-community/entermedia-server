@@ -23,7 +23,7 @@ public class ProjectModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
-		manager.loadCollections(inReq);
+		manager.loadCollections(inReq, getMediaArchive(inReq));
 	}
 
 	public void loadOpenCollections(WebPageRequest inReq) throws Exception
@@ -274,30 +274,15 @@ public class ProjectModule extends BaseMediaModule
 		inReq.setRequestParameter("collectionid", saved.getId());
 	}
 	
-	public void createUserLibrary(WebPageRequest inReq)
+	public Data createUserLibrary(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		Data userlibrary = archive.getData("library", inReq.getUserName());
-		if( userlibrary != null)
-		{
-			return;
-		}
-		
-		userlibrary = archive.getSearcher("library").createNewData();
-		userlibrary.setId(inReq.getUserName());
-		userlibrary.setName(inReq.getUser().getScreenName());
-		userlibrary.setProperty("folder", "Users/" + inReq.getUser().getScreenName());
-		archive.getSearcher("library").saveData(userlibrary, null);
+		UserProfile profile = inReq.getUserProfile();
+		ProjectManager manager = getProjectManager(inReq);
+		Data userlibrary = manager.loadUserLibrary(archive, profile);
 		inReq.setRequestParameter("profilepreference","last_selected_library" );
 		inReq.setRequestParameter("profilepreference.value", userlibrary.getId() );
-		//Make sure I am in the list of users for the library
-		ProjectManager manager = getProjectManager(inReq);
-		if( manager.addUserToLibrary(archive,userlibrary,inReq.getUser()) )
-		{
-			//reload profile?
-			UserProfile profile = inReq.getUserProfile();
-			profile.getCombinedLibraries().add(userlibrary.getId());
-		}
+		return userlibrary;
 	}
 
 	

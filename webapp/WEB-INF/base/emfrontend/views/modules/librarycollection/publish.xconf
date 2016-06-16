@@ -7,5 +7,5 @@
     <page-action name="PageValue.loadPageVariable" bean="sizer" class="org.entermediadb.links.FileSize" />
     <page-action name="ProjectModule.loadFileSizes"/>
     <page-action name="ProjectModule.searchForAssetsOnCollection"/>
-	<page-action name="ProjectModule.loadCollections"/>	
+	<page-action name="ProjectModule.loadSelectedLibrary"/>	
 </page>

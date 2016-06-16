@@ -95,7 +95,7 @@ public class BaseProjectManager implements ProjectManager
 		return null;
 	}
 	
-	public Collection<UserCollection> loadCollections(WebPageRequest inReq)
+	public Collection<UserCollection> loadCollections(WebPageRequest inReq, MediaArchive inArchive)
 	{
 		//get a library
 		Collection<UserCollection> usercollections = (Collection<UserCollection>)inReq.getPageValue("usercollections");
@@ -105,6 +105,10 @@ public class BaseProjectManager implements ProjectManager
 		}
 		
 		Data library = getCurrentLibrary(inReq.getUserProfile());
+		if( library == null)
+		{
+			library = loadUserLibrary(inArchive, inReq.getUserProfile());
+		}
 		if( library != null)
 		{
 			inReq.putPageValue("selectedlibrary",library);
@@ -885,5 +889,30 @@ public class BaseProjectManager implements ProjectManager
 		return newasset;
 	}
 
+	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile)
+	{
+		User user = inProfile.getUser();
+		Data userlibrary = inArchive.getData("library",user.getId());
+		if( userlibrary != null)
+		{
+			return userlibrary;
+		}
+		
+		userlibrary = inArchive.getSearcher("library").createNewData();
+		userlibrary.setId(user.getUserName());
+		userlibrary.setName(user.getScreenName());
+		userlibrary.setProperty("folder", "Users/" + user.getScreenName());
+		inArchive.getSearcher("library").saveData(userlibrary, null);
+
+		//Make sure I am in the list of users for the library
+		if( addUserToLibrary(inArchive,userlibrary,user) )
+		{
+			//reload profile?
+			inProfile.getCombinedLibraries().add(userlibrary.getId());
+		}
+		return userlibrary;
+	}
+
+	
 }
 
