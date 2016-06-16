@@ -13,7 +13,7 @@
 		<li class="row" >
 		    #set( $ids = "$categoryid $ids" )
 			#set( $category = $mediaarchive.getCategory($categoryid))
-			<a class="category"  href="$home$apphome/views/categories/${category.id}.html" >$category.getName()</a>
+			<a class="category ajax" targetdivinner="view-picker-content" href="$home$apphome/views/categories/${category.id}.html?oemaxlevel=2" >$category.getName()</a>
 		</li>
 	#end
 	</ul>
