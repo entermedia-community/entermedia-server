@@ -5,7 +5,7 @@
   <property id="id" editable="true" index="true" stored="true">Category Id</property>
   <property id="shortdescription"  editable="true" index="true" stored="true">Short Description</property>
   <property id="parentid"  editable="true" index="true" stored="true">Parent Category Id</property>
-  <property id="categorypath"  editable="true" index="true" stored="true" >Path</property>
+  <property id="categorypath"  editable="true" index="true" stored="true" sortable="true" >Path</property>
   <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date"  datatype="date">Created Date</property>
   <property id="foldertype"  editable="true" index="true" stored="true" type="list">Type</property>
   
