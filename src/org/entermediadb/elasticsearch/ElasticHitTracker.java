@@ -294,10 +294,10 @@ public class ElasticHitTracker extends HitTracker
 	{
 		List topfacets = new ArrayList();
 		SearchResponse response = getSearchResponse(0);
-		log.info(response.toString());
 		//TODO: Should save the response and only load it if someone needs the data
 		if (response.getAggregations() != null)
 		{
+			log.info(response.toString());
 			Aggregations facets = response.getAggregations();
 
 			
