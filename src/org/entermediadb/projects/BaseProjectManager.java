@@ -28,6 +28,7 @@ import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class BaseProjectManager implements ProjectManager
 {
@@ -702,10 +703,13 @@ public class BaseProjectManager implements ProjectManager
 			{
 				//Move the record
 				Data colasset = (Data)assetrecords.get(assetdata.getId());
+				librarycollectionassetSearcher.delete(colasset,null);
+				colasset = librarycollectionassetSearcher.createNewData();
+				colasset.setProperty("librarycollection", inCollectionid);
 				colasset.setProperty("_parent", copy.getId());
 				colasset.setProperty("asset", copy.getId()); //needed?
 				librarycollectionassetSearcher.saveData(colasset, null);
-			}	
+			}
 		}
 		//2: Find all the categories and move them to the library
 		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
@@ -715,11 +719,11 @@ public class BaseProjectManager implements ProjectManager
 		for (Iterator iterator = colcathits.iterator(); iterator.hasNext();)
 		{
 			Data catData = (Data)librarycollectioncategorySearcher.loadData( (Data)iterator.next());
-			if( "true".equals( catData.get("importedcat")) )
-			{
-				log.info("Already imported this category" + catData.get("categoryid"));
-				continue;
-			}
+//			if( "true".equals( catData.get("importedcat")) )
+//			{
+//				log.info("Already imported this category" + catData.get("categoryid"));
+//				continue;
+//			}
 			Category parentCat = (Category)inArchive.getCategory(catData.get("categoryid"));
 			//2. Now move the old category parent to the new parent and save it. The assets will just need their sourcepath updated
 			Collection catassets = inArchive.getAssetSearcher().query().match("category", parentCat.getId()).search();
@@ -729,32 +733,52 @@ public class BaseProjectManager implements ProjectManager
 			for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
 			{
 				Data assetdata = (Data) iterator2.next();
-				String oldpathprimary = assetdata.getSourcePath();
-				String newpath = null;
-				if( !oldpathprimary.startsWith(collectionpath) && oldpathprimary.startsWith(folder)) 
+				Asset asset = (Asset)inArchive.getAssetSearcher().loadData(assetdata);
+				List catpaths = new ArrayList();
+				for (Iterator iterator3 = asset.getCategories().iterator(); iterator3.hasNext();)
 				{
-					newpath = collectionpath + oldpathprimary.substring(folder.length());
+					Category cat = (Category) iterator3.next();
+					catpaths.add(cat.getCategoryPath());
 				}
-				else
+				Collections.sort(catpaths);
+				Collections.reverse(catpaths);
+				String newpath = null;
+				for (Iterator iterator3 = catpaths.iterator(); iterator3.hasNext();)
 				{
-					newpath = collectionpath + oldpathprimary; // //TODO: Deal with weird assets not in the category correctly
+					String path = (String) iterator3.next();
+					if( path.startsWith(folder))
+					{
+						newpath = collectionpath + "/" + parentCat.getName() + path.substring(folder.length());
+						break;
+					}
+				}
+				if( newpath== null)
+				{
+					log.error("someone deleted cats" + folder + asset.getId() );
+					continue;
 				}
 				//Remove the old category?
 				Asset existingasset = (Asset)inArchive.getAssetSearcher().loadData(assetdata);
 				Asset copy = copyAssetIfNeeded(inReq, inArchive, existingasset, newpath);
-				inArchive.saveAsset(copy, null);
-
-				Data found = librarycollectionassetSearcher.createNewData();
-				//found.setSourcePath(libraryid + "/" + librarycollection);
-				found.setProperty("librarycollection", inCollectionid);
-				found.setProperty("asset", copy.getId()); //legacy
-				found.setProperty("_parent", copy.getId()); 
-				tosave.add(found);
+				if( copy != existingasset)
+				{
+					inArchive.saveAsset(copy, null);
+	
+//					Data old = (Data)assetrecords.get(existingasset.getId());
+//					librarycollectionassetSearcher.delete(old, null);
+					
+					Data found = librarycollectionassetSearcher.createNewData();
+					//found.setSourcePath(libraryid + "/" + librarycollection);
+					found.setProperty("librarycollection", inCollectionid);
+					found.setProperty("asset", copy.getId()); //legacy
+					found.setProperty("_parent", copy.getId()); 
+					tosave.add(found);
+				}	
 
 			}
 			//Save the cateory
-			catData.setProperty("importedcat","true");
-			librarycollectioncategorySearcher.saveData(catData, null);
+			//catData.setProperty("importedcat","true");
+			//librarycollectioncategorySearcher.saveData(catData, null);
 			//Marked as imported or remove the category?
 			librarycollectionassetSearcher.saveAllData(tosave, null);
 			tosave.clear();
@@ -832,21 +856,30 @@ public class BaseProjectManager implements ProjectManager
 		}
 	}
 	
-	protected Asset copyAssetIfNeeded(WebPageRequest inReq, MediaArchive inArchive, Asset existingasset, String collectionpath)
+	protected Asset copyAssetIfNeeded(WebPageRequest inReq, MediaArchive inArchive, Asset existingasset, String folderpath)
 	{
 		//Change sourcepath
 		String oldsourcepath= existingasset.getSourcePath();
-		if( oldsourcepath.startsWith(collectionpath))
+		String sourcepath = null;
+		if( existingasset.isFolder())
 		{
-			return existingasset;
+			sourcepath = folderpath + "/" + PathUtilities.extractDirectoryName("/" + existingasset.getSourcePath());
 		}
-		String oldpathprimary = existingasset.getSourcePath();
-		if( existingasset.isFolder() )
+		else
 		{
-			oldpathprimary =  oldpathprimary + "/" + existingasset.getPrimaryFile();
+			sourcepath = folderpath + "/" + existingasset.getPrimaryFile();
 		}
-		String dest = collectionpath + "/" + existingasset.getPrimaryFile();
-		Asset newasset = inArchive.getAssetBySourcePath(dest);
+//		if( oldsourcepath.startsWith(collectionpath))
+//		{
+//			return existingasset;
+//		}
+//		String oldpathprimary = existingasset.getSourcePath();
+//		if( existingasset.isFolder() )
+//		{
+//			oldpathprimary =  oldpathprimary + "/" + existingasset.getPrimaryFile();
+//		}
+//		String dest = collectionpath + "/" + existingasset.getPrimaryFile();
+		Asset newasset = inArchive.getAssetBySourcePath(sourcepath);
 		
 		if( newasset != null)
 		{
@@ -856,36 +889,41 @@ public class BaseProjectManager implements ProjectManager
 		
 		//use Categories for multiple files
 		//These are single files with conflict checking
-		newasset = inArchive.getAssetEditor().copyAsset(existingasset, dest);
-
+		newasset = inArchive.getAssetEditor().copyAsset(existingasset,null);
+		newasset.setFolder(existingasset.isFolder());
+		newasset.setSourcePath(sourcepath);
 		newasset.clearCategories();
-		Category newparent = inArchive.getCategoryArchive().createCategoryTree(collectionpath);
+		Category newparent = inArchive.getCategoryArchive().createCategoryTree(sourcepath);
 		newasset.addCategory(newparent);
 
 		
-		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldpathprimary;
+		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + existingasset;
 		Page oldpage = inArchive.getPageManager().getPage(oldpath);
+		boolean copyorig = true;
 		if( !oldpage.exists() )
 		{
 			log.info("Original missing   " + oldpath);
+			copyorig = false;
 		}
-		String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + dest;
+		String newpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + sourcepath;
 		Page newpage = inArchive.getPageManager().getPage(newpath);
 		if( newpage.exists() )
 		{
 			log.info("Duplicated entry  " + newpath);
+			copyorig = false;
 		}
-		
-		Map props = new HashMap();
-		props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
-		inArchive.fireMediaEvent("savingoriginal","asset",newasset.getSourcePath(),props,inReq.getUser());
-		inArchive.getAssetSearcher().saveData(newasset, inReq.getUser()); //avoid Hot folder detection
-		inArchive.getPageManager().copyPage(oldpage, newpage);
-		Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldsourcepath);
-		Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + dest);
+		if( copyorig )
+		{
+			Map props = new HashMap();
+			props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
+			inArchive.fireMediaEvent("savingoriginal","asset",newasset.getSourcePath(),props,inReq.getUser());
+			inArchive.getAssetSearcher().saveData(newasset, inReq.getUser()); //avoid Hot folder detection
+			inArchive.getPageManager().copyPage(oldpage, newpage);
+			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldsourcepath);
+			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath);
 			inArchive.getPageManager().copyPage(oldthumbs, newthumbs);
-		
-		inArchive.fireMediaEvent("savingoriginalcomplete","asset",newasset.getSourcePath(),props,inReq.getUser());
+			inArchive.fireMediaEvent("savingoriginalcomplete","asset",newasset.getSourcePath(),props,inReq.getUser());
+		}	
 		return newasset;
 	}
 

@@ -2,6 +2,7 @@ package org.entermediadb.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -22,12 +23,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		//getMediaArchive().getSearcher("asset").getAllHits();
 		//getMediaArchive().getSearcher("librarycollectionasset").getAllHits();
 		
-		Searcher csearcher  = getMediaArchive().getSearcher("librarycollection");
-		Data collection = csearcher.createNewData();
-		collection.setId("testcollection");
-		collection.setName("test");
-		collection.setProperty("library","admin");
-		csearcher.saveData(collection, null);
+		Data collection = createCollection("test");
 		
 		//Searcher lsearcher  = getMediaArchive().getSearcher("librarycollectionasset");
 		ProjectManager manager = (ProjectManager)getFixture().getModuleManager().getBean(getMediaArchive().getCatalogId(),"projectManager");
@@ -50,6 +46,17 @@ public class CollectionTest extends BaseEnterMediaTest
 		assertEquals(1, assets.size());
 		
 	}
+
+	protected Data createCollection(String inName)
+	{
+		Searcher csearcher  = getMediaArchive().getSearcher("librarycollection");
+		Data collection = csearcher.createNewData();
+		//collection.setId("testcollection");
+		collection.setName(inName);
+		collection.setProperty("library","admin");
+		csearcher.saveData(collection, null);
+		return collection;
+	}
 	
 	public void testCollectionImport() throws Exception
 	{
@@ -62,7 +69,7 @@ public class CollectionTest extends BaseEnterMediaTest
 			data = librarysearcher.createNewData();
 			data.setId("admin");
 		}
-		data.setProperty("folder", "User/admin");
+		data.setProperty("folder", "Users/admin");
 		librarysearcher.saveData(data, null);
 		
 		Asset asset = getMediaArchive().getAsset("101");
@@ -74,18 +81,25 @@ public class CollectionTest extends BaseEnterMediaTest
 			asset.addCategory(cat);
 			getMediaArchive().saveAsset(asset, null);
 		}
-		String collectionid = "testcollection"; 
+		Data collection = createCollection("testcollection" + new Date());
+
 		WebPageRequest req = getFixture().createPageRequest();
-		manager.addCategoryToCollection(req.getUser(), getMediaArchive(), collectionid, cat.getId());
+		manager.addCategoryToCollection(req.getUser(), getMediaArchive(), collection.getId(), cat.getParentId() ); //One higher
 		//Now make a copy of the asset
-		manager.importCollection(req,getMediaArchive(),collectionid);
+		manager.importCollection(req,getMediaArchive(),collection.getId());
 		
-		Collection assets  = manager.loadAssetsInCollection(req, getMediaArchive(), collectionid);
+		boolean foundone = false;
+		Collection assets  = manager.loadAssetsInCollection(req, getMediaArchive(), collection.getId());
+		String onepath = "Users/admin/" + collection.getName() + "/SomeStuff/Sub1/asf_to_mpeg-1.mpg";
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			Data found = (Data) iterator.next();
-			assertEquals( found.getSourcePath(),"Users/admin/SomeStuff/Sub1");
+			if( onepath.equals(found.getSourcePath()) )
+			{
+				foundone = true;
+			}
 		}
+		assertTrue(foundone);
 	}
 
 	public void testCollectionExport() throws Exception
