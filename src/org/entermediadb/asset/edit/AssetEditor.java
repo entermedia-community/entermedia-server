@@ -97,11 +97,11 @@ public class AssetEditor {
 		 if (inAsset != null)
 		 {
 			 asset = new Asset();
-			 asset.setId(inId);
 			 asset.setCatalogId(inAsset.getCatalogId());
 			 asset.setName(inAsset.getName());
 			 asset.getKeywords().addAll(inAsset.getKeywords());
 			 asset.setProperties(new HashMap(inAsset.getProperties()));
+			 asset.setId(inId);
 		 }
 		 return asset;
 	 }	

@@ -15,12 +15,14 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
+import org.openedit.page.Page;
 
 public class CollectionTest extends BaseEnterMediaTest
 {
 	public void testCollectionEdit() throws Exception
 	{
-		//getMediaArchive().getSearcher("asset").getAllHits();
+		//getMediaArchive().getSearcher("asset").reIndexAll();
+		
 		//getMediaArchive().getSearcher("librarycollectionasset").getAllHits();
 		
 		Data collection = createCollection("test");
@@ -60,6 +62,8 @@ public class CollectionTest extends BaseEnterMediaTest
 	
 	public void testCollectionImport() throws Exception
 	{
+		//getMediaArchive().getSearcher("asset").reIndexAll();
+
 		ProjectManager manager = (ProjectManager)getFixture().getModuleManager().getBean(getMediaArchive().getCatalogId(),"projectManager");
 		
 		Searcher librarysearcher = getMediaArchive().getSearcher("library");
@@ -72,15 +76,17 @@ public class CollectionTest extends BaseEnterMediaTest
 		data.setProperty("folder", "Users/admin");
 		librarysearcher.saveData(data, null);
 		
-		Asset asset = getMediaArchive().getAsset("101");
+		Asset asset = getMediaArchive().getAsset("104");
+		assertEquals("users/admin/104", asset.getSourcePath() );
 		Category cat = getMediaArchive().getCategory("testcategory");
 		if( cat == null )
 		{
 			cat = getMediaArchive().getCategoryArchive().createCategoryTree("Projects/SomeStuff/Sub1");
-			asset.clearCategories();
-			asset.addCategory(cat);
-			getMediaArchive().saveAsset(asset, null);
 		}
+		asset.clearCategories();
+		asset.addCategory(cat);
+		getMediaArchive().saveAsset(asset, null);
+
 		Data collection = createCollection("testcollection" + new Date());
 
 		WebPageRequest req = getFixture().createPageRequest();
@@ -90,20 +96,33 @@ public class CollectionTest extends BaseEnterMediaTest
 		
 		boolean foundone = false;
 		Collection assets  = manager.loadAssetsInCollection(req, getMediaArchive(), collection.getId());
-		String onepath = "Users/admin/" + collection.getName() + "/SomeStuff/Sub1/asf_to_mpeg-1.mpg";
+		String onepath = "Users/admin/" + collection.getName() + "/SomeStuff/Sub1/104";
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 		{
 			Data found = (Data) iterator.next();
+			System.out.println(found.getSourcePath());
 			if( onepath.equals(found.getSourcePath()) )
 			{
+				assertNotSame("104",found.getId());
 				foundone = true;
 			}
 		}
 		assertTrue(foundone);
-	}
 
-	public void testCollectionExport() throws Exception
-	{
+		Data newlibrary = (Data)librarysearcher.searchById("approved");
+		if(newlibrary == null)
+		{
+			newlibrary = librarysearcher.createNewData();
+			newlibrary.setId("approved");
+		}
+		newlibrary.setProperty("folder", "Archive/2016");
+		librarysearcher.saveData(newlibrary, null);
+		manager.exportCollectionTo(req, getMediaArchive(), collection.getId(), newlibrary.getId());
+		
+//		"/entermedia-server/webapp/WEB-INF/data/entermedia/catalogs/testcatalog/originals/Archive/2016/testcollectionFri Jun 17 12:51:17 EDT 2016DT 2016/SomeStuff/Sub1/104/im.tiff"
+		Page moved = getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/originals/Archive/2016/" + collection.getName() + "/SomeStuff/Sub1/104/im.tiff");
+		System.out.println(moved.getContentItem().getAbsolutePath());
+		assertTrue(moved.exists());
 		
 	}
 	

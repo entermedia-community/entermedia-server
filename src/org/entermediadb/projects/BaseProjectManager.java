@@ -27,6 +27,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
@@ -729,6 +730,10 @@ public class BaseProjectManager implements ProjectManager
 			Collection catassets = inArchive.getAssetSearcher().query().match("category", parentCat.getId()).search();
 			
 			String folder = parentCat.getCategoryPath();
+			//TODO: Turn off notifications
+			String catpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + folder;
+			List childrenfiles = inArchive.getPageManager().getChildrenPaths(catpath);
+			
 			//this is every asset and the children
 			for (Iterator iterator2 = catassets.iterator(); iterator2.hasNext();)
 			{
@@ -752,6 +757,7 @@ public class BaseProjectManager implements ProjectManager
 						break;
 					}
 				}
+				
 				if( newpath== null)
 				{
 					log.error("someone deleted cats" + folder + asset.getId() );
@@ -774,8 +780,19 @@ public class BaseProjectManager implements ProjectManager
 					found.setProperty("_parent", copy.getId()); 
 					tosave.add(found);
 				}	
-
 			}
+			for (Iterator iterator2 = childrenfiles.iterator(); iterator2.hasNext();)
+			{
+				String path = (String) iterator2.next();
+				String dest = collectionpath + "/" + PathUtilities.extractFileName(path);
+				ContentItem existing = inArchive.getPageManager().getRepository().getStub(dest); 
+				if( !existing.exists() )
+				{
+					ContentItem source = inArchive.getPageManager().getRepository().getStub(path);
+					inArchive.getPageManager().getRepository().copy(source, existing);
+				}
+			}
+			
 			//Save the cateory
 			//catData.setProperty("importedcat","true");
 			//librarycollectioncategorySearcher.saveData(catData, null);
@@ -809,7 +826,7 @@ public class BaseProjectManager implements ProjectManager
 		{
 			throw new OpenEditException("No folder set on library");
 		}
-		String oldcollectionpath = oldlibrary.get("library") + "/" + collection.getName(); 
+		String oldcollectionpath = oldlibrary.get("folder") + "/" + collection.getName(); 
 		String collectionpath = librarysourcepath + "/" + collection.getName(); 
 
 		//Move this folder and update all the sourcepaths on assets. Also add a new Category
@@ -825,7 +842,6 @@ public class BaseProjectManager implements ProjectManager
 			String newsourcepath = collectionpath + existingasset.getSourcePath().substring(oldcollectionpath.length());
 			
 			String oldpathprimary = existingasset.getSourcePath();
-			//isFolder?
 			String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldpathprimary;
 			Page oldpage = inArchive.getPageManager().getPage(oldpath);
 			if( !oldpage.exists() )
@@ -842,37 +858,57 @@ public class BaseProjectManager implements ProjectManager
 			}
 			
 			Map props = new HashMap();
-			props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
-			inArchive.fireMediaEvent("savingoriginal","asset",existingasset.getSourcePath(),props,inReq.getUser());
-			inArchive.getAssetSearcher().saveData(existingasset, inReq.getUser()); //avoid Hot folder detection
-			inArchive.getPageManager().movePage(oldpage, newpage);
-
-			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldpathprimary);
-			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + newsourcepath);
-			inArchive.getPageManager().movePage(oldthumbs, newthumbs);
-			
-			inArchive.fireMediaEvent("savingoriginalcomplete","asset",existingasset.getSourcePath(),props,inReq.getUser());
-			
+			try
+			{
+				props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
+				inArchive.fireMediaEvent("savingoriginal","asset",existingasset.getSourcePath(),props,inReq.getUser());
+				existingasset.setSourcePath(newsourcepath);
+				inArchive.getAssetSearcher().saveData(existingasset, inReq.getUser()); //avoid Hot folder detection
+				inArchive.getPageManager().movePage(oldpage, newpage);
+				Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldpathprimary);
+				Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + newsourcepath);
+				if( oldthumbs.exists())
+				{
+					inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+				}
+			}
+			finally
+			{
+				inArchive.fireMediaEvent("savingoriginalcomplete","asset",existingasset.getSourcePath(),props,inReq.getUser());
+			}
 		}
+
+		//Clean up
+		Page leftovers = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldcollectionpath);
+		Page dest = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + collectionpath);
+		inArchive.getPageManager().movePage(leftovers, dest);
+
+		leftovers = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldcollectionpath);
+		dest = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + collectionpath);
+		inArchive.getPageManager().movePage(leftovers, dest);
+
+		//inArchive.getPageManager().movePage(oldthumbs, newthumbs);
+
+		
 	}
 	
 	protected Asset copyAssetIfNeeded(WebPageRequest inReq, MediaArchive inArchive, Asset existingasset, String folderpath)
 	{
 		//Change sourcepath
 		String oldsourcepath= existingasset.getSourcePath();
+		if( oldsourcepath.startsWith(folderpath))
+		{
+			return existingasset;
+		}
 		String sourcepath = null;
 		if( existingasset.isFolder())
 		{
-			sourcepath = folderpath + "/" + PathUtilities.extractDirectoryName("/" + existingasset.getSourcePath());
+			sourcepath = folderpath + oldsourcepath.substring(oldsourcepath.lastIndexOf('/'));
 		}
 		else
 		{
 			sourcepath = folderpath + "/" + existingasset.getPrimaryFile();
 		}
-//		if( oldsourcepath.startsWith(collectionpath))
-//		{
-//			return existingasset;
-//		}
 //		String oldpathprimary = existingasset.getSourcePath();
 //		if( existingasset.isFolder() )
 //		{
@@ -883,6 +919,7 @@ public class BaseProjectManager implements ProjectManager
 		
 		if( newasset != null)
 		{
+			log.info("Asset already imported " + sourcepath);
 			return newasset;
 		}
 		//Check for duplicates
@@ -897,7 +934,7 @@ public class BaseProjectManager implements ProjectManager
 		newasset.addCategory(newparent);
 
 		
-		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + existingasset;
+		String oldpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldsourcepath;
 		Page oldpage = inArchive.getPageManager().getPage(oldpath);
 		boolean copyorig = true;
 		if( !oldpage.exists() )
@@ -915,14 +952,23 @@ public class BaseProjectManager implements ProjectManager
 		if( copyorig )
 		{
 			Map props = new HashMap();
-			props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
-			inArchive.fireMediaEvent("savingoriginal","asset",newasset.getSourcePath(),props,inReq.getUser());
-			inArchive.getAssetSearcher().saveData(newasset, inReq.getUser()); //avoid Hot folder detection
-			inArchive.getPageManager().copyPage(oldpage, newpage);
-			Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldsourcepath);
-			Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath);
-			inArchive.getPageManager().copyPage(oldthumbs, newthumbs);
-			inArchive.fireMediaEvent("savingoriginalcomplete","asset",newasset.getSourcePath(),props,inReq.getUser());
+			try
+			{
+				props.put("absolutepath", newpage.getContentItem().getAbsolutePath());
+				inArchive.fireMediaEvent("savingoriginal","asset",newasset.getSourcePath(),props,inReq.getUser());
+				inArchive.getAssetSearcher().saveData(newasset, inReq.getUser()); //avoid Hot folder detection
+				inArchive.getPageManager().copyPage(oldpage, newpage);
+				Page oldthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldsourcepath);
+				Page newthumbs = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath);
+				if(oldthumbs.exists())
+				{
+					inArchive.getPageManager().copyPage(oldthumbs, newthumbs);
+				}
+			}
+			finally
+			{
+				inArchive.fireMediaEvent("savingoriginalcomplete","asset",newasset.getSourcePath(),props,inReq.getUser());
+			}
 		}	
 		return newasset;
 	}
