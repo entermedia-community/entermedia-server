@@ -49,7 +49,7 @@ public interface ProjectManager
 
 	public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
 	
-	public void exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
+	public String exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
 	//public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
 
 	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);

@@ -429,8 +429,8 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		String libraryid = inReq.getRequestParameter("targetlibraryid");
-		manager.exportCollectionTo(inReq,archive,collectionid,libraryid);
-		inReq.putPageValue("movestatus", "completed");
+		String path = manager.exportCollectionTo(inReq,archive,collectionid,libraryid);
+		inReq.putPageValue("movepath", path);
 	}	
 	
 	public void loadFileSizes(WebPageRequest inReq)

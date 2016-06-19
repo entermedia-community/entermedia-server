@@ -6,6 +6,7 @@
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
     </path-action>
+    <property name="defaulttab">publishtab</property>
 
 	
 </page>

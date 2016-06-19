@@ -637,7 +637,6 @@ uiload = function() {
 				hash = false;
 			}
 		}
-		
 		if( !hash )
 		{
 			hash = "#" + tabs.data("defaulttab");

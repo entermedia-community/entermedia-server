@@ -4,6 +4,7 @@
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
     </path-action>
+    <property name="defaulttab">publishtab</property>
     <page-action name="PageValue.loadPageVariable" bean="sizer" class="org.entermediadb.links.FileSize" />
     <page-action name="ProjectModule.loadFileSizes"/>
     <page-action name="ProjectModule.searchForAssetsOnCollection"/>

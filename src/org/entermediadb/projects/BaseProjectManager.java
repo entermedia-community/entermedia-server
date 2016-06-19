@@ -805,7 +805,7 @@ public class BaseProjectManager implements ProjectManager
 		
 	}
 
-	public void exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
+	public String exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
 	{
 		//move the collection root folder
 		importCollection(inReq,inArchive,inCollectionid); //make copies of everything
@@ -889,6 +889,7 @@ public class BaseProjectManager implements ProjectManager
 
 		//inArchive.getPageManager().movePage(oldthumbs, newthumbs);
 
+		return collectionpath;
 		
 	}
 	
@@ -901,7 +902,7 @@ public class BaseProjectManager implements ProjectManager
 			return existingasset;
 		}
 		String sourcepath = null;
-		if( existingasset.isFolder())
+		if( existingasset.isFolder() || existingasset.getPrimaryFile() == null)
 		{
 			sourcepath = folderpath + oldsourcepath.substring(oldsourcepath.lastIndexOf('/'));
 		}

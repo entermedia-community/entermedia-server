@@ -1,12 +1,12 @@
 <div class="publishtabcontainer">
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Export Assets]]</div>
+		<div class="ui-widget-header">[[Export Collection]]</div>
 		<div class="ui-widget-content">
-						<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
-				   method="post" action="$home$apphome/views/modules/librarycollection/exportsave.html#exporttab">
+						<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" class="validate" 
+				   method="post" action="$home$apphome/views/modules/librarycollection/exportsave.html">
 					<table>
 						<tr>
-							<td class="archiveassettable"><b>[[Move Assets and Collection To]]:</b>&nbsp;</td>
+							<td class="archiveassettable"><b>[[Move this Collection To]]:</b>&nbsp;</td>
 							<td>
 								#set( $selectedlibrary = $mediaarchive.getData("library",$librarycol.library) )
 								#set( $lastselectedlibraryname = $selectedlibrary.getName() )
@@ -15,7 +15,7 @@
 								#end
 								<input name="collectionid" value="$librarycol.getId()" type="hidden" />
 
-			<select name="targetlibraryid"  id="libraryvalue"  class="listautocomplete" data-searchfield="name" data-searchtype="library" 
+			<select name="targetlibraryid"  id="libraryvalue"  class="listautocomplete required" data-searchfield="name" data-searchtype="library" 
 				data-listcatalogid="$catalogid" onChange='$("#librarychange").submit()' >
 			#if( $selectedlibrary )
 			  <option value="$selectedlibrary.getId()" selected="selected">#esc($selectedlibrary.getName())</option>
@@ -35,14 +35,3 @@
 		
 	</div>	
 </div>
-		
-<script>
-$( document ).ready(function() {
-    
-    $(".ui-corner-top").removeClass("emtabselected");
-   	$("#publish").addClass("emtabselected");
-   
-});
-</script>
-	
-

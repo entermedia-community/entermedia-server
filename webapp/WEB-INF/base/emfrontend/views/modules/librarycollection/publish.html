@@ -30,7 +30,7 @@
 						#end
 
 					<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
-				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html#publishtab">
+				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
 
 						<h5>
 							[[Copy Assets and Categories in $selectedlibrary Library:]] <b>$selectedlibrary.folder/$librarycol.getName()/</b> 
@@ -42,14 +42,5 @@
 		
 	</div>	
 </div>
-		
-<script>
-$( document ).ready(function() {
-    
-    $(".ui-corner-top").removeClass("emtabselected");
-   	$("#publish").addClass("emtabselected");
-   
-});
-</script>
 	
 
