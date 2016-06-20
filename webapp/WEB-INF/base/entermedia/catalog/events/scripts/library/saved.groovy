@@ -30,14 +30,14 @@ public void init() {
 		String username = context.getUserName(); 
 		if(username != null)
 		{
-			SearchQuery query = libraryusers.createSearchQuery().append("libraryid", library.id).append("userid", username);
+			SearchQuery query = libraryusers.createSearchQuery().append("_parent", library.id).append("userid", username);
 			Data permission = libraryusers.searchByQuery(query);
 			if(permission == null)
 			{
 				Data newentry = libraryusers.createNewData();
 				newentry.setId(libraryusers.nextId());
 				newentry.setProperty("userid", username);
-				newentry.setProperty("libraryid", library.getId());
+				newentry.setProperty("_parent", library.getId());
 				//newentry.setProperty("libraryrole", "owner");//not used yet.
 				newentry.setSourcePath(library.getSourcePath());
 				libraryusers.saveData(newentry, context.getUser());

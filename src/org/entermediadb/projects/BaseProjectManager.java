@@ -430,12 +430,12 @@ public class BaseProjectManager implements ProjectManager
 	public boolean addUserToLibrary( MediaArchive archive, Data inLibrary, User inUser) 
 	{
 		Searcher searcher = archive.getSearcher("libraryusers");
-		Data found = searcher.query().match("userid",inUser.getId()).match("libraryid", inLibrary.getId()).searchOne();	
+		Data found = searcher.query().match("userid",inUser.getId()).match("_parent", inLibrary.getId()).searchOne();	
 		if( found == null )
 		{
 			found = searcher.createNewData();
 			found.setProperty("userid",inUser.getId());
-			found.setProperty("libraryid",inLibrary.getId());
+			found.setProperty("_parent",inLibrary.getId());
 			searcher.saveData(found,null);
 			return true;
 		}				

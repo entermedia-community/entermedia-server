@@ -3,7 +3,7 @@
 	<inner-layout />
 	<page-action name="DataEditModule.search" >
 		<property name="searchtype">category</property>
-		<property name="sortby">categorypathDown</property>
+		<property name="sortby">categorypathUp</property>
 	</page-action>
 
 </page>

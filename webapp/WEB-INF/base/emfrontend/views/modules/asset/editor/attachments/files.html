@@ -10,8 +10,8 @@
 		#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
 		#foreach($file in $files)
 			#set( $filesource  = "${file.parentsourcepath}/${file.name}")
-			   <li class="noderow" id="${file.id}_row" data-nodeid="$file.id"><div style="padding-left: ${padding}px"><span class="#if ( $file.folder == 'true' )arrow down #end"></span>
-			   #if ( $file.folder == "true" ) 
+			   <li class="noderow" id="${file.id}_row" data-nodeid="$file.id"><div style="padding-left: ${padding}px"><span class="#if ( $file.isfolder == 'true' )arrow down #end"></span>
+			   #if ( $file.isfolder == "true" ) 
 			   	<span id="${file.id}_display" class="name folder #if($isleaf) leaf #end" fileid="${file.id}">$file.name</span></span><span id="${file.id}_edit" class="name folder" style="display:none;">
 			   	<input class="field" type="text" value="$file.name" id="${file.id}_edit_field" /><a class="editsave btn">Save</a><a id="${file.id}" class="editcancel btn">Cancel</a></span>
 			   #else
@@ -20,7 +20,7 @@
 			   #end
 			   <span class="actions">
 			    #set( $downloadpath = "/WEB-INF/data/$catalogid/originals/$filesource/" )
-			   	#if ( $file.folder == "true" )
+			   	#if ( $file.isfolder == "true" )
 			   		<a class="download-folder click-link ir tooltip" title="Download Folder" id="${file.id}" href="$home$attachmentroot/zip/${file.name}-attachments.zip?path=$downloadpath&stripfolders=$downloadpath">Download Folder</a>
 			   		<a class="add-folder ir tooltip" title="Add a new Folder" id="${file.id}">Add New Folder</a>
 			   		<a class="upload-file ir tooltip" title="Upload a new File" id="${file.id}" >Upload</a>
@@ -30,13 +30,13 @@
 			   		<a class="download-file click-link ir tooltip" title="Download File" id="${file.id}" href="$home/${applicationid}/views/modules/asset/downloads/originals/$filesource/${file.name}">Download File</a> 
 				   	<a class="delete ir tooltip" title="Delete File" fileid="${file.id}" >Delete</a></span></div>
 			   	#end
-					#if($file.folder == "true")  
+					#if($file.isfolder == "true")  
 						<ul class="open" > ##use cookies to open/close them?
 						  #showattachments($filesource , $depth)
 					   </ul>
 					#end
 			   </li>
-			  #if ( $file.folder == "true" )
+			  #if ( $file.isfolder == "true" )
 			  	<li id="${file.id}_add-folder" style="display: none;">
 			  		<div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="New Folder" id="${file.id}_new" /><a data-parent="${file.id}"  class="addfoldersave btn">Save</a><a id="${file.id}" class="cancel btn">Cancel</a></span></div>
 			  	</li>

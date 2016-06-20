@@ -578,10 +578,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				String indextype = detail.get("indextype");
 				if (indextype == null)
 				{
-					if (detail.isMultiLanguage())
-					{
-						indextype = "object";
-					}
+//					if (detail.isMultiLanguage())
+//					{
+//						indextype = "object";
+//					}
 					if (detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
 					{
 						indextype = "not_analyzed";
@@ -1190,7 +1190,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isString() && detail.isSortable())
+			if (detail != null && detail.isString() && !detail.isMultiLanguage() && (detail.isSortable()  || "name".equals(detail.getName()) ))
 			{
 				sort = SortBuilders.fieldSort(field + ".sort");
 			}
@@ -1656,6 +1656,9 @@ public class BaseElasticSearcher extends BaseSearcher
 					// This is a nested document
 					inContent.startObject(key); //start first detail object
 					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
+					if(value == null){
+						continue;
+					}
 					if (value instanceof String)
 					{
 						String target = (String) value;

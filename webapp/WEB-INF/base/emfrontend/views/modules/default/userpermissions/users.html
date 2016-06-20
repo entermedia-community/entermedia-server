@@ -5,12 +5,12 @@
 
 #set( $libraryid = $context.getRequestParameter("libraryid") )
 #if( !$libraryid)
-	#set( $libraryid = $context.getRequestParameter("libraryid.value") )
+	#set( $libraryid = $context.getRequestParameter("_parent.value") )
 #end
 
 
 #set($libraryusersSearcher = $searcherManager.getSearcher($catalogid,"libraryusers") )
-#set( $libraryusers = $libraryusersSearcher.fieldSearch("libraryid",$libraryid) )
+#set( $libraryusers = $libraryusersSearcher.fieldSearch("_parent",$libraryid) )
 
 <div class="list-adder" style="padding: 13px 20px;">
 	<form class="ajaxform" targetdiv="userpermissioneditor" name="adduserform" action="$home$apphome/views/modules/library/userpermissions/useradd.html">
@@ -22,8 +22,8 @@
 		<input name="field" type="hidden"  value="userid" />
 		<input name="userid.value" type="hidden" id="useraddhidden" />
 	
-		<input name="field" type="hidden"  value="libraryid" />
-		<input name="libraryid.value" type="hidden"  value="$libraryid" />
+		<input name="field" type="hidden"  value="_parent" />
+		<input name="_parent.value" type="hidden"  value="$libraryid" />
 	
 		<input name="save" type="hidden"  value="true" />
 		<input class="btn right field-btn" type="submit" value="Add" />
