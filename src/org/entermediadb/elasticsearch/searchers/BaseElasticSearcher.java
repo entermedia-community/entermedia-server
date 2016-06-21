@@ -603,6 +603,17 @@ public class BaseElasticSearcher extends BaseSearcher
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
+						if (detail.isSortable() || "name".equals(detail.getName()))
+						{
+							jsonproperties.startObject("fields");
+							jsonproperties.startObject("sort");
+							jsonproperties = jsonproperties.field("type", "string");
+							jsonproperties = jsonproperties.field("index", "not_analyzed");
+							jsonproperties.endObject();
+							jsonproperties.endObject();
+						}
+						
+						
 						if (analyzer != null)
 						{
 							jsonproperties.field("analyzer", analyzer);
@@ -1190,10 +1201,17 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isString() && !detail.isMultiLanguage() && (detail.isSortable()  || "name".equals(detail.getName()) ))
+			if (detail != null && detail.isString()  && (detail.isSortable()  || "name".equals(detail.getName()) ))
 			{
-				sort = SortBuilders.fieldSort(field + ".sort");
+				if(detail.isMultiLanguage()){
+					sort = SortBuilders.fieldSort(field + "." + inQuery.getSortLanguage() + ".sort");
+				} else{
+					sort = SortBuilders.fieldSort(field + ".sort");	
+				}
+				
 			}
+			
+			
 			else
 			{
 				sort = SortBuilders.fieldSort(field);

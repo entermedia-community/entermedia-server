@@ -3,9 +3,17 @@
 ## $searcher
 ## $val
 ## $searcherManager
+
 #if($detail.render && $data)
 	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
 	#esc( $label )
 #else
-	#esc($!val)
+
+	#if($detail.isMultiLanguage())
+		#set($map = $data.getValue($detail.getId()))
+		$!map.getText($context.language)
+	#else
+		#esc($!val)	
+	#end
+
 #end
