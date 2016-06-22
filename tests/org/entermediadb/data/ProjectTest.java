@@ -40,7 +40,7 @@ public class ProjectTest extends BaseEnterMediaTest
 
 
 		int beforecount = 0;
-		Collection<UserCollection> lessfiles = manager.loadCollections(req);
+		Collection<UserCollection> lessfiles = manager.loadCollections(req, getMediaArchive());
 		if( lessfiles != null && lessfiles.size() > 0)
 		{
 			UserCollection hit = lessfiles.iterator().next();
@@ -53,7 +53,7 @@ public class ProjectTest extends BaseEnterMediaTest
 		collectionasset.setProperty("librarycollection", "testcollection");
 		lcasearcher.saveData(collectionasset, null);
 
-		Collection<UserCollection> files = manager.loadCollections(req);
+		Collection<UserCollection> files = manager.loadCollections(req, getMediaArchive());
 		assertNotNull( files );
 		assertEquals( files.size(), 1);
 		UserCollection hit = files.iterator().next();
