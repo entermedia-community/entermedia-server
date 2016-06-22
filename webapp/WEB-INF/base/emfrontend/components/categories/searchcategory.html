@@ -1,3 +1,7 @@
+#set( $action = $context.getRequestParameter("action") ) 
+#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+#set( $categories = $context.getRequestParameter("categories") )
+
 <div id="search-catgories" >
 	<div id="searcharea" >
 		#set( $searcher = $mediaarchive.getSearcher("category") )
@@ -20,8 +24,13 @@
 		
 		</form>
 		
+		<form  class="ajaxform"  data-targetdiv="$targetdiv" action="$action">
 		<div id="categoryresults">
 			$pages.include("$home$apphome/components/categories/searchcategoryresults.html",$context)
 		</div>
+			<input name="oemaxlevel" value="1"  type="hidden" />
+			<input name="categoryidpicked" id="emselectedrow" type="hidden" />
+			<input name="categories" type="hidden" value="$!categories" />
+		</form>
 	</div>
 </div>	

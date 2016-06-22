@@ -364,7 +364,23 @@ uiload = function() {
 				return false;
 	});
 	
-		jQuery('#emselectable table td' ).livequery("click", function(event)
+	jQuery('.emrowpicker table td' ).livequery("click", function(event)
+	{
+		var clicked = jQuery(this);
+		var row = $(clicked.closest("tr"));
+		var id = row.data("id");
+		
+		var form = $(clicked.closest("form"));
+		$('#emselectedrow',form ).val(id);
+
+		var targetdiv = form.data("targetdiv");
+		jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );	
+		form.closest(".modal").modal("hide");
+			
+	});
+		
+	
+	jQuery('#emselectable table td' ).livequery("click", function(event)
 	{
 		var clicked = jQuery(this);
 		if(clicked.attr("noclick") =="true") {

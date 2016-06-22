@@ -5,5 +5,6 @@
 		<property name="searchtype">category</property>
 		<property name="sortby">categorypathUp</property>
 	</page-action>
+	<property name="hitsperpage">24</property>
 
 </page>
