@@ -1955,6 +1955,8 @@
 	<bean id="smbpublisher" class="org.entermediadb.asset.publish.publishers.smbpublisher"  lazy-init="default" />
 	<bean id="fatwirepublisher" class="org.entermediadb.asset.publish.publishers.fatwirepublisher"  lazy-init="default" />
 	<bean id="wordpresspublisher" class="org.entermediadb.asset.publish.publishers.wordpresspublisher"  lazy-init="default"/>
+		<bean id="gallerypublisher" class="org.entermediadb.asset.publish.publishers.gallerypublisher"  lazy-init="default"/>
+	
 	<bean id="VizOnepublisher" class="org.entermediadb.asset.publish.publishers.vizonepublisher"  lazy-init="default"/>
 	
 	<bean id="searchQueryFilter" class="org.entermediadb.asset.search.BaseSearchQueryFilter"  lazy-init="default">
