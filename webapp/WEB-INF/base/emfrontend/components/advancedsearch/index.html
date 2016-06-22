@@ -34,7 +34,7 @@ $context.putPageValue("edit",$edit)
 $context.putPageValue("idprefix","search")
 
 
-<table 	 width="100%">
+<table width="100%" class="advancedsearchtable">
 	#foreach( $detail in $details)
 		$context.putPageValue("detail", $detail)
 		#if ($detail.isLeaf())

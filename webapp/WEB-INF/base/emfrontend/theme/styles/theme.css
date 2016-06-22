@@ -1329,7 +1329,7 @@ small {
 }
 #advsearchpanel #cat-list {
     padding: 0;
-    margin: 0 0px;
+    margin: 0 0 10px;
 }
 
 #cat-list .row {
@@ -1536,7 +1536,12 @@ small {
     width: 100%;
 }
 .row.category {
-    background: #fff url('../images/folder_16.png') left center no-repeat;
+    background: url('../images/folder_16.png') left center no-repeat;
+}
+.rowclick .category { 
+	background: url('../images/folder_16.png') 5px center no-repeat; 
+	padding-left:27px; 
+	cursor:pointer; 
 }
 .tag {
     background: #fff url('../images/tag.png') left center no-repeat;
@@ -6908,3 +6913,12 @@ a.categoryclose{
 }
 
 .categoriescontainer tr { line-height: 22px; }
+
+.advancedsearchtable {
+	table-layout:fixed;
+	border-collapse:collapse;
+	
+}
+.advancedsearchtable td {
+	word-wrap:break-word;
+}

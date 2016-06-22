@@ -358,6 +358,7 @@ uiload = function() {
         		 	{
         		 		$(".modal-footer",modaldialog).hide();
         		 	}
+        		 	$("form input",modaldialog).focus();
     			});
     			
 				event.preventDefault();

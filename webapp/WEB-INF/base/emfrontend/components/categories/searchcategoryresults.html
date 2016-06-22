@@ -11,11 +11,11 @@ $context.putPageValue("viewpostfix",".html")
 #set( $action = $context.getRequestParameter("actionurl") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 
-<div id="emrowpicker" class="emrowpicker" style="min-height: 500px"  >
+<div id="emrowpicker" class="emrowpicker" style="min-height: 450px"  >
 
 <table  id="main-results-table" class="emdata striped greytxt table tbl-responsive" >
 	<tr class="tableheader">
-	<th>Name</th>
+	<th>[[Name]]</th>
 	#foreach( $detail in $details )
 	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
 	#end
