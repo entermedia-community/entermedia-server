@@ -68,13 +68,18 @@ public class LibraryPermissionsTest extends BaseEnterMediaTest
 		
 		Searcher lgsearcher = getMediaArchive().getSearcher("librarygroups");
 		
-		Data libgroup = lgsearcher.createNewData();
+		Data libgroup = lgsearcher.query().match("libraryid", "library1").match("groupid", "users").searchOne();
+		if (libgroup == null) {
+
+			libgroup = lgsearcher.createNewData();
+			
+			libgroup.setProperty("libraryid", "library1");
+			libgroup.setProperty("groupid", "users");
+			
+			lgsearcher.saveData(libgroup, groupuser);
 		
-		libgroup.setProperty("libraryid", "library1");
-		libgroup.setProperty("groupid", "users");
-		
-		lgsearcher.saveData(libgroup, groupuser);
-		
+		}
+		req = getFixture().createPageRequest("/testcatalog/indexASDA.html");		
 		UserProfile groupprofile = upmanager.loadUserProfile(req, getMediaArchive().getCatalogId(), "groupuser");
 		
 		String lib1 = groupprofile.getCombinedLibraries().iterator().next();
