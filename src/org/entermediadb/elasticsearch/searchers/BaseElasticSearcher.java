@@ -240,8 +240,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
-	
-
 	// protected void addQueryFilters(SearchQuery inQuery, QueryBuilder inTerms)
 	// {
 	//
@@ -270,51 +268,48 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			if (detail.isFilter())
 			{
-				if(detail.isDate()){
+				if (detail.isDate())
+				{
 					DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
 					builder.field(detail.getId());
 					builder.interval(DateHistogramInterval.DAY);
-					
-//					DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown");
-//					builder.interval(DateHistogramInterval.DAY);
-					
+
+					//					DateHistogramBuilder builder = new DateHistogramBuilder("event_breakdown");
+					//					builder.interval(DateHistogramInterval.DAY);
+
 					inSearch.addAggregation(builder);
-					
-					 builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+
+					builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
 					builder.field("date");
 					builder.interval(DateHistogramInterval.WEEK);
-				} 
-				
-				else if(detail.isNumber()){
+				}
+
+				else if (detail.isNumber())
+				{
 					SumBuilder b = new SumBuilder(detail.getId() + "_sum");
 					b.field(detail.getId());
 					inSearch.addAggregation(b);
-					
+
 					AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
 					avg.field(detail.getId());
-					
-					
-					
-					
-					
+
 				}
-				else{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(10);
-				inSearch.addAggregation(b);
+				else
+				{
+					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(10);
+					inSearch.addAggregation(b);
 				}
 
-				
 			}
-			
-			
+
 		}
 		//For reports, we can pass in a custom aggregation from a script or somewhere
-		if(inQuery.getAggregation() != null){
+		if (inQuery.getAggregation() != null)
+		{
 			inSearch.addAggregation((AggregationBuilder) inQuery.getAggregation());
-			
+
 		}
-		
-			
+
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -578,10 +573,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				String indextype = detail.get("indextype");
 				if (indextype == null)
 				{
-//					if (detail.isMultiLanguage())
-//					{
-//						indextype = "object";
-//					}
+					//					if (detail.isMultiLanguage())
+					//					{
+					//						indextype = "object";
+					//					}
 					if (detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
 					{
 						indextype = "not_analyzed";
@@ -612,8 +607,7 @@ public class BaseElasticSearcher extends BaseSearcher
 							jsonproperties.endObject();
 							jsonproperties.endObject();
 						}
-						
-						
+
 						if (analyzer != null)
 						{
 							jsonproperties.field("analyzer", analyzer);
@@ -1201,17 +1195,19 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isString()  && (detail.isSortable()  || "name".equals(detail.getName()) ))
+			if (detail != null && detail.isString() && (detail.isSortable() || "name".equals(detail.getName())))
 			{
-				if(detail.isMultiLanguage()){
+				if (detail.isMultiLanguage())
+				{
 					sort = SortBuilders.fieldSort(field + "." + inQuery.getSortLanguage() + ".sort");
-				} else{
-					sort = SortBuilders.fieldSort(field + ".sort");	
 				}
-				
+				else
+				{
+					sort = SortBuilders.fieldSort(field + ".sort");
+				}
+
 			}
-			
-			
+
 			else
 			{
 				sort = SortBuilders.fieldSort(field);
@@ -1232,7 +1228,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public String getIndexId()
 	{
-		if( fieldIndexId == -1)
+		if (fieldIndexId == -1)
 		{
 			fieldIndexId = System.currentTimeMillis();
 		}
@@ -1309,7 +1305,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 		clearIndex();
-		
+
 		//inBuffer.clear();
 	}
 
@@ -1551,12 +1547,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 
 				String key = detail.getId();
-				if( key.equals("recordmodificationdate"))
+				if (key.equals("recordmodificationdate"))
 				{
 					inContent.field(key, new Date());
 					continue;
 				}
-				
+
 				Object value = inData.getValue(key);
 				if (value != null)
 				{
@@ -1674,7 +1670,8 @@ public class BaseElasticSearcher extends BaseSearcher
 					// This is a nested document
 					inContent.startObject(key); //start first detail object
 					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
-					if(value == null){
+					if (value == null)
+					{
 						continue;
 					}
 					if (value instanceof String)
@@ -1924,11 +1921,49 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else
 			{
-				String val = inData.get(det.getId());
-				if (val != null)
+				if (det.isMultiLanguage())
 				{
-					inFullDesc.append(val);
-					inFullDesc.append(' ');
+
+					Object value = (LanguageMap) inData.getValue(det.getId());
+					;
+					if (value instanceof String)
+					{
+						String target = (String) value;
+						LanguageMap map = new LanguageMap();
+						map.setText(target, "en");
+						value = map;
+
+					}
+					LanguageMap map = (LanguageMap) value;
+
+					if (map != null)
+					{
+						HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
+
+						for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
+						{
+							Data locale = (Data) iterator2.next();
+							String id = locale.getId();
+							String localeval = map.getText(id); //get a location specific value
+							if (localeval != null)
+							{
+
+								inFullDesc.append(localeval);
+								inFullDesc.append(' ');
+							}
+
+						}
+					}
+
+				}
+				else
+				{
+					String val = inData.get(det.getId());
+					if (val != null)
+					{
+						inFullDesc.append(val);
+						inFullDesc.append(' ');
+					}
 				}
 			}
 		}
