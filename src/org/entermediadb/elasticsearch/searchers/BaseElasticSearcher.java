@@ -1924,7 +1924,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				if (det.isMultiLanguage())
 				{
 
-					Object value = (LanguageMap) inData.getValue(det.getId());
+					Object value =  inData.getValue(det.getId());
 					;
 					if (value instanceof String)
 					{
