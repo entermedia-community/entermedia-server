@@ -2417,7 +2417,7 @@ tr.odd {
 }
 .widget-header-right {
 	float: right;
-    margin: 3px 8px 0 0;
+    margin: 0 8px 0 0;
 }
 .widget-header-right i { opacity: 0.6; top:0; margin-left:3px; }
 .widget-header-right i:hover { opacity: 1; }
@@ -6013,6 +6013,7 @@ td[title]:hover:before {
 }
 .ui-widget-header span a {
     color: #fff;
+    line-height: 20px;
 }
 
 /* DEFAULT MODULE STYLES */
