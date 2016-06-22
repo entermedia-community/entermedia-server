@@ -372,10 +372,22 @@ uiload = function() {
 		var id = row.data("id");
 		
 		var form = $(clicked.closest("form"));
-		$('#emselectedrow',form ).val(id);
+		$('.emselectedrow',form ).each(function()
+		{
+			$(this).val(id);
+		});
+		
 
 		var targetdiv = form.data("targetdiv");
-		jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );	
+		if( (typeof targetdiv) != "undefined" )
+		{
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );	
+		}	
+		else
+		{
+			jQuery(form).trigger("submit");
+		}
+		
 		form.closest(".modal").modal("hide");
 			
 	});

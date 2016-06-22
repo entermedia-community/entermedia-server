@@ -7,7 +7,7 @@
 		#set( $searcher = $mediaarchive.getSearcher("category") )
 		$context.putPageValue("searcher",$searcher)
 		#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
-		<form  class="autosubmit"  data-targetdiv="categoryresults" action="$home$apphome/components/categories/searchcategoryresults.html">
+		<form  class="autosubmit"  data-targetdiv="categoryresults" action="$home$apphome/components/categories/search/searchcategoryresults.html">
 		
 			<input type="hidden" name="searchtype" value="category" />
 			<input type="hidden" name="sortby" value="categorypathUp" />
@@ -24,15 +24,12 @@
 		
 		</form>
 		
-		<form  data-targetdiv="$!targetdiv" action="$action">
+		<form  action="$home$apphome/views/categories/index.html">
 		<div id="categoryresults">
-			$pages.include("$home$apphome/components/categories/searchcategoryresults.html",$context)
+			$pages.include("$home$apphome/components/categories/search/searchcategoryresults.html",$context)
 		</div>
-			#if( $targetdiv )
-			<input name="oemaxlevel" value="1"  type="hidden" />
-			#end
-			<input name="categoryidpicked" id="emselectedrow" type="hidden" />
-			<input name="categories" type="hidden" value="$!categories" />
+			<input name="categoryid" class="emselectedrow" type="hidden" />
+			<input name="nodeID" class="emselectedrow" type="hidden" />
 		</form>
 	</div>
 </div>	

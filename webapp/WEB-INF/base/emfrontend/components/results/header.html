@@ -21,6 +21,14 @@ $context.putPageValue("hits",$hits)
 	#end
 #end	
 <div id="resultheader">
+
+#if( $category )
+<div id="categoryheader" class="rowclick" style="border: 1px solid #eee;padding:3px 8px 8px 8px;color:#eee;margin: 0px; font-size: 13px; height: 33px">
+#foreach( $parent in $category.getParentCategories())
+	<a class="category" style="float:left;padding:4px 14px 4px 24px;" href="$home$apphome/views/categories/index.html?categoryid=$parent.getId()&nodeID=$parent.getId()"> $parent </a> 
+#end
+</div>
+#end
 	<ul id="sub-nav" class="search-views">
 		#set ($classname="enabled")
 		#set ($enabled=$hits.getSelectionSize() > 0)
