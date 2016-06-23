@@ -1226,7 +1226,7 @@ public class BasePushManager implements PushManager
 			String value = inMetadata.getProperty(key);
 			asset.setProperty(key, value);
 		}
-		inArchive.getAssetSearcher().saveData(asset, null);
+		importer.saveAsset(inArchive, null, asset); //TODO: check if zip functionality works
 		return asset;
 	}
 	

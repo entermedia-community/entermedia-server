@@ -212,7 +212,7 @@ public class JsonDataModule extends BaseJsonModule
 		Data newdata = loadData(inReq);
 		if(newdata != null)
 		{
-			saveJsonData(request,searcher,newdata);
+			populateJsonData(request,searcher,newdata);
 			searcher.saveData(newdata, inReq.getUser());
 			inReq.putPageValue("searcher", searcher);
 			inReq.putPageValue("data", newdata);

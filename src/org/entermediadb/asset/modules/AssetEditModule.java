@@ -866,7 +866,8 @@ public class AssetEditModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 		String unzip = inReq.findValue("unzip");
 		
-		Data asset = getAssetImporter().createAssetFromExistingFile(getMediaArchive(catalogid), inReq.getUser(), Boolean.valueOf(unzip), sourcepath);
+		Asset asset = getAssetImporter().createAssetFromExistingFile(getMediaArchive(catalogid), inReq.getUser(), Boolean.valueOf(unzip), sourcepath);
+		getAssetImporter().saveAsset(getMediaArchive(inReq), inReq.getUser(), asset);
 		if(asset == null)
 		{
 			return;

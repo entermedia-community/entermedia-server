@@ -142,7 +142,7 @@ public class AssetImporter
 	}
 
 
-	public Data createAssetFromExistingFile( MediaArchive inArchive, User inUser, boolean unzip,  String inSourcepath)
+	public Asset createAssetFromExistingFile( MediaArchive inArchive, User inUser, boolean unzip,  String inSourcepath)
 	{
 		String catalogid = inArchive.getCatalogId();
 		
@@ -199,7 +199,7 @@ public class AssetImporter
 	public Asset createAssetFromPage(MediaArchive inArchive, boolean includefilename, User inUser, Page inAssetPage, String inAssetId)
 	{
 		Asset asset = getAssetUtilities().createAssetIfNeeded(inAssetPage.getContentItem(),includefilename, inArchive, inUser);
-		boolean existing = true;
+
 		if( asset == null)
 		{
 			//Should never call this
@@ -208,14 +208,23 @@ public class AssetImporter
 			asset = inArchive.getAssetBySourcePath(sourcepath);
 			return asset;
 		}
-		if( asset.get("recordmodificationdate") == null )
-		{
-			existing = false;
-		}
 		if( asset.getId() == null) 
 		{
 			asset.setId(inAssetId);
 		}
+		saveAsset(inArchive, inUser, asset);
+		
+		
+		return asset;
+	}
+
+	public void saveAsset(MediaArchive inArchive, User inUser, Asset asset) {
+		boolean existing = true;
+		if( asset.get("recordmodificationdate") == null )
+		{
+			existing = false;
+		}
+
 		inArchive.saveAsset(asset, inUser);
 		if( existing )
 		{
@@ -227,9 +236,6 @@ public class AssetImporter
 		}
 
 		inArchive.fireMediaEvent("importing/assetsimported", inUser, asset);
-		
-		
-		return asset;
 	}
 
 	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)

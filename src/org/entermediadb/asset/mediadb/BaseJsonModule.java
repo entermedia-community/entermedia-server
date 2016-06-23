@@ -192,7 +192,7 @@ public class BaseJsonModule extends BaseMediaModule
 	}
 	
 	
-	public void saveJsonData(Map inputdata, Searcher searcher, Data inData)
+	public void populateJsonData(Map inputdata, Searcher searcher, Data inData)
 	{
 		for (Iterator iterator = inputdata.keySet().iterator(); iterator.hasNext();)
 		{
@@ -203,13 +203,14 @@ public class BaseJsonModule extends BaseMediaModule
 				inData.setProperty(key, (String)value);
 			} 
 			
-			if(value instanceof List)
+			if(value instanceof Collection)
 			{
 				Collection ids = new ArrayList();
+				Collection values = (Collection)value;
 				PropertyDetail detail = searcher.getDetail(key);
 				
 				//We have a list full of maps or strings
-				for (Iterator iterator2 = ids.iterator(); iterator2.hasNext();)
+				for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
 				{
 					Object it = (Object) iterator2.next();
 					if( it instanceof String)

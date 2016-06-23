@@ -172,6 +172,7 @@ public class JsonAssetModule extends BaseJsonModule
 		if(properties.getFirstItem() != null)
 		{
 			String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/" + properties.getFirstItem().getName();
+			path = path.replace("//", "/");
 			properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
 			Page newfile = archive.getPageManager().getPage(path);
 			//THis will append the filename to the source path
@@ -191,6 +192,7 @@ public class JsonAssetModule extends BaseJsonModule
 			if(file.exists())
 			{
 				String path = "/WEB-INF/data/" + archive.getCatalogId()	+ "/originals/" + sourcepath + "/" + file.getName();
+				path = path.replace("//", "/");
 				Page newfile = archive.getPageManager().getPage(path);
 				String realpath = newfile.getContentItem().getAbsolutePath();
 				File target = new File(realpath);
@@ -212,9 +214,9 @@ public class JsonAssetModule extends BaseJsonModule
 			asset.setProperty("sourcepath", sourcepath);
 		}
 		
-		saveJsonData(request,searcher,asset);
+		populateJsonData(request,searcher,asset);
 		
-		searcher.saveData(asset, inReq.getUser());
+		importer.saveAsset(archive, inReq.getUser(), asset);
 		
 		//JSONObject result = getAssetJson(sm, searcher, asset);
 		//String jsondata = result.toString();
@@ -254,7 +256,7 @@ public class JsonAssetModule extends BaseJsonModule
 		{
 				return;
 		}
-		saveJsonData(inputdata,searcher,asset);
+		populateJsonData(inputdata,searcher,asset);
 						
 		searcher.saveData(asset, inReq.getUser());
 		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset);
