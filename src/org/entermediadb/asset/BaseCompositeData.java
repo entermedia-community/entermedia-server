@@ -276,9 +276,21 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	public void setValues(String inKey, Collection<String> inValues)
 	{
 		//Turn this into a string? Nope
-		getPropertiesSet().put(inKey,inValues);
+		
 	}
-
+	@Override
+	public void setValue(String inKey, Object inValue)
+	{
+		if( inValue == null )
+		{
+			inValue = "";
+		}
+		//getProperties().put(inKey, inValue);
+		getPropertiesSet().put(inKey,inValue);
+	}
+	
+	
+	
 	public String getId()
 	{
 		return fieldId;
