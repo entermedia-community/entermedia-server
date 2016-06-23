@@ -12,9 +12,8 @@ import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
 import org.openedit.users.User
-import org.openedit.users.UserManager
-
-import assets.model.AssetTypeManager
+import org.openedit.users.UserManager;
+import assets.model.AssetTypeManager;
 import assets.model.EmailNotifier
 
 

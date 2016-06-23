@@ -1,17 +1,14 @@
-import java.io.OutputStream;
 import java.sql.Connection
 import java.sql.DatabaseMetaData
-import java.sql.ResultSet;
+import java.sql.ResultSet
 import java.sql.ResultSetMetaData
 import java.sql.SQLException
 import java.sql.Statement
 
-import org.openedit.db.util.ConnectionPool
-import org.entermediadb.asset.util.CSVWriter;
-
+import org.entermediadb.asset.util.CSVWriter
 import org.openedit.page.Page
 
-import model.importer.BaseImporter
+
 
 class ImportWithSqlHelper extends BaseImporter
 {

@@ -2,8 +2,6 @@ import org.entermediadb.asset.importer.BaseImporter
 import org.entermediadb.asset.util.Row
 import org.openedit.Data
 
-import conversions.CsvImporter
-
 class CsvImporter extends BaseImporter
 {
 	/**

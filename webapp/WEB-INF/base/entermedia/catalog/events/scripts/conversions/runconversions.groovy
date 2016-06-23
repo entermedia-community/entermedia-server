@@ -3,7 +3,7 @@ package conversions;
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.ConversionManager
 import org.entermediadb.asset.convert.ConvertInstructions
 import org.entermediadb.asset.convert.ConvertResult
 import org.entermediadb.scripts.ScriptLogger
@@ -14,12 +14,9 @@ import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
 import org.openedit.locks.Lock
-import org.openedit.page.Page
 import org.openedit.users.User
 import org.openedit.util.DateStorageUtil
 import org.openedit.util.ExecutorManager
-import org.openedit.util.PathUtilities
-import org.openedit.util.ExecutorManager.*
 
 //class Finisher implements Runnable 
 //{

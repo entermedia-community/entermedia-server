@@ -239,9 +239,16 @@ public class CatalogWebTreeModel extends BaseTreeModel
 	public Object getRoot()
 	{
 		if (fieldRoot == null)
+		{
 			return getCategorySearcher().getRootCategory();
-		else
-			return getCategorySearcher().getCategory(fieldRoot.getId());
+		}	
+//		else
+//		{
+//			return getCategorySearcher().getCategory(fieldRoot.getId());
+//		}
+		
+		//The children will be refreshed if needed based on the isDirty state
+		return fieldRoot;
 	}
 
 	public String getId(Object inNode)

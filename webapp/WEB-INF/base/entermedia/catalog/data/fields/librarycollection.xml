@@ -1,7 +1,7 @@
 
 <properties beanname="dataSearcher">
   <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
-  <property id="name" index="true" stored="true" editable="true" sortable="true" >Name</property>
+  <property id="name" index="true" stored="true" editable="true" required="true" viewtype="autocomplete" foreignkeyid="library"  >Collection Name</property>
   <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Delivery Date</property>
   <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Update Date</property>
   <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="user" >Owner</property>

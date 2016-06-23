@@ -6,7 +6,6 @@ import org.entermediadb.email.PostMail
 import org.entermediadb.email.TemplateWebEmail
 import org.openedit.Data
 import org.openedit.WebPageRequest
-import org.openedit.WebPageRequest.*
 import org.openedit.data.Searcher
 import org.openedit.page.Page
 
