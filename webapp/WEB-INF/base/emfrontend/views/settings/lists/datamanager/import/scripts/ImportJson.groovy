@@ -1,8 +1,7 @@
 import groovy.json.JsonSlurper
 
+import org.entermediadb.scripts.EnterMediaObject
 import org.openedit.data.Searcher
-
-import org.entermediadb.asset.scripts.EnterMediaObject
 import org.openedit.page.Page
 
 
