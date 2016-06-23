@@ -5,8 +5,7 @@
 	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->
 	<!-- <a folder="edit"  id="viewassetedit"  moduleid="asset"  useajax="false" name="Image Crop"  ordering="130"/> -->
 	<a folder="conversions"  id="viewconversions"  moduleid="asset"  useajax="false" name="Conversions"  ordering="130"/>
-	<a folder="categorize"  id="editassetcategories"  moduleid="asset" useajax="true" name="Categories" multiedit="true"  ordering="140"/>
-	<a folder="tags"  id="editassettags"  moduleid="asset"  useajax="true" name="Tags" multiedit="true"  ordering="150"/>   	
+	<a folder="categorize"  id="editassetcategories"  moduleid="asset" useajax="true" name="Categories" multiedit="true"  ordering="140"/>	
 	<a folder="libraries" id="asseteditorlibraries"  moduleid="asset"  useajax="true"  multiedit="true" name="Libraries" ordering="160"/>
 	<a folder="map"  id="viewmap"  moduleid="asset"  useajax="false" multiedit="true" name="Geo Location"  ordering="170"/> 	
 	<!-- <a folder="edit"  id="viewmediaedit" name="Media Editor" /> -->

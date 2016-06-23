@@ -11,7 +11,6 @@
 	<permission id="editassetcategories" permissiontype="edit" name="Assign Categories" description="Enables editing of an assets assigned categories" ordering="400" />
 	<permission id="editcategories" permissiontype="edit" name="Edit Categories" description="Enables editing of categories" ordering="400" />
 	<permission id="viewassetedit" permissiontype="edit" name="Crop JPG" description="Enables cropping of JPG Images" ordering="400" />
-	<permission id="editassettags" permissiontype="edit" name="Tags" description="Enables editing of an assets assigned tags" ordering="400" />
 	<permission id="comment" permissiontype="edit" name="Add Comments" description="Enables commenting on media assets." ordering="400" />
 	<permission id="deletecomments" permissiontype="edit" name="Delete Comments" description="Enables the removal of comments." ordering="400" />
 	<permission id="metadatageneral" permissiontype="edit" name="General Metadata" description="Enable general metadata edits." ordering="400" />

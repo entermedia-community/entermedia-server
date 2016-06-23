@@ -188,7 +188,7 @@
         </fileset>
 
     </classpath>
-  		<test name="org.entermediadb.asset.AllTests" outfile="./junit" todir="${report}">
+  		<test name="org.entermediadb.AllTests" outfile="./junit" todir="${report}">
   			<formatter type="xml"/>
   		</test>
   	</junit>
