@@ -58,6 +58,9 @@ public class LibraryPermissionsTest extends BaseEnterMediaTest
 		
 		groupuser.addGroup(usersgroup);
 		roleuser.addGroup(usersgroup);
+		uman.saveUser(groupuser);
+		uman.saveUser(roleuser);
+		
 		
 		ProfileModule module = (ProfileModule)getFixture().getModuleManager().getBean("ProfileModule");
 		
