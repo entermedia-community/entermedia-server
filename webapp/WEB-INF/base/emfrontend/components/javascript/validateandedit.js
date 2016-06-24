@@ -5,12 +5,38 @@ var app,home,apphome,themeprefix;
 
 
 jQuery(document).ready(function() 
-		{
-			app = jQuery("#application");
-			home =  app.data("home");
-			apphome = home + app.data("apphome");
-			themeprefix = app.data("home") + app.data("themeprefix");	
-		}
+{
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	themeprefix = app.data("home") + app.data("themeprefix");
+	
+	
+	//--
+	jQuery("#languagesavebtn").livequery('click', function(event){
+		event.stopPropagation();
+		event.preventDefault();
+		
+		var btn = $(this);
+		var url =  btn.attr('href');
+		var detailid = btn.data('detailid');
+		var languages = $("#languages"+detailid);
+		var value = $("#languagesavevalue").val();
+		
+		var args = {oemaxlevel : 1, detailid : detailid, languagecode: languages.val(), languagename: $("#languages"+detailid+" :selected").text()};
+		
+		jQuery.get(url, args, function (data) {
+			$("#languagesextra"+detailid).append(data);
+		});
+		//
+		
+	});
+	//++
+	jQuery("#languageselector").livequery('onchange', function(event){
+		
+	});
+	
+}
 );
 
 
