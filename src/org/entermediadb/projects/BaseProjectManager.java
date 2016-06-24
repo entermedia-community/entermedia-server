@@ -808,6 +808,7 @@ public class BaseProjectManager implements ProjectManager
 	public String exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
 	{
 		//move the collection root folder
+		//TODO: Check for bool
 		importCollection(inReq,inArchive,inCollectionid); //make copies of everything
 		
 		//grab all the assets and update thier sourcepath and move them with images
@@ -880,15 +881,22 @@ public class BaseProjectManager implements ProjectManager
 
 		//Clean up
 		Page leftovers = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + oldcollectionpath);
-		Page dest = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + collectionpath);
-		inArchive.getPageManager().movePage(leftovers, dest);
-
+		if( leftovers.exists())
+		{
+			Page dest = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + collectionpath);
+			inArchive.getPageManager().movePage(leftovers, dest);
+		}
 		leftovers = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + oldcollectionpath);
-		dest = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + collectionpath);
-		inArchive.getPageManager().movePage(leftovers, dest);
-
+		if( leftovers.exists())
+		{
+			Page dest = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + collectionpath);
+			inArchive.getPageManager().movePage(leftovers, dest);
+		}
 		//inArchive.getPageManager().movePage(oldthumbs, newthumbs);
 
+		collection.setValue("library", newlibrary.getId());
+		inArchive.getSearcher("librarycollection").saveData(collection, null);
+		
 		return collectionpath;
 		
 	}

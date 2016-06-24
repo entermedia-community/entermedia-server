@@ -947,13 +947,9 @@ public class AssetEditModule extends BaseMediaModule
 	protected void createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
-		String currentcollectionid = inReq.getRequestParameter("currentcollection");
-		if( currentcollectionid != null && currentcollectionid.trim().length() == 0 )
-		{
-			currentcollectionid = null;
-		}
-		final String currentcollection = currentcollectionid;
 		final Map metadata = readMetaData(inReq,archive,"");
+		final String currentcollection = (String)metadata.get("collectionid");
+
 		final Map pages = savePages(inReq,archive,inPages);
 		final User user = inReq.getUser();
 		
@@ -1151,6 +1147,51 @@ public class AssetEditModule extends BaseMediaModule
 			}
 		}
 		vals.put("categories",cats);
+		
+		
+		String collectionid = inReq.getRequestParameter("currentcollection");
+		if( collectionid == null)
+		{
+			collectionid = inReq.getRequestParameter("currentcollection.value");
+		}
+		if( collectionid != null && collectionid.trim().length() == 0 )
+		{
+			collectionid = null;
+		}
+		//Deal with library.value and create new collection
+		if( collectionid == null)
+		{
+			String newcollection = inReq.getRequestParameter("newcollection");
+			if( newcollection != null)
+			{
+				Searcher librarycollectionsearcher = archive.getSearcher("librarycollection");
+				Data collection = librarycollectionsearcher.createNewData();
+				collection.setName(newcollection);
+				String libraryid =  inReq.getRequestParameter("library.value");
+				if( libraryid == null)
+				{
+					libraryid = inReq.getUser().getId();
+				}
+				collection.setProperty("library", libraryid );
+				collection.setProperty("owner", inReq.getUser().getId() );
+				collection.setValue("creationdate", new Date() );
+				librarycollectionsearcher.saveData(collection, null);
+				collectionid = collection.getId();
+				
+				String libraries =  inReq.getRequestParameter("libraries.value");
+				if( libraries == null)
+				{
+					vals.put("libraries",libraryid);
+					inReq.setRequestParameter("libraries.value",libraryid);
+				}
+				inReq.setRequestParameter("currentcollection",collectionid);
+			}
+		}
+		if( collectionid != null)
+		{
+			vals.put("collectionid",collectionid);
+		}
+		
 		return vals;
 	}
 	

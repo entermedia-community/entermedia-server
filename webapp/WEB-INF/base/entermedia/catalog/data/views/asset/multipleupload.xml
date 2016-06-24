@@ -1,5 +1,9 @@
 <properties>
-  <property id="project"/>
-  <property id="libraries" required="true"/>
+  <property id="headline"/>
+  <property id="assettitle"/>
+  <property id="longcaption"/>
   <property id="keywords"/>
+  <property id="copyrightstatus"/>
+  <property id="language"/>
+  <property id="instructions"/>
 </properties>

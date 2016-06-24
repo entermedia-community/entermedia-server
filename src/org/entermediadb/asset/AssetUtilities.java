@@ -340,6 +340,10 @@ public class AssetUtilities
 		String currentcollectionid = inReq.getRequestParameter("currentcollection");
 		if( currentcollectionid == null)
 		{
+			currentcollectionid = inReq.getRequestParameter("currentcollection.value");
+		}	
+		if( currentcollectionid == null)
+		{
 			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
 		}
 		else

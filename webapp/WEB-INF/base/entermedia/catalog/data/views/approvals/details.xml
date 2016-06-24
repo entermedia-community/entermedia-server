@@ -1,6 +1,5 @@
 <properties usagelabel="Approvals and Licensing">
   <property id="contact" required="true" validate="true" />
-  <property id="departments"/>
   <property id="datereviewed" validate="true"/>
   <property id="notes" />
   <property id="dateexpires" />

@@ -1,4 +1,4 @@
-<div id="collectionpicker">
+<div id="collectionpicker" style="text-align: right;width:240px">
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
 	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
@@ -8,11 +8,23 @@
 		<table class="inlinesearch" >
 			<tr>
 			#foreach( $detail in $details)
-				<td>
+				<td id="${detail.id}editspace" style="padding-right:20px;">
+					#if( $detail.id == "name")
+						#set( $detail = $detail.copy() )
+						$detail.setId("currentcollection")
+						$detail.setViewType("autocomplete")
+						$detail.setProperty("foreignkeyid","library")
+						$detail.setProperty("listid","librarycollection")
+					#end
+					
 					$context.putPageValue("detail", $detail)
 					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+					#if( $detail.id == "currentcollection")
+							<a class="ajax" targetdivinner="nameeditspace" href="$home$apphome/components/upload/types/html5/createcollection.html">[[new collection]]</a>
+					#end
 				</td>	
 			#end
 			</tr>
 		</table>	
+		
 </div>

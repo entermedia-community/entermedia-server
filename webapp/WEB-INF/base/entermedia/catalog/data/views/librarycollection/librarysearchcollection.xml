@@ -2,5 +2,5 @@
 
 <root>
   <property id="library" />
-  <property id="name" required="true" name="Collection Name" viewtype="autocomplete" />
+  <property id="name" />
 </root>

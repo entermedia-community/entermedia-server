@@ -2,8 +2,6 @@
 
 <root> 
   <property id="name" />
-  <property id="project" />
-  <property id="projectstatus" />
-  <property id="projecttype" />
+  <property id="division"/>
   
 </root>

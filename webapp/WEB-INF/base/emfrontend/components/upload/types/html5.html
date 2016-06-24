@@ -58,9 +58,12 @@
 						$context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
 					#else
-						$context.putPageValue("view","asset/multipleupload")	
+
+					$pages.include("$apphome/components/upload/types/html5/pickcollection.html",$context)					
+					
 					#end
 					
+					$context.putPageValue("view","asset/multipleupload")	
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 				##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">

@@ -2,7 +2,8 @@
 
 <root>
   <property id="name"/>
-  <property id="project"/>
-  <property id="folder" required="true"/>
+  <property id="division"/>
+  <property id="projectstatus"/>  
+  <property id="folder"/>
   
 </root>
