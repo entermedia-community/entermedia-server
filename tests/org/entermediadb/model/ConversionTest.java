@@ -17,18 +17,12 @@ import org.openedit.page.Page;
 
 public class ConversionTest extends BaseEnterMediaTest
 {
-	static boolean reindex = false;
 	
-	protected void setUp() throws Exception
+	protected void oneTimeSetup()
 	{
 	    //executed only once, before the first test
-		if( reindex )
-		{
 			MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 			archive.getAssetSearcher().reIndexAll();
-			Thread.sleep(1000);
-			reindex = false;
-		}
 
 	}
 	
@@ -101,17 +95,7 @@ public class ConversionTest extends BaseEnterMediaTest
 		ConvertGenerator generator = (ConvertGenerator) archive.getModuleManager().getBean("ConvertGenerator");
 		Output output = new Output();
 		output.setStream(inReq.getOutputStream());
-		generator.generate(inReq, inReq.getPage(),output );
-		
-		
-//		 inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/widethumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3&assetid=101");
-//
-//		 getFixture().getEngine().executePageActions(inReq);
-//			getFixture().getEngine().executePathActions(inReq);
-//			
-//			generator.generate(inReq, inReq.getPage(),output );
-//			
-			
+		generator.generate(inReq, inReq.getPage(),output );	
 			
 		assertTrue(page.exists());
 		
