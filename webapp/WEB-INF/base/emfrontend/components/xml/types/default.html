@@ -1,30 +1,23 @@
 
 #if($detail.isMultiLanguage())
-	
-	##<a href="#" class="${detail.id}-languages" onClick='jQuery(".${detail.id}-languages").toggle("slow"); return false;'>(show languages)</a>
-	##<a href="#" class="${detail.id}-languages" style="display: none;" onClick='jQuery(".${detail.id}-languages").toggle("slow"); return false;'>(hide languages)</a>
 	<div class="${detail.id}-languages">
-		#set($languages = $mediaarchive.getList("locale"))
-		#set($map = $data.getValue($detail.getId()))
+			#set($languages = $mediaarchive.getList("locale"))
+			#set($map = $data.getValue($detail.getId()))
 			#set($locale = $languages.get(0))
 			
-			<div style="float:left;">
-			<input type="hidden" name="${detail.id}.language" value="$locale.id"/>
-			$locale: <input type=text" name="${detail.id}.${locale.id}" value="$!map.getText($locale.id)" >
-			</div>
-			<div style="float:left; padding:5px 5px 0 5px;">
-				<a class="ajax" targetdiv="languagesadd" href="$home$apphome/components/xml/types/language/addnew.html?oemaxlevel=1" title="[[Add Language]]"><img src="$home$themeprefix/images/icons/addgray.png"> </a>
+			<div class="clearfix"></div>
+			
+			<div id="languagesextra${detail.id}">
+			$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}")
 			</div>
 			
-			<div id="languagesadd"></div>
+			<div class="clearfix"></div>
+			<div style="padding: 10px">
+				<a class="" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra" data-detailid="${detail.id}" id="languagesavebtn"><img src="$home$themeprefix/images/icons/addgray.png"></a>
+			</div>
 			
-			##Show current Values
-			##if($languages.size() > 1)
-				  ##foreach($locale in $languages)
-					##	<li><a href="">$locale</a></li>
-					##end
-			##end
 	</div>
+
 #else
 	#if( !$val || $val.length() < 30)
 		<input type="text" class="detail_$detail.id autosubmited #if($detail.isRequired() && !$multiedit) required #end" value="#esc($val)"  id="${detail.getId()}.value" name="$!{detailprefix}${detail.getId()}.value"  onblur="if( typeof validate == 'function' ) validate('$searcher.getCatalogId()','$searcher.getSearchType()','$view','$detail.getId()');" />
