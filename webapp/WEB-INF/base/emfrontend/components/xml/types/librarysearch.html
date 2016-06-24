@@ -1,18 +1,2 @@
-#set( $pdetail = $mediaarchive.getAssetSearcher().getDetail("project") )
-#if($pdetail )
-	#set( $childcontext = $context.copy() )
-
-#if( $term)
-	#set( $library = $searcherManager.getData($catalogid,"library",$term.getValue() ) )		
-#end
-
-
-		#if($library)
-			$childcontext.putPageValue("val", $library.project)
-			$childcontext.putPageValue("value", $library.project)
-		#end
-		
-		$childcontext.putPageValue("detail", $pdetail)
-		<input name="operation" value="matches" type="hidden" />
-		$pages.include("$apphome/components/xml/types/autocomplete.html",$context)
-#end
+<input name="operation" value="exact" type="hidden" />
+$pages.include("$apphome/components/xml/types/libraries.html",$context)
