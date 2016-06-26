@@ -5,6 +5,7 @@
   <property id="headline"/>
   <property id="assettitle"/>
   <property id="creator"/>
+  <property id="keywords"/>
   <property id="longcaption"/>
   <property id="copyrightstatus"/>
   <property id="copyrightnotice"/>
@@ -13,6 +14,7 @@
 
   <property id="owner"/>
   <property id="editstatus"/>
+  <property id="importstatus"/>
   <property id="assettype"/>
   
 </properties>
