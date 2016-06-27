@@ -12,7 +12,6 @@ jQuery(document).ready(function()
 	themeprefix = app.data("home") + app.data("themeprefix");
 	
 	
-	//--
 	jQuery("#languagesavebtn").livequery('click', function(event){
 		event.stopPropagation();
 		event.preventDefault();
@@ -22,19 +21,36 @@ jQuery(document).ready(function()
 		var detailid = btn.data('detailid');
 		var languages = $("#languages"+detailid);
 		var value = $("#languagesavevalue").val();
-		
-		var args = {oemaxlevel : 1, detailid : detailid, languagecode: languages.val(), languagename: $("#languages"+detailid+" :selected").text()};
+		var count = $("#languagesextra_"+detailid+"_count").val();
+		if ($.isNumeric(count)) 
+			count++;
+		else
+			count = 1;
+		var args = {oemaxlevel : 1, 
+					detailid : detailid, 
+					count : count,
+					languagecode: languages.val(), 
+					languagename: $("#languages"+detailid+" :selected").text()};
 		
 		jQuery.get(url, args, function (data) {
-			$("#languagesextra"+detailid).append(data);
+			$("#languagesextra_"+detailid).append(data);
+			//languages count
+			
+			$("#languagesextra_"+detailid+"_count").val(count);
 		});
 		//
 		
 	});
-	//++
-	jQuery("#languageselector").livequery('onchange', function(event){
-		
+	
+	jQuery(".languageselector .select2").livequery('change', function(event){
+		var languagecode = $(this).val();
+		if (languagecode) {
+			var input_element = $(this).attr('id')+'_value';
+			var input_name = $(this).data("detailid")+'.'+languagecode;
+			$('#'+input_element).attr('name',input_name);
+		}
 	});
+	
 	
 }
 );

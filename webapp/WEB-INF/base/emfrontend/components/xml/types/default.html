@@ -5,16 +5,17 @@
 			#set($map = $data.getValue($detail.getId()))
 			#set($locale = $languages.get(0))
 			<input type="hidden" class="detail_$detail.id autosubmited #if($detail.isRequired() && !$multiedit) required #end" value="#esc($val)"  name="$!{detailprefix}${detail.getId()}.value"   />
-			
+			#set($language_count = 1)
+			<input type="hidden" id="languagesextra_${detail.id}_count" value="$language_count">
 			<div class="clearfix"></div>
 			
-			<div id="languagesextra${detail.id}">
-			$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}")
+			<div id="languagesextra_${detail.id}" class="languageselector">
+			$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count")
 			</div>
 			
 			<div class="clearfix"></div>
 			<div style="padding: 10px">
-				<a class="" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra" data-detailid="${detail.id}" id="languagesavebtn"><img src="$home$themeprefix/images/icons/addgray.png"></a>
+				<a class="" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id="languagesavebtn"><img src="$home$themeprefix/images/icons/addgray.png"></a>
 			</div>
 			
 	</div>
