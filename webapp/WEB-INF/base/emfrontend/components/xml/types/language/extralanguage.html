@@ -1,19 +1,26 @@
 #set( $detailid = $context.getRequestParameter("detailid"))
 #set( $languagecode = $context.getRequestParameter("languagecode"))
 #set( $language_count = $context.getRequestParameter("count"))
+#set( $map = $data.getValue($detailid))
 
 #set($languages = $mediaarchive.getList("locale"))
 
-<div id="languagesadd" class="languagesaddform">
+
+<div class="languagesaddform">
 	<div style="float:left; padding:0 5px">
-		<select class="select2 languageselector" id="languages_${detailid}_${language_count}" name="${detailid}.language" data-detailid="${detailid}">
+		<select class="select2 lenguagepicker" id="languages_${detailid}_${language_count}" name="${detailid}.language" data-detailid="${detailid}">
 			#foreach($locale in $languages)
-			<option value="$!locale.id">$!locale</option>
+			<option value="$!locale.id" #if($!languagecode==$!locale.id) selected="selected" #end>$!locale</option>
 			#end
 		</select>
 	</div>
 	<div style="float:left;">
-		<input type="text" id="languages_${detailid}_${language_count}_value" name="${detailid}.${languages[0].id}" >
+		#if($languagecode!='') 
+			#set($language_textbox = ${detailid} + "." + $languagecode) 
+		#else 
+			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
+		#end
+		<input type="text" id="languages_${detailid}_${language_count}_value" name="$language_textbox" value="$!map.getText($languagecode)" >
 	</div>
 	<div class='clearfix'></div>	
 </div>

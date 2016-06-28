@@ -34,27 +34,22 @@ jQuery(document).ready(function()
 		
 		jQuery.get(url, args, function (data) {
 			$("#languagesextra_"+detailid).append(data);
-			//languages count
-			
 			$("#languagesextra_"+detailid+"_count").val(count);
 		});
 		//
 		
 	});
-	
-	jQuery(".languageselector .select2").livequery('change', function(event){
-		var languagecode = $(this).val();
-		if (languagecode) {
-			var input_element = $(this).attr('id')+'_value';
-			var input_name = $(this).data("detailid")+'.'+languagecode;
-			$('#'+input_element).attr('name',input_name);
-		}
-	});
-	
-	
-}
-);
+});
 
+
+jQuery(document).on('change', ".lenguagepicker", function(){
+	var languagecode = $(this).val();
+	if (languagecode) {
+		var input_element = $(this).attr('id')+'_value';
+		var input_name = $(this).data("detailid")+'.'+languagecode;
+		$('#'+input_element).attr('name',input_name);
+	}
+});
 
 showPicker = function(detailid)
 {
