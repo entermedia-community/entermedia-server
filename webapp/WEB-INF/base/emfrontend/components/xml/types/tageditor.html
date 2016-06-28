@@ -17,7 +17,9 @@
 <select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"   multiple="multiple" class="listtags #if($detail.isRequired() && !$multiedit) required #end" data-searchfield="$searchfield"
  data-searchtype="$searcher.getSearchType()" data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-sortby="$!detail.sort" style="width: 250px">
 #foreach($vtag in $vals)
+#if($vtag && $vtag != "")
 <option value="$!vtag" selected="selected">#esc($vtag)</option>
+#end
 #end
 #if( $foundrow )
   <option value="$!val" selected="selected">#esc($label)</option>
