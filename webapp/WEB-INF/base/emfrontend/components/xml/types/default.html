@@ -14,8 +14,9 @@
 						#set($language_count = $language_count+1)
 					#end
 				#end
-				
+				#if($language_count == 1)
 				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$locale.id")
+				#end
 				<input type="hidden" id="languagesextra_${detail.id}_count" value="$language_count">
 			</div>
 			
