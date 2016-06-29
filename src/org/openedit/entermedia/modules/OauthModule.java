@@ -1,5 +1,7 @@
 package org.openedit.entermedia.modules;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthBearerClientRequest;
@@ -10,6 +12,7 @@ import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -24,7 +27,8 @@ import org.openedit.util.URLUtilities;
 
 public class OauthModule extends BaseMediaModule
 {	
-	
+	private static final Log log = LogFactory.getLog(OauthModule.class);
+
 	
 	protected StringEncryption fieldCookieEncryption;
 
@@ -176,7 +180,7 @@ public class OauthModule extends BaseMediaModule
 			JSONParser parser = new JSONParser();
 			
 			JSONObject data =  (JSONObject) parser.parse(userinfoJSON);
-			handleLogin(inReq, authinfo.getId() + "-" + (String)data.get("sub"), (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),true, true);
+			handleLogin(inReq, authinfo.getId() + "-" + (String)data.get("sub"), (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),false, true);
 			
 		}
 		inReq.redirect("/" + appid + "/index.html");
@@ -186,7 +190,9 @@ public class OauthModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
-
+		log.info("Username from drupal was " + username);
+		log.info("Username from drupal was " + username);
+		
 		User target = (User) searcher.searchById(username);
 
 	
