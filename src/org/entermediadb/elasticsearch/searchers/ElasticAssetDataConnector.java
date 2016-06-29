@@ -48,10 +48,9 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected MediaArchive fieldMediaArchive;
 	protected IntCounter fieldIntCounter;
 	protected OutputFiller filler = new OutputFiller();
-	
+
 	protected boolean fieldIncludeFullText = true;
-	
-	
+
 	public boolean isIncludeFullText()
 	{
 		return fieldIncludeFullText;
@@ -71,7 +70,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	{
 		if (fieldDataArchive == null)
 		{
-			DataArchive archive = (DataArchive)getModuleManager().getBean(getCatalogId(),"assetDataArchive");
+			DataArchive archive = (DataArchive) getModuleManager().getBean(getCatalogId(), "assetDataArchive");
 			archive.setDataFileName(getDataFileName());
 			archive.setElementName(getSearchType());
 			archive.setPathToData(getPathToData());
@@ -81,7 +80,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return fieldDataArchive;
 	}
 
-	
 	public void deleteFromIndex(String inId)
 	{
 		// TODO Auto-generated method stub
@@ -100,26 +98,24 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	}
 
-
 	public void reIndexAll() throws OpenEditException
-	{		
-		if( isReIndexing())
+	{
+		if (isReIndexing())
 		{
-			return;  //TODO: Make a lock so that two servers startin up dont conflict?
+			return; //TODO: Make a lock so that two servers startin up dont conflict?
 		}
 		setReIndexing(true);
 		try
 		{
 			getMediaArchive().getAssetArchive().clearAssets();
 			//For now just add things to the index. It never deletes
-			
-				//Someone is forcing a reindex
-				//deleteOldMapping();
-			putMappings(toId(getCatalogId()),true);
 
-			
+			//Someone is forcing a reindex
+			//deleteOldMapping();
+			putMappings(toId(getCatalogId()), true);
+
 			final List tosave = new ArrayList(500);
-			
+
 			PathProcessor processor = new PathProcessor()
 			{
 				public void processFile(ContentItem inContent, User inUser)
@@ -129,13 +125,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 						return;
 					}
 					String sourcepath = inContent.getPath();
-					sourcepath = sourcepath.substring(getPathToData().length() + 1,
-							sourcepath.length() - getDataFileName().length() - 1);
+					sourcepath = sourcepath.substring(getPathToData().length() + 1, sourcepath.length() - getDataFileName().length() - 1);
 					Asset asset = getMediaArchive().getAssetArchive().getAssetBySourcePath(sourcepath);
 					tosave.add(asset);
-					if(tosave.size() == 500)
+					if (tosave.size() == 500)
 					{
-						updateIndex(tosave,null);
+						updateIndex(tosave, null);
 						tosave.clear();
 					}
 					incrementCount();
@@ -146,11 +141,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			processor.setPageManager(getPageManager());
 			processor.setIncludeExtensions("xml");
 			processor.process();
-			updateIndex(tosave,null);
+			updateIndex(tosave, null);
 			log.info("reindexed " + processor.getExecCount());
-			flushChanges();			
+			flushChanges();
 		}
-		catch(Exception e){
+		catch (Exception e)
+		{
 			throw new OpenEditException(e);
 		}
 		finally
@@ -158,9 +154,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			setReIndexing(false);
 		}
 	}
-	
-	
-	
+
 	/**
 	 * @deprecated Need to simplify
 	 */
@@ -206,8 +200,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				inContent.field("category", catids);
 			}
 
-		
-			
 			// Searcher searcher =
 			// getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
 			// SearchQuery query = searcher.createSearchQuery();
@@ -231,39 +223,32 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// //log.info("Saved" + detail.getId() + "=" + value );
 			// }
 			// }
-			
+
 			//This is for saving and loading.
-			ArrayList <String>realcats = new ArrayList();
+			ArrayList<String> realcats = new ArrayList();
 			for (Iterator iterator = asset.getCategories().iterator(); iterator.hasNext();)
 			{
-				Category cat = (Category)iterator.next();
+				Category cat = (Category) iterator.next();
 				String catid = cat.getId();
 				realcats.add(catid);
 			}
 			String[] array = new String[realcats.size()];
-			array =  realcats.toArray(array);
-			inContent.field("category-exact",array);
+			array = realcats.toArray(array);
+			inContent.field("category-exact", array);
 		}
 		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
 	}
+
 	/*
-	protected void hydrateData(ContentItem inContent, String sourcepath, List buffer)
-	{
-		Asset data = getMediaArchive().getAssetBySourcePath(sourcepath);
-		if (data == null)
-		{
-			return;
-		}
-		buffer.add(data);
-		if (buffer.size() > 99)
-		{
-			updateIndex(buffer, null);
-		}
-	}
-	*/
+	 * protected void hydrateData(ContentItem inContent, String sourcepath, List
+	 * buffer) { Asset data =
+	 * getMediaArchive().getAssetBySourcePath(sourcepath); if (data == null) {
+	 * return; } buffer.add(data); if (buffer.size() > 99) { updateIndex(buffer,
+	 * null); } }
+	 */
 	protected void populatePermission(XContentBuilder inContent, Asset inAsset, String inPermission) throws IOException
 	{
 		List add = getAssetSecurityArchive().getAccessList(getMediaArchive(), inAsset);
@@ -287,7 +272,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 		// fullDesc.append(asset.getId());
 		// fullDesc.append(' ');
-		
+
 		String keywords = asTokens(asset.getKeywords());
 		fullDesc.append(keywords);
 		fullDesc.append(' ');
@@ -300,29 +285,29 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			fullDesc.append(cat.getName());
 			fullDesc.append(' ');
 		}
-		if( asset.getSourcePath() != null)
+		if (asset.getSourcePath() != null)
 		{
 			String[] dirs = asset.getSourcePath().split("/");
-	
+
 			for (int i = 0; i < dirs.length; i++)
 			{
 				fullDesc.append(dirs[i]);
 				fullDesc.append(' ');
 			}
-			if( isIncludeFullText() && Boolean.parseBoolean(asset.get("hasfulltext")))
+			if (isIncludeFullText() && Boolean.parseBoolean(asset.get("hasfulltext")))
 			{
-				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() +"/assets/" + asset.getSourcePath() + "/fulltext.txt");
-				if( item.exists() )
+				ContentItem item = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() + "/assets/" + asset.getSourcePath() + "/fulltext.txt");
+				if (item.exists())
 				{
 					Reader input = null;
 					try
 					{
-						input= new InputStreamReader( item.getInputStream(), "UTF-8");
-						StringWriter output = new StringWriter(); 
+						input = new InputStreamReader(item.getInputStream(), "UTF-8");
+						StringWriter output = new StringWriter();
 						filler.fill(input, output);
 						fullDesc.append(output.toString());
 					}
-					catch( IOException ex)
+					catch (IOException ex)
 					{
 						log.error(ex);
 					}
@@ -333,14 +318,14 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				}
 			}
 		}
-//		fullDesc.append(asset.get("fulltext")); //TODO: Is this set? Should we store this another way?
-//
-//		//TODO: Limit the size? Trim words?
-		if( fullDesc.length() > 500000)
+		//		fullDesc.append(asset.get("fulltext")); //TODO: Is this set? Should we store this another way?
+		//
+		//		//TODO: Limit the size? Trim words?
+		if (fullDesc.length() > 500000)
 		{
-			return fullDesc.substring(0,500000);
+			return fullDesc.substring(0, 500000);
 		}
-		
+
 		String result = fullDesc.toString();// fixInvalidCharacters(fullDesc.toString());
 		return result;
 	}
@@ -383,13 +368,13 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 	}
 
-//	/**
-//	 * @deprecated Need to simplify
-//	 */
-//	public void updateIndex(Collection<Data> all, boolean b)
-//	{
-//		updateIndex(all, null);
-//	}
+	//	/**
+	//	 * @deprecated Need to simplify
+	//	 */
+	//	public void updateIndex(Collection<Data> all, boolean b)
+	//	{
+	//		updateIndex(all, null);
+	//	}
 
 	public AssetSecurityArchive getAssetSecurityArchive()
 	{
@@ -428,6 +413,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 		return fieldIntCounter;
 	}
+
 	public synchronized String nextId()
 	{
 		Lock lock = getLockManager().lock(loadCounterPath(), "admin");
@@ -446,32 +432,33 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		if (inField.equals("id") || inField.equals("_id"))
 		{
 			GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
-			if(!response.isExists())
+			if (!response.isExists())
 			{
 				return null;
 			}
-			Asset asset =  createAssetFromResponse(response.getId(),response.getSource());
+			Asset asset = createAssetFromResponse(response.getId(), response.getSource());
 			return asset;
 			// String path = (String)response.getSource().get("sourcepath");
 
 			// return getAssetArchive().getAssetBySourcePath(path);
 		}
-		if(inField.equals("sourcepath") || inField.equals("_sourcepath")){
-			
+		if (inField.equals("sourcepath") || inField.equals("_sourcepath"))
+		{
+
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
-		
+
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 			search.setTypes(getSearchType());
-			
+
 			QueryBuilder b = QueryBuilders.matchQuery("sourcepath", inValue);
 			search.setQuery(b);
 			SearchResponse response = search.execute().actionGet();
-			Iterator <SearchHit> responseiter = response.getHits().iterator();
-			if(responseiter.hasNext()){
+			Iterator<SearchHit> responseiter = response.getHits().iterator();
+			if (responseiter.hasNext())
+			{
 				SearchHit hit = responseiter.next();
-				return createAssetFromResponse(hit.getId(),hit.getSource());
-				
-				
+				return createAssetFromResponse(hit.getId(), hit.getSource());
+
 			}
 			return null;
 		}
@@ -480,82 +467,97 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	protected Asset createAssetFromResponse(String inId, Map inSource)
 	{
-		Asset asset = (Asset)createNewData();
-		if(inSource == null){
+		Asset asset = (Asset) createNewData();
+		if (inSource == null)
+		{
 			return null;
 		}
 		asset.setId(inId);
-		
+
 		for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
 			Object object = inSource.get(key);
-			if("category-exact".equals(key)){
+			if ("category-exact".equals(key))
+			{
 				continue;
 			}
 			asset.setValue(key, object);
-//			String val = null;
-//			if (object instanceof String) {
-//				val= (String) object;
-//			}
-//			if (object instanceof Date) {
-//				val= String.valueOf((Date) object);
-//			}
-//			if (object instanceof Boolean) {
-//				val= String.valueOf((Boolean) object);
-//			}
-//			if (object instanceof Integer) {
-//				val= String.valueOf((Integer) object);
-//			}
-//			if (object instanceof Float) {
-//				val= String.valueOf((Float) object);
-//			}
-//			if (object instanceof Collection) {
-//				Collection values = (Collection) object;
-//				asset.setValues(key, (Collection<String>) object);
-//			}
-//			else if(val != null)
-//			{
-//				asset.setProperty(key, val);
-//			}
+			//			String val = null;
+			//			if (object instanceof String) {
+			//				val= (String) object;
+			//			}
+			//			if (object instanceof Date) {
+			//				val= String.valueOf((Date) object);
+			//			}
+			//			if (object instanceof Boolean) {
+			//				val= String.valueOf((Boolean) object);
+			//			}
+			//			if (object instanceof Integer) {
+			//				val= String.valueOf((Integer) object);
+			//			}
+			//			if (object instanceof Float) {
+			//				val= String.valueOf((Float) object);
+			//			}
+			//			if (object instanceof Collection) {
+			//				Collection values = (Collection) object;
+			//				asset.setValues(key, (Collection<String>) object);
+			//			}
+			//			else if(val != null)
+			//			{
+			//				asset.setProperty(key, val);
+			//			}
 		}
-		Collection categories = (Collection)inSource.get("category-exact");
-		if( categories != null)
+		Object cats = inSource.get("category-exact");
+		if (cats instanceof Collection)
 		{
-			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+			Collection categories = (Collection) inSource.get("category-exact");
+			if (categories != null)
 			{
-				String categoryid = (String) iterator.next();
-				Category category = getMediaArchive().getCategory(categoryid); //Cache this? Or lazy load em
-				if(category != null){
-					asset.addCategory(category);
+				for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+				{
+					String categoryid = (String) iterator.next();
+					Category category = getMediaArchive().getCategory(categoryid); //Cache this? Or lazy load em
+					if (category != null)
+					{
+						asset.addCategory(category);
+					}
 				}
 			}
-		}	
+		} else if(cats instanceof String){
+			Category category = getMediaArchive().getCategory((String) cats); //Cache this? Or lazy load em
+			if (category != null)
+			{
+				asset.addCategory(category);
+			}
+			
+		}
 		String isfolder = asset.get("isfolder");
-		if( isfolder == null)
+		if (isfolder == null)
 		{
 			ContentItem originalPage = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() + "/originals/" + asset.getSourcePath());
 			asset.setFolder(originalPage.isFolder());
-		}	
+		}
 		return asset;
 	}
-	
+
 	//TODO: Make an ElasticAsset bean type that can be searched and saved
 	@Override
 	public Data loadData(Data inHit)
 	{
-		if( inHit instanceof Asset)
+		if (inHit instanceof Asset)
 		{
 			return inHit;
 		}
 		//Stuff might get out of date?
-		if( inHit instanceof SearchHitData)
+		if (inHit instanceof SearchHitData)
 		{
-			SearchHitData db = (SearchHitData)inHit;
-			return createAssetFromResponse(inHit.getId(), db.getSearchHit().getSource() );
+			SearchHitData db = (SearchHitData) inHit;
+			return createAssetFromResponse(inHit.getId(), db.getSearchHit().getSource());
 		}
-		return (Data)searchById(inHit.getId());
+		return (Data) searchById(inHit.getId());
 	}
+
 	protected AssetArchive getAssetArchive()
 	{
 		return getMediaArchive().getAssetArchive();
@@ -563,9 +565,9 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	public Data getDataBySourcePath(String inSourcePath)
 	{
-		if( inSourcePath.endsWith("/"))
+		if (inSourcePath.endsWith("/"))
 		{
-			inSourcePath = inSourcePath.substring(0, inSourcePath.length() -1);
+			inSourcePath = inSourcePath.substring(0, inSourcePath.length() - 1);
 		}
 		return (Data) searchByField("sourcepath", inSourcePath);
 	}
@@ -575,12 +577,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return (Data) searchByField("sourcepath", inSourcePath);
 
 	}
-	
-	
+
 	public String getPathToData()
 	{
 		return "/WEB-INF/data/" + getCatalogId() + "/assets";
 	}
-	
-	
+
 }
