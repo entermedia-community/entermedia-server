@@ -71,7 +71,7 @@
 
 	<!-- Asset Contains -->
 	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" sortable="true"  externalid="XMP-dc:Title,iptc:ObjectName" >Asset Title</property>
-	<property id="headline"  index="true" stored="true" editable="true" keyword="true"  sortable="true"  externalid="iptc:Headline,XMP-photoshop:Headline">Headline</property>
+	<property id="headline" multilanguage=true" index="true" stored="true" editable="true" keyword="true"  sortable="true"  externalid="iptc:Headline,XMP-photoshop:Headline">Headline</property>
 	
 	
 	<property id="longcaption"  keyword="true" index="true" editable="true"  externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
