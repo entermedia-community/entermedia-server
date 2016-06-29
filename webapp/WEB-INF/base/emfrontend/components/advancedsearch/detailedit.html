@@ -29,6 +29,9 @@
 			#set ($viewtype = "default")
 		#end
 
+
+
+
 		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
 				#if($detail.defaultoperation && $detail.defaultoperation != "")
 					<input name="operation" value="$detail.defaultoperation" type="hidden" />
@@ -52,7 +55,7 @@
 			$context.putPageValue("values",$values)
 		#end	
 		
-		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
+		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
 	</td>
 </tr>
 
