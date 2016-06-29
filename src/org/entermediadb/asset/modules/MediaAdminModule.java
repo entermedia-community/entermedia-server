@@ -1,6 +1,5 @@
 package org.entermediadb.asset.modules;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,12 +14,12 @@ import org.entermediadb.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.data.Reloadable;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
+import org.openedit.page.PageSettings;
 import org.openedit.page.manage.PageManager;
 
 public class MediaAdminModule extends BaseMediaModule
@@ -320,13 +319,28 @@ public class MediaAdminModule extends BaseMediaModule
 				if( !existed)
 				{
 					//import any data sitting there for importing
+					MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive");
+
+				
+					
+					
 					List children = getPageManager().getRepository().getChildrenNames("/WEB-INF/data/" + catalogid + "/dataexport/");
 					if( !children.isEmpty())
 					{
-						MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive");
+						
+						PageManager pageManager = archive.getPageManager();
+						PageSettings homesettings = pageManager.getPageSettingsManager().getPageSettings("/" + catalogid + "/_site.xconf");
+						homesettings.setProperty("catalogid", catalogid);
+						homesettings.setProperty("fallbackdirectory","/entermedia/catalog");
+						pageManager.getPageSettingsManager().saveSetting(homesettings);
+						pageManager.clearCache();
+
 						log.info("Loading database from dataexport folder");
 						archive.fireMediaEvent("data/importdatabase",null);
 					}
+					
+										
+					
 				}
 			}
 			catch ( Exception ex)
