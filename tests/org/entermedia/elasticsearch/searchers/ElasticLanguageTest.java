@@ -65,8 +65,8 @@ public class ElasticLanguageTest extends BaseEnterMediaTest
 		hits = searcher.fieldSearch("assetttitle.fr", "German");
 		assertTrue(hits.size() ==0);
 		
-		hits = searcher.fieldSearch("assetttitle", "French"); // all languages
-		assertTrue(hits.size() >0);
+		//hits = searcher.fieldSearch("assetttitle", "French"); // all languages
+		//assertTrue(hits.size() >0);
 		
 		
 		

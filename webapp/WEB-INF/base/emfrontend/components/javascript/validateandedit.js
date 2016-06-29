@@ -5,14 +5,51 @@ var app,home,apphome,themeprefix;
 
 
 jQuery(document).ready(function() 
-		{
-			app = jQuery("#application");
-			home =  app.data("home");
-			apphome = home + app.data("apphome");
-			themeprefix = app.data("home") + app.data("themeprefix");	
-		}
-);
+{
+	app = jQuery("#application");
+	home =  app.data("home");
+	apphome = home + app.data("apphome");
+	themeprefix = app.data("home") + app.data("themeprefix");
+	
+	
+	jQuery(".languagesavebtn").livequery('click', function(event){
+		event.stopPropagation();
+		event.preventDefault();
+		
+		var btn = $(this);
+		var url =  btn.attr('href');
+		var detailid = btn.data('detailid');
+		var languages = $("#languages"+detailid);
+		var value = $("#languagesavevalue").val();
+		var count = $("#languagesextra_"+detailid+"_count").val();
+		if ($.isNumeric(count)) 
+			count++;
+		else
+			count = 1;
+		var args = {oemaxlevel : 1, 
+					detailid : detailid, 
+					count : count,
+					languagecode: languages.val(), 
+					languagename: $("#languages"+detailid+" :selected").text()};
+		
+		jQuery.get(url, args, function (data) {
+			$("#languagesextra_"+detailid).append(data);
+			$("#languagesextra_"+detailid+"_count").val(count);
+		});
+		//
+		
+	});
+});
 
+
+jQuery(document).on('change', ".lenguagepicker", function(){
+	var languagecode = $(this).val();
+	if (languagecode) {
+		var input_element = $(this).attr('id')+'_value';
+		var input_name = $(this).data("detailid")+'.'+languagecode;
+		$('#'+input_element).attr('name',input_name);
+	}
+});
 
 showPicker = function(detailid)
 {
