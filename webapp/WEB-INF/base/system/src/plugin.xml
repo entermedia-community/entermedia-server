@@ -269,7 +269,7 @@
 	
 	</bean>
 
-	<bean id="timedCacheManager" class="org.openedit.cache.CacheManager"  >
+	<bean id="timedCacheManager" class="org.openedit.cache.CacheManager" scope="prototype" >
 			<property name="expiryTime"><value>5</value></property>
 	</bean>
 
