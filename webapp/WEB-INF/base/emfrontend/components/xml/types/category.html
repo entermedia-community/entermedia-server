@@ -24,7 +24,7 @@
 	#end
    <input type="hidden" name="operation" value="orsgroup" />
    	#set( $ids = $existing.replace("|"," ") )
-   	<input type="hidden" name="category.values" value="$ids" />
+   	<input type="hidden" name="category.values" value="$!ids" />
    
    <a class="emdialog btn small" href="$home$apphome/components/categories/searchcategory.html?targetdiv=addcategory&categories=$!existing&clearselection=$!clear&action=$page.path" data-hidefooter="true">[[Pick Categories]]</a>
 
