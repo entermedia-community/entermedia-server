@@ -46,7 +46,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		assertNotNull( blank );
 	}
 	
-	public void testAddAndEditAsset() throws Exception
+	public void xtestAddAndEditAsset() throws Exception
 	{
 		Asset asset = createAsset();
 		Category category = getCategoryEditor().getCategory( "GOODSTUFF" );
