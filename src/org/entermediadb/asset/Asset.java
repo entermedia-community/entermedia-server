@@ -367,7 +367,8 @@ public class Asset implements MultiValued, SaveableData
 	public void setProperty(String inKey, String inValue)
 	{
 		PropertyDetail detail = getMediaArchive().getAssetSearcher().getDetail(inKey);
-		if(detail.isMultiLanguage()){
+
+		if(detail != null && detail.isMultiLanguage()){
 			Object val = getValue(inKey);
 			LanguageMap lm = new LanguageMap();
 			
