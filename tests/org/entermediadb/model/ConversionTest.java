@@ -86,7 +86,7 @@ public class ConversionTest extends BaseEnterMediaTest
 		Asset asset = archive.getAsset("101"); //mpg
 		assertNotNull(asset);
 		
-		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/image200x200offset3.jpg");		
+		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/video200x200offset3.jpg");		
 		archive.getPageManager().removePage(page);
 		
 		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3");
