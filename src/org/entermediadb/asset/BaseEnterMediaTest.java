@@ -53,6 +53,7 @@ public class BaseEnterMediaTest extends BaseTestCase
 	protected Asset createAsset(MediaArchive archive)
 	{
 		Asset asset = archive.getAssetEditor().createAsset();
+		asset.setMediaArchive(archive);
 		String newId = archive.getAssetSearcher().nextAssetNumber();
 		asset.setId(newId); // just in case case matters
 		asset.setName("Test asset");
