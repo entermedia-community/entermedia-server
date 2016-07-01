@@ -5,7 +5,7 @@ $context.putPageValue("details",$details)
 $context.putPageValue("clickpath","$apphome/views/categories/")
 $context.putPageValue("viewpostfix",".html")
 
-<div  class="tableholder">
+<div id="categoryresults"  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
 
 <table  id="main-results-table" class="emdata striped greytxt table tbl-responsive" >
@@ -21,7 +21,7 @@ $context.putPageValue("viewpostfix",".html")
 				<td class="category categorydraggable ui-draggable ui-draggable-handle" data-nodeid="$hit.id" data-categoryname="$hit.name">
 				$hit.name</td>
 			#foreach( $detail in $details)
-				<td style="padding:4px;">
+				<td style="padding:4px;" >
 					#set( $val = "$!hit.get($detail.id)" )
 					#if($detail.render)
 						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))

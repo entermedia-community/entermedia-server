@@ -294,13 +294,21 @@ uiload = function() {
 	{
 		var form = $(this);
 		var targetdiv = form.data('targetdiv');
-		jQuery(this,"select").change(function() 
+		jQuery("form.autosubmit select").change(function() 
 		{
-			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv , success: function()
+				{			
+					$(document).trigger("domchanged");
+				}
+			} );
 		});
-		jQuery(this,"input").on("keyup",function() 
+		jQuery("form.autosubmit input").on("keyup",function() 
 		{
-			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv , success: function()
+				{			
+					$(document).trigger("domchanged");
+				}
+			} );
 		});
 
 	});
@@ -367,6 +375,7 @@ uiload = function() {
 	
 	jQuery('.emrowpicker table td' ).livequery("click", function(event)
 	{
+		console.log("click");
 		event.preventDefault();
 
 		var clicked = jQuery(this);
