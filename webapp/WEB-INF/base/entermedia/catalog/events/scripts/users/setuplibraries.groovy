@@ -44,47 +44,19 @@ public void init()
 		{
 		
 			Data hit =  it;
-			//Create a hotfolder
-			Data profile = profilesearcher.searchById(it.id);
-			String path = "/WEB-INF/data/" + catalogId + "/originals/hotfolders/${it.id}/";
-			Data existing = manager.getFolderByPathEnding(catalogId, "test");
-			if( existing != null)
-			{
-				manager.deleteFolder(catalogId,existing);
-			}
-			Searcher hotfolders = mediaArchive.getSearcher("hotfolder");
-			
-			Data newrow = hotfolders.searchById("user-${it.id}");
-			if(newrow == null){
-				newrow = hotfolders.createNewData();
-				newrow.setId("user-${it.id}");
-			}
-				newrow.setName("Hot Folder for ${it} (${it.id})");
-				newrow.setProperty("subfolder", "${hit.id}");
-				//newrow.setProperty("externalpath", path);
-				
-				if(profile != null && profile.get("syncthing") != null){
-					newrow.setProperty("hotfoldertype", "syncthing");
-					newrow.setProperty("deviceid", profile.get("syncthing"));
-					
-					
-				}
-				newrow.setProperty("excludes", "*tmp*, */.*,*/Thumbs.db,*.old, *.ini");
-				manager.saveFolder(catalogId,newrow);
-				manager.saveMounts(catalogId);
-				
-			
+		
 			
 			//Create a library
 			
-			Data userlibrary = libraries.searchById("${hit.id}-library");
+			Data userlibrary = libraries.searchById("${hit.id}");
 			if(userlibrary == null){
 				userlibrary = libraries.createNewData();
 				userlibrary.setId("${hit.id}-library");
-				userlibrary.setName("${it.firstName}'s Library");
 				
 				
 			}
+			userlibrary.setName("${it.firstName}'s Library");
+			
 			userlibrary.setProperty("folder", "${hit.id}");
 			
 			libraries.saveData(userlibrary);
@@ -119,6 +91,39 @@ public void init()
 				
 				
 			}
+			
+			
+			//Create a hotfolder
+			Data profile = profilesearcher.searchById(it.id);
+			String path = "/WEB-INF/data/" + catalogId + "/originals/hotfolders/${it.id}/";
+			Data existing = manager.getFolderByPathEnding(catalogId, "test");
+			if( existing != null)
+			{
+				manager.deleteFolder(catalogId,existing);
+			}
+			Searcher hotfolders = mediaArchive.getSearcher("hotfolder");
+			
+			Data newrow = hotfolders.searchById("user-${it.id}");
+			if(newrow == null){
+				newrow = hotfolders.createNewData();
+				newrow.setId("user-${it.id}");
+			}
+				newrow.setName("Hot Folder for ${it} (${it.id})");
+				newrow.setProperty("subfolder", "${hit.id}");
+				//newrow.setProperty("externalpath", path);
+				
+				if(profile != null && profile.get("syncthing") != null){
+					newrow.setProperty("hotfoldertype", "syncthing");
+					newrow.setProperty("deviceid", profile.get("syncthing"));
+					
+					
+				}
+				newrow.setProperty("excludes", "*tmp*, */.*,*/Thumbs.db,*.old, *.ini");
+				manager.saveFolder(catalogId,newrow);
+				manager.saveMounts(catalogId);
+				
+			
+			
 			
 			
 		}

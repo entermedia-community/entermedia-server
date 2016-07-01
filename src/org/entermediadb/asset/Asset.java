@@ -50,9 +50,10 @@ public class Asset implements MultiValued, SaveableData
 	{
 		return getMap().getValues(inPreference);
 	}
+
 	public void setValues(String inKey, Collection<String> inValues)
 	{
-		if( inValues == null || inValues.size() == 0)
+		if (inValues == null || inValues.size() == 0)
 		{
 			removeProperty(inKey);
 		}
@@ -61,7 +62,7 @@ public class Asset implements MultiValued, SaveableData
 			getMap().put(inKey, inValues);
 		}
 	}
-	
+
 	public boolean isFolder()
 	{
 		return Boolean.parseBoolean(get("isfolder"));
@@ -69,7 +70,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public void setFolder(boolean inIsFolder)
 	{
-		setProperty("isfolder",String.valueOf(inIsFolder));
+		setProperty("isfolder", String.valueOf(inIsFolder));
 	}
 
 	public Asset(MediaArchive inMediaArchive)
@@ -86,15 +87,15 @@ public class Asset implements MultiValued, SaveableData
 	{
 		fieldMediaArchive = inMediaArchive;
 	}
-	
+
 	public int getOrdering()
 	{
-		return (int)getValue("ordering");
+		return (int) getValue("ordering");
 	}
 
 	public void setOrdering(int inOrdering)
 	{
-		setValue("ordering",inOrdering);
+		setValue("ordering", inOrdering);
 	}
 
 	public String getName()
@@ -131,7 +132,7 @@ public class Asset implements MultiValued, SaveableData
 	public String toString()
 	{
 		String title = get("assettitle");
-		if ( title != null)
+		if (title != null)
 		{
 			return title;
 		}
@@ -147,15 +148,14 @@ public class Asset implements MultiValued, SaveableData
 
 	public String getId()
 	{
-		return (String)getValue("id");
+		return (String) getValue("id");
 	}
 
 	public void setId(String inString)
 	{
-		setValue("id",inString);
+		setValue("id", inString);
 	}
 
-	
 	public String get(String inKey)
 	{
 		return getMap().getString(inKey);
@@ -167,77 +167,76 @@ public class Asset implements MultiValued, SaveableData
 
 	public Object getValue(String inAttribute)
 	{
-		
+
 		if ("fulltext".equals(inAttribute))
 		{
-			if(getMediaArchive() != null){
+			if (getMediaArchive() != null)
+			{
 				return getMediaArchive().getAssetSearcher().getFulltext(this);
-			} 
+			}
 		}
-//		if ("keywords".equals(inAttribute))
-//		{
-//			List<String> keywords = getKeywords();
-//			if( keywords.size() == 0 )
-//			{
-//				return null;
-//			}
-//			StringBuffer out = new StringBuffer();
-//			for (Iterator iterator = keywords.iterator(); iterator.hasNext();)
-//			{
-//				String key = (String) iterator.next();
-//				out.append(key);
-//				if( iterator.hasNext() )
-//				{
-//					out.append(" | ");
-//				}
-//			}
-//			return out.toString();
-//			return keywords;
-//		}
+		//		if ("keywords".equals(inAttribute))
+		//		{
+		//			List<String> keywords = getKeywords();
+		//			if( keywords.size() == 0 )
+		//			{
+		//				return null;
+		//			}
+		//			StringBuffer out = new StringBuffer();
+		//			for (Iterator iterator = keywords.iterator(); iterator.hasNext();)
+		//			{
+		//				String key = (String) iterator.next();
+		//				out.append(key);
+		//				if( iterator.hasNext() )
+		//				{
+		//					out.append(" | ");
+		//				}
+		//			}
+		//			return out.toString();
+		//			return keywords;
+		//		}
 		if ("category".equals(inAttribute))
 		{
 			List<Category> categories = getCategories();
-//			if( categories.size() == 0 )
-//			{
-//				return null;
-//			}
-//			StringBuffer out = new StringBuffer();
-//			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-//			{
-//				Category cat = (Category) iterator.next();
-//				out.append(cat.getId());
-//				if( iterator.hasNext() )
-//				{
-//					out.append(" | ");
-//				}
-//			}
+			//			if( categories.size() == 0 )
+			//			{
+			//				return null;
+			//			}
+			//			StringBuffer out = new StringBuffer();
+			//			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+			//			{
+			//				Category cat = (Category) iterator.next();
+			//				out.append(cat.getId());
+			//				if( iterator.hasNext() )
+			//				{
+			//					out.append(" | ");
+			//				}
+			//			}
 			//return out.toString();
 			return categories;
 		}
-		
-		
+
 		Object object = getMap().get(inAttribute);
-		
-		
+
 		return object;
 		// if ( value instanceof PageProperty)
 		// {
 		// PageProperty prop = (PageProperty)value;
 		// return prop.getValue();
 		// }
-//		if (value == null)
-//		{
-			// Loop over all the catalogs and look for hit
-//			for (Iterator iter = getCategories().iterator(); iter.hasNext();)
-//			{
-//				Category cat = (Category) iter.next();
-//				value = cat.get(inAttribute);
-//				if (value != null)
-//				{
-//					return value;
-//				}
-//			}
-//		}
+		//		if (value == null)
+		//		{
+		// Loop over all the catalogs and look for hit
+		//			for (Iterator iter = getCategories().iterator(); iter.hasNext();)
+		//			{
+		//				Category cat = (Category) iter.next();
+		//				value = cat.get(inAttribute);
+		//				if (value != null)
+		//				{
+		//					return value;
+		//				}
+		//			}
+		//		}
 
 	}
 
@@ -299,10 +298,6 @@ public class Asset implements MultiValued, SaveableData
 		}
 		return fieldCategories;
 	}
-	
-	
-	
-	
 
 	public boolean isInCatalog(Category inCategory)
 	{
@@ -326,16 +321,18 @@ public class Asset implements MultiValued, SaveableData
 		}
 		return false;
 	}
+
 	public Collection<String> getLibraries()
 	{
 		Collection<String> libraries = getValues("libraries");
-		if( libraries == null)
+		if (libraries == null)
 		{
 			libraries = Collections.EMPTY_LIST;
 		}
 		return libraries;
-				
+
 	}
+
 	protected ValuesMap getMap()
 	{
 		if (fieldMap == null)
@@ -344,7 +341,7 @@ public class Asset implements MultiValued, SaveableData
 		}
 		return fieldMap;
 	}
-	
+
 	public Map getProperties()
 	{
 		return getMap();
@@ -362,28 +359,45 @@ public class Asset implements MultiValued, SaveableData
 
 	/*
 	 * @deprecated
+	 * 
 	 * @see org.openedit.Data#setProperty(java.lang.String, java.lang.String)
 	 */
 	public void setProperty(String inKey, String inValue)
 	{
-		PropertyDetail detail = getMediaArchive().getAssetSearcher().getDetail(inKey);
-		if(detail.isMultiLanguage()){
-			Object val = getValue(inKey);
-			LanguageMap lm = new LanguageMap();
-			
-			if(val instanceof String){
-				lm  = new LanguageMap();
-				lm.setText(inValue, "en");
-				setValue(inKey, lm);
-				 
-			} else if(val instanceof LanguageMap){
-				lm  = (LanguageMap)val;
-				lm.setText(inValue, "en");
-				setValue(inKey, lm);				
-			}			
+		if (getMediaArchive() != null)
+		{
+			PropertyDetail detail = getMediaArchive().getAssetSearcher().getDetail(inKey);
+
+			if (detail != null && detail.isMultiLanguage())
+			{
+				Object val = getValue(inKey);
+				LanguageMap lm = new LanguageMap();
+
+				if (val instanceof String)
+				{
+					lm = new LanguageMap();
+					lm.setText(inValue, "en");
+					setValue(inKey, lm);
+
+				}
+				else if (val instanceof LanguageMap)
+				{
+					lm = (LanguageMap) val;
+					lm.setText(inValue, "en");
+					setValue(inKey, lm);
+				}
+			}
+			else
+			{
+				setValue(inKey, inValue);
+
+			}
 		}
-		
-		setValue(inKey,inValue);
+		else
+		{
+
+			setValue(inKey, inValue);
+		}
 	}
 
 	public void clearCategories()
@@ -400,14 +414,16 @@ public class Asset implements MultiValued, SaveableData
 		}
 		return false;
 	}
+
 	public void addKeyword(String inString)
 	{
 		if (inString == null)
 		{
 			log.debug("Null keyword");
 		}
-		addValue("keywords",inString);
+		addValue("keywords", inString);
 	}
+
 	public void addKeywords(String inString)
 	{
 		if (inString == null)
@@ -418,18 +434,18 @@ public class Asset implements MultiValued, SaveableData
 		{
 			//grab the "" stuff first
 			int start = inString.indexOf("\"");
-			while( start > -1 )
+			while (start > -1)
 			{
 				int end = inString.indexOf("\"", start + 1);
-				addKeyword(inString.substring(start + 1,end));
-				start = inString.indexOf("\"",end +1);
-			} 
-			
+				addKeyword(inString.substring(start + 1, end));
+				start = inString.indexOf("\"", end + 1);
+			}
+
 			String[] keywords = inString.split("\\s+");
-			for(int i = 0; i < keywords.length; i++)
+			for (int i = 0; i < keywords.length; i++)
 			{
 				String key = keywords[i].trim();
-				if( key.length() == 0 || key.startsWith("\"") || key.endsWith("\""))
+				if (key.length() == 0 || key.startsWith("\"") || key.endsWith("\""))
 				{
 					continue;
 				}
@@ -440,8 +456,8 @@ public class Asset implements MultiValued, SaveableData
 
 	public Collection<String> getKeywords()
 	{
-		Collection<String> keywords =  getValues("keywords");
-		if( keywords == null)
+		Collection<String> keywords = getValues("keywords");
+		if (keywords == null)
 		{
 			keywords = Collections.EMPTY_LIST;
 		}
@@ -455,7 +471,7 @@ public class Asset implements MultiValued, SaveableData
 
 	public Date getDate(String inField, String inDateFormat)
 	{
-		return getMap().getDate(inField,inDateFormat);
+		return getMap().getDate(inField, inDateFormat);
 	}
 
 	public boolean isRelated(Asset inAsset)
@@ -473,12 +489,12 @@ public class Asset implements MultiValued, SaveableData
 
 	public void setKeywords(Collection<String> inKeywords)
 	{
-		setValues("keywords",inKeywords);
+		setValues("keywords", inKeywords);
 	}
 
 	public void clearKeywords()
 	{
-		setValues("keywords",new ArrayList());
+		setValues("keywords", new ArrayList());
 	}
 
 	public void incrementProperty(String property, int delta) throws Exception
@@ -655,7 +671,7 @@ public class Asset implements MultiValued, SaveableData
 		String file = getProperty("primaryfile");
 		return file;
 	}
-	
+
 	public void setPrimaryFile(String inPath)
 	{
 		setProperty("primaryfile", inPath);
@@ -663,12 +679,12 @@ public class Asset implements MultiValued, SaveableData
 
 	public String getCatalogId()
 	{
-		return (String)getValue("catalogid");
+		return (String) getValue("catalogid");
 	}
 
 	public void setCatalogId(String inCatalogId)
 	{
-		setValue("catalogid",inCatalogId);
+		setValue("catalogid", inCatalogId);
 	}
 
 	public String getFileFormat()
@@ -677,13 +693,13 @@ public class Asset implements MultiValued, SaveableData
 		if (format == null)
 		{
 			String orig = getPrimaryFile();
-			if( orig == null)
+			if (orig == null)
 			{
 				orig = getName();
 			}
 			format = PathUtilities.extractPageType(orig);
 		}
-		if(format!= null)
+		if (format != null)
 		{
 			return format.toLowerCase();
 		}
@@ -693,13 +709,15 @@ public class Asset implements MultiValued, SaveableData
 	public String getAttachmentByType(String inType)
 	{
 		String filename = getProperty(inType + "file");
-		
+
 		return filename;
 	}
+
 	public void setAttachmentFileByType(String inType, String inName)
 	{
 		setProperty(inType + "file", inName);
 	}
+
 	public boolean hasKeywords()
 	{
 
@@ -718,65 +736,71 @@ public class Asset implements MultiValued, SaveableData
 	public int getInt(String inKey)
 	{
 		String val = get(inKey);
-		if( val == null)
+		if (val == null)
 		{
 			return 0;
 		}
-		if( val.contains("."))
+		if (val.contains("."))
 		{
 			return 0;
 		}
 		return Integer.valueOf(val);
 	}
+
 	public long getLong(String inKey)
 	{
 		String val = get(inKey);
-		if( val == null)
+		if (val == null)
 		{
 			return 0;
 		}
-		if( val.contains("."))
+		if (val.contains("."))
 		{
 			return 0;
 		}
 		return Long.valueOf(val);
 	}
+
 	public BigDecimal getBigDecimal(String inKey)
 	{
 		return getMap().getBigDecimal(inKey);
 	}
-	
-	public float getUploadPercentage() {
-		BigDecimal now=getBigDecimal("uploadprogress");
+
+	public float getUploadPercentage()
+	{
+		BigDecimal now = getBigDecimal("uploadprogress");
 		BigDecimal total = getBigDecimal("filesize");
-		if( total.doubleValue() > 0)
+		if (total.doubleValue() > 0)
 		{
-			BigDecimal percentage=now.divide(total,2,RoundingMode.HALF_UP);
+			BigDecimal percentage = now.divide(total, 2, RoundingMode.HALF_UP);
 			return percentage.floatValue();
 		}
 		return 0;
 	}
 
-	public boolean isPropertyTrue(String inKey) 
+	public boolean isPropertyTrue(String inKey)
 	{
 		return getMap().getBoolean(inKey);
 	}
-	public void addLibrary(String inLibraryid) {
-		addValue("libraries", inLibraryid);
-		
-	}
-	public void removeLibrary(String inLibraryid) 
+
+	public void addLibrary(String inLibraryid)
 	{
-		Collection<String> values = new ArrayList( getLibraries() );
+		addValue("libraries", inLibraryid);
+
+	}
+
+	public void removeLibrary(String inLibraryid)
+	{
+		Collection<String> values = new ArrayList(getLibraries());
 		values.remove(inLibraryid);
 		setValue("libraries", values);
-		
+
 	}
 
 	@Override
 	public void setValue(String inKey, Object inValue)
 	{
-		
+
 		if ("category-exact".equals(inKey))
 		{
 			if (inValue != null)
@@ -784,41 +808,40 @@ public class Asset implements MultiValued, SaveableData
 				//This is annoying. We will need to fix categories when we save this asset
 				getCategories().clear();
 				Collection catids = null;
-				if( inValue instanceof Collection)
+				if (inValue instanceof Collection)
 				{
 					catids = (Collection) inValue;
 				}
 				else
 				{
-					String ids = (String)inValue;
+					String ids = (String) inValue;
 					String[] vals = VALUEDELMITER.split(ids);
 					catids = Arrays.asList(vals);
-				}	
+				}
 
 				for (Iterator iterator = catids.iterator(); iterator.hasNext();)
 				{
 					String id = (String) iterator.next();
 					Category cat = getMediaArchive().getCategory(id);
-					if( cat != null)
+					if (cat != null)
 					{
 						addCategory(cat);
 					}
 				}
 			}
 		}
-		if(inValue instanceof Map){
+		if (inValue instanceof Map)
+		{
 			PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
-			if( detail != null && detail.isMultiLanguage())
+			if (detail != null && detail.isMultiLanguage())
 			{
 				inValue = new LanguageMap((Map) inValue);
 			}
-			
+
 		}
 		getMap().put(inKey, inValue);
 	}
 
-	
-	
 	@Override
 	public void addValue(String inKey, Object inNewValue)
 	{
@@ -830,38 +853,38 @@ public class Asset implements MultiValued, SaveableData
 	{
 		getMap().removeValue(inKey, inOldValue);
 	}
-//	public String get(String inKey, String inLocale)
-//	{
-//		// TODO Auto-generated method stub
-//		Object values = getValue(inKey);
-//		if(values instanceof String){
-//			return (String) values;
-//		} else if (values instanceof Map){
-//			Map valmap = (Map) values;
-//			return (String) valmap.get(inLocale);
-//		}
-//		return get(inKey);
-//	}
-//
-//	@Override
-//	public void setValue(String inKey, Object inValue, String inLocale)
-//	{
-//	
-//		Object values = getValue(inKey);
-//		if(values == null){
-//			values = new ValuesMap();
-//			setValue(inKey, values);
-//
-//		}
-//		if(values instanceof String){
-//			ValuesMap map = new ValuesMap();
-//			map.put(inLocale, "en");
-//			values = map;
-//			setValue(inKey, values);
-//		}
-//		else if(values instanceof Map){
-//			 Map vals = (Map) values;
-//			 vals.put(inLocale, inValue);
-//		}
-//	}
+	//	public String get(String inKey, String inLocale)
+	//	{
+	//		// TODO Auto-generated method stub
+	//		Object values = getValue(inKey);
+	//		if(values instanceof String){
+	//			return (String) values;
+	//		} else if (values instanceof Map){
+	//			Map valmap = (Map) values;
+	//			return (String) valmap.get(inLocale);
+	//		}
+	//		return get(inKey);
+	//	}
+	//
+	//	@Override
+	//	public void setValue(String inKey, Object inValue, String inLocale)
+	//	{
+	//	
+	//		Object values = getValue(inKey);
+	//		if(values == null){
+	//			values = new ValuesMap();
+	//			setValue(inKey, values);
+	//
+	//		}
+	//		if(values instanceof String){
+	//			ValuesMap map = new ValuesMap();
+	//			map.put(inLocale, "en");
+	//			values = map;
+	//			setValue(inKey, values);
+	//		}
+	//		else if(values instanceof Map){
+	//			 Map vals = (Map) values;
+	//			 vals.put(inLocale, inValue);
+	//		}
+	//	}
 }
