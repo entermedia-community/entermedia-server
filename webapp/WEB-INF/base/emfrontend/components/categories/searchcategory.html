@@ -7,10 +7,16 @@
 		#set( $searcher = $mediaarchive.getSearcher("category") )
 		$context.putPageValue("searcher",$searcher)
 		#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
-		<form  class="autosubmit"  data-targetdiv="categoryresults" action="$home$apphome/components/categories/searchcategoryresults.html">
+		<form  class="autosubmit" data-targetdiv="categoryresults" action="$home$apphome/components/categories/searchcategoryresults.html">
 		
 			<input type="hidden" name="searchtype" value="category" />
+			<input type="hidden" name="targetdiv" value="$!targetdiv" />
+			<input type="hidden" name="action" value="$!action" />
+			
 			<input type="hidden" name="sortby" value="categorypathUp" />
+
+		$context.putPageValue("autocomplete","off")
+
 		<table class="inlinesearch" >
 			<tr>
 			#foreach( $detail in $details)
@@ -25,12 +31,10 @@
 		</form>
 		
 		<form  data-targetdiv="$!targetdiv" action="$action">
-		<div id="categoryresults">
-			$pages.include("$home$apphome/components/categories/searchcategoryresults.html",$context)
+		<div id="categoryresults" class="emrowpicker" style="min-height: 450px"  >
+				$pages.include("$home$apphome/components/categories/searchcategoryresults.html",$context)
 		</div>
-			#if( $targetdiv )
 			<input name="oemaxlevel" value="1"  type="hidden" />
-			#end
 			<input name="categoryidpicked" class="emselectedrow" type="hidden" />
 			<input name="categories" type="hidden" value="$!categories" />
 		</form>

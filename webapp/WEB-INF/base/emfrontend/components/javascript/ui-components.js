@@ -367,6 +367,8 @@ uiload = function() {
 	
 	jQuery('.emrowpicker table td' ).livequery("click", function(event)
 	{
+		event.preventDefault();
+
 		var clicked = jQuery(this);
 		var row = $(clicked.closest("tr"));
 		var id = row.data("id");

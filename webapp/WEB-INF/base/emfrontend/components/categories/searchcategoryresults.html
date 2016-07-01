@@ -8,11 +8,6 @@ $context.putPageValue("viewpostfix",".html")
 <div  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
 
-#set( $action = $context.getRequestParameter("actionurl") ) 
-#set( $targetdiv = $context.getRequestParameter("targetdiv") )
-
-<div id="emrowpicker" class="emrowpicker" style="min-height: 450px"  >
-
 <table  id="main-results-table" class="emdata striped greytxt table tbl-responsive" >
 	<tr class="tableheader">
 	<th>[[Name]]</th>
@@ -40,5 +35,4 @@ $context.putPageValue("viewpostfix",".html")
 		#end
 	</tbody>
 </table>
-
 </div>
