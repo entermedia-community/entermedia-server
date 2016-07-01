@@ -296,19 +296,11 @@ uiload = function() {
 		var targetdiv = form.data('targetdiv');
 		jQuery("form.autosubmit select").change(function() 
 		{
-			jQuery(form).ajaxSubmit( {target:"#" + targetdiv , success: function()
-				{			
-					$(document).trigger("domchanged");
-				}
-			} );
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
 		});
 		jQuery("form.autosubmit input").on("keyup",function() 
 		{
-			jQuery(form).ajaxSubmit( {target:"#" + targetdiv , success: function()
-				{			
-					$(document).trigger("domchanged");
-				}
-			} );
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
 		});
 
 	});
