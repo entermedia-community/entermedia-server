@@ -52,7 +52,7 @@ public void init()
 			Data userlibrary = libraries.searchById("${hit.id}");
 			if(userlibrary == null){
 				userlibrary = libraries.createNewData();
-				userlibrary.setId("${hit.id}-library");
+				userlibrary.setId("${hit.id}");
 				
 				
 			}
