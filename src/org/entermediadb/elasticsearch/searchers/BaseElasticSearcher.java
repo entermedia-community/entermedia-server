@@ -92,6 +92,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
 	protected long fieldIndexId = System.currentTimeMillis();
+	
 
 	public boolean isRefreshSaves()
 	{
@@ -846,6 +847,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				find = QueryBuilders.matchAllQuery();
 			}
+		
 			else
 			{
 				find = QueryBuilders.termQuery("_id", valueof);
@@ -1422,6 +1424,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			String catid = toId(getCatalogId());
+			if(getAlternativeIndex() != null){
+				catid = getAlternativeIndex();
+			}
 			IndexRequestBuilder builder = null;
 			if (data.getId() == null)
 			{
@@ -1493,6 +1498,11 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			throw new OpenEditException(ex);
 		}
+	}
+
+	public void setIndexId(long inIndexId)
+	{
+		fieldIndexId = inIndexId;
 	}
 
 	private void updateVersion(Data data, IndexRequestBuilder builder)

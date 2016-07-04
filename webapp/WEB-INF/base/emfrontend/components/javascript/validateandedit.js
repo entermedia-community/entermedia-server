@@ -12,7 +12,7 @@ jQuery(document).ready(function()
 	themeprefix = app.data("home") + app.data("themeprefix");
 	
 	
-	jQuery("#languagesavebtn").livequery('click', function(event){
+	jQuery(".languagesavebtn").livequery('click', function(event){
 		event.stopPropagation();
 		event.preventDefault();
 		

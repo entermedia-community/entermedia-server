@@ -6,6 +6,7 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
+import org.openedit.users.User
 
 public void init()
 {
@@ -60,7 +61,10 @@ public void init()
 			userlibrary.setProperty("folder", "${hit.id}");
 			
 			libraries.saveData(userlibrary);
-			
+			User user = mediaArchive.getUserManager().getUser(hit.getId());
+			if(user != null){
+			mediaArchive.getProjectManager().addUserToLibrary(mediaArchive, userlibrary,user);
+			} 
 			// create some collections
 			HashMap collections = new HashMap();
 			collections.put("documents", "Documents");

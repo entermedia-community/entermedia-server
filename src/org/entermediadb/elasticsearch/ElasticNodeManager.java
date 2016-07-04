@@ -43,32 +43,29 @@ import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkProcessor.Listener;
 import org.elasticsearch.action.bulk.BulkRequest;
 import org.elasticsearch.action.bulk.BulkResponse;
-import org.elasticsearch.action.index.IndexRequest;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
-import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.entermediadb.asset.search.BaseAssetSearcher;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.entermediadb.elasticsearch.searchers.ElasticAssetDataConnector;
+import org.entermediadb.elasticsearch.searchers.ElasticListSearcher;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
@@ -523,20 +520,29 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 
 			String alias = toId(inCatalogId);
-			String index = getIndexNameFromAliasName(alias);//see if we already have an index  
+			String index = getIndexNameFromAliasName(alias);//see if we already have an index
+			AdminClient admin = getClient().admin();
+
+			//see if an actual index exists
 
 			if (index == null)
 			{
 				index = alias + "-0";
 			}
+			IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index); //see if 
+			IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
+//			if (res.isExists() ){
+//				index = alias;
+//			}
+			
 			getConnectedCatalogIds().put(inCatalogId, index);
 
 			boolean createdIndex = prepareIndex(index);
 			if (createdIndex)
 			{
-				AdminClient admin = getClient().admin();
-
+				if(!res.isExists()){
 				admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
+				}
 
 			}
 			//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
@@ -661,125 +667,164 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean reindexInternal(String inCatalogId)
 	{
+		ArrayList toskip = new ArrayList();
+		//couple of special ones to skip.
+		toskip.add("lock");
 		try
 		{
-			Date date = new Date();
-			String id = toId(inCatalogId);
-			String oldindex = getIndexNameFromAliasName(id);
+			String newindex =  prepareTemporaryIndex(inCatalogId);	
 
-			String tempindex = id + date.getTime();
-			prepareIndex(tempindex);
-			//need to reset/creat the mappings here!
-			getMappingErrors().clear();
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
 			List sorted = archive.listSearchTypes();
-			List<PropertyDetails> childtables = archive.findChildTables();
-			Set completed = new HashSet();
-//			 GetMappingsResponse res = getClient().admin().indices().getMappings(new GetMappingsRequest().indices(oldindex)).get();
-//			 Set loadedtables = new HashSet();
-//			 
-//			for (Iterator iterator = res.mappings().iterator(); iterator.hasNext();)
-//			{
-//				ImmutableOpenMap<String, MappingMetaData> mapping = (ImmutableOpenMap<String, MappingMetaData>) iterator.next();
-//				loadedtables.add(mapping.
-//			} 
-//			
-			//Tables with _parent need to go first.  Hope there is only one level or we need a better sort.
-			for (Iterator iterator = childtables.iterator(); iterator.hasNext();)
-			{
-				PropertyDetails type = (PropertyDetails) iterator.next();
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type.getId());
-				//searcher.reIndexAll();
-				if (searcher instanceof BaseElasticSearcher)
-				{
-					BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-					new_name.putMappings(tempindex, true);
-				}
-				else if (searcher instanceof BaseAssetSearcher)
-				{
-					BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
-					ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
-					con.putMappings(tempindex, true);
-				}
-				completed.add(type.getId());
-			}
-			String index = inCatalogId.replace('/', '_');
-
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{
-				String type = (String) iterator.next();
-				if (completed.contains(type))
-				{
-					continue;
-				}
-
-				boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { index }, type)).actionGet().isExists();
-				if (!used)
-				{
-					continue;
-				}
-
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
-				//searcher.reIndexAll();
-				if (searcher instanceof BaseElasticSearcher)
-				{
-					BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-
-					new_name.putMappings(tempindex, true);
-
-				}
-
-				if (searcher instanceof BaseAssetSearcher)
-				{
-					BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
-					ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
-					con.putMappings(tempindex, true);
-
-				}
-
+				String searchtype = (String) iterator.next();
+				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+			//	if(!(searcher instanceof ElasticListSearcher || toskip.contains(searchtype))  ){
+				if( !toskip.contains(searchtype))  {	
+					searcher.setAlternativeIndex(newindex);
+					
+					HitTracker allhits = searcher.getAllHits();
+					ArrayList tosave = new ArrayList();
+					for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+					{
+						Data hit = (Data) iterator2.next();
+						Data real = (Data) searcher.searchById(hit.getId());
+						tosave.add(real);
+						if(tosave.size() > 1000){
+							searcher.saveAllData(tosave, null);
+							tosave.clear();
+						}
+					}
+				searcher.saveAllData(tosave, null);
+				tosave.clear();			
+				searcher.setAlternativeIndex(null);
 			}
 
-			if (!getMappingErrors().isEmpty())
-			{
-				return false;
+			
 			}
-
-			SearchResponse searchResponse = getClient().prepareSearch(id).setQuery(QueryBuilders.matchAllQuery()).setSearchType(SearchType.SCAN).setScroll(new TimeValue(600000)).setSize(500).execute().actionGet();
-
-			BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), createLoggingBulkProcessorListener()).setBulkActions(10000).setConcurrentRequests(2).setFlushInterval(TimeValue.timeValueSeconds(5)).build();
-
-			while (true)
-			{
-				searchResponse = getClient().prepareSearchScroll(searchResponse.getScrollId()).setScroll(new TimeValue(600000)).execute().actionGet();
-
-				if (searchResponse.getHits().getHits().length == 0)
-				{
-					bulkProcessor.flush();
-
-					bulkProcessor.close();
-					break; //Break condition: No hits are returned
-				}
-
-				for (SearchHit hit : searchResponse.getHits())
-				{
-					IndexRequest request = new IndexRequest(tempindex, hit.type(), hit.id());
-					request.source(hit.sourceAsString());
-					bulkProcessor.add(request);
-				}
-			}
-
-			getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(tempindex, id).execute().actionGet();
-			DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
-			log.info("Dropped: " + response.isAcknowledged());
+			
+			loadIndex(inCatalogId, newindex, true);
 		}
 		catch (Exception e)
 		{
-			throw new OpenEditException(e);
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return false;
 		}
+
+		
+		
 		return true;
 
 	}
+
+	public String prepareTemporaryIndex(String inCatalogId)
+	{
+		Date date = new Date();
+		String id = toId(inCatalogId);
+		
+
+		String tempindex = id + date.getTime();
+		prepareIndex(tempindex);
+		//need to reset/creat the mappings here!
+		getMappingErrors().clear();
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+		archive.clearCache();
+		List sorted = archive.listSearchTypes();
+		List<PropertyDetails> childtables = archive.findChildTables();
+		Set completed = new HashSet();
+		for (Iterator iterator = childtables.iterator(); iterator.hasNext();)
+		{
+			PropertyDetails type = (PropertyDetails) iterator.next();
+			boolean used = tableExists(id, type.getId());
+			if (!used)
+			{
+				continue;
+			}
+			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type.getId());
+			//searcher.reIndexAll();
+		
+			
+			
+			
+			if (searcher instanceof BaseElasticSearcher)
+			{
+				BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
+				new_name.putMappings(tempindex, true);
+			}
+			else if (searcher instanceof BaseAssetSearcher)
+			{
+				BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
+				ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
+				con.putMappings(tempindex, true);
+			}
+			completed.add(type.getId());
+		}
+		String index = inCatalogId.replace('/', '_');
+
+		for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+		{
+			String type = (String) iterator.next();
+			if (completed.contains(type))
+			{
+				continue;
+			}
+
+			boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { id }, type)).actionGet().isExists();
+			if (!used)
+			{
+				continue;
+			}
+
+			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+			//searcher.reIndexAll();
+			if (searcher instanceof BaseElasticSearcher)
+			{
+				BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
+
+				new_name.putMappings(tempindex, true);
+
+			}
+
+			if (searcher instanceof BaseAssetSearcher)
+			{
+				BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
+				ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
+				con.putMappings(tempindex, true);
+
+			}
+
+		}
+
+		if (!getMappingErrors().isEmpty())
+		{
+			throw new OpenEditException("Was unable to create new mappings, inconsistent");
+		}
+		
+		return tempindex;
+		
+	}
+	
+	public void loadIndex(String id, String inTarget, boolean dropold){
+		id = toId(id);
+
+		String oldindex = getIndexNameFromAliasName(id);
+		if(oldindex == null){
+			
+		}
+		
+
+		getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(inTarget, id).execute().actionGet();
+		DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
+		if(dropold){
+			log.info("Dropped: " + response.isAcknowledged());
+		}
+		
+	}
+	
+	
 
 	private Listener createLoggingBulkProcessorListener()
 	{
@@ -823,6 +868,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		return createSnapShot(inCatalogId,false);
 	}	
+	public boolean tableExists(String indexid, String searchtype)
+	{
+		boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { indexid }, searchtype)).actionGet().isExists();
+		return used;
 
+	}
 	
 }

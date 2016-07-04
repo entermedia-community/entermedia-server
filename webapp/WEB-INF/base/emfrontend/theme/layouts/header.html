@@ -24,9 +24,15 @@
     #else 
     	<li><a href="$home$apphome/authentication/login.html" class="first">[[Login]]</a></li> 
     #end
-   	<li class="dropdown"><a class="" href="#" data-toggle="dropdown">[[Language]] <span class="caret"></span></a> 
+	#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+       #set($currentlang = $localesearcher.searchById($context.language))
+      #if($currentlang)
+ 	<li class="dropdown"><a class="" href="#" data-toggle="dropdown">$currentlang <span class="caret"></span></a> 
+    #else
+ 	<li class="dropdown"><a class="" href="#" data-toggle="dropdown">[[Language]] <span class="caret"></span></a> 
+     #end
   
-    <ul id="language-bar-select" class="dropdown-menu">
+  <ul id="language-bar-select" class="dropdown-menu">
 		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 		#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
 		#foreach( $lang in $languages)

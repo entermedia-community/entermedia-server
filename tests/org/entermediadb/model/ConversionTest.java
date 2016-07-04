@@ -46,7 +46,7 @@ public class ConversionTest extends BaseEnterMediaTest
 		Map settings = new HashMap();
 		settings.put("prefwidth", "100");
 		settings.put("prefheight", "100");
-		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(null, settings, "users/admin/105", "image1024x768.jpg");
+		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(null, settings, "users/admin/105", "video1024x768.jpg");
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
 		//Make sure we save the right final file output

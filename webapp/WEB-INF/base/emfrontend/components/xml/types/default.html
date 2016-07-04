@@ -9,10 +9,13 @@
 
 			<div id="languagesextra_${detail.id}" class="languageselector">
 				#foreach($locale in $languages)
-					#if($map.getText($locale.id) && $map.getText($locale.id) != '')
+					#set($localval = $map.getText($locale.id))
+				
+					#if($localval && $localval != "")
 						$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$locale.id",$context)
 						#set($language_count = $language_count+1)
 					#end
+					#set($localval = "")
 				#end
 				#if($language_count == 1)
 				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$locale.id")
@@ -22,7 +25,7 @@
 			
 			<div class="clearfix"></div>
 			<div style="padding: 10px">
-				<a class="" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id="languagesavebtn"><img src="$home$themeprefix/images/icons/addgray.png"></a>
+				<a class="languagesavebtn" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id=""><img src="$home$themeprefix/images/icons/addgray.png"></a>
 			</div>
 			
 	</div>

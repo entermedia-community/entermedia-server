@@ -20,7 +20,6 @@
 	<property id="convertpreset" index="true" stored="true" editable="true" type="list" >Default Profile</property>
 	
 	<property id="company" index="true" stored="true" editable="true" >Company Name</property>
-	<property id="division" index="true" stored="true" editable="true" >Division</property>
 		
 	<property id="technicalcontact" index="true" stored="true" editable="true" >Technical Contact</property>
 	<property id="technicalphone" index="true" stored="true" editable="true" >Technical Phone</property>

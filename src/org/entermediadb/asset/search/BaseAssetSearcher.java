@@ -17,6 +17,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CompositeAsset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.elasticsearch.searchers.ElasticAssetDataConnector;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -498,4 +499,16 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		// TODO Auto-generated method stub
 		return getDataConnector().initialize();
 	}
+	
+	@Override
+	public void setAlternativeIndex(String inAlternativeIndex)
+	{
+		// TODO Auto-generated method stub
+		super.setAlternativeIndex(inAlternativeIndex);
+		if(getDataConnector() instanceof ElasticAssetDataConnector){
+		//I hate this class.  I want to go back to a normal searcher.
+			((ElasticAssetDataConnector)getDataConnector()).setAlternativeIndex(inAlternativeIndex);
+		}
+	}
+	
 }
