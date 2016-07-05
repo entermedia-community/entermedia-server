@@ -9,11 +9,9 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -55,17 +53,10 @@ import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
-import org.entermediadb.asset.search.BaseAssetSearcher;
-import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
-import org.entermediadb.elasticsearch.searchers.ElasticAssetDataConnector;
-import org.entermediadb.elasticsearch.searchers.ElasticListSearcher;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
@@ -109,7 +100,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 				//TODO: Move node.xml to system
 				//TODO: add locking file for this node and remove it when done
-				
+
 				Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
 				if (!config.exists())
 				{
@@ -268,11 +259,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return snapshotid;
 	}
 
-	public String createDailySnapShot(String inCatalogId){
-	return	createDailySnapShot(inCatalogId, false);
+	public String createDailySnapShot(String inCatalogId)
+	{
+		return createDailySnapShot(inCatalogId, false);
 	}
-	
-	
+
 	public String createDailySnapShot(String inCatalogId, boolean wholedatabase)
 	{
 		Lock lock = null;
@@ -352,7 +343,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		try
 		{
-			
+
 			CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
 			closeIndexRequestBuilder.setIndices("_all");
 			closeIndexRequestBuilder.execute().actionGet();
@@ -395,93 +386,93 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 	}
 
-//	public void exportKnapsack(String inCatalogId)
-//	{
-//		Lock lock = null;
-//
-//		try
-//		{
-//			String indexid = toId(inCatalogId);
-//
-//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-//			Client client = getClient();
-//			Date date = new Date();
-//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
-//			Page folder = getPageManager().getPage(target.getParentPath());
-//			File file = new File(folder.getContentItem().getAbsolutePath());
-//			file.mkdirs();
-//			Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
-//			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(indexid);
-//			KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
-//
-//			KnapsackStateRequestBuilder knapsackStateRequestBuilder = new KnapsackStateRequestBuilder(client.admin().indices());
-//			KnapsackStateResponse knapsackStateResponse = knapsackStateRequestBuilder.execute().actionGet();
-//			knapsackStateResponse.isExportActive(exportPath);
-//			Thread.sleep(1000L);
-//			// delete index
-//			//		        client("1").admin().indices().delete(new DeleteIndexRequest("index1")).actionGet();
-//			//		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client("1").admin().indices())
-//			//		                .setPath(exportPath);
-//			//		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
-//			//		        if (!knapsackImportResponse.isRunning()) {
-//			//		            logger.error(knapsackImportResponse.getReason());
-//			//		        }
-//			//		        assertTrue(knapsackImportResponse.isRunning());
-//			//		        Thread.sleep(1000L);
-//			//		        // count
-//			//		        long count = client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
-//			//		        assertEquals(1L, count);
-//		}
-//		catch (Throwable ex)
-//		{
-//			throw new OpenEditException(ex);
-//		}
-//		finally
-//		{
-//			getLockManager(inCatalogId).release(lock);
-//		}
-//	}
-//
-//	public HitTracker listKnapsacks(String inCatalogId)
-//	{
-//		List snaps = getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + inCatalogId + "/snapshots/");
-//		ListHitTracker tracker = new ListHitTracker();
-//		for (Iterator iterator = snaps.iterator(); iterator.hasNext();)
-//		{
-//			String path = (String) iterator.next();
-//			Page page = getPageManager().getPage(path);
-//			tracker.add(page);
-//		}
-//		return tracker;
-//	}
-//
-//	public void importKnapsack(String inCatalogId, String inFile)
-//	{
-//		Lock lock = null;
-//
-//		try
-//		{
-//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
-//			String indexid = toId(inCatalogId);
-//
-//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/" + inFile);
-//
-//			Client client = getClient();
-//			File exportFile = new File(target.getContentItem().getAbsolutePath());
-//			Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
-//			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(indexid);
-//			KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
-//
-//		}
-//		catch (Throwable ex)
-//		{
-//			throw new OpenEditException(ex);
-//		}
-//		finally
-//		{
-//			getLockManager(inCatalogId).release(lock);
-//		}
-//	}
+	//	public void exportKnapsack(String inCatalogId)
+	//	{
+	//		Lock lock = null;
+	//
+	//		try
+	//		{
+	//			String indexid = toId(inCatalogId);
+	//
+	//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
+	//			Client client = getClient();
+	//			Date date = new Date();
+	//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/knapsack-bulk-" + date.getTime() + ".bulk.gz");
+	//			Page folder = getPageManager().getPage(target.getParentPath());
+	//			File file = new File(folder.getContentItem().getAbsolutePath());
+	//			file.mkdirs();
+	//			Path exportPath = Paths.get(URI.create("file:" + target.getContentItem().getAbsolutePath()));
+	//			KnapsackExportRequestBuilder requestBuilder = new KnapsackExportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setOverwriteAllowed(true).setIndex(indexid);
+	//			KnapsackExportResponse knapsackExportResponse = requestBuilder.execute().actionGet();
+	//
+	//			KnapsackStateRequestBuilder knapsackStateRequestBuilder = new KnapsackStateRequestBuilder(client.admin().indices());
+	//			KnapsackStateResponse knapsackStateResponse = knapsackStateRequestBuilder.execute().actionGet();
+	//			knapsackStateResponse.isExportActive(exportPath);
+	//			Thread.sleep(1000L);
+	//			// delete index
+	//			//		        client("1").admin().indices().delete(new DeleteIndexRequest("index1")).actionGet();
+	//			//		        KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client("1").admin().indices())
+	//			//		                .setPath(exportPath);
+	//			//		        KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
+	//			//		        if (!knapsackImportResponse.isRunning()) {
+	//			//		            logger.error(knapsackImportResponse.getReason());
+	//			//		        }
+	//			//		        assertTrue(knapsackImportResponse.isRunning());
+	//			//		        Thread.sleep(1000L);
+	//			//		        // count
+	//			//		        long count = client("1").prepareCount("index1").setQuery(QueryBuilders.matchAllQuery()).execute().actionGet().getCount();
+	//			//		        assertEquals(1L, count);
+	//		}
+	//		catch (Throwable ex)
+	//		{
+	//			throw new OpenEditException(ex);
+	//		}
+	//		finally
+	//		{
+	//			getLockManager(inCatalogId).release(lock);
+	//		}
+	//	}
+	//
+	//	public HitTracker listKnapsacks(String inCatalogId)
+	//	{
+	//		List snaps = getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + inCatalogId + "/snapshots/");
+	//		ListHitTracker tracker = new ListHitTracker();
+	//		for (Iterator iterator = snaps.iterator(); iterator.hasNext();)
+	//		{
+	//			String path = (String) iterator.next();
+	//			Page page = getPageManager().getPage(path);
+	//			tracker.add(page);
+	//		}
+	//		return tracker;
+	//	}
+	//
+	//	public void importKnapsack(String inCatalogId, String inFile)
+	//	{
+	//		Lock lock = null;
+	//
+	//		try
+	//		{
+	//			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
+	//			String indexid = toId(inCatalogId);
+	//
+	//			Page target = getPageManager().getPage("/WEB-INF/data/" + inCatalogId + "/snapshots/" + inFile);
+	//
+	//			Client client = getClient();
+	//			File exportFile = new File(target.getContentItem().getAbsolutePath());
+	//			Path exportPath = Paths.get(URI.create("file:" + exportFile.getAbsolutePath()));
+	//			KnapsackImportRequestBuilder knapsackImportRequestBuilder = new KnapsackImportRequestBuilder(client.admin().indices()).setArchivePath(exportPath).setIndex(indexid);
+	//			KnapsackImportResponse knapsackImportResponse = knapsackImportRequestBuilder.execute().actionGet();
+	//
+	//		}
+	//		catch (Throwable ex)
+	//		{
+	//			throw new OpenEditException(ex);
+	//		}
+	//		finally
+	//		{
+	//			getLockManager(inCatalogId).release(lock);
+	//		}
+	//	}
 
 	public void addMappingError(String inSearchType, String inMessage)
 	{
@@ -503,6 +494,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		return !getMappingErrors().isEmpty();
 	}
+
 	public boolean containsCatalog(String inCatalogId)
 	{
 		if (getConnectedCatalogIds().containsKey(inCatalogId))
@@ -513,7 +505,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index);
 		IndicesExistsResponse res = getClient().admin().indices().exists(existsreq).actionGet();
 		return res.isExists();
-	}	
+	}
+
 	public boolean connectCatalog(String inCatalogId)
 	{
 		if (!getConnectedCatalogIds().containsKey(inCatalogId))
@@ -531,17 +524,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			}
 			IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index); //see if 
 			IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
-//			if (res.isExists() ){
-//				index = alias;
-//			}
-			
+			//			if (res.isExists() ){
+			//				index = alias;
+			//			}
+
 			getConnectedCatalogIds().put(inCatalogId, index);
 
 			boolean createdIndex = prepareIndex(index);
 			if (createdIndex)
 			{
-				if(!res.isExists()){
-				admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
+				if (!res.isExists())
+				{
+					admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
 				}
 
 			}
@@ -672,7 +666,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		toskip.add("lock");
 		try
 		{
-			String newindex =  prepareTemporaryIndex(inCatalogId);	
+			String newindex = prepareTemporaryIndex(inCatalogId);
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
@@ -681,30 +675,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				String searchtype = (String) iterator.next();
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-			//	if(!(searcher instanceof ElasticListSearcher || toskip.contains(searchtype))  ){
-				if( !toskip.contains(searchtype))  {	
-					searcher.setAlternativeIndex(newindex);
-					
-					HitTracker allhits = searcher.getAllHits();
-					ArrayList tosave = new ArrayList();
-					for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
-					{
-						Data hit = (Data) iterator2.next();
-						Data real = (Data) searcher.searchById(hit.getId());
-						tosave.add(real);
-						if(tosave.size() > 1000){
-							searcher.saveAllData(tosave, null);
-							tosave.clear();
-						}
-					}
-				searcher.saveAllData(tosave, null);
-				tosave.clear();			
-				searcher.setAlternativeIndex(null);
+				if (!toskip.contains(searchtype))
+				{
+					searcher.setAlternativeIndex(newindex);//Should				
+					searcher.reIndexAll();
+					searcher.setAlternativeIndex(null);
+				}
+
 			}
 
-			
-			}
-			
 			loadIndex(inCatalogId, newindex, true);
 		}
 		catch (Exception e)
@@ -714,8 +693,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			return false;
 		}
 
-		
-		
 		return true;
 
 	}
@@ -724,107 +701,69 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		Date date = new Date();
 		String id = toId(inCatalogId);
-		
 
 		String tempindex = id + date.getTime();
 		prepareIndex(tempindex);
 		//need to reset/creat the mappings here!
 		getMappingErrors().clear();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-		archive.clearCache();
-		List sorted = archive.listSearchTypes();
-		List<PropertyDetails> childtables = archive.findChildTables();
-		Set completed = new HashSet();
-		for (Iterator iterator = childtables.iterator(); iterator.hasNext();)
-		{
-			PropertyDetails type = (PropertyDetails) iterator.next();
-			boolean used = tableExists(id, type.getId());
-			if (!used)
-			{
-				continue;
-			}
-			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type.getId());
-			//searcher.reIndexAll();
-		
-			
-			
-			
-			if (searcher instanceof BaseElasticSearcher)
-			{
-				BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-				new_name.putMappings(tempindex, true);
-			}
-			else if (searcher instanceof BaseAssetSearcher)
-			{
-				BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
-				ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
-				con.putMappings(tempindex, true);
-			}
-			completed.add(type.getId());
-		}
-		String index = inCatalogId.replace('/', '_');
+		List withparents = archive.findChildTablesNames();
 
+		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
+		{
+			String searchtype = (String) iterator.next();
+			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+
+			searcher.setAlternativeIndex(tempindex);//Should				
+			searcher.putMappings();
+			searcher.setAlternativeIndex(null);
+		}
+
+		List sorted = archive.listSearchTypes();
 		for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 		{
-			String type = (String) iterator.next();
-			if (completed.contains(type))
+
+			String searchtype = (String) iterator.next();
+			if (!withparents.contains(searchtype))
 			{
-				continue;
+				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+
+				searcher.setAlternativeIndex(tempindex);//Should				
+				searcher.putMappings();
+				searcher.setAlternativeIndex(null);
 			}
-
-			boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { id }, type)).actionGet().isExists();
-			if (!used)
-			{
-				continue;
-			}
-
-			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
-			//searcher.reIndexAll();
-			if (searcher instanceof BaseElasticSearcher)
-			{
-				BaseElasticSearcher new_name = (BaseElasticSearcher) searcher;
-
-				new_name.putMappings(tempindex, true);
-
-			}
-
-			if (searcher instanceof BaseAssetSearcher)
-			{
-				BaseAssetSearcher new_name = (BaseAssetSearcher) searcher;
-				ElasticAssetDataConnector con = (ElasticAssetDataConnector) new_name.getDataConnector();
-				con.putMappings(tempindex, true);
-
-			}
-
 		}
-
 		if (!getMappingErrors().isEmpty())
 		{
+			DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(tempindex)).actionGet();
+			if (!delete.isAcknowledged())
+			{
+				log.error("Index wasn't deleted");
+			}
 			throw new OpenEditException("Was unable to create new mappings, inconsistent");
 		}
-		
 		return tempindex;
-		
+
 	}
-	
-	public void loadIndex(String id, String inTarget, boolean dropold){
+
+	public void loadIndex(String id, String inTarget, boolean dropold)
+	{
 		id = toId(id);
 
 		String oldindex = getIndexNameFromAliasName(id);
-		if(oldindex == null){
-			
+		if (oldindex == null)
+		{
+
 		}
-		
 
 		getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(inTarget, id).execute().actionGet();
 		DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
-		if(dropold){
+		if (dropold)
+		{
 			log.info("Dropped: " + response.isAcknowledged());
 		}
-		
+
 	}
-	
-	
 
 	private Listener createLoggingBulkProcessorListener()
 	{
@@ -857,22 +796,24 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public void deleteCatalog(String inId)
 	{
 		DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(toId(inId))).actionGet();
-		if (!delete.isAcknowledged()) {
-		    log.error("Index wasn't deleted");
+		if (!delete.isAcknowledged())
+		{
+			log.error("Index wasn't deleted");
 		}
-		
+
 	}
 
 	@Override
 	public String createSnapShot(String inCatalogId)
 	{
-		return createSnapShot(inCatalogId,false);
-	}	
+		return createSnapShot(inCatalogId, false);
+	}
+
 	public boolean tableExists(String indexid, String searchtype)
 	{
 		boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { indexid }, searchtype)).actionGet().isExists();
 		return used;
 
 	}
-	
+
 }

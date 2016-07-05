@@ -48,7 +48,6 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
-import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
@@ -167,26 +166,27 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public HitTracker search(SearchQuery inQuery)
 	{
-		if (isReIndexing())
-		{
-			int timeout = 0;
-			while (isReIndexing())
-			{
-				try
-				{
-					Thread.sleep(250);
-				}
-				catch (InterruptedException ex)
-				{
-					log.error(ex);
-				}
-				timeout++;
-				if (timeout > 100)
-				{
-					throw new OpenEditException("timeout on search while reindexing" + getSearchType());
-				}
-			}
-		}
+//		if (isReIndexing())
+//		{
+//			int timeout = 0;
+//			while (isReIndexing())
+//			{
+//				try
+//				{
+//					Thread.sleep(250);
+//				}
+//				catch (InterruptedException ex)
+//				{
+//					log.error(ex);
+//				}
+//				timeout++;
+//				if (timeout > 100)
+//				{
+//					throw new OpenEditException("timeout on search while reindexing" + getSearchType());
+//				}
+//			}
+//		}
+		//Think this is lucene junk
 		String json = null;
 		try
 		{
@@ -321,7 +321,15 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			log.info("initi mapping " + getCatalogId() + "/" + getSearchType());
-			putMappings(toId(getCatalogId()), false);
+			
+			boolean alreadyin = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType())).actionGet().isExists();
+			if (!alreadyin)
+			{
+				putMappings();
+			}
+		
+			
+		
 		}
 		catch (Exception ex)
 		{
@@ -329,6 +337,17 @@ public class BaseElasticSearcher extends BaseSearcher
 			return false;
 		}
 		return true;
+	}
+
+	private String getElasticIndexId()
+	{
+		String indexid = getAlternativeIndex();
+		
+		if(indexid == null)
+		{
+			indexid = toId(getCatalogId());
+		}
+		return indexid;
 	}
 
 	//	
@@ -356,21 +375,14 @@ public class BaseElasticSearcher extends BaseSearcher
 	//			log.error(ex);
 	//		}
 	//	}
-	public void putMappings(String indexid, boolean force)
+	public void putMappings()
 	{
 		AdminClient admin = getElasticNodeManager().getClient().admin();
-		if (indexid == null)
-		{
-			indexid = toId(getCatalogId());
-		}
-		if (!force)
-		{
-			boolean alreadyin = admin.indices().typesExists(new TypesExistsRequest(new String[] { indexid }, getSearchType())).actionGet().isExists();
-			if (alreadyin)
-			{
-				return;
-			}
-		}
+		
+		String indexid = getElasticIndexId();
+		
+		
+		
 		List<PropertyDetails> dependson = getPropertyDetailsArchive().findChildTables();
 		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
 		{
@@ -571,18 +583,17 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 
 				//Now determine index
-				String indextype = detail.get("indextype");
-				if (indextype == null)
+				String indextype = null;
+				if (detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
 				{
-					//					if (detail.isMultiLanguage())
-					//					{
-					//						indextype = "object";
-					//					}
-					if (detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
-					{
-						indextype = "not_analyzed";
-					}
+					indextype = "not_analyzed";
 				}
+				if(indextype == null){
+				 indextype = detail.get("indextype");
+				}
+				
+				
+				
 				if (indextype != null)
 				{
 					jsonproperties = jsonproperties.field("index", indextype);
@@ -622,7 +633,9 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					if (detail.isStored())
 					{
-						jsonproperties = jsonproperties.field("store", "yes");
+						jsonproperties = jsonproperties.field("store", "no");
+						
+						//testing.  Why store?
 					}
 					else
 					{
@@ -643,6 +656,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			jsonBuilder = jsonproperties.endObject();
 			String content = jsonproperties.string();
+			log.info(content);
 			return jsonproperties;
 		}
 		catch (Throwable ex)
@@ -1991,9 +2005,23 @@ public class BaseElasticSearcher extends BaseSearcher
 			try
 			{
 				setReIndexing(true);
-				putMappings(toId(getCatalogId()), true); //We can only try to put mapping. If this failes then they will
-				//need to export their data and factory reset the fields 
-				//deleteAll(null); //This only deleted the index
+				//putMappings(); //We can only try to put mapping. If this failes then they will
+				HitTracker allhits = getAllHits();
+				allhits.enableBulkOperations();
+				ArrayList tosave = new ArrayList();
+				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+				{
+					Data hit = (Data) iterator2.next();
+					Data real = (Data) loadData(hit);
+					tosave.add(real);
+					if(tosave.size() > 1000){
+						
+						tosave.clear();
+					}
+				}
+				saveAllData(tosave, null);
+				
+				
 			}
 			finally
 			{
@@ -2008,7 +2036,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
-		putMappings(toId(getCatalogId()), true);
+		putMappings();
 	}
 
 	@Override
@@ -2016,7 +2044,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		//deleteOldMapping();  //you will lose your data!
 		//reIndexAll();
-		putMappings(toId(getCatalogId()), true);
+		putMappings();
 
 	}
 

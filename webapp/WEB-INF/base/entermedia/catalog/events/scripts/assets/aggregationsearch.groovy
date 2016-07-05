@@ -30,6 +30,7 @@ public void init(){
 	log.info(agginfo.getBuckets().size())
 	log.info("hits" + hits.size());
 	log.info(hits.toString());
+	
 }
 
 init();
