@@ -38,6 +38,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
@@ -46,6 +47,8 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathUtilities;
+
+import groovy.json.JsonSlurper;
 
 public class AssetEditModule extends BaseMediaModule
 {
@@ -1098,6 +1101,19 @@ public class AssetEditModule extends BaseMediaModule
 						val = Arrays.asList(array);
 					}
 				}
+				String[] language = inReq.getRequestParameters(prefix + fields[i] + ".language");
+				if (language != null)
+				{
+					LanguageMap lmap = new LanguageMap();
+					for (int j = 0; j < language.length; j++)
+					{
+						String lang = language[j];
+						String langval = inReq.getRequestParameter(prefix + fields[i] + "." + lang);
+						lmap.setText(langval, lang);
+					}
+					val = lmap;
+				}
+				
 				if( val != null)
 				{
 					vals.put(fields[i],val);
