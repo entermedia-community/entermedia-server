@@ -144,6 +144,9 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			updateIndex(tosave, null);
 			log.info("reindexed " + processor.getExecCount());
 			flushChanges();
+			
+			super.reIndexAll();//Old elastic data
+			
 		}
 		catch (Exception e)
 		{
