@@ -320,7 +320,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{
-			log.info("initi mapping " + getCatalogId() + "/" + getSearchType());
+			log.info("init mapping " + getCatalogId() + "/" + getSearchType());
 			
 			boolean alreadyin = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType())).actionGet().isExists();
 			if (!alreadyin)
