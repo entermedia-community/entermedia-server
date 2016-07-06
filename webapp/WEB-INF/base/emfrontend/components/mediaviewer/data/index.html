@@ -49,14 +49,6 @@ $context.putPageValue("showalllanguagevalues",true)
     					</div>
     				</div>
 				#end
-				#if( $asset.hasKeywords() )
-				<h3>[[Related Tags]]</h3>
-					<div class="asset-data-detail">
-						#foreach ($tag in $asset.keywords)
-							<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag" class="tag">$tag</a>
-						#end
-					</div>
-				#end	
 				<h3>[[Categories]]</h3>
 					<div class="asset-data-detail">
 					<div class="emtable">
