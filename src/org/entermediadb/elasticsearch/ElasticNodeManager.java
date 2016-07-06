@@ -678,7 +678,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				if (!toskip.contains(searchtype))
 				{
 					searcher.setAlternativeIndex(newindex);//Should				
-					searcher.reIndexAll();
+					searcher.reindexInternal();
 					searcher.setAlternativeIndex(null);
 				}
 
