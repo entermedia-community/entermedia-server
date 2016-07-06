@@ -661,6 +661,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean reindexInternal(String inCatalogId)
 	{
+		String id = toId(inCatalogId);
 		ArrayList toskip = new ArrayList();
 		//couple of special ones to skip.
 		toskip.add("lock");
@@ -674,6 +675,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{
 				String searchtype = (String) iterator.next();
+				if (tableExists(id, searchtype)){
+
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 				if (!toskip.contains(searchtype))
 				{
@@ -681,10 +684,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					searcher.reindexInternal();
 					searcher.setAlternativeIndex(null);
 				}
-
+			}
 			}
 
-			loadIndex(inCatalogId, newindex, true);
+			loadIndex(id, newindex, true);
 		}
 		catch (Exception e)
 		{
@@ -712,11 +715,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
 		{
 			String searchtype = (String) iterator.next();
-			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+			if (tableExists(id, searchtype))
+			{
+				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 
-			searcher.setAlternativeIndex(tempindex);//Should				
-			searcher.putMappings();
-			searcher.setAlternativeIndex(null);
+				searcher.setAlternativeIndex(tempindex);//Should				
+
+				searcher.putMappings();
+				searcher.setAlternativeIndex(null);
+			}
 		}
 
 		List sorted = archive.listSearchTypes();
@@ -724,13 +731,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 
 			String searchtype = (String) iterator.next();
-			if (!withparents.contains(searchtype))
+			if (tableExists(id, searchtype))
 			{
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+				if (!withparents.contains(searchtype))
+				{
 
-				searcher.setAlternativeIndex(tempindex);//Should				
-				searcher.putMappings();
-				searcher.setAlternativeIndex(null);
+					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+
+					searcher.setAlternativeIndex(tempindex);//Should				
+					searcher.putMappings();
+					searcher.setAlternativeIndex(null);
+				}
 			}
 		}
 		if (!getMappingErrors().isEmpty())
