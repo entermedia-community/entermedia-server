@@ -732,13 +732,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
 		{
 			Term term = (Term) iterator.next();
-			if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation()))
-			{
-				BoolQueryBuilder or = addOrsGroup(term);
-				bool.must(or);
-			}
-			else
-			{
+//			if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation()))
+//			{
+//				BoolQueryBuilder or = addOrsGroup(term);
+//				bool.must(or);
+//			}
+//			else
+//			{
 				String value = term.getValue();
 				QueryBuilder find = buildTerm(term.getDetail(), term, value);
 				if (find != null)
@@ -753,30 +753,30 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 				}
 			}
-		}
+		//}
 	}
 
-	protected BoolQueryBuilder addOrsGroup(Term term)
-	{
-		if (term.getValues() != null)
-		{
-			BoolQueryBuilder or = QueryBuilders.boolQuery();
-			for (int i = 0; i < term.getValues().length; i++)
-			{
-				Object val = term.getValues()[i];
-				if (val != null && !val.equals(""))
-				{
-					QueryBuilder aterm = buildTerm(term.getDetail(), term, val);
-					if (aterm != null)
-					{
-						or.should(aterm);
-					}
-				}
-			}
-			return or;
-		}
-		return null;
-	}
+//	protected BoolQueryBuilder addOrsGroup(Term term)
+//	{
+//		if (term.getValues() != null)
+//		{
+//			BoolQueryBuilder or = QueryBuilders.boolQuery();
+//			for (int i = 0; i < term.getValues().length; i++)
+//			{
+//				Object val = term.getValues()[i];
+//				if (val != null && !val.equals(""))
+//				{
+//					QueryBuilder aterm = buildTerm(term.getDetail(), term, val);
+//					if (aterm != null)
+//					{
+//						or.should(aterm);
+//					}
+//				}
+//			}
+//			return or;
+//		}
+//		return null;
+//	}
 
 	protected QueryBuilder buildTerm(PropertyDetail inDetail, Term inTerm, Object inValue)
 	{
@@ -1151,9 +1151,15 @@ public class BaseElasticSearcher extends BaseSearcher
 		//		}
 		else
 		{
-			if ("exact".equals(inTerm.getOperation()) || "orgroup".equals(inTerm.getOperation()))
+			if ("exact".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.termQuery(fieldid, valueof);
+			}
+			else if("orgroup".equals(inTerm.getOperation())){
+				
+				
+				find = QueryBuilders.termsQuery(fieldid, inTerm.getValues());
+				
 			}
 			else if ("matches".equals(inTerm.getOperation()))
 			{
