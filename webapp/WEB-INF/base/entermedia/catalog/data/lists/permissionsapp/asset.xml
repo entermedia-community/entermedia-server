@@ -23,17 +23,17 @@
 	<permission id="assetpermissions" permissiontype="asset" name="Permissions" description="Enables permission alteration for media assets." ordering="340" />
 	<permission id="editmetadatasetup" permissiontype="asset" name="Edit Views From Asset Page" description="Allows users to edit views from a quick link on the asset page." ordering="342"  />
 
-	<permission id="converthistory" permissiontype="history" name="Conversion" description="Logs the conversion history of an asset." ordering="344" />
-	<permission id="viewassetpreviewhistory" permissiontype="history" name="Preview" description="Logs the preview history of an asset." ordering="346" />
-	<preference id="capturehistory" permissiontype="history" name="Save Usage" description="Logs the download history of an asset." ordering="348" />
+	<permission id="converthistory" permissiontype="asset" name="Conversion" description="Logs the conversion history of an asset." ordering="344" />
+	<permission id="viewassetpreviewhistory" permissiontype="asset" name="Preview" description="Logs the preview history of an asset." ordering="346" />
+	<preference id="capturehistory" permissiontype="asset" name="Save Usage" description="Logs the download history of an asset." ordering="348" />
 
-	<permission id="viewmap" permissiontype="view" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="350"/>
-	<permission id="viewmediaedit" permissiontype="view" name="Media Editor" description="Enables access to a crop and rotate tool." ordering="352"/>
+	<permission id="viewmap" permissiontype="asset" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="350"/>
+	<permission id="viewmediaedit" permissiontype="asset" name="Media Editor" description="Enables access to a crop and rotate tool." ordering="352"/>
 
-	<permission id="viewmetadatageneral" permissiontype="view" name="View General Metadata" description="Enable general metadata viewing." ordering="354" />
-	<permission id="viewattachments" permissiontype="view" name="Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
-	<permission id="viewcomments" permissiontype="view" name="Comments" description="Enables view-only access to the comments." ordering="358"/>
-	<permission id="viewassets" permissiontype="view" name="Asset Search" description="Enables access to assets." ordering="360" />
+	<permission id="viewmetadatageneral" permissiontype="asset" name="View General Metadata" description="Enable general metadata viewing." ordering="354" />
+	<permission id="viewattachments" permissiontype="asset" name="Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
+	<permission id="viewcomments" permissiontype="asset" name="Comments" description="Enables view-only access to the comments." ordering="358"/>
+	<permission id="viewassets" permissiontype="asset" name="Asset Search" description="Enables access to assets." ordering="360" />
 
 		
 	<!-- 
