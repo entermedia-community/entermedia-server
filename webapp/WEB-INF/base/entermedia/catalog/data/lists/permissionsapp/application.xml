@@ -2,7 +2,7 @@
 
 			
 	<permission id="view" permissiontype="application" name="Application" description="Enables access to the EnterMedia application." ordering="200"/>
-	<permission id="viewhomelink" permissiontype="application" name="Home" description="Enables the home button." ordering="605"/>
+	<permission id="viewhomelink" permissiontype="application" name="Home" description="Enables the home button." ordering="205"/>
   	<permission id="viewsettings" permissiontype="application" name="Settings" description="Enables access to application management settings." ordering="205"/>
 		
 	<permission id="multiedit" permissiontype="application" name="Multiple Files" description="Enables various actions across multiple assets simultaneously." ordering="210" />
