@@ -25,7 +25,7 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 
-public class AssetUtilities
+public class AssetUtilities //TODO: Rename to AssetManager
 {
 	protected MetaDataReader fieldMetaDataReader;
 	protected DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");// TODO: use it8l
@@ -415,10 +415,10 @@ public class AssetUtilities
 		vals.put("guid", sguid);
 		vals.put("splitguid", sguid.substring(0,2) + "/" + sguid.substring(3).replace("-", ""));
 		
-		String date  = new SimpleDateFormat("yyyy/MM").format(new Date());
+		String date  = new SimpleDateFormat("yyyy/MM").format(new Date()); //TODO: Use DataStorage
 		vals.put("formatteddate",date );
 		vals.put("user",inReq.getUser());
-		Replacer replacer = new Replacer();
+		Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
 		
 		replacer.setSearcherManager(inArchive.getSearcherManager());
 		replacer.setCatalogId(inArchive.getCatalogId());

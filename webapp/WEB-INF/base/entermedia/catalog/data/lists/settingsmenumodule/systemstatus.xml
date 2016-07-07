@@ -5,10 +5,10 @@
   <property id="cache" menulevel="toplevel" parentid="cache" moduleid="system" path="/views/settings/status/cache/index.html" ordering="031" sublabel="Cache Status">System Status</property>
   <property id="version" parentid="cache" moduleid="system" path="/views/settings/status/version/index.html" ordering="031">Versions</property>
  -->
-  <property id="tools" parentid="tools"  menulevel="toplevel"  moduleid="system" path="/views/settings/status/tools/index.html" ordering="031" sublabel="Tools">Server</property>
-  <property id="version" parentid="tools" moduleid="system" path="/views/settings/status/version/index.html" ordering="031">Versions</property>
-  <property id="logs" parentid="tools" moduleid="system" path="/views/settings/status/logs/index.html" ordering="032">Logs</property>
-  <property id="reports" parentid="tools" moduleid="system" path="/views/settings/status/reports/index.html" ordering="032">Reports</property>
+  <property id="reports" parentid="reports" menulevel="toplevel" moduleid="system" path="/views/settings/status/reports/index.html" sublabel="Reports" ordering="30">Server</property>
+  <property id="tools" parentid="reports"    moduleid="system" path="/views/settings/status/tools/index.html" ordering="31" >Database</property>
+  <property id="version" parentid="reports" moduleid="system" path="/views/settings/status/version/index.html" ordering="32">Versions</property>
+  <property id="logs" parentid="reports" moduleid="system" path="/views/settings/status/logs/index.html" ordering="33">Logs</property>
 
 </properties>
 

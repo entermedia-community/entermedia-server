@@ -1,8 +1,0 @@
-<permissions name="Application Permissions">
-
-	<permission id="editusersgroups" permissiontype="system" name="Edit Users and Groups" description="Allows uset to create and edit users or groups" ordering="500"  />
-
-	
-</permissions>
-
-	
