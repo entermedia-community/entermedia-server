@@ -1,4 +1,10 @@
 <page>
 <path-action name="OauthModule.login"/> 
 <property name="provider">generic</property>
+<path-action name="Admin.redirect">
+	  <redirectpath>/${applicationid}/index.html</redirectpath>
+
+
+</path-action>
+
 </page>

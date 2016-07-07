@@ -196,7 +196,7 @@ public class OauthModule extends BaseMediaModule
 			handleLogin(inReq, authinfo.getId() + "-" + (String)data.get("sub"), (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),false, true);
 			
 		}
-		inReq.redirect("/" + appid + "/index.html");
+	//	inReq.redirect("/" + appid + "/index.html");
 	}
 
 	protected void handleLogin(WebPageRequest inReq, String username, String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate)
@@ -255,7 +255,19 @@ public class OauthModule extends BaseMediaModule
 			inReq.putPageValue( "user", target);
 
 		}
+		if(getWebEventListener() != null)
+		{
+			WebEvent event = new WebEvent();
+			event.setSearchType("userprofile");
+			event.setCatalogId(searcher.getCatalogId());
+			event.setOperation("userprofile/saved");
+			event.setProperty("dataid", target.getId());
+			event.setProperty("id", target.getId());
 
+			event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+			getWebEventListener().eventFired(event);
+		}
 
 	}
 
