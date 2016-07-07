@@ -171,7 +171,7 @@ public class ElasticSearchQuery extends SearchQuery
 		//term.setValue(inValue);
 		//String[] orwords = inValue.split("\\s+");
 		term.setValues(inValues);
-		term.setOperation("orsGroup");
+		term.setOperation("orgroup");
 		getTerms().add(term);
 		return term;
 	}
@@ -206,7 +206,7 @@ public class ElasticSearchQuery extends SearchQuery
 		term.setValue(inValue);
 		String[] orwords = inValue.split("\\s+");
 		term.setValues(orwords);
-		term.setOperation("orsGroup");
+		term.setOperation("orgroup");
 		getTerms().add(term);
 		return term;
 	}
