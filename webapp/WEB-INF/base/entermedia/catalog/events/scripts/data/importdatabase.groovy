@@ -32,15 +32,19 @@ public void init(){
 		rootdrive = "/WEB-INF/data/" + catalogid + "/dataexport";
 	}	
 
+	Page assets = mediaarchive.getPageManager().getPage(rootdrive + "/asset.csv");
+	if( !assets.exists() )
+	{
+		throw new OpenEditException("No asset.csv file in " + assets.getPath());
+	}
+	
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
+	
 	Page lists = mediaarchive.getPageManager().getPage(rootdrive + "/lists/");
 
 	if(lists.exists()) {
 		Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/");
 		mediaarchive.getPageManager().copyPage(lists, target);
-	}
-	else {
-		throw new OpenEditException("Invalid import path " + rootdrive);
 	}
 
 	Page views = mediaarchive.getPageManager().getPage(rootdrive + "/views/");
