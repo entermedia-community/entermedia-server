@@ -246,6 +246,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		{
 			product2 = getMediaArchive().createAsset("2","multitest/2");
 		}
+		
 		product2.setProperty("libraries", "1 | 2");
 		product2.setProperty("category", "index");
 		getMediaArchive().saveAsset(product2, user);

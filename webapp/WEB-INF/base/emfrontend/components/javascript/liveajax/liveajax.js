@@ -196,8 +196,13 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	    	regelements.push(item);
 	    	try
  			{
-	    		node.data("livequeryinit" + item.selector, true);
-	 			func.call($(this));
+ 				node.each(function() { //We need to make sure each row is handled for datepicker
+	 				var onerow = $(this); 
+	    			onerow.data("livequeryinit" + item.selector, true);
+	 				func.call(onerow);
+	 			});	
+	    		//node.data("livequeryinit" + item.selector, true);
+	 			//func.call($(this));
 	 		} catch ( error ) 
 	 		{
 	 			console.log("Could not process: " + item.selector , error); 

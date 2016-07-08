@@ -2,7 +2,6 @@ package org.entermediadb.asset;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +17,7 @@ import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
@@ -31,7 +31,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	protected HitTracker fieldSelectedResults; 
 	protected List<String> fieldRemovedCategories;
 	protected List<String> fieldRemovedKeywords;
-	protected Map<String,String> fieldPropertiesSet;
+	protected ValuesMap fieldPropertiesSet;
 	protected List<Integer> fieldSelections;
 	protected PropertyDetails fieldPropertyDetails;
 	protected String fieldId;
@@ -86,16 +86,16 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 		return getSearcher().getPropertyDetails();
 	}
 
-	public Map getPropertiesSet()
+	public ValuesMap getPropertiesSet()
 	{
 		if (fieldPropertiesSet == null)
 		{
-			fieldPropertiesSet = new HashMap();
+			fieldPropertiesSet = new ValuesMap();
 		}
 		return fieldPropertiesSet;
 	}
 
-	public void setPropertiesSet(Map inPropertiesSet)
+	public void setPropertiesSet(ValuesMap inPropertiesSet)
 	{
 		fieldPropertiesSet = inPropertiesSet;
 	}
@@ -364,7 +364,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 					continue;
 				}
 					
-				String value = (String)getPropertiesSet().get(key);
+				Object value = getPropertiesSet().get(key);
 				String datavalue = data.get(key);
 				
 				if( datavalue == value )
@@ -383,7 +383,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 					if( multi )
 					{
 						//Need to add any that are set by user in value 
-						Set added = collect(value);
+						Set added = collect((String)getPropertiesSet().getString(key));
 						Set existing = collect(datavalue);
 						
 						//TODO: Save as objects once we determine the value has changed
@@ -392,7 +392,7 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 					}
 					else
 					{
-						loaded.setProperty(key, value);
+						loaded.setValue(key, value);
 					}
 					inloopasset = loaded;
 				}

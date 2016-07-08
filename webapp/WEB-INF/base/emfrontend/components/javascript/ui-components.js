@@ -173,7 +173,7 @@ uiload = function() {
 			var date;
 			if( current.indexOf("-") > 0) //this is the standard
 			{
-				current = current.substring(2,10);
+				current = current.substring(0,10);
 				//2012-09-17 09:32:28 -0400
 				date = jQuery.datepicker.parseDate('yy-mm-dd', current);
 			}

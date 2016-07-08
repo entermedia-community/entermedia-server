@@ -1,6 +1,6 @@
 <page>
 	<property id="viewasset" index="true" internalfield="true" indextype="not_analyzed" >Readable</property>	
-	<property id="editasset" index="true" internalfield="true" indextype="not_analyzed" >Writable</property>	
+	<property id="editasset" internalfield="true" indextype="not_analyzed" >Writable</property>	
 
 	<property id="description" defaultoperation="freeform">All Fields</property>
 	<property id="sourcepath" internalfield="false" index="true" stored="true">Source Path</property>
