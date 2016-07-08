@@ -76,7 +76,7 @@ public class ProfileModule extends MediaArchiveModule
 		MediaArchive archive = getMediaArchive(inReq);
 		String searchtype = inReq.getRequestParameter("searchtype");
 		String view = searchtype + "/" + searchtype + "resultstable";
-		if( searchtype == null)
+		if( searchtype == null || "asset".equals(searchtype))
 		{
 			searchtype = "asset";
 			view = searchtype + "/resultstable";
