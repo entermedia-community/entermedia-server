@@ -2,6 +2,6 @@
 
 <page>
 
-	<property name="subtab">reports</property>
+	<property name="subtab">tools</property>
 	<permission name="view"><blank/></permission>
 </page>

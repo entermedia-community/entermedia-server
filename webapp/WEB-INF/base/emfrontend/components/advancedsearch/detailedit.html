@@ -29,6 +29,9 @@
 			#set ($viewtype = "default")
 		#end
 
+		#if ($detail.isMultiLanguage() )
+			#set ($viewtype = "multilanguage")
+		#end
 
 
 
@@ -54,7 +57,6 @@
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
 		#end	
-		
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
 	</td>
 </tr>

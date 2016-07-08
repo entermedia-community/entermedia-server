@@ -80,7 +80,15 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		
 		if (libraries != null) 
 		{
-			permissions.addAll(asList("library_", libraries.split("\\s+")));
+			Collection values = inAsset.getValues("libraries");
+			for (Iterator iter = values.iterator(); iter.hasNext();)
+			{
+				String value = (String) iter.next();
+				permissions.add("library_" + value);
+				
+			}
+			
+			
 		}
 		// clean up variables? add a bunch, then they can resolve in index time
 		// tmp.put("asset.owner", inAsset.get("owner"));

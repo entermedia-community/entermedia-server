@@ -1,6 +1,6 @@
 <page>
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
-	<property name="tab">tools</property>
+	<property name="tab">reports</property>
 	<permission name="view">
 			<or>
 				<pagevalue name="canviewsettings" equals="true" />

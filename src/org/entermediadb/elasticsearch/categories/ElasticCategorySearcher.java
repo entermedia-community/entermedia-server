@@ -76,7 +76,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		try
 		{
 		
-			putMappings(toId(getCatalogId()),true); //We can only try to put mapping. If this failes then they will
+			putMappings(); //We can only try to put mapping. If this failes then they will
 				//need to export their data and factory reset the fields 
 			
 			//deleteAll(null); //This only deleted the index

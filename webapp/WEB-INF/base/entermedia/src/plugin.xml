@@ -1368,6 +1368,10 @@
 		<property name="cookieEncryption">
 			<ref bean="stringEncryption" />
 		</property>
+		<property name="webEventListener">
+			<ref bean="pathEventHandler" />
+		</property>
+		
 	</bean>
 
 

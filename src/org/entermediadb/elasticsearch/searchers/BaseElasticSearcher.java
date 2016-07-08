@@ -732,7 +732,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
 		{
 			Term term = (Term) iterator.next();
-
+//			if ("orgroup".equals(term.getOperation()) || "orsGroup".equals(term.getOperation()))
+//			{
+//				BoolQueryBuilder or = addOrsGroup(term);
+//				bool.must(or);
+//			}
+//			else
+//			{
 				String value = term.getValue();
 				QueryBuilder find = buildTerm(term.getDetail(), term, value);
 				if (find != null)
@@ -747,7 +753,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 				}
 			}
-
+		//}
 	}
 
 //	protected BoolQueryBuilder addOrsGroup(Term term)

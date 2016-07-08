@@ -1,8 +1,10 @@
 package org.entermediadb.projects;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -15,6 +17,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
+import org.entermediadb.asset.ChunkySourcePathCreator;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -29,6 +32,7 @@ import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
 public class BaseProjectManager implements ProjectManager
@@ -828,7 +832,21 @@ public class BaseProjectManager implements ProjectManager
 			throw new OpenEditException("No folder set on library");
 		}
 		String oldcollectionpath = oldlibrary.get("folder") + "/" + collection.getName(); 
-		String collectionpath = librarysourcepath + "/" + collection.getName(); 
+		String path = inArchive.getCatalogSettingValue("movecollectionpath");
+
+		Map args = new HashMap();
+		args.put("collection", collection);
+		args.put("oldlibrary", oldlibrary);
+		args.put("newlibrary", newlibrary);
+		args.put("splitname", makeChunks(collection.getName()));
+		String date  = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM"); //TODO: Use DataStorage
+		args.put("year",date.substring(0, 4));
+		args.put("month",date.substring(5, 7));
+		args.put("user",inReq.getUser());
+
+		//librarysourcepath + "/" + collection.getName();
+		//${newlibrary.folder}/${year}/${splitname}
+		String collectionpath = inArchive.getReplacer().replace(path, args); 
 
 		//Move this folder and update all the sourcepaths on assets. Also add a new Category
 		Collection assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
@@ -900,6 +918,18 @@ public class BaseProjectManager implements ProjectManager
 		return collectionpath;
 		
 	}
+	
+	protected String makeChunks(String inName)
+	{
+		int split = 3;
+		if( inName.length() < 3 )
+		{
+			return inName;
+		}
+		String fixed = inName.replace("-", "");
+		fixed = fixed.substring(0,3) + "/" + inName;
+		return fixed;
+	}	
 	
 	protected Asset copyAssetIfNeeded(WebPageRequest inReq, MediaArchive inArchive, Asset existingasset, String folderpath)
 	{

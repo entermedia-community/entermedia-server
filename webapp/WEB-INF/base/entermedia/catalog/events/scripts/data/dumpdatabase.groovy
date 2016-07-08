@@ -3,12 +3,14 @@ package data;
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVWriter
 import org.openedit.data.PropertyDetail
+import org.openedit.data.PropertyDetails
 import org.openedit.data.PropertyDetailsArchive
+import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
 import org.openedit.util.DateStorageUtil
-import org.openedit.util.PathUtilities;
+import org.openedit.util.PathUtilities
 
 
 public void init(){
@@ -24,9 +26,10 @@ public void init(){
 	
 	searchtypes.each{
 		String searchtype = it;
-		searcher = searcherManager.getSearcher(catalogid, searchtype);
-		details = searcher.getPropertyDetails();
+		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
+		PropertyDetails details = searcher.getPropertyDetails();
 		HitTracker hits = searcher.getAllHits();
+		hits.enableBulkOperations();
 		if(hits){
 
 			Page output = mediaarchive.getPageManager().getPage(rootfolder + "/" + searchtype + ".csv");
@@ -38,12 +41,29 @@ public void init(){
 			parent.mkdirs();
 			FileWriter out = new FileWriter(outputfile);
 			CSVWriter writer  = new CSVWriter(out);
+			HitTracker languages = searcherManager.getList(catalogid, "locale");
 			int count = 0;
-			headers = new String[details.size()];
+			int langcount = details.getMultilanguageFieldCount() ;
+			langcount = langcount * (languages.size() );
+			
+			headers = new String[details.size() + langcount];
+			
+			
+			
 			for (Iterator iterator = details.iterator(); iterator.hasNext();) {
 				PropertyDetail detail = (PropertyDetail) iterator.next();
+				if(detail.isMultiLanguage()){
+					languages.each{
+						String id = it.id ;
+						headers[count] = detail.getId() + "." + id;
+						count ++;
+					}
+
+				}
+			 else{
 				headers[count] = detail.getId();
-				count++;
+						count++;
+			 }
 			}
 			writer.writeNext(headers);
 			log.info("about to start: " + hits.size() + "records");
@@ -53,18 +73,40 @@ public void init(){
 				//tracker = searcher.searchById(hit.get("id"));
 				tracker = hit;
 
-				nextrow = new String[details.size()];//make an extra spot for c
+				nextrow = new String[details.size() + langcount];//make an extra spot for c
 				int fieldcount = 0;
 				for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
 				{
 					PropertyDetail detail = (PropertyDetail) detailiter.next();
-					String value = tracker.get(detail.getId());
-					//do special logic here
+						
+					
+					if(detail.isMultiLanguage()){
+						languages.each
+						{
+							String id = it.id ;
+							Object vals = tracker.getValue(detail.getId())
+							
+							if(vals != null && vals instanceof Map){
+								nextrow[fieldcount] = vals.getText(id);
+							} else{
+							nextrow[fieldcount] = vals;
+							}
+							
+							fieldcount ++;
+						}
+					} else{
+					
+						String value = tracker.get(detail.getId());
+						nextrow[fieldcount] = value;
+						fieldcount++;
+					}
+	
+					
 
 
-					nextrow[fieldcount] = value;
+					
 
-					fieldcount++;
+					
 
 				}
 

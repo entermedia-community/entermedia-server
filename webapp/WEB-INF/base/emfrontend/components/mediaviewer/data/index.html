@@ -1,4 +1,5 @@
 #set($hitssessionid = $hits.sessionId )
+$context.putPageValue("showalllanguagevalues",true)
 
 <div id="data" class="row" >
 	<div class="asset-data col-sm-6">
@@ -48,14 +49,6 @@
     					</div>
     				</div>
 				#end
-				#if( $asset.hasKeywords() )
-				<h3>[[Related Tags]]</h3>
-					<div class="asset-data-detail">
-						#foreach ($tag in $asset.keywords)
-							<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag" class="tag">$tag</a>
-						#end
-					</div>
-				#end	
 				<h3>[[Categories]]</h3>
 					<div class="asset-data-detail">
 					<div class="emtable">

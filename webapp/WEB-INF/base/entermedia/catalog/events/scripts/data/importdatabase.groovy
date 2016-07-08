@@ -1,7 +1,5 @@
 package data;
 
-import java.util.Iterator;
-
 import org.dom4j.Attribute
 import org.dom4j.Element
 import org.entermediadb.asset.MediaArchive
@@ -9,10 +7,11 @@ import org.entermediadb.asset.util.CSVReader
 import org.entermediadb.asset.util.ImportFile
 import org.entermediadb.asset.util.Row
 import org.openedit.Data
-import org.openedit.OpenEditException;
+import org.openedit.OpenEditException
 import org.openedit.data.*
-import org.openedit.util.*
+import org.openedit.modules.translations.LanguageMap
 import org.openedit.page.Page
+import org.openedit.util.*
 
 public void init(){
 
@@ -164,6 +163,8 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload)
 			{
 				String header = (String)iterator.next();
 				String detailid = header;//PathUtilities.extractId(header,true);
+				String value = trow.get(header);
+				
 				PropertyDetail detail = details.getDetail(detailid);
 				if(detail == null)
 				{
@@ -175,10 +176,49 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload)
 						}
 					}
 				}
+				
+				
+				
+				if (header.contains("."))
+				{
+					def splits = header.split("\\.");
+					if (splits.length > 1)
+					{
+						detail = searcher.getDetail(splits[0]);
+						if (detail != null && detail.isMultiLanguage())
+						{
+							LanguageMap map = null;
+							Object values = newdata.getValue(detail.getId());
+							if (values instanceof LanguageMap)
+							{
+								map = (LanguageMap) values;
+							}
+							if (values instanceof String)
+							{
+								map = new LanguageMap();
+								map.put("en", values);
+							}
+							if (map == null)
+							{
+								map = new LanguageMap();
+							}
+							map.put(splits[1], value);
+							newdata.setValue(detail.getId(), map);
+								
+						}
+						
+					}
+					continue;
+				}
+				
+				
+				
+				
+				
+				
 				if(detail == null){
 					continue; // this should not happen if you run mergemappigns first
 				}
-				String value = trow.get(header);
 				if( value == null)
 				{
 					continue;

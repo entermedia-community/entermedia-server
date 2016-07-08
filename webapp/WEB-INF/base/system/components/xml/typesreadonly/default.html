@@ -8,10 +8,17 @@
 	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
 	#esc( $label )
 #else
-
 	#if($detail.isMultiLanguage())
 		#set($map = $data.getValue($detail.getId()))
-		$!map.getText($context.language)
+		#if( $showalllanguagevalues )
+			#set($languages = $mediaarchive.getList("locale"))
+			#foreach($locale in $languages)
+				#set( $lval = false ) #set( $lval = $map.getText($locale.id) )
+				#if($lval) $locale:$lval #end 
+			#end
+		#else
+			$!map.getText($context.language)
+		#end
 	#else
 		#esc($!val)	
 	#end

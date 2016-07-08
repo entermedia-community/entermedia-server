@@ -15,6 +15,8 @@ public void init(){
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	Searcher searcher = archive.getAssetSearcher();
+	searcher.putMappings();//just in case it's never been done.
+	
 	SearchQuery query = searcher.createSearchQuery();
 	AggregationBuilder b = AggregationBuilders.terms("assettype_filesize").field("assettype");
 	SumBuilder sum = new SumBuilder("assettype_sum");
@@ -30,6 +32,7 @@ public void init(){
 	log.info(agginfo.getBuckets().size())
 	log.info("hits" + hits.size());
 	log.info(hits.toString());
+	
 }
 
 init();

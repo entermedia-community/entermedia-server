@@ -50,6 +50,17 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected OutputFiller filler = new OutputFiller();
 
 	protected boolean fieldIncludeFullText = true;
+	protected int fieldFullTextCap = 500000;
+	
+	public int getFullTextCap()
+	{
+		return fieldFullTextCap;
+	}
+
+	public void setFullTextCap(int inFullTextCap)
+	{
+		fieldFullTextCap = inFullTextCap;
+	}
 
 	public boolean isIncludeFullText()
 	{
@@ -112,7 +123,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 			//Someone is forcing a reindex
 			//deleteOldMapping();
-			putMappings(toId(getCatalogId()), true);
+			putMappings();
 
 			final List tosave = new ArrayList(500);
 
@@ -144,6 +155,9 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			updateIndex(tosave, null);
 			log.info("reindexed " + processor.getExecCount());
 			flushChanges();
+			
+			super.reIndexAll();//Old elastic data
+			
 		}
 		catch (Exception e)
 		{
@@ -304,6 +318,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 					{
 						input = new InputStreamReader(item.getInputStream(), "UTF-8");
 						StringWriter output = new StringWriter();
+						filler.setMaxSize(getFullTextCap());
 						filler.fill(input, output);
 						fullDesc.append(output.toString());
 					}
@@ -318,13 +333,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				}
 			}
 		}
-		//		fullDesc.append(asset.get("fulltext")); //TODO: Is this set? Should we store this another way?
-		//
-		//		//TODO: Limit the size? Trim words?
-		if (fullDesc.length() > 500000)
-		{
-			return fullDesc.substring(0, 500000);
-		}
+//		if (fullDesc.length() > getFullTextCap())
+//		{
+//			return fullDesc.substring(0, getFullTextCap());
+//		}
 
 		String result = fullDesc.toString();// fixInvalidCharacters(fullDesc.toString());
 		return result;
