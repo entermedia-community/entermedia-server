@@ -145,7 +145,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public SearchQuery createSearchQuery()
 	{
-		ElasticSearchQuery query = new ElasticSearchQuery();
+		SearchQuery query = new ElasticSearchQuery();
 		query.setPropertyDetails(getPropertyDetails());
 		query.setCatalogId(getCatalogId());
 		query.setResultType(getSearchType()); // a default
@@ -861,12 +861,18 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				find = QueryBuilders.matchAllQuery();
 			}
-		
-			else
+			else if(!"orgroup".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.termQuery("_id", valueof);
 			}
-			return find;
+			else if( inTerm.getValues() != null)
+			{
+				find = QueryBuilders.termsQuery("_id", inTerm.getValues());
+			}
+			if( find != null)
+			{
+				return find;
+			}	
 		}
 
 		if (valueof.equals("*"))
