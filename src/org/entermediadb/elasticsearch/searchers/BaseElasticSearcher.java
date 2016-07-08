@@ -145,7 +145,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public SearchQuery createSearchQuery()
 	{
-		ElasticSearchQuery query = new ElasticSearchQuery();
+		SearchQuery query = new ElasticSearchQuery();
 		query.setPropertyDetails(getPropertyDetails());
 		query.setCatalogId(getCatalogId());
 		query.setResultType(getSearchType()); // a default
@@ -861,12 +861,18 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				find = QueryBuilders.matchAllQuery();
 			}
-		
-			else
+			else if(!"orgroup".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.termQuery("_id", valueof);
 			}
-			return find;
+			else if( inTerm.getValues() != null)
+			{
+				find = QueryBuilders.termsQuery("_id", inTerm.getValues());
+			}
+			if( find != null)
+			{
+				return find;
+			}	
 		}
 
 		if (valueof.equals("*"))
@@ -1170,9 +1176,13 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				find = QueryBuilders.matchQuery(fieldid, valueof);
 			}
+			else if( inDetail.isList() )
+			{
+				find = QueryBuilders.termQuery(fieldid, valueof); 
+			}
 			else
 			{
-				find = QueryBuilders.matchQuery(fieldid, valueof); //This is not analyzed termQuery
+				find = QueryBuilders.matchQuery(fieldid, valueof); //This is analyzed termQuery is not
 				//find = QueryBuilders.termQuery(fieldid, valueof);
 			}
 		}
@@ -1698,12 +1708,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				else if (detail.isMultiLanguage())
 				{
 					// This is a nested document
-					inContent.startObject(key); //start first detail object
-					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 					if (value == null)
 					{
 						continue;
 					}
+					XContentBuilder lanobj = inContent.startObject(key); //start first detail object
+					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 					if (value instanceof String)
 					{
 						String target = (String) value;
@@ -1726,7 +1736,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 
 					}
-					inContent.endObject();
+					lanobj.endObject();
 				}
 				else
 				{

@@ -255,6 +255,9 @@ public class AssetEditTest extends BaseEnterMediaTest
 		//q.addMatches("id","*");
 		q.addOrsGroup("id", "1 2 102" );
 		q.addSortBy("category");
+	
+		getMediaArchive().getSearcherManager().setShowSearchLogs(getMediaArchive().getCatalogId(),true);
+		
 		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
 		hits.toggleSelected("1");
 		hits.toggleSelected("2");

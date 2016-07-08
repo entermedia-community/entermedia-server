@@ -12,16 +12,21 @@ import org.openedit.util.PathUtilities
 public void init() {
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	String assetid = context.findValue("assetid");
-	log.info("Reading metadata for asset $assetid");
 
 	Searcher searcher = archive.getAssetSearcher();
 	HitTracker assets = searcher.fieldSearch("importstatus", "needsdownload");
 
 	String ids = context.getRequestParameter("assetids");
-	if( ids != null ) {
+	if( ids != null ) 
+	{
+		log.info("Reading metadata for asset $ids");
 		String[] assetids = ids.split(",");
 		assets.setSelections(Arrays.asList( assetids) );
 		assets.setShowOnlySelected(true);
+	}
+	else
+	{
+		log.info("Found ${assets.size()} assets ");
 	}
 	Downloader dl = new Downloader();
 	assets.each
@@ -29,8 +34,9 @@ public void init() {
 		Asset current = null;
 		try
 		{	
-			current = archive.getAssetBySourcePath(it.sourcepath);
+			current = archive.getAssetSearcher().loadData(it);
 			String fetchurl = current.fetchurl;
+			
 			boolean regenerate = false;
 			if( fetchurl != null )
 			{
@@ -45,7 +51,7 @@ public void init() {
 				File image = new File(finalfile.getContentItem().getAbsolutePath());
 				
 				dl.download(fetchurl, image);
-		
+				log.info("Downloaded ${fetchurl}" );
 				current.setPrimaryFile(image.getName());
 				MetaDataReader reader = archive.getModuleManager().getBean("metaDataReader");
 				reader.populateAsset(archive, finalfile.getContentItem(), current);
@@ -62,6 +68,7 @@ public void init() {
 			}		
 			if( regenerate )
 			{
+				current.setValue("importstatus","imported");				
 				def tasksearcher = archive.getSearcher("conversiontask");
 				def existing = tasksearcher.query().match("assetid", current.getId() ).search(); 
 				existing.each
@@ -69,7 +76,7 @@ public void init() {
 					tasksearcher.delete(it,user);		
 				}			
 				archive.saveAsset(current,user);
-				archive.fireMediaEvent( "importing/queueconversions", user, current); //this will save the asset as imported
+				archive.fireMediaEvent( "importing/assetsimported", user, current); //this will save the asset as imported
 			}
 		}
 		catch( Exception ex )
