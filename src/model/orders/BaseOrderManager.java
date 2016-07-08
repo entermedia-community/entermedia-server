@@ -970,38 +970,39 @@ public class BaseOrderManager implements OrderManager {
 			}
 		}
 		String emailto = inOrder.get("sharewithemail");
-		String notes = inOrder.get("sharenote");
-
-		if( inOrder.getRecentOrderHistory().getItemErrorCount() == 0)
+		//String notes = inOrder.get("sharenote");
+		if(emailto != null) 
 		{
-			if(emailto != null) {
+			if( inOrder.getRecentOrderHistory().getItemErrorCount() == 0)
+			{
 				String expireson=inOrder.get("expireson");
-				if ((expireson!=null) && (expireson.trim().length()>0)) {
+				if ((expireson!=null) && (expireson.trim().length()>0))
+				{
 					Date date = DateStorageUtil.getStorageUtil().parseFromStorage(expireson);
 					context.put("expiresondate", date);
 					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 				}
-
 				sendEmail(inArchive.getCatalogId(),context, emailto, "/" + appid + "/views/activity/email/sharetemplate.html");
 			}
-		}
-		if( "download" != inOrder.get("ordertype") )
-		{
-			String userid = inOrder.get("userid");
-			if(userid != null)
-			{
-				User muser = inArchive.getUserManager().getUser(userid);
-				if(muser != null)
-				{
-					String owneremail = muser.getEmail();
-					if(owneremail != null)
-					{
-						context.put("sharewithemail", emailto);
-						sendEmail(inArchive.getCatalogId(),context, owneremail, "/" + appid + "/views/activity/email/usertemplate.html");
-					}
-				}
-			}
-		}
+		}	
+		
+//		if( !"download".equals( inOrder.get("ordertype") ) )
+//		{
+//			String userid = inOrder.get("userid");
+//			if(userid != null)
+//			{
+//				User muser = inArchive.getUserManager().getUser(userid);
+//				if(muser != null)
+//				{
+//					String owneremail = muser.getEmail();
+//					if(owneremail != null)
+//					{
+//						context.put("sharewithemail", emailto); //Why would we need this
+//						sendEmail(inArchive.getCatalogId(),context, owneremail, "/" + appid + "/views/activity/email/usertemplate.html");
+//					}
+//				}
+//			}
+//		}
 		inOrder.setProperty("emailsent", "true");
 	}
 
