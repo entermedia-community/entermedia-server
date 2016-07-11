@@ -695,7 +695,7 @@ uiload = function() {
 		activelink.parent("li").addClass("emtabselected");
 		activelink.data("loadpageonce",false);
 		
-		$("a:first-child",tabs).livequery("click", function (e)   
+		$("a:first-child",tabs).on("click", function (e)   
 		{
 			e.preventDefault();
 			
