@@ -183,7 +183,7 @@ public abstract class BaseConversionManager implements ConversionManager
 	protected ConvertInstructions createNewInstructions()
 	{
 		ConvertInstructions ins = new ConvertInstructions(getMediaArchive());
-		ins.setOutputRenderType(getRenderType());
+	
 		return ins;
 	}
 

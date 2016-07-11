@@ -273,7 +273,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		inContent.array(inPermission, add.toArray());
 
 	}
-
+	//TODO: Migrate this into populateKeywords
 	protected String populateDescription(Asset asset, PropertyDetails inDetails, Set inCategories)
 	{
 		// Low level reading in of text
