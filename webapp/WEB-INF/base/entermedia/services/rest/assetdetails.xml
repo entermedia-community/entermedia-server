@@ -4,9 +4,21 @@
 #foreach( $detail in $details )
 #set( $value = false )
 #set( $value = $asset.get($detail.id) )
+
 #if( $value )
 #if($detail.isList())
 <property id="$detail.id" valueid="$value"><![CDATA[ $!searcherManager.getListData($detail, $value) ]]></property>
+#elseif($detail.isMultiLanguage())
+	
+	#set($languages = $!searcherManager.getList($catalogid, "locale"))
+    #set($map = $asset.getValue($detail.getId()))
+
+	#foreach($locale in $languages)
+		<property id="${detail.id}.${locale.id}"><![CDATA[ $!map.getText($locale.id) ]]></property>
+	#end
+
+
+
 #else
 <property id="$detail.id"><![CDATA[ $value ]]></property>
 #end

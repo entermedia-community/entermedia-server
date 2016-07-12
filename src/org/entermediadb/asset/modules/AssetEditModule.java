@@ -617,87 +617,61 @@ public class AssetEditModule extends BaseMediaModule
 		asset.setValues(inFieldName, existing);
 		getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
 	}
-	public void addAssetKeyword(WebPageRequest inReq) throws OpenEditException 
-	{
-		AssetEditor editor = getAssetEditor(inReq);
-		String key = inReq.getRequestParameter("keyword");
-		if (key == null) {
-			return;
-		}
-		Asset asset = getAsset(inReq);
-//		String id = inReq.getRequestParameter("assetid");
-//		
-//		if (id == null)
-//		{
-//			asset = editor.getCurrentAsset();
+//	public void addAssetKeyword(WebPageRequest inReq) throws OpenEditException 
+//	{
+//		AssetEditor editor = getAssetEditor(inReq);
+//		String key = inReq.getRequestParameter("keyword");
+//		if (key == null) {
+//			return;
 //		}
-//		if( asset == null )
-//		{
-//			asset = getMediaArchive(inReq).getAsset(id,inReq);
+//		Asset asset = getAsset(inReq);
+////		String id = inReq.getRequestParameter("assetid");
+////		
+////		if (id == null)
+////		{
+////			asset = editor.getCurrentAsset();
+////		}
+////		if( asset == null )
+////		{
+////			asset = getMediaArchive(inReq).getAsset(id,inReq);
+////		}
+//		asset.addKeywords(key);
+//		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
+//		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+//		inReq.putPageValue("asset", asset);
+//	}
+//
+//	public void removeAssetKeyword(WebPageRequest inReq) throws OpenEditException 
+//	{
+//		AssetEditor editor = getAssetEditor(inReq);
+//		String key = inReq.getRequestParameter("keyword");
+//		if (key == null) {
+//			return;
 //		}
-		asset.addKeywords(key);
-		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
-		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
-		inReq.putPageValue("asset", asset);
-	}
-
-	public void removeAssetKeyword(WebPageRequest inReq) throws OpenEditException 
-	{
-		AssetEditor editor = getAssetEditor(inReq);
-		String key = inReq.getRequestParameter("keyword");
-		if (key == null) {
-			return;
-		}
-		Asset asset = getAsset(inReq);
-//		String id = inReq.getRequestParameter("assetid");
-//		if (id == null)
-//		{
-//			asset = editor.getCurrentAsset();
-//		}
-//		else
-//		{
-//			asset = getMediaArchive(inReq).getAsset(id,inReq);
-//		}
-		asset.removeKeyword(key);
-		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
-
-		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
-		inReq.putPageValue("asset", asset);
-
-	}
+//		Asset asset = getAsset(inReq);
+////		String id = inReq.getRequestParameter("assetid");
+////		if (id == null)
+////		{
+////			asset = editor.getCurrentAsset();
+////		}
+////		else
+////		{
+////			asset = getMediaArchive(inReq).getAsset(id,inReq);
+////		}
+//		asset.removeKeyword(key);
+//		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
+//
+//		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
+//		inReq.putPageValue("asset", asset);
+//
+//	}
 	protected XmpWriter getXmpWriter()
 	{
 		XmpWriter writer = (XmpWriter) getBeanLoader().getBean("xmpWriter");
 		return writer;
 
 	}
-	public void writeAssetKeywords( WebPageRequest inRequest ) throws Exception
-	{
-		String[] assetids = inRequest.getRequestParameters("assetids");
-		if( assetids == null)
-		{
-			assetids = inRequest.getRequestParameters("assetid");
-		}
-		if( assetids != null)
-		{
-			MediaArchive mediaArchive = getMediaArchive(inRequest);
-			for (int i = 0; i < assetids.length; i++)
-			{
-				Asset asset = mediaArchive.getAsset(assetids[i]);
-				if( asset == null )
-				{
-					//log
-					return;
-				}
-				boolean didSave = false;
-				if( mediaArchive.isTagSync(asset.getFileFormat() ) )
-				{
-					didSave = getXmpWriter().saveKeywords(mediaArchive, asset);
-				}
-				inRequest.putPageValue("didSave", new Boolean(didSave));
-			}			
-		}	
-	}
+
 	
 	public void saveAssetProperties(WebPageRequest inReq) throws OpenEditException 
 	{

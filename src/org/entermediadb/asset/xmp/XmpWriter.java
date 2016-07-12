@@ -63,7 +63,12 @@ public class XmpWriter
 	{
 		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
 		List<String> comm = createCommand(inArchive);
-		addSaveFields(inArchive, inAsset, comm);			
+		addSaveFields(inArchive, inAsset, comm);		
+		List removekeywords = new ArrayList(comm);
+		removekeywords.add("-Subject="); //This only works on a line by itself
+		removekeywords.add(path);
+		addSaveKeywords(inAsset.getKeywords(), comm);
+
 		comm.add(path);
 		boolean ok = runExec(comm);
 		return ok;

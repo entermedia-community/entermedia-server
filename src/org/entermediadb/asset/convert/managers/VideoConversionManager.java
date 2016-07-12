@@ -78,7 +78,8 @@ public class VideoConversionManager extends BaseConversionManager
 		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","image1024x768.jpg");
 		ConvertInstructions instructions2 = inStructions.copy(preset);
 		instructions2.setInputFile( proxyinstructions.getOutputFile() );
-		
+		instructions2.setProperty("outputfile", "image1024x768.jpg");
+		instructions2.setOutputFile(null);
 		result = findTranscoder(instructions2).convertIfNeeded(instructions2);
 		if(!result.isComplete())
 		{
