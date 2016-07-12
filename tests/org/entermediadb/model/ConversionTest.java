@@ -86,11 +86,11 @@ public class ConversionTest extends BaseEnterMediaTest
 		Asset asset = archive.getAsset("101"); //mpg
 		assertNotNull(asset);
 		
-		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/video200x200offset3.jpg");		
+		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/image200x200offset3.jpg");		
 		archive.getPageManager().removePage(page);
 		
 		
-		Page page2 = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/video200x200offset5.jpg");		
+		Page page2 = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/image200x200offset5.jpg");		
 		archive.getPageManager().removePage(page2);
 		
 		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3");
@@ -98,14 +98,21 @@ public class ConversionTest extends BaseEnterMediaTest
 		getFixture().getEngine().executePathActions(inReq);
 		
 		
+		ConvertGenerator generator = (ConvertGenerator) archive.getModuleManager().getBean("ConvertGenerator");
+		Output output = new Output();
+		output.setStream(inReq.getOutputStream());
+		generator.generate(inReq, inReq.getPage(),output );
+		
+		
 		inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=5");
 		getFixture().getEngine().executePageActions(inReq);
 		getFixture().getEngine().executePathActions(inReq);
 		
-		ConvertGenerator generator = (ConvertGenerator) archive.getModuleManager().getBean("ConvertGenerator");
-		Output output = new Output();
+		 output = new Output();
 		output.setStream(inReq.getOutputStream());
 		generator.generate(inReq, inReq.getPage(),output );	
+		
+		
 			
 		assertTrue(page.exists());
 		assertTrue(page2.exists());
