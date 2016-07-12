@@ -89,7 +89,16 @@ public class ConversionTest extends BaseEnterMediaTest
 		Page page = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/video200x200offset3.jpg");		
 		archive.getPageManager().removePage(page);
 		
+		
+		Page page2 = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + asset.getSourcePath() + "/video200x200offset5.jpg");		
+		archive.getPageManager().removePage(page2);
+		
 		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=3");
+		getFixture().getEngine().executePageActions(inReq);
+		getFixture().getEngine().executePathActions(inReq);
+		
+		
+		inReq = getFixture().createPageRequest("/testcatalog/views/modules/asset/downloads/preview/thumb/" + asset.getSourcePath() + "/thumb.jpg?timeoffset=5");
 		getFixture().getEngine().executePageActions(inReq);
 		getFixture().getEngine().executePathActions(inReq);
 		
@@ -99,6 +108,10 @@ public class ConversionTest extends BaseEnterMediaTest
 		generator.generate(inReq, inReq.getPage(),output );	
 			
 		assertTrue(page.exists());
+		assertTrue(page2.exists());
+		
+		assertNotSame(page.length(), page2.length());
+
 		
 	}
 	
