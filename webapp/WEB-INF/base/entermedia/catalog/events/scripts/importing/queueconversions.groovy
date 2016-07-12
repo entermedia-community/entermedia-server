@@ -63,35 +63,10 @@ public void createTasksForUpload() throws Exception {
 			//lock = mediaArchive.lock("assetconversions/" + it.id, "queueconversions.createTasksForUpload");
 			Asset asset = assetsearcher.loadData(it);
 			//Data asset =  it;
-			int counted = mediaarchive.getPresetManager().retryConversions(mediaarchive,tasksearcher,asset);
-			if( counted > 0)
+			int tasks = mediaarchive.getPresetManager().retryConversions(mediaarchive,tasksearcher,asset);
+			if( tasks == 0)
 			{
-				String rendertype = mediaarchive.getMediaRenderType(asset);
-				if( foundsome )
-				{
-					asset.setProperty("importstatus","imported");
-					if( asset.get("previewstatus") == null)
-					{
-						asset.setProperty("previewstatus","converting");
-					}
-					assetsave.add(asset);
-				}
-				else
-				{
-					if( asset.get("importstatus") != "needsdownload" )
-					{
-						asset.setProperty("importstatus","complete");
-						if(asset.getProperty("fileformat") == "embedded")
-						{
-							asset.setProperty("previewstatus","2");
-						}
-						else
-						{
-							asset.setProperty("previewstatus","mime");
-						}
-						assetsave.add(asset);
-					}
-				}
+				markComplete(asset, assetsave)
 			}	
 		}
 		catch( Throwable ex)
@@ -122,6 +97,22 @@ public void createTasksForUpload() throws Exception {
 		log.info("No assets found");
 	}
 
+}
+
+private markComplete(Asset asset, List assetsave) {
+	if( asset.get("importstatus") != "needsdownload" )
+	{
+		asset.setProperty("importstatus","complete");
+		if(asset.getProperty("fileformat") == "embedded")
+		{
+			asset.setProperty("previewstatus","2");
+		}
+		else
+		{
+			asset.setProperty("previewstatus","mime");
+		}
+		assetsave.add(asset);
+	}
 }
 
 private saveAutoPublishTasks(Searcher publishqueuesearcher, Searcher destinationsearcher, Searcher presetsearcher, Asset asset, MediaArchive mediaArchive) {

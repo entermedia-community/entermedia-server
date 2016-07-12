@@ -75,8 +75,10 @@ public class PresetCreator
 		}
 		int added = 0;
 		Collection hits = getPresets(mediaarchive,rendertype);
-		
-
+		if( hits.size() == 0)
+		{
+			return 0;
+		}
 		boolean missingconversion = false;
 		HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search(); //This is so dumb
 		HashSet existingtasks = new HashSet();
@@ -106,9 +108,10 @@ public class PresetCreator
 				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 				existing.setProperty("submitted", nowdate);
 				tosave.add(existing);
+				added = added + 1;
 			}
 		}
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();) //Existing ones
 		{
 			Data preset = (Data) iterator.next();
 			added = added + createMissing(mediaarchive, tasksearcher, existingtasks, tosave, preset, asset);
