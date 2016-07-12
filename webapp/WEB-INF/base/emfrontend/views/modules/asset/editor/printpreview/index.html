@@ -3,7 +3,10 @@
 
 
 <div id="printpreview-top">
-$pages.include("$apphome/components/mediaviewer/player/index.html",$context)
+#set( $msize = "$home$apphome/views/modules/asset/downloads/preview/large/$asset.sourcepath/thumb.jpg")
+<p>
+<img class="center-block" src="$msize"/>
+</p>
 </div>
 
 <div id="printpreview-metadata">
