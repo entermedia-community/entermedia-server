@@ -796,7 +796,8 @@ public class BaseProjectManager implements ProjectManager
 					inArchive.getPageManager().getRepository().copy(source, existing);
 				}
 			}
-			
+			parentCat.setProperty("foldertype", "10");
+			inArchive.getCategorySearcher().saveData(parentCat, null);
 			//Save the cateory
 			//catData.setProperty("importedcat","true");
 			//librarycollectioncategorySearcher.saveData(catData, null);
