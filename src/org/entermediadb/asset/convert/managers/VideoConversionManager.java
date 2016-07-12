@@ -66,34 +66,38 @@ public class VideoConversionManager extends BaseConversionManager
 		
 		//Do the video conversion first. Then do the standard image conversion
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.mp4");
-		ConvertInstructions proxyinstructions = inStructions.copy(preset);
-		proxyinstructions.setProperty("timeoffset", null);
-			
+		ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(),preset);
 		ConvertResult result = findTranscoder(proxyinstructions).convertIfNeeded(proxyinstructions);
 		if(!result.isComplete())
 		{
 			return result;
 		}
-		//Now make the input image needed using the video as the input
+		ConvertInstructions instructions2;
 		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","image1024x768.jpg");
-		ConvertInstructions instructions2 = inStructions.copy(preset);
+		if( inStructions.getTimeOffset() == null)
+		{
+			//Now make the input image needed using the video as the input
+			instructions2 = createInstructions(inStructions.getAsset(),preset);
+			instructions2.setProperty("outputfile", "image1024x768.jpg");
+			instructions2.setOutputFile(null);
+		}
+		else
+		{
+			instructions2 = inStructions.copy(preset);
+			
+		}
 		instructions2.setInputFile( proxyinstructions.getOutputFile() );
-		instructions2.setProperty("outputfile", "image1024x768.jpg");
-		instructions2.setOutputFile(null);
 		result = findTranscoder(instructions2).convertIfNeeded(instructions2);
 		if(!result.isComplete())
 		{
 			return result;
 		}
-		//Finally use ImageMagick to transform the final image using the image above as the input
 		
+		//Finally use ImageMagick to transform the final image using the image above as the input
 		preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"image","image1024x768.jpg");
 		ConvertInstructions IMinstructions = inStructions.copy(preset);
 		IMinstructions.setMaxScaledSize(inStructions.getMaxScaledSize());
 		IMinstructions.setInputFile(instructions2.getOutputFile());
-		
-		
-		
 		result = findTranscoder(IMinstructions).convertIfNeeded(IMinstructions);
 		if(!result.isComplete())
 		{
