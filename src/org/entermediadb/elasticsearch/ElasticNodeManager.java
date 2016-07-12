@@ -756,6 +756,66 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return tempindex;
 
 	}
+	
+	
+	
+	
+	public boolean checkAllMappings(String inCatalogId)
+	{
+		Date date = new Date();
+		String id = toId(inCatalogId);
+
+		String tempindex = id + date.getTime();
+		prepareIndex(tempindex);
+		//need to reset/creat the mappings here!
+		getMappingErrors().clear();
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+		List withparents = archive.findChildTablesNames();
+
+		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
+		{
+			String searchtype = (String) iterator.next();
+			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+			searcher.setAlternativeIndex(tempindex);//Should				
+     		searcher.putMappings();
+			searcher.setAlternativeIndex(null);
+			
+		}
+
+		List sorted = archive.listSearchTypes();
+		for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+		{
+
+			String searchtype = (String) iterator.next();
+				if (!withparents.contains(searchtype))
+				{
+
+					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+
+					searcher.setAlternativeIndex(tempindex);//Should				
+					searcher.putMappings();
+					searcher.setAlternativeIndex(null);
+				}
+	
+		}
+		DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(tempindex)).actionGet();
+		if (!delete.isAcknowledged())
+		{
+			log.error("Index wasn't deleted");
+		}
+		if(getMappingErrors().size() == 0){
+			return true;
+		} else{
+			return false;
+		}
+		
+	
+
+	}
+
+	
+	
+	
 
 	public void loadIndex(String id, String inTarget, boolean dropold)
 	{
