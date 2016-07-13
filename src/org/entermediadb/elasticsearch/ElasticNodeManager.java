@@ -715,15 +715,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
 		{
 			String searchtype = (String) iterator.next();
-			if (tableExists(id, searchtype))
-			{
+			
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 
 				searcher.setAlternativeIndex(tempindex);//Should				
 
 				searcher.putMappings();
 				searcher.setAlternativeIndex(null);
-			}
+			
 		}
 
 		List sorted = archive.listSearchTypes();
