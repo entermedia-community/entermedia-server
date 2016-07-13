@@ -67,8 +67,9 @@ $(document).ready(function()
         e.preventDefault(); 
      });
 
-    jQuery("#startbutton").livequery('click',function() 
+    jQuery("#startbutton").livequery('click',function(e) 
     {
+    	e.preventDefault(); 
     	var valid = $("#uploaddata").validate().form();
     	if(!valid){
     		return;
