@@ -26,6 +26,7 @@ import org.elasticsearch.action.admin.cluster.snapshots.get.GetSnapshotsRequestB
 import org.elasticsearch.action.admin.cluster.snapshots.get.GetSnapshotsResponse;
 import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotAction;
 import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotRequestBuilder;
+import org.elasticsearch.action.admin.cluster.snapshots.restore.RestoreSnapshotResponse;
 import org.elasticsearch.action.admin.indices.close.CloseIndexAction;
 import org.elasticsearch.action.admin.indices.close.CloseIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
@@ -45,6 +46,7 @@ import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
+import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -334,6 +336,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
 	{
 		String indexid = toId(inCatalogId);
+		listSnapShots(inCatalogId);
+		 
 		// String reponame = indexid + "_repo";
 
 		// Obtain the snapshot and check the indices that are in the snapshot
@@ -344,9 +348,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		try
 		{
 
-			CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
-			closeIndexRequestBuilder.setIndices("_all");
-			closeIndexRequestBuilder.execute().actionGet();
+			//			CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
+			//			closeIndexRequestBuilder.setIndices(indexid);
+			//			closeIndexRequestBuilder.execute().actionGet();
 
 			try
 			{
@@ -356,18 +360,32 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				log.error(ex);
 			}
-
+		
+			String currentindex = getIndexNameFromAliasName(indexid); //This is the current index that the alias 
+			clearAlias(indexid);
+			try
+			{
 			// Now execute the actual restore action
 			RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(), RestoreSnapshotAction.INSTANCE);
 			restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId);
-			restoreBuilder.execute().actionGet();
+			RestoreSnapshotResponse response = restoreBuilder.execute().actionGet();
+//			List <String> restored = response.getRestoreInfo().indices();
+//			if(restored.size() == 1){
+//				clearAlias(indexid);
+//				loadIndex(indexid,restored.get(0), true);
+//			} else{
+//				loadIndex(indexid, currentindex, false);
+//
+//				throw new OpenEditException("Cannot Restore Snapshot - restored" + restored +" indeces");
+//			}
+			
 
-			try
-			{
+			
 				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
 			}
 			catch (Exception ex)
 			{
+				loadIndex(indexid, currentindex, true);
 				log.error(ex);
 			}
 		}
@@ -659,6 +677,30 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return null;
 	}
 
+	protected void clearAlias(final String aliasName)
+	{
+
+		AliasOrIndex indexToAliasesMap = getClient().admin().cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(aliasName);
+
+		if (indexToAliasesMap == null)
+		{
+			return;
+		}
+
+		if (indexToAliasesMap.isAlias() && indexToAliasesMap.getIndices().size() > 0)
+		{
+			for (Iterator iterator = indexToAliasesMap.getIndices().iterator(); iterator.hasNext();)
+			{
+				IndexMetaData metadata = (IndexMetaData) iterator.next();
+				String indexid = metadata.getIndex();
+
+				getClient().admin().indices().prepareAliases().removeAlias(indexid, aliasName).execute().actionGet();
+
+			}
+		}
+
+	}
+
 	public boolean reindexInternal(String inCatalogId)
 	{
 		String id = toId(inCatalogId);
@@ -671,20 +713,29 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
+
 			List sorted = archive.listSearchTypes();
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{
 				String searchtype = (String) iterator.next();
-				if (tableExists(id, searchtype)){
-
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-				if (!toskip.contains(searchtype))
+				if (tableExists(id, searchtype))
 				{
-					searcher.setAlternativeIndex(newindex);//Should				
-					searcher.reindexInternal();
-					searcher.setAlternativeIndex(null);
+
+					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+					if (!toskip.contains(searchtype))
+					{
+						searcher.setAlternativeIndex(newindex);//Should				
+						searcher.reindexInternal();
+						searcher.setAlternativeIndex(null);
+					}
+					else
+					{
+						//Note - lock searcher enforces versions and fails on moving data...
+						searcher.setAlternativeIndex(newindex);//Should				
+						searcher.putMappings();
+						searcher.setAlternativeIndex(null);
+					}
 				}
-			}
 			}
 
 			loadIndex(id, newindex, true);
@@ -715,14 +766,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
 		{
 			String searchtype = (String) iterator.next();
-			
-				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 
-				searcher.setAlternativeIndex(tempindex);//Should				
+			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 
-				searcher.putMappings();
-				searcher.setAlternativeIndex(null);
-			
+			searcher.setAlternativeIndex(tempindex);//Should				
+
+			searcher.putMappings();
+			searcher.setAlternativeIndex(null);
+
 		}
 
 		List sorted = archive.listSearchTypes();
@@ -755,10 +806,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return tempindex;
 
 	}
-	
-	
-	
-	
+
 	public boolean checkAllMappings(String inCatalogId)
 	{
 		Date date = new Date();
@@ -776,9 +824,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String searchtype = (String) iterator.next();
 			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 			searcher.setAlternativeIndex(tempindex);//Should				
-     		searcher.putMappings();
+			searcher.putMappings();
 			searcher.setAlternativeIndex(null);
-			
+
 		}
 
 		List sorted = archive.listSearchTypes();
@@ -786,35 +834,32 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 
 			String searchtype = (String) iterator.next();
-				if (!withparents.contains(searchtype))
-				{
+			if (!withparents.contains(searchtype))
+			{
 
-					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 
-					searcher.setAlternativeIndex(tempindex);//Should				
-					searcher.putMappings();
-					searcher.setAlternativeIndex(null);
-				}
-	
+				searcher.setAlternativeIndex(tempindex);//Should				
+				searcher.putMappings();
+				searcher.setAlternativeIndex(null);
+			}
+
 		}
 		DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(tempindex)).actionGet();
 		if (!delete.isAcknowledged())
 		{
 			log.error("Index wasn't deleted");
 		}
-		if(getMappingErrors().size() == 0){
+		if (getMappingErrors().size() == 0)
+		{
 			return true;
-		} else{
+		}
+		else
+		{
 			return false;
 		}
-		
-	
 
 	}
-
-	
-	
-	
 
 	public void loadIndex(String id, String inTarget, boolean dropold)
 	{
