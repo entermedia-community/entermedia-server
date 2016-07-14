@@ -336,8 +336,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
 	{
 		String indexid = toId(inCatalogId);
-		listSnapShots(inCatalogId);
-		 
+		listSnapShots(indexid);
+
 		// String reponame = indexid + "_repo";
 
 		// Obtain the snapshot and check the indices that are in the snapshot
@@ -348,10 +348,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		try
 		{
 
-			//			CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
-			//			closeIndexRequestBuilder.setIndices(indexid);
-			//			closeIndexRequestBuilder.execute().actionGet();
-
 			try
 			{
 				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
@@ -360,33 +356,38 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				log.error(ex);
 			}
-		
+
 			String currentindex = getIndexNameFromAliasName(indexid); //This is the current index that the alias 
 			clearAlias(indexid);
 			try
 			{
-			// Now execute the actual restore action
-			RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(), RestoreSnapshotAction.INSTANCE);
-			restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId);
-			RestoreSnapshotResponse response = restoreBuilder.execute().actionGet();
-//			List <String> restored = response.getRestoreInfo().indices();
-//			if(restored.size() == 1){
-//				clearAlias(indexid);
-//				loadIndex(indexid,restored.get(0), true);
-//			} else{
-//				loadIndex(indexid, currentindex, false);
-//
-//				throw new OpenEditException("Cannot Restore Snapshot - restored" + restored +" indeces");
-//			}
-			
 
-			
+				CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
+				closeIndexRequestBuilder.setIndices(currentindex);
+				closeIndexRequestBuilder.execute().actionGet();
+				// Now execute the actual restore action
+				RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(), RestoreSnapshotAction.INSTANCE);
+				restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId);
+				RestoreSnapshotResponse response = restoreBuilder.execute().actionGet();
+				//			List <String> restored = response.getRestoreInfo().indices();
+				//			if(restored.size() == 1){
+				//				clearAlias(indexid);
+				//				loadIndex(indexid,restored.get(0), true);
+				//			} else{
+				//				loadIndex(indexid, currentindex, false);
+				//
+				//				throw new OpenEditException("Cannot Restore Snapshot - restored" + restored +" indeces");
+				//			}
+				String loadedindexid = getIndexNameFromAliasName(indexid);
+				if(!loadedindexid.equals(currentindex)){
+				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(currentindex)).actionGet();
+				}
 				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
 			}
 			catch (Exception ex)
 			{
-				loadIndex(indexid, currentindex, true);
 				log.error(ex);
+
 			}
 		}
 		catch (Throwable ex)
@@ -866,15 +867,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		id = toId(id);
 
 		String oldindex = getIndexNameFromAliasName(id);
-		if (oldindex == null)
-		{
-
-		}
-
 		getClient().admin().indices().prepareAliases().removeAlias(oldindex, id).addAlias(inTarget, id).execute().actionGet();
-		DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
 		if (dropold)
 		{
+
+			DeleteIndexResponse response = getClient().admin().indices().delete(new DeleteIndexRequest(oldindex)).actionGet();
 			log.info("Dropped: " + response.isAcknowledged());
 		}
 
