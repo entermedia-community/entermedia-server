@@ -30,7 +30,10 @@ public void init(){
 	searchtypes.each{
 		String searchtype = it;
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
-		if(!searcher instanceof ElasticListSearcher){
+		if(searcher instanceof ElasticListSearcher)
+		{
+			return;
+		}
 			PropertyDetails details = searcher.getPropertyDetails();
 			HitTracker hits = searcher.getAllHits();
 			hits.enableBulkOperations();
@@ -121,8 +124,6 @@ public void init(){
 
 
 				writer.close();
-
-			}
 		}
 	}
 

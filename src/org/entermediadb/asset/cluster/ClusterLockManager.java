@@ -6,8 +6,10 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.elasticsearch.searchers.LockSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.Shutdownable;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -16,7 +18,7 @@ import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.node.NodeManager;
 
-public class ClusterLockManager implements LockManager
+public class ClusterLockManager implements LockManager, Shutdownable
 {
 	private static final Log log = LogFactory.getLog(ClusterLockManager.class);
 
@@ -330,5 +332,19 @@ public class ClusterLockManager implements LockManager
 	public void setNodeManager(NodeManager inNodeManager)
 	{
 		fieldNodeManager = inNodeManager;
+	}
+	
+	@Override
+	public void shutdown()
+	{
+		LockSearcher searcher = (LockSearcher)getLockSearcher();
+		try
+		{
+			searcher.clearStaleLocks();
+		}
+		catch( Throwable ex)
+		{
+			log.info(ex);
+		}
 	}
 }

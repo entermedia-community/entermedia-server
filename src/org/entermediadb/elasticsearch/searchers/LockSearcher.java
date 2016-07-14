@@ -1,8 +1,5 @@
 package org.entermediadb.elasticsearch.searchers;
 
-import java.util.ArrayList;
-import java.util.Collection;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
@@ -11,8 +8,6 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchService;
-import org.openedit.Shutdownable;
 
 public class LockSearcher extends BaseElasticSearcher 
 {
