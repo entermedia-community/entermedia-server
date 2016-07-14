@@ -708,6 +708,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		ArrayList toskip = new ArrayList();
 		//couple of special ones to skip.
 		toskip.add("lock");
+		
 		try
 		{
 			String newindex = prepareTemporaryIndex(inCatalogId);
@@ -716,6 +717,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			archive.clearCache();
 
 			List sorted = archive.listSearchTypes();
+			
+			Searcher locksearcher = getSearcherManager().getSearcher(inCatalogId, "lock");
+			locksearcher.setAlternativeIndex(newindex);//Should				
+			locksearcher.putMappings();
+			locksearcher.setAlternativeIndex(null);
+			
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{
 				String searchtype = (String) iterator.next();
@@ -728,14 +735,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						searcher.setAlternativeIndex(newindex);//Should				
 						searcher.reindexInternal();
 						searcher.setAlternativeIndex(null);
-					}
-					else
-					{
-						//Note - lock searcher enforces versions and fails on moving data...
-						searcher.setAlternativeIndex(newindex);//Should				
-						searcher.putMappings();
-						searcher.setAlternativeIndex(null);
-					}
+					}					
 				}
 			}
 

@@ -600,6 +600,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					jsonproperties = jsonproperties.field("index", indextype);
 				}
+				jsonproperties = jsonproperties.field("store", "no");
+
 
 				if (detail.isMultiLanguage())
 				{
@@ -630,19 +632,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						jsonproperties.endObject();
 					}
 					jsonproperties.endObject();
-				}
-				else
-				{
-					if (detail.isStored())
-					{
-						jsonproperties = jsonproperties.field("store", "no");
-						
-						//testing.  Why store?
-					}
-					else
-					{
-						jsonproperties = jsonproperties.field("store", "no");
-					}
 				}
 				jsonproperties = jsonproperties.field("include_in_all", "false"); //Do not use. Use _description
 				jsonproperties = jsonproperties.endObject();
@@ -1772,7 +1761,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 					}
 				}
-
 			}
 		}
 		catch (Exception ex)
