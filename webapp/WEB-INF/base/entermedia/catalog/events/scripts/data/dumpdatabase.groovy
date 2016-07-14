@@ -1,7 +1,10 @@
 package data;
 
+import javax.management.InstanceOfQueryExp;
+
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVWriter
+import org.entermediadb.elasticsearch.searchers.ElasticListSearcher;
 import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
 import org.openedit.data.PropertyDetailsArchive
@@ -23,102 +26,103 @@ public void init(){
 	String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
 	String rootfolder = "/WEB-INF/data/" + mediaarchive.getCatalogId() + "/dataexport/" + folder;
 	String catalogid = mediaarchive.getCatalogId();
-	
+
 	searchtypes.each{
 		String searchtype = it;
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
-		PropertyDetails details = searcher.getPropertyDetails();
-		HitTracker hits = searcher.getAllHits();
-		hits.enableBulkOperations();
-		if(hits){
+		if(!searcher instanceof ElasticListSearcher){
+			PropertyDetails details = searcher.getPropertyDetails();
+			HitTracker hits = searcher.getAllHits();
+			hits.enableBulkOperations();
+			if(hits){
 
-			Page output = mediaarchive.getPageManager().getPage(rootfolder + "/" + searchtype + ".csv");
+				Page output = mediaarchive.getPageManager().getPage(rootfolder + "/" + searchtype + ".csv");
 
-			String realpath = output.getContentItem().getAbsolutePath();
-			File outputfile = new File(realpath);
-			File parent = outputfile.parentFile;
+				String realpath = output.getContentItem().getAbsolutePath();
+				File outputfile = new File(realpath);
+				File parent = outputfile.parentFile;
 
-			parent.mkdirs();
-			FileWriter out = new FileWriter(outputfile);
-			CSVWriter writer  = new CSVWriter(out);
-			HitTracker languages = searcherManager.getList(catalogid, "locale");
-			int count = 0;
-			int langcount = details.getMultilanguageFieldCount() ;
-			langcount = langcount * (languages.size() );
-			
-			headers = new String[details.size() + langcount];
-			
-			
-			
-			for (Iterator iterator = details.iterator(); iterator.hasNext();) {
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if(detail.isMultiLanguage()){
-					languages.each{
-						String id = it.id ;
-						headers[count] = detail.getId() + "." + id;
-						count ++;
-					}
+				parent.mkdirs();
+				FileWriter out = new FileWriter(outputfile);
+				CSVWriter writer  = new CSVWriter(out);
+				HitTracker languages = searcherManager.getList(catalogid, "locale");
+				int count = 0;
+				int langcount = details.getMultilanguageFieldCount() ;
+				langcount = langcount * (languages.size() );
 
-				}
-			 else{
-				headers[count] = detail.getId();
-						count++;
-			 }
-			}
-			writer.writeNext(headers);
-			log.info("about to start: " + hits.size() + "records");
+				headers = new String[details.size() + langcount];
 
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-				hit =  iterator.next();
-				//tracker = searcher.searchById(hit.get("id"));
-				tracker = hit;
 
-				nextrow = new String[details.size() + langcount];//make an extra spot for c
-				int fieldcount = 0;
-				for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
-				{
-					PropertyDetail detail = (PropertyDetail) detailiter.next();
-						
-					
+
+				for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+					PropertyDetail detail = (PropertyDetail) iterator.next();
 					if(detail.isMultiLanguage()){
-						languages.each
-						{
+						languages.each{
 							String id = it.id ;
-							Object vals = tracker.getValue(detail.getId())
-							
-							if(vals != null && vals instanceof Map){
-								nextrow[fieldcount] = vals.getText(id);
-							} else{
-							nextrow[fieldcount] = vals;
-							}
-							
-							fieldcount ++;
+							headers[count] = detail.getId() + "." + id;
+							count ++;
 						}
-					} else{
-					
-						String value = tracker.get(detail.getId());
-						nextrow[fieldcount] = value;
-						fieldcount++;
 					}
-	
-					
+					else{
+						headers[count] = detail.getId();
+						count++;
+					}
+				}
+				writer.writeNext(headers);
+				log.info("about to start: " + hits.size() + "records");
+
+				for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+					hit =  iterator.next();
+					//tracker = searcher.searchById(hit.get("id"));
+					tracker = hit;
+
+					nextrow = new String[details.size() + langcount];//make an extra spot for c
+					int fieldcount = 0;
+					for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
+					{
+						PropertyDetail detail = (PropertyDetail) detailiter.next();
 
 
-					
+						if(detail.isMultiLanguage()){
+							languages.each
+							{
+								String id = it.id ;
+								Object vals = tracker.getValue(detail.getId())
 
-					
+								if(vals != null && vals instanceof Map){
+									nextrow[fieldcount] = vals.getText(id);
+								} else{
+									nextrow[fieldcount] = vals;
+								}
+
+								fieldcount ++;
+							}
+						} else{
+
+							String value = tracker.get(detail.getId());
+							nextrow[fieldcount] = value;
+							fieldcount++;
+						}
+
+
+
+
+
+
+
+
+					}
+
+					writer.writeNext(nextrow);
+
+
 
 				}
 
-				writer.writeNext(nextrow);
 
-
+				writer.close();
 
 			}
-
-
-			writer.close();
-
 		}
 	}
 
@@ -167,7 +171,7 @@ public void init(){
 				Page page = mediaarchive.getPageManager().getPage(path);
 				mediaarchive.getPageManager().removePage(page);
 			}
-		}	
+		}
 	}
 
 
