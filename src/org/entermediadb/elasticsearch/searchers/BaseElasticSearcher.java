@@ -1345,7 +1345,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public void updateInBatch(Collection<Data> inBuffer, User inUser)
 	{
-		String catid = toId(getCatalogId());
+		String catid = getElasticIndexId();
 
 		//We cant use this for normal updates since we do not get back the id or the version for new data object
 
@@ -1455,10 +1455,8 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		try
 		{
-			String catid = toId(getCatalogId());
-			if(getAlternativeIndex() != null){
-				catid = getAlternativeIndex();
-			}
+			String catid = getElasticIndexId();
+			
 			IndexRequestBuilder builder = null;
 			if (data.getId() == null)
 			{
