@@ -93,7 +93,7 @@ public class ClusterLockManager implements LockManager
 			String savedid = lock.getId();
 			//See if anyone else also happen to save a lock and delete the older one
 			SearchQuery q = inSearcher.createSearchQuery(); 
-			q.addMatches("sourcepath", inPath);
+			q.addExact("sourcepath", inPath);
 			q.addSortBy("date"); 
 			HitTracker tracker = inSearcher.search(q); //Make sure there was not a thread waiting
 			tracker.setHitsPerPage(1);
@@ -183,7 +183,7 @@ public class ClusterLockManager implements LockManager
 		Searcher searcher = getLockSearcher();
 
 		SearchQuery q = searcher.createSearchQuery(); 
-		q.addMatches("sourcepath", inPath);
+		q.addExact("sourcepath", inPath);
 		
 		HitTracker tracker = searcher.search(q);
 		tracker.setHitsPerPage(1);
@@ -216,7 +216,7 @@ public class ClusterLockManager implements LockManager
 	{
 		Searcher searcher = getLockSearcher();
 		SearchQuery q = searcher.createSearchQuery();
-		q.addMatches("sourcepath", inPath);
+		q.addExact("sourcepath", inPath);
 		q.addSortBy("date");
 		return searcher.search(q);
 	}
