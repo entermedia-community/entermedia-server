@@ -337,14 +337,14 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	@Override
 	public void shutdown()
 	{
-		LockSearcher searcher = (LockSearcher)getLockSearcher();
-		try
-		{
-			searcher.clearStaleLocks();
-		}
-		catch( Throwable ex)
-		{
-			log.info(ex);
-		}
+//		LockSearcher searcher = (LockSearcher)getLockSearcher();
+//		try
+//		{
+//			searcher.clearStaleLocks();
+//		}
+//		catch( Throwable ex)
+//		{
+//			log.info(ex);
+//		}
 	}
 }
