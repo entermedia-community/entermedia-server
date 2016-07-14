@@ -14,52 +14,37 @@ public class DefaultConversionManager extends BaseConversionManager
 {
 	private static final Log log = LogFactory.getLog(DefaultConversionManager.class);
 
-
-	
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
 		//if output == jpg and no time offset - standard
-		
-		
+
 		String mime = getMediaArchive().getMimeTypeIcon(inStructions.getAsset().getFileFormat());
-		String thumbpath = inStructions.get("themeprefix") + "/images/mimetypes/" +mime  + ".png";
+		String thumbpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime + ".png";
 
 		Page page = getMediaArchive().getPageManager().getPage(thumbpath);
-		
-		
-		
+
 		TranscodeTools creatorManager = getMediaArchive().getTranscodeTools();
 		ConversionManager transcoder = creatorManager.getManagerByRenderType("image");
-		
-		//ConvertInstructions cacheInsructions = transcoder.createInstructions();
-		ConvertInstructions cacheInsructions = new ConvertInstructions(getMediaArchive());
-		cacheInsructions.setMaxScaledSize(inStructions.getMaxScaledSize());
-		cacheInsructions.setInputFile(page.getContentItem());
-		String width = String.valueOf(inStructions.getMaxScaledSize().getWidth());
-		String height = String.valueOf(inStructions.getMaxScaledSize().getWidth());
-		String outpath = inStructions.get("themeprefix") + "/images/mimetypes/" +mime  + width + "x" + height + ".png";
+
+		String outputtarget = inStructions.getOutputFile().getName();
+		inStructions.setInputFile(page.getContentItem());
+		String outpath = inStructions.get("themeprefix") + "/images/mimetypes/" + mime +  outputtarget;
 		Page out = getMediaArchive().getPageManager().getPage(outpath);
-		if(!out.exists()){
-    	cacheInsructions.setOutputFile(out.getContentItem());
-		
-    	ConvertResult result = transcoder.createOutput(cacheInsructions);
-    	return result;
+				
+		if (!out.exists())
+		{
+			inStructions.setOutputFile(out.getContentItem());
+			ConvertResult result = transcoder.createOutput(inStructions);
+			return result;
 		}
-		
-		
+
 		ConvertResult result = new ConvertResult();
 		result.setOutput(out.getContentItem());
 		result.setOk(true);
 		result.setComplete(true);
 		return result;
-		
-		
-		
-		
-	}
-	
-	
 
+	}
 
 	@Override
 	protected String getRenderType()

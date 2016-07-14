@@ -391,7 +391,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			if (parent.getListId().equals(getSearchType()))
 			{
 				Searcher child = getSearcherManager().getSearcher(getCatalogId(), details.getId());
+				child.setAlternativeIndex(getAlternativeIndex());
 				child.reloadSettings();
+				child.setAlternativeIndex(null);
 			}
 		}
 

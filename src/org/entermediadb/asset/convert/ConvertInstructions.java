@@ -329,8 +329,10 @@ public class ConvertInstructions
 
 	public void setMaxScaledSize(Dimension inMaxScaledSize)
 	{
+		if(inMaxScaledSize != null){
 		setProperty("prefwidth", inMaxScaledSize.width);
 		setProperty("prefheight", inMaxScaledSize.height);
+		}
 	}
 
 	private void setProperty(String inName, int inVal)
