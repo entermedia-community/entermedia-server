@@ -835,11 +835,15 @@ public class AdminModule extends BaseModule
 	 */
 	public void redirect(WebPageRequest inReq) throws OpenEditException
 	{
-		String path = inReq.getCurrentAction().getChildValue("redirectpath");
+		String path = inReq.findValue("redirectpath"); 
+				if(path == null){
+				inReq.getCurrentAction().getChildValue("redirectpath");
+				}
 		if (path == null)
 		{
 			path = inReq.getPage().get("redirectpath");
 		}
+		
 		if (path != null && inReq.getRequest() != null)
 		{
 			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
