@@ -24,7 +24,7 @@ public void init()
 		for (Data hit in assets)
 		{
 			checked++;
-			Asset asset = mediaarchive.getAssetBySourcePath(hit.get("sourcepath"));
+			Asset asset = mediaarchive.getAssetSearcher().loadData(hit);
 			if( asset == null )
 			{
 				continue; //Bad index
