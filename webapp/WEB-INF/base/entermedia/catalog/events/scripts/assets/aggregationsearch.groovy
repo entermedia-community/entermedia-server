@@ -26,12 +26,12 @@ public void init(){
 	query.addMatches("id", "*");
 	
 	HitTracker hits =searcher.search(query);
+	hits.enableBulkOperations();
 	hits.getFilterOptions();
 	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
 	context.putPageValue("breakdownhits", hits)
 	log.info(agginfo.getBuckets().size())
 	log.info("hits" + hits.size());
-	log.info(hits.toString());
 	
 }
 

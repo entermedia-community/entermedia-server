@@ -42,9 +42,22 @@
 #end
 </iframe>
 </textarea>
+
 <p class="hyphenate"> 
-<strong>[[Or copy Link]]</strong><br> 
+<strong>[[Preview Page]]</strong><br> 
 <a href="$sharelink">$sharelink</a>
 </p>
+
+#if( $mediadbappid )
+#set( $downloadlink = "$prefix$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+#else
+#set( $downloadlink = "$prefix$home$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+#end
+
+<p class="hyphenate"> 
+<strong>[[Original Media Download]]</strong><br> 
+<a href="$downloadlink">$downloadlink</a>
+</p>
+
 </div>
 </div>
