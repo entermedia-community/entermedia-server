@@ -16,7 +16,7 @@ public class AssetTypeManager extends EnterMediaObject {
 
 		AssetSearcher searcher = mediaarchive.getAssetSearcher();
 
-		
+
 		List tosave = new ArrayList();
 		for (Data hit in inAssets)
 		{
@@ -55,80 +55,84 @@ public class AssetTypeManager extends EnterMediaObject {
 		//First check to see if we have a path mask for the asset type
 
 		HitTracker types = typesearcher.query().all().sort("ordering").search(context);
-		types.each{
+		for (it in types) {
+
+
 			String paths =it.paths;
 			String type = it.id;
-			
+
 			if(paths != null){
 				String [] splits = paths.split(',');
-				splits.each{
+				for(pathcheck in splits)
 
-					if(PathUtilities.match(hit.sourcepath, it)){
-						Asset real = inArchive.getAssetSearcher().loadData(hit);
-						real.setProperty("assettype", type);
-						return real;
-					}
+				if(PathUtilities.match(hit.sourcepath, pathcheck)){
+					Asset real = inArchive.getAssetSearcher().loadData(hit);
+					real.setProperty("assettype", type);
+					return real;
 				}
 			}
 		}
+	
 
-		//now check extensions
-		HashMap typemap = new HashMap();
-		types.each{
-			String extentions = it.extensions;
-			String type = it.id;
-			if(extentions != null){
-				String[] splits = extentions.split(" ");
-				splits.each{
-					typemap.put(it, type)
-				}
+
+
+	//now check extensions
+	HashMap typemap = new HashMap();
+	types.each{
+		String extentions = it.extensions;
+		String type = it.id;
+		if(extentions != null){
+			String[] splits = extentions.split(" ");
+			splits.each{
+				typemap.put(it, type)
 			}
 		}
+	}
 
-		String currentassettype = hit.assettype;
-		String assettype = typemap.get(fileformat);
-		if(assettype == null)
-		{
-			assettype = "none";
-		}
-		assettype = findCorrectAssetType(hit,assettype);
-		if(!assettype.equals(currentassettype))
-		{
-			Asset real = inArchive.getAssetSearcher().loadData(hit);
-			real.setProperty("assettype", assettype);
-			return real;
-		}
-		return null;
-	}
-	public Asset checkLibrary(MediaArchive mediaarchive, Data hit)
+	String currentassettype = hit.assettype;
+	String assettype = typemap.get(fileformat);
+	if(assettype == null)
 	{
-		//Load up asset if needed to change the library?
-		return null;
+		assettype = "none";
 	}
-	public Asset checkLibrary(MediaArchive mediaarchive, Asset real)
+	assettype = findCorrectAssetType(hit,assettype);
+	if(!assettype.equals(currentassettype))
 	{
-		//Load up asset if needed to change the library?
+		Asset real = inArchive.getAssetSearcher().loadData(hit);
+		real.setProperty("assettype", assettype);
 		return real;
 	}
+	return null;
+}
+public Asset checkLibrary(MediaArchive mediaarchive, Data hit)
+{
+	//Load up asset if needed to change the library?
+	return null;
+}
+public Asset checkLibrary(MediaArchive mediaarchive, Asset real)
+{
+	//Load up asset if needed to change the library?
+	return real;
+}
 
-	public void saveAssets(Searcher inSearcher, Collection tosave)
-	{
-		//Do any other checks on the asset. Add to library?
-		inSearcher.saveAllData(tosave, context.getUser());
-	}
-	public String findCorrectAssetType(Data inAssetHit, String inSuggested)
-	{
-		/*		String path = inAssetHit.getSourcePath().toLowercase();
-		 if( path.contains("/links/") )
-		 {
-		 return "links";
-		 }
-		 if( path.contains("/press ready pdf/") || path.endsWith("_pfinal.pdf") )
-		 {
-		 return "printreadyfinal";
-		 }
-		 */		
-		return inSuggested;
-	}
+public void saveAssets(Searcher inSearcher, Collection tosave)
+{
+	//Do any other checks on the asset. Add to library?
+	inSearcher.saveAllData(tosave, context.getUser());
+}
+public String findCorrectAssetType(Data inAssetHit, String inSuggested)
+{
+	/*		String path = inAssetHit.getSourcePath().toLowercase();
+	 if( path.contains("/links/") )
+	 {
+	 return "links";
+	 }
+	 if( path.contains("/press ready pdf/") || path.endsWith("_pfinal.pdf") )
+	 {
+	 return "printreadyfinal";
+	 }
+	 */		
+	return inSuggested;
+}
 
 }
