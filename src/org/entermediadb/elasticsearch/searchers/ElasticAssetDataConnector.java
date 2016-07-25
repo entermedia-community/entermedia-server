@@ -50,7 +50,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected OutputFiller filler = new OutputFiller();
 
 	protected boolean fieldIncludeFullText = true;
-	protected int fieldFullTextCap = 500000;
+	protected int fieldFullTextCap = 25000;
 	
 	public int getFullTextCap()
 	{
