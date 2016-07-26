@@ -136,7 +136,7 @@ public class ConvertInstructions
 	//		{
 			
 			String output = getProperty("outputfile");
-			if( output != null)
+			if( output != null && !output.isEmpty())
 			{
 				path.append( output );
 			}
