@@ -586,6 +586,7 @@ public class BaseHotFolderManager implements HotFolderManager
 				inLog.info("Hot folder not enabled " + name);
 				continue;
 			}
+			inLog.info("Starting hot folder import " + name);
 
 			//look for git folders?
 			try

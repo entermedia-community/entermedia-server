@@ -225,7 +225,7 @@ class ConvertRunner implements Runnable
 						Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitted"));
 						Calendar cal = new GregorianCalendar();
 						cal.add(Calendar.DAY_OF_YEAR,-2);
-						if( olddate.before(cal.getTime()))
+						if( olddate != null && olddate.before(cal.getTime()))
 						{
 							realtask.setProperty('status', 'error');
 							realtask.setProperty("errordetails", "Missing input expired" );
