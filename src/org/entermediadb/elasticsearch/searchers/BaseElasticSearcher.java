@@ -1921,12 +1921,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		typed.setName(data.getName());
 		typed.setSourcePath(data.getSourcePath());
 		Map<String, Object> props = data.getProperties();
-		for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
-		{
-			String key = (String) iterator.next();
-			Object obj = props.get(key);
-			typed.setProperty(key, String.valueOf(obj));
-		}
+		updateData(props, typed);
+//		for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
+//		{
+//			String key = (String) iterator.next();
+//			Object obj = props.get(key);
+//			typed.setProperty(key, String.valueOf(obj)); //TODO: use setValue ?
+//		}
 	}
 
 	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails)
