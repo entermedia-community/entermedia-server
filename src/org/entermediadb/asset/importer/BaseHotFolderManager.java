@@ -580,6 +580,13 @@ public class BaseHotFolderManager implements HotFolderManager
 			String name = folder.get("subfolder");
 			String path = base + "/" + name ;
 			
+			Object enabled = folder.getValue("enabled");
+			if( enabled != null && "false".equals( enabled.toString() ) )
+			{
+				inLog.info("Hot folder not enabled " + name);
+				continue;
+			}
+
 			//look for git folders?
 			try
 			{
