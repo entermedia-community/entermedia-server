@@ -34,6 +34,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebServer;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.locks.Lock;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
@@ -579,44 +580,55 @@ public class BaseHotFolderManager implements HotFolderManager
 			String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 			String name = folder.get("subfolder");
 			String path = base + "/" + name ;
-			
-			Object enabled = folder.getValue("enabled");
-			if( enabled != null && "false".equals( enabled.toString() ) )
+			Lock lock = inArchive.getLockManager().lockIfPossible(path, "HotFolderManager");
+			if( lock == null)
 			{
-				inLog.info("Hot folder not enabled " + name);
 				continue;
 			}
-			inLog.info("Starting hot folder import " + name);
-
-			//look for git folders?
 			try
 			{
-				//pullGit(path,1);
-				importHotFolder(inArchive,folder);
-			}
-			catch( Exception ex)
-			{
-				log.error("Could not process folder ${path}",ex);
-			}
-			
-			String monitor = folder.get("monitortree");
-			if(Boolean.valueOf(monitor) )
-			{
-				final ContentItem item = getPageManager().getRepository().getStub(path);
-				if(item.exists() && !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
+				Object enabled = folder.getValue("enabled");
+				if( enabled != null && "false".equals( enabled.toString() ) )
 				{
-					//will scan each folder once then monitor it from now on
-					getFolderMonitor().addPathChangedListener(item.getAbsolutePath(), new PathChangedListener()
-					{
-						@Override
-						public void pathChanged(String inType, String inAbsolutePath)
-						{
-							String ending = inAbsolutePath.substring( item.getAbsolutePath().length() );
-							importHotFolder(inArchive, folder, ending);
-						}
-					});
+					inLog.info("Hot folder not enabled " + name);
+					continue;
 				}
-			}	
+				inLog.info("Starting hot folder import " + name);
+	
+				//look for git folders?
+				try
+				{
+					//pullGit(path,1);
+					importHotFolder(inArchive,folder);
+				}
+				catch( Exception ex)
+				{
+					log.error("Could not process folder ${path}",ex);
+				}
+				
+				String monitor = folder.get("monitortree");
+				if(Boolean.valueOf(monitor) )
+				{
+					final ContentItem item = getPageManager().getRepository().getStub(path);
+					if(item.exists() && !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
+					{
+						//will scan each folder once then monitor it from now on
+						getFolderMonitor().addPathChangedListener(item.getAbsolutePath(), new PathChangedListener()
+						{
+							@Override
+							public void pathChanged(String inType, String inAbsolutePath)
+							{
+								String ending = inAbsolutePath.substring( item.getAbsolutePath().length() );
+								importHotFolder(inArchive, folder, ending);
+							}
+						});
+					}
+				}
+			}
+			finally
+			{
+				inArchive.releaseLock(lock);
+			}
 		}
 	
 	/*

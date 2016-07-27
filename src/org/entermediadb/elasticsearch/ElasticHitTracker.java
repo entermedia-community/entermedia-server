@@ -33,7 +33,7 @@ public class ElasticHitTracker extends HitTracker
 	private static final Log log = LogFactory.getLog(ElasticHitTracker.class);
 	protected SearchRequestBuilder fieldSearcheRequestBuilder;
 	protected Map fieldChunks;
-	protected int SCROLL_CACHE_TIME = 60000; //millis
+	protected int SCROLL_CACHE_TIME = 900000; //15 minutes
 	protected long fieldLastPullTime = -1;
 	protected String fieldLastScrollId;
 	protected Client fieldElasticClient;
