@@ -7,7 +7,7 @@
 	<property name="prefheight">200</property>
 	<property name="uselegacythumbimages">false</property>
 	<property name="sourcefile">image</property>
-	
+	<property name="exportname">image200x200.jpg</property>	
 </page>
 
 

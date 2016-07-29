@@ -86,7 +86,7 @@ public class ConvertGenerator extends FileGenerator
 			name = inPage.getName();
 		}
 		String themeprefix = inReq.findValue("themeprefix");
-		args.put("themeprefix", themeprefix);
+		all.put("themeprefix", themeprefix);
 		ConvertResult result = transcodetools.createOutputIfNeeded(all,args,sourcePath, name); //String inSourcePath, Data inPreset, String inOutputType);
 		
 		if( result.isComplete() )

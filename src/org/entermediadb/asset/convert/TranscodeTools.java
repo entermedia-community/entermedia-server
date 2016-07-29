@@ -298,12 +298,13 @@ public class TranscodeTools
 			}
 		}
 		Asset asset = getMediaArchive().getAssetBySourcePath(inSourcePath);
-		if(asset == null){
+		if(asset == null)
+		{
 			result = new ConvertResult();			
 			result.setOk(false);
 			result.setError("No Asset Found");
 			result.setComplete(false);
-		return result;
+			return result;
 		}
 		manager = getManagerByFileFormat(asset.getFileFormat() ); //video input?
 		if( inParameters != null)
