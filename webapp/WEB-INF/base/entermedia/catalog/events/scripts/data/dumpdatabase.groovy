@@ -1,7 +1,11 @@
 import org.entermedia.email.PostMail
 import org.entermedia.email.TemplateWebEmail
 import org.openedit.Data
-import org.openedit.data.*
+import org.openedit.data.PropertyDetail
+import org.openedit.data.PropertyDetails
+import org.openedit.data.PropertyDetailsArchive
+import org.openedit.data.Searcher
+import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVWriter
 import org.openedit.util.DateStorageUtil
@@ -17,21 +21,27 @@ public void init(){
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
 	List searchtypes = archive.listSearchTypes();
+
+	String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
+	String rootfolder = "/WEB-INF/data/" + mediaarchive.getCatalogId() + "/dataexport/" + folder;
+	String catalogid = mediaarchive.getCatalogId();
+
 	searchtypes.each{
 		String searchtype = it;
-
-
-
-
-		catalogid = context.findValue("catalogid");
-		searcher = searcherManager.getSearcher(catalogid, searchtype);
-		boolean friendly = Boolean.parseBoolean(context.findValue("friendly"));
-		details = searcher.getPropertyDetails();
+		//catalogid = context.findValue("catalogid");
+		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
+		if(searcher instanceof ElasticListSearcher)
+		{
+			return;
+		}
+		//boolean friendly = Boolean.parseBoolean(context.findValue("friendly"));
+		PropertyDetails details = searcher.getPropertyDetails();
 		HitTracker hits = searcher.getAllHits();
+		hits.enableBulkOperations();
 
 		if(hits){
 
-			Page output = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/" + searchtype + ".csv");
+			Page output = mediaarchive.getPageManager().getPage(rootfolder + "/" + searchtype + ".csv");
 
 			String realpath = output.getContentItem().getAbsolutePath();
 			File outputfile = new File(realpath);
@@ -83,37 +93,52 @@ public void init(){
 	}
 	
 	Page fields = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
-	Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/fields/");
-	mediaarchive.getPageManager().copyPage(fields, target);
-	
-	
+	if (fields.exists()) {
+		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/fields/");
+		mediaarchive.getPageManager().copyPage(fields, target);
+	}
+
 	Page lists = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/");
-	 target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/lists/");
-	mediaarchive.getPageManager().copyPage(lists, target);
-	
+	if (lists.exists()) {
+		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/lists/");
+		mediaarchive.getPageManager().copyPage(lists, target);
+	}
+
 	Page views = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/views/");
-	target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/views/");
-   mediaarchive.getPageManager().copyPage(views, target);
-	
-	
-   String applicationid  = context.findValue("applicationid");
-   if(applicationid != null){
-	   Page page = mediaarchive.getPageManager().getPage("/${applicationid}/");
-	   if (page.exists()){
-		   target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/application/${applicationid}/");
-		   mediaarchive.getPageManager().copyPage(page, target);
-		   
-		   
-	   }
-	   
-   }
-   
-	
+	if (views.exists()) {
+		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/views/");
+		mediaarchive.getPageManager().copyPage(views, target);
+	}
+
+
+	String applicationid  = context.findValue("applicationid");
+	if(applicationid != null){
+		Page page = mediaarchive.getPageManager().getPage("/${applicationid}/");
+		if (page.exists()){
+			Page target = mediaarchive.getPageManager().getPage(rootfolder + "/application/${applicationid}/");
+			mediaarchive.getPageManager().copyPage(page, target);
+
+
+		}
+
+	}
+
+	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
+	Collections.reverse(paths);
+	int keep = 0;
+	for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+	{
+		String path = (String) iterator.next();
+		if( PathUtilities.extractFileName(path).length() == 19)
+		{
+			keep++;
+			if( keep > 10 )
+			{
+				Page page = mediaarchive.getPageManager().getPage(path);
+				mediaarchive.getPageManager().removePage(page);
+			}
+		}
+	}
 }
-
-
-
-
-
 
 init();
