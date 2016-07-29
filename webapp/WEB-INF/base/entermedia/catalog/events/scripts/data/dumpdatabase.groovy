@@ -14,6 +14,7 @@ import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
 import com.openedit.util.Replacer
+import com.openedit.util.PathUtilities
 
 public void init(){
 
@@ -30,14 +31,14 @@ public void init(){
 		String searchtype = it;
 		//catalogid = context.findValue("catalogid");
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
-		if(searcher instanceof ElasticListSearcher)
+		String classname = searcher.getClass().getName();
+		if(classname.contains("XmlSearcher") || classname.contains("XmlFolderSearcher") || classname.contains("ListSearcher"))
 		{
 			return;
 		}
 		//boolean friendly = Boolean.parseBoolean(context.findValue("friendly"));
 		PropertyDetails details = searcher.getPropertyDetails();
 		HitTracker hits = searcher.getAllHits();
-		hits.enableBulkOperations();
 
 		if(hits){
 
