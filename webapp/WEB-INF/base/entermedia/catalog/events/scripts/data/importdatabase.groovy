@@ -143,6 +143,7 @@ public void importPermissions(MediaArchive mediaarchive, String rootdrive) {
 
 public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload) {
 
+	log.info("Importing " + upload.getPath());
 	Row trow = null;
 	ArrayList tosave = new ArrayList();
 	String catalogid = mediaarchive.getCatalogId();
