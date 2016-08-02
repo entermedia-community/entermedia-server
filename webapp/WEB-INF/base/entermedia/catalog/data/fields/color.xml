@@ -1,0 +1,7 @@
+
+<properties lazy-init="true" beanname="listSearcher">
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" searchtype="color">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="color">Name</property>
+  <property id="sourcepath" searchtype="color">SourcePath</property>
+  <property id="colorcode" index="true" stored="true" editable="true" viewtype="color" internalfield="false" searchtype="color">colorcode</property>
+</properties>

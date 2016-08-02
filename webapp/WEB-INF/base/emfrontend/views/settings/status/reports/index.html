@@ -70,21 +70,15 @@ var myChart = new Chart(ctx, {
                    
                    ],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+#foreach($node in $hits.loadHistogram("event_breakdown_day"))
+
+#foreach($child in $node.getChildren())
+
+                '$mediaarchive.getData("color", $velocityCount).get("colorcode")',
+                #end
+                #end
             ],
-            borderColor: [
-                'rgba(255,99,132,1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
+           
             borderWidth: 1
         }]
     },
@@ -134,12 +128,14 @@ var myChart = new Chart(ctx, {
                    
                    ],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+
+#foreach($child in $node.getChildren())
+
+                '$mediaarchive.getData("color", $velocityCount).get("colorcode")',
+                #end
+                #end
+                
             ],
             borderColor: [
                 'rgba(255,99,132,1)',
@@ -196,9 +192,22 @@ $subitem.getValue() ,
 #end
                   
                    
-                   ]
+                   ],
+                   #set($count = 1)
+
+        backgroundColor: [
+#foreach($item in $breakdownhits.getAggregations().get("assettype_filesize").getBuckets())
+#foreach($subitem in $item.getAggregations())
+                #if($count != 1) , #end '$mediaarchive.getData("color", "$count").get("colorcode")'
+                #set($count = $count + 1)
+                #end
+                #end
+            ]
+        
+        
             
-    }]
+    }],
+
 }
 
 var myChart = new Chart(ctx, {
