@@ -6,7 +6,12 @@ public void init()
 {
 	Data data = context.getPageValue("data");
 	
-	ConversionManager manager = mediaarchive.getTranscodeTools().getManagerByRenderType(data.get("inputtype"));
+	
+	String type = data.get("inputtype");
+	if("all".contentEquals(type)){
+		return;
+	}
+	ConversionManager manager = mediaarchive.getTranscodeTools().getManagerByRenderType(type);
 	
 	ConvertInstructions instructions = manager.createInstructions(null, data);
 	instructions.setAssetSourcePath("junk");

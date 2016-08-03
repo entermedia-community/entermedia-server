@@ -126,7 +126,8 @@ public class DocumentConversionManager extends BaseConversionManager
 			Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","document.pdf");
 			ConvertInstructions instructions2 = inStructions.copy(preset);
 
-			ConvertResult result = findTranscoder(instructions2).convertIfNeeded(instructions2);
+			MediaTranscoder findTranscoder = findTranscoder(instructions2);
+			ConvertResult result = findTranscoder.convertIfNeeded(instructions2);
 			//log.info("Created document.pdf");
 			if(inStructions.getOutputExtension().equals("pdf")){
 				return result; //Why shortcut?
