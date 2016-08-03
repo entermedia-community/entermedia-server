@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -1025,6 +1026,14 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				// Date after = new Date(0);
 				Date before = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
+				Calendar c = new GregorianCalendar();
+
+				c.setTime(before);
+				 c.set(Calendar.HOUR_OF_DAY, 23);
+				    c.set(Calendar.MINUTE, 59);
+				    c.set(Calendar.SECOND, 59);
+				    c.set(Calendar.MILLISECOND, 999);
+				before = c.getTime();
 				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
 			}
 			else if ("afterdate".equals(inTerm.getOperation()))
@@ -1040,11 +1049,21 @@ public class BaseElasticSearcher extends BaseSearcher
 				// Date(Long.MAX_VALUE));
 				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(inTerm.getParameter("afterDate"));
 				Date before = DateStorageUtil.getStorageUtil().parseFromStorage(inTerm.getParameter("beforeDate"));
+				
+				Calendar c = new GregorianCalendar();
 
+				c.setTime(before);
+				 c.set(Calendar.HOUR_OF_DAY, 23);
+				    c.set(Calendar.MINUTE, 59);
+				    c.set(Calendar.SECOND, 59);
+				    c.set(Calendar.MILLISECOND, 999);
+				before = c.getTime();
+				
+				
 				// inTerm.getParameter("beforeDate");
-
+				
 				// String before
-				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before);
+				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
 			}
 
 			else

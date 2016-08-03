@@ -47,7 +47,7 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 		command.add("-nolockcheck");
 		
 		command.add("-convert-to");		
-		command.add("pdf:writer_pdf_Export");
+		command.add("pdf");
 
 		command.add("-outdir");
 		
