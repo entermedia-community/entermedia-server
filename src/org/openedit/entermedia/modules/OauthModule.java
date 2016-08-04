@@ -206,7 +206,6 @@ public class OauthModule extends BaseMediaModule
 		log.info("Username from drupal was " + username);
 		log.info("Username from drupal was " + username);
 		
-		username = username.replace("-", "");
 		User target = (User) searcher.searchById(username);
 
 	
