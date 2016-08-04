@@ -57,7 +57,7 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 		dir = getPageManager().getPage(dir).getContentItem().getAbsolutePath();
 		//log.info("{$inOut} turns into ${dir}");
 		//String dir = inStructions.getOutputFile().getAbsolutePath();
-		//new File( dir ).mkdirs();
+		new File( dir ).mkdirs();
 		command.add(dir);
 		
 		command.add(input.getContentItem().getAbsolutePath());
