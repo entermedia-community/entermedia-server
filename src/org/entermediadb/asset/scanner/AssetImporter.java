@@ -328,4 +328,29 @@ public class AssetImporter
 				importer.fetchMediaForAsset(inArchive, inAsset,inUser);
 			}
 	}
+	
+	/**
+	 * For this to work, inSourcePath needs to have an extention, i.e.
+	 * newassets/admin/118/picture.jpg
+	 * @param inStructions
+	 * @param inSourcePath
+	 * @return
+	 */
+	public Asset createAsset(MediaArchive inArchive, String inSourcePath)
+	{
+		String extension = PathUtilities.extractPageType(inSourcePath);
+		if (extension != null)
+		{
+			Asset asset = new Asset(); //throw away
+			asset.setCatalogId(inArchive.getCatalogId());
+	//		asset.setId(inArchive.getAssetArchive().nextAssetNumber());
+			asset.setSourcePath(inSourcePath);
+			extension = extension.toLowerCase();
+			asset.setProperty("fileformat", extension);
+	//		inArchive.saveAsset(asset, null);
+			return asset;
+		}
+		return null;
+	}
+	
 }

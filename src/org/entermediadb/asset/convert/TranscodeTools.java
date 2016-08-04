@@ -300,18 +300,22 @@ public class TranscodeTools
 		Asset asset = getMediaArchive().getAssetBySourcePath(inSourcePath);
 		if(asset == null)
 		{
+			asset = getMediaArchive().getAssetImporter().createAsset(getMediaArchive(), inSourcePath);
+		}
+		if( asset == null)
+		{
 			result = new ConvertResult();			
 			result.setOk(false);
-			result.setError("No Asset Found");
+			result.setError("No Asset Found " + inSourcePath);
 			result.setComplete(false);
 			return result;
 		}
-		manager = getManagerByFileFormat(asset.getFileFormat() ); //video input?
+		manager = getManagerByFileFormat(asset.getFileFormat()); //video input?
 		if( inParameters != null)
 		{
 			inCreateProperties.putAll(inParameters);
 		}
-		result = manager.createOutputIfNeeded(inSourcePath, inExportName, inCreateProperties);
+		result = manager.createOutputIfNeeded(asset, inSourcePath, inExportName, inCreateProperties);
 		if( result.isComplete() )
 		{
 			if( result.getOutput() == null)

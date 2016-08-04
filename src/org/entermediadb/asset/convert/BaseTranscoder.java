@@ -63,10 +63,11 @@ public abstract class BaseTranscoder implements MediaTranscoder
 		
 		if (asset == null)
 		{
-			asset = createAsset(inStructions.getMediaArchive(), sourcePath); //virtual assets
+			asset = inStructions.getMediaArchive().getAssetImporter().createAsset(inStructions.getMediaArchive(), sourcePath); //virtual assets
 		}
-		if(asset == null){
-			asset = createAsset(inStructions.getMediaArchive(), inStructions.getInputPath());
+		if(asset == null)
+		{
+			asset = inStructions.getMediaArchive().getAssetImporter().createAsset(inStructions.getMediaArchive(), inStructions.getInputPath());
 		}
 		if (asset == null)
 		{
@@ -136,30 +137,6 @@ public abstract class BaseTranscoder implements MediaTranscoder
 
 	}
 
-	/**
-	 * For this to work, inSourcePath needs to have an extention, i.e.
-	 * newassets/admin/118/picture.jpg
-	 * @param inStructions
-	 * @param inSourcePath
-	 * @return
-	 */
-	protected Asset createAsset(MediaArchive inArchive, String inSourcePath)
-	{
-		String extension = PathUtilities.extractPageType(inSourcePath);
-		if (extension != null)
-		{
-			Asset asset = new Asset(); //throw away
-			asset.setCatalogId(inArchive.getCatalogId());
-	//		asset.setId(inArchive.getAssetArchive().nextAssetNumber());
-			asset.setSourcePath(inSourcePath);
-			extension = extension.toLowerCase();
-			asset.setProperty("fileformat", extension);
-	//		inArchive.saveAsset(asset, null);
-			return asset;
-		}
-		return null;
-	}
-	
 	public Exec getExec() {
 		return fieldExec;
 	}

@@ -20,7 +20,7 @@ public interface ConversionManager
 	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath, String exportName);
 
 	public ConvertResult createOutput(ConvertInstructions inStructions);
-	public ConvertResult createOutputIfNeeded(String inSourcePath, String inExportName, Map inCreateProperties);
+	public ConvertResult createOutputIfNeeded(Asset inAsset, String inSourcePath, String inExportName, Map inCreateProperties);
 	public ConvertResult updateStatus(Data inTask, ConvertInstructions inStructions);
 
 	public void setInputLoaders(Collection inList);

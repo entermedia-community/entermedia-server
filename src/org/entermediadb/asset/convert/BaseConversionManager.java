@@ -128,10 +128,10 @@ public abstract class BaseConversionManager implements ConversionManager
 	//Come up with the expected output path based on the input parameters
 	//All image handlers will use a standard file saving conversion
 	@Override
-	public ConvertResult createOutputIfNeeded(String inSourcePath,String inExportName, Map inSettings)
+	public ConvertResult createOutputIfNeeded(Asset inAsset, String inSourcePath,String inExportName, Map inSettings)
 	{
 		//First thing is first. We need to check out cache and make sure this file is not already in existence
-		ConvertInstructions instructions = createInstructions(inSourcePath, inExportName, inSettings);
+		ConvertInstructions instructions = createInstructions(inAsset, inSourcePath, inExportName, inSettings);
 		ContentItem output = instructions.getOutputFile();
 		if( output.getLength() < 2 )
 		{
@@ -198,12 +198,19 @@ public abstract class BaseConversionManager implements ConversionManager
 //		instructions.setOutputFile(output);
 		return instructions;
 	}
-	
 	public ConvertInstructions createInstructions(String inSourcePath, String inExportName, Map inSettings)
+	{
+		return createInstructions( null,inSourcePath,inExportName,inSettings);
+	}
+	public ConvertInstructions createInstructions(Asset inAsset, String inSourcePath, String inExportName, Map inSettings)
 	{ 
 		ConvertInstructions instructions = createNewInstructions();
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(getMediaArchive(), getRenderType(), inExportName);
 		instructions.loadPreset(preset);
+		if( inAsset != null)
+		{
+			instructions.setAsset(inAsset);
+		}
 		//log.error("No preset defined for export file name" + inExportName);
 		instructions.setOutputExtension(PathUtilities.extractPageType(inExportName)); //For cases where the output is not configured
 		instructions.loadSettings(inSettings);
