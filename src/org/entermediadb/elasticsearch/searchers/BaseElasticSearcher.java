@@ -521,7 +521,6 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.field("analyzer", analyzer);
 					jsonproperties = jsonproperties.field("type", "string");
 					jsonproperties = jsonproperties.field("index", "analyzed");
-					jsonproperties = jsonproperties.field("store", "no");
 					jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
 					continue;
@@ -599,7 +598,6 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					jsonproperties = jsonproperties.field("index", indextype);
 				}
-				jsonproperties = jsonproperties.field("store", "no");
 
 
 				if (detail.isMultiLanguage())
@@ -632,6 +630,8 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					jsonproperties.endObject();
 				}
+				
+		
 				jsonproperties = jsonproperties.field("include_in_all", "false"); //Do not use. Use _description
 				jsonproperties = jsonproperties.endObject();
 
