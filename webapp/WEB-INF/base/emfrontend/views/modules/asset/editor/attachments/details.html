@@ -3,9 +3,9 @@
 	#set( $parentsourcepath = "${file.parentsourcepath}" )
 	#set( $name = $file.name)
 #end
-	
+	 
 	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/${file.name}200x200.jpg" )
-		#if ( $file.folder == "false" )
+		#if ( $file.isfolder == "false" )
 		<a class="emdialog" href="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/${parentsourcepath}/${file.name}/preview.jpg">
 			<img src="$home/${applicationid}/views/modules/asset/downloads/preview/thumb/${parentsourcepath}/${file.name}/thumb.jpg" />
 		#else
@@ -14,7 +14,7 @@
 		
 		<p class="name">#if ( $name ) $name #else  Click on a file name to view details about that file #end</p>
 		
-		#if ( $file.folder == "false" )
+		#if ( $file.isfolder == "false" )
 		</a>
 		#end
 
@@ -30,7 +30,7 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 			$context.putPageValue("view",$view)	
 			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 			
-#if ( $file.folder != "false" )
+#if ( $file.isfolder != "false" )
 
 #else
 <div id="primary-options" style="margin-top: 0; margin-bottom: 10px;">
