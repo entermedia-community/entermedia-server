@@ -337,7 +337,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 					
 					searcher = getSearcherManager().getSearcher(inArchive.getCatalogId(), "libraryusers");
 					query = searcher.createSearchQuery().append("userid",inUser.getId());
-					query.addOrsGroup("libraryid", values);						
+					query.addOrsGroup("_parent", values);						
 					found = searcher.searchByQuery(query);
 					if( found != null )
 					{
