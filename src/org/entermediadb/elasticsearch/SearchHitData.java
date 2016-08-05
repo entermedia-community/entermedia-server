@@ -16,189 +16,178 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
 import org.openedit.modules.translations.LanguageMap;
 
-public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData
-{
+public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData {
 	protected Map fieldSearchData;
 	protected long fieldVersion;
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
-	
-	public SearchHitData(SearchHit inHit, PropertyDetails inPropertyDetails)
-	{
+
+	public SearchHitData(SearchHit inHit, PropertyDetails inPropertyDetails) {
 		setSearchHit(inHit);
 		setPropertyDetails(inPropertyDetails);
 	}
 
-	
-	public SearchHit getSearchHit()
-	{
+	public SearchHitData() {
+
+	}
+
+	public SearchHit getSearchHit() {
 		return fieldSearchHit;
 	}
 
-	public void setSearchHit(SearchHit inSearchHit)
-	{
+	public void setSearchHit(SearchHit inSearchHit) {
 		fieldSearchHit = inSearchHit;
 		setId(inSearchHit.getId());
 		setVersion(inSearchHit.getVersion());
 
 	}
 
-	public long getVersion()
-	{
+	public long getVersion() {
 		return fieldVersion;
 	}
 
-	public void setVersion(long inVersion)
-	{
+	public void setVersion(long inVersion) {
 		fieldVersion = inVersion;
 	}
-	
-	public PropertyDetails getPropertyDetails()
-	{
+
+	public PropertyDetails getPropertyDetails() {
 		return fieldPropertyDetails;
 	}
 
-	public void setPropertyDetails(PropertyDetails inPropertyDetails)
-	{
+	public void setPropertyDetails(PropertyDetails inPropertyDetails) {
 		fieldPropertyDetails = inPropertyDetails;
 	}
 
-	public Map getSearchData()
-	{
-		if( fieldSearchData == null && getSearchHit() != null)
-		{
-			fieldSearchData  = getSearchHit().getSource();
+	public Map getSearchData() {
+		if (fieldSearchData == null && getSearchHit() != null) {
+			fieldSearchData = getSearchHit().getSource();
 		}
 		return fieldSearchData;
 	}
 
-	public void setSearchData(Map inSearchHit)
-	{
+	public void setSearchData(Map inSearchHit) {
 		fieldSearchData = inSearchHit;
 	}
 
 	@Override
-	public void setProperty(String inId, String inValue)
-	{
+	public void setProperty(String inId, String inValue) {
 		// TODO Auto-generated method stub
 		super.setProperty(inId, inValue);
 	}
+
 	@Override
-	public Collection<String> getValues(String inPreference)
-	{
+	public Collection<String> getValues(String inPreference) {
 		Object result = getValue(inPreference);
-		if( result == null)
-		{
+		if (result == null) {
 			return null;
 		}
-		if( result instanceof Collection)
-		{
-			return (Collection)result;
+		if (result instanceof Collection) {
+			return (Collection) result;
 		}
 		ArrayList one = new ArrayList(1);
-		one.add( result);
+		one.add(result);
 		return one;
 	}
+
 	@Override
-	public Object getValue(String inId)
-	{
-		if(inId == null){
+	public Object getValue(String inId) {
+		if (inId == null) {
 			return null;
 		}
 		Object svalue = super.getValue(inId);
-		if (svalue != null)
-		{
+		if (svalue != null) {
 			return svalue;
 		}
 		svalue = getFromDb(inId);
 
 		return svalue;
 	}
-	
-	protected Object getFromDb(String inId)
-	{
-		if (inId.equals(".version"))
-		{
-			if (getVersion() > -1)
-			{
+
+	protected Object getFromDb(String inId) {
+		if (inId.equals(".version")) {
+			if (getVersion() > -1) {
 				return String.valueOf(getVersion());
 			}
 			return null;
 		}
+		String key = inId;
 		Object value = null;
-		if( getSearchHit() != null)
-		{
-			SearchHitField field = getSearchHit().field(inId);
-			if (field != null)
-			{
+		PropertyDetail detail = getPropertyDetails().getDetail(inId);
+		if (detail != null && detail.isMultiLanguage()) {
+			key = key + "_int";
+		}
+
+		if (getSearchHit() != null) {
+			SearchHitField field = getSearchHit().field(key);
+			if (field != null) {
 				value = field.getValue();
 			}
-		}	
-		if( value == null && getSearchData() != null)
-		{
-			value = getSearchData().get(inId);
 		}
-		if( value == null)
-		{
-			PropertyDetail detail = getPropertyDetails().getDetail(inId);
-			if( detail != null)
-			{
+		if (value == null && getSearchData() != null) {
+			value = getSearchData().get(key);
+		}
+		if (value == null) {
+
+			if (detail != null) {
 				String legacy = detail.get("legacy");
-				if( legacy != null)
-				{
+				if (legacy != null) {
 					value = getValue(legacy);
 				}
-			}
-		}
-		else{
-			if(value instanceof Map){
-				PropertyDetail detail = getPropertyDetails().getDetail(inId);
-				if(detail.isMultiLanguage()){
-					LanguageMap map = new LanguageMap((Map)value);
-					value = map;
-					
+
+				if (value == null) {
+					value = getSearchData().get(inId);
 				}
-	
 			}
 		}
+
+		if (value != null && detail != null && detail.isMultiLanguage()) {
+			if (value instanceof Map) {
+				LanguageMap map = new LanguageMap((Map) value);
+				value = map;
+
+			}
+			if (value instanceof String) {
+				LanguageMap map = new LanguageMap();
+				map.put("en", value);
+				value = map;
+			}
+		}
+
+		if (detail != null && "name".equals(inId) && !detail.isMultiLanguage() && value instanceof Map) {
+			LanguageMap map = new LanguageMap((Map) value);
+
+			value = map.get("en");
+		}
+
 		return value;
 	}
 
-	public Iterator keys()
-	{
+	public Iterator keys() {
 		return getProperties().keySet().iterator();
 	}
 
-	public Map getProperties()
-	{
+	public Map getProperties() {
 		Map all = new HashMap();
-		for (Iterator iterator = getSearchHit().getSource().keySet().iterator(); iterator.hasNext();)
-		{
+		for (Iterator iterator = getSearchHit().getSource().keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			String val = get(key);
 			all.put(key, val);
 		}
 		String version = get(".version");
-		if (version != null)
-		{
+		if (version != null) {
 			all.put(".version", version);
 		}
-		if( fieldMap != null)
-		{
+		if (fieldMap != null) {
 			all.putAll(super.getProperties());
 		}
 
 		return all;
 	}
 
-	public String toString()
-	{
-		if (getName() != null)
-		{
+	public String toString() {
+		if (getName() != null) {
 			return getName();
-		}
-		else
-		{
+		} else {
 			return getId();
 		}
 	}

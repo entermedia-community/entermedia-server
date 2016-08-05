@@ -46,7 +46,7 @@ public class MediaArchiveModule extends BaseMediaModule
 		{
 			MediaArchive archive = getMediaArchive(inReq);
 			Asset asset = archive.getAssetBySourcePath(sourcepath);
-			String vote = asset.getProperty("voteup");
+			String vote = asset.get("voteup");
 			int val = 1;
 			if (vote != null)
 			{
@@ -68,7 +68,7 @@ public class MediaArchiveModule extends BaseMediaModule
 		{
 			MediaArchive archive = getMediaArchive(inReq);
 			Asset asset = archive.getAssetBySourcePath(sourcepath);
-			String vote = asset.getProperty("votedown");
+			String vote = asset.get("votedown");
 			int val = -1;
 			if (vote != null)
 			{

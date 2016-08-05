@@ -480,76 +480,15 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	protected Asset createAssetFromResponse(String inId, Map inSource)
 	{
 		Asset asset = (Asset) createNewData();
+		
 		if (inSource == null)
 		{
 			return null;
 		}
+		asset.setSearchData(inSource);
 		asset.setId(inId);
-
-		for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();)
-		{
-			String key = (String) iterator.next();
-			Object object = inSource.get(key);
-			if ("category-exact".equals(key))
-			{
-				continue;
-			}
-			asset.setValue(key, object);
-			//			String val = null;
-			//			if (object instanceof String) {
-			//				val= (String) object;
-			//			}
-			//			if (object instanceof Date) {
-			//				val= String.valueOf((Date) object);
-			//			}
-			//			if (object instanceof Boolean) {
-			//				val= String.valueOf((Boolean) object);
-			//			}
-			//			if (object instanceof Integer) {
-			//				val= String.valueOf((Integer) object);
-			//			}
-			//			if (object instanceof Float) {
-			//				val= String.valueOf((Float) object);
-			//			}
-			//			if (object instanceof Collection) {
-			//				Collection values = (Collection) object;
-			//				asset.setValues(key, (Collection<String>) object);
-			//			}
-			//			else if(val != null)
-			//			{
-			//				asset.setProperty(key, val);
-			//			}
-		}
-		Object cats = inSource.get("category-exact");
-		if (cats instanceof Collection)
-		{
-			Collection categories = (Collection) inSource.get("category-exact");
-			if (categories != null)
-			{
-				for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-				{
-					String categoryid = (String) iterator.next();
-					Category category = getMediaArchive().getCategory(categoryid); //Cache this? Or lazy load em
-					if (category != null)
-					{
-						asset.addCategory(category);
-					}
-				}
-			}
-		} else if(cats instanceof String){
-			Category category = getMediaArchive().getCategory((String) cats); //Cache this? Or lazy load em
-			if (category != null)
-			{
-				asset.addCategory(category);
-			}
-			
-		}
-		String isfolder = asset.get("isfolder");
-		if (isfolder == null)
-		{
-			ContentItem originalPage = getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() + "/originals/" + asset.getSourcePath());
-			asset.setFolder(originalPage.isFolder());
-		}
+		
+		
 		return asset;
 	}
 

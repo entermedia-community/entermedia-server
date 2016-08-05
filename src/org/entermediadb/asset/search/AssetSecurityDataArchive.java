@@ -292,7 +292,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		}
 	
 		// TODO: Add libraries from user , profile and each group
-		String values = inAsset.getProperty("libraries");
+		Collection values = inAsset.getValues("libraries");
 
 		if( log.isDebugEnabled() )
 		{

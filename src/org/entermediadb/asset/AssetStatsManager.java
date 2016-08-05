@@ -68,7 +68,7 @@ public class AssetStatsManager
 
 		change.setProperty("assetid",inAsset.getId());
 	
-		String views = inAsset.getProperty("assetviews");
+		String views = inAsset.get("assetviews");
 		if( views != null )
 		{
 			long assetviews = Long.parseLong(views);
@@ -91,7 +91,7 @@ public class AssetStatsManager
 		}
 		
 		long assetexpire = 0L;
-		String expires = inAsset.getProperty("assetviewsexpires");
+		String expires = inAsset.get("assetviewsexpires");
 		if( expires != null )
 		{
 			assetexpire = Long.parseLong(expires);
@@ -110,7 +110,7 @@ public class AssetStatsManager
 		}
 		else
 		{
-			String views = inAsset.getProperty("assetviews");
+			String views = inAsset.get("assetviews");
 			if( views != null )
 			{
 				return Long.parseLong(views);

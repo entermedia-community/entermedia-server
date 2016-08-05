@@ -92,7 +92,7 @@ public class MetadataPdfExtractor extends MetadataExtractor
 						inAsset.setProperty("height", val);
 					}
 					inAsset.setProperty("pages", String.valueOf(results.getPages()));
-					if (inAsset.getProperty("assettitle") == null)
+					if (inAsset.get("assettitle") == null)
 					{
 						String title  = results.getTitle();
 						if( title != null && title.length() < 300)

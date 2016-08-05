@@ -33,7 +33,7 @@ public class CreateUploadAssetTest extends BaseTestCase
 		asset = archive.getAssetBySourcePath("users/admin/testassets/test1.jpg");
 		assertNotNull(asset);
 		
-		assertEquals(asset.getProperty("uploadstatus"), "pending");
+		assertEquals(asset.get("uploadstatus"), "pending");
 		
 		
 	}

@@ -355,7 +355,7 @@ public class AssetEditModule extends BaseMediaModule
 				if (asset == null) {
 					throw new OpenEditException("Asset is not found " + key);
 				}
-				String oldvalue = asset.getProperty(key);
+				String oldvalue = asset.get(key);
 				asset.setProperty(fieldid, value);
 				// null check
 				if (value != null && !value.equals(oldvalue)) {

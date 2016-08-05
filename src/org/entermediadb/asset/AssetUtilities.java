@@ -124,7 +124,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				return asset;
 			}
 			
-			String existingdate = asset.getProperty("assetmodificationdate");
+			String existingdate = asset.get("assetmodificationdate");
 			if( existingdate != null)
 			{
 				long filemmod = inContent.getLastModified();

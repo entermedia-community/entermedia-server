@@ -296,12 +296,12 @@ public class MediaArchive
 	{
 		Asset asset = (Asset) getAssetSearcher().searchById(inAssetID);
 
-		String count = asset.getProperty("seriescount");
+		String count = asset.get("seriescount");
 
 		if (count == null)
 		{
 			int i = 0;
-			String series = asset.getProperty("Series");
+			String series = asset.get("Series");
 			if (series != null)
 			{
 				SearchQuery searchQuery = getAssetSearcher().createSearchQuery();

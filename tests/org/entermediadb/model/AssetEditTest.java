@@ -140,7 +140,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		getMediaArchive().saveAsset(asset, user);
 		getMediaArchive().getAssetArchive().clearAssets();
 		asset = getMediaArchive().getAsset(asset.getId());
-		String returntext = asset.getProperty("assettitle");
+		String returntext = asset.get("assettitle");
 		assertEquals(originaltext, returntext);
 	}
 

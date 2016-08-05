@@ -1,4 +1,83 @@
-<properties dependson="librarycollectionasset">
-	<property id="id" index="true" keyword="true" stored="true">Id</property>
-	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
+
+<properties lazy-init="true">
+  <property id="id" index="true" keyword="true" stored="true" searchtype="asset">Id</property>
+  <property id="name" index="true" keyword="true" stored="true" sortable="true" defaultoperation="contains" searchtype="asset">File Name</property>
+  <property id="vizid" searchtype="asset">VizOne ID</property>
+  <property id="fetchurl" index="true" keyword="true" stored="true" editable="true" note="Download media from external location" defaultoperation="contains" searchtype="asset">Fetch URL</property>
+  <property id="fetchthumbnailurl" index="true" keyword="true" stored="true" editable="true" note="Download thumbnail from external location" defaultoperation="contains" searchtype="asset">Fetch Thumbnail URL</property>
+  <property id="linkurl" index="true" stored="true" editable="true" type="text" viewtype="url" note="Link to external URL" datatype="text" searchtype="asset">Link URL</property>
+  <property id="embeddedurl" index="true" stored="true" editable="true" type="text" viewtype="textarea" note="Embedded code to external location" datatype="text" searchtype="asset">Embedded Player</property>
+  <property id="bandwidth" index="true" stored="true" editable="true" sortable="true" type="list" datatype="list" searchtype="asset">Bandwidth</property>
+  <property id="viewasset" index="true" indextype="not_analyzed" internalfield="true" searchtype="asset">Readable</property>
+  <property id="editasset" indextype="not_analyzed" internalfield="true" searchtype="asset">Writable</property>
+  <property id="description" defaultoperation="freeform" searchtype="asset">All Fields</property>
+  <property id="sourcepath" index="true" stored="true" internalfield="false" searchtype="asset">Source Path</property>
+  <property id="category-exact" index="true" keyword="true" stored="true" editable="true" sortable="true" defaultoperation="contains" searchtype="asset">Exact Categories</property>
+  <property id="location" externalid="Location" index="true" stored="true" editable="true" type="list" autocreatefromexif="true" writenametoexif="true" datatype="list" searchtype="asset">Location</property>
+  <property id="isfolder" index="true" stored="true" editable="true" sortable="true" type="boolean" internalfield="true" datatype="boolean" searchtype="asset">Folder Based</property>
+  <property id="category" keyword="true" stored="true" editable="true" type="list" viewtype="category" listid="category" externalidXXX="assetcategory.categoryid" datatype="list" query="assetcategory.assetid = asset.id" searchtype="asset">Categories</property>
+  <property id="libraries" index="true" filter="true" stored="true" editable="true" type="list" viewtype="libraries" listid="library" datatype="list" searchtype="asset" sort="name" searchcomponent="librarysearch" foreignkeyid="project">Libraries</property>
+  <property id="assettype" index="true" filter="true" stored="true" editable="true" sortable="true" type="list" viewtype="list" sort="name" datatype="list" searchtype="asset">Asset Type</property>
+  <property id="pushstatus" index="true" stored="true" editable="true" type="list" listid="push/pushstatus" internalfield="true" datatype="list" searchtype="asset">Push Status</property>
+  <property id="pushpercentage" index="true" stored="true" internalfield="true" searchtype="asset">Push Percentage</property>
+  <property id="pusherrordetails" index="true" stored="true" internalfield="true" searchtype="asset">Push Error Details</property>
+  <property id="pusheddate" index="true" stored="true" editable="true" sortable="true" type="date" internalfield="true" datatype="date" searchcomponent="datesearch" searchtype="asset">Pushed Date</property>
+  <property id="hasfulltext" index="true" stored="true" sortable="true" type="boolean" datatype="boolean" searchtype="asset">Has Full Text</property>
+  <property id="pages" index="true" stored="true" sortable="true" type="number" viewtype="number" datatype="number" searchcomponent="numbersearch" searchtype="asset">Pages</property>
+  <property id="assetviews" index="true" stored="true" sortable="true" type="number" viewtype="number" searchcomponent="numbersearch" datatype="number" searchtype="asset">Views</property>
+  <property id="assetvotes" index="true" stored="true" sortable="true" type="number" datatype="number" searchcomponent="numbersearch" searchtype="asset">Vote Rank</property>
+  <property id="compression" externalid="Compression" index="true" stored="true" type="text" datatype="text" searchtype="asset">Compression</property>
+  <property id="artist" externalid="Artist" index="true" stored="true" sortable="true" type="text" datatype="text" searchtype="asset">Artist</property>
+  <property id="contributor" externalid="Contributor" index="true" stored="true" sortable="true" type="text" datatype="text" searchtype="asset">Contributor</property>
+  <property id="creator" externalid="XMP-dc:Creator,iptc:By-line" index="true" keyword="true" stored="true" editable="true" sortable="true" type="text" datatype="text" searchtype="asset">Author</property>
+  <property id="lenstype" externalid="Lens ID" index="true" stored="true" type="text" datatype="text" searchtype="asset">Lens Type</property>
+  <property id="focallength" externalid="Focal Length" index="true" stored="true" type="text" datatype="text" searchtype="asset">Focal Length</property>
+  <property id="cameramodel" externalid="Camera Model,Camera Model Name" index="true" stored="true" sortable="true" type="text" datatype="text" searchtype="asset">Camera Model</property>
+  <property id="iso" externalid="ISO" index="true" stored="true" type="text" datatype="text" searchtype="asset">ISO</property>
+  <property id="colorspace" externalid="Color Space,Color Mode" index="true" stored="true" type="list" viewtype="list" datatype="list" searchtype="asset">Color Space</property>
+  <property id="colortype" externalid="Color Space Data" index="true" stored="true" type="list" viewtype="list" datatype="list" searchtype="asset">Color Type</property>
+  <property id="shutterspeed" externalid="Shutter Speed" index="true" stored="true" type="text" datatype="text" searchtype="asset">Shutter Speed</property>
+  <property id="aperture" externalid="Aperture" index="true" stored="true" searchtype="asset">Aperture</property>
+  <property id="length" index="true" stored="true" sortable="true" type="double" viewtype="timelength" datatype="double" searchcomponent="numbersearch" searchtype="asset">Length</property>
+  <property id="duration" index="true" stored="true" searchtype="asset">Duration Stamp</property>
+  <property id="framerate" externalid="VideoFrameRate" index="true" stored="true" type="text" datatype="text" searchtype="asset">Frame rate</property>
+  <property id="bitspersample" externalid="Bits Per Sample" index="true" stored="true" type="text" datatype="text" searchtype="asset">Bits Per Sample</property>
+  <property id="videocodec" index="true" stored="true" searchtype="asset">Video Codec</property>
+  <property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true" searchtype="asset">Audio Codec</property>
+  <property id="imageorientation" externalid="exif:Orientation" index="true" stored="true" editable="true" type="list" listid="imageorientation" datatype="list" searchtype="asset">Image Rotation</property>
+  <property id="localpath" index="true" stored="true" internalfield="true" searchtype="asset">Local Path</property>
+  <property id="fileformat" externalid="File Type" index="true" filter="true" stored="true" editable="true" viewtype="list" searchtype="asset">File Format</property>
+  <property id="filesize" externalid="File Size" index="true" stored="true" sortable="true" type="number" viewtype="filesize" datatype="number" searchcomponent="numbersearch" searchtype="asset">File Size</property>
+  <property id="width" index="true" stored="true" sortable="true" type="number" datatype="number" searchcomponent="numbersearch" searchtype="asset">Width</property>
+  <property id="height" index="true" stored="true" sortable="true" type="number" datatype="number" searchcomponent="numbersearch" searchtype="asset">Height</property>
+  <property id="assetcreationdate" externalid="CreateDate,MediaCreateDate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="time" datatype="date" searchcomponent="datesearch" searchtype="asset">Created On</property>
+  <property id="assetmodificationdate" index="true" stored="true" sortable="true" type="date" viewtype="time" datatype="date" searchcomponent="datesearch" searchtype="asset">Last Modified</property>
+  <property id="recordmodificationdate" index="true" stored="true" sortable="true" type="date" datatype="date" searchcomponent="datesearch" searchtype="asset">Record Edit Date</property>
+  <property id="assetaddeddate" externalid="Record Creation Date" index="true" stored="true" sortable="true" type="date" viewtype="time" datatype="date" searchcomponent="datesearch" searchtype="asset">Uploaded Date</property>
+  <property id="owner" index="true" keyword="true" stored="true" editable="true" sortable="true" type="list" viewtype="user" listcatalogid="system" listid="user" datatype="list" searchtype="asset">Owner</property>
+  <property id="primaryfile" index="true" stored="true" internalfield="true" searchtype="asset">Primary File Name</property>
+  <property id="importstatus" index="true" stored="true" editable="true" type="list" listid="asset/importstatus" datatype="list" searchtype="asset">Import Status</property>
+  <property id="previewstatus" index="true" stored="true" editable="true" type="list" viewtype="list" listid="asset/previewstatus" datatype="list" searchtype="asset">Preview Status</property>
+  <property id="editstatus" index="true" filter="true" stored="true" editable="true" type="list" listid="asset/editstatus" datatype="list" searchtype="asset">Edit Status</property>
+  <property id="assettitle" externalid="XMP-dc:Title,iptc:ObjectName" index="true" keyword="true" stored="true" editable="true" sortable="true" multilanguage="true" internalfield="false" searchtype="asset">Asset Title</property>
+  <property id="headline" externalid="iptc:Headline,XMP-photoshop:Headline" index="true" keyword="true" stored="true" editable="true" sortable="true" multilanguage="true" searchtype="asset">Headline</property>
+  <property id="longcaption" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" index="true" keyword="true" editable="true" searchtype="asset">Description</property>
+  <property id="keywords" index="true" stored="true" editable="true" viewtype="tageditor" indextype="analyzed" defaultoperation="andgroup" searchtype="asset">Tags</property>
+  <property id="extrakeywords" externalid="Keywords" index="true" keyword="true" stored="true" editable="true" searchtype="asset">Extra Keywords</property>
+  <property id="purpose" index="true" stored="true" editable="true" type="list" viewtype="multiselect" datatype="list" searchtype="asset">Purpose</property>
+  <property id="ethnicity" index="true" stored="true" editable="true" type="list" viewtype="list" listchild="ethnicitydetailed" datatype="list" searchtype="asset">General Ethnicity</property>
+  <property id="ethnicitydetailed" index="true" stored="true" editable="true" type="list" viewtype="list" foreignkeyid="ethnicity" datatype="list" searchtype="asset">Specific Ethnicity</property>
+  <property id="language" index="true" stored="true" editable="true" type="list" viewtype="list" sort="textUp" datatype="list" searchtype="asset">Language</property>
+  <property id="viewpoint" index="true" stored="true" editable="true" type="list" datatype="list" searchtype="asset">Asset Viewpoint</property>
+  <property id="region" index="true" stored="true" editable="true" type="list" viewtype="list" listchild="country" datatype="list" searchtype="asset">Region</property>
+  <property id="country" index="true" stored="true" editable="true" type="list" viewtype="list" listchild="state" foreignkeyid="region" datatype="list" searchtype="asset">Country</property>
+  <property id="state" index="true" stored="true" editable="true" type="list" viewtype="list" foreignkeyid="country" datatype="list" searchtype="asset">State</property>
+  <property id="copyrightstatus" externalid="XMP-xmpRights:Marked" index="true" stored="true" editable="true" type="list" viewtype="list" datatype="list" searchtype="asset">Copyright Status</property>
+  <property id="copyrightnotice" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright" index="true" stored="true" editable="true" searchtype="asset">Copyright Notice</property>
+  <property id="rightsusageterms" externalid="XMP-xmpRights:UsageTerms," index="true" stored="true" editable="true" searchtype="asset">Rights Usage Terms</property>
+  <property id="instructions" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions" index="true" stored="true" editable="true" searchtype="asset">Instructions</property>
+  <property id="publisheds3" index="true" stored="true" editable="true" sortable="true" type="boolean" internalfield="true" datatype="boolean" searchtype="asset">Published S3</property>
+  <property id="geo_point" externalid="GPS Latitude,GPS Longitude" index="true" stored="true" type="geo_point" viewtype="map" internalfield="true" datatype="geo_point" searchcomponent="locationsearch" searchtype="asset">Position</property>
+  <property id="editgroups" index="true" stored="true" editable="true" viewtype="multiselect" listcatalogid="system" listid="group" internalfield="true" searchtype="asset">Edit Groups</property>
+  <property id="contenttype" index="true" keyword="true" stored="true" editable="true" type="list" datatype="list" searchtype="asset">Content Type</property>
 </properties>
