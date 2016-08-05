@@ -318,17 +318,13 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 					query = searcher.createSearchQuery();
 					query.addOrsGroup("libraryid", values);
 
-					StringBuffer groupids = new StringBuffer();
+					List groupids = new ArrayList();
 					for (Iterator iterator2 = inUser.getGroups().iterator(); iterator2.hasNext();)
 					{
 						Group group = (Group)iterator2.next();
-						groupids.append(group.getId());
-						if( iterator2.hasNext() )
-						{
-							groupids.append(" ");
-						}
+						groupids.add(group.getId());
 					}
-					query.addOrsGroup("groupid", groupids.toString());
+					query.addOrsGroup("groupid", groupids);
 					found = searcher.searchByQuery(query);
 					if( found != null )
 					{
