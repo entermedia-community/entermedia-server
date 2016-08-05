@@ -81,7 +81,7 @@ $lsearcher.addShowOnly($context, $query)
 	#end
 	#foreach( $type in $types )
 		#set( $key = $type.id)
-		<option value="$key" #if($values.contains($key)) selected #end>#esc($type.name)</option>
+		<option value="$key" #if($values.contains($key)) selected #end>#esc($type.getName($context.getLanguage()))</option>
 	#end
 
    </select>		
