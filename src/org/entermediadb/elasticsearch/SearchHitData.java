@@ -18,8 +18,40 @@ import org.openedit.modules.translations.LanguageMap;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData
 {
+	protected Map fieldSearchData;
+	protected long fieldVersion;
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
+	
+	public SearchHitData(SearchHit inHit, PropertyDetails inPropertyDetails)
+	{
+		setSearchHit(inHit);
+		setPropertyDetails(inPropertyDetails);
+	}
+
+	
+	public SearchHit getSearchHit()
+	{
+		return fieldSearchHit;
+	}
+
+	public void setSearchHit(SearchHit inSearchHit)
+	{
+		fieldSearchHit = inSearchHit;
+		setId(inSearchHit.getId());
+		setVersion(inSearchHit.getVersion());
+
+	}
+
+	public long getVersion()
+	{
+		return fieldVersion;
+	}
+
+	public void setVersion(long inVersion)
+	{
+		fieldVersion = inVersion;
+	}
 	
 	public PropertyDetails getPropertyDetails()
 	{
@@ -31,21 +63,18 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		fieldPropertyDetails = inPropertyDetails;
 	}
 
-	public SearchHitData(SearchHit inHit, PropertyDetails inPropertyDetails)
+	public Map getSearchData()
 	{
-		setSearchHit(inHit);
-		setId(getSearchHit().getId());
-		setPropertyDetails(inPropertyDetails);
+		if( fieldSearchData == null && getSearchHit() != null)
+		{
+			fieldSearchData  = getSearchHit().getSource();
+		}
+		return fieldSearchData;
 	}
 
-	public SearchHit getSearchHit()
+	public void setSearchData(Map inSearchHit)
 	{
-		return fieldSearchHit;
-	}
-
-	public void setSearchHit(SearchHit inSearchHit)
-	{
-		fieldSearchHit = inSearchHit;
+		fieldSearchData = inSearchHit;
 	}
 
 	@Override
@@ -90,21 +119,24 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	{
 		if (inId.equals(".version"))
 		{
-			if (getSearchHit().getVersion() > -1)
+			if (getVersion() > -1)
 			{
-				return String.valueOf(getSearchHit().getVersion());
+				return String.valueOf(getVersion());
 			}
 			return null;
 		}
 		Object value = null;
-		SearchHitField field = getSearchHit().field(inId);
-		if (field != null)
+		if( getSearchHit() != null)
 		{
-			value = field.getValue();
-		}
-		if( value == null)
+			SearchHitField field = getSearchHit().field(inId);
+			if (field != null)
+			{
+				value = field.getValue();
+			}
+		}	
+		if( value == null && getSearchData() != null)
 		{
-			value = getSearchHit().getSource().get(inId);
+			value = getSearchData().get(inId);
 		}
 		if( value == null)
 		{
