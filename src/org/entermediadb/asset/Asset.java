@@ -669,8 +669,15 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 	@Override
 	public void setValue(String inKey, Object inValue)
 	{
-	
-		if ("category-exact".equals(inKey))
+		if ("keywords".equals(inKey))
+		{
+			if( inValue instanceof String)
+			{
+				String[] vals = VALUEDELMITER.split((String )inValue );
+				inValue = Arrays.asList(vals);
+			}	
+		}
+		else if ("category-exact".equals(inKey))
 		{
 			if (inValue != null)
 			{

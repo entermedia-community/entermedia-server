@@ -537,7 +537,7 @@ public class MediaArchive
 	//Only use on old style sourcepaths
 	public Asset createAsset(String inId, String inSourcePath)
 	{
-		Asset asset = new Asset();
+		Asset asset = new Asset(this);
 		asset.setCatalogId(getCatalogId());
 		if( inId == null)
 		{

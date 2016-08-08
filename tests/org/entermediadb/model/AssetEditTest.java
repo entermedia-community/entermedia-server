@@ -148,9 +148,10 @@ public class AssetEditTest extends BaseEnterMediaTest
 	{
 		Asset asset = createAsset();
 		String input = "one | two | tree";
+		String inputgood = "one|two|tree";
 		asset.setProperty("keywords", input);
 		assertEquals(3,asset.getKeywords().size());
-		assertEquals(input,asset.get("keywords") );
+		assertEquals(inputgood,asset.get("keywords") );
 	}
 	public void XXXOLDtestEditRelatedAssets() throws Exception
 	{
