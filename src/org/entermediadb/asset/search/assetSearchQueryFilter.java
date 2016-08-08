@@ -65,7 +65,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 				}
 				buffer.append(" user_" + currentUser.getUserName());
 			}
-			inQuery.addOrsGroup("viewasset", buffer.toString().toLowerCase());
+			inQuery.addOrsGroup("viewasset", buffer.toString());
 			inQuery.setSecurityAttached(true);
 		}
 

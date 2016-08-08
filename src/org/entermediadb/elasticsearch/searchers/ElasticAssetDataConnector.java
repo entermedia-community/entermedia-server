@@ -222,7 +222,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// populateJoinData("album", doc, tracker, "albumid", true);
 
 			// populateSecurity(doc, asset, catalogs);
-			populatePermission(inContent, asset, "viewasset");
 
 			super.updateIndex(inContent, inData, inDetails);
 			// for (Iterator iterator =
@@ -249,6 +248,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			String[] array = new String[realcats.size()];
 			array = realcats.toArray(array);
 			inContent.field("category-exact", array);
+			populatePermission(inContent, asset, "viewasset");
+
 		}
 		catch (Exception ex)
 		{
