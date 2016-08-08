@@ -723,4 +723,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return getMediaArchive().getAssetPropertyDetails();
 	}
 	
+	
+	public String getProperty(String inProperty){
+		return get(inProperty);
+	}
+	
 }
