@@ -240,7 +240,11 @@ public abstract class BaseConversionManager implements ConversionManager
     	}	
     	if(input == null || !input.exists())
 		{
-			throw new OpenEditException("Input is " + input + " input loaders failed to load");
+			//throw new OpenEditException("Input is " + input + " input loaders failed to load");
+    		ConvertResult result = new ConvertResult();
+    		result.setInstructions(inStructions);
+    		result.setError("Input is " + input + " input loaders failed to load");
+    		return result;
 		}
     	
     	ConvertResult result = transcode(inStructions);

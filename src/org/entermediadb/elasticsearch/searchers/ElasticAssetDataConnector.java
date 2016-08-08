@@ -294,12 +294,12 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 		populateKeywords(fullDesc, asset, inDetails);
 		// add a bunch of stuff to the full text field
-		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
-		{
-			Category cat = (Category) iter.next();
-			fullDesc.append(cat.getName());
-			fullDesc.append(' ');
-		}
+//		for (Iterator iter = inCategories.iterator(); iter.hasNext();)
+//		{
+//			Category cat = (Category) iter.next();
+//			fullDesc.append(cat.getName());
+//			fullDesc.append(' ');
+//		}
 		if (asset.getSourcePath() != null)
 		{
 			String[] dirs = asset.getSourcePath().split("/");

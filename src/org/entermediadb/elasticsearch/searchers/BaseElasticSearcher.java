@@ -1705,13 +1705,38 @@ public class BaseElasticSearcher extends BaseSearcher {
 		for (Iterator iter = inDetails.findKeywordProperties().iterator(); iter.hasNext();) {
 			PropertyDetail det = (PropertyDetail) iter.next();
 			if (det.isList()) {
-				String prop = inData.get(det.getId());
-				if (prop != null) {
-					Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), prop);
-					if (data != null && data.getName() != null) {
-						inFullDesc.append(data.getName());
-						inFullDesc.append(' ');
+				Object prop = inData.getValue(det.getId());
+				if (prop != null) 
+				{
+					if( prop instanceof Collection)
+					{
+						Collection values = (Collection)prop;
+						for (Iterator iterator = values.iterator(); iterator.hasNext();)
+						{
+							Object object = (Object) iterator.next();
+							if( object instanceof String)
+							{
+								Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String)prop);
+								if (data != null && data.getName() != null) 
+								{
+									inFullDesc.append(data.getName());
+								}
+							}	
+							else
+							{
+								inFullDesc.append(String.valueOf( object) );								
+							}	
+							inFullDesc.append(' ');
+						}
 					}
+					else
+					{
+						Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String)prop);
+						if (data != null && data.getName() != null) {
+							inFullDesc.append(data.getName());
+							inFullDesc.append(' ');
+						}
+					}	
 				}
 			} else {
 				if (det.isMultiLanguage()) {

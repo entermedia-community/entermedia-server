@@ -154,11 +154,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 			return categories;
 		}
 		
-		
-		
-		
-		
-	return super.getValue(inAttribute);
+		return super.getValue(inAttribute);
 
 	}
 
