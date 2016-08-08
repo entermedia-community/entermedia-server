@@ -79,7 +79,7 @@ public class MetaDataReaderTest extends BaseEnterMediaTest {
 		{
 			File testFile = new File(rootDir, fileNames[i]);
 			assertTrue(testFile.exists() && testFile.canRead());
-			p = new Asset();
+			p = new Asset(getMediaArchive());
 			FileItem item = new FileItem();
 			item.setPath(testFile.getName());
 			item.setFile(testFile);
