@@ -81,7 +81,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 
 	public synchronized void reIndexAll() throws OpenEditException
 	{		
-		setReIndexing(false);
+		//setReIndexing(false);
 		if( isReIndexing())
 		{
 			return;
