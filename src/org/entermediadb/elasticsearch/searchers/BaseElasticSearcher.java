@@ -1508,12 +1508,25 @@ public class BaseElasticSearcher extends BaseSearcher {
 						}
 					}
 					lanobj.endObject();
-				} else {
+				}
+				else
+				{
 					if (value == null) {
 						// log.info( getSearchType() + "Had null value " + key);
-					} else {
-
-						inContent.field(key, value);
+					} 
+					else 
+					{
+						if( !(value instanceof String) )
+						{
+							String svalue = String.valueOf(value);
+							if (svalue.isEmpty()) {
+								value = null;
+							}
+						}
+						if (value != null) 
+						{
+							inContent.field(key, value);
+						}	
 					}
 				}
 				// log.info("Saved" + key + "=" + value );
