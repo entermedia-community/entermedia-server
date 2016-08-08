@@ -141,7 +141,7 @@ public class AttachmentManager
 					attachment.setProperty("isfolder", String.valueOf(page.isFolder()));
 					attachment.setProperty("parentsourcepath", inFolderSourcePath);
 
-					Asset asset = new Asset();
+					Asset asset = new Asset(inArchive);
 					getMetaDataReader().populateAsset(inArchive, page.getContentItem(), asset);
 					for (Iterator iterator2 = asset.getProperties().keySet().iterator(); iterator2.hasNext();)
 					{

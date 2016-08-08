@@ -53,7 +53,7 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 		String path = "/WEB-INF/data/"+archive.getCatalogId()+"/originals/"+asset.getSourcePath()+"/"+primary;
 		MetaDataReader reader = (MetaDataReader) archive.getModuleManager().getBean("metaDataReader");
 		Page content = archive.getPageManager().getPage(path);
-		Asset tempasset = new Asset();
+		Asset tempasset = new Asset(archive);
 		reader.populateAsset(archive, content.getContentItem(), tempasset);
 		int pages = getPages(tempasset);
 		asset.setProperty("pages", String.valueOf(pages));
@@ -195,7 +195,7 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 			String path = "/WEB-INF/data/"+archive.getCatalogId()+"/originals/"+target.getSourcePath()+"/"+primary;
 			MetaDataReader reader = (MetaDataReader) archive.getModuleManager().getBean("metaDataReader");
 			Page content = archive.getPageManager().getPage(path);
-			Asset tempasset = new Asset();
+			Asset tempasset = new Asset(archive);
 			reader.populateAsset(archive, content.getContentItem(), tempasset);
 			int pages = getPages(tempasset);
 			target.setProperty("pages", String.valueOf(pages));

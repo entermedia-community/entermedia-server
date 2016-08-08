@@ -11,7 +11,7 @@ public class SourcePathTest extends BaseEnterMediaTest
 	
 	public void testLookup() throws Exception
 	{
-		Asset asset = new Asset();
+		Asset asset = new Asset(getMediaArchive());
 		String originalpath= "\\\\server\\share\\mystuff\\here\\1234.gif";
 		
 		AssetSourcePathCreator creator = new AssetSourcePathCreator();

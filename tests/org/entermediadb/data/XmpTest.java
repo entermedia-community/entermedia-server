@@ -13,7 +13,7 @@ public class XmpTest extends BaseEnterMediaTest{
 	
 	public void testXmpWriting() throws Exception
 	{
-		Asset asset = new Asset();
+		Asset asset = new Asset(getMediaArchive());
 		asset.addKeyword("test1");
 		asset.addKeyword("test2");
 		asset.setSourcePath("testassets/Indesign.indd");
@@ -23,7 +23,7 @@ public class XmpTest extends BaseEnterMediaTest{
 		assertNotNull(writer);
 		writer.saveMetadata(getMediaArchive(), asset);
 		
-		Asset newasset = new Asset();
+		Asset newasset = new Asset(getMediaArchive());
 		
 		ExiftoolMetadataExtractor reader= (ExiftoolMetadataExtractor)getBean("exiftoolMetadataExtractor");
 		MediaArchive mediaArchive = getMediaArchive();

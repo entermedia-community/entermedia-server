@@ -385,7 +385,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		{
 			newId = getId();
 		}
-		Asset asset = new Asset();
+		Asset asset = new Asset(getMediaArchive());
 		asset.setId(newId);
 		asset.setName(getName());
 		asset.setOrdering(getOrdering());

@@ -49,7 +49,7 @@ public void init() {
 
 	ArrayList toSave = new ArrayList();
 	path.Items.Item.each{
-		Asset asset = new Asset();
+		Asset asset = new Asset(archive);
 		it.FieldValue.each{
 			String uid = it.@uid;
 			uid = uid.replace("{", "").replace("}", "");

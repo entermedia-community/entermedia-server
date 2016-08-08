@@ -122,7 +122,7 @@ public class PresetCreator
 		}
 		else
 		{
-			//updateAssetImportStatus(mediaarchive,  asset,  conversions ); //Nothing to convert, try updating status
+			updateAssetPreviewStatus(mediaarchive,  asset,  conversions ); //Nothing to convert, try updating status
 		}
 		return added;
 	}
@@ -212,12 +212,11 @@ public class PresetCreator
 		boolean allcomplete = true;
 		boolean founderror = false;
 		
-		String existingimportstatus = asset.get("previewstatus");
+		String existingimportstatus = asset.get("importstatus");
 	
-		if( existingpreviewstatus == null || !"2".equals( existingpreviewstatus ) )
+		if( existingpreviewstatus == null || !"2".equals( existingpreviewstatus ) || !"complete".equals(existingimportstatus))
 		{
 			//check tasks and update the asset status
-			Searcher tasksearcher = inArchive.getSearcher( "conversiontask");	
 			for( Object object : conversions )
 			{
 				Data task = (Data)object;
@@ -227,35 +226,13 @@ public class PresetCreator
 					founderror = true;
 					break;
 				}
-	
-				if( !"complete".equals( task.get("status") ) )
+				else if( !"complete".equals( task.get("status") ) )
 				{
 					allcomplete = false;
-					log.info("Found an incomplete task - status was: " + task.get("status") + " " + asset.getId());
-					String date = task.get("submitted");
-					if( "missinginput".equals( task.get("status") ) && date != null)
-					{
-						Date entered = DateStorageUtil.getStorageUtil().parseFromStorage(date);
-						GregorianCalendar cal = new GregorianCalendar();
-						cal.add(Calendar.DAY_OF_YEAR, -2);
-						if( entered.before(cal.getTime()))
-						{
-							Data loadedtask = (Data)tasksearcher.loadData(task);
-							loadedtask.setProperty("status","error");
-							loadedtask.setProperty("errordetails","Image missing more than 24 hours, marked as error");
-							tasksearcher.saveData(loadedtask, null);
-							founderror = true;
-						}
-					}
-					else
-					{
-						break;
-					}
+					break;
 				}
 			}	
 		}
-		
-		
 		//save importstatus
 		if( founderror || allcomplete )
 		{

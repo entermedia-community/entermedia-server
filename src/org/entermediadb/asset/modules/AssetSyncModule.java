@@ -101,7 +101,7 @@ public class AssetSyncModule extends BaseMediaModule
 				
 				String currentSourcePath = sourcepath[i];
 				Asset existing = archive.getAssetBySourcePath(currentSourcePath);
-				Asset toadd = new Asset();
+				Asset toadd = new Asset(archive);
 				toadd.setId(archive.getAssetSearcher().nextAssetNumber());
 				if (existing != null) 
 				{

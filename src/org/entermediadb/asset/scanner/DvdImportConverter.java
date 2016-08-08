@@ -136,7 +136,7 @@ public class DvdImportConverter extends CatalogConverter
 		{
 			String chapter = (String) inDvd.getChapterNames().get(i);
 
-			Asset asset = new Asset();
+			Asset asset = new Asset(inArchive);
 			String count = format.format(i + 1);
 			chapter = chapter.replace('.', '_');
 

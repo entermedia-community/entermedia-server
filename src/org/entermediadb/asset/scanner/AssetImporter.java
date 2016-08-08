@@ -341,7 +341,7 @@ public class AssetImporter
 		String extension = PathUtilities.extractPageType(inSourcePath);
 		if (extension != null)
 		{
-			Asset asset = new Asset(); //throw away
+			Asset asset = new Asset(inArchive); //throw away
 			asset.setCatalogId(inArchive.getCatalogId());
 	//		asset.setId(inArchive.getAssetArchive().nextAssetNumber());
 			asset.setSourcePath(inSourcePath);

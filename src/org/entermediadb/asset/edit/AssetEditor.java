@@ -28,7 +28,7 @@ public class AssetEditor {
 	
 	public Asset createAsset()
 	 {
-		 return new Asset();
+		 return new Asset(getMediaArchive());
 	 }
 
 	 public void addToCategory(Asset inAsset, Category inCategory) throws OpenEditRuntimeException
@@ -96,7 +96,7 @@ public class AssetEditor {
 		 Asset asset = null;
 		 if (inAsset != null)
 		 {
-			 asset = new Asset();
+			 asset = new Asset(inAsset.getMediaArchive());
 			 asset.setCatalogId(inAsset.getCatalogId());
 			 asset.setName(inAsset.getName());
 			 asset.getKeywords().addAll(inAsset.getKeywords());

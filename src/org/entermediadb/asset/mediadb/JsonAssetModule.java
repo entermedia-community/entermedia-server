@@ -209,7 +209,7 @@ public class JsonAssetModule extends BaseJsonModule
 		}
 		if(asset == null)
 		{
-			asset = new Asset();//Empty Record
+			asset = new Asset(archive);//Empty Record
 			asset.setId(id);
 			asset.setProperty("sourcepath", sourcepath);
 		}

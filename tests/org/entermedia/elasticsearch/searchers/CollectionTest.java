@@ -52,13 +52,13 @@ public class CollectionTest  extends BaseEnterMediaTest
 	{
 		//getMediaArchive().getAssetSearcher().reIndexAll();
 		
-		Asset newasset = new Asset();
+		Asset newasset = new Asset(getMediaArchive());
 		newasset.setId("101");
 		newasset.setName("Test 101");
 		newasset.setSourcePath("users/101");
 		getMediaArchive().saveAsset(newasset, null);
 
-		newasset = new Asset();
+		newasset = new Asset(getMediaArchive());
 		newasset.setId("102");
 		newasset.setName("Test 102");
 		newasset.setSourcePath("users/102");
