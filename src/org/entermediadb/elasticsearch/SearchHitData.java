@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.SearchHitField;
 import org.openedit.Data;
@@ -14,13 +16,15 @@ import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
+import org.openedit.data.SearchData;
 import org.openedit.modules.translations.LanguageMap;
 
-public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData {
+public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData {
 	protected Map fieldSearchData;
 	protected long fieldVersion;
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
+	private static final Log log = LogFactory.getLog(SearchHitData.class);
 
 	public SearchHitData(SearchHit inHit, PropertyDetails inPropertyDetails) {
 		setSearchHit(inHit);
@@ -110,6 +114,8 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			}
 			return null;
 		}
+		//log.info(getSearchHit().getSourceAsString());
+		
 		String key = inId;
 		Object value = null;
 		PropertyDetail detail = getPropertyDetails().getDetail(inId);
@@ -125,6 +131,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		}
 		if (value == null && getSearchData() != null) {
 			value = getSearchData().get(key);
+			if (value instanceof Map) {
+				Map map = (Map)value;
+				if(map.isEmpty()){
+					value = null;
+				}
+			}
 		}
 		if (value == null) {
 

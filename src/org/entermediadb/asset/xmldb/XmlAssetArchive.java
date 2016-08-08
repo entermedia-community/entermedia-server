@@ -465,7 +465,7 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 				continue;
 			}
 			PropertyDetail detail = details.getDetail(key);
-			String value = inAsset.getProperty(key);
+			String value = inAsset.get(key);
 
 			if (value != null && value.length() > 0)
 			{

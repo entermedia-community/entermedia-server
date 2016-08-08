@@ -68,6 +68,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.SearchData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.ChildFilter;
 import org.openedit.hittracker.HitTracker;
@@ -470,7 +471,46 @@ public class BaseElasticSearcher extends BaseSearcher {
 					continue;
 				}
 
+				if (detail.isMultiLanguage()) {
+					jsonproperties = jsonproperties.startObject(detail.getId() + "_int");
+					jsonproperties = jsonproperties.field("type", "object");
+
+					jsonproperties.startObject("properties");
+					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
+					for (Iterator iterator = languages.iterator(); iterator.hasNext();) {
+						Data locale = (Data) iterator.next();
+						String id = locale.getId();
+						jsonproperties.startObject(id);
+						String analyzer = locale.get("analyzer");
+						jsonproperties.field("type", "string");
+						if (detail.isSortable() || "name".equals(detail.getName())) {
+							jsonproperties.startObject("fields");
+							jsonproperties.startObject("sort");
+							jsonproperties = jsonproperties.field("type", "string");
+							jsonproperties = jsonproperties.field("index", "not_analyzed");
+							jsonproperties.endObject();
+							jsonproperties.endObject();
+						}
+
+						if (analyzer != null) {
+							jsonproperties.field("analyzer", analyzer);
+						}
+						jsonproperties = jsonproperties.field("index", "analyzed");
+						jsonproperties.endObject();
+					}
+					jsonproperties.endObject();
+					jsonproperties.endObject();
+
+					jsonproperties = jsonproperties.startObject(detail.getId());
+					jsonproperties = jsonproperties.field("type", "string");
+					jsonproperties = jsonproperties.field("include_in_all", "false");
+					jsonproperties = jsonproperties.endObject();
+
+					continue;
+				}
+
 				jsonproperties = jsonproperties.startObject(detail.getId());
+
 				if ("description".equals(detail.getId())) {
 					String analyzer = "lowersnowball";
 					jsonproperties = jsonproperties.field("analyzer", analyzer);
@@ -504,8 +544,6 @@ public class BaseElasticSearcher extends BaseSearcher {
 					} else {
 						jsonproperties = jsonproperties.field("type", "string");
 					}
-				} else if (detail.isMultiLanguage()) {
-					jsonproperties = jsonproperties.field("type", "object");
 				} else {
 					jsonproperties = jsonproperties.field("type", "string");
 					if (detail.isSortable() || "name".equals(detail.getName())) {
@@ -529,33 +567,6 @@ public class BaseElasticSearcher extends BaseSearcher {
 				}
 				if (indextype != null) {
 					jsonproperties = jsonproperties.field("index", indextype);
-				}
-
-				if (detail.isMultiLanguage()) {
-					jsonproperties.startObject("properties");
-					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
-					for (Iterator iterator = languages.iterator(); iterator.hasNext();) {
-						Data locale = (Data) iterator.next();
-						String id = locale.getId();
-						jsonproperties.startObject(id + "_int");
-						String analyzer = locale.get("analyzer");
-						jsonproperties.field("type", "string");
-						if (detail.isSortable() || "name".equals(detail.getName())) {
-							jsonproperties.startObject("fields");
-							jsonproperties.startObject("sort");
-							jsonproperties = jsonproperties.field("type", "string");
-							jsonproperties = jsonproperties.field("index", "not_analyzed");
-							jsonproperties.endObject();
-							jsonproperties.endObject();
-						}
-
-						if (analyzer != null) {
-							jsonproperties.field("analyzer", analyzer);
-						}
-						jsonproperties = jsonproperties.field("index", "analyzed");
-						jsonproperties.endObject();
-					}
-					jsonproperties.endObject();
 				}
 
 				jsonproperties = jsonproperties.field("include_in_all", "false"); // Do
@@ -1780,37 +1791,18 @@ public class BaseElasticSearcher extends BaseSearcher {
 	}
 
 	public void updateData(Map inSource, Data inData) {
-		for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();) {
-			String key = (String) iterator.next();
-			Object object = inSource.get(key);
-			// if("category-exact".equals(key)){ //Ian, why is this here?
-			// continue;
-			// }
-			// String val = null;
-			// if (object instanceof String) {
-			// val= (String) object;
-			// }
-			// if (object instanceof Date) {
-			// val= String.valueOf((Date) object);
-			// }
-			// if (object instanceof Boolean) {
-			// val= String.valueOf((Boolean) object);
-			// }
-			// if (object instanceof Integer) {
-			// val= String.valueOf((Integer) object);
-			// }
-			// if (object instanceof Float) {
-			// val= String.valueOf((Float) object);
-			// }
-			// if (object instanceof Collection) {
-			// //continue;
-			// Collection values = (Collection) object;
-			// inData.setValues(key, (Collection<String>) object);
-			// }
-			// else if(val != null)
-			// {
-			inData.setValue(key, object);
-			// }
+		if (inData instanceof SearchData) {
+			SearchData data = (SearchData) inData;
+			data.setSearchData(inSource);
+		} else {
+
+			for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();) {
+				String key = (String) iterator.next();
+				Object object = inSource.get(key);
+				
+				inData.setValue(key, object);
+				
+			}
 		}
 	}
 
