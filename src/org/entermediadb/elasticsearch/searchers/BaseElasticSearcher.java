@@ -62,6 +62,7 @@ import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
+import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
@@ -1488,29 +1489,24 @@ public class BaseElasticSearcher extends BaseSearcher {
 																			// object
 					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 
-					if (value instanceof LanguageMap) {
-						LanguageMap map = (LanguageMap) value;
-						for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();) {
-							Data locale = (Data) iterator2.next();
-							String id = locale.getId();
-							String localeval = map.getText(id); // get a
-																// location
-																// specific
-																// value
-							if (localeval != null) {
-
-								inContent.field(id, localeval);
-							}
-
-						}
-					} else if (value instanceof String) {
+					if (value instanceof String) 
+					{
 						String target = (String) value;
 						LanguageMap map = new LanguageMap();
-						map.setText(target, "en");
+						map.setText("en",target);
 						value = map;
-
+					} 
+					LanguageMap map = (LanguageMap) value;
+					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();) 
+					{
+						Data locale = (Data) iterator2.next();
+						String id = locale.getId();
+						String localeval = map.getText(id); // get value
+						if (localeval != null) 
+						{
+							lanobj.field(id, localeval);
+						}
 					}
-
 					lanobj.endObject();
 				} else {
 					if (value == null) {
@@ -1653,9 +1649,13 @@ public class BaseElasticSearcher extends BaseSearcher {
 						// copyData(data, typed);
 						updateData(response.getSource(), data);
 					} else {
-						data = new BaseData();
+						SearchHitData sdata = new SearchHitData();
+						sdata.setPropertyDetails(getPropertyDetails());
+						sdata.setSearchData(response.getSource());
+						sdata.setVersion(response.getVersion());
+						data = sdata;
 						// data.setProperties(response.getSource());
-						updateData(response.getSource(), data);
+						//updateData(response.getSource(), data);
 					}
 					// log.info(response.getSourceAsString());
 					data.setId(inValue);
@@ -1708,7 +1708,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 					if (value instanceof String) {
 						String target = (String) value;
 						LanguageMap map = new LanguageMap();
-						map.setText(target, "en");
+						map.setText("en",target);
 						value = map;
 
 					}

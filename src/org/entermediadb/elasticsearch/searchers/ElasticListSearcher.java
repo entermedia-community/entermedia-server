@@ -81,6 +81,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 
 	public synchronized void reIndexAll() throws OpenEditException
 	{		
+		setReIndexing(false);
 		if( isReIndexing())
 		{
 			return;
@@ -98,7 +99,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			getXmlSearcher().clearIndex();
 			HitTracker settings = getXmlSearcher().getAllHits();
 			Collection toindex = new ArrayList();
-			
+			log.info("settings " + settings.size() + " " + getSearchType());
 			for (Iterator iterator = settings.iterator(); iterator.hasNext();) 
 			{
 				Data data = (Data)iterator.next();					

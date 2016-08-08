@@ -180,7 +180,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	public Map getProperties() {
 		Map all = new HashMap();
-		for (Iterator iterator = getSearchHit().getSource().keySet().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = getSearchData().keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
 			String val = get(key);
 			all.put(key, val);

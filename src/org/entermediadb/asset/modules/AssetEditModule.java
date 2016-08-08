@@ -1083,7 +1083,7 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						String lang = language[j];
 						String langval = inReq.getRequestParameter(prefix + fields[i] + "." + lang);
-						lmap.setText(langval, lang);
+						lmap.setText(lang,langval);
 					}
 					val = lmap;
 				}

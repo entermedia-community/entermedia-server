@@ -2,7 +2,7 @@
 	#set($label = $searcherManager.getValue($catalogid, $detail.render, $data.properties))
 #else
    #set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
-   #set($label = $foundrow.name)
+   #set($label = $foundrow.getName($context.getLanguage()))
 #end
 #esc($!label)
 #debug("ListID: $detail.listId")

@@ -31,8 +31,8 @@ public class ElasticLanguageTest extends BaseEnterMediaTest
 		assertNull(asset.get("assettitle"));
 		
 		LanguageMap map = new LanguageMap();
-		map.setText("I am French", "fr");
-		map.setText("I am German", "de");
+		map.setText("fr","I am French");
+		map.setText("de","I am German");
 		
 		asset.setValue("assettitle",map);
 		
