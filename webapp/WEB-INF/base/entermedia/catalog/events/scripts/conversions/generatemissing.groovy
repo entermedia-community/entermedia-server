@@ -45,7 +45,7 @@ public void init()
 			if( logcount == 1000 )
 			{
 				logcount = 0;
-				log.info("Checked ${checked} ${added} ${more} "  + hit.get("importstatus"));
+				log.info("Assets Checked: ${checked} Conversions Found: ${added}");
 			}
 //			if( more == 0 && !"converting".equals(asset.get("previewstatus") ) )
 //			{
@@ -64,7 +64,8 @@ public void init()
 //			}
 		}
 //		mediaarchive.saveAssets(tosave);
-		log.info("checked ${checked} assets. ${added} tasks queued , ${completed} completed." );
+		log.info("Assets Checked: ${checked} Conversions Found: ${added}");
+
 }
 
 init();
