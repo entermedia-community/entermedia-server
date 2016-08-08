@@ -234,7 +234,7 @@ public class PresetCreator
 			}	
 		}
 		//save importstatus
-		if( founderror || allcomplete )
+		if( conversions.size() > 0 && ( founderror || allcomplete ) )
 		{
 			//load the asset and save the import status to complete		
 			if( asset != null )
