@@ -1,15 +1,16 @@
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
+import org.openedit.data.Searcher
+import org.openedit.page.*
 import org.openedit.store.*
 import org.openedit.util.DateStorageUtil
 
-import org.openedit.page.*
-
 
 MediaArchive mediaarchive = context.getPageValue("mediaarchive");
+Searcher assets = mediaarchive.getAssetSearcher();
 
-Asset asset = new Asset();
-asset.setId(mediaarchive.getAssetSearcher().nextAssetNumber());
+Asset asset = assets.createNewData();
+
 String sourcepath = "newassets/${context.getUserName()}/${asset.id}";
 asset.setSourcePath(sourcepath);
 asset.setFolder(true);
@@ -56,7 +57,7 @@ String tosourcepath = context.findValue("redirecttosourcepath");
 
 if (Boolean.parseBoolean(tosourcepath))
 {
-	String path = "$apphome/views/upload/create/video/recorder/index.html?assetid=${asset.id}&edit=true";
+	String path = "$apphome/components/createmedia/video/recorder/index.html?assetid=${asset.id}&edit=true";
 	
 	context.redirect(path);
 }
