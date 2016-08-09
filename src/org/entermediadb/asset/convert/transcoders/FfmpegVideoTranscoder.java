@@ -140,15 +140,6 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 				{
 					//no math needed
 				}
-				//must be even
-				if ((width % 2) != 0)
-				{
-					width++;
-				}
-				if ((height % 2) != 0)
-				{
-					height++;
-				}
 			}
 			else
 			{
@@ -171,6 +162,16 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			}
 			if (width > 1 && height > 1)
 			{
+				//must be even
+				if ((width % 2) != 0)
+				{
+					width++;
+				}
+				if ((height % 2) != 0)
+				{
+					height++;
+				}
+				//http://stackoverflow.com/questions/20847674/ffmpeg-libx264-height-not-divisible-by-2
 				comm.add("-s");
 				comm.add(width + "x" + height);
 			}
