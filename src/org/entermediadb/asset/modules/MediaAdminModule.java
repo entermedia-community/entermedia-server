@@ -263,6 +263,8 @@ public class MediaAdminModule extends BaseMediaModule
 			if (save)
 			{
 				searcher.saveData(existing, inReq.getUser());
+				MediaArchive archive = getMediaArchive(inReq);
+				archive.getCacheManager().remove("catalogsettings", existing.getId());
 			}
 		}
 	}

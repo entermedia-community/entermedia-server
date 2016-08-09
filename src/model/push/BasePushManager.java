@@ -414,7 +414,7 @@ public class BasePushManager implements PushManager
 		int status = inClient.executeMethod(inMethod);
 		if (status != 200)
 		{
-			throw new Exception(" ${inMethod} Request failed: status code ${status}");
+			throw new Exception( inMethod + " Request failed: status code " + status);
 		}
 		
 		
@@ -799,7 +799,7 @@ public class BasePushManager implements PushManager
 
 			Page inputpage = null;
 			String type = null;
-			if( !"original".equals(preset.get("type")))
+			if( !"original".equals(preset.get("transcoderid")))
 			{
 				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile");
 				inputpage= inArchive.getPageManager().getPage(input);
