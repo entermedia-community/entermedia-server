@@ -21,17 +21,18 @@ public class ImmutableData extends BaseData
 		fieldTarget = inTarget;
 	}
 	
-	public void setProperty(String inKey, String inValue)
+	@Override
+	public void setValue(String inKey, Object inValue)
 	{
 		if( inKey.equals("assetmodificationdate"))
 		{
-			getTarget().setProperty(inKey, inValue);
+			getTarget().setValue(inKey, inValue);
 			return;
 		}
-		String existing = getTarget().get(inKey);
+		Object existing = getTarget().getValue(inKey);
 		if( existing == null)
 		{
-			getTarget().setProperty(inKey, inValue);
+			getTarget().setValue(inKey, inValue);
 		}
 	}
 			

@@ -1355,6 +1355,7 @@ public class MediaArchive
 		}
 		setting.setProperty("value", inValue);
 		search.saveData(setting, null);
+		getCacheManager().remove("catalogsettings", inId);
 	}
 
 	
