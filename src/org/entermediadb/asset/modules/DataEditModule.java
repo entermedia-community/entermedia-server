@@ -1505,8 +1505,9 @@ public class DataEditModule extends BaseMediaModule
 		{
 			Data hit = (Data) iterator.next();
 			searcher.delete(hit, inReq.getUser());
+			hits.removeSelection(hit.getId());
 		}
-
+	
 	}
 
 	public void moveFieldInView(WebPageRequest inReq) throws Exception
