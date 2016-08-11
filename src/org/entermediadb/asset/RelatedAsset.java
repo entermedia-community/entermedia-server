@@ -14,7 +14,9 @@ import org.openedit.data.ValuesMap;
 public class RelatedAsset implements Data
 {
 	protected ValuesMap fieldProperties;
-
+	public String getName(String inLocale) {
+		return getName();
+	}
 	public String getType()
 	{
 		return get("type");

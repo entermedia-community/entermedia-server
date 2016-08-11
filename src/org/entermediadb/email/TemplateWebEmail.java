@@ -38,6 +38,9 @@ import org.openedit.util.PathUtilities;
  */
 public class TemplateWebEmail extends WebEmail implements Data
 {
+	public String getName(String inLocale) {
+		return getName();
+	}
 	protected PostMail postMail;
 	protected Page fieldMailTemplatePage;
 	protected String fieldMailTemplatePath;
