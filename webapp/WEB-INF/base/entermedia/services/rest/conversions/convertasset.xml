@@ -9,12 +9,12 @@
 	#set( $link = "$home/$catalogid/downloads/originals/${asset.sourcepath}/${asset.primaryfile}")
 	<path>$link</path>
 #else
-	#set( $genname = $preset.get("outputfile") )
+	#set( $genname = $preset.get("generatedoutputfile") )
 	#if($genname)
 		#set( $link = "$home/$catalogid/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
 		<path>$link</path>
 	#else
-		<msg>Error: unable to find outputfile of preset #${preset.id}</msg>
+		<msg>Error: unable to find outputfile of preset id ${preset.id}</msg>
 	#end
 #end
 </rsp>
