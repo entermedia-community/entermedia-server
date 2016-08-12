@@ -6,7 +6,7 @@
 #end
 <rsp stat="$error">
 #if($preset.transcoderid == "original")
-	#set( $link = "$home/$catalogid/downloads/originals/${asset.sourcepath}/${asset.primaryfile}")
+	#set( $link = "$home/$catalogid/downloads/originals/${asset.sourcepath}/${asset.getMediaName()}")
 	<path>$link</path>
 #else
 	#set( $genname = $preset.get("generatedoutputfile") )
