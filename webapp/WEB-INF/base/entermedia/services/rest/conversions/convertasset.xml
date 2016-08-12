@@ -5,7 +5,7 @@
 	##why not just set to the value of the method call above?
 #end
 <rsp stat="$error">
-#if($preset.type == "original")
+#if($preset.transcoderid == "original")
 	#set( $link = "$home/$catalogid/downloads/originals/${asset.sourcepath}/${asset.primaryfile}")
 	<path>$link</path>
 #else
