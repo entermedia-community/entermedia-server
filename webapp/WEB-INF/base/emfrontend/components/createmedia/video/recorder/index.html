@@ -70,7 +70,7 @@ window.onbeforeunload = function(){
 	function btStopRecordingPressed(recorderId)	{
 		document.VideoRecorder.save();//		alert("btStopRecordingPressed2");		//$("#livearea").html("");		//this function is called whenever a recording is stopped
 		//recorderId: the recorderId sent via flash vars, to be used when there are many recorders on the same web page
-		setTimeout( function() 		{				window.location.href = "$home$apphome/views/upload/create/video/recorder/finish.html?assetid=$asset.getId()";		}, 2000);				
+		setTimeout( function() 		{				window.location.href = "$home$apphome/components/createmedia/video/recorder/finish.html?assetid=$asset.getId()";		}, 2000);				
 		//document.getElementById("recordbtn").disabled = false;
 		//document.getElementById("stopBtn").disabled = true;
 	}
