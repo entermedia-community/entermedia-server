@@ -387,7 +387,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		String format = inAsset.getFileFormat();
 		if ("indd".equalsIgnoreCase(format))
 		{
-			ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.png");
+			ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 	
 			//if we have embdeded thumb 
 			ConvertInstructions instructions = new ConvertInstructions(inArchive);
