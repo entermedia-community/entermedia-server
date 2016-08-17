@@ -20,8 +20,8 @@
 #set( $fieldexternalvalue = $id )
 
 $context.putPageValue("canedittable", $caneditdata)
-#set($ismodule = false )
-#set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
+##set($ismodule = false )
+##set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
 #if($ismodule)
 	####set( $jumptomodule = true ) <!--  This isn't working very well...  -->
 #end
@@ -29,6 +29,11 @@ $context.putPageValue("canedittable", $caneditdata)
 ##TODO: Create a new type of table.html component that runs locally using searchhome and has a TableModel with it passed along with sessionids
 
 #set( $args = "id=$!id&parentid=$id&jumptomodule=$!jumptomodule&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+
+
+#if( $searchtype == "librarycollection")
+#set( $args = "$args&viewdetailspath=$apphome/views/modules/librarycollection/media/")
+#end
 #if($viewdata.rendercustomview)
 $pages.include("$searchhome/edit/table/${viewdata.rendercustomview}.html?$args", $context)
 
