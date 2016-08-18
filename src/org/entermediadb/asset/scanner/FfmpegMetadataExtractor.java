@@ -76,7 +76,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 						String val =  (String)stream.get("duration");
 						inAsset.setProperty("duration",val);
 						val = processDuration(val);
-						inAsset.setProperty("length", String.valueOf( Math.round( Double.parseDouble( val ) ) ) ); //in seconds rounded
+						inAsset.setValue("length",  Double.parseDouble( val ) ); //in seconds rounded
 						//inAsset.setProperty("length_mill", val); //in seconds rounded
 						inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
 						
