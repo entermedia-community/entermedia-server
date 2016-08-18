@@ -183,7 +183,6 @@
 	
 	   <script id="testbench" src="/${applicationid}/components/javascript/testbench.js" />
 	
-		<path-action name="storeArchive.loadStore"/>
 	
 
 	<property name="title">NetEvolved - Advanced Software Solutions</property>

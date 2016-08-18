@@ -428,7 +428,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 
 	}
 
-	protected XContentBuilder buildMapping() {
+	public XContentBuilder buildMapping() {
 		try {
 			XContentBuilder jsonBuilder = XContentFactory.jsonBuilder();
 			XContentBuilder jsonproperties = jsonBuilder.startObject().startObject(getSearchType());
