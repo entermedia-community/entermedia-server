@@ -1,0 +1,34 @@
+#set($targetuser = $mediaarchive.getUserProfile($context.getRequestParameter('userid')))
+
+<br>User to move: $targetuser 
+<br>College: $targetuser.organization<br>#set($classearcher = $testbench.getLearningGroupSearcher())
+#set($classes = $classearcher.getAllHits())
+#set($usercourses = $testbench.getCoursesForUser($targetuser.id))
+
+<form name="moveuser" action="$home$apphome/admin/moveuserfinish.html">
+
+	<input name="userid" value="$!context.getRequestParameter('userid')" type="hidden"/><br>
+	Old Course:
+	
+	<select class="form-control" name="oldclass">
+	#foreach($hit in $usercourses)
+	#set($course = $testbench.getLearningGroup($hit.learninggroup))
+	<option id="$course.id" value="$course.id" >$course.name</option>
+	#end
+	</select><br>New Course:
+	
+	<select class="form-control" name="newclass">
+
+	
+	#foreach($course in $classes)
+		#if($targetuser.organization ==  $course.organization && $course.classstatus != "archived")
+			<option id="$course.id" value="$course.id" #if($context.getRequestParameter('newclass') == $course.id) selected #end>$course.name </option>
+		#end
+	#end
+	</select>
+	<br>
+		Move Tests:<input class="form-control" type="checkbox" value="true" name="movetests" #if($context.getRequestParameter("movetests") == "true" ) checked #end/>
+	
+<br><input type="submit" value="Submit"/>
+
+</form>

@@ -1952,7 +1952,7 @@
 -->	
 	<bean id="httppublisher" class="org.entermediadb.asset.publish.publishers.httppublisher"  lazy-init="default"/>
 	<bean id="pushhttppublisher" class="org.entermediadb.asset.publish.publishers.pushhttppublisher"  lazy-init="default"/>
-	<bean id="externalpublisher" class="org.entermediadb.asset.publish.publisher.sexternalpublisher"  lazy-init="default"/>
+	<bean id="externalpublisher" class="org.entermediadb.asset.publish.publishers.externalpublisher"  lazy-init="default"/>
 	<bean id="filecopypublisher" class="org.entermediadb.asset.publish.publishers.filecopypublisher"   lazy-init="default"/>
 	<bean id="ftppublisher" class="org.entermediadb.asset.publish.publishers.ftppublisher"  lazy-init="default"/>
 	<bean id="sftppublisher" class="org.entermediadb.asset.publish.publishers.sftppublisher"  lazy-init="default" />
@@ -1980,13 +1980,9 @@
 
 	<bean  id="AnnotationModule" class="modules.annotations.AnnotationModule" lazy-init="default" />
 
-	<bean  id="pushManager" class="model/push/BasePushManager.groovy" lazy-init="default">
-			<property name="searcherManager"><ref bean="searcherManager" /></property>
-	</bean>
 	
- 	<bean  id="convertQueue" class="model/assets/BaseConvertQueue.groovy" lazy-init="default"  scope="prototype" >
-			<property name="executorManager"><ref bean="executorManager" /></property>
-	</bean>
+	
+ 	
  	
  	
 	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
@@ -2032,6 +2028,13 @@
 				<ref bean="originalInputLoader" />
 			</list>
 		</property>
+	</bean>
+ 	
+ 	<bean id="ReportModule" class="org.entermediadb.asset.modules.ReportModule" >
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	
 	</bean>
  	
  	

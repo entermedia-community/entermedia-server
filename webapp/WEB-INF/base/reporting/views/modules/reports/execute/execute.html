@@ -1,0 +1,31 @@
+<h2>$data</h2>
+
+<div class="row ">
+<div class="col-md-4 well">
+<form action="executefinish.html">
+<input type= "hidden" name="reportid" value="$data.id"/>
+#if($reportsearcher)
+	#set( $view = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")
+
+#if($reportsearcher.getSearchType() == "asset")
+	#set( $view = "asset/advancedsearch")
+#end
+
+$view
+
+    #set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
+
+
+ #foreach( $detail in $details)
+        $context.putPageValue("detail", $detail)
+        #if ($detail.isLeaf())
+            $pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
+        #else
+            $pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
+        #end
+    #end
+
+#end
+<input type="submit" name="Run Report" value="Run Report"/>
+</form>
+</div></div>

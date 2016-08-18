@@ -1,0 +1,38 @@
+import org.ijsolutions.testbench.*;
+import com.openedit.users.*;
+
+TestBench testbench = context.getPageValue("testbench");
+TestSearcher tsearcher = testbench.getTestSearcher();
+
+
+	query = tsearcher.createSearchQuery();
+	Calendar cal = Calendar.getInstance();
+	cal.set(Calendar.MONTH,6);
+	Date d= cal.getTime();
+	UserManager userManager = context.getPageValue("usermanager");
+	query.addAfter("starttime", d);
+	ArrayList list = new ArrayList();
+	ArrayList fixable = new ArrayList();
+	hits = tsearcher.search(query);
+	context.putPageValue("hits", hits);
+	for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		hit = iterator.next(); 
+		//test = tsearcher.searchById(hit.id, hit.user);
+		
+		if(hit.get("class") != null && hit.get("class").contains("_student")){
+			list.add(hit);
+			User user = userManager.getUser(hit.get("user"));
+					fixable.add(hit);
+					test = tsearcher.searchById(hit.id, user);
+					String temp = hit.get("class").replace("_student", "");
+					test.setProperty("class", temp );
+					tsearcher.saveData(test, null);	
+				
+			
+		}
+		
+			
+		
+	}
+	context.putPageValue("tests", list);
+context.putPageValue("fixable", fixable);

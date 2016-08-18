@@ -1,0 +1,3 @@
+#set($editPath = "$apphome/views/modules/${module}/")
+$context.putPageValue("editPath", $editPath)
+$pages.include("$apphome/components/rules/edit.html?editPath=${editPath}", $context)

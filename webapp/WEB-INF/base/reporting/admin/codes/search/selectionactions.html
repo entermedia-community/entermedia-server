@@ -1,0 +1,76 @@
+
+
+<ul class="table_actions">
+
+	<li>
+
+		<a href="#">Actions</a>
+	
+		<ul>
+            <li class="current"><a href="$home${content.searchhome}/export/export.pdf?hitssessionid=$hits.sessionId">Export PDF documents</a></li>
+<li class="current"><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId">Export results CSV</a></li>
+			#if("$canadmin")
+			 <li class="current"><a href="$home$membershiphome/search/actions/deleteusers.html?hitssessionid=$hits.sessionId">Delete selected users</a></li>
+            
+
+
+			<li class="current"><a href="$home$membershiphome/common/users/batchedit/index.html?hitssessionid=$hits.sessionId">Batch Edit</a></li>
+			#end	
+			#if($canexport)
+			<li class="current"><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId">Export results CSV</a></li>
+			<!-- 
+			<li class="current"><a href="$home$membershiphome/admin/export/id.zip?hitssessionid=$hits.sessionId">Generate ID cards</a></li>
+			 -->
+			<li class="current"><a href="$home$membershiphome/admin/export/userexport.zip?hitssessionid=$hits.sessionId">Export Photos/CSV</a></li>
+<!-- 
+<li class="current"><a href="$home$membershiphome/admin/export/pdf/startcards/startcards.pdf?hitssessionid=$hits.sessionId">Generate Documents and ID cards</a></li>
+ -->
+
+			#end
+	
+			
+			
+			
+	
+	#if($canmanagegroups)
+<li class="current"><a href="$home$membershiphome/search/actions/manageusergroups.html?hitssessionid=$hits.sessionId">Add selected users to group</a></li>
+	#end
+		    <!-- 
+			<li><a href="$home$membershiphome/search/results/actions/deleteusers.html">Add to group</a></li>
+			 -->
+		</ul>
+	</li>
+	
+</ul>
+
+<div id="ajax_results"></div>
+
+<script type="text/javascript">
+	table_action_over = function(){
+		$j(this).find('> ul').blur(function(){table_action_out.call(this);}).show();
+	};
+	table_action_out = function(){
+		$j(this).find('> ul').hide();
+	}
+	
+	$j(document).ready(function(){
+		$j('ul.table_actions li').hoverIntent(table_action_over, table_action_out);		
+		
+		$j('#select_all').click(function(){
+			$j('input[type="checkbox"]').each(function(){this.checked = true;});
+			$j('#ajax_results').load('$home$membershiphome/search/selectall.html');
+			
+			return false;
+		});
+		
+		$j('#select_none').click(function(){
+			$j('input[type="checkbox"]').each(function(){this.checked = false;});			
+			$j('#ajax_results').load('$home$membershiphome/search/selectnone.html');			
+			
+			return false;
+		});
+		
+	});
+	
+</script>
+

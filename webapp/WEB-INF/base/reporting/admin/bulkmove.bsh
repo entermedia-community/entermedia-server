@@ -1,0 +1,44 @@
+import org.ijsolutions.testbench.*;
+import com.openedit.users.*;
+
+TestBench testbench = context.getPageValue("testbench");
+TestSearcher tsearcher = testbench.getTestSearcher();
+
+String[] oldclass = context.getRequestParameters("oldclass");
+
+String newclass = context.getRequestParameter("newclass");
+UserManager userManager = context.getPageValue("usermanager");
+Group newgroup = userManager.getGroup(newclass + "_students");
+
+List usersmoved = new ArrayList();
+for(int i = 0; i < oldclass.length; i++){
+	String oldclassid = oldclass[i];
+	Group old = userManager.getGroup(oldclassid + "_students");
+	
+	 userlist = userManager.getUsersInGroup(old);
+	for(int j = 0; j < userlist.size(); j++){
+		 
+			
+		User user = userlist.get(j);
+		
+		if(user.isInGroup(old)){
+				user.removeGroup(old);
+		}
+		user.addGroup(newgroup);
+		userManager.saveUser(user);
+		
+		if(Boolean.parseBoolean(context.getRequestParameter("movetests"))){
+			query = tsearcher.createSearchQuery();
+			query.addMatches("user", user.getUserName());
+			query.addMatches("class", oldclassid);
+			hits = tsearcher.search(query);
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+				hit = iterator.next(); 
+				test = tsearcher.searchById(hit.id, user);
+				test.setProperty("class",  newclass);
+				tsearcher.saveData(test, null);			
+			}
+		}
+
+	}
+}

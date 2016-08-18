@@ -1,0 +1,36 @@
+#set($searcher = $mediaarchive.getSearcher("testbenchsetting"))
+   	$context.putPageValue("view", "testbenchsetting/edit")
+   	#set($data = $mediaarchive.getData("testbenchsetting", $testbench.mode))
+   	   	$context.putPageValue("data", $data)
+   	   	
+<div class="container">
+<div class="panel panel-default">
+  <div class="panel-heading">
+    <h3 class="panel-title">General Settings</h3>
+  </div>
+  <div class="panel-body">
+  
+<div id="default-fields">
+    <div id="editlayout">
+    <form id="dataeditor" name="dataeditor" method="post"  action="$apphome/admin/settings/savesettings.html">
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$testbench.mode" />
+    	  	
+    	<input name="searchtype" type="hidden" value="testbenchsetting" />
+    	<input name="viewid" type="hidden" value="$viewid" />
+    	<input name="viewpath" type="hidden" value="testbenchsetting/edit" />
+    	<input name="origURL"  type="hidden" value="$!origURL" />
+
+    	$context.putPageValue("searcher", $searcher)
+		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+    	<input class="btn right" style="margin: 20px 20px 0 0;" type="submit" value="Save" />
+
+    </form>
+    
+    
+    
+    </div>
+</div>
+  </div>
+</div>
+</div>
