@@ -31,9 +31,11 @@ files.deleteAll( root + "/WEB-INF/base/modulefrontend");
 files.deleteAll( root + "/WEB-INF/base/system");
 files.deleteAll( root + "/WEB-INF/base/mediadb");
 files.deleteAll( root + "/WEB-INF/base/emgallery");
+files.deleteAll( root + "/WEB-INF/base/reporting");
 files.deleteAll( root + "/WEB-INF/base/themes/baseem");
 
 files.copyFiles( tmp + "/WEB-INF/base/entermedia", root + "/WEB-INF/base/entermedia");
+files.copyFiles( tmp + "/WEB-INF/base/reporting", root + "/WEB-INF/base/reporting");
 files.copyFiles( tmp + "/WEB-INF/base/manager", root + "/WEB-INF/base/manager");
 files.copyFiles( tmp + "/WEB-INF/base/emfrontend", root + "/WEB-INF/base/emfrontend");
 files.copyFiles( tmp + "/WEB-INF/base/modulefrontend", root + "/WEB-INF/base/modulefrontend");
