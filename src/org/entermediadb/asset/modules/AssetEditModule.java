@@ -1192,7 +1192,16 @@ public class AssetEditModule extends BaseMediaModule
 		{
 			String field  = (String)iterator.next();
 			Object val = inMetadata.get(field);
-			if( field.equals("categories"))
+			if( field.equals("keywords"))
+			{
+				//combine lists
+				String[] col = (String[])val;
+				for (int i = 0; i < col.length; i++)
+				{
+					asset.addKeyword(col[i]);					
+				}
+			}
+			else if( field.equals("categories"))
 			{
 				for (Iterator citerator = ((Collection)val).iterator(); citerator.hasNext();)
 				{
