@@ -45,6 +45,8 @@
 
     #if($canviewsettings)
     	<li><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
+    	<li><a target="_blank" href="$home/reporting/index.html?id=$catalogid" >[[Reports]]</a></li> 
+    	
     	<li class="dropdown"><a href="#" data-toggle="dropdown">[[Applications]] <span class="caret"></span></a> 
 	    <ul id="top-bar-select" class="dropdown-menu">
 			#set( $sitesearcher = $searcherManager.getSearcher($catalogid,"app") )

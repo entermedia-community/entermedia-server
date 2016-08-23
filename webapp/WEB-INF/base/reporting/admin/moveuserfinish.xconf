@@ -1,7 +1,0 @@
-<page>
-	 <path-action name="User.getUserManager" alltypes="true"/>
-
-<path-action name="Script.run">
-<script>/${catalogid}/events/scripts/userprofile/moveuser.groovy</script>
-</path-action>
-</page>

@@ -1,7 +1,0 @@
-<page>
-	 <path-action name="User.getUserManager" alltypes="true"/>
-
-<path-action name="Script.run">
-<script>./fixtests.bsh</script>
-</path-action>
-</page>

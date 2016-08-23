@@ -49,6 +49,7 @@ import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
 import org.elasticsearch.index.query.WildcardQueryBuilder;
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
@@ -65,7 +66,6 @@ import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.data.BaseData;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -283,7 +283,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// For reports, we can pass in a custom aggregation from a script or
 		// somewhere
 		if (inQuery.getAggregation() != null) {
-			inSearch.addAggregation((AggregationBuilder) inQuery.getAggregation());
+			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
 
 		}
 

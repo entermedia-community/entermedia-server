@@ -19,6 +19,9 @@ public void init(){
 	searcher.putMappings();//just in case it's never been done.
 	
 	SearchQuery query = searcher.addStandardSearchTerms(context);
+	if(query == null){
+		query = searcher.createSearchQuery();
+	}
 	AggregationBuilder b = AggregationBuilders.terms("assettype_filesize").field("assettype");
 	SumBuilder sum = new SumBuilder("assettype_sum");
 	sum.field("filesize");

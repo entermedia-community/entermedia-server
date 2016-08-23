@@ -1,5 +1,0 @@
-<page>
-	 <path-action name="User.getUserManager" alltypes="true"/>
-	 <path-action name="LearningGroupModule.loadCoursesForUser"/>
-
-</page>
