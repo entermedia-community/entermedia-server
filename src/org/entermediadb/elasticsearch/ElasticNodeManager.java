@@ -708,10 +708,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		ArrayList toskip = new ArrayList();
 		//couple of special ones to skip.
 		toskip.add("lock");
-		
+		String newindex = null;
 		try
 		{
-			String newindex = prepareTemporaryIndex(inCatalogId);
+			 newindex = prepareTemporaryIndex(inCatalogId);
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
@@ -743,9 +743,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		catch (Exception e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			return false;
+			DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(newindex)).actionGet();
+			if (!delete.isAcknowledged())
+			{
+				log.error("Index wasn't deleted");
+			}
+			
+			
+			throw new OpenEditException(e);
 		}
 
 		return true;

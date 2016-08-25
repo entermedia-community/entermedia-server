@@ -1,3 +1,7 @@
+#set( $sitesearcher = $searcherManager.getSearcher("system","catalog") )
+						#set( $sites = $sitesearcher.fieldSearch("id","*","nameDown") )
+						#set( $active = $sitesearcher.searchById("$userprofile.reportcatalogid") )
+
    <div class="navbar navbar-inverse" style="z-index: 1001;">
       <div style="padding: 0px 20px;">
         <div class="navbar-header">
@@ -6,12 +10,12 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="$apphome/index.html">EM Reporting</a>
+          <a class="navbar-brand" href="$apphome/index.html">EM Reporting - $active</a>
         </div>
         <div class="navbar-collapse collapse">
           <ul class="nav navbar-nav">
             #if($user)
-                	        <li><a href="$apphome/index.html">Home</a></li>
+                	        <li><a href="/reporting/views/modules/reports/index.html?field=last_selected_module&last_selected_module.value=Reports">Home</a></li>
 
             #else
 
@@ -20,29 +24,25 @@
               </ul>      
           
           
-          ####if(!$user) 
-          	###$pages.include("/$applicationid/theme/layouts/loginform.html",$context)
-          ####end
-          
-          $pages.include("/$applicationid/theme/layouts/searchform.html",$context)
-          
+        
 		 #if($user)
 		
 		
 		 <ul class="nav navbar-nav navbar-right">       
 	         <li class="dropdown">
 		    		#set( $urlbase = "$home$apphome/views/modules" )
-					<a href="$home$apphome/views/modules/${module.getId()}/index.html" class="dropdown-toggle" data-toggle="dropdown">Admin<b class="caret"></b></a>
+					<a href="$home$apphome/views/modules/${module.getId()}/index.html" class="dropdown-toggle" data-toggle="dropdown">Catalogs<b class="caret"></b></a>
 		            <ul class="dropdown-menu" style="z-index: 10000;">	
-					#foreach ( $amodule in $mediaarchive.getList("module") ) 
+						#set( $sites = $sitesearcher.fieldSearch("id","*","nameDown") )
 						
-						#if($pages.canView("$urlbase/${amodule.id}/index.html"))
-							<li style="z-index: 10000;"><a href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule}">$amodule</a></li>
-						#end
+						#foreach( $site in $sites)
+					
+					
+						
+							<li style="z-index: 10000;"><a href="$apphome/index.html?id=$site.id">$site</a></li>
 					#end
 					
 					
-				<li style="z-index: 10000;"><a href="$apphome/views/modules/testbenchsetting/edit/edit.html?id=${benchmode}&viewid=testbenchsettingmain&viewpath=testbenchsetting/testbenchsettingmain&hitssessionid=hitstestbenchsettingbootstrapfrontend/system&searchtype=testbenchsetting">Configuration</a></li>
 					<li style="z-index: 10000;"><a href="$apphome/admin/launchadmin.html">Launch advanced admin tools</a></li>
 					
 					</ul>

@@ -1,9 +1,4 @@
 <h2>$data</h2>
-
-<div class="row ">
-<div class="col-md-4 well">
-<form action="executefinish.html">
-<input type= "hidden" name="reportid" value="$data.id"/>
 #if($reportsearcher)
 	#set( $view = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")
 
@@ -11,9 +6,15 @@
 	#set( $view = "asset/advancedsearch")
 #end
 
-$view
 
     #set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
+    #if($details.size() > 0)
+Filters:
+<div class="row ">
+<div class="col-md-4 well">
+<form action="executefinish.html">
+<input type= "hidden" name="reportid" value="$data.id"/>
+
 
 
  #foreach( $detail in $details)
@@ -25,7 +26,9 @@ $view
         #end
     #end
 
-#end
 <input type="submit" name="Run Report" value="Run Report"/>
 </form>
 </div></div>
+
+#end
+#end

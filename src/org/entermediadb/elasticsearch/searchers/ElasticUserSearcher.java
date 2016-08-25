@@ -155,11 +155,14 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
 		super.updateIndex(inContent, inData, inDetails);
-		User user = (User)inData;
+		User user = null;
+		if(!(inData instanceof User)){
+			user = (User) searchById(inData.getId());
+		}
 		try
 		{
 		//	inContent.field("enabled", user.isEnabled() ); //this causes mapping problem... will probably be in here twice.
-			if( user.getGroups().size() > 0)
+			if(user != null &&  user.getGroups().size() > 0)
 			{
 				String[] groups = new String[user.getGroups().size()];
 				int i = 0;

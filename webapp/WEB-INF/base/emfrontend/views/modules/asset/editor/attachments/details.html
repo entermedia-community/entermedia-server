@@ -6,18 +6,18 @@
 	 
 	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/${file.name}200x200.jpg" )
 		#if ( $file.isfolder == "false" )
-		<a class="emdialog" href="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/${parentsourcepath}/${file.name}/preview.jpg">
+		<a class="thickbox" href="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/${parentsourcepath}/${file.name}/preview.jpg"
+		title="">
 			<img src="$home/${applicationid}/views/modules/asset/downloads/preview/thumb/${parentsourcepath}/${file.name}/thumb.jpg" />
 		#else
 			<div class="preview folder"></div>
 		#end
-		
+
 		<p class="name">#if ( $name ) $name #else  Click on a file name to view details about that file #end</p>
 		
 		#if ( $file.isfolder == "false" )
 		</a>
 		#end
-
 	</a>
 $context.putPageValue("data",$file)	
 $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	

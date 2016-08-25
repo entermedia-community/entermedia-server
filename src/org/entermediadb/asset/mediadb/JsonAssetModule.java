@@ -233,7 +233,7 @@ public class JsonAssetModule extends BaseJsonModule
 
 		SearcherManager sm = (SearcherManager)inReq.getPageValue("searcherManager");
 
-		JSONObject inputdata  = (JSONObject)inReq.getJsonRequest(); 
+		Map inputdata  = (Map)inReq.getJsonRequest(); 
 
 
 		String catalogid =  findCatalogId(inReq);

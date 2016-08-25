@@ -129,5 +129,20 @@ public class ReportModule extends BaseMediaModule
 		
 	}
 	
+	public void selectCatalog(WebPageRequest inReq){
+		String catalogid = inReq.getRequestParameter("id");
+		MediaArchive archive = getMediaArchive(inReq);
+		log.info("why no breakpoint");
+		if(catalogid != null){
+			inReq.getUserProfile().setValue("reportcatalogid", catalogid);
+			archive.getSearcher("userprofile").saveData(inReq.getUserProfile(), inReq.getUser());
+			
+		}
+				
+
+	}
+	
+	
+	
 	
 }

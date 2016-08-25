@@ -3,22 +3,23 @@
  */
 package org.entermediadb.elasticsearch;
 
+import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.openedit.hittracker.SearchQuery;
 
 public class ElasticSearchQuery extends SearchQuery
 {	
 	
-	public AggregationBuilder fieldAggregationBuilder;
+	public AbstractAggregationBuilder fieldAggregationBuilder;
 	
-	public AggregationBuilder getAggregation()
+	public AbstractAggregationBuilder getAggregation()
 	{
 		return fieldAggregationBuilder;
 	}
 
-	public void setAggregation(AggregationBuilder inAggregationBuilder)
+	public void setAggregation(Object inAggregationBuilder)
 	{
-		fieldAggregationBuilder = inAggregationBuilder;
+		fieldAggregationBuilder = (AbstractAggregationBuilder) inAggregationBuilder;
 	}
 
 	public ElasticSearchQuery()
