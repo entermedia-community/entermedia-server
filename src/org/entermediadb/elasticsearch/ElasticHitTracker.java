@@ -54,12 +54,12 @@ public class ElasticHitTracker extends HitTracker
 
 	}
 
-	public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms)
+	public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms, int inHitsPerPage)
 	{
 		setElasticClient(inClient);
 		setTerms(inTerms);
 		setSearcheRequestBuilder(builder);
-		setHitsPerPage(50);
+		setHitsPerPage(inHitsPerPage);
 	}
 
 	public Client getElasticClient()

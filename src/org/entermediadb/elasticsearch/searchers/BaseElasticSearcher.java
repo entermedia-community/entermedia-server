@@ -195,7 +195,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 			addFacets(inQuery, search);
 			// addAggregations(inQuery, search);
 
-			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms);
+			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage() );
 
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
