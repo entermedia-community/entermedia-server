@@ -28,14 +28,13 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 		Asset asset = inArchive.getAssetBySourcePath(sourcepath);
 		if (asset == null) {
 			asset = inArchive.createAsset(sourcepath);
-			asset.setId(inArchive.getAssetSearcher().nextAssetNumber());
 		}
 		asset.setName(filename);
 		
 		asset.setPrimaryFile(filename);
-		asset.setProperty("downloadurl.file", inUrl);
+		asset.setProperty("downloadurl-file", inUrl);
 		if(inFileName != null){
-			asset.setProperty("downloadurl.filename", inFileName);
+			asset.setProperty("downloadurl-filename", inFileName);
 		}
 		asset.setFolder(true);
 		Category pcat = inArchive.getCategoryArchive().createCategoryTree(sourcepath);
@@ -54,9 +53,9 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 				+ asset.getSourcePath();
 		File attachments = new File(inArchive.getPageManager().getPage(path)
 				.getContentItem().getAbsolutePath());
-		String url = asset.get("downloadurl.file");
+		String url = asset.get("downloadurl-file");
 		if (url != null) {
-			String filename = asset.get("downloadurl.filename");
+			String filename = asset.get("downloadurl-filename");
 			
 			if(filename == null){
 			 filename = PathUtilities.extractFileName(url);
@@ -68,8 +67,8 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 				downloader.download(url, target);
 			}
 			asset.setProperty("downloadourl", url);
-			asset.removeProperty("downloadurl.file");
-			asset.removeProperty("downloadurl.filename");
+			asset.removeProperty("downloadurl-file");
+			asset.removeProperty("downloadurl-filename");
 
 			asset.setPrimaryFile(filename);
 		}

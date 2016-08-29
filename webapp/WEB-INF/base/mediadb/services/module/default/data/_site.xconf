@@ -14,6 +14,8 @@
 		<or>
 			<userprofile property="api-delete-data" equals="true" method="DELETE" />
 			<userprofile property="api-update-data" equals="true" method="PUT" />
+			<userprofile property="api-create-data" equals="true" method="POST" />
+			
 			<userprofile property="api-load-data" equals="true" method="GET" />			
 		</or>
 	</permission>
