@@ -21,17 +21,34 @@
 		<div id="share">
 			<!-- AddThis Button BEGIN -->
 			<div class="addthis_toolbox addthis_default_style"
-			
-			addthis:ui_click="true"
 			addthis:url="$sharelink"
 			addthis:title="$asset"
 			addthis:description="#if ( $asset.longcaption ) $asset.longcaption #else Check this out! #end">
 				<a class="addthis_button_facebook"></a>
 				<a class="addthis_button_twitter"></a>
 				<a class="addthis_button_google"></a>
-				<a class="addthis_button_compact"></a>
+<button class="accordion2"></button>
+<div class="panel2">
+                                <a class="addthis_button_evernote"></a>
+                                <a class="addthis_button_reddit"></a>
+                                <a class="addthis_button_pinterest_share"></a>
+                                <a class="addthis_button_skype"></a>
+                                <a class="addthis_button_tumblr"></a>
+                                <a class="addthis_button_whatsapp"></a>
+                                <a class="addthis_button_hootsuite"></a>
+                                <a class="addthis_button_delicious"></a>
+                                <a class="addthis_button_flipboard"></a>
+                                <a class="addthis_button_gmail"></a>
+</div>
+				<!-- <a class="addthis_button_compact"></a> -->
 				<a class="addthis_counter addthis_bubble_style"></a>
 			</div>
+
+<script type="text/javascript">
+	var addthis_config = {
+    	ui_click: true
+    };
+</script>
 
 <script type="text/javascript">
     // Call this function once the rest of the document is loaded
@@ -69,3 +86,15 @@
 
 </div>
 </div>
+
+<script>
+var acc = document.getElementsByClassName("accordion2");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+    acc[i].onclick = function(){
+        this.classList.toggle("active");
+        this.nextElementSibling.classList.toggle("show");
+  }
+}
+</script>

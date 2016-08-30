@@ -6930,3 +6930,45 @@ a.categoryclose{
 .languagesaddform .select2 {margin:0;}
 .edit-language .language-name { width:80px; float:left; line-height: 26px;}
 .edit-language .language-value { margin-left:10px; float:left;}
+
+
+
+
+
+/* Settings Accordian */
+
+button.accordion2 {
+    background: transparent url('../images/plus-red.png') left 1px no-repeat;
+    background-position: 1px 0px;
+    padding-left: 23px;
+    color: #ffffff;
+    cursor: pointer;
+    padding-top: 2px;
+    border: none;
+    text-align: left;
+    outline: none;
+    font-size: 13px;
+    transition: 0.4s;
+    height: 28px;
+    display: block;
+    position: relative;
+    z-index: 100;
+}
+
+button.accordion2.active, button.accordion2:hover {
+    background: transparent url('../images/plus-gray.png') left 1px no-repeat;
+    background-position: 1px 0px;
+    margin-bottom: 0px;
+    z-index: 100;
+}
+
+div.panel2 {
+    padding: 0;
+    display: none;
+    background-color: transparent;
+}
+
+div.panel2.show {
+    display: block !important;
+
+}
