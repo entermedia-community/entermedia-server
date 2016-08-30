@@ -1,31 +1,10 @@
 <page>
 
-	<inner-layout>/${applicationid}/services/module/asset/players/collections/viewassets.html</inner-layout>
 	
+		<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
 	
-	<property name="hitsname">hits</property>
-	<property name="virtual">true</property>
-	
-    <path-action name="DataEditModule.loadData" >
-			<pageval>librarycol</pageval>
-			<idname>collectionid</idname>
-			<searchtype>librarycollection</searchtype>
-    </path-action>
+  <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
 
-	<path-action name="ProjectModule.addCollectionTab" />
-
-	<page-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</page-action>
-	
-	<path-action name="ProjectModule.loadCategoriesOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</path-action>
-	
-	 <permission name="view">
-    		<action name="ProjectModule.checkLibraryPermission" />
-    </permission>
-	 <page-action name="DataEditModule.loadPageOfSearch"/>
 	  <style id="bootstrap" href="/${applicationid}/components/bootstrap/css/bootstrap.min.css" />
 	 
 	    	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
