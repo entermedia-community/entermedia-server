@@ -48,7 +48,7 @@
             headers: {
                 "Cache-Control":"no-cache",
                 "X-Requested-With":"XMLHttpRequest",
-                "X-File-Name": function(file){return get_file_name(file)},
+                "X-File-Name": function(file){return encodeURI( get_file_name(file))},
                 "X-File-Size": function(file){return get_file_size(file)},
                 "X-CSRF-Token": $('meta[name="csrf-token"]').attr("content"),
                 "Content-Type": function(file){
@@ -157,6 +157,8 @@
                 $.each(options.headers,function(key,val){
                     val = typeof(val) == "function" ? val(file) : val; // resolve value
                     if (val === false) return true; // if resolved value is boolean false, do not send this header
+                    console.log(key + " =  " + val );
+                    
                     xhr.setRequestHeader(key, val);
                 });
 

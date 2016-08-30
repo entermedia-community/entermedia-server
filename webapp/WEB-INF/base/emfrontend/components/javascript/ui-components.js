@@ -148,51 +148,53 @@ uiload = function() {
 	{
 		browserlanguage = "";
 	}
-	jQuery.datepicker.setDefaults(jQuery.extend({
-		showOn: 'button',
-		buttonImage: themeprefix + '/entermedia/images/cal.gif',
-		buttonImageOnly: true,
-		changeMonth: true,
-		changeYear: true, 
-		yearRange: '1900:2050'
-	}, jQuery.datepicker.regional[browserlanguage]));  //Move this to the layout?
-	
-		jQuery("input.datepicker").livequery( function() 
-		{
-		var targetid = jQuery(this).data("targetid");
-		jQuery(this).datepicker( {
-			altField: "#"+ targetid,
-			altFormat: "yy-mm-dd", 
+	if( jQuery.datepicker )
+	{
+		jQuery.datepicker.setDefaults(jQuery.extend({
+			showOn: 'button',
+			buttonImage: themeprefix + '/entermedia/images/cal.gif',
+			buttonImageOnly: true,
+			changeMonth: true,
+			changeYear: true, 
 			yearRange: '1900:2050'
+		}, jQuery.datepicker.regional[browserlanguage]));  //Move this to the layout?
+		
+			jQuery("input.datepicker").livequery( function() 
+			{
+			var targetid = jQuery(this).data("targetid");
+			jQuery(this).datepicker( {
+				altField: "#"+ targetid,
+				altFormat: "yy-mm-dd", 
+				yearRange: '1900:2050'
+			});
+					
+			var current = jQuery("#" + targetid).val();
+			if(current != undefined)
+			{
+				//alert(current);
+				var date;
+				if( current.indexOf("-") > 0) //this is the standard
+				{
+					current = current.substring(0,10);
+					//2012-09-17 09:32:28 -0400
+					date = jQuery.datepicker.parseDate('yy-mm-dd', current);
+				}
+				else
+				{
+					date = jQuery.datepicker.parseDate('mm/dd/yy', current); //legacy support
+				}
+				jQuery(this).datepicker("setDate", date );					
+			}
+			jQuery(this).blur(function()
+			{
+				var val = jQuery(this).val();
+				if( val == "")
+				{
+					jQuery("#" + targetid).val("");
+				}
+			});
 		});
-				
-		var current = jQuery("#" + targetid).val();
-		if(current != undefined)
-		{
-			//alert(current);
-			var date;
-			if( current.indexOf("-") > 0) //this is the standard
-			{
-				current = current.substring(0,10);
-				//2012-09-17 09:32:28 -0400
-				date = jQuery.datepicker.parseDate('yy-mm-dd', current);
-			}
-			else
-			{
-				date = jQuery.datepicker.parseDate('mm/dd/yy', current); //legacy support
-			}
-			jQuery(this).datepicker("setDate", date );					
-		}
-		jQuery(this).blur(function()
-		{
-			var val = jQuery(this).val();
-			if( val == "")
-			{
-				jQuery("#" + targetid).val("");
-			}
-		});
-	});
-	
+	}
 	//deprecated, use data-confirm
 	jQuery(".confirm").livequery('click',
 			function(e)

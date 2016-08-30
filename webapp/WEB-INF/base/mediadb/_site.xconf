@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
+  	<property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
 
 	<generator  name="velocityGenerator" mimetypes="text/html"/>
 	<generator  name="velocityGenerator" mimetypes="text/json"/>
@@ -13,6 +14,7 @@
 	<property name="editable">false</property>
 	<property name="showdebug">false</property>
 
+	<property name="themeprefix">/${applicationid}/theme</property>
 	<property name="applicationid">mediadb</property>
 	<property name="mediadbappid">${applicationid}</property>
 	

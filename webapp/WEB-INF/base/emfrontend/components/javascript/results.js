@@ -264,7 +264,13 @@ jQuery(document).ready(function(url,params)
 		var hidden = $("#hiddenoverlay");
 		if( hidden.length == 0 )
 		{
-			var href = home + "/components/mediaviewer/fullscreen/index.html";
+			var grid = $(".masonry-grid");
+			var href = grid.data("viewertemplate");
+			if( href == null )
+			{
+				 href = home + "/components/mediaviewer/fullscreen/index.html";	
+			}
+			
 			jQuery.ajax({ url:href,async: false, data: {oemaxlevel:1}, success: function(data) {
 				$('body').append(data);
 				hidden = $("#hiddenoverlay");
