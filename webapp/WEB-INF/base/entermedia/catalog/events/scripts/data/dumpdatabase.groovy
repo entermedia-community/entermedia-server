@@ -26,7 +26,7 @@ public void init(){
 	String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
 	String rootfolder = "/WEB-INF/data/" + mediaarchive.getCatalogId() + "/dataexport/" + folder;
 	String catalogid = mediaarchive.getCatalogId();
-
+	log.info("Exporting " + rootfolder);
 	searchtypes.each{
 		String searchtype = it;
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
@@ -72,7 +72,7 @@ public void init(){
 					}
 				}
 				writer.writeNext(headers);
-				log.info("about to start: " + hits.size() + "records");
+				log.info("about to start: " + searchtype + " " + hits.size() + "records");
 
 				for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 					hit =  iterator.next();
