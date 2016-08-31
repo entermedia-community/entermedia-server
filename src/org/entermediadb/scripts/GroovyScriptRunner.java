@@ -132,7 +132,10 @@ public class GroovyScriptRunner implements ScriptRunner
 					for (Iterator iterator = variableMap.keySet().iterator(); iterator.hasNext();)
 					{
 						String key = (String) iterator.next();
-						binding.setProperty(key,variableMap.get(key));
+						Object val = variableMap.get(key);
+						if(val != null && key != null){
+						binding.setProperty(key,val);
+						}
 					}
 					String filename = page.getPath();
 					String packageroot = page.getProperty("packageroot");
