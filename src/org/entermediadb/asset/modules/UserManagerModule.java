@@ -782,12 +782,13 @@ public class UserManagerModule extends BaseMediaModule
 		if (password.equals( retypedPassword ))
 		{
 			User user = getUser( inReq );
-			if( user != inReq.getUser() )
+			User target = inReq.getUser();
+			if( !user.getId().equals(target.getId()  ))
 			{
 				checkAdminPermission(inReq);
 			}
 			user.setPassword( password );
-			getUserSearcher(inReq).saveData( user ,inReq.getUser());
+			getUserSearcher(inReq).saveData( user ,target);
 			inReq.putPageValue("message", "passwordchanged");
 			
 		}
