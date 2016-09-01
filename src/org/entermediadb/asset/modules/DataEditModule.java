@@ -1232,17 +1232,16 @@ public class DataEditModule extends BaseMediaModule
 	public HitTracker loadHits(WebPageRequest inReq) throws Exception
 	{
 		HitTracker hits = null;
-		String searchType = inReq.getRequestParameter("searchtype");
-		if(searchType == null){
-			searchType = inReq.findValue("searchtype");
+		Searcher searcher = loadSearcher(inReq);
+		if( searcher == null)
+		{
+			return null;
 		}
 		String hitsname = inReq.findValue("hitsname");
 		if (hitsname == null)
 		{
 			hitsname = "hits";
 		}
-
-		Searcher searcher = null;
 
 		String catalogid = inReq.getRequestParameter("catalogid"); //TODO: Security isssue?
 		if(catalogid == null){
@@ -1254,7 +1253,6 @@ public class DataEditModule extends BaseMediaModule
 		}
 		if (catalogid != null)
 		{// for a sub searcher
-			searcher = getSearcherManager().getSearcher(catalogid, searchType);
 			if(searcher != null)
 			{
 				hits = searcher.loadHits(inReq);
@@ -1273,9 +1271,12 @@ public class DataEditModule extends BaseMediaModule
 				hits = searcher.loadHits(inReq);
 			}
 		}
-		inReq.putPageValue(hitsname + catalogid, hits);
-		inReq.putPageValue(hitsname, hits);
-		inReq.putPageValue("hits", hits);
+		if (hits != null)
+		{
+			inReq.putPageValue(hitsname + catalogid, hits);
+			inReq.putPageValue(hitsname, hits);
+			//inReq.putPageValue("hits", hits);
+		}	
 		
 		return hits;
 	}

@@ -1,6 +1,5 @@
 <div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">
 ##Job Number passed in - search on with links to each collection
-
 #if( $collectionhits.size() == 0)
 <p>[[No collections found]]</p>
 #else
@@ -15,7 +14,7 @@
 		
 		#foreach($collection in $collectionhits)
 		  <li class="ui-corner-top"><a id="$collection.id" data-layouts="2" data-alwaysreloadpage="true"  
-		  	 href="$apphome/services/module/asset/players/collections/display/${collection.getId()}.html" >$collection</a></li>
+		  	 href="$apphome/services/module/asset/players/collections/display/${collection.getId()}.html?librarycollectionhitssessionid=$collectionhits.sessionId" >$collection</a></li>
 		#end
 		</ul>
 		<div class="clearfix"></div>
