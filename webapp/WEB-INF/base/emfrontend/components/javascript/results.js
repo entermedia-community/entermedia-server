@@ -413,8 +413,19 @@ gridResize = function()
 	}
 	console.log("resized grid");
 	checkScroll();
-	var fixedheight = 250;
-	var cellpadding = 12;
+	
+	var fixedheight = grid.data("maxheight");
+	if( fixedheight == null)
+	{
+		fixedheight = 250;
+	}
+	fixedheight = parseInt(fixedheight);
+	var cellpadding = grid.data("cellpadding");
+	if( cellpadding == null)
+	{
+		cellpadding = 12;
+	}
+	cellpadding = parseInt(cellpadding);
 	var sofarused = 0;
 	var totalwidth = 0;
 	var rownum = 0;
