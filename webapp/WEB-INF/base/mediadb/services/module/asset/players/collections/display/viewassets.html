@@ -1,5 +1,3 @@
-<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}">
-
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
@@ -15,7 +13,6 @@ $context.putPageValue("showtoolbar", "false")
 #if( !$thumbsize )
     #set( $thumbsize  = "thumb" )
 #end
-
 #if ( $hits && $hits.size() > 0 )
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
@@ -64,6 +61,4 @@ $context.putPageValue("showtoolbar", "false")
 	[[No results found.]]
 	</p>
 #end
-</div>
-
 </div>

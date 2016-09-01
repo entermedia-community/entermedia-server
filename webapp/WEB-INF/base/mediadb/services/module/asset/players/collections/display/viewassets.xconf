@@ -1,6 +1,6 @@
 <page>
 
-	<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
+	<inner-layout>/${applicationid}/services/module/asset/players/collections/gallery.html</inner-layout>
 	
 	<path-action name="ProjectModule.addCollectionTab" />
 	

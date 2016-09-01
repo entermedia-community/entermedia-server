@@ -1,8 +1,0 @@
-<page>
-<path-action name="DataEditModule.search">
-	<searchtype>librarycollection</searchtype>
-<!-- Job ID -->
-</path-action>
-
-
-</page>

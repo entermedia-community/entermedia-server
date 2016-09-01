@@ -1,0 +1,8 @@
+<page>
+<page-action name="DataEditModule.search">
+	<searchtype>librarycollection</searchtype>
+	<hitsname>collectionhits</hitsname>
+</page-action>
+
+
+</page>
