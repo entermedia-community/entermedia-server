@@ -179,25 +179,32 @@ jQuery(document).ready(function(url,params)
 			if( inData == "")
 			{
 				$(inSpan).css("color","#333");
+				$(inSpan).hide();
 			}
 			else
 			{
 				$(inSpan).css("color","rgb(200,200,200)");
+				$(inSpan).show();
 			}
 	}
 	showOverlay = function(assetid,pagenum)
 	{
 		var hidden = getOverlay();
 		var currentasset = $("#main-media-viewer");
+		var grid = $(".masonry-grid");
+		var link = grid.data("assettemplate");
+		if( link == null )
+		{
+			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
+		}
 		
-		var href = home + "/components/mediaviewer/fullscreen/currentasset.html";
 		var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
 		var params = {playerareawidth: $(window).width() - 200, assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
 			params.pagenum = pagenum;
 		}
-		jQuery.get(href, params, function(data) 
+		jQuery.get(link, params, function(data) 
 		{
 			currentasset.replaceWith(data);
 			overlayResize();

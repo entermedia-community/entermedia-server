@@ -17,7 +17,10 @@ $context.putPageValue("showtoolbar", "false")
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
 
-<div class="row masonry-grid" data-maxheight="150" data-viewertemplate="$home$apphome/components/mediaviewer/fullscreen/indexnolink.html">
+<div class="row masonry-grid" data-maxheight="150" 
+	data-viewertemplate="$home$apphome/services/module/asset/players/fullscreen/indexnolink.html"
+	data-assettemplate="$home$apphome/services/module/asset/players/fullscreen/currentasset.html" >
+	
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
     #set( $viewerlink = $content.get("assetviewerlink") )
