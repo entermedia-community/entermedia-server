@@ -17,6 +17,7 @@
 	<property name="themeprefix">/${applicationid}/theme</property>
 	<property name="applicationid">mediadb</property>
 	<property name="mediadbappid">${applicationid}</property>
+	<property name="title">MediaDB</property>
 	
 	<property name="catalogid">media/catalogs/public</property>
 	<path-action name="Admin.loadPermissions"/>

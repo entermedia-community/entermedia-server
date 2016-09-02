@@ -443,8 +443,8 @@ gridResize = function()
 		h = parseInt(h);
 		if( w == 0 )
 		{
-			w = 100;
-			h = 100;
+			w = 150;
+			h = 150;
 		}
 		var a = w / h;  
 	

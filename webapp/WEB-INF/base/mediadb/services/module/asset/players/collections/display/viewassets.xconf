@@ -22,6 +22,7 @@
 	 <permission name="view">
     		<action name="ProjectModule.checkLibraryPermission" />
     </permission>
+    
 	<path-action name="DataEditModule.loadPageOfSearch">
 		<property name="searchtype">asset</property>
 	</path-action>	

@@ -1,10 +1,17 @@
 <h3>ElasticSearch</h3>
 
 <p>
-[[Snapshots are used by ElasticSearch to store and restore database state]].
-<br>
-<a class="btn btn-sm" href="./snapshots.html" id="tools-view/snapshots">[[View Snapshots]]</a>
+<a class="btn btn-sm" href="mappingerrors.html" id="tools-view-errors">[[View Known Mapping Conflicts]]</a>
 </p>
+
+<p>
+<a class="btn btn-sm" href="validateall.html" id="tools-fix-errors">[[Validate All Mapping Schema]]</a>
+</p>
+
+<p>
+<a class="btn btn-sm" href="reloadall.html" id="tools-fix-errors">[[Reindex]]</a>
+</p>
+
 
 <!--
 <p>
@@ -14,34 +21,25 @@
 </p>
 -->
 
-<h3>[[XML Management]]</h3>
-<p>[[Reloading lists should be performed after an upgrade]].
-[[This allows lists loaded from the installation to be integrated with your own lists.]].
-<br>
+<h3>[[Data Management]]</h3>
+<p>
 <a class="btn btn-sm" href="reloadlists.html" id="tools-reload-lists">[[Reload lists]]</a>
+<br>
+[[This allows lists loaded from the installation to be integrated with your own lists]].
+
 </p>
 
+<p>
+<a class="btn btn-sm" href="./snapshots.html" id="tools-view/snapshots">[[View Snapshots]]</a>
+<br>
+[[Snapshots are used by ElasticSearch to store and restore database state]].
+</p>
 
 
 <hr>
 
 
-<h3>[[Error Logs]]</h3>
-<p>
-<a class="btn btn-sm" href="mappingerrors.html" id="tools-view-errors">[[View Mapping Errors]]</a>
-</p>
-
-<p>
-<a class="btn btn-sm" href="reloadall.html" id="tools-fix-errors">[[Reindex]]</a>
-</p>
-
-<p>
-<a class="btn btn-sm" href="validateall.html" id="tools-fix-errors">[[Validate Mapping Schema]]</a>
-</p>
-
-
-
-<p>[[Log Search Requests]] 
+<h3>[[Search Logs]]</h3>
 
 <a class="btn btn-sm" href="togglesearchlogs.html" id="tools-lof-search">
 #if($mediaarchive.getSearcherManager().getShowSearchLogs($catalogid) )

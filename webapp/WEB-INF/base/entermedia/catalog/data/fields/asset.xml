@@ -70,8 +70,8 @@
   <property id="language" index="true" stored="true" editable="true" type="list" viewtype="list" sort="textUp" datatype="list" searchtype="asset">Language</property>
   <property id="viewpoint" index="true" stored="true" editable="true" type="list" datatype="list" searchtype="asset">Asset Viewpoint</property>
   <property id="region" index="true" stored="true" editable="true" type="list" viewtype="list" listchild="country" datatype="list" searchtype="asset">Region</property>
-  <property id="country" index="true" stored="true" editable="true" type="list" viewtype="list" listchild="state" foreignkeyid="region" datatype="list" searchtype="asset">Country</property>
-  <property id="state" index="true" stored="true" editable="true" type="list" viewtype="list" foreignkeyid="country" datatype="list" searchtype="asset">State</property>
+  <property id="country" index="true" stored="true" editable="true" type="list" sortable="true"  viewtype="list" listchild="state" foreignkeyid="region" datatype="list" searchtype="asset">Country</property>
+  <property id="state" index="true" stored="true" editable="true" type="list" sortable="true" viewtype="list" foreignkeyid="country" datatype="list" searchtype="asset">State</property>
   <property id="copyrightstatus" externalid="XMP-xmpRights:Marked" index="true" stored="true" editable="true" type="list" viewtype="list" datatype="list" searchtype="asset">Copyright Status</property>
   <property id="copyrightnotice" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright" index="true" stored="true" editable="true" searchtype="asset">Copyright Notice</property>
   <property id="rightsusageterms" externalid="XMP-xmpRights:UsageTerms," index="true" stored="true" editable="true" searchtype="asset">Rights Usage Terms</property>

@@ -42,8 +42,11 @@
 	#set ($query = $lsearcher.createSearchQuery())
 	#set ($o = $query.addMatches("id", "*"))
 #end
+
 #if ($detail.sort)
 	$query.setSortBy($detail.sort)
+#else
+	$query.setSortBy("name")
 #end
 $lsearcher.addShowOnly($context, $query) 
 #set ($types = $lsearcher.search($context, $query))
