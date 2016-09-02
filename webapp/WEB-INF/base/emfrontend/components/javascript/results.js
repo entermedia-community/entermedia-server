@@ -430,7 +430,7 @@ gridResize = function()
 	var totalwidth = 0;
 	var rownum = 0;
 
-	var totalavailable = grid.width() - 5;
+	var totalavailable = grid.width() - 6;
 	
 	var row = [];
 	$(".masonry-grid .masonry-grid-cell").each(function()
