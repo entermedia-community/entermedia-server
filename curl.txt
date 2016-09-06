@@ -299,3 +299,21 @@ curl -XPOST 'http://localhost:9200/_aliases' -d '
 }'
 
 
+curl -XGET 'http://localhost:9200/assets_catalog/country/_search' -d '{
+  "from" : 0,
+  "size" : 15,
+  "query" : {
+    "bool" : {
+      "must" : {
+        "match_all" : { }
+      }
+    }
+  },
+  "explain" : false,
+  "sort" : [ {
+    "name" : {
+      "order" : "asc",
+      "ignore_unmapped" : true
+    }
+  } ]
+}'| python -mjson.tool

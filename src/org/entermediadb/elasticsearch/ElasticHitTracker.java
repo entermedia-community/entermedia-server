@@ -174,7 +174,7 @@ public class ElasticHitTracker extends HitTracker
 					{
 						//Only call this if we are moving forward in the scroll
 						//scroll to the right place if within timeout 
-						log.info(getSearcher().getSearchType() + " hash:" + hashCode() + " scrolling to chunk " + inChunk + " " + getLastScrollId());
+						log.info(getSearcher().getSearchType() + " hash:" + hashCode() + " scrolling to chunk " + inChunk + " " + getHitsPerPage());
 						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
 					}
 					setLastPageLoaded(inChunk);
