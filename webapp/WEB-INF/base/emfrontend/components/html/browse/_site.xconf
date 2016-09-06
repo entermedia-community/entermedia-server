@@ -16,7 +16,7 @@
 
 	<property name="uploadsourcepath">webuploads</property>
     
-    
+    <!--
     <script id="bootstrap" src="/${applicationid}/components/bootstrap/js/bootstrap.js" />
  <script id="bootstrap-select" src="/${applicationid}/components/bootstrap/select/bootstrap-select.min.js" />
  <script id="bootstrap-validate" src="/${applicationid}/components/bootstrap/validate/jquery.validate.min.js" />
@@ -25,5 +25,5 @@
  <style id="bootstrap-theme" href='/${applicationid}/components/bootstrap/css/bootstrap-theme.css' />
  <style id="bootstrap-select" href='/${applicationid}/components/bootstrap/select/bootstrap-select.min.css' />
  <style id="bootstrap-validate" href='/${applicationid}/components/bootstrap/validate/jquery.validate.css' />
-    
+    -->
 </page>

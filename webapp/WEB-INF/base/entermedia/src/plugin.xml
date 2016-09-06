@@ -1316,7 +1316,7 @@
 		</property>
 	</bean>
 
-	<bean id="xmlDataArchive" class="org.openedit.data.XmlDataArchive" scope="prototype">
+	<bean id="xmlDataArchive" class="org.entermediadb.data.XmlDataArchive" scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -2036,6 +2036,27 @@
 		</property>
 	
 	</bean>
+ 	
+ 	
+ 	<bean id="elasticRepository" class="org.entermediadb.elasticsearch.ElasticsearchRepository" >
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	
+	</bean>
+ 	
+ 	<bean id="pageSearcher" class="org.entermediadb.elasticsearch.ElasticPageSearcher" >
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
+ 	
  	
  	
 </beans>

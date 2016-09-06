@@ -1,6 +1,7 @@
 
-<properties>
-  <property id="id" index="true" editable="true"  stored="true">Id</property>
-  <property id="name" editable="true" index="true" stored="true">Name</property>
-  <property id="folder" editable="true" index="true" stored="true" note="Top level folder name ie projects/1234">Folder Name</property>
+<properties lazy-init="true">
+  <property id="id" index="true" stored="true" editable="true" searchtype="project">Id</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="project">Name</property>
+  <property id="folder" index="true" stored="true" editable="true" note="Top level folder name ie projects/1234" searchtype="project">Folder Name</property>
+  <property id="logo" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" searchtype="project">logo</property>
 </properties>

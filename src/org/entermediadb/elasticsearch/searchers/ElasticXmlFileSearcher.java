@@ -165,6 +165,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 		try
 		{
 			final List buffer = new ArrayList(100);
+			String pathToData = getPathToData();
 			PathProcessor processor = new PathProcessor()
 			{
 				public void processFile(ContentItem inContent, User inUser)
@@ -174,17 +175,17 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 						return;
 					}
 					String sourcepath = inContent.getPath();
-					sourcepath = sourcepath.substring(getPathToData().length() + 1, sourcepath.length() - getDataFileName().length() - 1);
+					sourcepath = sourcepath.substring(pathToData.length() + 1, sourcepath.length() - getDataFileName().length() - 1);
 					hydrateData(inContent, sourcepath, buffer);
 					incrementCount();
 				}
 			};
 			processor.setRecursive(true);
-			processor.setRootPath(getPathToData());
+			processor.setRootPath(pathToData);
 			processor.setPageManager(getPageManager());
 			processor.setIncludeExtensions("xml");
 			processor.process();
-			if (processor.getExecCount() > 0)
+			if (buffer.size()  > 0)
 			{
 				updateIndex(buffer, null);
 				buffer.clear();
@@ -222,9 +223,10 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 			data.setElement(element);
 			data.setSourcePath(sourcepath);
 			buffer.add(data);
-			if (buffer.size() > 99)
+			if (buffer.size() > 1000)
 			{
 				updateIndex(buffer, null);
+				buffer.clear();
 			}
 		}
 
@@ -237,7 +239,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 			fieldPrefix = getPageManager().getPage("/" + getCatalogId()).get("defaultdatafolder");
 			if (fieldPrefix == null)
 			{
-				fieldPrefix = getSearchType() + "s"; //legacy support
+				fieldPrefix = getSearchType(); //legacy support
 			}
 		}
 		return fieldPrefix;

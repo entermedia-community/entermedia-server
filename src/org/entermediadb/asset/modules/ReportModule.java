@@ -15,7 +15,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.page.Page;
 
-public class ReportModule extends BaseMediaModule
+public class ReportModule extends DataEditModule
 {
 
 	private static Log log = LogFactory.getLog(ScriptModule.class);
@@ -65,7 +65,7 @@ public class ReportModule extends BaseMediaModule
 	
 	
 	
-	public void runReport(WebPageRequest inReq){
+	public void runReport(WebPageRequest inReq) throws Exception{
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		
@@ -90,7 +90,9 @@ public class ReportModule extends BaseMediaModule
 		Page page = getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/" + script);
 		
 		if(!page.exists()){
-			page =  getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/reports/default.groovy");
+		//	page =  getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/reports/default.groovy");
+			search(inReq);
+			return;
 		}
 		
 		Script reportscript = getScriptManager().loadScript(page.getPath());

@@ -1,7 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <settingsgroups> 
-  <settingsgroup id="administrator" name="Administrators" profilesearchfilters="hideassettype" permissions="api-manage-events|api-manage-list|api-manage-users|api-delete-data|api-load-data|api-search-data|api-manage-modules|api-update-data|api-create-data|sharetosocialmedia|shareasset|viewvoting|deleteasset|publish|embedasset|addnewcollection|emaillink|viewconversions|editadvancedsearch|asseteditorlibraries|changeattachment|viewassetedit|editmetadatasetup|editassetcategories|edittablecolumns|assetpermissions|deletecomments|metadatageneral|comment|editassettags|editcategories|multiedit|editlists|asseteditorpickanylibrary|viewupload|createnewrecord|download|viewuploadmulti|convert|viewassetpreviewhistory|converthistory|capturehistory|editusersgroups|viewmetadatageneral|viewassets|viewattachments|viewbasket|viewcomments|viewhomelink|viewmap|viewmediaedit|viewmyaccount|viewsettings|viewcategorynav|viewlibrarysearch|viewopencollections|filterbyassettype|togglesidebar|view|importcollection|exportcollection|sharecollection"/>  
-  <settingsgroup id="users" name="Users" profilesearchfilters="hideassettype" permissions="sharetosocialmedia|shareasset|viewvoting|embedasset|emaillink|viewconversions|editadvancedsearch|changeattachment|viewassetedit|savesearch|editassetcategories|edittablecolumns|assetpermissions|deletecomments|metadatageneral|comment|viewupload|createnewrecord|download|convert|converthistory|viewassets|viewattachments|viewbasket|viewcomments|viewhomelink|viewmap|viewmyaccount|viewcategorynav|viewlibrarysearch|togglesidebar|view"/>  
-  <settingsgroup id="guest" name="Anonymous" profilesearchfilters="hideassettype" permissions="viewassets|viewcategorynav|download"/> 
+  <settingsgroup id="administrator" permissions="view|viewhomelink|viewsettings|multiedit|edittablecolumns|editlists|createnewrecord|createlivemedia|convert|download|downloadfpo|viewuploadmulti|viewupload|editusersgroups|viewbasket|viewmyaccount|viewcategorynav|filterbyassettype|togglesidebar|deleteasset|emaillink|viewvoting|publish|shareasset|sharetosocialmedia|forcewatermarkasset|viewconversions|embedasset|editadvancedsearch|changeattachment|editassetcategories|editcategories|viewassetedit|comment|deletecomments|metadatageneral|assetpermissions|editmetadatasetup|converthistory|viewassetpreviewhistory|capturehistory|viewmap|viewmediaedit|viewmetadatageneral|viewattachments|viewcomments|viewassets|asseteditorlibraries|asseteditorpickanylibrary|viewlibrarysearch|viewopencollections|addnewcollection|importcollection|exportcollection|sharecollection|api-manage-list|api-create-data|api-load-data|api-delete-data|api-update-data|api-search-data|api-manage-events|api-manage-users|api-manage-modules" profilesearchfilters="hideassettype">
+    <name><![CDATA[Administrators]]></name>
+    <name><![CDATA[Administrators]]></name>
+  </settingsgroup>  
+  <settingsgroup id="users" permissions="view|viewhomelink|savesearch|edittablecolumns|createnewrecord|convert|download|viewupload|viewbasket|viewmyaccount|viewcategorynav|togglesidebar|emaillink|viewvoting|shareasset|sharetosocialmedia|viewconversions|embedasset|editadvancedsearch|changeattachment|editassetcategories|viewassetedit|comment|deletecomments|metadatageneral|assetpermissions|converthistory|viewmap|viewattachments|viewcomments|viewassets|asseteditorlibraries|asseteditorpickanylibrary|viewlibrarysearch|addnewcollection" profilesearchfilters="hideassettype"> 
+    <name><![CDATA[Users]]></name>  
+    <name><![CDATA[Users]]></name> 
+  </settingsgroup>  
+  <settingsgroup id="guest" permissions="downloadfpo|viewcategorynav|forcewatermarkasset|viewassets" profilesearchfilters="hideassettype"> 
+    <name><![CDATA[Anonymous]]></name>  
+    <name><![CDATA[Anonymous]]></name> 
+  </settingsgroup> 
 </settingsgroups>

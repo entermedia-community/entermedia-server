@@ -103,7 +103,7 @@ public class BaseImporter extends EnterMediaObject
 				addProperties(fieldSearcher, trow, target);
 				target.setId(idCell);
 				data.add(target);
-				if (data.size() == 1000)
+				if (data.size() == 10000)
 				{
 					getSearcher().saveAllData(data, context.getUser());
 					log.info("imported 1000");

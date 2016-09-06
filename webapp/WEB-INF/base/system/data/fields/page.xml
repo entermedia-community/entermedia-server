@@ -1,5 +1,33 @@
-
 <properties>
+<!--  
+
+	protected String fieldAuthor;
+	protected String fieldMessage;
+	protected String fieldVersion;
+	protected String fieldType;
+	protected String fieldPath;
+	protected String fieldActualPath; //only used when content actually comes from another path
+	protected String fieldAbsolutePath; //Used as an URL or full system location
+	protected boolean fieldStub;
+	protected Date fieldLastModified;
+	protected long fieldLength = -1;
+	protected boolean fieldMakeVersion = true; //used when saving content
+	protected OutputStream fieldOutputStream;
+-->
+
+
   <property id="id" index="true" stored="true">Id</property>
   <property id="name" editable="true" index="true" stored="true">Name</property>
+  <property id="sourcepath" editable="true" index="true" stored="true">Path</property>
+  <property id="version" editable="true" index="true" stored="true">Version</property>
+  <property id="type" editable="true" index="true" stored="true">Type</property>
+  <property id="path" editable="true" index="true" stored="true">Path</property>
+  <property id="stub" editable="true" index="true" stored="true" type="boolean">Stub</property>
+  <property id="lastmodified" editable="true" index="true" stored="true" type="date">Last Modified</property>
+  <property id="length" editable="true" index="true" stored="true" type="long">Stub</property>
+  <property id="author" editable="true" index="true" stored="true">Name</property>
+  
+  
+  
+  
 </properties>

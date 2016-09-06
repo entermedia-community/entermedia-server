@@ -26,7 +26,7 @@ $(document).ready(function() {
 
 
 
-						$('.ajaxDialog').on("click", function(){
+						$('body').on("click",'.ajaxDialog', function(){
 							
 							var target = $(this).data('target');
 							var title= $(this).data('title');
