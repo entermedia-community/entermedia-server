@@ -8,10 +8,10 @@
 #set($assets = $assetsearcher.getAllHits($context))
 
 
-Query: $breakdownhits.getSearchQuery().toFriendly()
-
 
 <div class="row">
+
+Query: $breakdownhits.getSearchQuery().toFriendly()
 
 
 
@@ -32,8 +32,8 @@ Query: $breakdownhits.getSearchQuery().toFriendly()
 #foreach($subitem in $item.getAggregations())
 
   <li class="list-group-item">
-    <span class="badge">$!sizer.inEnglish($subitem.getValue()) </span>
-   $mediaarchive.getData("assettype",$item.key)
+    <span class="badge" title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
+   $!mediaarchive.getData("assettype",$item.key)<br>
 
   </li>
 

@@ -1,0 +1,12 @@
+<page>
+	<property name="section">reporting</property>
+	<property name="sectiontitle">Reporting</property>
+
+	<inner-layout>${themeprefix}/layouts/dashboardlayout.html</inner-layout>
+	<permission name="view">
+		<or>
+			<pagevalue name="canviewsettings" equals="true" />
+			<pagevalue name="canviewreporting" equals="true" />
+		</or>	
+	</permission>
+</page>

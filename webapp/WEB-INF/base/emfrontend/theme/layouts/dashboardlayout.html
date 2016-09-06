@@ -1,0 +1,30 @@
+
+#set( $tab = $context.findValue("tab") )
+
+<div class="subcolumns">
+       <div class="c25l" id="left-col">
+		<div class="ui-widget" >
+			<div  class="ui-widget-header">[[Reports]]</div>
+			<div  class="ui-widget-content categories-widget no-padding-for-real">
+				<ul id="settings-menu" class="sidebar-list">
+					#set ($reports = $searcherManager.getList("system", "reports") )
+					#foreach($screen in $reports )
+					<li id="$screen.id" #if( $tab == "$screen.id" ) class="current" #end>
+						<a href="$home$apphome${screen.path}">$context.getText($screen.toString())</a>
+					</li>
+					#end
+				</ul>
+			</div>
+		</div>
+
+
+         </div>
+         <div id="right-col">	
+			<div class="liquid-sizer settings">
+				$pages.includeContent()
+			</div>
+         </div>
+</div>
+
+
+		
