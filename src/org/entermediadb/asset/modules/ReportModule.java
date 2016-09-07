@@ -13,6 +13,7 @@ import org.entermediadb.scripts.TextAppender;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
 import org.openedit.page.Page;
 
 public class ReportModule extends DataEditModule
@@ -44,13 +45,15 @@ public class ReportModule extends DataEditModule
 			return;
 		}
 		
-		Data report = archive.getData("reports", reportid);
+		SearcherManager manager = getSearcherManager();
+		Data report = manager.getData("system",  "reports",  reportid);
+		
 		inReq.putPageValue("report", report);
 		inReq.putPageValue("data", report);
 
 		String searchtype = report.get("searchtype");
-		String catalogid = inReq.getUserProfileValue("reportcatalogid");
-		
+		//String catalogid = inReq.getUserProfileValue("reportcatalogid");
+		String catalogid = archive.getCatalogId();
 		if(catalogid == null){
 			catalogid = "media/catalogs/public"; //Maybe should be last accessed catalog?  I'll pass in the profile value from the emshare app...
 		}
@@ -60,6 +63,8 @@ public class ReportModule extends DataEditModule
 		if(searchtype != null){
 			Searcher searcher = archive.getSearcherManager().getSearcher(catalogid, searchtype);
 			inReq.putPageValue("reportsearcher", searcher);
+			
+
 		}
 	}
 	
@@ -68,18 +73,20 @@ public class ReportModule extends DataEditModule
 	public void runReport(WebPageRequest inReq) throws Exception{
 		
 		MediaArchive archive = getMediaArchive(inReq);
-		
+
 		String reportid = inReq.findValue("reportid");
 		if (reportid == null){
 			return;
 		}
+		SearcherManager manager = getSearcherManager();
+		Data report = manager.getData("system",  "reports",  reportid);
 		
-		Data report = archive.getData("reports", reportid);
 		inReq.putPageValue("report", report);
 		String script = report.get("script");
 		String searchtype = report.get("searchtype");
-		String catalogid = inReq.getUserProfileValue("reportcatalogid");
-		
+		//String catalogid = inReq.getUserProfileValue("reportcatalogid");
+		String catalogid = archive.getCatalogId();
+
 		if(catalogid == null){
 			catalogid = "media/catalogs/public"; //Maybe should be last accessed catalog?  I'll pass in the profile value from the emshare app...
 		}
@@ -87,7 +94,7 @@ public class ReportModule extends DataEditModule
 			script = "reporting/" +  searchtype + ".groovy";
 		} 
 		inReq.putPageValue("reportcatalogid", catalogid);
-		Page page = getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/" + script);
+		Page page = getPageManager().getPage("/system/events/scripts/" + script);
 		
 		if(!page.exists()){
 		//	page =  getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/reports/default.groovy");
