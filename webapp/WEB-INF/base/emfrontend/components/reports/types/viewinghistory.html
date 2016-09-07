@@ -1,10 +1,12 @@
-#set($s = $mediaarchive.getSearcherManager().getSearcher("system", "userauthenticationLog"))
+
+#set($dl = $mediaarchive.getSearcher("assetviewLog"))
+#set($dlhits = $dl.getAllHits($context))
 
 
 
 
-<canvas id="myChart" width="200" height="200"></canvas>
 
+<canvas id="dlchart" ></canvas>
 
 
 
@@ -14,15 +16,15 @@
 
 
 <script>
-var ctx = document.getElementById("myChart");
+var ctx = document.getElementById("dlchart");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
         labels: [
 
-#foreach($node in $hits.loadHistogram("event_breakdown_day"))
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 	#foreach($child in $node.getChildren())
-		"$context.getDate($child.toString())",
+		"$child",
 	#end
 #end
         
@@ -33,9 +35,9 @@ var myChart = new Chart(ctx, {
         
         ,
         datasets: [{
-            label: 'Logins Per Day',
+            label: 'Asset Views time',
             data: [
-#foreach($node in $hits.loadHistogram("event_breakdown_day"))
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
 	$child.get("count"),
 #end
@@ -44,15 +46,23 @@ var myChart = new Chart(ctx, {
                    
                    ],
             backgroundColor: [
-#foreach($node in $hits.loadHistogram("event_breakdown_day"))
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 
 #foreach($child in $node.getChildren())
 
                 '$mediaarchive.getData("color", $velocityCount).get("colorcode")',
                 #end
                 #end
+                
             ],
-           
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
             borderWidth: 1
         }]
     },

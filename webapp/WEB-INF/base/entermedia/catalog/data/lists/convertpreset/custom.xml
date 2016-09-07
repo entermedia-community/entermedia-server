@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root> 
+  <data id="0" name="Original Format" transcoderid="original" ordering="0" inputtype="all"/>  
+  <data id="imagecrop" name="Small Crop" transcoderid="imagemagick" generatedoutputfile="image110x62cropped.jpg" ordering="5" display="true" inputtype="image" onimport="true" fileexportformat="${shortfilename}110x62cropped.jpg" guid="imagecrop" outputextension="jpg"/>  
+  <data id="AVZwv3RlzDiuvAM4Sc4H" transcoderid="ffmpeg" generatedoutputfile="video.wmv" ordering="0" display="true" inputtype="video" onimport="true" singlepage="false" fileexportformat="video.wmv" guid="AVZwv8HrzDiuvAM4Sc4I" outputextension="wmv">
+    <name><![CDATA[WMV]]></name>
+    <name><![CDATA[WMV]]></name>
+  </data> 
+</root>

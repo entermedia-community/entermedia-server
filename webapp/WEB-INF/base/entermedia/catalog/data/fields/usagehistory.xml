@@ -1,0 +1,11 @@
+
+<properties beanname="dataSearcher" lazy-init="true">
+  <property id="id" index="true" stored="true" sortable="true" type="number" datatype="number" searchtype="usagehistory">Id</property>
+  <property id="historystatus" index="true" stored="true" editable="true" legacy="description" searchtype="usagehistory">Status</property>
+  <property id="projectnumber" index="true" stored="true" editable="true" searchtype="usagehistory">Project Number</property>
+  <property id="formnumber" index="true" stored="true" editable="true" searchtype="usagehistory">Form Number</property>
+  <property id="date" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" searchtype="usagehistory">Date</property>
+  <property id="user" index="true" stored="true" type="list" viewtype="user" datatype="list" searchtype="usagehistory">User Name</property>
+  <property id="assetid" index="true" stored="true" editable="true" type="list" datatype="list" searchtype="usagehistory">Asset ID</property>
+  <property id="sourcepath" index="true" stored="true">Source Path</property>
+</properties>

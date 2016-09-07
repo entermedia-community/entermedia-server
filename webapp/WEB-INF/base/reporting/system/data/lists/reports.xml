@@ -12,7 +12,9 @@
   <reports searchtype="userauthenticationLog" outputtype="userauthentication" id="AVaYrpt-nzduSDGX3LG8"> 
     <name><![CDATA[User Authentication]]></name> 
   </reports>  
-  <reports searchtype="assetsearchLog" script="asset/assetsearches.groovy" id="AVaY2-sA9ECWDPHHHYiJ">
+   <reports searchtype="assetpreviewLog"  id="AVaY2-sA9ECWDPHHHYiJ">
     <name><![CDATA[Search Terms]]></name>
   </reports>
+  
+  
 </reportss>

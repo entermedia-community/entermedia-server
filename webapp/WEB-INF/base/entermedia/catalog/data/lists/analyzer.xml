@@ -1,0 +1,4 @@
+
+<analyzers>
+  <analyzer id="lowersnowball" name="Lower Snowball"/>
+</analyzers>
