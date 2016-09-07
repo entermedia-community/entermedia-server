@@ -17,6 +17,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
 import org.openedit.data.SearchData;
+import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData {
@@ -81,7 +82,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	@Override
 	public Collection<String> getValues(String inPreference) {
-		Object result = getValue(inPreference);
+		Object result =  getValue(inPreference);
 		if (result == null) {
 			return null;
 		}
@@ -99,8 +100,14 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			return null;
 		}
 		Object svalue = super.getValue(inId);
-		if (svalue != null) {
+		if (svalue != null) 
+		{
 			return svalue;
+		}
+		svalue = getMap().get(inId);
+		if( svalue == ValuesMap.NULLVALUE)
+		{
+			return null;
 		}
 		svalue = getFromDb(inId);
 
