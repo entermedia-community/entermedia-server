@@ -1,11 +1,5 @@
-#set($s = $mediaarchive.getSearcherManager().getSearcher("system", "userauthenticationLog"))
-#set($hits = $s.getAllHits($context))
-#set($dl = $mediaarchive.getSearcher("assetdownloadLog"))
-#set($dlhits = $dl.getAllHits($context))
-
-
 #set($assetsearcher = $mediaarchive.getSearcher("asset"))
-#set($assets = $assetsearcher.getAllHits($context))
+
 
 <div class="container-fluid">
 
