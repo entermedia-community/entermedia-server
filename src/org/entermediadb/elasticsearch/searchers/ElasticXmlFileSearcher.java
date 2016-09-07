@@ -165,7 +165,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 		try
 		{
 			final List buffer = new ArrayList(100);
-			String pathToData = getPathToData();
+			final String pathToData = getPathToData();
 			PathProcessor processor = new PathProcessor()
 			{
 				public void processFile(ContentItem inContent, User inUser)
