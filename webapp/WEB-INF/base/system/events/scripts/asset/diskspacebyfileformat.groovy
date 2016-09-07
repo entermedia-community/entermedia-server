@@ -11,7 +11,7 @@ import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
 
 public void init(){
-	log.info("Running aggregation search");
+	log.info("Running aggregation search - disk space by file format");
 	WebPageRequest req = context;
 	String catalogid = context.getPageValue("reportcatalogid");
 	if(catalogid == null){
@@ -25,7 +25,7 @@ public void init(){
 	if(query == null){
 		query = searcher.createSearchQuery();
 	}
-	AggregationBuilder b = AggregationBuilders.terms("assettype_filesize").field("fileformat");
+	AggregationBuilder b = AggregationBuilders.terms("fileformat_filesize").field("fileformat");
 	SumBuilder sum = new SumBuilder("filesize_sum");
 	sum.field("filesize");
 	b.subAggregation(sum);
@@ -33,7 +33,7 @@ public void init(){
 	HitTracker hits =searcher.search(query);
 	hits.enableBulkOperations();
 	hits.getFilterOptions();
-	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
+	StringTerms agginfo = hits.getAggregations().get("fileformat_filesize");
 	context.putPageValue("diskspacehits", hits)
 	log.info(agginfo.getBuckets().size())
 	log.info("hits" + hits.size());
