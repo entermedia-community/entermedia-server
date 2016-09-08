@@ -8,7 +8,7 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	AssetImporter importer = (AssetImporter)moduleManager.getBean("assetImporter");
 	//importer.setExcludeFolders("Fonts,Links");
-	importer.setIncludeExtensions("mp4,mov,wmv");
+	importer.setIncludeMatches("mp4,mov,wmv");
 	importer.setUseFolders(false);
 	
 	String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";

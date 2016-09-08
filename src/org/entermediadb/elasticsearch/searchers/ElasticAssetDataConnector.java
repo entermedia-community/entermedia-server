@@ -150,7 +150,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			processor.setRecursive(true);
 			processor.setRootPath(getPathToData());
 			processor.setPageManager(getPageManager());
-			processor.setIncludeExtensions("xml");
+			processor.setIncludeMatches("xml");
 			processor.process();
 			updateIndex(tosave, null);
 			log.info("reindexed " + processor.getExecCount());

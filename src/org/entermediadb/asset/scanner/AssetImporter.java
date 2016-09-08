@@ -43,7 +43,7 @@ public class AssetImporter
 //	protected List fieldExcludeFolderMatch;
     
     protected List<String> fieldExcludeMatches;
-    protected String fieldIncludeExtensions;
+    protected String fieldIncludeMatches;
     protected Collection fieldAttachmentFilters;
     
 	public Collection getAttachmentFilters()
@@ -66,14 +66,14 @@ public class AssetImporter
 		fieldExcludeMatches = inExcludeFolders;
 	}
 
-	public String getIncludeExtensions()
+	public String getIncludeMatches()
 	{
-		return fieldIncludeExtensions;
+		return fieldIncludeMatches;
 	}
 
-	public void setIncludeExtensions(String inIncludeFiles)
+	public void setIncludeMatches(String inIncludeFiles)
 	{
-		fieldIncludeExtensions = inIncludeFiles;
+		fieldIncludeMatches = inIncludeFiles;
 	}
 
 
@@ -118,7 +118,7 @@ public class AssetImporter
 		finder.setRootPath(inRootPath);
 		finder.setAssetUtilities(getAssetUtilities());
 		finder.setExcludeMatches(getExcludeMatches()); //The rest should be filtered by the mount itself
-		finder.setIncludeExtensions(getIncludeExtensions());
+		finder.setIncludeMatches(getIncludeMatches());
 		finder.setAttachmentFilters(getAttachmentFilters());
 		finder.processAssets(inStartingPoint, inUser);
 		

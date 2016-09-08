@@ -357,19 +357,18 @@ public class BaseHotFolderManager implements HotFolderManager
 		if( excludes != null )
 		{
 			List<String> list = EmStringUtils.split(excludes);
-			for (int i = 0; i < list.size(); i++)
-			{
-				String row = list.get(i).trim();
-				if( row.startsWith("/") &&  !row.startsWith(path))
-				{
-					row = path + row;
-				}
-				list.set(i, row);
-			}
+//			for (int i = 0; i < list.size(); i++)
+//			{
+//				String row = list.get(i).trim();
+//				if( row.startsWith("/") &&  !row.startsWith(path))
+//				{
+//					row = path + row;
+//				}
+//				list.set(i, row);
+//			}
 			importer.setExcludeMatches(list);
 		}
-		
-		importer.setIncludeExtensions(inFolder.get("includes"));
+		importer.setIncludeMatches(inFolder.get("includes"));
 		String attachments = inFolder.get("attachmenttrigger");
 		if( attachments != null )
 		{

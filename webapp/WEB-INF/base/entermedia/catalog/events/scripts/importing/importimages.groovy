@@ -8,7 +8,7 @@ public void init()
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	AssetImporter importer = (AssetImporter)moduleManager.getBean("assetImporter");
 	importer.setExcludeFolderMatch("Fonts,Links");
-	importer.setIncludeExtensions("psd,tif,pdf,eps");
+	importer.setIncludeMatches("psd,tif,pdf,eps");
 	importer.setUseFolders(false);
 	
 	String assetRoot = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/";
