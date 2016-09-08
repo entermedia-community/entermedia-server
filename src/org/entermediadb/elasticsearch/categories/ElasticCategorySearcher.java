@@ -81,6 +81,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			
 			//deleteAll(null); //This only deleted the index
 			//This is the one time we load up the categories from the XML file
+			getXmlCategoryArchive().clearCategories();
+			fieldRootCategory = null;
 			Category parent = getRootCategory();
 			List tosave = new ArrayList();
 			updateChildren(parent,tosave);
