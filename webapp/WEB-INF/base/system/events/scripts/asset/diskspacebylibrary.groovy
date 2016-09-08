@@ -25,7 +25,7 @@ public void init(){
 	if(query == null){
 		query = searcher.createSearchQuery();
 	}
-	AggregationBuilder b = AggregationBuilders.terms("fileformat_filesize").field("fileformat");
+	AggregationBuilder b = AggregationBuilders.terms("fileformat_filesize").field("libraries");
 	SumBuilder sum = new SumBuilder("filesize_sum");
 	sum.field("filesize");
 	b.subAggregation(sum);
@@ -38,7 +38,7 @@ public void init(){
 	context.putPageValue("hits", hits)
 	
 	log.info(agginfo.getBuckets().size())
-	log.info("hits" + hits.size());
+	log.info("Disk Space Library hits" + hits.size());
 	
 }
 

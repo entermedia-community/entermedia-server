@@ -33,6 +33,8 @@ public void init(){
 	context.putPageValue("breakdownhits", hits)
 	log.info(agginfo.getBuckets().size())
 	log.info("hits" + hits.size());
+	context.putPageValue("hits", hits)
+	
 	log.info("response was: " + hits.getSearchResponse(0).toString());
 	//log.info(response.toString());
 	

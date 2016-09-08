@@ -33,6 +33,8 @@ public void init(){
 	hits.getFilterOptions();
 	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
 	context.putPageValue("breakdownhits", hits)
+	context.putPageValue("hits", hits)
+	
 	log.info(agginfo.getBuckets().size())
 	log.info("hits" + hits.size());
 	
