@@ -214,7 +214,7 @@ public class PresetCreator
 		
 		String existingimportstatus = asset.get("importstatus");
 	
-		if( existingpreviewstatus == null || !"2".equals( existingpreviewstatus ) || !"complete".equals(existingimportstatus))
+		if( existingpreviewstatus == null || !("2".equals( existingpreviewstatus ) || "complete".equals(existingimportstatus)) )
 		{
 			//check tasks and update the asset status
 			for( Object object : conversions )
