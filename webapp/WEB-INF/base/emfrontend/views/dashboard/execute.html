@@ -8,7 +8,7 @@
 
     #set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
     #if($details.size() > 0)
-Filters:
+
 <form action="executefinish.html">
 <input type= "hidden" name="reportid" value="$data.id"/>
 $context.putPageValue("searcher", $reportsearcher)

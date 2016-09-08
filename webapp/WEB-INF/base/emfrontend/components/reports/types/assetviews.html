@@ -21,7 +21,7 @@ var myChart = new Chart(ctx, {
 
 #foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 	#foreach($child in $node.getChildren())
-		"$child",
+		"$context.getDate($child.toString())",
 	#end
 #end
         
