@@ -84,9 +84,10 @@ public class ReportModule extends DataEditModule
 		inReq.putPageValue("report", report);
 		String script = report.get("script");
 		String searchtype = report.get("searchtype");
+		
 		//String catalogid = inReq.getUserProfileValue("reportcatalogid");
 		String catalogid = archive.getCatalogId();
-
+		
 		if(catalogid == null){
 			catalogid = "media/catalogs/public"; //Maybe should be last accessed catalog?  I'll pass in the profile value from the emshare app...
 		}
@@ -97,6 +98,8 @@ public class ReportModule extends DataEditModule
 		Page page = getPageManager().getPage("/system/events/scripts/" + script);
 		
 		if(!page.exists()){
+			log.info("No script, running standard search");
+			inReq.setRequestParameter("searchtype", searchtype);
 		//	page =  getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/reports/default.groovy");
 			search(inReq);
 			return;

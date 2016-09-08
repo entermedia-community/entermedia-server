@@ -249,23 +249,23 @@ public class BaseElasticSearcher extends BaseSearcher {
 		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			if (detail.isFilter()) {
-				if (detail.isDate()) {
+				if (detail.isDate() && inQuery.isIncludeAggregations()) {
 					DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
 					builder.field(detail.getId());
 					builder.interval(DateHistogramInterval.DAY);
 
-					// DateHistogramBuilder builder = new
-					// DateHistogramBuilder("event_breakdown");
-					// builder.interval(DateHistogramInterval.DAY);
+					
 
 					inSearch.addAggregation(builder);
 
 					builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
-					builder.field("date");
+					builder.field(detail.getId());
 					builder.interval(DateHistogramInterval.WEEK);
+					inSearch.addAggregation(builder);
+
 				}
 
-				else if (detail.isNumber()) {
+				else if (detail.isNumber() && inQuery.isIncludeAggregations()) {
 					SumBuilder b = new SumBuilder(detail.getId() + "_sum");
 					b.field(detail.getId());
 					inSearch.addAggregation(b);
