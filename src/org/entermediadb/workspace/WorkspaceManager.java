@@ -136,7 +136,13 @@ public class WorkspaceManager
 		{
 			details.setBeanName("dataSearcher");
 		}
-		archive.savePropertyDetails(details, searchtype, null);
+		
+		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			archive.savePropertyDetail(detail, searchtype, null);
+
+			
+		}
 
 		// edit beans.xml
 //		XmlFile file = getXmlArchive().getXml("/" + catalogid + "/configuration/beans.xml");

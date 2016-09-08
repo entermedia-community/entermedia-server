@@ -211,7 +211,7 @@ public class BaseImporter extends EnterMediaObject
 				{
 					detail.setViewType("multiselect");
 				}
-				getSearcher().getPropertyDetailsArchive().savePropertyDetails(details, getSearcher().getSearchType(), context.getUser());
+				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
 			}
 
 		}
@@ -271,7 +271,8 @@ public class BaseImporter extends EnterMediaObject
 				detail.setStored(true);
 				detail.setCatalogId(getSearcher().getCatalogId());
 				details.addDetail(detail);
-				getSearcher().getPropertyDetailsArchive().savePropertyDetails(details, getSearcher().getSearchType(), context.getUser());
+				
+				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
 			}
 		}
 	}

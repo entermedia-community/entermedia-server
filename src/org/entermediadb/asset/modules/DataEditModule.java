@@ -290,7 +290,10 @@ public class DataEditModule extends BaseMediaModule
 			}
 		}
 		
-		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		searcher.getPropertyDetailsArchive().savePropertyDetail(detail, fieldName, inReq.getUser());
+		
+		
+		
 		searcher.reloadSettings();
 	}
 
@@ -407,7 +410,7 @@ public class DataEditModule extends BaseMediaModule
 		detail.setStored(true);
 		details.addDetail(detail);
 		
-		searcher.getPropertyDetailsArchive().savePropertyDetails(details, fieldName, inReq.getUser());
+		searcher.getPropertyDetailsArchive().savePropertyDetail(detail, fieldName, inReq.getUser());
 		loadProperties(inReq);
 		//tuan
 		inReq.putPageValue("property", detail);
@@ -420,8 +423,12 @@ public class DataEditModule extends BaseMediaModule
 		String searchtype = resolveSearchType(inReq);
 		Searcher searcher = loadSearcher(inReq);
 		PropertyDetails details = searcher.getPropertyDetailsArchive().getPropertyDetailsCached(searchtype);
-		details.removeDetail(id);
-		searcher.getPropertyDetailsArchive().savePropertyDetails(details, searchtype, inReq.getUser());
+		
+		PropertyDetail detail =  details.getDetail(id);
+		if(detail != null){		
+		
+		searcher.getPropertyDetailsArchive().deletePropertyDetail(detail, searchtype, inReq.getUser());
+		}
 	}
 
 	public void saveMultiJoinData(WebPageRequest inReq) throws Exception

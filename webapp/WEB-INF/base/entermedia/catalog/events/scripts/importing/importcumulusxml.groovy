@@ -43,8 +43,9 @@ public void init() {
 		}		else{
 			detail.setText(name);
 		}
+		assetsearcher.getPropertyDetailsArchive().savePropertyDetail(detail, "asset", null);
+		
 	}
-	assetsearcher.getPropertyDetailsArchive().savePropertyDetails(details, "asset", null);
 
 
 	ArrayList toSave = new ArrayList();
