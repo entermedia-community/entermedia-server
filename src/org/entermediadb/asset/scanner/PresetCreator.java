@@ -1,11 +1,9 @@
 package org.entermediadb.asset.scanner;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -20,8 +18,6 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.DateStorageUtil;
-
-import cumulus.importassets;
 
 public class PresetCreator
 {
