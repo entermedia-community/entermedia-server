@@ -1,3 +1,5 @@
+package conversions;
+
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.scanner.PresetCreator
 import org.openedit.Data
@@ -16,7 +18,7 @@ public void init()
 //		SearchQuery q = assetsearcher.createSearchQuery();
 //		q.addOrsGroup("importstatus", "imported reimported");
 		SearchQuery q = assetsearcher.createSearchQuery().append("id", "*");
-		q.addNot("editstatus","7");
+		//q.addNot("editstatus","7");
 		q.addSortBy("id");
 		HitTracker assets =  assetsearcher.search(q);
 		assets.enableBulkOperations();

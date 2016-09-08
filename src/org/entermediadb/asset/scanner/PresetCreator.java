@@ -21,6 +21,8 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.DateStorageUtil;
 
+import cumulus.importassets;
+
 public class PresetCreator
 {
 	private static final Log log = LogFactory.getLog(PresetCreator.class);
@@ -201,6 +203,7 @@ public class PresetCreator
 			return;
 		}
 		String existingpreviewstatus = asset.get("previewstatus");
+
 		//is it already complete?
 		
 		//log.info("existingpreviewstatus" + existingpreviewstatus);
@@ -213,7 +216,6 @@ public class PresetCreator
 		boolean founderror = false;
 		
 		String existingimportstatus = asset.get("importstatus");
-	
 		if( existingpreviewstatus == null || !("2".equals( existingpreviewstatus ) || "complete".equals(existingimportstatus)) )
 		{
 			//check tasks and update the asset status
@@ -239,7 +241,9 @@ public class PresetCreator
 			//load the asset and save the import status to complete		
 			if( asset != null )
 			{
-				if(founderror && "error".equals(existingimportstatus) || "complete".equals(existingimportstatus))
+				
+				
+				if(founderror && "error".equals(existingimportstatus) || ("complete".equals(existingimportstatus) && "2".equals(existingpreviewstatus)))
 				{
 					return;						
 				}
