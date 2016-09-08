@@ -5,9 +5,9 @@
     <name><![CDATA[Asset Disk Usage]]></name>  
     <name><![CDATA[Asset Disk Usage]]></name> 
   </reports>  
-  <reports id="AVaUgHarnzduSDGX3LDR" ordering="0" searchtype="assetdownloadLog" outputtype="downloadhistory" dashboard="true">
-    <name><![CDATA[Download History]]></name>
-    <name><![CDATA[Download History]]></name>
+  <reports id="AVaUgHarnzduSDGX3LDR" ordering="0" searchtype="assetdownloadLog" outputtype="downloadhistory" dashboard="true"> 
+    <name><![CDATA[Download History]]></name>  
+    <name><![CDATA[Download History]]></name> 
   </reports>  
   <reports id="AVaYrpt-nzduSDGX3LG8" ordering="0" searchtype="userauthenticationLog" outputtype="userauthentication" dashboard="true"> 
     <name><![CDATA[User Authentication]]></name>  
@@ -24,5 +24,8 @@
   <reports id="diskusagefilemorat" ordering="2" searchtype="asset" outputtype="fileformatusage" script="asset/diskspacebyfileformat.groovy" dashboard="true"> 
     <name><![CDATA[Disk Space By File Format]]></name>  
     <name><![CDATA[Disk Space By File Format]]></name> 
-  </reports> 
+  </reports>  
+  <reports id="assetscreated" searchtype="asset" outputtype="assetadded" dashboard="true">
+    <name><![CDATA[Assets over time]]></name>
+  </reports>
 </reportss>
