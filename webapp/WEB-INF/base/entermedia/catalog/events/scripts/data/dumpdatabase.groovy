@@ -1,6 +1,5 @@
-import org.entermedia.email.PostMail
-import org.entermedia.email.TemplateWebEmail
-import org.openedit.Data
+import java.text.SimpleDateFormat
+
 import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
 import org.openedit.data.PropertyDetailsArchive
@@ -8,12 +7,9 @@ import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.entermedia.MediaArchive
 import org.openedit.entermedia.util.CSVWriter
-import org.openedit.util.DateStorageUtil
 
-import com.openedit.WebPageRequest
 import com.openedit.hittracker.HitTracker
 import com.openedit.page.Page
-import com.openedit.util.Replacer
 import com.openedit.util.PathUtilities
 
 public void init(){
@@ -23,7 +19,11 @@ public void init(){
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
 	List searchtypes = archive.listSearchTypes();
 
-	String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
+	//String folder = DateStorageUtil.getStorageUtil().formatDateObj"yyyy-MM-dd-HH-mm-ss" "yyyy-MM-dd-HH-mm-ss");
+	SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+	format.setLenient(true);
+	String folder = format.format( new Date() );
+	
 	String rootfolder = "/WEB-INF/data/" + mediaarchive.getCatalogId() + "/dataexport/" + folder;
 	String catalogid = mediaarchive.getCatalogId();
 
