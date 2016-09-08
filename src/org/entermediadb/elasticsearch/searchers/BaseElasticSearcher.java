@@ -193,7 +193,9 @@ public class BaseElasticSearcher extends BaseSearcher {
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
-			addFacets(inQuery, search);
+			if(inQuery.isIncludeFacets()){
+				addFacets(inQuery, search);
+			}
 			// addAggregations(inQuery, search);
 
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage() );
@@ -249,7 +251,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 			if (detail.isFilter()) {
-				if (detail.isDate() && inQuery.isIncludeAggregations()) {
+				if (detail.isDate() ) {
 					DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
 					builder.field(detail.getId());
 					builder.interval(DateHistogramInterval.DAY);
@@ -265,7 +267,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 
 				}
 
-				else if (detail.isNumber() && inQuery.isIncludeAggregations()) {
+				else if (detail.isNumber() ) {
 					SumBuilder b = new SumBuilder(detail.getId() + "_sum");
 					b.field(detail.getId());
 					inSearch.addAggregation(b);

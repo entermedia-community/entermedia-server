@@ -100,6 +100,8 @@ public class ReportModule extends DataEditModule
 		if(!page.exists()){
 			log.info("No script, running standard search");
 			inReq.setRequestParameter("searchtype", searchtype);
+			inReq.setRequestParameter(searchtype + "includefacets", "true");
+
 		//	page =  getPageManager().getPage("/" + archive.getCatalogId() + "/events/scripts/reports/default.groovy");
 			search(inReq);
 			return;

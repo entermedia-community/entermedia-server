@@ -19,6 +19,7 @@ public void init(){
 	searcher.putMappings();//just in case it's never been done.
 	
 	SearchQuery query = searcher.addStandardSearchTerms(context);
+	
 	if(query == null){
 		query = searcher.createSearchQuery();
 	}
@@ -28,6 +29,7 @@ public void init(){
 	b.subAggregation(sum);
 	query.setAggregation(b);
 	query.addMatches("id", "*");
+	
 	HitTracker hits =searcher.search(query);
 	hits.enableBulkOperations();
 	hits.getFilterOptions();

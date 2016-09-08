@@ -20,6 +20,7 @@ public class ElasticSearchQuery extends SearchQuery
 	public void setAggregation(Object inAggregationBuilder)
 	{
 		fieldAggregationBuilder = (AbstractAggregationBuilder) inAggregationBuilder;
+		setIncludeFacets(true);
 	}
 
 	public ElasticSearchQuery()
