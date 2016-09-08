@@ -37,7 +37,7 @@ var myChart = new Chart(ctx, {
         
         ,
         datasets: [{
-            label: 'Downloads over time',
+            label: '[[Downloads over time]]',
             data: [
 #foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())

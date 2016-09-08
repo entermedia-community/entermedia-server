@@ -5,13 +5,17 @@
 <div class="subcolumns">
        <div class="c25l" id="left-col">
 		<div class="ui-widget" >
-			<div  class="ui-widget-header">[[Reports]]</div>
+			<div  class="ui-widget-header">
+			<span class="widget-header-title">[[Reports]]</span>
+			<span class="widget-header-right">
+				<a class="sidebarsubmenu" title="[[Edit Reports]]" href="$home/reporting/index.html"><i class="glyphicon glyphicon-edit"></i></a>
+			</span>
+			</div>
 			<div  class="ui-widget-content categories-widget no-padding-for-real">
 				<ul id="settings-menu" class="sidebar-list">
 				<li id="Home" #if( !$reportid ) class="current" #end>
-						<a href="$home$apphome/views/dashboard/index.html">Dashboard</a>
+						<a href="$home$apphome/views/dashboard/index.html">[[Dashboard]]</a>
 					</li>
-				
 				
 					#set ($reports = $searcherManager.getList("system", "reports") )
 					#foreach($screen in $reports )

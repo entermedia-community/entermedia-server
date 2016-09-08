@@ -18,7 +18,7 @@
 
 <ul class="list-group">
  <a href="#" class="list-group-item active">
-    Asset Usage Breakdown
+    [[File Formats]]
   </a>
 #foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
 #foreach($subitem in $item.getAggregations())

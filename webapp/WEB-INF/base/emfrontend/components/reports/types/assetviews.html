@@ -32,7 +32,7 @@ var myChart = new Chart(ctx, {
         
         ,
         datasets: [{
-            label: 'Asset Previews Over Time',
+            label: '[[Asset Previews Over Time]]',
             data: [
 #foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
