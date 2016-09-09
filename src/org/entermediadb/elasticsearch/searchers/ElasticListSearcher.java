@@ -104,7 +104,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			{
 				Data data = (Data)iterator.next();					
 				toindex.add(data); //loadData? nah
-				if( toindex.size() > 100)
+				if( toindex.size() > 1000)
 				{
 					updateIndex(toindex,null);
 					toindex.clear();
@@ -164,7 +164,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	public void saveAllData(Collection<Data> inAll, User inUser)
 	{
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-
+		
 		for (Object object: inAll)
 		{
 			Data data = (Data)object;

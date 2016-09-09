@@ -11,6 +11,7 @@ import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -94,6 +95,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
 	protected long fieldIndexId = System.currentTimeMillis();
+	
 
 	public boolean isRefreshSaves() {
 		return fieldRefreshSaves;
@@ -426,7 +428,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 
 		if (pres.isAcknowledged()) {
 			// log.info("mapping applied " + getSearchType());
-			admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+		//	admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 		}
 
 	}
@@ -1182,7 +1184,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 	 * } }
 	 */
 	public void updateIndex(Collection<Data> inBuffer, User inUser) {
-		if (inBuffer.size() > 999) // 100 was too low - caused shard exceptions
+		if (inBuffer.size() > 99 || fieldForceBulk) // 100 was too low - caused shard exceptions
 									// due to thread pool size on large
 									// ingests..
 		{
@@ -1279,10 +1281,16 @@ public class BaseElasticSearcher extends BaseSearcher {
 				log.error(ex);
 			}
 		}
-		bulkProcessor.close();
+
+		//bulkProcessor.close();
+		try{
+		bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+		} catch (InterruptedException e){
+			throw new OpenEditException(e);
+		}
 
 		if (errors.size() > 0) {
-			// throw new OpenEditException((Throwable)errors.get(0));
+			 throw new OpenEditException((String)errors.get(0));
 
 		}
 		// ConcurrentModificationException
@@ -1967,11 +1975,11 @@ public class BaseElasticSearcher extends BaseSearcher {
 					Data real = (Data) loadData(hit);
 					tosave.add(real);
 					if (tosave.size() > 1000) {
-
+						updateIndex(tosave, null);
 						tosave.clear();
 					}
 				}
-				saveAllData(tosave, null);
+				updateIndex(tosave, null);
 
 			} finally {
 				setReIndexing(false);

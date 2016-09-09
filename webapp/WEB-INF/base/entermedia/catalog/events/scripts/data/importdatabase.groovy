@@ -12,6 +12,7 @@ import org.openedit.data.*
 import org.openedit.modules.translations.LanguageMap
 import org.openedit.page.Page
 import org.openedit.util.*
+import org.openedit.xml.XmlFile
 
 public void init(){
 
@@ -148,14 +149,60 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload)
 	ArrayList tosave = new ArrayList();
 	String catalogid = mediaarchive.getCatalogId();
 
-	Searcher searcher = mediaarchive.getSearcher(searchtype);
 	//log.info("importing " + upload.getPath());
 	Reader reader = upload.getReader();
 	ImportFile file = new ImportFile();
 	file.setParser(new CSVReader(reader, ',', '\"'));
 	file.read(reader);
-	PropertyDetails details = searcher.getPropertyDetails();
-
+	//Searcher searcher = mediaarchive.getSearcher(searchtype);
+	
+	
+	PropertyDetails olddetails = null;
+	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
+	PropertyDetails details = archive.getPropertyDetails(searchtype);
+	
+	
+	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
+	XmlFile settings = archive.getXmlArchive().loadXmlFile(filepath); // checks time
+	if(settings.isExist()){
+		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
+		olddetails = new PropertyDetails(searchtype);
+		olddetails.setInputFile(settings);
+		archive.setAllDetails(olddetails, searchtype, settings.getRoot());
+					
+		ArrayList toremove = new ArrayList();
+		
+				
+		olddetails.each{
+			PropertyDetail olddetail = it;
+			
+			PropertyDetail current = details.getDetail(olddetail.getId());
+			if(current == null){
+				current = details.findCurrentFromLegacy(olddetail.getId());
+			}
+			if(current != null && !("name".equals(current.getId()) || "id".equals(current.getId()))){
+				
+				toremove.add(olddetail.getId());
+					
+				
+			}
+		}
+		
+		toremove.each{
+			olddetails.removeDetail(it);
+		}
+		
+		
+		archive.savePropertyDetails(olddetails, searchtype, null,  filename);
+		
+		
+		
+	}
+	
+	archive.clearCache();
+	Searcher searcher = mediaarchive.getSearcher(searchtype);
+	details = searcher.getPropertyDetails();
+	searcher.setForceBulk(true);
 	while( (trow = file.getNextRow()) != null ) 
 	{
 		try
@@ -244,7 +291,7 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload)
 			}
 			tosave.add(newdata);
 	
-			if(tosave.size() > 1000){
+			if(tosave.size() > 10000){
 				searcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
@@ -255,6 +302,8 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload)
 	}
 	FileUtils.safeClose(reader);
 	searcher.saveAllData(tosave, null);
+tosave.clear();	
+	searcher.setForceBulk(false);
 	log.info("Saved " + searchtype + " "  +  tosave.size() );
 }
 
