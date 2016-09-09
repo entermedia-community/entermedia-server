@@ -44,7 +44,7 @@
 	
 
     #if($canviewsettings)
-    	<li><a target="_blank" href="$home$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
+    	<li><a href="$home$apphome/views/dashboard/index.html" >[[Dashboard]]</a></li> 
     	<li><a #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
     	
     	<li class="dropdown"><a href="#" data-toggle="dropdown">[[Applications]] <span class="caret"></span></a> 
