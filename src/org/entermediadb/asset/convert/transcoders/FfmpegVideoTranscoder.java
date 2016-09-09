@@ -217,7 +217,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			new File(outpath).getParentFile().mkdirs();
 			//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 
-			ExecResult execresult = getExec().runExec("avconv", comm, true);
+			ExecResult execresult = getExec().runExec("avconv", comm, true,timeout);
 			result.setOk(execresult.isRunOk());
 			if (!execresult.isRunOk())
 			{
