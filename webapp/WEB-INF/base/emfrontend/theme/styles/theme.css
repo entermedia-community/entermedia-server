@@ -6972,3 +6972,7 @@ div.panel2.show {
     display: block !important;
 
 }
+
+tr.emrowselected
+{
+	background: #C9E8C7;

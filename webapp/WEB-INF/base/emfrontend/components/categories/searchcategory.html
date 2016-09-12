@@ -1,6 +1,6 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
-#set( $categories = $context.getRequestParameter("categories") )
+#set( $categories = $context.getRequestParameter("category.values") )
 
 <div id="search-catgories" >
 	<div id="searcharea" >
@@ -30,13 +30,20 @@
 		
 		</form>
 		
-		<form  data-targetdiv="$!targetdiv" action="$action">
+		<form  data-targetdiv="$!targetdiv" class="emmultivalue" action="$action">
 		<div class="emrowpicker" style="min-height: 450px"  >
 				$pages.include("$home$apphome/components/categories/searchcategoryresults.html",$context)
 		</div>
 			<input name="oemaxlevel" value="1"  type="hidden" />
-			<input name="categoryidpicked" class="emselectedrow" type="hidden" />
-			<input name="categories" type="hidden" value="$!categories" />
+			<input name="category.values" type="hidden"  class="emselectedrow" value="$!categories" />
 		</form>
+		
+		<script>
+			#foreach($categoryid in $categories.split(" +"))
+				$('[data-id="${categoryid}"]').addClass("emrowselected");
+			#end
+		</script>	
+		
+		
 	</div>
 </div>	

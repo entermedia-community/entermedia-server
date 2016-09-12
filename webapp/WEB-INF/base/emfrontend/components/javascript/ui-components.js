@@ -355,7 +355,17 @@ uiload = function() {
 					modaldialog = $("#" + id );
 				}
 				var link = dialog.attr("href");
-				modaldialog.load(link, function() { 
+				
+				var param = dialog.data("parameterdata");
+				var options = {};
+				if( param )
+				{	
+					var element = $("#" + param );
+					var name = element.prop("name");
+					options[name] = element.val(); 
+				}
+				
+				modaldialog.load(link, options, function() { 
         		 	modaldialog.modal({keyboard: true,backdrop:true, "show":true});
         		 	//fix submit button
         		 	var id = $("form",modaldialog).attr("id");
@@ -384,15 +394,40 @@ uiload = function() {
 		event.preventDefault();
 
 		var clicked = jQuery(this);
-		var row = $(clicked.closest("tr"));
+		var row = clicked.closest("tr");
+		var existing = row.hasClass("emrowselected");
+		row.toggleClass("emrowselected");
 		var id = row.data("id");
 		
 		var form = $(clicked.closest("form"));
 		$('.emselectedrow',form ).each(function()
 		{
-			$(this).val(id);
+			if( form.hasClass("emmultivalue" ) )
+			{
+				var old = $(this).val();
+				if( old )
+				{
+					if( existing )  //removing the value
+					{
+						old = old.replace(id, "");
+						old = old.replace("  ", " ");
+					}
+					else
+					{
+						old = old +" "+id;
+					}		
+				}
+				else
+				{
+					old = id;
+				}
+				$(this).val(old);
+			}
+			else
+			{
+				$(this).val(id);
+			}
 		});
-		
 
 		var targetdiv = form.data("targetdiv");
 		if( (typeof targetdiv) != "undefined" )
@@ -403,8 +438,10 @@ uiload = function() {
 		{
 			jQuery(form).trigger("submit");
 		}
-		
-		form.closest(".modal").modal("hide");
+		if( !form.hasClass("emmultivalue" ) )
+		{
+			form.closest(".modal").modal("hide");
+		}
 			
 	});
 		
