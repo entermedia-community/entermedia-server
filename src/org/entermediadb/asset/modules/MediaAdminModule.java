@@ -337,8 +337,8 @@ public class MediaAdminModule extends BaseMediaModule
 						pageManager.getPageSettingsManager().saveSetting(homesettings);
 						pageManager.clearCache();
 
-						log.info("Loading database from dataexport folder");
-						archive.fireMediaEvent("data/importdatabase",null);
+						//log.info("Loading database from dataexport folder");
+						//archive.fireMediaEvent("data/importdatabase",null);
 					}
 					
 										
