@@ -72,7 +72,7 @@ public class VideoCacheLoader implements InputLoader
 		}
 		else
 		{
-			//instruction.setUsedCache(true)
+			//inStructions.setUsedCache(true);
 		}
 		return input;
 

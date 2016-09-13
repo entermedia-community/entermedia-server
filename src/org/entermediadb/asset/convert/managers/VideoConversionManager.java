@@ -61,7 +61,7 @@ public class VideoConversionManager extends BaseConversionManager
 		//if output == jpg and no time offset - standard
 		if(inStructions.getOutputRenderType().equals("video"))
 		{
-			return findTranscoder(inStructions).convert(inStructions);
+			return findTranscoder(inStructions).convertIfNeeded(inStructions);
 		}
 		
 		//Do the video conversion first. Then do the standard image conversion
