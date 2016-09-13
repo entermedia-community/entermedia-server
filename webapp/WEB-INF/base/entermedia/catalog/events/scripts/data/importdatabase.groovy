@@ -6,6 +6,7 @@ import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVReader
 import org.entermediadb.asset.util.ImportFile
 import org.entermediadb.asset.util.Row
+import org.entermediadb.elasticsearch.ElasticNodeManager
 import org.openedit.Data
 import org.openedit.OpenEditException
 import org.openedit.data.*
@@ -16,9 +17,19 @@ import org.openedit.xml.XmlFile
 
 public void init(){
 
+	
+	
+	
 	MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 	String catalogid = context.findValue("catalogid");
 
+	ElasticNodeManager nodeManager = mediaarchive.getNodeManager();
+	Date date = new Date();
+	String tempindex =  nodeManager.toId(mediaarchive.getCatalogId().replaceAll("_", "") +  date.getTime());
+	nodeManager.prepareIndex(tempindex);
+	
+	
+	
 	String rootdrive = null;
 	
 	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
@@ -89,29 +100,45 @@ public void init(){
 	 populateData(categories);
 	 }
 	 */
+	boolean deleteold = true;
+	
+	ordereredtypes.each
+	{
+		Page upload = mediaarchive.getPageManager().getPage(rootdrive + "/" + it + ".csv");
+		prepFields(mediaarchive,it,upload, tempindex);
+		
+	}
+	
+	
+	
 	ordereredtypes.each 
 	{
 		Page upload = mediaarchive.getPageManager().getPage(rootdrive + "/" + it + ".csv");
 		try{
 			if( upload.exists() )
 			{
-				importCsv(mediaarchive,it,upload);
+				importCsv(mediaarchive,it,upload, tempindex);
 			}
 		} catch (Exception e) {
-
+			deleteold=false;
+			
 			log.info("Exception thrown importing upload: ${upload} ", e );
 		}
 	}
-	importPermissions(mediaarchive,rootdrive);
+	importPermissions(mediaarchive,rootdrive, tempindex);
+	nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
 	
 }
 
 
-public void importPermissions(MediaArchive mediaarchive, String rootdrive) {
+public void importPermissions(MediaArchive mediaarchive, String rootdrive, String tempindex) {
 	Page upload = mediaarchive.getPageManager().getPage(rootdrive + "/lists/settingsgroup.xml");
 	if( upload.exists() )
 	{
 		Searcher sg = mediaarchive.getSearcher("settingsgroup");
+		sg.setAlternativeIndex(tempindex);
+		sg.putMappings();
+		
 		XmlUtil util = new XmlUtil();
 		Element root = util.getXml(upload.getReader(),"utf-8");
 		for(Iterator iterator = root.elementIterator(); iterator.hasNext();) {
@@ -138,12 +165,15 @@ public void importPermissions(MediaArchive mediaarchive, String rootdrive) {
 			existing.setValue("permissions", perms);
 			sg.saveData(existing, null);
 		}
-	}	
+		sg.setAlternativeIndex(null);
+	}
+	
 }
 
 
-public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload) {
+public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
+	
 	log.info("Importing " + upload.getPath());
 	Row trow = null;
 	ArrayList tosave = new ArrayList();
@@ -160,48 +190,12 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload)
 	PropertyDetails olddetails = null;
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
 	PropertyDetails details = archive.getPropertyDetails(searchtype);
+		
 	
-	
-	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
-	XmlFile settings = archive.getXmlArchive().loadXmlFile(filepath); // checks time
-	if(settings.isExist()){
-		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
-		olddetails = new PropertyDetails(searchtype);
-		olddetails.setInputFile(settings);
-		archive.setAllDetails(olddetails, searchtype, settings.getRoot());
-					
-		ArrayList toremove = new ArrayList();
-		
-				
-		olddetails.each{
-			PropertyDetail olddetail = it;
-			
-			PropertyDetail current = details.getDetail(olddetail.getId());
-			if(current == null){
-				current = details.findCurrentFromLegacy(olddetail.getId());
-			}
-			if(current != null && !("name".equals(current.getId()) || "id".equals(current.getId()))){
-				
-				toremove.add(olddetail.getId());
-					
-				
-			}
-		}
-		
-		toremove.each{
-			olddetails.removeDetail(it);
-		}
-		
-		
-		archive.savePropertyDetails(olddetails, searchtype, null,  filename);
-		
-		
-		
-	}
-	
-	archive.clearCache();
 	Searcher searcher = mediaarchive.getSearcher(searchtype);
 	details = searcher.getPropertyDetails();
+	searcher.setAlternativeIndex(tempindex);
+	searcher.putMappings();
 	searcher.setForceBulk(true);
 	while( (trow = file.getNextRow()) != null ) 
 	{
@@ -295,17 +289,90 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload)
 				searcher.saveAllData(tosave, null);
 				tosave.clear();
 			}
-		} catch ( Exception ex)
+			
+		} finally 
 		{
-			log.error(ex);
+			searcher.saveAllData(tosave, null);
+			
+			searcher.setAlternativeIndex(null);
+			
 		}	
 	}
 	FileUtils.safeClose(reader);
-	searcher.saveAllData(tosave, null);
-tosave.clear();	
+	
+	tosave.clear();	
 	searcher.setForceBulk(false);
+	searcher.setAlternativeIndex(null);
 	log.info("Saved " + searchtype + " "  +  tosave.size() );
 }
 
 
-init();
+
+public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) {
+
+	
+	log.info("Importing " + upload.getPath());
+	Row trow = null;
+	ArrayList tosave = new ArrayList();
+	String catalogid = mediaarchive.getCatalogId();
+	
+	
+	
+	PropertyDetails olddetails = null;
+	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
+	PropertyDetails details = archive.getPropertyDetails(searchtype);
+	
+	
+	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
+	XmlFile settings = archive.getXmlArchive().loadXmlFile(filepath); // checks time
+	if(settings.isExist()){
+		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
+		olddetails = new PropertyDetails(searchtype);
+		olddetails.setInputFile(settings);
+		archive.setAllDetails(olddetails, searchtype, settings.getRoot());
+					
+		ArrayList toremove = new ArrayList();
+		
+				
+		olddetails.each{
+			PropertyDetail olddetail = it;
+			
+			PropertyDetail current = details.getDetail(olddetail.getId());
+			if(current == null){
+				current = details.findCurrentFromLegacy(olddetail.getId());
+			}
+			if(current != null && !("name".equals(current.getId()) || "id".equals(current.getId()))){
+				
+				toremove.add(olddetail.getId());
+					
+				
+			}
+		}
+		
+		toremove.each{
+			olddetails.removeDetail(it);
+		}
+		
+		
+		archive.savePropertyDetails(olddetails, searchtype, null,  filename);
+		
+		
+		
+	}
+	
+	archive.clearCache();
+	
+	
+}
+
+
+
+
+try{
+	init();
+} finally{
+MediaArchive mediaarchive = context.getPageValue("mediaarchive");
+mediaarchive.getSearcherManager().resetAlternative();
+
+
+}
