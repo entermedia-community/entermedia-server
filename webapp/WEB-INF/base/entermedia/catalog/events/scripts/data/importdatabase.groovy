@@ -126,7 +126,9 @@ public void init(){
 		}
 	}
 	importPermissions(mediaarchive,rootdrive, tempindex);
-	nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
+	if(deleteold){
+		nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
+	}
 	
 }
 
@@ -199,8 +201,7 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 	searcher.setForceBulk(true);
 	while( (trow = file.getNextRow()) != null ) 
 	{
-		try
-		{
+	
 			String id = trow.get("id");
 			Data newdata = searcher.createNewData();
 			newdata.setId(id);
@@ -285,19 +286,20 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 			}
 			tosave.add(newdata);
 	
-			if(tosave.size() > 10000){
-				searcher.saveAllData(tosave, null);
-				tosave.clear();
-			}
+		
 			
-		} finally 
-		{
+		
+		if(tosave.size() > 10000){
 			searcher.saveAllData(tosave, null);
-			
-			searcher.setAlternativeIndex(null);
-			
-		}	
+			tosave.clear();
+		}
 	}
+	
+	
+	searcher.saveAllData(tosave, null);
+	searcher.setAlternativeIndex(null);
+		
+	
 	FileUtils.safeClose(reader);
 	
 	tosave.clear();	
