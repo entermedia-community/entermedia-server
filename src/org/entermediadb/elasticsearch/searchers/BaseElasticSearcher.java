@@ -1290,7 +1290,7 @@ public class BaseElasticSearcher extends BaseSearcher {
 		}
 
 		if (errors.size() > 0) {
-			 throw new OpenEditException((String)errors.get(0));
+			 throw new OpenEditException((String)errors.get(0).toString());
 
 		}
 		// ConcurrentModificationException

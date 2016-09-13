@@ -199,7 +199,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 	}
 
-	protected String toId(String inId)
+	public String toId(String inId)
 	{
 		String id = inId.replace('/', '_');
 		return id;
