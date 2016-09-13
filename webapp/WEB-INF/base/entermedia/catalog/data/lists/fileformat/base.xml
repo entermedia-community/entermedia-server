@@ -9,6 +9,7 @@
 	<property id="bmp"  synctags="true"  rendertype="image" creator="imagemagick">BMP</property>
 	<property id="crw"  synctags="true"  rendertype="image" creator="imagemagick">CRW</property>
 	<property id="cr2"  synctags="true"  rendertype="image" creator="imagemagick">CR2</property>
+	<property id="dv"  synctags="false"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg" >DV</property>
 	<property id="dng"  synctags="true"  rendertype="image" creator="imagemagick">DNG</property>
 	<property id="eps"  synctags="true"  rendertype="image" creator="imagemagick">EPS</property>
 	<property id="flv"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg">FLV</property>
