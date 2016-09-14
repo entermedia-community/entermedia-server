@@ -94,7 +94,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			
 			//Someone is forcing a reindex
 			//deleteOldMapping();
-			//putMappings(); 
+			putMappings(); 
 
 			getXmlSearcher().clearIndex();
 			HitTracker settings = getXmlSearcher().getAllHits();
