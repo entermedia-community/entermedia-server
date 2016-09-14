@@ -129,7 +129,7 @@ public void init(){
 	if(deleteold){
 		nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
 	}
-	
+	mediaarchive.getSearcherManager().clear();
 }
 
 
