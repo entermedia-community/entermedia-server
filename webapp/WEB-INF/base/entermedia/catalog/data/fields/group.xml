@@ -3,4 +3,5 @@
 	<property id="name" index="true" stored="true" editable="true" keyword="true"  >Name</property>
 	<property id="description" index="true" >All Fields</property>
 	<property id="enabled" index="true" stored="true" editable="true" datatype="boolean">Enabled</property>
+	<property id="shortdateformat" index="true" stored="true" editable="true" >Short Date Format</property>
 </properties>
