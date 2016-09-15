@@ -9,7 +9,9 @@
   <property id="enabled" index="true" stored="true" editable="true"  type="boolean" internalfield="false" datatype="boolean" >enabled</property>
   <property id="remoteroot" index="true" stored="true" editable="true">remoteroot</property>
   <property id="autocreateusers" index="true" stored="true" editable="true"  type="boolean" internalfield="false" datatype="boolean" >Auto create new users</property>
-  <property id="newusersettingsgroup" index="true" stored="true" editable="true"  type="list" listid="settingsgroup" internalfield="false" datatype="boolean" >Settings Group for new users</property>
+   
+  <property id="newusersettingsgroup" index="true" stored="true" editable="true"  type="list" listid="settingsgroup" internalfield="false"  >Role for new users</property>
+   
   <property id="alloweddomains" index="true" stored="true" editable="true"  internalfield="false"  >List of allowed domains, comma seperated</property>
   
   

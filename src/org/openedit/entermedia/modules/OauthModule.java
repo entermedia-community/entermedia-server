@@ -160,7 +160,7 @@ public class OauthModule extends BaseMediaModule
 				String email = (String)data.get("email");
 				String firstname = (String)data.get("given_name");
 				String lastname = (String)data.get("family_name");
-				boolean autocreate = (Boolean) authinfo.getValue("autocreateusers");
+				boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
 				handleLogin(inReq,  email, firstname, lastname,true, autocreate, authinfo);
 				
 			}
@@ -225,16 +225,18 @@ public class OauthModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
 		
-		User target = searcher.getUserByEmail(email);
+		User target = searcher.getXmlUserArchive().getUserByEmail(email);
 		if (autocreate && target == null)
 		{
 			target = (User) searcher.createNewData();
 			target.setFirstName(firstname);
 			target.setLastName(lastname);
 			target.setEmail(email);
+			target.setEnabled(true);
 			searcher.saveData(target, null);			
 		}
 		if(target != null){
+			
 			inReq.putSessionValue(searcher.getCatalogId() + "user", target);
 			String md5 = getCookieEncryption().getPasswordMd5(target.getPassword());
 			String value = target.getUserName() + "md542" + md5;
