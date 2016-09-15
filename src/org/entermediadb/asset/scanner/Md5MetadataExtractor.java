@@ -8,6 +8,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
 
+
 public class Md5MetadataExtractor extends MetadataExtractor
 {
 	private static final Log log = LogFactory.getLog(Md5MetadataExtractor.class);
@@ -16,6 +17,7 @@ public class Md5MetadataExtractor extends MetadataExtractor
 	{
 		try
 		{
+			//com.google.common.hash.Hashing;
 			String catalogSettingValue = inArchive.getCatalogSettingValue("extractmd5");
 			if( Boolean.parseBoolean(catalogSettingValue) )
 			{
