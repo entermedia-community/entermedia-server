@@ -160,8 +160,8 @@ public class OauthModule extends BaseMediaModule
 				String email = (String)data.get("email");
 				String firstname = (String)data.get("given_name");
 				String lastname = (String)data.get("family_name");
-
-				handleLogin(inReq, "google-" + (String)data.get("id"), email, firstname, lastname,true, true);
+				boolean autocreate = (Boolean) authinfo.getValue("autocreateusers");
+				handleLogin(inReq,  email, firstname, lastname,true, autocreate, authinfo);
 				
 			}
 			catch (Exception e)
@@ -193,41 +193,53 @@ public class OauthModule extends BaseMediaModule
 			JSONParser parser = new JSONParser();
 			
 			JSONObject data =  (JSONObject) parser.parse(userinfoJSON);
-			handleLogin(inReq, authinfo.getId() + "-" + (String)data.get("sub"), (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),false, true);
+			handleLogin(inReq,  (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),false, true, authinfo);
 			
 		}
 	//	inReq.redirect("/" + appid + "/index.html");
 	}
 
-	protected void handleLogin(WebPageRequest inReq, String username, String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate)
+	protected void handleLogin(WebPageRequest inReq,  String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate, Data authinfo)
 	{
-		MediaArchive archive = getMediaArchive(inReq);
-		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
-		log.info("Username was " + username);
-		
-		User target = (User) searcher.searchById(username);
-
-	
-		if (matchOnEmail)
-		{
-			Data record = (Data) searcher.searchByField("email", email);
-
-			if (record != null)
-			{
-				target = (User) searcher.searchById(record.getId());
+		 
+		if(authinfo.getValue("alloweddomains") != null){
 			
+			boolean ok = false;
+			String domains = authinfo.get("alloweddomains");
+			String [] domainlist = domains.split(",");
+			for (int i = 0; i < domainlist.length; i++)
+			{
+				String domain = domainlist[i];
+				if(email.endsWith(domain)){
+					ok = true;
+				}
+			}
+			if(!ok){
+				return;
 			}
 		}
-
+		
+		
+		
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
+		
+		User target = searcher.getUserByEmail(email);
 		if (autocreate && target == null)
 		{
 			target = (User) searcher.createNewData();
-			target.setId(username);
 			target.setFirstName(firstname);
 			target.setLastName(lastname);
 			target.setEmail(email);
-			searcher.saveData(target, null);
-			
+			searcher.saveData(target, null);			
+		}
+		if(target != null){
+			inReq.putSessionValue(searcher.getCatalogId() + "user", target);
+			String md5 = getCookieEncryption().getPasswordMd5(target.getPassword());
+			String value = target.getUserName() + "md542" + md5;
+			inReq.putPageValue("entermediakey", value);
+			inReq.putPageValue( "user", target);
 			if(getWebEventListener() != null)
 			{
 				WebEvent event = new WebEvent();
@@ -241,31 +253,8 @@ public class OauthModule extends BaseMediaModule
 
 				getWebEventListener().eventFired(event);
 			}
-			
-			
 
-		}
-		if(target != null){
-			inReq.putSessionValue(searcher.getCatalogId() + "user", target);
 
-			String md5 = getCookieEncryption().getPasswordMd5(target.getPassword());
-			String value = target.getUserName() + "md542" + md5;
-			inReq.putPageValue("entermediakey", value);
-			inReq.putPageValue( "user", target);
-
-		}
-		if(getWebEventListener() != null)
-		{
-			WebEvent event = new WebEvent();
-			event.setSearchType("userprofile");
-			event.setCatalogId(searcher.getCatalogId());
-			event.setOperation("userprofile/saved");
-			event.setProperty("dataid", target.getId());
-			event.setProperty("id", target.getId());
-
-			event.setProperty("applicationid", inReq.findValue("applicationid"));
-
-			getWebEventListener().eventFired(event);
 		}
 
 	}

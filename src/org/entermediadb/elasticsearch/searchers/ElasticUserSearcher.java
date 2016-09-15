@@ -10,14 +10,12 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.tree.BaseElement;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.locks.Lock;
 import org.openedit.users.BaseUser;
 import org.openedit.users.Group;
 import org.openedit.users.User;
@@ -111,12 +109,12 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	 */
 	public User getUserByEmail(String inEmail)
 	{
-		User user =  getXmlUserArchive().getUserByEmail(inEmail);
-		if( user != null)
-		{
-			return getUser(user.getId());
+		User target = null;
+		Data record = (Data)searchByField("email", inEmail);
+		if(record != null){
+			target = (User) loadData(record);
 		}
-		return null;
+		return target;
 	}
 
 	public HitTracker getUsersInGroup(Group inGroup)
