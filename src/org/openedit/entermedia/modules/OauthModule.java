@@ -203,8 +203,7 @@ public class OauthModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
-		log.info("Username from drupal was " + username);
-		log.info("Username from drupal was " + username);
+		log.info("Username was " + username);
 		
 		User target = (User) searcher.searchById(username);
 
