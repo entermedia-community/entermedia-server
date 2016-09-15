@@ -1885,22 +1885,6 @@
 	
 	
 	
-	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-	
-		<property name="metadataExtractors">
-			<list>
-				<ref bean="pdfExtractor" />
-				<ref bean="oofficeTextExtractor" />
-				<ref bean="exiftoolMetadataExtractor" />
-				<ref bean="ffmpegMetadataExtractor" />
-				<ref bean="md5MetadataExtractor" />
-			</list>
-		</property>
-	</bean>
-	
 	
 
 
@@ -2007,6 +1991,10 @@
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
 	
+	
+	
+	
+	
 	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -2018,9 +2006,15 @@
 				<ref bean="oofficeTextExtractor" />
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />
+				<ref bean="md5MetadataExtractor" />
 			</list>
 		</property>
 	</bean>
+	
+	
+	
+	
+	
 	
 	<bean id="oofficeTextExtractor" class="org.entermediadb.ooffice.OofficeTextExtractor" >
 		<property name="metadataPdfExtractor"><ref bean="pdfExtractor" /></property>
@@ -2041,7 +2035,23 @@
 		</property>
 	
 	</bean>
- 	
+ 	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	
+		<property name="metadataExtractors">
+			<list>
+				<ref bean="pdfExtractor" />
+				<ref bean="oofficeTextExtractor" />
+				<ref bean="exiftoolMetadataExtractor" />
+				<ref bean="ffmpegMetadataExtractor" />
+				<ref bean="md5MetadataExtractor" />
+			</list>
+		</property>
+	</bean>
+	
+	
  	
  	<bean id="elasticRepository" class="org.entermediadb.elasticsearch.ElasticsearchRepository" >
 		<property name="searcherManager">
