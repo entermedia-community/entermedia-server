@@ -1,6 +1,5 @@
 package org.entermediadb.projects;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -17,7 +16,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
-import org.entermediadb.asset.ChunkySourcePathCreator;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -547,6 +545,20 @@ public class BaseProjectManager implements ProjectManager
 			{
 				collection = (Data)librarycolsearcher.searchById(inCollectionid);
 				data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
+				String libraryid = collection.get("library");
+				
+				Data library = inArchive.getData("library", libraryid);
+				String folder = library.get("folder");
+				Category cat = inArchive.getCategory(inCategoryid);
+
+				String categorypath = folder + "/" + collection.getName() + "/" + cat.getName();
+				
+				Category newcat = inArchive.getCategoryArchive().createCategoryTree(categorypath);
+				ArrayList list = new ArrayList();
+				copyAssets(list, inUser, inArchive, collection, cat, newcat);// will actually create librarycollectionasset entries
+				Searcher assets = inArchive.getAssetSearcher();
+				assets.saveAllData(list, null);
+				
 			}			
 			if(data == null)
 			{
@@ -560,6 +572,41 @@ public class BaseProjectManager implements ProjectManager
 		return null;
 	}
 	
+	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, Data inCollection, Category inCat, Category inNewcat)
+	{
+		
+		Searcher assets = inArchive.getAssetSearcher();
+		Searcher cats = inArchive.getSearcher("category");
+			
+		HitTracker assetlist = assets.fieldSearch("category-exact", inCat.getId());
+		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset) assets.loadData(hit);
+			asset.addCategory(inNewcat);		
+			savelist.add(asset);
+		}
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			String newpath = PathUtilities.extractId(child.getName());
+			
+			String id = inNewcat.getId() + "_" +newpath;
+			Category copy = inNewcat.getChild(id);
+			if(copy == null){
+				copy = (Category) cats.createNewData();
+				copy.setName(child.getName());
+				copy.setId(id);
+				inNewcat.addChild(copy);
+				cats.saveData(copy,null);
+			}
+			copyAssets(savelist, inUser, inArchive, inCollection, child, copy);		
+
+		}
+		
+		
+	}
+
 	@Override
 	public void removeCategoryFromCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
