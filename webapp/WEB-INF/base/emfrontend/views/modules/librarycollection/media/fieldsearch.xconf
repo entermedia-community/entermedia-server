@@ -1,6 +1,5 @@
 <page>
 
-	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
 	
 	
 	<property name="hitsname">hits</property>
@@ -13,16 +12,12 @@
     </path-action>
 
 	<path-action name="ProjectModule.addCollectionTab" />
-<!--
-	<page-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</page-action>
-	-->
-	<!--
-	<path-action name="ProjectModule.loadCategoriesOnCollection">
-		<searchtype>librarycollection</searchtype>
+
+	<path-action name="DataEditModule.search" allowduplicates="true">
+	<searchtype>asset</searchtype>
 	</path-action>
-	-->
+	
+	
 	
 	 <permission name="view">
     		<action name="ProjectModule.checkLibraryPermission" />

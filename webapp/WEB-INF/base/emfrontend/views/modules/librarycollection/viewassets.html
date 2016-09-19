@@ -13,5 +13,36 @@ $context.putPageValue("hideheader", "true")
 #end
 
 ###always go to index - don't care about resultview
+
+<div class="row">		
+				<div class="col-md-3 ">
+
+<div class="panel panel-default">
+  <div class="panel-heading">[[Collection Browser]]</div>
+  <div class="panel-body">
+		$pages.include("$apphome/views/modules/librarycollection/tree.html")
+  </div>
+</div>
+
+
+	
+
+  </div>
+
+		
+			
+				<div class="col-md-9">
+
+
+
 $pages.include("$apphome/components/results/index.html",$context)
 
+</div></div>
+
+
+
+
+<script>
+	// html demo
+	$('#html').jstree();
+	</script>
