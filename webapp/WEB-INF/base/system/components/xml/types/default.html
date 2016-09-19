@@ -4,7 +4,8 @@
 			#set($languages = $mediaarchive.getList("locale"))
 			#set($map = $data.getValue($detail.getId()))
 			#set($dlocale = $context.getLanguage() )
-			<input type="hidden" class="detail_$detail.id autosubmited #if($detail.isRequired() && !$multiedit) required #end" value="#esc($val)"  name="$!{detailprefix}${detail.getId()}.value"   />
+			<input type="hidden" value="#esc($val)" name="$!{detailprefix}${detail.getId()}.value" /> ##if this really needed?
+			
 			#set($language_count = 1)
 			<div id="languagesextra_${detail.id}" class="languageselector">
 				#foreach($locale in $languages)
@@ -16,7 +17,7 @@
 					#set($localval = "")
 				#end
 				#if($language_count == 1)
-				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$dlocale")
+				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$dlocale",$context)
 				#end
 				<input type="hidden" id="languagesextra_${detail.id}_count" value="$language_count">
 			</div>

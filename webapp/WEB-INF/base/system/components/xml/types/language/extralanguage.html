@@ -20,7 +20,7 @@
 		#else 
 			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
 		#end
-		<input type="text" id="languages_${detailid}_${language_count}_value" name="$language_textbox" value="$!map.getText($languagecode)" >
+		<input type="text" id="languages_${detailid}_${language_count}_value" class="#if($language_count == "1" && $detail.isRequired() && !$multiedit) required #end" name="$language_textbox" value="$!map.getText($languagecode)" >
 	</div>
 	<div class='clearfix'></div>	
 </div>
