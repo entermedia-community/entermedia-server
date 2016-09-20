@@ -56,8 +56,8 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		String isfolder = get("isfolder");
 		if (isfolder == null)
 		{
-			ContentItem originalPage = getMediaArchive().getPageManager().getRepository().getStub("/WEB-INF/data/" + getCatalogId() + "/originals/" + getSourcePath());
-			setFolder(originalPage.isFolder());
+			ContentItem item = getMediaArchive().getOriginalFileManager().getOriginalContent(this);
+			setFolder(item.isFolder());
 		}
 		
 		return Boolean.parseBoolean(get("isfolder"));

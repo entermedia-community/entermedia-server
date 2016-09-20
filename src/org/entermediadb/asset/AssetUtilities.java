@@ -423,8 +423,16 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		vals.put("guid", sguid);
 		vals.put("splitguid", sguid.substring(0,2) + "/" + sguid.substring(3).replace("-", ""));
 		
-		String date  = new SimpleDateFormat("yyyy/MM").format(new Date()); //TODO: Use DataStorage
+		Date now = new Date();
+		String date  = DateStorageUtil.getStorageUtil().formatDateObj(now,"yyyy/MM"); //TODO: Use DataStorage
 		vals.put("formatteddate",date );
+		date  = DateStorageUtil.getStorageUtil().formatDateObj(now,"dd"); //TODO: Use DataStorage
+		vals.put("formattedday",date );
+
+		date  = DateStorageUtil.getStorageUtil().formatDateObj(now,"HH"); //TODO: Use DataStorage
+		vals.put("formattedhour",date );
+		
+		
 		vals.put("user",inReq.getUser());
 		Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
 		

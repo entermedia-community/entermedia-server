@@ -31,6 +31,26 @@ public class OriginalFileManager
 		Asset asset = getMediaArchive().getAssetBySourcePath(inSourcePath);
 		return getOriginalDocument(asset);
 	}
+
+	public ContentItem getOriginalContent(Asset inAsset)
+	{
+		String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
+		String alternative = inAsset.get("archivesourcepath");
+		if( alternative == null)
+		{
+			alternative = inAsset.getSourcePath();
+		}
+		originalpath = originalpath + "/" + alternative;
+		String primaryname = inAsset.getPrimaryFile();
+		if(inAsset.isFolder() && primaryname != null)
+		{
+			originalpath = originalpath + "/" + primaryname;
+		}
+		ContentItem page = getPageManager().getRepository().getStub(originalpath);
+		return page;
+
+	}
+	
 	public Page getOriginalDocument(Asset inAsset)
 	{
 		String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";

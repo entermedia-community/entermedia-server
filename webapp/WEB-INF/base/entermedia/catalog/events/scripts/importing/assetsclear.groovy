@@ -63,7 +63,11 @@ public void init()
 	{
 		Data hit = (Data)obj;
 	
-		String assetsource = hit.getSourcePath();
+		String assetsource = inAsset.get("archivesourcepath");
+		if( assetsource == null)
+		{
+			assetsource = hit.getSourcePath();
+		}
 		String pathToOriginal = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + assetsource;
 		
 		if(!pageManager.getRepository().doesExist(pathToOriginal) )
