@@ -1,0 +1,9 @@
+<page>
+	<property name="virtual">true</property>
+	<property name="eventname">Scan and Flag duplicate assets</property>	
+
+
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${catalogid}/events/scripts/assets/findduplicates.groovy</script>
+	</path-action>
+</page>

@@ -117,6 +117,7 @@
  	-->
  	<property id="contenttype" keyword="true" datatype="list" editable="true" index="true" stored="true" >Content Type</property>
 	<property id="md5hex" index="true"  editable="false" indextype="not_analyzed" >MD5 Hex Value</property>	
+	<property id="duplicate" index="true"  editable="true" type="boolean" >Duplicate Asset</property>	
 
 
 </page>
