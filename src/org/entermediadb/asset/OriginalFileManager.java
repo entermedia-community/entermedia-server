@@ -35,7 +35,12 @@ public class OriginalFileManager
 	{
 		String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
 		//String fullpath = inAsset.get("originalpath");//absolute path might be a http server
-		originalpath = originalpath + "/" + inAsset.getSourcePath();
+		String alternative = inAsset.get("archivesourcepath");
+		if( alternative == null)
+		{
+			alternative = inAsset.getSourcePath();
+		}
+		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
 		if(inAsset.isFolder() && primaryname != null)
 		{

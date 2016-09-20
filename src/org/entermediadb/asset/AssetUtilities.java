@@ -353,6 +353,24 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		
 		Map vals = new HashMap();
 		vals.putAll(inReq.getPageMap());
+		
+		if(currentcollectionid != null)
+		{
+			Data coll = inArchive.getData("librarycollection", currentcollectionid);
+			if( coll != null)
+			{
+				vals.put("librarycollection", currentcollectionid);
+				vals.put("library", coll.get("library"));
+			}	
+		}
+		
+		String sourcepath = createSourcePathFromMask(inReq, inArchive, fileName, sourcepathmask, vals);
+		
+		return sourcepath;
+	}
+
+	protected String createSourcePathFromMask(WebPageRequest inReq, MediaArchive inArchive, String fileName, String sourcepathmask, Map vals)
+	{
 		String prefix ="";
 		String[] fields = inReq.getRequestParameters("field");
 
@@ -384,16 +402,6 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			vals.put("library", library);
 		}
 
-		if(currentcollectionid != null)
-		{
-			Data coll = inArchive.getData("librarycollection", currentcollectionid);
-			if( coll != null)
-			{
-				vals.put("librarycollection", currentcollectionid);
-				vals.put("library", coll.get("library"));
-			}	
-		}
-		
 		String division = inReq.getRequestParameter("division.value");
 		if(division != null)
 		{
@@ -438,7 +446,6 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		{
 			sourcepath = sourcepath.substring(1);
 		}
-		
 		return sourcepath;
 	}
 

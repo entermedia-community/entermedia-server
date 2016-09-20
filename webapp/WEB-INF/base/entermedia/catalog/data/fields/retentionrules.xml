@@ -1,0 +1,7 @@
+<properties beanname="folderSearcher">
+	<property id="id" editable="true" stored="true" index="true">ID</property>
+	<property id="name" editable="true" stored="true" index="true">Name</property>	
+	<property id="archivepath" editable="true" stored="true" index="true">Archive Path</property>
+	<property id="expirationperiod" editable="true" stored="true" index="true">Expiration Period</property>
+<!--- library? -->
+</properties>
