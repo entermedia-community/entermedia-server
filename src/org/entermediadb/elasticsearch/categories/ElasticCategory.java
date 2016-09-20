@@ -38,7 +38,7 @@ public class ElasticCategory extends Category
 	}
 	public Category getParentCategory() 
 	{
-		String parentid = (String)getMap().get("parentid");
+		String parentid = get("parentid");
 		if( parentid != null && fieldParentCategory == null && !"index".equals(getId()) && !parentid.equals(getId()))
 		{
 			fieldParentCategory = (Category)getCategorySearcher().searchById(parentid);
