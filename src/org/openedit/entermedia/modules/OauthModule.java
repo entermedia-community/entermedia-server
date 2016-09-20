@@ -214,7 +214,10 @@ public class OauthModule extends BaseMediaModule
 					ok = true;
 				}
 			}
-			if(!ok){
+			if(!ok)
+			{
+				String appid = inReq.findValue("applicationid");
+				inReq.redirect("/" + appid + "/authentication/nopermissions.html" );
 				return;
 			}
 		}
