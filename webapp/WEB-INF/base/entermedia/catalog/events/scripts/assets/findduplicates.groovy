@@ -38,6 +38,7 @@ public void init()
 			Data hit = it;
 			Asset asset = searcher.loadData(hit);
 			asset.setValue("duplicate", true);
+			asset.setValue("deleted", true);
 			assets.add(asset);
 		}
 		child.getMap();

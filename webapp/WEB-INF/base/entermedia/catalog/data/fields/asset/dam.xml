@@ -119,6 +119,7 @@
 	<property id="md5hex" index="true"  editable="false" indextype="not_analyzed" >MD5 Hex Value</property>	
 	<property id="duplicate" index="true"  editable="true" type="boolean" >Duplicate Asset</property>	
  	<property id="retentionpolicy"  datatype="list" listid="retentionrules" editable="true" index="true" stored="true" >Retention Policy</property>
+ 	<property id="archivesourcepath"  editable="true" index="true" stored="true" >Archive Source Path</property>
 
 
 </page>

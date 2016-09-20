@@ -1,5 +1,5 @@
 <page>
 
-	<rule id="101" archivepath="archive/${shotdate}/${slitguid}" name="30 Days Old" expirationperiod="30d"/>
+	<rule id="101" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="30 Days Old" expirationperiod="30d"/>
 
 </page>

@@ -270,6 +270,11 @@ public class MediaArchive
 		}
 		return path;
 	}
+	
+	public ContentItem getOriginalContent(Asset inAsset){
+		
+		return getOriginalFileManager().getOriginalContent(inAsset);
+	}
 
 	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException
 	{
