@@ -36,7 +36,7 @@ public void init()
 					
 					Page newpage = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + newsourcepath);
 					pageManager.movePage(fullpath,newpage);
-					log.info("Archived asset to ${newpage}");
+					log.info("Archived asset to ${newpage.getContentItem().getAbsolutePath()}");
 					asset.setFolder(fullpath.isFolder());
 					asset.setValue("archivesourcepath",newsourcepath);
 					mediaarchive.getAssetSearcher().saveData(asset);
