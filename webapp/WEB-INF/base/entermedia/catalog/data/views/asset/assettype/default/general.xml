@@ -11,6 +11,7 @@
   <property id="copyrightnotice"/>
   <property id="instructions"/>
   <property id="rightsusageterms"/>
+  <property id="retentionpolicy"/>
 
   <property id="owner"/>
   <property id="editstatus"/>
