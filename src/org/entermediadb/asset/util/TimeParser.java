@@ -4,9 +4,15 @@ public class TimeParser {
 
 	public long parse(String inPeriodString) 
 	{
-		inPeriodString = inPeriodString.trim().toLowerCase();
+		inPeriodString = inPeriodString.trim();
 
-		if (inPeriodString.endsWith("d"))
+		if (inPeriodString.endsWith("M"))
+		{
+			long months = Long.parseLong(inPeriodString.substring(0, inPeriodString.length() - 1));
+			long period = months * 30 * 24 * 60L * 60L * 1000L;
+			return period;
+		}
+		else if (inPeriodString.endsWith("d"))
 		{
 			long days = Long.parseLong(inPeriodString.substring(0, inPeriodString.length() - 1));
 			long period = days * 24 * 60L * 60L * 1000L;
