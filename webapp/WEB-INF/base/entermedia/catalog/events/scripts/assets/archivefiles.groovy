@@ -41,6 +41,10 @@ public void init()
 					asset.setValue("archivesourcepath",newsourcepath);
 					mediaarchive.getAssetSearcher().saveData(asset);
 				}
+				else
+				{
+					log.info("Original did not exist to archive: ${asset.getSourcePath()}"); 
+				}
 			}	
 			
 		}
