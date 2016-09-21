@@ -730,5 +730,12 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 	public String getProperty(String inProperty){
 		return get(inProperty);
 	}
+
+
+
+	public String getPath()
+	{
+		return get("archivesourcepath") == null ?  getSourcePath():get("archivesourcepath");
+	}
 	
 }

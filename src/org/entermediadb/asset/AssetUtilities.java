@@ -12,11 +12,16 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.UUID;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.scanner.MetaDataReader;
+import org.entermediadb.projects.BaseProjectManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -30,6 +35,8 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	protected MetaDataReader fieldMetaDataReader;
 	protected DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");// TODO: use it8l
 	protected boolean fieldIncludeCategories = true;
+	private static final Log log = LogFactory.getLog(AssetUtilities.class);
+
 	
 	public boolean isIncludeCategories()
 	{
@@ -455,6 +462,79 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			sourcepath = sourcepath.substring(1);
 		}
 		return sourcepath;
+	}
+	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, Data inCollection, Category inCat, Category inParent)
+	{
+
+		Searcher assets = inArchive.getAssetSearcher();
+		Searcher cats = inArchive.getSearcher("category");
+		String newpath = PathUtilities.extractId(inCat.getName());
+		String id = inParent.getId() + "_" + newpath;
+		Category copy = inParent.getChild(id);
+		if (copy == null)
+		{
+			copy = (Category) cats.createNewData();
+			copy.setName(inCat.getName());
+			copy.setId(id);
+			inParent.addChild(copy);
+			cats.saveData(copy, null);
+		}
+		
+		HitTracker assetlist = assets.fieldSearch("category-exact", inCat.getId());
+		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset) assets.loadData(hit);
+			asset.addCategory(copy);
+			savelist.add(asset);
+		}
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			copyAssets(savelist, inUser, inArchive, inCollection, child, copy);
+
+		}
+
+	}
+
+
+	
+	
+	public void exportCategoryTree(MediaArchive inArchive, Category inRoot, String inFolder)
+	{
+		String finalpath = inFolder + "/" + inRoot.getName();
+		Searcher assets = inArchive.getAssetSearcher();
+		Searcher cats = inArchive.getSearcher("category");
+		
+		
+		HitTracker assetlist = assets.fieldSearch("category-exact", inRoot.getId());
+		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset) assets.loadData(hit);
+			Page fullpath = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getPath() );
+			log.info(fullpath.isFolder());
+			if(!fullpath.exists()){
+				log.info("Fullpath " + fullpath  + "Did not exist");
+			
+			}
+			log.info(fullpath );
+			Page target = inArchive.getPageManager().getPage(finalpath);
+			inArchive.getPageManager().copyPage(fullpath, target);
+		
+		}
+		
+		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			exportCategoryTree(inArchive, child, finalpath);
+		}
+		
+		
+		
+		
+		
+		
 	}
 
 
