@@ -1,68 +1,68 @@
-	
-	Revisions Table with Date and Comments
-	
-	Check out for Editing
-	Check in Edits
-	
-	
-	Checked out by Ian
-	
-	Cancel Checkout
-	
-	"Switch to Revision" button
-	
-	
-	Code:  Move files on checkin to final resting place....
-	
-	
-	
-
-
-
-
 <div class="publishtabcontainer">
+	
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Import Assets]] </div>
+		<div class="ui-widget-header">[[Download Logs]] </div>
 		<div class="ui-widget-content">
 
-						#if( $hits.size() > 0)
-						Assets</h5><div style="padding:10px"> $sizer.inEnglish( $filesizes.get("assetsize") ) -  $hits.size() [[files]]</div>
-						#end
-						#set( $categories = $projectmanager.loadCategoriesOnCollection($mediaarchive,$librarycol.getId() ) )
+#set( $downloadsearcher = $mediaarchive.getSearcher("librarycollectiondownloads") )
+#set( $downloads = $downloadsearcher.query().matches("librarycollection",$librarycol.getId()).sort("date").search() )
+
+		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
+			<table width="50%" class="categoriescontainer hovertable" >
+			<tr>
+				<th>Revision</th>
+				<th>User</th>
+				<th>Date</th>
+			</tr>
+			#foreach($download in $downloads)
+				<tr> 
+					<td>$download.revision</td>
+					<td>$download.owner</td>
+					<td>$download.date</td>
+				</tr>	
+			#end
+			</table>
+			</div>
+			<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
+			   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
+				<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+				<br>
+				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download ]]">	   
+				<h5>
+					[[Download a copy to your User Folder:]] <b>$user.getUserName()/$librarycol.getName()/$count</b> 
+				</h5>
+			</form>	
+		</div>
+	</div>	
+
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+		<div class="ui-widget-header">[[Upload Logs]] </div>
+		<div class="ui-widget-content">
+		##set( $count = $librarycol.getValue("revisions") )
+		#if(!$count)
+			#set( $count = 12)
+		#end
+		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
+			<table width="50%" class="categoriescontainer hovertable" >
+			<tr>
+				<th>Revision</th>
+				<th>User</th>
+				<th>Date</th>
+				<th>Comment</th>
+			</tr>
+			#foreach($i in [1..$count])
+				<tr> 
+					<td>dsdfd</td>
+				</tr>	
+			#end
+				</table>
+			</div>
 						
-						#if( $categories && $categories.size()  > 0)
-							<h5>[[Categories]]</h5>  
-							<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
-								<table width="50%" class="categoriescontainer hovertable" >
-								#foreach( $cat in $categories)
-										<tr> #set( $categoryloaded=$mediaarchive.getCategorySearcher().loadData($cat))
-											<td style="padding:10px;" ><a href="$home$apphome/views/categories/${cat.getId()}.html">$categoryloaded.getCategoryPath()</a></td>
-											##<td>$sizer.inEnglish( $filesizes.get($cat.getId()) )</td>
-											<td style="text-align: right;">
-												<a href="$home$apphome/views/modules/librarycollection/removecategoryfromcollection.html?categoryid=$cat.getId()&collectionid=$librarycol.getId()"
-												   title="[[Remove $cat.getSourcePath() Category]]" 
-												   class="confirm categoryclose" confirm="[[Remove from collection?]]"> 
-													<span class=" ui-icon ui-icon-closethick" style="display: inline-block; vertical-align: middle;"></span>
-												</a>
-											</td>
-										</tr>	
-								#end
-								</table>
-							</div>
-						#end
-
-					<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
-				   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
-
-						<h5>
-							[[Copy Assets and Categories in $selectedlibrary Library:]] <b>$selectedlibrary.folder/$librarycol.getName()/</b> 
-						</h5>
-						<input type="hidden" name="collectionid" value="$librarycol.getId()" />
-						<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
-					</form>	
+			<a class="btn" href="#">Upload Changes</a>
 		</div>
 		
 	</div>	
+	
 </div>
 	
 
