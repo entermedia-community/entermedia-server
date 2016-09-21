@@ -26,7 +26,7 @@ public void init()
 		log.info("Found ${assets.size()} for retention policy ${it} ${assets.query}");
 		assets.each
 		{
-			if( it.archivesourcepath == null )
+			if( !it.archivesourcepath  )
 			{
 				Asset asset = mediaarchive.getAssetSearcher().loadData(it);
 				Page fullpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + asset.getSourcePath() );
