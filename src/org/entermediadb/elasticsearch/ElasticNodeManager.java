@@ -234,7 +234,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Settings settings = Settings.settingsBuilder().put("location", path).build();
 		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
 		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
-		.execute().actionGet();
+				.execute().actionGet();
 
 		//	    PutRepositoryRequestBuilder putRepo = 
 		//	    		new PutRepositoryRequestBuilder(getClient().admin().cluster());
@@ -313,7 +313,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
 		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
-		.execute().actionGet();
+				.execute().actionGet();
 
 		GetSnapshotsRequestBuilder builder = new GetSnapshotsRequestBuilder(getClient(), GetSnapshotsAction.INSTANCE);
 		builder.setRepository(indexid);
@@ -379,8 +379,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				//				throw new OpenEditException("Cannot Restore Snapshot - restored" + restored +" indeces");
 				//			}
 				String loadedindexid = getIndexNameFromAliasName(indexid);
-				if(!loadedindexid.equals(currentindex)){
-				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(currentindex)).actionGet();
+				if (!loadedindexid.equals(currentindex))
+				{
+					DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(currentindex)).actionGet();
 				}
 				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
 			}
@@ -600,11 +601,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			try
 			{
 				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder().startObject().startObject("analysis")
-				//								.startObject("filter").
-				//									startObject("snowball").field("type", "snowball").field("language", "English")
-				//									.endObject()
-				//								.endObject()
-				.startObject("analyzer").startObject("lowersnowball").field("type", "snowball").field("language", "English").endObject().endObject().endObject().endObject();
+						//								.startObject("filter").
+						//									startObject("snowball").field("type", "snowball").field("language", "English")
+						//									.endObject()
+						//								.endObject()
+						.startObject("analyzer").startObject("lowersnowball").field("type", "snowball").field("language", "English").endObject().endObject().endObject().endObject();
 
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
 				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
@@ -711,18 +712,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		String newindex = null;
 		try
 		{
-			 newindex = prepareTemporaryIndex(inCatalogId);
+			newindex = prepareTemporaryIndex(inCatalogId);
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
 
 			List sorted = archive.listSearchTypes();
-			
+
 			Searcher locksearcher = getSearcherManager().getSearcher(inCatalogId, "lock");
 			locksearcher.setAlternativeIndex(newindex);//Should				
 			locksearcher.putMappings();
 			locksearcher.setAlternativeIndex(null);
-			
+
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{
 				String searchtype = (String) iterator.next();
@@ -735,7 +736,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						searcher.setAlternativeIndex(newindex);//Should				
 						searcher.reindexInternal();
 						searcher.setAlternativeIndex(null);
-					}					
+					}
 				}
 			}
 
@@ -743,13 +744,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		catch (Exception e)
 		{
-			DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(newindex)).actionGet();
-			if (!delete.isAcknowledged())
+			if (newindex != null)
 			{
-				log.error("Index wasn't deleted");
+				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(newindex)).actionGet();
+				if (!delete.isAcknowledged())
+				{
+					log.error("Index wasn't deleted");
+				}
 			}
-			
-			
+
 			throw new OpenEditException(e);
 		}
 
