@@ -645,6 +645,24 @@ uiload = function() {
 //		container.closest("form").find("#" + id ).val(emdata.id);
 		return selectedoption.name || selectedoption.text;
 	}
+	
+	jQuery(".suggestsearchinput").livequery( function() 
+		{
+			var theinput = jQuery(this);
+			if( theinput && theinput.autocomplete )
+			{
+				theinput.autocomplete({
+					source: apphome + '/components/autocomplete/assetsuggestions.txt',
+					select: function(event, ui) {
+						//set input that's just for display purposes
+						theinput.val(ui.item.value);
+						//theinput.submit();
+						return false;
+					}
+				});
+			}
+		});
+
 	jQuery("select.listtags").livequery( function() 
 	{
 		var theinput = jQuery(this);
@@ -663,6 +681,7 @@ uiload = function() {
 		  	tags: true,
 			placeholder : defaulttext,
 			allowClear: true,
+			selectOnBlur: true,
 			delay: 250,
 			minimumInputLength : 1,
 			ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
@@ -691,7 +710,7 @@ uiload = function() {
 			escapeMarkup: function(m) { return m; },
 			templateResult : select2formatResult, 
 			templateSelection : select2Selected,
-			tokenSeparators: [",","|"],
+			tokenSeparators: ["|"],
 			separator: '|'
 		  }).change(function() { $(this).valid(); });  //is this still needed?
 

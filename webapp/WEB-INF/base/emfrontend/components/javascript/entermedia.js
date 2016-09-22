@@ -334,23 +334,6 @@ onloadselectors = function()
 			});
 	
 	
-	jQuery(".suggestsearchinput").livequery( function() 
-			{
-				var theinput = jQuery(this);
-				if( theinput && theinput.autocomplete )
-				{
-					theinput.autocomplete({
-						source: apphome + '/components/autocomplete/assetsuggestions.txt',
-						select: function(event, ui) {
-							//set input that's just for display purposes
-							theinput.val(ui.item.value);
-							//theinput.submit();
-							return false;
-						}
-					});
-				}
-			});
-
 	//move this to the settings.js or someplace similar 
 	jQuery(".addmygroupusers").livequery( function() 
 			{

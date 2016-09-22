@@ -1392,7 +1392,10 @@ S2.define('select2/selection/base',[
       ) {
         return;
       }
-
+	  if( evt.type =="blur")
+	  {
+		self.trigger('results:select', {});
+	  } 
       self.trigger('blur', evt);
     }, 1);
   };
