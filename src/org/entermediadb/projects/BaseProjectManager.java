@@ -653,8 +653,10 @@ public class BaseProjectManager implements ProjectManager
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		Data collection = (Data) librarycolsearcher.searchById(inCollectionid);
 		snapshotCategory(inReq, inUser, inArchive, inCollectionid);			
-			
 		
+		Category root = getRootCategory(inArchive, inCollectionid);
+		
+		importAssets(inArchive,collection,inImportPath, root);
 		
 		
 		
@@ -666,6 +668,41 @@ public class BaseProjectManager implements ProjectManager
 	
 	
 	
+
+	protected void importAssets(MediaArchive inArchive, Data inCollection, String inImportPath, Category inCurrentRoot)
+	{
+		inCurrentRoot.setChildren(null);
+		String sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+
+		Map vals = new HashMap();
+		vals.put("librarycollection", inCollection.getId());
+		vals.put("library", inCollection.get("library"));
+
+		Collection paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
+		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		{
+			String child = (String) iterator.next();
+			ContentItem item = inArchive.getPageManager().getRepository().getStub(child);
+			//String sourcepath = inArchive.getAssetImporter().getAssetUtilities().extractSourcePath(item, true, inArchive);
+
+			//MD5
+			String md5 = "";
+			Asset asset = (Asset)inArchive.getAssetSearcher().searchByField("md5hex", md5);
+			if( asset == null)
+			{				
+				
+				String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, item.getName(), sourcepathmask, vals);
+				ContentItem destination = inArchive.getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath);
+				
+				inArchive.getPageManager().getRepository().move(item, destination);
+				asset = getAssetUtilities().createAssetIfNeeded(destination,true, inArchive, null);
+				
+			}
+
+			
+		}
+		
+	}
 
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
@@ -840,7 +877,7 @@ public class BaseProjectManager implements ProjectManager
 
 	/**
 	 * Import process
-	 */
+	 
 	public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid)
 	{
 		//Find all the assets and move them to the library
@@ -982,6 +1019,8 @@ public class BaseProjectManager implements ProjectManager
 
 	}
 
+
+
 	public String exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid)
 	{
 		//move the collection root folder
@@ -1090,7 +1129,6 @@ public class BaseProjectManager implements ProjectManager
 		return collectionpath;
 
 	}
-
 	protected String makeChunks(String inName)
 	{
 		int split = 3;
@@ -1102,7 +1140,8 @@ public class BaseProjectManager implements ProjectManager
 		fixed = fixed.substring(0, 3) + "/" + inName;
 		return fixed;
 	}
-
+*/
+	/*
 	protected Asset copyAssetIfNeeded(WebPageRequest inReq, MediaArchive inArchive, Asset existingasset, String folderpath)
 	{
 		//Change sourcepath
@@ -1182,7 +1221,7 @@ public class BaseProjectManager implements ProjectManager
 		}
 		return newasset;
 	}
-
+*/
 	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile)
 	{
 		User user = inProfile.getUser();

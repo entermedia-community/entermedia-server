@@ -370,22 +370,13 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				vals.put("library", coll.get("library"));
 			}	
 		}
-		
-		String sourcepath = createSourcePathFromMask(inReq, inArchive, fileName, sourcepathmask, vals);
-		
-		return sourcepath;
-	}
-
-	protected String createSourcePathFromMask(WebPageRequest inReq, MediaArchive inArchive, String fileName, String sourcepathmask, Map vals)
-	{
-		String prefix ="";
 		String[] fields = inReq.getRequestParameters("field");
 
 		if( fields != null)
 		{
 			for (int i = 0; i < fields.length; i++)
 			{
-				String val = inReq.getRequestParameter(prefix + fields[i]+ ".value");
+				String val = inReq.getRequestParameter(fields[i]+ ".value");
 				if( val != null)
 				{
 					vals.put(fields[i],val);
@@ -414,6 +405,19 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		{
 			vals.put("division", division);
 		}
+		
+		String sourcepath = createSourcePathFromMask(inArchive, inReq.getUser(), fileName, sourcepathmask, vals);
+		
+		return sourcepath;
+	}
+
+	public String createSourcePathFromMask( MediaArchive inArchive, User inUser, String fileName, String sourcepathmask, Map vals)
+	{
+
+		if( inUser != null)
+		{
+			vals.put("user",inUser);
+		}
 
 		if(fileName != null)
 		{
@@ -440,7 +444,6 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		vals.put("formattedhour",date );
 		
 		
-		vals.put("user",inReq.getUser());
 		Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
 		
 		replacer.setSearcherManager(inArchive.getSearcherManager());
@@ -539,7 +542,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	
 	
 	
-	
+	/*
 	
 	public void copyCategory(MediaArchive inArchive, Category inSource, Category inDestination)
 	{
@@ -575,8 +578,8 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		
 		
 		
-		
 	}
+		*/
 	
 	
 	
