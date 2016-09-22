@@ -17,6 +17,9 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.scanner.AssetImporter;
+import org.entermediadb.asset.scanner.AssetPathProcessor;
+import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -556,7 +559,7 @@ public class BaseProjectManager implements ProjectManager
 				Category rootcat = getRootCategory(inArchive, inCollectionid);
 
 				ArrayList list = new ArrayList();
-				copyAssets(list, inUser, inArchive, collection, cat, rootcat);// will actually create librarycollectionasset entries
+				copyAssets(list, inUser, inArchive, collection, cat, rootcat,0l);// will actually create librarycollectionasset entries
 				Searcher assets = inArchive.getAssetSearcher();
 				assets.saveAllData(list, null);
 
@@ -572,6 +575,97 @@ public class BaseProjectManager implements ProjectManager
 		}
 		return null;
 	}
+	
+	
+	public Category snapshotCategory(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid)
+	{
+		CategorySearcher cats = inArchive.getCategorySearcher();
+		
+		
+		Category rootcat = getRootCategory(inArchive, inCollectionid);
+		ArrayList list = new ArrayList();
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		Data collection = (Data) librarycolsearcher.searchById(inCollectionid);
+		Date date = new Date();
+		
+		
+		 
+			
+		Category versionroot = (Category) cats.createNewData();
+		versionroot.setName(rootcat.getName());
+		Long revisionnumber = (Long) collection.getValue("revisions");
+		if(revisionnumber == null){
+			revisionnumber = 0l;
+		}
+		revisionnumber++;
+		
+		
+		versionroot.setId(rootcat.getId() + "_" + revisionnumber);
+		
+		
+		copyAssets(list, inUser, inArchive, collection, versionroot, rootcat,revisionnumber);// will actually create librarycollectionasset entries
+		Searcher assets = inArchive.getAssetSearcher();
+		assets.saveAllData(list, null);
+		versionroot.setParentId(null);
+		
+		String fields [] = inReq.getRequestParameters("field");
+		cats.updateData(inReq, fields, versionroot);
+		
+		
+		versionroot.setValue("librarycollection", inCollectionid);
+		versionroot.setValue("versioncreator", inUser.getId());
+		versionroot.setValue("creationdate", date);
+
+	
+		cats.saveData(versionroot);
+		
+		
+		
+		return versionroot;
+	}
+	
+	
+	public void restoreSnapshot(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCategoryid){
+		
+		
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		Searcher cats = inArchive.getSearcher("category");
+		Category category = (Category) cats.searchById(inCategoryid);
+		
+		String collectionid = category.get("librarycollection");
+		Data collection = (Data) librarycolsearcher.searchById(collectionid);
+		Category rootcat = getRootCategory(inArchive, collectionid);
+		rootcat.setChildren(null);
+		rootcat.addChild(category);
+		category.setParentId(rootcat.getId());
+		
+		cats.saveData(rootcat);
+		cats.saveData(category);
+		
+
+		
+		
+	}
+	
+	
+	public void snapshotAndImport(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath){
+		
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		Data collection = (Data) librarycolsearcher.searchById(inCollectionid);
+		snapshotCategory(inReq, inUser, inArchive, inCollectionid);			
+			
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
+	
+	
 
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
@@ -604,20 +698,19 @@ public class BaseProjectManager implements ProjectManager
 
 	}
 
-	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, Data inCollection, Category inCat, Category inParent)
+	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, Data inCollection, Category inCat, Category inParentTarget, Long inRevision)
 	{
 
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
-		String newpath = PathUtilities.extractId(inCat.getName());
-		String id = inParent.getId() + "_" + newpath;
-		Category copy = inParent.getChild(id);
+		String id = inCat.getId() + inCollection.getId() +  "_" + inRevision;
+		Category copy = inParentTarget.getChild(id);
 		if (copy == null)
 		{
 			copy = (Category) cats.createNewData();
 			copy.setName(inCat.getName());
 			copy.setId(id);
-			inParent.addChild(copy);
+			inParentTarget.addChild(copy);
 			cats.saveData(copy, null);
 		}
 		
@@ -632,7 +725,7 @@ public class BaseProjectManager implements ProjectManager
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
-			copyAssets(savelist, inUser, inArchive, inCollection, child, copy);
+			copyAssets(savelist, inUser, inArchive, inCollection, child, copy, inRevision);
 
 		}
 
@@ -1113,5 +1206,14 @@ public class BaseProjectManager implements ProjectManager
 		}
 		return userlibrary;
 	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
 
 }
