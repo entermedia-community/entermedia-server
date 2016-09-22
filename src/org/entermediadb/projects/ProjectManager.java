@@ -31,7 +31,7 @@ public interface ProjectManager
 
 	public Data addCategoryToCollection(User inUser, MediaArchive archive, String collectionid, String categoryid );
 	
-	public void removeCategoryFromCollection(MediaArchive archive, String collectionid, String categoryid );
+//	public void removeCategoryFromCollection(MediaArchive archive, String collectionid, String categoryid );
 
 	public void removeAssetFromLibrary(MediaArchive archive, String libraryid, HitTracker inAssets );
 
@@ -47,12 +47,12 @@ public interface ProjectManager
 	
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
 
-	public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
+	//public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
 	
-	public String exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
+	//public String exportCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
 	//public void moveCollectionTo(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid, String inLibraryid);
 
-	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
+	//public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
 
 	//public void savedCollection(MediaArchive archive, Data inLibrary, User inUser);
 	

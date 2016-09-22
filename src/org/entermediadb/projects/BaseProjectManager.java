@@ -1,5 +1,6 @@
 package org.entermediadb.projects;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -11,30 +12,27 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.scanner.AssetImporter;
-import org.entermediadb.asset.scanner.AssetPathProcessor;
+import org.entermediadb.asset.scanner.Md5MetadataExtractor;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.RepositoryException;
 import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
-import org.openedit.util.PathUtilities;
 
 public class BaseProjectManager implements ProjectManager
 {
@@ -648,7 +646,7 @@ public class BaseProjectManager implements ProjectManager
 	}
 	
 	
-	public void snapshotAndImport(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath){
+	public void snapshotAndImport(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath) throws Exception{
 		
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		Data collection = (Data) librarycolsearcher.searchById(inCollectionid);
@@ -669,7 +667,7 @@ public class BaseProjectManager implements ProjectManager
 	
 	
 
-	protected void importAssets(MediaArchive inArchive, Data inCollection, String inImportPath, Category inCurrentRoot)
+	protected void importAssets(MediaArchive inArchive, Data inCollection, String inImportPath, Category inCurrentRoot) throws Exception
 	{
 		inCurrentRoot.setChildren(null);
 		String sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
@@ -677,6 +675,7 @@ public class BaseProjectManager implements ProjectManager
 		Map vals = new HashMap();
 		vals.put("librarycollection", inCollection.getId());
 		vals.put("library", inCollection.get("library"));
+		
 
 		Collection paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
@@ -686,7 +685,7 @@ public class BaseProjectManager implements ProjectManager
 			//String sourcepath = inArchive.getAssetImporter().getAssetUtilities().extractSourcePath(item, true, inArchive);
 
 			//MD5
-			String md5 = "";
+			String md5  = DigestUtils.md5Hex( item.getInputStream() );
 			Asset asset = (Asset)inArchive.getAssetSearcher().searchByField("md5hex", md5);
 			if( asset == null)
 			{				
@@ -769,65 +768,65 @@ public class BaseProjectManager implements ProjectManager
 	}
 
 	@Override
-	public void removeCategoryFromCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
-	{
-		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+//	public void removeCategoryFromCollection(MediaArchive inArchive, String inCollectionid, String inCategoryid)
+//	{
+//		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+//
+//		Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
+//		librarycollectioncategorySearcher.delete(data, null);
+//
+//	}
 
-		Data data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
-		librarycollectioncategorySearcher.delete(data, null);
-
-	}
-
-	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid)
-	{
-		Map sizes = new HashMap();
-		HitTracker assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
-		long size = 0;
-		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
-		{
-			Data asset = (Data) iterator.next();
-			Asset loaded = (Asset) inArchive.getAssetSearcher().loadData(asset);
-			Page orig = inArchive.getOriginalDocument(loaded);
-			size = size + orig.length();
-
-		}
-		sizes.put("assetsize", size);
-		Collection categories = loadCategoriesOnCollection(inArchive, inCollectionid);
-
-		if (categories != null)
-		{
-			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-			{
-				Data catData = (Data) iterator.next();
-				Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
-				String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + cat.getCategoryPath();
-				long catsize = fileSize(inArchive, path);
-				sizes.put(cat.getId(), catsize);
-			}
-		}
-
-		return sizes;
-	}
-
-	protected long fileSize(MediaArchive inArchive, String inPath)
-	{
-		long size = 0;
-		Collection children = inArchive.getPageManager().getChildrenPaths(inPath);
-		for (Iterator iterator = children.iterator(); iterator.hasNext();)
-		{
-			String child = (String) iterator.next();
-			Page page = inArchive.getPageManager().getPage(child);
-			if (!page.isFolder())
-			{
-				size = size + page.length();
-			}
-			else
-			{
-				size = size + fileSize(inArchive, child);
-			}
-		}
-		return size;
-	}
+//	public Map loadFileSizes(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid)
+//	{
+//		Map sizes = new HashMap();
+//		HitTracker assets = loadAssetsInCollection(inReq, inArchive, inCollectionid);
+//		long size = 0;
+//		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+//		{
+//			Data asset = (Data) iterator.next();
+//			Asset loaded = (Asset) inArchive.getAssetSearcher().loadData(asset);
+//			Page orig = inArchive.getOriginalDocument(loaded);
+//			size = size + orig.length();
+//
+//		}
+//		sizes.put("assetsize", size);
+//		Collection categories = loadCategoriesOnCollection(inArchive, inCollectionid);
+//
+//		if (categories != null)
+//		{
+//			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+//			{
+//				Data catData = (Data) iterator.next();
+//				Category cat = (Category) inArchive.getCategorySearcher().loadData(catData);
+//				String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + cat.getCategoryPath();
+//				long catsize = fileSize(inArchive, path);
+//				sizes.put(cat.getId(), catsize);
+//			}
+//		}
+//
+//		return sizes;
+//	}
+//
+//	protected long fileSize(MediaArchive inArchive, String inPath)
+//	{
+//		long size = 0;
+//		Collection children = inArchive.getPageManager().getChildrenPaths(inPath);
+//		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+//		{
+//			String child = (String) iterator.next();
+//			Page page = inArchive.getPageManager().getPage(child);
+//			if (!page.isFolder())
+//			{
+//				size = size + page.length();
+//			}
+//			else
+//			{
+//				size = size + fileSize(inArchive, child);
+//			}
+//		}
+//		return size;
+//	}
 
 	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid)
 	{
