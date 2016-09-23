@@ -13,11 +13,9 @@
     </path-action>
 
 	<path-action name="ProjectModule.addCollectionTab" />
-<!--
 	<page-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</page-action>
-	-->
 	<!--
 	<path-action name="ProjectModule.loadCategoriesOnCollection">
 		<searchtype>librarycollection</searchtype>

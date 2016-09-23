@@ -352,31 +352,10 @@ public class BaseProjectManager implements ProjectManager
 		{
 			assetsearch = searcher.createSearchQuery();
 		}
-		assetsearch.addChildFilter("librarycollectionasset", "librarycollection", collectionid);
+		Category root = getRootCategory(archive,collectionid);
+		assetsearch.addMatches("category-exact", root.getId());
 		all = archive.getAssetSearcher().search(assetsearch);
 
-		/*
-		 * 
-		 * // Collection<String> ids = loadAssetIdsInCollection(inReq, archive,
-		 * collectionid ); // //Do an asset search with permissions, showing
-		 * only the assets on this collection // all =
-		 * archive.getAssetSearcher().query().match("id", "*").not("editstatus",
-		 * "7").search(); // all.setSelections(ids); //
-		 * all.setShowOnlySelected(true); //log.info("Searching for assets " +
-		 * all.size() + " ANND " + ids.size() ); //create script that syncs up
-		 * the assets that have been removed if( all.size() != ids.size() ) {
-		 * //Collection<String> ids = loadAssetIdsInCollection(archive,
-		 * collectionid ); //Some assets got deleted, lets remove them from the
-		 * collection Set<String> extras = new HashSet(ids); for (Object hit :
-		 * all) { Data data = (Data)hit; extras.remove(data.getId()); }
-		 * //log.info("remaining " + extras ); Searcher collectionassetsearcher
-		 * = archive.getSearcher("librarycollectionasset"); for (String id :
-		 * extras) { Data toremove =
-		 * collectionassetsearcher.query().match("asset",id).match(
-		 * "librarycollection", collectionid).searchOne(); if( toremove != null)
-		 * { collectionassetsearcher.delete(toremove, null); } } }
-		 */
-		//		}
 		String hpp = inReq.getRequestParameter("page");
 		if (hpp != null)
 		{
