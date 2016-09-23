@@ -39,7 +39,7 @@
            
                 #foreach($item in $permissionsearcher.query().all().sort("permissiontype").sort("ordering").search($context) )
                      #if( $section != $item.permissiontype )
-                         <option #if($permissiontype == $item.permissiontype) selected #end value="$item.permissiontype">$searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)</option>
+                         <option #if($permissiontype == $item.permissiontype) selected #end value="$!item.permissiontype">$!searcherManager.getData($catalogid,"permissiontype",$item.permissiontype)</option>
                      #set( $section = $item.permissiontype)
                      #end   
                  #end
