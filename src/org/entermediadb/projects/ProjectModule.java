@@ -392,14 +392,7 @@ public class ProjectModule extends BaseMediaModule
 		}	
 	}
 	
-	public void removeCategoryFromCollection(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		String categoryid = inReq.getRequestParameter("categoryid");
-		manager.removeCategoryFromCollection(archive, collectionid, categoryid);
-	}
+	
 	
 	public void loadCategoriesOnCollection(WebPageRequest inReq)
 	{
@@ -420,27 +413,15 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
-		manager.importCollection(inReq,archive,collectionid);
+		
+		manager.snapshotAndImport(inReq, inReq.getUser(), archive, collectionid, inImportPath);
 		inReq.putPageValue("importstatus", "completed");
 	}	
-	public void moveCollection(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		String libraryid = inReq.getRequestParameter("targetlibraryid");
-		String path = manager.exportCollectionTo(inReq,archive,collectionid,libraryid);
-		inReq.putPageValue("movepath", path);
-	}	
 	
-	public void loadFileSizes(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		Map sizes = manager.loadFileSizes(inReq, archive, collectionid);
-		inReq.putPageValue("filesizes", sizes);
-	}
+	
+		
+	
+	
 	
 	public void loadCategoriesOnCollections(WebPageRequest inReq)
 	{

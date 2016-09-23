@@ -59,4 +59,6 @@ public interface ProjectManager
 	public void loadCategoriesOnCollections(MediaArchive inArchive, Collection inCollections);
 	
 	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile);
+	public void snapshotAndImport(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath);
+
 }

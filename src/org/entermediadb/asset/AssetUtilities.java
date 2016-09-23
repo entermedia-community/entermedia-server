@@ -521,9 +521,11 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				log.info("Fullpath " + fullpath  + "Did not exist");
 			
 			}
-			log.info(fullpath );
 			Page target = inArchive.getPageManager().getPage(finalpath);
+			log.info("moving: " + fullpath + " to " + target  );
+			if(!fullpath.isFolder()){
 			inArchive.getPageManager().copyPage(fullpath, target);
+			}
 		
 		}
 		

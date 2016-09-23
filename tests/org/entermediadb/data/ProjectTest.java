@@ -83,9 +83,11 @@ public class ProjectTest extends BaseEnterMediaTest
 
 //		AssetUtilities utils = getMediaArchive().getAssetImporter().getAssetUtilities();
 //		Category root = getMediaArchive().getCategoryArchive().getRootCategory();
-//		String folder = "/myexportfolder";
+		String folder = "/myexportfolder";
 //		utils.exportCategoryTree(getMediaArchive(),root, folder);
 
+		
+		
 		Page samples = archive.getPageManager().getPage("/entermedia/catalogs/testcatalog/importfolder/");
 		Page setup = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/originals/importfolder");
 		archive.getPageManager().copyPage(samples, setup);
@@ -123,10 +125,16 @@ public class ProjectTest extends BaseEnterMediaTest
 		archive.saveAsset(other,null);
 		manager.addCategoryToCollection(null, archive, collection.getId(), cat.getParentId());		
 		
+
+		
+		
+		
 		//Import a new path
 		WebPageRequest req = getFixture().createPageRequest();
 		manager.snapshotAndImport(req, null, archive, collection.getId(), "importfolder");
-		
+
+		manager.exportCollection(getMediaArchive(), collection.getId(), folder);
+
 		//Make sure we got the same asset as 106
 		Category newrootcategory = manager.getRootCategory(archive, collection.getId());
 

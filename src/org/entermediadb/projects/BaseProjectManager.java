@@ -1266,6 +1266,17 @@ public class BaseProjectManager implements ProjectManager
 		}
 		return userlibrary;
 	}
+
+	public void exportCollection(MediaArchive inMediaArchive, String inCollectionid, String inFolder)
+	{			
+		Data collection = inMediaArchive.getData("librarycollection", inCollectionid);
+		AssetUtilities utilities = inMediaArchive.getAssetImporter().getAssetUtilities();
+		Category root = getRootCategory(inMediaArchive, inCollectionid);
+		utilities.exportCategoryTree(inMediaArchive, root, inFolder);
+		
+		
+		
+	}
 	
 	
 	
