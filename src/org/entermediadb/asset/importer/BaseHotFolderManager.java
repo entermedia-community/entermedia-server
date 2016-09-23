@@ -122,10 +122,11 @@ public class BaseHotFolderManager implements HotFolderManager
 		{
 			Data folder = (Data) iterator.next();
 			String external = folder.get("externalpath");
-			if( external != null)
+			String type = folder.get("hotfoldertype");
+
+			if( external != null || "s3".equals(type) || "syncthing".equals(type))
 			{
 				String toplevelfolder =  folder.get("subfolder");
-				String type = folder.get("hotfoldertype");
 				
 				if(type == null ||"mount".equals(type))
 				{
@@ -169,8 +170,8 @@ public class BaseHotFolderManager implements HotFolderManager
 		}
 		else if( "s3".equals(inType))
 		{
-			repo = new XmlVersionRepository();
-			repo.setRepositoryType("versionRepository");
+			repo = (Repository) getSearcherManager().getModuleManager().getBean("S3Repository");
+			repo.setRepositoryType("S3Repository");
 		}
 		else
 		{
