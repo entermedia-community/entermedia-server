@@ -14,6 +14,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.FileUtils;
 
@@ -85,7 +86,9 @@ public class ProjectTest extends BaseEnterMediaTest
 //		String folder = "/myexportfolder";
 //		utils.exportCategoryTree(getMediaArchive(),root, folder);
 
-		
+		Page samples = archive.getPageManager().getPage("/entermedia/catalogs/testcatalog/importfolder/");
+		Page setup = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/originals/importfolder");
+		archive.getPageManager().copyPage(samples, setup);
 		Asset existingasset = archive.getAsset("106");
 		ContentItem item = archive.getOriginalFileManager().getOriginalContent(existingasset);
 		InputStream input = item.getInputStream();
@@ -112,7 +115,7 @@ public class ProjectTest extends BaseEnterMediaTest
 		HitTracker assets = archive.getAssetSearcher().fieldSearch("id","101");
 		manager.addAssetToCollection(archive, collection.getId(), assets);
 		
-		//Add tree
+		//Add tree (This is for an eventual export test)
 		Category cat = archive.getCategoryArchive().createCategoryTree("/my/stuff/here");
 		Asset other = archive.getAsset("102");
 		other.addCategory(cat);
@@ -127,17 +130,24 @@ public class ProjectTest extends BaseEnterMediaTest
 		//Make sure we got the same asset as 106
 		Category newrootcategory = manager.getRootCategory(archive, collection.getId());
 
-		Data found =  archive.getAssetSearcher().query().match("category", newrootcategory.getId()).match("name", "bones.jpg").searchOne();
+//		HitTracker assetcount = archive.getAssetSearcher().query().match("category", newrootcategory.getId()).search();
+//		assertEquals(assetcount.size(), 6);
+		
+		//This tests matching on MD5
+		Data found =  archive.getAssetSearcher().query().match("category", newrootcategory.getId()).match("id", "106").searchOne();
 		assertNotNull(found);
-
-		found =  archive.getAssetSearcher().query().match("category", newrootcategory.getId()).match("id", "106").searchOne();
+		//This tests a new file 
+		
+		found =  archive.getAssetSearcher().query().match("category", newrootcategory.getId()).match("name", "niceday.wmv").searchOne();
 		assertNotNull(found);
-
-		found =  archive.getAssetSearcher().query().match("category", newrootcategory.getId()).match("id", "102").searchOne();
+		
+		found =  archive.getAssetSearcher().query().match("category", newrootcategory.getId()).match("description", "bones.jpg").searchOne();
 		assertNotNull(found);
+		
+
+	
 
 
-		//Finally revert back to version 0
 		
 	}
 	

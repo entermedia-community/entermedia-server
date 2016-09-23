@@ -497,6 +497,9 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	@Override
 	public Data loadData(Data inHit)
 	{
+		if(inHit == null){
+			return null;
+		}
 		if (inHit instanceof Asset)
 		{
 			return inHit;

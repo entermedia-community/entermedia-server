@@ -1,5 +1,6 @@
 package org.entermediadb.asset.scanner;
 
+import java.io.InputStream;
 import java.util.Iterator;
 
 import org.apache.commons.codec.digest.DigestUtils;
@@ -12,6 +13,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
+import org.openedit.util.FileUtils;
 
 
 public class Md5MetadataExtractor extends MetadataExtractor
@@ -20,6 +22,7 @@ public class Md5MetadataExtractor extends MetadataExtractor
 
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
+		InputStream in = inFile.getInputStream();
 		try
 		{
 			//com.google.common.hash.Hashing;
@@ -50,6 +53,9 @@ public class Md5MetadataExtractor extends MetadataExtractor
 		catch( Throwable ex)
 		{
 			throw new OpenEditException("Could not read in " + inAsset.getSourcePath(),ex);
+		}
+		finally{
+			FileUtils.safeClose(in);
 		}
 		return false;
 		

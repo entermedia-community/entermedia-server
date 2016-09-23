@@ -1,6 +1,6 @@
 package org.entermediadb.projects;
 
-import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -19,7 +19,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.scanner.Md5MetadataExtractor;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -32,8 +31,8 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.RepositoryException;
 import org.openedit.users.User;
+import org.openedit.util.FileUtils;
 
 public class BaseProjectManager implements ProjectManager
 {
@@ -45,22 +44,7 @@ public class BaseProjectManager implements ProjectManager
 	private int COPY = 1;
 	private int MOVE = 2;
 
-	public AssetUtilities getAssetUtilities()
-	{
-		return fieldAssetUtilities;
-	}
-
-	public void setAssetUtilities(AssetUtilities inAssetUtilities)
-	{
-		fieldAssetUtilities = inAssetUtilities;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see model.projects.ProjectManager#getCatalogId()
-	 */
-	@Override
+	
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -661,8 +645,9 @@ public class BaseProjectManager implements ProjectManager
 		vals.put("librarycollection", inCollection.getId());
 		vals.put("library", inCollection.get("library"));
 		
-
-		Collection paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
+		String finalimportpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/"  + inImportPath;
+		
+		Collection paths = inArchive.getPageManager().getChildrenPaths(finalimportpath);
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 		{
 			String child = (String) iterator.next();
@@ -674,30 +659,43 @@ public class BaseProjectManager implements ProjectManager
 				//Who cares about the id
 				inCurrentParent.addChild( newfolder );
 				inArchive.getCategorySearcher().saveData(inCurrentParent);
+				inArchive.getCategorySearcher().saveData(newfolder);
+
 				importAssets(inArchive, inCollection, inImportPath + "/" + item.getName(), newfolder);
 			}
 			else
 			{
 				//MD5
 				String md5;
+				InputStream inputStream = item.getInputStream();
+
 				try
 				{
-					md5 = DigestUtils.md5Hex( item.getInputStream() );
+					md5 = DigestUtils.md5Hex( inputStream );
 				}
 				catch (Exception e)
 				{
 					throw new OpenEditException(e);
 				}
-				Asset asset = (Asset)inArchive.getAssetSearcher().searchByField("md5hex", md5);
+				finally{
+					FileUtils.safeClose(inputStream);
+				}
+				Data target = (Data)inArchive.getAssetSearcher().searchByField("md5hex", md5);
+				Asset asset = (Asset) inArchive.getAssetSearcher().loadData(target);
 				if( asset == null)
 				{				
 					
 					String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, item.getName(), sourcepathmask, vals);
 					ContentItem destination = inArchive.getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath);
+					ContentItem finalitem = inArchive.getPageManager().getPage(destination.getPath() + "/" + item.getName()).getContentItem();
 					
 					inArchive.getPageManager().getRepository().move(item, destination);
-					asset = getAssetUtilities().createAssetIfNeeded(destination,true, inArchive, null); //this also extracts the md5
+					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem,true, inArchive, null); //this also extracts the md5
+					asset.setCategories(null);
 					//asset.setValue("md5hex", md5);
+				} else{
+					inArchive.getPageManager().getRepository().remove(item);
+
 				}
 				asset.addCategory(inCurrentParent);
 				inArchive.saveAsset(asset, null);
