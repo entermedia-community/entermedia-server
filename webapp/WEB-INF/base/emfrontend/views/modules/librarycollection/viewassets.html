@@ -1,6 +1,9 @@
 $context.putPageValue("showhover", "false")
 $context.putPageValue("showcaption", "true")
 $context.putPageValue("hideheader", "true")
+#set( $downloadsearcher = $mediaarchive.getSearcher("librarycollectiondownloads") )
+$downloadsearcher.query().match("librarycollection", "*")
+#set( $downloads = $downloadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
 
 #if(!$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
@@ -15,10 +18,20 @@ $context.putPageValue("hideheader", "true")
 ###always go to index - don't care about resultview
 
 <div class="row">		
-				<div class="col-md-3 ">
+  <div class="col-md-3 ">
 
-<div class="panel panel-default">
-  <div class="panel-heading">[[Collection Browser]]   <div class="pull-right"> <a href="$apphome/views/modules/librarycollection/autopopulate.html" class="btn" >Auto Populate </a> Choose revision..</div></div>
+    <div class="panel panel-default">
+      <div class="panel-heading">[[Collection Browser]] 
+        <div class="pull-right"> 
+          <select onchange="this.options[this.selectedIndex].value && console.log(this.options[this.selectedIndex].value);">
+		      <option value ="">#if( $downloads) [[Choose revision...]] #else [[No revisions]] #end</option>
+		      #foreach( $revision in $downloads )
+		      <option value="$revision.id">$revision.name</option>
+		      #end
+		  </select>
+		  <a href="$apphome/views/modules/librarycollection/autopopulate.html" class="btn" >[[Auto Populate]]</a>
+	  </div>
+	</div>
 
   <div class="panel-body">
 		$pages.include("$apphome/views/modules/librarycollection/tree.html")
