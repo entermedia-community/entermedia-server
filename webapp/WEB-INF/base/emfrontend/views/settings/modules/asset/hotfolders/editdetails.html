@@ -8,11 +8,10 @@
  #set( $type = $data.get("hotfoldertype") )
 #end
 <select name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=${data.id}&type=" data-targetdiv="editdetails">
-	<option value="mount" #if( $type == "mount") selected #end>Server Files</option>
-##	<option value="version" >Version Control</option>
-	<option value="googledrive" #if( $type == "googledrive") selected #end>Google Drive</option>
-	<option value="s3" #if( $type == "s3") selected #end>Amazon S3 Drive</option>
-	<option value="syncthing" #if( $type == "syncthing") selected #end>SyncThing</option>
+#set( $types = $mediaarchive.getList("hotfoldertypes"))
+#foreach( $hftype in $types)
+	<option value="$hftype.getId()" #if( $type == "$hftype.getId()") selected #end>$hftype.getName()</option>
+#end	
 </select>
 
 #if( $type == "syncthing" )
@@ -74,16 +73,19 @@
 <input class="field" name="accesskey.value" value="$!data.accesskey" />
 <div class="note">[[Temporary access key]] <a class="btn" target="_blank" href="https://goo.gl/jv797S">[[Get Google Key]]</a></div> 
 
-<!-- 
-<label>[[Folder to Sync]]</label>
-<input type="hidden" name="field" value="subfolder" />
-<select class="field" name="subfolder.value" > ##use auto complete
-	<option value=""></option>
-	
-</select>
-<div class="note">[[Required: The name of folder such as Marketing or My Files. Do not include path information. No slashes allowed]] </div> 
- -->
  
+#elseif ($type == "resiliodrive")
+
+<label>[[Folder Name]]</label>
+<input type="hidden" name="field" value="subfolder" />
+<input class="field" name="subfolder.value" value="$!data.subfolder" />
+<div class="note">[[Required: The unique name of folder such as "My Files". Do not include path information. No slashes allowed]] </div> 
+
+<label>[[Secret Key]]</label>
+<input type="hidden" name="field" value="secretkey" />
+<input class="field" name="secretkey.value" value="$!data.secretkey" />
+<div class="note">[[Your secret key provided from Desktop client preferences screen]] <a class="btn" target="_blank" href="https://getsync.com/platforms/desktop/">[[Download Client]]</a></div>
+
 #else
 
 <label>[[External Path]]</label>

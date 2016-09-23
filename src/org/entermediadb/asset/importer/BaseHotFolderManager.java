@@ -282,6 +282,28 @@ public class BaseHotFolderManager implements HotFolderManager
 				throw new OpenEditException("Could not save google drive:" + toplevelfolder + " " + email + " " +  result.getStandardError());
 			}	
 		}
+		else if( "resiliodrive".equals(type))
+		{
+			String toplevelfolder = inNewrow.get("subfolder");
+			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
+			String hotfolderpath = archive.getCatalogSettingValue("hotfolderoverride");
+			if( hotfolderpath == null)
+			{
+				hotfolderpath = System.getProperty("user.home") + "/HotFolders";
+			}	
+			hotfolderpath =  hotfolderpath + "/" + toplevelfolder ;
+			new File( hotfolderpath + "/").mkdirs();
+			inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);
+			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
+			
+			String key = inNewrow.get("secretkey");
+			List<String> com = Arrays.asList(key,hotfolderpath);
+			ExecResult result = getExec().runExec("setupresiliodrive",com,true);
+			if( !result.isRunOk() )
+			{
+				throw new OpenEditException("Could not setup resiliodrive:" + toplevelfolder + " " +  result.getStandardError());
+			}	
+		}
 		else 
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
