@@ -6,7 +6,7 @@
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[View Collection]]</a></li>
 		  #if($canimportcollection)
-		  <li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Revisions]]</a></li>
+		  <li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Snapshots]]</a></li>
 		  #end
 		  #if($canviewupload)
 		  <li class="ui-corner-top" ><a id="addmediatab"   href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
