@@ -5,7 +5,8 @@
 		<div class="ui-widget-content">
 
 #set( $downloadsearcher = $mediaarchive.getSearcher("librarycollectiondownloads") )
-#set( $downloads = $downloadsearcher.query().matches("librarycollection",$librarycol.getId()).sort("date").search() )
+#set( $downloads = $downloadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
+
 
 		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 			<table width="50%" class="categoriescontainer hovertable" >
