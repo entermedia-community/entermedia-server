@@ -35,7 +35,8 @@
 			</form>	
 		</div>
 	</div>	
-
+#set( $uploadsearcher = $mediaarchive.getSearcher("librarycollectionuploads") )
+#set( $uploads = $uploadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
 		<div class="ui-widget-header">[[Upload Logs]] </div>
 		<div class="ui-widget-content">
@@ -51,9 +52,9 @@
 				<th>Date</th>
 				<th>Comment</th>
 			</tr>
-			#foreach($i in [1..$count])
+			#foreach($upload in $uploads)
 				<tr> 
-					<td>dsdfd</td>
+					<td>$upload.id</td>
 				</tr>	
 			#end
 				</table>
