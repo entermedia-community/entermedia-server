@@ -228,44 +228,38 @@ public class BaseProjectManager implements ProjectManager
 
 	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets)
 	{
-		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
-
 		List tosave = new ArrayList();
 		assets.setHitsPerPage(200);
 		for (int i = 0; i < assets.getTotalPages(); i++)
 		{
 			assets.setPage(i + 1);
-			Set assetids = new HashSet();
+			Map assetids = new HashMap();
 			for (Object hit : assets.getPageOfHits())
 			{
 				Data asset = (Data) hit;
-				assetids.add(asset.getId());
+				assetids.put(asset.getId(),asset);
 			}
-			Collection existing = librarycollectionassetSearcher.query().match("librarycollection", librarycollection).orgroup("_parent", assetids).search();
+			Category root = getRootCategory(archive, librarycollection);
+			Collection existing = archive.getAssetSearcher().query().match("category", root.getId() ).search();
 			for (Iterator iterator = existing.iterator(); iterator.hasNext();)
 			{
-				Data collasset = (Data) iterator.next();
-				assetids.remove(collasset.get("_parent"));
+				Data hit = (Data) iterator.next();
+				assetids.remove(hit.getId());
 			}
-			for (Iterator iterator = assetids.iterator(); iterator.hasNext();)
+			for (Iterator iterator = assetids.values().iterator(); iterator.hasNext();)
 			{
-				String assetid = (String) iterator.next();
-				Data found = librarycollectionassetSearcher.createNewData();
-				//found.setSourcePath(libraryid + "/" + librarycollection);
-				found.setProperty("librarycollection", librarycollection);
-				found.setProperty("asset", assetid);
-				found.setProperty("_parent", assetid);
-
-				tosave.add(found);
+				Data hit = (Data) iterator.next();
+				Asset asset = (Asset)archive.getAssetSearcher().loadData(hit);
+				asset.addCategory(root);
+				tosave.add(asset);
 				if (tosave.size() > 200)
 				{
-					librarycollectionassetSearcher.saveAllData(tosave, null);
+					archive.getAssetSearcher().saveAllData(tosave, null);
 					tosave.clear();
 				}
-				//log.info("Saved " + found.getId());
 			}
 		}
-		librarycollectionassetSearcher.saveAllData(tosave, null);
+		archive.getAssetSearcher().saveAllData(tosave, null);
 
 	}
 
