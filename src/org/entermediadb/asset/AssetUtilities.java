@@ -505,7 +505,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	
 	public void exportCategoryTree(MediaArchive inArchive, Category inRoot, String inFolder)
 	{
-		String finalpath = inFolder + "/" + inRoot.getName();
+		String finalpath = inFolder  + inRoot.getName() + "/";
+		ContentItem target = inArchive.getPageManager().getRepository().getStub(finalpath);
+
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
 		
@@ -515,17 +517,19 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		{
 			Data hit = (Data) iterator.next();
 			Asset asset = (Asset) assets.loadData(hit);
-			Page fullpath = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getPath() );
+			ContentItem fullpath = inArchive.getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getPath() );
+			//Page fullpath = inArchive.getOriginalDocument(asset);
+
+			
 			log.info(fullpath.isFolder());
 			if(!fullpath.exists()){
 				log.info("Fullpath " + fullpath  + "Did not exist");
 			
 			}
-			Page target = inArchive.getPageManager().getPage(finalpath);
+		
 			log.info("moving: " + fullpath + " to " + target  );
-			if(!fullpath.isFolder()){
-			inArchive.getPageManager().copyPage(fullpath, target);
-			}
+			inArchive.getPageManager().getRepository().copy(fullpath, target);
+
 		
 		}
 		

@@ -336,14 +336,14 @@ public class Category extends BaseData
 		{
 			return val;
 		}
-		if( fieldParentCategory != null)
-		{
-			Category parent = getParentCategory();
-			if (parent != null)
-			{
-				return parent.getValue(inKey);
-			}
-		}	
+//		if( fieldParentCategory != null)
+//		{
+//			Category parent = getParentCategory();
+//			if (parent != null)
+//			{
+//				return parent.getValue(inKey);
+//			}
+//		}	
 		return null;
 	}
 

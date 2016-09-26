@@ -35,8 +35,7 @@
 			</form>	
 		</div>
 	</div>	
-#set( $uploadsearcher = $mediaarchive.getSearcher("librarycollectionuploads") )
-#set( $uploads = $uploadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
+
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
 		<div class="ui-widget-header">[[Upload Logs]] </div>
 		<div class="ui-widget-content">
@@ -52,15 +51,15 @@
 				<th>Date</th>
 				<th>Comment</th>
 			</tr>
-			#foreach($upload in $uploads)
+			#foreach($i in [1..$count])
 				<tr> 
-					<td>$upload.id</td>
+					<td>dsdfd</td>
 				</tr>	
 			#end
 				</table>
 			</div>
 						
-			<a class="btn" href="$home$apphome/views/modules/librarycollection/importsave.html?collectionid=$librarycol.getId()">Upload Changes</a>
+			<a class="btn" href="#">Upload Changes</a>
 		</div>
 		
 	</div>	

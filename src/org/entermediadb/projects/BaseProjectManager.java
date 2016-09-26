@@ -604,9 +604,8 @@ public class BaseProjectManager implements ProjectManager
 		vals.put("librarycollection", inCollection.getId());
 		vals.put("library", inCollection.get("library"));
 		
-		String finalimportpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/"  + inImportPath;
 		
-		Collection paths = inArchive.getPageManager().getChildrenPaths(finalimportpath);
+		Collection paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 		{
 			String child = (String) iterator.next();
@@ -617,7 +616,7 @@ public class BaseProjectManager implements ProjectManager
 				newfolder.setName(item.getName());
 				//Who cares about the id
 				inCurrentParent.addChild( newfolder );
-				inArchive.getCategorySearcher().saveData(inCurrentParent);
+				//inArchive.getCategorySearcher().saveData(inCurrentParent);
 				inArchive.getCategorySearcher().saveData(newfolder);
 
 				importAssets(inArchive, inCollection, inImportPath + "/" + item.getName(), newfolder);

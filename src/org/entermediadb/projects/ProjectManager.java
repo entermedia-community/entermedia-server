@@ -61,4 +61,8 @@ public interface ProjectManager
 	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile);
 	public void snapshotAndImport(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath);
 
+	public void exportCollection(MediaArchive inMediaArchive, String inCollectionid, String inFolder);
+
+	
+	
 }

@@ -414,13 +414,31 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
+		Data collection = archive.getData("librarycollection", collectionid);
+		User user = inReq.getUser();
+		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId() + "/" + collection.getName() + "/";
+		//Need to check if this is unique - increment a counter?
 		
-		manager.snapshotAndImport(inReq, inReq.getUser(), archive, collectionid, inImportPath);
+		manager.snapshotAndImport(inReq, inReq.getUser(), archive, collectionid, outfolder );
 		inReq.putPageValue("importstatus", "completed");
 	}	
 	
 	
 		
+	public void exportCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		User user = inReq.getUser();
+		Data collection = archive.getData("librarycollection", collectionid);
+
+		
+		//The trailing slash is needed for the recursive algorithm.  Don't delete.
+		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId()+"/";  
+
+		manager.exportCollection(archive, collectionid, infolder);
+	}	
 	
 	
 	
