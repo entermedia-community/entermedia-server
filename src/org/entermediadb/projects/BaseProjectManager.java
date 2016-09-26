@@ -488,7 +488,6 @@ public class BaseProjectManager implements ProjectManager
 	{
 		if (inCategoryid != null)
 		{
-			Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
 			Data collection = null;
 			Data data = null;
 			Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
@@ -505,13 +504,7 @@ public class BaseProjectManager implements ProjectManager
 			else
 			{
 				collection = (Data) librarycolsearcher.searchById(inCollectionid);
-				data = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).match("categoryid", inCategoryid).searchOne();
-//				String libraryid = collection.get("library");
-
-//				Data library = inArchive.getData("library", libraryid);
-//				String folder = library.get("folder");
 				Category cat = inArchive.getCategory(inCategoryid);
-				
 				Category rootcat = getRootCategory(inArchive, inCollectionid);
 
 				ArrayList list = new ArrayList();
@@ -519,13 +512,6 @@ public class BaseProjectManager implements ProjectManager
 				Searcher assets = inArchive.getAssetSearcher();
 				assets.saveAllData(list, null);
 
-			}
-			if (data == null)
-			{
-				Data newfolder = librarycollectioncategorySearcher.createNewData();
-				newfolder.setProperty("librarycollection", inCollectionid);
-				newfolder.setProperty("categoryid", inCategoryid);
-				librarycollectioncategorySearcher.saveData(newfolder, null);
 			}
 			return collection;
 		}
@@ -713,12 +699,12 @@ public class BaseProjectManager implements ProjectManager
 
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
-		String id = inParentSource.getId() +  "_" + getRevisions(inCollection);
+		String id = inCollection.getId() + "_" + inParentSource.getId() +  "_" + getRevisions(inCollection);
 		Category copy = inDestinationCat.getChild(id);
 		if (copy == null)
 		{
 			copy = (Category) cats.createNewData();
-			copy.setName(inDestinationCat.getName());
+			copy.setName(inParentSource.getName());
 			copy.setId(id);
 			inDestinationCat.addChild(copy);
 			cats.saveData(copy, null);
