@@ -2083,7 +2083,7 @@
 			<ref bean="searcherManager" />
 		</property>
 		<property name="newDataName"><value>libraryCollection</value></property>
-		<property name="checkVersions"><value>true</value></property>
+		<property name="checkVersions"><value>false</value></property>
 	</bean>
 
 	<bean id="libraryCollection" class="org.entermediadb.projects.LibraryCollection" scope="prototype" >
