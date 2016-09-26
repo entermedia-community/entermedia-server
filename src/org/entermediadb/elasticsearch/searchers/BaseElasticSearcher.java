@@ -8,9 +8,11 @@ import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -82,7 +84,8 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
 
-public class BaseElasticSearcher extends BaseSearcher {
+public class BaseElasticSearcher extends BaseSearcher
+{
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
@@ -95,49 +98,59 @@ public class BaseElasticSearcher extends BaseSearcher {
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
 	protected long fieldIndexId = System.currentTimeMillis();
-	
 
-	public boolean isRefreshSaves() {
+	public boolean isRefreshSaves()
+	{
 		return fieldRefreshSaves;
 	}
 
-	public void setRefreshSaves(boolean inRefreshSaves) {
+	public void setRefreshSaves(boolean inRefreshSaves)
+	{
 		fieldRefreshSaves = inRefreshSaves;
 	}
 
-	public ElasticNodeManager getElasticNodeManager() {
+	public ElasticNodeManager getElasticNodeManager()
+	{
 		return fieldElasticNodeManager;
 	}
 
-	public void setElasticNodeManager(ElasticNodeManager inElasticNodeManager) {
+	public void setElasticNodeManager(ElasticNodeManager inElasticNodeManager)
+	{
 		fieldElasticNodeManager = inElasticNodeManager;
 	}
 
-	public boolean isCheckVersions() {
+	public boolean isCheckVersions()
+	{
 		return fieldCheckVersions;
 	}
 
-	public void setCheckVersions(boolean inCheckVersions) {
+	public void setCheckVersions(boolean inCheckVersions)
+	{
 		fieldCheckVersions = inCheckVersions;
 	}
 
-	public boolean isReIndexing() {
+	public boolean isReIndexing()
+	{
 		return fieldReIndexing;
 	}
 
-	public void setReIndexing(boolean inReIndexing) {
+	public void setReIndexing(boolean inReIndexing)
+	{
 		fieldReIndexing = inReIndexing;
 	}
 
-	public boolean isAutoIncrementId() {
+	public boolean isAutoIncrementId()
+	{
 		return fieldAutoIncrementId;
 	}
 
-	public void setAutoIncrementId(boolean inAutoIncrementId) {
+	public void setAutoIncrementId(boolean inAutoIncrementId)
+	{
 		fieldAutoIncrementId = inAutoIncrementId;
 	}
 
-	public SearchQuery createSearchQuery() {
+	public SearchQuery createSearchQuery()
+	{
 		SearchQuery query = new ElasticSearchQuery();
 		query.setPropertyDetails(getPropertyDetails());
 		query.setCatalogId(getCatalogId());
@@ -146,16 +159,19 @@ public class BaseElasticSearcher extends BaseSearcher {
 		return query;
 	}
 
-	protected Client getClient() {
+	protected Client getClient()
+	{
 		return getElasticNodeManager().getClient();
 	}
 
-	protected String toId(String inId) {
+	protected String toId(String inId)
+	{
 		String id = inId.replace('/', '_');
 		return id;
 	}
 
-	public HitTracker search(SearchQuery inQuery) {
+	public HitTracker search(SearchQuery inQuery)
+	{
 		// if (isReIndexing())
 		// {
 		// int timeout = 0;
@@ -179,15 +195,18 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// }
 		// Think this is lucene junk
 		String json = null;
-		try {
-			if (!(inQuery instanceof ElasticSearchQuery)) {
+		try
+		{
+			if (!(inQuery instanceof ElasticSearchQuery))
+			{
 				throw new OpenEditException("Elastic search requires elastic query");
 			}
 			long start = System.currentTimeMillis();
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 			search.setTypes(getSearchType());
-			if (isCheckVersions()) {
+			if (isCheckVersions())
+			{
 				search.setVersion(true);
 			}
 			QueryBuilder terms = buildTerms(inQuery);
@@ -195,33 +214,37 @@ public class BaseElasticSearcher extends BaseSearcher {
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
-			if(inQuery.isIncludeFacets()){
+			if (inQuery.isIncludeFacets())
+			{
 				addFacets(inQuery, search);
 			}
 			// addAggregations(inQuery, search);
 
-			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage() );
+			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
 			hits.setSearchQuery(inQuery);
 
 			// Infinite loop check
-			if (getSearcherManager().getShowSearchLogs(getCatalogId())) {
+			if (getSearcherManager().getShowSearchLogs(getCatalogId()))
+			{
 				long size = hits.size(); // order is important
 				json = search.toString();
 				long end = System.currentTimeMillis() - start;
-				log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size
-						+ " hits in: " + (double) end / 1000D + " seconds]");
+				log.info(toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' \n" + size + " hits in: " + (double) end / 1000D + " seconds]");
 			}
 			return hits;
-		} catch (Exception ex) {
-			if (json != null) {
-				log.error("Could not query: " + toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json
-						+ "' sort by " + inQuery.getSorts(), ex);
+		}
+		catch (Exception ex)
+		{
+			if (json != null)
+			{
+				log.error("Could not query: " + toId(getCatalogId()) + "/" + getSearchType() + "/_search' -d '" + json + "' sort by " + inQuery.getSorts(), ex);
 			}
 
-			if (ex instanceof OpenEditException) {
+			if (ex instanceof OpenEditException)
+			{
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
@@ -249,45 +272,72 @@ public class BaseElasticSearcher extends BaseSearcher {
 	// }
 	//
 	//
-	protected void addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch) {
-		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();) {
+	protected void addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
+	{
+
+		Set allFilters = new HashSet();
+
+		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (detail.isFilter()) {
-				if (detail.isDate() ) {
-					DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
-					builder.field(detail.getId());
-					builder.interval(DateHistogramInterval.DAY);
+			if (detail.isFilter())
+			{
+				allFilters.add(detail);
+			}
+		}
 
-					
-
-					inSearch.addAggregation(builder);
-
-					builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
-					builder.field(detail.getId());
-					builder.interval(DateHistogramInterval.WEEK);
-					inSearch.addAggregation(builder);
-
-				}
-
-				else if (detail.isNumber() ) {
-					SumBuilder b = new SumBuilder(detail.getId() + "_sum");
-					b.field(detail.getId());
-					inSearch.addAggregation(b);
-
-					AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
-					avg.field(detail.getId());
-
-				} else {
-					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(10);
-					inSearch.addAggregation(b);
-				}
-
+		for (Iterator iterator = inQuery.getExtraFacets().iterator(); iterator.hasNext();)
+		{
+			String detail = (String) iterator.next();
+			PropertyDetail facet = getDetail(detail);
+			if (facet != null)
+			{
+				allFilters.add(facet);
 			}
 
 		}
+		for (Iterator iterator = allFilters.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+
+			if (detail.isDate())
+			{
+				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
+				builder.field(detail.getId());
+				builder.interval(DateHistogramInterval.DAY);
+
+				inSearch.addAggregation(builder);
+
+				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+				builder.field(detail.getId());
+				builder.interval(DateHistogramInterval.WEEK);
+				inSearch.addAggregation(builder);
+
+			}
+
+			else if (detail.isNumber())
+			{
+				SumBuilder b = new SumBuilder(detail.getId() + "_sum");
+				b.field(detail.getId());
+				inSearch.addAggregation(b);
+
+				AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
+				avg.field(detail.getId());
+
+			}
+			else
+			{
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(10);
+				inSearch.addAggregation(b);
+			}
+
+		}
+
 		// For reports, we can pass in a custom aggregation from a script or
 		// somewhere
-		if (inQuery.getAggregation() != null) {
+
+		if (inQuery.getAggregation() != null)
+		{
 			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
 
 		}
@@ -297,28 +347,33 @@ public class BaseElasticSearcher extends BaseSearcher {
 	@SuppressWarnings("rawtypes")
 
 	@Override
-	public boolean initialize() {
-		try {
+	public boolean initialize()
+	{
+		try
+		{
 			log.info("initi mapping " + getCatalogId() + "/" + getSearchType());
 
-			boolean alreadyin = getClient().admin().indices()
-					.typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType()))
-					.actionGet().isExists();
-			if (!alreadyin) {
+			boolean alreadyin = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { getElasticIndexId() }, getSearchType())).actionGet().isExists();
+			if (!alreadyin)
+			{
 				putMappings();
 			}
 
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			log.error("index could not be created ", ex);
 			return false;
 		}
 		return true;
 	}
 
-	private String getElasticIndexId() {
+	private String getElasticIndexId()
+	{
 		String indexid = getAlternativeIndex();
 
-		if (indexid == null) {
+		if (indexid == null)
+		{
 			indexid = toId(getCatalogId());
 		}
 		return indexid;
@@ -351,16 +406,19 @@ public class BaseElasticSearcher extends BaseSearcher {
 	// log.error(ex);
 	// }
 	// }
-	public void putMappings() {
+	public void putMappings()
+	{
 		AdminClient admin = getElasticNodeManager().getClient().admin();
 
 		String indexid = getElasticIndexId();
 
 		List<PropertyDetails> dependson = getPropertyDetailsArchive().findChildTables();
-		for (Iterator iterator = dependson.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = dependson.iterator(); iterator.hasNext();)
+		{
 			PropertyDetails details = (PropertyDetails) iterator.next();
 			PropertyDetail parent = details.getDetail("_parent");
-			if (parent.getListId().equals(getSearchType())) {
+			if (parent.getListId().equals(getSearchType()))
+			{
 				Searcher child = getSearcherManager().getSearcher(getCatalogId(), details.getId());
 				child.setAlternativeIndex(getAlternativeIndex());
 				child.reloadSettings();
@@ -369,9 +427,12 @@ public class BaseElasticSearcher extends BaseSearcher {
 		}
 
 		XContentBuilder source = buildMapping();
-		try {
+		try
+		{
 			log.info(indexid + "/" + getSearchType() + "/_mapping' -d '" + source.string() + "'");
-		} catch (IOException ex) {
+		}
+		catch (IOException ex)
+		{
 			log.error(ex);
 		}
 		// GetMappingsRequest find = new
@@ -379,7 +440,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// GetMappingsResponse found =
 		// admin.indices().getMappings(find).actionGet();
 		// if( !found.isContextEmpty())
-		try {
+		try
+		{
 			putMapping(admin, indexid, source);
 			admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
@@ -387,7 +449,9 @@ public class BaseElasticSearcher extends BaseSearcher {
 			getElasticNodeManager().removeMappingError(getSearchType());
 
 			return;
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			// https://www.elastic.co/guide/en/elasticsearch/guide/current/scan-scroll.html
 			// https://github.com/jprante/elasticsearch-knapsack
 			log.info("Could not put mapping over existing mapping. Please use restoreDefaults", ex);
@@ -419,29 +483,34 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// }
 	}
 
-	protected void putMapping(AdminClient admin, String indexid, XContentBuilder source) {
+	protected void putMapping(AdminClient admin, String indexid, XContentBuilder source)
+	{
 		PutMappingRequest req = Requests.putMappingRequest(indexid).updateAllTypes(true).type(getSearchType());
 		req = req.source(source);
 
 		req.validate();
 		PutMappingResponse pres = admin.indices().putMapping(req).actionGet();
 
-		if (pres.isAcknowledged()) {
+		if (pres.isAcknowledged())
+		{
 			// log.info("mapping applied " + getSearchType());
-		//	admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
+			//	admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 		}
 
 	}
 
-	public XContentBuilder buildMapping() {
-		try {
+	public XContentBuilder buildMapping()
+	{
+		try
+		{
 			XContentBuilder jsonBuilder = XContentFactory.jsonBuilder();
 			XContentBuilder jsonproperties = jsonBuilder.startObject().startObject(getSearchType());
 			jsonproperties.field("date_detection", "false");
 			jsonproperties = jsonproperties.startObject("properties");
 
 			List props = getPropertyDetails().findIndexProperties();
-			if (props.size() == 0) {
+			if (props.size() == 0)
+			{
 				throw new OpenEditException("No fields defined for " + getSearchType());
 			}
 			// https://github.com/elasticsearch/elasticsearch/pull/606
@@ -462,10 +531,12 @@ public class BaseElasticSearcher extends BaseSearcher {
 			// props.add(detail);
 			// }
 
-			for (Iterator i = props.iterator(); i.hasNext();) {
+			for (Iterator i = props.iterator(); i.hasNext();)
+			{
 				PropertyDetail detail = (PropertyDetail) i.next();
 
-				if ("_id".equals(detail.getId()) || "id".equals(detail.getId())) {
+				if ("_id".equals(detail.getId()) || "id".equals(detail.getId()))
+				{
 					// jsonproperties = jsonproperties.startObject("_id");
 					// jsonproperties = jsonproperties.field("index",
 					// "not_analyzed");
@@ -473,23 +544,27 @@ public class BaseElasticSearcher extends BaseSearcher {
 					// jsonproperties = jsonproperties.endObject();
 					continue;
 				}
-				if ("_parent".equals(detail.getId()) || detail.getId().contains(".")) {
+				if ("_parent".equals(detail.getId()) || detail.getId().contains("."))
+				{
 					continue;
 				}
 
-				if (detail.isMultiLanguage()) {
+				if (detail.isMultiLanguage())
+				{
 					jsonproperties = jsonproperties.startObject(detail.getId() + "_int");
 					jsonproperties = jsonproperties.field("type", "object");
 
 					jsonproperties.startObject("properties");
 					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
-					for (Iterator iterator = languages.iterator(); iterator.hasNext();) {
+					for (Iterator iterator = languages.iterator(); iterator.hasNext();)
+					{
 						Data locale = (Data) iterator.next();
 						String id = locale.getId();
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
-						if (detail.isSortable() || "name".equals(detail.getId())) {
+						if (detail.isSortable() || "name".equals(detail.getId()))
+						{
 							jsonproperties.startObject("fields");
 							jsonproperties.startObject("sort");
 							jsonproperties = jsonproperties.field("type", "string");
@@ -498,7 +573,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 							jsonproperties.endObject();
 						}
 
-						if (analyzer != null) {
+						if (analyzer != null)
+						{
 							jsonproperties.field("analyzer", analyzer);
 						}
 						jsonproperties = jsonproperties.field("index", "analyzed");
@@ -517,7 +593,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 
 				jsonproperties = jsonproperties.startObject(detail.getId());
 
-				if ("description".equals(detail.getId())) {
+				if ("description".equals(detail.getId()))
+				{
 					String analyzer = "lowersnowball";
 					jsonproperties = jsonproperties.field("analyzer", analyzer);
 					jsonproperties = jsonproperties.field("type", "string");
@@ -528,31 +605,49 @@ public class BaseElasticSearcher extends BaseSearcher {
 				}
 
 				// First determine type
-				if (detail.isDate()) {
+				if (detail.isDate())
+				{
 					jsonproperties = jsonproperties.field("type", "date");
 					// "date_detection" : 0
 					// jsonproperties = jsonproperties.field("format",
 					// "yyyy-MM-dd HH:mm:ss Z");
-				} else if (detail.isBoolean()) {
-					jsonproperties = jsonproperties.field("type", "boolean");
-				} else if (detail.isDataType("number")) {
-					jsonproperties = jsonproperties.field("type", "long");
-				} else if (detail.isDataType("double")) {
-					jsonproperties = jsonproperties.field("type", "double");
-				} else if (detail.isDataType("long")) {
-					jsonproperties = jsonproperties.field("type", "long");
-				} else if (detail.isDataType("geo_point")) {
-					jsonproperties = jsonproperties.field("type", "geo_point");
-				} else if (detail.isList()) // Or multi valued?
+				}
+				else if (detail.isBoolean())
 				{
-					if (Boolean.parseBoolean(detail.get("nested"))) {
+					jsonproperties = jsonproperties.field("type", "boolean");
+				}
+				else if (detail.isDataType("number"))
+				{
+					jsonproperties = jsonproperties.field("type", "long");
+				}
+				else if (detail.isDataType("double"))
+				{
+					jsonproperties = jsonproperties.field("type", "double");
+				}
+				else if (detail.isDataType("long"))
+				{
+					jsonproperties = jsonproperties.field("type", "long");
+				}
+				else if (detail.isDataType("geo_point"))
+				{
+					jsonproperties = jsonproperties.field("type", "geo_point");
+				}
+				else if (detail.isList()) // Or multi valued?
+				{
+					if (Boolean.parseBoolean(detail.get("nested")))
+					{
 						jsonproperties = jsonproperties.field("type", "nested");
-					} else {
+					}
+					else
+					{
 						jsonproperties = jsonproperties.field("type", "string");
 					}
-				} else {
+				}
+				else
+				{
 					jsonproperties = jsonproperties.field("type", "string");
-					if (detail.isSortable() || "name".equals(detail.getId())) {
+					if (detail.isSortable() || "name".equals(detail.getId()))
+					{
 						jsonproperties.startObject("fields");
 						jsonproperties.startObject("sort");
 						jsonproperties = jsonproperties.field("type", "string");
@@ -565,13 +660,16 @@ public class BaseElasticSearcher extends BaseSearcher {
 
 				// Now determine index
 				String indextype = null;
-				if (detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath")) {
+				if (detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
+				{
 					indextype = "not_analyzed";
 				}
-				if (indextype == null) {
+				if (indextype == null)
+				{
 					indextype = detail.get("indextype");
 				}
-				if (indextype != null) {
+				if (indextype != null)
+				{
 					jsonproperties = jsonproperties.field("index", indextype);
 				}
 
@@ -585,7 +683,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 			}
 			jsonproperties = jsonproperties.endObject();
 			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
-			if (_parent != null) {
+			if (_parent != null)
+			{
 				jsonproperties = jsonproperties.startObject("_parent");
 				jsonproperties = jsonproperties.field("type", _parent.getListId());
 				jsonproperties = jsonproperties.endObject();
@@ -594,13 +693,16 @@ public class BaseElasticSearcher extends BaseSearcher {
 			String content = jsonproperties.string();
 			log.info(content);
 			return jsonproperties;
-		} catch (Throwable ex) {
+		}
+		catch (Throwable ex)
+		{
 			throw new OpenEditException(ex);
 		}
 
 	}
 
-	protected QueryBuilder buildTerms(SearchQuery inQuery) {
+	protected QueryBuilder buildTerms(SearchQuery inQuery)
+	{
 
 		// if (inQuery.getTerms().size() == 1 && inQuery.getChildren().size() ==
 		// 0 ) //Shortcut for common cases
@@ -644,13 +746,18 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// }
 		// }
 
-		if (inQuery.getChildren().size() > 0) {
-			for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();) {
+		if (inQuery.getChildren().size() > 0)
+		{
+			for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();)
+			{
 				SearchQuery query = (SearchQuery) iterator.next();
 				QueryBuilder builder = buildTerms(query);
-				if (inQuery.isAndTogether()) {
+				if (inQuery.isAndTogether())
+				{
 					bool.must(builder);
-				} else {
+				}
+				else
+				{
 					bool.should(builder);
 				}
 			}
@@ -659,8 +766,10 @@ public class BaseElasticSearcher extends BaseSearcher {
 
 	}
 
-	protected void buildBoolTerm(SearchQuery inQuery, BoolQueryBuilder bool, boolean inAnd) {
-		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();) {
+	protected void buildBoolTerm(SearchQuery inQuery, BoolQueryBuilder bool, boolean inAnd)
+	{
+		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
+		{
 			Term term = (Term) iterator.next();
 			// if ("orgroup".equals(term.getOperation()) ||
 			// "orsGroup".equals(term.getOperation()))
@@ -672,10 +781,14 @@ public class BaseElasticSearcher extends BaseSearcher {
 			// {
 			String value = term.getValue();
 			QueryBuilder find = buildTerm(term.getDetail(), term, value);
-			if (find != null) {
-				if (inAnd) {
+			if (find != null)
+			{
+				if (inAnd)
+				{
 					bool.must(find);
-				} else {
+				}
+				else
+				{
 					bool.should(find);
 				}
 			}
@@ -705,9 +818,11 @@ public class BaseElasticSearcher extends BaseSearcher {
 	// return null;
 	// }
 
-	protected QueryBuilder buildTerm(PropertyDetail inDetail, Term inTerm, Object inValue) {
+	protected QueryBuilder buildTerm(PropertyDetail inDetail, Term inTerm, Object inValue)
+	{
 		QueryBuilder find = buildNewTerm(inDetail, inTerm, inValue);
-		if ("not".equals(inTerm.getOperation())) {
+		if ("not".equals(inTerm.getOperation()))
+		{
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
 			or.mustNot(find);
 			return or;
@@ -716,20 +831,25 @@ public class BaseElasticSearcher extends BaseSearcher {
 		return find;
 	}
 
-	protected QueryBuilder buildNewTerm(PropertyDetail inDetail, Term inTerm, Object inValue) {
+	protected QueryBuilder buildNewTerm(PropertyDetail inDetail, Term inTerm, Object inValue)
+	{
 		// Check for quick date object
 		QueryBuilder find = null;
 		String valueof = null;
 
-		if (inValue instanceof Date) {
+		if (inValue instanceof Date)
+		{
 			valueof = DateStorageUtil.getStorageUtil().formatForStorage((Date) inValue);
-		} else {
+		}
+		else
+		{
 			valueof = String.valueOf(inValue);
 		}
 
 		String fieldid = inDetail.getId();
 
-		if ("searchjoin".equals(inDetail.getDataType())) {
+		if ("searchjoin".equals(inDetail.getDataType()))
+		{
 			// contact.state
 			String fieldname = fieldid.substring(0, fieldid.indexOf(".")); // contact
 			String path = fieldid.substring(fieldid.indexOf(".") + 1); // state
@@ -740,23 +860,28 @@ public class BaseElasticSearcher extends BaseSearcher {
 			// joinquery.lookupIndex(toId( inDetail.getListCatalogId()));
 			// joinquery.lookupPath(path);
 			// return joinquery;
-			org.openedit.data.QueryBuilder builder = getSearcherManager()
-					.getSearcher(inDetail.getListCatalogId(), inDetail.getListId()).query();
+			org.openedit.data.QueryBuilder builder = getSearcherManager().getSearcher(inDetail.getListCatalogId(), inDetail.getListId()).query();
 			HitTracker hits = builder.match(path, valueof).search();
 
 			hits.setHitsPerPage(1000);
 			Collection ids = new ArrayList(hits.size());
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+			{
 				Data data = (Data) iterator.next();
 				ids.add(data.getId());
 			}
-			if (ids.size() > 0) {
+			if (ids.size() > 0)
+			{
 				find = QueryBuilders.termsQuery(fieldname, ids);
 				return find;
-			} else {
+			}
+			else
+			{
 				return null;
 			}
-		} else if ("childfilter".equals(inTerm.getOperation())) {
+		}
+		else if ("childfilter".equals(inTerm.getOperation()))
+		{
 			ChildFilter filter = (ChildFilter) inTerm;
 			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue());
 			QueryBuilder haschild = QueryBuilders.hasChildQuery(filter.getChildTable(), parent);
@@ -770,43 +895,55 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// find = QueryBuilders.textQuery(fieldid, valueof);
 		// return find;
 		// }
-		if (fieldid.equals("id")) {
+		if (fieldid.equals("id"))
+		{
 			// valueof = valueof.toLowerCase();
-			if (valueof.equals("*")) {
+			if (valueof.equals("*"))
+			{
 				find = QueryBuilders.matchAllQuery();
-			} else if (!"orgroup".equals(inTerm.getOperation())) {
+			}
+			else if (!"orgroup".equals(inTerm.getOperation()))
+			{
 				find = QueryBuilders.termQuery("_id", valueof);
-			} else if (inTerm.getValues() != null) {
+			}
+			else if (inTerm.getValues() != null)
+			{
 				find = QueryBuilders.termsQuery("_id", inTerm.getValues());
 			}
-			if (find != null) {
+			if (find != null)
+			{
 				return find;
 			}
 		}
 
-		if (valueof.equals("*")) {
+		if (valueof.equals("*"))
+		{
 			find = QueryBuilders.matchAllQuery();
 			// ExistsFilterBuilder filter =
 			// FilterBuilders.existsFilter(fieldid);
 			// find = QueryBuilders.filteredQuery(all, filter);
 
-		} else if ("contains".equals(inTerm.getOperation())) {
+		}
+		else if ("contains".equals(inTerm.getOperation()))
+		{
 			// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
 			// valueof);
 			// QueryBuilder text = QueryBuilders.queryString("*" + valueof +
 			// "*").field(fieldid);
 			String wildcard = valueof;
 
-			if (!wildcard.startsWith("*")) {
+			if (!wildcard.startsWith("*"))
+			{
 				wildcard = "*" + wildcard;
 			}
-			if (!wildcard.endsWith("*")) {
+			if (!wildcard.endsWith("*"))
+			{
 				wildcard = wildcard + "*";
 			}
 			wildcard = wildcard.toLowerCase(); // Some reason wildcard searches
 												// are not run by the analyser
-			// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
-			// valueof);
+												// MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(fieldid,
+												// valueof);
 			WildcardQueryBuilder text = QueryBuilders.wildcardQuery(fieldid, wildcard);
 
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
@@ -817,13 +954,18 @@ public class BaseElasticSearcher extends BaseSearcher {
 			phrase.maxExpansions(10);
 			or.should(phrase);
 			find = or;
-		} else if ("startswith".equals(inTerm.getOperation())) {
+		}
+		else if ("startswith".equals(inTerm.getOperation()))
+		{
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
-		} else if ("freeform".equals(inTerm.getOperation())) {
+		}
+		else if ("freeform".equals(inTerm.getOperation()))
+		{
 			boolean simple = true;
-			if (!StringUtils.isAlphanumericSpace(valueof)) {
+			if (!StringUtils.isAlphanumericSpace(valueof))
+			{
 				simple = false;
 
 				// Replace GOOD stuff for now. Then escape whats left then
@@ -842,18 +984,19 @@ public class BaseElasticSearcher extends BaseSearcher {
 				// Parse by Operator
 				// Add wildcards
 				// Look for Quotes
-				String uppercase = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ")
-						.replace(" to ", " TO ");
+				String uppercase = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO ");
 
 				Matcher m = operators.matcher(uppercase);
-				if (!m.find()) {
+				if (!m.find())
+				{
 					// inValue = inValue.replaceAll(" ", " "); //recurse
 					uppercase = uppercase.replaceAll(" ", " AND ");
 				}
 				m = operators.matcher(uppercase);
 				StringBuffer output = new StringBuffer();
 				int location = 0;
-				while (m.find()) {
+				while (m.find())
+				{
 					String word = uppercase.substring(location, m.start());
 					String operator = m.group();
 					wildcard(output, word);
@@ -870,16 +1013,19 @@ public class BaseElasticSearcher extends BaseSearcher {
 				// "Big Deal" => "Big Deal"
 			}
 
-			if ((valueof.startsWith("\"") && valueof.endsWith("\""))) {
+			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
+			{
 				valueof = valueof.replace("\"", "");
 				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 				text.analyzer("lowersnowball");
 				find = text;
 
-			} else {
-				if (!simple) {
-					valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ")
-							.replace(" to ", " TO "); // Why do this again?
+			}
+			else
+			{
+				if (!simple)
+				{
+					valueof = valueof.replace(" and ", " AND ").replace(" or ", " OR ").replace(" not ", " NOT ").replace(" to ", " TO "); // Why do this again?
 				}
 
 				String query = "+(" + valueof + ")";
@@ -909,25 +1055,35 @@ public class BaseElasticSearcher extends BaseSearcher {
 				}
 
 			}
-		} else if (valueof.endsWith("*")) {
+		}
+		else if (valueof.endsWith("*"))
+		{
 			valueof = valueof.substring(0, valueof.length() - 1);
 
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
-		} else if (valueof.contains("*")) {
+		}
+		else if (valueof.contains("*"))
+		{
 			find = QueryBuilders.wildcardQuery(fieldid, valueof);
 		}
 
-		else if (valueof.startsWith("\"") && valueof.endsWith("\"")) {
+		else if (valueof.startsWith("\"") && valueof.endsWith("\""))
+		{
 			valueof.replaceAll("\"", "");
 			MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 			text.analyzer("lowersnowball");
 			find = text;
-		} else if (inDetail.isBoolean()) {
+		}
+		else if (inDetail.isBoolean())
+		{
 			find = QueryBuilders.termQuery(fieldid, Boolean.parseBoolean(valueof));
-		} else if (inDetail.isDate()) {
-			if ("beforedate".equals(inTerm.getOperation())) {
+		}
+		else if (inDetail.isDate())
+		{
+			if ("beforedate".equals(inTerm.getOperation()))
+			{
 				// Date after = new Date(0);
 				Date before = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 				Calendar c = new GregorianCalendar();
@@ -939,11 +1095,15 @@ public class BaseElasticSearcher extends BaseSearcher {
 				c.set(Calendar.MILLISECOND, 999);
 				before = c.getTime();
 				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
-			} else if ("afterdate".equals(inTerm.getOperation())) {
+			}
+			else if ("afterdate".equals(inTerm.getOperation()))
+			{
 				Date before = new Date(Long.MAX_VALUE);
 				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 				find = QueryBuilders.rangeQuery(fieldid).from(after);// .to(before);
-			} else if ("betweendates".equals(inTerm.getOperation())) {
+			}
+			else if ("betweendates".equals(inTerm.getOperation()))
+			{
 				// String end =
 				// DateStorageUtil.getStorageUtil().formatForStorage(new
 				// Date(Long.MAX_VALUE));
@@ -962,11 +1122,11 @@ public class BaseElasticSearcher extends BaseSearcher {
 				// inTerm.getParameter("beforeDate");
 
 				// String before
-				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before)
-						.includeUpper(true).includeLower(true);
+				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
 			}
 
-			else {
+			else
+			{
 				// Think this doesn't ever run. I think we use betweendates.
 				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 				Calendar calendar = Calendar.getInstance();
@@ -988,50 +1148,65 @@ public class BaseElasticSearcher extends BaseSearcher {
 				// find = QueryBuilders.termQuery(fieldid, valueof); //TODO make
 				// it a range query? from 0-24 hours
 			}
-		} else if (inDetail.isNumber()) {
-			if ("betweennumbers".equals(inTerm.getOperation())) {
+		}
+		else if (inDetail.isNumber())
+		{
+			if ("betweennumbers".equals(inTerm.getOperation()))
+			{
 
-				if (inDetail.isDataType("double")) {
+				if (inDetail.isDataType("double"))
+				{
 					Double lowval = Double.valueOf(inTerm.getParameter("lowval"));
 					Double highval = Double.valueOf(inTerm.getParameter("highval"));
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
-				if (inDetail.isDataType("long") || inDetail.isDataType("number")) {
+				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
+				{
 					Long lowval = Long.valueOf(inTerm.getParameter("lowval"));
 					Long highval = Long.valueOf(inTerm.getParameter("highval"));
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
 			}
 
-			else if ("lessthannumber".equals(inTerm.getOperation())) {
-				if (inDetail.isDataType("double")) {
+			else if ("lessthannumber".equals(inTerm.getOperation()))
+			{
+				if (inDetail.isDataType("double"))
+				{
 					Double val = Double.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).lt(val);
 				}
-				if (inDetail.isDataType("long") || inDetail.isDataType("number")) {
+				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
+				{
 					Long val = Long.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).lt(val);
 				}
 
 			}
 
-			else if ("greaterthannumber".equals(inTerm.getOperation())) {
-				if (inDetail.isDataType("double")) {
+			else if ("greaterthannumber".equals(inTerm.getOperation()))
+			{
+				if (inDetail.isDataType("double"))
+				{
 					Double val = Double.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).gt(val);
 				}
-				if (inDetail.isDataType("long") || inDetail.isDataType("number")) {
+				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
+				{
 					Long val = Long.valueOf(inTerm.getValue());
 					find = QueryBuilders.rangeQuery(fieldid).gt(val);
 				}
 
 			}
 
-			else {
-				if (inDetail.isDataType("double")) {
+			else
+			{
+				if (inDetail.isDataType("double"))
+				{
 					find = QueryBuilders.termQuery(fieldid, Double.parseDouble(valueof));
 
-				} else {
+				}
+				else
+				{
 					find = QueryBuilders.termQuery(fieldid, Long.parseLong(valueof));
 				}
 			}
@@ -1048,32 +1223,45 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// text.maxExpansions(10);
 		// find = text;
 		// }
-		else {
-			if ("exact".equals(inTerm.getOperation())) {
+		else
+		{
+			if ("exact".equals(inTerm.getOperation()))
+			{
 				find = QueryBuilders.termQuery(fieldid, valueof);
-			} else if ("orgroup".equals(inTerm.getOperation())) {
+			}
+			else if ("orgroup".equals(inTerm.getOperation()))
+			{
 
 				find = QueryBuilders.termsQuery(fieldid, inTerm.getValues());
 
-			} else if ("matches".equals(inTerm.getOperation())) {
+			}
+			else if ("matches".equals(inTerm.getOperation()))
+			{
 				find = QueryBuilders.matchQuery(fieldid, valueof); // this is
 																	// analyzed
-				// find = QueryBuilders.termQuery(fieldid, valueof);
-			} else if ("contains".equals(inTerm.getOperation())) {
+																	// find = QueryBuilders.termQuery(fieldid, valueof);
+			}
+			else if ("contains".equals(inTerm.getOperation()))
+			{
 				find = QueryBuilders.matchQuery(fieldid, valueof);
-			} else if (inDetail.isList()) {
+			}
+			else if (inDetail.isList())
+			{
 				find = QueryBuilders.termQuery(fieldid, valueof);
-			} else {
+			}
+			else
+			{
 				find = QueryBuilders.matchQuery(fieldid, valueof); // This is
 																	// analyzed
 																	// termQuery
 																	// is not
-				// find = QueryBuilders.termQuery(fieldid, valueof);
+																	// find = QueryBuilders.termQuery(fieldid, valueof);
 			}
 		}
 		// QueryBuilders.idsQuery(types)
 
-		if (fieldid.contains(".")) {
+		if (fieldid.contains("."))
+		{
 			String[] parentpath = fieldid.split(".");
 
 		}
@@ -1081,64 +1269,83 @@ public class BaseElasticSearcher extends BaseSearcher {
 		return find;
 	}
 
-	private void wildcard(StringBuffer output, String word) {
+	private void wildcard(StringBuffer output, String word)
+	{
 		output.append("*");
 		output.append(QueryParser.escape(word));
 		output.append("*");
 	}
 
-	protected void addSorts(SearchQuery inQuery, SearchRequestBuilder search) {
-		if (inQuery.getSorts() == null) {
+	protected void addSorts(SearchQuery inQuery, SearchRequestBuilder search)
+	{
+		if (inQuery.getSorts() == null)
+		{
 			return;
 		}
-		for (Iterator iterator = inQuery.getSorts().iterator(); iterator.hasNext();) {
+		for (Iterator iterator = inQuery.getSorts().iterator(); iterator.hasNext();)
+		{
 			String field = (String) iterator.next();
 			boolean direction = false;
-			if (field.endsWith("Down")) {
+			if (field.endsWith("Down"))
+			{
 				direction = true;
 				field = field.substring(0, field.length() - 4);
-			} else if (field.endsWith("Up")) {
+			}
+			else if (field.endsWith("Up"))
+			{
 				direction = false;
 				field = field.substring(0, field.length() - 2);
 			}
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isString() && (detail.isSortable() || "name".equals(detail.getId()))) {
-				if (detail.isMultiLanguage()) {
+			if (detail != null && detail.isString() && (detail.isSortable() || "name".equals(detail.getId())))
+			{
+				if (detail.isMultiLanguage())
+				{
 					sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".sort");
-				} else {
+				}
+				else
+				{
 					sort = SortBuilders.fieldSort(field + ".sort");
 				}
 
 			}
 
-			else {
+			else
+			{
 				sort = SortBuilders.fieldSort(field);
 			}
 
 			sort.ignoreUnmapped(true);
-			if (direction) {
+			if (direction)
+			{
 				sort.order(SortOrder.DESC);
-			} else {
+			}
+			else
+			{
 				sort.order(SortOrder.ASC);
 			}
 			search.addSort(sort);
 		}
 	}
 
-	public String getIndexId() {
-		if (fieldIndexId == -1) {
+	public String getIndexId()
+	{
+		if (fieldIndexId == -1)
+		{
 			fieldIndexId = System.currentTimeMillis();
 		}
 		return String.valueOf(fieldIndexId);
 	}
 
-	public void clearIndex() {
+	public void clearIndex()
+	{
 		fieldIndexId = -1;
 	}
 
-	public void saveData(Data inData, User inUser) {
+	public void saveData(Data inData, User inUser)
+	{
 		// update the index
 		// List<Data> list = new ArrayList(1);
 		// list.add((Data) inData);
@@ -1183,16 +1390,21 @@ public class BaseElasticSearcher extends BaseSearcher {
 	 * getSearchType()); } catch (Exception e) { throw new OpenEditException(e);
 	 * } }
 	 */
-	public void updateIndex(Collection<Data> inBuffer, User inUser) {
+	public void updateIndex(Collection<Data> inBuffer, User inUser)
+	{
 		if (inBuffer.size() > 99 || fieldForceBulk) // 100 was too low - caused shard exceptions
-									// due to thread pool size on large
-									// ingests..
+		// due to thread pool size on large
+		// ingests..
 		{
 			updateInBatch(inBuffer, inUser); // This is asynchronous
-		} else {
+		}
+		else
+		{
 			PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-			for (Data data : inBuffer) {
-				if (data == null) {
+			for (Data data : inBuffer)
+			{
+				if (data == null)
+				{
 					throw new OpenEditException("Data was null!");
 				}
 				updateElasticIndex(details, data);
@@ -1203,7 +1415,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// inBuffer.clear();
 	}
 
-	public void updateInBatch(Collection<Data> inBuffer, User inUser) {
+	public void updateInBatch(Collection<Data> inBuffer, User inUser)
+	{
 		String catid = getElasticIndexId();
 
 		// We cant use this for normal updates since we do not get back the id
@@ -1213,26 +1426,33 @@ public class BaseElasticSearcher extends BaseSearcher {
 		final List<Data> toprocess = new ArrayList(inBuffer);
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener() {
+		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
+		{
 			@Override
-			public void beforeBulk(long executionId, BulkRequest request) {
+			public void beforeBulk(long executionId, BulkRequest request)
+			{
 
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-				for (int i = 0; i < response.getItems().length; i++) {
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
+			{
+				for (int i = 0; i < response.getItems().length; i++)
+				{
 					// request.getFromContext(key)
 					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed()) {
+					if (res.isFailed())
+					{
 						log.info(res.getFailureMessage());
 						errors.add(res.getFailureMessage());
 
 					}
 					// Data toupdate = toversion.get(res.getId());
 					Data toupdate = toprocess.get(res.getItemId());
-					if (toupdate != null) {
-						if (isCheckVersions()) {
+					if (toupdate != null)
+					{
+						if (isCheckVersions())
+						{
 							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
 						}
 						toupdate.setId(res.getId());
@@ -1242,17 +1462,19 @@ public class BaseElasticSearcher extends BaseSearcher {
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
+			{
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
-				.setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
+		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
 
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
-		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();) {
-			try {
+		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
+		{
+			try
+			{
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateIndex(content, data2, details);
@@ -1260,14 +1482,17 @@ public class BaseElasticSearcher extends BaseSearcher {
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
 				PropertyDetail parent = details.getDetail("_parent");
-				if (parent != null) {
+				if (parent != null)
+				{
 					// String _parent = data.get(parent.getListId());
 					String _parent = data2.get(parent.getId());
-					if (_parent != null) {
+					if (_parent != null)
+					{
 						req.parent(_parent);
 					}
 				}
-				if (data2.getId() != null) {
+				if (data2.getId() != null)
+				{
 					req = req.id(data2.getId());
 
 				}
@@ -1277,20 +1502,26 @@ public class BaseElasticSearcher extends BaseSearcher {
 				// req = req.refresh(true);
 				// }
 				bulkProcessor.add(req);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				log.error(ex);
 			}
 		}
 
 		//bulkProcessor.close();
-		try{
-		bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
-		} catch (InterruptedException e){
+		try
+		{
+			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+		}
+		catch (InterruptedException e)
+		{
 			throw new OpenEditException(e);
 		}
 
-		if (errors.size() > 0) {
-			 throw new OpenEditException((String)errors.get(0).toString());
+		if (errors.size() > 0)
+		{
+			throw new OpenEditException((String) errors.get(0).toString());
 
 		}
 		// ConcurrentModificationException
@@ -1302,13 +1533,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
 	}
 
-	
-	
-	
-	
-	
-	
-	public void deleteAll(Collection<Data> inBuffer, User inUser) {
+	public void deleteAll(Collection<Data> inBuffer, User inUser)
+	{
 		String catid = getElasticIndexId();
 
 		// We cant use this for normal updates since we do not get back the id
@@ -1318,26 +1544,33 @@ public class BaseElasticSearcher extends BaseSearcher {
 		final List<Data> toprocess = new ArrayList(inBuffer);
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener() {
+		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
+		{
 			@Override
-			public void beforeBulk(long executionId, BulkRequest request) {
+			public void beforeBulk(long executionId, BulkRequest request)
+			{
 
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-				for (int i = 0; i < response.getItems().length; i++) {
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
+			{
+				for (int i = 0; i < response.getItems().length; i++)
+				{
 					// request.getFromContext(key)
 					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed()) {
+					if (res.isFailed())
+					{
 						log.info(res.getFailureMessage());
 						errors.add(res.getFailureMessage());
 
 					}
 					// Data toupdate = toversion.get(res.getId());
 					Data toupdate = toprocess.get(res.getItemId());
-					if (toupdate != null) {
-						if (isCheckVersions()) {
+					if (toupdate != null)
+					{
+						if (isCheckVersions())
+						{
 							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
 						}
 						toupdate.setId(res.getId());
@@ -1347,38 +1580,42 @@ public class BaseElasticSearcher extends BaseSearcher {
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
+			{
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
-				.setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
+		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
 
-	
-
-		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();) {
-			try {
+		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
+		{
+			try
+			{
 				Data data2 = (Data) iterator.next();
-			
+
 				DeleteRequest req = Requests.deleteRequest(catid).type(getSearchType());
-			
-				if (data2.getId() != null) {
+
+				if (data2.getId() != null)
+				{
 					req = req.id(data2.getId());
 
 				}
-				
+
 				// if( isRefreshSaves() )
 				// {
 				// req = req.refresh(true);
 				// }
 				bulkProcessor.add(req);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				log.error(ex);
 			}
 		}
 		bulkProcessor.close();
 
-		if (errors.size() > 0) {
+		if (errors.size() > 0)
+		{
 			// throw new OpenEditException((Throwable)errors.get(0));
 
 		}
@@ -1391,26 +1628,32 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
 	}
 
-	
-	
-	
-	protected void updateElasticIndex(PropertyDetails details, Data data) {
-		try {
+	protected void updateElasticIndex(PropertyDetails details, Data data)
+	{
+		try
+		{
 			String catid = getElasticIndexId();
 
 			IndexRequestBuilder builder = null;
-			if (data.getId() == null) {
+			if (data.getId() == null)
+			{
 				builder = getClient().prepareIndex(catid, getSearchType());
-			} else {
+			}
+			else
+			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
 			PropertyDetail parent = details.getDetail("_parent");
-			if (parent != null) {
+			if (parent != null)
+			{
 				// String _parent = data.get(parent.getListId());
 				String _parent = data.get(parent.getId());
-				if (_parent != null) {
+				if (_parent != null)
+				{
 					builder = builder.setParent(_parent);
-				} else {
+				}
+				else
+				{
 					return; // Can't save data that doesn't have a parent!
 				}
 			}
@@ -1419,63 +1662,83 @@ public class BaseElasticSearcher extends BaseSearcher {
 
 			updateIndex(content, data, details);
 			content.endObject();
-			if (log.isDebugEnabled()) {
+			if (log.isDebugEnabled())
+			{
 				log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
 			}
 
 			builder = builder.setSource(content);
-			if (isRefreshSaves()) {
+			if (isRefreshSaves())
+			{
 				builder = builder.setRefresh(true);
 			}
-			if (isCheckVersions()) {
+			if (isCheckVersions())
+			{
 				updateVersion(data, builder);
 			}
 			IndexResponse response = null;
 
 			response = builder.execute().actionGet();
-			if (response.getId() != null) {
+			if (response.getId() != null)
+			{
 				data.setId(response.getId());
 			}
 			data.setProperty(".version", String.valueOf(response.getVersion()));
-		} catch (RemoteTransportException ex) {
-			if (ex.getCause() instanceof VersionConflictEngineException) {
+		}
+		catch (RemoteTransportException ex)
+		{
+			if (ex.getCause() instanceof VersionConflictEngineException)
+			{
 				throw new ConcurrentModificationException(ex.getMessage());
 			}
-		} catch (VersionConflictEngineException ex) {
+		}
+		catch (VersionConflictEngineException ex)
+		{
 			throw new ConcurrentModificationException(ex.getMessage());
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			log.error("Problem saving data in " + getCatalogId() + " " + getSearchType() + " " + data.getId());
-			if (ex instanceof OpenEditException) {
+			if (ex instanceof OpenEditException)
+			{
 				throw (OpenEditException) ex;
 			}
 			throw new OpenEditException(ex);
 		}
 	}
 
-	public void setIndexId(long inIndexId) {
+	public void setIndexId(long inIndexId)
+	{
 		fieldIndexId = inIndexId;
 	}
 
-	private void updateVersion(Data data, IndexRequestBuilder builder) {
-		if (isCheckVersions()) {
+	private void updateVersion(Data data, IndexRequestBuilder builder)
+	{
+		if (isCheckVersions())
+		{
 			String version = data.get(".version");
-			if (version != null) {
+			if (version != null)
+			{
 				long val = Long.parseLong(version);
-				if (val > -1) {
+				if (val > -1)
+				{
 					builder.setVersion(val);
 				}
 			}
 		}
 	}
 
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails) {
-		if (inData == null) {
+	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	{
+		if (inData == null)
+		{
 			log.info("Null Data");
 		}
 		populateDoc(inContent, inData, inDetails);
 	}
 
-	protected void populateDoc(XContentBuilder inContent, Data inData, PropertyDetails inDetails) {
+	protected void populateDoc(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	{
 
 		// Map props = inData.getProperties();
 		// HashSet everything = new HashSet(props.keySet());
@@ -1490,99 +1753,142 @@ public class BaseElasticSearcher extends BaseSearcher {
 		//
 		// }
 		// everything.remove(".version"); // is this correct?
-		try {
-			for (Iterator iterator = inDetails.getDetails().iterator(); iterator.hasNext();) {
+		try
+		{
+			for (Iterator iterator = inDetails.getDetails().iterator(); iterator.hasNext();)
+			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
-				if (!detail.isIndex()) {
+				if (!detail.isIndex())
+				{
 					continue;
 				}
 
 				String key = detail.getId();
-				if (key.equals("recordmodificationdate")) {
+				if (key.equals("recordmodificationdate"))
+				{
 					inContent.field(key, new Date());
 					continue;
 				}
 
 				Object value = inData.getValue(key);
-				if (value != null) {
-					if (value instanceof String && ((String) value).isEmpty()) {
+				if (value != null)
+				{
+					if (value instanceof String && ((String) value).isEmpty())
+					{
 						value = null;
 					}
 				}
 
-				if (shoudSkipField(key)) {
+				if (shoudSkipField(key))
+				{
 					continue;
 				}
-				if (detail.isDate()) {
-					if (value != null) {
+				if (detail.isDate())
+				{
+					if (value != null)
+					{
 						Date date = null;
-						if (value instanceof Date) {
+						if (value instanceof Date)
+						{
 							date = (Date) value;
-						} else {
+						}
+						else
+						{
 							date = DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
 						}
-						if (date != null) {
+						if (date != null)
+						{
 							inContent.field(key, date);
 						}
 					}
-				} else if (detail.isBoolean()) {
+				}
+				else if (detail.isBoolean())
+				{
 					boolean val = false;
-					if (value instanceof Boolean) {
+					if (value instanceof Boolean)
+					{
 						val = (Boolean) value;
-					} else if (value != null) {
+					}
+					else if (value != null)
+					{
 						val = Boolean.valueOf((String) value);
 					}
 					inContent.field(key, val);
-				} else if (detail.isDataType("double")) {
+				}
+				else if (detail.isDataType("double"))
+				{
 					Double val = null;
 
-					if (value instanceof Double) {
+					if (value instanceof Double)
+					{
 						val = (Double) value;
-					} else if (value != null) {
+					}
+					else if (value != null)
+					{
 						val = Double.valueOf((String) value);
 					}
 					inContent.field(key, val);
 				}
 
-				else if (detail.isDataType("number")) {
+				else if (detail.isDataType("number"))
+				{
 					Number val = 0;
 
-					if (value instanceof Number) {
+					if (value instanceof Number)
+					{
 						val = (Number) value;
-					} else if (value != null) {
+					}
+					else if (value != null)
+					{
 						val = Long.valueOf((String) value);
 					}
 					inContent.field(key, val);
-				} else if (detail.isMultiValue()) {
-					if (value != null) {
+				}
+				else if (detail.isMultiValue())
+				{
+					if (value != null)
+					{
 						Collection values = null;
-						if (value instanceof Collection) {
+						if (value instanceof Collection)
+						{
 							values = (Collection) value;
-						} else if (value != null) {
+						}
+						else if (value != null)
+						{
 							String vs = (String) value;
-							if (vs.contains("|")) {
+							if (vs.contains("|"))
+							{
 								String[] vals = VALUEDELMITER.split(vs);
 								values = Arrays.asList(vals);
-							} else {
+							}
+							else
+							{
 								values = Arrays.asList(value);
 							}
 						}
 						inContent.field(key, values);
 					}
-				} else if (detail.isDataType("geo_point")) {
+				}
+				else if (detail.isDataType("geo_point"))
+				{
 					inContent.field(key, value);
-				} else if (key.equals("description")) // TODO: This should be
-														// moved to _all
-														// searches
+				}
+				else if (key.equals("description")) // TODO: This should be
+													// moved to _all
+													// searches
 				{
 					StringBuffer desc = new StringBuffer();
 					populateKeywords(desc, inData, inDetails);
-					if (desc.length() > 0) {
+					if (desc.length() > 0)
+					{
 						inContent.field(key, desc.toString());
 					}
-				} else if (detail.isMultiLanguage()) {
+				}
+				else if (detail.isMultiLanguage())
+				{
 					// This is a nested document
-					if (value == null) {
+					if (value == null)
+					{
 						continue;
 					}
 					key = key + "_int";
@@ -1592,20 +1898,20 @@ public class BaseElasticSearcher extends BaseSearcher {
 																			// object
 					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 
-					if (value instanceof String) 
+					if (value instanceof String)
 					{
 						String target = (String) value;
 						LanguageMap map = new LanguageMap();
-						map.setText("en",target);
+						map.setText("en", target);
 						value = map;
-					} 
+					}
 					LanguageMap map = (LanguageMap) value;
-					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();) 
+					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
 					{
 						Data locale = (Data) iterator2.next();
 						String id = locale.getId();
 						String localeval = map.getText(id); // get value
-						if (localeval != null) 
+						if (localeval != null)
 						{
 							lanobj.field(id, localeval);
 						}
@@ -1614,56 +1920,68 @@ public class BaseElasticSearcher extends BaseSearcher {
 				}
 				else
 				{
-					if (value == null) {
-						// log.info( getSearchType() + "Had null value " + key);
-					} 
-					else 
+					if (value == null)
 					{
-						if( !(value instanceof String) )
+						// log.info( getSearchType() + "Had null value " + key);
+					}
+					else
+					{
+						if (!(value instanceof String))
 						{
 							String svalue = String.valueOf(value);
-							if (svalue.isEmpty()) {
+							if (svalue.isEmpty())
+							{
 								value = null;
 							}
 						}
-						if (value != null) 
+						if (value != null)
 						{
 							inContent.field(key, value);
-						}	
+						}
 					}
 				}
 				// log.info("Saved" + key + "=" + value );
 			}
 
-			if (inDetails.isAllowDynamicFields()) {
+			if (inDetails.isAllowDynamicFields())
+			{
 				Map props = inData.getProperties();
-				for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();) {
+				for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
+				{
 					String key = (String) iterator.next();
-					if (shoudSkipField(key)) {
+					if (shoudSkipField(key))
+					{
 						continue;
 					}
-					if (inDetails.getDetail(key) == null) {
+					if (inDetails.getDetail(key) == null)
+					{
 						Object val = props.get(key);
-						if (val != null) {
+						if (val != null)
+						{
 							inContent.field(key, val);
 						}
 					}
 				}
 			}
-		} catch (Exception ex) {
+		}
+		catch (Exception ex)
+		{
 			throw new OpenEditException(ex);
 		}
 
 	}
 
-	private boolean shoudSkipField(String inKey) {
-		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains(".")) {
+	private boolean shoudSkipField(String inKey)
+	{
+		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains("."))
+		{
 			return true;
 		}
 		return false;
 	}
 
-	public void deleteAll(User inUser) {
+	public void deleteAll(User inUser)
+	{
 
 		// https://github.com/elastic/elasticsearch/blob/master/plugins/delete-by-query/src/main/java/org/elasticsearch/action/deletebyquery/TransportDeleteByQueryAction.java#L104
 
@@ -1674,90 +1992,93 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
 		HitTracker all = getAllHits();
 		all.enableBulkOperations();
-		
-		
+
 		String catid = getElasticIndexId();
 
 		// We cant use this for normal updates since we do not get back the id
 		// or the version for new data object
 
 		// final Map<String, Data> toversion = new HashMap(inBuffer.size());
-	
+
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener() {
+		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
+		{
 			@Override
-			public void beforeBulk(long executionId, BulkRequest request) {
+			public void beforeBulk(long executionId, BulkRequest request)
+			{
 
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response) {
-				for (int i = 0; i < response.getItems().length; i++) {
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
+			{
+				for (int i = 0; i < response.getItems().length; i++)
+				{
 					// request.getFromContext(key)
 					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed()) {
+					if (res.isFailed())
+					{
 						log.error(res.getFailureMessage());
 						errors.add(res.getFailureMessage());
 
 					}
-				
+
 				}
 				request.refresh(true);
 			}
 
 			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure) {
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
+			{
 				log.error(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(all.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB))
-				.setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
+		}).setBulkActions(all.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
 
-	
-
-		for (Iterator iterator = all.iterator(); iterator.hasNext();) {
-			try {
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			try
+			{
 				Data data2 = (Data) iterator.next();
-			
+
 				DeleteRequest req = Requests.deleteRequest(catid).type(getSearchType());
-			
-				if (data2.getId() != null) {
+
+				if (data2.getId() != null)
+				{
 					req = req.id(data2.getId());
 
 				}
-				
+
 				// if( isRefreshSaves() )
 				// {
 				// req = req.refresh(true);
 				// }
-				
+
 				bulkProcessor.add(req);
-			} catch (Exception ex) {
+			}
+			catch (Exception ex)
+			{
 				log.error(ex);
 			}
 		}
 		bulkProcessor.close();
 
-		if (errors.size() > 0) {
+		if (errors.size() > 0)
+		{
 			// throw new OpenEditException((Throwable)errors.get(0));
 
 		}
-		
-		
-		
-		
-		
-		
-	
 
 	}
 
-	public void delete(Data inData, User inUser) {
+	public void delete(Data inData, User inUser)
+	{
 		String id = inData.getId();
 
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
-		if (inData.get("_parent") != null) {
+		if (inData.get("_parent") != null)
+		{
 			delete.setParent(inData.get("_parent"));
 		}
 		delete.setRefresh(true).execute().actionGet();
@@ -1765,11 +2086,13 @@ public class BaseElasticSearcher extends BaseSearcher {
 	}
 
 	// Base class only updated the index in bulk
-	public void saveAllData(Collection<Data> inAll, User inUser) {
+	public void saveAllData(Collection<Data> inAll, User inUser)
+	{
 		updateIndex(inAll, inUser);
 	}
 
-	public synchronized String nextId() {
+	public synchronized String nextId()
+	{
 		// Lock lock = getLockManager().lock(getCatalogId(), loadCounterPath(),
 		// "admin");
 		// try
@@ -1783,7 +2106,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 		throw new OpenEditException("Should not call next ID");
 	}
 
-	protected IntCounter getIntCounter() {
+	protected IntCounter getIntCounter()
+	{
 		// if (fieldIntCounter == null)
 		// {
 		// fieldIntCounter = new IntCounter();
@@ -1798,7 +2122,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 	}
 
 	/** TODO: Update this location to match the new standard location */
-	protected String loadCounterPath() {
+	protected String loadCounterPath()
+	{
 		return "/WEB-INF/data/" + getCatalogId() + "/" + getSearchType() + "s/idcounter.properties";
 	}
 
@@ -1816,27 +2141,35 @@ public class BaseElasticSearcher extends BaseSearcher {
 	// return inTracker;
 	// }
 
-	protected boolean flushChanges() {
+	protected boolean flushChanges()
+	{
 		FlushRequest req = Requests.flushRequest(toId(getCatalogId()));
 		FlushResponse res = getClient().admin().indices().flush(req).actionGet();
-		if (res.getSuccessfulShards() > 0) {
+		if (res.getSuccessfulShards() > 0)
+		{
 			return true;
 		}
 		return false;
 	}
 
-	public Object searchByField(String inField, String inValue) {
-		if (inField.equals("id") || inField.equals("_id")) {
-			if (getPropertyDetails().getDetail("_parent") == null) {
-				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute()
-						.actionGet();
-				if (response.isExists()) {
+	public Object searchByField(String inField, String inValue)
+	{
+		if (inField.equals("id") || inField.equals("_id"))
+		{
+			if (getPropertyDetails().getDetail("_parent") == null)
+			{
+				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
+				if (response.isExists())
+				{
 					Data data = null;
-					if (getNewDataName() != null) {
+					if (getNewDataName() != null)
+					{
 						data = createNewData();
 						// copyData(data, typed);
 						updateData(response.getSource(), data);
-					} else {
+					}
+					else
+					{
 						SearchHitData sdata = new SearchHitData();
 						sdata.setPropertyDetails(getPropertyDetails());
 						sdata.setSearchData(response.getSource());
@@ -1850,7 +2183,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 					// data.setName(data.getName());
 					// data.setSourcePath(data.getSourcePath());
 
-					if (response.getVersion() > -1) {
+					if (response.getVersion() > -1)
+					{
 						data.setProperty(".version", String.valueOf(response.getVersion()));
 					}
 					return data;
@@ -1861,7 +2195,8 @@ public class BaseElasticSearcher extends BaseSearcher {
 		return super.searchByField(inField, inValue);
 	}
 
-	protected void copyData(Data data, Data typed) {
+	protected void copyData(Data data, Data typed)
+	{
 		typed.setId(data.getId());
 		typed.setName(data.getName());
 		typed.setSourcePath(data.getSourcePath());
@@ -1876,68 +2211,79 @@ public class BaseElasticSearcher extends BaseSearcher {
 		// }
 	}
 
-	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails) {
-		for (Iterator iter = inDetails.findKeywordProperties().iterator(); iter.hasNext();) {
+	protected void populateKeywords(StringBuffer inFullDesc, Data inData, PropertyDetails inDetails)
+	{
+		for (Iterator iter = inDetails.findKeywordProperties().iterator(); iter.hasNext();)
+		{
 			PropertyDetail det = (PropertyDetail) iter.next();
-			if (det.isList()) {
+			if (det.isList())
+			{
 				Object prop = inData.getValue(det.getId());
-				if (prop != null) 
+				if (prop != null)
 				{
-					if( prop instanceof Collection)
+					if (prop instanceof Collection)
 					{
-						Collection values = (Collection)prop;
+						Collection values = (Collection) prop;
 						for (Iterator iterator = values.iterator(); iterator.hasNext();)
 						{
 							Object object = (Object) iterator.next();
-							if( object instanceof String)
+							if (object instanceof String)
 							{
-								Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String)object);
-								if (data != null && data.getName() != null) 
+								Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String) object);
+								if (data != null && data.getName() != null)
 								{
 									inFullDesc.append(data.getName());
 								}
-							}	
+							}
 							else
 							{
-								inFullDesc.append(String.valueOf( object) );								
-							}	
+								inFullDesc.append(String.valueOf(object));
+							}
 							inFullDesc.append(' ');
 						}
 					}
 					else
 					{
-						Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String)prop);
-						if (data != null && data.getName() != null) {
+						Data data = (Data) getSearcherManager().getData(det.getListCatalogId(), det.getListId(), (String) prop);
+						if (data != null && data.getName() != null)
+						{
 							inFullDesc.append(data.getName());
 							inFullDesc.append(' ');
 						}
-					}	
+					}
 				}
-			} else {
-				if (det.isMultiLanguage()) {
+			}
+			else
+			{
+				if (det.isMultiLanguage())
+				{
 
 					Object value = inData.getValue(det.getId());
 					;
-					if (value instanceof String) {
+					if (value instanceof String)
+					{
 						String target = (String) value;
 						LanguageMap map = new LanguageMap();
-						map.setText("en",target);
+						map.setText("en", target);
 						value = map;
 
 					}
 					LanguageMap map = (LanguageMap) value;
 
-					if (map != null) {
+					if (map != null)
+					{
 						HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 
-						for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();) {
+						for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
+						{
 							Data locale = (Data) iterator2.next();
 							String id = locale.getId();
 							String localeval = map.getText(id); // get a
 																// location
 																// specific
 																// value
-							if (localeval != null) {
+							if (localeval != null)
+							{
 
 								inFullDesc.append(localeval);
 								inFullDesc.append(' ');
@@ -1946,9 +2292,12 @@ public class BaseElasticSearcher extends BaseSearcher {
 						}
 					}
 
-				} else {
+				}
+				else
+				{
 					String val = inData.get(det.getId());
-					if (val != null) {
+					if (val != null)
+					{
 						inFullDesc.append(val);
 						inFullDesc.append(' ');
 					}
@@ -1957,38 +2306,47 @@ public class BaseElasticSearcher extends BaseSearcher {
 		}
 	}
 
-	public void reIndexAll() throws OpenEditException {
+	public void reIndexAll() throws OpenEditException
+	{
 		// there is not reindex step since it is only in memory
-		if (isReIndexing()) {
+		if (isReIndexing())
+		{
 			return;
 		}
-		synchronized (this) {
-			try {
+		synchronized (this)
+		{
+			try
+			{
 				setReIndexing(true);
 				// putMappings(); //We can only try to put mapping. If this
 				// failes then they will
 				HitTracker allhits = getAllHits();
 				allhits.enableBulkOperations();
 				ArrayList tosave = new ArrayList();
-				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+				{
 					Data hit = (Data) iterator2.next();
 					Data real = (Data) loadData(hit);
 					tosave.add(real);
-					if (tosave.size() > 1000) {
+					if (tosave.size() > 1000)
+					{
 						updateIndex(tosave, null);
 						tosave.clear();
 					}
 				}
 				updateIndex(tosave, null);
 
-			} finally {
+			}
+			finally
+			{
 				setReIndexing(false);
 			}
 		}
 	}
 
 	@Override
-	public void restoreSettings() {
+	public void restoreSettings()
+	{
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
 		// deleteOldMapping(); //you will lose your data!
 		// reIndexAll();
@@ -1996,33 +2354,38 @@ public class BaseElasticSearcher extends BaseSearcher {
 	}
 
 	@Override
-	public void reloadSettings() {
+	public void reloadSettings()
+	{
 		// deleteOldMapping(); //you will lose your data!
 		// reIndexAll();
 		putMappings();
 
 	}
 
-	public void updateData(Map inSource, Data inData) {
-		if (inData instanceof SearchData) {
+	public void updateData(Map inSource, Data inData)
+	{
+		if (inData instanceof SearchData)
+		{
 			SearchData data = (SearchData) inData;
 			data.setSearchData(inSource);
-		} else {
+		}
+		else
+		{
 
-			for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = inSource.keySet().iterator(); iterator.hasNext();)
+			{
 				String key = (String) iterator.next();
 				Object object = inSource.get(key);
-				
+
 				inData.setValue(key, object);
-				
+
 			}
 		}
 	}
 
-	public boolean tableExists() {
-		boolean used = getClient().admin().indices()
-				.typesExists(new TypesExistsRequest(new String[] { toId(getCatalogId()) }, getSearchType())).actionGet()
-				.isExists();
+	public boolean tableExists()
+	{
+		boolean used = getClient().admin().indices().typesExists(new TypesExistsRequest(new String[] { toId(getCatalogId()) }, getSearchType())).actionGet().isExists();
 		return used;
 
 	}
