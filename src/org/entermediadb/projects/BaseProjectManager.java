@@ -113,7 +113,7 @@ public class BaseProjectManager implements ProjectManager
 			HitTracker allcollections = searcher.query().exact("library", library.getId()).sort("name").named("sidebar").search();
 
 			//Mach up all the top level categories
-			usercollections = loadUserCollections(inReq, allcollections, inArchive);
+			usercollections = loadUserCollections(inReq, allcollections, inArchive, library);
 			inReq.putPageValue("usercollections", usercollections);
 			return usercollections;
 		}
@@ -148,14 +148,14 @@ public class BaseProjectManager implements ProjectManager
 			//Build list of ID's
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
 			HitTracker allcollections = searcher.query().orgroup("id", opencollections).named("sidebar").search(); //todo: Cache?
-			usercollections = loadUserCollections(inReq, allcollections, inArchive);
+			usercollections = loadUserCollections(inReq, allcollections, inArchive, null);
 			inReq.putPageValue("usercollections", usercollections);
 		}
 		return usercollections;
 
 	}
 
-	protected Collection<LibraryCollection> loadUserCollections(WebPageRequest inReq, Collection<Data> allcollections, MediaArchive inArchive)
+	protected Collection<LibraryCollection> loadUserCollections(WebPageRequest inReq, Collection<Data> allcollections, MediaArchive inArchive, Data library)
 	{
 		Searcher lcsearcher = inArchive.getSearcher("librarycollection");
 		List usercollections = new ArrayList(allcollections.size());
@@ -170,6 +170,8 @@ public class BaseProjectManager implements ProjectManager
 		}
 		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search(inReq);
 		
+		
+
 		int assetsize = hits.size();
 		inReq.putPageValue("librarysize", assetsize);
 
