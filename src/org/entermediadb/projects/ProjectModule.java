@@ -369,6 +369,7 @@ public class ProjectModule extends BaseMediaModule
 		{
 			profile.setProperty("selectedcollection", null);
 		}
+		profile.save(inReq.getUser());
 	}
 	
 	public ProjectManager getProjectManager(WebPageRequest inReq)
