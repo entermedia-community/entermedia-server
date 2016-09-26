@@ -30,7 +30,7 @@ public class ProjectModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
-		manager.loadOpenCollections(inReq);
+		manager.loadOpenCollections(inReq,getMediaArchive(inReq));
 	}
 	
 	
@@ -395,20 +395,20 @@ public class ProjectModule extends BaseMediaModule
 	
 	
 	
-	public void loadCategoriesOnCollection(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		if( collectionid == null)
-		{
-			return;
-		}		
-		HitTracker categories = manager.loadCategoriesOnCollection(archive,collectionid);
-		//log.info("Found: " + categories.size());
-		inReq.putPageValue("collectioncategories", categories);
-		//inReq.putSessionValue(all.getSessionId(),all);
-	}
+//	public void loadCategoriesOnCollection(WebPageRequest inReq)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		ProjectManager manager = getProjectManager(inReq);
+//		String collectionid = loadCollectionId(inReq);
+//		if( collectionid == null)
+//		{
+//			return;
+//		}		
+//		HitTracker categories = manager.loadCategoriesOnCollection(archive,collectionid);
+//		//log.info("Found: " + categories.size());
+//		inReq.putPageValue("collectioncategories", categories);
+//		//inReq.putSessionValue(all.getSessionId(),all);
+//	}
 	public void importCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -441,14 +441,14 @@ public class ProjectModule extends BaseMediaModule
 	}	
 	
 	
-	
-	public void loadCategoriesOnCollections(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		Collection<UserCollection> collections = manager.loadOpenCollections(inReq);
-		
-		manager.loadCategoriesOnCollections(archive, collections);
-		
-	}
+//	
+//	public void loadCategoriesOnCollections(WebPageRequest inReq)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		ProjectManager manager = getProjectManager(inReq);
+//		Collection<LibraryCollection> collections = manager.loadOpenCollections(inReq,archive);
+//		
+//		manager.loadCategoriesOnCollections(inReq, archive, collections);
+//		
+//	}
 }

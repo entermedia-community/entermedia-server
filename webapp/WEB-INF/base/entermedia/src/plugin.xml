@@ -2071,6 +2071,23 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
+
+	<bean id="elasticLibraryCollectionSearcher" class="org.entermediadb.elasticsearch.searchers.BaseElasticSearcher" scope="prototype">
+		<property name="elasticNodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="newDataName"><value>libraryCollection</value></property>
+		<property name="checkVersions"><value>true</value></property>
+	</bean>
+
+	<bean id="libraryCollection" class="org.entermediadb.projects.LibraryCollection" scope="prototype" >
+	</bean>	
  	
  	
  	

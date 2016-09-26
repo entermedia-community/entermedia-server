@@ -6,11 +6,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
@@ -92,10 +90,10 @@ public class BaseProjectManager implements ProjectManager
 		return null;
 	}
 
-	public Collection<UserCollection> loadCollections(WebPageRequest inReq, MediaArchive inArchive)
+	public Collection<LibraryCollection> loadCollections(WebPageRequest inReq, MediaArchive inArchive)
 	{
 		//get a library
-		Collection<UserCollection> usercollections = (Collection<UserCollection>) inReq.getPageValue("usercollections");
+		Collection<LibraryCollection> usercollections = (Collection<LibraryCollection>) inReq.getPageValue("usercollections");
 		if (usercollections != null)
 		{
 			return usercollections;
@@ -109,45 +107,13 @@ public class BaseProjectManager implements ProjectManager
 		if (library != null)
 		{
 			inReq.putPageValue("selectedlibrary", library);
-
-			Searcher assetsearcher = getSearcherManager().getSearcher(getCatalogId(), "asset");
-
-			HitTracker hits = assetsearcher.query().match("libraries", library.getId()).named("sidebar").search(inReq);
-			if (hits != null)
-			{
-				int assetsize = hits.size();
-				inReq.putPageValue("librarysize", assetsize);
-			}
+						
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
-			String reloadcollectoin = inReq.getRequestParameter("reloadcollection");
+			//String reloadcollectoin = inReq.getRequestParameter("reloadcollection");
 			HitTracker allcollections = searcher.query().exact("library", library.getId()).sort("name").named("sidebar").search();
 
-			//Show all the collections for a library
-			inReq.putPageValue("allcollections", allcollections);
-
-			//enable filters to show the asset count on each collection node
-			FilterNode collectionhits = null;
-			if (allcollections.size() > 0) //May not have any collections
-			{
-				Searcher collectionassetsearcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollectionasset");
-
-				//Build list of ID's
-				List ids = new ArrayList(allcollections.size());
-				for (Iterator iterator = allcollections.iterator(); iterator.hasNext();)
-				{
-					Data collection = (Data) iterator.next();
-					ids.add(collection.getId());
-				}
-				if (ids.size() > 0)
-				{
-					HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection", ids).named("sidebar").search(); //todo: Cache?
-					if (collectionassets != null && collectionassets.size() > 0) //No assets found at all
-					{
-						collectionhits = collectionassets.findFilterNode("librarycollection");
-					}
-				}
-			}
-			usercollections = loadUserCollections(allcollections, collectionhits);
+			//Mach up all the top level categories
+			usercollections = loadUserCollections(inReq, allcollections, inArchive);
 			inReq.putPageValue("usercollections", usercollections);
 			return usercollections;
 		}
@@ -159,12 +125,12 @@ public class BaseProjectManager implements ProjectManager
 
 	}
 
-	public Collection<UserCollection> loadOpenCollections(WebPageRequest inReq)
+	public Collection<LibraryCollection> loadOpenCollections(WebPageRequest inReq, MediaArchive inArchive)
 	{
 		//get a library
 		//inReq.putPageValue("selectedlibrary",library);
 
-		Collection<UserCollection> usercollections = (Collection<UserCollection>) inReq.getPageValue("usercollections");
+		Collection<LibraryCollection> usercollections = (Collection<LibraryCollection>) inReq.getPageValue("usercollections");
 		if (usercollections != null)
 		{
 			return usercollections;
@@ -177,43 +143,54 @@ public class BaseProjectManager implements ProjectManager
 			return Collections.EMPTY_LIST;
 		}
 
-		FilterNode collectionhits = null;
 		if (opencollections.size() > 0) //May not have any collections
 		{
-			Searcher collectionassetsearcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollectionasset");
-
 			//Build list of ID's
-			HitTracker collectionassets = collectionassetsearcher.query().orgroup("librarycollection", opencollections).named("sidebar").search(); //todo: Cache?
-			if (collectionassets != null && collectionassets.size() > 0) //No assets found at all
-			{
-				collectionhits = collectionassets.findFilterNode("librarycollection");
-			}
+			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
+			HitTracker allcollections = searcher.query().orgroup("id", opencollections).named("sidebar").search(); //todo: Cache?
+			usercollections = loadUserCollections(inReq, allcollections, inArchive);
+			inReq.putPageValue("usercollections", usercollections);
 		}
-		Collection collections = getSearcherManager().getSearcher(getCatalogId(), "librarycollection").query().orgroup("id", opencollections).search(inReq);
-		usercollections = loadUserCollections(collections, collectionhits);
-		inReq.putPageValue("usercollections", usercollections);
 		return usercollections;
-
-		//search
-		//Searcher searcher = getSearcherManager().getSearcher(getMediaArchive().getCatalogId(),"librarycollection") )
-		//HitTracker labels = searcher.query().match("library",$library.getId()).sort("name").search() )
 
 	}
 
-	protected Collection<UserCollection> loadUserCollections(Collection<Data> allcollections, FilterNode collectionhits)
+	protected Collection<LibraryCollection> loadUserCollections(WebPageRequest inReq, Collection<Data> allcollections, MediaArchive inArchive)
 	{
+		Searcher lcsearcher = inArchive.getSearcher("librarycollection");
 		List usercollections = new ArrayList(allcollections.size());
+		
+		Collection categoryids = new ArrayList();
 		for (Data collection : allcollections)
 		{
-			UserCollection uc = new UserCollection();
-			uc.setCollection(collection);
-			if (collectionhits != null)
-			{
-				int assetcount = collectionhits.getCount(collection.getId());
-				uc.setAssetCount(assetcount);
-			}
+			LibraryCollection uc = (LibraryCollection)lcsearcher.loadData(collection);
+			
+			categoryids.add(uc.getCurrentCategoryRootId());
 			usercollections.add(uc);
 		}
+		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).showFacets(true).named("librarysidebar").search(inReq);
+		
+		int assetsize = hits.size();
+		inReq.putPageValue("librarysize", assetsize);
+
+		//Show all the collections for a library
+		inReq.putPageValue("allcollections", usercollections);
+
+		//enable filters to show the asset count on each collection node
+		FilterNode collectionhits = null;
+		if (allcollections.size() > 0) //May not have any collections
+		{
+			FilterNode node = hits.findFilterNode("category-exact");
+			if( node != null)
+			{
+				for (Iterator iterator = usercollections.iterator(); iterator.hasNext();)
+				{
+					LibraryCollection collection = (LibraryCollection) iterator.next();
+					collection.setAssetCount(node.getCount(collection.getCurrentCategoryRootId()));
+				}
+			}	
+		}
+		
 		return usercollections;
 	}
 
@@ -440,8 +417,8 @@ public class BaseProjectManager implements ProjectManager
 			}
 		}
 	}
-
-	public Collection<UserCollection> loadRecentCollections(WebPageRequest inReq)
+/*
+	public Collection<LibraryCollection> loadRecentCollections(WebPageRequest inReq)
 	{
 		//enable filters to show the asset count on each collection node
 		UserProfile profile = inReq.getUserProfile();
@@ -478,22 +455,22 @@ public class BaseProjectManager implements ProjectManager
 				}
 			}
 		}
-		Collection<UserCollection> usercollections = loadUserCollections(allcollections, collectionhits);
+		Collection<LibraryCollection> usercollections = loadUserCollections(allcollections, collectionhits);
 		inReq.putPageValue("usercollections", usercollections);
 		return usercollections;
 	}
-
+*/
 	@Override
 	public Data addCategoryToCollection(User inUser, MediaArchive inArchive, String inCollectionid, String inCategoryid)
 	{
 		if (inCategoryid != null)
 		{
-			Data collection = null;
+			LibraryCollection collection = null;
 			Data data = null;
 			Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 			if (inCollectionid == null)
 			{
-				collection = librarycolsearcher.createNewData();
+				collection = (LibraryCollection)librarycolsearcher.createNewData();
 				collection.setValue("library", inUser.getId()); //Make one now?
 				collection.setValue("owner", inUser.getId());
 				Category cat = inArchive.getCategory(inCategoryid);
@@ -503,7 +480,7 @@ public class BaseProjectManager implements ProjectManager
 			}
 			else
 			{
-				collection = (Data) librarycolsearcher.searchById(inCollectionid);
+				collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
 				Category cat = inArchive.getCategory(inCategoryid);
 				Category rootcat = getRootCategory(inArchive, inCollectionid);
 
@@ -527,12 +504,13 @@ public class BaseProjectManager implements ProjectManager
 		Category rootcat = getRootCategory(inArchive, inCollectionid);
 		ArrayList list = new ArrayList();
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		Data collection = (Data) librarycolsearcher.searchById(inCollectionid);
+		Data hit = (Data) librarycolsearcher.searchById(inCollectionid);
+		LibraryCollection collection = (LibraryCollection)librarycolsearcher.loadData(hit);
 		Date date = new Date();
 			
 		Category versionroot = (Category) cats.createNewData();
 		versionroot.setName(rootcat.getName());
-		long revisionnumber = getRevisions(collection);
+		long revisionnumber = collection.getCurentRevision();
 		
 		versionroot.setId(collection.getId() + "_" + revisionnumber);
 		
@@ -581,8 +559,8 @@ public class BaseProjectManager implements ProjectManager
 	public void snapshotAndImport(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath) {
 		
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		Data collection = (Data) librarycolsearcher.searchById(inCollectionid);
-		long revisions = getRevisions(collection);
+		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		long revisions = collection.getCurentRevision();
 		revisions++;
 		collection.setValue("revisions",revisions);
 		librarycolsearcher.saveData(collection);
@@ -666,8 +644,8 @@ public class BaseProjectManager implements ProjectManager
 
 		Searcher cats = inArchive.getSearcher("category");
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		Data collection = (Data) librarycolsearcher.searchById(inCollectionId);
-		long revisions = getRevisions(collection);			
+		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionId);
+		long revisions = collection.getCurentRevision();			
 		//String libraryid = collection.get("library");
 		//Data library = inArchive.getData("library", libraryid);
 		//String folder = library.get("folder");
@@ -693,12 +671,12 @@ public class BaseProjectManager implements ProjectManager
 
 	}
 
-	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, Data inCollection, Category inParentSource, Category inDestinationCat)
+	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, LibraryCollection inCollection, Category inParentSource, Category inDestinationCat)
 	{
 
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
-		String id = inCollection.getId() + "_" + inParentSource.getId() +  "_" + getRevisions(inCollection);
+		String id = inCollection.getId() + "_" + inParentSource.getId() +  "_" + inCollection.getCurentRevision();
 		Category copy = inDestinationCat.getChild(id);
 		if (copy == null)
 		{
@@ -724,27 +702,6 @@ public class BaseProjectManager implements ProjectManager
 
 		}
 
-	}
-
-	private long getRevisions(Data inCollection)
-	{
-		Object obj = inCollection.getValue("revisions");
-		if( obj == null)
-		{
-			obj = 0;
-		}
-
-		Long revisionnumber = null;
-		if( obj instanceof Integer)
-		{
-			revisionnumber = (long)(Integer)obj;
-		}
-		else
-		{
-			revisionnumber = (Long)obj;
-		}
-
-		return revisionnumber;
 	}
 
 	@Override
@@ -808,25 +765,26 @@ public class BaseProjectManager implements ProjectManager
 //		return size;
 //	}
 
-	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid)
-	{
-		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
-		HitTracker hits = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).search();
-		if (hits.size() > 0)
-		{
-			List catids = new ArrayList();
-			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
-			{
-				Data libcat = (Data) iterator.next();
-				catids.add(libcat.get("categoryid"));
-			}
-			HitTracker cats = inArchive.getCategorySearcher().query().orgroup("id", catids).search();
+//	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid)
+//	{
+//		Searcher librarycollectioncategorySearcher = inArchive.getSearcher("librarycollectioncategory");
+//		HitTracker hits = librarycollectioncategorySearcher.query().match("librarycollection", inCollectionid).search();
+//		if (hits.size() > 0)
+//		{
+//			List catids = new ArrayList();
+//			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+//			{
+//				Data libcat = (Data) iterator.next();
+//				catids.add(libcat.get("categoryid"));
+//			}
+//			HitTracker cats = inArchive.getCategorySearcher().query().orgroup("id", catids).search();
+//
+//			return cats;
+//		}
+//		return null;
+//	}
 
-			return cats;
-		}
-		return null;
-	}
-
+	/*
 	public void loadCategoriesOnCollections(MediaArchive inArchive, Collection inCollections)
 	{
 		if (inCollections.size() > 0)
@@ -834,7 +792,7 @@ public class BaseProjectManager implements ProjectManager
 			Map usercollections = new HashMap();
 			for (Iterator iterator = inCollections.iterator(); iterator.hasNext();)
 			{
-				UserCollection collection = (UserCollection) iterator.next();
+				LibraryCollection collection = (LibraryCollection) iterator.next();
 				collection.clearCategories();
 				usercollections.put(collection.getId(), collection);
 			}
@@ -846,13 +804,14 @@ public class BaseProjectManager implements ProjectManager
 				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 				{
 					Data libcat = (Data) iterator.next();
-					UserCollection col = (UserCollection) usercollections.get(libcat.get("librarycollection"));
+					LibraryCollection col = (LibraryCollection) usercollections.get(libcat.get("librarycollection"));
 					col.addCategory(libcat.get("categoryid"));
 				}
 
 			}
 		}
 	}
+	*/
 
 	/**
 	 * Import process

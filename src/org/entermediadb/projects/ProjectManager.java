@@ -18,7 +18,7 @@ public interface ProjectManager
 
 	public abstract void setCatalogId(String inCatId);
 
-	public Collection<UserCollection> loadCollections(WebPageRequest inReq, MediaArchive archive);
+	public Collection<LibraryCollection> loadCollections(WebPageRequest inReq, MediaArchive archive);
 	
 	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid);
 
@@ -43,9 +43,9 @@ public interface ProjectManager
 	
 	public HitTracker loadAssetsInLibrary(Data inLibrary,  MediaArchive archive, WebPageRequest inReq);
 
-	public Collection<UserCollection> loadOpenCollections(WebPageRequest inReq);
+	public Collection<LibraryCollection> loadOpenCollections(WebPageRequest inReq, MediaArchive archive);
 	
-	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
+//	public HitTracker loadCategoriesOnCollection(MediaArchive inArchive, String inCollectionid);
 
 	//public void importCollection(WebPageRequest inReq, MediaArchive inArchive, String inCollectionid);
 	
@@ -56,7 +56,7 @@ public interface ProjectManager
 
 	//public void savedCollection(MediaArchive archive, Data inLibrary, User inUser);
 	
-	public void loadCategoriesOnCollections(MediaArchive inArchive, Collection inCollections);
+//	public void loadCategoriesOnCollections(MediaArchive inArchive, Collection inCollections);
 	
 	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile);
 	public void snapshotAndImport(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath);
