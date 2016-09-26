@@ -5,7 +5,7 @@
 	<property id="description" defaultoperation="freeform">All Fields</property>
 	<property id="sourcepath" internalfield="false" index="true" stored="true">Source Path</property>
 
-	<property id="category-exact" index="true" stored="true" keyword="true"  filter="true"  editable="true" defaultoperation="contains" viewtype="multiselect" listid="category"  sortable="true" type="list" >Exact Categories</property>
+	<property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" viewtype="multiselect" listid="category"  sortable="true" type="list" >Exact Categories</property>
 
 	<property id="location" index="true" editable="true" stored="true" externalid="Location" type="list" writenametoexif="true" autocreatefromexif="true" >Location</property>
 

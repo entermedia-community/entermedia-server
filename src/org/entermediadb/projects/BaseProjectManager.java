@@ -168,7 +168,7 @@ public class BaseProjectManager implements ProjectManager
 			categoryids.add(uc.getCurrentCategoryRootId());
 			usercollections.add(uc);
 		}
-		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).showFacets(true).named("librarysidebar").search(inReq);
+		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search(inReq);
 		
 		int assetsize = hits.size();
 		inReq.putPageValue("librarysize", assetsize);
@@ -180,7 +180,7 @@ public class BaseProjectManager implements ProjectManager
 		FilterNode collectionhits = null;
 		if (allcollections.size() > 0) //May not have any collections
 		{
-			FilterNode node = hits.findFilterNode("category-exact");
+			FilterNode node = hits.findFilterNode("category");
 			if( node != null)
 			{
 				for (Iterator iterator = usercollections.iterator(); iterator.hasNext();)
