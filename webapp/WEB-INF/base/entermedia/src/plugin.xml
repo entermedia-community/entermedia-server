@@ -1363,7 +1363,7 @@
 	<bean id="RevisionEditor" class="org.openedit.modules.revisions.RevisionEditorModule"/>
 
  	<bean  id="ProjectModule" class="org.entermediadb.projects.ProjectModule" lazy-init="default" />
-	<bean  id="projectManager" class="org.entermediadb.projects.BaseProjectManager" lazy-init="default" scope="prototype"  >
+	<bean  id="projectManager" class="org.entermediadb.projects.ProjectManager" lazy-init="default" scope="prototype"  >
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 

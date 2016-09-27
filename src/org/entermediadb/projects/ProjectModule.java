@@ -2,7 +2,6 @@ package org.entermediadb.projects;
 
 import java.util.Collection;
 import java.util.Date;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -11,6 +10,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -418,10 +418,38 @@ public class ProjectModule extends BaseMediaModule
 		User user = inReq.getUser();
 		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId() + "/" + collection.getName() + "/";
 		//Need to check if this is unique - increment a counter?
-		
-		manager.snapshotAndImport(inReq, inReq.getUser(), archive, collectionid, outfolder );
+		String note = inReq.getRequestParameter("note.value");
+		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, outfolder , note);
 		inReq.putPageValue("importstatus", "completed");
+		
+		
+
+	
+		
+		
 	}	
+	
+	
+	public void createSnapshot(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+
+		User user = inReq.getUser();
+
+		String note = inReq.getRequestParameter("note.value");
+		manager.snapshotCollection(inReq, user, archive, collectionid, note);
+		
+		
+		
+
+	
+		
+		
+	}	
+	
+	
 	
 	
 		
@@ -437,7 +465,41 @@ public class ProjectModule extends BaseMediaModule
 		//The trailing slash is needed for the recursive algorithm.  Don't delete.
 		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId()+"/";  
 
-		manager.exportCollection(archive, collectionid, infolder);
+		manager.exportCollection(archive, collectionid, infolder, inReq.getUser());
+		
+
+		
+
+//		if(getWebEventListener() != null)
+//		{
+//			WebEvent event = new WebEvent();
+//			event.setSearchType(searcher.getSearchType());
+//			event.setCatalogId(searcher.getCatalogId());
+//			event.setOperation(searcher.getSearchType() + "/saved");
+//			event.setProperty("dataid", data.getId());
+//			event.setProperty("id", data.getId());
+//
+//			event.setProperty("applicationid", inReq.findValue("applicationid"));
+//
+//			getWebEventListener().eventFired(event);
+//		}
+		
+		
+		
+		
+//		Searcher librarycollectiondownloads = archive.getSearcher("librarycollectiondownloads");
+//
+//		Data history  = librarycollectiondownloads.createNewData();
+//	
+//		history.setValue("owner", inReq.getUserName());
+//		history.setValue("librarycollection", collectionid);
+//		history.setValue("date", new Date());
+//		history.setValue("revision", collection.get("revisions"));
+//		
+//		String fields[] = inReq.getRequestParameters("field");
+//		librarycollectiondownloads.updateData(inReq, fields, history);
+//		librarycollectiondownloads.saveData(history);
+
 	}	
 	
 	

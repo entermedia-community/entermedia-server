@@ -1,49 +1,13 @@
 <div class="publishtabcontainer">
 	
+	
+#set( $snapshotsearcher = $mediaarchive.getSearcher("librarycollectionsnapshot") )
+#set( $snapshotsearcher = $snapshotsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Download Logs]] </div>
-		<div class="ui-widget-content">
-
-#set( $downloadsearcher = $mediaarchive.getSearcher("librarycollectiondownloads") )
-#set( $downloads = $downloadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
-
-
-		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
-			<table width="50%" class="categoriescontainer hovertable" >
-			<tr>
-				<th>Revision</th>
-				<th>User</th>
-				<th>Date</th>
-			</tr>
-			#foreach($download in $downloads)
-				<tr> 
-					<td>$download.revision</td>
-					<td>$download.owner</td>
-					<td>$download.date</td>
-				</tr>	
-			#end
-			</table>
-			</div>
-			<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" 
-			   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
-				<input type="hidden" name="collectionid" value="$librarycol.getId()" />
-				<br>
-				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download ]]">	   
-				<h5>
-					[[Download a copy to your User Folder:]] <b>$user.getUserName()/$librarycol.getName()/$count</b> 
-				</h5>
-			</form>	
-		</div>
-	</div>	
-#set( $uploadsearcher = $mediaarchive.getSearcher("librarycollectionuploads") )
-#set( $uploads = $uploadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
-	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Upload Logs]] </div>
+		<div class="ui-widget-header">[[Snapshot Logs]] </div>
 		<div class="ui-widget-content">
 		##set( $count = $librarycol.getValue("revisions") )
-		#if(!$count)
-			#set( $count = 12)
-		#end
+		
 		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 			<table width="50%" class="categoriescontainer hovertable" >
 			<tr>
@@ -61,6 +25,8 @@
 			</div>
 						
 			<a class="btn" href="$home$apphome/views/modules/librarycollection/importsave.html?collectionid=$librarycol.getId()">Upload Changes</a>
+			<a class="btn" href="$home$apphome/views/modules/librarycollection/createsnapshot.html?collectionid=$librarycol.getId()">Take snapshot</a>
+			
 		</div>
 		
 	</div>	

@@ -18,33 +18,25 @@ $context.putPageValue("hideheader", "true")
 
 <div class="row">		
   <div class="col-md-3 ">
+ 
 
-    <div class="panel panel-default">
-      <div class="panel-heading">[[Collection Browser]] 
-        <div class="pull-right"> 
-          <select onchange="this.options[this.selectedIndex].value && console.log(this.options[this.selectedIndex].value);">
-		      <option value ="">#if( $downloads) [[Choose revision...]] #else [[No revisions]] #end</option>
-		      #foreach( $revision in $downloads )
-		      <option value="$revision.id">$revision.name</option>
-		      #end
-		  </select>
-		  <a href="$apphome/views/modules/librarycollection/autopopulate.html" class="btn" >[[Auto Populate]]</a>
-	  </div>
+<div class="ui-widget uipanel" style="padding-top: 5px;">
+	<div class="ui-widget-header">
+		<span class="widget-header-title">Folders</span>
+		<span class="widget-header-right">
+			  <a class="emdialog pull-right" data-hidefooter="true" href="$apphome/views/modules/librarycollection/download.html?collectionid=${libarycol.id}" class="btn" ><span class="glyphicon glyphicon-download" aria-hidden="true"></span></a>
+		</span>
 	</div>
-
-  <div class="panel-body">
-		$pages.include("$apphome/views/modules/librarycollection/tree.html")
+	<div class="ui-widget-content" >  
+		$pages.include("$apphome/views/modules/librarycollection/tree.html")		
+	</div>
+	</div>
   </div>
-</div>
-
-
-	
-
-  </div>
+  
 
 		
 			
-				<div class="col-md-9">
+				<div class="col-md-9" >
 
 
 
@@ -55,7 +47,6 @@ $pages.include("$apphome/components/results/index.html",$context)
 
 
 
-<script>
-	// html demo
-	$('#html').jstree();
-	</script>
+
+
+
