@@ -488,7 +488,7 @@ public class ProjectManager
 				Category rootcat = getRootCategory(inArchive, inCollectionid);
 
 				ArrayList list = new ArrayList();
-				copyAssets(list, inUser, inArchive, collection, cat, rootcat);// will actually create librarycollectionasset entries
+				copyAssets(list, inUser, inArchive, collection, cat, rootcat, false);// will actually create librarycollectionasset entries
 				Searcher assets = inArchive.getAssetSearcher();
 				assets.saveAllData(list, null);
 
@@ -508,7 +508,7 @@ public class ProjectManager
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
 		ArrayList list = new ArrayList();
-		copyAssets(list, inUser, inArchive, collection, rootcat, newroot);// will actually create librarycollectionasset entries
+		copyAssets(list, inUser, inArchive, collection, rootcat, newroot, true);// will actually create librarycollectionasset entries
 		Searcher assets = inArchive.getAssetSearcher();
 		assets.saveAllData(list, null);
 		
@@ -659,16 +659,25 @@ public class ProjectManager
 //			}
 			root.setName(name);
 			root.setId(id);
+			ArrayList nodestoremove = new ArrayList();
+			
 			for (Iterator iterator = librarynode.getChildren().iterator(); iterator.hasNext();)
 			{	
 				Category child = (Category) iterator.next();
 				if(child.getId().startsWith(inCollectionId)){
-					librarynode.removeChild(child);
-					cats.saveData(child, null);
+					nodestoremove.add(child);
 
 				}
 				
 			}
+			
+			for (Iterator iterator = nodestoremove.iterator(); iterator.hasNext();)
+			{
+				Category child = (Category) iterator.next();
+				librarynode.removeChild(child);
+				cats.saveData(child, null);
+			}
+			
 			
 			if(librarynode != null){
 				librarynode.addChild(root);
@@ -682,20 +691,22 @@ public class ProjectManager
 
 	}
 
-	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, LibraryCollection inCollection, Category inParentSource, Category inDestinationCat)
+	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, LibraryCollection inCollection, Category inParentSource, Category inDestinationCat, boolean skip)
 	{
 
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
 		String id = inCollection.getId() + "_" + inParentSource.getId() +  "_" + inCollection.getCurentRevision();
 		Category copy = inDestinationCat.getChild(id);
-		if (copy == null)
+		if (copy == null && !skip)
 		{
 			copy = (Category) cats.createNewData();
 			copy.setName(inParentSource.getName());
 			copy.setId(id);
 			inDestinationCat.addChild(copy);
 			cats.saveData(copy, null);
+		} else{
+			copy = inDestinationCat;
 		}
 		
 		HitTracker assetlist = assets.fieldSearch("category-exact", inParentSource.getId());
@@ -709,7 +720,7 @@ public class ProjectManager
 		for (Iterator iterator = inParentSource.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
-			copyAssets(savelist, inUser, inArchive, inCollection, child, copy);
+			copyAssets(savelist, inUser, inArchive, inCollection, child, copy, false);
 
 		}
 
@@ -1216,7 +1227,7 @@ public class ProjectManager
 		Category revisionroot = getRevisionRoot(inArchive, inCollectionid, inRevision);
 		
 		ArrayList list = new ArrayList();
-		copyAssets(list, inUser, inArchive, collection, revisionroot, newroot);// will actually create librarycollectionasset entries
+		copyAssets(list, inUser, inArchive, collection, revisionroot, newroot,true);// will actually create librarycollectionasset entries
 		Searcher assets = inArchive.getAssetSearcher();
 		assets.saveAllData(list, null);
 		
