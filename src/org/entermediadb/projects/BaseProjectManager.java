@@ -17,6 +17,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -630,13 +631,19 @@ public class BaseProjectManager implements ProjectManager
 					inArchive.getPageManager().getRepository().move(item, destination);
 					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem,true, inArchive, null); //this also extracts the md5
 					asset.setCategories(null);
+					inArchive.saveAsset(asset, null);
+
 					//asset.setValue("md5hex", md5);
+					PresetCreator presets = inArchive.getPresetManager();
+					Searcher tasksearcher = inArchive.getSearcherManager().getSearcher (inArchive.getCatalogId(), "conversiontask");
+					presets.createMissingOnImport(inArchive, tasksearcher, asset);
 				} else{
 					inArchive.getPageManager().getRepository().remove(item);
 
 				}
 				asset.addCategory(inCurrentParent);
 				inArchive.saveAsset(asset, null);
+			
 			}	
 		}
 	}
@@ -659,10 +666,10 @@ public class BaseProjectManager implements ProjectManager
 		{
 			root = (Category) cats.createNewData();
 			String name = collection.getName();
-			if( revisions > 0)
-			{
-				name = name + " " + revisions;
-			}
+//			if( revisions > 0)
+//			{
+//				name = name + " " + revisions;
+//			}
 			root.setName(name);
 			root.setId(id);
 			//librarynode.addChild(root);
