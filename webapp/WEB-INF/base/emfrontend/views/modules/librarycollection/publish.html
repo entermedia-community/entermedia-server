@@ -29,12 +29,30 @@
 				</table>
 			</div>
 						
-			<a class="btn" href="$home$apphome/views/modules/librarycollection/importsave.html?collectionid=$librarycol.getId()">Upload Changes</a>
 			<a class="btn" href="$home$apphome/views/modules/librarycollection/createsnapshot.html?collectionid=$librarycol.getId()">Take snapshot</a>
 			
 		</div>
 		
 	</div>	
+
+
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+		<div class="ui-widget-header">[[Import Changes]] </div>
+		<div class="ui-widget-content">
+									
+#if( $exportpath )
+<div class="alert alert-success">
+  <strong>Export complete</strong> Please check local drive for syncronized files. $exportpath
+</div> 
+#end
+						
+						
+			<a class="btn" href="$home$apphome/views/modules/librarycollection/importsave.html?collectionid=$librarycol.getId()">Import Changes</a><br> Takes snapshot and imports any changes
+			
+		</div>
+		
+	</div>	
+
 	
 </div>
 	

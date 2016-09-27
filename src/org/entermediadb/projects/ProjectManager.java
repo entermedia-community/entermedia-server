@@ -1207,7 +1207,7 @@ public class ProjectManager
 
 	public void exportCollection(MediaArchive inMediaArchive, String inCollectionid, String inFolder, User inUser)
 	{			
-		Data collection = inMediaArchive.getData("librarycollection", inCollectionid);
+		//Data collection = inMediaArchive.getData("librarycollection", inCollectionid);
 		AssetUtilities utilities = inMediaArchive.getAssetImporter().getAssetUtilities();
 		Category root = getRootCategory(inMediaArchive, inCollectionid);
 		utilities.exportCategoryTree(inMediaArchive, root, inFolder);

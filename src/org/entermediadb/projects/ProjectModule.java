@@ -1,7 +1,9 @@
 package org.entermediadb.projects;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,10 +12,10 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
-import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 
 public class ProjectModule extends BaseMediaModule
 {
@@ -414,20 +416,26 @@ public class ProjectModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
-		Data collection = archive.getData("librarycollection", collectionid);
+		LibraryCollection collection = (LibraryCollection)archive.getData("librarycollection", collectionid);
+
 		User user = inReq.getUser();
-		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId() + "/" + collection.getName() + "/";
+		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId() + "/" + collection.getName() +"/";
+		
+		List paths = archive.getPageManager().getChildrenPathsSorted(outfolder);
+		if( paths.isEmpty() ) {
+			log.info("No import folders found ");
+			return;
+		}
+		Collections.reverse(paths);
+		String latest = (String)paths.iterator().next();
+		
 		//Need to check if this is unique - increment a counter?
 		String note = inReq.getRequestParameter("note.value");
 		if(note == null){
 			note = "Auto Created Revision on Import";
 		}
-		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, outfolder , note);
+		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, latest, note);
 		inReq.putPageValue("importstatus", "completed");
-		
-		
-
-	
 		
 		
 	}	
@@ -494,11 +502,17 @@ public class ProjectModule extends BaseMediaModule
 
 		
 		//The trailing slash is needed for the recursive algorithm.  Don't delete.
-		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId()+"/";  
-
+		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId()+"/" + collection.getName();  
+		
+		Date now = new Date();
+		
+		String stamp = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy-MM-dd-HH-mm-ss");
+		
+		infolder = infolder + "/" + stamp + "/";
+		
 		manager.exportCollection(archive, collectionid, infolder, inReq.getUser());
 		
-
+		inReq.putPageValue("exportpath", infolder );
 		
 
 //		if(getWebEventListener() != null)

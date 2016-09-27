@@ -2,13 +2,12 @@
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 <p>
 
-Copy and synchronized files into your working folder:  Users/$user.getUserName()/$library.getName()/${librarycol.getName()}-{timestamp}/
+Copy files into your working folder:  $library.get("folder")/${librarycol.getName()}/{timestamp}/
 
 <form  name="archiveassets" id="archiveassets" 
 			   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
-				<input type="hidden" name="collectionid" value="$context.getRequestParameter('collectionid')" />
-				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download ]]">	   
-			
+				<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download ]]">	   			
 </form>
 
 <h3>Or</h3>
