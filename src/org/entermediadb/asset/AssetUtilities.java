@@ -520,12 +520,12 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			log.info(fullpath.isFolder());
 			if(!fullpath.exists()){
 				log.info("Fullpath " + fullpath  + "Did not exist");
-			
-			}
+				
+			} else{
 		
 			log.info("moving: " + fullpath + " to " + target  );
 			inArchive.getPageManager().getRepository().copy(fullpath, target);
-
+			}
 		
 		}
 		
