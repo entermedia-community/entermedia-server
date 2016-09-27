@@ -420,6 +420,9 @@ public class ProjectModule extends BaseMediaModule
 
 		User user = inReq.getUser();
 		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId() + "/" + collection.getName() +"/";
+	
+		
+		
 		
 		List paths = archive.getPageManager().getChildrenPathsSorted(outfolder);
 		if( paths.isEmpty() ) {
@@ -428,7 +431,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		Collections.reverse(paths);
 		String latest = (String)paths.iterator().next();
-		
+		latest = latest + "/" + collection.getName();
 		//Need to check if this is unique - increment a counter?
 		String note = inReq.getRequestParameter("note.value");
 		if(note == null){
