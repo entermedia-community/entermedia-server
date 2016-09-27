@@ -637,6 +637,9 @@ public class ProjectManager
 		Searcher cats = inArchive.getSearcher("category");
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionId);
+		if(collection == null){
+			return null;
+		}
 		long revisions = collection.getCurentRevision();			
 		String libraryid = collection.get("library");
 		Data library = inArchive.getData("library", libraryid);
@@ -646,6 +649,10 @@ public class ProjectManager
 		if(folder != null){
 			String categorypath = "/" + folder;  //Users/Ian Miller
 			librarynode = inArchive.getCategoryArchive().createCategoryTree(categorypath);
+		} else{
+			String categorypath = "/" + library.getId();  //Users/Ian Miller
+			librarynode = inArchive.getCategoryArchive().createCategoryTree(categorypath);
+			librarynode.setName(library.getName());
 		}
 		String id = collection.getId() + "_" + revisions;
 		Category root = inArchive.getCategory(id);
