@@ -2,10 +2,8 @@
 <properties beanname="dataSearcher">
   <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
   <property id="name" index="true" stored="true" editable="true" >Notes</property>
-  <property id="date" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Snapshot Date</property>
-  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="user" >Snapshot By</property>
+  <property id="date" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Download Date</property>
+  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="user" >Download By</property>
   <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
   <property id="revision" index="true" stored="true" editable="true" sortable="true" type="number" >Revision</property>  
-    <property id="note" index="true" stored="true" editable="true" >Notes</property>
-  
 </properties>
