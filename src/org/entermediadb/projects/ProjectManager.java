@@ -516,26 +516,6 @@ public class ProjectManager
 	}
 	
 	
-	public void restoreSnapshot(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCategoryid){
-		
-		
-		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		Searcher cats = inArchive.getSearcher("category");
-		Category category = (Category) cats.searchById(inCategoryid);
-		
-		String collectionid = category.get("librarycollection");
-		//Data collection = (Data) librarycolsearcher.searchById(collectionid);
-		Category rootcat = getRootCategory(inArchive, collectionid);
-		rootcat.setChildren(null);
-		rootcat.addChild(category);
-		category.setParentId(rootcat.getId());
-		
-		cats.saveData(rootcat);
-		cats.saveData(category);
-		
-		
-	}
-	
 	
 	
 	
@@ -570,7 +550,8 @@ public class ProjectManager
 		history.setValue("librarycollection", inCollectionid);
 		history.setValue("date", new Date());
 		history.setValue("revision", revisions);
-				
+		history.setValue("note", inNote);
+	
 		librarycollectionuploads.saveData(history);
 		
 		
@@ -1222,6 +1203,33 @@ public class ProjectManager
 		
 		
 		
+		
+		
+	}
+
+	public void restoreSnapshot(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid, String inRevision, String inNote)
+	{
+
+
+		LibraryCollection collection = createRevision(inArchive, inCollectionid, inUser, inNote);
+		Category newroot = getRootCategory(inArchive, inCollectionid);
+		Category revisionroot = getRevisionRoot(inArchive, inCollectionid, inRevision);
+		
+		ArrayList list = new ArrayList();
+		copyAssets(list, inUser, inArchive, collection, revisionroot, newroot);// will actually create librarycollectionasset entries
+		Searcher assets = inArchive.getAssetSearcher();
+		assets.saveAllData(list, null);
+		
+	}
+
+	protected Category getRevisionRoot(MediaArchive inArchive, String inCollectionid, String inRevision)
+	{
+		Searcher cats = inArchive.getSearcher("category");
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		String id = collection.getId() + "_" + inRevision;
+		Category revisionroot = (Category) cats.searchById(id);
+		return revisionroot;
 		
 		
 	}

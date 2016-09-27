@@ -419,6 +419,9 @@ public class ProjectModule extends BaseMediaModule
 		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ user.getId() + "/" + collection.getName() + "/";
 		//Need to check if this is unique - increment a counter?
 		String note = inReq.getRequestParameter("note.value");
+		if(note == null){
+			note = "Auto Created Revision on Import";
+		}
 		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, outfolder , note);
 		inReq.putPageValue("importstatus", "completed");
 		
@@ -439,6 +442,9 @@ public class ProjectModule extends BaseMediaModule
 		User user = inReq.getUser();
 
 		String note = inReq.getRequestParameter("note.value");
+		if(note == null){
+			note = "Snapshot Created";
+		}
 		manager.snapshotCollection(inReq, user, archive, collectionid, note);
 		
 		
@@ -448,6 +454,31 @@ public class ProjectModule extends BaseMediaModule
 		
 		
 	}	
+	public void restoreSnapshot(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		String revision = inReq.getRequestParameter("revision");
+		
+		User user = inReq.getUser();
+
+		String note = inReq.getRequestParameter("note.value");
+		if(note == null){
+			note = "Snapshot Restored from " + revision;
+		}
+		manager.restoreSnapshot(inReq, user, archive, collectionid, revision,note);
+		
+		
+		
+
+	
+		
+		
+	}	
+	
+	
+	
 	
 	
 	
