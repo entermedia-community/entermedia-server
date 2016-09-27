@@ -1,6 +1,18 @@
+
+	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
+<p>
+
+Copy and synchronized files into your working folder:  Users/$user.getUserName()/$library.getName()/${librarycol.getName()}-{timestamp}/
+
 <form  name="archiveassets" id="archiveassets" 
 			   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
 				<input type="hidden" name="collectionid" value="$context.getRequestParameter('collectionid')" />
 				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download ]]">	   
 			
 </form>
+
+<h3>Or</h3>
+
+<a href="#" class="btn">Download With Zip File</a>
+
+</p>
