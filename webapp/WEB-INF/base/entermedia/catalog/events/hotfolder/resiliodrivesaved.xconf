@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Resilio Drive Saved</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/hotfolder/resiliodrive.groovy</script>
+	</path-action>
+	<property name="enabled">false</property>
+	<property name="period">5h</property>
+	
+</page>

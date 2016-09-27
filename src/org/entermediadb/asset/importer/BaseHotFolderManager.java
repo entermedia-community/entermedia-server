@@ -286,23 +286,27 @@ public class BaseHotFolderManager implements HotFolderManager
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
 			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
-			String hotfolderpath = archive.getCatalogSettingValue("hotfolderoverride");
-			if( hotfolderpath == null)
+			String enabled = inNewrow.get("enabled");
+			if( Boolean.parseBoolean(enabled))
 			{
-				hotfolderpath = System.getProperty("user.home") + "/HotFolders";
-			}	
-			hotfolderpath =  hotfolderpath + "/" + toplevelfolder ;
-			new File( hotfolderpath + "/").mkdirs();
-			inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);
+				String hotfolderpath = archive.getCatalogSettingValue("hotfolderoverride");
+				if( hotfolderpath == null)
+				{
+					hotfolderpath = System.getProperty("user.home") + "/HotFolders";
+				}	
+				hotfolderpath =  hotfolderpath + "/" + toplevelfolder ;
+				new File( hotfolderpath + "/").mkdirs();
+				inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);				
+			}
+			else
+			{
+				String hotfolderpath =  "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder;
+				File file = new File( hotfolderpath + "/");
+				file.mkdirs();
+				inNewrow.setProperty("externalpath",file.getAbsolutePath());				
+			}
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
-			
-			String key = inNewrow.get("secretkey");
-			List<String> com = Arrays.asList(key,hotfolderpath);
-			ExecResult result = getExec().runExec("setupresiliodrive",com,true);
-			if( !result.isRunOk() )
-			{
-				throw new OpenEditException("Could not setup resiliodrive:" + toplevelfolder + " " +  result.getStandardError());
-			}	
+			archive.fireMediaEvent("resiliodrivesaved", "hotfolder", inNewrow.getId(), null);
 		}
 		else 
 		{
@@ -330,7 +334,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			}
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 		}		
-				
+		
 	}	
 	@Override
 	public List<String> importHotFolder(MediaArchive inArchive, Data inFolder)
