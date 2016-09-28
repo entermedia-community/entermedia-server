@@ -54,8 +54,8 @@ public void init()
 	log.info("ending with : ${footer}");
 	output.append(footer);
 		
-	templatepage = archive.getPageManager().getPage("/WEB-INF/bin/linux/sync.conf");
-	archive.getPageManager().saveContent(templatepage,null,output.toString(),null);
+	Page configpage = archive.getPageManager().getPage("/WEB-INF/data/sync.conf");
+	archive.getPageManager().saveContent(configpage,null,output.toString(),null);
 	
 	ContentItem datadir = archive.getContent("/WEB-INF/data/");
 	
