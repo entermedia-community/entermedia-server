@@ -355,7 +355,7 @@ public class PathEvent implements Comparable, TextAppender
 					ex.printStackTrace(new PrintWriter(ow));
 					ex = ex.getCause();
 				}
-				log.error("\n" + ow.toString() + "\n");
+				logs.error("\n" + ow.toString() + "\n");
 			}
 //			finally
 //			{

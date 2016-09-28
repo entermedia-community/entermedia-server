@@ -306,7 +306,7 @@ public class BaseHotFolderManager implements HotFolderManager
 				inNewrow.setProperty("externalpath",file.getAbsolutePath());				
 			}
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
-			archive.fireMediaEvent("resiliodrivesaved", "hotfolder", inNewrow.getId(), null);
+			archive.fireMediaEvent("hotfolder/resiliodrivesaved", "hotfolder", inNewrow.getId(), null);
 		}
 		else 
 		{
