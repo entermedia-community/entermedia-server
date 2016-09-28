@@ -57,7 +57,9 @@ public void init()
 	templatepage = archive.getPageManager().getPage("/WEB-INF/bin/linux/sync.conf");
 	archive.getPageManager().saveContent(templatepage,null,output.toString(),null);
 	
-	List<String> com = Arrays.asList("restart",templatepage.getContentItem().getAbsolutePath());
+	ContentItem datadir = archive.getContent("/WEB-INF/data/");
+	
+	List<String> com = Arrays.asList("restart",datadir.getAbsolutePath());
 	
 	Exec exec = (Exec)moduleManager.getBean(archive.getCatalogId(),"exec");
 	
