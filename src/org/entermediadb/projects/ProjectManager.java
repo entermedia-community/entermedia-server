@@ -252,18 +252,11 @@ public class ProjectManager
 
 	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid)
 	{
-		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
-
-		Data found = librarycollectionassetSearcher.query().match("librarycollection", collectionid).match("_parent", assetid).searchOne();
-
-		if (found == null)
-		{
-			found = librarycollectionassetSearcher.createNewData();
-			//found.setSourcePath(libraryid + "/" + collectionid);
-			found.setProperty("librarycollection", collectionid);
-			found.setProperty("_parent", assetid);
-			librarycollectionassetSearcher.saveData(found, null);
-			log.info("Saved " + found.getId());
+		Category root = getRootCategory(archive, collectionid);
+		Asset asset = (Asset)archive.getAssetSearcher().searchById(assetid);
+		if(asset != null){
+			asset.addCategory(root);
+			archive.getAssetSearcher().saveData(asset);
 		}
 	}
 
