@@ -2,6 +2,7 @@ import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.OpenEditException
 import org.openedit.page.Page
+import org.openedit.repository.ContentItem
 import org.openedit.util.Exec
 import org.openedit.util.ExecResult
 
@@ -42,8 +43,9 @@ public void init()
 			log.info("found : ${folder.getName()} ${template}");
 			String key = folder.get("secretkey");
 			String externalpath = folder.get("externalpath");
+			ContentItem item = archive.getContent(externalpath);
 			log.info("Key ${key} ${externalpath}");
-			String newfolder = template.replace("%SECRET%",key).replace("%PATH%",externalpath);
+			String newfolder = template.replace("%SECRET%",key).replace("%PATH%",item.getAbsolutePath());
 			output.append(newfolder);
 			log.info("ending with : ${newfolder}");
 		}
