@@ -321,12 +321,14 @@ public class ProjectManager
 		//		{	
 		//SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
 		SearchQuery assetsearch = searcher.addStandardSearchTerms(inReq);
+		Category root = getRootCategory(archive,collectionid);
+
 		if (assetsearch == null)
 		{
 			assetsearch = searcher.createSearchQuery();
+			assetsearch.addExact("category-exact", root.getId());
+
 		}
-		Category root = getRootCategory(archive,collectionid);
-		assetsearch.addMatches("category-exact", root.getId());
 		all = archive.getAssetSearcher().search(assetsearch);
 
 		String hpp = inReq.getRequestParameter("page");

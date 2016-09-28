@@ -186,6 +186,10 @@ public class ProjectModule extends BaseMediaModule
 		}		
 		ProjectManager manager = getProjectManager(inReq);
 		
+		
+		
+		
+		
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
