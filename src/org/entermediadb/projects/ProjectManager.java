@@ -522,7 +522,7 @@ public class ProjectManager
 		LibraryCollection collection = createRevision(inArchive, inCollectionid, inUser, inNote);
 		Category root = getRootCategory(inArchive, inCollectionid);
 		importAssets(inArchive,collection,inImportPath, root);
-		
+		inArchive.fireSharedMediaEvent("conversions/runconversions");
 	}
 
 	public LibraryCollection createRevision(MediaArchive inArchive, String inCollectionid, User inUser, String inNote)
