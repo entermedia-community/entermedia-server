@@ -57,7 +57,7 @@ public void init()
 	Page configpage = archive.getPageManager().getPage("/WEB-INF/data/sync.conf");
 	archive.getPageManager().saveContent(configpage,null,output.toString(),null);
 	
-	ContentItem datadir = archive.getContent("/WEB-INF/data/");
+	ContentItem datadir = archive.getContent("/WEB-INF/data");
 	
 	List<String> com = Arrays.asList("restart",datadir.getAbsolutePath());
 	
