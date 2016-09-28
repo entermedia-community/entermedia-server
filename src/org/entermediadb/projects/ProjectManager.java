@@ -326,7 +326,7 @@ public class ProjectManager
 		if (assetsearch == null)
 		{
 			assetsearch = searcher.createSearchQuery();
-			assetsearch.addExact("category-exact", root.getId());
+			assetsearch.addExact("category", root.getId());
 
 		}
 		all = archive.getAssetSearcher().search(assetsearch);
