@@ -2,7 +2,7 @@
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 <p>
 
-Copy files into your working folder:  $library.get("folder")/${librarycol.getName()}/{timestamp}/
+Copy files into your working folder:  $user.id/${librarycol.getName()}/{timestamp}/
 
 <form  name="archiveassets" id="archiveassets" 
 			   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
