@@ -37,7 +37,7 @@
 											var node = data.node;
 											if (first != false) {
 											
-												jQuery("#resultsdiv").load("$home$apphome/views/modules/librarycollection/media/fieldsearch.html?collectionid=$librarycol.getId()&oemaxlevel=1&field=category-exact&operation=matches&category-exact.value="+ node.id);
+												jQuery("#resultsdiv").load("$home$apphome/views/modules/librarycollection/media/fieldsearch.html?collectionid=$librarycol.getId()&oemaxlevel=1&field=category-exact&operation=exact&category-exact.value="+ node.id);
 												
 												//	document.location.href = "$home$apphome/views/modules/question/fieldsearch.html?field=category&operation=matches&category.value="
 												//		+ node.id;
