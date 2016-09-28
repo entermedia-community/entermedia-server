@@ -327,7 +327,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else
 			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(10);
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
 				inSearch.addAggregation(b);
 			}
 
