@@ -10,7 +10,7 @@
 		
 		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 			#if( $snaphits.size() > 0)
-			<table width="50%" class="categoriescontainer hovertable" >
+			<table width="100%" class="categoriescontainer hovertable" >
 			<tr>
 				<th>Revision</th>
 				<th>User</th>
@@ -22,7 +22,7 @@
 				<tr> 
 					<td>$upload.revision</td>
 					<td>$upload.owner</td>
-					<td>$context.getDate($upload.date)</td>
+					<td>$context.getDateTime($upload.date)</td>
 					<td>$!upload.note</td>
 					<td><a href="$home$apphome/views/modules/librarycollection/restoresnapshot.html?collectionid=${librarycol.getId()}&revision=$upload.revision">Restore</a></td>
 				</tr>	
