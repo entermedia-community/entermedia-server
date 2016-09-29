@@ -1207,7 +1207,7 @@ public class ProjectManager
 		return userlibrary;
 	}
 
-	public void exportCollection(MediaArchive inMediaArchive, String inCollectionid, String inFolder, User inUser)
+	public void exportCollection(MediaArchive inMediaArchive, String inCollectionid, String inFolder)
 	{			
 		//Data collection = inMediaArchive.getData("librarycollection", inCollectionid);
 		AssetUtilities utilities = inMediaArchive.getAssetImporter().getAssetUtilities();

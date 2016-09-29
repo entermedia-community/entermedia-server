@@ -7,7 +7,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.projects.BaseProjectManager;
+import org.entermediadb.projects.ProjectManager;
 import org.junit.Test;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -79,7 +79,7 @@ public class ProjectTest extends BaseEnterMediaTest
 		MediaArchive archive = getMediaArchive();
 		archive.getAssetSearcher().reIndexAll();
 		
-		BaseProjectManager manager = (BaseProjectManager)getFixture().getModuleManager().getBean(archive.getCatalogId(), "projectManager");
+		ProjectManager manager = (ProjectManager)getFixture().getModuleManager().getBean(archive.getCatalogId(), "projectManager");
 
 //		AssetUtilities utils = getMediaArchive().getAssetImporter().getAssetUtilities();
 //		Category root = getMediaArchive().getCategoryArchive().getRootCategory();
@@ -131,7 +131,8 @@ public class ProjectTest extends BaseEnterMediaTest
 		
 		//Import a new path
 		WebPageRequest req = getFixture().createPageRequest();
-		manager.snapshotAndImport(req, null, archive, collection.getId(), "importfolder");
+		manager.importCollection(req, null, archive, collection.getId(), "importfolder" ,"Some Note" );
+
 
 		manager.exportCollection(getMediaArchive(), collection.getId(), folder);
 

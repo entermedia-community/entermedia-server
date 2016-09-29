@@ -517,7 +517,7 @@ public class ProjectModule extends BaseMediaModule
 		
 		infolder = infolder + "/" + stamp + "/";
 		
-		manager.exportCollection(archive, collectionid, infolder, inReq.getUser());
+		manager.exportCollection(archive, collectionid, infolder);
 		
 		inReq.putPageValue("exportpath", infolder );
 		
