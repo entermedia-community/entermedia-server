@@ -503,7 +503,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	{
 		String finalpath = inFolder  + inRoot.getName() + "/";
 		ContentItem target = inArchive.getPageManager().getRepository().getStub(finalpath);
-
+		if(!target.exists()){
+			inArchive.getPageManager().getRepository().put(target);
+		}
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
 		
