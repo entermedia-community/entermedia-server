@@ -499,18 +499,15 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 	
 	
-	public void exportCategoryTree(MediaArchive inArchive, Category inRoot, String inFolder)
+	public void exportCategoryTree(MediaArchive inArchive, Category inCategory, ContentItem target)
 	{
-		String finalpath = inFolder  + inRoot.getName() + "/";
-		ContentItem target = inArchive.getPageManager().getRepository().getStub(finalpath);
 		if(!target.exists()){
 			inArchive.getPageManager().getRepository().put(target);
 		}
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
 		
-		
-		HitTracker assetlist = assets.fieldSearch("category-exact", inRoot.getId());
+		HitTracker assetlist = assets.fieldSearch("category-exact", inCategory.getId());
 		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
@@ -531,17 +528,13 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		
 		}
 		
-		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
+		for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
-			exportCategoryTree(inArchive, child, finalpath);
+			String childfolder = target.getPath() + child.getName() + "/";
+			ContentItem childtarget = inArchive.getPageManager().getRepository().getStub(childfolder);
+			exportCategoryTree(inArchive, child,childtarget);
 		}
-		
-		
-		
-		
-		
-		
 	}
 	
 	

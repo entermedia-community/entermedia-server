@@ -435,7 +435,7 @@ public class ProjectModule extends BaseMediaModule
 		}
 		Collections.reverse(paths);
 		String latest = (String)paths.iterator().next();
-		latest = latest + "/" + collection.getName();
+		latest = latest + "/";
 		//Need to check if this is unique - increment a counter?
 		String note = inReq.getRequestParameter("note.value");
 		if(note == null){

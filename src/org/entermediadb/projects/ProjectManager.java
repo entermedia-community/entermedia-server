@@ -1212,11 +1212,8 @@ public class ProjectManager
 		//Data collection = inMediaArchive.getData("librarycollection", inCollectionid);
 		AssetUtilities utilities = inMediaArchive.getAssetImporter().getAssetUtilities();
 		Category root = getRootCategory(inMediaArchive, inCollectionid);
-		utilities.exportCategoryTree(inMediaArchive, root, inFolder);
-		
-		
-		
-		
+		ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
+		utilities.exportCategoryTree(inMediaArchive, root, childtarget);
 		
 	}
 
