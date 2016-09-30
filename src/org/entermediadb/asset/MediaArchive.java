@@ -587,6 +587,10 @@ public class MediaArchive
 		}
 		return fieldCategoryArchive;
 	}
+	public Category createCategoryTree(String inPath)
+	{
+		return getCategoryArchive().createCategoryTree(inPath);
+	}
 
 	public void setCategoryArchive(CategoryArchive inCategoryArchive)
 	{

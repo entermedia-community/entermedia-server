@@ -1,5 +1,5 @@
 #if( $librarycol )
-	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
+	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 		<div class="pull-left libraryheader" >$librarycol (<a class="" href="$home$apphome/views/modules/library/edit/edit.html?id=$library.getId()&viewid=librarygeneral&viewpath=library/librarygeneral&searchtype=library"><span>$library</span></a>)</div>

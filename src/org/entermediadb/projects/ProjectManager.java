@@ -638,17 +638,23 @@ public class ProjectManager
 		long revisions = collection.getCurentRevision();			
 		String libraryid = collection.get("library");
 		Data library = inArchive.getData("library", libraryid);
-		String folder = library.get("folder");
 		Category librarynode = null;
-		
-		if(folder != null){
-			String categorypath = "/" + folder;  //Users/Ian Miller
-			librarynode = inArchive.getCategoryArchive().createCategoryTree(categorypath);
-		} else{
-			String categorypath = "/" + library.getId();  //Users/Ian Miller
-			librarynode = inArchive.getCategoryArchive().createCategoryTree(categorypath);
-			librarynode.setName(library.getName());
+		if( library.get("categoryid") != null)
+		{
+			librarynode = inArchive.getCategory(library.get("categoryid"));
 		}
+		if(librarynode != null)
+		{
+			String folder = library.get("folder");
+			if( folder == null)
+			{
+				folder = "Libraries/" + library.getName();
+			}
+			librarynode = inArchive.createCategoryTree(folder);
+			library.setValue("categoryid",librarynode.getId());
+			inArchive.getCategorySearcher().saveData(librarynode);
+		}
+		
 		String id = collection.getId() + "_" + revisions;
 		Category root = inArchive.getCategory(id);
 		if( root == null)
@@ -1202,7 +1208,7 @@ public class ProjectManager
 		if (addUserToLibrary(inArchive, userlibrary, user))
 		{
 			//reload profile?
-			inProfile.getCombinedLibraries().add(userlibrary.getId());
+			inProfile.getViewCategories().add(userlibrary.getId());
 		}
 		return userlibrary;
 	}

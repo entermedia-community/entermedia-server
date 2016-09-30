@@ -8,5 +8,8 @@
   <property id="categorypath"  editable="true" index="true" stored="true" sortable="true" >Path</property>
   <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date"  datatype="date">Created Date</property>
   <property id="foldertype"  editable="true" index="true" stored="true" type="list">Type</property>
-  
+  <property id="viewusers"  editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system">Users</property>
+  <property id="viewgroups"  editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system">Groups</property>
+  <property id="viewroles"  editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup">Roles</property>
+    
 </properties>

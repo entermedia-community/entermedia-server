@@ -1,7 +1,7 @@
 package org.entermediadb.asset.search;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -10,7 +10,6 @@ import org.openedit.data.SearchQueryFilter;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.Group;
 import org.openedit.users.User;
 
 public class assetSearchQueryFilter implements SearchQueryFilter {
@@ -33,39 +32,34 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 			return inQuery;
 		}
 		if(!inQuery.isSecurityAttached())
-		{
-			//TODO: This should be in a child query with 	child.setFilter(true);
-			
+		{			
 			//viewasset = "admin adminstrators guest designers"
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();
-			StringBuffer buffer = new StringBuffer("true "); //true is for wide open searches
-
+			Collection<String> ids = null;//new ArrayList<String>();
+			
 			UserProfile profile = inPageRequest.getUserProfile();
 			if( profile != null)
 			{
 				//Get the libraries
-				Collection libraries = profile.getCombinedLibraries();
-				if( libraries != null)
-				{
-					for (Iterator iterator = libraries.iterator(); iterator	.hasNext();)
-					{
-						String library = (String) iterator.next();
-						buffer.append( " library_" + library);
-					}
-				}
+				ids = profile.getViewCategories();
 			}
-
-			if (currentUser != null)
+			if( ids == null)
 			{
-				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
-				{
-					String allow = ((Group)iterator.next()).getId();
-					buffer.append(" group_" + allow);
-				}
-				buffer.append(" user_" + currentUser.getUserName());
+				ids = new ArrayList<String>();
+				ids.add("none");
 			}
-			inQuery.addOrsGroup("viewasset", buffer.toString());
+//			if (currentUser != null)
+//			{
+//				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
+//				{
+//					String allow = ((Group)iterator.next()).getId();
+//					buffer.append(" group_" + allow);
+//				}
+//				buffer.append(" user_" + currentUser.getUserName());
+//			}
+			inQuery.addOrsGroup("category", ids);
+			
 			inQuery.setSecurityAttached(true);
 		}
 

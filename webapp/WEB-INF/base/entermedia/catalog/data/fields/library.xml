@@ -4,6 +4,7 @@
   <property id="name" editable="true" sortable="true"  index="true" stored="true">Name</property>
   <property id="description">Description</property>
   <property id="folder" editable="true" index="true" stored="true" note="Relative Folder hotfolder/sub1/song123">HotFolder Import Path</property>
+  <property id="categoryid" editable="false" index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated">Category ID</property>
    
   <property id="giturl" editable="true" index="true" stored="true" note="ssh://servername/vol1/git/song123.git">Git URL</property>
 

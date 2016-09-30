@@ -38,17 +38,18 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 		UserProfile profile = inPageRequest.getUserProfile();
 		if (profile != null)
 		{
-			Collection<String> libraryids = profile.getCombinedLibraries();
+			Collection<String> viewcategories = profile.getViewCategories();
 			if (log.isDebugEnabled())
 			{
 				log.debug("added security filer for " + inPageRequest.getUserProfile());
 			}
-			if (libraryids.size() == 0)
+			if (viewcategories.size() == 0)
 			{
-				libraryids = new ArrayList();
-				libraryids.add("-1");
+				viewcategories = new ArrayList();
+				viewcategories.add("-1");
 			}
-			inQuery.setSecurityIds(libraryids);
+			//inQuery.setSecurityIds(libraryids);
+			inQuery.addOrsGroup("categoryid", viewcategories);
 			inQuery.setSecurityAttached(true);
 		}
 		return inQuery;

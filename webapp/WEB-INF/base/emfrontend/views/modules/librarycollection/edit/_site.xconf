@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<inner-layout>/${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
+
+    <path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<idname>id</idname>
+			<searchtype>librarycollection</searchtype>
+    </path-action>
+
+   	<inner-layout>/${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
     
+    <property name="defaulttab">settingstab</property>
 </page>

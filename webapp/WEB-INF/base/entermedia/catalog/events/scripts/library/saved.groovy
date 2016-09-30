@@ -1,9 +1,8 @@
 package library
 
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
-import org.openedit.data.Searcher
-import org.openedit.hittracker.SearchQuery
 import org.openedit.page.Page
 import org.openedit.util.Exec
 import org.openedit.util.ExecResult
@@ -11,6 +10,7 @@ import org.openedit.util.ExecResult
 public void init() {
 	String id = context.getRequestParameter("id");
 
+	log.info("saving library");
 	Data library = context.getPageValue("data");
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	if(library == null){
@@ -23,11 +23,22 @@ public void init() {
 		library = mediaArchive.getSearcher("library").searchById(id);
 	}
 
-
 	if( library != null ) 
 	{
+		Category parentcategory = null;
+		String path = library.get("folder");
+		if( path == null)
+		{
+			path = "Libraries/" + library.getName();
+		}
+		parentcategory = mediaArchive.createCategoryTree(path);
+		library.setValue("categoryid", parentcategory.getId() );
+		String username = context.getUserName();
+		
+		parentcategory.addValue("viewusers",username);
+		mediaArchive.getCategorySearcher().saveData(parentcategory);
+		/*
 		Searcher libraryusers = mediaArchive.getSearcher("libraryusers");
-		String username = context.getUserName(); 
 		if(username != null)
 		{
 			SearchQuery query = libraryusers.createSearchQuery().append("_parent", library.id).append("userid", username);
@@ -44,13 +55,15 @@ public void init() {
 
 			}
 		}
+		*/
 		String owner = library.get("owner");
 		if(owner == null){
 			library.setProperty("owner", username);
-			library.setProperty("ownerprofile",context.getUserProfile().getId()); 
+			//library.setProperty("ownerprofile",context.getUserProfile().getId()); 
 			mediaArchive.getSearcher("library").saveData(library, null);
 		}
-
+		
+		
 		String gitcheckout = library.get("git");
 		String localfolder = library.get("folder");
 		//Create Git Repo and check it out

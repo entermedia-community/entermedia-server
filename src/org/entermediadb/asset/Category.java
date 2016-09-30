@@ -4,6 +4,7 @@
 package org.entermediadb.asset;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -544,5 +545,18 @@ public class Category extends BaseData
 		 
 		 return false;
 	 }
+
+	public boolean hasParent(Collection<String> inCategorids)
+	{
+		for(String id : inCategorids)
+		{
+			if( hasParent(id) )
+			{
+				return true;
+			}
+		}
+		return false;
+
+	}
 	
 }

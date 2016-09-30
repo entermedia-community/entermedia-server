@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="categorygeneral" moduleid="category" systemdefined="false" byassettype="false">General</property>  
+  <property id="categoryadvancedsearch" moduleid="category" systemdefined="true" byassettype="false">Advanced Search</property>  
+  <property id="categoryresultstable" moduleid="category" systemdefined="true" byassettype="false">Results</property>  
+  <property id="categoryheaderdetail" moduleid="category" systemdefined="true" byassettype="false">Header Details</property> 
+</properties>

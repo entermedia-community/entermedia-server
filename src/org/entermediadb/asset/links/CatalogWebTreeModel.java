@@ -1,6 +1,7 @@
 package org.entermediadb.asset.links;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -11,12 +12,12 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.webui.tree.BaseTreeModel;
 import org.openedit.page.manage.PageManager;
-import org.openedit.users.User;
+import org.openedit.profile.UserProfile;
 import org.openedit.util.RequestUtils;
 
 public class CatalogWebTreeModel extends BaseTreeModel
 {
-	protected User fieldUser;
+	protected UserProfile fieldUserProfile;
 	protected Set fieldHiddenCatalogs;
 	protected Set fieldLimitToCatalogs;
 	protected CategorySearcher fieldCategorySearcher;
@@ -24,6 +25,18 @@ public class CatalogWebTreeModel extends BaseTreeModel
 	protected String fieldCatalogId;
 	protected RequestUtils fieldRequestUtils;
 	protected Category fieldRoot;
+
+	public UserProfile getUserProfile()
+	{
+		return fieldUserProfile;
+	}
+
+	public void setUserProfile(UserProfile inUserProfile)
+	{
+		fieldUserProfile = inUserProfile;
+	}
+
+
 	public CategorySearcher getCategorySearcher()
 	{
 		return fieldCategorySearcher;
@@ -136,8 +149,11 @@ public class CatalogWebTreeModel extends BaseTreeModel
 			// index/photo2/stuff1 nostuff
 			return true;
 		}
+		
+		Collection<String> parents = getUserProfile().getViewCategories();
+		boolean ok = inCat.hasParent(parents);
 
-		return true;
+		return ok;
 	}
 
 	public Set getHiddenCatalogs()
@@ -266,15 +282,6 @@ public class CatalogWebTreeModel extends BaseTreeModel
 		return child.getParentCategory();
 	}
 
-	public User getUser()
-	{
-		return fieldUser;
-	}
-
-	public void setUser(User inUser)
-	{
-		fieldUser = inUser;
-	}
 
 	public Category getRootCatalog()
 	{

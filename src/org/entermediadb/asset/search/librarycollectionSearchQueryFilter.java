@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearchQueryFilter;
 import org.openedit.data.Searcher;
@@ -35,17 +36,25 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter {
 		UserProfile profile = inPageRequest.getUserProfile();
 		if (profile != null)
 		{
-			Collection<String> libraryids = profile.getCombinedLibraries();
+			Collection<String> viewcategories = profile.getViewCategories();
 			if (log.isDebugEnabled())
 			{
 				log.debug("added security filer for " + inPageRequest.getUserProfile());
 			}
-			if (libraryids.size() == 0)
+			if (viewcategories.size() == 0)
 			{
-				libraryids = new ArrayList();
-				libraryids.add("-1");
+				viewcategories = new ArrayList();
+				viewcategories.add("-1");
 			}
-			SearchQuery child = inSearcher.query().orgroup("library", libraryids).getQuery();
+
+			Searcher librarysearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(),"library");
+			Collection<Data> libraries = librarysearcher.query().orgroup("categoryid", viewcategories).search();
+			Collection ids = new ArrayList();
+			for(Data library: libraries)
+			{
+				ids.add(library.getId());
+			}
+			SearchQuery child = inSearcher.query().orgroup("library", ids).getQuery();
 			//TODO: Clear old child queries
 			inQuery.setChildren(null);
 			inQuery.addChildQuery(child);

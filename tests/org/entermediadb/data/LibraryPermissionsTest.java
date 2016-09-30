@@ -85,7 +85,7 @@ public class LibraryPermissionsTest extends BaseEnterMediaTest
 		req = getFixture().createPageRequest("/testcatalog/indexASDA.html");		
 		UserProfile groupprofile = upmanager.loadUserProfile(req, getMediaArchive().getCatalogId(), "groupuser");
 		
-		String lib1 = groupprofile.getCombinedLibraries().iterator().next();
+		String lib1 = groupprofile.getViewCategories().iterator().next();
 		
 		assertEquals(library.getId(), lib1);
 		

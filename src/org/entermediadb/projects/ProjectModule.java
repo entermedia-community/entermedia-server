@@ -242,7 +242,7 @@ public class ProjectModule extends BaseMediaModule
 			UserProfile profile = inReq.getUserProfile();
 			if( profile != null)
 			{
-				boolean ok = profile.getCombinedLibraries().contains(libraryid);
+				boolean ok = profile.getViewCategories().contains(libraryid);
 				return ok;
 			}
 		}
@@ -264,7 +264,7 @@ public class ProjectModule extends BaseMediaModule
 		{
 			//reload profile?
 			UserProfile profile = inReq.getUserProfile();
-			profile.getCombinedLibraries().add(saved.getId());
+			profile.getViewCategories().add(saved.getId());
 		}
 	}
 	public void createCollection(WebPageRequest inReq)

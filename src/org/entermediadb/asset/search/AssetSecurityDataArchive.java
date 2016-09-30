@@ -13,14 +13,12 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.Replacer;
 
@@ -259,11 +257,27 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		return fieldReplacer;
 	}
 
-	public Boolean canDo(MediaArchive inArchive, User inUser,
-			UserProfile inProfile, String inType, Asset inAsset) {
-		if (inAsset == null) {
+	public Boolean canDo(MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset) {
+		if (inAsset == null)
+		{
 			return true;
 		}
+		if( inUser.isInGroup("administrators"))
+		{
+			return true;
+		}
+		List<Category> exactcategories = inAsset.getCategories();
+		
+		Collection<String> categorids = inProfile.getViewCategories();
+		for( Category cat : exactcategories)
+		{
+			if( cat.hasParent(categorids) )
+			{
+				return true;
+			}
+		}
+		return false;
+		/*
 		Collection allowed = getAccessList(inArchive, inType, inAsset);
 
 		if (allowed.size() == 0) 
@@ -350,7 +364,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		{
 			log.debug("No rights for " + inType + " on " + inProfile );
 		}
-		return false;
+		*/
 	}
 
 }

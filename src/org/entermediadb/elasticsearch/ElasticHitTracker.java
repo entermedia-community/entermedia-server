@@ -3,9 +3,11 @@ package org.entermediadb.elasticsearch;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +29,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.JoinFilter;
 
 public class ElasticHitTracker extends HitTracker
 {
@@ -443,25 +446,16 @@ public class ElasticHitTracker extends HitTracker
 			}
 			getSearcheRequestBuilder().setQuery(bool);
 		}
-		Collection validids = null;
-
+		Collection<String> validids = new HashSet<String>();
+		
 		if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
 		{
-			validids = new ArrayList(fieldSelections);
+			validids.addAll(fieldSelections);
 		}
-		Collection ids = getSearchQuery().getSecurityIds();
-		if (ids != null)
-		{
-			if (validids == null)
-			{
-				validids = ids;
-			}
-			else
-			{
-				validids.addAll(ids);
-			}
-		}
-		if (validids != null)
+		//validids = findCommonIds(validids,getSearchQuery().getJoinsIds());		
+		validids = findCommonIds(validids,getSearchQuery().getSecurityIds());
+		
+		if (!validids.isEmpty())
 		{
 			QueryBuilder fids = QueryBuilders.termsQuery("_id", validids);
 			//			QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
@@ -474,5 +468,22 @@ public class ElasticHitTracker extends HitTracker
 			getSearcheRequestBuilder().setPostFilter((QueryBuilder) null);
 		}
 
+	}
+
+	protected Collection<String> findCommonIds(Collection<String> validids, Collection<String> andids)
+	{
+		if( andids == null || andids.size() == 0)
+		{
+			return validids;
+		}
+		Collection<String> both = new HashSet<String>();
+		for(String id : andids)
+		{
+			if( validids.contains(id))
+			{
+				both.add(id);
+			}
+		}
+		return both;
 	}
 }

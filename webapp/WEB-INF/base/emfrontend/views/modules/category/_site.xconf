@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
+  <property name="module">category</property>
+  <property name="enforcesecurity">true</property>
+  
+</page>

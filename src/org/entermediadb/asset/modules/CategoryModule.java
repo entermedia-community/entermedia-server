@@ -100,7 +100,7 @@ public class CategoryModule extends BaseMediaModule
 			model.setCatalogId(archive.getCatalogId());
 			model.setRoot(main);
 			model.setCategorySearcher(archive.getCategorySearcher());
-			model.setUser(inRequest.getUser());
+			model.setUserProfile(inRequest.getUserProfile());
 			model.setRequestUtils(getRequestUtils());
 			webTree = new WebTree(model);
 			webTree.setName(name);

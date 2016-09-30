@@ -1,6 +1,0 @@
-
-<properties prefix="asdf" beanname="dataSearcher" lazy-init="true">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true" searchtype="asdf">Id</property>
-  <property id="name" index="true" stored="true" editable="true" multilanguage="true" internalfield="false" searchtype="asdf">Name</property>
-  <property id="sourcepath" searchtype="asdf">SourcePath</property>
-</properties>
