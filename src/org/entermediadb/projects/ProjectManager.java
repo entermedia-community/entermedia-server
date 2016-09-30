@@ -346,38 +346,6 @@ public class ProjectManager
 		return all;
 	}
 
-	//TODO: delete this
-	private Collection<String> loadAssetIdsInCollection(WebPageRequest inReq, MediaArchive archive, String inCollectionId)
-	{
-		Searcher librarycollectionassetSearcher = archive.getSearcher("librarycollectionasset");
-		HitTracker found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionId).search(inReq);
-		Collection<String> ids = new ArrayList();
-		for (Object hit : found)
-		{
-			Data data = (Data) hit;
-			String id = data.get("_parent");
-			if (id != null)
-			{
-				ids.add(id);
-			}
-		}
-		return ids;
-	}
-
-	public boolean addUserToLibrary(MediaArchive archive, Data inLibrary, User inUser)
-	{
-		Searcher searcher = archive.getSearcher("libraryusers");
-		Data found = searcher.query().match("userid", inUser.getId()).match("_parent", inLibrary.getId()).searchOne();
-		if (found == null)
-		{
-			found = searcher.createNewData();
-			found.setProperty("userid", inUser.getId());
-			found.setProperty("_parent", inLibrary.getId());
-			searcher.saveData(found, null);
-			return true;
-		}
-		return false;
-	}
 
 	public void removeAssetFromLibrary(MediaArchive inArchive, String inLibraryid, HitTracker inAssets)
 	{
@@ -1201,15 +1169,18 @@ public class ProjectManager
 		userlibrary = inArchive.getSearcher("library").createNewData();
 		userlibrary.setId(user.getUserName());
 		userlibrary.setName(user.getScreenName());
-		userlibrary.setProperty("folder", "Users/" + user.getScreenName());
+		
+		String folder = "Users/" + user.getScreenName();
+		
+		Category librarynode = inArchive.createCategoryTree(folder);
+		((MultiValued)userlibrary).addValue("viewusers",user.getId());
+		inArchive.getCategorySearcher().saveData(librarynode);
+		//reload profile?
+		inProfile.getViewCategories().add(userlibrary.getId()); 		//Make sure I am in the list of users for the library
+	
+		userlibrary.setValue("categoryid",librarynode.getId());
 		inArchive.getSearcher("library").saveData(userlibrary, null);
 
-		//Make sure I am in the list of users for the library
-		if (addUserToLibrary(inArchive, userlibrary, user))
-		{
-			//reload profile?
-			inProfile.getViewCategories().add(userlibrary.getId());
-		}
 		return userlibrary;
 	}
 
