@@ -69,8 +69,8 @@ $context.putPageValue("idprefix","search")
 	<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
 	<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
 	
-	<select name="field" onChange="jQuery('#searchaddfield').submit();">
-		<option>[[Add Field]]</option>
+	<select  class="select2"  name="field" onChange="jQuery('#searchaddfield').submit();">
+		<option>[[Asset]]</option>
 		#foreach( $detail in $alldetails)
 			#if($detail.isLeaf())
 			<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
@@ -81,10 +81,24 @@ $context.putPageValue("idprefix","search")
 				#end
 			#end
 		#end	
-
 	</select>
+	<select class="select2" name="field" onChange="jQuery('#searchaddfield').submit();">
+		<option>[[Collection]]</option>
+		#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
+		#foreach( $detail in $librarydetails)
+		<option value="librarycollection.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
+		#end
+	</select>
+	<select  class="select2"  name="field" onChange="jQuery('#searchaddfield').submit();">
+		<option>[[Library]]</option>
+		#set( $librarydetails = $mediaarchive.getSearcher("library").getUserPropertyDetails() )
+		#foreach( $detail in $librarydetails)
+		<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
+		#end
+	</select>
+<div class="pull-right">
 	<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Done</a>
-	
+</div>	
 </form>
 #end
 

@@ -5,10 +5,13 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearchQueryFilter;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
@@ -24,45 +27,85 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 			return inQuery;
 		}
 
-		User user = inPageRequest.getUser();
-		//log.info( "found filer user  "  + user + " " + user.isInGroup("administrators"));
-		if (user != null && user.isInGroup("administrators"))
-		{
-			//dont filter since its the admin
-			return inQuery;
-		}
-		if(!inQuery.isSecurityAttached())
+		//check for category joins
+		if(!inQuery.hasChildren())
 		{			
+			SearchQuery child = inSearcher.createSearchQuery();
 			//viewasset = "admin adminstrators guest designers"
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();
 			Collection<String> ids = null;//new ArrayList<String>();
 			
-			UserProfile profile = inPageRequest.getUserProfile();
-			if( profile != null)
+			User user = inPageRequest.getUser();
+			if (user == null || !user.isInGroup("administrators"))
 			{
-				//Get the libraries
-				ids = profile.getViewCategories();
-			}
-			if( ids == null)
+				UserProfile profile = inPageRequest.getUserProfile();
+				if( profile != null)
+				{
+					//Get the libraries
+					ids = profile.getViewCategories();
+				}
+				if( ids == null)
+				{
+					ids = new ArrayList<String>();
+					ids.add("none");
+				}
+				child.addOrsGroup(inSearcher.getDetail("category"), ids);
+				inQuery.setSecurityAttached(true);
+			}	
+		
+			for(Term term : inQuery.getTerms() )
 			{
-				ids = new ArrayList<String>();
-				ids.add("none");
+				String id = term.getId();
+				if( id.contains("."))
+				{
+					if( child == null)
+					{
+						child = inSearcher.createSearchQuery();
+					}
+					String[] typefield = id.split("\\.");
+					String type = typefield[0];
+					Searcher othersearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(), type);
+					
+					SearchQuery othersearch = othersearcher.createSearchQuery();
+					//fix the detail id?
+					othersearch.addTerm(term);
+					
+					Collection<Data> parenthits = othersearcher.search(othersearch);
+					Collection<Data> libraryhits = null;
+					
+					if( type.equals("library"))
+					{
+						libraryhits = parenthits;
+					}
+					else if( type.equals("librarycollection") )
+					{
+						Collection<String> libraryids  = new ArrayList();
+						for(Data data : parenthits)
+						{
+							libraryids.add(data.get("library"));
+						}	
+						libraryhits = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(), "library").query().orgroup("id", libraryids).search();
+					}
+					else
+					{
+						throw new OpenEditException("Asset searches only support Library and Collection joins not: " + type);
+					}
+					Collection<String> categoryids = new ArrayList();
+					for(Data data : libraryhits)
+					{
+						categoryids.add(data.get("categoryid"));
+					}	
+					child.addOrsGroup(inSearcher.getDetail("category"), categoryids);
+				}
 			}
-//			if (currentUser != null)
-//			{
-//				for (Iterator iterator = currentUser.getGroups().iterator(); iterator.hasNext();)
-//				{
-//					String allow = ((Group)iterator.next()).getId();
-//					buffer.append(" group_" + allow);
-//				}
-//				buffer.append(" user_" + currentUser.getUserName());
-//			}
-			inQuery.addOrsGroup("category", ids);
-			
-			inQuery.setSecurityAttached(true);
-		}
+			if(!child.isEmpty())
+			{
+				inQuery.addChildQuery(child);
+			}
+		}	
 
+		
 		return inQuery;
 	}
 }
