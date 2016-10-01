@@ -771,16 +771,23 @@ public class BaseElasticSearcher extends BaseSearcher
 		for (Iterator iterator = inQuery.getTerms().iterator(); iterator.hasNext();)
 		{
 			Term term = (Term) iterator.next();
-			// if ("orgroup".equals(term.getOperation()) ||
-			// "orsGroup".equals(term.getOperation()))
-			// {
-			// BoolQueryBuilder or = addOrsGroup(term);
-			// bool.must(or);
-			// }
-			// else
-			// {
+			PropertyDetail detail = term.getDetail();
+			//We handle joins with SearchQueryFilter.java
+			if( detail.getId().contains("."))
+			{
+				String[] type = detail.getId().split("\\.");
+				if( type[0].equals(getSearchType()))  //this happens when using assetSearchQueryFilter
+				{
+					detail = getDetail(type[1]);
+				}
+				else
+				{
+					continue;
+				}	
+			}
+			
 			String value = term.getValue();
-			QueryBuilder find = buildTerm(term.getDetail(), term, value);
+			QueryBuilder find = buildTerm(detail, term, value);
 			if (find != null)
 			{
 				if (inAnd)
@@ -1259,12 +1266,12 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 		// QueryBuilders.idsQuery(types)
-
-		if (fieldid.contains("."))
-		{
-			String[] parentpath = fieldid.split(".");
-
-		}
+//
+//		if (fieldid.contains("."))
+//		{
+//			String[] parentpath = fieldid.split(".");
+//
+//		}
 
 		return find;
 	}

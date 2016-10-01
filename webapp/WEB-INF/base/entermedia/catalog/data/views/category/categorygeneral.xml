@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<root>
-  <property id="name"/>
-  <property id="categorypath" />
-  <property id="foldertype" />
-  <property id="viewusers" />
-  <property id="viewgroups" />
-  <property id="viewroles" />
-  
+<root> 
+  <property id="name"/>  
+  <property id="viewgroups"/>  
+  <property id="viewusers"/>  
+  <property id="viewroles"/>  
+  <property id="id"/>
 </root>
