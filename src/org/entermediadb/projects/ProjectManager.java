@@ -165,7 +165,7 @@ public class ProjectManager
 		{
 			LibraryCollection uc = (LibraryCollection) lcsearcher.loadData(collection);
 
-			categoryids.add(uc.getId());
+			categoryids.add(uc.get("rootcategory"));
 			usercollections.add(uc);
 		}
 		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search(inReq);
@@ -186,7 +186,7 @@ public class ProjectManager
 				for (Iterator iterator = usercollections.iterator(); iterator.hasNext();)
 				{
 					LibraryCollection collection = (LibraryCollection) iterator.next();
-					collection.setAssetCount(node.getCount(collection.getId()));
+					collection.setAssetCount(node.getCount(collection.get("rootcategory")));
 				}
 			}
 		}
