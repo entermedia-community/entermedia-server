@@ -592,32 +592,32 @@ public class ProjectManager
 			}
 		}
 	}
-
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionId);
-		if (collection == null)
+		return getRootCategory(inArchive, collection);
+		
+	}
+	public Category getRootCategory(MediaArchive inArchive, LibraryCollection inCollection)
+	{
+		if (inCollection == null)
 		{
 			return null;
 		}
-		String categoryid = collection.get("rootcategory");
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		String categoryid = inCollection.get("rootcategory");
 		Category collectioncategory = null;
-		if (categoryid == null)
-		{
-			collectioncategory = createRootCategory(inArchive, collection);
-			collection.setValue("rootcategory", collectioncategory.getId());
-			librarycolsearcher.saveData(collection);
-		}
-		else
+		if (categoryid != null)
 		{
 			collectioncategory = (Category) inArchive.getCategorySearcher().searchById(categoryid);
 		}
+		
 		if (collectioncategory == null)
 		{
-			collectioncategory = createRootCategory(inArchive, collection);
-			collection.setValue("rootcategory", collectioncategory.getId());
-			librarycolsearcher.saveData(collection);
+			collectioncategory = createRootCategory(inArchive, inCollection);
+			inCollection.setValue("rootcategory", collectioncategory.getId());
+			librarycolsearcher.saveData(inCollection);
 		}
 
 		return collectioncategory;

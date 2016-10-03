@@ -1,7 +1,10 @@
 package users
 
-import org.entermediadb.asset.Category;
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
+import org.entermediadb.projects.LibraryCollection
+import org.entermediadb.projects.ProjectManager
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
@@ -44,7 +47,35 @@ public void init()
 
 		log.info("saved  ${library.getName() }");
 	}
+
+	ProjectManager projectmanager = (ProjectManager)moduleManager.getBean(catalogid,"projectManager");
 	
+	HitTracker all = mediaArchive.getSearcher("librarycollectionasset").getAllHits();
+	all.enableBulkOperations();
+	
+	Collection tosave = new ArrayList();
+	all.each {
+		Data hit = it;
+		
+		LibraryCollection librarycollection = mediaArchive.getData("librarycollection",hit.get("librarycollection") );
+		
+		Category rootcategory = projectmanager.getRootCategory(mediaArchive,librarycollection);
+		Asset asset = mediaArchive.getAsset(librarycollection.get("_parent") );
+		if( asset != null && !asset.isInCategory(rootcategory.getId()))
+		{
+			asset.addCategory(rootcategory);
+			tosave.add(asset);
+			if( tosave.size() > 500)
+			{
+				mediaArchive.getAssetSearcher().saveAllData(tosave,null);
+				tosave.clear();
+			}
+		}
+	}
+	mediaArchive.getAssetSearcher().saveAllData(tosave,null);
+		
 }
+
+
 	
 init();

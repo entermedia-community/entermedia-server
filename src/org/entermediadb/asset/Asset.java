@@ -226,7 +226,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		}
 		return fieldCategories;
 	}
-
+	/**
+	 * @deprecated
+	 * @param inCategory
+	 * @return
+	 */
 	public boolean isInCatalog(Category inCategory)
 	{
 		return isInCategory(inCategory);

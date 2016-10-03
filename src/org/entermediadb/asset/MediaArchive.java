@@ -1593,8 +1593,13 @@ public class MediaArchive
 		return getSearcherManager().getSearcher(getCatalogId(), inSearchType);
 	}
 	
-	public Data getData(String inSearchType, String inId){
-		return getSearcherManager().getData(getCatalogId(), inSearchType, inId);
+	public Data getData(String inSearchType, String inId)
+	{
+		Searcher searcher = getSearcher(inSearchType);
+		Data hit =  (Data)searcher.searchById(inId);
+		hit = searcher.loadData(hit); //not needed?
+		return hit;
+		
 	}
 	
 	
