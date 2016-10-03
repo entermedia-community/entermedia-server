@@ -165,7 +165,7 @@ public class ProjectManager
 		{
 			LibraryCollection uc = (LibraryCollection) lcsearcher.loadData(collection);
 
-			categoryids.add(uc.getCurrentCategoryRootId());
+			categoryids.add(uc.getId());
 			usercollections.add(uc);
 		}
 		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search(inReq);
@@ -186,7 +186,7 @@ public class ProjectManager
 				for (Iterator iterator = usercollections.iterator(); iterator.hasNext();)
 				{
 					LibraryCollection collection = (LibraryCollection) iterator.next();
-					collection.setAssetCount(node.getCount(collection.getCurrentCategoryRootId()));
+					collection.setAssetCount(node.getCount(collection.getId()));
 				}
 			}
 		}
@@ -483,14 +483,14 @@ public class ProjectManager
 		searcher.deleteCategoryTree(root);
 		root = getRootCategory(inArchive, inCollectionid);
 		importAssets(inArchive, collection, inImportPath, root, ids);
-		
+
 		for (Iterator iterator = ids.iterator(); iterator.hasNext();)
 		{
 			String assetid = (String) iterator.next();
 			Asset asset = inArchive.getAsset(assetid);
 			inArchive.saveAsset(asset, inUser);
 		}
-		
+
 		inArchive.fireSharedMediaEvent("conversions/runconversions");
 	}
 
@@ -517,27 +517,26 @@ public class ProjectManager
 		return getRootVersionCategory(inArchive, collection);
 	}
 
-	protected void importAssets(MediaArchive inArchive, Data inCollection, String inImportPath, Category inCurrentParent, Collection assets) 
+	protected void importAssets(MediaArchive inArchive, Data inCollection, String inImportPath, Category inCurrentParent, Collection assets)
 	{
 		//inCurrentParent.setChildren(null);
-		String sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+		String sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}
 
 		Map vals = new HashMap();
 		vals.put("librarycollection", inCollection.getId());
 		vals.put("library", inCollection.get("library"));
-		
-		
+
 		Collection paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 		{
 			String child = (String) iterator.next();
 			ContentItem item = inArchive.getPageManager().getRepository().getStub(child);
-			if( item.isFolder() )
+			if (item.isFolder())
 			{
-				Category newfolder = (Category)inArchive.getCategorySearcher().createNewData();
+				Category newfolder = (Category) inArchive.getCategorySearcher().createNewData();
 				newfolder.setName(item.getName());
 				//Who cares about the id
-				inCurrentParent.addChild( newfolder );
+				inCurrentParent.addChild(newfolder);
 				//inArchive.getCategorySearcher().saveData(inCurrentParent);
 				inArchive.getCategorySearcher().saveData(newfolder);
 
@@ -551,42 +550,46 @@ public class ProjectManager
 
 				try
 				{
-					md5 = DigestUtils.md5Hex( inputStream );
+					md5 = DigestUtils.md5Hex(inputStream);
 				}
 				catch (Exception e)
 				{
 					throw new OpenEditException(e);
 				}
-				finally{
+				finally
+				{
 					FileUtils.safeClose(inputStream);
 				}
-				Data target = (Data)inArchive.getAssetSearcher().searchByField("md5hex", md5);
+				Data target = (Data) inArchive.getAssetSearcher().searchByField("md5hex", md5);
 				Asset asset = (Asset) inArchive.getAssetSearcher().loadData(target);
-				
-				if(asset == null){				
-					
+
+				if (asset == null)
+				{
+
 					String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, item.getName(), sourcepathmask, vals);
 					ContentItem destination = inArchive.getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath);
 					ContentItem finalitem = inArchive.getPageManager().getPage(destination.getPath() + "/" + item.getName()).getContentItem();
-					
+
 					inArchive.getPageManager().getRepository().move(item, destination);
-					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem,true, inArchive, null); //this also extracts the md5
+					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem, true, inArchive, null); //this also extracts the md5
 					asset.setCategories(null);
 					inArchive.saveAsset(asset, null);
 
 					//asset.setValue("md5hex", md5);
 					PresetCreator presets = inArchive.getPresetManager();
-					Searcher tasksearcher = inArchive.getSearcherManager().getSearcher (inArchive.getCatalogId(), "conversiontask");
+					Searcher tasksearcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "conversiontask");
 					presets.createMissingOnImport(inArchive, tasksearcher, asset);
-				} else{
+				}
+				else
+				{
 					inArchive.getPageManager().getRepository().remove(item);
 
 				}
 				asset.addCategory(inCurrentParent);
 				inArchive.saveAsset(asset, null);
 				assets.remove(asset.getId());
-			
-			}	
+
+			}
 		}
 	}
 
@@ -598,6 +601,30 @@ public class ProjectManager
 		{
 			return null;
 		}
+		String categoryid = collection.get("rootcategory");
+		Category collectioncategory = null;
+		if (categoryid == null)
+		{
+			collectioncategory = createRootCategory(inArchive, collection);
+			collection.setValue("rootcategory", collectioncategory.getId());
+			librarycolsearcher.saveData(collection);
+		}
+		else
+		{
+			collectioncategory = (Category) inArchive.getCategorySearcher().searchById(categoryid);
+		}
+		if (collectioncategory == null)
+		{
+			collectioncategory = createRootCategory(inArchive, collection);
+			collection.setValue("rootcategory", collectioncategory.getId());
+			librarycolsearcher.saveData(collection);
+		}
+
+		return collectioncategory;
+	}
+
+	private Category createRootCategory(MediaArchive inArchive, LibraryCollection collection)
+	{
 		String libraryid = collection.get("library");
 		Data library = inArchive.getData("library", libraryid);
 
@@ -609,6 +636,7 @@ public class ProjectManager
 		}
 		else
 		{
+
 			String folder = library.get("folder");
 			if (folder == null)
 			{
@@ -1100,7 +1128,7 @@ public class ProjectManager
 		{
 			return;
 		}
-		
+
 		snapshotCollection(inReq, inUser, inArchive, inCollectionid, inNote);
 		Category newroot = getRootCategory(inArchive, inCollectionid);
 		CategorySearcher searcher = inArchive.getCategorySearcher();

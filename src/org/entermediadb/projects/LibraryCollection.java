@@ -28,11 +28,7 @@ public class LibraryCollection extends BaseData implements SaveableData
 	{
 		fieldAssetCount = inCount;
 	}
-	public String getCurrentCategoryRootId()
-	{
-		return getId() + "_" + getCurentRevision();
-	}
-	
+
 	public long getCurentRevision()
 	{
 		Object obj = getValue("revisions");
