@@ -49,5 +49,14 @@ public class LibraryCollection extends BaseData implements SaveableData
 
 		return revisionnumber;
 	}
+	public boolean hasRootCategory()
+	{
+		return getRootCategoryId() != null;
+	}
+	public String getRootCategoryId()
+	{
+		return get("rootcategory");
+	}
+
 
 }

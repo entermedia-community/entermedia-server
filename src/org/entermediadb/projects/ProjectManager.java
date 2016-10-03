@@ -164,10 +164,10 @@ public class ProjectManager
 		for (Data collection : allcollections)
 		{
 			LibraryCollection uc = (LibraryCollection) lcsearcher.loadData(collection);
-			String categoryid  = uc.get("rootcategory");
-			if( categoryid != null)
+			
+			if( uc.hasRootCategory())
 			{
-				categoryids.add(categoryid);
+				categoryids.add(uc.getRootCategoryId());
 			}
 			usercollections.add(uc);
 		}
@@ -189,7 +189,10 @@ public class ProjectManager
 				for (Iterator iterator = usercollections.iterator(); iterator.hasNext();)
 				{
 					LibraryCollection collection = (LibraryCollection) iterator.next();
-					collection.setAssetCount(node.getCount(collection.get("rootcategory")));
+					if( collection.hasRootCategory())
+					{
+						collection.setAssetCount(node.getCount(collection.getRootCategoryId()));
+					}
 				}
 			}
 		}
