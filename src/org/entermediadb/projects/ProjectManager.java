@@ -164,8 +164,11 @@ public class ProjectManager
 		for (Data collection : allcollections)
 		{
 			LibraryCollection uc = (LibraryCollection) lcsearcher.loadData(collection);
-
-			categoryids.add(uc.get("rootcategory"));
+			String categoryid  = uc.get("rootcategory");
+			if( categoryid != null)
+			{
+				categoryids.add(categoryid);
+			}
 			usercollections.add(uc);
 		}
 		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search(inReq);
