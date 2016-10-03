@@ -2,6 +2,8 @@
 
 <page>
 
+	<path-action name="ProfileModule.loadUserProfile" />
+
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
 	<page-action name="PageValue.loadPageVariable" bean="sizer" />	

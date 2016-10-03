@@ -108,11 +108,18 @@ public class ProjectTest extends BaseEnterMediaTest
 			FileUtils.safeClose(input);
 		}
 		archive.saveAsset(existingasset, null);
+		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/index.html");
+		getFixture().getEngine().executePathActions(inReq);
+		
+		Data library = manager.loadUserLibrary(archive, inReq.getUserProfile());
+		
+		
 		
 		Searcher lcsearcher = getMediaArchive().getSearcher("librarycollection");
 		Data collection = lcsearcher.createNewData();
 		collection.setId("testcollection");
 		collection.setName("Movie");
+		collection.setValue("library", library.getId());
 		lcsearcher.saveData(collection);
 		HitTracker assets = archive.getAssetSearcher().fieldSearch("id","101");
 		manager.addAssetToCollection(archive, collection.getId(), assets);

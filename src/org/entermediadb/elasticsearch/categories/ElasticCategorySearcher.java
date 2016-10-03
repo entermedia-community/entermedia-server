@@ -291,4 +291,19 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	}
 	
 	
+	public void deleteCategoryTree(Category root){
+		for (Iterator iterator = root.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			deleteCategoryTree(child);
+			
+		}
+		delete(root, null);
+		
+		
+		
+	}
+	
+	
+	
 }
