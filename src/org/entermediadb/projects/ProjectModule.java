@@ -481,7 +481,7 @@ public class ProjectModule extends BaseMediaModule
 
 		String note = inReq.getRequestParameter("note.value");
 		if(note == null){
-			note = "Snapshot Restored from " + revision;
+			note = "Auto Snapshot on Restore from " + revision;
 		}
 		manager.restoreSnapshot(inReq, user, archive, collectionid, revision,note);
 		

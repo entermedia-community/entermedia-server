@@ -150,6 +150,16 @@ public class CatalogWebTreeModel extends BaseTreeModel
 			return true;
 		}
 		
+		
+		 
+		    
+		
+		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null ){
+			return true;
+			
+		}
+		
+		
 		Collection<String> parents = getUserProfile().getViewCategories();
 		boolean ok = inCat.hasParent(parents);
 

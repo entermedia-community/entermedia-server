@@ -1071,7 +1071,7 @@ public class ProjectManager
 		String folder = "Users/" + user.getScreenName();
 
 		Category librarynode = inArchive.createCategoryPath(folder);
-		((MultiValued) userlibrary).addValue("viewusers", user.getId());
+		((MultiValued) librarynode).addValue("viewusers", user.getId());
 		inArchive.getCategorySearcher().saveData(librarynode);
 		//reload profile?
 		inProfile.getViewCategories().add(userlibrary.getId()); //Make sure I am in the list of users for the library
@@ -1100,7 +1100,8 @@ public class ProjectManager
 		{
 			return;
 		}
-
+		
+		snapshotCollection(inReq, inUser, inArchive, inCollectionid, inNote);
 		Category newroot = getRootCategory(inArchive, inCollectionid);
 		CategorySearcher searcher = inArchive.getCategorySearcher();
 		searcher.deleteCategoryTree(newroot);

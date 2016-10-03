@@ -554,5 +554,18 @@ public class Category extends BaseData
 		return false;
 
 	}
+
+	public Object findValue(String inString)
+	{
+		Object value = getValue(inString);
+		if(value != null){
+			return value;
+		}
+		
+		if(getParentCategory() != null){
+			value = getParentCategory().findValue(inString);
+		}
+		return value;
+	}
 	
 }
