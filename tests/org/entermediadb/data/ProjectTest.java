@@ -140,7 +140,7 @@ public class ProjectTest extends BaseEnterMediaTest
 		
 		//Import a new path
 		WebPageRequest req = getFixture().createPageRequest();
-		manager.importCollection(req, req.getUser(), archive, collection.getId(), "importfolder" ,"Some Note" );
+		manager.importCollection(req, req.getUser(), archive, collection.getId(), "/WEB-INF/data/entermedia/catalogs/testcatalog/originals/importfolder" ,"Some Note" );
 
 
 		manager.exportCollection(getMediaArchive(), collection.getId(), folder);
