@@ -614,7 +614,7 @@ onloadselectors = function()
 			{	
 				jQuery(this).draggable( 
 					{
-						
+						delay: 300,
 						helper: function()
 						{
 							var cloned = $(this).clone();
