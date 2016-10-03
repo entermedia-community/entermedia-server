@@ -324,18 +324,14 @@ public class Category extends BaseData
 
 	public Object getValue(String inKey)
 	{
-//		if (inKey.equals("parentid"))
-//		{
-//			Category parent = getParentCategory();
-//			if( parent != null )
-//			{
-//				return parent.getId();
-//			}
-//		}
 		Object val = super.getValue(inKey);
 		if (val != null)
 		{
 			return val;
+		}
+		if (inKey.equals("categorypath"))
+		{
+			return getCategoryPath();
 		}
 //		if( fieldParentCategory != null)
 //		{

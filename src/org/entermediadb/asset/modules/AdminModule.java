@@ -756,7 +756,10 @@ public class AdminModule extends BaseModule
 		UserManager userManager = getUserManager(inReq);
 		String catalogid = userManager.getUserSearcher().getCatalogId();
 		User user = (User) inReq.getSessionValue(catalogid + "user");
-		inReq.putPageValue( "user", user);
+		if( user != null)
+		{
+			inReq.putPageValue( "user", user);
+		}
 
 		return user;
 		

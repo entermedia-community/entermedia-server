@@ -16,6 +16,7 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.User;
 import org.openedit.util.FileUtils;
 
 public class ProjectTest extends BaseEnterMediaTest
@@ -109,8 +110,9 @@ public class ProjectTest extends BaseEnterMediaTest
 		}
 		archive.saveAsset(existingasset, null);
 		WebPageRequest inReq = getFixture().createPageRequest("/testcatalog/index.html");
+		User user = inReq.getUser();
 		getFixture().getEngine().executePathActions(inReq);
-		
+		user = inReq.getUser();
 		Data library = manager.loadUserLibrary(archive, inReq.getUserProfile());
 		
 		
@@ -138,7 +140,7 @@ public class ProjectTest extends BaseEnterMediaTest
 		
 		//Import a new path
 		WebPageRequest req = getFixture().createPageRequest();
-		manager.importCollection(req, null, archive, collection.getId(), "importfolder" ,"Some Note" );
+		manager.importCollection(req, req.getUser(), archive, collection.getId(), "importfolder" ,"Some Note" );
 
 
 		manager.exportCollection(getMediaArchive(), collection.getId(), folder);

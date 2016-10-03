@@ -612,7 +612,7 @@ public class ProjectManager
 			String folder = library.get("folder");
 			if (folder == null)
 			{
-				folder = "Libraries/" + library.getName();
+				folder = "Index/Libraries/" + library.getName();
 			}
 			librarycategory = inArchive.createCategoryPath(folder);
 			library.setValue("categoryid", librarycategory.getId());
@@ -620,7 +620,7 @@ public class ProjectManager
 			//			{
 			//				librarycategory.addValue("viewusers",inUser.getUserName());
 			//			}
-			inArchive.getCategorySearcher().saveData(library);
+			inArchive.getSearcher("library").saveData(library);
 		}
 		Category collectioncategory = inArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
 		return collectioncategory;

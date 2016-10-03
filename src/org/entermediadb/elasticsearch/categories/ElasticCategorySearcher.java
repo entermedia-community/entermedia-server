@@ -133,21 +133,21 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
 		super.updateIndex(inContent,inData,inDetails);
-		Category category = (Category)inData;
-		Category parent  = category.getParentCategory();
-		if( parent != null)
-		{
-			try
-			{
-				inContent.field("parentid", parent.getId());
-				String categorypath = category.getCategoryPath();
-				inContent.field("categorypath", categorypath );
-			}
-			catch (Exception ex)
-			{
-				throw new OpenEditException(ex);
-			}
-		}
+//		Category category = (Category)inData;
+//		Category parent  = category.getParentCategory();
+//		if( parent != null)
+//		{
+//			try
+//			{
+//				inContent.field("parentid", parent.getId());
+//				String categorypath = category.getCategoryPath();
+//				inContent.field("categorypath", categorypath );
+//			}
+//			catch (Exception ex)
+//			{
+//				throw new OpenEditException(ex);
+//			}
+//		}
 	}
 	@Override
 	public Category getRootCategory()
@@ -227,7 +227,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public Data loadData(Data inHit)
 	{
-		if( inHit instanceof Category)
+		if( inHit == null || inHit instanceof Category )
 		{
 			return inHit;
 		}
@@ -246,7 +246,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	
 	public void saveData(Data inData, User inUser)
 	{
-		super.saveData(inData, inUser);
+		//For the path to be saved we might need to force category?
+		
+		super.saveData((Category)inData, inUser);
 		getRootCategory().setValue("dirty", true);
 //		cat = (ElasticCategory)cat.getParentCategory();
 //		if( cat == null)
@@ -268,26 +270,28 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public Category createCategoryPath(String inPath)
 	{
-		if( inPath.length() == 0 || inPath.equals("Index") )
+		if( inPath.length() == 0 || inPath.equals("Index"))
 		{		
-			Category found = (Category)query().exact("categorypath.sort", inPath).searchOne();
-			if( found == null)
+			return getRootCategory();
+		}
+		//TODO: Find right way to do this not matches
+		Data hit = (Data)query().startsWith("categorypath", inPath).sort("categorypathUp").searchOne();
+		Category found = (Category)loadData(hit);
+		if( found == null)
+		{
+			found = (Category)createNewData();
+			String name = PathUtilities.extractFileName(inPath);
+			found.setName(name);
+			//create parents and itself
+			String parent = PathUtilities.extractDirectoryPath(inPath);
+			Category parentcategory = createCategoryPath(parent);
+			if( parentcategory != null)
 			{
-				found = (Category)createNewData();
-				String name = PathUtilities.extractFileName(inPath);
-				found.setName(name);
-				//create parents and itself
-				String parent = PathUtilities.extractDirectoryPath(inPath);
-				Category parentcategory = createCategoryPath(parent);
-				if( parentcategory != null)
-				{
-					parentcategory.addChild(found);
-					saveData(found);
-				}
+				parentcategory.addChild(found);
+				saveData(found);
 			}
-			return found;
-		}	
-		return null;
+		}
+		return found;
 	}
 	
 	

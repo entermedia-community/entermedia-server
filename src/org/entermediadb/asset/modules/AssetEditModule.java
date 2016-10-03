@@ -1174,6 +1174,7 @@ public class AssetEditModule extends BaseMediaModule
 				if( libraries == null)
 				{
 					vals.put("libraries",libraryid);
+/*					
 					Not needed
 					
 
@@ -1183,7 +1184,7 @@ For imports just set categories like we already do
 	
 Change Collections to be normal categories path s and make createTree look at the folderpath not the ID's so we can use weird ID's
 
-
+*/
 					
 					Data library = archive.getData("library", libraryid);
 					inReq.setRequestParameter("category.value",library.get("categoryid"));
