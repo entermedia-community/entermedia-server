@@ -217,4 +217,25 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 //		getCategoryArchive().setCatalogId(inCatalogId);
 //		super.setCatalogId(inCatalogId);
 //	}
+
+	@Override
+	public Category createCategoryPath(String inPath)
+	{
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteCategoryTree(Category root){
+		for (Iterator iterator = root.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			deleteCategoryTree(child);
+			
+		}
+		delete(root, null);
+		
+		
+		
+	}
 }
