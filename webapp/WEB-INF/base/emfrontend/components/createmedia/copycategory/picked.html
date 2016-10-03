@@ -1,0 +1,16 @@
+	#set ($existing = $context.getRequestParameter("category.values") )
+	#if( $existing && !$existing.trim().isEmpty() )
+	    <ul id="cat-list">
+		#foreach($categoryid in $existing.replace("  ","").trim().split(" +"))
+			#set($category  = $mediaarchive.getCategory($categoryid))
+			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+				<a class="category ajax" title="$category.getCategoryPath()" targetdivinner="view-picker-content" href="$home$apphome/views/categories/${category.id}.html?oemaxlevel=2" >$category.getName()</a>
+				<div class="collectionIcons">
+						<a href="#" title="[[Remove]]">
+							<span class="closecollection ui-icon ui-icon-closethick " data-categoryid="$categoryid"></span>
+						</a>
+				</div>
+			</li>
+		#end
+		</ul>
+	#end

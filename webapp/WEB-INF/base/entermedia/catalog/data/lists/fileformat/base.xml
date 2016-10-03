@@ -78,14 +78,12 @@
 	<property id="odt"  synctags="true"  rendertype="document" >ODT</property>
 	<property id="ods"  synctags="true"  rendertype="document" >ODS</property>
 	<property id="odp"  synctags="true"  rendertype="document" >ODP</property>
-		<property id="pub"  synctags="true"  rendertype="document" >PUB</property>
+	<property id="pub"  synctags="true"  rendertype="document" >PUB</property>
 	
-	
-	
-	<property id="html"  synctags="true"  rendertype="document" >HTML</property>
-	<property id="xml"  synctags="true"  rendertype="document" >XML</property>
+	<property id="html"  >HTML</property>
+	<property id="xml"  >XML</property>
 	<property id="csv"  synctags="true"  >CSV</property>
 	<property id="webp"  synctags="false"  rendertype="image" >Webp</property>
 	
-	<property id="default"  synctags="true"  rendertype="default" >Default</property>
+	<property id="default"  rendertype="default" >Default</property>
 </properties>

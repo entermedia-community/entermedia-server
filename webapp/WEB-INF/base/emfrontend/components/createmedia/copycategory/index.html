@@ -1,0 +1,23 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Copy Existing Folders]]</div>
+   <div class="ui-widget-content">
+	
+
+<form  name="wizard" method="post"  class="ajaxform" targetdiv="addedcomplete"
+	action="$home$apphome/components/createmedia/data/createnew.html">
+    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
+	
+	<div class="inner-content" style="width: 500px;" id="categoriespicked">
+	$pages.include("./picked.html",$context)	
+	</div>
+	
+   <input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
+   <a class="emdialog" href="$home$apphome/components/categories/searchcategory.html?targetdiv=categoriespicked&clearselection=$!clear&action=$page.folder/picked.html"
+    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="glyphicon glyphicon-search"></i> [[Select Categories]]</a>
+</div>
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
+
+	</div>
+</div>

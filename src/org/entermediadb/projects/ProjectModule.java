@@ -389,13 +389,25 @@ public class ProjectModule extends BaseMediaModule
 	
 	public void addCategoryToCollection(WebPageRequest inReq)
 	{
-		String categoryid = inReq.getRequestParameter("categoryid");
+		String[] categoryid = inReq.getRequestParameters("categoryid");
+		if( categoryid == null)
+		{
+			String vals = inReq.getRequestParameter("category.values");
+			if( vals != null)
+			{
+				categoryid = vals.replace("  ","").trim().split(" +");
+			}
+		}
 		if( categoryid != null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
 			ProjectManager manager = getProjectManager(inReq);
 			String collectionid = inReq.getRequestParameter("collectionid");
-			Data collection = manager.addCategoryToCollection(inReq.getUser(),archive, collectionid, categoryid);
+			Data collection = null;
+			for (int i = 0; i < categoryid.length; i++)
+			{	
+				collection = manager.addCategoryToCollection(inReq.getUser(),archive, collectionid, categoryid[i]);
+			}
 			inReq.putPageValue("librarycol",collection);
 		}	
 	}
