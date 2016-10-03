@@ -197,14 +197,14 @@ public class ProjectManager
 		return usercollections;
 	}
 
-	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, HitTracker assets)
-	{
-		if (libraryid != null)
-		{
-			addAssetToLibrary(archive, libraryid, assets);
-		}
-		addAssetToCollection(archive, collectionid, assets);
-	}
+//	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, HitTracker assets)
+//	{
+//		if (libraryid != null)
+//		{
+//			addAssetToLibrary(archive, libraryid, assets);
+//		}
+//		addAssetToCollection(archive, collectionid, assets);
+//	}
 
 	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets)
 	{
@@ -243,16 +243,16 @@ public class ProjectManager
 
 	}
 
-	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
-	{
-		addAssetToLibrary(archive, libraryid, assetid);
-		//String librarycollection = inReq.getRequestParameter("librarycollection");
-		addAssetToCollection(archive, collectionid, assetid);
-	}
-
+//	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)
+//	{
+//		addAssetToLibrary(archive, libraryid, assetid);
+//		//String librarycollection = inReq.getRequestParameter("librarycollection");
+//		addAssetToCollection(archive, collectionid, assetid);
+//	}
+//
 	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid)
 	{
-		Category root = getRootCategory(archive, collectionid);
+		Category root = getRootCategory(archive,collectionid);
 		Asset asset = (Asset)archive.getAssetSearcher().searchById(assetid);
 		if(asset != null){
 			asset.addCategory(root);
@@ -260,52 +260,52 @@ public class ProjectManager
 		}
 	}
 
-	public void addAssetToLibrary(MediaArchive archive, String libraryid, HitTracker assets)
-	{
-		List tosave = new ArrayList();
-		for (Object data : assets)
-		{
-			//TODO: Skip loading?
-			MultiValued toadd = (MultiValued) data;
-			Collection libraries = toadd.getValues("libraries");
-			if (libraries != null && libraries.contains(libraryid))
-			{
-				continue;
-			}
-			Asset asset = (Asset) archive.getAssetSearcher().loadData(toadd);
-
-			if (asset != null && !asset.getLibraries().contains(libraryid))
-			{
-				asset.addLibrary(libraryid);
-				tosave.add(asset);
-				if (tosave.size() > 500)
-				{
-					archive.saveAssets(tosave);
-					tosave.clear();
-				}
-			}
-		}
-		archive.saveAssets(tosave);
-
-	}
-
-	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid)
-	{
-		Asset asset = archive.getAsset(assetid);
-
-		if (asset != null && !asset.getLibraries().contains(libraryid))
-		{
-			asset.addLibrary(libraryid);
-			archive.saveAsset(asset, null);
-		}
-	}
-
-	public HitTracker loadAssetsInLibrary(Data inLibrary, MediaArchive archive, WebPageRequest inReq)
-	{
-		HitTracker hits = archive.getAssetSearcher().query().match("libraries", inLibrary.getId()).search(inReq);
-		return hits;
-	}
-
+//	public void addAssetToLibrary(MediaArchive archive, String libraryid, HitTracker assets)
+//	{
+//		List tosave = new ArrayList();
+//		for (Object data : assets)
+//		{
+//			//TODO: Skip loading?
+//			MultiValued toadd = (MultiValued) data;
+//			Collection libraries = toadd.getValues("libraries");
+//			if (libraries != null && libraries.contains(libraryid))
+//			{
+//				continue;
+//			}
+//			Asset asset = (Asset) archive.getAssetSearcher().loadData(toadd);
+//
+//			if (asset != null && !asset.getLibraries().contains(libraryid))
+//			{
+//				asset.addLibrary(libraryid);
+//				tosave.add(asset);
+//				if (tosave.size() > 500)
+//				{
+//					archive.saveAssets(tosave);
+//					tosave.clear();
+//				}
+//			}
+//		}
+//		archive.saveAssets(tosave);
+//
+//	}
+//
+//	public void addAssetToLibrary(MediaArchive archive, String libraryid, String assetid)
+//	{
+//		Asset asset = archive.getAsset(assetid);
+//
+//		if (asset != null && !asset.getLibraries().contains(libraryid))
+//		{
+//			asset.addLibrary(libraryid);
+//			archive.saveAsset(asset, null);
+//		}
+//	}
+//
+//	public HitTracker loadAssetsInLibrary(Data inLibrary, MediaArchive archive, WebPageRequest inReq)
+//	{
+//		HitTracker hits = archive.getAssetSearcher().query().match("libraries", inLibrary.getId()).search(inReq);
+//		return hits;
+//	}
+//
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
 	{
 		Searcher searcher = archive.getAssetSearcher();
@@ -321,7 +321,7 @@ public class ProjectManager
 		//		{	
 		//SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
 		SearchQuery assetsearch = searcher.addStandardSearchTerms(inReq);
-		Category root = getRootCategory(archive,collectionid);
+		Category root = getRootCategory(archive, collectionid);
 
 		if (assetsearch == null)
 		{
@@ -347,25 +347,25 @@ public class ProjectManager
 	}
 
 
-	public void removeAssetFromLibrary(MediaArchive inArchive, String inLibraryid, HitTracker inAssets)
-	{
-		Searcher librarycollectionsearcher = inArchive.getSearcher("librarycollection");
-		HitTracker<Data> collections = (HitTracker<Data>) librarycollectionsearcher.query().match("library", inLibraryid).search();
-		for (Object collection : collections)
-		{
-			removeAssetFromCollection(inArchive, ((Data) collection).getId(), inAssets);
-		}
-		for (Object toadd : inAssets)
-		{
-			Asset asset = (Asset) inArchive.getAssetSearcher().loadData((Data) toadd);
-
-			if (asset != null && asset.getLibraries().contains(inLibraryid))
-			{
-				asset.removeLibrary(inLibraryid);
-				inArchive.saveAsset(asset, null);
-			}
-		}
-	}
+//	public void removeAssetFromLibrary(MediaArchive inArchive, String inLibraryid, HitTracker inAssets)
+//	{
+//		Searcher librarycollectionsearcher = inArchive.getSearcher("librarycollection");
+//		HitTracker<Data> collections = (HitTracker<Data>) librarycollectionsearcher.query().match("library", inLibraryid).search();
+//		for (Object collection : collections)
+//		{
+//			removeAssetFromCollection(inArchive, ((Data) collection).getId(), inAssets);
+//		}
+//		for (Object toadd : inAssets)
+//		{
+//			Asset asset = (Asset) inArchive.getAssetSearcher().loadData((Data) toadd);
+//
+//			if (asset != null && asset.getLibraries().contains(inLibraryid))
+//			{
+//				asset.removeLibrary(inLibraryid);
+//				inArchive.saveAsset(asset, null);
+//			}
+//		}
+//	}
 
 	public void removeAssetFromCollection(MediaArchive inArchive, String inCollectionid, HitTracker inAssets)
 	{
@@ -448,7 +448,7 @@ public class ProjectManager
 			{
 				collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
 				Category cat = inArchive.getCategory(inCategoryid);
-				Category rootcat = getRootCategory(inArchive, inCollectionid);
+				Category rootcat = getRootCategory(inArchive,inCollectionid);
 
 				ArrayList list = new ArrayList();
 				copyAssets(list, inUser, inArchive, collection, cat, rootcat, false);// will actually create librarycollectionasset entries
@@ -462,12 +462,13 @@ public class ProjectManager
 	}
 	
 	
+	
 	public void snapshotCollection(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid, String inNote)
 	{
 		CategorySearcher cats = inArchive.getCategorySearcher();
 		Category rootcat = getRootCategory(inArchive, inCollectionid);
-		createRevision(inArchive, inCollectionid, inUser, inNote);
-		Category newroot = getRootCategory(inArchive, inCollectionid);
+		
+		Category newroot = createRevision(inArchive, inCollectionid, inUser, inNote);
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
 		ArrayList list = new ArrayList();
@@ -479,26 +480,27 @@ public class ProjectManager
 	}
 	
 	
+	//Add new assets are added to both the root and the current version
+	
+	//When we snapshot we just increment the count and add existing to the new count as well
 	
 	
 	
 	
 	
+	public void importCollection(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath, String inNote) 
+	{
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
 	
-	public void importCollection(WebPageRequest inReq, User inUser, MediaArchive inArchive,  String inCollectionid, String inImportPath, String inNote) {
-		
-		LibraryCollection collection = createRevision(inArchive, inCollectionid, inUser, inNote);
-		Category root = getRootCategory(inArchive, inCollectionid);
+		Category root = createRevision(inArchive, collection, inUser, inNote);
 		importAssets(inArchive,collection,inImportPath, root);
 		inArchive.fireSharedMediaEvent("conversions/runconversions");
 	}
 
-	public LibraryCollection createRevision(MediaArchive inArchive, String inCollectionid, User inUser, String inNote)
+	public Category createRevision(MediaArchive inArchive, LibraryCollection collection, User inUser, String inNote)
 	{
-		
-		
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
 		long revisions = collection.getCurentRevision();
 		revisions++;
 		collection.setValue("revisions",revisions);
@@ -510,16 +512,14 @@ public class ProjectManager
 		Data history  = librarycollectionuploads.createNewData();
 	
 		history.setValue("owner", inUser.getId());
-		history.setValue("librarycollection", inCollectionid);
+		history.setValue("librarycollection", collection.getId());
 		history.setValue("date", new Date());
 		history.setValue("revision", revisions);
 		history.setValue("note", inNote);
 	
 		librarycollectionuploads.saveData(history);
 		
-		
-		
-		return collection;
+		return getRootCategory(inArchive, inCollectionid);
 	}
 	
 	protected void importAssets(MediaArchive inArchive, Data inCollection, String inImportPath, Category inCurrentParent) 
@@ -593,16 +593,46 @@ public class ProjectManager
 			}	
 		}
 	}
-
-	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
+	public Category  getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
-
-		Searcher cats = inArchive.getSearcher("category");
 		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionId);
-		if(collection == null){
+		if(collection == null)
+		{
 			return null;
 		}
+		String libraryid = collection.get("library");
+		Data library = inArchive.getData("library", libraryid);
+		
+		Category librarycategory = null;
+		
+		if( library.get("categoryid") != null)
+		{
+			librarycategory = inArchive.getCategory(library.get("categoryid"));
+		}
+		else
+		{
+			String folder = library.get("folder");
+			if( folder == null)
+			{
+				folder = "Libraries/" + library.getName();
+			}
+			librarycategory = inArchive.createCategoryPath(folder);
+			library.setValue("categoryid",librarycategory.getId());
+//			if( inUser != null && librarycategory.getValue("viewusers") == null)
+//			{
+//				librarycategory.addValue("viewusers",inUser.getUserName());
+//			}
+			inArchive.getCategorySearcher().saveData(library);
+		}
+		Category collectioncategory = inArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
+		return collectioncategory;
+	}
+
+	public Category getRootVersionCategory(MediaArchive inArchive, LibraryCollection collection)
+	{
+		Searcher cats = inArchive.getSearcher("category");
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
 		long revisions = collection.getCurentRevision();			
 		String libraryid = collection.get("library");
 		Data library = inArchive.getData("library", libraryid);
@@ -611,17 +641,8 @@ public class ProjectManager
 		{
 			librarynode = inArchive.getCategory(library.get("categoryid"));
 		}
-		if(librarynode != null)
-		{
-			String folder = library.get("folder");
-			if( folder == null)
-			{
-				folder = "Libraries/" + library.getName();
-			}
-			librarynode = inArchive.createCategoryTree(folder);
-			library.setValue("categoryid",librarynode.getId());
-			inArchive.getCategorySearcher().saveData(librarynode);
-		}
+		
+		//Use the String path to load up the category from the hot folder import
 		
 		String id = collection.getId() + "_" + revisions;
 		Category root = inArchive.getCategory(id);
@@ -640,7 +661,7 @@ public class ProjectManager
 			for (Iterator iterator = librarynode.getChildren().iterator(); iterator.hasNext();)
 			{	
 				Category child = (Category) iterator.next();
-				if(child.getId().startsWith(inCollectionId)){
+				if(child.getId().startsWith(collection)){
 					nodestoremove.add(child);
 
 				}
@@ -1172,7 +1193,7 @@ public class ProjectManager
 		
 		String folder = "Users/" + user.getScreenName();
 		
-		Category librarynode = inArchive.createCategoryTree(folder);
+		Category librarynode = inArchive.createCategoryPath(folder);
 		((MultiValued)userlibrary).addValue("viewusers",user.getId());
 		inArchive.getCategorySearcher().saveData(librarynode);
 		//reload profile?

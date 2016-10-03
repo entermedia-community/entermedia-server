@@ -56,6 +56,7 @@ public class ProjectModule extends BaseMediaModule
 //		}
 //	}
 	
+	/*
 	public void addAssetToLibrary(WebPageRequest inReq)
 	{
 		//TODO: Support multiple selections
@@ -107,14 +108,14 @@ public class ProjectModule extends BaseMediaModule
 			}
 		}
 	}
-
+	*/
 	public void addAssetToCollection(WebPageRequest inReq)
 	{
 		//TODO: Support multiple selections
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String hitssessionid = inReq.getRequestParameter("hitssessionid");
-		String libraryid = inReq.getRequestParameter("libraryid");
+		//String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("collectionid");
 		if( librarycollection == null)
 		{
@@ -131,7 +132,7 @@ public class ProjectModule extends BaseMediaModule
 			}
 			if( tracker != null && tracker.size() > 0 )
 			{
-				manager.addAssetToCollection(archive, libraryid,  librarycollection, tracker);
+				manager.addAssetToCollection(archive, librarycollection, tracker);
 				inReq.putPageValue("added" , String.valueOf( tracker.size() ) );
 				return;
 			}
@@ -165,17 +166,17 @@ public class ProjectModule extends BaseMediaModule
 			}
 		}
 	}
-	public void searchForAssetsInLibrary(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		Data library = manager.getCurrentLibrary(inReq.getUserProfile());
-		if( library != null)
-		{
-			HitTracker hits = manager.loadAssetsInLibrary(library,archive,inReq);
-			inReq.putPageValue("hits", hits);
-		}
-	}
+//	public void searchForAssetsInLibrary(WebPageRequest inReq)
+//	{
+//		MediaArchive archive = getMediaArchive(inReq);
+//		ProjectManager manager = getProjectManager(inReq);
+//		Data library = manager.getCurrentLibrary(inReq.getUserProfile());
+//		if( library != null)
+//		{
+//			HitTracker hits = manager.loadAssetsInLibrary(library,archive,inReq);
+//			inReq.putPageValue("hits", hits);
+//		}
+//	}
 	public void searchForAssetsOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

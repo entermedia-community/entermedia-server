@@ -1,10 +1,8 @@
 package model.assets;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
@@ -13,25 +11,28 @@ import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.Data;
 import org.openedit.MultiValued;
-import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
 public class LibraryManager extends EnterMediaObject
 {
+	//If a user picks a library and collection then we just need to add the category
+	
+	//If we are scanning a hot folder then we add categories anyways. So this is not needed
+	
+	
 	protected Map fieldLibraryFolders = null;
 	protected Map fieldLibraries = null;
 	protected Object NULL = new BaseData();
 	
 	public void assignLibraries(MediaArchive mediaarchive, Collection assets)
 	{
-		
 		Searcher searcher = mediaarchive.getAssetSearcher();
 		Searcher librarySearcher = mediaarchive.getSearcher("library");
 		Searcher librarycollectionSearcher = mediaarchive.getSearcher("librarycollection");
 		
-		List tosave = new ArrayList();
+		//List tosave = new ArrayList();
 		int savedsofar = 0;
 		
 		ProjectManager proj = mediaarchive.getProjectManager();
@@ -59,13 +60,13 @@ public class LibraryManager extends EnterMediaObject
 					Collection existing = hit.getValues("libraries");
 					if( existing == null || !existing.contains(libraryid))
 					{
-						if( loaded == null)
-						{
-							loaded = (Asset) searcher.loadData(hit);
-							tosave.add(loaded);
-							savedsofar++;
-						}
-						loaded.addLibrary(libraryid);
+//						if( loaded == null)
+//						{
+//							loaded = (Asset) searcher.loadData(hit);
+//							tosave.add(loaded);
+//							savedsofar++;
+//						}
+						//loaded.addLibrary(libraryid);
 						Data li = (Data) fieldLibraries.get(libraryid);
 						loaded.setProperty("project",li.get("project") );
 						//Now check for collections that have the right name
@@ -76,7 +77,8 @@ public class LibraryManager extends EnterMediaObject
 							String toppath = li.get("folder") + "/" + coll.getName();
 							if( loaded.getSourcePath().startsWith(toppath) )
 							{
-								proj.addAssetToCollection(mediaarchive, libraryid, coll.getId(), loaded.getId());
+								proj.addAssetToCollection(mediaarchive, coll.getId(), loaded.getId());
+								savedsofar++;
 							}
 							
 						}
@@ -84,16 +86,16 @@ public class LibraryManager extends EnterMediaObject
 					}
 				}
 			}
-			if(tosave.size() == 100)
-			{
-				searcher.saveAllData(tosave, null);
-				savedsofar = tosave.size() + savedsofar;
-				log.info("assets added to library: " + savedsofar );
-				tosave.clear();
-			}
+//			if(tosave.size() == 100)
+//			{
+//				searcher.saveAllData(tosave, null);
+//				savedsofar = tosave.size() + savedsofar;
+//				log.info("assets added to library: " + savedsofar );
+//				tosave.clear();
+//			}
 		}
-		searcher.saveAllData(tosave, null);
-		savedsofar = tosave.size() + savedsofar;
+		//searcher.saveAllData(tosave, null);
+		//savedsofar = tosave.size() + savedsofar;
 		log.debug("completedlibraryadd added: " + savedsofar );
 		if( fieldLibraryFolders != null)
 		{

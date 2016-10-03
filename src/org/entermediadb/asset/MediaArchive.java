@@ -587,9 +587,10 @@ public class MediaArchive
 		}
 		return fieldCategoryArchive;
 	}
-	public Category createCategoryTree(String inPath)
+	public Category createCategoryPath(String inPath)
 	{
-		return getCategoryArchive().createCategoryTree(inPath);
+		//Break down each name and load the category
+		return getCategorySearcher().createCategoryPath(inPath);
 	}
 
 	public void setCategoryArchive(CategoryArchive inCategoryArchive)

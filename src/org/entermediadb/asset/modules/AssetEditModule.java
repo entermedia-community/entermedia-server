@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1172,6 +1174,19 @@ public class AssetEditModule extends BaseMediaModule
 				if( libraries == null)
 				{
 					vals.put("libraries",libraryid);
+					Not needed
+					
+
+When we uploads we can just set sourcepath. Use Archiving to move to a library. just add a category based on what the user picked for collection
+
+For imports just set categories like we already do
+	
+Change Collections to be normal categories path s and make createTree look at the folderpath not the ID's so we can use weird ID's
+
+
+					
+					Data library = archive.getData("library", libraryid);
+					inReq.setRequestParameter("category.value",library.get("categoryid"));
 					inReq.setRequestParameter("libraries.value",libraryid);
 				}
 				inReq.setRequestParameter("currentcollection",collectionid);

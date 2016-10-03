@@ -125,6 +125,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			//deleteOldMapping();
 			putMappings();
 
+			//this is for legacy support
 			final List tosave = new ArrayList(500);
 
 			PathProcessor processor = new PathProcessor()

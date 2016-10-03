@@ -17,6 +17,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetails;
 import org.openedit.users.User;
+import org.openedit.util.PathUtilities;
 
 public class ElasticCategorySearcher extends BaseElasticSearcher implements CategorySearcher//, Reloadable
 {
@@ -262,6 +263,31 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		getRootCategory().setValue("dirty", true);
 
 		getRootCategory().refresh();
+	}
+
+	@Override
+	public Category createCategoryPath(String inPath)
+	{
+		if( inPath.length() == 0 || inPath.equals("Index") )
+		{		
+			Category found = (Category)query().exact("categorypath.sort", inPath).searchOne();
+			if( found == null)
+			{
+				found = (Category)createNewData();
+				String name = PathUtilities.extractFileName(inPath);
+				found.setName(name);
+				//create parents and itself
+				String parent = PathUtilities.extractDirectoryPath(inPath);
+				Category parentcategory = createCategoryPath(parent);
+				if( parentcategory != null)
+				{
+					parentcategory.addChild(found);
+					saveData(found);
+				}
+			}
+			return found;
+		}	
+		return null;
 	}
 	
 	

@@ -47,7 +47,7 @@ public void setAssetTypes()
 	manager.log = log;
 	manager.saveAssetTypes(hits);
 	
-	setupProjects(hits);
+	//setupProjects(hits);
 	//assignCollections(hits); //This is a slow way to do this, use Library Manager
 	
 }
