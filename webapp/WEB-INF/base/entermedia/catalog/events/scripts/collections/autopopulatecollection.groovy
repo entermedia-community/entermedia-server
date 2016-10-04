@@ -37,13 +37,13 @@ public void init(){
 		String colid = it.id;
 		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypath").search();
 		log.info("Found ${categories.size()} existing categories");
+		
+		
+		
 		categories.enableBulkOperations();
-		if(categories.size() > 0 && categories.size() < 30){
+		if(categories.size() > 0){
 			ArrayList rootcats = findCommonRoots(categories);
-			println rootcats;
-			rootcats.each{
-				projects.addCategoryToCollection(context.getUser(),archive, colid, it);
-			}
+			context.putPageValue("foundcategories", rootcats);
 		}
 	}
 }

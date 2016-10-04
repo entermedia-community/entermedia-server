@@ -12,12 +12,24 @@
 	<div class="inner-content" style="width: 500px;" id="categoriespicked">
 	$pages.include("./picked.html",$context)	
 	</div>
+	<div id="auto-pop" style="width: 500px;"></div>
 	
-   <input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
-   <a class="emdialog" href="$home$apphome/components/categories/searchcategory.html?targetdiv=categoriespicked&clearselection=$!clear&action=$page.folder/picked.html"
+	
+	
+   <a class="emdialog btn" href="$home$apphome/components/categories/searchcategory.html?targetdiv=categoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
     data-hidefooter="true" data-parameterdata="categoryvalues"><i class="glyphicon glyphicon-search"></i> [[Select Categories]]</a>
+    <a class="ajax btn" targetdivinner="auto-pop"  
+			  	data-hidefooter="true" href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=${collectionid}" class="btn" ><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Auto Populate</a>
+	
 </div>
+	
+	
 	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
 
+		
+
+
 	</div>
-</div>
+
+	
+	
