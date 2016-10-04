@@ -74,6 +74,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected List fieldMappingErrors;
 	protected Node fieldNode;
 
+	protected boolean reindexing = false;
+	
 	public List getMappingErrors()
 	{
 		if (fieldMappingErrors == null)
@@ -705,13 +707,19 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean reindexInternal(String inCatalogId)
 	{
+		if( reindexing )
+		{
+			throw new OpenEditException("Already reindexing");
+		}
+		reindexing = true;
+		
 		String id = toId(inCatalogId);
-		ArrayList toskip = new ArrayList();
-		//couple of special ones to skip.
-		toskip.add("lock");
 		String newindex = null;
 		try
 		{
+			ArrayList toskip = new ArrayList();
+			//couple of special ones to skip.
+			toskip.add("lock");
 			newindex = prepareTemporaryIndex(inCatalogId);
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
@@ -733,8 +741,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 					if (!toskip.contains(searchtype))
 					{
-						searcher.setAlternativeIndex(newindex);//Should				
+						searcher.setAlternativeIndex(newindex);//Should		
+						long start = System.currentTimeMillis();
 						searcher.reindexInternal();
+						long end = System.currentTimeMillis();
+						log.info("Reindex of " + searchtype + " took " + (end - start) / 1000L);
 						searcher.setAlternativeIndex(null);
 					}
 				}
@@ -742,7 +753,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 			loadIndex(id, newindex, true);
 		}
-		catch (Exception e)
+		catch (Throwable e)
 		{
 			if (newindex != null)
 			{
@@ -755,7 +766,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 			throw new OpenEditException(e);
 		}
-
+		finally
+		{
+			reindexing = false;
+		}
 		return true;
 
 	}
