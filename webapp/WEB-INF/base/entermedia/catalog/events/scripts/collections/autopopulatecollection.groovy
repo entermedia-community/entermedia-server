@@ -2,6 +2,7 @@ package collections;
 
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.ProjectManager
+import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 
@@ -32,6 +33,7 @@ public void init(){
 		searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
 
 		String colid = it.id;
+		Data collection = archive.getData("librarycollection", colid);
 		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
 		log.info("Found ${categories.size()} existing categories");
 		
@@ -40,6 +42,7 @@ public void init(){
 		categories.enableBulkOperations();
 		if(categories.size() > 0){
 			ArrayList rootcats = findCommonRoots(categories);
+			rootcats.remove(collection.get("rootcategory"));
 			context.putPageValue("foundcategories", rootcats);
 		}
 	}
