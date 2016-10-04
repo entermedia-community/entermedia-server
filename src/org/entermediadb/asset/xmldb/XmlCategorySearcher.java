@@ -3,6 +3,7 @@ package org.entermediadb.asset.xmldb;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CategoryArchive;
@@ -237,5 +238,11 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 		
 		
 		
+	}
+
+	@Override
+	public List findChildren(Category inCategory)
+	{
+		return inCategory.getChildren();
 	}
 }

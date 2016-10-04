@@ -1640,6 +1640,10 @@
 		</property>
 		<property name="newDataName"><value>elasticCategory</value></property>
 		<property name="checkVersions"><value>false</value></property>
+		<property name="cacheManager">
+			<ref bean="timedCacheManager" />
+		</property>
+		
 	</bean>
 
 	<bean id="elasticCategory" class="org.entermediadb.elasticsearch.categories.ElasticCategory" scope="prototype" >

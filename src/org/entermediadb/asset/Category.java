@@ -6,12 +6,11 @@ package org.entermediadb.asset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
+import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.data.BaseData;
 
 /**
@@ -27,23 +26,13 @@ public class Category extends BaseData
 	protected Category fieldParentCategory;
 	protected List fieldRelatedCategoryIds;
 	protected String fieldLinkedToCategoryId;
-	
+	protected String fieldIndexId;
+	protected CategorySearcher fieldCategorySearcher;
+
 	public Category()
 	{
 	}
 	
-	public void sortChildren(boolean inRecursive){
-		
-		Collections.sort(getChildren());
-		if(inRecursive)
-		{
-			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) 
-			{
-				Category child = (Category) iterator.next();
-				child.sortChildren(inRecursive);
-			}
-		}
-	}
 
 	public Category(String inName)
 	{
@@ -56,6 +45,44 @@ public class Category extends BaseData
 		if (inName != null)
 		{
 			setName(inName.trim());
+		}
+	}
+	
+	public Category(CategorySearcher inCategorySearcher)
+	{
+		setCategorySearcher(inCategorySearcher);
+	}
+	public String getIndexId()
+	{
+		return fieldIndexId;
+	}
+
+	public void setIndexId(String inIndexId)
+	{
+		fieldIndexId = inIndexId;
+	}
+	
+	public CategorySearcher getCategorySearcher()
+	{
+		return fieldCategorySearcher;
+	}
+
+	public void setCategorySearcher(CategorySearcher inCategorySearcher)
+	{
+		fieldCategorySearcher = inCategorySearcher;
+	}
+
+
+	public void sortChildren(boolean inRecursive){
+		
+		Collections.sort(getChildren());
+		if(inRecursive)
+		{
+			for (Iterator iterator = getChildren().iterator(); iterator.hasNext();) 
+			{
+				Category child = (Category) iterator.next();
+				child.sortChildren(inRecursive);
+			}
 		}
 	}
 
@@ -502,11 +529,10 @@ public class Category extends BaseData
 
 	public boolean refresh()
 	{
-		Boolean dirty = (Boolean)getValue("dirty");
-		if( dirty != null && dirty )
+		if( isDirty() && getCategorySearcher() != null)
 		{
 			fieldChildren = null;
-			setValue("dirty", false);
+			setIndexId(getCategorySearcher().getIndexId());
 			return true;
 		}
 		return false;
@@ -514,12 +540,11 @@ public class Category extends BaseData
 
 	public boolean isDirty()
 	{
-		Boolean dirty = (Boolean)getValue("dirty");
-		if( dirty != null && dirty )
+		if( getCategorySearcher() != null && getCategorySearcher().getIndexId().equals(getIndexId()))
 		{
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	 @Override
@@ -566,6 +591,12 @@ public class Category extends BaseData
 			value = getParentCategory().findValue(inString);
 		}
 		return value;
+	}
+
+
+	public boolean hasLoadedParent()
+	{
+		return fieldParentCategory != null;
 	}
 	
 }

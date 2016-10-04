@@ -166,10 +166,10 @@ public class ElasticCategoryArchive implements CategoryArchive
 	public Category createCategoryTree(String inPath) throws OpenEditException
 	{
 		Category newcat = createCategoryTree(inPath, null);
-		if( newcat != null && newcat.getParentCategory() != null)
-		{
-			newcat.getParentCategory().refresh();
-		}
+//		if( newcat != null && newcat.getParentCategory() != null)
+//		{
+//			newcat.getParentCategory().refresh();
+//		}
 		return newcat;
 	}
 

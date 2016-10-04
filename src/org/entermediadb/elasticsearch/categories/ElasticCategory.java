@@ -3,36 +3,30 @@ package org.entermediadb.elasticsearch.categories;
 import java.util.List;
 
 import org.entermediadb.asset.Category;
+import org.entermediadb.asset.xmldb.CategorySearcher;
 
 public class ElasticCategory extends Category
 {
-	protected ElasticCategorySearcher fieldCategorySearcher;
-	
-	public ElasticCategorySearcher getCategorySearcher() {
-		return fieldCategorySearcher;
-	}
-
-	public ElasticCategory() {
+	public ElasticCategory(CategorySearcher inSearcher)
+	{
+		super(inSearcher);
+		setIndexId(inSearcher.getIndexId());
 	}
 	
-	public ElasticCategory(ElasticCategorySearcher inElasticCategorySearcher) {
-		fieldCategorySearcher =inElasticCategorySearcher;
-	}
-
 	public boolean hasChildren()
 	{
 		return getChildren().size() > 0;
 	}
 	public List getChildren()
 	{
-		boolean dirty = getCategorySearcher().getRootCategory().refresh();
-		if( dirty)
+		if( isDirty() )
 		{
 			fieldChildren = null;
 		}
 		if (fieldChildren == null)
 		{
 			fieldChildren = getCategorySearcher().findChildren(this);
+			setIndexId(getCategorySearcher().getIndexId());
 		}
 		return fieldChildren;
 	}

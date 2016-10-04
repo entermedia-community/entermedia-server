@@ -1,37 +1,26 @@
-<div class="publishtabcontainer">
-	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Export Collection]]</div>
-		<div class="ui-widget-content">
-						<form  name="archiveassets" id="archiveassets" targetdiv="collectionfeed" class="validate" 
-				   method="post" action="$home$apphome/views/modules/librarycollection/exportsave.html">
-					<table>
-						<tr>
-							<td class="archiveassettable"><b>[[Move this Collection To]]:</b>&nbsp;</td>
-							<td>
-								#set( $selectedlibrary = $mediaarchive.getData("library",$librarycol.library) )
-								#set( $lastselectedlibraryname = $selectedlibrary.getName() )
-								#if( !$lastselectedlibraryname)
-								#set( $lastselectedlibraryname = $user.getShortDescription())
-								#end
-								<input name="collectionid" value="$librarycol.getId()" type="hidden" />
+#set( $collectionid = $context.getRequestParameter("collectionid") )
 
-			<select name="targetlibraryid"  id="libraryvalue"  class="listautocomplete required" data-searchfield="name" data-searchtype="library" 
-				data-listcatalogid="$catalogid" onChange='$("#librarychange").submit()' >
-			#if( $selectedlibrary )
-			  <option value="$selectedlibrary.getId()" selected="selected">#esc($selectedlibrary.getName())</option>
-			#end
-			</select>
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Exported Work]]</div>
+   <div class="ui-widget-content">
+	
+#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
 
+	<div id="exportpath" class="alert alert-success">
+	  <strong>Export complete</strong> Please check local drive for syncronized files. $exportpath
+	  
+	  Once you are done editing you can import your changes.
+	</div> 
+					
+	<a class="btn ajax" targetdivinner="addcategoryform" href="$home$apphome/components/createmedia/importwork/index.html?collectionid=$librarycol.getId()&oemaxlevel=1">Add Media</a> 
+	
+  </div>
+	
+<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
 
-								<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Ok ]]">	   
-							</td>
-						<tr>
-							<td colspan="3" align="center">#if(  $movestatus) [[Move to ]] <b>$selectedlibrary.folder/$librarycol.getName()/</b>  $movestatus #end</td>
-						</tr>
-				</table>
-			</form>
-						
-		</div>
-		
-	</div>	
 </div>
+
+	
+	
+
+

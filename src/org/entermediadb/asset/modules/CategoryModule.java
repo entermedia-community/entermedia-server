@@ -89,7 +89,7 @@ public class CategoryModule extends BaseMediaModule
 				root = inRequest.findValue("root");
 			}
 
-			Category main = archive.getCategoryArchive().getCategory( root );
+			Category main = archive.getCategory( root );
 			if ( main == null)
 			{
 				log.error("No such category named " + root);

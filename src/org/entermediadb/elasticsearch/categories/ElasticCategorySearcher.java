@@ -15,6 +15,7 @@ import org.entermediadb.asset.xmldb.XmlCategoryArchive;
 import org.entermediadb.elasticsearch.searchers.BaseElasticSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetails;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
@@ -23,6 +24,19 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 {
 	private static final Log log = LogFactory.getLog(ElasticCategorySearcher.class);
 	protected XmlCategoryArchive fieldXmlCategoryArchive;
+	//protected Category fieldRootCategory;
+	protected CacheManager fieldCacheManager;
+	
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+
 	public XmlCategoryArchive getXmlCategoryArchive()
 	{
 		if( fieldXmlCategoryArchive == null)
@@ -37,7 +51,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		fieldXmlCategoryArchive = inXmlCategoryArchive;
 	}
 
-	protected Category fieldRootCategory;
 	
 	public Data createNewData()
 	{
@@ -83,7 +96,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			//deleteAll(null); //This only deleted the index
 			//This is the one time we load up the categories from the XML file
 			getXmlCategoryArchive().clearCategories();
-			fieldRootCategory = null;
+			getCacheManager().clear("category");
 			Category parent = getRootCategory();
 			List tosave = new ArrayList();
 			updateChildren(parent,tosave);
@@ -105,9 +118,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //			}
 //			updateIndex(tosave, null);
 			
-			fieldRootCategory = null;
-			getRootCategory();
-			
 		}
 		finally
 		{
@@ -118,7 +128,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	{
 		// TODO Auto-generated method stub
 		inTosave.add(inParent);
-		if( inTosave.size() == 100)
+		if( inTosave.size() == 1000)
 		{
 			updateIndex(inTosave,null);
 			inTosave.clear();
@@ -152,25 +162,22 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public Category getRootCategory()
 	{
-		if( fieldRootCategory == null)
+		Category root = getCategory("index");
+		
+		if( root == null)
 		{
-			fieldRootCategory = (Category)searchById("index");
-			if( fieldRootCategory == null)
+			root = getXmlCategoryArchive().getRootCategory();
+			fieldXmlCategoryArchive = null;
+			if( root == null)
 			{
-				fieldRootCategory = getXmlCategoryArchive().getRootCategory();
-				fieldXmlCategoryArchive = null;
-				if( fieldRootCategory == null)
-				{
-						fieldRootCategory = (Category)createNewData();
-						fieldRootCategory.setId("index");
-						fieldRootCategory.setName("Index");
-				}
-				fieldRootCategory.setValue("dirty", true);
-				saveCategoryTree(fieldRootCategory);
-				//We are going to create a database tool to import categories.xml
+				root = (Category)createNewData();
+				root.setId("index");
+				root.setName("Index");
 			}
+			saveCategoryTree(root);
+			//We are going to create a database tool to import categories.xml
 		}	
-		return fieldRootCategory;
+		return root;
 	}
 	
     protected void saveCategoryTree(Category inRootCategory)
@@ -196,9 +203,24 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //		inCategoryArchive.setCatalogId(getCatalogId());
 //	}
 	@Override
-	public Category getCategory(String inCatalog)
+	public Category getCategory(String inCategoryId)
 	{
-		return (Category)searchById(inCatalog);
+		Category cat = null;
+		cat = (Category)getCacheManager().get("category", inCategoryId);
+		if( cat == null || cat.isDirty() )
+		{
+			cat = (Category)searchById(inCategoryId); //this will be fresh
+			getCacheManager().put("category", inCategoryId,cat);
+		}
+		if( cat != null && !cat.hasLoadedParent())
+		{
+			String parentid = (String)cat.getValue("parentid");
+			if( parentid != null)
+			{
+				cat.setParentCategory(getCategory(parentid));
+			}
+		}
+		return cat;
 	}
 	
 	public Object searchByField(String inField, String inValue)
@@ -249,7 +271,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		//For the path to be saved we might need to force category?
 		
 		super.saveData((Category)inData, inUser);
-		getRootCategory().setValue("dirty", true);
+		setIndexId(-1);
 //		cat = (ElasticCategory)cat.getParentCategory();
 //		if( cat == null)
 //		{
@@ -262,9 +284,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void delete(Data inData, User inUser) {
 		// TODO Auto-generated method stub
 		super.delete(inData, inUser);
-		getRootCategory().setValue("dirty", true);
-
-		getRootCategory().refresh();
+		setIndexId(-1);
 	}
 
 	@Override

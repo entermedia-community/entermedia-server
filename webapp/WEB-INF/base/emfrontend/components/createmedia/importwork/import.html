@@ -1,0 +1,24 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
+
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Imported]]</div>
+   <div class="ui-widget-content">
+	
+
+		<div class="alert alert-success">
+		  <strong>Import complete</strong>
+ 
+		</div> 
+
+		 <a href="$home$apphome/views/modules/librarycollection/media/${collectionid}.html">[[Review your changes]]</a>
+					
+
+</div>
+	
+	
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
+
+
+	</div>
+

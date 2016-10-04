@@ -24,7 +24,7 @@ public class CatalogWebTreeModel extends BaseTreeModel
 	protected PageManager fieldPageManager;
 	protected String fieldCatalogId;
 	protected RequestUtils fieldRequestUtils;
-	protected Category fieldRoot;
+	protected String fieldRootId;
 
 	public UserProfile getUserProfile()
 	{
@@ -150,7 +150,10 @@ public class CatalogWebTreeModel extends BaseTreeModel
 			return true;
 		}
 		
-		
+		if( getUserProfile() != null && getUserProfile().getId().equals("administrators"))
+		{
+			return true;
+		}
 		 
 		    
 		
@@ -259,12 +262,15 @@ public class CatalogWebTreeModel extends BaseTreeModel
 
 	public void setRoot(Category inCategory)
 	{
-		fieldRoot = inCategory;
+		if( inCategory != null)
+		{
+			fieldRootId = inCategory.getId();
+		}
 	}
 
 	public Object getRoot()
 	{
-		if (fieldRoot == null)
+		if (fieldRootId == null)
 		{
 			return getCategorySearcher().getRootCategory();
 		}	
@@ -274,7 +280,7 @@ public class CatalogWebTreeModel extends BaseTreeModel
 //		}
 		
 		//The children will be refreshed if needed based on the isDirty state
-		return fieldRoot;
+		return getCategorySearcher().getCategory(fieldRootId);
 	}
 
 	public String getId(Object inNode)
@@ -306,21 +312,21 @@ public class CatalogWebTreeModel extends BaseTreeModel
 	public Object findNodeById(Object inRoot, String inId)
 	{
 		String test = getId(inRoot);
-		if (test.equals(inId))
-		{
-			return inRoot;
-		}
-		//check one level deep
-		for (Iterator iterator = getChildren(inRoot).iterator(); iterator.hasNext();)
-		{
-			Object child = iterator.next();
-			String id = getId(child);
-			if (id.equals(inId))
-			{
-				return child;
-			}
-		}
-		return getCategorySearcher().searchById(inId);
+//		if (test.equals(inId))
+//		{
+//			return inRoot;
+//		}
+//		//check one level deep
+//		for (Iterator iterator = getChildren(inRoot).iterator(); iterator.hasNext();)
+//		{
+//			Object child = iterator.next();
+//			String id = getId(child);
+//			if (id.equals(inId))
+//			{
+//				return child;
+//			}
+//		}
+		return getCategorySearcher().getCategory(inId);
 	}
 
 	public String getCatalogId()
