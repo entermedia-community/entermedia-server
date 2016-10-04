@@ -1,18 +1,23 @@
 	#set ($existing = $context.getRequestParameter("category.values") )
 	#if( $existing && !$existing.trim().isEmpty() )
-	    <ul id="cat-list">
+	   <input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
+	   
+	   <ul id="cat-list">
 		#foreach($categoryid in $existing.replace("  ","").trim().split(" +"))
 			#set($category  = $mediaarchive.getCategory($categoryid))
-			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+				<input type="hidden" id="categoryvalues" name="categoryid" value="$categoryid" />
 				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath()</a>
 				<div class="collectionIcons">
 						<a href="#" title="[[Remove]]">
-							<span class="closecollection ui-icon ui-icon-closethick " data-categoryid="$categoryid"></span>
+							<span class="ui-icon ui-icon-closethick  auto-remove" data-categoryid="$categoryid"></span>
 						</a>
 				</div>
 			</li>
 		#end
 		</ul>
+	#else
+	<div style="padding:100px;">[[No categories selected]]</div>			
+		
 	#end
-   <input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
 	

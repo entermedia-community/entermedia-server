@@ -9,7 +9,7 @@
 		  <li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Revisions]]</a></li>
 		  #end
 		  #if($canviewupload)
-		  <li class="ui-corner-top" ><a id="addmediatab"   href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
+		  <li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
 		  #end
 		  <li class="ui-corner-top"><a  id="emannotationstab" data-alwaysreloadpage="true" href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotate]]</a></li>
 		  #if($cansharecollection)

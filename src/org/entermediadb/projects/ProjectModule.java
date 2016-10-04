@@ -390,14 +390,14 @@ public class ProjectModule extends BaseMediaModule
 	public void addCategoryToCollection(WebPageRequest inReq)
 	{
 		String[] categoryid = inReq.getRequestParameters("categoryid");
-		if( categoryid == null)
-		{
-			String vals = inReq.getRequestParameter("category.values");
-			if( vals != null)
-			{
-				categoryid = vals.replace("  ","").trim().split(" +");
-			}
-		}
+//		if( categoryid == null)
+//		{
+//			String vals = inReq.getRequestParameter("category.values");
+//			if( vals != null)
+//			{
+//				categoryid = vals.replace("  ","").trim().split(" +");
+//			}
+//		}
 		if( categoryid != null)
 		{
 			MediaArchive archive = getMediaArchive(inReq);
