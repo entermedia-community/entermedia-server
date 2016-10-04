@@ -1,8 +1,5 @@
 package collections;
 
-import java.util.Iterator;
-
-import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.ProjectManager
 import org.openedit.data.Searcher
@@ -35,7 +32,7 @@ public void init(){
 		searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
 
 		String colid = it.id;
-		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypath").search();
+		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
 		log.info("Found ${categories.size()} existing categories");
 		
 		
@@ -50,7 +47,7 @@ public void init(){
 
 
 public List findCommonRoots(HitTracker inCategories){
-	HashMap allcats = new HashMap();
+	TreeMap allcats = new TreeMap();
 	MediaArchive archive = context.getPageValue("mediaarchive");
 
 	Searcher catsearcher = archive.getSearcher("category");
@@ -84,6 +81,8 @@ public List findCommonRoots(HitTracker inCategories){
 		}
 		if(add){
 			finalist.add(id);
+			paths.add(catpath);
+			
 		}
 	}
 	return finalist;
