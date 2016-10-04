@@ -4,7 +4,7 @@
 		#foreach($categoryid in $existing.replace("  ","").trim().split(" +"))
 			#set($category  = $mediaarchive.getCategory($categoryid))
 			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
-				<a class="category ajax" title="$category.getCategoryPath()" targetdivinner="view-picker-content" href="$home$apphome/views/categories/${category.id}.html?oemaxlevel=2" >$category.getName()</a>
+				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getName()</a>
 				<div class="collectionIcons">
 						<a href="#" title="[[Remove]]">
 							<span class="closecollection ui-icon ui-icon-closethick " data-categoryid="$categoryid"></span>
