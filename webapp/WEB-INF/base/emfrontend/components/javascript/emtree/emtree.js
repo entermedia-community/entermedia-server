@@ -256,7 +256,7 @@ jQuery(document).ready(function()
 				var link = home + "/components/emtree/rename.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth; 
 				node.find("> .categorydroparea").load(link , function()
 				{
-					node.find("input").focus();
+					node.find("input").select().focus();
 				});
 				//node.html('<input name="test" />');
 				return false;
