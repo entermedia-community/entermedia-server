@@ -6,7 +6,7 @@
     <!-- This URL will look like this /downloads/preset/sourcepath/presetname.jpg -->
 	<property name="virtual">true</property>
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/preset</property>
-	<property name="sourcepathhasfilename">true</property>
+	<property name="sourcepathhasfilename">true</property>	
 	<generator name="convertArchiveDocument"/>
 </page>
 

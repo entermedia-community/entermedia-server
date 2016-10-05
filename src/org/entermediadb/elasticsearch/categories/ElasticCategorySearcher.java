@@ -66,11 +66,17 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 	public List findChildren(Category inParent) 
 	{
-		Collection hits = query().exact("parentid", inParent.getId()).sort("name").search();
+		Collection hits = query().exact("parentid", inParent.getId()).sort("name.sort").search();
 		List children = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
-			ElasticCategory category = (ElasticCategory)createNewData();
+			
+			ElasticCategory category = (ElasticCategory)getCacheManager().get("category", data.getId());
+			if( category == null)
+			{
+				category  = (ElasticCategory)createNewData();
+				getCacheManager().put("category", data.getId(),category);
+			}
 			category.setId(data.getId());
 			category.setProperties(data.getProperties());
 			category.setParentCategory(inParent);

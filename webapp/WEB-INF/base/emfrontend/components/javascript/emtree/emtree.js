@@ -88,18 +88,6 @@ jQuery(document).ready(function()
 		}
 	});
 	
-	$(".emtree-widget .add").livequery('click', function(event) {
-				event.stopPropagation();
-				var tree = $(this).closest(".emtree");
-				tree = $(tree);
-				var home = tree.data("home");
-				var node = $(this).closest('.noderow');
-				var nodeid = node.data('nodeid');
-				var depth = node.data('depth');
-				node.load(home + "/components/emtree/tree.html?adding=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
-	} );
-	
-	
 	$(".emtree-widget .cancel").livequery('click', function(event) { 
 			
 			event.stopPropagation();
@@ -227,30 +215,80 @@ jQuery(document).ready(function()
 		}
 	});
 
-	//does this do anything?
-	$(".categorycheckbox").livequery("click", function()
+	$("#treeholder input").livequery('keypress', function(event) {
+	
+		if( event.which == 13 ) 
+	  	{
+	       	//13 represents Enter key
+	       	var input = $(this);
+	       	var node = input.closest(".noderow");
+	       	var tree = input.closest(".emtree");
+	       	var value = input.val();
+	       	var nodeid = node.data('nodeid');
+			var depth = node.data('depth');
+			var home = tree.data("home");
+			var link = home + "/components/emtree/savecategory.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth;
+			link = link + "&edittext=" + value;
+			link = link + "&adding=true";
+			node.load(link, function() 
 			{
-				var home = $(this).closest(".emtree").data("home");
-				var checkbox = $(this);
-				var checked = checkbox.is(":checked");
-				var assetid = checkbox.data("assetid");
-				var categoryid = checkbox.val();
-				var treeid = checkbox.data("treeid");
-				if (checked)
-				{
-					jQuery.get(home  + "/components/emtree/addassetcategory.html?categories="+categoryid+"&treeid="+treeid)
-					.fail(function()
-						{
-							alert("failed to add category to asset");
-						});
-				} else {
-				    jQuery.get(home + "/components/emtree/deleteassetcategory.html?categories="+categoryid+"&treeid="+treeid)
-					.fail(function()
-						{
-							alert("failed to delete category to asset");
-						});
-				}
+				//Reload tree in case it moved order
+				tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );		
 			});
+	  	}
+	});
+
+	$(".treecontext #renamenode").livequery('click', function(event) {
+				event.stopPropagation();
+				var clickedon = $(this);
+				var contextmenu = clickedon.closest(".treecontext");
+				contextmenu = $(contextmenu);
+				var treename = contextmenu.data("treename");
+				var tree = $("#" + treename + "tree");
+				var home = tree.data("home");
+				var node = contextmenu.data("selectednoderow");
+				contextmenu.hide();
+				//var node = $(this).closest('.noderow');
+				console.log("selected", contextmenu);
+				console.log("found", node);
+				var nodeid = node.data('nodeid');
+				var depth = node.data('depth');
+				var link = home + "/components/emtree/rename.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth; 
+				node.find("> .categorydroparea").load(link , function()
+				{
+					node.find("input").focus();
+				});
+				//node.html('<input name="test" />');
+				return false;
+	} );
+	
+		  $("body").on("contextmenu", ".noderow", function(e) 
+		  {
+		  	var noderow = $(this); // LI is the think that has context .find("> .noderow");
+		  	var xPos = e.pageX;
+    		var yPos = e.pageY;
+
+			noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
+		  	
+		  	var emtreediv = noderow.closest(".emtree");		  	
+		  	var treename = emtreediv.data("treename"); 
+		  	
+		  	var $contextMenu = $( "#" + treename + "contextMenu");
+		  	$contextMenu.data("selectednoderow",noderow);
+		    $contextMenu.css({
+		      display: "block",
+		      left: xPos,
+		      top: yPos
+		    });
+		    return false;
+		  });
+		  
+		   $('body').click(function () {
+             	var $contextMenu = $(".treecontext");
+             	$contextMenu.hide();
+             	$(".categorydroparea").removeClass('selected');
+             	
+            });
 
 	//end document ready
 	

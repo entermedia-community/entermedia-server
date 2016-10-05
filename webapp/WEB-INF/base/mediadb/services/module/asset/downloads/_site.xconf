@@ -14,6 +14,10 @@
 		<boolean value="true" />
 	</permission>	
 	
+	<permission name="view">
+		<pagevalue name="canviewasset" equals="true"/>
+	</permission>
+	
 	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
 
 	<property name="oe.enableautologinparam">true</property>

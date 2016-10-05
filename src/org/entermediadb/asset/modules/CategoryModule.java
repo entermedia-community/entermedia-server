@@ -376,7 +376,14 @@ public class CategoryModule extends BaseMediaModule
 //			tree.getTreeRenderer().expandNode(parent);
 //		}
 	}
-	public void editNode(WebPageRequest inReq)
+	public void loadNode(WebPageRequest inReq)
+	{
+		String catid = inReq.getRequestParameter("nodeID");
+		MediaArchive archive = getMediaArchive(inReq);
+		Category parent = archive.getCategory(catid);
+		inReq.putPageValue("node", parent);
+	}
+	public void saveNode(WebPageRequest inReq)
 	{
 		String catid = inReq.getRequestParameter("nodeID");
 		MediaArchive archive = getMediaArchive(inReq);
@@ -385,9 +392,9 @@ public class CategoryModule extends BaseMediaModule
 		{
 			String text = inReq.getRequestParameter("edittext");
 			parent.setName(text);
-			archive.getCategoryArchive().saveAll();
+			archive.getCategorySearcher().saveCategory(parent);
 		}
-		inReq.setRequestParameter("reload", "true");
+		//inReq.setRequestParameter("reload", "true"); //needed?
 		getCatalogTree(inReq);
 	}
 	
