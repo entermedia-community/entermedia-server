@@ -597,6 +597,7 @@ public class BaseHotFolderManager implements HotFolderManager
 	@Override
 	public void scanFolders(final MediaArchive inArchive, ScriptLogger inLog)
 	{
+		getWebServer().checkMounts();
 		Collection hits = loadFolders( inArchive.getCatalogId() );
 		for(Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
