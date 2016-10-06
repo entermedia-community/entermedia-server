@@ -1723,7 +1723,7 @@ small {
 #eml-tab-subnav {
     margin: 0;
 }
-#eml-tab-subnav ul, #sub-nav {
+#eml-tab-subnav ul, #sub-nav, .tree-header {
     background: rgb(255,255,255); /* Old browsers */
     background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(212,245,252,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(212,245,252,1))); /* Chrome,Safari4+ */
@@ -6976,3 +6976,8 @@ div.panel2.show {
 tr.emrowselected
 {
 	background: #C9E8C7;
+}
+
+
+/*Collection tree*/
+.tree-header span { line-height:45px; padding:0 20px; color: #2790B0; font-weight:bold; }

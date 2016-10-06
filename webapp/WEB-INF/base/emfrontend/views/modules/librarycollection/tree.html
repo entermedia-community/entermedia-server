@@ -1,12 +1,12 @@
 #set($rootcategory = $mediaarchive.getProjectManager().getRootCategory($mediaarchive, $librarycol.getId()))
  
-<div class="ui-widget uipanel" style="padding-top: 0px;">
-	<div class="ui-widget-header" style="border-radius:0px">
-		<span class="widget-header-title">Folders</span>
+
+	<div class="tree-header">
+		<span class="">[[Folders]]</span>
 	</div>
-	<div class="ui-widget-content" style="padding:0px;">  
+	<div class="" style="padding:0px;">  
 		$pages.include("$apphome/components/emtree/tree.html?collectiontreeroot=$rootcategory.getId()&tree-name=collectiontree",$context)
 	</div>
-</div>
+
  
  
