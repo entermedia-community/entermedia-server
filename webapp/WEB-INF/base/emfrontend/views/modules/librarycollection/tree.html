@@ -1,12 +1,12 @@
 #set($rootcategory = $mediaarchive.getProjectManager().getRootCategory($mediaarchive, $librarycol.getId()))
- 
-
+ <div >
 	<div class="tree-header">
 		<span class="">[[Categories]]</span>
 	</div>
-	<div class="" style="padding:0px;">  
+	<div class="" style="padding:0px; border-right: 1px solid #80b5c6">  
 		$pages.include("$apphome/components/emtree/tree.html?collectiontreeroot=$rootcategory.getId()&tree-name=collectiontree&treeprefix=$apphome/views/modules/librarycollection/category/$librarycol.getId()/&targetdiv=viewassets",$context)
 	</div>
 
  
  
+</div>

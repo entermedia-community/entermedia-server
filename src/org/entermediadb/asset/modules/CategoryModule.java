@@ -65,8 +65,13 @@ public class CategoryModule extends BaseMediaModule
 			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
 		}		
 		WebTree webTree = (WebTree) inRequest.getPageValue( treeid );
+		String root = inRequest.getRequestParameter(name + "root");
+		String reload = inRequest.getRequestParameter("reloadtree");
 
-		String reload = inRequest.getRequestParameter("reload");
+		if( root != null && webTree != null && webTree.getName().equals(root))
+		{
+			reload="true";
+		}
 		Object needsreload = inRequest.getSessionValue("reloadcategorytree");//Some other way?
 		if(needsreload != null){
 			webTree = null;
