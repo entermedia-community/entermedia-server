@@ -553,6 +553,7 @@ public class MultiSearchModule extends BaseMediaModule
 //		}
 		String catalogid = rootpath + "/catalog";
 		catalogid = catalogid.substring(1);
+		catalogid = catalogid.toLowerCase();
 		Page app = getPageManager().getPage("/" + catalogid + "/_site.xconf");
 		PageProperty prop = new PageProperty("fallbackdirectory");
 		prop.setValue(inReq.findValue("fallbackfolder"));
