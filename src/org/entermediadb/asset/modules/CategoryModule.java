@@ -346,7 +346,7 @@ public class CategoryModule extends BaseMediaModule
 		Category child = archive.getCategory(catid);
 		if( child != null)
 		{
-			archive.getCategoryArchive().deleteCategory(child);
+			archive.getCategorySearcher().delete(child,inReq.getUser());
 		}
 		inReq.setRequestParameter("reload", "true");
 		getCatalogTree(inReq);
@@ -387,14 +387,28 @@ public class CategoryModule extends BaseMediaModule
 	{
 		String catid = inReq.getRequestParameter("nodeID");
 		MediaArchive archive = getMediaArchive(inReq);
-		Category parent = archive.getCategory(catid);
-		if( parent != null)
+		Category tosave = null;
+		if( catid != null)
+		{
+			tosave = archive.getCategory(catid);
+		}
+		else
+		{
+			String parentid = inReq.getRequestParameter("parentNodeID");
+			if( parentid == null)
+			{
+				parentid = "index";
+			}
+			Category parent = archive.getCategory(parentid);
+			tosave = (Category)archive.getCategorySearcher().createNewData();
+			parent.addChild(tosave);
+		}
+		if( tosave != null)
 		{
 			String text = inReq.getRequestParameter("edittext");
-			parent.setName(text);
-			archive.getCategorySearcher().saveCategory(parent);
+			tosave.setName(text);
+			archive.getCategorySearcher().saveCategory(tosave);
 		}
-		//inReq.setRequestParameter("reload", "true"); //needed?
 		getCatalogTree(inReq);
 	}
 	

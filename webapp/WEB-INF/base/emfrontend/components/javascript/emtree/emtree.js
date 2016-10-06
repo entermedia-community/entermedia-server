@@ -130,6 +130,11 @@ jQuery(document).ready(function()
 		}
 	});
 
+	$('#treeholder input').livequery('click', function(event)
+	{
+		event.stopPropagation();
+	});
+
 	$("#treeholder input").livequery('keyup', function(event) 
 	{
        	var input = $(this);
@@ -137,61 +142,90 @@ jQuery(document).ready(function()
        	var tree = input.closest(".emtree");
        	var value = input.val();
        	var nodeid = node.data('nodeid');
-		var depth = node.data('depth');
-		var home = tree.data("home");
 
 		if( event.keyCode == 13 ) 
 	  	{
 	       	//13 represents Enter key
-			var link = home + "/components/emtree/savecategory.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth;
+			var link = tree.data("home") + "/components/emtree/savenode.html?tree-name=" + tree.data("treename") + "&depth=" + node.data('depth');
+			if(nodeid)
+			{
+				link = link + "&nodeID=" + nodeid;
+			}
+			else
+			{
+				nodeid = node.closest(".noderow").data("nodeid");
+				if( nodeid )
+				{
+					link = link + "&parentNodeID=" + nodeid;
+				}	
+			}
 			link = link + "&edittext=" + value;
 			link = link + "&adding=true";
 			node.load(link, function() 
 			{
 				//Reload tree in case it moved order
-				tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );		
+				tree.closest("#treeholder").load(tree.data("home") +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );		
 			});
 	  	}
 		else if( event.keyCode === 27 ) //esc 
 	  	{
-			var link = home + "/components/emtree/tree.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth;
+			var link = tree.data("home") + "/components/emtree/tree.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + node.data('depth');
 			link = link + "&adding=true";
 			node.load(link); 	  		
 	  	}
 	});
 
+	getNode = function(clickedon)
+	{
+		var clickedon = $(clickedon);
+		var contextmenu = $(clickedon.closest(".treecontext"));
+		var node = contextmenu.data("selectednoderow");
+		contextmenu.hide();
+		return node;
+	}
+	
 	$(".treecontext #renamenode").livequery('click', function(event) {
 				event.stopPropagation();
-				var clickedon = $(this);
-				var contextmenu = $(clickedon.closest(".treecontext"));
-				var node = contextmenu.data("selectednoderow");
+				var node = getNode(this);
 				var tree = node.closest(".emtree");
-				var home = tree.data("home");
-				contextmenu.hide();
-				//var node = $(this).closest('.noderow');
 				var nodeid = node.data('nodeid');
-				var depth = node.data('depth');
-				var link = home + "/components/emtree/rename.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth; 
+				var link = tree.data("home") + "/components/emtree/rename.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
 				node.find("> .categorydroparea").load(link , function()
 				{
 					node.find("input").select().focus();
 				});
-				//node.html('<input name="test" />');
 				return false;
 	} );
+	$(".treecontext #deletenode").livequery('click', function(event) {
+		event.stopPropagation();
+		var node = getNode(this);
+		var tree = node.closest(".emtree");
+		var nodeid = node.data('nodeid');
+		var link = tree.data("home") + "/components/emtree/delete.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
+		tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );		
+		return false;
+	} );
+	$(".treecontext #createnode").livequery('click', function(event) {
+		event.stopPropagation();
+		var node = getNode(this);
+		var tree = node.closest(".emtree");
+		var link = tree.data("home") + "/components/emtree/create.html?tree-name=" + tree.data("treename") + "&depth=" +  node.data('depth'); 
+		$.get(link, function(data) {
+		    node.append(data).fadeIn("slow");
+			node.find("input").select().focus();
+		});
+		return false;
+	} );
+
 	
   $("body").on("contextmenu", ".noderow", function(e) 
   {
   	var noderow = $(this); // LI is the think that has context .find("> .noderow");
 	var xPos = e.pageX;
 	var yPos = e.pageY;
-	
 	noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
-	
 	var emtreediv = noderow.closest(".emtree");
-	
 	var treename = emtreediv.data("treename"); 
-	
 	var $contextMenu = $( "#" + treename + "contextMenu");
 	$contextMenu.data("selectednoderow",noderow);
 	$contextMenu.css({
@@ -214,7 +248,5 @@ jQuery(document).ready(function()
 
 repaintEmTree = function (tree) {
 	var home = tree.data("home");
-
 	tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );
-	
 }

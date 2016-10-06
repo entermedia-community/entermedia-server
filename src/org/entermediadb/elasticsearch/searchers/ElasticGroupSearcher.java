@@ -111,5 +111,15 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 		getXmlUserArchive().deleteGroup((Group) inData);
 		super.delete(inData, inUser); //update the index
 	}
+	@Override
+	public boolean initialize()
+	{
+		if( !tableExists())
+		{
+			reIndexAll();
+			return true;
+		}				
+		return false;
+	}
 
 }

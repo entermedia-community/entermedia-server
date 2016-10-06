@@ -9,7 +9,6 @@
 #set( $adding = $context.getRequestParameter("adding" ) )
 #if($selectednodes)
 $!webtree.getTreeRenderer().selectNodes($selectednodes)
-
 #end
 
 #macro(showtreecategories $cat $depth) 
@@ -83,7 +82,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
       <li><a id="createnode" tabindex="-1" href="#">[[Create]]</a></li>
       <li><a id="renamenode" tabindex="-1" href="#">[[Rename]]</a></li>
-      <li><a tabindex="-1" href="#">[[Delete]]</a></li>
+      <li><a id="deletenode" tabindex="-1" href="#">[[Delete]]</a></li>
       <li class="divider"></li>
       <li><a tabindex="-1" href="#">[[Copy]]</a></li>
       <li><a tabindex="-1" href="#">[[Cut]]</a></li>      

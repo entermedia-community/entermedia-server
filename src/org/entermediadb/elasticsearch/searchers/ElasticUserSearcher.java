@@ -194,6 +194,18 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			return (Data) searchById(inHit.getId());
 		}
 	}
+
+	@Override
+	public boolean initialize()
+	{
+		if( !tableExists())
+		{
+			reIndexAll();
+			return true;
+		}				
+		return false;
+	}
 	
+
 
 }
