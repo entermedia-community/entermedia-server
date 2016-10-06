@@ -2,6 +2,7 @@ package org.entermediadb.elasticsearch.categories;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -82,6 +83,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			category.setParentCategory(inParent);
 			children.add(category);
 		}
+		Collections.sort(children);
 		return children;
 	}
 

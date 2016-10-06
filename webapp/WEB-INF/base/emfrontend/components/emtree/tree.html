@@ -78,6 +78,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 </div>
 #end
 
+#if( $editable )
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename" style="position: absolute;display:none;z-index:1000;">
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
       <li><a id="createnode" tabindex="-1" href="#">[[Create]]</a></li>
@@ -89,3 +90,4 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
       <li><a tabindex="-1" href="#" style="enabled:false">[[Paste]]</a></li>
     </ul>
   </div>
+#end

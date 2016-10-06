@@ -1,3 +1,4 @@
 <page>
+<property name="virtual">true</property>
 <path-action name="CategoryModule.removeNode"/>
 </page>

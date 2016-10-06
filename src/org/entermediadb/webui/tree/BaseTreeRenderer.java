@@ -214,6 +214,10 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 	public void expandNode(Object inNode)
 	{
+		if( inNode == null)
+		{
+			return;
+		}
 		String path = toUrl(inNode);
 		if ( !getExpandedNodes().contains(path))
 		{

@@ -141,27 +141,28 @@ jQuery(document).ready(function()
        	var node = input.closest(".noderow");
        	var tree = input.closest(".emtree");
        	var value = input.val();
+       	console.log("childnode",node);
        	var nodeid = node.data('nodeid');
-
 		if( event.keyCode == 13 ) 
 	  	{
 	       	//13 represents Enter key
 			var link = tree.data("home") + "/components/emtree/savenode.html?tree-name=" + tree.data("treename") + "&depth=" + node.data('depth');
-			if(nodeid)
+			if(nodeid != undefined)
 			{
 				link = link + "&nodeID=" + nodeid;
+				link = link + "&adding=true";
 			}
 			else
 			{
-				nodeid = node.closest(".noderow").data("nodeid");
-				if( nodeid )
+				node = node.parent(".noderow");
+				nodeid = node.data("nodeid");
+				console.log("Dont want to save",node);
+				if(nodeid != undefined)
 				{
 					link = link + "&parentNodeID=" + nodeid;
 				}	
 			}
-			link = link + "&edittext=" + value;
-			link = link + "&adding=true";
-			node.load(link, function() 
+			node.load(link, {edittext: value},function() 
 			{
 				//Reload tree in case it moved order
 				tree.closest("#treeholder").load(tree.data("home") +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );		
@@ -201,8 +202,13 @@ jQuery(document).ready(function()
 		var node = getNode(this);
 		var tree = node.closest(".emtree");
 		var nodeid = node.data('nodeid');
+		console.log("removing",node, nodeid);
+
 		var link = tree.data("home") + "/components/emtree/delete.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
-		tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );		
+		$.get(link, function(data) 
+		{
+			tree.closest("#treeholder").load(tree.data("home") +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );					
+		});
 		return false;
 	} );
 	$(".treecontext #createnode").livequery('click', function(event) {
@@ -213,6 +219,7 @@ jQuery(document).ready(function()
 		$.get(link, function(data) {
 		    node.append(data).fadeIn("slow");
 			node.find("input").select().focus();
+			$(document).trigger("domchanged");
 		});
 		return false;
 	} );
@@ -227,13 +234,16 @@ jQuery(document).ready(function()
 	var emtreediv = noderow.closest(".emtree");
 	var treename = emtreediv.data("treename"); 
 	var $contextMenu = $( "#" + treename + "contextMenu");
-	$contextMenu.data("selectednoderow",noderow);
-	$contextMenu.css({
-	  display: "block",
-	      left: xPos,
-	      top: yPos
-	    });
-	return false;
+	if( $contextMenu.length > 0 )
+	{
+		$contextMenu.data("selectednoderow",noderow);
+		$contextMenu.css({
+		  display: "block",
+		      left: xPos,
+		      top: yPos
+		    });
+		return false;
+	}	
   });
 		  
    $('body').click(function () {

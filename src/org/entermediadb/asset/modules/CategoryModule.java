@@ -83,7 +83,11 @@ public class CategoryModule extends BaseMediaModule
 				return null;
 			}
 			log.info("No Category in Session, creating new " + treeid);
-			String root = inRequest.findValue(name + "root");
+			String root = inRequest.getRequestParameter(name + "root");
+			if( root == null)
+			{
+				root = inRequest.findValue(name + "root");
+			}
 			if( root  == null )
 			{
 				root = inRequest.findValue("root");
@@ -346,10 +350,9 @@ public class CategoryModule extends BaseMediaModule
 		Category child = archive.getCategory(catid);
 		if( child != null)
 		{
-			archive.getCategorySearcher().delete(child,inReq.getUser());
+			archive.getCategorySearcher().deleteCategoryTree(child);
 		}
 		inReq.setRequestParameter("reload", "true");
-		getCatalogTree(inReq);
 	}
 	public void addNode(WebPageRequest inReq)
 	{
