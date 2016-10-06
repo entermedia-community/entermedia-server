@@ -12,6 +12,13 @@ Copy files into your working folder:  $user.id/${librarycol.getName()}/{timestam
 
 <h3>Or</h3>
 
-<a href="#" class="btn">Download With Zip File</a>
 
-</p>
+<form  name="archiveassets" id="archiveassets" 
+			   method="post" action="$home$apphome/views/modules/librarycollection/download/zip/${librarycol.getId()}.zip">
+				<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+				<input type="hidden" name="zip" value="true" />
+				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download Zip ]]">	   			
+</form>
+
+
+

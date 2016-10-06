@@ -565,6 +565,15 @@ public class ProjectModule extends BaseMediaModule
 //		librarycollectiondownloads.updateData(inReq, fields, history);
 //		librarycollectiondownloads.saveData(history);
 
+		boolean zip = Boolean.parseBoolean(inReq.findValue("zip"));
+		if(zip){
+			inReq.setRequestParameter("path", infolder);
+			inReq.setRequestParameter("stripfolders", infolder);
+
+			
+		}
+		
+		
 	}	
 	
 	

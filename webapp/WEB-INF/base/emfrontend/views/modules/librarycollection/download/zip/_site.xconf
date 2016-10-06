@@ -1,4 +1,6 @@
 <page>
+	<path-action name="ProjectModule.exportCollection" alltypes="true"/>
+	
 	<property name="virtual">true</property>
 	<layout/>
 	<inner-layout/>
