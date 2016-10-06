@@ -594,9 +594,27 @@ public class ProjectManager
 				asset.addCategory(inCurrentParent);
 				inArchive.saveAsset(asset, null);
 				assets.remove(asset.getId());
+				
+				
+				
+				
+				
+				
+				
+				
 
 			}
 		}
+		
+		paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
+		if(paths.isEmpty()){
+			ContentItem item = inArchive.getPageManager().getRepository().getStub(inImportPath);
+			inArchive.getPageManager().getRepository().remove(item);
+
+		}
+
+		
+		
 	}
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
