@@ -3035,6 +3035,11 @@ table.emdata th {
 .emtree .name {
     padding-left: 35px;
 }
+.emcategories .folder {
+    background: url('../images/folder-closed.gif') 0px 12px no-repeat;
+    display: block;
+    padding-left: 18px;
+}
 .emtree .name.folder {
     background: url('../images/folder-closed.gif') 14px -1px no-repeat;
 }

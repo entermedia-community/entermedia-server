@@ -10,7 +10,7 @@ $context.putPageValue("hits",$hits)
 
 #if($hits)
 	#set( $collectionid = $hits.getInput("collectionid") )
-	#if( $collectionid)
+	#if( $collectionid && !$librarycol)
 		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
 		$context.putPageValue("librarycol",$librarycol)
 	#end
@@ -20,14 +20,6 @@ $context.putPageValue("hits",$hits)
 		$context.putPageValue("order",$order)
 	#end
 #end	
-#if( $category )
-<div id="categoryheader" class="rowclick" style="border: 1px solid #eee;padding:3px 8px 8px 8px;color:#eee;margin: 0px; font-size: 13px; height: 33px">
-#foreach( $parent in $category.getParentCategories())
-	<a class="category" style="float:left;padding:4px 14px 4px 24px;" href="$home$apphome/views/categories/index.html?categoryid=$parent.getId()&nodeID=$parent.getId()"> $parent </a> 
-#end
-</div>
-#end
-
 <div id="resultheader">
 	<ul id="sub-nav" class="search-views">
 		#set ($classname="enabled")
@@ -83,6 +75,26 @@ $context.putPageValue("hits",$hits)
 				</ul>
 				</li>
 				#end
+		
+#if( $category)
+#set( $catsize = $category.getParentCategories().size() )
+	<li><a>[[Categories]]</a>	
+		<ul>
+	#if( $catsize > 1 )
+		#foreach( $parent in $category.getParentCategories())
+			#set( $pad = $velocityCount * 7)
+			<li class="emcategories" ><a href="$home$apphome/views/categories/index.html?categoryid=$parent.getId()&nodeID=$parent.getId()" style="padding-left:${pad}px; #if( $catsize == $velocityCount) font-weight:bold;#end"><span  class="name folder">$parent </span> </a></li> 
+		#end
+	#end
+	#set( $pad = $pad + 7 )
+	#foreach( $parent in $category.getChildren())
+		<li class="emcategories"><a href="$home$apphome/views/categories/index.html?categoryid=$parent.getId()&nodeID=$parent.getId()" style="padding-left:${pad}px"><span  class="name folder">$parent </span> </a></li> 
+	#end
+	
+		</ul>
+	</li>
+#end
+		
 		
 		#if ( $canviewbasket )
 			#if($order)

@@ -16,6 +16,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class ProjectModule extends BaseMediaModule
 {
@@ -576,6 +577,15 @@ public class ProjectModule extends BaseMediaModule
 		
 	}	
 	
+	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq)
+	{
+		String colid = PathUtilities.extractDirectoryName( inReq.getPath() );
+		ProjectManager manager = getProjectManager(inReq);
+		LibraryCollection col = manager.getLibraryCollection(getMediaArchive(inReq),colid);
+		inReq.putPageValue("librarycol", col);
+		return col;
+		
+	}
 	
 //	
 //	public void loadCategoriesOnCollections(WebPageRequest inReq)

@@ -39,17 +39,28 @@ jQuery(document).ready(function()
 		var nodeid = node.data('nodeid');
 		var depth = node.data('depth');
 		var home = tree.data("home");
-		var prefix = $(this).closest(".emtree").data("url-prefix");
+		var prefix = tree.data("url-prefix");
+		var targetdiv = tree.data("targetdiv");
+		var maxlevel = 2;
+		if(targetdiv ==  undefined || targetdiv == "" )
+		{
+			targetdiv = "searchlayout";
+			maxlevel = 3;
+		}
 		if( prefix)
 		{
 			var treeholder = $("div#categoriescontent");
 			var toplocation =  parseInt( treeholder.scrollTop() );
 			var leftlocation =  parseInt( treeholder.scrollLeft() );
-		
+			var postfix = tree.data("url-postfix");
+			if( postfix == undefined || postfix == "" )
+			{
+				postfix = ".html";
+			}
 			//$("#right-col").load(); 'clearfilters':true,
-				jQuery.get(prefix + nodeid + ".html",
+				jQuery.get(prefix + nodeid + postfix,
 						{
-							'oemaxlevel':3,
+							'oemaxlevel':maxlevel,
 							'tree-name':tree.data("treename"),
 							'nodeID':nodeid,							
 							'treetoplocation':toplocation,
@@ -58,7 +69,7 @@ jQuery(document).ready(function()
 						},	
 						function(data) 
 						{
-							var cell = jQuery("#searchlayout"); //view-picker-content
+							var cell = jQuery("#" + targetdiv); //view-picker-content
 							cell.html(data);
 							//window.location.hash="TOP";
 						}

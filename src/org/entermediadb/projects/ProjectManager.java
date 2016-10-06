@@ -437,7 +437,7 @@ public class ProjectManager
 			}
 			else
 			{
-				collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+				collection = getLibraryCollection(inArchive,inCollectionid);
 				Category cat = inArchive.getCategory(inCategoryid);
 				Category rootcat = getRootCategory(inArchive, inCollectionid);
 
@@ -454,11 +454,9 @@ public class ProjectManager
 
 	public void snapshotCollection(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid, String inNote)
 	{
-		CategorySearcher cats = inArchive.getCategorySearcher();
 		Category rootcat = getRootCategory(inArchive, inCollectionid);
 
-		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inArchive,inCollectionid);
 		Category newroot = createRevision(inArchive, collection, inUser, inNote);
 
 		ArrayList list = new ArrayList();
@@ -474,8 +472,7 @@ public class ProjectManager
 
 	public void importCollection(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid, String inImportPath, String inNote)
 	{
-		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inArchive,inCollectionid);
 		snapshotCollection(inReq, inUser, inArchive, inCollectionid, inNote);
 		CategorySearcher searcher = inArchive.getCategorySearcher();
 		Category root = getRootCategory(inArchive, inCollectionid);
@@ -594,15 +591,6 @@ public class ProjectManager
 				asset.addCategory(inCurrentParent);
 				inArchive.saveAsset(asset, null);
 				assets.remove(asset.getId());
-				
-				
-				
-				
-				
-				
-				
-				
-
 			}
 		}
 		
@@ -610,10 +598,7 @@ public class ProjectManager
 		if(paths.isEmpty()){
 			ContentItem item = inArchive.getPageManager().getRepository().getStub(inImportPath);
 			inArchive.getPageManager().getRepository().remove(item);
-
 		}
-
-		
 		
 	}
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
@@ -1171,12 +1156,18 @@ public class ProjectManager
 	protected Category getRevisionRoot(MediaArchive inArchive, String inCollectionid, String inRevision)
 	{
 		Searcher cats = inArchive.getSearcher("category");
-		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inArchive, inCollectionid);
 		String id = collection.getId() + "_" + inRevision;
 		Category revisionroot = (Category) cats.searchById(id);
 		return revisionroot;
 
+	}
+
+	public LibraryCollection getLibraryCollection(MediaArchive inArchive, String inCollectionid)
+	{
+		Searcher librarycolsearcher = inArchive.getSearcher("librarycollection");
+		LibraryCollection collection = (LibraryCollection) librarycolsearcher.searchById(inCollectionid);
+		return collection;
 	}
 
 }

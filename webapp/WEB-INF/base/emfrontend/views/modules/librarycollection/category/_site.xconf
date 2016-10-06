@@ -1,0 +1,19 @@
+<page>
+	<path-action name="MediaSearchModule.searchCategories"/>
+	<path-action name="ProjectModule.loadCollectionFromFolder"/>
+	<property name="searchcategory">true</property>
+
+	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
+	
+	<property name="hitsname">hits</property>
+	<property name="virtual">true</property>
+	
+	 <permission name="view">
+    		<action name="ProjectModule.checkLibraryPermission" />
+    </permission>
+
+	 <page-action name="DataEditModule.loadPageOfSearch"/>
+
+	<property name="assetrootfolderXX">/${applicationid}/views/assets</property>
+
+</page>

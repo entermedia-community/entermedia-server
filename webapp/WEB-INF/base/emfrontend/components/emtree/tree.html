@@ -72,13 +72,17 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 
 #set( $prefix = $context.getRequestParameter("treeprefix" ) )
 #if( !$prefix)
-	#set( $prefix = "$home$apphome/views/categories/");
+	#set( $prefix = "$home$apphome/views/categories/")
 #end
 #set( $postfix = $context.getRequestParameter("treepostfix" ) )
 
+#set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
+
 
 <div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
-	<div id="${treename}tree" class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix">
+	<div id="${treename}tree" class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" 
+		data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix" data-targetdiv="$!targetdiv"
+		>
 			<ul  class="open" >
 			#showtreecategories($rootcategory, 1)
 			</ul>
