@@ -25,9 +25,9 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 		#set( $isselected = $render.isNodeSelected($cat))
 		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth" data-categoryname="$cat.name">
 			#set( $checked = $render.isIdSelected($cat.id) )
-			<div class="categorydroparea #if( $isselected ) selected #end #if( $checked) idchecked #end" style="padding-left: ${padding}px" title="$cat.name #if($editable) ($cat.id) #end">
+			<div class="categorydroparea #if( $isselected ) selected #end #if( $checked) idchecked #end" style="padding-left: ${padding}px" title="id: $cat.id">
 				#if($haschildren)<span class="arrow #if($expanded) down #end "></span>#end 
-				<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end #if( $editable )editablecategory#end" >$cat.name</span>
+				<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end" title="$cat.getCategoryPath()" >$cat.name</span>
 			</div>
 		#if($haschildren && $expanded)
 		   <ul class="open" >
@@ -78,15 +78,6 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 	</div>
 </div>
 #end
-
-				#if( $editable )
-				<span class="actions">
-					<a class="edit ir tooltip" title="Edit Category Name">Edit</a>
-					<a class="add ir tooltip" title="Add a new Category" id="$cat.id">Add New</a>
-					<a data-parent="${cat.id}" class="delete ir tooltip" title="Delete Category">Delete</a>
-				</span>
-				#end
-
 
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename" style="position: absolute;display:none;z-index:1000;">
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
