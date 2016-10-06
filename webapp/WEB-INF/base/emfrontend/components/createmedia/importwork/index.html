@@ -10,8 +10,8 @@
 		<p>Import latest edits and changes from your working folder: </p>				
 				$user.id/${librarycol.getName()}/{timestamp}/
 					
-	<a class="btn ajax" targetdivinner="addcategoryform" href="$home$apphome/components/createmedia/importwork/import.html?collectionid=$librarycol.getId()&oemaxlevel=1">Import Latest Changes</a> 
-
+	<a id="importbutton" class="btn ajax"  targetdivinner="addcategoryform" href="$home$apphome/components/createmedia/importwork/import.html?collectionid=$librarycol.getId()&oemaxlevel=1">Import Latest Changes</a> 
+<div id="importmessage"></div>
 </div>
 	
 	
@@ -21,3 +21,13 @@
 
 	
 	
+<script type="text/javascript">
+
+jQuery("#importbutton").on('click', function(){
+	
+	jQuery("#importbutton").attr('disabled','disabled');
+	jQuery("#importmessage").html("<b>[[Please Wait - Importing...]]");
+	
+});
+
+</script>
