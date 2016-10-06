@@ -1124,6 +1124,7 @@ public class DataEditModule extends BaseMediaModule
 		else if ("none".equals(action))
 		{
 			hits.deselectAll();
+			hits.setShowOnlySelected(false);
 		}
 		inReq.putPageValue(hits.getHitsName(), hits);
 
