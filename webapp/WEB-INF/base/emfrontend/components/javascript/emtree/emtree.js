@@ -72,25 +72,6 @@ jQuery(document).ready(function()
 		}
 });
 	
-//	var field = $('.emtree .field'); 
-//	
-//	field.livequery('click', function(event) 	{
-//			event.stopPropagation();
-//	});
-//	
-//	$('.emtree-widget .field.text').livequery('focusin', function(event) 	{
-//		if ($(this).val() == this.defaultValue ) { 
-//			$(this).val(''); 
-//		}
-//	});
-//	
-//	$('.emtree-widget .field.text').livequery('focusout', function(event)	{
-//		if ($(this).val() == "") { 
-//			$(this).val(this.defaultValue); 
-//		}
-//	});
-	
-	
 	$(".emtree-widget .delete").livequery('click', function(event) {
 			event.stopPropagation();
 
@@ -229,9 +210,11 @@ jQuery(document).ready(function()
   {
   	var noderow = $(this); // LI is the think that has context .find("> .noderow");
 	var xPos = e.pageX;
-	var yPos = e.pageY;
+	var yPos = e.pageY - 10;
 	noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
 	var emtreediv = noderow.closest(".emtree");
+	
+	
 	var treename = emtreediv.data("treename"); 
 	var $contextMenu = $( "#" + treename + "contextMenu");
 	if( $contextMenu.length > 0 )

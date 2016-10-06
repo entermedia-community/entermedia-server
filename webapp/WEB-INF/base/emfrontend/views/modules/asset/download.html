@@ -9,14 +9,14 @@
 <form  name="archiveassets" id="archiveassets" 
    method="post" action="$home$apphome/views/modules/librarycollection/export.html">
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
-	<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Copy ]]">	   			
+	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Export Folders]]">	   			
 </form>
 <h3>[[Zip File]]</h3>
 <form  name="archiveassets" id="archiveassets" 
 			   method="post" action="$home$apphome/views/modules/librarycollection/download/zip/${librarycol.getId()}.zip">
 				<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
 				<input type="hidden" name="zip" value="true" />
-				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download Zip ]]">	   			
+				<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download Zip]]">	   			
 </form>
 
 #end
@@ -24,4 +24,8 @@
 #if ($hits.getSelectionSize() > 0)
 <h3>[[Asset Selections]]</h3>
 <a class="btn emdialog"  data-hidefooter="true" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}">[[Download]] $hits.getSelectionSize() [[Selected Assets]]</a>
-#end 
+#else
+
+
+#end
+<br><br> 

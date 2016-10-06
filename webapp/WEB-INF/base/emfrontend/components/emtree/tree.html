@@ -69,8 +69,16 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 
 #set( $top = $context.getRequestParameter("treetoplocation") )
 #set( $left = $context.getRequestParameter("treeleftlocation") )
+
+#set( $prefix = $context.getRequestParameter("treeprefix" ) )
+#if( !$prefix)
+	#set( $prefix = "$home$apphome/views/categories/");
+#end
+#set( $postfix = $context.getRequestParameter("treepostfix" ) )
+
+
 <div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
-	<div id="${treename}tree" class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" data-editable="$editable" data-url-prefix="$home$apphome/views/categories/" data-url-postfix="">
+	<div id="${treename}tree" class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix">
 			<ul  class="open" >
 			#showtreecategories($rootcategory, 1)
 			</ul>
@@ -79,7 +87,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 #end
 
 ##if( $editable )
-<div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename" style="position: absolute;display:none;z-index:1000;">
+<div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename" style="top:0px; left:0;position: absolute;display:none;z-index:1000;">
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
       <li><a id="createnode" tabindex="-1" href="#">[[Create]]</a></li>
       <li><a id="renamenode" tabindex="-1" href="#">[[Rename]]</a></li>
