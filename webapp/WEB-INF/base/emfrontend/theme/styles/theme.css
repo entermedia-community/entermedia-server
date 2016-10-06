@@ -852,7 +852,7 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
 
 #emcontainer #emcontent .selectedfolder A {
     font-weight: bold;
-    background-image: url("../images/navigation/folderopen.png");
+    background-image: url("../images/navigation/folder-open.gif");
 }
 #emcontainer .folderlink {
     padding: 5px;
@@ -1538,10 +1538,10 @@ small {
     width: 100%;
 }
 .row.category {
-    background: url('../images/folder_16.png') left center no-repeat;
+    background: url('../images/folder-open.gif') left center no-repeat;
 }
 .rowclick .category { 
-	background: url('../images/folder_16.png') 5px center no-repeat; 
+	background: url('../images/folder-open.gif') 5px center no-repeat; 
 	padding-left:27px; 
 	cursor:pointer; 
 }
@@ -2989,7 +2989,7 @@ table.emdata th {
     padding-left: 35px;
 }
 #attachmenttree .name.folder {
-    background: url('../images/folder-closed.gif') 14px -1px no-repeat;
+    background: url('../images/folderclosed.png') 14px -1px no-repeat;
 }
 #attachmenttree .arrow.down + .name.folder {
     background: url('../images/folder-open.gif') 14px -1px no-repeat;

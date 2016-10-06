@@ -20,8 +20,6 @@ $context.putPageValue("hits",$hits)
 		$context.putPageValue("order",$order)
 	#end
 #end	
-<div id="resultheader">
-
 #if( $category )
 <div id="categoryheader" class="rowclick" style="border: 1px solid #eee;padding:3px 8px 8px 8px;color:#eee;margin: 0px; font-size: 13px; height: 33px">
 #foreach( $parent in $category.getParentCategories())
@@ -29,12 +27,19 @@ $context.putPageValue("hits",$hits)
 #end
 </div>
 #end
+
+<div id="resultheader">
+
 	<ul id="sub-nav" class="search-views">
 		#set ($classname="enabled")
 		#set ($enabled=$hits.getSelectionSize() > 0)
 		
 		#if( $candownload || $canconvert || $candownloadfpo )
-			<li><a #if( $enabled )href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" class="emdialog" data-hidefooter="true" #else style="text-decoration:none;" #end>[[Download]]</a></li>
+			#if( $librarycol )
+			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
+			#else
+			<li><a #if( $enabled )href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" #else style="text-decoration:none;" #end>[[Download]]</a></li>
+			#end
 		#end	
 		##Email and publish should be under share
 		#if($canpublish || $canemaillink )

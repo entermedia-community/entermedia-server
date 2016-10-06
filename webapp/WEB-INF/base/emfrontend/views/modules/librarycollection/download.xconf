@@ -1,9 +1,0 @@
-<page>
-<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
-  <path-action name="DataEditModule.loadData" >
-			<pageval>librarycol</pageval>
-			<idname>collectionid</idname>
-			<searchtype>librarycollection</searchtype>
-    </path-action>
-
-</page>
