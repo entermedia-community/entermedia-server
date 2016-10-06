@@ -45,7 +45,7 @@
 	<property id="log_all_searches" value="false">Log All Searches</property>
 
 	<property id="conversionexpirytime" value="7">Conversions older than this as expired</property>
-	<property id="extractmd5" value="false">Create MD5 Checksum values on import</property>
+	<property id="extractmd5" value="true">Create MD5 Checksum values on import</property>
 
 
 </properties>

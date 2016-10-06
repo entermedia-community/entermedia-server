@@ -566,9 +566,9 @@ public class ProjectManager
 				{
 					FileUtils.safeClose(inputStream);
 				}
-				Data target = (Data) inArchive.getAssetSearcher().searchByField("md5hex", md5);
+				Data target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name.sort", item.getName()).searchOne();
 				Asset asset = (Asset) inArchive.getAssetSearcher().loadData(target);
-
+				
 				if (asset == null)
 				{
 

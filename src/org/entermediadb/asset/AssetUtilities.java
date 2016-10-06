@@ -524,6 +524,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		
 			log.info("moving: " + fullpath + " to " + target  );
 			inArchive.getPageManager().getRepository().copy(fullpath, target);
+			ContentItem finalpath = inArchive.getPageManager().getRepository().get(target.getPath() + "/" + asset.getName());
+			Date lastmod = new Date(fullpath.getLastModified());
+			finalpath.setLastModified(lastmod);
 			}
 		
 		}
