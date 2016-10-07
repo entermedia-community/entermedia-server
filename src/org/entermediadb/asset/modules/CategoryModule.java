@@ -68,7 +68,7 @@ public class CategoryModule extends BaseMediaModule
 		String root = inRequest.getRequestParameter(name + "root");
 		String reload = inRequest.getRequestParameter("reloadtree");
 
-		if( root != null && webTree != null && webTree.getName().equals(root))
+		if( root != null && webTree != null && !root.equals( webTree.getRootId() ) )
 		{
 			reload="true";
 		}
@@ -88,7 +88,6 @@ public class CategoryModule extends BaseMediaModule
 				return null;
 			}
 			log.info("No Category in Session, creating new " + treeid);
-			String root = inRequest.getRequestParameter(name + "root");
 			if( root == null)
 			{
 				root = inRequest.findValue(name + "root");

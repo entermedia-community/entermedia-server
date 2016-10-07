@@ -32,6 +32,12 @@ public class WebTree implements Serializable
 	protected transient String fieldName;
 	protected transient String fieldId;
 	
+	public String getRootId()
+	{
+		String id = getModel().getId( getModel().getRoot() );
+		return id;
+	}
+
 	protected transient WebTreeModel fieldModel;
 	protected transient TreeRenderer fieldTreeRenderer;
 
