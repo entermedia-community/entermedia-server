@@ -1,8 +1,10 @@
 package model.assets;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
@@ -14,7 +16,6 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.util.PathUtilities;
 
 /**
@@ -39,7 +40,7 @@ public class LibraryManager extends EnterMediaObject
 		Searcher librarySearcher = mediaarchive.getSearcher("library");
 		Searcher librarycollectionSearcher = mediaarchive.getSearcher("librarycollection");
 		
-		//List tosave = new ArrayList();
+		List tosave = new ArrayList();
 		int savedsofar = 0;
 		
 		ProjectManager proj = mediaarchive.getProjectManager();
@@ -67,12 +68,11 @@ public class LibraryManager extends EnterMediaObject
 					Collection existing = hit.getValues("libraries");
 					if( existing == null || !existing.contains(libraryid))
 					{
-//						if( loaded == null)
-//						{
-//							loaded = (Asset) searcher.loadData(hit);
-//							tosave.add(loaded);
-//							savedsofar++;
-//						}
+						if( loaded == null)
+						{
+							loaded = (Asset) searcher.loadData(hit);
+							savedsofar++;
+						}
 						//loaded.addLibrary(libraryid);
 						Data li = (Data) fieldLibraries.get(libraryid);
 						//loaded.setProperty("project",li.get("project") );
@@ -85,31 +85,34 @@ public class LibraryManager extends EnterMediaObject
 							String collectionrootpath =  loaded.getSourcePath().substring(toppath.length());
 							collectionrootpath = PathUtilities.extractDirectoryName(collectionrootpath);
 							Category cat = mediaarchive.createCategoryPath(toppath + collectionrootpath);
-							Data collection = (Data)librarycollectionSearcher.query().exact("rootcategory", cat.getId()).search();
+							Data collection = (Data)librarycollectionSearcher.query().exact("rootcategory", cat.getId()).searchOne();
 							if( collection == null)
 							{
 								collection = (Data)librarycollectionSearcher.createNewData();
+								collection.setName(collectionrootpath);
 								collection.setProperty("library", li.getId());
+								
 								collection.setProperty("rootcategory", cat.getId());
 							}
 							loaded.addCategory(cat);
 							librarycollectionSearcher.saveData(collection);
+							tosave.add(loaded);
 						}
 
 						//log.info("found ${sofar}" );
 					}
 				}
 			}
-//			if(tosave.size() == 100)
-//			{
-//				searcher.saveAllData(tosave, null);
-//				savedsofar = tosave.size() + savedsofar;
-//				log.info("assets added to library: " + savedsofar );
-//				tosave.clear();
-//			}
+			if(tosave.size() == 100)
+			{
+				searcher.saveAllData(tosave, null);
+				savedsofar = tosave.size() + savedsofar;
+				log.info("assets added to library: " + savedsofar );
+				tosave.clear();
+			}
 		}
-		//searcher.saveAllData(tosave, null);
-		//savedsofar = tosave.size() + savedsofar;
+		searcher.saveAllData(tosave, null);
+		savedsofar = tosave.size() + savedsofar;
 		log.debug("completedlibraryadd added: " + savedsofar );
 		if( fieldLibraryFolders != null)
 		{

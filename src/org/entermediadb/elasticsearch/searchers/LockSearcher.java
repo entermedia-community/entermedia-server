@@ -70,6 +70,14 @@ public class LockSearcher extends BaseElasticSearcher
 //		delete.setQuery(builder).execute().actionGet();
 		
 	}
+
+	@Override
+	public boolean initialize()
+	{
+		boolean init = super.initialize();
+		clearStaleLocks();
+		return init;
+	}
 	
 //	public void shutdown()
 //	{
