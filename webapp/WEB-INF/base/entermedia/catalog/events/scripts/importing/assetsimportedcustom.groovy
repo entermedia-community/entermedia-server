@@ -391,6 +391,7 @@ public void assignCollections(Collection hits){
 
 
 setAssetTypes();
+setupProjects();
 //setDefaultMetadataFields();
 //setDefaultLibrary();
 //setDefaultTags();
