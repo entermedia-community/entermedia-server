@@ -93,6 +93,7 @@ public class LibraryManager extends EnterMediaObject
 								collection.setProperty("categoryid", cat.getId());
 							}
 							loaded.addCategory(cat);
+							librarycollectionSearcher.saveData(collection);
 						}
 
 						//log.info("found ${sofar}" );
