@@ -85,12 +85,12 @@ public class LibraryManager extends EnterMediaObject
 							String collectionrootpath =  loaded.getSourcePath().substring(toppath.length());
 							collectionrootpath = PathUtilities.extractDirectoryName(collectionrootpath);
 							Category cat = mediaarchive.createCategoryPath(toppath + collectionrootpath);
-							Data collection = (Data)librarycollectionSearcher.query().match("categoryid", cat.getId()).search();
+							Data collection = (Data)librarycollectionSearcher.query().exact("rootcategory", cat.getId()).search();
 							if( collection == null)
 							{
 								collection = (Data)librarycollectionSearcher.createNewData();
 								collection.setProperty("library", li.getId());
-								collection.setProperty("categoryid", cat.getId());
+								collection.setProperty("rootcategory", cat.getId());
 							}
 							loaded.addCategory(cat);
 							librarycollectionSearcher.saveData(collection);

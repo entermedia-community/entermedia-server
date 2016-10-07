@@ -150,7 +150,7 @@ public class CatalogWebTreeModel extends BaseTreeModel
 			return true;
 		}
 		
-		if( getUserProfile() != null && getUserProfile().getId().equals("administrators"))
+		if( getUserProfile() != null && getUserProfile().getSettingsGroup().getId().equals("administrator"))
 		{
 			return true;
 		}
