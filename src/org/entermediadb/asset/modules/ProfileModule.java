@@ -301,7 +301,18 @@ public class ProfileModule extends MediaArchiveModule
 		String[] fields = inReq.getRequestParameters("field");
 		if (fields == null)
 		{
-			return;
+			String field = inReq.getCurrentAction().getChildValue("field");
+			String value = inReq.getCurrentAction().getChildValue(field + ".value");
+			if( field != null && value != null)
+			{
+				inReq.setRequestParameter("field", field );
+				inReq.setRequestParameter(field + ".value", value );
+				fields = inReq.getRequestParameters("field");
+			}
+			else
+			{
+				return;
+			}
 		}
 		UserProfile prof = loadUserProfile(inReq);
 

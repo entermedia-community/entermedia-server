@@ -176,6 +176,17 @@ jQuery(document).ready(function()
 		contextmenu.hide();
 		return node;
 	}
+	$(".treecontext #nodeproperties").livequery('click', function(event) 
+	{
+				event.stopPropagation();
+				var node = getNode(this);
+				var tree = node.closest(".emtree");
+				var nodeid = node.data('nodeid');
+				var link = tree.data("home") + "/views/modules/category/edit/edit.html?id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral"; 
+				document.location = link;
+				return false;
+	} );
+
 	
 	$(".treecontext #renamenode").livequery('click', function(event) {
 				event.stopPropagation();
