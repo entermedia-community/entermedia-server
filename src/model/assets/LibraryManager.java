@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.EnterMediaObject;
@@ -14,7 +15,13 @@ import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.util.PathUtilities;
 
+/**
+ * This class is not needed anymore
+ * @author shanti
+ *
+ */
 public class LibraryManager extends EnterMediaObject
 {
 	//If a user picks a library and collection then we just need to add the category
@@ -68,20 +75,26 @@ public class LibraryManager extends EnterMediaObject
 //						}
 						//loaded.addLibrary(libraryid);
 						Data li = (Data) fieldLibraries.get(libraryid);
-						loaded.setProperty("project",li.get("project") );
+						//loaded.setProperty("project",li.get("project") );
 						//Now check for collections that have the right name
-						HitTracker hits = librarycollectionSearcher.query().match("library", libraryid).search();
-						for (Iterator iterator2 = hits.iterator(); iterator2.hasNext();)
+						
+						String toppath = li.get("folder") + "/";
+						if( loaded.getSourcePath().startsWith(toppath) )
 						{
-							Data coll = (Data) iterator2.next();
-							String toppath = li.get("folder") + "/" + coll.getName();
-							if( loaded.getSourcePath().startsWith(toppath) )
+							//grab more more level down and create a collection category and add the asset to it and create a collection to match
+							String collectionrootpath =  loaded.getSourcePath().substring(toppath.length());
+							collectionrootpath = PathUtilities.extractDirectoryName(collectionrootpath);
+							Category cat = mediaarchive.createCategoryPath(toppath + collectionrootpath);
+							Data collection = (Data)librarycollectionSearcher.query().match("categoryid", cat.getId()).search();
+							if( collection == null)
 							{
-								proj.addAssetToCollection(mediaarchive, coll.getId(), loaded.getId());
-								savedsofar++;
+								collection = (Data)librarycollectionSearcher.createNewData();
+								collection.setProperty("library", li.getId());
+								collection.setProperty("categoryid", cat.getId());
 							}
-							
+							loaded.addCategory(cat);
 						}
+
 						//log.info("found ${sofar}" );
 					}
 				}
