@@ -41,18 +41,18 @@ public class LibraryManager extends EnterMediaObject
 		Searcher librarycollectionSearcher = mediaarchive.getSearcher("librarycollection");
 		
 		List tosave = new ArrayList();
-		int savedsofar = 0;
+		//int savedsofar = 0;
 		
 		ProjectManager proj = mediaarchive.getProjectManager();
 		
-		for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
+		{
 			MultiValued hit = (MultiValued) iterator.next();
 			
 			String sourcepath = hit.getSourcePath();
 			//log.info("try ${sourcepath}" );
 			String[] split = sourcepath.split("/");
 			String sofar = "";
-			Asset loaded = null;
 			for( int i=0;i<split.length - 1;i++)
 			{
 				if( i > 10 )
@@ -65,55 +65,39 @@ public class LibraryManager extends EnterMediaObject
 		
 				if( libraryid != null )
 				{
-					Collection existing = hit.getValues("libraries");
-					if( existing == null || !existing.contains(libraryid))
+					Data li = (Data) fieldLibraries.get(libraryid);
+					//Now check for collections that have the right name						
+					String toppath = li.get("folder") + "/";
+					if( hit.getSourcePath().startsWith(toppath) )
 					{
-						if( loaded == null)
+						//grab more more level down and create a collection category and add the asset to it and create a collection to match
+						String collectionrootpath =  hit.getSourcePath().substring(toppath.length());
+						collectionrootpath = PathUtilities.extractRootDirectory(collectionrootpath);
+						Category cat = mediaarchive.createCategoryPath(toppath + collectionrootpath);
+						Data collection = (Data)librarycollectionSearcher.query().exact("rootcategory", cat.getId()).searchOne();
+						if( collection == null)
 						{
-							loaded = (Asset) searcher.loadData(hit);
-							savedsofar++;
-						}
-						//loaded.addLibrary(libraryid);
-						Data li = (Data) fieldLibraries.get(libraryid);
-						//loaded.setProperty("project",li.get("project") );
-						//Now check for collections that have the right name
-						
-						String toppath = li.get("folder") + "/";
-						if( loaded.getSourcePath().startsWith(toppath) )
-						{
-							//grab more more level down and create a collection category and add the asset to it and create a collection to match
-							String collectionrootpath =  loaded.getSourcePath().substring(toppath.length());
-							collectionrootpath = PathUtilities.extractDirectoryName(collectionrootpath);
-							Category cat = mediaarchive.createCategoryPath(toppath + collectionrootpath);
-							Data collection = (Data)librarycollectionSearcher.query().exact("rootcategory", cat.getId()).searchOne();
-							if( collection == null)
-							{
-								collection = (Data)librarycollectionSearcher.createNewData();
-								collection.setName(collectionrootpath);
-								collection.setProperty("library", li.getId());
-								
-								collection.setProperty("rootcategory", cat.getId());
-							}
-							loaded.addCategory(cat);
+							collection = (Data)librarycollectionSearcher.createNewData();
+							collection.setName(collectionrootpath);
+							collection.setProperty("library", li.getId());
+							
+							collection.setProperty("rootcategory", cat.getId());
 							librarycollectionSearcher.saveData(collection);
-							tosave.add(loaded);
 						}
-
-						//log.info("found ${sofar}" );
 					}
 				}
 			}
-			if(tosave.size() == 100)
-			{
-				searcher.saveAllData(tosave, null);
-				savedsofar = tosave.size() + savedsofar;
-				log.info("assets added to library: " + savedsofar );
-				tosave.clear();
-			}
+//			if(tosave.size() == 100)
+//			{
+//				searcher.saveAllData(tosave, null);
+//				savedsofar = tosave.size() + savedsofar;
+//				log.info("assets added to library: " + savedsofar );
+//				tosave.clear();
+//			}
 		}
-		searcher.saveAllData(tosave, null);
-		savedsofar = tosave.size() + savedsofar;
-		log.debug("completedlibraryadd added: " + savedsofar );
+//		searcher.saveAllData(tosave, null);
+//		savedsofar = tosave.size() + savedsofar;
+//		log.debug("completedlibraryadd added: " + savedsofar );
 		if( fieldLibraryFolders != null)
 		{
 			fieldLibraryFolders.clear();
