@@ -5,6 +5,7 @@ package org.entermediadb.asset.modules;
 
 import java.io.File;
 import java.io.FilenameFilter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -18,10 +19,8 @@ import org.entermediadb.asset.edit.CategoryEditor;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.data.Searcher;
 import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.util.PathUtilities;
 
 /**
@@ -268,6 +267,8 @@ public class CategoryEditModule extends BaseMediaModule {
 		}
 		
 		String hitssessionid = inPageRequest.getRequestParameter("hitssessionid");
+		boolean movecategory = Boolean.parseBoolean( inPageRequest.getRequestParameter("moveasset") );
+		String rootcategoryid = inPageRequest.getRequestParameter("rootcategoryid");
 		if( hitssessionid != null )
 		{
 			HitTracker tracker = (HitTracker)inPageRequest.getSessionValue(hitssessionid);
@@ -282,7 +283,7 @@ public class CategoryEditModule extends BaseMediaModule {
 				{
 					Data data = (Data) iterator.next();
 					Asset asset = archive.getAsset(data.getId());
-					addCategoryToAsset(inPageRequest, archive ,categories, asset);
+					addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
 					added++;
 				}
 				
@@ -296,21 +297,30 @@ public class CategoryEditModule extends BaseMediaModule {
 			log.error("No asset id passed in");
 			return;
 		}
-		addCategoryToAsset(inPageRequest, archive ,categories, asset);
+		addCategoryToAsset(inPageRequest, archive ,categories, asset, movecategory, rootcategoryid);
 		inPageRequest.putPageValue("added" , "1");
 	}
 
-	protected void addCategoryToAsset(WebPageRequest inPageRequest, MediaArchive archive, String[] add, Asset asset)
+	protected void addCategoryToAsset(WebPageRequest inPageRequest, MediaArchive archive, String[] add, Asset asset, boolean moveasset, String rootcategoryid)
 	{
-		String message = "Added to category ";
+		if( moveasset )
+		{
+			List<Category> cats = new ArrayList(asset.getCategories());
+			for(Category cat: cats)
+			{
+				if( cat.hasParent(rootcategoryid))
+				{
+					asset.removeCategory(cat);
+				}
+			}
+		}
+		
 		for (int i = 0; i < add.length; i++) {
 			Category c = archive.getCategory(add[i]);
 			if (c == null) {
 				log.info("No category found. " + add[i]);
 				return;
 			}
-
-			message = message + "\"" + c.getName() + "\"";
 			asset.addCategory(c);
 		}
 		archive.saveAsset(asset, inPageRequest.getUser());

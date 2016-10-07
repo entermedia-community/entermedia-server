@@ -700,11 +700,20 @@ onloadselectors = function()
 								hitssessionid = $("#main-results-table").data("hitssessionid");
 							}
 							//this is a category
+							var moveit = false;
+							if( node.closest(".assetdropcategorymove").length > 0 )
+							{
+								moveit = true;
+							}
+							var rootcategory = node.closest(".emtree").data("rootnodeid");
+								
 							jQuery.get(apphome + "/components/categorize/addassetcategory.html", 
 									{
 										assetid:assetid,
 										categoryid:categoryid,
-										hitssessionid:hitssessionid
+										hitssessionid:hitssessionid,
+										moveasset: moveit,
+										rootcategoryid: rootcategory
 									},
 									function(data) 
 									{
