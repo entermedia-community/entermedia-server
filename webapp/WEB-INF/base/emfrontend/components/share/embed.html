@@ -74,9 +74,9 @@
 </p>
 
 #if( $mediadbappid )
-#set( $downloadlink = "$prefix$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+#set( $downloadlink = "$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
 #else
-#set( $downloadlink = "$prefix$home$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+#set( $downloadlink = "$home$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
 #end
 
 <p class="hyphenate"> 
