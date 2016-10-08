@@ -764,7 +764,6 @@ uiload = function() {
 		    var id = link.attr("id");
 
 		    var url = link.attr("href");
-		    url = url + "#" + id;
 			var panelid =  id + "panel";
 			var tab = $( "#" + panelid);
 			if( tab.length == 0)
@@ -788,6 +787,7 @@ uiload = function() {
 			}
 			else
 			{
+		    	url = url + "#" + id;
 				var loaded = link.data("tabloaded");
 				if( link.data("allwaysloadpage") )
 				{	

@@ -9,11 +9,12 @@
 	
 	
 	
-  
- <script id="jquery" src="/${applicationid}/docs/bootstrap/js/jquery.js" />
- <script id="bootstrap" src="/${applicationid}/docs/bootstrap/js/bootstrap.js" />
- <style id="bootstrap" href='/${applicationid}/docs/bootstrap/css/bootstrap.min.css' />
+<script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
+<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/js/bootstrap.js" />
+<style id="bootstrap" href='/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css' />
 <script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
+  
+
 
 <inner-layout>/${applicationid}/docs/theme/layouts/layout.html</inner-layout>
 <property name="title">EnterMediaDB</property>

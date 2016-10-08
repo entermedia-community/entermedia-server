@@ -4,13 +4,13 @@
 	<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
 	
 	<script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
-	<script id="bootstrap" src="/${applicationid}/components/bootstrap/js/bootstrap.js" />
+	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/js/bootstrap.js" />
 	
 	<script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.11.4.min.js"/>
 	<script id="jquery-ui-i18n" src="/${applicationid}/components/javascript/ui/i18n/jquery-ui-i18n.js"/>
 	<style id="jqueryui" href="${themeprefix}/styles/jquery-ui.css"/>
 
-	<style id="bootstrap" href="/${applicationid}/components/bootstrap/css/bootstrap.min.css" />
+	<style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
 	 
    	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
   	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>

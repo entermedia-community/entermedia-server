@@ -30,8 +30,8 @@
     <style id="annotations" href="/${applicationid}/components/annotations/ajax/css/annotations.css" />
     <style id="colorpickercss" href="/${applicationid}/components/javascript/colorpicker-master/jquery.colorpicker.css"/>
     
- 
-	
+     <property name="defaulttab">emannotationstab</property>
+ 	
 	<!-- load in lodash for now, can replace these calls later if needed -->
     <script id="lodash" src="/${applicationid}/components/annotations/vendor/lodash/lodash.js"></script>
     <script id="annotate-main" src="/${applicationid}/components/annotations/ajax/main.js"></script>

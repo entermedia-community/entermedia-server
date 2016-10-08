@@ -26,7 +26,7 @@
     		<action name="ProjectModule.checkLibraryPermission" />
     </permission>
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
-	  <style id="bootstrap" href="/${applicationid}/components/bootstrap/css/bootstrap.min.css" />
+	  <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
 	 
 	    	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
   	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>

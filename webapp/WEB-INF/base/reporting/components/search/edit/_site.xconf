@@ -1,6 +1,0 @@
-<page>
-	<path-action name="DataEditModule.loadSearcherForEdit" />
-	<permission name="view">
-		<permission name="oe.administration"/>
-	</permission>
-</page>

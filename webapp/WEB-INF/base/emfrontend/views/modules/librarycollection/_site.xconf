@@ -9,15 +9,9 @@
 	
 	<property name="defaulttab">mediatab</property>
 
-	 <script id="jscroller"  src="/${applicationid}/components/javascript/scroller/jquery.mThumbnailScroller.js">  </script>
-     <style id="jscroller-css"  href="/${applicationid}/components/javascript/scroller/jquery.mThumbnailScroller.css" />
-
 	<style id="uploadstyle" href="${themeprefix}/styles/pages/upload.css" />
 	<property name="uploadtab">single</property>
 	<script id="upload" src="/${applicationid}/components/upload/types/html5/upload.js" />
 	<script id="html5_upload" src="/${applicationid}/components/javascript/upload/jquery.html5_upload.js" />
 
-	<script id="jstree" src="/${applicationid}/components/javascript/jstree/dist/jstree.min.js" />
-	<style id="jstree-css" href="/${applicationid}/components/javascript/jstree/dist/themes/default/style.min.css" />
-    
 </page>

@@ -2152,10 +2152,9 @@ center #addcoment {
     border-left: 1px solid #80b5c6;
     display: table-cell;
     margin: 0;
-    min-height: 600px;
+    min-height: 100%;
     min-width: 100%;
     border-radius: 0 0 5px 0;
-    padding-bottom: 20px;
 }
 .ui-widget-header, #nav, #header .navlinks {
 	border:0 none;
@@ -6823,10 +6822,10 @@ select.smalldropdown {
 }
 #collection-tab-content
 {
-	border: 1px solid #eee;
+	border-top: 1px solid #eee;
 	margin: -1px 0 0 0;
 	background-color: white;
-	padding-bottom: 60px;
+	min-height: 160px;
 }	
 #emcontent #collection-home-tab-content
 {

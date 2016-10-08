@@ -46,7 +46,8 @@ $context.putPageValue("asset", $asset)
 			if(size != "original"){
 			window.opener.CKEDITOR.tools.callFunction( 1, "$home$apphome/views/modules/asset/downloads/preview/" + size + "/${asset.sourcepath}/thumb.jpg" );
 			} else{
-				#set($url = $mediaarchive.asLinkToOriginal($asset))
+				#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+				#set($url = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
 				
 				window.opener.CKEDITOR.tools.callFunction( 1, "$url" );
 			}

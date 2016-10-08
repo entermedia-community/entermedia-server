@@ -2,7 +2,9 @@
         #set ( $hit = $asset )
     #end
 #if( $hit.get("fileformat") == "mp3")
-    #set ($path = "$home${mediaarchive.asLinkToOriginal($hit)}")
+	#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+	#set ($path = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
+
 #else
     #set ($path = "$home$apphome/views/modules/asset/downloads/mp3/$hit.sourcepath/audio.mp3")
 #end    

@@ -30,11 +30,11 @@ $pages.include("/${applicationid}/docs/theme/layouts/header.html")
    #set($sectionid  = $context.getRequestParameter("section"))
    
    #foreach($section in $sections)
-    <div class="panel-group" role="tablist">
+    <div class="panel-group">
     <div class="panel panel-default">
-      <div class="panel-heading" role="tab" id="collapseListGroupHeading1${section.id}">
+      <div class="panel-heading" id="collapseListGroupHeading1${section.id}">
         <h4 class="panel-title">
-          <a class="" data-toggle="collapse" href="#collapseListGroup1${section.id}" aria-expanded="false" aria-controls="collapseListGroup1${section.id}">
+          <a class="" data-toggle="collapse" href="#collapseListGroup1${section.id}" >
             $section
           </a>
         </h4>
@@ -62,7 +62,7 @@ $pages.include("/${applicationid}/docs/theme/layouts/header.html")
 		
 		
 		
-		
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 		
 </body>
 </html>

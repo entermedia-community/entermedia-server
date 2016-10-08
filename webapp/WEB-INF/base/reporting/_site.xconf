@@ -53,9 +53,9 @@
   </permission>
   
   
+  <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
   
   
- <script id="jquery" src="/${applicationid}/bootstrap/js/jquery.js" />
     <script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
   <script id="jquery-fancybox" src="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.js"/>
   <style id="jquery-fancybox-css" href="/${applicationid}/components/javascript/jquery.fancybox/jquery.fancybox.css"/>

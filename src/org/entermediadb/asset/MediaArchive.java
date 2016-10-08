@@ -235,7 +235,6 @@ public class MediaArchive
 			return null;
 		}
 		StringBuffer out = new StringBuffer();
-		out.append(getCatalogHome() + "/downloads/originals/");
 		out.append(inSourcePath);
 
 		if (inPrimaryImageName == null)
