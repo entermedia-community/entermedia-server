@@ -26,7 +26,8 @@
 	</div -->
 	<div class="row">
 		<span>[[Original Download]]: </span>
-		#set( $link = $mediaarchive.asLinkToOriginal($asset) )
+		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+    #set ($link = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
 		<span><a href="$context.siteRoot$home$link">download</a>
 			<input size="100" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home$link"/>
