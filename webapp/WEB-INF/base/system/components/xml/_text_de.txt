@@ -1,5 +1,3 @@
-#
-#Thu Feb 12 16:17:32 EST 2015
-No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=keine Daten zur Ansicht zur Verfügung; bitte bearbeiten Sie die Ansichtsvorgaben. 
+#Mon Oct 10 12:22:34 EDT 2016
+No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=Keine Daten zur Ansicht zur Verfügung - bitte bearbeiten Sie die Ansichtseinstellungen.
 required=erforderlich
-

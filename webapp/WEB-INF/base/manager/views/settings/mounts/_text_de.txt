@@ -1,12 +1,11 @@
-#
-#Thu Apr 08 15:23:14 EDT 2010
+#Mon Oct 10 12:22:34 EDT 2016
 Actions=Aktionen
 Edit=bearbeiten
-Mounted\ Folders=gemountete Ordner
+Mounted\ Folders=Gemountete Ordner
 Remove\ this\ entry?=Diesen Eintrag entfernen?
 Path=Pfad
 Reload\ Mounts=Mounts erneut laden
 Remove=entfernen
 Add\ new\ entry=Neuen Eintrag hinzufügen
-External\ Path=externer Pfad
+External\ Path=Externer Pfad
 By\ default\ all\ files\ are\ version\ controlled=Standardmäßig stehen alle Dateien unter Versionskontrolle

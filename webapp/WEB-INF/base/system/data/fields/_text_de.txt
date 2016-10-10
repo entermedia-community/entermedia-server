@@ -1,0 +1,10 @@
+#Mon Oct 10 12:22:34 EDT 2016
+First\ Name=Vorname
+Enabled=Aktiviert
+Notes=Notizen
+User\ ID=Benutzer-ID
+Email=E-Mail
+Password=Passwort
+User\ Search=Benutzersuche
+Sent\ By=Gesendet von
+Last\ Name=Nachname

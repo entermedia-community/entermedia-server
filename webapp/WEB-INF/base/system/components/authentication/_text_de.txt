@@ -1,11 +1,10 @@
-#
-#Thu Jan 14 13:10:51 EST 2016
+#Mon Oct 10 12:22:34 EDT 2016
 Please\ enter\ your\ password=Bitte geben Sie Ihr Passwort ein
 or\ Create\ a\ New\ Account=oder erstellen Sie ein neues Konto
 Email\ or\ Username=E-Mail oder Benutzername
-Forgotten\ your\ password?=Passwort vergessen ?
-Welcome\!\ Please\ enter\ your\ email\ and\ password\:=herzlich willkommen\! geben Sie bitte Ihre E-Mail und Passwort ein\:
+Forgotten\ your\ password?=Passwort vergessen?
+Welcome\!\ Please\ enter\ your\ email\ and\ password\:=Herzlich willkommen\! Geben Sie bitte E-Mail und Passwort ein\:
 Login=einloggen
-Log\ in=einloggen
+Log\ in=Anmelden
 You\ are\ logged\ in\ as=Sie sind angemeldet als
 Password=Passwort

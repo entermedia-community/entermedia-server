@@ -1,0 +1,4 @@
+#Mon Oct 10 12:22:34 EDT 2016
+Applications\ =Anwendungen
+Toggle\ navigation=Toggle-Navigation
+Create\ Module\ API=erstellen Modul api
