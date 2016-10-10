@@ -19,24 +19,26 @@ jQuery(document).ready(function()
 		var btn = $(this);
 		var url =  btn.attr('href');
 		var detailid = btn.data('detailid');
-		var languages = $("#languages"+detailid);
-		var value = $("#languagesavevalue").val();
-		var count = $("#languagesextra_"+detailid+"_count").val();
-		if ($.isNumeric(count)) 
-			count++;
-		else
-			count = 1;
-		var args = {oemaxlevel : 1, 
-					detailid : detailid, 
-					count : count,
-					languagecode: languages.val(), 
-					languagename: $("#languages"+detailid+" :selected").text()};
 		
-		jQuery.get(url, args, function (data) {
-			$("#languagesextra_"+detailid).append(data);
-			$("#languagesextra_"+detailid+"_count").val(count);
+		var languages = [];
+		var args = {oemaxlevel : 1, 
+					detailid : detailid,
+					usedlanguages : [] 
+					};
+		
+		$(".lenguagepicker").each(function()
+		{
+			var value = $(this).val();
+			args.usedlanguages.push(value); 
 		});
-		//
+		$.get(url,args, function(data) {
+			var selectlist = $(".lenguagepicker option", data);
+			if( $(selectlist).length > 0)
+			{
+				$("#languagesextra_"+detailid).append(data);
+				$(document).trigger("domchanged");
+			}	
+		})	
 		
 	});
 });

@@ -5,12 +5,14 @@
 
 #set($languages = $mediaarchive.getList("locale"))
 
-
+#set($usedlanguages = $context.getRequestParameters("usedlanguages") )
 <div class="languagesaddform">
 	<div style="float:left; padding:0 5px">
 		<select class="select2 lenguagepicker" id="languages_${detailid}_${language_count}" name="${detailid}.language" data-detailid="${detailid}">
 			#foreach($locale in $languages)
+			#if( !$usedlanguages.contains($locale.id))
 			<option value="$!locale.id" #if($!languagecode==$!locale.id) selected="selected" #end>$!locale</option>
+			#end
 			#end
 		</select>
 	</div>

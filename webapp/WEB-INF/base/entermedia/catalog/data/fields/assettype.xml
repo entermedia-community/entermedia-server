@@ -1,7 +1,7 @@
 
 <properties>
   <property id="id" index="true" stored="true" editable="true" searchtype="assettype">Id</property>
-  <property id="name" index="true" stored="true" editable="true" searchtype="assettype">Name</property>
+  <property id="name" index="true" stored="true" editable="true" searchtype="assettype" multilanguage="true" >Name</property>
   <property id="extensions" index="true" stored="true" editable="true" searchtype="assettype">Extensions</property>
   <property id="paths" index="true" stored="true" editable="true">Paths</property>
   <property id="ordering" editable="true" index="true" type="number" stored="true">Ordering</property>
