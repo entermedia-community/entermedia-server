@@ -20,9 +20,12 @@ jQuery(document).ready(function()
 		var url =  btn.attr('href');
 		var detailid = btn.data('detailid');
 		
+		var count = $("#languagesextra_" + detailid ).data("count");
+		count = count + 1;
 		var languages = [];
 		var args = {oemaxlevel : 1, 
 					detailid : detailid,
+					count: count,
 					usedlanguages : [] 
 					};
 		
@@ -36,6 +39,7 @@ jQuery(document).ready(function()
 			if( $(selectlist).length > 0)
 			{
 				$("#languagesextra_"+detailid).append(data);
+				$("#colanguagesextra_" + detailid ).data("count",count);
 				$(document).trigger("domchanged");
 			}	
 		})	

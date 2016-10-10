@@ -6,20 +6,21 @@
 			#set($dlocale = $context.getLanguage() )
 			<input type="hidden" value="#esc($val)" name="$!{detailprefix}${detail.getId()}.value" /> ##if this really needed?
 			
-			#set($language_count = 1)
+			#set($language_count = 0)
 			<div class="languageselector pull-left">
 				#foreach($locale in $languages)
 					#set($localval = $map.getText($locale.id))
 					#if($localval && $localval != "")
-						$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$locale.id",$context)
 						#set($language_count = $language_count+1)
+						$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$locale.id",$context)
 					#end
 					#set($localval = "")
 				#end
-				#if($language_count == 1)
+				#if($language_count == 0)
+				#set($language_count = $language_count+1)
 				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$dlocale",$context)
 				#end
-				<div id="languagesextra_${detail.id}" ></div> 
+				<div id="languagesextra_${detail.id}" data-count='$language_count' ></div> 
 			</div>
 			
 			<div style="padding: 10px" class="pull-left"> ##TODO, update the parameters using jQuery
