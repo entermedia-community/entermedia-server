@@ -261,16 +261,12 @@ public class BaseHotFolderManager implements HotFolderManager
 		else if( "googledrive".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
-			String email = inNewrow.get("email");
 			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
-			String hotfolderpath = archive.getCatalogSettingValue("hotfolderoverride");
-			if( hotfolderpath == null)
-			{
-				hotfolderpath = System.getProperty("user.home") + "/HotFolders";
-			}	
-			hotfolderpath =  hotfolderpath + "/" + email ;
-			new File( hotfolderpath + "/").mkdirs();
-			inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);
+
+			String hotfolderpath =  "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder;
+			File file = new File( hotfolderpath + "/");
+			file.mkdirs();
+			inNewrow.setProperty("externalpath",file.getAbsolutePath());				
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			
 			String key = inNewrow.get("accesskey");
@@ -279,32 +275,18 @@ public class BaseHotFolderManager implements HotFolderManager
 			if( !result.isRunOk() )
 			{
 				log.info("insync-headless " + com + " =" + result.getStandardError());
-				throw new OpenEditException("Could not save google drive:" + toplevelfolder + " " + email + " " +  result.getStandardError());
+				throw new OpenEditException("Could not save google drive:" + toplevelfolder + " " + result.getStandardError());
 			}	
 		}
 		else if( "resiliodrive".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
 			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
-			String enabled = inNewrow.get("enabled");
-			if( Boolean.parseBoolean(enabled))
-			{
-				String hotfolderpath = archive.getCatalogSettingValue("hotfolderoverride");
-				if( hotfolderpath == null)
-				{
-					hotfolderpath = System.getProperty("user.home") + "/HotFolders";
-				}	
-				hotfolderpath =  hotfolderpath + "/" + toplevelfolder ;
-				new File( hotfolderpath + "/").mkdirs();
-				inNewrow.setProperty("externalpath",hotfolderpath + "/" + toplevelfolder);				
-			}
-			else
-			{
-				String hotfolderpath =  "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder;
-				File file = new File( hotfolderpath + "/");
-				file.mkdirs();
-				inNewrow.setProperty("externalpath",file.getAbsolutePath());				
-			}
+			
+			String hotfolderpath =  "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder;
+			File file = new File( hotfolderpath + "/");
+			file.mkdirs();
+			inNewrow.setProperty("externalpath",file.getAbsolutePath());				
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
 			archive.fireMediaEvent("hotfolder/resiliodrivesaved", "hotfolder", inNewrow.getId(), null);
 		}
