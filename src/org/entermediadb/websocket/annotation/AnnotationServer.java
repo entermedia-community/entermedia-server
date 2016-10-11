@@ -246,7 +246,7 @@ public class AnnotationServer  {
 			Data annotation = (Data) iterator.next();
 			JSONObject json = new JSONObject();
 			//json.put("id", annotation.getId() );
-			for (Iterator iterator2 = annotation.getProperties().keySet().iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = annotation.keySet().iterator(); iterator2.hasNext();)
 			{
 				String key = (String) iterator2.next();
 				String value = annotation.get(key);

@@ -253,7 +253,7 @@ public class WorkspaceManager
 				endpoint = endpointSearcher.createNewData();
 			}
 			//endpoint.setProperties(row.getProperties());
-			for (Iterator iterator2 = row.getProperties().keySet().iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = row.keySet().iterator(); iterator2.hasNext();)
 			{
 				String key = (String) iterator2.next();
 				String val = row.get(key);

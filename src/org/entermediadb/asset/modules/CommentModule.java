@@ -88,7 +88,7 @@ public class CommentModule extends BaseMediaModule
 		event.setProperty("siteRoot", inReq.getSiteRoot());
 		
 		//add in extra info?
-		for (Iterator iterator = inComment.getProperties().keySet().iterator(); iterator.hasNext();)
+		for (Iterator iterator = inComment.keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
 			event.setProperty(key, inComment.get(key));

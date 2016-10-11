@@ -1,9 +1,10 @@
 #
-#Tue Oct 11 01:59:32 EDT 2016
-Logout=Cerrar sesi\u00F3n
+#Tue Oct 11 02:03:27 EDT 2016
 Language=Idioma
+Logout=Cerrar sesi\u00F3n
 Dashboard=Tablero
-My\ Account=Mi cuenta
 Settings=ajustes
-Applications=aplicaciones
+My\ Account=Mi cuenta
+System\ Settings=Ajustes del sistema
 Login=Iniciar sesi\u00F3n
+Applications=aplicaciones

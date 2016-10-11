@@ -18,7 +18,7 @@ public class ElasticLogSearcher extends BaseElasticSearcher   implements WebEven
 		Data entry = createNewData();
 		entry.setProperty("operation", inEvent.getOperation());
 		entry.setProperty("user", inEvent.getUsername());
-		for (Iterator iterator = inEvent.getProperties().keySet().iterator(); iterator
+		for (Iterator iterator = inEvent.keySet().iterator(); iterator
 				.hasNext();) {
 			String key = (String) iterator.next();
 			entry.setProperty(key, inEvent.get(key));

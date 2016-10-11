@@ -143,7 +143,7 @@ public class AttachmentManager
 
 					Asset asset = new Asset(inArchive);
 					getMetaDataReader().populateAsset(inArchive, page.getContentItem(), asset);
-					for (Iterator iterator2 = asset.getProperties().keySet().iterator(); iterator2.hasNext();)
+					for (Iterator iterator2 = asset.keySet().iterator(); iterator2.hasNext();)
 					{
 						String key = (String) iterator2.next();
 						String value = asset.get(key);

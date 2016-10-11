@@ -142,10 +142,10 @@ public class BaseHotFolderManager implements HotFolderManager
 				created.setFilterOut(folder.get("excludes"));
 				//add varliables
 				
-				for (Iterator iterator2 = folder.getProperties().keySet().iterator(); iterator2.hasNext();) {
+				for (Iterator iterator2 = folder.keySet().iterator(); iterator2.hasNext();) {
 					
 					String key = (String) iterator2.next();
-					created.setProperty(key, (String) folder.getProperties().get(key)); //
+					created.setProperty(key, (String) folder.get(key)); //
 				}
 				
 				newrepos.add(created);

@@ -463,7 +463,7 @@ public class BasePushManager implements PushManager
 			}
 //			parts.add(new StringPart("username", account));
 //			parts.add(new StringPart("password", password));
-			for (Iterator iterator = inAsset.getProperties().keySet().iterator(); iterator.hasNext();)
+			for (Iterator iterator = inAsset.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
 				if( !key.equals("libraries"))  //handled below

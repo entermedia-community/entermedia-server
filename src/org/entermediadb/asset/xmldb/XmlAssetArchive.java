@@ -241,7 +241,7 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 		inAsset.setId(data.getId());
 		inAsset.setName(data.getName());
 		inAsset.setSourcePath(data.getSourcePath());
-		for (Iterator iterator = data.getProperties().keySet().iterator(); iterator.hasNext();)
+		for (Iterator iterator = data.keySet().iterator(); iterator.hasNext();)
 		{
 			String key	= (String) iterator.next();
 			inAsset.setProperty(key, data.get(key));
