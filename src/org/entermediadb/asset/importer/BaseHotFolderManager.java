@@ -261,9 +261,10 @@ public class BaseHotFolderManager implements HotFolderManager
 		else if( "googledrive".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
+			String email = inNewrow.get("email");
 			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
 
-			ContentItem hotfolderpath =  archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder );
+			ContentItem hotfolderpath =  archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ email + "/" + toplevelfolder );
 			File file = new File( hotfolderpath.getAbsolutePath() );
 			file.mkdirs();
 			inNewrow.setProperty("externalpath",file.getAbsolutePath());				

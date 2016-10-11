@@ -26,10 +26,14 @@ public void init()
 		{
 			log.info("insync save");
 			String externalpath = folder.get("externalpath");
-
+			String email = folder.get("email");
+			
 			//HOMEDIR=$2 			THEAUTHCODE=$3					HOTFOLDER=$4
 			String key = folder.get("accesskey");
-			List<String> com = Arrays.asList(homedir.getAbsolutePath(),key, externalpath);
+			
+			ContentItem hotfolderpath =  archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ email + "/" );
+			
+			List<String> com = Arrays.asList(homedir.getAbsolutePath(),key, hotfolderpath.getAbsolutePath() );
 			
 			ExecResult result = exec.runExec("setupinsyncdrive",com,true);
 			if( !result.isRunOk() )
