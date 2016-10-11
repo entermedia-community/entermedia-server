@@ -1,11 +1,13 @@
 #
-#Tue Jan 26 14:57:19 EST 2016
+#Thu Oct 06 15:30:13 EDT 2016
 Settings=Param\u00E8tres
 Editing\ across\ $asset.size()\ records=Modification \u00E0 travers asset.size $ () enregistre
+Language=La langue
 Logout=Se d\u00E9connecter
 My\ Account=Mon compte
 Login=S&\#39;identifier
 There\ was\ a\ problem\ completing\ this\ request=Il y avait une difficult\u00E9 \u00E0 remplir cette demande
 System\ Settings=Les param\u00E8tres du syst\u00E8me
+Dashboard=Tableau de bord
 Applications=Applications
 Asset\ is\ missing=Actif est manquant

@@ -1,6 +1,7 @@
 <page>
-	<path-action name="MediaSearchModule.searchCategories"/>
 	<path-action name="ProjectModule.loadCollectionFromFolder"/>
+
+	<path-action name="MediaSearchModule.searchCategories"/>
 	<property name="searchcategory">true</property>
 
 	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>

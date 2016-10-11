@@ -1,0 +1,57 @@
+	
+		<div id="categoryresults">
+<div id="emresultscontent">
+
+#set( $searcher = $mediaarchive.getSearcher("asset") )
+$context.putPageValue("searcher",$searcher)
+#set ($details = $searcher.getDetailsForView("asset/pickerresults", $userprofile))
+$context.putPageValue("details",$details)
+$context.putPageValue("clickpath","$apphome/views/assets/")
+$context.putPageValue("viewpostfix",".html")
+$pages.include("./pages.html", $context)
+<div  class="tableholder" ">
+#set( $xmledithome = "$apphome/components/xml")    
+
+#set( $action = $context.getRequestParameter("actionurl") ) 
+#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+
+<div id="" class="" style="min-height: 450px"  >
+
+<table  id="main-results-table" class="emdata striped greytxt table tbl-responsive" >
+	<tr class="tableheader" >
+	<th>[[Preview]]</th>
+
+	<th>[[Name]]</th>
+	#foreach( $detail in $details )
+	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
+	#end
+	</tr>
+	<tbody ng-foreach="hit in dataresults">
+		#foreach( $hit in $hits.getPageOfHits() )
+		$context.putPageValue("hit", $hit)
+			<tr   data-assetid="$hit.id"  class="selectrowclick #if($selectedid == $hit.id) emhighlight #end">
+	<td>
+	$pages.include("$apphome/components/results/thumbnails/small.html",$context)		
+	</td>
+				<td  data-nodeid="$hit.id" >
+				$hit.name</td>
+			#foreach( $detail in $details)
+				<td style="padding:4px;">
+					#set( $val = "$!hit.get($detail.id)" )
+					#if($detail.render)
+						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
+					#end
+					$context.putPageValue("detail",$detail)
+					$context.putPageValue("val",$val)
+					$pages.include("$xmledithome/detailreadonly.html", $context)
+				</td>
+			#end	
+			</tr>
+		#end
+	</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
