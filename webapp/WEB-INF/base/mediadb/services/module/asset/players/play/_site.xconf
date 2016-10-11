@@ -6,5 +6,6 @@
 	<property name="assetpageid">true</property>
 	
 	<path-action name="MediaArchiveModule.getAsset"/>
+	  	<path-action name="AssetStatsModule.addPreViewEvent" />
 	
 </page>

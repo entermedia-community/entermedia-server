@@ -1,4 +1,6 @@
 <page>
 	<path-action name="MediaArchiveModule.getAsset"  />
  <inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
+ 	  	<path-action name="AssetStatsModule.addPreViewEvent" />
+ 
 </page>
