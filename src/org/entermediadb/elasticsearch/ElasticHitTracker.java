@@ -393,6 +393,7 @@ public class ElasticHitTracker extends HitTracker
 
 							long count = entry.getDocCount();
 							String term = entry.getKeyAsString();
+							//log.info("term " + parent.getName()  + " \\" + term);
 							FilterNode child = new FilterNode();
 							child.setId(term);
 							if (detail != null && detail.isList())

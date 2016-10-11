@@ -660,7 +660,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				// Now determine index
 				String indextype = null;
-				if (detail.isList() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
+				if (detail.isList() || detail.isMultiValue() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
 				{
 					indextype = "not_analyzed";
 				}
