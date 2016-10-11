@@ -10,7 +10,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.elasticsearch.categories.ElasticCategorySearcher;
 import org.openedit.data.BaseData;
 
 /**
@@ -19,6 +22,9 @@ import org.openedit.data.BaseData;
  */
 public class Category extends BaseData
 {
+	private static final Log log = LogFactory.getLog(Category.class);
+
+	
 	protected String fieldDescription;
 	protected String fieldShortDecription;
 	protected int fieldItemCount;
@@ -277,6 +283,11 @@ public class Category extends BaseData
 
 	public void setParentCategory(Category parentCatalog)
 	{
+		if( parentCatalog.hasParent(getId()))
+		{
+			log.error("Called myself as a child");
+			return;
+		}
 		fieldParentCategory = parentCatalog;
 		if (parentCatalog != null)
 		{
