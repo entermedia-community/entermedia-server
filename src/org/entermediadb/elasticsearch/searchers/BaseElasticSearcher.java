@@ -1242,6 +1242,21 @@ public class BaseElasticSearcher extends BaseSearcher
 				find = QueryBuilders.termsQuery(fieldid, inTerm.getValues());
 
 			}
+			else if ("andgroup".equals(inTerm.getOperation()))
+			{
+				Object[] values = inTerm.getValues();
+				for (int i = 0; i < values.length; i++)
+				{
+					Object val = values[i];
+					find = QueryBuilders.matchQuery(fieldid, val);
+
+				}
+				
+				
+
+			}
+			
+			
 			else if ("matches".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.matchQuery(fieldid, valueof); // this is
@@ -1516,15 +1531,15 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 
-		//bulkProcessor.close();
-		try
-		{
-			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
-		}
-		catch (InterruptedException e)
-		{
-			throw new OpenEditException(e);
-		}
+		bulkProcessor.close();
+//		try
+//		{
+//			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+//		}
+//		catch (InterruptedException e)
+//		{
+//			throw new OpenEditException(e);
+//		}
 
 		if (errors.size() > 0)
 		{
