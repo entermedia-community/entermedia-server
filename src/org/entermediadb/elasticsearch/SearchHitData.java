@@ -2,9 +2,10 @@ package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -99,17 +100,15 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		if (inId == null) {
 			return null;
 		}
-		Object svalue = super.getValue(inId);
-		if (svalue != null) 
-		{
-			return svalue;
-		}
-		svalue = getMap().get(inId);
+		Object svalue = getMap().getObject(inId);
 		if( svalue == ValuesMap.NULLVALUE)
 		{
 			return null;
 		}
-		svalue = getFromDb(inId);
+		if( svalue == null)
+		{
+			svalue = getFromDb(inId);
+		}
 
 		return svalue;
 	}
@@ -122,10 +121,14 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			return null;
 		}
 		//log.info(getSearchHit().getSourceAsString());
-		
-		String key = inId;
+		String detailid = inId;
+		if( detailid.endsWith("_int"))
+		{
+			detailid = inId.substring(0, inId.length() - 4);
+		}
+		String key = detailid;
 		Object value = null;
-		PropertyDetail detail = getPropertyDetails().getDetail(inId);
+		PropertyDetail detail = getPropertyDetails().getDetail(detailid);
 		if (detail != null && detail.isMultiLanguage()) {
 			key = key + "_int";
 		}
@@ -152,20 +155,20 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				if (legacy != null) {
 					value = getValue(legacy);
 				}
-
 				if (value == null && getSearchData() != null) {
-					value = getSearchData().get(inId);
+					value = getSearchData().get(inId); //check without the _int
 				}
 			}
 		}
 
 		if (value != null && detail != null && detail.isMultiLanguage()) {
-			if (value instanceof Map) {
+			if (value instanceof Map) 
+			{
 				LanguageMap map = new LanguageMap((Map) value);
 				value = map;
-
 			}
-			if (value instanceof String) {
+			else if (value instanceof String) 
+			{
 				LanguageMap map = new LanguageMap();
 				map.put("en", value);
 				value = map;
@@ -181,28 +184,39 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		return value;
 	}
 
-	public Iterator keys() {
-		return getProperties().keySet().iterator();
-	}
-
-	public Map getProperties() {
-		Map all = new HashMap();
+	public Set keySet() 
+	{
+		Set set = new HashSet();
 		if( getSearchData() != null)
 		{
-			for (Iterator iterator = getSearchData().keySet().iterator(); iterator.hasNext();) {
-				String key = (String) iterator.next();
-				String val = get(key);
+			for (Iterator iterator = getSearchData().keySet().iterator(); iterator.hasNext();) 
+			{
+				String key = (String)iterator.next();
+				if( key.endsWith("_int"))
+				{
+					key = key.substring(0, key.length() - 4);
+				}
+				set.add(key);
+			}
+		}	
+		set.addAll( getMap().keySet() );
+		//set.add(".version");
+		return set;
+	}
+
+	public ValuesMap getProperties() 
+	{
+		Set set = keySet();
+		ValuesMap all = new ValuesMap();
+		for (Iterator iterator = set.iterator(); iterator.hasNext();) 
+		{
+			String key = (String) iterator.next();
+			Object val = getValue(key);
+			if( val != null)
+			{
 				all.put(key, val);
 			}
 		}
-		String version = get(".version");
-		if (version != null) {
-			all.put(".version", version);
-		}
-		if (fieldMap != null) {
-			all.putAll(super.getProperties());
-		}
-
 		return all;
 	}
 

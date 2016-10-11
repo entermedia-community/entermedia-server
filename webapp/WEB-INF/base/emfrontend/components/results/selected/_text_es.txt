@@ -1,0 +1,16 @@
+#
+#Tue Oct 11 01:59:43 EDT 2016
+Remove\ From\ Basket=Quitar de la Cesta
+View\ Selections=Ver Selecciones
+Results=resultados
+Show\ All\ Results=Mostrar todos los resultados
+Edit=Editar
+Edit\ selected\ records=Editar registros seleccionados
+Export\ to\ CSV=Exportar a CSV
+Select\ All\ Results=Seleccionar todos los resultados
+Multi\ Edit=Multiedici\u00F3n
+Show\ All=Mostrar todo
+Show\ Only\ Selections=Mostrar \u00FAnicamente Selecciones
+Deselect\ All=Anular todas las selecciones
+Select\ This\ Page=Seleccionar esta p\u00E1gina
+Add\ To\ Basket=A\u00F1adir al carrito

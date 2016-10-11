@@ -1,0 +1,6 @@
+#
+#Tue Oct 11 01:59:33 EDT 2016
+Over=encima
+Pick\ Categories=Escoja Categor\u00EDas
+Enter\ a\ Custom\ Range=Introduzca una Serie personalizada
+Remove=retirar

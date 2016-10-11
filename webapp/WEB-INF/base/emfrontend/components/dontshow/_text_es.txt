@@ -1,4 +1,5 @@
 #
-#Fri Mar 27 15:49:36 EDT 2015
-Filters=Filtros
-
+#Tue Oct 11 01:59:35 EDT 2016
+Filters=filtros
+Show\ Less=Muestra menos
+Show\ More=Mostrar m\u00E1s

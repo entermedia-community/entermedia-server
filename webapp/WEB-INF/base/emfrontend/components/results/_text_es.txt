@@ -1,28 +1,30 @@
 #
-#Fri Mar 27 15:49:38 EDT 2015
-resultados=resultados
-Gallery\ View=Ver galer\u00EDa
-Download=descargar
-Deselect\ All=Desmarcar todo
-Add\ to\ Basket=A\u00F1adir a la cesta
-Email\ Assets=Art\u0EDculos por correo electr\u00F3nico
-Change\ Result\ View=Cambiar Vista de Resultados
-Publish=publicar
+#Tue Oct 11 01:59:43 EDT 2016
+Share=Compartir
+Categories=Categor\u00EDas
+Table=Mesa
+Download=Descargar
+Download\ Options=Opciones de descarga
+Deselect\ All=Anular todas las selecciones
+Email\ Assets=Activos de correo electr\u00F3nico
+Publish=Publicar
 Select\ All\ Results=Seleccionar todos los resultados
-Publish\ Assets\ to\ Server=Publicar Articulos al servidor
-Category\ Folder\ View=Categor\u00EDa de vista de carpetas
+Folders=carpetas
+Remove\ from\ library\ and\ all\ collections?=Eliminar de la biblioteca y todas las colecciones?
+Publish\ Assets\ to\ Server=Activos publicar al servidor
+Remove\ from\ Collection=Sacar de la colecci\u00F3n
 Select\ This\ Page=Seleccionar esta p\u00E1gina
-items=art\u00EDculos
+Gallery=Galer\u00EDa
 of=de
-Cancel=cancelar
-Add\ Column=A\u00F1adir columna
 Share\ Gallery=Compartir Galer\u00EDa
+Cancel=Cancelar
+Add\ Column=A\u00F1adir columna
 Edit\ Columns=Editar columnas
-Displaying\ records=Visualizar registros
-Table\ View=Vista de tabla
-No\ results\ found=No se encontraron resultados
-Edit=editar
-Remove=eliminar
-Edit\ one\ or\ more\ selected\ records=Editar uno o m\u00E1s de los registros seleccionados
-Drag\ columns\ to\ move\ them=Arrastre columnas para moverlos
-
+Remove\ from\ collection?=Quitar de colecci\u00F3n?
+No\ results\ found=No se han encontrado resultados
+Remove=retirar
+Remove\ from\ Library=Eliminar de la biblioteca
+Stacked=apilada
+Collection=Colecci\u00F3n
+Drag\ columns\ to\ move\ them=Arrastrar las columnas para moverlos
+Edit\ one\ or\ more\ selected\ records=Editar una o m\u00E1s registros seleccionados

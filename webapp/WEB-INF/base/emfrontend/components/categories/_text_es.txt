@@ -1,4 +1,5 @@
 #
-#Fri Mar 27 15:49:36 EDT 2015
+#Tue Oct 11 01:59:36 EDT 2016
+Edit\ Categories=Modificar categor\u00EDas
+Search\ Categories=Buscar Categor\u00EDas
 Categories=Categor\u00EDas
-

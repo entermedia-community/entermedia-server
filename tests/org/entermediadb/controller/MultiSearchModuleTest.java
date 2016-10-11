@@ -47,7 +47,7 @@ public class MultiSearchModuleTest extends BaseEnterMediaTest
 		req.setRequestParameter("searchtype", "asset" );
 		req.setRequestParameter("catalogid",new String[] {catalog1,catalog2});
 		
-		module.multiSearch(req);
+		//module.multiSearch(req);
 		CompositeHitTracker allhits = (CompositeHitTracker) req.getPageValue("hits");
 		assertNotNull(allhits);
 		

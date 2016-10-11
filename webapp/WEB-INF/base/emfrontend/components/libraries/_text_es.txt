@@ -1,8 +1,7 @@
 #
-#Fri Mar 27 15:49:37 EDT 2015
-Details=Detalles
-Assets=Activos
-Create\ New=crear nuevo
-Project\ Tracker=Rastreador de Proyectos
+#Tue Oct 11 01:59:34 EDT 2016
+Libraries=bibliotecas
+Details=detalles
+Assets=Bienes
+Create\ New=Crear nuevo
 Collections=Colecciones
-

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.ValuesMap;
@@ -146,7 +147,7 @@ public class RelatedAsset implements Data
 	@Override
 	public Object getValue(String inKey)
 	{
-		return getProperties().get(inKey);
+		return getProperties().getObject(inKey);
 	}
 	@Override
 	public void setValue(String inKey, Object inValue)
@@ -158,4 +159,12 @@ public class RelatedAsset implements Data
 		// TODO Auto-generated method stub
 		return get(inKey + "." + inLocale);
 	}
+	
+	@Override
+	public Set keySet()
+	{
+		return getProperties().keySet();
+	}
+
 }
+

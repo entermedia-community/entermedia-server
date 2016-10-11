@@ -561,4 +561,10 @@ public class TemplateWebEmail extends WebEmail implements Data
 		// TODO Auto-generated method stub
 		return get(inKey + "." + inLocale);
 	}
+	
+	@Override
+	public Set keySet()
+	{
+		return getProperties().keySet();
+	}
 }

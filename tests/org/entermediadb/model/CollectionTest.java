@@ -59,7 +59,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		csearcher.saveData(collection, null);
 		return collection;
 	}
-	
+	/*
 	public void testCollectionImport() throws Exception
 	{
 		//getMediaArchive().getSearcher("asset").reIndexAll();
@@ -126,6 +126,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		
 	}
 	
+	*/
 //	public void testCollectionExport() throws Exception
 //	{
 //		ProjectManager manager = (ProjectManager)getFixture().getModuleManager().getBean(getMediaArchive().getCatalogId(),"projectManager");

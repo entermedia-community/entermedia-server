@@ -400,7 +400,9 @@ public class ElasticHitTracker extends HitTracker
 								Data data = getSearcher().getSearcherManager().getData(getCatalogId(), detail.getListId(), term);
 								if (data != null)
 								{
-									child.setName(data.getName());
+									//child.setName(data.getName());
+									
+									child.setProperties(data.getProperties());
 								}
 								else
 								{
