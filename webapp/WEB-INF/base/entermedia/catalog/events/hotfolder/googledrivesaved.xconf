@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Google Drive Saved</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/hotfolder/googledrivesaved.groovy</script>
+	</path-action>
+	<property name="enabled">true</property>
+	
+</page>

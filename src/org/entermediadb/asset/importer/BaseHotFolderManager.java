@@ -263,28 +263,21 @@ public class BaseHotFolderManager implements HotFolderManager
 			String toplevelfolder = inNewrow.get("subfolder");
 			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
 
-			String hotfolderpath =  "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder;
-			File file = new File( hotfolderpath + "/");
+			ContentItem hotfolderpath =  archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder );
+			File file = new File( hotfolderpath.getAbsolutePath() );
 			file.mkdirs();
 			inNewrow.setProperty("externalpath",file.getAbsolutePath());				
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
+			archive.fireMediaEvent("hotfolder/googledrivesaved", "hotfolder", inNewrow.getId(), null);
 			
-			String key = inNewrow.get("accesskey");
-			List<String> com = Arrays.asList("add_account","-a", key,"-p",hotfolderpath,"-e","link");
-			ExecResult result = getExec().runExec("insync-portable",com,true);
-			if( !result.isRunOk() )
-			{
-				log.info("insync-headless " + com + " =" + result.getStandardError());
-				throw new OpenEditException("Could not save google drive:" + toplevelfolder + " " + result.getStandardError());
-			}	
 		}
 		else if( "resiliodrive".equals(type))
 		{
 			String toplevelfolder = inNewrow.get("subfolder");
 			MediaArchive archive = (MediaArchive)getSearcherManager().getModuleManager().getBean(inCatalogId,"mediaArchive");
 			
-			String hotfolderpath =  "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder;
-			File file = new File( hotfolderpath + "/");
+			ContentItem hotfolderpath =  archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/"+ toplevelfolder );
+			File file = new File( hotfolderpath.getAbsolutePath() );
 			file.mkdirs();
 			inNewrow.setProperty("externalpath",file.getAbsolutePath());				
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
