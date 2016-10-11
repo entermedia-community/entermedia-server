@@ -54,6 +54,12 @@ public class MediaSearchModule extends BaseMediaModule
 //				{
 //					//TODO: Seems like this could be done within the searcher or something
 				tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
+				Data librarycol = (Data) inPageRequest.getPageValue("librarycol");
+				if(librarycol != null){
+					tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
+				}
+				tracker.getSearchQuery().setProperty("categoryid", category.getId());
+
 		}
 		UserProfile prefs = (UserProfile)inPageRequest.getUserProfile();
 		if( prefs != null)

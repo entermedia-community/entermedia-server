@@ -11,8 +11,13 @@ $context.putPageValue("hits",$hits)
 #if($hits)
 	#set( $collectionid = $hits.getInput("collectionid") )
 	#if( $collectionid && !$librarycol)
+	
 		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
 		$context.putPageValue("librarycol",$librarycol)
+	#end
+	#set( $catid = $hits.getInput("categoryid") )
+	#if( $catid && !$category)
+	#set( $category = $mediaarchive.getData("category",$catid) )
 	#end
 	#set( $orderid = $hits.getInput("orderid") )
 	#if( $orderid)
