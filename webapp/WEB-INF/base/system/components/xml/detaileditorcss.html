@@ -61,7 +61,7 @@
 			$pages.include("$xmledithome/detailreadonly.html", $context) 
 		#end
 		#if ( $detail.note )
-			<span class="detail-note">$detail.note<span>
+			<span class="detail-note">$context.getText($detail.note.toString())<span>
 		#end
 		</div>
 	#end

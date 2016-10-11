@@ -1,5 +1,5 @@
 #
-#Thu Jan 28 15:47:05 EST 2016
+#Tue Oct 11 15:51:04 EDT 2016
 Share=Aktie
 Manager=Manager
 closed=geschlossen
@@ -13,8 +13,10 @@ Applications=Anwendungen
 Attachments=Anh\u00E4nge
 System\ Settings=Systemeinstellungen
 Annotations=Anmerkungen
+Language=Sprache
 Logout=Logout
 Asset\ is\ missing=Asset fehlt
+Dashboard=Instrumententafel
 Login=einloggen
 Add\ Media=Medien hinzuf\u00FCgen
 Settings=Einstellungen

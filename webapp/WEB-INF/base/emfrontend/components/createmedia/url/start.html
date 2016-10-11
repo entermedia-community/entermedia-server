@@ -5,8 +5,10 @@
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 
 
-<p>Fetch URL is an an image, video. If there is no login or password required then EnterMedia scheduler will
-download the file and create thumbnails or conversions.</p> 
+<p>
+	[[Fetch an external asset by its URL or embed code (may not be protected by a login)]].
+	[[The EnterMedia scheduler will then download the file and create thumbnails or conversions]].
+</p> 
 
 <form  name="wizard" method="post" class="ajaxform" targetdiv="addedcomplete"
 	action="$home$apphome/components/createmedia/url/createnew.html">
@@ -69,11 +71,11 @@ download the file and create thumbnails or conversions.</p>
 </style>
 <div class="inputformrow">
 	<span class="emdatafield">
-			Media URL Address: 
+			[[Media URL Address]]: 
 	</span>
 	<div id="detail_embeddedurl" class="emdatafieldvalue ">
 		<input name="externalmediainput" id="externalmediainput"  />
-		<span class="detail-note">External image, video, YouTube or Vimeo<span></span></span>
+		<span class="detail-note">[[URL to external asset or YouTube/Vimeo link]]<span></span></span>
 	</div>
 </div>
 

@@ -1,4 +1,5 @@
 #
-#Wed Feb 04 06:35:12 EST 2015
+#Tue Oct 11 16:10:36 EDT 2016
+Edit\ Categories=Kategorien bearbeiten
+Search\ Categories=Suchkategorien kategorien~~POS\=HEADCOMP
 Categories=Kategorien
-

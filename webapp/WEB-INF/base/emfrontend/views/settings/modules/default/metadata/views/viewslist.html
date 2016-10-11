@@ -16,7 +16,7 @@ $!query.addSortBy("ordering")
 		
 				<li class="header no-sort">[[Editing Boxes]]</li>
 				#if ($systemdefined && $systemdefined != "true")
-				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
+				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">[[Add New]]</a></li>
                 #end
               
 			#foreach( $target in $views)
@@ -31,7 +31,7 @@ $!query.addSortBy("ordering")
 						#set( $viewpath = "${moduleid}/$target.id")
 					#end
 					<a href="$home$viewsroot/index.html?viewid=$target.id&viewpath=$viewpath">
-					<span class="drag-and-drop"></span>$target</a>
+					<span class="drag-and-drop"></span>$context.getText($target.toString())</a>
 					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath"></a>
 
                 </li>

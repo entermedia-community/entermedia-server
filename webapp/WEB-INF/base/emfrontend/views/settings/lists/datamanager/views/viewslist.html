@@ -12,7 +12,7 @@ $context.putPageValue("views", $views)
 <ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering" class="" data-searchtype="view" data-field="ordering">
 		
 				<li class="header no-sort">[[System Views]]</li>
-				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1&searchtype=${moduleid}">Add New</a></li>
+				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1&searchtype=${moduleid}">[[Add New]]</a></li>
 
               
 			#foreach( $target in $views)
@@ -27,7 +27,7 @@ $context.putPageValue("views", $views)
 						#set( $viewpath = "${moduleid}/$target")
 					#end
 					<a href="$home$viewsroot/index.html?viewid=$target&viewpath=$viewpath&searchtype=${moduleid}">
-					$target</a>
+					$context.getText($target.toString())</a>
 					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath&searchtype=${moduleid}"></a>
 
                 </li>

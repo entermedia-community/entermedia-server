@@ -18,12 +18,12 @@
 			<input type="hidden" name="sourcepath" value="$asset.sourcePath"/>
 			<input type="hidden" name="oemaxlevel" value="2"/>
 			<input type="hidden" name="catalogid" value="$catalogid"/>
-			<input class="btn right" type="submit" value="Save Comment" />
+			<input class="btn right" type="submit" value="[[Save Comment]]" />
 		</form>
 	#end
 
 #if( $comments.size() == 0)
-    <p class="info" style="margin: 20px;">There are no comments on this asset.</p>
+    <p class="info" style="margin: 20px;">[[There are no comments on this asset.]]</p>
 #else
     $pages.include("$apphome/views/modules/asset/editor/comment/list.html", $context)
 #end

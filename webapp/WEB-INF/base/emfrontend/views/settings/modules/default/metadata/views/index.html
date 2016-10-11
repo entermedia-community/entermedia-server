@@ -20,7 +20,7 @@
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
 	
 	<li class="header no-sort" id="views-header" style="height: 16px;">
-	    <span id="name">$view</span>
+	    <span id="name">$context.getText($view.toString())</span>
 	    #if ( $view.rendertable )
 	    <span class="type">Table: $view.rendertable</span>
 	    #end
@@ -29,7 +29,7 @@
         #set ( $systemdefined = $context.findValue("systemdefined") )
         
     #if( $canviewsettings )   
-	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$view [[Settings]]</a>
+	<a class="settings-icon ir tooltip" title="$view Settings" id="setup-view">$context.getText($view) [[Settings]]</a>
 	#end
 	
 	   #if($view.byassettype == "true" )
@@ -43,7 +43,7 @@
             <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
                     <option value="default" >Default</option>
                         #foreach($item in $assettypesearcher.fieldSearch("id","*","nameUp"))
-                            <option #if($current == $item.id) selected #end value="$item.id">$item</option>
+                            <option #if($current == $item.id) selected #end value="$item.id">$context.getText($item.toString())</option>
                         #end
                     </select> 
             </span>
@@ -145,8 +145,7 @@
         #end
         #if( $canviewsettings )
         <div class="subheader-title">
-	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">Add New</a>
-	    </div>
+		<a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">[[Add New]]</a>	    </div>
 	    #end
 	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="addtoview.html">
             <input type="hidden" name="catalogid" value="$!catalogid"/>
@@ -163,7 +162,7 @@
             <select name="newone" style="float: right; #if( $canviewsettings ) ; #else display:none;  #end width:150px;" onchange="jQuery('#addtoview').submit()"  >
                 <option value=""> </option>
                 #foreach( $detail in $searcher.getUserPropertyDetails() )
-                    <option value="$detail.id">$detail.text</option>
+				<option value="$detail.id">$detail.getText($context)</option>
                 #end
             </select>
         </form>

@@ -17,7 +17,7 @@ $context.putPageValue("showalllanguagevalues",true)
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						
 						$context.putPageValue("view",$viewpath)
-						<h3>$target</h3>
+						<h3><h3>$context.getText($target.toString())</h3></h3>
 						<div class="asset-data-detail">
 						$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>

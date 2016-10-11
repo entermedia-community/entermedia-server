@@ -12,7 +12,7 @@
 	#if( $value ) #set( $foundone = true)
 		<tr>
 			<td class="bodylabel" valign="top">
-				$detail.getText($context):
+				$context.getText($detail.toString()):
 			</td>
 			<td class="bodycontent" valign="top" width="100%">
 				#if( $detail.isList() )

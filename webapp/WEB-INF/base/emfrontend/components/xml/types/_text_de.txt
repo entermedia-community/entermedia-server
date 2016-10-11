@@ -1,7 +1,17 @@
 #
-#Fri Feb 13 10:32:42 EST 2015
-Over=zu ende
-Pick\ Categories=Kategorien wählen
+#Tue Oct 11 16:12:10 EDT 2016
+You\ can\ only\ select=Sie k\u00F6nnen nur w\u00E4hlen
+View=Aussicht
+Loading\ more\ results=Weitere Ergebnisse werden geladen
+chars\ more=Zeichen mehr
+Search=Suche
+chars\ less=Zeichen weniger
+entries=Eintr\u00E4ge
 Enter\ a\ Custom\ Range=geben Sie einen benutzerdefinierten Bereich an
+No\ results=keine Ergebnisse
+Please\ enter=Bitte eingeben
+Searching=Suche
+entry=Eintrag
+Pick\ Categories=Kategorien w\u00E4hlen
 Enter\ comma\ separated\ tags=geben Sie durch Komma getrennte Tags ein
-
+Over=zu ende

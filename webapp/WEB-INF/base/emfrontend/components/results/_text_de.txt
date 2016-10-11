@@ -1,5 +1,5 @@
 #
-#Thu Jan 14 13:11:01 EST 2016
+#Tue Oct 11 16:10:38 EDT 2016
 Remove=entfernen
 Table\ View=Tabellenansicht
 Collection=Sammlung
@@ -14,6 +14,7 @@ Add\ Column=Spalte hinzuf\u00FCgen
 Publish=ver\u00F6ffentlichen
 items=Objekte
 Displaying\ records=Anzeige von Datens\u00E4tzen
+Download\ Options=Download-Optionen
 Select\ This\ Page=diese Seite w\u00E4hlen
 View\ Table=Tabelle anzeigen
 Share=Teilen
@@ -30,6 +31,7 @@ Remove\ from\ collection?=aus der Sammlung zu entfernen?
 Edit\ Columns=Spalten bearbeiten
 Remove\ from\ library\ and\ all\ collections?=von Bibliothek und alle Sammlungen entfernen?
 Remove\ from\ Library=aus der Bibliothek zu entfernen
+Categories=Kategorien
 Gallery=Galerie
 Folders=Ordner
 Gallery\ View=Galerie-Ansicht
