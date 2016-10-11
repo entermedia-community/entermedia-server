@@ -2,30 +2,4 @@
 
 	<inner-layout>/${applicationid}/services/module/asset/players/collections/gallery.html</inner-layout>
 	
-	<path-action name="ProjectModule.addCollectionTab" />
-	
-	<property name="hitsname">hits</property>
-	<property name="virtual">true</property>
-	
-    <path-action name="DataEditModule.loadData" >
-			<pageval>librarycol</pageval>
-			<idname>collectionid</idname>
-			<searchtype>librarycollection</searchtype>
-    </path-action>
-	<path-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</path-action>
-	<path-action name="ProjectModule.loadCategoriesOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</path-action>
-	
-	 <permission name="view">
-    		<action name="ProjectModule.checkLibraryPermission" />
-    </permission>
-    
-	<path-action name="DataEditModule.loadPageOfSearch">
-		<property name="searchtype">asset</property>
-	</path-action>	
-	
-	
 </page>

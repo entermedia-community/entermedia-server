@@ -72,6 +72,7 @@ jQuery(document).ready(function()
 							var cell = jQuery("#" + targetdiv); //view-picker-content
 							cell.html(data);
 							//window.location.hash="TOP";
+							$(window).trigger( "resize" );
 						}
 				);
 		}

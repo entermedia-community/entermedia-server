@@ -3,7 +3,7 @@
 	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/viewassets.html</inner-layout>
 	
 	
-	<property name="hitsname">hits</property>
+	<property name="hitsname">collectionhits</property>
 	<property name="virtual">true</property>
 	
     <path-action name="DataEditModule.loadData" >
@@ -12,30 +12,29 @@
 			<searchtype>librarycollection</searchtype>
     </path-action>
 
-	<path-action name="ProjectModule.addCollectionTab" />
+	<path-action name="ProjectModule.searchForAssetsOnCollection" />
+	
+   	<!--path-action name="MediaSearchModule.searchCategories"/ -->
+   	
+	<property name="searchcategory">true</property>
 
-	<page-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</page-action>
-	
-	<path-action name="ProjectModule.loadCategoriesOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</path-action>
-	
 	 <permission name="view">
     		<action name="ProjectModule.checkLibraryPermission" />
     </permission>
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
-	  <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
-	 
-	    	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
+
+    <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
+   	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
   	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
+  	<script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
   	<script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
 	<style id="results" href="${themeprefix}/styles/pages/results.css"/>
   	<script id="results" src="/${applicationid}/components/javascript/results.js"/>   
 	 
- <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
-  <style id="app-css" href="${themeprefix}/styles/theme.css"/>
+    <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
+    <style id="app-css" href="${themeprefix}/styles/theme.css"/>
+    
+
     
 	 
 </page>

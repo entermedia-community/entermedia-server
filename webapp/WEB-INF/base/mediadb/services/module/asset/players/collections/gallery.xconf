@@ -1,15 +1,4 @@
 <page>
-<page-action name="DataEditModule.searchFields">
-	<searchtype>librarycollection</searchtype>
-	<hitsname>collectionhits</hitsname>
-</page-action>
-
-<property name="librarycollectionendusersearch">false</property> 
-
-<page-action name="DataEditModule.loadHits">
-	<searchtype>librarycollection</searchtype>
-	<hitsname>collectionhits</hitsname>
-</page-action>
 
 
 </page>

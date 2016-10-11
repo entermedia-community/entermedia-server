@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
@@ -236,17 +237,23 @@ public class ProjectModule extends BaseMediaModule
 			//dont filter since its the admin
 			return true;
 		}
+		ProjectManager manager = getProjectManager(inReq);
+
+		//TODO: Check the library not the category?
 		String collectionid = loadCollectionId(inReq);
-		Data data = archive.getData("librarycollection", collectionid);
-		if( data != null)
+		
+		Category cat = manager.getRootCategory(archive, collectionid);
+		
+		UserProfile profile = inReq.getUserProfile();
+		if( profile != null)
 		{
-			String libraryid  = data.get("library");
-			UserProfile profile = inReq.getUserProfile();
-			if( profile != null)
+			for(String catid : profile.getViewCategories())
 			{
-				boolean ok = profile.getViewCategories().contains(libraryid);
-				return ok;
-			}
+				if( cat.hasParent(catid) )
+				{
+					return true;
+				}
+			}	
 		}
 		return false;
 	}

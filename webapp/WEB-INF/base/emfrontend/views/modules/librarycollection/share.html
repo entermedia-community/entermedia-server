@@ -1,0 +1,30 @@
+<div class="publishtabcontainer">
+	
+	##set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection")		
+	
+	
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+		<div class="ui-widget-header">[[Sharing]] </div>
+		<div class="ui-widget-content">
+
+		<h5>[[View Only]]</h5>
+		<p>[[Copy this link to share or embed a read-only version of these assets]]</p>
+		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+		
+		#set( $link = "$context.getSiteRoot()/$mediadbappid/services/module/asset/players/collections/display/${librarycol.getId()}.html")
+		<input value="$link" style="width:300px; background-color: #EEE;" enabled=false  /><a  class="btn" target="_new" href="$link">Preview</a>
+
+		<h5>[[Email Notification]]</h5>
+		<p>[[Send notifications to email when events happen in this collection]]</p>
+		#set( $link = "$apphome/views/modules/librarycollection/edit/moduletable.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection")
+		
+		$pages.include($link, $context)		
+			
+		</div>
+		
+	</div>	
+
+	
+</div>
+	
+

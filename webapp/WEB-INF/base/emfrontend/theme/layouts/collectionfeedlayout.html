@@ -13,8 +13,8 @@
 		  #end
 		  <li class="ui-corner-top"><a  id="emannotationstab" data-alwaysreloadpage="true" href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotate]]</a></li>
 		  #if($cansharecollection)
-#set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection")		
-		  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Email]]</a></li>
+		  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+		  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Share]]</a></li>
 		  #end
 		  <li class="ui-corner-top" ><a id="settingstab" href="$editlink" >[[Settings]]</a></li>
 		</ul>

@@ -10,19 +10,15 @@
  	#end	
  	$context.putPageValue("librarycol", $first)
 
-<ul class="ui-tabs-nav nav  emtabs" data-defaulttab="$first.id" data-targetdiv="collection-tab-content" >
-		
-		#foreach($collection in $collectionhits)
-		  <li class="ui-corner-top"><a id="$collection.id" data-layouts="2" data-alwaysreloadpage="true"  
-		  	 href="$apphome/services/module/asset/players/collections/display/${collection.getId()}.html?librarycollectionhitssessionid=$collectionhits.sessionId" >$collection</a></li>
-		#end
-		</ul>
-		<div class="clearfix"></div>
-		<div  id="collection-tab-content" class="ui-corner-top ui-corner-bottom" >
-		  <div class="tab-pane" id="loadedpanel" >
-		  	$pages.include("$apphome/services/module/asset/players/collections/display/viewassets.html", $context)
-		  </div>
-		</div>
+
+<div class="row" >		
+  	<div class="col-md-2" style="padding: 0px 0px 20px 0px; position:inherit;min-height:600px;border-right: 1px solid #e2eff4;border-bottom: 1px solid #e2eff4;">
+		$pages.include("$apphome/services/module/asset/players/collections/tree.html")		
+	</div>
+	<div class="col-md-10" style="border:2px; padding: 0px 0px 0px 0px; margin-left: -1px; border-left: 1px solid #e2eff4;">
+	  	$pages.include("$apphome/services/module/asset/players/collections/display/viewassets.html", $context)
+	</div>
+</div>
  #end 
 
 </div>
