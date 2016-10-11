@@ -1,9 +1,25 @@
-<properties>
-	
-	<property id="video" extensions="mp4 mov avi flv">Videos</property>
-	<property id="document" extensions="pdf doc">Documents</property>
-	<property id="photo" extensions="jpg png">Photos</property>
-	<property id="audio" extensions="mp3 wav">Audio</property>
-	<property id="none" >None</property>
-
-</properties>
+<properties> 
+  <property id="video" extensions="mp4 mov avi flv">Videos</property>  
+  <property id="document" extensions="pdf doc" ordering="0"> 
+    <name> 
+      <language id="de"><![CDATA[Dokumente]]></language>  
+      <language id="en"><![CDATA[Documents]]></language>  
+      <language id="es"><![CDATA[Documentos]]></language> 
+    </name> 
+  </property>  
+  <property id="photo" extensions="jpg png" ordering="0">
+    <name>
+      <language id="de"><![CDATA[Fotos]]></language>
+      <language id="en"><![CDATA[Photos]]></language>
+      <language id="es"><![CDATA[Fotos]]></language>
+    </name>
+  </property>  
+  <property id="audio" extensions="mp3 wav">Audio</property>  
+  <property id="none" ordering="0"> 
+    <name> 
+      <language id="de"><![CDATA[Unbekannt]]></language>  
+      <language id="en"><![CDATA[None]]></language>  
+      <language id="es"><![CDATA[Ninguno]]></language> 
+    </name> 
+  </property> 
+</properties>	

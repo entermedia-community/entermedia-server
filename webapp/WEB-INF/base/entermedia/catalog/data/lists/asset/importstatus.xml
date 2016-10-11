@@ -1,11 +1,43 @@
 <properties>
 	<!-- The last thing completed -->
-  <property id="uploading" >Uploading</property> <!-- Assets created -->
-  <property id="needsdownload" >Pending Download</property> <!-- Assets created -->
-  <property id="uploaded" >Uploaded</property> <!-- originals in place -->
-  <property id="imported" >Imported</property> <!-- after exif removed -->
-  <property id="reimported" >Re-Imported</property> <!-- if modified -->
-  <property id="complete" >Complete</property>
-  <property id="error" >Error</property>
+	<property id="uploading" >
+		<name> 
+	     <language id="en"><![CDATA[Uploading]]></language>  
+	     <language id="es"><![CDATA[Subiendo]]></language> 
+	   </name>
+	</property> <!-- Assets created -->
+	<property id="needsdownload">
+		<name> 
+	      <language id="en"><![CDATA[Pending Download]]></language>  
+	      <language id="es"><![CDATA[Pendiente]]></language> 
+	    </name>
+	</property> <!-- Assets created -->
+	<property id="uploaded" >
+		<name> 
+	      <language id="en"><![CDATA[Uploaded]]></language>  
+	      <language id="es"><![CDATA[Subido]]></language> 
+	    </name>
+	</property> <!-- originals in place -->
+	<property id="imported" >
+		<name> 
+	      <language id="en"><![CDATA[Imported]]></language>  
+	      <language id="es"><![CDATA[Importado]]></language> 
+	    </name>
+	</property> <!-- after exif removed -->
+	<property id="reimported" >
+		<name> 
+	      <language id="en"><![CDATA[Re-Imported]]></language>  
+	      <language id="es"><![CDATA[Re-Importado]]></language> 
+	    </name>
+	</property> <!-- if modified -->
+	<property id="complete" >
+		<name> 
+	      <language id="en"><![CDATA[Complete]]></language>  
+	      <language id="es"><![CDATA[Completo]]></language> 
+	    </name>
+	</property>
+	<property id="error" >
+		<language id="en"><![CDATA[Error]]></language>
+	</property>
 </properties>
   

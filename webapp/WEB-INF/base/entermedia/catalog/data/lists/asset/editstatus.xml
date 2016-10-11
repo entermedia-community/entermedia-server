@@ -1,10 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties> 
-	<property id="1">Pending Approval</property>
-	<property id="6">Approved</property>	
-	<property id="recording">Recording</property>	
-	<property id="rejected">Rejected</property>	
-	<property id="7">Deleted</property>	
-	
+	<property id="1">
+		<name> 
+	      <language id="en"><![CDATA[Pending]]></language>  
+	      <language id="es"><![CDATA[Pendiente]]></language> 
+	    </name>
+    </property>
+	<property id="6">
+		<name> 
+	      <language id="en"><![CDATA[Approved]]></language>  
+	      <language id="es"><![CDATA[Aprobado]]></language> 
+	    </name>
+	</property>	
+	<property id="recording">
+		<name> 
+	      <language id="en"><![CDATA[Recording]]></language>  
+	      <language id="es"><![CDATA[Grabando]]></language> 
+	    </name>
+	</property>	
+	<property id="rejected">
+		<name> 
+	      <language id="en"><![CDATA[Rejected]]></language>  
+	      <language id="es"><![CDATA[Rechazado]]></language> 
+	    </name>
+	</property>	
+	<property id="7">
+		<name> 
+	      <language id="en"><![CDATA[Deleted]]></language>  
+	      <language id="es"><![CDATA[Eliminado]]></language> 
+	    </name>
+	</property>	
 </properties>
