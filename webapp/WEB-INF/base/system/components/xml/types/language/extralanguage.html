@@ -8,7 +8,7 @@
 
 #set($usedlanguages = $context.getRequestParameters("usedlanguages") )
 <div class="languagesaddform">
-	<div style="float:left; padding:0 5px">
+	<div class="languageselector">
 		<select class="select2 lenguagepicker" id="languages_${detailid}_${language_count}" name="${detailid}.language" data-count="$count" data-detailid="${detailid}">
 			#foreach($locale in $languages)
 			#if( !$usedlanguages.contains($locale.id))
@@ -17,7 +17,7 @@
 			#end
 		</select>
 	</div>
-	<div style="float:left;">
+	<div class="languageinput">
 		#if($languagecode!='') 
 			#set($language_textbox = ${detailid} + "." + $languagecode) 
 		#else 

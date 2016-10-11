@@ -6985,3 +6985,24 @@ tr.emrowselected
 
 /*Collection tree*/
 .tree-header span { line-height:45px; padding:0 20px; color: #2790B0; font-weight:bold; }
+
+div.languagesaddform div.languageselector
+{
+	float:left; 
+	margin-right:5px;
+}
+div.languagesaddform div.languageselector .select2
+{
+	width: 50px;
+}
+
+div.languagesaddform div.languageinput 
+{
+	float:left;	
+}
+
+div.languagesaddform div.languageinput input
+{
+	width: 20em;
+}
+
