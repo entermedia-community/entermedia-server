@@ -8,7 +8,7 @@
 	#if($detail.internalfield == "true")
 		
 	#else
-		<input type="checkbox" name="detail" value="$detail.id"> $detail.getText() <br/>
+		<input type="checkbox" name="detail" value="$detail.id"> $detail.getText($context) <br/>
 	#end
 #end
 	<input type="hidden" name="hitssessionid" value="$!context.getRequestParameter('hitssessionid')"> 

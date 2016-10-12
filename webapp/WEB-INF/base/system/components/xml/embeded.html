@@ -6,7 +6,7 @@
 			#set( $selected = "selected")
 		#else
 			#set( $selected = "")		
-		#end #set($textval = $element.getText()) 
+		#end #set($textval = $element.getText($context)) 
 		<option value="$element.attributeValue('id')" $selected >$!textval</option>		
 		#end
 	</select><br>
@@ -24,7 +24,7 @@
 	#foreach( $attrib in $xmlfile.attributes )
 		#set( $value = "")
 		#if( $attrib.id == "text" )
-			#set( $value = $selectedelement.getText() )
+			#set( $value = $selectedelement.getText($context) )
 		#else
 			#set( $value = $selectedelement.attributeValue($attrib.id) )
 		#end

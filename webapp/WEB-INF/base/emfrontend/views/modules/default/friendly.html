@@ -2,8 +2,8 @@
 [[Search Results for: ]]
 #foreach($term in $query.getTerms())
     #set($detail = $term.getDetail())
-    #if($detail.getText())
-        <b>$detail.getText() : </b>
+    #if($detail.getText($context))
+        <b>$detail.getText($context) : </b>
     #else
         <b>$detail :</b>
     #end 
@@ -28,7 +28,7 @@
 #foreach( $child in $query.children )
 #foreach( $term in $child.getTerms() )
     #set($detail = $term.getDetail())
-    <b>$detail.getText() : </b> 
+    <b>$detail.getText($context) : </b> 
     #if($detail.isList())
         #set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$term.value)) 
         #if( $foundrow )

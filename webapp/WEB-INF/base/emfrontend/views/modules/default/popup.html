@@ -9,7 +9,7 @@ $context.putPageValue("view",$view)
     #foreach($detail in $details)
     
     #if($detail.isList())
-    #set($val = $searcherManager.getListData($catalogid, $detail.listId, $data.get($detail.id)).getText())
+    #set($val = $searcherManager.getListData($catalogid, $detail.listId, $data.get($detail.id)).getText($context))
     #else
     #set($val = $data.get($detail.id))
     #end
