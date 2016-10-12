@@ -46,19 +46,19 @@ public class Validator {
 				if (detail.isDate()) {
 					// TODO: We cant validate unless they pass in the format the
 					// UI is using
-					if (detail.getDateFormat() != null) {
-						try {
-							Date parsed = detail.getDateFormat().parse(value);
-							if (!detail.getDateFormat().parse(detail.getDateFormat().format(parsed)).equals(parsed)) {
-								throw new Exception();
-							}
-							return null;
-						} catch (Exception ex) {
-							return "error-format";
-							// return "(" +
-							// detail.getDateFormatString().toLowerCase() + ")";
-						}
-					}
+//					if (detail.getDateFormat() != null) {
+//						try {
+//							Date parsed = detail.getDateFormat().parse(value);
+//							if (!detail.getDateFormat().parse(detail.getDateFormat().format(parsed)).equals(parsed)) {
+//								throw new Exception();
+//							}
+//							return null;
+//						} catch (Exception ex) {
+//							return "error-format";
+//							// return "(" +
+//							// detail.getDateFormatString().toLowerCase() + ")";
+//						}
+//					}
 				}
 			}
 		}

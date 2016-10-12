@@ -236,7 +236,7 @@ public class DataEditModule extends BaseMediaModule
 		detail.setId(newid);
 
 		String name = inReq.getRequestParameter("name");
-		detail.setText(name);
+		detail.setName(name);
 		String externalid = inReq.getRequestParameter("externalid");
 		detail.setExternalId(externalid);
 		String editable = inReq.getRequestParameter("editable");
@@ -402,7 +402,7 @@ public class DataEditModule extends BaseMediaModule
 			label = "New";
 		}
 		detail.setId(label.toLowerCase().replace(" ", ""));
-		detail.setText(label);
+		detail.setName(label);
 		String catid = inReq.findValue("catalogid");
 		detail.setCatalogId(catid);
 		detail.setEditable(true);

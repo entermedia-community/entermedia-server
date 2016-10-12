@@ -320,7 +320,7 @@ public class ElasticHitTracker extends HitTracker
 						PropertyDetail detail = getSearcher().getDetail(f.getName());
 						if (detail != null)
 						{
-							parent.setName(detail.getText());
+							parent.setName(detail.getName());
 						}
 						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
 						{
@@ -383,7 +383,7 @@ public class ElasticHitTracker extends HitTracker
 						PropertyDetail detail = getSearcher().getDetail(f.getName());
 						if (detail != null)
 						{
-							parent.setName(detail.getText());
+							parent.setValue("name", detail.getElementData().getLanguageMap("name"));
 						}
 						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
 						{
