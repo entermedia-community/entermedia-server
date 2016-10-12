@@ -5,15 +5,12 @@
 				      #else class="ui-widget-header" #end 
 				      data-target="categoriescontent">
 				<span class="widget-header-title">[[Categories]]</span>
-				#if( $caneditcategories )
-					<span class="widget-header-right">
-					##<a class="emdialog sidebarsubmenu" title="[[Edit Categories]]" href="$home$apphome/components/categories/edit/editdialog.html?targetdiv=addcategory&clearselection=true"><i class="glyphicon glyphicon-edit"></i></a>
-					<a class="emdialog sidebarsubmenu" title="[[Search Categories]]" href="$home$apphome/components/categories/search/searchcategory.html"><i class="glyphicon glyphicon-search"></i></a>
-					</span>
-				#end	
+				<span class="widget-header-right">
+				<a class="emdialog sidebarsubmenu" title="[[Search Categories]]" href="$home$apphome/components/categories/search/searchcategory.html"><i class="glyphicon glyphicon-search"></i></a>
+				</span>
 				</div>
 				<div  class="ui-widget-content categories-widget categories-navigation" id="categoriescontent" #if($userprofile.minimizecategoriescontent == "true" && $cantogglesidebar) style="display: none;" #end>
-					$pages.include("$apphome/components/categories/inline.html?editable=$caneditcategories")
+					$pages.include("$apphome/components/categories/inline.html")
 				</div>
 			</div>
 #end
