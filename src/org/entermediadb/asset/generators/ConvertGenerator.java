@@ -115,7 +115,8 @@ public class ConvertGenerator extends FileGenerator
 			String missingImage = inReq.getContentProperty("missingimagepath");
 			if(missingImage == null)
 			{
-				missingImage = themeprefix + "/images/missing150.jpg"; //would a 404 be better?
+				
+				missingImage =  "/mediadb/views/images/missing150.jpg"; //would a 404 be better?
 			}
 			Page missing = archive.getPageManager().getPage(missingImage);			//File temp = new File(missing.getContentItem().getAbsolutePath());
 			super.generate(inReq, missing, inOut);
