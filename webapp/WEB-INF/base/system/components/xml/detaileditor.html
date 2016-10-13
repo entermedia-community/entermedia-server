@@ -63,7 +63,7 @@ $context.putPageValue("multiedit",$multiedit)
 			<td   class="emdatafield" #if( $errors && $errors.get($detail.id) ) style="color: red; font-weight: bold;" #end >
 				#if( $detail.hidelabel == true )
 				#else
-				    #if ($detail.required == true) * #end	$context.getText($!detail.toString()) 
+				    #if ($detail.required == true) * #end	$!detail.getText( $context ) 
 				#end
 			</td>
 			
