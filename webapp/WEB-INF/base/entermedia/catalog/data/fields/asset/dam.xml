@@ -11,7 +11,7 @@
 
 	<property id="isfolder" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Folder Based</property>
 
-	<property id="category" index="true" keyword="true" editable="true" viewtype="category" indextype="not_analyzed" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
+	<property id="category" index="false" keyword="true" editable="true" viewtype="category" indextype="not_analyzed" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
 	<!-- Allow searching -->
 	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"   searchcomponent="librarysearch"   editable="true"  stored="true" index="true" sort="name" foreignkeyid="project">Libraries</property>
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
