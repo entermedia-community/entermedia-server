@@ -7006,3 +7006,7 @@ div.languagesaddform div.languageinput input
 	width: 20em;
 }
 
+input.textinput
+{
+	width: 228px;
+}

@@ -329,6 +329,9 @@ div.masonry-grid-cell span.emdropshadow
 div.masonry-grid-cell span.emdropshadow img
 {
 	width:100%;
+	display: inline-block;
+    margin: 0 auto;
+    vertical-align: middle;
 }
 
 
@@ -495,7 +498,7 @@ div.masonry-grid-cell span.emdropshadow img
 .masonry-grid-cell
 {
 	position: relative;
-	margin: 6px;
+	margin: 4px;
 	padding: 0;
 	border: 0;
 	text-overflow: ellipsis;

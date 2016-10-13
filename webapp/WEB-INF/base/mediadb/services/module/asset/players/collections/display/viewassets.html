@@ -17,7 +17,7 @@ $context.putPageValue("showtoolbar", "false")
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
 
-<div class="row masonry-grid" data-maxheight="150" 
+<div class="row masonry-grid" data-maxheight="175" 
 	data-viewertemplate="$home$apphome/services/module/asset/players/fullscreen/indexnolink.html"
 	data-assettemplate="$home$apphome/services/module/asset/players/fullscreen/currentasset.html" >
 	
@@ -25,7 +25,6 @@ $context.putPageValue("showtoolbar", "false")
     #set($count = 0)
     #set( $viewerlink = $content.get("assetviewerlink") )
     #foreach ($hit in $hits.getPageOfHits())
-    $hit.getClass()
         #set ($sourcepath = $hit.sourcepath)
         
         $context.putPageValue("hit", $hit)
@@ -52,7 +51,7 @@ $context.putPageValue("showtoolbar", "false")
 			      <div class="grid-gallery-checkbox">
 			          ##<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
 			      </div>
-		         <div class="stacked-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" >#if( $hit.assettitle ) $hit.assettitle #else $hit.get("name") #end</div>
+		         <div class="stacked-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" >#if( $hit.assettitle ) $hit.assettitle #else $hit.getName() #end</div>
 		     </div>
 		</div>
         #set ( $count = $count + 1)

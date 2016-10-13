@@ -343,6 +343,7 @@ jQuery(document).ready(function(url,params)
 		gridResize();
 	});
 	gridResize();
+	setTimeout(gridResize,50);
 	
 });        //document ready
         
@@ -430,14 +431,14 @@ gridResize = function()
 	var cellpadding = grid.data("cellpadding");
 	if( cellpadding == null)
 	{
-		cellpadding = 12;
+		cellpadding = 8;  //this has to be twice what is in results.css
 	}
 	cellpadding = parseInt(cellpadding);
 	var sofarused = 0;
 	var totalwidth = 0;
 	var rownum = 0;
 
-	var totalavailable = grid.width() - 6;
+	var totalavailable = grid.width() - (cellpadding/2);
 	
 	var row = [];
 	$(".masonry-grid .masonry-grid-cell").each(function()
@@ -480,6 +481,7 @@ gridResize = function()
 					//var area = jQuery(".imagearea img",div);
 					//area = $(area);
 					//area.height(roundedheight); 
+					div.css("line-height",roundedheight + "px"); 
 					div.height(roundedheight); 
 					div.width(newwidth); 
 					jQuery.data( div, "rowcount",rownum);
@@ -503,6 +505,7 @@ gridResize = function()
 		newheight = fixedheight + 100
 	}
 	var roundedheight = Math.floor(newheight);
+	
 	$.each( row, function()
 		{
 			var newcell = this;
@@ -512,6 +515,7 @@ gridResize = function()
 			//area = $(area);
 			div.height(roundedheight); 
 			div.width(newwidth); 
+			div.css("line-height",roundedheight + "px"); 
 			jQuery.data( div, "rowcount",rownum);
 			//jQuery("#emthumbholder img",newcell.cell).width(newwidth);
 			//jQuery(".imagearea",newcell.cell).height(roundedheight); //TODO: Fix aspect
