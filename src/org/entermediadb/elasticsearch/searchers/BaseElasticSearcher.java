@@ -1918,6 +1918,7 @@ public class BaseElasticSearcher extends BaseSearcher
 																			// first
 																			// detail
 																			// object
+					
 					HitTracker locales = getSearcherManager().getList(getCatalogId(), "locale");
 
 					if (value instanceof String)
@@ -1948,7 +1949,11 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					else
 					{
-						if (!(value instanceof String))
+						if( value instanceof LanguageMap)
+						{
+							value = ((LanguageMap)value).toString();
+						}
+						else if (!(value instanceof String))
 						{
 							String svalue = String.valueOf(value);
 							if (svalue.isEmpty())
@@ -1958,6 +1963,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 						if (value != null)
 						{
+							
 							inContent.field(key, value);
 						}
 					}

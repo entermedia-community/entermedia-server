@@ -220,9 +220,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		return all;
 	}
 
-	public String toString() {
-		if (getName() != null) {
-			return getName();
+	public String toString() 
+	{
+		String val = getName();
+		if (val != null)
+		{
+			return val;
 		} else {
 			return getId();
 		}

@@ -102,8 +102,9 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			log.info("settings " + settings.size() + " " + getSearchType());
 			for (Iterator iterator = settings.iterator(); iterator.hasNext();) 
 			{
-				Data data = (Data)iterator.next();					
+				ElementData data = (ElementData)iterator.next();					
 				toindex.add(data); //loadData? nah
+				log.info(data.getName());
 				if( toindex.size() > 1000)
 				{
 					updateIndex(toindex,null);
