@@ -3,14 +3,11 @@
 <settingsgroups> 
   <settingsgroup id="administrator" permissions="view|viewhomelink|viewsettings|multiedit|edittablecolumns|editlists|createnewrecord|createlivemedia|convert|download|downloadfpo|viewuploadmulti|viewupload|editusersgroups|viewbasket|viewmyaccount|viewcategorynav|filterbyassettype|togglesidebar|deleteasset|emaillink|viewvoting|publish|shareasset|sharetosocialmedia|viewconversions|embedasset|editadvancedsearch|changeattachment|editassetcategories|editcategories|viewassetedit|comment|deletecomments|metadatageneral|assetpermissions|editmetadatasetup|converthistory|viewassetpreviewhistory|capturehistory|viewmap|viewmediaedit|viewmetadatageneral|viewattachments|viewcomments|viewassets|asseteditorlibraries|asseteditorpickanylibrary|viewopencollections|addnewcollection|importcollection|exportcollection|sharecollection|api-manage-list|api-create-data|api-load-data|api-delete-data|api-update-data|api-search-data|api-manage-events|api-manage-users|api-manage-modules" profilesearchfilters="hideassettype">
     <name><![CDATA[Administrators]]></name>
-    <name><![CDATA[Administrators]]></name>
   </settingsgroup>  
   <settingsgroup id="users" permissions="view|viewhomelink|savesearch|edittablecolumns|createnewrecord|convert|download|viewupload|viewbasket|viewmyaccount|viewcategorynav|togglesidebar|emaillink|viewvoting|shareasset|sharetosocialmedia|viewconversions|embedasset|editadvancedsearch|changeattachment|editassetcategories|viewassetedit|comment|deletecomments|metadatageneral|assetpermissions|converthistory|viewmap|viewattachments|viewcomments|viewassets|asseteditorlibraries|asseteditorpickanylibrary|viewopencollections|addnewcollection" profilesearchfilters="hideassettype"> 
     <name><![CDATA[Users]]></name>  
-    <name><![CDATA[Users]]></name> 
   </settingsgroup>  
   <settingsgroup id="guest" permissions="downloadfpo|viewcategorynav|forcewatermarkasset|viewassets" profilesearchfilters="hideassettype"> 
     <name><![CDATA[Anonymous]]></name>  
-    <name><![CDATA[Anonymous]]></name> 
   </settingsgroup> 
 </settingsgroups>
