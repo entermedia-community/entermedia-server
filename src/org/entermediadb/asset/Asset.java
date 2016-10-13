@@ -186,6 +186,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public void removeCategory(Category inCategory)
 	{
+		
+		Collection categories = (Collection) getValues("category-exact");
+		categories.remove(inCategory.getId());
+		Collection fullcategories = (Collection) getValues("category");
+		fullcategories.remove(inCategory.getId());
 		Category found = null;
 		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
 		{
