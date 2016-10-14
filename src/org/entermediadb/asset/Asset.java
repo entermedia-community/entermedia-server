@@ -673,7 +673,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 				inValue = Arrays.asList(vals);
 			}
 		}
-		else if ("category-exact".equals(inKey))
+		else if ("category-exact".equals(inKey) || "category".equals(inKey))
 		{
 			if (inValue != null)
 			{
@@ -702,7 +702,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 				}
 			}
 		}
-		if (inValue instanceof Map)
+		else if (inValue instanceof Map)
 		{
 			PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
 			if (detail != null && detail.isMultiLanguage())
@@ -710,8 +710,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 				inValue = new LanguageMap((Map) inValue);
 			}
 
+		} else{
+			super.setValue(inKey, inValue);
 		}
-		super.setValue(inKey, inValue);
 	}
 
 	@Override

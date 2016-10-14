@@ -281,7 +281,7 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 				}
 				else
 				{
-					newdata.setProperty(detail.getId(), value);
+					newdata.setValue(detail.getId(), value);
 				}	
 			}
 			tosave.add(newdata);
