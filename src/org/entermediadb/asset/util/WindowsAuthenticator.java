@@ -51,6 +51,7 @@ public class WindowsAuthenticator extends BaseAuthenticator
 			// }
 			UniAddress controller = new UniAddress(ip);
 
+			//445 is the default port
 			String port = inAReq.get("authenticationserverport");
 			if (port != null)
 			{

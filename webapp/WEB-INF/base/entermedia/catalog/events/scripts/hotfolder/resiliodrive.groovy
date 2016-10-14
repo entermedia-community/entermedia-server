@@ -42,12 +42,14 @@ public void init()
 			foundone = true;
 			log.info("found : ${folder.getName()} ${template}");
 			String key = folder.get("secretkey");
-			String externalpath = folder.get("externalpath");
-			ContentItem item = archive.getContent(externalpath);
-			log.info("Key ${key} ${externalpath}");
-			String newfolder = template.replace("%SECRET%",key).replace("%PATH%",item.getAbsolutePath());
-			output.append(newfolder);
-			log.info("ending with : ${newfolder}");
+			if( key != null)
+			{
+				String externalpath = folder.get("externalpath");
+				log.info("Key ${key} ${externalpath}");
+				String newfolder = template.replace("%SECRET%",key).replace("%PATH%",externalpath);
+				output.append(newfolder);
+				log.info("ending with : ${newfolder}");
+			}	
 		}
 	}
 	String footer = content.substring(keyend + template.length(), content.length());
