@@ -1,7 +1,7 @@
 <properties >
 	<property id="id" editable="true" stored="true" index="true">ID</property>
 	<property id="name" multilanguage="true" editable="true" stored="true" index="true">Name</property>	
-	<property id="editable"  editable="true" stored="true" index="true">Editable</property>	
+	<property id="editable" type="boolean" editable="true" stored="true" index="true">Editable</property>	
 	<property id="internaluse" type="boolean" editable="true" stored="true" index="true">Internal use</property>	
 	<property id="defaultoperation" listid="defaultsearchoperation" type="list"  editable="true" stored="true" index="true">Default Search Operation</property>	
 	<property id="datatype" listid="datadatatype" type="list"  editable="true" stored="true" index="true">Data Type</property>	
@@ -9,7 +9,7 @@
 	<property id="required" type="boolean" editable="true" stored="true" index="true">Required</property>	
 	<property id="sortable" type="boolean" editable="true" stored="true" index="true">Sortable</property>	
 	<property id="searchable" type="boolean" editable="true" stored="true" index="true">Searchable</property>	
-	<property id="searchcomponent" type="list" editable="true" stored="true" index="true">Default Search View</property>	
+	<property id="searchcomponent" listid="datarendertype" type="list" editable="true" stored="true" index="true">Default Search View</property>	
 	<property id="stored" type="boolean" editable="true" stored="true" index="true">Stored</property>	
 	<property id="externalid"  editable="true" stored="true" index="true">External ID</property>	
 	<property id="keyword" type="boolean"  editable="true" stored="true" index="true">Used in Keywords</property>	
@@ -24,7 +24,7 @@
 	<property id="dependsonvalue"  editable="true" stored="true" index="true">Depends on Value</property>	
 	<property id="regex"  editable="true" stored="true" index="true">Regex</property>	
 	<property id="rendermask"  editable="true" stored="true" index="true">Render Mask</property>	
-	<property id="autocreatefromexif"  editable="true" stored="true" index="true">Auto Create Metadata from Exif</property>	
-	<property id="writenametoexif"  editable="true" stored="true" index="true">Write Name to Exif</property>	
+	<property id="autocreatefromexif" type="boolean"  editable="true" stored="true" index="true">Auto Create Metadata from Exif</property>	
+	<property id="writenametoexif" type="boolean"  editable="true" stored="true" index="true">Write Name to Exif</property>	
 	
 </properties>
