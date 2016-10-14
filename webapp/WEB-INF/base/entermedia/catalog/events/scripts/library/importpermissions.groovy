@@ -60,7 +60,10 @@ public void init()
 		LibraryCollection librarycollection = mediaArchive.getData("librarycollection",hit.get("librarycollection") );
 		
 		Category rootcategory = projectmanager.getRootCategory(mediaArchive,librarycollection);
-		Asset asset = mediaArchive.getAsset(librarycollection.get("_parent") );
+		if(rootcategory != null){
+		Asset asset = mediaArchive.getAsset(hit.get("_parent") );
+		
+		
 		if( asset != null && !asset.isInCategory(rootcategory.getId()))
 		{
 			asset.addCategory(rootcategory);
@@ -70,6 +73,9 @@ public void init()
 				mediaArchive.getAssetSearcher().saveAllData(tosave,null);
 				tosave.clear();
 			}
+		}
+		} else{
+		log.info("No root category: " + librarycollection);
 		}
 	}
 	mediaArchive.getAssetSearcher().saveAllData(tosave,null);

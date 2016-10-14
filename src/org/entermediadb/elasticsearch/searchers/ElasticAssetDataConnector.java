@@ -180,7 +180,15 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		updateIndex(all, null);
 		// updateIndex(one,null);
 	}
-
+	
+	public boolean shoudSkipField(String inKey)
+	{
+		if(inKey.equals("category-exact") || inKey.equals("category")){
+			return true;
+		}
+		return super.shoudSkipField(inKey);
+	}
+	
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
 		Asset asset = (Asset) inData;
@@ -223,7 +231,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// populateJoinData("album", doc, tracker, "albumid", true);
 
 			// populateSecurity(doc, asset, catalogs);
-
+			
 			super.updateIndex(inContent, inData, inDetails);
 			// for (Iterator iterator =
 			// inDetails.findIndexProperties().iterator(); iterator.hasNext();)

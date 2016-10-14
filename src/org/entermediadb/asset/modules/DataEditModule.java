@@ -235,8 +235,7 @@ public class DataEditModule extends BaseMediaModule
 		String newid = inReq.getRequestParameter("newid");
 		detail.setId(newid);
 
-		String name = inReq.getRequestParameter("name");
-		detail.setName(name);
+		
 		String externalid = inReq.getRequestParameter("externalid");
 		detail.setExternalId(externalid);
 		String editable = inReq.getRequestParameter("editable");
@@ -277,19 +276,9 @@ public class DataEditModule extends BaseMediaModule
 //		val = inReq.getRequestParameter("viewtype");
 //		detail.setProperty("viewtype", val);
 
-		
-		String [] fields = inReq.getRequestParameters("field");
-		if( fields != null)
-		{
-			for (int i = 0; i < fields.length; i++) 
-			{
-				
-				String field = fields[i];
-				String value = inReq.getRequestParameter(field + ".value");
-				detail.setProperty(field, value);
-			}
-		}
-		
+		Searcher psearcher = getSearcherManager().getSearcher(searcher.getCatalogId(), "propertydetail");
+		String fields[] =inReq.getRequestParameters("field");
+		psearcher.updateData(inReq, fields, detail);
 		searcher.getPropertyDetailsArchive().savePropertyDetail(detail, fieldName, inReq.getUser());
 		
 		

@@ -11,6 +11,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -284,9 +285,15 @@ public class ProjectModule extends BaseMediaModule
 		saved.setValue("owner",inReq.getUserName() );
 		saved.setValue("library",inReq.getUserName() );
 		
-		getMediaArchive(inReq).getSearcher("librarycollection").saveData(saved,null);
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		mediaArchive.getSearcher("librarycollection").saveData(saved,null);
 		inReq.setRequestParameter("librarycollection", saved.getId());
 		inReq.setRequestParameter("collectionid", saved.getId());
+		ProjectManager manager = getProjectManager(inReq);
+		Category cat = manager.getRootCategory(mediaArchive, (LibraryCollection)saved);
+		((MultiValued) cat).addValue("viewusers", inReq.getUserName());
+		mediaArchive.getCategorySearcher().saveData(cat);
+		
 	}
 	
 	public Data createUserLibrary(WebPageRequest inReq)

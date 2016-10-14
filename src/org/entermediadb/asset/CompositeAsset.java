@@ -205,7 +205,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 
 	public List getCategories()
 	{
-		if( fieldCategories == null )
+		List mycats = (List) getValues("category");
+		if( mycats == null )
 		{
 			Data first = (Data)getSelectedResults().first();
 			if( first == null )
@@ -246,14 +247,14 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					}
 				}
 				Collections.sort(categories);
-				fieldCategories  = categories;
+				mycats  = categories;
 			}
 			else
 			{
-				fieldCategories = new ArrayList();
+				mycats = new ArrayList();
 			}
 		}
-		return fieldCategories;
+		return mycats;
 	}
 
 	public void removeCategory(Category inCategory)
@@ -635,7 +636,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	public void refresh()
 	{
 		getPropertiesSet().clear();
-		fieldCategories = null;
+		setValue("category-exact", null);
 		
 	}
 	@Override

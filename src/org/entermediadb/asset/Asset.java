@@ -37,7 +37,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	//protected Page fieldSourcePage;
 	protected String fieldDescription;
-	protected List fieldCategories;
 	//protected Collection<String> fieldLibraries;
 	protected ValuesMap fieldMap;
 	protected MediaArchive fieldMediaArchive;
@@ -48,18 +47,16 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 	{
 	}
 
-	
-
 	public boolean isFolder()
 	{
-		
+
 		String isfolder = get("isfolder");
 		if (isfolder == null)
 		{
 			ContentItem item = getMediaArchive().getOriginalFileManager().getOriginalContent(this);
 			setFolder(item.isFolder());
 		}
-		
+
 		return Boolean.parseBoolean(get("isfolder"));
 	}
 
@@ -92,8 +89,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 	{
 		setValue("ordering", inOrdering);
 	}
-
-	
 
 	/**
 	 * This is an optional field
@@ -129,9 +124,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		}
 	}
 
-	
-
-	
 	/**
 	 * This will look in all the category objects if needed
 	 */
@@ -146,19 +138,35 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 				return getMediaArchive().getAssetSearcher().getFulltext(this);
 			}
 		}
-		
-//		if ("category".equals(inAttribute))
-//		{
-//			List<Category> categories = getCategories();
-//			
-//			return categories;
-//		}
-		
+		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute) )
+		{
+			Collection categorylist = (Collection) getMap().getObject("category-exact");
+			if(categorylist == null){
+				categorylist = new ArrayList();
+				Collection categories = (Collection) getFromDb("category-exact");
+				if (categories != null)
+				{
+					for (Iterator iterator = categories.iterator(); iterator.hasNext();)
+					{
+						String categoryid = (String) iterator.next();
+						Category category = getMediaArchive().getCategory(categoryid); //Cache this? Or lazy load em
+						if (category != null)
+						{
+							categorylist.add(category);
+						}
+					}
+				}
+				getMap().put("category-exact", categorylist);
+				
+
+			} 
+			
+			
+		}
+
 		return super.getValue(inAttribute);
 
 	}
-
-	
 
 	public void removeProperty(String inKey)
 	{
@@ -186,7 +194,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public void removeCategory(Category inCategory)
 	{
-		
+
 		Collection categories = (Collection) getValues("category-exact");
 		categories.remove(inCategory.getId());
 		Collection fullcategories = (Collection) getValues("category");
@@ -209,28 +217,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public List<Category> getCategories()
 	{
-		if (fieldCategories == null)
-		{
-			fieldCategories = new ArrayList();
-			
-				Collection categories = (Collection) getValues("category-exact");
-				if (categories != null)
-				{
-					for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-					{
-						String categoryid = (String) iterator.next();
-						Category category = getMediaArchive().getCategory(categoryid); //Cache this? Or lazy load em
-						if (category != null)
-						{
-							fieldCategories.add(category);
-						}
-					}
-				}
-			
-			
-		}
-		return fieldCategories;
+		return (List<Category>) getValue("category-exact");
 	}
+
 	/**
 	 * @deprecated
 	 * @param inCategory
@@ -270,13 +259,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	}
 
-	
 	/*
 	 * @deprecated
 	 * 
 	 * @see org.openedit.Data#setProperty(java.lang.String, java.lang.String)
 	 */
-	
 
 	public void clearCategories()
 	{
@@ -428,9 +415,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return copy(null);
 	}
 
-	public void setCategories(List inCatalogs)
+	public void setCategories(Collection <Category> inCatalogs)
 	{
-		fieldCategories = inCatalogs;
+		setValue("category-exact", inCatalogs);
 	}
 
 	public void setOriginalImagePath(String inPath)
@@ -680,13 +667,13 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 	{
 		if ("keywords".equals(inKey))
 		{
-			if( inValue instanceof String)
+			if (inValue instanceof String)
 			{
-				String[] vals = VALUEDELMITER.split((String )inValue );
+				String[] vals = VALUEDELMITER.split((String) inValue);
 				inValue = Arrays.asList(vals);
-			}	
+			}
 		}
-		else if ("category-exact".equals(inKey))
+		else if ("category-exact".equals(inKey) || "category".equals(inKey))
 		{
 			if (inValue != null)
 			{
@@ -715,7 +702,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 				}
 			}
 		}
-		if (inValue instanceof Map)
+		else if (inValue instanceof Map)
 		{
 			PropertyDetail detail = getMediaArchive().getAssetPropertyDetails().getDetail(inKey);
 			if (detail != null && detail.isMultiLanguage())
@@ -723,28 +710,26 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 				inValue = new LanguageMap((Map) inValue);
 			}
 
+		} else{
+			super.setValue(inKey, inValue);
 		}
-		super.setValue(inKey, inValue);
 	}
 
-	
-	
 	@Override
-	public PropertyDetails getPropertyDetails() {
+	public PropertyDetails getPropertyDetails()
+	{
 		// TODO Auto-generated method stub
 		return getMediaArchive().getAssetPropertyDetails();
 	}
-	
-	
-	public String getProperty(String inProperty){
+
+	public String getProperty(String inProperty)
+	{
 		return get(inProperty);
 	}
 
-
-
 	public String getPath()
 	{
-		return get("archivesourcepath") == null ?  getSourcePath():get("archivesourcepath");
+		return get("archivesourcepath") == null ? getSourcePath() : get("archivesourcepath");
 	}
-	
+
 }

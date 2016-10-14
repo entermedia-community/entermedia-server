@@ -1999,8 +1999,9 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-	private boolean shoudSkipField(String inKey)
+	public boolean shoudSkipField(String inKey)
 	{
+		//skip description?
 		if ("_id".equals(inKey) || "_parent".equals(inKey) || "_all".equals(inKey) || inKey.contains("."))
 		{
 			return true;
