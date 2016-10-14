@@ -31,9 +31,15 @@
 	#end
 
 <div id="edit-data" class="oeinputform validate-inputs">	
+$context.putPageValue("searchtype", "propertydetail")
+$context.putPageValue("view", "propertydetail/edit")
+$context.putPageValue("data", $property)
 
+$context.putPageValue("searcher",$mediaarchive.getSearcher("propertydetail"))
 
+$pages.include("$apphome/components/xml/detaileditor.html", $context)
 
+<!-- 
 <table class="settings-table">
 
 	<tr> <td>ID:</td> <td><input type="text" name="newid" value="$property.id" /></td> </tr>
@@ -125,11 +131,15 @@
 	<tr> <td>[[Used In Keywords]]:</td> <td><input name="keyword" type="checkbox" #if ($property.isKeyword() == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Used In Filters]]:</td> <td><input name="filter" type="checkbox" #if ($property.isFilter() == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Multi Language Enabled]]:</td> <td><input name="multilanguage.value" type="checkbox" #if ($property.isMultiLanguage() == true) checked #end value="true"/> </td> </tr>
-<!--	<tr> <td>[[Auto Include]]:</td> <td>
+	<tr> <td>[[Auto Include]]:</td> <td>
 		<input type="hidden" name="field" value="autoinclude"/>
 		<input name="autoinclude.value" type="checkbox" #if ($property.isAutoInclude() == true) checked #end value="true"/> </td> </tr>
 	<tr> <td>[[Groovy Procedure]]:</td> <td><textarea  name="query.value" >$!property.query</textarea> </td> </tr>
--->
+
+
+ -->
+ 
+<!--  
 	<input type="hidden" name="field" value="listcatalogid"/>
 	<input type="hidden" name="field" value="sort"/>
 	<input type="hidden" name="field" value="query"/>
@@ -142,7 +152,6 @@
 
 
 	<tr> <td>[[List ID]]:</td> <td><input type="text" name="listid.value" value="$!property.listid"/> </td> </tr>
-	<!-- use searchtype table  tr> <td>[[List Catalog ID]]:</td> <td><input type="text" name="listcatalogid.value" value="$!property.listcatalogid"/> </td> </tr -->
 	<tr> <td>[[List Sort Field]]:</td> <td><input type="text" name="sort.value" value="$!property.sort"/> </td> </tr>
 	<tr> <td>[[Foreign Key ID]]:</td> <td><input type="text" name="foreignkeyid.value" value="$!property.foreignkeyid"/> </td> </tr>
 
@@ -184,6 +193,7 @@
 <input class="btn right" style="margin-right: 20px;" type="submit" value="Save" />
 
 </div>
+ -->
 </form>
 
 #if( $savedok && $origURL )

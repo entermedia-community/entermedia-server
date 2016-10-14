@@ -1,0 +1,13 @@
+<list>
+
+		<option id="startswith">Starts With</option>
+		<option id="contains" >Contains</option>
+		<option id="orsgroup" >Ors Group</option>
+		<option id="andgroup" >And Group</option>
+		<option id="matches"  >Matches</option>
+		<option id="freeform"  >Free Form</option>
+		<option id="exact"  >Exact</option>
+		<option id="not" >Not</option>
+	
+
+</list>
