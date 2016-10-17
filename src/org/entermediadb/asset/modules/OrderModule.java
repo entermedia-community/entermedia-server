@@ -719,7 +719,6 @@ public class OrderModule extends BaseMediaModule
 			item.setProperty("assetid", hit.getId());
 			item.setProperty("orderid", order.getId());
 
-			item.setId(itemsearcher.nextId());
 			itemsearcher.saveData(item, inReq.getUser());
 					
 		}
