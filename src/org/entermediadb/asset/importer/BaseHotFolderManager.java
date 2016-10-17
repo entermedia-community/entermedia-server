@@ -603,7 +603,11 @@ public class BaseHotFolderManager implements HotFolderManager
 				try
 				{
 					//pullGit(path,1);
-					importHotFolder(inArchive,folder);
+					Collection found = importHotFolder(inArchive,folder); 
+					if( found != null)
+					{
+						inLog.info(name + " Imported " + found.size() + " assets");
+					}
 				}
 				catch( Exception ex)
 				{
