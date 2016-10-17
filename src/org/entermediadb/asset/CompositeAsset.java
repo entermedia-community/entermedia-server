@@ -205,7 +205,17 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 
 	public List getCategories()
 	{
-		List mycats = (List) getValues("category");
+		Object vals = getValues("category-exact");
+		List mycats = null;
+		if(vals instanceof List){
+			 mycats = (List)vals;
+
+		}
+		if(vals instanceof Collection){
+			Collection target = (Collection)vals;
+			mycats = new ArrayList(target);
+		}
+		
 		if( mycats == null )
 		{
 			Data first = (Data)getSelectedResults().first();
@@ -213,14 +223,14 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			{
 				return Collections.EMPTY_LIST;
 			}
-			String fcats = first.get("category");
+			String fcats = first.get("category-exact");
 			if( fcats != null )
 			{
 				String[] catlist = fcats.split("\\|");
 				for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
-					String cats = data.get("category");
+					String cats = data.get("category-exact");
 					if( cats != null )
 					{
 						for (int i = 0; i < catlist.length; i++)
@@ -433,7 +443,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			for (Iterator iterator2 = getCategories().iterator(); iterator2.hasNext();)
 			{
 				Category cat = (Category) iterator2.next();
-				Collection cats = (Collection)data.getValue("category");
+				Collection cats = (Collection)data.getValue("category-exact");
 				if( cats == null || !cats.contains(cat) )
 				{
 					Asset asset = loadAsset( inloopasset, data, tosave);
@@ -447,7 +457,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			for (Iterator iterator2 = getRemovedCategories().iterator(); iterator2.hasNext();)
 			{
 				Category cat = (Category) iterator2.next();
-				Collection cats = (Collection)data.getValue("category");
+				Collection cats = (Collection)data.getValue("category-exact");
 				if( cats != null && cats.contains(cat) )
 				{
 					Asset asset = loadAsset( inloopasset, data, tosave);
@@ -641,8 +651,10 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	}
 	@Override
 	public Collection<String> getValues(String inPreference) {
-		String currentlist =getValueFromResults(inPreference); 
-		return collect(currentlist);
+		
+			String currentlist =getValueFromResults(inPreference); 
+			return collect(currentlist);
+		
 		
 	}
 	
