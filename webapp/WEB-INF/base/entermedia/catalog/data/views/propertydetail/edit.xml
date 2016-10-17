@@ -10,21 +10,6 @@
 	<property id="sortable"  editable="true" stored="true" index="true">Sortable</property>	
 	<property id="index"  editable="true" stored="true" index="true">Searchable</property>	
 	<property id="searchcomponent"  editable="true" stored="true" index="true">Default Search View</property>	
-	<property id="stored"  editable="true" stored="true" index="true">Stored</property>	
-	<property id="externalid"  editable="true" stored="true" index="true">External ID</property>	
-	<property id="keyword"  editable="true" stored="true" index="true">Used in Keywords</property>	
-	<property id="filter"  editable="true" stored="true" index="true">Used in Filters</property>	
-	<property id="multilanguage"  editable="true" stored="true" index="true">Mutlilanguage Enabled</property>	
-	<property id="filtercount"  editable="true" stored="true" index="true">Filter Count</property>	
-	<property id="note"  editable="true" stored="true" index="true">Note</property>	
-	<property id="listid"  editable="true" stored="true" index="true">listid</property>	
-	<property id="sort"  editable="true" stored="true" index="true">Default Sort</property>	
-	<property id="foreignkeyid"  editable="true" stored="true" index="true">Foreign Key</property>	
-	<property id="dependson"  editable="true" stored="true" index="true">Depends On Field</property>	
-	<property id="dependsonvalue"  editable="true" stored="true" index="true">Depends on Value</property>	
-	<property id="regex"  editable="true" stored="true" index="true">Regex</property>	
-	<property id="rendermask"  editable="true" stored="true" index="true">Render Mask</property>	
-	<property id="autocreatefromexif"  editable="true" stored="true" index="true">Auto Create Metadata from Exif</property>	
-	<property id="writenametoexif"  editable="true" stored="true" index="true">Write Name to Exif</property>	
+	
 	
 </properties>

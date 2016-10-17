@@ -39,6 +39,14 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher("propertydetail"))
 
 $pages.include("$apphome/components/xml/detaileditor.html", $context)
 
+<div id="advanced" style="display: none;">
+<h3>Advanced Options</h3>
+$context.putPageValue("view", "propertydetail/advanced")
+$pages.include("$apphome/components/xml/detaileditor.html", $context)
+
+</div>
+</div>
+
 <!-- 
 <table class="settings-table">
 
