@@ -1,0 +1,7 @@
+<page>
+	<!-- Push items -->
+	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
+	<property id="pushpercentage" internalfield="true"  index="true"  stored="true">Push Percentage</property>
+	<property id="pusherrordetails" internalfield="true"  index="true"  stored="true">Push Error Details</property>
+	<property id="pusheddate" internalfield="true" editable="true"  index="true"  searchcomponent="datesearch"  type="date" stored="true" >Pushed Date</property>
+</page>	

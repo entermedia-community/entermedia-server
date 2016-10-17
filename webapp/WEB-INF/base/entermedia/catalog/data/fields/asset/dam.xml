@@ -12,16 +12,11 @@
 	<property id="isfolder" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Folder Based</property>
 
 	<property id="category" index="true" keyword="true" editable="true" viewtype="category" indextype="not_analyzed" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
-	<!-- Allow searching -->
+	<!-- Allow searching 
 	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"   searchcomponent="librarysearch"   editable="true"  stored="true" index="true" sort="name" foreignkeyid="project">Libraries</property>
+	-->
 	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
 
-	<!-- Push items -->
-	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
-	<property id="pushpercentage" internalfield="true"  index="true"  stored="true">Push Percentage</property>
-	<property id="pusherrordetails" internalfield="true"  index="true"  stored="true">Push Error Details</property>
-	<property id="pusheddate" internalfield="true" editable="true"  index="true"  searchcomponent="datesearch"  type="date" stored="true" >Pushed Date</property>
-	
 	<!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->	
