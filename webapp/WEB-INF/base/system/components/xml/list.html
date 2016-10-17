@@ -86,6 +86,13 @@ $lsearcher.addShowOnly($context, $query)
 		<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
 	#end
    </select>
+   #set ($mode = $user.get("oe_edit_mode"))
+   
+	#if($mode && ($mode == "debug" || $mode == "editing" ))
+		<a class="btn" href="$apphome/views/settings/lists/datamanager/list/index.html?catalogid=${catalogid}&searchtype=$listid">Edit Values</a>
+	#end
+   
+   
 #else
 	No values found in data file ${listid}).xml 
 #end
