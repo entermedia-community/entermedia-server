@@ -8,7 +8,7 @@
 	<property id="rendertype"  editable="true" stored="true" index="true">Render Type</property>	
 	<property id="required"  editable="true" stored="true" index="true">Required</property>	
 	<property id="sortable"  editable="true" stored="true" index="true">Sortable</property>	
-	<property id="searchable"  editable="true" stored="true" index="true">Searchable</property>	
+	<property id="index"  editable="true" stored="true" index="true">Searchable</property>	
 	<property id="searchcomponent"  editable="true" stored="true" index="true">Default Search View</property>	
 	<property id="stored"  editable="true" stored="true" index="true">Stored</property>	
 	<property id="externalid"  editable="true" stored="true" index="true">External ID</property>	
