@@ -1,3 +1,4 @@
+#if( $canasseteditorlibraries)
 <div id="collectionpicker" style="text-align: right;width:240px">
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
@@ -28,3 +29,4 @@
 		</table>	
 		
 </div>
+#end
