@@ -1,6 +1,7 @@
 package assets
 
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -23,7 +24,9 @@ public void init()
 		Asset asset = mediaarchive.getAssetSearcher().loadData(it);
 		asset.getCategories().each
 		{
-			Collection values = searcher.query().exact("categoryid",it.getId()).search();
+			//Look for any parent values
+			Category cat = it;
+			Collection values = searcher.query().orgroup("categoryid",cat.getParentCategories()).search();
 			values.each
 			{
 				Data row = it;
