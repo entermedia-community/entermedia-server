@@ -21,27 +21,6 @@ $pages.include("$home$apphome/views/modules/asset/editor/conversions/attachmenth
 ##set($page = $pagemanager.getPage($previewpath, $context))
 
 
-<script type="text/javascript">
-jQuery("a.cropbox").livequery(
-			function() 
-			{
-				jQuery(this).fancybox(
-				{
-			    	openEffect	: 'elastic',
-			    	closeEffect	: 'elastic',
-			    	scrolling: 'none',
-			    	fitToView: true,
-			    	aspectRatio: true,
-			    	helpers:  {
-       					title : {
-			    			type : 'inside'
-			    		}
-    				}
-			    	
-				});
-			}
-		); 
-</script>
 
 ## check whether we can crop on particular image
 
@@ -50,6 +29,6 @@ jQuery("a.cropbox").livequery(
 #end
 #set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
 #if($cancrop)
-<a class="btn previewcrop-btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}">Crop</a>
+<a class="btn previewcrop-btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">Crop</a>
 #end
 

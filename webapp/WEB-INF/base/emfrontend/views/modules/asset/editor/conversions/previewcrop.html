@@ -81,7 +81,7 @@
 #set($preview_img_height = $numberutils.createDouble("${preview_img_height}").intValue())
 
 ##set crop link
-#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/preview.jpg?cache=false")
+#set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/thumb.jpg?cache=false")
 
 <div style="padding:30px;">
 	<div class="jc-demo-box">
@@ -214,75 +214,94 @@
 #end
 
 <script>
-$(document).ready(function(){
-	var jcrop_api;
-	function prepareCropUtil(boxwidth,boxheight){
-		var boundx,
-		    boundy,
-		    xsize = ${preview_img_width},
-		    ysize = ${preview_img_height};
-	    
-		$('#target').Jcrop({
-			keySupport: false,
-			onChange: updatePreview,
-			onSelect: updatePreview,
-			minSize: [xsize,ysize],
-			setSelect: [0,0,xsize,ysize]
-		},function(){
-		    jcrop_api = this;
-			var bounds = this.getBounds();
-			boundx = bounds[0];
-			boundy = bounds[1];
-			//$('#preview-panel').appendTo(this.ui.holder);
-		});
-		/*
-					trueSize: [1024,768]
-			#if( $forceaspect),
-			aspectRatio: xsize / ysize
-			#end
-		*/
-		function updatePreview(c){
-			/*
-			if (parseInt(c.w) > 0){
-		    	var rx = xsize / c.w;
-		    	var ry = ysize / c.h;
-		    	$("#preview-image").css({
-		        	width: Math.round(rx * boundx) + 'px',
-		          	height: Math.round(ry * boundy) + 'px',
-		          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
-		          	marginTop: '-' + Math.round(ry * c.y) + 'px'
-		        });
-		    	rx = ${width} / c.w;
-		    	ry = ${height} / c.h;
-		    	$("#fancybox-preview").css({
-		        	width: Math.round(rx * boundx) + 'px',
-		          	height: Math.round(ry * boundy) + 'px',
-		          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
-		          	marginTop: '-' + Math.round(ry * c.y) + 'px'
-		        });
-		  	}
-			*/
-		  	var x1 = Math.round(c.x),
-		 		y1 = Math.round(c.y),
-		 		x2 = Math.round(c.x2),
-		 		y2 = Math.round(c.y2),
-		 		w = Math.round(c.w),
-		 		h = Math.round(c.h);
-			$('#x1').val(x1);
-		 	$('#y1').val(y1);
-		  	$('#x2').val(x2);
-		  	$('#y2').val(y2);
-		  	$('#w').val(w);
-		  	$('#h').val(h); 
-		  	$('#dimension').text(w+"x"+h);
-		};
-		/*
-		$("#showpreview").fancybox({
-			'autoScale':'false',
-			'scrolling':'no'
-		});
-		*/
+
+$("img").on("load", function() {
+	var id = $(this).attr("id");
+	if (id == "target"){
+		$("#target").show();
+		prepareCropUtil(${img_width},${img_height});
+	} else if (id == "preview-image"){
+		$(this).show();
 	}
+}).each(function() {
+		$(this).load();
+});
+	
+
+var jcrop_api;
+
+function prepareCropUtil(boxwidth,boxheight){
+	var boundx,
+	    boundy,
+	    xsize = ${preview_img_width},
+	    ysize = ${preview_img_height};
+    
+	$('#target').Jcrop({
+		keySupport: false,
+		onChange: updatePreview,
+		onSelect: updatePreview,
+		minSize: [xsize,ysize],
+		setSelect: [0,0,xsize,ysize]
+	},function(){
+	    jcrop_api = this;
+		var bounds = this.getBounds();
+		boundx = bounds[0];
+		boundy = bounds[1];
+		//$('#preview-panel').appendTo(this.ui.holder);
+	});
+	/*
+				trueSize: [1024,768]
+		#if( $forceaspect),
+		aspectRatio: xsize / ysize
+		#end
+	*/
+	function updatePreview(c){
+		/*
+		if (parseInt(c.w) > 0){
+	    	var rx = xsize / c.w;
+	    	var ry = ysize / c.h;
+	    	$("#preview-image").css({
+	        	width: Math.round(rx * boundx) + 'px',
+	          	height: Math.round(ry * boundy) + 'px',
+	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
+	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
+	        });
+	    	rx = ${width} / c.w;
+	    	ry = ${height} / c.h;
+	    	$("#fancybox-preview").css({
+	        	width: Math.round(rx * boundx) + 'px',
+	          	height: Math.round(ry * boundy) + 'px',
+	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
+	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
+	        });
+	  	}
+		*/
+	  	var x1 = Math.round(c.x),
+	 		y1 = Math.round(c.y),
+	 		x2 = Math.round(c.x2),
+	 		y2 = Math.round(c.y2),
+	 		w = Math.round(c.w),
+	 		h = Math.round(c.h);
+		$('#x1').val(x1);
+	 	$('#y1').val(y1);
+	  	$('#x2').val(x2);
+	  	$('#y2').val(y2);
+	  	$('#w').val(w);
+	  	$('#h').val(h); 
+	  	$('#dimension').text(w+"x"+h);
+	};
+	/*
+	$("#showpreview").fancybox({
+		'autoScale':'false',
+		'scrolling':'no'
+	});
+	*/
+}
+
+
+
+$(document).ready(function(){
+	
 	$("#maximize").bind("click",function(){
 		
 		var displaywidth = $(window).width();
@@ -305,17 +324,8 @@ $(document).ready(function(){
 		}, 300); //add a timeout to allow for toggleprofileproperty to be executed
 		
 	});
-	$("img").one('load', function() {
-		var id = $(this).attr("id");
-		if (id == "target"){
-			$(this).show();
-			prepareCropUtil(${img_width},${img_height});
-		} else if (id == "preview-image"){
-			$(this).show();
-		}
-	}).each(function() {
-		if (this.complete) $(this).load();
-	});
+	prepareCropUtil(${img_width},${img_height});
+
 });
 </script>
 
