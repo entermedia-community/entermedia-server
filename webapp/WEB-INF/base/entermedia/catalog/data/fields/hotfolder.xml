@@ -11,8 +11,7 @@
 <!-- Local Folder -->    
   <property id="externalpath" editable="true" index="true" stored="true">External Path</property>
 
-  <property id="email" editable="true" index="true" stored="true">Email</property>
-
+	<property id="email" index="true" stored="true" keyword="true" editable="true" required="true" indextype="not_analyzed">Email</property>
 <!-- Amazon S3 -->    
   <property id="bucket" editable="true" index="true" stored="true">Bucket</property>
   <property id="accesskey" editable="true" index="true" stored="true">Access Key</property>
