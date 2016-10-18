@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -56,30 +57,36 @@ public class PresetCreator
 		}
 		return hits;
 	}
-	public int retryConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
-	{
-		return queueConversions(mediaarchive, tasksearcher, asset, true);
-	}
-	public int createMissingOnImport(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
+
+	public Collection createMissingOnImport(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
 	{
 		return queueConversions(mediaarchive, tasksearcher, asset, false);
 	}
-	public int queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean rerun )
+	public Collection queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset, boolean rerun )
 	{
 		String rendertype = mediaarchive.getMediaRenderType(asset.get("fileformat"));
-		if(rendertype==null){
-			//return?
-			return 0;
+		
+		if(rendertype == null)
+		{
+			if(asset.get("fileformat") == "embedded")
+			{
+				rendertype = "image";   //assume jpg thumbnail was downloaded
+			}
+		}
+		if(rendertype==null)
+		{
+			//Mime icon
+			return Collections.emptyList();
 		}
 		int added = 0;
 		Collection hits = getPresets(mediaarchive,rendertype);
 		if( hits.size() == 0)
 		{
-			return 0;
+			return Collections.emptyList();
 		}
 		boolean missingconversion = false;
-		HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search(); //This is so dumb
-		HashSet existingtasks = new HashSet();
+		HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search(); //This is slow, we should load up a bunch at once
+		HashMap alltasks = new HashMap();
 		List tosave = new ArrayList();
 		for (Iterator iterator = conversions.iterator(); iterator.hasNext();)
 		{
@@ -89,7 +96,6 @@ public class PresetCreator
 			{
 				page = "1";
 			}
-			existingtasks.add(existing.get("presetid") + page);
 			if( "error".equals( existing.get("status")))
 			{
 				rerun = true;
@@ -108,33 +114,31 @@ public class PresetCreator
 				tosave.add(existing);
 				added = added + 1;
 			}
+			alltasks.put(existing.get("presetid") + page,existing);
 		}
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) //Existing ones
 		{
 			Data preset = (Data) iterator.next();
-			added = added + createMissing(mediaarchive, tasksearcher, existingtasks, tosave, preset, asset);
+			added = added + createMissing(mediaarchive, tasksearcher, alltasks, tosave, preset, asset);
 		}
 		if( tosave.size() > 0)
 		{
 			tasksearcher.saveAllData(tosave, null);
 		}
-		else
-		{
-			updateAssetPreviewStatus(mediaarchive,  asset,  conversions ); //Nothing to convert, try updating status
-		}
-		return added;
+		return alltasks.values();
 	}
 
-	public int createMissing(MediaArchive mediaarchive, Searcher tasksearcher, HashSet existingtasks, List tosave, Data preset, Data asset)
+	public int createMissing(MediaArchive mediaarchive, Searcher tasksearcher, Map existingtasks, List tosave, Data preset, Data asset)
 	{
 		int added = 0;
 		boolean missingconversion = false;
 		
-		if (!existingtasks.contains(preset.getId() + "1"))//See if the first page is already created.
+		if (!existingtasks.containsKey(preset.getId() + "1"))//See if the first page is already created.
 		{
 			missingconversion = true;
 			Data created = createPresetsForPage(tasksearcher, preset, asset, 0);
 			tosave.add(created);
+			existingtasks.put(preset.getId() + "1",created);
 			added++;
 		}
 		Boolean onlyone = Boolean.parseBoolean(preset.get("singlepage"));
@@ -149,12 +153,13 @@ public class PresetCreator
 					for (int i = 1; i < npages; i++)
 					{
 						int pagenum = i + 1;
-						if (!existingtasks.contains(preset.getId() + pagenum))
+						if (!existingtasks.containsKey(preset.getId() + pagenum))
 						{
 							missingconversion = true;
 							Data created = createPresetsForPage(tasksearcher, preset, asset, pagenum);
 							tosave.add(created);
 							added++;
+							existingtasks.put(preset.getId() + pagenum,created);
 						}
 					}
 				}
@@ -191,19 +196,10 @@ public class PresetCreator
 		}		
 		return found;
 	}
-	public void updateAssetPreviewStatus(MediaArchive inArchive, Data asset, HitTracker conversions )
+	
+	public void checkAssetConversions(MediaArchive inArchive, Data asset, Collection assetconversions )
 	{
-		if( conversions.size() == 0 )
-		{
-			log.info("No conversions queued " + asset.getSourcePath());
-			return;
-		}
 		String existingpreviewstatus = asset.get("previewstatus");
-
-		//is it already complete?
-		
-		//log.info("existingpreviewstatus" + existingpreviewstatus);
-		//update importstatus and previewstatus to complete
 		if( log.isDebugEnabled() )
 		{
 			log.debug("Checking preview status: " + asset.getId() +"/" + existingpreviewstatus);
@@ -212,38 +208,33 @@ public class PresetCreator
 		boolean founderror = false;
 		
 		String existingimportstatus = asset.get("importstatus");
-		if( existingpreviewstatus == null || !("2".equals( existingpreviewstatus ) || "complete".equals(existingimportstatus)) )
+		//check tasks and update the asset status
+		for( Object object : assetconversions )
 		{
-			//check tasks and update the asset status
-			for( Object object : conversions )
+			Data task = (Data)object;
+			if( "error".equals( task.get("status") ) )
 			{
-				Data task = (Data)object;
-				if( "error".equals( task.get("status") ) )
-				{
-					log.info(asset.getId() + "Found an error");
-					founderror = true;
-					break;
-				}
-				else if( !"complete".equals( task.get("status") ) )
-				{
-					allcomplete = false;
-					break;
-				}
-			}	
-		}
+				log.info(asset.getId() + "Found an error");
+				founderror = true;
+				break;
+			}
+			else if( !"complete".equals( task.get("status") ) )
+			{
+				allcomplete = false;
+				break;
+			}
+		}	
 		//save importstatus
-		if( conversions.size() > 0 && ( founderror || allcomplete ) )
+		if( founderror || allcomplete ) 
 		{
 			//load the asset and save the import status to complete		
 			if( asset != null )
 			{
-				
-				
 				if(founderror && "error".equals(existingimportstatus) || ("complete".equals(existingimportstatus) && "2".equals(existingpreviewstatus)))
 				{
 					return;						
 				}
-				Asset target =  (Asset)inArchive.getAssetSearcher().loadData(asset);
+				Asset target = (Asset)inArchive.getAssetSearcher().loadData(asset);
 				if( founderror)
 				{
 					target.setProperty("importstatus","error");
@@ -252,10 +243,18 @@ public class PresetCreator
 				else
 				{
 					target.setProperty("importstatus","complete");
-					target.setProperty("previewstatus","2");
-					
+					if( assetconversions.size() > 0)
+					{
+						target.setProperty("previewstatus","2");
+					}
+					else if( !"exif".equals(existingpreviewstatus) )  //Is this used?
+					{
+						target.setProperty("previewstatus","mime");  //Set it to mime most of the time
+					}
 				}
 				inArchive.saveAsset(target, null);
+				inArchive.fireMediaEvent("asset/importcomplete",null,target);
+				inArchive.fireSharedMediaEvent("importing/importcomplete");
 			}
 		}
 	}
@@ -264,4 +263,38 @@ public class PresetCreator
 	{
 		return (Data)inArchive.getSearcher("convertpreset").query().match("generatedoutputfile", inFileName).match("inputtype", inRenderType).searchOne();
 	}
+
+	public void queueConversions(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
+	{
+		if( "needsdownload".equals( asset.get("importstatus") ) )
+		{
+			return;
+		}
+		Collection assetconversions = queueConversions(mediaarchive, tasksearcher, asset, true);
+		
+		checkAssetConversions(mediaarchive,  asset,  assetconversions ); //Nothing to convert, try updating status
+		//asset.setProperty("previewstatus","mime");
+
+	}
+	
+	public void conversionCompleted(MediaArchive inArchive, Asset inAsset)
+	{
+		Searcher tasksearcher = inArchive.getSearcher("conversiontask");
+		HitTracker assetconversions = tasksearcher.query().exact("assetid", inAsset.getId()).search(); //This is slow, we should load up a bunch at once
+
+		checkAssetConversions(inArchive,  inAsset,  assetconversions ); 
+		
+//		//String existingimportstatus = asset.get("importstatus");
+//		String existingpreviewstatus = asset.get("previewstatus");
+//		
+//		if( !"2".equals( existingpreviewstatus ))
+//		{
+//			Searcher tasksearcher = getSearcher( "conversiontask");	
+//			HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search();
+//			checkAssetConversions(this, asset, conversions);
+//		}
+
+		
+	}
+
 }

@@ -1660,21 +1660,13 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 	//Look for previews that should be marked as complete now
-	public void updateAssetPreviewStatus(Data asset) 
+	public void conversionCompleted(Asset asset) 
 	{
 		if( asset == null)
 		{
 			return; //asset deleted
 		}
-		//String existingimportstatus = asset.get("importstatus");
-		String existingpreviewstatus = asset.get("previewstatus");
-		
-		if( !"2".equals( existingpreviewstatus ))
-		{
-			Searcher tasksearcher = getSearcher( "conversiontask");	
-			HitTracker conversions = tasksearcher.query().match("assetid", asset.getId()).search();
-			getPresetManager().updateAssetPreviewStatus(this, asset, conversions);
-		}
+		getPresetManager().conversionCompleted(this, asset);
 	}
 	public UserManager getUserManager()
 	{

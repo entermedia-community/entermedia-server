@@ -761,7 +761,7 @@ public class AssetEditModule extends BaseMediaModule
 		inReq.setRequestParameter("assetids",new String[]{asset.getId()});
 
 		archive.removeGeneratedImages(asset);
-		archive.getPresetManager().retryConversions(archive, archive.getSearcher("conversiontask"), asset);
+		archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), asset);
 		archive.fireSharedMediaEvent("conversions/runconversions");
 		
 		getAttachmentManager().processAttachments(archive, asset, true);//don't reprocess everything else
@@ -1333,7 +1333,7 @@ Change Collections to be normal categories path s and make createTree look at th
 			archive.saveAsset(target, inReq.getUser());
 			
 			archive.removeGeneratedImages(target, true);
-			archive.getPresetManager().retryConversions(archive, archive.getSearcher("conversiontask"), target);
+			archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), target);
 			archive.fireSharedMediaEvent("conversions/runconversions");
 		}
 	}

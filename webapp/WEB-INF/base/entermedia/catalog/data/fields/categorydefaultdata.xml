@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties>
+  <property id="id" editable="true" index="true" stored="true">Id</property>
+  <property id="categoryid"  type="list" listid="category" editable="true" index="true" stored="true">CategoryID</property>
+  <property id="fieldname"  editable="true" index="true" stored="true">Field Name</property>
+  <property id="fieldvalue" editable="true" index="true" stored="true">Field Value</property>
+</properties>

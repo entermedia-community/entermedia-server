@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Asset Imported</property>	
+	<property name="runmultiple">true</property>
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/assets/assetimported.groovy</script>
+	</path-action>
+	
+</page>

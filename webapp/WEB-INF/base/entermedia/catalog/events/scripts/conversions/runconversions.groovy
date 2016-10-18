@@ -71,6 +71,7 @@ class CompositeConvertRunner implements Runnable
 				if( runner.isComplete())
 				{
 					fieldCompleted = true;
+					//Slow? fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 				}
 			}
 		}
@@ -79,13 +80,12 @@ class CompositeConvertRunner implements Runnable
 		}
 		finally
 		{
-			if( hasComplete())
-			{
-				fieldMediaArchive.updateAssetPreviewStatus(asset);
-			}	
-					
 			fieldMediaArchive.releaseLock(lock);
 			
+			if( hasComplete())
+			{
+				fieldMediaArchive.conversionCompleted(asset);
+			}	
 			if( hasComplete() )
 			{
 				fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
@@ -441,17 +441,6 @@ public void checkforTasks()
 		
 	}
 	executorQueue.execute("conversions",runners);
-	if( runners.size() > 0)
-	{
-		for( CompositeConvertRunner runner: runners )
-		{
-			if( runner.hasComplete() )
-			{
-				mediaarchive.fireSharedMediaEvent("conversions/conversionscomplete");
-				break;
-			}
-		}
-	}
 	log.debug("Queued up ${count} of ${newtasks.size()} conversion tasks for processing");
 	
 }
