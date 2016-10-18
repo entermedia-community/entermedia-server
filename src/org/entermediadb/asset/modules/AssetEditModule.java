@@ -2075,12 +2075,9 @@ Change Collections to be normal categories path s and make createTree look at th
 			
 			mediaArchive.removeGeneratedImages(asset,true);
 			
-			missing = missing + presets.retryConversions(mediaArchive, tasksearcher, asset);
+			presets.queueConversions(mediaArchive, tasksearcher, asset);
 		}
-		if( missing > 0 )
-		{
-			mediaArchive.fireSharedMediaEvent("conversions/runconversions");
-		}
+		mediaArchive.fireSharedMediaEvent("conversions/runconversions");
 	}
 	
 	public Asset loadAssetFromSelection(WebPageRequest inReq)

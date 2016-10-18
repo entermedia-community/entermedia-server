@@ -7,32 +7,46 @@ import org.openedit.data.Searcher
 
 public void init()
 {
-	String assetid = context.getRequestParameter("assetid");
-	if( assetid == null)
+	String assetids = context.getRequestParameter("assetids");
+	if( assetids == null)
 	{
 		return;
 	}
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
-	Asset asset = mediaarchive.getAsset(assetid);
+	Collection assets = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
 	
 	Searcher searcher = mediaarchive.getSearcher("categorydefaultdata");
-	boolean foundone = false;
-	asset.getCategories().each
+	assets.each
 	{
-		Collection values = searcher.query().exact("categoryid",it.getId()).search();
-		values.each
+		boolean foundone = false;
+		boolean foundretention = false;
+		Asset asset = mediaarchive.getAssetSearcher().loadData(it);
+		asset.getCategories().each
 		{
-			Data row = it;
-			String field = row.get("fieldname");
-			String value = row.get("fieldvalue");
-			asset.setProperty(field,value);
-			foundone = true;
+			Collection values = searcher.query().exact("categoryid",it.getId()).search();
+			values.each
+			{
+				Data row = it;
+				String field = row.get("fieldname");
+				if( field.equals("retentionpolicy") )
+				{
+					foundretention = true;
+				}
+					
+				String value = row.get("fieldvalue");
+				asset.setProperty(field,value);
+				foundone = true;
+			}
 		}
-	}
-	if( foundone)
-	{
-		mediaarchive.saveAsset(asset);
-	}
+		if( foundone)
+		{
+			mediaarchive.saveAsset(asset,null);
+			if( foundretention )
+			{
+				mediaarchive.fireMediaEvent("asset/archivefiles",null,asset);
+			}
+		}
+	}	
 }
 
 init();

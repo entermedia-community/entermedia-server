@@ -38,9 +38,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 {
 	private static final Log log = LogFactory.getLog(Asset.class);
 
-	//protected Page fieldSourcePage;
-	//protected Collection<String> fieldLibraries;
-	protected ValuesMap fieldMap;
 	protected MediaArchive fieldMediaArchive;
 	// be shown in a list
 	protected Collection fieldRelatedAssets;
@@ -143,7 +140,8 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute) )
 		{
 			Collection categorylist = (Collection) getMap().getObject("category-exact");
-			if(categorylist == null){
+			if(categorylist == null)
+			{
 				categorylist = new ArrayList();
 				Collection categories = (Collection) getFromDb("category-exact");
 				if (categories != null)
@@ -159,8 +157,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 					}
 				}
 				getMap().put("category-exact", categorylist);
-				
-
+				return categorylist;
 			} 
 			
 			
@@ -340,6 +337,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 	public void removeKeyword(String inKey)
 	{
 		getKeywords().remove(inKey);
+	}
+
+	public Date getDate(String inField)
+	{
+		return getMap().getDate(inField);
 	}
 
 	public Date getDate(String inField, String inDateFormat)
