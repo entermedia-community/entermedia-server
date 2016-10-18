@@ -35,10 +35,12 @@ public void init()
 				{
 					foundretention = true;
 				}
-					
-				String value = row.get("fieldvalue");
-				asset.setProperty(field,value);
-				foundone = true;
+				if( asset.getValue(field) == null )
+				{	
+					String value = row.get("fieldvalue");
+					asset.setProperty(field,value);
+					foundone = true;
+				}	
 			}
 		}
 		if( foundone)
