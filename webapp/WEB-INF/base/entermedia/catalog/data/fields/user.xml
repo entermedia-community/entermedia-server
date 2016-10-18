@@ -6,7 +6,7 @@
 	<property id="screenname" index="true" stored="true" keyword="true" editable="true">Screen Name</property>
 	<property id="firstName" index="true" stored="true" keyword="true" editable="true" required="true">First Name</property>
 	<property id="lastName" index="true" stored="true" keyword="true" editable="true" required="true">Last Name</property>
-	<property id="email" index="true" stored="true" keyword="true" editable="true" required="true">Email</property>
+	<property id="email" index="true" stored="true" keyword="true" editable="true" required="true" indextype="not_analyzed">Email</property>
 	<property id="enabled" index="true" stored="true" editable="true" datatype="boolean">Enabled</property>
 	<property id="password">Password</property>
 	<property id="failedlogincount" editable="true" type="number">Failed login attempts</property>
