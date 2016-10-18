@@ -89,7 +89,7 @@ $lsearcher.addShowOnly($context, $query)
    #set ($mode = $user.get("oe_edit_mode"))
    
 	#if($mode && ($mode == "debug" || $mode == "editing" ))
-		<a class="btn" href="$apphome/views/settings/lists/datamanager/list/index.html?catalogid=${catalogid}&searchtype=$listid">Edit Values</a>
+		<a class="textlink" href="$apphome/views/settings/lists/datamanager/edit/addnew.html?searchtype=$listid">[[add new]]</a>
 	#end
    
    

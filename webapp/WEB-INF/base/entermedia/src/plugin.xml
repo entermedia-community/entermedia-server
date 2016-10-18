@@ -1365,6 +1365,7 @@
  	<bean  id="ProjectModule" class="org.entermediadb.projects.ProjectModule" lazy-init="default" />
 	<bean  id="projectManager" class="org.entermediadb.projects.ProjectManager" lazy-init="default" scope="prototype"  >
 			<property name="searcherManager"><ref bean="searcherManager" /></property>
+			<property name="moduleManager"><ref bean="moduleManager"/></property>
 	</bean>
 
 	
@@ -2091,6 +2092,9 @@
 	</bean>
 
 	<bean id="libraryCollection" class="org.entermediadb.projects.LibraryCollection" scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>	
  	
  	

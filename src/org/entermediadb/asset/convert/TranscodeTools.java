@@ -27,7 +27,6 @@ public class TranscodeTools
 	protected Map fieldRenderTypeCache = new HashMap(5);
 	protected Map fieldManagerCache = new HashMap(5);
 	//protected Map<String,String> fieldTranscoderForFileFormatCache = new HashMap<String,String>(5);
-	protected String fieldCatalogId;
 	
 	public Map getRenderTypeCache()
 	{

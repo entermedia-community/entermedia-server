@@ -3,6 +3,7 @@ package org.entermediadb.asset.search;
 import java.io.File;
 import java.util.Collection;
 
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetailsArchive;
@@ -11,7 +12,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
-public interface DataConnector 
+public interface DataConnector extends CatalogEnabled
 {
 	public Data getDataBySourcePath(String inSourcePath);
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate);

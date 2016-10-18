@@ -9,10 +9,6 @@
 $!query.addSortBy("ordering")   
 #set($views = $viewsearcher.search($query))
 
-##if( !$viewid && $views.size() > 0)               
-    ##set( $viewid = $views.first().getId() )
-    ##set( $viewpath = "${moduleid}/$viewid" )
-##end
 $context.putPageValue("view", $viewpath)
 	#set($hitssessionid = $context.findValue("hitssessionid"))
     #set ($lastselected = $content.module )
@@ -38,7 +34,7 @@ $context.putPageValue("view", $viewpath)
 			        	 <a class="tab" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
 	                     <span class="icon"></span><span class="text"> $target</span></a>
                   	#else
-                      	<a class="tab" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+                      	<a class="tab" title="[[Edit]] $target" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
                         	<span class="icon"></span><span class="text"> $target</span></a>
                     #end
                   </li>

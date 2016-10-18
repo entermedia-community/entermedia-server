@@ -11,11 +11,12 @@ import java.util.Set;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.webui.tree.BaseTreeModel;
+import org.openedit.CatalogEnabled;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.util.RequestUtils;
 
-public class CatalogWebTreeModel extends BaseTreeModel
+public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 {
 	protected UserProfile fieldUserProfile;
 	protected Set fieldHiddenCatalogs;

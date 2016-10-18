@@ -13,7 +13,7 @@
   <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list">Project Status</property>
   <property id="projecttype" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list">Project Type</property>
   <property id="projectdescription" index="true" stored="true" editable="true" viewtype="html" internalfield="false">Project Description</property>
-<property id="rootcategory" internalfield="true"  editable="false" index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated">Category ID</property>  
+<property id="rootcategory" internalfield="false" index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated">Category ID</property>  
   
   
 </properties>

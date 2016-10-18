@@ -17,7 +17,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.TranscodeTools;
-import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
 import org.entermediadb.asset.orders.OrderManager;
@@ -29,6 +28,7 @@ import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.projects.ProjectManager;
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
@@ -59,7 +59,7 @@ import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 
-public class MediaArchive
+public class MediaArchive implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(MediaArchive.class);
 	protected File BLANKFILE = new File("blank");

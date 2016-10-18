@@ -77,28 +77,28 @@ $context.putPageValue("multiedit",$multiedit)
 
 			</td>
 		</tr>
-	#end
+	#else
 	
-	#if(!$editrow && $alwaysshow == "true")
-	#if( !$val) #set( $val = "") #end	
-		$!context.putPageValue("val",$val)
-		<tr id="inputarea_${detail.id}">
-			<td   class="emdatafield" >
-				#if( $detail.hidelabel == true )
-				#else
-				    #if ($detail.required == true) * #end	$!detail.getText($context)
-				#end				
-			</td>
-			<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) [[required]] #end">
-			
-				$pages.include("$xmledithome/detailreadonly.html", $context) 
-			#if ( $detail.note )
-				<span style="color:gray;font-style:italic;font-size:.9em;">$detail.note<span>
-			#end
-			</td>
-		</tr>
-	#end
-	
+		#if(!$editrow && $alwaysshow == "true")
+		#if( !$val) #set( $val = "") #end	
+			$!context.putPageValue("val",$val)
+			<tr id="inputarea_${detail.id}">
+				<td   class="emdatafield" >
+					#if( $detail.hidelabel == true )
+					#else
+					    #if ($detail.required == true) * #end	$!detail.getText($context)
+					#end				
+				</td>
+				<td id="detail_$detail.id" class="emdatafieldvalue #if ($detail.required == true) [[required]] #end">
+				xx.
+					$pages.include("$xmledithome/detailreadonly.html", $context) 
+				#if ( $detail.note )
+					<span style="color:gray;font-style:italic;font-size:.9em;">$detail.note<span>
+				#end
+				</td>
+			</tr>
+		#end
+	#end	
 	#if ($detail.viewType && ($detail.viewType == "html" || $detail.viewType == "largehtml"))
 		#if($usedhtml)
 			#set( $usedhtml = "htmltextarea=${detail.getId()}&$usedhtml")
@@ -108,6 +108,7 @@ $context.putPageValue("multiedit",$multiedit)
 	#end
 	
 	#if($detail.get('dependson'))
+	##TODO: Remove this ugly code, use jQuery in validateandedit.js
    <script type="text/javascript">			
 			##TODO: Put this in validateandedit.js
 			jQuery(document).ready(function(){

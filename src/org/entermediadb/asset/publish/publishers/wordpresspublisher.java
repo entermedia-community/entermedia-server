@@ -84,8 +84,7 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 				StringBuffer buffer = new StringBuffer();
 				for (Iterator iterator = libraries.iterator(); iterator.hasNext();)
 				{
-					String id = (String) iterator.next();
-					Data library = mediaArchive.getData("library", id);
+					Data library = (Data) iterator.next();
 					if( library != null)
 					{
 						buffer.append(library.getName());

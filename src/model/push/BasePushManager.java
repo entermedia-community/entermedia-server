@@ -497,21 +497,23 @@ public class BasePushManager implements PushManager
 				}
 				parts.add(new StringPart("keywords", buffer.toString() ));
 			}
-			Collection libraries =  inAsset.getLibraries();
-			if(  libraries != null && libraries.size() > 0 )
-			{
-				StringBuffer buffer = new StringBuffer();
-				for (Iterator iterator = inAsset.getLibraries().iterator(); iterator.hasNext();)
-				{
-					String keyword = (String) iterator.next();
-					buffer.append( keyword );
-					if( iterator.hasNext() )
-					{
-						buffer.append('|');
-					}
-				}
-				parts.add(new StringPart("libraries", buffer.toString() ));
-			}
+			
+//TODO: Do we need to sync the category tree as well?
+//			Collection libraries =  inAsset.getCategories();
+//			if(  libraries != null && libraries.size() > 0 )
+//			{
+//				StringBuffer buffer = new StringBuffer();
+//				for (Iterator iterator = inAsset.getLibraries().iterator(); iterator.hasNext();)
+//				{
+//					String keyword = (String) iterator.next();
+//					buffer.append( keyword );
+//					if( iterator.hasNext() )
+//					{
+//						buffer.append('|');
+//					}
+//				}
+//				parts.add(new StringPart("libraries", buffer.toString() ));
+//			}
 
 			Part[] arrayOfparts = parts.toArray(new Part[parts.size()]);
 
@@ -960,7 +962,6 @@ public class BasePushManager implements PushManager
 		String k4processed = inReq.getRequestParameter("k4processed.value");
 		
 		
-		Collection existing = target.getLibraries();
 		if( k4processed == "true" || editstatus == "override" || editstatus == "7") 
 		{
 			archive.getAssetSearcher().updateData(inReq, fields, target);
@@ -969,16 +970,6 @@ public class BasePushManager implements PushManager
 		{
 			archive.getAssetSearcher().updateData(inReq, fields, new ImmutableData(target));
 		}
-		String libraries = inReq.getRequestParameter("libraries");
-		if( libraries != null )
-		{
-			String[] keys =  libraries.split("\\|");
-			for (int i = 0; i < keys.length; i++)
-			{
-				target.addLibrary(keys[i]);
-			}
-		}
-
 		String keywords = inReq.getRequestParameter("keywords");
 		if( keywords != null )
 		{

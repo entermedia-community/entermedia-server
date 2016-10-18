@@ -1,16 +1,43 @@
 package org.entermediadb.projects;
 
 import org.entermediadb.asset.Category;
+import org.entermediadb.asset.MediaArchive;
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.ModuleManager;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
 
-public class LibraryCollection extends BaseData implements SaveableData
+public class LibraryCollection extends BaseData implements SaveableData, CatalogEnabled
 {
 	protected Data fieldLibrary;
 	protected Category fieldCategoryRoot;
 	protected int fieldAssetCount;
+	protected String fieldCatalogId;
+	protected ModuleManager fieldModuleManager;
+
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
 	
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
+	protected MediaArchive getMediaArchive()
+	{
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return archive;
+	}
 	public Data getLibrary()
 	{
 		return fieldLibrary;

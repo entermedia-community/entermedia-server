@@ -3,13 +3,14 @@ package org.entermediadb.asset.publishing;
 import java.util.Date;
 
 import org.dom4j.Element;
+import org.openedit.CatalogEnabled;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.xml.XmlArchive;
 import org.openedit.xml.XmlFile;
 
-public class PublishManager {
+public class PublishManager implements CatalogEnabled {
 
 	protected SearcherManager fieldSearcherManager;
 	protected PageManager fieldPageManager;

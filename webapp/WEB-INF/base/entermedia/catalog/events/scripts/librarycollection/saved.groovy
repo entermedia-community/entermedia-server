@@ -1,28 +1,30 @@
-package library
+package librarycollection
 
-import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
+import org.entermediadb.projects.LibraryCollection
 import org.openedit.Data
 
 public void init() {
 	String id = context.getRequestParameter("id");
 
-	Data library = context.getPageValue("data");
+	Data data = context.getPageValue("data");
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
-	if(library == null){
+	if(data == null){
 		if( id == null) {
 			id = context.getRequestParameter("id.value");
 		}
 		if( id == null) {
 			return;
 		}
-		library = mediaArchive.getSearcher("library").searchById(id);
 	}
-
-	if( library != null ) 
+	LibraryCollection collection = mediaArchive.getSearcher("librarycollection").searchById(id);
+	if( data != null ) 
 	{
-		Category parentcategory = null;
-		if( library.get("categoryid") == null)
+		//Make sure the root folder is within the library root folder
+		String rootcatid = data.get("rootcategory");
+		String libraryid = data.get("library");
+		mediaArchive.getData("library",libraryid);
+		if( rootcatid == null)
 		{
 			String path = library.get("folder");
 			if( path == null)

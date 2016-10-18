@@ -1,7 +1,6 @@
 <permissions name="Library Permissions">
 	<permission id="asseteditorlibraries" permissiontype="library" name="Asset Project Editor" description="Enables access to the asset project editor." ordering="500" />
 	<permission id="asseteditorpickanylibrary" permissiontype="library" name="Pick Any Library" description="Asset can be added to any library." ordering="505" />
-	<permission id="viewlibrarysearch" permissiontype="library" name="Library Tracker" description="Enables a list of libraries on the sidebar." ordering="510"/>
 	<permission id="viewopencollections" permissiontype="library" name="Open Collections" description="Enables a list of open collections on the sidebar." ordering="515"/>
 	<permission id="addnewcollection" permissiontype="library" name="Create New Collection" description="Allows creation of new collections." ordering="520"/>
 	<permission id="importcollection" permissiontype="library" name="Import Collection" description="Copy assets into a collection" ordering="525"/>

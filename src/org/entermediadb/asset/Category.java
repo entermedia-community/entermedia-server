@@ -448,7 +448,7 @@ public class Category extends BaseData
 			parent = parent.getParentCategory();
 		}
 		//from top to end 1, 2, 3, 4 cuts 3 till 4
-		if( inStartFrom <= paths.size() )
+		if( inStartFrom >= paths.size() )
 		{
 			return Collections.EMPTY_LIST;
 		}

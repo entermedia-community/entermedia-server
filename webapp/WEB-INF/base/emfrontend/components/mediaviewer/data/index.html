@@ -17,7 +17,7 @@ $context.putPageValue("showalllanguagevalues",true)
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						
 						$context.putPageValue("view",$viewpath)
-						<h3><h3>$context.getText($target.toString())</h3></h3>
+						<h3>$context.getText($target.toString())</h3>
 						<div class="asset-data-detail">
 						$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
@@ -28,8 +28,6 @@ $context.putPageValue("showalllanguagevalues",true)
 			#end
 	</div>		
 	<div class="asset-data col-sm-6">						
-			#if( $asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 )
-						
 			<div class="" style="padding: 0 0 20px 0">
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
@@ -37,28 +35,43 @@ $context.putPageValue("showalllanguagevalues",true)
     				<div class="asset-data-detail">
     				<div class="emtable">
             				#foreach($library in $libraries)
-            					  
-            					 #set( $ldata = $searcherManager.getData($catalogid,"library",$library) )
-            					 #set( $division = $searcherManager.getData($catalogid,"division",$ldata.division ) )
+            					 #set( $division = $mediaarchive.getData("division",$library.division ) )
             					 #if($division)
-            					 	#set($ldata = $division + " / " + $ldata)
+            					 	#set($ldata = "$division.getName($context.locale) / $library.getName($context.locale)" )
+            					 #else
+            					 	#set($ldata = $library.getName($context.locale) )
             					 #end
-            					<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="row tag">$ldata</a>
+            					<a href="$home$apphome/views/modules/library/view/view.html?id=$library.getId()" class="row tag">$ldata</a>
             			
             				#end
     					</div>
     				</div>
-				#end
+					<h3>[[Collections]]</h3>
+						<div class="asset-data-detail">
+							#foreach ($category in $asset.categories)
+							#set( $collection = false)
+							#set( $collection = $mediaarchive.getProjectManager().findCollectionForCategory($category) )
+							#if($collection)
+								 <a class="librarylabel" href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="collection">$collection</a>
+							#end
+							#end
+						</div>
+				#end						
+
 				<h3>[[Categories]]</h3>
 					<div class="asset-data-detail">
-					<div class="emtable">
+					<div  id="cat-list" class="emtable">
 					#foreach ($category in $asset.categories)
-						<a href="$home$apphome/views/search/category.html?categoryid=${category.id}" class="row category">$category.name</a> 
+						<div  class="row category" style="padding-left:24px;">						
+#foreach( $parent in $category.getParentCategoriesFrom(1))
+#if( $velocityCount > 1) \ #end
+<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/search/category.html?categoryid=${category.id}">$parent</a>
+#end
+						</div>
 					#end
 					</div>
 					</div>
 			</div>	
-			#end
 				
 				#if ($canviewslideshow)
 				

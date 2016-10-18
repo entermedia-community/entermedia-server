@@ -19,7 +19,9 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
+import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -33,7 +35,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.FileUtils;
 
-public class ProjectManager
+public class ProjectManager implements CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(ProjectManager.class);
 
@@ -42,6 +44,17 @@ public class ProjectManager
 	protected AssetUtilities fieldAssetUtilities;
 	private int COPY = 1;
 	private int MOVE = 2;
+	protected ModuleManager fieldModuleManager;
+	
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
 
 	public String getCatalogId()
 	{
@@ -1170,4 +1183,17 @@ public class ProjectManager
 		return collection;
 	}
 
+	public LibraryCollection findCollectionForCategory(Category inCategory)
+	{
+		Searcher librarycolsearcher = getMediaArchive().getSearcher("librarycollection");
+		Collection<Category> parents = inCategory.getParentCategories();
+		Data hit = librarycolsearcher.query().orgroup("rootcategory",parents).searchOne();
+		return (LibraryCollection)hit; 
+	}
+	
+	protected MediaArchive getMediaArchive()
+	{
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return archive;
+	}
 }

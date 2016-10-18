@@ -2,12 +2,13 @@ package org.entermediadb.asset.orders;
 
 import java.util.Date;
 
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
 import org.openedit.util.DateStorageUtil;
 
-public class Order extends BaseData implements SaveableData
+public class Order extends BaseData implements SaveableData, CatalogEnabled
 {
 	protected OrderHistory fieldRecentOrderHistory;
 	protected OrderManager fieldOrderManager;

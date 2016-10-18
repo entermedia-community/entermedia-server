@@ -18,11 +18,14 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.openedit.CatalogEnabled;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
+import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
@@ -31,12 +34,11 @@ import org.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class Asset extends SearchHitData implements MultiValued, SaveableData
+public class Asset extends SearchHitData implements MultiValued, SaveableData, CatalogEnabled
 {
 	private static final Log log = LogFactory.getLog(Asset.class);
 
 	//protected Page fieldSourcePage;
-	protected String fieldDescription;
 	//protected Collection<String> fieldLibraries;
 	protected ValuesMap fieldMap;
 	protected MediaArchive fieldMediaArchive;
@@ -248,15 +250,21 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return false;
 	}
 
-	public Collection<String> getLibraries()
+	public Collection getLibraries()
 	{
-		Collection<String> libraries = getValues("libraries");
-		if (libraries == null)
+		Collection cats = getCategories();
+		if( cats == null || cats.isEmpty())
 		{
-			libraries = Collections.EMPTY_LIST;
+			return Collections.emptyList();
 		}
-		return libraries;
-
+		Searcher librarysearcher = getMediaArchive().getSearcher("library");
+		Collection ids = new ArrayList();
+		for(Category cat: getCategories() )
+		{
+			ids.add(cat.getId());
+		}
+		HitTracker hits = librarysearcher.query().orgroup("categoryid", ids).search();
+		return hits;
 	}
 
 	/*
@@ -648,19 +656,13 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		return getMap().getBoolean(inKey);
 	}
 
-	public void addLibrary(String inLibraryid)
-	{
-		addValue("libraries", inLibraryid);
-
-	}
-
-	public void removeLibrary(String inLibraryid)
-	{
-		Collection<String> values = new ArrayList(getLibraries());
-		values.remove(inLibraryid);
-		setValue("libraries", values);
-
-	}
+//	public void removeLibrary(String inLibraryid)
+//	{
+//		Collection<String> values = new ArrayList(getLibraries());
+//		values.remove(inLibraryid);
+//		setValue("libraries", values);
+//
+//	}
 
 	@Override
 	public void setValue(String inKey, Object inValue)

@@ -6,9 +6,10 @@ package org.entermediadb.data;
 import java.util.Iterator;
 
 import org.dom4j.Element;
+import org.openedit.CatalogEnabled;
 import org.openedit.event.WebEventListener;
 
-public class BaseDataArchive
+public class BaseDataArchive implements CatalogEnabled
 {
 		protected String fieldCatalogId;
 		protected WebEventListener fieldWebEventListener;

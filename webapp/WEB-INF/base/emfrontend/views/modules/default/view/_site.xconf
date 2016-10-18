@@ -2,5 +2,6 @@
 	<path-action name="DataEditModule.loadData" >
 			<searchtype>${module}</searchtype>
 	</path-action>
+	<property name="viewid">none</property>
 	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
 </page>

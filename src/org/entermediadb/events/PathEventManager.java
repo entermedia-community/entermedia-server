@@ -15,6 +15,7 @@ import java.util.TimerTask;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.util.TimeCalculator;
+import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
@@ -38,7 +39,7 @@ import org.openedit.util.SynchronizedLinkedList;
  * @author cburkey
  * 
  */
-public class PathEventManager implements Shutdownable
+public class PathEventManager implements Shutdownable, CatalogEnabled
 {
 	protected static final Log log = LogFactory.getLog(PathEventManager.class);
 

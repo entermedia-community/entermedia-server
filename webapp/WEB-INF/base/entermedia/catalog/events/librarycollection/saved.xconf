@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Library Collection Saved</property>	
+	<property name="virtual">true</property>
+	<property name="reloadprofile">true</property>
+
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/librarycollection/saved.groovy</script>
+	</path-action>
+</page>

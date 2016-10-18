@@ -7010,3 +7010,9 @@ input.textinput
 {
 	width: 228px;
 }
+a.textlink
+{
+	float:right;
+	max-width:200px;
+	color: #666;
+}

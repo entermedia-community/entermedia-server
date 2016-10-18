@@ -8,7 +8,7 @@
   <property id="thumbnail" internalfield="true" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="library" listid="assetid" datatype="list">Thumbnail</property>
 
   <property id="folder" internalfield="true" editable="true" index="true" stored="true" note="Relative Folder hotfolder/sub1/song123">Path</property>
-  <property id="categoryid" internalfield="true"  editable="false" index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated">Category ID</property>
+  <property id="categoryid" internalfield="true"  index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated">Category ID</property>
   
   
 </properties>

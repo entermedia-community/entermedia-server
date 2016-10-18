@@ -9,7 +9,7 @@
 	#set($ismodule = $searcherManager.getData($catalogid, "module", $moduleid ) )
 	#if($ismodule)
 		#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-		#set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined","false") )
+		#set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false") )
 		$!query.addSortBy("ordering")   
 		#set($view = $viewsearcher.searchByQuery($query))
 		#if( $view )

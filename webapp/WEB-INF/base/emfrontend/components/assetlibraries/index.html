@@ -5,20 +5,15 @@
         <p class="info">[[There are no project associated with this asset.  Add project below.]]</p>
     #else
 	<div id="valuelist" class="emtable clearfix">
-    	#foreach($libraryid in $asset.getLibraries())
+    	#foreach($library in $asset.getLibraries())
     		  
     		 #set( $library = false )
     		 #set( $project = false )
-    		 #set( $library = $searcherManager.getData($catalogid,"library",$libraryid) )
-    		 #if( $library )
-	    		 #set( $project = $searcherManager.getData($catalogid,"project",$library.project ) )
-	 			<a class="row tag" href="$home$apphome/views/modules/library/userpermissions/index.html?id=$libraryid&searchtype=library">#if($project) $!project / #end $library #if( $library.folder ) ( $library.folder )#end</a>    
-	    		#if($caneditasset)
-	    			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$libraryid"></a>
-	    		#end
-	    	#else
-	    		##<a class="row tag" href="">[[Library not found]] ($libraryid)</a>
-	    	#end	
+    		 #set( $project = $searcherManager.getData($catalogid,"project",$library.project ) )
+ 			<a class="row tag" href="$home$apphome/views/modules/library/userpermissions/index.html?id=$libraryid&searchtype=library">#if($project) $!project / #end $library #if( $library.folder ) ( $library.folder )#end</a>    
+    		#if($caneditasset)
+    			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$libraryid"></a>
+    		#end
     		</a>
 		#set($project = "")
     	#end

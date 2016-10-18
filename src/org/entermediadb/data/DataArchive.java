@@ -2,11 +2,12 @@ package org.entermediadb.data;
 
 import java.util.Collection;
 
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.users.User;
 import org.openedit.xml.XmlArchive;
 
-public interface DataArchive
+public interface DataArchive extends CatalogEnabled
 {
 
 	void setXmlArchive(XmlArchive inXmlArchive);

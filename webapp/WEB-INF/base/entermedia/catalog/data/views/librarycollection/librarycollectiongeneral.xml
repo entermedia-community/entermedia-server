@@ -7,5 +7,6 @@
   <property id="notes" />
   <property id="owner" />
   <property id="addnotifypolicy" />
+  <property id="rootcategory" />
   
 </root>
