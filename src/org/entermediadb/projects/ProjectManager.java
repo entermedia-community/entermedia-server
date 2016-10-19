@@ -185,8 +185,13 @@ public class ProjectManager implements CatalogEnabled
 			usercollections.add(uc);
 		}
 		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search(inReq);
+		int assetsize = 0;
+		if(hits != null){
+			 assetsize = hits.size();
 
-		int assetsize = hits.size();
+		} else{
+			assetsize = 0;
+		}
 		inReq.putPageValue("librarysize", assetsize);
 
 		//Show all the collections for a library
