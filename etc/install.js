@@ -42,12 +42,13 @@ files.copyFiles( tmp + "/WEB-INF/base/modulefrontend", root + "/WEB-INF/base/mod
 files.copyFiles( tmp + "/WEB-INF/base/system", root + "/WEB-INF/base/system");
 files.copyFiles( tmp + "/WEB-INF/base/mediadb", root + "/WEB-INF/base/mediadb");
 files.copyFiles( tmp + "/WEB-INF/base/emgallery", root + "/WEB-INF/base/emgallery");
-files.copyFiles( tmp + "/WEB-INF/base/themes/baseem", root + "/WEB-INF/base/themes/baseem");
-files.copyFiles( tmp + "/WEB-INF/base/themes/rational", root + "/WEB-INF/base/themes/rational");
+
 
 log.info("4. REPLACE LIBS");
 files.deleteMatch( web + "/lib/em9_entermedia-server*.jar");
 files.deleteMatch( web + "/lib/em9_entermedia-9*.jar");
+files.deleteMatch( web + "/lib/em9dev_entermedia-server*.jar");
+files.deleteMatch( web + "/lib/em9dev_entermedia-9*.jar");
 
 
 
