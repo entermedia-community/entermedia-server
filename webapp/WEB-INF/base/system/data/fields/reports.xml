@@ -6,6 +6,6 @@
   <property id="script" index="true" stored="true" editable="true" internalfield="false" searchtype="reports">Custom Groovy Script</property>
   <property id="searchtype" index="true" stored="true" editable="true" internalfield="false" searchtype="reports">Core Search Type</property>
   <property id="outputtype" index="true" stored="true" editable="true" internalfield="false" searchtype="reports">Output Type</property>
-  <property id="ordering" index="true" stored="true" editable="true" searchtype="reports" type="number">ordering</property>
+  <property id="ordering" index="true" stored="true" editable="true" searchtype="reports" >ordering</property>
   <property id="dashboard" index="true" stored="true" editable="true" internalfield="false" searchtype="reports" type="boolean">Shown on Dashboard</property>
 </properties>

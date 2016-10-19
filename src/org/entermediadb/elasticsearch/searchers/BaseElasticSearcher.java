@@ -511,7 +511,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			List props = getPropertyDetails().findIndexProperties();
 			if (props.size() == 0)
 			{
-				throw new OpenEditException("No fields defined for " + getSearchType());
+				log.error("No fields defined for " + getSearchType());
 			}
 			// https://github.com/elasticsearch/elasticsearch/pull/606
 			// https://gist.github.com/870714

@@ -3,7 +3,7 @@
 	<property id="name" editable="true" stored="true" index="true">Name</property>	
 	<property id="rootpath" editable="true" stored="true" index="true">Root Path</property>	
 	<property id="clientsubdomain" editable="true" stored="true" index="true">Sub-Domain</property>	
-	<property id="email" editable="true" stored="true" index="true">Email</property>	
+	<property id="email" index="true" stored="true" keyword="true" editable="true" required="true" indextype="not_analyzed">Email</property>
 	<property id="plan" editable="true" stored="true" type="list" index="true">Plan</property>	
 	<property id="createdon" editable="true" stored="true" type="date" index="true">Created On</property>	
 <!-- Show password and link -->	
