@@ -652,9 +652,20 @@ public class ProjectManager implements CatalogEnabled
 
 	private Category createRootCategory(MediaArchive inArchive, LibraryCollection collection)
 	{
+		Searcher librarysearcher = inArchive.getSearcher("library");
 		String libraryid = collection.get("library");
+		if(libraryid == null){
+			libraryid = "default";
+			collection.setValue("library", "default");
+			inArchive.getSearcher("librarycollection").saveData(collection);
+		}
 		Data library = inArchive.getData("library", libraryid);
-
+		if(library == null && "default".equals(libraryid)){
+			library = librarysearcher.createNewData();
+			library.setId("default");
+			library.setName("Default");
+			librarysearcher.saveData(library);
+		}
 		Category librarycategory = null;
 
 		if (library.get("categoryid") != null)
