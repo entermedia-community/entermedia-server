@@ -42,8 +42,8 @@ public void init()
 //				continue; //Bad index
 //			}
 
-			int more = presets.createMissingOnImport(mediaarchive, tasksearcher, hit);
-			added = added + more;
+			Collection more = presets.createMissingOnImport(mediaarchive, tasksearcher, hit);
+			added = added + more.size();
 			if( logcount == 1000 )
 			{
 				logcount = 0;
