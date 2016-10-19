@@ -7,7 +7,7 @@
   <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Delivery Date</property>
   <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Update Date</property>
   <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="user" >Owner</property>
-  <property id="library" index="true" stored="true" editable="true" sortable="true" type="list" viewtype="autocomplete"  listid="library" datatype="list">Library</property>
+  <property id="library" required="true" index="true" stored="true" editable="true" sortable="true" type="list" viewtype="autocomplete"  listid="library" datatype="list">Library</property>
   <property id="addnotifypolicy" index="true" type="list" listid="librarycollection/addnotifypolicy" stored="true" editable="true" note="Who do we notify when assets are added" >Send Notifications</property>
   <property id="revisions" index="true" stored="true" editable="true" sortable="true" type="number" >Revisions</property>
   <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list">Project Status</property>
