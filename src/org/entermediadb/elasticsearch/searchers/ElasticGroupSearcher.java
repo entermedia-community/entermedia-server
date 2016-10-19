@@ -102,8 +102,7 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 	public void saveData(Data inData, User inUser)
 	{
 		getXmlUserArchive().saveGroup((Group) inData);
-		//super.saveData(inData, inUser); //update the index
-		//PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
+	
 		super.saveData(inData, inUser); //update the index
 
 	}
