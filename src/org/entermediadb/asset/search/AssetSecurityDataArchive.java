@@ -288,7 +288,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		{
 			return true;
 		}
-		if (inUser.isInGroup("administrators"))
+		if (inUser != null && inUser.isInGroup("administrators"))
 		{
 			return true;
 		}

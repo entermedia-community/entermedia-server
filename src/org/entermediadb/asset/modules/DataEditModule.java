@@ -236,31 +236,31 @@ public class DataEditModule extends BaseMediaModule
 		detail.setId(newid);
 
 		
-		String externalid = inReq.getRequestParameter("externalid");
-		detail.setExternalId(externalid);
-		String editable = inReq.getRequestParameter("editable");
-		detail.setEditable(Boolean.parseBoolean(editable));
-
-		String index = inReq.getRequestParameter("index");
-		detail.setIndex(Boolean.parseBoolean(index));
-
-		String stored = inReq.getRequestParameter("stored");
-		detail.setStored(Boolean.parseBoolean(stored));
-
-		String keyword = inReq.getRequestParameter("keyword");
-		detail.setKeyword(Boolean.parseBoolean(keyword));
-
-		String filter = inReq.getRequestParameter("filter");
-		detail.setFilter(Boolean.parseBoolean(filter));
-
-		String internalfield = inReq.getRequestParameter("internalfield");
-		detail.setProperty("internalfield", String.valueOf(Boolean.parseBoolean(internalfield)));
-		
-		String type = inReq.getRequestParameter("datatype");
-		detail.setDataType(type);
-
-		type = inReq.getRequestParameter("viewtype");
-		detail.setViewType(type);
+//		String externalid = inReq.getRequestParameter("externalid");
+//		detail.setExternalId(externalid);
+//		String editable = inReq.getRequestParameter("editable");
+//		detail.setEditable(Boolean.parseBoolean(editable));
+//
+//		String index = inReq.getRequestParameter("index");
+//		detail.setIndex(Boolean.parseBoolean(index));
+//
+//		String stored = inReq.getRequestParameter("stored");
+//		detail.setStored(Boolean.parseBoolean(stored));
+//
+//		String keyword = inReq.getRequestParameter("keyword");
+//		detail.setKeyword(Boolean.parseBoolean(keyword));
+//
+//		String filter = inReq.getRequestParameter("filter");
+//		detail.setFilter(Boolean.parseBoolean(filter));
+//
+//		String internalfield = inReq.getRequestParameter("internalfield");
+//		detail.setProperty("internalfield", String.valueOf(Boolean.parseBoolean(internalfield)));
+//		
+//		String type = inReq.getRequestParameter("datatype");
+//		detail.setDataType(type);
+//
+//		type = inReq.getRequestParameter("viewtype");
+//		detail.setViewType(type);
 
 //		String val = inReq.getRequestParameter("listid");
 //		detail.setProperty("listid", val);
