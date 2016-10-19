@@ -2,7 +2,7 @@
 
 <properties>
   <property  id="groups"  menulevel="toplevel" moduleid="system"  parentid="groups" path="/views/settings/users/usermanager/groups/index.html" ordering="020">Groups</property>
-    <property id="admin" parentid="groups" moduleid="system" path="/views/settings/users/usermanager/admin/index.html" ordering="220">Import / Export</property>
+    <property id="admin" parentid="groups" moduleid="system" path="/views/settings/lists/datamanager/list/index.html?searchtype=group" ordering="220">Import / Export</property>
   
 </properties>
 
