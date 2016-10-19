@@ -61,7 +61,10 @@
 			</list>
 		</property>
 	</bean>
-	<bean id="ldapAuthenticator" class="org.openedit.users.authenticate.LdapAuthenticator" />
+	<bean id="ldapAuthenticator" class="org.openedit.users.authenticate.LdapAuthenticator" >
+			<property name="searcherManager"><ref bean="searcherManager"/></property>
+	</bean>		
+	
 	<bean id="jaasAuthenticator" class="org.openedit.users.authenticate.JaasAuthenticator" />
 
 	<bean id="fileAuthenticator" class="org.openedit.users.authenticate.FileSystemAuthenticator">
