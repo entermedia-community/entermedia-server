@@ -412,7 +412,7 @@ public class AdminModule extends BaseModule
 				inReq.putPageValue("oe-exception", "Invalid Logon");
 				return;
 			}
-			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
+			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
 
 			if (loginAndRedirect(aReq, inReq))
 			{
@@ -426,12 +426,13 @@ public class AdminModule extends BaseModule
 	{
 		String account = inReq.getRequestParameter("id");
 		String password = inReq.getRequestParameter("password");
-		User user = getUserManager(inReq).getUser(account);
+		UserManager userManager = getUserManager(inReq);
+		User user = userManager.getUser(account);
 		Boolean ok = false;
 		if (user != null)
 		{
-			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
-			if (getUserManager(inReq).authenticate(aReq))
+			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
+			if (userManager.authenticate(aReq))
 			{
 				ok = true;
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
@@ -452,23 +453,6 @@ public class AdminModule extends BaseModule
 		inReq.putPageValue("authenticated", ok);
 		return ok;
 
-	}
-
-	protected AuthenticationRequest createAuthenticationRequest(WebPageRequest inReq, String password, User user)
-	{
-		AuthenticationRequest aReq = new AuthenticationRequest();
-		aReq.setUser(user);
-		aReq.setPassword(password);
-
-		String domain = inReq.getRequestParameter("domain");
-		if (domain == null)
-		{
-			domain = inReq.getContentPage().get("authenticationdomain");
-		}
-		aReq.putProperty("authenticationdomain", domain);
-		String server = inReq.getPage().get("authenticationserver");
-		aReq.putProperty("authenticationserver", server);
-		return aReq;
 	}
 
 	/**
@@ -665,12 +649,13 @@ public class AdminModule extends BaseModule
 	{
 		String account = inReq.getRequestParameter("id");
 		String password = inReq.getRequestParameter("password");
-		User user = getUserManager(inReq).getUser(account);
+		UserManager userManager = getUserManager(inReq);
+		User user = userManager.getUser(account);
 		Boolean ok = false;
 		if (user != null)
 		{
-			AuthenticationRequest aReq = createAuthenticationRequest(inReq, password, user);
-			if (getUserManager(inReq).authenticate(aReq))
+			AuthenticationRequest aReq = userManager.createAuthenticationRequest(inReq, password, user);
+			if (userManager.authenticate(aReq))
 			{
 				String md5 = getCookieEncryption().getPasswordMd5(user.getPassword());
 				String value = user.getUserName() + "md542" + md5;

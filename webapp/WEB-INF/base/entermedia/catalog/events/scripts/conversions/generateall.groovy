@@ -27,7 +27,7 @@ public void init()
 				archive.saveAssets( assetsToSave );
 				assetsToSave.clear();
 			}
-			int more = presets.createMissingOnImport(archive, tasksearcher, hit);
+			presets.createMissingOnImport(archive, tasksearcher, hit);
 			
 		}
 		archive.saveAssets assetsToSave;
