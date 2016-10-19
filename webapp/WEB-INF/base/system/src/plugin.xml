@@ -35,13 +35,14 @@
 	<bean id="userManager" class="org.openedit.users.BaseUserManager" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="catalogId"><value>system</value></property>
+		<property name="authenticator"><ref bean="authenticator"/></property>
+		<property name="webEventHandler"><ref bean="userEventHandler"/></property>
+		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 	</bean>
 	
 	<bean id="xmlUserArchive" class="org.openedit.users.filesystem.XmlUserArchive" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager"/></property>
-		<property name="authenticator"><ref bean="authenticator"/></property>
 		<property name="stringEncryption"><ref bean="stringEncryption"/></property>
-		<property name="webEventHandler"><ref bean="userEventHandler"/></property>
 		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
 	</bean>
 	

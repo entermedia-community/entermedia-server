@@ -19,9 +19,11 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.BaseUser;
 import org.openedit.users.Group;
+import org.openedit.users.GroupSearcher;
 import org.openedit.users.User;
 import org.openedit.users.UserSearcher;
 import org.openedit.users.filesystem.XmlUserArchive;
+import org.openedit.util.StringEncryption;
 
 /**
  *
@@ -34,11 +36,11 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	@Override
 	public Data createNewData()
 	{
-		BaseUser user = new BaseUser();
+		BaseUser user = (BaseUser)super.createNewData();
+		user.setGroupSearcher(getGroupSearcher());
 		return user;
 	}
 
-	
 	public XmlUserArchive getXmlUserArchive() {
 		if (fieldXmlUserArchive == null) {
 			fieldXmlUserArchive = (XmlUserArchive) getModuleManager().getBean(
@@ -64,14 +66,18 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 				for (Iterator iterator = usernames.iterator(); iterator.hasNext();)
 				{
 					String userid = (String) iterator.next();
-					User data = getXmlUserArchive().getUser(userid);
-					users.add(data);
-					if( users.size() > 1000)//makes it bulk.
+					
+					User data = (User)createNewData(); 
+					data = getXmlUserArchive().loadUser(data, getGroupSearcher());
+					if( data != null)
 					{
-						updateIndex(users, null);
-						users.clear();
-						getXmlUserArchive().clear();
-					}
+						users.add(data);
+						if( users.size() > 1000)//makes it bulk.
+						{
+							updateIndex(users, null);
+							users.clear();
+						}
+					}	
 				}	
 				updateIndex(users, null);
 			}
@@ -89,22 +95,24 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		reIndexAll();
 	}
 
-	
-	//TODO: Replace with in-memory copy for performance reasons?
-	public Object searchById(String inId)
-	{		
-		return getXmlUserArchive().loadUser(inId);
-	}
-
 	/* (non-Javadoc)
 	 * @see org.openedit.users.UserSearcherI#getUser(java.lang.String)
 	 */
 	public User getUser(String inAccount)
 	{
 		User user = (User)searchById(inAccount);
+		if( user != null && user.getPassword() == null) //Old Elastic did not save passwords
+		{
+			user = getXmlUserArchive().loadUser(user,getGroupSearcher());
+			
+		}
 		return user;
 	}
 
+	protected GroupSearcher getGroupSearcher()
+	{
+		return (GroupSearcher)getSearcherManager().getSearcher(getCatalogId(), "group");
+	}
 	/**
 	 * @deprecate use standard field search API
 	 */
@@ -133,10 +141,15 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 
 	public void saveUsers(List userstosave, User inUser) 
 	{
-		for (Iterator iterator = userstosave.iterator(); iterator.hasNext();) {
+		saveAllData(userstosave,inUser);
+	}
+	public void saveAllData(Collection<Data> inAll, User inUser)
+	{
+		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 			User user = (User) iterator.next();
-			saveData(user, inUser);
+			getXmlUserArchive().saveUser(user);
 		}
+		super.saveAllData(inAll, inUser);
 	}
 
 	public void saveData(Data inData, User inUser)
@@ -205,7 +218,25 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		}				
 		return false;
 	}
-	
 
 
+	@Override
+	public StringEncryption getStringEncryption()
+	{
+		return getXmlUserArchive().getStringEncryption();
+	}
+
+
+	@Override
+	public String encryptPassword(User inUser)
+	{
+		return getXmlUserArchive().encryptPassword(inUser);
+	}
+
+
+	@Override
+	public String decryptPassword(User inUser)
+	{
+		return getXmlUserArchive().decryptPassword(inUser);
+	}
 }

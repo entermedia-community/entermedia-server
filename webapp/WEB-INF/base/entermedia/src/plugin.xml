@@ -1479,6 +1479,8 @@
 		class="org.entermediadb.elasticsearch.searchers.ElasticUserSearcher"
 		scope="prototype"
 		>
+		<property name="newDataName"><value>baseUser</value></property>
+
 		<property name="elasticNodeManager">
 			<ref bean="elasticNodeManager" />
 		</property>
@@ -1493,10 +1495,15 @@
 			
 	
 	</bean>
+	<bean id="baseUser"	class="org.openedit.users.BaseUser"	scope="prototype" >
+	</bean>	
+	<bean id="baseGroup" class="org.openedit.users.BaseGroup"	scope="prototype" >
+	</bean>	
 	<bean id="elasticGroupSearcher"
 		class="org.entermediadb.elasticsearch.searchers.ElasticGroupSearcher"
 		scope="prototype"
 		>
+		<property name="newDataName"><value>baseGroup</value></property>
 		<property name="elasticNodeManager">
 			<ref bean="elasticNodeManager" />
 		</property>

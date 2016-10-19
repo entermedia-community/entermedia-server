@@ -168,11 +168,11 @@ public class UserProfileModule extends BaseMediaModule
 		String mode = inReq.getUser().get("oe_edit_mode");
 		if( mode == null || mode.equals("preview"))
 		{
-			inReq.getUser().put("oe_edit_mode","debug");
+			inReq.getUser().setValue("oe_edit_mode","debug");
 		}
 		else
 		{
-			inReq.getUser().put("oe_edit_mode","preview");
+			inReq.getUser().setValue("oe_edit_mode","preview");
 		}
 		//redirectBack(inReq);		
 	}

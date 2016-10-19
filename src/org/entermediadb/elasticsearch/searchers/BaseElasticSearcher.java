@@ -2185,7 +2185,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		if (inField.equals("id") || inField.equals("_id"))
 		{
-			if (getPropertyDetails().getDetail("_parent") == null)
+			if (getPropertyDetails().getDetail("_parent") == null) //? what is this for?
 			{
 				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
 				if (response.isExists())

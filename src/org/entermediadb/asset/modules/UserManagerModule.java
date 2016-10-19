@@ -6,7 +6,6 @@
  */
 package org.entermediadb.asset.modules;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -15,15 +14,12 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.upload.FileUpload;
-import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.modules.admin.users.PasswordMismatchException;
 import org.entermediadb.modules.admin.users.PropertyContainerManipulator;
 import org.entermediadb.modules.admin.users.Question;
 import org.entermediadb.modules.admin.users.QuestionArchive;
-import org.entermediadb.modules.admin.users.UserImport;
 import org.openedit.BaseWebPageRequest;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -76,8 +72,7 @@ public class UserManagerModule extends BaseMediaModule
 		{
 			String id = PathUtilities.extractId(name,false);
 			inReq.setRequestParameter("groupid", id);
-			Group group = getUserManager(inReq).createGroup( id );
-			group.setName(name);
+			Group group = getUserManager(inReq).createGroup( id, name );
 
 			//	We no longer have standard properties, now we have standard
 			// permissions (e.g. wsp.edit.notify) instead
@@ -313,12 +308,12 @@ public class UserManagerModule extends BaseMediaModule
 			getPropertyContainerManipulator().updateProperties( inReq.getParameterMap(),
 							newUser.getProperties() );
 			inReq.putPageValue("password", password);
-			newUser.put("refererurl", inReq.getSessionValue("refererurl"));
+			newUser.setValue("refererurl", inReq.getSessionValue("refererurl"));
 			
 			Group group = getGroupSearcher(inReq).getGroup("guest");
 			if ( group == null)
 			{
-				group = getUserManager(inReq).createGroup("guest");
+				group = getUserManager(inReq).createGroup("guest", "Guest");
 			}
 			newUser.addGroup(group);
 			
@@ -493,17 +488,17 @@ public class UserManagerModule extends BaseMediaModule
 		try
 		{
 			User user = getUserSearcher(inReq).getUser(username);
-
-			user.clearGroups();
 			String groups[] = inReq.getRequestParameters(GROUPS);
+			Collection groupslist = new ArrayList();
 			if( groups != null )
 			{
 				for (int i = 0; i < groups.length; i++)
 				{
 					Group group = getGroupSearcher(inReq).getGroup( groups[i] );
-					user.addGroup( group );
+					groupslist.add( group );
 				}
 			}
+			user.setGroups(groupslist);
 			getUserSearcher(inReq).saveData( user ,inReq.getUser());
 		}
 		catch( UserManagerException ume )
@@ -1021,62 +1016,6 @@ public class UserManagerModule extends BaseMediaModule
 		}
 	}
 	
-	public void importAccounts( WebPageRequest inReq) throws OpenEditException
-	{
-		checkAdminPermission(inReq);
-		//get the file data
-		//grab four columns accountid, email, firstname, lastname
-		//grab remaining columns as extra data
-		
-		FileUpload command = new FileUpload();
-		command.setRoot(getRoot());
-		command.setPageManager(getPageManager());
-		UploadRequest properties = command.parseArguments(inReq);
-		if ( properties == null)
-		{
-			return;
-		}
-		String 	id = inReq.getRequestParameter("groupid"); //found here in testing
-		//handle the upload
-		//figure out path
-		if ( id != null && id.length() > 0)
-		{
-			try
-			{
-				File temp = null;
-				String input = null;
-				if ( input != null  && inReq.getRequest() == null)
-				{
-					input = inReq.getRequestParameter("inputfile"); //used in junit
-					temp = new File( input );
-				}
-				else
-				{
-					//temp = File.createTempFile("openedit", "customerimport");
-					Page page = properties.saveFirstFileAs("/WEB-INF/trash/userimport.tsv", inReq.getUser());
-					temp = new File( getRoot(), page.getPath() );
-				}
-				//now import it
-				//read csv file
-				UserImport uimport = new UserImport();
-				uimport.setUserManager(getUserManager(inReq));
-				List users = uimport.listUsers(temp);
-				
-				Group group = getGroupSearcher(inReq).getGroup(id);
-				
-				for (Iterator iter = users.iterator(); iter.hasNext();)
-				{
-					User user = (User) iter.next();
-					user.addGroup(group);
-					getUserSearcher(inReq).saveData(user, inReq.getUser());
-				}
-			}
-			catch ( Exception ex)
-			{
-				throw new OpenEditException(ex);
-			}
-		}			
-	}
 	
 	public void findUsers(WebPageRequest inReq)
 	{
@@ -1244,7 +1183,7 @@ public class UserManagerModule extends BaseMediaModule
 		Group group = getGroupSearcher(inReq).getGroup(value);
 		if( group == null)
 		{
-			group = getUserManager(inReq).createGroup(value);
+			group = getUserManager(inReq).createGroup(value, value);
 		}
 		if( !user.isInGroup(group))
 		{
@@ -1270,7 +1209,7 @@ public class UserManagerModule extends BaseMediaModule
 		Group group = getGroupSearcher(inReq).getGroup(value);
 		if( group == null)
 		{
-			group = getUserManager(inReq).createGroup(value);
+			group = getUserManager(inReq).createGroup(value, value);
 		}
 		if( !user.isInGroup(group))
 		{
@@ -1360,7 +1299,7 @@ public class UserManagerModule extends BaseMediaModule
 		{
 			mode = inReq.findValue("userpropertyname");
 		}
-		user.put(mode,value);
+		user.setValue(mode,value);
 		getUserManager(inReq).saveUser(inReq.getUser());
 	}
 /*
@@ -1413,7 +1352,7 @@ public class UserManagerModule extends BaseMediaModule
 		String groups = inReq.getRequestParameter("groups.value");
 		if( groups != null)
 		{
-			user.clearGroups();
+			Collection groupslist = new ArrayList();
 			if( groups != null )
 			{
 				String[] vals = null;
@@ -1430,10 +1369,11 @@ public class UserManagerModule extends BaseMediaModule
 					Group group = getGroupSearcher(inReq).getGroup( vals[i] );
 					if( group != null )
 					{
-						user.addGroup( group );
+						groupslist.add( group );
 					}
 				}
 			}
+			user.setGroups(groupslist);
 			getSearcherManager().getSearcher("system", "user").saveData(user, inReq.getUser());
 			
 		}

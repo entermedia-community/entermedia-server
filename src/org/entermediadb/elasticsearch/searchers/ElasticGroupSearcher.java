@@ -14,6 +14,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetails;
 import org.openedit.locks.Lock;
+import org.openedit.users.BaseGroup;
 import org.openedit.users.Group;
 import org.openedit.users.GroupSearcher;
 import org.openedit.users.User;
@@ -40,10 +41,6 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 	}
 	
 	
-	public Object searchById(String inId) 
-	{
-		return getGroup(inId);
-	}
 	public void reIndexAll()
 	{
 		log.info("Reindex of customer groups directory");
@@ -61,13 +58,17 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 				for (Iterator iterator = ids.iterator(); iterator.hasNext();)
 				{
 					String id = (String) iterator.next();
-					Group group = getXmlUserArchive().getGroup(id);
-					groups.add(group);
-					if( groups.size() > 1000)
+					Group group = (Group)createNewData(); 
+					group = getXmlUserArchive().loadGroup(group);
+					if( group != null)
 					{
-						updateIndex(groups, null);
-						groups.clear();
-					}
+						groups.add(group);
+						if( groups.size() > 1000)
+						{
+							updateIndex(groups, null);
+							groups.clear();
+						}
+					}	
 				}
 				updateIndex(groups, null);
 			}
@@ -85,18 +86,13 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 
 	public Group getGroup(String inGroupId)
 	{
-		Group group = getXmlUserArchive().getGroup(inGroupId);
+		Group group = (Group)searchById(inGroupId);
 		if (group == null)
 		{
 			log.error("Index is out of date, group " + inGroupId
 					+ " has since been deleted");
 		} 
 		return group;
-	}
-
-	public Data createNewData()
-	{
-		return getXmlUserArchive().createGroup();
 	}
 
 	public void saveData(Data inData, User inUser)

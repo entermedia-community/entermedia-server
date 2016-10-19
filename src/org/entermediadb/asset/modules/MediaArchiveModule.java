@@ -20,7 +20,6 @@ import org.openedit.page.Page;
 import org.openedit.page.PageAction;
 import org.openedit.users.Group;
 import org.openedit.users.User;
-import org.openedit.users.filesystem.FileSystemGroup;
 import org.openedit.util.DateStorageUtil;
 
 public class MediaArchiveModule extends BaseMediaModule
@@ -196,11 +195,11 @@ public class MediaArchiveModule extends BaseMediaModule
 				boolean has = user.hasProperty(id);
 				if (has)
 				{
-					user.remove(id);
+					user.setValue(id,null);
 				}
 				else
 				{
-					user.put(id, String.valueOf(has));
+					user.setValue(id, String.valueOf(has));
 				}
 				getUserManager(inReq).saveUser(user);
 			}
@@ -235,24 +234,24 @@ public class MediaArchiveModule extends BaseMediaModule
 					log.info("Creating virtual user " + username);
 				}
 
-				String includerecords = cAcction.getConfig().getChildValue("limitrecords");
-				if (includerecords != null)
-				{
-					// excluderecords:PII_site:false
-					// user.put("includerecords", );
-					String val = inReq.getRequestParameter(includerecords);
-					if (val != null)
-					{
-						Group tmpGroup = new FileSystemGroup();
-						tmpGroup.addPermission("limitrecords:" + includerecords + ":" + val);
-						user.addGroup(tmpGroup); // TODO: Keep this from
-						// saving
-					}
-					else
-					{
-						log.error("No value passed in for " + includerecords);
-					}
-				}
+//				String includerecords = cAcction.getConfig().getChildValue("limitrecords");
+//				if (includerecords != null)
+//				{
+//					// excluderecords:PII_site:false
+//					// user.put("includerecords", );
+//					String val = inReq.getRequestParameter(includerecords);
+//					if (val != null)
+//					{
+//						Group tmpGroup = getUserManager(inReq).createGroup();
+//						tmpGroup.addPermission("limitrecords:" + includerecords + ":" + val);
+//						user.addGroup(tmpGroup); // TODO: Keep this from
+//						// saving
+//					}
+//					else
+//					{
+//						log.error("No value passed in for " + includerecords);
+//					}
+//				}
 				// <username>ExternalUser</username>
 				// <group>externalusers</group>
 				// <includerecords>customernumber</includerecords>

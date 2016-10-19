@@ -1067,11 +1067,11 @@ public class AdminModule extends BaseModule
 			boolean bol = user.getBoolean("openadmintoolbar");
 			if (bol)
 			{
-				user.put("openadmintoolbar", "false");
+				user.setValue("openadmintoolbar", false);
 			}
 			else
 			{
-				user.put("openadmintoolbar", "true");
+				user.setValue("openadmintoolbar", true);
 			}
 			if (!user.isVirtual())
 			{
@@ -1112,11 +1112,11 @@ public class AdminModule extends BaseModule
 				boolean has = user.hasProperty(id);
 				if (has)
 				{
-					user.remove(id);
+					user.setValue(id,null);
 				}
 				else
 				{
-					user.put(id, String.valueOf(has));
+					user.setValue(id, String.valueOf(has));
 				}
 				getUserManager(inReq).saveUser(user);
 			}
@@ -1248,7 +1248,7 @@ public class AdminModule extends BaseModule
 			Group guest = getGroupSearcher(inReq).getGroup("guest");
 			if (guest == null)
 			{
-				getUserManager(inReq).createGroup("guest");
+				getUserManager(inReq).createGroup("guest", "Guest");
 			}
 
 			user = getUserManager(inReq).createGuestUser(null, null, "guest");

@@ -228,7 +228,7 @@ public class OauthModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
 		
-		User target = searcher.getXmlUserArchive().getUserByEmail(email);
+		User target = searcher.getUserByEmail(email);
 		if (autocreate && target == null)
 		{
 			target = (User) searcher.createNewData();

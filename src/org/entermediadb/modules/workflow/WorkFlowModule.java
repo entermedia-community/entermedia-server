@@ -36,24 +36,24 @@ public class WorkFlowModule extends BaseMediaModule
 //	}
 	public void viewEditingMode(WebPageRequest inReq) 
 	{
-		inReq.getUser().put("oe_edit_mode","editing");
-		inReq.getUser().put("showdebug","false");
+		inReq.getUser().setValue("oe_edit_mode","editing");
+		inReq.getUser().setValue("showdebug","false");
 		inReq.putSessionValue("oe_edit_mode", "editing");
 		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
 	public void viewDebugMode(WebPageRequest inReq) 
 	{
-		inReq.getUser().put("oe_edit_mode","debug");
-		inReq.getUser().put("showdebug","true");
+		inReq.getUser().setValue("oe_edit_mode","debug");
+		inReq.getUser().setValue("showdebug","true");
 		inReq.putSessionValue("oe_edit_mode","debug");
 		getUserManager(inReq).saveUser(inReq.getUser());
 		redirectBack(inReq);		
 	}
 	public void viewPreviewMode(WebPageRequest inReq) 
 	{
-		inReq.getUser().put("oe_edit_mode","preview");
-		inReq.getUser().put("showdebug","false");
+		inReq.getUser().setValue("oe_edit_mode","preview");
+		inReq.getUser().setValue("showdebug","false");
 		inReq.putSessionValue("oe_edit_mode","preview");
 
 		//inReq.getUser().put("openadmintoolbar","false");

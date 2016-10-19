@@ -244,7 +244,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 
 	public void saveLink(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		LinkTree tree = getLinkTree(inReq);
 		Link link = tree.getSelectedLink();
@@ -273,7 +273,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 
 	public void appendLink(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		LinkTree tree = getLinkTree(inReq);
 
@@ -328,7 +328,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 	public void addNewLink(WebPageRequest inReq) throws Exception
 	{
 		//Should this method replace appendLink?
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		LinkTree tree = getLinkTree(inReq);
 
@@ -353,7 +353,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 	
 	public void copyLink(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		LinkTree tree = getLinkTree(inReq);
 		Link link = tree.getSelectedLink();
@@ -414,7 +414,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 		if( linkId != null)
 		{
 			if(inReq.getUser() != null){
-				inReq.getUser().put("oe_edit_draftmode", "true");
+				inReq.getUser().setValue("oe_edit_draftmode", "true");
 			}
 			getLinkTree(inReq).setSelectedLink(linkId);
 		}
@@ -422,7 +422,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 
 	public void removeLink(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 			Link link = getLinkTree(inReq).getSelectedLink();
 			getLinkTree(inReq).removeLink(link);
@@ -430,7 +430,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 	}
 	public void moveUp(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		Link link = getLinkTree(inReq).getSelectedLink();
 		getLinkTree(inReq).moveUp(link);
@@ -438,7 +438,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 	}
 	public void moveDown(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		Link link = getLinkTree(inReq).getSelectedLink();
 		getLinkTree(inReq).moveDown(link);
@@ -446,7 +446,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 	}
 	public void moveRight(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		Link link = getLinkTree(inReq).getSelectedLink();
 		getLinkTree(inReq).moveRight(link);
@@ -454,7 +454,7 @@ public class LinkModule extends BaseModule implements PageAccessListener
 	}
 	public void moveLeft(WebPageRequest inReq) throws Exception
 	{
-		inReq.getUser().put("oe_edit_draftmode", "true");
+		inReq.getUser().setValue("oe_edit_draftmode", "true");
 
 		Link link = getLinkTree(inReq).getSelectedLink();
 		getLinkTree(inReq).moveLeft(link);

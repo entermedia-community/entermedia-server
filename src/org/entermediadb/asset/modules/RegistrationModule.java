@@ -90,7 +90,7 @@ public class RegistrationModule extends BaseMediaModule
 			Group guest = getUserManager().getGroup("guest");
 			if (guest == null)
 			{
-				getUserManager().createGroup("guest");
+				getUserManager().createGroup("guest", "Guest");
 			}
 
 			user = getUserManager().createGuestUser(null, null, "guest");
@@ -256,7 +256,7 @@ public class RegistrationModule extends BaseMediaModule
 		Group guestgroup = getUserManager().getGroup("guest");
 		if (guestgroup == null)
 		{
-			guestgroup = getUserManager().createGroup("guest");
+			guestgroup = getUserManager().createGroup("guest", "Guest");
 		}
 
 		boolean generatepassword = Boolean.parseBoolean(inReq.findValue("generatepassword"));
@@ -330,8 +330,8 @@ public class RegistrationModule extends BaseMediaModule
 
 		log.info("user id was" + current.getId());
 
-		current.remove("password");
-		current.remove("password2");
+		current.setValue("password",null);
+		current.setValue("password2",null);
 
 		handleValidationCodes(inReq, current);
 
@@ -357,7 +357,7 @@ public class RegistrationModule extends BaseMediaModule
 		Group notifygroup = getUserManager().getGroup("registration");
 		if (notifygroup == null)
 		{
-			notifygroup = getUserManager().createGroup("registration");
+			notifygroup = getUserManager().createGroup("registration", "Registration");
 		}
 		if (email != null)
 		{
@@ -600,7 +600,7 @@ public class RegistrationModule extends BaseMediaModule
 			Group group = getUserManager().getGroup(collegeid);
 			if (group == null)
 			{
-				group = getUserManager().createGroup(collegeid);
+				group = getUserManager().createGroup(collegeid, collegeid);
 				getUserManager().saveGroup(group);
 
 			}
@@ -619,7 +619,7 @@ public class RegistrationModule extends BaseMediaModule
 			Group group = getUserManager().getGroup(classid + "_students");
 			if (group == null)
 			{
-				group = getUserManager().createGroup(classid + "_students");
+				group = getUserManager().createGroup(classid + "_students", classid + "_students");
 				getUserManager().saveGroup(group);
 
 			}
@@ -637,7 +637,7 @@ public class RegistrationModule extends BaseMediaModule
 				Group group = getUserManager().getGroup(codeclass + "_students");
 				if (group == null)
 				{
-					group = getUserManager().createGroup(codeclass + "_students");
+					group = getUserManager().createGroup(codeclass + "_students", codeclass + "_students");
 					getUserManager().saveGroup(group);
 
 				}
