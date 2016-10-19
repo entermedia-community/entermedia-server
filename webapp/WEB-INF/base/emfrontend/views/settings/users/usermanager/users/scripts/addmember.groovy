@@ -11,11 +11,6 @@ public Group getGroup()
 {
 	String groupid = context.getRequestParameter("groupid");
 	
-	if (groupid == null)
-	{
-		throw new OpenEditException("mastergroup not set");
-	}
-	
 	Group group = userManager.getGroup(groupid);
 	if (group == null)
 	{
@@ -124,17 +119,6 @@ public void editUser()
 		
 		//save the user object
 		Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
-		String groupid = context.findValue("mastergroup");
-		Group mastergroup = usermanager.getGroup(groupid);
-		if( mastergroup == null)
-		{
-			mastergroup = usermanager.createGroup(groupid);
-		}
-		if( !edituser.isInGroup(mastergroup) )
-		{
-			edituser.addGroup(mastergroup);
-			log.info("added group to user");
-		}
 
 		List details = usersearcher.getDetailsForView("user/simpleuseredit", loggedin);
 		

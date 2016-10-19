@@ -33,7 +33,7 @@
 
 
 			<a href="#" class="btn" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
-			<a class="btn red" style="float: right;" href="./removeuser.html?groupid=$content.mastergroup&usertodelete=$selectedUser.id">[[Delete User]]</a>
+			<a class="btn red" style="float: right;" href="./removeuser.html?usertodelete=$selectedUser.id">[[Delete User]]</a>
 			<a href="$home$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn" >[[Edit Password]]</a>
 					#if($canactasotherusers)
 	<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn" >[[Act As this user temporarily]]</a>
