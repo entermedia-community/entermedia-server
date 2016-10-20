@@ -70,7 +70,7 @@
 	
 	
 	<property id="longcaption"  keyword="true" index="true" editable="true"  externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
-	<property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" >Tags</property> 
+	<property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags">Tags</property> 
 	<property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords">Extra Keywords</property> 
 	<property id="purpose" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list">Purpose</property>
 	<property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed" >General Ethnicity</property>
