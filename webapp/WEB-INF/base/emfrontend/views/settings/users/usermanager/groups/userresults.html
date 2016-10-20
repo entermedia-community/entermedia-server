@@ -17,7 +17,7 @@ $context.putPageValue("groupid", $groupid)
 	#foreach ( $hit in $userTracker.getPageOfHits() )
 	<tr rowid="${hit.id}" id="${hit.id}_row">
 		<td nowrap noclick="true">
-			<input type="radio" data-user="${hit.id}" name="groupcheckbox" class="groupcheckbox">
+			<input type="checkbox" data-userid="${hit.id}" name="usercheckbox" class="usercheckbox">
 		</td>
 	#foreach( $detail in $details ) 
 		#set( $newval = "$!hit.get($detail.getId())")
@@ -25,7 +25,6 @@ $context.putPageValue("groupid", $groupid)
 			#set( $newval = "$!searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$newval)" )
 		#end			
 		<td nowrap noclick="true">
-			####<a href="#" onclick="selectUser('${hit.id}');" class="oeactionlink" >$newval</a>
 			$newval
 		</td>
 	#end
@@ -47,17 +46,12 @@ $context.putPageValue("groupid", $groupid)
 <tr>
 	<td>
 		<div>
-			<a  href="#" class="btn" onclick="removeMember('$group.id');">[[Remove Selected]]</a>
+			<a  href="#" class="btn" onclick="removeMember('$group.id');;return false;">[[Remove Selected]]</a>
 		</div>
 	</td>
 	<td>
 		<div>
-			<a  href="#" class="btn" onclick="viewUser();">[[View Selected]]</a>
-		</div>
-	</td>
-	<td>
-		<div>
-			<a  href="#" class="btn" style="float: right;" onclick="removeAllMembers('$group.id');">[[Remove All]]</a>
+			<a  href="#" class="btn" style="float: right;" onclick="selectAllMembers();return false;">[[Select All]]</a>
 		</div>
 	</td>
 </tr>
@@ -94,11 +88,3 @@ $(".groupcheckbox").on("click",function(e){
 	}
 });
 </script>
-<style>
-.groupcheckbox{
-    -webkit-appearance: checkbox;
-    -moz-appearance: checkbox;
-    -ms-appearance: checkbox;
-    -o-appearance: checkbox;
-}
-</style>

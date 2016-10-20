@@ -132,7 +132,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		query.addExact("groups",inGroup.getId());
 		//query.setSortBy("idsorted");
 		HitTracker tracker = search(query);
-		log.info(tracker.size());
+		//log.info(tracker.size());
 		return tracker;
 	}
 

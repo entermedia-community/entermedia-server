@@ -1,11 +1,4 @@
 <script type="text/javascript">
-	removeAllMembers = function(inGroupId)
-	{
-		if(confirm("Are you sure you want to remove all members from the group \"" + inGroupId + "\" ?"))
-		{
-			jQuery("#usersearchresultspanel").load("$home$usermanagerhome/groups/removeallmembers.html", {groupid: inGroupId, oemaxlevel: '1'});
-		}
-	}
 	selectUser = function(inUser)
 	{
 		var currentUser = $("#selecteduserholder").val();
@@ -36,11 +29,23 @@
 	}
 	removeMember = function(inGroupId)
 	{
-		var currentUser = $("#selecteduserholder").val();
-		console.log("remove current user "+currentUser+" from group "+inGroupId);
-		$("#usersearchresultspanel").load("$home$usermanagerhome/groups/removemember.html", {removeUsernames: currentUser, groupid: inGroupId, oemaxlevel: '1'});
+		var ids = [];
+		$(".usercheckbox:checked").each(function()
+		{
+			ids.push($(this).data("userid"));
+		});
+		console.log("$home$usermanagerhome remove current user "+ids +" from group "+inGroupId);
+		$("#usersearchresultspanel").load("$home$usermanagerhome/groups/removemember.html", {removeUsernames: ids, groupid: inGroupId, oemaxlevel: '1'});
 		return false;
 	}
+	selectAllMembers = function(inGroupId)
+	{
+		$(".usercheckbox").each(function()
+		{
+			$(this).prop( "checked", true );
+		});
+	}
+
 </script>
 
 <div class="subcolumns">
