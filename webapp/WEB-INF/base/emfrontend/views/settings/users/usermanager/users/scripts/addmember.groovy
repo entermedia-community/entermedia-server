@@ -10,7 +10,10 @@ import org.openedit.page.manage.*
 public Group getGroup()
 {
 	String groupid = context.getRequestParameter("groupid");
-	
+	if( groupid == null)
+	{
+		return null
+	}
 	Group group = userManager.getGroup(groupid);
 	if (group == null)
 	{
@@ -20,12 +23,12 @@ public Group getGroup()
 	return group;
 }
 
-public User getUser(Group inGroup)
+public User getUser()
 {
 	String email = context.getRequestParameter("email.value");
 	String emailcheck = context.getRequestParameter("emailmatch.value");
 	
-	if (email == null || !email.equals(emailcheck))
+	if ((email != null && emailcheck != null) && !email.equals(emailcheck))
 	{
 		throw new OpenEditException("E-mail addresses don't match.");
 	}
@@ -44,14 +47,9 @@ public User getUser(Group inGroup)
 			throw new OpenEditException("passwords don't match");
 		}
 			
-		String username = context.getRequestParameter("userName.value");
+		String username = context.getRequestParameter("id.value");
 		newuser = userManager.createUser( username, password);
 		newuser.setVirtual(false);
-	}
-	
-	if (!newuser.isInGroup(inGroup))
-	{
-		newuser.addGroup(inGroup);
 	}
 	
 	return newuser;
@@ -90,8 +88,7 @@ public Data saveUserProfile(String inUserId)
 
 public void addUser()
 {
-	Group group = getGroup();
-	User newuser = getUser(group);
+	User newuser = getUser();
 	
 	Searcher usersearcher = searcherManager.getSearcher(catalogid,"user");
 	
@@ -104,6 +101,12 @@ public void addUser()
 	usersearcher.saveDetails(context,fields,newuser,newuser.getId());
 	
 	saveUserProfile(newuser.getId());
+	
+	context.putPageValue("userName",newuser.getId());
+	context.putPageValue("selectedUser",newuser);
+	
+//	MediaArchive
+//	mediaArchive.fire
 }
 
 public void editUser()

@@ -141,23 +141,23 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	}
 	public void saveAllData(Collection<Data> inAll, User inUser)
 	{
+		super.saveAllData(inAll, inUser);
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 			User user = (User) iterator.next();
 			getXmlUserArchive().saveUser(user);
 		}
-		super.saveAllData(inAll, inUser);
 	}
 
 	public void saveData(Data inData, User inUser)
 	{
-		getXmlUserArchive().saveUser((User)inData);
 		super.saveData(inData, inUser); //update the index
+		getXmlUserArchive().saveUser((User)inData);
 	}
 	
 	public void delete(Data inData, User inUser)
 	{
-		getXmlUserArchive().deleteUser((User)inData);
 		super.delete(inData, inUser); //delete the index
+		getXmlUserArchive().deleteUser((User)inData);
 	}
 	
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)

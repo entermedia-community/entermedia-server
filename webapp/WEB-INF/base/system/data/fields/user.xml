@@ -1,12 +1,11 @@
 <properties>
-	<property id="id" index="true" stored="true"  keyword="true" >Internal ID</property>
+	<property id="id" index="true" stored="true"  keyword="true" >Username</property>
 	<property id="name" index="true" stored="true" editable="false">Name</property>
 	<property id="description" index="false">User Search</property>
-	<property id="userName" index="true" stored="true"  keyword="true" >User ID</property>
 	<property id="screenname" index="true" stored="true" keyword="true" editable="true">Screen Name</property>
-	<property id="firstName" index="true" stored="true" keyword="true" editable="true" required="true">First Name</property>
-	<property id="lastName" index="true" stored="true" keyword="true" editable="true" required="true">Last Name</property>
-	<property id="email" index="true" stored="true" keyword="true" editable="true" required="true" indextype="not_analyzed">Email</property>
+	<property id="firstName" index="true" stored="true" keyword="true" editable="true" >First Name</property>
+	<property id="lastName" index="true" stored="true" keyword="true" editable="true" >Last Name</property>
+	<property id="email" index="true" stored="true" keyword="true" editable="true"  indextype="not_analyzed">Email</property>
 	<property id="enabled" index="true" stored="true" editable="true" datatype="boolean" type="boolean">Enabled</property>
 	<property id="password"  index="true" stored="true" >Password</property>
 	<property id="failedlogincount" editable="true" type="number">Failed login attempts</property>

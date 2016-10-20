@@ -1,10 +1,9 @@
 <properties>
 
-	<property id="firstName" required="true"/>
-	<property id="lastName" required="true"/>
-	<property id="userName" editable="true" >User Name</property>
+	<property id="firstName" />
+	<property id="lastName" />
 
-    <property id="enabled" header="blank" />
+    <property id="enabled" />
 
 	<property id="email" required="true" header="Contact Information" />
     <property id="phone" /> 

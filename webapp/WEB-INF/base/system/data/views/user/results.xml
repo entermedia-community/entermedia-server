@@ -1,5 +1,6 @@
 <properties>
-<property id="userName" />
+<property id="id" />
 <property id="firstName" />
 <property id="lastName" />
+<property id="email" />
 </properties> 

@@ -16,7 +16,7 @@
 		#end
 		<td colspan="2">
 			<div id="usereditarea" style="vertical-align: middle;padding: 0 0 10px 25px;" >
-				$pages.include("edituser.html", $context)
+				$pages.include("./edituser.html", $context)
 				
 			</div>
 		</td>
@@ -27,14 +27,14 @@
 			<div style="border-right:2px solid black;padding:10px;">
 				<h2>[[Permission Groups]]</h2>	
 				<div id="grouparea">
-				$pages.include("grouplist.html", $context)
+				$pages.include("./grouplist.html", $context)
 				</div>
 			</div>
 		</td>
 		<td>    
 			<div id="changepasswordarea" style="padding:10px;">
 				<h2>[[Change Password]]</h2>
-				$pages.include("setuserpassword.html", $context)
+				$pages.include("./setuserpassword.html", $context)
 
 				<div class="embutton" style="padding-left: 100px;">
 					<a class="ajax" targetdiv="usermessagearea" href="./sendpassword.html?username=$userName">[[Send Password To User]]</a>
