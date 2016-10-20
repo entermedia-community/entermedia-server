@@ -506,6 +506,10 @@ public class BaseElasticSearcher extends BaseSearcher
 			XContentBuilder jsonBuilder = XContentFactory.jsonBuilder();
 			XContentBuilder jsonproperties = jsonBuilder.startObject().startObject(getSearchType());
 			jsonproperties.field("date_detection", "false");
+			
+	
+			
+			
 			jsonproperties = jsonproperties.startObject("properties");
 
 			List props = getPropertyDetails().findIndexProperties();
@@ -678,6 +682,14 @@ public class BaseElasticSearcher extends BaseSearcher
 																					// use.
 																					// Use
 																					// _description
+				
+				
+				String analyzer = detail.get("analyzer");
+				if(analyzer != null){
+					jsonproperties = jsonproperties.field("analyzer", analyzer);
+				}
+				
+
 				jsonproperties = jsonproperties.endObject();
 
 			}

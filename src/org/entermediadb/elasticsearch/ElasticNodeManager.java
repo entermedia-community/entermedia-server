@@ -607,8 +607,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						//									startObject("snowball").field("type", "snowball").field("language", "English")
 						//									.endObject()
 						//								.endObject()
-						.startObject("analyzer").startObject("lowersnowball").field("type", "snowball").field("language", "English").endObject().endObject().endObject().endObject();
+						.startObject("analyzer").startObject("lowersnowball").field("type", "snowball").field("language", "English").endObject().endObject()
+						.startObject("analyzer").startObject("tags").field("type", "custom").field("tokenizer", "keyword").startArray("filter").value("lowercase").endArray().endObject().endObject()					
+						.endObject().endObject();
 
+				
+				
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
 				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
 
