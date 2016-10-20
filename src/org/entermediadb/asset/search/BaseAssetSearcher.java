@@ -155,6 +155,12 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		fieldUsesSearchSecurity = null;
 	}
 
+	@Override
+	public void reindexInternal()
+	{
+		getDataConnector().reindexInternal();
+	}
+	
 	private boolean doesIndexSecurely()
 	{
 		if (fieldUsesSearchSecurity == null)

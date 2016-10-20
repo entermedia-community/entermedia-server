@@ -2433,4 +2433,26 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
+	@Override
+	public void reindexInternal() throws OpenEditException
+	{
+		HitTracker allhits = getAllHits();
+		allhits.enableBulkOperations();
+		ArrayList tosave = new ArrayList();
+		for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+		{
+			Data hit = (Data) iterator2.next();
+			Data real = (Data) loadData(hit);
+			tosave.add(real);
+			if(tosave.size() > 1000)
+			{
+				updateInBatch(tosave, null);
+	
+				tosave.clear();
+			}
+		}
+		updateInBatch(tosave, null);
+		
+	}
+	
 }

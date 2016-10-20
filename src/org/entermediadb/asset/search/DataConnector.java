@@ -42,6 +42,8 @@ public interface DataConnector extends CatalogEnabled
 	public void updateIndex(Collection<Data> inBuffer, User inUser);
 
 	void reIndexAll();
+	
+	void reindexInternal();
 
 	String getIndexId();
 
