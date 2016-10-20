@@ -1,6 +1,8 @@
 <servers>
-	<server id="5" listingurl="http://entermediasoftware.com/plugins/allplugins9.xml">EnterMediaSoftware.com Version 9</server>	
 
+	<server id="5" listingurl="http://entermediasoftware.com/plugins/allplugins9dev.xml">EnterMediaSoftware.com Version 9</server>	
+
+	<server id="5" listingurl="http://entermediasoftware.com/plugins/allplugins9.xml">EnterMediaSoftware.com Version 9</server>	
 	<server id="4" listingurl="http://entermediasoftware.com/plugins/allplugins8dev.xml">EnterMediaSoftware.com Version 8 Sandbox</server>	
 	<server id="1" listingurl="http://entermediasoftware.com/plugins/allplugins8.xml">EnterMediaSoftware.com Version 8 Releases</server>	
 	<server id="2" listingurl="http://entermediasoftware.com/plugins/allplugins.xml">EnterMediaSoftware.com Version 7</server>	
