@@ -51,17 +51,24 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 					ids.add("none");
 				}
 				child.addOrsGroup(inSearcher.getDetail("category"), ids);
+				child.addExact("owner",user.getId());
+
 				inQuery.setSecurityAttached(true);
+				if(!child.isEmpty())
+				{
+					inQuery.addChildQuery(child);
+				}
 			}	
 		
+			SearchQuery filterchild = null;
 			for(Term term : inQuery.getTerms() )
 			{
 				String id = term.getId();
 				if( id.contains("."))
 				{
-					if( child == null)
+					if( filterchild == null)
 					{
-						child = inSearcher.createSearchQuery();
+						filterchild = inSearcher.createSearchQuery();
 					}
 					String[] typefield = id.split("\\.");
 					String type = typefield[0];
@@ -96,14 +103,14 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 					{
 						categoryids.add(data.get("categoryid"));
 					}	
-					child.addOrsGroup(inSearcher.getDetail("category"), categoryids);
+					filterchild.addOrsGroup(inSearcher.getDetail("category"), categoryids);
 				}
 			}
-			if(!child.isEmpty())
+			if( filterchild != null )
 			{
-				inQuery.addChildQuery(child);
+				inQuery.addChildQuery(filterchild);
 			}
-		}	
+		}
 
 		
 		return inQuery;
