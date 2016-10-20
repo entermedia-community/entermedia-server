@@ -1,7 +1,7 @@
 <properties>
 	<property id="id" index="true" stored="true"  keyword="true" >Username</property>
 	<property id="name" index="true" stored="true" editable="false">Name</property>
-	<property id="description" index="false">User Search</property>
+	<property id="description" index="true">User Search</property>
 	<property id="screenname" index="true" stored="true" keyword="true" editable="true">Screen Name</property>
 	<property id="firstName" index="true" stored="true" keyword="true" editable="true" >First Name</property>
 	<property id="lastName" index="true" stored="true" keyword="true" editable="true" >Last Name</property>
