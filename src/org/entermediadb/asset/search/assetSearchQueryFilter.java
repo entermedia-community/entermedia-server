@@ -30,7 +30,6 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 		//check for category joins
 		if(!inQuery.hasChildren())
 		{			
-			SearchQuery child = inSearcher.createSearchQuery();
 			//viewasset = "admin adminstrators guest designers"
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();
@@ -39,6 +38,8 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 			User user = inPageRequest.getUser();
 			if (user == null || !user.isInGroup("administrators"))
 			{
+				SearchQuery child = inSearcher.createSearchQuery();
+				child.setAndTogether(false);
 				UserProfile profile = inPageRequest.getUserProfile();
 				if( profile != null)
 				{
