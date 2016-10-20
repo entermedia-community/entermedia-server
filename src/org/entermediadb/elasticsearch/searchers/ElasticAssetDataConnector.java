@@ -514,12 +514,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			return inHit;
 		}
 		//Stuff might get out of date?
-		if (inHit instanceof SearchHitData)
-		{
-			SearchHitData db = (SearchHitData) inHit;
-			return createAssetFromResponse(inHit.getId(), db.getSearchData());
-		}
-		return (Data) searchById(inHit.getId());
+		SearchHitData db = (SearchHitData) inHit;
+		return createAssetFromResponse(inHit.getId(), db.getSearchData());
 	}
 
 	protected AssetArchive getAssetArchive()
