@@ -42,7 +42,7 @@ public class OriginalFileManager
 		}
 		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
-		if(inAsset.isFolder() && primaryname != null)
+		if(primaryname != null && inAsset.isFolder() )
 		{
 			originalpath = originalpath + "/" + primaryname;
 		}
@@ -62,7 +62,7 @@ public class OriginalFileManager
 		}
 		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
-		if(inAsset.isFolder() && primaryname != null)
+		if( primaryname != null && inAsset.isFolder() )
 		{
 			originalpath = originalpath + "/" + primaryname;
 		}

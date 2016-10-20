@@ -7,7 +7,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -200,7 +199,11 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			{
 				inContent.field("fileformat", fileformat);
 			}
-
+			Object folderval = asset.getValue("isfolder");
+			if(folderval == null){
+				ContentItem item = getMediaArchive().getOriginalFileManager().getOriginalContent(asset);
+				asset.setFolder(item.isFolder());				
+			}
 			if (asset.getCatalogId() == null)
 			{
 				asset.setCatalogId(getCatalogId());
@@ -222,6 +225,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			{
 				inContent.field("category", catids);
 			}
+			
+			
 
 			// Searcher searcher =
 			// getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");

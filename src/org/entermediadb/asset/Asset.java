@@ -49,14 +49,10 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 	public boolean isFolder()
 	{
 
-		String isfolder = get("isfolder");
-		if (isfolder == null)
-		{
-			ContentItem item = getMediaArchive().getOriginalFileManager().getOriginalContent(this);
-			setFolder(item.isFolder());
-		}
+		
+	
 
-		return Boolean.parseBoolean(get("isfolder"));
+		return getBoolean("isfolder");
 	}
 
 	public void setFolder(boolean inIsFolder)
