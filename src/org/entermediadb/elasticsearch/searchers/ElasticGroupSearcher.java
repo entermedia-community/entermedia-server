@@ -12,9 +12,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetails;
-import org.openedit.locks.Lock;
-import org.openedit.users.BaseGroup;
 import org.openedit.users.Group;
 import org.openedit.users.GroupSearcher;
 import org.openedit.users.User;
@@ -29,7 +28,20 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 {
 	private static final Log log = LogFactory.getLog(ElasticGroupSearcher.class);
 	protected XmlUserArchive fieldXmlUserArchive;
+	protected CacheManager fieldCacheManager;
 	
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
+
+
 	public XmlUserArchive getXmlUserArchive() {
 		if (fieldXmlUserArchive == null) {
 			fieldXmlUserArchive = (XmlUserArchive) getModuleManager().getBean(
@@ -86,12 +98,20 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 
 	public Group getGroup(String inGroupId)
 	{
-		Group group = (Group)searchById(inGroupId);
-		if (group == null)
+		Group group = (Group)getCacheManager().get("groupSearcher", inGroupId);
+		if( group == null)
 		{
-			log.error("Index is out of date, group " + inGroupId
-					+ " has since been deleted");
-		} 
+			group = (Group)searchById(inGroupId);
+			if (group == null)
+			{
+				log.error("Index is out of date, group " + inGroupId
+						+ " has since been deleted");
+			}
+			else
+			{
+				getCacheManager().put("groupSearcher", inGroupId, group);
+			}
+		}	
 		return group;
 	}
 

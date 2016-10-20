@@ -37,7 +37,6 @@
 		<property name="catalogId"><value>system</value></property>
 		<property name="authenticator"><ref bean="authenticator"/></property>
 		<property name="webEventHandler"><ref bean="userEventHandler"/></property>
-		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 	</bean>
 	
 	<bean id="xmlUserArchive" class="org.openedit.users.filesystem.XmlUserArchive" scope="prototype">

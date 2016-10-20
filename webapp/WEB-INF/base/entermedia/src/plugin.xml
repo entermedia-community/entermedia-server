@@ -1513,6 +1513,7 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 		
 	</bean>
 
