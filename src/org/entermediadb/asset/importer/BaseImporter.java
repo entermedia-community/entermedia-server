@@ -260,7 +260,7 @@ public class BaseImporter extends EnterMediaObject
 			//String header = inHeaders[i];
 			String id = PathUtilities.extractId(header, true);
 			PropertyDetail detail = details.getDetail(id);
-			if (detail == null && !id.contains("."))
+			if (detail == null && !header.contains("."))
 			{
 				detail = new PropertyDetail();
 				detail.setId(id);
