@@ -68,6 +68,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 					String userid = (String) iterator.next();
 					
 					User data = (User)createNewData(); 
+					data.setId(userid);
 					data = getXmlUserArchive().loadUser(data, getGroupSearcher());
 					if( data != null)
 					{
@@ -101,11 +102,6 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	public User getUser(String inAccount)
 	{
 		User user = (User)searchById(inAccount);
-		if( user != null && user.getPassword() == null) //Old Elastic did not save passwords
-		{
-			user = getXmlUserArchive().loadUser(user,getGroupSearcher());
-			
-		}
 		return user;
 	}
 
@@ -198,14 +194,23 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		{
 			return null;
 		}
-		if (inHit instanceof User)
+		User user = null;
+		if ( inHit instanceof User)
 		{
-			return inHit;
+			user = (User)inHit;
 		}
 		else
 		{
-			return (Data) searchById(inHit.getId());
+			user = (User)createNewData();
+			user.setProperties(inHit.getProperties());
+			user.setId(inHit.getId());
+			if( user.getPassword() == null)
+			{
+				//Old indexes did not contain the password
+				user = getXmlUserArchive().loadUser(user, getGroupSearcher());
+			}
 		}
+		return user;
 	}
 
 	@Override

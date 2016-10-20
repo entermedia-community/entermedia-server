@@ -1874,6 +1874,20 @@ public class BaseElasticSearcher extends BaseSearcher
 						if (value instanceof Collection)
 						{
 							values = (Collection) value;
+							Collection ids = new ArrayList(values.size());
+							for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
+							{
+								Object object = (Object) iterator2.next();
+								if( object instanceof Data)
+								{
+									ids.add(((Data)object).getId());
+								}
+								else
+								{
+									ids.add(String.valueOf(object));
+								}
+							}
+							values = ids;
 						}
 						else if (value != null)
 						{
@@ -2185,7 +2199,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		if (inField.equals("id") || inField.equals("_id"))
 		{
-			if (getPropertyDetails().getDetail("_parent") == null) //? what is this for?
+			if (getPropertyDetails().getDetail("_parent") == null) //? what is this for? routing?
 			{
 				GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
 				if (response.isExists())
@@ -2216,7 +2230,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						data.setProperty(".version", String.valueOf(response.getVersion()));
 					}
-					return data;
+					return loadData(data);
 				}
 				return null;
 			}

@@ -71,6 +71,7 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 				{
 					String id = (String) iterator.next();
 					Group group = (Group)createNewData(); 
+					group.setId(id);
 					group = getXmlUserArchive().loadGroup(group);
 					if( group != null)
 					{
