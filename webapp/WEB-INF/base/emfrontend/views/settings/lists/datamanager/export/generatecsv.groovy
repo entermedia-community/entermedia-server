@@ -1,9 +1,8 @@
+import org.entermediadb.asset.util.CSVWriter
 import org.openedit.Data
 import org.openedit.data.*
-import org.entermediadb.asset.util.CSVWriter
-import org.openedit.util.DateStorageUtil
-
 import org.openedit.hittracker.HitTracker
+import org.openedit.util.DateStorageUtil
 	
 
 HitTracker hits = (HitTracker) context.getPageValue("hits");
@@ -17,27 +16,39 @@ searchtype = context.findValue("searchtype");
 catalogid = context.findValue("catalogid");
 searcher = searcherManager.getSearcher(catalogid, searchtype);
 boolean friendly = Boolean.parseBoolean(context.getRequestParameter("friendly"));
- details = searcher.getDetailsForView("csvexport", context.getUser());
-if(details == null){
-	details = searcher.getPropertyDetails().findStoredProperties();
-}
 
+
+PropertyDetails	details = searcher.getPropertyDetails();
+
+int count = 0;
 Writer output = context.getPageStreamer().getOutput().getWriter();
-
+HitTracker languages = searcherManager.getList(catalogid, "locale");
+int langcount = details.getMultilanguageFieldCount();
+langcount = langcount * (languages.size() );
 //StringWriter output  = new StringWriter();
 //CSVWriter writer  = new CSVWriter(output,CSVWriter.DEFAULT_SEPARATOR, CSVWriter.NO_QUOTE_CHARACTER);
 CSVWriter writer  = new CSVWriter(output);
-int count = 0;
-headers = new String[details.size()];
+
+headers = new String[details.size() + langcount];
 for (Iterator iterator = details.iterator(); iterator.hasNext();)
 {
 	PropertyDetail detail = (PropertyDetail) iterator.next();
 	if(friendly){
 	headers[count] = detail.getText();
 	} else{
-	headers[count] = detail.getId();
+	if(detail.isMultiLanguage()){
+						languages.each{
+							String id = it.id ;
+							headers[count] = detail.getId() + "." + id;
+							count ++;
+						}
+					}
+					else{
+						headers[count] = detail.getId();
+						count++;
+					}
 	}		
-	count++;
+	
 }
 
 int rowcount = 0;
@@ -51,7 +62,7 @@ writer.writeNext(headers);
 		try
 		{
 				hit =  iterator.next();
-				nextrow = new String[details.size()];//make an extra spot for c
+				nextrow = new String[details.size() + langcount];//make an extra spot for c
 				int fieldcount = 0;
 				for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
 				{
@@ -77,9 +88,34 @@ writer.writeNext(headers);
 						value = searcherManager.getValue(detail.getListCatalogId(), render, hit.getProperties());
 					}
 					
-					nextrow[fieldcount] = value;
+					
+					if(detail.isMultiLanguage()){
+						languages.each
+						{
+							String id = it.id ;
+							Object vals = hit.getValue(detail.getId())
+
+							if(vals != null && vals instanceof Map){
+								nextrow[fieldcount] = vals.getText(id);
+							} else{
+								nextrow[fieldcount] = vals;
+							}
+
+							fieldcount ++;
+						}
+					} else{
+
+						 value = hit.get(detail.getId());
+						nextrow[fieldcount] = value;
+						fieldcount++;
+					}
+
+					
+					
+					
+					
+
 				
-					fieldcount++;
 				}	
 				writer.writeNext(nextrow);
 		}
