@@ -364,12 +364,12 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 
 	public void setKeywords(Collection<String> inKeywords)
 	{
-		setValues("keywords", inKeywords);
+		setValue("keywords", inKeywords);
 	}
 
 	public void clearKeywords()
 	{
-		setValues("keywords", new ArrayList());
+		setValue("keywords", new ArrayList());
 	}
 
 	public void incrementProperty(String property, int delta) throws Exception
@@ -682,7 +682,8 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 			if (inValue != null)
 			{
 				//This is annoying. We will need to fix categories when we save this asset
-				getCategories().clear();
+				Collection cats = getCategories();
+				cats.clear();
 				Collection catids = null;
 				if (inValue instanceof Collection)
 				{
@@ -701,9 +702,10 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 					Category cat = getMediaArchive().getCategory(id);
 					if (cat != null)
 					{
-						addCategory(cat);
+						cats.add(cat);
 					}
 				}
+				inValue = cats;
 			}
 		}
 		else if (inValue instanceof Map)
@@ -713,10 +715,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 			{
 				inValue = new LanguageMap((Map) inValue);
 			}
-
-		} else{
-			super.setValue(inKey, inValue);
-		}
+		} 
+		
+		super.setValue(inKey, inValue);
 	}
 
 	@Override
