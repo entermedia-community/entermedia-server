@@ -1,3 +1,23 @@
-<div id="asset-editor-container">
-	$pages.include("$apphome/components/categorize/index.html")
+<div id="asset-editor-container" style="padding:20px;">
+
+<div class="info" style="background:#eee; padding:20px;">
+<form name="catsave" method="post" action="$home$apphome/views/modules/asset/editor/categorize/save.html">
+
+<input name="id" value="$asset.id" type="hidden" />
+<input name="assetid" value="$asset.id" type="hidden" />
+<input name="save" value="true" type="hidden" />
+<input name="field" value="category" type="hidden" />
+
+		$context.putPageValue("searcher", $mediaarchive.getAssetSearcher())   
+		$context.putPageValue("data", $asset)
+		$context.putPageValue("val", $asset.get("category-exact"))
+		$context.putPageValue("detail", $mediaarchive.getAssetSearcher().getDetail("category-exact"))
+		$pages.include("$apphome/components/xml/types/category.html", $context)
+
+<br>
+<input type="submit" value="Save" />
+
+##category.values
+</form>
+</div>
 </div>

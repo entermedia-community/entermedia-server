@@ -155,8 +155,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 				getMap().put("category-exact", categorylist);
 				return categorylist;
 			} 
-			
-			
 		}
 
 		return super.getValue(inAttribute);
@@ -687,20 +685,26 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 				}
 				else
 				{
-					String ids = (String) inValue;
+					
+					String ids = ((String) inValue).replaceAll(" " , "|");
 					String[] vals = VALUEDELMITER.split(ids);
 					catids = Arrays.asList(vals);
 				}
 
 				for (Iterator iterator = catids.iterator(); iterator.hasNext();)
 				{
-					String id = (String) iterator.next();
-					Category cat = getMediaArchive().getCategory(id);
-					if (cat != null)
+					String row = (String) iterator.next();
+					String[] ids = VALUEDELMITER.split(row.replaceAll(" " , "|"));
+					for (int i = 0; i < ids.length; i++)
 					{
-						cats.add(cat);
+						Category cat = getMediaArchive().getCategory(ids[i]);
+						if (cat != null)
+						{
+							cats.add(cat);
+						}						
 					}
 				}
+				inKey = "category-exact";
 				inValue = cats;
 			}
 		}
