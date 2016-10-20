@@ -129,9 +129,10 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		{
 			throw new OpenEditException("No group found");
 		}
-		query.addMatches("group",inGroup.getId());
+		query.addExact("groups",inGroup.getId());
 		//query.setSortBy("idsorted");
 		HitTracker tracker = search(query);
+		log.info(tracker.size());
 		return tracker;
 	}
 

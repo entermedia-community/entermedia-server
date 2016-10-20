@@ -675,7 +675,7 @@ uiload = function() {
 		{
 			defaulttext = "Search";
 		}
-		var url = apphome + "/components/xml/types/autocomplete/tagsearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=contains&searchtype=" + searchtype;
+		var url = apphome + "/components/xml/types/autocomplete/tagsearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=startswith&searchtype=" + searchtype;
 	
 		theinput.select2({
 		  	tags: true,
@@ -693,7 +693,7 @@ uiload = function() {
 						page_limit : 15,
 						page: params.page
 					};
-					search[searchfield+ ".value"] = params.term.toLowerCase(); //search term
+					search[searchfield+ ".value"] = params.term; //search term
 					search["sortby"] = sortby; //search term
 					return search;
 				},
