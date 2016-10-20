@@ -3,6 +3,5 @@
 	<property name="assettab">viewmediaviewer</property>
 	<property name="showpreviewpage">true</property>
 	<path-action name="AttachmentModule.countAttachments" />
-		<script external="true" id="addthis" src="https://s7.addthis.com/js/300/addthis_widget.js#async=1" />
 	
 </page>

@@ -50,12 +50,21 @@
     };
 </script>
 
+
 <script type="text/javascript">
     // Call this function once the rest of the document is loaded
-    function loadAddThis() {
-    	addthis.toolbox('.addthis_toolbox');
-    }
-   loadAddThis();
+    jQuery(document).ready(function() 
+	{ 
+		var script = document.createElement('script');
+		script.src = "https://s7.addthis.com/js/300/addthis_widget.js#async=1";
+		script.onload = function () {
+		    //do stuff with the script
+			addthis.toolbox('.addthis_toolbox');    
+		};
+		
+		document.head.appendChild(script); 
+    	
+    });
 </script>			<!-- AddThis Button END -->
 		</div>
 #end
