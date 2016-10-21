@@ -1,7 +1,7 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 #set( $categories = $context.getRequestParameter("category.values") )
-
+#set ($longform = $context.getRequestParameter("longform") )
 <div id="search-catgories" >
 	<div id="searcharea" >
 		#set( $searcher = $mediaarchive.getSearcher("category") )
@@ -12,7 +12,7 @@
 			<input type="hidden" name="searchtype" value="category" />
 			<input type="hidden" name="targetdiv" value="$!targetdiv" />
 			<input type="hidden" name="action" value="$!action" />
-			
+			<input type="hidden" name="longform" value="$!longform" />
 			<input type="hidden" name="sortby" value="categorypathUp" />
 
 		$context.putPageValue("autocomplete","off")
@@ -35,11 +35,12 @@
 				$pages.include("$home$apphome/components/categories/searchcategoryresults.html",$context)
 		</div>
 			<input name="oemaxlevel" value="1"  type="hidden" />
+			<input type="hidden" name="longform" value="$!longform" />
 			<input name="category.values" type="hidden"  class="emselectedrow" value="$!categories" />
 		</form>
 		
 		<script>
-			#foreach($categoryid in $categories.split(" +"))
+			#foreach($categoryid in $categories.split("\s*\|\s*"))
 				$('[data-id="${categoryid}"]').addClass("emrowselected");
 			#end
 		</script>	

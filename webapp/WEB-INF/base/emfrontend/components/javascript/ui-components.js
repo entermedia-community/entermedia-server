@@ -410,11 +410,11 @@ uiload = function() {
 					if( existing )  //removing the value
 					{
 						old = old.replace(id, "");
-						old = old.replace("  ", " ");
+						old = old.replace("||", "|");
 					}
 					else
 					{
-						old = old +" "+id;
+						old = old +"|"+id;
 					}		
 				}
 				else

@@ -2079,7 +2079,11 @@ Change Collections to be normal categories path s and make createTree look at th
 		}
 		mediaArchive.fireSharedMediaEvent("conversions/runconversions");
 	}
-	
+	/**
+	 * Grab first asset that was selected 
+	 * @param inReq
+	 * @return
+	 */
 	public Asset loadAssetFromSelection(WebPageRequest inReq)
 	{
 		Object found = inReq.getPageValue("asset");
@@ -2110,10 +2114,10 @@ Change Collections to be normal categories path s and make createTree look at th
 				}
 			}
 		}
-		if( asset == null )
-		{
-			return getAsset(inReq);
-		}
+//		if( asset == null )
+//		{
+//			return getAsset(inReq);
+//		}
 		return asset;
 		
 	}

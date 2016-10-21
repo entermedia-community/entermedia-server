@@ -2,4 +2,6 @@
 	<path-action name="DataEditModule.saveData">
 		<searchtype>${module}</searchtype>
 	</path-action>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	
 </page>

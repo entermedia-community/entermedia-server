@@ -2,6 +2,7 @@
 
 <page>
 	<path-action name="AssetEditModule.loadAssetFromSelection"/>
+	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
 	<path-action name="CommentModule.loadComments" />

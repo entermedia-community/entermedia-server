@@ -1,17 +1,28 @@
 #set( $rootpath = "${apphome}/components/categorize")
-<div id="addcategory">
+<div id="addcategory" >
 	#set ($existing = $context.getRequestParameter("category.values") )
+	#set ($longform = $context.getRequestParameter("longform") )
 	#if( $existing && !$existing.trim().isEmpty() )
-	    <ul id="cat-list">
-		#foreach($categoryid in $existing.replace("  ","").trim().split(" +"))
+	 	#set ($existing = $existing.replace("||","|"))
+	    <ul id="cat-list" >
+		#foreach($categoryid in $existing.split("\s*\|\s*"))
 			#set($category  = $mediaarchive.getCategory($categoryid))
-			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
-				<a class="category ajax" title="$category.getCategoryPath()" targetdivinner="view-picker-content" href="$home$apphome/views/categories/${category.id}.html?oemaxlevel=2" >$category.getName()</a>
+			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()" style="padding:4px;background-color: #FFF">
+					<div class="category "  style="padding-left:20px;">					
+			#if( $longform)
+#foreach( $parent in $category.getParentCategoriesFrom(1))
+#if( $velocityCount > 1) \ #end
+<a  href="$home$apphome/views/search/category.html?categoryid=${category.id}">$parent</a>
+#end
+			#else
+				<a class="ajax" title="$category.getCategoryPath()" targetdivinner="view-picker-content" href="$home$apphome/views/categories/${category.id}.html?oemaxlevel=2" >$category.getName()</a>
+			#end	
 				<div class="collectionIcons">
 						<a href="#" title="[[Remove]]">
-							<span class="closecollection ui-icon ui-icon-closethick " data-categoryid="$categoryid"></span>
+							<span class="closecategory ui-icon ui-icon-closethick " data-categoryid="$categoryid"></span>
 						</a>
 				</div>
+			</div>
 			</li>
 		#end
 		</ul>
@@ -19,11 +30,11 @@
    <input type="hidden" name="operation" value="orsgroup" />
    	<input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
    
-   <a class="emdialog btn small" href="$home$apphome/components/categories/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path" data-hidefooter="true" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
+   <a class="emdialog btn small" href="$home$apphome/components/categories/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&longform=$!longform" data-hidefooter="true" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
 
 <script>
 
-	$("#cat-list .closecollection").on("click",function() 
+	$("#cat-list .closecategory").on("click",function() 
 			{
 				var link = $(this);
 				link.closest("li").hide();
@@ -31,7 +42,7 @@
 				var id = link.data("categoryid");
 				var existing = $("#categoryvalues").val();
 				existing = existing.replace(id,"");
-				existing = existing.replace("  "," ");
+				existing = existing.replace("||","|");
 				$("#categoryvalues").val(existing);
 				
 				

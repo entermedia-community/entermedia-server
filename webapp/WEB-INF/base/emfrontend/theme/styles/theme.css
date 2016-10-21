@@ -1337,7 +1337,7 @@ small {
     border-bottom: 1px solid #eee;
     list-style: none;
 }
-#cat-list .row a.category {
+#cat-list .row .category {
     padding-left: 18px;
     background: url('../images/folder-closed.gif') left -1px no-repeat;
     margin: 0 3px;
