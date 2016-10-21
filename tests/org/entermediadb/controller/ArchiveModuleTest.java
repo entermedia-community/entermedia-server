@@ -3,8 +3,8 @@ package org.entermediadb.controller;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.users.BaseUser;
 import org.openedit.users.User;
-import org.openedit.users.filesystem.FileSystemUser;
 
 public class ArchiveModuleTest extends BaseEnterMediaTest
 {
@@ -21,9 +21,9 @@ public class ArchiveModuleTest extends BaseEnterMediaTest
 		WebPageRequest req = getFixture().createPageRequest("/entermedia/catalogs/testcatalog/categories/index.html");
 		//User user = getFixture().getUserManager().getUser("guest");
 		//user.clearGroups();
-		User user = new FileSystemUser();
-		user.put("datalevel","guest");
-		user.put("viewarchive","true");
+		User user = new BaseUser();
+		user.setValue("datalevel","guest");
+		user.setValue("viewarchive","true");
 		user.setUserName("admin");
 		req.setUser(user);
 
