@@ -390,19 +390,17 @@ public class ProjectManager implements CatalogEnabled
 
 	public void removeAssetFromCollection(MediaArchive inArchive, String inCollectionid, HitTracker inAssets)
 	{
-		Searcher librarycollectionassetSearcher = inArchive.getSearcher("librarycollectionasset");
-
-		List tosave = new ArrayList();
-		for (Object hit : inAssets)
+		LibraryCollection col = getLibraryCollection(inArchive, inCollectionid);
+		Category cat = getRootCategory(inArchive, col);
+		Collection tosave = new ArrayList();
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
 		{
-			Data asset = (Data) hit;
-			Data found = librarycollectionassetSearcher.query().match("librarycollection", inCollectionid).match("_parent", asset.getId()).searchOne();
-
-			if (found != null)
-			{
-				librarycollectionassetSearcher.delete(found, null);
-			}
+			Data data = (Data) iterator.next();
+			Asset asset = (Asset)inArchive.getAssetSearcher().loadData(data);
+			asset.removeChildCategory(cat); //
+			tosave.add(asset);
 		}
+		inArchive.getAssetSearcher().saveAllData(tosave, null);
 	}
 	/*
 	 * public Collection<LibraryCollection> loadRecentCollections(WebPageRequest

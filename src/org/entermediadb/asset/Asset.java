@@ -737,4 +737,18 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		return get("archivesourcepath") == null ? getSourcePath() : get("archivesourcepath");
 	}
 
+	public void removeChildCategory(Category inCatParent)
+	{
+		removeCategory(inCatParent);
+		Collection children = new ArrayList(getCategories());
+		for (Iterator iterator = children.iterator(); iterator.hasNext();)
+		{
+			Category cat = (Category) iterator.next();
+			if( cat.hasParent(inCatParent.getId()) )
+			{
+				removeCategory(cat);
+			}
+		}
+	}
+
 }
