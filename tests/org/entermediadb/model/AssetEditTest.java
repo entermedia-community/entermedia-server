@@ -237,7 +237,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 		{
 			product = getMediaArchive().createAsset("1","multitest/1");
 		}
-		product.setProperty("libraries", "1");
+		product.setProperty("keywords", "1");
 		product.setProperty("categories", "index");
 		User user = getFixture().createPageRequest().getUser();
 		getMediaArchive().saveAsset(product, user);
@@ -247,8 +247,10 @@ public class AssetEditTest extends BaseEnterMediaTest
 		{
 			product2 = getMediaArchive().createAsset("2","multitest/2");
 		}
-		
-		product2.setProperty("libraries", "1 | 2");
+		ArrayList libs = new ArrayList();
+		libs.add("1");
+		libs.add("2");
+		product2.setValue("keywords", libs);
 		product2.setProperty("category", "index");
 		getMediaArchive().saveAsset(product2, user);
 
@@ -265,40 +267,40 @@ public class AssetEditTest extends BaseEnterMediaTest
 		hits.toggleSelected("2");
 		assertEquals( 2, hits.getSelections().size() );
 		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
-		Collection existing = composite.getValues("libraries");
+		Collection existing = composite.getValues("keywords");
 		assertEquals(existing.size() , 1);
 		assertTrue(existing.contains("1"));
 		existing.add("3");
-		composite.setValue("libraries",existing); //We removed 1 (common) and added 3
+		composite.setValue("keywords",existing); //We removed 1 (common) and added 3
 		composite.saveChanges();
-		Collection values = composite.getValues("libraries");
+		Collection values = composite.getValues("keywords");
 		assertEquals( 2 , values.size());
 		assertTrue(values.contains("1"));
 		assertTrue(values.contains("3"));
 
 
 		product = getMediaArchive().getAsset("1");
-		values = product.getValues("libraries");
+		values = product.getValues("keywords");
 		assertEquals( 2 , values.size());
 		assertTrue(values.contains("1"));
 		assertTrue(values.contains("3"));
 
 		product = getMediaArchive().getAsset("2");
-		values = product.getValues("libraries");
+		values = product.getValues("keywords");
 		assertEquals( 3 , values.size());
 		assertTrue(values.contains("1"));
 		assertTrue(values.contains("2"));
 		assertTrue(values.contains("3"));
 
 		//Now set it again and it will fail since results are not updated
-		composite.setValue("libraries" , new ArrayList() );
+		composite.setValue("keywords" , new ArrayList() );
 		composite.saveChanges(); //removed 3
-		values = composite.getValues("libraries");
+		values = composite.getValues("keywords");
 		assertEquals( 0 , values.size());
 
 		//We remved all the common ones 1 and 3
 		product = getMediaArchive().getAsset("2");
-		values = product.getValues("libraries");
+		values = product.getValues("keywords");
 		assertEquals( 1 , values.size());
 		assertTrue(values.contains("2"));
 		
@@ -310,7 +312,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 	{
 		Asset asset = getMediaArchive().createAsset("666","multitest/666");
 		
-		asset.setProperty("libraries", "1");
+		asset.setProperty("keywords", "1");
 		asset.setProperty("category", "index");
 		getMediaArchive().saveAsset(asset, null);
 
