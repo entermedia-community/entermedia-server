@@ -6,7 +6,7 @@
   <property id="assetid" editable="true" type="list" index="true" stored="true">Asset ID</property>
  	<property id="fulltext" keyword="true" index="true">Full Text</property> 	<!-- This is for PDFs -->
  	<property id="sourcepath" index="true" stored="true">Asset Source Path</property>
- 	<property id="parentsourcepath" index="true" stored="true">Parent Source Path</property>
+ 	<property id="parentsourcepath" index="true" stored="true" indextype="not_analyzed">Parent Source Path</property>
  	<property id="isfolder" index="true" type="boolean" stored="true" legacy="folder">Is Folder</property>
  
 	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>
