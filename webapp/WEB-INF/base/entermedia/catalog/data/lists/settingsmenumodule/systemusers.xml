@@ -2,7 +2,7 @@
 
 <properties>
   <property id="users" menulevel="toplevel" parentid="users" moduleid="system" path="/views/settings/users/usermanager/users/index.html" ordering="010">Users</property>
-  <property id="admin" parentid="users" moduleid="system" path="/views/settings/lists/datamanager/list/index.html?searchtype=user" ordering="110">Import / Export</property>
+  <property id="adminusers" parentid="users" moduleid="system" path="/views/settings/lists/datamanager/list/index.html?searchtype=user" ordering="110">Import / Export</property>
 
 </properties>
 
