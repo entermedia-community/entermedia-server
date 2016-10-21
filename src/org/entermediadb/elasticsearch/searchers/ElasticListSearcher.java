@@ -81,6 +81,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	@Override
 	public void reindexInternal() throws OpenEditException
 	{
+		getXmlSearcher().clearIndex();
 		HitTracker allhits = getXmlSearcher().getAllHits();
 		allhits.enableBulkOperations();
 		ArrayList tosave = new ArrayList();
