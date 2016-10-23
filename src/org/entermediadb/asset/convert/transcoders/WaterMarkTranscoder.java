@@ -93,7 +93,7 @@ public class WaterMarkTranscoder extends BaseTranscoder
 		
 		if( watermarkfile == null)
 		{
-			watermarkfile = inStructions.getMediaArchive().getThemePrefix() + "/images/watermark.png";
+			watermarkfile =  inStructions.getMediaArchive().getCatalogHome() + "/images/watermark.png";
 		}		
 		String abs = getWaterMarkPath(watermarkfile);
 		com.add(abs);

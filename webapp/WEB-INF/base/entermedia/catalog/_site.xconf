@@ -8,12 +8,6 @@
   <property name="profilemanagerid">${catalogid}</property>
   <path-action name="ProfileModule.loadUserProfile" />	 
 
-  <path-action name="LinkTree.setSelectedLinkByUrl">
-    <linktreename>archivemenu</linktreename>
-    <linkpath>/${catalogid}/links.xml</linkpath>
-  </path-action>
-  <property name="linktreename">archivemenu</property> <!-- Used for crumbs -->
-
 <!--END OF PAGE ACTIONS-->
 
 <!--PROPERTIES-->
