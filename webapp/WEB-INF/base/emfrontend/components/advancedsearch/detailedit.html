@@ -2,7 +2,7 @@
 	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
 		<div class="emsearchfield"> 
 	#if ($edit == "true")
-		<a href="#" onclick="javascript:deleteField('$detail.id'); return false;">
+		<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
 		<img src="$home$apphome/theme/images/navigation/deletesm.png"/>
 		</a>
 	#end
@@ -57,6 +57,7 @@
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
 		#end	
+		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden">
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
 	</td>
 </tr>

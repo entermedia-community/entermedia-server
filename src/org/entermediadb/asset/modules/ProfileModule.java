@@ -203,13 +203,19 @@ public class ProfileModule extends MediaArchiveModule
 
 		userProfile.save(inReq.getUser());
 	}
-
+	/**
+	 * This is only called once 
+	 * @param inReq
+	 * @param view
+	 * @param userProfile
+	 * @param viewkey
+	 */
 	protected void initList(WebPageRequest inReq, String view, UserProfile userProfile, String viewkey)
 	{
 		String value = userProfile.get(viewkey);
 		if (value == null)
 		{
-			String type = inReq.findValue("searchtype");
+			String type = inReq.findValue("searchtype"); 
 			if (type == null)
 			{
 				type = "asset";
@@ -229,11 +235,18 @@ public class ProfileModule extends MediaArchiveModule
 
 		String viewkey = "view_" + view.replace('/', '_');
 
+		//Check for null starting condition
 		initList(inReq, view, userProfile, viewkey);
 
+		String searchtype = inReq.getRequestParameter("searchtype");
+		
 		for (int i = 0; i < fields.length; i++)
 		{
 			userProfile.removeValue(viewkey, fields[i]);
+			if( searchtype != null)
+			{
+				userProfile.removeValue(viewkey, searchtype +"." + fields[i]);
+			}
 		}
 		String values = userProfile.get(viewkey);
 		if(values == null || values.trim().length() == 0)

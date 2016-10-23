@@ -64,48 +64,50 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 			SearchQuery filterchild = null;
 			for(Term term : inQuery.getTerms() )
 			{
-				String id = term.getId();
-				if( id.contains("."))
+				String type = term.getDetail().getSearchType();
+				if( "asset".equals(type))
 				{
-					if( filterchild == null)
-					{
-						filterchild = inSearcher.createSearchQuery();
-					}
-					String[] typefield = id.split("\\.");
-					String type = typefield[0];
-					Searcher othersearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(), type);
-					
-					SearchQuery othersearch = othersearcher.createSearchQuery();
-					//fix the detail id?
-					othersearch.addTerm(term);
-					
-					Collection<Data> parenthits = othersearcher.search(othersearch);
-					Collection<Data> libraryhits = null;
-					
-					if( type.equals("library"))
-					{
-						libraryhits = parenthits;
-					}
-					else if( type.equals("librarycollection") )
-					{
-						Collection<String> libraryids  = new ArrayList();
-						for(Data data : parenthits)
-						{
-							libraryids.add(data.get("library"));
-						}	
-						libraryhits = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(), "library").query().orgroup("id", libraryids).search();
-					}
-					else
-					{
-						throw new OpenEditException("Asset searches only support Library and Collection joins not: " + type);
-					}
-					Collection<String> categoryids = new ArrayList();
-					for(Data data : libraryhits)
+					continue;
+				}
+				if( filterchild == null)
+				{
+					filterchild = inSearcher.createSearchQuery();
+				}
+				Searcher othersearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(), type);
+				
+				SearchQuery othersearch = othersearcher.createSearchQuery();
+				//fix the detail id?
+				othersearch.addTerm(term);
+
+				//First find any matching libraries or collections
+				Collection<Data> parenthits = othersearcher.search(othersearch);
+				Collection<Data> libraryhits = null;
+				Collection<String> categoryids = new ArrayList();
+				
+				if( type.equals("library"))
+				{
+					for(Data data : parenthits)
 					{
 						categoryids.add(data.get("categoryid"));
 					}	
-					filterchild.addOrsGroup(inSearcher.getDetail("category"), categoryids);
 				}
+				else if( type.equals("librarycollection") )
+				{
+					//Since we found collections, find the correct 
+					for(Data data : parenthits)
+					{
+						categoryids.add(data.get("rootcategory"));
+					}	
+				}
+				else
+				{
+					throw new OpenEditException("Asset searches only support Library and Collection joins not: " + type);
+				}
+				if( categoryids.isEmpty())
+				{
+					categoryids.add("nocategoryhits");
+				}
+				filterchild.addOrsGroup(inSearcher.getDetail("category"), categoryids);  //This will filter in specific assets
 			}
 			if( filterchild != null )
 			{

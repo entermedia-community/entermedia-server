@@ -103,9 +103,9 @@ $context.putPageValue("idprefix","search")
 #end
 
 <script type="text/javascript">
-	deleteField = function(inFieldId)
+	deleteField = function(inType,inFieldId)
 	{
-		var params = "oemaxlevel=1&editadvsearch=true&view=$view&catalogid=$searcher.getCatalogId()&searchtype=$searcher.getSearchType()&field=" + inFieldId;
+		var params = 'oemaxlevel=1&editadvsearch=true&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
 		jQuery('#advsearchpanel').load("$home$apphome/components/advancedsearch/deletefield.html?" + params)
 	}
 </script>

@@ -548,7 +548,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					// jsonproperties = jsonproperties.endObject();
 					continue;
 				}
-				if ("_parent".equals(detail.getId()) || detail.getId().contains("."))
+				if ("_parent".equals(detail.getId()) || detail.getId().contains("."))  //TODO: Check search type instead?
 				{
 					continue;
 				}
@@ -785,17 +785,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			Term term = (Term) iterator.next();
 			PropertyDetail detail = term.getDetail();
 			//We handle joins with SearchQueryFilter.java
-			if( detail.getId().contains("."))
+			if( !getSearchType().equals( detail.getSearchType()))
 			{
-				String[] type = detail.getId().split("\\.");
-				if( type[0].equals(getSearchType()))  //this happens when using assetSearchQueryFilter
-				{
-					detail = getDetail(type[1]);
-				}
-				else
-				{
-					continue;
-				}	
+				continue;
 			}
 			
 			String value = term.getValue();
