@@ -12,7 +12,7 @@ public void createTasksForUpload() throws Exception
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 	Searcher assetsearcher = mediaarchive.getAssetSearcher();
 
-	HitTracker hits = context.getPageValue("hits");
+	Collection hits = context.getPageValue("hits");
 	if( hits == null)
 	{
 		//There is a chance that the index is out of date.
@@ -33,8 +33,9 @@ public void createTasksForUpload() throws Exception
 			q.addOrsGroup( "id", assetids );
 		}
 	
-		hits = assetsearcher.search(q);
-		hits.enableBulkOperations();
+		HitTracker tracker = assetsearcher.search(q);
+		tracker.enableBulkOperations();
+		hits = tracker;
 	}
 	if( hits.size() == 0 )
 	{

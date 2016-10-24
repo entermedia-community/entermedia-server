@@ -11,6 +11,7 @@ public void init()
 	String assetids = context.getRequestParameter("assetids");
 	if( assetids == null)
 	{
+		log.info("No assetid found");
 		return;
 	}
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
