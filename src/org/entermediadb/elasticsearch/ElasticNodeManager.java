@@ -808,19 +808,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 		List withparents = archive.findChildTablesNames();
 
-		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
-		{
-			String searchtype = (String) iterator.next();
-
-			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-
-			searcher.setAlternativeIndex(tempindex);//Should				
-
-			searcher.putMappings();
-			searcher.setAlternativeIndex(null);
-
-		}
-
+		
 		List sorted = archive.listSearchTypes();
 		for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 		{
@@ -838,6 +826,22 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 			
 		}
+		
+		
+		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
+		{
+			String searchtype = (String) iterator.next();
+
+			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
+
+			searcher.setAlternativeIndex(tempindex);//Should				
+
+			searcher.putMappings();
+			searcher.setAlternativeIndex(null);
+
+		}
+
+	
 		if (!getMappingErrors().isEmpty())
 		{
 			DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(tempindex)).actionGet();
