@@ -43,7 +43,6 @@
 	
 	
 	jQuery("#search-categories").on("click", ".selectrowclick", function() {
-		alert("clicked");
 		var assetid = jQuery(this).data('assetid');
 		jQuery("#" + targetdiv).attr("value", assetid);
 		jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){

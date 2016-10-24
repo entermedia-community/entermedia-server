@@ -247,11 +247,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 //		}
 		SearchQuery query = createSearchQuery();
 		query.addMatches("id", "*");
-		if(inReq != null){
-			boolean  includefacets = Boolean.parseBoolean(inReq.findValue(getSearchType() + "includefacets"));
-			query.setIncludeFacets(includefacets);
-			
-		}
+	
 //		if (root != null)
 //		{
 //			query.addMatches("category", root.getId());

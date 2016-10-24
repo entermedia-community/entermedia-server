@@ -214,7 +214,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
-			if (inQuery.isIncludeFacets())
+			if (inQuery.isEndUserSearch())
 			{
 				addFacets(inQuery, search);
 			}
