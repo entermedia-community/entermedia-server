@@ -184,7 +184,11 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		
 		
 		metadata.put("date",date );
-		metadata.put("policy","oneweek" );
+		String retention = inAsset.get("vizoneretention");
+		if(retention == null){
+			retention = "oneweek";
+		}
+		metadata.put("policy",retention );
 		metadata.put("title",inAsset.getName() );
 
 		
