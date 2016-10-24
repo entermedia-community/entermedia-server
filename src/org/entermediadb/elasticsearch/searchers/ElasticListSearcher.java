@@ -194,7 +194,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			try
 			{
 				updateElasticIndex(details, data);
-			//	getXmlSearcher().saveAllData(inAll, inUser); //locks
+				getXmlSearcher().saveAllData(inAll, inUser);
 			}
 			catch(Throwable ex)
 			{
