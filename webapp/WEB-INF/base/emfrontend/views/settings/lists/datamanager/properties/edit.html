@@ -2,13 +2,16 @@
 <div class="tab-actions">
 	<strong>Editing $!property.name</strong>
 	<div style="float:right;">
+	#if($detail.isList() || $detail.isMultiValue())
+		<a class="btn" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">Edit Values</a>
+	#end
+[[Current Field]]:
 	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px; width: 80px;" >
 		<option value="" ></option>
 			#foreach( $detail in $searcher.getPropertyDetails())
 				<option value="$detail.id" #if($property.id == $detail.id)selected="selected"#end>$detail.text</option>
 			#end
 		</select>
-	
 	</div>
 </div>
 #set($viewid = $context.getRequestParameter("viewid"))
