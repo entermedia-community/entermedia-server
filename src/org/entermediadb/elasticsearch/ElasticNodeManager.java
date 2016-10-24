@@ -35,6 +35,8 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
@@ -47,6 +49,8 @@ import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
@@ -64,6 +68,8 @@ import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
+
+import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
 
 public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 {
@@ -717,20 +723,31 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		reindexing = true;
 		
+		
+		
 		String id = toId(inCatalogId);
+		List mappedtypes = getMappedTypes(id);
+
 		String newindex = null;
 		try
 		{
-			ArrayList toskip = new ArrayList();
-			//couple of special ones to skip.
-			toskip.add("lock");
-			newindex = prepareTemporaryIndex(inCatalogId);
+			
+			newindex = prepareTemporaryIndex(inCatalogId, mappedtypes);
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
 
 			List sorted = archive.listSearchTypes();
 
+			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
+			{
+				String type = (String) iterator.next();
+				if(!sorted.contains(type)){
+					sorted.add(type);
+				}
+				
+			}
+			sorted.remove("lock");
 			Searcher locksearcher = getSearcherManager().getSearcher(inCatalogId, "lock");
 			locksearcher.setAlternativeIndex(newindex);//Should				
 			locksearcher.putMappings();
@@ -739,20 +756,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
 			{
 				String searchtype = (String) iterator.next();
-				if (tableExists(id, searchtype))
-				{
-
+				
 					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-					if (!toskip.contains(searchtype))
-					{
+					
 						searcher.setAlternativeIndex(newindex);//Should		
 						long start = System.currentTimeMillis();
 						searcher.reindexInternal();
 						long end = System.currentTimeMillis();
 						log.info("Reindex of " + searchtype + " took " + (end - start) / 1000L);
 						searcher.setAlternativeIndex(null);
-					}
-				}
+					
+				
 			}
 
 			loadIndex(id, newindex, true);
@@ -778,11 +792,15 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	}
 
-	public String prepareTemporaryIndex(String inCatalogId)
+	public String prepareTemporaryIndex(String inCatalogId, List mappedtypes)
 	{
 		Date date = new Date();
 		String id = toId(inCatalogId);
 
+		
+		
+		
+		
 		String tempindex = id + date.getTime();
 		prepareIndex(tempindex);
 		//need to reset/creat the mappings here!
@@ -804,12 +822,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 
 		List sorted = archive.listSearchTypes();
-		for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+		for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 		{
 
 			String searchtype = (String) iterator.next();
-			if (tableExists(id, searchtype))
-			{
+		
 				if (!withparents.contains(searchtype))
 				{
 
@@ -819,7 +836,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					searcher.putMappings();
 					searcher.setAlternativeIndex(null);
 				}
-			}
+			
 		}
 		if (!getMappingErrors().isEmpty())
 		{
@@ -832,6 +849,22 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		return tempindex;
 
+	}
+
+	public List getMappedTypes(String inCatalogId)
+	{
+		GetMappingsRequest req = new GetMappingsRequest().indices(inCatalogId);
+		GetMappingsResponse resp = getClient().admin().indices().getMappings(req).actionGet();
+		String oldindex = getIndexNameFromAliasName(inCatalogId);
+
+		ArrayList types = new ArrayList();
+		  ImmutableOpenMap<String, MappingMetaData> mapping  = resp.mappings().get(oldindex);
+		   for (ObjectObjectCursor<String, MappingMetaData> c : mapping) {
+		       System.out.println(c.key+" = "+c.value.source());
+		       types.add(c.key);
+		   }
+		return types;
+		
 	}
 
 	public boolean checkAllMappings(String inCatalogId)
