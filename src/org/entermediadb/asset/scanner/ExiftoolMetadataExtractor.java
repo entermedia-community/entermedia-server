@@ -438,20 +438,28 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 	protected boolean isCMYKColorSpace(ContentItem inOriginal)
 	{
 		List<String> command = new ArrayList<String>();
-		command.add("-verbose");
+		//command.add("-verbose");
+		
+		 //identify -format '%[colorspace]'
+		command.add("-format");
+		command.add("'%[colorspace]'");
 		command.add(inOriginal.getAbsolutePath());
 		ExecResult result = getExec().runExec("identify",command, true);
 		String sout = result.getStandardOut();
-		String[] tokens = sout.split("\n");
-		if (tokens.length > 0){
-			for(String token:tokens)
-			{
-				if (token != null && token.trim().startsWith("Colorspace:")){//Colorspace: CMYK
-					boolean isCMYK = token.toLowerCase().contains("cmyk");
-					return isCMYK;
-				}
-			}
+//		String[] tokens = sout.split("\n");
+//		if (tokens.length > 0){
+//			for(String token:tokens)
+//			{
+//				if (token != null && token.trim().startsWith("Colorspace:")){//Colorspace: CMYK
+//					boolean isCMYK = token.toLowerCase().contains("cmyk");
+//					return isCMYK;
+//				}
+//			}
+//		}
+		if(sout.toLowerCase().contains("cmyk")){
+			return true;
 		}
+			
 		return false;
 	}
 	protected boolean isCMYKProfile(ContentItem inOriginal)
