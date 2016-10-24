@@ -115,6 +115,7 @@
 	<property id="duplicate" index="true"  editable="true" type="boolean" >Duplicate Asset</property>	
  	<property id="retentionpolicy"  datatype="list" listid="retentionrules" editable="true" index="true" stored="true" >Retention Policy</property>
  	<property id="archivesourcepath"  editable="true" index="true" stored="true" >Archive Source Path</property>
+ 	<property id="vizoneretention"  datatype="list" listid="retentionrules" editable="true" index="true" stored="true" >Vizone Retention Policy</property>
 
 
 </page>

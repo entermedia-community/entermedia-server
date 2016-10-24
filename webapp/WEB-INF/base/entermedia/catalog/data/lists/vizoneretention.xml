@@ -1,0 +1,9 @@
+<policies>
+
+<!-- http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/dictionary/~retentionpolicy -->
+  <property id="oneweek" default="true">Keep for One Week</property>
+  <property id="remove" default="true">Remove/Delete</property>
+  <property id="keep" default="true">Keep Permanently</property>
+  
+  
+</policies>
