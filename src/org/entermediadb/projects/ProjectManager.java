@@ -199,7 +199,7 @@ public class ProjectManager implements CatalogEnabled
 
 		//enable filters to show the asset count on each collection node
 		FilterNode collectionhits = null;
-		if (allcollections.size() > 0) //May not have any collections
+		if (hits != null && allcollections.size() > 0) //May not have any collections
 		{
 			FilterNode node = hits.findFilterNode("category");
 			if (node != null)
