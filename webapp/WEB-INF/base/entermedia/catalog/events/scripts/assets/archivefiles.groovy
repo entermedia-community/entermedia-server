@@ -1,15 +1,11 @@
 package assets
 
-import java.util.Map;
-
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.TimeParser
-import org.junit.Before;
 import org.openedit.Data
 import org.openedit.page.Page
 import org.openedit.page.manage.PageManager
-import org.openedit.users.User;
 
 
 MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
