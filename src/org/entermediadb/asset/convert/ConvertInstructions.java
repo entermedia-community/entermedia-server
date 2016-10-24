@@ -549,7 +549,7 @@ public class ConvertInstructions
 		if (presetdataid != null)
 		{
 			Searcher paramsearcher = getMediaArchive().getSearcherManager().getSearcher(getMediaArchive().getCatalogId(), "presetparameter");
-			Collection params = paramsearcher.fieldSearch("parameterdata", presetdataid, "id");
+			Collection params = paramsearcher.query().exact("parameterdata", presetdataid).sort("id").search();
 			if (params.size() > 0)
 			{
 				setPresetParameters(params);
