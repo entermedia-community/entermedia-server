@@ -304,6 +304,11 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		}
 		//TODO: Find right way to do this not matches
 		Data hit = (Data)query().startsWith("categorypath", inPath).sort("categorypathUp").searchOne();
+		if( hit == null)
+		{
+			String id = toId(inPath);
+			 hit = (Data)searchById(id);
+		}
 		Category found = (Category)loadData(hit);
 		if( found == null)
 		{
