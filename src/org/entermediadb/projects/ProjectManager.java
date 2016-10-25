@@ -184,7 +184,7 @@ public class ProjectManager implements CatalogEnabled
 			}
 			usercollections.add(uc);
 		}
-		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search(inReq);
+		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search();
 		int assetsize = 0;
 		if(hits != null){
 			 assetsize = hits.size();
