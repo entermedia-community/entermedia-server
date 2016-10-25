@@ -13,10 +13,8 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.EnterMediaObject;
 import org.openedit.Data;
-import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
-import org.openedit.util.PathUtilities;
 
 /**
  * This class is not needed anymore
@@ -47,47 +45,37 @@ public class LibraryManager extends EnterMediaObject
 		
 		for (Iterator iterator = assets.iterator(); iterator.hasNext();) 
 		{
-			MultiValued hit = (MultiValued) iterator.next();
-			
-			String sourcepath = hit.getSourcePath();
-			if( sourcepath == null)
+			Asset asset = (Asset)searcher.loadData((Data)iterator.next());
+			for (Iterator iterator2 = asset.getCategories().iterator(); iterator2.hasNext();)
 			{
-				continue;
-			}
-			//log.info("try ${sourcepath}" );
-			String[] split = sourcepath.split("/");
-			String sofar = "";
-			for( int i=0;i<split.length - 1;i++)
-			{
-				if( i > 10 )
+				Category child = (Category) iterator2.next();
+				//Make sure it's not part of a library
+				Data library = (Data)librarySearcher.query().orgroup("categoryid", child.getParentCategories()).searchOne();
+				if( library != null)
 				{
-					break;
-				}
-				sofar = sofar + split[i];
-				String libraryid = getLibraryIdForFolder(librarySearcher,sofar);
-				sofar = sofar + "/";
-		
-				if( libraryid != null )
-				{
-					Data li = (Data) fieldLibraries.get(libraryid);
-					//Now check for collections that have the right name						
-					String toppath = li.get("folder") + "/";
-					if( hit.getSourcePath().startsWith(toppath) )
+					Data collection = (Data)librarycollectionSearcher.query().exact("library",library.getId()).orgroup("rootcategory", child.getParentCategories()).searchOne();
+					if( collection == null)
 					{
-						//grab more more level down and create a collection category and add the asset to it and create a collection to match
-						String collectionrootpath =  hit.getSourcePath().substring(toppath.length());
-						collectionrootpath = PathUtilities.extractRootDirectory(collectionrootpath);
-						Category cat = mediaarchive.createCategoryPath(toppath + collectionrootpath);
-						Data collection = (Data)librarycollectionSearcher.query().exact("rootcategory", cat.getId()).searchOne();
-						if( collection == null)
+						String librarycatid = library.get("categoryid");
+						Category collectioncat = null;
+						for (Iterator iterator3 = child.getParentCategories().iterator(); iterator3.hasNext();)
+						{
+							Category parent = (Category) iterator3.next();
+							if( parent.getId().equals(librarycatid) && iterator3.hasNext())
+							{
+								collectioncat = (Category)iterator3.next();
+								break;
+							}
+							
+						}
+						if( collectioncat != null)
 						{
 							collection = (Data)librarycollectionSearcher.createNewData();
-							collection.setName(collectionrootpath);
-							collection.setProperty("library", li.getId());
-							
-							collection.setProperty("rootcategory", cat.getId());
+							collection.setName(collectioncat.getName());
+							collection.setProperty("library", library.getId());
+							collection.setProperty("rootcategory", collectioncat.getId());
 							librarycollectionSearcher.saveData(collection);
-						}
+						}	
 					}
 				}
 			}

@@ -60,22 +60,25 @@ public void init()
 		LibraryCollection librarycollection = mediaArchive.getData("librarycollection",hit.get("librarycollection") );
 		
 		Category rootcategory = projectmanager.getRootCategory(mediaArchive,librarycollection);
-		if(rootcategory != null){
-		Asset asset = mediaArchive.getAsset(hit.get("_parent") );
-		
-		
-		if( asset != null && !asset.isInCategory(rootcategory.getId()))
+		if(rootcategory != null)
 		{
-			asset.addCategory(rootcategory);
-			tosave.add(asset);
-			if( tosave.size() > 500)
+			Asset asset = mediaArchive.getAsset(hit.get("_parent") );
+			
+			
+			if( asset != null && !asset.isInCategory(rootcategory.getId()))
 			{
-				mediaArchive.getAssetSearcher().saveAllData(tosave,null);
-				tosave.clear();
+				asset.addCategory(rootcategory);
+				tosave.add(asset);
+				if( tosave.size() > 500)
+				{
+					mediaArchive.getAssetSearcher().saveAllData(tosave,null);
+					tosave.clear();
+				}
 			}
 		}
-		} else{
-		log.info("No root category: " + librarycollection);
+		else
+		{
+			log.info("No root category: " + librarycollection);
 		}
 	}
 	mediaArchive.getAssetSearcher().saveAllData(tosave,null);
