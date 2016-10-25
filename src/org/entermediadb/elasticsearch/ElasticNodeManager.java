@@ -748,7 +748,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			archive.clearCache();
 
 			List sorted = archive.listSearchTypes();
-
+			sorted.add(0, "category");
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
 				String type = (String) iterator.next();
