@@ -44,7 +44,11 @@ $context.putPageValue("multiedit",$multiedit)
   #set ($mode = $user.get("oe_edit_mode"))
    #if($viewid)
 	#if($mode && ($mode == "debug" || $mode == "editing" ))
-		<a class="textlink emdialog" data-autoclose="false" href="$apphome/views/settings/lists/datamanager/views/indexdialog.html?viewpath=$view&searchtype=$searcher.searchType&viewid=$viewid">[[Customize View]]</a>
+		<span class="widget-header-edit">
+		<a class="ir emdialog" data-autoclose="false" href="$apphome/views/settings/lists/datamanager/views/indexdialog.html?viewpath=$view&searchtype=$searcher.searchType&viewid=$viewid">
+		[[Edit]]
+		</a>
+		</span>
 	#end
 	#end
 	
