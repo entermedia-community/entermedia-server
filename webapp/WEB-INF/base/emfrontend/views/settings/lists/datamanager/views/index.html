@@ -150,7 +150,7 @@
 	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">Add New</a>
 	    </div>
 	    #end
-	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="addtoview.html">
+	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="$apphome/views/settings/lists/datamanager/views/addtoview.html" >
             <input type="hidden" name="catalogid" value="$!catalogid"/>
             <input type="hidden" name="searchtype" value="$moduleid"/>
             <input type="hidden" name="assettype" value="$assettype"/>
@@ -183,7 +183,7 @@
 					#else	
 						<A href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#end	
-					<a class="ajax delete-row" targetdiv="vieweditorarea" href="./removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1"></a>
+					<a class="ajax delete-row" targetdiv="vieweditorarea" href="$apphome/views/settings/lists/datamanager/views/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1"></a>
 				</li>
 			#end		
 		

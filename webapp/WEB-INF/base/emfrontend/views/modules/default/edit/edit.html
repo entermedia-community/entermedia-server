@@ -19,6 +19,12 @@
 #else
 	#set( $action = "$home$content.searchhome/edit/save.html")
 #end
+
+$context.putPageValue("viewid", $view.id)
+
+
+
+
 <div id="default-fields">
     <div id="editlayout">
     <form id="dataeditor" name="dataeditor" method="post"  action="$action" enctype="multipart/form-data">

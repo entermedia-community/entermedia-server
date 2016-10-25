@@ -4,6 +4,7 @@
 #set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
 #set( $multiedit = "false")
 #set( $multiedit = $context.getRequestParameter("multiedit"))
+
 #if ( $multiedit == "true" )
 	#set( $multiedit = true)
 #else
@@ -12,6 +13,15 @@
 
 $context.putPageValue("multiedit",$multiedit)
 ##$context.putPageValue("caneditlists","false")
+#if(!$view)
+
+#if($viewid)
+		#set($view = "${searcher.searchType}/${viewid}")
+
+#end
+
+#end
+
 
 ##We need 3 things passed in: $searcher, $view, $data
 #if ($view)
@@ -31,7 +41,13 @@ $context.putPageValue("multiedit",$multiedit)
 	#end
 #end	
 
-
+  #set ($mode = $user.get("oe_edit_mode"))
+   #if($viewid)
+	#if($mode && ($mode == "debug" || $mode == "editing" ))
+		<a class="textlink emdialog" data-autoclose="false" href="$apphome/views/settings/lists/datamanager/views/indexdialog.html?viewpath=$view&searchtype=$searcher.searchType&viewid=$viewid">[[Customize View]]</a>
+	#end
+	#end
+	
 <div class="oeinputform validate-inputs detaileditor">
 <div id="allerrors">
 </div>
