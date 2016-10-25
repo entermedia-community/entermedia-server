@@ -10,13 +10,11 @@ import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Reloadable;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
-import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
 import org.openedit.xml.ElementData;
 import org.openedit.xml.XmlFile;
@@ -156,8 +154,14 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 		super.reloadSettings();
 		reIndexAll();
 	} 
-	
-	
+
+	@Override
+	protected void deleteAll(Collection<Data> inBuffer, User inUser)
+	{
+		super.deleteAll(inBuffer, inUser);
+		getXmlSearcher().deleteAll(inUser);
+
+	}
 
 	public void delete(Data inData, User inUser)
 	{
@@ -193,8 +197,8 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			Data data = (Data)object;
 			try
 			{
-				updateElasticIndex(details, data);
-				getXmlSearcher().saveAllData(inAll, inUser);
+				updateElasticIndex(details, data); //Cant use bulk operations because id wont be set
+				getXmlSearcher().saveData(data, inUser);
 			}
 			catch(Throwable ex)
 			{

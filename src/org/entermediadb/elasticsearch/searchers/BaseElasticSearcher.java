@@ -1559,7 +1559,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
 	}
 
-	public void deleteAll(Collection<Data> inBuffer, User inUser)
+	protected void deleteAll(Collection<Data> inBuffer, User inUser)
 	{
 		String catid = getElasticIndexId();
 
@@ -1567,7 +1567,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		// or the version for new data object
 
 		// final Map<String, Data> toversion = new HashMap(inBuffer.size());
-		final List<Data> toprocess = new ArrayList(inBuffer);
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
 		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
@@ -1591,18 +1590,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						errors.add(res.getFailureMessage());
 
 					}
-					// Data toupdate = toversion.get(res.getId());
-					Data toupdate = toprocess.get(res.getItemId());
-					if (toupdate != null)
-					{
-						if (isCheckVersions())
-						{
-							toupdate.setProperty(".version", String.valueOf(res.getVersion()));
-						}
-						toupdate.setId(res.getId());
-					}
 				}
-				request.refresh(true);
 			}
 
 			@Override
@@ -1626,11 +1614,6 @@ public class BaseElasticSearcher extends BaseSearcher
 					req = req.id(data2.getId());
 
 				}
-
-				// if( isRefreshSaves() )
-				// {
-				// req = req.refresh(true);
-				// }
 				bulkProcessor.add(req);
 			}
 			catch (Exception ex)
@@ -1642,16 +1625,8 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		if (errors.size() > 0)
 		{
-			// throw new OpenEditException((Throwable)errors.get(0));
-
+			log.error("Bulk delete errors" + errors);
 		}
-		// ConcurrentModificationException
-		// builder = builder.setSource(content).setRefresh(true);
-		// BulkRequestBuilder brb = getClient().prepareBulk();
-		//
-		// brb.add(Requests.indexRequest(indexName).type(getIndexType()).id(id).source(source));
-		// }
-		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
 	}
 
 	protected void updateElasticIndex(PropertyDetails details, Data data)
@@ -2031,7 +2006,6 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 
 		// https://github.com/elastic/elasticsearch/blob/master/plugins/delete-by-query/src/main/java/org/elasticsearch/action/deletebyquery/TransportDeleteByQueryAction.java#L104
-
 		log.info("Deleted all records database " + getSearchType());
 		// DeleteByQueryRequestBuilder delete =
 		// getClient().prepareDeleteByQuery(toId(getCatalogId()));
@@ -2039,84 +2013,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// delete.setQuery(new MatchAllQueryBuilder()).execute().actionGet();
 		HitTracker all = getAllHits();
 		all.enableBulkOperations();
-
-		String catid = getElasticIndexId();
-
-		// We cant use this for normal updates since we do not get back the id
-		// or the version for new data object
-
-		// final Map<String, Data> toversion = new HashMap(inBuffer.size());
-
-		final List errors = new ArrayList();
-		// Make this not return till it is finished?
-		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
-		{
-			@Override
-			public void beforeBulk(long executionId, BulkRequest request)
-			{
-
-			}
-
-			@Override
-			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
-			{
-				for (int i = 0; i < response.getItems().length; i++)
-				{
-					// request.getFromContext(key)
-					BulkItemResponse res = response.getItems()[i];
-					if (res.isFailed())
-					{
-						log.error(res.getFailureMessage());
-						errors.add(res.getFailureMessage());
-
-					}
-
-				}
-				request.refresh(true);
-			}
-
-			@Override
-			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
-			{
-				log.error(failure);
-				errors.add(failure);
-			}
-		}).setBulkActions(all.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
-
-		for (Iterator iterator = all.iterator(); iterator.hasNext();)
-		{
-			try
-			{
-				Data data2 = (Data) iterator.next();
-
-				DeleteRequest req = Requests.deleteRequest(catid).type(getSearchType());
-
-				if (data2.getId() != null)
-				{
-					req = req.id(data2.getId());
-
-				}
-
-				// if( isRefreshSaves() )
-				// {
-				// req = req.refresh(true);
-				// }
-
-				bulkProcessor.add(req);
-			}
-			catch (Exception ex)
-			{
-				log.error(ex);
-			}
-		}
-		bulkProcessor.close();
-
-		if (errors.size() > 0)
-		{
-			// throw new OpenEditException((Throwable)errors.get(0));
-
-		}
-
+		deleteAll(all, inUser);
 	}
 
 	public void delete(Data inData, User inUser)
