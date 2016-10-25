@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -248,9 +249,15 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 			return Collections.emptyList();
 		}
 		Searcher librarysearcher = getMediaArchive().getSearcher("library");
-		Collection ids = new ArrayList();
+		HashSet ids = new HashSet();
 		for(Category cat: getCategories() )
 		{
+			for (Iterator iterator = cat.getParentCategories().iterator(); iterator.hasNext();)
+			{
+				Category parent = (Category) iterator.next();
+				ids.add(parent.getId());
+				
+			}
 			ids.add(cat.getId());
 		}
 		HitTracker hits = librarysearcher.query().orgroup("categoryid", ids).search();

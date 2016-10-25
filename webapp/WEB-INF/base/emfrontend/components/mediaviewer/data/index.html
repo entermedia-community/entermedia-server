@@ -48,7 +48,7 @@ $context.putPageValue("showalllanguagevalues",true)
     				</div>
 					<h3>[[Collections]]</h3>
 						<div class="asset-data-detail">
-							#foreach ($category in $asset.categories)
+							#foreach ($category in $asset.getCategories())
 							#set( $collection = false)
 							#set( $collection = $mediaarchive.getProjectManager().findCollectionForCategory($category) )
 							#if($collection)
@@ -65,7 +65,7 @@ $context.putPageValue("showalllanguagevalues",true)
 						<div  class="row category" style="padding-left:24px;">						
 #foreach( $parent in $category.getParentCategoriesFrom(1))
 #if( $velocityCount > 1) \ #end
-<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/search/category.html?categoryid=${category.id}">$parent</a>
+<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/search/category.html?categoryid=${parent.id}">$parent</a>
 #end
 						</div>
 					#end
