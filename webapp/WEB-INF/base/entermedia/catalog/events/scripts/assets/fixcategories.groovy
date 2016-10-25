@@ -15,24 +15,22 @@ public void init(){
 	int savedsofar = 0;
 	hits.each{
 		Data hit = it;
-		if( hit.get("category-exact") == null)
+//		if( hit.getValue("category-exact") == null)
+		String path = PathUtilities.extractDirectoryPath(hit.getSourcePath());
+		org.entermediadb.asset.Category catparent = archive.getCategorySearcher().createCategoryPath(path);
+		Asset found = archive.getAssetSearcher().loadData(hit);
+		found.addCategory(catparent);
+		tosave.add(found);
+		savedsofar++;
+		if( tosave.size() == 200)
 		{
-			String path = PathUtilities.extractDirectoryPath(hit.getSourcePath());
-			org.entermediadb.asset.Category catparent = archive.getCategorySearcher().createCategoryPath(path);
-			Asset found = archive.getAssetBySourcePath(hit.getSourcePath());
-			found.addCategory(catparent);
-			tosave.add(found);
-			savedsofar++;
-			if( tosave.size() == 200)
-			{
-				archive.saveAssets(tosave, null);
-				tosave.clear();
-				log.info("saved assets ${savedsofar}");
-			}
+			archive.saveAssets(tosave, null);
+			tosave.clear();
+			log.info("saved assets ${savedsofar}");
 		}
 	}
 	archive.saveAssets(tosave, null);
-	log.info("Finished fixcategories saved: ${savedsofar}");
+	log.info("Finished fixcategories saved: ${savedsofar} ${hits.size()}");
 }
 
 init();

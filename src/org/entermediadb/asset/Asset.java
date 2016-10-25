@@ -179,7 +179,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		{
 			throw new IllegalArgumentException("Categories cannot be null");
 		}
-		if (!isInCatalog(inCatid))
+		if (!isInCategory(inCatid))
 		{
 			getCategories().add(inCatid);
 		}
