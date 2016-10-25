@@ -513,6 +513,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			guessdetail = guessdetail.substring(0, guessdetail.indexOf("]"));
 			error.setDetail(guessdetail);
 		}
+		
+		
+		if (inMessage.contains("cannot be changed"))
+		{
+			String guessdetail = inMessage.substring("mapper [".length(), inMessage.length());
+			guessdetail = guessdetail.substring(0, guessdetail.indexOf("]"));
+			error.setDetail(guessdetail);
+		}
+		
+		
 
 		getMappingErrors().add(error);
 
