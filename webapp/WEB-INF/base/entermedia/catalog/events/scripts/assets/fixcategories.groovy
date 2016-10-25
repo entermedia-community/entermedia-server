@@ -19,9 +19,12 @@ public void init(){
 		String path = PathUtilities.extractDirectoryPath(hit.getSourcePath());
 		org.entermediadb.asset.Category catparent = archive.getCategorySearcher().createCategoryPath(path);
 		Asset found = archive.getAssetSearcher().loadData(hit);
-		found.addCategory(catparent);
-		tosave.add(found);
-		savedsofar++;
+		if( !found.isInCategory(catparent))
+		{
+			found.addCategory(catparent);
+			tosave.add(found);
+			savedsofar++;
+		}	
 		if( tosave.size() == 200)
 		{
 			archive.saveAssets(tosave, null);
