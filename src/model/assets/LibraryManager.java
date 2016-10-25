@@ -50,6 +50,10 @@ public class LibraryManager extends EnterMediaObject
 			MultiValued hit = (MultiValued) iterator.next();
 			
 			String sourcepath = hit.getSourcePath();
+			if( sourcepath == null)
+			{
+				continue;
+			}
 			//log.info("try ${sourcepath}" );
 			String[] split = sourcepath.split("/");
 			String sofar = "";
