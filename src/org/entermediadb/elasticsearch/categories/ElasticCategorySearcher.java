@@ -295,6 +295,22 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		setIndexId(-1);
 	}
 
+	protected String createCategoryId(String inPath)
+	{
+		// subtract the start /store/assets/stuff/more -> stuff_more
+		if (inPath.length() < 0)
+		{
+			return "index";
+		}
+
+		if (inPath.startsWith("/"))
+		{
+			inPath = inPath.substring(1);
+		}
+		inPath = inPath.replace('/', '_');
+		String id = PathUtilities.extractId(inPath, true);
+		return id;
+	}
 	@Override
 	public Category createCategoryPath(String inPath)
 	{
@@ -306,8 +322,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Data hit = (Data)query().startsWith("categorypath", inPath).sort("categorypathUp").searchOne();
 		if( hit == null)
 		{
-			String id = toId(inPath);
-			 hit = (Data)searchById(id);
+			String id = createCategoryId(inPath);
+			hit = (Data)searchById(id);  //May result in false positive
 		}
 		Category found = (Category)loadData(hit);
 		if( found == null)

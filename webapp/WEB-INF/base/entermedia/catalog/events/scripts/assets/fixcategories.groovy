@@ -18,7 +18,7 @@ public void init(){
 		if( hit.get("category-exact") == null)
 		{
 			String path = PathUtilities.extractDirectoryPath(hit.getSourcePath());
-			org.entermediadb.asset.Category catparent = archive.getCategoryArchive().createCategoryTree(path);
+			org.entermediadb.asset.Category catparent = archive.getCategorySearcher().createCategoryPath(path);
 			Asset found = archive.getAssetBySourcePath(hit.getSourcePath());
 			found.addCategory(catparent);
 			tosave.add(found);

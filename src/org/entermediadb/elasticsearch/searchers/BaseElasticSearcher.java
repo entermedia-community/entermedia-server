@@ -1765,6 +1765,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 
 				String key = detail.getId();
+				if( key == null)
+				{
+					continue;
+				}
 				if (key.equals("recordmodificationdate"))
 				{
 					inContent.field(key, new Date());
