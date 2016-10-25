@@ -213,7 +213,21 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		}
 		if(vals instanceof Collection){
 			Collection target = (Collection)vals;
-			mycats = new ArrayList(target);
+			ArrayList finalvals = new ArrayList();
+			for (Iterator iterator = target.iterator(); iterator.hasNext();)
+			{
+				Object object = (Object) iterator.next();
+				if(object instanceof String){
+					Category cat = getMediaArchive().getCategory((String) object);
+					finalvals.add(cat);
+
+				} 
+				else if(object instanceof Category){
+					finalvals.add(object);
+				}
+			}
+			
+			mycats = finalvals;
 		}
 		
 		if( mycats == null )
