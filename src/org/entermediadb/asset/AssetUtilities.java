@@ -507,7 +507,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
 		
-		HitTracker assetlist = assets.fieldSearch("category-exact", inCategory.getId());
+		HitTracker assetlist = assets.query().exact("category-exact", inCategory.getId()).search();
 		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();

@@ -24,10 +24,8 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
 import org.openedit.data.Searcher;
-import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
 /**
@@ -135,7 +133,8 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		}
 		if ("category".equals(inAttribute) || "category-exact".equals(inAttribute) )
 		{
-			Collection categorylist = (Collection) getMap().getObject("category-exact");
+			
+			Collection categorylist = (Collection) getMap().getValue("category-exact");
 			if(categorylist == null)
 			{
 				categorylist = new ArrayList();
