@@ -91,6 +91,14 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 			throw new OpenEditException(e);
 		}
 	}
+	
+	@Override
+	public void reindexInternal() throws OpenEditException
+	{
+		reIndexAll();
+	}
+
+	
 	public void restoreSettings()
 	{
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());

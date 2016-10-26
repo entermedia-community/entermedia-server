@@ -94,6 +94,12 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		}
 
 	}
+	
+	@Override
+	public void reindexInternal() throws OpenEditException
+	{
+		reIndexAll();
+	}
 	public void restoreSettings()
 	{
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
