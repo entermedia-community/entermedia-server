@@ -54,19 +54,18 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	public void reIndexAll() throws OpenEditException
 	{
 		log.info("Reindex of customer users directory");
-		try
+		putMappings();
+	
+		Collection usernames = getXmlUserArchive().listUserNames();
+		if( usernames != null)
 		{
-			
-			putMappings();
-		
-			Collection usernames = getXmlUserArchive().listUserNames();
-			if( usernames != null)
+			log.info("Indexing " + usernames.size() + " users");
+			List users = new ArrayList();
+			for (Iterator iterator = usernames.iterator(); iterator.hasNext();)
 			{
-				List users = new ArrayList();
-				for (Iterator iterator = usernames.iterator(); iterator.hasNext();)
+				String userid = (String) iterator.next();
+				try
 				{
-					String userid = (String) iterator.next();
-					
 					User data = (User)createNewData(); 
 					data.setId(userid);
 					data = getXmlUserArchive().loadUser(data, getGroupSearcher());
@@ -79,14 +78,18 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 							users.clear();
 						}
 					}	
-				}	
-				updateIndex(users, null);
-			}
-		}
-		catch (Exception e)
-		{
-			// TODO Auto-generated catch block
-			throw new OpenEditException(e);
+					else
+					{
+						log.error("Could not load user " + userid);
+					}
+				}
+				catch (Exception e)
+				{
+					log.error(e);
+				}
+					
+			}	
+			updateIndex(users, null);
 		}
 
 	}
