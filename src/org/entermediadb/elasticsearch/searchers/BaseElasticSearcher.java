@@ -1535,15 +1535,15 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 
-		bulkProcessor.close();
-//		try
-//		{
-//			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
-//		}
-//		catch (InterruptedException e)
-//		{
-//			throw new OpenEditException(e);
-//		}
+	//	bulkProcessor.close();
+		try
+		{
+			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+		}
+		catch (InterruptedException e)
+		{
+			throw new OpenEditException(e);
+		}
 
 		if (errors.size() > 0)
 		{
