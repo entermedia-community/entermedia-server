@@ -85,6 +85,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 				}
 				catch (Exception e)
 				{
+					e.printStackTrace();
 					log.error(e);
 				}
 					
