@@ -227,7 +227,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	@Override
 	public boolean initialize()
 	{
-		if( !tableExists())
+		if( !tableExists() || getAllHits().isEmpty())
 		{
 			reIndexAll();
 			return true;
