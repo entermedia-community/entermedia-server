@@ -23,7 +23,6 @@
 	<classpathentry kind="lib" path="lib/compile/websocket-api.jar"/>
 	<classpathentry kind="lib" path="lib/mp4parser-0826.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.43.jar"/>
-	<classpathentry kind="lib" path="lib/extras/jtds-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/org.apache.oltu.oauth2.client-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
 	<classpathentry kind="lib" path="lib/antlr-runtime-3.5.jar"/>

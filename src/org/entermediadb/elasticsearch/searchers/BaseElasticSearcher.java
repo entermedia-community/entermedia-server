@@ -539,7 +539,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				PropertyDetail detail = (PropertyDetail) i.next();
 
-				if ("_id".equals(detail.getId()) || "id".equals(detail.getId()))
+				if ( detail.getId() == null || "_id".equals(detail.getId()) || "id".equals(detail.getId()))
 				{
 					// jsonproperties = jsonproperties.startObject("_id");
 					// jsonproperties = jsonproperties.field("index",
