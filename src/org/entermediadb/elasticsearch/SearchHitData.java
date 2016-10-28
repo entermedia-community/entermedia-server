@@ -150,13 +150,15 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		}
 		if (value == null) {
 
-			if (detail != null) {
+			if (detail != null && getSearchData() != null)
+			{
 				String legacy = detail.get("legacy");
-				if (legacy != null) {
-					value = getValue(legacy);
+				if (legacy != null) 
+				{
+					value = getSearchData().get(legacy);
 				}
-				if (value == null && getSearchData() != null) {
-					value = getSearchData().get(inId); //check without the _int
+				if (value == null && !inId.equals(key)) {
+					value = getSearchData().get(inId); //check without the _int if !inId.equals(key) ?
 				}
 			}
 		}
