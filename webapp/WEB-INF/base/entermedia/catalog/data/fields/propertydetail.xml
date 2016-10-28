@@ -26,6 +26,6 @@
 	<property id="rendermask"  editable="true" stored="true" index="true">Render Mask</property>	
 	<property id="autocreatefromexif" type="boolean"  editable="true" stored="true" index="true">Auto Create Metadata from Exif</property>	
 	<property id="writenametoexif" type="boolean"  editable="true" stored="true" index="true">Write Name to Exif</property>	
-	<property id="indextype"  editable="true" stored="true" index="true">Indexing Rule</property>	
-	<property id="analyzer"   editable="true" stored="true" index="true">Analyzer</property>
+	<property id="indextype" type="list" editable="true" stored="true" index="true" indextype="not_analyzed">Indexing Rule</property>	
+	<property id="analyzer" type="list"  editable="true" stored="true" index="true" indextype="not_analyzed">Analyzer</property>
 </properties>
