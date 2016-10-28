@@ -30,16 +30,14 @@ jQuery(document).ready(function()
 	});
 
 	//Select a node
-	$('.emtree-widget ul li div').livequery('click', function(event) {
+	$('.emtree-widget ul li div').livequery('click', function(event) 
+	{
 		event.stopPropagation();
 		$('.emtree ul li div').removeClass('selected');
-		//$(this).addClass("selected");
 		var tree = $(this).closest(".emtree");
 		var node = $(this).closest('.noderow');
-		var nodeid = node.data('nodeid');
-		var depth = node.data('depth');
-		var home = tree.data("home");
 		var prefix = tree.data("url-prefix");
+		console.log(prefix);
 		var targetdiv = tree.data("targetdiv");
 		var maxlevel = 2;
 		if(targetdiv ==  undefined || targetdiv == "" )
@@ -49,40 +47,59 @@ jQuery(document).ready(function()
 		}
 		if( prefix)
 		{
-			var treeholder = $("div#categoriescontent");
-			var toplocation =  parseInt( treeholder.scrollTop() );
-			var leftlocation =  parseInt( treeholder.scrollLeft() );
 			var postfix = tree.data("url-postfix");
-			if( postfix == undefined || postfix == "" )
-			{
-				postfix = ".html";
-			}
-			//$("#right-col").load(); 'clearfilters':true,
-				jQuery.get(prefix + nodeid + postfix,
-						{
-							'oemaxlevel':maxlevel,
-							'tree-name':tree.data("treename"),
-							'nodeID':nodeid,							
-							'treetoplocation':toplocation,
-							'treeleftlocation':leftlocation,
-							'depth': depth
-						},	
-						function(data) 
-						{
-							var cell = jQuery("#" + targetdiv); //view-picker-content
-							cell.html(data);
-							//window.location.hash="TOP";
-							$(window).trigger( "resize" );
-						}
-				);
+			gotopage(tree,node,maxlevel,prefix, postfix);
 		}
 		else
 		{
+			var home = tree.data("home");
 			tree.find(nodeid + "_add").remove();
 			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
 			
 		}
-});
+	});
+	
+	gotopage = function(tree, node, maxlevel, prefix, postfix)
+	{
+		var treeholder = $("div#categoriescontent");
+		var toplocation =  parseInt( treeholder.scrollTop() );
+		var leftlocation =  parseInt( treeholder.scrollLeft() );
+		var targetdiv = tree.data("targetdiv");
+		if(targetdiv ==  undefined || targetdiv == "" )
+		{
+			targetdiv = "searchlayout";
+			maxlevel = 3;
+		}
+		
+		if( postfix == undefined || postfix == "" )
+		{
+			postfix = ".html";
+		}
+		var home = tree.data("home");
+		
+		var nodeid = node.data('nodeid');
+		var depth = node.data('depth');
+		
+		jQuery.get(prefix + nodeid + postfix,
+				{
+					'oemaxlevel':maxlevel,
+					'tree-name':tree.data("treename"),
+					'nodeID':nodeid,							
+					'treetoplocation':toplocation,
+					'treeleftlocation':leftlocation,
+					'depth': depth
+				},	
+				function(data) 
+				{
+					var cell = jQuery("#" + targetdiv); //view-picker-content
+					console.log(cell);
+					cell.html(data);
+					//window.location.hash="TOP";
+					$(window).trigger( "resize" );
+				}
+		);
+	}
+	
 	
 	$(".emtree-widget .delete").livequery('click', function(event) {
 			event.stopPropagation();
@@ -185,6 +202,29 @@ jQuery(document).ready(function()
 				var nodeid = node.data('nodeid');
 				var link = tree.data("home") + "/views/modules/category/edit/edit.html?id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral"; 
 				document.location = link;
+				return false;
+	} );
+
+	$(".treecontext #addmedia").livequery('click', function(event) 
+	{
+				event.stopPropagation();
+				var node = getNode(this);
+				var tree = node.closest(".emtree");
+				var nodeid = node.data('nodeid');
+				var maxlevel = 2;
+				
+				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
+				var url = tree.data("home") + "/components/createmedia/upload/index.html?";
+				
+				var collectionid = $("#collectiontoplevel").data("collectionid");
+				var postfix = "";
+				if( collectionid )
+				{
+					postfix = "&collectionid=" + collectionid;
+				}
+				
+				gotopage(tree,node,maxlevel,url,postfix);
+						
 				return false;
 	} );
 

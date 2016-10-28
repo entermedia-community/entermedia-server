@@ -17,11 +17,11 @@
 			       <div class="padding">
 			        	#if( $browser.isHtml5Browser() )
 			        	
-			        		$pages.include("$apphome/components/upload/types/html5.html")
+			        		$pages.include("$apphome/components/upload/types/html5.html",$context)
 			        	
 			        	#else
 			        
-			        		$pages.include("$apphome/components/upload/types/simpler.html")
+			        		$pages.include("$apphome/components/upload/types/simpler.html",$context)
 			        	
 			        	#end	
 			        </div>

@@ -1064,38 +1064,7 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		String[] fields = inReq.getRequestParameters("field");
 		Map vals = new HashMap();
-		if( fields != null)
-		{
-			for (int i = 0; i < fields.length; i++)
-			{
-				Object val = inReq.getRequestParameters(prefix + fields[i]+ ".value");
-				if( val == null)
-				{
-					String[] array = inReq.getRequestParameters(prefix + fields[i]+ ".values");
-					if( array != null)
-					{
-						val = Arrays.asList(array);
-					}
-				}
-				String[] language = inReq.getRequestParameters(prefix + fields[i] + ".language");
-				if (language != null)
-				{
-					LanguageMap lmap = new LanguageMap();
-					for (int j = 0; j < language.length; j++)
-					{
-						String lang = language[j];
-						String langval = inReq.getRequestParameter(prefix + fields[i] + "." + lang);
-						lmap.setText(lang,langval);
-					}
-					val = lmap;
-				}
-				
-				if( val != null)
-				{
-					vals.put(fields[i],val);
-				}
-			}
-		}
+		
 		String[] categories = inReq.getRequestParameters(prefix + "categoryid");
 		List cats = new ArrayList();
 		if( categories != null)
@@ -1140,6 +1109,45 @@ public class AssetEditModule extends BaseMediaModule
 		}
 		vals.put("categories",cats);
 		
+
+		
+		if( fields != null)
+		{
+			for (int i = 0; i < fields.length; i++)
+			{
+				String afield = fields[i];
+				Object val = inReq.getRequestParameters(prefix + afield+ ".value");
+				if( val == null)
+				{
+					String[] array = inReq.getRequestParameters(prefix + afield+ ".values");
+					if( array != null)
+					{
+						val = Arrays.asList(array);
+					}
+				}
+				String[] language = inReq.getRequestParameters(prefix + afield + ".language");
+				if (language != null)
+				{
+					LanguageMap lmap = new LanguageMap();
+					for (int j = 0; j < language.length; j++)
+					{
+						String lang = language[j];
+						String langval = inReq.getRequestParameter(prefix + afield + "." + lang);
+						lmap.setText(lang,langval);
+					}
+					val = lmap;
+				}
+				
+				if( val != null)
+				{
+					if( val instanceof Collection && ((Collection)val).isEmpty())
+					{
+						continue;
+					}
+					vals.put(afield,val);
+				}
+			}
+		}
 		
 		String collectionid = inReq.getRequestParameter("currentcollection");
 		if( collectionid == null)

@@ -58,11 +58,17 @@
 						$context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
 					#else
-
-					$pages.include("$apphome/components/upload/types/html5/pickcollection.html",$context)					
-					
+						$pages.include("$apphome/components/upload/types/html5/pickcollection.html",$context)					
 					#end
 					
+
+					#set( $nodeId = $context.getRequestParameter("nodeID") )
+					#if($nodeId)
+						<input type="hidden" name="field" value="category" />
+						<input type="hidden" name="category.value" value="$nodeId"/>
+					#end
+
+
 					$context.putPageValue("view","asset/multipleupload")	
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 				##have the cancel delete these assets?
