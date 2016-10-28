@@ -1828,6 +1828,10 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						val = (Double) value;
 					}
+					else if (value instanceof Integer)
+					{
+						val = Double.valueOf((int)value);
+					}
 					else if (value != null)
 					{
 						val = Double.valueOf((String) value);
