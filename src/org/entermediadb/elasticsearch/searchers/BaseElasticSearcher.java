@@ -1991,6 +1991,10 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		catch (Exception ex)
 		{
+			if( ex instanceof OpenEditException)
+			{
+				throw (OpenEditException)ex;
+			}
 			throw new OpenEditException(ex);
 		}
 

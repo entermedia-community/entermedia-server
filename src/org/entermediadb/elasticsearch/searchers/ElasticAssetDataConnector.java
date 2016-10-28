@@ -267,6 +267,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 		catch (Exception ex)
 		{
+			if( ex instanceof OpenEditException)
+			{
+				throw (OpenEditException)ex;
+			}
 			throw new OpenEditException(ex);
 		}
 	}
