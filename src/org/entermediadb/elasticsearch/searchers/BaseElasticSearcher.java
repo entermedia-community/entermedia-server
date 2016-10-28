@@ -785,7 +785,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			Term term = (Term) iterator.next();
 			PropertyDetail detail = term.getDetail();
 			//We handle joins with SearchQueryFilter.java
-			if( !getSearchType().equals( detail.getSearchType()))
+			if(detail.getSearchType() != null && !getSearchType().equals( detail.getSearchType()))
 			{
 				continue;
 			}

@@ -25,6 +25,7 @@ import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
@@ -579,7 +580,13 @@ public class ProjectManager implements CatalogEnabled
 				{
 					FileUtils.safeClose(inputStream);
 				}
-				Data target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name.sort", item.getName()).searchOne();
+				PropertyDetail namedetail = inArchive.getAssetSearcher().getDetail("name");
+				Data target = null;
+				if(namedetail.isMultiLanguage()){
+				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name_int.en.sort", item.getName()).searchOne();
+				} else{
+				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name.sort", item.getName()).searchOne();
+				}
 				Asset asset = (Asset) inArchive.getAssetSearcher().loadData(target);
 				
 				if (asset == null)

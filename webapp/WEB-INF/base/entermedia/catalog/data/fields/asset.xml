@@ -1,4 +1,4 @@
 <properties dependson="librarycollectionasset">
 	<property id="id" index="true" keyword="true" stored="true">Id</property>
-	<property id="name" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
+	<property id="name" legacy="name_int" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
 </properties>
