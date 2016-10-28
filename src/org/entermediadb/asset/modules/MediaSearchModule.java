@@ -43,16 +43,21 @@ public class MediaSearchModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);
 		inPageRequest.putPageValue("category",category);
-		HitTracker tracker = archive.getAssetSearcher().searchCategories(inPageRequest, category);
+		
+		
+		String exact = inPageRequest.findValue("exact-search");
+		HitTracker tracker = null;
+		if( exact != null && Boolean.parseBoolean(exact))
+		{
+			tracker = archive.getAssetSearcher().query().exact("category-exact",category.getId()).search(inPageRequest);
+		}
+		else
+		{
+			tracker = archive.getAssetSearcher().searchCategories(inPageRequest, category);
+		}
 		if( tracker != null)
 		{
-//			SearchQuery query = tracker.getSearchQuery();
-//			if( query.getTerms().size() == 1)
-//			{
-//				Term term = (Term)query.getTerms().get(0);
-//				if (term.getDetail().getId().equals("category"))
-//				{
-//					//TODO: Seems like this could be done within the searcher or something
+				//TODO: Seems like this could be done within the searcher or something
 				tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
 				Data librarycol = (Data) inPageRequest.getPageValue("librarycol");
 				if(librarycol != null){
@@ -68,7 +73,11 @@ public class MediaSearchModule extends BaseMediaModule
 			//prefs.save();
 		}
 	}
-
+	/**
+	 * not used
+	 * @param inPageRequest
+	 * @throws Exception
+	 */
 	public void searchExactCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
