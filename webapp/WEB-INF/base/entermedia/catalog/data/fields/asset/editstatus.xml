@@ -1,5 +1,0 @@
-
-<properties lazy-init="true">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true" searchtype="asset/editstatus">Id</property>
-  <property id="name" index="true" stored="true" editable="true" multilanguage="true" internalfield="false" searchtype="asset/editstatus">Name</property>
-</properties>
