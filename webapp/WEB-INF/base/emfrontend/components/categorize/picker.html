@@ -12,7 +12,7 @@
 			#set( $selectednodes = $asset.getCategories() )
 			$context.putPageValue("selectednodes",$selectednodes)
 			<div id="treescroller">
-		        $pages.include("$apphome/components/emtree/index.html?tree-name=categoryAssetPickerTree&showchecks=true&editabletree=$caneditcategories&allowselections=true",$context)
+		        $pages.include("$apphome/components/emtree/index.html?tree-name=categoryAssetPickerTree&showchecks=true&editabletree=true&allowselections=true",$context)
 		    </div>
 				<input type="hidden" name="save" value="true" />
 				<input type="hidden" name="assetid" value="$!asset.id" />
