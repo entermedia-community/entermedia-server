@@ -92,7 +92,7 @@ jQuery(document).ready(function()
 				function(data) 
 				{
 					var cell = jQuery("#" + targetdiv); //view-picker-content
-					console.log(cell);
+					//console.log(cell);
 					cell.html(data);
 					//window.location.hash="TOP";
 					$(window).trigger( "resize" );
@@ -100,7 +100,7 @@ jQuery(document).ready(function()
 		);
 	}
 	
-	
+/*	
 	$(".emtree-widget .delete").livequery('click', function(event) {
 			event.stopPropagation();
 
@@ -125,7 +125,7 @@ jQuery(document).ready(function()
 				return false;
 			}
 	} );
-			
+*/			
 	//need to init this with the tree
 	$("div#treeholder").livequery( function()
 	{	
@@ -175,7 +175,7 @@ jQuery(document).ready(function()
 			node.load(link, {edittext: value},function() 
 			{
 				//Reload tree in case it moved order
-				tree.closest("#treeholder").load(tree.data("home") +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );		
+				repaintEmTree(tree);
 			});
 	  	}
 		else if( event.keyCode === 27 ) //esc 
@@ -246,13 +246,16 @@ jQuery(document).ready(function()
 		var node = getNode(this);
 		var tree = node.closest(".emtree");
 		var nodeid = node.data('nodeid');
-		console.log("removing",node, nodeid);
-
-		var link = tree.data("home") + "/components/emtree/delete.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
-		$.get(link, function(data) 
+		var agree=confirm("Are you sure you want to delete?");
+		if (agree)
 		{
-			tree.closest("#treeholder").load(tree.data("home") +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );					
-		});
+			console.log("removing",node, nodeid);
+			var link = tree.data("home") + "/components/emtree/delete.html?tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" +  node.data('depth'); 
+			$.get(link, function(data) 
+			{
+				repaintEmTree(tree);
+			});
+		}	
 		return false;
 	} );
 	$(".treecontext #createnode").livequery('click', function(event) {
@@ -304,5 +307,20 @@ jQuery(document).ready(function()
 
 repaintEmTree = function (tree) {
 	var home = tree.data("home");
-	tree.closest("#treeholder").load(home +  "/components/emtree/tree.html?tree-name=" + tree.data("treename") );
+	
+//	<div id="${treename}tree" class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" data-rootnodeid="$rootcategory.getId()"
+//		data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix" data-targetdiv="$!targetdiv"
+//		>
+	var options = { 
+			"tree-name": tree.data("treename"),
+			"treeprefix":tree.data("url-prefix"),
+			"treepostfix":tree.data("url-postfix"),
+			"targetdiv":tree.data("targetdiv")
+		};
+	
+	tree.closest("#treeholder").load(home +  "/components/emtree/tree.html", options, function()
+	{
+		$(document).trigger("domchanged");
+
+	});
 }

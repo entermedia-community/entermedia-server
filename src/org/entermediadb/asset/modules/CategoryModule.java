@@ -155,6 +155,14 @@ public class CategoryModule extends BaseMediaModule
 			inRequest.putPageValue(webTree.getName(), webTree);
 			//inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
 		}
+		
+		String clear = inRequest.getRequestParameter("clearselection");
+		if( Boolean.parseBoolean(clear))
+		{
+			webTree.getTreeRenderer().selectNodes(null);
+		}
+
+		
 		return webTree;
 	}
 	public void selectNodes(WebPageRequest inReq)
