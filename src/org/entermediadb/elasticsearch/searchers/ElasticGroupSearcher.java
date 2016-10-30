@@ -107,7 +107,7 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 
 	public Group getGroup(String inGroupId)
 	{
-		Group group = (Group)getCacheManager().get("groupSearcher", inGroupId);
+		Group group = (Group)getCacheManager().get(getCatalogId() + "groupSearcher", inGroupId);
 		if( group == null)
 		{
 			group = (Group)searchById(inGroupId);
@@ -118,7 +118,7 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 			}
 			else
 			{
-				getCacheManager().put("groupSearcher", inGroupId, group);
+				getCacheManager().put(getCatalogId() +  "groupSearcher", inGroupId, group);
 			}
 		}	
 		return group;
