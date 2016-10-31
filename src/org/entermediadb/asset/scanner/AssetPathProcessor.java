@@ -129,8 +129,8 @@ public class AssetPathProcessor extends PathProcessor
 		}
 		if( !fieldFileUtils.isLegalFilename(inItem.getPath()))
 		{
-			log.info("Path is not web friendly. Couldn't import " + path);
-			return false;
+			log.info("Path is not web friendly.  Will have archivepath set");
+			return true;
 		}
 
 		return super.acceptFile(inItem);
@@ -147,10 +147,9 @@ public class AssetPathProcessor extends PathProcessor
 			}
 			else
 			{
-				if (acceptFile(inInput))
-				{
+				
 					processFile(inInput, inUser);
-				}
+				
 			}
 		}
 		protected void processAssetFolder(ContentItem inInput, User inUser)

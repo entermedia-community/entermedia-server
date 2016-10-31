@@ -538,7 +538,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		{
 			inSourcePath = inSourcePath.substring(0, inSourcePath.length() - 1);
 		}
-		return (Data) searchByField("sourcepath", inSourcePath);
+		return (Data) query().or().exact("sourcepath",  inSourcePath).exact("archivesourcepath",  inSourcePath).searchOne();
 	}
 
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate)

@@ -33,7 +33,8 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	protected boolean fieldIncludeCategories = true;
 	private static final Log log = LogFactory.getLog(AssetUtilities.class);
 
-	
+	protected FileUtils fieldFileUtils = new FileUtils();
+
 	public boolean isIncludeCategories()
 	{
 		return fieldIncludeCategories;
@@ -53,17 +54,20 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	{
 		fieldMetaDataReader = inMetaDataReader;
 	}
+
 	public Asset createAssetIfNeeded(ContentItem inContent, final MediaArchive inArchive, User inUser)
 	{
-		return createAssetIfNeeded(inContent, true, inArchive,  inUser);
+		return createAssetIfNeeded(inContent, true, inArchive, inUser);
 	}
+
 	public Asset createAssetIfNeeded(ContentItem inContent, boolean includefilename, final MediaArchive inArchive, User inUser)
 	{
-		String sourcepath = extractSourcePath(inContent,includefilename, inArchive);
+		String sourcepath = extractSourcePath(inContent, includefilename, inArchive);
 		Asset asset = inArchive.getAssetSearcher().getAssetBySourcePath(sourcepath);
 		asset = populateAsset(asset, inContent, inArchive, sourcepath, inUser);
 		return asset;
 	}
+
 	//Main API
 	public Asset createAssetIfNeeded(final MediaArchive inArchive, ContentItem inContent, String inSourcePath, User inUser)
 	{
@@ -72,32 +76,34 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		return asset;
 	}
 
-	public String extractSourcePath(ContentItem inContent,boolean inIncludeFileName, MediaArchive inArchive)
+	public String extractSourcePath(ContentItem inContent, boolean inIncludeFileName, MediaArchive inArchive)
 	{
-		String	datadir = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
+		String datadir = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 
 		String sourcePath = inContent.getPath().substring(datadir.length());
-		if( sourcePath.startsWith("/"))
+		if (sourcePath.startsWith("/"))
 		{
 			sourcePath = sourcePath.substring(1);
 		}
-		if( !inIncludeFileName )
+		if (!inIncludeFileName)
 		{
 			return PathUtilities.extractDirectoryPath(sourcePath) + "/";
 		}
 		return sourcePath;
 	}
+
 	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, String sourcePath, User inUser)
 	{
 		return populateAsset(asset, inContent, inArchive, isIncludeCategories(), sourcePath, inUser);
 	}
+
 	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, boolean inCludeCategories, String sourcePath, User inUser)
 	{
 		/**
-		String absolutepath = dest.getContentItem().getAbsolutePath();
-		File itemFile = new File(absolutepath);
-		getAssetUtilities().getMetaDataReader().populateAsset(archive,itemFile, asset);
-		archive.saveAsset(asset, inUser);
+		 * String absolutepath = dest.getContentItem().getAbsolutePath(); File
+		 * itemFile = new File(absolutepath);
+		 * getAssetUtilities().getMetaDataReader().populateAsset(archive,
+		 * itemFile, asset); archive.saveAsset(asset, inUser);
 		 */
 		boolean importedasset = true;
 		if (asset != null)
@@ -105,39 +111,39 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			// Incremental conversion
 			// Asset Modification Date">2005-03-04 08:28:57
 			String editstatus = asset.get("editstatus");
-			if( "7".equals( editstatus) ) //Not deleted anymore
+			if ("7".equals(editstatus)) //Not deleted anymore
 			{
 				//restore
 				asset.setProperty("importstatus", "reimported");
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
-				readMetadata(asset, inContent, inArchive); 				//should we re-load metadata?
-				if( inCludeCategories )
+				readMetadata(asset, inContent, inArchive); //should we re-load metadata?
+				if (inCludeCategories)
 				{
 					populateCategory(asset, inContent, inArchive, inUser);
 				}
-//				else
-//				{
-//					Category parent = inArchive.getCategory("users");
-//					if ( parent != null)
-//					{
-//						inUser
-//					}
-//				}
+				//				else
+				//				{
+				//					Category parent = inArchive.getCategory("users");
+				//					if ( parent != null)
+				//					{
+				//						inUser
+				//					}
+				//				}
 				return asset;
 			}
-			
+
 			String existingdate = asset.get("assetmodificationdate");
-			if( existingdate != null)
+			if (existingdate != null)
 			{
 				long filemmod = inContent.getLastModified();
 				Date saveddate = DateStorageUtil.getStorageUtil().parseFromStorage(existingdate);
 				//We need to ignore milliseconds since our parsed date will not have them
-				if (saveddate !=  null)
+				if (saveddate != null)
 				{
 					long oldtime = saveddate.getTime();
-					filemmod = filemmod/1000;
-					oldtime = oldtime/1000;
+					filemmod = filemmod / 1000;
+					oldtime = oldtime / 1000;
 					if (filemmod == oldtime)
 					{
 						inArchive.getAssetArchive().clearAsset(asset);
@@ -146,61 +152,76 @@ public class AssetUtilities //TODO: Rename to AssetManager
 					}
 				}
 			}
-			
+
 		}
 		else
 		{
-			asset = (Asset)inArchive.getAssetSearcher().createNewData();
-			if( sourcePath.endsWith("/"))
+			asset = (Asset) inArchive.getAssetSearcher().createNewData();
+			if (sourcePath.endsWith("/"))
 			{
 				asset.setFolder(true);
 				asset.setPrimaryFile(inContent.getName());
-				sourcePath = sourcePath.substring(0,sourcePath.length() - 1);
-			}	
+				sourcePath = sourcePath.substring(0, sourcePath.length() - 1);
+
+			}
+
+			if (!fieldFileUtils.isLegalFilename(sourcePath))
+			{
+				log.info("Path is not web friendly.  Will have archivepath set");
+				asset.setValue("archivesourcepath", sourcePath);
+				for (Iterator iterator = fieldFileUtils.getInvalidChars().iterator(); iterator.hasNext();)
+				{
+					String invalid = (String) iterator.next();
+					sourcePath = sourcePath.replace(invalid, "");
+				}
+				sourcePath = "sourcepath/" + sourcePath ;
+				asset.setSourcePath(sourcePath);
+			}
+
 			asset.setSourcePath(sourcePath);
 			asset.setProperty("datatype", "original");
 			asset.setProperty("editstatus", "1");
-			
+
 			asset.setName(inContent.getName());
 			String ext = PathUtilities.extractPageType(inContent.getName());
-			if( ext != null)
+			if (ext != null)
 			{
 				ext = ext.toLowerCase();
 			}
 			asset.setProperty("fileformat", ext);
-			
-			if( inUser != null ) 
+
+			if (inUser != null)
 			{
 				asset.setProperty("owner", inUser.getUserName());
 			}
-			asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			asset.setProperty("assetviews", "1");
 			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
-			if( assettype != null)
+			if (assettype != null)
 			{
-				asset.setProperty("assettype",assettype.getId());
+				asset.setProperty("assettype", assettype.getId());
 			}
 		}
 		if (importedasset)
 		{
 			String status = asset.get("importstatus");
-			if( status == null || !status.equals("complete"))
+			if (status == null || !status.equals("complete"))
 			{
-				asset.setProperty("importstatus", "imported");				
+				asset.setProperty("importstatus", "imported");
 			}
 			String previewstatus = asset.get("previewstatus");
-//			if( previewstatus == null || status.equals("2"))
-//			{
-				asset.setProperty("previewstatus", "0");				
-//			}
-			
+			//			if( previewstatus == null || status.equals("2"))
+			//			{
+			asset.setProperty("previewstatus", "0");
+			//			}
+
 			asset.setProperty("pushstatus", "resend");
 			asset.setProperty("editstatus", "1");
 
 			readMetadata(asset, inContent, inArchive);
 			// TODO: clear out old cached thumbnails and conversions
 			// directory
-			if( inCludeCategories )
+			if (inCludeCategories)
 			{
 				populateCategory(asset, inContent, inArchive, inUser);
 			}
@@ -208,10 +229,10 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		}
 		return null;
 	}
-	
+
 	public void populateCategory(Asset inAsset, ContentItem inContent, final MediaArchive inArchive, User inUser)
 	{
-		String	datadir = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
+		String datadir = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 		String dir = PathUtilities.extractDirectoryPath(inContent.getPath());
 		populateCategory(inAsset, inArchive, datadir, dir, inUser);
 	}
@@ -222,27 +243,27 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		if (dir.length() > datadir.length())
 		{
 			String folderPath = dir.substring(datadir.length());
-//			This code is not needed. Just user runtime filters for categories			
-//			String folderfilter = inArchive.getCatalogSettingValue("categorytreemask");
-//			if(folderfilter == null || folderfilter.length() == 0){
-//				return;
-//				
-//			}
-//			HashMap properties = new HashMap();
-//			for (Iterator iterator = asset.getProperties().keySet().iterator(); iterator.hasNext();)
-//			{
-//				String key = (String) iterator.next();
-//				String value = asset.get(key);
-//				properties.put(key, value);
-//			}
-//			if(inUser != null){
-//				properties.put("username", inUser.getUserName());
-//			}
-//			properties.put("folderpath", folderPath);
-//			String categorypath = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), folderfilter, properties);
-			
+			//			This code is not needed. Just user runtime filters for categories			
+			//			String folderfilter = inArchive.getCatalogSettingValue("categorytreemask");
+			//			if(folderfilter == null || folderfilter.length() == 0){
+			//				return;
+			//				
+			//			}
+			//			HashMap properties = new HashMap();
+			//			for (Iterator iterator = asset.getProperties().keySet().iterator(); iterator.hasNext();)
+			//			{
+			//				String key = (String) iterator.next();
+			//				String value = asset.get(key);
+			//				properties.put(key, value);
+			//			}
+			//			if(inUser != null){
+			//				properties.put("username", inUser.getUserName());
+			//			}
+			//			properties.put("folderpath", folderPath);
+			//			String categorypath = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), folderfilter, properties);
+
 			//This now is really long, unique, and has a GUID...lets strip off the last folder?
-					
+
 			category = inArchive.getCategoryArchive().createCategoryTree(folderPath); //
 		}
 		else
@@ -266,7 +287,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	{
 		getMetaDataReader().populateAsset(inArchive, inContent, asset);
 	}
-		
+
 	public boolean deleteAsset(ContentItem inContent, final MediaArchive inArchive)
 	{
 		Asset asset = getAsset(inContent, inArchive);
@@ -280,12 +301,12 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			return false;
 		}
 	}
-	
+
 	public Asset getAsset(ContentItem inContent, final MediaArchive inArchive)
 	{
 		String datadir = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 		String sourcePath = inContent.getPath().substring(datadir.length());
-		if( sourcePath.startsWith("/"))
+		if (sourcePath.startsWith("/"))
 		{
 			sourcePath = sourcePath.substring(1);
 		}
@@ -296,15 +317,15 @@ public class AssetUtilities //TODO: Rename to AssetManager
 	public void moveAsset(Asset inAsset, String inNewPath, MediaArchive inArchive)
 	{
 		String oldSourcePath = inAsset.getSourcePath();
-		
+
 		String sourcePath = inNewPath;
 		if (inNewPath.startsWith("/"))
 		{
 			sourcePath = inNewPath.substring(getDataDir(inArchive).length());
 		}
-		
+
 		inAsset.setSourcePath(sourcePath);
-		
+
 		File oldFile = null;
 		File newFile = null;
 		if (inAsset.isFolder())
@@ -321,147 +342,149 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		try
 		{
 			new FileUtils().move(oldFile, newFile);
-		} catch (IOException e)
+		}
+		catch (IOException e)
 		{
 			throw new OpenEditException(e);
 		}
 	}
-	
+
 	public String getDataDir(MediaArchive inArchive)
 	{
 		return "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
 	}
-	
+
 	public String createSourcePath(WebPageRequest inReq, MediaArchive inArchive)
 	{
-		return createSourcePath( inReq,  inArchive, null);
+		return createSourcePath(inReq, inArchive, null);
 	}
+
 	public String createSourcePath(WebPageRequest inReq, MediaArchive inArchive, String fileName)
 	{
 		String sourcepathmask = null;
-		
+
 		String currentcollectionid = inReq.getRequestParameter("currentcollection");
-		if( currentcollectionid == null)
+		if (currentcollectionid == null)
 		{
 			currentcollectionid = inReq.getRequestParameter("currentcollection.value");
-		}	
-		if( currentcollectionid == null)
+		}
+		if (currentcollectionid == null)
 		{
-			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}
+			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}
 		}
 		else
 		{
-			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload");  //${division.uploadpath}/${user.userName}/${formateddate}	
+			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}	
 		}
-		
+
 		Map vals = new HashMap();
 		vals.putAll(inReq.getPageMap());
-		
-		if(currentcollectionid != null)
+
+		if (currentcollectionid != null)
 		{
 			Data coll = inArchive.getData("librarycollection", currentcollectionid);
-			if( coll != null)
+			if (coll != null)
 			{
 				vals.put("librarycollection", currentcollectionid);
 				vals.put("library", coll.get("library"));
-			}	
+			}
 		}
 		String[] fields = inReq.getRequestParameters("field");
 
-		if( fields != null)
+		if (fields != null)
 		{
 			for (int i = 0; i < fields.length; i++)
 			{
-				String val = inReq.getRequestParameter(fields[i]+ ".value");
-				if( val != null)
+				String val = inReq.getRequestParameter(fields[i] + ".value");
+				if (val != null)
 				{
-					vals.put(fields[i],val);
+					vals.put(fields[i], val);
 				}
 			}
 		}
 		String id = inReq.getRequestParameter("id");
-		if(id != null)
+		if (id != null)
 		{
-			vals.put("id",id);
+			vals.put("id", id);
 		}
 		String library = inReq.getRequestParameter("libraries.value");
-		if(library != null)
+		if (library != null)
 		{
 			vals.put("library", library);
 		}
 
 		library = inReq.getRequestParameter("library.value");
-		if(library != null)
+		if (library != null)
 		{
 			vals.put("library", library);
 		}
 
 		String division = inReq.getRequestParameter("division.value");
-		if(division != null)
+		if (division != null)
 		{
 			vals.put("division", division);
 		}
-		
+
 		String sourcepath = createSourcePathFromMask(inArchive, inReq.getUser(), fileName, sourcepathmask, vals);
-		
+
 		return sourcepath;
 	}
 
-	public String createSourcePathFromMask( MediaArchive inArchive, User inUser, String fileName, String sourcepathmask, Map vals)
+	public String createSourcePathFromMask(MediaArchive inArchive, User inUser, String fileName, String sourcepathmask, Map vals)
 	{
 
-		if( inUser != null)
+		if (inUser != null)
 		{
-			vals.put("user",inUser);
+			vals.put("user", inUser);
 		}
 
-		if(fileName != null)
+		if (fileName != null)
 		{
 			vals.put("filename", fileName);
 			String ext = PathUtilities.extractPageType(fileName);
 			String render = inArchive.getMediaRenderType(ext);
 			vals.put("extension", ext);
-			vals.put("rendertype", render);			
+			vals.put("rendertype", render);
 		}
 		//vals.put("filename", item.getName());
 		//vals.put("guid", item.getName());
 		String guid = UUID.randomUUID().toString();
-		String sguid = guid.substring(0,Math.min(guid.length(), 13));
+		String sguid = guid.substring(0, Math.min(guid.length(), 13));
 		vals.put("guid", sguid);
-		vals.put("splitguid", sguid.substring(0,2) + "/" + sguid.substring(3).replace("-", ""));
-		
-		Date now = new Date();
-		String date  = DateStorageUtil.getStorageUtil().formatDateObj(now,"yyyy/MM"); //TODO: Use DataStorage
-		vals.put("formatteddate",date );
-		date  = DateStorageUtil.getStorageUtil().formatDateObj(now,"dd"); //TODO: Use DataStorage
-		vals.put("formattedday",date );
+		vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3).replace("-", ""));
 
-		date  = DateStorageUtil.getStorageUtil().formatDateObj(now,"HH"); //TODO: Use DataStorage
-		vals.put("formattedhour",date );
-		
-		
+		Date now = new Date();
+		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy/MM"); //TODO: Use DataStorage
+		vals.put("formatteddate", date);
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "dd"); //TODO: Use DataStorage
+		vals.put("formattedday", date);
+
+		date = DateStorageUtil.getStorageUtil().formatDateObj(now, "HH"); //TODO: Use DataStorage
+		vals.put("formattedhour", date);
+
 		Replacer replacer = new Replacer(); //TODO: Replace with MediaArchuive.getReplacer()
-		
+
 		replacer.setSearcherManager(inArchive.getSearcherManager());
 		replacer.setCatalogId(inArchive.getCatalogId());
 		replacer.setAlwaysReplace(true);
 		String sourcepath = replacer.replace(sourcepathmask, vals);
 		//sourcepath = sourcepath + "/" + item.getName();
-		if( sourcepath.endsWith("/"))
+		if (sourcepath.endsWith("/"))
 		{
-			sourcepath = sourcepath.substring(0,sourcepath.length() - 1);
+			sourcepath = sourcepath.substring(0, sourcepath.length() - 1);
 		}
-		if( sourcepathmask.endsWith("/") )
+		if (sourcepathmask.endsWith("/"))
 		{
 			sourcepath = sourcepath + "/";
 		}
 		sourcepath = sourcepath.replace("//", "/"); //in case of missing data
-		if( sourcepath.startsWith("/") )
+		if (sourcepath.startsWith("/"))
 		{
 			sourcepath = sourcepath.substring(1);
 		}
 		return sourcepath;
 	}
+
 	protected void copyAssets(ArrayList savelist, User inUser, MediaArchive inArchive, Data inCollection, Category inCat, Category inParent)
 	{
 
@@ -478,7 +501,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			inParent.addChild(copy);
 			cats.saveData(copy, null);
 		}
-		
+
 		HitTracker assetlist = assets.fieldSearch("category-exact", inCat.getId());
 		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
 		{
@@ -496,95 +519,82 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 	}
 
-
-	
-	
 	public void exportCategoryTree(MediaArchive inArchive, Category inCategory, ContentItem target)
 	{
-		if(!target.exists()){
+		if (!target.exists())
+		{
 			inArchive.getPageManager().getRepository().put(target);
 		}
 		Searcher assets = inArchive.getAssetSearcher();
 		Searcher cats = inArchive.getSearcher("category");
-		
+
 		HitTracker assetlist = assets.query().exact("category-exact", inCategory.getId()).search();
 		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
 			Asset asset = (Asset) assets.loadData(hit);
-			ContentItem fullpath = inArchive.getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getPath() );
+			ContentItem fullpath = inArchive.getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getPath());
 			//Page fullpath = inArchive.getOriginalDocument(asset);
 
-			
 			log.info(fullpath.isFolder());
-			if(!fullpath.exists()){
-				log.info("Fullpath " + fullpath  + "Did not exist");
-				
-			} else{
-		
-			log.info("moving: " + fullpath + " to " + target  );
-			inArchive.getPageManager().getRepository().copy(fullpath, target);
-			ContentItem finalpath = inArchive.getPageManager().getRepository().get(target.getPath() + "/" + asset.getName());
-			Date lastmod = new Date(fullpath.getLastModified());
-			finalpath.setLastModified(lastmod);
+			if (!fullpath.exists())
+			{
+				log.info("Fullpath " + fullpath + "Did not exist");
+
 			}
-		
+			else
+			{
+
+				log.info("moving: " + fullpath + " to " + target);
+				inArchive.getPageManager().getRepository().copy(fullpath, target);
+				ContentItem finalpath = inArchive.getPageManager().getRepository().get(target.getPath() + "/" + asset.getName());
+				Date lastmod = new Date(fullpath.getLastModified());
+				finalpath.setLastModified(lastmod);
+			}
+
 		}
-		
+
 		for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
 			String childfolder = target.getPath() + child.getName() + "/";
 			ContentItem childtarget = inArchive.getPageManager().getRepository().getStub(childfolder);
-			exportCategoryTree(inArchive, child,childtarget);
+			exportCategoryTree(inArchive, child, childtarget);
 		}
 	}
-	
-	
-	
-	/*
-	
-	public void copyCategory(MediaArchive inArchive, Category inSource, Category inDestination)
-	{
-		String finalpath = inFolder + "/" + inRoot.getName();
-		Searcher assets = inArchive.getAssetSearcher();
-		Searcher cats = inArchive.getSearcher("category");
-		
-		
-		HitTracker assetlist = assets.fieldSearch("category-exact", inRoot.getId());
-		for (Iterator iterator = assetlist.iterator(); iterator.hasNext();)
-		{
-			Data hit = (Data) iterator.next();
-			Asset asset = (Asset) assets.loadData(hit);
-			Page fullpath = inArchive.getPageManager().getPage("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + asset.getPath() );
-			log.info(fullpath.isFolder());
-			if(!fullpath.exists()){
-				log.info("Fullpath " + fullpath  + "Did not exist");
-			
-			}
-			log.info(fullpath );
-			Page target = inArchive.getPageManager().getPage(finalpath);
-			inArchive.getPageManager().copyPage(fullpath, target);
-		
-		}
-		
-		for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();)
-		{
-			Category child = (Category) iterator.next();
-			exportCategoryTree(inArchive, child, finalpath);
-		}
-		
-		
-		
-		
-		
-	}
-		*/
-	
-	
-	
-	
-	
 
+	/*
+	 * 
+	 * public void copyCategory(MediaArchive inArchive, Category inSource,
+	 * Category inDestination) { String finalpath = inFolder + "/" +
+	 * inRoot.getName(); Searcher assets = inArchive.getAssetSearcher();
+	 * Searcher cats = inArchive.getSearcher("category");
+	 * 
+	 * 
+	 * HitTracker assetlist = assets.fieldSearch("category-exact",
+	 * inRoot.getId()); for (Iterator iterator = assetlist.iterator();
+	 * iterator.hasNext();) { Data hit = (Data) iterator.next(); Asset asset =
+	 * (Asset) assets.loadData(hit); Page fullpath =
+	 * inArchive.getPageManager().getPage("/WEB-INF/data/" +
+	 * inArchive.getCatalogId() + "/originals/" + asset.getPath() );
+	 * log.info(fullpath.isFolder()); if(!fullpath.exists()){
+	 * log.info("Fullpath " + fullpath + "Did not exist");
+	 * 
+	 * } log.info(fullpath ); Page target =
+	 * inArchive.getPageManager().getPage(finalpath);
+	 * inArchive.getPageManager().copyPage(fullpath, target);
+	 * 
+	 * }
+	 * 
+	 * for (Iterator iterator = inRoot.getChildren().iterator();
+	 * iterator.hasNext();) { Category child = (Category) iterator.next();
+	 * exportCategoryTree(inArchive, child, finalpath); }
+	 * 
+	 * 
+	 * 
+	 * 
+	 * 
+	 * }
+	 */
 
 }
