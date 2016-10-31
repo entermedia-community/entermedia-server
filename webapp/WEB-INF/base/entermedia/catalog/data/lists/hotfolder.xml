@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <hotfolders> 
-  <hotfolder id="user-admin" name="Hot Folder for Ian Miller (admin)" externalpath="/home/ian/git/testbench/webapp/WEB-INF/data/media/catalogs/public/hotfolders/admin/" hotfoldertype="syncthing" excludes="      */.*,*/Thumbs.db,*.old      " ordering="0" lastscanstart="2016-06-22 10:44:51 -0400" subfolder="admin" monitortree="false" deviceid="234IFP6-3BQUJ6F-JWLYL37-4J6JQF7-6YTICXP-KAFPS66-2VAAY54-CIZHUQN" enabled="false"/> 
 </hotfolders>
