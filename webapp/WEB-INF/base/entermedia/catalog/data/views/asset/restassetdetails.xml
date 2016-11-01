@@ -2,10 +2,9 @@
 
 <properties usagelabel="General">
   <property id="name"/>
+  <property id="headline"/>
   <property id="assettitle"/>
   <property id="longcaption"/>
-  <property id="longcaption"/>
-  <property id="editstatus"/>
   <property id="importstatus"/>
   <property id="editstatus"/>
   <property id="owner"/>

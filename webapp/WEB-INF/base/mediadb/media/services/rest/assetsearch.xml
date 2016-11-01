@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="ok">
 #set( $mediaarchive = $entermedia.getMediaArchive($context.getRequestParameter("catalogid") ) )
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+
 #set( $cataloghome = $mediaarchive.getCatalogHome() )
 #set( $fields = $searcher.getDetailsForView("asset/restsearchresults",$user) )
 <hits sessionid="$hits.sessionId" page="$hits.page" pages="$hits.totalPages" totalsize="$hits.size()">
@@ -13,10 +15,13 @@
 #if( $type == "default" )
         #set ($ext = $hit.fileformat)
         #set ($thumb = "$mediaarchive.getThemePrefix()/entermedia/images/mimetypes/${ext}.gif")
+        #set ($thumb = $link)
 #else
-        #set( $thumb = "$home$cataloghome/downloads/preview/thumb/$hit.sourcepath/thumb.jpg")
+        #set( $thumb = "$home/${mediadbappid}/services/module/asset/downloads/preview/thumb/$hit.sourcepath/thumb.jpg")
+        #set( $link = "$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$hit.sourcepath/${hit.name}.jpg")
 #end
         <thumb>#esc($thumb)</thumb>
+        <preview>#esc($link)</preview>
 </hit>
 
 #end

@@ -3,10 +3,21 @@
 #set($details = $searcher.getDetailsForView("asset/restassetdetails", $user))
 #foreach( $detail in $details )
 #set( $value = false )
-#set( $value = $asset.get($detail.id) )
+#set( $value = $asset.getValue($detail.id) )
 #if( $value )
 #if($detail.isList())
-<property id="$detail.id" valueid="$value"><![CDATA[ $!searcherManager.getListData($detail, $value) ]]></property>
+<property id="$detail.id" valueid="$value"><![CDATA[$!searcherManager.getListData($detail, $value)]]></property>
+#elseif($detail.isMultiLanguage())
+	
+	#set($languages = $!searcherManager.getList($catalogid, "locale"))
+    #set($map = $asset.getValue($detail.getId()))
+
+	#foreach($locale in $languages)
+	   #set( $val = false ) #set( $val = $map.getText($locale.id) )
+	   #if($val)
+		<property id="${detail.id}.${locale.id}"><![CDATA[$val]]></property>
+	   #end	
+	#end
 #else
 <property id="$detail.id"><![CDATA[ $value ]]></property>
 #end
