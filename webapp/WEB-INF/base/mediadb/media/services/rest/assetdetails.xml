@@ -19,7 +19,7 @@
 	   #end	
 	#end
 #else
-<property id="$detail.id"><![CDATA[ $value ]]></property>
+<property id="$detail.id"><![CDATA[$value]]></property>
 #end
 #end
 #end
