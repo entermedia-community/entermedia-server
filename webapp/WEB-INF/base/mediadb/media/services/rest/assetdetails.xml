@@ -23,23 +23,25 @@
 #end
 #end
 #end
-#set( $mediaarchive = $entermedia.getMediaArchive($context.getRequestParameter("catalogid") ) )
-#set( $cataloghome = $mediaarchive.getCatalogHome() )
+#set( $mediaarchive = $entermedia.getMediaArchive($context.findValue("catalogid") ) )
+#set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#if(!$prefix) #set( $prefix = $context.siteRoot ) #end
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
-#if( $type == "default" )
-	#set ($ext = $hit.fileformat)
-	#set ($thumb = "$mediaarchive.getThemePrefix()/entermedia/images/mimetypes/${ext}.gif")
-#else
-	#set( $thumb = "$home$cataloghome/downloads/preview/thumb/$asset.sourcePath/thumb.jpg")
-#end
+#set( $thumb = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$asset.getSourcePath()/image200x200.jpg")
 <thumb>#esc($thumb)</thumb>
-#if( $type == "image" || $type == "document")
-#set( $preview = "$home$cataloghome/downloads/preview/large/$asset.sourcePath/image.jpg")
+#if( $type == "document" )
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$asset.getSourcePath()/image1024x768.png")
+#elseif( $type == "image")
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$asset.getSourcePath()/image1024x768.jpg")
 #elseif(  $type == "video" )
-#set( $preview = "$home/$catalogid/downloads/converted/cache/${asset.sourcePath}/preview.flv")
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$asset.getSourcePath()/video.mp4")
 #elseif( $type == "audio" )
-#set( $preview = "$home/$catalogid/downloads/mp3/${asset.sourcePath}/audio.mp3")
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$asset.getSourcePath()/audio.mp3")
 #end
-<preview>$preview</preview>
-<original>$home$cataloghome/downloads/originals/$asset.sourcePath/$asset.name</original>
+<preview>#esc($preview)</preview>
+
+#set( $downloadlink = "$context.siteRoot$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+
+<original>#esc($downloadlink)</original>
 </rsp>
