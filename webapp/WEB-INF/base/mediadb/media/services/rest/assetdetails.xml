@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="ok">
+#set( $mediaarchive = $entermedia.getMediaArchive($catalogid) )
+#set($languages = $!searcherManager.getList($catalogid, "locale"))
 #set($details = $searcher.getDetailsForView("asset/restassetdetails", $user))
 #foreach( $detail in $details )
 #set( $value = false )
-#set( $value = $asset.getValue($detail.id) )
+#set( $value = $asset.get($detail.id) )
 #if( $value )
 #if($detail.isList())
-<property id="$detail.id" valueid="$value"><![CDATA[$!searcherManager.getListData($detail, $value)]]></property>
+<property id="$detail.id" valueid="$value"><![CDATA[$!searcherManager.getData($detail, $value)]]></property>
 #elseif($detail.isMultiLanguage())
 	
-	#set($languages = $!searcherManager.getList($catalogid, "locale"))
     #set($map = $asset.getValue($detail.getId()))
 
 	#foreach($locale in $languages)
@@ -23,7 +24,6 @@
 #end
 #end
 #end
-#set( $mediaarchive = $entermedia.getMediaArchive($context.findValue("catalogid") ) )
 #set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #if(!$prefix) #set( $prefix = $context.siteRoot ) #end
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
