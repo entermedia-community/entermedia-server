@@ -288,7 +288,7 @@ public class MediaArchive implements CatalogEnabled
 	//cached
 	public Asset getAssetBySourcePath(String inSourcePath)
 	{
-		return (Asset)getAssetSearcher().searchByField("sourcepath",inSourcePath);
+		return (Asset)getAssetSearcher().query().or().exact("sourcepath",  inSourcePath).exact("archivesourcepath",  inSourcePath).searchOne();
 	}
 	
 	public String asLinkToPreview(String inSourcePath)

@@ -115,7 +115,6 @@ public class DataEditModule extends BaseMediaModule
 		
 	}	
 	/**
-	 * @deprecated use searchFields
 	 * @param inReq
 	 * @throws Exception
 	 */

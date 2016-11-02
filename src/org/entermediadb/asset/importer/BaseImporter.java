@@ -260,6 +260,10 @@ public class BaseImporter extends EnterMediaObject
 			//String header = inHeaders[i];
 			String id = PathUtilities.extractId(header, true);
 			PropertyDetail detail = details.getDetail(id);
+			if(detail == null){
+				detail = details.getDetail(header);
+			}
+			
 			if (detail == null && !header.contains("."))
 			{
 				detail = new PropertyDetail();
@@ -278,6 +282,8 @@ public class BaseImporter extends EnterMediaObject
 
 	protected void addProperties(Searcher searcher, Row inRow, Data inData)
 	{
+		PropertyDetails details = getSearcher().getPropertyDetails();
+
 		for (int i = 0; i < inRow.getData().length; i++)
 		{
 			String val = inRow.getData(i);
@@ -319,7 +325,17 @@ public class BaseImporter extends EnterMediaObject
 			}
 			else if (val != null && val.length() > 0)
 			{
-				inData.setProperty(headerid, val);
+				
+				PropertyDetail detail = details.getDetail(headerid);
+				if(detail == null){
+					detail = details.getDetail(header);
+				}
+				
+				if(detail != null){
+					
+				
+				inData.setProperty(detail.getId(), val);
+				}
 			}
 		}
 	}
