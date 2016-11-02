@@ -16,9 +16,9 @@
 #set( $value = false )
 #set( $value = $hit.get($field.id))
 #if( $value )
-#if($field.isList())${field.id}id="#esc($value)" ${field.id}="#esc( "$!searcherManager.getData($field,$value)" )"
+#if($field.isList()) ${field.id}id="#esc($value)" ${field.id}="#esc( "$!searcherManager.getData($field,$value)" )"
 #elseif($field.isMultiLanguage())
-${field.id}="#esc( $value )"#set($value = $hit.getValue($field.getId()))
+ ${field.id}="#esc( $value )"#set($value = $hit.getValue($field.getId()))
 #foreach($locale in $languages) #set( $val = false )#set( $val = $value.getText($locale.id) )
 #if($val) ${field.id}.${locale.id}="#esc($val)"#end	
 #end
