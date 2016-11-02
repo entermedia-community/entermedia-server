@@ -7,7 +7,6 @@
 	<property id="datatype"  editable="true" stored="true" index="true">Data Type</property>	
 	<property id="rendertype"  editable="true" stored="true" index="true">Render Type</property>	
 	<property id="required"  editable="true" stored="true" index="true">Required</property>	
-	<property id="sortable"  editable="true" stored="true" index="true">Sortable</property>	
 	<property id="index"  editable="true" stored="true" index="true">Searchable</property>	
 	<property id="searchcomponent"  editable="true" stored="true" index="true">Default Search View</property>	
 	

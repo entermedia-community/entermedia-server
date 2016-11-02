@@ -1,3 +1,5 @@
+package data;
+
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVWriter
 import org.entermediadb.email.PostMail
