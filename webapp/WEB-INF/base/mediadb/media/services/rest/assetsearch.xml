@@ -17,10 +17,10 @@
 #set( $value = $hit.get($field.id))
 #if( $value )
 #if($field.isList())${field.id}id="#esc($value)" ${field.id}="#esc( "$!searcherManager.getData($field,$value)" )"
-#elseif($detail.isMultiLanguage())
-${field.id}="#esc( $value )"#set($value = $hit.getValue($detail.getId()))
+#elseif($field.isMultiLanguage())
+${field.id}="#esc( $value )"#set($value = $hit.getValue($field.getId()))
 #foreach($locale in $languages) #set( $val = false )#set( $val = $value.getText($locale.id) )
-#if($val) ${detail.id}.${locale.id}="#esc($val)"#end	
+#if($val) ${field.id}.${locale.id}="#esc($val)"#end	
 #end
 #else
  ${field.id}="#esc( $value )"
@@ -34,12 +34,12 @@ ${field.id}="#esc( $value )"#set($value = $hit.getValue($detail.getId()))
 <thumb>#esc($thumb)</thumb>
 #if( $type == "document" )
 #set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/image1024x768.png")
-#elseif( $type == "image")
-#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/image1024x768.jpg")
 #elseif(  $type == "video" )
 #set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/video.mp4")
 #elseif( $type == "audio" )
 #set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/audio.mp3")
+#else
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/image1024x768.jpg")
 #end
 <preview>#esc($preview)</preview>
 

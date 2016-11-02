@@ -65,7 +65,11 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 			for(Term term : inQuery.getTerms() )
 			{
 				String type = term.getDetail().getSearchType();
-				if( "asset".equals(type))
+				if(type == null )
+				{
+					continue;
+				}
+				if( !type.equals("library") && !type.equals("librarycollection"))
 				{
 					continue;
 				}

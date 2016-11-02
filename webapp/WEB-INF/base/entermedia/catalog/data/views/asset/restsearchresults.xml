@@ -4,6 +4,7 @@
   <property id="id"/>
   <property id="sourcepath"/>
   <property id="name"/>
+  <property id="headline"/>
   <property id="assettitle"/>
   <property id="longcaption"/>
   <property id="fileformat"/>
