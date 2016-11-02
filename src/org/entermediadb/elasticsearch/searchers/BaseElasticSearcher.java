@@ -567,10 +567,10 @@ public class BaseElasticSearcher extends BaseSearcher
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
-						if (detail.isSortable() || "name".equals(detail.getId()))
+						if (detail.isAnalyzed() )
 						{
 							jsonproperties.startObject("fields");
-							jsonproperties.startObject("sort");
+							jsonproperties.startObject("exact");
 							jsonproperties = jsonproperties.field("type", "string");
 							jsonproperties = jsonproperties.field("index", "not_analyzed");
 							jsonproperties.endObject();
@@ -650,10 +650,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				else
 				{
 					jsonproperties = jsonproperties.field("type", "string");
-					if (detail.isSortable() || "name".equals(detail.getId()))
+					if (detail.isAnalyzed())
 					{
 						jsonproperties.startObject("fields");
-						jsonproperties.startObject("sort");
+						jsonproperties.startObject("exact");
 						jsonproperties = jsonproperties.field("type", "string");
 						jsonproperties = jsonproperties.field("index", "not_analyzed");
 						jsonproperties.endObject();
@@ -667,7 +667,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				
 				if( indextype == null)
 				{
-					if (detail.isList() || detail.isMultiValue() || detail.getId().endsWith("id") || detail.getId().contains("sourcepath"))
+					if (!detail.isAnalyzed())
 					{
 						indextype = "not_analyzed";
 					}
@@ -1238,7 +1238,11 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			if ("exact".equals(inTerm.getOperation()))
 			{
-				find = QueryBuilders.termQuery(fieldid, valueof);
+				if(inDetail.isAnalyzed()){
+					find = QueryBuilders.termQuery(fieldid + ".exact" , valueof);
+				} else {
+					find = QueryBuilders.termQuery(fieldid  , valueof);
+				}
 			}
 			else if ("orgroup".equals(inTerm.getOperation()))
 			{
@@ -1325,15 +1329,15 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isString() && (detail.isSortable() || "name".equals(detail.getId())))
+			if (detail != null && detail.isAnalyzed())
 			{
 				if (detail.isMultiLanguage())
 				{
-					sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".sort");
+					sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
 				}
 				else
 				{
-					sort = SortBuilders.fieldSort(field + ".sort");
+					sort = SortBuilders.fieldSort(field + ".exact");
 				}
 
 			}

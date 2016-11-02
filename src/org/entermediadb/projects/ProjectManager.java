@@ -583,9 +583,9 @@ public class ProjectManager implements CatalogEnabled
 				PropertyDetail namedetail = inArchive.getAssetSearcher().getDetail("name");
 				Data target = null;
 				if(namedetail.isMultiLanguage()){
-				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name_int.en.sort", item.getName()).searchOne();
+				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name_int.en.exact", item.getName()).searchOne();
 				} else{
-				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name.sort", item.getName()).searchOne();
+				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name.exact", item.getName()).searchOne();
 				}
 				Asset asset = (Asset) inArchive.getAssetSearcher().loadData(target);
 				
