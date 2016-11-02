@@ -1,28 +1,50 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <rsp stat="ok">
-#set( $mediaarchive = $entermedia.getMediaArchive($context.getRequestParameter("catalogid") ) )
+#set( $mediaarchive = $entermedia.getMediaArchive($catalogid) )
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
+#set($languages = $searcherManager.getList($catalogid, "locale"))
+#set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#if(!$prefix) #set( $prefix = $context.siteRoot ) #end
 
 #set( $cataloghome = $mediaarchive.getCatalogHome() )
 #set( $fields = $searcher.getDetailsForView("asset/restsearchresults",$user) )
 <hits sessionid="$hits.sessionId" page="$hits.page" pages="$hits.totalPages" totalsize="$hits.size()">
 #foreach( $hit in $hits.getPageOfHits() )
+
+
 <hit #foreach( $field in $fields )
 #set( $value = false )
 #set( $value = $hit.get($field.id))
-#if( $value )#if($field.isList())${field.id}id="#esc($value)" ${field.id}="#esc( "$!searcherManager.getListData($field,$value)" )"#{else}${field.id}="#esc( $value )"#{end}#end #end>
-#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-#if( $type == "default" )
-        #set ($ext = $hit.fileformat)
-        #set ($thumb = "$mediaarchive.getThemePrefix()/entermedia/images/mimetypes/${ext}.gif")
-        #set ($thumb = $link)
-#else
-        #set( $thumb = "$home/${mediadbappid}/services/module/asset/downloads/preview/thumb/$hit.sourcepath/thumb.jpg")
-        #set( $link = "$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$hit.sourcepath/${hit.name}.jpg")
+#if( $value )
+#if($field.isList())${field.id}id="#esc($value)" ${field.id}="#esc( "$!searcherManager.getData($field,$value)" )"
+#elseif($detail.isMultiLanguage())
+${field.id}="#esc( $value )"#set($value = $hit.getValue($detail.getId()))
+#foreach($locale in $languages) #set( $val = false )#set( $val = $value.getText($locale.id) )
+#if($val) ${detail.id}.${locale.id}="#esc($val)"#end	
 #end
-        <thumb>#esc($thumb)</thumb>
-        <preview>#esc($link)</preview>
+#else
+ ${field.id}="#esc( $value )"
+#end 
+#end
+#end
+>
+
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+#set( $thumb = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/image200x200.jpg")
+<thumb>#esc($thumb)</thumb>
+#if( $type == "document" )
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/image1024x768.png")
+#elseif( $type == "image")
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/image1024x768.jpg")
+#elseif(  $type == "video" )
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/video.mp4")
+#elseif( $type == "audio" )
+#set( $preview = "$prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$hit.getSourcePath()/audio.mp3")
+#end
+<preview>#esc($preview)</preview>
+
 </hit>
+
 
 #end
 </hits>

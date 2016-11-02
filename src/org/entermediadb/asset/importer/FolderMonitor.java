@@ -14,12 +14,11 @@ import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 import org.openedit.OpenEditException;
+import org.openedit.cache.CacheManager;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
 import org.openedit.util.ExecutorManager;
@@ -30,8 +29,18 @@ public class FolderMonitor implements Runnable, WebEventListener
 	protected Map<WatchKey, Path> keys = null;
 	protected ExecutorManager fieldExecutorManager;
 	protected Map fieldPathChangedListeners = new HashMap();
-	protected Set fieldIgnoreList = new HashSet();
+	protected CacheManager fieldTimedCache;
 	
+	public CacheManager getTimedCache()
+	{
+		return fieldTimedCache;
+	}
+
+	public void setTimedCache(CacheManager inTimedCache)
+	{
+		fieldTimedCache = inTimedCache;
+	}
+
 	public void addPathChangedListener(String inPrefix, PathChangedListener inPathChangedListener)
 	{
 		fieldPathChangedListeners.put(inPrefix, inPathChangedListener);
@@ -125,7 +134,7 @@ public class FolderMonitor implements Runnable, WebEventListener
 				// print out event
 				//System.out.format("%s: %s\n", event.kind().name(), child);
 				String absolutepath = child.toFile().getAbsolutePath();
-				if( !fieldIgnoreList.contains( absolutepath) )
+				if( getTimedCache().get("FolderMonitor", absolutepath) == null )
 				{
 					for (Iterator iterator = fieldPathChangedListeners.keySet().iterator(); iterator.hasNext();)
 					{
@@ -207,12 +216,12 @@ public class FolderMonitor implements Runnable, WebEventListener
 	{
 		if( "savingoriginal".equals( inEvent.getOperation() ))
 		{
-			fieldIgnoreList.add(inEvent.get("absolutepath"));
+			getTimedCache().put("FolderMonitor", inEvent.get("absolutepath"),true);
 		}
-		else if( "savingoriginalcomplete".equals( inEvent.getOperation() ))
-		{
-			fieldIgnoreList.remove(inEvent.get("absolutepath"));
-		}
+//		else if( "savingoriginalcomplete".equals( inEvent.getOperation() ))
+//		{
+//			fieldIgnoreList.remove(inEvent.get("absolutepath"));
+//		}
 		
 	}
 

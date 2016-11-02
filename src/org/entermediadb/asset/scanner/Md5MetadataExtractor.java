@@ -29,7 +29,7 @@ public class Md5MetadataExtractor extends MetadataExtractor
 			String catalogSettingValue = inArchive.getCatalogSettingValue("extractmd5");
 			if( Boolean.parseBoolean(catalogSettingValue) )
 			{
-				String md5 = DigestUtils.md5Hex( inFile.getInputStream() );
+				String md5 = DigestUtils.md5Hex( in );
 				inAsset.setValue("md5hex", md5);
 				Searcher assetsearcher = inArchive.getAssetSearcher();
 				HitTracker assets = assetsearcher.fieldSearch("md5hex", md5);
@@ -42,17 +42,12 @@ public class Md5MetadataExtractor extends MetadataExtractor
 						asset.setValue("duplicate", true);
 						assetsearcher.saveData(asset, null);
 					}
-					
-					
 				}
-				
 			}
-			
-			
 		}
 		catch( Throwable ex)
 		{
-			throw new OpenEditException("Could not read in " + inAsset.getSourcePath(),ex);
+			throw new OpenEditException("Error on: " + inAsset.getSourcePath(),ex);
 		}
 		finally{
 			FileUtils.safeClose(in);

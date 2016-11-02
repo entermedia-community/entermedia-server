@@ -1262,6 +1262,7 @@
 	</bean>
 	 
 	<bean id="HotFolderModule" class="org.entermediadb.asset.modules.HotFolderModule">
+
 	</bean>			
 
 
@@ -1860,6 +1861,7 @@
 			<property name="executorManager">
 				<ref bean="executorManager" />
 			</property>
+			<property name="timedCache"><ref bean="timedCacheManager"/></property>
 	</bean>		
 	<bean id="OrderManager" class="model.orders.BaseOrderManager" >
 		<property name="searcherManager">

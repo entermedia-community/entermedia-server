@@ -3,7 +3,10 @@ package org.entermediadb.asset.xmp;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -14,6 +17,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
@@ -62,15 +66,26 @@ public class XmpWriter
 	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception
 	{
 		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
-		List<String> comm = createCommand(inArchive);
-		addSaveFields(inArchive, inAsset, comm);		
-		List removekeywords = new ArrayList(comm);
-		removekeywords.add("-Subject="); //This only works on a line by itself
-		removekeywords.add(path);
-		addSaveKeywords(inAsset.getKeywords(), comm);
-
-		comm.add(path);
-		boolean ok = runExec(comm);
+		
+		Map props = new HashMap();
+		props.put("absolutepath", path);
+		inArchive.fireMediaEvent("savingoriginal","asset",inAsset.getSourcePath(),props,null);
+		boolean ok = false;
+		try
+		{
+			List<String> comm = createCommand(inArchive);
+			addSaveFields(inArchive, inAsset, comm);		
+			List removekeywords = new ArrayList(comm);
+			removekeywords.add("-Subject="); //This only works on a line by itself
+			removekeywords.add(path);
+			addSaveKeywords(inAsset.getKeywords(), comm);
+			comm.add(path);
+			ok = runExec(comm);
+		}
+		finally
+		{
+			inArchive.fireMediaEvent("savingoriginalcomplete","asset",inAsset.getSourcePath(),props,null);			
+		}
 		return ok;
 
 	}	
@@ -78,16 +93,28 @@ public class XmpWriter
 	public boolean saveKeywords(MediaArchive inArchive, Asset inAsset) throws Exception
 	{
 		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
-		List<String> comm = createCommand(inArchive);
-		List removekeywords = new ArrayList(comm);
-		removekeywords.add("-Subject="); //This only works on a line by itself
-		removekeywords.add(path);
-		boolean ok = runExec(removekeywords);
-		if( ok ) 
+
+		Map props = new HashMap();
+		props.put("absolutepath", path);
+		inArchive.fireMediaEvent("savingoriginal","asset",inAsset.getSourcePath(),props,null);
+		boolean ok = false;
+		try
 		{
-			addSaveKeywords(inAsset.getKeywords(), comm);
-			comm.add(path);
-			ok = runExec(comm);
+			List<String> comm = createCommand(inArchive);
+			List removekeywords = new ArrayList(comm);
+			removekeywords.add("-Subject="); //This only works on a line by itself
+			removekeywords.add(path);
+			ok = runExec(removekeywords);
+			if( ok ) 
+			{
+				addSaveKeywords(inAsset.getKeywords(), comm);
+				comm.add(path);
+				ok = runExec(comm);
+			}
+		}
+		finally
+		{
+			inArchive.fireMediaEvent("savingoriginalcomplete","asset",inAsset.getSourcePath(),props,null);			
 		}
 		return ok;
 	}
@@ -113,19 +140,20 @@ public class XmpWriter
 		for(Object o: details)
 		{
 			PropertyDetail detail = (PropertyDetail) o;
-			if(detail.getExternalId() == null || !detail.isEditable())
+			Object value = inAsset.getValue(detail.getId());
+			if(value == null || detail.getExternalId() == null || !detail.isEditable())
 			{
 				continue;
 			}
 			String[] tags = detail.getExternalIds();
 			
-			String value = inAsset.get(detail.getId());
-			
-			if(detail.isList() && Boolean.parseBoolean(detail.get("writenametoexif"))){
-				Searcher lookups = inArchive.getSearcherManager().getSearcher(detail.getListCatalogId(), detail.getListId());
-				Data remote = (Data) lookups.searchById(value);
-				if(remote != null){
-					value = remote.getName();
+			String val = String.valueOf(value);
+			if(detail.isList() && Boolean.parseBoolean(detail.get("writenametoexif")))
+			{
+				Data remote = (Data)inArchive.getSearcherManager().getData(detail,val);
+				if(remote != null)
+				{
+					val = remote.getName();
 				}
 			}
 //			if( detail.getId().equals("imageorientation"))
@@ -139,7 +167,7 @@ public class XmpWriter
 //					continue; //Only set the value if rotation is set
 //				}
 //			}
-			addTags(tags, value, inComm);
+			addTags(tags, val, inComm);
 		}
 	}
 

@@ -1,4 +1,6 @@
-curl -XGET 'http://localhost:9200/media_catalogs_public/asset/_search?q=id:AVOBeG5aFJnkLdE2TX75' | python -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
+
+
 
 curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVPN6HCf8OKeBnSPyh4w' | python -mjson.tool
 

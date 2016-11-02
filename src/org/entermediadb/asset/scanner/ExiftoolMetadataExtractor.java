@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -22,12 +23,14 @@ import org.openedit.Data;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.page.Page;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
+
+import groovy.json.JsonSlurper;
 
 public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
@@ -317,6 +320,20 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 								inAsset.setProperty(property.getId(), value);
 							}
 						}
+					}
+					else if( property.isMultiLanguage())
+					{
+						LanguageMap map = new LanguageMap();
+						if( value.contains("{"))
+						{
+							Map object = (Map)new JsonSlurper().parseText(value);
+							map.putAll(object);
+						}
+						else
+						{
+							map.setText("en", value);
+						}
+						inAsset.setValue(property.getId(), map);						
 					}
 					else
 					{
