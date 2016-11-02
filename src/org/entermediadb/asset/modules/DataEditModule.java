@@ -562,19 +562,19 @@ public class DataEditModule extends BaseMediaModule
 					PropertyDetail detail = searcher.getDetail(fields[i]);
 					if( detail != null && detail.isBoolean())
 					{
-						fieldswithvalues.add(fields[i]);
+						fieldswithvalues.add(detail.getId());
 						continue;
 					}
 					
-					val = inReq.getRequestParameter(fields[i]+".value");
+					val = inReq.getRequestParameter(detail.getId()+".value");
 					if(val!= null && val.length() > 0)
 					{
-						fieldswithvalues.add(fields[i]);
+						fieldswithvalues.add(detail.getId());
 					}
-					String[] vals = inReq.getRequestParameters(fields[i]+".values");
+					String[] vals = inReq.getRequestParameters(detail.getId()+".values");
 					if(vals != null && vals.length > 0)
 					{
-						fieldswithvalues.add(fields[i]);
+						fieldswithvalues.add(detail.getId());
 					}
 				}
 				

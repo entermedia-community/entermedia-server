@@ -122,6 +122,10 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		XmpWriter writer = (XmpWriter) getModuleManager().getBean("xmpWriter");
 		String assetid = inReq.getRequestParameter("assetid");
+		if( assetid == null)
+		{
+			assetid = inReq.getRequestParameter("id");
+		}
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		Asset asset = mediaArchive.getAsset(assetid);
 		if( asset == null )
