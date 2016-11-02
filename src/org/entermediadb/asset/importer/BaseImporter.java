@@ -268,7 +268,7 @@ public class BaseImporter extends EnterMediaObject
 			{
 				detail = new PropertyDetail();
 				detail.setId(id);
-				detail.getName(header);
+				detail.setName(header);
 				detail.setEditable(true);
 				detail.setIndex(true);
 				detail.setStored(true);
