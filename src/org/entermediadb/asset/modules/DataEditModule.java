@@ -560,7 +560,11 @@ public class DataEditModule extends BaseMediaModule
 				{
 					//see if we have boolean fields
 					PropertyDetail detail = searcher.getDetail(fields[i]);
-					if( detail != null && detail.isBoolean())
+					if( detail == null)
+					{
+						continue;
+					}
+					if( detail.isBoolean())
 					{
 						fieldswithvalues.add(detail.getId());
 						continue;
