@@ -6,7 +6,7 @@
 		<img src="$home$apphome/theme/images/navigation/deletesm.png"/>
 		</a>
 	#end
-		$!detail.getText($context) 
+		$!detail.getText($context) #if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 		</div>
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 

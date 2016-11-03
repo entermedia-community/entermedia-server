@@ -25,7 +25,6 @@ $context.putPageValue("edit",$edit)
 #end
 ##We need 2 things passed in: $searcher, $view or $searcher $details
 #if (!$details && $userprofile)
-
 	#set ($details = $searcher.getDetailsForView($view, $userprofile))
 #else
 	#set ($details = $searcher.getDetailsForView($view))
@@ -70,7 +69,7 @@ $context.putPageValue("idprefix","search")
 	<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
 	
 	<select  class="select2"  name="field" onChange="jQuery('#searchaddfield').submit();">
-		<option>[[Asset]]</option>
+		<option value="">[[Asset]]</option>
 		#foreach( $detail in $alldetails)
 			#if($detail.isLeaf())
 			<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
@@ -83,14 +82,14 @@ $context.putPageValue("idprefix","search")
 		#end	
 	</select>
 	<select class="select2" name="field" onChange="jQuery('#searchaddfield').submit();">
-		<option>[[Collection]]</option>
+		<option value="">[[Collection]]</option>
 		#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
 		#foreach( $detail in $librarydetails)
 		<option value="librarycollection.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
 		#end
 	</select>
 	<select  class="select2"  name="field" onChange="jQuery('#searchaddfield').submit();">
-		<option>[[Library]]</option>
+		<option value="">[[Library]]</option>
 		#set( $librarydetails = $mediaarchive.getSearcher("library").getUserPropertyDetails() )
 		#foreach( $detail in $librarydetails)
 		<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>

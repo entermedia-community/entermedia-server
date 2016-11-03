@@ -117,7 +117,7 @@ public class WorkspaceManager
 		if (details == null)
 		{
 			PropertyDetails defaultdetails = archive.getPropertyDetails("default");
-			details = new PropertyDetails(searchtype);
+			details = new PropertyDetails(archive,searchtype);
 			details.setDetails(defaultdetails.getDetails());
 		}
 		if( details.getPrefix() == null )

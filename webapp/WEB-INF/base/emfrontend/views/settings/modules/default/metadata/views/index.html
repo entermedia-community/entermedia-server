@@ -159,10 +159,17 @@
 			#else
 				#set($searcher = $searcherManager.getSearcher($catalogid, $moduleid))
 			#end	
-            <select name="newone" style="float: right; #if( $canviewsettings ) ; #else display:none;  #end width:150px;" onchange="jQuery('#addtoview').submit()"  >
+            <select id="fieldnames" name="newone" style="float: right; #if( $canviewsettings ) ; #else display:none;  #end width:150px;" onchange="jQuery('#addtoview').submit()"  >
                 <option value=""> </option>
                 #foreach( $detail in $searcher.getUserPropertyDetails() )
 				<option value="$detail.id">$detail.getText($context)</option>
+                #end
+            </select>
+            <select id="tableid" name="tableid" style="float: right; #if( $canviewsettings ) ; #else display:none;  #end width:150px;" 
+            	onchange='$("#fieldnames").load("$home$apphome/views/settings/modules/${moduleid}/metadata/views/listfieldoptions.html?searchtype=" + $("#tableid").val())'  >
+                <option value=""> </option>
+                #foreach( $table in $searcher.getPropertyDetailsArchive().listSearchTypes() )
+				<option value="$table" #if( $table == $searcher.getSearchType() ) selected #end>$table</option>
                 #end
             </select>
         </form>

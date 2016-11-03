@@ -4,7 +4,8 @@
 <property id="details" index="true" stored="true" >Details</property>
 <property id="operation" index="true" stored="true" >Operation</property>
 <property id="sourcepath" index="true" stored="true" >Source Path</property>
-<property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property><property id="sourcepath"  index="true" stored="true">Source Path</property>
+<property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property>
+<property id="sourcepath"  index="true" stored="true">Source Path</property>
 <property id="date" datatype="date" viewtype="time"  index="true" stored="true" >Date</property>
 
 </properties>

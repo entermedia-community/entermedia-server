@@ -32,7 +32,7 @@ public void init(){
 			String filepath = "/WEB-INF/data/" + catalogid + "/dataexport/fields/" + searchtype + ".xml";
 			XmlFile settings = archive.getXmlArchive().loadXmlFile(filepath); // checks time
 			if(settings.isExist()){
-				olddetails = new PropertyDetails(searchtype);
+				olddetails = new PropertyDetails(archive,searchtype);
 				olddetails.setInputFile(settings);
 				archive.setAllDetails(olddetails, searchtype, settings.getRoot());
 			}

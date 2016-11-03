@@ -329,7 +329,7 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 	XmlFile settings = archive.getXmlArchive().loadXmlFile(filepath); // checks time
 	if(settings.isExist()){
 		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
-		olddetails = new PropertyDetails(searchtype);
+		olddetails = new PropertyDetails(archive,searchtype);
 		olddetails.setInputFile(settings);
 		archive.setAllDetails(olddetails, searchtype, settings.getRoot());
 					

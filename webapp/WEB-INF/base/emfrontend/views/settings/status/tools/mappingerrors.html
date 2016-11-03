@@ -10,12 +10,12 @@
 
 #set($map = $mediaarchive.getPropertyDetailsArchive().findSearchersWithDetail($error.getDetail()))
 <table class="main-results-table" style="width: 100%">
-<tr><td>Table</td><td>Field Name</td><td>Data Type</td><td>Is Stored</td><td>View type</td><td>Analyzer</td><td>Is Analyzed</td></tr>
+<tr><td>Table</td><td>Field Name</td><td>Data Type</td><td>Index Type</td><td>Analyzer</td><td>Is Analyzed</td><td></td><td></td></tr>
 #foreach($key in $map.keySet())
 #set($detail = false);
 #set($detail = $map.get($key))
 <tr>
-<td>$key:</td><td> $detail</td><td>$!detail.getDataType()</td><td>$detail.isStored()</td><td>$!detail.getViewType()</td><td>$!detail.indextype</td><td>$!detail.analyzer</td>
+<td>$key:</td><td> $detail.getName()</td><td>$!detail.getDataType()</td><td>$!detail.indextype</td><td>$!detail.analyzer</td><td>$detail.isAnalyzed()</td>
 <td><a class="btn" target="_blank" href="convertall.html?searchtype=$key&detail=$detail.id">Make all like this</a></td>
 <td><td><a class="btn" target="_blank" href="legacy.html?searchtype=$key&detail=$detail.id">Reset this field name and reset other lists</a> </td>
 <td><a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$detail.id&catalogid=${catalogid}&searchtype=$key">View in DM</a>
