@@ -1,9 +1,9 @@
 <page>
 	
-	<page-action name="TranslationModule.changeLanguage" />
-	<page-action name="Admin.redirectToOriginal" />
+	<path-action name="TranslationModule.changeLanguage" />
+	<path-action name="Admin.redirectToOriginal" >
+		<property name="origURL">/${applicationid}/index.html</property>
+	</path-action>
 	
-	
-	<permission name="view" ><blank/></permission>
-	
+		
 </page>

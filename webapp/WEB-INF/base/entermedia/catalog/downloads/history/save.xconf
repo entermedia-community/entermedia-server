@@ -1,5 +1,5 @@
 <page>
 	<property name="virtual">true</property>
-	<page-action name="AssetEditModule.saveUsageHistory"/>
-	<page-action name="Admin.redirectToOriginal"/>
+	<path-action name="AssetEditModule.saveUsageHistory"/>
+	<path-action name="Admin.redirectToOriginal"/>
 </page>

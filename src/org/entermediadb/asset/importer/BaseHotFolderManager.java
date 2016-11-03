@@ -583,7 +583,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			Lock lock = inArchive.getLockManager().lockIfPossible(path, "HotFolderManager");
 			if( lock == null)
 			{
-				inLog.info("folder is locked" + path);
+				inLog.info("folder is already in lock table" + path);
 				continue;
 			}
 			try

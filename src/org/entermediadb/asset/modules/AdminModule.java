@@ -553,9 +553,9 @@ public class AdminModule extends BaseModule
 					inReq.removeSessionValue("fullOriginalEntryPage");
 				}
 			}
-			if (sendTo == null)
+			String appid = inReq.findValue("applicationid");
+			if (sendTo == null || !sendTo.startsWith("/" + appid))
 			{
-				String appid = inReq.findValue("applicationid");
 				if (appid != null)
 				{
 					sendTo = "/" + appid + "/index.html";
@@ -1026,12 +1026,13 @@ public class AdminModule extends BaseModule
 
 	public void redirectToOriginal(WebPageRequest inReq)
 	{
+		String orig = inReq.findValue("origURL");
 		String editPath = inReq.getRequestParameter("editPath");
-		String orig = inReq.getRequestParameter("origURL");
-		if (orig == null)
-		{
-			orig = inReq.findValue("origURL");
-		}
+//		if (orig == null)
+//		{
+//			orig = inReq.getRequestParameter("origURL");
+//		}	
+			
 		if (orig != null)
 		{
 			if (orig.indexOf("?") == -1 && editPath != null)
