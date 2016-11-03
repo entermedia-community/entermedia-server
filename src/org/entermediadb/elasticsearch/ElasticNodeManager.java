@@ -619,16 +619,34 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			try
 			{
 				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder().startObject().startObject("analysis")
-						//								.startObject("filter").
-						//									startObject("snowball").field("type", "snowball").field("language", "English")
-						//									.endObject()
-						//								.endObject()
-						.startObject("analyzer").startObject("lowersnowball").field("type", "snowball").field("language", "English").endObject().endObject()
-						.startObject("analyzer").startObject("tags").field("type", "custom").field("tokenizer", "keyword").startArray("filter").value("lowercase").endArray().endObject().endObject()					
-						.endObject().endObject();
 
+						/*
+						 * "index" : {
+            "analyzer" : {
+                "my_analyzer" : {
+                    "tokenizer" : "standard",
+                    "filter" : ["standard", "lowercase", "my_snow"]
+                }
+            },
+            "filter" : {
+                "my_snow" : {
+                    "type" : "snowball",
+                    "language" : "Lovins"
+                }
+            }
+        }
+    }
+						 */
+						
+				.startObject("analyzer").startObject("lowersnowball").field("tokenizer", "standard").startArray("filter").value("standard").value("lowercase").value("stemfilter").endArray().
+				endObject().endObject()
+				.startObject("analyzer").startObject("tags").field("type", "custom").field("tokenizer", "keyword").startArray("filter").value("lowercase").endArray()					
+				.endObject().endObject()
+				.startObject("filter").startObject("stemfilter").field("type","snowball").field("language","English").endObject().endObject()
 				
-				
+				.endObject().endObject();
+
+				log.info(settingsBuilder.toString());
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
 				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
 
