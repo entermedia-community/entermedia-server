@@ -751,7 +751,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		reindexing = true;
 		
-		
+		getPageManager().clearCache();
 		
 		String id = toId(inCatalogId);
 		List mappedtypes = getMappedTypes(id);
@@ -764,7 +764,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
-
+			
 			List sorted = archive.listSearchTypes();
 			sorted.add(0, "category");
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
