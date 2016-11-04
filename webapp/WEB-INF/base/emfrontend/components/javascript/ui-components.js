@@ -89,6 +89,9 @@ uiload = function() {
 					theform.valid();
 				});
 				
+				$.validator.setDefaults({ignore: ".ignore"});
+
+				
 				theform.validate({
 					  ignore: ".ignore"
 				});
@@ -712,8 +715,12 @@ uiload = function() {
 			templateSelection : select2Selected,
 			tokenSeparators: ["|"],
 			separator: '|'
-		  }).change(function() { $(this).valid(); });  //is this still needed?
-
+		  }).change(function() { 
+		  	if( $(this).parents(".ignore").length == 0 )
+		  	{
+			  $(this).valid(); 
+			}
+		  });  //is this still needed?
 	});
 
 	jQuery("input.grabfocus").livequery( function() 
