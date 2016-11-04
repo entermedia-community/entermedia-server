@@ -752,6 +752,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		reindexing = true;
 		
 		getPageManager().clearCache();
+		getSearcherManager().getCacheManager().clearAll();
 		
 		String id = toId(inCatalogId);
 		List mappedtypes = getMappedTypes(id);
