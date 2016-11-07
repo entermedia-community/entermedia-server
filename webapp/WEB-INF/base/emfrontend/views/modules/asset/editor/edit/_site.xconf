@@ -11,8 +11,7 @@
     <style id="imgareaselect-css" href="${themeprefix}/styles/jquery/imgareaselect-default.css"/>
 
 	<!-- jcrop tool -->
-  <script id="jcrop" src="/${applicationid}/components/javascript/jcrop/js/jquery.Jcrop.min.js" />
-  <style id="jcrop" href="/${applicationid}/components/javascript/jcrop/css/jquery.Jcrop.min.css" />
+  
 	<permission name="view">
 		<not>
 			<pagevalue name="canviewasset" equals="false" />

@@ -10,7 +10,8 @@
 		<property name="searchtype">asset</property>
 		<property name="hitsname">hits</property>
 	</path-action>	
-	
+	<script id="jcrop" src="/${applicationid}/components/javascript/jcrop/js/jquery.Jcrop.min.js" />
+  <style id="jcrop" href="/${applicationid}/components/javascript/jcrop/css/jquery.Jcrop.min.css" />
 	
 	<property name="saveokpage">/tools/edit/saveok.html</property>
 		
