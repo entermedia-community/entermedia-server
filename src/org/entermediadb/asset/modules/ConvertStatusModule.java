@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import java.util.Iterator;
+
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -75,9 +77,17 @@ public class ConvertStatusModule extends BaseMediaModule
 	 	BaseData settings = new BaseData();
 			
 		String []fields = inReq.getRequestParameters("field");
-		if(fields != null){
-			presetSearcher.updateData(inReq, fields, settings);
+		
+		for (int i = 0; i < fields.length; i++)
+		{
+			String field = fields[i];
+			String val = inReq.getRequestParameter(field + ".value");
+			if(field != null && val != null){
+				settings.setValue(field, val);
+			}		
 		}
+		
+		
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
