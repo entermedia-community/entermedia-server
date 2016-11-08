@@ -90,7 +90,7 @@ public class AssetPathProcessor extends PathProcessor
 		for (Iterator iter = getAssetsToSave().iterator(); iter.hasNext();)
 		{
 			Asset asset = (Asset) iter.next();
-			//someids.add(asset.getId() );
+			assetsids.add(asset.getId() );
 			
 			if( existingassets.contains(asset) )
 			{
