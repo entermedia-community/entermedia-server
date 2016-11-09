@@ -1,6 +1,7 @@
 <page>
 	<property id="vizid"  >VizOne ID</property>	
 
+	<property id="vizoneretention"  datatype="list"  editable="true" index="true" stored="true" >Vizone Retention Policy</property>
 
 
 </page>
