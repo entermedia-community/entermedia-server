@@ -8,6 +8,7 @@
 	<type id="date"  >Date</type>
 	<type id="list" >List</type>
 	<type id="multi" >Multi Value</type>
+	<type id="kwmap" >Keyword Map</type>
 	<type id="datejoin" >Date Join</type>
 	<type id="textjoin" >Text Join</type>
 	<type id="totaljoin" >Total Join</type>

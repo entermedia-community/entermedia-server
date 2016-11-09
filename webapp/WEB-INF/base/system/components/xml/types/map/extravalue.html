@@ -1,0 +1,29 @@
+#set( $detailid = $context.getRequestParameter("detailid"))
+#set( $mapcode = $context.getRequestParameter("mapcode"))
+#set( $count = $context.getRequestParameter("count"))
+
+#set( $map = $data.getValue($detailid))
+
+#set($languages = $mediaarchive.getList("locale"))
+
+#set($usedlanguages = $context.getRequestParameters("usedlanguages") )
+<div class="languagesaddform">
+	<div class="languageselector">
+		<select class="select2 lenguagepicker" id="languages_${detailid}_${language_count}" name="${detailid}.language" data-count="$count" data-detailid="${detailid}">
+			#foreach($locale in $languages)
+			#if( !$usedlanguages.contains($locale.id))
+			<option value="$!locale.id" #if($!mapcode==$!locale.id) selected="selected" #end>$!locale</option>
+			#end
+			#end
+		</select>
+	</div>
+	<div class="languageinput">
+		#if($mapcode!='') 
+			#set($language_textbox = ${detailid} + "." + $mapcode) 
+		#else 
+			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
+		#end
+		<input type="text" id="languages_${detailid}_${count}_value" #if($count == "1" && $detail.isRequired() && !$multiedit) class="required" #end name="${detailid}.language.${count}" value="$!map.getText($mapcode)" >
+	</div>
+	<div class='clearfix'></div>	
+</div>
