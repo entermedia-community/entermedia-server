@@ -13,7 +13,11 @@ public void init()
 	
 	MediaArchive archive = context.getPageValue("mediaarchive");
 	
-	Page templatepage = archive.getPageManager().getPage("/WEB-INF/bin/linux/sync.conf.template");
+	Page templatepage = archive.getPageManager().getPage("/WEB-INF/data/sync.conf.template");
+	if(!templatepage.exists())
+	{
+		templatepage = archive.getPageManager().getPage("/WEB-INF/bin/linux/sync.conf.template");
+	}
 
 	String content = templatepage.getContent();
 	
