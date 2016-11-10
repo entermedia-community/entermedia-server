@@ -19,7 +19,7 @@ $invalue
 #set($data = false)#set($data = $searcherManager.getData($detail, $id))
 {
 	"id":"$id",
-	"name":#jesc($data.name)
+	"name":#jesc($data.getName($context.getLocale()) )
 }
 #end
 #macro(jesc $object)
