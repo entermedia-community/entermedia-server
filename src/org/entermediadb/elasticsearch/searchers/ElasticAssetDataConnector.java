@@ -262,7 +262,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			String[] array = new String[realcats.size()];
 			array = realcats.toArray(array);
 			inContent.field("category-exact", array);
-			populatePermission(inContent, asset, "viewasset");
+			//populatePermission(inContent, asset, "viewasset");
 
 		}
 		catch (Exception ex)

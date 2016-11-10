@@ -132,23 +132,31 @@ public class JsonAssetModule extends BaseJsonModule {
 		df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
 		vals.put("formattedmonth", df);
 
+		Asset asset = null;
 		String id = (String) request.get("id");
+		String sourcepath = null;
 		if (id == null) {
 			// id = searcher.nextAssetNumber();
 			vals.put("id", id);
 		}
-
-		String sourcepath = (String) vals.get("sourcepath");
-
-		if (sourcepath == null) {
-			sourcepath = archive.getCatalogSettingValue("catalogassetupload"); // ${division.uploadpath}/${user.userName}/${formateddate}
+		else
+		{
+			asset = archive.getAsset(id);
+			sourcepath = asset.getSourcePath();
 		}
-		if (sourcepath == null || sourcepath.length() == 0) {
-			sourcepath = "receivedfiles/${id}";
+		if( asset == null)
+		{
+			sourcepath = (String) vals.get("sourcepath");
+	
+			if (sourcepath == null) {
+				sourcepath = archive.getCatalogSettingValue("catalogassetupload"); // ${division.uploadpath}/${user.userName}/${formateddate}
+			}
+			if (sourcepath == null || sourcepath.length() == 0) {
+				sourcepath = "receivedfiles/${id}";
+			}
+			sourcepath = sm.getValue(catalogid, sourcepath, vals);
 		}
-
-		sourcepath = sm.getValue(catalogid, sourcepath, vals);
-		Asset asset = null;
+		
 
 		if (properties.getFirstItem() != null) {
 			String path = "/WEB-INF/data/" + archive.getCatalogId() + "/originals/" + sourcepath + "/"

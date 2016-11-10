@@ -19,6 +19,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.modules.translations.LanguageMap;
 
 
 
@@ -198,16 +199,38 @@ public class BaseJsonModule extends BaseMediaModule
 		{
 			String key = (String) iterator.next();
 			Object value = inputdata.get(key);
-			if(value instanceof String)
+			PropertyDetail detail = searcher.getDetail(key);
+			if( detail != null && detail.isMultiLanguage())
+			{
+				LanguageMap map = null;
+				Object oldval = inData.getValue(detail.getId());
+				if(oldval != null){
+					if(oldval instanceof LanguageMap){
+						map = (LanguageMap) oldval;										
+					} else{
+						map = new LanguageMap();
+						map.setText("en",(String) oldval);
+					}
+				}
+				if (map == null)
+				{
+					map = new LanguageMap();
+				}
+				if( value != null && key.contains("."))
+				{
+					String lang = key.substring(key.indexOf( ".") + 1);
+					map.setText(lang,String.valueOf( value) );
+				}
+				inData.setValue(detail.getId(), map);
+			}
+			else if(value instanceof String)
 			{
 				inData.setProperty(key, (String)value);
 			} 
-			
-			if(value instanceof Collection)
+			else if(value instanceof Collection)
 			{
 				Collection ids = new ArrayList();
 				Collection values = (Collection)value;
-				PropertyDetail detail = searcher.getDetail(key);
 				
 				//We have a list full of maps or strings
 				for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
@@ -243,11 +266,10 @@ public class BaseJsonModule extends BaseMediaModule
 				} 
 				inData.setValue(key, ids);				
 			}
-			if(value instanceof Map )
+			else if(value instanceof Map )
 			{
 					Map values = (Map)value;
 					
-					PropertyDetail detail = searcher.getDetail(key);
 					Searcher rsearcher = searcher.getSearcherManager().getListSearcher(detail);
 					String targetid = (String)values.get("id");
 					Data remote = (Data)rsearcher.searchById(targetid);
@@ -271,7 +293,7 @@ public class BaseJsonModule extends BaseMediaModule
 			else
 			{
 				//do something else?
-				
+				log.info("Could not process " + key+  " : " + value);
 			}
 
 		}

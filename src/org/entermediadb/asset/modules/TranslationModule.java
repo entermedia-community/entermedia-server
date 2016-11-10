@@ -39,7 +39,7 @@ public class TranslationModule extends BaseModule {
 
 	public void listFilesInBase(WebPageRequest inReq) throws Exception{
 		// get a list
-		String path = "/";
+		String path = "/WEB-INF/base";
 		String lang = inReq.getRequestParameter("lang");
 		List translations = gatherTranslations(path, lang);
 		StringWriter out = new StringWriter();
@@ -112,7 +112,9 @@ public class TranslationModule extends BaseModule {
 					Page page = getPageManager().getPage(filepath);
 					// dont save to folders that do not exists
 					Page parent = getPageManager().getPage(page.getParentPath());
-					if (!parent.exists()) {
+					if (parent == null || !parent.exists()) {
+						line = read.readLine();
+						filepath = line;
 						continue;
 					}
 					
