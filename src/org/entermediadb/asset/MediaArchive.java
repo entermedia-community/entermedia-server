@@ -1712,4 +1712,15 @@ public class MediaArchive implements CatalogEnabled
 	}
 
 	
+	public void clearAll(){
+		getCacheManager().clearAll();
+		getPageManager().clearCache();
+		getPageManager().getPageSettingsManager().clearCache();
+		getSearcherManager().getPropertyDetailsArchive(getCatalogId()).clearCache();
+		getSearcherManager().clear();
+		
+	}
+	
+	
+	
 }

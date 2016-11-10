@@ -36,6 +36,8 @@ $context.putPageValue("idprefix","search")
 <table width="100%" class="advancedsearchtable">
 	#foreach( $detail in $details)
 		$context.putPageValue("detail", $detail)
+		$context.putPageValue("searchform", true)
+
 		#if ($detail.isLeaf())
 			$pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
 		#else

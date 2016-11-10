@@ -765,6 +765,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
+			getPageManager().clearCache();
+			getSearcherManager().getCacheManager().clearAll();
+
 			
 			List sorted = archive.listSearchTypes();
 			sorted.add(0, "category");

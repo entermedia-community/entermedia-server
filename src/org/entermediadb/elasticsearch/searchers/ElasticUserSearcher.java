@@ -151,18 +151,21 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		saveAllData(userstosave,inUser);
 	}
 	public void saveAllData(Collection<Data> inAll, User inUser)
+	
 	{
-		super.saveAllData(inAll, inUser);
 		for (Iterator iterator = inAll.iterator(); iterator.hasNext();) {
 			User user = (User) iterator.next();
 			getXmlUserArchive().saveUser(user);
 		}
+		super.saveAllData(inAll, inUser);
+	
 	}
 
 	public void saveData(Data inData, User inUser)
 	{
-		super.saveData(inData, inUser); //update the index
 		getXmlUserArchive().saveUser((User)inData);
+
+		super.saveData(inData, inUser); //update the index
 	}
 	
 	public void delete(Data inData, User inUser)
