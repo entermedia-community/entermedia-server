@@ -444,6 +444,7 @@ ul.emheaderbuttons li a {
     text-decoration: none;
     float: left;
     cursor: pointer;
+    color: #fff;
 }
 
 ul.emheaderbuttons li a span {
@@ -465,6 +466,10 @@ ul.emheaderbuttons li a span {
 
 ul.emheaderbuttons li a.current span, ul.emheaderbuttons li a:hover span {
     text-decoration: none;
+    color: #f3f3f3;
+	background: #23819E;
+	background: #23819E;
+    
 }
 
 ul.emheaderbuttons li.navactive a {
