@@ -1,9 +1,8 @@
-#
-#Tue Dec 01 11:05:55 EST 2015
-Be\ the\ first\ to\ like\ this\ asset\!=Soyez le premier \u00E0 aimer cet actif \!
-likes\ this=comme \u00E7a
+#Thu Nov 10 10:19:40 EST 2016
+Be\ the\ first\ to\ like\ this\ asset\!=Soyez le premier à aimer cet actif \!
+likes\ this=comme ça
 You=Tu
-You\ like\ this=Tu aimes \u00E7a
+You\ like\ this=Tu aimes ça
 others=autres
 and=et
-like\ this=comme \u00E7a
+like\ this=comme ça

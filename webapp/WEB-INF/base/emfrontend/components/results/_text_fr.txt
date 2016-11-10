@@ -1,30 +1,29 @@
-#
-#Tue Jan 26 14:54:37 EST 2016
+#Thu Nov 10 10:19:40 EST 2016
 Share=Partagez
 Table=Table
-Download=T\u00E9l\u00E9charger
-Deselect\ All=Tout d\u00E9selectionner
+Download=Télécharger
+Deselect\ All=Tout déselectionner
 Email\ Assets=Actifs Email
 Publish=Publier
-Select\ All\ Results=S\u00E9lectionnez Tous les r\u00E9sultats
+Select\ All\ Results=Sélectionnez Tous les résultats
 Folders=Dossiers
-Remove\ from\ library\ and\ all\ collections?=Retirer de la biblioth\u00E8que et de toutes les collections?
+Remove\ from\ library\ and\ all\ collections?=Retirer de la bibliothèque et de toutes les collections?
 Publish\ Assets\ to\ Server=Publier actifs au serveur
 Remove\ from\ Collection=Retirer de la Collection
-Select\ This\ Page=S\u00E9lectionner cette page
+Select\ This\ Page=Sélectionner cette page
 Gallery=Galerie
 items=articles
 of=de
-Cancel=Annuler
 Add\ Column=Ajouter une colonne
+Cancel=Annuler
 Share\ Gallery=Partager Galerie
 Edit\ Columns=Modifier les colonnes
 Remove\ from\ collection?=Retirer de la collection?
 Displaying\ records=Affichage des dossiers
-No\ results\ found=Aucun r\u00E9sultat trouv\u00E9
+No\ results\ found=Aucun résultat trouvé
 Remove=enlever
-Remove\ from\ Library=Retirer de la Biblioth\u00E8que
+Remove\ from\ Library=Retirer de la Bibliothèque
 Stacked=Stacked
 Collection=Collection
-Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les d\u00E9placer
-Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus s\u00E9lectionn\u00E9s
+Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les déplacer
+Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus sélectionnés

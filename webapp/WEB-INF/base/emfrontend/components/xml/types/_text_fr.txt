@@ -1,3 +1,2 @@
-#
-#Tue Dec 01 11:05:42 EST 2015
-Enter\ comma\ separated\ tags=Entrez les tags s\u00E9par\u00E9s par des virgules
+#Thu Nov 10 10:19:40 EST 2016
+Enter\ comma\ separated\ tags=Entrez les tags séparés par des virgules

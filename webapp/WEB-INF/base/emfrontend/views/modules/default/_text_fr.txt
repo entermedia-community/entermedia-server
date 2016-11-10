@@ -1,17 +1,16 @@
-#
-#Tue Jan 26 16:20:34 EST 2016
-\ and\ some\ other\ data=et certaines autres donn\u00E9es
-Results=R\u00E9sultats
-Export\ results\ with\ Friendly\ values=Exporter les r\u00E9sultats avec les valeurs amicales
-No\ results\ found.=Aucun r\u00E9sultat trouv\u00E9.
+#Thu Nov 10 10:19:40 EST 2016
+\ and\ some\ other\ data=et certaines autres données
+Results=Résultats
+Export\ results\ with\ Friendly\ values=Exporter les résultats avec les valeurs amicales
 Batch\ Edit=Batch Modifier
-Delete\ Selected\ Items=Supprimer les \u00E9l\u00E9ments s\u00E9lectionn\u00E9s
+No\ results\ found.=Aucun résultat trouvé.
+Delete\ Selected\ Items=Supprimer les éléments sélectionnés
 Edit\ Columns=Modifier les colonnes
-Export\ results\ CSV=Export CSV des r\u00E9sultats
-Custom\ Export=Personnalis\u00E9e Export
+Export\ results\ CSV=Export CSV des résultats
+Custom\ Export=Personnalisée Export
 Add\ New=Ajouter un nouveau
-Export\ results=Exporter les r\u00E9sultats
-Download\ Assets=T\u00E9l\u00E9charger actifs
-Export\ results\ (friendly)=Exporter les r\u00E9sultats (amical)
+Export\ results=Exporter les résultats
+Download\ Assets=Télécharger actifs
+Export\ results\ (friendly)=Exporter les résultats (amical)
 Add\ Column=Ajouter une colonne
 Cancel=Annuler

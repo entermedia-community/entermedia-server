@@ -1,17 +1,16 @@
-#
-#Tue Jan 26 14:54:36 EST 2016
+#Thu Nov 10 10:19:40 EST 2016
 Remove\ From\ Basket=Enlever du panier
-View\ Selections=Voir les S\u00E9lections
-Results=R\u00E9sultats
-Show\ All\ Results=Afficher tous les r\u00E9sultats
+View\ Selections=Voir les Sélections
+Results=Résultats
+Show\ All\ Results=Afficher tous les résultats
 Edit=modifier
-Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus s\u00E9lectionn\u00E9s
-Edit\ selected\ records=Modifier les enregistrements s\u00E9lectionn\u00E9s
+Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus sélectionnés
+Edit\ selected\ records=Modifier les enregistrements sélectionnés
 Export\ to\ CSV=Exporter au format CSV
-Select\ All\ Results=S\u00E9lectionnez Tous les r\u00E9sultats
+Select\ All\ Results=Sélectionnez Tous les résultats
 Multi\ Edit=Multi Edit
 Show\ All=Montre tout
-Show\ Only\ Selections=Afficher uniquement les s\u00E9lections
-Deselect\ All=Tout d\u00E9selectionner
-Select\ This\ Page=S\u00E9lectionner cette page
+Show\ Only\ Selections=Afficher uniquement les sélections
+Deselect\ All=Tout déselectionner
+Select\ This\ Page=Sélectionner cette page
 Add\ To\ Basket=Ajouter au panier

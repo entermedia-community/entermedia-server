@@ -1,3 +1,2 @@
-#
-#Tue Jan 26 16:28:46 EST 2016
-Settings\ Area=Param\u00E8tres de la
+#Thu Nov 10 10:19:40 EST 2016
+Settings\ Area=Paramètres de la

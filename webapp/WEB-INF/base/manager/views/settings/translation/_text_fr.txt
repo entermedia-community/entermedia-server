@@ -1,0 +1,4 @@
+#Thu Nov 10 10:19:40 EST 2016
+Language=La langue
+Read=lire
+Translation\ Exporter=Exportateur de traduction

@@ -1,7 +1,6 @@
-#
-#Tue Jan 26 16:31:18 EST 2016
-Fully\ Scanned=Enti\u00E8rement num\u00E9ris\u00E9e
+#Thu Nov 10 10:19:40 EST 2016
+Fully\ Scanned=Entièrement numérisée
 Add\ Hot\ Folder=Ajouter Hot Folder
 Schedule\ Importing=Annexe Importation
-Scan\ in\ Progress=Num\u00E9risation en cours
+Scan\ in\ Progress=Numérisation en cours
 Alias=Alias

@@ -1,14 +1,13 @@
-#
-#Tue Jan 26 15:58:27 EST 2016
-Upload\ Queue=File de t\u00E9l\u00E9chargement
+#Thu Nov 10 10:19:40 EST 2016
+Upload\ Queue=File de téléchargement
 Pick\ Files=Choisissez Fichiers
 Pick\ More\ Files...=Choisissez Plus de fichiers ...
-Upload=T\u00E9l\u00E9charger
+Upload=Télécharger
 View\ Uploads=Voir Envois
-Drop\ files\ here\!=D\u00E9poser des fichiers ici\!
+Drop\ files\ here\!=Déposer des fichiers ici\!
 View\ Collection=Voir Collection
-Metadata=M\u00E9tadonn\u00E9es
-Upload\ Complete=T\u00E9l\u00E9chargez compl\u00E8te
-Upload\ multiple\ files\ by\ using\ the=T\u00E9l\u00E9charger plusieurs fichiers en utilisant le
-key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=sur votre clavier tout en s\u00E9lectionnant les fichiers que vous souhaitez t\u00E9l\u00E9charger
-Shift=D\u00E9calage
+Metadata=Métadonnées
+Upload\ Complete=Téléchargez complète
+Upload\ multiple\ files\ by\ using\ the=Télécharger plusieurs fichiers en utilisant le
+key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=sur votre clavier tout en sélectionnant les fichiers que vous souhaitez télécharger
+Shift=Décalage

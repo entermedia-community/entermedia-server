@@ -1,9 +1,8 @@
-#
-#Tue Jan 26 15:12:58 EST 2016
-Knapsack\ snapshots\ are\ used\ to\ create\ text\ based\ backups\ that\ can\ be\ moved\ between\ servers=Instantan\u00E9s \u00E0 dos sont utilis\u00E9s pour cr\u00E9er des sauvegardes \u00E0 base de texte qui peuvent \u00EAtre d\u00E9plac\u00E9s entre les serveurs
-This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists.=Cela permet listes charg\u00E9s de l&\#39;installation \u00E0 \u00EAtre int\u00E9gr\u00E9es \u00E0 vos propres listes.
+#Thu Nov 10 10:19:40 EST 2016
+Knapsack\ snapshots\ are\ used\ to\ create\ text\ based\ backups\ that\ can\ be\ moved\ between\ servers=Instantanés à dos sont utilisés pour créer des sauvegardes à base de texte qui peuvent être déplacés entre les serveurs
+This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists.=Cela permet listes chargés de l&\#39;installation à être intégrées à vos propres listes.
 Tools=Outils
-Reloading\ lists\ should\ be\ performed\ after\ an\ upgrade=Rechargement listes doivent \u00EAtre ex\u00E9cut\u00E9es apr\u00E8s une mise \u00E0 niveau
+Reloading\ lists\ should\ be\ performed\ after\ an\ upgrade=Rechargement listes doivent être exécutées après une mise à niveau
 View\ Snapshots=Voir Snapshots
-Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Les instantan\u00E9s sont utilis\u00E9s par ElasticSearch de stocker et de restaurer l&\#39;\u00E9tat de base de donn\u00E9es
+Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Les instantanés sont utilisés par ElasticSearch de stocker et de restaurer l&\#39;état de base de données
 Reload\ lists=Recharger listes

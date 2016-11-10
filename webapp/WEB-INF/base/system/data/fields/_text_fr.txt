@@ -1,8 +1,7 @@
-#
-#Tue Jan 26 15:13:29 EST 2016
-First\ Name=Pr\u00E9nom
+#Thu Nov 10 10:19:40 EST 2016
+First\ Name=Prénom
 Address\ 2=adresse 2
-Phone=t\u00E9l\u00E9phone
+Phone=téléphone
 Address\ 1=adresse 1
 User\ ID=ID de l&\#39;utilisateur
 Email=Email
@@ -11,4 +10,4 @@ City=ville
 User\ Search=Utilisateur Recherche
 Country=pays
 Postal\ Code=code postal
-Last\ Name=Pr\u00E9nom
+Last\ Name=Prénom

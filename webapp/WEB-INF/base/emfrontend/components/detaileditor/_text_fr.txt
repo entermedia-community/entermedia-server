@@ -1,9 +1,8 @@
-#
-#Mon Aug 27 11:11:11 EDT 2012
+#Thu Nov 10 10:19:40 EST 2016
 No=aucun
 Save\ values=Enregistrer les valeurs
 Share=part
 Cancel=annuler
-Edit=\u00E9diter
+Edit=éditer
 Yes=oui
-No\ data\ has\ been\ entered.=Aucune donn\u00E9e n'a \u00E9t\u00E9 entr\u00E9 .
+No\ data\ has\ been\ entered.=Aucune donnée n'a été entré .

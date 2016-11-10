@@ -1,10 +1,9 @@
-#
-#Tue Dec 01 11:07:11 EST 2015
+#Thu Nov 10 10:19:40 EST 2016
 Before\ Date=avant de date
 Between=Compris entre
-Equals=\u00C9gal
-Past\ 24\ hours=Derni\u00E8res 24 heures
+Equals=Égal
+Past\ 24\ hours=Dernières 24 heures
 Past\ month=dernier mois
-Past\ week=La semaine derni\u00E8re
-After\ Date=apr\u00E8s la date
-Past\ year=Ann\u00E9e derni\u00E8re
+Past\ week=La semaine dernière
+After\ Date=après la date
+Past\ year=Année dernière
