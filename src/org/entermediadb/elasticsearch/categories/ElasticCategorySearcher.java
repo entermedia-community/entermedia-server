@@ -217,7 +217,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		cat = (Category)getCacheManager().get("category", inCategoryId);
 		if( cat == null || cat.isDirty() )
 		{
-			cat = (Category)searchById(inCategoryId); //this will be fresh
+			cat = searchCategory(inCategoryId);
 			getCacheManager().put("category", inCategoryId,cat);
 		}
 		if( cat != null && !cat.hasLoadedParent())
@@ -235,23 +235,28 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	{
 		if( inField.equals("id") || inField.equals("_id"))
 		{
-			GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
-			if( response.isExists() )
-			{
-				ElasticCategory data = (ElasticCategory) createNewData();
-				data.setProperties(response.getSource());
-				//data.
-				//copyData(data, typed);
-				data.setId(inValue);
-				if( response.getVersion() > -1)
-				{
-					data.setProperty(".version",String.valueOf(response.getVersion()) );
-				}
-				return data;
-			}
-			return null;
+			return getCategory(inValue);
 		}
 		return super.searchByField(inField, inValue);
+	}
+
+	protected Category searchCategory(String inValue)
+	{
+		GetResponse response = getClient().prepareGet(toId(getCatalogId()), getSearchType(), inValue).execute().actionGet();
+		if( response.isExists() )
+		{
+			ElasticCategory data = (ElasticCategory) createNewData();
+			data.setProperties(response.getSource());
+			//data.
+			//copyData(data, typed);
+			data.setId(inValue);
+			if( response.getVersion() > -1)
+			{
+				data.setProperty(".version",String.valueOf(response.getVersion()) );
+			}
+			return data;
+		}
+		return null;
 	}
 
 	@Override
