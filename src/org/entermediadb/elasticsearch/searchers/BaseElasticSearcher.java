@@ -220,6 +220,12 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			// addAggregations(inQuery, search);
 
+//			 "_source": {
+//		        "include": [ "obj1.*", "obj2.*" ],
+//		        "exclude": [ "*.description" ]
+//		    },
+
+			search.setFetchSource(null, "description");
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
 
 			hits.setIndexId(getIndexId());
@@ -507,7 +513,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			XContentBuilder jsonproperties = jsonBuilder.startObject().startObject(getSearchType());
 			jsonproperties.field("date_detection", "false");
 			
-	
+			//"_all" : {"enabled" : false},
+			jsonproperties.startObject("_all" ).field("enabled", "false").endObject();
 			
 			
 			jsonproperties = jsonproperties.startObject("properties");
