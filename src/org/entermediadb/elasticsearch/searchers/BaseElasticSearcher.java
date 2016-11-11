@@ -1053,6 +1053,15 @@ public class BaseElasticSearcher extends BaseSearcher
 				text.analyzer("lowersnowball");
 				text.defaultField("description");
 
+
+				MatchQueryBuilder text2 = QueryBuilders.matchPhrasePrefixQuery("description",String.valueOf(inValue));
+				text2.analyzer("lowersnowball");
+
+				BoolQueryBuilder or = QueryBuilders.boolQuery();
+				or.should(text);
+				or.should(text2);
+
+				find = or;
 				// TODO: Use RegEx to check for this
 
 				// if( valueof.contains("-") || valueof.contains(",") ||
@@ -1068,9 +1077,6 @@ public class BaseElasticSearcher extends BaseSearcher
 				// find = or;
 				// }
 				// else
-				{
-					find = text;
-				}
 
 			}
 		}
