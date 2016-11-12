@@ -4,6 +4,8 @@
   <property id="oneweek" default="true">Keep for One Week</property>
   <property id="remove" default="true">Remove/Delete</property>
   <property id="keep" default="true">Keep Permanently</property>
+  <!-- Test to see if purge works -->
+  <property id="purge" default="true">Purge</property>
   
   
 </policies>

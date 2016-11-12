@@ -1,5 +1,7 @@
 <properties >
 	<property id="id" editable="true" stored="true" index="true">ID</property>
+	<property id="searchtype" editable="true" stored="true" index="true">Search Type</property>	
+
 	<property id="name" multilanguage="true" editable="true" stored="true" index="true">Name</property>	
 	<property id="editable" type="boolean" editable="true" stored="true" index="true">Editable</property>	
 	<property id="internaluse" type="boolean" editable="true" stored="true" index="true">Internal use</property>	

@@ -2107,6 +2107,14 @@
 		</property>
 	</bean>	
  	
+ 	<bean id="propertydetailSearcher" class="org.openedit.data.PropertyDetailSearcher" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+	</bean>
  	
  	
 </beans>

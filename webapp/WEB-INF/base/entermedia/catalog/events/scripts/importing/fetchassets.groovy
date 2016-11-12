@@ -15,7 +15,7 @@ public void init() {
 
 	Searcher searcher = archive.getAssetSearcher();
 	HitTracker assets = searcher.fieldSearch("importstatus", "needsdownload");
-
+	assets.enableBulkOperations();
 	String ids = context.getRequestParameter("assetids");
 	if( ids != null ) 
 	{

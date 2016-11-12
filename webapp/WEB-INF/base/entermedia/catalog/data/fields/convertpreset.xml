@@ -13,6 +13,11 @@
 	<property id="display" type="boolean" index="true" stored="true" editable="true">Display on Convert/Crop Page</property>
 	<property id="singlepage" type="boolean" index="true" stored="true" editable="true">Only create the first page in multipage documents</property>
 	
+	
+	
+	
+	
+	
 </properties>
 
    

@@ -48,22 +48,22 @@ public class ElasticsearchRepository extends FileRepository {
 		
 		
 		//get it from the super class and create one on the fly?  IE, if the pages already exist...
-//		if (page == null) {
-//			ContentItem item = super.get(inPath);
-//			if (item != null) {
-//				
-//				ElasticContentItem elasticitem = new ElasticContentItem();
-//				page = getElasticPageSearcher().createNewData();
-//				page.setSourcePath(inPath);
-//				page.setProperty("content", item.get);
-//				elasticitem.setElasticData(page);
-//				
-//			}
-//		} else{
-//			ElasticContentItem elasticitem = new ElasticContentItem();
-//			elasticitem.setElasticData(page);
-//			
-//		}
+		if (page == null) {
+			ContentItem item = super.get(inPath);
+			if (item != null) {
+				
+				elasticitem = new ElasticContentItem();
+				page = getElasticPageSearcher().createNewData();
+				page.setSourcePath(inPath);
+				
+				elasticitem.setElasticData(page);
+				
+			}
+		} else{
+			elasticitem = new ElasticContentItem();
+			elasticitem.setElasticData(page);
+			
+		}
 		
 		return elasticitem;
 	}
