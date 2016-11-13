@@ -23,7 +23,7 @@ while( (trow = file.getNextRow()) != null ) {
 	String searchtype = trow.get("searchtype");
 	if(id && searchtype){
 		Searcher remote = mediaarchive.getSearcher(searchtype);
-		PropertyDetail detail = searcher.getDetail(id);
+		PropertyDetail detail = remote.getDetail(id);  //target detail from the actual table
 		if(detail == null){
 			detail = new PropertyDetail();
 			detail.setId(id);
@@ -31,12 +31,14 @@ while( (trow = file.getNextRow()) != null ) {
 		}
 		boolean changed = false;
 		searcher.getPropertyDetails().each{
-			String detailid = it.id ;
-			if("id".equals(id)){
-				return;
+			String detailid = it.id ;  //name, editable, analyzer etc...
+			if("id".equals(detailid)){
+				return; //skip the ID column - it's nonsense
 			}
 			String value = trow.get(detailid);
-			
+			if(value != null && value.length() == 0){
+				value = null;
+			}
 			if(detailid.contains("name.")){
 				String[] split = detailid.split(".");
 				String langcode = split[1];
