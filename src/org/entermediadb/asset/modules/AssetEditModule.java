@@ -1136,9 +1136,17 @@ public class AssetEditModule extends BaseMediaModule
 					for (int j = 0; j < language.length; j++)
 					{
 						String lang = language[j];
-						String langval = inReq.getRequestParameter(prefix + afield + "." + lang);
-						lmap.setText(lang,langval);
+						String langval = inReq.getRequestParameter(prefix + afield + ".language." + (j + 1));
+						if( langval == null)
+						{
+							langval = inReq.getRequestParameter(prefix + afield + "." + lang); //legacy
+						}
+						if( langval != null)
+						{
+							lmap.setText(lang,langval);
+						}
 					}
+					
 					val = lmap;
 				}
 				
