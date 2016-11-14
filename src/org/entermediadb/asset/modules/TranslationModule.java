@@ -245,10 +245,6 @@ public class TranslationModule extends BaseModule {
 				String locale = newlang.substring("locale_".length());
 				inReq.putSessionValue("sessionlocale", locale);
 			}
-			String orig = inReq.findValue("origURL");
-			if (orig != null) {
-				inReq.redirect(orig);
-			}
 		}
 	}
 

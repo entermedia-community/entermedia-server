@@ -1,6 +1,6 @@
 
 <form name="oelanguage" action="$home$apphome/components/languages/changelanguage.html" nobr>		
-	<input type="hidden" name="origURL" value="$content.path" />
+	<input type="hidden" name="origURL" value="$context.getPathUrl()" />
  <select  name="newlang" onchange="document.oelanguage.submit()" >	
 	<option value="">Change Language</option>	
 		#foreach( $lang in $translations.languages )

@@ -1033,8 +1033,20 @@ public class AdminModule extends BaseModule
 //			orig = inReq.getRequestParameter("origURL");
 //		}	
 			
-		if (orig != null)
+//		if(orig == null)
+//		{
+//			orig = inReq.getReferringPage();
+//		}
+		
+		if (orig != null )
 		{
+			if( orig.startsWith("http") )
+			{
+				log.error("Orig starts with " + orig);
+				inReq.redirect("/index.html");
+				return;
+			}
+			
 			if (orig.indexOf("?") == -1 && editPath != null)
 			{
 				inReq.redirect(orig + "?path=" + editPath + "&cache=false");
@@ -1046,7 +1058,7 @@ public class AdminModule extends BaseModule
 		}
 		else
 		{
-			// log.error("No origURL specified");
+			//log.error("No origURL specified");
 		}
 	}
 
