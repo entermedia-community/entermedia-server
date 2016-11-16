@@ -228,7 +228,7 @@ public class FileManagerModule extends BaseModule
 	//TODO: Move over to our built in permission checker API
 	protected void checkUser(WebPageRequest inReq ) throws OpenEditException
 	{
-		if( inReq.getUser() == null && !inReq.getUser().hasPermission("oe.administration") ||  inReq.getUser().isInGroup("administrators"))
+		if( inReq.getUser() == null && (!inReq.getUser().hasPermission("oe.administration") ||  inReq.getUser().isInGroup("administrators")))
 		{
 			throw new OpenEditException("Must be logged in as an administrator");
 		}
