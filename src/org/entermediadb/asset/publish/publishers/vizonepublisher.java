@@ -16,6 +16,9 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -251,19 +254,27 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				
 				data = inArchive.getReplacer().replace(data, metadata);
 				
-				PostMethod method = new PostMethod(addr);
+				HttpPost method = new HttpPost(addr);
 				
 				//method.setRequestEntity(new ByteArrayEntity(data.bytes));
-				method.setRequestBody(data);
+				StringEntity params = new StringEntity(data);
+				method.setEntity(params);
+
+				
+				method.setHeader( "Authorization", "Basic " + inAuthString);
+				method.setHeader( "Expect", "" );
+				method.setHeader("Content-Type", "application/atom+xml;type=entry");
+				
+				HttpResponse response2 = getClient().execute(method);
+				StatusLine sl = response2.getStatusLine();           
+				int status = sl.getStatusCode();
+				if( status != 200)
+				{
+					throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+				}
 				
 				
-				method.setRequestHeader( "Authorization", "Basic " + inAuthString);
-				method.setRequestHeader( "Expect", "" );
-				method.setRequestHeader("Content-Type", "application/atom+xml;type=entry");
-				
-				int status = getClient("test").executeMethod(method);
-				
-				Element response = getXmlUtil().getXml(method.getResponseBodyAsStream(), "UTF-8");
+				Element response = getXmlUtil().getXml(method.getEntity().getContent(), "UTF-8");
 				String xml = response.asXML();
 				return response;
 			
@@ -282,24 +293,34 @@ public class vizonepublisher extends BasePublisher implements Publisher
 						
 			
 			
-			PutMethod method = new PutMethod(addr);
-			method.setRequestHeader( "Authorization", "Basic " + inAuthString );
-			method.setRequestHeader( "Expect", "" );
-			
-			String response = method.getResponseBodyAsString();
-			
-			int status = getClient("test").executeMethod(method);
-			String addr2 = method.getResponseHeader("Location").getValue();
+			HttpPut method = new HttpPut(addr);
+			method.setHeader( "Authorization", "Basic " + inAuthString );
+			method.setHeader( "Expect", "" );
 			
 			
+			HttpResponse response2 =  getClient().execute(method);
+			
+			String addr2 = method.getFirstHeader("Location").getValue();
 			
 			
-			PutMethod upload = new PutMethod(addr2);
-			upload.setRequestHeader( "Authorization", "Basic " + inAuthString );
-			upload.setRequestHeader( "Expect", "" );
-			upload.setRequestBody(inputpage.getInputStream());
 			
-			 status = getClient("test").executeMethod(upload);
+			HttpPut upload = new HttpPut(addr2);
+			upload.setHeader( "Authorization", "Basic " + inAuthString );
+			upload.setHeader( "Expect", "" );
+			InputStreamEntity entity = new InputStreamEntity(inputpage.getInputStream());
+			upload.setEntity(entity);
+			
+
+			HttpResponse response3 = getClient().execute(upload);
+			
+			StatusLine sl = response3.getStatusLine();           
+			int status = sl.getStatusCode();
+			if( status != 200)
+			{
+				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+			}
+			
+			
 		}
 		catch (Exception e)
 		{
@@ -317,7 +338,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	
 	public HttpClient getClient()
 	{
-		  HttpClient client = HttpClients.createDefault();
+		  
 			
 		  RequestConfig globalConfig = RequestConfig.custom()
 	                .setCookieSpec(CookieSpecs.DEFAULT)
@@ -326,7 +347,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	                .setDefaultRequestConfig(globalConfig)
 	                .build();
 		
-		return client;
+		return httpClient;
 	}
 	
 	public XmlUtil getXmlUtil()
