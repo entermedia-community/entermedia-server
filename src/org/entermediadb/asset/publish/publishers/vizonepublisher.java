@@ -8,11 +8,17 @@ import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
@@ -194,20 +200,23 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		
 		data = inArchive.getReplacer().replace(data, metadata);
 		
-		PutMethod method = new PutMethod(addr);
+		HttpPost method = new HttpPost(addr);
+		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
+		method.setHeader("Authorization", "Basic " + inAuthString);
+		method.setHeader("Expect", "" );
+
+		StringEntity params = new StringEntity(data);
+		method.setEntity(params);
 		
-		//method.setRequestEntity(new ByteArrayEntity(data.bytes));
-		method.setRequestBody(data);
-		
-		
-		method.setRequestHeader( "Authorization", "Basic " + inAuthString);
-		method.setRequestHeader( "Expect", "" );
-		method.setRequestHeader("Content-Type", "application/vnd.vizrt.payload+xml");
-		
-		int status = getClient("test").executeMethod(method);
-		
-		Element response = getXmlUtil().getXml(method.getResponseBodyAsStream(), "UTF-8");
-		String xml = response.asXML();
+		HttpResponse response2 = getClient().execute(method);
+		StatusLine sl = response2.getStatusLine();           
+		int status = sl.getStatusCode();
+		if( status != 200)
+		{
+			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+		}
+		Element response = getXmlUtil().getXml(response2.getEntity().getContent(), "UTF-8");
+		//String xml = response.asXML();
 		return response;
 	
 		//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
@@ -306,15 +315,18 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	}
 	
 	
-	public HttpClient getClient(String inCatalogId)
+	public HttpClient getClient()
 	{
-		HttpClient ref = new HttpClient();
+		  HttpClient client = HttpClients.createDefault();
+			
+		  RequestConfig globalConfig = RequestConfig.custom()
+	                .setCookieSpec(CookieSpecs.DEFAULT)
+	                .build();
+	        CloseableHttpClient httpClient = HttpClients.custom()
+	                .setDefaultRequestConfig(globalConfig)
+	                .build();
 		
-		
-		
-		
-		
-		return ref;
+		return client;
 	}
 	
 	public XmlUtil getXmlUtil()

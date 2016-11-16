@@ -3,38 +3,41 @@ package model.push;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
-import java.util.StringTokenizer;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.multipart.FilePart;
-import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-import org.apache.commons.httpclient.methods.multipart.Part;
-import org.apache.commons.httpclient.methods.multipart.StringPart;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.dom4j.Attribute;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.HTTP;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.elasticsearch.http.HttpException;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.push.PushManager;
-import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -44,8 +47,6 @@ import org.entermediadb.modules.update.Downloader;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.data.PropertyDetail;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -79,7 +80,15 @@ public class BasePushManager implements PushManager
 //		System.getProperties().put("proxyHost", "localhost");
 //		System.getProperties().put("proxyPort", "8082");
 		
-		HttpClient client = new HttpClient();
+	  HttpClient client = HttpClients.createDefault();
+		
+	  RequestConfig globalConfig = RequestConfig.custom()
+                .setCookieSpec(CookieSpecs.DEFAULT)
+                .build();
+        CloseableHttpClient httpClient = HttpClients.custom()
+                .setDefaultRequestConfig(globalConfig)
+                .build();
+		
 		String server = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_url").get("value");
 		String account = getSearcherManager().getData(inCatalogId, "catalogsettings", "push_server_username").get("value");
 		User user = getUserManager(inCatalogId).getUser(account);
@@ -89,16 +98,24 @@ public class BasePushManager implements PushManager
 			return null;
 		}
 		String password = getUserManager(inCatalogId).decryptPassword(user);
-		PostMethod method = new PostMethod(server + "/media/services/rest/login.xml");
+		HttpPost method = new HttpPost(server + "/media/services/rest/login.xml");
+
+		List <org.apache.http.NameValuePair> nvps = new ArrayList <NameValuePair>();
+		nvps.add(new BasicNameValuePair("accountname", account));
+		nvps.add(new BasicNameValuePair("password", password));
+		
+		//add(new BasicNameValuePair(
 
 		//TODO: Support a session key and ssl
-		method.addParameter("accountname", account);
-		method.addParameter("password", password);
 		//execute(inCatalogId, method);
+		
 		try
 		{
-			int status = client.executeMethod(method);
-			if (status != 200)
+			method.setEntity(new UrlEncodedFormEntity(nvps));
+			CloseableHttpResponse response2 = httpClient.execute(method);
+			StatusLine sl = response2.getStatusLine();           
+			//int status = client.executeMethod(method);
+			if (sl.getStatusCode() != 200)
 			{
 				throw new Exception(" ${method} Request failed: status code ${status}");
 			}
@@ -384,7 +401,7 @@ public class BasePushManager implements PushManager
 		return inputpage;
 
 	}
-	protected Element execute(String inCatalogId, HttpMethod inMethod)
+	protected Element execute(String inCatalogId, HttpPost inMethod)
 	{
 		try
 		{
@@ -405,22 +422,21 @@ public class BasePushManager implements PushManager
 			throw new RuntimeException(e);
 		}
 	}
-	protected Element send(String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	protected Element send(String inCatalogId, HttpPost inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
 		return send(getClient(inCatalogId),inCatalogId, inMethod);
 	}
-	protected Element send(HttpClient inClient, String inCatalogId, HttpMethod inMethod) throws IOException, HttpException, Exception, DocumentException
+	protected Element send(HttpClient inClient, String inCatalogId, HttpPost inMethod) throws IOException, HttpException, Exception, DocumentException
 	{
-		int status = inClient.executeMethod(inMethod);
+		//method.setEntity(new UrlEncodedFormEntity(nvps));
+		HttpResponse response2 = inClient.execute(inMethod);
+		StatusLine sl = response2.getStatusLine();           
+		int status = sl.getStatusCode();
 		if (status != 200)
 		{
 			throw new Exception( inMethod + " Request failed: status code " + status);
 		}
-		
-		
-//		log.info(inMethod.getResponseBodyAsString());//for debug purposes only
-		
-		Element result = xmlUtil.getXml(inMethod.getResponseBodyAsStream(),"UTF-8");
+		Element result = xmlUtil.getXml(response2.getEntity().getContent(),"UTF-8");
 		return result;
 	}
 	
@@ -432,9 +448,16 @@ public class BasePushManager implements PushManager
 		//String password = getUserManager().decryptPassword(getUserManager().getUser(account));
 
 		String url = server + "/media/services/rest/" + "handlesync.xml?catalogid=" + targetcatalogid;
-		PostMethod method = new PostMethod(url);
+		HttpPost method = new HttpPost(url);
+		//Request.setHeader(CoreProtocolPNames.HTTP_CONTENT_CHARSET, Consts.UTF_8);
+		//method.setHeader(CoreProtocolPNames.HTTP_CONTENT_CHARSET, Consts.UTF_8);
+		//method.setHeader("Content-Type", "multipart/form-data; charset=utf-8");
 		
-		method.getParams().setContentCharset("utf-8"); //The line I added
+		method.setHeader(HTTP.CONTENT_TYPE,
+                "application/x-www-form-urlencoded;charset=UTF-8");
+		
+		
+		//method.getParams().setContentCharset("utf-8"); //The line I added
 		//method.setRequestHeader("Content-Type", "multipart/form-data; charset=utf-8");
 		//method.getParams().setBooleanParameter(HttpMethodParams.USE_EXPECT_CONTINUE, true);
 		
@@ -446,7 +469,8 @@ public class BasePushManager implements PushManager
 		
 		try
 		{
-			List<Part> parts = new ArrayList();
+			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+			
 			int count = 0;
 			for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 			{
@@ -457,12 +481,14 @@ public class BasePushManager implements PushManager
 				{
 					type = "originals." + type;
 				}
-				FilePart part = new FilePart(type + count, name, new File( file.getAbsolutePath() ));
-				parts.add(part);
+				FileBody fileBody = new FileBody(new File( file.getAbsolutePath() ), name, "application/octect-stream","utf-8");
+				 
+				builder.addPart(type + count, fileBody);
+				//FilePart part = new FilePart(type + count, name, new File( file.getAbsolutePath() ));
 				count++;
 			}
-//			parts.add(new StringPart("username", account));
-//			parts.add(new StringPart("password", password));
+//			parts.add(new BasicNameValuePair("username", account));
+//			parts.add(new BasicNameValuePair("password", password));
 			for (Iterator iterator = inAsset.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
@@ -471,17 +497,16 @@ public class BasePushManager implements PushManager
 					String value = inAsset.get(key);
 					if( value != null)
 					{
-						parts.add(new StringPart("field", key));
-						parts.add(new StringPart(key+ ".value", value));
+						builder.addPart("field",new StringBody(key, ContentType.TEXT_PLAIN));
+						builder.addPart(key+ ".value",new StringBody(value, ContentType.TEXT_PLAIN));
 					}
 				}
 			}
-			parts.add(new StringPart("field", "name"));
-			parts.add(new StringPart("name.value", inAsset.getName()));
-			parts.add(new StringPart("sourcepath", inAsset.getSourcePath()));
-			
-			parts.add(new StringPart("uploadtype", inUploadType)); 
-			parts.add(new StringPart("id", prefix + inAsset.getId()));
+			builder.addPart("field", new StringBody("name",ContentType.TEXT_PLAIN));
+			builder.addPart("name.value", new StringBody( inAsset.getName(),ContentType.TEXT_PLAIN));
+			builder.addPart("sourcepath", new StringBody( inAsset.getSourcePath(),ContentType.TEXT_PLAIN));
+			builder.addPart("uploadtype", new StringBody( inUploadType,ContentType.TEXT_PLAIN));
+			builder.addPart("id", new StringBody( prefix + inAsset.getId(),ContentType.TEXT_PLAIN));
 			
 			if( inAsset.getKeywords().size() > 0 )
 			{
@@ -495,7 +520,7 @@ public class BasePushManager implements PushManager
 						buffer.append('|');
 					}
 				}
-				parts.add(new StringPart("keywords", buffer.toString() ));
+				builder.addPart("keywords",new StringBody(buffer.toString(),ContentType.TEXT_PLAIN));
 			}
 			
 //TODO: Do we need to sync the category tree as well?
@@ -512,14 +537,14 @@ public class BasePushManager implements PushManager
 //						buffer.append('|');
 //					}
 //				}
-//				parts.add(new StringPart("libraries", buffer.toString() ));
+//				builder.add(new StringBody("libraries", buffer.toString() ));
 //			}
 
-			Part[] arrayOfparts = parts.toArray(new Part[parts.size()]);
-
-			MultipartRequestEntity entity = new MultipartRequestEntity(arrayOfparts, method.getParams());
+//			Part[] arrayOfparts = builder.toArray(new Part[builder.size()]);
+//
+//			MultipartRequestEntity entity = new MultipartRequestEntity(arrayOfparts, method.getParams());
 			//entity.
-			method.setRequestEntity(entity);
+			method.setEntity(builder.build());
 			
 			Element root = execute(inArchive.getCatalogId(), method);
 			Map<String, String> result = new HashMap<String, String>();
@@ -709,7 +734,7 @@ public class BasePushManager implements PushManager
 
 		String url = server + "/media/services/rest/searchpendingpublish.xml?catalogid=" + targetcatalogid;
 		//url = url + "&field=remotempublishstatus&remotempublishstatus.value=new&operation=exact";
-		PostMethod method = new PostMethod(url);
+		HttpPost method = new HttpPost(url);
 		
 		//loop over all the destinations we are monitoring
 		Searcher dests = inArchive.getSearcher("publishdestination");
@@ -729,18 +754,22 @@ public class BasePushManager implements PushManager
 				ors.append(" ");
 			}
 		}
-		method.addParameter("field", "publishdestination");
-		//method.addParameter("publishdestination.value", "pushhttp");
-		method.addParameter("publishdestination.value", ors.toString() );
-		method.addParameter("operation", "orsgroup");
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 
-		method.addParameter("field", "status");
-		method.addParameter("status.value", "complete");
-		method.addParameter("operation", "not");
+		builder.addPart("field", new StringBody("publishdestination", ContentType.TEXT_PLAIN));
+		//builder.addPart(new BasicNameValuePair(("publishdestination.value", "pushhttp");
+		builder.addPart("publishdestination.value", new StringBody(ors.toString(), ContentType.TEXT_PLAIN));
+		builder.addPart("operation", new StringBody("orsgroup", ContentType.TEXT_PLAIN));
 
-		method.addParameter("field", "status");
-		method.addParameter("status.value", "error");
-		method.addParameter("operation", "not");
+		builder.addPart("field", new StringBody("status", ContentType.TEXT_PLAIN));
+		builder.addPart("status.value", new StringBody("complete", ContentType.TEXT_PLAIN));
+		builder.addPart("operation", new StringBody("not", ContentType.TEXT_PLAIN));
+
+		builder.addPart("field", new StringBody("status", ContentType.TEXT_PLAIN));
+		builder.addPart("status.value", new StringBody("error", ContentType.TEXT_PLAIN));
+		builder.addPart("operation", new StringBody("not", ContentType.TEXT_PLAIN));
+
+		method.setEntity(builder.build());
 
 		try
 		{
@@ -781,7 +810,7 @@ public class BasePushManager implements PushManager
 			log.info("Asset not found: " + sourcepath);
 			saveurl = saveurl + "&field=status&status.value=error";
 			saveurl = saveurl + "&field=errordetails&errordetails.value=original_asset_not_found";
-			PostMethod savemethod = new PostMethod(saveurl);
+			HttpPost savemethod = new HttpPost(saveurl);
 			Element saveroot = execute(inArchive.getCatalogId(), savemethod);
 		}
 		else
@@ -817,7 +846,7 @@ public class BasePushManager implements PushManager
 				saveurl = saveurl + "&field=status&status.value=error";
 				//saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=error";
 				saveurl = saveurl + "&field=errordetails&errordetails.value=output_not_found";
-				PostMethod savemethod = new PostMethod(saveurl);
+				HttpPost savemethod = new HttpPost(saveurl);
 				Element saveroot = execute(inArchive.getCatalogId(), savemethod);
 				return;
 			}
@@ -848,7 +877,7 @@ public class BasePushManager implements PushManager
 			}
 
 			
-			PostMethod savemethod = new PostMethod(saveurl);
+			HttpPost savemethod = new HttpPost(saveurl);
 			Element saveroot = execute(inArchive.getCatalogId(), savemethod);					
 		}
 	}
@@ -1021,7 +1050,7 @@ public class BasePushManager implements PushManager
 		archive.fireMediaEvent("importing/pushassetimported", inReq.getUser(), target);
 
 	}
-	
+	/*
 	public void pullApprovedAssets(WebPageRequest inReq, MediaArchive inArchive){
 		log.info("pulling approved assets from remote server");
 		Map<String,Properties> map = getApprovedAssets(inArchive);
@@ -1034,11 +1063,9 @@ public class BasePushManager implements PushManager
 		}
 	}
 	
-	/**
 	 * Gets the approved assets (that are not marked for deletion) from remote server
 	 * @param inArchive
 	 * @return
-	 */
 	protected HashMap<String,Properties> getApprovedAssets(MediaArchive inArchive) {
 		log.info("getApprovedAssets starting");
 		String server = inArchive.getCatalogSettingValue("push_server_url");
@@ -1049,14 +1076,18 @@ public class BasePushManager implements PushManager
 		String [] inOperations = {"matches", "not"};
 
 		String url = server + "/media/services/rest/assetsearch.xml";
-		PostMethod method = new PostMethod(url);
-		method.addParameter("catalogid", remotecatalogid);
+		HttpPost method = new HttpPost(url);
+		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		
+		builder.addPart("catalogid", new StringBody("remotecatalogid", ContentType.TEXT_PLAIN));
+
 		for(int i=0; i<inFields.length; i++){
-			method.addParameter("field", inFields[i]);
-			method.addParameter("operation", inOperations[i]);
-			method.addParameter(inFields[i] + ".value", inValues[i]);
+			builder.addPart("field", new StringBody("inFields[i]", ContentType.TEXT_PLAIN));
+			builder.addPart("operation", new StringBody(inOperations[i], ContentType.TEXT_PLAIN));
+			builder.addPart(inFields[i] + ".value", new StringBody(inValues[i], ContentType.TEXT_PLAIN));
 		}
 		log.info("executing $remotecatalogid, $method");
+		method.setEntity(builder.build());
 		Element root = execute(remotecatalogid,method);
 		method.releaseConnection();
 		Element hits = (Element)root.elements().get(0);
@@ -1071,10 +1102,12 @@ public class BasePushManager implements PushManager
 		url = server + "/media/services/rest/getpage.xml";
 		for( int i = 2; i <= pages; i++ )
 		{
-			method = new PostMethod(url);
-			method.addParameter("catalogid", remotecatalogid);
-			method.addParameter("hitssessionid", sessionid);
-			method.addParameter("page", String.valueOf(i));
+			method = new HttpPost(url);
+			builder = MultipartEntityBuilder.create();
+
+			builder.addPart("catalogid", new StringBody(remotecatalogid, ContentType.TEXT_PLAIN));
+			builder.addPart("hitssessionid", new StringBody(sessionid, ContentType.TEXT_PLAIN));
+			builder.addPart("page", new StringBody(String.valueOf(i), ContentType.TEXT_PLAIN));
 			root = execute(remotecatalogid,method);
 			method.releaseConnection();
 			hits = (Element)root.elements().get(0);
@@ -1171,9 +1204,9 @@ public class BasePushManager implements PushManager
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 		String url = server + "/media/services/rest/assetdetails.xml";
-		PostMethod method = new PostMethod(url);
-		method.addParameter("catalogid", remotecatalogid);
-		method.addParameter("id", inAssetId);
+		HttpPost method = new HttpPost(url);
+		builder.addPart(new BasicNameValuePair(("catalogid", remotecatalogid);
+		method.add(new BasicNameValuePair(("id", inAssetId);
 		Element root = execute(remotecatalogid,method);
 		method.releaseConnection();
 		Properties props = new Properties();
@@ -1326,11 +1359,11 @@ public class BasePushManager implements PushManager
 		String server = inArchive.getCatalogSettingValue("push_server_url");
 		String remotecatalogid = inArchive.getCatalogSettingValue("push_target_catalogid");
 		String url = server + "/media/services/rest/saveassetdetails.xml";
-		PostMethod method = new PostMethod(url);
-		method.addParameter("catalogid", remotecatalogid);
-		method.addParameter("id", inAssetId);
-		method.addParameter("field", "editstatus");
-		method.addParameter("editstatus.value", "7");
+		HttpPost method = new HttpPost(url);
+		method.add(new BasicNameValuePair(("catalogid", remotecatalogid);
+		method.add(new BasicNameValuePair(("id", inAssetId);
+		method.add(new BasicNameValuePair(("field", "editstatus");
+		method.add(new BasicNameValuePair(("editstatus.value", "7");
 		Element root = execute(remotecatalogid,method);
 		method.releaseConnection();
 		String out = root.attributeValue("stat");
@@ -1338,4 +1371,5 @@ public class BasePushManager implements PushManager
 			log.info("warning, could not update $inAssetId editstatus!!!");
 		}
 	}
+	*/
 }

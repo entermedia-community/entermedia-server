@@ -3,11 +3,9 @@ package org.entermediadb.asset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
@@ -17,6 +15,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.modules.translations.LanguageMap;
 
 public class CompositeAsset extends Asset implements Data, CompositeData
 {
@@ -217,7 +216,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			for (Iterator iterator = target.iterator(); iterator.hasNext();)
 			{
 				Object object = (Object) iterator.next();
-				if(object instanceof String){
+				if(object instanceof String)
+				{
 					Category cat = getMediaArchive().getCategory((String) object);
 					finalvals.add(cat);
 
@@ -520,8 +520,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				{
 					continue;
 				}
-				String value = getPropertiesSet().getString(key);
-				String datavalue = data.get(key);
+				Object value = getPropertiesSet().get(key);
+				Object datavalue = data.getValue(key);
 				
 				if( datavalue == value )
 				{
@@ -534,19 +534,36 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				Asset asset = loadAsset( inloopasset, data, tosave);
 				if( asset != null )
 				{
-					boolean multi = isMulti(key);
-
-					if( multi )
+					PropertyDetail detail = getPropertyDetails().getDetail(key);
+					if( detail.isMultiLanguage() )
+					{
+						LanguageMap map = null;
+						if( datavalue instanceof LanguageMap)
+						{
+							map = (LanguageMap)datavalue;
+						}
+						if( map == null )
+						{
+							map = new LanguageMap();
+						}
+						LanguageMap langs = (LanguageMap)value;
+						for (Iterator iterator3 = langs.keySet().iterator(); iterator3.hasNext();)
+						{
+							String code = (String) iterator3.next();
+							map.setText(code, langs.getText(code));
+						}
+					}
+					else if( detail.isMultiValue() )
 					{
 						//Need to add any that are set by user in value 
-						Set added = collect(value);
-						Set existing = collect(datavalue);
-						Set previousCommonOnes = collect(getValueFromResults(key)); //Do this only once somehow 
+						Collection added = collect(value);
+						Collection existing = collect(datavalue);
+						Collection previousCommonOnes = collect(getValueFromResults(key)); //Do this only once somehow 
 						saveMultiValues(asset, key, added, existing,previousCommonOnes);
 					}
 					else
 					{
-						asset.setProperty(key, value);
+						asset.setValue(key, value);
 					}
 					inloopasset = asset;
 				}
@@ -569,7 +586,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	 * @param existing Ones that are already on the asset
 	 * @param old Ones that need to be removed?
 	 */
-	protected void saveMultiValues(Asset asset, String key, Set added, Set existing, Set previousCommonOnes) 
+	protected void saveMultiValues(Asset asset, String key, Collection added, Collection existing, Collection previousCommonOnes) 
 	{
 		existing.addAll(added);
 		
@@ -591,13 +608,22 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		return multi;
 	}
 
-	protected Set collect(String existingvalue) 
+	protected Collection collect(Object existingvalue) 
 	{
-		if( existingvalue == null || existingvalue.length() == 0)
+		if( existingvalue == null)
 		{
 			return new HashSet();
 		}
-		String[] vals = VALUEDELMITER.split(existingvalue);
+		if( existingvalue instanceof Collection)
+		{
+			return (Collection)existingvalue;
+		}
+		String val = (String)existingvalue;
+		if( val.trim().isEmpty() )
+		{
+			return new HashSet();
+		}
+		String[] vals = VALUEDELMITER.split(val);
 		Set set = new HashSet(vals.length);
 		for (int i = 0; i < vals.length; i++) {
 			set.add(vals[i]);

@@ -3,7 +3,7 @@ package org.entermediadb.asset.push;
 import java.util.Collection;
 import java.util.List;
 
-import org.apache.commons.httpclient.HttpClient;
+import org.apache.http.client.HttpClient;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.WebPageRequest;
@@ -59,6 +59,6 @@ public interface PushManager
 
 	void acceptPush(WebPageRequest inReq, MediaArchive archive);
 	
-	void pullApprovedAssets(WebPageRequest inReq, MediaArchive inArchive);
+	//void pullApprovedAssets(WebPageRequest inReq, MediaArchive inArchive);
 
 }
