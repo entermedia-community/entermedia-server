@@ -65,7 +65,7 @@ while( (trow = file.getNextRow()) != null ) {
 			
 			
 		if(changed){
-			remote.getPropertyDetailsArchive().savePropertyDetail(detail, searchtype, null);
+			remote.getPropertyDetailsArchive().updatePropertyDetail(detail, searchtype, null);
 		}
 		
 		

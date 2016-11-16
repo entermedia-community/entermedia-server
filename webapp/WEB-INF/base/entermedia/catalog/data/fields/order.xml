@@ -1,30 +1,180 @@
-<properties class="order">
-	<property id="id" index="true" stored="true">Id</property>
-	<property id="name" index="true" stored="true">Order Number</property>
-	<property id="sourcepath" index="true" stored="true">SourcePath</property>
-	<property id="ordertype"  editable="true" index="true" stored="true" type="list" listid="order/ordertype">Order Type</property>
-  	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true">User</property>
-  	<property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>
-	<property id="orderstatus" editable="true"  datatype="list" index="true" stored="true">Status</property>
-	<property id="orderstatusdetails" editable="true"  index="true" stored="true">Status Details</property>
-	<property id="project" editable="true"  datatype="list" listid="order/projects" index="true" stored="true">Project</property>
+<?xml version="1.0" encoding="UTF-8"?>
 
-	<property id="applicationid"  index="true" stored="true">Application Ordered</property>
-	<property id="sharedby"  index="true" stored="true">Shared By</property>
-	<property id="publishdestination"  editable="true" type="list" index="true" stored="true">Destination Id</property>
-
-	<property id="expireson" editable="true" type="date"  index="true" stored="true">Expires On</property>
-	<property id="sharewithemail"  editable="true" note="separated by commas" index="true" stored="true">Email</property>
-	<property id="sharenote"  viewtype="html" editable="true"  stored="true">Notes</property>
-	<property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true"  stored="true">Share Type</property>
-	<property id="emailsent"  type="boolean" editable="true" index="true" stored="true">Email Sent</property>
-
-	<property id="historytype" stored="true" index="true" type="list" listid="order/historytype" >History Status</property>
-	<property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" >Status Updated</property>
-	<property id="historyitemsuccesscount" editable="false" stored="true" index="true"  >Complete Count</property>
-	<property id="historyitemerrorcount" editable="false" stored="true" index="true"  >Error Count</property>
-	
-	<property id="basket"  index="true" stored="true" type="boolean">Is an order basket</property>
-
-
+<properties class="order"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Order Number 
+    <name> 
+      <language id="de"><![CDATA[Bestellnummer]]></language>  
+      <language id="en"><![CDATA[Order Number]]></language>  
+      <language id="es"><![CDATA[Número de orden]]></language>  
+      <language id="fr"><![CDATA[Numéro de commande]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">SourcePath 
+    <name> 
+      <language id="de"><![CDATA[SourcePath]]></language>  
+      <language id="en"><![CDATA[SourcePath]]></language>  
+      <language id="es"><![CDATA[SourcePath]]></language>  
+      <language id="fr"><![CDATA[SourcePath]]></language> 
+    </name> 
+  </property>  
+  <property id="ordertype" editable="true" index="true" stored="true" type="list" listid="order/ordertype" keyword="false" filter="false" sortable="true">Order Type 
+    <name> 
+      <language id="de"><![CDATA[Auftragsart]]></language>  
+      <language id="en"><![CDATA[Order Type]]></language>  
+      <language id="es"><![CDATA[Tipo de orden]]></language>  
+      <language id="fr"><![CDATA[Type d&#39;ordre]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">User 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[User]]></language>  
+      <language id="es"><![CDATA[Usuario]]></language>  
+      <language id="fr"><![CDATA[Utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="date" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date 
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="orderstatus" editable="true" datatype="list" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Status 
+    <name> 
+      <language id="de"><![CDATA[Status]]></language>  
+      <language id="en"><![CDATA[Status]]></language>  
+      <language id="es"><![CDATA[Estado]]></language>  
+      <language id="fr"><![CDATA[statut]]></language> 
+    </name> 
+  </property>  
+  <property id="orderstatusdetails" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Status Details 
+    <name> 
+      <language id="de"><![CDATA[Statusdetails]]></language>  
+      <language id="en"><![CDATA[Status Details]]></language>  
+      <language id="es"><![CDATA[Detalles de estado]]></language>  
+      <language id="fr"><![CDATA[Détails de l&#39;état]]></language> 
+    </name> 
+  </property>  
+  <property id="project" editable="true" datatype="list" listid="order/projects" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Project 
+    <name> 
+      <language id="de"><![CDATA[Projekt]]></language>  
+      <language id="en"><![CDATA[Project]]></language>  
+      <language id="es"><![CDATA[Proyecto]]></language>  
+      <language id="fr"><![CDATA[Project]]></language> 
+    </name> 
+  </property>  
+  <property id="applicationid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Application Ordered 
+    <name> 
+      <language id="de"><![CDATA[Anwendung bestellt]]></language>  
+      <language id="en"><![CDATA[Application Ordered]]></language>  
+      <language id="es"><![CDATA[aplicación ordenada]]></language>  
+      <language id="fr"><![CDATA[Demande Ordonné]]></language> 
+    </name> 
+  </property>  
+  <property id="sharedby" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Shared By 
+    <name> 
+      <language id="de"><![CDATA[geteilt von]]></language>  
+      <language id="en"><![CDATA[Shared By]]></language>  
+      <language id="es"><![CDATA[Compartido por]]></language>  
+      <language id="fr"><![CDATA[Partagé par]]></language> 
+    </name> 
+  </property>  
+  <property id="publishdestination" editable="true" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Destination Id 
+    <name> 
+      <language id="de"><![CDATA[Ziel-ID]]></language>  
+      <language id="en"><![CDATA[Destination Id]]></language>  
+      <language id="es"><![CDATA[Id destino]]></language>  
+      <language id="fr"><![CDATA[Destination Id]]></language> 
+    </name> 
+  </property>  
+  <property id="expireson" editable="true" type="date" index="true" stored="true" keyword="false" filter="false" sortable="true">Expires On 
+    <name> 
+      <language id="de"><![CDATA[Läuft aus am]]></language>  
+      <language id="en"><![CDATA[Expires On]]></language>  
+      <language id="es"><![CDATA[Expira el]]></language>  
+      <language id="fr"><![CDATA[Expire le]]></language> 
+    </name> 
+  </property>  
+  <property id="sharewithemail" editable="true" note="separated by commas" index="true" stored="true" keyword="false" filter="false" sortable="true">Email 
+    <name> 
+      <language id="de"><![CDATA[Email]]></language>  
+      <language id="en"><![CDATA[Email]]></language>  
+      <language id="es"><![CDATA[Email]]></language>  
+      <language id="fr"><![CDATA[Email]]></language> 
+    </name> 
+  </property>  
+  <property id="sharenote" viewtype="html" editable="true" stored="true" index="false" keyword="false" filter="false" sortable="true">Notes 
+    <name> 
+      <language id="de"><![CDATA[Notizen]]></language>  
+      <language id="en"><![CDATA[Notes]]></language>  
+      <language id="es"><![CDATA[notas]]></language>  
+      <language id="fr"><![CDATA[Remarques]]></language> 
+    </name> 
+  </property>  
+  <property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true" stored="true" index="false" keyword="false" filter="false" sortable="true">Share Type 
+    <name> 
+      <language id="de"><![CDATA[Aktien Typ]]></language>  
+      <language id="en"><![CDATA[Share Type]]></language>  
+      <language id="es"><![CDATA[Tipo de acción]]></language>  
+      <language id="fr"><![CDATA[type de part]]></language> 
+    </name> 
+  </property>  
+  <property id="emailsent" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Email Sent 
+    <name> 
+      <language id="de"><![CDATA[E-Mail gesendet]]></language>  
+      <language id="en"><![CDATA[Email Sent]]></language>  
+      <language id="es"><![CDATA[Email enviado]]></language>  
+      <language id="fr"><![CDATA[Email envoyé]]></language> 
+    </name> 
+  </property>  
+  <property id="historytype" stored="true" index="true" type="list" listid="order/historytype" keyword="false" filter="false" editable="false" sortable="true">History Status 
+    <name> 
+      <language id="de"><![CDATA[Geschichte Status]]></language>  
+      <language id="en"><![CDATA[History Status]]></language>  
+      <language id="es"><![CDATA[Estado de la historia]]></language>  
+      <language id="fr"><![CDATA[Histoire Statut]]></language> 
+    </name> 
+  </property>  
+  <property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" keyword="false" filter="false" sortable="true">Status Updated 
+    <name> 
+      <language id="de"><![CDATA[Status aktualisiert]]></language>  
+      <language id="en"><![CDATA[Status Updated]]></language>  
+      <language id="es"><![CDATA[Estado actualizado]]></language>  
+      <language id="fr"><![CDATA[Statut Mise à jour]]></language> 
+    </name> 
+  </property>  
+  <property id="historyitemsuccesscount" editable="false" stored="true" index="true" keyword="false" filter="false" sortable="true">Complete Count 
+    <name> 
+      <language id="de"><![CDATA[Vollzähligkeit]]></language>  
+      <language id="en"><![CDATA[Complete Count]]></language>  
+      <language id="es"><![CDATA[Conteo completo]]></language>  
+      <language id="fr"><![CDATA[Nombre complet]]></language> 
+    </name> 
+  </property>  
+  <property id="historyitemerrorcount" editable="false" stored="true" index="true" keyword="false" filter="false" sortable="true">Error Count 
+    <name> 
+      <language id="de"><![CDATA[Fehleranzahl]]></language>  
+      <language id="en"><![CDATA[Error Count]]></language>  
+      <language id="es"><![CDATA[Error Count]]></language>  
+      <language id="fr"><![CDATA[Error Count]]></language> 
+    </name> 
+  </property>  
+  <property id="basket" index="true" stored="true" type="boolean" keyword="false" filter="false" editable="false" sortable="true">Is an order basket
+    <name>
+      <language id="de"><![CDATA[Korb ist ein Auftrag]]></language>
+      <language id="en"><![CDATA[Is an order basket]]></language>
+      <language id="es"><![CDATA[Es una cesta de orden]]></language>
+      <language id="fr"><![CDATA[Est un panier de commande]]></language>
+    </name>
+  </property> 
 </properties>

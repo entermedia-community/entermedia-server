@@ -1,9 +1,60 @@
-<properties>
-	<property id="id" index="true" stored="true">ID</property>
-	<property id="name" editable="true" index="true" stored="true">Name</property>
-	<property id="uploadstatus" editable="true" index="true" stored="true">Status</property>
-	<property id="filesize" editable="true" type="number" index="true" stored="true">File Size</property>
-	<property id="filesizeuploaded" editable="true" type="number" index="true" stored="true">Upload So Far</property>
-	<property id="date" editable="true" type="date" viewtype="datetime" index="true" stored="true">Date</property>
-	<property id="sourcepath" index="true" stored="true">Source Path</property>		
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="uploadstatus" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Status 
+    <name> 
+      <language id="de"><![CDATA[Status]]></language>  
+      <language id="en"><![CDATA[Status]]></language>  
+      <language id="es"><![CDATA[Estado]]></language>  
+      <language id="fr"><![CDATA[statut]]></language> 
+    </name> 
+  </property>  
+  <property id="filesize" editable="true" type="number" index="true" stored="true" keyword="false" filter="false" sortable="true">File Size 
+    <name> 
+      <language id="de"><![CDATA[Dateigröße]]></language>  
+      <language id="en"><![CDATA[File Size]]></language>  
+      <language id="es"><![CDATA[Tamaño del archivo]]></language>  
+      <language id="fr"><![CDATA[File Size]]></language> 
+    </name> 
+  </property>  
+  <property id="filesizeuploaded" editable="true" type="number" index="true" stored="true" keyword="false" filter="false" sortable="true">Upload So Far 
+    <name> 
+      <language id="de"><![CDATA[laden so weit]]></language>  
+      <language id="en"><![CDATA[Upload So Far]]></language>  
+      <language id="es"><![CDATA[Sube hasta ahora]]></language>  
+      <language id="fr"><![CDATA[Télécharger So Far]]></language> 
+    </name> 
+  </property>  
+  <property id="date" editable="true" type="date" viewtype="datetime" index="true" stored="true" keyword="false" filter="false" sortable="true">Date 
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path
+    <name>
+      <language id="de"><![CDATA[Source-Pfad]]></language>
+      <language id="en"><![CDATA[Source Path]]></language>
+      <language id="es"><![CDATA[Ruta de origen]]></language>
+      <language id="fr"><![CDATA[Source Path]]></language>
+    </name>
+  </property> 
 </properties>

@@ -1,122 +1,598 @@
-<page>
-	<property id="viewasset" index="true" internalfield="true" indextype="not_analyzed" >Readable</property>	
-	<property id="editasset" internalfield="true" indextype="not_analyzed" >Writable</property>	
+<?xml version="1.0" encoding="UTF-8"?>
 
-	<property id="description" defaultoperation="freeform">All Fields</property>
-	<property id="sourcepath" internalfield="false" index="true" stored="true">Source Path</property>
-
-	<property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" viewtype="multiselect" listid="category"  sortable="true" type="list" >Exact Categories</property>
-
-	<property id="location" index="true" editable="true" stored="true" externalid="Location" type="list" writenametoexif="true" autocreatefromexif="true" >Location</property>
-
-	<property id="isfolder" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Folder Based</property>
-
-	<property id="category" index="true" keyword="true" editable="true" viewtype="category" indextype="not_analyzed" type="list" stored="true" listid="category"  externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id">Categories</property>
-	<!-- Allow searching 
+<page> 
+  <property id="description" defaultoperation="freeform" index="false" keyword="false" filter="false" stored="false" editable="false" sortable="true">All Fields 
+    <name> 
+      <language id="de"><![CDATA[All Fields]]></language>  
+      <language id="en"><![CDATA[All Fields]]></language>  
+      <language id="es"><![CDATA[Todos]]></language>  
+      <language id="fr"><![CDATA[All Fields]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" internalfield="false" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
+    <name> 
+      <language id="de"><![CDATA[Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen]]></language>  
+      <language id="fr"><![CDATA[Source Path]]></language> 
+    </name> 
+  </property>  
+  <property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" viewtype="multiselect" listid="category" sortable="true" type="list" filter="false">Exact Categories 
+    <name> 
+      <language id="de"><![CDATA[Kategorien]]></language>  
+      <language id="en"><![CDATA[Exact Categories]]></language>  
+      <language id="es"><![CDATA[Categorías Exactas]]></language>  
+      <language id="fr"><![CDATA[Categories]]></language> 
+    </name> 
+  </property>  
+  <property id="location" index="true" editable="true" stored="true" externalid="Location" type="list" writenametoexif="true" autocreatefromexif="true" keyword="false" filter="false" sortable="true">Location 
+    <name> 
+      <language id="de"><![CDATA[Lage]]></language>  
+      <language id="en"><![CDATA[Location]]></language>  
+      <language id="es"><![CDATA[Ubicación]]></language>  
+      <language id="fr"><![CDATA[Location]]></language> 
+    </name> 
+  </property>  
+  <property id="isfolder" internalfield="true" datatype="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true" type="boolean">Folder Based 
+    <name> 
+      <language id="de"><![CDATA[Ordner basierend]]></language>  
+      <language id="en"><![CDATA[Folder Based]]></language>  
+      <language id="es"><![CDATA[carpeta basada]]></language>  
+      <language id="fr"><![CDATA[dossier Based]]></language> 
+    </name> 
+  </property>  
+  <property id="category" index="true" keyword="true" editable="true" viewtype="category" indextype="not_analyzed" type="list" stored="true" listid="category" externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id" filter="false" sortable="true">Categories 
+    <name> 
+      <language id="de"><![CDATA[Kategorien]]></language>  
+      <language id="en"><![CDATA[Categories]]></language>  
+      <language id="es"><![CDATA[Categorías]]></language>  
+      <language id="fr"><![CDATA[Categories]]></language> 
+    </name> 
+  </property>  
+  <!-- Allow searching 
 	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"   searchcomponent="librarysearch"   editable="true"  stored="true" index="true" sort="name" foreignkeyid="project">Libraries</property>
-	-->
-	<property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sortable="true" filter="true" sort="name">Asset Type</property>
-
-	<!--  
+	-->  
+  <property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list" sortable="true" filter="true" sort="name" keyword="false" type="list">Asset Type 
+    <name> 
+      <language id="de"><![CDATA[Asset Type]]></language>  
+      <language id="en"><![CDATA[Asset Type]]></language>  
+      <language id="es"><![CDATA[Tipo de activo]]></language>  
+      <language id="fr"><![CDATA[Type d'item]]></language> 
+    </name> 
+  </property>  
+  <!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
-	-->	
-	<property id="hasfulltext" index="true" type="boolean" stored="true" >Has Full Text</property> 	<!-- This is for PDFs -->
-	<property id="pages" datatype="number" viewtype="number" index="true" stored="true" searchcomponent="numbersearch" >Pages</property> 	<!--  These are writen to by outside API -->
-	<property id="assetviews" searchcomponent="numbersearch"  datatype="number" viewtype="number" index="true" stored="true" >Views</property> 	<!--  These are writen to by outside API -->
-	<property id="assetvotes" searchcomponent="numbersearch"  type="number" index="true" stored="true" >Vote Rank</property>
-	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text" >Compression</property>
-	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text" sortable="true">Artist</property>
-	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text"  sortable="true">Contributor</property>
-	<property id="creator" index="true" stored="true" keyword="true"  datatype="text" editable="true" externalid="XMP-dc:Creator,iptc:By-line"  sortable="true">Author</property>
-	
-	<!-- Camera stuff --> 
-	<property id="lenstype" externalid="Lens ID" index="true" stored="true" datatype="text"  >Lens Type</property>
-	<property id="focallength" externalid="Focal Length" index="true" stored="true" datatype="text"  >Focal Length</property>
-	<property id="cameramodel" externalid="Camera Model,Camera Model Name" index="true" stored="true" datatype="text" sortable="true" >Camera Model</property>
-	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text"  >ISO</property>
-	<property id="colorspace"  externalid="Color Space,Color Mode"  index="true" stored="true" viewtype="list" datatype="list">Color Space</property>
-	<property id="colortype"   index="true" stored="true" viewtype="list" datatype="list" externalid="Color Space Data">Color Type</property>
-	<property id="shutterspeed" externalid="Shutter Speed" index="true" stored="true" datatype="text">Shutter Speed</property>
-	<property id="aperture" externalid="Aperture" index="true" stored="true" >Aperture</property>
-
-	<!--  Video stuff -->
-	<property id="length" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch">Length</property> <!-- Rounded to the nearest second -->
-	<property id="duration" index="true" stored="true" >Duration Stamp</property> <!-- Videos -->
-	<property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate">Frame rate</property>
-	<property id="bitspersample" externalid="Bits Per Sample" index="true" stored="true" datatype="text">Bits Per Sample</property> 	<!-- IPTC/EXIFF/XMP -->
-	<property id="videocodec"  index="true" stored="true" >Video Codec</property>
-	<property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true" >Audio Codec</property>
-
-	<property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="exif:Orientation">Image Rotation</property>
-	<property id="localpath" internalfield="true" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
-	<property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type">File Format</property>
-	<property id="filesize" filter="true" index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size">File Size</property>
-	<property id="width" index="true" stored="true" datatype="number" searchcomponent="numbersearch" >Width</property>
-	<property id="height" index="true" stored="true" datatype="number" searchcomponent="numbersearch">Height</property>
-	<property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date"  viewtype="time" searchcomponent="datesearch" externalid="CreateDate,MediaCreateDate">Created On</property>
-	<property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date"  searchcomponent="datesearch"  viewtype="time" >Last Modified</property>
-	<property id="recordmodificationdate" index="true" type="date"  searchcomponent="datesearch"  stored="true" editable="false">Record Edit Date</property> <!--  should be a date -->
-	<property id="assetaddeddate" filter="true" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date">Uploaded Date</property>
-	<property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" keyword="true" stored="true" sortable="true" editable="true" >Owner</property>
-	<property id="primaryfile" internalfield="true" index="true" stored="true">Primary File Name</property>
-	
-	<property id="importstatus" index="true" stored="true" datatype="list" listid="asset/importstatus" editable="true">Import Status</property>
-	<property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" listid="asset/previewstatus" datatype="list">Preview Status</property>
-	<property id="editstatus" filter="true" index="true" stored="true" editable="true" listid="asset/editstatus" datatype="list">Edit Status</property>
-
-	<!-- Asset Contains -->
-	<property id="assettitle" index="true" stored="true" editable="true" keyword="true" sortable="true"  externalid="XMP-dc:Title,iptc:ObjectName" >Asset Title</property>
-	<property id="headline" multilanguage="true" index="true" stored="true" editable="true" keyword="true"  sortable="true"  externalid="iptc:Headline,XMP-photoshop:Headline">Headline</property>
-	
-	
-	<property id="longcaption"  keyword="true" index="true" editable="true"  externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" >Description</property>
-	<property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags">Tags</property> 
-	<property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords">Extra Keywords</property> 
-	<property id="purpose" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list">Purpose</property>
-	<property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed" >General Ethnicity</property>
-	<property id="ethnicitydetailed" foreignkeyid="ethnicity" datatype="list" index="true" stored="true" editable="true" viewtype="list" >Specific Ethnicity</property>
-	<property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp" >Language</property>
-	<property id="viewpoint" datatype="list" editable="true" index="true" stored="true" >Asset Viewpoint</property>
-	<property id="region" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="country" >Region</property>
-	<property id="country" foreignkeyid="region" datatype="list" index="true" stored="true" editable="true" viewtype="list" listchild="state" >Country</property>
-	<property id="state" foreignkeyid="country" datatype="list" index="true" stored="true" editable="true" viewtype="list" >State</property>
-
-	<property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked" >Copyright Status</property>
-	<property id="copyrightnotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright"  >Copyright Notice</property>
-	<property id="rightsusageterms" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms," >Rights Usage Terms</property>
-	<property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions" >Instructions</property>
-
-
-	<property id="publisheds3" internalfield="true" datatype="boolean" index="true" stored="true" editable="true">Published S3</property>
-
-	<!-- Approvals -->	
-	<!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->
-	<!-- Geo Location -->
-	<property id="geo_point" internalfield="true" type="position" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch">Position</property>
-
-	<!--  Client specific -->
-	<!-- 
+	-->  
+  <property id="hasfulltext" index="true" type="boolean" stored="true" keyword="false" filter="false" editable="false" sortable="true">Has Full Text 
+    <name> 
+      <language id="de"><![CDATA[hat Volltext]]></language>  
+      <language id="en"><![CDATA[Has Full Text]]></language>  
+      <language id="es"><![CDATA[Tiene texto completo]]></language>  
+      <language id="fr"><![CDATA[Has Full Text]]></language> 
+    </name> 
+  </property>  
+  <!-- This is for PDFs -->  
+  <property id="pages" datatype="number" viewtype="number" index="true" stored="true" searchcomponent="numbersearch" keyword="false" filter="false" editable="false" sortable="true" type="number">Pages 
+    <name> 
+      <language id="de"><![CDATA[Seiten]]></language>  
+      <language id="en"><![CDATA[Pages]]></language>  
+      <language id="es"><![CDATA[páginas]]></language>  
+      <language id="fr"><![CDATA[Pages]]></language> 
+    </name> 
+  </property>  
+  <!--  These are writen to by outside API -->  
+  <property id="assetviews" searchcomponent="numbersearch" datatype="number" viewtype="number" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="number">Views 
+    <name> 
+      <language id="de"><![CDATA[Ansichten]]></language>  
+      <language id="en"><![CDATA[Views]]></language>  
+      <language id="es"><![CDATA[Puntos de vista]]></language>  
+      <language id="fr"><![CDATA[Views]]></language> 
+    </name> 
+  </property>  
+  <!--  These are writen to by outside API -->  
+  <property id="assetvotes" searchcomponent="numbersearch" type="number" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Vote Rank 
+    <name> 
+      <language id="de"><![CDATA[Abstimmung Rang]]></language>  
+      <language id="en"><![CDATA[Vote Rank]]></language>  
+      <language id="es"><![CDATA[Rango voto]]></language>  
+      <language id="fr"><![CDATA[Vote Rank]]></language> 
+    </name> 
+  </property>  
+  <property id="compression" externalid="Compression" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Compression 
+    <name> 
+      <language id="de"><![CDATA[Kompression]]></language>  
+      <language id="en"><![CDATA[Compression]]></language>  
+      <language id="es"><![CDATA[Compresión]]></language>  
+      <language id="fr"><![CDATA[Compression]]></language> 
+    </name> 
+  </property>  
+  <property id="artist" externalid="Artist" index="true" stored="true" datatype="text" sortable="true" keyword="false" filter="false" editable="false" type="text">Artist 
+    <name> 
+      <language id="de"><![CDATA[Künstler]]></language>  
+      <language id="en"><![CDATA[Artist]]></language>  
+      <language id="es"><![CDATA[Artista]]></language>  
+      <language id="fr"><![CDATA[Artist]]></language> 
+    </name> 
+  </property>  
+  <property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text" sortable="true" keyword="false" filter="false" editable="false" type="text">Contributor 
+    <name> 
+      <language id="de"><![CDATA[Beiträger]]></language>  
+      <language id="en"><![CDATA[Contributor]]></language>  
+      <language id="es"><![CDATA[Contribuyente]]></language>  
+      <language id="fr"><![CDATA[Contributor]]></language> 
+    </name> 
+  </property>  
+  <property id="creator" index="true" stored="true" keyword="true" datatype="text" editable="true" externalid="XMP-dc:Creator,iptc:By-line" sortable="true" filter="false" type="text">Author 
+    <name> 
+      <language id="de"><![CDATA[Author]]></language>  
+      <language id="en"><![CDATA[Author]]></language>  
+      <language id="es"><![CDATA[Autor]]></language>  
+      <language id="fr"><![CDATA[Author]]></language> 
+    </name> 
+  </property>  
+  <!-- Camera stuff -->  
+  <property id="lenstype" externalid="Lens ID" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Lens Type 
+    <name> 
+      <language id="de"><![CDATA[Objektivtyp]]></language>  
+      <language id="en"><![CDATA[Lens Type]]></language>  
+      <language id="es"><![CDATA[Tipo de lente]]></language>  
+      <language id="fr"><![CDATA[Lens Type]]></language> 
+    </name> 
+  </property>  
+  <property id="focallength" externalid="Focal Length" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Focal Length 
+    <name> 
+      <language id="de"><![CDATA[Brennweite]]></language>  
+      <language id="en"><![CDATA[Focal Length]]></language>  
+      <language id="es"><![CDATA[Longitud focal]]></language>  
+      <language id="fr"><![CDATA[Focal Length]]></language> 
+    </name> 
+  </property>  
+  <property id="cameramodel" externalid="Camera Model,Camera Model Name" index="true" stored="true" datatype="text" sortable="true" keyword="false" filter="false" editable="false" type="text">Camera Model 
+    <name> 
+      <language id="de"><![CDATA[Kameramodell]]></language>  
+      <language id="en"><![CDATA[Camera Model]]></language>  
+      <language id="es"><![CDATA[Modelo de la cámara]]></language>  
+      <language id="fr"><![CDATA[Camera Model]]></language> 
+    </name> 
+  </property>  
+  <property id="iso" externalid="ISO" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">ISO 
+    <name> 
+      <language id="de"><![CDATA[ISO]]></language>  
+      <language id="en"><![CDATA[ISO]]></language>  
+      <language id="es"><![CDATA[ISO]]></language>  
+      <language id="fr"><![CDATA[ISO]]></language> 
+    </name> 
+  </property>  
+  <property id="colorspace" externalid="Color Space,Color Mode" index="true" stored="true" viewtype="list" datatype="list" keyword="false" filter="false" editable="false" sortable="true" type="list">Color Space 
+    <name> 
+      <language id="de"><![CDATA[Farbraum]]></language>  
+      <language id="en"><![CDATA[Color Space]]></language>  
+      <language id="es"><![CDATA[Espacio de color]]></language>  
+      <language id="fr"><![CDATA[Color Space]]></language> 
+    </name> 
+  </property>  
+  <property id="colortype" index="true" stored="true" viewtype="list" datatype="list" externalid="Color Space Data" keyword="false" filter="false" editable="false" sortable="true" type="list">Color Type 
+    <name> 
+      <language id="de"><![CDATA[Farbtyp]]></language>  
+      <language id="en"><![CDATA[Color Type]]></language>  
+      <language id="es"><![CDATA[Tipo color]]></language>  
+      <language id="fr"><![CDATA[Color Type]]></language> 
+    </name> 
+  </property>  
+  <property id="shutterspeed" externalid="Shutter Speed" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Shutter Speed 
+    <name> 
+      <language id="de"><![CDATA[Verschlusszeit]]></language>  
+      <language id="en"><![CDATA[Shutter Speed]]></language>  
+      <language id="es"><![CDATA[velocidad de obturación]]></language>  
+      <language id="fr"><![CDATA[Shutter Speed]]></language> 
+    </name> 
+  </property>  
+  <property id="aperture" externalid="Aperture" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Aperture 
+    <name> 
+      <language id="de"><![CDATA[Öffnung]]></language>  
+      <language id="en"><![CDATA[Aperture]]></language>  
+      <language id="es"><![CDATA[Abertura]]></language>  
+      <language id="fr"><![CDATA[Aperture]]></language> 
+    </name> 
+  </property>  
+  <!--  Video stuff -->  
+  <property id="length" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch" keyword="false" filter="false" editable="false" sortable="true" type="double">Length 
+    <name> 
+      <language id="de"><![CDATA[Länge]]></language>  
+      <language id="en"><![CDATA[Length]]></language>  
+      <language id="es"><![CDATA[Longitud]]></language>  
+      <language id="fr"><![CDATA[Length]]></language> 
+    </name> 
+  </property>  
+  <!-- Rounded to the nearest second -->  
+  <property id="duration" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Duration Stamp 
+    <name> 
+      <language id="de"><![CDATA[Dauer Stempel]]></language>  
+      <language id="en"><![CDATA[Duration Stamp]]></language>  
+      <language id="es"><![CDATA[sello duración]]></language>  
+      <language id="fr"><![CDATA[Duration Stamp]]></language> 
+    </name> 
+  </property>  
+  <!-- Videos -->  
+  <property id="framerate" index="true" stored="true" datatype="text" externalid="VideoFrameRate" keyword="false" filter="false" editable="false" sortable="true" type="text">Frame rate 
+    <name> 
+      <language id="de"><![CDATA[Framerate]]></language>  
+      <language id="en"><![CDATA[Frame rate]]></language>  
+      <language id="es"><![CDATA[Cuadros por segundo]]></language>  
+      <language id="fr"><![CDATA[Frame rate]]></language> 
+    </name> 
+  </property>  
+  <property id="bitspersample" externalid="Bits Per Sample" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Bits Per Sample 
+    <name> 
+      <language id="de"><![CDATA[Bits pro Probe]]></language>  
+      <language id="en"><![CDATA[Bits Per Sample]]></language>  
+      <language id="es"><![CDATA[Bits por muestra]]></language>  
+      <language id="fr"><![CDATA[Bits Per Sample]]></language> 
+    </name> 
+  </property>  
+  <!-- IPTC/EXIFF/XMP -->  
+  <property id="videocodec" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Video Codec 
+    <name> 
+      <language id="de"><![CDATA[Video-Codec]]></language>  
+      <language id="en"><![CDATA[Video Codec]]></language>  
+      <language id="es"><![CDATA[Códec de vídeo]]></language>  
+      <language id="fr"><![CDATA[Video Codec]]></language> 
+    </name> 
+  </property>  
+  <property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Audio Codec 
+    <name> 
+      <language id="de"><![CDATA[Audio-Codec]]></language>  
+      <language id="en"><![CDATA[Audio Codec]]></language>  
+      <language id="es"><![CDATA[Audio Codec]]></language>  
+      <language id="fr"><![CDATA[Audio Codec]]></language> 
+    </name> 
+  </property>  
+  <property id="imageorientation" index="true" stored="true" datatype="list" editable="true" listid="imageorientation" externalid="exif:Orientation" keyword="false" filter="false" sortable="true" type="list">Image Rotation 
+    <name> 
+      <language id="de"><![CDATA[Bildrotation]]></language>  
+      <language id="en"><![CDATA[Image Rotation]]></language>  
+      <language id="es"><![CDATA[Rotación de imagen]]></language>  
+      <language id="fr"><![CDATA[Image Rotation]]></language> 
+    </name> 
+  </property>  
+  <property id="localpath" internalfield="true" index="true" stored="true" editable="false" keyword="false" filter="false" sortable="true">Local Path 
+    <name> 
+      <language id="de"><![CDATA[lokalen Pfad]]></language>  
+      <language id="en"><![CDATA[Local Path]]></language>  
+      <language id="es"><![CDATA[Ruta de acceso local]]></language>  
+      <language id="fr"><![CDATA[Chemin d&#39;accès local]]></language> 
+    </name> 
+  </property>  
+  <!-- Uploading -->  
+  <property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type" keyword="false" sortable="true">File Format 
+    <name> 
+      <language id="de"><![CDATA[Datei Format]]></language>  
+      <language id="en"><![CDATA[File Format]]></language>  
+      <language id="es"><![CDATA[Formato de archivo]]></language>  
+      <language id="fr"><![CDATA[File Format]]></language> 
+    </name> 
+  </property>  
+  <property id="filesize" filter="true" index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size" keyword="false" editable="false" sortable="true" type="number">File Size 
+    <name> 
+      <language id="de"><![CDATA[Dateigröße]]></language>  
+      <language id="en"><![CDATA[File Size]]></language>  
+      <language id="es"><![CDATA[Tamaño del archivo]]></language>  
+      <language id="fr"><![CDATA[File Size]]></language> 
+    </name> 
+  </property>  
+  <property id="width" index="true" stored="true" datatype="number" searchcomponent="numbersearch" keyword="false" filter="false" editable="false" sortable="true" type="number">Width 
+    <name> 
+      <language id="de"><![CDATA[Width]]></language>  
+      <language id="en"><![CDATA[Width]]></language>  
+      <language id="es"><![CDATA[Anchura]]></language>  
+      <language id="fr"><![CDATA[Width]]></language> 
+    </name> 
+  </property>  
+  <property id="height" index="true" stored="true" datatype="number" searchcomponent="numbersearch" keyword="false" filter="false" editable="false" sortable="true" type="number">Height 
+    <name> 
+      <language id="de"><![CDATA[Height]]></language>  
+      <language id="en"><![CDATA[Height]]></language>  
+      <language id="es"><![CDATA[Altura]]></language>  
+      <language id="fr"><![CDATA[Height]]></language> 
+    </name> 
+  </property>  
+  <property id="assetcreationdate" editable="true" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="CreateDate,MediaCreateDate" keyword="false" filter="false" sortable="true" type="date">Created On 
+    <name> 
+      <language id="de"><![CDATA[erstellt am]]></language>  
+      <language id="en"><![CDATA[Created On]]></language>  
+      <language id="es"><![CDATA[Creado en]]></language>  
+      <language id="fr"><![CDATA[Created On]]></language> 
+    </name> 
+  </property>  
+  <property id="assetmodificationdate" editable="false" index="true" stored="true" datatype="date" searchcomponent="datesearch" viewtype="time" keyword="false" filter="false" sortable="true" type="date">Last Modified 
+    <name> 
+      <language id="de"><![CDATA[zuletzt bearbeitet]]></language>  
+      <language id="en"><![CDATA[Last Modified]]></language>  
+      <language id="es"><![CDATA[Última modificación]]></language>  
+      <language id="fr"><![CDATA[Last Modified]]></language> 
+    </name> 
+  </property>  
+  <property id="recordmodificationdate" index="true" type="date" searchcomponent="datesearch" stored="true" editable="false" keyword="false" filter="false" sortable="true">Record Edit Date 
+    <name> 
+      <language id="de"><![CDATA[Rekord bearbeiten Datum]]></language>  
+      <language id="en"><![CDATA[Record Edit Date]]></language>  
+      <language id="es"><![CDATA[Record Edit Fecha]]></language>  
+      <language id="fr"><![CDATA[Record Edit Date]]></language> 
+    </name> 
+  </property>  
+  <!--  should be a date -->  
+  <property id="assetaddeddate" filter="true" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date" keyword="false" sortable="true" type="date">Uploaded Date 
+    <name> 
+      <language id="de"><![CDATA[uploaded Datum]]></language>  
+      <language id="en"><![CDATA[Uploaded Date]]></language>  
+      <language id="es"><![CDATA[Fecha de subida]]></language>  
+      <language id="fr"><![CDATA[Uploaded Date]]></language> 
+    </name> 
+  </property>  
+  <property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" keyword="true" stored="true" sortable="true" editable="true" filter="false">Owner 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Owner]]></language> 
+    </name> 
+  </property>  
+  <property id="primaryfile" internalfield="true" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Primary File Name 
+    <name> 
+      <language id="de"><![CDATA[primäre Dateinamen]]></language>  
+      <language id="en"><![CDATA[Primary File Name]]></language>  
+      <language id="es"><![CDATA[Nombre de archivo primaria]]></language>  
+      <language id="fr"><![CDATA[Primaire Nom du fichier]]></language> 
+    </name> 
+  </property>  
+  <property id="importstatus" index="true" stored="true" datatype="list" listid="assetimportstatus" editable="true" keyword="false" filter="false" sortable="true" type="list">Import Status 
+    <name> 
+      <language id="de"><![CDATA[Import Status]]></language>  
+      <language id="en"><![CDATA[Import Status]]></language>  
+      <language id="es"><![CDATA[Estado de la importación]]></language>  
+      <language id="fr"><![CDATA[Import Status]]></language> 
+    </name> 
+  </property>  
+  <property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" listid="assetpreviewstatus" datatype="list" keyword="false" filter="false" sortable="true" type="list">Preview Status 
+    <name> 
+      <language id="de"><![CDATA[Vorschau-Status]]></language>  
+      <language id="en"><![CDATA[Preview Status]]></language>  
+      <language id="es"><![CDATA[Estado de previsualización]]></language>  
+      <language id="fr"><![CDATA[Preview Status]]></language> 
+    </name> 
+  </property>  
+  <property id="editstatus" filter="true" index="true" stored="true" editable="true" listid="asseteditstatus" datatype="list" keyword="false" sortable="true" type="list">Edit Status 
+    <name> 
+      <language id="de"><![CDATA[Edit Status]]></language>  
+      <language id="en"><![CDATA[Edit Status]]></language>  
+      <language id="es"><![CDATA[Editar estado]]></language>  
+      <language id="fr"><![CDATA[Edit Status]]></language> 
+    </name> 
+  </property>  
+  <!-- Asset Contains -->  
+  <property id="assettitle" index="true" stored="true" editable="true" keyword="true" sortable="true" externalid="XMP-dc:Title,iptc:ObjectName" filter="false">Asset Title 
+    <name> 
+      <language id="de"><![CDATA[Asset Title]]></language>  
+      <language id="en"><![CDATA[Asset Title]]></language>  
+      <language id="es"><![CDATA[Título de activos]]></language>  
+      <language id="fr"><![CDATA[Titre]]></language> 
+    </name> 
+  </property>  
+  <property id="headline" multilanguage="true" index="true" stored="true" editable="true" keyword="true" sortable="true" externalid="iptc:Headline,XMP-photoshop:Headline" filter="false">Headline 
+    <name> 
+      <language id="de"><![CDATA[Headline]]></language>  
+      <language id="en"><![CDATA[Headline]]></language>  
+      <language id="es"><![CDATA[Titular]]></language>  
+      <language id="fr"><![CDATA[Headline]]></language> 
+    </name> 
+  </property>  
+  <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract" filter="false" stored="false" sortable="true">Description 
+    <name> 
+      <language id="de"><![CDATA[Description]]></language>  
+      <language id="en"><![CDATA[Description]]></language>  
+      <language id="es"><![CDATA[descripción]]></language>  
+      <language id="fr"><![CDATA[Description]]></language> 
+    </name> 
+  </property>  
+  <property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags" keyword="false" filter="false" sortable="true">Tags 
+    <name> 
+      <language id="de"><![CDATA[Tags]]></language>  
+      <language id="en"><![CDATA[Tags]]></language>  
+      <language id="es"><![CDATA[Etiquetas]]></language>  
+      <language id="fr"><![CDATA[Tags]]></language> 
+    </name> 
+  </property>  
+  <property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords" filter="false" sortable="true">Extra Keywords 
+    <name> 
+      <language id="de"><![CDATA[zusätzliche Schlüsselwörter]]></language>  
+      <language id="en"><![CDATA[Extra Keywords]]></language>  
+      <language id="es"><![CDATA[Palabras clave adicionales]]></language>  
+      <language id="fr"><![CDATA[Extra Keywords]]></language> 
+    </name> 
+  </property>  
+  <property id="purpose" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list" keyword="false" filter="false" sortable="true" type="list">Purpose 
+    <name> 
+      <language id="de"><![CDATA[Zweck]]></language>  
+      <language id="en"><![CDATA[Purpose]]></language>  
+      <language id="es"><![CDATA[Propósito]]></language>  
+      <language id="fr"><![CDATA[Purpose]]></language> 
+    </name> 
+  </property>  
+  <property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed" keyword="false" filter="false" sortable="true" type="list">General Ethnicity 
+    <name> 
+      <language id="de"><![CDATA[allgemeine Ethnizität]]></language>  
+      <language id="en"><![CDATA[General Ethnicity]]></language>  
+      <language id="es"><![CDATA[Etnia general]]></language>  
+      <language id="fr"><![CDATA[General Ethnicity]]></language> 
+    </name> 
+  </property>  
+  <property id="ethnicitydetailed" foreignkeyid="ethnicity" datatype="list" index="true" stored="true" editable="true" viewtype="list" keyword="false" filter="false" sortable="true" type="list">Specific Ethnicity 
+    <name> 
+      <language id="de"><![CDATA[spezifische ethnische Zugehörigkeit]]></language>  
+      <language id="en"><![CDATA[Specific Ethnicity]]></language>  
+      <language id="es"><![CDATA[Etnia específica]]></language>  
+      <language id="fr"><![CDATA[Specific Ethnicity]]></language> 
+    </name> 
+  </property>  
+  <property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp" keyword="false" filter="false" sortable="true" type="list">Language 
+    <name> 
+      <language id="de"><![CDATA[Sprache]]></language>  
+      <language id="en"><![CDATA[Language]]></language>  
+      <language id="es"><![CDATA[Idioma]]></language>  
+      <language id="fr"><![CDATA[Language]]></language> 
+    </name> 
+  </property>  
+  <property id="viewpoint" datatype="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Asset Viewpoint 
+    <name> 
+      <language id="de"><![CDATA[Asset-Sicht]]></language>  
+      <language id="en"><![CDATA[Asset Viewpoint]]></language>  
+      <language id="es"><![CDATA[Punto de vista de activos]]></language>  
+      <language id="fr"><![CDATA[Point de vue item]]></language> 
+    </name> 
+  </property>  
+  <property id="region" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="country" keyword="false" filter="false" sortable="true" type="list">Region 
+    <name> 
+      <language id="de"><![CDATA[Region]]></language>  
+      <language id="en"><![CDATA[Region]]></language>  
+      <language id="es"><![CDATA[Región]]></language>  
+      <language id="fr"><![CDATA[Region]]></language> 
+    </name> 
+  </property>  
+  <property id="country" foreignkeyid="region" datatype="list" index="true" stored="true" editable="true" viewtype="list" listchild="state" keyword="false" filter="false" sortable="true" type="list">Country 
+    <name> 
+      <language id="de"><![CDATA[Land]]></language>  
+      <language id="en"><![CDATA[Country]]></language>  
+      <language id="es"><![CDATA[País]]></language>  
+      <language id="fr"><![CDATA[Country]]></language> 
+    </name> 
+  </property>  
+  <property id="state" foreignkeyid="country" datatype="list" index="true" stored="true" editable="true" viewtype="list" keyword="false" filter="false" sortable="true" type="list">State 
+    <name> 
+      <language id="de"><![CDATA[Bundesland]]></language>  
+      <language id="en"><![CDATA[State]]></language>  
+      <language id="es"><![CDATA[Estado]]></language>  
+      <language id="fr"><![CDATA[State]]></language> 
+    </name> 
+  </property>  
+  <property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked" keyword="false" filter="false" sortable="true">Copyright Status 
+    <name> 
+      <language id="de"><![CDATA[Copyright Status]]></language>  
+      <language id="en"><![CDATA[Copyright Status]]></language>  
+      <language id="es"><![CDATA[Estado del derecho de autor]]></language>  
+      <language id="fr"><![CDATA[Copyright Status]]></language> 
+    </name> 
+  </property>  
+  <property id="copyrightnotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright" keyword="false" filter="false" sortable="true">Copyright Notice 
+    <name> 
+      <language id="de"><![CDATA[Copyright Notice]]></language>  
+      <language id="en"><![CDATA[Copyright Notice]]></language>  
+      <language id="es"><![CDATA[Aviso de copyright]]></language>  
+      <language id="fr"><![CDATA[Copyright Notice]]></language> 
+    </name> 
+  </property>  
+  <property id="rightsusageterms" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms," keyword="false" filter="false" sortable="true">Rights Usage Terms 
+    <name> 
+      <language id="de"><![CDATA[Rights Usage Terms]]></language>  
+      <language id="en"><![CDATA[Rights Usage Terms]]></language>  
+      <language id="es"><![CDATA[Términos Los derechos de uso]]></language>  
+      <language id="fr"><![CDATA[Rights Usage Terms]]></language> 
+    </name> 
+  </property>  
+  <property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions" keyword="false" filter="false" sortable="true">Instructions 
+    <name> 
+      <language id="de"><![CDATA[Instructions]]></language>  
+      <language id="en"><![CDATA[Instructions]]></language>  
+      <language id="es"><![CDATA[Instrucciones]]></language>  
+      <language id="fr"><![CDATA[Instructions]]></language> 
+    </name> 
+  </property>  
+  <property id="publisheds3" internalfield="true" datatype="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true" type="boolean">Published S3 
+    <name> 
+      <language id="de"><![CDATA[veröffentlicht s3]]></language>  
+      <language id="en"><![CDATA[Published S3]]></language>  
+      <language id="es"><![CDATA[Publicado S3]]></language>  
+      <language id="fr"><![CDATA[Publié sur S3]]></language> 
+    </name> 
+  </property>  
+  <!-- Approvals -->  
+  <!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->  
+  <!-- Geo Location -->  
+  <property id="geo_point" internalfield="true" type="position" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch" keyword="false" filter="false" editable="false" sortable="true">Position 
+    <name> 
+      <language id="de"><![CDATA[Position]]></language>  
+      <language id="en"><![CDATA[Position]]></language>  
+      <language id="es"><![CDATA[Posición]]></language>  
+      <language id="fr"><![CDATA[Position]]></language> 
+    </name> 
+  </property>  
+  <!--  Client specific -->  
+  <!-- 
 	<property id="stocknumber" index="true" keyword="true" editable="true" stored="true">Stock Number</property>
 	<property id="term" internalfield="true" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>
 	<property id="fatwireid"  internalfield="true"  index="true" stored="true">FatWire ID</property>
 	<property id="uploadteam" index="true"  keyword="true" stored="true"  editable="true"  catalogid="system" type="list" listid="group" sort="namesortedUp">Upload Team</property>
 	<property id="jobnotes" internalfield="true" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>	
 	<property id="cumulusid" internalfield="true" index="true" stored="true">Cumulus ID</property>
-	 -->
-	<property id="editgroups" index="true" stored="true" editable="true" viewtype="multiselect" internalfield="true" listcatalogid="system"  listid="group">Edit Groups</property>
-		
-	<!-- 
+	 -->  
+  <property id="editgroups" index="true" stored="true" editable="true" viewtype="multiselect" internalfield="true" listcatalogid="system" listid="group" keyword="false" filter="false" sortable="true">Edit Groups 
+    <name> 
+      <language id="de"><![CDATA[Gruppen bearbeiten]]></language>  
+      <language id="en"><![CDATA[Edit Groups]]></language>  
+      <language id="es"><![CDATA[Editar Grupos]]></language>  
+      <language id="fr"><![CDATA[Modifier les groupes]]></language> 
+    </name> 
+  </property>  
+  <!-- 
 	<property id="showtitle" index="true" datatype="list" stored="true" editable="true" keyword="true" >Show Title</property>
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>
 	<property id="watermark" keyword="true" datatype="list" editable="true" index="true" stored="true" listcatalogid="system"  listid="group"  >Watermark</property>
- 	-->
- 	<property id="contenttype" keyword="true" datatype="list" editable="true" index="true" stored="true" >Content Type</property>
-	<property id="md5hex" index="true"  editable="false" indextype="not_analyzed" >MD5 Hex Value</property>	
-	<property id="duplicate" index="true"  editable="true" type="boolean" >Duplicate Asset</property>	
- 	<property id="retentionpolicy"  datatype="list" listid="retentionrules" editable="true" index="true" stored="true" >Retention Policy</property>
- 	<property id="archivesourcepath"  editable="true" index="true" stored="true" >Archive Source Path</property>
- 	
-	<property id="usertags" datatype="kwmap" editable="true" index="true" stored="true" >User Tags</property>
-
-
+ 	-->  
+  <property id="contenttype" keyword="true" datatype="list" editable="true" index="true" stored="true" filter="false" sortable="true" type="list">Content Type 
+    <name> 
+      <language id="de"><![CDATA[Inhaltstyp]]></language>  
+      <language id="en"><![CDATA[Content Type]]></language>  
+      <language id="es"><![CDATA[Tipo de contenido]]></language>  
+      <language id="fr"><![CDATA[Content Type]]></language> 
+    </name> 
+  </property>  
+  <property id="md5hex" index="true" editable="false" indextype="not_analyzed" keyword="false" filter="false" stored="false" sortable="true">MD5 Hex Value 
+    <name> 
+      <language id="de"><![CDATA[md5 Hex-Wert]]></language>  
+      <language id="en"><![CDATA[MD5 Hex Value]]></language>  
+      <language id="es"><![CDATA[MD5 valor hexadecimal]]></language>  
+      <language id="fr"><![CDATA[MD5 Valeur Hex]]></language> 
+    </name> 
+  </property>  
+  <property id="duplicate" index="true" editable="true" type="boolean" keyword="false" filter="false" stored="false" sortable="true">Duplicate Asset 
+    <name> 
+      <language id="de"><![CDATA[doppelte Vermögens]]></language>  
+      <language id="en"><![CDATA[Duplicate Asset]]></language>  
+      <language id="es"><![CDATA[duplicado de Activos]]></language>  
+      <language id="fr"><![CDATA[Doublon]]></language> 
+    </name> 
+  </property>  
+  <property id="retentionpolicy" datatype="list" listid="retentionrules" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Retention Policy 
+    <name> 
+      <language id="de"><![CDATA[Aufbewahrungsrichtlinie]]></language>  
+      <language id="en"><![CDATA[Retention Policy]]></language>  
+      <language id="es"><![CDATA[Política de retención]]></language>  
+      <language id="fr"><![CDATA[Politique de rétention]]></language> 
+    </name> 
+  </property>  
+  <property id="archivesourcepath" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Archive Source Path 
+    <name> 
+      <language id="de"><![CDATA[Archivquellenpfad]]></language>  
+      <language id="en"><![CDATA[Archive Source Path]]></language>  
+      <language id="es"><![CDATA[Archivo Camino Fuente]]></language>  
+      <language id="fr"><![CDATA[Chemin des archives Source]]></language> 
+    </name> 
+  </property>  
+  <property id="usertags" datatype="kwmap" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="kwmap">User Tags 
+    <name>
+      <language id="de"><![CDATA[Nutzer-Tags]]></language>
+      <language id="en"><![CDATA[User Tags]]></language>
+      <language id="es"><![CDATA[Etiquetas de usuarios]]></language>
+      <language id="fr"><![CDATA[Mots-clés de l&#39;utilisateur]]></language>
+    </name>
+  </property> 
 </page>

@@ -1,13 +1,26 @@
-#Thu Nov 10 10:19:40 EST 2016
-First\ Name=Prénom
+#
+#Wed Nov 16 11:41:07 EST 2016
+Password=Mot de passe
 Address\ 2=adresse 2
-Phone=téléphone
 Address\ 1=adresse 1
-User\ ID=ID de l&\#39;utilisateur
-Email=Email
-State\ /\ Province=Etat / Province
-City=ville
-User\ Search=Utilisateur Recherche
+Enable\ HTML\ editing=Activer HTML \u00E9dition
+Name=pr\u00E9nom
+Username=Nom d&\#39;utilisateur
 Country=pays
+Last\ Name=Pr\u00E9nom
+Groups=Groupes
+Screen\ Name=Nom de l&\#39;\u00E9cran
+EnterMedia\ Key=EnterMedia Key
+Failed\ login\ attempts=tentatives de connexion infructueuses
+User\ ID=ID de l&\#39;utilisateur
+Phone=t\u00E9l\u00E9phone
+id=\u00E7a
+State\ /\ Province=Etat / Province
+Notes=Remarques
 Postal\ Code=code postal
-Last\ Name=Prénom
+User\ Search=Utilisateur Recherche
+First\ Name=Pr\u00E9nom
+Email=Email
+All\ Fields=Tous les champs
+Enabled=Activ\u00E9e
+City=ville

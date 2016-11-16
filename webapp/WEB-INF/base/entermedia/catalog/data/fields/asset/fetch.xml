@@ -1,14 +1,52 @@
-<page>
-	<property id="fetchurl" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains"  note="Download media from external location" >Fetch URL</property>
-	<property id="fetchthumbnailurl" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" note="Download thumbnail from external location" >Fetch Thumbnail URL</property>	
-	<property id="linkurl" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL">Link URL</property>
-	<property id="embeddedurl" index="true" stored="true" datatype="text" viewtype="textarea" editable="true" note="Embedded code to external location">Embedded Player</property>
+<?xml version="1.0" encoding="UTF-8"?>
 
-	<property id="downloadurl-file" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL">Download URL Filename</property>
-	<property id="downloadurl-filename" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL">Download URL File</property>
-
-
-
-
-
+<page> 
+  <property id="fetchurl" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" note="Download media from external location" filter="false" sortable="true">Fetch URL 
+    <name> 
+      <language id="de"><![CDATA[holen url]]></language>  
+      <language id="en"><![CDATA[Fetch URL]]></language>  
+      <language id="es"><![CDATA[Fetch URL]]></language>  
+      <language id="fr"><![CDATA[Fetch URL]]></language> 
+    </name> 
+  </property>  
+  <property id="fetchthumbnailurl" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" note="Download thumbnail from external location" filter="false" sortable="true">Fetch Thumbnail URL 
+    <name> 
+      <language id="de"><![CDATA[holen Thumbnail url]]></language>  
+      <language id="en"><![CDATA[Fetch Thumbnail URL]]></language>  
+      <language id="es"><![CDATA[Fetch URL en miniatura]]></language>  
+      <language id="fr"><![CDATA[Fetch Thumbnail URL]]></language> 
+    </name> 
+  </property>  
+  <property id="linkurl" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL" keyword="false" filter="false" sortable="true" type="text">Link URL 
+    <name> 
+      <language id="de"><![CDATA[Link-uRL]]></language>  
+      <language id="en"><![CDATA[Link URL]]></language>  
+      <language id="es"><![CDATA[URL del enlace]]></language>  
+      <language id="fr"><![CDATA[Link URL]]></language> 
+    </name> 
+  </property>  
+  <property id="embeddedurl" index="true" stored="true" datatype="text" viewtype="textarea" editable="true" note="Embedded code to external location" keyword="false" filter="false" sortable="true" type="text">Embedded Player 
+    <name> 
+      <language id="de"><![CDATA[eingebetteten Player]]></language>  
+      <language id="en"><![CDATA[Embedded Player]]></language>  
+      <language id="es"><![CDATA[reproductor incrustado]]></language>  
+      <language id="fr"><![CDATA[Embedded Player]]></language> 
+    </name> 
+  </property>  
+  <property id="downloadurl-file" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL" keyword="false" filter="false" sortable="true" type="text">Download URL Filename 
+    <name> 
+      <language id="de"><![CDATA[Download-URL Dateiname]]></language>  
+      <language id="en"><![CDATA[Download URL Filename]]></language>  
+      <language id="es"><![CDATA[Descargar URL Nombre del archivo]]></language>  
+      <language id="fr"><![CDATA[Télécharger URL Nom du fichier]]></language> 
+    </name> 
+  </property>  
+  <property id="downloadurl-filename" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL" keyword="false" filter="false" sortable="true" type="text">Download URL File 
+    <name>
+      <language id="de"><![CDATA[Download-URL-Datei]]></language>
+      <language id="en"><![CDATA[Download URL File]]></language>
+      <language id="es"><![CDATA[URL de descarga de archivos]]></language>
+      <language id="fr"><![CDATA[URL de téléchargement de fichiers]]></language>
+    </name>
+  </property> 
 </page>

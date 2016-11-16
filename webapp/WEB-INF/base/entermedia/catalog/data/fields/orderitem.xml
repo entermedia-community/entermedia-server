@@ -1,16 +1,88 @@
-<properties beanname="dataSearcher" prefix="orderitems">
-	<property id="id" index="true" stored="true">Item Id</property>
-	<property id="orderid" index="true" type="list" stored="true">Order Id</property>
-	<property id="sourcepath" index="true" stored="true">Source Path</property>
-  	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true">User</property>
-  	<property id="assetsourcepath" index="true" stored="true" >Asset SourcePath</property>
-	<property id="assetid" type="list" index="true" stored="true" >Asset Id</property>
-	<!--  property id="status" datatype="list" listid="orderitem/status" index="true" stored="true" >Status</property>
-	<property id="errorcount" index="true" stored="true" >Error Count</property>
-	<property id="errordetails" index="true"  stored="true" >Error Details</property -->
-	<property id="jobnotes" index="true" stored="true" >Job Notes</property>
-	<property id="remotePath" index="true" stored="true" >Remote Path</property> <!-- Is This needed? -->
-	<property id="publishqueueid" index="true" stored="true" >Publish Queue Id</property>
-	<property id="presetid" listid="convertpreset" type="list" index="true" stored="true" >Preset</property>
+<?xml version="1.0" encoding="UTF-8"?>
 
+<properties beanname="dataSearcher" prefix="orderitems"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Item Id 
+    <name> 
+      <language id="de"><![CDATA[Artikel Identifikationsnummer]]></language>  
+      <language id="en"><![CDATA[Item Id]]></language>  
+      <language id="es"><![CDATA[Identificación del artículo]]></language>  
+      <language id="fr"><![CDATA[ID de l&#39;article]]></language> 
+    </name> 
+  </property>  
+  <property id="orderid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true">Order Id 
+    <name> 
+      <language id="de"><![CDATA[Auftragsnummer]]></language>  
+      <language id="en"><![CDATA[Order Id]]></language>  
+      <language id="es"><![CDATA[Solicitar ID]]></language>  
+      <language id="fr"><![CDATA[Numéro de commande]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
+    <name> 
+      <language id="de"><![CDATA[Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen]]></language>  
+      <language id="fr"><![CDATA[Source Path]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">User 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[User]]></language>  
+      <language id="es"><![CDATA[Usuario]]></language>  
+      <language id="fr"><![CDATA[Utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="assetsourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset SourcePath 
+    <name> 
+      <language id="de"><![CDATA[Asset SourcePath]]></language>  
+      <language id="en"><![CDATA[Asset SourcePath]]></language>  
+      <language id="es"><![CDATA[activos SourcePath]]></language>  
+      <language id="fr"><![CDATA[Asset SourcePath]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" type="list" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset Id]]></language>  
+      <language id="es"><![CDATA[identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property>  
+  <!--  property id="status" datatype="list" listid="orderitem/status" index="true" stored="true" >Status</property>
+	<property id="errorcount" index="true" stored="true" >Error Count</property>
+	<property id="errordetails" index="true"  stored="true" >Error Details</property -->  
+  <property id="jobnotes" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Job Notes 
+    <name> 
+      <language id="de"><![CDATA[Job-Notizen]]></language>  
+      <language id="en"><![CDATA[Job Notes]]></language>  
+      <language id="es"><![CDATA[Notas de trabajo]]></language>  
+      <language id="fr"><![CDATA[Notes d&#39;emploi]]></language> 
+    </name> 
+  </property>  
+  <property id="remotePath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Remote Path 
+    <name> 
+      <language id="de"><![CDATA[Remote-Pfad]]></language>  
+      <language id="en"><![CDATA[Remote Path]]></language>  
+      <language id="es"><![CDATA[Ruta remota]]></language>  
+      <language id="fr"><![CDATA[Chemin distant]]></language> 
+    </name> 
+  </property>  
+  <!-- Is This needed? -->  
+  <property id="publishqueueid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Publish Queue Id 
+    <name> 
+      <language id="de"><![CDATA[veröffentlichen Warteschlange-ID]]></language>  
+      <language id="en"><![CDATA[Publish Queue Id]]></language>  
+      <language id="es"><![CDATA[Publicar cola Id]]></language>  
+      <language id="fr"><![CDATA[Publier Queue Id]]></language> 
+    </name> 
+  </property>  
+  <property id="presetid" listid="convertpreset" type="list" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Preset
+    <name>
+      <language id="de"><![CDATA[Preset]]></language>
+      <language id="en"><![CDATA[Preset]]></language>
+      <language id="es"><![CDATA[Programar]]></language>
+      <language id="fr"><![CDATA[Preset]]></language>
+    </name>
+  </property> 
 </properties>

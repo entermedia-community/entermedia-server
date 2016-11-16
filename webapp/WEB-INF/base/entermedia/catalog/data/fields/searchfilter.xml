@@ -1,5 +1,28 @@
-<properties beanname="folderSearcher">
-	<property id="id" editable="true" stored="true" index="true">Search Type</property>
-	<property id="name" editable="true" stored="true" index="true">Label</property>	
-	<property id="beanname" editable="true" stored="true" index="true">Bean Name</property>	
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <property id="id" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Search Type 
+    <name> 
+      <language id="de"><![CDATA[Suchart]]></language>  
+      <language id="en"><![CDATA[Search Type]]></language>  
+      <language id="es"><![CDATA[Tipo de búsqueda]]></language>  
+      <language id="fr"><![CDATA[Type de recherche]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Label 
+    <name> 
+      <language id="de"><![CDATA[Etikette]]></language>  
+      <language id="en"><![CDATA[Label]]></language>  
+      <language id="es"><![CDATA[Etiqueta]]></language>  
+      <language id="fr"><![CDATA[Étiquette]]></language> 
+    </name> 
+  </property>  
+  <property id="beanname" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Bean Name
+    <name>
+      <language id="de"><![CDATA[Bohne Name]]></language>
+      <language id="en"><![CDATA[Bean Name]]></language>
+      <language id="es"><![CDATA[Nombre del frijol]]></language>
+      <language id="fr"><![CDATA[Nom Bean]]></language>
+    </name>
+  </property> 
 </properties>

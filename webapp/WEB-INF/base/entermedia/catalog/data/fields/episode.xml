@@ -1,7 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties lazy-init="true">
-  <property id="id" index="true" stored="true" searchtype="episode">Id</property>
-  <property id="episodetitle" index="true" stored="true" editable="true" type="list" viewtype="list" legacy="title" datatype="list" searchtype="episode">Title</property>
-  <property id="name" index="true" stored="true" editable="true" searchtype="episode">Name</property>
-  <property id="season" index="true" stored="true" editable="true" type="list" listid="title/seasons" datatype="list" searchtype="episode">Season</property>
+<properties lazy-init="true"> 
+  <property id="id" index="true" stored="true" searchtype="episode" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="episodetitle" index="true" stored="true" editable="true" type="list" viewtype="list" legacy="title" datatype="list" searchtype="episode" keyword="false" filter="false" sortable="true">Title 
+    <name> 
+      <language id="de"><![CDATA[Titel]]></language>  
+      <language id="en"><![CDATA[Title]]></language>  
+      <language id="es"><![CDATA[Título]]></language>  
+      <language id="fr"><![CDATA[Titre]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true" searchtype="episode" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="season" index="true" stored="true" editable="true" type="list" listid="title/seasons" datatype="list" searchtype="episode" keyword="false" filter="false" sortable="true">Season
+    <name>
+      <language id="de"><![CDATA[Jahreszeit]]></language>
+      <language id="en"><![CDATA[Season]]></language>
+      <language id="es"><![CDATA[Temporada]]></language>
+      <language id="fr"><![CDATA[Saison]]></language>
+    </name>
+  </property> 
 </properties>

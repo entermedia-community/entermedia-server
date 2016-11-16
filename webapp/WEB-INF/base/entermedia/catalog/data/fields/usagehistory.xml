@@ -1,11 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties beanname="dataSearcher" lazy-init="true">
-  <property id="id" index="true" stored="true" sortable="true" type="number" datatype="number" searchtype="usagehistory">Id</property>
-  <property id="historystatus" index="true" stored="true" editable="true" legacy="description" searchtype="usagehistory">Status</property>
-  <property id="projectnumber" index="true" stored="true" editable="true" searchtype="usagehistory">Project Number</property>
-  <property id="formnumber" index="true" stored="true" editable="true" searchtype="usagehistory">Form Number</property>
-  <property id="date" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" searchtype="usagehistory">Date</property>
-  <property id="user" index="true" stored="true" type="list" viewtype="user" datatype="list" searchtype="usagehistory">User Name</property>
-  <property id="assetid" index="true" stored="true" editable="true" type="list" datatype="list" searchtype="usagehistory">Asset ID</property>
-  <property id="sourcepath" index="true" stored="true">Source Path</property>
+<properties beanname="dataSearcher" lazy-init="true"> 
+  <property id="id" index="true" stored="true" sortable="true" type="number" datatype="number" searchtype="usagehistory" keyword="false" filter="false" editable="false">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="historystatus" index="true" stored="true" editable="true" legacy="description" searchtype="usagehistory" keyword="false" filter="false" sortable="true">Status 
+    <name> 
+      <language id="de"><![CDATA[Status]]></language>  
+      <language id="en"><![CDATA[Status]]></language>  
+      <language id="es"><![CDATA[Estado]]></language>  
+      <language id="fr"><![CDATA[statut]]></language> 
+    </name> 
+  </property>  
+  <property id="projectnumber" index="true" stored="true" editable="true" searchtype="usagehistory" keyword="false" filter="false" sortable="true">Project Number 
+    <name> 
+      <language id="de"><![CDATA[Projektnummer]]></language>  
+      <language id="en"><![CDATA[Project Number]]></language>  
+      <language id="es"><![CDATA[Número de proyecto]]></language>  
+      <language id="fr"><![CDATA[Numéro de projet]]></language> 
+    </name> 
+  </property>  
+  <property id="formnumber" index="true" stored="true" editable="true" searchtype="usagehistory" keyword="false" filter="false" sortable="true">Form Number 
+    <name> 
+      <language id="de"><![CDATA[Formularnummer]]></language>  
+      <language id="en"><![CDATA[Form Number]]></language>  
+      <language id="es"><![CDATA[Número del formulario]]></language>  
+      <language id="fr"><![CDATA[Numéro du formulaire]]></language> 
+    </name> 
+  </property>  
+  <property id="date" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" searchtype="usagehistory" keyword="false" filter="false">Date 
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="user" index="true" stored="true" type="list" viewtype="user" datatype="list" searchtype="usagehistory" keyword="false" filter="false" editable="false" sortable="true">User Name 
+    <name> 
+      <language id="de"><![CDATA[Benutzername]]></language>  
+      <language id="en"><![CDATA[User Name]]></language>  
+      <language id="es"><![CDATA[Nombre de usuario]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" index="true" stored="true" editable="true" type="list" datatype="list" searchtype="usagehistory" keyword="false" filter="false" sortable="true">Asset ID 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset ID]]></language>  
+      <language id="es"><![CDATA[Identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path
+    <name>
+      <language id="de"><![CDATA[Source-Pfad]]></language>
+      <language id="en"><![CDATA[Source Path]]></language>
+      <language id="es"><![CDATA[Ruta de origen]]></language>
+      <language id="fr"><![CDATA[Source Path]]></language>
+    </name>
+  </property> 
 </properties>

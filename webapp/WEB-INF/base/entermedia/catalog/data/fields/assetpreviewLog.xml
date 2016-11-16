@@ -1,7 +1,36 @@
-<properties>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<property id="user" index="true" viewtype="user" stored="true" type="list">User Name</property><property id="sourcepath"  index="true" stored="true">Source Path</property>
-<property id="assetid" type="list" index="true" stored="true">Asset Id</property>
-<property id="date" datatype="date" viewtype="time" index="true" stored="true" >Date</property>
-
+<properties> 
+  <property id="user" index="true" viewtype="user" stored="true" type="list" keyword="false" filter="false" editable="false" sortable="true">User Name 
+    <name> 
+      <language id="de"><![CDATA[Benutzername]]></language>  
+      <language id="en"><![CDATA[User Name]]></language>  
+      <language id="es"><![CDATA[Nombre de usuario]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
+    <name> 
+      <language id="de"><![CDATA[Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen]]></language>  
+      <language id="fr"><![CDATA[Source Path]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" type="list" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset Id]]></language>  
+      <language id="es"><![CDATA[identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property>  
+  <property id="date" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date
+    <name>
+      <language id="de"><![CDATA[Datum]]></language>
+      <language id="en"><![CDATA[Date]]></language>
+      <language id="es"><![CDATA[Fecha]]></language>
+      <language id="fr"><![CDATA[Date]]></language>
+    </name>
+  </property> 
 </properties>

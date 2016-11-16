@@ -1,13 +1,52 @@
-<properties  beanname="dataSearcher">
-	<property id="id" index="true" stored="true">Item Id</property>
-	<property id="createdby" index="true" stored="true" type="list" listid="relatedassets/type" editable="true">Type</property>
-	<property id="assetid" index="true" stored="true" type="list" viewtype="asset" editable="true" >Source Asset</property>
-	<property id="createdfrom" index="true" stored="true" type="asset" editable="true" >Target</property>
-	<property id="creationdate" index="true" stored="true" type="date" editable="true" >Creation Date</property>
-	<property id="targetid" index="true" stored="true" type="asset" editable="true" >Target Asset</property>
-	
+<?xml version="1.0" encoding="UTF-8"?>
 
-
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Item Id 
+    <name> 
+      <language id="de"><![CDATA[Artikel Identifikationsnummer]]></language>  
+      <language id="en"><![CDATA[Item Id]]></language>  
+      <language id="es"><![CDATA[Identificación del artículo]]></language>  
+      <language id="fr"><![CDATA[ID de l&#39;article]]></language> 
+    </name> 
+  </property>  
+  <property id="createdby" index="true" stored="true" type="list" listid="relatedassets/type" editable="true" keyword="false" filter="false" sortable="true">Type 
+    <name> 
+      <language id="de"><![CDATA[Art]]></language>  
+      <language id="en"><![CDATA[Type]]></language>  
+      <language id="es"><![CDATA[Tipo]]></language>  
+      <language id="fr"><![CDATA[Type]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" index="true" stored="true" type="list" viewtype="asset" editable="true" keyword="false" filter="false" sortable="true">Source Asset 
+    <name> 
+      <language id="de"><![CDATA[Quelle Asset]]></language>  
+      <language id="en"><![CDATA[Source Asset]]></language>  
+      <language id="es"><![CDATA[fuente de Activos]]></language>  
+      <language id="fr"><![CDATA[Source Asset]]></language> 
+    </name> 
+  </property>  
+  <property id="createdfrom" index="true" stored="true" type="asset" editable="true" keyword="false" filter="false" sortable="true">Target 
+    <name> 
+      <language id="de"><![CDATA[Ziel]]></language>  
+      <language id="en"><![CDATA[Target]]></language>  
+      <language id="es"><![CDATA[Objetivo]]></language>  
+      <language id="fr"><![CDATA[Cible]]></language> 
+    </name> 
+  </property>  
+  <property id="creationdate" index="true" stored="true" type="date" editable="true" keyword="false" filter="false" sortable="true">Creation Date 
+    <name> 
+      <language id="de"><![CDATA[Erstellungsdatum]]></language>  
+      <language id="en"><![CDATA[Creation Date]]></language>  
+      <language id="es"><![CDATA[Fecha de creación]]></language>  
+      <language id="fr"><![CDATA[Date de création]]></language> 
+    </name> 
+  </property>  
+  <property id="targetid" index="true" stored="true" type="asset" editable="true" keyword="false" filter="false" sortable="true">Target Asset
+    <name>
+      <language id="de"><![CDATA[Zielanlage]]></language>
+      <language id="en"><![CDATA[Target Asset]]></language>
+      <language id="es"><![CDATA[objetivo de Activos]]></language>
+      <language id="fr"><![CDATA[Target Asset]]></language>
+    </name>
+  </property> 
 </properties>
-
-

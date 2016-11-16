@@ -1,5 +1,28 @@
-<properties>
-  <property id="id" editable="true" index="true" stored="true">Id</property>
-  <property id="name" keyword="true" editable="true" index="true" stored="true">Name</property>
-  <property id="mediatypecategory" editable="true" list="true" datatype="list" index="true" stored="true">Media Type Category</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" keyword="true" editable="true" index="true" stored="true" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="mediatypecategory" editable="true" list="false" datatype="list" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Media Type Category
+    <name>
+      <language id="de"><![CDATA[Medientyp Kategorie]]></language>
+      <language id="en"><![CDATA[Media Type Category]]></language>
+      <language id="es"><![CDATA[Tipo de categorías de medios]]></language>
+      <language id="fr"><![CDATA[Type de support Catégorie]]></language>
+    </name>
+  </property> 
 </properties>

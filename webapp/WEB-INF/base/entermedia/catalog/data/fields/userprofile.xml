@@ -1,48 +1,256 @@
-<properties allowdynamicfields="true">
-	
-	
-	
-	<property id="id" index="true" stored="true"  keyword="true" internalfield="true" >ID</property>
-  	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true">User</property>
-	<property id="settingsgroup" editable="true" index="true" stored="true" datatype="list">Role</property>
-	<property id="view_asset_resultstable" index="true" stored="true"  internalfield="true" >View Table Results</property>
-	<property id="view_asset_advancedsearch" index="true" stored="true"  internalfield="true" >Asset Search</property>
-	<property id="profilesearchfilters" index="true" stored="true"  internalfield="true" >Filters Used By Search</property>
-	<property id="hideassettype" index="true" stored="true"  internalfield="true" >Hide Asset Types</property>
-	<property id="maximize_screen" index="true" stored="true"  internalfield="true" >Maximize</property>
-	<property id="sourcepath" index="true" stored="true"  internalfield="true">Source Path</property>	
-	<property id="last_selected_module" index="true" stored="true"  internalfield="true">Last Selected Module</property>
-	<property id="last_selected_library" index="true" stored="true"  internalfield="true">Last Selected Library</property>
-	<property id="maximize_player" index="true" stored="true"  internalfield="true">false</property>
-	<property id="expand_media_sidebar" index="true" stored="true"  internalfield="true">true</property>
-	
-	<property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of Assets to view per page</property>
-	<property id="modulehitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of rows show on Module results</property>
-	
-	<property id="opencollections" index="true" stored="true"  internalfield="true" >Open Collection Tabs</property>
-	<property id="selectedcollection" index="true" stored="true"  internalfield="true" >Selected Collection</property>
-	
-	<!--  Custom fields -->
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <property id="phone" index="true" stored="true" keyword="true" editable="true">Phone</property>
-    
-    <property id="business" index="true" stored="true" keyword="true" editable="true">Business / Affiliation Name</property>
-    <property id="jobtitle" index="true" stored="true" keyword="true" editable="true">Job Title</property>
-    <property id="country" index="true" stored="true" keyword="true" editable="true" type="list">Country</property>
-    <property id="address1" index="true" stored="true" keyword="true" editable="true">Address 1</property> 
-    <property id="address2" index="true" stored="true" keyword="true" editable="true">Address 2</property>
-    <property id="city" index="true" stored="true" keyword="true" editable="true">City</property>
-    <property id="state_province" index="true" stored="true" keyword="true" editable="true">State / Province</property>
-    <property id="postal_code" index="true" stored="true" keyword="true" editable="true">Postal Code</property>
-	
-	<property id="screenname" index="true" stored="true" keyword="true" editable="true">Screen Name</property>
-	<property id="firstName" index="true" stored="true" keyword="true" editable="true" required="true">First Name</property>
-	<property id="lastName" index="true" stored="true" keyword="true" editable="true" required="true">Last Name</property>
-	<!-- 
+<properties allowdynamicfields="true"> 
+  <property id="id" index="true" stored="true" keyword="true" internalfield="true" filter="false" editable="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true" keyword="false" filter="false" sortable="true">User 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[User]]></language>  
+      <language id="es"><![CDATA[Usuario]]></language>  
+      <language id="fr"><![CDATA[Utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="settingsgroup" editable="true" index="true" stored="true" datatype="list" keyword="false" filter="false" sortable="true" type="list">Role 
+    <name> 
+      <language id="de"><![CDATA[Rolle]]></language>  
+      <language id="en"><![CDATA[Role]]></language>  
+      <language id="es"><![CDATA[Papel]]></language>  
+      <language id="fr"><![CDATA[Rôle]]></language> 
+    </name> 
+  </property>  
+  <property id="view_asset_resultstable" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">View Table Results 
+    <name> 
+      <language id="de"><![CDATA[Ansicht Tabellenergebnisse]]></language>  
+      <language id="en"><![CDATA[View Table Results]]></language>  
+      <language id="es"><![CDATA[Ver Resultados de la mesa]]></language>  
+      <language id="fr"><![CDATA[Voir le Tableau Résultats]]></language> 
+    </name> 
+  </property>  
+  <property id="view_asset_advancedsearch" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Asset Search 
+    <name> 
+      <language id="de"><![CDATA[Asset-Suche]]></language>  
+      <language id="en"><![CDATA[Asset Search]]></language>  
+      <language id="es"><![CDATA[búsqueda de activos]]></language>  
+      <language id="fr"><![CDATA[Asset Recherche]]></language> 
+    </name> 
+  </property>  
+  <property id="profilesearchfilters" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Filters Used By Search 
+    <name> 
+      <language id="de"><![CDATA[Filter von Such]]></language>  
+      <language id="en"><![CDATA[Filters Used By Search]]></language>  
+      <language id="es"><![CDATA[Los filtros usados ​​por Search]]></language>  
+      <language id="fr"><![CDATA[Filtres utilisés par Recherche]]></language> 
+    </name> 
+  </property>  
+  <property id="hideassettype" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Hide Asset Types 
+    <name> 
+      <language id="de"><![CDATA[verstecken Asset-Typen]]></language>  
+      <language id="en"><![CDATA[Hide Asset Types]]></language>  
+      <language id="es"><![CDATA[Ocultar los tipos de activos]]></language>  
+      <language id="fr"><![CDATA[Hide Types d&#39;actifs]]></language> 
+    </name> 
+  </property>  
+  <property id="maximize_screen" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Maximize 
+    <name> 
+      <language id="de"><![CDATA[maximieren]]></language>  
+      <language id="en"><![CDATA[Maximize]]></language>  
+      <language id="es"><![CDATA[Maximizar]]></language>  
+      <language id="fr"><![CDATA[Maximiser]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
+    <name> 
+      <language id="de"><![CDATA[Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen]]></language>  
+      <language id="fr"><![CDATA[Source Path]]></language> 
+    </name> 
+  </property>  
+  <property id="last_selected_module" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Last Selected Module 
+    <name> 
+      <language id="de"><![CDATA[zuletzt gewählte Modul]]></language>  
+      <language id="en"><![CDATA[Last Selected Module]]></language>  
+      <language id="es"><![CDATA[Última módulo seleccionado]]></language>  
+      <language id="fr"><![CDATA[Module sélectionné Dernière]]></language> 
+    </name> 
+  </property>  
+  <property id="last_selected_library" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Last Selected Library 
+    <name> 
+      <language id="de"><![CDATA[zuletzt ausgewählte Bibliothek]]></language>  
+      <language id="en"><![CDATA[Last Selected Library]]></language>  
+      <language id="es"><![CDATA[Última biblioteca seleccionada]]></language>  
+      <language id="fr"><![CDATA[Dernière bibliothèque sélectionnée]]></language> 
+    </name> 
+  </property>  
+  <property id="maximize_player" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">false 
+    <name> 
+      <language id="de"><![CDATA[falsch]]></language>  
+      <language id="en"><![CDATA[false]]></language>  
+      <language id="es"><![CDATA[falso]]></language>  
+      <language id="fr"><![CDATA[faux]]></language> 
+    </name> 
+  </property>  
+  <property id="expand_media_sidebar" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">true 
+    <name> 
+      <language id="de"><![CDATA[wahr]]></language>  
+      <language id="en"><![CDATA[true]]></language>  
+      <language id="es"><![CDATA[cierto]]></language>  
+      <language id="fr"><![CDATA[vrai]]></language> 
+    </name> 
+  </property>  
+  <property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" keyword="false" filter="false" sortable="true">Number of Assets to view per page 
+    <name> 
+      <language id="de"><![CDATA[Anzahl der Assets pro Seite zu sehen]]></language>  
+      <language id="en"><![CDATA[Number of Assets to view per page]]></language>  
+      <language id="es"><![CDATA[Número de Activos para ver por página]]></language>  
+      <language id="fr"><![CDATA[Nombre d&#39;items à afficher par page]]></language> 
+    </name> 
+  </property>  
+  <property id="modulehitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" keyword="false" filter="false" sortable="true">Number of rows show on Module results 
+    <name> 
+      <language id="de"><![CDATA[Anzahl der Zeilen zeigen Modul Ergebnisse]]></language>  
+      <language id="en"><![CDATA[Number of rows show on Module results]]></language>  
+      <language id="es"><![CDATA[Número de filas muestran en los resultados del módulo]]></language>  
+      <language id="fr"><![CDATA[Nombre de lignes montrent les résultats du module]]></language> 
+    </name> 
+  </property>  
+  <property id="opencollections" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Open Collection Tabs 
+    <name> 
+      <language id="de"><![CDATA[offene Sammellaschen]]></language>  
+      <language id="en"><![CDATA[Open Collection Tabs]]></language>  
+      <language id="es"><![CDATA[Abrir aquí Collection]]></language>  
+      <language id="fr"><![CDATA[Ouvert Collection Tabs]]></language> 
+    </name> 
+  </property>  
+  <property id="selectedcollection" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Selected Collection 
+    <name> 
+      <language id="de"><![CDATA[ausgewählte Sammlung]]></language>  
+      <language id="en"><![CDATA[Selected Collection]]></language>  
+      <language id="es"><![CDATA[Colección seleccionado]]></language>  
+      <language id="fr"><![CDATA[Collection Selected]]></language> 
+    </name> 
+  </property>  
+  <!--  Custom fields -->  
+  <property id="phone" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Phone 
+    <name> 
+      <language id="de"><![CDATA[Telefon]]></language>  
+      <language id="en"><![CDATA[Phone]]></language>  
+      <language id="es"><![CDATA[Teléfono]]></language>  
+      <language id="fr"><![CDATA[Téléphone]]></language> 
+    </name> 
+  </property>  
+  <property id="business" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Business / Affiliation Name 
+    <name> 
+      <language id="de"><![CDATA[Business / Zugehörigkeit Name]]></language>  
+      <language id="en"><![CDATA[Business / Affiliation Name]]></language>  
+      <language id="es"><![CDATA[Empresa / Nombre Afiliación]]></language>  
+      <language id="fr"><![CDATA[Business / Nom Affiliation]]></language> 
+    </name> 
+  </property>  
+  <property id="jobtitle" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Job Title 
+    <name> 
+      <language id="de"><![CDATA[Berufsbezeichnung]]></language>  
+      <language id="en"><![CDATA[Job Title]]></language>  
+      <language id="es"><![CDATA[Título profesional]]></language>  
+      <language id="fr"><![CDATA[Titre de l&#39;emploi]]></language> 
+    </name> 
+  </property>  
+  <property id="country" index="true" stored="true" keyword="true" editable="true" type="list" filter="false" sortable="true">Country 
+    <name> 
+      <language id="de"><![CDATA[Land]]></language>  
+      <language id="en"><![CDATA[Country]]></language>  
+      <language id="es"><![CDATA[País]]></language>  
+      <language id="fr"><![CDATA[Country]]></language> 
+    </name> 
+  </property>  
+  <property id="address1" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Address 1 
+    <name> 
+      <language id="de"><![CDATA[Adresse 1]]></language>  
+      <language id="en"><![CDATA[Address 1]]></language>  
+      <language id="es"><![CDATA[Dirección 1]]></language>  
+      <language id="fr"><![CDATA[Adresse 1]]></language> 
+    </name> 
+  </property>  
+  <property id="address2" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Address 2 
+    <name> 
+      <language id="de"><![CDATA[Adresse 2]]></language>  
+      <language id="en"><![CDATA[Address 2]]></language>  
+      <language id="es"><![CDATA[Dirección 2]]></language>  
+      <language id="fr"><![CDATA[Adresse 2]]></language> 
+    </name> 
+  </property>  
+  <property id="city" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">City 
+    <name> 
+      <language id="de"><![CDATA[Stadt]]></language>  
+      <language id="en"><![CDATA[City]]></language>  
+      <language id="es"><![CDATA[Ciudad]]></language>  
+      <language id="fr"><![CDATA[Ville]]></language> 
+    </name> 
+  </property>  
+  <property id="state_province" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">State / Province 
+    <name> 
+      <language id="de"><![CDATA[Staat / Provinz]]></language>  
+      <language id="en"><![CDATA[State / Province]]></language>  
+      <language id="es"><![CDATA[Estado / Provincia]]></language>  
+      <language id="fr"><![CDATA[État / Province]]></language> 
+    </name> 
+  </property>  
+  <property id="postal_code" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Postal Code 
+    <name> 
+      <language id="de"><![CDATA[Postleitzahl]]></language>  
+      <language id="en"><![CDATA[Postal Code]]></language>  
+      <language id="es"><![CDATA[código postal]]></language>  
+      <language id="fr"><![CDATA[code postal]]></language> 
+    </name> 
+  </property>  
+  <property id="screenname" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Screen Name 
+    <name> 
+      <language id="de"><![CDATA[Künstlername]]></language>  
+      <language id="en"><![CDATA[Screen Name]]></language>  
+      <language id="es"><![CDATA[Nombre de pantalla]]></language>  
+      <language id="fr"><![CDATA[Nom de l&#39;écran]]></language> 
+    </name> 
+  </property>  
+  <property id="firstName" index="true" stored="true" keyword="true" editable="true" required="true" filter="false" sortable="true">First Name 
+    <name> 
+      <language id="de"><![CDATA[Vorname]]></language>  
+      <language id="en"><![CDATA[First Name]]></language>  
+      <language id="es"><![CDATA[Nombre de pila]]></language>  
+      <language id="fr"><![CDATA[Prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="lastName" index="true" stored="true" keyword="true" editable="true" required="true" filter="false" sortable="true">Last Name 
+    <name> 
+      <language id="de"><![CDATA[Familienname, Nachname]]></language>  
+      <language id="en"><![CDATA[Last Name]]></language>  
+      <language id="es"><![CDATA[Apellido]]></language>  
+      <language id="fr"><![CDATA[Nom de famille]]></language> 
+    </name> 
+  </property>  
+  <!-- 
 	<property id="enabled" index="true" stored="true" keyword="true" editable="true" type="boolean">Enabled</property>
-	 -->
-	<property id="password" index="true" stored="true" keyword="true" editable="true" viewtype="password">Password</property>
-	<property id="syncthing" index="true" stored="true" keyword="true" editable="true">Syncthing Device Id</property>
-	
-	
+	 -->  
+  <property id="password" index="true" stored="true" keyword="true" editable="true" viewtype="password" filter="false" sortable="true">Password 
+    <name> 
+      <language id="de"><![CDATA[Passwort]]></language>  
+      <language id="en"><![CDATA[Password]]></language>  
+      <language id="es"><![CDATA[Contraseña]]></language>  
+      <language id="fr"><![CDATA[Mot de passe]]></language> 
+    </name> 
+  </property>  
+  <property id="syncthing" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Syncthing Device Id
+    <name>
+      <language id="de"><![CDATA[syncthing Geräte-ID]]></language>
+      <language id="en"><![CDATA[Syncthing Device Id]]></language>
+      <language id="es"><![CDATA[Id Syncthing dispositivo]]></language>
+      <language id="fr"><![CDATA[Dispositif Syncthing Id]]></language>
+    </name>
+  </property> 
 </properties>

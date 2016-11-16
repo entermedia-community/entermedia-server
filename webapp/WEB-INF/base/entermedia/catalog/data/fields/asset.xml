@@ -1,4 +1,20 @@
-<properties dependson="librarycollectionasset">
-	<property id="id" index="true" keyword="true" stored="true">Id</property>
-	<property id="name" legacy="name_int" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains"  sortable="true" >File Name</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties dependson="librarycollectionasset"> 
+  <property id="id" index="true" keyword="true" stored="true" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" legacy="name_int" index="true" stored="true" keyword="true" editable="false" defaultoperation="contains" sortable="true" filter="false">File Name
+    <name>
+      <language id="de"><![CDATA[Dateiname]]></language>
+      <language id="en"><![CDATA[File Name]]></language>
+      <language id="es"><![CDATA[Nombre del archivo]]></language>
+      <language id="fr"><![CDATA[File Name]]></language>
+    </name>
+  </property> 
 </properties>

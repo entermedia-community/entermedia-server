@@ -1,9 +1,60 @@
-<properties beanname="dataSearcher">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
-  <property id="owner" index="true" stored="true" editable="true" type="list" searchtype="user" >Owner</property>
-  <property id="collectionhistorytype" index="true" stored="true" editable="true" type="list" viewtype="list" >Type</property>
-  <property id="assetids" index="true" stored="true" editable="true"  >Asset Ids</property>
-  <property id="userids" index="true" stored="true" editable="true"   >User Ids</property>
-  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
-  <property id="recorddate" index="true" stored="true" editable="true" type="date" viewtype="datetime"  >Record Update Date</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="owner" index="true" stored="true" editable="true" type="list" searchtype="librarycollectionhistory" keyword="false" filter="false" sortable="true">Owner 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Owner]]></language> 
+    </name> 
+  </property>  
+  <property id="collectionhistorytype" index="true" stored="true" editable="true" type="list" viewtype="list" keyword="false" filter="false" sortable="true">Type 
+    <name> 
+      <language id="de"><![CDATA[Art]]></language>  
+      <language id="en"><![CDATA[Type]]></language>  
+      <language id="es"><![CDATA[Tipo]]></language>  
+      <language id="fr"><![CDATA[Type]]></language> 
+    </name> 
+  </property>  
+  <property id="assetids" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Asset Ids 
+    <name> 
+      <language id="de"><![CDATA[Asset-IDs]]></language>  
+      <language id="en"><![CDATA[Asset Ids]]></language>  
+      <language id="es"><![CDATA[Ids de activos]]></language>  
+      <language id="fr"><![CDATA[Asset Ids]]></language> 
+    </name> 
+  </property>  
+  <property id="userids" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">User Ids 
+    <name> 
+      <language id="de"><![CDATA[Benutzer-IDs]]></language>  
+      <language id="en"><![CDATA[User Ids]]></language>  
+      <language id="es"><![CDATA[identificadores de usuario]]></language>  
+      <language id="fr"><![CDATA[utilisateur Ids]]></language> 
+    </name> 
+  </property>  
+  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false" keyword="false" sortable="true">Collection 
+    <name> 
+      <language id="de"><![CDATA[Sammlung]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>  
+  <property id="recorddate" index="true" stored="true" editable="true" type="date" viewtype="datetime" keyword="false" filter="false" sortable="true">Record Update Date
+    <name>
+      <language id="de"><![CDATA[Rekord Aktualisierungsdatum]]></language>
+      <language id="en"><![CDATA[Record Update Date]]></language>
+      <language id="es"><![CDATA[Fecha de actualización de registros]]></language>
+      <language id="fr"><![CDATA[Fiche mise à jour Date de]]></language>
+    </name>
+  </property> 
 </properties>

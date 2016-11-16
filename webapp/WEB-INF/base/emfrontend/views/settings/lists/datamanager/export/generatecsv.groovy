@@ -90,19 +90,27 @@ writer.writeNext(headers);
 					
 					
 					if(detail.isMultiLanguage()){
-						languages.each
+						Object vals = hit.getValue(detail.getId())
+						if(vals != null && vals instanceof Map)
 						{
-							String id = it.id ;
-							Object vals = hit.getValue(detail.getId())
-
-							if(vals != null && vals instanceof Map){
-								nextrow[fieldcount] = vals.getText(id);
-							} else{
-								nextrow[fieldcount] = vals;
+							languages.each
+							{
+								String lang = it.id ;
+								String label = vals.getText(lang);
+								if( label == null && detail.getId().equals("name") )
+								{
+									label = hit.getName(lang);
+								}
+								nextrow[fieldcount] = label;
+								fieldcount ++;
 							}
-
-							fieldcount ++;
 						}
+						else
+						{
+							nextrow[fieldcount] = vals;
+							fieldcount = fieldcount + languages.size();
+						}	
+
 					} else{
 
 						 value = hit.get(detail.getId());

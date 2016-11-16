@@ -1,3 +1,12 @@
-<page>
-	<property id="bandwidth" index="true" stored="true" type="list" editable="true"  sortable="true" >Bandwidth</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page> 
+  <property id="bandwidth" index="true" stored="true" type="list" editable="true" sortable="true" keyword="false" filter="false">Bandwidth 
+    <name>
+      <language id="de"><![CDATA[Bandbreite]]></language>
+      <language id="en"><![CDATA[Bandwidth]]></language>
+      <language id="es"><![CDATA[Ancho de banda]]></language>
+      <language id="fr"><![CDATA[Bandwidth]]></language>
+    </name>
+  </property> 
 </page>

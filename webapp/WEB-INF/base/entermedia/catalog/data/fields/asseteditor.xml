@@ -1,5 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties   beanname="folderSearcher">
-  <property id="id"  internalfield="true" index="true" editable="true" stored="true">Id</property>
-  <property id="name" editable="true" index="true" stored="true">Name</property>
+<properties beanname="folderSearcher"> 
+  <property id="id" internalfield="true" index="true" editable="true" stored="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name
+    <name>
+      <language id="de"><![CDATA[Name]]></language>
+      <language id="en"><![CDATA[Name]]></language>
+      <language id="es"><![CDATA[Nombre]]></language>
+      <language id="fr"><![CDATA[prénom]]></language>
+    </name>
+  </property> 
 </properties>

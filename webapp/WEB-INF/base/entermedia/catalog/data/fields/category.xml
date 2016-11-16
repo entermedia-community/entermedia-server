@@ -1,15 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties>
-  <property id="name"  editable="true" index="true" stored="true">Category Name</property>
-  <property id="id" editable="true" index="true" stored="true">Category Id</property>
-  <property id="shortdescription"  editable="true" index="true" stored="true">Short Description</property>
-  <property id="parentid"  editable="true" type="list" listid="category" viewtype="autocomplete" index="true" stored="true">Parent Category Id</property>
-  <property id="categorypath"  editable="true" index="true" stored="true" sortable="true" >Path</property>
-  <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date"  datatype="date">Created Date</property>
-  <property id="foldertype"  editable="true" index="true" stored="true" type="list">Type</property>
-  <property id="viewusers"  editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system">Users</property>
-  <property id="viewgroups"  editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system">Groups</property>
-  <property id="viewroles"  editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup">Roles</property>
-    
+<properties> 
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Category Name 
+    <name> 
+      <language id="de"><![CDATA[Kategoriename]]></language>  
+      <language id="en"><![CDATA[Category Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[Catégorie]]></language> 
+    </name> 
+  </property>  
+  <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Category Id 
+    <name> 
+      <language id="de"><![CDATA[Kategorie ID]]></language>  
+      <language id="en"><![CDATA[Category Id]]></language>  
+      <language id="es"><![CDATA[Categoria ID]]></language>  
+      <language id="fr"><![CDATA[Catégorie Id]]></language> 
+    </name> 
+  </property>  
+  <property id="shortdescription" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Short Description 
+    <name> 
+      <language id="de"><![CDATA[kurze Beschreibung]]></language>  
+      <language id="en"><![CDATA[Short Description]]></language>  
+      <language id="es"><![CDATA[Descripción breve]]></language>  
+      <language id="fr"><![CDATA[brève description]]></language> 
+    </name> 
+  </property>  
+  <property id="parentid" editable="true" type="list" listid="category" viewtype="autocomplete" index="true" stored="true" keyword="false" filter="false" sortable="true">Parent Category Id 
+    <name> 
+      <language id="de"><![CDATA[geordnete Kategorie-ID]]></language>  
+      <language id="en"><![CDATA[Parent Category Id]]></language>  
+      <language id="es"><![CDATA[Categoría ID del directorio padre]]></language>  
+      <language id="fr"><![CDATA[Parent Catégorie Id]]></language> 
+    </name> 
+  </property>  
+  <property id="categorypath" editable="true" index="true" stored="true" sortable="true" keyword="false" filter="false">Path 
+    <name> 
+      <language id="de"><![CDATA[Pfad]]></language>  
+      <language id="en"><![CDATA[Path]]></language>  
+      <language id="es"><![CDATA[Camino]]></language>  
+      <language id="fr"><![CDATA[Chemin]]></language> 
+    </name> 
+  </property>  
+  <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" keyword="false" filter="false">Created Date 
+    <name> 
+      <language id="de"><![CDATA[Erstellungsdatum]]></language>  
+      <language id="en"><![CDATA[Created Date]]></language>  
+      <language id="es"><![CDATA[Fecha de creación]]></language>  
+      <language id="fr"><![CDATA[date de création]]></language> 
+    </name> 
+  </property>  
+  <property id="foldertype" editable="true" index="true" stored="true" type="list" keyword="false" filter="false" sortable="true">Type 
+    <name> 
+      <language id="de"><![CDATA[Art]]></language>  
+      <language id="en"><![CDATA[Type]]></language>  
+      <language id="es"><![CDATA[Tipo]]></language>  
+      <language id="fr"><![CDATA[Type]]></language> 
+    </name> 
+  </property>  
+  <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system" keyword="false" filter="false" sortable="true" type="list">Users 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[Users]]></language>  
+      <language id="es"><![CDATA[usuarios]]></language>  
+      <language id="fr"><![CDATA[Utilisateurs]]></language> 
+    </name> 
+  </property>  
+  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system" keyword="false" filter="false" sortable="true" type="list">Groups 
+    <name> 
+      <language id="de"><![CDATA[Gruppen]]></language>  
+      <language id="en"><![CDATA[Groups]]></language>  
+      <language id="es"><![CDATA[grupos]]></language>  
+      <language id="fr"><![CDATA[Groupes]]></language> 
+    </name> 
+  </property>  
+  <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup" keyword="false" filter="false" sortable="true" type="list">Roles
+    <name>
+      <language id="de"><![CDATA[Rollen]]></language>
+      <language id="en"><![CDATA[Roles]]></language>
+      <language id="es"><![CDATA[Roles]]></language>
+      <language id="fr"><![CDATA[Les rôles]]></language>
+    </name>
+  </property> 
 </properties>

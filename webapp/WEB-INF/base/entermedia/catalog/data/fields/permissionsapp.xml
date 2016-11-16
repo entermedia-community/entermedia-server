@@ -1,7 +1,44 @@
-<properties beanname="folderSearcher">
-	<property id="id" editable="true">ID</property>
-	<property id="permissiontype" editable="true" type="list" stored="true" index="true">Section</property>	
-	<property id="caption" editable="true" stored="true" legacy="description" index="true">Caption</property>	
-	<property id="name" editable="true" stored="true" index="true">Name</property>	
-	<property id="ordering" editable="true" type="number" stored="true" index="true">Ordering</property>	
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <property id="id" editable="true" index="false" keyword="false" filter="false" stored="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="permissiontype" editable="true" type="list" stored="true" index="true" keyword="false" filter="false" sortable="true">Section 
+    <name> 
+      <language id="de"><![CDATA[Abschnitt]]></language>  
+      <language id="en"><![CDATA[Section]]></language>  
+      <language id="es"><![CDATA[Sección]]></language>  
+      <language id="fr"><![CDATA[Section]]></language> 
+    </name> 
+  </property>  
+  <property id="caption" editable="true" stored="true" legacy="description" index="true" keyword="false" filter="false" sortable="true">Caption 
+    <name> 
+      <language id="de"><![CDATA[Bildunterschrift]]></language>  
+      <language id="en"><![CDATA[Caption]]></language>  
+      <language id="es"><![CDATA[Subtítulo]]></language>  
+      <language id="fr"><![CDATA[Légende]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="ordering" editable="true" type="number" stored="true" index="true" keyword="false" filter="false" sortable="true">Ordering
+    <name>
+      <language id="de"><![CDATA[Bestellung]]></language>
+      <language id="en"><![CDATA[Ordering]]></language>
+      <language id="es"><![CDATA[Ordenando]]></language>
+      <language id="fr"><![CDATA[Commande]]></language>
+    </name>
+  </property> 
 </properties>

@@ -1,9 +1,53 @@
-<properties  beanname="folderSearcher">
-	<property id="id" editable="true"  index="true" stored="true">ID</property>
-	<property id="name"  editable="true"  index="true" stored="true">Name</property>
-	<property id="rendertype" type="list"  editable="true"  index="true" stored="true" >Render Type</property>
-	<property id="creator"  editable="true"  index="true" stored="true" >Creator</property>
-	<property id="synctags" type="boolean"  editable="true"  index="true" stored="true"	>Sync Tags</property>
-	<!--  add timeout values -->
-	<property id="conversiontimeout"  editable="true"  index="true" stored="true" note="Timeout in milliseconds" >Conversion Timeout</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="rendertype" type="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Render Type 
+    <name> 
+      <language id="de"><![CDATA[render-Typ]]></language>  
+      <language id="en"><![CDATA[Render Type]]></language>  
+      <language id="es"><![CDATA[render Tipo]]></language>  
+      <language id="fr"><![CDATA[type de rendu]]></language> 
+    </name> 
+  </property>  
+  <property id="creator" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Creator 
+    <name> 
+      <language id="de"><![CDATA[Schöpfer]]></language>  
+      <language id="en"><![CDATA[Creator]]></language>  
+      <language id="es"><![CDATA[Creador]]></language>  
+      <language id="fr"><![CDATA[Créateur]]></language> 
+    </name> 
+  </property>  
+  <property id="synctags" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Sync Tags 
+    <name> 
+      <language id="de"><![CDATA[Sync-Tags]]></language>  
+      <language id="en"><![CDATA[Sync Tags]]></language>  
+      <language id="es"><![CDATA[Etiquetas de sincronización]]></language>  
+      <language id="fr"><![CDATA[Sync Balises]]></language> 
+    </name> 
+  </property>  
+  <!--  add timeout values -->  
+  <property id="conversiontimeout" editable="true" index="true" stored="true" note="Timeout in milliseconds" keyword="false" filter="false" sortable="true">Conversion Timeout
+    <name>
+      <language id="de"><![CDATA[Umwandlung Timeout]]></language>
+      <language id="en"><![CDATA[Conversion Timeout]]></language>
+      <language id="es"><![CDATA[Tiempo de espera de la conversión]]></language>
+      <language id="fr"><![CDATA[Conversion Timeout]]></language>
+    </name>
+  </property> 
 </properties>

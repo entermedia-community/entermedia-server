@@ -1,17 +1,92 @@
-<properties>
-	<property id="id" index="true" stored="true">Id</property>
-	<property id="assetid" type="list" index="true"  stored="true">Asset Id</property>
-	<property id="assetname" index="true"  stored="true">Asset Name</property>
-	<property id="assetfilesize" index="true" stored="true">Asset File Size</property>
-	<property id="status" editable="true"  index="true"  stored="true" type="list" viewtype="list" listid="push/pushstatus">Status</property>
-	<property id="percentage"  index="true"  stored="true">Push Percentage</property>
-	<property id="errordetails"  index="true"  stored="true">Error Details</property>
-	<property id="errorcount"  index="true"  stored="true">Error Count</property>
-	<property id="sourcepath" index="true" stored="true">Source Path</property>	
-	<property id="ordering" type="number" index="true" stored="true" editable="true">Ordering</property>
-	<property id="hotfolder" index="true" stored="true" editable="true" type="list">Push Folder</property>
+<?xml version="1.0" encoding="UTF-8"?>
 
-
-	
-
+<properties> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" type="list" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset Id]]></language>  
+      <language id="es"><![CDATA[identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property>  
+  <property id="assetname" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Name 
+    <name> 
+      <language id="de"><![CDATA[Asset-Name]]></language>  
+      <language id="en"><![CDATA[Asset Name]]></language>  
+      <language id="es"><![CDATA[Nombre de activos]]></language>  
+      <language id="fr"><![CDATA[Nom de l&#39;actif]]></language> 
+    </name> 
+  </property>  
+  <property id="assetfilesize" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset File Size 
+    <name> 
+      <language id="de"><![CDATA[Asset Dateigröße]]></language>  
+      <language id="en"><![CDATA[Asset File Size]]></language>  
+      <language id="es"><![CDATA[Tamaño del archivo activo]]></language>  
+      <language id="fr"><![CDATA[Taille du fichier actif]]></language> 
+    </name> 
+  </property>  
+  <property id="status" editable="true" index="true" stored="true" type="list" viewtype="list" listid="push/pushstatus" keyword="false" filter="false" sortable="true">Status 
+    <name> 
+      <language id="de"><![CDATA[Status]]></language>  
+      <language id="en"><![CDATA[Status]]></language>  
+      <language id="es"><![CDATA[Estado]]></language>  
+      <language id="fr"><![CDATA[statut]]></language> 
+    </name> 
+  </property>  
+  <property id="percentage" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Push Percentage 
+    <name> 
+      <language id="de"><![CDATA[Push-Prozentsatz]]></language>  
+      <language id="en"><![CDATA[Push Percentage]]></language>  
+      <language id="es"><![CDATA[Porcentaje de empuje]]></language>  
+      <language id="fr"><![CDATA[Poussez Pourcentage]]></language> 
+    </name> 
+  </property>  
+  <property id="errordetails" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Details 
+    <name> 
+      <language id="de"><![CDATA[Fehlerdetails]]></language>  
+      <language id="en"><![CDATA[Error Details]]></language>  
+      <language id="es"><![CDATA[Error de detalles]]></language>  
+      <language id="fr"><![CDATA[Détails de l&#39;erreur]]></language> 
+    </name> 
+  </property>  
+  <property id="errorcount" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Count 
+    <name> 
+      <language id="de"><![CDATA[Fehleranzahl]]></language>  
+      <language id="en"><![CDATA[Error Count]]></language>  
+      <language id="es"><![CDATA[Error Count]]></language>  
+      <language id="fr"><![CDATA[Error Count]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
+    <name> 
+      <language id="de"><![CDATA[Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen]]></language>  
+      <language id="fr"><![CDATA[Source Path]]></language> 
+    </name> 
+  </property>  
+  <property id="ordering" type="number" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Ordering 
+    <name> 
+      <language id="de"><![CDATA[Bestellung]]></language>  
+      <language id="en"><![CDATA[Ordering]]></language>  
+      <language id="es"><![CDATA[Ordenando]]></language>  
+      <language id="fr"><![CDATA[Commande]]></language> 
+    </name> 
+  </property>  
+  <property id="hotfolder" index="true" stored="true" editable="true" type="list" keyword="false" filter="false" sortable="true">Push Folder
+    <name>
+      <language id="de"><![CDATA[Push-Ordner]]></language>
+      <language id="en"><![CDATA[Push Folder]]></language>
+      <language id="es"><![CDATA[carpeta de empuje]]></language>
+      <language id="fr"><![CDATA[Dossier Push]]></language>
+    </name>
+  </property> 
 </properties>

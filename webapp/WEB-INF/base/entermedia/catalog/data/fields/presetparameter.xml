@@ -1,6 +1,36 @@
-<properties beanname="folderSearcher">
-  <property id="id" editable="true" index="true" stored="true">Id</property>
-  <property id="parameterdata" editable="true" index="true" stored="true" type="list">Preset Data</property>
-  <property id="name"  editable="true" index="true" stored="true">Parameter Name</property>
-  <property id="value"  editable="true" index="true" stored="true">Parameter Value</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="parameterdata" editable="true" index="true" stored="true" type="list" keyword="false" filter="false" sortable="true">Preset Data 
+    <name> 
+      <language id="de"><![CDATA[Preset-Daten]]></language>  
+      <language id="en"><![CDATA[Preset Data]]></language>  
+      <language id="es"><![CDATA[datos predefinidos]]></language>  
+      <language id="fr"><![CDATA[Preset Data]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Parameter Name 
+    <name> 
+      <language id="de"><![CDATA[Parametername]]></language>  
+      <language id="en"><![CDATA[Parameter Name]]></language>  
+      <language id="es"><![CDATA[Nombre del parámetro]]></language>  
+      <language id="fr"><![CDATA[Nom du paramètre]]></language> 
+    </name> 
+  </property>  
+  <property id="value" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Parameter Value
+    <name>
+      <language id="de"><![CDATA[Parameterwert]]></language>
+      <language id="en"><![CDATA[Parameter Value]]></language>
+      <language id="es"><![CDATA[parámetro Valor]]></language>
+      <language id="fr"><![CDATA[Paramètre Valeur]]></language>
+    </name>
+  </property> 
 </properties>

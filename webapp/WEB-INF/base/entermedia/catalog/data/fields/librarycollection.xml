@@ -1,19 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties beanname="dataSearcher">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
-  <property id="name" index="true" stored="true" editable="true" >Collection Name</property>
-  <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date"  datatype="date">Created Date</property>
-  <property id="startdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" internalfield="false" datatype="date">Start Date</property>
-  <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Delivery Date</property>
-  <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Update Date</property>
-  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="user" >Owner</property>
-  <property id="library" required="true" index="true" stored="true" editable="true" sortable="true" type="list" viewtype="autocomplete"  listid="library" datatype="list">Library</property>
-  <property id="addnotifypolicy" index="true" type="list" listid="librarycollection/addnotifypolicy" stored="true" editable="true" note="Who do we notify when assets are added" >Send Notifications</property>
-  <property id="revisions" index="true" stored="true" editable="true" sortable="true" type="number" >Revisions</property>
-  <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list">Project Status</property>
-  <property id="projecttype" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list">Project Type</property>
-  <property id="projectdescription" index="true" stored="true" editable="true" viewtype="html" internalfield="false">Project Description</property>
-<property id="rootcategory" internalfield="false" index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated">Category ID</property>  
-  
-  
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Collection Name 
+    <name> 
+      <language id="de"><![CDATA[Kollektionsnamen]]></language>  
+      <language id="en"><![CDATA[Collection Name]]></language>  
+      <language id="es"><![CDATA[Nombre de la colección]]></language>  
+      <language id="fr"><![CDATA[Nom de la collection]]></language> 
+    </name> 
+  </property>  
+  <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" keyword="false" filter="false">Created Date 
+    <name> 
+      <language id="de"><![CDATA[Erstellungsdatum]]></language>  
+      <language id="en"><![CDATA[Created Date]]></language>  
+      <language id="es"><![CDATA[Fecha de creación]]></language>  
+      <language id="fr"><![CDATA[date de création]]></language> 
+    </name> 
+  </property>  
+  <property id="startdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" internalfield="false" datatype="date" keyword="false" filter="false">Start Date 
+    <name> 
+      <language id="de"><![CDATA[Anfangsdatum]]></language>  
+      <language id="en"><![CDATA[Start Date]]></language>  
+      <language id="es"><![CDATA[Fecha de inicio]]></language>  
+      <language id="fr"><![CDATA[Date de début]]></language> 
+    </name> 
+  </property>  
+  <property id="deliverydate" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" keyword="false" filter="false">Delivery Date 
+    <name> 
+      <language id="de"><![CDATA[Lieferdatum]]></language>  
+      <language id="en"><![CDATA[Delivery Date]]></language>  
+      <language id="es"><![CDATA[Fecha de entrega]]></language>  
+      <language id="fr"><![CDATA[Date de livraison]]></language> 
+    </name> 
+  </property>  
+  <property id="recorddate" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" keyword="false" filter="false">Update Date 
+    <name> 
+      <language id="de"><![CDATA[Aktualisierungsdatum]]></language>  
+      <language id="en"><![CDATA[Update Date]]></language>  
+      <language id="es"><![CDATA[Fecha de actualización]]></language>  
+      <language id="fr"><![CDATA[Date de mise à jour]]></language> 
+    </name> 
+  </property>  
+  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="librarycollection" keyword="false" filter="false" sortable="true">Owner 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Owner]]></language> 
+    </name> 
+  </property>  
+  <property id="library" required="true" index="true" stored="true" editable="true" sortable="true" type="list" viewtype="autocomplete" listid="library" datatype="list" keyword="false" filter="false">Library 
+    <name> 
+      <language id="de"><![CDATA[Bibliothek]]></language>  
+      <language id="en"><![CDATA[Library]]></language>  
+      <language id="es"><![CDATA[Biblioteca]]></language>  
+      <language id="fr"><![CDATA[Bibliothèque]]></language> 
+    </name> 
+  </property>  
+  <property id="addnotifypolicy" index="true" type="list" listid="librarycollection/addnotifypolicy" stored="true" editable="true" note="Who do we notify when assets are added" keyword="false" filter="false" sortable="true">Send Notifications 
+    <name> 
+      <language id="de"><![CDATA[Benachrichtigungen versenden]]></language>  
+      <language id="en"><![CDATA[Send Notifications]]></language>  
+      <language id="es"><![CDATA[Enviar notificaciones]]></language>  
+      <language id="fr"><![CDATA[Envoyer Notifications]]></language> 
+    </name> 
+  </property>  
+  <property id="revisions" index="true" stored="true" editable="true" sortable="true" type="number" keyword="false" filter="false">Revisions 
+    <name> 
+      <language id="de"><![CDATA[Revisionen]]></language>  
+      <language id="en"><![CDATA[Revisions]]></language>  
+      <language id="es"><![CDATA[Las revisiones]]></language>  
+      <language id="fr"><![CDATA[Révisions]]></language> 
+    </name> 
+  </property>  
+  <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list" keyword="false" filter="false" sortable="true">Project Status 
+    <name> 
+      <language id="de"><![CDATA[Projekt-Status]]></language>  
+      <language id="en"><![CDATA[Project Status]]></language>  
+      <language id="es"><![CDATA[Estado del proyecto]]></language>  
+      <language id="fr"><![CDATA[L&#39;état du projet]]></language> 
+    </name> 
+  </property>  
+  <property id="projecttype" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list" keyword="false" filter="false" sortable="true">Project Type 
+    <name> 
+      <language id="de"><![CDATA[Projekttyp]]></language>  
+      <language id="en"><![CDATA[Project Type]]></language>  
+      <language id="es"><![CDATA[Tipo de proyecto]]></language>  
+      <language id="fr"><![CDATA[Type de projet]]></language> 
+    </name> 
+  </property>  
+  <property id="projectdescription" index="true" stored="true" editable="true" viewtype="html" internalfield="false" keyword="false" filter="false" sortable="true">Project Description 
+    <name> 
+      <language id="de"><![CDATA[Projektbeschreibung]]></language>  
+      <language id="en"><![CDATA[Project Description]]></language>  
+      <language id="es"><![CDATA[Descripción del Proyecto]]></language>  
+      <language id="fr"><![CDATA[Description du projet]]></language> 
+    </name> 
+  </property>  
+  <property id="rootcategory" internalfield="false" index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated" keyword="false" filter="false" editable="false" sortable="true">Category ID
+    <name>
+      <language id="de"><![CDATA[Kategorie ID]]></language>
+      <language id="en"><![CDATA[Category ID]]></language>
+      <language id="es"><![CDATA[categoria ID]]></language>
+      <language id="fr"><![CDATA[Catégorie ID]]></language>
+    </name>
+  </property> 
 </properties>

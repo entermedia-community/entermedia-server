@@ -1,5 +1,28 @@
-<properties beanname="folderSearcher">
-	<property id="id" editable="true" stored="true" index="true">ID</property>
-	<property id="name" editable="true" stored="true" index="true">Name</property>	
-	<property id="deploypath" editable="true" stored="true" index="true">Deploy Path</property>	
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <property id="id" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="deploypath" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Deploy Path
+    <name>
+      <language id="de"><![CDATA[bereitstellen Weg]]></language>
+      <language id="en"><![CDATA[Deploy Path]]></language>
+      <language id="es"><![CDATA[implementar Camino]]></language>
+      <language id="fr"><![CDATA[Déployer Chemin]]></language>
+    </name>
+  </property> 
 </properties>

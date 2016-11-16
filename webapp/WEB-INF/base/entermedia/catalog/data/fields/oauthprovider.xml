@@ -1,20 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties prefix="oauthproviders">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true" >Id</property>
-  <property id="name" index="true" stored="true" editable="true" >Name</property>
-  <property id="sourcepath" >SourcePath</property>
-  <property id="clientid" index="true" stored="true" editable="true" >clientid</property>
-  <property id="clientsecret" index="true" stored="true" editable="true" >clientsecret</property>
-  <property id="redirecturi" index="true" stored="true" editable="true" >redirecturi</property>
-  <property id="enabled" index="true" stored="true" editable="true"  type="boolean" internalfield="false" datatype="boolean" >enabled</property>
-  <property id="remoteroot" index="true" stored="true" editable="true">remoteroot</property>
-  <property id="autocreateusers" index="true" stored="true" editable="true"  type="boolean" internalfield="false" datatype="boolean" >Auto create new users</property>
-   
-  <property id="newusersettingsgroup" index="true" stored="true" editable="true"  type="list" listid="settingsgroup" internalfield="false"  >Role for new users</property>
-   
-  <property id="alloweddomains" index="true" stored="true" editable="true"  internalfield="false"  >List of allowed domains, comma seperated</property>
-  
-  
-  
-  
+<properties prefix="oauthproviders"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="false" keyword="false" filter="false" stored="false" editable="false" sortable="true">SourcePath 
+    <name> 
+      <language id="de"><![CDATA[SourcePath]]></language>  
+      <language id="en"><![CDATA[SourcePath]]></language>  
+      <language id="es"><![CDATA[SourcePath]]></language>  
+      <language id="fr"><![CDATA[SourcePath]]></language> 
+    </name> 
+  </property>  
+  <property id="clientid" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">clientid 
+    <name> 
+      <language id="de"><![CDATA[Kunden ID]]></language>  
+      <language id="en"><![CDATA[clientid]]></language>  
+      <language id="es"><![CDATA[Identificación del cliente]]></language>  
+      <language id="fr"><![CDATA[identité du client]]></language> 
+    </name> 
+  </property>  
+  <property id="clientsecret" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">clientsecret 
+    <name> 
+      <language id="de"><![CDATA[clientsecret]]></language>  
+      <language id="en"><![CDATA[clientsecret]]></language>  
+      <language id="es"><![CDATA[clientsecret]]></language>  
+      <language id="fr"><![CDATA[clientsecret]]></language> 
+    </name> 
+  </property>  
+  <property id="redirecturi" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">redirecturi 
+    <name> 
+      <language id="de"><![CDATA[redirecturi]]></language>  
+      <language id="en"><![CDATA[redirecturi]]></language>  
+      <language id="es"><![CDATA[redirecturi]]></language>  
+      <language id="fr"><![CDATA[redirecturi]]></language> 
+    </name> 
+  </property>  
+  <property id="enabled" index="true" stored="true" editable="true" type="boolean" internalfield="false" datatype="boolean" keyword="false" filter="false" sortable="true">enabled 
+    <name> 
+      <language id="de"><![CDATA[freigegeben]]></language>  
+      <language id="en"><![CDATA[enabled]]></language>  
+      <language id="es"><![CDATA[habilitado]]></language>  
+      <language id="fr"><![CDATA[activée]]></language> 
+    </name> 
+  </property>  
+  <property id="remoteroot" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">remoteroot 
+    <name> 
+      <language id="de"><![CDATA[remoteroot]]></language>  
+      <language id="en"><![CDATA[remoteroot]]></language>  
+      <language id="es"><![CDATA[remoteroot]]></language>  
+      <language id="fr"><![CDATA[remoteroot]]></language> 
+    </name> 
+  </property>  
+  <property id="autocreateusers" index="true" stored="true" editable="true" type="boolean" internalfield="false" datatype="boolean" keyword="false" filter="false" sortable="true">Auto create new users 
+    <name> 
+      <language id="de"><![CDATA[Auto schaffen neue Benutzer]]></language>  
+      <language id="en"><![CDATA[Auto create new users]]></language>  
+      <language id="es"><![CDATA[Auto crear nuevos usuarios]]></language>  
+      <language id="fr"><![CDATA[Auto créer de nouveaux utilisateurs]]></language> 
+    </name> 
+  </property>  
+  <property id="newusersettingsgroup" index="true" stored="true" editable="true" type="list" listid="settingsgroup" internalfield="false" keyword="false" filter="false" sortable="true">Role for new users 
+    <name> 
+      <language id="de"><![CDATA[Rolle für neue Benutzer]]></language>  
+      <language id="en"><![CDATA[Role for new users]]></language>  
+      <language id="es"><![CDATA[Papel para los nuevos usuarios]]></language>  
+      <language id="fr"><![CDATA[Rôle pour les nouveaux utilisateurs]]></language> 
+    </name> 
+  </property>  
+  <property id="alloweddomains" index="true" stored="true" editable="true" internalfield="false" keyword="false" filter="false" sortable="true">List of allowed domains, comma seperated
+    <name>
+      <language id="de"><![CDATA[Liste der zulässigen Domänen, durch Komma getrennt]]></language>
+      <language id="en"><![CDATA[List of allowed domains, comma seperated]]></language>
+      <language id="es"><![CDATA[Lista de dominios permitidos, coma seperated]]></language>
+      <language id="fr"><![CDATA[Liste des domaines autorisés, séparées par des virgules]]></language>
+    </name>
+  </property> 
 </properties>

@@ -1,4 +1,20 @@
-<properties beanname="folderSearcher">
-	<property id="id" editable="true" stored="true" index="true">ID</property>
-	<property id="name" editable="true" stored="true" index="true">Theme Name</property>	
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <property id="id" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Theme Name
+    <name>
+      <language id="de"><![CDATA[Thema Name]]></language>
+      <language id="en"><![CDATA[Theme Name]]></language>
+      <language id="es"><![CDATA[Nombre tema]]></language>
+      <language id="fr"><![CDATA[Thème Nom]]></language>
+    </name>
+  </property> 
 </properties>

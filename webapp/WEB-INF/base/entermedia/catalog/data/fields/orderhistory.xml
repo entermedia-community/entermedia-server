@@ -1,9 +1,60 @@
-<properties beanname="dataSearcher" prefix="orders" class="orderhistory">
-	<property id="id" editable="false" index="true" stored="true">History Id</property>
-	<property id="historytype" index="true" type="list" stored="true" listid="order/historytype" >Type</property>
-	<property id="date" editable="false" index="true" stored="true" type="date" >Date</property>
-	<property id="orderid" editable="false" type="list" index="true" stored="true">Order Id</property>
-	<property id="itemcount"  index="true" type="number" stored="true">Item Count</property>
-	<property id="itemsuccesscount"  index="true"  type="number" stored="true">Success Count</property>
-	<property id="itemerrorcount"  index="true"  type="number" stored="true">Error Count</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher" prefix="orders" class="orderhistory"> 
+  <property id="id" editable="false" index="true" stored="true" keyword="false" filter="false" sortable="true">History Id 
+    <name> 
+      <language id="de"><![CDATA[Geschichte id]]></language>  
+      <language id="en"><![CDATA[History Id]]></language>  
+      <language id="es"><![CDATA[historia Id]]></language>  
+      <language id="fr"><![CDATA[Histoire Id]]></language> 
+    </name> 
+  </property>  
+  <property id="historytype" index="true" type="list" stored="true" listid="order/historytype" keyword="false" filter="false" editable="false" sortable="true">Type 
+    <name> 
+      <language id="de"><![CDATA[Art]]></language>  
+      <language id="en"><![CDATA[Type]]></language>  
+      <language id="es"><![CDATA[Tipo]]></language>  
+      <language id="fr"><![CDATA[Type]]></language> 
+    </name> 
+  </property>  
+  <property id="date" editable="false" index="true" stored="true" type="date" keyword="false" filter="false" sortable="true">Date 
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="orderid" editable="false" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Order Id 
+    <name> 
+      <language id="de"><![CDATA[Auftragsnummer]]></language>  
+      <language id="en"><![CDATA[Order Id]]></language>  
+      <language id="es"><![CDATA[Solicitar ID]]></language>  
+      <language id="fr"><![CDATA[Numéro de commande]]></language> 
+    </name> 
+  </property>  
+  <property id="itemcount" index="true" type="number" stored="true" keyword="false" filter="false" editable="false" sortable="true">Item Count 
+    <name> 
+      <language id="de"><![CDATA[Stückzahl]]></language>  
+      <language id="en"><![CDATA[Item Count]]></language>  
+      <language id="es"><![CDATA[Recuento de elementos]]></language>  
+      <language id="fr"><![CDATA[Nombre d&#39;éléments]]></language> 
+    </name> 
+  </property>  
+  <property id="itemsuccesscount" index="true" type="number" stored="true" keyword="false" filter="false" editable="false" sortable="true">Success Count 
+    <name> 
+      <language id="de"><![CDATA[Anzahl der Erfolge]]></language>  
+      <language id="en"><![CDATA[Success Count]]></language>  
+      <language id="es"><![CDATA[Conde éxito]]></language>  
+      <language id="fr"><![CDATA[Count Success]]></language> 
+    </name> 
+  </property>  
+  <property id="itemerrorcount" index="true" type="number" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Count
+    <name>
+      <language id="de"><![CDATA[Fehleranzahl]]></language>
+      <language id="en"><![CDATA[Error Count]]></language>
+      <language id="es"><![CDATA[Error Count]]></language>
+      <language id="fr"><![CDATA[Error Count]]></language>
+    </name>
+  </property> 
 </properties>

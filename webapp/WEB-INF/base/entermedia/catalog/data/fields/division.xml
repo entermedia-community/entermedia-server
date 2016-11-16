@@ -1,6 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties>
-  <property id="id" index="true" editable="true"  stored="true">Id</property>
-  <property id="name" editable="true" index="true" stored="true">Name</property>
-  <property id="folder" editable="true" index="true" stored="true" note="Top level folder name ie projects/1234">Folder Name</property>
+<properties> 
+  <property id="id" index="true" editable="true" stored="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="folder" editable="true" index="true" stored="true" note="Top level folder name ie projects/1234" keyword="false" filter="false" sortable="true">Folder Name
+    <name>
+      <language id="de"><![CDATA[Ordnernamen]]></language>
+      <language id="en"><![CDATA[Folder Name]]></language>
+      <language id="es"><![CDATA[Nombre de la carpeta]]></language>
+      <language id="fr"><![CDATA[Nom de dossier]]></language>
+    </name>
+  </property> 
 </properties>

@@ -1,14 +1,54 @@
-<properties  beanname="folderSearcher">
+<?xml version="1.0" encoding="UTF-8"?>
 
-	<!-- asset details -->
-	<property id="id" index="true" keyword="true" stored="true">Id</property>
-	<property id="name" index="true" stored="true" keyword="true" editable="false">File Name</property>
-	<property id="author" index="true" stored="true" keyword="true" editable="false">Author</property>
-	<property id="publicface" index="true" type="boolen" stored="true" keyword="true" editable="false">Public Facing</property>
-	<!-- Extra stuff? -->
-	<property id="upgradeURL" index="true" stored="true" keyword="true" editable="false">Upgrade URL</property>
-	<property id="licence" index="true" stored="true" keyword="true" editable="false">Upgrade URL</property>
-
-
-	
+<properties beanname="folderSearcher"> 
+  <!-- asset details -->  
+  <property id="id" index="true" keyword="true" stored="true" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">File Name 
+    <name> 
+      <language id="de"><![CDATA[Dateiname]]></language>  
+      <language id="en"><![CDATA[File Name]]></language>  
+      <language id="es"><![CDATA[Nombre del archivo]]></language>  
+      <language id="fr"><![CDATA[File Name]]></language> 
+    </name> 
+  </property>  
+  <property id="author" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">Author 
+    <name> 
+      <language id="de"><![CDATA[Author]]></language>  
+      <language id="en"><![CDATA[Author]]></language>  
+      <language id="es"><![CDATA[Autor]]></language>  
+      <language id="fr"><![CDATA[Author]]></language> 
+    </name> 
+  </property>  
+  <property id="publicface" index="true" type="boolen" stored="true" keyword="true" editable="false" filter="false" sortable="true">Public Facing 
+    <name> 
+      <language id="de"><![CDATA[öffentlich zugänglichen]]></language>  
+      <language id="en"><![CDATA[Public Facing]]></language>  
+      <language id="es"><![CDATA[Orientada hacia el público]]></language>  
+      <language id="fr"><![CDATA[Orientation publique]]></language> 
+    </name> 
+  </property>  
+  <!-- Extra stuff? -->  
+  <property id="upgradeURL" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">Upgrade URL 
+    <name> 
+      <language id="de"><![CDATA[Upgrade-uRL]]></language>  
+      <language id="en"><![CDATA[Upgrade URL]]></language>  
+      <language id="es"><![CDATA[URL de actualización]]></language>  
+      <language id="fr"><![CDATA[URL de mise à niveau]]></language> 
+    </name> 
+  </property>  
+  <property id="licence" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">Upgrade URL
+    <name>
+      <language id="de"><![CDATA[Upgrade-uRL]]></language>
+      <language id="en"><![CDATA[Upgrade URL]]></language>
+      <language id="es"><![CDATA[URL de actualización]]></language>
+      <language id="fr"><![CDATA[URL de mise à niveau]]></language>
+    </name>
+  </property> 
 </properties>

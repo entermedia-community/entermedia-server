@@ -1,5 +1,28 @@
-<properties>
-<property id="id" index="true" stored="true">ID</property>
-<property id="settingsgroup" index="true" stored="true" type="list">Settings Group</property>
-<property id="accesslevelchild" index="true" stored="true">Child Settting</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="settingsgroup" index="true" stored="true" type="list" keyword="false" filter="false" editable="false" sortable="true">Settings Group 
+    <name> 
+      <language id="de"><![CDATA[Einstellungen Gruppe]]></language>  
+      <language id="en"><![CDATA[Settings Group]]></language>  
+      <language id="es"><![CDATA[Grupo de ajustes]]></language>  
+      <language id="fr"><![CDATA[Groupe Paramètres]]></language> 
+    </name> 
+  </property>  
+  <property id="accesslevelchild" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Child Settting
+    <name>
+      <language id="de"><![CDATA[Kind settting]]></language>
+      <language id="en"><![CDATA[Child Settting]]></language>
+      <language id="es"><![CDATA[settting niño]]></language>
+      <language id="fr"><![CDATA[Settting Enfant]]></language>
+    </name>
+  </property> 
 </properties>

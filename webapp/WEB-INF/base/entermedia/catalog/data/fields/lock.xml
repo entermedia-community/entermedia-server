@@ -1,8 +1,52 @@
-	<properties>
-	<property id="id"  editable="true"  index="true" stored="true">Lock Id</property>
-	<property id="nodeid"  editable="true"  index="true" stored="true">Node Id</property>
-	<property id="ownerid"  editable="true"  index="true" stored="true">Owner Id</property>
-	<property id="date"  editable="true"  datatype="date" viewtype="time" index="true" stored="true" >Date</property>
-	<property id="locked"  editable="true"  index="true" stored="true" type="boolean" >Locked</property>
-	<property id="sourcepath"  editable="true"  index="true" stored="true">Path</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Lock Id 
+    <name> 
+      <language id="de"><![CDATA[Lock-ID]]></language>  
+      <language id="en"><![CDATA[Lock Id]]></language>  
+      <language id="es"><![CDATA[bloqueo de Id]]></language>  
+      <language id="fr"><![CDATA[Verrouiller Id]]></language> 
+    </name> 
+  </property>  
+  <property id="nodeid" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Node Id 
+    <name> 
+      <language id="de"><![CDATA[Knoten-ID]]></language>  
+      <language id="en"><![CDATA[Node Id]]></language>  
+      <language id="es"><![CDATA[ID de nodo]]></language>  
+      <language id="fr"><![CDATA[Node Id]]></language> 
+    </name> 
+  </property>  
+  <property id="ownerid" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Owner Id 
+    <name> 
+      <language id="de"><![CDATA[Inhaber-ID]]></language>  
+      <language id="en"><![CDATA[Owner Id]]></language>  
+      <language id="es"><![CDATA[propietario Id]]></language>  
+      <language id="fr"><![CDATA[Propriétaire Id]]></language> 
+    </name> 
+  </property>  
+  <property id="date" editable="true" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" sortable="true" type="date">Date 
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="locked" editable="true" index="true" stored="true" type="boolean" keyword="false" filter="false" sortable="true">Locked 
+    <name> 
+      <language id="de"><![CDATA[verschlossen]]></language>  
+      <language id="en"><![CDATA[Locked]]></language>  
+      <language id="es"><![CDATA[bloqueado]]></language>  
+      <language id="fr"><![CDATA[Fermé à clef]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Path
+    <name>
+      <language id="de"><![CDATA[Pfad]]></language>
+      <language id="en"><![CDATA[Path]]></language>
+      <language id="es"><![CDATA[Camino]]></language>
+      <language id="fr"><![CDATA[Chemin]]></language>
+    </name>
+  </property> 
 </properties>

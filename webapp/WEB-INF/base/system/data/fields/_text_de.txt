@@ -1,10 +1,20 @@
-#Mon Oct 10 12:22:34 EDT 2016
-First\ Name=Vorname
-Enabled=Aktiviert
-Notes=Notizen
-User\ ID=Benutzer-ID
-Email=E-Mail
+#
+#Wed Nov 16 11:41:07 EST 2016
 Password=Passwort
-User\ Search=Benutzersuche
-Sent\ By=Gesendet von
+Enable\ HTML\ editing=erm\u00F6glichen HTML-Bearbeitung
+Name=Name
+Username=Benutzername
 Last\ Name=Nachname
+Groups=Gruppen
+Screen\ Name=K\u00FCnstlername
+EnterMedia\ Key=entermedia Schl\u00FCssel
+Failed\ login\ attempts=fehlgeschlagene Anmeldeversuche
+User\ ID=Benutzer-ID
+id=Ich w\u00FCrde
+Sent\ By=Gesendet von
+Notes=Notizen
+User\ Search=Benutzersuche
+First\ Name=Vorname
+Email=E-Mail
+Enabled=Aktiviert
+All\ Fields=alle Felder

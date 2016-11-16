@@ -1,40 +1,222 @@
-<properties>
-	<property id="id" index="true" stored="true">Destination ID</property>
-	<property id="name" editable="true" index="true" stored="true">Destination</property>
-	
-	<property id="publishtype"  index="true" stored="true" editable="true" viewtype="list" type="list">Publish Type</property>
-	<property id="notifyadmin" index="true" stored="true" editable="true" type="boolean" >Notify Administrator</property>
-	<property id="remotepublish" index="true" stored="true" editable="true" type="boolean" >Remotely Published</property>
-	
-	<property id="server" index="true" stored="true" editable="true" >Server IP</property>
-	<property id="url" index="true" stored="true" editable="true" >Path/URL</property>
-	<property id="onimport" index="true" type="boolean" stored="true" editable="true" >On Import</property>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<!-- Amazon -->
-	<property id="bucket" index="true" stored="true" editable="true" >Bucket / Catalog</property>
-	<property id="accesskey" index="true" stored="true" editable="true" >Access Key</property>
-	<property id="secretkey" index="true" stored="true" editable="true" >Secret Key</property>
-
-	<property id="username"  index="true" stored="true" editable="true">User Name</property>
-	<property id="password"  index="true" stored="true" editable="true">Password</property>
-	<property id="convertpreset" index="true" stored="true" editable="true" type="list" >Default Profile</property>
-	
-	<property id="company" index="true" stored="true" editable="true" >Company Name</property>
-		
-	<property id="technicalcontact" index="true" stored="true" editable="true" >Technical Contact</property>
-	<property id="technicalphone" index="true" stored="true" editable="true" >Technical Phone</property>
-	<property id="technicalemail" index="true" stored="true" editable="true" >Technical Email</property>
-
-	<property id="administrativecontact" index="true" stored="true" editable="true" >Administrative Contact</property>
-	<property id="administrativephone" index="true" stored="true" editable="true" >Administrative Phone</property>
-	<property id="administrativeemail" index="true" stored="true" editable="true" >Administrative Email</property>
-	
-	<property id="emergencycontact" index="true" stored="true" editable="true" >Emergency Contact</property>
-	<property id="emergencyphone" index="true" stored="true" editable="true" >Emergency Phone</property>
-	<property id="emergencyemail" index="true" stored="true" editable="true" >Emergency Email</property>
-
-	<property id="assetvideoidfield" index="true" stored="true" editable="true" >Asset Video ID Field</property>	
-<!--  google oauth v2 -->
-	<property id="access_token" index="true" stored="true" editable="true" >Access Token</property>
-	<property id="refresh_token" index="true" stored="true" editable="true" >Refresh Token</property>
+<properties> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Destination ID 
+    <name> 
+      <language id="de"><![CDATA[Ziel-ID]]></language>  
+      <language id="en"><![CDATA[Destination ID]]></language>  
+      <language id="es"><![CDATA[ID de destino]]></language>  
+      <language id="fr"><![CDATA[Destination ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Destination 
+    <name> 
+      <language id="de"><![CDATA[Reiseziel]]></language>  
+      <language id="en"><![CDATA[Destination]]></language>  
+      <language id="es"><![CDATA[Destino]]></language>  
+      <language id="fr"><![CDATA[Destination]]></language> 
+    </name> 
+  </property>  
+  <property id="publishtype" index="true" stored="true" editable="true" viewtype="list" type="list" keyword="false" filter="false" sortable="true">Publish Type 
+    <name> 
+      <language id="de"><![CDATA[veröffentlichen Typ]]></language>  
+      <language id="en"><![CDATA[Publish Type]]></language>  
+      <language id="es"><![CDATA[publicar Tipo]]></language>  
+      <language id="fr"><![CDATA[Type de publication]]></language> 
+    </name> 
+  </property>  
+  <property id="notifyadmin" index="true" stored="true" editable="true" type="boolean" keyword="false" filter="false" sortable="true">Notify Administrator 
+    <name> 
+      <language id="de"><![CDATA[benachrichtigen Administrator]]></language>  
+      <language id="en"><![CDATA[Notify Administrator]]></language>  
+      <language id="es"><![CDATA[notificárselo al administrador]]></language>  
+      <language id="fr"><![CDATA[Notifier Administrator]]></language> 
+    </name> 
+  </property>  
+  <property id="remotepublish" index="true" stored="true" editable="true" type="boolean" keyword="false" filter="false" sortable="true">Remotely Published 
+    <name> 
+      <language id="de"><![CDATA[remote veröffentlicht]]></language>  
+      <language id="en"><![CDATA[Remotely Published]]></language>  
+      <language id="es"><![CDATA[Publicado de forma remota]]></language>  
+      <language id="fr"><![CDATA[Remotely Publié]]></language> 
+    </name> 
+  </property>  
+  <property id="server" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Server IP 
+    <name> 
+      <language id="de"><![CDATA[Server-IP]]></language>  
+      <language id="en"><![CDATA[Server IP]]></language>  
+      <language id="es"><![CDATA[Servidor IP]]></language>  
+      <language id="fr"><![CDATA[IP du serveur]]></language> 
+    </name> 
+  </property>  
+  <property id="url" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Path/URL 
+    <name> 
+      <language id="de"><![CDATA[Pfad / url]]></language>  
+      <language id="en"><![CDATA[Path/URL]]></language>  
+      <language id="es"><![CDATA[Ruta / URL]]></language>  
+      <language id="fr"><![CDATA[Chemin / URL]]></language> 
+    </name> 
+  </property>  
+  <property id="onimport" index="true" type="boolean" stored="true" editable="true" keyword="false" filter="false" sortable="true">On Import 
+    <name> 
+      <language id="de"><![CDATA[bei der Einfuhr]]></language>  
+      <language id="en"><![CDATA[On Import]]></language>  
+      <language id="es"><![CDATA[en importación]]></language>  
+      <language id="fr"><![CDATA[Sur l&#39;importation]]></language> 
+    </name> 
+  </property>  
+  <!-- Amazon -->  
+  <property id="bucket" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Bucket / Catalog 
+    <name> 
+      <language id="de"><![CDATA[Eimer / Katalog]]></language>  
+      <language id="en"><![CDATA[Bucket / Catalog]]></language>  
+      <language id="es"><![CDATA[Cubo / Catálogo]]></language>  
+      <language id="fr"><![CDATA[Seau / Catalogue]]></language> 
+    </name> 
+  </property>  
+  <property id="accesskey" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Access Key 
+    <name> 
+      <language id="de"><![CDATA[Zugangsschlüssel]]></language>  
+      <language id="en"><![CDATA[Access Key]]></language>  
+      <language id="es"><![CDATA[Llave de acceso]]></language>  
+      <language id="fr"><![CDATA[Clef d&#39;accès]]></language> 
+    </name> 
+  </property>  
+  <property id="secretkey" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Secret Key 
+    <name> 
+      <language id="de"><![CDATA[geheimer Schlüssel]]></language>  
+      <language id="en"><![CDATA[Secret Key]]></language>  
+      <language id="es"><![CDATA[Llave secreta]]></language>  
+      <language id="fr"><![CDATA[Clef secrète]]></language> 
+    </name> 
+  </property>  
+  <property id="username" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">User Name 
+    <name> 
+      <language id="de"><![CDATA[Benutzername]]></language>  
+      <language id="en"><![CDATA[User Name]]></language>  
+      <language id="es"><![CDATA[Nombre de usuario]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="password" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Password 
+    <name> 
+      <language id="de"><![CDATA[Passwort]]></language>  
+      <language id="en"><![CDATA[Password]]></language>  
+      <language id="es"><![CDATA[Contraseña]]></language>  
+      <language id="fr"><![CDATA[Mot de passe]]></language> 
+    </name> 
+  </property>  
+  <property id="convertpreset" index="true" stored="true" editable="true" type="list" keyword="false" filter="false" sortable="true">Default Profile 
+    <name> 
+      <language id="de"><![CDATA[standard Profil]]></language>  
+      <language id="en"><![CDATA[Default Profile]]></language>  
+      <language id="es"><![CDATA[Perfil por defecto]]></language>  
+      <language id="fr"><![CDATA[Profil par défaut]]></language> 
+    </name> 
+  </property>  
+  <property id="company" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Company Name 
+    <name> 
+      <language id="de"><![CDATA[Name der Firma]]></language>  
+      <language id="en"><![CDATA[Company Name]]></language>  
+      <language id="es"><![CDATA[nombre de empresa]]></language>  
+      <language id="fr"><![CDATA[Nom de la compagnie]]></language> 
+    </name> 
+  </property>  
+  <property id="technicalcontact" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Technical Contact 
+    <name> 
+      <language id="de"><![CDATA[technischer Kontakt]]></language>  
+      <language id="en"><![CDATA[Technical Contact]]></language>  
+      <language id="es"><![CDATA[contacto técnico]]></language>  
+      <language id="fr"><![CDATA[contact technique]]></language> 
+    </name> 
+  </property>  
+  <property id="technicalphone" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Technical Phone 
+    <name> 
+      <language id="de"><![CDATA[technische Telefon]]></language>  
+      <language id="en"><![CDATA[Technical Phone]]></language>  
+      <language id="es"><![CDATA[Teléfono técnica]]></language>  
+      <language id="fr"><![CDATA[téléphone technique]]></language> 
+    </name> 
+  </property>  
+  <property id="technicalemail" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Technical Email 
+    <name> 
+      <language id="de"><![CDATA[technische E-Mail]]></language>  
+      <language id="en"><![CDATA[Technical Email]]></language>  
+      <language id="es"><![CDATA[Email técnica]]></language>  
+      <language id="fr"><![CDATA[technique Email]]></language> 
+    </name> 
+  </property>  
+  <property id="administrativecontact" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Administrative Contact 
+    <name> 
+      <language id="de"><![CDATA[administrativen Kontakt]]></language>  
+      <language id="en"><![CDATA[Administrative Contact]]></language>  
+      <language id="es"><![CDATA[contacto administrativo]]></language>  
+      <language id="fr"><![CDATA[contact administratif]]></language> 
+    </name> 
+  </property>  
+  <property id="administrativephone" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Administrative Phone 
+    <name> 
+      <language id="de"><![CDATA[Verwaltungs Telefon]]></language>  
+      <language id="en"><![CDATA[Administrative Phone]]></language>  
+      <language id="es"><![CDATA[Teléfono administrativa]]></language>  
+      <language id="fr"><![CDATA[téléphone administratif]]></language> 
+    </name> 
+  </property>  
+  <property id="administrativeemail" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Administrative Email 
+    <name> 
+      <language id="de"><![CDATA[administrative E-Mail]]></language>  
+      <language id="en"><![CDATA[Administrative Email]]></language>  
+      <language id="es"><![CDATA[Email administrativa]]></language>  
+      <language id="fr"><![CDATA[Email administratif]]></language> 
+    </name> 
+  </property>  
+  <property id="emergencycontact" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Emergency Contact 
+    <name> 
+      <language id="de"><![CDATA[Notfallkontakt]]></language>  
+      <language id="en"><![CDATA[Emergency Contact]]></language>  
+      <language id="es"><![CDATA[Contacto de emergencia]]></language>  
+      <language id="fr"><![CDATA[Personne à contacter en cas d&#39;urgence]]></language> 
+    </name> 
+  </property>  
+  <property id="emergencyphone" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Emergency Phone 
+    <name> 
+      <language id="de"><![CDATA[Notfall-Telefon]]></language>  
+      <language id="en"><![CDATA[Emergency Phone]]></language>  
+      <language id="es"><![CDATA[Teléfono de emergencia]]></language>  
+      <language id="fr"><![CDATA[téléphone d&#39;urgence]]></language> 
+    </name> 
+  </property>  
+  <property id="emergencyemail" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Emergency Email 
+    <name> 
+      <language id="de"><![CDATA[Notfall-E-Mail]]></language>  
+      <language id="en"><![CDATA[Emergency Email]]></language>  
+      <language id="es"><![CDATA[Correo de emergencia]]></language>  
+      <language id="fr"><![CDATA[urgence Email]]></language> 
+    </name> 
+  </property>  
+  <property id="assetvideoidfield" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Asset Video ID Field 
+    <name> 
+      <language id="de"><![CDATA[Asset-Video-ID-Feld]]></language>  
+      <language id="en"><![CDATA[Asset Video ID Field]]></language>  
+      <language id="es"><![CDATA[Identificación en el campo activo de vídeo]]></language>  
+      <language id="fr"><![CDATA[Asset Video ID Champ]]></language> 
+    </name> 
+  </property>  
+  <!--  google oauth v2 -->  
+  <property id="access_token" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Access Token 
+    <name> 
+      <language id="de"><![CDATA[Zugangstoken]]></language>  
+      <language id="en"><![CDATA[Access Token]]></language>  
+      <language id="es"><![CDATA[El acceso de emergencia]]></language>  
+      <language id="fr"><![CDATA[Jeton d&#39;accès]]></language> 
+    </name> 
+  </property>  
+  <property id="refresh_token" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Refresh Token
+    <name>
+      <language id="de"><![CDATA[Aktualisierungs-Token]]></language>
+      <language id="en"><![CDATA[Refresh Token]]></language>
+      <language id="es"><![CDATA[Actualizar Token]]></language>
+      <language id="fr"><![CDATA[Refresh Token]]></language>
+    </name>
+  </property> 
 </properties>

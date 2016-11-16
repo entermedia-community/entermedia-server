@@ -1,10 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties>
-  <property id="id" datatype="number" index="true" stored="true">Id</property>
-  <property id="contact" editable="true" index="true" stored="true">Contact</property>
-  <property id="notes" editable="true" index="true" stored="true">Notes</property>
-  <property id="datereviewed" datatype="date" editable="true" index="true" stored="true">Date Reviewed</property>
-  <property id="dateexpires" datatype="date"  editable="true" index="true" stored="true">Valid Till</property>
-  <property id="reviewstatus" editable="true" list="true" index="true" stored="true">Status</property>
-  <property id="assetid" type="list" editable="true" index="true" stored="true">Asset ID</property>
+<properties> 
+  <property id="id" datatype="number" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="number">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="contact" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Contact 
+    <name> 
+      <language id="de"><![CDATA[Kontakt]]></language>  
+      <language id="en"><![CDATA[Contact]]></language>  
+      <language id="es"><![CDATA[Contacto]]></language>  
+      <language id="fr"><![CDATA[Contact]]></language> 
+    </name> 
+  </property>  
+  <property id="notes" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Notes 
+    <name> 
+      <language id="de"><![CDATA[Notizen]]></language>  
+      <language id="en"><![CDATA[Notes]]></language>  
+      <language id="es"><![CDATA[notas]]></language>  
+      <language id="fr"><![CDATA[Remarques]]></language> 
+    </name> 
+  </property>  
+  <property id="datereviewed" datatype="date" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="date">Date Reviewed 
+    <name> 
+      <language id="de"><![CDATA[Datum Bewertung]]></language>  
+      <language id="en"><![CDATA[Date Reviewed]]></language>  
+      <language id="es"><![CDATA[fecha de la revisión]]></language>  
+      <language id="fr"><![CDATA[Date de révision]]></language> 
+    </name> 
+  </property>  
+  <property id="dateexpires" datatype="date" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="date">Valid Till 
+    <name> 
+      <language id="de"><![CDATA[gültig bis]]></language>  
+      <language id="en"><![CDATA[Valid Till]]></language>  
+      <language id="es"><![CDATA[Válida hasta]]></language>  
+      <language id="fr"><![CDATA[Valable jusqu&#39;au]]></language> 
+    </name> 
+  </property>  
+  <property id="reviewstatus" editable="true" list="false" index="true" stored="true" keyword="false" filter="false" sortable="true">Status 
+    <name> 
+      <language id="de"><![CDATA[Status]]></language>  
+      <language id="en"><![CDATA[Status]]></language>  
+      <language id="es"><![CDATA[Estado]]></language>  
+      <language id="fr"><![CDATA[statut]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" type="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Asset ID
+    <name>
+      <language id="de"><![CDATA[Asset-ID]]></language>
+      <language id="en"><![CDATA[Asset ID]]></language>
+      <language id="es"><![CDATA[Identificación del activo]]></language>
+      <language id="fr"><![CDATA[ID Item]]></language>
+    </name>
+  </property> 
 </properties>

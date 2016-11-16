@@ -1,9 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties beanname="dataSearcher" prefix="libraryusers">
-  <property id="id" index="true" stored="true">Id</property>
-  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true">User</property>
-<!-- 
+<properties beanname="dataSearcher" prefix="libraryusers"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">User 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[User]]></language>  
+      <language id="es"><![CDATA[Usuario]]></language>  
+      <language id="fr"><![CDATA[Utilisateur]]></language> 
+    </name> 
+  </property>  
+  <!-- 
   <property id="libraryid" type="list" listid="library" editable="true" index="true" stored="true">Library</property>
-   -->
-  <property id="_parent" index="true" type="list" listid="library"  legacy="libraryid" >Parent Table</property>
+   -->  
+  <property id="_parent" index="true" type="list" listid="library" legacy="libraryid" keyword="false" filter="false" stored="false" editable="false" sortable="true">Parent Table
+    <name>
+      <language id="de"><![CDATA[Elterntabelle]]></language>
+      <language id="en"><![CDATA[Parent Table]]></language>
+      <language id="es"><![CDATA[Tabla de Padres]]></language>
+      <language id="fr"><![CDATA[Parent Table]]></language>
+    </name>
+  </property> 
 </properties>

@@ -1,32 +1,236 @@
-<properties >
-	<property id="id" editable="true" stored="true" index="true">ID</property>
-	<property id="searchtype" editable="true" stored="true" index="true">Search Type</property>	
+<?xml version="1.0" encoding="UTF-8"?>
 
-	<property id="name" multilanguage="true" editable="true" stored="true" index="true">Name</property>	
-	<property id="editable" type="boolean" editable="true" stored="true" index="true">Editable</property>	
-	<property id="internaluse" type="boolean" editable="true" stored="true" index="true">Internal use</property>	
-	<property id="defaultoperation" listid="defaultsearchoperation" type="list"  editable="true" stored="true" index="true">Default Search Operation</property>	
-	<property id="datatype" listid="datadatatype" type="list"  editable="true" stored="true" index="true">Data Type</property>	
-	<property id="rendertype" listid="datarendertype" type="list" editable="true" stored="true" index="true">Render Type</property>	
-	<property id="required" type="boolean" editable="true" stored="true" index="true">Required</property>	
-	<property id="index" type="boolean" editable="true" stored="true" index="true">Searchable</property>	
-	<property id="searchcomponent" listid="datarendertype" type="list" editable="true" stored="true" index="true">Default Search View</property>	
-	<property id="stored" type="boolean" editable="true" stored="true" index="true">Stored</property>	
-	<property id="externalid"  editable="true" stored="true" index="true">External ID</property>	
-	<property id="keyword" type="boolean"  editable="true" stored="true" index="true">Used in Keywords</property>	
-	<property id="filter" type="boolean"  editable="true" stored="true" index="true">Used in Filters</property>	
-	<property id="multilanguage" type="boolean" editable="true" stored="true" index="true">Mutlilanguage Enabled</property>	
-	<property id="filtercount" type="number"  editable="true" stored="true" index="true">Filter Count</property>	
-	<property id="note"  editable="true" stored="true" index="true">Note</property>	
-	<property id="listid"  editable="true" stored="true" index="true">listid</property>	
-	<property id="sort"  editable="true" stored="true" index="true">Default Sort</property>	
-	<property id="foreignkeyid"  editable="true" stored="true" index="true">Foreign Key</property>	
-	<property id="dependson"  editable="true" stored="true" index="true">Depends On Field</property>	
-	<property id="dependsonvalue"  editable="true" stored="true" index="true">Depends on Value</property>	
-	<property id="regex"  editable="true" stored="true" index="true">Regex</property>	
-	<property id="rendermask"  editable="true" stored="true" index="true">Render Mask</property>	
-	<property id="autocreatefromexif" type="boolean"  editable="true" stored="true" index="true">Auto Create Metadata from Exif</property>	
-	<property id="writenametoexif" type="boolean"  editable="true" stored="true" index="true">Write Name to Exif</property>	
-	<property id="indextype" type="list" editable="true" stored="true" index="true" indextype="not_analyzed">Indexing Rule</property>	
-	<property id="analyzer" type="list"  editable="true" stored="true" index="true" indextype="not_analyzed">Analyzer</property>
+<properties> 
+  <property id="id" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="searchtype" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Search Type 
+    <name> 
+      <language id="de"><![CDATA[Suchart]]></language>  
+      <language id="en"><![CDATA[Search Type]]></language>  
+      <language id="es"><![CDATA[Tipo de búsqueda]]></language>  
+      <language id="fr"><![CDATA[Type de recherche]]></language> 
+    </name> 
+  </property>  
+  <property id="name" multilanguage="true" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="editable" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Editable 
+    <name> 
+      <language id="de"><![CDATA[editierbare]]></language>  
+      <language id="en"><![CDATA[Editable]]></language>  
+      <language id="es"><![CDATA[Editable]]></language>  
+      <language id="fr"><![CDATA[éditable]]></language> 
+    </name> 
+  </property>  
+  <property id="internaluse" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Internal use 
+    <name> 
+      <language id="de"><![CDATA[interne Benutzung]]></language>  
+      <language id="en"><![CDATA[Internal use]]></language>  
+      <language id="es"><![CDATA[Uso interno]]></language>  
+      <language id="fr"><![CDATA[Usage interne]]></language> 
+    </name> 
+  </property>  
+  <property id="defaultoperation" listid="defaultsearchoperation" type="list" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Default Search Operation 
+    <name> 
+      <language id="de"><![CDATA[Standard-Suchoperation]]></language>  
+      <language id="en"><![CDATA[Default Search Operation]]></language>  
+      <language id="es"><![CDATA[Operación de búsqueda predeterminado]]></language>  
+      <language id="fr"><![CDATA[Recherche par défaut Opération]]></language> 
+    </name> 
+  </property>  
+  <property id="datatype" listid="datadatatype" type="list" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Data Type 
+    <name> 
+      <language id="de"><![CDATA[Datentyp]]></language>  
+      <language id="en"><![CDATA[Data Type]]></language>  
+      <language id="es"><![CDATA[Tipo de datos]]></language>  
+      <language id="fr"><![CDATA[Type de données]]></language> 
+    </name> 
+  </property>  
+  <property id="rendertype" listid="datarendertype" type="list" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Render Type 
+    <name> 
+      <language id="de"><![CDATA[render-Typ]]></language>  
+      <language id="en"><![CDATA[Render Type]]></language>  
+      <language id="es"><![CDATA[render Tipo]]></language>  
+      <language id="fr"><![CDATA[type de rendu]]></language> 
+    </name> 
+  </property>  
+  <property id="required" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Required 
+    <name> 
+      <language id="de"><![CDATA[erforderlich]]></language>  
+      <language id="en"><![CDATA[Required]]></language>  
+      <language id="es"><![CDATA[Necesario]]></language>  
+      <language id="fr"><![CDATA[Obligatoire]]></language> 
+    </name> 
+  </property>  
+  <property id="index" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Searchable 
+    <name> 
+      <language id="de"><![CDATA[durchsuchbar]]></language>  
+      <language id="en"><![CDATA[Searchable]]></language>  
+      <language id="es"><![CDATA[investigable]]></language>  
+      <language id="fr"><![CDATA[consultable]]></language> 
+    </name> 
+  </property>  
+  <property id="searchcomponent" listid="datarendertype" type="list" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Default Search View 
+    <name> 
+      <language id="de"><![CDATA[Standard-Suchansicht]]></language>  
+      <language id="en"><![CDATA[Default Search View]]></language>  
+      <language id="es"><![CDATA[Predeterminado de búsqueda Ver]]></language>  
+      <language id="fr"><![CDATA[Recherche par défaut Vue]]></language> 
+    </name> 
+  </property>  
+  <property id="stored" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Stored 
+    <name> 
+      <language id="de"><![CDATA[gelagert]]></language>  
+      <language id="en"><![CDATA[Stored]]></language>  
+      <language id="es"><![CDATA[almacenado]]></language>  
+      <language id="fr"><![CDATA[Stocké]]></language> 
+    </name> 
+  </property>  
+  <property id="externalid" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">External ID 
+    <name> 
+      <language id="de"><![CDATA[externe Kennung]]></language>  
+      <language id="en"><![CDATA[External ID]]></language>  
+      <language id="es"><![CDATA[Identificación externa]]></language>  
+      <language id="fr"><![CDATA[ID externe]]></language> 
+    </name> 
+  </property>  
+  <property id="keyword" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Used in Keywords 
+    <name> 
+      <language id="de"><![CDATA[in Schlüsselwörter verwendet]]></language>  
+      <language id="en"><![CDATA[Used in Keywords]]></language>  
+      <language id="es"><![CDATA[Se utiliza en Palabras clave]]></language>  
+      <language id="fr"><![CDATA[Utilisé dans les mots clés]]></language> 
+    </name> 
+  </property>  
+  <property id="filter" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Used in Filters 
+    <name> 
+      <language id="de"><![CDATA[in Filtern verwendet]]></language>  
+      <language id="en"><![CDATA[Used in Filters]]></language>  
+      <language id="es"><![CDATA[Se utiliza en los filtros]]></language>  
+      <language id="fr"><![CDATA[Utilisé dans Filtres]]></language> 
+    </name> 
+  </property>  
+  <property id="multilanguage" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Mutlilanguage Enabled 
+    <name> 
+      <language id="de"><![CDATA[Mutlilanguage aktiviert]]></language>  
+      <language id="en"><![CDATA[Mutlilanguage Enabled]]></language>  
+      <language id="es"><![CDATA[Mutlilanguage Habilitado]]></language>  
+      <language id="fr"><![CDATA[Mutlilanguage Enabled]]></language> 
+    </name> 
+  </property>  
+  <property id="filtercount" type="number" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Filter Count 
+    <name> 
+      <language id="de"><![CDATA[Filterzahl]]></language>  
+      <language id="en"><![CDATA[Filter Count]]></language>  
+      <language id="es"><![CDATA[Contador de filtro]]></language>  
+      <language id="fr"><![CDATA[Nombre de filtre]]></language> 
+    </name> 
+  </property>  
+  <property id="note" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Note 
+    <name> 
+      <language id="de"><![CDATA[Hinweis]]></language>  
+      <language id="en"><![CDATA[Note]]></language>  
+      <language id="es"><![CDATA[Nota]]></language>  
+      <language id="fr"><![CDATA[Remarque]]></language> 
+    </name> 
+  </property>  
+  <property id="listid" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">listid 
+    <name> 
+      <language id="de"><![CDATA[listid]]></language>  
+      <language id="en"><![CDATA[listid]]></language>  
+      <language id="es"><![CDATA[listid]]></language>  
+      <language id="fr"><![CDATA[listid]]></language> 
+    </name> 
+  </property>  
+  <property id="sort" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Default Sort 
+    <name> 
+      <language id="de"><![CDATA[Standardsortierung]]></language>  
+      <language id="en"><![CDATA[Default Sort]]></language>  
+      <language id="es"><![CDATA[Ordenar por defecto]]></language>  
+      <language id="fr"><![CDATA[Par défaut Trier]]></language> 
+    </name> 
+  </property>  
+  <property id="foreignkeyid" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Foreign Key 
+    <name> 
+      <language id="de"><![CDATA[Unbekannter Schlüssel]]></language>  
+      <language id="en"><![CDATA[Foreign Key]]></language>  
+      <language id="es"><![CDATA[Clave externa]]></language>  
+      <language id="fr"><![CDATA[Clé étrangère]]></language> 
+    </name> 
+  </property>  
+  <property id="dependson" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Depends On Field 
+    <name> 
+      <language id="de"><![CDATA[abhängig von Feld]]></language>  
+      <language id="en"><![CDATA[Depends On Field]]></language>  
+      <language id="es"><![CDATA[Depende de Campo]]></language>  
+      <language id="fr"><![CDATA[Dépend On Field]]></language> 
+    </name> 
+  </property>  
+  <property id="dependsonvalue" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Depends on Value 
+    <name> 
+      <language id="de"><![CDATA[abhängig von Wert]]></language>  
+      <language id="en"><![CDATA[Depends on Value]]></language>  
+      <language id="es"><![CDATA[Depende de Valor]]></language>  
+      <language id="fr"><![CDATA[Dépend de la valeur]]></language> 
+    </name> 
+  </property>  
+  <property id="regex" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Regex 
+    <name> 
+      <language id="de"><![CDATA[Regex]]></language>  
+      <language id="en"><![CDATA[Regex]]></language>  
+      <language id="es"><![CDATA[expresiones regulares]]></language>  
+      <language id="fr"><![CDATA[Regex]]></language> 
+    </name> 
+  </property>  
+  <property id="rendermask" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Render Mask 
+    <name> 
+      <language id="de"><![CDATA[render-Maske]]></language>  
+      <language id="en"><![CDATA[Render Mask]]></language>  
+      <language id="es"><![CDATA[render Máscara]]></language>  
+      <language id="fr"><![CDATA[Render Mask]]></language> 
+    </name> 
+  </property>  
+  <property id="autocreatefromexif" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Auto Create Metadata from Exif 
+    <name> 
+      <language id="de"><![CDATA[auto erstellen Metadaten aus exif]]></language>  
+      <language id="en"><![CDATA[Auto Create Metadata from Exif]]></language>  
+      <language id="es"><![CDATA[Creación automática de metadatos Exif de]]></language>  
+      <language id="fr"><![CDATA[Création automatique de métadonnées Exif de]]></language> 
+    </name> 
+  </property>  
+  <property id="writenametoexif" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Write Name to Exif 
+    <name> 
+      <language id="de"><![CDATA[schreiben Namen exif]]></language>  
+      <language id="en"><![CDATA[Write Name to Exif]]></language>  
+      <language id="es"><![CDATA[Escribir el nombre de Exif]]></language>  
+      <language id="fr"><![CDATA[Ecrire Nom à Exif]]></language> 
+    </name> 
+  </property>  
+  <property id="indextype" type="list" editable="true" stored="true" index="true" indextype="not_analyzed" keyword="false" filter="false" sortable="true">Indexing Rule 
+    <name> 
+      <language id="de"><![CDATA[Indizierungsregel]]></language>  
+      <language id="en"><![CDATA[Indexing Rule]]></language>  
+      <language id="es"><![CDATA[Regla de indexación]]></language>  
+      <language id="fr"><![CDATA[indexation règle]]></language> 
+    </name> 
+  </property>  
+  <property id="analyzer" type="list" editable="true" stored="true" index="true" indextype="not_analyzed" keyword="false" filter="false" sortable="true">Analyzer
+    <name>
+      <language id="de"><![CDATA[Analysator]]></language>
+      <language id="en"><![CDATA[Analyzer]]></language>
+      <language id="es"><![CDATA[Analizador]]></language>
+      <language id="fr"><![CDATA[Analyzer]]></language>
+    </name>
+  </property> 
 </properties>

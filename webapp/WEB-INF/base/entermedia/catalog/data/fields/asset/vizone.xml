@@ -1,7 +1,20 @@
-<page>
-	<property id="vizid"  >VizOne ID</property>	
+<?xml version="1.0" encoding="UTF-8"?>
 
-	<property id="vizoneretention"  datatype="list"  editable="true" index="true" stored="true" >Vizone Retention Policy</property>
-
-
+<page> 
+  <property id="vizid" index="false" keyword="false" filter="false" stored="false" editable="false" sortable="true">VizOne ID 
+    <name> 
+      <language id="de"><![CDATA[VizOne ID]]></language>  
+      <language id="en"><![CDATA[VizOne ID]]></language>  
+      <language id="es"><![CDATA[VizOne ID]]></language>  
+      <language id="fr"><![CDATA[VizOne ID]]></language> 
+    </name> 
+  </property>  
+  <property id="vizoneretention" datatype="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Vizone Retention Policy 
+    <name>
+      <language id="de"><![CDATA[vizone Aufbewahrungsrichtlinie]]></language>
+      <language id="en"><![CDATA[Vizone Retention Policy]]></language>
+      <language id="es"><![CDATA[Vizone Directiva de retención]]></language>
+      <language id="fr"><![CDATA[Politique de rétention Vizone]]></language>
+    </name>
+  </property> 
 </page>

@@ -1,16 +1,94 @@
-<properties beanname="dataSearcher" >
-  <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
-  <property id="sourcepath" index="true" stored="true"  >SourcePath</property>  
-  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
-  <property id="asset" index="true" stored="true" editable="true" type="list" viewtype="asset" >Asset</property>
-  <property id="librarycollectionassetstatus" index="true" stored="true" editable="true" type="list"  >Approval</property>
-  <property id="approvedby" index="true" stored="true" editable="true" type="list" listid="user" listcatalogid="system" viewtype="user"  >Approval By</property>
-  <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Approval Date</property>
-  <property id="collectioncategory" index="true" stored="true" editable="true" type="list" viewtype="tageditor" >Notes</property>
-  <property id="ordering"  type="number" index="true" stored="true" editable="true"  >Rank</property>
-  <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Approval Date</property>
-  <!-- property id="recorddate" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Record Update Date</property -->
-  <property id="_parent" index="true" type="list" listid="asset"  legacy="asset" >Parent Table</property>
-  <property id="versions"  type="number" index="true" stored="true" editable="true"  >Versions</property>
-  
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">SourcePath 
+    <name> 
+      <language id="de"><![CDATA[SourcePath]]></language>  
+      <language id="en"><![CDATA[SourcePath]]></language>  
+      <language id="es"><![CDATA[SourcePath]]></language>  
+      <language id="fr"><![CDATA[SourcePath]]></language> 
+    </name> 
+  </property>  
+  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false" keyword="false" sortable="true">Collection 
+    <name> 
+      <language id="de"><![CDATA[Sammlung]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>  
+  <property id="asset" index="true" stored="true" editable="true" type="list" viewtype="asset" keyword="false" filter="false" sortable="true">Asset 
+    <name> 
+      <language id="de"><![CDATA[Vermögenswert]]></language>  
+      <language id="en"><![CDATA[Asset]]></language>  
+      <language id="es"><![CDATA[Activo]]></language>  
+      <language id="fr"><![CDATA[Item]]></language> 
+    </name> 
+  </property>  
+  <property id="librarycollectionassetstatus" index="true" stored="true" editable="true" type="list" keyword="false" filter="false" sortable="true">Approval 
+    <name> 
+      <language id="de"><![CDATA[die Genehmigung]]></language>  
+      <language id="en"><![CDATA[Approval]]></language>  
+      <language id="es"><![CDATA[Aprobación]]></language>  
+      <language id="fr"><![CDATA[Approbation]]></language> 
+    </name> 
+  </property>  
+  <property id="approvedby" index="true" stored="true" editable="true" type="list" listid="user" listcatalogid="system" viewtype="user" keyword="false" filter="false" sortable="true">Approval By 
+    <name> 
+      <language id="de"><![CDATA[Zustimmung von]]></language>  
+      <language id="en"><![CDATA[Approval By]]></language>  
+      <language id="es"><![CDATA[Aprobado por]]></language>  
+      <language id="fr"><![CDATA[Approbation par]]></language> 
+    </name> 
+  </property>  
+  <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime" keyword="false" filter="false" sortable="true">Approval Date 
+    <name> 
+      <language id="de"><![CDATA[Datum der Genehmigung]]></language>  
+      <language id="en"><![CDATA[Approval Date]]></language>  
+      <language id="es"><![CDATA[Fecha de aprobación]]></language>  
+      <language id="fr"><![CDATA[Date d&#39;approbation]]></language> 
+    </name> 
+  </property>  
+  <property id="collectioncategory" index="true" stored="true" editable="true" type="list" viewtype="tageditor" keyword="false" filter="false" sortable="true">Notes 
+    <name> 
+      <language id="de"><![CDATA[Notizen]]></language>  
+      <language id="en"><![CDATA[Notes]]></language>  
+      <language id="es"><![CDATA[notas]]></language>  
+      <language id="fr"><![CDATA[Remarques]]></language> 
+    </name> 
+  </property>  
+  <property id="ordering" type="number" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Rank 
+    <name> 
+      <language id="de"><![CDATA[Rang]]></language>  
+      <language id="en"><![CDATA[Rank]]></language>  
+      <language id="es"><![CDATA[Rango]]></language>  
+      <language id="fr"><![CDATA[Rang]]></language> 
+    </name> 
+  </property>  
+  <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime">Approval Date</property>  
+  <!-- property id="recorddate" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Record Update Date</property -->  
+  <property id="_parent" index="true" type="list" listid="asset" legacy="asset" keyword="false" filter="false" stored="false" editable="false" sortable="true">Parent Table 
+    <name> 
+      <language id="de"><![CDATA[Elterntabelle]]></language>  
+      <language id="en"><![CDATA[Parent Table]]></language>  
+      <language id="es"><![CDATA[Tabla de Padres]]></language>  
+      <language id="fr"><![CDATA[Parent Table]]></language> 
+    </name> 
+  </property>  
+  <property id="versions" type="number" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Versions
+    <name>
+      <language id="de"><![CDATA[Versionen]]></language>
+      <language id="en"><![CDATA[Versions]]></language>
+      <language id="es"><![CDATA[versiones]]></language>
+      <language id="fr"><![CDATA[Versions]]></language>
+    </name>
+  </property> 
 </properties>

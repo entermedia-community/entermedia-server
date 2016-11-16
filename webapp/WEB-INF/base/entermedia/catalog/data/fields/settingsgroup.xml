@@ -1,12 +1,55 @@
-<properties index="true" stored="true">
-	<property id="id" index="true" stored="true">Id</property>
-	<property id="name" index="true" stored="true" editable="true">Name</property>
-	<property id="profilesearchfilters" index="true" stored="true" editable="true" note="Used for filtering">Filters</property>
-	<property id="viewtableresults"  index="true" editable="true">Table Columns</property>
-  	<property id="permissions"  viewtype="multiselect" editable="false" index="true" stored="true" type="list" listid="permissionapp"  >Permissions</property>
-  	<property id="resultview" editable="true" index="true" stored="true" type="list"   >Default Result View</property>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<!-- 
+<properties index="true" stored="true"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="profilesearchfilters" index="true" stored="true" editable="true" note="Used for filtering" keyword="false" filter="false" sortable="true">Filters 
+    <name> 
+      <language id="de"><![CDATA[Filter]]></language>  
+      <language id="en"><![CDATA[Filters]]></language>  
+      <language id="es"><![CDATA[filtros]]></language>  
+      <language id="fr"><![CDATA[Filtres]]></language> 
+    </name> 
+  </property>  
+  <property id="viewtableresults" index="true" editable="true" keyword="false" filter="false" stored="false" sortable="true">Table Columns 
+    <name> 
+      <language id="de"><![CDATA[Tabellenspalten]]></language>  
+      <language id="en"><![CDATA[Table Columns]]></language>  
+      <language id="es"><![CDATA[Columnas de la tabla]]></language>  
+      <language id="fr"><![CDATA[Colonnes de table]]></language> 
+    </name> 
+  </property>  
+  <property id="permissions" viewtype="multiselect" editable="false" index="true" stored="true" type="list" listid="permissionapp" keyword="false" filter="false" sortable="true">Permissions 
+    <name> 
+      <language id="de"><![CDATA[Berechtigungen]]></language>  
+      <language id="en"><![CDATA[Permissions]]></language>  
+      <language id="es"><![CDATA[permisos]]></language>  
+      <language id="fr"><![CDATA[Autorisations]]></language> 
+    </name> 
+  </property>  
+  <property id="resultview" editable="true" index="true" stored="true" type="list" keyword="false" filter="false" sortable="true">Default Result View
+    <name>
+      <language id="de"><![CDATA[Standardergebnisansicht]]></language>
+      <language id="en"><![CDATA[Default Result View]]></language>
+      <language id="es"><![CDATA[El resultado predeterminado Ver]]></language>
+      <language id="fr"><![CDATA[Par défaut Résultat Voir]]></language>
+    </name>
+  </property>  
+  <!-- 
 	<property id="viewupload" stored="true" editable="true"  index="true" datatype="list" searchtype="acesslevel" listid="accesslevels">Upload Access</property>
 	<property id="assetadmin">Asset Admin</property>
 	<property id="viewassets" stored="true" editable="true"  index="true" datatype="list" listid="accesslevels">View Assets</property>
@@ -17,11 +60,9 @@
 	<property id="viewsettings" stored="true" editable="true" datatype="list"  index="true" listid="partialaccesslevels">Settings Access</property>
 	<property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" >Number of Assets to view per page</property>
   	<property id="multiedit" editable="true" type="boolean" index="true" stored="true">Multi-Edit</property>
- -->
- 
-<!--TODO: I think elastic search needs all the permissions defined in here! -->
-
-<!-- 
+ -->  
+  <!--TODO: I think elastic search needs all the permissions defined in here! -->  
+  <!-- 
 	<property id="manageusers" stored="true" editable="true" datatype="list" listid="accesslevels">Users / Groups Access</property>
 	<permission id="metadatadetails" name="Show Metadata" description="Show asset metadata"/>
 
@@ -43,5 +84,5 @@
 	<permission id="viewassetedithistory" name="Edit History" description="Show when edits where made"/>
 	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>
 	<permission id="viewassetorderhistory" name="Order History" description="Show order history report"/>
- -->	
+ --> 
 </properties>

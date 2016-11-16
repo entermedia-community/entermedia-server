@@ -1,8 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties>
-  <property id="id" editable="true" index="true" stored="true">Id</property>
-  <property id="categoryid"  type="list" viewtype="text" listid="category" editable="true" index="true" stored="true">CategoryID</property>
-  <property id="fieldname"  editable="true" index="true" stored="true">Field Name</property>
-  <property id="fieldvalue" editable="true" index="true" stored="true">Field Value</property>
+<properties> 
+  <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="categoryid" type="list" viewtype="text" listid="category" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">CategoryID 
+    <name> 
+      <language id="de"><![CDATA[Kategorie ID]]></language>  
+      <language id="en"><![CDATA[CategoryID]]></language>  
+      <language id="es"><![CDATA[Categoria ID]]></language>  
+      <language id="fr"><![CDATA[CategoryID]]></language> 
+    </name> 
+  </property>  
+  <property id="fieldname" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Field Name 
+    <name> 
+      <language id="de"><![CDATA[Feldname]]></language>  
+      <language id="en"><![CDATA[Field Name]]></language>  
+      <language id="es"><![CDATA[Nombre del campo]]></language>  
+      <language id="fr"><![CDATA[Nom de domaine]]></language> 
+    </name> 
+  </property>  
+  <property id="fieldvalue" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Field Value
+    <name>
+      <language id="de"><![CDATA[Feldwert]]></language>
+      <language id="en"><![CDATA[Field Value]]></language>
+      <language id="es"><![CDATA[campo Valor]]></language>
+      <language id="fr"><![CDATA[Valeur Champ]]></language>
+    </name>
+  </property> 
 </properties>

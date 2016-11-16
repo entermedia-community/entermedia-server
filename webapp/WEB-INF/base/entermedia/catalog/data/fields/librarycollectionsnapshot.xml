@@ -1,11 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties beanname="dataSearcher">
-  <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
-  <property id="name" index="true" stored="true" editable="true" >Notes</property>
-  <property id="date" index="true" stored="true" editable="true" sortable="true" type="date"   datatype="date">Snapshot Date</property>
-  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="user" >Snapshot By</property>
-  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
-  <property id="revision" index="true" stored="true" editable="true" sortable="true" type="number" >Revision</property>  
-    <property id="note" index="true" stored="true" editable="true" >Notes</property>
-  
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Notes 
+    <name> 
+      <language id="de"><![CDATA[Notizen]]></language>  
+      <language id="en"><![CDATA[Notes]]></language>  
+      <language id="es"><![CDATA[notas]]></language>  
+      <language id="fr"><![CDATA[Remarques]]></language> 
+    </name> 
+  </property>  
+  <property id="date" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" keyword="false" filter="false">Snapshot Date 
+    <name> 
+      <language id="de"><![CDATA[Schnappschuss Datum]]></language>  
+      <language id="en"><![CDATA[Snapshot Date]]></language>  
+      <language id="es"><![CDATA[Fecha de instantáneas]]></language>  
+      <language id="fr"><![CDATA[Snapshot Date]]></language> 
+    </name> 
+  </property>  
+  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="librarycollectionsnapshot" keyword="false" filter="false" sortable="true">Snapshot By 
+    <name> 
+      <language id="de"><![CDATA[Schnappschuss von]]></language>  
+      <language id="en"><![CDATA[Snapshot By]]></language>  
+      <language id="es"><![CDATA[Por instantánea]]></language>  
+      <language id="fr"><![CDATA[Snapshot Par]]></language> 
+    </name> 
+  </property>  
+  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false" keyword="false" sortable="true">Collection 
+    <name> 
+      <language id="de"><![CDATA[Sammlung]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>  
+  <property id="revision" index="true" stored="true" editable="true" sortable="true" type="number" keyword="false" filter="false">Revision 
+    <name> 
+      <language id="de"><![CDATA[Revision]]></language>  
+      <language id="en"><![CDATA[Revision]]></language>  
+      <language id="es"><![CDATA[Revisión]]></language>  
+      <language id="fr"><![CDATA[Révision]]></language> 
+    </name> 
+  </property>  
+  <property id="note" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Notes
+    <name>
+      <language id="de"><![CDATA[Notizen]]></language>
+      <language id="en"><![CDATA[Notes]]></language>
+      <language id="es"><![CDATA[notas]]></language>
+      <language id="fr"><![CDATA[Remarques]]></language>
+    </name>
+  </property> 
 </properties>

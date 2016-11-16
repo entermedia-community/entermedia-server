@@ -1,17 +1,116 @@
-<properties beanname="dataSearcher" >
-	<property id="id" index="true" stored="true">Id</property>
-	<property id="assetid" index="true" stored="true" type="list" listid="asset" viewtype="text">Asset Id</property>
-	<property id="assetsourcepath" index="true" stored="true">Asset SourcePath</property>
-	<property id="publishdestination" editable="true"  type="list" index="true"  stored="true">Publish Destination</property>
-	<property id="exportname" editable="true"  index="true"  stored="true">Export Name</property>
-	<property id="presetid" editable="true" index="true" type="list" listid="convertpreset" stored="true">Profile</property>
-	<property id="status" editable="true" index="true" type="list" listid="publishing/queuestatus"  stored="true">Status</property>
-	<property id="errordetails" index="true"  stored="true">Error Details</property>
-	<property id="errorcount" editable="true"  index="true"  stored="true">Error Count</property>
-	<property id="date" datatype="date" index="true" stored="true" >Time</property>
-	<property id="trackingnumber" editable="true"  index="true"  stored="true">Tracking Number</property>
-	<property id="completionpercent" editable="true"  index="true"  stored="true">Completion Percent</property>
-	<property id="conversiontaskid" index="true" stored="true" >Conversion Task Id</property>
-	<property id="notes" index="true" stored="true" >Notes</property>
-		
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" index="true" stored="true" type="list" listid="asset" viewtype="text" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset Id]]></language>  
+      <language id="es"><![CDATA[identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property>  
+  <property id="assetsourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset SourcePath 
+    <name> 
+      <language id="de"><![CDATA[Asset SourcePath]]></language>  
+      <language id="en"><![CDATA[Asset SourcePath]]></language>  
+      <language id="es"><![CDATA[activos SourcePath]]></language>  
+      <language id="fr"><![CDATA[Asset SourcePath]]></language> 
+    </name> 
+  </property>  
+  <property id="publishdestination" editable="true" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Publish Destination 
+    <name> 
+      <language id="de"><![CDATA[veröffentlichen Ziel]]></language>  
+      <language id="en"><![CDATA[Publish Destination]]></language>  
+      <language id="es"><![CDATA[Destino de publicación]]></language>  
+      <language id="fr"><![CDATA[Publier Destination]]></language> 
+    </name> 
+  </property>  
+  <property id="exportname" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Export Name 
+    <name> 
+      <language id="de"><![CDATA[Exportnamen]]></language>  
+      <language id="en"><![CDATA[Export Name]]></language>  
+      <language id="es"><![CDATA[Nombre de exportación]]></language>  
+      <language id="fr"><![CDATA[Nom d&#39;exportation]]></language> 
+    </name> 
+  </property>  
+  <property id="presetid" editable="true" index="true" type="list" listid="convertpreset" stored="true" keyword="false" filter="false" sortable="true">Profile 
+    <name> 
+      <language id="de"><![CDATA[Profil]]></language>  
+      <language id="en"><![CDATA[Profile]]></language>  
+      <language id="es"><![CDATA[Perfil]]></language>  
+      <language id="fr"><![CDATA[Profil]]></language> 
+    </name> 
+  </property>  
+  <property id="status" editable="true" index="true" type="list" listid="publishing/queuestatus" stored="true" keyword="false" filter="false" sortable="true">Status 
+    <name> 
+      <language id="de"><![CDATA[Status]]></language>  
+      <language id="en"><![CDATA[Status]]></language>  
+      <language id="es"><![CDATA[Estado]]></language>  
+      <language id="fr"><![CDATA[statut]]></language> 
+    </name> 
+  </property>  
+  <property id="errordetails" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Details 
+    <name> 
+      <language id="de"><![CDATA[Fehlerdetails]]></language>  
+      <language id="en"><![CDATA[Error Details]]></language>  
+      <language id="es"><![CDATA[Error de detalles]]></language>  
+      <language id="fr"><![CDATA[Détails de l&#39;erreur]]></language> 
+    </name> 
+  </property>  
+  <property id="errorcount" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Error Count 
+    <name> 
+      <language id="de"><![CDATA[Fehleranzahl]]></language>  
+      <language id="en"><![CDATA[Error Count]]></language>  
+      <language id="es"><![CDATA[Error Count]]></language>  
+      <language id="fr"><![CDATA[Error Count]]></language> 
+    </name> 
+  </property>  
+  <property id="date" datatype="date" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Time 
+    <name> 
+      <language id="de"><![CDATA[Zeit]]></language>  
+      <language id="en"><![CDATA[Time]]></language>  
+      <language id="es"><![CDATA[Hora]]></language>  
+      <language id="fr"><![CDATA[Temps]]></language> 
+    </name> 
+  </property>  
+  <property id="trackingnumber" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Tracking Number 
+    <name> 
+      <language id="de"><![CDATA[Auftragsnummer, Frachtnummer, Sendungscode]]></language>  
+      <language id="en"><![CDATA[Tracking Number]]></language>  
+      <language id="es"><![CDATA[El número de rastreo]]></language>  
+      <language id="fr"><![CDATA[Numéro de traçage]]></language> 
+    </name> 
+  </property>  
+  <property id="completionpercent" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Completion Percent 
+    <name> 
+      <language id="de"><![CDATA[Abschluss Prozent]]></language>  
+      <language id="en"><![CDATA[Completion Percent]]></language>  
+      <language id="es"><![CDATA[Finalización Porcentaje]]></language>  
+      <language id="fr"><![CDATA[Pourcentage d&#39;achèvement]]></language> 
+    </name> 
+  </property>  
+  <property id="conversiontaskid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Conversion Task Id 
+    <name> 
+      <language id="de"><![CDATA[Umwandlung Aufgabe id]]></language>  
+      <language id="en"><![CDATA[Conversion Task Id]]></language>  
+      <language id="es"><![CDATA[Id tarea de conversión]]></language>  
+      <language id="fr"><![CDATA[Conversion des tâches Id]]></language> 
+    </name> 
+  </property>  
+  <property id="notes" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Notes
+    <name>
+      <language id="de"><![CDATA[Notizen]]></language>
+      <language id="en"><![CDATA[Notes]]></language>
+      <language id="es"><![CDATA[notas]]></language>
+      <language id="fr"><![CDATA[Remarques]]></language>
+    </name>
+  </property> 
 </properties>

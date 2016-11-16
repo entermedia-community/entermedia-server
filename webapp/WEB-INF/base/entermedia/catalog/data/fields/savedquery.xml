@@ -1,11 +1,68 @@
-<properties beanname="dataSearcher" >
-	<property id="id" index="true" stored="true" >ID</property>
-	<property id="name" index="true" stored="true" >Name</property>
-  	<property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true">User</property>
-	<property id="usersaved" index="true" type="boolean" stored="true" >User Saved</property>
-	<property id="saveddate" index="true" stored="true" datatype="date" date="true">Saved Date</property>
-	
-	<property id="caption" index="true" stored="true" >Description</property>
-	<property id="andtogether" type="boolean">Or Together</property>
-	<property id="parentid" index="true" stored="true" >Parent ID</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true" keyword="false" filter="false" sortable="true">User 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[User]]></language>  
+      <language id="es"><![CDATA[Usuario]]></language>  
+      <language id="fr"><![CDATA[Utilisateur]]></language> 
+    </name> 
+  </property>  
+  <property id="usersaved" index="true" type="boolean" stored="true" keyword="false" filter="false" editable="false" sortable="true">User Saved 
+    <name> 
+      <language id="de"><![CDATA[Benutzer gespeichert]]></language>  
+      <language id="en"><![CDATA[User Saved]]></language>  
+      <language id="es"><![CDATA[usuario Registrado]]></language>  
+      <language id="fr"><![CDATA[utilisateur Enregistré]]></language> 
+    </name> 
+  </property>  
+  <property id="saveddate" index="true" stored="true" datatype="date" date="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Saved Date 
+    <name> 
+      <language id="de"><![CDATA[Speicherdatum]]></language>  
+      <language id="en"><![CDATA[Saved Date]]></language>  
+      <language id="es"><![CDATA[Fecha guardado]]></language>  
+      <language id="fr"><![CDATA[date de Saved]]></language> 
+    </name> 
+  </property>  
+  <property id="caption" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Description 
+    <name> 
+      <language id="de"><![CDATA[Description]]></language>  
+      <language id="en"><![CDATA[Description]]></language>  
+      <language id="es"><![CDATA[descripción]]></language>  
+      <language id="fr"><![CDATA[Description]]></language> 
+    </name> 
+  </property>  
+  <property id="andtogether" type="boolean" index="false" keyword="false" filter="false" stored="false" editable="false" sortable="true">Or Together 
+    <name> 
+      <language id="de"><![CDATA[oder zusammen]]></language>  
+      <language id="en"><![CDATA[Or Together]]></language>  
+      <language id="es"><![CDATA[o junto]]></language>  
+      <language id="fr"><![CDATA[Ou Ensemble]]></language> 
+    </name> 
+  </property>  
+  <property id="parentid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Parent ID
+    <name>
+      <language id="de"><![CDATA[Eltern ID]]></language>
+      <language id="en"><![CDATA[Parent ID]]></language>
+      <language id="es"><![CDATA[Identificación de los padres]]></language>
+      <language id="fr"><![CDATA[Parent ID]]></language>
+    </name>
+  </property> 
 </properties>

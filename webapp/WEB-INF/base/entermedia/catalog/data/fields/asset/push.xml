@@ -1,7 +1,37 @@
-<page>
-	<!-- Push items -->
-	<property id="pushstatus" internalfield="true" editable="true"  index="true"  stored="true" type="list" listid="push/pushstatus">Push Status</property>
-	<property id="pushpercentage" internalfield="true"  index="true"  stored="true">Push Percentage</property>
-	<property id="pusherrordetails" internalfield="true"  index="true"  stored="true">Push Error Details</property>
-	<property id="pusheddate" internalfield="true" editable="true"  index="true"  searchcomponent="datesearch"  type="date" stored="true" >Pushed Date</property>
-</page>	
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page> 
+  <!-- Push items -->  
+  <property id="pushstatus" internalfield="true" editable="true" index="true" stored="true" type="list" listid="push/pushstatus" keyword="false" filter="false" sortable="true">Push Status 
+    <name> 
+      <language id="de"><![CDATA[Push-Status]]></language>  
+      <language id="en"><![CDATA[Push Status]]></language>  
+      <language id="es"><![CDATA[Estado de empuje]]></language>  
+      <language id="fr"><![CDATA[Poussez Statut]]></language> 
+    </name> 
+  </property>  
+  <property id="pushpercentage" internalfield="true" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Push Percentage 
+    <name> 
+      <language id="de"><![CDATA[Push-Prozentsatz]]></language>  
+      <language id="en"><![CDATA[Push Percentage]]></language>  
+      <language id="es"><![CDATA[Porcentaje de empuje]]></language>  
+      <language id="fr"><![CDATA[Poussez Pourcentage]]></language> 
+    </name> 
+  </property>  
+  <property id="pusherrordetails" internalfield="true" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Push Error Details 
+    <name> 
+      <language id="de"><![CDATA[Push-Fehlerdetails]]></language>  
+      <language id="en"><![CDATA[Push Error Details]]></language>  
+      <language id="es"><![CDATA[Empuje Detalles de error]]></language>  
+      <language id="fr"><![CDATA[Appuyez sur Détails d&#39;erreur]]></language> 
+    </name> 
+  </property>  
+  <property id="pusheddate" internalfield="true" editable="true" index="true" searchcomponent="datesearch" type="date" stored="true" keyword="false" filter="false" sortable="true">Pushed Date 
+    <name>
+      <language id="de"><![CDATA[geschoben Datum]]></language>
+      <language id="en"><![CDATA[Pushed Date]]></language>
+      <language id="es"><![CDATA[empujado Fecha]]></language>
+      <language id="fr"><![CDATA[date de Pushed]]></language>
+    </name>
+  </property> 
+</page>

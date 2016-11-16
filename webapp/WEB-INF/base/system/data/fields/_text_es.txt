@@ -1,0 +1,18 @@
+#
+#Wed Nov 16 11:41:06 EST 2016
+id=carn\u00E9 de identidad
+All\ Fields=Todos los campos
+Username=Nombre de usuario
+Groups=grupos
+Screen\ Name=Nombre de pantalla
+First\ Name=Nombre de pila
+EnterMedia\ Key=EnterMedia clave
+Enabled=habilitado
+Notes=notas
+Email=Email
+Name=Nombre
+Failed\ login\ attempts=intentos de conexi\u00F3n fallidos
+Password=Contrase\u00F1a
+User\ Search=usuario Buscar
+Enable\ HTML\ editing=Habilitar la edici\u00F3n de HTML
+Last\ Name=Apellido

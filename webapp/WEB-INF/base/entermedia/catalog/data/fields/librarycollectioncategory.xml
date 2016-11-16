@@ -1,5 +1,28 @@
-<properties beanname="dataSearcher" >
-  <property id="id" index="true" stored="true" editable="true" internalfield="true">Id</property>
-  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false">Collection</property>
-  <property id="categoryid" index="true" listid="category" stored="true" editable="true" type="list"  >Category ID</property>
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false" keyword="false" sortable="true">Collection 
+    <name> 
+      <language id="de"><![CDATA[Sammlung]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
+    </name> 
+  </property>  
+  <property id="categoryid" index="true" listid="category" stored="true" editable="true" type="list" keyword="false" filter="false" sortable="true">Category ID
+    <name>
+      <language id="de"><![CDATA[Kategorie ID]]></language>
+      <language id="en"><![CDATA[Category ID]]></language>
+      <language id="es"><![CDATA[categoria ID]]></language>
+      <language id="fr"><![CDATA[Catégorie ID]]></language>
+    </name>
+  </property> 
 </properties>

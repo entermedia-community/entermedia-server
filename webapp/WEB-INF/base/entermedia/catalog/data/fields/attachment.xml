@@ -1,28 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties beanname="dataSearcher" prefix="assets">
-  <property id="id" index="true" stored="true">Id</property>
-  <property id="name" editable="true" index="true" stored="true">Name</property>
-  <property id="description" editable="false">All Fields</property>
-  <property id="assetid" editable="true" type="list" index="true" stored="true">Asset ID</property>
- 	<property id="fulltext" keyword="true" index="true">Full Text</property> 	<!-- This is for PDFs -->
- 	<property id="sourcepath" index="true" stored="true">Asset Source Path</property>
- 	<property id="parentsourcepath" index="true" stored="true" indextype="not_analyzed">Parent Source Path</property>
- 	<property id="isfolder" index="true" type="boolean" stored="true" legacy="folder">Is Folder</property>
- 
-	<property id="compression" externalid="Compression" index="true" stored="true" datatype="text">Compression</property>
-	<property id="cammaker" externalid="Make" index="true" stored="true" datatype="text">Camera Maker</property>
-	<property id="cammodel" externalid="Model" index="true" stored="true" datatype="text">Camera Model</property>
-	<property id="artist" externalid="Artist" index="true" stored="true" datatype="text">Artist</property>
-	<property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text">Contributor</property>
-	<property id="creator" externalid="Creator" index="true" stored="true" datatype="text">Creator</property>
-	<property id="source" externalid="Source" index="true" stored="true" datatype="text">Source</property>
-	<property id="iso" externalid="ISO" index="true" stored="true" datatype="text">ISO</property>
-	<property id="author" externalid="Author" index="true" stored="true" datatype="text">Author</property>
-	<property id="localpath" index="true" stored="true" editable="false">Local Path</property> <!-- Uploading -->
-	<property id="fileformat" index="true" stored="true" viewtype="list" editable="true" externalid="FileType">File Format</property>
-	<property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" externalid="FileSize">File Size</property>
-	<property id="colortype" index="true" stored="true" viewtype="list" datatype="list">Color</property>
-	<property id="width" index="true" stored="true" datatype="number" >Width</property>
-	<property id="height" index="true" stored="true" datatype="number" >Height</property>
-  
+<properties beanname="dataSearcher" prefix="assets"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="description" editable="false" index="false" keyword="false" filter="false" stored="false" sortable="true">All Fields 
+    <name> 
+      <language id="de"><![CDATA[All Fields]]></language>  
+      <language id="en"><![CDATA[All Fields]]></language>  
+      <language id="es"><![CDATA[Todos los campos]]></language>  
+      <language id="fr"><![CDATA[All Fields]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" editable="true" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Asset ID 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset ID]]></language>  
+      <language id="es"><![CDATA[Identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property>  
+  <property id="fulltext" keyword="true" index="true" filter="false" stored="false" editable="false" sortable="true">Full Text 
+    <name> 
+      <language id="de"><![CDATA[voller Text]]></language>  
+      <language id="en"><![CDATA[Full Text]]></language>  
+      <language id="es"><![CDATA[Texto completo]]></language>  
+      <language id="fr"><![CDATA[Texte intégral]]></language> 
+    </name> 
+  </property>  
+  <!-- This is for PDFs -->  
+  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Source Path 
+    <name> 
+      <language id="de"><![CDATA[Asset-Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Asset Source Path]]></language>  
+      <language id="es"><![CDATA[Camino Fuente de activos]]></language>  
+      <language id="fr"><![CDATA[Chemin Asset Source]]></language> 
+    </name> 
+  </property>  
+  <property id="parentsourcepath" index="true" stored="true" indextype="not_analyzed" keyword="false" filter="false" editable="false" sortable="true">Parent Source Path 
+    <name> 
+      <language id="de"><![CDATA[Mutterquellpfad]]></language>  
+      <language id="en"><![CDATA[Parent Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen de los padres]]></language>  
+      <language id="fr"><![CDATA[Parent Path Source]]></language> 
+    </name> 
+  </property>  
+  <property id="isfolder" index="true" type="boolean" stored="true" legacy="folder" keyword="false" filter="false" editable="false" sortable="true">Is Folder 
+    <name> 
+      <language id="de"><![CDATA[ist Ordner]]></language>  
+      <language id="en"><![CDATA[Is Folder]]></language>  
+      <language id="es"><![CDATA[es carpeta]]></language>  
+      <language id="fr"><![CDATA[Est-dossier]]></language> 
+    </name> 
+  </property>  
+  <property id="compression" externalid="Compression" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Compression 
+    <name> 
+      <language id="de"><![CDATA[Kompression]]></language>  
+      <language id="en"><![CDATA[Compression]]></language>  
+      <language id="es"><![CDATA[Compresión]]></language>  
+      <language id="fr"><![CDATA[Compression]]></language> 
+    </name> 
+  </property>  
+  <property id="cammaker" externalid="Make" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Camera Maker 
+    <name> 
+      <language id="de"><![CDATA[Kamerahersteller]]></language>  
+      <language id="en"><![CDATA[Camera Maker]]></language>  
+      <language id="es"><![CDATA[fabricante de la cámara]]></language>  
+      <language id="fr"><![CDATA[Camera Maker]]></language> 
+    </name> 
+  </property>  
+  <property id="cammodel" externalid="Model" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Camera Model 
+    <name> 
+      <language id="de"><![CDATA[Kameramodell]]></language>  
+      <language id="en"><![CDATA[Camera Model]]></language>  
+      <language id="es"><![CDATA[Modelo de la cámara]]></language>  
+      <language id="fr"><![CDATA[Camera Model]]></language> 
+    </name> 
+  </property>  
+  <property id="artist" externalid="Artist" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Artist 
+    <name> 
+      <language id="de"><![CDATA[Künstler]]></language>  
+      <language id="en"><![CDATA[Artist]]></language>  
+      <language id="es"><![CDATA[Artista]]></language>  
+      <language id="fr"><![CDATA[Artist]]></language> 
+    </name> 
+  </property>  
+  <property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Contributor 
+    <name> 
+      <language id="de"><![CDATA[Beiträger]]></language>  
+      <language id="en"><![CDATA[Contributor]]></language>  
+      <language id="es"><![CDATA[Contribuyente]]></language>  
+      <language id="fr"><![CDATA[Contributor]]></language> 
+    </name> 
+  </property>  
+  <property id="creator" externalid="Creator" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Creator 
+    <name> 
+      <language id="de"><![CDATA[Schöpfer]]></language>  
+      <language id="en"><![CDATA[Creator]]></language>  
+      <language id="es"><![CDATA[Creador]]></language>  
+      <language id="fr"><![CDATA[Créateur]]></language> 
+    </name> 
+  </property>  
+  <property id="source" externalid="Source" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Source 
+    <name> 
+      <language id="de"><![CDATA[Quelle]]></language>  
+      <language id="en"><![CDATA[Source]]></language>  
+      <language id="es"><![CDATA[Fuente]]></language>  
+      <language id="fr"><![CDATA[La source]]></language> 
+    </name> 
+  </property>  
+  <property id="iso" externalid="ISO" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">ISO 
+    <name> 
+      <language id="de"><![CDATA[ISO]]></language>  
+      <language id="en"><![CDATA[ISO]]></language>  
+      <language id="es"><![CDATA[ISO]]></language>  
+      <language id="fr"><![CDATA[ISO]]></language> 
+    </name> 
+  </property>  
+  <property id="author" externalid="Author" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Author 
+    <name> 
+      <language id="de"><![CDATA[Author]]></language>  
+      <language id="en"><![CDATA[Author]]></language>  
+      <language id="es"><![CDATA[Autor]]></language>  
+      <language id="fr"><![CDATA[Author]]></language> 
+    </name> 
+  </property>  
+  <property id="localpath" index="true" stored="true" editable="false" keyword="false" filter="false" sortable="true">Local Path 
+    <name> 
+      <language id="de"><![CDATA[lokalen Pfad]]></language>  
+      <language id="en"><![CDATA[Local Path]]></language>  
+      <language id="es"><![CDATA[Ruta de acceso local]]></language>  
+      <language id="fr"><![CDATA[Chemin d&#39;accès local]]></language> 
+    </name> 
+  </property>  
+  <!-- Uploading -->  
+  <property id="fileformat" index="true" stored="true" viewtype="list" editable="true" externalid="FileType" keyword="false" filter="false" sortable="true">File Format 
+    <name> 
+      <language id="de"><![CDATA[Datei Format]]></language>  
+      <language id="en"><![CDATA[File Format]]></language>  
+      <language id="es"><![CDATA[Formato de archivo]]></language>  
+      <language id="fr"><![CDATA[File Format]]></language> 
+    </name> 
+  </property>  
+  <property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" externalid="FileSize" keyword="false" filter="false" editable="false" sortable="true" type="number">File Size 
+    <name> 
+      <language id="de"><![CDATA[Dateigröße]]></language>  
+      <language id="en"><![CDATA[File Size]]></language>  
+      <language id="es"><![CDATA[Tamaño del archivo]]></language>  
+      <language id="fr"><![CDATA[File Size]]></language> 
+    </name> 
+  </property>  
+  <property id="colortype" index="true" stored="true" viewtype="list" datatype="list" keyword="false" filter="false" editable="false" sortable="true" type="list">Color 
+    <name> 
+      <language id="de"><![CDATA[Farbe]]></language>  
+      <language id="en"><![CDATA[Color]]></language>  
+      <language id="es"><![CDATA[Color]]></language>  
+      <language id="fr"><![CDATA[Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="width" index="true" stored="true" datatype="number" keyword="false" filter="false" editable="false" sortable="true" type="number">Width 
+    <name> 
+      <language id="de"><![CDATA[Width]]></language>  
+      <language id="en"><![CDATA[Width]]></language>  
+      <language id="es"><![CDATA[Anchura]]></language>  
+      <language id="fr"><![CDATA[Width]]></language> 
+    </name> 
+  </property>  
+  <property id="height" index="true" stored="true" datatype="number" keyword="false" filter="false" editable="false" sortable="true" type="number">Height
+    <name>
+      <language id="de"><![CDATA[Height]]></language>
+      <language id="en"><![CDATA[Height]]></language>
+      <language id="es"><![CDATA[Altura]]></language>
+      <language id="fr"><![CDATA[Height]]></language>
+    </name>
+  </property> 
 </properties>

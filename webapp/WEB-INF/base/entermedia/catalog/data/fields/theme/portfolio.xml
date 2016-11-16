@@ -1,83 +1,370 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties >
-
-  <property id="name" index="true" stored="true" editable="true" >Theme Name</property>
-  
-  <!--  header information and style -->
-  <property id="title" index="true" stored="true" editable="true" note="EM Share">Site Title</property>
-  <property id="systemfromemail" index="true" stored="true" editable="true"  note="noreply@entermediasoftware.com">Email Address</property>
-  <property id="systemfromemailname" index="true" stored="true" editable="true"  note="No Reply">Email Name</property>
-  <property id="logopath" index="true" stored="true" editable="true" note="Relative or absolute URL" >Logo URL</property>
-  <property id="logoasset" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="portfolio"  internalfield="false" listid="asset" datatype="list"  note="Optional">Logo Asset</property>
-  <property id="logowidth" index="true" stored="true" editable="true" >Logo Width</property>
-  <property id="logoheight" index="true" stored="true" editable="true" >Logo Height</property>
- 
-   <!-- global styles -->
-  <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset"  sourcepath="users/${userid}/backgroundtile" internalfield="false" listid="asset" datatype="list"
-   tooltip="This acts as a background for the whole site"  note="Optional">Background Asset</property>
-  
-  <property id="bodybackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Body Background Color </property>
-  <property id="backgroundpath" index="true" stored="true" editable="true" note="Optional">Background Image URL</property>
-  
-  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="portfolio" datatype="list" note="Optional" >Standard Background Image</property>
-
-  <property id="backgroundtile" index="true" stored="true" type="boolean" editable="true" >Tile Background Image</property>
-
-  <!-- header color -->
-  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" >Header Color</property>
-  <property id="headercolorgradient" index="true" stored="true" editable="true" viewtype="color" >Header Color Gradient</property>
-  
-  <!-- navigation color -->
-  <property id="navbackgroundpath" index="true" stored="true" editable="true" note="Overrides Colors">Nav Background Path</property>
-  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Color</property>
-  <property id="navcolorgradient" index="true" stored="true" editable="true" viewtype="color" >Navigation Color Gradient </property>
-  <property id="navfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Font Color</property>
-  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Font Color</property>
-  <property id="navdropdownbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Dropdown Background Color</property>
- 
-  
-  <!-- navigation button color -->
-  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Color</property>
-  <property id="navbuttoncolorgradient" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Color Gradient </property>
-  <property id="navbuttonbordercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Button Border</property>
-  
-  <!-- navigation font hover-->
-  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Button Color</property>
-  <property id="navbuttonhovercolorgradient" index="true" stored="true" editable="true" viewtype="color" >Navigation Hover Button Color Gradient</property>
-
-  <!-- left column -->
-  <property id="leftcolumnnavcolor" index="true" stored="true" editable="true" viewtype="color" >Left Column Navigation Color</property>
-  <property id="leftcolumnnavcolorgradient" index="true" stored="true" editable="true" viewtype="color" >Left Column Navigation Color Gradient </property>
-  <property id="leftcolumnbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Left Column Background Color</property>
-  <property id="leftcolumnnavfontcolor" index="true" stored="true" editable="true" viewtype="color" >Left Column Navigation Font Color</property>
-  
-  <!-- navigation links -->
-  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Navigation Links Background Color</property>
-  
-  <!-- table header -->
-  <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" >Table Header Color</property>
-  <property id="tableheadercolorgradient" index="true" stored="true" editable="true" viewtype="color" >Table Header Color Gradient </property>
-  
-  <!-- table colors -->
-  <property id="tablebordercolor" index="true" stored="true" editable="true" viewtype="color" >Table Border Color</property>
-  <property id="tablehovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Hover Color</property>
-
-  <property id="tablemenubackgroundcolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Color</property>
-  <property id="tablemenubackgroundcolorgradient" index="true" stored="true" editable="true" viewtype="color" >Table Menu Color Gradient</property>
-  <property id="tablemenuhovercolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Hover Color</property>
-  <property id="tablemenufontcolor" index="true" stored="true" editable="true" viewtype="color" >Table Menu Font Color</property>
-  
-  <!-- widget border color -->
-  <property id="widgetbordercolor" index="true" stored="true" editable="true" viewtype="color" >Widget Border Color</property>
-
-  <!-- asset details -->
-  <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" >Asset Details Selected Tab Color</property>
-  <property id="assetdetailsselectedtabcolorgradient" index="true" stored="true" editable="true" viewtype="color">Asset Details Selected Tab Color Gradient </property>
-  <property id="detailsrightcolumnselectedcolor" index="true" stored="true" editable="true" viewtype="color">Asset Details Selected Asset Color </property>
-  
-  <!-- settings menu selection -->
-  <property id="settingsmenuselectioncolor" index="true" stored="true" editable="true" viewtype="color" >Settings Menu Selection Color</property>
-  
-  <property id="disableshadows" index="true" stored="true" editable="true" sortable="true" type="boolean"  datatype="boolean">Disable Shadows Around Header and Content</property>
-  
+<properties> 
+  <property id="name" index="true" stored="true" editable="true">Theme Name</property>  
+  <!--  header information and style -->  
+  <property id="title" index="true" stored="true" editable="true" note="EM Share" keyword="false" filter="false" sortable="true">Site Title 
+    <name> 
+      <language id="de"><![CDATA[Seitentitel]]></language>  
+      <language id="en"><![CDATA[Site Title]]></language>  
+      <language id="es"><![CDATA[Título del sitio]]></language>  
+      <language id="fr"><![CDATA[Titre du site]]></language> 
+    </name> 
+  </property>  
+  <property id="systemfromemail" index="true" stored="true" editable="true" note="noreply@entermediasoftware.com" keyword="false" filter="false" sortable="true">Email Address 
+    <name> 
+      <language id="de"><![CDATA[E-Mail-Addresse]]></language>  
+      <language id="en"><![CDATA[Email Address]]></language>  
+      <language id="es"><![CDATA[Dirección de correo electrónico]]></language>  
+      <language id="fr"><![CDATA[Adresse e-mail]]></language> 
+    </name> 
+  </property>  
+  <property id="systemfromemailname" index="true" stored="true" editable="true" note="No Reply" keyword="false" filter="false" sortable="true">Email Name 
+    <name> 
+      <language id="de"><![CDATA[E-Mail-Name]]></language>  
+      <language id="en"><![CDATA[Email Name]]></language>  
+      <language id="es"><![CDATA[Nombre Correo]]></language>  
+      <language id="fr"><![CDATA[Email Nom]]></language> 
+    </name> 
+  </property>  
+  <property id="logopath" index="true" stored="true" editable="true" note="Relative or absolute URL" keyword="false" filter="false" sortable="true">Logo URL 
+    <name> 
+      <language id="de"><![CDATA[Logo URL]]></language>  
+      <language id="en"><![CDATA[Logo URL]]></language>  
+      <language id="es"><![CDATA[URL del logotipo]]></language>  
+      <language id="fr"><![CDATA[Logo URL]]></language> 
+    </name> 
+  </property>  
+  <property id="logoasset" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="theme" internalfield="false" listid="asset" datatype="list" note="Optional" keyword="false" filter="false" sortable="true">Logo Asset 
+    <name> 
+      <language id="de"><![CDATA[logo Vermögenswert]]></language>  
+      <language id="en"><![CDATA[Logo Asset]]></language>  
+      <language id="es"><![CDATA[logotipo de Activos]]></language>  
+      <language id="fr"><![CDATA[Logo item]]></language> 
+    </name> 
+  </property>  
+  <property id="logowidth" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Logo Width 
+    <name> 
+      <language id="de"><![CDATA[Logobreite]]></language>  
+      <language id="en"><![CDATA[Logo Width]]></language>  
+      <language id="es"><![CDATA[El ancho del logotipo]]></language>  
+      <language id="fr"><![CDATA[Logo Largeur]]></language> 
+    </name> 
+  </property>  
+  <property id="logoheight" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Logo Height 
+    <name> 
+      <language id="de"><![CDATA[logo Höhe]]></language>  
+      <language id="en"><![CDATA[Logo Height]]></language>  
+      <language id="es"><![CDATA[La altura del logotipo]]></language>  
+      <language id="fr"><![CDATA[Logo Hauteur]]></language> 
+    </name> 
+  </property>  
+  <!-- global styles -->  
+  <property id="tileupload" index="true" stored="true" editable="true" type="list" viewtype="asset" internalfield="false" listid="asset" datatype="list" tooltip="This acts as a background for the whole site" note="Optional" keyword="false" filter="false" sortable="true">Background Asset 
+    <name> 
+      <language id="de"><![CDATA[Hintergrund Asset]]></language>  
+      <language id="en"><![CDATA[Background Asset]]></language>  
+      <language id="es"><![CDATA[Activos fondo]]></language>  
+      <language id="fr"><![CDATA[Item de fond]]></language> 
+    </name> 
+  </property>  
+  <property id="bodybackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Body Background Color 
+    <name> 
+      <language id="de"><![CDATA[Körper Hintergrundfarbe]]></language>  
+      <language id="en"><![CDATA[Body Background Color]]></language>  
+      <language id="es"><![CDATA[Color de fondo del cuerpo]]></language>  
+      <language id="fr"><![CDATA[Body Couleur de fond]]></language> 
+    </name> 
+  </property>  
+  <property id="backgroundpath" index="true" stored="true" editable="true" note="Optional" keyword="false" filter="false" sortable="true">Background Image URL 
+    <name> 
+      <language id="de"><![CDATA[Hintergrund Bild-URL]]></language>  
+      <language id="en"><![CDATA[Background Image URL]]></language>  
+      <language id="es"><![CDATA[URL de la imagen de fondo]]></language>  
+      <language id="fr"><![CDATA[Background Image URL]]></language> 
+    </name> 
+  </property>  
+  <property id="backgroundstyle" index="true" stored="true" editable="true" type="list" viewtype="list" searchtype="theme" datatype="list" note="Optional" keyword="false" filter="false" sortable="true">Standard Background Image 
+    <name> 
+      <language id="de"><![CDATA[Standard-Hintergrundbild]]></language>  
+      <language id="en"><![CDATA[Standard Background Image]]></language>  
+      <language id="es"><![CDATA[Estándar imagen de fondo]]></language>  
+      <language id="fr"><![CDATA[Contexte standard image]]></language> 
+    </name> 
+  </property>  
+  <property id="backgroundtile" index="true" stored="true" type="boolean" editable="true" keyword="false" filter="false" sortable="true">Tile Background Image 
+    <name> 
+      <language id="de"><![CDATA[Fliese Hintergrundbild]]></language>  
+      <language id="en"><![CDATA[Tile Background Image]]></language>  
+      <language id="es"><![CDATA[Baldosas de la imagen de fondo]]></language>  
+      <language id="fr"><![CDATA[Tile Background Image]]></language> 
+    </name> 
+  </property>  
+  <!-- header color -->  
+  <property id="headercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Header Color 
+    <name> 
+      <language id="de"><![CDATA[Kopf Farbe]]></language>  
+      <language id="en"><![CDATA[Header Color]]></language>  
+      <language id="es"><![CDATA[color de la cabecera]]></language>  
+      <language id="fr"><![CDATA[En-tête Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="headercolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Header Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[Kopffarbverlauf]]></language>  
+      <language id="en"><![CDATA[Header Color Gradient]]></language>  
+      <language id="es"><![CDATA[Jefe del color del gradiente]]></language>  
+      <language id="fr"><![CDATA[Header Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <!-- navigation color -->  
+  <property id="navbackgroundpath" index="true" stored="true" editable="true" note="Overrides Colors" keyword="false" filter="false" sortable="true">Nav Background Path 
+    <name> 
+      <language id="de"><![CDATA[nav Hintergrund Pfad]]></language>  
+      <language id="en"><![CDATA[Nav Background Path]]></language>  
+      <language id="es"><![CDATA[Camino de fondo Nav]]></language>  
+      <language id="fr"><![CDATA[Nav Chemin de fond]]></language> 
+    </name> 
+  </property>  
+  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Color 
+    <name> 
+      <language id="de"><![CDATA[Navigations Farbe]]></language>  
+      <language id="en"><![CDATA[Navigation Color]]></language>  
+      <language id="es"><![CDATA[color Navegacion]]></language>  
+      <language id="fr"><![CDATA[Navigation Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="navcolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[Navigation Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Navigation Color Gradient]]></language>  
+      <language id="es"><![CDATA[Gradiente de color de navegación]]></language>  
+      <language id="fr"><![CDATA[Navigation Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="navfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Font Color 
+    <name> 
+      <language id="de"><![CDATA[Navigation Schriftfarbe]]></language>  
+      <language id="en"><![CDATA[Navigation Font Color]]></language>  
+      <language id="es"><![CDATA[Color de fuente de navegación]]></language>  
+      <language id="fr"><![CDATA[Navigation Couleur de police]]></language> 
+    </name> 
+  </property>  
+  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Hover Font Color 
+    <name> 
+      <language id="de"><![CDATA[Navigation schweben Schriftfarbe]]></language>  
+      <language id="en"><![CDATA[Navigation Hover Font Color]]></language>  
+      <language id="es"><![CDATA[Navegación de la libración Color de fuente]]></language>  
+      <language id="fr"><![CDATA[Navigation Hover Couleur de police]]></language> 
+    </name> 
+  </property>  
+  <property id="navdropdownbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Dropdown Background Color 
+    <name> 
+      <language id="de"><![CDATA[Navigation Dropdown-Hintergrundfarbe]]></language>  
+      <language id="en"><![CDATA[Navigation Dropdown Background Color]]></language>  
+      <language id="es"><![CDATA[Navegación desplegable Color de fondo]]></language>  
+      <language id="fr"><![CDATA[Contexte de navigation Dropdown Couleur]]></language> 
+    </name> 
+  </property>  
+  <!-- navigation button color -->  
+  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Color 
+    <name> 
+      <language id="de"><![CDATA[Navigationstaste Farbe]]></language>  
+      <language id="en"><![CDATA[Navigation Button Color]]></language>  
+      <language id="es"><![CDATA[Navegación color del botón]]></language>  
+      <language id="fr"><![CDATA[Bouton de navigation couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="navbuttoncolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[Navigationstaste Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Navigation Button Color Gradient]]></language>  
+      <language id="es"><![CDATA[Botón de navegación Gradiente de color]]></language>  
+      <language id="fr"><![CDATA[Bouton de navigation Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="navbuttonbordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Border 
+    <name> 
+      <language id="de"><![CDATA[Navigationstaste Grenze]]></language>  
+      <language id="en"><![CDATA[Navigation Button Border]]></language>  
+      <language id="es"><![CDATA[Frontera botón de navegación]]></language>  
+      <language id="fr"><![CDATA[Bouton de navigation Border]]></language> 
+    </name> 
+  </property>  
+  <!-- navigation font hover-->  
+  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Hover Button Color 
+    <name> 
+      <language id="de"><![CDATA[Navigation Hoverschaltfläche Farbe]]></language>  
+      <language id="en"><![CDATA[Navigation Hover Button Color]]></language>  
+      <language id="es"><![CDATA[Navegación de la libración del color del botón]]></language>  
+      <language id="fr"><![CDATA[Bouton de navigation Hover Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="navbuttonhovercolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Hover Button Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[Navigation Hoverschaltfläche Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Navigation Hover Button Color Gradient]]></language>  
+      <language id="es"><![CDATA[Botón de navegación de la libración del gradiente del color]]></language>  
+      <language id="fr"><![CDATA[Navigation bouton sensitif Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <!-- left column -->  
+  <property id="leftcolumnnavcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Color 
+    <name> 
+      <language id="de"><![CDATA[linke Spalte Navigations Farbe]]></language>  
+      <language id="en"><![CDATA[Left Column Navigation Color]]></language>  
+      <language id="es"><![CDATA[Columna de la izquierda de color Navegación]]></language>  
+      <language id="fr"><![CDATA[Colonne de gauche Navigation Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="leftcolumnnavcolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[linke Spalte Navigation Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Left Column Navigation Color Gradient]]></language>  
+      <language id="es"><![CDATA[Columna izquierda navegación Gradiente de color]]></language>  
+      <language id="fr"><![CDATA[Colonne de gauche Navigation Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="leftcolumnbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Background Color 
+    <name> 
+      <language id="de"><![CDATA[linke Spalte Hintergrundfarbe]]></language>  
+      <language id="en"><![CDATA[Left Column Background Color]]></language>  
+      <language id="es"><![CDATA[Columna de la izquierda Color de fondo]]></language>  
+      <language id="fr"><![CDATA[Contexte colonne de gauche Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="leftcolumnnavfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Font Color 
+    <name> 
+      <language id="de"><![CDATA[linke Spalte Navigation Schriftfarbe]]></language>  
+      <language id="en"><![CDATA[Left Column Navigation Font Color]]></language>  
+      <language id="es"><![CDATA[Columna de la izquierda de navegación Color de fuente]]></language>  
+      <language id="fr"><![CDATA[Colonne de gauche Navigation Couleur de police]]></language> 
+    </name> 
+  </property>  
+  <!-- navigation links -->  
+  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Links Background Color 
+    <name> 
+      <language id="de"><![CDATA[Navigationslinks Hintergrundfarbe]]></language>  
+      <language id="en"><![CDATA[Navigation Links Background Color]]></language>  
+      <language id="es"><![CDATA[Vínculos de exploración Color de fondo]]></language>  
+      <language id="fr"><![CDATA[Navigation Links Couleur de fond]]></language> 
+    </name> 
+  </property>  
+  <!-- table header -->  
+  <property id="tableheadercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Header Color 
+    <name> 
+      <language id="de"><![CDATA[Tabellenkopf Farbe]]></language>  
+      <language id="en"><![CDATA[Table Header Color]]></language>  
+      <language id="es"><![CDATA[Tabla Jefe del color]]></language>  
+      <language id="fr"><![CDATA[Table-tête Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="tableheadercolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Header Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[Tabellenkopf Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Table Header Color Gradient]]></language>  
+      <language id="es"><![CDATA[Tabla Jefe del color del gradiente]]></language>  
+      <language id="fr"><![CDATA[Tableau Header Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <!-- table colors -->  
+  <property id="tablebordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Border Color 
+    <name> 
+      <language id="de"><![CDATA[table border Farbe]]></language>  
+      <language id="en"><![CDATA[Table Border Color]]></language>  
+      <language id="es"><![CDATA[Tabla de colores Frontera]]></language>  
+      <language id="fr"><![CDATA[Tableau Bordure Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="tablehovercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Hover Color 
+    <name> 
+      <language id="de"><![CDATA[Tisch schweben Farbe]]></language>  
+      <language id="en"><![CDATA[Table Hover Color]]></language>  
+      <language id="es"><![CDATA[Tabla de color de la libración]]></language>  
+      <language id="fr"><![CDATA[Tableau Hover Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="tablemenubackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Menu Color 
+    <name> 
+      <language id="de"><![CDATA[Tabelle Menüfarbe]]></language>  
+      <language id="en"><![CDATA[Table Menu Color]]></language>  
+      <language id="es"><![CDATA[Tabla de colores de menú]]></language>  
+      <language id="fr"><![CDATA[Table Menu Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="tablemenubackgroundcolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Menu Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[Tabelle Menü Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Table Menu Color Gradient]]></language>  
+      <language id="es"><![CDATA[Menú Tabla de color degradado]]></language>  
+      <language id="fr"><![CDATA[Tableau Menu Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="tablemenuhovercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Menu Hover Color 
+    <name> 
+      <language id="de"><![CDATA[Tabelle Menü Hover Farb]]></language>  
+      <language id="en"><![CDATA[Table Menu Hover Color]]></language>  
+      <language id="es"><![CDATA[Menú Tabla Hover color]]></language>  
+      <language id="fr"><![CDATA[Table Menu Hover Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="tablemenufontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Menu Font Color 
+    <name> 
+      <language id="de"><![CDATA[Tabelle Menü Schriftfarbe]]></language>  
+      <language id="en"><![CDATA[Table Menu Font Color]]></language>  
+      <language id="es"><![CDATA[Menú Tabla Color de fuente]]></language>  
+      <language id="fr"><![CDATA[Table Menu Font Color]]></language> 
+    </name> 
+  </property>  
+  <!-- widget border color -->  
+  <property id="widgetbordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Widget Border Color 
+    <name> 
+      <language id="de"><![CDATA[Widget Grenze Farbe]]></language>  
+      <language id="en"><![CDATA[Widget Border Color]]></language>  
+      <language id="es"><![CDATA[Widget Color del borde]]></language>  
+      <language id="fr"><![CDATA[Widget Border Couleur]]></language> 
+    </name> 
+  </property>  
+  <!-- asset details -->  
+  <property id="assetdetailsselectedtabcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Asset Details Selected Tab Color 
+    <name> 
+      <language id="de"><![CDATA[Asset Details ausgewählte Registerkarte Farbe]]></language>  
+      <language id="en"><![CDATA[Asset Details Selected Tab Color]]></language>  
+      <language id="es"><![CDATA[Detalles activo seleccionado Color de etiqueta]]></language>  
+      <language id="fr"><![CDATA[Item Détails sélectionnés Tab Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="assetdetailsselectedtabcolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Asset Details Selected Tab Color Gradient 
+    <name> 
+      <language id="de"><![CDATA[Asset Details ausgewählte Registerkarte Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Asset Details Selected Tab Color Gradient]]></language>  
+      <language id="es"><![CDATA[Detalles activo seleccionado Tab Gradiente de color]]></language>  
+      <language id="fr"><![CDATA[Asset Détails sélectionnés Tab Dégradé de couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="detailsrightcolumnselectedcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Asset Details Selected Asset Color 
+    <name> 
+      <language id="de"><![CDATA[Asset Details ausgewählte Asset Farbe]]></language>  
+      <language id="en"><![CDATA[Asset Details Selected Asset Color]]></language>  
+      <language id="es"><![CDATA[Detalles activo seleccionado de Activos en color]]></language>  
+      <language id="fr"><![CDATA[Item Détails sélectionnés Item couleur]]></language> 
+    </name> 
+  </property>  
+  <!-- settings menu selection -->  
+  <property id="settingsmenuselectioncolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Settings Menu Selection Color 
+    <name> 
+      <language id="de"><![CDATA[Einstellungen Menüauswahl Farbe]]></language>  
+      <language id="en"><![CDATA[Settings Menu Selection Color]]></language>  
+      <language id="es"><![CDATA[Selección de ajustes de color para el menú]]></language>  
+      <language id="fr"><![CDATA[Menu Paramètres de sélection des couleurs]]></language> 
+    </name> 
+  </property>  
+  <property id="disableshadows" index="true" stored="true" editable="true" sortable="true" type="boolean" datatype="boolean" keyword="false" filter="false">Disable Shadows Around Header and Content 
+    <name>
+      <language id="de"><![CDATA[deaktivieren Schatten um Header und Inhalt]]></language>
+      <language id="en"><![CDATA[Disable Shadows Around Header and Content]]></language>
+      <language id="es"><![CDATA[Desactivar sombras alrededor de encabezado y contenido]]></language>
+      <language id="fr"><![CDATA[Désactiver les ombres autour des en-tête et du contenu]]></language>
+    </name>
+  </property> 
 </properties>

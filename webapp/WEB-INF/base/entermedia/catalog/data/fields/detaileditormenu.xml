@@ -1,10 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties  beanname="folderSearcher">
-  <property id="id" index="true" stored="true">Id</property>
-  <property id="name" editable="true" index="true" stored="true">Name</property>
-  <property id="folder" editable="true" index="true" stored="true">Folder</property>
-  <property id="ordering" type="number" editable="true" index="true" stored="true">Ordering</property>
-  <property id="moduleid" editable="true" index="true" stored="true" legacy="module">Module</property>
-  <property id="useajax" editable="true" index="true" stored="true" type="boolean">Use Ajax</property>
-  <property id="multiedit" editable="true" type="boolean" index="true" stored="true">Multi-Edit</property>
+<properties beanname="folderSearcher"> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="folder" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Folder 
+    <name> 
+      <language id="de"><![CDATA[Mappe]]></language>  
+      <language id="en"><![CDATA[Folder]]></language>  
+      <language id="es"><![CDATA[Carpeta]]></language>  
+      <language id="fr"><![CDATA[Dossier]]></language> 
+    </name> 
+  </property>  
+  <property id="ordering" type="number" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Ordering 
+    <name> 
+      <language id="de"><![CDATA[Bestellung]]></language>  
+      <language id="en"><![CDATA[Ordering]]></language>  
+      <language id="es"><![CDATA[Ordenando]]></language>  
+      <language id="fr"><![CDATA[Commande]]></language> 
+    </name> 
+  </property>  
+  <property id="moduleid" editable="true" index="true" stored="true" legacy="module" keyword="false" filter="false" sortable="true">Module 
+    <name> 
+      <language id="de"><![CDATA[Modul]]></language>  
+      <language id="en"><![CDATA[Module]]></language>  
+      <language id="es"><![CDATA[Módulo]]></language>  
+      <language id="fr"><![CDATA[Module]]></language> 
+    </name> 
+  </property>  
+  <property id="useajax" editable="true" index="true" stored="true" type="boolean" keyword="false" filter="false" sortable="true">Use Ajax 
+    <name> 
+      <language id="de"><![CDATA[Verwendung ajax]]></language>  
+      <language id="en"><![CDATA[Use Ajax]]></language>  
+      <language id="es"><![CDATA[utilizar Ajax]]></language>  
+      <language id="fr"><![CDATA[Utilisez Ajax]]></language> 
+    </name> 
+  </property>  
+  <property id="multiedit" editable="true" type="boolean" index="true" stored="true" keyword="false" filter="false" sortable="true">Multi-Edit
+    <name>
+      <language id="de"><![CDATA[Multi-Edit]]></language>
+      <language id="en"><![CDATA[Multi-Edit]]></language>
+      <language id="es"><![CDATA[Multi-Edit]]></language>
+      <language id="fr"><![CDATA[Multi-Edition]]></language>
+    </name>
+  </property> 
 </properties>

@@ -1,6 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties>
-  <property id="id" index="true" stored="true">Id</property>
-  <property id="roleid" type="list" listid="settingsgroup"  editable="true" index="true" stored="true">Role</property>
-  <property id="libraryid" type="list" listid="library" editable="true" index="true" stored="true">Library</property>
+<properties> 
+  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="roleid" type="list" listid="settingsgroup" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Role 
+    <name> 
+      <language id="de"><![CDATA[Rolle]]></language>  
+      <language id="en"><![CDATA[Role]]></language>  
+      <language id="es"><![CDATA[Papel]]></language>  
+      <language id="fr"><![CDATA[Rôle]]></language> 
+    </name> 
+  </property>  
+  <property id="libraryid" type="list" listid="library" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Library
+    <name>
+      <language id="de"><![CDATA[Bibliothek]]></language>
+      <language id="en"><![CDATA[Library]]></language>
+      <language id="es"><![CDATA[Biblioteca]]></language>
+      <language id="fr"><![CDATA[Bibliothèque]]></language>
+    </name>
+  </property> 
 </properties>
