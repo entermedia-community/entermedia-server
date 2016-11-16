@@ -3,6 +3,7 @@ package model.push;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,16 +22,13 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
-import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.protocol.HTTP;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.elasticsearch.http.HttpException;
@@ -57,6 +55,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
 public class BasePushManager implements PushManager
@@ -435,6 +434,7 @@ public class BasePushManager implements PushManager
 			throw new Exception( inMethod + " Request failed: status code " + status);
 		}
 		Element result = xmlUtil.getXml(response2.getEntity().getContent(),"UTF-8");
+		inMethod.releaseConnection();
 		return result;
 	}
 	
@@ -449,11 +449,11 @@ public class BasePushManager implements PushManager
 		HttpPost method = new HttpPost(url);
 		//Request.setHeader(CoreProtocolPNames.HTTP_CONTENT_CHARSET, Consts.UTF_8);
 		//method.setHeader(CoreProtocolPNames.HTTP_CONTENT_CHARSET, Consts.UTF_8);
+		
 		//method.setHeader("Content-Type", "multipart/form-data; charset=utf-8");
 		
-		method.setHeader(HTTP.CONTENT_TYPE,
-                "application/x-www-form-urlencoded;charset=UTF-8");
-		
+		//method.setHeader(HTTP.CONTENT_TYPE, "application/x-www-form-urlencoded;charset=UTF-8");
+		//method.setHeader(HTTP.CONTENT_TYPE, "multipart/form-data; charset=utf-8");
 		
 		//method.getParams().setContentCharset("utf-8"); //The line I added
 		//method.setRequestHeader("Content-Type", "multipart/form-data; charset=utf-8");
@@ -467,7 +467,8 @@ public class BasePushManager implements PushManager
 		
 		try
 		{
-			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+			HttpRequestBuilder builder = new HttpRequestBuilder();
+			//builder.setCharset(Charset.forName("UTF-8"));
 			
 			int count = 0;
 			for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
@@ -479,12 +480,15 @@ public class BasePushManager implements PushManager
 				{
 					type = "originals." + type;
 				}
-				FileBody fileBody = new FileBody(new File( file.getAbsolutePath() ), name, "application/octect-stream","utf-8");
-				 
-				builder.addPart(type + count, fileBody);
+				builder.addPart(type + count, new File(file.getAbsolutePath()), name);
 				//FilePart part = new FilePart(type + count, name, new File( file.getAbsolutePath() ));
 				count++;
 			}
+
+			//ContentType contentType = ContentType.create(HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
+			ContentType contentType = ContentType.create("text/plain", Charset.forName("UTF-8"));
+			//Charset set = Charset.forName("UTF-8");
+			
 //			parts.add(new BasicNameValuePair("username", account));
 //			parts.add(new BasicNameValuePair("password", password));
 			for (Iterator iterator = inAsset.keySet().iterator(); iterator.hasNext();)
@@ -495,16 +499,17 @@ public class BasePushManager implements PushManager
 					String value = inAsset.get(key);
 					if( value != null)
 					{
-						builder.addPart("field",new StringBody(key, ContentType.TEXT_PLAIN));
-						builder.addPart(key+ ".value",new StringBody(value, ContentType.TEXT_PLAIN));
+						builder.addPart("field",key);
+						builder.addPart(key+ ".value",value);
+						log.info(inAsset.getName() + " " + key + " " + value);
 					}
 				}
 			}
-			builder.addPart("field", new StringBody("name",ContentType.TEXT_PLAIN));
-			builder.addPart("name.value", new StringBody( inAsset.getName(),ContentType.TEXT_PLAIN));
-			builder.addPart("sourcepath", new StringBody( inAsset.getSourcePath(),ContentType.TEXT_PLAIN));
-			builder.addPart("uploadtype", new StringBody( inUploadType,ContentType.TEXT_PLAIN));
-			builder.addPart("id", new StringBody( prefix + inAsset.getId(),ContentType.TEXT_PLAIN));
+			builder.addPart("field", "name");
+			builder.addPart("name.value",  inAsset.getName());
+			builder.addPart("sourcepath",  inAsset.getSourcePath());
+			builder.addPart("uploadtype",  inUploadType);
+			builder.addPart("id",  prefix + inAsset.getId());
 			
 			if( inAsset.getKeywords().size() > 0 )
 			{
@@ -518,7 +523,7 @@ public class BasePushManager implements PushManager
 						buffer.append('|');
 					}
 				}
-				builder.addPart("keywords",new StringBody(buffer.toString(),ContentType.TEXT_PLAIN));
+				builder.addPart("keywords",buffer.toString());
 			}
 			
 //TODO: Do we need to sync the category tree as well?
@@ -535,7 +540,7 @@ public class BasePushManager implements PushManager
 //						buffer.append('|');
 //					}
 //				}
-//				builder.add(new StringBody("libraries", buffer.toString() ));
+//				builder.add("libraries", buffer.toString() ));
 //			}
 
 //			Part[] arrayOfparts = builder.toArray(new Part[builder.size()]);
@@ -752,20 +757,20 @@ public class BasePushManager implements PushManager
 				ors.append(" ");
 			}
 		}
-		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+		HttpRequestBuilder builder = new HttpRequestBuilder();
 
-		builder.addPart("field", new StringBody("publishdestination", ContentType.TEXT_PLAIN));
+		builder.addPart("field", "publishdestination");
 		//builder.addPart(new BasicNameValuePair(("publishdestination.value", "pushhttp");
-		builder.addPart("publishdestination.value", new StringBody(ors.toString(), ContentType.TEXT_PLAIN));
-		builder.addPart("operation", new StringBody("orsgroup", ContentType.TEXT_PLAIN));
+		builder.addPart("publishdestination.value", ors.toString());
+		builder.addPart("operation", "orsgroup");
 
-		builder.addPart("field", new StringBody("status", ContentType.TEXT_PLAIN));
-		builder.addPart("status.value", new StringBody("complete", ContentType.TEXT_PLAIN));
-		builder.addPart("operation", new StringBody("not", ContentType.TEXT_PLAIN));
+		builder.addPart("field", "status");
+		builder.addPart("status.value", "complete");
+		builder.addPart("operation", "not");
 
-		builder.addPart("field", new StringBody("status", ContentType.TEXT_PLAIN));
-		builder.addPart("status.value", new StringBody("error", ContentType.TEXT_PLAIN));
-		builder.addPart("operation", new StringBody("not", ContentType.TEXT_PLAIN));
+		builder.addPart("field", "status");
+		builder.addPart("status.value", "error");
+		builder.addPart("operation", "not");
 
 		method.setEntity(builder.build());
 
@@ -1077,12 +1082,12 @@ public class BasePushManager implements PushManager
 		HttpPost method = new HttpPost(url);
 		MultipartEntityBuilder builder = MultipartEntityBuilder.create();
 		
-		builder.addPart("catalogid", new StringBody("remotecatalogid", ContentType.TEXT_PLAIN));
+		builder.addPart("catalogid", "remotecatalogid");
 
 		for(int i=0; i<inFields.length; i++){
-			builder.addPart("field", new StringBody("inFields[i]", ContentType.TEXT_PLAIN));
-			builder.addPart("operation", new StringBody(inOperations[i], ContentType.TEXT_PLAIN));
-			builder.addPart(inFields[i] + ".value", new StringBody(inValues[i], ContentType.TEXT_PLAIN));
+			builder.addPart("field", "inFields[i]");
+			builder.addPart("operation", inOperations[i]);
+			builder.addPart(inFields[i] + ".value", inValues[i]);
 		}
 		log.info("executing $remotecatalogid, $method");
 		method.setEntity(builder.build());
@@ -1103,9 +1108,9 @@ public class BasePushManager implements PushManager
 			method = new HttpPost(url);
 			builder = MultipartEntityBuilder.create();
 
-			builder.addPart("catalogid", new StringBody(remotecatalogid, ContentType.TEXT_PLAIN));
-			builder.addPart("hitssessionid", new StringBody(sessionid, ContentType.TEXT_PLAIN));
-			builder.addPart("page", new StringBody(String.valueOf(i), ContentType.TEXT_PLAIN));
+			builder.addPart("catalogid", remotecatalogid);
+			builder.addPart("hitssessionid", sessionid);
+			builder.addPart("page", String.valueOf(i));
 			root = execute(remotecatalogid,method);
 			method.releaseConnection();
 			hits = (Element)root.elements().get(0);
