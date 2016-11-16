@@ -31,12 +31,10 @@ public class YoutubeParser
 			return null;
 		}
 		
-		  HttpClient client = HttpClients.createDefault();
-			
 		  RequestConfig globalConfig = RequestConfig.custom()
 	                .setCookieSpec(CookieSpecs.DEFAULT)
 	                .build();
-	        CloseableHttpClient httpClient = HttpClients.custom()
+		  HttpClient client = HttpClients.custom()
 	                .setDefaultRequestConfig(globalConfig)
 	                .build();
 
