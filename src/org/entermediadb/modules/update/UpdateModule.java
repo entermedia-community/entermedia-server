@@ -24,7 +24,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -41,7 +40,6 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
-import org.entermediadb.asset.util.SyncFileDownloader;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.Recipient;
 import org.entermediadb.email.TemplateWebEmail;
@@ -400,49 +398,7 @@ public class UpdateModule extends BaseMediaModule {
 		inReq.redirect("/openedit/editors/themes/finished.html");
 	}
 
-	public void listFilesInDirectory(WebPageRequest inReq) throws Exception {
-		checkLogin(inReq);
-		boolean relative = Boolean.parseBoolean(inReq
-				.getRequestParameter("relative"));
-
-		SyncToServer server = new SyncToServer();
-		server.setPageManager(getPageManager());
-		server.setRoot(getRoot());
-		// server.setRelativeSync(relative);
-		String path = inReq.getRequestParameter("syncpath");
-		if (path == null) {
-			throw new OpenEditException("syncpath is required");
-		}
-		String[] excludes = inReq.getRequestParameters("exclude");
-		if (excludes != null && excludes.length > 0) {
-			for (int i = 0; i < excludes.length; i++) {
-				server.addExclude(excludes[i]);
-			}
-		}
-		Map f = server.buildLocalFileMap(path);
-		List files = new ArrayList(f.values());
-
-		inReq.putPageValue("fileitemlist", files);
-	}
-
-	public void downloadFiles(WebPageRequest inReq) throws Exception {
-		checkLogin(inReq);
-		// User passes a list of files to download and we make a zip file
-		SyncToServer server = new SyncToServer();
-		server.setPageManager(getPageManager());
-		server.setRoot(getRoot());
-		// boolean relative =
-		// Boolean.parseBoolean(inReq.getRequestParameter("relative"));
-		// server.setRelativeSync(relative);
-		// Make list of files
-		String[] paths = inReq.getRequestParameters("file");
-		if (paths == null) {
-			throw new OpenEditException("No files specified");
-		}
-		List files = Arrays.asList(paths);
-		server.getZipUtils().zipFiles(files, inReq.getOutputStream(), false);
-	}
-
+	
 	public void saveSync(WebPageRequest inReq) {
 		String applicationid = inReq.getRequestParameter("applicationid");
 		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
@@ -548,97 +504,7 @@ public class UpdateModule extends BaseMediaModule {
 		inReq.putPageValue("synclist", synchits);
 	}
 
-	public void syncToServer(WebPageRequest inReq) throws Exception {
-
-		// get list for one directory at a time
-		// process list recursively
-		log.info("Starting syncronization");
-
-		boolean usenotification = Boolean.parseBoolean(inReq
-				.findValue("sendnotifications"));
-		try {
-			SyncToServer server = new SyncToServer();
-			configureSync(inReq, server);
-			server.syncFromServer();
-
-		} catch (Exception e) {
-			if (usenotification) {
-				notify(e.toString(), inReq);
-			}
-			throw (e);
-		}
-		if (usenotification) {
-			notify("Sync completed successfully at: " + new Date().toString(),
-					inReq);
-		}
-
-	}
-
-	protected void configureSync(WebPageRequest inReq, SyncFileDownloader server)
-			throws Exception {
-		String applicationid = inReq.findValue("applicationid");
-		Searcher syncSearcher = getSearcherManager().getSearcher(applicationid,
-				"sync");
-		String syncid = inReq.getPage().get("syncid");
-		Data sync = (Data) syncSearcher.searchById(syncid);
-		log.info(sync.get("syncpath"));
-		server.setRoot(getRoot());
-
-		for (Iterator iter = inReq.getCurrentAction().getConfig()
-				.getChildIterator("exclude"); iter.hasNext();) {
-			Configuration exclude = (Configuration) iter.next();
-			server.addExclude(exclude.getValue());
-		}
-		String exlist = sync.get("exclude");
-		if (exlist != null) {
-			String[] list = exlist.split(",");
-			for (int i = 0; i < list.length; i++) {
-				server.addExclude(list[i]);
-			}
-		}
-		server.setPageManager(getPageManager());
-
-		Site toUpgrade = selectSite(inReq, sync);
-		server.setUsername(toUpgrade.getUsername());
-		server.setPassword(toUpgrade.getPassword());
-		server.setServerUrl(toUpgrade.getHref());
-		// Backwards compatability
-		String localPath = sync.get("syncpath");
-		server.setSyncPath(localPath);
-	}
-
-	// public void resetTimeStamps(WebPageRequest inReq) throws Exception {
-	// // get list for one directory at a time
-	// // process list recursively
-	// SyncToServer server = new SyncToServer();
-	// configureSync( inReq, server );
-	// server.resetStamps();
-	//
-	// }
-
-	public void downloadMissing(WebPageRequest inReq) throws Exception {
-		log.info("Starting download...");
-		log.info(inReq.getPath());
-		boolean usenotification = Boolean.parseBoolean(inReq
-				.findValue("sendnotifications"));
-		try {
-			DownloadMissingFromServer server = new DownloadMissingFromServer();
-			configureSync(inReq, server);
-			server.syncFromServer();
-
-		} catch (Exception e) {
-			if (usenotification) {
-				notify(e.toString(), inReq);
-			}
-			throw (e);
-		}
-		if (usenotification) {
-			notify("Download completed successfully at: "
-					+ new Date().toString(), inReq);
-		}
-
-	}
-
+	
 	protected void checkLogin(WebPageRequest inReq) throws Exception {
 		if (inReq.getUser() == null) {
 			String username = inReq.getRequestParameter("accountname");

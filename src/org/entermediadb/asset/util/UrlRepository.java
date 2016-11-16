@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.HeadMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
+import org.apache.http.impl.client.HttpClients;
 import org.openedit.repository.BaseRepository;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.InputStreamItem;
@@ -17,11 +21,16 @@ public class UrlRepository extends  BaseRepository
 {
 	protected HttpClient fieldHttpClient;
 
-	public org.apache.commons.httpclient.HttpClient getHttpClient()
+	public HttpClient getHttpClient()
 	{
 		if (fieldHttpClient == null)
 		{
-			fieldHttpClient = new HttpClient();
+			  RequestConfig globalConfig = RequestConfig.custom()
+		                .setCookieSpec(CookieSpecs.DEFAULT)
+		                .build();
+			  fieldHttpClient = HttpClients.custom()
+		                .setDefaultRequestConfig(globalConfig)
+		                .build();
 		}
 
 		return fieldHttpClient;
@@ -110,7 +119,7 @@ public class UrlRepository extends  BaseRepository
 
 	class UrlContentItem extends InputStreamItem
 	{
-		protected Boolean existed;
+		protected Boolean existed = null;
 		
 		public InputStream getInputStream() throws RepositoryException 
 		{
@@ -118,11 +127,11 @@ public class UrlRepository extends  BaseRepository
 			{
 				String fullpath = getAbsolutePath().replace(" ", "%20");
 				//fullpath = fullpath.replace(";", "%3b");
-				GetMethod postMethod = new GetMethod(fullpath);
-				int statusCode1 = getHttpClient().executeMethod(postMethod);
-				if (statusCode1 == 200)
+				HttpGet postMethod = new HttpGet(fullpath);
+				HttpResponse res = getHttpClient().execute(postMethod);
+				if (res.getStatusLine().getStatusCode() == 200)
 				{
-					fieldInputStream = postMethod.getResponseBodyAsStream();
+					fieldInputStream = res.getEntity().getContent();
 				}
 			}
 			catch ( IOException ex)
@@ -138,9 +147,17 @@ public class UrlRepository extends  BaseRepository
 				try
 				{
 					String fullpath = getAbsolutePath().replace(" ", "%20");
-					HeadMethod postMethod = new HeadMethod(fullpath);
-					int statusCode1 = getHttpClient().executeMethod(postMethod);
-					existed = new Boolean(statusCode1 == 200);
+					HttpHead postMethod = new HttpHead(fullpath);
+					//HeadMethod postMethod = new HeadMethod(fullpath);
+					HttpResponse res = getHttpClient().execute(postMethod);
+					if (res.getStatusLine().getStatusCode() == 200)
+					{
+						existed = Boolean.TRUE;
+					}
+					else
+					{
+						existed = Boolean.FALSE;
+					}
 				}
 				catch ( IOException ex)
 				{

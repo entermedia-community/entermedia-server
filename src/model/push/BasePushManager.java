@@ -80,12 +80,10 @@ public class BasePushManager implements PushManager
 //		System.getProperties().put("proxyHost", "localhost");
 //		System.getProperties().put("proxyPort", "8082");
 		
-	  HttpClient client = HttpClients.createDefault();
-		
 	  RequestConfig globalConfig = RequestConfig.custom()
                 .setCookieSpec(CookieSpecs.DEFAULT)
                 .build();
-        CloseableHttpClient httpClient = HttpClients.custom()
+        HttpClient client = HttpClients.custom()
                 .setDefaultRequestConfig(globalConfig)
                 .build();
 		
@@ -112,7 +110,7 @@ public class BasePushManager implements PushManager
 		try
 		{
 			method.setEntity(new UrlEncodedFormEntity(nvps));
-			CloseableHttpResponse response2 = httpClient.execute(method);
+			HttpResponse response2 = client.execute(method);
 			StatusLine sl = response2.getStatusLine();           
 			//int status = client.executeMethod(method);
 			if (sl.getStatusCode() != 200)

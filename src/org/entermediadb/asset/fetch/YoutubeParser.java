@@ -8,10 +8,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.config.CookieSpecs;
+import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.openedit.OpenEditException;
 
 public class YoutubeParser
@@ -26,8 +31,16 @@ public class YoutubeParser
 			return null;
 		}
 		
-		HttpClient client = new org.apache.commons.httpclient.HttpClient();
-		GetMethod req = new GetMethod(inYoutubeUrl);
+		  HttpClient client = HttpClients.createDefault();
+			
+		  RequestConfig globalConfig = RequestConfig.custom()
+	                .setCookieSpec(CookieSpecs.DEFAULT)
+	                .build();
+	        CloseableHttpClient httpClient = HttpClients.custom()
+	                .setDefaultRequestConfig(globalConfig)
+	                .build();
+
+		HttpGet req = new HttpGet(inYoutubeUrl);
 		Map<String, String> result = new HashMap<String, String>();
 		Map<String, Pattern> patterns = new HashMap<String, Pattern>();
 		
@@ -38,12 +51,12 @@ public class YoutubeParser
 		
 		try
 		{
-			client.executeMethod(req);
-			if( req.getStatusCode() < 200 || req.getStatusCode() > 299 )
+			HttpResponse res = client.execute(req);
+			if( res.getStatusLine().getStatusCode() < 200 || res.getStatusLine().getStatusCode() > 299 )
 			{
 				throw new OpenEditException("Did not get a 200 status code.");
 			}
-			BufferedReader in = new BufferedReader(new InputStreamReader(req.getResponseBodyAsStream()));
+			BufferedReader in = new BufferedReader(new InputStreamReader(res.getEntity().getContent(),"UTF-8"));
 
 			do
 			{
@@ -73,6 +86,10 @@ public class YoutubeParser
 		{
 			log.info("Couldn't get YouTube video: " + e.getLocalizedMessage());
 			return null;
+		}
+		finally
+		{
+			req.releaseConnection();
 		}
 		return result;
 	}
