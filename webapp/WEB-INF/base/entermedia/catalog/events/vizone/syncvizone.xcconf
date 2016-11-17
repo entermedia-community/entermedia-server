@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Sync Assets from VizOne</property>	
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/vizone/syncassets.groovy</script>
+	</path-action>
+		<property name="period">5h</property>
+	
+</page>
