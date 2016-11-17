@@ -52,7 +52,10 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 					ids.add("none");
 				}
 				child.addOrsGroup(inSearcher.getDetail("category"), ids);
-				child.addExact("owner",user.getId());
+				if( user != null)
+				{
+					child.addExact("owner",user.getId());
+				}
 
 				inQuery.setSecurityAttached(true);
 				if(!child.isEmpty())
