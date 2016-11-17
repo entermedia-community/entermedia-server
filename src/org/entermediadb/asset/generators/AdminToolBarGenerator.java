@@ -64,6 +64,10 @@ public class AdminToolBarGenerator extends BaseToolBarGenerator
 			{
 				showtoolbar = user.hasPermission("oe.administration");
 			}
+			if( !showtoolbar)
+			{
+				showtoolbar = user.isInGroup("administrators");
+			}
 		}
 		
 		if(!showtoolbar){
