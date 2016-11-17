@@ -29,7 +29,12 @@ $context.putPageValue("hits",$hits)
 	<ul id="sub-nav" class="search-views">
 		#set ($classname="enabled")
 		#set ($enabled=$hits.getSelectionSize() > 0)
+			#if($enabled)
+	#if($candeleteasset)
+			 <li>   	    <a class="emdialog" href="/emshare/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&amp;hitssessionid=selectedhitsassetmedia/catalogs/public">Delete Assets</a></li>
+			 #end
 		
+		#end
 		#if( $candownload || $canconvert || $candownloadfpo )
 			#if( $librarycol )
 			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
@@ -38,10 +43,12 @@ $context.putPageValue("hits",$hits)
 			#end
 		#end	
 		##Email and publish should be under share
+	
 		#if($canpublish || $canemaillink )
 			<li><a #if( !$enabled ) style="text-decoration:none;" #end>[[Share]]</a>
 				#if( $enabled )
 				<ul>
+
 					#if( $canemaillink )
 					<li><a class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a></li>
 					#end
