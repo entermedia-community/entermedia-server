@@ -251,14 +251,14 @@ public class AssetEditTest extends BaseEnterMediaTest
 		libs.add("1");
 		libs.add("2");
 		product2.setValue("keywords", libs);
-		product2.setProperty("category", "index");
+		product2.setProperty("categories", "index");
 		getMediaArchive().saveAsset(product2, user);
 
 		SearchQuery q = getMediaArchive().getAssetSearcher().createSearchQuery();
 		//HitTracker hits = getMediaArchive().getAssetSearcher().getAllHits();
 		//q.addMatches("id","*");
 		q.addOrsGroup("id", "1 2 102" );
-		q.addSortBy("category");
+		q.addSortBy("categories");
 	
 		getMediaArchive().getSearcherManager().setShowSearchLogs(getMediaArchive().getCatalogId(),true);
 		
