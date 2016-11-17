@@ -331,7 +331,7 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
 		olddetails = new PropertyDetails(archive,searchtype);
 		olddetails.setInputFile(settings);
-		archive.setAllDetails(olddetails, searchtype, settings.getRoot());
+		archive.setAllDetails(olddetails, searchtype, filename, settings.getRoot());
 					
 		ArrayList toremove = new ArrayList();
 		
