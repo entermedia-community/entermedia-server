@@ -280,7 +280,7 @@ public class BasePushManager implements PushManager
 			}
 			
 			upload(asset, archive, "delete",  (List<ContentItem>) Collections.EMPTY_LIST );
-			asset.setProperty("pushstatus", "deleted");
+			asset.setValue("pushstatus", "deleted");
 			archive.saveAsset(asset, null);
 			deleted++;
 		}
@@ -329,13 +329,13 @@ public class BasePushManager implements PushManager
 			try
 			{
 				upload(target, archive, "generated", filestosend);
-				target.setProperty("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				target.setValue("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
 
 			}
 			catch (Exception e)
 			{
-				target.setProperty("pusherrordetails", e.toString());
+				target.setValue("pusherrordetails", e.toString());
 				saveAssetStatus(searcher, savequeue, target, "error", inUser);
 				log.error("Could not push",e);
 			}
@@ -375,7 +375,7 @@ public class BasePushManager implements PushManager
 		String oldstatus = target.get("pushstatus");
 		if( oldstatus == null || !oldstatus.equals(inNewStatus))
 		{
-			target.setProperty("pushstatus", inNewStatus);
+			target.setValue("pushstatus", inNewStatus);
 			savequeue.add(target);
 			if( savequeue.size() == 100 )
 			{
@@ -585,7 +585,7 @@ public class BasePushManager implements PushManager
 					log.error("Missing asset" + data.getSourcePath());
 					continue;
 				}
-				asset.setProperty("pushstatus", inNewStatus);
+				asset.setValue("pushstatus", inNewStatus);
 				savequeue.add(asset);
 				if( savequeue.size() == 1000 )
 				{
@@ -910,9 +910,9 @@ public class BasePushManager implements PushManager
 			{
 				Data newTask = taskSearcher.createNewData();
 				newTask.setSourcePath(inAsset.getSourcePath());
-				newTask.setProperty("status", "new");
-				newTask.setProperty("assetid", assetid);
-				newTask.setProperty("presetid", preset.getId());
+				newTask.setValue("status", "new");
+				newTask.setValue("assetid", assetid);
+				newTask.setValue("presetid", preset.getId());
 				taskSearcher.saveData(newTask, null);
 			}
 			//TODO: Make sure it finished?
@@ -926,18 +926,18 @@ public class BasePushManager implements PushManager
 		{
 			publishqeuerow = publishQueueSearcher.createNewData();
 			publishqeuerow.setId("remote" + publishqueueid);
-			publishqeuerow.setProperty("status", "new");
-			publishqeuerow.setProperty("assetid", assetid);
-			publishqeuerow.setProperty("publishdestination", destinationid);
-			publishqeuerow.setProperty("presetid", preset.getId() );
+			publishqeuerow.setValue("status", "new");
+			publishqeuerow.setValue("assetid", assetid);
+			publishqeuerow.setValue("publishdestination", destinationid);
+			publishqeuerow.setValue("presetid", preset.getId() );
 			//Why is this not being passed back to us?
 			if( exportpath == null )
 			{
 				exportpath = inArchive.asExportFileName(inAsset, preset);
 			}
-			publishqeuerow.setProperty("exportname", exportpath);
+			publishqeuerow.setValue("exportname", exportpath);
 			publishqeuerow.setSourcePath(inAsset.getSourcePath());
-			publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			publishqeuerow.setValue("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			publishQueueSearcher.saveData(publishqeuerow, null);
 		}
 		inArchive.fireMediaEvent("publishing/publishasset", null, inAsset);
@@ -1251,7 +1251,7 @@ public class BasePushManager implements PushManager
 		while (keys.hasMoreElements()){
 			String key = keys.nextElement().toString();
 			String value = inMetadata.getProperty(key);
-			asset.setProperty(key, value);
+			asset.setValue(key, value);
 		}
 		importer.saveAsset(inArchive, null, asset); //TODO: check if zip functionality works
 		return asset;
