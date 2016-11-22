@@ -61,6 +61,7 @@
 #set( $valueid = "$fieldname" )
 
 #if($types)
+$types.enableBulkOperations()
 	#if( $foreignkeyid)
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");

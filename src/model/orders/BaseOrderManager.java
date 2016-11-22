@@ -700,7 +700,8 @@ public class BaseOrderManager implements OrderManager {
 			//query.addNot("status", "complete");
 			HitTracker hits =  itemsearcher.search(query); //not cached
 
-			if( hits.size() == 0)
+			int size = hits.size();
+			if( size == 0)
 			{
 				log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
 				//error?
@@ -723,7 +724,9 @@ public class BaseOrderManager implements OrderManager {
 			}
 			//If changed then save history and update order
 
-			if((temphistory.getItemErrorCount() + temphistory.getItemSuccessCount()) == hits.size() )
+			int itemErrorCount = temphistory.getItemErrorCount();
+			int itemSuccessCount = temphistory.getItemSuccessCount();
+			if((itemErrorCount + itemSuccessCount) == size )
 			{
 				//Finalize should be only for complete orders.
 				inOrder.setOrderStatus("complete");

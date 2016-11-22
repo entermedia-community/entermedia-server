@@ -758,21 +758,19 @@ public class BasePushManager implements PushManager
 			}
 		}
 		HttpRequestBuilder builder = new HttpRequestBuilder();
+		
+		HashMap map = new HashMap();
+		map.put("field", "publishdestination");
+		map.put("publishdestination.value", ors.toString());
+		map.put("operation", "orsgroup");
+		map.put("field", "status");
+		map.put("status.value", "complete");
+		map.put("operation", "not");
+		map.put("field", "status");
+		map.put("status.value", "error");
+		map.put("operation", "not");
 
-		builder.addPart("field", "publishdestination");
-		//builder.addPart(new BasicNameValuePair(("publishdestination.value", "pushhttp");
-		builder.addPart("publishdestination.value", ors.toString());
-		builder.addPart("operation", "orsgroup");
-
-		builder.addPart("field", "status");
-		builder.addPart("status.value", "complete");
-		builder.addPart("operation", "not");
-
-		builder.addPart("field", "status");
-		builder.addPart("status.value", "error");
-		builder.addPart("operation", "not");
-
-		method.setEntity(builder.build());
+		method.setEntity(builder.build(map));
 
 		try
 		{
@@ -850,7 +848,9 @@ public class BasePushManager implements PushManager
 				//saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=error";
 				saveurl = saveurl + "&field=errordetails&errordetails.value=output_not_found";
 				HttpPost savemethod = new HttpPost(saveurl);
+		
 				Element saveroot = execute(inArchive.getCatalogId(), savemethod);
+				
 				return;
 			}
 
@@ -875,7 +875,7 @@ public class BasePushManager implements PushManager
 				filestosend.add(inputpage.getContentItem());
 
 				//String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
-				
+			
 				upload(asset, inArchive, type, filestosend);
 			}
 
