@@ -1,16 +1,15 @@
 ## Required: path, id
 ## Optional: width, autostart, hit or asset (for the file name)
-
-#if(!$path)
-	#set ($path = $context.getRequestParameter("path"))
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $asset.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
 #end
 
-#if( !$path)
-	#set ($path = "$home$mediaarchive.getCatalogHome()/downloads/mp3/$asset.sourcepath/audio.mp3")
-#end
 
-#set( $id = $asset.id )
-#set( $name = $asset.name )
+#set ($path = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")
 
 <div id="playerwindow${id}" style="width: 120px;">
 

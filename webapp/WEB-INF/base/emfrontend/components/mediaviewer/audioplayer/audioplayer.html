@@ -1,21 +1,15 @@
 ## Required: path, id
 ## Optional: width, autostart, hit or asset (for the file name)
-
-#if(!$path)
-    #set ($path = $context.getRequestParameter("path"))
-#end
-
-#if( !$path)
-    #set ($path = "$home$apphome/views/modules/asset/downloads/mp3/$asset.sourcepath/audio.mp3")
-#end
-
-#if( $asset.get("fileformat") == "mp3")
-	#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
-    #set ($path = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $asset.sourcepath)
 #else
-    #set ($path = "$home$apphome/views/modules/asset/downloads/mp3/$asset.sourcepath/audio.mp3")
-#end    
+	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
 
+
+#set ($path = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")
 
 #set( $name = $asset.name )
 

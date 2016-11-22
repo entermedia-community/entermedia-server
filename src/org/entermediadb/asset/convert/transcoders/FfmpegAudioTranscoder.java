@@ -47,15 +47,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		 */
 		String inputExt = PathUtilities.extractPageType(input.getAbsolutePath());
 		String outputExt = inStructions.getOutputExtension();
-		String useoriginalmediawhenpossible = inStructions.getProperty("useoriginalmediawhenpossible");
-		if (Boolean.parseBoolean(useoriginalmediawhenpossible) && outputExt != null && outputExt.equals(inputExt))
-		{
-			result.setOk(true);
-			result.setComplete(true);
-			return result;
-		}
-//		else
-//		{
+		
 		long timeout = inStructions.getConversionTimeout();
 		String inOutputType = inStructions.getOutputExtension();
 		if ("wma".equalsIgnoreCase(inputExt) || "aac".equalsIgnoreCase(inputExt) || "m4a".equalsIgnoreCase(inputExt) || "flac".equalsIgnoreCase(inputExt) || "ogg".equalsIgnoreCase(inputExt))
@@ -66,7 +58,6 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		{
 			runLame(input, inStructions, result, timeout);
 		}
-//		}
 		if (result.isOk())
 		{
 			result.setComplete(true);

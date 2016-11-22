@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.openedit.repository.ContentItem;
 
 public class AudioConversionManager extends BaseConversionManager
@@ -79,9 +80,35 @@ public class AudioConversionManager extends BaseConversionManager
 
 
 	@Override
+	public ConvertResult createOutput(ConvertInstructions inStructions)
+	{
+	
+		if("mp3".equalsIgnoreCase(inStructions.getAsset().getFileFormat())){
+			if(inStructions.getOutputExtension().equalsIgnoreCase("mp3")){
+				
+				ConvertResult result = new ConvertResult();
+	    		result.setInstructions(inStructions);
+	    		result.setOk(true);
+	    		result.setComplete(true);
+	    		result.setOutput(inStructions.getOriginalDocument());
+	    		return result;
+				
+				
+				
+			}
+		}
+		
+		// TODO Auto-generated method stub
+		return super.createOutput(inStructions);
+	}
+	
+	
+	@Override
 	protected String getRenderType()
 	{
 		return "audio";
 	}
-
+	
+	
+	
 }
