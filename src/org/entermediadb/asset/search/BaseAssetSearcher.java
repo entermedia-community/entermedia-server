@@ -519,11 +519,12 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	}
 	
 	@Override
-	public void putMappings() {
+	public boolean putMappings() {
 		if(getDataConnector() instanceof ElasticAssetDataConnector){
 			//I hate this class.  I want to go back to a normal searcher.
-				((ElasticAssetDataConnector)getDataConnector()).putMappings();
+				return ((ElasticAssetDataConnector)getDataConnector()).putMappings();
 			}
+		return super.putMappings();
 	}
 	
 	

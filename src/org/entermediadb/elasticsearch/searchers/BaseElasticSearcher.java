@@ -412,7 +412,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	// log.error(ex);
 	// }
 	// }
-	public void putMappings()
+	public boolean putMappings()
 	{
 		AdminClient admin = getElasticNodeManager().getClient().admin();
 
@@ -453,8 +453,6 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			// Remove error warning
 			getElasticNodeManager().removeMappingError(getSearchType());
-
-			return;
 		}
 		catch (Exception ex)
 		{
@@ -462,9 +460,11 @@ public class BaseElasticSearcher extends BaseSearcher
 			// https://github.com/jprante/elasticsearch-knapsack
 			log.info("Could not put mapping over existing mapping.", ex);
 			getElasticNodeManager().addMappingError(getSearchType(), ex.getMessage());
-			throw new OpenEditException("Mapping was not saved " + getSearchType(),ex);
+			//throw new OpenEditException("Mapping was not saved " + getSearchType(),ex);
+			return false;
 			// you will need to export data");
 		}
+		return true;
 		// try
 		// {
 		// //Save existing index values

@@ -128,6 +128,7 @@ public void init(){
 	importPermissions(mediaarchive,rootdrive, tempindex);
 	if(deleteold){
 		nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
+		log.info("Import canceled");
 	}
 	mediaarchive.getSearcherManager().clear();
 }
@@ -139,7 +140,10 @@ public void importPermissions(MediaArchive mediaarchive, String rootdrive, Strin
 	{
 		Searcher sg = mediaarchive.getSearcher("settingsgroup");
 		sg.setAlternativeIndex(tempindex);
-		sg.putMappings();
+		if( !sg.putMappings() )
+		{
+			
+		}
 		
 		XmlUtil util = new XmlUtil();
 		Element root = util.getXml(upload.getReader(),"utf-8");
@@ -197,7 +201,10 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 	Searcher searcher = mediaarchive.getSearcher(searchtype);
 	details = searcher.getPropertyDetails();
 	searcher.setAlternativeIndex(tempindex);
-	searcher.putMappings();
+	if( !searcher.putMappings() )
+	{
+		throw new OpenEditException("Could not define dynamic or static fields, check mapping errors");		
+	}
 	
 	
 	searcher.setForceBulk(true);
