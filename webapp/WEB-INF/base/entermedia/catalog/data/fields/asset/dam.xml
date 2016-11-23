@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page> 
-  <property id="description" defaultoperation="freeform" index="false" keyword="false" filter="false" stored="false" editable="false" sortable="true">All Fields 
+  <property id="description" defaultoperation="freeform" index="true" keyword="false" filter="false" stored="false" editable="false" sortable="true">All Fields 
     <name> 
       <language id="de"><![CDATA[All Fields]]></language>  
       <language id="en"><![CDATA[All Fields]]></language>  

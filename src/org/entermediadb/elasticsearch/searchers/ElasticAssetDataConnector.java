@@ -208,7 +208,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			{
 				asset.setCatalogId(getCatalogId());
 			}
-			inContent.field("catalogid", asset.getCatalogId());
+			//inContent.field("catalogid", asset.getCatalogId());
 
 			Set categories = buildCategorySet(asset);
 			String desc = populateDescription(asset, inDetails, categories);

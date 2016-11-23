@@ -198,6 +198,8 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 	details = searcher.getPropertyDetails();
 	searcher.setAlternativeIndex(tempindex);
 	searcher.putMappings();
+	
+	
 	searcher.setForceBulk(true);
 	while( (trow = file.getNextRow()) != null ) 
 	{
@@ -258,12 +260,10 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 					continue;
 				}
 				
-				
-				
-				
-				
-				
-				if(detail == null){
+				if(detail == null)
+				{
+					
+					
 					continue; // this should not happen if you run mergemappigns first
 				}
 				if( value == null)
