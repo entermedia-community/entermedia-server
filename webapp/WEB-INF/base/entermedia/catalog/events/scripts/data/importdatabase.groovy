@@ -93,7 +93,10 @@ public void init(){
 	}
 	ordereredtypes.addAll(childrennames);
 	ordereredtypes.remove("settingsgroup");
-		
+	ordereredtypes.remove("lock");
+	ordereredtypes.remove("category");
+	ordereredtypes.add(0,"category");
+	
 	/*
 	 Page categories = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/category.csv");
 	 if(categories.exists()){
@@ -126,8 +129,12 @@ public void init(){
 		}
 	}
 	importPermissions(mediaarchive,rootdrive, tempindex);
-	if(deleteold){
+	if(deleteold)
+	{
 		nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
+	}
+	else
+	{	
 		log.info("Import canceled");
 	}
 	mediaarchive.getSearcherManager().clear();
@@ -135,16 +142,15 @@ public void init(){
 
 
 public void importPermissions(MediaArchive mediaarchive, String rootdrive, String tempindex) {
+	Searcher sg = mediaarchive.getSearcher("settingsgroup");
+	sg.setAlternativeIndex(tempindex);
+	if( !sg.putMappings() )
+	{
+		throw new OpenEditException("Could not import permissions ");
+	}
 	Page upload = mediaarchive.getPageManager().getPage(rootdrive + "/lists/settingsgroup.xml");
 	if( upload.exists() )
 	{
-		Searcher sg = mediaarchive.getSearcher("settingsgroup");
-		sg.setAlternativeIndex(tempindex);
-		if( !sg.putMappings() )
-		{
-			
-		}
-		
 		XmlUtil util = new XmlUtil();
 		Element root = util.getXml(upload.getReader(),"utf-8");
 		for(Iterator iterator = root.elementIterator(); iterator.hasNext();) {
@@ -152,7 +158,7 @@ public void importPermissions(MediaArchive mediaarchive, String rootdrive, Strin
 			String permsstring = row.attributeValue("permissions");
 			if( permsstring != null) //upgrade?
 			{
-				return;
+				continue;
 			}
 			Set perms = new HashSet();
 			for(Iterator iterator2 = row.attributes().iterator(); iterator2.hasNext();) {
@@ -171,16 +177,17 @@ public void importPermissions(MediaArchive mediaarchive, String rootdrive, Strin
 			existing.setValue("permissions", perms);
 			sg.saveData(existing, null);
 		}
-		sg.setAlternativeIndex(null);
 	}
-	
+	sg.reIndexAll();
+	sg.setAlternativeIndex(null);
+
 }
 
 
 public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
 	
-	log.info("Importing " + upload.getPath());
+	log.info("Importing data " + upload.getPath());
 	Row trow = null;
 	ArrayList tosave = new ArrayList();
 	String catalogid = mediaarchive.getCatalogId();
@@ -305,11 +312,8 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 	
 	searcher.saveAllData(tosave, null);
 	searcher.setAlternativeIndex(null);
-		
 	
 	FileUtils.safeClose(reader);
-	
-	tosave.clear();	
 	searcher.setForceBulk(false);
 	searcher.setAlternativeIndex(null);
 	log.info("Saved " + searchtype + " "  +  tosave.size() );
@@ -320,7 +324,7 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) {
 
 	
-	log.info("Importing " + upload.getPath());
+	log.info("putMapping for " + upload.getPath());
 	Row trow = null;
 	ArrayList tosave = new ArrayList();
 	String catalogid = mediaarchive.getCatalogId();
