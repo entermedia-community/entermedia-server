@@ -225,7 +225,15 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			String parentid = (String)cat.getValue("parentid");
 			if( parentid != null && !parentid.equals(inCategoryId))
 			{
-				cat.setParentCategory(getCategory(parentid));
+				Category parent = getCategory(parentid);
+				if( parent != null )
+				{
+					cat.setParentCategory(parent);
+				}
+				else
+				{
+					log.error("Missing parent category " + parentid + " on child " + inCategoryId);
+				}
 			}
 		}
 		return cat;
