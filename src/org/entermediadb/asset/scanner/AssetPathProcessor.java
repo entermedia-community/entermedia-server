@@ -130,7 +130,7 @@ public class AssetPathProcessor extends PathProcessor
 		if( !fieldFileUtils.isLegalFilename(inItem.getPath()))
 		{
 			log.info("Path is not web friendly.  Will have archivepath set");
-			return true;
+			//return true;
 		}
 
 		return super.acceptFile(inItem);
