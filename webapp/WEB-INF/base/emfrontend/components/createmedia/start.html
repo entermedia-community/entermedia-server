@@ -1,11 +1,12 @@
 <div id="createmediapanel" style="padding-top:20px;">
 #set( $collectionid = $context.getRequestParameter("collectionid") )
+#set( $nodeID = $context.getRequestParameter("nodeID") )
 
 <div class="row" style="max-width: 850px;margin: auto;">
 
 #if( $canviewupload)
      <div class="col-xs-3">
-  		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid">
+  		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid&nodeID=$!nodeID">
       <img  src="$home$apphome/components/createmedia/upload/add.png" style="height: 100px; width: 100%; display: block;">
       <div class="caption">
         <h3>[[Upload Media]]</h3>

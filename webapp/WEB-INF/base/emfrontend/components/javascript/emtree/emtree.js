@@ -221,9 +221,14 @@ jQuery(document).ready(function()
 				if( collectionid )
 				{
 					postfix = "&collectionid=" + collectionid;
+					gotopage(tree,node,maxlevel,url,postfix);
+				}
+				else
+				{
+					url = tree.data("home") + "/views/upload/create/createnewstart.html?" + "nodeID=" + nodeid;
+					document.location.href = url;
 				}
 				
-				gotopage(tree,node,maxlevel,url,postfix);
 						
 				return false;
 	} );
