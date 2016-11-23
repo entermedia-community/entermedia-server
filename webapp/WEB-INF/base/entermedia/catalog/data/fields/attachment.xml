@@ -17,8 +17,8 @@
       <language id="fr"><![CDATA[prénom]]></language> 
     </name> 
   </property>  
-  <property id="description" editable="false" index="false" keyword="false" filter="false" stored="false" sortable="true">All Fields 
-    <name> 
+  <property id="description" index="true" editable="false" >
+  	 <name> 
       <language id="de"><![CDATA[All Fields]]></language>  
       <language id="en"><![CDATA[All Fields]]></language>  
       <language id="es"><![CDATA[Todos los campos]]></language>  

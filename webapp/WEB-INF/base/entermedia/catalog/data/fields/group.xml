@@ -1,7 +1,16 @@
 <properties>		
 	<property id="id" index="true" stored="true"  keyword="true"  >id</property>
 	<property id="name" index="true" stored="true" editable="true" keyword="true"  >Name</property>
-	<property id="description" index="true" >All Fields</property>
+	
+  <property id="description" index="true" editable="false" >
+	  	 <name> 
+	      <language id="de"><![CDATA[All Fields]]></language>  
+	      <language id="en"><![CDATA[All Fields]]></language>  
+	      <language id="es"><![CDATA[Todos los campos]]></language>  
+	      <language id="fr"><![CDATA[All Fields]]></language> 
+	    </name> 
+	  </property>  
+
 	<property id="enabled" index="true" stored="true" editable="true" datatype="boolean">Enabled</property>
 	<property id="datetimeformat" index="true" stored="true" editable="true" >Short Date Format</property>
 </properties>

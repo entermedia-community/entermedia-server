@@ -1,7 +1,17 @@
 <properties>
 	<property id="id" index="true" stored="true"  keyword="true" >Username</property>
 	<property id="name" index="true" stored="true" editable="false">Name</property>
-	<property id="description" index="true">User Search</property>
+
+	  <property id="description" index="true" editable="false" >
+	  	 <name> 
+	      <language id="de"><![CDATA[All Fields]]></language>  
+	      <language id="en"><![CDATA[All Fields]]></language>  
+	      <language id="es"><![CDATA[Todos los campos]]></language>  
+	      <language id="fr"><![CDATA[All Fields]]></language> 
+	    </name> 
+	  </property>  
+	
+	<property id="description" index="true" editable="false" >User Search</property>
 	<property id="screenname" index="true" stored="true" keyword="true" editable="true">Screen Name</property>
 	<property id="firstName" index="true" stored="true" keyword="true" editable="true" >First Name</property>
 	<property id="lastName" index="true" stored="true" keyword="true" editable="true" >Last Name</property>
@@ -13,8 +23,6 @@
 	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 
 	<property id="groups" stored="true" index="true" type="list"   viewtype="multiselect"  listid="group" editable="false">Groups</property>
-
-<!--  Custom fields -->
 
 
 	
