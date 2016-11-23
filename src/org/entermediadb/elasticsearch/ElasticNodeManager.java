@@ -760,45 +760,26 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		String newindex = null;
 		try
 		{
-			
-			newindex = prepareTemporaryIndex(inCatalogId, mappedtypes);
-
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
 			getPageManager().clearCache();
 			getSearcherManager().getCacheManager().clearAll();
-
 			
-			List sorted = archive.listSearchTypes();
-			sorted.add(0, "category");
+			newindex = prepareTemporaryIndex(inCatalogId, mappedtypes);
+
+			mappedtypes.remove("lock");
+
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
-				String type = (String) iterator.next();
-				if(!sorted.contains(type)){
-					sorted.add(type);
-				}
-				
-			}
-			sorted.remove("lock");
-			Searcher locksearcher = getSearcherManager().getSearcher(inCatalogId, "lock");
-			locksearcher.setAlternativeIndex(newindex);//Should				
-			locksearcher.putMappings();
-			locksearcher.setAlternativeIndex(null);
-
-			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
-			{
 				String searchtype = (String) iterator.next();
+				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 				
-					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-					
-						searcher.setAlternativeIndex(newindex);//Should		
-						long start = System.currentTimeMillis();
-						searcher.reindexInternal();
-						long end = System.currentTimeMillis();
-						log.info("Reindex of " + searchtype + " took " + (end - start) / 1000L);
-						searcher.setAlternativeIndex(null);
-					
-				
+				searcher.setAlternativeIndex(newindex);//Should		
+				long start = System.currentTimeMillis();
+				searcher.reindexInternal();
+				long end = System.currentTimeMillis();
+				log.info("Reindex of " + searchtype + " took " + (end - start) / 1000L);
+				searcher.setAlternativeIndex(null);
 			}
 
 			loadIndex(id, newindex, true);
@@ -828,52 +809,20 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		Date date = new Date();
 		String id = toId(inCatalogId);
-
-		
-		
-		
-		
 		String tempindex = id + date.getTime();
 		prepareIndex(tempindex);
 		//need to reset/creat the mappings here!
 		getMappingErrors().clear();
-		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-		List withparents = archive.findChildTablesNames();
 
-		
-		List sorted = archive.listSearchTypes();
 		for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 		{
-
 			String searchtype = (String) iterator.next();
-		
-				if (!withparents.contains(searchtype))
-				{
-
-					Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-
-					searcher.setAlternativeIndex(tempindex);//Should				
-					searcher.putMappings();
-					searcher.setAlternativeIndex(null);
-				}
-			
-		}
-		
-		
-		for (Iterator iterator = withparents.iterator(); iterator.hasNext();)
-		{
-			String searchtype = (String) iterator.next();
-
 			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
-
 			searcher.setAlternativeIndex(tempindex);//Should				
-
 			searcher.putMappings();
 			searcher.setAlternativeIndex(null);
-
 		}
 
-	
 		if (!getMappingErrors().isEmpty())
 		{
 			DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(tempindex)).actionGet();
@@ -896,9 +845,31 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		ArrayList types = new ArrayList();
 		  ImmutableOpenMap<String, MappingMetaData> mapping  = resp.mappings().get(oldindex);
 		   for (ObjectObjectCursor<String, MappingMetaData> c : mapping) {
-		       System.out.println(c.key+" = "+c.value.source());
+		      // System.out.println(c.key+" = "+c.value.source());
 		       types.add(c.key);
 		   }
+
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+		final List withparents = archive.findChildTablesNames();
+
+		types.sort(new Comparator()
+		{
+			@Override
+			public int compare(Object inO1, Object inO2)
+			{
+				if( withparents.contains(inO1))
+				{
+					return -1;
+				}
+				if( withparents.contains(inO2))
+				{
+					return 1;
+				}
+				return 0;
+			}
+		});
+		types.remove("category");
+		types.add(0,"category");
 		return types;
 		
 	}
