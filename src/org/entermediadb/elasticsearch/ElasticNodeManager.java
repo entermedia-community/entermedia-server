@@ -859,11 +859,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				if( withparents.contains(inO1))
 				{
-					return -1;
+					return 1;
 				}
 				if( withparents.contains(inO2))
 				{
-					return 1;
+					return -1;
 				}
 				return 0;
 			}
