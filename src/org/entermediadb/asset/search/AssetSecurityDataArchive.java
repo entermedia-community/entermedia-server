@@ -292,7 +292,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		{
 			return true;
 		}
-		List<Category> exactcategories = inAsset.getCategories();
+		Collection<Category> exactcategories = inAsset.getCategories();
 
 		if (inProfile != null)
 		{

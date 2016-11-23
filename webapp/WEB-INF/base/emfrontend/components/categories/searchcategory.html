@@ -1,6 +1,11 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 #set( $categories = $context.getRequestParameter("category.values") )
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category-exact.values") )
+#end	
+
+
 #set ($longform = $context.getRequestParameter("longform") )
 <div id="search-catgories" >
 	<div id="searcharea" >

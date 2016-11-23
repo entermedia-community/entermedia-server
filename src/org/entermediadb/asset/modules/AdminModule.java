@@ -947,7 +947,7 @@ public class AdminModule extends BaseModule
 		{
 			return;
 		}
-		String host = inReq.getCurrentAction().getChildValue("redirecthost");
+		String host = inReq.findValue("redirecthost");
 		URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
 		if (utils == null)
 		{

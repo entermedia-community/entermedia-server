@@ -117,10 +117,6 @@ public class AssetPathProcessor extends PathProcessor
 	@Override
 	public boolean acceptFile(ContentItem inItem)
 	{
-		if( inItem.getLength() == 0 )
-		{
-			return false;
-		}
 		String path = inItem.getAbsolutePath();
 		if (isOnWindows())
 		{

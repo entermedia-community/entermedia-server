@@ -45,7 +45,13 @@
 
 		<div id="uploadmetadata">
 		<div class="ui-widget uipanel">
-		    <div  class="ui-widget-header">[[Metadata]]</div>
+		    <div  class="ui-widget-header">[[Metadata]]
+		    	#if( $caneditmetadatasetup )
+		    	<span class="widget-header-edit">
+				 <a class="ir" href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload">[[Edit]]</a>
+				</span>
+				#end
+		    </div>
 		    <div  class="ui-widget-content">
 				<form id="uploaddata" name="wizard" onSubmit="return false;"
 				    action="$root/finish.html" class="validate"  >

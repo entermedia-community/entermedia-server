@@ -208,9 +208,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		}
 	}
 
-	public List<Category> getCategories()
+	public Collection<Category> getCategories()
 	{
-		return (List<Category>) getValue("category-exact");
+		return (Collection<Category>) getValue("category-exact");
 	}
 
 	/**
@@ -603,7 +603,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 	{
 		if (getCategories() != null && getCategories().size() > 0)
 		{
-			return (Category) getCategories().get(0);
+			return (Category) getCategories().iterator().next();
 		}
 		return null;
 	}
@@ -676,14 +676,13 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 				String[] vals = VALUEDELMITER.split((String) inValue);
 				inValue = Arrays.asList(vals);
 			}
+			log.info("saving " + getId() + " " + inValue);
 		}
 		else if ("category-exact".equals(inKey) || "category".equals(inKey))
 		{
 			if (inValue != null)
 			{
 				//This is annoying. We will need to fix categories when we save this asset
-				Collection cats = getCategories();
-				cats.clear();
 				Collection catids = null;
 				if (inValue instanceof Collection)
 				{
@@ -697,18 +696,27 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 					catids = Arrays.asList(vals);
 				}
 
+				Collection cats = new HashSet();
 				for (Iterator iterator = catids.iterator(); iterator.hasNext();)
 				{
-					String row = (String) iterator.next();
-					String[] ids = VALUEDELMITER.split(row.replaceAll(" " , "|"));
-					for (int i = 0; i < ids.length; i++)
+					Object row = iterator.next();
+					if( row instanceof Category)
 					{
-						Category cat = getMediaArchive().getCategory(ids[i]);
-						if (cat != null)
-						{
-							cats.add(cat);
-						}						
+						cats.add(row);
 					}
+					else
+					{
+						String id = (String)row;
+						String[] ids = VALUEDELMITER.split(id.replaceAll(" " , "|"));
+						for (int i = 0; i < ids.length; i++)
+						{
+							Category cat = getMediaArchive().getCategory(ids[i]);
+							if (cat != null)
+							{
+								cats.add(cat);
+							}						
+						}
+					}	
 				}
 				inKey = "category-exact";
 				inValue = cats;

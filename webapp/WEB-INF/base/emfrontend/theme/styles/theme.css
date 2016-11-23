@@ -959,6 +959,7 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
     border-radius: 0 0 5px 5px;
     border: 1px solid #ccc;
     border-top: none;
+    background: #fff;
 }
 #emcontainer {
     background: none;

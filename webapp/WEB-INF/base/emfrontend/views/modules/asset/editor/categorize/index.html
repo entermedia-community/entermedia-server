@@ -11,7 +11,7 @@
 <input name="assetid" value="$asset.id" type="hidden" />
 <input name="save" value="true" type="hidden" />
 #set( $val = $asset.get("category-exact"))
-<input name="field" value="category" type="hidden" value="$!val" />
+<input name="field" value="category-exact" type="hidden" />
 
 		$context.putPageValue("searcher", $mediaarchive.getAssetSearcher())   
 		$context.putPageValue("data", $asset)
@@ -20,7 +20,7 @@
 		$context.putPageValue("existing", $val)
 		#end
 		$context.putPageValue("detail", $mediaarchive.getAssetSearcher().getDetail("category-exact"))
-		$pages.include("$apphome/components/xml/types/category.html?longform=true", $context)
+		$pages.include("$apphome/components/xml/types/category-exact.html?longform=true", $context)
 
 <br>
 <input type="submit" value="Save" />

@@ -564,7 +564,7 @@ public class DataEditModule extends BaseMediaModule
 					{
 						continue;
 					}
-					if( detail.isBoolean())
+					if( detail.isBoolean() || detail.isMultiValue() )
 					{
 						fieldswithvalues.add(detail.getId());
 						continue;
@@ -596,7 +596,7 @@ public class DataEditModule extends BaseMediaModule
 				count = compositedata.size();
 				compositedata.saveChanges();
 				// should we redirect to a save ok page?
-				redirectToSaveOk(inReq);
+				//redirectToSaveOk(inReq);
 			}
 			else
 			{

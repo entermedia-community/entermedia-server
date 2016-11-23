@@ -194,83 +194,83 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		getRemovedKeywords().add(inKey);
 	}
 
-	public List getCategories()
+	public Collection getCategories()
 	{
-		Object vals = getValues("category-exact");
-		List mycats = null;
-		if(vals instanceof List){
-			 mycats = (List)vals;
-
-		}
-		if(vals instanceof Collection){
-			Collection target = (Collection)vals;
-			ArrayList finalvals = new ArrayList();
-			for (Iterator iterator = target.iterator(); iterator.hasNext();)
-			{
-				Object object = (Object) iterator.next();
-				if(object instanceof String)
-				{
-					Category cat = getMediaArchive().getCategory((String) object);
-					finalvals.add(cat);
-
-				} 
-				else if(object instanceof Category){
-					finalvals.add(object);
-				}
-			}
-			
-			mycats = finalvals;
-		}
-		
-		if( mycats == null )
-		{
-			Data first = (Data)getSelectedResults().first();
-			if( first == null )
-			{
-				return Collections.EMPTY_LIST;
-			}
-			String fcats = first.get("category-exact");
-			if( fcats != null )
-			{
-				String[] catlist = fcats.split("\\|");
-				for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
-				{
-					Data data = (Data) iterator.next();
-					String cats = data.get("category-exact");
-					if( cats != null )
-					{
-						for (int i = 0; i < catlist.length; i++)
-						{
-							String  catid = catlist[i];
-							if(catid != null && !cats.contains(catid) )
-							{
-								catlist[i] = null;
-							}
-						}
-					}
-				}
-				ArrayList categories = new ArrayList();
-				for (int i = 0; i < catlist.length; i++)
-				{
-					String  catid = catlist[i];
-					if( catid != null )
-					{
-						Category cat = getMediaArchive().getCategory(catid.trim());
-						if( cat != null )
-						{
-							categories.add( cat );
-						}
-					}
-				}
-				Collections.sort(categories);
-				mycats  = categories;
-			}
-			else
-			{
-				mycats = new ArrayList();
-			}
-		}
-		return mycats;
+		Collection val = (Collection)getValue("category-exact");
+//		List mycats = null;
+//		if(vals instanceof List){
+//			 mycats = (List)vals;
+//
+//		}
+//		if(vals instanceof Collection){
+//			Collection target = (Collection)vals;
+//			ArrayList finalvals = new ArrayList();
+//			for (Iterator iterator = target.iterator(); iterator.hasNext();)
+//			{
+//				Object object = (Object) iterator.next();
+//				if(object instanceof String)
+//				{
+//					Category cat = getMediaArchive().getCategory((String) object);
+//					finalvals.add(cat);
+//
+//				} 
+//				else if(object instanceof Category){
+//					finalvals.add(object);
+//				}
+//			}
+//			
+//			mycats = finalvals;
+//		}
+//		
+//		if( mycats == null )
+//		{
+//			Data first = (Data)getSelectedResults().first();
+//			if( first == null )
+//			{
+//				return Collections.EMPTY_LIST;
+//			}
+//			String fcats = first.get("category-exact");
+//			if( fcats != null )
+//			{
+//				String[] catlist = fcats.split("\\|");
+//				for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
+//				{
+//					Data data = (Data) iterator.next();
+//					String cats = data.get("category-exact");
+//					if( cats != null )
+//					{
+//						for (int i = 0; i < catlist.length; i++)
+//						{
+//							String  catid = catlist[i];
+//							if(catid != null && !cats.contains(catid) )
+//							{
+//								catlist[i] = null;
+//							}
+//						}
+//					}
+//				}
+//				ArrayList categories = new ArrayList();
+//				for (int i = 0; i < catlist.length; i++)
+//				{
+//					String  catid = catlist[i];
+//					if( catid != null )
+//					{
+//						Category cat = getMediaArchive().getCategory(catid.trim());
+//						if( cat != null )
+//						{
+//							categories.add( cat );
+//						}
+//					}
+//				}
+//				Collections.sort(categories);
+//				mycats  = categories;
+//			}
+//			else
+//			{
+//				mycats = new ArrayList();
+//			}
+//		}
+		return val;
 	}
 
 	public void removeCategory(Category inCategory)
@@ -288,32 +288,8 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{	
 		if (size() > 0)
 		{
-			String val = getMap().getString(inId); //set by the user since last save
-//			if( val == null && fieldPropertiesPreviouslySaved != null)
-//			{
-//				val = (String)getPropertiesPreviouslySaved().get(inId);
-//			}
-			if( val == null)
-			{
-				val = super.get(inId); //set by looking over the cached results
-			}
-			if( val != null ) //already set to a value
-			{
-				if( val.length() == 0 )
-				{
-					return null; //set to empty
-				}
-				return val;
-			}
-//			if( val == null ) 
-//			{
-//				return null;
-//			}
-			//return something only if all the values match the first record
-			val = getValueFromResults(inId);
-			//getPropertiesPreviouslySaved().put(inId, val);
-			//super.setProperty(inId, val);
-			return val;
+			Object val = getValue(inId);
+			return getMap().toString(val);
 		}
 		
 		return null;
@@ -323,7 +299,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	{	
 		if (size() > 0)
 		{
-			Object val = super.getValue(inId); //set by the user since last save
+			Object val = getMap().getValue(inId); //set by the user since last save
 			if( val != null ) //already set to a value
 			{
 				return val;
@@ -334,8 +310,12 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 //			}
 			//return something only if all the values match the first record
 			String sval = getValueFromResults(inId);
-			if( sval != null && inId.equals("category-exact") && !sval.isEmpty())
+			if(inId.equals("category-exact"))
 			{
+				if( sval == null || sval.isEmpty() )
+				{
+					return Collections.EMPTY_LIST;
+				}
 				Collection col = collect(sval);
 				Collection categories = new HashSet();
 				for (Iterator iterator = col.iterator(); iterator.hasNext();)
@@ -668,22 +648,24 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	 */
 	protected void saveMultiValues(Asset asset, String key, Collection added, Collection existing, Collection previousCommonOnes) 
 	{
-		HashSet set = new HashSet(existing);
-		set.addAll(added);
+		HashSet set = new HashSet();
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
+		{
+			Object object = (Object) iterator.next();
+			if( object instanceof String && ((String)object).isEmpty())
+			{
+				continue;
+			}
+			set.add(object);
+		}
 		
+		set.addAll(added);
+
 		//Need to remove any that are missing from combined
 		previousCommonOnes.removeAll(added);
 		set.removeAll(previousCommonOnes);
-		for (Iterator iterator = set.iterator(); iterator.hasNext();)
-		{
-			Object val = iterator.next();
-			asset.addValue(key, val);
-		}
-		for (Iterator iterator = previousCommonOnes.iterator(); iterator.hasNext();)
-		{
-			Object val = iterator.next();
-			asset.removeValue(key, val);
-		}
+
+		asset.setValue(key, set);
 		//System.out.println("Saving old value:" + datavalue + " saved: " + existing);
 	}
 	protected boolean isMulti(String key) 
