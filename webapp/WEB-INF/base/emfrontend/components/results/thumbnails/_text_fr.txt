@@ -1,0 +1,3 @@
+#
+#Wed Nov 23 16:05:38 EST 2016
+Drag\ to\ collection=Faites glisser la collecte

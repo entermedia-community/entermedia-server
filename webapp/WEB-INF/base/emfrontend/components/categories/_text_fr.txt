@@ -1,2 +1,4 @@
-#Thu Nov 10 10:19:40 EST 2016
-Categories=Catégories
+#
+#Wed Nov 23 16:05:36 EST 2016
+Search\ Categories=Rechercher Cat\u00E9gories
+Categories=Cat\u00E9gories

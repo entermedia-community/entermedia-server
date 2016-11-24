@@ -1,3 +1,5 @@
-#Thu Nov 10 10:19:40 EST 2016
+#
+#Wed Nov 23 16:05:33 EST 2016
+add\ new=ajouter de nouvelles
 No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=No details available for this view.  Please configure your view settings.
 required=required

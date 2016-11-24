@@ -1,4 +1,8 @@
-#Thu Nov 10 10:19:40 EST 2016
-Search=Recherche
+#
+#Wed Nov 23 16:05:33 EST 2016
+Asset=Atout
 Edit=modifier
+Search=Recherche
+Collection=Collection
 Add\ Field=Ajouter un champ
+Library=Biblioth\u00E8que
