@@ -17,7 +17,6 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.InputStreamEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -195,6 +194,13 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		String retention = inAsset.get("vizoneretention");
 		if(retention == null){
 			retention = "oneweek";
+		}
+		if("remove".equals(retention)){
+			Date current = new Date();
+			
+			 date = format.format(current);
+			metadata.put("retentiondate",date );
+
 		}
 		metadata.put("policy",retention );
 		metadata.put("title",inAsset.getName() );
