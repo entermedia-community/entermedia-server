@@ -203,7 +203,7 @@ public class ScriptLogger extends Handler
 //			Logger logger = Logger.getLogger("");
 //			logger.removeHandler(composite);
 //		}
-		fieldAppendLogs = true;
+		fieldAppendLogs = false;
 	}
 	public List listLogs()
 	{

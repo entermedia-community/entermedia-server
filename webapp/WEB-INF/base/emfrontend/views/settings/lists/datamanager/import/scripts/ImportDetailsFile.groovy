@@ -17,10 +17,12 @@ file.setParser(new CSVReader(reader, ',', '\"'));
 file.read(reader);
 Searcher searcher = mediaarchive.getSearcher("propertydetail");
 ArrayList rows = new ArrayList();
-while( (trow = file.getNextRow()) != null ) {
-
+log.info("Importing " + importpath);
+while( (trow = file.getNextRow()) != null ) 
+{
 	String id = trow.get("id");
 	String searchtype = trow.get("searchtype");
+	//log.info("Importing row ${id} ${searchtype}");
 	if(id && searchtype){
 		Searcher remote = mediaarchive.getSearcher(searchtype);
 		PropertyDetail detail = remote.getDetail(id);  //target detail from the actual table
@@ -45,32 +47,34 @@ while( (trow = file.getNextRow()) != null ) {
 				LanguageMap map = detail.getValue("name");
 				map.setValue(langcode, value);
 			} else{
-			
-			String oldval = detail.get(detailid);
-			if(value != null && oldval != null && !value.equals(oldval) ){
-				changed = true;
-				detail.setValue(detailid, value);
-			}			
-		}
-		HitTracker locales = mediaarchive.getSearcherManager().getList(mediaarchive.getCatalogId(), "locale");
-		LanguageMap map = detail.getValue("name");
-		locales.each{
-			String langval = trow.get("name." + it.id);
-			if(langval != null)				 
-				map.setText(it.id, langval);
-				changed=true; 
+				String oldval = detail.get(detailid);
+				if(value != null && oldval != null && !value.equals(oldval) ){
+					changed = true;
+					detail.setValue(detailid, value);
+				}
+			}
+			HitTracker locales = mediaarchive.getSearcherManager().getList(mediaarchive.getCatalogId(), "locale");
+			LanguageMap map = detail.getValue("name");
+			locales.each{
+				String langval = trow.get("name." + it.id);
+				if(langval != null)
+					map.setText(it.id, langval);
+				changed=true;
 			}
 		}
-			
-			
-			
-		if(changed){
+
+		if(changed)
+		{
+			log.info("Saving " + searchtype);
 			remote.getPropertyDetailsArchive().updatePropertyDetail(detail, searchtype, null);
 		}
-		
-		
-
+		else
+		{
+			log.info("Not Saving " + searchtype);
+		}
 	}
 }
+log.info("complete import ");
+
 
 
