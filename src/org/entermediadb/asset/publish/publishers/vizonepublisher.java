@@ -90,7 +90,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			
 			uploadAsset(inMediaArchive, result, inAsset, inDestination, inPreset, authString);
 			//http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101604250011569821/metadata
-			setMetadata(inMediaArchive, inDestination, inAsset, authString);
+			setMetadata(inMediaArchive,  inDestination.get("url"), inAsset, authString);
 			
 			result.setComplete(true);
 			log.info("publishished  ${asset} to FTP server ${servername}");
@@ -170,12 +170,12 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	
 	
 	
-	public Element setMetadata(MediaArchive inArchive, Data inDestination, Asset inAsset, String inAuthString) throws Exception{
+	public Element setMetadata(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception{
 		
 		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
 		
 
-		String servername = inDestination.get("url");
+		
 		String addr       = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
 
 
@@ -203,7 +203,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		
 		data = inArchive.getReplacer().replace(data, metadata);
 		
-		HttpPost method = new HttpPost(addr);
+		HttpPut method = new HttpPut(addr);
 		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "" );
