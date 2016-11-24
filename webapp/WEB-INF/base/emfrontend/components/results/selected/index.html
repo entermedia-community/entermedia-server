@@ -47,9 +47,11 @@
     	<li><a class="ajax  deselectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
     	
 	#if($candeleteasset)	    
- <li>   	    <a class="emdialog" href="/emshare/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&amp;hitssessionid=selectedhitsassetmedia/catalogs/public">Delete Assets</a></li>
+ <li>   	    <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&amp;hitssessionid=selectedhitsassetmedia/catalogs/public">Delete Assets</a></li>
     	    
     	#end    	
+    	 <li>   	    <a  href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">Print Assets</a></li>
+    	
     	
 #end
 	
