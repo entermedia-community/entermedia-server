@@ -117,7 +117,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					//throw new OpenEditException("Missing " + config.getPath());
 					config = getPageManager().getPage("/system/configuration/node.xml");
 				}
-
+				boolean dynamicmapdefined = false;
 				for (Iterator iterator = getLocalNode().getElement().elementIterator("property"); iterator.hasNext();)
 				{
 					Element prop = (Element) iterator.next();
@@ -127,14 +127,23 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					val = getSetting(key);
 
 					nb.settings().put(key, val);
-
+					if("index.mapper.dynamic".equals(key)){
+						dynamicmapdefined = true;
+					}
 				}
 
+				if(dynamicmapdefined == false){
+					 nb.settings().put("index.mapper.dynamic",false );
+					 		
+				}
 				String abs = config.getContentItem().getAbsolutePath();
 				File parent = new File(abs);
 				String webroot = parent.getParentFile().getParentFile().getAbsolutePath();
 				nb.settings().put("path.plugins", webroot + "/WEB-INF/base/entermedia/elasticplugins");
-
+				
+				
+				//nb.settings().put("index.mapper.dynamic",false);
+				
 				//			     <property id="path.plugins">${webroot}/WEB-INF/base/entermedia/elasticplugins</property>
 
 				//extras
@@ -702,7 +711,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		//return runmapping;
 	}
 
-	protected String getIndexNameFromAliasName(final String aliasName)
+	public String getIndexNameFromAliasName(final String aliasName)
 	{
 		AliasOrIndex indexToAliasesMap = getClient().admin().cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(aliasName);
 

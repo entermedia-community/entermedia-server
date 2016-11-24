@@ -10,6 +10,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -24,6 +25,8 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -41,6 +44,8 @@ import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.cluster.metadata.MappingMetaData;
+import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
@@ -2004,6 +2009,8 @@ public class BaseElasticSearcher extends BaseSearcher
 						Object val = props.get(key);
 						if (val != null)
 						{
+							checkMapping(key);
+							
 							inContent.field(key, val);
 						}
 					}
@@ -2019,6 +2026,36 @@ public class BaseElasticSearcher extends BaseSearcher
 			throw new OpenEditException(ex);
 		}
 
+	}
+
+	private void checkMapping(String inKey) throws Exception
+	{
+		String catid = getElasticIndexId();
+
+	
+		
+		
+		GetMappingsRequest req = new GetMappingsRequest().indices(catid).types(getSearchType());
+		GetMappingsResponse resp = getClient().admin().indices().getMappings(req).actionGet();
+		String indexname = getElasticNodeManager().getIndexNameFromAliasName(catid);
+		 ImmutableOpenMap typeMappings = resp.getMappings().get(indexname);
+        MappingMetaData mapping = (MappingMetaData) typeMappings.get(getSearchType());
+		  
+		LinkedHashMap data = (LinkedHashMap) mapping.getSourceAsMap();
+		Map properties = (Map) data.get("properties");
+		Object prop = properties.get(inKey);
+		
+		if(prop == null){
+			
+		XContentBuilder jsonBuilder = XContentFactory.jsonBuilder();
+		jsonBuilder.startObject("properties");
+		jsonBuilder.startObject(inKey);
+		jsonBuilder.endObject();
+		jsonBuilder.endObject();
+			PutMappingRequest putreq = new PutMappingRequest().indices( new String[] {catid}).type(getSearchType()).source(jsonBuilder);
+		getClient().admin().indices().putMapping(putreq);
+		}
+		
 	}
 
 	public boolean shoudSkipField(String inKey)
