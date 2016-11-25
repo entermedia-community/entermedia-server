@@ -1,3 +1,4 @@
-#Thu Nov 10 10:19:40 EST 2016
-$asset=$ d'actifs
-Preview\ Image=image de prévisualisation
+#Fri Nov 25 16:02:26 UTC 2016
+$asset=$asset
+Preview\ Image=Aperçu
+

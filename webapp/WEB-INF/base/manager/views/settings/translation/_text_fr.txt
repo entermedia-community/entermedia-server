@@ -1,4 +1,6 @@
-#Thu Nov 10 10:19:40 EST 2016
-Language=La langue
-Read=lire
+#Fri Nov 25 16:02:26 UTC 2016
+Language=Langue
+Read=Lire
+all\ translations\ within\ the\ WEB-INF/base/\ directory\ tree=toutes les traductions dans l'arborescence WEB-INF / base
 Translation\ Exporter=Exportateur de traduction
+

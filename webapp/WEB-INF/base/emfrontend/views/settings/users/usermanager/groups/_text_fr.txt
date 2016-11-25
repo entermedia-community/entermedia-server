@@ -1,8 +1,9 @@
-#Thu Nov 10 10:19:40 EST 2016
+#Fri Nov 25 16:02:26 UTC 2016
 Add\ a\ New\ Group=Ajouter un nouveau groupe
-Reload\ Search\ Index=Recharger Recherche Index
-Please\ select\ a\ group=S&\#39;il vous plaît sélectionner un groupe
+Reload\ Search\ Index=Recharger Index de recherche
+Please\ select\ a\ group=Veuillez sélectionner un groupe
 Add=Ajouter
 selected=choisi
 Select\ a\ Group=Sélectionner un groupe
 Groups=Groupes
+

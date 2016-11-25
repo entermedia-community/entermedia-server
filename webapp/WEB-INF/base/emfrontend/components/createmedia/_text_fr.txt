@@ -1,9 +1,10 @@
-#Thu Nov 10 10:19:40 EST 2016
+#Fri Nov 25 16:02:26 UTC 2016
 Create\ Data\ Record=Créer Data Record
-Upload\ Media=Transférer multimédia
-Create\ empty\ data\ records\ then\ attach\ media\ later=Créer vides enregistrements de données, puis fixer le média tard
-Add\ Remote\ Media=Ajouter Media Remote
-Make\ a\ live\ stream\ recording\ from\ your\ webcam=Faire un enregistrement de flux en direct à partir de votre webcam
-Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Créer actifs médias à partir d&\#39;une URL ou un code Intégrer
-Upload\ media\ from\ local\ file\ system\ or\ camera=Téléchargez médias de système de fichiers local ou un appareil photo
-Live\ Video\ Stream=Live Video Streaming
+Upload\ Media=Téléverser un média
+Create\ empty\ data\ records\ then\ attach\ media\ later=Créer une entrée vide puis ajouter le média plus tard
+Add\ Remote\ Media=Ajouter un média distant
+Live\ Video\ Stream=Video Streaming en direct
+Upload\ media\ from\ local\ file\ system\ or\ camera=Téléverser du média depuis un fichier local ou un appareil photo
+Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Créer un item depuis une URL ou un lien imbriqué
+Make\ a\ live\ stream\ recording\ from\ your\ webcam=Faire un enregistrement en direct à partir de votre webcam
+

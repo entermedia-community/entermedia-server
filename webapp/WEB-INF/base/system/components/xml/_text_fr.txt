@@ -1,5 +1,5 @@
-#
-#Wed Nov 23 16:05:33 EST 2016
-add\ new=ajouter de nouvelles
-No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=No details available for this view.  Please configure your view settings.
-required=required
+#Fri Nov 25 16:02:26 UTC 2016
+No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=Pas de détails disponibles pour cette vue. Veuillez configurer les réglages de la vue.
+add\ new=Ajouter nouveau
+required=requis
+

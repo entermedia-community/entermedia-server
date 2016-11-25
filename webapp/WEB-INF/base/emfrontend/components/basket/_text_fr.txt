@@ -1,4 +1,5 @@
-#Thu Nov 10 10:19:40 EST 2016
-Basket=panier
-Add\ To\ Basket=Ajouter au panier
+#Fri Nov 25 16:02:26 UTC 2016
+Basket=Panier
 Remove\ From\ Basket=Retirer du panier
+Add\ To\ Basket=Ajouter au panier
+

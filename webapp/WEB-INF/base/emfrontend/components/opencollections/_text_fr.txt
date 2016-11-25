@@ -1,12 +1,12 @@
-#
-#Wed Nov 23 16:05:36 EST 2016
+#Fri Nov 25 16:02:26 UTC 2016
 Open\ Collections=Collections ouvertes
-Categories=Cat\u00E9gories
-Assets=Des atouts
-Create\ New=Cr\u00E9er nouveau
+Categories=Catégories
+Assets=Items
+Create\ New=Créer nouveau
 Close\ Collection=Fermer Collection
-Details=D\u00E9tails
-Libraries=Biblioth\u00E8ques
+Details=Détails
+Libraries=Bibliothèques
 Publish=Publier
 Collections=Collections
-Collection\ Search=Collection Recherche
+Collection\ Search=Recherche collection
+

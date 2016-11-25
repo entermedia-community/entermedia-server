@@ -1,13 +1,14 @@
-#Thu Nov 10 10:19:40 EST 2016
-Upload\ Queue=File de téléchargement
-Pick\ Files=Choisissez Fichiers
-Pick\ More\ Files...=Choisissez Plus de fichiers ...
-Upload=Télécharger
-View\ Uploads=Voir Envois
-Drop\ files\ here\!=Déposer des fichiers ici\!
+#Fri Nov 25 16:02:26 UTC 2016
+Upload\ Queue=File de téléversement
+Pick\ Files=Choisir les fichiers
+Pick\ More\ Files...=Choisir plus de fichiers ...
+Upload=Téléverser
+View\ Uploads=Voir les téléversements
+Drop\ files\ here\!=Déposer les fichiers ici\!
 View\ Collection=Voir Collection
 Metadata=Métadonnées
-Upload\ Complete=Téléchargez complète
-Upload\ multiple\ files\ by\ using\ the=Télécharger plusieurs fichiers en utilisant le
-key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=sur votre clavier tout en sélectionnant les fichiers que vous souhaitez télécharger
-Shift=Décalage
+Upload\ Complete=Téléversement terminé
+Upload\ multiple\ files\ by\ using\ the=Téléverser plusieurs fichiers en utilisant la touche
+key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=de votre clavier pour sélectionner les fichiers que vous souhaitez téléverser
+Shift=Majuscule
+

@@ -1,9 +1,10 @@
-#Thu Nov 10 10:19:40 EST 2016
+#Fri Nov 25 16:02:26 UTC 2016
 No\ users\ found.=Aucun utilisateur trouvé.
-Next=la prochaine
-Create\ User=Créer un utilisateur
+Next=Suivant
 Search=Recherche
+Create\ User=Créer un utilisateur
+Reindex=Reindexer
 Page=Page
-Reindex=Reindex
+Previous=Précédent
 Role=Rôle
-Previous=précédent
+

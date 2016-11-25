@@ -1,4 +1,5 @@
-#Thu Nov 10 10:19:40 EST 2016
-Export\ results\ with\ Friendly\ values=Exporter les résultats avec les valeurs amicales
+#Fri Nov 25 16:02:26 UTC 2016
+Export\ results\ with\ Friendly\ values=Exporter les résultats avec les valeurs simplifiées
 Delete\ Selected\ Items=Supprimer les éléments sélectionnés
-Export\ results\ CSV=Export CSV des résultats
+Export\ results\ CSV=Exporter les résultats en CSV
+

@@ -1,2 +1,3 @@
-#Thu Nov 10 10:19:40 EST 2016
-Editing\ across\ $asset.size()\ records=Modification travers $ asset.size ( ) records
+#Fri Nov 25 16:02:26 UTC 2016
+Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistrés
+

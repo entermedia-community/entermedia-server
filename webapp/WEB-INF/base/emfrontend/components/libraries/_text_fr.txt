@@ -1,6 +1,7 @@
-#Thu Nov 10 10:19:40 EST 2016
-Libraries=Bibliothèques
+#Fri Nov 25 16:02:26 UTC 2016
 Details=Détails
-Assets=Des atouts
+Libraries=Bibliothèques
+Assets=Items
 Create\ New=Créer nouveau
 Collections=Collections
+

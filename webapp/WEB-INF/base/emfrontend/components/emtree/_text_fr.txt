@@ -1,10 +1,10 @@
-#
-#Wed Nov 23 16:05:37 EST 2016
-Properties=Propri\u00E9t\u00E9s
-Rename=Rebaptiser
-Create=Cr\u00E9er
-Paste=P\u00E2te
-Cut=Coupe
-Delete=Effacer
-Copy=Copie
-Add\ Media=Ajouter un m\u00E9dia
+#Fri Nov 25 16:02:26 UTC 2016
+Properties=Propriétés
+Create=Créer
+Rename=Renommer
+Paste=Coller
+Cut=Couper
+Delete=Supprimer
+Add\ Media=Ajouter un média
+Copy=Copier
+

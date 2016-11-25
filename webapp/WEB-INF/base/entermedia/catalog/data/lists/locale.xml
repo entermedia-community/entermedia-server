@@ -2,7 +2,7 @@
 
 <locales> 
   <locale id="en" name="English" namesorted="English" enabled="true"/>  
-  <locale id="fr" name="French" enabled="true"/>  
+  <locale id="fr" name="Français" enabled="true"/>  
   <locale id="es" name="Español" enabled="true"/>  
-  <locale id="de" name="German" enabled="true"/>
+  <locale id="de" name="Deutsche" enabled="true"/>
 </locales>

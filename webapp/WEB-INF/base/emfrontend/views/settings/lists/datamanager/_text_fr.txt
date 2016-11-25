@@ -1,4 +1,5 @@
-#Thu Nov 10 10:19:40 EST 2016
-Choose\ Table=Choisissez Tableau
+#Fri Nov 25 16:02:26 UTC 2016
+Choose\ Table=Choisir la table
 selected=choisi
-Create\ New\ Table=Créer un nouveau tableau
+Create\ New\ Table=Créer une nouvelle table
+

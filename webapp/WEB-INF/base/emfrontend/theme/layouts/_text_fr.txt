@@ -1,12 +1,13 @@
-#Thu Nov 10 10:19:40 EST 2016
+#Fri Nov 25 16:02:26 UTC 2016
 Settings=Paramètres
-Editing\ across\ $asset.size()\ records=Modification à travers asset.size $ () enregistre
-Language=La langue
-Logout=Se déconnecter
+Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistrés
+Language=Langue
+Logout=Déconnexion
 My\ Account=Mon compte
-Login=S&\#39;identifier
-There\ was\ a\ problem\ completing\ this\ request=Il y avait une difficulté à remplir cette demande
-System\ Settings=Les paramètres du système
+Login=Connexion
+There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficulté à remplir cette demande
+System\ Settings=Paramètres du système
 Dashboard=Tableau de bord
 Applications=Applications
-Asset\ is\ missing=Actif est manquant
+Asset\ is\ missing=Item manquant
+
