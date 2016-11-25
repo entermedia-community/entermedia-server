@@ -30,9 +30,9 @@ $context.putPageValue("hits",$hits)
 		#set ($classname="enabled")
 		#set ($enabled=$hits.getSelectionSize() > 0)
 			#if($enabled)
-##			 <li>   	    <a class="emdialog" href="/emshare/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&amp;hitssessionid=selectedhitsassetmedia/catalogs/public">Delete Assets</a></li>
+
 	#if($candeleteasset)
-##			 <li>   	    <a class="emdialog" href="/emshare/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&amp;hitssessionid=selectedhitsassetmedia/catalogs/public">Delete Assets</a></li>
+			 <li>   	    <a class="emdialog" href="/emshare/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&amp;hitssessionid=selectedhitsassetmedia/catalogs/public">[[Delete Assets]]</a></li>
 			 #end
 		
 		#end
