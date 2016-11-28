@@ -345,6 +345,11 @@
       <language id="fr"><![CDATA[Primaire Nom du fichier]]></language> 
     </name> 
   </property>  
+  <property id="imagefile" internalfield="true" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Thumbnail File]]></language>  
+    </name> 
+  </property>  
   <property id="importstatus" index="true" stored="true" datatype="list" listid="assetimportstatus" editable="true" keyword="false" filter="false" sortable="true" type="list">Import Status 
     <name> 
       <language id="de"><![CDATA[Import Status]]></language>  
