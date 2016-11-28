@@ -53,19 +53,29 @@ public void init() {
 				dl.download(fetchurl, image);
 				log.info("Downloaded ${fetchurl}" );
 				current.setPrimaryFile(image.getName());
+				
+				String assettype = current.assettype;
+				
 				MetaDataReader reader = archive.getModuleManager().getBean("metaDataReader");
 				reader.populateAsset(archive, finalfile.getContentItem(), current);
+				if( assettype != null && assettype.equals("embedded") )
+				{
+					current.setValue("assettype","embedded");
+				}
 				regenerate = true;
-			}	
-			String fetchthumbnailurl = current.fetchthumbnailurl;
-			if(fetchthumbnailurl != null )
-			{
-				String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/generated/" + current.getSourcePath()	+ "/customthumb.jpg";
-				Page finalfile = archive.getPageManager().getPage(path);
-				File image = new File(finalfile.getContentItem().getAbsolutePath());
-				archive.removeGeneratedImages(current, false);	
-				dl.download(fetchthumbnailurl, image);
-			}		
+			}
+			else
+			{	
+				String fetchthumbnailurl = current.fetchthumbnailurl;
+				if(fetchthumbnailurl != null )
+				{
+					String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/generated/" + current.getSourcePath()	+ "/customthumb.jpg";
+					Page finalfile = archive.getPageManager().getPage(path);
+					File image = new File(finalfile.getContentItem().getAbsolutePath());
+					archive.removeGeneratedImages(current, false);	
+					dl.download(fetchthumbnailurl, image);
+				}
+			}			
 			if( regenerate )
 			{
 				current.setValue("importstatus","imported");				

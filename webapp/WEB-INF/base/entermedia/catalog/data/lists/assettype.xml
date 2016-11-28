@@ -15,6 +15,7 @@
     </name>
   </property>  
   <property id="audio" extensions="mp3 wav">Audio</property>  
+  <property id="embedded" >Embedded</property>  
   <property id="none" ordering="0"> 
     <name> 
       <language id="de"><![CDATA[Unbekannt]]></language>  

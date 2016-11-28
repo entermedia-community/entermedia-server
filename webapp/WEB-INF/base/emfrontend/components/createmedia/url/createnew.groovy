@@ -75,22 +75,26 @@ else
 }
 
 //TODO: Use some parser interface and grab more metadata from youtube or vimeo, flickr
-if( fetchthumb != null)
+asset.setProperty("linkurl",externalmediainput);
+
+if( fetchthumb == null)
 {
-	asset.setProperty("fetchurl",fetchthumb);
-	asset.setProperty("linkurl",externalmediainput);
+	asset.setProperty("fetchurl",externalmediainput);
 }
 else
-{
-	asset.setProperty("fetchurl",externalmediainput);	
+{	
+	//this is still set because we dont currently have a way to make thumbnails for embdedded file formats
+	asset.setProperty("fetchurl",fetchthumb);
+	asset.setProperty("fetchthumbnailurl",fetchthumb);
+	asset.setProperty("assettype","embedded");
 }
+asset.setProperty("importstatus","needsdownload");
+
 //String embed =  context.getRequestParameter("embeddedurl.value") 
 //if( embed != null )
 //{
 //	asset.setProperty("fileformat","embedded");	
 //}
-
-asset.setProperty("importstatus","needsdownload");
 //See if embed video is set? if not then fill it in?
 
 mediaarchive.saveAsset(asset, context.getUser());
