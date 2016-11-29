@@ -366,7 +366,7 @@
       <language id="fr"><![CDATA[Preview Status]]></language> 
     </name> 
   </property>  
-  <property id="editstatus" filter="true" index="true" stored="true" editable="true" listid="asseteditstatus" datatype="list" keyword="false" sortable="true" type="list">Edit Status 
+  <property id="editstatus" index="true" stored="true" editable="true" listid="asseteditstatus" datatype="list" keyword="false" sortable="true" type="list">Edit Status 
     <name> 
       <language id="de"><![CDATA[Edit Status]]></language>  
       <language id="en"><![CDATA[Edit Status]]></language>  
