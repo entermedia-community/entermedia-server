@@ -2204,7 +2204,7 @@ center #addcoment {
 #nav li:first-child {
     margin-left: 20px;
 }
-#nav li a {
+#nav li a.navbutton {
     background: #53bbd9; /* Old browsers */
     background: -moz-linear-gradient(top, #53bbd9 0%, #4db3ce 25%, #43a8c3 46%, #3f9eb9 61%, #399ab6 68%, #3591aa 89%, #328fab 93%, #308ea7 96%, #328da7 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#53bbd9), color-stop(25%,#4db3ce), color-stop(46%,#43a8c3), color-stop(61%,#3f9eb9), color-stop(68%,#399ab6), color-stop(89%,#3591aa), color-stop(93%,#328fab), color-stop(96%,#308ea7), color-stop(100%,#328da7)); /* Chrome,Safari4+ */
@@ -2221,7 +2221,7 @@ center #addcoment {
     font-weight: bold;
     box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, .2);
 }
-#nav li a:hover {
+#nav li a.navbutton:hover {
     background: #65c3dd; /* Old browsers */
     background: -moz-linear-gradient(top, #65c3dd 0%, #5fbad3 25%, #55b0c9 46%, #4faac3 61%, #47aac5 68%, #3ca4c0 89%, #38a2c2 93%, #37a2bf 96%, #39a2bf 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#65c3dd), color-stop(25%,#5fbad3), color-stop(46%,#55b0c9), color-stop(61%,#4faac3), color-stop(68%,#47aac5), color-stop(89%,#3ca4c0), color-stop(93%,#38a2c2), color-stop(96%,#37a2bf), color-stop(100%,#39a2bf)); /* Chrome,Safari4+ */
@@ -2231,7 +2231,7 @@ center #addcoment {
     background: linear-gradient(top, #65c3dd 0%,#5fbad3 25%,#55b0c9 46%,#4faac3 61%,#47aac5 68%,#3ca4c0 89%,#38a2c2 93%,#37a2bf 96%,#39a2bf 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65c3dd', endColorstr='#39a2bf',GradientType=0 ); /* IE6-9 */
 }
-#nav li.navselected a, #nav li a:active, #module-dropdown.active, #module-dropdown.active:hover {
+#nav li.navselected a.navbutton, #nav li a.navbutton:active, #module-dropdown.active, #module-dropdown.active:hover {
     background: #2c7f96; /* Old browsers */
     background: -moz-linear-gradient(top, #2c7f96 0%, #2a8097 7%, #2f89a2 21%, #308ca6 32%, #308ca6 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2c7f96), color-stop(7%,#2a8097), color-stop(21%,#2f89a2), color-stop(32%,#308ca6), color-stop(100%,#308ca6)); /* Chrome,Safari4+ */

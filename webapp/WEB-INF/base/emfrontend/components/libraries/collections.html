@@ -1,0 +1,29 @@
+#if( $content.isPropertyTrue("libraryreloadpage") )
+<form name="librarychange" id="librarychange"   > 
+#else
+<form name="librarychange" id="librarychange" action="$home$apphome/components/libraries/sidebar.html" class="ajaxform" targetdiv="left-col-libraries"  > 
+#end
+		<div class="collectionheaderleft">
+
+	##		<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  
+	##		data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" 
+	##		data-sortby="name" onChange='$("#librarychange").submit()' />
+
+			<input name="profilepreference"    value="last_selected_library" type="hidden" />
+			<select name="profilepreference.value"  id="listprofilepreferencevalue"  class="listautocomplete" data-searchfield="name" data-searchtype="library" 
+				data-listcatalogid="$catalogid" onChange='$("#librarychange").submit()' >
+			#if( $selectedlibrary )
+			  <option value="$selectedlibrary.getId()" selected="selected">#esc($selectedlibrary.getName())</option>
+			#end
+			</select>
+
+		</div>		
+#set( $caneditlibrary = $context.getPageStreamer().canDo("editdata","$apphome/views/modules/library/index.html"))
+#if ($caneditlibrary)		
+		<div class="collectionheaderright">
+			<a href="$home$apphome/components/libraries/addnewlibrary.html" class="emdialog" title="Add Library"><img src="$home$themeprefix/images/icons/addgray.png"> </a>
+		</div>
+		
+#end		
+<div class="clearfix"></div>
+</form>

@@ -11,10 +11,10 @@
   </property>  
   <property id="name" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Collection Name 
     <name> 
-      <language id="de"><![CDATA[Kollektionsnamen]]></language>  
-      <language id="en"><![CDATA[Collection Name]]></language>  
-      <language id="es"><![CDATA[Nombre de la colección]]></language>  
-      <language id="fr"><![CDATA[Nom de la collection]]></language> 
+      <language id="de"><![CDATA[Kollektion]]></language>  
+      <language id="en"><![CDATA[Collection]]></language>  
+      <language id="es"><![CDATA[Colección]]></language>  
+      <language id="fr"><![CDATA[Collection]]></language> 
     </name> 
   </property>  
   <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" keyword="false" filter="false">Created Date 

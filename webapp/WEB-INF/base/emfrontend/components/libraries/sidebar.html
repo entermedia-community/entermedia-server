@@ -1,4 +1,5 @@
-#if ( $canviewlibrarysearch )
+##if ( $canviewlibrarysearch )
+
 <div class="ui-widget uipanel" id="left-col-libraries" >
 	<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
 		#else class="ui-widget-header" #end data-target="projectscontent">
@@ -67,5 +68,5 @@
 #end
 	</div>
 </div>
-#end
+##end
 

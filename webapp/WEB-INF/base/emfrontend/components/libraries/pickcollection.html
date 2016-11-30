@@ -19,7 +19,7 @@
 					#end
 					
 					$context.putPageValue("detail", $detail)
-					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+					$pages.include("/${applicationid}/components/advancedsearch/detailselectinline.html", $context)
 					#if( $detail.id == "currentcollection")
 							<a class="ajax" targetdivinner="nameeditspace" href="$home$apphome/components/upload/types/html5/createcollection.html">[[new collection]]</a>
 					#end
