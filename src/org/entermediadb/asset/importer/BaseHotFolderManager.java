@@ -328,14 +328,16 @@ public class BaseHotFolderManager implements HotFolderManager
 
 		Date started = new Date();
 		
+		boolean checkformod = false;
 		if( inSubChangePath != null )
 		{
 			path = path + "/" + inSubChangePath;
+			checkformod = true;
 		}
-	
-		log.info(path + " scan started. skip mod check = " );
 		
-		List<String> paths = importer.processOn(base, path, inArchive, null);
+		log.info(path + " scan started. mod check = " + checkformod);
+		
+		List<String> paths = importer.processOn(base, path, checkformod, inArchive, null);
 
 		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);

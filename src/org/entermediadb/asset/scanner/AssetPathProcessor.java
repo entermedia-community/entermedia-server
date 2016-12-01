@@ -27,17 +27,17 @@ public class AssetPathProcessor extends PathProcessor
 
 	protected MediaArchive fieldMediaArchive;
     protected Boolean fieldOnWindows;
-    protected boolean fieldSkipModificationCheck;
+    protected boolean fieldModificationCheck = false;
     
-	public boolean isSkipModificationCheck()
+	public boolean isModificationCheck()
 	{
-		return fieldSkipModificationCheck;
+		return fieldModificationCheck;
 	}
 
 
-	public void setSkipModificationCheck(boolean inSkipModificationCheck)
+	public void setModificationCheck(boolean inModificationCheck)
 	{
-		fieldSkipModificationCheck = inSkipModificationCheck;
+		fieldModificationCheck = inModificationCheck;
 	}
 
 	protected AssetUtilities fieldAssetUtilities;
@@ -246,7 +246,11 @@ public class AssetPathProcessor extends PathProcessor
 						{
 							if (acceptFile(item))
 							{
-								if( knownssourcepaths != null && !knownssourcepaths.isEmpty())
+								if( isModificationCheck() ) //Only set to true when importing a specific folder/file
+								{
+									processFile(item, inUser);
+								}
+								else if( !knownssourcepaths.isEmpty())
 								{
 									String nwwsourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
 
@@ -255,10 +259,6 @@ public class AssetPathProcessor extends PathProcessor
 										processFile(item, inUser);
 									}
 								}	
-								else
-								{
-									processFile(item, inUser);
-								}
 							}
 						}
 					}
