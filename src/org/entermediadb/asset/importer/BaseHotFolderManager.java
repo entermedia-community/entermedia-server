@@ -325,7 +325,6 @@ public class BaseHotFolderManager implements HotFolderManager
 		String path = base + "/" + name;
 
 		AssetImporter importer = createImporter(inArchive,inFolder,path);
-		boolean skipmodcheck = checkMod(inArchive, inFolder);
 
 		Date started = new Date();
 		
@@ -334,14 +333,12 @@ public class BaseHotFolderManager implements HotFolderManager
 			path = path + "/" + inSubChangePath;
 		}
 	
-		log.info(path + " scan started. skip mod check = " + skipmodcheck );
+		log.info(path + " scan started. skip mod check = " );
 		
-		List<String> paths = importer.processOn(base, path, inArchive, skipmodcheck, null);
-		if( !skipmodcheck )
-		{
-			inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
-			getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
-		}
+		List<String> paths = importer.processOn(base, path, inArchive, null);
+
+		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
+		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
 
 		long taken = ((new Date().getTime() - started.getTime())/6000L);
 		log.info(inFolder + " Imported " + paths.size() + " in " + taken + " milli-seconds" );

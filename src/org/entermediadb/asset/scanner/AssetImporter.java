@@ -95,7 +95,7 @@ public class AssetImporter
 			Page topLevelPage = getPageManager().getPage(path);
 			if (topLevelPage.isFolder() && !topLevelPage.getPath().endsWith("/CVS") && !topLevelPage.getPath().endsWith(".versions"))
 			{
-				processOn(inRootPath, path,inArchive, true, inUser);
+				processOn(inRootPath, path,inArchive, inUser);
 			}
 		}
 	}
@@ -103,7 +103,7 @@ public class AssetImporter
 	{
 		//this might be overriden to push
 	}
-	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, boolean inSkipModCheck, User inUser)
+	public List<String> processOn(String inRootPath, String inStartingPoint, final MediaArchive inArchive, User inUser)
 	{
 		AssetPathProcessor finder = new AssetPathProcessor()
 		{
@@ -112,7 +112,7 @@ public class AssetImporter
 				AssetImporter.this.assetsImported(inArchive, inAssetsSaved);
 			};
 		};
-		finder.setSkipModificationCheck(inSkipModCheck);
+		//finder.setSkipModificationCheck(true);
 		finder.setMediaArchive(inArchive);
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);

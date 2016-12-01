@@ -225,12 +225,7 @@ public class AssetPathProcessor extends PathProcessor
 				
 				if( processchildren && isRecursive())
 				{
-				
-					Set knownssourcepaths = null;
-					if( !isSkipModificationCheck() )
-					{
-						knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
-					}		
+					Set	knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
 					for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 					{
 						String path = (String) iterator.next();
