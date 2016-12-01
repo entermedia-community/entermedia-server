@@ -3,8 +3,10 @@ package org.entermediadb.asset.scanner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -147,9 +149,7 @@ public class AssetPathProcessor extends PathProcessor
 			}
 			else
 			{
-				
-					processFile(inInput, inUser);
-				
+				processFile(inInput, inUser);
 			}
 		}
 		protected void processAssetFolder(ContentItem inInput, User inUser)
@@ -192,9 +192,7 @@ public class AssetPathProcessor extends PathProcessor
 					}
 
 					//Use the first file that is not a folder
-					String soucepath = getAssetUtilities().extractSourcePath(inInput, true, getMediaArchive());
-
-					asset = getMediaArchive().createAsset(soucepath);
+					asset = getMediaArchive().createAsset(sourcepath);
 					asset.setFolder(true);
 					asset.setProperty("datatype", "original");
 					if( inUser != null )
@@ -227,7 +225,12 @@ public class AssetPathProcessor extends PathProcessor
 				
 				if( processchildren && isRecursive())
 				{
-					
+				
+					Set knownssourcepaths = null;
+					if( !isSkipModificationCheck() )
+					{
+						knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
+					}		
 					for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 					{
 						String path = (String) iterator.next();
@@ -246,17 +249,44 @@ public class AssetPathProcessor extends PathProcessor
 						}
 						else
 						{
-								if (acceptFile(item))
+							if (acceptFile(item))
+							{
+								if( knownssourcepaths != null && !knownssourcepaths.isEmpty())
 								{
-									
-										processFile(item, inUser); 
-									
-								}
+									String nwwsourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
+
+									if( !knownssourcepaths.contains(nwwsourcepath) )
+									{
+										processFile(item, inUser);
+									}
+								}	
+							}
+							else
+							{
+								processFile(item, inUser);
+							}
 						}
 					}
 				}
 			}
 		}
+		protected Set loadGeneratedFolders(ContentItem inInput, String inSourcepath)
+		{
+			Set set = new HashSet();
+			String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/";
+			Collection generatedfolders = getPageManager().getChildrenPaths(filepath  + inSourcepath); 
+
+			for (Iterator iterator = generatedfolders.iterator(); iterator.hasNext();)
+			{
+				String path = (String) iterator.next();
+				String sourcepath = path.substring(filepath.length());
+				set.add(sourcepath);
+			}
+			
+			return set;
+		}
+
+
 		public Boolean isOnWindows()
 		{
 			if (fieldOnWindows == null)
