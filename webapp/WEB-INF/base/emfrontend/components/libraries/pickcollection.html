@@ -3,7 +3,7 @@
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
 	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
-	##<form  class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresults.html">
+	<form  class="autosubmit"  data-targetdiv="main" action="$home$apphome/components/opencollections/searchcollectionresults.html">
 	
 	##	<input type="hidden" name="searchtype" value="librarycollection" />
 		<table class="inlinesearch" >
@@ -21,12 +21,14 @@
 					$context.putPageValue("detail", $detail)
 					$pages.include("/${applicationid}/components/advancedsearch/detailselectinline.html", $context)
 					#if( $detail.id == "currentcollection")
-							<a class="ajax" targetdivinner="nameeditspace" href="$home$apphome/components/upload/types/html5/createcollection.html">[[new collection]]</a>
+						<a class="ajax" targetdivinner="nameeditspace" href="$home$apphome/components/upload/types/html5/createcollection.html">[[add]]</a>
+					#elseif( $detail.id == "library")
+						<a class="ajax" targetdivinner="nameeditspace" href="$home$apphome/components/upload/types/html5/createcollection.html">[[add]]</a>
 					#end
 				</td>	
 			#end
 			</tr>
 		</table>	
-		
+	</form>	
 </div>
 #end

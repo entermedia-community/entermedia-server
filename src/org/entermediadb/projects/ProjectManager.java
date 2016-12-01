@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -163,7 +164,22 @@ public class ProjectManager implements CatalogEnabled
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
 			HitTracker allcollections = searcher.query().orgroup("id", opencollections).named("sidebar").search(); //todo: Cache?
 			usercollections = loadUserCollections(inReq, allcollections, inArchive, null);
-			inReq.putPageValue("usercollections", usercollections);
+			List<Data> sorted = new ArrayList(usercollections);
+			final List<String> order = new ArrayList(opencollections);
+			
+			Collections.sort(sorted,new Comparator<Data>()
+			{
+				public int compare(Data o1, Data o2) 
+				{
+					int one = order.indexOf(o1.getId());
+					int two = order.indexOf(o2.getId());
+					if(one == two) return 0;
+					if(one > two) return 1;
+					return -1;
+				};
+			});
+			Collections.reverse(sorted);
+			inReq.putPageValue("usercollections", sorted);
 		}
 		return usercollections;
 
