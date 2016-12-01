@@ -218,12 +218,22 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			user = (User)createNewData();
 			user.setProperties(inHit.getProperties());
 			user.setId(inHit.getId());
-		}	
+			
+
+		}
 		if( user.getPassword() == null)
 		{
 			//Old indexes did not contain the password
 			user = getXmlUserArchive().loadUser(user, getGroupSearcher());
+			if( user.getPassword() != null){
+				updateElasticIndex(getPropertyDetails(), user);
+			} else{
+				log.info("User " + user.getId() + " Had no password.  Please set one.");
+				
+			}
 		}
+		
+		
 		return user;
 	}
 

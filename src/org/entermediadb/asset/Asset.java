@@ -339,10 +339,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		getKeywords().remove(inKey);
 	}
 
-	public Date getDate(String inField)
-	{
-		return getMap().getDate(inField);
-	}
 
 	public Date getDate(String inField, String inDateFormat)
 	{
