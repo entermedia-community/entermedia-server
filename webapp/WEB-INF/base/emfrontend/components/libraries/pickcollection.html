@@ -2,34 +2,40 @@
 <div id="collectionpickerinner" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
-	<form  class="ajaxform"  data-targetdiv="collectionpicker" action="$home$apphome/components/libraries/pickcollection.html">
 		<table class="inlinesearch" >
 			<tr>
 				<td id="${detail.id}editspace" style="padding-right:20px;">
+	<form  class="ajaxform"  data-targetdiv="collectionpicker" action="$home$apphome/components/libraries/pickcollection.html">
 					#set( $detail = $searcher.getDetail("library"))
 					#set( $selectedlibrary = $context.getRequestParameter("selectedlibrary"))
 					#if($selectedlibrary)
-						#set($foundrow = $mediaarchive.getData("library",$selectedlibrary))
+						#set($library = $mediaarchive.getData("library",$selectedlibrary))
 					#end
-					<select id="list-libraryvalue" name="selectedlibrary"  class="listautocomplete selectautosubmit" 
+					<select  name="selectedlibrary"  class="listautocomplete selectautosubmit" 
 						data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">
-					#if( $foundrow )
-					  <option value="$foundrow.getId()" selected="selected">#esc($foundrow.getName($context.locale))</option>
+					#if( $library )
+					  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
 					#end
 					</select>
+	</form>
 				</td>	
-				<td id="${detail.id}editspace" style="padding-right:20px;">
+				<td id="librarycollectioneditspace" style="padding-right:20px;">
+
+	<form  action="$home$apphome/views/modules/librarycollection/media/index.html">
+				<input type="hidden" id="list-libraryvalue" name="selectedlibrary" value="$!library.getId()" />  
 				#set( $detail = $searcher.getDetail("name"))
-				<select name="${detailid}.value"  class="listautocomplete" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+				#set( $selectedcollection = $context.getRequestParameter("collectionid"))
+				#set($collection = $mediaarchive.getData("librarycollection",$selectedcollection))
+				<select name="collectionid"  class="listautocomplete selectautosubmit" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 					data-placeholder="$detail.getText($context)" data-sortby="name">
-				#if( $foundrow )
-				  <option value="$!val" selected="selected">#esc($label)</option>
+				#if( $collection )
+				  <option value="$collection.getId()" selected="selected">#esc($collection.getName($context.locale)))</option>
 				#end
 				</select>
+	</form>
 				</td>	
 			</tr>
 		</table>	
-	</form>
 	
 </div>
 #end

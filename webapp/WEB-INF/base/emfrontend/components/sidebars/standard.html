@@ -1,16 +1,19 @@
 ##$pages.include("$apphome/components/libraries/selector.html",$context)
 
-##$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
-
-
-
-#if ( $canviewopencollections )
-$pages.include("$apphome/components/opencollections/sidebar.html",$context)
+#if( $librarycol)
+$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+#else
+$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+$pages.include("$apphome/components/categories/sidebar.html", $context)
+$pages.include("$apphome/components/dontshow/sidebar.html",$context)
 #end
 
 
 
-$pages.include("$apphome/components/categories/sidebar.html", $context)
+
+
 
 
 ##$pages.include("$apphome/components/previoussearches/sidebar.html", $context)
@@ -19,4 +22,7 @@ $pages.include("$apphome/components/categories/sidebar.html", $context)
 
 ##$pages.include("$apphome/components/relatedkeywords/sidebar.html",$context)
 
-$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+
+#if ( $canviewopencollections )
+$pages.include("$apphome/components/opencollections/sidebar.html",$context)
+#end

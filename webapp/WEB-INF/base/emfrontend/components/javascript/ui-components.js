@@ -284,7 +284,7 @@ uiload = function() {
             	//show message
             	return;
         	}
-			var targetdiv = form.attr("targetdiv");
+			var targetdiv = form.data("targetdiv");
 			targetdiv = targetdiv.replace(/\//g, "\\/");
 			// allows for posting to a div in the parent from a fancybox.
 			

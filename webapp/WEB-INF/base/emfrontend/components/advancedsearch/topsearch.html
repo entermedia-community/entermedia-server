@@ -3,9 +3,24 @@
 <td id="collectionpicker" style="padding-top:8px">
 $pages.include("$apphome/components/libraries/pickcollection.html",$context)
 </td>
+
+<!-- 
 <td style="margin-left:20px">
 <div id="searchform" class="">
 <form id="search_form" action="$home$apphome/views/search/search.html" class="em-widget-content">
+
+
+	#if( $collection  )
+		#set( $categoryid = $collection.rootcategory )
+	#elseif($library)
+		#set( $categoryid = $library.categoryid )
+	#end
+	<input name="operation" type="hidden" value="exact" />
+	<input name="field" type="hidden" value="category-exact" />
+	<input name="category-exact.value" type="hidden" value="$!categoryid" />
+	
+
+
 	<input type="hidden" name="field" value="description" />
 	<input type="hidden" name="operation" value="freeform" />
 	#set( $input = "[[Search...]]")
@@ -14,5 +29,7 @@ $pages.include("$apphome/components/libraries/pickcollection.html",$context)
 </form>
 </div>
 </td>
+ -->
+ 
 </tr>
 </table>

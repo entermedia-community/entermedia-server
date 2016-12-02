@@ -2,7 +2,7 @@
 	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
-		<div class="pull-left libraryheader" >$librarycol (<a class="" href="$home$apphome/views/modules/library/edit/edit.html?id=$library.getId()&viewid=librarygeneral&viewpath=library/librarygeneral&searchtype=library"><span>$library</span></a>)</div>
+		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[View Collection]]</a></li>
 		  #if($canimportcollection)
