@@ -6,17 +6,25 @@
 			<tr>
 				<td id="${detail.id}editspace" style="padding-right:20px;">
 	<form  class="ajaxform"  data-targetdiv="collectionpicker" action="$home$apphome/components/libraries/pickcollection.html">
-					#set( $detail = $searcher.getDetail("library"))
-					#set( $selectedlibrary = $context.getRequestParameter("selectedlibrary"))
-					#if($selectedlibrary)
-						#set($library = $mediaarchive.getData("library",$selectedlibrary))
-					#end
-					<select  name="selectedlibrary"  class="listautocomplete selectautosubmit" 
-						data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">
-					#if( $library )
-					  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
-					#end
-					</select>
+		#set( $detail = $searcher.getDetail("library"))
+
+		#if(!$librarycol)
+			#set( $selectedcollection = $context.getRequestParameter("collectionid"))
+			#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
+		#end
+			#set( $selectedlibrary = $context.getRequestParameter("selectedlibrary"))
+			#if($selectedlibrary)
+				#set($library = $mediaarchive.getData("library",$selectedlibrary))
+			#elseif( $librarycol )
+				#set( $selectedlibrary = $librarycol.get("library") )
+				#set($library = $mediaarchive.getData("library",$selectedlibrary))
+			#end
+			<select  name="selectedlibrary"  class="listautocomplete selectautosubmit" 
+				data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">
+			#if( $library )
+			  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
+			#end
+			</select>
 	</form>
 				</td>	
 				<td id="librarycollectioneditspace" style="padding-right:20px;">
@@ -24,12 +32,10 @@
 	<form  action="$home$apphome/views/modules/librarycollection/media/index.html">
 				<input type="hidden" id="list-libraryvalue" name="selectedlibrary" value="$!library.getId()" />  
 				#set( $detail = $searcher.getDetail("name"))
-				#set( $selectedcollection = $context.getRequestParameter("collectionid"))
-				#set($collection = $mediaarchive.getData("librarycollection",$selectedcollection))
 				<select name="collectionid"  class="listautocomplete selectautosubmit" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 					data-placeholder="$detail.getText($context)" data-sortby="name">
-				#if( $collection )
-				  <option value="$collection.getId()" selected="selected">#esc($collection.getName($context.locale)))</option>
+				#if( $librarycol )
+				  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
 				#end
 				</select>
 	</form>
