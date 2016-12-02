@@ -1,34 +1,35 @@
 #if( $canasseteditorlibraries)
-<div id="collectionpicker" style="text-align: right;width:240px">
+<div id="collectionpickerinner" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
-	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
-	<form  class="autosubmit"  data-targetdiv="main" action="$home$apphome/components/opencollections/searchcollectionresults.html">
-	
-	##	<input type="hidden" name="searchtype" value="librarycollection" />
+	<form  class="ajaxform"  data-targetdiv="collectionpicker" action="$home$apphome/components/libraries/pickcollection.html">
 		<table class="inlinesearch" >
 			<tr>
-			#foreach( $detail in $details)
 				<td id="${detail.id}editspace" style="padding-right:20px;">
-					#if( $detail.id == "name")
-						#set( $detail = $detail.copy() )
-						$detail.setId("currentcollection")
-						$detail.setViewType("autocomplete")
-						$detail.setProperty("foreignkeyid","library")
-						$detail.setProperty("listid","librarycollection")
+					#set( $detail = $searcher.getDetail("library"))
+					#set( $selectedlibrary = $context.getRequestParameter("selectedlibrary"))
+					#if($selectedlibrary)
+						#set($foundrow = $mediaarchive.getData("library",$selectedlibrary))
 					#end
-					
-					$context.putPageValue("detail", $detail)
-					$pages.include("/${applicationid}/components/advancedsearch/detailselectinline.html", $context)
-					#if( $detail.id == "currentcollection")
-						<a class="ajax" targetdivinner="nameeditspace" href="$home$apphome/components/upload/types/html5/createcollection.html">[[add]]</a>
-					#elseif( $detail.id == "library")
-						<a class="ajax" targetdivinner="nameeditspace" href="$home$apphome/components/upload/types/html5/createcollection.html">[[add]]</a>
+					<select id="list-libraryvalue" name="selectedlibrary"  class="listautocomplete selectautosubmit" 
+						data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">
+					#if( $foundrow )
+					  <option value="$foundrow.getId()" selected="selected">#esc($foundrow.getName($context.locale))</option>
 					#end
+					</select>
 				</td>	
-			#end
+				<td id="${detail.id}editspace" style="padding-right:20px;">
+				#set( $detail = $searcher.getDetail("name"))
+				<select name="${detailid}.value"  class="listautocomplete" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+					data-placeholder="$detail.getText($context)" data-sortby="name">
+				#if( $foundrow )
+				  <option value="$!val" selected="selected">#esc($label)</option>
+				#end
+				</select>
+				</td>	
 			</tr>
 		</table>	
-	</form>	
+	</form>
+	
 </div>
 #end

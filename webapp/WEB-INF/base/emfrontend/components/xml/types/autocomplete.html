@@ -31,13 +31,6 @@
 
 
 
-##<input name="completefield" class="listautocomplete #if($detail.isRequired() && !$multiedit) required #end" id="${detailid}${idcount}value" value="#esc($label)"  type="hidden"  
-##	data-searchfield="$searchfield" data-searchtype="$detail.listId" data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-sortby="$!detail.sort"/>
-##<input name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"   value="$!val" type="hidden" class="listautocompletevalue" />
-
-
-
-
 #if( $idprefix != "search" && $canviewsettings && $foundrow )
 	#set($module = $searcherManager.getData($catalogid, "module", $detail.listId ) )
 	#if($module)

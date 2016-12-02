@@ -305,7 +305,7 @@ uiload = function() {
 			return false;
 		}
 	);
-	
+
 	jQuery("form.autosubmit").livequery( function() 
 	{
 		var form = $(this);
@@ -940,6 +940,11 @@ uiload = function() {
 				{
 					var id = "#list-" + theinput.attr("id");
 					jQuery(id).val("");
+				}
+				if( theinput.hasClass("selectautosubmit") )
+				{
+					var theform = jQuery(this).closest("form");
+					theform.closest("form").trigger("submit")
 				}
 			});
 		}
