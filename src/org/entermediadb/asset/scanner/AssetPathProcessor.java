@@ -258,7 +258,11 @@ public class AssetPathProcessor extends PathProcessor
 									{
 										processFile(item, inUser);
 									}
-								}	
+								}
+								else
+								{
+									processFile(item, inUser);
+								}
 							}
 						}
 					}
