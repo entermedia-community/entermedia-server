@@ -133,15 +133,14 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				return asset;
 			}
 
-			String existingdate = asset.get("assetmodificationdate");
+			Date existingdate = asset.getDate("assetmodificationdate");
 			if (existingdate != null)
 			{
 				long filemmod = inContent.getLastModified();
-				Date saveddate = DateStorageUtil.getStorageUtil().parseFromStorage(existingdate);
 				//We need to ignore milliseconds since our parsed date will not have them
-				if (saveddate != null)
+				if (existingdate != null)
 				{
-					long oldtime = saveddate.getTime();
+					long oldtime = existingdate.getTime();
 					filemmod = filemmod / 1000;
 					oldtime = oldtime / 1000;
 					if (filemmod == oldtime)

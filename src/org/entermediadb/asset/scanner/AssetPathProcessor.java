@@ -3,8 +3,10 @@ package org.entermediadb.asset.scanner;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,17 +27,17 @@ public class AssetPathProcessor extends PathProcessor
 
 	protected MediaArchive fieldMediaArchive;
     protected Boolean fieldOnWindows;
-    protected boolean fieldSkipModificationCheck;
+    protected boolean fieldModificationCheck = false;
     
-	public boolean isSkipModificationCheck()
+	public boolean isModificationCheck()
 	{
-		return fieldSkipModificationCheck;
+		return fieldModificationCheck;
 	}
 
 
-	public void setSkipModificationCheck(boolean inSkipModificationCheck)
+	public void setModificationCheck(boolean inModificationCheck)
 	{
-		fieldSkipModificationCheck = inSkipModificationCheck;
+		fieldModificationCheck = inModificationCheck;
 	}
 
 	protected AssetUtilities fieldAssetUtilities;
@@ -147,9 +149,7 @@ public class AssetPathProcessor extends PathProcessor
 			}
 			else
 			{
-				
-					processFile(inInput, inUser);
-				
+				processFile(inInput, inUser);
 			}
 		}
 		protected void processAssetFolder(ContentItem inInput, User inUser)
@@ -192,9 +192,7 @@ public class AssetPathProcessor extends PathProcessor
 					}
 
 					//Use the first file that is not a folder
-					String soucepath = getAssetUtilities().extractSourcePath(inInput, true, getMediaArchive());
-
-					asset = getMediaArchive().createAsset(soucepath);
+					asset = getMediaArchive().createAsset(sourcepath);
 					asset.setFolder(true);
 					asset.setProperty("datatype", "original");
 					if( inUser != null )
@@ -227,7 +225,7 @@ public class AssetPathProcessor extends PathProcessor
 				
 				if( processchildren && isRecursive())
 				{
-					
+					Set	knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
 					for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 					{
 						String path = (String) iterator.next();
@@ -246,28 +244,44 @@ public class AssetPathProcessor extends PathProcessor
 						}
 						else
 						{
-								if (acceptFile(item))
+							if (acceptFile(item))
+							{
+								if( isModificationCheck() ) //Only set to true when importing a specific folder/file
 								{
-									if( isSkipModificationCheck() )
-									{
-										//we dont need to load the asset so dont load it
-										String filesourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
-										String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/assets/" + filesourcepath + "/data.xml";
-										if( !getPageManager().getRepository().doesExist(filepath) )
-										{
-											processFile(item, inUser); //Loads the asset and does a check on mod date
-										}
-									}
-									else
-									{
-										processFile(item, inUser); 
-									}
+									processFile(item, inUser);
 								}
+								else if( !knownssourcepaths.isEmpty())
+								{
+									String nwwsourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
+
+									if( !knownssourcepaths.contains(nwwsourcepath) )
+									{
+										processFile(item, inUser);
+									}
+								}	
+							}
 						}
 					}
 				}
 			}
 		}
+		protected Set loadGeneratedFolders(ContentItem inInput, String inSourcepath)
+		{
+			Set set = new HashSet();
+			String filepath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/";
+			Collection generatedfolders = getPageManager().getChildrenPaths(filepath  + inSourcepath); 
+
+			for (Iterator iterator = generatedfolders.iterator(); iterator.hasNext();)
+			{
+				String path = (String) iterator.next();
+				String sourcepath = path.substring(filepath.length());
+				set.add(sourcepath);
+			}
+			
+			return set;
+		}
+
+
 		public Boolean isOnWindows()
 		{
 			if (fieldOnWindows == null)
