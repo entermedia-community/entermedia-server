@@ -1403,7 +1403,7 @@ Change Collections to be normal categories path s and make createTree look at th
 			{
 				continue;
 			}
-			getAssetImporter().processOn(assetRoot, path,archive, false,inReq.getUser());
+			getAssetImporter().processOn(assetRoot, path, false,archive,inReq.getUser());
 		}
 
 		if (unzipped != null)
@@ -1411,7 +1411,7 @@ Change Collections to be normal categories path s and make createTree look at th
 			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
 			{
 				Page page = (Page) iterator.next();
-				getAssetImporter().processOn(assetRoot, page.getPath(), archive, false,inReq.getUser());
+				getAssetImporter().processOn(assetRoot, page.getPath(),  false,archive,inReq.getUser());
 			}
 		}
 	}
@@ -1434,7 +1434,9 @@ Change Collections to be normal categories path s and make createTree look at th
 			{
 				continue;
 			}
-			getAssetImporter().processOn(assetRoot, path, archive,false, inReq.getUser());
+			//	public List<String> processOn(String inRootPath, String inStartingPoint, boolean checkformod, final MediaArchive inArchive, User inUser)
+
+			getAssetImporter().processOn(assetRoot, path, false,archive, inReq.getUser());
 		}
 
 		if (unzipped != null)
@@ -1442,7 +1444,7 @@ Change Collections to be normal categories path s and make createTree look at th
 			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
 			{
 				Page page = (Page) iterator.next();
-				getAssetImporter().processOn(assetRoot, page.getPath(), archive,false,inReq.getUser());
+				getAssetImporter().processOn(assetRoot, page.getPath(), false,archive,inReq.getUser());
 			}
 		}
 	}
@@ -1514,7 +1516,7 @@ Change Collections to be normal categories path s and make createTree look at th
 	}
 	protected void importAndSearch(WebPageRequest inReq, MediaArchive inArchive, String mountpath, String assetRoot)
 	{
-		List<String> created = getAssetImporter().processOn(assetRoot, assetRoot, inArchive,false,inReq.getUser());
+		List<String> created = getAssetImporter().processOn(assetRoot, assetRoot, false,inArchive,inReq.getUser());
 		
 		SearchQuery search = inArchive.getAssetSearcher().createSearchQuery();
 		int max = Math.min(10000, created.size());
