@@ -31,6 +31,19 @@ public class ProjectModule extends BaseMediaModule
 		manager.loadCollections(inReq, getMediaArchive(inReq));
 	}
 
+	public void redirectToCollection(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
+		String collectionid = loadCollectionId(inReq);
+		String appid = inReq.findValue("applicationid");
+		String finalpath = "/" + appid + "/views/modules/librarycollection/media/" + collectionid + ".html";
+		inReq.redirect(finalpath);
+
+	}
+
+	
+	
 	public void loadOpenCollections(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");
@@ -195,6 +208,9 @@ public class ProjectModule extends BaseMediaModule
 		
 		
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
+		if(all == null){
+			return;
+		}
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
 		String sessionId = all.getSessionId();

@@ -347,6 +347,9 @@ public class ProjectManager implements CatalogEnabled
 	//
 	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
 	{
+		if(collectionid == null){
+			return null;
+		}
 		Searcher searcher = archive.getAssetSearcher();
 		HitTracker all = null;
 		//		if( assetsearch instanceof LuceneSearchQuery)
@@ -361,7 +364,10 @@ public class ProjectManager implements CatalogEnabled
 		//SearchQuery collectionassetsearch = archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
 		SearchQuery assetsearch = searcher.addStandardSearchTerms(inReq);
 		Category root = getRootCategory(archive, collectionid);
-
+		if(root == null){
+			return null;
+		}
+		
 		if (assetsearch == null)
 		{
 			assetsearch = searcher.createSearchQuery();
