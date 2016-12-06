@@ -1,3 +1,5 @@
 <page>
+	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
+
 	 <inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout> 
 </page>
