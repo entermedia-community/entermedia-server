@@ -1,10 +1,10 @@
-#if( $canviewlibrarysearch)
+#if( $canviewopencollections)
 <div id="collectionpickerinner" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
 		<table class="inlinesearch" >
 			<tr>
-				<td id="${detail.id}editspace" style="padding-right:20px;">
+				<td  id="selectedlibraryui" style="padding-right:20px;">
 	<form  class="ajaxform"  data-targetdiv="collectionpicker" action="$home$apphome/components/libraries/pickcollection.html">
 		#set( $detail = $searcher.getDetail("library"))
 
@@ -12,32 +12,34 @@
 			#set( $selectedcollection = $context.getRequestParameter("collectionid"))
 			#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
 		#end
-			#set( $selectedlibrary = $context.getRequestParameter("selectedlibrary"))
-			#if($selectedlibrary)
-				#set($library = $mediaarchive.getData("library",$selectedlibrary))
-			#elseif( $librarycol )
-				#set( $selectedlibrary = $librarycol.get("library") )
-				#set($library = $mediaarchive.getData("library",$selectedlibrary))
-			#end
-			<select  name="selectedlibrary"  class="listautocomplete selectautosubmit" 
+		#set( $selectedlibrary = $context.getRequestParameter("selectedlibrary"))
+		#if($selectedlibrary)
+			#set($library = $mediaarchive.getData("library",$selectedlibrary))
+		#elseif( $librarycol )
+			#set( $selectedlibrary = $librarycol.get("library") )
+			#set($library = $mediaarchive.getData("library",$selectedlibrary))
+		#end
+		<select  name="selectedlibrary" id="selectedlibrary"  class="listautocomplete selectautosubmit selectaddnew"  data-addnewlabel="[Add New]"
 				data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">
 			#if( $library )
 			  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
 			#end
 			</select>
+			<a id="selectedlibraryadd" href="$home$apphome/components/xml/types/autocomplete/addnew.html?searchtype=library&targetdiv=collectionpicker" title="[[Add Library]]" class="emdialog" style="display:none" >add</a>
 	</form>
 				</td>	
-				<td id="librarycollectioneditspace" style="padding-right:20px;">
+				<td id="collectionidui" style="padding-right:20px;">
 
 	<form  action="$home$apphome/views/modules/librarycollection/media/index.html">
 				<input type="hidden" id="list-libraryvalue" name="selectedlibrary" value="$!library.getId()" />  
 				#set( $detail = $searcher.getDetail("name"))
-				<select name="collectionid"  class="listautocomplete selectautosubmit" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+				<select name="collectionid" id="collectionid"  class="listautocomplete selectautosubmit selectaddnew" data-addnewlabel="[Add New]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 					data-placeholder="$detail.getText($context)" data-sortby="name">
 				#if( $librarycol )
 				  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
 				#end
 				</select>
+				<a id="collectionidadd" href="$home$apphome/$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" style="display:none" >add</a>
 	</form>
 				</td>	
 			</tr>

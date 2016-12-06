@@ -926,9 +926,20 @@ uiload = function() {
 						return search;
 					},
 					processResults: function(data, params) { // parse the results into the format expected by Select2.
+						 var rows = data.rows;
+						 if( theinput.hasClass("selectaddnew") )
+						 {
+						 	if( params.page == 1 || !params.page)
+						 	{	
+						 		var addnewlabel = theinput.data('addnewlabel');
+							 	var addnewdata = { name: addnewlabel, id: "_addnew_" };
+							 	rows.unshift(addnewdata);
+							}	
+						 }	 
+						 //addnew
 					 	 params.page = params.page || 1;
 						 return {
-					        results: data.rows,
+					        results: rows,
 					        pagination: {
 					          more: false //(params.page * 30) < data.total_count
 					        }
@@ -947,11 +958,30 @@ uiload = function() {
 					var id = "#list-" + theinput.attr("id");
 					jQuery(id).val("");
 				}
-				if( theinput.hasClass("selectautosubmit") )
-				{
-					var theform = jQuery(this).closest("form");
-					theform.closest("form").trigger("submit")
-				}
+				else
+				{	
+					//Check for "_addnew_" show ajax form
+					var selectedid = theinput.val();
+					
+					if(  selectedid == "_addnew_" )
+					{
+						var clicklink = $("#" + theinput.attr("id") + "add");
+						clicklink.trigger("click");
+						
+						e.preventDefault();
+						return false;
+					}
+					//Check for "_addnew_" show ajax form
+					if( theinput.hasClass("selectautosubmit") )
+					{
+						if( selectedid )
+						{
+							var theform = jQuery(this).closest("form");
+							theform.closest("form").trigger("submit");
+						}	
+					}
+				}	
+
 			});
 		}
 	});		

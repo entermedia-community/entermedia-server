@@ -1,0 +1,12 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $action = "$home$apphome/views/modules/librarycollection/media/save.html")
+	
+<form name="adder" id="adder" class="validate-inputs" action="$action">
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="$searchtype" />
+
+$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
+$context.putPageValue("view","${searchtype}/${searchtype}general")	
+$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
+</form>
