@@ -368,6 +368,10 @@ public class ProjectManager implements CatalogEnabled
 			assetsearch.addExact("category", root.getId());
 
 		}
+		if(assetsearch.getTermByDetailId("category") == null){
+			assetsearch.addExact("category", root.getId());
+		}
+		assetsearch.setEndUserSearch(true);
 		all = archive.getAssetSearcher().search(assetsearch);
 
 		String hpp = inReq.getRequestParameter("page");

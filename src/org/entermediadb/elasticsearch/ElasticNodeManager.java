@@ -792,6 +792,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			}
 
 			loadIndex(id, newindex, true);
+			getSearcherManager().clear();
+			
 		}
 		catch (Throwable e)
 		{
@@ -860,7 +862,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 		final List withparents = archive.findChildTablesNames();
-
+		
 		types.sort(new Comparator()
 		{
 			@Override

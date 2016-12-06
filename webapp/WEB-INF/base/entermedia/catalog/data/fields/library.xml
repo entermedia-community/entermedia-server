@@ -17,14 +17,6 @@
       <language id="fr"><![CDATA[Nom de la bibliothèque]]></language> 
     </name> 
   </property>  
-  <property id="division" type="list" viewtype="list" editable="true" index="true" sort="name" stored="true" keyword="false" filter="false" sortable="true">Department 
-    <name> 
-      <language id="de"><![CDATA[Abteilung]]></language>  
-      <language id="en"><![CDATA[Department]]></language>  
-      <language id="es"><![CDATA[Departamento]]></language>  
-      <language id="fr"><![CDATA[Département]]></language> 
-    </name> 
-  </property>  
   <property id="librarystatus" index="true" stored="true" editable="true" type="list" keyword="false" filter="false" sortable="true">Client Status 
     <name> 
       <language id="de"><![CDATA[Client-Status]]></language>  

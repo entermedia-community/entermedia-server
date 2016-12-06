@@ -105,6 +105,9 @@ uiload = function() {
 				var nextpage= inlink.data('href');
 				nextpage = nextpage + inlink.val();
 				var targetDiv = inlink.data("targetdiv");
+				if(!targetDiv){
+					targetDiv = inlink.attr("targetdiv");
+				}
 				targetDiv = targetDiv.replace(/\//g, "\\/");
 				jQuery.get(nextpage, {}, function(data) 
 				{
@@ -285,6 +288,9 @@ uiload = function() {
             	return;
         	}
 			var targetdiv = form.data("targetdiv");
+			if(!targetdiv){
+				targetdiv = form.attr("targetdiv");
+			}
 			targetdiv = targetdiv.replace(/\//g, "\\/");
 			// allows for posting to a div in the parent from a fancybox.
 			

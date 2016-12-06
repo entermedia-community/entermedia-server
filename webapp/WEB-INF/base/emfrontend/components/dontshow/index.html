@@ -13,20 +13,34 @@
  ##<h4>Selected</h4>
 	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
 			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+		#if($librarycol)
+		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
+				href="$home$apphome/views/modules/librarycollection/filter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=3" >$selectedfilter
+				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>
+				 #else
+		
 		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
 				href="$home$apphome/views/search/filter.html?removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >$selectedfilter
 				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>
+		
+		
+		
+				 
+				 #end
 	#end
 #end	
 </ul>
 
 #set($facets = $hits.getFilterOptions())
 #if( $librarycol)
-<form class="ajaxform" targetdiv="collectiontoplevel" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
     <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
+    <input type="hidden" name="oemaxlevel" value="3" />
 
 #else
 <form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+    <input type="hidden" name="oemaxlevel" value="2" />
+
 #end
 
 #foreach($type in $facets )
@@ -55,7 +69,6 @@
     <input type="hidden" id="filtertype" name="filtertype" value="" />
     <input type="hidden" id="filtervalue" name="filtervalue" value="" />
     <input type="hidden" id="filterlabel" name="filterlabel" value="" />
-    <input type="hidden" name="oemaxlevel" value="2" />
     <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
 </form>
 
