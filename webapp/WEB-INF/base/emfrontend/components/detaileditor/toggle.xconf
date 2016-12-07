@@ -1,5 +1,5 @@
 <page>
-	<path-action name="MediaArchiveModule.toggleProperty" />
+	<path-action name="ProfileModule.toggleUserPreference" />
 	<layout/>
 	<inner-layout/>
 	

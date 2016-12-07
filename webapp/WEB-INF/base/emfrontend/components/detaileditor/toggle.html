@@ -10,8 +10,7 @@
 
 #set ($finishedname = "${view}complete")
 #set ($finished = $asset.get($finishedname))
-
-#if( !$user.hasProperty($viewpath) || $user.isPropertyTrue($viewpath) )
+#if(  $userprofile.getValue($viewpath) == "true" )
 	#set( $open = "down")
 #else
 	#set( $open = "up")
