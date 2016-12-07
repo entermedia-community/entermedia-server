@@ -11,6 +11,8 @@ Searcher assetsearcher = mediaArchive.getAssetSearcher();
 
 log.info("Ran");
 HitTracker assets = assetsearcher.getAllHits();
+assets.enableBulkOperations();
+
 AssetTypeManager manager = new AssetTypeManager();
 manager.context = context;
 manager.log = log;
