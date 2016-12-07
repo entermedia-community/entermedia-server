@@ -127,6 +127,7 @@
             targetDiv = targetDiv.replace(/\//g, "\\/");
             jQuery(targetDiv).load('$home$apphome/components/detaileditor/toggle.html', {
                 id : inId,
+                field : inId,
                 pluginpath : inPath,
                 origURL : "$content.path",
                 module : "${moduleid}",
