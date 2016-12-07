@@ -142,7 +142,9 @@ public class JsonAssetModule extends BaseJsonModule {
 		else
 		{
 			asset = archive.getAsset(id);
-			sourcepath = asset.getSourcePath();
+			if(asset != null ){
+				sourcepath = asset.getSourcePath();
+			}
 		}
 		if( asset == null)
 		{
@@ -171,6 +173,10 @@ public class JsonAssetModule extends BaseJsonModule {
 		if (asset == null && vals.get("fetchURL") != null) {
 			asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
 					sourcepath, (String) vals.get("importfilename"));
+			if(id != null){
+				asset.setId(id);
+			
+			}
 		}
 
 		if (asset == null && vals.get("localPath") != null) {
@@ -186,6 +192,10 @@ public class JsonAssetModule extends BaseJsonModule {
 				target.getParentFile().mkdirs();
 				if (file.renameTo(new File(realpath))) {
 					asset = importer.createAssetFromPage(archive, true, inReq.getUser(), newfile, id);
+					if(id != null){
+						asset.setId(id);
+					
+					}
 				} else {
 					throw new OpenEditException("Error moving file: " + realpath);
 				}
