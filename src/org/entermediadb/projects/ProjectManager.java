@@ -683,6 +683,11 @@ public class ProjectManager implements CatalogEnabled
 
 	private Category createRootCategory(MediaArchive inArchive, LibraryCollection collection)
 	{
+		if(collection == null )
+		{
+			log.error("No collection found");
+			return null;
+		}
 		Searcher librarysearcher = inArchive.getSearcher("library");
 		String libraryid = collection.get("library");
 		if(libraryid == null){
@@ -694,7 +699,7 @@ public class ProjectManager implements CatalogEnabled
 		if(library == null && "default".equals(libraryid)){
 			library = librarysearcher.createNewData();
 			library.setId("default");
-			library.setName("Default");
+			library.setName("General");
 			librarysearcher.saveData(library);
 		}
 		Category librarycategory = null;
@@ -703,9 +708,9 @@ public class ProjectManager implements CatalogEnabled
 		{
 			librarycategory = inArchive.getCategory(library.get("categoryid"));
 		}
-		else
-		{
 
+		if( librarycategory == null)
+		{
 			String folder = library.get("folder");
 			if (folder == null)
 			{
@@ -713,10 +718,6 @@ public class ProjectManager implements CatalogEnabled
 			}
 			librarycategory = inArchive.createCategoryPath(folder);
 			library.setValue("categoryid", librarycategory.getId());
-			//			if( inUser != null && librarycategory.getValue("viewusers") == null)
-			//			{
-			//				librarycategory.addValue("viewusers",inUser.getUserName());
-			//			}
 			inArchive.getSearcher("library").saveData(library);
 		}
 		Category collectioncategory = inArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
