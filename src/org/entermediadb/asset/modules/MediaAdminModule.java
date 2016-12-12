@@ -304,6 +304,9 @@ public class MediaAdminModule extends BaseMediaModule
 	}	
 	public void initCatalogs(WebPageRequest inReq)
 	{
+		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+		manager.getPathEvents();
+
 		HitTracker catalogs = getSearcherManager().getList("system","catalog");
 		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
 		{
@@ -315,19 +318,16 @@ public class MediaAdminModule extends BaseMediaModule
 				NodeManager nodemanager = (NodeManager)getModuleManager().getBean(catalogid,"nodeManager");
 				boolean existed = nodemanager.containsCatalog(catalogid);
 				
-				PathEventManager manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
+				manager = (PathEventManager)getModuleManager().getBean(catalogid, "pathEventManager");
 				manager.getPathEvents();
 				
 				if( !existed)
 				{
 					//import any data sitting there for importing
 					MediaArchive archive = (MediaArchive)getModuleManager().getBean(catalogid,"mediaArchive");
-
-				
 					
-					
-					List children = getPageManager().getRepository().getChildrenNames("/WEB-INF/data/" + catalogid + "/dataexport/");
-					if( !children.isEmpty())
+					Page cat = getPageManager().getPage("/" + catalogid + "/site.xconf" );
+					if( !cat.exists())
 					{
 						
 						PageManager pageManager = archive.getPageManager();
@@ -336,12 +336,7 @@ public class MediaAdminModule extends BaseMediaModule
 						homesettings.setProperty("fallbackdirectory","/entermedia/catalog");
 						pageManager.getPageSettingsManager().saveSetting(homesettings);
 						pageManager.clearCache();
-
-						//log.info("Loading database from dataexport folder");
-						//archive.fireMediaEvent("data/importdatabase",null);
 					}
-					
-										
 					
 				}
 			}
