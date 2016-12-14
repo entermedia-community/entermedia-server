@@ -61,6 +61,14 @@ public class ProjectModule extends BaseMediaModule
 
 	}
 
+	public void setCurrentLibrary(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		String libraryid = inReq.findValue("selectedlibrary");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
+		Data library = manager.setCurrentLibrary(inReq.getUserProfile(), libraryid);
+		inReq.putPageValue("selectedlibrary", library);
+	}
 //	public void savedCollection(WebPageRequest inReq)
 //	{
 //		MediaArchive archive = getMediaArchive(inReq);

@@ -76,7 +76,7 @@ $(document).ready(function()
     	}
     	$(this).text("Uploading");
     	$(this).attr('disabled', 'disabled');
-    	 $("#viewassets").attr('disabled', 'disabled');
+    	 $("#viewassetsbtn").attr('disabled', 'disabled');
     	jQuery("#upload_field").triggerHandler("html5_upload.start");
     	
     });
@@ -194,7 +194,7 @@ $(document).ready(function()
     				   jQuery("#filePicker").text("Pick More Files...");
     				   jQuery("#upload_field").removeAttr('disabled');
     				   
-    				   var viewassets = $("#viewassets");
+    				   var viewassets = $("#viewassetsbtn");
 	        		   viewassets.removeAttr('disabled');
     				   
     				   //$(".media_results_tab").data("tabloaded",false);

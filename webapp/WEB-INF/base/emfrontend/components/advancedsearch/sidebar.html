@@ -1,7 +1,23 @@
 #if( $canviewassets )
+#if(!$librarycol)
+	#set( $selectedcollection = $context.getRequestParameter("collectionid"))
+	#if( $selectedcollection)
+		#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
+		$context.putPageValue("librarycol",$librarycol)
+	#end	
+#end
+#set( $selectedlibrary = $context.getRequestParameter("selectedlibrary"))
+#if($selectedlibrary)
+	#set($library = $mediaarchive.getData("library",$selectedlibrary))
+#elseif( $librarycol )
+	#set( $selectedlibrary = $librarycol.get("library") )
+	#set($library = $mediaarchive.getData("library",$selectedlibrary))
+	$context.putPageValue("selectedlibrary",$library)
+#end
+
 			<div class="ui-widget uipanel" id="left-col-search" >
 				<div  #if($userprofile.minimizeasearchcontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" #else class="ui-widget-header" #end data-target="asearchcontent">
-				<span class="widget-header-title">[[Search]]</span>
+				<span class="widget-header-title">[[Search]] #if($librarycol)[[Collection]]#elseif($library)[[Library]]#end</span>
 					#if( $caneditadvancedsearch )
 						<span class="widget-header-right">
 						<a class="ajax " targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><i class="glyphicon glyphicon-edit"></i></a>

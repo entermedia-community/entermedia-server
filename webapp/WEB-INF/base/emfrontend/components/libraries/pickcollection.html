@@ -5,7 +5,9 @@
 		<table class="inlinesearch" >
 			<tr>
 				<td  id="selectedlibraryui" style="padding-right:20px;">
-	<form  class="ajaxform"  data-targetdiv="collectionpicker" action="$home$apphome/components/libraries/pickcollection.html">
+	<form class="ajax" data-targetdiv="application" action="$home$apphome/views/modules/asset/librarysearch.html">
+		<input type="hidden" name="oemaxlevel" value="4" />
+		
 		#set( $detail = $searcher.getDetail("library"))
 
 		#if(!$librarycol)

@@ -1,0 +1,11 @@
+<page>
+	<path-action name="ProjectModule.setCurrentLibrary"/>
+	<path-action name="MediaSearchModule.searchLibrary"/>
+	<property name="sortby">assetaddeddateDown</property>
+	<property name="section">assets</property>
+	<property name="virtual">true</property>
+	<property name="assetrootfolder">/${applicationid}/views/assets</property>
+	<property name="categoryid">index</property>
+	<inner-layout>/${applicationid}/theme/layouts/searchlayout.html</inner-layout>
+
+</page>

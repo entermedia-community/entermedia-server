@@ -32,7 +32,6 @@ $context.putPageValue("edit",$edit)
 
 $context.putPageValue("idprefix","search")
 
-
 <table width="100%" class="advancedsearchtable">
 	#foreach( $detail in $details)
 		$context.putPageValue("detail", $detail)
@@ -44,7 +43,22 @@ $context.putPageValue("idprefix","search")
 			$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
 		#end
 	#end
+
+
+#if( $librarycol.rootcategory )
+<input type="hidden" name="field" value="category" />
+<input type="hidden" name="operation" value="exact" />
+<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
+<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+#elseif( $library.categoryid )
+<input type="hidden" name="field" value="category" />
+<input type="hidden" name="operation" value="exact" />
+<input type="hidden" name="category.value" value="$library.categoryid" />
+<input type="hidden" name="selectedlibrary" value="$library.getId()" />
+#end
+
 	<td class="submit"><input class="btn small" type="submit" value="[[Search]]" />
+
 	</td>
 	</tr>
 	

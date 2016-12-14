@@ -6,7 +6,7 @@
 <input type="hidden" name="searchtype" value="$searchtype" />
 
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
-$context.putPageValue("view","${searchtype}/${searchtype}general")	
+$context.putPageValue("view","${searchtype}/${searchtype}addnew")	
 $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 
 </form>

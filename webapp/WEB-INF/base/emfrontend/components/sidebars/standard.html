@@ -1,26 +1,15 @@
 ##$pages.include("$apphome/components/libraries/selector.html",$context)
 
 #if( $librarycol)
-$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
-$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+##<div class="libraryheader" >$librarycol </div>
 $pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
 #else
 $pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
-$pages.include("$apphome/components/categories/sidebar.html", $context)
 $pages.include("$apphome/components/dontshow/sidebar.html",$context)
+$pages.include("$apphome/components/categories/sidebar.html", $context)
 #end
-
-
-
-
-
-
-
-##$pages.include("$apphome/components/previoussearches/sidebar.html", $context)
-
-##$pages.include("$apphome/components/savedqueries/sidebar.html", $context)
-
-##$pages.include("$apphome/components/relatedkeywords/sidebar.html",$context)
 
 
 #if ( $canviewopencollections )

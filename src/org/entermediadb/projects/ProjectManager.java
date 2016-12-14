@@ -104,6 +104,19 @@ public class ProjectManager implements CatalogEnabled
 		}
 		return null;
 	}
+	public Data setCurrentLibrary(UserProfile inProfile, String libraryid)
+	{
+		if (inProfile != null)
+		{
+			inProfile.setProperty("last_selected_library", libraryid);
+			if (libraryid != null)
+			{
+				Data library = getSearcherManager().getData(getCatalogId(), "library", libraryid);
+				return library;
+			}
+		}
+		return null;
+	}
 
 	public Collection<LibraryCollection> loadCollections(WebPageRequest inReq, MediaArchive inArchive)
 	{

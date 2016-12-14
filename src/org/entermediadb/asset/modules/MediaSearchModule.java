@@ -36,7 +36,18 @@ public class MediaSearchModule extends BaseMediaModule
 	public void setGeoCoder(GeoCoder fieldGeoCoder) {
 		this.fieldGeoCoder = fieldGeoCoder;
 	}
-
+	public void searchLibrary(WebPageRequest inPageRequest) throws Exception
+	{
+		Data selectedlibrary = (Data)inPageRequest.getPageValue("selectedlibrary");
+		if( selectedlibrary != null)
+		{
+			MediaArchive archive = getMediaArchive(inPageRequest);
+			String catid = selectedlibrary.get("categoryid");
+			inPageRequest.setRequestParameter("nodeID", catid);
+			HitTracker tracker = archive.getAssetSearcher().query().enduser(true).exact("category",catid).search(inPageRequest);
+			tracker.getSearchQuery().setProperty("categoryid", catid);
+		}
+	}
 
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{

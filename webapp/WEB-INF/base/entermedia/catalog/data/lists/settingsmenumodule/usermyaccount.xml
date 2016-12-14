@@ -2,7 +2,7 @@
 
 <properties>
   <property id="myassets" menulevel="toplevel" moduleid="user" path="/views/myaccount/myassets/index.html" ordering="5">My Assets</property>
-  <property id="userupload" menulevel="toplevel" moduleid="user" path="/views/upload/index.html" ordering="6">Upload</property>
+  <property id="userupload" menulevel="toplevel" moduleid="user" path="/views/upload/create/createnewstart.html" ordering="6">Add Media</property>
   <property id="profile"  menulevel="toplevel" moduleid="user" path="/views/myaccount/index.html" ordering="10">Profile</property>
   <property id="accountprefences"  menulevel="toplevel" moduleid="user" path="/views/myaccount/preferences/index.html" ordering="11">Preferences</property>
 
