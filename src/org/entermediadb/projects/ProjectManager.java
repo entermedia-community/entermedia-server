@@ -128,10 +128,10 @@ public class ProjectManager implements CatalogEnabled
 		}
 
 		Data library = getCurrentLibrary(inReq.getUserProfile());
-		if (library == null)
-		{
-			library = loadUserLibrary(inArchive, inReq.getUserProfile());
-		}
+//		if (library == null)
+//		{
+//			library = loadUserLibrary(inArchive, inReq.getUserProfile());
+//		}
 		if (library != null)
 		{
 			inReq.putPageValue("selectedlibrary", library);
