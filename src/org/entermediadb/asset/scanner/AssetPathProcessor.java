@@ -147,7 +147,7 @@ public class AssetPathProcessor extends PathProcessor
 					processAssetFolder( inInput, inUser);
 				}
 			}
-			else
+			else if (acceptFile(inInput))
 			{
 				processFile(inInput, inUser);
 			}
