@@ -66,8 +66,9 @@ public class MediaArchive implements CatalogEnabled
 	protected EmailErrorHandler fieldEmailErrorHandler;
 	protected PageManager fieldPageManager;
 	protected WebEventHandler fieldMediaEventHandler;
-	protected TranscodeTools fieldTranscodeTools;
+	protected WebEventHandler fieldLoggingEventHandler;
 
+	protected TranscodeTools fieldTranscodeTools;
 	protected AssetArchive fieldAssetArchive;
 	protected AssetArchive fieldMirrorAssetArchive;
 //	protected Map fieldTaxRates;
@@ -1721,6 +1722,27 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 	
+	public void fireLoggingEvent(String inSearchType, String operation, String inFunctionType, String inLog, User inUser)
+	{
+			WebEvent event = new WebEvent();
+			event.setOperation(operation);
+			event.setSearchType(inSearchType);
+			event.setCatalogId(getCatalogId());
+			event.setUser(inUser);
+			event.setSource(this);
+			event.setProperty("functiontype", inFunctionType);
+			event.setProperty("log", inLog);
+			getLoggingEventHandler().eventFired(event);
+	}
+
+	public WebEventHandler getLoggingEventHandler()
+	{
+		return fieldLoggingEventHandler;
+	}
+	public void setLoggingEventHandler(WebEventHandler inLoggingEventHandler)
+	{
+		fieldLoggingEventHandler = inLoggingEventHandler;
+	}
 	
 	
 }

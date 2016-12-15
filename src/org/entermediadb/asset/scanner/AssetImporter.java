@@ -120,7 +120,13 @@ public class AssetImporter
 		finder.setExcludeMatches(getExcludeMatches()); //The rest should be filtered by the mount itself
 		finder.setIncludeMatches(getIncludeMatches());
 		finder.setAttachmentFilters(getAttachmentFilters());
+		String value = inArchive.getCatalogSettingValue("showhotfolderstatus");
+		if(Boolean.valueOf(value))
+		{
+			finder.setShowLogs(true);
+		}
 		finder.processAssets(inStartingPoint, inUser);
+			
 		
 		// Windows, for instance, has an absolute file system path limit of 256
 		// characters

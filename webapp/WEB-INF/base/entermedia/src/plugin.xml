@@ -477,6 +477,9 @@
 		<property name="mediaEventHandler">
 			<ref bean="mediaEventHandler" />
 		</property>
+		<property name="loggingEventHandler">
+			<ref bean="logSearcherEventHandler" />
+		</property>
 		<property name="pageManager">
 			<ref bean="pageManager" />
 		</property>
@@ -957,6 +960,7 @@
 			</list>
 		</property>		
 	</bean>
+
 
 	<bean id="assetStatsManager" class="org.entermediadb.asset.AssetStatsManager">
 		<property name="mediaEventHandler">

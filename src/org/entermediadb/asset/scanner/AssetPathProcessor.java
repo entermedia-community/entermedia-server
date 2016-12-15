@@ -28,7 +28,20 @@ public class AssetPathProcessor extends PathProcessor
 	protected MediaArchive fieldMediaArchive;
     protected Boolean fieldOnWindows;
     protected boolean fieldModificationCheck = false;
+    protected boolean fieldShowLogs;
     
+	public boolean isShowLogs()
+	{
+		return fieldShowLogs;
+	}
+
+
+	public void setShowLogs(boolean inShowLogs)
+	{
+		fieldShowLogs = inShowLogs;
+	}
+
+
 	public boolean isModificationCheck()
 	{
 		return fieldModificationCheck;
@@ -109,6 +122,8 @@ public class AssetPathProcessor extends PathProcessor
 		//archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
 		getMediaArchive().firePathEvent("importing/assetsimported",inUser,getAssetsToSave());
 		
+		getMediaArchive().fireLoggingEvent("hotfolder","update", "saved", String.valueOf( getAssetsToSave().size()), null);
+
 		getAssetsToSave().clear();
 	}
 
@@ -166,7 +181,7 @@ public class AssetPathProcessor extends PathProcessor
 					if( asset != null)
 					{
 						getAssetsToSave().add(asset);
-						if (getAssetsToSave().size() > 100)
+						if (getAssetsToSave().size() > 500)
 						{
 							saveImportedAssets(inUser);
 						}
@@ -182,6 +197,11 @@ public class AssetPathProcessor extends PathProcessor
 				{
 					return;
 				}
+				if( paths.size() > 10000 )
+				{
+					getMediaArchive().fireLoggingEvent("hotfolder","update", "slowdown", paths.size()  + " files in one folder:" + inInput.getPath(), null);
+				}
+				
 				boolean processchildren = true;
 				if( createAttachments(paths) )
 				{
@@ -203,7 +223,6 @@ public class AssetPathProcessor extends PathProcessor
 					asset.setProperty("assetviews", "1");
 					asset.setProperty("importstatus", "imported");
 
-
 					String foundprimary = PathUtilities.extractFileName(found.getPath());
 					asset.setPrimaryFile(foundprimary);
 					getAssetUtilities().readMetadata(asset, found, getMediaArchive());
@@ -211,7 +230,7 @@ public class AssetPathProcessor extends PathProcessor
 					//asset = getAssetUtilities().createAssetIfNeeded(item, getMediaArchive(), inUser);
 					//set the primary file
 					getAssetsToSave().add(asset);
-					if (getAssetsToSave().size() > 100)
+					if (getAssetsToSave().size() > 500)
 					{
 						saveImportedAssets(inUser);
 					}
@@ -226,6 +245,11 @@ public class AssetPathProcessor extends PathProcessor
 				if( processchildren && isRecursive())
 				{
 					Set	knownssourcepaths = loadGeneratedFolders(inInput, sourcepath);
+					int processedfiles = 0;
+					int acceptfolder = 0;
+					int rejectfolder = 0;
+					int skipfile = 0;
+					int rejectfile = 0;
 					for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 					{
 						String path = (String) iterator.next();
@@ -234,11 +258,16 @@ public class AssetPathProcessor extends PathProcessor
 						{
 							if (acceptDir(item))
 							{
+								acceptfolder++;
 //								if( deep > 2 )
 //								{
 //									ignoretime = true; //If we are deeper than 3 and still showed a mod stamp then check everything
 //								}
 								processAssetFolder( item, inUser);
+							}
+							else
+							{
+								rejectfolder++;
 							}
 							
 						}
@@ -249,6 +278,7 @@ public class AssetPathProcessor extends PathProcessor
 								if( isModificationCheck() ) //Only set to true when importing a specific folder/file
 								{
 									processFile(item, inUser);
+									processedfiles++;
 								}
 								else if( !knownssourcepaths.isEmpty())
 								{
@@ -257,15 +287,37 @@ public class AssetPathProcessor extends PathProcessor
 									if( !knownssourcepaths.contains(nwwsourcepath) )
 									{
 										processFile(item, inUser);
+										processedfiles++;
+									}
+									else
+									{
+										skipfile++;
 									}
 								}
 								else
 								{
 									processFile(item, inUser);
+									processedfiles++;
 								}
+							}
+							else
+							{
+								rejectfile++;
 							}
 						}
 					}
+					if( isShowLogs() )
+					{
+						getMediaArchive().fireLoggingEvent("hotfolder","update", "optimization", 
+								"processedfiles:" + processedfiles +
+								" acceptfolder:" + acceptfolder + 
+								" rejectfolder:"+ rejectfolder + 
+								" skipfile:"+ skipfile + 
+								" rejectfile:" + rejectfile + 
+								" path:" + inInput.getPath(), null);
+						log.info("skipped folder:" + inInput.getPath());
+					}
+					
 				}
 			}
 		}
