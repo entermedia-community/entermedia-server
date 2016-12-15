@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  
+  <property id="date" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date
+    <name>
+      <language id="de"><![CDATA[Datum]]></language>
+      <language id="en"><![CDATA[Date]]></language>
+      <language id="es"><![CDATA[Fecha]]></language>
+      <language id="fr"><![CDATA[Date]]></language>
+    </name>
+  </property>
+  
+  <property id="functiontype" index="true" stored="true">Function Type</property>
+  <property id="log" index="true" stored="true">Log</property>
+   
+</properties>
