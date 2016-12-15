@@ -19,9 +19,7 @@
 							#set($library = $mediaarchive.getData("library",$selectedlibrary))
 						#elseif( $librarycol )
 							#set( $selectedlibrary = $librarycol.get("library") )
-							$selectedlibrary
 							#set($library = $mediaarchive.getData("library",$selectedlibrary))
-							$library
 						#end
 						<select  name="selectedlibrary" id="selectedlibrary"  class="listautocomplete selectautosubmit selectaddnew"  data-addnewlabel="[Add New]"
 								data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">

@@ -26,7 +26,7 @@ $pages.include("./editdetails.html")
 
 <label>[[Exclude Filter]]</label>
 <input type="hidden" name="field" value="excludes" />
-<textarea class="field" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old#end</textarea>
+<textarea class="field" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old, *_tmp*#end</textarea>
 <div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div> 
 
 <label>[[Attachment Filter]]</label>

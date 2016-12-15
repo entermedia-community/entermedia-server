@@ -1,8 +1,8 @@
 package org.entermediadb.email;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -62,10 +62,13 @@ public class ElasticPostMail extends PostMail
 		{
 			String fullpath = "https://api.elasticemail.com/mailer/send";
 			postMethod = new HttpPost(fullpath);
-			builder.addPart("username", getSmtpUsername());
-			builder.addPart("api_key", getSmtpPassword());
-			builder.addPart("from", from);
-			builder.addPart("from_name", from);
+			
+			HashMap props = new HashMap();
+			
+			props.put("username", getSmtpUsername());
+			props.put("api_key", getSmtpPassword());
+			props.put("from", from);
+			props.put("from_name", from);
 			//make sure list of recipients is unique since it may combine cc and bcc
 			ArrayList<String> list = new ArrayList<String>();
 			for (InternetAddress str : recipients){
@@ -74,13 +77,13 @@ public class ElasticPostMail extends PostMail
 				}
 			}
 			String finallist = list.toString().replace("[", "").replace("]", "").replace(",", ";").trim();
-			builder.addPart("to", finallist);//email is sent separately to each recipient, ie. treated as BCC, so include BCC list
-			builder.addPart("subject", subject);
+			props.put("to", finallist);//email is sent separately to each recipient, ie. treated as BCC, so include BCC list
+			props.put("subject", subject);
 			if (inHtml != null){
-				builder.addPart("body_html", inHtml);
+				props.put("body_html", inHtml);
 			}
 			if (inText != null){
-				builder.addPart("body_text", inText);
+				props.put("body_text", inText);
 			}
 			boolean hasAttachments = false;
 			if (inAttachments!=null && !inAttachments.isEmpty()){
@@ -94,6 +97,7 @@ public class ElasticPostMail extends PostMail
 				}
 			}
 			HttpClient client = getClient();
+			postMethod.setEntity(builder.build(props));
 			//should check if attachments are being sent
 			//if so, increase the socket timeout
 //			int connectionTimeout = 5000; // 5 seconds default

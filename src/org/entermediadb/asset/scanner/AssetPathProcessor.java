@@ -424,6 +424,27 @@ public class AssetPathProcessor extends PathProcessor
 
 		public void processAssets(String inStartingPoint, User inUser)
 		{
+			ContentItem item = getMediaArchive().getPageManager().getRepository().getStub(inStartingPoint);
+			String sourcepath = getAssetUtilities().extractSourcePath(item, true, getMediaArchive());
+			String[] folderlist = sourcepath.split("/");
+			String pathtocheck = "";
+			for (int i = 0; i < folderlist.length; i++)
+			{
+				String nextfolder = folderlist[i];
+				if(i > 0){
+					pathtocheck = pathtocheck + "/" + nextfolder;
+				} else{
+					pathtocheck =folderlist[0];
+				}
+				Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);
+				if(asset != null){
+					return;
+				}
+			}
+		
+			
+			
+			
 			process(inStartingPoint, inUser);
 			saveImportedAssets(inUser);
 

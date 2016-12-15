@@ -49,7 +49,7 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 			$!asset.name
 		</td>
 		<td>
-			$!searcherManager.getData($catalogid,"assettype",$asset.assettype)
+			$!searcherManager.getData($catalogid,"assettype",$asset.assettype).getName($context.getLocale())
 		</td>
 		<td>
 		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
@@ -58,7 +58,7 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 		    #end
 			#if( $val )
 				#set($preset = $searcherManager.getData($catalogid, "convertpreset",$val ))
-				$!preset
+				$!preset.getName($context.getLocale())
 			#else
 				[[Online Preview]]
 			#end	

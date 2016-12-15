@@ -306,6 +306,9 @@ public class BasePushManager implements PushManager
 		{
 			filestosend.add(item);
 		}
+		
+	
+		
 		//			}
 //			else
 //			{
@@ -345,6 +348,19 @@ public class BasePushManager implements PushManager
 			//upload(target, archive, "generated", filestosend);
 			saveAssetStatus(searcher, savequeue, target, "nogenerated", inUser);
 		}
+		
+		
+		if("mp3".equalsIgnoreCase(target.getFileFormat())){
+		
+			Page inputpage = archive.getOriginalDocument(target);
+			ArrayList mp3 = new ArrayList();
+			
+			mp3.add(inputpage.getContentItem());
+			upload(target, archive, "original", mp3);
+			
+		}
+		
+		
 	}
 
 
