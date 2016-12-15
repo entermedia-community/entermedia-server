@@ -263,7 +263,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 			//This now is really long, unique, and has a GUID...lets strip off the last folder?
 
-			category = inArchive.getCategoryArchive().createCategoryTree(folderPath); //
+			category = inArchive.createCategoryPath(folderPath); //
 		}
 		else
 		{
