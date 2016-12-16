@@ -142,7 +142,7 @@ public class AssetSyncModule extends BaseMediaModule
 			archive.saveAssets(tracker, inReq.getUser());
 			if(tracker.size() > 0)
 			{
-				archive.fireMediaEvent("assetuploadpending",inReq.getUser(),(Asset)tracker.first(),allids);
+			//	archive.fireMediaEvent("assetuploadpending",inReq.getUser(),(Asset)tracker.first(),allids);
 			}
 			//TODO: Replace with a cached search using the assetid's
 			SearchQuery query = archive.getAssetSearcher().createSearchQuery();
