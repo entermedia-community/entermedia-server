@@ -383,7 +383,7 @@ public class AssetPathProcessor extends PathProcessor
 			if( asset != null)
 			{
 				getAssetsToSave().add(asset);
-				if (getAssetsToSave().size() > 100)
+				if (getAssetsToSave().size() > 500)
 				{
 					saveImportedAssets(inUser);
 				}
