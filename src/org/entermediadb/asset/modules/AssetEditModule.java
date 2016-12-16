@@ -1226,6 +1226,8 @@ Change Collections to be normal categories path s and make createTree look at th
 	protected Asset createAsset(MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
 	{
 		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, false, assetsourcepath, inUser);
+		getAssetImporter().getAssetUtilities().readMetadata(asset, dest.getContentItem(), archive);
+		asset.setProperty("importstatus", "imported");
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
 		{
 			String field  = (String)iterator.next();

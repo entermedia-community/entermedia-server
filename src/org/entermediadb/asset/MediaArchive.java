@@ -1091,6 +1091,7 @@ public class MediaArchive implements CatalogEnabled
 		request.putPageValue("hits", inData);
 		manager.runPathEvent(runpath, request);
 	}	
+	/*
 	public void fireMediaEvent(String operation, User inUser, Asset asset, List<String> inids)
 	{
 		WebEvent event = new WebEvent();
@@ -1120,7 +1121,7 @@ public class MediaArchive implements CatalogEnabled
 		//archive.getWebEventListener()
 		getMediaEventHandler().eventFired(event);
 	}
-	
+	*/
 	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)
 	{
 		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)

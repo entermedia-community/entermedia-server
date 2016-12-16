@@ -120,7 +120,7 @@ public class AssetPathProcessor extends PathProcessor
 
 		//archive.firePathEvent("importing/assetsuploaded",inReq.getUser(),getAssetsToSave());
 		//archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
-		getMediaArchive().firePathEvent("importing/assetsimported",inUser,getAssetsToSave());
+		getMediaArchive().firePathEvent("importing/assetscreated",inUser,getAssetsToSave());
 		
 		getMediaArchive().fireLoggingEvent("hotfolder","update", "saved", String.valueOf( getAssetsToSave().size()), null);
 
@@ -221,11 +221,11 @@ public class AssetPathProcessor extends PathProcessor
 					}
 					asset.setProperty("assetaddeddate",DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 					asset.setProperty("assetviews", "1");
-					asset.setProperty("importstatus", "imported");
+					asset.setProperty("importstatus", "needsmetadata");
 
 					String foundprimary = PathUtilities.extractFileName(found.getPath());
 					asset.setPrimaryFile(foundprimary);
-					getAssetUtilities().readMetadata(asset, found, getMediaArchive());
+					//getAssetUtilities().readMetadata(asset, found, getMediaArchive());
 					getAssetUtilities().populateCategory(asset, inInput, getMediaArchive(), inUser);
 					//asset = getAssetUtilities().createAssetIfNeeded(item, getMediaArchive(), inUser);
 					//set the primary file

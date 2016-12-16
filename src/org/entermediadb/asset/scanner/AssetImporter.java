@@ -120,7 +120,7 @@ public class AssetImporter
 		finder.setExcludeMatches(getExcludeMatches()); //The rest should be filtered by the mount itself
 		finder.setIncludeMatches(getIncludeMatches());
 		finder.setAttachmentFilters(getAttachmentFilters());
-		String value = inArchive.getCatalogSettingValue("showhotfolderstatus");
+		String value = inArchive.getCatalogSettingValue("show_hotfolder_status");
 		if(Boolean.valueOf(value))
 		{
 			finder.setShowLogs(true);
@@ -240,8 +240,7 @@ public class AssetImporter
 		{
 			inArchive.fireMediaEvent("asset/assetcreated",inUser, asset);
 		}
-
-		inArchive.fireMediaEvent("importing/assetsimported", inUser, asset);
+		inArchive.fireSharedMediaEvent("importing/assetscreated");
 	}
 
 	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)

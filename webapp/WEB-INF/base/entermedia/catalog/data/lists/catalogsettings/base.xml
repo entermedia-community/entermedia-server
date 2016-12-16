@@ -46,7 +46,7 @@
 
 	<property id="conversionexpirytime" value="7">Conversions older than this as expired</property>
 	<property id="extractmd5" value="true">Create MD5 Checksum values on import</property>
-	<property id="show_hot_folder_status" value="false">Track Hotfolde ingesting in database</property>
+	<property id="show_hotfolder_status" value="false">Track Hotfolder ingesting in database</property>
 
 
 </properties>

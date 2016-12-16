@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Read Asset Metadata</property>	
+	<property name="enabled">true</property>
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${catalogid}/events/scripts/importing/assetsreadmetadata.groovy</script>
+	</path-action>
+</page>

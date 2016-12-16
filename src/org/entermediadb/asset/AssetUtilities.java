@@ -114,10 +114,10 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			if ("7".equals(editstatus)) //Not deleted anymore
 			{
 				//restore
-				asset.setProperty("importstatus", "reimported");
+				asset.setProperty("importstatus", "needsmetadata");
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
-				readMetadata(asset, inContent, inArchive); //should we re-load metadata?
+				//readMetadata(asset, inContent, inArchive); //should we re-load metadata?
 				if (inCludeCategories)
 				{
 					populateCategory(asset, inContent, inArchive, inUser);
@@ -204,10 +204,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		if (importedasset)
 		{
 			String status = asset.get("importstatus");
-			if (status == null || !status.equals("complete"))
-			{
-				asset.setProperty("importstatus", "imported");
-			}
+			asset.setProperty("importstatus", "needsmetadata");
 			String previewstatus = asset.get("previewstatus");
 			//			if( previewstatus == null || status.equals("2"))
 			//			{
@@ -217,7 +214,8 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			asset.setProperty("pushstatus", "resend");
 			asset.setProperty("editstatus", "1");
 
-			readMetadata(asset, inContent, inArchive);
+			//readMetadata(asset, inContent, inArchive);
+			
 			// TODO: clear out old cached thumbnails and conversions
 			// directory
 			if (inCludeCategories)
