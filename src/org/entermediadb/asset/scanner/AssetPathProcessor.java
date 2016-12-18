@@ -25,6 +25,7 @@ public class AssetPathProcessor extends PathProcessor
 {
 	private static final Log log = LogFactory.getLog(AssetPathProcessor.class);
 
+	protected int fieldSaveSize = 1000;
 	protected MediaArchive fieldMediaArchive;
     protected Boolean fieldOnWindows;
     protected boolean fieldModificationCheck = false;
@@ -181,7 +182,7 @@ public class AssetPathProcessor extends PathProcessor
 					if( asset != null)
 					{
 						getAssetsToSave().add(asset);
-						if (getAssetsToSave().size() > 500)
+						if (getAssetsToSave().size() > fieldSaveSize)
 						{
 							saveImportedAssets(inUser);
 						}
@@ -197,7 +198,7 @@ public class AssetPathProcessor extends PathProcessor
 				{
 					return;
 				}
-				if( paths.size() > 10000 )
+				if( paths.size() > 3000 )
 				{
 					getMediaArchive().fireLoggingEvent("hotfolder","update", "slowdown", paths.size()  + " files in one folder:" + inInput.getPath(), null);
 				}
@@ -230,7 +231,7 @@ public class AssetPathProcessor extends PathProcessor
 					//asset = getAssetUtilities().createAssetIfNeeded(item, getMediaArchive(), inUser);
 					//set the primary file
 					getAssetsToSave().add(asset);
-					if (getAssetsToSave().size() > 500)
+					if (getAssetsToSave().size() > fieldSaveSize)
 					{
 						saveImportedAssets(inUser);
 					}
@@ -383,7 +384,7 @@ public class AssetPathProcessor extends PathProcessor
 			if( asset != null)
 			{
 				getAssetsToSave().add(asset);
-				if (getAssetsToSave().size() > 500)
+				if (getAssetsToSave().size() > fieldSaveSize)
 				{
 					saveImportedAssets(inUser);
 				}
