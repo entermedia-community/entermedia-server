@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Source Path]]></language> 
     </name> 
   </property>  
-  <property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" viewtype="multiselect" listid="category" sortable="true" type="list" filter="false">Exact Categories 
+  <property id="category-exact" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" viewtype="text" listid="category" sortable="true" type="list" filter="false">Exact Categories 
     <name> 
       <language id="de"><![CDATA[Kategorien]]></language>  
       <language id="en"><![CDATA[Exact Categories]]></language>  
