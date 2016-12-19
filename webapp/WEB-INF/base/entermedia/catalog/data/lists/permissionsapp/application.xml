@@ -29,6 +29,8 @@
 	<permission id="quicksearch" permissiontype="application" name="Quick Search" description="Enables a general search bar in the top navigation bar." ordering="290"/>
   	<permission id="viewmodulesettings" permissiontype="application" name="Module Settings" description="Enables access to module specific settings." ordering="291"/>
   	<permission id="viewcategorynav" permissiontype="application" name="Category Navigation" description="Enables the Category Navigation in the sidebar." ordering="292"/>
+	<permission id="editcategorytree" permissiontype="application" name="Edit/Modify Category Tree" description="Enables editing of the Category Tree in the sidebar." ordering="292"/>
+	
 	<permission id="viewerrors" permissiontype="application" name="Error Reporting" description="Enables Error Reporting to appear at the bottom of the screen." ordering="293"/>
 	
 	<permission id="filterbyassettype" permissiontype="application" name="Filter By Asset Type" description="Enables filters." ordering="294"/>

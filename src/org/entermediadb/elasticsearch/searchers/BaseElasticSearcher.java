@@ -91,6 +91,9 @@ import org.openedit.util.IntCounter;
 
 public class BaseElasticSearcher extends BaseSearcher
 {
+	
+	
+	
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
@@ -219,7 +222,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
-			if (inQuery.isEndUserSearch())
+			if (inQuery.isEndUserSearch() || inQuery.isFilter())
 			{
 				addFacets(inQuery, search);
 			}
@@ -1260,7 +1263,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			if ("exact".equals(inTerm.getOperation()))
 			{
-				if(inDetail.isAnalyzed()){
+				if(inDetail.isAnalyzed() ){
 					find = QueryBuilders.termQuery(fieldid + ".exact" , valueof);
 				} else {
 					find = QueryBuilders.termQuery(fieldid  , valueof);
@@ -1470,7 +1473,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	public void updateInBatch(Collection<Data> inBuffer, User inUser)
 	{
 		String catid = getElasticIndexId();
-
+		long start = new Date().getTime();
 		// We cant use this for normal updates since we do not get back the id
 		// or the version for new data object
 
@@ -1561,21 +1564,24 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 
-	//	bulkProcessor.close();
-		try
-		{
-			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
-		}
-		catch (InterruptedException e)
-		{
-			throw new OpenEditException(e);
-		}
+		bulkProcessor.close();
+//		try
+//		{
+//			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+//		}
+//		catch (InterruptedException e)
+//		{
+//			throw new OpenEditException(e);
+//		}
 
 		if (errors.size() > 0)
 		{
 			throw new OpenEditException((String) errors.get(0).toString());
 
 		}
+		long end = new Date().getTime();
+		double total = (end - start)  /1000.0;
+		log.info("processed bulk save  " + inBuffer.size() + " records in " + total + "(" + getSearchType() + ")");
 		// ConcurrentModificationException
 		// builder = builder.setSource(content).setRefresh(true);
 		// BulkRequestBuilder brb = getClient().prepareBulk();
@@ -1704,7 +1710,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				updateVersion(data, builder);
 			}
 			IndexResponse response = null;
-
+			
 			response = builder.execute().actionGet();
 			if (response.getId() != null)
 			{
