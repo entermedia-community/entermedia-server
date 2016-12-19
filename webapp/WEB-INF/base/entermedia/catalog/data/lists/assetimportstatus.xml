@@ -1,5 +1,13 @@
 <properties>
 	<!-- The last thing completed -->
+	<property id="needsmetadata">
+		<name> 
+	      <language id="en"><![CDATA[Pending Metadata]]></language>  
+	      <language id="es"><![CDATA[Pendiente Metadata]]></language> 
+	    </name>
+	</property>
+	
+	
 	<property id="uploading" >
 		<name> 
 	     <language id="en"><![CDATA[Uploading]]></language>  

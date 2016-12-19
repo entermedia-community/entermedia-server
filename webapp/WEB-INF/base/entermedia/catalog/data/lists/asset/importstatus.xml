@@ -1,6 +1,14 @@
-<!--  THis is OLD. It has been moved to asseteditstatus.xml -->
+<!-- This is a legacy file.  Not used anymore -->
 <properties>
 	<!-- The last thing completed -->
+	<property id="needsmetadata">
+		<name> 
+	      <language id="en"><![CDATA[Pending Metadata]]></language>  
+	      <language id="es"><![CDATA[Pendiente Metadata]]></language> 
+	    </name>
+	</property>
+	
+	
 	<property id="uploading" >
 		<name> 
 	     <language id="en"><![CDATA[Uploading]]></language>  
@@ -13,12 +21,6 @@
 	      <language id="es"><![CDATA[Pendiente]]></language> 
 	    </name>
 	</property> <!-- Assets created -->
-	<property id="needsmetadata">
-		<name> 
-	      <language id="en"><![CDATA[Pending Metadata]]></language>  
-	      <language id="es"><![CDATA[Pendiente Metadata]]></language> 
-	    </name>
-	</property>
 	<property id="uploaded" >
 		<name> 
 	      <language id="en"><![CDATA[Uploaded]]></language>  
