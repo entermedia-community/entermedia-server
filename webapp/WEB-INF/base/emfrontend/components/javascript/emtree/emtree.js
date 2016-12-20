@@ -328,8 +328,8 @@ repaintEmTree = function (tree) {
 //		>
 	var options = { 
 			"tree-name": tree.data("treename"),
-			"treeprefix":tree.data("url-prefix"),
-			"treepostfix":tree.data("url-postfix"),
+			"url-prefix":tree.data("url-prefix"),
+			"url-postfix":tree.data("url-postfix"),
 			"targetdiv":tree.data("targetdiv")
 		};
 	
