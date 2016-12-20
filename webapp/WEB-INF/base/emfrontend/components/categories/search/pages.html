@@ -1,3 +1,4 @@
+
 #if( $hits && $hits.getTotalPages() >  1  )
 	#if($categorycarousel == "true" && $category)
 		#set($categoryid = $category)
@@ -46,5 +47,6 @@
 			#end
 		</ul>
 	</div>
+	<p class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
 #end
 

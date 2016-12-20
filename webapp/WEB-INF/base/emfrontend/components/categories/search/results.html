@@ -8,7 +8,6 @@ $context.putPageValue("searcher",$searcher)
 $context.putPageValue("details",$details)
 $context.putPageValue("clickpath","$apphome/views/categories/")
 $context.putPageValue("viewpostfix",".html")
-$pages.include("./pages.html", $context)
 <div  class="tableholder" ">
 #set( $xmledithome = "$apphome/components/xml")    
 
@@ -45,8 +44,7 @@ $pages.include("./pages.html", $context)
 		#end
 	</tbody>
 </table>
-$pages.include("./pages.html")
-
+$pages.include("./pages.html",$context)
 </div>
 </div>
 </div>
