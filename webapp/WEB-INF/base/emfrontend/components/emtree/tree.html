@@ -70,11 +70,8 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 #set( $top = $context.getRequestParameter("treetoplocation") )
 #set( $left = $context.getRequestParameter("treeleftlocation") )
 
-#set( $prefix = $context.getRequestParameter("treeprefix" ) )
-#if( !$prefix)
-	#set( $prefix = "$home$apphome/views/categories/")
-#end
-#set( $postfix = $context.getRequestParameter("treepostfix" ) )
+#set( $prefix = $context.getRequestParameter("url-prefix" ) )
+#set( $postfix = $context.getRequestParameter("url-postfix" ) )
 
 #set( $targetdiv = $context.getRequestParameter("targetdiv" ) )
 

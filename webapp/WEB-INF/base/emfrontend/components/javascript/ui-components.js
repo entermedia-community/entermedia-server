@@ -345,17 +345,13 @@ uiload = function() {
 				var dialog = jQuery(this);
 				var hidescrolling = dialog.data("hidescrolling");
 				
-				var height = dialog.data("height");
-				if( !height )
-				{
-					height = "500";
-				}
 	
 				var width = dialog.data("width");
 				if( !width )
 				{
-					width = "650";
+					width = "800";
 				}
+				
 				var id = "modals";
 				var modaldialog = $( "#" + id );
 				if( modaldialog.length == 0 )
@@ -375,8 +371,13 @@ uiload = function() {
 				}
 				
 				modaldialog.load(link, options, function() { 
+					$(".modal-lg").css("min-width",width + "px" );
+					//$(".modal-lg").css("min-height",height + "px" );
+				
         		 	modaldialog.modal({keyboard: true,backdrop:true, "show":true});
         		 	//fix submit button
+        		 	//modaldialog.width(width);
+        		 	//modaldialog.height(height);
         		 	var id = $("form",modaldialog).attr("id");
         		 	$("#submitbutton",modaldialog).attr("form",id);
         		 	var title = dialog.attr("title");
@@ -399,7 +400,6 @@ uiload = function() {
 	
 	jQuery('.emrowpicker table td' ).livequery("click", function(event)
 	{
-		console.log("click");
 		event.preventDefault();
 
 		var clicked = jQuery(this);
@@ -408,7 +408,7 @@ uiload = function() {
 		row.toggleClass("emrowselected");
 		var id = row.data("id");
 		
-		var form = $(clicked.closest("form"));
+		var form = $(clicked.closest("form"));		
 		$('.emselectedrow',form ).each(function()
 		{
 			if( form.hasClass("emmultivalue" ) )
@@ -447,7 +447,7 @@ uiload = function() {
 		{
 			jQuery(form).trigger("submit");
 		}
-		if( !form.hasClass("emmultivalue" ) )
+		if( form.hasClass("autoclose" ) )
 		{
 			form.closest(".modal").modal("hide");
 		}

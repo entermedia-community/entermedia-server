@@ -36,6 +36,9 @@ jQuery(document).ready(function()
 		$('.emtree ul li div').removeClass('selected');
 		var tree = $(this).closest(".emtree");
 		var node = $(this).closest('.noderow');
+		$("div:first",node).addClass('selected');
+		var nodeid = node.data('nodeid');	
+		
 		var prefix = tree.data("url-prefix");
 		console.log(prefix);
 		var targetdiv = tree.data("targetdiv");
@@ -54,9 +57,14 @@ jQuery(document).ready(function()
 		{
 			var home = tree.data("home");
 			tree.find(nodeid + "_add").remove();
-			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
-			
+			var depth = node.data('depth');	
+			//Not really needed?
+			//node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
 		}
+		var event = jQuery.Event( "emtreeselect" );
+		event.tree = tree;
+		event.nodeid = nodeid;
+		$(document).trigger(event);
 	});
 	
 	gotopage = function(tree, node, maxlevel, prefix, postfix)
@@ -73,7 +81,9 @@ jQuery(document).ready(function()
 		
 		if( postfix == undefined || postfix == "" )
 		{
-			postfix = ".html";
+			//postfix = ".html";
+			postfix = "";
+			prefix = prefix + "?";
 		}
 		var home = tree.data("home");
 		
@@ -303,7 +313,7 @@ jQuery(document).ready(function()
    $('body').click(function () {
      	var $contextMenu = $(".treecontext");
      	$contextMenu.hide();
-     	$(".categorydroparea").removeClass('selected');     	
+     	$(".categorydroparea:first").removeClass('selected');     	
     });
 
 	//end document ready

@@ -33,6 +33,11 @@
       <language id="fr"><![CDATA[Parent Catégorie Id]]></language> 
     </name> 
   </property>  
+  <property id="parents" editable="false" type="list" listid="category" viewtype="multiselect" index="true" stored="true" keyword="false" filter="false"> 
+    <name> 
+      <language id="en"><![CDATA[Parents]]></language>  
+    </name> 
+  </property>  
   <property id="categorypath" editable="true" index="true" stored="true" sortable="true" keyword="false" filter="false">Path 
     <name> 
       <language id="de"><![CDATA[Pfad]]></language>  

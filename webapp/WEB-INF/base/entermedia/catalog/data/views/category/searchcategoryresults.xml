@@ -2,6 +2,4 @@
 
 <root>
   <property id="categorypath" />
-  <property id="foldertype" />
-  <property id="creationdate" />
 </root>

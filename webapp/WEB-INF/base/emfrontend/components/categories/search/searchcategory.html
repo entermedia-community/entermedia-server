@@ -1,35 +1,80 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
-#set( $categories = $context.getRequestParameter("categories") )
+#set( $categories = $context.getRequestParameter("category.values") )
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category-exact.values") )
+#end	
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category.values") )
+#end
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("category-exact.values") )
+#end	
 
-<div id="search-catgories" >
-	<div id="searcharea" >
-		#set( $searcher = $mediaarchive.getSearcher("category") )
-		$context.putPageValue("searcher",$searcher)
-		#set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
-		<form  class="autosubmit"  data-targetdiv="categoryresults" action="$home$apphome/components/categories/search/searchcategoryresults.html">
-		
-			<input type="hidden" name="searchtype" value="category" />
-			<input type="hidden" name="sortby" value="categorypathUp" />
-		<table class="inlinesearch" >
-			<tr>
-			#foreach( $detail in $details)
-				<td>
-					$context.putPageValue("detail", $detail)
-					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-				</td>	
-			#end
-			</tr>
-		</table>
-		
-		</form>
-		
-		<form  action="$home$apphome/views/categories/index.html">
-		<div id="categoryresults">
-			$pages.include("$home$apphome/components/categories/search/searchcategoryresults.html",$context)
+<div id="search-catgories">
+<table width="100%">
+<tr><td style="width:30%;padding-right:6px;">
+	<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
+			[[Parent]] 
 		</div>
-			<input name="categoryid" class="emselectedrow" type="hidden" />
-			<input name="nodeID" class="emselectedrow" type="hidden" />
-		</form>
+	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;overflow-x:auto;width:300px">  
+		$pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&editabletree=true&clearselection=true",$context)
 	</div>
+</td>
+<td>
+	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
+			[[Search]] 
+		</div>
+	<div id="searchareacontent" >
+	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index&existingcategories=$!categories",$context)
+	</div>
+
+</td></tr>	
+</table>	
+
+<script>
+
+var paintselected = function()
+{
+#foreach($categoryid in $categories.split("\s*\|\s*"))
+$('[data-id="${categoryid}"]').addClass("emrowselected");
+#end
+};
+
+$(document).on("emtreeselect",function(event) 
+{
+	var selectednode = event.nodeid;
+	$("#parentfilter").val(selectednode);
+	//trigger("submit");
+	//$("#autosubmitfilter").trigger("submit");
+	//$("#autosubmitfilter").submit();
+	$("#autosubmitfilter").ajaxSubmit({
+		target:"#categoryresults",
+		success: paintselected 
+	});
+	return false;
+});
+
+
+$(".pickedcategoryform").submit(function(event)
+{
+	//append to a list of categories from the calling area?
+	#if( $action )
+		event.preventDefault();
+		console.log("submit action $action to $targetdiv");
+		var params = {};
+		params["category.values"] =  $("#selectedcategories").val();
+		params["longform"] = "true";
+		params["oemaxlevel"] = "1";
+		$("#$targetdiv").load("$action", params);
+		return false;
+	#else
+		console.log("submit stop");
+		return true;  //Load category as usual
+	#end
+});
+
+paintselected();
+
+</script>
 </div>	

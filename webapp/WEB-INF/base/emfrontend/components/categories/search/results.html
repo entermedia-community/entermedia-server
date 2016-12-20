@@ -19,7 +19,6 @@ $pages.include("./pages.html", $context)
 
 <table  id="main-results-table" class="emdata striped greytxt table tbl-responsive" >
 	<tr class="tableheader">
-	<th>[[Name]]</th>
 	#foreach( $detail in $details )
 	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
 	#end
@@ -27,10 +26,12 @@ $pages.include("./pages.html", $context)
 	<tbody ng-foreach="hit in dataresults">
 		#foreach( $hit in $hits.getPageOfHits() )
 			<tr  #if($candelete != "false") data-id="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
-				<td class="category categorydraggable ui-draggable ui-draggable-handle" data-nodeid="$hit.id" data-categoryname="$hit.name">
-				$hit.name</td>
 			#foreach( $detail in $details)
+				#if( $velocityCount == 1)
+				<td class="category categorydraggable ui-draggable ui-draggable-handle" data-nodeid="$hit.id" data-categoryname="$hit.name">
+				#else
 				<td style="padding:4px;">
+				#end
 					#set( $val = "$!hit.get($detail.id)" )
 					#if($detail.render)
 						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
