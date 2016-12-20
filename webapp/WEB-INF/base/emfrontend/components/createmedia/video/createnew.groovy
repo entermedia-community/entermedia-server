@@ -10,7 +10,7 @@ MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 Searcher assets = mediaarchive.getAssetSearcher();
 
 Asset asset = assets.createNewData();
-
+asset.setId(assets.nextId());
 String sourcepath = "newassets/${context.getUserName()}/${asset.id}";
 asset.setSourcePath(sourcepath);
 asset.setFolder(true);
