@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -39,6 +38,7 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.client.AdminClient;
@@ -2340,7 +2340,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				setReIndexing(true);
 				// putMappings(); //We can only try to put mapping. If this
 				// failes then they will
-				HitTracker allhits = getAllHits();
+				ElasticHitTracker allhits = (ElasticHitTracker)getAllHits();
 				allhits.enableBulkOperations();
 				ArrayList tosave = new ArrayList();
 				for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
@@ -2355,7 +2355,10 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 				}
 				updateIndex(tosave, null);
-
+				ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
+			    clearScrollRequest.addScrollId(allhits.getLastScrollId());
+				getClient().clearScroll(clearScrollRequest);
+				
 			}
 			finally
 			{
