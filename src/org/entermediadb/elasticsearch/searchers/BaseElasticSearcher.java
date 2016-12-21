@@ -2358,7 +2358,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
 			    clearScrollRequest.addScrollId(allhits.getLastScrollId());
 				getClient().clearScroll(clearScrollRequest).actionGet();
-				System.gc();
+				//System.gc();
 				
 			}
 			finally
