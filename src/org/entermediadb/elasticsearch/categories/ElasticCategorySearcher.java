@@ -76,7 +76,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			if( category == null)
 			{
 				category  = (ElasticCategory)createNewData();
-				getCacheManager().put("category", data.getId(),category);
+				if( inParent.getLevel() < 4)
+				{
+					getCacheManager().put("category", data.getId(),category);
+				}
 			}
 			category.setId(data.getId());
 			category.setProperties(data.getProperties());
@@ -218,7 +221,6 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if( cat == null || cat.isDirty() )
 		{
 			cat = searchCategory(inCategoryId);
-			getCacheManager().put("category", inCategoryId,cat);
 		}
 		if( cat != null && !cat.hasLoadedParent())
 		{
@@ -236,6 +238,11 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				}
 			}
 		}
+		if( cat != null && cat.getLevel() < 4)
+		{
+			getCacheManager().put("category", inCategoryId,cat);
+		}
+
 		return cat;
 	}
 	
