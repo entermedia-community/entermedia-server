@@ -76,7 +76,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			if( category == null)
 			{
 				category  = (ElasticCategory)createNewData();
-				if( inParent.getLevel() < 4)
+				if( inParent.getLevel() < 3)
 				{
 					getCacheManager().put("category", data.getId(),category);
 				}
