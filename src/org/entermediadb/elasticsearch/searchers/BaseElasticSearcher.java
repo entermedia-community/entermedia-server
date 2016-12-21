@@ -2357,7 +2357,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				updateIndex(tosave, null);
 				ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
 			    clearScrollRequest.addScrollId(allhits.getLastScrollId());
-				getClient().clearScroll(clearScrollRequest);
+				getClient().clearScroll(clearScrollRequest).actionGet();
 				
 			}
 			finally
