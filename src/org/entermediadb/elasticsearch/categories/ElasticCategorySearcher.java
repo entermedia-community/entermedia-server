@@ -116,18 +116,19 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();
-				ElasticCategory data = (ElasticCategory) createNewData();
-				data.setProperties(hit.getProperties());
-				data.setId(hit.getId());
+				ElasticCategory data = (ElasticCategory)loadData(hit);
 				tosave.add(data);
-				if( tosave.size()>1000)
+				if( tosave.size() > 2000)
 				{
 					updateIndex(tosave,null);
 					tosave.clear();
 				}
 			}
 			updateIndex(tosave,null);
+			
+			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
 			getCacheManager().clear("category");
+			
 			//updateChildren(parent,tosave);
 			//updateIndex(tosave,null);
 			
@@ -241,7 +242,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			cat = searchCategory(inCategoryId);
 //			if( cat != null)
 //			{
-//				log.debug("loading category:"  + cat.getName() );
+//				log.info("loading category:"  + cat.getName() );
 //			}	
 		}
 		if( cat != null && !cat.hasLoadedParent())

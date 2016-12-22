@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Parent Catégorie Id]]></language> 
     </name> 
   </property>  
-  <property id="parents" editable="false" type="list" listid="category" viewtype="multiselect" index="true" stored="true" keyword="false" filter="false"> 
+  <property id="parents" editable="false" type="list" listid="category" viewtype="text" index="true" stored="true" keyword="false" filter="false"> 
     <name> 
       <language id="en"><![CDATA[Parents]]></language>  
     </name> 
