@@ -103,7 +103,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			//log.info(hit.get("categorypath"));
 			ElasticCategory data = (ElasticCategory)loadData(hit);
 			tosave.add(data);
-			if( tosave.size() > 2000)
+			if( tosave.size() > 1000)
 			{
 				updateIndex(tosave,null);
 				tosave.clear();
