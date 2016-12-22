@@ -18,6 +18,7 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetails;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
@@ -67,7 +68,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 	public List findChildren(Category inParent) 
 	{
-		Collection hits = query().exact("parentid", inParent.getId()).sort("name.exact").search();
+		Collection hits = query().exact("parentid", inParent.getId()).search();
 		List children = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 			Data data = (Data) iterator.next();
@@ -76,10 +77,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			if( category == null)
 			{
 				category  = (ElasticCategory)createNewData();
-				if( inParent.getLevel() < 3)
-				{
-					getCacheManager().put("category", data.getId(),category);
-				}
+				getCacheManager().put("category", data.getId(),category);
 			}
 			category.setId(data.getId());
 			category.setProperties(data.getProperties());
@@ -108,10 +106,30 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			//This is the one time we load up the categories from the XML file
 			getXmlCategoryArchive().clearCategories();
 			getCacheManager().clear("category");
-			Category parent = getRootCategory();
+//			Category parent = getRootCategory();
+			//Loop over entire database sorted by categorypath?
+			
+			HitTracker tracker = query().all().sort("categorypath").search();
+			tracker.enableBulkOperations();
+			
 			List tosave = new ArrayList();
-			updateChildren(parent,tosave);
+			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				ElasticCategory data = (ElasticCategory) createNewData();
+				data.setProperties(hit.getProperties());
+				data.setId(hit.getId());
+				tosave.add(data);
+				if( tosave.size()>1000)
+				{
+					updateIndex(tosave,null);
+					tosave.clear();
+				}
+			}
 			updateIndex(tosave,null);
+			getCacheManager().clear("category");
+			//updateChildren(parent,tosave);
+			//updateIndex(tosave,null);
 			
 			//resave all the paths?
 //			List tosave = new ArrayList(1000);
@@ -221,6 +239,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		if( cat == null || cat.isDirty() )
 		{
 			cat = searchCategory(inCategoryId);
+//			if( cat != null)
+//			{
+//				log.debug("loading category:"  + cat.getName() );
+//			}	
 		}
 		if( cat != null && !cat.hasLoadedParent())
 		{
@@ -238,7 +260,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				}
 			}
 		}
-		if( cat != null && cat.getLevel() < 4)
+		if( cat != null )
 		{
 			getCacheManager().put("category", inCategoryId,cat);
 		}
