@@ -87,6 +87,34 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		Collections.sort(children);
 		return children;
 	}
+	
+	public void reindexInternal() throws OpenEditException
+	{
+		getXmlCategoryArchive().clearCategories();
+		getCacheManager().clear("category");
+		
+		HitTracker tracker = query().all().sort("categorypath").search();
+		tracker.enableBulkOperations();
+		
+		List tosave = new ArrayList();
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			//log.info(hit.get("categorypath"));
+			ElasticCategory data = (ElasticCategory)loadData(hit);
+			tosave.add(data);
+			if( tosave.size() > 2000)
+			{
+				updateIndex(tosave,null);
+				tosave.clear();
+				getCacheManager().clear("category");
+			}
+		}
+		updateIndex(tosave,null);
+		
+		//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
+		getCacheManager().clear("category");
+	}
 
 	public void reIndexAll() throws OpenEditException 
 	{
@@ -101,53 +129,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		
 			putMappings(); //We can only try to put mapping. If this failes then they will
 				//need to export their data and factory reset the fields 
-			
-			//deleteAll(null); //This only deleted the index
-			//This is the one time we load up the categories from the XML file
-			getXmlCategoryArchive().clearCategories();
-			getCacheManager().clear("category");
-//			Category parent = getRootCategory();
-			//Loop over entire database sorted by categorypath?
-			
-			HitTracker tracker = query().all().sort("categorypath").search();
-			tracker.enableBulkOperations();
-			
-			List tosave = new ArrayList();
-			for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-			{
-				Data hit = (Data) iterator.next();
-				ElasticCategory data = (ElasticCategory)loadData(hit);
-				tosave.add(data);
-				if( tosave.size() > 2000)
-				{
-					updateIndex(tosave,null);
-					tosave.clear();
-				}
-			}
-			updateIndex(tosave,null);
-			
-			//Keep in mind that the index is about the clear so the cache will be invalid anyways since isDirty will be called
-			getCacheManager().clear("category");
-			
-			//updateChildren(parent,tosave);
-			//updateIndex(tosave,null);
-			
-			//resave all the paths?
-//			List tosave = new ArrayList(1000);
-//			
-//			for (Iterator iterator = all.iterator(); iterator.hasNext();)
-//			{
-//				Data row = (Data) iterator.next();
-//				Category parent = (Category)loadData(row);
-//				tosave.add(parent);
-//				if(tosave.size() == 1000)
-//				{
-//					updateIndex(tosave, null);
-//					tosave.clear();
-//				}
-//			}
-//			updateIndex(tosave, null);
-			
+			reindexInternal();
 		}
 		finally
 		{
