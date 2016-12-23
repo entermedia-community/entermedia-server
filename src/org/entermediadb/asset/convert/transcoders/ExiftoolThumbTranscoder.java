@@ -17,7 +17,7 @@ public class ExiftoolThumbTranscoder extends BaseTranscoder
 	@Override
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
-		log.info("Extracting thumb from");
+
 
 		ConvertResult result = new ConvertResult();
 		result.setOutput(inStructions.getOutputFile());
