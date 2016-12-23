@@ -1720,6 +1720,7 @@ public class MediaArchive implements CatalogEnabled
 		getPageManager().getPageSettingsManager().clearCache();
 		getSearcherManager().getPropertyDetailsArchive(getCatalogId()).clearCache();
 		getSearcherManager().clear();
+		getNodeManager().clear();
 		
 	}
 	

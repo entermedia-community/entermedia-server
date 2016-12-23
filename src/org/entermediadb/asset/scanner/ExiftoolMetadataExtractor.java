@@ -404,6 +404,8 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		String format = inAsset.getFileFormat();
 		if ("indd".equalsIgnoreCase(format))
 		{
+			log.info("Extracting thumb from "+ inInputFile.getAbsolutePath());
+
 			ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
 	
 			//if we have embdeded thumb 

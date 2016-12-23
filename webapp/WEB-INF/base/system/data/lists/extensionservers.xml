@@ -1,10 +1,10 @@
 <servers>
 
-	<server id="6" listingurl="http://entermediasoftware.com/plugins/allplugins9dev.xml">EnterMediaSoftware.com Version 9</server>	
+	<server id="6" listingurl="https://entermediadb.org/plugins/allplugins9dev.xml">EnterMediaSoftware.com Version 9</server>	
 
-	<server id="5" listingurl="http://entermediasoftware.com/plugins/allplugins9.xml">EnterMediaSoftware.com Version 9</server>	
-	<server id="4" listingurl="http://entermediasoftware.com/plugins/allplugins8dev.xml">EnterMediaSoftware.com Version 8 Sandbox</server>	
-	<server id="1" listingurl="http://entermediasoftware.com/plugins/allplugins8.xml">EnterMediaSoftware.com Version 8 Releases</server>	
-	<server id="2" listingurl="http://entermediasoftware.com/plugins/allplugins.xml">EnterMediaSoftware.com Version 7</server>	
-	<server id="3" listingurl="http://netevolved.com/plugins/netevolved.xml">NetEvolved Platform</server>	
+	<server id="5" listingurl="https://entermediadb.org/plugins/allplugins9.xml">EnterMediaSoftware.com Version 9</server>	
+	<server id="4" listingurl="https://entermediadb.org/plugins/allplugins8dev.xml">EnterMediaSoftware.com Version 8 Sandbox</server>	
+	<server id="1" listingurl="https://entermediadb.org/plugins/allplugins8.xml">EnterMediaSoftware.com Version 8 Releases</server>	
+	<server id="2" listingurl="https://entermediadb.org/plugins/allplugins.xml">EnterMediaSoftware.com Version 7</server>	
+	<server id="3" listingurl="https://netevolved.com/plugins/netevolved.xml">NetEvolved Platform</server>	
 </servers>

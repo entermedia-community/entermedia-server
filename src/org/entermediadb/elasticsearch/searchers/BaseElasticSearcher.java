@@ -1513,7 +1513,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						toupdate.setId(res.getId());
 					}
 				}
-				request.refresh(true);
+				//request.refresh(true);
 			}
 
 			@Override

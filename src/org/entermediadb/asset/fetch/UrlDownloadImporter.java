@@ -15,7 +15,7 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 	private static Log log = LogFactory.getLog(UrlDownloadImporter.class);
 
 	public Asset importFromUrl(MediaArchive inArchive, String inUrl,
-			User inUser, String sourcepath, String inFileName) {
+			User inUser, String sourcepath, String inFileName, String id) {
 		String filename = PathUtilities.extractFileName(inUrl);
 		filename = filename.replaceAll("\\?.*", "");
 		if(inFileName != null){
@@ -30,7 +30,9 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 			asset = inArchive.createAsset(sourcepath);
 		}
 		asset.setName(filename);
-		
+		if(id != null){
+			asset.setId(id);
+		}
 		asset.setPrimaryFile(filename);
 		asset.setProperty("downloadurl-file", inUrl);
 		if(inFileName != null){

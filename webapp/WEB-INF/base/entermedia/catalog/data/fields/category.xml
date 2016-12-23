@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[brève description]]></language> 
     </name> 
   </property>  
-  <property id="parentid" editable="true" type="list" listid="category" viewtype="autocomplete" index="true" stored="true" keyword="false" filter="false" sortable="true">Parent Category Id 
+  <property id="parentid" editable="true" type="list" listid="category" viewtype="text" index="true" stored="true" keyword="false" filter="false" sortable="true">Parent Category Id 
     <name> 
       <language id="de"><![CDATA[geordnete Kategorie-ID]]></language>  
       <language id="en"><![CDATA[Parent Category Id]]></language>  

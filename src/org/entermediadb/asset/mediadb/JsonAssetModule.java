@@ -172,11 +172,8 @@ public class JsonAssetModule extends BaseJsonModule {
 
 		if (asset == null && vals.get("fetchURL") != null) {
 			asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
-					sourcepath, (String) vals.get("importfilename"));
-			if(id != null){
-				asset.setId(id);
+					sourcepath, (String) vals.get("importfilename"), id);
 			
-			}
 		}
 
 		if (asset == null && vals.get("localPath") != null) {

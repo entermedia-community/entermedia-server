@@ -69,9 +69,11 @@
 		#foreach( $detail in $details )
 			<td style="padding:4px;">
 				#set( $val = "$!hit.get($detail.id)" )
+				
 				#if($detail.render)
 					#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
 				#end
+				
 				$context.putPageValue("detail",$detail)
 				$context.putPageValue("val",$val)
 								$context.putPageValue("hit",$hit)

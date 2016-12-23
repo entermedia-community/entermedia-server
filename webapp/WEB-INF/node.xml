@@ -10,7 +10,7 @@
      <property id="path.logs">${webroot}/WEB-INF/elastic/${nodeid}/logs</property>
      <property id="path.work">${webroot}/WEB-INF/elastic/${nodeid}/work</property>
      <property id="repo.root.location">${webroot}/WEB-INF/elastic/repos</property>     
-     <property id="path.repo">${webroot}/WEB-INF/data/repos</property>     
+     <property id="path.repo">/home/ian/repos</property>     
 
 	 <property id="discovery.zen.ping.unicast.hosts">localhost</property>
 	 
