@@ -299,11 +299,11 @@ public class AssetImporter
 		return removed;
 	}
 
-	public Asset createAssetFromFetchUrl(MediaArchive inArchive, String inUrl, User inUser, String inSourcePath, String inFileName)
+	public Asset createAssetFromFetchUrl(MediaArchive inArchive, String inUrl, User inUser, String inSourcePath, String inFileName, String inId)
 	{
 		for(UrlMetadataImporter importer: getUrlMetadataImporters())
 		{
-			Asset asset = importer.importFromUrl(inArchive, inUrl, inUser,  inSourcePath,  inFileName);
+			Asset asset = importer.importFromUrl(inArchive, inUrl, inUser,  inSourcePath,  inFileName, inId);
 			if( asset != null )
 			{
 				return asset;
