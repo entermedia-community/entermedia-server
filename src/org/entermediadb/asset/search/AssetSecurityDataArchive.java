@@ -305,6 +305,14 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 				}
 			}
 		}
+		String owner = inAsset.get("owner");
+		if( owner != null && inUser != null && owner.equals(inUser.getId()))
+		{
+			return true;
+		}
+		// tmp.put("asset.owner", );
+		
+		
 		return false;
 		/*
 		 * Collection allowed = getAccessList(inArchive, inType, inAsset);

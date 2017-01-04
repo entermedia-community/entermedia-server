@@ -252,7 +252,8 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// }
 
 			//This is for saving and loading.
-			ArrayList<String> realcats = new ArrayList();
+			Set<String> realcats = new HashSet();
+			realcats.add("index");
 			for (Iterator iterator = asset.getCategories().iterator(); iterator.hasNext();)
 			{
 				Category cat = (Category) iterator.next();
