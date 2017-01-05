@@ -212,6 +212,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 			Set categories = buildCategorySet(asset);
 			String desc = populateDescription(asset, inDetails, categories);
+			categories.add(getMediaArchive().getCategorySearcher().getRootCategory());
 			inContent.field("description", desc);
 
 			String[] catids = new String[categories.size()];
@@ -252,8 +253,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// }
 
 			//This is for saving and loading.
-			Set<String> realcats = new HashSet();
-			realcats.add("index");
+			ArrayList<String> realcats = new ArrayList();
 			for (Iterator iterator = asset.getCategories().iterator(); iterator.hasNext();)
 			{
 				Category cat = (Category) iterator.next();
