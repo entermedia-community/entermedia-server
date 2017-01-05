@@ -1885,14 +1885,18 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					inContent.field(key, val);
 				}
-				else if (detail.isMultiValue())
+				else if (detail.isMultiValue() || detail.isList() )
 				{
 					if (value != null)
 					{
-						Collection values = null;
-						if (value instanceof Collection)
+						if( value instanceof Data )
 						{
-							values = (Collection) value;
+							String id = ((Data)value).getId();
+							inContent.field(key, id);
+						}
+						else if (value instanceof Collection)
+						{
+							Collection values = (Collection) value;
 							Collection ids = new ArrayList(values.size());
 							for (Iterator iterator2 = values.iterator(); iterator2.hasNext();)
 							{
@@ -1906,22 +1910,26 @@ public class BaseElasticSearcher extends BaseSearcher
 									ids.add(String.valueOf(object));
 								}
 							}
-							values = ids;
+							inContent.field(key, ids);
 						}
-						else if (value != null)
+						if( value instanceof String)
 						{
 							String vs = (String) value;
 							if (vs.contains("|"))
 							{
 								String[] vals = VALUEDELMITER.split(vs);
-								values = Arrays.asList(vals);
+								Collection values = Arrays.asList(vals);
+								inContent.field(key, values);
 							}
 							else
 							{
-								values = Arrays.asList(value);
+								inContent.field(key, value);
 							}
 						}
-						inContent.field(key, values);
+						else
+						{
+							inContent.field(key, value);
+						}
 					}
 				}
 				else if (detail.isDataType("geo_point"))
