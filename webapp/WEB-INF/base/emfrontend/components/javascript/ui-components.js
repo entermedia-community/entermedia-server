@@ -391,7 +391,7 @@ uiload = function() {
         		 	{
         		 		$(".modal-footer",modaldialog).hide();
         		 	}
-        		 	$("form input",modaldialog).focus();
+        		 	$('form', modaldialog).find('*').filter(':input:visible:first').focus();
     			});
     			
 				event.preventDefault();
@@ -969,6 +969,7 @@ uiload = function() {
 						clicklink.trigger("click");
 						
 						e.preventDefault();
+						theinput.select2("val", "");
 						return false;
 					}
 					//Check for "_addnew_" show ajax form
