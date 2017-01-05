@@ -1600,6 +1600,10 @@ public class MediaArchive implements CatalogEnabled
 	
 	public Data getData(String inSearchType, String inId)
 	{
+		if( inId == null)
+		{
+			return null;
+		}
 		Searcher searcher = getSearcher(inSearchType);
 		Data hit =  (Data)searcher.searchById(inId);
 		hit = searcher.loadData(hit); //not needed?

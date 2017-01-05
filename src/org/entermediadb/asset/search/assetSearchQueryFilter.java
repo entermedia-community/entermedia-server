@@ -2,6 +2,7 @@ package org.entermediadb.asset.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -46,17 +47,34 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 					//Get the libraries
 					ids = profile.getViewCategories();
 				}
+				
+				//Also add to this list public collections
+				Collection collections = inSearcher.getSearcherManager().query(inSearcher.getCatalogId(), "librarycollection").exact("visibility", "2").search(inPageRequest);
+				for (Iterator iterator = collections.iterator(); iterator.hasNext();)
+				{
+					Data librarycollection = (Data) iterator.next();
+					String categoryid = librarycollection.get("rootcategory");
+					if( categoryid != null)
+					{
+						ids.add(categoryid);
+					}
+				}
+				
 				if( ids == null)
 				{
 					ids = new ArrayList<String>();
 					ids.add("none");
 				}
+				
+				
 				child.addOrsGroup(inSearcher.getDetail("category"), ids);
 				if( user != null)
 				{
 					child.addExact("owner",user.getId());
 				}
 
+				
+				
 				inQuery.setSecurityAttached(true);
 				if(!child.isEmpty())
 				{

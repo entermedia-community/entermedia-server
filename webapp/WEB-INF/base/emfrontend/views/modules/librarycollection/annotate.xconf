@@ -14,7 +14,7 @@
 	</path-action>
 	
 	  <permission name="view">
-    		<action name="ProjectModule.checkLibraryPermission" />
+    		<action name="ProjectModule.checkViewCollection" />
     </permission>
 	
 	<style id="uploadstyle" href="${themeprefix}/styles/pages/upload.css" />

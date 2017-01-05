@@ -1257,4 +1257,84 @@ public class ProjectManager implements CatalogEnabled
 		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 		return archive;
 	}
+
+	public Boolean canEditCollection(WebPageRequest inReq, String inCollectionid)
+	{
+		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
+		if( collection != null)
+		{
+			String ownerid = collection.get("owner");
+			if( ownerid != null && ownerid.equals( inReq.getUserName( ) ) )
+			{
+				return true;
+			}
+			User user = inReq.getUser();
+			if(  user != null && user.isInGroup("administrators"))
+			{
+				//dont filter since its the admin
+				return true;
+			}
+			//Check the library permissions?
+			Data library = getMediaArchive().getData("library", collection.get("library"));
+			if( library != null)
+			{
+				String catid = library.get("categoryid");
+				UserProfile profile = inReq.getUserProfile();
+				if( catid != null && profile != null && profile.getViewCategories() != null)
+				{
+					if( profile.getViewCategories().contains(catid) )
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+
+	}
+
+	public boolean canViewCollection(WebPageRequest inReq, String inCollectionid)
+	{
+		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
+		if( collection != null)
+		{
+			String ownerid = collection.get("owner");
+			User user = inReq.getUser();
+			
+			if( ownerid != null && ownerid.equals( inReq.getUserName( ) ) )
+			{
+				return true;
+			}
+			String visibility = collection.get("visibility");
+			if( visibility != null && visibility.equals( "2" ) )
+			{
+				return true;
+			}
+			if(  user != null && user.isInGroup("administrators"))
+			{
+				//dont filter since its the admin
+				return true;
+			}
+			//Check the library permissions?
+			Data library = getMediaArchive().getData("library", collection.get("library"));
+			if( library != null)
+			{
+				Category cat = getRootCategory(getMediaArchive(), inCollectionid);
+				
+				UserProfile profile = inReq.getUserProfile();
+				if( profile != null && profile.getViewCategories() != null)
+				{
+					for(String catid : profile.getViewCategories())
+					{
+						if( cat.hasParent(catid) )
+						{
+							return true;
+						}
+					}	
+				}				
+
+			}
+		}
+		return false;
+	}
 }

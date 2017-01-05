@@ -54,7 +54,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter {
 			{
 				ids.add(library.getId());
 			}
-			SearchQuery child = inSearcher.query().orgroup("library", ids).getQuery();
+			SearchQuery child = inSearcher.query().or().orgroup("library", ids).match("visibility","2").getQuery();
 			//TODO: Clear old child queries
 			inQuery.setChildren(null);
 			inQuery.addChildQuery(child);

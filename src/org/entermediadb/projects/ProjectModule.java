@@ -224,6 +224,16 @@ public class ProjectModule extends BaseMediaModule
 		String sessionId = all.getSessionId();
 		inReq.putSessionValue(sessionId,all);
 	}
+	protected Data loadCollection(WebPageRequest inReq)
+	{
+		String collectionid = loadCollectionId(inReq);
+		if( collectionid != null)
+		{
+			return getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+		}
+		return null;
+	}
+	
 	protected String loadCollectionId(WebPageRequest inReq)
 	{
 		String collectionid = inReq.getRequestParameter("collectionid");
@@ -251,37 +261,6 @@ public class ProjectModule extends BaseMediaModule
 		return collectionid;
 	}	
 
-	public boolean checkLibraryPermission(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		User user = inReq.getUser();
-			
-		if(  user != null && user.isInGroup("administrators"))
-		{
-			//dont filter since its the admin
-			return true;
-		}
-		ProjectManager manager = getProjectManager(inReq);
-
-		//TODO: Check the library not the category?
-		String collectionid = loadCollectionId(inReq);
-		
-		Category cat = manager.getRootCategory(archive, collectionid);
-		
-		UserProfile profile = inReq.getUserProfile();
-		if( profile != null)
-		{
-			for(String catid : profile.getViewCategories())
-			{
-				if( cat.hasParent(catid) )
-				{
-					return true;
-				}
-			}	
-		}
-		return false;
-	}
 	
 	public void savedLibrary(WebPageRequest inReq)
 	{
@@ -624,7 +603,22 @@ public class ProjectModule extends BaseMediaModule
 		return col;
 		
 	}
+
+	public boolean checkViewCollection(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		return manager.canViewCollection(inReq,collectionid);
+		
+	}
+
 	
+	public Boolean canEditCollection(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		return manager.canEditCollection(inReq,collectionid);
+	}	
 //	
 //	public void loadCategoriesOnCollections(WebPageRequest inReq)
 //	{

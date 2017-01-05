@@ -13,7 +13,7 @@
 		<path-action name="ProjectModule.searchForAssetsOnCollection"/>
 	
 	  <permission name="view">
-    		<action name="ProjectModule.checkLibraryPermission" />
+    		<action name="ProjectModule.checkViewCollection" />
     </permission>
 	
 	

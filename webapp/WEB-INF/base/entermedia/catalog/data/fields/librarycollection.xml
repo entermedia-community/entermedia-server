@@ -49,7 +49,7 @@
       <language id="fr"><![CDATA[Date de mise à jour]]></language> 
     </name> 
   </property>  
-  <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="librarycollection" keyword="false" filter="false" sortable="true">Owner 
+  <property id="owner" index="true" viewtype="user" type="list" listid="user" keyword="true" stored="true" sortable="true" editable="true" filter="false"> 
     <name> 
       <language id="de"><![CDATA[Owner]]></language>  
       <language id="en"><![CDATA[Owner]]></language>  
@@ -73,7 +73,7 @@
       <language id="fr"><![CDATA[Envoyer Notifications]]></language> 
     </name> 
   </property>  
-  <property id="revisions" index="true" stored="true" editable="true" sortable="true" type="number" keyword="false" filter="false">Revisions 
+  <property id="revisions" index="true" stored="true" editable="true" sortable="true" type="number" keyword="false" filter="false"> 
     <name> 
       <language id="de"><![CDATA[Revisionen]]></language>  
       <language id="en"><![CDATA[Revisions]]></language>  
@@ -81,6 +81,17 @@
       <language id="fr"><![CDATA[Révisions]]></language> 
     </name> 
   </property>  
+
+  <property id="visibility" index="true" stored="true" type="list" listid="librarycollectionvisibility" editable="true" filter="false"> 
+    <name> 
+      <language id="de"><![CDATA[Sichtweite]]></language>  
+      <language id="en"><![CDATA[Visibility]]></language>  
+      <language id="es"><![CDATA[Visibilidad]]></language>  
+      <language id="fr"><![CDATA[Visibilité]]></language> 
+    </name> 
+  </property>  
+
+
   <property id="projectstatus" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list" keyword="false" filter="false" sortable="true">Project Status 
     <name> 
       <language id="de"><![CDATA[Projekt-Status]]></language>  

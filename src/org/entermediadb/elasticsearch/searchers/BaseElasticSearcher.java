@@ -1912,7 +1912,7 @@ public class BaseElasticSearcher extends BaseSearcher
 							}
 							inContent.field(key, ids);
 						}
-						if( value instanceof String)
+						else if( value instanceof String)
 						{
 							String vs = (String) value;
 							if (vs.contains("|"))

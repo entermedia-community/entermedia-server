@@ -1,0 +1,14 @@
+<properties> 
+	<property id="1">
+		<name> 
+	      <language id="en"><![CDATA[Default]]></language>  
+	      <language id="es"><![CDATA[Normal]]></language> 
+	    </name>
+    </property>
+	<property id="2">
+		<name> 
+	      <language id="en"><![CDATA[Public]]></language>  
+	      <language id="es"><![CDATA[Publico]]></language> 
+	    </name>
+	</property>	
+</properties>	

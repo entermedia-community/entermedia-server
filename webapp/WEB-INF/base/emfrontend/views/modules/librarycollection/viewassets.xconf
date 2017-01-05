@@ -14,7 +14,7 @@
 	</path-action>
 	
 	 <permission name="view">
-    		<action name="ProjectModule.checkLibraryPermission" />
+    		<action name="ProjectModule.checkViewCollection" />
     </permission>
 	 <path-action name="DataEditModule.loadPageOfSearch"/>
 	
