@@ -33,11 +33,11 @@ public void init(){
 	HitTracker hits =searcher.search(query);
 	hits.enableBulkOperations();
 	hits.getFilterOptions();
-	StringTerms agginfo = hits.getAggregations().get("fileformat_filesize");
+	//StringTerms agginfo = hits.getAggregations().get("fileformat_filesize");
 	context.putPageValue("diskspacehits", hits)
 	context.putPageValue("hits", hits)
 	
-	log.info(agginfo.getBuckets().size())
+	//log.info(agginfo.getBuckets().size())
 	log.info("Disk Space Library hits" + hits.size());
 	
 }
