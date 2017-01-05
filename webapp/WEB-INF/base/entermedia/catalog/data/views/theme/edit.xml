@@ -5,8 +5,8 @@
   <property id="name" />
   <property id="title" />
   <property id="subheading" />
-  <property id="logopath" />
   <property id="logoasset" />
+  <property id="logopath" />
   
   <property id="logowidth" />
   <property id="logoheight" />
