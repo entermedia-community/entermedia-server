@@ -1979,10 +1979,13 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
-	<groovy  id="librarySearchQueryFilter" class="org.entermediadb.asset.search.librarySearchQueryFilter" lazy-init="default" />
-	<groovy  id="librarycollectionSearchQueryFilter" class="org.entermediadb.asset.search.librarycollectionSearchQueryFilter" lazy-init="default" />
-	<groovy  id="assetSearchQueryFilter" class="org.entermediadb.asset.search.assetSearchQueryFilter" lazy-init="default" />
-	
+	<bean  id="librarySearchQueryFilter" class="org.entermediadb.asset.search.librarySearchQueryFilter" lazy-init="default" />
+	<bean  id="librarycollectionSearchQueryFilter" class="org.entermediadb.asset.search.librarycollectionSearchQueryFilter" lazy-init="default" />
+	<bean  id="assetSearchQueryFilter" class="org.entermediadb.asset.search.assetSearchQueryFilter" lazy-init="default" >
+	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
 	
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" lazy-init="default" />
 
