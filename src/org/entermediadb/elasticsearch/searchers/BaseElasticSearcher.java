@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1513,7 +1514,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						toupdate.setId(res.getId());
 					}
 				}
-				//request.refresh(true);
+			//	request.refresh(true);
 			}
 
 			@Override
@@ -1522,7 +1523,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(1, ByteSizeUnit.GB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(2).build();
+		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(4).build();
 
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
@@ -1564,15 +1565,15 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 		}
 
-		bulkProcessor.close();
-//		try
-//		{
-//			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
-//		}
-//		catch (InterruptedException e)
-//		{
-//			throw new OpenEditException(e);
-//		}
+//		bulkProcessor.close();
+		try
+		{
+			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+		}
+		catch (InterruptedException e)
+		{
+			throw new OpenEditException(e);
+		}
 
 		if (errors.size() > 0)
 		{
@@ -2103,13 +2104,13 @@ public class BaseElasticSearcher extends BaseSearcher
 	public void delete(Data inData, User inUser)
 	{
 		String id = inData.getId();
-
+		log.info(id.length());
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
 		if (inData.get("_parent") != null)
 		{
 			delete.setParent(inData.get("_parent"));
 		}
-		delete.setRefresh(true).execute().actionGet();
+		delete.setRefresh(false).execute().actionGet();
 
 	}
 
