@@ -1749,6 +1749,17 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldLoggingEventHandler = inLoggingEventHandler;
 	}
+	public Collection listPublicCollections()
+	{
+		Searcher search = getSearcher("librarycollection");
+		Collection visibility = (Collection)getCacheManager().get("visiblecollection", search.getIndexId()); //Expires after 5 min
+		if( visibility == null)
+		{
+			visibility = getSearcher("librarycollection").query().exact("visibility", "2").search();
+			getCacheManager().put("visiblecollection", search.getIndexId(), visibility);
+		}
+		return visibility;
+	}
 	
 	
 }

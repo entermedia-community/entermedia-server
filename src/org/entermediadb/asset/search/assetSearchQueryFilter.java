@@ -6,7 +6,9 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearchQueryFilter;
@@ -16,10 +18,24 @@ import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class assetSearchQueryFilter implements SearchQueryFilter {
+public class assetSearchQueryFilter implements SearchQueryFilter 
+{
 	private static final Log log = LogFactory.getLog(assetSearchQueryFilter.class);
 
-	public SearchQuery  attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) 
+	protected ModuleManager fieldModuleManager;
+	
+	
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
+
+	public SearchQuery attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) 
 	{
 		boolean enabled = inQuery.isEndUserSearch();
 		//log.info( "security filer enabled "  + enabled );
@@ -49,7 +65,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 				}
 				
 				//Also add to this list public collections
-				Collection collections = inSearcher.getSearcherManager().query(inSearcher.getCatalogId(), "librarycollection").exact("visibility", "2").search(inPageRequest);
+				Collection collections = getMediaArchive(inSearcher.getCatalogId()).listPublicCollections();
 				for (Iterator iterator = collections.iterator(); iterator.hasNext();)
 				{
 					Data librarycollection = (Data) iterator.next();
@@ -142,5 +158,11 @@ public class assetSearchQueryFilter implements SearchQueryFilter {
 
 		
 		return inQuery;
+	}
+
+	protected MediaArchive getMediaArchive(String inCatalogId)
+	{
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(inCatalogId,"mediaArchive");
+		return archive;
 	}
 }

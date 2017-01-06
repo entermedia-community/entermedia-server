@@ -293,7 +293,6 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 			return true;
 		}
 		Collection<Category> exactcategories = inAsset.getCategories();
-
 		if (inProfile != null)
 		{
 			Collection<String> categorids = inProfile.getViewCategories();
@@ -311,7 +310,23 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 			return true;
 		}
 		// tmp.put("asset.owner", );
-		
+		if( "view".equals(inType))
+		{
+			Collection publiccollections = inArchive.listPublicCollections();
+			Collection<String> categorids = inProfile.getViewCategories();
+			for (Category cat : exactcategories)
+			{
+				for (Iterator iterator = publiccollections.iterator(); iterator.hasNext();)
+				{
+					Data  collection = (Data) iterator.next();
+					String publiccategoryid = collection.get("rootcategory");
+					if (cat.hasParent(publiccategoryid))
+					{
+						return true;
+					}					
+				}
+			}
+		}
 		
 		return false;
 		/*
