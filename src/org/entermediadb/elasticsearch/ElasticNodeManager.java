@@ -755,6 +755,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean reindexInternal(String inCatalogId)
 	{
+		createSnapShot(inCatalogId);
 		if( reindexing )
 		{
 			throw new OpenEditException("Already reindexing");
