@@ -1561,7 +1561,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			catch (Exception ex)
 			{
-				log.error(ex);
+				throw new OpenEditException(ex);
+				
 			}
 		}
 
