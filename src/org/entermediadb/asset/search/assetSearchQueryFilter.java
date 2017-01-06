@@ -50,7 +50,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			//viewasset = "admin adminstrators guest designers"
 			//goal: current query && (viewasset.contains(username) || viewasset.contains(group0) || ... || viewasset.contains(groupN))
 			User currentUser = inPageRequest.getUser();
-			Collection<String> ids = null;//new ArrayList<String>();
+			Collection<String> ids = new ArrayList<String>();
 			
 			User user = inPageRequest.getUser();
 			if (user == null || !user.isInGroup("administrators"))
@@ -58,10 +58,10 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				SearchQuery child = inSearcher.createSearchQuery();
 				child.setAndTogether(false);
 				UserProfile profile = inPageRequest.getUserProfile();
-				if( profile != null)
+				if( profile != null && profile.getViewCategories() != null)
 				{
 					//Get the libraries
-					ids = profile.getViewCategories();
+					ids.addAll(profile.getViewCategories());
 				}
 				
 				//Also add to this list public collections
@@ -76,9 +76,8 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 					}
 				}
 				
-				if( ids == null)
+				if( ids.isEmpty() )
 				{
-					ids = new ArrayList<String>();
 					ids.add("none");
 				}
 				

@@ -313,7 +313,6 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		if( "view".equals(inType))
 		{
 			Collection publiccollections = inArchive.listPublicCollections();
-			Collection<String> categorids = inProfile.getViewCategories();
 			for (Category cat : exactcategories)
 			{
 				for (Iterator iterator = publiccollections.iterator(); iterator.hasNext();)
