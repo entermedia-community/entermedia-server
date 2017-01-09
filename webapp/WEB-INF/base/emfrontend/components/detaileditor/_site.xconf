@@ -4,4 +4,10 @@
 	<path-action name="Admin.allowViewing">
 			<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
 	</path-action>
+	<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>
 </page>

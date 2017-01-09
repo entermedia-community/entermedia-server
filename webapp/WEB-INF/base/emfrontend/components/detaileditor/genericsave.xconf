@@ -2,6 +2,7 @@
 
 	<path-action name="AssetEditModule.handleUploads"/>
 	<path-action name="DataEditModule.saveData"/>
+	
 	<permission name="view">
 		<pagevalue name="caneditasset" equals="true"/>
 	</permission>

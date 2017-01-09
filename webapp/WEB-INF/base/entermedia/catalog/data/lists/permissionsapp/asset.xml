@@ -1,7 +1,4 @@
 <permissions name="Asset Permissions">
-	<permission id="viewasset" permissiontype="internal" name="View Asset" description="Ability to view a specific asset" ordering="300"/>
-	<permission id="editasset" permissiontype="internal" name="Edit Asset" description="Ability to edit any assets." ordering="300"/>
-
 	<permission id="deleteasset" permissiontype="asset" name="Delete" description="Enables removal of an asset, and the option to remove the original." ordering="301"/>
 	<permission id="emaillink" permissiontype="asset" name="Email" description="Enables an email button that sends a link to an internal asset." ordering="302"/>
 	<permission id="viewvoting" permissiontype="asset" name="View Like" description="Enables a like button for users to express approval of an asset." ordering="304"/>
