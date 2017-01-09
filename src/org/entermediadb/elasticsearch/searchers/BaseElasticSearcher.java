@@ -29,6 +29,7 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -1523,7 +1524,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(4).build();
+		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(1) .setBackoffPolicy(
+	            BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
 
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
@@ -2058,6 +2060,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		GetMappingsRequest req = new GetMappingsRequest().indices(catid).types(getSearchType());
 		GetMappingsResponse resp = getClient().admin().indices().getMappings(req).actionGet();
 		String indexname = getElasticNodeManager().getIndexNameFromAliasName(catid);
+		if(indexname != null){
 		 ImmutableOpenMap typeMappings = resp.getMappings().get(indexname);
         MappingMetaData mapping = (MappingMetaData) typeMappings.get(getSearchType());
 		  
@@ -2075,7 +2078,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			PutMappingRequest putreq = new PutMappingRequest().indices( new String[] {catid}).type(getSearchType()).source(jsonBuilder);
 		getClient().admin().indices().putMapping(putreq);
 		}
-		
+		}
 	}
 
 	public boolean shoudSkipField(String inKey)
