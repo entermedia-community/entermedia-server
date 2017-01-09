@@ -51,6 +51,7 @@ import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.common.util.concurrent.EsRejectedExecutionException;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
@@ -1524,9 +1525,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(inBuffer.size()).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueSeconds(5)).setConcurrentRequests(1) .setBackoffPolicy(
+		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(
 	            BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
 
+			//setConcurrentRequests = 1 sets concurrentRequests to 1, which means an asynchronous execution of the flush operation.
+		
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
 
 		for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
@@ -1559,9 +1562,19 @@ public class BaseElasticSearcher extends BaseSearcher
 				// {
 				// req = req.refresh(true);
 				// }
-				bulkProcessor.add(req);
+//				try
+//				{
+					bulkProcessor.add(req);
+//				}
+//				catch( RemoteTransportException ex)
+//				{
+//					if( ex.getCause() instanceof EsRejectedExecutionException)
+//					{
+//						
+//					}
+//				}
 			}
-			catch (Exception ex)
+			catch (Throwable ex)
 			{
 				throw new OpenEditException(ex);
 				
