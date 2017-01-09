@@ -19,7 +19,7 @@
 	<property name="searchcategory">true</property>
 
 	 <permission name="view">
-    		<action name="ProjectModule.checkLibraryPermission" />
+    		<action name="ProjectModule.checkViewCollection" />
     </permission>
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
 
