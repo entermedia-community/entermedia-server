@@ -1,4 +1,5 @@
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVReader
 import org.entermediadb.asset.util.ImportFile
