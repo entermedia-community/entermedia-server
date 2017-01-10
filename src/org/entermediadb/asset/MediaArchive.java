@@ -700,6 +700,10 @@ public class MediaArchive implements CatalogEnabled
 			getAssetSearcher().saveData(inAsset, inUser);
 		}
 	}
+	public void saveAsset(Asset inAsset)
+	{
+		getAssetSearcher().saveData(inAsset, null);
+	}
 	public void saveAssets(Collection inAssets)
 	{
 		saveAssets(inAssets, (User)null);
