@@ -3,6 +3,10 @@
  */
 package org.entermediadb.asset.util;
 
+import java.util.Arrays;
+import java.util.Collection;
+
+import org.openedit.MultiValued;
 
 public class Row
 {
@@ -30,6 +34,28 @@ public class Row
 		}
 		return null;
 	}
+	
+	public Collection<String> getValues(String inPreference)
+	{
+		String val = get(inPreference);
+		
+		if (val == null)
+		{
+			return null;
+		}
+		String[] vals = null;
+		if( val.contains("|") )
+		{
+			vals = MultiValued.VALUEDELMITER.split(val);
+		}
+		else
+		{
+			vals = new String[]{val};
+		}
+		Collection collection = Arrays.asList(vals);
+		return collection;
+	}
+	
 	public String getData(int index)
 	{
 		return getData()[index];

@@ -82,6 +82,7 @@ public class DataImportModule extends DataEditModule
 
 		ScriptLogger logger = new ScriptLogger();
 		logger.startCapture();
+		logger.info("Running script: " + script.getPage().getPath());
 		variables.put("log", logger);
 		try
 		{
