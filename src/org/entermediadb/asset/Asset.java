@@ -550,7 +550,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 
 	public String getCatalogId()
 	{
-		return (String) getValue("catalogid");
+		if( fieldMediaArchive == null)
+		{
+			return null;
+		}
+		return getMediaArchive().getCatalogId();
 	}
 
 	public void setCatalogId(String inCatalogId)
