@@ -1,18 +1,10 @@
 #if( $hits && $hits.getTotalPages() >  1  )
-	#if($categorycarousel == "true" && $category)
-		#set($categoryid = $category)
-	#else
-		#set($categoryid = "")
-	#end
+	
 	#set($module = $content.module)
-	#set($resultsPage = "$home$apphome/components/categories/search/results.html?hitssessionid=$hits.sessionId&searchtype=categories&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
+	#set($resultsPage = "$home$apphome/components/assetpicker/search/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearcher().getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
-	
-	
-	
-	
-	#set($targetdiv = "categoryresults")
+	#set($targetdiv = "dialogsearchresults")
 	<div id="pages">
 		<ul>
 			#if( $hits.prevPage() )
