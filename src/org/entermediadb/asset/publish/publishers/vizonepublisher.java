@@ -220,7 +220,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		HttpResponse response2 = getClient().execute(method);
 		StatusLine sl = response2.getStatusLine();           
 		int status = sl.getStatusCode();
-		if( status != 200)
+		if( status>=400)
 		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
@@ -274,7 +274,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				HttpResponse response2 = getClient().execute(method);
 				StatusLine sl = response2.getStatusLine();           
 				int status = sl.getStatusCode();
-				if( status != 200)
+				if( status>=400)
 				{
 					throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 				}
@@ -321,7 +321,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			
 			StatusLine sl = response3.getStatusLine();           
 			int status = sl.getStatusCode();
-			if( status != 200)
+			if( status>=400)
 			{
 				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 			}
