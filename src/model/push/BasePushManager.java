@@ -1010,13 +1010,17 @@ public class BasePushManager implements PushManager
 		String k4processed = inReq.getRequestParameter("k4processed.value");
 		
 		
-		if( k4processed == "true" || editstatus == "override" || editstatus == "7") 
+		if( k4processed == "true" || editstatus == "override") 
 		{
 			archive.getAssetSearcher().updateData(inReq, fields, target);
 		}
 		else
 		{
 			archive.getAssetSearcher().updateData(inReq, fields, new ImmutableData(target));
+		}
+		if( editstatus != null )
+		{
+			target.setValue("editstatus", editstatus);
 		}
 		String keywords = inReq.getRequestParameter("keywords");
 		if( keywords != null )
