@@ -606,6 +606,19 @@ public class Category extends BaseData
 
 	}
 
+	public boolean hasSelf(Collection<String> inCategorids)
+	{
+		for(String id : inCategorids)
+		{
+			if( getId().equals( id) )
+			{
+				return true;
+			}
+		}
+		return false;
+
+	}
+	
 	public Object findValue(String inString)
 	{
 		Object value = getValue(inString);

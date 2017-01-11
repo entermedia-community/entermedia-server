@@ -1760,10 +1760,37 @@ public class MediaArchive implements CatalogEnabled
 		if( visibility == null)
 		{
 			visibility = getSearcher("librarycollection").query().exact("visibility", "2").search();
+			log.info(visibility.size() + " public collections ");
 			getCacheManager().put("visiblecollection", search.getIndexId(), visibility);
 		}
 		return visibility;
 	}
 	
+	public Collection<Category> listPublicCategories()
+	{
+		Searcher search = getSearcher("librarycollection");
+		Collection<Category> categories = (Collection)getCacheManager().get("visiblecollectioncategories", search.getIndexId()); //Expires after 5 min
+		if( categories == null)
+		{
+			categories = new ArrayList();
+			Collection visibility = listPublicCollections();
+			for (Iterator iterator = visibility.iterator(); iterator.hasNext();)
+			{
+				Data librarycollection = (Data) iterator.next();
+				String categoryid = librarycollection.get("rootcategory");
+				if( categoryid != null)
+				{
+					Category child = getCategory(categoryid);
+					if( child != null)
+					{
+						categories.add(child);
+					}
+				}
+			}
+			getCacheManager().put("visiblecollectioncategories", search.getIndexId(), categories);
+		}	
+		return categories;
+		
+	}
 	
 }

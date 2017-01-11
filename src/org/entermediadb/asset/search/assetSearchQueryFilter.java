@@ -6,6 +6,7 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -65,17 +66,12 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				}
 				
 				//Also add to this list public collections
-				Collection collections = getMediaArchive(inSearcher.getCatalogId()).listPublicCollections();
-				for (Iterator iterator = collections.iterator(); iterator.hasNext();)
+				Collection<Category> pcats = getMediaArchive(inSearcher.getCatalogId()).listPublicCategories();
+				for (Iterator iterator = pcats.iterator(); iterator.hasNext();)
 				{
-					Data librarycollection = (Data) iterator.next();
-					String categoryid = librarycollection.get("rootcategory");
-					if( categoryid != null)
-					{
-						ids.add(categoryid);
-					}
+					Category category = (Category)iterator.next();
+					ids.add(category.getId());
 				}
-				
 				if( ids.isEmpty() )
 				{
 					ids.add("none");

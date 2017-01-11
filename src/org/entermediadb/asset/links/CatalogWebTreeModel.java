@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.entermediadb.asset.Category;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.webui.tree.BaseTreeModel;
 import org.openedit.CatalogEnabled;
@@ -26,6 +27,17 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 	protected String fieldCatalogId;
 	protected RequestUtils fieldRequestUtils;
 	protected String fieldRootId;
+	protected MediaArchive fieldMediaArchive;
+	
+	public MediaArchive getMediaArchive()
+	{
+		return fieldMediaArchive;
+	}
+
+	public void setMediaArchive(MediaArchive inMediaArchive)
+	{
+		fieldMediaArchive = inMediaArchive;
+	}
 
 	public UserProfile getUserProfile()
 	{
@@ -156,18 +168,30 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 			return true;
 		}
 		 
-		    
-		
-		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null ){
+		Collection<String> parents = getUserProfile().getViewCategories();
+		if( inCat.hasParent(parents) )
+		{
 			return true;
+		}
+
+		//In case it's new system TODO: Is this needed?
+		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null )
+		{
+			return true;
+		}
+
+		Collection<Category> pcats = getMediaArchive().listPublicCategories();
+		for (Iterator iterator = pcats.iterator(); iterator.hasNext();)
+		{
+			Category category = (Category)iterator.next();
+			if( category.hasParent(inCat.getId()) || inCat.hasParent(category.getId()))
+			{
+				return true;
+			}
 			
 		}
 		
-		
-		Collection<String> parents = getUserProfile().getViewCategories();
-		boolean ok = inCat.hasParent(parents);
-
-		return ok;
+		return false;
 	}
 
 	public Set getHiddenCatalogs()

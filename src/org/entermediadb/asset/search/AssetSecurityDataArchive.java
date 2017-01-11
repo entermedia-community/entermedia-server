@@ -312,13 +312,12 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		// tmp.put("asset.owner", );
 		if( "view".equals(inType))
 		{
-			Collection publiccollections = inArchive.listPublicCollections();
+			Collection<String> publiccategories = inArchive.listPublicCollections();
 			for (Category cat : exactcategories)
 			{
-				for (Iterator iterator = publiccollections.iterator(); iterator.hasNext();)
+				for (Iterator iterator = publiccategories.iterator(); iterator.hasNext();)
 				{
-					Data  collection = (Data) iterator.next();
-					String publiccategoryid = collection.get("rootcategory");
+					String publiccategoryid = (String)iterator.next();
 					if (cat.hasParent(publiccategoryid))
 					{
 						return true;

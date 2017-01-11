@@ -727,7 +727,7 @@ public class ProjectManager implements CatalogEnabled
 			String folder = library.get("folder");
 			if (folder == null)
 			{
-				folder = "Index/Libraries/" + library.getName();
+				folder = "Libraries/" + library.getName();
 			}
 			librarycategory = inArchive.createCategoryPath(folder);
 			library.setValue("categoryid", librarycategory.getId());
