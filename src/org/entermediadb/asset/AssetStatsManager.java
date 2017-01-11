@@ -79,10 +79,10 @@ public class AssetStatsManager
 		getMediaEventHandler().eventFired(change);
 	}
 	
-	public long getViewsForAsset(String inCatalogId, Asset inAsset)
+	public long getViewsForAsset(Asset inAsset)
 	{
 		//check with the log files and cache the results?
-		if( inAsset == null)
+		if( inAsset == null || inAsset.getCatalogId() == null)
 		{
 			return 0L;
 		}
@@ -101,7 +101,7 @@ public class AssetStatsManager
 		{
 			assetexpire = now + 1000*60*60; //once an hour
 			
-			Searcher logsearcher = getSearcherManager().getSearcher(inCatalogId, "assetpreviewLog");
+			Searcher logsearcher = getSearcherManager().getSearcher(inAsset.getCatalogId(), "assetpreviewLog");
 			HitTracker all = logsearcher.fieldSearch("sourcepath", inAsset.getSourcePath());
 			Long views = Long.valueOf(all.size());
 			inAsset.setProperty("assetviews",String.valueOf(views));
