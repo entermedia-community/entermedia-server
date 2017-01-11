@@ -1,5 +1,4 @@
-
-#if( $data )
+#if( !$values && $data )
 	#set($values = $data.getValues($detail.id) )
 #end
 #set( $searcher = $searcherManager.getSearcher($detail.getListCatalogId(), $detail.getListId() ))

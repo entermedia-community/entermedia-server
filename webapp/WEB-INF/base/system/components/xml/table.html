@@ -14,7 +14,6 @@
 #if( !$viewpath )
 	#set( $viewpath = $view)
 #end
-
 #set( $editpath = $context.getRequestParameter("editpath"))
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
@@ -68,15 +67,19 @@
 		<tr #if($candelete != "false") rowid="$hit.id" #end #if($selectedid == $hit.id) class="emhighlight" #end>
 		#foreach( $detail in $details )
 			<td style="padding:4px;">
+			
 				#set( $val = "$!hit.get($detail.id)" )
-				
-				#if($detail.render)
-					#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
+				#set( $values = false )
+				#set( $values = $hit.getValues($detail.id) )
+				#if($detail.rendermask)
+					#set( $val = $searcherManager.getValue($catalogid, $detail.rendermask, $hit.properties))
+					#set( $values = $searcherManager.getValues($catalogid, $detail.rendermask, $hit.properties))
 				#end
 				
 				$context.putPageValue("detail",$detail)
+				$context.putPageValue("values",$values)
 				$context.putPageValue("val",$val)
-								$context.putPageValue("hit",$hit)
+				$context.putPageValue("hit",$hit)
 				
 				$pages.include("$xmledithome/detailreadonly.html", $context)
 			</td>

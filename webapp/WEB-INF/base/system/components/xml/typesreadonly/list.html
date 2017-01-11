@@ -1,8 +1,4 @@
-#if($detail.render && $data)
-	#set($label = $searcherManager.getValue($catalogid, $detail.render, $data.properties))
-#else
-   #set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
-   #set($label = $foundrow.getName($context.getLanguage()))
-#end
+#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
+#set($label = $foundrow.getName($context.getLanguage()))
 #esc($!label)
 #debug("ListID: $detail.listId")

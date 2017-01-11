@@ -97,8 +97,8 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			SearchQuery q = inSearcher.createSearchQuery(); 
 			q.addExact("sourcepath", inPath);
 			q.addSortBy("date"); 
+			q.setHitsPerPage(1);
 			HitTracker tracker = inSearcher.search(q); //Make sure there was not a thread waiting
-			tracker.setHitsPerPage(1);
 			Iterator iter = tracker.iterator();
 			if( !iter.hasNext() )
 			{
@@ -186,9 +186,8 @@ public class ClusterLockManager implements LockManager, Shutdownable
 
 		SearchQuery q = searcher.createSearchQuery(); 
 		q.addExact("sourcepath", inPath);
-		
+		q.setHitsPerPage(1);
 		HitTracker tracker = searcher.search(q);
-		tracker.setHitsPerPage(1);
 		if( tracker.size() == 0)
 		{
 			return null;

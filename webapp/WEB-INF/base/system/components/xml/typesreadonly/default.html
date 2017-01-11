@@ -4,7 +4,7 @@
 ## $val
 ## $searcherManager
 
-#if($detail.render && $data)
+#if(!$val && $detail.rendermask && $data)
 	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
 	#esc( $label )
 #elseif($detail.isMultiLanguage())

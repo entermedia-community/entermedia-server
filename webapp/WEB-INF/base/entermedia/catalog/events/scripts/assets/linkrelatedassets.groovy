@@ -66,6 +66,7 @@ public void init(){
 	boolean deleterow = Boolean.parseBoolean(req.getRequestParameter("delete"));
 	//iterate through fields
 	String [] fields = req.getRequestParameters("field");//these are the fields on the view
+	log.info("Processing : ${fields}");
 	//need to search for a field that is not empty and references an asset; this will be the related field
 	boolean update = false;
 	for (String field:fields){
@@ -144,8 +145,10 @@ public void init(){
 							entry = searcher.createNewData();
 							entry.setProperty("$dependson",val);
 							entry.setProperty("$field",dependsonval);
+							log.info("Search was empty:" + query);
 						} else {
-							entry = (Data) searcher.searchById( ((Data) hits.first()).getId());
+							entry = (Data) searcher.loadData( ((Data) hits.first()));
+							log.info("Search had one:" + query + " " + entry);
 						}
 						//need the remote data
 						Data remotedata2 = remotesearcher.searchById(dependsonval);
@@ -170,6 +173,7 @@ public void init(){
 }
 
 public boolean updateRelatedFields(WebPageRequest req, MediaArchive archive, Searcher searcher, PropertyDetail detail, Data data, Data remotedata){
+	log.info("Updating: ${detail.getId()} on  ${data} from Asset:${remotedata}");
 	boolean updated = false;
 	Collection details = searcher.getPropertyDetails();
 	for (Iterator iterator = details.iterator(); iterator.hasNext();){

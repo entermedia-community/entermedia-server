@@ -18,6 +18,7 @@
 	<table class="striped emdata">
 		<tr class="tableheader">
 			<th #if ($detail.getExternalId ) colspan="2" #end>[[Field Name]]</th>
+			<th style="width:200px;">ID</th>
 			<th style="width:200px;">Field Type</th>
 		</tr>	
 	#foreach( $detail in $properties)
@@ -27,6 +28,7 @@
 			<td><br>$!detail.getExternalId()</td>
 		#end
 		<td><b>$!detail.getText($context)</b></td>
+		<td><b>$!detail.getId()</b></td>
 		<td><span class="emselectabledetails">#if( $detail.getDataType() ) $detail.getDataType() #else textbox #end</span></td>
 		
 			
