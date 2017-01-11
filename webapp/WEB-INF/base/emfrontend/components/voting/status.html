@@ -3,7 +3,7 @@
 #end
    #set( $voted = $searcherManager.getData($catalogid, "assetvotes","${user.getId()}_${hit.id}") )
    #if(  $hit.assetvotes )
-	    <a href="$home$apphome/views/modules/asset/editor/voting/showvotes.html?assetid=${hit.id}&oemaxlevel=1" class="emdialog" title="[[Show Votes]]">$hit.assetvotes</a>
+	    <a href="$home$apphome/views/modules/asset/editor/voting/showvotes.html?assetid=${hit.id}" class="emdialog" title="[[Show Votes]]">$hit.assetvotes</a>
   #end
    #if( $voted )
 	 	<a class="ajax star full tooltip"  title="Remove Vote" targetdivinner="votebox${hit.id}" href="$home$apphome/components/voting/removeVote.html?assetid=$hit.id"></a> 

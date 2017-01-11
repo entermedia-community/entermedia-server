@@ -1968,9 +1968,9 @@ Change Collections to be normal categories path s and make createTree look at th
 		
 		row.setId(username + "_" + asset.getId());
 		String date = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
-		row.setProperty("time", date);
-		row.setProperty("assetid", asset.getId());
-		row.setProperty("username", inUser.getUserName());
+		row.setValue("votetime", date);
+		row.setValue("assetid", asset.getId());
+		row.setValue("username", inUser.getUserName());
 		row.setSourcePath(asset.getSourcePath());
 		searcher.saveData(row,inUser);
 		archive.fireMediaEvent("asset/userlikes", inUser, asset);
