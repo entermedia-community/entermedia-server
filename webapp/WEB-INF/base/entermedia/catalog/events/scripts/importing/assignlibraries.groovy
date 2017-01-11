@@ -12,7 +12,7 @@ public void setupLibraries()
 	Searcher assetsearcher = mediaarchive.getAssetSearcher();
 
 	HitTracker assets = assetsearcher.getAllHits();
-	
+	assets.enableBulkOperations();
 	LibraryManager librarymanager = new LibraryManager();
 	librarymanager.log = log;
 	librarymanager.assignLibraries(mediaarchive, assets);
