@@ -34,7 +34,7 @@ public void runExport(){
 	for (Iterator iterator = details.iterator(); iterator.hasNext();)
 	{
 		PropertyDetail detail = (PropertyDetail) iterator.next();
-		headers[count] = detail.getText();
+		headers[count] = detail.getText(context);
 		count++;
 	}
 	writer.writeNext(headers);
