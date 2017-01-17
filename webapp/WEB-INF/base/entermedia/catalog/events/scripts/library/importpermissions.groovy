@@ -62,8 +62,16 @@ public void init()
 		Category rootcategory = projectmanager.getRootCategory(mediaArchive,librarycollection);
 		if(rootcategory != null)
 		{
-			Asset asset = mediaArchive.getAsset(hit.get("_parent") );
-			
+			String assetid = hit.get("_parent");
+			if( assetid == null )
+			{
+				assetid = hit.get("asset");
+			}
+			Asset asset = mediaArchive.getAsset( assetid );
+			if( asset == null)
+			{
+				log.error("Missing asset " + assetid);
+			}
 			
 			if( asset != null && !asset.isInCategory(rootcategory.getId()))
 			{
