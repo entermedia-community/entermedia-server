@@ -75,14 +75,15 @@
   </property>  
   <property id="approvedwhen" index="true" stored="true" editable="true" type="time" viewtype="datetime">Approval Date</property>  
   <!-- property id="recorddate" index="true" stored="true" editable="true" type="time" viewtype="datetime"  >Record Update Date</property -->  
-  <property id="_parent" index="true" type="list" listid="asset" legacy="asset" keyword="false" filter="false" stored="false" editable="false" sortable="true">Parent Table 
+  <!-- property id="_parent" index="true" type="list" listid="asset" legacy="asset" keyword="false" filter="false" stored="false" editable="false" sortable="true">Parent Table 
     <name> 
       <language id="de"><![CDATA[Elterntabelle]]></language>  
       <language id="en"><![CDATA[Parent Table]]></language>  
       <language id="es"><![CDATA[Tabla de Padres]]></language>  
       <language id="fr"><![CDATA[Parent Table]]></language> 
     </name> 
-  </property>  
+  </property --> 
+   
   <property id="versions" type="number" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Versions
     <name>
       <language id="de"><![CDATA[Versionen]]></language>
