@@ -39,7 +39,14 @@
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 			</a>
 	</td>
-	<td class="asset-name">${asset}</td>
+	<td class="asset-name">
+	
+	$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
+	$context.putPageValue("view","asset/downloaddetails")	
+	$context.putPageValue("data",$asset)
+	$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
+
+	</td>
 	#set( $publishqueueid = $item.get("publishqueueid"))
 	#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
 
