@@ -296,13 +296,16 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		if (inProfile != null)
 		{
 			Collection<String> categorids = inProfile.getViewCategories();
-			for (Category cat : exactcategories)
+			if( categorids != null)
 			{
-				if (cat.hasParent(categorids))
+				for (Category cat : exactcategories)
 				{
-					return true;
+					if (cat.hasParent(categorids))
+					{
+						return true;
+					}
 				}
-			}
+			}	
 		}
 		String owner = inAsset.get("owner");
 		if( owner != null && inUser != null && owner.equals(inUser.getId()))
@@ -312,13 +315,13 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		// tmp.put("asset.owner", );
 		if( "view".equals(inType))
 		{
-			Collection<String> publiccategories = inArchive.listPublicCollections();
+			Collection<Category> publiccategories = inArchive.listPublicCategories();
 			for (Category cat : exactcategories)
 			{
 				for (Iterator iterator = publiccategories.iterator(); iterator.hasNext();)
 				{
-					String publiccategoryid = (String)iterator.next();
-					if (cat.hasParent(publiccategoryid))
+					Category publiccategory = (Category)iterator.next();
+					if (cat.hasParent(publiccategory.getId()))
 					{
 						return true;
 					}					

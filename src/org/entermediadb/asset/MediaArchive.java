@@ -1753,7 +1753,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldLoggingEventHandler = inLoggingEventHandler;
 	}
-	public Collection listPublicCollections()
+	public Collection<Data> listPublicCollections()
 	{
 		Searcher search = getSearcher("librarycollection");
 		Collection visibility = (Collection)getCacheManager().get("visiblecollection", search.getIndexId()); //Expires after 5 min
