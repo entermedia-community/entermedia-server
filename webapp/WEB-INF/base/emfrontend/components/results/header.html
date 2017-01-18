@@ -27,15 +27,6 @@ $context.putPageValue("hits",$hits)
 #end	
 <div id="resultheader">
 	<ul id="sub-nav" class="search-views">
-		#set ($classname="enabled")
-		#set ($enabled=$hits.getSelectionSize() > 0)
-			#if($enabled)
-
-	#if($candeleteasset)
-			 <li>   	    <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hits${catalogid}&hitssessionid=$!hits.getSessionId()">[[Delete Assets]]</a></li>
-			 #end
-		
-		#end
 		#if( $candownload || $canconvert || $candownloadfpo )
 			#if( $librarycol )
 			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>

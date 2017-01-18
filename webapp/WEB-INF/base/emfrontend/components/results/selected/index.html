@@ -26,6 +26,11 @@
 			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
 			</li>
 		#end
+		#if($candeleteasset)
+			 <li>   	    <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hits${catalogid}&hitssessionid=$!hits.getSessionId()">[[Delete Selected]]</a></li>
+		#end
+		
+		
     	<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
 	#end
 
