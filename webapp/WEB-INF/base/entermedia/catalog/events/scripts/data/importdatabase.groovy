@@ -125,7 +125,7 @@ public void init(){
 		} catch (Exception e) {
 			deleteold=false;
 			
-			log.info("Exception thrown importing upload: ${upload} ", e );
+			log.error("Exception thrown importing upload: ${upload} ", e );
 		}
 	}
 	importPermissions(mediaarchive,rootdrive, tempindex);
