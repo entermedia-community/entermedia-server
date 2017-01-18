@@ -21,7 +21,7 @@ public void init()
 			String path = library.get("folder");
 			if( path == null)
 			{
-				path = library.getName();
+				path = "Libraries/" + library.getName();
 			}
 			if( path == null)
 			{
