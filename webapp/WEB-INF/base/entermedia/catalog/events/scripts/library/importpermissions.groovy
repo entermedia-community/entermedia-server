@@ -23,6 +23,10 @@ public void init()
 			{
 				path = library.getName();
 			}
+			if( path == null)
+			{
+				return;
+			}
 			Category node = mediaArchive.createCategoryPath(path);
 			library.setValue("categoryid", node.getId() );
 			libraries.saveData(library);
