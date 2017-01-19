@@ -167,7 +167,7 @@ public void init(){
 		if( PathUtilities.extractFileName(path).length() == 19)
 		{
 			keep++;
-			if( keep > 10 )
+			if( keep > 100 )
 			{
 				Page page = mediaarchive.getPageManager().getPage(path);
 				mediaarchive.getPageManager().removePage(page);
