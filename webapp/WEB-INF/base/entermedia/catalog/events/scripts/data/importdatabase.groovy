@@ -87,10 +87,10 @@ public void init()
 		}
 	}
 	ordereredtypes.addAll(childrennames);
-	ordereredtypes.remove("settingsgroup");
-	ordereredtypes.remove("propertydetail");
-	ordereredtypes.remove("lock");
-	ordereredtypes.remove("category");
+	ordereredtypes.removeAll("settingsgroup");
+	ordereredtypes.removeAll("propertydetail");
+	ordereredtypes.removeAll("lock");
+	ordereredtypes.removeAll("category");
 	ordereredtypes.add(0,"category");
 
 	/*
@@ -137,7 +137,7 @@ public void init()
 
 public void archiveFolder(Page inPage, String inIndex) 
 {
-	if( inPage.exists() && "false" == inPage.get("cleanonimport"))
+	if( inPage.exists() && "false" != inPage.get("cleanonimport"))
 	{
 		MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 		Page trash = mediaarchive.getPageManager().getPage("/WEB-INF/trash/" + inIndex + "/" + inPage.getPath() );
