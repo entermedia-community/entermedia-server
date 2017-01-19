@@ -226,7 +226,7 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 				child.toString();
 				child.getURL();
 				boolean okToAdd = true;
-				if( getFilter() != null && (checkpermissions || !child.isLeaf() ) )
+				if( checkpermissions && getFilter() != null && !child.isLeaf() )
 				{
 					okToAdd = getFilter().passes(npath);
 				}
