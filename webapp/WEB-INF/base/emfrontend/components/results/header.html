@@ -27,6 +27,9 @@ $context.putPageValue("hits",$hits)
 #end	
 <div id="resultheader">
 	<ul id="sub-nav" class="search-views">
+	
+		#set ($enabled=$hits.getSelectionSize() > 0)
+	
 		#if( $candownload || $canconvert || $candownloadfpo )
 			#if( $librarycol )
 			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
