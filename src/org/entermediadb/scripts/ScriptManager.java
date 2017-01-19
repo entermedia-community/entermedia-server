@@ -127,6 +127,10 @@ public class ScriptManager
 		logger.debug("Running "  +inScript.getPage() );
 		returned = runner.exec(inScript, variableMap);
 		}
+		catch( Throwable ex)
+		{
+			logger.error("Error running "  +inScript.getPage(), ex );
+		}
 		finally 
 		{
 			long used = System.currentTimeMillis() - start;

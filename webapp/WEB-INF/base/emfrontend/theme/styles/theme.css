@@ -2198,7 +2198,7 @@ center #addcoment {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#f7f7f7',GradientType=0 ); /* IE6-9 */
 }
 #nav li {
-    line-height: 13px;
+    line-height: 29px;
 }
 #nav li:first-child {
     margin-left: 20px;

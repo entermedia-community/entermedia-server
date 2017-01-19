@@ -12,6 +12,7 @@ import java.util.zip.ZipOutputStream;
 import org.dom4j.Attribute;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
@@ -378,6 +379,7 @@ public class WorkspaceManager
 			//move the files in place
 			Page apphome = getPageManager().getPage(dest.getPath() + "/" + oldapplicationid);
 			Page appdest = getPageManager().getPage( "/" + inDestinationAppId);
+			getPageManager().removePage(appdest);
 			getPageManager().copyPage(apphome, appdest);
 
 			//tweak the xconf
@@ -395,6 +397,7 @@ public class WorkspaceManager
 			if( cataloghome.exists() )
 			{
 				Page catalogdest = getPageManager().getPage( "/" + inAppcatalogid);
+				getPageManager().removePage(catalogdest);
 				getPageManager().copyPage(cataloghome, catalogdest);
 				
 				PageSettings catsettings = getPageManager().getPageSettingsManager().getPageSettings("/" + inAppcatalogid + "/_site.xconf");
@@ -408,6 +411,7 @@ public class WorkspaceManager
 			Page datadest = getPageManager().getPage( "/WEB-INF/data/" + inAppcatalogid);
 			if( dataold.exists() )
 			{
+				getPageManager().removePage(datadest);
 				getPageManager().copyPage(dataold, datadest);
 			}
 			//Save the app data
@@ -449,11 +453,13 @@ public class WorkspaceManager
 				cat.setId(inAppcatalogid);
 				catsearcher.saveData(cat, null);
 			}
+			MediaArchive archive  = (MediaArchive)getSearcherManager().getModuleManager().getBean(inAppcatalogid,"mediaArchive");
+			archive.clearAll();
 			//Reset mapping
 			NodeManager nodemanager = (NodeManager)getSearcherManager().getModuleManager().getBean(inAppcatalogid, "nodeManager");
 			nodemanager.reindexInternal(inAppcatalogid);
 			//Reset lists
-			getSearcherManager().reloadLoadedSettings(inAppcatalogid);
+			//getSearcherManager().reloadLoadedSettings(inAppcatalogid);
 			
 		}
 		catch (Exception ex)
