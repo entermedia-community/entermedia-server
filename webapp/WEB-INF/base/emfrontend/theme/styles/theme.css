@@ -2212,9 +2212,9 @@ center #addcoment {
     background: -ms-linear-gradient(top, #53bbd9 0%,#4db3ce 25%,#43a8c3 46%,#3f9eb9 61%,#399ab6 68%,#3591aa 89%,#328fab 93%,#308ea7 96%,#328da7 100%); /* IE10+ */
     background: linear-gradient(top, #53bbd9 0%,#4db3ce 25%,#43a8c3 46%,#3f9eb9 61%,#399ab6 68%,#3591aa 89%,#328fab 93%,#308ea7 96%,#328da7 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#53bbd9', endColorstr='#328da7',GradientType=0 ); /* IE6-9 */
-    border-radius: 5px;
+    border-radius: 4px;
     border: 1px solid #237b97;
-    padding: 8px 20px;
+    padding: 0 20px;
     margin: 0px;
     font-size: 13px;
     font-weight: bold;
