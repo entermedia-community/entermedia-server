@@ -4,6 +4,8 @@
 <form name="adder" id="adder" class="validate-inputs" action="$action">
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="searchtype" value="$searchtype" />
+<input type="hidden" name="field" value="owner" />
+<input type="hidden" name="owner.value" value="$!user.getId()" />
 
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
 $context.putPageValue("view","${searchtype}/${searchtype}addnew")	
