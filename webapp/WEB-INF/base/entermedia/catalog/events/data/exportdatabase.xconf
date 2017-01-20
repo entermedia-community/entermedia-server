@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Export Database CSV</property>	
+	<property name="eventname">Export MediaDB</property>	
 	
 	<path-action name="Script.run" alltypes="true" >
 		<script>/${catalogid}/events/scripts/data/dumpdatabase.groovy</script>

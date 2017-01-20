@@ -1,10 +1,9 @@
 package data;
 
-import javax.management.InstanceOfQueryExp;
-
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVWriter
-import org.entermediadb.elasticsearch.searchers.ElasticListSearcher;
+import org.entermediadb.elasticsearch.searchers.ElasticListSearcher
+import org.openedit.Data;
 import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
 import org.openedit.data.PropertyDetailsArchive
@@ -106,23 +105,9 @@ public void init(){
 							nextrow[fieldcount] = value;
 							fieldcount++;
 						}
-
-
-
-
-
-
-
-
 					}
-
 					writer.writeNext(nextrow);
-
-
-
 				}
-
-
 				writer.close();
 		}
 	}
@@ -145,17 +130,18 @@ public void init(){
 		mediaarchive.getPageManager().copyPage(views, target);
 	}
 
-
-	String applicationid  = context.findValue("applicationid");
-	if(applicationid != null){
-		Page page = mediaarchive.getPageManager().getPage("/${applicationid}/");
-		if (page.exists()){
-			Page target = mediaarchive.getPageManager().getPage(rootfolder + "/application/${applicationid}/");
-			mediaarchive.getPageManager().copyPage(page, target);
-
-
+	Collection apps = mediaarchive.getList("app");
+	for(Data app in apps)
+	{
+		String deploypath = app.get("deploypath");
+		if(deploypath != null)
+		{
+			Page page = mediaarchive.getPageManager().getPage(deploypath);
+			if (page.exists()){
+				Page target = mediaarchive.getPageManager().getPage(rootfolder + "/application/" + deploypath);
+				mediaarchive.getPageManager().copyPage(page, target);
+			}
 		}
-
 	}
 
 	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
