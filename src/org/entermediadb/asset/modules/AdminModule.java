@@ -1279,6 +1279,7 @@ public class AdminModule extends BaseModule
 		User user = inReq.getUser();
 		if (!user.isInGroup("administrators"))
 		{
+			log.info("Only administrators can switch users" );
 			return;
 		}
 
@@ -1289,8 +1290,12 @@ public class AdminModule extends BaseModule
 		{
 			clearSession(inReq);		
 			inReq.putSessionValue("realuser", user);
-			inReq.putSessionValue(target.get("catalogid") + "user", target);
-			createUserSession(inReq);
+			String catid = inReq.findValue("catalogid");
+			inReq.putSessionValue(catid + "user", target);
+			inReq.putSessionValue("system" + "user", target);
+			inReq.putPageValue( "user", target);
+			String appid = inReq.findValue("applicationid");
+			inReq.redirect("/" + appid + "/");
 		}
 
 	}
