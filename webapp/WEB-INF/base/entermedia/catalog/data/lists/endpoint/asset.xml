@@ -14,9 +14,9 @@
   "assettype": "article",
   "fileformat": "jpg",
   "keywords": "animals",
-  "fetchURL": "http://o.onionstatic.com/images/25/25530/16x9/700.jpg?8747",
-
-  "longcaption": "Image of a squirrel who waterskis",
+  "fetchurl": "http://www.uwec.edu/centers/images/test-pattern-jpg.jpeg",
+  "importstatus":"needsdownload",
+  "longcaption": "Image of a test pattern",
   "purpose": {
     "id": "sales",
     "name": "Sales Channel"
@@ -24,13 +24,13 @@
   "category": {
     "id": "index"
   },
-  "editstatus": 6
+  "editstatus": "6"
 }]]></samplerequest>  
     <caption><![CDATA[This endpoint creates a new asset on the server and returns the resulting object.  Nested lists can be created automatically.
 
-If you include a "localPath" parameter, EnterMedia will copy the file at that path into the DAM. 
+If you include a "localpath" parameter, EnterMedia will copy the file at that path into the DAM. 
 
-If you include a "fetchURL" parameter, EnterMedia will download the file at that URL into the DAM. 
+If you include a "fetchurl" parameter, EnterMedia will download the file at that URL into the DAM. 
 ]]></caption>
   </endpoint>  
   
