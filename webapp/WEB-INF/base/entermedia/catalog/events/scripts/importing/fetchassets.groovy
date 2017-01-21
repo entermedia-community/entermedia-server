@@ -53,6 +53,7 @@ public void init() {
 				dl.download(fetchurl, image);
 				log.info("Downloaded ${fetchurl}" );
 				current.setPrimaryFile(image.getName());
+				current.setFolder(true);
 				
 				String assettype = current.assettype;
 				

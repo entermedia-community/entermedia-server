@@ -66,14 +66,27 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 			log.info("Downloading " + url + " ->" + path + "/" + filename);
 			File target = new File(attachments, filename);
 			if (target.exists() || target.length() == 0) {
-				downloader.download(url, target);
+				try
+				{
+					downloader.download(url, target);
+				}
+				catch( Exception ex)
+				{
+					asset.setProperty("importstatus", "error");
+					log.error(ex);
+					inArchive.saveAsset(asset, inUser);
+					return;
+				}
 			}
+			asset.setName(filename);
+			asset.setPrimaryFile(filename);
+			asset.setFolder(true);
+			asset.setProperty("importstatus", "needsmetadata");
 			asset.setProperty("downloadourl", url);
 			asset.removeProperty("downloadurl-file");
 			asset.removeProperty("downloadurl-filename");
-
-			asset.setPrimaryFile(filename);
+			inArchive.saveAsset(asset, inUser);
+			inArchive.fireSharedMediaEvent("importing/assetscreated");
 		}
-		inArchive.saveAsset(asset, inUser);
 	}
 }

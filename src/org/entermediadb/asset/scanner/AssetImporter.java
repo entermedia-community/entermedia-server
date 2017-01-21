@@ -240,7 +240,14 @@ public class AssetImporter
 		{
 			inArchive.fireMediaEvent("asset/assetcreated",inUser, asset);
 		}
-		inArchive.fireSharedMediaEvent("importing/assetscreated");
+		if( "needsdownload".equals( asset.get("importstatus") ) )
+		{
+			inArchive.fireSharedMediaEvent("importing/fetchdownloads");
+		}
+		else 
+		{
+			inArchive.fireSharedMediaEvent("importing/assetscreated");
+		}
 	}
 
 	protected Asset createAssetFromPage(MediaArchive inArchive, User inUser, Page inAssetPage)

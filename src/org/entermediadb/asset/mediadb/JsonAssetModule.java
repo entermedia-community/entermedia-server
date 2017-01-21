@@ -132,6 +132,10 @@ public class JsonAssetModule extends BaseJsonModule {
 		df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
 		vals.put("formattedmonth", df);
 
+		if( request == null)
+		{
+			throw new OpenEditException("JSON not parsed ");
+		}
 		Asset asset = null;
 		String id = (String) request.get("id");
 		String sourcepath = null;
@@ -202,6 +206,7 @@ public class JsonAssetModule extends BaseJsonModule {
 			asset = new Asset(archive);// Empty Record
 			asset.setId(id);
 			asset.setProperty("sourcepath", sourcepath);
+			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		}
 
 		populateJsonData(request, searcher, asset);

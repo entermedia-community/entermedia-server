@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Location]]></language> 
     </name> 
   </property>  
-  <property id="isfolder" internalfield="true" datatype="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true" type="boolean">Folder Based 
+  <property id="isfolder" datatype="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true" type="boolean">Folder Based 
     <name> 
       <language id="de"><![CDATA[Ordner basierend]]></language>  
       <language id="en"><![CDATA[Folder Based]]></language>  
