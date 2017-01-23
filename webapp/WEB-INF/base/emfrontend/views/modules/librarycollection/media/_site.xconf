@@ -12,7 +12,7 @@
 			<searchtype>librarycollection</searchtype>
     </path-action>
 
-	<path-action name="ProjectModule.addCollectionTab" />
+	<path-action name="ProjectModule.addOpenCollection" />
 	<page-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</page-action>

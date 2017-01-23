@@ -361,7 +361,7 @@ public class ElasticHitTracker extends HitTracker
 		{
 			if( log.isDebugEnabled() )
 			{
-				log.debug(response.toString());
+				log.info(response.toString());
 			}
 			Aggregations facets = response.getAggregations();
 

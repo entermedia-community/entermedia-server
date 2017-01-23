@@ -210,11 +210,13 @@ public class ProjectManager implements CatalogEnabled
 			
 			if( uc.hasRootCategory())
 			{
-				categoryids.add(uc.getRootCategoryId());
+				String catid = uc.getRootCategoryId();
+				categoryids.add(catid);
 			}
 			usercollections.add(uc);
 		}
 		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category").named("librarysidebar").search();
+		//log.info( hits.getSearchQuery() );
 		int assetsize = 0;
 		if(hits != null){
 			 assetsize = hits.size();
@@ -239,7 +241,15 @@ public class ProjectManager implements CatalogEnabled
 					LibraryCollection collection = (LibraryCollection) iterator.next();
 					if( collection.hasRootCategory())
 					{
-						collection.setAssetCount(node.getCount(collection.getRootCategoryId()));
+						int counted = node.getCount(collection.getRootCategoryId());
+						if( counted == 0)
+						{
+							//These fell off the radar of the agregation because there are too many random categories
+							Collection assets = inArchive.getAssetSearcher().query().exact("category", collection.getRootCategoryId()).named("librarysidebarexact").search();
+							log.info("Too many other categories within collection:" + collection.getName());
+							counted = assets.size();
+						}
+						collection.setAssetCount(counted);
 					}
 				}
 			}

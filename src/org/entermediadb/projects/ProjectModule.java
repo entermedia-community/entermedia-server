@@ -1,8 +1,10 @@
 package org.entermediadb.projects;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -325,18 +327,30 @@ public class ProjectModule extends BaseMediaModule
 		UserProfile profile = inReq.getUserProfile();
 		Collection cols = profile.getValues("opencollections");
 		
-		Data collection = (Data)inReq.getPageValue("data");
+		Data collection = (Data)inReq.getPageValue("librarycol");
+		if( collection == null )
+		{
+			collection = (Data)inReq.getPageValue("data");
+		}
 		if( collection != null)
 		{
 			String collectionid = collection.getId();
 			if( cols == null || !cols.contains(collectionid))
 			{
 				profile.addValue("opencollections", collectionid);
-			}
+				cols = profile.getValues("opencollections");
+				if( cols.size() > 10)
+				{
+					List cut = new ArrayList(cols);
+					cut = cut.subList(cols.size() - 10, cols.size());
+					profile.setValues("opencollections", cut);
+				}
+			}	
 			profile.setProperty("selectedcollection", collectionid);
 		}
 	}
 	
+	//Not used anymore
 	public void addCollectionTab(WebPageRequest inReq)
 	{
 		UserProfile profile = inReq.getUserProfile();
@@ -383,7 +397,6 @@ public class ProjectModule extends BaseMediaModule
 				collectionid = newcol.getId();
 			}
 		}
-
 		Collection cols = profile.getValues("opencollections");
 		if( cols == null || !cols.contains(collectionid))
 		{
