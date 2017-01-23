@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Chemin]]></language> 
     </name> 
   </property>  
-  <property id="categoryid" internalfield="true" index="true" type="list" viewtype="autocomplete" listid="category" stored="true" note="Auto populated" keyword="false" filter="false" editable="false" sortable="true">Category ID
+  <property id="categoryid" internalfield="false" index="true" type="list" viewtype="category" listid="category" stored="true" note="Auto populated" editable="true" >
     <name>
       <language id="de"><![CDATA[Kategorie ID]]></language>
       <language id="en"><![CDATA[Category ID]]></language>
