@@ -1,0 +1,37 @@
+
+#set( $moduleid = $context.findValue("module") )
+#set( $searchhome = $context.findValue("searchhome") )
+<div class="ui-widget uipanel" id="left-col-search" >
+	
+	<div  class="ui-widget-header">[[Search]]
+		#if( $canviewmodulesettings )
+			
+#set( $moduleid = $context.findValue("module") )
+#set( $view = "${moduleid}/${moduleid}advancedsearch") 
+						<span class="widget-header-edit">
+						<a class="ajax ir" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Edit</a>
+						</span>
+				
+			
+			
+		#end
+	</div>
+	
+	<div  class="ui-widget-content">
+
+
+			$pages.include("${searchhome}/advancedsearch/index.html")
+
+	</div>
+
+		<div  style="text-align:right;">
+<hr>	
+		   <a class="emdialog btn small" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=embody&clearselection=$!clear&pickone=true&action=$apphome/views/modules/category/edit/edit.html&longform=true" data-hidefooter="true" data-parameterdata="categoryvalues">[[Pick Category]]</a>
+	
+	</div>
+	
+	
+	
+</div>
+
+			

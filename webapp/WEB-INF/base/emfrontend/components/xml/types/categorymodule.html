@@ -1,13 +1,8 @@
+
 #set( $rootpath = "${apphome}/components/categorize")
+
 <div id="addcategory" >
-#set( $existing = $val)
-#if(!$existing )
-	#set ($existing = $context.getRequestParameter("category-exact.values") )
-#end	
-#if(!$existing )
-	#set ($existing = $context.getRequestParameter("category.values") )
-#end	
-	#set ($longform = $context.getRequestParameter("longform") )
+	#set ($existing = $context.getRequestParameter($property.getId() + ".values") )
 	#if( $existing && !$existing.trim().isEmpty() )
 	 	#set ($existing = $existing.replace("||","|"))
 	    <ul id="cat-list" >
@@ -18,10 +13,8 @@
 			#if( $longform)
 #foreach( $parent in $category.getParentCategoriesFrom(1))
 #if( $velocityCount > 1) \ #end
-<a  href="$home$apphome/views/search/category.html?categoryid=${category.id}">$parent</a>
+<a  href="$home$apphome/views/categories/${category.id}.html">$parent</a>
 #end
-			#else
-				<a class="ajax" title="$category.getCategoryPath()" targetdivinner="view-picker-content" href="$home$apphome/views/categories/${category.id}.html?oemaxlevel=2" >$category.getName()</a>
 			#end	
 				<div class="collectionIcons">
 						<a href="#" title="[[Remove]]">
@@ -34,7 +27,7 @@
 		</ul>
 	#end
    <input type="hidden" name="operation" value="orsgroup" />
-   	<input type="hidden" id="categoryvalues" name="category-exact.values" value="$!existing" />
+   	<input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
    
    <a class="emdialog btn small" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&longform=$!longform" data-hidefooter="true" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
 

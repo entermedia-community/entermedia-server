@@ -17,7 +17,7 @@
 		#if( $section != $perm.permissiontype )
 			<tr class="sectionlevel">
 			<td colspan="2" style="height: 35px; line-height: 35px;">
-				$searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
+				$!searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
 			</td>
 			</tr>
 		#set( $section = $perm.permissiontype)

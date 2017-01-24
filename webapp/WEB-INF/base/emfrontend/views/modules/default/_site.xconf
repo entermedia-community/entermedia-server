@@ -23,7 +23,6 @@
  <permission name="editdata">
  	<or>
 		<group name="administrators" />
-		<group name="users" />
 	</or>
  </permission>
  	<script id="results" src="/${applicationid}/components/javascript/results.js"/>

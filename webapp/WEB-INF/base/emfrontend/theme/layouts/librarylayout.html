@@ -1,0 +1,27 @@
+#if( $selectedlibrary )
+	<div style="float:left;margin-top: 20px;">
+	$pages.include("$apphome/components/categories/crumbs.html?categoryid=$selectedlibrary.categoryid")
+	</div>
+<div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
+		
+		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
+		  <li class="ui-corner-top"><a id="mediatab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=${selectedlibrary.getId()}" >[[Library Assets]]</a></li>
+		  
+		  #set( $link = "$home$apphome/views/modules/library/edit/index.html?id=${selectedlibrary.getId()}&selectedlibrary=$selectedlibrary.getId()&viewid=librarygeneral&viewpath=library/librarygeneral&searchtype=library")
+		  <li class="ui-corner-top" ><a id="settingstab" href="$link" >[[Properties]]</a></li>
+
+		  #set( $link = "$home$apphome/views/modules/library/permissions.html?selectedlibrary=${selectedlibrary.getId()}")
+		  <li class="ui-corner-top" ><a id="permissionstab" href="$link" >[[Permissions]]</a></li>
+		</ul>
+		<div class="clearfix"></div>
+		<div  id="collection-tab-content" >
+		  <div class="tab-pane" id="loadedpanel" >
+		  	$pages.includeContent()
+		  </div>
+		</div>
+</div>
+
+
+#else
+$pages.includeContent()
+#end

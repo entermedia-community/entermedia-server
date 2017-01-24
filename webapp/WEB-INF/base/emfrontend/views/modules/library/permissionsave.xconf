@@ -1,0 +1,13 @@
+<page>
+	<path-action name="AssetEditModule.handleUploads"/>
+	<path-action name="ProjectModule.setCurrentLibrary"/>
+    <property name="defaulttab">permissionstab</property>
+	
+	<path-action name="DataEditModule.saveData" >
+			<property name="searchtype">category</property>
+	</path-action>
+	<property name="reloadprofile">true</property>
+	
+
+
+</page>

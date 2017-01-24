@@ -204,6 +204,15 @@ public class ProjectManager implements CatalogEnabled
 		List usercollections = new ArrayList(allcollections.size());
 
 		Collection categoryids = new ArrayList();
+		//Add the base library
+		if( library != null)
+		{
+			String parent = library.get("categoryid");
+			if( parent != null)
+			{
+				categoryids.add(parent);
+			}
+		}
 		for (Data collection : allcollections)
 		{
 			LibraryCollection uc = (LibraryCollection) lcsearcher.loadData(collection);
@@ -725,8 +734,14 @@ public class ProjectManager implements CatalogEnabled
 			library.setName("General");
 			librarysearcher.saveData(library);
 		}
-		Category librarycategory = null;
+		Category librarycategory = createLibraryCategory(inArchive,library);
+		Category collectioncategory = inArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
+		return collectioncategory;
+	}
 
+	public Category createLibraryCategory(MediaArchive inArchive, Data library)
+	{
+		Category librarycategory = null;
 		if (library.get("categoryid") != null)
 		{
 			librarycategory = inArchive.getCategory(library.get("categoryid"));
@@ -735,7 +750,7 @@ public class ProjectManager implements CatalogEnabled
 		if( librarycategory == null)
 		{
 			String folder = library.get("folder");
-			if (folder == null)
+			if (folder == null || folder.isEmpty())
 			{
 				folder = "Libraries/" + library.getName();
 			}
@@ -743,8 +758,7 @@ public class ProjectManager implements CatalogEnabled
 			library.setValue("categoryid", librarycategory.getId());
 			inArchive.getSearcher("library").saveData(library);
 		}
-		Category collectioncategory = inArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
-		return collectioncategory;
+		return librarycategory;
 	}
 
 	public Category getRootVersionCategory(MediaArchive inArchive, LibraryCollection collection)
@@ -1346,5 +1360,13 @@ public class ProjectManager implements CatalogEnabled
 			}
 		}
 		return false;
+	}
+
+	public boolean addUserToLibrary(MediaArchive inArchive, Data inSavedLibrary, User inUser)
+	{
+		Category librarycategory = createLibraryCategory(inArchive, inSavedLibrary);
+		librarycategory.addValue("viewusers", inUser.getId());
+		inArchive.getSearcher("category").saveData(librarycategory);
+		return true;
 	}
 }

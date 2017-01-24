@@ -5,4 +5,5 @@
   <property id="categoryadvancedsearch" moduleid="category" systemdefined="true" byassettype="false">Advanced Search</property>  
   <property id="categoryresultstable" moduleid="category" systemdefined="true" byassettype="false">Results</property>  
   <property id="categoryheaderdetail" moduleid="category" systemdefined="true" byassettype="false">Header Details</property> 
+  <property id="categorypermissions" moduleid="category" systemdefined="false" byassettype="false">Permissions</property>  
 </properties>

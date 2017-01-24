@@ -54,6 +54,7 @@ public class MediaSearchModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inPageRequest);
 		Category category = archive.getCategory(inPageRequest);
 		inPageRequest.putPageValue("category",category);
+		inPageRequest.putPageValue("selectedcategory",category);
 		
 		
 		String exact = inPageRequest.findValue("exact-search");

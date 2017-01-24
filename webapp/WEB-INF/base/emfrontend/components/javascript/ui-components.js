@@ -376,10 +376,16 @@ uiload = function() {
 				
         		 	modaldialog.modal({keyboard: true,backdrop:true, "show":true});
         		 	//fix submit button
-        		 	//modaldialog.width(width);
-        		 	//modaldialog.height(height);
-        		 	var id = $("form",modaldialog).attr("id");
-        		 	$("#submitbutton",modaldialog).attr("form",id);
+        		 	var justok = dialog.data("cancelsubmit");
+        		 	if( justok != null)
+        		 	{
+        		 		$(".modal-footer #submitbutton",modaldialog).hide();
+        		 	}
+        		 	else
+        		 	{
+	        		 	var id = $("form",modaldialog).attr("id");
+	        		 	$("#submitbutton",modaldialog).attr("form",id);
+	        		 }	
         		 	var title = dialog.attr("title");
         		 	if( title == null)
         		 	{

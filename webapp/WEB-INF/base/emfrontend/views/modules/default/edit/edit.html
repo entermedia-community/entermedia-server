@@ -22,8 +22,15 @@
 
 $context.putPageValue("viewid", $view.id)
 
-
-
+	<div class="ui-widget uipanel" style="padding: 20px 5px 5px 5px;width: 60%">
+		  	<div  class="ui-widget-header">[[Properties]]
+		    	#if( $caneditmetadatasetup )
+		    	<span class="widget-header-edit">
+				 <a class="ir" href="$home$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath">[[Edit]]</a>
+				</span>
+				#end
+		    </div>
+			<div class="ui-widget-content">
 
 <div id="default-fields">
     <div id="editlayout">
@@ -45,7 +52,7 @@ $context.putPageValue("viewid", $view.id)
 #set( $origURL = $context.getRequestParameter("origURL" ) )
 #set ( $moduleid = $context.findValue("module") )
 #if($caneditdata)
-$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
 #else
 ##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
 $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
@@ -59,8 +66,8 @@ $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly
     #end
  #end   
     </form>
-    
-    
-    
     </div>
+</div>
+
+</div>
 </div>

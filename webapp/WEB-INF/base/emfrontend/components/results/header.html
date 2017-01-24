@@ -80,26 +80,6 @@ $context.putPageValue("hits",$hits)
 				</li>
 				#end
 		
-#if( $category)
-#set( $catsize = $category.getParentCategories().size() )
-	<li><a>[[Categories]]</a>	
-		<ul>
-	#if( $catsize > 1 )
-		#foreach( $parent in $category.getParentCategories())
-			#set( $pad = $velocityCount * 7)
-			<li class="emcategories" ><a href="$home$apphome/views/categories/index.html?categoryid=$parent.getId()&nodeID=$parent.getId()" style="padding-left:${pad}px; #if( $catsize == $velocityCount) font-weight:bold;#end"><span  class="name folder">$parent </span> </a></li> 
-		#end
-	#end
-	#set( $pad = $pad + 7 )
-	#foreach( $parent in $category.getChildren())
-		<li class="emcategories"><a href="$home$apphome/views/categories/index.html?categoryid=$parent.getId()&nodeID=$parent.getId()" style="padding-left:${pad}px"><span  class="name folder">$parent </span> </a></li> 
-	#end
-	
-		</ul>
-	</li>
-#end
-		
-		
 		#if ( $canviewbasket )
 			#if($order)
 				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>

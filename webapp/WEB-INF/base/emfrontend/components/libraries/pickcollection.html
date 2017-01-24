@@ -5,8 +5,8 @@
 		<table class="inlinesearch" style="" >
 			<tr>
 				<td  id="selectedlibraryui" style="min-width:220px; padding-right:20px;">
-					<form class="ajax" data-targetdiv="application" action="$home$apphome/views/modules/asset/librarysearch.html">
-						<input type="hidden" name="oemaxlevel" value="4" />
+					<form class="ajax" data-targetdiv="application" action="$home$apphome/views/modules/library/librarysearch.html">
+						<input type="hidden" name="oemaxlevel" value="5" />
 						
 						#set( $detail = $searcher.getDetail("library"))
 				
@@ -27,7 +27,7 @@
 							  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
 							#end
 							</select>
-							<a id="selectedlibraryadd" href="$home$apphome/components/xml/types/autocomplete/addnew.html?searchtype=library&targetdiv=collectionpicker" title="[[Add Library]]" class="emdialog" style="display:none" >[[add]]</a>
+							<a id="selectedlibraryadd" href="$home$apphome/components/libraries/addnewlibrary.html?searchtype=library&targetdiv=collectionpicker" title="[[Add Library]]" class="emdialog" style="display:none" >[[add]]</a>
 					</form>
 				</td>	
 				<td id="collectionidui" style="padding-right:20px;">

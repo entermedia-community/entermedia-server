@@ -1,6 +1,8 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
-#set( $categories = $context.getRequestParameter("category.values") )
+#set( $detailid = $context.getRequestParameter("detailid") )
+#set( $pickone = $context.getRequestParameter("pickone") )
+#set( $categories = $context.getRequestParameter("${detailid}.value") )
 #if(!$categories)
 	#set( $categories = $context.getRequestParameter("category-exact.values") )
 #end	
@@ -63,10 +65,16 @@ $(".pickedcategoryform").submit(function(event)
 		event.preventDefault();
 		console.log("submit action $action to $targetdiv");
 		var params = {};
-		params["category.values"] =  $("#selectedcategories").val();
-		params["longform"] = "true";
-		params["oemaxlevel"] = "1";
-		$("#$targetdiv").load("$action", params);
+		params["${detailid}.value"] =  $("#selectedcategories").val();
+		params["detailid"] = "$detailid";
+		#if( $pickone )
+			params["id"] =  $("#selectedcategories").val();
+			$("#$targetdiv").load("$action", params);
+			$(this).closest(".modal").modal("hide"); 			//close dialog
+		#else
+			params["oemaxlevel"] = "1";
+			$("#$targetdiv").load("$action", params);
+		#end
 		return false;
 	#else
 		console.log("submit stop");

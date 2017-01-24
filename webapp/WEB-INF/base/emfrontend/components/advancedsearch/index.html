@@ -50,11 +50,11 @@ $context.putPageValue("idprefix","search")
 <input type="hidden" name="operation" value="exact" />
 <input type="hidden" name="category.value" value="$librarycol.rootcategory" />
 <input type="hidden" name="collectionid" value="$librarycol.getId()" />
-#elseif( $library.categoryid )
+#elseif( $selectedlibrary.categoryid )
 <input type="hidden" name="field" value="category" />
 <input type="hidden" name="operation" value="exact" />
-<input type="hidden" name="category.value" value="$library.categoryid" />
-<input type="hidden" name="selectedlibrary" value="$library.getId()" />
+<input type="hidden" name="category.value" value="$selectedlibrary.categoryid" />
+<input type="hidden" name="selectedlibrary" value="$selectedlibrary.getId()" />
 #end
 
 	<td class="submit"><input class="btn small" type="submit" value="[[Search]]" />
@@ -78,6 +78,7 @@ $context.putPageValue("idprefix","search")
 #set ($alldetails = $searcher.getUserPropertyDetails() )
 
 <form id="searchaddfield" class="ajaxform" targetdiv="advsearchpanel" action="$home$apphome/components/advancedsearch/addfield.html" method="post">
+
 	<input type="hidden" name="oemaxlevel" value="1"/>
 	<input type="hidden" name="editadvsearch" value="true"/>
 	<input type="hidden" name="view" value="$view"/>

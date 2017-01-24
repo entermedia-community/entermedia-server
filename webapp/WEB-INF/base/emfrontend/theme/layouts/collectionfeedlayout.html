@@ -1,10 +1,14 @@
 #if( $librarycol )
+	<div style="float:left;margin-top: 20px;">
+	$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
+	</div>
+
 	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
-		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[View Collection]]</a></li>
+		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Collection Assets]]</a></li>
 		  #if($canimportcollection)
 		  <li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Revisions]]</a></li>
 		  #end

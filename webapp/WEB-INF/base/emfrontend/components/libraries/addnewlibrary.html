@@ -1,12 +1,19 @@
-
-<form name="adder" id="libadder" class="ajaxform  validate-inputs" targetdiv="left-col-libraries" action="$home$apphome/components/libraries/addlibraryfinish.html">
-
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $targetdiv = $context.getRequestParameter("targetdiv"))
+#set( $action = "$home$apphome/components/libraries/pickcollectionlibrarysave.html")
+	
+<form name="adder" id="adder" class="ajaxform  validate-inputs" targetdiv="$targetdiv" action="$action">
 
 <input type="hidden" name="save" value="true" />
-<input type="hidden" name="searchtype" value="library" />
+<input type="hidden" name="searchtype" value="$searchtype" />
 
-$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"library") )	
-$context.putPageValue("view","library/librarygeneral")	
+$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
+$context.putPageValue("view","${searchtype}/${searchtype}addnew")	
 $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
+<input type="hidden" name="save" value="true" />
+
+<input type="hidden" name="field" value="owner" />
+<input type="hidden" name="owner.value" value="$!user.id" />
 
 </form>

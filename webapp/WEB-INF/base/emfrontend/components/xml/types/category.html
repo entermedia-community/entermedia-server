@@ -1,22 +1,26 @@
 #set( $rootpath = "${apphome}/components/categorize")
+#set ($detailid = $context.getRequestParameter("detailid") )
+#if( $detail )
+#set( $detailid = $detail.id)
+#end
+
 <div id="addcategory" >
-	#set ($existing = $context.getRequestParameter("category.values") )
-	#set ($longform = $context.getRequestParameter("longform") )
+	#set ($existing = $context.getRequestParameter("${detailid}.value") )
+	#if(!$existing)
+		#set ($existing = $val)
+	#end
 	#if( $existing && !$existing.trim().isEmpty() )
 	 	#set ($existing = $existing.replace("||","|"))
 	    <ul id="cat-list" >
 		#foreach($categoryid in $existing.split("\s*\|\s*"))
 			#set($category  = $mediaarchive.getCategory($categoryid))
+			#if($category)
 			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()" style="padding:4px;background-color: #FFF">
 					<div class="category "  style="padding-left:20px;">					
-			#if( $longform)
 #foreach( $parent in $category.getParentCategoriesFrom(1))
 #if( $velocityCount > 1) \ #end
-<a  href="$home$apphome/views/search/category.html?categoryid=${category.id}">$parent</a>
+<a  href="$home$apphome/views/modules/category/assets/${category.id}.html">$parent</a>
 #end
-			#else
-				<a class="ajax" title="$category.getCategoryPath()" targetdivinner="view-picker-content" href="$home$apphome/views/categories/${category.id}.html?oemaxlevel=2" >$category.getName()</a>
-			#end	
 				<div class="collectionIcons">
 						<a href="#" title="[[Remove]]">
 							<span class="closecategory ui-icon ui-icon-closethick " data-categoryid="$categoryid"></span>
@@ -24,13 +28,15 @@
 				</div>
 			</div>
 			</li>
+			#end
 		#end
 		</ul>
 	#end
+
    <input type="hidden" name="operation" value="orsgroup" />
-   	<input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
+   	<input type="hidden" id="categoryvalues" name="${detailid}.value" value="$!existing" />
    
-   <a class="emdialog btn small" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&longform=$!longform" data-hidefooter="true" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
+   <a class="emdialog btn small" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&detailid=$detailid" data-cancelsubmit="true" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
 
 <script>
 

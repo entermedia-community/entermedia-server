@@ -48,5 +48,14 @@
       <language id="es"><![CDATA[categoria ID]]></language>
       <language id="fr"><![CDATA[Catégorie ID]]></language>
     </name>
-  </property> 
+  </property>
+    <property id="owner" index="true" viewtype="user" type="list" listid="user" keyword="true" stored="true" sortable="true" editable="true" filter="false"> 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Owner]]></language> 
+    </name> 
+  </property>  
+   
 </properties>

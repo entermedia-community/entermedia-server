@@ -79,15 +79,15 @@ jQuery(document).ready(function()
 			maxlevel = 3;
 		}
 		
+		var nodeid = node.data('nodeid');
 		if( postfix == undefined || postfix == "" )
 		{
 			//postfix = ".html";
 			postfix = "";
-			prefix = prefix + "?";
+			prefix = prefix + "?categoryid=";
 		}
 		var home = tree.data("home");
 		
-		var nodeid = node.data('nodeid');
 		var depth = node.data('depth');
 		
 		jQuery.get(prefix + nodeid + postfix,
@@ -210,7 +210,7 @@ jQuery(document).ready(function()
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
 				var nodeid = node.data('nodeid');
-				var link = tree.data("home") + "/views/modules/category/edit/edit.html?id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral"; 
+				var link = tree.data("home") + "/views/modules/category/edit/edit.html?categoryid=" + nodeid + "&id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral"; 
 				document.location = link;
 				return false;
 	} );

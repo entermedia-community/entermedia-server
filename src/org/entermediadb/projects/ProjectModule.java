@@ -67,9 +67,12 @@ public class ProjectModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		String libraryid = inReq.findValue("selectedlibrary");
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
-		Data library = manager.setCurrentLibrary(inReq.getUserProfile(), libraryid);
-		inReq.putPageValue("selectedlibrary", library);
+		if( libraryid != null)
+		{
+			ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
+			Data library = manager.setCurrentLibrary(inReq.getUserProfile(), libraryid);
+			inReq.putPageValue("selectedlibrary", library);
+		}	
 	}
 //	public void savedCollection(WebPageRequest inReq)
 //	{
@@ -212,11 +215,6 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}		
 		ProjectManager manager = getProjectManager(inReq);
-		
-		
-		
-		
-		
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		if(all == null){
 			return;
@@ -282,14 +280,14 @@ public class ProjectModule extends BaseMediaModule
 			inReq.setRequestParameter("profilepreference.value", saved.getId() );
 		}
 //		//Make sure I am in the list of users for the library
-//		MediaArchive archive = getMediaArchive(inReq);
-//		ProjectManager manager = getProjectManager(inReq);
-//		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
-//		{
-//			//reload profile?
-//			UserProfile profile = inReq.getUserProfile();
-//			profile.getViewCategories().add(saved.getId());
-//		}
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+		{
+			//reload profile?
+			UserProfile profile = inReq.getUserProfile();
+			profile.getViewCategories().add(saved.getId());
+		}
 	}
 	public void createCollection(WebPageRequest inReq)
 	{
@@ -651,4 +649,10 @@ public class ProjectModule extends BaseMediaModule
 //		manager.loadCategoriesOnCollections(inReq, archive, collections);
 //		
 //	}
+	
+	public void searchForAssetsOnLibrary(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+	}
 }

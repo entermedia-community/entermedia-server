@@ -1,0 +1,11 @@
+#set( $categoryid = $context.getRequestParameter("categoryid"))
+#set( $category = $mediaarchive.getCategory($categoryid))
+<div id="cat-list">
+<div  class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" style="padding:4px;margin-top:-4px;">
+<div class="category"  style="padding-left:20px;">					
+	#foreach( $parent in $category.getParentCategoriesFrom(1))
+	#if( $velocityCount > 1) \ #end
+	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}">$parent</a>
+	#end
+</div>
+</div></div>

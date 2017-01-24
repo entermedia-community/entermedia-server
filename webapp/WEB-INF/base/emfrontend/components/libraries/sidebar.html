@@ -44,7 +44,7 @@
 #if( $selectedlibrary )
 	<div class="librarymenu" >
 		<a href="$home$apphome/views/modules/library/edit/edit.html?id=${selectedlibrary.id}&viewid=librarygeneral&viewpath=library/librarygeneral&hitssessionid=hitslibrarymedia/catalogs/public&searchtype=library" class="librarydetails"><span> [[Details]]</span></a>
-		<a href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$selectedlibrary.id" #if ($user) class="librarydroparea" #end data-targetdiv="left-col-libraries" data-libraryid="$selectedlibrary.id" data-count="$librarysize" data-label="Assets"><span> $librarysize [[Assets]]</span></a>
+		<a href="$home$apphome/views/search/search.html?field=category&operation=exact&category.value=$selectedlibrary.categoryid" #if ($user) class="librarydroparea" #end data-targetdiv="left-col-libraries" data-libraryid="$selectedlibrary.id" data-count="$librarysize" data-label="Assets"><span> $librarysize [[Assets]]</span></a>
 	</div>
 	<div class="librarylabels"><h2>[[Collections]]</h2>
    	<ul >

@@ -162,22 +162,32 @@ public class WorkspaceManager
 	public void saveModule(String catalogid, String appid, Data module) throws Exception
 	{
 		/** APP STUFF **/
+		String mid = module.getId();
+		String basepath = "default";
 		Page home = getPageManager().getPage("/" + appid + "/views/modules/" + module.getId() + "/_site.xconf");
-		PageSettings homesettings = home.getPageSettings();
-		homesettings.setProperty("module", module.getId());
-		PageProperty prop = new PageProperty("fallbackdirectory");
-		prop.setValue("/" + appid + "/views/modules/default");
-		homesettings.putProperty(prop);
-		getPageManager().getPageSettingsManager().saveSetting(homesettings);
-
 		Page settings = getPageManager().getPage("/" + appid + "/views/settings/modules/" + module.getId() + "/_site.xconf");
+		PageSettings homesettings = home.getPageSettings();
 		PageSettings modulesettings = settings.getPageSettings();
-		modulesettings.setProperty("module", module.getId());
-		prop = new PageProperty("fallbackdirectory");
-		prop.setValue("/" + appid + "/views/settings/modules/default");
-		modulesettings.putProperty(prop);
+		if( mid.equals("asset") || mid.equals("library") || mid.equals("librarycollection") || mid.equals("category"))
+		{
+			basepath = mid;
+			homesettings.removeProperty("fallbackdirectory");
+			modulesettings.removeProperty("fallbackdirectory");
+		}
+		else
+		{
+			homesettings.setProperty("module", module.getId());
+			PageProperty prop = new PageProperty("fallbackdirectory");
+			prop.setValue("/" + appid + "/views/modules/" + basepath);
+			homesettings.putProperty(prop);
+	
+			modulesettings.setProperty("module", module.getId());
+			prop = new PageProperty("fallbackdirectory");
+			prop.setValue("/" + appid + "/views/settings/modules/" + basepath);
+			modulesettings.putProperty(prop);
+		}		
+		getPageManager().getPageSettingsManager().saveSetting(homesettings);
 		getPageManager().getPageSettingsManager().saveSetting(modulesettings);
-		
 		/** DATABASE STUFF **/
 		String template = "/" + catalogid + "/data/lists/view/default.xml";
 		String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";

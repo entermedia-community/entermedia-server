@@ -1,0 +1,69 @@
+<div class="publishtabcontainer">
+	
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+		<div class="ui-widget-header">[[Category Permissions]] </div>
+		<div class="ui-widget-content">
+
+#set( $categoryid = $selectedcategory.id )
+
+#if( !$categoryid)
+No Category Set on Library
+#end
+
+		<p>[[Choose what users can see the assets and collections within this library]]</p>
+		
+		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+
+#set($viewid = "categorypermissions")
+#set($viewpath = "category/categorypermissions")
+#set($moduleid = $context.findValue("module") )
+#set($view = $searcherManager.getData($catalogid, "view",$viewid))
+#set( $action = "$home$content.searchhome/permissionsave.html")
+$context.putPageValue("viewid", $view.id)
+#set( $searcher = $mediaarchive.getSearcher("category"))
+$context.putPageValue("searcher", $searcher )
+
+#set( $data = $mediaarchive.getCategory($categoryid) )
+$context.putPageValue("data", $data )
+
+<div id="default-fields">
+    <div id="editlayout">
+    <form id="dataeditor" name="dataeditor" method="post"  action="$action" enctype="multipart/form-data">
+    	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$data.id" />
+    	<input name="categoryid" type="hidden" value="$data.id" />
+    	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+    	$context.putPageValue("view", "$searcher.searchType/$viewid")
+
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+#set ( $moduleid = $context.findValue("module") )
+#if($caneditdata)
+$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
+#else
+$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
+#end
+#if( !$context.getRequestParameter("preview") )
+    #if($caneditdata)
+    <input class="btn" style="margin: 20px 0 0 20px;" type="submit" value="Save" />
+    #end
+    #if($caneditdata || $candelete)	
+    <a class="btn right red ajax" targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin: 20px 20px 0 0; color: #fff;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">Delete</a>
+    #end
+ #end   
+    </form>
+    
+    
+    
+    </div>
+</div>
+
+
+			
+		</div>
+		
+	</div>	
+
+	
+</div>
+	
+

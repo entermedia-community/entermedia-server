@@ -4,4 +4,7 @@
 	<type id="internal">Internal</type> 
 	<type id="library">Library Management</type> 
 	<type id="restapi">Programming API</type> 
+	<type id="edit">Editing</type> 
+	<type id="view">Viewing</type>
+	<type id="none">General</type> 
 </types>
