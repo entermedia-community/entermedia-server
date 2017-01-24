@@ -2,7 +2,7 @@
 	<property id="id" editable="true" stored="true" index="true">ID</property>
 	<property id="name" multilanguage="true" editable="true" stored="true" index="true">Name</property>	
 	<property id="editable"  editable="true" stored="true" index="true">Editable</property>	
-	<property id="internaluse"  editable="true" stored="true" index="true">Internal use</property>	
+	<property id="internalfield"  editable="true" stored="true" index="true">Internal use</property>	
 	<property id="defaultoperation"  editable="true" stored="true" index="true">Default Search Operation</property>	
 	<property id="datatype"  editable="true" stored="true" index="true">Data Type</property>	
 	<property id="rendertype"  editable="true" stored="true" index="true">Render Type</property>	

@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[éditable]]></language> 
     </name> 
   </property>  
-  <property id="internaluse" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Internal use 
+  <property id="internalfield" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Internal use 
     <name> 
       <language id="de"><![CDATA[interne Benutzung]]></language>  
       <language id="en"><![CDATA[Internal use]]></language>  
