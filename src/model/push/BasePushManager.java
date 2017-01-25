@@ -60,7 +60,7 @@ import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
 public class BasePushManager implements PushManager
 {
-	private static final Log log = LogFactory.getLog(PushManager.class);
+	private static final Log log = LogFactory.getLog(BasePushManager.class);
 	protected SearcherManager fieldSearcherManager;
 	protected PageManager fieldPageManager;
 	protected Downloader fielddownloader;
@@ -517,7 +517,7 @@ public class BasePushManager implements PushManager
 					{
 						builder.addPart("field",key);
 						builder.addPart(key+ ".value",value);
-						log.info(inAsset.getName() + " " + key + " " + value);
+						//log.info(inAsset.getName() + " " + key + " " + value);
 					}
 				}
 			}
