@@ -9,6 +9,13 @@
 	#if(!$existing)
 		#set ($existing = $val)
 	#end
+	#if(!$existing)
+		#set ($existing = $values)
+	#end
+	#if(!$existing)
+		#set ($existing = $context.getRequestParameter("${detailid}.values") )
+	#end
+	
 	#if( $existing && !$existing.trim().isEmpty() )
 	 	#set ($existing = $existing.replace("||","|"))
 	    <ul id="cat-list" >
@@ -19,7 +26,7 @@
 					<div class="category "  style="padding-left:20px;">					
 #foreach( $parent in $category.getParentCategoriesFrom(1))
 #if( $velocityCount > 1) \ #end
-<a  href="$home$apphome/views/modules/category/assets/${category.id}.html">$parent</a>
+<a  href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${category.id}">$parent</a>
 #end
 				<div class="collectionIcons">
 						<a href="#" title="[[Remove]]">
