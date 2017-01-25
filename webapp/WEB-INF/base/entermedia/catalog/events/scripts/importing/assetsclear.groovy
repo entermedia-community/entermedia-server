@@ -63,7 +63,7 @@ public void init()
 	{
 		Data hit = (Data)obj;
 	
-		String assetsource = inAsset.get("archivesourcepath");
+		String assetsource = hit.get("archivesourcepath");
 		if( assetsource == null)
 		{
 			assetsource = hit.getSourcePath();

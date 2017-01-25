@@ -1,5 +1,7 @@
 I'm a map
-
+	#foreach($location in $hits.getAllHits())
+	$location.getValue("geo_point") $location
+#end
 <script type="text/javascript">
 
 jQuery(document).ready(function(){ 
@@ -7,7 +9,7 @@ $('#map').gmap({
 	 'center':'39.025818619038375,-95.03089171562499',
 }).bind('init', function(ev, map) {
 	#foreach($location in $hits.getAllHits())
-		
+		#if($location.geo_point)
       	$('#map').gmap('addMarker', 
 		{
 			'position': '$!location.geo_point'		    
@@ -19,7 +21,7 @@ $('#map').gmap({
 	 		});
 
 		});;
-	
+	#end
 	#end
 });
 });
