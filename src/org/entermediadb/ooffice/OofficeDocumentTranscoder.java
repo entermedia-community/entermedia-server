@@ -71,7 +71,7 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 			String newname = PathUtilities.extractPageName(input.getName()) + ".pdf";
 			
 			Page tmpfile = getPageManager().getPage(outfolder+ "/" + newname);
-			if( !tmpfile.exists())
+			if( !tmpfile.exists() || tmpfile.length() == 0)
 			{
 				throw new OpenEditException("OpenOffice did not create output file " + tmpfile);
 			}
@@ -80,7 +80,6 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 			getPageManager().movePage(tmpfile, output);
 			log.info("Completed: " + input.getName());
 		}
-	    result.setOk(true);
 	    return result;
 	}
 
