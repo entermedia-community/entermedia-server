@@ -80,6 +80,10 @@ public class OofficeDocumentTranscoder extends BaseTranscoder
 			getPageManager().movePage(tmpfile, output);
 			log.info("Completed: " + input.getName());
 		}
+		else
+		{
+			log.error("Error running command on : " + input.getName() + " output:" + done.getStandardOut()  + " returned: " + done.getReturnValue() );
+		}
 	    return result;
 	}
 
