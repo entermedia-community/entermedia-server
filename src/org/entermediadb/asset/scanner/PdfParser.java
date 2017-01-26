@@ -14,6 +14,7 @@ import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.util.PDFTextStripper;
+import org.openedit.util.FileUtils;
 
 public class PdfParser
 {
@@ -94,10 +95,13 @@ public class PdfParser
 			try
 			{
 				if (pdf != null)
+				{
 					pdf.close();
+				}				
 			} catch (IOException e)
 			{
 				// nothing to do
+				log.info(e);
 			}
 		}
 		return results;
