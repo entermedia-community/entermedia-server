@@ -260,13 +260,22 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				
 				data = inArchive.getReplacer().replace(data, metadata);
 				
+				
+				
+				
 				HttpPost method = new HttpPost(addr);
 				
-				//method.setRequestEntity(new ByteArrayEntity(data.bytes));
+				//method.setEntity(new ByteArrayEntity(data.bytes));
 				StringEntity params = new StringEntity(data);
-				method.setEntity(params);
+//				method.setEntity(params);
 
+				//HttpEntity entity = new ByteArrayEntity(data.getBytes("UTF-8"));
+				//StringEntity xmlEntity = new StringEntity(data, "application/atom+xml;type=entry","UTF-8");
+			
 				
+				
+				
+		        method.setEntity(params);
 				method.setHeader( "Authorization", "Basic " + inAuthString);
 				method.setHeader( "Expect", "" );
 				method.setHeader("Content-Type", "application/atom+xml;type=entry");
@@ -280,7 +289,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				}
 				
 				
-				Element response = getXmlUtil().getXml(method.getEntity().getContent(), "UTF-8");
+				Element response = getXmlUtil().getXml(response2.getEntity().getContent(), "UTF-8");
 				String xml = response.asXML();
 				return response;
 			
@@ -306,7 +315,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			
 			HttpResponse response2 =  getClient().execute(method);
 			
-			String addr2 = method.getFirstHeader("Location").getValue();
+			String addr2 = response2.getFirstHeader("Location").getValue();
 			
 			
 			
