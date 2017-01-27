@@ -3758,7 +3758,14 @@ td.checkbox input, th.firstheader input {
 #user-search .btn {
     margin: 0;
 }
-.datepicker + img {
+
+#advsearchpanel .ui-datepicker-trigger
+{
+	float: right;
+    left: -8px;
+    top: -22px;	
+}
+.ui-datepicker-trigger {
     position: relative;
     left: -23px;
     top: -1px;
