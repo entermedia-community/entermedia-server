@@ -34,6 +34,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
 import org.openedit.event.WebEventListener;
+import org.openedit.hittracker.GeoFilter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -1741,20 +1742,21 @@ public class DataEditModule extends BaseMediaModule
 		Position p = (Position)positions.get(0);
 		Double latitude = p.getLatitude();
 		Double longitude = p.getLongitude();
-		Double maxlat = latitude + range;
-		Double minlat = latitude - range;
-		Double maxlong = longitude + range;
-		Double minlong = longitude - range; 
+		
 		Searcher searcher = loadSearcher(inReq);
 		
 		SearchQuery query = searcher.addStandardSearchTerms(inReq);
 		if(query == null){
 			query = searcher.createSearchQuery();
 		}
+		GeoFilter filter = new GeoFilter();
+		filter.setPropertyDetail(detailid);
+		filter.setLatitude(latitude);
+		filter.setLongitude(longitude);
+		filter.setDistance(rangeString);
+		filter.setType("distance");
+		query.addGeoFilter(searcher.getDetail(detailid), filter);
 		
-		
-		query.addBetween(detailid + "_lat", minlat, maxlat);
-		query.addBetween(detailid + "_lng", minlong, maxlong );
 		searcher.cachedSearch(inReq, query);
 		
 	}

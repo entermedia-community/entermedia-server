@@ -509,7 +509,9 @@ public class BaseOrderManager implements OrderManager {
 			String presetid = orderitemhit.get("presetid");
 			if(presetid == null){
 				presetid = properties.get(orderitemhit.getId() + ".presetid.value");
-
+				if(presetid == ""){
+					presetid = null;
+				}
 				String rendertype = null;
 				if( presetid == null)
 				{
