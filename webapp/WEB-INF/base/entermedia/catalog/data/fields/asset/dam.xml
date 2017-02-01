@@ -522,7 +522,7 @@
   <!-- Approvals -->  
   <!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->  
   <!-- Geo Location -->  
-  <property id="geo_point" internalfield="false" type="position" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch" keyword="false" filter="false" editable="true" sortable="true">Position 
+  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch" keyword="false" filter="false" editable="true" sortable="true">Position 
     <name> 
       <language id="de"><![CDATA[Position]]></language>  
       <language id="en"><![CDATA[Position]]></language>  

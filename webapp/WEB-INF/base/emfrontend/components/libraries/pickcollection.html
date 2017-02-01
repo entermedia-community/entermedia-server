@@ -1,3 +1,5 @@
+
+
 #if( $canviewopencollections)
 <div id="collectionpickerinner" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
@@ -27,7 +29,10 @@
 							  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
 							#end
 							</select>
+											#if($canaddnewcollection)
+							
 							<a id="selectedlibraryadd" href="$home$apphome/components/libraries/addnewlibrary.html?searchtype=library&targetdiv=collectionpicker" title="[[Add Library]]" class="emdialog" style="display:none" >[[add]]</a>
+				#end
 					</form>
 				</td>	
 				<td id="collectionidui" style="padding-right:20px;">
@@ -41,7 +46,9 @@
 				  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
 				#end
 				</select>
+				#if($canaddnewcollection)
 				<a id="collectionidadd" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" style="display:none" >add</a>
+				#end
 	</form>
 				</td>	
 			</tr>
@@ -49,3 +56,6 @@
 	
 </div>
 #end
+
+
+ 

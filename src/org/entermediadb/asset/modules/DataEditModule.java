@@ -1736,7 +1736,10 @@ public class DataEditModule extends BaseMediaModule
 
 	double range = Double.parseDouble(rangeString);
     range = range / 157253.2964;//convert to decimal degrees (FROM Meters)
-	
+	if(detailid == null){
+		search(inReq);
+		return ;
+	}
     List positions = getGeoCoder().getPositions(target);
 	if(positions != null && positions.size() > 0){
 		Position p = (Position)positions.get(0);
@@ -1757,7 +1760,6 @@ public class DataEditModule extends BaseMediaModule
 		filter.setType("distance");
 		query.addGeoFilter(searcher.getDetail(detailid), filter);
 		
-		searcher.cachedSearch(inReq, query);
 		
 	}
 

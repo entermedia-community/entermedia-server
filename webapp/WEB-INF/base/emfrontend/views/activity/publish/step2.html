@@ -35,14 +35,14 @@
 					#end
 				#end
 				#if(!$found)
-					#set($null = $filetypes.add([$filetype,"1",$fileformat,"${omit}"]))
+					#set($null = $filetypes.add([$filetype.getName($context.getLocale()),"1",$fileformat,"${omit}"]))
 				#end
 				##add hidden inputs
 				<input type="hidden" name="itemid" value="$item.id"/>
 				<input type="hidden" name="field" value="presetid"/>
 				<input type="hidden" name="${item.id}.presetid.value" value=""/>
 				<input type="hidden" name="field" value="itemfiletype"/>
-				<input type="hidden" name="${item.id}.itemfiletype.value" value="${filetype}"/>
+				<input type="hidden" name="${item.id}.itemfiletype.value" value="$filetype.getName($context.getLocale())"/>
 				##add extra variables for specific publishers
 				#if ($publishtype.publishtype == "youtube")
 					<input type="hidden" name="assetfield.value" value="${asset.id}">
@@ -73,7 +73,7 @@
 				<tr>
 					<td>
 						<input type="hidden" name="field" value="filetype"/>
-						<input type="hidden" name="filetype.value" value="${filetype}"/>
+						<input type="hidden" name="filetype.value" value="$filetype"/>
 						#if($omit == "true")
 							Selected $num $filetype
 						#else
@@ -123,7 +123,7 @@
 							#end
 						</select>
 						#else
-							<input type="hidden" name="${filetype}.presetid.value" value="0">
+							<input type="hidden" name="$filetype.getName($context.getLocale()).presetid.value" value="0">
 						#end	
 					</td>
 					#end

@@ -8,13 +8,13 @@
  #set($hit = $data)
  #end
 
-  #set($latandlong = $data.get("$detail"))
-   #set( $lat = $!data.get("${detail.id}_lat") )
-   #set( $lng = $!data.get("${detail.id}_lng") )
+  #set($latandlong = $data.getValue("$detail.id"))
+   #set( $lat = $!data.getValue("${detail.id}_lat") )
+   #set( $lng = $!data.getValue("${detail.id}_lng") )
    #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
-
 <div id="$!{hit.id}_${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
    
+  
   
 
 <script type="text/javascript">
