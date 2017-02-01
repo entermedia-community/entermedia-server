@@ -24,7 +24,7 @@ $context.putPageValue("showtoolbar", "false")
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
     #set( $viewerlink = $content.get("assetviewerlink") )
-    #foreach ($hit in $hits.getPageOfHits())
+    #foreach ($hit in $hits)
         #set ($sourcepath = $hit.sourcepath)
         
         $context.putPageValue("hit", $hit)
