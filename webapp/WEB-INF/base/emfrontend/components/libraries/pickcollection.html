@@ -23,13 +23,13 @@
 							#set( $selectedlibrary = $librarycol.get("library") )
 							#set($library = $mediaarchive.getData("library",$selectedlibrary))
 						#end
-						<select  name="selectedlibrary" id="selectedlibrary"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end"  data-addnewlabel="[Add New]"
+						<select  name="selectedlibrary" id="selectedlibrary"  class="listautocomplete selectautosubmit #if($canaddnewlibrary) selectaddnew #end"  data-addnewlabel="[Add New]"
 								data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">
 							#if( $library )
 							  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
 							#end
 							</select>
-											#if($canaddnewcollection)
+											#if($canaddnewlibrary)
 							
 							<a id="selectedlibraryadd" href="$home$apphome/components/libraries/addnewlibrary.html?searchtype=library&targetdiv=collectionpicker" title="[[Add Library]]" class="emdialog" style="display:none" >[[add]] $canaddnewcollection</a>
 				#end
