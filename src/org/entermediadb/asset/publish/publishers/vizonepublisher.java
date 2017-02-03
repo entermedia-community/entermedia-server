@@ -1,6 +1,7 @@
 package org.entermediadb.asset.publish.publishers;
 
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +18,7 @@ import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -322,7 +323,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			HttpPut upload = new HttpPut(addr2);
 			upload.setHeader( "Authorization", "Basic " + inAuthString );
 			upload.setHeader( "Expect", "" );
-			InputStreamEntity entity = new InputStreamEntity(inputpage.getInputStream());
+			
+			FileEntity entity = new FileEntity(new File(inputpage.getContentItem().getAbsolutePath()));
 			upload.setEntity(entity);
 			
 
