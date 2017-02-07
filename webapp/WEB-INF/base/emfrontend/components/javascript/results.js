@@ -132,27 +132,30 @@ jQuery(document).ready(function(url,params)
 		{
 			w = parseInt(w);
 			var h = parseInt(img.data("height"));	
-			var newh = Math.max($(window).height(),Math.floor( avwidth * h / w ));
+			var newh = Math.floor( avwidth * h / w );
 			var neww = Math.max(avwidth, Math.floor( avwidth * w / h ));
-			if( neww > avwidth ) //larger of the two
-			{	
-				img.width(avwidth);
-				img.css("height", "auto");
-				
-				//Only if limited by height
-				var remaining = $(window).height() - newh;
+			img.width(avwidth);
+			img.css("height", "auto");
+			//Only if limited by height
+			var avheight = $(window).height();
+
+			if( newh > avheight )
+			{ 
+				img.height(avheight);
+				img.css("margin-top","0px");
+				//var neww2 = Math.floor( avheight * w / h );
+				//img.width(neww2);
+				img.css("width", "auto");
+			}
+			else
+			{
+				var remaining = avheight - newh;
 				if ( remaining > 0 )
 				{
 					remaining = remaining/2;
 					img.css("margin-top",remaining + "px");
 				}	
 			}
-			else
-			{
-				img.height($(window).height());
-				img.css("margin-top","0px");
-				img.css("width", "auto");
-			}			
 		}
 		else
 		{

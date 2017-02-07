@@ -554,6 +554,7 @@ div.masonry-grid-cell span.emdropshadow img
 {
 	position: absolute;
 	bottom: 0px;
+	line-height:20px;
 	background-color: rgba(20,20,20,.4);
 	width: 100%;
 	border-radius: 0 0 .2em .2em;
