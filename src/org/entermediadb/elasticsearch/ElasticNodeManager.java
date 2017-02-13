@@ -155,6 +155,19 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				// nb.settings().put("discovery.zen.ping.unicast.hosts", elasticSearchHostsList);
 				fieldNode = nb.node();
 				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
+				
+				/*
+				 * 
+				 TODO: support using a Transport client to connect to an existing cluster
+				 Settings settings = ImmutableSettings.settingsBuilder()
+				 
+			    .put("client.transport.sniff", true)
+			    .put("cluster.name", "my-cluster").build();
+			Client client = new TransportClient(settings)
+			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost1", 9300))
+			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost2", 9300));
+				*/
+				
 			}
 		}
 		return fieldClient;

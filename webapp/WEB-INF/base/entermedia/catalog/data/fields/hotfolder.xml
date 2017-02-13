@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Hot Type de dossier]]></language> 
     </name> 
   </property>  
-  <property id="subfolder" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Top Level Folder 
+  <property id="subfolder" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" note="Optional"> 
     <name> 
       <language id="de"><![CDATA[Top-Level-Ordner]]></language>  
       <language id="en"><![CDATA[Top Level Folder]]></language>  
@@ -139,7 +139,9 @@
       <language id="es"><![CDATA[Ordenando]]></language>
       <language id="fr"><![CDATA[Commande]]></language>
     </name>
-  </property>  
+  </property>
+  
+    
   <!-- Move to system settings -->  
   <!--    
   <property id="automatic" editable="true" index="true" stored="true" type="boolean">Automatic</property>

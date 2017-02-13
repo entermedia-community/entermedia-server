@@ -222,6 +222,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		//add sampling-factor if specified
 		if (inStructions.get("sampling-factor") != null)
 		{
+			//-sampling-factor 4:2:0
 			com.add("-sampling-factor");
 			com.add(inStructions.get("sampling-factor"));
 		}

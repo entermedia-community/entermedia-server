@@ -2,9 +2,13 @@
 
   <parameter id="imagethumb1" parameterdata="imagethumb" value="200" >prefwidth</parameter> 
   <parameter id="imagethumb2" parameterdata="imagethumb" value="200" >prefheight</parameter> 
+  <parameter id="imagethumb3" parameterdata="imagethumb" value="76" >quality</parameter> 
+  <parameter id="imagethumb4" parameterdata="imagethumb" value="4:2:0" >sampling-factor</parameter> 
 
   <parameter id="imagemedium1" parameterdata="imagemedium" value="550" >prefwidth</parameter> 
   <parameter id="imagemedium2" parameterdata="imagemedium" value="350" >prefheight</parameter> 
+  <parameter id="imagemedium3" parameterdata="imagemedium" value="76" >quality</parameter> 
+  <parameter id="imagemedium4" parameterdata="imagemedium" value="4:2:0" >sampling-factor</parameter> 
 
   <parameter id="imagepreview1" parameterdata="imagepreview" value="1024" >prefwidth</parameter> 
   <parameter id="imagepreview2" parameterdata="imagepreview" value="768" >prefheight</parameter> 
@@ -13,6 +17,8 @@
 
   <parameter id="imagelarge1" parameterdata="imagelarge" value="640" >prefwidth</parameter> 
   <parameter id="imagelarge2" parameterdata="imagelarge" value="480" >prefheight</parameter> 
+  <parameter id="imagelarge3" parameterdata="imagelarge" value="76" >quality</parameter> 
+  <parameter id="imagelarge4" parameterdata="imagelarge" value="4:2:0" >sampling-factor</parameter> 
 
 
   <data name="x1" value="0" parameterdata="imagecrop" id="1447788355708"/>  
