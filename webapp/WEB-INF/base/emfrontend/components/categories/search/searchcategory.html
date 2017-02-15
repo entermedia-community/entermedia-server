@@ -1,6 +1,10 @@
 #set( $action = $context.getRequestParameter("action") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 #set( $detailid = $context.getRequestParameter("detailid") )
+#if(!$detailid)
+#set( $detailid = "category") 
+#end
+
 #set( $pickone = $context.getRequestParameter("pickone") )
 #set( $categories = $context.getRequestParameter("${detailid}.value") )
 #if(!$categories)

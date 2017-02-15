@@ -1,10 +1,12 @@
-	#set ($existing = $context.getRequestParameter("category.values") )
+	#set ($existing = $context.getRequestParameter("category.value") )
 	#if( $existing && !$existing.trim().isEmpty() )
-	   <input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
+	   <input type="hidden" id="categoryvalues" name="category.value" value="$!existing" />
 	   
 	   <ul id="cat-list">
-		#foreach($categoryid in $existing.replace("  ","").trim().split(" +"))
+	   #set( $split = $existing.replace("  ","").trim().split("\s*\|\s*") )
+		#foreach($categoryid in $split)
 			#set($category  = $mediaarchive.getCategory($categoryid))
+			#if( $category )
 			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
 				<input type="hidden" id="categoryvalues" name="categoryid" value="$categoryid" />
 				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath()</a>
@@ -14,6 +16,7 @@
 						</a>
 				</div>
 			</li>
+			#end
 		#end
 		</ul>
 	#else
