@@ -13,7 +13,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.xmldb.CategorySearcher;
-import org.entermediadb.elasticsearch.categories.ElasticCategorySearcher;
 import org.openedit.data.BaseData;
 
 /**
@@ -297,6 +296,8 @@ public class Category extends BaseData
 		{
 			setParentId(null);
 		}
+		setValue("categorypath", loadCategoryPath());
+		setValue("parents", getParentCategories());
 	}
 
 	/**
@@ -360,38 +361,30 @@ public class Category extends BaseData
 		fieldDescription = inDescription;
 	}
 
-	public Object getValue(String inKey)
-	{
-		Object val = super.getValue(inKey);
-		if (inKey.equals("categorypath"))
-		{
-			return getCategoryPath();
-		}
-		if (inKey.equals("parents"))
-		{
-			List paths = new ArrayList();
-			Category parent = getParentCategory();
-			while (parent != null)
-			{
-				paths.add(0, parent);
-				parent = parent.getParentCategory();
-			}
-			return paths;
-		}
-		if (val != null)
-		{
-			return val;
-		}
-//		if( fieldParentCategory != null)
+//	public Object getValue(String inKey)
+//	{
+//		Object val = super.getValue(inKey);
+//		if (inKey.equals("categorypath"))
 //		{
+//			return getCategoryPath();
+//		}
+//		if (inKey.equals("parents"))
+//		{
+//			List paths = new ArrayList();
 //			Category parent = getParentCategory();
-//			if (parent != null)
+//			while (parent != null)
 //			{
-//				return parent.getValue(inKey);
+//				paths.add(0, parent);
+//				parent = parent.getParentCategory();
 //			}
-//		}	
-		return null;
-	}
+//			return paths;
+//		}
+//		if (val != null)
+//		{
+//			return val;
+//		}
+//		return null;
+//	}
 
 	public String getShortDescription()
 	{
@@ -506,33 +499,39 @@ public class Category extends BaseData
 
 	public String getCategoryPath()
 	{
+		String path = get("categorypath");
+		if( path == null)
+		{
+			path = loadCategoryPath();
+		}
+		return path;
+	}
+	
+	public String loadCategoryPath()
+	{
 		String vale  = null;//get("sourcepath");
-//		if( vale == null)
-//		{
-			StringBuffer path = new StringBuffer();
-			boolean first = true;
-			for (Iterator iterator = getParentCategories().iterator(); iterator.hasNext();)
+		StringBuffer path = new StringBuffer();
+		boolean first = true;
+		for (Iterator iterator = getParentCategories().iterator(); iterator.hasNext();)
+		{
+			if( first ) //This takes off the index category
 			{
-				if( first ) //This takes off the index category
-				{
-					iterator.next();
-					first = false;
-					continue;
-				}
-				Category aparent = (Category) iterator.next();
-				path.append(aparent.getName());
-				if( iterator.hasNext() )
-				{
-					path.append("/");
-				}
+				iterator.next();
+				first = false;
+				continue;
 			}
-			//path.append(getName());
-			vale = path.toString();
-			if( vale.isEmpty())
+			Category aparent = (Category) iterator.next();
+			path.append(aparent.getName());
+			if( iterator.hasNext() )
 			{
-				return getName();
+				path.append("/");
 			}
-//		}
+		}
+		vale = path.toString();
+		if( vale.isEmpty())
+		{
+			return getName();
+		}
 		return vale;
 	}
 	

@@ -30,10 +30,11 @@ public void init(){
 
 		String [] splits = name.split("-");
 		String searchstring = splits[splits.length -1];
-		searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
+		//searchstring = searchstring.replaceFirst("^0+(?!\$)", "")
 
 		String colid = it.id;
 		Data collection = archive.getData("librarycollection", colid);
+		log.info("searching for categories contains(categorypath =" +  searchstring);
 		HitTracker categories =  catsearcher.query().contains("categorypath", searchstring).sort("categorypathUp").search();
 		log.info("Found ${categories.size()} existing categories");
 		
@@ -50,45 +51,45 @@ public void init(){
 
 
 public List findCommonRoots(HitTracker inCategories){
-	TreeMap allcats = new TreeMap();
+	
 	MediaArchive archive = context.getPageValue("mediaarchive");
 
 	Searcher catsearcher = archive.getSearcher("category");
 
-	inCategories.each{
-
-		String catpath = it.categorypath;
-		if(catpath){
-			allcats.put(it.id, it.categorypath);
-		}
-	}
-
-
-	ArrayList finalist = new ArrayList();
-	ArrayList paths = new ArrayList();
-
-
-	boolean removed = true;
-
-	allcats.keySet().each{
-		String id = (String)it;
-		String catpath = allcats.get(id);
-		boolean add = true;
-		for (Iterator iterator = paths.iterator(); iterator.hasNext();){
-			String existing = (String)iterator.next();
-			if(catpath.startsWith(existing)){
-				add = false;
-			} else{
-			add = true;
-			}
-		}
-		if(add){
-			finalist.add(id);
-			paths.add(catpath);
+	ArrayList sorted = new ArrayList(inCategories);
+	Collections.sort(sorted, new Comparator()
+	{
+		public int compare(Object inA, Object inB)
+		{
+			Data dA = (Data)inA;
+			Data dB = (Data)inB;
 			
+			String path = dA.get("categorypath");
+			String path2 = dB.get("categorypath");
+			return path.compareTo(path2);
 		}
+	}	
+	);
+
+	List finallist = new ArrayList();
+
+	String lastroot = "_";
+	sorted.each{
+		Data hit = (Data)it;
+		String catpath = hit.get("categorypath");
+		if( !catpath.startsWith(lastroot))
+		{
+			finallist.add(hit.getId());
+			lastroot = catpath;
+		}
+		else
+		{
+			//log.info("skip " + catpath);
+		}
+
 	}
-	return finalist;
+	log.info("got  " + finallist.size());
+	return finallist;
 }
 
 init();

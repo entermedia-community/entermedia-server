@@ -1686,6 +1686,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+			clearIndex();
 		}
 		catch (InterruptedException e)
 		{
@@ -2135,6 +2136,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		HitTracker all = getAllHits();
 		all.enableBulkOperations();
 		deleteAll(all, inUser);
+		
 	}
 
 	public void delete(Data inData, User inUser)

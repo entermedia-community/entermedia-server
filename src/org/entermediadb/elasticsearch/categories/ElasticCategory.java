@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.openedit.data.ValuesMap;
 
 public class ElasticCategory extends Category
 {
@@ -40,6 +41,9 @@ public class ElasticCategory extends Category
 		return fieldParentCategory;
 	}
 
-	
+	public ValuesMap getMap() 
+	{
+		return super.getMap();
+	}
 	
 }

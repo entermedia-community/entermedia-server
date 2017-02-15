@@ -1,5 +1,6 @@
 package org.entermediadb.elasticsearch.categories;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -151,25 +152,43 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			updateChildren(child,inTosave);
 		}
 	}
+	
+//	@Override
+//	public boolean shoudSkipField(String inKey)
+//	{
+//		boolean skip = super.shoudSkipField(inKey);
+//		if( skip || inKey.equals("parents") || inKey.equals("categorypath"))
+//		{
+//			return true; 
+//		}
+//		return false;
+//	}
+	
 	@Override
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
 		super.updateIndex(inContent,inData,inDetails);
-//		Category category = (Category)inData;
-//		Category parent  = category.getParentCategory();
-//		if( parent != null)
+//
+//		try
 //		{
-//			try
+//			ElasticCategory category = (ElasticCategory)inData;
+//			Collection values = (Collection)category.getMap().getValue("parents");
+//			if( values != null)
 //			{
-//				inContent.field("parentid", parent.getId());
-//				String categorypath = category.getCategoryPath();
-//				inContent.field("categorypath", categorypath );
-//			}
-//			catch (Exception ex)
+//				inContent.field("parents", values);
+//			}	
+//			
+//			String path = (String)category.getMap().getValue("categorypath");
+//			if( path != null)
 //			{
-//				throw new OpenEditException(ex);
-//			}
+//				inContent.field("categorypath", path);
+//			}	
 //		}
+//		catch ( IOException ex)
+//		{
+//			throw new OpenEditException(ex);
+//		}
+		
 	}
 	@Override
 	public Category getRootCategory()
