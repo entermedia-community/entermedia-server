@@ -84,7 +84,8 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 	</div>
 </div>
 #end
-#if($caneditcategorytree)
+
+#if($caneditcategorytree || $editcategories)
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename" style="top:0px; left:0;position: absolute;display:none;z-index:1000;">
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu" style="display:block;position:static;margin-bottom:5px;">
 #if( $editable )
