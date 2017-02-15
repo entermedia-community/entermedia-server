@@ -680,8 +680,9 @@ public class BaseElasticSearcher extends BaseSearcher
 						jsonproperties.startObject("exact");
 						jsonproperties = jsonproperties.field("type", "string");
 						jsonproperties = jsonproperties.field("index", "not_analyzed");
-						jsonproperties = jsonproperties.field("ignore_above", 256);
-
+						if(!detail.getId().contains("path")){
+							jsonproperties = jsonproperties.field("ignore_above", 256);
+						}
 						jsonproperties.endObject();
 						jsonproperties.endObject();
 					}

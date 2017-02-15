@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page> 
-  <property id="vizid" index="true" keyword="true" filter="false" stored="true" editable="false" sortable="true">VizOne ID 
+  <property id="vizid" index="true" keyword="true" filter="false" stored="true" editable="false" sortable="true">VizOne Internal ID 
     <name> 
       <language id="de"><![CDATA[VizOne ID]]></language>  
       <language id="en"><![CDATA[VizOne ID]]></language>  
@@ -9,6 +9,13 @@
       <language id="fr"><![CDATA[VizOne ID]]></language> 
     </name> 
   </property>  
+  
+  
+  <property id="vizidentifier" index="true" keyword="true" filter="false" stored="true" editable="false" sortable="true">VizOne Identifier
+  
+  </property>  
+  
+  
   <property id="vizoneretention" datatype="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Vizone Retention Policy 
     <name>
       <language id="de"><![CDATA[vizone Aufbewahrungsrichtlinie]]></language>
