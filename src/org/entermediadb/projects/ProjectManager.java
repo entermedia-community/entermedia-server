@@ -198,7 +198,7 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
-	protected Collection<LibraryCollection> loadUserCollections(WebPageRequest inReq, Collection<Data> allcollections, MediaArchive inArchive, Data library)
+	protected Collection<LibraryCollection> loadUserCollections(WebPageRequest inReq, HitTracker allcollections, MediaArchive inArchive, Data library)
 	{
 		Searcher lcsearcher = inArchive.getSearcher("librarycollection");
 		List usercollections = new ArrayList(allcollections.size());
@@ -213,8 +213,10 @@ public class ProjectManager implements CatalogEnabled
 				categoryids.add(parent);
 			}
 		}
-		for (Data collection : allcollections)
+		allcollections.setHitsPerPage(500);
+		for (Iterator iterator = allcollections.getPageOfHits().iterator(); iterator.hasNext();)
 		{
+			Data collection = (Data) iterator.next();			
 			LibraryCollection uc = (LibraryCollection) lcsearcher.loadData(collection);
 			
 			if( uc.hasRootCategory())
