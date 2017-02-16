@@ -1102,7 +1102,7 @@ public class DataEditModule extends BaseMediaModule
 		{
 			throw new OpenEditException("Session timed out, reload page");
 		}
-		String action = inReq.getRequestParameter("action");
+		String action = inReq.findValue("action");
 		if ("all".equals(action))
 		{
 			hits.selectAll();

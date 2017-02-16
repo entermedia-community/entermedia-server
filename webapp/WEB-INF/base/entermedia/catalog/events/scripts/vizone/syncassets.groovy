@@ -8,6 +8,7 @@ import org.apache.http.client.config.RequestConfig
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.scanner.MetaDataReader
 import org.entermediadb.asset.search.AssetSearcher
@@ -24,13 +25,12 @@ public class VizOne{
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	public void testLoadAsset(WebPageRequest inReq){
 		//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?id=50"
-		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=2&num=10000"
+		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=1&num=10000"
 		def conn = addr.toURL().openConnection()
 		conn.setRequestProperty( "Authorization", "Basic ${authString}" )
 		conn.setRequestProperty("Accept", "application/atom+xml;type=feed");
 
 		String content = conn.content.text;
-		println content;
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		AssetSearcher assetsearcher = archive.getAssetSearcher();
 		ArrayList assets = new ArrayList();
@@ -45,6 +45,7 @@ public class VizOne{
 					String vizid =it.ardomeIdentity;
 
 					Asset asset = assetsearcher.searchByField("vizid", vizid);
+					
 					if(asset == null){
 						asset = assetsearcher.createNewData();
 
@@ -69,11 +70,24 @@ public class VizOne{
 						reader.populateAsset(archive, finalfile.getContentItem(), asset);
 
 						asset.setValue("importstatus","imported");
+						asset.setValue("fromviz",true);
+						
 						def tasksearcher = archive.getSearcher("conversiontask");
 
-						archive.saveAsset(asset,null);
 						archive.fireMediaEvent( "importing/assetsimported", null, asset); //this will save the asset as imported
 					}
+					Category cat = archive.getCategorySearcher().createCategoryPath("Vizone");
+					asset.addCategory(cat);
+					archive.saveAsset(asset,null);
+					
+					//Always update metadata  and save asset in case VIZ metadata changed?
+					
+					
+					
+					
+					
+					
+					
 
 				} catch(Exception e){
 

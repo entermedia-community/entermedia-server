@@ -14,7 +14,10 @@
   <property id="vizidentifier" index="true" keyword="true" filter="false" stored="true" editable="false" sortable="true">VizOne Identifier
   
   </property>  
+    
+  <property id="fromviz" index="true" keyword="true" filter="false" stored="true" editable="false" type="boolean" sortable="true">VizOne Identifier
   
+  </property>  
   
   <property id="vizoneretention" datatype="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Vizone Retention Policy 
     <name>

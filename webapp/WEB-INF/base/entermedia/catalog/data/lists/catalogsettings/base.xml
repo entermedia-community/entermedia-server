@@ -24,7 +24,7 @@
  -->
 
 
-	<property id="server_log_location" value="/opt/entermediadb/tomcat/logs/catalina.log">Web Server Logs</property>
+	<property id="server_log_location" value="/opt/entermediadb/tomcat/logs/catalina.out">Web Server Logs</property>
 
 
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>

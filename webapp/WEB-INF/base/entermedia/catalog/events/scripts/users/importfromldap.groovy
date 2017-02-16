@@ -29,7 +29,6 @@ public void init()
 		Group admingroup = createGroup(groupsearch,"CBC RC MTL GG EMShare Admin Group");
 		Group usergroup = createGroup(groupsearch,"CBC RC MTL GG EMShare Users Group");
 		Group readonlygroup = createGroup(groupsearch,"CBC RC MTL GG EMShare Visionnement");
-		Group tempgroup = createGroup(groupsearch,"DTV MTL GG GM EMS Viz");
 		Group deletegroup = createGroup(groupsearch,"DTV MTL GG GM EMS FMOD");
 		Group uploaddeletegroup = createGroup(groupsearch,"DTV MTL GG GM EMS UPLOAD");
 
@@ -53,7 +52,6 @@ public void init()
 					//Is this a group we care about?
 					if( current.isInGroup(admingroup)
 						|| current.isInGroup(usergroup)
-						|| current.isInGroup(tempgroup)
 						|| current.isInGroup(readonlygroup)
 						|| current.isInGroup(deletegroup)
 												|| current.isInGroup(uploaddeletegroup) )
@@ -78,19 +76,16 @@ public void init()
 												 }
 												 else if( current.isInGroup(readonlygroup) )
 												 {
-														  profile.setProperty("settingsgroup","1441306726936");
+														  profile.setProperty("settingsgroup","AVmPYLWTPbQVdTC3G5OM");
 												 }
-												 else if( current.isInGroup(tempgroup) )
-												 {
-														  profile.setProperty("settingsgroup","1441306726936");
-												 }
+												 
 												 else if( current.isInGroup(deletegroup) )
 												 {
-														  profile.setProperty("settingsgroup","1459970036228");
+														  profile.setProperty("settingsgroup","AVmPVfBNPbQVdTC3G5N4");
 												 }
 												 else if( current.isInGroup(uploaddeletegroup) )
 												 {
-														  profile.setProperty("settingsgroup","1473251433563");
+														  profile.setProperty("settingsgroup","AVmPXL9pPbQVdTC3G5N8");
 												 }
 												 log.info("saved profile ${profile.getId()} as ${profile.settingsgroup}");
 												profilesearcher.saveData(profile,null);
@@ -106,7 +101,6 @@ public void init()
 				 current.removeGroup(admingroup);
 				 current.removeGroup(usergroup);
 				 current.removeGroup(readonlygroup);
-				 current.removeGroup(tempgroup);
 				 current.removeGroup(deletegroup);
 								 current.removeGroup(uploaddeletegroup);
 			 }
@@ -124,10 +118,7 @@ public void init()
 				 {
 					 current.addGroup(readonlygroup);
 				 }
-				 else if( line.contains(tempgroup.getName()))
-				 {
-					 current.addGroup(tempgroup);
-				 }
+				
 				 else if( line.contains(deletegroup.getName()))
 				 {
 					 current.addGroup(deletegroup);

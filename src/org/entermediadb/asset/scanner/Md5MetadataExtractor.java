@@ -29,6 +29,8 @@ public class Md5MetadataExtractor extends MetadataExtractor
 			String catalogSettingValue = inArchive.getCatalogSettingValue("extractmd5");
 			if( Boolean.parseBoolean(catalogSettingValue) )
 			{
+				//Can we do the first 20% of the file?
+				
 				String md5 = DigestUtils.md5Hex( in );
 				inAsset.setValue("md5hex", md5);
 				Searcher assetsearcher = inArchive.getAssetSearcher();
