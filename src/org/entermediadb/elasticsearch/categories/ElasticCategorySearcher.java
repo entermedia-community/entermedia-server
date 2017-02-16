@@ -336,6 +336,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void delete(Data inData, User inUser) {
 		// TODO Auto-generated method stub
 		super.delete(inData, inUser);
+		getCacheManager().remove("category", inData.getId() );
 		setIndexId(-1);
 	}
 
@@ -365,11 +366,11 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		//TODO: Find right way to do this not matches
 		inPath = inPath.replace('\\', '/'); //Unix paths
 		Data hit = (Data)query().exact("categorypath", inPath).sort("categorypathUp").searchOne();
-		if( hit == null)
-		{
-			String id = createCategoryId(inPath);
-			hit = (Data)searchById(id);  //May result in false positive
-		}
+//		if( hit == null)
+//		{
+//			//String id = createCategoryId(inPath);
+//			//hit = (Data)searchById(id);  //May result in false positive
+//		}
 		Category found = (Category)loadData(hit);
 		if( found == null)
 		{

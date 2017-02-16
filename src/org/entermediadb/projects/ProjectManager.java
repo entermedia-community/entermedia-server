@@ -561,7 +561,11 @@ public class ProjectManager implements CatalogEnabled
 			ids.add(hit.getId());
 		}
 		searcher.deleteCategoryTree(root);
-		root = getRootCategory(inArchive, inCollectionid);
+		//remove all the assets?
+		root = createRootCategory(inArchive, collection);
+		collection.setValue("rootcategory",root.getId());
+		inArchive.getSearcher("librarycollection").saveData(collection);
+		
 		importAssets(inArchive, collection, inImportPath, root, ids);
 
 		for (Iterator iterator = ids.iterator(); iterator.hasNext();)
@@ -643,9 +647,9 @@ public class ProjectManager implements CatalogEnabled
 				PropertyDetail namedetail = inArchive.getAssetSearcher().getDetail("name");
 				Data target = null;
 				if(namedetail.isMultiLanguage()){
-				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name_int.en.exact", item.getName()).searchOne();
+				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name_int.en", item.getName()).searchOne();
 				} else{
-				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name.exact", item.getName()).searchOne();
+				 target = (Data) inArchive.getAssetSearcher().query().exact("md5hex", md5).exact("name", item.getName()).searchOne();
 				}
 				Asset asset = (Asset) inArchive.getAssetSearcher().loadData(target);
 				
@@ -653,15 +657,21 @@ public class ProjectManager implements CatalogEnabled
 				{
 
 					String savesourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask(inArchive, null, item.getName(), sourcepathmask, vals);
-					ContentItem destination = inArchive.getPageManager().getRepository().getStub("/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath);
-					ContentItem finalitem = inArchive.getPageManager().getPage(destination.getPath() + "/" + item.getName()).getContentItem();
+					
+					String destpath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/" + savesourcepath;
+					if( !destpath.endsWith("/"))
+					{
+						destpath = "/";
+					}
+					destpath = destpath +  item.getName();
+					ContentItem finalitem = inArchive.getPageManager().getRepository().getStub(destpath);
+					inArchive.getPageManager().getRepository().move(item, finalitem);
+					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem, true, inArchive, null);
+					//asset.setCategories(null);
+					asset.addCategory(inCurrentParent);
+					asset.setValue("md5hex", md5);
+					inArchive.saveAsset(asset, null); //TODO: is this needed?
 
-					inArchive.getPageManager().getRepository().move(item, destination);
-					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem, true, inArchive, null); //this also extracts the md5
-					asset.setCategories(null);
-					inArchive.saveAsset(asset, null);
-
-					//asset.setValue("md5hex", md5);
 					PresetCreator presets = inArchive.getPresetManager();
 					Searcher tasksearcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "conversiontask");
 					presets.createMissingOnImport(inArchive, tasksearcher, asset);
@@ -669,10 +679,9 @@ public class ProjectManager implements CatalogEnabled
 				else
 				{
 					inArchive.getPageManager().getRepository().remove(item);
-
+					asset.addCategory(inCurrentParent);
+					inArchive.saveAsset(asset, null);
 				}
-				asset.addCategory(inCurrentParent);
-				inArchive.saveAsset(asset, null);
 				assets.remove(asset.getId());
 			}
 		}

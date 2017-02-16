@@ -583,7 +583,7 @@ public class Category extends BaseData
 		 {
 			 Category c = (Category)obj;
 			 String id = c.getId();
-			 if( id != null || id.equals(getId()))
+			 if( id != null && id.equals(getId()))
 			 {
 				 return true;
 			 }

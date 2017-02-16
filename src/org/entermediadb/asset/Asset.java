@@ -181,7 +181,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		}
 		if (!isInCategory(inCatid))
 		{
-			getCategories().add(inCatid);
+			addValue("category-exact",inCatid);
 		}
 	}
 
