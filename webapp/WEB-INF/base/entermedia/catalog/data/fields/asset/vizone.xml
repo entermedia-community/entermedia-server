@@ -15,7 +15,7 @@
   
   </property>  
     
-  <property id="fromviz" index="true" keyword="true" filter="false" stored="true" editable="false" type="boolean" sortable="true">VizOne Identifier
+  <property id="fromviz" index="true" keyword="true" filter="false" stored="true" editable="false" type="boolean" sortable="true">From VizOne
   
   </property>  
   
