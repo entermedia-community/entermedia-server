@@ -363,7 +363,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			return getRootCategory();
 		}
 		//TODO: Find right way to do this not matches
-		Data hit = (Data)query().startsWith("categorypath", inPath).sort("categorypathUp").searchOne();
+		inPath = inPath.replace('\\', '/'); //Unix paths
+		Data hit = (Data)query().exact("categorypath", inPath).sort("categorypathUp").searchOne();
 		if( hit == null)
 		{
 			String id = createCategoryId(inPath);

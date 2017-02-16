@@ -995,6 +995,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		else if ("startswith".equals(inTerm.getOperation()))
 		{
+			//TODO: Should startswith be exact or analysed phrases? 
+			//find = QueryBuilders.prefixQuery(fieldid, valueof);
+			//Left this in for now...
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
