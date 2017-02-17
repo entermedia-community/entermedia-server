@@ -768,7 +768,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	public boolean reindexInternal(String inCatalogId)
 	{
-		createSnapShot(inCatalogId);
+		try
+		{
+			createSnapShot(inCatalogId);
+		}
+		catch( Throwable ex)
+		{
+			log.error("Could not get snapshot" , ex);
+		}
 		if( reindexing )
 		{
 			throw new OpenEditException("Already reindexing");
