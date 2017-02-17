@@ -560,9 +560,14 @@ public class ProjectManager implements CatalogEnabled
 			Data hit = (Data) iterator.next();
 			ids.add(hit.getId());
 		}
+		String oldcatid = root.getId();
 		searcher.deleteCategoryTree(root);
 		//remove all the assets?
 		root = createRootCategory(inArchive, collection);
+		if( root.getId().equals(oldcatid))
+		{
+			throw new OpenEditException("Did not delete old category");
+		}
 		collection.setValue("rootcategory",root.getId());
 		inArchive.getSearcher("librarycollection").saveData(collection);
 		

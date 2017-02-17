@@ -1699,6 +1699,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		if (errors.size() > 0)
 		{
 			log.error("Bulk delete errors" + errors);
+			//TODO: Throw exception?
 		}
 	}
 
@@ -2145,13 +2146,13 @@ public class BaseElasticSearcher extends BaseSearcher
 	public void delete(Data inData, User inUser)
 	{
 		String id = inData.getId();
-		log.info(id.length());
+		//log.info(id.length());
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), id);
 		if (inData.get("_parent") != null)
 		{
 			delete.setParent(inData.get("_parent"));
 		}
-		delete.setRefresh(false).execute().actionGet();
+		delete.setRefresh(true).execute().actionGet();
 
 	}
 
