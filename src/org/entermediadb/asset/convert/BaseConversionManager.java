@@ -67,7 +67,10 @@ public abstract class BaseConversionManager implements ConversionManager
 	
 	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath, String exportName)
 	{
-		ContentItem existing = getMediaArchive().getContent( "/WEB-INF/data/entermedia/catalogs/testcatalog/generated/" + inSourcePath + "/" + exportName);
+//		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
+//		ContentItem output = instructions.getOutputFile();
+		
+		ContentItem existing = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + inSourcePath + "/" + exportName);
 		ConvertResult result = new ConvertResult();
 		result.setOutput(existing);
 		result.setOk(true);
