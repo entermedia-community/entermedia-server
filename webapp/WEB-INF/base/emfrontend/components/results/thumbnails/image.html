@@ -13,8 +13,6 @@
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
 
-#set ($mediumend = "/${applicationid}/views/modules/asset/downloads/preview/medium/$sourcepath/thumb.jpg")
-#set( $msize = "$home$mediumend")
 #set ($thumbsize = $context.getPageValue("thumbsize"))
 #if(!$thumbsize)
 	#set($thumbsize = "thumb")
@@ -30,8 +28,6 @@
 	#set($thumbsize = "thumb")
 #end
 
-###set ($sourcepath = $hit.sourcepath)
-
 <span id="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
@@ -42,12 +38,12 @@
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-		<img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
+		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
 	#else	
 	<span class="emdropshadow">
 		<img class=" assetdragdrop" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="[[Drag to Library or Category]]"
 		draggable="true"  data-sourcepath="$sourcepath" data-name="$asset.name" 
-		src="$home/${applicationid}/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
+		src="$!cdn$home$apphome/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
 	</span>	
 	#end
 </span>

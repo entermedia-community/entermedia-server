@@ -15,8 +15,23 @@ curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	
 curl -XGET 'http://localhost:9200/media_catalogs_public/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
 curl -XGET  'http://localhost:9200/assets_catalog/asset/_mapping?pretty=true'  | python -mjson.tool
-
 curl -XGET  'http://localhost:9200/assets_catalog/category/_mapping?pretty=true'  | python -mjson.tool
+
+curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
+  "from" : 0,
+  "size" : 50,
+  "query" : {
+    "bool" : {
+      "must" : {
+        "term" : {
+          "categorypath.exact" : "Genesis 1/0333B_Title p1 update04_2004"
+        }
+      }
+    }
+  },
+  "explain" : true
+}'| python -mjson.tool
+
 
 curl -XGET http://localhost:9200/assets_catalog/category/_search -d '{
   "from" : 0,

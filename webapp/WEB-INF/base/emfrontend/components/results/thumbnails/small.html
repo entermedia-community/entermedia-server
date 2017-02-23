@@ -8,7 +8,7 @@ $context.putPageValue("thumbsize",$thumbsize)
     #if( $hit.previewstatus && $hit.previewstatus == "mime")
         #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
         #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-        <img class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
+        <img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
     #elseif( $hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated")
         $pages.include("$apphome/components/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
     #else   
@@ -25,7 +25,7 @@ $context.putPageValue("thumbsize",$thumbsize)
             	#set ( $urlenc = $urlenc.replace("%2F", "/") )
             #end
             <div class="emdropshadow">
-            <img class="smallthumb assetdragdrop" title="[[Drag to collection]]"  draggable="true" data-sourcepath="$urlenc" data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${urlenc}/thumb.jpg" alt="$!asset.name" border="0" />
+            <img class="smallthumb assetdragdrop" title="[[Drag to collection]]"  draggable="true" data-sourcepath="$urlenc" data-name="$asset.name" src="$!cdn$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${urlenc}/thumb.jpg" alt="$!asset.name" border="0" />
             </div>
         #end
     #end

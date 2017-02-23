@@ -674,3 +674,20 @@ span.glyphicon-triangle-left.overlay-nav {
     height: 68px;
 
 }
+
+.masonry-grid .stacked-field-info {
+    text-align: left; 
+    color:#efefef; 
+    line-height:1.8;
+    overflow: hidden; 
+    text-overflow: ellipsis; 
+    white-space: nowrap;
+}
+#embody .masonry-grid .stacked-field-info a {
+    font-weight: normal;
+    color: #fff;
+    font-size: 12px;
+    text-shadow:0 0 2px #121212;
+}
+
+

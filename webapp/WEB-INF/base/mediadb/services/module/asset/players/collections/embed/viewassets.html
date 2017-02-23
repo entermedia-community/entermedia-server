@@ -1,0 +1,67 @@
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
+
+#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))
+#if( $cdn )
+$context.putPageValue("cdn", "$cdn")
+#else
+Error: CDN prefix is not set in catalog settings
+#end
+$context.putPageValue("assetrootfolder", "/$catalogid/assets")
+#if( !$thumbsize )
+    #set( $thumbsize  = "thumb" )
+#end
+
+#if( !$thumbsize )
+    #set( $thumbsize  = "thumb" )
+#end
+#if ( $hits && $hits.size() > 0 )
+<div class="row masonry-grid" data-maxheight="175" 
+	data-viewertemplate="$cdn$home$apphome/services/module/asset/players/fullscreen/indexnolink.html"
+	data-assettemplate="$cdn$home$apphome/services/module/asset/players/fullscreen/currentasset.html" >
+	
+ 	#set( $rootid = $hits.sessionId )
+    #set($count = 0)
+    #set( $viewerlink = $content.get("assetviewerlink") )
+    #foreach ($hit in $hits)
+        #set ($sourcepath = $hit.sourcepath)
+        
+        $context.putPageValue("hit", $hit)
+        #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+        $context.putPageValue("type", $type)
+        $context.putPageValue("assetid", $hit.id)
+        $context.putPageValue("count", $count )
+        $context.putPageValue("sourcepath", $hit.sourcepath )
+         $context.putPageValue("thumbsize", "medium" )
+        #if ($!hit.width) #set($assetwidth = $hit.width) #else #set($assetwidth = 0) #end
+        #if($!hit.height) #set ($assetheight = $hit.height) #else #set($assetheight = 0) #end
+        #set($click = "$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+        
+		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >
+		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
+		    	    <div class="grid-thumbimage"> 
+		    	    	#if( $type =="audio")
+		    	    		#set( $type = "mime" )
+		    	    	#end
+		        	   $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+		        	</div>
+		    	</a>
+		      <div class="caption">
+			      <div class="grid-gallery-checkbox">
+			          ##<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
+			      </div>
+		         <div class="stacked-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" >#if( $hit.assettitle ) $hit.assettitle #else $hit.getName() #end</div>
+		     </div>
+		</div>
+        #set ( $count = $count + 1)
+    #end
+</div>	
+#end
+#if ( $hits.totalPages == 0 )
+	<p class="info" style="margin: 20px;">
+	[[No results found.]]
+	</p>
+#end
+</div>

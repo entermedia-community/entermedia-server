@@ -17,5 +17,5 @@
 <span id="emthumbholder">
 		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-		<img class="mimethumb" style="height:64px; position:absolute; margin:auto;" src="$home$thumbpath" border="0"/>
+		<img class="mimethumb" style="height:64px; position:absolute; margin:auto;" src="$!cdn$home$thumbpath" border="0"/>
 </span>

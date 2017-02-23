@@ -5554,7 +5554,7 @@ ul.filters-sidebar li a:hover
     opacity: 1;
 }
 
-/* GALLERY STYLES */
+/* GALLERY STYLES TODO: remove these and put them in results.css if needed */
 
 .emgallery {
     text-align: left;
@@ -5595,6 +5595,8 @@ ul.filters-sidebar li a:hover
     box-shadow: none;
     border: none;
 }
+
+
 #embody .emgallery a.updatebasket {
    font-size: 26px !important;
     font-weight: bold;
@@ -5651,20 +5653,6 @@ ul.filters-sidebar li a:hover
     border-top: none;
     border-radius: 0 0 3px 0; 
     padding: 4px 5px 2px 4px;
-}
-.stacked-field-info {
-    text-align: left; 
-    color:#efefef; 
-    line-height:1.8;
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    white-space: nowrap;
-}
-#embody .stacked-field-info a {
-    font-weight: normal;
-    color: #fff;
-    font-size: 12px;
-    text-shadow:0 0 2px #121212;
 }
 
 /* AUTOCOMPLETE */
