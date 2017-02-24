@@ -2,6 +2,12 @@
 #set( $next = $hits.next($index))
 #set( $previous = $hits.previous($index))
 
+#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))
+#if( $cdn )
+$context.putPageValue("cdn", $cdn)
+#end
+
+
 <div id="main-media-viewer" data-assetid="$asset.id" data-indexOf="$index"  data-next="$!next.id"  data-previous="$!previous.id" >
 	#set( $mediadbappid = $mediaarchive.getMediaDbId() )
 	#if( !$mediadbappid)

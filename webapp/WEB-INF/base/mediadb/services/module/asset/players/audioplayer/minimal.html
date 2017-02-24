@@ -12,15 +12,15 @@
 #end
 
 
-#set ($path = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")
+#set ($path = "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")
 
 #set( $id = $asset.id )
 #set( $name = $asset.name )
 
 <div id="playerwindow${id}" style="width: 120px;">
 
-<script type="text/javascript" src="$!prefix$home/${mediadbappid}/services/module/asset/players/jplayer/jquery.jplayer.js">  </script>
-<link  rel="stylesheet" type="text/css" href="$!prefix$home/${mediadbappid}/services/module/asset/players/jplayer/jplayer.blue.monday.css"/>
+<script type="text/javascript" src="$!cdn$home/${mediadbappid}/services/module/asset/players/jplayer/jquery.jplayer.js">  </script>
+<link  rel="stylesheet" type="text/css" href="$!cdn$home/${mediadbappid}/services/module/asset/players/jplayer/jplayer.blue.monday.css"/>
 
 <script type="text/javascript">
 //<![CDATA[

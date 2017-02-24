@@ -5,7 +5,7 @@ $context.putPageValue("showtoolbar",  $showtoolbar)
 
 #set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))
 #if( $cdn )
-$context.putPageValue("cdn", "$cdn")
+$context.putPageValue("cdn", $cdn)
 #else
 Error: CDN prefix is not set in catalog settings
 #end
