@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties dependson="librarycollectionasset"> 
+<properties> 
   <property id="id" index="true" keyword="true" stored="true" filter="false" editable="false" sortable="true">Id 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
