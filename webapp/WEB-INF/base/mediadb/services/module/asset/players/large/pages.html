@@ -1,0 +1,77 @@
+    #set($pagenum = $context.findValue('pagenum'))
+    #set($totalpages = $numberutils.toInt($asset.pages))
+    #set ( $hitssessionid = $context.findValue("hitssessionid"))
+    #if( !$currentpreview )
+      #if ( !$pagenum )
+        #set($currentpreview = 0)
+        #set ($pagenum = 1)
+      #else   
+        #set($pagenumnum = $numberutils.toInt($pagenum) )
+        #set( $currentpreview = $pagenumnum - 1 )
+      #end
+    #else
+        #set( $currentpreview = $numberutils.toInt($currentpreview) )
+        #set( $pagenum = $currentpreview + 1  )
+    #end
+   #set($pagenumparsed = $numberutils.toInt($pagenum) )
+   #if ( $pagenumparsed && ($totalpages < $pagenumparsed) )
+       #set( $pagenum = $totalpages )
+       #set( $currentpreview = $totalpages - 1 )
+    #end
+
+    <div id="pdf-thumbnail-sidebar">
+  
+            #set($thepages = $totalpages / 5)
+
+            #if( $currentpreview >= 5)
+                #set( $page = $currentpreview / 5)
+            #else
+                #set( $page = 0)
+            #end
+
+            <ul>
+                <li id="prevfive">
+                #if ($page > 0 )
+                    
+                         #set ($pageholder = $page + 1)
+                         #set( $prevthumb = $pageholder - 1)
+                         #set( $prevthumb = $prevthumb * 5 - 4)
+                        <a href="index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid"> << [[Previous Five]] </a>
+                #end
+                </li>
+                    
+                #set( $start = $page*5) 
+                #set($end = $start + 4)
+               
+                #if( $end > $totalpages - 1 )
+                  #set( $end = $totalpages - 1 )
+                #end
+                #set ( $urlenc = $url_util.encode($asset.sourcepath))
+                
+                #foreach( $page in [$start..$end])
+                	<li class="#if ( $page == $currentpreview ) current #end">
+                        #set( $page = $page + 1)
+                        <a href="#" onclick='$("#mainimage").attr("src", "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page")'>
+                            <div class="emdropshadow">
+       							<img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${urlenc}/preview.jpg?pagenum=$page" />
+       						</div>	
+                            <p><span>$page</span></p>
+                        </a>
+                    </li>
+                #end
+                #set ($pageholder = $page + 1)
+                <li id="nextfive">
+                #if ( $pageholder * 5 < $totalpages)
+                    #set( $nextthumb = $pageholder + 1)
+                    #set( $nextthumb = $nextthumb * 5 - 4)
+                    
+                        <a href="index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
+                #end
+                </li>
+            </ul>
+            #if(!$currentpreview)
+            	#set( $currentpreview = 1)
+            #end
+            $context.putPageValue("currentpreview",$currentpreview)
+            $context.putPageValue("totalpages",$totalpages)
+   </div>

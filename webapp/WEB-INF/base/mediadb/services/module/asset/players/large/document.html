@@ -10,12 +10,19 @@
 #end
 
 <div id="mainholder">
+#set($totalpages = $numberutils.toInt($asset.pages))
+#if( $totalpages > 1 )
+    $pages.include("$apphome/services/module/asset/players/large/pages.html",$context)
+#end
+
+<div id="mainimageholder">
 <img id="mainimage" 
 	src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.png?pagenum=$!pagenum"
 	alt="$!asset.name"/>
 
 <div id="footerholder">
 [[click to pan, scroll to zoom]]
+</div>
 </div>
 
 

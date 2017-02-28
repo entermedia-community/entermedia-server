@@ -1,0 +1,42 @@
+List know versions locally
+
+Create new snapshot(version)
+
+List URL with last selected shown
+
+#set( $installedpluginid = $context.getRequestParameter("id") )
+#set ($installedplugin = $searcherManager.getData("system","installedplugim",$installedpluginid))
+
+<div class="panel panel-default">
+  <div class="panel-heading section-title">
+           <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 	0px 15px 0 15px;">
+                 <span>Plugin: $installedplugin</span> 
+   </div>              
+  <div class="panel-body">
+<div id="oeadmin">
+	
+<h2 style="margin-top: 0; padding-top: 0;">[[Available Versions]]</h2>
+#set( $sortedlist = $searcherManager.getList("system","installedplugins") )
+
+<form name="upgradepicker" class="emrowpicker" action="$home$apphome/views/plugins/viewdetails.html" target="_top" method="post">
+<input type="hidden" class="emselectedrow" name="id" />
+<table  width="100%" class="striped">
+<tr>
+	<th>[[Name]]</th>
+	<th>[[Version]]</th>
+</tr>
+#foreach( $plugin in $sortedlist ) 
+<tr>
+<td valign="top" style="white-space: nowrap;">
+#esc($plugin.getName($context.locale))
+</td>
+<td valign="top" style="white-space: nowrap;">
+#esc($plugin.get("version"))
+</td>
+#end
+</table>
+</form>
+
+<a href="addnew.html">Add New</a>
+
+</div>

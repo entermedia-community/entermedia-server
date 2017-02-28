@@ -1,4 +1,5 @@
 #macro(uuencode $invalue)$!url_util.encode($invalue)#end
+#macro(urlencode $invalue)$!url_util.encode($invalue)#end
 #macro(esc $invalue)$!url_util.xmlEscape($invalue)#end
 #macro(escwrap $invalue $inwrap)$!url_util.xmlEscapeWithWrap($invalue, $inwrap)#end
 #macro(text $t)$!context.getText($t)#end
