@@ -22,6 +22,8 @@
 	<property name="catalogid">media/catalogs/public</property>
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
+	<path-action name="MediaArchiveModule.loadApplicationId" />
+	
 	<permission name="view">
 		<user />
 	</permission>	

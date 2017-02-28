@@ -609,6 +609,8 @@ onloadselectors = function()
 			}
 		);
 	
+	if( jQuery.fn.draggable )
+	{
 		jQuery(".categorydraggable").livequery( 
 			function()
 			{	
@@ -646,8 +648,7 @@ onloadselectors = function()
 				*/
 			}
 		);
-	
-	
+	}
 	jQuery(".headerdroppable").livequery(
 			function()
 			{
@@ -684,7 +685,10 @@ onloadselectors = function()
 				);
 			}
 		);
-	jQuery(".assetdropcategory .categorydroparea").livequery(
+
+	if( jQuery.fn.droppable )
+	{
+    	jQuery(".assetdropcategory .categorydroparea").livequery(
 			function()
 			{
 				jQuery(this).droppable(
@@ -731,7 +735,8 @@ onloadselectors = function()
 				);
 			}
 		);
-
+		} //droppable
+		
 		jQuery(".autosubmitdetails").livequery(
 			function()
 			{
@@ -797,6 +802,7 @@ showajaxstatus = function(uid)
 		}
 		var timeout = cell.data("period");
 		//console.log(uid + " update running with next period " + timeout);
+		console.log("Some path" + path);
 		jQuery.get(path, {}, function(data) {
 			cell.replaceWith(data);
 			cell = jQuery("#" + uid);
@@ -937,7 +943,9 @@ emcomponents = function() {
 		}
 	);
 
-	jQuery(".librarydroparea").livequery(
+	if( jQuery.fn.draggable )
+	{
+	   jQuery(".librarydroparea").livequery(
 			function()
 			{
 				jQuery(this).droppable(
@@ -980,7 +988,8 @@ emcomponents = function() {
 				);
 			}
 		);
-
+	} //droppable
+	
 	jQuery("img.assetdragdrop").livequery( function()
 	{
 		var img = $(this);
