@@ -49,4 +49,9 @@
 	<property id="show_hotfolder_status" value="false">Track Hotfolder ingesting in database</property>
 
 
+<property id="publiccollections" value="false">Default Collections To Public (true/false)</property>
+<property id="publiclibraries" value="false">Default Libraries To Public (true/false)</property>
+
+
+
 </properties>

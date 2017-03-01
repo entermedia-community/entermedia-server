@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearchQueryFilter;
 import org.openedit.data.Searcher;
@@ -33,7 +34,15 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 			//dont filter since its the admin
 			return inQuery;
 		}
-
+		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
+		if(archive != null){
+			boolean publiclibs = Boolean.parseBoolean(archive.getCatalogSettingValue("publiclibraries"));
+			if(publiclibs){
+				return inQuery;
+			}
+		}
+		
+		
 		//Run a search on another table, find a list of id's, add them to the query
 		UserProfile profile = inPageRequest.getUserProfile();
 		if (profile != null)
