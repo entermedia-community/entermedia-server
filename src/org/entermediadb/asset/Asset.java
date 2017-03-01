@@ -19,6 +19,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
@@ -241,6 +242,21 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		return false;
 	}
 
+	public Collection getCollections()
+	{
+		Collection collections = new ArrayList();
+		for(Category cat: getCategories() )
+		{
+			LibraryCollection collection = getMediaArchive().getProjectManager().findCollectionForCategory(cat);
+			if(collection != null)
+			{
+				// <a class="librarylabel" href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="collection">$collection</a>
+				collections.add(collection);
+			}
+		}	
+		return collections;
+	}
+	
 	public Collection getLibraries()
 	{
 		Collection cats = getCategories();

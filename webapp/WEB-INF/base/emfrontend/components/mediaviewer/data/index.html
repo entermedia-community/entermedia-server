@@ -48,12 +48,8 @@ $context.putPageValue("showalllanguagevalues",true)
     				</div>
 					<h3>[[Collections]]</h3>
 						<div class="asset-data-detail">
-							#foreach ($category in $asset.getCategories())
-							#set( $collection = false)
-							#set( $collection = $mediaarchive.getProjectManager().findCollectionForCategory($category) )
-							#if($collection)
+							#foreach ($collection in $asset.getCollections())
 								 <a class="librarylabel" href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="collection">$collection</a>
-							#end
 							#end
 						</div>
 				#end						

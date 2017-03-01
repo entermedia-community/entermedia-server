@@ -1,15 +1,12 @@
 package org.entermediadb.asset.publish.publishers;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
@@ -23,9 +20,11 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
+import org.openedit.util.HttpRequestBuilder;
 
 public class wordpresspublisher extends BasePublisher implements Publisher
 {
@@ -44,7 +43,6 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 
 			result = new PublishResult();
 
-			String username = destination.get("username");
 			String url = destination.get("url");
 			
 			log.info("Publishing ${asset} to EnterMedia server ${url}, with hash encoded password from ${username}.");
@@ -54,12 +52,15 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			HttpPost method = new HttpPost(url);
 			
 			/* example for adding an image part */
-			MultipartEntityBuilder parts = MultipartEntityBuilder.create();
-			parts.addPart("accesskey", new StringBody(password)) ;
-			parts.addPart("sourcepath", new StringBody(asset.getSourcePath())) ;
-			parts.addPart("assetid", new StringBody(asset.getId())) ;
+			HttpRequestBuilder builder = new HttpRequestBuilder();
+
+			//TODO: Use HttpRequestBuilder.addPart()
+			
+			builder.addPart("accesskey", password) ;
+			builder.addPart("sourcepath", asset.getSourcePath());
+			builder.addPart("assetid", asset.getId());
 			String exportname = inPublishRequest.get("exportname");
-			parts.addPart("exportname", new StringBody(exportname));
+			builder.addPart("exportname", exportname);
 
 			if( asset.getKeywords().size() > 0 )
 			{
@@ -75,19 +76,25 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 				}
 				if( buffer.length() > 0)
 				{
-					parts.addPart("keywords", new StringBody( buffer.toString()));
+					builder.addPart("keywords",  buffer.toString());
 				}
 			}
-			Collection libraries =  asset.getLibraries();
-			if(  libraries != null && libraries.size() > 0 )
+			Collection collections =  asset.getCollections();
+			if(  collections != null && collections.size() > 0 )
 			{
 				StringBuffer buffer = new StringBuffer();
-				for (Iterator iterator = libraries.iterator(); iterator.hasNext();)
+				for (Iterator iterator = collections.iterator(); iterator.hasNext();)
 				{
-					Data library = (Data) iterator.next();
-					if( library != null)
+					LibraryCollection librarycollection = (LibraryCollection) iterator.next();
+					if( librarycollection != null)
 					{
-						buffer.append(library.getName());
+						Data library = (Data)librarycollection.getLibrary();
+						if( library != null)
+						{
+							buffer.append(library.getName());
+							buffer.append("\\");
+						}
+						buffer.append(librarycollection.getName());
 						if( iterator.hasNext() )
 						{
 							buffer.append(',');
@@ -96,7 +103,7 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 				}
 				if( buffer.length() > 0)
 				{
-					parts.addPart("libraries", new StringBody( buffer.toString()));
+					builder.addPart("collections",  buffer.toString());
 				}
 			}
 			Page inputpage = findInputPage(mediaArchive,asset,preset);
@@ -105,10 +112,9 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			{
 				throw new OpenEditException("Input file missing " + file.getPath() );
 			}
-			FileBody fileBody = new FileBody(file);//, "application/octect-stream") ;
-			parts.addPart("file", fileBody);
+			builder.addPart("file", file);
 			
-			method.setEntity(parts.build());
+			method.setEntity(builder.build());
 			
 			CloseableHttpClient httpclient = HttpClients.createDefault();  //TODO: Cache this
 			CloseableHttpResponse response2 = httpclient.execute(method);
