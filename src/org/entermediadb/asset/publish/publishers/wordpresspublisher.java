@@ -61,6 +61,7 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			builder.addPart("assetid", asset.getId());
 			String exportname = inPublishRequest.get("exportname");
 			builder.addPart("exportname", exportname);
+			builder.addPart("assettitle", asset.toString());
 
 			if( asset.getKeywords().size() > 0 )
 			{
