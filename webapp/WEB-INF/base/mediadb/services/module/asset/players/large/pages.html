@@ -36,7 +36,7 @@
                          #set ($pageholder = $page + 1)
                          #set( $prevthumb = $pageholder - 1)
                          #set( $prevthumb = $prevthumb * 5 - 4)
-                        <a href="index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid"> << [[Previous Five]] </a>
+                        <a class="ajax" targetdiv="pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid"> [[Previous Five]] >> </a>                         
                 #end
                 </li>
                     
@@ -65,7 +65,7 @@
                     #set( $nextthumb = $pageholder + 1)
                     #set( $nextthumb = $nextthumb * 5 - 4)
                     
-                        <a href="index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
+                        <a class="ajax" targetdiv="pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
                 #end
                 </li>
             </ul>

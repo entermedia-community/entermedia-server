@@ -1,13 +1,7 @@
 #set( $pagenum = $context.getRequestParameter("pagenum") )
 #set( $name = $context.getRequestParameter("name") )
 
-#set ( $urlutils = $context.getPageValue("url_util"))
-#if (!$urlutils)
-	#set ($urlenc = $asset.sourcepath)
-#else
-	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
-	#set ( $urlenc = $urlenc.replace("%2F", "/") )
-#end
+#set ( $urlenc = $url_util.encode($asset.sourcepath))
 
 <div id="mainholder">
 #set($totalpages = $numberutils.toInt($asset.pages))

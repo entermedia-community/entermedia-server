@@ -125,7 +125,7 @@ jQuery(document).ready(function(url,params)
 	overlayResize = function()
 	{
 		var img = $("#hiddenoverlay #main-media");
-		var avwidth = $(window).width() - 200;
+		var avwidth = $(window).width() - 200 - 2;
 		$("#hiddenoverlay .playerarea").width(avwidth);
 		var w = img.data("width");
 		if(!isNaN(w) && w != "")
