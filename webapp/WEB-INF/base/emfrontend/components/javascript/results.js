@@ -315,6 +315,7 @@ jQuery(document).ready(function(url,params)
 		var assetid = link.data("assetid");
 		var pagenum = link.data("pagenum"); 
 		showOverlay(assetid,pagenum);
+		return false;
 	});
 	
 	

@@ -51,7 +51,7 @@
                 #foreach( $page in [$start..$end])
                 	<li class="#if ( $page == $currentpreview ) current #end">
                         #set( $page = $page + 1)
-                        <a href="#" onclick='$("#mainimage").attr("src", "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page")'>
+                        <a href="#" onclick='$("li").removeClass("current");$(this).closest("li").addClass("current");$("#mainimage").attr("src", "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page")'>
                             <div class="emdropshadow">
        							<img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${urlenc}/preview.jpg?pagenum=$page" />
        						</div>	
