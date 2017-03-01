@@ -1,11 +1,11 @@
-<div class="em-rounded">
+<div class="em-rounded" id="orderdialog">
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
 	<h3>Publish To Server</h3>
 	
-<form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/publish/step2.html">
+<form class="validate ajaxformXX" data-targetdivXX="orderdialog" id="usereditform" method="post" action="$home$apphome/views/activity/publish/step2.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("data", $order)	 

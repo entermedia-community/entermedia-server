@@ -25,7 +25,8 @@
 				#set($found = false)
 				#foreach( $ft in $filetypes)
 
-					#if ($ft.get(0).name.equals($filetype.name))
+					#set( $ftname = $filetype.getName($context.getLocale()) )
+					#if ($ft.get(0).equals($ftname))
 						
 						#set($num = $numberutils.toInt("${ft.get(1)}"))
 						#set($num = $num + 1)
@@ -35,12 +36,13 @@
 					#end
 				#end
 				#if(!$found)
-					#set($null = $filetypes.add([$filetype.getName($context.getLocale()),"1",$fileformat,"${omit}"]))
+					#set( $ftname = $filetype.getName($context.getLocale()) )
+					#set($null = $filetypes.add([$ftname,"1",$fileformat,"${omit}",$filetype.getId()]))
 				#end
 				##add hidden inputs
 				<input type="hidden" name="itemid" value="$item.id"/>
 				<input type="hidden" name="field" value="presetid"/>
-				<input type="hidden" name="${item.id}.presetid.value" value=""/>
+				<input type="hidden" name="${item.id}.presetid.value" />
 				<input type="hidden" name="field" value="itemfiletype"/>
 				<input type="hidden" name="${item.id}.itemfiletype.value" value="$filetype.getName($context.getLocale())"/>
 				##add extra variables for specific publishers
@@ -61,6 +63,7 @@
 				#set($num = $ft.get(1))
 				#set($fileformat = $ft.get(2))
 				#set($omit = $ft.get(3))
+				#set($ftid = $ft.get(4))
 				
 				##include header if youtube
 				#if($publishtype.publishtype == "youtube")
@@ -117,7 +120,7 @@
 						#set($null = $presetquery.addSortBy("ordering"))
 						#set( $results = $presetsearcher.search($presetquery) )
 						#if($canconvert || $candownloadfpo)
-					  		<select name="${filetype}.presetid.value">
+					  		<select name="${ftid}.presetid.value">
 							#foreach ($preset in $results)
 								<option value="$preset.id">$preset</option>
 							#end

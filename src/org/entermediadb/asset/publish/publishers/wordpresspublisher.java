@@ -45,9 +45,9 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 
 			String url = destination.get("url");
 			
-			log.info("Publishing ${asset} to EnterMedia server ${url}, with hash encoded password from ${username}.");
-			
 			String password = destination.get("accesskey");
+			log.info("Publishing " + asset + " to EnterMedia server " + url);
+			
 			//http://hc.apache.org/httpcomponents-client-4.4.x/httpmime/examples/org/apache/http/examples/entity/mime/ClientMultipartFormPost.java
 			HttpPost method = new HttpPost(url);
 			
@@ -61,7 +61,10 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			builder.addPart("assetid", asset.getId());
 			String exportname = inPublishRequest.get("exportname");
 			builder.addPart("exportname", exportname);
-			builder.addPart("assettitle", asset.toString());
+			builder.addPart("title", asset.toString());
+			builder.addPart("caption", asset.get("headline"));
+			builder.addPart("description", asset.get("longcaption")); 
+			builder.addPart("uploadby", "entermedia");
 
 			if( asset.getKeywords().size() > 0 )
 			{
@@ -83,28 +86,15 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			Collection collections =  asset.getCollections();
 			if(  collections != null && collections.size() > 0 )
 			{
-				StringBuffer buffer = new StringBuffer();
 				for (Iterator iterator = collections.iterator(); iterator.hasNext();)
 				{
 					LibraryCollection librarycollection = (LibraryCollection) iterator.next();
-					if( librarycollection != null)
+					Data library = (Data)librarycollection.getLibrary();
+					if( library != null)
 					{
-						Data library = (Data)librarycollection.getLibrary();
-						if( library != null)
-						{
-							buffer.append(library.getName());
-							buffer.append("\\");
-						}
-						buffer.append(librarycollection.getName());
-						if( iterator.hasNext() )
-						{
-							buffer.append(',');
-						}
+						builder.addPart("library", library.getName());
 					}
-				}
-				if( buffer.length() > 0)
-				{
-					builder.addPart("collections",  buffer.toString());
+					builder.addPart("collection", librarycollection.getName());
 				}
 			}
 			Page inputpage = findInputPage(mediaArchive,asset,preset);
@@ -118,13 +108,17 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			method.setEntity(builder.build());
 			
 			CloseableHttpClient httpclient = HttpClients.createDefault();  //TODO: Cache this
+
 			CloseableHttpResponse response2 = httpclient.execute(method);
-			
-			try 
+			try
 			{
 				if( response2.getStatusLine().getStatusCode() != 200 )
 				{
-					result.setErrorMessage("Wordpress Server error returned ${response2.getStatusLine().getStatusCode()}");
+					result.setErrorMessage("Wordpress Server error returned " + response2.getStatusLine().getStatusCode());
+				}
+				else
+				{
+					result.setComplete(true);
 				}
 				HttpEntity entity2 = response2.getEntity();
 				log.info( "Wordpress Server response: " + EntityUtils.toString(entity2));
@@ -132,22 +126,17 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 				// and ensure it is fully consumed
 				EntityUtils.consume(entity2);
 			}	
-			catch( Exception ex)
-			{
-				throw new OpenEditException(" ${method} Request failed: status code",ex);
-			}
 			finally 
 			{
 				response2.close();
 			}
-			result.setComplete(true);
 			return result;
 		}
 		catch( Exception ex)
 		{
-			throw new OpenEditException(" ${method} Request failed: status code",ex);
+			throw new OpenEditException(" Request failed: status code",ex);
 		}
-		
+
 	}
 	
 }

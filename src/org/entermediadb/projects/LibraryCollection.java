@@ -40,6 +40,11 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	}
 	public Data getLibrary()
 	{
+		if( fieldLibrary == null)
+		{
+			String id = get("library");
+			fieldLibrary = getMediaArchive().getData("library",id);
+		}
 		return fieldLibrary;
 	}
 	public void setLibrary(Data inLibrary)

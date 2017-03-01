@@ -624,27 +624,27 @@ public class OrderModule extends BaseMediaModule
 	
 	public void preprocessOrder(WebPageRequest inReq)
 	{		
-		String [] orderids = inReq.getRequestParameters("itemid");
-		if( orderids != null)
-		{
-			for(String orderid:orderids)
-			{
-				String formatkey = new StringBuilder().append(orderid).append(".itemfiletype.value").toString();
-				
-				
-				if (!inReq.getParameterMap().containsKey(formatkey)){
-					continue;
-				}
-				String format = inReq.getParameterMap().get(formatkey).toString();
-				String presetkey = new StringBuilder().append(format).append(".presetid.value").toString();
-				if (!inReq.getParameterMap().containsKey(presetkey)){
-					continue;
-				}
-				String preset = inReq.getParameterMap().get(presetkey).toString();
-				String itempresetkey = new StringBuilder().append(orderid).append(".presetid.value").toString();
-				inReq.setRequestParameter(itempresetkey, preset);
-			}
-		}
+//		String [] orderids = inReq.getRequestParameters("itemid");
+//		if( orderids != null)
+//		{
+//			for(String orderid:orderids)
+//			{
+//				String formatkey = new StringBuilder().append(orderid).append(".itemfiletype.value").toString();
+//				
+//				
+//				if (!inReq.getParameterMap().containsKey(formatkey)){
+//					continue;
+//				}
+//				String format = inReq.getParameterMap().get(formatkey).toString();
+//				String presetkey = new StringBuilder().append(format).append(".presetid.value").toString();
+//				if (!inReq.getParameterMap().containsKey(presetkey)){
+//					continue;
+//				}
+//				String preset = inReq.getParameterMap().get(presetkey).toString();
+//				String itempresetkey = new StringBuilder().append(orderid).append(".presetid.value").toString();
+//				inReq.setRequestParameter(itempresetkey, preset);
+//			}
+//		}
 	}
 
 	public void createConversionAndPublishRequest(WebPageRequest inReq)

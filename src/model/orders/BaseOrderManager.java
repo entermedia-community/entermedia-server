@@ -515,6 +515,11 @@ public class BaseOrderManager implements OrderManager {
 				String rendertype = null;
 				if( presetid == null)
 				{
+					String type = asset.get("assettype");
+					presetid = properties.get(type + ".presetid.value");
+				}
+				if( presetid == null)
+				{
 					rendertype = archive.getMediaRenderType(asset.getFileFormat());
 					presetid = properties.get(rendertype + ".presetid.value");
 				}
@@ -607,7 +612,10 @@ public class BaseOrderManager implements OrderManager {
 				user = inUser;
 			}
 			Data preset = (Data) presets.searchById(presetid);
-
+			if( preset == null)
+			{
+				throw new OpenEditException("Preset missing " + presetid);
+			}
 			String exportname = archive.asExportFileName(user, asset, preset);
 			publishqeuerow.setProperty("exportname", exportname);
 			publishqeuerow.setProperty("status", publishstatus);
