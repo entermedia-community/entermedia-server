@@ -69,13 +69,13 @@ public void init()
 			assetsource = hit.getSourcePath();
 		}
 		String pathToOriginal = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + assetsource;
+		Asset asset = archive.getAssetBySourcePath(assetsource);
 		
 		if(!pageManager.getRepository().doesExist(pathToOriginal) )
 		{
-			Asset asset = archive.getAssetBySourcePath(assetsource);
 			if( asset == null)
 			{
-				log.info("invalid asset " + path);
+				log.info("invalid asset " + assetsource);
 				continue;
 			}
 
@@ -99,11 +99,11 @@ public void init()
 		else
 		{
 			existed++;
-//            if( asset.get("editstatus") != "7" )
-//            {
-//			   asset.setProperty("editstatus", "6"); //restore files
-//			   tosave.add(asset);
-//            }
+            if("7".equals(asset.get("editstatus")))
+            {
+			   asset.setProperty("editstatus", "6"); //restore files
+			   tosave.add(asset);
+            }
 		}
 		if( tosave.size() == 100 )
 		{
