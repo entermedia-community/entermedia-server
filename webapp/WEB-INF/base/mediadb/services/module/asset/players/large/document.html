@@ -2,11 +2,10 @@
 #set( $name = $context.getRequestParameter("name") )
 
 #set ( $urlenc = $url_util.encode($asset.sourcepath))
-
 <div id="mainholder">
 #set($totalpages = $numberutils.toInt($asset.pages))
 #if( $totalpages > 1 )
-    $pages.include("$apphome/services/module/asset/players/large/pages.html",$context)
+    $pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
 #end
 
 <div id="mainimageholder">

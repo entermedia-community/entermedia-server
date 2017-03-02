@@ -1,3 +1,5 @@
+<div id="stacked-pdf-thumbnail-sidebar">
+    #set($currentpreview = $context.findValue('currentpreview'))
     #set($pagenum = $context.findValue('pagenum'))
     #set($totalpages = $numberutils.toInt($asset.pages))
     #set ( $hitssessionid = $context.findValue("hitssessionid"))
@@ -18,8 +20,7 @@
        #set( $pagenum = $totalpages )
        #set( $currentpreview = $totalpages - 1 )
     #end
-
-    <div id="pdf-thumbnail-sidebar">
+    <div id="pdf-thumbnail-sidebar" >
   
             #set($thepages = $totalpages / 5)
 
@@ -36,7 +37,7 @@
                          #set ($pageholder = $page + 1)
                          #set( $prevthumb = $pageholder - 1)
                          #set( $prevthumb = $prevthumb * 5 - 4)
-                        <a class="ajax" targetdiv="pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid"> [[Previous Five]] >> </a>                         
+                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid">&lt;&lt; [[Previous Five]] </a>                         
                 #end
                 </li>
                     
@@ -65,7 +66,7 @@
                     #set( $nextthumb = $pageholder + 1)
                     #set( $nextthumb = $nextthumb * 5 - 4)
                     
-                        <a class="ajax" targetdiv="pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
+                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
                 #end
                 </li>
             </ul>
@@ -75,3 +76,4 @@
             $context.putPageValue("currentpreview",$currentpreview)
             $context.putPageValue("totalpages",$totalpages)
    </div>
+</div>   
