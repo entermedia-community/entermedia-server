@@ -11,8 +11,6 @@
  "sourcepath": "${hit.sourcepath}",
  "annotated":false,
  "name": "${hit.name}"
- ## "thumb" : "$home$apphome/views/modules/assets/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg",
- ## "large" : "$home$apphome/views/modules/assets/downloads/preview/extralarge/${hit.sourcepath}/thumb.jpg"
  } 
 #end
 ]

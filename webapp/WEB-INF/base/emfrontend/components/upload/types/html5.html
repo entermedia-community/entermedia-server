@@ -61,7 +61,7 @@
 					#if( $collectionid)
 						$context.putPageValue("view","asset/multipleuploadcollection")	
 						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
-						$context.setRequestParameter("libraries.value",$collection.library)
+						$!context.setRequestParameter("libraries.value",$collection.library)
 						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
 					##else
 					##	$pages.include("$apphome/components/upload/types/html5/pickcollection.html",$context)					
