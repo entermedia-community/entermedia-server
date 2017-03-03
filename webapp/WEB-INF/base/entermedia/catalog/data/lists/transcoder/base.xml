@@ -9,4 +9,6 @@
 <transcoder id="finalcut">Final Cut</transcoder>
 <transcoder id="imagemagick">Image Magick</transcoder>
 <transcoder id="audio">Audio</transcoder>
+<transcoder id="ooffice">Libre Office</transcoder>
+
 </transcoders>
