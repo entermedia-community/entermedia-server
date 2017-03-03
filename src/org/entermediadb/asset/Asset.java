@@ -780,5 +780,24 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 			}
 		}
 	}
+	public boolean isEquals(long filemmod)
+	{
+		Date existingdate = getDate("assetmodificationdate");
+		if (existingdate != null)
+		{
+			//We need to ignore milliseconds since our parsed date will not have them
+			if (existingdate != null)
+			{
+				long oldtime = existingdate.getTime();
+				filemmod = filemmod / 1000;
+				oldtime = oldtime / 1000;
+				if (filemmod == oldtime)
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 }

@@ -19,11 +19,13 @@ import org.entermediadb.asset.fetch.UrlMetadataImporter;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.ZipUtil;
@@ -99,6 +101,20 @@ public class AssetImporter
 			}
 		}
 	}
+	public void reImportAsset(MediaArchive mediaArchive, Asset inAsset)
+	{
+		ContentItem itemFile = mediaArchive.getOriginalContent(inAsset);
+		getAssetUtilities().getMetaDataReader().updateAsset(mediaArchive, itemFile, inAsset);
+		inAsset.setProperty("previewstatus", "converting");
+		mediaArchive.saveAsset(inAsset);
+		mediaArchive.removeGeneratedImages(inAsset, true);
+		
+		PresetCreator presets = mediaArchive.getPresetManager();
+		Searcher tasksearcher = mediaArchive.getSearcher("conversiontask");
+		presets.queueConversions(mediaArchive, tasksearcher, inAsset);
+
+	}
+	
 	protected void assetsImported( MediaArchive inArchive, java.util.List<Asset> inAssetsSaved)
 	{
 		//this might be overriden to push

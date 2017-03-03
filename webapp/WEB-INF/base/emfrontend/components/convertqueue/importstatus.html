@@ -30,15 +30,15 @@
     #end        
 
 #elseif($publish && $publish.size() >0 )
-    <div id="status$hit.id"  class="ajaxstatus "   data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div id="status$hit.id"  class="ajaxstatus "  #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
     <div class="uiinfo	 proxythumb" title="Publishing Proxy $publish.size()" ><div class="loadingbar" style="width:30px;"></div></div> 
      </div>
 #elseif($conversions && $conversions.size() == 0)
-    <div id="status$hit.id" class="ajaxstatus"  data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         <div class="uiinfo	 proxythumb" title="Queing Conversions" ><div class="loadingbar" style="width:20px;"></div></div> 
     </div>
 #else
-    <div id="status$hit.id" class="ajaxstatus  " data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div id="status$hit.id" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
         #set( $totalcount = $conversions.size() )
 
         #if( $conversionsremaining )

@@ -1,4 +1,5 @@
-<div class="ui-widget" style="overflow: hidden;">
+<div id="eventeditpage">
+<div  class="ui-widget" style="overflow: hidden;">
 <div class="ui-widget-header">Properties</div>
 <div  class="ui-widget-content" > 
  
@@ -24,23 +25,12 @@
 </div>
 </div>
 
-#if( $pathevent.isRunning() )<b>[[event is running]]<b>#end
-
-<br>
-
-<p> 
-<a class="btn" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=$pathevent.getPage().getPath()">Refresh</a>
-</p>
-
-
-<div  id="eventstatus" class="edit-permissions">
-
-<p>
-most recent logs are at the bottom of the page<br>
+<div class="edit-permissions">
 $pages.include("$apphome/views/settings/events/triggers/edit/log.html")
-</p>
-
 </div>
 
+<p> 
+<a class="btn ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">Clear Log</a>
+</p>
 
 </div>

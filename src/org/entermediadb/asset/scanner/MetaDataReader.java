@@ -1,6 +1,7 @@
 package org.entermediadb.asset.scanner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -8,6 +9,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
@@ -17,6 +20,30 @@ public class MetaDataReader
 	private static final Log log = LogFactory.getLog(MetaDataReader.class);
 	protected List fieldMetadataExtractors;
 
+	public void updateAsset(MediaArchive archive, ContentItem itemFile, Asset target)
+	{
+		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
+		HashMap<String, String> externaldetails = new HashMap<String, String>();
+		for(Iterator i = details.iterator(); i.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) i.next();
+			if(detail.getExternalId() != null)
+			{
+				externaldetails.put(detail.getId(), target.get(detail.getId()));
+				target.setProperty(detail.getId(), null);
+			}
+		}
+		
+		populateAsset(archive, itemFile, target);
+		
+		for(String detail: externaldetails.keySet())
+		{
+			if(target.get(detail) == null)
+			{
+				target.setProperty(detail, externaldetails.get(detail));
+			}
+		}
+	}
 	public void populateAsset(MediaArchive inArchive, ContentItem inputFile, Asset inAsset)
 	{
 		try

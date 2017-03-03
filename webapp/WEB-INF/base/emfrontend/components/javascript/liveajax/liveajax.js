@@ -111,7 +111,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  	{
  		if( livequeryrunning )
  		{
- 			console.log("Skipping reload");
+ 			//console.log("Skipping reload");
  			return;
  		}
  		//console.log("domchanged reload");

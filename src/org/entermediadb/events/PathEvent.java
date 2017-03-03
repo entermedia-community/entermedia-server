@@ -20,6 +20,8 @@ import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.util.RequestUtils;
 
+import com.sun.xml.internal.bind.v2.model.annotation.FieldLocatable;
+
 public class PathEvent implements Comparable, TextAppender
 {
 	private static final Log log = LogFactory.getLog(PathEvent.class);
@@ -455,6 +457,12 @@ public class PathEvent implements Comparable, TextAppender
 		String name = event.toString();
 		
 		return toString().compareTo(name);
+	}
+
+	public void clearLog()
+	{
+		// TODO Auto-generated method stub
+		fieldLastOutput = null;
 	}
 
 }

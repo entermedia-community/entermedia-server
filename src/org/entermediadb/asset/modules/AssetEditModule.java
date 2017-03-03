@@ -1,7 +1,5 @@
 package org.entermediadb.asset.modules;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,18 +37,15 @@ import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.locks.Lock;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
-import org.openedit.repository.RepositoryException;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.ExecutorManager;
 import org.openedit.util.PathUtilities;
-
-import groovy.json.JsonSlurper;
 
 public class AssetEditModule extends BaseMediaModule
 {
@@ -757,13 +752,15 @@ public class AssetEditModule extends BaseMediaModule
 		getPageManager().movePage(page, dest);
 		asset = archive.getAssetBySourcePath(asset.getSourcePath());
 		asset.setPrimaryFile(page.getName());
-		Page media = archive.getOriginalDocument(asset);
-		updateMetadata(archive, asset, media);
+		ContentItem item = archive.getOriginalContent(asset);
+		getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(archive, item, asset);
 		asset.setProperty("editstatus", "1");
 		asset.setProperty("importstatus", "reimported");
 		asset.setProperty("previewstatus", "converting");
 		archive.saveAsset(asset, null);
 
+		//TODO:Call reimport
+		
 		inReq.setRequestParameter("assetids",new String[]{asset.getId()});
 
 		archive.removeGeneratedImages(asset);
@@ -1348,41 +1345,17 @@ Change Collections to be normal categories path s and make createTree look at th
 			{
 				target.setProperty("imagefile", PathUtilities.extractFileName(imagefilename));
 			}
-			Page itemFile = archive.getOriginalDocument(target);
+			ContentItem itemFile = archive.getOriginalContent(target);
 			
 			// We're going to allow the metadata reader to replace this asset's properties
 			// but we want to keep old values the reader is not going to replace
-			updateMetadata(archive, target, itemFile);
+			getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(archive, itemFile, target);
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
 			
 			archive.removeGeneratedImages(target, true);
 			archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), target);
 			archive.fireSharedMediaEvent("conversions/runconversions");
-		}
-	}
-	protected void updateMetadata(MediaArchive archive, Asset target, Page itemFile)
-	{
-		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
-		HashMap<String, String> externaldetails = new HashMap<String, String>();
-		for(Iterator i = details.iterator(); i.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) i.next();
-			if(detail.getExternalId() != null)
-			{
-				externaldetails.put(detail.getId(), target.get(detail.getId()));
-				target.setProperty(detail.getId(), null);
-			}
-		}
-		
-		getAssetImporter().getAssetUtilities().getMetaDataReader().populateAsset(archive, itemFile.getContentItem(), target);
-		
-		for(String detail: externaldetails.keySet())
-		{
-			if(target.get(detail) == null)
-			{
-				target.setProperty(detail, externaldetails.get(detail));
-			}
 		}
 	}
 
@@ -2087,8 +2060,6 @@ Change Collections to be normal categories path s and make createTree look at th
 	{
 		String[] assetids = inRequest.getRequestParameters("assetids");
 		MediaArchive mediaArchive = getMediaArchive(inRequest);
-		PresetCreator presets = mediaArchive.getPresetManager();
-		Searcher tasksearcher = mediaArchive.getSearcher("conversiontask");
 		int missing = 0;
 		for (int i = 0; i < assetids.length; i++)
 		{
@@ -2098,10 +2069,7 @@ Change Collections to be normal categories path s and make createTree look at th
 				log.error("Missing asset " + assetids[i]);
 				continue;
 			}
-			
-			mediaArchive.removeGeneratedImages(asset,true);
-			
-			presets.queueConversions(mediaArchive, tasksearcher, asset);
+			getAssetImporter().reImportAsset(mediaArchive, asset);
 		}
 		mediaArchive.fireSharedMediaEvent("conversions/runconversions");
 	}

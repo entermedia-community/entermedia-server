@@ -759,35 +759,20 @@ onloadselectors = function()
 			}
 		);	
 		jQuery(".ajaxstatus").livequery(
-				function()
+			function()
+			{
+				var uid = $(this).attr("id");
+				var isrunning = $(this).data("ajaxrunning");
+				var timeout = 3000;
+				if( isrunning == undefined)
 				{
-	
-					var uid = $(this).attr("id");
-					
-					var running = runningstatus[uid];
-					if( !running)
-					{
-						runningstatus[uid] = true;
-						var timeout = $(this).data("period");
-						if( timeout == undefined)
-						{
-							$(this).data("period","3000");
-							timeout = $(this).data("firstrun");
-							if( timeout == undefined)
-							{
-								timeout = "3000";
-							}
-						}
-						timeout = parseInt(timeout);
-						//console.log("Started period " + uid + " " + timeout);
-						setTimeout('showajaxstatus("' + uid +'");',timeout);
-					}
+					timeout = 500; //First one is always faster
 				}
+				setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
+			}
 		);
 		
 } //End of selections
-
-var runningstatus = {};
 
 showajaxstatus = function(uid)
 {
@@ -796,34 +781,9 @@ showajaxstatus = function(uid)
 	if( cell )
 	{
 		var path = cell.attr("ajaxpath");
-		if( path == undefined)
-		{
-			return;
-		}
-		var timeout = cell.data("period");
-		//console.log(uid + " update running with next period " + timeout);
-		console.log("Some path" + path);
+		//console.log("Loading " + path );
 		jQuery.get(path, {}, function(data) {
-			cell.replaceWith(data);
-			cell = jQuery("#" + uid);
-			if( !cell.hasClass("ajaxstatus") )
-			{
-				return;
-			}
-			if( timeout == undefined)
-			{
-				return;
-			}
-			cell.data("period",timeout);
-			timeout = parseInt(timeout);
-			if( cell.length > 0 )
-			{
-				setTimeout('showajaxstatus("' + uid +'",' + timeout + ');',timeout);
-			}
-			else
-			{
-				delete runningstatus[uid];
-			}
+			cell.replaceWith(data); //jQuery will reinit this class
 		});
 	}
 }

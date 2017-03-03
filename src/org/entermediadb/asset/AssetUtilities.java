@@ -132,26 +132,16 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				//				}
 				return asset;
 			}
-
+			
 			Date existingdate = asset.getDate("assetmodificationdate");
 			if (existingdate != null)
 			{
 				long filemmod = inContent.getLastModified();
-				//We need to ignore milliseconds since our parsed date will not have them
-				if (existingdate != null)
+				if( asset.isEquals(filemmod) )
 				{
-					long oldtime = existingdate.getTime();
-					filemmod = filemmod / 1000;
-					oldtime = oldtime / 1000;
-					if (filemmod == oldtime)
-					{
-						inArchive.getAssetArchive().clearAsset(asset);
-						//saveasset = false;
-						return null;
-					}
+					return null;
 				}
 			}
-
 		}
 		else
 		{

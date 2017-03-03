@@ -140,5 +140,11 @@ public class PathEventModule extends BaseModule
 		PathEventManager manager = getPathEventManager(inReq); 
 		manager.shutdown();
 	}
-		
+	public void clearPathEventLog(WebPageRequest inReq)
+	{
+		PathEventManager manager = getPathEventManager(inReq);
+		String eventPath = inReq.getRequestParameter("eventpath");
+		PathEvent event = manager.getPathEvent(eventPath);
+		event.clearLog();
+	}
 }
