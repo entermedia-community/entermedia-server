@@ -14,13 +14,9 @@ import org.entermediadb.scripts.TextAppender;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
-import org.openedit.event.WebEvent;
-import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.util.RequestUtils;
-
-import com.sun.xml.internal.bind.v2.model.annotation.FieldLocatable;
 
 public class PathEvent implements Comparable, TextAppender
 {

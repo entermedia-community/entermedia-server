@@ -18,6 +18,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
 public class AdvancedAssetEditModule extends AssetEditModule{
@@ -72,8 +73,8 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 		removeGenerated(archive,asset);
 		//done insert
 		
-		Page media = archive.getOriginalDocument(asset);
-		updateMetadata(archive, asset, media);
+		ContentItem media = archive.getOriginalContent(asset);
+		archive.getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(archive, media, asset);
 		asset.setProperty("editstatus", "1");
 		asset.setProperty("importstatus", "reimported");
 		asset.setProperty("previewstatus", "converting");
@@ -213,8 +214,8 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 			}
 			removeGenerated(archive,target);
 			//done insert
-			
-			updateMetadata(archive, target, itemFile);
+			ContentItem media = archive.getOriginalContent(target);
+			archive.getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(archive, media, target);
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
 			String[] assetids = {target.getId()};
