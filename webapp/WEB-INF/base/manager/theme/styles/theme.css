@@ -157,7 +157,7 @@ a:hover {
 	background: -ms-linear-gradient(top, #329b27 0%,#4bd63c 100%); /* IE10+ */
 	background: linear-gradient(top, #329b27 0%,#4bd63c 100%); /* W3C */
 }
-.mbtn:visited {
+.mbtn:visited {padding: 8px 10px;
 	color: #fff;
 }
 .mbtn.blue {
@@ -367,7 +367,8 @@ table th {
 	background: #A28562;
 	color: #fff;
 	font-weight: bold;
-	padding: 10px 0;
+	padding: 8px 10px;
+	text-align:left;
 }
 table {
 	border: 1px solid #A28562;
