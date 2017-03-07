@@ -1,35 +1,6 @@
-#set( $appcatalogid = $context.getRequestParameter("appcatalogid"))
-		<div class="wizard clearfix">
-			<div class="wizard-top">
-				<h1>Server Distribution</h1>
-			</div>
-			<div class="wizard-body">
-		#set( $appsearcher = $searcherManager.getSearcher("system","extensionservers") )
-
-		#set( $versions = $appsearcher.query().all().sort("name").search($context) )
-		#foreach( $serverversion in $versions)
-				<div class="app-option">
-					<img class="app-store-icon" src="$home$themeprefix/images/folder.png" width="60" height="60" alt="$serverversion.name" />
-					<div class="app-nameplate">
-						<div class="app-title">$serverversion.name</div>
-						<div class="app-subtitle">$serverversion.caption</div>
-					</div>
-					<a class="mbtn learn-more"  href="$home$apphome/views/update/upgrade.html?id=$serverversion.id">#if($serverversion.selected == "true")Upgrade#else Install#end >> </a>
-				</div>
-		#end		
-			</div>
-			<div class="wizard-bottom">
-			<!-- 
-				<a class="btn-blue build-your-own-app" href="#">Build Your Own App</a>
-			 -->
-			</div>
-		</div>
-
-<!-- 
-
 <div id="oeadmin">
 	
-<h2 style="margin-top: 0; padding-top: 0;">[[Upgrade/Install Add-Ons]]</h2>
+<h2 style="margin-top: 0; padding-top: 0;">[[Add New Plugins]]</h2>
 #set( $installpath = $context.getRequestParameter("installpath") ) 
 
 <form name="serverpicker" action="index.html">
@@ -40,6 +11,7 @@
 #end
 </select>
 </form>
+
 
 <form name="upgradepicker" action="upgrade.html" target="_top" method="post">
 <input type="hidden" name="serverid" value="$pluginfinder.id"/>
@@ -125,6 +97,5 @@ onclick="javascript:togglePlugins( '$plugin.id'
 	}
  }
 </script>
- -->
- 
+
 </div>

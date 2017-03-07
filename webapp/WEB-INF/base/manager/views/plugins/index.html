@@ -1,14 +1,14 @@
 <div id="oeadmin">
 	
 <h2 style="margin-top: 0; padding-top: 0;">[[Installed Applications]]</h2>
-#set( $sortedlist = $searcherManager.getList("system","installedapplications") )
+#set( $sortedlist = $searcherManager.getList("system","installedplugins") )
 
-<form name="upgradepicker" class="emrowpicker" action="$home$apphome/views/applications/viewdetails.html" target="_top" method="post">
+<form name="upgradepicker" class="emrowpicker" action="$home$apphome/views/plugins/viewdetails.html" target="_top" method="post">
 <input type="hidden" class="emselectedrow" name="id" />
-<table width="100%" class="striped">
+<table  width="100%" class="striped">
 <tr>
 	<th>[[Name]]</th>
-	<th>[[Snapshot]]</th>
+	<th>[[Version]]</th>
 </tr>
 #foreach( $plugin in $sortedlist ) 
 <tr>
@@ -22,8 +22,6 @@
 </table>
 </form>
 
-<div class="scan" style="margin-right: 0; float: left;">
-	<a class="mbtn" href="/manager/views/applications/addapp.html">Add</a>
-</div>
+<a href="addnew.html">Add New</a>
 
 </div>

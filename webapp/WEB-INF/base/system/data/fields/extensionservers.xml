@@ -4,4 +4,6 @@
 
 	<property id="selected" stored="true"  index="true"  editable="true" datatype="boolean">Default</property>
 	<property id="listingurl" stored="true"  index="true"  editable="true" >URL</property>
+	<property id="caption" stored="true"  index="true"  editable="true" datatype="boolean">Caption</property>
+	
 </properties>

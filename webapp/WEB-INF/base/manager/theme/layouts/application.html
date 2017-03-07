@@ -22,14 +22,14 @@
 ##                        </li>
 ##                 #end
 		     <ul>
-		         <li><a href="$home$apphome/views/catalogs/index.html">Catalogs</a></li>
-##                 <li><a href="$home$apphome/views/applications/index.html">Applications</a></li>
+		     #set( $app = $content.get("managersection"))
+                 <li><a #if( $app == "applications") class="current" #end href="$home$apphome/views/applications/index.html">Applications</a></li>
 ##                 <li><a href="$home$apphome/views/applications/uploadapp.html">Import Application</a></li>
 		           <li><a href="$home$apphome/views/settings/translation/index.html">Translation</a></li>
-		         <li><a href="$home$apphome/views/settings/lists/datamanager/index.html">Data Manager</a></li>
+		         <li><a href="$home$apphome/views/settings/lists/datamanager/index.html">Database</a></li>
 		         <li><a href="$home$apphome/views/settings/events/triggers/index.html">Scheduler</a></li>
-		         <li><a href="$home$apphome/views/update/index.html">Update Manager</a></li>
-		         <li><a href="$home$apphome/views/update/upload/index.html">Extension Uploads</a></li>
+		         <li><a href="$home$apphome/views/update/index.html">Upgrade</a></li>
+##		         <li><a href="$home$apphome/views/update/upload/index.html">Uploads</a></li>
 
 		     </ul>
 

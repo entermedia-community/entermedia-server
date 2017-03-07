@@ -278,14 +278,14 @@ a:hover {
 	float: right;
 }
 #main-content {
-    margin: 35px 0;
+    margin: 10px 0;
 }
 
 /* ==|== catalog page ============================================== */
 
 .catalog-list {
     padding: 0;
-    max-width: 500px;
+    max-width: 600px;
     margin: 20px 0 0 30px;
     
 }
@@ -399,12 +399,19 @@ table tr:hover {
 /* ==|== wizard ================================================= */
 
 .wizard {
-	width: 520px;
-	margin: 30px auto;
+	width: 620px;
+	margin: 10px auto;
 }
 .wizard-top {
-	background: url('../images/wizard-top.png');
-	width: 520px;
+	background: #A28562;
+    margin: 0;
+    padding: 0;
+    margin-top: -39px;
+    border-radius: 5px 5px 0 0;
+    height: 40px;
+    border: 1px solid #937B60;
+    
+	width: 620px;
 	height: 86px;
 	margin: 0;
 	padding: 0;
@@ -416,10 +423,10 @@ table tr:hover {
 	margin: 30px 30px 0 0;
 }
 .wizard-body {
-	background: url('../images/wizard-body.png') repeat-y;
-	width: 520px;
+	background: white;
+	width: 620px;
 	margin: 0;
-	padding: 20px 0;
+	 border: 1px solid #937B60;
 }
 .wizard-body h2 {
 	text-align: center;
@@ -429,6 +436,7 @@ table tr:hover {
 }
 .wizard-content {
     padding: 0 40px;
+    
 }
 .wizard-content label {
     display: block;
@@ -437,18 +445,22 @@ table tr:hover {
     padding-top: 20px;
 }
 .wizard-bottom {
-	background: url('../images/wizard-bottom.png');
-	width: 520px;
-	height: 114px;
+	background: #A28562;
+    padding: 0;
+    border-radius: 0 0 5px 5px;
+    height: 40px;
+    border: 1px solid #937B60;
+    border-top: none;
+    
+	width: 620px;
 	margin: 0; 
 	padding: 30px 0 0 0;
 	text-align: center;
 }
 .app-option {
-	width: 500px;
+	width: 620px;
 	height: 100px;
 	border-bottom: 1px solid #a29484;
-	margin-left: 10px;
 }
 .app-option-first {
 	border-top: 1px solid #a29484;
@@ -479,17 +491,21 @@ table tr:hover {
 }
 .learn-more {
 	float: right;
+	margin:30px 20px 0 0;
+}
+.install-app {
+	float: right;
 	margin: -46px 20px 0 0;
 }
 .app-info {
 	border: none;
 	margin: -25px 0 0 10px;
-	width: 500px;
+	width: 600px;
 	height: 100px;
 }
 .app-info-content {
 	padding-top: 30px;
-	width: 460px;
+	width: 560px;
 	margin-left: 10px;
 	padding: 0 20px;
 }
@@ -638,6 +654,10 @@ small {
 #nav ul li a:hover {
     background: #7F694A; 
 }
+#nav ul li a.current {
+    background: #7F694A; 
+}
+
 #nav ul li:first-child a {
     border-radius: 0 0 0 5px;
 }
@@ -835,7 +855,7 @@ div#folders .path, div#folders .alias {
     margin-top: 5px;
 }
 .fields .field {
-    width: 500px;
+    width: 600px;
     color: #444;
     font-size: 12px;
 }
@@ -914,7 +934,7 @@ div#folders.add .folder {
 	float: left;
 }
 .col6 {
-	width: 460px;
+	width: 560px;
 	padding: 0 10px;
 	float: left;
 }

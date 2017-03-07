@@ -1,0 +1,26 @@
+#set( $appcatalogid = $context.getRequestParameter("appcatalogid"))
+		<div class="wizard clearfix">
+			<div class="wizard-top">
+				<h1>Add Application</h1>
+			</div>
+			<div class="wizard-body">
+		#set( $appsearcher = $searcherManager.getSearcher("system","frontend") )
+
+		#set( $frontends = $appsearcher.query().all().sort("name").search($context) )
+		#foreach( $frontend in $frontends)
+				<div class="app-option">
+					<img class="app-store-icon" src="$home$themeprefix/images/folder.png" width="60" height="60" alt="$frontend.name" />
+					<div class="app-nameplate">
+						<div class="app-title">$frontend.name</div>
+						<div class="app-subtitle">$frontend.caption</div>
+					</div>
+					<a class="mbtn learn-more"  href="$home$apphome/views/applications/appdetails.html?id=$frontend.id">Next >> </a>
+				</div>
+		#end		
+			</div>
+			<div class="wizard-bottom">
+			<!-- 
+				<a class="btn-blue build-your-own-app" href="#">Build Your Own App</a>
+			 -->
+			</div>
+		</div>
