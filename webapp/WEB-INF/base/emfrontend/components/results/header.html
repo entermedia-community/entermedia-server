@@ -74,6 +74,10 @@ $context.putPageValue("hits",$hits)
 			#if( $librarycol )
 				<li><a>[[Collection]]</a>	
 				<ul>
+<li><a class="emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]" 
+					 >[[Copy Collection]]</a></li>
+
+
 					<li><a href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
 					class="confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
 				</ul>

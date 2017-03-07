@@ -499,6 +499,36 @@ public class ProjectModule extends BaseMediaModule
 	}	
 	
 	
+	
+	public void copyCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		LibraryCollection collection = (LibraryCollection)archive.getData("librarycollection", collectionid);
+
+		Searcher colsearcher = archive.getSearcher("librarycollection");
+		LibraryCollection newcollection = (LibraryCollection) colsearcher.createNewData();
+		String[] fields = inReq.getRequestParameters("field");
+		colsearcher.updateData(inReq, fields, newcollection);
+		colsearcher.saveData(newcollection);
+		
+		Category destination = manager.getRootCategory(archive, (LibraryCollection)newcollection);
+		Category source = manager.getRootCategory(archive, (LibraryCollection)collection);
+		ArrayList assetstosave = new ArrayList();
+		
+		manager.copyAssets(assetstosave, inReq.getUser(), archive, newcollection, source, destination, true);
+		
+		archive.getAssetSearcher().saveAllData(assetstosave, null);
+		
+		inReq.putPageValue("newcollection", newcollection);
+			
+		
+	}	
+	
+	
+	
+	
 	public void createSnapshot(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

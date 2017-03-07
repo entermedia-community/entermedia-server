@@ -1,0 +1,16 @@
+#set( $searchtype = "librarycollection")
+#set( $action = "$home$apphome/views/modules/librarycollection/copycollectionfinish.html")
+#set($current = $mediaarchive.getData("librarycollection", $context.getRequestParameter("collectionid")))	
+[[Copy from : ]] $current
+<form name="adder" id="adder" class="validate-inputs" action="$action">
+<input type="hidden" name="save" value="true" />
+<input type="hidden" name="searchtype" value="$searchtype" />
+<input type="hidden" name="field" value="owner" />
+<input type="hidden" name="owner.value" value="$!user.getId()" />
+<input type="hidden" name="collectionid" value="$current.id" />
+
+$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
+$context.putPageValue("view","${searchtype}/${searchtype}copy")	
+$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
+</form>
