@@ -165,6 +165,7 @@ runajaxonthis = function(inlink,e)
 		e.preventDefault();
 		return false;
 	}
+	inlink.attr('disabled','disabled');
 	
 	if( inlink.hasClass("activelistener") )
 	{
@@ -197,9 +198,12 @@ runajaxonthis = function(inlink,e)
 				//Call replacer to pull $scope variables
 				cell.replaceWith(data); //Cant get a valid dom element
 				$(window).trigger( "resize" );
-				
 			}
-		);
+		).always(function()
+		{
+			//inlink.css("enabled",true);
+			inlink.removeAttr('disabled');
+		});
 	}	
 	else
 	{
