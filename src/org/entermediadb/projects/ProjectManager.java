@@ -1,5 +1,6 @@
 package org.entermediadb.projects;
 
+import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -571,7 +572,13 @@ public class ProjectManager implements CatalogEnabled
 		collection.setValue("rootcategory",root.getId());
 		inArchive.getSearcher("librarycollection").saveData(collection);
 		
-		importAssets(inArchive, collection, inImportPath, root, ids);
+		try {
+			importAssets(inArchive, collection, inImportPath, root, ids);
+		} catch (Exception e) {
+			inReq.putPageValue("errormsg", "There was an error importing.  Your files have not been deleted but you should import again.");
+			inReq.putPageValue("exception", e);
+			log.error("Failed importing Collection " + inCollectionid ,e);
+		}
 
 		for (Iterator iterator = ids.iterator(); iterator.hasNext();)
 		{
@@ -616,6 +623,11 @@ public class ProjectManager implements CatalogEnabled
 		vals.put("library", inCollection.get("library"));
 
 		Collection paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
+		FileUtils utils = new FileUtils();
+		String path = inArchive.getPageManager().getPage(inImportPath).getContentItem().getAbsolutePath();
+		long totalbytes =  utils.sizeOf(new File(path));
+		Date starttime = new Date();
+		
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 		{
 			String child = (String) iterator.next();
@@ -670,7 +682,7 @@ public class ProjectManager implements CatalogEnabled
 					}
 					destpath = destpath +  item.getName();
 					ContentItem finalitem = inArchive.getPageManager().getRepository().getStub(destpath);
-					inArchive.getPageManager().getRepository().move(item, finalitem);
+					inArchive.getPageManager().getRepository().copy(item, finalitem);
 					asset = inArchive.getAssetImporter().getAssetUtilities().createAssetIfNeeded(finalitem, true, inArchive, null);
 					//asset.setCategories(null);
 					asset.addCategory(inCurrentParent);
@@ -683,7 +695,7 @@ public class ProjectManager implements CatalogEnabled
 				}
 				else
 				{
-					inArchive.getPageManager().getRepository().remove(item);
+					//inArchive.getPageManager().getRepository().remove(item);
 					asset.addCategory(inCurrentParent);
 					inArchive.saveAsset(asset, null);
 				}
@@ -691,12 +703,15 @@ public class ProjectManager implements CatalogEnabled
 			}
 		}
 		
-		paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
-		if(paths.isEmpty()){
+		
+		long finalbytes =  utils.sizeOf(new File(path));
+
+		if(finalbytes == totalbytes){
 			ContentItem item = inArchive.getPageManager().getRepository().getStub(inImportPath);
 			inArchive.getPageManager().getRepository().remove(item);
+		} else{
+			throw new OpenEditException("File sizes were not identical before and after import, collection has changed.");
 		}
-		
 	}
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
