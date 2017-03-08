@@ -1,0 +1,41 @@
+<div id="oeadmin">
+	
+<h2 style="margin-top: 0; padding-top: 0;">[[Site Manager]]</h2>
+#set( $sortedlist = $searcherManager.getList("system","site") )
+
+<form name="upgradepicker" class="emrowpicker" action="$home$apphome/views/sites/viewsitedetails.html" target="_top" method="post">
+<input type="hidden" class="emselectedrow" name="id" />
+<table width="100%" class="striped">
+<tr>
+	<th>[[Site Name]]</th>
+	<th>[[Folder]]</th>
+	<th>[[Catalog]]</th>
+	<th>[[Last Snapshot]]</th>
+</tr>
+#foreach( $plugin in $sortedlist ) 
+ <tr data-id="$plugin.id" >
+<td valign="top" style="white-space: nowrap;">
+#esc($plugin.getName($context.locale))
+</td>
+<td valign="top" style="white-space: nowrap;">
+#esc($plugin.get("rootpath"))
+</td>
+<td valign="top" style="white-space: nowrap;">
+#set( $cat = $searcherManager.getData("system","catalog",$plugin.get("catalogid") ) )
+$cat
+</td>
+<td valign="top" style="white-space: nowrap;">
+#set( $snap = $searcherManager.getData("system","catalog",$plugin.get("catalogid") ) )
+$!snap
+
+#esc($plugin.get("lastsnapshot"))
+</td>
+#end
+</table>
+</form>
+
+<div class="scan" style="margin-right: 0; float: left;">
+	<a class="mbtn" href="/manager/views/sites/addapp.html">Add</a>
+</div>
+
+</div>

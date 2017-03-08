@@ -1,0 +1,6 @@
+<properties>
+	<property id="id" index="true" stored="true"  keyword="true" >ID</property>
+	<property id="name" index="true" stored="true"  keyword="true" >Name</property>
+	<property id="date" stored="true"  index="true"  editable="true" datatype="date">Date</property>
+	<property id="site" stored="true"  index="true" datatype="list" editable="true">Site ID</property>
+</properties>

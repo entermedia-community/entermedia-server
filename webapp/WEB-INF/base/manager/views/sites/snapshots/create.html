@@ -1,0 +1,19 @@
+<div id="eventeditpage">
+<div  class="ui-widget" style="overflow: hidden;">
+<div class="ui-widget-header">Running Export</div>
+<div  class="ui-widget-content" > 
+ 
+ <form name="okform" action="$home$apphome/views/sites/viewsitedetails.html">
+
+//Show log for the event
+	<input name="id" value="$site.id" type="hidden"/>
+</form>
+
+</div>
+</div>
+
+<div class="edit-permissions">
+$pages.include("./log.html",$context)
+</div>
+
+</div>

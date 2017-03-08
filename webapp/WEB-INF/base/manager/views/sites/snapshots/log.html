@@ -1,0 +1,14 @@
+#set( $targetcatalogid = $context.getRequestParameter("targetcatalogid"))
+<div  id="eventstatus" class="ajaxstatus" #if( $content == $page)data-ajaxrunning="true"#end ajaxpath="$home$apphome/views/sites/snapshots/log.html?eventpath=$pathevent.getPage().getPath()&targetcatalogid=$targetcatalogid">
+
+#if( $pathevent.isRunning() )
+<b>[[event has been running since]]: $pathevent.getFormattedLastRun()</b>
+#else
+ <b>[[event is not running. Last ran:]] $pathevent.getFormattedLastRun() </b>
+#end
+
+<hr>
+
+$!pathevent.getLastOutputHtml() 
+</div>
+
