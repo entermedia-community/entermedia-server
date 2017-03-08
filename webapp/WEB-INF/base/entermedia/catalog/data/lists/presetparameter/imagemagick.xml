@@ -10,6 +10,12 @@
   <parameter id="imagemedium3" parameterdata="imagemedium" value="76" >quality</parameter> 
   <parameter id="imagemedium4" parameterdata="imagemedium" value="4:2:0" >sampling-factor</parameter> 
 
+  <parameter id="imagemediumsm1" parameterdata="imagemediumsmall" value="300" >prefwidth</parameter> 
+  <parameter id="imagemediumsm2" parameterdata="imagemediumsmall" value="300" >prefheight</parameter> 
+  <parameter id="imagemediumsm3" parameterdata="imagemediumsmall" value="76" >quality</parameter> 
+  <parameter id="imagemediumsm4" parameterdata="imagemediumsmall" value="4:2:0" >sampling-factor</parameter> 
+
+
   <parameter id="imagepreview1" parameterdata="imagepreview" value="1024" >prefwidth</parameter> 
   <parameter id="imagepreview2" parameterdata="imagepreview" value="768" >prefheight</parameter> 
   <data name="background" value="white" parameterdata="imagepreview" id="1447784755291"/> 
