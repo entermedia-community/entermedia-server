@@ -46,16 +46,18 @@
 ##these shouod always be at least the initi snapshot
 	<h3>Site Snapshots</h3>
 
-<div class="scan" style="margin-top: 10px;margin-right: 0;">
+<div  style="margin-right: 0;padding:20px;">
 
 	<form class="ajaxform" targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
 		<input type="hidden" id="list-categoryidvalue" name="catalogid" value="$site.catalogid" />  
 		#set( $detail = $searcher.getDetail("name"))
-		<select name="selectedsitesnapshot" class="listautocomplete selectautosubmit " data-listcatalogid="$site.catalogid" data-searchtype="sitesnapshot" data-foreignkeyid="categoryid"  
+		<select name="selectedsitesnapshot" style="min-width:200px;" class="listautocomplete selectautosubmit " data-listcatalogid="$site.catalogid" data-searchtype="sitesnapshot" data-foreignkeyid="categoryid"  
 			 data-placeholder="$detail.getText($context)" data-sortby="name" data-searchfield="name">
 		</select>
 	</form>	
-	<a class="mbtn emdialog" style="margin-left: 50px; " title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">Create Snapshot</a>
+	<div style="margin-left: 250px; margin-top: -20px;">
+		<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">Create Snapshot</a>
+	</div>
 </div>	
 	<div id="snapshotdetails">
 	</div>

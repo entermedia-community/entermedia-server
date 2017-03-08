@@ -6,9 +6,9 @@
 	<property name="prefwidth">75</property>
 	<property name="prefheight">75</property>
 	<property name="virtual">true</property>
-	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
 	<property name="uselegacythumbimages">false</property>
 	<property name="sourcefile">image</property>
+	<property name="exportname">image75x75.jpg</property>	
 </page>
 
 
