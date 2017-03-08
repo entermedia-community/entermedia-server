@@ -29,14 +29,6 @@
 	<permission name="viewsettings">
 		<group name="administrators" />
 	</permission>
-  
-  
-  
-  
-  
-  
-   <style id="layout" href="${themeprefix}/styles/layout.css"/>
-  <style id="modulefrontend-css" href="${themeprefix}/styles/modulefrontend.css"/>
 
   <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.7.1.min.js"/>
   <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.8.12.custom.min.js"/>
@@ -60,8 +52,8 @@
   <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
   <script id="results" src="/${applicationid}/components/javascript/results.js"/>
   
-  <script id="select2" src="/${applicationid}/components/javascript/select2/select2.js"/>
-  <style id="select2-css" href="/${applicationid}/components/javascript/select2/select2.css"/>  
+  <script id="select2" src="/${applicationid}/components/javascript/select2/js/select2.js"/>
+  <style id="select2-css" href="/${applicationid}/components/javascript/select2/css/select2.css"/>  
   <style id="app-css" href="${themeprefix}/styles/theme.css"/>
   <style id="results" href="${themeprefix}/styles/pages/results.css"/>
   

@@ -1,0 +1,85 @@
+<div>
+#set( $siteid = $context.getRequestParameter("id") )
+#set ($site = $searcherManager.getData("system","site",$siteid))
+
+<div class="wizard clearfix">
+	<div class="wizard-body">
+
+#if(!$site.catalogid )
+<form name="catalogid">
+	Catalog ID: <input name="id.value" > <br>
+	Catalog Label: <input name="name.value" >
+	<br>
+	<input type="submit" value="Save" class="mbtn" />
+</form>
+#else
+
+<form action="./save.html" method="post" style="padding:20px;">
+	<h3>$site Properties</h3>
+    #set($searcher = $searcherManager.getSearcher("system", "site"))
+	$context.putPageValue("searcher", $searcher)	 
+	$context.putPageValue("data", $site)	 
+	$context.putPageValue("view", "site/edit")	
+	<input type="hidden" name="view" value="site/edit"/>
+	<input type="hidden" name="save" value="true"/>
+	<input type="hidden" name="id" value="$site.id"/>
+	<input type="hidden" name="searchtype" value="site"/>
+	
+	<div id="shares">
+	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
+
+#set( $admin = $searcherManager.getData($site.id , "user", "admin"))
+<p><b>[[Admin Password Hash]]</b>: $admin.password
+##<p><b>[[Admin Password]]</b>: $userManager.decryptPassword($admin)
+
+	</div>
+<div class="scan" style="margin-top: 10px;margin-right: 0;">
+	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" data-confirm="[[Are you sure?]]"> Save </button>
+	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Site</a>
+</div>
+
+</form>
+
+
+<div style="padding-top: 60px;margin-right: 0; height: 200px;">
+<hr>
+##these shouod always be at least the initi snapshot
+	<h3>Site Snapshots</h3>
+
+<div class="scan" style="margin-top: 10px;margin-right: 0;">
+
+	<form class="ajaxform" targetdiv="snapshotdetails" action="$home$apphome/views/sites/snapshotdetails.html">
+		<input type="hidden" id="list-categoryidvalue" name="catalogid" value="$site.catalogid" />  
+		#set( $detail = $searcher.getDetail("name"))
+		<select name="selectedsitesnapshot" class="listautocomplete selectautosubmit " data-listcatalogid="$site.catalogid" data-searchtype="sitesnapshot" data-foreignkeyid="categoryid"  
+			 data-placeholder="$detail.getText($context)" data-sortby="name" data-searchfield="name">
+		</select>
+	</form>	
+	<a class="mbtn emdialog" style="margin-left: 50px; " title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">Create Snapshot</a>
+</div>	
+	<div id="snapshotdetails">
+	</div>
+</div>
+#end
+</div>
+			<div class="wizard-bottom">
+			<!-- 
+				<a class="btn-blue build-your-own-app" href="#">Build Your Own App</a>
+			 -->
+			</div>
+		</div>
+
+<!-- 
+Deployed the first snapshot?
+//Add additional apps?
+
+
+
+List know versions locally
+
+Create new snapshot(version)
+
+List URL with last selected shown
+-->
+
+</div>

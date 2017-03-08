@@ -48,7 +48,11 @@ public class PathEventModule extends BaseModule
 
 	public PathEventManager getPathEventManager(WebPageRequest inReq)
 	{
-		String catalogid = inReq.getContentProperty("catalogid");
+		String catalogid = inReq.getRequestParameter("targetcatalogid");
+		if(catalogid == null)
+		{
+			catalogid = inReq.getContentProperty("catalogid");
+		}
 		if(catalogid == null)
 		{
 			catalogid = inReq.getContentProperty("applicationid");

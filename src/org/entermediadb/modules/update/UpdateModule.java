@@ -678,6 +678,34 @@ public class UpdateModule extends BaseMediaModule {
 	// // redirect the user to a blank page
 	// }
 
+	public void updateDistribution(WebPageRequest inReq) throws Exception {
+		checkLogin(inReq);
+		if (inReq.getSessionValue("status") != null
+				&& !Boolean.parseBoolean(inReq
+						.getRequestParameter("forceupgrade"))) {
+			inReq.putPageValue("error", "Upgrade already in progress");
+			return;
+		}
+		
+		List all = getPlugInFinder(inReq).getPlugIns();
+		
+		// *** get root path of this object
+		String root = getRoot().getAbsolutePath();
+		if (root.endsWith("/")) {
+			root = root.substring(0, root.length() - 1);
+		}
+		PluginUpgrader upgrader = new PluginUpgrader();
+		upgrader.setPlugInFinder(getPlugInFinder(inReq));
+		upgrader.setRoot(getRoot());
+		upgrader.setToUpgrade(all);
+		upgrader.setScriptModule((ScriptModule) getModule("Script"));
+		String serverid = inReq.findValue("serverid");
+		inReq.putSessionValue("upgrader" + serverid, upgrader);
+		inReq.putPageValue("upgrader", upgrader);
+	
+	}
+
+	
 	public void updateProjects(WebPageRequest inReq) throws Exception {
 		checkLogin(inReq);
 		if (inReq.getSessionValue("status") != null
@@ -755,9 +783,9 @@ public class UpdateModule extends BaseMediaModule {
 		Searcher searcher = getSearcherManager().getSearcher("system",
 				"extensionservers");
 		String serverid = inReq.getRequestParameter("serverid");
-		if (serverid == null) {
-			serverid = "1";
-		}
+//		if (serverid == null) {
+//			serverid = "1";
+//		}
 		PlugInFinder finder = (PlugInFinder) getPluginFinders().get(serverid);
 
 		if (finder == null) {

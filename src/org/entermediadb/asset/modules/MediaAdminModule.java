@@ -347,5 +347,16 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 	}
 
+	public void createSiteSnapshot(WebPageRequest inReq)
+	{
+		//Use the archive
+		String siteid = inReq.getRequestParameter("id");
+		Data site = getSearcherManager().getData("system","site",siteid);
+
+		MediaArchive archive = getMediaArchive(site.get("catalogid"));
+		archive.fireSharedMediaEvent("data/exportdatabase");
+		
+		inReq.putPageValue("site", site);
+	}
 
 }
