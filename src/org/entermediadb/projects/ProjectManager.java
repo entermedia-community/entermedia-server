@@ -572,6 +572,14 @@ public class ProjectManager implements CatalogEnabled
 		collection.setValue("rootcategory",root.getId());
 		inArchive.getSearcher("librarycollection").saveData(collection);
 		
+		
+		FileUtils utils = new FileUtils();
+		String path = inArchive.getPageManager().getPage(inImportPath).getContentItem().getAbsolutePath();
+		File fname = new File(path);
+		long totalbytes =  utils.sizeOf(fname);
+		
+		
+		
 		try {
 			importAssets(inArchive, collection, inImportPath, root, ids);
 		} catch (Exception e) {
@@ -587,6 +595,19 @@ public class ProjectManager implements CatalogEnabled
 			inArchive.saveAsset(asset, inUser);
 		}
 
+		
+		long finalbytes =  utils.sizeOf(fname);
+
+		if(finalbytes == totalbytes){
+			ContentItem item = inArchive.getPageManager().getRepository().getStub(inImportPath);
+			inArchive.getPageManager().getRepository().remove(item);
+		} else{
+			inReq.putPageValue("errormsg", "There was an error importing.  Your files have not been deleted but you should import again. Size before: " + totalbytes + " after: " +finalbytes);
+			
+		}
+		
+		
+		
 		inArchive.fireSharedMediaEvent("conversions/runconversions");
 	}
 
@@ -623,10 +644,7 @@ public class ProjectManager implements CatalogEnabled
 		vals.put("library", inCollection.get("library"));
 
 		Collection paths = inArchive.getPageManager().getChildrenPaths(inImportPath);
-		FileUtils utils = new FileUtils();
-		String path = inArchive.getPageManager().getPage(inImportPath).getContentItem().getAbsolutePath();
-		long totalbytes =  utils.sizeOf(new File(path));
-		Date starttime = new Date();
+		
 		
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 		{
@@ -704,14 +722,7 @@ public class ProjectManager implements CatalogEnabled
 		}
 		
 		
-		long finalbytes =  utils.sizeOf(new File(path));
-
-		if(finalbytes == totalbytes){
-			ContentItem item = inArchive.getPageManager().getRepository().getStub(inImportPath);
-			inArchive.getPageManager().getRepository().remove(item);
-		} else{
-			throw new OpenEditException("File sizes were not identical before and after import, collection has changed.  Before: " + totalbytes + "After: " + finalbytes);
-		}
+		
 	}
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
 	{
