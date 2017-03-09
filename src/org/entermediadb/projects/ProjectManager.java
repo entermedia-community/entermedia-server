@@ -710,7 +710,7 @@ public class ProjectManager implements CatalogEnabled
 			ContentItem item = inArchive.getPageManager().getRepository().getStub(inImportPath);
 			inArchive.getPageManager().getRepository().remove(item);
 		} else{
-			throw new OpenEditException("File sizes were not identical before and after import, collection has changed.");
+			throw new OpenEditException("File sizes were not identical before and after import, collection has changed.  Before: " + totalbytes + "After: " + finalbytes);
 		}
 	}
 	public Category getRootCategory(MediaArchive inArchive, String inCollectionId)
