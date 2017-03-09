@@ -1,6 +1,8 @@
 <properties>
 	<property id="id" index="true" stored="true"  keyword="true" >ID</property>
 	<property id="name" index="true" stored="true"  keyword="true" >Name</property>
-	<property id="date" stored="true"  index="true"  editable="true" datatype="date">Date</property>
+	<property id="date" stored="true"  index="true"  editable="true" datatype="date">Start Date</property>
+	<property id="folder" stored="true"  index="true" editable="true">Folder</property>	
 	<property id="site" stored="true"  index="true" datatype="list" editable="true">Site ID</property>
+	<property id="snapshotstatus" stored="true"  index="true" datatype="list" editable="true">Site Status</property>
 </properties>

@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +10,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.events.PathEvent;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.openedit.Data;
@@ -21,6 +23,7 @@ import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
 import org.openedit.page.manage.PageManager;
+import org.openedit.util.DateStorageUtil;
 
 public class MediaAdminModule extends BaseMediaModule
 {
@@ -353,10 +356,23 @@ public class MediaAdminModule extends BaseMediaModule
 		String siteid = inReq.getRequestParameter("id");
 		Data site = getSearcherManager().getData("system","site",siteid);
 
-		MediaArchive archive = getMediaArchive(site.get("catalogid"));
-		archive.fireSharedMediaEvent("data/exportdatabase");
+		Searcher snaps = getSearcherManager().getSearcher("system", "snapshots");
+		Data snapshot = snaps.createNewData();
+		String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
+		snapshot.setValue("folder", folder);
 		
+		snapshot.setName(folder);
+		snapshot.setValue("site", siteid);
+		snapshot.setValue("snapshotstatus","pendingexport");
+		snaps.saveData(snapshot);
+		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+		manager.runSharedPathEvent("/system/events/data/exportsite.html");
+
+		//PathEvent event = manager.getPathEvent("/system/events/data/exportsite.html");
 		inReq.putPageValue("site", site);
+		
+		inReq.putPageValue("snapshot", snapshot);
+
 	}
 
 }

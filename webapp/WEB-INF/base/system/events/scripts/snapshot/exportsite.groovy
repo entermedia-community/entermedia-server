@@ -12,17 +12,63 @@ import org.openedit.data.SearcherManager
 import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
 import org.openedit.util.DateStorageUtil
-import org.openedit.util.PathUtilities
 
 
-public void init(){
+public void init()
+{
 
-	MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
+	Searcher snapshotsearcher = searcherManager.getSearcher("system", "sitesnapshot");
+	HitTracker exports = snapshotsearcher.query().match("snapshotstatus","pendingexport").search();
+	
+	//Link files in the FileManager. Keep exports in data/system
+	for(Data snapshot:exports)
+	{
+		snapshot.setValue("snapshotstatus", "exporting"); //Like a lock
+		Searcher sitesearcher = searcherManager.getSearcher("system", "site");
+		Data site = sitesearcher.query().match("id", snapshot.get("site")).searchOne(); 
+		String catalogid =  site.get("catalogid");
+		MediaArchive mediaarchive = (MediaArchive)moduleManager.getBean(catalogid,"mediaArchive");
+		
+		snapshotsearcher.saveData(snapshot);
+		export(mediaarchive, snapshot);
+		snapshot.setValue("snapshotstatus", "complete");
+		snapshotsearcher.saveData(snapshot);
+		
+	}
+	
+
+	
+
+	/*  Do this based on the database as a seperate script
+	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
+	Collections.reverse(paths);
+	int keep = 0;
+	for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+	{
+		String path = (String) iterator.next();
+		if( PathUtilities.extractFileName(path).length() == 19)
+		{
+			keep++;
+			if( keep > 100 )
+			{
+				Page page = mediaarchive.getPageManager().getPage(path);
+				mediaarchive.getPageManager().removePage(page);
+			}
+		}
+	}
+	*/
+
+
+}
+
+
+public void export(MediaArchive mediaarchive, Data inSnap)
+{
+	String folder = inSnap.get("folder");
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
 	List searchtypes = archive.listSearchTypes();
 
-	String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
 	String rootfolder = "/WEB-INF/data/" + mediaarchive.getCatalogId() + "/dataexport/" + folder;
 	String catalogid = mediaarchive.getCatalogId();
 	log.info("Exporting " + rootfolder);
@@ -144,28 +190,7 @@ public void init(){
 		}
 	}
 
-	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
-	Collections.reverse(paths);
-	int keep = 0;
-	for (Iterator iterator = paths.iterator(); iterator.hasNext();)
-	{
-		String path = (String) iterator.next();
-		if( PathUtilities.extractFileName(path).length() == 19)
-		{
-			keep++;
-			if( keep > 100 )
-			{
-				Page page = mediaarchive.getPageManager().getPage(path);
-				mediaarchive.getPageManager().removePage(page);
-			}
-		}
-	}
-
-
 }
-
-
-
 
 
 
