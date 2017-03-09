@@ -5,14 +5,33 @@
    <div class="ui-widget-header">[[Imported]]</div>
    <div class="ui-widget-content">
 	
-
+#if(!$errormsg)
 		<div class="alert alert-success">
 		  <strong>Import complete</strong>
  
 		</div> 
 
 		 <a href="$home$apphome/views/modules/librarycollection/media/${collectionid}.html">[[Review your changes]]</a>
-					
+#else
+
+<div class="alert alert-danger">
+		  <strong>Import failed to complete.</strong>
+ 
+		</div> 
+<a class="btn btn-primary" role="button" data-toggle="collapse" href="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Show full error</a>
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  Show Full Error
+</button>
+<div class="collapse" id="collapseExample">
+  <div class="well">
+$e.printStackTrace()
+
+  </div>
+</div>
+
+
+#end					
 
 </div>
 	
