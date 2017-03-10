@@ -1,4 +1,4 @@
-<div>
+<div id="sitedetails">
 #set( $siteid = $context.getRequestParameter("siteid") )
 #set ($site = $searcherManager.getData("system","site",$siteid))
 <div class="wizard clearfix">
@@ -35,7 +35,7 @@
 	</div>
 <div class="scan" style="margin-top: 10px;margin-right: 0;">
 	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" data-confirm="[[Are you sure?]]"> Save </button>
-	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Site</a>
+	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=site&id=$site.id" data-confirm="[[Are you sure?]]">Delete Site</a>
 </div>
 
 </form>
@@ -52,7 +52,7 @@
 			<input type="hidden" id="list-sitevalue" name="siteid" value="$site.id" />  
 			<input type="hidden" name="oemaxlevel" value="1" />
 			#set( $detail = $searcher.getDetail("name"))
-			<select name="selectedsitesnapshot" style="min-width:200px;" class="listautocomplete selectautosubmit " data-listcatalogid="system" data-searchtype="sitesnapshot" data-foreignkeyid="site"  
+			<select name="selectedsitesnapshot" style="min-width:250px;" class="listautocomplete selectautosubmit " data-listcatalogid="system" data-searchtype="sitesnapshot" data-foreignkeyid="site"  
 				 data-placeholder="$detail.getText($context)" data-sortby="name" data-searchfield="name">
 
 #set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
@@ -62,9 +62,9 @@
 #end				 
 			</select>
 		</form>	
-		<div style="margin-left: 250px; margin-top: -20px;">
-			<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">New Snapshot</a>
-			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?id=$site.id&targetcatalogid=$site.catalogid">Import URL</a>
+		<div style="margin-left: 300px; margin-top: -20px;">
+			<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">Snapshot</a>
+			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">Import</a>
 		</div>
 		<div id="snapshotdetails">
 		$pages.include("./snapshotdetails.html")

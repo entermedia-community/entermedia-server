@@ -1,5 +1,6 @@
 package org.entermediadb.asset.modules;
 
+import java.io.File;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.events.PathEventManager;
+import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
@@ -24,6 +26,8 @@ import org.openedit.page.PageSettings;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
+import org.openedit.util.ZipUtil;
 
 public class MediaAdminModule extends BaseMediaModule
 {
@@ -437,7 +441,7 @@ public class MediaAdminModule extends BaseMediaModule
 //		inReq.putPageValue("snapshot", snapshot);
 		
 	}
-	public void downloadSnapshot(WebPageRequest inReq) throws Exception
+	public void zipSnapshot(WebPageRequest inReq) throws Exception
 	{
 		//ZipGenerator
 		//Check on the path and user
@@ -460,5 +464,39 @@ public class MediaAdminModule extends BaseMediaModule
 		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/" + snap.get("folder");
 		inReq.setRequestParameter("path", path);
 		
+		path = PathUtilities.extractDirectoryPath(path);
+		inReq.setRequestParameter("stripfolders",path);
+		
+	}
+	public void downloadSnapshot(WebPageRequest inReq) throws Exception
+	{
+	
+		String zip = inReq.getRequestParameter("url");
+		String folder = PathUtilities.extractFileName(zip);
+		
+		Page temp = getPageManager().getPage("/WEB-INF/temp/" + folder);
+		getPageManager().removePage(temp);
+		File outputFile = new File(temp.getContentItem().getAbsolutePath() );
+		new Downloader().download(zip, outputFile);
+
+		String siteid = inReq.getRequestParameter("siteid");
+		Data site = getSearcherManager().getData("system","site",siteid);
+		
+		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/";
+		ZipUtil util = new ZipUtil();
+		util.unzip(outputFile.getAbsolutePath(), getPageManager().getRepository().get(path).getAbsolutePath());
+
+		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+		Data snapshot = snaps.createNewData();
+		snapshot.setValue("folder", temp.getPageName());
+		snapshot.setName(temp.getPageName() + " downloaded");
+		snapshot.setValue("site", siteid);
+		snapshot.setValue("snapshotstatus","downloaded");
+		snaps.saveData(snapshot);
+		
+		//PathEvent event = manager.getPathEvent("/system/events/data/exportsite.html");
+		inReq.putPageValue("site", site);
+		
+		inReq.putPageValue("snapshot", snapshot);
 	}
 }

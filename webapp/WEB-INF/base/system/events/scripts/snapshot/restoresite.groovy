@@ -17,6 +17,7 @@ import org.openedit.data.SearcherManager
 import org.openedit.hittracker.HitTracker
 import org.openedit.modules.translations.LanguageMap
 import org.openedit.page.Page
+import org.openedit.page.PageSettings
 import org.openedit.page.manage.PageManager
 import org.openedit.util.DateStorageUtil
 import org.openedit.util.FileUtils
@@ -109,6 +110,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 		mediaarchive.getPageManager().copyPage(sitefolder, target);
 		
 		//TODO: Go fix the catalogid's and applicationids
+		fixXconfs(mediaarchive.getPageManager(),target,catalogid);
 	}
 	else
 	{
@@ -180,6 +182,25 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 		log.info("Import canceled");
 	}
 	mediaarchive.getSearcherManager().clear();
+}
+
+public void fixXconfs(PageManager pageManager, Page site,String catalogid)
+{
+	//Loop over apps
+	Collection paths = pageManager.getChildrenPaths(site.getPath());
+	for(String path:paths)
+	{
+		PageSettings settings = pageManager.getPageSettingsManager().getPageSettings(path + "/_site.xconf");
+		if( settings.exists() )
+		{
+			settings.setProperty("catalogid", catalogid);
+			String appid = site.getPath().substring(1) + "/" + PathUtilities.extractPageName(path);
+			settings.setProperty("applicationid", appid);
+			pageManager.getPageSettingsManager().saveSetting(settings);
+		}	
+	}
+	pageManager.clearCache();
+
 }
 
 public void archiveFolder(PageManager inManager, Page inPage, String inIndex) 

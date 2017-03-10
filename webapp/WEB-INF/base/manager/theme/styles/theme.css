@@ -400,7 +400,7 @@ table tr:hover {
 /* ==|== wizard ================================================= */
 
 .wizard {
-	width: 620px;
+	width: 720px;
 	margin: 10px auto;
 }
 .wizard-top {
@@ -412,7 +412,7 @@ table tr:hover {
     height: 40px;
     border: 1px solid #937B60;
     
-	width: 620px;
+	width: 720px;
 	height: 86px;
 	margin: 0;
 	padding: 0;
@@ -425,7 +425,7 @@ table tr:hover {
 }
 .wizard-body {
 	background: white;
-	width: 620px;
+	width: 720px;
 	margin: 0;
 	 border: 1px solid #937B60;
 }
@@ -453,13 +453,13 @@ table tr:hover {
     border: 1px solid #937B60;
     border-top: none;
     
-	width: 620px;
+	width: 720px;
 	margin: 0; 
 	padding: 30px 0 0 0;
 	text-align: center;
 }
 .app-option {
-	width: 620px;
+	width: 720px;
 	height: 100px;
 	border-bottom: 1px solid #a29484;
 }
@@ -945,7 +945,7 @@ div#folders.add .folder {
 	float: left;
 }
 .col8 {
-	width: 620px;
+	width: 720px;
 	padding: 0 10px;
 	float: left;
 }

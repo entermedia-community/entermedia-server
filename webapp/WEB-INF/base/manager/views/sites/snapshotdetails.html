@@ -3,11 +3,10 @@
 #set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
 #if($selectedsitesnapshotid)
 
-<div style="margin:20px;">
+<div style="margin:10px;">
 			#set( $snap = $searcherManager.getData("system","sitesnapshot",$selectedsitesnapshotid))
 			##Show edit form with save
 			<form action="./savesite.html" method="post" style="padding:20px;">
-			<h3>$snap Details</h3>
 		    #set($searcher = $searcherManager.getSearcher("system", "sitesnapshot"))
 			$context.putPageValue("searcher", $searcher)	 
 			$context.putPageValue("data", $snap)	 
@@ -23,13 +22,14 @@
 			
 			#set( $admin = $searcherManager.getData($site.get("catalogid") , "user", "admin"))
 			#set( $key = $userManager.getStringEncryption().getPasswordMd5($admin.getPassword()) )
-			#set( $url = "${context.siteRoot}/manager/views/sites/snapshots/download/${snap.getId()}.zip?entermedia.key=$key")
-			URL: <a href="$url">$url</a>
+			#set( $folder = $snap.get("folder"))
+			#set( $url = "${context.siteRoot}/manager/views/sites/snapshots/download/${snap.getId()}/${folder}.zip?entermedia.key=$key")
+			Download <a href="$url">URL:</a> <input size="50" value="$url"> 
 
 <div class="scan" style="margin-top: 10px;margin-right: 0;">
 	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > Save </button>
 <a class="mbtn emdialog" href="./snapshots/restore.html?snapid=$snap.id">Restore</a>
-	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Snapshot</a>
+	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=sitesnapshot&id=$snap.id" data-confirm="[[Are you sure?]]">Delete Snapshot</a>
 </div>
 
 

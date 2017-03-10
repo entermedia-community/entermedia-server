@@ -817,7 +817,7 @@ jQuery(document).ready(function()
 				{
 					
 					function fade(elem){
-						$(elem).delay(5000).fadeOut(5000, "linear");
+						$(elem).delay(6000).fadeOut(5000, "linear");
 					}
 					
 					$('#errordiv').stop(true, true).show().css('opacity', 1);

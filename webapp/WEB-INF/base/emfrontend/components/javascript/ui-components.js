@@ -298,7 +298,11 @@ uiload = function() {
 				
 
 			form.ajaxSubmit({
-				target:"#" + targetdiv
+				target:"#" + targetdiv,
+				error: function(data ) {
+					alert("error");
+					$("#" + targetdiv).html(data);
+				}
 			 });
 				
 			form.closest(".modal").modal("hide");

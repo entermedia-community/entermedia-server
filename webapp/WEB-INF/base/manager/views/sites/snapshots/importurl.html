@@ -1,12 +1,13 @@
+#set( $siteid = $context.getRequestParameter("siteid") )
+#set ($site = $searcherManager.getData("system","site",$siteid))
+
 <div id="eventeditpage">
 <div  class="ui-widget" style="overflow: hidden;">
 <div  class="ui-widget-content" > 
- 
- <form name="okform" action="$home$apphome/views/sites/snapshots/download.html">
-	<input name="id" value="$site.id" type="hidden"/>
-	Enter a URL for a snapshot image:
-	<input name="url"  />
-	
+ <form name="okform" id="okform" class="ajaxform" targetdiv="sitedetails" action="$home$apphome/views/sites/snapshotdownload.html">
+	<input name="siteid" value="$site.id" type="hidden"/>
+	Paste shared URL of snapshot image:
+	<input name="url"  size="100"/>
 	
 </form>
 

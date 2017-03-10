@@ -1,7 +1,7 @@
 <div id="oeadmin">
 	
 <h2 style="margin-top: 0; padding-top: 0;">[[Site Manager]]</h2>
-#set( $sortedlist = $searcherManager.getList("system","site") )
+#set( $sortedlist = $searcherManager.query("system","site").all().search() )
 
 <form name="upgradepicker" class="emrowpicker" action="$home$apphome/views/sites/viewsitedetails.html" target="_top" method="post">
 <input type="hidden" class="emselectedrow" name="siteid" />
