@@ -356,7 +356,19 @@ public class MediaAdminModule extends BaseMediaModule
 		String siteid = inReq.getRequestParameter("id");
 		Data site = getSearcherManager().getData("system","site",siteid);
 
-		Searcher snaps = getSearcherManager().getSearcher("system", "snapshots");
+		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+
+		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+
+		HitTracker exports = snaps.query().match("snapshotstatus","pendingexport").search();
+		if( exports.size() > 0)
+		{
+			inReq.putPageValue("status", "Snapshots are already pending");
+			manager.runSharedPathEvent("/system/events/snapshot/exportsite.html");
+			return;
+		}
+			
+		
 		Data snapshot = snaps.createNewData();
 		String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
 		snapshot.setValue("folder", folder);
@@ -365,8 +377,7 @@ public class MediaAdminModule extends BaseMediaModule
 		snapshot.setValue("site", siteid);
 		snapshot.setValue("snapshotstatus","pendingexport");
 		snaps.saveData(snapshot);
-		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
-		manager.runSharedPathEvent("/system/events/data/exportsite.html");
+		manager.runSharedPathEvent("/system/events/snapshot/exportsite.html");
 
 		//PathEvent event = manager.getPathEvent("/system/events/data/exportsite.html");
 		inReq.putPageValue("site", site);
@@ -375,4 +386,18 @@ public class MediaAdminModule extends BaseMediaModule
 
 	}
 
+	public void restoreSiteSnapshot(WebPageRequest inReq)
+	{
+		String snapid = inReq.getRequestParameter("snapid");
+		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+		Data snap = (Data)snaps.searchById(snapid);
+		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+
+		inReq.putPageValue("status", "Snapshots are already pending");
+		snap.setValue("snapshotstatus","pendingrestore");
+		snaps.saveData(snap);
+		manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
+		inReq.putPageValue("snapshot", snap);
+
+	}
 }

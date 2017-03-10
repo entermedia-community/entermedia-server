@@ -1,4 +1,4 @@
-package data;
+package snapshot;
 
 import org.dom4j.Attribute
 import org.dom4j.Element
@@ -9,67 +9,112 @@ import org.entermediadb.asset.util.Row
 import org.entermediadb.elasticsearch.ElasticNodeManager
 import org.openedit.Data
 import org.openedit.OpenEditException
-import org.openedit.data.*
+import org.openedit.data.PropertyDetail
+import org.openedit.data.PropertyDetails
+import org.openedit.data.PropertyDetailsArchive
+import org.openedit.data.Searcher
+import org.openedit.data.SearcherManager
+import org.openedit.hittracker.HitTracker
 import org.openedit.modules.translations.LanguageMap
 import org.openedit.page.Page
-import org.openedit.util.*
+import org.openedit.page.manage.PageManager
+import org.openedit.util.DateStorageUtil
+import org.openedit.util.FileUtils
+import org.openedit.util.PathUtilities
+import org.openedit.util.XmlUtil
 import org.openedit.xml.XmlFile
 
 public void init() 
 {
-	MediaArchive mediaarchive = context.getPageValue("mediaarchive");
-	String catalogid = context.findValue("catalogid");
+	SearcherManager searcherManager = context.getPageValue("searcherManager");
+	Searcher snapshotsearcher = searcherManager.getSearcher("system", "sitesnapshot");
+	HitTracker restores = snapshotsearcher.query().match("snapshotstatus","pendingrestore").search();
+	if( restores.isEmpty() )
+	{
+		log.info("No pending snapshotstatus  = pendingrestore");
+		return;
+	}
+	//Link files in the FileManager. Keep restores in data/system
+	for(Data snapshot:restores)
+	{
+		snapshot.setValue("snapshotstatus", "restoring"); //Like a lock
+		snapshotsearcher.saveData(snapshot);
+		Searcher sitesearcher = searcherManager.getSearcher("system", "site");
+		Data site = sitesearcher.query().match("id", snapshot.get("site")).searchOne();
+		log.info("restoring: " + site.get("rootpath"));
+		String catalogid =  site.get("catalogid");
+		MediaArchive mediaarchive = (MediaArchive)moduleManager.getBean(catalogid,"mediaArchive");
+		
+		snapshotsearcher.saveData(snapshot);
+		try
+		{
+			restore(mediaarchive, site,snapshot);
+			snapshot.setValue("snapshotstatus", "complete");
+		}
+		catch( Exception ex)
+		{
+			log.error(ex);
+			snapshot.setValue("snapshotstatus", "error");
+		}	
+		finally
+		{
+			mediaarchive.getSearcherManager().resetAlternative();
+		}
+		snapshotsearcher.saveData(snapshot);
+
+	}
+}
+
+public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
+{
+	String folder = inSnap.get("folder");
+
+	String catalogid = mediaarchive.getCatalogId();
 
 	ElasticNodeManager nodeManager = mediaarchive.getNodeManager();
 	Date date = new Date();
 	String tempindex =  nodeManager.toId(mediaarchive.getCatalogId().replaceAll("_", "") +  date.getTime());
 	nodeManager.prepareIndex(tempindex);
 
-	String rootdrive = null;
+	String rootfolder = "/WEB-INF/data/exports/" + mediaarchive.getCatalogId() + "/" + folder;
 
-	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
-	if( paths.isEmpty() ) {
-		log.info("No import folders found " + catalogid);
-		return;
-	}
-	Collections.reverse(paths);
-	rootdrive = (String)paths.iterator().next();
-	if( PathUtilities.extractPageName(rootdrive).size() != 19) 
+	Collection files = mediaarchive.getPageManager().getChildrenPaths(rootfolder);
+	if( files.isEmpty() ) 
 	{
-		log.error("Root drive invalid: " + rootdrive);
-		rootdrive = "/WEB-INF/data/" + catalogid + "/dataexport";
+		throw new OpenEditException("No files in " + rootfolder);
 	}
-
-	Page assets = mediaarchive.getPageManager().getPage(rootdrive + "/asset.csv");
-	if( !assets.exists() ) {
-		throw new OpenEditException("No asset.csv file in " + assets.getPath());
-	}
-
+	
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
 
-	Page lists = mediaarchive.getPageManager().getPage(rootdrive + "/lists/");
-
+	Page lists = mediaarchive.getPageManager().getPage(rootfolder + "/lists/");
+	
 	if(lists.exists()) {
 		Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/");
-		archiveFolder(target, tempindex);
+		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
 		mediaarchive.getPageManager().copyPage(lists, target);
 	}
-
-	Page views = mediaarchive.getPageManager().getPage(rootdrive + "/views/");
+	
+	Page views = mediaarchive.getPageManager().getPage(rootfolder + "/views/");
 	if(views.exists()) {
 		Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/views/");
-		archiveFolder(target, tempindex);
+		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
 		mediaarchive.getPageManager().copyPage(views, target);
 	}
-
-	List apps = mediaarchive.getPageManager().getChildrenPaths(rootdrive + "/application/");
-	apps.each {
-		Page page = mediaarchive.getPageManager().getPage(it);
-		Page target = mediaarchive.getPageManager().getPage("/" + page.getName() + "/"); //This is the top folder
-		archiveFolder(target, tempindex);
-		mediaarchive.getPageManager().copyPage(page, target);
+	
+	Page sitefolder = mediaarchive.getPageManager().getPage(rootfolder + "/site");
+	if( sitefolder.exists() )
+	{
+		Page target = mediaarchive.getPageManager().getPage(site.get("rootpath"));
+		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
+		mediaarchive.getPageManager().copyPage(sitefolder, target);
 	}
-
+	else
+	{
+		log.info(" site not included " + sitefolder.getPath());
+	}
+	
+	mediaarchive.getPageManager().clearCache();
+	
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
 	pdarchive.clearCache();
 
@@ -77,7 +122,7 @@ public void init()
 	ordereredtypes.add("category");
 
 	List childrennames = pdarchive.findChildTablesNames();
-	List searchtypes = pdarchive.getPageManager().getChildrenPaths(rootdrive + "/" );
+	List searchtypes = pdarchive.getPageManager().getChildrenPaths(rootfolder + "/" );
 	searchtypes.each {
 		if( it.endsWith(".csv")) {
 			String searchtype = PathUtilities.extractPageName(it);
@@ -100,18 +145,18 @@ public void init()
 	 }
 	 */
 	Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
-	archiveFolder(target, tempindex);
+	archiveFolder(mediaarchive.getPageManager(), target, tempindex);
 	
 	boolean deleteold = true;
 	ordereredtypes.each {
-		Page upload = mediaarchive.getPageManager().getPage(rootdrive + "/" + it + ".csv");
+		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + it + ".csv");
 		prepFields(mediaarchive,it,upload, tempindex); //Does this throw an exception?
 
 	}
 	pdarchive.clearCache();
-
+	
 	for( String type in ordereredtypes ) {
-		Page upload = mediaarchive.getPageManager().getPage(rootdrive + "/" + type + ".csv");
+		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + type + ".csv");
 		try{
 			if( upload.exists() ) {
 				importCsv(mediaarchive,type,upload, tempindex);
@@ -126,7 +171,7 @@ public void init()
 	
 	if(deleteold) 
 	{
-		importPermissions(mediaarchive,rootdrive, tempindex);
+		importPermissions(mediaarchive,rootfolder, tempindex);
 		nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
 	}
 	else {
@@ -135,24 +180,22 @@ public void init()
 	mediaarchive.getSearcherManager().clear();
 }
 
-public void archiveFolder(Page inPage, String inIndex) 
+public void archiveFolder(PageManager inManager, Page inPage, String inIndex) 
 {
 	if( inPage.exists() && "false" != inPage.get("cleanonimport"))
 	{
-		MediaArchive mediaarchive = context.getPageValue("mediaarchive");
-		Page trash = mediaarchive.getPageManager().getPage("/WEB-INF/trash/" + inIndex + "/" + inPage.getPath() );
-		log.info("Archiving " + trash.getPath());
-		mediaarchive.getPageManager().movePage(inPage, trash);
+		Page trash = inManager.getPage("/WEB-INF/trash/" + inIndex + inPage.getPath() );
+		inManager.movePage(inPage, trash);
 	}	
 }
 
-public void importPermissions(MediaArchive mediaarchive, String rootdrive, String tempindex) {
+public void importPermissions(MediaArchive mediaarchive, String rootfolder, String tempindex) {
 	Searcher sg = mediaarchive.getSearcher("settingsgroup");
 	sg.setAlternativeIndex(tempindex);
 	if( !sg.putMappings() ) {
 		throw new OpenEditException("Could not import permissions ");
 	}
-	Page upload = mediaarchive.getPageManager().getPage(rootdrive + "/lists/settingsgroup.xml");
+	Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/lists/settingsgroup.xml");
 	if( upload.exists() ) {
 		XmlUtil util = new XmlUtil();
 		Element root = util.getXml(upload.getReader(),"utf-8");
@@ -183,7 +226,7 @@ public void importPermissions(MediaArchive mediaarchive, String rootdrive, Strin
 	}
 	sg.reIndexAll();
 	sg.setAlternativeIndex(null);
-
+	log.info("Previous application and catalog backed up in /WEB-INF/trash/" + tempindex + "/");
 }
 
 
@@ -341,7 +384,7 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 
 	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
 	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); // checks time
-	if(settings.isExist()){
+	if(settings.isExist()){archiveFolder
 		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
 		olddetails = new PropertyDetails(pdarchive,searchtype);
 		olddetails.setInputFile(settings);
@@ -377,14 +420,4 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 	}
 }
 
-
-
-
-try{
-	init();
-} finally{
-	MediaArchive mediaarchive = context.getPageValue("mediaarchive");
-	mediaarchive.getSearcherManager().resetAlternative();
-
-
-}
+init();

@@ -4,7 +4,7 @@ Create new snapshot(version)
 
 List URL with last selected shown
 
-#set( $installedapplication = $context.getRequestParameter("id") )
+#set( $installedapplication = $context.getRequestParameter("siteid") )
 #set ($installedapp = $searcherManager.getData("system","installedapplications",$installedapplication))
 
 <div class="panel panel-default">

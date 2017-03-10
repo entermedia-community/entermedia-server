@@ -1,6 +1,33 @@
-<h2>Snapshot Details</h2>
+#set( $siteid = $context.getRequestParameter("siteid") )
+#set ($site = $searcherManager.getData("system","site",$siteid))
+#set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
+#if($selectedsitesnapshotid)
 
-Date Details
-<a class="mbtn" href="/manager/views/sites/addapp.html">Restore</a>
+<div style="margin:20px;">
+			#set( $snap = $searcherManager.getData("system","sitesnapshot",$selectedsitesnapshotid))
+			##Show edit form with save
+			<form action="./savesite.html" method="post" style="padding:20px;">
+			<h3>$snap Details</h3>
+		    #set($searcher = $searcherManager.getSearcher("system", "sitesnapshot"))
+			$context.putPageValue("searcher", $searcher)	 
+			$context.putPageValue("data", $snap)	 
+			$context.putPageValue("view", "sitesnapshot/edit")	
+			<input type="hidden" name="view" value="sitesnapshot/edit"/>
+			<input type="hidden" name="save" value="true"/>
+			<input type="hidden" name="id" value="$snap.id"/>
+			<input type="hidden" name="siteid" value="$site.id"/>
+			<input type="hidden" name="selectedsitesnapshot" value="$selectedsitesnapshotid" />
+			<input type="hidden" name="searchtype" value="sitesnapshot"/>
+			
+			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+<div class="scan" style="margin-top: 10px;margin-right: 0;">
+	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" data-confirm="[[Are you sure?]]"> Save </button>
+<a class="mbtn emdialog" href="./snapshots/restore.html?snapid=$snap.id">Restore</a>
+	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Snapshot</a>
+</div>
 
 
+			</form>				
+</div>
+#end

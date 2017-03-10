@@ -20,18 +20,23 @@ public void init()
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
 	Searcher snapshotsearcher = searcherManager.getSearcher("system", "sitesnapshot");
 	HitTracker exports = snapshotsearcher.query().match("snapshotstatus","pendingexport").search();
-	
+	if( exports.isEmpty() )
+		{
+			log.info("No pending snapshotstatus  = pendingexport");
+			return;
+		}
 	//Link files in the FileManager. Keep exports in data/system
 	for(Data snapshot:exports)
 	{
 		snapshot.setValue("snapshotstatus", "exporting"); //Like a lock
+		snapshotsearcher.saveData(snapshot);
 		Searcher sitesearcher = searcherManager.getSearcher("system", "site");
 		Data site = sitesearcher.query().match("id", snapshot.get("site")).searchOne(); 
 		String catalogid =  site.get("catalogid");
 		MediaArchive mediaarchive = (MediaArchive)moduleManager.getBean(catalogid,"mediaArchive");
 		
 		snapshotsearcher.saveData(snapshot);
-		export(mediaarchive, snapshot);
+		export(mediaarchive, site, snapshot);
 		snapshot.setValue("snapshotstatus", "complete");
 		snapshotsearcher.saveData(snapshot);
 		
@@ -63,13 +68,13 @@ public void init()
 }
 
 
-public void export(MediaArchive mediaarchive, Data inSnap)
+public void export(MediaArchive mediaarchive,Data inSite, Data inSnap)
 {
 	String folder = inSnap.get("folder");
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
 	List searchtypes = archive.listSearchTypes();
 
-	String rootfolder = "/WEB-INF/data/" + mediaarchive.getCatalogId() + "/dataexport/" + folder;
+	String rootfolder = "/WEB-INF/data/exports/" + mediaarchive.getCatalogId() + "/" + folder;
 	String catalogid = mediaarchive.getCatalogId();
 	log.info("Exporting " + rootfolder);
 	searchtypes.each{
@@ -175,20 +180,28 @@ public void export(MediaArchive mediaarchive, Data inSnap)
 		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/views/");
 		mediaarchive.getPageManager().copyPage(views, target);
 	}
-	
-	Collection apps = mediaarchive.getList("app");
-	for(Data app in apps)
+	String rootpath = inSite.get("rootpath");
+	Page site = mediaarchive.getPageManager().getPage(rootpath);
+	if (site.exists()) 
 	{
-		String deploypath = app.get("deploypath");
-		if(deploypath != null)
-		{
-			Page page = mediaarchive.getPageManager().getPage(deploypath);
-			if (page.exists()){
-				Page target = mediaarchive.getPageManager().getPage(rootfolder + "/application/" + deploypath);
-				mediaarchive.getPageManager().copyPage(page, target);
-			}
-		}
+		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/site");
+		mediaarchive.getPageManager().copyPage(site, target);
 	}
+	
+	
+//	Collection apps = mediaarchive.getList("app");
+//	for(Data app in apps)
+//	{
+//		String deploypath = app.get("deploypath");
+//		if(deploypath != null)
+//		{
+//			Page page = mediaarchive.getPageManager().getPage(deploypath);
+//			if (page.exists()){
+//				Page target = mediaarchive.getPageManager().getPage(rootfolder + "/application/" + deploypath);
+//				mediaarchive.getPageManager().copyPage(page, target);
+//			}
+//		}
+//	}
 
 }
 

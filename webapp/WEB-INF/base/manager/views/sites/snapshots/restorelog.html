@@ -1,8 +1,8 @@
 #set( $pathEventManager = $moduleManager.getBean("system","pathEventManager") )
-#set( $pathevent = $pathEventManager.getPathEvent("/system/events/snapshot/exportsite.html"))
+#set( $pathevent = $pathEventManager.getPathEvent("/system/events/snapshot/restoresite.html"))
 <div  id="eventstatus" class="ajaxstatus" 
 	#if($content == $page)data-ajaxrunning="true"#end 
-	ajaxpath="$home$apphome/views/sites/snapshots/log.html">
+	ajaxpath="$home$apphome/views/sites/snapshots/restorelog.html">
 
 #if( $pathevent.isRunning() )
 <b>[[run started]]: $pathevent.getFormattedLastRun()</b>
