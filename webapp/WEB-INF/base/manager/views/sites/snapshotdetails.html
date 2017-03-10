@@ -20,9 +20,14 @@
 			<input type="hidden" name="searchtype" value="sitesnapshot"/>
 			
 			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			
+			#set( $admin = $searcherManager.getData($site.get("catalogid") , "user", "admin"))
+			#set( $key = $userManager.getStringEncryption().getPasswordMd5($admin.getPassword()) )
+			#set( $url = "${context.siteRoot}/manager/views/sites/snapshots/download/${snap.getId()}.zip?entermedia.key=$key")
+			URL: <a href="$url">$url</a>
 
 <div class="scan" style="margin-top: 10px;margin-right: 0;">
-	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" data-confirm="[[Are you sure?]]"> Save </button>
+	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > Save </button>
 <a class="mbtn emdialog" href="./snapshots/restore.html?snapid=$snap.id">Restore</a>
 	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Snapshot</a>
 </div>

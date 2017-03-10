@@ -10,7 +10,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.events.PathEvent;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.workspace.WorkspaceManager;
 import org.openedit.Data;
@@ -23,6 +22,7 @@ import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
 import org.openedit.page.manage.PageManager;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
 public class MediaAdminModule extends BaseMediaModule
@@ -399,5 +399,66 @@ public class MediaAdminModule extends BaseMediaModule
 		manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
 		inReq.putPageValue("snapshot", snap);
 
+	}
+	
+	public void deploySite(WebPageRequest inReq) throws Exception
+	{
+		//make us a catalog id
+		//Download a snapshot? no use snapshots by URL to do that. Show a URL and allow paste of URL
+		String sitename = inReq.getRequestParameter("sitename");
+		
+		Searcher sites = getSearcherManager().getSearcher("system", "site");
+		Data site = sites.createNewData();
+		String rootpath = inReq.getRequestParameter("rootpath");
+		site.setValue("rootpath", rootpath);
+		
+		String catalogid = inReq.getRequestParameter("sitecatalogid");
+		if( catalogid == null)
+		{
+			catalogid = rootpath.substring(1) + "/catalog";
+		}
+		site.setValue("catalogid", catalogid);
+		site.setName(sitename);
+		sites.saveData(site);
+		inReq.setRequestParameter("siteid", site.getId());
+		
+//		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+//
+//		Data snapshot = snaps.createNewData();
+//		String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
+//		snapshot.setValue("folder", folder);
+//		snapshot.setName(folder + " site added"); //Init
+//		snapshot.setValue("site", site.getId());
+//		snapshot.setValue("snapshotstatus","pendingrestore");
+//		snaps.saveData(snapshot);
+//		
+//		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+//		manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
+//		inReq.putPageValue("snapshot", snapshot);
+		
+	}
+	public void downloadSnapshot(WebPageRequest inReq) throws Exception
+	{
+		//ZipGenerator
+		//Check on the path and user
+		//Cancel if not the right user. Otherwise put in as temp user varible
+		String key = inReq.getRequestParameter("entermedia.key");
+		User admin = getUserManager(inReq).getUser("admin");
+		String hash = getUserManager(inReq).getStringEncryption().getPasswordMd5(admin.getPassword());
+		if (!key.equals(hash))
+		{
+			inReq.redirect("/manager/");
+			log.error("Invalid key");
+			return;
+		}
+		inReq.setUser(admin);
+
+		String snapid = inReq.getContentPage().getDirectoryName();
+		Data snap = getSearcherManager().getData("system", "sitesnapshot",snapid);
+		Data site = getSearcherManager().getData("system", "site", snap.get("site"));
+
+		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/" + snap.get("folder");
+		inReq.setRequestParameter("path", path);
+		
 	}
 }

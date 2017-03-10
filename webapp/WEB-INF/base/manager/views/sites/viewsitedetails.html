@@ -27,9 +27,9 @@
 	
 	<div id="shares">
 	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
-
-#set( $admin = $searcherManager.getData($site.id , "user", "admin"))
-<p><b>[[Admin Password Hash]]</b>: $admin.password
+<br>
+#set( $admin = $searcherManager.getData($site.get("catalogid") , "user", "admin"))
+<p><b>[[Admin Hash]]</b>: $admin.password
 ##<p><b>[[Admin Password]]</b>: $userManager.decryptPassword($admin)
 
 	</div>
@@ -64,6 +64,7 @@
 		</form>	
 		<div style="margin-left: 250px; margin-top: -20px;">
 			<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">New Snapshot</a>
+			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?id=$site.id&targetcatalogid=$site.catalogid">Import URL</a>
 		</div>
 		<div id="snapshotdetails">
 		$pages.include("./snapshotdetails.html")

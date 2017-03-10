@@ -107,6 +107,8 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 		Page target = mediaarchive.getPageManager().getPage(site.get("rootpath"));
 		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
 		mediaarchive.getPageManager().copyPage(sitefolder, target);
+		
+		//TODO: Go fix the catalogid's and applicationids
 	}
 	else
 	{

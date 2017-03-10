@@ -3,10 +3,10 @@
 
 	<div class="wizard clearfix">
 			<div class="wizard-top">
-				<h1>Add Application</h1>
+				<h1>Add Site</h1>
 			</div>
 			
-			<form name="adder" action="$home$apphome/views/sites/addappfinish.html">
+			<form name="adder" action="$home$apphome/views/sites/addsitefinish.html">
 				<input name="frontendid" value="${data.id}" type="hidden"/>
 				<input name="deploypath" value="$appcatalog.rootpath/$data.id" type="hidden"/>
 			<div class="wizard-body clearfix">
@@ -24,8 +24,15 @@ $data.longdescription
 				</div>				
 				<div class="app-info-content">
 					<p>
-				Label:
+				Label:<br>
 				<input name="sitename" value="$data.name" size="30" />
+<br><br>
+				Folder path:<br>
+				<input name="rootpath"  size="30" value="/mynewsite" /> 
+<br>
+				Catalog ID: (optional)<br>
+				<input name="sitecatalogid"  size="30" /> <i> i.e. mystuff/catalog</i>
+
 					</p>
 					<input type="submit" class="mbtn install-app" value="Save" />
 
