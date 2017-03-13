@@ -177,7 +177,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + type + ".csv");
 		try{
 			if( upload.exists() ) {
-				importCsv(mediaarchive,type,upload, tempindex);
+				importCsv(site, mediaarchive,type,upload, tempindex);
 			}
 		} catch (Exception e) {
 			deleteold=false;
@@ -267,7 +267,7 @@ public void importPermissions(MediaArchive mediaarchive, String rootfolder, Stri
 }
 
 
-public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
+public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
 
 	log.info("Importing data " + upload.getPath());
@@ -381,9 +381,9 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 				if( searchtype.equals("app") && detail.getId().equals("deploypath"))
 				{
 					int inx= value.indexOf("/");
-					if( inx > 0)
+					if( inx > 1)
 					{
-						value = 		
+						value = site.get("rootpath") + value.substring(inx - 1);
 					}
 				}
 				newdata.setValue(detail.getId(), value);

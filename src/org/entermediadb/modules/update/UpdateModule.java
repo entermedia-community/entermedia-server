@@ -60,6 +60,8 @@ import org.openedit.page.PageSettings;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.Exec;
+import org.openedit.util.ExecResult;
 import org.openedit.util.FileUtils;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.PathUtilities;
@@ -856,4 +858,12 @@ public class UpdateModule extends BaseMediaModule {
 
 	}
 
+	public void restartDocker(WebPageRequest inReq) 
+	{
+		Exec exec = (Exec)getModuleManager().getBean("exec");
+		ExecResult res = exec.runExec("restartdocker", null, true);
+		log.info( "Restaring site: " + res.getStandardOut() );
+		inReq.putPageValue("result", res.getStandardOut());
+	}
+	
 }

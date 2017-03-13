@@ -29,10 +29,9 @@
 							  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
 							#end
 							</select>
-											#if($canaddnewlibrary)
-							
+							#if($canaddnewlibrary)
 							<a id="selectedlibraryadd" href="$home$apphome/components/libraries/addnewlibrary.html?searchtype=library&targetdiv=collectionpicker" title="[[Add Library]]" class="emdialog" style="display:none" >[[add]] $canaddnewcollection</a>
-				#end
+							#end
 					</form>
 				</td>	
 				<td id="collectionidui" style="padding-right:20px;">
