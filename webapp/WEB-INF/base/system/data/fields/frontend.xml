@@ -6,4 +6,5 @@
   <property id="caption" editable="true" index="true" stored="true">Caption</property>
   <property id="ordering" editable="true" index="true" stored="true">Ordering</property>
   <property id="longdescription" editable="true" index="true" stored="true">Description</property>
+  <property id="initurl" editable="true" index="true" stored="true">Init Snapshot</property>
 </properties>

@@ -397,7 +397,7 @@ public class MediaAdminModule extends BaseMediaModule
 		Data snap = (Data)snaps.searchById(snapid);
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
 
-		inReq.putPageValue("status", "Snapshots are already pending");
+		inReq.putPageValue("status", "Snapshots are pending");
 		snap.setValue("snapshotstatus","pendingrestore");
 		snaps.saveData(snap);
 		manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
@@ -410,6 +410,7 @@ public class MediaAdminModule extends BaseMediaModule
 		//make us a catalog id
 		//Download a snapshot? no use snapshots by URL to do that. Show a URL and allow paste of URL
 		String sitename = inReq.getRequestParameter("sitename");
+
 		
 		Searcher sites = getSearcherManager().getSearcher("system", "site");
 		Data site = sites.createNewData();
@@ -421,10 +422,38 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			catalogid = rootpath.substring(1) + "/catalog";
 		}
+		Searcher catsearcher = getSearcherManager().getSearcher("system", "catalog");
+		
+		Data catalog = (Data)catsearcher.searchById(catalogid);
+		if( catalog == null)
+		{
+			catalog = catsearcher.createNewData();
+			catalog.setId(catalogid);
+			catalog.setName(sitename);
+			catsearcher.saveData(catalog);
+		}
+		
 		site.setValue("catalogid", catalogid);
 		site.setName(sitename);
 		sites.saveData(site);
 		inReq.setRequestParameter("siteid", site.getId());
+
+		String frontendid = inReq.getRequestParameter("frontendid");
+		Data frontend= getSearcherManager().getData("system","frontend",frontendid);
+		String url = frontend.get("initurl");
+		if( url != null)
+		{
+			inReq.setRequestParameter("url", url);
+			Data snapshot = downloadSnapshot(inReq);
+			snapshot.setValue("snapshotstatus","pendingrestore");
+			Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+			snaps.saveData(snapshot);
+			PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
+			manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
+			inReq.putPageValue("snapshot", snapshot);
+		}
+		
+
 		
 //		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
 //
@@ -468,7 +497,7 @@ public class MediaAdminModule extends BaseMediaModule
 		inReq.setRequestParameter("stripfolders",path);
 		
 	}
-	public void downloadSnapshot(WebPageRequest inReq) throws Exception
+	public Data downloadSnapshot(WebPageRequest inReq) throws Exception
 	{
 	
 		String zip = inReq.getRequestParameter("url");
@@ -498,5 +527,6 @@ public class MediaAdminModule extends BaseMediaModule
 		inReq.putPageValue("site", site);
 		
 		inReq.putPageValue("snapshot", snapshot);
+		return snapshot;
 	}
 }

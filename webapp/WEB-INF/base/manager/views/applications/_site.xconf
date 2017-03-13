@@ -1,0 +1,7 @@
+<page>
+	<property name='managersection'>applications</property>
+
+	<page-action name="UpdateModule.listPlugins">
+	</page-action>
+
+</page>

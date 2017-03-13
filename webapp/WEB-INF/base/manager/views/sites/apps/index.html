@@ -1,0 +1,34 @@
+#set( $appcatalogid = $context.getRequestParameter("appcatalogid") )
+#set ($catalog = $searcherManager.getData("system","catalog",$appcatalogid))
+
+<div class="panel panel-default">
+  <div class="panel-heading section-title">
+           <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 	0px 15px 0 15px;">
+                 <span>$catalog Applications</span> 
+   </div>              
+  <div class="panel-body">
+
+   <ul class="fwlist" id="folders">
+
+	
+	#set( $apps = $searcherManager.getList($appcatalogid,"app") )
+	
+	#foreach( $app in $apps)
+	<li class="auto">
+       <a href="$home${app.deploypath}" class="app">
+           <img height="60" width="60" alt="$app" src="/manager/theme/images/folder.png" style="float:left; margin: -15px 15px 0 0;">
+           <div class="name" style="margin-left: 85px; margin-top: -12px;">
+               <div class="alias" style="font-size: 18px; font-weight: bold; margin-bottom: 4px;">$app</div>
+               <div class="path">${context.siteRoot}${app.deploypath}</div>
+               <div class="last-activity">
+               </div>
+           </div>
+       </a>
+	</li>
+	#end
+	</ul> 		
+</div>
+</div>   
+    
+
+		

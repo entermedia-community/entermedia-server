@@ -122,7 +122,7 @@ public void export(MediaArchive mediaarchive,Data inSite, Data inSnap)
 					}
 				}
 				writer.writeNext(headers);
-				log.info("about to start: " + searchtype + " " + hits.size() + "records");
+				log.info("exporting: " + searchtype + ": " + hits.size() + " records");
 
 				for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
 					hit =  iterator.next();

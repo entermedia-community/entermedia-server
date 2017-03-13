@@ -407,7 +407,7 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 
 	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
 	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); // checks time
-	if(settings.isExist()){archiveFolder
+	if(settings.isExist()){
 		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
 		olddetails = new PropertyDetails(pdarchive,searchtype);
 		olddetails.setInputFile(settings);

@@ -28,13 +28,15 @@
 	<div id="shares">
 	$pages.include("/${applicationid}/components/xml/detaileditorcss.html", $context)
 <br>
-#set( $admin = $searcherManager.getData($site.get("catalogid") , "user", "admin"))
+#set( $appcatalogid = $site.get("catalogid"))
+#set( $admin = $searcherManager.getData($appcatalogid , "user", "admin"))
 <p><b>[[Admin Hash]]</b>: $admin.password
 ##<p><b>[[Admin Password]]</b>: $userManager.decryptPassword($admin)
 
 	</div>
 <div class="scan" style="margin-top: 10px;margin-right: 0;">
-	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" data-confirm="[[Are you sure?]]"> Save </button>
+	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > Save </button>
+	<a class="mbtn" href="./apps/index.html?appcatalogid=$appcatalogid">View Apps</a>
 	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=site&id=$site.id" data-confirm="[[Are you sure?]]">Delete Site</a>
 </div>
 

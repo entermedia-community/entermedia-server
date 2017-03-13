@@ -1,0 +1,41 @@
+#set( $appcatalogid = $context.getRequestParameter("id"))
+#set( $data = $searcherManager.getData("system","catalog",$appcatalogid))
+
+	<div class="wizard clearfix">
+			<div class="wizard-top">
+				<h1>Add Application</h1>
+			</div>
+			
+			<form name="adder" action="$home$apphome/views/applications/addappfinish.html">
+				<input name="frontendid" value="${data.id}" type="hidden"/>
+				<input name="deploypath" value="$appcatalog.rootpath/$data.id" type="hidden"/>
+			<div class="wizard-body clearfix">
+				<div class="app-info">
+					<img class="app-store-icon" src="$home$themeprefix/images/folder.png" width="60" height="60" alt="$data.name" />
+					<div class="app-nameplate">
+						<div class="app-title">$data.name</div>
+						<div class="app-subtitle">$data.caption</div>
+					</div>
+				</div>
+				<div class="app-info-content">
+					<p>
+$data.longdescription						
+					</p>
+				</div>				
+				<div class="app-info-content">
+					<p>
+				Label:
+				<input name="sitename" value="$data.name" size="30" />
+					</p>
+					<input type="submit" class="mbtn install-app" value="Save" />
+
+				</div>				
+
+
+			</div>
+			
+			</form>
+			
+			<div class="wizard-bottom">
+			</div>
+		</div>
