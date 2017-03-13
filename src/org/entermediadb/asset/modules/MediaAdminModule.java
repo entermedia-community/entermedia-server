@@ -402,6 +402,11 @@ public class MediaAdminModule extends BaseMediaModule
 		snaps.saveData(snap);
 		manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
 		inReq.putPageValue("snapshot", snap);
+		
+		Data site = getSearcherManager().getData("system","site",snap.get("site"));
+
+		inReq.putPageValue("site", site);
+		
 
 	}
 	

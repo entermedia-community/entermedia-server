@@ -378,9 +378,18 @@ public void importCsv(MediaArchive mediaarchive, String searchtype, Page upload,
 			}
 			else
 			{
+				if( searchtype.equals("app") && detail.getId().equals("deploypath"))
+				{
+					int inx= value.indexOf("/");
+					if( inx > 0)
+					{
+						value = 		
+					}
+				}
 				newdata.setValue(detail.getId(), value);
 			}
 		}
+		
 		tosave.add(newdata);
 
 

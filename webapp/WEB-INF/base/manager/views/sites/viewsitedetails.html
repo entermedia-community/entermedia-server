@@ -55,7 +55,7 @@
 			<input type="hidden" name="oemaxlevel" value="1" />
 			#set( $detail = $searcher.getDetail("name"))
 			<select name="selectedsitesnapshot" style="min-width:250px;" class="listautocomplete selectautosubmit " data-listcatalogid="system" data-searchtype="sitesnapshot" data-foreignkeyid="site"  
-				 data-placeholder="$detail.getText($context)" data-sortby="name" data-searchfield="name">
+				 data-placeholder="$detail.getText($context)" data-sortby="nameDown" data-searchfield="name">
 
 #set( $selectedsitesnapshotid = $context.getRequestParameter("selectedsitesnapshot") )
 #if($selectedsitesnapshotid)
