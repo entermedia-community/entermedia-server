@@ -117,6 +117,20 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 		log.info(" site not included " + sitefolder.getPath());
 	}
 	
+	Page orig = mediaarchive.getPageManager().getPage(rootfolder + "/originals");
+	if( orig.exists() )
+	{
+		Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/originals/");
+		mediaarchive.getPageManager().copyPage(orig, target);
+	}
+
+	Page gen = mediaarchive.getPageManager().getPage(rootfolder + "/generated");
+	if( gen.exists() )
+	{
+		Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/generated/");
+		mediaarchive.getPageManager().copyPage(gen, target);
+	}
+
 	mediaarchive.getPageManager().clearCache();
 	
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
