@@ -572,43 +572,57 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		if (!getConnectedCatalogIds().containsKey(inCatalogId))
 		{
-
-			String alias = toId(inCatalogId);
-			String index = getIndexNameFromAliasName(alias);//see if we already have an index
-			AdminClient admin = getClient().admin();
-
-			//see if an actual index exists
-
-			if (index == null)
+			synchronized (this)
 			{
-				index = alias + "-0";
-			}
-			IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index); //see if 
-			IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
-			//			if (res.isExists() ){
-			//				index = alias;
-			//			}
-
-			getConnectedCatalogIds().put(inCatalogId, index);
-
-			boolean createdIndex = prepareIndex(index);
-			if (createdIndex)
-			{
-				if (!res.isExists())
+				if (!getConnectedCatalogIds().containsKey(inCatalogId))
 				{
-					admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
-				}
+					String alias = toId(inCatalogId);
+					
+					AdminClient admin = getClient().admin();
+					ClusterHealthResponse health = admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
 
-			}
-			//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
-			//			List sorted = archive.listSearchTypes();
-			//			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
-			//			{
-			//				String type = (String) iterator.next();
-			//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
-			//				searcher.initialize();	
-			//			}
-			return true;
+					if (health.isTimedOut())
+					{
+						throw new OpenEditException("Could not get yellow status for " + alias);
+					}
+
+					
+					String index = getIndexNameFromAliasName(alias);//see if we already have an index
+		
+					//see if an actual index exists
+		
+					if (index == null)
+					{
+						index = alias + "-0";
+					}
+					IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index); //see if 
+					IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
+					//			if (res.isExists() ){
+					//				index = alias;
+					//			}
+		
+		
+					boolean createdIndex = prepareIndex(index);
+					getConnectedCatalogIds().put(inCatalogId, index);
+					if (createdIndex)
+					{
+						if (!res.isExists())
+						{
+							admin.indices().prepareAliases().addAlias(index, alias).execute().actionGet();//This sets up an alias that the app uses so we can flip later.
+						}
+		
+					}
+					//			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+					//			List sorted = archive.listSearchTypes();
+					//			for (Iterator iterator = sorted.iterator(); iterator.hasNext();)
+					//			{
+					//				String type = (String) iterator.next();
+					//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
+					//				searcher.initialize();	
+					//			}
+					return true;
+				}	
+			}	
 		}
 		return false;//Created a ne
 	}
@@ -618,12 +632,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		AdminClient admin = getClient().admin();
 
-		ClusterHealthResponse health = admin.cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
-
-		if (health.isTimedOut())
-		{
-			throw new OpenEditException("Could not get yellow status for " + index);
-		}
+		
 		boolean indexexists = false;
 		//		AliasOrIndex indexToAliasesMap = admin.cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(alias);
 		//		if(indexToAliasesMap != null && !indexToAliasesMap.isAlias()){

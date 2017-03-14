@@ -62,6 +62,7 @@ public void init()
 			mediaarchive.getSearcherManager().resetAlternative();
 		}
 		snapshotsearcher.saveData(snapshot);
+		mediaarchive.getSearcherManager().clear();		
 
 	}
 }
@@ -195,7 +196,6 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 	else {
 		log.info("Import canceled");
 	}
-	mediaarchive.getSearcherManager().clear();
 }
 
 public void fixXconfs(PageManager pageManager, Page site,String catalogid)

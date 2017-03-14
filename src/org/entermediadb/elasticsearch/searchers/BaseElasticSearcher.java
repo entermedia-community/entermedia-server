@@ -734,6 +734,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		catch (Throwable ex)
 		{
+			ex.printStackTrace();
 			throw new OpenEditException(ex);
 		}
 
