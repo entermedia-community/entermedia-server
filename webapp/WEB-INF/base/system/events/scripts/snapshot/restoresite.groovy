@@ -200,11 +200,19 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 
 public void fixXconfs(PageManager pageManager, Page site,String catalogid)
 {
+	PageSettings settings = pageManager.getPageSettingsManager().getPageSettings(site.getPath() + "/_site.xconf");
+	if( settings.exists() )
+	{
+		settings.setProperty("catalogid", catalogid);
+		String appid = PathUtilities.extractPageName(site.getPath());
+		settings.setProperty("applicationid", appid);
+		pageManager.getPageSettingsManager().saveSetting(settings);
+	}
 	//Loop over apps
 	Collection paths = pageManager.getChildrenPaths(site.getPath());
 	for(String path:paths)
 	{
-		PageSettings settings = pageManager.getPageSettingsManager().getPageSettings(path + "/_site.xconf");
+		settings = pageManager.getPageSettingsManager().getPageSettings(path + "/_site.xconf");
 		if( settings.exists() )
 		{
 			settings.setProperty("catalogid", catalogid);
