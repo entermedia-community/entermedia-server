@@ -863,7 +863,7 @@ public class UpdateModule extends BaseMediaModule {
 		Exec exec = (Exec)getModuleManager().getBean("exec");
 		ExecResult res = exec.runExec("restartdocker", null, true);
 		log.info( "Restaring site: " + res.getStandardOut() );
-		inReq.putPageValue("result", res.getStandardOut());
+		inReq.putPageValue("result", res);
 	}
 	
 }
