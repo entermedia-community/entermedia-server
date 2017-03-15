@@ -788,6 +788,10 @@ public class UpdateModule extends BaseMediaModule {
 //		if (serverid == null) {
 //			serverid = "1";
 //		}
+		if(serverid == null){
+			 serverid = inReq.getRequestParameter("id");
+
+		}
 		PlugInFinder finder = (PlugInFinder) getPluginFinders().get(serverid);
 
 		if (finder == null) {
