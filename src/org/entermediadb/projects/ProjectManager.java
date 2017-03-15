@@ -413,6 +413,14 @@ public class ProjectManager implements CatalogEnabled
 			assetsearch.addExact("category", root.getId());
 		}
 		assetsearch.setEndUserSearch(true);
+		
+		if (assetsearch.getSortBy() == null)
+		{
+			String sort = inReq.findValue("asset" + "sortby");
+			assetsearch.setSortBy(sort);
+		}
+
+		
 		all = archive.getAssetSearcher().search(assetsearch);
 
 		String hpp = inReq.getRequestParameter("page");
