@@ -1,6 +1,9 @@
 package assets
 
+import java.util.Iterator
+
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.TimeParser
 import org.openedit.Data
@@ -35,11 +38,10 @@ public void archiveAssets(Data retentionpolicy, Collection assets)
 				log.info("Original did not exist to archive: ${asset.getSourcePath()}");
 			}
 		}
-		
 	}
-
 	
 }
+
 public void checkRules()
 {
 	Collection policies = mediaarchive.getList("retentionrules");
@@ -57,33 +59,77 @@ public void checkRules()
 	}
 }	
 
-String assetids = context.getRequestParameter("assetids");
-if( assetids == null)
+public boolean isEmpty( Page inParentFolder)
 {
-	checkRules();
-}
-else
-{
-	Collection hits = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
-	List assets = new ArrayList();
-	hits.each
+	boolean hasstuff = false;
+	Collection children = pageManager.getChildrenPaths(inParentFolder.getPath(),true);
+	for (Iterator iterator = children.iterator(); iterator.hasNext();)
 	{
-		Asset asset = mediaarchive.getAssetSearcher().loadData(it);
-		String policy = asset.get("retentionpolicy");
-		if( policy != null)
+		String childfolder =  iterator.next();
+		
+		Page node = pageManager.getPage(childfolder);
+		if( !node.isFolder() )
 		{
-			Data retentionpolicy = mediaarchive.getData("retentionrules",policy);
-			TimeParser parser = new TimeParser();
-			long daystokeep = parser.parse(retentionpolicy.expirationperiod);
-			Date cutoff = new Date(System.currentTimeMillis() -  daystokeep );
-			Date uploaddate = asset.getDate("assetaddeddate");
-			if( daystokeep == 0 || uploaddate.before(cutoff) )
+			hasstuff = true;
+		}
+		else if(!isEmpty(node))
+		{
+			hasstuff = true;
+		}
+	}
+	if( !hasstuff )
+	{
+		log.info("trim " + inParentFolder);
+		pageManager.removePage(inParentFolder);
+		return true;
+	}
+	return false;
+}
+
+
+
+public init()
+{
+	String assetids = context.getRequestParameter("assetids");
+	if( assetids == null)
+	{
+		checkRules();
+	}
+	else
+	{
+		Collection hits = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
+		List assets = new ArrayList();
+		hits.each
+		{
+			Asset asset = mediaarchive.getAssetSearcher().loadData(it);
+			String policy = asset.get("retentionpolicy");
+			if( policy != null)
 			{
-				assets.add(asset);	
-				archiveAssets(retentionpolicy, assets);
-				assets.clear();
+				Data retentionpolicy = mediaarchive.getData("retentionrules",policy);
+				TimeParser parser = new TimeParser();
+				long daystokeep = parser.parse(retentionpolicy.expirationperiod);
+				Date cutoff = new Date(System.currentTimeMillis() -  daystokeep );
+				Date uploaddate = asset.getDate("assetaddeddate");
+				if( daystokeep == 0 || uploaddate.before(cutoff) )
+				{
+					assets.add(asset);	
+					archiveAssets(retentionpolicy, assets);
+					assets.clear();
+				}
 			}
 		}
 	}
+	
+	//look auto archive folders and clean them up
+	Collection defaultcats = mediaarchive.getSearcher("categorydefaultdata").query().match("fieldname","retentionpolicy").search();
+	for( Data row : defaultcats)
+	{
+		Category root = mediaarchive.getCategory(row.get("categoryid"));
+		Page mountedpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + root.getCategoryPath());
+		log.info("checking for empty folders: " + mountedpath.getPath());
+		
+		isEmpty(mountedpath);
+	}
 }
 
+init();
