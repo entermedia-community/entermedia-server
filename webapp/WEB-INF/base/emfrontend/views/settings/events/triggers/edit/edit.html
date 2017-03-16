@@ -11,7 +11,7 @@
 <tr><td>Enabled:</td><td><input name="enabled"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/></td></tr>
 <tr><td>Event URL:</td><td>$pathevent.getPage().getPath()</td></tr>
 #if ( $pathevent.getFormattedLastRun()  )
-<tr><td>Last ran on: </td><td> $pathevent.getFormattedLastRun()</td></tr>
+<tr><td>Last ran on: </td><td> $!pathevent.getFormattedLastRun()</td></tr>
 #end 
  	
 </table>
