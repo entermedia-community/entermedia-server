@@ -786,9 +786,13 @@ showajaxstatus = function(uid)
 	{
 		var path = cell.attr("ajaxpath");
 		//console.log("Loading " + path );
-		jQuery.get(path, {}, function(data) {
-			cell.replaceWith(data); //jQuery will reinit this class
-		});
+		if( path && path.length > 1)
+		{
+			jQuery.get(path, {}, function(data) 
+			{
+				cell.replaceWith(data); //jQuery will reinit this class
+			});
+		}	
 	}
 }
 
