@@ -10,6 +10,18 @@
 	<input name="url"  size="100"/>
 	
 </form>
+<h2>Or</h2>
+<form name="uploadwizard0" id="uploadwizard0" method="post" enctype="multipart/form-data"  action="$home$apphome/views/sites/snapshots/uploadsnap.html">
+
+<input type="hidden" name="unzip" value="true" checked="true" />
+	Upload a zip file:<br><br>
+<input type="file" size="50" onchange='$("#uploadwizard0").submit();' name="file.0">
+<input type="hidden" id="path" name="path" value="/WEB-INF/data/exports/${site.rootfolder}/" >
+<input name="siteid" value="$site.id" type="hidden"/>
+
+</form>
+<hr>
+<h3>You will need to restore the snapshot after importing</h3>
 
 </div>
 </div>

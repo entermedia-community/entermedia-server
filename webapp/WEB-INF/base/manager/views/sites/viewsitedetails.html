@@ -65,11 +65,11 @@
 			</select>
 		</form>	
 		<div style="margin-left: 300px; margin-top: -20px;">
-			<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">Snapshot</a>
-			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">Import</a>
+			<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">Take Snapshot</a>
+			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">Import Zip</a>
 		</div>
 		<div id="snapshotdetails">
-		$pages.include("./snapshotdetails.html")
+		$pages.include("/manager/views/sites/snapshotdetails.html")
 		</div>
 	
 	</div>	

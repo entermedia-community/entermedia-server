@@ -11,6 +11,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.modules.update.Downloader;
 import org.entermediadb.workspace.WorkspaceManager;
@@ -542,5 +543,28 @@ public class MediaAdminModule extends BaseMediaModule
 		
 		inReq.putPageValue("snapshot", snapshot);
 		return snapshot;
+	}
+	public Data uploadSnapshot(WebPageRequest inReq) throws Exception
+	{
+		String siteid = inReq.getRequestParameter("siteid");
+		Data site = getSearcherManager().getData("system","site",siteid);
+		UploadRequest req = (UploadRequest)inReq.getPageValue("uploadrequest");
+		String filenam = req.getFirstItem().getName();
+		String folder = PathUtilities.extractPageName(filenam);
+		
+		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
+		Data snapshot = snaps.createNewData();
+		snapshot.setValue("folder", folder);
+		snapshot.setName(folder + " uploaded");
+		snapshot.setValue("site", siteid);
+		snapshot.setValue("snapshotstatus","downloaded");
+		snaps.saveData(snapshot);
+		
+		//PathEvent event = manager.getPathEvent("/system/events/data/exportsite.html");
+		inReq.putPageValue("site", site);
+		
+		inReq.putPageValue("snapshot", snapshot);
+		return snapshot;
+
 	}
 }
