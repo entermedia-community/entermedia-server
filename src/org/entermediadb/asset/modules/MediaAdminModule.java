@@ -450,7 +450,16 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			inReq.setRequestParameter("url", url);
 			Data snapshot = downloadSnapshot(inReq);
-			snapshot.setValue("snapshotstatus","pendingrestore");
+			Page root = getPageManager().getPage(rootpath);
+			if( root.exists() )
+			{
+				//dont mess with it
+				snapshot.setValue("snapshotstatus","downloaded");
+			}
+			else
+			{
+				snapshot.setValue("snapshotstatus","pendingrestore");
+			}
 			Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
 			snaps.saveData(snapshot);
 			PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
