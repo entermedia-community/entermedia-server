@@ -4395,7 +4395,7 @@ span.drag-and-drop {
     margin: 0;
     padding: 1px 0 2px 0;
     position: relative;
-    top: 5px;left 4px;
+    top: -4px;left 4px;
 }
 #module-dropdown.active span {
     background: url('../images/sort-asc.png') 0 0 no-repeat;
@@ -6542,6 +6542,43 @@ a.librarylabel .collectionlabel {
 	display: inline-block;
 	
 }
+
+a.collectioncrumb
+{
+	padding-left: 26px;
+	background: url("../images/icons/box.png") no-repeat scroll 4px 4px;
+	padding-top: 6px;
+	padding-bottom: 8px;
+	padding-right: 20px;
+	width: 85%;
+	display:inline-cell;
+	
+}
+a.librarycrumb
+{
+	padding-left: 30px;
+	background: url("../images/icons/book_5020.svg") no-repeat scroll 4px 4px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-right: 20px;	
+	width: 85%;
+	display:inline-cell;
+	
+}
+
+a.categorycrumb
+{
+	padding-left: 32px;
+	background: url("../images/icons/folder_755626.svg") no-repeat scroll 4px 4px;
+	padding-top: 8px;
+	padding-bottom: 8px;
+	padding-right: 0px;	
+	width: 85%;
+	display:inline-cell;
+	
+}
+
+
 .collectionclose
 {
 	display: inline-block;

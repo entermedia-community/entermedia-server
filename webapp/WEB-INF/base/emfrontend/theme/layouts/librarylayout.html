@@ -1,8 +1,12 @@
 #if( $selectedlibrary )
-	<div style="float:left;margin-top: 20px;">
-	$pages.include("$apphome/components/categories/crumbs.html?categoryid=$selectedlibrary.categoryid")
+	<div style="float:left;margin-top: 12px;margin-left: 10px">
+	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=${selectedlibrary.getId()}" title="View Library"><b>$selectedlibrary</b></a> 
+	#if( $selectedlibrary.categoryid )
+	<a class="categorycrumb" title="View Category" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$selectedlibrary.categoryid"> Library Folders </a>
+	#end	
 	</div>
-<div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
+
+<div id="collectiontoplevel" data-libraryid='${selectedlibrary.getId()}' data-catalogid='$catalogid'>
 		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=${selectedlibrary.getId()}" >[[Library Assets]]</a></li>

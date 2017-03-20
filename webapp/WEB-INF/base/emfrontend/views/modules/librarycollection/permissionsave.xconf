@@ -1,0 +1,16 @@
+<page>
+    <property name="defaulttab">permissionstab</property>
+	
+	<path-action name="DataEditModule.saveData" >
+			<property name="searchtype">category</property>
+	</path-action>
+	<property name="reloadprofile">true</property>
+	
+	<path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<searchtype>${module}</searchtype>
+			<idname>collectionid</idname>
+    </path-action>
+
+
+</page>

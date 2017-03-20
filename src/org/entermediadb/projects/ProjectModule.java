@@ -224,7 +224,7 @@ public class ProjectModule extends BaseMediaModule
 		String sessionId = all.getSessionId();
 		inReq.putSessionValue(sessionId,all);
 	}
-	protected Data loadCollection(WebPageRequest inReq)
+	public Data loadCollection(WebPageRequest inReq)
 	{
 		String collectionid = loadCollectionId(inReq);
 		if( collectionid != null)

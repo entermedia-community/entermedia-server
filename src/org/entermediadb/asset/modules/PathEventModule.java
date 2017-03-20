@@ -23,7 +23,7 @@ public class PathEventModule extends BaseModule
 	public boolean runEvent(WebPageRequest inReq)
 	{
 		String runpath = inReq.findValue("runpath");
-		Page page  = getPageManager().getPage(runpath,true);
+		//Page page  = getPageManager().getPage(runpath,true);
 		
 		//WebPageRequest child = inReq.copy(page);
 		
@@ -34,7 +34,7 @@ public class PathEventModule extends BaseModule
 	public void runSharedEvent(WebPageRequest inReq)
 	{
 		String runpath = inReq.findValue("runpath");
-		Page page  = getPageManager().getPage(runpath,true);
+		//Page page  = getPageManager().getPage(runpath,true);
 		
 		//WebPageRequest child = inReq.copy(page);
 		

@@ -1,18 +1,26 @@
 <div class="publishtabcontainer">
 	
 	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Library Permissions]] </div>
+		<div class="ui-widget-header">[[Collection Permissions]] </div>
 		<div class="ui-widget-content">
+
+
+#set( $selectedlibrary = $librarycol.getLibrary() )
 
 #set( $categoryid = $selectedlibrary.categoryid )
 
-#if( !$categoryid)
-No Category Set on Library
+#if( $categoryid)
+
+<a href="$home$apphome/views/modules/library/permissions.html?selectedlibrary=$selectedlibrary.getId()">Library Permissions</a>
+
 #end
 
-		<p>[[Choose what users can see the assets and collections within this library]]</p>
+
+#set( $categoryid = $librarycol.rootcategory )
+
+<p>[[Choose what users can see the assets and collections within this collection]]</p>
 		
-		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
 
 #set($viewid = "categorypermissions")
 #set($viewpath = "category/categorypermissions")
@@ -32,7 +40,7 @@ $context.putPageValue("data", $data )
     	<input name="save" type="hidden" value="true" />
     	<input name="id" type="hidden" value="$data.id" />
     	<input name="searchtype" type="hidden" value="$searcher.searchType" />
-    	<input name="selectedlibrary" type="hidden" value="$selectedlibrary.getId()" />
+    	<input name="collectionid" type="hidden" value="$librarycol.getId()" />
     	$context.putPageValue("view", "$searcher.searchType/$viewid")
 
 #set( $origURL = $context.getRequestParameter("origURL" ) )

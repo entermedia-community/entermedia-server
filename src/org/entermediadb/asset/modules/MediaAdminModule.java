@@ -521,14 +521,17 @@ public class MediaAdminModule extends BaseMediaModule
 		Page temp = getPageManager().getPage("/WEB-INF/temp/" + folder);
 		getPageManager().removePage(temp);
 		File outputFile = new File(temp.getContentItem().getAbsolutePath() );
+		log.info("downloading " + zip);
 		new Downloader().download(zip, outputFile);
+		log.info("downloading finished " + zip);
 
 		String siteid = inReq.getRequestParameter("siteid");
 		Data site = getSearcherManager().getData("system","site",siteid);
 		
 		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/";
 		ZipUtil util = new ZipUtil();
-		util.unzip(outputFile.getAbsolutePath(), getPageManager().getRepository().get(path).getAbsolutePath());
+		String abspath = getPageManager().getRepository().get(path).getAbsolutePath();
+		util.unzip(outputFile.getAbsolutePath(), abspath);
 
 		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
 		Data snapshot = snaps.createNewData();

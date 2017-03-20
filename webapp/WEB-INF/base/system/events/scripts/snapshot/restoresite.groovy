@@ -155,6 +155,9 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 	ordereredtypes.removeAll("propertydetail");
 	ordereredtypes.removeAll("lock");
 	ordereredtypes.removeAll("category");
+	ordereredtypes.removeAll("user");
+	ordereredtypes.removeAll("userprofile");
+	ordereredtypes.removeAll("group");
 	ordereredtypes.add(0,"category");
 
 	/*
@@ -164,12 +167,12 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 	 }
 	 */
 	Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
-	archiveFolder(mediaarchive.getPageManager(), target, tempindex);
+	archiveFolder(mediaarchive.getPageManager(), target, tempindex);  //Dele all existing fields
 	
 	boolean deleteold = true;
 	ordereredtypes.each {
 		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + it + ".csv");
-		prepFields(mediaarchive,it,upload, tempindex); //Does this throw an exception?
+		prepFields(mediaarchive,it,upload, tempindex); //only move fields over that have data we care about
 
 	}
 	pdarchive.clearCache();
@@ -421,24 +424,25 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 
 
 
-public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) {
+public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) 
+{
 
-
-	log.info("putMapping for " + upload.getPath());
+	log.info("save fields " + upload.getPath());
 	Row trow = null;
 	ArrayList tosave = new ArrayList();
 	String catalogid = mediaarchive.getCatalogId();
 
-
-
 	PropertyDetails olddetails = null;
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
+	pdarchive.clearCache();
+	
 	PropertyDetails details = pdarchive.getPropertyDetails(searchtype);
 
 
 	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
 	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); // checks time
-	if(settings.isExist()){
+	if(settings.isExist())
+	{
 		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
 		olddetails = new PropertyDetails(pdarchive,searchtype);
 		olddetails.setInputFile(settings);
@@ -465,12 +469,18 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 		toremove.each{
 			olddetails.removeDetail(it);
 		}
-
-
 		pdarchive.savePropertyDetails(olddetails, searchtype, null,  filename);
-
-
-
+		pdarchive.clearCache();
+	}
+	else
+	{
+		Page inputed = mediaarchive.getPageManager().getPage(filepath);
+		if( inputed.exists() )
+		{
+			String dest = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
+			Page target = mediaarchive.getPageManager().getPage(dest);
+			mediaarchive.getPageManager().copyPage(inputed, target);
+		}
 	}
 }
 

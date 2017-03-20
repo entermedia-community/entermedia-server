@@ -502,7 +502,7 @@ public class BasePushManager implements PushManager
 			}
 
 			//ContentType contentType = ContentType.create(HTTP.PLAIN_TEXT_TYPE, HTTP.UTF_8);
-			ContentType contentType = ContentType.create("text/plain", Charset.forName("UTF-8"));
+			//ContentType contentType = ContentType.create("text/plain", Charset.forName("UTF-8"));
 			//Charset set = Charset.forName("UTF-8");
 			
 //			parts.add(new BasicNameValuePair("username", account));

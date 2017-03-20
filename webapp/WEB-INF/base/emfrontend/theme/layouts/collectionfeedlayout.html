@@ -1,10 +1,13 @@
 #if( $librarycol )
-	<div style="float:left;margin-top: 20px;">
-	$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
+	<div style="float:left;margin-top: 12px;margin-left: 10px">
+	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=$librarycol.getLibrary().getId()" title="View Library">$librarycol.getLibrary()</a> 
+	<a class="collectioncrumb" href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" title="View Collection"><b>$librarycol</b></a>  
+	#if( $librarycol.rootcategory)
+	<a class="categorycrumb" title="View Folders" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$librarycol.rootcategory"> Folder </a>
+	#end
 	</div>
 
 	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
-	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
@@ -19,6 +22,10 @@
 		  #if($cansharecollection)
 		  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
 		  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Share]]</a></li>
+		  #end
+		  #if( $caneditdata)
+		   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+		  <li class="ui-corner-top" ><a id="permissionstab" href="$link" >[[Permissions]]</a></li>
 		  #end
 		  <li class="ui-corner-top" ><a id="settingstab" href="$editlink" >[[Settings]]</a></li>
 		</ul>
