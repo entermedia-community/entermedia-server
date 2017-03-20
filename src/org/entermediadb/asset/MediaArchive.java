@@ -37,6 +37,7 @@ import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
@@ -1796,5 +1797,10 @@ public class MediaArchive implements CatalogEnabled
 		return categories;
 		
 	}
+
 	
+	public QueryBuilder query(String inSearchType)
+	{
+		return getSearcher(inSearchType).query();
+	}
 }

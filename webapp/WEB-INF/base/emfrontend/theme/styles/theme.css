@@ -6573,9 +6573,13 @@ a.categorycrumb
 	padding-top: 8px;
 	padding-bottom: 8px;
 	padding-right: 0px;	
-	width: 85%;
 	display:inline-cell;
 	
+}
+
+a.categorycrumb.openfolder
+{
+	background: url("../images/icons/folder_755626open.svg") no-repeat scroll 4px 4px;
 }
 
 

@@ -3,7 +3,7 @@
 	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=$librarycol.getLibrary().getId()" title="View Library">$librarycol.getLibrary()</a> 
 	<a class="collectioncrumb" href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" title="View Collection"><b>$librarycol</b></a>  
 	#if( $librarycol.rootcategory)
-	<a class="categorycrumb" title="View Folders" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$librarycol.rootcategory"> Folder </a>
+	<a class="categorycrumb" title="View Folders" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$librarycol.rootcategory&nodeID=$librarycol.rootcategory"> Folder </a>
 	#end
 	</div>
 
