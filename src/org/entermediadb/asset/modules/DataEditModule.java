@@ -22,6 +22,7 @@ import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.location.GeoCoder;
 import org.entermediadb.location.Position;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.CompositeData;
@@ -1512,7 +1513,38 @@ public class DataEditModule extends BaseMediaModule
 		}
 	
 	}
+	public void saveView(WebPageRequest inReq) throws Exception
+	{
+		//XmlFile file = (XmlFile)loadView(inReq);
+		String catalogid = resolveCatalogId(inReq);
+		String type = resolveSearchType(inReq);
+		String items = inReq.getRequestParameter("items");
+		String[] sorted = MultiValued.VALUEDELMITER.split(items);	
+		
+		XmlFile file = (XmlFile)loadView(inReq);
+		String viewpath = inReq.getRequestParameter("viewpath");
+		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
+		file.setPath(path);
+		file.setElementName("property");
+		List tosave = new ArrayList();
+		for (int i = 0; i < sorted.length; i++)
+		{
+			Element sourceelement = file.getElementById(sorted[i]);
+			sourceelement.setParent(null);
+			tosave.add(sourceelement);
+		}
+		if(tosave.isEmpty())
+		{
+			throw new OpenEditException("Should not be removing all fields");
+		}
+		file.getElements().clear();
+		file.getElements().addAll(tosave);
+		getXmlArchive().saveXml(file, inReq.getUser());
+		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
 
+		//log.info(catalogid + type + items);
+		
+	}
 	public void moveFieldInView(WebPageRequest inReq) throws Exception
 	{
 		XmlFile file = (XmlFile)loadView(inReq);

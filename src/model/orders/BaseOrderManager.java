@@ -715,6 +715,14 @@ public class BaseOrderManager implements OrderManager {
 			{
 				log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
 				//error?
+				Date date = inOrder.getDate("date");
+				Date monthold = new Date(System.currentTimeMillis() - (1000*60*60*24*30));
+				if( date.before(monthold))
+				{
+					inOrder.setValue("orderstatus", "complete");
+					inOrder.setValue("orderstatusdetails", "order expired after one month");
+					saveOrder(archive.getCatalogId(), null, inOrder);
+				}
 				return;
 			}
 

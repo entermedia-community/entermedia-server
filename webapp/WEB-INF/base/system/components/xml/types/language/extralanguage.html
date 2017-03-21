@@ -9,9 +9,10 @@
 #set($usedlanguages = $context.getRequestParameters("usedlanguages") )
 <div class="languagesaddform">
 	<div class="languageselector">
-		<select class="select2 lenguagepicker" id="languages_${detailid}_${language_count}" name="${detailid}.language" data-count="$count" data-detailid="${detailid}">
+		<select class="select2 lenguagepicker" id="languages_${detailid}_${count}" name="${detailid}.language" data-count="$count" data-detailid="${detailid}">
 			#foreach($locale in $languages)
 			#if( !$usedlanguages.contains($locale.id))
+				#if( !$languagecode) #set( $languagecode = $locale.id) #end
 			<option value="$!locale.id" #if($!languagecode==$!locale.id) selected="selected" #end>$!locale</option>
 			#end
 			#end
@@ -23,7 +24,7 @@
 		#else 
 			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
 		#end
-		<input type="text" id="languages_${detailid}_${count}_value" #if($count == "1" && $detail.isRequired() && !$multiedit) class="required" #end name="${detailid}.language.${count}" value="$!map.getText($languagecode)" >
+		<input type="text" class="langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" value="$!map.getText($languagecode)" >
 	</div>
 	<div class='clearfix'></div>	
 </div>

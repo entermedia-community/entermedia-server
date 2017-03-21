@@ -11,6 +11,17 @@ jQuery(document).ready(function()
 	apphome = home + app.data("apphome");
 	themeprefix = app.data("home") + app.data("themeprefix");
 	
+	jQuery(document).on('change', ".lenguagepicker", function()
+	{
+		//Makes sure the name matches the new value
+		var select = $(this);
+		var div = $(this).closest(".languagesaddform");
+		var langinput = $(".langvalue",div);
+		var detailid = select.data("detailid");
+		var lang = select.val();
+		langinput.attr("name",detailid + "." +  lang + ".value" );
+	});
+	
 	
 	jQuery(".languagesavebtn").livequery('click', function(event){
 		event.stopPropagation();
@@ -49,15 +60,6 @@ jQuery(document).ready(function()
 	});
 });
 
-
-jQuery(document).on('change', ".lenguagepicker", function(){
-	var languagecode = $(this).val();
-	if (languagecode) {
-		var input_element = $(this).attr('id')+'_value';
-		var input_name = $(this).data("detailid")+'.'+languagecode;
-		$('#'+input_element).attr('name',input_name);
-	}
-});
 
 showPicker = function(detailid)
 {

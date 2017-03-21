@@ -12,28 +12,19 @@
 
 		#set( $viewtype = $detail.searchcomponent )
 		#if (!$viewtype)
-			#set( $viewtype = $detail.viewType )
-		#end
-		#if (!$viewtype)
-			#set ($viewtype = $detail.dataType)
-		#end
-		#if (!$viewtype || $viewtype == "text")
-			#set ($viewtype = "default")
-		#end
-		
-		#if (!$viewtype || $viewtype == "date")
-			#set ($viewtype = "datesearch")
-		#end
-
-		#if (!$viewtype || $viewtype == "textarea" || $viewtype == "html")
-			#set ($viewtype = "default")
-		#end
-
-		#if ($detail.isMultiLanguage() )
-			#set ($viewtype = "multilanguage")
-		#end
-
-
+			#if (!$viewtype)
+				#set( $viewtype = $detail.viewType )
+			#end
+			#if (!$viewtype)
+				#set ($viewtype = $detail.dataType)
+			#end
+			#if (!$viewtype || $viewtype == "text" || $detail.isMultiLanguage() || $viewtype == "textarea" || $viewtype == "html")
+				#set ($viewtype = "default")
+			#end
+			#if ($viewtype == "date")
+				#set ($viewtype = "datesearch")
+			#end
+		#end	
 
 		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
 				#if($detail.defaultoperation && $detail.defaultoperation != "")
@@ -57,6 +48,7 @@
 			$context.putPageValue("term",$term)			
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
+			$context.putPageValue("data",$hits.getSearchQuery())
 		#end	
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden">
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)

@@ -176,12 +176,13 @@
         <div class="clearfix"></div>
 	</li>
 #end
-
+</ul>
+<ul  class="sortviews" data-viewid="$viewid" data-catalogid="$catalogid" data-searchtype="$moduleid" data-assettype="$assettype" data-viewpath="$viewpath" data-path="$home$viewsroot/saveview.html">
 			#set($details = false)
 			#set($details =  $searcher.getDetailsForView($viewpath, $user))
 			#foreach( $element in $details)
 				#set( $pid = $element.id)
-				<li class="rowdraggable metadatadroppable" id="$pid" ><span class="drag-and-drop"></span>
+				<li id="viewid_$pid" ><span class="drag-and-drop"></span>
 					#if( $canviewsettings )
 					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#else	

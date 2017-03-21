@@ -4,8 +4,6 @@
 			#set($languages = $mediaarchive.getList("locale"))
 			#set($map = $data.getValue($detail.getId()))
 			#set($dlocale = $context.getLanguage() )
-			<input type="hidden" value="#esc($val)" name="$!{detailprefix}${detail.getId()}.value" /> ##if this really needed?
-			
 			#set($language_count = 0)
 			<div class="languageselector pull-left">
 				#foreach($locale in $languages)
@@ -23,7 +21,7 @@
 				<div id="languagesextra_${detail.id}" data-count='$language_count' ></div> 
 			</div>
 			
-			<div style="padding: 10px" class="pull-left"> ##TODO, update the parameters using jQuery
+			<div style="padding: 10px" class="pull-left">
 				<a class="languagesavebtn" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id=""><img src="$home$themeprefix/images/icons/addgray.png"></a>
 			</div>
 			
