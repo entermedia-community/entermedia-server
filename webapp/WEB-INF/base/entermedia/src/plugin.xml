@@ -2124,4 +2124,11 @@
 	</bean>
  	
  	
+ 	<bean id="resilioManager" class="org.entermediadb.resilio.ResilioManager" scope="prototype" >
+	
+	</bean>	
+ 	
+ 	
+ 	
+ 	
 </beans>
