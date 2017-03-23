@@ -1,0 +1,9 @@
+<properties>
+
+	<property id="resilio_url" value="http://localhost:8888">Resilio Remote Address (API must be installed and working) </property>
+	<property id="resilio_username" value="admin">Resilio Username Config </property>
+	
+	<property id="resilio_password" value="resilio123Sync!">Resilio Password </property>
+
+
+</properties>
