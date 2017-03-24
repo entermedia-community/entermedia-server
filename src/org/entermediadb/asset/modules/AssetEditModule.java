@@ -1349,11 +1349,11 @@ Change Collections to be normal categories path s and make createTree look at th
 			
 			// We're going to allow the metadata reader to replace this asset's properties
 			// but we want to keep old values the reader is not going to replace
+			archive.removeGeneratedImages(target, true);
 			getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(archive, itemFile, target);
 			target.setProperty("previewstatus", "converting");
 			archive.saveAsset(target, inReq.getUser());
 			
-			archive.removeGeneratedImages(target, true);
 			archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), target);
 			archive.fireSharedMediaEvent("conversions/runconversions");
 		}
