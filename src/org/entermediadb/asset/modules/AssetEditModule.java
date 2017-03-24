@@ -753,6 +753,8 @@ public class AssetEditModule extends BaseMediaModule
 		asset = archive.getAssetBySourcePath(asset.getSourcePath());
 		asset.setPrimaryFile(page.getName());
 		ContentItem item = archive.getOriginalContent(asset);
+		archive.removeGeneratedImages(asset,true);
+
 		getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(archive, item, asset);
 		asset.setProperty("editstatus", "1");
 		asset.setProperty("importstatus", "reimported");
@@ -763,7 +765,6 @@ public class AssetEditModule extends BaseMediaModule
 		
 		inReq.setRequestParameter("assetids",new String[]{asset.getId()});
 
-		archive.removeGeneratedImages(asset);
 		archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), asset);
 		archive.fireSharedMediaEvent("conversions/runconversions");
 		
