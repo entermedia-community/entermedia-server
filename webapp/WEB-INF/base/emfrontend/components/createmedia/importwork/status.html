@@ -1,0 +1,70 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+#set($folder = $resilioManager.getWorkingFolder($mediaarchive, $user.getId()))
+
+<div  id="eventstatus" #if($folder) class="ajaxstatus" #end #if( $content == $page)data-ajaxrunning="true"#end ajaxpath="$home$apphome/components/createmedia/importwork/index.html?collectionid=${collectionid}">
+
+#set($allowimport = true)
+
+#if($folder)
+#if($folder.up_eta != 0 || $folder.down_eta != 0)
+
+#set($allowimport = false)
+#end
+
+
+#end
+
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Import Work Changes]]</div>
+   <div class="ui-widget-content">
+   #if($folder)
+   
+Sending Files:  ${folder.up_status}% Complete
+<div class="progress">
+  <div class="progress-bar progress-bar-striped #if($folder.up_status != "100") active #end" role="progressbar" aria-valuenow="$folder.up_status" aria-valuemin="0" aria-valuemax="100" style="width: ${folder.up_status}%">
+    <span class="sr-only">${folder.up_status}% Complete</span>
+  </div>
+</div>
+
+   
+Receiving Files:    ${folder.down_status}% Complete
+<div class="progress">
+  <div class="progress-bar progress-bar-striped #if($folder.down_status != "100") active #end" role="progressbar" aria-valuenow="$folder.down_status" aria-valuemin="0" aria-valuemax="100" style="width: ${folder.down_status}%">
+    <span class="sr-only">${folder.up_status}% Complete</span>
+  </div>
+</div>
+
+
+	#end
+#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
+
+#if($allowimport)
+		<p>Import latest edits and changes from your working folder: </p>				
+				$user.id/${librarycol.getName()}/{timestamp}/
+					
+	<a id="importbutton" class="btn ajax"  targetdivinner="addcategoryform" href="$home$apphome/components/createmedia/importwork/import.html?collectionid=$librarycol.getId()&oemaxlevel=1">Import Latest Changes</a> 
+<div id="importmessage"></div>
+</div>
+	#else
+	[[Your working folder is still transfering.  Please wait for all file transfers to complete before importing]]
+	
+	#end
+	
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
+
+	</div>
+
+	
+	
+<script type="text/javascript">
+
+jQuery("#importbutton").on('click', function(){
+	
+	jQuery("#importbutton").attr('disabled','disabled');
+	jQuery("#importmessage").html("<b>[[Please Wait - Importing...]]");
+	
+});
+
+</script>
+
+</div>

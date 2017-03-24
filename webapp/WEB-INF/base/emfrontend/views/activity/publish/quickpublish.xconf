@@ -5,4 +5,8 @@
 	
 	<path-action name="OrderModule.updatePendingOrders"/>
 	<property name="sectiontitle">Publishing...</property>
+	<path-action name="DataEditModule.selectHits"/>
+		<property name="action">none</property>
+	
+	
 </page>

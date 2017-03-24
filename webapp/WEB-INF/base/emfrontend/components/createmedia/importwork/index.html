@@ -1,33 +1,3 @@
-#set( $collectionid = $context.getRequestParameter("collectionid") )
 
-<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
-   <div class="ui-widget-header">[[Import Work Changes]]</div>
-   <div class="ui-widget-content">
-	
-#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
+$pages.include("./status.html")
 
-
-		<p>Import latest edits and changes from your working folder: </p>				
-				$user.id/${librarycol.getName()}/{timestamp}/
-					
-	<a id="importbutton" class="btn ajax"  targetdivinner="addcategoryform" href="$home$apphome/components/createmedia/importwork/import.html?collectionid=$librarycol.getId()&oemaxlevel=1">Import Latest Changes</a> 
-<div id="importmessage"></div>
-</div>
-	
-	
-	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
-
-	</div>
-
-	
-	
-<script type="text/javascript">
-
-jQuery("#importbutton").on('click', function(){
-	
-	jQuery("#importbutton").attr('disabled','disabled');
-	jQuery("#importmessage").html("<b>[[Please Wait - Importing...]]");
-	
-});
-
-</script>
