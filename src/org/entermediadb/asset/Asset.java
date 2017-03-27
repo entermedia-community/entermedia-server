@@ -692,7 +692,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 				String[] vals = VALUEDELMITER.split((String) inValue);
 				inValue = Arrays.asList(vals);
 			}
-			log.info("saving keyword " + getId() + " " + inValue);
+			log.debug("saving keyword " + getId() + " " + inValue);
 		}
 		else if ("category-exact".equals(inKey) || "category".equals(inKey))
 		{
