@@ -518,7 +518,7 @@ public class MediaAdminModule extends BaseMediaModule
 		String folder = PathUtilities.extractFileName(zip);
 		
 		Page temp = getPageManager().getPage("/WEB-INF/temp/" + folder);
-		String foldername = temp.getPageName() + "U" + DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "HH-mm-ss");
+		String foldername = temp.getPageName() + "D" + DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "HH-mm-ss");
 
 		getPageManager().removePage(temp);
 		File outputFile = new File(temp.getContentItem().getAbsolutePath() );
@@ -562,10 +562,16 @@ public class MediaAdminModule extends BaseMediaModule
 		String filenam = req.getFirstItem().getName();
 		String folder = PathUtilities.extractPageName(filenam);
 		
+		Page source = getPageManager().getPage(req.getFirstItem().getSavedPage().getDirectory() + "/" + folder );
+		String foldername = folder + "U" + DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "HH-mm-ss");
+		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/" + foldername;
+		Page dest = getPageManager().getPage(path);
+		getPageManager().movePage(source,dest);
+		
 		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
 		Data snapshot = snaps.createNewData();
-		snapshot.setValue("folder", folder);
-		snapshot.setName(folder + " uploaded");
+		snapshot.setValue("folder", foldername);
+		snapshot.setName(foldername);
 		snapshot.setValue("site", siteid);
 		snapshot.setValue("snapshotstatus","downloaded");
 		snaps.saveData(snapshot);
