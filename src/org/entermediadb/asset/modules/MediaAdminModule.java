@@ -514,29 +514,36 @@ public class MediaAdminModule extends BaseMediaModule
 	}
 	public Data downloadSnapshot(WebPageRequest inReq) throws Exception
 	{
-	
 		String zip = inReq.getRequestParameter("url");
 		String folder = PathUtilities.extractFileName(zip);
 		
 		Page temp = getPageManager().getPage("/WEB-INF/temp/" + folder);
+		String foldername = temp.getPageName() + "U" + DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "HH-mm-ss");
+
 		getPageManager().removePage(temp);
 		File outputFile = new File(temp.getContentItem().getAbsolutePath() );
 		log.info("downloading " + zip);
 		new Downloader().download(zip, outputFile);
 		log.info("downloading finished " + zip);
 
+		//Unzip it to temp folder
+		ZipUtil util = new ZipUtil();
+		temp = getPageManager().getPage("/WEB-INF/temp/" + folder + "unzip/");
+		getPageManager().removePage(temp);
+		util.unzip(outputFile.getAbsolutePath(), temp.getContentItem().getAbsolutePath());
+		
+		
 		String siteid = inReq.getRequestParameter("siteid");
 		Data site = getSearcherManager().getData("system","site",siteid);
-		
-		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/";
-		ZipUtil util = new ZipUtil();
-		String abspath = getPageManager().getRepository().get(path).getAbsolutePath();
-		util.unzip(outputFile.getAbsolutePath(), abspath);
 
+		Page source = getPageManager().getPage("/WEB-INF/temp/" + folder + "unzip/" + PathUtilities.extractPageName(folder));
+		String path = "/WEB-INF/data/exports/" + site.get("catalogid") + "/" + foldername;
+		Page dest = getPageManager().getPage(path);
+		getPageManager().movePage(source, dest);
 		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
 		Data snapshot = snaps.createNewData();
-		snapshot.setValue("folder", temp.getPageName());
-		snapshot.setName(temp.getPageName() + " downloaded");
+		snapshot.setValue("folder", foldername);
+		snapshot.setName(foldername);
 		snapshot.setValue("site", siteid);
 		snapshot.setValue("snapshotstatus","downloaded");
 		snaps.saveData(snapshot);
