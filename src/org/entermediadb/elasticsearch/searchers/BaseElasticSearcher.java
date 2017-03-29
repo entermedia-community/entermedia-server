@@ -1831,14 +1831,25 @@ public class BaseElasticSearcher extends BaseSearcher
 		// everything.remove(".version"); // is this correct?
 		try
 		{
-			for (Iterator iterator = inDetails.getDetails().iterator(); iterator.hasNext();)
+			Map props = inData.getProperties();
+			for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
 			{
-				PropertyDetail detail = (PropertyDetail) iterator.next();
+				String propid = (String)iterator.next();
+				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
+				if( detail == null)
+				{
+					detail = getPropertyDetailsArchive().createDetail(propid, propid);
+					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
+					inDetails.add(detail);
+					if( !putMappings() )
+					{
+						throw new OpenEditException("could not map row of data " + propid + " rowid=" + inData.getId());
+					}
+				}
 				if (!detail.isIndex())
 				{
 					continue;
 				}
-
 				String key = detail.getId();
 				if (key == null)
 				{
@@ -2055,6 +2066,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				// log.info("Saved" + key + "=" + value );
 			}
 
+			/*
 			if (inDetails.isAllowDynamicFields())
 			{
 				Map props = inData.getProperties();
@@ -2077,6 +2089,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 				}
 			}
+			*/
 		}
 		catch (Exception ex)
 		{
