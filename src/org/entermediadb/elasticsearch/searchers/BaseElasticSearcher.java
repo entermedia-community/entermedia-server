@@ -1840,7 +1840,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
-					inDetails.add(detail);
+					inDetails.addDetail(detail);
 					if( !putMappings() )
 					{
 						throw new OpenEditException("could not map row of data " + propid + " rowid=" + inData.getId());
