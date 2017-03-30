@@ -1835,8 +1835,11 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
 			{
 				String propid = (String)iterator.next();
+				if(propid.contains(".")){
+					continue;
+				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
-				if( detail == null)
+				if( detail == null )
 				{
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
