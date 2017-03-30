@@ -16,15 +16,14 @@ public class ElasticLogSearcher extends BaseElasticSearcher   implements WebEven
 	
 	public void eventFired(WebEvent inEvent) {
 		Data entry = createNewData();
-		entry.setProperty("operation", inEvent.getOperation());
-		entry.setProperty("user", inEvent.getUsername());
+		entry.setValue("operation", inEvent.getOperation());
+		entry.setValue("user", inEvent.getUsername());
 		for (Iterator iterator = inEvent.keySet().iterator(); iterator
 				.hasNext();) {
 			String key = (String) iterator.next();
-			entry.setProperty(key, inEvent.get(key));
+			entry.setValue(key, inEvent.get(key));
 		}
-		entry.setProperty("date", DateStorageUtil.getStorageUtil()
-				.formatForStorage(inEvent.getDate()));
+		entry.setValue("date", inEvent.getDate());
 		saveData(entry, null);
 	}
 	
