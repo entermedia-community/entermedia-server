@@ -46,7 +46,7 @@
 	    </name>
 	</property>
 	<property id="error" >
-	<name>
+		<name>
 		<language id="en"><![CDATA[Error]]></language>
 		</name>
 	</property>
