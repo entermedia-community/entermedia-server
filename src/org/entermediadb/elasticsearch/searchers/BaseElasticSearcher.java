@@ -1842,7 +1842,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
-				if( detail == null && !propid.contains("sourcepath") )
+				if( detail == null )
 				{
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					setType(detail);
@@ -1855,7 +1855,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						log.info("Added new detail " + propid + " to " + getSearchType() +  " as " + detail.getDataType());
 					}
 				}
-				if (!detail.isIndex())
+				if (!detail.isIndex()) //&& !propid.contains("sourcepath")
 				{
 					continue;
 				}

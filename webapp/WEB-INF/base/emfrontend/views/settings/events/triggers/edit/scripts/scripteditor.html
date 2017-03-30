@@ -1,0 +1,10 @@
+<div style="background: #f7f7f7; border: 1px solid #ddd; padding: 20px 30px 10px 30px; border-radius: 5px; margin-bottom: 20px;">
+
+<form id="okform" name="save" targetdiv="scriptlist" method="post" action="$home$apphome/views/settings/events/triggers/edit/savescript.html">
+	<input name="eventpath" type="hidden" value="$pathevent.getPage().getPath()" />
+	
+	<textarea spellcheck="false" style="width: 97%; height: 300px; overflow: scroll; white-space: pre;" name="scriptcode">$script.getContent()</textarea>
+</form>	
+
+</div>
+

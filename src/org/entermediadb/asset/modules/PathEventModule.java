@@ -1,18 +1,17 @@
 package org.entermediadb.asset.modules;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.events.PathEvent;
 import org.entermediadb.events.PathEventManager;
-import org.openedit.Data;
 import org.openedit.WebPageRequest;
-import org.openedit.hittracker.HitTracker;
+import org.openedit.config.XMLConfiguration;
 import org.openedit.modules.BaseModule;
 import org.openedit.page.Page;
+import org.openedit.page.PageAction;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
 
@@ -86,11 +85,13 @@ public class PathEventModule extends BaseModule
 		inReq.putPageValue("pathevents", events);
 	}
 	
-	public void loadPathEvent(WebPageRequest inReq)
+	public PathEvent loadPathEvent(WebPageRequest inReq)
 	{
 		PathEventManager manager = getPathEventManager(inReq);
 		String eventPath = inReq.getRequestParameter("eventpath");
-		inReq.putPageValue("pathevent", manager.getPathEvent(eventPath));
+		PathEvent pathevent = manager.getPathEvent(eventPath);
+		inReq.putPageValue("pathevent", pathevent);
+		return pathevent;
 	}
 	public void removePathEvent(WebPageRequest inReq)
 	{
@@ -151,4 +152,60 @@ public class PathEventModule extends BaseModule
 		PathEvent event = manager.getPathEvent(eventPath);
 		event.clearLog();
 	}
+	public void loadScriptForEvent(WebPageRequest inReq)
+	{
+		PathEvent event = loadPathEvent(inReq);
+		String pathtoscript = findScriptName(event);
+		Page script = getPageManager().getPage(pathtoscript);
+		if( !script.exists() )
+		{
+			String catalogid = event.getPage().get("catalogid");
+			script = getPageManager().getPage("/" + catalogid + "/events/scripts/template.groovy");
+		}
+		inReq.putPageValue("script", script);
+	}
+	private String findScriptName(PathEvent event) {
+		String eventname = event.getPage().getPageName();
+		eventname = eventname + ".groovy";
+		
+		String folder = event.getPage().getDirectoryName();
+		String catalogid = event.getPage().get("catalogid");
+		String pathtoscript = "/" + catalogid + "/events/scripts/" + folder +"/"+ eventname ;
+
+		return pathtoscript;
+	}
+	public void saveScriptForEvent(WebPageRequest inReq)
+	{
+		PathEvent event = loadPathEvent(inReq);
+		String pathtoscript = findScriptName(event);
+		Page script = getPageManager().getPage(pathtoscript);
+		String  code = inReq.getRequestParameter("scriptcode");
+		getPageManager().saveContent(script, null,code, null);
+		inReq.putPageValue("script", script);
+		
+		PageSettings settings = event.getPage().getPageSettings();
+		if( settings.getFieldPathActions() == null || settings.getFieldPathActions().isEmpty() ) //Fix 
+		{
+			XMLConfiguration config = new XMLConfiguration("path-action");
+			config.setAttribute("name", "Script.run");
+			XMLConfiguration child = new XMLConfiguration("script");
+			String catalogid = event.getPage().get("catalogid");
+			pathtoscript = pathtoscript.replace(catalogid, "${catalogid}");
+			child.setValue(pathtoscript);
+			config.addChild(child);
+			PageAction action = new PageAction();
+			action.setConfig(config);
+			getPageManager().saveSettings(event.getPage());
+		}
+		getPageManager().clearCache(event.getPage());
+		
+		/**
+		 * 	<path-action name="Script.run"  allowduplicates="true">
+		<script>/${catalogid}/events/scripts/publishing/publishassets.groovy</script>
+	</path-action>
+
+		 */
+	}
+
+	
 }
