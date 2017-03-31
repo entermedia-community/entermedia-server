@@ -861,7 +861,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String searchtype = (String) iterator.next();
 			Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 			searcher.setAlternativeIndex(tempindex);//Should				
-			searcher.putMappings();
+			if( !searcher.putMappings() )
+			{
+				log.error("Could not map " + searchtype);
+			}
 			searcher.setAlternativeIndex(null);
 		}
 

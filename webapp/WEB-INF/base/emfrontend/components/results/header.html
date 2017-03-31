@@ -145,10 +145,13 @@ $context.putPageValue("hits",$hits)
 					<a class="table-edit-close">
 						<select name="resultview" id="selectresultview" class="smalldropdown" 
 							data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()">
-							<option value="table" #if( $resultview == "table") selected #end>[[Table]]</option>
-							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery]]</option>
-							<option value="stackedgallery" #if( $resultview == "stackedgallery") selected #end>[[Stacked]]</option>
-							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Folders]]</option>
+#set( $types = $mediaarchive.getList("resulttype"))
+#foreach($type in $types)
+							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
+#end
+##							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery]]</option>
+##							<option value="stackedgallery" #if( $resultview == "stackedgallery") selected #end>[[Stacked]]</option>
+##							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Folders]]</option>
 						</select>
 					</a>
 				</div>

@@ -1758,13 +1758,13 @@ public class DataEditModule extends BaseMediaModule
 		
 		//This does a search in a square for the range (+/- the range in both directions from the point
 
-	String rangeString = inReq.findValue("range");
+	String rangeString = inReq.findValue("range");  //distance in meters
 	if(rangeString  == null){
 		rangeString = "10000"; //10 Km default.  
 	}
-	String detailid = inReq.findValue("rangefield");
+	String detailid = inReq.findValue("rangefield");  //position
 	
-	String target = inReq.getRequestParameter(detailid + ".value");
+	String target = inReq.getRequestParameter(detailid + ".value");   //name of city
 
 	double range = Double.parseDouble(rangeString);
     range = range / 157253.2964;//convert to decimal degrees (FROM Meters)
