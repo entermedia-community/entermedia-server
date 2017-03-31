@@ -505,14 +505,17 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		loadPathEvent(htmlpage);
 	}
 
-	protected void loadPathEvent(String htmlpage)
+	public PathEvent loadPathEvent(String htmlpage)
 	{
 		Page eventpage = getPageManager().getPage(htmlpage, true);
 		PathEvent event = (PathEvent) getModuleManager().getBean("pathEvent");
 		event.setPage(eventpage);
 		//loadTask(event);
-		getPathEvents().add(event);
+		User user = (User)getSearcherManager().getData(getCatalogId(), "user", "admin");
+		event.setUser(user);
 
+		getPathEvents().add(event);
+		return event;
 	}
 	
 	public PathEvent getPathEvent(String inPath)

@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -14,6 +15,7 @@ import org.openedit.page.Page;
 import org.openedit.page.PageAction;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
+import org.openedit.users.User;
 
 public class PathEventModule extends BaseModule
 {
@@ -108,6 +110,10 @@ public class PathEventModule extends BaseModule
 		PathEventManager manager = getPathEventManager(inReq);
 		String eventPath = inReq.getRequestParameter("eventpath");
 		PathEvent event = manager.getPathEvent(eventPath);
+		if( event == null)
+		{
+			event = manager.loadPathEvent(eventPath);
+		}
 		String period = inReq.getRequestParameter("period");
 		event.setPeriod(period);
 		event.setDelay(inReq.getRequestParameter("delay"));
@@ -138,6 +144,7 @@ public class PathEventModule extends BaseModule
 		getPageManager().getPageSettingsManager().saveSetting(settings);
 		manager = getPathEventManager(inReq); 
 		manager.reload(eventPath);
+		inReq.putPageValue("pathevent", event);
 	}
 	
 	public void restartEvents(WebPageRequest inReq)
@@ -164,6 +171,17 @@ public class PathEventModule extends BaseModule
 		}
 		inReq.putPageValue("script", script);
 	}
+	public void deleteScriptForEvent(WebPageRequest inReq)
+	{
+		PathEvent event = loadPathEvent(inReq);
+		String pathtoscript = findScriptName(event);
+		Page script = getPageManager().getPage(pathtoscript);
+		if( script.exists() && !pathtoscript.startsWith("/WEB-INF/base") )
+		{
+			getPageManager().removePage(script);
+		}
+		loadScriptForEvent(inReq);
+	}
 	private String findScriptName(PathEvent event) {
 		String eventname = event.getPage().getPageName();
 		eventname = eventname + ".groovy";
@@ -184,17 +202,19 @@ public class PathEventModule extends BaseModule
 		inReq.putPageValue("script", script);
 		
 		PageSettings settings = event.getPage().getPageSettings();
-		if( settings.getFieldPathActions() == null || settings.getFieldPathActions().isEmpty() ) //Fix 
+		String catalogid = event.getPage().get("catalogid");
+		pathtoscript = pathtoscript.replace(catalogid, "${catalogid}");
+		if( !containsScript(settings,pathtoscript)) //Fix 
 		{
 			XMLConfiguration config = new XMLConfiguration("path-action");
 			config.setAttribute("name", "Script.run");
 			XMLConfiguration child = new XMLConfiguration("script");
-			String catalogid = event.getPage().get("catalogid");
-			pathtoscript = pathtoscript.replace(catalogid, "${catalogid}");
 			child.setValue(pathtoscript);
 			config.addChild(child);
-			PageAction action = new PageAction();
+			PageAction action = new PageAction("Script.run");
 			action.setConfig(config);
+			//settings.
+			settings.addPathAction(action);
 			getPageManager().saveSettings(event.getPage());
 		}
 		getPageManager().clearCache(event.getPage());
@@ -205,6 +225,23 @@ public class PathEventModule extends BaseModule
 	</path-action>
 
 		 */
+	}
+	protected boolean containsScript(PageSettings settings, String pathtoscript) 
+	{
+		for (Iterator iterator = settings.getPathActions().iterator(); iterator.hasNext();) 
+		{
+			PageAction action = (PageAction) iterator.next();
+			if( action.getActionName().equals("Script.run") )
+			{
+				String name = action.getConfig().getChildValue("script");
+				if( name != null && name.equals(pathtoscript))
+				{
+					return true;
+				}
+			}
+		}
+		
+		return false;
 	}
 
 	

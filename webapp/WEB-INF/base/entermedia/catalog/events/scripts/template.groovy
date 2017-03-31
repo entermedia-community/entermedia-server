@@ -2,6 +2,7 @@ package assets;
 
 import org.openedit.data.*;
 import org.entermediadb.asset.*;
+import org.openedit.hittracker.*;
 
 public void go()
 {

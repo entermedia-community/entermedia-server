@@ -224,9 +224,11 @@ runajaxonthis = function(inlink,e)
 					}
 					cell.html(data);
 					$(window).trigger( "resize" );
-				}
-
-			);
+				}).always(function()
+						{
+							//inlink.css("enabled",true);
+							inlink.removeAttr('disabled');
+						});		
 	}
 }
 runajax = function(e)
