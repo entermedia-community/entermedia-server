@@ -8,12 +8,12 @@
 	</property>
 	<property id="gallery" >
 	<name> 
-	      <language id="en"><![CDATA[Table]]></language>  
-	      <language id="es"><![CDATA[Tabla]]></language> 
+	      <language id="en"><![CDATA[Gallery]]></language>  
+	      <language id="es"><![CDATA[Galeria]]></language> 
 	      <language id="de"><![CDATA[Galerie]]></language> 
     </name>
 	</property>
-	<property id="stackedgallery" >Stacked
+	<property id="stackedgallery" >
 	
 	<name> 
 	      <language id="en"><![CDATA[Stacked]]></language>  
@@ -22,15 +22,14 @@
     </name>
 	</property>
 	
-	<property id="hierarchy" >Folders
+	<property id="hierarchy" >
 	<name> 
 	      <language id="en"><![CDATA[Folders]]></language>  
 	      <language id="es"><![CDATA[Carpetas]]></language> 
 	      <language id="de"><![CDATA[Ordner]]></language> 
     </name>
 	</property>
-	<property id="map" >Map
-	
+	<property id="map" >
 	<name> 
 	      <language id="en"><![CDATA[Map]]></language>  
 	      <language id="es"><![CDATA[Mapa]]></language> 

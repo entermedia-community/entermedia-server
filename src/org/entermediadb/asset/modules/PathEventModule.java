@@ -208,10 +208,12 @@ public class PathEventModule extends BaseModule
 		{
 			XMLConfiguration config = new XMLConfiguration("path-action");
 			config.setAttribute("name", "Script.run");
+			config.setAttribute("allowduplicates", "true");
 			XMLConfiguration child = new XMLConfiguration("script");
 			child.setValue(pathtoscript);
 			config.addChild(child);
 			PageAction action = new PageAction("Script.run");
+			
 			action.setConfig(config);
 			//settings.
 			settings.addPathAction(action);
