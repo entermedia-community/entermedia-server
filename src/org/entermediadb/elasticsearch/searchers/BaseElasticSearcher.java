@@ -1845,7 +1845,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				if( detail == null )
 				{
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
-					setType(detail);
+					//setType(detail);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
 					inDetails.addDetail(detail);
 					if( !putMappings() )
@@ -2111,19 +2111,19 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-	private void setType(PropertyDetail detail) {
-	
-		
-		
-		String catid = getElasticIndexId();
-		GetFieldMappingsRequest	 req = new GetFieldMappingsRequest().indices(catid).fields(detail.getId());
-		GetFieldMappingsResponse resp = getClient().admin().indices().getFieldMappings(req).actionGet();
-		Map data = resp.mappings();
-		Object mappings = data.get(catid);
-		if(mappings != null){
-			Map types = (Map) data.get("blah");
-		}
-	}
+//	private void setType(PropertyDetail detail) {
+//	
+//		
+//		
+//		String catid = getElasticIndexId();
+//		GetFieldMappingsRequest	 req = new GetFieldMappingsRequest().indices(catid).fields(detail.getId());
+//		GetFieldMappingsResponse resp = getClient().admin().indices().getFieldMappings(req).actionGet();
+//		Map data = resp.mappings();
+//		Object mappings = data.get(catid);
+//		if(mappings != null){
+//			Map types = (Map) data.get("blah");
+//		}
+//	}
 
 	private void checkMapping(String inKey) throws Exception
 	{
