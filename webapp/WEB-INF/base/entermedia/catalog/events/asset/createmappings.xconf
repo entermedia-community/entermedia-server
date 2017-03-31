@@ -2,7 +2,7 @@
 	<property name="eventname">Create Mappings</property>	
 	<property name="eventdescription">Create parent child mappings from tables</property>	
 		<path-action name="Script.run" allowduplicates="true" >
-		<script>/${catalogid}/events/scripts/assets/createmappings.groovy</script>
+		<script>/${catalogid}/events/scripts/asset/createmappings.groovy</script>
 	</path-action>
 	<property name="mappingtable">featuremapping</property>
 	<property name="parentfield">feature</property>

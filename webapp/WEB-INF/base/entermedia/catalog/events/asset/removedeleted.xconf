@@ -2,6 +2,6 @@
 	<property name="eventname">Remove deleted records > 1 month</property>	
 
 	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/assets/removedeletedassets.groovy</script>
+		<script>/${catalogid}/events/scripts/asset/removedeleted.groovy</script>
 	</path-action>
 </page>

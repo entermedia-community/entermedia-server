@@ -3,6 +3,6 @@
 	<property name="eventname">Archive By Retention</property>	
 
 	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/assets/archivefiles.groovy</script>
+		<script>/${catalogid}/events/scripts/asset/archivefiles.groovy</script>
 	</path-action>
 </page>

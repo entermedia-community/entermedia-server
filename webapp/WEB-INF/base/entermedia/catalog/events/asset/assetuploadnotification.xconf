@@ -2,6 +2,6 @@
 	<property name="eventname">Send Periodic Summary of Uploads</property>	
 
 	<path-action name="Script.run">
-		<script>/${catalogid}/events/scripts/notifications/assetuploadnotification.groovy</script>
+		<script>/${catalogid}/events/scripts/asset/assetuploadnotification.groovy</script>
 	</path-action>
 </page>

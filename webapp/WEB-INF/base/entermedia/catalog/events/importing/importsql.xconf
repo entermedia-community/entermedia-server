@@ -2,6 +2,6 @@
   <property name="eventname">Import From SQL</property>	
 
 	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/sql/importdata.groovy</script>
+		<script>/${catalogid}/events/scripts/sql/importsql.groovy</script>
 	</path-action>  
 </page>

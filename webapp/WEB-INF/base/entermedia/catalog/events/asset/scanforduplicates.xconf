@@ -4,6 +4,6 @@
 
 
 	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/assets/findduplicates.groovy</script>
+		<script>/${catalogid}/events/scripts/asset/findduplicates.groovy</script>
 	</path-action>
 </page>

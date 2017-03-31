@@ -2,7 +2,7 @@
 	<property name="virtual">true</property>
 	<path-action name="Script.run">
 		<script>
-			/${catalogid}/events/scripts/assets/finalizepull.groovy
+			/${catalogid}/events/scripts/asset/finalizepull.groovy
 		</script>
 	</path-action>
 </page>
