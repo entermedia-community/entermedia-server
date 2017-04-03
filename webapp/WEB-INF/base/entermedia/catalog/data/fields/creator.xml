@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="firstname" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+    <name> 
+      <language id="en"><![CDATA[firstname]]></language> 
+    </name> 
+  </property>  
+  <property id="lastname" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[lastname]]></language>
+    </name>
+  </property>
+</properties>

@@ -105,4 +105,21 @@
       <language id="fr"><![CDATA[créer Seule la première page dans les documents multipages]]></language>
     </name>
   </property> 
+  <!--  Data merge -->
+   <property id="attachments" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+    <name> 
+      <language id="en"><![CDATA[attachments]]></language> 
+    </name> 
+  </property>  
+  <property id="extension" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+    <name> 
+      <language id="en"><![CDATA[extension]]></language> 
+    </name> 
+  </property>  
+  <property id="watermark" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[watermark]]></language>
+    </name>
+  </property>
+  
 </properties>

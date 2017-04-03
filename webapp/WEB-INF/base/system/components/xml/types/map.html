@@ -1,3 +1,10 @@
+#set( $key = $mediaarchive.getCatalogSettingValue("google-maps-key"))
+#if( $key )
+<script type="text/javascript"   src="https://maps.googleapis.com/maps/api/js?key=$key&callback=${detail.id}_map" > </script>
+#else
+<script type="text/javascript"   src="https://maps.google.com/maps/api/js?sensor=false" > </script>
+#end
+<script type="text/javascript"  src="$apphome/components/javascript/jquery.ui.map.full.min.js">   </script>
 #set ($catalogid = $context.getRequestParameter('catalogid'))
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
 #set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
@@ -22,7 +29,7 @@
      <input type="hidden" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!lng"/>
 
   
-   Latitude: <input type="text" id="${detail.id}_latandlong" size="40" name="${detail.id}.value" value="$!latandlong"/>
+   Position: <input type="text" id="${detail.id}_latandlong" size="40" name="${detail.id}.value" value="$!latandlong"/>
 
 
 <script type="text/javascript">
