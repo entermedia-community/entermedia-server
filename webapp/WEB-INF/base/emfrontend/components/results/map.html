@@ -1,7 +1,19 @@
-I'm a map
-	#foreach($location in $hits.getAllHits())
-	$location.getValue("geo_point") $location
+$pages.include("$apphome/components/map/includes.html")
+
+
+
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
+#if( $hideheader &&  $hideheader != "true")
+	$pages.include("$apphome/components/results/header.html",$context) 
 #end
+
+
+
+
+
 <script type="text/javascript">
 
 jQuery(document).ready(function(){ 
@@ -15,7 +27,7 @@ $('#map').gmap({
 			'position': '$!location.geo_point'		    
 	 	}).click(function() {
 	 		var location = this;
-	 		jQuery.get("$apphome/views/modules/${module}/search/mapbubble.html?id=$location.id&sourcepath=$location.sourcepath", function (content){
+	 		jQuery.get("$apphome/components/map/mapbubble.html?id=$location.id", function (content){
 	 			$('#map').gmap('openInfoWindow', {'content': content}, location);
 
 	 		});
@@ -30,7 +42,11 @@ $('#map').gmap({
 
    
     </script>
+    
+    
+    
 <div id="map" align style="width: 100%; height: 750px;"></div>
 
 
 
+</div>
