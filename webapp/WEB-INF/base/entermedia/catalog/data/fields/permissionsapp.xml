@@ -41,4 +41,15 @@
       <language id="fr"><![CDATA[Commande]]></language>
     </name>
   </property> 
+  
+  <!--  Data merged -->
+    <property id="description" index="true" keyword="false" filter="false" stored="false" editable="false" sortable="true" defaultoperation="freeform">New
+    <name>
+      <language id="de"><![CDATA[All Fields]]></language>
+      <language id="en"><![CDATA[All Fields]]></language>
+      <language id="es"><![CDATA[Todos]]></language>
+      <language id="fr"><![CDATA[All Fields]]></language>
+    </name>
+  </property>
+  
 </properties>

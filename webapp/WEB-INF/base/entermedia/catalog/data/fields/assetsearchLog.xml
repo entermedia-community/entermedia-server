@@ -40,5 +40,37 @@
       <language id="es"><![CDATA[Fecha]]></language>
       <language id="fr"><![CDATA[Date]]></language>
     </name>
-  </property> 
+  </property>
+  <!--  Data Merge -->
+   <property id="catalogid" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true">New 
+    <name> 
+      <language id="de"><![CDATA[CatalogID]]></language>  
+      <language id="en"><![CDATA[CatalogID]]></language>  
+      <language id="es"><![CDATA[CatalogID]]></language>  
+      <language id="fr"><![CDATA[CatalogID]]></language> 
+    </name> 
+  </property>  
+  <property id="detailed" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+    <name> 
+      <language id="en"><![CDATA[detailed]]></language> 
+    </name> 
+  </property>  
+  <property id="sort" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true">New 
+    <name> 
+      <language id="de"><![CDATA[Standardsortierung]]></language>  
+      <language id="en"><![CDATA[Default Sort]]></language>  
+      <language id="es"><![CDATA[Ordenar por defecto]]></language>  
+      <language id="fr"><![CDATA[Par défaut Trier]]></language> 
+    </name> 
+  </property>  
+  <property id="operation" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true">New
+    <name>
+      <language id="de"><![CDATA[Betrieb]]></language>
+      <language id="en"><![CDATA[Operation]]></language>
+      <language id="es"><![CDATA[Operación]]></language>
+      <language id="fr"><![CDATA[Opération]]></language>
+    </name>
+  </property>
+  
+   
 </properties>

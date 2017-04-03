@@ -51,4 +51,13 @@
       <language id="fr"><![CDATA[URL de mise à niveau]]></language>
     </name>
   </property> 
+  
+  <!--  Dasta Merge -->
+  
+    <property id="href" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[href]]></language>
+    </name>
+  </property>
+  
 </properties>

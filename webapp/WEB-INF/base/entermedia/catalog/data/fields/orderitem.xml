@@ -85,4 +85,15 @@
       <language id="fr"><![CDATA[Preset]]></language>
     </name>
   </property> 
+  
+  <!--  Data Merge -->
+   <property id="status" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list" viewtype="list" listid="convertstatus">New
+    <name>
+      <language id="de"><![CDATA[Status]]></language>
+      <language id="en"><![CDATA[Status]]></language>
+      <language id="es"><![CDATA[Estado]]></language>
+      <language id="fr"><![CDATA[statut]]></language>
+    </name>
+  </property>
+  
 </properties>

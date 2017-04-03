@@ -17,4 +17,29 @@
       <language id="fr"><![CDATA[File Name]]></language>
     </name>
   </property> 
+  
+  <!--  Data Merge -->
+  
+    <property id="datatype" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list" listid="datadatatype">New 
+    <name> 
+      <language id="de"><![CDATA[Datentyp]]></language>  
+      <language id="en"><![CDATA[Data Type]]></language>  
+      <language id="es"><![CDATA[Tipo de datos]]></language>  
+      <language id="fr"><![CDATA[Type de données]]></language> 
+    </name> 
+  </property>  
+  <property id="previewtatus" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+    <name> 
+      <language id="en"><![CDATA[previewtatus]]></language> 
+    </name> 
+  </property>  
+  <property id="collectionid" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true">New
+    <name>
+      <language id="de"><![CDATA[Sammlung ID]]></language>
+      <language id="en"><![CDATA[Collection Id]]></language>
+      <language id="es"><![CDATA[colección Id]]></language>
+      <language id="fr"><![CDATA[Collection Id]]></language>
+    </name>
+  </property>
+  
 </properties>

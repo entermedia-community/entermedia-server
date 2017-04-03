@@ -185,4 +185,13 @@
       <language id="fr"><![CDATA[Utilisation de la saisie]]></language>
     </name>
   </property> 
+  
+ 
+  <!--  Data Merge -->
+    <property id="submitted" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[submitted]]></language>
+    </name>
+  </property>
+  
 </properties>

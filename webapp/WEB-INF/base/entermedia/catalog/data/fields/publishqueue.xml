@@ -113,4 +113,32 @@
       <language id="fr"><![CDATA[Remarques]]></language>
     </name>
   </property> 
+  
+  <!--  Data Merge  -->
+  <property id="rendertype" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list">New 
+    <name> 
+      <language id="de"><![CDATA[render-Typ]]></language>  
+      <language id="en"><![CDATA[Render Type]]></language>  
+      <language id="es"><![CDATA[render Tipo]]></language>  
+      <language id="fr"><![CDATA[type de rendu]]></language> 
+    </name> 
+  </property>  
+  <property id="sourcepath" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true" internalfield="false">New 
+    <name> 
+      <language id="de"><![CDATA[Source-Pfad]]></language>  
+      <language id="en"><![CDATA[Source Path]]></language>  
+      <language id="es"><![CDATA[Ruta de origen]]></language>  
+      <language id="fr"><![CDATA[Source Path]]></language> 
+    </name> 
+  </property>  
+  <property id="ordertype" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list" listid="order/ordertype">New
+    <name>
+      <language id="de"><![CDATA[Auftragsart]]></language>
+      <language id="en"><![CDATA[Order Type]]></language>
+      <language id="es"><![CDATA[Tipo de orden]]></language>
+      <language id="fr"><![CDATA[Type d&#39;ordre]]></language>
+    </name>
+  </property>
+  
+  
 </properties>

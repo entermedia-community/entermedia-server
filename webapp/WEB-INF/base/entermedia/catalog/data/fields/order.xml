@@ -177,4 +177,24 @@
       <language id="fr"><![CDATA[Est un panier de commande]]></language>
     </name>
   </property> 
+  
+  <!--  Data Merge -->
+  <property id="rendertype" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list">New 
+    <name> 
+      <language id="de"><![CDATA[render-Typ]]></language>  
+      <language id="en"><![CDATA[Render Type]]></language>  
+      <language id="es"><![CDATA[render Tipo]]></language>  
+      <language id="fr"><![CDATA[type de rendu]]></language> 
+    </name> 
+  </property>  
+  <property id="presetid" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list" viewtype="list" listid="convertpreset">New
+    <name>
+      <language id="de"><![CDATA[Preset-ID]]></language>
+      <language id="en"><![CDATA[Preset ID]]></language>
+      <language id="es"><![CDATA[ID preajustado]]></language>
+      <language id="fr"><![CDATA[Preset ID]]></language>
+    </name>
+  </property>
+  
+  
 </properties>

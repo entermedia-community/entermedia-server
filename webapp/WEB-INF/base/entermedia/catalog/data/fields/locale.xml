@@ -41,4 +41,12 @@
       <language id="fr"><![CDATA[activée]]></language>
     </name>
   </property> 
+  
+  <!--  Data sorted -->
+    <property id="namesorted" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[namesorted]]></language>
+    </name>
+  </property>
+  
 </properties>

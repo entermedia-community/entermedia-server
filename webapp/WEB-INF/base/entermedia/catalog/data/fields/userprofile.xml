@@ -253,4 +253,19 @@
       <language id="fr"><![CDATA[Dispositif Syncthing Id]]></language>
     </name>
   </property> 
+  <!--  Data Merge -->
+  <property id="asset/assettype/default/general" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+    <name> 
+      <language id="en"><![CDATA[asset/assettype/default/general]]></language> 
+    </name> 
+  </property>  
+  <property id="resultview" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list">New
+    <name>
+      <language id="de"><![CDATA[Standardergebnisansicht]]></language>
+      <language id="en"><![CDATA[Default Result View]]></language>
+      <language id="es"><![CDATA[El resultado predeterminado Ver]]></language>
+      <language id="fr"><![CDATA[Par défaut Résultat Voir]]></language>
+    </name>
+  </property>
+  
 </properties>

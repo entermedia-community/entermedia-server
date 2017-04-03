@@ -33,4 +33,32 @@
       <language id="fr"><![CDATA[Date]]></language>
     </name>
   </property> 
+  
+  <!--  Data Merged -->
+  
+    <property id="catalogid" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true">New 
+    <name> 
+      <language id="de"><![CDATA[CatalogID]]></language>  
+      <language id="en"><![CDATA[CatalogID]]></language>  
+      <language id="es"><![CDATA[CatalogID]]></language>  
+      <language id="fr"><![CDATA[CatalogID]]></language> 
+    </name> 
+  </property>  
+  <property id="id" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" internalfield="true">New 
+    <name> 
+      <language id="de"><![CDATA[Id]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Id]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="operation" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true">New
+    <name>
+      <language id="de"><![CDATA[Betrieb]]></language>
+      <language id="en"><![CDATA[Operation]]></language>
+      <language id="es"><![CDATA[Operación]]></language>
+      <language id="fr"><![CDATA[Opération]]></language>
+    </name>
+  </property>
+  
 </properties>

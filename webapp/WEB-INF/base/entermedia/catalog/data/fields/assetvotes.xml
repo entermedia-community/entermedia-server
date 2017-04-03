@@ -33,4 +33,15 @@
       <language id="fr"><![CDATA[Temps]]></language>
     </name>
   </property> 
+  
+  <!--  Data Merge -->
+    <property id="sourcepath" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true" internalfield="false">New
+    <name>
+      <language id="de"><![CDATA[Source-Pfad]]></language>
+      <language id="en"><![CDATA[Source Path]]></language>
+      <language id="es"><![CDATA[Ruta de origen]]></language>
+      <language id="fr"><![CDATA[Source Path]]></language>
+    </name>
+  </property>
+  
 </properties>

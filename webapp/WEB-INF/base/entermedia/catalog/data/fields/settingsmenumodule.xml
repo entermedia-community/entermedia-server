@@ -65,4 +65,13 @@
       <language id="fr"><![CDATA[Chemin]]></language>
     </name>
   </property> 
+  
+  <!--  Data Merge -->
+    <property id="tab" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[tab]]></language>
+    </name>
+  </property>
+  
+  
 </properties>
