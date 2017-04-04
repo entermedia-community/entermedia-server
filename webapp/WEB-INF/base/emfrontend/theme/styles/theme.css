@@ -5711,7 +5711,7 @@ ul.filters-sidebar li a:hover
     display: block;
     width: 24px;
     height: 23px;
-    background: url('../images/likestar.png');
+    background: url('../images/likeonasset.svg');
     float: right;
     margin: -5px 10px 0 0;
 }
@@ -5748,7 +5748,7 @@ ul.filters-sidebar li a:hover
     display: block;
     width: 24px;
     height: 23px;
-    background: url('../images/likestar.png');
+    background: url('../images/likeonasset.svg');
     float: right;
     margin: -4px 5px 0 3px;
 }
