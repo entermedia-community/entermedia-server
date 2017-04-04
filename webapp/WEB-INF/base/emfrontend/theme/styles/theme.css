@@ -5709,14 +5709,14 @@ ul.filters-sidebar li a:hover
 }
 #assetVoteCount .star {
     display: block;
-    width: 24px;
+    width: 22px;
     height: 23px;
     background: url('../images/likeonasset.svg');
     float: right;
     margin: -5px 10px 0 0;
 }
 #assetVoteCount .star.full {
-    background-position: 24px 0;
+    background-position: 23px 0;
 }
 #assetVoteCount a {
     color: #3490B2;
@@ -5746,7 +5746,7 @@ ul.filters-sidebar li a:hover
 
 #assetVoteTool .star {
     display: block;
-    width: 24px;
+    width: 22px;
     height: 23px;
     background: url('../images/likeonasset.svg');
     float: right;
@@ -5757,7 +5757,7 @@ ul.filters-sidebar li a:hover
 	 margin-right: 5px;
 }
 #assetVoteTool .star.full {
-    background-position: 24px 0;
+    background-position: 23px 0;
 }
 #assetVoteTool a {
     color: #3490B2;
