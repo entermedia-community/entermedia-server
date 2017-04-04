@@ -63,7 +63,9 @@ public class ResilioManager
 			int status = sl.getStatusCode();
 			if (status >= 400)
 			{
-				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+				log.info("Resilio API unavailable at " + fullpath);
+				return folders;
+				//throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 			}
 			String val = EntityUtils.toString(response.getEntity());
 
