@@ -2,20 +2,24 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" >
 <head>
 #set( $sectiontitle = $content.sectiontitle)
-  <title>#if( $asset || $catalog || $librarycol )$!asset.name $!catalog.name $!librarycol.name - #end #if( $sectiontitle ) $sectiontitle - #end$content.title</title>
+  <title>#if( $asset || $catalog )$!asset.name $!catalog.name - #end #if( $sectiontitle ) $sectiontitle - #end$content.title</title>
   <meta http-equiv="X-UA-Compatible" content="IE=10">
   <meta name="keywords" content="$!content.keywords"/>
   <meta name="description" content="$!content.caption"/>
   <meta http-equiv="imagetoolbar" CONTENT="no" />
   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+  <meta charset="UTF-8" />
+  <meta name="google" content="notranslate">
+  
   <meta name="MSSmartTagsPreventParsing" content="TRUE" />  
-  <meta name="robots" content="all" />
+  <meta name="robots" content="noindex">
   <link rel="Shortcut Icon" type="image/x-icon" href="$home$apphome/theme/images/favicon.ico" />
   
 $pages.include("${themeprefix}/layouts/includes.html")
+$pages.include("$apphome/components/map/includes.html")
 
 </head>
-<body id="embody" >
+<body id="embody" showadmintoolbar="$canshowadmintoolbar" >
    #if ( $browser.isMSIE() )
          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
           <style>
