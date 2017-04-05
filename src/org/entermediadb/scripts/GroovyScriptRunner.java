@@ -32,6 +32,13 @@ public class GroovyScriptRunner implements ScriptRunner
 	protected File fieldRoot;
 	protected Map<String,GroovyScriptEngine> fieldEnginesByPackage;
 	
+	public void clearCache()
+	{
+		if( fieldEnginesByPackage != null )
+		{
+			fieldEnginesByPackage.clear();
+		}
+	}
 	
 	public GroovyScriptEngine getEngine(String inPackageRoot)
 	{
@@ -194,6 +201,7 @@ public class GroovyScriptRunner implements ScriptRunner
 	}
 
 	//Use Spring
+	/*
 	public Object newInstance(Script inScript)
 	{
 		Page page = inScript.getPage();
@@ -243,5 +251,6 @@ public class GroovyScriptRunner implements ScriptRunner
 			throw new OpenEditException(ex);
 		}
 	}
+	*/
 
 }
