@@ -104,21 +104,25 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 
 	public String toString()
 	{
-		String title = get("assettitle");
-		if (title != null)
-		{
-			return title;
-		}
-		else if (getName() != null)
-		{
-			return getName();
-		}
-		else
-		{
-			return getId();
-		}
+		return toString("en");
 	}
-
+	public String toString(String inLocale)
+	{
+		String text = getText("assettitle", inLocale);
+		if( text == null)
+		{
+			text = getText("assettitle","en");
+		}
+		if( text == null)
+		{
+			text = getName();
+		}	
+		if ( text == null)
+		{
+			text = getId();
+		}
+		return text;
+	}
 	/**
 	 * This will look in all the category objects if needed
 	 */

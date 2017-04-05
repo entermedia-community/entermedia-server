@@ -28,7 +28,10 @@
 <div id="media-player" class="#if( $totalpages > 1 ) document #end">
 
     <div id="mp-player">
-        <div id="mp-asset-title"><span class="name" title="#if ( $asset.title ) $asset.title #else $asset #end">#if ( $asset.title ) $asset.title #else $asset #end</span> #if( $totalpages > 1 ) <span class="pagenum">(Page $pagenum of $totalpages)</span> #end</div>
+        <div id="mp-asset-title">
+        	#set(  $tostring = $asset.toString($context.locale))
+        	<span class="name" title="$tostring">$tostring</span> 
+        	#if( $totalpages > 1 ) <span class="pagenum">([[Page]] $pagenum of $totalpages)</span> #end</div>
     	#if( !$asset.importstatus || $asset.importstatus != "complete" )
     		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
     	#else
