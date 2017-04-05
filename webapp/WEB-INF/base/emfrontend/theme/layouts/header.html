@@ -9,7 +9,6 @@
 #end
 
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
-#set($logo = $mediaarchive.getAssetBySourcePath("applicationassets/logo"))
 
 #set($logourl = "$home$themeprefix/images/logo.png")
 <a class="logocontainer" href="$home$apphome/views/modules/${module.getId()}/index.html"><img class="logo" src="$logourl" alt="EnterMedia Share" /></a>

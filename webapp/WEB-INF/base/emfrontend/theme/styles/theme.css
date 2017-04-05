@@ -7067,3 +7067,8 @@ a.textlink
 	max-width:200px;
 	color: #666;
 }
+
+input.defaulttext 
+{
+	color: #666;
+}

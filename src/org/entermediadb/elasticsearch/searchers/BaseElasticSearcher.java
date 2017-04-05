@@ -73,6 +73,7 @@ import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
@@ -1259,15 +1260,22 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 
 		}
-		
-		else if (inDetail.isGeoPoint()){
-			GeoDistanceQueryBuilder geoDistanceFilterBuilder = new GeoDistanceQueryBuilder(inDetail.getId());
-			GeoFilter filter = (GeoFilter) inTerm.getData();
-			geoDistanceFilterBuilder.point(filter.getLatitude(), filter.getLongitude());
-			geoDistanceFilterBuilder.distance(filter.getDistance());
-			geoDistanceFilterBuilder.optimizeBbox("memory");       // Can be also "indexed" or "none"
-			geoDistanceFilterBuilder.geoDistance(GeoDistance.ARC); // Or GeoDistance.PLANE
-			find = geoDistanceFilterBuilder;
+		else if (inDetail.isGeoPoint())
+		{
+			GeoFilter filter = (GeoFilter) inTerm;
+			if( filter.getLatitude() == 0)
+			{
+				find = QueryBuilders.termQuery("id", "-" + System.currentTimeMillis() );
+			}
+			else
+			{
+				GeoDistanceQueryBuilder geoDistanceFilterBuilder = new GeoDistanceQueryBuilder(inDetail.getId());
+				geoDistanceFilterBuilder.point(filter.getLatitude(), filter.getLongitude());
+				geoDistanceFilterBuilder.distance(String.valueOf(  filter.getDistance()));
+				geoDistanceFilterBuilder.optimizeBbox("memory");       // Can be also "indexed" or "none"
+				geoDistanceFilterBuilder.geoDistance(GeoDistance.ARC); // Or GeoDistance.PLANE
+				find = geoDistanceFilterBuilder;
+			}	
 		}
 		// DO not use _all use _description
 		// else if (fieldid.equals("description"))
@@ -2528,5 +2536,12 @@ public class BaseElasticSearcher extends BaseSearcher
 		updateInBatch(tosave, null);
 
 	}
-
+	/**
+	 * @override
+	 */
+	public String getConfigValue(String inKey)
+	{
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return archive.getCatalogSettingValue(inKey);
+	}
 }

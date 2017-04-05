@@ -682,6 +682,17 @@ uiload = function() {
 			}
 		});
 
+	jQuery("input.defaulttext").livequery("click", function() 
+	{
+		var theinput = $(this);
+		var startingtext = theinput.data('startingtext');
+		if( theinput.val() == startingtext )
+		{
+			theinput.val("");
+		}
+	});
+
+
 	jQuery("select.listtags").livequery( function() 
 	{
 		var theinput = jQuery(this);

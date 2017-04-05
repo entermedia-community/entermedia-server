@@ -526,6 +526,14 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 			}
 		return super.putMappings();
 	}
-	
+
+	/**
+	 * @override
+	 */
+	public String getConfigValue(String inKey)
+	{
+		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		return archive.getCatalogSettingValue(inKey);
+	}
 	
 }

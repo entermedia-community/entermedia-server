@@ -52,7 +52,6 @@ public class DataEditModule extends BaseMediaModule
 {
 	protected XmlArchive fieldXmlArchive;
 	protected WebEventListener fieldWebEventListener;
-	protected GeoCoder fieldGeoCoder;
 	
 
 	private static final Log log = LogFactory.getLog(DataEditModule.class);
@@ -1753,65 +1752,70 @@ public class DataEditModule extends BaseMediaModule
 		saveData(inReq);
 		
 	}
-	
-	public void rangeSearch(WebPageRequest inReq) throws Exception {
-		
-		//This does a search in a square for the range (+/- the range in both directions from the point
-
-	String rangeString = inReq.findValue("range");  //distance in meters
-	if(rangeString  == null){
-		rangeString = "10000"; //10 Km default.  
-	}
-	String detailid = inReq.findValue("rangefield");  //position
-	
-	String target = inReq.getRequestParameter(detailid + ".value");   //name of city
-
-	double range = Double.parseDouble(rangeString);
-    range = range / 157253.2964;//convert to decimal degrees (FROM Meters)
-	if(detailid == null){
-		search(inReq);
-		return ;
-	}
-    List positions = getGeoCoder().getPositions(target);
-	if(positions != null && positions.size() > 0){
-		Position p = (Position)positions.get(0);
-		Double latitude = p.getLatitude();
-		Double longitude = p.getLongitude();
-		
-		Searcher searcher = loadSearcher(inReq);
-		
-		SearchQuery query = searcher.addStandardSearchTerms(inReq);
-		if(query == null){
-			query = searcher.createSearchQuery();
-		}
-		GeoFilter filter = new GeoFilter();
-		filter.setPropertyDetail(detailid);
-		filter.setLatitude(latitude);
-		filter.setLongitude(longitude);
-		filter.setDistance(rangeString);
-		filter.setType("distance");
-		query.addGeoFilter(searcher.getDetail(detailid), filter);
-		
-		
-	}
-
-}
-	public GeoCoder getGeoCoder()
-	{
-		if (fieldGeoCoder == null)
-		{
-			fieldGeoCoder = new GeoCoder();
-			
-		}
-
-		return fieldGeoCoder;
-	}
-
-	public void setGeoCoder(GeoCoder inGeoCoder)
-	{
-		fieldGeoCoder = inGeoCoder;
-	}
-	
+	/**
+	 * @deprecated use searcher standard search terms
+	 * @param inReq
+	 * @throws Exception
+	 */
+//	public void rangeSearch(WebPageRequest inReq) throws Exception {
+//		
+//		//This does a search in a square for the range (+/- the range in both directions from the point
+//
+//	String rangeString = inReq.findValue("range");  //distance in meters
+//	if(rangeString  == null){
+//		rangeString = "10000"; //10 Km default.  
+//	}
+//	String detailid = inReq.findValue("rangefield");  //position
+//	
+//	String target = inReq.getRequestParameter(detailid + ".value");   //name of city
+//
+//	double range = Double.parseDouble(rangeString);
+//    range = range / 157253.2964;//convert to decimal degrees (FROM Meters)
+//	if(detailid == null){
+//		search(inReq);
+//		return ;
+//	}
+//    List positions = getGeoCoder().getPositions(target);
+//	if(positions != null && positions.size() > 0){
+//		Position p = (Position)positions.get(0);
+//		Double latitude = p.getLatitude();
+//		Double longitude = p.getLongitude();
+//		
+//		Searcher searcher = loadSearcher(inReq);
+//		
+//		SearchQuery query = searcher.addStandardSearchTerms(inReq);
+//		if(query == null){
+//			query = searcher.createSearchQuery();
+//		}
+//		GeoFilter filter = new GeoFilter();
+//		filter.setLatitude(latitude);
+//		filter.setLongitude(longitude);
+//		filter.setDistance(rangeString);
+//		filter.setType("distance");
+//		query.addGeoFilter(searcher.getDetail(detailid), filter);
+//		
+//		
+//	}
+//
+//}
+//	protected GeoCoder fieldGeoCoder;
+//
+//	public GeoCoder getGeoCoder()
+//	{
+//		if (fieldGeoCoder == null)
+//		{
+//			fieldGeoCoder = new GeoCoder();
+//			
+//		}
+//
+//		return fieldGeoCoder;
+//	}
+//
+//	public void setGeoCoder(GeoCoder inGeoCoder)
+//	{
+//		fieldGeoCoder = inGeoCoder;
+//	}
+//	
 	public void reload(WebPageRequest inReq)
 	{
 		getSearcherManager().clear();

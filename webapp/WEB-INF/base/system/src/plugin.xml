@@ -320,6 +320,13 @@
 		</property>
 		
 	</bean>
+
+	<bean id="geoCoder" class="org.entermediadb.location.GeoCoder"  scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>
+
 	
 	
 </beans>
