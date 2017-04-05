@@ -25,11 +25,8 @@ import org.apache.lucene.queryparser.classic.QueryParser;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushRequest;
 import org.elasticsearch.action.admin.indices.flush.FlushResponse;
-import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsRequest;
-import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
-import org.elasticsearch.action.admin.indices.mapping.get.GetFieldMappingsResponse.FieldMappingMetaData;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.action.bulk.BackoffPolicy;
@@ -1835,7 +1832,15 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			Map props = inData.getProperties();
-			for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
+			HashSet allprops = new HashSet();
+			allprops.addAll(props.keySet());
+			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();) {
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				allprops.add(detail.getId());
+			}
+			
+			
+			for (Iterator iterator = allprops.iterator(); iterator.hasNext();)
 			{
 				String propid = (String)iterator.next();
 				if(propid.contains(".")){
