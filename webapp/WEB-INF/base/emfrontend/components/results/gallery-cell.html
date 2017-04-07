@@ -15,9 +15,21 @@
     </div>
 #end
                     <a class="hovering" href="$click">
+                    <div id="iconcontainer">
+                        
+                        
+                       			 <div id="icononassetx" class="">
+                       			 
+                       			 </div>
+                       			 
+                       			 
+                       			    </div>
                         <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
-                            $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
-                        </div>
+                            $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)      
+                              
+                     
+                        	  
+                        </div>   
                     </a>
                     
                     #if( $showcaption )
@@ -29,3 +41,20 @@
                     </div>
                     #end
                 </div>
+
+
+<style>
+#iconcontainer {
+	position: relative;
+	width: 180px;
+	height: 25px;
+	
+	background-color: black;
+}
+
+#icononassetx {
+	position: absolute;
+	top: 50px;
+	background-color: green;
+}
+</style>Letsfd

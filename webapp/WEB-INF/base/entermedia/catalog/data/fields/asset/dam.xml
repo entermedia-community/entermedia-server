@@ -568,7 +568,7 @@
       <language id="fr"><![CDATA[MD5 Valeur Hex]]></language> 
     </name> 
   </property>  
-  <property id="duplicate" index="true" editable="true" type="boolean" keyword="false" filter="false" stored="false" sortable="true">Duplicate Asset 
+  <property id="duplicate" index="true" editable="true" type="boolean" keyword="false" badge="true" filter="false" stored="false" sortable="true">Duplicate Asset 
     <name> 
       <language id="de"><![CDATA[doppelte Vermögens]]></language>  
       <language id="en"><![CDATA[Duplicate Asset]]></language>  
@@ -596,6 +596,14 @@
     <name>
       <language id="de"><![CDATA[Nutzer-Tags]]></language>
       <language id="en"><![CDATA[User Tags]]></language>
+      <language id="es"><![CDATA[Etiquetas de usuarios]]></language>
+      <language id="fr"><![CDATA[Mots-clés de l&#39;utilisateur]]></language>
+    </name>
+  </property> 
+    <property id="badges" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list" viewtype="multiselect">
+    <name>
+      <language id="de"><![CDATA[Nutzer-Tags]]></language>
+      <language id="en"><![CDATA[Badges]]></language>
       <language id="es"><![CDATA[Etiquetas de usuarios]]></language>
       <language id="fr"><![CDATA[Mots-clés de l&#39;utilisateur]]></language>
     </name>

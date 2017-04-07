@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -31,6 +32,7 @@ import org.entermediadb.projects.ProjectManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.cache.CacheManager;
@@ -1803,4 +1805,21 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getSearcher(inSearchType).query();
 	}
+	
+	public Collection getBadges(MultiValued inRow)
+	{
+		Collection badges = inRow.getValues("badge");
+		if( badges != null && !badges.isEmpty())
+		{
+			ArrayList b = new ArrayList<Data>();
+			for (Iterator iterator = badges.iterator(); iterator.hasNext();) {
+				String badgeid = (String) iterator.next();
+				Data badge = getData("badge", badgeid);
+				b.add(badge);
+			}
+			Collections.sort(b);
+			return b;
+		}
+		return null;
+	} 
 }

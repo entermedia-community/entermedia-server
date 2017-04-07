@@ -29,6 +29,10 @@
 #end
 
 <span id="emthumbholder">
+#set( $badges = $mediaarchive.getBadges($hit)
+#foreach($badge in $badges)
+	<span id="$badge.getId()" class="badge" title="$badge.getName()">$badge</span>
+#end
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
