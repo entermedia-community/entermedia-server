@@ -29,7 +29,7 @@
 #end
 
 <span id="emthumbholder">
-#set( $badges = $mediaarchive.getBadges($hit)
+#set( $badges = $mediaarchive.getBadges($hit) )
 #foreach($badge in $badges)
 	<span id="$badge.getId()" class="badge" title="$badge.getName()">$badge</span>
 #end
