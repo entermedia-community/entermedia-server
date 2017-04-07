@@ -1,3 +1,4 @@
+#set( $n = $hits.setHitsPerPage(1000))
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
@@ -28,7 +29,7 @@ $('#map').gmap({
 	 'zoom': 3,
 	#end 
 }).bind('init', function(ev, map) {
-	#foreach($location in $hits.getAllHits())
+	#foreach($location in $hits.getPageOfHits())
 	 #if($location.geo_point)
       	$('#map').gmap('addMarker', 
 		{
