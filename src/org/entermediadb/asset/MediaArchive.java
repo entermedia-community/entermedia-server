@@ -1815,7 +1815,11 @@ public class MediaArchive implements CatalogEnabled
 			for (Iterator iterator = badges.iterator(); iterator.hasNext();) {
 				String badgeid = (String) iterator.next();
 				Data badge = getData("badge", badgeid);
-				b.add(badge);
+				if (badge == null) {
+					log.info(" Error - Loading badge " + badgeid);
+				} else {
+					b.add(badge);
+				}
 			}
 			Collections.sort(b);
 			return b;

@@ -690,4 +690,24 @@ span.glyphicon-triangle-left.overlay-nav {
     text-shadow:0 0 2px #121212;
 }
 
+.badge {
+	display: block;
+	float: right;
+	width: 15px;
+	height: 15px;
+	margin: 5px;
+}
+#asset_editstatus_6 {
+	background-image: url('../badges/asset_editstatus_6.svg');
+	background-size: 15px 15px;
+}
 
+#asset_editstatus_7 {
+	background-image: url('../badges/asset_editstatus_7.svg');
+	background-size: 15px 15px;
+}
+
+#asset_editstatus_rejected {
+	background-image: url('../badges/asset_editstatus_rejected.svg');
+	background-size: 15px 15px;
+}
