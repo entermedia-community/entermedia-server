@@ -1,4 +1,3 @@
-#set( $n = $hits.setHitsPerPage(1000))
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
@@ -6,6 +5,9 @@ $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
 	$pages.include("$apphome/components/results/mapheader.html",$context) 
 #end
+
+#set( $n = $hits.setHitsPerPage(1000))
+
 #set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
 #if( $geofilter)
 <div style="padding:10px;background:#eee;">
