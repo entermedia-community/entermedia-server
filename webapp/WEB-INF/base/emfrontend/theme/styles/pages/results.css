@@ -690,24 +690,22 @@ span.glyphicon-triangle-left.overlay-nav {
     text-shadow:0 0 2px #121212;
 }
 
-
-#badgecontainer {
-	width: auto;
-	height: 30px;
+#badgecontainer {  
+	height: 0px;
+	position: relative;
 }
 .badgetarget {
-	margin-top: -30px;
+	position: absolute;
+	top: 0px;
+	right: 20px;
 }
 .badge {	
-	display: inline;	
+	display: block;	
 	float: right;
 	width: 20px;
 	height: 20px;
 	margin:1px;	
 	background-color: transparent;
-	
-	
-	
 }
 
 .asset_editstatus_rejected {

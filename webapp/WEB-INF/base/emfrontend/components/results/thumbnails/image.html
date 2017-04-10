@@ -31,9 +31,13 @@
 <span id="emthumbholder">
 <div id="badgecontainer">
 	#set( $badges = $mediaarchive.getBadges($hit) )
+	<div class="badgetarget">
 	#foreach($badge in $badges)
+	 
 		<span id="$badge.getId()" class="badge $badge.getId()" title="$badge.getName()"> </span>
+		
 	#end
+	</div>
 </div>
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
@@ -46,7 +50,7 @@
 		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
 	#else	
-	<div class="badgetarget">
+	<div class="">
 		<img class=" assetdragdrop" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="[[Drag to Library or Category]]"
 		draggable="true"  data-sourcepath="$sourcepath" data-name="$asset.name" 
 		src="$!cdn$home$apphome/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
