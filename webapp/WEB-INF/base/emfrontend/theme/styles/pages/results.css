@@ -699,26 +699,14 @@ span.glyphicon-triangle-left.overlay-nav {
 	top: 0px;
 	right: 20px;
 }
-.badge {	
+.embadge {	
 	display: block;	
 	float: right;
-	width: 20px;
-	height: 20px;
-	margin:1px;	
+	width: 25px;
+	height: 30px;
+	margin:0px;
+	margin-left: 4px;	
 	background-color: transparent;
+	background-size: 25px 30px;
 }
 
-.asset_editstatus_rejected {
-	background-image:url('../../images/badges/asset_editstatus_rejected.svg') ri}
-
-.asset_duplicate_true {
-	background-image: url('../../images/badges/asset_duplicate_true.svg');
-}
-
-.asset_editstatus_6 {
-	background-image: url('../../images/badges/asset_editstatus_6.svg');
-}
-
-.asset_editstatus_7 {
-	background-image: url('../../images/badges/asset_editstatus_7.svg');
-}
