@@ -1851,6 +1851,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator iterator = allprops.iterator(); iterator.hasNext();)
 			{
 				String propid = (String)iterator.next();
+				if(propid == null){
+					continue;
+				}
 				if(propid.contains(".")){
 					continue;
 				}

@@ -4,7 +4,7 @@
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
-	$pages.include("$apphome/components/results/header.html",$context) 
+	$pages.include("$apphome/components/results/mapheader.html",$context) 
 #end
 #set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
 #if( $geofilter)
