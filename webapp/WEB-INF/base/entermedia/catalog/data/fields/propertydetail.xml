@@ -233,4 +233,14 @@
       <language id="fr"><![CDATA[Analyzer]]></language>
     </name>
   </property> 
+
+  <property id="isbadge" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true"> 
+    <name> 
+      <language id="de"><![CDATA[Show Badge]]></language>  
+      <language id="en"><![CDATA[Show Badge]]></language>  
+      <language id="es"><![CDATA[Show Badge]]></language>  
+      <language id="fr"><![CDATA[Show Badge]]></language> 
+    </name> 
+  </property>  
+
 </properties>

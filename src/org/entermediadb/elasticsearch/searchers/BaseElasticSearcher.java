@@ -1846,7 +1846,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				PropertyDetail detail = (PropertyDetail) iterator.next();
 				allprops.add(detail.getId());
 			}
-			
+			List badges = new ArrayList();
+
 			
 			for (Iterator iterator = allprops.iterator(); iterator.hasNext();)
 			{
@@ -1898,6 +1899,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				if (shoudSkipField(key))
 				{
 					continue;
+				}
+				if( detail.isBadge() && value !=null)
+				{
+					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);
 				}
 				if (detail.isDate())
 				{
@@ -2090,7 +2095,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				// log.info("Saved" + key + "=" + value );
 			}
-
+			if(  !badges.isEmpty())
+			{
+				inContent.field("badge", badges);
+			}
 			/*
 			if (inDetails.isAllowDynamicFields())
 			{

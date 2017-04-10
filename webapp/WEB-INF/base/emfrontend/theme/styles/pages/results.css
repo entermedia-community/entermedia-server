@@ -690,4 +690,23 @@ span.glyphicon-triangle-left.overlay-nav {
     text-shadow:0 0 2px #121212;
 }
 
+#badgecontainer {  
+	height: 0px;
+	position: relative;
+}
+.badgetarget {
+	position: absolute;
+	top: 0px;
+	right: 20px;
+}
+.embadge {	
+	display: block;	
+	float: right;
+	width: 25px;
+	height: 30px;
+	margin:0px;
+	margin-left: 4px;	
+	background-color: transparent;
+	background-size: 25px 30px;
+}
 

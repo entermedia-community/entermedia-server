@@ -877,9 +877,6 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
     text-decoration: underline;
 }
 
-#emslidesheet .emdropshadow {
-    margin: 5px;
-}
 
 #emcontainer  .emselectmenu ul {
     list-style: none;
@@ -996,10 +993,6 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 .emgallery {
     text-align: center;
-}
-#emslidesheet {
-    margin: 20px;
-    padding: 0;
 }
 .emthumbbox {
     margin-bottom: 4px;
@@ -2263,11 +2256,6 @@ center #addcoment {
 }
 tr.odd {
     background: #f7fdff;
-}
-#emslidesheet .emdropshadow {
-    background: white;
-    padding: 3px;
-    border: 1px solid #e5e5e5;
 }
 #media-player {
     background: #000 url('../images/asset-bg.png');
