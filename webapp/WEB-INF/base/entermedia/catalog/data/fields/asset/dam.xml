@@ -495,7 +495,7 @@
       <language id="fr"><![CDATA[Copyright Notice]]></language> 
     </name> 
   </property>  
-  <property id="rightsusageterms" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms," keyword="false" filter="false" sortable="true">Rights Usage Terms 
+  <property id="rightsusageterms" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms" keyword="false" filter="false" sortable="true">Rights Usage Terms 
     <name> 
       <language id="de"><![CDATA[Rights Usage Terms]]></language>  
       <language id="en"><![CDATA[Rights Usage Terms]]></language>  
