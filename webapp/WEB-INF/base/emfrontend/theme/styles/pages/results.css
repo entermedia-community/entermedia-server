@@ -690,24 +690,37 @@ span.glyphicon-triangle-left.overlay-nav {
     text-shadow:0 0 2px #121212;
 }
 
-.badge {
-	display: block;
+
+#badgecontainer {
+	width: auto;
+	height: 30px;
+}
+.badgetarget {
+	margin-top: -30px;
+}
+.badge {	
+	display: inline;	
 	float: right;
-	width: 15px;
-	height: 15px;
-	margin: 5px;
-}
-#asset_editstatus_6 {
-	background-image: url('../badges/asset_editstatus_6.svg');
-	background-size: 15px 15px;
-}
-
-#asset_editstatus_7 {
-	background-image: url('../badges/asset_editstatus_7.svg');
-	background-size: 15px 15px;
+	width: 20px;
+	height: 20px;
+	margin:1px;	
+	background-color: transparent;
+	
+	
+	
 }
 
-#asset_editstatus_rejected {
-	background-image: url('../badges/asset_editstatus_rejected.svg');
-	background-size: 15px 15px;
+.asset_editstatus_rejected {
+	background-image:url('../../images/badges/asset_editstatus_rejected.svg') ri}
+
+.asset_duplicate_true {
+	background-image: url('../../images/badges/asset_duplicate_true.svg');
+}
+
+.asset_editstatus_6 {
+	background-image: url('../../images/badges/asset_editstatus_6.svg');
+}
+
+.asset_editstatus_7 {
+	background-image: url('../../images/badges/asset_editstatus_7.svg');
 }

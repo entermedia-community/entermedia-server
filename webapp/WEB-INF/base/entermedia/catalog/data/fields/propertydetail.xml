@@ -234,7 +234,7 @@
     </name>
   </property> 
 
-  <property id="badge" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true"> 
+  <property id="isbadge" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Show Badge]]></language>  
       <language id="en"><![CDATA[Show Badge]]></language>  

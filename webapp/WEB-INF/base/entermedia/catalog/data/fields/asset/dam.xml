@@ -366,7 +366,7 @@
       <language id="fr"><![CDATA[Preview Status]]></language> 
     </name> 
   </property>  
-  <property id="editstatus" index="true" stored="true" editable="true" listid="asseteditstatus" datatype="list" badge="true" keyword="false" sortable="true" type="list"> 
+  <property id="editstatus" index="true" stored="true" editable="true" listid="asseteditstatus" datatype="list" isbadge="true" keyword="false" sortable="true" type="list"> 
     <name> 
       <language id="de"><![CDATA[Edit Status]]></language>  
       <language id="en"><![CDATA[Edit Status]]></language>  
@@ -568,7 +568,7 @@
       <language id="fr"><![CDATA[MD5 Valeur Hex]]></language> 
     </name> 
   </property>  
-  <property id="duplicate" index="true" editable="true" type="boolean" keyword="false" badge="true" filter="false" stored="false" sortable="true">
+  <property id="duplicate" index="true" editable="true" type="boolean" keyword="false" isbadge="true" filter="false" stored="false" sortable="true">
     <name> 
       <language id="de"><![CDATA[doppelte Vermögens]]></language>  
       <language id="en"><![CDATA[Duplicate Asset]]></language>  
@@ -600,7 +600,7 @@
       <language id="fr"><![CDATA[Mots-clés de l&#39;utilisateur]]></language>
     </name>
   </property> 
-    <property id="badges" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list" viewtype="multiselect">
+    <property id="badge" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list" viewtype="multiselect">
     <name>
       <language id="de"><![CDATA[Nutzer-Tags]]></language>
       <language id="en"><![CDATA[Badges]]></language>
