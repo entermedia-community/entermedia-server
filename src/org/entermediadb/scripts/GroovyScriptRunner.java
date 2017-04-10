@@ -201,7 +201,7 @@ public class GroovyScriptRunner implements ScriptRunner
 	}
 
 	//Use Spring
-	/*
+	
 	public Object newInstance(Script inScript)
 	{
 		Page page = inScript.getPage();
@@ -251,6 +251,6 @@ public class GroovyScriptRunner implements ScriptRunner
 			throw new OpenEditException(ex);
 		}
 	}
-	*/
+
 
 }
