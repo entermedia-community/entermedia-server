@@ -242,7 +242,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	@Override
 	public boolean initialize()
 	{
-		if( !tableExists())
+		if( !tableExists() || getCatalogId().equals("system"))
 		{
 			reIndexAll();
 			return true;
