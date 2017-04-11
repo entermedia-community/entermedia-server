@@ -1,8 +1,8 @@
 <properties> 
 	<property id="1">
 		<name> 
-	      <language id="en"><![CDATA[True]]></language>  
-	      <language id="es"><![CDATA[Visibilidad]]></language> 
+	      <language id="en"><![CDATA[Read Only]]></language>  
+	      <language id="es"><![CDATA[Solo Leer]]></language> 
 	    </name>
     </property>
 	<property id="3">

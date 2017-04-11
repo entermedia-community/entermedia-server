@@ -7,25 +7,31 @@
 
 #set( $selectedlibrary = $librarycol.getLibrary() )
 
-#set( $categoryid = $selectedlibrary.categoryid )
+#set( $visible = $selectedlibrary.visibility )
 
-#if( $categoryid)
+<h4>[[View Permissions]]</h4>
 
+#if( $visible && $visible == "3")
 <p class="error">
 <strong>Warning: </strong>
-Permissions are being set at the library level.
-<a href="$home$apphome/views/modules/library/permissions.html?selectedlibrary=$selectedlibrary.getId()">View Library Permissions</a>
+<p>Hidden from all users</p>
 <br>
+</p>
+#else
+<p>Read only for all users</p>
+#end
+
+#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
+
+<a class="btn" href="$editlink">Change Visibility</a>
 
 </p>
 <br>
+<hr>
+<br>
 
-#end
 
-
-#set( $categoryid = $librarycol.rootcategory )
-
-<p>[[Choose what users can see the assets and collections within this collection]]</p>
+<h4>[[Edit Permissions]]</h4>
 		
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
 
@@ -73,6 +79,7 @@ $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly
     </div>
 </div>
 
+##<a href="$home$apphome/views/modules/library/permissions.html?selectedlibrary=$selectedlibrary.getId()">View Library Permissions</a>
 
 			
 		</div>

@@ -1805,23 +1805,28 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getSearcher(inSearchType).query();
 	}
-	
 	public Collection getBadges(MultiValued inRow)
 	{
 		Collection badges = inRow.getValues("badge");
 		if( badges != null && !badges.isEmpty())
 		{
-			ArrayList b = new ArrayList<Data>();
-			for (Iterator iterator = badges.iterator(); iterator.hasNext();) {
-				String badgeid = (String) iterator.next();
-				Data badge = getData("badge", badgeid);
-				if (badge == null) {
-					log.info(" Error - Loading badge " + badgeid);
-				} else {
-					b.add(badge);
+			String id = inRow.get("badge");
+			List b = (List)getCacheManager().get("badges",id); //Expires after 5 min, sort it?
+			if( b == null)
+			{
+				b = new ArrayList<Data>();
+				for (Iterator iterator = badges.iterator(); iterator.hasNext();) {
+					String badgeid = (String) iterator.next();
+					Data badge = getData("badge", badgeid);
+					if (badge == null) {
+						log.info("badge not defined" + badgeid);
+					} else {
+						b.add(badge);
+					}
 				}
-			}
-			Collections.sort(b);
+				Collections.sort(b);
+				getCacheManager().put("badges",id, b);
+			}	
 			return b;
 		}
 		return null;
