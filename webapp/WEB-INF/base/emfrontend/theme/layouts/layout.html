@@ -19,8 +19,8 @@ $pages.include("${themeprefix}/layouts/includes.html")
 $pages.include("$apphome/components/map/includes.html")
 
 </head>
-<body id="embody" showadmintoolbar="$canshowadmintoolbar" >
-   #if ( $browser.isMSIE() )
+<body id="embody" showadmintoolbar="$canshowadmintoolbar" style="direction:ltr">
+   #if ( $browser.isMSIE() )	
          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/chrome-frame/1/CFInstall.min.js"></script>
           <style>
              .chromeFrameInstallDefaultStyle {
