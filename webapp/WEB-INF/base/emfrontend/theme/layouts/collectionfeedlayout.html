@@ -11,22 +11,27 @@
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
-		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Collection Assets]]</a></li>
-		  #if($canimportcollection)
+		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Assets]]</a></li>
+		  #if( $caneditdata && $librarycol.hasPendingAssets() )
+		  <li class="ui-corner-top"><a id="approvaltab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/pending/${librarycol.getId()}.html" >[[Pending]]</a></li>
+		  #end
+	#if( $caneditdata)
+		  #if($canimportcollection )
 		  <li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Revisions]]</a></li>
 		  #end
 		  #if($canviewupload)
 		  <li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
 		  #end
+		  #if($canassetannotate )
 		  <li class="ui-corner-top"><a  id="emannotationstab" data-alwaysreloadpage="true" href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotate]]</a></li>
+		  #end 
 		  #if($cansharecollection)
 		  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
 		  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Share]]</a></li>
 		  #end
-		  #if( $caneditdata)
 		   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
 		  <li class="ui-corner-top" ><a id="permissionstab" href="$link" >[[Permissions]]</a></li>
-		  #end
+	  #end
 		  <li class="ui-corner-top" ><a id="settingstab" href="$editlink" >[[Settings]]</a></li>
 		</ul>
 		<div class="clearfix"></div>

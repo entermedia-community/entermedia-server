@@ -6,7 +6,7 @@ import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher
 import org.openedit.hittracker.SearchQuery
 
-import assets.model.AssetTypeManager
+import asset.model.AssetTypeManager
 
 
 

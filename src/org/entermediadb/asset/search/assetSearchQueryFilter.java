@@ -36,6 +36,21 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 		fieldModuleManager = inModuleManager;
 	}
 
+	
+	/**
+	 * 
+	 * 
+OR {
+  Any files owned by them 
+AND(
+ any Approved Assets
+ OR ( 
+   unless they are explicidly on that collection
+   NOT in Collections marked private
+ )  
+) 
+	 * 
+	 */
 	public SearchQuery attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) 
 	{
 		boolean enabled = inQuery.isEndUserSearch();
@@ -57,7 +72,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			if (user == null || !user.isInGroup("administrators"))
 			{
 				SearchQuery child = inSearcher.createSearchQuery();
-				child.setAndTogether(false);
+				//child.setAndTogether(false);
 				UserProfile profile = inPageRequest.getUserProfile();
 				if( profile != null && profile.getViewCategories() != null)
 				{
@@ -66,25 +81,36 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				}
 				
 				//Also add to this list public collections
-				Collection<Category> pcats = getMediaArchive(inSearcher.getCatalogId()).listPublicCategories();
-				for (Iterator iterator = pcats.iterator(); iterator.hasNext();)
+				Collection<Category> privatecats = getMediaArchive(inSearcher.getCatalogId()).listHiddenCategories();
+				Collection notshown = new ArrayList();
+				for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
 				{
 					Category category = (Category)iterator.next();
-					ids.add(category.getId());
+					if( !ids.contains(category.getId()) )
+					{
+						notshown.add(category.getId()); //This is a hidden one that is not in the view list
+					}
 				}
 				if( ids.isEmpty() )
 				{
 					ids.add("none");
 				}
-				
-				
-				child.addOrsGroup(inSearcher.getDetail("category"), ids);
-				if( user != null)
+				//child.addMatch(inSearcher.getDetail("category"), ids);
+				child.addMatches("id", "*");
+				if( !notshown.isEmpty() )
 				{
-					child.addExact("owner",user.getId());
+					child.addNots("category", notshown );  //Hidden categories that Im not part of
 				}
+//				if( user != null)
+//				{
+//					child.addExact("owner",user.getId());
+//				}
 
-				
+//				Term term = inQuery.getTermByDetailId("editstatus");
+//				if( term == null) //TODO: Enforce??
+//				{
+//					inQuery.addExact("editstatus","6");
+//				}
 				
 				inQuery.setSecurityAttached(true);
 				if(!child.isEmpty())

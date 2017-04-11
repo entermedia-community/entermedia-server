@@ -2,11 +2,12 @@ package org.entermediadb.asset.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearchQueryFilter;
 import org.openedit.data.Searcher;
@@ -35,16 +36,17 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter {
 		}
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
-		if(archive != null){
-			boolean publiclibs = Boolean.parseBoolean(archive.getCatalogSettingValue("publiccollections"));
-			if(publiclibs){
-				return inQuery;
-			}
-		}
+//		if(archive != null){
+//			boolean publiclibs = Boolean.parseBoolean(archive.getCatalogSettingValue("publiccollections"));
+//			if(publiclibs){
+//				return inQuery;
+//			}
+//		}
 
 		UserProfile profile = inPageRequest.getUserProfile();
 		if (profile != null)
 		{
+			
 			Collection<String> viewcategories = profile.getViewCategories();
 			if (log.isDebugEnabled())
 			{
@@ -55,15 +57,26 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter {
 				viewcategories = new ArrayList();
 				viewcategories.add("-1");
 			}
-
-			Searcher librarysearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(),"library");
-			Collection<Data> libraries = librarysearcher.query().orgroup("categoryid", viewcategories).search();
-			Collection ids = new ArrayList();
-			for(Data library: libraries)
+			Collection catshidden = archive.listHiddenCategories();
+			Collection hiddencatids = new ArrayList();
+			for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
 			{
-				ids.add(library.getId());
+				Category cathidden = (Category)iterator.next();
+				if( !cathidden.hasSelf(viewcategories))
+				{
+					hiddencatids.add(cathidden.getId());
+				}
+				
 			}
-			SearchQuery child = inSearcher.query().or().orgroup("library", ids).match("visibility","2").getQuery();
+			//.or().orgroup("rootcategory", viewcategories).not("visibility", "3")
+			
+//			Searcher librarysearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(),"library");
+//			Collection<Data> libraries = librarysearcher.query().orgroup("categoryid", viewcategories).search();
+//			for(Data library: libraries)
+//			{
+//				ids.add(library.getId());
+//			}
+			SearchQuery child = inSearcher.query().all().notgroup("rootcategory", hiddencatids).getQuery();
 			//TODO: Clear old child queries
 			inQuery.setChildren(null);
 			inQuery.addChildQuery(child);

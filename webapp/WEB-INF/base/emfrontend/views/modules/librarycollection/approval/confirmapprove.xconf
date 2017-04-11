@@ -1,0 +1,5 @@
+<page>
+<path-action name="DataEditModule.loadHits">
+	<searchtype>asset</searchtype>
+</path-action>
+</page>

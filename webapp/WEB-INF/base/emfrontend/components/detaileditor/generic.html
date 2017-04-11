@@ -56,10 +56,9 @@ $context.putPageValue("searcher", $searcher)
 		<input type="hidden" name="label" value="$label" />
 		
 		#if( $searchtype == "asset" )
-			<input type="hidden" name="field" value="assetid" />
-			<input type="hidden" name="assetid.value" value="$asset.getId()" />
+##			<input type="hidden" name="field" value="assetid" />
+##			<input type="hidden" name="assetid.value" value="$asset.getId()" />
 			<input type="hidden" name="assetid" value="$asset.getId()" />
-			
 		#end
 		<input type="hidden" name="id" value="$!data.id" />
 		$context.putPageValue("view",$view)	

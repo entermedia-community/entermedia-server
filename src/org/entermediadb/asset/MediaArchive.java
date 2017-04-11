@@ -1760,27 +1760,27 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldLoggingEventHandler = inLoggingEventHandler;
 	}
-	public Collection<Data> listPublicCollections()
+	public Collection<Data> listHiddenCollections()
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection visibility = (Collection)getCacheManager().get("visiblecollection", search.getIndexId()); //Expires after 5 min
+		Collection visibility = (Collection)getCacheManager().get("hiddencollection", search.getIndexId()); //Expires after 5 min
 		if( visibility == null)
 		{
-			visibility = getSearcher("librarycollection").query().exact("visibility", "2").search();
-			log.info(visibility.size() + " public collections ");
-			getCacheManager().put("visiblecollection", search.getIndexId(), visibility);
+			visibility = getSearcher("librarycollection").query().exact("visibility", "3").search();
+			log.info(visibility.size() + " hidden collections ");
+			getCacheManager().put("hiddencollection", search.getIndexId(), visibility);
 		}
 		return visibility;
 	}
 	
-	public Collection<Category> listPublicCategories()
+	public Collection<Category> listHiddenCategories()	
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection<Category> categories = (Collection)getCacheManager().get("visiblecollectioncategories", search.getIndexId()); //Expires after 5 min
+		Collection<Category> categories = (Collection)getCacheManager().get("hiddencollectioncategories", search.getIndexId()); //Expires after 5 min
 		if( categories == null)
 		{
 			categories = new ArrayList();
-			Collection visibility = listPublicCollections();
+			Collection visibility = listHiddenCollections();
 			for (Iterator iterator = visibility.iterator(); iterator.hasNext();)
 			{
 				Data librarycollection = (Data) iterator.next();
@@ -1794,7 +1794,7 @@ public class MediaArchive implements CatalogEnabled
 					}
 				}
 			}
-			getCacheManager().put("visiblecollectioncategories", search.getIndexId(), categories);
+			getCacheManager().put("hiddencollectioncategories", search.getIndexId(), categories);
 		}	
 		return categories;
 		

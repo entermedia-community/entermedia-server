@@ -380,7 +380,7 @@ public class ProjectManager implements CatalogEnabled
 	//		return hits;
 	//	}
 	//
-	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid)
+	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, boolean inApproved)
 	{
 		if(collectionid == null){
 			return null;
@@ -412,6 +412,16 @@ public class ProjectManager implements CatalogEnabled
 		if(assetsearch.getTermByDetailId("category") == null){
 			assetsearch.addExact("category", root.getId());
 		}
+		
+		if( inApproved )
+		{
+			assetsearch.addExact("editstatus", "6");
+		}
+		else
+		{
+			assetsearch.addNot("editstatus", "6");			
+		}
+		
 		assetsearch.setEndUserSearch(true);
 		
 		if (assetsearch.getSortBy() == null)
@@ -423,6 +433,10 @@ public class ProjectManager implements CatalogEnabled
 		
 		all = archive.getAssetSearcher().search(assetsearch);
 
+		if( !inApproved)
+		{
+			all.selectAll();
+		}
 		String hpp = inReq.getRequestParameter("page");
 		if (hpp != null)
 		{
@@ -1348,20 +1362,18 @@ public class ProjectManager implements CatalogEnabled
 				//dont filter since its the admin
 				return true;
 			}
-			//Check the library permissions?
-			Data library = getMediaArchive().getData("library", collection.get("library"));
-			if( library != null)
+			Category root = collection.getCategory();
+			UserProfile profile = inReq.getUserProfile();
+			if( profile != null && profile.getViewCategories() != null)
 			{
-				String catid = library.get("categoryid");
-				UserProfile profile = inReq.getUserProfile();
-				if( catid != null && profile != null && profile.getViewCategories() != null)
+				for(String catid : profile.getViewCategories())
 				{
-					if( profile.getViewCategories().contains(catid) )
+					if( root.hasParent(catid) )
 					{
 						return true;
 					}
-				}
-			}
+				}	
+			}				
 		}
 		return false;
 
@@ -1372,15 +1384,10 @@ public class ProjectManager implements CatalogEnabled
 		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
 		if( collection != null)
 		{
-			String ownerid = collection.get("owner");
 			User user = inReq.getUser();
-			
+
+			String ownerid = collection.get("owner");
 			if( ownerid != null && ownerid.equals( inReq.getUserName( ) ) )
-			{
-				return true;
-			}
-			String visibility = collection.get("visibility");
-			if( visibility != null && visibility.equals( "2" ) )
 			{
 				return true;
 			}
@@ -1389,27 +1396,47 @@ public class ProjectManager implements CatalogEnabled
 				//dont filter since its the admin
 				return true;
 			}
-			//Check the library permissions?
-			Data library = getMediaArchive().getData("library", collection.get("library"));
-			if( library != null)
+
+			String visibility = collection.get("visibility");
+			if( visibility != null && !visibility.equals( "3" ) )
 			{
-				Category cat = getRootCategory(getMediaArchive(), inCollectionid);
-				
+				Category root = collection.getCategory();
 				UserProfile profile = inReq.getUserProfile();
 				if( profile != null && profile.getViewCategories() != null)
 				{
 					for(String catid : profile.getViewCategories())
 					{
-						if( cat.hasParent(catid) )
+						if( root.hasParent(catid) )
 						{
 							return true;
 						}
 					}	
 				}				
-
+				return false;
 			}
+
+			
+//			//Check the library permissions?
+//			Data library = getMediaArchive().getData("library", collection.get("library"));
+//			if( library != null)
+//			{
+//				Category cat = getRootCategory(getMediaArchive(), inCollectionid);
+//				
+//				UserProfile profile = inReq.getUserProfile();
+//				if( profile != null && profile.getViewCategories() != null)
+//				{
+//					for(String catid : profile.getViewCategories())
+//					{
+//						if( cat.hasParent(catid) )
+//						{
+//							return true;
+//						}
+//					}	
+//				}				
+//
+//			}
 		}
-		return false;
+		return true;
 	}
 
 	public boolean addUserToLibrary(MediaArchive inArchive, Data inSavedLibrary, User inUser)
@@ -1418,5 +1445,28 @@ public class ProjectManager implements CatalogEnabled
 		librarycategory.addValue("viewusers", inUser.getId());
 		inArchive.getSearcher("category").saveData(librarycategory);
 		return true;
+	}
+
+	public int approveSelection(WebPageRequest inReq, HitTracker inHits, String inCollectionid)
+	{
+		Collection tosave = new ArrayList();
+		int approved = 0;
+		Searcher searcher = getMediaArchive().getAssetSearcher();
+		for (Iterator iterator = inHits.getSelectedHitracker().iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			asset = searcher.loadData(asset);
+			asset.setValue("editstatus", "6");
+			tosave.add(asset);
+			approved++;
+			if( tosave.size() > 400)
+			{
+				searcher.saveAllData(tosave,null);
+				tosave.clear();
+			}
+		}
+		//TODO: Save this event to a log
+		searcher.saveAllData(tosave,null);
+		return approved;
 	}
 }

@@ -1,7 +1,8 @@
 <page>
 
 	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
-	<property name="defaulttab">mediatab</property>
+	<property name="defaulttab">approvaltab</property>
+	
 	
 	<property name="hitsname">hits</property>
 	<property name="virtual">true</property>
@@ -13,14 +14,9 @@
     </path-action>
 
 	<path-action name="ProjectModule.addOpenCollection" />
-	<page-action name="ProjectModule.searchForAssetsOnCollection">
+	<page-action name="ProjectModule.searchForPendingAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</page-action>
-	<!--
-	<path-action name="ProjectModule.loadCategoriesOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</path-action>
-	-->
 	
 	 <permission name="view">
     		<action name="ProjectModule.checkViewCollection" />

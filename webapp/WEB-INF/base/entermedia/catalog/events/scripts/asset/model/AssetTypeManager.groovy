@@ -1,4 +1,4 @@
-package assets.model;
+package asset.model;
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive

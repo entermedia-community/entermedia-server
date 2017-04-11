@@ -19,6 +19,11 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 
 	public SearchQuery  attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) 
 	{
+		return inQuery;
+		
+		//TODO: Add Hidden Libraries
+		
+		/*
 		boolean enabled = inQuery.isEndUserSearch();
 		//log.info( "security filer enabled "  + enabled );
 		if (!enabled)
@@ -35,13 +40,13 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 			return inQuery;
 		}
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
-		if(archive != null){
-			boolean publiclibs = Boolean.parseBoolean(archive.getCatalogSettingValue("publiclibraries"));
-			if(publiclibs){
-				return inQuery;
-			}
-		}
-		
+//		if(archive != null){
+//			boolean publiclibs = Boolean.parseBoolean(archive.getCatalogSettingValue("publiclibraries"));
+//			if(publiclibs){
+//				return inQuery;
+//			}
+//		}
+//		
 		
 		//Run a search on another table, find a list of id's, add them to the query
 		UserProfile profile = inPageRequest.getUserProfile();
@@ -62,5 +67,6 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 			inQuery.setSecurityAttached(true);
 		}
 		return inQuery;
+		*/
 	}
 }

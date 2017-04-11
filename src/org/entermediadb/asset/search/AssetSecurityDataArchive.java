@@ -315,7 +315,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		// tmp.put("asset.owner", );
 		if( "view".equals(inType))
 		{
-			Collection<Category> publiccategories = inArchive.listPublicCategories();
+			Collection<Category> publiccategories = inArchive.listHiddenCategories();
 			for (Category cat : exactcategories)
 			{
 				for (Iterator iterator = publiccategories.iterator(); iterator.hasNext();)
@@ -323,10 +323,11 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 					Category publiccategory = (Category)iterator.next();
 					if (cat.hasParent(publiccategory.getId()))
 					{
-						return true;
+						return false;
 					}					
 				}
 			}
+			return true;
 		}
 		
 		return false;

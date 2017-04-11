@@ -124,11 +124,8 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 		{
 			return false;
 		}
-//		if( getSearchFilter().hasExcludedCategory(inCat.getId()) )
-//		{
-//			return false;
-//		}
 
+/*
 		if (getLimitToCatalogs().size() > 0)
 		{
 			// Only worry about including these catalogs
@@ -179,19 +176,19 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 		{
 			return true;
 		}
-
-		Collection<Category> pcats = getMediaArchive().listPublicCategories();
+*/
+		Collection<Category> pcats = getMediaArchive().listHiddenCategories();
 		for (Iterator iterator = pcats.iterator(); iterator.hasNext();)
 		{
 			Category category = (Category)iterator.next();
-			if( category.hasParent(inCat.getId()) || inCat.hasParent(category.getId()))
+			if( category.hasParent(inCat.getId()) && inCat.hasParent(category.getId()))
 			{
-				return true;
+				return false;
 			}
 			
 		}
 		
-		return false;
+		return true;
 	}
 
 	public Set getHiddenCatalogs()
