@@ -1,7 +1,17 @@
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+		<div class="ui-widget-header">$hits.size() [[Assets Approved]] </div>
+		<div class="ui-widget-content">
 
 
-[[Collection Saved - please wait...]]
+<form id="okform" action="$apphome/views/modules/librarycollection/media/index.html">
 
-<script type="text/javascript">
-window.location.replace("$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.id}&assetclearresults=false")
-</script>
+<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+<input type="hidden" name="assetclearresults" value="true" />
+
+<input type="submit" value="View Assets" />
+
+</form>
+
+
+</div>
+</div>

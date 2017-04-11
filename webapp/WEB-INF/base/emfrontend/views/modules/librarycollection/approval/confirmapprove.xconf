@@ -1,4 +1,6 @@
 <page>
+	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+
 <path-action name="DataEditModule.loadHits">
 	<searchtype>asset</searchtype>
 </path-action>
