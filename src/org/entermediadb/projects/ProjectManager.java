@@ -380,7 +380,7 @@ public class ProjectManager implements CatalogEnabled
 	//		return hits;
 	//	}
 	//
-	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, boolean inApproved)
+	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid, String inShowOnlyEditStatus)
 	{
 		if(collectionid == null){
 			return null;
@@ -413,13 +413,9 @@ public class ProjectManager implements CatalogEnabled
 			assetsearch.addExact("category", root.getId());
 		}
 		
-		if( inApproved )
+		if( inShowOnlyEditStatus != null )
 		{
-			assetsearch.addExact("editstatus", "6");
-		}
-		else
-		{
-			assetsearch.addNot("editstatus", "6");			
+			assetsearch.addExact("editstatus", inShowOnlyEditStatus);			
 		}
 		
 		assetsearch.setEndUserSearch(true);
@@ -433,7 +429,7 @@ public class ProjectManager implements CatalogEnabled
 		
 		all = archive.getAssetSearcher().search(assetsearch);
 
-		if( !inApproved)
+		if( inShowOnlyEditStatus != null && inShowOnlyEditStatus.equals("1"))
 		{
 			all.selectAll();
 		}

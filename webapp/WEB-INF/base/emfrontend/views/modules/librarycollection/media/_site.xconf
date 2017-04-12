@@ -23,7 +23,10 @@
 	-->
 	
 	 <permission name="view">
+	 	<and>
+	 	   	<pagevalue name="canviewopencollections" equals="true" />
     		<action name="ProjectModule.checkViewCollection" />
+    	</and>	
     </permission>
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
 	 

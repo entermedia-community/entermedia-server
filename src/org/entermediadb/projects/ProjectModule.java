@@ -215,7 +215,7 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}		
 		ProjectManager manager = getProjectManager(inReq);
-		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, false);
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, "1");
 		if(all == null){
 			return;
 		}
@@ -233,7 +233,14 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}		
 		ProjectManager manager = getProjectManager(inReq);
-		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, true);
+		
+		boolean canedit = manager.canEditCollection(inReq, collectionid);
+		String editstatus = "6";
+		if( canedit )
+		{
+			editstatus = null;
+		}
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, editstatus);
 		if(all == null){
 			return;
 		}
