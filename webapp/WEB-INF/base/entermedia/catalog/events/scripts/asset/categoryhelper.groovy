@@ -1,3 +1,5 @@
+package asset;
+
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.WebPageRequest

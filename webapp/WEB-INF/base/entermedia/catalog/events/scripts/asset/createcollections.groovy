@@ -1,4 +1,4 @@
-package library;
+package asset;
 
 import model.assets.LibraryManager
 

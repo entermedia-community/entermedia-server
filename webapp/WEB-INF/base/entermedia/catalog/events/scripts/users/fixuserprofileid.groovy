@@ -1,4 +1,4 @@
-package assets
+package users
 
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data

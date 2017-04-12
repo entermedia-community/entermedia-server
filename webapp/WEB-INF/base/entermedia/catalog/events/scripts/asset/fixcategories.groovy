@@ -1,3 +1,5 @@
+package asset;
+
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
