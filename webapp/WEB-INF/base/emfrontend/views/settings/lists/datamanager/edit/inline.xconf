@@ -1,0 +1,4 @@
+<page>
+	<path-action name="DataEditModule.loadSearcherForEdit" />
+<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+</page>
