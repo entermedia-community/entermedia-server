@@ -2,7 +2,7 @@
 #set ($urlenc = $asset.sourcepath) #else #set ( $urlenc =
 $urlutils.encode($asset.sourcepath)) #set ( $urlenc =
 $urlenc.replace("%2F", "/") ) #end
-
+<div id="main-media-container">
 <img id="main-media" class="emdropshadow  assetdragdrop"
 	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
 	data-name="$asset.name" data-width="$!asset.width"
@@ -42,14 +42,31 @@ $urlenc.replace("%2F", "/") ) #end
 	</div>
 </div>
 
+</div>
+
+<script>
+
+$("#main-media-container").livequery("mouseenter", function(e)
+{
+	$("#footerbase").show();	
+});
+
+$("#main-media-container").livequery("mouseleave", function(e)
+{
+	$("#footerbase").hide();	
+});
+
+
+</script>
 
 
 <style>
+/*
 #main-media:HOVER+#footerbase {
-	display: inherit;
+	visibility: visible;
 }
-
-#footerbase { //
+*/
+#footerbase { 
 	display: none;
 	position: relative;
 	width: 100%;
