@@ -7,7 +7,6 @@
 	#end
 	</div>
 
-	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
@@ -27,11 +26,13 @@
 		  #end 
 		  #if($cansharecollection)
 		  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
-		  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Share]]</a></li>
+		  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Followers]]</a></li>
 		  #end
 		   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
 		  <li class="ui-corner-top" ><a id="permissionstab" href="$link" >[[Permissions]]</a></li>
 	  #end
+	  	  #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+	  
 		  <li class="ui-corner-top" ><a id="settingstab" href="$editlink" >[[Settings]]</a></li>
 		</ul>
 		<div class="clearfix"></div>

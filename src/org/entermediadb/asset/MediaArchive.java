@@ -2,6 +2,7 @@ package org.entermediadb.asset;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.TranscodeTools;
@@ -26,6 +29,7 @@ import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.projects.ProjectManager;
@@ -1831,4 +1835,30 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return null;
 	} 
+	
+	
+	public TemplateWebEmail createSystemEmail(User inSendTo, String inTemplatePath)
+	{
+		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+		
+		String fromemail = getCatalogSettingValue("system_from_email");
+		String fromemailname = getCatalogSettingValue("system_from_email_name");
+		
+		webmail.setFrom(fromemail);
+		webmail.setFromName(fromemailname);
+		
+		webmail.setMailTemplatePath(inTemplatePath);
+
+		try
+		{
+			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription() );
+			webmail.setRecipient(to);
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+		
+	}
 }

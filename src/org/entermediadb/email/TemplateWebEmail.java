@@ -8,7 +8,6 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +30,7 @@ import org.openedit.page.PageStreamer;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
+import org.openedit.util.RequestUtils;
 
 /**
  * @author cburkey
@@ -496,6 +496,36 @@ public class TemplateWebEmail extends WebEmail implements Data
 		send();
 		
 	}	
+	
+	public RequestUtils getRequestUtils()
+	{
+		return fieldRequestUtils;
+	}
+
+	public void setRequestUtils(RequestUtils inRequestUtils)
+	{
+		fieldRequestUtils = inRequestUtils;
+	}
+	public RequestUtils fieldRequestUtils;
+	
+	public void send(Map inObjects)
+	{
+		WebPageRequest req = getRequestUtils().createPageRequest(getMailTemplatePage(), null);
+		
+		StringWriter outputStream = new StringWriter();
+		Output out = new Output();
+		out.setWriter(outputStream);
+
+		req.getPageStreamer().setOutput(out);
+		for (Iterator iterator = inObjects.keySet().iterator(); iterator.hasNext();)
+		{
+			String	key = (String) iterator.next();
+			req.putPageValue(key, inObjects.get(key));			
+		}
+		req.getPageStreamer().include(getMailTemplatePage(), req);
+		sendText(outputStream.toString());
+
+	}
 	public void send()
 	{
 		if (getFrom() == null)
@@ -504,6 +534,11 @@ public class TemplateWebEmail extends WebEmail implements Data
 		}
 		StringWriter out = new StringWriter();
 		String output = render(out);
+				
+	}
+
+	protected void sendText(String output)
+	{
 		try
 		{
 			String from = getFrom();

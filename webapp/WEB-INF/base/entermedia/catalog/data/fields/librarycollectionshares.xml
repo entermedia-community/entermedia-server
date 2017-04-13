@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties beanname="dataSearcher"> 
-  <property id="id" index="true" stored="true" editable="true" internalfield="true" keyword="false" filter="false" sortable="true">Id 
+  <property id="id" index="true" stored="true" editable="true" internalfield="true"   >
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[Id]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="sourcepath" index="false" keyword="false" filter="false" stored="false" editable="false" sortable="true">SourcePath 
+  <property id="sourcepath" > 
     <name> 
       <language id="de"><![CDATA[SourcePath]]></language>  
       <language id="en"><![CDATA[SourcePath]]></language>  
@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[SourcePath]]></language> 
     </name> 
   </property>  
-  <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false" keyword="false" sortable="true">Collection 
+  <property id="librarycollection" index="true" type="list" stored="true" editable="true"   > 
     <name> 
       <language id="de"><![CDATA[Sammlung]]></language>  
       <language id="en"><![CDATA[Collection]]></language>  
@@ -25,15 +25,22 @@
       <language id="fr"><![CDATA[Collection]]></language> 
     </name> 
   </property>  
-  <property id="emails" index="true" stored="true" editable="true" viewtype="tageditor" keyword="false" filter="false" sortable="true">Share Emails 
+  <property id="followeruser" index="true" viewtype="user" type="list" listid="user"  stored="true" editable="true"  > 
+    <name> 
+      <language id="en"><![CDATA[User]]></language>  
+    </name> 
+  </property>  
+  <!-- 
+  <property id="emails" index="true" stored="true" editable="true" viewtype="tageditor"   >
     <name> 
       <language id="de"><![CDATA[Anteil von E-Mails]]></language>  
-      <language id="en"><![CDATA[Share Emails]]></language>  
+      <language id="en"><![CDATA[External Email]]></language>  
       <language id="es"><![CDATA[Los correos electrónicos de Acciones]]></language>  
       <language id="fr"><![CDATA[Partager Emails]]></language> 
     </name> 
-  </property>  
-  <property id="sent" editable="false" index="true" searchcomponent="datesearch" viewtype="datetime" type="date" stored="true" keyword="false" filter="false" sortable="true">Sent Date 
+  </property>
+   -->  
+  <property id="sent"  index="true" searchcomponent="datesearch" viewtype="datetime" type="date" stored="true"   >Sent Date 
     <name> 
       <language id="de"><![CDATA[Sendedatum]]></language>  
       <language id="en"><![CDATA[Sent Date]]></language>  
@@ -41,7 +48,12 @@
       <language id="fr"><![CDATA[date d&#39;envoi]]></language> 
     </name> 
   </property>  
-  <property id="note" editable="true" viewtype="html" index="true" stored="true" keyword="false" filter="false" sortable="true">Note 
+  <property id="apphome" editable="true" index="true" stored="true"   > 
+    <name> 
+      <language id="en"><![CDATA[App Home]]></language>  
+    </name> 
+  </property>  
+  <property id="note" editable="true" viewtype="html" index="true" stored="true"   > 
     <name> 
       <language id="de"><![CDATA[Hinweis]]></language>  
       <language id="en"><![CDATA[Note]]></language>  
@@ -49,7 +61,7 @@
       <language id="fr"><![CDATA[Remarque]]></language> 
     </name> 
   </property>  
-  <property id="senderror" editable="false" index="true" stored="true" keyword="false" filter="false" sortable="true">Error 
+  <property id="senderror"  index="true" stored="true"   >Error 
     <name> 
       <language id="de"><![CDATA[Fehler]]></language>  
       <language id="en"><![CDATA[Error]]></language>  
@@ -57,10 +69,10 @@
       <language id="fr"><![CDATA[Erreur]]></language> 
     </name> 
   </property>  
-  <property id="fromuser" editable="false" viewtype="user" type="list" listid="user" catalogid="assets/catalog" index="true" stored="true" keyword="false" filter="false" sortable="true">Sent By
+  <property id="fromuser"  viewtype="user" type="list" listid="user" catalogid="assets/catalog" index="true" stored="true"   >
     <name>
       <language id="de"><![CDATA[gesendet von]]></language>
-      <language id="en"><![CDATA[Sent By]]></language>
+      <language id="en"><![CDATA[Added By]]></language>
       <language id="es"><![CDATA[Enviado por]]></language>
       <language id="fr"><![CDATA[Envoyée par]]></language>
     </name>
