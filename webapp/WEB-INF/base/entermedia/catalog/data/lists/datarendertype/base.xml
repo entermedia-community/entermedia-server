@@ -22,7 +22,8 @@
 		<type id="timelength"   >Time Length</type>
 		<type id="url"  >URL</type>
 		<type id="color"  >Color</type>
-		<type id="map"  >Map</type>
+		<type id="table"  >Table</type>
+		<type id="timecodetable"  >Timecode Table</type>
 		<type id="searchsuggest"  >Suggestions</type>
 		<type id="tageditor"  >Tags</type>
 

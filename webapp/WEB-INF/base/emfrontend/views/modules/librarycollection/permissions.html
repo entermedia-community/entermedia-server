@@ -7,18 +7,17 @@
 
 #set( $selectedlibrary = $librarycol.getLibrary() )
 
-#set( $visible = $selectedlibrary.visibility )
+#set( $visible = $librarycol.visibility )
 
 <h4>[[View Permissions]]</h4>
 
 #if( $visible && $visible == "3")
 <p class="error">
-<strong>Warning: </strong>
-<p>Hidden from all users</p>
+<strong>[[Warning: Hidden from other users]]</strong>
 <br>
 </p>
 #else
-<p>Read only for all users</p>
+<p>[[Read only for users]]</p>
 #end
 
 #set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
@@ -30,7 +29,7 @@
 <hr>
 <br>
 
-
+#set( $categoryid = $librarycol.getRootCategoryId())
 <h4>[[Edit Permissions]]</h4>
 		
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
@@ -43,10 +42,8 @@
 $context.putPageValue("viewid", $view.id)
 #set( $searcher = $mediaarchive.getSearcher("category"))
 $context.putPageValue("searcher", $searcher )
-
 #set( $data = $mediaarchive.getCategory($categoryid) )
 $context.putPageValue("data", $data )
-
 <div id="default-fields">
     <div id="editlayout">
     <form id="dataeditor" name="dataeditor" method="post"  action="$action" >

@@ -219,6 +219,10 @@ public class ProjectModule extends BaseMediaModule
 		if(all == null){
 			return;
 		}
+		
+		Object caneditdata = inReq.getPageValue("caneditdata");
+		all.getSearchQuery().setValue("caneditdata", caneditdata);
+		
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
 		String sessionId = all.getSessionId();
@@ -244,6 +248,10 @@ public class ProjectModule extends BaseMediaModule
 		if(all == null){
 			return;
 		}
+		
+		Object caneditdata = inReq.getPageValue("caneditdata");
+		all.getSearchQuery().setValue("caneditdata", caneditdata);
+
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
 		String sessionId = all.getSessionId();
