@@ -674,7 +674,6 @@ public class DataEditModule extends BaseMediaModule
 				event.setOperation(searcher.getSearchType() + "/saved");
 				event.setProperty("dataid", data.getId());
 				event.setProperty("id", data.getId());
-
 				event.setProperty("applicationid", inReq.findValue("applicationid"));
 
 				getWebEventListener().eventFired(event);

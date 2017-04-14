@@ -48,11 +48,13 @@
       <language id="fr"><![CDATA[date d&#39;envoi]]></language> 
     </name> 
   </property>  
+  <!-- 
   <property id="apphome" editable="true" index="true" stored="true"   > 
     <name> 
       <language id="en"><![CDATA[App Home]]></language>  
     </name> 
-  </property>  
+  </property>
+  -->   
   <property id="note" editable="true" viewtype="html" index="true" stored="true"   > 
     <name> 
       <language id="de"><![CDATA[Hinweis]]></language>  

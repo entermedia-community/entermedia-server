@@ -511,18 +511,18 @@ public class TemplateWebEmail extends WebEmail implements Data
 	public void send(Map inObjects)
 	{
 		WebPageRequest req = getRequestUtils().createPageRequest(getMailTemplatePage(), null);
-		
+		PageStreamer streamer = getRequestUtils().createPageStreamer(getMailTemplatePage(),req);
 		StringWriter outputStream = new StringWriter();
 		Output out = new Output();
 		out.setWriter(outputStream);
 
-		req.getPageStreamer().setOutput(out);
+		streamer.setOutput(out);
 		for (Iterator iterator = inObjects.keySet().iterator(); iterator.hasNext();)
 		{
 			String	key = (String) iterator.next();
 			req.putPageValue(key, inObjects.get(key));			
 		}
-		req.getPageStreamer().include(getMailTemplatePage(), req);
+		streamer.include(getMailTemplatePage(), req);
 		sendText(outputStream.toString());
 
 	}
