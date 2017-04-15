@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Asset Added To Collection</property>	
+	<property name="virtual">true</property>
+
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/librarycollection/assetadded.groovy</script>
+	</path-action>
+</page>
