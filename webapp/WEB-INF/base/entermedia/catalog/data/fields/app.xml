@@ -21,8 +21,8 @@
     <name>
       <language id="de"><![CDATA[bereitstellen Weg]]></language>
       <language id="en"><![CDATA[Deploy Path]]></language>
-      <language id="es"><![CDATA[implementar Camino]]></language>
-      <language id="fr"><![CDATA[Déployer Chemin]]></language>
+      <language id="es"><![CDATA[Ruta de montación]]></language>
+      <language id="fr"><![CDATA[Chemin de déploiement]]></language>
     </name>
   </property> 
 </properties>
