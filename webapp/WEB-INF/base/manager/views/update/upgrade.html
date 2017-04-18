@@ -4,7 +4,7 @@
 <p>[[Here is the upgrade log]]:</p>
 
 #foreach( $plugin in $upgrader.list )
-<h2>$id</h2>
+<h2>$plugin</h2>
 <p>
 	#foreach( $row in $upgrader.upgrade($plugin,$context) )
 #esc($row) <br>
@@ -26,4 +26,4 @@
 
 #end
 
-<a href="/manager/views/update/restartdocker.html">[[Restart Docker]]</a>
+<a class="mbtn learn-more" href="/manager/views/update/restartdocker.html" >Restart Docker</a>

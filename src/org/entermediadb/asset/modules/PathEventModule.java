@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.events.PathEvent;
 import org.entermediadb.events.PathEventManager;
+import org.entermediadb.scripts.ScriptManager;
 import org.openedit.WebPageRequest;
 import org.openedit.config.XMLConfiguration;
 import org.openedit.modules.BaseModule;
@@ -163,7 +164,7 @@ public class PathEventModule extends BaseModule
 	{
 		PathEvent event = loadPathEvent(inReq);
 		String pathtoscript = findScriptName(event);
-		Page script = getPageManager().getPage(pathtoscript);
+		Page script = getPageManager().getPage(pathtoscript, true);
 		if( !script.exists() )
 		{
 			String catalogid = event.getPage().get("catalogid");
@@ -179,6 +180,9 @@ public class PathEventModule extends BaseModule
 		if( script.exists() && !pathtoscript.startsWith("/WEB-INF/base") )
 		{
 			getPageManager().removePage(script);
+			getPageManager().clearCache(event.getPage());
+			getScriptManager().clearCache();
+
 		}
 		loadScriptForEvent(inReq);
 	}
@@ -218,8 +222,10 @@ public class PathEventModule extends BaseModule
 			//settings.
 			settings.addPathAction(action);
 			getPageManager().saveSettings(event.getPage());
+			getScriptManager().clearCache();
 		}
 		getPageManager().clearCache(event.getPage());
+		//getPageManager().clearCache();
 		
 		/**
 		 * 	<path-action name="Script.run"  allowduplicates="true">
@@ -228,6 +234,13 @@ public class PathEventModule extends BaseModule
 
 		 */
 	}
+	
+	public ScriptManager getScriptManager()
+	{
+		ScriptManager fieldScriptManager = (ScriptManager)getModuleManager().getBean("scriptManager");
+		return fieldScriptManager;
+	}
+	
 	protected boolean containsScript(PageSettings settings, String pathtoscript) 
 	{
 		for (Iterator iterator = settings.getPathActions().iterator(); iterator.hasNext();) 

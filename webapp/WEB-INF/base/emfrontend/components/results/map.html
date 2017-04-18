@@ -3,8 +3,11 @@
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
-	$pages.include("$apphome/components/results/header.html",$context) 
+	$pages.include("$apphome/components/results/mapheader.html",$context) 
 #end
+
+#set( $n = $hits.setHitsPerPage(1000))
+
 #set( $geofilter = $hits.getSearchQuery().getTermByDetailId("geo_point"))
 #if( $geofilter)
 <div style="padding:10px;background:#eee;">
@@ -28,7 +31,7 @@ $('#map').gmap({
 	 'zoom': 3,
 	#end 
 }).bind('init', function(ev, map) {
-	#foreach($location in $hits.getAllHits())
+	#foreach($location in $hits.getPageOfHits())
 	 #if($location.geo_point)
       	$('#map').gmap('addMarker', 
 		{

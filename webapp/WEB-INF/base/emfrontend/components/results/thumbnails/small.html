@@ -23,19 +23,18 @@ $context.putPageValue("thumbsize",$thumbsize)
             #else
             	#set ( $urlenc = $urlutils.encode($sourcepath))
             	#set ( $urlenc = $urlenc.replace("%2F", "/") )
-            #end
-            
+            #end	
+           <div class="emdropshadow">
+            <img class="smallthumb assetdragdrop" title="[[Drag to collection]]"  draggable="true" data-sourcepath="$urlenc" data-name="$asset.name" src="$!cdn$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${urlenc}/thumb.jpg" alt="$!asset.name" border="0" />
+           </div> 
+        #end
+    #end
     <div id="badgecontainer">
 	#set( $badges = $mediaarchive.getBadges($hit) )
-	<div class="badgetarget">
+	<div class="badgetargetsmall">
 	#foreach($badge in $badges)
 		<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
 	#end
 	</div>
 	</div>
-            <div >
-            <img class="smallthumb assetdragdrop" title="[[Drag to collection]]"  draggable="true" data-sourcepath="$urlenc" data-name="$asset.name" src="$!cdn$home/${applicationid}/views/modules/asset/downloads/preview/${thumbsize}/${urlenc}/thumb.jpg" alt="$!asset.name" border="0" />
-            </div>
-        #end
-    #end
     

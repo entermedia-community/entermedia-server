@@ -4,11 +4,10 @@
 	<type id="long"  >Long</type>
 	<type id="double"  >Double</type>
 	<type id="geo_point"  >Location (Lat and Long)</type>
-	
 	<type id="date"  >Date</type>
 	<type id="list" >List</type>
 	<type id="multi" >Multi Value</type>
-	<type id="kwmap" >Keyword Map</type>
+	<type id="table" >Table</type>
 	<type id="datejoin" >Date Join</type>
 	<type id="textjoin" >Text Join</type>
 	<type id="totaljoin" >Total Join</type>

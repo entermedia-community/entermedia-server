@@ -694,11 +694,18 @@ span.glyphicon-triangle-left.overlay-nav {
 	height: 0px;
 	position: relative;
 }
+.badgetargetsmall {
+	position: absolute;
+	bottom: 0px;
+	right: 10px;
+}
 .badgetarget {
 	position: absolute;
-	top: 0px;
-	right: 20px;
+	bottom: 0px;
+	right: 40px;
 }
+
+
 .embadge {	
 	display: block;	
 	float: right;

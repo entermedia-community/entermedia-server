@@ -1,14 +1,15 @@
 <properties> 
 	<property id="1">
 		<name> 
-	      <language id="en"><![CDATA[Default]]></language>  
-	      <language id="es"><![CDATA[Normal]]></language> 
+	      <language id="en"><![CDATA[Read Only]]></language>  
+	      <language id="es"><![CDATA[Solo Leer]]></language> 
 	    </name>
     </property>
-	<property id="2">
+	<property id="3">
 		<name> 
-	      <language id="en"><![CDATA[Public]]></language>  
-	      <language id="es"><![CDATA[Publico]]></language> 
+	      <language id="en"><![CDATA[Hidden]]></language>  
+	      <language id="es"><![CDATA[Oculto]]></language> 
 	    </name>
 	</property>	
+		
 </properties>	

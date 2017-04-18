@@ -29,14 +29,6 @@
 #end
 
 <span id="emthumbholder">
-<div id="badgecontainer">
-	#set( $badges = $mediaarchive.getBadges($hit) )
-	<div class="badgetarget">
-	#foreach($badge in $badges)
-		<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
-	#end
-	</div>
-</div>
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
@@ -54,4 +46,15 @@
 		src="$!cdn$home$apphome/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
 	</div>	
 	#end
+	
+	<div id="badgecontainer">
+	#set( $badges = $mediaarchive.getBadges($hit) )
+	<div class="badgetarget">
+	#foreach($badge in $badges)
+		<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
+	#end
+	</div>
+</div>
+	
+	
 </span>

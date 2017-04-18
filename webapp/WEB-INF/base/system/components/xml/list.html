@@ -91,7 +91,7 @@ $types.enableBulkOperations()
    #set ($mode = $user.get("oe_edit_mode"))
    
 	#if($mode && ($mode == "debug" || $mode == "editing" ))
-		<a class="textlink" href="$apphome/views/settings/lists/datamanager/edit/addnew.html?searchtype=$listid">[[add new]]</a>
+		<a class="emdialog" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=$csslistid" data-hidefooter="true">[[Add New $detail]]</a>
 	#end
    
    

@@ -4,8 +4,15 @@
   <property id="oneweek" default="true">Keep for One Week</property>
   <property id="remove" default="true">Remove/Delete</property>
   <property id="keep" default="true">Keep Permanently</property>
+  
   <!-- Test to see if purge works -->
   <property id="purge" default="true">Purge</property>
   
+  
+    <property id="default" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[default]]></language>
+    </name>
+  </property>
   
 </policies>

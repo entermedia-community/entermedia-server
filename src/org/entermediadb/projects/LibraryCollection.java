@@ -94,5 +94,11 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	{
 		return getMediaArchive().getCategory(getRootCategoryId());
 	}
+	
+	public boolean hasPendingAssets()
+	{
+		Object found = getMediaArchive().getAssetSearcher().query().orgroup("editstatus", "1|rejected|7").exact("category", getRootCategoryId()).searchOne();
+		return found != null;
+	}
 
 }

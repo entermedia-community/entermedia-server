@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties> 
+
+  <property id="id" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>
   <property id="user" index="true" viewtype="user" stored="true" type="list" keyword="false" filter="false" editable="false" sortable="true">User Name 
     <name> 
       <language id="de"><![CDATA[Benutzername]]></language>  

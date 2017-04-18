@@ -15,6 +15,10 @@ $context.putPageValue("hits",$hits)
 		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
 		$context.putPageValue("librarycol",$librarycol)
 	#end
+	#set( $caneditdata = $hits.getSearchQuery().getValue("caneditdata") )
+	#if( $caneditdata )
+		$context.putPageValue("caneditdata",$caneditdata)
+	#end
 	#set( $catid = $hits.getInput("categoryid") )
 	#if( $catid && !$category)
 	#set( $category = $mediaarchive.getData("category",$catid) )
@@ -71,15 +75,17 @@ $context.putPageValue("hits",$hits)
 			</li>
 		#end
 		
-			#if( $librarycol )
+			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
 				<li><a>[[Collection]]</a>	
 				<ul>
+					#if( $canaddnewcollection)
 <li><a class="emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]" 
 					 >[[Copy Collection]]</a></li>
-
-
+					 #end
+					 #if( $caneditdata)
 					<li><a href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
 					class="confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
+					#end
 				</ul>
 				</li>
 				#end

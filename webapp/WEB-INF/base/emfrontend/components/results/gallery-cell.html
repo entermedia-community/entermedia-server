@@ -1,5 +1,4 @@
 
-
            
                 <div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
                     #if($showtoolbar)
@@ -15,33 +14,17 @@
     </div>
 #end
                     <a class="hovering" href="$click">
-                    <div id="iconcontainer">
-                        
-                        
-                       			 <div id="icononassetx" class="">
-                       			 
-                       			 </div>
-                       			 
-                       			 
-                       			    </div>
                         <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
-                            $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)      
-                              
-                     
-                        	  
-                        </div>   
+                            $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+                        </div>
                     </a>
                     
                     #if( $showcaption )
                     <div class="gallery-caption">
-                        <div class="gallery-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a href="$click">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div> 
+                        <div class="gallery-field-info" ><a href="$click">$hit.getName($context.locale)</a></div> 
                         #if($canviewbasket) 
                         $pages.include("$apphome/components/basket/toggleitem.html", $context)
                         #end
                     </div>
                     #end
                 </div>
-
-<style>
-
-</style>

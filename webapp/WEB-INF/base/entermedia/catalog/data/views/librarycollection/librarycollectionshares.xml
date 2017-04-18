@@ -1,7 +1,5 @@
 
 <root>
-  <property id="emails"/>
+  <property id="followeruser"/>
   <property id="note"/>
-  <property id="fromuser"/>
-  <property id="sent"/>
 </root>

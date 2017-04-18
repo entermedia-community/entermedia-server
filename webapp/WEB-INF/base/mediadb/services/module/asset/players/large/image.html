@@ -2,7 +2,6 @@
 #set ($urlenc = $asset.sourcepath) #else #set ( $urlenc =
 $urlutils.encode($asset.sourcepath)) #set ( $urlenc =
 $urlenc.replace("%2F", "/") ) #end
-
 <div id="main-media-container">
 <img id="main-media" class="emdropshadow  assetdragdrop"
 	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
@@ -73,7 +72,11 @@ $("#main-media-container").livequery("mouseleave", function(e)
 
 
 <style>
-
+/*
+#main-media:HOVER+#footerbase {
+	visibility: visible;
+}
+*/
 #footerbase { 
 	display: none;
 	position: relative;

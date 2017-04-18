@@ -15,8 +15,13 @@ jQuery(document).ready(function(url,params)
 		var select = $(this);
 		select.on("change",function() 
 		{
-			var href = home  +  "/components/results/changeresultview.html?oemaxlevel=1";
-
+			var originalhitsperpage = select.data("hitsperpage");
+			if(originalhitsperpage){
+				var href = home  +  "/components/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
+			}
+			else{
+				var href = home  +  "/components/results/changeresultview.html?oemaxlevel=1";
+			}
 			var args = { hitssessionid: select.data("hitssessionid") ,
 						 searchtype:  select.data("searchtype") ,
 						 page:  select.data("page") ,

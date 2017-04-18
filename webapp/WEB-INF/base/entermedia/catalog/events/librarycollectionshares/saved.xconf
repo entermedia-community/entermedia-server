@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Library Collection Share Saved</property>	
+	<property name="virtual">true</property>
+
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/librarycollectionshares/saved.groovy</script>
+	</path-action>
+</page>

@@ -7,25 +7,30 @@
 
 #set( $selectedlibrary = $librarycol.getLibrary() )
 
-#set( $categoryid = $selectedlibrary.categoryid )
+#set( $visible = $librarycol.visibility )
 
-#if( $categoryid)
+<h4>[[View Permissions]]</h4>
 
+#if( $visible && $visible == "3")
 <p class="error">
-<strong>Warning: </strong>
-Permissions are being set at the library level.
-<a href="$home$apphome/views/modules/library/permissions.html?selectedlibrary=$selectedlibrary.getId()">View Library Permissions</a>
+<strong>[[Warning: Hidden from other users]]</strong>
 <br>
+</p>
+#else
+<p>[[Read only for users]]</p>
+#end
+
+#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
+
+<a class="btn" href="$editlink">Change Visibility</a>
 
 </p>
 <br>
+<hr>
+<br>
 
-#end
-
-
-#set( $categoryid = $librarycol.rootcategory )
-
-<p>[[Choose what users can see the assets and collections within this collection]]</p>
+#set( $categoryid = $librarycol.getRootCategoryId())
+<h4>[[Edit Permissions]]</h4>
 		
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
 
@@ -37,10 +42,8 @@ Permissions are being set at the library level.
 $context.putPageValue("viewid", $view.id)
 #set( $searcher = $mediaarchive.getSearcher("category"))
 $context.putPageValue("searcher", $searcher )
-
 #set( $data = $mediaarchive.getCategory($categoryid) )
 $context.putPageValue("data", $data )
-
 <div id="default-fields">
     <div id="editlayout">
     <form id="dataeditor" name="dataeditor" method="post"  action="$action" >
@@ -73,6 +76,7 @@ $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly
     </div>
 </div>
 
+##<a href="$home$apphome/views/modules/library/permissions.html?selectedlibrary=$selectedlibrary.getId()">View Library Permissions</a>
 
 			
 		</div>

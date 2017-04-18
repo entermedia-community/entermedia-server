@@ -16,7 +16,12 @@
       <language id="es"><![CDATA[Nombre]]></language>  
       <language id="fr"><![CDATA[prénom]]></language> 
     </name> 
-  </property>  
+  </property>
+  <property id="code" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[Code]]></language>
+    </name>
+  </property>    
   <property id="country" index="true" stored="true" type="list" datatype="list" searchtype="state" keyword="false" filter="false" editable="false" sortable="true">Country
     <name>
       <language id="de"><![CDATA[Land]]></language>

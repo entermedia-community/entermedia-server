@@ -1,42 +1,7 @@
-<li><a>[[Results]] (
-#if( $hits.isShowOnlySelected() )
- $hits.getSelectionSize()
-#else 
- $hits.getSelectionSize() / $hits.size()
- #end
- )</a>
+<li><a>[[Selections]]</a>
 	<ul>
-	#if( $hits.getSelectionSize() > 0)
-	    #if ( $canviewbasket  )
-			#if($order)
-				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Basket]]</a></li>
-			#else
-				<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Basket]]</a></li>
-			#end
-		#end
-  		#if ($canmetadatageneral)
-  		#set($multi = $hits.getSelectionSize() > 1)
-  		#if ($multi)
-  			#set($link = "editall.html")
-  			#set($text = "[[Multi Edit]]")
-  		#else
-  			#set($link = "index.html")
-  			#set($text = "[[Edit]]")
-  		#end
-			<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
-			</li>
-		#end
-		#if($candeleteasset)
-			 <li>   	    <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hits${catalogid}&hitssessionid=$!hits.getSessionId()">[[Delete Selected]]</a></li>
-		#end
-		
-		
-    	<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
-	#end
-
 	  	<li><a class="ajax selectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
     	<li><a class="ajax  selectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
- 
  #if( !$hits.isShowOnlySelected() )
 		<li><a 
 			title="[[View Selections]]"
@@ -50,16 +15,49 @@
 #end		
 #if( $hits.getSelectionSize() > 0)
     	<li><a class="ajax  deselectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
-
-    	
-	#if($candeleteasset)	    
- <li>   	    <a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a></li>
-    	    
-    	#end    	
-    	 <li>   	    <a  href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>
-    	
-    	
 #end
-	
 	</ul>
 </li>
+
+
+#if( $hits.hasSelections() )
+
+<li><a>[[Actions]] (
+#if( $hits.isShowOnlySelected() )
+[[All]] $hits.getSelectionSize()
+#else 
+ $hits.getSelectionSize() / $hits.size()
+#end
+ )</a>
+	<ul>
+	#if( $librarycol && $caneditdata )
+		<li><a class="emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a></li>
+    	<li><a class="emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a></li>
+    #end	
+    #if ( $canviewbasket  )
+		#if($order)
+			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Basket]]</a></li>
+		#else
+			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Basket]]</a></li>
+		#end
+	#end
+	#if ($canmetadatageneral )
+  		#set($multi = $hits.getSelectionSize() > 1)
+  		#if ($multi)
+  			#set($link = "editall.html")
+  			#set($text = "[[Multi Edit]]")
+  		#else
+  			#set($link = "index.html")
+  			#set($text = "[[Edit Asset]]")
+  		#end
+		<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a></li>
+	#end	
+    	<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
+	#if($candeleteasset)	    
+ 		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a></li>
+   	#end    	
+    	 <li>   	    <a  href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>
+	</ul>
+</li>
+
+#end

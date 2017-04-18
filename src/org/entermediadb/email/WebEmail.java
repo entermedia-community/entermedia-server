@@ -489,6 +489,9 @@ public abstract class WebEmail
 
 	public abstract void send() throws OpenEditException, MessagingException;
 
+	public abstract void send(Map inObjects);
+
+	
 	public PostMailStatus sendAndCollectStatus()
 	{
 		PostMailStatus result = new PostMailStatus();

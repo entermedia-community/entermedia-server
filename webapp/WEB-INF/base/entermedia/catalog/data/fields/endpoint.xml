@@ -72,5 +72,11 @@
       <language id="es"><![CDATA[Subir]]></language>
       <language id="fr"><![CDATA[Télécharger]]></language>
     </name>
+  </property>   
+    <property id="module" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+    <name>
+      <language id="en"><![CDATA[module]]></language>
+    </name>
   </property> 
+  
 </properties>

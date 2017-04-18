@@ -861,7 +861,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected QueryBuilder buildTerm(PropertyDetail inDetail, Term inTerm, Object inValue)
 	{
 		QueryBuilder find = buildNewTerm(inDetail, inTerm, inValue);
-		if ("not".equals(inTerm.getOperation()))
+		if ("not".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 		{
 			BoolQueryBuilder or = QueryBuilders.boolQuery();
 			or.mustNot(find);
@@ -1301,7 +1301,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					find = QueryBuilders.termQuery(fieldid, valueof);
 				}
 			}
-			else if ("orgroup".equals(inTerm.getOperation()))
+			else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 			{
 
 				find = QueryBuilders.termsQuery(fieldid, inTerm.getValues());
@@ -1852,11 +1852,14 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator iterator = allprops.iterator(); iterator.hasNext();)
 			{
 				String propid = (String)iterator.next();
+				if(propid == null){
+					continue;
+				}
 				if(propid.contains(".")){
 					continue;
 				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
-				if( detail == null )
+				if( detail == null && !propid.equals("description"))
 				{
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					//setType(detail);
@@ -1869,7 +1872,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						log.info("Added new detail " + propid + " to " + getSearchType() +  " as " + detail.getDataType());
 					}
 				}
-				if (!detail.isIndex()) //&& !propid.contains("sourcepath")
+				if (detail == null || !detail.isIndex()) //&& !propid.contains("sourcepath")
 				{
 					continue;
 				}

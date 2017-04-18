@@ -2,6 +2,7 @@ package org.entermediadb.asset;
 
 import java.io.File;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +16,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.internet.InternetAddress;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.TranscodeTools;
@@ -26,6 +29,7 @@ import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.projects.ProjectManager;
@@ -1760,27 +1764,27 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldLoggingEventHandler = inLoggingEventHandler;
 	}
-	public Collection<Data> listPublicCollections()
+	public Collection<Data> listHiddenCollections()
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection visibility = (Collection)getCacheManager().get("visiblecollection", search.getIndexId()); //Expires after 5 min
+		Collection visibility = (Collection)getCacheManager().get("hiddencollection", search.getIndexId()); //Expires after 5 min
 		if( visibility == null)
 		{
-			visibility = getSearcher("librarycollection").query().exact("visibility", "2").search();
-			log.info(visibility.size() + " public collections ");
-			getCacheManager().put("visiblecollection", search.getIndexId(), visibility);
+			visibility = getSearcher("librarycollection").query().exact("visibility", "3").search();
+			log.info(visibility.size() + " hidden collections ");
+			getCacheManager().put("hiddencollection", search.getIndexId(), visibility);
 		}
 		return visibility;
 	}
 	
-	public Collection<Category> listPublicCategories()
+	public Collection<Category> listHiddenCategories()	
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection<Category> categories = (Collection)getCacheManager().get("visiblecollectioncategories", search.getIndexId()); //Expires after 5 min
+		Collection<Category> categories = (Collection)getCacheManager().get("hiddencollectioncategories", search.getIndexId()); //Expires after 5 min
 		if( categories == null)
 		{
 			categories = new ArrayList();
-			Collection visibility = listPublicCollections();
+			Collection visibility = listHiddenCollections();
 			for (Iterator iterator = visibility.iterator(); iterator.hasNext();)
 			{
 				Data librarycollection = (Data) iterator.next();
@@ -1794,7 +1798,7 @@ public class MediaArchive implements CatalogEnabled
 					}
 				}
 			}
-			getCacheManager().put("visiblecollectioncategories", search.getIndexId(), categories);
+			getCacheManager().put("hiddencollectioncategories", search.getIndexId(), categories);
 		}	
 		return categories;
 		
@@ -1805,25 +1809,56 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getSearcher(inSearchType).query();
 	}
-	
 	public Collection getBadges(MultiValued inRow)
 	{
 		Collection badges = inRow.getValues("badge");
 		if( badges != null && !badges.isEmpty())
 		{
-			ArrayList b = new ArrayList<Data>();
-			for (Iterator iterator = badges.iterator(); iterator.hasNext();) {
-				String badgeid = (String) iterator.next();
-				Data badge = getData("badge", badgeid);
-				if (badge == null) {
-					log.info(" Error - Loading badge " + badgeid);
-				} else {
-					b.add(badge);
+			String id = inRow.get("badge");
+			List b = (List)getCacheManager().get("badges",id); //Expires after 5 min, sort it?
+			if( b == null)
+			{
+				b = new ArrayList<Data>();
+				for (Iterator iterator = badges.iterator(); iterator.hasNext();) {
+					String badgeid = (String) iterator.next();
+					Data badge = getData("badge", badgeid);
+					if (badge == null) {
+						log.info("badge not defined" + badgeid);
+					} else {
+						b.add(badge);
+					}
 				}
-			}
-			Collections.sort(b);
+				Collections.sort(b);
+				getCacheManager().put("badges",id, b);
+			}	
 			return b;
 		}
 		return null;
 	} 
+	
+	
+	public TemplateWebEmail createSystemEmail(User inSendTo, String inTemplatePath)
+	{
+		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+		
+		String fromemail = getCatalogSettingValue("system_from_email");
+		String fromemailname = getCatalogSettingValue("system_from_email_name");
+		
+		webmail.setFrom(fromemail);
+		webmail.setFromName(fromemailname);
+		
+		webmail.setMailTemplatePath(inTemplatePath);
+
+		try
+		{
+			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription() );
+			webmail.setRecipient(to);
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+		
+	}
 }

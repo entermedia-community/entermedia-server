@@ -206,6 +206,28 @@ public class ProjectModule extends BaseMediaModule
 //			inReq.putPageValue("hits", hits);
 //		}
 //	}
+	public void searchForPendingAssetsOnCollection(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = loadCollectionId(inReq);
+		if( collectionid == null)
+		{
+			return;
+		}		
+		ProjectManager manager = getProjectManager(inReq);
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, "1");
+		if(all == null){
+			return;
+		}
+		
+		Object caneditdata = inReq.getPageValue("caneditdata");
+		all.getSearchQuery().setValue("caneditdata", caneditdata);
+		
+		//String hitsname = inReq.findValue("hitsname");
+		inReq.putPageValue("hits", all);
+		String sessionId = all.getSessionId();
+		inReq.putSessionValue(sessionId,all);
+	}
 	public void searchForAssetsOnCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -215,10 +237,21 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}		
 		ProjectManager manager = getProjectManager(inReq);
-		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
+		
+		boolean canedit = manager.canEditCollection(inReq, collectionid);
+		String editstatus = "6";
+		if( canedit )
+		{
+			editstatus = null;
+		}
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, editstatus);
 		if(all == null){
 			return;
 		}
+		
+		Object caneditdata = inReq.getPageValue("caneditdata");
+		all.getSearchQuery().setValue("caneditdata", caneditdata);
+
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
 		String sessionId = all.getSessionId();
@@ -683,6 +716,15 @@ public class ProjectModule extends BaseMediaModule
 	public void searchForAssetsOnLibrary(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
+		
+	}
+	public void approveSelection(WebPageRequest inReq)
+	{
+		HitTracker hits = (HitTracker)inReq.getPageValue("hits");
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		int count = manager.approveSelection(inReq,hits,collectionid);
+		inReq.putPageValue("approved",count);
 		
 	}
 }

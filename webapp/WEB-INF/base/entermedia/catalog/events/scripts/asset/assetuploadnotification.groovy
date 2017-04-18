@@ -1,4 +1,4 @@
-package notifications;
+package asset;
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive

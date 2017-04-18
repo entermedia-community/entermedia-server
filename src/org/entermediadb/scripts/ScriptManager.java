@@ -68,6 +68,14 @@ public class ScriptManager
 		return runner;
 	}
 	
+	public void clearCache()
+	{
+		if( fieldScriptRunners != null )
+		{
+			fieldScriptRunners.clear();
+		}
+	}
+	
 	public Script loadScript(String code) throws OpenEditException
 	{
 		try

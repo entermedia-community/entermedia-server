@@ -1,7 +1,7 @@
 <page>
 
 	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
-	
+	<property name="defaulttab">mediatab</property>
 	
 	<property name="hitsname">hits</property>
 	<property name="virtual">true</property>
@@ -23,7 +23,10 @@
 	-->
 	
 	 <permission name="view">
+	 	<and>
+	 	   	<pagevalue name="canviewopencollections" equals="true" />
     		<action name="ProjectModule.checkViewCollection" />
+    	</and>	
     </permission>
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
 	 

@@ -1,4 +1,4 @@
-package assets.model
+package asset;
 
 import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher

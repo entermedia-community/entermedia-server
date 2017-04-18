@@ -1,0 +1,21 @@
+#set( $editlink = "$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
+
+$pages.include($editlink)
+
+<div class="ui-widget uipanel" style="padding: 20px 5px 5px 5px;width: 60%">
+  	<div class="ui-widget-header">[[Sharing]]
+    	<span class="widget-header-edit">
+			 <a class="ir" href="/assets/emshare/views/settings/modules/librarycollection/metadata/views/index.html?viewid=librarycollectiongeneral&amp;viewpath=librarycollection/librarycollectiongeneral">Edit</a>
+		</span>
+    </div>
+	<div class="ui-widget-content">
+
+		<p>[[Copy this link to share or embed a read-only version of these assets]]</p>
+		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+		
+		#set( $link = "$context.getSiteRoot()/$mediadbappid/services/module/asset/players/collections/display/${librarycol.getId()}.html")
+		<input value="$link" style="width:500px; background-color: #EEE;" enabled=false  /><a  class="btn" target="_new" href="$link">Preview</a>
+
+</div>
+</div>
+
