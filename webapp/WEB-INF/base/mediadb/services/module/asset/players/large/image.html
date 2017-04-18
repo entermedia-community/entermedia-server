@@ -3,6 +3,7 @@
 $urlutils.encode($asset.sourcepath)) #set ( $urlenc =
 $urlenc.replace("%2F", "/") ) #end
 
+<div id="main-media-container">
 <img id="main-media" class="emdropshadow  assetdragdrop"
 	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
 	data-name="$asset.name" data-width="$!asset.width"
@@ -14,15 +15,26 @@ $urlenc.replace("%2F", "/") ) #end
 	<div id="footermenu">
 		<div id="menuoptions">
 			<ul>
-
 				<li>
 					<div class="dropup">
 						<a class="" href="#" data-toggle="dropdown" expanded="true">Downloads
 							<span class="caret"></span></a>
-						<ul id="module-bar-select" class="dropdown-menu dropup">
-							<li><a href="/">1024x768</a></li>
-							<li><a href="">800x600</a></li>
-							<li><a href="">640x480</a></li>
+							
+						
+			#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+			#set( $results = $searcher.query().exact("inputtype","image").exact("onimport","true").sort("ordering").search($context) )
+			#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+			#set($mediadbappid=$mediaarchive.getMediaDbId())
+			#if( !$cdnprefix )
+				#set( $cdnprefix = $context.siteRoot )
+			#end
+				<ul id="module-bar-select" class="dropdown-menu dropup">
+						
+						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
+							<li><a href="$home$apphome/views/modules/asset/downloads/originals/$originalpath">[[Original image]]</a></li>	
+						#foreach($result in $results )						
+								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
+						#end
 						</ul>
 					</div>
 			  </il>
@@ -42,14 +54,27 @@ $urlenc.replace("%2F", "/") ) #end
 	</div>
 </div>
 
+</div>
+
+<script>
+
+$("#main-media-container").livequery("mouseenter", function(e)
+{
+	$("#footerbase").show();	
+});
+
+$("#main-media-container").livequery("mouseleave", function(e)
+{
+	$("#footerbase").hide();	
+});
+
+
+</script>
 
 
 <style>
-#main-media:HOVER+#footerbase {
-	display: inherit;
-}
 
-#footerbase { //
+#footerbase { 
 	display: none;
 	position: relative;
 	width: 100%;
@@ -83,6 +108,5 @@ $urlenc.replace("%2F", "/") ) #end
 	padding: 5px;
 	margin-right: 17px;
 }
-
 
 </style>

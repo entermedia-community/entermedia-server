@@ -1,6 +1,6 @@
 <div id="orderhistory">
 
-<h2>Order History</h2>
+<h2>[[Order History]]</h2>
 #set( $itemsearcher = $searcherManager.getSearcher($catalogid,"orderitem" ))
 #set( $q = $itemsearcher.createSearchQuery() )
 $!q.addSortBy("idDown")
@@ -13,10 +13,10 @@ $!q.addSortBy("idDown")
 
 <table class="emdatatable uipanel">
 <tr>
-<th>Item Status</th>
-<th>Order Id</th>
-<th>Order Type</th>
-<th>Order Date</th>
+<th>[[Item Status]]</th>
+<th>[[Order Id]]</th>
+<th>[[Order Type]]</th>
+<th>[[Order Date]]</th>
 #foreach( $item in $items.getPageOfHits() )
 		
 	#set( $order = $searcherManager.getData($catalogid,"order",$item.orderid ) )
@@ -37,7 +37,7 @@ $!q.addSortBy("idDown")
 <input name="id" id="emselectedrow" type="hidden" />
 </form>
 #else
-<p>No orders have been placed for this asset</p>
+<p>[[No orders have been placed for this asset]]</p>
 #end
 </div>
 

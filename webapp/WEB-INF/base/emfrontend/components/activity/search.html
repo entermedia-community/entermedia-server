@@ -6,7 +6,7 @@
 $context.putPageValue("view", $view)
 $context.putPageValue("searcher", $searcher)
 
-<div class="emsectionheader"><h3>Activity Search</h3></div>
+<div class="emsectionheader"><h3>[[Activity Search]]</h3></div>
 
 #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 $context.putPageValue("usestartswith",$usestartswith)
@@ -55,7 +55,7 @@ $context.putPageValue("usestartswith",$usestartswith)
 	<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
 	
 	<select name="field" onChange="jQuery('#searchaddfield').submit();">
-		<option>Add Field</option>
+		<option>[[Add Field]]</option>
 		#foreach ($detail in $alldetails)
 		<option value="$detail.id">$detail.text</option>
 		#end

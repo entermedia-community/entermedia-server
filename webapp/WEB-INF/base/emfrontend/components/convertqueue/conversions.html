@@ -3,7 +3,7 @@
 #set( $fieldexternalvalue = $asset.getId())
 #set( $permissionname = "caneditasset")
 #set ($view = "conversions/details")
-<h2>Conversion History</h2>
+<h2>[[Conversion History]]</h2>
 
 <div class="uipanel">
 #set( $args = "assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$listid&listexternalid=$listexternalid&permissionname=$permissionname&view=$view")
@@ -20,6 +20,6 @@ $pages.include("/$applicationid/components/xml/table.html?$args&candelete=false"
 
 </div>
 
-<a class="uibutton" href="$home$cataloghome/detailviewer/converthistory/index.html?assetid=$asset.id">Edit History</a>
+<a class="uibutton" href="$home$cataloghome/detailviewer/converthistory/index.html?assetid=$asset.id">[[Edit History]]</a>
 
 <a class="thickbox uibutton" href="$home$cataloghome/settings/events/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversion.html&assetid=$asset.getId()">Process Conversion Now</a>

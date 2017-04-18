@@ -19,15 +19,15 @@
    <div class="ui-widget-content">
    #if($folder)
    
-Sending Files:  ${folder.up_status}% Complete
+[[Sending Files]]:  ${folder.up_status}% [[Complete]]
 <div class="progress">
   <div class="progress-bar progress-bar-striped #if($folder.up_status != "100") active #end" role="progressbar" aria-valuenow="$folder.up_status" aria-valuemin="0" aria-valuemax="100" style="width: ${folder.up_status}%">
-    <span class="sr-only">${folder.up_status}% Complete</span>
+    <span class="sr-only">${folder.up_status}% [[Complete]]</span>
   </div>
 </div>
 
    
-Receiving Files:    ${folder.down_status}% Complete
+[[Receiving Files]]:    ${folder.down_status}% Complete
 <div class="progress">
   <div class="progress-bar progress-bar-striped #if($folder.down_status != "100") active #end" role="progressbar" aria-valuenow="$folder.down_status" aria-valuemin="0" aria-valuemax="100" style="width: ${folder.down_status}%">
     <span class="sr-only">${folder.up_status}% Complete</span>
@@ -39,7 +39,7 @@ Receiving Files:    ${folder.down_status}% Complete
 #set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
 
 #if($allowimport)
-		<p>Import latest edits and changes from your working folder: </p>				
+		<p>[[Import latest edits and changes from your working folder]]: </p>				
 				$user.id/${librarycol.getName()}/{timestamp}/
 					
 	<a id="importbutton" class="btn "  targetdivinner="importing" href="#">Import Latest Changes</a> 
