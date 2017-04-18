@@ -1,11 +1,9 @@
 package importing;
 
-import model.assets.LibraryManager
-
 import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher
 import org.openedit.hittracker.SearchQuery
-
+import model.assets.LibraryManager
 import asset.model.AssetTypeManager
 
 

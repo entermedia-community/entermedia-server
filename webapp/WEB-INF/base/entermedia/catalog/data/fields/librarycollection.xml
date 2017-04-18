@@ -124,4 +124,24 @@
       <language id="fr"><![CDATA[Catégorie ID]]></language>
     </name>
   </property> 
+  
+  
+   <property id="lastmodifieddatesent"  index="true" searchcomponent="datesearch" viewtype="datetime" type="date" stored="true"  >
+    <name> 
+      <language id="en"><![CDATA[Notified On]]></language>  
+    </name> 
+  </property>  
+   <property id="lastmodifieddate"  index="true" searchcomponent="datesearch" viewtype="datetime" type="date" stored="true"  >
+    <name> 
+      <language id="en"><![CDATA[Asset Modified]]></language>  
+    </name> 
+  </property>  
+  <property id="lastmodifieddatedirty"  index="true" datatype="boolean" stored="true" >
+    <name> 
+      <language id="en"><![CDATA[Recently Edited]]></language>  
+    </name> 
+  </property>  
+  
+  
+  
 </properties>

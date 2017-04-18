@@ -1208,6 +1208,22 @@ public class MediaArchive implements CatalogEnabled
 			getMediaEventHandler().eventFired(event);
 	}
 
+	public void fireMediaEvent(String operation, String inMetadataType, Map inParams, User inUser)
+	{
+			WebEvent event = new WebEvent();
+			event.setProperties(inParams);
+			event.setSearchType(inMetadataType);
+			
+			event.setCatalogId(getCatalogId());
+			event.setOperation(operation);
+			event.setUser(inUser);
+			event.setSource(this);
+			
+			//archive.getWebEventListener()
+			getMediaEventHandler().eventFired(event);
+	}
+	
+	
 	public Category getCategory(WebPageRequest inReq)
 	{
 		Category category = null;

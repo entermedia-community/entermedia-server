@@ -39,7 +39,12 @@ public class PathEventHandler implements WebEventListener
 		for (Iterator iterator = inEvent.getProperties().keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
-			request.setRequestParameter(key, inEvent.get(key));
+			Object value = inEvent.getValue(key);
+			if( value instanceof String)
+			{
+				request.setRequestParameter(key, (String)value);
+			}
+			request.putPageValue(key, value);
 		}
 		request.setRequestParameter("catalogid", inEvent.getCatalogId());
 		request.putPageValue("webevent", inEvent);

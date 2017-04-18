@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Send Count Change Notifications</property>	
+	<property name="virtual">true</property>
+
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/librarycollection/notifyassetscountchange.groovy</script>
+	</path-action>
+	<property name="period">1h</property>	
+</page>
