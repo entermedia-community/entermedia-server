@@ -7,19 +7,12 @@
 	
 #set($count = 0)
 #foreach ($item in $all)
-	
 	<td>
-	
-	
-	
 	<label for="${searchtype}.value" class="">
-	
-	
 	  <input class="${searchtype}checkbox" type="checkbox" name="${searchtype}.value" id="${searchtype}.${item.id}" value="$item.get('id')"
 	    #if ($checked.contains($item.id)) checked #end >
 		$item
 	 </label>
-
 	</td> 
 	#if ($velocityCount % 4 == 0) </tr> <tr> #end	    
 	
