@@ -11,16 +11,15 @@ Upload complete.. please wait.
 	
 	var assetid = $newasset.id;
 	
-	if(jQuery.fancybox != null){
+	if (jQuery.fancybox != null) {
 		//This is for fancybox
 		parent.jQuery("#" + targetdiv).attr("value", assetid);
-		parent.jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
-			parent.jQuery(".fancybox-close").trigger("click");	
-		});
+		parent.jQuery("#" + detailid + "-preview").load(
+				"$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid="
+						+ assetid, function() {
+					parent.jQuery(".fancybox-close").trigger("click");
+				});
 	}
-
-
-
 </script>
 
 

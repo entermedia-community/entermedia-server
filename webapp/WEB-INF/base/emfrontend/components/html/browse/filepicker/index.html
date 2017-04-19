@@ -1,7 +1,5 @@
 <div class="oelist-box">
-	#set ( $path = $context.getRequestParameter( "path" ) )    
-   
- 
+	#set ( $path = $context.getRequestParameter( "path" ) ) 
 	#if ( $path )
 		$pages.stream("$apphome/views/filemanager/overview/index.html?path=$path")
      #else

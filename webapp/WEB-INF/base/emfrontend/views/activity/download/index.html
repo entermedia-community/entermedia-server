@@ -3,7 +3,7 @@
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-<h3>Download </h3>
+<h3>[[Download]] </h3>
 
 <table>
 <tr>
@@ -19,7 +19,7 @@ $pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadon
 #if( $order.orderstatus == "complete")
 	##to much work to support group downloads yet
 #else
-<p>Order still being processed. <a href="$home$apphome/views/activity/download/index.html?orderid=$order.id">refresh</a>
+<p>[[Order still being processed]]. <a href="$home$apphome/views/activity/download/index.html?orderid=$order.id">[[refresh]]</a>
 </p>
 #end
 </td>
@@ -34,10 +34,10 @@ $context.putPageValue("searcher", $orderitemsearcher)
 <div id="emselectable">
 <table class="striped greytxt">		
 	<thead>
-	<th style="text-align: center">Title</th>
+	<th style="text-align: center">[[Title]]</th>
 	<th style="text-align: center">&nbsp;</th>
-	<th style="text-align: center">File Name</th>
-	<th style="text-align: center">Status</th>
+	<th style="text-align: center">[[File Name]]</th>
+	<th style="text-align: center">[[Status]]</th>
 	</thead>
 		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
