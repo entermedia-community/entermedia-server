@@ -2,7 +2,7 @@
 <form name="oelanguage" action="$home$apphome/components/languages/changelanguage.html" nobr>		
 	<input type="hidden" name="origURL" value="$context.getPathUrl()" />
  <select  name="newlang" onchange="document.oelanguage.submit()" >	
-	<option value="">Change Language</option>	
+	<option value="">[[Change Language]]</option>	
 		#foreach( $lang in $translations.languages )
 			<option value="locale_$lang.id" #if( $translations.isSelected($lang)) selected #end >$lang.name</option> 
 		#end
