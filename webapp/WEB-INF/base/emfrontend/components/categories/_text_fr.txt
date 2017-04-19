@@ -1,4 +1,5 @@
-#Fri Nov 25 16:02:26 UTC 2016
-Categories=Catégories
-Search\ Categories=Rechercher Catégories
-
+#
+#Wed Apr 19 08:56:47 CDT 2017
+Select\ Category=Choisir une cat\u00E9gorie
+Search\ Categories=Rechercher Cat\u00E9gories
+Categories=Cat\u00E9gories

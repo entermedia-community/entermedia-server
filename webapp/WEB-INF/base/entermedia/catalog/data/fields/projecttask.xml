@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[SourcePath]]></language>  
       <language id="en"><![CDATA[SourcePath]]></language>  
       <language id="es"><![CDATA[SourcePath]]></language>  
-      <language id="fr"><![CDATA[SourcePath]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="library" index="true" stored="true" editable="true" sortable="true" type="list" searchtype="projecttask" internalfield="false" listid="library" datatype="list" keyword="false" filter="false">Project 
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Projekt]]></language>  
       <language id="en"><![CDATA[Project]]></language>  
       <language id="es"><![CDATA[Proyecto]]></language>  
-      <language id="fr"><![CDATA[Project]]></language> 
+      <language id="fr"><![CDATA[Projet]]></language> 
     </name> 
   </property>  
   <property id="asset" index="true" stored="true" editable="true" type="list" viewtype="asset" searchtype="projecttask" internalfield="false" datatype="list" keyword="false" filter="false" sortable="true">Asset

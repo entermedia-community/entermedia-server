@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Hot Folder-Typ]]></language>  
       <language id="en"><![CDATA[Hot Folder Type]]></language>  
       <language id="es"><![CDATA[Tipo de carpeta caliente]]></language>  
-      <language id="fr"><![CDATA[Hot Type de dossier]]></language> 
+      <language id="fr"><![CDATA[Dossier Hot-Folder]]></language> 
     </name> 
   </property>  
   <property id="subfolder" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" note="Optional"> 
@@ -39,7 +39,7 @@
       <language id="de"><![CDATA[Geräte ID]]></language>  
       <language id="en"><![CDATA[Device ID]]></language>  
       <language id="es"><![CDATA[ID del dispositivo]]></language>  
-      <language id="fr"><![CDATA[Reference de l&#39;appareil]]></language> 
+      <language id="fr"><![CDATA[Référence de l&#39;appareil]]></language> 
     </name> 
   </property>  
   <!-- Local Folder -->  
@@ -48,7 +48,7 @@
       <language id="de"><![CDATA[externen Pfad]]></language>  
       <language id="en"><![CDATA[External Path]]></language>  
       <language id="es"><![CDATA[Ruta externa]]></language>  
-      <language id="fr"><![CDATA[Chemin externe]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès externe]]></language> 
     </name> 
   </property>  
   <property id="email" index="true" stored="true" keyword="true" editable="true" required="true" indextype="not_analyzed" filter="false" sortable="true">Email 
@@ -129,7 +129,7 @@
       <language id="de"><![CDATA[letzte Scanstart]]></language>  
       <language id="en"><![CDATA[Last Scan Start]]></language>  
       <language id="es"><![CDATA[Última Iniciar análisis]]></language>  
-      <language id="fr"><![CDATA[Dernière analyse Démarrer]]></language> 
+      <language id="fr"><![CDATA[Dernière analyse]]></language> 
     </name> 
   </property>  
   <property id="ordering" type="number" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Ordering

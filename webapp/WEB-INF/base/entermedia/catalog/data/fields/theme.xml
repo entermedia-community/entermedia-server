@@ -13,8 +13,8 @@
     <name>
       <language id="de"><![CDATA[Thema Name]]></language>
       <language id="en"><![CDATA[Theme Name]]></language>
-      <language id="es"><![CDATA[Nombre tema]]></language>
-      <language id="fr"><![CDATA[Thème Nom]]></language>
+      <language id="es"><![CDATA[Nombre del tema]]></language>
+      <language id="fr"><![CDATA[Nom du Thème]]></language>
     </name>
   </property> 
 </properties>

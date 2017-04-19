@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="season" index="true" stored="true" editable="true" type="list" listid="title/seasons" datatype="list" searchtype="episode" keyword="false" filter="false" sortable="true">Season

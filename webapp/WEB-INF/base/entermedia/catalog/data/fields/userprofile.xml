@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Ansicht Tabellenergebnisse]]></language>  
       <language id="en"><![CDATA[View Table Results]]></language>  
       <language id="es"><![CDATA[Ver Resultados de la mesa]]></language>  
-      <language id="fr"><![CDATA[Voir le Tableau Résultats]]></language> 
+      <language id="fr"><![CDATA[Voir les Résultats de la table]]></language> 
     </name> 
   </property>  
   <property id="view_asset_advancedsearch" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Asset Search 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[Asset-Suche]]></language>  
       <language id="en"><![CDATA[Asset Search]]></language>  
       <language id="es"><![CDATA[búsqueda de activos]]></language>  
-      <language id="fr"><![CDATA[Asset Recherche]]></language> 
+      <language id="fr"><![CDATA[Recherche d&#39;item]]></language> 
     </name> 
   </property>  
   <property id="profilesearchfilters" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Filters Used By Search 
@@ -46,7 +46,7 @@
       <language id="de"><![CDATA[Filter von Such]]></language>  
       <language id="en"><![CDATA[Filters Used By Search]]></language>  
       <language id="es"><![CDATA[Los filtros usados ​​por Search]]></language>  
-      <language id="fr"><![CDATA[Filtres utilisés par Recherche]]></language> 
+      <language id="fr"><![CDATA[Filtres utilisés par la Recherche]]></language> 
     </name> 
   </property>  
   <property id="hideassettype" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Hide Asset Types 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[verstecken Asset-Typen]]></language>  
       <language id="en"><![CDATA[Hide Asset Types]]></language>  
       <language id="es"><![CDATA[Ocultar los tipos de activos]]></language>  
-      <language id="fr"><![CDATA[Hide Types d&#39;actifs]]></language> 
+      <language id="fr"><![CDATA[Cacher les Types d&#39;item]]></language> 
     </name> 
   </property>  
   <property id="maximize_screen" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Maximize 
@@ -70,7 +70,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
       <language id="es"><![CDATA[Ruta de origen]]></language>  
-      <language id="fr"><![CDATA[Source Path]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="last_selected_module" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Last Selected Module 
@@ -78,7 +78,7 @@
       <language id="de"><![CDATA[zuletzt gewählte Modul]]></language>  
       <language id="en"><![CDATA[Last Selected Module]]></language>  
       <language id="es"><![CDATA[Última módulo seleccionado]]></language>  
-      <language id="fr"><![CDATA[Module sélectionné Dernière]]></language> 
+      <language id="fr"><![CDATA[Dernier module sélectionné]]></language> 
     </name> 
   </property>  
   <property id="last_selected_library" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Last Selected Library 
@@ -118,7 +118,7 @@
       <language id="de"><![CDATA[Anzahl der Zeilen zeigen Modul Ergebnisse]]></language>  
       <language id="en"><![CDATA[Number of rows show on Module results]]></language>  
       <language id="es"><![CDATA[Número de filas muestran en los resultados del módulo]]></language>  
-      <language id="fr"><![CDATA[Nombre de lignes montrent les résultats du module]]></language> 
+      <language id="fr"><![CDATA[Nombre de lignes affichées sur le module des résultats]]></language> 
     </name> 
   </property>  
   <property id="opencollections" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Open Collection Tabs 
@@ -126,7 +126,7 @@
       <language id="de"><![CDATA[offene Sammellaschen]]></language>  
       <language id="en"><![CDATA[Open Collection Tabs]]></language>  
       <language id="es"><![CDATA[Abrir aquí Collection]]></language>  
-      <language id="fr"><![CDATA[Ouvert Collection Tabs]]></language> 
+      <language id="fr"><![CDATA[Ouvrir Tables de Collection]]></language> 
     </name> 
   </property>  
   <property id="selectedcollection" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Selected Collection 
@@ -134,7 +134,7 @@
       <language id="de"><![CDATA[ausgewählte Sammlung]]></language>  
       <language id="en"><![CDATA[Selected Collection]]></language>  
       <language id="es"><![CDATA[Colección seleccionado]]></language>  
-      <language id="fr"><![CDATA[Collection Selected]]></language> 
+      <language id="fr"><![CDATA[Collection Sélectionnée]]></language> 
     </name> 
   </property>  
   <!--  Custom fields -->  
@@ -151,7 +151,7 @@
       <language id="de"><![CDATA[Business / Zugehörigkeit Name]]></language>  
       <language id="en"><![CDATA[Business / Affiliation Name]]></language>  
       <language id="es"><![CDATA[Empresa / Nombre Afiliación]]></language>  
-      <language id="fr"><![CDATA[Business / Nom Affiliation]]></language> 
+      <language id="fr"><![CDATA[Entreprise / Nom d&#39;Affiliation]]></language> 
     </name> 
   </property>  
   <property id="jobtitle" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Job Title 
@@ -167,7 +167,7 @@
       <language id="de"><![CDATA[Land]]></language>  
       <language id="en"><![CDATA[Country]]></language>  
       <language id="es"><![CDATA[País]]></language>  
-      <language id="fr"><![CDATA[Country]]></language> 
+      <language id="fr"><![CDATA[Pays]]></language> 
     </name> 
   </property>  
   <property id="address1" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Address 1 
@@ -207,7 +207,7 @@
       <language id="de"><![CDATA[Postleitzahl]]></language>  
       <language id="en"><![CDATA[Postal Code]]></language>  
       <language id="es"><![CDATA[código postal]]></language>  
-      <language id="fr"><![CDATA[code postal]]></language> 
+      <language id="fr"><![CDATA[Code Postal]]></language> 
     </name> 
   </property>  
   <property id="screenname" index="true" stored="true" keyword="true" editable="true" filter="false" sortable="true">Screen Name 
@@ -250,7 +250,7 @@
       <language id="de"><![CDATA[syncthing Geräte-ID]]></language>
       <language id="en"><![CDATA[Syncthing Device Id]]></language>
       <language id="es"><![CDATA[Id Syncthing dispositivo]]></language>
-      <language id="fr"><![CDATA[Dispositif Syncthing Id]]></language>
+      <language id="fr"><![CDATA[Id Dispositif Syncthing]]></language>
     </name>
   </property> 
   <!--  Data Merge -->
@@ -264,7 +264,7 @@
       <language id="de"><![CDATA[Standardergebnisansicht]]></language>
       <language id="en"><![CDATA[Default Result View]]></language>
       <language id="es"><![CDATA[El resultado predeterminado Ver]]></language>
-      <language id="fr"><![CDATA[Par défaut Résultat Voir]]></language>
+      <language id="fr"><![CDATA[Vue de Résultat Par Défaut]]></language>
     </name>
   </property>
   

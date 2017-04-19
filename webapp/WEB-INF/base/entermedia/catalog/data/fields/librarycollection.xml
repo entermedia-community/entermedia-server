@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Erstellungsdatum]]></language>  
       <language id="en"><![CDATA[Created Date]]></language>  
       <language id="es"><![CDATA[Fecha de creación]]></language>  
-      <language id="fr"><![CDATA[date de création]]></language> 
+      <language id="fr"><![CDATA[Date de création]]></language> 
     </name> 
   </property>  
   <property id="startdate" index="true" stored="true" editable="true" sortable="true" type="date" viewtype="date" internalfield="false" datatype="date" keyword="false" filter="false">Start Date 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Owner]]></language>  
       <language id="en"><![CDATA[Owner]]></language>  
       <language id="es"><![CDATA[Propietario]]></language>  
-      <language id="fr"><![CDATA[Owner]]></language> 
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
     </name> 
   </property>  
   <property id="library" required="true" index="true" stored="true" editable="true" sortable="true" type="list" viewtype="autocomplete" listid="library" datatype="list" keyword="false" filter="false">Library 
@@ -69,7 +69,7 @@
     <name> 
       <language id="de"><![CDATA[Benachrichtigungen versenden]]></language>  
       <language id="en"><![CDATA[Send Notifications]]></language>  
-      <language id="es"><![CDATA[Enviar notificaciones]]></language>  
+      <language id="es"><![CDATA[Enviar Notificaciones]]></language>  
       <language id="fr"><![CDATA[Envoyer Notifications]]></language> 
     </name> 
   </property>  
@@ -97,7 +97,7 @@
       <language id="de"><![CDATA[Projekt-Status]]></language>  
       <language id="en"><![CDATA[Project Status]]></language>  
       <language id="es"><![CDATA[Estado del proyecto]]></language>  
-      <language id="fr"><![CDATA[L&#39;état du projet]]></language> 
+      <language id="fr"><![CDATA[Etat du projet]]></language> 
     </name> 
   </property>  
   <property id="projecttype" index="true" stored="true" editable="true" type="list" viewtype="list" internalfield="false" datatype="list" keyword="false" filter="false" sortable="true">Project Type 
@@ -121,7 +121,7 @@
       <language id="de"><![CDATA[Kategorie ID]]></language>
       <language id="en"><![CDATA[Category ID]]></language>
       <language id="es"><![CDATA[categoria ID]]></language>
-      <language id="fr"><![CDATA[Catégorie ID]]></language>
+      <language id="fr"><![CDATA[ID Catégorie]]></language>
     </name>
   </property> 
   

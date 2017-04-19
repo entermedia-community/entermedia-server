@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Quelle Asset]]></language>  
       <language id="en"><![CDATA[Source Asset]]></language>  
       <language id="es"><![CDATA[fuente de Activos]]></language>  
-      <language id="fr"><![CDATA[Source Asset]]></language> 
+      <language id="fr"><![CDATA[Item d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="createdfrom" index="true" stored="true" type="asset" editable="true" keyword="false" filter="false" sortable="true">Target 
@@ -46,7 +46,7 @@
       <language id="de"><![CDATA[Zielanlage]]></language>
       <language id="en"><![CDATA[Target Asset]]></language>
       <language id="es"><![CDATA[objetivo de Activos]]></language>
-      <language id="fr"><![CDATA[Target Asset]]></language>
+      <language id="fr"><![CDATA[Item cible]]></language>
     </name>
   </property> 
 </properties>

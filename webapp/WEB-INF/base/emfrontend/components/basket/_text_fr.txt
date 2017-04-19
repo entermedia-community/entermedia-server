@@ -1,5 +1,7 @@
-#Fri Nov 25 16:02:26 UTC 2016
+#
+#Wed Apr 19 08:56:52 CDT 2017
++=+
 Basket=Panier
 Remove\ From\ Basket=Retirer du panier
 Add\ To\ Basket=Ajouter au panier
-
+-=-

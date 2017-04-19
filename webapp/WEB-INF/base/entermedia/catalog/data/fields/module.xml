@@ -15,7 +15,7 @@
       <language id="de"><![CDATA[Dateiname]]></language>  
       <language id="en"><![CDATA[File Name]]></language>  
       <language id="es"><![CDATA[Nombre del archivo]]></language>  
-      <language id="fr"><![CDATA[File Name]]></language> 
+      <language id="fr"><![CDATA[Nom de fichier]]></language> 
     </name> 
   </property>  
   <property id="author" index="true" stored="true" keyword="true" editable="false" filter="false" sortable="true">Author 
@@ -23,7 +23,7 @@
       <language id="de"><![CDATA[Author]]></language>  
       <language id="en"><![CDATA[Author]]></language>  
       <language id="es"><![CDATA[Autor]]></language>  
-      <language id="fr"><![CDATA[Author]]></language> 
+      <language id="fr"><![CDATA[Auteur]]></language> 
     </name> 
   </property>  
   <property id="publicface" index="true" type="boolen" stored="true" keyword="true" editable="false" filter="false" sortable="true">Public Facing 
@@ -31,7 +31,7 @@
       <language id="de"><![CDATA[öffentlich zugänglichen]]></language>  
       <language id="en"><![CDATA[Public Facing]]></language>  
       <language id="es"><![CDATA[Orientada hacia el público]]></language>  
-      <language id="fr"><![CDATA[Orientation publique]]></language> 
+      <language id="fr"><![CDATA[Accessible au public]]></language> 
     </name> 
   </property>  
   <!-- Extra stuff? -->  

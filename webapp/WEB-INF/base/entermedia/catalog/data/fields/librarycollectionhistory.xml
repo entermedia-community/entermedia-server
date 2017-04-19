@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Owner]]></language>  
       <language id="en"><![CDATA[Owner]]></language>  
       <language id="es"><![CDATA[Propietario]]></language>  
-      <language id="fr"><![CDATA[Owner]]></language> 
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
     </name> 
   </property>  
   <property id="collectionhistorytype" index="true" stored="true" editable="true" type="list" viewtype="list" keyword="false" filter="false" sortable="true">Type 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Asset-IDs]]></language>  
       <language id="en"><![CDATA[Asset Ids]]></language>  
       <language id="es"><![CDATA[Ids de activos]]></language>  
-      <language id="fr"><![CDATA[Asset Ids]]></language> 
+      <language id="fr"><![CDATA[Ids item]]></language> 
     </name> 
   </property>  
   <property id="userids" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">User Ids 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[Benutzer-IDs]]></language>  
       <language id="en"><![CDATA[User Ids]]></language>  
       <language id="es"><![CDATA[identificadores de usuario]]></language>  
-      <language id="fr"><![CDATA[utilisateur Ids]]></language> 
+      <language id="fr"><![CDATA[Ids utilisateur]]></language> 
     </name> 
   </property>  
   <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false" keyword="false" sortable="true">Collection 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Rekord Aktualisierungsdatum]]></language>
       <language id="en"><![CDATA[Record Update Date]]></language>
       <language id="es"><![CDATA[Fecha de actualización de registros]]></language>
-      <language id="fr"><![CDATA[Fiche mise à jour Date de]]></language>
+      <language id="fr"><![CDATA[Date de mise à jour de l&#39;enregistrement]]></language>
     </name>
   </property> 
 </properties>

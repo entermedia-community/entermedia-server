@@ -34,7 +34,6 @@
     </name>
   </property> 
   
-  
   <!--  Data Merged -->
   
     <property id="presetdata" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
@@ -42,7 +41,4 @@
       <language id="en"><![CDATA[presetdata]]></language>
     </name>
   </property>
-  
-  
-  
 </properties>

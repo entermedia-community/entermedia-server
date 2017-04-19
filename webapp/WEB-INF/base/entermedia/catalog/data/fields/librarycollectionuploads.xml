@@ -21,8 +21,8 @@
     <name> 
       <language id="de"><![CDATA[Download-Datum]]></language>  
       <language id="en"><![CDATA[Download Date]]></language>  
-      <language id="es"><![CDATA[Descargar Fecha]]></language>  
-      <language id="fr"><![CDATA[Télécharger date de]]></language> 
+      <language id="es"><![CDATA[Fecha de descarga]]></language>  
+      <language id="fr"><![CDATA[Date de Téléchargement]]></language> 
     </name> 
   </property>  
   <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="librarycollectionuploads" keyword="false" filter="false" sortable="true">Download By 

@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Schnappschuss Datum]]></language>  
       <language id="en"><![CDATA[Snapshot Date]]></language>  
       <language id="es"><![CDATA[Fecha de instantáneas]]></language>  
-      <language id="fr"><![CDATA[Snapshot Date]]></language> 
+      <language id="fr"><![CDATA[Date de l&#39;instantané]]></language> 
     </name> 
   </property>  
   <property id="owner" index="true" stored="true" editable="true" type="list" listid="user" searchtype="librarycollectionsnapshot" keyword="false" filter="false" sortable="true">Snapshot By 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Schnappschuss von]]></language>  
       <language id="en"><![CDATA[Snapshot By]]></language>  
       <language id="es"><![CDATA[Por instantánea]]></language>  
-      <language id="fr"><![CDATA[Snapshot Par]]></language> 
+      <language id="fr"><![CDATA[Instantané Par]]></language> 
     </name> 
   </property>  
   <property id="librarycollection" index="true" filter="true" type="list" stored="true" editable="true" internalfield="false" keyword="false" sortable="true">Collection 

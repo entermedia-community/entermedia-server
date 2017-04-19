@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Asset-Name]]></language>  
       <language id="en"><![CDATA[Asset Name]]></language>  
       <language id="es"><![CDATA[Nombre de activos]]></language>  
-      <language id="fr"><![CDATA[Nom de l&#39;actif]]></language> 
+      <language id="fr"><![CDATA[Nom de l&#39;item]]></language> 
     </name> 
   </property>  
   <property id="assetfilesize" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset File Size 
@@ -38,22 +38,22 @@
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
       <language id="es"><![CDATA[Estado]]></language>  
-      <language id="fr"><![CDATA[statut]]></language> 
+      <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
   <property id="percentage" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Push Percentage 
     <name> 
       <language id="de"><![CDATA[Push-Prozentsatz]]></language>  
       <language id="en"><![CDATA[Push Percentage]]></language>  
-      <language id="es"><![CDATA[Porcentaje de empuje]]></language>  
-      <language id="fr"><![CDATA[Poussez Pourcentage]]></language> 
+      <language id="es"><![CDATA[Porcentaje del empuje]]></language>  
+      <language id="fr"><![CDATA[Pourcentage de la publication]]></language> 
     </name> 
   </property>  
   <property id="errordetails" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Details 
     <name> 
       <language id="de"><![CDATA[Fehlerdetails]]></language>  
       <language id="en"><![CDATA[Error Details]]></language>  
-      <language id="es"><![CDATA[Error de detalles]]></language>  
+      <language id="es"><![CDATA[Detalles del error]]></language>  
       <language id="fr"><![CDATA[Détails de l&#39;erreur]]></language> 
     </name> 
   </property>  
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Fehleranzahl]]></language>  
       <language id="en"><![CDATA[Error Count]]></language>  
       <language id="es"><![CDATA[Error Count]]></language>  
-      <language id="fr"><![CDATA[Error Count]]></language> 
+      <language id="fr"><![CDATA[Nombre d&#39;erreur]]></language> 
     </name> 
   </property>  
   <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
@@ -70,7 +70,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
       <language id="es"><![CDATA[Ruta de origen]]></language>  
-      <language id="fr"><![CDATA[Source Path]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="ordering" type="number" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Ordering 
@@ -85,8 +85,8 @@
     <name>
       <language id="de"><![CDATA[Push-Ordner]]></language>
       <language id="en"><![CDATA[Push Folder]]></language>
-      <language id="es"><![CDATA[carpeta de empuje]]></language>
-      <language id="fr"><![CDATA[Dossier Push]]></language>
+      <language id="es"><![CDATA[Carpeta de empuje]]></language>
+      <language id="fr"><![CDATA[Dossier de publication]]></language>
     </name>
   </property> 
 </properties>

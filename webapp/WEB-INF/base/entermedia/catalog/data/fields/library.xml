@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Miniaturansicht]]></language>  
       <language id="en"><![CDATA[Thumbnail]]></language>  
       <language id="es"><![CDATA[Miniatura]]></language>  
-      <language id="fr"><![CDATA[La vignette]]></language> 
+      <language id="fr"><![CDATA[Vignette]]></language> 
     </name> 
   </property>  
   <property id="folder" internalfield="true" editable="true" index="true" stored="true" note="Relative Folder hotfolder/sub1/song123" keyword="false" filter="false" sortable="true">Path 
@@ -46,7 +46,7 @@
       <language id="de"><![CDATA[Kategorie ID]]></language>
       <language id="en"><![CDATA[Category ID]]></language>
       <language id="es"><![CDATA[categoria ID]]></language>
-      <language id="fr"><![CDATA[Catégorie ID]]></language>
+      <language id="fr"><![CDATA[ID Catégorie]]></language>
     </name>
   </property>
     <property id="owner" index="true" viewtype="user" type="list" listid="user" keyword="true" stored="true" sortable="true" editable="true" filter="false"> 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Owner]]></language>  
       <language id="en"><![CDATA[Owner]]></language>  
       <language id="es"><![CDATA[Propietario]]></language>  
-      <language id="fr"><![CDATA[Owner]]></language> 
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
     </name> 
   </property>  
    

@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="folder" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Folder 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Multi-Edit]]></language>
       <language id="en"><![CDATA[Multi-Edit]]></language>
       <language id="es"><![CDATA[Multi-Edit]]></language>
-      <language id="fr"><![CDATA[Multi-Edition]]></language>
+      <language id="fr"><![CDATA[Edition multiple]]></language>
     </name>
   </property> 
 </properties>

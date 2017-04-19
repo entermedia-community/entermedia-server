@@ -1,5 +1,6 @@
-#Fri Nov 25 16:02:26 UTC 2016
-No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=Pas de détails disponibles pour cette vue. Veuillez configurer les réglages de la vue.
+#
+#Wed Apr 19 08:56:46 CDT 2017
 add\ new=Ajouter nouveau
+No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=Pas de d\u00E9tails disponibles pour cette vue. Veuillez configurer les r\u00E9glages de la vue.
+Add\ New\ $detail=Ajouter un nouveau d\u00E9tail $
 required=requis
-

@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Sammlung ID]]></language>  
       <language id="en"><![CDATA[Collection Id]]></language>  
       <language id="es"><![CDATA[colección Id]]></language>  
-      <language id="fr"><![CDATA[Collection Id]]></language> 
+      <language id="fr"><![CDATA[Id Collection]]></language> 
     </name> 
   </property>  
   <property id="user" index="true" viewtype="user" stored="true" type="list" keyword="false" filter="false" editable="false" sortable="true">User Name 

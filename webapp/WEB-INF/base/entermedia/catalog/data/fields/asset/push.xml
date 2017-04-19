@@ -7,7 +7,7 @@
       <language id="de"><![CDATA[Push-Status]]></language>  
       <language id="en"><![CDATA[Push Status]]></language>  
       <language id="es"><![CDATA[Estado de empuje]]></language>  
-      <language id="fr"><![CDATA[Poussez Statut]]></language> 
+      <language id="fr"><![CDATA[Statut de la publication]]></language> 
     </name> 
   </property>  
   <property id="pushpercentage" internalfield="true" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Push Percentage 
@@ -15,7 +15,7 @@
       <language id="de"><![CDATA[Push-Prozentsatz]]></language>  
       <language id="en"><![CDATA[Push Percentage]]></language>  
       <language id="es"><![CDATA[Porcentaje de empuje]]></language>  
-      <language id="fr"><![CDATA[Poussez Pourcentage]]></language> 
+      <language id="fr"><![CDATA[Pourcentage de la publication]]></language> 
     </name> 
   </property>  
   <property id="pusherrordetails" internalfield="true" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Push Error Details 
@@ -30,8 +30,8 @@
     <name>
       <language id="de"><![CDATA[geschoben Datum]]></language>
       <language id="en"><![CDATA[Pushed Date]]></language>
-      <language id="es"><![CDATA[empujado Fecha]]></language>
-      <language id="fr"><![CDATA[date de Pushed]]></language>
+      <language id="es"><![CDATA[Fecha de publicación]]></language>
+      <language id="fr"><![CDATA[Date de publication]]></language>
     </name>
   </property> 
 </page>

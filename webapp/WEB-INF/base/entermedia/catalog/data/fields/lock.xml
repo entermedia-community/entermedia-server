@@ -6,7 +6,7 @@
       <language id="de"><![CDATA[Lock-ID]]></language>  
       <language id="en"><![CDATA[Lock Id]]></language>  
       <language id="es"><![CDATA[bloqueo de Id]]></language>  
-      <language id="fr"><![CDATA[Verrouiller Id]]></language> 
+      <language id="fr"><![CDATA[Lock Id]]></language> 
     </name> 
   </property>  
   <property id="nodeid" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Node Id 
@@ -21,8 +21,8 @@
     <name> 
       <language id="de"><![CDATA[Inhaber-ID]]></language>  
       <language id="en"><![CDATA[Owner Id]]></language>  
-      <language id="es"><![CDATA[propietario Id]]></language>  
-      <language id="fr"><![CDATA[Propriétaire Id]]></language> 
+      <language id="es"><![CDATA[Propietario Id]]></language>  
+      <language id="fr"><![CDATA[Id Propriétaire]]></language> 
     </name> 
   </property>  
   <property id="date" editable="true" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" sortable="true" type="date">Date 

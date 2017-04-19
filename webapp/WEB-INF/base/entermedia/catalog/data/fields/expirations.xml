@@ -12,7 +12,7 @@
   <property id="expirationsnegotiator" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Negotiator/Agency 
     <name> 
       <language id="de"><![CDATA[Verhandler / Agentur]]></language>  
-      <language id="en"><![CDATA[Negotiator/Agency]]></language>  
+      <language id="en"><![CDATA[Negotiator / Agency]]></language>  
       <language id="es"><![CDATA[Negociador / Agencia]]></language>  
       <language id="fr"><![CDATA[Négociateur / Agence]]></language> 
     </name> 

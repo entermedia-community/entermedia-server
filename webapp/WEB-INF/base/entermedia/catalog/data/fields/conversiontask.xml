@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
       <language id="es"><![CDATA[Estado]]></language>  
-      <language id="fr"><![CDATA[statut]]></language> 
+      <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
   <property id="submitteddate" type="date" searchcomponent="datesearch" viewtype="time" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Submission Date 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Remote-Job-ID]]></language>  
       <language id="en"><![CDATA[Remote Job ID]]></language>  
       <language id="es"><![CDATA[ID de trabajo a distancia]]></language>  
-      <language id="fr"><![CDATA[Télécommande Job ID]]></language> 
+      <language id="fr"><![CDATA[ID Télétravail]]></language> 
     </name> 
   </property>  
   <property id="orderid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true">Associated Order ID 
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[verbunden sind, um id]]></language>  
       <language id="en"><![CDATA[Associated Order ID]]></language>  
       <language id="es"><![CDATA[Asociada IDPEDIDO]]></language>  
-      <language id="fr"><![CDATA[Associated Order ID]]></language> 
+      <language id="fr"><![CDATA[ID commande associée]]></language> 
     </name> 
   </property>  
   <property id="itemid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true">Associated Order Item 
@@ -70,7 +70,7 @@
       <language id="de"><![CDATA[assoziiert Auftragsposition]]></language>  
       <language id="en"><![CDATA[Associated Order Item]]></language>  
       <language id="es"><![CDATA[Orden de Associated artículo]]></language>  
-      <language id="fr"><![CDATA[Commander Associated Item]]></language> 
+      <language id="fr"><![CDATA[Item de la commande associée]]></language> 
     </name> 
   </property>  
   <property id="errordetails" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Details 
@@ -86,7 +86,7 @@
       <language id="de"><![CDATA[Fehleranzahl]]></language>  
       <language id="en"><![CDATA[Error Count]]></language>  
       <language id="es"><![CDATA[Error Count]]></language>  
-      <language id="fr"><![CDATA[Error Count]]></language> 
+      <language id="fr"><![CDATA[Nombre d&#39;erreur]]></language> 
     </name> 
   </property>  
   <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
@@ -94,7 +94,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
       <language id="es"><![CDATA[Ruta de origen]]></language>  
-      <language id="fr"><![CDATA[Source Path]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="pagenumber" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Page Number 
@@ -150,7 +150,7 @@
       <language id="de"><![CDATA[Erntegutbreitenmessmittel]]></language>  
       <language id="en"><![CDATA[Crop Width]]></language>  
       <language id="es"><![CDATA[Ancho de cultivos]]></language>  
-      <language id="fr"><![CDATA[Crop Largeur]]></language> 
+      <language id="fr"><![CDATA[Recadrage Largeur]]></language> 
     </name> 
   </property>  
   <property id="cropheight" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Crop Height 
@@ -158,7 +158,7 @@
       <language id="de"><![CDATA[Pflanzenhöhe]]></language>  
       <language id="en"><![CDATA[Crop Height]]></language>  
       <language id="es"><![CDATA[Altura de cultivos]]></language>  
-      <language id="fr"><![CDATA[Crop Hauteur]]></language> 
+      <language id="fr"><![CDATA[Recadrage Hauteur]]></language> 
     </name> 
   </property>  
   <property id="force" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Force 
@@ -174,7 +174,7 @@
       <language id="de"><![CDATA[Ernte]]></language>  
       <language id="en"><![CDATA[Crop]]></language>  
       <language id="es"><![CDATA[Cultivo]]></language>  
-      <language id="fr"><![CDATA[Surgir]]></language> 
+      <language id="fr"><![CDATA[Recadrage]]></language> 
     </name> 
   </property>  
   <property id="useinput" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Use Input

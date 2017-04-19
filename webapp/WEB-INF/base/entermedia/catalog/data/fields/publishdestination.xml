@@ -6,7 +6,7 @@
       <language id="de"><![CDATA[Ziel-ID]]></language>  
       <language id="en"><![CDATA[Destination ID]]></language>  
       <language id="es"><![CDATA[ID de destino]]></language>  
-      <language id="fr"><![CDATA[Destination ID]]></language> 
+      <language id="fr"><![CDATA[ID de destination]]></language> 
     </name> 
   </property>  
   <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Destination 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[benachrichtigen Administrator]]></language>  
       <language id="en"><![CDATA[Notify Administrator]]></language>  
       <language id="es"><![CDATA[notificárselo al administrador]]></language>  
-      <language id="fr"><![CDATA[Notifier Administrator]]></language> 
+      <language id="fr"><![CDATA[Notifier Administrateur]]></language> 
     </name> 
   </property>  
   <property id="remotepublish" index="true" stored="true" editable="true" type="boolean" keyword="false" filter="false" sortable="true">Remotely Published 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[remote veröffentlicht]]></language>  
       <language id="en"><![CDATA[Remotely Published]]></language>  
       <language id="es"><![CDATA[Publicado de forma remota]]></language>  
-      <language id="fr"><![CDATA[Remotely Publié]]></language> 
+      <language id="fr"><![CDATA[Publié en remote]]></language> 
     </name> 
   </property>  
   <property id="server" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Server IP 
@@ -126,8 +126,8 @@
     <name> 
       <language id="de"><![CDATA[technischer Kontakt]]></language>  
       <language id="en"><![CDATA[Technical Contact]]></language>  
-      <language id="es"><![CDATA[contacto técnico]]></language>  
-      <language id="fr"><![CDATA[contact technique]]></language> 
+      <language id="es"><![CDATA[Contacto técnico]]></language>  
+      <language id="fr"><![CDATA[Contact technique]]></language> 
     </name> 
   </property>  
   <property id="technicalphone" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Technical Phone 
@@ -135,7 +135,7 @@
       <language id="de"><![CDATA[technische Telefon]]></language>  
       <language id="en"><![CDATA[Technical Phone]]></language>  
       <language id="es"><![CDATA[Teléfono técnica]]></language>  
-      <language id="fr"><![CDATA[téléphone technique]]></language> 
+      <language id="fr"><![CDATA[Téléphone technique]]></language> 
     </name> 
   </property>  
   <property id="technicalemail" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Technical Email 
@@ -143,7 +143,7 @@
       <language id="de"><![CDATA[technische E-Mail]]></language>  
       <language id="en"><![CDATA[Technical Email]]></language>  
       <language id="es"><![CDATA[Email técnica]]></language>  
-      <language id="fr"><![CDATA[technique Email]]></language> 
+      <language id="fr"><![CDATA[Email technique]]></language> 
     </name> 
   </property>  
   <property id="administrativecontact" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Administrative Contact 
@@ -151,7 +151,7 @@
       <language id="de"><![CDATA[administrativen Kontakt]]></language>  
       <language id="en"><![CDATA[Administrative Contact]]></language>  
       <language id="es"><![CDATA[contacto administrativo]]></language>  
-      <language id="fr"><![CDATA[contact administratif]]></language> 
+      <language id="fr"><![CDATA[Contact administratif]]></language> 
     </name> 
   </property>  
   <property id="administrativephone" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Administrative Phone 
@@ -159,7 +159,7 @@
       <language id="de"><![CDATA[Verwaltungs Telefon]]></language>  
       <language id="en"><![CDATA[Administrative Phone]]></language>  
       <language id="es"><![CDATA[Teléfono administrativa]]></language>  
-      <language id="fr"><![CDATA[téléphone administratif]]></language> 
+      <language id="fr"><![CDATA[Téléphone administratif]]></language> 
     </name> 
   </property>  
   <property id="administrativeemail" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Administrative Email 
@@ -183,7 +183,7 @@
       <language id="de"><![CDATA[Notfall-Telefon]]></language>  
       <language id="en"><![CDATA[Emergency Phone]]></language>  
       <language id="es"><![CDATA[Teléfono de emergencia]]></language>  
-      <language id="fr"><![CDATA[téléphone d&#39;urgence]]></language> 
+      <language id="fr"><![CDATA[Téléphone d&#39;urgence]]></language> 
     </name> 
   </property>  
   <property id="emergencyemail" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Emergency Email 
@@ -191,7 +191,7 @@
       <language id="de"><![CDATA[Notfall-E-Mail]]></language>  
       <language id="en"><![CDATA[Emergency Email]]></language>  
       <language id="es"><![CDATA[Correo de emergencia]]></language>  
-      <language id="fr"><![CDATA[urgence Email]]></language> 
+      <language id="fr"><![CDATA[Email d&#39;urgence]]></language> 
     </name> 
   </property>  
   <property id="assetvideoidfield" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Asset Video ID Field 
@@ -199,7 +199,7 @@
       <language id="de"><![CDATA[Asset-Video-ID-Feld]]></language>  
       <language id="en"><![CDATA[Asset Video ID Field]]></language>  
       <language id="es"><![CDATA[Identificación en el campo activo de vídeo]]></language>  
-      <language id="fr"><![CDATA[Asset Video ID Champ]]></language> 
+      <language id="fr"><![CDATA[Champ ID de l&#39;item  vidéo ID ]]></language> 
     </name> 
   </property>  
   <!--  google oauth v2 -->  
@@ -216,7 +216,7 @@
       <language id="de"><![CDATA[Aktualisierungs-Token]]></language>
       <language id="en"><![CDATA[Refresh Token]]></language>
       <language id="es"><![CDATA[Actualizar Token]]></language>
-      <language id="fr"><![CDATA[Refresh Token]]></language>
+      <language id="fr"><![CDATA[Rafraîchir Token]]></language>
     </name>
   </property> 
   
@@ -226,7 +226,7 @@
       <language id="de"><![CDATA[Preset-ID]]></language>
       <language id="en"><![CDATA[Preset ID]]></language>
       <language id="es"><![CDATA[ID preajustado]]></language>
-      <language id="fr"><![CDATA[Preset ID]]></language>
+      <language id="fr"><![CDATA[ID préréglage]]></language>
     </name>
   </property>
  

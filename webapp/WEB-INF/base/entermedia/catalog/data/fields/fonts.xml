@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="fontname" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Fontname
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Fontname]]></language>
       <language id="en"><![CDATA[Fontname]]></language>
       <language id="es"><![CDATA[Nombre de la fuente]]></language>
-      <language id="fr"><![CDATA[Fontname]]></language>
+      <language id="fr"><![CDATA[Nom de la police]]></language>
     </name>
   </property> 
 </properties>

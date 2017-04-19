@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="url" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">URL Path 
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[uRL-Pfad]]></language>  
       <language id="en"><![CDATA[URL Path]]></language>  
       <language id="es"><![CDATA[Ruta URL]]></language>  
-      <language id="fr"><![CDATA[Chemin URL]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès de l&#39;URL]]></language> 
     </name> 
   </property>  
   <property id="samplerequest" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Sample JSON Request 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Probe json Anfrage]]></language>  
       <language id="en"><![CDATA[Sample JSON Request]]></language>  
       <language id="es"><![CDATA[Sample Pedir JSON]]></language>  
-      <language id="fr"><![CDATA[Sample Demande JSON]]></language> 
+      <language id="fr"><![CDATA[Exemple de requête JSON]]></language> 
     </name> 
   </property>  
   <property id="docsection" type="list" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Documentation Section 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[Dokumentation Abschnitt]]></language>  
       <language id="en"><![CDATA[Documentation Section]]></language>  
       <language id="es"><![CDATA[Sección de documentación]]></language>  
-      <language id="fr"><![CDATA[Documentation Section]]></language> 
+      <language id="fr"><![CDATA[Section Documentation]]></language> 
     </name> 
   </property>  
   <property id="parameters" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Parameters 
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Methode]]></language>  
       <language id="en"><![CDATA[Method]]></language>  
       <language id="es"><![CDATA[Método]]></language>  
-      <language id="fr"><![CDATA[méthode]]></language> 
+      <language id="fr"><![CDATA[Méthode]]></language> 
     </name> 
   </property>  
   <property id="uploadfile" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Upload

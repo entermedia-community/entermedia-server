@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Medientyp]]></language>  
       <language id="en"><![CDATA[Media Type]]></language>  
       <language id="es"><![CDATA[Tipo de medio]]></language>  
-      <language id="fr"><![CDATA[Type de support]]></language> 
+      <language id="fr"><![CDATA[Type de média]]></language> 
     </name> 
   </property>  
   <property id="outputextension" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">File Extension 
@@ -45,8 +45,8 @@
     <name> 
       <language id="de"><![CDATA[generierte Datei]]></language>  
       <language id="en"><![CDATA[Generated File]]></language>  
-      <language id="es"><![CDATA[archivo generado]]></language>  
-      <language id="fr"><![CDATA[fichier généré]]></language> 
+      <language id="es"><![CDATA[Archivo generado]]></language>  
+      <language id="fr"><![CDATA[Fichier généré]]></language> 
     </name> 
   </property>  
   <property id="fileexportformat" index="true" stored="true" editable="true" note="${user.id}/${date}${time}-${asset.author||assettitle}-${shortfilename}.mp4" keyword="false" filter="false" sortable="true">File Download Format 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Datei-Download-Format]]></language>  
       <language id="en"><![CDATA[File Download Format]]></language>  
       <language id="es"><![CDATA[Descarga del fichero Formato]]></language>  
-      <language id="fr"><![CDATA[Téléchargez le fichier Format]]></language> 
+      <language id="fr"><![CDATA[Format de téléchargement du fichier]]></language> 
     </name> 
   </property>  
   <property id="transcoderid" listid="transcoder" index="true" stored="true" editable="true" viewtype="list" type="list" legacy="type" keyword="false" filter="false" sortable="true">Transcoder 
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Transcoder]]></language>  
       <language id="en"><![CDATA[Transcoder]]></language>  
       <language id="es"><![CDATA[Transcoder]]></language>  
-      <language id="fr"><![CDATA[Transcoder]]></language> 
+      <language id="fr"><![CDATA[Transcodeur]]></language> 
     </name> 
   </property>  
   <property id="guid" index="true" type="list" listid="presetdata" sort="name" stored="true" editable="true" keyword="false" filter="false" sortable="true">Parameters 
@@ -94,7 +94,7 @@
       <language id="de"><![CDATA[Anzeige auf convert / Ernte Seite]]></language>  
       <language id="en"><![CDATA[Display on Convert/Crop Page]]></language>  
       <language id="es"><![CDATA[Pantalla en Convertir / Recorte de Página]]></language>  
-      <language id="fr"><![CDATA[Affichage sur Convertir / Crop page]]></language> 
+      <language id="fr"><![CDATA[Affichage sur Convertir / Recadrer page]]></language> 
     </name> 
   </property>  
   <property id="singlepage" type="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Only create the first page in multipage documents
@@ -102,7 +102,7 @@
       <language id="de"><![CDATA[nur erstellen die erste Seite in mehrseitigen Dokumenten]]></language>
       <language id="en"><![CDATA[Only create the first page in multipage documents]]></language>
       <language id="es"><![CDATA[Sólo crear la primera página en documentos de varias páginas]]></language>
-      <language id="fr"><![CDATA[créer Seule la première page dans les documents multipages]]></language>
+      <language id="fr"><![CDATA[Créer seulement la première page dans les documents multipages]]></language>
     </name>
   </property> 
   <!--  Data merge -->

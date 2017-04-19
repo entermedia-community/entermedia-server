@@ -1,7 +1,10 @@
-#Fri Nov 25 16:02:26 UTC 2016
-Details=Détails
-Libraries=Bibliothèques
+#
+#Wed Apr 19 08:56:46 CDT 2017
+Libraries=Biblioth\u00E8ques
+Details=D\u00E9tails
 Assets=Items
-Create\ New=Créer nouveau
+Create\ New=Cr\u00E9er nouveau
+Add\ Library=Ajouter une biblioth\u00E8que
+add=ajouter
+Add\ Collection=Ajouter une collection
 Collections=Collections
-

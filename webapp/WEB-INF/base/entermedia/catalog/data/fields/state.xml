@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>
   <property id="code" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
@@ -27,7 +27,7 @@
       <language id="de"><![CDATA[Land]]></language>
       <language id="en"><![CDATA[Country]]></language>
       <language id="es"><![CDATA[País]]></language>
-      <language id="fr"><![CDATA[Country]]></language>
+      <language id="fr"><![CDATA[Pays]]></language>
     </name>
   </property> 
 </properties>

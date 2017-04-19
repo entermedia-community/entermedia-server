@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="profilesearchfilters" index="true" stored="true" editable="true" note="Used for filtering" keyword="false" filter="false" sortable="true">Filters 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Tabellenspalten]]></language>  
       <language id="en"><![CDATA[Table Columns]]></language>  
       <language id="es"><![CDATA[Columnas de la tabla]]></language>  
-      <language id="fr"><![CDATA[Colonnes de table]]></language> 
+      <language id="fr"><![CDATA[Colonnes de la table]]></language> 
     </name> 
   </property>  
   <property id="permissions" viewtype="multiselect" editable="false" index="true" stored="true" type="list" listid="permissionapp" keyword="false" filter="false" sortable="true">Permissions 
@@ -46,7 +46,7 @@
       <language id="de"><![CDATA[Standardergebnisansicht]]></language>
       <language id="en"><![CDATA[Default Result View]]></language>
       <language id="es"><![CDATA[El resultado predeterminado Ver]]></language>
-      <language id="fr"><![CDATA[Par défaut Résultat Voir]]></language>
+      <language id="fr"><![CDATA[Vue Résultat Par Défaut]]></language>
     </name>
   </property>  
   <!-- 

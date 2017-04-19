@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
       <language id="es"><![CDATA[Estado]]></language>  
-      <language id="fr"><![CDATA[statut]]></language> 
+      <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
   <property id="projectnumber" index="true" stored="true" editable="true" searchtype="usagehistory" keyword="false" filter="false" sortable="true">Project Number 
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>
       <language id="en"><![CDATA[Source Path]]></language>
       <language id="es"><![CDATA[Ruta de origen]]></language>
-      <language id="fr"><![CDATA[Source Path]]></language>
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language>
     </name>
   </property> 
 </properties>

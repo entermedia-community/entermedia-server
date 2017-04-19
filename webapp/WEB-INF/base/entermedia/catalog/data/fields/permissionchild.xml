@@ -14,15 +14,15 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="permission" datatype="list" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true" type="list">Parent Permission
     <name>
       <language id="de"><![CDATA[Eltern Erlaubnis]]></language>
       <language id="en"><![CDATA[Parent Permission]]></language>
-      <language id="es"><![CDATA[permiso de los Padres]]></language>
-      <language id="fr"><![CDATA[Parent Permission]]></language>
+      <language id="es"><![CDATA[Permiso de los Padres]]></language>
+      <language id="fr"><![CDATA[Permission Parentale]]></language>
     </name>
   </property> 
 </properties>

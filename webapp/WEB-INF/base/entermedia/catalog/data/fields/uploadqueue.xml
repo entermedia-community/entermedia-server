@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="uploadstatus" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Status 
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
       <language id="es"><![CDATA[Estado]]></language>  
-      <language id="fr"><![CDATA[statut]]></language> 
+      <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
   <property id="filesize" editable="true" type="number" index="true" stored="true" keyword="false" filter="false" sortable="true">File Size 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Dateigröße]]></language>  
       <language id="en"><![CDATA[File Size]]></language>  
       <language id="es"><![CDATA[Tamaño del archivo]]></language>  
-      <language id="fr"><![CDATA[File Size]]></language> 
+      <language id="fr"><![CDATA[Taille du fichier]]></language> 
     </name> 
   </property>  
   <property id="filesizeuploaded" editable="true" type="number" index="true" stored="true" keyword="false" filter="false" sortable="true">Upload So Far 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[laden so weit]]></language>  
       <language id="en"><![CDATA[Upload So Far]]></language>  
       <language id="es"><![CDATA[Sube hasta ahora]]></language>  
-      <language id="fr"><![CDATA[Télécharger So Far]]></language> 
+      <language id="fr"><![CDATA[Télécharger jusqu&#39;ici]]></language> 
     </name> 
   </property>  
   <property id="date" editable="true" type="date" viewtype="datetime" index="true" stored="true" keyword="false" filter="false" sortable="true">Date 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>
       <language id="en"><![CDATA[Source Path]]></language>
       <language id="es"><![CDATA[Ruta de origen]]></language>
-      <language id="fr"><![CDATA[Source Path]]></language>
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language>
     </name>
   </property> 
 </properties>
