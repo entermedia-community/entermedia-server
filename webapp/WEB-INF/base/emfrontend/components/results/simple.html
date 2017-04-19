@@ -18,11 +18,7 @@ $pages.include("$apphome/components/results/header.html",$context)
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
 
-
-
 <ul  class="emgallery"  >  
-
-            
             <li  id="emslidesheet" class="clearfix">
             #set( $rootid = $hits.sessionId )
             #set($count = 0)

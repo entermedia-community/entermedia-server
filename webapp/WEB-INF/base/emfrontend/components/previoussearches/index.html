@@ -10,11 +10,11 @@
 	#foreach($hit in $filderedquerylist)
 		<li #if( $current == $hit.id) class="current" #end >
 			#if ($cansavesearch)
-			<div class="search-save"><a class="ir" href="$home$apphome/views/search/edit/save.html?queryid=$hit.id&name=$hit.getName()">Save</a></div>
+			<div class="search-save"><a class="ir" href="$home$apphome/views/search/edit/save.html?queryid=$hit.id&name=$hit.getName()">[[Save]]</a></div>
 			#end
 			<a class="search-href" href="$home$apphome/views/search/runsavedquery.html?queryid=$hit.id&searchtype=asset">$hit.getName()</a>
 			
-			<div class="search-delete" ><a class="ir ajax" targetdivinner="previous-searches-container" href="$home$apphome/components/previoussearches/delete.html?queryid=${hit.id}&oemaxlevel=1">delete</a></div>
+			<div class="search-delete" ><a class="ir ajax" targetdivinner="previous-searches-container" href="$home$apphome/components/previoussearches/delete.html?queryid=${hit.id}&oemaxlevel=1">[[delete]]</a></div>
 
 		</li>
 	#end

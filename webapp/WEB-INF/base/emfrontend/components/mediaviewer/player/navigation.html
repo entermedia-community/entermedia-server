@@ -16,8 +16,7 @@
 		#if($asset.caption) $asset.caption #else $asset #end
 	</p>
 </div>
-<ul class="emdetailactions">
-	
+<ul class="emdetailactions">	
 	#if( $candownload )
 	<li>
 		<a class="btn" title="[[Download Asset]]" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">Download</a>
@@ -72,8 +71,6 @@
 <div id="share-container" style="display: none;">
 	
 </div>
-
-
 <script>
 	$('#share-button').click(function() {
 		$('#share-container').toggle('fast');
@@ -83,9 +80,7 @@
 
 		$('#share-container ul li.current').removeClass('current');
 		$(this).addClass('current');
-
 	});
-
 </script>
 $pages.include("/${applicationid}/components/mediaviewer/details/index.html",$context)
 
