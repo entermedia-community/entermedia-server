@@ -1,7 +1,10 @@
 #
-#Tue Oct 11 01:59:34 EDT 2016
-Libraries=bibliotecas
+#Thu Apr 20 13:21:24 CDT 2017
 Details=detalles
+Libraries=bibliotecas
 Assets=Bienes
 Create\ New=Crear nuevo
+Add\ Library=A\u00F1adir biblioteca
+add=a\u00F1adir
+Add\ Collection=A\u00F1adir colecci\u00F3n
 Collections=Colecciones

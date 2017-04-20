@@ -2,9 +2,11 @@
 	<property name='text.Pick a date'>
     	<value>Pick a date</value>
 		<value locale="es">Escoja una Fecha</value>
+		<value locale="fr">Choissisez une date</value>
 	</property>
 	<property name='text.Pick a File'>
-    	<value>Pick a date</value>
+    	<value>Pick a file</value>
 		<value locale="es">Escoja un Archivo</value>
+		<value locale="fr">Choissisez un fichier</value>
 	</property>
 </page>

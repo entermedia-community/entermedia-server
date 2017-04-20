@@ -1,6 +1,6 @@
 #
 #Thu Nov 24 10:20:38 EST 2016
-Libraries=biblioth\u00E8ques
-Slideshow=diaporama
+Libraries=Biblioth\u00E8ques
+Slideshow=Diaporama
 Categories=Cat\u00E9gories
 Collections=Collections

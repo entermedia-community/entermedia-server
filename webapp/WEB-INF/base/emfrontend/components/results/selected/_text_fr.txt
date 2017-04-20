@@ -23,5 +23,5 @@ Show\ Only\ Selections=Afficher uniquement les s\u00E9lections
 Print\ Assets=Imprimer actifs
 Reject\ Pending=Rejeter en attente
 Edit=Modifier
-Actions=actes
+Actions=Actions
 Edit\ one\ or\ more\ selected\ records=Modifier un ou des enregistrements s\u00E9lectionn\u00E9s

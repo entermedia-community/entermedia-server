@@ -1,9 +1,20 @@
-#Fri Nov 25 16:02:26 UTC 2016
-Save\ values=Enregistrer les valeurs
-No=Non
+#
+#Thu Apr 20 15:14:10 CDT 2017
 Share=Partager
-Edit=Modifier
-Cancel=Annuler
+Save\ values=Enregistrer les valeurs
+File=Fichier
 Yes=Oui
-No\ data\ has\ been\ entered.=Aucune donnée n'a été entrée
-
+Download=T\u00E9l\u00E9charger
+No=Non
+Results=R\u00E9sultats
+Embed=Int\u00E9grer
+Delete=Effacer
+Publish=Publier
+Edit\ =modifier
+Print=Impression
+Delete\ Assets=Supprimer les actifs
+No\ data\ has\ been\ entered.=Aucune donn\u00E9e n'a \u00E9t\u00E9 entr\u00E9e
+Cancel=Annuler
+Edit=Modifier
+Email=Email
+Add\ to\ Project=Ajouter au projet

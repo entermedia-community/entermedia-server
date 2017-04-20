@@ -1,16 +1,26 @@
 #
-#Tue Oct 11 01:59:43 EDT 2016
-Remove\ From\ Basket=Quitar de la Cesta
+#Thu Apr 20 13:21:33 CDT 2017
 View\ Selections=Ver Selecciones
-Results=resultados
-Show\ All\ Results=Mostrar todos los resultados
-Edit=Editar
-Edit\ selected\ records=Editar registros seleccionados
-Export\ to\ CSV=Exportar a CSV
-Select\ All\ Results=Seleccionar todos los resultados
+Edit\ Asset=Editar activo
+Reject=Rechazar
 Multi\ Edit=Multiedici\u00F3n
-Show\ All=Mostrar todo
-Show\ Only\ Selections=Mostrar \u00FAnicamente Selecciones
+Results=resultados
 Deselect\ All=Anular todas las selecciones
-Select\ This\ Page=Seleccionar esta p\u00E1gina
+Show\ All\ Results=Mostrar todos los resultados
+Select\ All\ Results=Seleccionar todos los resultados
 Add\ To\ Basket=A\u00F1adir al carrito
+Approve\ Pending=Aprobar Pendiente
+Export\ to\ CSV=Exportar a CSV
+All=Todas
+Delete\ Assets=Eliminar activos
+Show\ All=Mostrar todo
+Approve=Aprobar
+Select\ This\ Page=Seleccionar esta p\u00E1gina
+Edit\ selected\ records=Editar registros seleccionados
+Remove\ From\ Basket=Quitar de la Cesta
+Selections=Trozos escogidos
+Show\ Only\ Selections=Mostrar \u00FAnicamente Selecciones
+Print\ Assets=Imprimir activos
+Reject\ Pending=Rechazar Pendiente
+Edit=Editar
+Actions=Comportamiento

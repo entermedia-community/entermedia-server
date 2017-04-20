@@ -1,13 +1,18 @@
-#Fri Nov 25 16:02:26 UTC 2016
-Settings=Paramètres
-Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistrés
+#
+#Thu Apr 20 13:46:19 CDT 2017
+Settings=Param\u00E8tres
+Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistr\u00E9s
 Language=Langue
-Logout=Déconnexion
+Related\ Media=M\u00E9dias apparent\u00E9s
+Logout=D\u00E9connexion
+Selected\ Media=M\u00E9dias s\u00E9lectionn\u00E9s
 My\ Account=Mon compte
 Login=Connexion
-There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficulté à remplir cette demande
-System\ Settings=Paramètres du système
+There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficult\u00E9 \u00E0 remplir cette demande
+Close=Fermer
+Attachments=Pi\u00E8ces jointes
+System\ Settings=Param\u00E8tres du syst\u00E8me
+Ok=D&\#39;accord
 Dashboard=Tableau de bord
 Applications=Applications
 Asset\ is\ missing=Item manquant
-
