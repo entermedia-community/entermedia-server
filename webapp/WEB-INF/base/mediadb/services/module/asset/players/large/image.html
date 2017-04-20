@@ -14,6 +14,11 @@ $urlenc.replace("%2F", "/") ) #end
 	<div id="footermenu">
 		<div id="menuoptions">
 			<ul>
+			<li style="margin-right: 50px;">
+					 
+				<a href="$home$viewdetailspath${id}.html" >$asset</a>
+			  </il>
+			
 				<li>
 					<div class="dropup">
 						<a class="" href="#" data-toggle="dropdown" expanded="true">Downloads
@@ -37,17 +42,7 @@ $urlenc.replace("%2F", "/") ) #end
 						</ul>
 					</div>
 			  </il>
-				<li>
-					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true">Settings
-							<span class="caret"></span></a>
-						<ul id="module-bar-select" class="dropdown-menu dropup">
-							<li><a href="/">Remove</a></li>
-							<li><a href="">Move</a></li>
-							
-						</ul>
-					</div>
-			  </il>
+				
 			</ul>
 		</div>
 	</div>
@@ -90,7 +85,7 @@ $("#main-media-container").livequery("mouseleave", function(e)
 	width: 100%;
 	height: 35px;
 	top: -110%;
-	opacity: 0.4;
+	opacity: 0.9;
 }
 
 #menuoptions {
@@ -101,9 +96,13 @@ $("#main-media-container").livequery("mouseleave", function(e)
 
 #menuoptions li {
 	display: inline-table;
-	font-size: large;
-	color: white;
+	font-size: large;	
 	font-weight: normal;
+}
+#menuoptions a {
+
+	color: white;
+	
 }
 
 #menuoptions div {
