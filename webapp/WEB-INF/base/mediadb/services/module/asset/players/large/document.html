@@ -22,6 +22,10 @@
 	<div id="footermenu">
 		<div id="menuoptions">
 			<ul>
+			<li style="margin-right: 50px;">					 
+				<a href="" id="escapelink" >$asset</a>
+			  </il>
+			
 				<li>
 					<div class="dropup">
 						<a class="" href="#" data-toggle="dropdown" expanded="true">Downloads
@@ -45,17 +49,6 @@
 						</ul>
 					</div>
 			  </il>
-				<li>
-					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true">[[Settings]]
-							<span class="caret"></span></a>
-						<ul id="module-bar-select" class="dropdown-menu dropup">
-							<li><a href="/">Remove</a></li>
-							<li><a href="">Move</a></li>
-							
-						</ul>
-					</div>
-			  </il>
 			</ul>
 		</div>
 	</div>
@@ -70,6 +63,11 @@
 		$("#main-media-container").livequery("mouseleave", function(e) {
 			$("#footerbase").hide();
 		});
+		var escp = jQuery.Event("keypress");
+		escp.which = 27;
+		escp.keyCode = 27;
+		$("#escapelink").click().trigger(escp);
+		
 	</script>
 
 	<style>
@@ -106,7 +104,7 @@
 	width: 100%;
 	height: 35px;
 	top: -110%;
-	opacity: 0.4;
+	/*opacity: 0.8;*/
 }
 
 #menuoptions {
@@ -121,7 +119,9 @@
 	color: white;
 	font-weight: normal;
 }
-
+#menuoptions a {
+	color: white;	
+}
 #menuoptions div {
 	display: inline;
 	padding: 5px;
