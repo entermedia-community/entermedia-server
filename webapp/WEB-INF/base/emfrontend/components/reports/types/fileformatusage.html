@@ -1,15 +1,10 @@
 #set($assetsearcher = $mediaarchive.getSearcher("asset"))
 <div class="container-fluid">
 	<div class="row">
-
 		<div class="col-md-6 ">
-
 			<canvas id="fileformatusagechart"></canvas>
-
 		</div>
-
 		<div class="col-md-6">
-
 			<ul class="list-group">
 				<a href="#" class="list-group-item active"> [[File Formats]] </a>
 				#foreach($item in
@@ -21,7 +16,7 @@
 					$!mediaarchive.getData("fileformat",$item.key)<br /></li> #end #end
 
 				<li class="list-group-item"><span class="badge">$!sizer.inEnglish($diskspacehits.getSum("filesize"))
-				</span> Total</li>
+				</span> [[Total]]</li>
 
 			</ul>
 		</div>

@@ -3,18 +3,10 @@
 #set($dl = $mediaarchive.getSearcher("assetdownloadLog"))
 #set($dlhits = $dl.getAllHits($context))
 
-
 #set($assetsearcher = $mediaarchive.getSearcher("asset"))
 #set($assets = $assetsearcher.getAllHits($context))
 
-
-
-
-
 <canvas id="dlchart" ></canvas>
-
-
-
 
 
 <script>
@@ -29,8 +21,6 @@ var myChart = new Chart(ctx, {
 		"$context.getDate($child.toString())",
 	#end
 #end
-        
-
         
         ]
         
