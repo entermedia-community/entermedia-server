@@ -19,12 +19,12 @@
 <ul class="emdetailactions">	
 	#if( $candownload )
 	<li>
-		<a class="btn" title="[[Download Asset]]" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">Download</a>
+		<a class="btn" title="[[Download Asset]]" href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a>
 	</li>
 	#end
 	#if ($content.isPropertyTrue("showaddselections") && $canviewbasket)
 	<li>
-		<a class="toggleitem ajax btn" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">Add to Basket</a>
+		<a class="toggleitem ajax btn" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">[[Add to Basket]]</a>
 	</li>
 	#end
 
@@ -38,25 +38,25 @@
 
 	#if($candeleteasset)
 	<li style="float: right; margin-right: 0px;">
-		<a class="btn tooltip delete" title="Delete Asset" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="Delete Asset" /></a>
+		<a class="btn tooltip delete" title="Delete Asset" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="[[Delete Asset]]" /></a>
 	</li>
 	#end
 	
 	#if( $asset.isFolder() )
 	<li style="float: right;">
-		<a class="btn tooltip attachments" title="View Attachments" href="$home$apphome/views/modules/asset/editor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="14" src="$home$themeprefix/images/navigation/attachments-icon.png" title="View Attachments" /></a>
+		<a class="btn tooltip attachments" title="View Attachments" href="$home$apphome/views/modules/asset/editor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="14" src="$home$themeprefix/images/navigation/attachments-icon.png" title="[[View Attachments]]" /></a>
 	</li>
 	#end
 
 	#if($canprintpreview)
 	<li style="float: right;">
-		<a class="btn tooltip print" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="Print Preview"><img width="12" src="$home$themeprefix/images/navigation/print-icon.png" /></a>
+		<a class="btn tooltip print" href="$home$apphome/views/modules/asset/editor/printpreview/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}" title="[[Print Preview]]"><img width="12" src="$home$themeprefix/images/navigation/print-icon.png" /></a>
 	</li>
 	#end
 	
 	#if($canmetadatadetails)
 	<li style="float: right;">
-		<a class="btn tooltip edit" title="Edit Asset Metadata" href="$home$apphome/views/modules/asset/editor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="Edit Metadata" /></a>
+		<a class="btn tooltip edit" title="Edit Asset Metadata" href="$home$apphome/views/modules/asset/editor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="[[Edit Metadata]]" /></a>
 	</li>
 	#end
 

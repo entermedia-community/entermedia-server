@@ -8,7 +8,7 @@
 	    <div class="c33r">
         	<div class="subcr" >
 			#if( $order.userid != $user.getId() )
-			Invalid order
+			[[Invalid order]]
 			#end
 		
 			#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
@@ -17,7 +17,7 @@
 			<form name="activitydetails" method="post" action="$home$apphome/views/activity/details/save.html">
 				<input name="orderid" type="hidden" value="$order.id" />
 			<div style="padding-left:10px;" class="autosubmitdetails">	
-				<h3>Activity Details</h3>
+				<h3>[[Activity Details]]</h3>
 			
 				<div style="padding-left: 20px">	
 				$context.putPageValue("searcher", $ordersearcher)	 
@@ -37,28 +37,28 @@
 	
 <ul class="embuttons">
 <li>
-	<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()"><span>Add Files</span></a>
+	<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()"><span>[[Add Files]]</span></a>
 </li>
 #if( $orderitems.size() > 0)	
 
 	<li>
-		<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()"><span>Download</span></a>
+		<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()"><span>[[Download]]</span></a>
 	</li>
 	<li>
-		<a href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()"><span>Export</span></a>
+		<a href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()"><span>[[Export]]</span></a>
 	</li>
 	<li>
-		<a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()"><span>Email</span></a>
+		<a href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()"><span>[[Email]]</span></a>
 	</li>
 
 	#if($content.isPropertyTrue("showaddselections"))
 	<li>
-		<a class="toggleitem" targetdiv="nothing" href="$home/$applicationid/components/results/addalltobasket.html?hitssessionid=$hits.getSessionId()"><span>Add to Basket</span></a>
+		<a class="toggleitem" targetdiv="nothing" href="$home/$applicationid/components/results/addalltobasket.html?hitssessionid=$hits.getSessionId()"><span>[[Add to Basket]]</span></a>
 	</li>
 	#end
 	#if($content.isPropertyTrue("showremoveselections"))
 	<li>
-		<a class="toggleitem" targetdiv="nothing" href="$home/$applicationid/components/results/removeselections.html?hitssessionid=$hits.getSessionId()"><span>Remove Selections</span></a>
+		<a class="toggleitem" targetdiv="nothing" href="$home/$applicationid/components/results/removeselections.html?hitssessionid=$hits.getSessionId()"><span>[[Remove Selections]]</span></a>
 	</li>
 	#end
 #end
