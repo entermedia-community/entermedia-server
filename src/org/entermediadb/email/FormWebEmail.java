@@ -1,14 +1,27 @@
 package org.entermediadb.email;
 
+import java.io.StringWriter;
+import java.util.Iterator;
+import java.util.Map;
+
 import javax.mail.MessagingException;
 
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.generators.Output;
+import org.openedit.page.PageStreamer;
 
 public class FormWebEmail extends WebEmail
 {
 	protected String fieldBody;
 
+	
+	public void send(Map inObjects)
+	{
+	throw new OpenEditException("Not Implemented for FormWebEmail");
+	}
+	
+	
 	public void send() throws OpenEditException
 	{
 		
