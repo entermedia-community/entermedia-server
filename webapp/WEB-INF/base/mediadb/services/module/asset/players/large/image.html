@@ -16,7 +16,7 @@ $urlenc.replace("%2F", "/") ) #end
 			<ul>
 			<li style="margin-right: 50px;">
 					 
-				<a href="$home$viewdetailspath${id}.html" >$asset</a>
+				<a href="" id="escapelink" >$asset</a>
 			  </il>
 			
 				<li>
@@ -62,7 +62,10 @@ $("#main-media-container").livequery("mouseleave", function(e)
 	$("#footerbase").hide();	
 });
 
-
+var escp = jQuery.Event("keypress");
+escp.which = 27; 
+escp.keyCode = 27;
+$("#escapelink").click().trigger(escp);
 </script>
 
 
