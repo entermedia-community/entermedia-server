@@ -1,11 +1,11 @@
 #Fri Nov 25 16:02:26 UTC 2016
 Empty\ Data\ Record=Enregistrement vide
-Upload\ media\ from\ local\ file\ system\ or\ camera=Téléverser du média depuis un fichier local ou un appareil photo
+Upload\ media\ from\ local\ file\ system\ or\ camera=Téléverser un média depuis un fichier local ou un appareil photo
 Add\ Remote\ Media=Ajouter un média distant
 Add\ Media=Ajouter des médias
 Live\ Video\ Stream=Video Streaming en direct
 Make\ a\ live\ stream\ recording\ from\ your\ webcam=Faire un enregistrement en direct à partir de votre webcam
-Create\ empty\ data\ records\ then\ attach\ media\ later=Créer une entrée vide puis ajouter le média plus tard
+Create\ empty\ data\ records\ then\ attach\ media\ later=Créer un enregistrement vide puis ajouter le média plus tard
 Next=Suivant
 Upload\ Media=Téléverser un média
 Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Créer un item depuis une URL ou un lien imbriqué
