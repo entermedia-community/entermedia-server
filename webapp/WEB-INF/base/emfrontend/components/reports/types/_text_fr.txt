@@ -1,0 +1,9 @@
+#
+#Fri Apr 21 10:26:07 CDT 2017
+Total=Total
+Libraries=Biblioth\u00E8ques
+Asset\ Previews\ Over\ Time=Aper\u00E7u des actifs au fil du temps
+File\ Formats=Formats de fichier
+Downloads\ over\ time=T\u00E9l\u00E9chargements au fil du temps
+Asset\ Creation\ over\ time=Cr\u00E9ation d&\#39;actifs au fil du temps
+Logins\ Per\ Day=Logins par jour

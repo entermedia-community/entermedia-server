@@ -3,42 +3,25 @@
 #set($dl = $mediaarchive.getSearcherManager().getSearcher("media/catalogs/public","assetdownloadLog"))
 #set($dlhits = $dl.getAllHits($context))
 
-
 #set($assetsearcher = $mediaarchive.getSearcherManager().getSearcher("media/catalogs/public","asset"))
 #set($assets = $assetsearcher.getAllHits($context))
 
-
-
-
-
 <div class="row">
-<div class="col-md-4">
-<canvas id="myChart" width="200" height="200"></canvas>
-
-</div>
-
-<div class="col-md-4">
-<canvas id="dlchart" width="200" height="200"></canvas>
-
-</div>
-
-
-<div class="col-md-4">
-Usage Chart - Original Files - Total:  $!sizer.inEnglish($assets.getSum("filesize"))
-
-<canvas id="usagechart" width="200" height="200"></canvas>
-
-</div>
-
-
-
+	<div class="col-md-4">
+	<canvas id="myChart" width="200" height="200"></canvas>
+	</div>
+	
+	<div class="col-md-4">
+	<canvas id="dlchart" width="200" height="200"></canvas>
+	</div>
+	
+	<div class="col-md-4">
+		[[Usage Chart]] - [[Original Files]] - Total:  $!sizer.inEnglish($assets.getSum("filesize"))
+		<canvas id="usagechart" width="200" height="200"></canvas>
+	</div>
 </div>
 
 705-309-4794
-
-
-
-
 
 <script>
 var ctx = document.getElementById("myChart");
@@ -52,23 +35,16 @@ var myChart = new Chart(ctx, {
 		"$child",
 	#end
 #end
-        
-
-        
         ]
-        
-        
         ,
         datasets: [{
-            label: 'Logins Per Day',
+            label: '[[Logins Per Day]]',
             data: [
 #foreach($node in $hits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
 	$child.get("count"),
 #end
 #end
-                  
-                   
                    ],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -100,10 +76,6 @@ var myChart = new Chart(ctx, {
     }
 });
 </script>
-
-
-
-
 <script>
 var ctx = document.getElementById("dlchart");
 var myChart = new Chart(ctx, {
@@ -116,23 +88,16 @@ var myChart = new Chart(ctx, {
 		"$child",
 	#end
 #end
-        
-
-        
         ]
-        
-        
         ,
         datasets: [{
-            label: 'Downloads over time',
+            label: '[[Downloads over time]]',
             data: [
 #foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
 	$child.get("count"),
 #end
 #end
-                  
-                   
                    ],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
@@ -164,18 +129,13 @@ var myChart = new Chart(ctx, {
     }
 });
 </script>
-
 #foreach($item in $breakdownhits.getAggregations().get("assettype_filesize").getBuckets())
 $item.key
 #foreach($subitem in $item.getAggregations())
 $subitem.getValue()
 #end
 #end
-
-
 <script>
-
-
 var ctx = document.getElementById("usagechart");
 var data =
 {
@@ -186,25 +146,15 @@ var data =
 "$item.key" #if($foreach.hasNext),#end
 
 #end
-        
-
-        
         ],
-     
-        
-        
         datasets: [{
-            
             data: [
 #foreach($item in $breakdownhits.getAggregations().get("assettype_filesize").getBuckets())
 #foreach($subitem in $item.getAggregations())
 $subitem.getValue() ,
 #end
 #end
-                  
-                   
                    ]
-            
     }]
 }
 

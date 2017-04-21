@@ -1,0 +1,16 @@
+#
+#Thu Apr 20 13:26:41 CDT 2017
+Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=ElasticSearch utiliza Snapshots para almacenar y restaurar el estado de la base de datos
+View\ Known\ Mapping\ Conflicts=Ver conflictos de asignaci\u00F3n conocidos
+Reindex=Reindex
+Disabled=Discapacitado
+Validate\ All\ Mapping\ Schema=Validar todo el esquema de asignaci\u00F3n
+Knapsack\ is\ used\ to\ create\ JSON\ based\ backups\ that\ can\ be\ moved\ between\ servers=Knapsack se utiliza para crear copias de seguridad basadas en JSON que se pueden mover entre servidores
+Enabled=Habilitado
+Clear\ Cached\ Data=Borrar datos almacenados en cach\u00E9
+View\ Knapsack=Ver Mochila
+Search\ Logs=Registros de b\u00FAsqueda
+Data\ Management=Gesti\u00F3n de datos
+This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists=Esto permite que las listas cargadas desde la instalaci\u00F3n se integren con sus propias listas
+View\ Snapshots=Ver instant\u00E1neas
+Reload\ lists=Recargar listas

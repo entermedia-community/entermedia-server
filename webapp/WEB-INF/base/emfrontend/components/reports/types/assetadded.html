@@ -15,7 +15,7 @@ var myChart = new Chart(ctx, {
         ]    
         ,
         datasets: [{
-            label: 'Asset Creation over time',
+            label: '[[Asset Creation over time]]',
             data: [
 #foreach($node in $hits.loadHistogram("assetaddeddate_breakdown_week"))
 #foreach($child in $node.getChildren())

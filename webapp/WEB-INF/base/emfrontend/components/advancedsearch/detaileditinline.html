@@ -31,7 +31,7 @@
 
 		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
 				#if($detail.defaultoperation && $detail.defaultoperation != "")
-					<input name="operation" value="$detail.defaultoperation" type="hidden" />
+				<input name="operation" value="$detail.defaultoperation" type="hidden" />
 				#elseif($detail.isList() || $detail.isBoolean() || $viewtype == "multiselect")
 				<input name="operation" value="matches" type="hidden" />
 				#else

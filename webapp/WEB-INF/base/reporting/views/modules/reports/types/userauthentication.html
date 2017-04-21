@@ -1,18 +1,5 @@
 #set($s = $mediaarchive.getSearcherManager().getSearcher("system", "userauthenticationLog"))
-
-
-
-
 <canvas id="myChart" width="200" height="200"></canvas>
-
-
-
-
-
-
-
-
-
 <script>
 var ctx = document.getElementById("myChart");
 var myChart = new Chart(ctx, {
@@ -25,23 +12,16 @@ var myChart = new Chart(ctx, {
 		"$context.getDate($child.toString())",
 	#end
 #end
-        
-
-        
         ]
-        
-        
         ,
         datasets: [{
-            label: 'Logins Per Day',
+            label: '[[Logins Per Day]]',
             data: [
 #foreach($node in $hits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
 	$child.get("count"),
 #end
 #end
-                  
-                   
                    ],
             backgroundColor: [
 #foreach($node in $hits.loadHistogram("event_breakdown_day"))
@@ -67,5 +47,3 @@ var myChart = new Chart(ctx, {
     }
 });
 </script>
-
-

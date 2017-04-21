@@ -17,7 +17,7 @@ var myChart = new Chart(ctx, {
         ]
         ,
         datasets: [{
-            label: 'Logins Per Day',
+            label: '[[Logins Per Day]]',
             data: [
 #foreach($node in $hits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
