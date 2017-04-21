@@ -1,24 +1,13 @@
-
-
 <ul class="table_actions">
-
 	<li>
-
 		<a href="#">[[Actions]]</a>
-	
 		<ul>
-            
 			#if($canexport)
 			<li class="current"><a href="$home${content.searchhome}/export/export.csv?hitssessionid=$hits.sessionId">[[Export results CSV]]</a></li>
-			
-
 			#end
 			#if($candelete)
 		<li class="current confirm"><a href="$home${content.searchhome}/actions/deleteselections.html?hitssessionid=$hits.sessionId">[[Delete selected items]]</a></li>
 			#end
-			
-			
-	
 		</ul>
 	</li>
 	
