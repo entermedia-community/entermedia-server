@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties beanname="folderSearcher"> 
-  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">ID 
+  <property id="id" index="true" stored="true" keyword="false"  editable="false" sortable="true">ID 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[ID]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[ID]]></language> 
     </name> 
   </property>  
-  <property id="name" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Conversion 
+  <property id="name" index="true" stored="true" editable="true" keyword="false"  sortable="true">Conversion 
     <name> 
       <language id="de"><![CDATA[Umwandlung]]></language>  
       <language id="en"><![CDATA[Conversion]]></language>  
@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Conversion]]></language> 
     </name> 
   </property>  
-  <property id="inputtype" index="true" stored="true" type="list" editable="true" listid="rendertype" keyword="false" filter="false" sortable="true">Media Type 
+  <property id="inputtype" index="true" stored="true" type="list" editable="true" listid="rendertype" keyword="false"  sortable="true">Media Type 
     <name> 
       <language id="de"><![CDATA[Medientyp]]></language>  
       <language id="en"><![CDATA[Media Type]]></language>  
@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Type de support]]></language> 
     </name> 
   </property>  
-  <property id="outputextension" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">File Extension 
+  <property id="outputextension" index="true" stored="true" editable="true" keyword="false"  sortable="true">File Extension 
     <name> 
       <language id="de"><![CDATA[Dateierweiterung]]></language>  
       <language id="en"><![CDATA[File Extension]]></language>  
@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Extension de fichier]]></language> 
     </name> 
   </property>  
-  <property id="outputfile" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Output Override 
+  <property id="outputfile" index="true" stored="true" editable="true" keyword="false"  sortable="true">Output Override 
     <name> 
       <language id="de"><![CDATA[Ausgangsüberschreibung]]></language>  
       <language id="en"><![CDATA[Output Override]]></language>  
@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Priorité de sortie]]></language> 
     </name> 
   </property>  
-  <property id="generatedoutputfile" index="true" stored="true" editable="false" legacy="outputfile" keyword="false" filter="false" sortable="true">Generated File 
+  <property id="generatedoutputfile" index="true" stored="true" editable="false" legacy="outputfile" keyword="false"  sortable="true">Generated File 
     <name> 
       <language id="de"><![CDATA[generierte Datei]]></language>  
       <language id="en"><![CDATA[Generated File]]></language>  
@@ -49,7 +49,7 @@
       <language id="fr"><![CDATA[fichier généré]]></language> 
     </name> 
   </property>  
-  <property id="fileexportformat" index="true" stored="true" editable="true" note="${user.id}/${date}${time}-${asset.author||assettitle}-${shortfilename}.mp4" keyword="false" filter="false" sortable="true">File Download Format 
+  <property id="fileexportformat" index="true" stored="true" editable="true" note="${user.id}/${date}${time}-${asset.author||assettitle}-${shortfilename}.mp4" keyword="false"  sortable="true">File Download Format 
     <name> 
       <language id="de"><![CDATA[Datei-Download-Format]]></language>  
       <language id="en"><![CDATA[File Download Format]]></language>  
@@ -57,7 +57,7 @@
       <language id="fr"><![CDATA[Téléchargez le fichier Format]]></language> 
     </name> 
   </property>  
-  <property id="transcoderid" listid="transcoder" index="true" stored="true" editable="true" viewtype="list" type="list" legacy="type" keyword="false" filter="false" sortable="true">Transcoder 
+  <property id="transcoderid" listid="transcoder" index="true" stored="true" editable="true" viewtype="list" type="list" legacy="type" keyword="false"  sortable="true">Transcoder 
     <name> 
       <language id="de"><![CDATA[Transcoder]]></language>  
       <language id="en"><![CDATA[Transcoder]]></language>  
@@ -65,7 +65,7 @@
       <language id="fr"><![CDATA[Transcoder]]></language> 
     </name> 
   </property>  
-  <property id="guid" index="true" type="list" listid="presetdata" sort="name" stored="true" editable="true" keyword="false" filter="false" sortable="true">Parameters 
+  <property id="guid" index="true" type="list" listid="presetdata" sort="name" stored="true" editable="true" keyword="false"  sortable="true">Parameters 
     <name> 
       <language id="de"><![CDATA[Parameter]]></language>  
       <language id="en"><![CDATA[Parameters]]></language>  
@@ -73,7 +73,7 @@
       <language id="fr"><![CDATA[Paramètres]]></language> 
     </name> 
   </property>  
-  <property id="onimport" type="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">On Import 
+  <property id="onimport" type="boolean" index="true" stored="true" editable="true" keyword="false"  sortable="true">On Import 
     <name> 
       <language id="de"><![CDATA[bei der Einfuhr]]></language>  
       <language id="en"><![CDATA[On Import]]></language>  
@@ -81,7 +81,7 @@
       <language id="fr"><![CDATA[Sur l&#39;importation]]></language> 
     </name> 
   </property>  
-  <property id="ordering" type="number" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Ordering 
+  <property id="ordering" type="number" index="true" stored="true" editable="true" keyword="false"  sortable="true">Ordering 
     <name> 
       <language id="de"><![CDATA[Bestellung]]></language>  
       <language id="en"><![CDATA[Ordering]]></language>  
@@ -89,7 +89,7 @@
       <language id="fr"><![CDATA[Commande]]></language> 
     </name> 
   </property>  
-  <property id="display" type="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Display on Convert/Crop Page 
+  <property id="display" type="boolean" index="true" stored="true" editable="true" keyword="false"  sortable="true">Display on Convert/Crop Page 
     <name> 
       <language id="de"><![CDATA[Anzeige auf convert / Ernte Seite]]></language>  
       <language id="en"><![CDATA[Display on Convert/Crop Page]]></language>  
@@ -97,7 +97,7 @@
       <language id="fr"><![CDATA[Affichage sur Convertir / Crop page]]></language> 
     </name> 
   </property>  
-  <property id="singlepage" type="boolean" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Only create the first page in multipage documents
+  <property id="singlepage" type="boolean" index="true" stored="true" editable="true" keyword="false"  sortable="true">Only create the first page in multipage documents
     <name>
       <language id="de"><![CDATA[nur erstellen die erste Seite in mehrseitigen Dokumenten]]></language>
       <language id="en"><![CDATA[Only create the first page in multipage documents]]></language>
@@ -106,19 +106,24 @@
     </name>
   </property> 
   <!--  Data merge -->
-   <property id="attachments" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+   <property id="attachments" index="true" keyword="true"  stored="false" editable="true" sortable="true">New 
     <name> 
       <language id="en"><![CDATA[attachments]]></language> 
     </name> 
   </property>  
-  <property id="extension" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+  <property id="extension" index="true" keyword="true"  stored="true" editable="true" sortable="true">New 
     <name> 
       <language id="en"><![CDATA[extension]]></language> 
     </name> 
   </property>  
-  <property id="watermark" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New
+  <property id="watermark" index="true" keyword="true"  stored="true" editable="true" sortable="true">New
     <name>
       <language id="en"><![CDATA[watermark]]></language>
+    </name>
+  </property>
+  <property id="enforceaspectratio" index="true" stored="true" editable="true" type="boolean" sortable="true">
+    <name>
+      <language id="en"><![CDATA[Crop to Aspect Ratio]]></language>
     </name>
   </property>
   

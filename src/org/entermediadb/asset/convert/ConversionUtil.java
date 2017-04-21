@@ -9,6 +9,7 @@ import java.util.Iterator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
@@ -348,5 +349,13 @@ public class ConversionUtil {
 		return doesConvertedFileExist(inCatalogId, assetSourcePath, inPresetId);
 	}
 	
+
+	public boolean isEnforceAspectRatio(MediaArchive inArchive, String inPresetId) 
+	{
+		Data preset = inArchive.getData("convertpreset", inPresetId);
+		String enforce = preset.get("enforceaspectratio");
+		return Boolean.parseBoolean(enforce);
+	}
+
 	
 }

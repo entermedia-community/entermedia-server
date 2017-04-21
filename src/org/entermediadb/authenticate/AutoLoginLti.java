@@ -59,8 +59,11 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 				}
 			}
 			String sha1 = getStringEncryption().calculateRFC2104HMAC(inPrivateKey + "&", base.toString());
-			//log.info("created " + base);
-			//log.info("sha " + sha1);
+			if(log.isDebugEnabled())
+			{
+				log.info("created " + base);
+				log.info("sha " + sha1);
+			}	
 
 			return sha1;
 		}
