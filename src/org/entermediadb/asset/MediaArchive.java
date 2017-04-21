@@ -1830,7 +1830,7 @@ public class MediaArchive implements CatalogEnabled
 		Collection badges = inRow.getValues("badge");
 		if( badges != null && !badges.isEmpty())
 		{
-			String id = inRow.get("badge");
+			String id = inRow.get("badge");  //text version of the ids
 			List b = (List)getCacheManager().get("badges",id); //Expires after 5 min, sort it?
 			if( b == null)
 			{

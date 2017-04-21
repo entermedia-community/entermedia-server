@@ -19,6 +19,7 @@
 	
 	<property id="indextype"  editable="true" stored="true" index="true">Indexing Rule</property>	
 	<property id="analyzer"   editable="true" stored="true" index="true">Analyzer</property>
+	<property id="isbadge"   editable="true" stored="true" index="true" type="boolean">Is Badge</property>
 	
 	
 </properties>
