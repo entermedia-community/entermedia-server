@@ -14,5 +14,12 @@
        <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  data-sourcepath="$urlenc" data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$urlenc/thumb.jpg" alt="$!asset.name"/>
     </div>  
 </a>
+<div id="badgecontainer">
+#set( $badges = $mediaarchive.getBadges($asset) )
+<div class="badgetarget">
+#foreach($badge in $badges)
+	<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
+#end
+</div>
 
 

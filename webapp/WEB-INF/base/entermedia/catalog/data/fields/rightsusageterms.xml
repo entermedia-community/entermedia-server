@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="listSearcher" lazy-init="true"> 
+  <property id="id" index="true" stored="true" searchtype="state" keyword="false" filter="false" editable="false" sortable="true">ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" multilanguage="true" internalfield="false" searchtype="state" keyword="false" filter="false" editable="false" sortable="true">Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[prénom]]></language> 
+    </name> 
+  </property>
+  <property id="fatwirevalue" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">
+    <name>
+      <language id="en"><![CDATA[Fatwire Code]]></language>
+    </name>
+  </property>    
+</properties>

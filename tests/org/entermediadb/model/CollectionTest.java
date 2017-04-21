@@ -52,7 +52,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		//Collection existing = lsearcher.query().match("librarycollection", collection.getId()).orgroup("asset", all).search();
 
 		WebPageRequest req = getFixture().createPageRequest();
-		HitTracker assets = manager.loadAssetsInCollection(req, getMediaArchive(), collection.getId());
+		HitTracker assets = manager.loadAssetsInCollection(req, getMediaArchive(), collection.getId(),null);
 		assertEquals(1, assets.size());
 		
 	}

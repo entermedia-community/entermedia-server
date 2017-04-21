@@ -32,7 +32,11 @@ public class WindowsAuthenticator extends BaseAuthenticator
 		{
 			inDomainOrBlank = "";
 		}
-		//1433 445
+		//1433 
+		
+		
+		//I think 445 is the main port we need
+		
 		NtlmPasswordAuthentication auth = new NtlmPasswordAuthentication(inDomainOrBlank, inAReq.getUser().getUserName(), inAReq.getPassword());
 		try
 		{

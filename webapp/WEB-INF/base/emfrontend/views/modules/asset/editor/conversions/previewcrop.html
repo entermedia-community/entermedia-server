@@ -206,12 +206,7 @@
 	text-align:center;
 }
 </style>
-#set( $forceaspect = $context.getRequestParameter("forceaspect"))
-#if($forceaspect && $forceaspect == "false" )
-#set( $forceaspect = false)
-#else
-#set( $forceaspect = true)
-#end
+#set($forceaspect = $conversionUtil.isEnforceAspectRatio($mediaarchive,$presetid))
 
 <script>
 
@@ -241,6 +236,9 @@ function prepareCropUtil(boxwidth,boxheight){
 		onChange: updatePreview,
 		onSelect: updatePreview,
 		minSize: [xsize,ysize],
+		#if( $forceaspect)
+		aspectRatio: xsize / ysize,
+		#end
 		setSelect: [0,0,xsize,ysize]
 	},function(){
 	    jcrop_api = this;
@@ -251,10 +249,7 @@ function prepareCropUtil(boxwidth,boxheight){
 	});
 	/*
 				trueSize: [1024,768]
-		#if( $forceaspect),
-		aspectRatio: xsize / ysize
-		#end
-	*/
+	*/			
 	function updatePreview(c){
 		/*
 		if (parseInt(c.w) > 0){
