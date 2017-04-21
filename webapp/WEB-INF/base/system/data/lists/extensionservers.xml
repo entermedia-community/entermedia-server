@@ -1,5 +1,0 @@
-<servers>
-	<server id="5" listingurl="https://raw.githubusercontent.com/entermedia-community/demoall/entermedia9/etc/emdistribution.xml" selected="true" caption="DAM DemoAll site">EnterMediDB 9 (Release)</server>
-	<server id="6" listingurl="https://raw.githubusercontent.com/entermedia-community/demoall/entermedia9/etc/emdistribution_em9dev.xml" caption="Development version of DemoAll site">EnterMediaDB 9 (Dev)</server>	
-	<server id="3" listingurl="https://netevolved.com/plugins/netevolved.xml" caption="External community">NetEvolved (Dev)</server>	
-</servers>

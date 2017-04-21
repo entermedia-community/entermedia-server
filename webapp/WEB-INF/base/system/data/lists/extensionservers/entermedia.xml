@@ -1,0 +1,6 @@
+<servers>
+	<server id="em1" listingurl="https://raw.githubusercontent.com/entermedia-community/demoall/entermedia9/etc/emdistribution.xml" selected="true" caption="DAM DemoAll site">EnterMediDB 9 (Release)</server>
+	<server id="em2" listingurl="https://raw.githubusercontent.com/entermedia-community/demoall/entermedia9/etc/emdistribution_em9dev.xml" caption="Development version of DemoAll site">EnterMediaDB 9 (Dev)</server>	
+	<server id="em3" listingurl="https://raw.githubusercontent.com/entermedia-community/extension-fatwire/master/etc/fatwireextension.xml" caption="External community">Fatwire</server>
+		
+</servers>
