@@ -479,7 +479,7 @@
       <language id="fr"><![CDATA[State]]></language> 
     </name> 
   </property>  
-  <property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked" keyword="false" filter="false" sortable="true">Copyright Status 
+  <property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked" keyword="false" filter="false" sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Copyright Status]]></language>  
       <language id="en"><![CDATA[Copyright Status]]></language>  
@@ -487,7 +487,7 @@
       <language id="fr"><![CDATA[Copyright Status]]></language> 
     </name> 
   </property>  
-  <property id="copyrightnotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright" keyword="false" filter="false" sortable="true">Copyright Notice 
+  <property id="copyrightnotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright" keyword="false" filter="false" sortable="true">
     <name> 
       <language id="de"><![CDATA[Copyright Notice]]></language>  
       <language id="en"><![CDATA[Copyright Notice]]></language>  
@@ -495,15 +495,21 @@
       <language id="fr"><![CDATA[Copyright Notice]]></language> 
     </name> 
   </property>  
-  <property id="rightsusageterms" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms" keyword="false" filter="false" sortable="true">Rights Usage Terms 
+  <property id="rightsusageinstructions" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms" keyword="false" filter="false" sortable="true">
+    <name> 
+      <language id="en"><![CDATA[Rights Usage Instructions]]></language>  
+      <language id="es"><![CDATA[Derechos de Uso Instruciones]]></language>  
+    </name> 
+  </property>  
+  <property id="rightsusageterms" editable="true" isbadge="true" index="true" type="list" stored="true" keyword="false" filter="false" sortable="true">
     <name> 
       <language id="de"><![CDATA[Rights Usage Terms]]></language>  
       <language id="en"><![CDATA[Rights Usage Terms]]></language>  
-      <language id="es"><![CDATA[Términos Los derechos de uso]]></language>  
+      <language id="es"><![CDATA[Derechos de Uso]]></language>  
       <language id="fr"><![CDATA[Rights Usage Terms]]></language> 
     </name> 
   </property>  
-  <property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions" keyword="false" filter="false" sortable="true">Instructions 
+  <property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions" keyword="false" filter="false" sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Instructions]]></language>  
       <language id="en"><![CDATA[Instructions]]></language>  
