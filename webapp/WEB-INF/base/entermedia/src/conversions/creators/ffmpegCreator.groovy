@@ -87,9 +87,9 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 				comm.add("-y");
 
 				//audio
-				setValue("acodec","libfaac",inStructions,comm);  //libfaac  libmp3lame libvo_aacenc				
+				setValue("acodec","aac",inStructions,comm);  //native aac encoder is not considered experimental anymore. libmp3lame libvo_aacenc				
 
-				if( inStructions.get("fpre") == null ) //legacy?
+				if( inStructions.get("pre") == null ) // presets are called 'pre' in avconv.
 				{
 					setValue("ab","96k",inStructions,comm);
 					setValue("ar","44100",inStructions,comm);
@@ -97,8 +97,8 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 				}
 				else
 				{
-					comm.add("-fpre");
-					comm.add(inStructions.get("fpre"));
+					comm.add("-pre");
+					comm.add(inStructions.get("pre"));
 				}
 				comm.add("-nostats");
 				//video
@@ -107,7 +107,10 @@ public class ffmpegCreator extends BaseCreator implements MediaCreator
 				setValue("vpre",null,inStructions,comm);  //legacy?
 				setValue("crf","28",inStructions,comm); //legacy?
 				setValue("framerate",null,inStructions,comm);
-				
+			
+				setValue("vf",null,inStructions,comm); // videofilters e.g. for deinterlacing with yadif filter
+				setValue("af",null,inStructions,comm); // audiofilters e.g. or volume normalization with loudnorm flter
+										
 				//One-pass CRF (Constant Rate Factor) using the slow preset. One-pass CRF is good for general encoding and is what I use most often. Adjust -crf to change the quality. Lower numbers mean higher quality and a larger output file size. A sane range is 18 to 28.
 				//ffmpeg -i input.avi -acodec libfaac -ab 128k -ac 2 -vcodec libx264 -vpre slow -crf 22 -threads 0 output.mp4
 				
