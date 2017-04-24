@@ -5,7 +5,7 @@
 	<div id="mainholder">
 		#set($totalpages = $numberutils.toInt($asset.pages)) 
 		#if( $totalpages > 1 )
-		$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
+			$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
 		#end
 
 		<div id="mainimageholder">
@@ -19,11 +19,11 @@
 	<div id="footermenu">
 		<div id="menuoptions">
 			<ul>
-			<li style="margin-right: 50px;">					 
+			<li class="botmenulink">					 
 				<a href="" id="escapelink" >$asset</a>
 			  </il>
 			
-				<li>
+				<li class="botmenulink">
 					<div class="dropup">
 						<a class="" href="#" data-toggle="dropdown" expanded="true">[[Downloads]]
 							<span class="caret"></span></a>
@@ -44,6 +44,9 @@
 								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
 						#end
 						</ul>
+						
+						<li class="botmenulink">					 
+				<a href=""  > View PDF </a>
 					</div>
 			  </il>
 			</ul>
@@ -68,6 +71,12 @@
 	</script>
 
 	<style>
+	
+	.botmenulink
+	{
+	margin-right: 50px;		
+	}
+	
 #mainholder {
 	position: relative;
 	height: 100%;

@@ -1,7 +1,11 @@
-#set ( $urlutils = $context.getPageValue("url_util")) #if (!$urlutils)
-#set ($urlenc = $asset.sourcepath) #else #set ( $urlenc =
-$urlutils.encode($asset.sourcepath)) #set ( $urlenc =
-$urlenc.replace("%2F", "/") ) #end
+#set ( $urlutils = $context.getPageValue("url_util"))
+ #if (!$urlutils)
+	#set ($urlenc = $asset.sourcepath) 
+#else #set ( $urlenc =
+	$urlutils.encode($asset.sourcepath)) 
+	#set ( $urlenc =
+	$urlenc.replace("%2F", "/") ) 
+#end
 <div id="main-media-container">
 <img id="main-media" class="emdropshadow  assetdragdrop"
 	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
@@ -14,13 +18,13 @@ $urlenc.replace("%2F", "/") ) #end
 	<div id="footermenu">
 		<div id="menuoptions">
 			<ul>
-			<li style="margin-right: 50px;">					 
+			<li  class="botmenulink">					 
 				<a href="" id="escapelink" > $asset </a>
 			  </il>
 			
-				<li>
+				<li 	class="botmenulink	">
 					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true">[[Downloads]]
+						<a class="" href="#" data-toggle="dropdown" expanded="true" >[[Downloads]]
 							<span class="caret"></span></a>
 							
 						
@@ -39,11 +43,7 @@ $urlenc.replace("%2F", "/") ) #end
 								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
 						#end
 						</ul>
-						<li style="margin-right: 50px;">					 
-				<a href=""  > View PDF</a>
-			  </il>s
-						
-					</div>
+</div>
 			  </il>
 				
 			</ul>
@@ -78,6 +78,12 @@ $("#main-media-container").livequery("mouseleave", function(e)
 	visibility: visible;
 }
 */
+
+.botmenulink
+{
+margin-right: 50px;
+}
+
 #footerbase { 
 	display: none;
 	position: relative;
