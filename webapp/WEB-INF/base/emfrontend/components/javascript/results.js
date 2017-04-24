@@ -198,7 +198,6 @@ jQuery(document).ready(function(url,params)
 	showOverlay = function(assetid,pagenum)
 	{
 		var hidden = getOverlay();
-		var currentasset = $("#main-media-viewer");
 		var grid = $(".masonry-grid");
 		var link = grid.data("assettemplate");
 		if( link == null )
@@ -214,7 +213,9 @@ jQuery(document).ready(function(url,params)
 		}
 		jQuery.get(link, params, function(data) 
 		{
-			currentasset.replaceWith(data);
+			hidden.show();
+			var container = $("#main-media-container");
+			container.replaceWith(data);
 			overlayResize();
 			var div = $("#main-media-viewer" );
 			var id = div.data("previous");

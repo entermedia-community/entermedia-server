@@ -1,3 +1,4 @@
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $index = $hits.indexOfId($asset.id))
 #set( $next = $hits.next($index))
 #set( $previous = $hits.previous($index))
@@ -13,12 +14,15 @@
 
 <div id="footerbase">
 	<div id="footermenu">
-		<div id="menuoptions">
-		<ul>
-			<li  class="botmenulink">					 
-				<a href="" id="escapelink" > $asset </a>
+		<ul class="nav navbar-nav" style="margin: auto;">
+			<li  class="botmenulink nav-item">	
+				#if( $user )
+				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()" id="escapelink" class="nav-link" > $asset </a>
+				#else
+				$asset
+				#end
 			 </il>
-			<li class="botmenulink	">
+			<li id="download-select"  >
 				<div class="dropup">
 					<a class="" href="#" data-toggle="dropdown" expanded="true" >[[Downloads]]
 						<span class="caret"></span></a>
@@ -29,7 +33,7 @@
 					#if( !$cdnprefix )
 						#set( $cdnprefix = $context.siteRoot )
 					#end
-					<ul id="module-bar-select" class="dropdown-menu dropup">
+					<ul class="dropdown-menu dropup">
 							
 							#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
 								<li><a href="$home$apphome/views/modules/asset/downloads/originals/$originalpath">[[Original image]]</a></li>	
@@ -40,31 +44,22 @@
 			   </div>
 		  </il>
 		</ul>
-		</div>
 	</div>
 </div>
 
-</div>
 
-HEY
-
-<script>
-
+/*
 $("#footerbase").livequery("mouseenter", function(e)
 {
 	$("#footerbase").css("visibility", "visible");	
 });
 
+
 $("#footerbase").livequery("mouseleave", function(e)
 {
 	$("#footerbase").css("visibility", "hidden");	
 });
-
-	var escp = jQuery.Event("keypress");
-	escp.which = 27;
-	escp.keyCode = 27;
-	$("#escapelink").click().trigger(escp);
-</script>
+*/
 
 
 <style>
@@ -80,40 +75,49 @@ margin-right: 50px;
 }
 
 #footerbase { 
-	visibility: hidden;
 	position: absolute;
 	width: 100%;
+	bottom:0px;
 	height: 50px;
-	bottom:-50px;
+	opacity: 0.9;
+}
+
+
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover
+{
+	background-color: black;
+}
+#download-select 
+{
+	opacity: 1;
 }
 
 #footermenu {
+	padding-bottom: 30px;
+	padding-left: 200px;
 	background-color: black;
-	position: absolute;
 	width: 100%;
-	height: 35px;
-	top: -110%;
-	/* opacity: 0.8; */
+	height: 60px;
 }
 
-#menuoptions {
-	position: absolute;
-	top: -20%;
-	right: 50%;
+#download-select
+{
+	margin-top: 8px;
 }
 
-#menuoptions li {
-	display: inline-table;
+#footermenu li {
 	font-size: large;	
 	font-weight: normal;
 }
-#menuoptions a {
+#footermenu a {
 	color: white;	
 }
 
-#menuoptions div {
-	display: inline;
+#footermenu div {
 	padding: 5px;
 	margin-right: 17px;
 }
 </style>
+
+</div>
+
