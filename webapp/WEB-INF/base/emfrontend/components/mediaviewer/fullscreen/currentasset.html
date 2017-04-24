@@ -14,7 +14,7 @@
 
 <div id="footerbase">
 	<div id="footermenu">
-		<ul class="nav navbar-nav" style="margin: auto;">
+		<ul class="nav navbar-nav">
 			<li  class="botmenulink nav-item">	
 				#if( $user )
 				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()" id="escapelink" class="nav-link" > $asset </a>
@@ -24,7 +24,7 @@
 			 </il>
 			<li id="download-select"  >
 				<div class="dropup">
-					<a class="" href="#" data-toggle="dropdown" expanded="true" >[[Downloads]]
+					<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="glyphicon glyphicon-download" style="color: #fff;"> </span>  [[Downloads]]
 						<span class="caret"></span></a>
 					#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 					#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
@@ -36,30 +36,23 @@
 					<ul class="dropdown-menu dropup">
 							
 							#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
-								<li><a href="$home$apphome/views/modules/asset/downloads/originals/$originalpath">[[Original image]]</a></li>	
+								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original image]]</a></li>	
 							#foreach($result in $results )						
 									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
 							#end
 					</ul>
 			   </div>
 		  </il>
+		  <li>
+	#if(  $asset.getFileFormat()  == "pdf")
+		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+            	<span class="glyphicon glyphicon-blackboard" style="color: #fff;"> </span> View PDF
+            </a> 
+	#end
+		  </li>
 		</ul>
 	</div>
 </div>
-
-
-/*
-$("#footerbase").livequery("mouseenter", function(e)
-{
-	$("#footerbase").css("visibility", "visible");	
-});
-
-
-$("#footerbase").livequery("mouseleave", function(e)
-{
-	$("#footerbase").css("visibility", "hidden");	
-});
-*/
 
 
 <style>
@@ -71,7 +64,7 @@ $("#footerbase").livequery("mouseleave", function(e)
 
 .botmenulink
 {
-margin-right: 50px;
+padding-left: 250px;
 }
 
 #footerbase { 
@@ -108,6 +101,7 @@ margin-right: 50px;
 #footermenu li {
 	font-size: large;	
 	font-weight: normal;
+	padding-right: 50px;
 }
 #footermenu a {
 	color: white;	
