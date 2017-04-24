@@ -31,6 +31,8 @@
         <div id="mp-asset-title">
         	#set(  $tostring = $asset.toString($context.locale))
         	<span class="name" title="$tostring">$tostring</span> 
+
+
         	#if( $totalpages > 1 ) <span class="pagenum">([[Page]] $pagenum of $totalpages)</span> #end</div>
     	#if( !$asset.importstatus || $asset.importstatus != "complete" )
     		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
@@ -38,12 +40,14 @@
     		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
     	#end
     	<div id="mp-asset-info"  class="row">
+    
     	
 	    	#if ( $canviewvoting )
 			    <div id="assetVoteCount" class="col-sm-7">
 			        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
 			    </div>
 			#end
+				
     		<div class="col-sm-5">
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
     	    #if ($attachmentcount && $attachmentcount.size() > 1)
@@ -55,7 +59,12 @@
             #if($canviewcomments)
             <a href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments">$comments.size()<span>&nbsp;</span></a>
             #end
+                <a class="stackedplayer" data-assetid="${asset.id}" href="#" >
+            	<span class="glyphicon glyphicon-fullscreen" style="color: #fff;"> </span>
+            </a> 
             </div>
+       
+     
        
         </div>
     </div>

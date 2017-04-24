@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/vieworiginal</property>
+	<property name="sourcepathhasfilename">true</property>
+	
+	<generator name="originalDownloadGenerator"/>
+	
+	<permission name="viewasset">
+		<and>
+			 <userprofile property="download" equals="true" />
+			<action name="AssetControlModule.canViewAsset" /> 
+		</and>
+	</permission>	
+		
+</page>

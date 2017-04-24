@@ -1,7 +1,8 @@
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $index = $hits.indexOfId($asset.id))
 #set( $next = $hits.next($index))
 #set( $previous = $hits.previous($index))
-
+<div id="main-media-container">
 <div id="main-media-viewer" data-assetid="$asset.id" data-indexOf="$index"  data-next="$!next.id"  data-previous="$!previous.id" >
 	#set( $mediadbappid = $mediaarchive.getMediaDbId() )
 	#if( !$mediadbappid)
@@ -10,3 +11,107 @@
 	#set( $type = $mediaarchive.getMediaPlayerType($asset))
 	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
 </div>
+
+<div id="footerbase">
+	<div id="footermenu">
+		<ul class="nav navbar-nav">
+			<li  class="botmenulink nav-item">	
+				#if( $user )
+				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()" id="escapelink" class="nav-link" > $asset </a>
+				#else
+				$asset
+				#end
+			 </il>
+			<li id="download-select"  >
+				<div class="dropup">
+					<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="glyphicon glyphicon-download" style="color: #fff;"> </span>  [[Downloads]]
+						<span class="caret"></span></a>
+					#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+					#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
+					#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+					#set($mediadbappid=$mediaarchive.getMediaDbId())
+					#if( !$cdnprefix )
+						#set( $cdnprefix = $context.siteRoot )
+					#end
+					<ul class="dropdown-menu dropup">
+							
+							#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
+								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original image]]</a></li>	
+							#foreach($result in $results )						
+									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
+							#end
+					</ul>
+			   </div>
+		  </il>
+		  <li>
+	#if(  $asset.getFileFormat()  == "pdf")
+		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+            	<span class="glyphicon glyphicon-blackboard" style="color: #fff;"> </span> View PDF
+            </a> 
+	#end
+		  </li>
+		</ul>
+	</div>
+</div>
+
+
+<style>
+/*
+#main-media:HOVER+#footerbase {
+	visibility: visible;
+}
+*/
+
+.botmenulink
+{
+padding-left: 250px;
+}
+
+#footerbase { 
+	position: absolute;
+	width: 100%;
+	bottom:0px;
+	height: 50px;
+	opacity: 0.9;
+}
+
+
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover
+{
+	background-color: black;
+}
+#download-select 
+{
+	opacity: 1;
+}
+
+#footermenu {
+	padding-bottom: 30px;
+	padding-left: 200px;
+	background-color: black;
+	width: 100%;
+	height: 60px;
+}
+
+#download-select
+{
+	margin-top: 8px;
+}
+
+#footermenu li {
+	font-size: large;	
+	font-weight: normal;
+	padding-right: 50px;
+}
+#footermenu a {
+	color: white;	
+}
+
+#footermenu div {
+	padding: 5px;
+	margin-right: 17px;
+}
+</style>
+
+</div>
+

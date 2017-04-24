@@ -7060,3 +7060,19 @@ input.defaulttext
 {
 	color: #666;
 }
+
+a.addnewitem
+{
+	background-color: #eee;
+	display:table-cell;
+	padding: 2px 10px 2px 10px;
+	border: 1px solid #aaa;
+	margin-left: 2px;
+	font-size: .85em;
+}
+a.addnewitem:hover
+{
+	background-color: #aaa;
+	color: white;
+	
+}
