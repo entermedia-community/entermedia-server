@@ -1,6 +1,6 @@
 <div id="orderhistory">
 
-<h2>Order History</h2>
+<h2>[[Order History]]</h2>
 
 #set( $itemsearcher = $searcherManager.getSearcher($catalogid,"orderitem" ))
 #set( $q = $itemsearcher.createSearchQuery() )
@@ -17,10 +17,10 @@ $pages.include("$apphome/components/results/pages.html",$context)
 
 <table class="striped" width="100%">
 <tr>
-<th>Order Number</th>
-<th>User</th>
-<th>Date</th>
-<th>Status</th>
+<th>[[Order Number]]</th>
+<th>[[User]]</th>
+<th>[[Date]]</th>
+<th>[[Status]]</th>
 #foreach( $item in $hits.getPageOfHits() )
 	#set( $order = $searcherManager.getData($catalogid,"order",$item.orderid ) )
 	#set( $status = $searcherManager.getData($catalogid,"orderstatus",$order.orderstatus ))
@@ -35,8 +35,7 @@ $pages.include("$apphome/components/results/pages.html",$context)
 <input name="id" id="emselectedrow" type="hidden" />
 </form>
 #else
-<p>No orders have been placed for this asset</p>
+<p>[[No orders have been placed for this asset]]</p>
 #end
 </div>
-
 </div>

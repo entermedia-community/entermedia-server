@@ -1,137 +1,161 @@
 <div class="container">
-<div class="row">
-<div class="col-md-4">
+	<div class="row">
+		<div class="col-md-4">
+
+			<div class="well">
+
+				<form id="fileupload"
+					action="$home$apphome/components/quickshare/handleupload.html"
+					method="POST" enctype="multipart/form-data">
 
 
+					<span class="btn btn-success fileinput-button"> <i
+						class="glyphicon glyphicon-plus"></i> <span>[[Select files]]...</span> <!-- The file input field used as target for the file upload widget -->
+						<input id="" type="file" name="files[]" multiple>
+					</span> <br />
+					<br />
+					<p id="readyarea"></p>
+					<div class="row">
+						<!-- The global progress bar -->
+						<div id="progress" class="progress">
+							<div class="progress-bar progress-bar-success"></div>
+						</div>
+					</div>
+					<!-- The container for the uploaded files -->
+					<div id="files" class="files"></div>
 
 
-<div class="well">
+					<div class="form-group">
+						<label for="exampleInputEmail1">[[Your Email address]]</label> <input
+							type="email" class="form-control" name="email.value"
+							id="fromemail" placeholder="Your Email">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">[[Destination Email Address]]</label> <input type="text" class="form-control"
+							name="destination.value" id="toemail" placeholder="Recipient">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">[[Note]]</label>
+						<textarea class="form-control" name="sharenote.value"></textarea>
+					</div>
 
-<form id="fileupload" action="$home$apphome/components/quickshare/handleupload.html" method="POST" enctype="multipart/form-data">
-
-
-    <span class="btn btn-success fileinput-button">
-        <i class="glyphicon glyphicon-plus"></i>
-        <span>Select files...</span>
-        <!-- The file input field used as target for the file upload widget -->
-        <input id="" type="file" name="files[]" multiple>
-    </span>
-    <br/><br/>
-    <p  id="readyarea"></p>
-   <div class="row">
-    <!-- The global progress bar -->
-    <div id="progress" class="progress" >
-        <div class="progress-bar progress-bar-success"></div>
-    </div>
-    </div>
-    <!-- The container for the uploaded files -->
-    <div id="files" class="files"></div>
-    
-    
-  <div class="form-group">
-    <label for="exampleInputEmail1">Your Email address</label>
-    <input type="email" class="form-control" name="email.value" id="fromemail" placeholder="Your Email">
-  </div>
-  <div class="form-group">
-    <label for="exampleInputPassword1">Destination Email Address</label>
-    <input type="text" class="form-control" name="destination.value" id="toemail" placeholder="Recipient">
-  </div>
-   <div class="form-group">
-    <label for="exampleInputPassword1">Note</label>
-<textarea class="form-control" name="sharenote.value"></textarea>  </div>
- 
- <div id="upload"></div>
-  <button id="startbutton" type="submit" style="display: none;">Start Upload</button>
- <input type="hidden" id="totalfiles" name="totalfiles" value=""/>
-</form>
-    
-    
-    <br>
-
-<script>
-/*jslint unparam: true */
-/*global window, $ */
-jQuery(function () {
-    'use strict';
-    // Change this to the location of your server-side upload handler:
-    var url = "$home$apphome/components/quickshare/handleupload.html";
-  	var totalfiles = 0;
-    jQuery('#fileupload').fileupload({
-        url: url,
-        //singleFileUploads: false,
-        autoUpload: false,
-        dataType: 'json',
-        
-        add: function (e, data) {
-        	
-        	totalfiles += 1;
-        	jQuery("#totalfiles").val(totalfiles);
-        	jQuery("#readyarea").html("<span class='label label-success'>" + totalfiles  + " files have been added and are ready for upload</span>");
-        	
-        	data.context = jQuery('#startbutton').show()
-                
-                .click(function () {
-                	var from = jQuery("#fromemail").val();
-                	var to = jQuery("#toemail").val();
-                	if(!from || !to ){
-                		alert("You must provide a TO and FROM email address");
-                		return false;
-                	}
-                	
-                	data.context = $('<p/>').text('Uploading...').replaceAll($(this));
-                    data.submit();
-                });
-        	
-        },
-        done: function (e, data) {
-        	
-
-        //	alert("All done!");
-        //    var url = "$home$apphome/components/quickshare/done.html";
-        //    document.location.href = url;
-        
-        },
-        
-        
-        
-        
-        progressall: function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-            console.log(progress)
-            jQuery('#progress .progress-bar').css(
-                'width',
-                progress + '%'
-            );
-			if(progress == 100){
-				sleep(50000);
-
-				var from = jQuery("#fromemail").val();
-            	var to = jQuery("#toemail").val();
-				var url = "$home$apphome/components/quickshare/done.html?destination.value=" + to + "&email.value=" + from;
-		        document.location.href = url;
-		        
-			}
-
-        }
-    }).prop('disabled', !jQuery.support.fileInput)
-        .parent().addClass(jQuery.support.fileInput ? undefined : 'disabled');
-});
+					<div id="upload"></div>
+					<button id="startbutton" type="submit" style="display: none;">[[Start Upload]]</button>
+					<input type="hidden" id="totalfiles" name="totalfiles" value="" />
+				</form>
 
 
-function sleep(milliseconds) {
-	 console.log("starting sleeep");
-	  var start = new Date().getTime();
-	  for (var i = 0; i < 1e7; i++) {
-	    if ((new Date().getTime() - start) > milliseconds){
-	      break;
-	    }
-	  }
-	  console.log("ending sleeep");
-	}
+				<br>
 
+				<script>
+					/*jslint unparam: true */
+					/*global window, $ */
+					jQuery(function() {
+						'use strict';
+						// Change this to the location of your server-side upload handler:
+						var url = "$home$apphome/components/quickshare/handleupload.html";
+						var totalfiles = 0;
+						jQuery('#fileupload')
+								.fileupload(
+										{
+											url : url,
+											//singleFileUploads: false,
+											autoUpload : false,
+											dataType : 'json',
 
-</script>
-</div>
-</div>
-</div>
+											add : function(e, data) {
+
+												totalfiles += 1;
+												jQuery("#totalfiles").val(
+														totalfiles);
+												jQuery("#readyarea")
+														.html(
+																"<span class='label label-success'>"
+																		+ totalfiles
+																		+ " files have been added and are ready for upload</span>");
+
+												data.context = jQuery(
+														'#startbutton')
+														.show()
+
+														.click(
+																function() {
+																	var from = jQuery(
+																			"#fromemail")
+																			.val();
+																	var to = jQuery(
+																			"#toemail")
+																			.val();
+																	if (!from
+																			|| !to) {
+																		alert("You must provide a TO and FROM email address");
+																		return false;
+																	}
+
+																	data.context = $(
+																			'<p/>')
+																			.text(
+																					'Uploading...')
+																			.replaceAll(
+																					$(this));
+																	data
+																			.submit();
+																});
+
+											},
+											done : function(e, data) {
+
+												//	alert("All done!");
+												//    var url = "$home$apphome/components/quickshare/done.html";
+												//    document.location.href = url;
+
+											},
+
+											progressall : function(e, data) {
+												var progress = parseInt(
+														data.loaded
+																/ data.total
+																* 100, 10);
+												console.log(progress)
+												jQuery(
+														'#progress .progress-bar')
+														.css('width',
+																progress + '%');
+												if (progress == 100) {
+													sleep(50000);
+
+													var from = jQuery(
+															"#fromemail").val();
+													var to = jQuery("#toemail")
+															.val();
+													var url = "$home$apphome/components/quickshare/done.html?destination.value="
+															+ to
+															+ "&email.value="
+															+ from;
+													document.location.href = url;
+
+												}
+
+											}
+										}).prop('disabled',
+										!jQuery.support.fileInput).parent()
+								.addClass(
+										jQuery.support.fileInput ? undefined
+												: 'disabled');
+					});
+
+					function sleep(milliseconds) {
+						console.log("starting sleeep");
+						var start = new Date().getTime();
+						for (var i = 0; i < 1e7; i++) {
+							if ((new Date().getTime() - start) > milliseconds) {
+								break;
+							}
+						}
+						console.log("ending sleeep");
+					}
+				</script>
+			</div>
+		</div>
+	</div>
 </div>

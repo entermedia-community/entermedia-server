@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="extensions" index="true" stored="true" editable="true" searchtype="assettype" keyword="false" filter="false" sortable="true">Extensions 

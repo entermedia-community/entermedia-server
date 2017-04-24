@@ -6,7 +6,7 @@
       <language id="de"><![CDATA[CatalogID]]></language>  
       <language id="en"><![CDATA[CatalogID]]></language>  
       <language id="es"><![CDATA[CatalogID]]></language>  
-      <language id="fr"><![CDATA[CatalogID]]></language> 
+      <language id="fr"><![CDATA[ID Catalogue]]></language> 
     </name> 
   </property>  
   <property id="dataid" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
@@ -19,7 +19,7 @@
       <language id="de"><![CDATA[Asset-IDs]]></language>  
       <language id="en"><![CDATA[Asset Ids]]></language>  
       <language id="es"><![CDATA[Ids de activos]]></language>  
-      <language id="fr"><![CDATA[Asset Ids]]></language> 
+      <language id="fr"><![CDATA[Ids items]]></language> 
     </name> 
   </property>  
   <property id="date" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true" type="date" datatype="date">New 
@@ -51,7 +51,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
       <language id="es"><![CDATA[Ruta de origen]]></language>  
-      <language id="fr"><![CDATA[Source Path]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="id" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" internalfield="true">New

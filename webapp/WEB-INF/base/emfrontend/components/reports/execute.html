@@ -12,9 +12,6 @@
 Filters:
 <form action="executefinish.html">
 <input type= "hidden" name="reportid" value="$data.id"/>
-
-
-
  #foreach( $detail in $details)
         $context.putPageValue("detail", $detail)
         #if ($detail.isLeaf())

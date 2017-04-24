@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="mediatypecategory" editable="true" list="false" datatype="list" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Media Type Category
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Medientyp Kategorie]]></language>
       <language id="en"><![CDATA[Media Type Category]]></language>
       <language id="es"><![CDATA[Tipo de categorías de medios]]></language>
-      <language id="fr"><![CDATA[Type de support Catégorie]]></language>
+      <language id="fr"><![CDATA[Catégorie des types de médias]]></language>
     </name>
   </property> 
 </properties>

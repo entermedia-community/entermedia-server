@@ -1,4 +1,4 @@
-<h2>Edit $!data</h2>
+<h2>[[Edit]] $!data</h2>
 
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )
@@ -22,12 +22,12 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 
 <ul class="embuttons">
 <li>
-	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
+	<a href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
 </li>
-<li><a href='$home$content.searchhome/index.html'><span>Cancel</span></a></li>
+<li><a href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a></li>
 <li><a href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
-		Delete
+		[[Delete]]
 	</span></a>
 </li>
 

@@ -1,19 +1,7 @@
+ #set($dl = $mediaarchive.getSearcher("assetviewLog")) #set($dlhits =
+$dl.getAllHits($context))
 
-#set($dl = $mediaarchive.getSearcher("assetviewLog"))
-#set($dlhits = $dl.getAllHits($context))
-
-
-
-
-
-<canvas id="dlchart" ></canvas>
-
-
-
-
-
-
-
+<canvas id="dlchart"></canvas>
 
 <script>
 var ctx = document.getElementById("dlchart");
@@ -27,12 +15,7 @@ var myChart = new Chart(ctx, {
 		"$context.getDate($child.toString())",
 	#end
 #end
-        
-
-        
         ]
-        
-        
         ,
         datasets: [{
             label: 'Asset Views time',

@@ -1,4 +1,3 @@
 <page>
-		<page-action bean="replacer" name="PageValue.loadPageVariable" class="org.openedit.util.Replacer" alltypes="true" allowduplicates="true"/>
-
+	<page-action bean="replacer" name="PageValue.loadPageVariable" class="org.openedit.util.Replacer" alltypes="true" allowduplicates="true"/>
 </page>

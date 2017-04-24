@@ -1,19 +1,27 @@
 #
-#Fri Nov 25 16:33:28 EST 2016
-Remove\ From\ Basket=Retirer du panier
+#Wed Apr 19 08:56:51 CDT 2017
 View\ Selections=Voir les s\u00E9lections
-Results=R\u00E9sultats
-Show\ All\ Results=Afficher tous les r\u00E9sultats
-Edit=Modifier
-Edit\ one\ or\ more\ selected\ records=Modifier un ou des enregistrements s\u00E9lectionn\u00E9s
-Edit\ selected\ records=Modifier les enregistrements s\u00E9lectionn\u00E9s
-Select\ All\ Results=S\u00E9lectionnez tous les r\u00E9sultats
-Export\ to\ CSV=Exporter au format CSV
+Edit\ Asset=Modifier l&\#39;item
+Reject=Rejeter
 Multi\ Edit=Multi \u00C9dition
-Delete\ Assets=Supprimer actifs
-Show\ All=Tout montrer
-Print\ Assets=Imprimer actifs
-Show\ Only\ Selections=Afficher uniquement les s\u00E9lections
+Results=R\u00E9sultats
 Deselect\ All=Tout d\u00E9selectionner
-Select\ This\ Page=S\u00E9lectionner cette page
+Show\ All\ Results=Afficher tous les r\u00E9sultats
+Select\ All\ Results=S\u00E9lectionnez tous les r\u00E9sultats
 Add\ To\ Basket=Ajouter au panier
+Approve\ Pending=Approuver en attente
+Export\ to\ CSV=Exporter au format CSV
+All=Tout
+Delete\ Assets=Supprimer items
+Show\ All=Tout montrer
+Approve=Approuver
+Select\ This\ Page=S\u00E9lectionner cette page
+Edit\ selected\ records=Modifier les enregistrements s\u00E9lectionn\u00E9s
+Selections=S\u00E9lections
+Remove\ From\ Basket=Retirer du panier
+Show\ Only\ Selections=Afficher uniquement les s\u00E9lections
+Print\ Assets=Imprimer items
+Reject\ Pending=Rejeter en attente
+Edit=Modifier
+Actions=Actions
+Edit\ one\ or\ more\ selected\ records=Modifier un ou des enregistrements s\u00E9lectionn\u00E9s

@@ -3,14 +3,17 @@
  	<property name="text.error-integer">
    		<value>Must be numeric</value>
 		<value locale="es">Debe ser numérico</value>
+		<value locale="es">Doit être un numérique</value>
    	</property>
    	<property name="text.error-date">
    		<value>Must be a date</value>
 		<value locale="es">Debe ser una fecha</value>
+		<value locale="fr">Doit être une date</value>
    	</property>
    	<property name="text.error-email">
    		<value>Must be a valid email address</value>
 		<value locale="es">Debe ser una dirección válida de correo electrónico</value>
+		<value locale="fr">Doit être une adresse mail valide</value>
    	</property>
    	<property name="text.error-required">
    		<value>*</value>

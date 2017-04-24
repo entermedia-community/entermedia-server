@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[gespeicherte Abfrage-ID]]></language>  
       <language id="en"><![CDATA[Saved Query Id]]></language>  
       <language id="es"><![CDATA[Id consulta guardada]]></language>  
-      <language id="fr"><![CDATA[Requête enregistrée Id]]></language> 
+      <language id="fr"><![CDATA[Id Requête enregistrée]]></language> 
     </name> 
   </property>  
   <property id="searchcatalogid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Search Catalog ID 
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Suche Katalog-ID]]></language>  
       <language id="en"><![CDATA[Search Catalog ID]]></language>  
       <language id="es"><![CDATA[Buscar en el Catálogo ID]]></language>  
-      <language id="fr"><![CDATA[Recherche Numéro de catalogue]]></language> 
+      <language id="fr"><![CDATA[ID catalogue de recherche]]></language> 
     </name> 
   </property>  
   <property id="searchtype" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Search Type 

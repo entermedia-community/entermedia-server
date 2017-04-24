@@ -17,7 +17,7 @@
 		#set($name = "${firstname} ${lastname}")
 		#set($email = $user.email)
 		#set($url = "${content.siteroot}${home}/${appid}/views/modules/asset/editor/viewer/index.html?hitssessionid=hitsassetmedia/catalogs/public&assetid=${hit.id}")
-	<li><strong>$dateStorageUtil2.getStorageUtil().parseFromStorage($hit.assetaddeddate):</strong> &nbsp; <a href="$!url">$hit.name</a> by $name ($email)</li>
+	<li><strong>$dateStorageUtil2.getStorageUtil().parseFromStorage($hit.assetaddeddate):</strong> &nbsp; <a href="$!url">$hit.name</a>[[[ by ]] $name ($email)</li>
 		#set($user = false)
 		#set($firstname = false)
 		#set($lastname = false)

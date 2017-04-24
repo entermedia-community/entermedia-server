@@ -1,53 +1,27 @@
 #set($assetsearcher = $mediaarchive.getSearcher("asset"))
-
-
 <div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6 ">
+			<canvas id="fileformatusagechart"></canvas>
+		</div>
+		<div class="col-md-6">
+			<ul class="list-group">
+				<a href="#" class="list-group-item active"> [[File Formats]] </a>
+				#foreach($item in
+				$diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
+				#foreach($subitem in $item.getAggregations())
 
-<div class="row">
+				<li class="list-group-item"><span class="badge"
+					title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
+					$!mediaarchive.getData("fileformat",$item.key)<br /></li> #end #end
 
+				<li class="list-group-item"><span class="badge">$!sizer.inEnglish($diskspacehits.getSum("filesize"))
+				</span> [[Total]]</li>
 
-
-
-<div class="col-md-6 ">
-
-<canvas id="fileformatusagechart" ></canvas>
-
+			</ul>
+		</div>
+	</div>
 </div>
-
-<div class="col-md-6">
-
-<ul class="list-group">
- <a href="#" class="list-group-item active">
-    [[File Formats]]
-  </a>
-#foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
-#foreach($subitem in $item.getAggregations())
-
-  <li class="list-group-item">
-    <span class="badge" title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
-   $!mediaarchive.getData("fileformat",$item.key)<br/>
-
-  </li>
-
-#end
-#end
-
-<li class="list-group-item">
-    <span class="badge">$!sizer.inEnglish($diskspacehits.getSum("filesize")) </span>
-  Total
-
-  </li>
-  
-</ul>
-
-</div>
-
-</div>
-
-
-
-</div>
-
 
 
 <script>

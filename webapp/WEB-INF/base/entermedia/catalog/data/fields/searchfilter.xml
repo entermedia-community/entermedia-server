@@ -21,7 +21,7 @@
     <name>
       <language id="de"><![CDATA[Bohne Name]]></language>
       <language id="en"><![CDATA[Bean Name]]></language>
-      <language id="es"><![CDATA[Nombre del frijol]]></language>
+      <language id="es"><![CDATA[Nombre del Bean]]></language>
       <language id="fr"><![CDATA[Nom Bean]]></language>
     </name>
   </property> 

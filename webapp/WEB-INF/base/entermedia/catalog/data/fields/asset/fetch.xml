@@ -6,7 +6,7 @@
       <language id="de"><![CDATA[holen url]]></language>  
       <language id="en"><![CDATA[Fetch URL]]></language>  
       <language id="es"><![CDATA[Fetch URL]]></language>  
-      <language id="fr"><![CDATA[Fetch URL]]></language> 
+      <language id="fr"><![CDATA[Récupérer URL]]></language> 
     </name> 
   </property>  
   <property id="fetchthumbnailurl" index="true" stored="true" keyword="true" editable="true" defaultoperation="contains" note="Download thumbnail from external location" filter="false" sortable="true">Fetch Thumbnail URL 
@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[holen Thumbnail url]]></language>  
       <language id="en"><![CDATA[Fetch Thumbnail URL]]></language>  
       <language id="es"><![CDATA[Fetch URL en miniatura]]></language>  
-      <language id="fr"><![CDATA[Fetch Thumbnail URL]]></language> 
+      <language id="fr"><![CDATA[Récupérer Thumbnail URL]]></language> 
     </name> 
   </property>  
   <property id="linkurl" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL" keyword="false" filter="false" sortable="true" type="text">Link URL 
@@ -22,15 +22,15 @@
       <language id="de"><![CDATA[Link-uRL]]></language>  
       <language id="en"><![CDATA[Link URL]]></language>  
       <language id="es"><![CDATA[URL del enlace]]></language>  
-      <language id="fr"><![CDATA[Link URL]]></language> 
+      <language id="fr"><![CDATA[Lien URL]]></language> 
     </name> 
   </property>  
   <property id="embeddedurl" index="true" stored="true" datatype="text" viewtype="textarea" editable="true" note="Embedded code to external location" keyword="false" filter="false" sortable="true" type="text">Embedded Player 
     <name> 
       <language id="de"><![CDATA[eingebetteten Player]]></language>  
       <language id="en"><![CDATA[Embedded Player]]></language>  
-      <language id="es"><![CDATA[reproductor incrustado]]></language>  
-      <language id="fr"><![CDATA[Embedded Player]]></language> 
+      <language id="es"><![CDATA[Reproductor incrustado]]></language>  
+      <language id="fr"><![CDATA[Lecteur embarqué]]></language> 
     </name> 
   </property>  
   <property id="downloadurl-file" index="true" stored="true" datatype="text" viewtype="url" editable="true" note="Link to external URL" keyword="false" filter="false" sortable="true" type="text">Download URL Filename 

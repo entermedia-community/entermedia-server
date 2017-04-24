@@ -1,0 +1,17 @@
+#
+#Thu Apr 20 16:16:54 CDT 2017
+Image=is too small to crop to the desired crop dimension\=L'image est trop petite pour \u00EAtre recadr\u00E9e
+Reload\ Original\ Thumbnails=Recharger les miniatures originales
+Upload=T\u00E9l\u00E9charger
+Preview=Aper\u00E7u
+Image\ Editor=\u00C9diteur d&\#39;image
+Create=Cr\u00E9er
+Select\ code\ then\ right\ click\ to\ copy=S\u00E9lectionnez le code puis cliquez avec le bouton droit de la souris pour copier
+Create\ New\ Conversion=Cr\u00E9er une nouvelle conversion
+Image\ is\ too\ small\ to\ crop\ to\ the\ desired\ crop\ dimension=L&\#39;image est trop petite pour recadrer la dimension de culture souhait\u00E9e
+Aspect\ Ratio=Ratio d&\#39;aspect
+Replace\ Image=Remplacer l&\#39;image
+Rotate=Tourner
+You\ can\ specify\ custom\ width,\ height\ or\ formats.\ For\ example,\ a\ large\ PDF=Vous pouvez sp\u00E9cifier une largeur, une hauteur ou des formats personnalis\u00E9s. Par exemple, un grand PDF
+Download=T\u00E9l\u00E9charger
+Crop=Recadrer

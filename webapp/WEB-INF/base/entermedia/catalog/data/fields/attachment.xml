@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="description" index="true" editable="false" >
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[All Fields]]></language>  
       <language id="en"><![CDATA[All Fields]]></language>  
       <language id="es"><![CDATA[Todos los campos]]></language>  
-      <language id="fr"><![CDATA[All Fields]]></language> 
+      <language id="fr"><![CDATA[Tous les champs]]></language> 
     </name> 
   </property>  
   <property id="assetid" editable="true" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Asset ID 
@@ -47,7 +47,7 @@
       <language id="de"><![CDATA[Asset-Source-Pfad]]></language>  
       <language id="en"><![CDATA[Asset Source Path]]></language>  
       <language id="es"><![CDATA[Camino Fuente de activos]]></language>  
-      <language id="fr"><![CDATA[Chemin Asset Source]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine item]]></language> 
     </name> 
   </property>  
   <property id="parentsourcepath" index="true" stored="true" indextype="not_analyzed" keyword="false" filter="false" editable="false" sortable="true">Parent Source Path 
@@ -63,7 +63,7 @@
       <language id="de"><![CDATA[ist Ordner]]></language>  
       <language id="en"><![CDATA[Is Folder]]></language>  
       <language id="es"><![CDATA[es carpeta]]></language>  
-      <language id="fr"><![CDATA[Est-dossier]]></language> 
+      <language id="fr"><![CDATA[Est dossier]]></language> 
     </name> 
   </property>  
   <property id="compression" externalid="Compression" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Compression 
@@ -79,7 +79,7 @@
       <language id="de"><![CDATA[Kamerahersteller]]></language>  
       <language id="en"><![CDATA[Camera Maker]]></language>  
       <language id="es"><![CDATA[fabricante de la cámara]]></language>  
-      <language id="fr"><![CDATA[Camera Maker]]></language> 
+      <language id="fr"><![CDATA[Fabricant de caméra]]></language> 
     </name> 
   </property>  
   <property id="cammodel" externalid="Model" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Camera Model 
@@ -87,7 +87,7 @@
       <language id="de"><![CDATA[Kameramodell]]></language>  
       <language id="en"><![CDATA[Camera Model]]></language>  
       <language id="es"><![CDATA[Modelo de la cámara]]></language>  
-      <language id="fr"><![CDATA[Camera Model]]></language> 
+      <language id="fr"><![CDATA[Modèle de la caméra]]></language> 
     </name> 
   </property>  
   <property id="artist" externalid="Artist" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Artist 
@@ -95,7 +95,7 @@
       <language id="de"><![CDATA[Künstler]]></language>  
       <language id="en"><![CDATA[Artist]]></language>  
       <language id="es"><![CDATA[Artista]]></language>  
-      <language id="fr"><![CDATA[Artist]]></language> 
+      <language id="fr"><![CDATA[Artiste]]></language> 
     </name> 
   </property>  
   <property id="contributor" externalid="Contributor" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Contributor 
@@ -103,7 +103,7 @@
       <language id="de"><![CDATA[Beiträger]]></language>  
       <language id="en"><![CDATA[Contributor]]></language>  
       <language id="es"><![CDATA[Contribuyente]]></language>  
-      <language id="fr"><![CDATA[Contributor]]></language> 
+      <language id="fr"><![CDATA[Contributeur]]></language> 
     </name> 
   </property>  
   <property id="creator" externalid="Creator" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">Creator 
@@ -119,7 +119,7 @@
       <language id="de"><![CDATA[Quelle]]></language>  
       <language id="en"><![CDATA[Source]]></language>  
       <language id="es"><![CDATA[Fuente]]></language>  
-      <language id="fr"><![CDATA[La source]]></language> 
+      <language id="fr"><![CDATA[Source]]></language> 
     </name> 
   </property>  
   <property id="iso" externalid="ISO" index="true" stored="true" datatype="text" keyword="false" filter="false" editable="false" sortable="true" type="text">ISO 
@@ -135,7 +135,7 @@
       <language id="de"><![CDATA[Author]]></language>  
       <language id="en"><![CDATA[Author]]></language>  
       <language id="es"><![CDATA[Autor]]></language>  
-      <language id="fr"><![CDATA[Author]]></language> 
+      <language id="fr"><![CDATA[Auteur]]></language> 
     </name> 
   </property>  
   <property id="localpath" index="true" stored="true" editable="false" keyword="false" filter="false" sortable="true">Local Path 
@@ -152,7 +152,7 @@
       <language id="de"><![CDATA[Datei Format]]></language>  
       <language id="en"><![CDATA[File Format]]></language>  
       <language id="es"><![CDATA[Formato de archivo]]></language>  
-      <language id="fr"><![CDATA[File Format]]></language> 
+      <language id="fr"><![CDATA[Format de fichier]]></language> 
     </name> 
   </property>  
   <property id="filesize" index="true" stored="true" datatype="number" viewtype="filesize" externalid="FileSize" keyword="false" filter="false" editable="false" sortable="true" type="number">File Size 
@@ -160,7 +160,7 @@
       <language id="de"><![CDATA[Dateigröße]]></language>  
       <language id="en"><![CDATA[File Size]]></language>  
       <language id="es"><![CDATA[Tamaño del archivo]]></language>  
-      <language id="fr"><![CDATA[File Size]]></language> 
+      <language id="fr"><![CDATA[Taille du fichier]]></language> 
     </name> 
   </property>  
   <property id="colortype" index="true" stored="true" viewtype="list" datatype="list" keyword="false" filter="false" editable="false" sortable="true" type="list">Color 
@@ -176,7 +176,7 @@
       <language id="de"><![CDATA[Width]]></language>  
       <language id="en"><![CDATA[Width]]></language>  
       <language id="es"><![CDATA[Anchura]]></language>  
-      <language id="fr"><![CDATA[Width]]></language> 
+      <language id="fr"><![CDATA[Largeur]]></language> 
     </name> 
   </property>  
   <property id="height" index="true" stored="true" datatype="number" keyword="false" filter="false" editable="false" sortable="true" type="number">Height
@@ -184,7 +184,7 @@
       <language id="de"><![CDATA[Height]]></language>
       <language id="en"><![CDATA[Height]]></language>
       <language id="es"><![CDATA[Altura]]></language>
-      <language id="fr"><![CDATA[Height]]></language>
+      <language id="fr"><![CDATA[Hauteur]]></language>
     </name>
   </property> 
 </properties>

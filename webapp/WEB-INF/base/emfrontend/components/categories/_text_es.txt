@@ -1,5 +1,6 @@
 #
-#Tue Oct 11 01:59:36 EDT 2016
+#Thu Apr 20 13:21:27 CDT 2017
 Edit\ Categories=Modificar categor\u00EDas
-Search\ Categories=Buscar Categor\u00EDas
+Select\ Category=selecciona una categor\u00EDa
 Categories=Categor\u00EDas
+Search\ Categories=Buscar Categor\u00EDas

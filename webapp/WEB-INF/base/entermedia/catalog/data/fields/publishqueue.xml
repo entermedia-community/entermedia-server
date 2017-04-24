@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Asset SourcePath]]></language>  
       <language id="en"><![CDATA[Asset SourcePath]]></language>  
       <language id="es"><![CDATA[activos SourcePath]]></language>  
-      <language id="fr"><![CDATA[Asset SourcePath]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine de l&#39;item]]></language> 
     </name> 
   </property>  
   <property id="publishdestination" editable="true" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Publish Destination 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[veröffentlichen Ziel]]></language>  
       <language id="en"><![CDATA[Publish Destination]]></language>  
       <language id="es"><![CDATA[Destino de publicación]]></language>  
-      <language id="fr"><![CDATA[Publier Destination]]></language> 
+      <language id="fr"><![CDATA[Destination de publication]]></language> 
     </name> 
   </property>  
   <property id="exportname" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Export Name 
@@ -54,14 +54,14 @@
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
       <language id="es"><![CDATA[Estado]]></language>  
-      <language id="fr"><![CDATA[statut]]></language> 
+      <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
   <property id="errordetails" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Details 
     <name> 
       <language id="de"><![CDATA[Fehlerdetails]]></language>  
       <language id="en"><![CDATA[Error Details]]></language>  
-      <language id="es"><![CDATA[Error de detalles]]></language>  
+      <language id="es"><![CDATA[Detalles del error]]></language>  
       <language id="fr"><![CDATA[Détails de l&#39;erreur]]></language> 
     </name> 
   </property>  
@@ -70,7 +70,7 @@
       <language id="de"><![CDATA[Fehleranzahl]]></language>  
       <language id="en"><![CDATA[Error Count]]></language>  
       <language id="es"><![CDATA[Error Count]]></language>  
-      <language id="fr"><![CDATA[Error Count]]></language> 
+      <language id="fr"><![CDATA[Nombre d&#39;erreur]]></language> 
     </name> 
   </property>  
   <property id="date" datatype="date" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Time 
@@ -102,7 +102,7 @@
       <language id="de"><![CDATA[Umwandlung Aufgabe id]]></language>  
       <language id="en"><![CDATA[Conversion Task Id]]></language>  
       <language id="es"><![CDATA[Id tarea de conversión]]></language>  
-      <language id="fr"><![CDATA[Conversion des tâches Id]]></language> 
+      <language id="fr"><![CDATA[ID des tâches de conversion]]></language> 
     </name> 
   </property>  
   <property id="notes" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Notes
@@ -120,7 +120,7 @@
       <language id="de"><![CDATA[render-Typ]]></language>  
       <language id="en"><![CDATA[Render Type]]></language>  
       <language id="es"><![CDATA[render Tipo]]></language>  
-      <language id="fr"><![CDATA[type de rendu]]></language> 
+      <language id="fr"><![CDATA[Type de rendu]]></language> 
     </name> 
   </property>  
   <property id="sourcepath" index="true" keyword="false" filter="false" stored="true" editable="false" sortable="true" internalfield="false">New 
@@ -128,7 +128,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
       <language id="es"><![CDATA[Ruta de origen]]></language>  
-      <language id="fr"><![CDATA[Source Path]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="ordertype" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list" listid="order/ordertype">New

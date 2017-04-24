@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Kategorie ID]]></language>  
       <language id="en"><![CDATA[Category Id]]></language>  
       <language id="es"><![CDATA[Categoria ID]]></language>  
-      <language id="fr"><![CDATA[Catégorie Id]]></language> 
+      <language id="fr"><![CDATA[Id catégorie]]></language> 
     </name> 
   </property>  
   <property id="shortdescription" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Short Description 
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[kurze Beschreibung]]></language>  
       <language id="en"><![CDATA[Short Description]]></language>  
       <language id="es"><![CDATA[Descripción breve]]></language>  
-      <language id="fr"><![CDATA[brève description]]></language> 
+      <language id="fr"><![CDATA[Brève description]]></language> 
     </name> 
   </property>  
   <property id="parentid" editable="true" type="list" listid="category" viewtype="text" index="true" stored="true" keyword="false" filter="false" sortable="true">Parent Category Id 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[geordnete Kategorie-ID]]></language>  
       <language id="en"><![CDATA[Parent Category Id]]></language>  
       <language id="es"><![CDATA[Categoría ID del directorio padre]]></language>  
-      <language id="fr"><![CDATA[Parent Catégorie Id]]></language> 
+      <language id="fr"><![CDATA[Id Catégorie parent]]></language> 
     </name> 
   </property>  
   <property id="parents" editable="false" type="list" listid="category" viewtype="text" index="true" stored="true" keyword="false" filter="false"> 
@@ -51,7 +51,7 @@
       <language id="de"><![CDATA[Erstellungsdatum]]></language>  
       <language id="en"><![CDATA[Created Date]]></language>  
       <language id="es"><![CDATA[Fecha de creación]]></language>  
-      <language id="fr"><![CDATA[date de création]]></language> 
+      <language id="fr"><![CDATA[Date de création]]></language> 
     </name> 
   </property>  
   <property id="foldertype" editable="true" index="true" stored="true" type="list" keyword="false" filter="false" sortable="true">Type 
@@ -83,7 +83,7 @@
       <language id="de"><![CDATA[Rollen]]></language>
       <language id="en"><![CDATA[Roles]]></language>
       <language id="es"><![CDATA[Roles]]></language>
-      <language id="fr"><![CDATA[Les rôles]]></language>
+      <language id="fr"><![CDATA[Rôles]]></language>
     </name>
   </property> 
 </properties>

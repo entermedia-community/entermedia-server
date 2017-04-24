@@ -14,15 +14,15 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="deploypath" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Deploy Path
     <name>
       <language id="de"><![CDATA[bereitstellen Weg]]></language>
       <language id="en"><![CDATA[Deploy Path]]></language>
-      <language id="es"><![CDATA[implementar Camino]]></language>
-      <language id="fr"><![CDATA[Déployer Chemin]]></language>
+      <language id="es"><![CDATA[Ruta de montación]]></language>
+      <language id="fr"><![CDATA[Chemin de déploiement]]></language>
     </name>
   </property> 
 </properties>

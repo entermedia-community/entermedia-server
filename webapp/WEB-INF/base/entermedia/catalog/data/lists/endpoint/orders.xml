@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <endpoints> 
-  <endpoint id="basketadd" name="Add to Basket" url="/${applicationid}/services/module/order/basketadd" docsection="moduleorder" caption="Add asset to basket" httpmethod="POST">
+  <endpoint id="basketadd" name="[[Add to Basket]]" url="/${applicationid}/services/module/order/basketadd" docsection="moduleorder" caption="[[Add asset to basket]]" httpmethod="POST">
 	<samplerequest><![CDATA[{"assetid":"101"}]]></samplerequest>
   </endpoint>  
-  <endpoint id="basketremove" name="Remove from Basket" url="/${applicationid}/services/module/order/basketremove" docsection="moduleorder" caption="Remove asset from basket. Requires an orderitem id" httpmethod="POST">
+  <endpoint id="basketremove" name="Remove from Basket" url="/${applicationid}/services/module/order/basketremove" docsection="moduleorder" caption="[[Remove asset from basket. Requires an orderitem id]]" httpmethod="POST">
 	<samplerequest><![CDATA[{"id":"223"}]]></samplerequest>
   </endpoint>  
-  <endpoint id="listopenorders" name="List Open Orders" url="/${applicationid}/services/module/order/listopenorders" docsection="moduleorder" caption="List open orders within last 90 days" httpmethod="GET">
+  <endpoint id="listopenorders" name="List Open Orders" url="/${applicationid}/services/module/order/listopenorders" docsection="moduleorder" caption="[[List open orders within last 90 days]]" httpmethod="GET">
 	
   </endpoint>  
-  <endpoint id="emailassets" name="Create Email Order" url="/${applicationid}/services/module/order/orderemail" docsection="moduleorder" caption="Create order for emailing assets" httpmethod="POST">
+  <endpoint id="emailassets" name="Create Email Order" url="/${applicationid}/services/module/order/orderemail" docsection="moduleorder" caption="[[Create order for emailing assets]]" httpmethod="POST">
 	<samplerequest><![CDATA[{
 	"field":["publishdestination","ordertype","presetid","sharewithemail"],
 	"publishdestination.value":"0",
@@ -20,7 +20,7 @@
 	"sharewithemail.value":["cburkey.mediadb@openedit.org"]
 	}]]></samplerequest>
 </endpoint>  
-  <endpoint id="createdownload" name="Create Download Order" url="/${applicationid}/services/module/order/orderdownload" docsection="moduleorder" caption="Create order for download in original format" httpmethod="POST">
+  <endpoint id="createdownload" name="[[Create Download Order]]" url="/${applicationid}/services/module/order/orderdownload" docsection="moduleorder" caption="[[Create order for download in original format]]" httpmethod="POST">
 	<samplerequest><![CDATA[{
 	"field":["publishdestination","ordertype","presetid"],
 	"publishdestination.value":"0",
@@ -29,7 +29,7 @@
 	"assetid":["101"]
 	}]]></samplerequest>
 </endpoint>  
-  <endpoint id="publishassets" name="Create Export Order" url="/${applicationid}/services/module/order/orderexport" docsection="moduleorder" caption="Publish Assets to Destination" httpmethod="POST">  
+  <endpoint id="publishassets" name="[[Create Export Order]]" url="/${applicationid}/services/module/order/orderexport" docsection="moduleorder" caption="[[Publish Assets to Destination]]" httpmethod="POST">  
 	<samplerequest><![CDATA[{
 	"field":["publishdestination","ordertype","presetid"],
 	"publishdestination.value":"local",
@@ -38,7 +38,7 @@
 	"assetid":["101"]
 	}]]></samplerequest>
   </endpoint>	
-  <endpoint id="updatestatus" name="Update Order Status" url="/${applicationid}/services/module/order/updateorderstatus" docsection="moduleorder" caption="Check the conversion status of a pending order" httpmethod="POST">
+  <endpoint id="updatestatus" name="[[Update Order Status]]" url="/${applicationid}/services/module/order/updateorderstatus" docsection="moduleorder" caption="[[Check the conversion status of a pending order]]" httpmethod="POST">
 	<samplerequest><![CDATA[{"orderid":"ertFGErre3234"}]]></samplerequest>
   </endpoint>
  </endpoints>

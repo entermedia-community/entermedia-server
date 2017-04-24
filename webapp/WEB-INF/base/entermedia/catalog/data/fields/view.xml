@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="byassettype" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">By Asset Type 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[System definiert]]></language>  
       <language id="en"><![CDATA[System Defined]]></language>  
       <language id="es"><![CDATA[sistema Definido]]></language>  
-      <language id="fr"><![CDATA[défini par le système]]></language> 
+      <language id="fr"><![CDATA[Défini par le système]]></language> 
     </name> 
   </property>  
   <property id="moduleid" index="true" stored="true" legacy="module" keyword="false" filter="false" editable="false" sortable="true">Module 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[render-Typ]]></language>  
       <language id="en"><![CDATA[Render Type]]></language>  
       <language id="es"><![CDATA[render Tipo]]></language>  
-      <language id="fr"><![CDATA[type de rendu]]></language> 
+      <language id="fr"><![CDATA[Type de rendu]]></language> 
     </name> 
   </property>  
   <property id="rendertable" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Table 
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Tabelle]]></language>  
       <language id="en"><![CDATA[Table]]></language>  
       <language id="es"><![CDATA[Mesa]]></language>  
-      <language id="fr"><![CDATA[Table]]></language> 
+      <language id="fr"><![CDATA[Tableau]]></language> 
     </name> 
   </property>  
   <property id="renderexternalid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Table External ID 
@@ -78,7 +78,7 @@
       <language id="de"><![CDATA[Renderer benutzerdefinierte Ansicht]]></language>
       <language id="en"><![CDATA[Renderer Custom View]]></language>
       <language id="es"><![CDATA[Renderizador vista personalizada]]></language>
-      <language id="fr"><![CDATA[Renderer Vue personnalisée]]></language>
+      <language id="fr"><![CDATA[Vue de rendu personnalisée]]></language>
     </name>
   </property> 
 </properties>

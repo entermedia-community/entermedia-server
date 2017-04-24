@@ -1,6 +1,8 @@
 #
-#Fri Nov 25 16:33:28 EST 2016
+#Wed Apr 19 08:56:49 CDT 2017
 Share=Partager
+No\ results\ found.=Aucun r\u00E9sultat trouv\u00E9.
+Copy\ Collection=Collection de copie
 Categories=Cat\u00E9gories
 Table=Table
 Thumbnail=Miniature
@@ -11,24 +13,25 @@ Email\ Assets=Envoyer par courriel
 Publish=Publier
 Select\ All\ Results=S\u00E9lectionner tous les r\u00E9sultats
 Folders=Dossiers
+Create\ a\ copy\ of\ this\ collection=Cr\u00E9er une copie de cette collection
 Remove\ from\ library\ and\ all\ collections?=Retirer de la biblioth\u00E8que et de toutes les collections?
 Publish\ Assets\ to\ Server=Publier items vers serveur
 Delete\ Assets=Supprimer actifs
 Remove\ from\ Collection=Retirer de la collection
 Select\ This\ Page=S\u00E9lectionner cette page
-Gallery=Galerie
 items=\u00E9l\u00E9ments
+Gallery=Galerie
 of=de
-Share\ Gallery=Partager Galerie
-Cancel=Annuler
 Add\ Column=Ajouter une colonne
+Cancel=Annuler
+Share\ Gallery=Partager Galerie
 Edit\ Columns=Modifier les colonnes
 Remove\ from\ collection?=Retirer de la collection?
-No\ results\ found=Aucun r\u00E9sultat trouv\u00E9
 Displaying\ records=Affichage des dossiers
+No\ results\ found=Aucun r\u00E9sultat trouv\u00E9
 Remove=Retirer
 Remove\ from\ Library=Retirer de la biblioth\u00E8que
 Stacked=Superpos\u00E9
 Collection=Collection
-Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus s\u00E9lectionn\u00E9s
 Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les d\u00E9placer
+Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus s\u00E9lectionn\u00E9s

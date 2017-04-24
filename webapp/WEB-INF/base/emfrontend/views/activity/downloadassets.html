@@ -3,7 +3,7 @@
 	[[Session expired, Reload browser]]
 #end
 #if( $order.userid != $context.getUserName() )
-Invalid order, username does not match
+[[Invalid order, username does not match]]
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))

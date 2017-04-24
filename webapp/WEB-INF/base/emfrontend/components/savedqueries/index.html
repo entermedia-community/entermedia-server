@@ -13,15 +13,15 @@
 		#if( $current == $hit.id) #set( $selected = true) #end 
 		<li #if( $selected )class="current" #end>
 
-			<div class="search-edit"><a class="ir" href="$home$apphome/views/search/edit/index.html?queryid=$hit.id" title="Edit">Edit</a></div>
+			<div class="search-edit"><a class="ir" href="$home$apphome/views/search/edit/index.html?queryid=$hit.id" title="Edit">[[Edit]]</a></div>
 
 			<a class="search-href" href="$home$apphome/views/search/runsavedquery.html?queryid=$hit.id&searchtype=asset" title="Execute">$hit.getName()</a>
 			
 			<div class="search-delete">
 				#if( $selected)
-					<a class="ir" href="$home$apphome/views/search/edit/deletefinish.html?queryid=${hit.id}" title="Delete">Delete</a>
+					<a class="ir" href="$home$apphome/views/search/edit/deletefinish.html?queryid=${hit.id}" title="Delete">[[Delete]]</a>
 				#else
-					<a class="ir ajax" targetdivinner="saved-searches-container" href="$home$apphome/components/savedqueries/delete.html?queryid=${hit.id}&oemaxlevel=1" title="Delete">Delete</a>
+					<a class="ir ajax" targetdivinner="saved-searches-container" href="$home$apphome/components/savedqueries/delete.html?queryid=${hit.id}&oemaxlevel=1" title="Delete">[[Delete]]</a>
 				#end
 			</div>
 			

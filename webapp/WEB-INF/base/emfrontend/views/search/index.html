@@ -6,7 +6,7 @@ $context.putPageValue("hideheader", "true")
 	#set($categoryid = $context.getRequestParameter("categoryid"))
 	#if($categoryid)
 		#set($category = $mediaarchive.getData("category",$categoryid))
-		#if($category)
+		#if($category)`
 			$context.putPageValue("category",$category)
 		#end
 	#end

@@ -1,54 +1,71 @@
-#set( $pagenum = $context.getRequestParameter("pagenum") ) #set( $name =
-$context.getRequestParameter("name") ) #set ( $urlenc =
-$url_util.encode($asset.sourcepath))
-<div id="mainholder">
-	#set($totalpages = $numberutils.toInt($asset.pages)) #if( $totalpages >
-	1 )
-	$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
-	#end
+#set( $pagenum = $context.getRequestParameter("pagenum") ) 
+#set( $name = $context.getRequestParameter("name") )
+ #set ( $urlenc = $url_util.encode($asset.sourcepath))
+<div id="main-media-container">
+	<div id="mainholder">
+		#set($totalpages = $numberutils.toInt($asset.pages)) 
+		#if( $totalpages > 1 )
+		$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
+		#end
 
-	<div id="mainimageholder">
-		<img id="mainimage"
-			src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.png?pagenum=$!pagenum"
-			alt="$!asset.name" />
-
-
-		<div id="footerbase">
-			<div id="footermenu">
-				<div id="menuoptions">
-					<ul>
-
-				<li>
-					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true">Downloads
-							<span class="caret"></span></a>
-						<ul id="module-bar-select" class="dropdown-menu dropup">
-							<li><a href="/">1024x768</a></li>
-							<li><a href="">800x600</a></li>
-							<li><a href="">640x480</a></li>
-						</ul>
-					</div>
+		<div id="mainimageholder">
+			<img id="mainimage" src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.png?pagenum=$!pagenum" alt="$!asset.name" />		
+			</div>
+		
+		<div id="footerholder">[[Mouse wheel to zoom and click to drag]]
+		</div>
+	</div>
+	<div id="footerbase">
+	<div id="footermenu">
+		<div id="menuoptions">
+			<ul>
+			<li style="margin-right: 50px;">					 
+				<a href="" id="escapelink" >$asset</a>
 			  </il>
+			
 				<li>
 					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true">Settings
+						<a class="" href="#" data-toggle="dropdown" expanded="true">[[Downloads]]
 							<span class="caret"></span></a>
-						<ul id="module-bar-select" class="dropdown-menu dropup">
-							<li><a href="/">Remove</a></li>
-							<li><a href="">Move</a></li>
 							
+						
+			#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+			#set( $results = $searcher.query().exact("inputtype","document").exact("onimport","true").sort("ordering").search($context) )
+			#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+			#set($mediadbappid=$mediaarchive.getMediaDbId())
+			#if( !$cdnprefix )
+				#set( $cdnprefix = $context.siteRoot )
+			#end
+				<ul id="module-bar-select" class="dropdown-menu dropup">
+						
+						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
+							<li><a href="$home$apphome/views/modules/asset/downloads/originals/$originalpath">[[Original document]]</a></li>	
+						#foreach($result in $results )						
+								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
+						#end
 						</ul>
 					</div>
 			  </il>
 			</ul>
-				</div>
-			</div>
-		</div>
-		<div id="footerholder">[[Mouse wheel to zoom and click to drag]]
 		</div>
 	</div>
+</div>
+</div>
 
+	<script>
+		$("#main-media-container").livequery("mouseenter", function(e) {
+			$("#footerbase").show();
+		});
 
+		$("#main-media-container").livequery("mouseleave", function(e) {
+			$("#footerbase").hide();
+		});
+		var escp = jQuery.Event("keypress");
+		escp.which = 27;
+		escp.keyCode = 27;
+		$("#escapelink").click().trigger(escp);
+		
+	</script>
 
 	<style>
 #mainholder {
@@ -71,30 +88,20 @@ $url_util.encode($asset.sourcepath))
 	color: #666;
 }
 
-#mainimage:HOVER+#footerbase {
-	display: inherit;
-}
-
-#options:HOVER {
-	font-weight: bold;
-}
-
 #footerbase {
 	display: none;
 	position: relative;
 	width: 100%;
 	height: 30px;
-	ali
 }
 
 #footermenu {
 	background-color: black;
 	position: absolute;
-	width: 50%;
+	width: 100%;
 	height: 35px;
-	//top: -110%;
-	right:-15%;
-	opacity: 0.4;
+	top: -110%;
+	/*opacity: 0.8;*/
 }
 
 #menuoptions {
@@ -102,23 +109,18 @@ $url_util.encode($asset.sourcepath))
 	top: -20%;
 	right: 50%;
 }
-
 #menuoptions li {
 	display: inline-table;
 	font-size: large;
 	color: white;
 	font-weight: normal;
 }
-
+#menuoptions a {
+	color: white;	
+}
 #menuoptions div {
 	display: inline;
 	padding: 5px;
 	margin-right: 17px;
-}
-
-#menuoptions li :HOVER {
-	font-weight: bold;
-	color:black;
-	background-color: white;	
 }
 </style>

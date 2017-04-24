@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
       <language id="es"><![CDATA[Ruta de origen]]></language>  
-      <language id="fr"><![CDATA[Source Path]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="assetid" type="list" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
@@ -41,7 +41,7 @@
       <language id="de"><![CDATA[CatalogID]]></language>  
       <language id="en"><![CDATA[CatalogID]]></language>  
       <language id="es"><![CDATA[CatalogID]]></language>  
-      <language id="fr"><![CDATA[CatalogID]]></language> 
+      <language id="fr"><![CDATA[ID Catalogue]]></language> 
     </name> 
   </property>  
   <property id="id" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" internalfield="true">New 

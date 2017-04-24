@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[SourcePath]]></language>  
       <language id="en"><![CDATA[SourcePath]]></language>  
       <language id="es"><![CDATA[SourcePath]]></language>  
-      <language id="fr"><![CDATA[SourcePath]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="librarycollection" index="true" type="list" stored="true" editable="true"   > 
@@ -45,7 +45,7 @@
       <language id="de"><![CDATA[Sendedatum]]></language>  
       <language id="en"><![CDATA[Added Date]]></language>  
       <language id="es"><![CDATA[Fecha enviada]]></language>  
-      <language id="fr"><![CDATA[date d&#39;envoi]]></language> 
+      <language id="fr"><![CDATA[Date d&#39;envoi]]></language> 
     </name> 
   </property>  
   <!-- 

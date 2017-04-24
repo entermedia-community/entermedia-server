@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" internalfield="true" keyword="false" filter="false" sortable="true">User 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Benutzer gespeichert]]></language>  
       <language id="en"><![CDATA[User Saved]]></language>  
       <language id="es"><![CDATA[usuario Registrado]]></language>  
-      <language id="fr"><![CDATA[utilisateur Enregistré]]></language> 
+      <language id="fr"><![CDATA[Utilisateur Enregistré]]></language> 
     </name> 
   </property>  
   <property id="saveddate" index="true" stored="true" datatype="date" date="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Saved Date 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[Speicherdatum]]></language>  
       <language id="en"><![CDATA[Saved Date]]></language>  
       <language id="es"><![CDATA[Fecha guardado]]></language>  
-      <language id="fr"><![CDATA[date de Saved]]></language> 
+      <language id="fr"><![CDATA[Date de sauvegarde]]></language> 
     </name> 
   </property>  
   <property id="caption" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Description 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[oder zusammen]]></language>  
       <language id="en"><![CDATA[Or Together]]></language>  
       <language id="es"><![CDATA[o junto]]></language>  
-      <language id="fr"><![CDATA[Ou Ensemble]]></language> 
+      <language id="fr"><![CDATA[Ou ensemble]]></language> 
     </name> 
   </property>  
   <property id="parentid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Parent ID
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Eltern ID]]></language>
       <language id="en"><![CDATA[Parent ID]]></language>
       <language id="es"><![CDATA[Identificación de los padres]]></language>
-      <language id="fr"><![CDATA[Parent ID]]></language>
+      <language id="fr"><![CDATA[ID Parent]]></language>
     </name>
   </property> 
 </properties>

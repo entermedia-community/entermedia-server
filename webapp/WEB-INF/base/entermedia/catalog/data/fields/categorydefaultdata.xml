@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Kategorie ID]]></language>  
       <language id="en"><![CDATA[CategoryID]]></language>  
       <language id="es"><![CDATA[Categoria ID]]></language>  
-      <language id="fr"><![CDATA[CategoryID]]></language> 
+      <language id="fr"><![CDATA[ID Categorie]]></language> 
     </name> 
   </property>  
   <property id="fieldname" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Field Name 
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Feldname]]></language>  
       <language id="en"><![CDATA[Field Name]]></language>  
       <language id="es"><![CDATA[Nombre del campo]]></language>  
-      <language id="fr"><![CDATA[Nom de domaine]]></language> 
+      <language id="fr"><![CDATA[Nom Champ]]></language> 
     </name> 
   </property>  
   <property id="fieldvalue" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Field Value

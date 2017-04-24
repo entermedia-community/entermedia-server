@@ -29,7 +29,7 @@
     <name> 
       <language id="de"><![CDATA[Datum Bewertung]]></language>  
       <language id="en"><![CDATA[Date Reviewed]]></language>  
-      <language id="es"><![CDATA[fecha de la revisión]]></language>  
+      <language id="es"><![CDATA[Fecha de la revisión]]></language>  
       <language id="fr"><![CDATA[Date de révision]]></language> 
     </name> 
   </property>  
@@ -46,7 +46,7 @@
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
       <language id="es"><![CDATA[Estado]]></language>  
-      <language id="fr"><![CDATA[statut]]></language> 
+      <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
   <property id="assetid" type="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Asset ID

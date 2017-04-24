@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="ordering" type="number" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Ordering 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Etikett auf die Unter]]></language>  
       <language id="en"><![CDATA[Label Used on Sub]]></language>  
       <language id="es"><![CDATA[Se utiliza en la etiqueta Sub]]></language>  
-      <language id="fr"><![CDATA[Étiquette Utilisé sur Sub]]></language> 
+      <language id="fr"><![CDATA[Label Used on Sub]]></language> 
     </name> 
   </property>  
   <property id="path" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Path

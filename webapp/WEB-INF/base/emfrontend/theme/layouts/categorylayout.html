@@ -3,17 +3,17 @@
 #set( $librarycol = $mediaarchive.query("librarycollection").match("rootcategory",$selectedcategory.getId()).searchOne() )
 #if( $librarycol)
 	<div style="float:left;margin-top: 12px;margin-left: 10px">
-	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=$librarycol.getLibrary().getId()" title="View Library">$librarycol.getLibrary()</a> 
-	<a class="collectioncrumb" href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" title="View Collection">$librarycol</a>  
-	<a class="categorycrumb openfolder" title="View Folders" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$selectedcategory.id&nodeID=$selectedcategory.id"><b> Folder </b></a>
+	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=$librarycol.getLibrary().getId()" title="[[View Library]]">$librarycol.getLibrary()</a> 
+	<a class="collectioncrumb" href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" title="[[View Collection]]">$librarycol</a>  
+	<a class="categorycrumb openfolder" title="[[View Folders]]" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$selectedcategory.id&nodeID=$selectedcategory.id"><b> [[Folder]] </b></a>
 	</div>
 #else
 #set( $selectedlibrary = $mediaarchive.query("library").match("categoryid",$selectedcategory.getId()).searchOne() )
 #if( $selectedlibrary)
 	<div style="float:left;margin-top: 12px;margin-left: 10px">
-	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=${selectedlibrary.getId()}" title="View Library">$selectedlibrary</a> 
+	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=${selectedlibrary.getId()}" title="[[View Library]]">$selectedlibrary</a> 
 	#if( $selectedlibrary.categoryid )
-	<a class="categorycrumb openfolder" title="View Category" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$selectedlibrary.categoryid&nodeID=$librarycol.rootcategory"> <b> Library Folders </b> </a>
+	<a class="categorycrumb openfolder" title="[[View Category]]" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$selectedlibrary.categoryid&nodeID=$librarycol.rootcategory"> <b> [[Library Folders]] </b> </a>
 	#end	
 	</div>
 #else
@@ -23,7 +23,6 @@
 #end
 #end	
 <div id="collectiontoplevel" >
-		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/category/categorysearch.html?selectedcategory=${selectedcategory.getId()}" >[[Category Assets]]</a></li>
 		  

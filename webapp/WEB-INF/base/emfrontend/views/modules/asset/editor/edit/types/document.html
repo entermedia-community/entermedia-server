@@ -24,11 +24,11 @@
 	<input type="hidden" name="assetid" value="$asset.id"/>
 	
 	<input type="hidden" name="field" value="imageorientation"/>
-	Rotate Image: <select onchange="this.form.submit();" name="imageorientation.value">
-		<option value="1"#if($currentOrientation && $currentOrientation == 1) selected #end>0 Degrees</option>
-		<option value="8"#if($currentOrientation && $currentOrientation == 8) selected #end>90 Degrees</option>
-		<option value="3"#if($currentOrientation && $currentOrientation == 3) selected #end>180 Degrees</option>
-		<option value="6" #if($currentOrientation && $currentOrientation == 6) selected #end>270 Degrees</option> 
+	[[ Image]]: <select onchange="this.form.submit();" name="imageorientation.value">
+		<option value="1"#if($currentOrientation && $currentOrientation == 1) selected #end>0 [[Degrees]]</option>
+		<option value="8"#if($currentOrientation && $currentOrientation == 8) selected #end>90 [[Degrees]]</option>
+		<option value="3"#if($currentOrientation && $currentOrientation == 3) selected #end>180 [[Degrees]]</option>
+		<option value="6" #if($currentOrientation && $currentOrientation == 6) selected #end>270 [[Degrees]]</option> 
 	</select>
 </form>
 

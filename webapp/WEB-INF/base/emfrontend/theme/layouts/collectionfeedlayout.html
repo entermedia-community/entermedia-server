@@ -1,14 +1,13 @@
 #if( $librarycol )
 	<div style="float:left;margin-top: 12px;margin-left: 10px">
-	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=$librarycol.getLibrary().getId()" title="View Library">$librarycol.getLibrary()</a> 
-	<a class="collectioncrumb" href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" title="View Collection"><b>$librarycol</b></a>  
+	<a class="librarycrumb" href="$apphome/views/modules/library/librarysearch.html?selectedlibrary=$librarycol.getLibrary().getId()" title="[[View Library]]">$librarycol.getLibrary()</a> 
+	<a class="collectioncrumb" href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" title="[[View Collection]]"><b>$librarycol</b></a>  
 	#if( $librarycol.rootcategory)
-	<a class="categorycrumb" title="View Folders" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$librarycol.rootcategory&nodeID=$librarycol.rootcategory"> Folder </a>
+	<a class="categorycrumb" title="[[View Folders]]" href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$librarycol.rootcategory&nodeID=$librarycol.rootcategory"> [[Folder]] </a>
 	#end
 	</div>
 
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
-		
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Assets]]</a></li>
 		  #if( $caneditdata && $librarycol.hasPendingAssets() )
@@ -42,7 +41,6 @@
 		  </div>
 		</div>
 </div>
-
 
 #else
 $pages.includeContent()

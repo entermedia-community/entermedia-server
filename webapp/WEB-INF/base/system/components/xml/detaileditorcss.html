@@ -10,7 +10,7 @@
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
 	#if( !$details)
-		404 on view:  $searcher.getCatalogId() $searcher.getSearchType() $view
+		[[404 on view]]:  $searcher.getCatalogId() $searcher.getSearchType() $view
 	#end
 #else
 	##leagacy check. We used to pass in the $details

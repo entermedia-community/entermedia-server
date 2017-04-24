@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="serverid" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Server ID
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Server-ID]]></language>
       <language id="en"><![CDATA[Server ID]]></language>
       <language id="es"><![CDATA[ID de servidor]]></language>
-      <language id="fr"><![CDATA[ID Server]]></language>
+      <language id="fr"><![CDATA[ID Serveur]]></language>
     </name>
   </property> 
 </properties>

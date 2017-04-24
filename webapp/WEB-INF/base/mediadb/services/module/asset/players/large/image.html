@@ -14,29 +14,38 @@ $urlenc.replace("%2F", "/") ) #end
 	<div id="footermenu">
 		<div id="menuoptions">
 			<ul>
-
-				<li>
-					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true">Downloads
-							<span class="caret"></span></a>
-						<ul id="module-bar-select" class="dropdown-menu dropup">
-							<li><a href="/">1024x768</a></li>
-							<li><a href="">800x600</a></li>
-							<li><a href="">640x480</a></li>
-						</ul>
-					</div>
+			<li style="margin-right: 50px;">					 
+				<a href="" id="escapelink" > $asset </a>
 			  </il>
+			
 				<li>
 					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true">Settings
+						<a class="" href="#" data-toggle="dropdown" expanded="true">[[Downloads]]
 							<span class="caret"></span></a>
-						<ul id="module-bar-select" class="dropdown-menu dropup">
-							<li><a href="/">Remove</a></li>
-							<li><a href="">Move</a></li>
 							
+						
+			#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+			#set( $results = $searcher.query().exact("inputtype","image").exact("onimport","true").sort("ordering").search($context) )
+			#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+			#set($mediadbappid=$mediaarchive.getMediaDbId())
+			#if( !$cdnprefix )
+				#set( $cdnprefix = $context.siteRoot )
+			#end
+				<ul id="module-bar-select" class="dropdown-menu dropup">
+						
+						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
+							<li><a href="$home$apphome/views/modules/asset/downloads/originals/$originalpath">[[Original image]]</a></li>	
+						#foreach($result in $results )						
+								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
+						#end
 						</ul>
+						<li style="margin-right: 50px;">					 
+				<a href=""  > View PDF</a>
+			  </il>s
+						
 					</div>
 			  </il>
+				
 			</ul>
 		</div>
 	</div>
@@ -56,7 +65,10 @@ $("#main-media-container").livequery("mouseleave", function(e)
 	$("#footerbase").hide();	
 });
 
-
+	var escp = jQuery.Event("keypress");
+	escp.which = 27;
+	escp.keyCode = 27;
+	$("#escapelink").click().trigger(escp);
 </script>
 
 
@@ -79,7 +91,7 @@ $("#main-media-container").livequery("mouseleave", function(e)
 	width: 100%;
 	height: 35px;
 	top: -110%;
-	opacity: 0.4;
+	/* opacity: 0.8; */
 }
 
 #menuoptions {
@@ -90,9 +102,11 @@ $("#main-media-container").livequery("mouseleave", function(e)
 
 #menuoptions li {
 	display: inline-table;
-	font-size: large;
-	color: white;
+	font-size: large;	
 	font-weight: normal;
+}
+#menuoptions a {
+	color: white;	
 }
 
 #menuoptions div {
@@ -100,6 +114,4 @@ $("#main-media-container").livequery("mouseleave", function(e)
 	padding: 5px;
 	margin-right: 17px;
 }
-
-
 </style>

@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="url" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">URL 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Methode]]></language>  
       <language id="en"><![CDATA[Method]]></language>  
       <language id="es"><![CDATA[Método]]></language>  
-      <language id="fr"><![CDATA[méthode]]></language> 
+      <language id="fr"><![CDATA[Méthode]]></language> 
     </name> 
   </property>  
   <property id="samplerequest" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Sample

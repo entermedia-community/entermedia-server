@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
       <language id="es"><![CDATA[Ruta de origen]]></language>  
-      <language id="fr"><![CDATA[Source Path]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="query" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Query 
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Abfrage]]></language>  
       <language id="en"><![CDATA[Query]]></language>  
       <language id="es"><![CDATA[Consulta]]></language>  
-      <language id="fr"><![CDATA[Question]]></language> 
+      <language id="fr"><![CDATA[Requête]]></language> 
     </name> 
   </property>  
   <property id="hits" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Hits 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Hits]]></language>  
       <language id="en"><![CDATA[Hits]]></language>  
       <language id="es"><![CDATA[Golpes]]></language>  
-      <language id="fr"><![CDATA[Les coups]]></language> 
+      <language id="fr"><![CDATA[Coups]]></language> 
     </name> 
   </property>  
   <property id="date" datatype="date" date="true" viewtype="time" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date

@@ -1,17 +1,6 @@
-
-#set($dl = $mediaarchive.getSearcher("assetpreviewLog"))
-#set($dlhits = $dl.getAllHits($context))
-
-
-
-
-
-<canvas id="viewchart" ></canvas>
-
-
-
-
-
+ #set($dl = $mediaarchive.getSearcher("assetpreviewLog")) #set($dlhits =
+$dl.getAllHits($context))
+<canvas id="viewchart"></canvas>
 <script>
 var ctx = document.getElementById("viewchart");
 var myChart = new Chart(ctx, {
@@ -24,11 +13,7 @@ var myChart = new Chart(ctx, {
 		"$context.getDate($child.toString())",
 	#end
 #end
-        
-
-        
         ]
-        
         
         ,
         datasets: [{

@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[SourcePath]]></language>  
       <language id="en"><![CDATA[SourcePath]]></language>  
       <language id="es"><![CDATA[SourcePath]]></language>  
-      <language id="fr"><![CDATA[SourcePath]]></language> 
+      <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="ordertype" editable="true" index="true" stored="true" type="list" listid="order/ordertype" keyword="false" filter="false" sortable="true">Order Type 
@@ -30,7 +30,7 @@
       <language id="de"><![CDATA[Auftragsart]]></language>  
       <language id="en"><![CDATA[Order Type]]></language>  
       <language id="es"><![CDATA[Tipo de orden]]></language>  
-      <language id="fr"><![CDATA[Type d&#39;ordre]]></language> 
+      <language id="fr"><![CDATA[Type de commande]]></language> 
     </name> 
   </property>  
   <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">User 
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
       <language id="es"><![CDATA[Estado]]></language>  
-      <language id="fr"><![CDATA[statut]]></language> 
+      <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
   <property id="orderstatusdetails" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Status Details 
@@ -62,7 +62,7 @@
       <language id="de"><![CDATA[Statusdetails]]></language>  
       <language id="en"><![CDATA[Status Details]]></language>  
       <language id="es"><![CDATA[Detalles de estado]]></language>  
-      <language id="fr"><![CDATA[Détails de l&#39;état]]></language> 
+      <language id="fr"><![CDATA[Détails du Statut]]></language> 
     </name> 
   </property>  
   <property id="project" editable="true" datatype="list" listid="order/projects" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Project 
@@ -70,7 +70,7 @@
       <language id="de"><![CDATA[Projekt]]></language>  
       <language id="en"><![CDATA[Project]]></language>  
       <language id="es"><![CDATA[Proyecto]]></language>  
-      <language id="fr"><![CDATA[Project]]></language> 
+      <language id="fr"><![CDATA[Projet]]></language> 
     </name> 
   </property>  
   <property id="applicationid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Application Ordered 
@@ -78,7 +78,7 @@
       <language id="de"><![CDATA[Anwendung bestellt]]></language>  
       <language id="en"><![CDATA[Application Ordered]]></language>  
       <language id="es"><![CDATA[aplicación ordenada]]></language>  
-      <language id="fr"><![CDATA[Demande Ordonné]]></language> 
+      <language id="fr"><![CDATA[Demande commandée]]></language> 
     </name> 
   </property>  
   <property id="sharedby" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Shared By 
@@ -94,7 +94,7 @@
       <language id="de"><![CDATA[Ziel-ID]]></language>  
       <language id="en"><![CDATA[Destination Id]]></language>  
       <language id="es"><![CDATA[Id destino]]></language>  
-      <language id="fr"><![CDATA[Destination Id]]></language> 
+      <language id="fr"><![CDATA[Id Destination]]></language> 
     </name> 
   </property>  
   <property id="expireson" editable="true" type="date" index="true" stored="true" keyword="false" filter="false" sortable="true">Expires On 
@@ -117,7 +117,7 @@
     <name> 
       <language id="de"><![CDATA[Notizen]]></language>  
       <language id="en"><![CDATA[Notes]]></language>  
-      <language id="es"><![CDATA[notas]]></language>  
+      <language id="es"><![CDATA[Notas]]></language>  
       <language id="fr"><![CDATA[Remarques]]></language> 
     </name> 
   </property>  
@@ -126,15 +126,15 @@
       <language id="de"><![CDATA[Aktien Typ]]></language>  
       <language id="en"><![CDATA[Share Type]]></language>  
       <language id="es"><![CDATA[Tipo de acción]]></language>  
-      <language id="fr"><![CDATA[type de part]]></language> 
+      <language id="fr"><![CDATA[Type de partage]]></language> 
     </name> 
   </property>  
   <property id="emailsent" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Email Sent 
     <name> 
       <language id="de"><![CDATA[E-Mail gesendet]]></language>  
       <language id="en"><![CDATA[Email Sent]]></language>  
-      <language id="es"><![CDATA[Email enviado]]></language>  
-      <language id="fr"><![CDATA[Email envoyé]]></language> 
+      <language id="es"><![CDATA[Email Enviado]]></language>  
+      <language id="fr"><![CDATA[Email Envoyé]]></language> 
     </name> 
   </property>  
   <property id="historytype" stored="true" index="true" type="list" listid="order/historytype" keyword="false" filter="false" editable="false" sortable="true">History Status 
@@ -142,7 +142,7 @@
       <language id="de"><![CDATA[Geschichte Status]]></language>  
       <language id="en"><![CDATA[History Status]]></language>  
       <language id="es"><![CDATA[Estado de la historia]]></language>  
-      <language id="fr"><![CDATA[Histoire Statut]]></language> 
+      <language id="fr"><![CDATA[Statut de l&#39;historique]]></language> 
     </name> 
   </property>  
   <property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" keyword="false" filter="false" sortable="true">Status Updated 
@@ -150,7 +150,7 @@
       <language id="de"><![CDATA[Status aktualisiert]]></language>  
       <language id="en"><![CDATA[Status Updated]]></language>  
       <language id="es"><![CDATA[Estado actualizado]]></language>  
-      <language id="fr"><![CDATA[Statut Mise à jour]]></language> 
+      <language id="fr"><![CDATA[Statut Mis à jour]]></language> 
     </name> 
   </property>  
   <property id="historyitemsuccesscount" editable="false" stored="true" index="true" keyword="false" filter="false" sortable="true">Complete Count 
@@ -158,7 +158,7 @@
       <language id="de"><![CDATA[Vollzähligkeit]]></language>  
       <language id="en"><![CDATA[Complete Count]]></language>  
       <language id="es"><![CDATA[Conteo completo]]></language>  
-      <language id="fr"><![CDATA[Nombre complet]]></language> 
+      <language id="fr"><![CDATA[Décompte complet]]></language> 
     </name> 
   </property>  
   <property id="historyitemerrorcount" editable="false" stored="true" index="true" keyword="false" filter="false" sortable="true">Error Count 
@@ -166,7 +166,7 @@
       <language id="de"><![CDATA[Fehleranzahl]]></language>  
       <language id="en"><![CDATA[Error Count]]></language>  
       <language id="es"><![CDATA[Error Count]]></language>  
-      <language id="fr"><![CDATA[Error Count]]></language> 
+      <language id="fr"><![CDATA[Nombre d&#39;erreur]]></language> 
     </name> 
   </property>  
   <property id="basket" index="true" stored="true" type="boolean" keyword="false" filter="false" editable="false" sortable="true">Is an order basket
@@ -184,7 +184,7 @@
       <language id="de"><![CDATA[render-Typ]]></language>  
       <language id="en"><![CDATA[Render Type]]></language>  
       <language id="es"><![CDATA[render Tipo]]></language>  
-      <language id="fr"><![CDATA[type de rendu]]></language> 
+      <language id="fr"><![CDATA[Type de rendu]]></language> 
     </name> 
   </property>  
   <property id="presetid" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list" viewtype="list" listid="convertpreset">New
@@ -195,6 +195,4 @@
       <language id="fr"><![CDATA[Preset ID]]></language>
     </name>
   </property>
-  
-  
 </properties>

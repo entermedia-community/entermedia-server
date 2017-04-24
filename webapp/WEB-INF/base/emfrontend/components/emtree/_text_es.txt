@@ -1,9 +1,10 @@
 #
-#Tue Oct 11 01:59:37 EDT 2016
+#Thu Apr 20 13:21:27 CDT 2017
 Properties=propiedades
-Create=Crear
 Rename=Rebautizar
+Create=Crear
 Paste=Pegar
 Cut=Cortar
 Delete=Borrar
+Add\ Media=A\u00F1adir medios
 Copy=Dupdo

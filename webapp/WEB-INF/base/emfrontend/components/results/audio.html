@@ -2,12 +2,11 @@ $pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
 <div id="resultscontent_$catalogid">
 	$pages.include("${cataloghome}/results/navigate/navigate.html", $context)
 <br>
-
 <table border="1" width="100%" class="striped">
 	<tr >
 		<th></th>
-		<th style="width: 100px;">Listen</th>
-		<th>Description</th>
+		<th style="width: 100px;">[[Listen]]</th>
+		<th>[[Description]]</th>
 	</tr>
 
 #foreach ($hit in $hits.getPageOfHits())
@@ -24,8 +23,7 @@ $pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
 				$pages.include("$cataloghome/results/thumbnails/media/default.html", $context)
 			</div>
 		</td>
-		<td>
-		
+		<td>		
 		#set($audiofilepath = "$home$mediaarchive.getCatalogHome()/downloads/mp3/$hit.sourcepath/audio.mp3")
 	
 		$context.putPageValue("path","$audiofilepath")

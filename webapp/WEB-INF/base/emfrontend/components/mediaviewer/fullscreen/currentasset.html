@@ -5,7 +5,7 @@
 <div id="main-media-viewer" data-assetid="$asset.id" data-indexOf="$index"  data-next="$!next.id"  data-previous="$!previous.id" >
 	#set( $mediadbappid = $mediaarchive.getMediaDbId() )
 	#if( !$mediadbappid)
-		<p style="color: white;">mediadbappid not defined in datamanager</p>
+		<p style="color: white;">[[mediadbappid not defined in datamanage]]r</p>
 	#end
 	#set( $type = $mediaarchive.getMediaPlayerType($asset))
 	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)

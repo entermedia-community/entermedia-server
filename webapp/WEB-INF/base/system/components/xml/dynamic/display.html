@@ -11,9 +11,9 @@
 	<a href = "$home/#esc($val)">#esc($!val)</a>
 #elseif($detail.isBoolean())
 	#if ("true" == $val)
-		Yes
+		[[Yes]]
 	#else
-		No
+		[[No]]
 	#end
 #else
 	#esc($!val)

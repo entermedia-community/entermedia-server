@@ -1,13 +1,26 @@
-#Fri Nov 25 16:02:26 UTC 2016
-Settings=Paramètres
-Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistrés
-Language=Langue
-Logout=Déconnexion
+#
+#Fri Apr 21 13:10:36 CDT 2017
+Permissions=Autorisations
+Library\ Assets=Actifs de la biblioth\u00E8que
+There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficult\u00E9 \u00E0 remplir cette demande
+Related\ Media=M\u00E9dias apparent\u00E9s
 My\ Account=Mon compte
-Login=Connexion
-There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficulté à remplir cette demande
-System\ Settings=Paramètres du système
-Dashboard=Tableau de bord
+Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistr\u00E9s
+Selected\ Media=M\u00E9dias s\u00E9lectionn\u00E9s
+View\ Category=Afficher la cat\u00E9gorie
 Applications=Applications
+Attachments=Pi\u00E8ces jointes
+Ok=D&\#39;accord
+System\ Settings=Param\u00E8tres du syst\u00E8me
+Language=Langue
+Properties=Propri\u00E9t\u00E9s
+Logout=D\u00E9connexion
 Asset\ is\ missing=Item manquant
-
+Dashboard=Tableau de bord
+Reports=Rapports
+Login=Connexion
+Close=Fermer
+Edit\ Reports=Modifier les rapports
+Settings=Param\u00E8tres
+View\ Library=Voir la biblioth\u00E8que
+Library\ Folders=Dossiers de biblioth\u00E8que

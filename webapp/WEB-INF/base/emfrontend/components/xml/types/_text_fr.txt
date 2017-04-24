@@ -1,3 +1,4 @@
-#Fri Nov 25 16:02:26 UTC 2016
-Enter\ comma\ separated\ tags=Entrez les étiquettes séparées par des virgules
-
+#
+#Fri Apr 21 12:25:48 CDT 2017
+View=Vue
+Enter\ comma\ separated\ tags=Entrez les \u00E9tiquettes s\u00E9par\u00E9es par des virgules

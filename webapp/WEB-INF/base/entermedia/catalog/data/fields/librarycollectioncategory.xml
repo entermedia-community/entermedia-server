@@ -21,8 +21,8 @@
     <name>
       <language id="de"><![CDATA[Kategorie ID]]></language>
       <language id="en"><![CDATA[Category ID]]></language>
-      <language id="es"><![CDATA[categoria ID]]></language>
-      <language id="fr"><![CDATA[Catégorie ID]]></language>
+      <language id="es"><![CDATA[Categoria ID]]></language>
+      <language id="fr"><![CDATA[ID Catégorie]]></language>
     </name>
   </property> 
 </properties>

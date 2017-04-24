@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[Quelle Asset]]></language>  
       <language id="en"><![CDATA[Source Asset]]></language>  
       <language id="es"><![CDATA[fuente de Activos]]></language>  
-      <language id="fr"><![CDATA[Source Asset]]></language> 
+      <language id="fr"><![CDATA[Item d&#39;origine]]></language> 
     </name> 
   </property>  
   <property id="targetid" index="true" stored="true" type="list" viewtype="asset" editable="true" keyword="false" filter="false" sortable="true">Target 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[Zielkatalog]]></language>  
       <language id="en"><![CDATA[Target Catalog]]></language>  
       <language id="es"><![CDATA[Catálogo de destino]]></language>  
-      <language id="fr"><![CDATA[Catalogue Target]]></language> 
+      <language id="fr"><![CDATA[Catalogue cible]]></language> 
     </name> 
   </property>  
   <property id="notes" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Notes

@@ -53,7 +53,7 @@ var DetailEditor = {
 		else{
 			e.hide();
 			
-		  if(i.val() == '') 
+			if(i.val() == '') 
 				i.val(default_value);
 		}		
 	}

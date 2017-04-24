@@ -6,7 +6,7 @@
       <language id="de"><![CDATA[Geschichte id]]></language>  
       <language id="en"><![CDATA[History Id]]></language>  
       <language id="es"><![CDATA[historia Id]]></language>  
-      <language id="fr"><![CDATA[Histoire Id]]></language> 
+      <language id="fr"><![CDATA[Id Historique]]></language> 
     </name> 
   </property>  
   <property id="historytype" index="true" type="list" stored="true" listid="order/historytype" keyword="false" filter="false" editable="false" sortable="true">Type 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[Stückzahl]]></language>  
       <language id="en"><![CDATA[Item Count]]></language>  
       <language id="es"><![CDATA[Recuento de elementos]]></language>  
-      <language id="fr"><![CDATA[Nombre d&#39;éléments]]></language> 
+      <language id="fr"><![CDATA[Nombre d&#39;items]]></language> 
     </name> 
   </property>  
   <property id="itemsuccesscount" index="true" type="number" stored="true" keyword="false" filter="false" editable="false" sortable="true">Success Count 
@@ -46,7 +46,7 @@
       <language id="de"><![CDATA[Anzahl der Erfolge]]></language>  
       <language id="en"><![CDATA[Success Count]]></language>  
       <language id="es"><![CDATA[Conde éxito]]></language>  
-      <language id="fr"><![CDATA[Count Success]]></language> 
+      <language id="fr"><![CDATA[Nombre de réussite]]></language> 
     </name> 
   </property>  
   <property id="itemerrorcount" index="true" type="number" stored="true" keyword="false" filter="false" editable="false" sortable="true">Error Count
@@ -54,7 +54,7 @@
       <language id="de"><![CDATA[Fehleranzahl]]></language>
       <language id="en"><![CDATA[Error Count]]></language>
       <language id="es"><![CDATA[Error Count]]></language>
-      <language id="fr"><![CDATA[Error Count]]></language>
+      <language id="fr"><![CDATA[Nombre d&#39;erreur]]></language>
     </name>
   </property> 
   

@@ -54,15 +54,15 @@ p{
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 
 <div class="info">
-<h2>Image Editor</h2>
+<h2>[[Image Editor]]</h2>
 
-<a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">Crop</a>
-<a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">Reload Original Thumbnails</a>
+<a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
+<a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
 
-##<a class="btn">Rotate</a>
+##<a class="btn">[[Rotate]]</a>
 
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
-		Replace Image: <input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+		[[Replace Image]]: <input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
 		<input type="hidden" name="unzip" value="false" />
 		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
 		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
@@ -99,7 +99,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
 		#if ($height && $height > 0 && $width && $width > 0)
-			<h2>$result.name  <span class="h2e">${width}x${height}</span>  <span class="h2e">Aspect Ratio: $aspectratio</span></h2>
+			<h2>$result.name  <span class="h2e">${width}x${height}</span>  <span class="h2e">[[Aspect Ratio]]: $aspectratio</span></h2>
 			###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
 		#else
 			<h2>$result.name</h2>
@@ -119,7 +119,7 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 			#if( $canviewconversions )
 				#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
 				#if(!$cancrop)
-					<span style="font-size:smaller;margin: 0 20px 20px;">Image is too small to crop to the desired crop dimension</span>
+					<span style="font-size:smaller;margin: 0 20px 20px;">[[Image is too small to crop to the desired crop dimension]]</span>
 				#end
 			#end	
 			<!-- include submit to fatwire -->
@@ -153,7 +153,7 @@ $(document).ready(function(){
 
 <hr>
 <p>
-You can specify custom width, height or formats. For example, a large PDF:
+[[You can specify custom width, height or formats. For example, a large PDF]]:
 </p>
 <div style="width: 550px">
 <p ><i>

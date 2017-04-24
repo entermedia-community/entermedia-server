@@ -14,7 +14,7 @@
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
       <language id="es"><![CDATA[Nombre]]></language>  
-      <language id="fr"><![CDATA[prénom]]></language> 
+      <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
   <property id="rendertype" type="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Render Type 
@@ -22,7 +22,7 @@
       <language id="de"><![CDATA[render-Typ]]></language>  
       <language id="en"><![CDATA[Render Type]]></language>  
       <language id="es"><![CDATA[render Tipo]]></language>  
-      <language id="fr"><![CDATA[type de rendu]]></language> 
+      <language id="fr"><![CDATA[Type de rendu]]></language> 
     </name> 
   </property>  
   <property id="creator" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Creator 
@@ -38,7 +38,7 @@
       <language id="de"><![CDATA[Sync-Tags]]></language>  
       <language id="en"><![CDATA[Sync Tags]]></language>  
       <language id="es"><![CDATA[Etiquetas de sincronización]]></language>  
-      <language id="fr"><![CDATA[Sync Balises]]></language> 
+      <language id="fr"><![CDATA[Sync Tags]]></language> 
     </name> 
   </property>  
   <!--  add timeout values -->  
