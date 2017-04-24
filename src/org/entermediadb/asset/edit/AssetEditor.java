@@ -39,7 +39,7 @@ public class AssetEditor
 
 	public void deleteAsset(Asset inAsset) throws OpenEditRuntimeException
 	{
-		getMediaArchive().removeGeneratedImages(inAsset);
+		getMediaArchive().removeGeneratedImages(inAsset, true);
 		getMediaArchive().getAssetArchive().deleteAsset(inAsset);
 		getMediaArchive().getAssetSearcher().deleteFromIndex(inAsset);
 

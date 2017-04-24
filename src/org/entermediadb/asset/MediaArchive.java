@@ -995,6 +995,13 @@ public class MediaArchive implements CatalogEnabled
 				
 		}
 		
+		if(everything){
+			Page folder = getPageManager().getPage(path);
+			getPageManager().removePage(folder);
+			return;
+		}
+		
+	
 		
 		PathProcessor processor = new PathProcessor()
 		{
