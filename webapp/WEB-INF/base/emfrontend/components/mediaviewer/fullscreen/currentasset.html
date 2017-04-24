@@ -50,14 +50,14 @@ HEY
 
 <script>
 
-$("#main-media-container").livequery("mouseenter", function(e)
+$("#footerbase").livequery("mouseenter", function(e)
 {
-	$("#footerbase").show();	
+	$("#footerbase").css("visibility", "visible");	
 });
 
-$("#main-media-container").livequery("mouseleave", function(e)
+$("#footerbase").livequery("mouseleave", function(e)
 {
-	$("#footerbase").hide();	
+	$("#footerbase").css("visibility", "hidden");	
 });
 
 	var escp = jQuery.Event("keypress");
@@ -80,7 +80,7 @@ margin-right: 50px;
 }
 
 #footerbase { 
-	display: none;
+	visibility: hidden;
 	position: absolute;
 	width: 100%;
 	height: 50px;
