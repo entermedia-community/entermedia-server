@@ -81,7 +81,12 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 			}
 
 			search.addMatches("category", actualid);
-			//search.setResultType("category");
+
+			String sortorder = catalog.get("assetsort");
+			if( sortorder != null)
+			{
+				search.setSortBy(sortorder);
+			}
 			
 			HitTracker res = cachedSearch(inPageRequest, search);	
 			return res;

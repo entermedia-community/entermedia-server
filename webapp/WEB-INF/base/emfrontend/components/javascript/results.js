@@ -251,13 +251,19 @@ jQuery(document).ready(function(url,params)
 		        case 37: // left
 					var div = $("#main-media-viewer" );
 		        	var id = div.data("previous");
-		        	showOverlay(id);		        	
+		        	if( id )
+		        	{
+			        	showOverlay(id);
+			        }		        	
 		        break;
 		
 				case 39: // right
 		        	var div = $("#main-media-viewer" );
 		        	var id = div.data("next");
-		        	showOverlay(id);
+		        	if( id )
+		        	{
+			        	showOverlay(id);
+			        }	
 		        break;
 		        
 		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits

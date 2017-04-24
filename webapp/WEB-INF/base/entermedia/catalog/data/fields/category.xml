@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties> 
-  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Category Name 
+  <property id="name" editable="true" index="true" stored="true"   >Category Name 
     <name> 
       <language id="de"><![CDATA[Kategoriename]]></language>  
       <language id="en"><![CDATA[Category Name]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[Catégorie]]></language> 
     </name> 
   </property>  
-  <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Category Id 
+  <property id="id" editable="true" index="true" stored="true"   >Category Id 
     <name> 
       <language id="de"><![CDATA[Kategorie ID]]></language>  
       <language id="en"><![CDATA[Category Id]]></language>  
@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Id catégorie]]></language> 
     </name> 
   </property>  
-  <property id="shortdescription" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Short Description 
+  <property id="shortdescription" editable="true" index="true" stored="true"   >Short Description 
     <name> 
       <language id="de"><![CDATA[kurze Beschreibung]]></language>  
       <language id="en"><![CDATA[Short Description]]></language>  
@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Brève description]]></language> 
     </name> 
   </property>  
-  <property id="parentid" editable="true" type="list" listid="category" viewtype="text" index="true" stored="true" keyword="false" filter="false" sortable="true">Parent Category Id 
+  <property id="parentid" editable="true" type="list" listid="category" viewtype="text" index="true" stored="true"   >Parent Category Id 
     <name> 
       <language id="de"><![CDATA[geordnete Kategorie-ID]]></language>  
       <language id="en"><![CDATA[Parent Category Id]]></language>  
@@ -33,12 +33,12 @@
       <language id="fr"><![CDATA[Id Catégorie parent]]></language> 
     </name> 
   </property>  
-  <property id="parents" editable="false" type="list" listid="category" viewtype="text" index="true" stored="true" keyword="false" filter="false"> 
+  <property id="parents" editable="false" type="list" listid="category" viewtype="text" index="true" stored="true"  > 
     <name> 
       <language id="en"><![CDATA[Parents]]></language>  
     </name> 
   </property>  
-  <property id="categorypath" editable="true" index="true" stored="true" sortable="true" keyword="false" filter="false">Path 
+  <property id="categorypath" editable="true" index="true" stored="true"   >Path 
     <name> 
       <language id="de"><![CDATA[Pfad]]></language>  
       <language id="en"><![CDATA[Path]]></language>  
@@ -46,7 +46,7 @@
       <language id="fr"><![CDATA[Chemin]]></language> 
     </name> 
   </property>  
-  <property id="creationdate" index="true" stored="true" editable="true" sortable="true" type="date" datatype="date" keyword="false" filter="false">Created Date 
+  <property id="creationdate" index="true" stored="true" editable="true"  type="date" datatype="date"  >Created Date 
     <name> 
       <language id="de"><![CDATA[Erstellungsdatum]]></language>  
       <language id="en"><![CDATA[Created Date]]></language>  
@@ -54,7 +54,7 @@
       <language id="fr"><![CDATA[Date de création]]></language> 
     </name> 
   </property>  
-  <property id="foldertype" editable="true" index="true" stored="true" type="list" keyword="false" filter="false" sortable="true">Type 
+  <property id="foldertype" editable="true" index="true" stored="true" type="list"   >Type 
     <name> 
       <language id="de"><![CDATA[Art]]></language>  
       <language id="en"><![CDATA[Type]]></language>  
@@ -62,7 +62,7 @@
       <language id="fr"><![CDATA[Type]]></language> 
     </name> 
   </property>  
-  <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system" keyword="false" filter="false" sortable="true" type="list">Users 
+  <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system"    type="list">Users 
     <name> 
       <language id="de"><![CDATA[Benutzer]]></language>  
       <language id="en"><![CDATA[Users]]></language>  
@@ -70,7 +70,7 @@
       <language id="fr"><![CDATA[Utilisateurs]]></language> 
     </name> 
   </property>  
-  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system" keyword="false" filter="false" sortable="true" type="list">Groups 
+  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system"    type="list">Groups 
     <name> 
       <language id="de"><![CDATA[Gruppen]]></language>  
       <language id="en"><![CDATA[Groups]]></language>  
@@ -78,7 +78,7 @@
       <language id="fr"><![CDATA[Groupes]]></language> 
     </name> 
   </property>  
-  <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup" keyword="false" filter="false" sortable="true" type="list">Roles
+  <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"    type="list">Roles
     <name>
       <language id="de"><![CDATA[Rollen]]></language>
       <language id="en"><![CDATA[Roles]]></language>
@@ -86,4 +86,11 @@
       <language id="fr"><![CDATA[Rôles]]></language>
     </name>
   </property> 
+
+  <property id="assetsort" editable="true" index="true" stored="true" > 
+    <name> 
+      <language id="en"><![CDATA[Asset Sort]]></language>  
+    </name> 
+  </property>  
+
 </properties>

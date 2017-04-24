@@ -1,5 +1,4 @@
 <page>
-	<path-action name="ProjectModule.searchForAssetsOnCollection" cancel="true"/>
 
 	<path-action name="MediaSearchModule.searchCategories"/>
 	<path-action name="ProjectModule.loadCollectionFromFolder"/>
