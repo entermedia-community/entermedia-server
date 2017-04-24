@@ -72,11 +72,11 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 					if( data != null)
 					{
 						users.add(data);
-//						if( users.size() > 1000)//makes it bulk.
-//						{
+						if( users.size() > 1000)//makes it bulk.
+						{
 							updateIndex(users, null);
 							users.clear();
-//						}
+						}
 					}	
 					else
 					{
