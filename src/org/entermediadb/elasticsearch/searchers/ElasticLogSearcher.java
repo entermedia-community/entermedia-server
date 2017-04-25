@@ -1,31 +1,12 @@
 package org.entermediadb.elasticsearch.searchers;
 
-import java.util.Iterator;
-
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.openedit.Data;
-import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventListener;
 import org.openedit.hittracker.SearchQuery;
-import org.openedit.util.DateStorageUtil;
 
-public class ElasticLogSearcher extends BaseElasticSearcher   implements WebEventListener {
+public class ElasticLogSearcher extends BaseElasticSearcher  {
 
-	
-	public void eventFired(WebEvent inEvent) {
-		Data entry = createNewData();
-		entry.setValue("operation", inEvent.getOperation());
-		entry.setValue("user", inEvent.getUsername());
-		for (Iterator iterator = inEvent.keySet().iterator(); iterator
-				.hasNext();) {
-			String key = (String) iterator.next();
-			entry.setValue(key, inEvent.get(key));
-		}
-		entry.setValue("date", inEvent.getDate());
-		saveData(entry, null);
-	}
 	
 	
 	@Override

@@ -51,7 +51,7 @@
 	<bean id="AssetEditModule" class="org.entermediadb.asset.modules.AssetEditModule">
 		<property name="assetImporter"><ref bean="assetImporter" /></property>
 		<property name="fileUpload"><ref bean="fileUpload" /></property>
-		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
+		<property name="eventManager"><ref bean="eventManager" /></property>
 		<property name="webServer"><ref bean="WebServer" /></property>
 		<property name="attachmentManager"><ref bean="attachmentManager" /></property>
 	</bean>
@@ -78,21 +78,21 @@
 		<property name="commentArchive">
 			<ref bean="commentArchive" />
 		</property>
-		<property name="webEventListener">
-			<ref bean="mediaEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 	</bean>
 	<bean id="CategoryEditModule" class="org.entermediadb.asset.modules.CategoryEditModule">
-		<property name="webEventListener">
-			<ref bean="mediaEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 	</bean>
 	<bean id="DataEditModule" class="org.entermediadb.asset.modules.DataEditModule">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
-		<property name="webEventListener">
-			<ref bean="pathEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 
 	</bean>
@@ -134,8 +134,8 @@
 		<property name="searchQueryArchive">
 			<ref bean="searchQueryArchive" />
 		</property>
-		<property name="webEventHandler">
-			<ref bean="mediaEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 		
 	</bean>
@@ -176,24 +176,6 @@
 	</bean>
 	<bean id="TabModule" class="org.entermediadb.webui.tabs.TabModule">
 	</bean>
-
-	<!-- bean id="TaskModule" name="TaskModule"
-		class="org.entermediadb.asset.workflow.TaskModule" abstract="false"
-		 lazy-init="default" autowire="default"
-		dependency-check="default">
-		<property name="mediaArchiveManager">
-			<ref bean="mediaArchiveManager" />
-		</property>
-
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="taskManager">
-			<ref bean="workflowTaskManager" />
-		</property>
-	</bean -->
-
-
 
 	<bean id="UserProfileModule" class="org.entermediadb.asset.modules.UserProfileModule">
 		<property name="xmlArchive">
@@ -267,78 +249,19 @@
 	</bean>
 
 	<bean id="Date" class="org.entermediadb.modules.dates.DateModule"/>
-<!-- 
-	<bean id="luceneUserSearcher" class="org.openedit.users.LuceneUserSearcher" scope="prototype">
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
-	</bean>
-	<bean id="luceneGroupSearcher" class="org.openedit.users.LuceneGroupSearcher" scope="prototype">
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
-	</bean>
-	<bean id="luceneTransientSearcher" class="org.openedit.data.lucene.LuceneTransientSearcher" scope="prototype">
-		<property name="moduleManager"><ref bean="moduleManager" /></property>
-		<property name="searcherManager"><ref bean="searcherManager" /></property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
-		<property name="pageManager"><ref bean="pageManager" /></property>
-		<property name="indexRootFolder"><value>lucene</value></property>
-	</bean>
--->
-	<!-- 
-	<bean id="xmlDynamicSearcher" class="org.openedit.xml.XmlSearcher" scope="prototype">
-		<property name="xmlArchive">
-			<ref bean="xmlArchive" />
-		</property>
-		<property name="webEventListener">
-			<ref bean="editorEventHandler" />
-		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-	</bean>
-	 -->
 	<bean id="xmlFolderSearcher" class="org.openedit.xml.XmlFolderSearcher"	scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="xmlArchive"><ref bean="xmlArchive" /></property>
 	</bean>
-	<!-- 
-	<bean id="xmlDataSearcher" class="org.openedit.data.XmlFileSearcher" scope="prototype">
-		<property name="pageManager"><ref bean="pageManager"/></property>
-		<property name="xmlArchive"><ref bean="xmlArchive"/></property>
-		<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="rootDirectory"><ref bean="root"/></property>
-		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>
-		<property name="indexRootFolder"><value>lucene</value></property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>	
-		<property name="moduleManager"><ref bean="moduleManager" /></property>	
-	</bean>	
- -->
 	<bean id="xmlSearcher" class="org.openedit.xml.XmlSearcher"	scope="prototype">
 		<property name="xmlArchive">
 			<ref bean="xmlArchive" />
 		</property>
-		<property name="webEventListener">
-			<ref bean="editorEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 		<property name="cacheManager"><ref bean="cacheManager"/></property>
 	</bean>
-
-
-<!-- 
-	<bean id="compositeLuceneSearcher" class="org.openedit.data.lucene.CompositeLuceneSearcher"
-		scope="prototype">
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
-		<property name="userProfileManager"><ref bean="userProfileManager"/></property>
-	</bean>
- -->
-
 
 	<bean id="searchQueryArchive" class="org.openedit.data.SearchQueryArchive"
 		>
@@ -391,15 +314,7 @@
 	</bean>
 
 
-
-	<bean id="editorEventHandler" class="org.openedit.event.WebEventCompositeHandler">
-		<property name="webEventListeners">
-			<list>
-				<ref bean="logSearcherEventHandler" />
-			</list>
-		</property>
-	</bean>
-	<bean id="logSearcherEventHandler" class="org.entermediadb.logger.LogSearcherEventHandler">
+	<bean id="eventLogger" class="org.entermediadb.logger.EventLogger">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
@@ -474,11 +389,8 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-		<property name="mediaEventHandler">
-			<ref bean="mediaEventHandler" />
-		</property>
-		<property name="loggingEventHandler">
-			<ref bean="logSearcherEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -773,8 +685,8 @@
 		<property name="dataConnector">
 			<ref bean="luceneAssetDataConnector" />
 		</property>
-		<property name="webEventListener">
-			<ref bean="mediaEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -850,14 +762,8 @@
 		</property>
 	</bean>
 
-	<bean id="mediaEventHandler" class="org.openedit.event.WebEventCompositeHandler">
-		<property name="webEventListeners">
-			<list>
-				<ref bean="pathEventHandler" />
-				<ref bean="folderMonitor" />
-			</list>
-		</property>
-
+	<bean id="eventManager" class="org.openedit.event.EventManager">
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
 	</bean>
 
 	
@@ -952,19 +858,10 @@
 		<property name="root"><ref bean="root"/></property>
 	</bean>
 	
-	<bean id="userEventHandler" class="org.openedit.event.WebEventCompositeHandler">
-		<property name="webEventListeners">
-			<list>
-				<ref bean="logSearcherEventHandler"/>
-				<ref bean="pathEventHandler"/>
-			</list>
-		</property>		
-	</bean>
-
 
 	<bean id="assetStatsManager" class="org.entermediadb.asset.AssetStatsManager">
-		<property name="mediaEventHandler">
-			<ref bean="mediaEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 	</bean>
@@ -1069,7 +966,7 @@
 	
 	
 	<bean id="ConvertStatusModule" class="org.entermediadb.asset.modules.ConvertStatusModule">
-		<property name="webEventListener"><ref bean="mediaEventHandler" /></property>
+		<property name="eventManager"><ref bean="eventManager" /></property>
 		<property name="searcherManager"><ref bean="searcherManager" /></property>
 	</bean>
 
@@ -1134,27 +1031,6 @@
 		 lazy-init="default" autowire="default"
 		dependency-check="default">
 	</bean>
-    <!-- 
-    <bean id="luceneAssetDataConnector" class="org.entermediadb.connectors.lucene.LuceneAssetDataConnector"
-		scope="prototype">
-		<property name="webEventListener">
-			<ref bean="mediaEventHandler" />
-		</property>
-		<property name="rootDirectory">
-			<ref bean="root" />
-		</property>
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-		<property name="searcherManager">
-			<ref bean="searcherManager" />
-		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
-		
-		
-	</bean>
- -->
-
 	<bean id="videoEditor" class="org.entermediadb.videoedit.VideoEditor" >
 		
 	</bean>
@@ -1383,8 +1259,8 @@
 		<property name="cookieEncryption">
 			<ref bean="stringEncryption" />
 		</property>
-		<property name="webEventListener">
-			<ref bean="pathEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 		
 	</bean>
@@ -1447,8 +1323,8 @@
 		<property name="dataConnector">
 			<ref bean="elasticAssetDataConnector" />
 		</property>
-		<property name="webEventListener">
-			<ref bean="mediaEventHandler" />
+		<property name="eventManager">
+			<ref bean="eventManager" />
 		</property>
 		<property name="pageManager">
 			<ref bean="pageManager" />
@@ -1877,7 +1753,7 @@
 			<ref bean="searcherManager"/>
 		</property>
 		<property name="webEventHandler">
-			<ref bean="mediaEventHandler" />
+			<ref bean="eventManager" />
 		</property>
 		<property name="lockManager">
 			<ref bean="lockManager" />
@@ -1901,7 +1777,7 @@
 	
 	<bean id="orderManager" class="model.orders.BaseOrderManager" >
 	   	<property name="searcherManager"><ref bean="searcherManager"/></property>
-		<property name="webEventHandler"><ref bean="mediaEventHandler" /></property>
+		<property name="eventManager"><ref bean="eventManager" /></property>
 		<property name="lockManager"><ref bean="lockManager" /></property>
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="moduleManager"><ref bean="moduleManager" /></property>

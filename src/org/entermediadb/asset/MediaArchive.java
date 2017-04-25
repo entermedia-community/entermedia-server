@@ -46,8 +46,9 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventHandler;
+import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -72,8 +73,20 @@ public class MediaArchive implements CatalogEnabled
 	protected File BLANKFILE = new File("blank");
 	protected EmailErrorHandler fieldEmailErrorHandler;
 	protected PageManager fieldPageManager;
-	protected WebEventHandler fieldMediaEventHandler;
-	protected WebEventHandler fieldLoggingEventHandler;
+	
+	protected EventManager fieldEventManager;
+	
+//	protected EventManager fieldMediaEventHandler;
+//	protected EventManager fieldLoggingEventHandler;
+
+	public EventManager getEventManager()
+	{
+		return fieldEventManager;
+	}
+	public void setEventManager(EventManager inEventManager)
+	{
+		fieldEventManager = inEventManager;
+	}
 
 	protected TranscodeTools fieldTranscodeTools;
 	protected AssetArchive fieldAssetArchive;
@@ -481,16 +494,6 @@ public class MediaArchive implements CatalogEnabled
 //		return false;
 //	}
 	
-	public WebEventHandler getMediaEventHandler()
-	{
-		return fieldMediaEventHandler;
-	}
-
-	public void setMediaEventHandler(WebEventHandler inMediaEventHandler)
-	{
-		fieldMediaEventHandler = inMediaEventHandler;
-	}
-
 	public String getLinkToAssetDetails(String inSourcePath)
 	{
 		String assetroot = "/" + getCatalogId() + "/assets"; 
@@ -1168,7 +1171,7 @@ public class MediaArchive implements CatalogEnabled
 			event.setProperty("dataid", asset.getId() );
 
 			//archive.getWebEventListener()
-			getMediaEventHandler().eventFired(event);
+			getEventManager().fireEvent(event);
 		}
 	}
 	public void fireMediaEvent(String operation, User inUser)
@@ -1180,7 +1183,7 @@ public class MediaArchive implements CatalogEnabled
 			event.setUser(inUser);
 			event.setSource(this);
 			//event.setSourcePath("/"); //TODO: This should not be needed any more
-			getMediaEventHandler().eventFired(event);
+			getEventManager().fireEvent(event);
 	}
 
 	public void fireMediaEvent(String operation, String inMetadataType, String inId,  User inUser)
@@ -1195,7 +1198,7 @@ public class MediaArchive implements CatalogEnabled
 			//event.setProperty("sourcepath", inSourcePath);
 			event.setProperty("targetid", inId);
 			//archive.getWebEventListener()
-			getMediaEventHandler().eventFired(event);
+			getEventManager().fireEvent(event);
 	}
 	
 	//conversionfailed  conversiontask assetsourcepath, params[id=102], admin
@@ -1212,7 +1215,7 @@ public class MediaArchive implements CatalogEnabled
 			
 			event.setProperty("sourcepath", inSourcePath);
 			//archive.getWebEventListener()
-			getMediaEventHandler().eventFired(event);
+			getEventManager().fireEvent(event);
 	}
 
 	public void fireMediaEvent(String operation, String inMetadataType, Map inParams, User inUser)
@@ -1227,7 +1230,7 @@ public class MediaArchive implements CatalogEnabled
 			event.setSource(this);
 			
 			//archive.getWebEventListener()
-			getMediaEventHandler().eventFired(event);
+			getEventManager().fireEvent(event);
 	}
 	
 	
@@ -1766,27 +1769,6 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 	
-	public void fireLoggingEvent(String inSearchType, String operation, String inFunctionType, String inLog, User inUser)
-	{
-			WebEvent event = new WebEvent();
-			event.setOperation(operation);
-			event.setSearchType(inSearchType);
-			event.setCatalogId(getCatalogId());
-			event.setUser(inUser);
-			event.setSource(this);
-			event.setProperty("functiontype", inFunctionType);
-			event.setProperty("log", inLog);
-			getLoggingEventHandler().eventFired(event);
-	}
-
-	public WebEventHandler getLoggingEventHandler()
-	{
-		return fieldLoggingEventHandler;
-	}
-	public void setLoggingEventHandler(WebEventHandler inLoggingEventHandler)
-	{
-		fieldLoggingEventHandler = inLoggingEventHandler;
-	}
 	public Collection<Data> listHiddenCollections()
 	{
 		Searcher search = getSearcher("librarycollection");

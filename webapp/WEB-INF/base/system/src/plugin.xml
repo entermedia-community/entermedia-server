@@ -36,7 +36,7 @@
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="catalogId"><value>system</value></property>
 		<property name="authenticator"><ref bean="authenticator"/></property>
-		<property name="webEventHandler"><ref bean="userEventHandler"/></property>
+		<property name="eventManager"><ref bean="eventManager"/></property>
 	</bean>
 	
 	<bean id="xmlUserArchive" class="org.openedit.users.filesystem.XmlUserArchive" scope="prototype">
@@ -191,9 +191,6 @@
 				<value>testRestricted</value>
 			</list>
 		</property>
-	</bean>
-	
-	<bean id="userEventHandler" class="org.openedit.event.WebEventCompositeHandler">
 	</bean>
 	
 	<bean id="xmlUtil" class="org.openedit.util.XmlUtil">

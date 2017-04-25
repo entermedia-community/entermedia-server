@@ -1,12 +1,9 @@
 package org.entermediadb.asset.modules;
 
-import java.util.Iterator;
-
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.MediaTranscoder;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
@@ -14,15 +11,16 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventListener;
+import org.openedit.event.EventManager;
 import org.openedit.repository.ContentItem;
 
 public class ConvertStatusModule extends BaseMediaModule
 {
 	
 	protected SearcherManager fieldSearcherManager;
-	protected WebEventListener fieldWebEventListener;
+	protected EventManager fieldEventManager;
 
 
 	public SearcherManager getSearcherManager()
@@ -37,14 +35,14 @@ public class ConvertStatusModule extends BaseMediaModule
 		fieldSearcherManager = searcherManager;
 	}
 	
-	public WebEventListener getWebEventListener()
+	public EventManager getEventManager()
 	{
-		return fieldWebEventListener;
+		return fieldEventManager;
 	}
 
-	public void setWebEventListener(WebEventListener webEventListener)
+	public void setEventManager(EventManager EventManager)
 	{
-		fieldWebEventListener = webEventListener;
+		fieldEventManager = EventManager;
 	}
 
 	//this should kick off the groovy event by firing a path event?
@@ -117,15 +115,14 @@ public class ConvertStatusModule extends BaseMediaModule
 	public void processConversions(WebPageRequest inReq)
 	{
 		
-		
 		WebEvent event = new WebEvent();
 		event.setSource(this);
 		MediaArchive archive = getMediaArchive(inReq);
 		event.setCatalogId(archive.getCatalogId());
 		event.setOperation("conversions/runconversions");
 		event.setUser(inReq.getUser());
-		//log.info(getWebEventListener());
-		getWebEventListener().eventFired(event);
+		//log.info(getEventManager());
+		getEventManager().fireEvent(event);
 	}
 	
 	

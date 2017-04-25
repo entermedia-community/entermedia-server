@@ -34,6 +34,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebServer;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.event.WebEvent;
 import org.openedit.locks.Lock;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
@@ -41,6 +42,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.XmlVersionRepository;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
 import org.openedit.util.Exec;
@@ -334,11 +336,11 @@ public class BaseHotFolderManager implements HotFolderManager
 			path = path + "/" + inSubChangePath;
 			checkformod = true;
 		}
-		inArchive.fireLoggingEvent("hotfolder","update", "start", "Scanning " + path, null);
+		importer.fireHotFolderEvent(inArchive, "update", "start", "Scanning " + path, null);
 		log.info(path + " scan started. mod check = " + checkformod);
 		
 		List<String> paths = importer.processOn(base, path, checkformod, inArchive, null);
-		inArchive.fireLoggingEvent("hotfolder","update", "finish", String.valueOf( paths.size()), null);
+		importer.fireHotFolderEvent(inArchive, "update", "finish", String.valueOf( paths.size()), null);
 		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
 

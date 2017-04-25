@@ -20,7 +20,7 @@ import org.openedit.data.SearchQueryArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventHandler;
+import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -40,14 +40,14 @@ public class MultiSearchModule extends BaseMediaModule
 {
 	protected SearcherManager fieldSearcherManager;
 	protected SearchQueryArchive fieldSearchQueryArchive;
-	protected WebEventHandler fieldWebEventHandler;
+	protected EventManager fieldEventManager;
 	
-	protected WebEventHandler getWebEventHandler() {
-		return fieldWebEventHandler;
+	protected EventManager getEventManager() {
+		return fieldEventManager;
 	}
 
-	public void setWebEventHandler(WebEventHandler inListener) {
-		fieldWebEventHandler = inListener;
+	public void setEventManager(EventManager inListener) {
+		fieldEventManager = inListener;
 	}
 	
 	public SearchQueryArchive getSearchQueryArchive()
@@ -587,14 +587,14 @@ public class MultiSearchModule extends BaseMediaModule
 
 	protected void fireCatalogEvent(String inOperation, String newcatalogid) 
 	{
-		if (fieldWebEventHandler != null) {
+		if (fieldEventManager != null) {
 			WebEvent event = new WebEvent();
 			event.setOperation(inOperation);
 			event.setSearchType("catalog");
 			event.setSource(this);
 			event.setProperty("newcatalogid", newcatalogid);
 			event.setCatalogId("system");
-			getWebEventHandler().eventFired(event);
+			getEventManager().fireEvent(event);
 		}
 	}
 	

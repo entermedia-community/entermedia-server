@@ -20,6 +20,7 @@ import org.entermediadb.asset.search.AssetSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -130,6 +131,7 @@ public class AssetImporter
 		};
 		finder.setModificationCheck(checkformod);
 		finder.setMediaArchive(inArchive);
+		finder.setAssetImporter(this);
 		finder.setPageManager(getPageManager());
 		finder.setRootPath(inRootPath);
 		finder.setAssetUtilities(getAssetUtilities());
@@ -380,5 +382,19 @@ public class AssetImporter
 		}
 		return null;
 	}
+
+	public void fireHotFolderEvent(MediaArchive inArchive, String operation, String inFunctionType, String inLog, User inUser)
+	{
+			WebEvent event = new WebEvent();
+			event.setOperation(operation);
+			event.setSearchType("hotfolder");
+			event.setCatalogId(inArchive.getCatalogId());
+			event.setUser(inUser);
+			event.setSource(this);
+			event.setProperty("functiontype", inFunctionType);
+			event.setProperty("log", inLog);
+			inArchive.getEventManager().fireEvent(event);
+	}
+
 	
 }

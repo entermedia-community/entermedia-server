@@ -1443,7 +1443,7 @@ public class ProjectManager implements CatalogEnabled
 		return true;
 	}
 
-	public int approveSelection(WebPageRequest inReq, HitTracker inHits, String inCollectionid)
+	public int approveSelection(WebPageRequest inReq, HitTracker inHits, String inCollectionid, User inUser, String inNote)
 	{
 		Collection tosave = new ArrayList();
 		int approved = 0;
@@ -1458,11 +1458,55 @@ public class ProjectManager implements CatalogEnabled
 			if( tosave.size() > 400)
 			{
 				searcher.saveAllData(tosave,null);
+				logAssetEvent(tosave,"approved",inCollectionid);
+				tosave.clear();
+			}
+		}
+		searcher.saveAllData(tosave,null);
+		logAssetEvent(tosave,"approved",inCollectionid);
+		return approved;
+	}
+	
+	private void logAssetEvent(Collection inTosave, String inString, String inCollectionid)
+	{
+		// TODO Auto-generated method stub
+		//getMediaArchive().firePathEvent(operation, inUser, inData); //path event URL approach
+		
+		//getCollectionEventHandler().fireEvent(collection, etc);  //decoubled java event
+		
+		
+		//Check if exist
+		
+		//Allow people to register and listen
+		getMediaArchive().getEventManager().fireEvent(webevent); //Central control procedural
+		
+	}
+
+	public int rejectSelection(WebPageRequest inReq, HitTracker inHits, String inCollectionid, User inUser, String inNote)
+	{
+		Collection tosave = new ArrayList();
+		int approved = 0;
+		Searcher searcher = getMediaArchive().getAssetSearcher();
+		for (Iterator iterator = inHits.getSelectedHitracker().iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			asset = searcher.loadData(asset);
+			asset.setValue("editstatus", "rejected");
+			tosave.add(asset);
+			approved++;
+			if( tosave.size() > 400)
+			{
+				searcher.saveAllData(tosave,null);
+				logAssetEvent(tosave,"rejected",inCollectionid);
 				tosave.clear();
 			}
 		}
 		//TODO: Save this event to a log
 		searcher.saveAllData(tosave,null);
+		logAssetEvent(tosave,"rejected",inCollectionid);
+
 		return approved;
 	}
+
+	
 }
