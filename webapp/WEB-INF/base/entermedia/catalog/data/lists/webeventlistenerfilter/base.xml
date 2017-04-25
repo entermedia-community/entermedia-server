@@ -7,4 +7,7 @@
 	<row id="6"  webeventlistener="logger" action="user/authentication" ></row>
 	<row id="7"  webeventlistener="logger" action="asset/userlikes" ></row>
 	<row id="8"  webeventlistener="logger" action="asset/download" ></row>	
+	<row id="8"  webeventlistener="logger" action="asset/approved" ></row>	
+	<row id="8"  webeventlistener="logger" action="asset/rejected" ></row>	
+	
 </rows>

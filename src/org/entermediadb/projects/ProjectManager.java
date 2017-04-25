@@ -30,6 +30,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -1458,27 +1459,38 @@ public class ProjectManager implements CatalogEnabled
 			if( tosave.size() > 400)
 			{
 				searcher.saveAllData(tosave,null);
-				logAssetEvent(tosave,"approved",inCollectionid);
+				logAssetEvent(tosave,"approval",inReq.getUser(),inCollectionid);
 				tosave.clear();
 			}
 		}
 		searcher.saveAllData(tosave,null);
-		logAssetEvent(tosave,"approved",inCollectionid);
+		logAssetEvent(tosave,"approval",inReq.getUser(),inCollectionid);
 		return approved;
 	}
 	
-	private void logAssetEvent(Collection inTosave, String inString, String inCollectionid)
+	protected void logAssetEvent(Collection<Asset> inTosave, String inOperation, User inUser, String inCollectionid)
 	{
-		// TODO Auto-generated method stub
-		//getMediaArchive().firePathEvent(operation, inUser, inData); //path event URL approach
-		
-		//getCollectionEventHandler().fireEvent(collection, etc);  //decoubled java event
-		
-		
-		//Check if exist
-		
-		//Allow people to register and listen
-		getMediaArchive().getEventManager().fireEvent(webevent); //Central control procedural
+		for (Iterator iterator = inTosave.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			//Allow people to register and listen
+			//getMediaArchive().fireMediaEvent(inOperation, null, asset);
+			WebEvent event = new WebEvent();
+			event.setSearchType("asset");
+			event.setCatalogId(getCatalogId());
+			event.setOperation(inOperation);
+			event.setSource(this);
+			event.setUser(inUser);
+			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
+			event.setProperty("sourcepath", asset.getSourcePath());
+			event.setProperty("assetids", asset.getId() );
+			event.setProperty("dataid", asset.getId() );
+			event.setProperty("librarycollection", inCollectionid );
+			//TODO: Log in one database table called collectionevents
+			//archive.getWebEventListener()
+			getMediaArchive().getEventManager().fireEvent(event);
+			
+		}
 		
 	}
 
@@ -1497,13 +1509,13 @@ public class ProjectManager implements CatalogEnabled
 			if( tosave.size() > 400)
 			{
 				searcher.saveAllData(tosave,null);
-				logAssetEvent(tosave,"rejected",inCollectionid);
+				logAssetEvent(tosave,"rejected",inReq.getUser(), inCollectionid);
 				tosave.clear();
 			}
 		}
 		//TODO: Save this event to a log
 		searcher.saveAllData(tosave,null);
-		logAssetEvent(tosave,"rejected",inCollectionid);
+		logAssetEvent(tosave,"rejected",inReq.getUser(), inCollectionid);
 
 		return approved;
 	}

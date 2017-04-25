@@ -20,6 +20,7 @@
   <!-- 
   <property id="libraryid" type="list" listid="library" editable="true" index="true" stored="true">Library</property>
    -->  
+   <!-- 
   <property id="_parent" index="true" type="list" listid="library" legacy="libraryid" keyword="false" filter="false" stored="false" editable="false" sortable="true">Parent Table
     <name>
       <language id="de"><![CDATA[Elterntabelle]]></language>
@@ -27,5 +28,6 @@
       <language id="es"><![CDATA[Tabla de Padres]]></language>
       <language id="fr"><![CDATA[Table mère]]></language>
     </name>
-  </property> 
+  </property>
+   --> 
 </properties>

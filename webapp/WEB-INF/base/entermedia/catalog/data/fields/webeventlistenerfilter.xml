@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="folderSearcher"> 
+  <property id="id" index="true" editable="true" stored="true" keyword="false" filter="false" sortable="true"> 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="webeventlistener" editable="true" index="true" stored="true" datatype="list" > 
+    <name> 
+      <language id="en"><![CDATA[Listener]]></language>  
+    </name> 
+  </property>  
+  <property id="action" index="true" stored="true" editable="true"> 
+    <name> 
+      <language id="en"><![CDATA[Action]]></language>  
+    </name> 
+  </property>  
+</properties>
