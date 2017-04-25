@@ -65,7 +65,7 @@
       <language id="fr"><![CDATA[Bibliothèque]]></language> 
     </name> 
   </property>  
-  <property id="addnotifypolicy" index="true" type="list" listid="librarycollection/addnotifypolicy" stored="true" editable="true" note="Who do we notify when assets are added" keyword="false" filter="false" sortable="true">Send Notifications 
+  <property id="addnotifypolicy" index="true" type="list" listid="librarycollection/addnotifypolicy" stored="true" editable="true" note="[[Who do we notify when assets are added]]" keyword="false" filter="false" sortable="true">Send Notifications 
     <name> 
       <language id="de"><![CDATA[Benachrichtigungen versenden]]></language>  
       <language id="en"><![CDATA[Send Notifications]]></language>  

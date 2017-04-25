@@ -16,4 +16,3 @@ Edit=Modifier
 Collection=Collection
 Add\ Field=Ajouter un champ
 Library=Bibliothèque
-
