@@ -76,6 +76,7 @@ public class PluginUpgrader
 		{
 			try {
 				// *** connect to configured web site
+				log.info("Downloading " + plugin.getInstallScript());
 				new Downloader().download(plugin.getInstallScript(), out);
 		
 				Map variables = new HashMap();

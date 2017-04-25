@@ -20,7 +20,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventListener;
+import org.openedit.event.EventManager;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
 import org.openedit.users.UserSearcher;
@@ -33,17 +33,17 @@ public class OauthModule extends BaseMediaModule
 
 	
 	protected StringEncryption fieldCookieEncryption;
-	protected WebEventListener fieldWebEventListener;
+	protected EventManager fieldEventManager;
 
 
-	public WebEventListener getWebEventListener()
+	public EventManager getEventManager()
 	{
-		return fieldWebEventListener;
+		return fieldEventManager;
 	}
 
-	public void setWebEventListener(WebEventListener inWebEventListener)
+	public void setEventManager(EventManager inEventManager)
 	{
-		fieldWebEventListener = inWebEventListener;
+		fieldEventManager = inEventManager;
 	}
 
 	public StringEncryption getCookieEncryption()
@@ -245,7 +245,7 @@ public class OauthModule extends BaseMediaModule
 			String value = target.getUserName() + "md542" + md5;
 			inReq.putPageValue("entermediakey", value);
 			inReq.putPageValue( "user", target);
-			if(getWebEventListener() != null)
+			if(getEventManager() != null)
 			{
 				WebEvent event = new WebEvent();
 				event.setSearchType("userprofile");
@@ -256,7 +256,7 @@ public class OauthModule extends BaseMediaModule
 
 				event.setProperty("applicationid", inReq.findValue("applicationid"));
 
-				getWebEventListener().eventFired(event);
+				getEventManager().fireEvent(event);
 			}
 
 

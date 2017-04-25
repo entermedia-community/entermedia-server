@@ -3,14 +3,14 @@ package org.entermediadb.asset;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventHandler;
+import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
 public class AssetStatsManager
 {
-	protected WebEventHandler fieldMediaEventHandler;
+	protected EventManager fieldEventManager;
 	protected SearcherManager fieldSearcherManager;
 //	protected Map fieldViewCache;
 //	protected long fieldViewExpireTime;
@@ -35,14 +35,14 @@ public class AssetStatsManager
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public WebEventHandler getMediaEventHandler()
+	public EventManager getEventManager()
 	{
-		return fieldMediaEventHandler;
+		return fieldEventManager;
 	}
 
-	public void setMediaEventHandler(WebEventHandler inMediaEventHandler)
+	public void setEventManager(EventManager inEventManager)
 	{
-		fieldMediaEventHandler = inMediaEventHandler;
+		fieldEventManager = inEventManager;
 	}
 
 	public void logAssetDownload(String inCatalogId, String inSourcePath, String inResult, User inUser)
@@ -55,12 +55,12 @@ public class AssetStatsManager
 		change.setUser(inUser);
 		change.setProperty("result", inResult);
 		change.setCatalogId(inCatalogId);
-		getMediaEventHandler().eventFired(change);
+		getEventManager().fireEvent(change);
 	}
 	public void logAssetPreview(MediaArchive inArchive, Asset inAsset, User inUser)
 	{
 		WebEvent change = new WebEvent();
-		change.setOperation("asset/preview");
+		change.setOperation("preview");
 		change.setSearchType("asset");
 		change.setSourcePath(inAsset.getSourcePath());
 		change.setUser(inUser);
@@ -76,7 +76,7 @@ public class AssetStatsManager
 			inAsset.setProperty("assetviews",String.valueOf(assetviews)); //this will be overridden 
 		}
 
-		getMediaEventHandler().eventFired(change);
+		getEventManager().fireEvent(change);
 	}
 	
 	public long getViewsForAsset(Asset inAsset)
@@ -137,7 +137,7 @@ public class AssetStatsManager
 			change.setSearchType("asset");
 			change.setSourcePath(inAsset.getSourcePath());
 			change.setCatalogId(inAsset.getCatalogId());
-			getMediaEventHandler().eventFired(change);
+			getEventManager().fireEvent(change);
 		}
 	}
 }

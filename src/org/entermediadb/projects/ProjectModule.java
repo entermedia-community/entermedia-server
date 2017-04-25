@@ -723,8 +723,19 @@ public class ProjectModule extends BaseMediaModule
 		HitTracker hits = (HitTracker)inReq.getPageValue("hits");
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
-		int count = manager.approveSelection(inReq,hits,collectionid);
+		String comment = inReq.getRequestParameter("comment");
+		int count = manager.approveSelection(inReq,hits,collectionid, inReq.getUser(), comment);
 		inReq.putPageValue("approved",count);
+		
+	}
+	public void rejectSelection(WebPageRequest inReq)
+	{
+		HitTracker hits = (HitTracker)inReq.getPageValue("hits");
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		String comment = inReq.getRequestParameter("comment");
+		int count = manager.rejectSelection(inReq,hits,collectionid, inReq.getUser(), comment);
+		inReq.putPageValue("rejected",count);
 		
 	}
 }

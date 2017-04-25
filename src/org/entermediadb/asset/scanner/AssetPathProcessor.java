@@ -30,7 +30,20 @@ public class AssetPathProcessor extends PathProcessor
     protected Boolean fieldOnWindows;
     protected boolean fieldModificationCheck = false;
     protected boolean fieldShowLogs;
+    protected AssetImporter fieldAssetImporter;
     
+	public AssetImporter getAssetImporter()
+	{
+		return fieldAssetImporter;
+	}
+
+
+	public void setAssetImporter(AssetImporter inAssetImporter)
+	{
+		fieldAssetImporter = inAssetImporter;
+	}
+
+
 	public boolean isShowLogs()
 	{
 		return fieldShowLogs;
@@ -123,7 +136,7 @@ public class AssetPathProcessor extends PathProcessor
 		//archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
 		getMediaArchive().firePathEvent("importing/assetscreated",inUser,getAssetsToSave());
 		
-		getMediaArchive().fireLoggingEvent("hotfolder","update", "saved", String.valueOf( getAssetsToSave().size()), null);
+		getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saved", String.valueOf( getAssetsToSave().size()), null);
 
 		getAssetsToSave().clear();
 	}
@@ -200,7 +213,7 @@ public class AssetPathProcessor extends PathProcessor
 				}
 				if( paths.size() > 3000 )
 				{
-					getMediaArchive().fireLoggingEvent("hotfolder","update", "slowdown", paths.size()  + " files in one folder:" + inInput.getPath(), null);
+					getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "slowdown", paths.size()  + " files in one folder:" + inInput.getPath(), null);
 				}
 				
 				boolean processchildren = true;
@@ -309,7 +322,7 @@ public class AssetPathProcessor extends PathProcessor
 					}
 					if( isShowLogs() )
 					{
-						getMediaArchive().fireLoggingEvent("hotfolder","update", "optimization", 
+						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", 
 								"processedfiles:" + processedfiles +
 								" acceptfolder:" + acceptfolder + 
 								" rejectfolder:"+ rejectfolder + 

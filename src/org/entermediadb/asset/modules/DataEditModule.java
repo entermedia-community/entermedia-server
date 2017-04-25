@@ -34,7 +34,7 @@ import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.WebEventListener;
+import org.openedit.event.EventManager;
 import org.openedit.hittracker.GeoFilter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
@@ -51,7 +51,7 @@ import org.openedit.xml.XmlSearcher;
 public class DataEditModule extends BaseMediaModule
 {
 	protected XmlArchive fieldXmlArchive;
-	protected WebEventListener fieldWebEventListener;
+	protected EventManager fieldEventManager;
 	
 
 	private static final Log log = LogFactory.getLog(DataEditModule.class);
@@ -666,7 +666,7 @@ public class DataEditModule extends BaseMediaModule
 			inReq.putPageValue("savedok", Boolean.TRUE);
 			
 			
-			if(getWebEventListener() != null)
+			if(getEventManager() != null)
 			{
 				WebEvent event = new WebEvent();
 				event.setSearchType(searcher.getSearchType());
@@ -676,7 +676,7 @@ public class DataEditModule extends BaseMediaModule
 				event.setProperty("id", data.getId());
 				event.setProperty("applicationid", inReq.findValue("applicationid"));
 
-				getWebEventListener().eventFired(event);
+				getEventManager().fireEvent(event);
 			}
 			inReq.putPageValue("rowsedited", String.valueOf(count));
 			//rowsedited="$!rowsedited}
@@ -684,13 +684,13 @@ public class DataEditModule extends BaseMediaModule
 		}
 	}
 
-	public WebEventListener getWebEventListener() {
-		return fieldWebEventListener;
+	public EventManager getEventManager() {
+		return fieldEventManager;
 	}
 
 
-	public void setWebEventListener(WebEventListener inWebEventListener) {
-		fieldWebEventListener = inWebEventListener;
+	public void setEventManager(EventManager inEventManager) {
+		fieldEventManager = inEventManager;
 	}
 
 
@@ -745,7 +745,7 @@ public class DataEditModule extends BaseMediaModule
 					{
 						searcher.delete(data, inReq.getUser());
 						changes++;
-						if(getWebEventListener() != null)
+						if(getEventManager() != null)
 						{
 							WebEvent event = new WebEvent();
 							event.setSearchType(searcher.getSearchType());
@@ -756,7 +756,7 @@ public class DataEditModule extends BaseMediaModule
 	
 							event.setProperty("applicationid", inReq.findValue("applicationid"));
 	
-							getWebEventListener().eventFired(event);
+							getEventManager().fireEvent(event);
 						}
 					}
 				}
@@ -778,7 +778,7 @@ public class DataEditModule extends BaseMediaModule
 						{
 							searcher.delete(curdata, inReq.getUser());
 							
-							if(getWebEventListener() != null)
+							if(getEventManager() != null)
 							{
 								WebEvent event = new WebEvent();
 								event.setSearchType(searcher.getSearchType());
@@ -789,7 +789,7 @@ public class DataEditModule extends BaseMediaModule
 
 								event.setProperty("applicationid", inReq.findValue("applicationid"));
 
-								getWebEventListener().eventFired(event);
+								getEventManager().fireEvent(event);
 							}
 						}
 					}				

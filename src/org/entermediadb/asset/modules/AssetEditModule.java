@@ -18,7 +18,6 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.attachments.AttachmentManager;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.scanner.AssetImporter;
-import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
@@ -33,7 +32,7 @@ import org.openedit.data.BaseData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
-import org.openedit.event.WebEventListener;
+import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -50,7 +49,6 @@ import org.openedit.util.PathUtilities;
 public class AssetEditModule extends BaseMediaModule
 {
 	protected WebServer fieldWebServer;
-	protected WebEventListener fieldWebEventListener;
 	protected static final String CATEGORYID = "categoryid";
 	protected FileUpload fieldFileUpload;
 	public AttachmentManager getAttachmentManager() {
@@ -1684,15 +1682,7 @@ Change Collections to be normal categories path s and make createTree look at th
 		}
 	}
 */
-	public WebEventListener getWebEventListener()
-	{
-		return fieldWebEventListener;
-	}
 	
-	public void setWebEventListener( WebEventListener inWebEventListener)
-	{
-		fieldWebEventListener = inWebEventListener;
-	}
 	
 	protected Data buildDataObject( WebPageRequest inReq, PropertyDetails inDetails )
 	{

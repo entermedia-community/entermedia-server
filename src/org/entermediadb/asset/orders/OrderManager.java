@@ -10,16 +10,16 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearcherManager;
-import org.openedit.event.WebEventHandler;
+import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 
 public interface OrderManager
 {
 
-	WebEventHandler getWebEventHandler();
+	EventManager getEventManager();
 
-	void setWebEventHandler(WebEventHandler inWebEventHandler);
+	void setEventManager(EventManager inWebEventHandler);
 
 	SearcherManager getSearcherManager();
 

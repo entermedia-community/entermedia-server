@@ -1,0 +1,10 @@
+<rows>
+	<row id="1"  webeventlistener="pathevent" action="*" ></row>
+	<row id="2"  webeventlistener="foldermonitor" action="asset/savingoriginal" ></row>
+	<row id="3"  webeventlistener="logger" action="asset/search" ></row>
+	<row id="4"  webeventlistener="logger" action="asset/preview" ></row>
+	<row id="5"  webeventlistener="logger" action="asset/edit" ></row>
+	<row id="6"  webeventlistener="logger" action="user/authentication" ></row>
+	<row id="7"  webeventlistener="logger" action="asset/userlikes" ></row>
+	<row id="8"  webeventlistener="logger" action="asset/download" ></row>	
+</rows>
