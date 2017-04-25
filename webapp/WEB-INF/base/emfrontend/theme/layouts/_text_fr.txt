@@ -1,26 +1,35 @@
 #
-#Fri Apr 21 13:10:36 CDT 2017
+#Tue Apr 25 11:02:21 CDT 2017
 Permissions=Autorisations
+Annotate=Annoter
 Library\ Assets=Actifs de la biblioth\u00E8que
 There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficult\u00E9 \u00E0 remplir cette demande
 Related\ Media=M\u00E9dias apparent\u00E9s
+Followers=Suiveurs
+Assets=Les atouts
+View\ Collection=Afficher la collection
 My\ Account=Mon compte
+View\ Folders=Afficher les dossiers
 Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistr\u00E9s
 Selected\ Media=M\u00E9dias s\u00E9lectionn\u00E9s
 View\ Category=Afficher la cat\u00E9gorie
 Applications=Applications
 Attachments=Pi\u00E8ces jointes
+Revisions=R\u00E9visions
 Ok=D&\#39;accord
 System\ Settings=Param\u00E8tres du syst\u00E8me
 Language=Langue
-Properties=Propri\u00E9t\u00E9s
 Logout=D\u00E9connexion
+Properties=Propri\u00E9t\u00E9s
 Asset\ is\ missing=Item manquant
-Dashboard=Tableau de bord
+Pending=en attendant
+Folder=Dossier
 Reports=Rapports
+Dashboard=Tableau de bord
 Login=Connexion
-Close=Fermer
 Edit\ Reports=Modifier les rapports
+Close=Fermer
+Add\ Media=Ajouter des m\u00E9dias
 Settings=Param\u00E8tres
 View\ Library=Voir la biblioth\u00E8que
 Library\ Folders=Dossiers de biblioth\u00E8que

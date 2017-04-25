@@ -1,8 +1,7 @@
-
 <catalog id="index" name="Audio">
-  <property id="categoryhome">/media/browse/audio/categories/</property>
-  <property id="sortfield">nameUp</property>
-  <catalog id="newassets" name="Pending">
-    <catalog id="newassets_admin" name="The Administrator"/>
-  </catalog>
+	<property id="categoryhome">/media/browse/audio/categories/</property>
+	<property id="sortfield">nameUp</property>
+	<catalog id="newassets" name="Pending">
+		<catalog id="newassets_admin" name="The Administrator" />
+	</catalog>
 </catalog>

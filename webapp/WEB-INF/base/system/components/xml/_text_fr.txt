@@ -1,7 +1,9 @@
 #
-#Fri Apr 21 09:44:27 CDT 2017
+#Tue Apr 25 10:12:19 CDT 2017
+New=Nouveau
 Edit=modifier
 No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=Pas de d\u00E9tails disponibles pour cette vue. Veuillez configurer les r\u00E9glages de la vue.
 add\ new=Ajouter nouveau
+Add\ New=Ajouter nouveau
 required=requis
 Add\ New\ $detail=Ajouter un nouveau d\u00E9tail $

@@ -6,30 +6,30 @@
 			<div class="list-group" style="margin: 10px 0 10px 0;">
 	#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
 						<a class="list-group-item active" href="$home$apphome/views/modules/asset/index.html?sortby=assetaddeddateDown"><span class="badge">$userprofile.getCombinedLibraries().size()</span>
-							Your Libraries</a>
+							[[Your Libraries]]</a>
 	#set( $searcher = $mediaarchive.getAssetSearcher())
 	#set( $results = $searcher.query().since("assetaddeddate",30).named("pending").search($context,1) )
 						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=assetaddeddate&operation=before30&sortby=assetaddeddateDown"><span class="badge">$results.size()</span>
-							Recent Uploads</a>
+							[[Recent Uploads]]</a>
 	#set( $results = $searcher.query().since("recordmodificationdate",30).named("recent").search($context,1) )
 						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=recordmodificationdate&operation=before30&sortby=recordmodificationdateDown"><span class="badge">$results.size()</span>
-							Recently Edited</a>
+							[[Recently Edited]]</a>
 	#set( $results = $searcher.query().match("owner",$context.getUserName()).named("owner").search($context,1) )
 						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=owner&owner.value=$context.getUserName()&operation=matches&sortby=assetaddeddateDown"><span class="badge">$results.size()</span>
-							Your Uploads</a>
+							[[Your Uploads]]</a>
 	#set( $results = $mediaarchive.getSearcher("assetpreviewLog").query().match("assetid","*").named("views").search($context,1) )
 						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=id&id.value=*&operation=matches&sortby=assetviewsDown"><span class="badge">$results.size()</span>
-						 Recent Views</a>	
+						 [[Recent Views]]</a>	
 	#set( $results = $mediaarchive.getSearcher("assetvotes").query().match("id","*").named("ranking").search($context,1) )
 						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=id&id.value=*&operation=matches&sortby=assetvotesDown"><span class="badge">$results.size()</span>
-							Recent Votes</a>
+							[[Recent Votes]]</a>
 	#set( $results = $searcher.query().match("editstatus","1").since("recordmodificationdate",30).named("pending").search($context,1) )
 						<a class="list-group-item" href="$home$apphome/views/search/search.html?field=editstatus&editstatus.value=1&operation=matches&field=recordmodificationdate&operation=before30&sortby=recordmodificationdateDown"><span class="badge">$results.size()</span>
-						 Pending Approval</a>	
+						 [[Pending Approval]]</a>	
 							
-			<p style="color: white; margin: 30px">Welcome to your media
+			<p style="color: white; margin: 30px">[[Welcome to your media
 				database, a centralized media storage and searching interface.
-				Please select a search type.</p>
+				Please select a search type]].</p>
 
 			<a class="pull-right"
 				href="http://entermediasoftware.com/knowledge/json-rest-api/"><img

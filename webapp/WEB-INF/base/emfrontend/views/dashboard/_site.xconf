@@ -1,6 +1,9 @@
 <page>
 	<property name="section">reporting</property>
-	<property name="sectiontitle">Reporting</property>
+	<property name="sectiontitle">
+	        <value>Reporting</value>
+    	    <value locale="fr">Rapport</value>
+	</property>
 
 	<inner-layout>${themeprefix}/layouts/dashboardlayout.html</inner-layout>
 	<permission name="view">
