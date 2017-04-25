@@ -1,0 +1,22 @@
+#set($entry = $mediaarchive.getData("cuepoint", $context.getRequestParameter("id")))
+
+
+
+ ###if($user.get("oe_edit_mode")== "editing")
+		<a class="oe-dataedit" data-target="#edit-$entry.id"  href="#"><img src="/openedit/components/html/theme/images/htmledit.png"/></a>
+##	#end
+  	<div id="edit-$entry.id" data-dataid="$entry.id" data-field="text" data-searchtype="cue">
+		$!entry.getValue("text")
+
+		</div>
+
+
+		<script type="text/javascript">
+							#if($question.questiontype != "info")			
+									pause();	
+							#end
+						#if($entry)
+								loadCueMenu('$entry.id');
+							#end
+
+		</script>

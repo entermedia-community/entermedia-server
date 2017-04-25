@@ -35,6 +35,7 @@
 	<permission id="viewcomments" permissiontype="asset" name="Comments" description="Enables view-only access to the comments." ordering="358"/>
 	<permission id="viewassets" permissiontype="asset" name="Asset Search" description="Enables access to assets." ordering="360" />
 
+			<permission id="viewtimeline" permissiontype="asset" name="Video Timeline" description="Enables access to video timelines and cuepoints" ordering="360" />
 		
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
