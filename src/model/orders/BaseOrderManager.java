@@ -100,6 +100,7 @@ public class BaseOrderManager implements OrderManager {
 		event.setOperation("orderplaced");
 		event.setSourcePath(order.getSourcePath());
 		event.setSearchType("order");
+		event.setCatalogId(inCatlogId);
 		getEventManager().fireEvent(event);
 
 		return order;
