@@ -48,7 +48,7 @@ public class AssetStatsManager
 	public void logAssetDownload(String inCatalogId, String inSourcePath, String inResult, User inUser)
 	{
 		WebEvent change = new WebEvent();
-		change.setOperation("asset/download");
+		change.setOperation("download");
 		change.setSearchType("asset");
 		change.setProperty("filename", PathUtilities.extractFileName(inSourcePath ));
 		change.setSourcePath(inSourcePath);

@@ -250,7 +250,7 @@ public class OauthModule extends BaseMediaModule
 				WebEvent event = new WebEvent();
 				event.setSearchType("userprofile");
 				event.setCatalogId(searcher.getCatalogId());
-				event.setOperation("userprofile/saved");
+				event.setOperation("saved");
 				event.setProperty("dataid", target.getId());
 				event.setProperty("id", target.getId());
 

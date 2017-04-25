@@ -105,13 +105,6 @@ public class ConvertStatusModule extends BaseMediaModule
 		processConversions(inReq);//non-block
 	}
 	
-	
-	
-	
-	
-
-
-
 	public void processConversions(WebPageRequest inReq)
 	{
 		
@@ -119,7 +112,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		event.setSource(this);
 		MediaArchive archive = getMediaArchive(inReq);
 		event.setCatalogId(archive.getCatalogId());
-		event.setOperation("conversions/runconversions");
+		event.setOperation("runconversions");
 		event.setUser(inReq.getUser());
 		//log.info(getEventManager());
 		getEventManager().fireEvent(event);

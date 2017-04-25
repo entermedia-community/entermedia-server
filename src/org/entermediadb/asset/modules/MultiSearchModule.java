@@ -582,7 +582,7 @@ public class MultiSearchModule extends BaseMediaModule
 
 //		String id = appid + "usersettings" + inReq.getUserName();
 //		inReq.removeSessionValue(id);
-		fireCatalogEvent("catalog/saved", catalogid);
+		fireCatalogEvent("saved", catalogid);
 	}
 
 	protected void fireCatalogEvent(String inOperation, String newcatalogid) 
