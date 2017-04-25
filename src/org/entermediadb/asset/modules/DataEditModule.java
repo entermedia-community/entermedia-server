@@ -671,7 +671,7 @@ public class DataEditModule extends BaseMediaModule
 				WebEvent event = new WebEvent();
 				event.setSearchType(searcher.getSearchType());
 				event.setCatalogId(searcher.getCatalogId());
-				event.setOperation(searcher.getSearchType() + "/saved");
+				event.setOperation("saved");
 				event.setProperty("dataid", data.getId());
 				event.setProperty("id", data.getId());
 				event.setProperty("note", "old field diff" );
@@ -751,7 +751,7 @@ public class DataEditModule extends BaseMediaModule
 							WebEvent event = new WebEvent();
 							event.setSearchType(searcher.getSearchType());
 							event.setCatalogId(searcher.getCatalogId());
-							event.setOperation(searcher.getSearchType() + "/deleted");
+							event.setOperation("deleted");
 							event.setProperty("dataid", data.getId());
 							event.setProperty("id", data.getId());
 	
@@ -784,7 +784,7 @@ public class DataEditModule extends BaseMediaModule
 								WebEvent event = new WebEvent();
 								event.setSearchType(searcher.getSearchType());
 								event.setCatalogId(searcher.getCatalogId());
-								event.setOperation(searcher.getSearchType() + "/deleted");
+								event.setOperation("deleted");
 								event.setProperty("dataid", curdata.getId());
 								event.setProperty("id", curdata.getId());
 
