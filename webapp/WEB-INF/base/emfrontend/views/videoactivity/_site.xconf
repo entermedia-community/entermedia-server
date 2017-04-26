@@ -1,0 +1,9 @@
+<page>
+	<inner-layout>/${applicationid}/views/videoactivity/innerlayout.html</inner-layout>
+
+	<property name="hidemenu">false</property>
+		<property name="showshare">true</property>
+	<property name="clientroot">/${applicationid}/views/videoactivity</property>
+<property name="fullwidth">true</property>
+
+</page>

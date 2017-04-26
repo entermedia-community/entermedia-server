@@ -1,0 +1,6 @@
+<page>
+<path-action name="DataEditModule.saveData">
+	<property name="searchtype">videocue</property>
+</path-action>
+<inner-layout/>
+</page>

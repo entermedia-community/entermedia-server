@@ -1,0 +1,55 @@
+#set($entry = $mediaarchive.getData("cuepoint", $context.getRequestParameter("cueid")))
+
+#if(!$asset)
+#set( $asset = $mediaarchive.getAsset($context.getRequestParameter("dataid")) )   
+#if(!$asset && $entry)
+#set( $asset = $mediaarchive.getAsset($entry.assetid) )    
+
+#end
+#end
+ <ul class="nav navbar-nav navbar-right">
+      
+      
+      	
+      	
+      	<li><a class="shiftLeft"  data-amount="1" href="#addcue" data-dataid="${data.id}"><</a></li>
+		<li><a>1</a></li>
+		<li><a class="shiftRight" data-amount="1" href="#addcue" data-dataid="${data.id}">></a></li>
+      	<li><a class="shiftLeft"  data-amount="10" href="#addcue" data-dataid="${data.id}"><</a></li>
+		<li><a>10</a></li>
+
+		<li><a class="shiftRight" data-amount="10" href="#addcue" data-dataid="${data.id}">></a></li>
+      	<li><a class="shiftLeft"  data-amount="15" href="#addcue" data-dataid="${data.id}"><</a></li>
+		<li><a>15</a></li>
+
+		<li><a class="shiftRight" data-amount="15" href="#addcue" data-dataid="${data.id}">></a></li>
+    	<li><a class="shiftLeft"  data-amount="60" href="#addcue" data-dataid="${data.id}"><</a></li>
+		<li><a>60</a></li>
+
+		<li><a class="shiftRight" data-amount="60" href="#addcue" data-dataid="${data.id}">></a></li>
+      
+      #if($canadmin)
+      
+      <li class="dropdown">
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cuepoint Details <b class="caret"></b></a>
+        <ul class="dropdown-menu">
+        
+   		
+        <li><a  id="addcue" href="#addcue" data-dataid="${asset.id}">Add New Cue Point </a></li>
+        
+        
+        
+        
+        
+        
+#if($entry) 
+<li><a href="#" class="disabled"   >Current Cue: ${entry.timecode}s</a></li>
+<li><a href="#" class="ajaxDialog" data-target="$apphome/components/dialogedit/edit.html?oemaxlevel=1&id=$entry.id&searchtype=cuepoint&viewpath=cuepoint/edit">Cuepoint Details</a></li> 
+<li><a href="#" class="ajaxDialog" data-target="$apphome/components/dialogedit/delete.html?oemaxlevel=1&id=$entry.id&searchtype=cuepoint&viewpath=videocue/videocuecue_edit">Delete Cue Point</a></li>
+#end        
+          #end
+          
+        </ul>
+      </li>
+    </ul>
+

@@ -1,0 +1,46 @@
+#set( $clientroot = $context.findValue("clientroot") )
+
+
+#set($sharelink = "$content.siteroot$home$apphome/views/facebook/index.html?id=$context.getRequestParameter('id')")
+										 <div class="addthis_toolbox addthis_default_style"
+                       addthis:url="$sharelink"
+                       addthis:title="$asset"
+                       addthis:description="#if ( $asset.longcaption ) $asset.longcaption #else Check this out! #end">
+                               <a class="addthis_button_facebook"></a>
+                               <a class="addthis_button_twitter"></a>
+                               <a class="addthis_button_google"></a>
+                               <a class="addthis_button_compact"></a>
+                               <a class="addthis_counter addthis_bubble_style"></a>
+                       </div>
+                       <script type="text/javascript" src="https://s7.addthis.com/js/250/addthis_widget.js#pubid=ra-4f28119b5b332dce"></script>
+								<script type="text/javascript">
+// Call this function once the rest of the document is loaded
+function loadAddThis() {
+    addthis.init()
+}
+</script>			
+										</div>
+<h3>Add to Facebook Page:</h3>
+
+<p>Note - you need to have a page in facebook created for your video before you can add.  Use the link below if you need to
+create a page now</p>
+<a target="_blank" class="btn btn-danger" href="https://www.facebook.com/pages/create.php">Create Facebook Page</a>
+<p>Click the link below - you'll be prompted to add the video to a page you control.</p>
+$pages.include("$apphome/facebook/index.html")
+
+<h3>Embed Code</h3> 
+<p>Copy and paste the code below onto any page to embed the showcase viewer</p>
+<textarea cols="80" rows="4" style="width: auto;">
+<iframe src="$content.siteroot$home$apphome/views/facebook/index.html?id=$context.getRequestParameter('id')" width="1000" height="800" />
+
+</textarea>
+
+<h3>Direct Links</h3>
+
+<textarea cols="80" rows="4" style="width: auto;">
+$sharelink
+</textarea>
+
+<a target="_blank" class="btn btn-danger" href="$sharelink" >Preview</a>
+
+

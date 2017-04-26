@@ -1,0 +1,153 @@
+<div style="padding: 0px 20px;">
+#set( $asset = $mediaarchive.getAsset($context.getRequestParameter("assetid")) )    
+#set( $sourcepath = $asset.sourcepath )
+#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $clientroot = $context.getContentProperty("clientroot") )
+$context.putPageValue("asset", $asset)
+#if($cantimeline)
+		    
+		    <nav class="navbar navbar-default" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+      <span class="sr-only">Toggle navigation</span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+      <span class="icon-bar"></span>
+    </button>
+    <a class="navbar-brand" href="#">$!asset.assettitle</a>
+  </div>
+
+  <!-- Collect the nav links, forms, and other content for toggling -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav">
+		
+     
+    </ul>
+    
+    <div id="cuepointactions">
+   $pages.include("$apphome/views/modules/asset/editor/timeline/details/cuepointactions.html", $context)
+    </div>
+  </div><!-- /.navbar-collapse -->
+</nav> 
+		    
+		    
+												
+						
+				#end				
+				
+			
+				<div class="container-fluid">
+			
+ 				<div class="row" >
+ 				
+					<div class="col-md-10 " id="video-holder">
+						<div class="row">
+							<div class="col-md-12">	
+								<div class="thumbnail" id="video-container">
+								
+<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+									 <div id="top-float" class="to-hide" >
+											<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+											
+									</div>
+									
+										<section id='cuePlayer' style="padding:6px;">
+											<video class="" id="video" preload="no" controls  webkit-playsinline poster="$thumb">
+												<source src="$source" type="video/mp4" /><!-- Safari / iOS video    -->
+												<source src="$webmsource" type="video/webm" /><!-- Firefox    -->
+											</video>
+										   </section>
+											
+										</div>									
+									<!--  -
+									 <div id="product-dialog" class="to-hide">
+											asdf
+									</div>
+									
+									 <div id="left-dialog" class="to-hide" >
+											asdf
+									</div>
+									
+									-->
+								</div>
+							
+						    </div>
+						    
+						   
+						    <div id="bottomtoolbar">
+						    <div class="col-md-12 to-hide" id="video-cuepoints" data-dataid="${asset.id}">
+						    		
+									
+						   			$pages.include("$clientroot/details/cuepoints.html", $context)
+						   	
+							</div>
+							</div>
+						</div>
+					
+						</div>
+						
+						<div id="right-panel" class="col-md-2"  >
+						
+				
+						<div  id="cue-products">	
+						
+												
+							$pages.include("$clientroot/details/cuepointdetails.html?cueid=$cue.i&dataid=${asset.id}")
+						</div>	
+					</div>
+					
+						
+						
+						
+					</div>	
+					</div>
+					
+					
+					
+					
+					
+					
+				</div>
+			
+	
+
+#set($time = $context.getRequestParameter("jumpto"))
+#if($time)
+<script type="text/javascript">
+$(document).ready(function() {
+
+	 var video = jQuery("#video");
+	  
+	  
+	  
+	jQuery("#video").bind("loadeddata", function() {
+		jump('$time');
+		pause();
+	});
+} );
+
+
+
+</script>
+#end
+
+
+
+	
+</div>
+<style type="text/css">
+#video_overlays {
+position:absolute;
+float:left;
+    width:100%;
+    min-height:100%;
+    background-color:#000;
+    z-index:300000;
+}
+</style>
+
+
+<a href="#" id="openTrigger">Open</a>
