@@ -326,7 +326,7 @@ div.masonry-grid-cell span.emdropshadow
 	margin:0px;
 	border:0px;
 }
-div.masonry-grid-cell span.emdropshadow img
+div.masonry-grid-cell .grid-thumbimage img
 {
 	width:100%;
 	display: inline-block;
@@ -573,6 +573,10 @@ div.masonry-grid-cell span.emdropshadow img
             
         }
         
+.masonry-grid-cell .typedocument 
+{
+	 opacity:1;
+}
 
 .masonry-grid-cell:hover .caption {
             opacity:1;

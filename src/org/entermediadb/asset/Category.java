@@ -636,5 +636,5 @@ public class Category extends BaseData
 	{
 		return fieldParentCategory != null;
 	}
-	
+
 }

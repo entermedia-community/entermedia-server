@@ -65,27 +65,28 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 	 * @see org.entermediadb.asset.search.AssetSearcher#fieldSearch(org.openedit.WebPageRequest,
 	 *      org.openedit.store.Cart)
 	 */
-	public HitTracker searchCategories(WebPageRequest inPageRequest, Category catalog) throws Exception
+	public HitTracker searchCategories(WebPageRequest inPageRequest, Category category) throws Exception
 	{
 		SearchQuery search = createSearchQuery();
 
-		if (catalog != null)
+		if (category != null)
 		{
-			inPageRequest.putPageValue("catalog", catalog); // @deprecated
-			inPageRequest.putPageValue("category", catalog); // @deprecated
+			inPageRequest.putPageValue("category", category); // @deprecated
+			inPageRequest.putPageValue("category", category); // @deprecated
 
-			String actualid = catalog.getId();
-			if (catalog.getLinkedToCategoryId() != null)
+			String actualid = category.getId();
+			if (category.getLinkedToCategoryId() != null)
 			{
-				actualid = catalog.getLinkedToCategoryId();
+				actualid = category.getLinkedToCategoryId();
 			}
 
 			search.addMatches("category", actualid);
 
-			String sortorder = catalog.get("assetsort");
+			Object sortorder = category.findValue("assetsort");
 			if( sortorder != null)
 			{
-				search.setSortBy(sortorder);
+				//name,date
+				search.setSortBy(String.valueOf( sortorder ) );
 			}
 			
 			HitTracker res = cachedSearch(inPageRequest, search);	
