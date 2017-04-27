@@ -304,6 +304,44 @@ jQuery(document).ready(function(url,params)
 		return hidden;
 		
 	}
+	
+	jQuery('#jumptoform .jumpto-left').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var input = $("#jumptoform #pagejumper" );
+		var current = input.val();
+		current = parseInt(current);
+		current--;
+		if( current > 0 )
+		{
+			input.val(current);
+			$("#jumptoform").submit();
+		}
+		jQuery('#jumptoform .jumpto-right').removeClass("disable");
+	});
+
+
+	jQuery('#jumptoform .jumpto-right').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var input = $("#jumptoform #pagejumper" );
+		var current = input.val();
+		current = parseInt(current);
+		current++;
+		var totalpages = $("#jumptoform").data("totalpages");
+		totalpages = parseInt(totalpages);
+		if( current > totalpages )
+		{
+			$(this).addClass("disable");
+		}
+		else
+		{
+			input.val(current);
+			$("#jumptoform").submit();
+		}	
+		
+	});
+	
 	jQuery('div.goleftlick .glyphicon-triangle-left').livequery('click',function(e)
 	{
 		e.preventDefault();

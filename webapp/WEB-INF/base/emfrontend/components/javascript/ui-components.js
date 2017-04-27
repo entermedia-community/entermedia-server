@@ -275,18 +275,20 @@ uiload = function() {
 		{
 			e.preventDefault();
 			var form = jQuery(this);
-			form.validate({
-			  ignore: ".ignore"
-			});
 			
-			
-    		var isvalidate = form.valid();
-			if(!isvalidate)
-        	{
-            	e.preventDefault();
-            	//show message
-            	return;
-        	}
+			if( form.validate )
+			{
+				form.validate({
+				  ignore: ".ignore"
+				});
+	    		var isvalidate = form.valid();
+				if(!isvalidate)
+	        	{
+	            	e.preventDefault();
+	            	//show message
+	            	return;
+	        	}
+	        }	
 			var targetdiv = form.data("targetdiv");
 			if(!targetdiv){
 				targetdiv = form.attr("targetdiv");
@@ -304,8 +306,13 @@ uiload = function() {
 					$("#" + targetdiv).html(data);
 				}
 			 });
+			
 				
-			form.closest(".modal").modal("hide");
+			var findmodal = form.closest(".modal");
+			if( findmodal && findmodal.modal )
+			{
+				findmodal.modal("hide");
+			}	
 			
 
 			var reset = form.data("reset") 
@@ -1020,7 +1027,7 @@ uiload = function() {
 		e.stopPropagation();
 	});
 
-	jQuery("#mainholder").livequery(function(e)
+	jQuery("#mainimageholder").livequery(function(e)
 	{
 		// Zooming code, only makes sense to run this when we actually have the DOM
 		if ($(this).position() == undefined){ // check if the element isn't there (best practice is...?)
@@ -1033,13 +1040,13 @@ uiload = function() {
 		mainholder.height($(window).height());
 		mainholder.width($(window).width());
 		var mainimage = $("#mainimage",mainholder);
-		var centerimage = function()
+/*		var centerimage = function()
 		{
 			var left = ( $(window).width() - mainimage.width() - $(".overlay-margin").width() ) / 2;
 			mainimage.css({"left" : left + "px"});
 		};
-		centerimage();
 	 	mainimage.on("load",centerimage);
+*/	 	
 	
 		$(window).bind('mousewheel DOMMouseScroll', function(event)
 		{

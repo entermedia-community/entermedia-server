@@ -1,3 +1,5 @@
+XXXX
+
 #set($currentpreview = $context.findValue('currentpreview'))
 #set( $currentpreview = $numberutils.toInt($currentpreview) )
 
@@ -10,6 +12,10 @@
 #if ( !$pagenum ) 
     #set ( $pagenum = 1)
 #end
+
+#set($totalpages = $numberutils.toInt($asset.pages))
+
+
 #set ( $gotopage = $currentpreview + 1)
     <div id="pdf-viewer-container">
         #if ($gotopage > 1)

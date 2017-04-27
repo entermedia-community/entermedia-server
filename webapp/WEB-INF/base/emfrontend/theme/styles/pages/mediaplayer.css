@@ -334,3 +334,26 @@ color: #fff;
 	 text-decoration: underline;
 	 
 }
+
+#mainimageholder
+{
+	position: relative;
+	height:100%;
+	width:100%;
+	overflow: hidden;
+}
+
+#mainimage
+{
+	position: absolute;
+	top: 20px;
+	left: 100px;
+}
+
+#footerholder
+{
+	position: absolute;
+	top: 2px;
+	left: 367px;
+	color: #eee;
+}

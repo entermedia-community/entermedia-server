@@ -1,6 +1,0 @@
-#
-#Wed Feb 04 07:56:03 EST 2015
-$asset=$asset
-drag\ to\ download=Ziehen zum Herunterladen
-Preview\ Image=Vorschaubild
-
