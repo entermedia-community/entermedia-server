@@ -32,7 +32,7 @@ public class PathEventHandler implements WebEventListener
 	{
 		//TODO: Cache events and pages. Make sure we skip empty or disabled events
 		
-		String runpath = "/" + inEvent.getCatalogId() + "/events/" + inEvent.getOperation() + "/" + inEvent.getOperation() + ".html";
+		String runpath = "/" + inEvent.getCatalogId() + "/events/" + inEvent.getSearchType() + "/" + inEvent.getOperation() + ".html";
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean(inEvent.getCatalogId(),"pathEventManager");
 		//log.info("path event running" + runpath);
 		//log.info("web event called : " + inRunpath);

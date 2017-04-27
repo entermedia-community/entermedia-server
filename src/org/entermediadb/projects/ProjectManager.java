@@ -1459,16 +1459,16 @@ public class ProjectManager implements CatalogEnabled
 			if( tosave.size() > 400)
 			{
 				searcher.saveAllData(tosave,null);
-				logAssetEvent(tosave,"approval",inReq.getUser(),inCollectionid);
+				logAssetEvent(tosave,"approved",inReq.getUser(),inNote, inCollectionid);
 				tosave.clear();
 			}
 		}
 		searcher.saveAllData(tosave,null);
-		logAssetEvent(tosave,"approval",inReq.getUser(),inCollectionid);
+		logAssetEvent(tosave,"approved",inReq.getUser(),inNote,inCollectionid);
 		return approved;
 	}
 	
-	protected void logAssetEvent(Collection<Asset> inTosave, String inOperation, User inUser, String inCollectionid)
+	protected void logAssetEvent(Collection<Asset> inTosave, String inOperation, User inUser, String inNote, String inCollectionid)
 	{
 		for (Iterator iterator = inTosave.iterator(); iterator.hasNext();)
 		{
@@ -1485,6 +1485,7 @@ public class ProjectManager implements CatalogEnabled
 			event.setProperty("sourcepath", asset.getSourcePath());
 			event.setProperty("assetids", asset.getId() );
 			event.setProperty("dataid", asset.getId() );
+			event.setProperty("note", inNote );
 			event.setProperty("librarycollection", inCollectionid );
 			//TODO: Log in one database table called collectionevents
 			//archive.getWebEventListener()
@@ -1509,13 +1510,13 @@ public class ProjectManager implements CatalogEnabled
 			if( tosave.size() > 400)
 			{
 				searcher.saveAllData(tosave,null);
-				logAssetEvent(tosave,"rejected",inReq.getUser(), inCollectionid);
+				logAssetEvent(tosave,"rejected",inReq.getUser(), inNote, inCollectionid);
 				tosave.clear();
 			}
 		}
 		//TODO: Save this event to a log
 		searcher.saveAllData(tosave,null);
-		logAssetEvent(tosave,"rejected",inReq.getUser(), inCollectionid);
+		logAssetEvent(tosave,"rejected",inReq.getUser(), inNote, inCollectionid);
 
 		return approved;
 	}
