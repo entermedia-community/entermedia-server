@@ -477,7 +477,7 @@ gridResize = function()
 	checkScroll();
 	
 	var fixedheight = grid.data("maxheight");
-	if( fixedheight == null)
+	if( fixedheight == null || fixedheight.length == 0)
 	{
 		fixedheight = 250;
 	}

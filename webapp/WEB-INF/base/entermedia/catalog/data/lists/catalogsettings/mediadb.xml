@@ -1,4 +1,6 @@
 <properties>
 	<property id="cdn_prefix" >CDN Prefix</property>
 	<property id="mediadbappid" >MediaDB Application ID</property>
+	<property id="stacked_gallery_imagesize" value="250">Stacked Gallery Image Size</property>
+	
 </properties>
