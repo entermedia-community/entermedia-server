@@ -1,6 +1,6 @@
-#
-#Thu Nov 24 10:20:38 EST 2016
-Libraries=Biblioth\u00E8ques
+#Thu Apr 27 09:03:42 CDT 2017
+Libraries=Bibliothèques
 Slideshow=Diaporama
-Categories=Cat\u00E9gories
+Categories=Catégories
 Collections=Collections
+

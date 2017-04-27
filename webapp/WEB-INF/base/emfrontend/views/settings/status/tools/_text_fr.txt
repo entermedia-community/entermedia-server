@@ -1,9 +1,9 @@
-#Fri Nov 25 16:02:26 UTC 2016
-This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists.=Permets aux listes chargées depuis l'installation d'être intégrées à vos propres listes.
+#Thu Apr 27 09:03:42 CDT 2017
 Knapsack\ snapshots\ are\ used\ to\ create\ text\ based\ backups\ that\ can\ be\ moved\ between\ servers=Les images instantanées sont utilisées pour créer des sauvegarde au format texte pouvant être déplacer sur des serveurs.
+This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists.=Permets aux listes chargées depuis l'installation d'être intégrées à vos propres listes.
 Tools=Outils
-View\ Snapshots=Voir Snapshots
 Reloading\ lists\ should\ be\ performed\ after\ an\ upgrade=Les listes doivent être rechargées après une mise à jour.
+View\ Snapshots=Voir Snapshots
 Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Les sauvegardes instantanées sont utilisées par ElasticSearch pour enregistrer et restaurer l'état de la base de données.
 Reload\ lists=Recharger listes
 

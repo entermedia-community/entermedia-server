@@ -1,9 +1,9 @@
-#
-#Thu Apr 20 13:20:12 CDT 2017
+#Thu Apr 27 09:03:42 CDT 2017
 Welcome\!\ Please\ enter\ your\ email\ and\ password\:=Bienvenue\! Entrez votre email et votre mot de passe\:
-Email\ or\ Username=E-mail ou nom d&\#39;utilisateur
-You\ are\ logged\ in\ as=Vous \u00EAtes connect\u00E9 en tant que
 Password=Mot de passe
-Forgotten\ your\ password?=Mot de passe oubli\u00E9?
+You\ are\ logged\ in\ as=Vous êtes connecté en tant que
+Email\ or\ Username=E-mail ou nom d&\#39;utilisateur
+Forgotten\ your\ password?=Mot de passe oublié?
 Login=S&\#39;identifier
 Please\ enter\ your\ password=s&\#39;il vous plait entrez votre mot de passe
+

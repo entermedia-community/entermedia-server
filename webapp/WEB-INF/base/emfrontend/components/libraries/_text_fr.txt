@@ -1,10 +1,10 @@
-#
-#Wed Apr 19 08:56:46 CDT 2017
-Libraries=Biblioth\u00E8ques
-Details=D\u00E9tails
+#Thu Apr 27 09:03:42 CDT 2017
+Details=Détails
+Libraries=Bibliothèques
 Assets=Items
-Create\ New=Cr\u00E9er nouveau
-Add\ Library=Ajouter une biblioth\u00E8que
+Create\ New=Créer nouveau
 add=ajouter
-Add\ Collection=Ajouter une collection
+Add\ Library=Ajouter une bibliothèque
 Collections=Collections
+Add\ Collection=Ajouter une collection
+

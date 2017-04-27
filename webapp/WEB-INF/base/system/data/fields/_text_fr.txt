@@ -1,4 +1,4 @@
-#Fri Nov 25 16:02:26 UTC 2016
+#Thu Apr 27 09:03:42 CDT 2017
 Password=Mot de passe
 Address\ 2=Adresse 2
 Address\ 1=Adresse 1
@@ -17,10 +17,10 @@ id=ID
 State\ /\ Province=État / Province
 Notes=Remarques
 Postal\ Code=Code postal
-First\ Name=Prénom
 User\ Search=Recherche utilisateur
+First\ Name=Prénom
 Email=Courriel
-Enabled=Activé
 All\ Fields=Tous les champs
+Enabled=Activé
 City=Ville
 

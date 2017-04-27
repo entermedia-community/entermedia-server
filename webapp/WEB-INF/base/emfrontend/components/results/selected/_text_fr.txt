@@ -1,13 +1,12 @@
-#
-#Wed Apr 19 08:56:51 CDT 2017
-View\ Selections=Voir les s\u00E9lections
+#Thu Apr 27 09:03:42 CDT 2017
+View\ Selections=Voir les sélections
 Edit\ Asset=Modifier l&\#39;item
 Reject=Rejeter
-Multi\ Edit=Multi \u00C9dition
-Results=R\u00E9sultats
-Deselect\ All=Tout d\u00E9selectionner
-Show\ All\ Results=Afficher tous les r\u00E9sultats
-Select\ All\ Results=S\u00E9lectionnez tous les r\u00E9sultats
+Multi\ Edit=Multi Édition
+Results=Résultats
+Deselect\ All=Tout déselectionner
+Show\ All\ Results=Afficher tous les résultats
+Select\ All\ Results=Sélectionnez tous les résultats
 Add\ To\ Basket=Ajouter au panier
 Approve\ Pending=Approbation en attente
 Export\ to\ CSV=Exporter au format CSV
@@ -15,13 +14,14 @@ All=Tout
 Delete\ Assets=Supprimer items
 Show\ All=Tout montrer
 Approve=Approuver
-Select\ This\ Page=S\u00E9lectionner cette page
-Edit\ selected\ records=Modifier les enregistrements s\u00E9lectionn\u00E9s
-Selections=S\u00E9lections
+Select\ This\ Page=Sélectionner cette page
+Edit\ selected\ records=Modifier les enregistrements sélectionnés
 Remove\ From\ Basket=Retirer du panier
-Show\ Only\ Selections=Afficher uniquement les s\u00E9lections
+Selections=Sélections
+Show\ Only\ Selections=Afficher uniquement les sélections
 Print\ Assets=Imprimer items
 Reject\ Pending=Rejet en attente
 Edit=Modifier
+Edit\ one\ or\ more\ selected\ records=Modifier un ou plusieurs enregistrement(s) sélectionné(s)
 Actions=Actions
-Edit\ one\ or\ more\ selected\ records=Modifier un ou plusieurs enregistrement(s) s\u00E9lectionn\u00E9(s)
+

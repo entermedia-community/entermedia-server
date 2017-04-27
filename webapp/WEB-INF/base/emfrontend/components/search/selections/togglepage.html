@@ -1,4 +1,4 @@
-	#set($resultsPage = "$home$content.searchhome/results.html")
+#set($resultsPage = "$home$content.searchhome/results.html")
 <table>
 <tr>
 <td>&nbsp;</td>
@@ -39,12 +39,12 @@
     -->
     <td>&nbsp;</td>
     #if($content.isPropertyTrue("showselections"))
- <td>       <b>Selections: </b> ($!hits.getSelections().size()):  <a class="actionlink" href="#page" onclick="togglehits('page');return false;">  This Page  </a>|  <a class="actionlink" href="#all" onclick="togglehits('all');">  All $!hits.size()  </a> | <a  class="actionlink" href="#none" onclick="togglehits('none');return false;">Clear</a></td>
+ <td>       <b>Selections: </b> ($!hits.getSelections().size()):  <a class="actionlink" href="#page" onclick="togglehits('page');return false;">  [[This Page]]  </a>|  <a class="actionlink" href="#all" onclick="togglehits('all');">  All $!hits.size()  </a> | <a  class="actionlink" href="#none" onclick="togglehits('none');return false;">[[Clear]]</a></td>
  #end
     #if($content.isPropertyTrue("showactions"))
     <td>&nbsp;</td>
     #end
- <td>       <b>Actions: </b> <a href="$home${content.searchhome}/actions/reindex.html">[[Reindex]]</a>
+ <td>       <b>[[Actions]]: </b> <a href="$home${content.searchhome}/actions/reindex.html">[[Reindex]]</a>
 []<a href="$home${content.searchhome}/edit/addnew.html">[[Add New Data]]</a> </td>
     </tr>
     </table>

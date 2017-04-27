@@ -1,5 +1,5 @@
-#
-#Thu Apr 20 13:43:23 CDT 2017
+#Thu Apr 27 09:03:43 CDT 2017
 Original\ image=Image originale
 $asset=$asset
-Preview\ Image=Aper\u00E7u
+Preview\ Image=Aperçu
+

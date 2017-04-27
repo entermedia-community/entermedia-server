@@ -1,18 +1,15 @@
-#Fri Nov 25 16:02:26 UTC 2016
-$asset=$asset
-Preview\ Image=Aperçu
-
-#Fri Nov 25 16:02:26 UTC 2016
-items=éléments
-No\ results\ found=Aucun résultat trouvé
-Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les déplacer
+#Thu Apr 27 09:03:42 CDT 2017
+Edit=Modifier
+Asset=Item
 Displaying\ records=Affichage des dossiers
+Library=Bibliothèque
+Search=Recherche
+$asset=$asset
+Collection=Collection
+items=éléments
+Add\ Field=Ajouter un champ
+Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les déplacer
+No\ results\ found=Aucun résultat trouvé
+Preview\ Image=Aperçu
 of=de
 
-#Fri Nov 25 16:02:26 UTC 2016
-Asset=Item
-Search=Recherche
-Edit=Modifier
-Collection=Collection
-Add\ Field=Ajouter un champ
-Library=Bibliothèque

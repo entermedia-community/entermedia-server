@@ -1,5 +1,6 @@
 #Thu Apr 27 09:03:43 CDT 2017
 Permissions=Autorisations
+Powered\ by\ EnterMedia=Propulsé par EnterMedia
 Annotate=Annoter
 Library\ Assets=Actifs de la bibliothèque
 There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficulté à remplir cette demande
@@ -18,18 +19,18 @@ Revisions=Révisions
 Ok=D&\#39;accord
 System\ Settings=Paramètres du système
 Language=Langue
-Properties=Propriétés
 Logout=Déconnexion
+Properties=Propriétés
 Asset\ is\ missing=Item manquant
-Dashboard=Tableau de bord
-Reports=Rapports
-Folder=Dossier
 Pending=en attendant
+Folder=Dossier
+Reports=Rapports
+Dashboard=Tableau de bord
 Login=Connexion
-Close=Fermer
 Edit\ Reports=Modifier les rapports
-Settings=Paramètres
+Close=Fermer
 Add\ Media=Ajouter des médias
+Settings=Paramètres
 View\ Library=Voir la bibliothèque
 Library\ Folders=Dossiers de bibliothèque
 

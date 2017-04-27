@@ -1,7 +1,7 @@
-#Fri Nov 25 16:02:26 UTC 2016
+#Thu Apr 27 09:03:42 CDT 2017
 Fully\ Scanned=Entièrement numérisée
 Add\ Hot\ Folder=Ajouter dossier surveillé
 Schedule\ Importing=Planifier Importation
-Alias=Alias
 Scan\ in\ Progress=Numérisation en cours
+Alias=Alias
 

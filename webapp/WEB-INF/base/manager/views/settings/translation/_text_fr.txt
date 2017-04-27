@@ -1,4 +1,4 @@
-#Fri Nov 25 16:02:26 UTC 2016
+#Thu Apr 27 09:03:43 CDT 2017
 Language=Langue
 Read=Lire
 all\ translations\ within\ the\ WEB-INF/base/\ directory\ tree=toutes les traductions dans l'arborescence WEB-INF / base

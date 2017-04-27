@@ -1,16 +1,16 @@
-#
-#Thu Apr 20 13:42:28 CDT 2017
-You\ like\ this=Vous aimez \u00E7a
+#Thu Apr 27 09:03:42 CDT 2017
+You\ like\ this=Vous aimez ça
 others=autres
-Be\ the\ first\ to\ approve\ this=Soyez le premier \u00E0 donner votre avis
+Be\ the\ first\ to\ approve\ this=Soyez le premier à donner votre avis
 approves=Approuve
 and=et
-have\ approved\ this=Ont approuv\u00E9 cette
-likes\ this=comme \u00E7a
+have\ approved\ this=Ont approuvé cette
+likes\ this=comme ça
 You=Vous
-Be\ the\ first\ to\ like\ this\ asset\!=Soyez le premier \u00E0 aimer cet item \!
-You\ approved=Vous avez approuv\u00E9
-like\ this=comme \u00E7a
+You\ approved=Vous avez approuvé
+Be\ the\ first\ to\ like\ this\ asset\!=Soyez le premier à aimer cet item \!
+like\ this=comme ça
 Approve=Approuver
 Remove\ Approval=Supprimer l&\#39;approbation
-approved=approuv\u00E9
+approved=approuvé
+

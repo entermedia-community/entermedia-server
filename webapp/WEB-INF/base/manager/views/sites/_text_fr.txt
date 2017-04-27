@@ -1,0 +1,7 @@
+#Thu Apr 27 09:03:43 CDT 2017
+Site\ Manager=Gestionnaire de site
+Folder=Dossier
+Site\ Name=Nom du site
+Snapshots=Instantanés
+Catalog=Catalogue
+

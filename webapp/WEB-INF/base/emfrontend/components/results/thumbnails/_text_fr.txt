@@ -1,4 +1,4 @@
-#
-#Wed Apr 19 08:56:52 CDT 2017
-Drag\ to\ Library\ or\ Category=Faites glisser vers la biblioth\u00E8que ou la cat\u00E9gorie
+#Thu Apr 27 09:03:42 CDT 2017
+Drag\ to\ Library\ or\ Category=Faites glisser vers la bibliothèque ou la catégorie
 Drag\ to\ collection=Glisser dans une collection
+

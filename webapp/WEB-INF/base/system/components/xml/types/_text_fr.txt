@@ -1,10 +1,10 @@
-#Fri Nov 25 16:02:26 UTC 2016
-Before\ Date=Avant
+#Thu Apr 27 09:03:42 CDT 2017
+Before\ Date=Avant le
+Between=Entre
 Equals=Égal
-Between=Compris entre
 Past\ 24\ hours=Dernières 24 heures
 Past\ month=Dernier mois
-After\ Date=Après
-Past\ week=La semaine dernière
+Past\ week=Semaine dernière
+After\ Date=Après le
 Past\ year=Année dernière
 

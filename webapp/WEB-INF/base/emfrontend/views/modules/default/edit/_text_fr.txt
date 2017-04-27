@@ -1,5 +1,5 @@
-#
-#Tue Apr 25 11:02:26 CDT 2017
-Properties=Propri\u00E9t\u00E9s
-Are\ you\ sure=\u00CAtes-vous s\u00FBr
+#Thu Apr 27 09:03:42 CDT 2017
+Properties=Propriétés
+Are\ you\ sure=Êtes-vous sûr
 Edit=modifier
+

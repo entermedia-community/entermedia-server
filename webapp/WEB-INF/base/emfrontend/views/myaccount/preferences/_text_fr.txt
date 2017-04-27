@@ -1,5 +1,5 @@
-#
-#Fri Apr 21 09:45:42 CDT 2017
+#Thu Apr 27 09:03:42 CDT 2017
 Save\ Changes=Sauvegarder les modifications
-Update\ your\ Preferences=Mettez \u00E0 jour vos pr\u00E9f\u00E9rences
-User\ Preferences=Pr\u00E9f\u00E9rences de l&\#39;utilisateur
+Update\ your\ Preferences=Mettez à jour vos préférences
+User\ Preferences=Préférences de l&\#39;utilisateur
+

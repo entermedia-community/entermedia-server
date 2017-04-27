@@ -1,13 +1,13 @@
-#
-#Thu Apr 20 15:14:09 CDT 2017
-Previous\ Five=Pr\u00E9c\u00E9dent Cinq
+#Thu Apr 27 09:03:42 CDT 2017
+Previous\ Five=Précédent Cinq
 as\ jpeg=En jpeg
 Contact=Contact
-Categories=Cat\u00E9gories
-Tags=Mots cl\u00E9s
+Categories=Catégories
+Tags=Mots clés
 assets=les atouts
-drag=tra\u00EEne
+drag=traîne
 Next\ Five=Suivant Cinq
 Shopping\ Cart=Chariot
-Editing\ across=\u00C9dition \u00E0 travers
+Editing\ across=Édition à travers
 Page=Page
+

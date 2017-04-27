@@ -1,13 +1,13 @@
-#
-#Fri Apr 21 09:46:07 CDT 2017
+#Thu Apr 27 09:03:42 CDT 2017
 Retype\ Password=Retaper le mot de passe
-Update\ your\ password\ information=Mettre \u00E0 jour vos informations de mot de passe
+Update\ your\ password\ information=Mettre à jour vos informations de mot de passe
 User\ Profile=Profil de l&\#39;utilisateur
-Password\ Settings=Param\u00E8tres du mot de passe
-Update\ your\ user\ profile\ information=Mettre \u00E0 jour vos informations de profil
+Password\ Settings=Paramètres du mot de passe
+Update\ your\ user\ profile\ information=Mettre à jour vos informations de profil
 Password=Mot de passe
 CANCEL=ANNULER
-Saved=Enregistr\u00E9
+Saved=Enregistré
 Cancel=Annuler
-Save=Sauvegarder
 Save\ Changes=Sauvegarder les modifications
+Save=Sauvegarder
+

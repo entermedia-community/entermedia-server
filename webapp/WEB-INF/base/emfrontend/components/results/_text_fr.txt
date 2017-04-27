@@ -1,37 +1,37 @@
-#
-#Wed Apr 19 08:56:49 CDT 2017
+#Thu Apr 27 09:03:42 CDT 2017
 Share=Partager
-No\ results\ found.=Aucun r\u00E9sultat trouv\u00E9.
+No\ results\ found.=Aucun résultat trouvé.
 Copy\ Collection=Collection de copie
-Categories=Cat\u00E9gories
+Categories=Catégories
 Table=Table
 Thumbnail=Miniature
-Download=T\u00E9l\u00E9charger
-Download\ Options=Options de t\u00E9l\u00E9chargement
-Deselect\ All=Tout d\u00E9selectionner
+Download=Télécharger
+Download\ Options=Options de téléchargement
+Deselect\ All=Tout déselectionner
 Email\ Assets=Envoyer par courriel
 Publish=Publier
-Select\ All\ Results=S\u00E9lectionner tous les r\u00E9sultats
+Select\ All\ Results=Sélectionner tous les résultats
 Folders=Dossiers
-Create\ a\ copy\ of\ this\ collection=Cr\u00E9er une copie de cette collection
-Remove\ from\ library\ and\ all\ collections?=Retirer de la biblioth\u00E8que et de toutes les collections?
+Create\ a\ copy\ of\ this\ collection=Créer une copie de cette collection
+Remove\ from\ library\ and\ all\ collections?=Retirer de la bibliothèque et de toutes les collections?
 Publish\ Assets\ to\ Server=Publier items vers serveur
 Delete\ Assets=Supprimer actifs
 Remove\ from\ Collection=Retirer de la collection
-Select\ This\ Page=S\u00E9lectionner cette page
-items=\u00E9l\u00E9ments
+Select\ This\ Page=Sélectionner cette page
 Gallery=Galerie
+items=éléments
 of=de
-Add\ Column=Ajouter une colonne
-Cancel=Annuler
 Share\ Gallery=Partager Galerie
+Cancel=Annuler
+Add\ Column=Ajouter une colonne
 Edit\ Columns=Modifier les colonnes
 Remove\ from\ collection?=Retirer de la collection?
+No\ results\ found=Aucun résultat trouvé
 Displaying\ records=Affichage des dossiers
-No\ results\ found=Aucun r\u00E9sultat trouv\u00E9
 Remove=Retirer
-Remove\ from\ Library=Retirer de la biblioth\u00E8que
-Stacked=Superpos\u00E9
+Remove\ from\ Library=Retirer de la bibliothèque
+Stacked=Superposé
 Collection=Collection
-Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les d\u00E9placer
-Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus s\u00E9lectionn\u00E9s
+Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus sélectionnés
+Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les déplacer
+
