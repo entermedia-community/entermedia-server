@@ -1,5 +1,6 @@
-#Thu Apr 27 09:03:42 CDT 2017
+#
+#Thu Apr 27 13:16:08 CDT 2017
 $asset=$asset
 Drag\ to\ collection=Drag to collection
-Preview\ Image=Aperçu
-
+Jump\ To\ Page=Aller \u00E0 la page
+Preview\ Image=Aper\u00E7u

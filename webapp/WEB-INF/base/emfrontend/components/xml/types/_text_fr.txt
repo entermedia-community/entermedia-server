@@ -1,4 +1,22 @@
-#Thu Apr 27 09:03:42 CDT 2017
-Enter\ comma\ separated\ tags=Entrez les étiquettes séparées par des virgules
+#
+#Thu Apr 27 13:21:28 CDT 2017
+Searching=Recherche
+IP\ Address=Adresse IP
+entry=entr\u00E9e
+chars\ less=Moins de caract\u00E8res
+City\ or\ Address=Ville ou adresse
+10km\ -\ 6\ miles=10 km - 6 miles
+Search=Chercher
+1000\ km\ -\ 620\ miles=1000 km - 620 milles
+Please\ enter=Entrez s&\#39;il vous plait
+entries=Entr\u00E9es
+Enter\ comma\ separated\ tags=Entrez les \u00E9tiquettes s\u00E9par\u00E9es par des virgules
+Loading\ more\ results=Chargement de plus de r\u00E9sultats
+Pick\ Categories=Choisir des cat\u00E9gories
+100\ km\ -\ 62\ miles=100 km - 62 miles
 View=Vue
-
+You\ can\ only\ select=Vous ne pouvez s\u00E9lectionner que
+5000\ km\ -\ 3100\ miles=5000 km - 3100 milles
+chars\ more=Charles plus
+Remove=Retirer
+No\ results=Aucun r\u00E9sultat
