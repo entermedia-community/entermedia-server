@@ -16,10 +16,10 @@
 	<div id="footermenu">
 		<ul class="nav navbar-nav">
 			<li  class="botmenulink nav-item">	
-				#if( $user )
-				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()" id="escapelink" class="nav-link" > $asset </a>
+				#if( $canmetadatageneral )
+				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()" class="nav-link" > $asset </a>
 				#else
-				$asset
+				<a href="#" class="nav-link" > $asset </a>
 				#end
 			 </il>
 			<li id="download-select"  >
