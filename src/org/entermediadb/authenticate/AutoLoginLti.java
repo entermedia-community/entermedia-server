@@ -53,6 +53,9 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 				base.append("%3D");
 				base.append(encode(encode(value)));
 				//base.append(value);
+				log.info(key +  ":" + value);
+				
+				
 				if (iterator.hasNext())
 				{
 					base.append("%26");
@@ -83,15 +86,25 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 		    {
 				AutoLoginResult result = new AutoLoginResult();
 				String username = (String)map.get("ext_user_username");
+				
 				String email = (String)map.get("lis_person_contact_email_primary");
+				if( username == null && email != null && email.contains("@"))
+				{
+					username = email;
+					username = email.substring(0,email.indexOf("@"));
+				}
 				User user = getUserManager(inReq).getUser(username);
 				if( user == null)
 				{
 					user = getUserManager(inReq).createUser(username, null);
 				}
 				user.setEmail(email);
-				user.setFirstName( (String)map.get("lis_person_name_given") );
-				user.setLastName( (String)map.get("lis_person_name_family") );
+				String given = (String)map.get("lis_person_name_given");
+				if( given != null)
+				{
+					user.setFirstName(given);
+					user.setLastName( (String)map.get("lis_person_name_family") );
+				}	
 				result.setUser(user);
 				return result;
 		    }
