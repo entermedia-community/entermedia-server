@@ -1,0 +1,23 @@
+#
+#Thu Apr 27 13:12:42 CDT 2017
+Delete\ All=Supprimer tout
+Data\ Search=Recherche de donn\u00E9es
+Data=Les donn\u00E9es
+Export=Exportation
+Records=Enregistrements
+Search=Chercher
+Reindex=Reindex
+Customize\ Views=Personnaliser les vues
+Import=Importer
+Elastic\ System\ Info=Informations sur le syst\u00E8me \u00E9lastique
+Page=Page
+of=de
+Delete\ Table=Supprimer le tableau
+Data\ Type=Type de donn\u00E9es
+Found=A trouv\u00E9
+Copy\ to\ defaults=Copier les valeurs par d\u00E9faut
+Back=Arri\u00E8re
+Reset\ Settings=R\u00E9initialiser les options
+Add\ New=Ajouter nouveau
+Customize\ Fields=Personnaliser les champs
+Forward=Vers l&\#39;avant

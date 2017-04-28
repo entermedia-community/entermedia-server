@@ -1,4 +1,8 @@
-#Thu Apr 27 09:03:42 CDT 2017
+#
+#Thu Apr 27 16:24:16 CDT 2017
+Adding\ to\ Queue=Ajouter \u00E0 la file d&\#39;attente
+Please\ contact\ your\ administrator=Veuillez contacter votre administrateur
+Creating\ Proxy\ Step=Cr\u00E9ation d&\#39;une \u00E9tape de proxy
 Publish\ Error=Erreur de publication
 Conversion\ Error=Erreur de conversion
-
+Publishing\ Proxy=Proxy de publication
