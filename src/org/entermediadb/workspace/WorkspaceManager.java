@@ -188,14 +188,14 @@ public class WorkspaceManager
 		}		
 		getPageManager().getPageSettingsManager().saveSetting(homesettings);
 		getPageManager().getPageSettingsManager().saveSetting(modulesettings);
-		/** DATABASE STUFF **/
-		String template = "/" + catalogid + "/data/lists/view/default.xml";
-		String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
-		copyXml(catalogid, template, path, module);
-		Searcher views = getSearcherManager().getSearcher(catalogid, "view");
-		
 		if( !mid.equals("asset") )
 		{
+			/** DATABASE STUFF **/
+			String template = "/" + catalogid + "/data/lists/view/default.xml";
+			String path = "/WEB-INF/data/" + catalogid + "/lists/view/" + module.getId() + ".xml";
+			copyXml(catalogid, template, path, module);
+			Searcher views = getSearcherManager().getSearcher(catalogid, "view");
+			
 			Collection valuesdir = getPageManager().getChildrenPaths("/" + catalogid + "/data/views/defaults/",true );
 			for (Iterator iterator = valuesdir.iterator(); iterator.hasNext();)
 			{
@@ -206,28 +206,26 @@ public class WorkspaceManager
 				
 			}
 			views.reIndexAll();
+			String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
+			String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
+			copyXml(catalogid, templte2, path2, module);
+			
+			Searcher settingsmenumodule = getSearcherManager().getSearcher(catalogid, "settingsmenumodule");
+			settingsmenumodule.reIndexAll();
+			
+			String templte3 = "/" + catalogid + "/data/lists/settingsmodulepermissionsdefault.xml";
+			String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
+			copyXml(catalogid, templte3, path3, module);
+
+			
+			createMediaDbModule(catalogid,module);
+			
+			getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
+
+			// add settings menu
+			createTable(catalogid, module.getId(), module.getId());
 		}
-
 		
-		String templte2 = "/" + catalogid + "/data/lists/settingsmenumodule/default.xml";
-		String path2 = "/WEB-INF/data/" + catalogid + "/lists/settingsmenumodule/" + module.getId() + ".xml";
-		copyXml(catalogid, templte2, path2, module);
-		
-		Searcher settingsmenumodule = getSearcherManager().getSearcher(catalogid, "settingsmenumodule");
-		settingsmenumodule.reIndexAll();
-		
-		String templte3 = "/" + catalogid + "/data/lists/settingsmodulepermissionsdefault.xml";
-		String path3 = "/WEB-INF/data/" + catalogid + "/lists/settingsmodulepermissions" + module.getId() + ".xml";
-		copyXml(catalogid, templte3, path3, module);
-
-		
-		createMediaDbModule(catalogid,module);
-		
-		
-		getSearcherManager().removeFromCache(catalogid, "settingsmenumodule");
-
-		// add settings menu
-		createTable(catalogid, module.getId(), module.getId());
 		//getPageManager().clearCache();
 				
 		
