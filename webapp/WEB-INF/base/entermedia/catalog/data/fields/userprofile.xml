@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Rôle]]></language> 
     </name> 
   </property>  
-  <property id="view_asset_resultstable" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">View Table Results 
+  <property id="view_asset_resultstable" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="true" sortable="true">View Table Results 
     <name> 
       <language id="de"><![CDATA[Ansicht Tabellenergebnisse]]></language>  
       <language id="en"><![CDATA[View Table Results]]></language>  
@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Voir les Résultats de la table]]></language> 
     </name> 
   </property>  
-  <property id="view_asset_advancedsearch" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Asset Search 
+  <property id="view_asset_advancedsearch" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="true" sortable="true">Asset Search 
     <name> 
       <language id="de"><![CDATA[Asset-Suche]]></language>  
       <language id="en"><![CDATA[Asset Search]]></language>  
