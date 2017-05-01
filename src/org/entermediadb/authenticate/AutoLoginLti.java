@@ -53,8 +53,10 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 				base.append("%3D");
 				base.append(encode(encode(value)));
 				//base.append(value);
-				log.info(key +  ":" + value);
-				
+				if( log.isDebugEnabled() )
+				{
+					log.debug(key +  ":" + value);
+				}
 				
 				if (iterator.hasNext())
 				{
