@@ -1,4 +1,7 @@
 <properties>
 	<property id="assethitsperpage" editable="true"/>
 	<property id="modulehitsperpage" editable="true"/>
+	<property id="sendcollectionnotifications" editable="true"/>
+	
+	
 </properties> 

@@ -151,5 +151,18 @@
       <language id="fr"><![CDATA[Vue de Résultat Par Défaut]]></language>
     </name>
   </property>
+  <property id="sendcollectionnotifications" index="true" type="boolean" internalfield="true" keyword="false" filter="false" editable="false" > 
+    <name> 
+      <language id="en"><![CDATA[Send Email Notifications on Asset Approval or Rejection]]></language>  
+      
+    </name> 
+  </property>  
+  <property id="lastviewedapp" index="true"  internalfield="true" keyword="false" filter="false" editable="false" > 
+    <name> 
+      <language id="en"><![CDATA[Last Viewed Application]]></language>  
+      
+    </name> 
+  </property>  
+  
   
 </properties>

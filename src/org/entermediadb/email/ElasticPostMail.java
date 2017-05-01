@@ -6,12 +6,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.StatusLine;
+import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
@@ -45,7 +46,7 @@ public class ElasticPostMail extends PostMail
 	}
 
 	//Combine BCC and CC
-	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, String from, List inAttachments, Map inProperties)
+	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, String from, List inAttachments, Map inProperties) throws MessagingException
 	{
 		ArrayList<InternetAddress> list = new ArrayList<InternetAddress>();
 		list.addAll(recipients);
@@ -53,7 +54,7 @@ public class ElasticPostMail extends PostMail
 		postMail(list, subject, inHtml, inText, from, inAttachments, inProperties);
 	}
 
-	public void postMail(List<InternetAddress> recipients, String subject, String inHtml, String inText, String from, List inAttachments, Map inProperties)
+	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, InternetAddress from, List inAttachments, Map inProperties) throws MessagingException
 	{
 		HttpRequestBuilder builder = new HttpRequestBuilder();
 
@@ -67,8 +68,8 @@ public class ElasticPostMail extends PostMail
 			
 			props.put("username", getSmtpUsername());
 			props.put("api_key", getSmtpPassword());
-			props.put("from", from);
-			props.put("from_name", from);
+			props.put("from", from.getAddress());
+			props.put("from_name", from.getPersonal());
 			//make sure list of recipients is unique since it may combine cc and bcc
 			ArrayList<String> list = new ArrayList<String>();
 			for (InternetAddress str : recipients){
@@ -107,12 +108,12 @@ public class ElasticPostMail extends PostMail
 //			}
 //			client.getParams().setSoTimeout(socketTimeout);
 //			client.getParams().setConnectionManagerTimeout(connectionTimeout);
-			StatusLine line  = client.execute(postMethod).getStatusLine();
-			int statuscode = line.getStatusCode();
+			HttpResponse response  = client.execute(postMethod);
+			int statuscode = response.getStatusLine().getStatusCode();
 			if (statuscode == 200)
 			{
 				//need to save response
-				String response = IOUtils.toString(postMethod.getEntity().getContent());
+				String resp = IOUtils.toString(response.getEntity().getContent());
 				if (inProperties != null){
 					inProperties.put(PostMailStatus.ID, response);
 				}

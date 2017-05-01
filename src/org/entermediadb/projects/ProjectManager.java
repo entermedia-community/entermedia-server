@@ -415,8 +415,11 @@ public class ProjectManager implements CatalogEnabled
 		}
 		
 		if( inShowOnlyEditStatus != null )
+			
+			
 		{
-			assetsearch.addExact("editstatus", inShowOnlyEditStatus);			
+			assetsearch.addOrsGroup("editstatus", inShowOnlyEditStatus);			
+			
 		}
 		
 		assetsearch.setEndUserSearch(true);
@@ -1449,6 +1452,7 @@ public class ProjectManager implements CatalogEnabled
 		Collection tosave = new ArrayList();
 		int approved = 0;
 		Searcher searcher = getMediaArchive().getAssetSearcher();
+		
 		for (Iterator iterator = inHits.getSelectedHitracker().iterator(); iterator.hasNext();)
 		{
 			Data asset = (Data) iterator.next();
@@ -1470,9 +1474,20 @@ public class ProjectManager implements CatalogEnabled
 	
 	protected void logAssetEvent(Collection<Asset> inTosave, String inOperation, User inUser, String inNote, String inCollectionid)
 	{
+		HashMap ownerassetmap = new HashMap();
+
+		
 		for (Iterator iterator = inTosave.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
+			String owner = asset.get("owner");
+			ArrayList assetlist = (ArrayList) ownerassetmap.get(owner);
+			if(assetlist == null){
+				assetlist = new ArrayList();
+				ownerassetmap.put(owner, assetlist);
+			}
+			assetlist.add(asset.getId());
+			
 			//Allow people to register and listen
 			//getMediaArchive().fireMediaEvent(inOperation, null, asset);
 			WebEvent event = new WebEvent();
@@ -1484,6 +1499,8 @@ public class ProjectManager implements CatalogEnabled
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
 			event.setProperty("assetids", asset.getId() );
+			event.setProperty("owner", owner );
+
 			event.setProperty("dataid", asset.getId() );
 			event.setProperty("note", inNote );
 			event.setProperty("librarycollection", inCollectionid );
@@ -1492,6 +1509,26 @@ public class ProjectManager implements CatalogEnabled
 			getMediaArchive().getEventManager().fireEvent(event);
 			
 		}
+		
+		for (Iterator iterator = ownerassetmap.keySet().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			List values = (List) ownerassetmap.get(key);
+			WebEvent event = new WebEvent();
+			event.setSearchType("librarycollection");
+			event.setCatalogId(getCatalogId());
+			event.setOperation(inOperation);
+			event.setSource(this);
+			event.setUser(inUser);
+			event.setProperty("owner", key);
+			event.setValue("assetids", values );
+			
+			event.setProperty("note", inNote );
+			event.setProperty("librarycollection", inCollectionid );
+			getMediaArchive().getEventManager().fireEvent(event);
+
+		}
+		
 		
 	}
 

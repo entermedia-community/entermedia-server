@@ -162,12 +162,15 @@ public class PostMail
 		}
 		return emails;
 	}
-	public void postMail(List<InternetAddress> recipients, String subject, String inHtml, String inText, String from, List inAttachments, Map inProperties) throws MessagingException
+	public void postMail(List<InternetAddress> recipients, String subject, String inHtml, String inText, String inFrom, List inAttachments, Map inProperties) throws MessagingException
 	{
+		
+		InternetAddress from = new InternetAddress();
+		from.setAddress(inFrom);
 		postMail(recipients, null, subject, inHtml, inText, from, inAttachments, inProperties);
 	}
 
-	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, String from, List inAttachments, Map inProperties) throws MessagingException
+	public void postMail(List<InternetAddress> recipients, List<InternetAddress> blindrecipients, String subject, String inHtml, String inText, InternetAddress from, List inAttachments, Map inProperties) throws MessagingException
 	{
 		// Set the host smtp address
 		Properties props = new Properties();
@@ -266,8 +269,7 @@ public class PostMail
 			msg.setContent(inText, "text/plain; charset=UTF-8");
 		}
 		// set the from and to address
-		InternetAddress addressFrom = new InternetAddress(from);
-		msg.setFrom(addressFrom);
+		msg.setFrom(from);
 		//msg.setRecipient(RecipientType.BCC, addressFrom);
 		msg.setSentDate(new Date());
 		if (recipients == null || recipients.isEmpty() )

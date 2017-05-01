@@ -215,7 +215,7 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}		
 		ProjectManager manager = getProjectManager(inReq);
-		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, "1");
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, "1|rejected");
 		if(all == null){
 			return;
 		}
