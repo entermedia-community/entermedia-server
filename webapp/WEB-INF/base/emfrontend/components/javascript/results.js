@@ -481,7 +481,7 @@ gridResize = function()
 	var fixedheight = grid.data("maxheight");
 	if( fixedheight == null || fixedheight.length == 0)
 	{
-		fixedheight = 230;
+		fixedheight = 200;
 	}
 	fixedheight = parseInt(fixedheight);
 	var cellpadding = grid.data("cellpadding");
