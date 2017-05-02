@@ -481,13 +481,13 @@ gridResize = function()
 	var fixedheight = grid.data("maxheight");
 	if( fixedheight == null || fixedheight.length == 0)
 	{
-		fixedheight = 200;
+		fixedheight = 230;
 	}
 	fixedheight = parseInt(fixedheight);
 	var cellpadding = grid.data("cellpadding");
 	if( cellpadding == null)
 	{
-		cellpadding = 4;  //this has to be twice what is in results.css
+		cellpadding = 8;  //this has to be twice what is in results.css
 	}
 	cellpadding = parseInt(cellpadding);
 	
@@ -504,8 +504,7 @@ gridResize = function()
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		cell.css("margin-top",cellpadding + "px");
-		cell.css("margin-left",cellpadding + "px");
+		cell.css("margin",cellpadding/2 + "px");
 		//cell.css("padding",cellpadding);
 		var w = cell.data("width");
 		var	h = cell.data("height");
@@ -539,8 +538,9 @@ gridResize = function()
 				var a = div.data("aspect");
 				div.css("line-height",fixedheight + "px"); 
 				div.height(fixedheight);
-				var neww = fixedheight * a - cellpadding;
-				div.width(Math.floor(neww - 1));
+				$("img.imagethumb",div).height(fixedheight);
+				//var neww = fixedheight * a - cellpadding;
+				//div.width(Math.floor(neww - 1));
 			});
 }
 /**
@@ -566,6 +566,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 				var newheight = Math.floor(ratiow / a);
 				div.css("line-height",newheight + "px"); 
 				div.height(newheight);
+				$("img.imagethumb",div).height(newheight);
 				var neww = newheight * a - cellpadding;
 				div.width(Math.floor(neww - 1));  //The 1 is for rounding errors
 			});
