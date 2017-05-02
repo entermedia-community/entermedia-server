@@ -788,13 +788,22 @@ public class ProjectManager implements CatalogEnabled
 		}
 		Searcher librarysearcher = inArchive.getSearcher("library");
 		String libraryid = collection.get("library");
-		if(libraryid == null){
+		if(libraryid == null)
+		{
 			libraryid = "default";
-			collection.setValue("library", "default");
+			collection.setValue("library", libraryid);
 			inArchive.getSearcher("librarycollection").saveData(collection);
 		}
 		Data library = inArchive.getData("library", libraryid);
-		if(library == null && "default".equals(libraryid)){
+		if(library == null && "default".equals(libraryid))
+		{
+			/*
+			if( path == null)
+			{
+				path = "Libraries/" + library.getName();
+			}
+			Category parentcategory = mediaArchive.createCategoryPath(path);
+			 */
 			library = librarysearcher.createNewData();
 			library.setId("default");
 			library.setName("General");

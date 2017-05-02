@@ -1,12 +1,15 @@
 package librarycollection
 
 import org.entermediadb.asset.Category
+import org.entermediadb.asset.MediaArchive
 import org.entermediadb.projects.LibraryCollection
 import org.openedit.Data
 import org.openedit.OpenEditException
 
 public void init() {
 	String id = context.getRequestParameter("id");
+	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
+	
 	LibraryCollection collection = mediaArchive.getSearcher("librarycollection").searchById(id);
 	if( collection != null ) 
 	{
@@ -32,34 +35,35 @@ public void init() {
 				library.setValue("categoryid",  librarycategoryid);
 				mediaArchive.getSearcher("library").saveData(library, null);
 			}	
-			Category librarycategory = mediaArchive.getCategory(librarycategoryid);
-			if( !collection.hasRootCategory() )
-			{
-				Category collectioncategory = mediaArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
-				String username = context.getUserName();
-				collectioncategory.addValue("viewusers",username);
-				mediaArchive.getCategorySearcher().saveData(collectioncategory);
-				collection.setCatalogId(collectioncategory.getId());
-				mediaArchive.getSearcher("librarycollection").saveData(collection, null);
-				log.info("saving collection");
-			}
-			else
-			{
-				Category collectioncategory = collection.getCategory();
-				if( collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
-				{
-					collectioncategory.setName(collection.getName());
-					mediaArchive.getCategorySearcher().saveData(collectioncategory);
-				}
-				Category librarycategory = mediaArchive.getCategory(librarycategoryid);
-				if( !collectioncategory.hasParent(librarycategory.getId()))
-				{
-					//Move the child into the parent
-					librarycategory.addChild(collectioncategory);
-					mediaArchive.getCategorySearcher().saveData(collectioncategory);
-				}
-			}
 		}	
+		//Make sure we have a root category
+		String librarycategoryid = collection.getLibrary().get("categoryid");
+		Category librarycategory = mediaArchive.getCategory(librarycategoryid);
+		if( !collection.hasRootCategory() )
+		{
+			Category collectioncategory = mediaArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
+			String username = context.getUserName();
+			collectioncategory.addValue("viewusers",username);
+			mediaArchive.getCategorySearcher().saveData(collectioncategory);
+			collection.setCatalogId(collectioncategory.getId());
+			mediaArchive.getSearcher("librarycollection").saveData(collection, null);
+			log.info("saving collection");
+		}
+		//Make sure the name still matches
+		Category collectioncategory = collection.getCategory();
+		if( collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
+		{
+			collectioncategory.setName(collection.getName());
+			mediaArchive.getCategorySearcher().saveData(collectioncategory);
+		}
+		//Move the parents if needed
+		if( !collectioncategory.hasParent(librarycategory.getId()))
+		{
+			//Move the child into the parent
+			librarycategory.addChild(collectioncategory);
+			mediaArchive.getCategorySearcher().saveData(collectioncategory);
+		}
+
 	}
 }
 
