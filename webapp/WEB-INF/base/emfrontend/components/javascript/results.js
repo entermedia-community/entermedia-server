@@ -538,7 +538,7 @@ gridResize = function()
 				var div = this;
 				var a = div.data("aspect");
 				div.css("line-height",fixedheight + "px"); 
-				//div.height(fixedheight);
+				div.height(fixedheight);
 				var neww = fixedheight * a - cellpadding;
 				div.width(Math.floor(neww - 1));
 			});
@@ -567,7 +567,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 				div.css("line-height",newheight + "px"); 
 				div.height(newheight);
 				var neww = newheight * a - cellpadding;
-				div.width(Math.floor(neww - 1));
+				div.width(Math.floor(neww - 1));  //The 1 is for rounding errors
 			});
 }
 	
