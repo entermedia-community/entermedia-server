@@ -85,4 +85,25 @@
 	<permission id="viewassetpreviewhistory" name="Preview History" description="Show previews history report"/>
 	<permission id="viewassetorderhistory" name="Order History" description="Show order history report"/>
  --> 
+  <property id="assethitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" keyword="false" filter="false" sortable="true">Number of Assets to view per page 
+    <name> 
+      <language id="de"><![CDATA[Anzahl der Assets pro Seite zu sehen]]></language>  
+      <language id="en"><![CDATA[Number of Assets to view per page]]></language>  
+      <language id="es"><![CDATA[Número de Activos para ver por página]]></language>  
+      <language id="fr"><![CDATA[Nombre d&#39;items à afficher par page]]></language> 
+    </name> 
+  </property>  
+  <property id="modulehitsperpage" index="true" stored="true" type="list" listid="hitcount" editable="true" keyword="false" filter="false" sortable="true">Number of rows show on Module results 
+    <name> 
+      <language id="de"><![CDATA[Anzahl der Zeilen zeigen Modul Ergebnisse]]></language>  
+      <language id="en"><![CDATA[Number of rows show on Module results]]></language>  
+      <language id="es"><![CDATA[Número de filas muestran en los resultados del módulo]]></language>  
+      <language id="fr"><![CDATA[Nombre de lignes affichées sur le module des résultats]]></language> 
+    </name> 
+  </property>  
+  <property id="sendcollectionnotifications" index="true" type="boolean" internalfield="true" keyword="false" filter="false" editable="false" > 
+    <name> 
+      <language id="en"><![CDATA[Send Email Notifications on Asset Approval or Rejection]]></language>  
+    </name> 
+  </property>  
 </properties>
