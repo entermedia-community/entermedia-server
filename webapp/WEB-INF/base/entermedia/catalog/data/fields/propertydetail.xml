@@ -224,4 +224,13 @@
       <language id="fr"><![CDATA[Voir Badge]]></language> 
     </name> 
   </property>  
+  
+  <property id="istimecoded" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true"> 
+    <name> 
+      
+      <language id="en"><![CDATA[Is Timecoded]]></language>  
+    
+    </name> 
+  </property>  
+  
 </properties>
