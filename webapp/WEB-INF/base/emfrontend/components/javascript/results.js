@@ -391,6 +391,10 @@ jQuery(document).ready(function(url,params)
 	{
 		checkScroll();
 	});
+	$(document).on('domchanged',function() 
+	{
+		checkScroll();
+	});
 	//END Gallery stuff
 	
 	$(window).on('resize',function(){
@@ -421,7 +425,6 @@ var loadingscroll = false;
 
 checkScroll = function()
 {
-		
 		if( loadingscroll )
 		{
 			console.log("loading scroll");
