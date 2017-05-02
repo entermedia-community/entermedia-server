@@ -11,11 +11,12 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 $context.putPageValue("showtoolbar", "false")
 
 #if( !$thumbsize )
-    #set( $thumbsize  = "thumb" )
+    #set( $thumbsize  = "mediumplus" )
 #end
 #if ( $hits && $hits.size() > 0 )
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
-    $context.putPageValue("details",$details)
+  	$context.putPageValue("details",$details)
+	$context.putPageValue("thumbsize", $thumbsize )
 
 <div class="row masonry-grid" data-maxhei$home$apphome/services/module/asset/players/fullscreen/index.htmlght="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"  
 	data-viewertemplate="$home$apphome/services/module/asset/players/fullscreen/index.html"
@@ -33,7 +34,6 @@ $context.putPageValue("showtoolbar", "false")
         $context.putPageValue("assetid", $hit.id)
         $context.putPageValue("count", $count )
         $context.putPageValue("sourcepath", $hit.sourcepath )
-         $context.putPageValue("thumbsize", "mediumplus" )
         #set($assetwidth = $mediaarchive.getRealImageWidth($hit))
         #set($assetheight = $mediaarchive.getRealImageHeight($hit))
 

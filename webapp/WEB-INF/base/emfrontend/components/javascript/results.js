@@ -550,20 +550,14 @@ W = A * H
 */
 computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 {
-			//Take the diff and ratio down the widths
-			//- (cellpadding * row.length) 
-			
-			//What we used = sofarusedw
-			//What is available = totalavailablew
-			
 			var growthratiow = (totalavailablew - sofarusedw) / sofarusedw;
 			$.each( row, function()
 			{
 				var div = this;
 				var a = div.data("aspect");
 				var oldw = a * fixedheight;
-				var ratiow = oldw + (oldw * growthratiow);
-				var newheight = Math.floor(ratiow / a);
+				var ratiow = oldw + (oldw * growthratiow); //Here is the magic
+				var newheight = Math.floor(ratiow / a); //There cells should all be the same height
 				div.css("line-height",newheight + "px"); 
 				div.height(newheight);
 				$("img.imagethumb",div).height(newheight);

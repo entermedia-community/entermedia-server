@@ -415,21 +415,23 @@ public class ProjectManager implements CatalogEnabled
 		}
 		
 		if( inShowOnlyEditStatus != null )
-			
-			
 		{
 			assetsearch.addOrsGroup("editstatus", inShowOnlyEditStatus);			
-			
 		}
 		
 		assetsearch.setEndUserSearch(true);
-		
-		if (assetsearch.getSortBy() == null)
+
+		String sort = (String)root.findValue("assetsort");
+		if( sort != null)
 		{
-			String sort = inReq.findValue("asset" + "sortby");
 			assetsearch.setSortBy(sort);
 		}
 
+		if (assetsearch.getSortBy() == null)
+		{
+			sort = inReq.findValue("asset" + "sortby");
+			assetsearch.setSortBy(sort);
+		}
 		
 		all = archive.getAssetSearcher().search(assetsearch);
 
