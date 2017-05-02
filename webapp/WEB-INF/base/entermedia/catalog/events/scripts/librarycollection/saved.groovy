@@ -1,49 +1,64 @@
 package librarycollection
 
-import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.Category
 import org.entermediadb.projects.LibraryCollection
 import org.openedit.Data
+import org.openedit.OpenEditException
 
 public void init() {
 	String id = context.getRequestParameter("id");
-
-	Data data = context.getPageValue("data");
-	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
-	if(data == null){
-		if( id == null) {
-			id = context.getRequestParameter("id.value");
-		}
-		if( id == null) {
-			return;
-		}
-	}
 	LibraryCollection collection = mediaArchive.getSearcher("librarycollection").searchById(id);
-	if( data != null ) 
+	if( collection != null ) 
 	{
 		//Make sure the root folder is within the library root folder
-		String rootcatid = data.get("rootcategory");
-		String libraryid = data.get("library");
-		mediaArchive.getData("library",libraryid);
+		String rootcatid = collection.get("rootcategory");
 		if( rootcatid == null)
 		{
-			String path = library.get("folder");
-			if( path == null)
+			Data library = collection.getLibrary();
+			if( library == null)
 			{
-				path = "Libraries/" + library.getName();
+				throw new OpenEditException("Library cannot be null");
 			}
-			parentcategory = mediaArchive.createCategoryPath(path);
-			library.setValue("categoryid", parentcategory.getId() );
-			String username = context.getUserName();
-			parentcategory.addValue("viewusers",username);
-			mediaArchive.getCategorySearcher().saveData(parentcategory);
-		
-			String owner = library.get("owner");
-			if(owner == null){
-				library.setProperty("owner", username);
-				//library.setProperty("ownerprofile",context.getUserProfile().getId()); 
+			String librarycategoryid = library.get("categoryid");
+			if( librarycategoryid == null)
+			{
+				String path = library.get("folder");
+				if( path == null)
+				{
+					path = "Libraries/" + library.getName();
+				}
+				Category parentcategory = mediaArchive.createCategoryPath(path);
+				librarycategoryid = parentcategory.getId();
+				library.setValue("categoryid",  librarycategoryid);
 				mediaArchive.getSearcher("library").saveData(library, null);
+			}	
+			Category librarycategory = mediaArchive.getCategory(librarycategoryid);
+			if( !collection.hasRootCategory() )
+			{
+				Category collectioncategory = mediaArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
+				String username = context.getUserName();
+				collectioncategory.addValue("viewusers",username);
+				mediaArchive.getCategorySearcher().saveData(collectioncategory);
+				collection.setCatalogId(collectioncategory.getId());
+				mediaArchive.getSearcher("librarycollection").saveData(collection, null);
+				log.info("saving collection");
 			}
-			log.info("saving library $path");
+			else
+			{
+				Category collectioncategory = collection.getCategory();
+				if( collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
+				{
+					collectioncategory.setName(collection.getName());
+					mediaArchive.getCategorySearcher().saveData(collectioncategory);
+				}
+				Category librarycategory = mediaArchive.getCategory(librarycategoryid);
+				if( !collectioncategory.hasParent(librarycategory.getId()))
+				{
+					//Move the child into the parent
+					librarycategory.addChild(collectioncategory);
+					mediaArchive.getCategorySearcher().saveData(collectioncategory);
+				}
+			}
 		}	
 	}
 }
