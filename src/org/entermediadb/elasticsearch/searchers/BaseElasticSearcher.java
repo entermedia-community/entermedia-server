@@ -536,6 +536,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.startObject("properties");
 
 			List props = getPropertyDetails().findIndexProperties();
+			List objectarrays = new ArrayList();
 			if (props.size() == 0)
 			{
 				log.error("No fields defined for " + getSearchType());
@@ -587,6 +588,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						Data locale = (Data) iterator.next();
 						String id = locale.getId();
+						 
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
@@ -619,107 +621,35 @@ public class BaseElasticSearcher extends BaseSearcher
 
 					continue;
 				}
+				
+				
 
-				jsonproperties = jsonproperties.startObject(detail.getId());
-
-				if ("description".equals(detail.getId()))
-				{
-					String analyzer = "lowersnowball";
-					jsonproperties = jsonproperties.field("analyzer", analyzer);
-					jsonproperties = jsonproperties.field("type", "string");
-					jsonproperties = jsonproperties.field("index", "analyzed");
-					jsonproperties = jsonproperties.field("include_in_all", "false");
+				if(!detail.isDataType("objectarray")){
+					jsonproperties = jsonproperties.startObject(detail.getId());
+					configureDetail(detail, jsonproperties);
 					jsonproperties = jsonproperties.endObject();
-					continue;
 				}
-
-				// First determine type
-				if (detail.isDate())
-				{
-					jsonproperties = jsonproperties.field("type", "date");
-					// "date_detection" : 0
-					// jsonproperties = jsonproperties.field("format",
-					// "yyyy-MM-dd HH:mm:ss Z");
-				}
-				else if (detail.isBoolean())
-				{
-					jsonproperties = jsonproperties.field("type", "boolean");
-				}
-				else if (detail.isDataType("number"))
-				{
-					jsonproperties = jsonproperties.field("type", "long");
-				}
-				else if (detail.isDataType("double"))
-				{
-					jsonproperties = jsonproperties.field("type", "double");
-				}
-				else if (detail.isDataType("long"))
-				{
-					jsonproperties = jsonproperties.field("type", "long");
-				}
-				else if (detail.isDataType("geo_point"))
-				{
-					jsonproperties = jsonproperties.field("type", "geo_point");
-				}
-				else if (detail.isList()) // Or multi valued?
-				{
-					if (Boolean.parseBoolean(detail.get("nested")))
-					{
-						jsonproperties = jsonproperties.field("type", "nested");
-					}
-					else
-					{
-						jsonproperties = jsonproperties.field("type", "string");
-					}
-				}
-				else
-				{
-					jsonproperties = jsonproperties.field("type", "string");
-					if (detail.isAnalyzed())
-					{
-						jsonproperties.startObject("fields");
-						jsonproperties.startObject("exact");
-						jsonproperties = jsonproperties.field("type", "string");
-						jsonproperties = jsonproperties.field("index", "not_analyzed");
-						if(!detail.getId().contains("path")){
-							jsonproperties = jsonproperties.field("ignore_above", 256);
-						}
-						jsonproperties.endObject();
-						jsonproperties.endObject();
-					}
-
-				}
-
-				// Now determine index
-				String indextype = detail.get("indextype");
-
-				if (indextype == null)
-				{
-					if (!detail.isAnalyzed())
-					{
-						indextype = "not_analyzed";
-					}
-				}
-				if (indextype != null)
-				{
-					jsonproperties = jsonproperties.field("index", indextype);
-				}
-
-				jsonproperties = jsonproperties.field("include_in_all", "false"); // Do
-																					// not
-																					// use.
-																					// Use
-																					// _description
-
-				String analyzer = detail.get("analyzer");
-				if (analyzer != null)
-				{
-					jsonproperties = jsonproperties.field("analyzer", analyzer);
-				}
-
-				jsonproperties = jsonproperties.endObject();
+					
+				
 
 			}
+			
+			for (Iterator iterator = objectarrays.iterator(); iterator.hasNext();) {
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				
+				jsonproperties = jsonproperties.startObject(detail.getId());
+				jsonproperties = jsonproperties.field("type", "array");
+
+					configureDetail(detail, jsonproperties);
+				
+				
+				jsonproperties = jsonproperties.endObject();
+				
+			}
+			
+			
+			
+			
 			jsonproperties = jsonproperties.endObject();
 			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
 			if (_parent != null)
@@ -739,6 +669,113 @@ public class BaseElasticSearcher extends BaseSearcher
 			throw new OpenEditException(ex);
 		}
 
+	}
+
+	protected void configureDetail(PropertyDetail detail, XContentBuilder jsonproperties) throws Exception{
+		
+		
+		if ("description".equals(detail.getId()))
+		{
+			String analyzer = "lowersnowball";
+			jsonproperties = jsonproperties.field("analyzer", analyzer);
+			jsonproperties = jsonproperties.field("type", "string");
+			jsonproperties = jsonproperties.field("index", "analyzed");
+			jsonproperties = jsonproperties.field("include_in_all", "false");
+			jsonproperties = jsonproperties.endObject();
+			return;
+		}
+
+		//CHECK TIMECODE
+		if(detail.get("istimecoded") == "true"){
+			//add mappings
+		}
+		
+		// First determine type
+		if (detail.isDate())
+		{
+			jsonproperties = jsonproperties.field("type", "date");
+			// "date_detection" : 0
+			// jsonproperties = jsonproperties.field("format",
+			// "yyyy-MM-dd HH:mm:ss Z");
+		}
+		else if (detail.isBoolean())
+		{
+			jsonproperties = jsonproperties.field("type", "boolean");
+		}
+		else if (detail.isDataType("number"))
+		{
+			jsonproperties = jsonproperties.field("type", "long");
+		}
+		else if (detail.isDataType("double"))
+		{
+			jsonproperties = jsonproperties.field("type", "double");
+		}
+		else if (detail.isDataType("long"))
+		{
+			jsonproperties = jsonproperties.field("type", "long");
+		}
+		else if (detail.isDataType("geo_point"))
+		{
+			jsonproperties = jsonproperties.field("type", "geo_point");
+		}
+		
+		
+		
+		else if (detail.isList()) // Or multi valued?
+		{
+			if (Boolean.parseBoolean(detail.get("nested")))
+			{
+				jsonproperties = jsonproperties.field("type", "nested");
+			}
+			else
+			{
+				jsonproperties = jsonproperties.field("type", "string");
+			}
+		}
+		else
+		{
+			jsonproperties = jsonproperties.field("type", "string");
+			if (detail.isAnalyzed())
+			{
+				jsonproperties.startObject("fields");
+				jsonproperties.startObject("exact");
+				jsonproperties = jsonproperties.field("type", "string");
+				jsonproperties = jsonproperties.field("index", "not_analyzed");
+				if(!detail.getId().contains("path")){
+					jsonproperties = jsonproperties.field("ignore_above", 256);
+				}
+				jsonproperties.endObject();
+				jsonproperties.endObject();
+			}
+
+		}
+
+		// Now determine index
+		String indextype = detail.get("indextype");
+
+		if (indextype == null)
+		{
+			if (!detail.isAnalyzed())
+			{
+				indextype = "not_analyzed";
+			}
+		}
+		if (indextype != null)
+		{
+			jsonproperties = jsonproperties.field("index", indextype);
+		}
+
+		jsonproperties = jsonproperties.field("include_in_all", "false"); // Do
+																			// not
+																			// use.
+																			// Use
+																			// _description
+
+		String analyzer = detail.get("analyzer");
+		if (analyzer != null)
+		{
+			jsonproperties = jsonproperties.field("analyzer", analyzer);
+		}		
 	}
 
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
