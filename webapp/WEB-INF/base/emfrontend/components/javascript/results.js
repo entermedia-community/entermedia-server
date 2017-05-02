@@ -424,6 +424,7 @@ checkScroll = function()
 		
 		if( loadingscroll )
 		{
+			console.log("loading scroll");
 			return;
 		}
 		//are we near the end? Are there more pages?
@@ -435,31 +436,32 @@ checkScroll = function()
 	    {
 		  return;
 		}
-		var gallery= $("#resultsdiv");
-		var lastcell = $(".masonry-grid-cell",gallery).last();
+		var resultsdiv= $("#resultsdiv");
+		var lastcell = $(".masonry-grid-cell",resultsdiv).last();
 		 if( lastcell.length == 0 )
 		 {
 		 	return;
 		 }
 		 
-	    var page = parseInt(gallery.data("pagenum"));   
-	    var total = parseInt(gallery.data("totalpages"));
+	    var page = parseInt(resultsdiv.data("pagenum"));   
+	    var total = parseInt(resultsdiv.data("totalpages"));
 		 console.log("checking scroll" + loadingscroll + " page " + page + " of " + total);
 	    if( total > page)
 	    {
 		   loadingscroll = true; 
-		   var session = gallery.data("hitssessionid");
+		   var session = resultsdiv.data("hitssessionid");
 		   page = page + 1;
-		   gallery.data("pagenum",page);
-		   console.log("loading page: " + page);
+		   resultsdiv.data("pagenum",page);
 		   var home = $('#application').data('home') + $('#application').data('apphome');
+		   console.log("loading page: " + home +" " + page);
 		   jQuery.get(home + "/components/results/stackedgallery.html", {hitssessionid:session,page:page,oemaxlevel:"1"}, function(data) 
 		   {
 			   var jdata = $(data);
 			   var code = $(".masonry-grid",jdata).html();
-			   $(".masonry-grid",gallery).append(code);
+			   $(".masonry-grid",resultsdiv).append(code);
 			   gridResize();
 			   loadingscroll = false; 
+			   $(document).trigger("domchanged");
 			});
 	     }   
 }
@@ -479,26 +481,32 @@ gridResize = function()
 	var fixedheight = grid.data("maxheight");
 	if( fixedheight == null || fixedheight.length == 0)
 	{
-		fixedheight = 250;
+		fixedheight = 200;
 	}
 	fixedheight = parseInt(fixedheight);
 	var cellpadding = grid.data("cellpadding");
 	if( cellpadding == null)
 	{
-		cellpadding = 8;  //this has to be twice what is in results.css
+		cellpadding = 4;  //this has to be twice what is in results.css
 	}
 	cellpadding = parseInt(cellpadding);
-	var sofarused = 0;
+	
 	var totalwidth = 0;
 	var rownum = 0;
 
-	var totalavailable = grid.width() - (cellpadding/2);
+	var totalavailablew = grid.width();
+	
+	//Two loops, one to make rows and one to render cells
+	var sofarusedw = 0;
+	var sofarusedh = 0;
 	
 	var row = [];
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		var useimage = false;
+		cell.css("margin-top",cellpadding + "px");
+		cell.css("margin-left",cellpadding + "px");
+		//cell.css("padding",cellpadding);
 		var w = cell.data("width");
 		var	h = cell.data("height");
 		w = parseInt(w);
@@ -509,72 +517,57 @@ gridResize = function()
 			h = 150;
 		}
 		var a = w / h;  
-	
+		cell.data( "aspect",a);
+		//console.log("Aspect" + cell.data("aspect"));
 		var neww = Math.floor( fixedheight * a );
-		
-		//TODO: Default the height to something smart
-		cell.width(neww);
-		
-		var over = sofarused + neww;
-		if( over > totalavailable )
+		var isover = sofarusedw + neww;
+		if( isover > totalavailablew )
 		{
-			var overage = (totalavailable - row.length * cellpadding)/ sofarused;
-			var newheight = fixedheight * overage;
-
-			//Need to figure aspect of entire row
-			var roundedheight = Math.floor( newheight ); //make smaller
-			if( roundedheight > fixedheight + 50 )
-			{
-				roundedheight = fixedheight;
-			} 
-			$.each( row, function()
-				{
-					var newcell = this;
-					var div = newcell.cell;
-					var newwidth = Math.floor(newheight * newcell.aspect); 
-					//var area = jQuery(".imagearea img",div);
-					//area = $(area);
-					//area.height(roundedheight); 
-					div.css("line-height",roundedheight + "px"); 
-					div.height(roundedheight); 
-					div.width(newwidth); 
-					jQuery.data( div, "rowcount",rownum);
-				}	
-			);
+			//Process previously added cell
+			computeRow(row,fixedheight,totalavailablew,sofarusedw,cellpadding);
 			row = [];
-			sofarused = 0;
+			sofarusedw = 0;
 			rownum = rownum + 1;
 		}
-		
-		sofarused = sofarused + neww;
-		row.push( {cell:$(cell), aspect:a, width:w, height:h} );		
-		
+		sofarusedw = sofarusedw + neww;// + cellpadding;
+		row.push( cell );		
+		cell.data( "rownum",rownum);
 	});
-	
-	//TODO: Move to method call
-	var overage = (totalavailable - row.length * cellpadding)/ sofarused;
-	var newheight = fixedheight * overage;
-	if( newheight > fixedheight + 100) //100 is how wide the next image is going to be
-	{
-		newheight = fixedheight + 100
-	}
-	var roundedheight = Math.floor(newheight);
-	
 	$.each( row, function()
-		{
-			var newcell = this;
-			var div = newcell.cell;
-			var newwidth = Math.floor(newheight * newcell.aspect); 
-			//var area = jQuery(".imagearea",div);
-			//area = $(area);
-			div.height(roundedheight); 
-			div.width(newwidth); 
-			div.css("line-height",roundedheight + "px"); 
-			jQuery.data( div, "rowcount",rownum);
-			//jQuery("#emthumbholder img",newcell.cell).width(newwidth);
-			//jQuery(".imagearea",newcell.cell).height(roundedheight); //TODO: Fix aspect
-			//jQuery(".imagearea",newcell.cell).width(newwidth);
-		}	
-	);
+			{
+				var div = this;
+				var a = div.data("aspect");
+				div.css("line-height",fixedheight + "px"); 
+				//div.height(fixedheight);
+				var neww = fixedheight * a - cellpadding;
+				div.width(Math.floor(neww - 1));
+			});
+}
+/**
+A = W / H
+H = W / A
+W = A * H
+*/
+computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
+{
+			//Take the diff and ratio down the widths
+			//- (cellpadding * row.length) 
+			
+			//What we used = sofarusedw
+			//What is available = totalavailablew
+			
+			var growthratiow = (totalavailablew - sofarusedw) / sofarusedw;
+			$.each( row, function()
+			{
+				var div = this;
+				var a = div.data("aspect");
+				var oldw = a * fixedheight;
+				var ratiow = oldw + (oldw * growthratiow);
+				var newheight = Math.floor(ratiow / a);
+				div.css("line-height",newheight + "px"); 
+				div.height(newheight);
+				var neww = newheight * a - cellpadding;
+				div.width(Math.floor(neww - 1));
+			});
 }
 	

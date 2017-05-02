@@ -328,7 +328,7 @@ div.masonry-grid-cell span.emdropshadow
 }
 div.masonry-grid-cell .grid-thumbimage img
 {
-	width:100%;
+	width:100%; 
 	display: inline-block;
     margin: 0 auto;
     vertical-align: middle;
@@ -493,18 +493,17 @@ div.masonry-grid-cell .grid-thumbimage img
 
 .masonry-grid
 {
+
+background-color: #eee;
 }
 
 .masonry-grid-cell
 {
 	position: relative;
-	margin: 4px;
 	padding: 0;
 	border: 0;
 	text-overflow: ellipsis;
-	background-color: #eee;
 	overflow:hidden;
-	
 }
 .masonry-grid-cell .grid-thumbimage
 {

@@ -582,7 +582,9 @@ onloadselectors = function()
 				);
 			}
 		);
-	jQuery(".assetdraggable").livequery( 
+	if( jQuery.fn.draggable )
+	{
+		jQuery(".assetdraggable").livequery( 
 			function()
 			{	
 				jQuery(this).draggable( 
@@ -614,9 +616,6 @@ onloadselectors = function()
 				*/
 			}
 		);
-	
-	if( jQuery.fn.draggable )
-	{
 		jQuery(".categorydraggable").livequery( 
 			function()
 			{	
@@ -658,6 +657,12 @@ onloadselectors = function()
 	jQuery(".headerdroppable").livequery(
 			function()
 			{
+			
+				if( !jQuery(this).droppable )
+				{
+					return;
+				}
+			
 				jQuery(this).droppable(
 					{
 						drop: function(event, ui) {
