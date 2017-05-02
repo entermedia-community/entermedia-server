@@ -5,4 +5,5 @@
   <locale id="fr" name="Français" enabled="true"/>  
   <locale id="es" name="Español" enabled="true"/>  
   <locale id="de" name="Deutsche" enabled="true"/>
+  <locale id="ar" name="عربى" enabled="true"/>
 </locales>
