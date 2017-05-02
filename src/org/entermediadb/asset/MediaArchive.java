@@ -1857,6 +1857,43 @@ public class MediaArchive implements CatalogEnabled
 			throw new OpenEditException(e);
 		}
 		return webmail;
+	}
+	
+	public int getRealImageWidth(Data inHit)
+	{
+		String orientation = inHit.get("imageorientation");
+		String width = null;
+		if(orientation == null || orientation.equals("1") || orientation.equals("3"))
+		{
+			width = inHit.get("width");
+		}
+		else
+		{
+			width = inHit.get("height");
+		}
+		if( width == null)
+		{
+			return 0;
+		}
+		return Integer.parseInt(width);
+	}
+	public int getRealImageHeight(Data inHit)
+	{
+		String orientation = inHit.get("imageorientation");
+		String height = null;
+		if(orientation == null || orientation.equals("1") || orientation.equals("3"))
+		{
+			height = inHit.get("height");
+		}
+		else
+		{
+			height = inHit.get("width");
+		}
+		if( height == null)
+		{
+			return 0;
+		}
+		return Integer.parseInt(height);
 		
 	}
 

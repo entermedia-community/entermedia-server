@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Send Asset Approval Notifications</property>	
+
+	<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/librarycollection/approved.groovy</script>
+	</path-action>
+</page>

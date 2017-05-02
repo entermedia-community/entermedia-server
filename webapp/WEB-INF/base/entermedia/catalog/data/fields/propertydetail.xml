@@ -88,14 +88,6 @@
       <language id="fr"><![CDATA[Vue de recherche par défaut]]></language> 
     </name> 
   </property>  
-  <property id="stored" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Stored 
-    <name> 
-      <language id="de"><![CDATA[gelagert]]></language>  
-      <language id="en"><![CDATA[Stored]]></language>  
-      <language id="es"><![CDATA[almacenado]]></language>  
-      <language id="fr"><![CDATA[Stocké]]></language> 
-    </name> 
-  </property>  
   <property id="externalid" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">External ID 
     <name> 
       <language id="de"><![CDATA[externe Kennung]]></language>  
@@ -150,14 +142,6 @@
       <language id="en"><![CDATA[listid]]></language>  
       <language id="es"><![CDATA[listid]]></language>  
       <language id="fr"><![CDATA[listid]]></language> 
-    </name> 
-  </property>  
-  <property id="sort" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Default Sort 
-    <name> 
-      <language id="de"><![CDATA[Standardsortierung]]></language>  
-      <language id="en"><![CDATA[Default Sort]]></language>  
-      <language id="es"><![CDATA[Ordenar por defecto]]></language>  
-      <language id="fr"><![CDATA[Tri par défaut]]></language> 
     </name> 
   </property>  
   <property id="foreignkeyid" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Foreign Key 

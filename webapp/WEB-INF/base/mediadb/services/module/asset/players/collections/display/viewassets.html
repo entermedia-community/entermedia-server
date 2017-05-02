@@ -11,20 +11,20 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 $context.putPageValue("showtoolbar", "false")
 
 #if( !$thumbsize )
-    #set( $thumbsize  = "thumb" )
+    #set( $thumbsize  = "mediumplus" )
 #end
 #if ( $hits && $hits.size() > 0 )
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
-    $context.putPageValue("details",$details)
-
-<div class="row masonry-grid" data-maxheight="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"  
+  	$context.putPageValue("details",$details)
+	$context.putPageValue("thumbsize", $thumbsize )
+<div class="row masonry-grid" data-maxhei$home$apphome/services/module/asset/players/fullscreen/index.htmlght="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"  
 	data-viewertemplate="$home$apphome/services/module/asset/players/fullscreen/index.html"
 	data-assettemplate="$home$apphome/services/module/asset/players/fullscreen/currentasset.html" >
 	
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
     #set( $viewerlink = $content.get("assetviewerlink") )
-    #foreach ($hit in $hits)
+    #foreach ($hit in $hits.getPageOfHits())
         #set ($sourcepath = $hit.sourcepath)
         
         $context.putPageValue("hit", $hit)
@@ -33,9 +33,9 @@ $context.putPageValue("showtoolbar", "false")
         $context.putPageValue("assetid", $hit.id)
         $context.putPageValue("count", $count )
         $context.putPageValue("sourcepath", $hit.sourcepath )
-         $context.putPageValue("thumbsize", "medium" )
-        #if ($!hit.width) #set($assetwidth = $hit.width) #else #set($assetwidth = 0) #end
-        #if($!hit.height) #set ($assetheight = $hit.height) #else #set($assetheight = 0) #end
+        #set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+        #set($assetheight = $mediaarchive.getRealImageHeight($hit))
+
         #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
 		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight" >

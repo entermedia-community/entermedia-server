@@ -14,6 +14,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
@@ -215,7 +216,7 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}		
 		ProjectManager manager = getProjectManager(inReq);
-		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, "1");
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, "1|rejected");
 		if(all == null){
 			return;
 		}
@@ -296,7 +297,7 @@ public class ProjectModule extends BaseMediaModule
 			else
 			{
 				String page = inReq.getPage().getName();
-				page = page.replace(".html", "");
+				page = page.replace(".html", "").replace(".zip", "");
 				collectionid = page;
 			}	
 		}
@@ -619,6 +620,10 @@ public class ProjectModule extends BaseMediaModule
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		User user = inReq.getUser();
+		if( user == null)
+		{
+			throw new OpenEditException("User required ");
+		}
 		Data collection = archive.getData("librarycollection", collectionid);
 
 		
@@ -666,13 +671,9 @@ public class ProjectModule extends BaseMediaModule
 //		librarycollectiondownloads.updateData(inReq, fields, history);
 //		librarycollectiondownloads.saveData(history);
 
-		boolean zip = Boolean.parseBoolean(inReq.findValue("zip"));
-		if(zip){
-			inReq.setRequestParameter("path", infolder);
-			inReq.setRequestParameter("stripfolders", infolder);
-
-			
-		}
+		//boolean zip = Boolean.parseBoolean(inReq.findValue("zip"));
+		inReq.setRequestParameter("path", infolder);
+		inReq.setRequestParameter("stripfolders", infolder);
 		
 		
 	}	

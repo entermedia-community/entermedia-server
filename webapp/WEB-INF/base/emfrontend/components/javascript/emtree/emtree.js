@@ -103,7 +103,8 @@ jQuery(document).ready(function()
 				{
 					var cell = jQuery("#" + targetdiv); //view-picker-content
 					//console.log(cell);
-					cell.html(data);
+					cell.replaceWith(data);
+					//cell.html(data);
 					//window.location.hash="TOP";
 					$(window).trigger( "resize" );
 				}

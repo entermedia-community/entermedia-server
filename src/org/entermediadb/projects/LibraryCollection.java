@@ -97,7 +97,7 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	
 	public boolean hasPendingAssets()
 	{
-		Object found = getMediaArchive().getAssetSearcher().query().orgroup("editstatus", "1|rejected|7").exact("category", getRootCategoryId()).searchOne();
+		Object found = getMediaArchive().getAssetSearcher().query().orgroup("editstatus", "1|rejected").exact("category", getRootCategoryId()).searchOne();
 		return found != null;
 	}
 

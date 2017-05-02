@@ -319,19 +319,19 @@ div#hiddenoverlay .overlay-margin {
 
 }
 
-div.masonry-grid-cell span.emdropshadow 
+div.masonry-grid-cell .grid-thumbimage 
 {
-	display: inline;
+	background-color:#fff;
 	padding: 0px;
 	margin:0px;
 	border:0px;
+	text-align: center;
 }
-div.masonry-grid-cell .grid-thumbimage img
+div.masonry-grid-cell .grid-thumbimage img.imagethumb
 {
-	width:100%;
 	display: inline-block;
     margin: 0 auto;
-    vertical-align: middle;
+    vertical-align: top;
 }
 
 
@@ -493,18 +493,17 @@ div.masonry-grid-cell .grid-thumbimage img
 
 .masonry-grid
 {
+
+background-color: #eee;
 }
 
 .masonry-grid-cell
 {
 	position: relative;
-	margin: 4px;
 	padding: 0;
 	border: 0;
 	text-overflow: ellipsis;
-	background-color: #eee;
 	overflow:hidden;
-	
 }
 .masonry-grid-cell .grid-thumbimage
 {
