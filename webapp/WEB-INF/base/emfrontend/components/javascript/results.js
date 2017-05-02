@@ -512,8 +512,8 @@ gridResize = function()
 		h = parseInt(h);
 		if( w == 0 )
 		{
-			w = 150;
-			h = 150;
+			w = fixedheight;
+			h = fixedheight;
 		}
 		var a = w / h;  
 		cell.data( "aspect",a);
@@ -539,8 +539,8 @@ gridResize = function()
 				div.css("line-height",fixedheight + "px"); 
 				div.height(fixedheight);
 				$("img.imagethumb",div).height(fixedheight);
-				//var neww = fixedheight * a - cellpadding;
-				//div.width(Math.floor(neww - 1));
+				var neww = fixedheight * a - cellpadding;
+				div.width(Math.floor(neww - 1));
 			});
 }
 /**

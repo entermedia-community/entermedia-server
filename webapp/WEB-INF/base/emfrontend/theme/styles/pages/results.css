@@ -319,12 +319,13 @@ div#hiddenoverlay .overlay-margin {
 
 }
 
-div.masonry-grid-cell span.emdropshadow 
+div.masonry-grid-cell .grid-thumbimage 
 {
-	display: inline;
+	background-color:#fff;
 	padding: 0px;
 	margin:0px;
 	border:0px;
+	text-align: center;
 }
 div.masonry-grid-cell .grid-thumbimage img.imagethumb
 {
