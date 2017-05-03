@@ -1,8 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
 
-<properties>
-  <property id="searchtype" index="true" internalfield="false" editable="true" stored="true" searchtype="reports">New
+<properties> 
+  <property id="searchtype" index="true" internalfield="false" editable="true" stored="true" searchtype="reports">New 
+    <name> 
+      <language id="en"><![CDATA[Core Search Type]]></language> 
+    </name> 
+  </property>  
+  <property id="virtual" index="true" editable="true" keyword="true">New 
+    <name> 
+      <language id="en"><![CDATA[virtual]]></language> 
+    </name> 
+  </property>  
+  <property id="oe_edit_mode" index="true" editable="true" keyword="true">New
     <name>
-      <language id="en"><![CDATA[Core Search Type]]></language>
+      <language id="en"><![CDATA[oe_edit_mode]]></language>
     </name>
   </property>
 </properties>
