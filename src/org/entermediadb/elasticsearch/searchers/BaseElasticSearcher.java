@@ -1938,6 +1938,15 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);
 				}
+				
+				if(detail.isDataType("objectarray")){
+					if(!(value instanceof Collection)){
+						throw new OpenEditException("Data was not an array");
+					}
+					
+					
+					
+				}
 				if (detail.isDate())
 				{
 					if (value != null)
