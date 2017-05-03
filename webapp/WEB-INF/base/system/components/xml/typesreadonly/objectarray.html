@@ -1,0 +1,11 @@
+<div class="${detail.id}-objectarray objectarray-field">
+	#set($collection = $data.getValue($detail.getId()))
+	$collection.size()
+	#foreach( $object in $collection)
+		<span>$object.values()</span> x
+	#end
+	<div style="padding: 10px" class="pull-left">
+		<a class="languagesavebtn" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id=""><img src="$home$themeprefix/images/icons/addgray.png"></a>
+	</div>
+		
+</div>
