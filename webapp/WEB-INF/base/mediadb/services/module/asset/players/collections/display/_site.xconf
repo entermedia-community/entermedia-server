@@ -18,6 +18,10 @@
    	
 	<property name="searchcategory">true</property>
 
+	<permission name="showbadge">
+    		<boolean value="false" />
+    </permission>
+    
 	 <permission name="view">
     		<action name="ProjectModule.checkViewCollection" />
     </permission>
