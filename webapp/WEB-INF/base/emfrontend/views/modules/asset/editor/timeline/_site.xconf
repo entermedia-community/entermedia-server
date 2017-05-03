@@ -1,5 +1,6 @@
 <page>
 	<inner-layout>/${applicationid}/views/modules/asset/editor/timeline/innerlayout.html</inner-layout>
+	<property name="hidepreview">true</property>
 
 	<property name="hidemenu">false</property>
 		<property name="showshare">true</property>
@@ -9,4 +10,6 @@
  
   <script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/js/videoplayer.js" />
   <style id="videoplayer-css" href="/${applicationid}/views/modules/asset/editor/videoplayer.css"/>
+  		<property name="assettab">timeline</property>
+  
 </page>
