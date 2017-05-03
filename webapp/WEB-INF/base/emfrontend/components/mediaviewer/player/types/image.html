@@ -17,8 +17,10 @@
 <div id="badgecontainer">
 #set( $badges = $mediaarchive.getBadges($asset) )
 <div class="badgetarget">
-#foreach($badge in $badges)
-	<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
+#if($canshowbadge)
+	#foreach($badge in $badges)
+		<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
+	#end
 #end
 </div>
 </div>
