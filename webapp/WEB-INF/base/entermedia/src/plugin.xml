@@ -2008,6 +2008,9 @@
 	
 	</bean>	
  	
+ 	<bean id="TimelineModule" class="org.entermediadb.asset.modules.TimelineModule" >
+	
+	</bean>	
  	
  	
  	

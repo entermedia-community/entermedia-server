@@ -196,7 +196,8 @@
     </name> 
   </property>  
   <!--  Video stuff -->  
-  <property id="length" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch"   editable="false" type="double">Length 
+  <!-- Fractional seconds -->  
+  <property id="length" index="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch"   editable="false" type="double"> 
     <name> 
       <language id="de"><![CDATA[Länge]]></language>  
       <language id="en"><![CDATA[Length]]></language>  
@@ -204,7 +205,6 @@
       <language id="fr"><![CDATA[Longueur]]></language> 
     </name> 
   </property>  
-  <!-- Rounded to the nearest second -->  
   <property id="duration" index="true" stored="true"   editable="false" sortable="true">Duration Stamp 
     <name> 
       <language id="de"><![CDATA[Dauer Stempel]]></language>  

@@ -6,6 +6,9 @@
 		<property name="showshare">true</property>
 	<property name="clientroot">/${applicationid}/views/modules/asset/editor/timeline</property>
 <property name="fullwidth">true</property>
+
+<path-action name="TimelineModule.loadChart" />
+
 <script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />
  
   <script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/js/videoplayer.js" />

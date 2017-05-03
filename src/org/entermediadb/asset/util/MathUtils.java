@@ -14,6 +14,10 @@ public class MathUtils
 		}
 		return new BigDecimal(val);
 	}
+	public BigDecimal getBigDecimal(double val)
+	{
+		return new BigDecimal(val);
+	}
 	public float getPercentage(BigDecimal now, BigDecimal total)
 	{
 		if( total.doubleValue() > 0)
@@ -35,6 +39,19 @@ public class MathUtils
 		BigDecimal now=getBigDecimal(inSoFar);
 		BigDecimal total = getBigDecimal(inTotal);
 		return getPercentage(now, total);
+	}
+
+	public static double divide(double intop, double inbottom)
+	{
+		BigDecimal top = new BigDecimal(intop);
+		BigDecimal bottom = new BigDecimal(inbottom);
+		if( bottom.doubleValue() > 0)
+		{
+			BigDecimal percentage=top.divide(bottom,5,RoundingMode.HALF_UP);
+			return percentage.doubleValue();
+		}
+		return 0;
+		
 	}
 
 	
