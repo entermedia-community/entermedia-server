@@ -67,6 +67,10 @@ public class VideoConversionManager extends BaseConversionManager
 		//Do the video conversion first. Then do the standard image conversion
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"video","video.mp4");
 		ConvertInstructions proxyinstructions = createInstructions(inStructions.getAsset(),preset);
+		if( proxyinstructions.getInputFile() == null)
+		{
+			proxyinstructions.setInputFile(getMediaArchive().getOriginalContent(inStructions.getAsset()));
+		}
 		ConvertResult result = findTranscoder(proxyinstructions).convertIfNeeded(proxyinstructions);
 		if(!result.isComplete())
 		{

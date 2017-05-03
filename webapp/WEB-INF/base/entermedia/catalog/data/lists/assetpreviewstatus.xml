@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--  THis is OLD. It has been moved to asseteditstatus.xml -->
+<properties> 
+	<property id="0">
+		<name> 
+	      <language id="en"><![CDATA[Unknown]]></language>  
+	      <language id="es"><![CDATA[Desconocido]]></language> 
+	    </name>
+	</property>
+	<property id="1">
+		<name> 
+	      <language id="en"><![CDATA[Exif Stub Created]]></language>  
+	      <language id="es"><![CDATA[Exif Stub Creado]]></language> 
+	    </name>
+	</property>
+	<property id="mime">
+		<name> 
+	      <language id="en"><![CDATA[MIME Icon]]></language>  
+	      <language id="es"><![CDATA[Icono MIME]]></language> 
+	    </name>
+	</property>
+	<property id="exif">
+		<name> 
+	      <language id="en"><![CDATA[EXIF Icon]]></language>  
+	      <language id="es"><![CDATA[Icono EXIF]]></language> 
+	    </name>
+	</property>
+	<property id="converting">
+		<name> 
+	      <language id="en"><![CDATA[Converting]]></language>  
+	      <language id="es"><![CDATA[Convirtiendo]]></language> 
+	    </name>
+	</property>
+	<property id="2">
+		<name> 
+	      <language id="en"><![CDATA[Conversions Complete]]></language>  
+	      <language id="es"><![CDATA[Conversión Completa]]></language> 
+	    </name>
+	</property>
+	<property id="3">
+		<language id="en"><![CDATA[Error]]></language>
+	</property>
+	<property id="generated">
+		<name> 
+	      <language id="en"><![CDATA[Generated (old)]]></language>  
+	      <language id="es"><![CDATA[Generado]]></language> 
+	    </name>
+	</property>
+</properties>
