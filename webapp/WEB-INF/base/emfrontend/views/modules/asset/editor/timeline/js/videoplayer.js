@@ -12,31 +12,10 @@ $(document).ready(function() {
 					
 				
 
-					// Grab the data?
-					/* This forces our modal dialogs to reload */
-					/*
-					$('body').on('hidden', '.modal', function () {
-						  $(this).removeData('modal');
-						});
-					/*
-					 * */
-					 /*
-					jQuery("#editmodal").on("shown", function () {
-						var textareas = jQuery(".htmleditor");
-						if(textareas.size() > 0){
-						
-							loadEditors();
-						}
-					} );
-					*/
 					
 					
 					
 					
-					
-					jQuery("#share").on("shown", function () {
-						addthis.toolbox('.addthis_toolbox');
-					} );
 					
 					
 					//This is the open and close code
@@ -64,81 +43,14 @@ $(document).ready(function() {
 
 					$('.carousel').carousel('pause');
 
-					$('.productclosebutton').on("click", function() {
-						$('#product-dialog').fadeTo('slow', 0);
-						$('.close2').fadeTo('slow', 0);
-						play();
-					});
-
+				
 					
 					
 					
 					
-					
-					$('.product .thumb .productlink')
-							.on("click", 
-									function() {
-
-								var parentnode = $(this).parent();									
-								var productid = parentnode.data(
-												"productid");
-												
-										var cpid = parentnode.data(	"cpid");
-										$('#product-dialog').load(clientroot+ "/details/productdetails.html?productid="+ productid + "&cp="+cpid + "&oemaxlevel=1", function() {});
-										
-										$('#product-dialog').fadeTo('slow', 1);
-										pause();
-									
-										$('.close2').fadeTo('slow', 1);
-									});
-
 					
 
-//					jQuery(".addtocart").livequery('click', function() {
-//										var clicked = jQuery(this);
-//										var productid = jQuery(this).data("productid");
-//										jQuery
-//												.ajax({
-//													url : apphome+ "/views/cart/toggle.html?productid=" + productid,
-//															
-//													async : false,
-//													success : function(data) {
-//
-//														if( clicked.hasClass("active") )
-//														{
-//															clicked.removeClass("active");															
-//														}
-//														else
-//														{
-//															clicked.addClass("active");
-//														}
-//													}
-//												});
-//											return false;
-//					});
-					
 
-//					jQuery(".addtolove").livequery('click', function(e) {
-//										var clicked = jQuery(this);
-//										var cueproductid = jQuery(this).data("cueproduct");
-//										jQuery
-//												.ajax({
-//													url : apphome+ "/components/lovedproducts/toggle.html?cueproductid=" + cueproductid,
-//															
-//													async : false,
-//													success : function(data) {
-//														if( clicked.hasClass("active") )
-//														{
-//															clicked.removeClass("active");															
-//														}
-//														else
-//														{
-//															clicked.addClass("active");
-//														}
-//													}
-//												});
-//											return false;
-//					});
 					
 					
 					jQuery("body")
@@ -164,7 +76,7 @@ $(document).ready(function() {
 														reloadCues(paused, data);
 														//$('#editmodal').modal('hide');
 														
-
+														
 														if (paused) {
 															pause();
 														}
@@ -178,27 +90,7 @@ $(document).ready(function() {
 					
 					
 					
-//					
-//					jQuery(".addexistingproduct")
-//					.livequery(
-//							'click',
-//							function() {
-//
-//								var productid = jQuery(this).data("productid");
-//								var cueid = jQuery(this).data("cueid");
-//								jQuery
-//										.ajax({
-//											url : apphome
-//													+ "/views/modules/product/addexistingfinish.html?productid=" + productid +"&cueid=" + cueid,
-//											async : false,
-//											success : function(data) {
-//												reloadProducts();
-//												//$('#editmodal').modal('hide')
-//											}
-//										});
-//
-//							});
-//					
+
 					
 					jQuery("body").on('click',".shiftLeft", function() {
 						var amount = jQuery(this).data("amount");
@@ -285,36 +177,7 @@ $(document).ready(function() {
 
 
 
-updateVideoDisplay = function () {
-	var urls = apphome + "/test/active/actions/teststatus.json";
-	console.log("Updating..");
-	$.getJSON(urls,  function(data) {
-		
-		
-		
-		
-		 var percent = data.testdata.percentcomplete;
-		 $("#completion-bar").css("width", percent + "%");
-		jQuery.each(data.testdata.nodes, function(index, more) {
-			console.log(more.id + ":" + more.show);
-			var id = more.id;
-			var show = more.show;
-			if(show){
-				console.log("showing" + id);
-				jQuery("#node-" + id).show();
-			} else{
-				console.log("hiding" + id);
 
-				jQuery("#node-" + id).hide();
-
-			}
-		});
-
-		
-	});
-	
-	
-}
 
 
 
@@ -421,7 +284,7 @@ shiftLeft = function(shiftamount) {
 }
 shiftRight = function(shiftamount) {
 	var current = cuepoint.currentTime();
-	current = current + shiftamount;testplan
+	current = current + shiftamount;
 	var paused = cuepoint.video.paused;
 	cuepoint.setTime(current);
 	if (paused) {

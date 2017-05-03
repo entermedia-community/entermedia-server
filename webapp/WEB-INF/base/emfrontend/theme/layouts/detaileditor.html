@@ -77,8 +77,12 @@
                             	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
                             
                             #else
-                            
+								                            #set( $hidepreview = $content.isPropertyTrue("hidepreview" ))
+								                        #if(!$hidepreview)
+                                                        
+                                                        
                                                         $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                                                        #end
                             #end
                             #set ($listid =  $content.tab )
                             #if ($content.subtab)

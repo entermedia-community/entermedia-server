@@ -1,4 +1,4 @@
-<div style="padding: 0px 20px;">
+
 #set( $asset = $mediaarchive.getAsset($context.getRequestParameter("assetid")) )    
 #set( $sourcepath = $asset.sourcepath )
 #set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
@@ -6,7 +6,44 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = $context.getContentProperty("clientroot") )
 $context.putPageValue("asset", $asset)
-#if($cantimeline)
+
+				
+			
+				<div class="container-fluid">
+			
+ 				<div class="row" >
+ 				
+					<div class="col-md-12 " id="video-holder">
+						<div class="row">
+							<div class="col-md-12">	
+								<div class="thumbnail" id="video-container">
+								
+<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+									 <div id="top-float" class="to-hide" >
+											<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+											
+									</div>
+									
+										<section id='cuePlayer' style="padding:6px;">
+											<video class="" id="video" preload="no" controls  webkit-playsinline poster="$thumb">
+												<source src="$source" type="video/mp4" />
+												<source src="$webmsource" type="video/webm" />
+											</video>
+										   </section>
+											
+										</div>									
+									
+								</div>
+							
+						    </div>
+						    
+						   
+						    <div id="bottomtoolbar">
+						    <div class="col-md-12 to-hide" id="video-cuepoints" data-dataid="${asset.id}">
+						    		
+						    		
+						    		
+						    		#if($cantimeline)
 		    
 		    <nav class="navbar navbar-default" role="navigation">
   <!-- Brand and toggle get grouped for better mobile display -->
@@ -37,48 +74,7 @@ $context.putPageValue("asset", $asset)
 												
 						
 				#end				
-				
-			
-				<div class="container-fluid">
-			
- 				<div class="row" >
- 				
-					<div class="col-md-10 " id="video-holder">
-						<div class="row">
-							<div class="col-md-12">	
-								<div class="thumbnail" id="video-container">
-								
-<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
-									 <div id="top-float" class="to-hide" >
-											<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-											
-									</div>
-									
-										<section id='cuePlayer' style="padding:6px;">
-											<video class="" id="video" preload="no" controls  webkit-playsinline poster="$thumb">
-												<source src="$source" type="video/mp4" /><!-- Safari / iOS video    -->
-												<source src="$webmsource" type="video/webm" /><!-- Firefox    -->
-											</video>
-										   </section>
-											
-										</div>									
-									<!--  -
-									 <div id="product-dialog" class="to-hide">
-											asdf
-									</div>
-									
-									 <div id="left-dialog" class="to-hide" >
-											asdf
-									</div>
-									
-									-->
-								</div>
-							
-						    </div>
-						    
-						   
-						    <div id="bottomtoolbar">
-						    <div class="col-md-12 to-hide" id="video-cuepoints" data-dataid="${asset.id}">
+						    		
 						    		
 									
 						   			$pages.include("$clientroot/details/cuepoints.html", $context)
@@ -95,7 +91,7 @@ $context.putPageValue("asset", $asset)
 						<div  id="cue-products">	
 						
 												
-							$pages.include("$clientroot/details/cuepointdetails.html?cueid=$cue.i&dataid=${asset.id}")
+							##$pages.include("$clientroot/details/cuepointdetails.html?cueid=$cue.i&dataid=${asset.id}")
 						</div>	
 					</div>
 					
@@ -110,7 +106,6 @@ $context.putPageValue("asset", $asset)
 					
 					
 					
-				</div>
 			
 	
 
@@ -137,7 +132,6 @@ $(document).ready(function() {
 
 
 	
-</div>
 <style type="text/css">
 #video_overlays {
 position:absolute;
@@ -149,5 +143,92 @@ float:left;
 }
 </style>
 
+<!-- Modal -->
+  <div class="modal" id="editmodal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+          <h4 class="modal-title" id="modal-title">Modal title</h4>
+        </div>
+        <div class="modal-body" id="edit-modal-body">
+          ...
+        </div>
+      
+      </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+  </div><!-- /.modal -->
 
-<a href="#" id="openTrigger">Open</a>
+  
+  
+  {
+  
+  actor: { 
+   {
+  	id:asdfsaf
+  	in:20
+  	out:5
+  	firstname:ian
+  	lastname bob
+  	age:20
+  	description:Ian was here2
+   },
+   {
+   id:asdf324rdsf
+  	in:20
+  	out:5
+  	
+  	firstname:asfd
+  	lastname sadfdsaf
+  	age:30
+  	
+  	
+  	description:Ian was here3
+   },
+   {
+   id:asdf324rdsf
+  	in:20
+  	out:5
+  	description:Ian was here5
+   }
+}  
+  
+  
+  
+  
+  
+    actor: { 
+   {
+  	id:asdfsaf
+  	in:20
+  	out:5
+  	firstname:ian
+  	lastname bob
+  	age:20
+  	description:Ian was here2
+   },
+   {
+   id:asdf324rdsf
+  	in:20
+  	out:5
+  	
+  	firstname:asfd
+  	lastname sadfdsaf
+  	age:30
+  	
+  	
+  	description:Ian was here3
+   },
+   {
+   id:asdf324rdsf
+  	in:20
+  	out:5
+  	description:Ian was here5
+   }
+}  
+  
+  
+  
+  
+  }
+  
