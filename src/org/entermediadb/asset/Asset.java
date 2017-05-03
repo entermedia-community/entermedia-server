@@ -124,8 +124,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 	/**
 	 * This will look in all the category objects if needed
 	 */
+	@Override
 
-	public Object 	(String inAttribute)
+	public Object getValue(String inAttribute)
 	{
 
 		if ("fulltext".equals(inAttribute))
