@@ -415,13 +415,17 @@
       <language id="fr"><![CDATA[Mots-clés additionnels]]></language> 
     </name> 
   </property>  
-  <property id="purpose" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list" keyword="false" filter="false" type="list">Purpose 
+  <property id="purpose" index="true" stored="true" editable="true" viewtype="multiselect" datatype="objectarray" keyword="false" filter="false" > 
     <name> 
       <language id="de"><![CDATA[Zweck]]></language>  
       <language id="en"><![CDATA[Purpose]]></language>  
       <language id="es"><![CDATA[Propósito]]></language>  
       <language id="fr"><![CDATA[Objet]]></language> 
     </name> 
+    <property id="purpose" index="true" stored="true" editable="true"  datatype="list" keyword="false" filter="false" type="list">Purpose</property>
+    <property id="timecodestart" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list" keyword="false" filter="false" type="number">Start Time</property>
+    <property id="timecodeend" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list" keyword="false" filter="false" type="number">End Time</property>   
+    
   </property>  
   <property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed" keyword="false" filter="false" type="list">General Ethnicity 
     <name> 

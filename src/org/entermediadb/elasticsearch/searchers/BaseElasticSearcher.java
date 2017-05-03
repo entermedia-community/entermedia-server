@@ -622,30 +622,15 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 				
-				
-
-				if(!detail.isDataType("objectarray")){
-					jsonproperties = jsonproperties.startObject(detail.getId());
-					configureDetail(detail, jsonproperties);
-					jsonproperties = jsonproperties.endObject();
-				}
-					
+				jsonproperties = jsonproperties.startObject(detail.getId());
+				configureDetail(detail, jsonproperties);
+				jsonproperties = jsonproperties.endObject();
+		
 				
 
 			}
 			
-			for (Iterator iterator = objectarrays.iterator(); iterator.hasNext();) {
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-				
-				jsonproperties = jsonproperties.startObject(detail.getId());
-				jsonproperties = jsonproperties.field("type", "array");
-
-					configureDetail(detail, jsonproperties);
-				
-				
-				jsonproperties = jsonproperties.endObject();
-				
-			}
+			
 			
 			
 			
@@ -681,13 +666,25 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.field("type", "string");
 			jsonproperties = jsonproperties.field("index", "analyzed");
 			jsonproperties = jsonproperties.field("include_in_all", "false");
-			jsonproperties = jsonproperties.endObject();
 			return;
 		}
 
 		//CHECK TIMECODE
-		if(detail.get("istimecoded") == "true"){
-			//add mappings
+		if(detail.isDataType("objectarray")){
+		
+			jsonproperties = jsonproperties.field("type", "object");
+			jsonproperties.startObject("properties");
+			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();) {
+				PropertyDetail child = (PropertyDetail) iterator.next();
+				jsonproperties = jsonproperties.startObject(child.getId());
+				configureDetail(child, jsonproperties);
+				jsonproperties = jsonproperties.endObject();
+			}
+			jsonproperties.endObject();
+			
+			
+			return;
+			
 		}
 		
 		// First determine type
