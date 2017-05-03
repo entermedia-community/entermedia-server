@@ -22,6 +22,7 @@ import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.MultiValued;
+import org.openedit.data.ObjectArray;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
@@ -48,10 +49,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 
 	public boolean isFolder()
 	{
-
-		
-	
-
 		return getBoolean("isfolder");
 	}
 
@@ -365,6 +362,11 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		return getMap().getDate(inField, inDateFormat);
 	}
 
+	public Collection getObjects(String inField)
+	{
+		return getMap().getObjects(inField);
+	}
+	
 	public boolean isRelated(Asset inAsset)
 	{
 		for (Iterator i = getRelatedAssets().iterator(); i.hasNext();)
