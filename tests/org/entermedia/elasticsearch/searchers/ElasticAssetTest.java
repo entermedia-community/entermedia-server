@@ -78,25 +78,32 @@ public class ElasticAssetTest  extends BaseEnterMediaTest
 
 	public void testAssetTimecode()
 	{
-		Searcher searcher = getMediaArchive().getSearcherManager().getSearcher("entermedia/catalogs/testcatalog", "asset");
-		Asset asset = getMediaArchive().getAsset("101");
-		Collection purposes = new ArrayList();
-		Map purpose = new HashMap();
-		purpose.put("purpose", "1|2");
-		purpose.put("timecodestart", "12:00");
-		purpose.put("timecodestart", "13:00");		
-		purposes.add(purpose);
-		purpose = new HashMap();
-		purpose.put("purpose", "1");
-		purpose.put("timecodestart", "12:00");
-		purpose.put("timecodestart", "13:00");		
-		purposes.add(purpose);
-		asset.setValue("purpose", purposes);
+		Searcher searcher = getMediaArchive().getAssetSearcher();
+		searcher.reIndexAll();
+		Asset asset = getMediaArchive().getAsset("talent");
+		if( asset == null)
+		{
+			asset = (Asset)searcher.createNewData();
+			asset.setSourcePath("talent");
+			asset.setId("talent");
+		}
+		Collection talents = new ArrayList();
+		Map talent = new HashMap();
+		talent.put("talent", "1|2");
+		talent.put("timecodestart", 12);
+		talent.put("timecodestart", 13);		
+		talents.add(talent);
+		talent = new HashMap();
+		talent.put("talent", "1");
+		talent.put("timecodestart", 12);
+		talent.put("timecodestart", 13);		
+		talents.add(talent);
+		asset.setValue("talents", talents);
 		
 		 getMediaArchive().getAssetSearcher().saveData(asset);
-		 asset = getMediaArchive().getAsset("101");
-		 Collection savedpurposes = asset.getObjects("purpose");
-		 assertTrue(savedpurposes.size() > 0);
+		 asset = getMediaArchive().getAsset("talent");
+		 Collection savedtalents = asset.getObjects("talents");
+		 assertTrue(savedtalents.size() > 0);
 	}
 	
 	

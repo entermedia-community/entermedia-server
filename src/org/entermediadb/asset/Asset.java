@@ -27,6 +27,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
 import org.openedit.data.Searcher;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.util.PathUtilities;
@@ -124,7 +125,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 	 * This will look in all the category objects if needed
 	 */
 
-	public Object getValue(String inAttribute)
+	public Object 	(String inAttribute)
 	{
 
 		if ("fulltext".equals(inAttribute))
@@ -364,7 +365,8 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 
 	public Collection getObjects(String inField)
 	{
-		return getMap().getObjects(inField);
+		Collection values = (Collection)getValue(inField);
+		return values;
 	}
 	
 	public boolean isRelated(Asset inAsset)
