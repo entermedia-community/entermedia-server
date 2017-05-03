@@ -1,5 +1,10 @@
 package org.entermedia.elasticsearch.searchers;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.EnterMedia;
@@ -69,10 +74,32 @@ public class ElasticAssetTest  extends BaseEnterMediaTest
 
 		tracker = searcher.cachedSearch(req, q);
 		assertTrue(tracker.size() > 0);
-
-		
 	}
 
+	public void testAssetTimecode()
+	{
+		Searcher searcher = getMediaArchive().getSearcherManager().getSearcher("entermedia/catalogs/testcatalog", "asset");
+		Asset asset = getMediaArchive().getAsset("101");
+		Collection purposes = new ArrayList();
+		Map purpose = new HashMap();
+		purpose.put("purpose", "1|2");
+		purpose.put("timecodestart", "12:00");
+		purpose.put("timecodestart", "13:00");		
+		purposes.add(purpose);
+		purpose = new HashMap();
+		purpose.put("purpose", "1");
+		purpose.put("timecodestart", "12:00");
+		purpose.put("timecodestart", "13:00");		
+		purposes.add(purpose);
+		asset.setValue("purpose", purposes);
+		
+		 getMediaArchive().getAssetSearcher().saveData(asset);
+		 asset = getMediaArchive().getAsset("101");
+		 Collection savedpurposes = asset.getObjects("purpose");
+		 assertTrue(savedpurposes.size() > 0);
+	}
+	
+	
 	public EnterMedia getEnterMedia(String inApplicationId)
 	{
 		EnterMedia media = (EnterMedia)getStaticFixture().getModuleManager().getBean(inApplicationId, "enterMedia");

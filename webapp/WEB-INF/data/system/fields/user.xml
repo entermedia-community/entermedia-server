@@ -1,0 +1,8 @@
+
+<properties>
+  <property id="searchtype" index="true" internalfield="false" editable="true" stored="true" searchtype="reports">New
+    <name>
+      <language id="en"><![CDATA[Core Search Type]]></language>
+    </name>
+  </property>
+</properties>
