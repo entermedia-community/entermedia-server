@@ -159,76 +159,17 @@ float:left;
     </div><!-- /.modal-dialog -->
   </div><!-- /.modal -->
 
-  
-  
-  {
-  
-  actor: { 
-   {
-  	id:asdfsaf
-  	in:20
-  	out:5
-  	firstname:ian
-  	lastname bob
-  	age:20
-  	description:Ian was here2
-   },
-   {
-   id:asdf324rdsf
-  	in:20
-  	out:5
-  	
-  	firstname:asfd
-  	lastname sadfdsaf
-  	age:30
-  	
-  	
-  	description:Ian was here3
-   },
-   {
-   id:asdf324rdsf
-  	in:20
-  	out:5
-  	description:Ian was here5
-   }
-}  
-  
-  
-  
-  
-  
-    actor: { 
-   {
-  	id:asdfsaf
-  	in:20
-  	out:5
-  	firstname:ian
-  	lastname bob
-  	age:20
-  	description:Ian was here2
-   },
-   {
-   id:asdf324rdsf
-  	in:20
-  	out:5
-  	
-  	firstname:asfd
-  	lastname sadfdsaf
-  	age:30
-  	
-  	
-  	description:Ian was here3
-   },
-   {
-   id:asdf324rdsf
-  	in:20
-  	out:5
-  	description:Ian was here5
-   }
-}  
-  
-  
-  
-  
-  }
-  
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<script src="$home$apphome/components/javascript/timeslider.js"></script>
+<link rel="stylesheet" href="$home$apphome/components/styles/jquery/timeslider.css">
+<script type="text/javascript">
+$('#slider123').TimeSlider({
+	start_timestamp: (new Date()).getTime() - 3600 * 12 * 1000,
+	current_timestamp: (new Date()).getTime(),
+	init_cells: [
+		{'_id': 'c1', 'start': ((new Date()).getTime() - (3600 * 5.4 * 1000) + 1234), 'stop': (new Date()).getTime() - 3600 * 3.2 * 1000},
+		{'_id': 'c2', 'start': ((new Date()).getTime() - (3600 * 2.1 * 1000))}
+	]
+});
+</script>  
