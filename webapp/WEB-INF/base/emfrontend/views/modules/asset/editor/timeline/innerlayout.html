@@ -15,6 +15,7 @@ $context.putPageValue("asset", $asset)
 								<div style="background-color:#666;color:white;padding:4px;">
 									Add Metadata
 								</div>	
+									##this form should pop up a data entry form
 									<form class="ajaxform addnewtimeline" style="padding: 10px; text-align:center;">
 									<label>Metadata Type</label>
 									<select>
@@ -113,12 +114,19 @@ float:left;
 
 <link rel="stylesheet" href="$home$apphome/theme/styles/jquery/timeslider.css">
 
-##loop over the details looking for objectarrays
+##TODO: loop over the details looking for sorted objectarrays. Use Module Method to load em
 
 ##$asset.getObjects("")
 <div id="slider123" class="time-slider" style="height: 45px;">
 	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell scene" style="left: 60.174px; width: 273.018px; cursor: move;">Scene: <b>Intro</b></div>
+		<div id="tc1" p_id="c1" class="timecell scene" style="left: 60.174px; width: 273.018px; cursor: move;">Scene: <b>Opening Ceremony</b></div>
+	</div>
+</div>	
+
+
+<div id="slider123" class="time-slider" style="height: 45px;">
+	<div class="ruler" >
+		<div id="tc1" p_id="c1" class="timecell" style="left: 160.174px; width: 173.018px; cursor: move;">Talent: <b>Katty Perry</b></div>
 	</div>
 </div>	
 
@@ -132,13 +140,7 @@ float:left;
 
 <div id="slider123" class="time-slider" style="height: 45px;">
 	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell" style="left: 60.174px; width: 173.018px; cursor: move;">Talent: <b>John Smith</b></div>
-	</div>
-</div>	
-
-<div id="slider123" class="time-slider" style="height: 45px;">
-	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell" style="left: 360.174px; width: 273.018px; cursor: move;">Talent: <b>Ian Miller</b></div>
+		<div id="tc1" p_id="c1" class="timecell" style="left: 360.174px; width: 273.018px; cursor: move;">Talent: <b>Lionel Messi</b></div>
 	</div>
 </div>	
 
