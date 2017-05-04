@@ -171,7 +171,7 @@ float:left;
 		<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
 #end
 	##remaining ticks, just to run off the end the page
-	#foreach($block in $blocks)
+	#foreach($i in [1..20])
 		#set( $added = $added + $space)
 		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
 		#set( $added = $added + $space)
