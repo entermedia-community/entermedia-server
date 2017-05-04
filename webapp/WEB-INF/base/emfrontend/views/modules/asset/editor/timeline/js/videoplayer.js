@@ -61,6 +61,8 @@ $(document).ready(function() {
 										var departmentasset = jQuery(this)
 												.data("dataid");
 										var current = cuepoint.currentTime();
+										var targetfield = jQuery(this).data("targetfield");
+
 										var time = Math.round(current);
 										jQuery
 												.ajax({
@@ -68,7 +70,11 @@ $(document).ready(function() {
 															+ "/addcue.html?save=true&field=timecode&timecode.value="
 															+ time														
 															+ "&field=assetid&assetid.value="
-															+ departmentasset ,
+															+ departmentasset 
+
+															+ "&targetfield=" 
+
+															+ targetfield,
 															
 													async : false,
 													success : function(data) {
@@ -189,31 +195,31 @@ $(document).ready(function() {
 resize = function()
 {
 	
-	var video = document.getElementById("video"); // assuming "video" is your videos' id
-	//video.setAttribute("controls","controls");
-	//video.removeAttribute("controls");
-// $("#video").css('width', $(window).width()*.75 );
-						
-						//$("#video").css('height', "65%");
-						
-						//$("#video").css('width', "90%");
-
-						var footer = 100; //header
-
-						if( $("#btmhead").is(":visible") )
-						{
-							footer = footer + 30;
-						}
-						
-						if( $("#btmcontent").is(":visible") )
-						{
-							footer = footer + 200;
-						}
-						/*console.log(footer);*/
-						$("#video").css('height', $(window).height() -  footer );
-						
-						var height = $("#video-holder").height();
-						$("#left-slide").css('height',height );
+//	var video = document.getElementById("video"); // assuming "video" is your videos' id
+//	//video.setAttribute("controls","controls");
+//	//video.removeAttribute("controls");
+//// $("#video").css('width', $(window).width()*.75 );
+//						
+//						//$("#video").css('height', "65%");
+//						
+//						//$("#video").css('width', "90%");
+//
+//						var footer = 100; //header
+//
+//						if( $("#btmhead").is(":visible") )
+//						{
+//							footer = footer + 30;
+//						}
+//						
+//						if( $("#btmcontent").is(":visible") )
+//						{
+//							footer = footer + 200;
+//						}
+//						/*console.log(footer);*/
+//						$("#video").css('height', $(window).height() -  footer );
+//						
+//						var height = $("#video-holder").height();
+//						$("#left-slide").css('height',height );
 }
 
 getPadding = function() {

@@ -6,7 +6,7 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = $context.getContentProperty("clientroot") )
 $context.putPageValue("asset", $asset)
-
+Some data: $asset.talents
 				<div class="container-fluid" style="background-color:#eee;">
 						<div class="row" >
 
@@ -28,21 +28,36 @@ $context.putPageValue("asset", $asset)
 									<label>End time</label>
 										<input value="21:12" size="6"/>							
 											<br>	<br>		
-									<input type="submit" value="Add"/>
+									
+									
+									
+									
 									</form>
+																		        <a  class="btn" id="addcue" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">Add New Cue Point </a>
+									
 								</nav>
 							</div>
 							<div class="col-md-8" style="padding: 0px;">	
-								<div  id="video-container">
-									<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
-										<div id='cuePlayer' style="padding:6px;text-align:right;">
-											<video class="" id="video2" preload="no" controls  webkit-playsinline poster="$thumb" style="width:600px;">
+														
+									<div class="thumbnail" id="video-container">
+								
+<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+									 <div id="top-float" class="to-hide" >
+											<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+											
+									</div>
+									
+										<section id='cuePlayer' style="padding:6px;">
+											<video class="" id="video" preload="no" controls  webkit-playsinline poster="$thumb">
 												<source src="$source" type="video/mp4" />
 												<source src="$webmsource" type="video/webm" />
 											</video>
-										</div>
+										   </section>
+											
 										</div>									
+									
 								</div>
+								
 						    </div>
 						    <div class="col-md-3" style="padding: 0px;">	
 							   $pages.include("$apphome/views/modules/asset/editor/timeline/details/cuepointactions.html", $context)
@@ -117,6 +132,8 @@ float:left;
 ##TODO: loop over the details looking for sorted objectarrays. Use Module Method to load em
 
 ##$asset.getObjects("")
+
+
 <div id="slider123" class="time-slider" style="height: 45px;">
 	<div class="ruler" >
 		<div id="tc1" p_id="c1" class="timecell scene" style="left: 60.174px; width: 273.018px; cursor: move;">Scene: <b>Opening Ceremony</b></div>
@@ -186,3 +203,20 @@ float:left;
 	
 	
 </div>
+
+
+
+
+<div id="bottomtoolbar">
+						    <div class="col-md-12 to-hide" id="video-cuepoints" data-dataid="${asset.id}">
+						    		
+						    		
+						    		
+						    		
+						    		
+						    		
+									
+						   			$pages.include("$clientroot/details/cuepoints.html", $context)
+						   	
+							</div>
+							</div>

@@ -1,6 +1,5 @@
 <page>
-<path-action name="DataEditModule.saveData">
-	<property name="searchtype">videocue</property>
+<path-action name="TimelineModule.addCuepoint">
 </path-action>
 <inner-layout/>
 </page>
