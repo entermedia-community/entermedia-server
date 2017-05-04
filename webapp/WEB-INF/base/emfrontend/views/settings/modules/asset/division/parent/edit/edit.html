@@ -1,6 +1,5 @@
 #set( $parent = "$content.parenttype")
 #set( $child = "$content.childtype")
-
 <div class="ui-widget" >
 <div class="ui-widget-header">$content.parentlabel</div>
 <div  class="ui-widget-content" > 
@@ -24,15 +23,14 @@ $context.putPageValue("view", $view)
 <div id="division" class="list-adder">
 	$pages.include("/system/components/xml/detaileditorcss.html", $context)
 	
-	<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
-	##<a class="btn"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
-	<a class="btn red" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>Delete</a>
+	<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">[[Save]]</a>
+	##<a class="btn"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
+	<a class="btn red" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&id=$!data.id'>[[Delete]]</a>
 </div>
 
 #if( $savedok)
-<p class="fader save">Saved</p>
+<p class="fader save">[[Saved]]</p>
 #end
-
 </form>
 
 

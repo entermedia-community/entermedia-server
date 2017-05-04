@@ -23,17 +23,13 @@
 			
 			<a class="btn" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
 #if( $type )
-<a class="btn red" onclick="return confirm('Are you sure you want to delete $type?')" href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>Delete</a>
+<a class="btn red" onclick="return confirm('[[Are you sure you want to delete]] $type?')" href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>[[Delete]]</a>
 #end			
 		</form>
-		
-		
-		
 	</div>	
 	</div>
-
 <br>
 #else
-	Please select an Asset Type
+	[[Please select an Asset Type]]
 #end
 </div>

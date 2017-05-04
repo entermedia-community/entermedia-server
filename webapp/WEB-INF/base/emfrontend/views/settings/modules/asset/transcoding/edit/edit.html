@@ -1,5 +1,5 @@
 <div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">Settings</div>
+<div class="ui-widget-header">[[Settings]]</div>
 <div  class="ui-widget-content">
 
 <div id="editlayout">
@@ -20,25 +20,19 @@ $context.putPageValue("view", $view)
 	<input name="origURL"  type="hidden" value="$!origURL" />
 $pages.include("/system/components/xml/detaileditor.html", $context)
 
-
-<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();"><span>Save</span></a>
-<a class="btn"  href='$home$content.searchhome/index.html'><span>Cancel</span></a>
+<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
+<a class="btn"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
 <a class="btn red" style="float: right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
-		Delete
+		[[Delete]]
 	</span></a>
 <br>
 <div id="messagearea">$!message
 </div>
 </form>
-
-
 #if( $savedok && $origURL )
 	<a href="$origURL">[[Go Back]]</a>	
 #end
-
-
 </div>
-
 </div>
 </div>

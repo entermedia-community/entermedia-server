@@ -1,25 +1,19 @@
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
 #set ($permissiontype = $context.findValue("permissiontype"))
-
-
 #if (!$data)
 	#set($groupid = $context.getRequestParameter("settingsgroupid"))
 	#if($groupid)
 		#set ($data = $groupSearcher.searchById($groupid))
 	#end
 #end
-
-
 #if ($data)
-
 <form method="post" action="$home$apphome/views/settings/users/permissions/views/save.html">
 	<input type="hidden" name="id" value="$!data.id"/>
 	<input type="hidden" name="save" value="true"/>
 	<input type="hidden" name="view" value="settings/settinggroupedit" />
 	<input type="hidden" name="searchtype" value="$groupSearcher.getSearchType()"/>
 	<input type="hidden" name="settingsgroupid" value="$data.id" />
-	        		<input type="hidden" name="field" value="permissions"/>
-	
+	<input type="hidden" name="field" value="permissions"/>
 	
 	$context.putPageValue("searcher", $groupSearcher)	 
 	$context.putPageValue("view", "settings/settinggroupedit")
@@ -66,13 +60,11 @@
     	</table>
     </div>
 	
-<a class="btn red"  href="$home$apphome/views/settings/users/permissions/views/delete.html?id=$groupid" onclick="return confirm('Are you sure you want to delete the security group $data.name')">[[Delete]]</a>
-	<input class="btn small" style="float: right;" type="submit" value="Save"/>
-	
+<a class="btn red"  href="$home$apphome/views/settings/users/permissions/views/delete.html?id=$groupid" onclick="return confirm('[[Are you sure you want to delete the security group]] $data.name')">[[Delete]]</a>
+	<input class="btn small" style="float: right;" type="submit" value="[[Save]]"/>
 </form>
 
 <script type="text/javascript">
-
 jQuery(".permission-radio").bind("click", function () {
 	var val = jQuery(this).val();
 	
@@ -82,14 +74,9 @@ jQuery(".permission-radio").bind("click", function () {
 	else {
 		jQuery(this).parent().find(".sub-list").hide();
 	}
-		
-	
 });
-
 </script>
 
-
-
 #else
-Please select a Security Group
+[[Please select a Security Group]]
 #end

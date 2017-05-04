@@ -30,8 +30,8 @@
 			#end			
 			<td nowrap>$newval</td>
 		#end
-##		<td><a href="catalogid=$searcher.getCatalogId()&searchtype=$searcher.getSearchType()&id=${hit.id}&origURL=$!origURL">Edit</a></td>
-##		<td><a href="$home$content.dataroot/list/delete.html?catalogid=$searcher.getCatalogId()&searchtype=$searcher.getSearchType()&id=${hit.id}&origURL=$!origURL">Delete</a></td>
+##		<td><a href="catalogid=$searcher.getCatalogId()&searchtype=$searcher.getSearchType()&id=${hit.id}&origURL=$!origURL">[[Edit]]</a></td>
+##		<td><a href="$home$content.dataroot/list/delete.html?catalogid=$searcher.getCatalogId()&searchtype=$searcher.getSearchType()&id=${hit.id}&origURL=$!origURL">[[Delete]]</a></td>
 		</tr>
 	#end
 	</table>
@@ -54,8 +54,6 @@
 			#if( $datalist.prevPage() )
 			<a href="$home$page.path?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType" ><b>&lt;&lt;  [[Back]]</a>
 			#end
-			
-			
 			#if ( $datalist.nextPage() )
 			<a href="$home$page.path?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt; </a>
 			#end

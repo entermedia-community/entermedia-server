@@ -19,7 +19,7 @@
 				#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
 				#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
 				#if(!$filetype)
-					#set($filetype="None")
+					#set($filetype="[[None]]")
 				#end
 				#set( $omit = $invaliditems.contains("${asset.id}"))
 				#set($found = false)

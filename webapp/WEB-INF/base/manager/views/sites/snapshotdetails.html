@@ -6,39 +6,37 @@
 #if($snapshot)
 
 <div style="margin:10px;">
-			##Show edit form with save
-			<form action="./savesite.html" method="post" style="padding:20px;">
-		    #set($searcher = $searcherManager.getSearcher("system", "sitesnapshot"))
-			$context.putPageValue("searcher", $searcher)	 
-			$context.putPageValue("data", $snapshot)	 
-			$context.putPageValue("view", "sitesnapshot/edit")	
-			<input type="hidden" name="view" value="sitesnapshot/edit"/>
-			<input type="hidden" name="save" value="true"/>
-			<input type="hidden" name="id" value="$snapshot.id"/>
-			<input type="hidden" name="siteid" value="$site.id"/>
-			<input type="hidden" name="selectedsitesnapshot" value="$selectedsitesnapshotid" />
-			<input type="hidden" name="searchtype" value="sitesnapshot"/>
+	##Show edit form with save
+	<form action="./savesite.html" method="post" style="padding:20px;">
+	    #set($searcher = $searcherManager.getSearcher("system", "sitesnapshot"))
+		$context.putPageValue("searcher", $searcher)	 
+		$context.putPageValue("data", $snapshot)	 
+		$context.putPageValue("view", "sitesnapshot/edit")	
+		<input type="hidden" name="view" value="sitesnapshot/edit"/>
+		<input type="hidden" name="save" value="true"/>
+		<input type="hidden" name="id" value="$snapshot.id"/>
+		<input type="hidden" name="siteid" value="$site.id"/>
+		<input type="hidden" name="selectedsitesnapshot" value="$selectedsitesnapshotid" />
+		<input type="hidden" name="searchtype" value="sitesnapshot"/>
 
-			#set( $admin = $searcherManager.getData($site.get("catalogid") , "user", "admin"))
-			#set( $key = $userManager.getStringEncryption().getPasswordMd5($admin.getPassword()) )
-			#set( $folder = $snapshot.get("folder"))
+		#set( $admin = $searcherManager.getData($site.get("catalogid") , "user", "admin"))
+		#set( $key = $userManager.getStringEncryption().getPasswordMd5($admin.getPassword()) )
+		#set( $folder = $snapshot.get("folder"))
 
-			#set( $url = "${context.siteRoot}/manager/views/sites/snapshots/download/${snapshot.getId()}/${folder}.zip?entermedia.key=$key")
-			<a href="$url">URL:</a> <input size="50" value="$url"> <a href="$url">download</a>
-			
-			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
-			
-
-
-<div style="margin-top: 20px;margin-right: 0;">
-	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > Save </button>
-	<a class="mbtn" href="/openedit/views/filemanager/tab.html?path=/WEB-INF/data/exports/${site.catalogid}/${folder}">Preview Files</a>
-
-	<a class="mbtn emdialog" href="./snapshots/restore.html?snapid=$snapshot.id">Restore</a>
-	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=sitesnapshot&id=$snapshot.id" data-confirm="[[Are you sure?]]">Delete Snapshot</a>
-</div>
+		#set( $url = "${context.siteRoot}/manager/views/sites/snapshots/download/${snapshot.getId()}/${folder}.zip?entermedia.key=$key")
+		<a href="$url">URL:</a> <input size="50" value="$url"> <a href="$url">download</a>
+		
+		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		
 
 
-			</form>				
+		<div style="margin-top: 20px;margin-right: 0;">
+			<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > [[Save]] </button>
+			<a class="mbtn" href="/openedit/views/filemanager/tab.html?path=/WEB-INF/data/exports/${site.catalogid}/${folder}">[[Preview Files]]</a>
+		
+			<a class="mbtn emdialog" href="./snapshots/restore.html?snapid=$snapshot.id">[[Restore]]</a>
+			<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=sitesnapshot&id=$snapshot.id" data-confirm="[[Are you sure?]]">[[Delete Snapshot]]</a>
+		</div>
+	</form>				
 </div>
 #end

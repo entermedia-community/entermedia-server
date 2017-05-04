@@ -31,14 +31,11 @@ $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 $pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true&alwaysshow=true", $context)
 #end
     #if($candelete)	
-    <a class="btn red confirm" confirm="Are you sure?" style="margin: 20px 0 0 20px; color: #fff;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath" style="margin: 20px 20px 0 0;">Delete</a>
+    <a class="btn red confirm" confirm="Are you sure?" style="margin: 20px 0 0 20px; color: #fff;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath" style="margin: 20px 20px 0 0;">[[Delete]]</a>
     #end
     #if($caneditdata)
-    <input class="btn right" style="margin: 20px 20px 0 0;" type="submit" value="Save" />
+    <input class="btn right" style="margin: 20px 20px 0 0;" type="submit" value="[[Save]]" />
     #end
     </form>
-    
-    
-    
     </div>
 </div>

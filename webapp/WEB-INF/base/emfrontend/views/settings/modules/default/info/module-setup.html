@@ -1,5 +1,3 @@
-
-
 <div id="folders" class="fwlist manual">
 	<div class="folder module">
 		<div class="name">
@@ -7,13 +5,11 @@
 		</div>
 		</div>
 		<div class="delete">
-			<a class="btn red" style="margin-top: 20px;" href="$home$apphome/views/settings/modules/setup/remove.html?id=$data.id" confirm="Are you sure?">Delete</a>
+			<a class="btn red" style="margin-top: 20px;" href="$home$apphome/views/settings/modules/setup/remove.html?id=$data.id" confirm="[[Are you sure]]?">[[Delete]]</a>
 		</div>
 	</div>
 	<div class="fields">
-		<div style="float:right"><a class="btn"  href="$home$apphome/views/settings/modules/${data.id}/index.html" >Settings</a></div>
-		
+		<div style="float:right"><a class="btn"  href="$home$apphome/views/settings/modules/${data.id}/index.html" >[[Settings]]</a></div>
 		$pages.include("$apphome/views/settings/modules/setup/edit.html",$context)
-		
 	</div>
 </div>

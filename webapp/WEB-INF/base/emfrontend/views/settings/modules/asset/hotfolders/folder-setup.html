@@ -6,15 +6,13 @@
 			<div class="last-activity">Last Scanned: $!context.getDateTime($data.lastscanstart)</div>
 		</div>
 		<div class="delete">
-			<a class="btn red" href="$home$apphome/views/settings/modules/asset/hotfolders/remove.html?id=$data.id" confirm="Are you sure?">Delete</a>
+			<a class="btn red" href="$home$apphome/views/settings/modules/asset/hotfolders/remove.html?id=$data.id" confirm="[[Are you sure]]?">[[Delete]]</a>
 		</div>
 		<div class="delete">
-			<a class="btn" href="$home$apphome/views/settings/modules/asset/hotfolders/scan/checkpath.html?from=$data.subfolder" >Scan Path</a>
+			<a class="btn" href="$home$apphome/views/settings/modules/asset/hotfolders/scan/checkpath.html?from=$data.subfolder" >[[Scan Path]]</a>
 		</div>
 	</div>
 	<div class="fields">
-		
 		$pages.include("$apphome/views/settings/modules/asset/hotfolders/edit.html")
-		
 	</div>
 </div>

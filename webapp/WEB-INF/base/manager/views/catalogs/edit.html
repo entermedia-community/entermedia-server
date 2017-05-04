@@ -7,10 +7,7 @@
                  <span>$catalog Applications</span> 
    </div>              
   <div class="panel-body">
-
 <ul class="fwlist" id="folders">
-
-	
 	#set( $apps = $searcherManager.getList($appcatalogid,"app") )
 	
 	#foreach( $app in $apps)
@@ -27,17 +24,15 @@
            </div>
        </a>
        <div class="scan">
-           <a class="mbtn" style="margin-top: 15px;" href="$home${app.deploypath}">View</a>
-           <a class="mbtn" style="margin-top: 15px;" href="$home$apphome/views/applications/exports/${app}.zip?apppath=$app.deploypath">Download</a>
+           <a class="mbtn" style="margin-top: 15px;" href="$home${app.deploypath}">[[View]]</a>
+           <a class="mbtn" style="margin-top: 15px;" href="$home$apphome/views/applications/exports/${app}.zip?apppath=$app.deploypath">[[Download]]</a>
        </div>
 	</li>
 	#end
 	</ul> 
-	
 	<div class="scan" style="margin-top: 30px;margin-right: 0;">
-    <a class="mbtn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$appcatalogid">Create New Application</a>
-    <a class="mbtn" href="$home$apphome/views/applications/uploadapp.html?appcatalogid=$appcatalogid">Import Application</a>
-
+    <a class="mbtn" href="$home$apphome/views/catalogs/addapp.html?appcatalogid=$appcatalogid">[[Create New Application]]</a>
+    <a class="mbtn" href="$home$apphome/views/applications/uploadapp.html?appcatalogid=$appcatalogid">[[Import Application]]</a>
 </div> 
 	
 </div>
@@ -64,18 +59,13 @@
 	</div>
 
 <div class="scan" style="margin-top: 30px;margin-right: 0;">
-	<button class="btn green" style="margin-left: 200px;" href="#" data-confirm="[[Are you sure?]]">Save</button>
-	<a class="mbtn blue confirm" style="margin-left: 200px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">Delete Catalog</a>
+	<button class="btn green" style="margin-left: 200px;" href="#" data-confirm="[[Are you sure?]]">[[Save]]</button>
+	<a class="mbtn blue confirm" style="margin-left: 200px;" href="./remove.html?searchtype=catalog&id=$appcatalogid" data-confirm="[[Are you sure?]]">[[Delete Catalog]]</a>
 </div>
 <br>
 #set( $admin = $searcherManager.getData($catalog.id , "user", "admin"))
 <p><b>[[Admin Password Hash]]</b>: $admin.password
 ##<p><b>[[Admin Password]]</b>: $userManager.decryptPassword($admin)
-
 </from>
-	
 </div>
 </div>
-    
-
-		

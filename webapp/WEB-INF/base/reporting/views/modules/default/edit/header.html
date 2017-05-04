@@ -17,7 +17,7 @@
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
       <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-        <span class="sr-only">Toggle navigation</span>
+        <span class="sr-only">[[Toggle navigation]]</span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
@@ -30,13 +30,13 @@
       #if(!$new == "true")
       <ul class="nav navbar-nav navbar-right">
         <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b></a>
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown">[[Actions]] <b class="caret"></b></a>
           <ul class="dropdown-menu">
            
           
             #if($candelete)	
 
-    			<li><a class="confirm" confirm="Are you sure?"  href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath"><span class="glyphicon glyphicon-trash"></span>  Delete</a></li>
+    			<li><a class="confirm" confirm="Are you sure?"  href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath"><span class="glyphicon glyphicon-trash"></span>  [[Delete]]</a></li>
     		#end
           </ul>
         </li>

@@ -6,10 +6,10 @@
 
 #if(!$site.catalogid )
 <form name="catalogid">
-	Catalog ID: <input name="id.value" > <br>
-	Catalog Label: <input name="name.value" >
+	[[Catalog ID]]: <input name="id.value" > <br>
+	[[Catalog Label]]: <input name="name.value" >
 	<br>
-	<input type="submit" value="Save" class="mbtn" />
+	<input type="submit" value="[[Save]]" class="mbtn" />
 </form>
 #else
 
@@ -35,9 +35,9 @@
 
 	</div>
 <div class="scan" style="margin-top: 10px;margin-right: 0;">
-	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > Save </button>
-	<a class="mbtn" href="./apps/index.html?appcatalogid=$appcatalogid">View Apps</a>
-	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=site&id=$site.id" data-confirm="[[Are you sure?]]">Delete Site</a>
+	<button class="mbtn green" style="margin-right: 50px; width:100px;" href="#" > [[Save]] </button>
+	<a class="mbtn" href="./apps/index.html?appcatalogid=$appcatalogid">[[View Apps]]</a>
+	<a class="mbtn blue confirm" style="margin-left: 0px;" href="./remove.html?searchtype=site&id=$site.id" data-confirm="[[Are you sure?]]">[[Delete Site]]</a>
 </div>
 
 </form>
@@ -46,7 +46,7 @@
 <div style="padding-top: 60px;margin-right: 0; ">
 <hr>
 ##these shouod always be at least the initi snapshot
-	<h3>Site Snapshots</h3>
+	<h3>[[Site Snapshots]]</h3>
 
 	<div  style="margin-right: 0;padding:20px;">
 	
@@ -65,8 +65,8 @@
 			</select>
 		</form>	
 		<div style="margin-left: 300px; margin-top: -20px;">
-			<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">Take Snapshot</a>
-			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">Import Zip</a>
+			<a class="mbtn emdialog"  title="Create Snapshot" href="/manager/views/sites/snapshots/create.html?id=$site.id&targetcatalogid=$site.catalogid">[[Take Snapshot]]</a>
+			<a class="mbtn emdialog"  title="Import Snapshot" href="/manager/views/sites/snapshots/importurl.html?siteid=$site.id&targetcatalogid=$site.catalogid">[[Import Zip]]</a>
 		</div>
 		<div id="snapshotdetails">
 		$pages.include("/manager/views/sites/snapshotdetails.html")
