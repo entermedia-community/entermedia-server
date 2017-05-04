@@ -7,132 +7,98 @@
 #set( $clientroot = $context.getContentProperty("clientroot") )
 $context.putPageValue("asset", $asset)
 
-				
-			
-				<div class="container-fluid">
-			
- 				<div class="row" >
- 				
-					<div class="col-md-12 " id="video-holder">
-						<div class="row">
-							<div class="col-md-12">	
-								<div class="thumbnail" id="video-container">
-								
-<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
-									 <div id="top-float" class="to-hide" >
-											<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-											
-									</div>
+				<div class="container-fluid" style="background-color:#eee;">
+						<div class="row" >
+
+						    <div class="col-md-1" style="padding: 0px 0 0 70px; ">	
+								<nav class="navbar navbar-default" role="navigation" style="width:200px;margin:50px 0 0 0px;display:block;">											
+								<div style="background-color:#666;color:white;padding:4px;">
+									Add Metadata
+								</div>	
+									<form class="ajaxform addnewtimeline" style="padding: 10px; text-align:center;">
+									<label>Metadata Type</label>
+									<select>
+										<option>Scene</option>
+										<option>Talent</option>
+									</select>
 									
-										<section id='cuePlayer' style="padding:6px;">
-											<video class="" id="video" preload="no" controls  webkit-playsinline poster="$thumb">
+									<label>Start time</label>
+										<input value="21:12" size="6"/>
+									<label>End time</label>
+										<input value="21:12" size="6"/>							
+											<br>	<br>		
+									<input type="submit" value="Add"/>
+									</form>
+								</nav>
+							</div>
+							<div class="col-md-8" style="padding: 0px;">	
+								<div  id="video-container">
+									<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+										<div id='cuePlayer' style="padding:6px;text-align:right;">
+											<video class="" id="video2" preload="no" controls  webkit-playsinline poster="$thumb" style="width:600px;">
 												<source src="$source" type="video/mp4" />
 												<source src="$webmsource" type="video/webm" />
 											</video>
-										   </section>
-											
+										</div>
 										</div>									
-									
 								</div>
-							
 						    </div>
-						    
-						   
-						    <div id="bottomtoolbar">
-						    <div class="col-md-12 to-hide" id="video-cuepoints" data-dataid="${asset.id}">
-						    		
-						    		
-						    		
-						    		#if($cantimeline)
-		    
-		    <nav class="navbar navbar-default" role="navigation">
-  <!-- Brand and toggle get grouped for better mobile display -->
-  <div class="navbar-header">
-    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-      <span class="sr-only">Toggle navigation</span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-      <span class="icon-bar"></span>
-    </button>
-    <a class="navbar-brand" href="#">$!asset.assettitle</a>
-  </div>
-
-  <!-- Collect the nav links, forms, and other content for toggling -->
-  <div class="collapse navbar-collapse navbar-ex1-collapse">
-    <ul class="nav navbar-nav">
-		
-     
-    </ul>
-    
-    <div id="cuepointactions">
-   $pages.include("$apphome/views/modules/asset/editor/timeline/details/cuepointactions.html", $context)
-    </div>
-  </div><!-- /.navbar-collapse -->
-</nav> 
-		    
-		    
-												
-						
-				#end				
-						    		
-						    		
-									
-						   			$pages.include("$clientroot/details/cuepoints.html", $context)
-						   	
-							</div>
-							</div>
-						</div>
-					
-						</div>
-						
-						<div id="right-panel" class="col-md-2"  >
-						
-				
-						<div  id="cue-products">	
-						
-												
-							##$pages.include("$clientroot/details/cuepointdetails.html?cueid=$cue.i&dataid=${asset.id}")
+						    <div class="col-md-3" style="padding: 0px;">	
+							   $pages.include("$apphome/views/modules/asset/editor/timeline/details/cuepointactions.html", $context)
+						    </div>
 						</div>	
-					</div>
+				</div>
 					
-						
-						
-						
-					</div>	
-					</div>
-					
-		
-		<p>Zoom: <div id="zoom-slider123" style="width:300px;"></div></p>
-		<div id="slider123" class="time-slider"></div>
-					
-					
-					
-			
-	
-
-#set($time = $context.getRequestParameter("jumpto"))
-#if($time)
 <script type="text/javascript">
 $(document).ready(function() {
 
+#set($time = $context.getRequestParameter("jumpto"))
+#if($time)
+
 	 var video = jQuery("#video");
-	  
-	  
-	  
 	jQuery("#video").bind("loadeddata", function() {
 		jump('$time');
 		pause();
 	});
-} );
-
-
-
-</script>
-#end
-
-
-
+#end	
+	jQuery(".timecell").livequery(function()
+	{
+		var mainimage = $(this);
+		var clickspot;
+		var imageposition;
+		 
+		mainimage.on("mousedown", function(event)
+		{
+			clickspot = event;
+			imageposition = mainimage.position();
+			console.log(event);
+			return false;
+		});
 	
+		mainimage.on("mouseup", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		
+		mainimage.on("mousemove", function(event)
+		{
+			//if( isMouseDown() )
+			if( clickspot )
+			{
+				var changetop = clickspot.pageY - event.pageY;
+				var changeleft = clickspot.pageX - event.pageX;
+				
+				var left = imageposition.left - changeleft;
+				var top = imageposition.top;// - changetop;
+				
+				$(this).css({"left" : left + "px", "top" : top + "px"});
+			}	
+		});	
+	});
+});	
+</script>
+
 <style type="text/css">
 #video_overlays {
 position:absolute;
@@ -144,342 +110,77 @@ float:left;
 }
 </style>
 
-<!-- Modal -->
-  <div class="modal" id="editmodal">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title" id="modal-title">Modal title</h4>
-        </div>
-        <div class="modal-body" id="edit-modal-body">
-          ...
-        </div>
-      
-      </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-  </div><!-- /.modal -->
-
 
 <link rel="stylesheet" href="$home$apphome/theme/styles/jquery/timeslider.css">
 
 ##loop over the details looking for objectarrays
 
 ##$asset.getObjects("")
+<div id="slider123" class="time-slider" style="height: 45px;">
+	<div class="ruler" >
+		<div id="tc1" p_id="c1" class="timecell scene" style="left: 60.174px; width: 273.018px; cursor: move;">Scene: <b>Intro</b></div>
+	</div>
+</div>	
 
-<div id="slider123" class="time-slider" style="height: 66px;">
+<div id="slider123" class="time-slider" style="height: 45px;">
+	<div class="ruler" >
+		<div id="tc1" p_id="c1" class="timecell scene" style="left: 360.174px; width: 273.018px; cursor: move;">Scene: <b>Messi scores!</b></div>
+	</div>
+</div>	
+
+
+
+<div id="slider123" class="time-slider" style="height: 45px;">
+	<div class="ruler" >
+		<div id="tc1" p_id="c1" class="timecell" style="left: 60.174px; width: 173.018px; cursor: move;">Talent: <b>John Smith</b></div>
+	</div>
+</div>	
+
+<div id="slider123" class="time-slider" style="height: 45px;">
+	<div class="ruler" >
+		<div id="tc1" p_id="c1" class="timecell" style="left: 360.174px; width: 273.018px; cursor: move;">Talent: <b>Ian Miller</b></div>
+	</div>
+</div>	
+
+<div id="slider123" class="time-slider" style="height: 45px;">
+	<div class="ruler" >
+		<div id="tc1" p_id="c1" class="timecell" style="left: 660.174px; width: 573.018px; cursor: move;">Talent: <b>Ian Miller</b></div>
+	</div>
+</div>	
+
+
+
+<div id="slider123" class="time-slider" style="height: 45px;">
 	<div class="ruler" style="height: 66px;">
 		<div class="bg"></div>
 		<div class="bg-event"></div>
+#set( $added = 0)		
+#set( $space = 15)
 #foreach($block in $blocks)
-		#if( $block.isLabel())
-		<div id="graduation-title-hour-2" class="graduation-title"
-			style="left: $block.getLeft()px">$block.getLabel()</div>
-		#else
-		<div id="hour1" class="graduation " style="left: $block.getLeft()px"></div>
-		#end			
+		<div id="title_${added}"	class="graduation-title"   style="left: ${added}px">$block.getLabel()</div>
+	#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
 #end
+	##remaining ticks, just to run off the end the page
+	#foreach($block in $blocks)
+		#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		#set( $added = $added + $space)
+		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+		<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
+	#end	
 	</div>
+	
+	
 </div>
-
-<!-- 
-		<div class="current-time-caret" style="left: 727.611px;"></div>
-
-
-
-		<div id="hour-4" class="graduation "
-			style="left: -68.09508043981482px"></div>
-		<div id="graduation-title-hour-4" class="graduation-title hidden"
-			style="left: -108.09508043981482px">7:20</div>
-		<div id="hour-3" class="graduation "
-			style="left: -47.914524884259265px"></div>
-		<div id="graduation-title-hour-3" class="graduation-title hidden"
-			style="left: -87.91452488425927px">7:40</div>
-		<div id="hour-2" class="graduation middle"
-			style="left: -27.733969328703708px"></div>
-		<div id="hour-1" class="graduation "
-			style="left: -7.553413773148149px"></div>
-		<div id="graduation-title-hour-1" class="graduation-title hidden"
-			style="left: -47.55341377314815px">8:20</div>
-		<div id="hour0" class="graduation " style="left: 12.627141782407408px"></div>
-		<div id="graduation-title-hour0" class="graduation-title hidden"
-			style="left: -27.372858217592594px">8:40</div>
-		<div id="hour1" class="graduation " style="left: 32.80769733796296px"></div>
-		<div id="graduation-title-hour1" class="graduation-title hidden"
-			style="left: -7.1923026620370365px">9:00</div>
-		<div id="hour2" class="graduation " style="left: 52.98825289351852px"></div>
-		<div id="graduation-title-hour2" class="graduation-title hidden"
-			style="left: 12.98825289351852px">9:20</div>
-		<div id="hour3" class="graduation " style="left: 73.16880844907408px"></div>
-		<div id="graduation-title-hour3" class="graduation-title hidden"
-			style="left: 33.16880844907408px">9:40</div>
-		<div id="hour4" class="graduation middle"
-			style="left: 93.34936400462963px"></div>
-		<div id="graduation-title-hour4" class="graduation-title"
-			style="left: 53.349364004629635px">10:00</div>
-		<div id="hour5" class="graduation " style="left: 113.52991956018519px"></div>
-		<div id="graduation-title-hour5" class="graduation-title hidden"
-			style="left: 73.52991956018519px">10:20</div>
-		<div id="hour6" class="graduation " style="left: 133.71047511574076px"></div>
-		<div id="graduation-title-hour6" class="graduation-title hidden"
-			style="left: 93.71047511574076px">10:40</div>
-		<div id="hour7" class="graduation " style="left: 153.89103067129633px"></div>
-		<div id="graduation-title-hour7" class="graduation-title hidden"
-			style="left: 113.89103067129633px">11:00</div>
-		<div id="hour8" class="graduation " style="left: 174.07158622685188px"></div>
-		<div id="graduation-title-hour8" class="graduation-title hidden"
-			style="left: 134.07158622685188px">11:20</div>
-		<div id="hour9" class="graduation " style="left: 194.25214178240742px"></div>
-		<div id="graduation-title-hour9" class="graduation-title hidden"
-			style="left: 154.25214178240742px">11:40</div>
-		<div id="hour10" class="graduation middle"
-			style="left: 214.432697337963px"></div>
-		<div id="graduation-title-hour10" class="graduation-title"
-			style="left: 174.432697337963px">12:00</div>
-		<div id="hour11" class="graduation "
-			style="left: 234.61325289351856px"></div>
-		<div id="graduation-title-hour11" class="graduation-title hidden"
-			style="left: 194.61325289351856px">12:20</div>
-		<div id="hour12" class="graduation " style="left: 254.7938084490741px"></div>
-		<div id="graduation-title-hour12" class="graduation-title hidden"
-			style="left: 214.7938084490741px">12:40</div>
-		<div id="hour13" class="graduation "
-			style="left: 274.97436400462965px"></div>
-		<div id="graduation-title-hour13" class="graduation-title hidden"
-			style="left: 234.97436400462965px">13:00</div>
-		<div id="hour14" class="graduation "
-			style="left: 295.15491956018525px"></div>
-		<div id="graduation-title-hour14" class="graduation-title hidden"
-			style="left: 255.15491956018525px">13:20</div>
-		<div id="hour15" class="graduation " style="left: 315.3354751157408px"></div>
-		<div id="graduation-title-hour15" class="graduation-title hidden"
-			style="left: 275.3354751157408px">13:40</div>
-		<div id="hour16" class="graduation middle"
-			style="left: 335.51603067129633px"></div>
-		<div id="graduation-title-hour16" class="graduation-title"
-			style="left: 295.51603067129633px">14:00</div>
-		<div id="hour17" class="graduation " style="left: 355.6965862268519px"></div>
-		<div id="graduation-title-hour17" class="graduation-title hidden"
-			style="left: 315.6965862268519px">14:20</div>
-		<div id="hour18" class="graduation " style="left: 375.8771417824074px"></div>
-		<div id="graduation-title-hour18" class="graduation-title hidden"
-			style="left: 335.8771417824074px">14:40</div>
-		<div id="hour19" class="graduation " style="left: 396.057697337963px"></div>
-		<div id="graduation-title-hour19" class="graduation-title hidden"
-			style="left: 356.057697337963px">15:00</div>
-		<div id="hour20" class="graduation "
-			style="left: 416.23825289351856px"></div>
-		<div id="graduation-title-hour20" class="graduation-title hidden"
-			style="left: 376.23825289351856px">15:20</div>
-		<div id="hour21" class="graduation " style="left: 436.4188084490741px"></div>
-		<div id="graduation-title-hour21" class="graduation-title hidden"
-			style="left: 396.4188084490741px">15:40</div>
-		<div id="hour22" class="graduation middle"
-			style="left: 456.5993640046297px"></div>
-		<div id="graduation-title-hour22" class="graduation-title"
-			style="left: 416.5993640046297px">16:00</div>
-		<div id="hour23" class="graduation "
-			style="left: 476.77991956018525px"></div>
-		<div id="graduation-title-hour23" class="graduation-title hidden"
-			style="left: 436.77991956018525px">16:20</div>
-		<div id="hour24" class="graduation " style="left: 496.9604751157408px"></div>
-		<div id="graduation-title-hour24" class="graduation-title hidden"
-			style="left: 456.9604751157408px">16:40</div>
-		<div id="hour25" class="graduation " style="left: 517.1410306712963px"></div>
-		<div id="graduation-title-hour25" class="graduation-title hidden"
-			style="left: 477.14103067129633px">17:00</div>
-		<div id="hour26" class="graduation " style="left: 537.3215862268519px"></div>
-		<div id="graduation-title-hour26" class="graduation-title hidden"
-			style="left: 497.3215862268519px">17:20</div>
-		<div id="hour27" class="graduation " style="left: 557.5021417824074px"></div>
-		<div id="graduation-title-hour27" class="graduation-title hidden"
-			style="left: 517.5021417824074px">17:40</div>
-		<div id="hour28" class="graduation middle"
-			style="left: 577.6826973379631px"></div>
-		<div id="graduation-title-hour28" class="graduation-title"
-			style="left: 537.6826973379631px">18:00</div>
-		<div id="hour29" class="graduation " style="left: 597.8632528935186px"></div>
-		<div id="graduation-title-hour29" class="graduation-title hidden"
-			style="left: 557.8632528935186px">18:20</div>
-		<div id="hour30" class="graduation " style="left: 618.0438084490742px"></div>
-		<div id="graduation-title-hour30" class="graduation-title hidden"
-			style="left: 578.0438084490742px">18:40</div>
-		<div id="hour31" class="graduation " style="left: 638.2243640046297px"></div>
-		<div id="graduation-title-hour31" class="graduation-title hidden"
-			style="left: 598.2243640046297px">19:00</div>
-		<div id="hour32" class="graduation " style="left: 658.4049195601852px"></div>
-		<div id="graduation-title-hour32" class="graduation-title hidden"
-			style="left: 618.4049195601852px">19:20</div>
-		<div id="hour33" class="graduation " style="left: 678.5854751157408px"></div>
-		<div id="graduation-title-hour33" class="graduation-title hidden"
-			style="left: 638.5854751157408px">19:40</div>
-		<div id="hour34" class="graduation middle"
-			style="left: 698.7660306712963px"></div>
-		<div id="graduation-title-hour34" class="graduation-title"
-			style="left: 658.7660306712963px">20:00</div>
-		<div id="hour35" class="graduation " style="left: 718.9465862268519px"></div>
-		<div id="graduation-title-hour35" class="graduation-title hidden"
-			style="left: 678.9465862268519px">20:20</div>
-		<div id="hour36" class="graduation " style="left: 739.1271417824074px"></div>
-		<div id="graduation-title-hour36" class="graduation-title hidden"
-			style="left: 699.1271417824074px">20:40</div>
-		<div id="hour37" class="graduation " style="left: 759.3076973379631px"></div>
-		<div id="graduation-title-hour37" class="graduation-title hidden"
-			style="left: 719.3076973379631px">21:00</div>
-		<div id="hour38" class="graduation " style="left: 779.4882528935186px"></div>
-		<div id="graduation-title-hour38" class="graduation-title hidden"
-			style="left: 739.4882528935186px">21:20</div>
-		<div id="hour39" class="graduation " style="left: 799.6688084490742px"></div>
-		<div id="graduation-title-hour39" class="graduation-title hidden"
-			style="left: 759.6688084490742px">21:40</div>
-		<div id="hour40" class="graduation middle"
-			style="left: 819.8493640046297px"></div>
-		<div id="graduation-title-hour40" class="graduation-title"
-			style="left: 779.8493640046297px">22:00</div>
-		<div id="hour41" class="graduation " style="left: 840.0299195601852px"></div>
-		<div id="graduation-title-hour41" class="graduation-title hidden"
-			style="left: 800.0299195601852px">22:20</div>
-		<div id="hour42" class="graduation " style="left: 860.2104751157408px"></div>
-		<div id="graduation-title-hour42" class="graduation-title hidden"
-			style="left: 820.2104751157408px">22:40</div>
-		<div id="hour43" class="graduation " style="left: 880.3910306712963px"></div>
-		<div id="graduation-title-hour43" class="graduation-title hidden"
-			style="left: 840.3910306712963px">23:00</div>
-		<div id="hour44" class="graduation " style="left: 900.571586226852px"></div>
-		<div id="graduation-title-hour44" class="graduation-title hidden"
-			style="left: 860.571586226852px">23:20</div>
-		<div id="hour45" class="graduation " style="left: 920.7521417824075px"></div>
-		<div id="graduation-title-hour45" class="graduation-title hidden"
-			style="left: 880.7521417824075px">23:40</div>
-		<div id="hour46" class="graduation big"
-			style="left: 940.9326973379631px"></div>
-		<div id="graduation-title-hour46" class="graduation-title"
-			style="left: 900.9326973379631px">04.05.2017</div>
-		<div id="hour47" class="graduation " style="left: 961.1132528935186px"></div>
-		<div id="graduation-title-hour47" class="graduation-title hidden"
-			style="left: 921.1132528935186px">0:20</div>
-		<div id="hour48" class="graduation " style="left: 981.2938084490742px"></div>
-		<div id="graduation-title-hour48" class="graduation-title hidden"
-			style="left: 941.2938084490742px">0:40</div>
-		<div id="hour49" class="graduation "
-			style="left: 1001.4743640046297px"></div>
-		<div id="graduation-title-hour49" class="graduation-title hidden"
-			style="left: 961.4743640046297px">1:00</div>
-		<div id="hour50" class="graduation "
-			style="left: 1021.6549195601852px"></div>
-		<div id="graduation-title-hour50" class="graduation-title hidden"
-			style="left: 981.6549195601852px">1:20</div>
-		<div id="hour51" class="graduation "
-			style="left: 1041.8354751157408px"></div>
-		<div id="graduation-title-hour51" class="graduation-title hidden"
-			style="left: 1001.8354751157408px">1:40</div>
-		<div id="hour52" class="graduation middle"
-			style="left: 1062.0160306712962px"></div>
-		<div id="graduation-title-hour52" class="graduation-title"
-			style="left: 1022.0160306712962px">2:00</div>
-		<div id="hour53" class="graduation "
-			style="left: 1082.1965862268519px"></div>
-		<div id="graduation-title-hour53" class="graduation-title hidden"
-			style="left: 1042.1965862268519px">2:20</div>
-		<div id="hour54" class="graduation "
-			style="left: 1102.3771417824073px"></div>
-		<div id="graduation-title-hour54" class="graduation-title hidden"
-			style="left: 1062.3771417824073px">2:40</div>
-		<div id="hour55" class="graduation " style="left: 1122.557697337963px"></div>
-		<div id="graduation-title-hour55" class="graduation-title hidden"
-			style="left: 1082.557697337963px">3:00</div>
-		<div id="hour56" class="graduation "
-			style="left: 1142.7382528935186px"></div>
-		<div id="graduation-title-hour56" class="graduation-title hidden"
-			style="left: 1102.7382528935186px">3:20</div>
-		<div id="hour57" class="graduation " style="left: 1162.918808449074px"></div>
-		<div id="graduation-title-hour57" class="graduation-title hidden"
-			style="left: 1122.918808449074px">3:40</div>
-		<div id="hour58" class="graduation middle"
-			style="left: 1183.0993640046297px"></div>
-		<div id="graduation-title-hour58" class="graduation-title"
-			style="left: 1143.0993640046297px">4:00</div>
-		<div id="hour59" class="graduation "
-			style="left: 1203.2799195601851px"></div>
-		<div id="graduation-title-hour59" class="graduation-title hidden"
-			style="left: 1163.2799195601851px">4:20</div>
-		<div id="hour60" class="graduation "
-			style="left: 1223.4604751157408px"></div>
-		<div id="graduation-title-hour60" class="graduation-title hidden"
-			style="left: 1183.4604751157408px">4:40</div>
-		<div id="hour61" class="graduation "
-			style="left: 1243.6410306712962px"></div>
-		<div id="graduation-title-hour61" class="graduation-title hidden"
-			style="left: 1203.6410306712962px">5:00</div>
-		<div id="hour62" class="graduation "
-			style="left: 1263.8215862268519px"></div>
-		<div id="graduation-title-hour62" class="graduation-title hidden"
-			style="left: 1223.8215862268519px">5:20</div>
-		<div id="hour63" class="graduation "
-			style="left: 1284.0021417824073px"></div>
-		<div id="graduation-title-hour63" class="graduation-title hidden"
-			style="left: 1244.0021417824073px">5:40</div>
-		<div id="hour64" class="graduation middle"
-			style="left: 1304.182697337963px"></div>
-		<div id="graduation-title-hour64" class="graduation-title"
-			style="left: 1264.182697337963px">6:00</div>
-		<div id="hour65" class="graduation "
-			style="left: 1324.3632528935186px"></div>
-		<div id="graduation-title-hour65" class="graduation-title hidden"
-			style="left: 1284.3632528935186px">6:20</div>
-		<div id="hour66" class="graduation " style="left: 1344.543808449074px"></div>
-		<div id="graduation-title-hour66" class="graduation-title hidden"
-			style="left: 1304.543808449074px">6:40</div>
-		<div id="hour67" class="graduation "
-			style="left: 1364.7243640046297px"></div>
-		<div id="graduation-title-hour67" class="graduation-title hidden"
-			style="left: 1324.7243640046297px">7:00</div>
-		<div id="hour68" class="graduation "
-			style="left: 1384.9049195601851px"></div>
-		<div id="graduation-title-hour68" class="graduation-title hidden"
-			style="left: 1344.9049195601851px">7:20</div>
-		<div id="hour69" class="graduation "
-			style="left: 1405.0854751157408px"></div>
-		<div id="graduation-title-hour69" class="graduation-title hidden"
-			style="left: 1365.0854751157408px">7:40</div>
-		<div id="hour70" class="graduation middle"
-			style="left: 1425.2660306712962px"></div>
-		<div id="graduation-title-hour70" class="graduation-title"
-			style="left: 1385.2660306712962px">8:00</div>
-		<div id="hour71" class="graduation "
-			style="left: 1445.4465862268519px"></div>
-		<div id="graduation-title-hour71" class="graduation-title hidden"
-			style="left: 1405.4465862268519px">8:20</div>
-		<div id="hour72" class="graduation "
-			style="left: 1465.6271417824073px"></div>
-		<div id="graduation-title-hour72" class="graduation-title hidden"
-			style="left: 1425.6271417824073px">8:40</div>
-		<div id="c1" class="timecell" start_timestamp="1493819172259"
-			stop_timestamp="1493827091025"
-			style="left: 321.596px; width: 133.171px;">2:11:59</div>
-		<div id="tc1" p_id="c1" class="timecell-event"
-			style="left: 321.596px; width: 133.171px; cursor: move;"></div>
-		<div id="c2" class="timecell current" start_timestamp="1493835689150"
-			style="left: 599.363px; width: 128.248px;">2:07:06</div>
-		<div id="tc2" p_id="c2" class="timecell-event current"
-			style="left: 599.363px; width: 128.248px; cursor: default;"></div>
-	</div>
-	<div class="prompts" style="top: -116px;">
-		<div id="l-prompt-c1" class="prompt"
-			style="top: 9px; left: 277.596px; display: none;">
-			<div class="triangle-down"></div>
-			<div class="body">03.05.2017 13:46:12</div>
-		</div>
-		<div id="r-prompt-c1" class="prompt"
-			style="top: 101px; left: 410.767px; display: none;">
-			<div class="triangle-up"></div>
-			<div class="body">03.05.2017 15:58:11</div>
-		</div>
-		<div id="l-prompt-c2" class="prompt"
-			style="top: 9px; left: 555.363px; display: none;">
-			<div class="triangle-down"></div>
-			<div class="body">03.05.2017 18:21:29</div>
-		</div>
-	</div>
-</div>
--->

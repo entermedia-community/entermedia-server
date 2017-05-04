@@ -21,25 +21,13 @@ public class TimelineModule extends BaseModule
 		//divide into 60 blocks
 		List blocks = new ArrayList();
 		
-		double chunck = videolength / 60;
-		for (int i = 0; i < 60; i++)
+		double chunck = videolength / 20d;
+		for (int i = 0; i < 21; i++)
 		{
 			Block block = new Block();
 			//block.setTime(i * chunck);
-			block.setLeft(i * 10);
-			if( i % 5 == 0)
-			{
-				if( i == 0)
-				{
-					block.setLabel(0);
-				}
-				else
-				{
-					double rounded = ( videolength / (double)i);
-					rounded = Math.round( videolength - rounded );
-					block.setLabel(rounded);
-				}	
-			}
+			block.setCounter(i);
+			block.setLabel(chunck * (double)i);
 			blocks.add(block);
 		}
 		inReq.putPageValue("blocks", blocks);

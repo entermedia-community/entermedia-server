@@ -7,48 +7,24 @@
 
 #end
 #end
- <ul class="nav navbar-nav navbar-right">
-      
-      
-      	
-      	
-      	<li><a class="shiftLeft"  data-amount="1" href="#addcue" data-dataid="${data.id}"><</a></li>
-		<li><a>1</a></li>
-		<li><a class="shiftRight" data-amount="1" href="#addcue" data-dataid="${data.id}">></a></li>
-      	<li><a class="shiftLeft"  data-amount="10" href="#addcue" data-dataid="${data.id}"><</a></li>
-		<li><a>10</a></li>
 
-		<li><a class="shiftRight" data-amount="10" href="#addcue" data-dataid="${data.id}">></a></li>
-      	<li><a class="shiftLeft"  data-amount="15" href="#addcue" data-dataid="${data.id}"><</a></li>
-		<li><a>15</a></li>
+    <div id="cuepointactions" >
+<nav class="navbar navbar-default" role="navigation" style="width:100px;margin:50px 0 0 0;">											
+<div style="background-color:#666;color:white;padding:4px;">
+	Jump to frame
+</div>	
+	
+ <ul class="nav navbar-nav" style="width:80px;">
 
-		<li><a class="shiftRight" data-amount="15" href="#addcue" data-dataid="${data.id}">></a></li>
-    	<li><a class="shiftLeft"  data-amount="60" href="#addcue" data-dataid="${data.id}"><</a></li>
-		<li><a>60</a></li>
+    	<li><a class="shiftLeft"  data-amount="60" href="#addcue" data-dataid="${data.id}">&lt; 60 </a></li>
+    	<li><a class="shiftLeft"  data-amount="10" href="#addcue" data-dataid="${data.id}">&lt; 10</a></li>
+		<li><a class="shiftLeft"  data-amount="1" href="#addcue" data-dataid="${data.id}">&lt; 1</a></li>
 
-		<li><a class="shiftRight" data-amount="60" href="#addcue" data-dataid="${data.id}">></a></li>
+		<li><a class="shiftRight"  data-amount="1" href="#addcue" data-dataid="${data.id}">&nbsp;&nbsp;&nbsp;1 &gt;</a></li>
+		<li><a class="shiftRight"  data-amount="10" href="#addcue" data-dataid="${data.id}">&nbsp;&nbsp;10 &gt;</a></li>
+		<li><a class="shiftRight"  data-amount="60" href="#addcue" data-dataid="${data.id}">&nbsp;&nbsp;60 &gt;</a></li>
       
       
-      <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Cuepoint Details <b class="caret"></b></a>
-        <ul class="dropdown-menu">
-        
-   		
-        <li><a  id="addcue" href="#addcue" data-dataid="${asset.id}">Add New Cue Point </a></li>
-        
-        
-        
-        
-        
-        
-#if($entry) 
-<li><a href="#" class="disabled"   >Current Cue: ${entry.timecode}s</a></li>
-<li><a href="#" class="ajaxDialog" data-target="$apphome/components/dialogedit/edit.html?oemaxlevel=1&id=$entry.id&searchtype=cuepoint&viewpath=cuepoint/edit">Cuepoint Details</a></li> 
-<li><a href="#" class="ajaxDialog" data-target="$apphome/components/dialogedit/delete.html?oemaxlevel=1&id=$entry.id&searchtype=cuepoint&viewpath=videocue/videocuecue_edit">Delete Cue Point</a></li>
-#end        
-         
-          
-        </ul>
-      </li>
     </ul>
-
+</nav>
+</div>

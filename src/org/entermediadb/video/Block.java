@@ -7,7 +7,7 @@ import org.entermediadb.asset.util.MathUtils;
 public class Block
 {
 	protected String fieldLabel;
-	
+	protected int fieldCounter;
 	
 	public void setLabel(double inTime)
 	{
@@ -22,7 +22,7 @@ public class Block
 		
 		if(inTime > 86400) // //day
 		{
-			String formated = String.format("%02d:%02d:%d", days, hours, seconds);
+			String formated = String.format("%02d:%02d:%02d", days, hours, seconds);
 			if( millis > 0)
 			{
 				formated = formated + "." + Math.floor( millis );
@@ -31,7 +31,7 @@ public class Block
 		}
 		else
 		{
-			String formated = String.format("%02d:%d", hours, seconds);
+			String formated = String.format("%02d:%02d", hours, seconds);
 			if( millis > 0)
 			{
 				formated = formated + "." + Math.floor( millis );
@@ -44,17 +44,21 @@ public class Block
 		return fieldLabel != null;
 	}
 	
-	protected int fieldLeft;
-	public void setLeft(int inLeft)
+	public void setCounter(int inLeft)
 	{
-		fieldLeft = inLeft;
+		fieldCounter = inLeft;
 	}
-	public int getLeft()
+	public int getCounter()
 	{
-		return fieldLeft;
+		return fieldCounter;
 	}
 	public String getLabel()
 	{	
 		return fieldLabel;
 	}
+	public int tick(int inSoFar,int width)
+	{
+		return inSoFar + width;
+	}
+	
 }
