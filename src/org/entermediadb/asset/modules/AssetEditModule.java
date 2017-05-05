@@ -969,11 +969,17 @@ public class AssetEditModule extends BaseMediaModule
 			String sourcepath = (String) iterator.next();
 			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
 			UploadedPage page = (UploadedPage)pages.get(sourcepath);
-			if(!page.inUpload.getPath().equals(page.inDestPage.getPath()))//move from tmp location to final location
+			if( page.inDestPage.exists())
+			{
+				log.error("Asset already exists in collection " + sourcepath);
+				continue;
+			}
+			else if(!page.inUpload.getPath().equals(page.inDestPage.getPath()))//move from tmp location to final location
 			{
 				Map props = new HashMap();
 				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
 				archive.fireMediaEvent("savingoriginal","asset",sourcepath,props,user);
+				page.moved = true;
 				getPageManager().movePage(page.inUpload, page.inDestPage);
 			}
 			page.fieldAsset = createAsset(archive,metadata, sourcepath,page.inDestPage, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
@@ -985,10 +991,13 @@ public class AssetEditModule extends BaseMediaModule
 			String sourcepath = (String) iterator.next();
 			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
 			UploadedPage page = (UploadedPage)pages.get(sourcepath);
-			Data asset = page.fieldAsset;
-			Map props = new HashMap();
-			props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
-			archive.fireMediaEvent("savingoriginalcomplete","asset",asset.getSourcePath(),props,user);
+			if( page.moved )
+			{
+				Data asset = page.fieldAsset;
+				Map props = new HashMap();
+				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
+				archive.fireMediaEvent("savingoriginalcomplete","asset",asset.getSourcePath(),props,user);
+			}	
 		}
 		return tracker;
 	}
@@ -999,6 +1008,7 @@ public class AssetEditModule extends BaseMediaModule
 		protected Page inDestPage;
 		protected String sourcePath;
 		protected Asset fieldAsset;
+		protected boolean moved;
 	}
 	
 	protected Map savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)

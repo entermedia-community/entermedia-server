@@ -37,7 +37,7 @@
 							#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
 								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>	
 							#foreach($result in $results )						
-									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/${result.generatedoutputfile}">$result.name</a></li>
+									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/$result.name-${result.generatedoutputfile}">$result.name</a></li>
 							#end
 					</ul>
 			   </div>

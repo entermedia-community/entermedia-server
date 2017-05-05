@@ -8,7 +8,7 @@
 
 <div id="play$asset.getId()" class="player is-splash"  data-embed="false" style='background-color:#777; background-image:url("$thumb");' data-fullscreen="true"
      data-native_fullscreen="true">
-   <video>
+   <video autoplay=true >
       <source type="video/mp4"  src="$source">
       #set( $short = $url_util.getPathUtilities().extractPagePath($source) )
       <source type="video/flash"  src="mp4:$short"></video>
