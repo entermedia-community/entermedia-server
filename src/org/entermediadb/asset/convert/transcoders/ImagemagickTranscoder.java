@@ -217,7 +217,19 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			createBackground(inStructions, com, usepng, ext);
 		}
-
+		String dpi = inStructions.get("dpi");
+		if (dpi != null)
+		{
+			//-set units PixelsPerInch -density 300
+			com.add("-set");
+			com.add("units");
+			com.add("PixelsPerInch");
+			
+			com.add("-set");
+			com.add("density");
+			com.add(dpi);
+		}
+		
 		setValue("quality", "89", inStructions, com);
 		//add sampling-factor if specified
 		if (inStructions.get("sampling-factor") != null)
