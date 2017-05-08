@@ -223,7 +223,7 @@ public class ProjectModule extends BaseMediaModule
 		
 		Object caneditdata = inReq.getPageValue("caneditdata");
 		all.getSearchQuery().setValue("caneditdata", caneditdata);
-		
+		all.selectAll();
 		//String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
 		String sessionId = all.getSessionId();
