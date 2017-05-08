@@ -6,46 +6,16 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = $context.getContentProperty("clientroot") )
 $context.putPageValue("asset", $asset)
-Some data: $asset.talents
 				<div class="container-fluid" style="background-color:#eee;">
 						<div class="row" >
 
-						    <div class="col-md-1" style="padding: 0px 0 0 70px; ">	
-								<nav class="navbar navbar-default" role="navigation" style="width:200px;margin:50px 0 0 0px;display:block;">											
-								<div style="background-color:#666;color:white;padding:4px;">
-									Add Metadata
-								</div>	
-									##this form should pop up a data entry form
-									<form class="ajaxform addnewtimeline" style="padding: 10px; text-align:center;">
-									<label>Metadata Type</label>
-									<select>
-										<option>Scene</option>
-										<option>Talent</option>
-									</select>
-									
-									<label>Start time</label>
-										<input value="21:12" size="6"/>
-									<label>End time</label>
-										<input value="21:12" size="6"/>							
-											<br>	<br>		
-									
-									
-									
-									
-									</form>
-																		        <a  class="btn" id="addcue" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">Add New Cue Point </a>
-									
-								</nav>
-							</div>
-							<div class="col-md-8" style="padding: 0px;">	
+						 
+							<div class="col-md-6 col-md-offset-3" style="padding: 0px;">	
 														
 									<div class="thumbnail" id="video-container">
 								
 <div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
-									 <div id="top-float" class="to-hide" >
-											<span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-											
-									</div>
+									
 									
 										<section id='cuePlayer' style="padding:6px;">
 											<video class="" id="video" preload="no" controls  webkit-playsinline poster="$thumb">
@@ -59,9 +29,9 @@ Some data: $asset.talents
 								</div>
 								
 						    </div>
-						    <div class="col-md-3" style="padding: 0px;">	
-							   $pages.include("$apphome/views/modules/asset/editor/timeline/details/cuepointactions.html", $context)
-						    </div>
+						    	
+							
+						    
 						</div>	
 				</div>
 					
@@ -131,14 +101,17 @@ float:left;
 
 ##TODO: loop over the details looking for sorted objectarrays. Use Module Method to load em
 
-##$asset.getObjects("")
+
+<div class="container-fluid">
+<div class="row">
+<div class="col-md-10">
 
 
-<div id="slider123" class="time-slider" style="height: 45px;">
-	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell scene" style="left: 60.174px; width: 273.018px; cursor: move;">Scene: <b>Opening Ceremony</b></div>
-	</div>
-</div>	
+						   			$pages.include("$clientroot/details/cuepoints.html", $context)
+
+
+
+
 
 
 <div id="slider123" class="time-slider" style="height: 45px;">
@@ -166,6 +139,7 @@ float:left;
 		<div id="tc1" p_id="c1" class="timecell" style="left: 660.174px; width: 573.018px; cursor: move;">Talent: <b>Ian Miller</b></div>
 	</div>
 </div>	
+
 
 
 
@@ -204,8 +178,72 @@ float:left;
 	
 </div>
 
+</div>
+<div class="col-md-2">
 
 
+
+<div style="background-color:#666;color:white;padding:4px;">
+									Add Metadata
+								</div>								
+		<nav class="navbar navbar-default" role="navigation" >											
+
+								<ul class="nav navbar-nav navbar-right">
+								<li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Options <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Download</a></li>
+            <li><a href="#">Delete</a></li>
+            <li><a href="#">Something else here</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Separated link</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">One more separated link</a></li>
+          </ul>
+        </li></ul>
+							
+								
+									##this form should pop up a data entry form
+									<form class="ajaxform addnewtimeline" style="padding: 10px; text-align:center;">
+							
+									#set($details = $searcher.getPropertyDetails().getDetailsByType("viewtype", "timecodetable"))
+									#if($details.size() == 1)
+									<input type="hidden" name="targetfield" value="$details.get(0).getId()"/>
+									#elseif($details.size() > 1)
+																		<label>Metadata Type</label>
+									
+									<select name="targetfield" class="form-control">
+										#foreach($detail in $details)
+										<option id="$detail.id">$detail.name</option>
+										#end
+										
+									
+									</select>
+									
+									
+									
+									#end
+									
+									<label>Start time</label>
+										<input class="form-control" value="21:12" size="6"/>
+									<label>End time</label>
+										<input class="form-control" value="21:12" size="6"/>							
+											<br>	<br>		
+									
+									
+																        <a  class="btn" id="addcue" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">Add New Cue Point </a>
+									
+									</form>
+									
+									
+									
+									<a  class="btn" id="download" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">[[Download this clip]] </a>
+									<a  class="btn" id="download" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">[[Download this clip]] </a>
+									<a  class="btn" id="download" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">[[Download this clip]] </a>		
+									
+								</nav>
+
+</div></div></div>
 
 <div id="bottomtoolbar">
 						    <div class="col-md-12 to-hide" id="video-cuepoints" data-dataid="${asset.id}">
@@ -216,7 +254,14 @@ float:left;
 						    		
 						    		
 									
-						   			$pages.include("$clientroot/details/cuepoints.html", $context)
 						   	
 							</div>
 							</div>
+							
+							
+							
+							
+							
+							Some data: $asset.talents
+							
+   $pages.include("$apphome/views/modules/asset/editor/timeline/details/cuepointactions.html", $context)
