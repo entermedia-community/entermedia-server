@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
+  <property id="demoallasset" ordering="01"   
+	initurl="http://template9dev.entermediadb.org/manager/views/sites/snapshots/download/AVrIbUjeeEUksDKW_Sy2/2017-03-13-16-08-09.zip?entermedia.key=1c0af185908a6c0c40d50fd5e3f16760d5580bc" username="admin" password="admin" caption="Media sharing web site"
+  	longdescription="EnterMedia Share is a media sharing website. It allows users to comment, share to Facebook, upload, view assets in galleries, and play videos. Starting with EMShare you can customize your own web site by changing the logo and color scheme.">EnterMedia - DAM</property>
   <property id="demoalloi" ordering="01"  
   	initurl="http://template9dev.entermediadb.org/manager/views/sites/snapshots/download/AVrIb9FfeEUksDKW_Sy4/2017-03-13-16-10-55.zip?entermedia.key=1c0af185908a6c0c40d50fd5e3f16760d5580bc" username="admin" password="admin" caption="Media sharing web site" 
   	longdescription="EnterMedia Share is a media sharing website. It allows users to comment, share to Facebook, upload, view assets in galleries, and play videos. Starting with EMShare you can customize your own web site by changing the logo and color scheme.">EnterMedia - OpenInstitute</property>
-  <property id="demoallasset" ordering="01"   
-	initurl="http://template9dev.entermediadb.org/manager/views/sites/snapshots/download/AVrIbUjeeEUksDKW_Sy2/2017-03-13-16-08-09.zip?entermedia.key=1c0af185908a6c0c40d50fd5e3f16760d5580bc" username="admin" password="admin" caption="Media sharing web site"
-  	longdescription="EnterMedia Share is a media sharing website. It allows users to comment, share to Facebook, upload, view assets in galleries, and play videos. Starting with EMShare you can customize your own web site by changing the logo and color scheme.">EnterMedia - Video DAM</property>
 
   <property id="blank" ordering="01"   
 	caption="Has not configuration or catalog"
