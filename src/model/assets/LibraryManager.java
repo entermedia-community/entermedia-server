@@ -56,7 +56,6 @@ public class LibraryManager extends EnterMediaObject
 							{
 								collectioncat = (Category)iterator3.next();
 								//Fire event, existing
-								modifiedcollections.put(collection.getId(), collection);
 								break;
 							}
 						}
@@ -67,10 +66,9 @@ public class LibraryManager extends EnterMediaObject
 							collection.setProperty("library", library.getId());
 							collection.setProperty("rootcategory", collectioncat.getId());
 							librarycollectionSearcher.saveData(collection);
-							modifiedcollections.put(collection.getId(), collection);
-
 						}	
 					}
+					modifiedcollections.put(collection.getId(), collection);
 				}
 			}
 		}

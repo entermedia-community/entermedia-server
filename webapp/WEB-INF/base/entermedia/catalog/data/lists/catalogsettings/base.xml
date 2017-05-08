@@ -29,7 +29,7 @@
 
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
 	-->
-	<property id="events_notify_app" value="asset/emshare">Email Notify App</property>
+	<property id="events_notify_app" value="assets/emshare">Email Notify App</property>
 	<property id="events_conversion_error_grace_period" value="1h">Conversion Error Asset Delete</property>
 	
 	<!--  system email settings -->

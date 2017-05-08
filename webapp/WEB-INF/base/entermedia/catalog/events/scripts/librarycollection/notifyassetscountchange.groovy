@@ -6,6 +6,7 @@ import org.openedit.Data
 import org.openedit.MultiValued
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
+import org.openedit.profile.UserProfile
 import org.openedit.users.User
 
 
@@ -13,37 +14,43 @@ public void init()
 {
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	
-	Date fiveminago = new Date(System.currentTimeMillis() - 60*1000*5);
-	Date onehourago = new Date(System.currentTimeMillis() - 60*1000*60);
+	Date quietperiod = new Date(System.currentTimeMillis() - 60*1000*10);
 	
-	Set collections = new HashSet();
+	Map collections = new HashMap();
 	
 	HitTracker found = mediaArchive.query("librarycollection").match("lastmodifieddatedirty","true").search();
 	if( found.isEmpty() )
 	{
+		log.info("No edited collections");
 		return;
 	}
 	for (MultiValued collection in found)
 	{
-		Date modifiedon = collection.getDate("lastmodifieddate");  //TODO: Use database to limit list
-		if( modifiedon.before(fiveminago)) //Quiet period
+		//Send notification?
+		Date lastsent = collection.getDate("lastmodifieddatesent");
+		if( lastsent == null || lastsent.before(quietperiod))
 		{
-			//Send notification?
-			Date lastsent = collection.getDate("lastmodifieddatesent");
-			if( lastsent == null || lastsent.before(onehourago))
-			{
-				collections.put(collection.getId(), collection);
-				int counted = mediaArchive.query("asset").match("categories",collection.get("rootcategory")).search().size();
+			int counted = mediaArchive.query("asset").match("category",collection.get("rootcategory")).search().size();
+			String oldcount = collection.getValue("assetcounted");
+			if( oldcount== null || !oldcount.equals(String.valueOf(counted)))
+			{ 
+				collection = mediaArchive.getSearcher("librarycollection").loadData(collection);
 				collection.setValue("assetcounted", counted);
-			}
+				collections.put(collection.getId(), collection);
+			}	
 		}
 	}
-	
-	//TODO: Add owners as followers automatically
-	HitTracker followers = mediaArchive.query("librarycollectionshare").orgroup("librarycollection",collections).search();
-	if( followers.isEmpty() )
+	if( collections.isEmpty() )
 	{
-			return;
+		log.info("no collections edited or within 10 min");
+		return;
+	}
+	//TODO: Add owners as followers automatically
+	HitTracker followers = mediaArchive.query("librarycollectionshares").orgroup("librarycollection",collections.keySet()).search();
+	if( followers.isEmpty() )
+	{asset
+		log.info("No followers on collection");
+		return;
 	}
 	Date now = new Date();
 	
@@ -55,7 +62,7 @@ public void init()
 		List dirtycollections = (List)users.get(userid);
 		if( dirtycollections == null)
 		{
-			collections = new ArrayList();
+			dirtycollections = new ArrayList();
 			users.put(userid, dirtycollections);
 		}
 		String collectionid = follower.get("librarycollection");
@@ -68,8 +75,21 @@ public void init()
 		User followeruser = mediaArchive.getUserManager().getUser(userid);
 		if( followeruser != null && followeruser.getEmail() != null)
 		{
-			String appid =  mediaArchive.getCatalogSettingValue("events_notify_app");
+			//Save this in the user profile
 			
+			Data profile = mediaArchive.getData("userprofile", userid);
+			if(profile.getBoolean("sendcollectionnotifications") == false)
+			{
+				log.info("Notification disabled " + userid);
+				continue;	
+			}
+			String appid  = profile.get("preferedapp");
+			if( appid == null)
+			{
+				appid =  mediaArchive.getCatalogSettingValue("events_notify_app");
+			}	
+			
+			//collection-count-modifed
 			String template = "/" + appid + "/theme/emails/collection-count-modified.html";
 		
 			List dirtycollections = (List)users.get(userid);

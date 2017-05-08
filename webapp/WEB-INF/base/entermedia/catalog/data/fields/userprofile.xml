@@ -153,13 +153,17 @@
   </property>
   <property id="sendcollectionnotifications" index="true" type="boolean" internalfield="true" keyword="false" filter="false" editable="false" > 
     <name> 
-      <language id="en"><![CDATA[Send Email Notifications on Asset Approval or Rejection]]></language>  
-      
+      <language id="en"><![CDATA[Receive Collection Notifications]]></language>  
     </name> 
   </property>  
-  <property id="lastviewedapp" index="true"  internalfield="true" keyword="false" filter="false" editable="false" > 
+  <property id="sendapprovalnotifications" index="true" type="boolean" internalfield="true" keyword="false" filter="false" editable="false" > 
     <name> 
-      <language id="en"><![CDATA[Last Viewed Application]]></language>  
+      <language id="en"><![CDATA[Receive Approval / Rejection Notifications]]></language>  
+    </name> 
+  </property>  
+  <property id="preferedapp" index="true"  internalfield="true" keyword="false" filter="false" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[Prefered Application]]></language>  
       
     </name> 
   </property>  

@@ -21,8 +21,8 @@ public void init()
 	
 	
 	UserProfile profile = mediaArchive.getData("userprofile", owner);
-	if(profile.getBoolean("sendcollectionnotifications") == true  ){
-		String template = "/" + profile.get("lastviewedapp") + "/theme/emails/collection-assets-rejected.html";
+	if(profile.getBoolean("sendapprovalnotifications") == true  ){
+		String template = "/" + profile.get("preferedapp") + "/theme/emails/collection-assets-rejected.html";
 		Data librarycol = mediaArchive.getData("librarycollection", context.getPageValue("librarycollection"));
 		User target = mediaArchive.getData("user", owner);
 		WebEmail templatemail = mediaArchive.createSystemEmail(target, template);
