@@ -1,38 +1,29 @@
-XXXX
-
-#set($currentpreview = $context.findValue('currentpreview'))
-#set( $currentpreview = $numberutils.toInt($currentpreview) )
-
 #set ($pagenum = $context.findValue("pagenum") )
-#set ( $hitssessionid = $context.findValue("hitssessionid"))
-#set ($sourcepath = $asset.sourcepath )
-#if ( !$pagenum ) 
-    #set ( $pagenum = $currentpreview + 1)
-#end
-#if ( !$pagenum ) 
+#if ( $pagenum ) 
+	#set($pagenum = $numberutils.toInt($pagenum))
+#else
     #set ( $pagenum = 1)
 #end
 
+#set ( $hitssessionid = $context.findValue("hitssessionid"))
+#set ($sourcepath = $asset.sourcepath )
 #set($totalpages = $numberutils.toInt($asset.pages))
-
-
-#set ( $gotopage = $currentpreview + 1)
+pagenum $pagenum
     <div id="pdf-viewer-container">
-        #if ($gotopage > 1)
-             #set( $prevthumb = $gotopage - 1)
-            <a id="prevpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid"> Previous </a>
+        #if ($pagenum > 1)
+            #set( $prevthumb = $pagenum - 1)
+            <a id="prevpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid&currentpreview=$currentpreview"> [[Previous]] </a>
         #end
         #set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$asset.id&pagenum=$pagenum&name=preview.png")
 	<a class="stackedplayer" data-assetid="$asset.id" data-pagenum="$pagenum" href="#" >
-        	#set( $page = $currentpreview + 1)
        <div class="emdropshadow">
         	<img id="main-media" class=" #if( $totalpages > 1 ) document #end  assetdragdrop"  draggable="true"  data-sourcepath="$sourcepath" 
-        		data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.png?pagenum=$!gotopage" alt="[[Preview Image]]"/>
+        		data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.png?pagenum=$!pagenum" alt="[[Preview Image]]"/>
        </div> 
         </a>
-        #if ($gotopage != $totalpages)
-             #set( $nextthumb = $gotopage + 1)
-            <a id ="nextpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> Next </a>
+        #if ($pagenum != $totalpages)
+            #set( $nextthumb = $pagenum + 1)
+            <a id ="nextpage" class="ir" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next]] </a>
         #end
     </div>
 
