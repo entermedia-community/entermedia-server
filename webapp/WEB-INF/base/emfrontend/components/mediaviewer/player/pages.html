@@ -5,20 +5,25 @@
 #else
     #set ( $pagenum = 1)
 #end
-#set ($currentfive = $pagenum / 5 )
-
+#set ($currentfive = (($pagenum - 1) / 5) * 5)
     <div id="pdf-thumbnail-sidebar">
                 <ul>
                 <li id="prevfive">
                 #if ($currentfive > 0 )
-                    #set( $prevfive = $currentfive - 5)
-                   <a href="index.html?assetid=${asset.getId()}&pagenum=$prevfive&currentfive=$prevfive&hitssessionid=$hitssessionid"> << [[Previous Five]] </a>
+                    #set( $prevfive = $currentfive)
+                   <a href="index.html?assetid=${asset.getId()}&pagenum=$prevfive&hitssessionid=$hitssessionid"> << [[Previous Five]] </a>
                 #end
                 </li>
-                    
-                #foreach( $page in [0..4])
-                	<li class="#if ( $page == $currentpreview ) current #end">
-                        #set( $page = $currentfive + $page + 1)
+ 				#set( $start = $currentfive) 
+                #set($end = $start + 4)
+               
+                #if( $end > $totalpages - 1 )
+                  #set( $end = $totalpages - 1 )
+                #end
+                
+                #foreach( $index in [$start..$end])
+                	#set( $page = $index + 1)                    
+                	<li class="#if ( $page == $pagenum ) current #end">
                         <a href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=${asset.getId()}&pagenum=$page&hitssessionid=$hitssessionid">
                             <div class="emdropshadow">
        							<img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${asset.sourcepath}/preview.jpg?pagenum=$page" />
@@ -28,9 +33,9 @@
                     </li>
                 #end
                 <li id="nextfive">
-                #if ( $totalpages < $currentfive + 5)
-                    #set( $nextthumb = $currentfive + 5)
-                        <a href="index.html?assetid=${asset.getId()}&pagenum=$nextthumb&currentfive=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
+                #if ( $totalpages > $currentfive  + 5)
+                    #set( $nextthumb = $currentfive + 6)
+                        <a href="index.html?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
                 #end
                 </li>
             </ul>
