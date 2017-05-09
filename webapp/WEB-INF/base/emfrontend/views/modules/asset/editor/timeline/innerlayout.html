@@ -1,152 +1,22 @@
+<link rel="stylesheet" href="$home$apphome/theme/styles/jquery/timeslider.css">
 
-#set( $asset = $mediaarchive.getAsset($context.getRequestParameter("assetid")) )    
 #set( $sourcepath = $asset.sourcepath )
 #set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
 #set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = $context.getContentProperty("clientroot") )
-$context.putPageValue("asset", $asset)
-				<div class="container-fluid" style="background-color:#eee;">
-						<div class="row" >
 
-						 
-							<div class="col-md-6 col-md-offset-3" style="padding: 0px;">	
-														
-									<div class="thumbnail" id="video-container">
-								
-<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
-									
-									
-										<section id='cuePlayer' style="padding:6px;">
-											<video class="" id="video" preload="no" controls="true" autoplay="false"  webkit-playsinline poster="$thumb">
-												<source src="$source" type="video/mp4" />
-												<source src="$webmsource" type="video/webm" />
-											</video>
-										   </section>
-											
-										</div>									
-									
-								</div>
-								
-						    </div>
-						    	
-							
-						    
-						</div>	
-				</div>
-					
-<script type="text/javascript">
-$(document).ready(function() {
+$pages.include("$clientroot/details/video.html", $context)
 
-#set($time = $context.getRequestParameter("jumpto"))
-#if($time)
-
-	 var video = jQuery("#video");
-	jQuery("#video").bind("loadeddata", function() {
-		jump('$time');
-		pause();
-	});
-#end	
-	jQuery(".timecell").livequery(function()
-	{
-		var mainimage = $(this);
-		var clickspot;
-		var imageposition;
-		 
-		mainimage.on("mousedown", function(event)
-		{
-			clickspot = event;
-			imageposition = mainimage.position();
-			console.log(event);
-			return false;
-		});
-	
-		mainimage.on("mouseup", function(event)
-		{
-			clickspot = false;
-			return false;
-		});
-		
-		mainimage.on("mousemove", function(event)
-		{
-			//if( isMouseDown() )
-			if( clickspot )
-			{
-				var changetop = clickspot.pageY - event.pageY;
-				var changeleft = clickspot.pageX - event.pageX;
-				
-				var left = imageposition.left - changeleft;
-				var top = imageposition.top;// - changetop;
-				
-				$(this).css({"left" : left + "px", "top" : top + "px"});
-			}	
-		});	
-	});
-});	
-</script>
-
-<style type="text/css">
-#video_overlays {
-position:absolute;
-float:left;
-    width:100%;
-    min-height:100%;
-    background-color:#000;
-    z-index:300000;
-}
-</style>
-
-
-<link rel="stylesheet" href="$home$apphome/theme/styles/jquery/timeslider.css">
-
-##TODO: loop over the details looking for sorted objectarrays. Use Module Method to load em
 
 
 <div class="container-fluid">
 <div class="row">
-<div class="col-md-10">
-
-
-						   			$pages.include("$clientroot/details/cuepoints.html", $context)
-
-
-
-
-
-
-<div id="slider123" class="time-slider" style="height: 45px;">
-	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell" style="left: 160.174px; width: 173.018px; cursor: move;">Talent: <b>Katty Perry</b></div>
-	</div>
-</div>	
-
-<div id="slider123" class="time-slider" style="height: 45px;">
-	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell scene" style="left: 360.174px; width: 273.018px; cursor: move;">Scene: <b>Messi scores!</b></div>
-	</div>
-</div>	
-
-
-
-<div id="slider123" class="time-slider" style="height: 45px;">
-	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell" style="left: 360.174px; width: 273.018px; cursor: move;">Talent: <b>Lionel Messi</b></div>
-	</div>
-</div>	
-
-<div id="slider123" class="time-slider" style="height: 45px;">
-	<div class="ruler" >
-		<div id="tc1" p_id="c1" class="timecell" style="left: 660.174px; width: 573.018px; cursor: move;">Talent: <b>Ian Miller</b></div>
-	</div>
-</div>	
-
-
-
+<div class="col-md-12" style="overflow:auto;">
+	$pages.include("$clientroot/details/metadata.html", $context)
 
 <div id="slider123" class="time-slider" style="height: 45px;">
 	<div class="ruler" style="height: 66px;">
-		<div class="bg"></div>
-		<div class="bg-event"></div>
 #set( $added = 0)		
 #set( $space = 15)
 #foreach($block in $blocks)
@@ -161,107 +31,24 @@ float:left;
 		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
 		<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
 #end
-	##remaining ticks, just to run off the end the page
-	#foreach($i in [1..20])
-		#set( $added = $added + $space)
-		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
-		#set( $added = $added + $space)
-		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
-		#set( $added = $added + $space)
-		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
-		#set( $added = $added + $space)
-		<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
-		<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
-	#end	
+		<div class="bg" style="width:${added}px"></div>
 	</div>
-	
-	
+</div>
+
+	<div class="iconbar" style="width:${added}px;margin-top:30px; height: 66px; background-color:#000;position:relative;">
+#set( $space = 15*8)	
+#set( $added = 60)
+#foreach($block in $blocks)
+	#if( $block.showThumb() )
+		<div  style="position:absolute;left: ${added}px; top:2px;">
+		<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getStartOffset()&assetid=$asset.id" title="$block.getLabel()"/></div>
+		#set( $added = $added + $space)
+	#end	
+#end		
+</div>
+
+
 </div>
 
 </div>
-<div class="col-md-2">
-
-
-
-<div style="background-color:#666;color:white;padding:4px;">
-									Add Metadata
-								</div>								
-		<nav class="navbar navbar-default" role="navigation" >											
-
-								<ul class="nav navbar-nav navbar-right">
-								<li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Options <span class="caret"></span></a>
-          <ul class="dropdown-menu">
-            <li><a href="#">Download</a></li>
-            <li><a href="#">Delete</a></li>
-            <li><a href="#">Something else here</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">Separated link</a></li>
-            <li role="separator" class="divider"></li>
-            <li><a href="#">One more separated link</a></li>
-          </ul>
-        </li></ul>
-							
-								
-									##this form should pop up a data entry form
-									<form class="ajaxform addnewtimeline" style="padding: 10px; text-align:center;">
-							
-									#set($details = $searcher.getPropertyDetails().getDetailsByType("viewtype", "timecodetable"))
-									#if($details.size() == 1)
-									<input type="hidden" name="targetfield" value="$details.get(0).getId()"/>
-									#elseif($details.size() > 1)
-																		<label>Metadata Type</label>
-									
-									<select name="targetfield" class="form-control">
-										#foreach($detail in $details)
-										<option id="$detail.id">$detail.name</option>
-										#end
-										
-									
-									</select>
-									
-									
-									
-									#end
-									
-									<label>Start time</label>
-										<input class="form-control" value="21:12" size="6"/>
-									<label>End time</label>
-										<input class="form-control" value="21:12" size="6"/>							
-											<br>	<br>		
-									
-									
-																        <a  class="btn" id="addcue" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">Add New Cue Point </a>
-									
-									</form>
-									
-									
-									
-									<a  class="btn" id="download" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">[[Download this clip]] </a>
-									<a  class="btn" id="download" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">[[Download this clip]] </a>
-									<a  class="btn" id="download" href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">[[Download this clip]] </a>		
-									
-								</nav>
-
-</div></div></div>
-
-<div id="bottomtoolbar">
-						    <div class="col-md-12 to-hide" id="video-cuepoints" data-dataid="${asset.id}">
-						    		
-						    		
-						    		
-						    		
-						    		
-						    		
-									
-						   	
-							</div>
-							</div>
-							
-							
-							
-							
-							
-							Some data: $asset.talents
-							
-   $pages.include("$apphome/views/modules/asset/editor/timeline/details/cuepointactions.html", $context)
+</div>

@@ -53,6 +53,18 @@ public class MathUtils
 		return 0;
 		
 	}
+	public static String toString(double inD, int inDigits)
+	{
+		BigDecimal top = new BigDecimal(inD);
+		BigDecimal result = top.divide(new BigDecimal(1d),inDigits,RoundingMode.HALF_UP);
+		return result.toPlainString();
+	}
+	public static double roundDouble(double inD, int inDigits)
+	{
+		BigDecimal top = new BigDecimal(inD);
+		BigDecimal result = top.divide(new BigDecimal(1d),inDigits,RoundingMode.HALF_UP);
+		return result.doubleValue();
+	}
 
 	
 }

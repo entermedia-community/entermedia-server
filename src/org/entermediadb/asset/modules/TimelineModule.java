@@ -44,7 +44,11 @@ public class TimelineModule extends BaseMediaModule
 			Block block = new Block();
 			//block.setTime(i * chunck);
 			block.setCounter(i);
-			block.setLabel(chunck * (double)i);
+			block.setStartOffset(chunck * (double)i);
+			if( i < 20)
+			{
+				block.setShowThumb((i % 2) == 0);
+			}	
 			blocks.add(block);
 		}
 		inReq.putPageValue("blocks", blocks);

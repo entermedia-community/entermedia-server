@@ -12,7 +12,7 @@
 <script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />
  
   <script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/js/videoplayer.js" />
-  <style id="videoplayer-css" href="/${applicationid}/views/modules/asset/editor/videoplayer.css"/>
+  <style id="videoplayer-css" href="/${applicationid}/views/modules/asset/editor/timeline/videoplayer.css"/>
   		<property name="assettab">timeline</property>
   
 </page>

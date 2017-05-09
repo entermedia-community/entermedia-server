@@ -12,6 +12,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.util.MathUtils;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
@@ -86,7 +87,7 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		}
 		try
 		{
-			offset = String.valueOf(Integer.parseInt(offset));
+			offset = String.valueOf(Double.parseDouble(offset));
 		}
 		catch( Exception e )
 		{
@@ -100,12 +101,14 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 		
 		List<String> com = new ArrayList<String>();
 
-		int jumpoff = Integer.parseInt(offset);
+		double jumpoff = Double.parseDouble(offset); //Jump to within 2 seconds to speed up / more accurate creation
 		if( jumpoff > 2 )
 		{
 			com.add("-ss");
-			com.add(String.valueOf( jumpoff - 2 ) );
-			offset = "2";
+			int seconds = (int)jumpoff;			
+			com.add(String.valueOf( seconds - 2) ); //This is the whole number minus 2
+			String jumpoffs = MathUtils.toString(jumpoff  - (double)seconds + 2d,3);  //Should be 2.1232
+			offset = jumpoffs; //Now we add the 2 second back on plus the millis
 		}
 
 		//com.add("-deinterlace");

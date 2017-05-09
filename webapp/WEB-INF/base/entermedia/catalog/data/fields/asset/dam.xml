@@ -424,19 +424,20 @@
     </name> 
   </property>
   
-   <property id="scenes" index="true" stored="true" editable="true" datatype="objectarray" > 
+   <property id="clips" index="true" stored="true" editable="true" datatype="objectarray" viewtype="timecodetable"> 
     <name> 
-      <language id="en"><![CDATA[Scenes]]></language>  
+      <language id="en"><![CDATA[Clips]]></language>  
     </name> 
-    <property id="scene" index="true" stored="true" editable="true" >
+    <property id="cliplabel" index="true" stored="true" editable="true" >
     <name> 
-      <language id="en"><![CDATA[Scene]]></language>  
+      <language id="en"><![CDATA[Label]]></language>  
     </name> 
     </property>
-    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="number">Start Time</property>
-    <property id="timecodeend" index="true" stored="true" editable="true" datatype="number">End Time</property>   
+    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="number" viewtype="videotime">Starting</property>
+    <property id="timecodeend" index="true" stored="true" editable="true" datatype="number" viewtype="videotime">Ending</property>   
   </property>
-  <property id="talents" index="true" stored="true" editable="true" datatype="objectarray"   > 
+  <!-- 
+  <property id="talents" index="true" stored="true" editable="true" datatype="objectarray"  viewtype="timecodetable" > 
     <name> 
       <language id="en"><![CDATA[Talents]]></language>  
     </name> 
@@ -448,7 +449,7 @@
     <property id="timecodestart" index="true" stored="true" editable="true"  datatype="number">Start Time</property>
     <property id="timecodeend" index="true" stored="true" editable="true" datatype="number">End Time</property>   
   </property>
-    
+     -->
   <property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed"   type="list">General Ethnicity 
     <name> 
       <language id="de"><![CDATA[allgemeine Ethnizität]]></language>  

@@ -1,0 +1,25 @@
+#set( $sourcepath = $asset.sourcepath )
+#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $clientroot = $context.getContentProperty("clientroot") )
+
+<div class="container-fluid" style="padding:10px;">
+		<div class="row" >
+			<div class="col-md-2" style="padding: 0px;"></div>
+			<div class="col-md-8" style="padding: 10px; background-color:#eee; width:900px">	
+				<div id="video-container" style="float:left;">
+				<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+					<section id='cuePlayer' style="padding:6px;">
+						<video id="videoclip" preload="no" controls="true" webkit-playsinline poster="$thumb" style="width:550px">
+							<source src="$source" type="video/mp4" />
+							<source src="$webmsource" type="video/webm" />
+						</video>
+					   </section>
+				</div>									
+				</div>
+				$pages.include("$apphome/views/modules/asset/editor/timeline/details/edit.html", $context)
+			</div>
+			<div class="col-md-2" style="padding: 0px;"></div>
+		</div>	
+</div>	

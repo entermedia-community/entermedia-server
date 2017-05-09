@@ -1,41 +1,42 @@
 package org.entermediadb.video;
 
-import java.math.BigDecimal;
-
 import org.entermediadb.asset.util.MathUtils;
 
 public class Block
 {
 	protected String fieldLabel;
+	protected double fieldStartOffset;
 	protected int fieldCounter;
-	
-	public void setLabel(double inTime)
+	protected boolean fieldShowThumb;
+	public double getStartOffset()
 	{
-		BigDecimal big = new BigDecimal(inTime);
+		return fieldStartOffset;
+	}
+	public void setStartOffset(double inTime)
+	{
+		int totalseconds = (int)inTime;
+		double fractionalsecond = inTime % 1d;
 		
-		double d = ( inTime / 86400d);
-		int days = (int)MathUtils.divide(inTime , 86400d);
-		double remaining = inTime % 86400d;
-		int hours = (int)(remaining / 3600d);
-		int seconds = (int)(remaining - hours);
-		double millis = seconds % 1;
+		int millis = (int)(fractionalsecond * 1000d);
+		double temp = Double.parseDouble( totalseconds + "." + millis );
+		temp = MathUtils.roundDouble(temp,3);
+		fieldStartOffset = temp;
 		
-		if(inTime > 86400) // //day
+		int hours = (int)MathUtils.divide(totalseconds, (60d*60d));
+		
+		int remainingseconds = totalseconds - (hours*60*60);
+		
+		int minutes = (int)MathUtils.divide(remainingseconds , 60d);
+		int seconds = (int)(remainingseconds - (minutes * 60));
+		
+		if(inTime > (60d*60d)) // hours
 		{
-			String formated = String.format("%02d:%02d:%02d", days, hours, seconds);
-			if( millis > 0)
-			{
-				formated = formated + "." + Math.floor( millis );
-			}
+			String formated = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 			fieldLabel = formated;
 		}
 		else
 		{
-			String formated = String.format("%02d:%02d", hours, seconds);
-			if( millis > 0)
-			{
-				formated = formated + "." + Math.floor( millis );
-			}	
+			String formated = String.format("%02d:%02d", minutes, seconds);
 			fieldLabel = formated;
 		}
 	}
@@ -60,5 +61,12 @@ public class Block
 	{
 		return inSoFar + width;
 	}
-	
+	public boolean showThumb()
+	{
+		return fieldShowThumb;
+	}
+	public void setShowThumb(boolean inShowThumb)
+	{
+		fieldShowThumb = inShowThumb;
+	}
 }
