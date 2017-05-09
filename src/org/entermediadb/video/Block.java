@@ -14,14 +14,8 @@ public class Block
 	}
 	public void setStartOffset(double inTime)
 	{
-		int totalseconds = (int)inTime;
-		double fractionalsecond = inTime % 1d;
-		
-		int millis = (int)(fractionalsecond * 1000d);
-		double temp = Double.parseDouble( totalseconds + "." + millis );
-		temp = MathUtils.roundDouble(temp,3);
-		fieldStartOffset = temp;
-		
+		fieldStartOffset = MathUtils.roundDouble(inTime,3);
+		int totalseconds = (int)Math.round( inTime);
 		int hours = (int)MathUtils.divide(totalseconds, (60d*60d));
 		
 		int remainingseconds = totalseconds - (hours*60*60);

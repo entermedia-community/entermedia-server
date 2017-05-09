@@ -107,6 +107,8 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 			com.add("-ss");
 			int seconds = (int)jumpoff;			
 			com.add(String.valueOf( seconds - 2) ); //This is the whole number minus 2
+			
+			//https://ffmpeg.org/ffmpeg-utils.html#time-duration-syntax
 			String jumpoffs = MathUtils.toString(jumpoff  - (double)seconds + 2d,3);  //Should be 2.1232
 			offset = jumpoffs; //Now we add the 2 second back on plus the millis
 		}

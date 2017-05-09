@@ -22,6 +22,7 @@ $(document).ready(function()
 	selectTime = function()
 	{
 			var inTime = video.currentTime;
+			console.log(inTime);
 			var justseconds = Math.floor(inTime);
 			var justremainder = inTime - justseconds;			
 			var millis = Math.floor(justremainder * 1000);
