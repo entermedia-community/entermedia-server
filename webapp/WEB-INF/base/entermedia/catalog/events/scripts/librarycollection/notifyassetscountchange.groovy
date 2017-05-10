@@ -46,6 +46,10 @@ public void init()
 		return;
 	}
 	//TODO: Add owners as followers automatically
+	
+	
+	Collection userids = new HashSet();
+	
 	HitTracker followers = mediaArchive.query("librarycollectionshares").orgroup("librarycollection",collections.keySet()).search();
 	if( followers.isEmpty() )
 	{
@@ -68,7 +72,23 @@ public void init()
 		String collectionid = follower.get("librarycollection");
 		dirtycollections.add(collections.get(collectionid));
 	}
-	
+
+	String groupid = mediaArchive.getCatalogSettingValue("notify-group-on-all-collection-modify");
+	if( groupid != null)
+	{
+		Collection adminusers = mediaArchive.getUserManager().getUsersInGroup(groupid);
+		for( Data user in adminusers)
+		{
+			List dirtycollections = (List)users.get(user.getId());
+			if( dirtycollections == null)
+			{
+				dirtycollections = new ArrayList();
+				users.put(user.getId(), collections.valueSet()); 
+				//TODO: Deal with mixed notifications
+			}
+		}
+	}	
+		
 	for (String userid in users.keySet())
 	{
 		//Make sure the root folder is within the library root folder
