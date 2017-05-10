@@ -1,5 +1,6 @@
 <div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()">
 
+
 #set( $clientroot = $context.getContentProperty("clientroot") )
 #set( $clips = $timeline.loadClips($asset,"clips") )
 #foreach($clip in $clips)
@@ -18,3 +19,5 @@
 	</div>
 </div>	
 #end
+
+</div>

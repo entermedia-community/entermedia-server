@@ -16,74 +16,26 @@ $(document).ready(function()
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
-/*
-	jQuery("body")
-			.on("click","#addcue",
-					
-					function() {
-						var paused = cuepoint.video.paused;
-						var departmentasset = jQuery(this)
-								.data("dataid");
-						var current = cuepoint.currentTime();
-						var targetfield = jQuery(this).data("targetfield");
-
-						var time = Math.round(current);
-						jQuery
-								.ajax({
-									url : clientroot
-											+ "/addcue.html?save=true&field=timecode&timecode.value="
-											+ time														
-											+ "&field=assetid&assetid.value="
-											+ departmentasset 
-
-											+ "&targetfield=" 
-
-											+ targetfield,
-											
-									async : false,
-									success : function(data) {
-									
-										//reloadCues(paused, data);
-										//$('#editmodal').modal('hide');
-										
-										if (paused) {
-											pause();
-										}
-									}
-								});
-						
-					});
-
-		*/			
-					
-
-
 	var videoclip = jQuery("#videoclip");
 	var video = videoclip[0]; 
 
 	selectTime = function()
 	{
 			var inTime = video.currentTime;
-			var done = parseTime(inTime);
+			var done = parseTimeToText(inTime);
 			$(".selectedtime").val(done);  //00:00.000
-			$(".selectedtime").data("time",inTime);
+			updateClip();
 	}
 	
-	selectLength = function()
+	copyLength = function()
 	{
 			var inTime = video.currentTime;
-			
-			var start = $(".selectedtime").data("time");
-			var length = "10";
-			if( start )
-			{	
-				length = inTime - start;
-			}	
-				var done = parseTime(length);
-				$(".selectedlength").val(done);  //00:00.000
+			var done = parseTimeToText(inTime);
+			$(".selectedlength").val(done);  //00:00.000
+			updateClip();
 	}
 
-	parseTime = function(inTime)
+	parseTimeToText = function(inTime)
 	{
 			var justseconds = Math.floor(inTime);
 			var justremainder = inTime - justseconds;			
@@ -97,25 +49,33 @@ $(document).ready(function()
 			var done = m + ":" + s + "." + millis;
 			return done;
 	}
-	parseTimeInText = function(inTime)
+	parseTimeFromText = function(inText)
 	{
-			var justseconds = Math.floor(inTime);
-			var justremainder = inTime - justseconds;			
-			var millis = Math.floor(justremainder * 1000);
-			
-			var minutes = Math.floor(justseconds / 60);
-			var m = zeroPad(minutes,2);
-
-			var secondsleft = justseconds - (minutes*60);
-			var s = zeroPad(secondsleft,2);
-			var done = m + ":" + s + "." + millis;
-			return done;
+		var parts = inText.split(":");
+		if( parts.length == 1)
+		{
+			return parseFloat(parts[0]);
+		}
+		if( parts.length == 2)
+		{
+			var totals = 60 * parseFloat(parts[0]);
+			totals = totals +  parseFloat(parts[1]);
+			return totals;
+		}	
+		if( parts.length == 3)
+		{
+			var totals =  60 * 60 * parseFloat(parts[0]);				
+			totals = totals +  60 * parseFloat(parts[1]);
+			totals = totals +  parseFloat(parts[2]);
+			return totals;
+		}	
+		
 	}
 
 	videoclip.on("timeupdate",function(e)
 	{
 			selectTime();	
-			selectLength();		
+			copyLength();		
 	});
 	$("#timecodestart-value").livequery("click",function(e)
 	{
@@ -127,7 +87,11 @@ $(document).ready(function()
 		if( !input.val() )
 		{
 			selectTime();
-		}		
+		}	
+		var selected = $(".selectedclip");
+		var start = selected.data("timecodestart");
+		video.currentTime = start;
+			
 	});
 	$("#timecodelength-value").livequery("click",function(e)
 	{
@@ -137,28 +101,29 @@ $(document).ready(function()
 		input.addClass("selectedlength");
 		if( !input.val() )
 		{
-			selectLength();
+			copyLength();
 		}		
+		var selected = $(".selectedclip");
+		var start = selected.data("timecodestart");
+		var length = selected.data("timecodelength");
+		video.currentTime = start + length;
+		
 	});
 	
 	$("#cliplabel\\.value").livequery("keyup", function()
 	{
-		var text = $(this).val();
-		var selected = $(".selectedclip");
-		selected.data("cliplabel", text);
-		$(".cliptext",selected).html(text);
-		
+		updateClip();		
 	});
 
-	$("#timecodelength-value").livequery("change", function()
+
+	$("#timecodestart-value").livequery("blur", function()
 	{
-		var val = $(this).val();
-		
-		//Convert to seconds
-		var selected = $(".selectedclip");
-		selected.data("cliplabel", text);
-		$(".cliptext",selected).html(text);
-		
+		updateClip();
+	});
+
+	$("#timecodelength-value").livequery("blur", function()
+	{
+		updateClip();		
 	});
 	
 	jQuery(".removetime").livequery("click",function(e)
@@ -195,24 +160,46 @@ $(document).ready(function()
 		div.addClass("selectedclip");
 		updateDetails();
 	}
-	
+
+	updateClip = function()
+	{
+		var text = $("#cliplabel\\.value").val();
+
+		var selected = $(".selectedclip");
+		var cell = $(".selectedclip .timecell");
+		selected.data("cliplabel", text);
+		$(".cliptext",selected).html(text);
+
+		var starttext = $("#timecodestart-value").val();
+		var start = parseTimeFromText(starttext);
+		selected.data("timecodestart", start);
+		//calculate the px left
+		var ratio = $("#timelinemetadata").data("ratio");
+		var left = start * ratio;		
+		cell.css({"left" : left + "px"});
+
+		var lengthtext = $("#timecodelength-value").val();
+		var length = parseTimeFromText(lengthtext);
+		selected.data("timecodelength", length);
+		console.log("Saved",length,selected);
+		var width = length * ratio;		
+		cell.css({"width" : width + "px"});
+		
+	}	
 
 	updateDetails = function()
 	{
 		var selected = $(".selectedclip");
 		$("#cliplabel\\.value").val( selected.data("cliplabel") );
 		var dec = selected.data("timecodestart");
-		if( dec )
-		{
-			dec = parseFloat(dec);
-			var start = parseTime( dec );
-			$("#timecodestart-value").val( start );
-			console.log(dec);
-			video.currentTime = dec; 
-		
-			var length = parseTime( selected.data("timecodelength") );
-			$("#timecodelength-value").val( length );
-		}	
+		dec = parseFloat(dec);
+		var start = parseTimeToText( dec );
+		$("#timecodestart-value").val( start );
+		video.currentTime = dec; 
+	
+		var len = parseFloat(selected.data("timecodelength"));
+		var textlength = parseTimeToText( len);
+		$("#timecodelength-value").val( textlength );
 		
 	}
 
@@ -258,8 +245,6 @@ $(document).ready(function()
 			if( clickspot )
 			{
 				var changeleft = event.pageX - clickspot.pageX;
-				
-				console.log("Moved: ",clickspot.pageX + " - " + event.pageX + " + " + startwidth);
 				var width = startwidth + changeleft;
 				mainimage.width(width);
 				
@@ -268,6 +253,7 @@ $(document).ready(function()
 				
 				var seconds = width / ratio;
 				var selected = $(".selectedclip");
+				console.log("Moved: ",seconds);
 				selected.data("timecodelength",seconds);
 				updateDetails();
 				event.preventDefault();

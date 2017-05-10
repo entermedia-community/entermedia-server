@@ -6,21 +6,18 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = $context.getContentProperty("clientroot") )
 
-<div class="container-fluid" style="padding:10px;">
+<div class="container-fluid" style="padding:10px 10px 10px 90px;">
 		<div class="row" >
-			<div class="col-md-2" style="padding: 200px 0 0 0;">
-			
-			</div>
-			<div class="col-md-8" style="padding: 10px; background-color:#eee; width:900px">	
+			<div class="col-md-10" style="padding: 10px; background-color:#eee; width:900px">	
 $pages.include("$clientroot/details/video.html")
 			</div>
 			<div class="col-md-2" style="padding: 0px;"></div>
 		</div>	
 </div>	
 
-<div class="container-fluid">
-<div class="row">
-<div id="timelineviewer" class="col-md-12" style="overflow:auto;">
+<div class="container-fluid" style="padding:0px:margin:0px">
+<div class="row" style="padding:0px:margin:0px">
+<div id="timelineviewer" class="col-md-12" style="overflow:auto;padding-top:0px;margin-top:0px	">
 	$pages.include("$clientroot/timelinedata.html")
 	$pages.include("$clientroot/timeline.html")
 
