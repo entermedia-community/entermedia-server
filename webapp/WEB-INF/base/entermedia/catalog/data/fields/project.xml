@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Nom de dossier]]></language> 
     </name> 
   </property>  
-  <property id="logo" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" searchtype="project" keyword="false" filter="false" sortable="true">logo
+  <property id="projectlogo" legacy="logo" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" searchtype="project" keyword="false"  sortable="true">logo
     <name>
       <language id="de"><![CDATA[logo]]></language>
       <language id="en"><![CDATA[logo]]></language>

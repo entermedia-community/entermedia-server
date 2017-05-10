@@ -259,6 +259,9 @@ public class BaseImporter extends EnterMediaObject
 		for (Iterator iterator = inHeader.getHeaderNames().iterator(); iterator.hasNext();)
 		{
 			String header = (String) iterator.next();
+			if(header.contains(".")){
+				continue;
+			}
 			//String header = inHeaders[i];
 			String id = PathUtilities.extractId(header, true);
 			PropertyDetail detail = details.getDetail(id);
