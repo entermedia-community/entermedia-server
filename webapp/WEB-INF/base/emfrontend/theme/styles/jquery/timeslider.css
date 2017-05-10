@@ -92,9 +92,7 @@
 
 /* ----- timecells  ----- */
 
-.time-slider .timecell.scene {
-	background-color: #aaab7d;
-}
+
 .time-slider .timecell {
     top: 7px;
     height: 36px;
@@ -104,8 +102,8 @@
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     font-style: normal;
-    font-weight: 400;
-    background-color: #ffab7d;
+    font-weight: 500;
+    background-color: #aaab7d;
     opacity: 0.9;
     filter: alpha(Opacity=90);
     z-index: 4;

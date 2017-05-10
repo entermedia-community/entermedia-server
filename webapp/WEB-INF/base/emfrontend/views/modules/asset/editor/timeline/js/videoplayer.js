@@ -16,13 +16,75 @@ $(document).ready(function()
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
+/*
+	jQuery("body")
+			.on("click","#addcue",
+					
+					function() {
+						var paused = cuepoint.video.paused;
+						var departmentasset = jQuery(this)
+								.data("dataid");
+						var current = cuepoint.currentTime();
+						var targetfield = jQuery(this).data("targetfield");
+
+						var time = Math.round(current);
+						jQuery
+								.ajax({
+									url : clientroot
+											+ "/addcue.html?save=true&field=timecode&timecode.value="
+											+ time														
+											+ "&field=assetid&assetid.value="
+											+ departmentasset 
+
+											+ "&targetfield=" 
+
+											+ targetfield,
+											
+									async : false,
+									success : function(data) {
+									
+										//reloadCues(paused, data);
+										//$('#editmodal').modal('hide');
+										
+										if (paused) {
+											pause();
+										}
+									}
+								});
+						
+					});
+
+		*/			
+					
+
+
 	var videoclip = jQuery("#videoclip");
 	var video = videoclip[0]; 
 
 	selectTime = function()
 	{
 			var inTime = video.currentTime;
-			console.log(inTime);
+			var done = parseTime(inTime);
+			$(".selectedtime").val(done);  //00:00.000
+			$(".selectedtime").data("time",inTime);
+	}
+	
+	selectLength = function()
+	{
+			var inTime = video.currentTime;
+			
+			var start = $(".selectedtime").data("time");
+			var length = "10";
+			if( start )
+			{	
+				length = inTime - start;
+			}	
+				var done = parseTime(length);
+				$(".selectedlength").val(done);  //00:00.000
+	}
+
+	parseTime = function(inTime)
+	{
 			var justseconds = Math.floor(inTime);
 			var justremainder = inTime - justseconds;			
 			var millis = Math.floor(justremainder * 1000);
@@ -32,32 +94,36 @@ $(document).ready(function()
 
 			var secondsleft = justseconds - (minutes*60);
 			var s = zeroPad(secondsleft,2);
-			$(".selectedtime").val(m + ":" + s + "." + millis);  //00:00.000
+			var done = m + ":" + s + "." + millis;
+			return done;
 	}
-
 
 	videoclip.on("timeupdate",function(e)
 	{
-			selectTime();			
+			selectTime();	
+			selectLength();		
 	});
 	$("#timecodestart-value").livequery("click",function(e)
 	{
 		var input = $(this);
 		$("input").removeClass("selectedtime");
+		$("input").removeClass("selectedlength");
+		
 		input.addClass("selectedtime");
 		if( !input.val() )
 		{
 			selectTime();
 		}		
 	});
-	$("#timecodeend-value").livequery("click",function(e)
+	$("#timecodelength-value").livequery("click",function(e)
 	{
 		var input = $(this);
 		$("input").removeClass("selectedtime");
-		input.addClass("selectedtime");
+		$("input").removeClass("selectedlength");
+		input.addClass("selectedlength");
 		if( !input.val() )
 		{
-			selectTime();
+			selectLength();
 		}		
 	});
 	jQuery(".removetime").livequery("click",function(e)
@@ -76,12 +142,32 @@ $(document).ready(function()
 	{
 		e.preventDefault();
 		var link = $(this);
-		
-		
 		video.currentTime = video.currentTime + 1;
-		
 		return false;
 	});
+	
+	jQuery(".data-selection").livequery("click",function(e)
+	{
+		e.preventDefault();
+		var div = $(this);
+		$(".data-selection").removeClass("selectedclip");
+		div.addClass("selectedclip");
+		updateDetails();
+	});	
+	updateDetails = function()
+	{
+		var selected = $(".selectedclip");
+		$("#cliplabel\\.value").val( selected.data("cliplabel") );
+		var dec = selected.data("timecodestart");
+		var start = parseTime( dec );
+		$("#timecodestart-value").val( start );
+		
+		video.currentTime = dec; 
+		
+		var length = parseTime( selected.data("timecodelength") );
+		$("#timecodelength-value").val( length );
+		
+	}
 
 /*
 #set($time = $context.getRequestParameter("jumpto"))
@@ -99,18 +185,22 @@ $(document).ready(function()
 		var mainimage = $(this);
 		var clickspot;
 		var imageposition;
-		 
+		var resizeing = false; 
 		mainimage.on("mousedown", function(event)
 		{
 			clickspot = event;
 			imageposition = mainimage.position();
-			console.log(event);
+			
+			var div = mainimage.closest("data-selection");
+			if( div.position().
+			
 			return false;
 		});
 	
 		mainimage.on("mouseup", function(event)
 		{
 			clickspot = false;
+			resizeing = false;
 			return false;
 		});
 		
@@ -126,6 +216,14 @@ $(document).ready(function()
 				var top = imageposition.top;// - changetop;
 				
 				$(this).css({"left" : left + "px", "top" : top + "px"});
+				
+				var ratio = $("#timelinemetadata").data("ratio");
+				ratio = parseFloat(ratio);
+				
+				var seconds = left / ratio;
+				var selected = $(".selectedclip");
+				selected.data("timecodestart",seconds);
+				updateDetails();
 			}	
 		});	
 	});

@@ -5,19 +5,19 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.video.Block;
+import org.entermediadb.video.Timeline;
 import org.openedit.WebPageRequest;
-import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 
 public class TimelineModule extends BaseMediaModule
 {
-	public void loadChart(WebPageRequest inReq)
+	public void loadTimeline(WebPageRequest inReq)
 	{
 		Asset asset = (Asset)inReq.getPageValue("asset");
 		MediaArchive archive = getMediaArchive(inReq);
@@ -35,92 +35,54 @@ public class TimelineModule extends BaseMediaModule
 		{
 			return;
 		}
-		//divide into 60 blocks
-		List blocks = new ArrayList();
-		
-		double chunck = videolength / 20d;
-		for (int i = 0; i < 21; i++)
-		{
-			Block block = new Block();
-			//block.setTime(i * chunck);
-			block.setCounter(i);
-			block.setStartOffset(chunck * (double)i);
-			if( i < 20)
-			{
-				block.setShowThumb((i % 2) == 0);
-			}	
-			blocks.add(block);
-		}
-		inReq.putPageValue("blocks", blocks);
+		Timeline timeline = new Timeline();
+		timeline.setLength(videolength);
+		timeline.setPxWidth(1200);
+		inReq.putPageValue("timeline", timeline);
 	}
 	
-	
-	
-	public void addCuepoint(WebPageRequest inReq){
+	public void loadTimeLineManager(WebPageRequest inReq)
+	{
 		
-		Asset asset = getAsset(inReq);
+	}
 	
+	public void addCuepoint(WebPageRequest inReq)
+	{
 		
 		MediaArchive archive = getMediaArchive(inReq);
-		if(asset == null){
-			String id = inReq.getRequestParameter("assetid.value");
-			if(id != null){
-				asset = archive.getAsset(id);
-			}
-		}
-
+		Asset asset = getAsset(inReq);
 		
-		String timecodes = inReq.getRequestParameter("timecode.value");
-		String end = inReq.getRequestParameter("outtime.value");
-
-		double start = Double.parseDouble(timecodes);
-		double endtime =  15;
-		
-		if(end != null){
-			endtime = Double.parseDouble(end);
-		}
-		endtime = start + endtime;
-		
-		String field = inReq.getRequestParameter("targetfield");
-		
-		Object currentcodes = asset.getValue(field);
-		
-		Collection timeline = null;
-		if(currentcodes != null && currentcodes instanceof Collection){
-			timeline = (Collection) currentcodes;
-		} else {
+		String field = inReq.getRequestParameter("parentfield");
+		Collection timeline = asset.getObjects(field);
+		if(timeline == null)
+		{
 			timeline = new ArrayList();
-			if(currentcodes != null){
-				timeline.add(currentcodes);
-			}
-		}
-		if(currentcodes == null){
-			timeline = new ArrayList();			
 		}
 		
 		String [] fields = inReq.getRequestParameters("field");
 		Searcher assetsearcher = archive.getAssetSearcher();
 		HashMap codemap = new HashMap();
-		codemap.put("timecodestart", start);
-		codemap.put("timecodeend", endtime);
 		for (int i = 0; i < fields.length; i++)
 		{
 			String id = fields[i];
-			String val = inReq.getRequestParameter(id);
-			if(id != null && val != null){
-				codemap.put(id, val);
+			String val = inReq.getRequestParameter(id + ".value");
+			if(val != null)
+			{
+				if( id.equals("timecodestart") || id.equals("timecodelength"))
+				{
+					double duration = MathUtils.parseDuration(val);
+					codemap.put(id, duration);
+				}
+				else //More Data typing ie. date??
+				{
+					codemap.put(id, val);
+				}	
 			}
 		}
-		
-		
 		timeline.add(codemap);
-		
 		
 		Collections.sort((List<HashMap>) timeline, new Comparator()
 		{
-
-			
-
 			@Override
 			public int compare(Object inO1, Object inO2)
 			{
@@ -142,7 +104,6 @@ public class TimelineModule extends BaseMediaModule
 		});
 		asset.setValue(field, timeline);
 		assetsearcher.saveData(asset);
-		
 		
 	}
 	

@@ -3,26 +3,25 @@
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
 
 ##We need 3 things passed in: $searcher, $view, $data
-#if ($view)
+#if (!$details && $view)
 	#if( $context.getUserProfile() )
 		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
 	#else
 		#set ($details = $searcher.getDetailsForView($view))
 	#end
+#end	
 	#if( !$details)
 		[[404 on view]]:  $searcher.getCatalogId() $searcher.getSearchType() $view
 	#end
-#else
 	##leagacy check. We used to pass in the $details
 	#if( !$details)
 	#set ($details = $searcher.getPropertyDetails())
 	#end
-#end	
-
 <div class="oeinputform validate-inputs">
 <div id="allerrors">
 </div>
  #foreach( $detail in $details )
+ 
  	<div class="inputformrow">
 	#set($val = false)
 	#set($target = "${detail.id}.value")

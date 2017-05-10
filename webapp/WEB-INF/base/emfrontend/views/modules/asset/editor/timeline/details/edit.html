@@ -15,23 +15,30 @@
 <div style="margin:-2 0 0 10px; padding:10px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
 
 
-	<form class="ajaxform addnewtimeline" style="padding: 10px; text-align: center;">
-		#set($groups =	$searcher.getPropertyDetails().getDetailsByType("viewtype",	"timecodetable")) 
-		#foreach( $parent in $groups)
-			#set($details =	$parent.getObjectDetails()) 
-			$context.putPageValue("details",$details)					
-			$context.putPageValue("searcher",$searcher)
-			$pages.include("/$applicationid/components/xml/detaileditorcss.html?catalogid=$catalogid", $context)
-		#end
+	<form class="ajaxform addnewtimeline" targetdiv="timelinemetadata" action="$apphome/views/modules/asset/editor/timeline/saveobject.html" style="padding: 10px; text-align: center;">
+		<input type="hidden" name="assetid" value="$asset.id" />
+		<input type="hidden" name="parentfield" value="clips" />
+		
+		#set($detail =	$searcher.getPropertyDetails().getDetail("clips")) 
+		$context.putPageValue("detail",$detail)
+		$context.putPageValue("searcher",$searcher)
+		$pages.include("/$applicationid/components/xml/detailedit.html", $context)
 	<!-- 	
 <label>Start time</label> 
 	<input class="form-control"	value="21:12" size="6" /> 
 <label>End time</label> 
 	<input	class="form-control" value="21:12" size="6" /> <br> <br>
  -->	 
-	<a class="btn" id="addcue"	href="#addcue" data-targetfield="talents" data-dataid="${asset.id}">Save</a>
-
-	</form>
+ 
+ 
+ #if( $selected )
+<input type="checkbox" name="saveascopy" /> Save as copy	
+<br>
+	<input class="btn" id="addcue" type="submit" value="Save" />
+#else
+	<input class="btn" id="addcue" type="submit" value="Add" />
+#end
+</form>
 
 </div>
 

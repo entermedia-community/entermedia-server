@@ -434,7 +434,7 @@
     </name> 
     </property>
     <property id="timecodestart" index="true" stored="true" editable="true"  datatype="number" viewtype="videotime">Starting</property>
-    <property id="timecodeend" index="true" stored="true" editable="true" datatype="number" viewtype="videotime">Ending</property>   
+    <property id="timecodelength" index="true" stored="true" editable="true" datatype="number" viewtype="videolength">Length</property>   
   </property>
   <!-- 
   <property id="talents" index="true" stored="true" editable="true" datatype="objectarray"  viewtype="timecodetable" > 
