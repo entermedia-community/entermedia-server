@@ -130,10 +130,6 @@ $(document).ready(function()
 	{
 		e.preventDefault();
 		var link = $(this);
-		
-	//	val formated = $("#timecodestart\\.value").val();
-	//	formated.split(":");
-		
 		video.currentTime = video.currentTime - 1;
 		
 		return false;
@@ -187,7 +183,7 @@ $(document).ready(function()
 		
 	}	
 
-	updateDetails = function()
+	updateDetails = function(jumptoend)
 	{
 		var selected = $(".selectedclip");
 		$("#cliplabel\\.value").val( selected.data("cliplabel") );
@@ -195,11 +191,20 @@ $(document).ready(function()
 		dec = parseFloat(dec);
 		var start = parseTimeToText( dec );
 		$("#timecodestart-value").val( start );
-		video.currentTime = dec; 
+		//video.currentTime = dec; 
 	
 		var len = parseFloat(selected.data("timecodelength"));
 		var textlength = parseTimeToText( len);
 		$("#timecodelength-value").val( textlength );
+		
+		if( jumptoend )
+		{
+			video.currentTime = dec + len;
+		}	
+		else
+		{
+			video.currentTime = dec;
+		}
 		
 	}
 
@@ -215,6 +220,12 @@ $(document).ready(function()
 #end
 */	
 
+	clearSelection = function()
+	{
+		$("input").removeClass("selectedtime");
+		$("input").removeClass("selectedlength");
+	}
+
 	jQuery(".grabresize").livequery(function()
 	{
 		var mainimage = $(this).closest(".timecell");
@@ -224,6 +235,7 @@ $(document).ready(function()
 		{
 			if( $(event.target).hasClass("grabresize") )
 			{
+				clearSelection();
 				clickspot = event;
 				startwidth = mainimage.width();
 				selectClip(this);
@@ -244,6 +256,7 @@ $(document).ready(function()
 		{
 			if( clickspot )
 			{
+				clearSelection();
 				var changeleft = event.pageX - clickspot.pageX;
 				var width = startwidth + changeleft;
 				mainimage.width(width);
@@ -253,9 +266,10 @@ $(document).ready(function()
 				
 				var seconds = width / ratio;
 				var selected = $(".selectedclip");
-				console.log("Moved: ",seconds);
+				
+				
 				selected.data("timecodelength",seconds);
-				updateDetails();
+				updateDetails(true);
 				event.preventDefault();
 				return false;
 			}	
@@ -271,6 +285,7 @@ $(document).ready(function()
 		{
 			if( !$(event.target).hasClass("grabresize") )
 			{
+				clearSelection();
 				clickspot = event;
 				imageposition = mainimage.position();
 				return false;
@@ -292,6 +307,7 @@ $(document).ready(function()
 		{
 			if( clickspot )
 			{
+				clearSelection();
 				var changeleft = clickspot.pageX - event.pageX;
 				
 				var left = imageposition.left - changeleft;
@@ -306,6 +322,9 @@ $(document).ready(function()
 				var selected = $(".selectedclip");
 				selected.data("timecodestart",seconds);
 				updateDetails();
+				
+				//set video as well
+				
 			}	
 		});	
 	});
