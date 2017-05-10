@@ -1,24 +1,10 @@
-    #set($currentpreview = $context.findValue('currentpreview'))
-    #set($pagenum = $context.findValue('pagenum'))
-    #set($totalpages = $numberutils.toInt($asset.pages))
-    #set ( $hitssessionid = $context.findValue("hitssessionid"))
-    #if( !$currentpreview )
-      #if ( !$pagenum )
-        #set($currentpreview = 0)
-        #set ($pagenum = 1)
-      #else   
-        #set($pagenumnum = $numberutils.toInt($pagenum) )
-        #set( $currentpreview = $pagenumnum - 1 )
-      #end
-    #else
-        #set( $currentpreview = $numberutils.toInt($currentpreview) )
-        #set( $pagenum = $currentpreview + 1  )
-    #end
-   #set($pagenumparsed = $numberutils.toInt($pagenum) )
-   #if ( $pagenumparsed && ($totalpages < $pagenumparsed) )
-       #set( $pagenum = $totalpages )
-       #set( $currentpreview = $totalpages - 1 )
-    #end
+#set ($pagenum = $context.findValue("pagenum") )
+#if ( $pagenum ) 
+	#set($pagenum = $numberutils.toInt($pagenum))
+#else
+    #set ( $pagenum = 1)
+#end
+#set($totalpages = $numberutils.toInt($asset.pages))
     
     ##TODO Move this to ./player/types/documentpages.html
     #if( $totalpages > 1 )
