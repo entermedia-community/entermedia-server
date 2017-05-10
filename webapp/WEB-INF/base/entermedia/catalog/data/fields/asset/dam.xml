@@ -433,8 +433,8 @@
       <language id="en"><![CDATA[Label]]></language>  
     </name> 
     </property>
-    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="number" viewtype="videotime">Starting</property>
-    <property id="timecodelength" index="true" stored="true" editable="true" datatype="number" viewtype="videolength">Length</property>   
+    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Starting</property>
+    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Length</property>   
   </property>
   <!-- 
   <property id="talents" index="true" stored="true" editable="true" datatype="objectarray"  viewtype="timecodetable" > 

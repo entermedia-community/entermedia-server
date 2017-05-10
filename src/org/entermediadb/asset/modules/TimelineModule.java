@@ -6,11 +6,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.MathUtils;
-import org.entermediadb.video.Block;
 import org.entermediadb.video.Timeline;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -45,8 +45,22 @@ public class TimelineModule extends BaseMediaModule
 	{
 		
 	}
-	
-	public void addCuepoint(WebPageRequest inReq)
+
+	public void saveClips(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Map values = inReq.getJsonRequest();
+		String assetid = (String)values.get("assetid");
+		Asset asset = archive.getAsset(assetid);
+		
+		Collection clips = (Collection)values.get("clips");
+		asset.setValue("clips", clips);
+		
+		archive.saveAsset(asset);
+		
+	}
+	public void addClip(WebPageRequest inReq)
 	{
 		
 		MediaArchive archive = getMediaArchive(inReq);

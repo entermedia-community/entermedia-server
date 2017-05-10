@@ -129,11 +129,57 @@ $(document).ready(function()
 	jQuery(".removetime").livequery("click",function(e)
 	{
 		e.preventDefault();
-		var link = $(this);
 		video.currentTime = video.currentTime - 1;
 		
-		return false;
 	});
+	jQuery(".addtime").livequery("click",function(e)
+	{
+		e.preventDefault();
+		video.currentTime = video.currentTime + 1;
+	});
+	jQuery("#removeclip").livequery("click",function(e)
+	{
+		e.preventDefault();
+		$(".selectedclip").remove();
+	});
+	jQuery("#playclip").livequery("click",function(e)
+	{
+		e.preventDefault();
+		var link = $(this);
+		video.play();		
+	});
+	
+	jQuery("#savetimeline").livequery("click",function(e)
+	{
+		e.preventDefault();
+		//Grab all the dom... Submit it to a method, render
+		
+		var clips = [];
+
+    	$(".data-selection").each(function() 
+    	{
+			//timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
+			var data = $(this).data();
+    		clips.push(data);
+    	});
+    	
+		var assetid = $("#timelinemetadata").data("assetid");
+		var link = $("#timelinemetadata").data("savelink");
+		
+		var data = {"assetid": assetid,"clips":clips};
+		$.ajax({        
+       		type: "POST",
+       		url: link,
+       		data: JSON.stringify(data),
+       		success: function() 
+       		{
+            	//reload page?
+            	//change button color 
+            	$("#savetimeline").css({"background-color" : "","color" : ""});       
+       		}
+    	}); 
+	});
+	
 	jQuery(".addtime").livequery("click",function(e)
 	{
 		e.preventDefault();
@@ -141,6 +187,8 @@ $(document).ready(function()
 		video.currentTime = video.currentTime + 1;
 		return false;
 	});
+	
+	
 	
 	jQuery(".data-selection").livequery("click",function(e)
 	{
@@ -180,7 +228,7 @@ $(document).ready(function()
 		console.log("Saved",length,selected);
 		var width = length * ratio;		
 		cell.css({"width" : width + "px"});
-		
+		$("#savetimeline").css({"background-color" : "#f4df42","color" : "#000"});
 	}	
 
 	updateDetails = function(jumptoend)
