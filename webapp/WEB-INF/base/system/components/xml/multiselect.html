@@ -9,9 +9,11 @@
 <div id="listdetail_$fieldname" class="listdetailpicker" data-rendertype="multiselect">
 ##we need to load up the existing detail object
 
-#set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
+#if( !$searcher)
+#set( $searcher = $searcherManager.getSearcher($catalogid, $searchtype))
+#end
 #if( !$detail) ##this is new. To reduce complexity we want to just load up the detail all the time
-	#set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
+	#set( $detail = $searcher.getDetailForView($view, $fieldname, $user) )
 #end
 
 #set( $listid = $detail.getListId())
@@ -26,7 +28,7 @@
 #set ($squery = $detail.query )
 
 #if ($foreignkeyid && $foreignkeyvalue)
-	#set( $foreigndetail = $originalsearcher.getDetailForView($view, $foreignkeyid, $user) )
+	#set( $foreigndetail = $searcher.getDetailForView($view, $foreignkeyid, $user) )
 	
 	#if( $foreigndetail && $foreigndetail.listid )
 		#set( $foreignfield = $foreigndetail.listid )

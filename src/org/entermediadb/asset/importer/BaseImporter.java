@@ -3,6 +3,7 @@ package org.entermediadb.asset.importer;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -19,6 +20,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
@@ -257,6 +259,9 @@ public class BaseImporter extends EnterMediaObject
 		for (Iterator iterator = inHeader.getHeaderNames().iterator(); iterator.hasNext();)
 		{
 			String header = (String) iterator.next();
+			if(header.contains(".")){
+				continue;
+			}
 			//String header = inHeaders[i];
 			String id = PathUtilities.extractId(header, true);
 			PropertyDetail detail = details.getDetail(id);
@@ -266,14 +271,8 @@ public class BaseImporter extends EnterMediaObject
 			
 			if (detail == null && !header.contains("."))
 			{
-				detail = new PropertyDetail();
-				detail.setId(id);
-				detail.setName(header);
-				detail.setEditable(true);
-				detail.setIndex(true);
-				detail.setStored(true);
-				detail.setCatalogId(getSearcher().getCatalogId());
-				details.addDetail(detail);
+				detail = getSearcher().getPropertyDetailsArchive().createDetail(id, id);
+
 				
 				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
 			}
@@ -326,16 +325,10 @@ public class BaseImporter extends EnterMediaObject
 			else if (val != null && val.length() > 0)
 			{
 				
-				PropertyDetail detail = details.getDetail(headerid);
-				if(detail == null){
-					detail = details.getDetail(header);
-				}
 				
-				if(detail != null){
-					
+				Object value = getSearcher().createValue(headerid, val);
+				inData.setValue(headerid, value);
 				
-				inData.setProperty(detail.getId(), val);
-				}
 			}
 		}
 	}

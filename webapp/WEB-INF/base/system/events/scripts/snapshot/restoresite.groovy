@@ -27,6 +27,7 @@ import org.openedit.xml.XmlFile
 
 public void init() 
 {
+	log.info("Initializing restore");
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
 	Searcher snapshotsearcher = searcherManager.getSearcher("system", "sitesnapshot");
 	HitTracker restores = snapshotsearcher.query().match("snapshotstatus","pendingrestore").search();
@@ -321,7 +322,9 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 			String header = (String)iterator.next();
 			String detailid = header;//PathUtilities.extractId(header,true);
 			String value = trow.get(header);
-
+			if(detailid && detailid.contains(".")){
+				continue;
+			}
 			PropertyDetail detail = details.getDetail(detailid);
 			if(detail == null)
 			{

@@ -48,7 +48,7 @@ public void init()
 	//TODO: Add owners as followers automatically
 	HitTracker followers = mediaArchive.query("librarycollectionshares").orgroup("librarycollection",collections.keySet()).search();
 	if( followers.isEmpty() )
-	{asset
+	{
 		log.info("No followers on collection");
 		return;
 	}

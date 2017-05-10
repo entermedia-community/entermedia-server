@@ -1,0 +1,4 @@
+#set($details =	$detail.getObjectDetails()) 
+$context.putPageValue("details",$details)
+
+$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)

@@ -1,402 +1,295 @@
-$(document).ready(function() {
-					
-	
-	
-	
-					var app = jQuery("#application");
-					var apphome = app.data("home") + app.data("apphome");
-					var themeprefix = app.data("home")
-							+ app.data("themeprefix");
-					var clientroot = jQuery("#showcaseclient").data("clientroot");
-					
-					
-				
+function zeroPad(num, numZeros) {
+    var n = Math.abs(num);
+    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+    var zeroString = Math.pow(10,zeros).toString().substr(1);
+    if( num < 0 ) {
+        zeroString = '-' + zeroString;
+    }
 
-					
-					
-					
-					
-					
-					
-					//This is the open and close code
-					$("#closeTrigger").click(function() {
-
-						$('.resizer').removeClass('openLeft', 1000).addClass('closeLeft', 1000);
-						$('#openTrigger').show();
-						$('#closeTrigger').hide();
-						jump();
-						resize();
-					});
-
-					$("#openTrigger").click(function() {
-						$('.resizer').removeClass('closeLeft',1000).addClass('openLeft',1000);
-						$('#openTrigger').hide();
-						$('#closeTrigger').show();		
-						mark();
-						resize();
-					});
-					
-					
-					$('.carousel').carousel({
-						interval : 2000														
-					});
-
-					$('.carousel').carousel('pause');
-
-				
-					
-					
-					
-					
-					
+    return zeroString+n;
+}
 
 
-					
-					
-					jQuery("body")
-							.on("click","#addcue",
-									
-									function() {
-										var paused = cuepoint.video.paused;
-										var departmentasset = jQuery(this)
-												.data("dataid");
-										var current = cuepoint.currentTime();
-										var targetfield = jQuery(this).data("targetfield");
-
-										var time = Math.round(current);
-										jQuery
-												.ajax({
-													url : clientroot
-															+ "/addcue.html?save=true&field=timecode&timecode.value="
-															+ time														
-															+ "&field=assetid&assetid.value="
-															+ departmentasset 
-
-															+ "&targetfield=" 
-
-															+ targetfield,
-															
-													async : false,
-													success : function(data) {
-													
-														reloadCues(paused, data);
-														//$('#editmodal').modal('hide');
-														
-														
-														if (paused) {
-															pause();
-														}
-													}
-												});
-										
-									});
-
-					
-					
-					
-					
-					
-
-					
-					jQuery("body").on('click',".shiftLeft", function() {
-						var amount = jQuery(this).data("amount");
-						if (amount == null) {
-							amount = 1;
-						}
-						shiftLeft(amount);
-						return false;
-					});
-
-					jQuery("body").on('click',".shiftRight", function() {
-						var amount = jQuery(this).data("amount");
-						if (amount == null) {
-							amount = 1;
-						}
-						shiftRight(amount);
-						return false;
-					});
-					
-					
-					
-					
-					jQuery(".play").on('click', function() {
-						play();
-						
-						var hidepanel = jQuery(this).data("hidepanel");
-						if(hidepanel == true){
-							
-							$("#responseform :input").prop("disabled", true);
-							jQuery(".autohide").fadeOut("slow");
-						}
-						return false;
-					});
-
-					
-					
-					
-
-						
-					
-
-					$(window).on("resize", function() {
-						resize();
-						
-					}).resize();
-
-			//		$('#rs-carousel').carousel();
-
-					// TODO: Move this code to a function
-					jQuery(".ImageLink").on('mousedown', function(e) {
-						$(this).data('p0', {
-							x : e.pageX,
-							y : e.pageY
-						});
-					}).on(
-							'mouseup',
-							function(e) {
-								var p0 = $(this).data('p0'), p1 = {
-									x : e.pageX,
-									y : e.pageY
-								}, d = Math.sqrt(Math.pow(p1.x - p0.x, 2)
-										+ Math.pow(p1.y - p0.y, 2));
-
-								if (d < 4) {
-									e.stopPropagation();
-									e.preventDefault();
-									// reload the page into application and full
-									// screen it
-									var link = $(this).attr("href");
-									window.location.assign(link);
-									/*
-									 * jQuery.get(link, {}, function(data) {
-									 * $('#application').replaceWith(data);
-									 * //now somehow let it load? } );
-									 * $('#application').fullScreen(function(e) {
-									 * $(window).resize(); });
-									 */
-								}
-							});
-
-				});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-resize = function()
+$(document).ready(function() 
 {
-	
-//	var video = document.getElementById("video"); // assuming "video" is your videos' id
-//	//video.setAttribute("controls","controls");
-//	//video.removeAttribute("controls");
-//// $("#video").css('width', $(window).width()*.75 );
-//						
-//						//$("#video").css('height', "65%");
-//						
-//						//$("#video").css('width', "90%");
-//
-//						var footer = 100; //header
-//
-//						if( $("#btmhead").is(":visible") )
-//						{
-//							footer = footer + 30;
-//						}
-//						
-//						if( $("#btmcontent").is(":visible") )
-//						{
-//							footer = footer + 200;
-//						}
-//						/*console.log(footer);*/
-//						$("#video").css('height', $(window).height() -  footer );
-//						
-//						var height = $("#video-holder").height();
-//						$("#left-slide").css('height',height );
-}
-
-getPadding = function() {
-	if ($("#cuepointcontainer").is(":visible")) {
-		return 200;
-	}
-	return 80;
-}
-
-jump = function(timecode) {
-	if(timecode == null){
-	 timecode = getSessionValue("timecode");
-	}
-	console.log("time " + timecode);
-	cuepoint.setTime(timecode);
-}
-
-mark = function() {
-	var current = cuepoint.currentTime();
-	setSessionValue("timecode", current);
-}
-
-pause = function() {
-	cuepoint.pause();
-
-}
-
-play = function() {
-	cuepoint.play();
-
-}
-
-play = function() {
-	cuepoint.play();
-
-}
-
-
-$('#productmodal').on('show', function () {
-pause();
-	});
-
-
-
-slideToCue = function() {
-	
-	var page = jQuery( ".videolinks li a.current").parents(".item").data("page");
-	var cueid = jQuery( ".videolinks li a.current").data("cueid");
-	
-	loadCueMenu(cueid);
-	jQuery("#myCarousel").carousel(page);
-	jQuery("#myCarousel").carousel('pause');
-	$(window).resize();
-}
-
-
-shiftLeft = function(shiftamount) {
-	var current = cuepoint.currentTime();
-	current = current - shiftamount;
-	var paused = cuepoint.video.paused;
-
-	cuepoint.setTime(current);
-	if (paused) {
-		pause();
-	}
-	// cuepoint.play();
-
-}
-shiftRight = function(shiftamount) {
-	var current = cuepoint.currentTime();
-	current = current + shiftamount;
-	var paused = cuepoint.video.paused;
-	cuepoint.setTime(current);
-	if (paused) {
-		pause();
-	}
-}
-
-loadCueMenu= function(cueid){
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
+	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
-	var dataid = jQuery("#showcaseclient").data("dataid");
+/*
+	jQuery("body")
+			.on("click","#addcue",
+					
+					function() {
+						var paused = cuepoint.video.paused;
+						var departmentasset = jQuery(this)
+								.data("dataid");
+						var current = cuepoint.currentTime();
+						var targetfield = jQuery(this).data("targetfield");
 
-	var clientroot = jQuery("#showcaseclient").data("clientroot");
-	jQuery("#cuepointactions").load(clientroot + "/details/cuepointactions.html?oemaxlevel=1&cueid=" + cueid + "&dataid=" + dataid);
-}
+						var time = Math.round(current);
+						jQuery
+								.ajax({
+									url : clientroot
+											+ "/addcue.html?save=true&field=timecode&timecode.value="
+											+ time														
+											+ "&field=assetid&assetid.value="
+											+ departmentasset 
+
+											+ "&targetfield=" 
+
+											+ targetfield,
+											
+									async : false,
+									success : function(data) {
+									
+										//reloadCues(paused, data);
+										//$('#editmodal').modal('hide');
+										
+										if (paused) {
+											pause();
+										}
+									}
+								});
+						
+					});
+
+		*/			
+					
 
 
+	var videoclip = jQuery("#videoclip");
+	var video = videoclip[0]; 
 
-reloadCues = function(paused, startingcue){
-		 
-	var app = jQuery("#application");
-	var apphome = app.data("home") + app.data("apphome");
-	var videoid = jQuery("#video-cuepoints").data("dataid");
-	if(paused){
-		var pstatus = "true"
-	} else{
-		pstatus = "false";
+	selectTime = function()
+	{
+			var inTime = video.currentTime;
+			var done = parseTime(inTime);
+			$(".selectedtime").val(done);  //00:00.000
+			$(".selectedtime").data("time",inTime);
 	}
-	var clientroot = jQuery("#showcaseclient").data("clientroot");
 	
-	
-	jQuery("#video-cuepoints").load(clientroot + "/details/cuepoints.html?oemaxlevel=1&id=" + videoid + "&paused=" + pstatus, function() 
-			{
-		if(startingcue != null){
-			var slide =jQuery("#aslide-" + startingcue); 	
-			loadCueMenu(startingcue);
-
-			slide.addClass("current");
-			slideToCue();
-			if(paused){
-				pause();
-			}
-		}
-			}
+	selectLength = function()
+	{
+			var inTime = video.currentTime;
 			
-	);
-	
-}
+			var start = $(".selectedtime").data("time");
+			var length = "10";
+			if( start )
+			{	
+				length = inTime - start;
+			}	
+				var done = parseTime(length);
+				$(".selectedlength").val(done);  //00:00.000
+	}
 
+	parseTime = function(inTime)
+	{
+			var justseconds = Math.floor(inTime);
+			var justremainder = inTime - justseconds;			
+			var millis = Math.floor(justremainder * 1000);
+			
+			var minutes = Math.floor(justseconds / 60);
+			var m = zeroPad(minutes,2);
 
+			var secondsleft = justseconds - (minutes*60);
+			var s = zeroPad(secondsleft,2);
+			var done = m + ":" + s + "." + millis;
+			return done;
+	}
 
-reloadProducts = function(){
-		 
-	
-	var app = jQuery("#application");
-	var apphome = app.data("home") + app.data("apphome");
-	var videoid = jQuery("#cuepoint-products").data("cueid");
-		var clientroot = app.data("home") + jQuery("#showcaseclient").data("clientroot");
-	jQuery("#cuepoint-products").load(clientroot + "/details/cuepointproducts.html?oemaxlevel=1&cueid=" + videoid);
-	
-}
-
-
-
-
-setSessionValue = function(key, value) {
-	var app = jQuery("#application");
-	var apphome = app.data("home") + app.data("apphome");
-
-	jQuery.ajax({
-		url : apphome + "/components/session/setvalue.html?key=" + key
-				+ "&value=" + value
+	videoclip.on("timeupdate",function(e)
+	{
+			selectTime();	
+			selectLength();		
 	});
-
-}
-
-getSessionValue = function(key) {
-	var returnval = "";
-	var app = jQuery("#application");
-	var apphome = app.data("home") + app.data("apphome");
-
-	jQuery.ajax({
-		url : apphome + "/components/session/getvalue.html?key=" + key,
-		async : false,
-		success : function(data) {
-			returnval = data;
-		}
-	});
-
-	return returnval;
-}
-
-
-showModal = function(inUrl){
-	
-	$('#edit-modal-body').load(inUrl,function(result){
-		var textareas = jQuery(".htmleditor");
-		if(textareas.size() > 0){
+	$("#timecodestart-value").livequery("click",function(e)
+	{
+		var input = $(this);
+		$("input").removeClass("selectedtime");
+		$("input").removeClass("selectedlength");
 		
-			loadEditors();
-		}
-		$('#editmodal').modal({show:true});
-	
+		input.addClass("selectedtime");
+		if( !input.val() )
+		{
+			selectTime();
+		}		
+	});
+	$("#timecodelength-value").livequery("click",function(e)
+	{
+		var input = $(this);
+		$("input").removeClass("selectedtime");
+		$("input").removeClass("selectedlength");
+		input.addClass("selectedlength");
+		if( !input.val() )
+		{
+			selectLength();
+		}		
+	});
+	jQuery(".removetime").livequery("click",function(e)
+	{
+		e.preventDefault();
+		var link = $(this);
+		
+	//	val formated = $("#timecodestart\\.value").val();
+	//	formated.split(":");
+		
+		video.currentTime = video.currentTime - 1;
+		
+		return false;
+	});
+	jQuery(".addtime").livequery("click",function(e)
+	{
+		e.preventDefault();
+		var link = $(this);
+		video.currentTime = video.currentTime + 1;
+		return false;
 	});
 	
+	jQuery(".data-selection").livequery("click",function(e)
+	{
+		e.preventDefault();
+		selectClip(this);
+		updateDetails();
+	});	
 	
-}
+	selectClip = function(div)
+	{
+		var div = $(div).closest(".data-selection");
+		$(".data-selection").removeClass("selectedclip");
+		div.addClass("selectedclip");
+		updateDetails();
+	}
+	
+	updateDetails = function()
+	{
+		var selected = $(".selectedclip");
+		$("#cliplabel\\.value").val( selected.data("cliplabel") );
+		var dec = selected.data("timecodestart");
+		if( dec )
+		{
+			dec = parseFloat(dec);
+			var start = parseTime( dec );
+			$("#timecodestart-value").val( start );
+			console.log(dec);
+			video.currentTime = dec; 
+		
+			var length = parseTime( selected.data("timecodelength") );
+			$("#timecodelength-value").val( length );
+		}	
+		
+	}
+
+/*
+#set($time = $context.getRequestParameter("jumpto"))
+#if($time)
+
+	 var video = jQuery("#video");
+	jQuery("#video").bind("loadeddata", function() {
+		jump('$time');
+		pause();
+	});
+#end
+*/	
+
+	jQuery(".grabresize").livequery(function()
+	{
+		var mainimage = $(this).closest(".timecell");
+		var clickspot;
+		var startwidth;
+		mainimage.on("mousedown", function(event)
+		{
+			if( $(event.target).hasClass("grabresize") )
+			{
+				clickspot = event;
+				startwidth = mainimage.width();
+				selectClip(this);
+			}	
+			
+		});
+		mainimage.on("mouseup", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		mainimage.on("mouseleave", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		mainimage.on("mousemove", function(event)
+		{
+			if( clickspot )
+			{
+				var changeleft = event.pageX - clickspot.pageX;
+				
+				console.log("Moved: ",clickspot.pageX + " - " + event.pageX + " + " + startwidth);
+				var width = startwidth + changeleft;
+				mainimage.width(width);
+				
+				var ratio = $("#timelinemetadata").data("ratio");
+				ratio = parseFloat(ratio);
+				
+				var seconds = width / ratio;
+				var selected = $(".selectedclip");
+				selected.data("timecodelength",seconds);
+				updateDetails();
+				event.preventDefault();
+				return false;
+			}	
+		});	
+	});
+
+	jQuery(".timecell").livequery(function()
+	{
+		var mainimage = $(this);
+		var clickspot = false;
+		var imageposition;
+		mainimage.on("mousedown", function(event)
+		{
+			if( !$(event.target).hasClass("grabresize") )
+			{
+				clickspot = event;
+				imageposition = mainimage.position();
+				return false;
+			}	
+		});
+	
+		mainimage.on("mouseup", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		mainimage.on("mouseleave", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		
+		mainimage.on("mousemove", function(event)
+		{
+			if( clickspot )
+			{
+				var changeleft = clickspot.pageX - event.pageX;
+				
+				var left = imageposition.left - changeleft;
+				//var top = imageposition.top;// - changetop;
+				
+				$(this).css({"left" : left + "px"});
+				
+				var ratio = $("#timelinemetadata").data("ratio");
+				ratio = parseFloat(ratio);
+				
+				var seconds = left / ratio;
+				var selected = $(".selectedclip");
+				selected.data("timecodestart",seconds);
+				updateDetails();
+			}	
+		});	
+	});
+});	
+
+
+
+
 

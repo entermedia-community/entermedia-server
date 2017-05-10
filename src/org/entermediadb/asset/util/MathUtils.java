@@ -3,6 +3,8 @@ package org.entermediadb.asset.util;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import org.openedit.OpenEditException;
+
 public class MathUtils
 {
 
@@ -53,6 +55,53 @@ public class MathUtils
 		return 0;
 		
 	}
+	public static String toString(double inD, int inDigits)
+	{
+		BigDecimal top = new BigDecimal(inD);
+		BigDecimal result = top.divide(new BigDecimal(1d),inDigits,RoundingMode.HALF_UP);
+		return result.toPlainString();
+	}
+	public static double roundDouble(double inD, int inDigits)
+	{
+		BigDecimal top = new BigDecimal(inD);
+		BigDecimal result = top.divide(new BigDecimal(1d),inDigits,RoundingMode.HALF_UP);
+		return result.doubleValue();
+	}
 
+	
+	public static double parseDuration(String inSeconds)
+	{
+		if( inSeconds == null)
+		{
+			return 0;
+		}
+		if( inSeconds.contains("s") )
+		{
+			inSeconds = inSeconds.split("\\.")[0];
+		}
+		else
+		{
+			String[] parts = inSeconds.split(":");
+			if( parts.length == 1)
+			{
+				return Double.parseDouble(parts[0]);
+			}
+			if( parts.length == 2)
+			{
+				double totals = 60L * Double.parseDouble(parts[0]);
+				totals = totals +  Double.parseDouble(parts[1]);
+				return totals;
+			}	
+			if( parts.length == 3)
+			{
+				double totals =  60L * 60L * Double.parseDouble(parts[0]);				
+				totals = totals +  60L * Double.parseDouble(parts[1]);
+				totals = totals +  Double.parseDouble(parts[2]);
+				return totals;
+			}	
+			throw new OpenEditException("Could not parse " + inSeconds);
+		}
+		return  Double.parseDouble(inSeconds);
+	}
 	
 }

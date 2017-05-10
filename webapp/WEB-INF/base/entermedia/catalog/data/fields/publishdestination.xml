@@ -114,14 +114,7 @@
       <language id="fr"><![CDATA[Profil par défaut]]></language> 
     </name> 
   </property>  
-  <property id="company" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Company Name 
-    <name> 
-      <language id="de"><![CDATA[Name der Firma]]></language>  
-      <language id="en"><![CDATA[Company Name]]></language>  
-      <language id="es"><![CDATA[nombre de empresa]]></language>  
-      <language id="fr"><![CDATA[Nom de la compagnie]]></language> 
-    </name> 
-  </property>  
+  
   <property id="technicalcontact" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Technical Contact 
     <name> 
       <language id="de"><![CDATA[technischer Kontakt]]></language>  

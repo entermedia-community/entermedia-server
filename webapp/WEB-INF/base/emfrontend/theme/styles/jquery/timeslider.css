@@ -17,7 +17,7 @@
 .time-slider .ruler {
     height: 100%;
     position: relative;
-    overflow: hidden;
+    
     z-index: 1;
 }
 
@@ -92,9 +92,7 @@
 
 /* ----- timecells  ----- */
 
-.time-slider .timecell.scene {
-	background-color: #aaab7d;
-}
+
 .time-slider .timecell {
     top: 7px;
     height: 36px;
@@ -104,9 +102,8 @@
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 12px;
     font-style: normal;
-    font-weight: 400;
-    overflow: hidden;
-    background-color: #ffab7d;
+    font-weight: 500;
+    background-color: #aaab7d;
     opacity: 0.9;
     filter: alpha(Opacity=90);
     z-index: 4;
@@ -135,6 +132,17 @@
 .time-slider .timecell-event.moving {
     border-color: #ff0716;
 }
+.clipedit .navbar-nav ul li
+{
+	list-style: none; 
+}
+
+.clipedit .navlinks a {
+    position: relative;
+    top: -1px;
+    color: #fff;
+    padding: 0 5px;
+ }   
 
 .time-slider .timecell-event.current {
     border-right: none;
@@ -149,7 +157,6 @@
     top: 0;
     left: 0;
     position: relative;
-    overflow: hidden;
     height: 150px;
     width: 100%;
 }
