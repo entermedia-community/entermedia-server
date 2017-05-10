@@ -510,6 +510,10 @@ public class BasePushManager implements PushManager
 			for (Iterator iterator = inAsset.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
+				if("category".equals(key) || "category-exact".equals(key)){
+					continue; //we care creating this automatically from the sourcepath
+				}
+
 				if( !key.equals("libraries"))  //handled below
 				{
 					String value = inAsset.get(key);
@@ -520,6 +524,7 @@ public class BasePushManager implements PushManager
 						//log.info(inAsset.getName() + " " + key + " " + value);
 					}
 				}
+				
 			}
 			builder.addPart("field", "name");
 			builder.addPart("name.value",  inAsset.getName());
@@ -989,18 +994,10 @@ public class BasePushManager implements PushManager
 			target.setSourcePath(sourcepath);
 		}
 		
-//		String name = inReq.getRequestParameter("name");
-//		if( name != null)
-//		{
-//			target.setName(name);
-//		}
-		
-//		String categories = inReq.getRequestParameter("categories");
-//		String[] vals = categories.split(";");
-//		archive.c
-//		target.setCategories(cats);
+
 		String categorypath = PathUtilities.extractDirectoryPath(sourcepath);
-		Category category = archive.getCategoryArchive().createCategoryTree(categorypath);
+		Category category = archive.getCategorySearcher().createCategoryPath(categorypath);
+		archive.getCategorySearcher().saveData(category);
 		target.addCategory(category);
 		
 		String[] fields = inReq.getRequestParameters("field");
