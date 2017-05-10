@@ -15,7 +15,7 @@
 <div style="margin:-2 0 0 10px; padding:10px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
 
 
-	<form class="ajaxform addnewtimeline" targetdiv="timelinemetadata" action="$apphome/views/modules/asset/editor/timeline/saveobject.html" style="padding: 10px; text-align: center;">
+	<form id="addnewclip" class="ajaxform addnewtimeline" targetdiv="timelinemetadata" action="$apphome/views/modules/asset/editor/timeline/saveobject.html" style="padding: 10px; text-align: center;">
 		<input type="hidden" name="assetid" value="$asset.id" />
 		<input type="hidden" name="parentfield" value="clips" />
 		
@@ -29,17 +29,14 @@
 <label>End time</label> 
 	<input	class="form-control" value="21:12" size="6" /> <br> <br>
  -->	 
- 
- 
- #if( $selected )
-<input type="checkbox" name="saveascopy" /> Save as copy	
-<br>
-	<input class="btn" id="addcue" type="submit" value="Save" />
-#else
-	<input class="btn" id="addcue" type="submit" value="Add" />
-#end
-</form>
+ 		<a href="#" class="btn" style="background:#336633;color:white;">Play Clip</a>
+ 		<a href="#" class="btn" style="background:#336633;color:white;">Download</a>
+	</form>
 
 </div>
 
 </div>
+
+			<input type="submit" class="btn" form="addnewclip" style="background:#336633;color:white;margin-left:30px;" value="Add New" />
+
+			<a  href="#" class="btn" style="float:right;background:#336633;color:white;">Save Timeline</a>

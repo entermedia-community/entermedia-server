@@ -149,23 +149,34 @@ $(document).ready(function()
 	jQuery(".data-selection").livequery("click",function(e)
 	{
 		e.preventDefault();
-		var div = $(this);
+		selectClip(this);
+		updateDetails();
+	});	
+	
+	selectClip = function(div)
+	{
+		var div = $(div).closest(".data-selection");
 		$(".data-selection").removeClass("selectedclip");
 		div.addClass("selectedclip");
 		updateDetails();
-	});	
+	}
+	
 	updateDetails = function()
 	{
 		var selected = $(".selectedclip");
 		$("#cliplabel\\.value").val( selected.data("cliplabel") );
 		var dec = selected.data("timecodestart");
-		var start = parseTime( dec );
-		$("#timecodestart-value").val( start );
+		if( dec )
+		{
+			dec = parseFloat(dec);
+			var start = parseTime( dec );
+			$("#timecodestart-value").val( start );
+			console.log(dec);
+			video.currentTime = dec; 
 		
-		video.currentTime = dec; 
-		
-		var length = parseTime( selected.data("timecodelength") );
-		$("#timecodelength-value").val( length );
+			var length = parseTime( selected.data("timecodelength") );
+			$("#timecodelength-value").val( length );
+		}	
 		
 	}
 
@@ -180,42 +191,91 @@ $(document).ready(function()
 	});
 #end
 */	
+
+	jQuery(".grabresize").livequery(function()
+	{
+		var mainimage = $(this).closest(".timecell");
+		var clickspot;
+		var startwidth;
+		mainimage.on("mousedown", function(event)
+		{
+			if( $(event.target).hasClass("grabresize") )
+			{
+				clickspot = event;
+				startwidth = mainimage.width();
+				selectClip(this);
+			}	
+			
+		});
+		mainimage.on("mouseup", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		mainimage.on("mouseleave", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		mainimage.on("mousemove", function(event)
+		{
+			if( clickspot )
+			{
+				var changeleft = event.pageX - clickspot.pageX;
+				
+				console.log("Moved: ",clickspot.pageX + " - " + event.pageX + " + " + startwidth);
+				var width = startwidth + changeleft;
+				mainimage.width(width);
+				
+				var ratio = $("#timelinemetadata").data("ratio");
+				ratio = parseFloat(ratio);
+				
+				var seconds = width / ratio;
+				var selected = $(".selectedclip");
+				selected.data("timecodelength",seconds);
+				updateDetails();
+				event.preventDefault();
+				return false;
+			}	
+		});	
+	});
+
 	jQuery(".timecell").livequery(function()
 	{
 		var mainimage = $(this);
-		var clickspot;
+		var clickspot = false;
 		var imageposition;
-		var resizeing = false; 
 		mainimage.on("mousedown", function(event)
 		{
-			clickspot = event;
-			imageposition = mainimage.position();
-			
-			var div = mainimage.closest("data-selection");
-			if( div.position().
-			
-			return false;
+			if( !$(event.target).hasClass("grabresize") )
+			{
+				clickspot = event;
+				imageposition = mainimage.position();
+				return false;
+			}	
 		});
 	
 		mainimage.on("mouseup", function(event)
 		{
 			clickspot = false;
-			resizeing = false;
+			return false;
+		});
+		mainimage.on("mouseleave", function(event)
+		{
+			clickspot = false;
 			return false;
 		});
 		
 		mainimage.on("mousemove", function(event)
 		{
-			//if( isMouseDown() )
 			if( clickspot )
 			{
-				var changetop = clickspot.pageY - event.pageY;
 				var changeleft = clickspot.pageX - event.pageX;
 				
 				var left = imageposition.left - changeleft;
-				var top = imageposition.top;// - changetop;
+				//var top = imageposition.top;// - changetop;
 				
-				$(this).css({"left" : left + "px", "top" : top + "px"});
+				$(this).css({"left" : left + "px"});
 				
 				var ratio = $("#timelinemetadata").data("ratio");
 				ratio = parseFloat(ratio);

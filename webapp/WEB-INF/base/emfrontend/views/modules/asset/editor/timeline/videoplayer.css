@@ -13,7 +13,7 @@
 .selectedlength
 {
 	border-color: #666; 
-	background-color: #1faf7d;
+	background-color: #ffaf7d;
 }
 
 
@@ -31,12 +31,26 @@
 }
 
 
- #bottom-slider #btmcontent ul#slider_vdo li a.current  {
+#bottom-slider #btmcontent ul#slider_vdo li a.current  
+{
+	border-color: #2a6496; 
+}
  
-border-color: #2a6496; 
- }
-
-
+.grabresize
+{
+	position:absolute;
+	right:0;
+	top:0px;
+	cursor:col-resize;
+	width:12px;
+	height:36px;
+	border-radius: 4px;
+	margin-right:-6px;
+}
+.grabresize:hover
+{
+	background: #666;
+}
 
 #video-container{
 	background: #060606;
