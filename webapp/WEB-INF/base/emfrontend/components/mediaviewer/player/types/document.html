@@ -8,7 +8,6 @@
 #set ( $hitssessionid = $context.findValue("hitssessionid"))
 #set ($sourcepath = $asset.sourcepath )
 #set($totalpages = $numberutils.toInt($asset.pages))
-pagenum $pagenum
     <div id="pdf-viewer-container">
         #if ($pagenum > 1)
             #set( $prevthumb = $pagenum - 1)

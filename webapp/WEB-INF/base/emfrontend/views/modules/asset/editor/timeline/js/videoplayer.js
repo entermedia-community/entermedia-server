@@ -97,6 +97,20 @@ $(document).ready(function()
 			var done = m + ":" + s + "." + millis;
 			return done;
 	}
+	parseTimeInText = function(inTime)
+	{
+			var justseconds = Math.floor(inTime);
+			var justremainder = inTime - justseconds;			
+			var millis = Math.floor(justremainder * 1000);
+			
+			var minutes = Math.floor(justseconds / 60);
+			var m = zeroPad(minutes,2);
+
+			var secondsleft = justseconds - (minutes*60);
+			var s = zeroPad(secondsleft,2);
+			var done = m + ":" + s + "." + millis;
+			return done;
+	}
 
 	videoclip.on("timeupdate",function(e)
 	{
@@ -126,6 +140,27 @@ $(document).ready(function()
 			selectLength();
 		}		
 	});
+	
+	$("#cliplabel\\.value").livequery("keyup", function()
+	{
+		var text = $(this).val();
+		var selected = $(".selectedclip");
+		selected.data("cliplabel", text);
+		$(".cliptext",selected).html(text);
+		
+	});
+
+	$("#timecodelength-value").livequery("change", function()
+	{
+		var val = $(this).val();
+		
+		//Convert to seconds
+		var selected = $(".selectedclip");
+		selected.data("cliplabel", text);
+		$(".cliptext",selected).html(text);
+		
+	});
+	
 	jQuery(".removetime").livequery("click",function(e)
 	{
 		e.preventDefault();
@@ -161,6 +196,7 @@ $(document).ready(function()
 		updateDetails();
 	}
 	
+
 	updateDetails = function()
 	{
 		var selected = $(".selectedclip");
