@@ -1,31 +1,6 @@
 <properties>
 	
-	<!--  An asset can be viewed by the owner and the administrators-->
-	<property id="catalogassetviewispublic" value="false">Default Assets To Public (true/false)</property>
-	<property id="catalogassetviewusers" value="${asset.owner}">Admin Catalog Asset View Users</property>
-	<property id="catalogassetviewgroups" value="administrators">Admin Catalog Asset View Groups</property>
-
-	<property id="catalogasseteditusers" value="${asset.owner}">Catalog Asset Edit Users</property>
-	<property id="catalogasseteditgroups" value="administrators users">Catalog Asset Edit Groups</property>
-
-
-	<property id="catalogassetforcewatermarkusers" value="">Admin Catalog Asset View Users</property>
-	<property id="catalogassetforcewatermarkgroups" value="">Admin Catalog Asset View Groups</property>
-	<property id="projectassetupload" value="${library.folder||library.name}/${formatteddate}/${splitguid}/">Add Media Upload Path</property>
-	<property id="collectionassetupload" value="${library.folder||library.name}/${librarycollection.name}/${formatteddate}/${filename}">Collection Media Upload Path</property>
-	<property id="catalogassetupload" value="${formattedmonth}/${splitguid}/">API Upload Path</property>
-	<property id="movecollectionpath" value="${newlibrary.folder||newlibrary.name}/${year}/${splitname}">Collection Export Path</property>
-	
-<!-- 
-	<property id="categorytreemask" value="users/${username}/">Default mask for creating categories on upload/asset creation</property>
-	 -->
-	 <!-- Just give them a custom source path 
-	<property id="categorytreemask" value="${folderpath}">Default mask for creating categories on upload/asset creation</property>
- -->
-
-
 	<property id="server_log_location" value="/opt/entermediadb/tomcat/logs/catalina.out">Web Server Logs</property>
-
 
 	<!--   <property id="catalogassetdefaultlibrary" value="public">Default Asset Library</property>
 	-->
@@ -47,11 +22,6 @@
 	<property id="conversionexpirytime" value="7">Conversions older than this as expired</property>
 	<property id="extractmd5" value="true">Create MD5 Checksum values on import</property>
 	<property id="show_hotfolder_status" value="false">Track Hotfolder ingesting in database</property>
-
-
-<property id="publiccollections" value="false">Default Collections To Public (true/false)</property>
-<property id="publiclibraries" value="false">Default Libraries To Public (true/false)</property>
-
 
 
 </properties>
