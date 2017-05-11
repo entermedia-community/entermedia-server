@@ -19,6 +19,6 @@
 	<property id="publiccollections" value="false">Default Collections To Public (true/false)</property>
 	<property id="publiclibraries" value="false">Default Libraries To Public (true/false)</property>
 
-	<property id="notify-group-on-all-collection-modify" >Collection Notification Group ID</property>
+	<property id="notify-group-on-all-collection-modify" value="collectionnotification">Collection Notification Group ID</property>
 
 </properties>

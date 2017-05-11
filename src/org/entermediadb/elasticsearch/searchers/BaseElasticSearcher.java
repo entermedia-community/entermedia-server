@@ -2432,7 +2432,6 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 
 					Object value = inData.getValue(det.getId());
-					;
 					if (value instanceof String)
 					{
 						String target = (String) value;
@@ -2464,7 +2463,32 @@ public class BaseElasticSearcher extends BaseSearcher
 
 						}
 					}
-
+				}
+				else if(det.isDataType("objectarray"))
+				{
+					Object values = inData.getValue(det.getId());
+					if( values != null && det.getObjectDetails() != null)
+					{
+						Collection maps = (Collection)values;
+						for (Iterator iterator = maps.iterator(); iterator.hasNext();)
+						{
+							Map map = (Map) iterator.next();
+							for (Iterator miterator = det.getObjectDetails().iterator(); iterator.hasNext();)
+							{
+								PropertyDetail detal = (PropertyDetail) miterator.next();
+								if( detal.isKeyword() )
+								{
+									Object val = map.get(detal.getId()); 
+									if( val != null)
+									{
+										inFullDesc.append(String.valueOf( val) );
+										inFullDesc.append(' ');
+									}	
+								}	
+								
+							}
+						}	
+					}
 				}
 				else
 				{

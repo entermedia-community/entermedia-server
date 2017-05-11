@@ -73,16 +73,19 @@ public void init()
 	if( groupid != null)
 	{
 		Collection adminusers = mediaArchive.getUserManager().getUsersInGroup(groupid);
-		for( Data user in adminusers)
+		if( adminusers != null)
 		{
-			List dirtycollections = (List)users.get(user.getId());
-			if( dirtycollections == null)
+			for( Data user in adminusers)
 			{
-				dirtycollections = new ArrayList();
-				List list = IteratorUtils.toList(collections.values().iterator());
-				users.put(user.getId(), list ); 
-				//TODO: Deal with mixed notifications
-			}
+				List dirtycollections = (List)users.get(user.getId());
+				if( dirtycollections == null)
+				{
+					dirtycollections = new ArrayList();
+					List list = IteratorUtils.toList(collections.values().iterator());
+					users.put(user.getId(), list ); 
+					//TODO: Deal with mixed notifications
+				}
+			}	
 		}
 	}	
 	if( users.isEmpty() )
