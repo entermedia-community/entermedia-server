@@ -45,6 +45,7 @@
 	<permission name="editasset">
 		<or>
 			<group name="administrators" />
+			<userprofile property="editallassets" equals="true" />
 			<action name="AssetControlModule.canEditAsset" />
 		</or>
 	</permission>
