@@ -22,7 +22,7 @@
 				<a href="#" class="nav-link" > $asset </a>
 				#end
 			 </il>
-			 #if($candownload)
+			 #if($candownload || $canconvert)
 				<li id="download-select" >		
 					<div class="dropup">
 						<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="glyphicon glyphicon-download" style="color: #fff;"> </span>  [[Downloads]]
@@ -35,11 +35,15 @@
 							#set( $cdnprefix = $context.siteRoot )
 						#end
 						<ul class="dropdown-menu dropup">
-								#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
-									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>	
-								#foreach($result in $results )						
-										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/$result.name-${result.generatedoutputfile}">$result.name</a></li>
-								#end
+								#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )	
+									 #if($candownload)				
+										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
+									#end	
+									#if($canconvert)
+										#foreach($result in $results )						
+												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/$result.name-${result.generatedoutputfile}">$result.name</a></li>
+										#end
+									#end
 								</ul>
 					   </div>
 				  </li>
