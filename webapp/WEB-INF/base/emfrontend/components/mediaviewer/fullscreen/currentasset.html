@@ -22,26 +22,28 @@
 				<a href="#" class="nav-link" > $asset </a>
 				#end
 			 </il>
-			<li id="download-select"  >
-				<div class="dropup">
-					<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="glyphicon glyphicon-download" style="color: #fff;"> </span>  [[Downloads]]
-						<span class="caret"></span></a>
-					#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-					#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
-					#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
-					#set($mediadbappid=$mediaarchive.getMediaDbId())
-					#if( !$cdnprefix )
-						#set( $cdnprefix = $context.siteRoot )
-					#end
-					<ul class="dropdown-menu dropup">
-							#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
-								<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>	
-							#foreach($result in $results )						
-									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/$result.name-${result.generatedoutputfile}">$result.name</a></li>
-							#end
-					</ul>
-			   </div>
-		  </il>
+			 #if($candownload)
+				<li id="download-select" >		
+					<div class="dropup">
+						<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="glyphicon glyphicon-download" style="color: #fff;"> </span>  [[Downloads]]
+							<span class="caret"></span></a>
+						#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+						#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
+						#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+						#set($mediadbappid=$mediaarchive.getMediaDbId())
+						#if( !$cdnprefix )
+							#set( $cdnprefix = $context.siteRoot )
+						#end
+						<ul class="dropdown-menu dropup">
+								#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )					
+									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>	
+								#foreach($result in $results )						
+										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${result.generatedoutputfile}/$result.name-${result.generatedoutputfile}">$result.name</a></li>
+								#end
+								</ul>
+					   </div>
+				  </li>
+			 #end
 		  <li>
 	#if(  $asset.getFileFormat()  == "pdf")
 		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
