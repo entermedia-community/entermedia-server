@@ -19,20 +19,24 @@ $(document).ready(function()
 	var videoclip = jQuery("#videoclip");
 	var video = videoclip[0]; 
 
-	selectTime = function()
+
+	copyStartTime = function()
 	{
 			var inTime = video.currentTime;
 			var done = parseTimeToText(inTime);
 			$(".selectedtime").val(done);  //00:00.000
-			updateClip();
+			
 	}
 	
 	copyLength = function()
 	{
 			var inTime = video.currentTime;
-			var done = parseTimeToText(inTime);
+			var selected = $(".selectedclip");
+			var start = selected.data("timecodestart");
+			//take off the start
+			var done = parseTimeToText(inTime - start);
 			$(".selectedlength").val(done);  //00:00.000
-			updateClip();
+			
 	}
 
 	parseTimeToText = function(inTime)
@@ -74,8 +78,12 @@ $(document).ready(function()
 
 	videoclip.on("timeupdate",function(e)
 	{
-			selectTime();	
-			copyLength();		
+		if(	$(".selectedtime").length > 0 || $(".selectedlength").length > 0 )
+		{ 
+			copyStartTime();	
+			copyLength();
+			updateClip();
+		}			
 	});
 	$("#timecodestart-value").livequery("click",function(e)
 	{
@@ -83,14 +91,15 @@ $(document).ready(function()
 		$("input").removeClass("selectedtime");
 		$("input").removeClass("selectedlength");
 		
-		input.addClass("selectedtime");
 		if( !input.val() )
 		{
-			selectTime();
+			copyStartTime();
+			updateClip();
 		}	
 		var selected = $(".selectedclip");
 		var start = selected.data("timecodestart");
 		video.currentTime = start;
+		input.addClass("selectedtime");
 			
 	});
 	$("#timecodelength-value").livequery("click",function(e)
@@ -98,15 +107,17 @@ $(document).ready(function()
 		var input = $(this);
 		$("input").removeClass("selectedtime");
 		$("input").removeClass("selectedlength");
-		input.addClass("selectedlength");
 		if( !input.val() )
 		{
 			copyLength();
+			updateClip();
 		}		
 		var selected = $(".selectedclip");
 		var start = selected.data("timecodestart");
 		var length = selected.data("timecodelength");
 		video.currentTime = start + length;
+		
+		input.addClass("selectedlength");
 		
 	});
 	
@@ -149,6 +160,22 @@ $(document).ready(function()
 		video.play();		
 	});
 	
+	jQuery("#addnewcopy").livequery("click",function(e)
+	{
+		e.preventDefault();
+		console.log("Make copy");
+		var template = $("#templateclip").clone();
+		template.attr("id","randomone");
+		$(".selectedclip").removeClass("selectedclip");
+		template.addClass("selectedclip");
+		$("#timelinemetadata").prepend(template);
+		template.show();
+		updateDetails();
+		updateClip();	
+		$("#cliplabel\\.value").focus();
+				
+	});
+	
 	jQuery("#savetimeline").livequery("click",function(e)
 	{
 		e.preventDefault();
@@ -156,10 +183,15 @@ $(document).ready(function()
 		
 		var clips = [];
 
-    	$(".data-selection").each(function() 
+    	$("#timelinemetadata  .data-selection").each(function() 
     	{
-			//timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
-			var data = $(this).data();
+			var clip = $(this);
+			//cant use data() because it does not save doubles correctly timecodelength=10.0, timecodestart=0.0, cliplabel=sfsf, index=0}
+
+			var timecodestart = parseFloat( clip.data("timecodestart") );
+			var timecodelength = parseFloat( clip.data("timecodelength") );
+			var data = {"timecodestart": timecodestart,"timecodelength":timecodelength,"cliplabel":clip.data("cliplabel")};
+			
     		clips.push(data);
     	});
     	
@@ -167,15 +199,20 @@ $(document).ready(function()
 		var link = $("#timelinemetadata").data("savelink");
 		
 		var data = {"assetid": assetid,"clips":clips};
+		
+		var json = JSON.stringify(data);
 		$.ajax({        
        		type: "POST",
        		url: link,
-       		data: JSON.stringify(data),
+       		data: json,
+       		contentType: "application/json; charset=utf-8",
+    		dataType: "json",
        		success: function() 
        		{
             	//reload page?
             	//change button color 
-            	$("#savetimeline").css({"background-color" : "","color" : ""});       
+            	$("#savetimeline").addClass("btn-disabled");
+            	$("#savetimeline").css("color","white");
        		}
     	}); 
 	});
@@ -219,16 +256,20 @@ $(document).ready(function()
 		selected.data("timecodestart", start);
 		//calculate the px left
 		var ratio = $("#timelinemetadata").data("ratio");
-		var left = start * ratio;		
+		var left = start * ratio;
 		cell.css({"left" : left + "px"});
 
 		var lengthtext = $("#timecodelength-value").val();
 		var length = parseTimeFromText(lengthtext);
 		selected.data("timecodelength", length);
-		console.log("Saved",length,selected);
-		var width = length * ratio;		
+		//console.log("Saved",length,selected);
+		var width = length * ratio;	
+		if( width < 1 )
+		{
+			width = 5;
+		}	
 		cell.css({"width" : width + "px"});
-		$("#savetimeline").css({"background-color" : "#f4df42","color" : "#000"});
+		$("#savetimeline").show();
 	}	
 
 	updateDetails = function(jumptoend)
@@ -249,11 +290,12 @@ $(document).ready(function()
 		{
 			video.currentTime = dec + len;
 		}	
-		else
+		else if( dec )
 		{
 			video.currentTime = dec;
 		}
-		
+		$("a.btn-disabled").removeClass("btn-disabled");
+		$("a.btn-yellow").removeClass("btn-yellow");
 	}
 
 /*
@@ -307,6 +349,10 @@ $(document).ready(function()
 				clearSelection();
 				var changeleft = event.pageX - clickspot.pageX;
 				var width = startwidth + changeleft;
+				if( width < 10 )
+				{
+					width = 10;
+				}
 				mainimage.width(width);
 				
 				var ratio = $("#timelinemetadata").data("ratio");
@@ -359,6 +405,10 @@ $(document).ready(function()
 				var changeleft = clickspot.pageX - event.pageX;
 				
 				var left = imageposition.left - changeleft;
+				if( left < 0 )
+				{
+					left = 0;
+				}
 				//var top = imageposition.top;// - changetop;
 				
 				$(this).css({"left" : left + "px"});

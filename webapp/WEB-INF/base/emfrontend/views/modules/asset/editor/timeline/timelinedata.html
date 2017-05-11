@@ -1,13 +1,13 @@
 #set( $clientroot = $context.getContentProperty("clientroot") )
 
-<div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()" data-savelink="$home$clientroot/saveclips.html" data-assetid="$asset.id">
+<div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()" data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="margin-left:60px;">
 
 
 #set( $clips = $timeline.loadClips($asset,"clips") )
 #foreach($clip in $clips)
 #set( $index = $velocityCount - 1)
-<div id="slider123" class="time-slider data-selection" style="height: 45px;margin-left:60px" 
-	data-cliplabel='$clip.getValue("cliplabel")' 
+<div id="slider123" class="time-slider data-selection"  
+	data-cliplabel='$!clip.getValue("cliplabel")' 
 	data-timecodestart="$clip.getStart()"
 	data-timecodelength="$clip.getLength()"
 >
@@ -21,3 +21,16 @@
 #end
 
 </div>
+
+<div id="templateclip" class="time-slider data-selection" style="height: 45px;margin-left:60px;display:none;"
+	data-cliplabel='New Clip' 
+	data-timecodestart="0"
+	data-timecodelength="5"
+>
+	<div class="ruler" >
+		<div class="timecell" style="cursor: move;position:relative;">
+			<div class="grabresize"></div>
+			<span class="cliptext">New Clip</span>
+		</div>
+	</div>
+</div>	

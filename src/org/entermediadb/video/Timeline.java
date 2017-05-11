@@ -2,7 +2,11 @@ package org.entermediadb.video;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
@@ -61,6 +65,7 @@ public class Timeline
 				}	
 				fieldTicks.add(block);
 			}
+			
 		}
 		return fieldTicks;
 	}
@@ -103,6 +108,8 @@ public class Timeline
 				clip.setData(data);
 				fieldClips.add(clip);
 			}
+			Collections.sort((ArrayList)fieldClips);
+
 		}
 		return fieldClips;
 	}
@@ -116,6 +123,10 @@ public class Timeline
 	{
 		double ratio = inClip.getLength() / getLength();
 		double px = (double)getPxWidth() * ratio;
+		if( px < 10)
+		{
+			px = 10;
+		}
 		return (int)Math.round(px);
 	}
 	public double getPxToTimeRatio()

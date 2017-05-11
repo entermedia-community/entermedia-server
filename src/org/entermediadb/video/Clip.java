@@ -2,21 +2,24 @@ package org.entermediadb.video;
 
 import java.util.Map;
 
-public class Clip
+import org.openedit.data.ValuesMap;
+
+
+public class Clip implements Comparable
 {
-	protected Map fieldData;
+	protected ValuesMap fieldData;
 	
-	public Map getData()
+	public ValuesMap getData()
 	{
 		return fieldData;
 	}
 	public void setData(Map inData)
 	{
-		fieldData = inData;
+		fieldData = new ValuesMap(inData);
 	}
 	public double getStart()
 	{
-		Double d = (Double)getData().get("timecodestart");
+		Double d = getData().getDouble("timecodestart");
 		if( d == null)
 		{
 			return 0d;
@@ -25,7 +28,7 @@ public class Clip
 	}
 	public double getLength()
 	{
-		Double d = (Double)getData().get("timecodelength");
+		Double d = getData().getDouble("timecodelength");
 		if( d == null)
 		{
 			return 0d;
@@ -36,5 +39,19 @@ public class Clip
 	public Object getValue(String inKey)
 	{
 		return getData().get(inKey);
+	}
+	@Override
+	public int compareTo(Object inO)
+	{
+		Clip clip = (Clip)inO;
+		double d1 = getStart();
+		double d2 = clip.getStart();
+		if(d1 < d2){
+			return -1;
+		}
+		if(d2 < d1){
+			return 1;
+		}
+		return 0;
 	}
 }

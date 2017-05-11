@@ -14,12 +14,8 @@
 			</ul></li>
 	</ul>
 </div>
-<div style="margin:-2 0 0 10px; padding:10px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
+<div style="margin:-2 0 0 10px; padding:20px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
 
-
-	<form id="addnewclip" class="ajaxform addnewtimeline" targetdiv="timelinemetadata" action="$apphome/views/modules/asset/editor/timeline/addclip.html" style="padding: 10px; text-align: center;">
-		<input type="hidden" name="assetid" value="$asset.id" />
-		<input type="hidden" name="parentfield" value="clips" />
 		
 		#set($detail =	$searcher.getPropertyDetails().getDetail("clips")) 
 		$context.putPageValue("detail",$detail)
@@ -31,16 +27,15 @@
 <label>End time</label> 
 	<input	class="form-control" value="21:12" size="6" /> <br> <br>
  -->	 
- 		<a id="playclip" href="#" class="btn" style="background:#336633;color:white;">Play Clip</a>
- 		<a id="removeclip" href="#" class="btn" style="background:#663333;color:white;">Remove Clip</a>
-	</form>
+ 		<a id="playclip" href="#" class="btn btn-green btn-disabled" >Play Clip</a>
+ 		<a id="removeclip" href="#" class="btn btn-red btn-disabled" >Remove Clip</a>
 
 </div>
 
 </div>
-			<input type="submit" class="btn" form="addnewclip" style="background:#336633;color:white;margin-left:0px;" value="Add New" />
+			<a id="addnewcopy" href="#" class="btn btn-green" style="margin-left:0px;color:white;" >Add New</a>
 
-			<a  id="savetimeline" href="#" class="btn" style="float:right;background:#336633;color:white;">Save Timeline</a>
+			<a id="savetimeline" href="#" class="btn btn-green btn-disabled" style="float:right" >Save Timeline</a>
 <div id="warningarea" class="alert alert-warning " role="alert" style="margin-top:4px;display:none;">
   <strong>Note:</strong> unsaved changes to timeline
 </div>

@@ -430,11 +430,11 @@
     </name> 
     <property id="cliplabel" index="true" stored="true" editable="true" >
     <name> 
-      <language id="en"><![CDATA[Label]]></language>  
+      <language id="en"><![CDATA[Clip Label]]></language>  
     </name> 
     </property>
-    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Starting</property>
-    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Length</property>   
+    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
+    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
   </property>
   <!-- 
   <property id="talents" index="true" stored="true" editable="true" datatype="objectarray"  viewtype="timecodetable" > 

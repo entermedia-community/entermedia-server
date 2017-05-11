@@ -1,10 +1,12 @@
 package org.entermediadb.asset.modules;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.video.Timeline;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 
@@ -51,15 +54,40 @@ public class TimelineModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		Map values = inReq.getJsonRequest();
+		if( values == null)
+		{
+			throw new OpenEditException("No clips received");
+		}
 		String assetid = (String)values.get("assetid");
 		Asset asset = archive.getAsset(assetid);
 		
 		Collection clips = (Collection)values.get("clips");
+		for (Iterator iterator = clips.iterator(); iterator.hasNext();)
+		{
+			Map clip = (Map) iterator.next();
+			MathUtils.cleanTypes(clip);			
+		}
 		asset.setValue("clips", clips);
 		
 		archive.saveAsset(asset);
-		
 	}
+	public static void cleanTypes(Map inMap)
+	{
+		Collection keys = new ArrayList(inMap.keySet());
+		for (Iterator iterator = keys.iterator(); iterator.hasNext();)
+		{
+			String type = (String) iterator.next();
+			Object m = inMap.get(type);
+			if( m instanceof BigDecimal)
+			{
+				inMap.put(type, ((BigDecimal)m).doubleValue() );
+			}
+			else if( m instanceof Integer)
+			{
+				inMap.put(type, Double.parseDouble( m.toString() ) );
+			}
+		}
+	}	
 	public void addClip(WebPageRequest inReq)
 	{
 		
@@ -95,27 +123,6 @@ public class TimelineModule extends BaseMediaModule
 		}
 		timeline.add(codemap);
 		
-		Collections.sort((List<HashMap>) timeline, new Comparator()
-		{
-			@Override
-			public int compare(Object inO1, Object inO2)
-			{
-				HashMap first = (HashMap) inO1;
-				HashMap second = (HashMap) inO2;
-				Double code1 = (Double) first.get("timecodestart");
-				Double code2 = (Double) second.get("timecodestart");
-				if(code1 == null || code2 == null){
-					return 0;
-				}
-				if(code1 < code2){
-					return -1;
-				}
-				if(code2 < code1){
-					return 1;
-				}
-				return 0;
-			}
-		});
 		asset.setValue(field, timeline);
 		assetsearcher.saveData(asset);
 		

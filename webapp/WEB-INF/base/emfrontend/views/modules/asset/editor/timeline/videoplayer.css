@@ -1,3 +1,31 @@
+a.btn-green,input.btn-green
+{
+	background:#336633;color:white;
+}
+
+a.btn-green:hover
+{
+	background:#336633;color:white;
+}
+
+ 
+ a.btn-red
+ {
+	background:#663333;color:white; 
+ }
+
+a.btn-disabled
+{
+	background:#aaa;
+	color:white; !important 
+
+}
+a.btn-yellow
+{
+	background-color: #f4df42;
+	color: #000;
+}	
+
 .time-slider.selectedclip .timecell
 {
 	background-color: #ffab7d;

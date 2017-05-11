@@ -2,6 +2,10 @@ package org.entermediadb.asset.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 import org.openedit.OpenEditException;
 
@@ -102,6 +106,19 @@ public class MathUtils
 			throw new OpenEditException("Could not parse " + inSeconds);
 		}
 		return  Double.parseDouble(inSeconds);
+	}
+	public static void cleanTypes(Map inMap)
+	{
+		Collection keys = new ArrayList(inMap.keySet());
+		for (Iterator iterator = keys.iterator(); iterator.hasNext();)
+		{
+			String type = (String) iterator.next();
+			Object m = inMap.get(type);
+			if( m instanceof BigDecimal)
+			{
+				inMap.put(type, ((BigDecimal)m).doubleValue() );
+			}
+		}
 	}
 	
 }
