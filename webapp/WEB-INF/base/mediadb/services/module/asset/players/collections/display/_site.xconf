@@ -22,6 +22,10 @@
     		<boolean value="false" />
     </permission>
     
+    <permission name="download">
+           <userprofile property="download" equals="true" />
+    </permission>
+    
 	 <permission name="view">
     		<action name="ProjectModule.checkViewCollection" />
     </permission>
