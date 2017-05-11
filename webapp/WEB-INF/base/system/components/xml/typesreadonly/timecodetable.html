@@ -1,3 +1,7 @@
 #set($details =	$detail.getObjectDetails()) 
-$context.putPageValue("details",$details)					
-$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+#set( $collection = $data.getValues($detail.getId()) )
+#foreach( $map in $collection )
+<div class="tageditor-viewer">
+      <a href="$apphome/views/modules/asset/editor/timeline/index.html?assetid=$data.getId()&timecodejump=$map.timecodestart">$map.cliplabel</a> 
+</div>
+#end

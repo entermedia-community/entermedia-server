@@ -19,7 +19,6 @@ $(document).ready(function()
 	var videoclip = jQuery("#videoclip");
 	var video = videoclip[0]; 
 
-
 	copyStartTime = function()
 	{
 			var inTime = video.currentTime;

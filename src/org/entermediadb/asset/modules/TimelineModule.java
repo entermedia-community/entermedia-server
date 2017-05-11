@@ -41,6 +41,10 @@ public class TimelineModule extends BaseMediaModule
 		Timeline timeline = new Timeline();
 		timeline.setLength(videolength);
 		timeline.setPxWidth(1200);
+		
+//		String selected = inReq.getRequestParameter("timecodejump");
+//		timeline.selectClip(selected);
+		
 		inReq.putPageValue("timeline", timeline);
 	}
 	

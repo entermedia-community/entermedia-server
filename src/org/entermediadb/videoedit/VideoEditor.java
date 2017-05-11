@@ -21,7 +21,7 @@ import com.googlecode.mp4parser.authoring.tracks.CroppedTrack;
 
 public class VideoEditor
 {
-		public void split(Page inVideo, double inStartTime, OutputStream inOutput) throws IOException
+		public void split(Page inVideo, double inStartTime, double cutto, OutputStream inOutput) throws IOException
 		{
 			File videofile = new File(inVideo.getContentItem().getAbsolutePath());
 			Movie movie = new MovieCreator().build(new IsoBufferWrapperImpl(videofile));

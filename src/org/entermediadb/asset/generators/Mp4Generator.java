@@ -33,7 +33,15 @@ public class Mp4Generator extends ConvertGenerator
 			{
 				double timeoffset = Double.parseDouble(startbytes);
 				OutputStream stream = inOut.getStream();
-				getVideoEditor().split(inPage, timeoffset, stream);
+				
+				String cutending = inReq.getRequestParameter("end");
+				double cutto = 0;
+				if( cutending != null)
+				{
+					cutto = Double.parseDouble(cutending);
+				}
+				
+				getVideoEditor().split(inPage, timeoffset,cutto, stream);
 				stream.flush();
 				return in;
 			}

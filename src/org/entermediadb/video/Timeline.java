@@ -133,4 +133,17 @@ public class Timeline
 	{
 		return (double)getPxWidth() / getLength();
 	}
+
+	public void selectClip(String inSelected)
+	{
+		if( fieldClips == null)
+		{
+			return;
+		}
+		for (Iterator iterator = getClips().iterator(); iterator.hasNext();)
+		{
+			Clip clip = (Clip) iterator.next();
+			//clip.getStart()
+		}
+	}
 }
