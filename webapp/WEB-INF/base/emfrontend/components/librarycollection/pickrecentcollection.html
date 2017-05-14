@@ -1,0 +1,29 @@
+#if( $canviewopencollections)
+<div id="collectionpicker">
+<div id="collectionpickerinner" >
+
+	<a class="emdialog sidebarsubmenu" style="float:right;padding-left: 20px" title="Collection Search" data-hidefooter="true" href="$apphome/components/opencollections/searchcollection.html">
+		<i class="glyphicon glyphicon-search"></i>
+	</a>
+	<form  action="$home$apphome/views/modules/librarycollection/media/index.html" style="float:right;padding-left: 120px" >
+		#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+	$context.putPageValue("searcher",$searcher)
+	
+				#set( $detail = $searcher.getDetail("name"))
+				<select name="collectionid" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end" data-addnewlabel="[Add New]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+					data-placeholder="$detail.getText($context)" data-sortby="name">
+				#if( $librarycol )
+				  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
+				#end
+				</select>
+				#if($canaddnewcollection)
+				<a id="collectionidadd" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" ><img src="$apphome/theme/images/icons/addgray.png"></a>
+				#end
+	</form>
+</div>
+</div>
+
+#end
+
+
+ 

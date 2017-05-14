@@ -3,6 +3,7 @@ package org.entermediadb.projects;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -155,7 +156,7 @@ public class ProjectManager implements CatalogEnabled
 
 	}
 
-	public Collection<LibraryCollection> loadOpenCollections(WebPageRequest inReq, MediaArchive inArchive)
+	public Collection<LibraryCollection> loadOpenCollections(WebPageRequest inReq, MediaArchive inArchive, int count)
 	{
 		//get a library
 		//inReq.putPageValue("selectedlibrary",library);
@@ -177,23 +178,26 @@ public class ProjectManager implements CatalogEnabled
 		{
 			//Build list of ID's
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "librarycollection");
-			HitTracker allcollections = searcher.query().orgroup("id", opencollections).named("sidebar").search(); //todo: Cache?
-			usercollections = loadUserCollections(inReq, allcollections, inArchive, null);
-			List<Data> sorted = new ArrayList(usercollections);
-			final List<String> order = new ArrayList(opencollections);
 			
+			List array = new ArrayList(opencollections);
+			Collections.reverse(array);
+
+			final List sortorder = array.subList(0, Math.min(array.size(), count));
+			HitTracker allcollections = searcher.query().orgroup("id", sortorder).named("sidebar").search(); //todo: Cache?
+			usercollections = loadUserCollections(inReq, allcollections, inArchive, null);
+			
+			List<Data> sorted = new ArrayList(usercollections);
 			Collections.sort(sorted,new Comparator<Data>()
 			{
 				public int compare(Data o1, Data o2) 
 				{
-					int one = order.indexOf(o1.getId());
-					int two = order.indexOf(o2.getId());
+					int one = sortorder.indexOf(o1.getId());
+					int two = sortorder.indexOf(o2.getId());
 					if(one == two) return 0;
 					if(one > two) return 1;
 					return -1;
 				};
 			});
-			Collections.reverse(sorted);
 			inReq.putPageValue("usercollections", sorted);
 		}
 		return usercollections;

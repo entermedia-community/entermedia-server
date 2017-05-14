@@ -51,7 +51,17 @@ public class ProjectModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
-		manager.loadOpenCollections(inReq,getMediaArchive(inReq));
+		manager.loadOpenCollections(inReq,getMediaArchive(inReq), 10);
+	}
+	public void loadMostRecentCollection(WebPageRequest inReq) throws Exception
+	{
+		String catalogid = inReq.findValue("catalogid");
+		ProjectManager manager = (ProjectManager)getModuleManager().getBean(catalogid,"projectManager");
+		Collection<LibraryCollection> list = manager.loadOpenCollections(inReq,getMediaArchive(inReq),1);
+		if( !list.isEmpty() )
+		{
+			inReq.putPageValue("librarycol", list.iterator().next());
+		}
 	}
 	
 	
