@@ -1667,7 +1667,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
 	}
 
-	protected void deleteAll(Collection<Data> inBuffer, User inUser)
+	public void deleteAll(Collection inBuffer, User inUser)
 	{
 		String catid = getElasticIndexId();
 
