@@ -763,7 +763,7 @@ public class AssetEditModule extends BaseMediaModule
 		
 		inReq.setRequestParameter("assetids",new String[]{asset.getId()});
 
-		archive.getPresetManager().queueConversions(archive, archive.getSearcher("conversiontask"), asset);
+		archive.getPresetManager().clearConversions(archive, asset);
 		archive.fireSharedMediaEvent("conversions/runconversions");
 		
 		getAttachmentManager().processAttachments(archive, asset, true);//don't reprocess everything else

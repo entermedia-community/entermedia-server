@@ -297,4 +297,19 @@ public class PresetCreator
 		
 	}
 
+	public void clearConversions(MediaArchive inArchive, Searcher tasksearcher, Asset inAsset)
+	{
+		// TODO Auto-generated method stub
+		HitTracker assetconversions = tasksearcher.query().exact("assetid", inAsset.getId()).search(); //This is slow, we should load up a bunch at once
+		tasksearcher.deleteAll(assetconversions, null);
+	}
+
+	public void reQueueConversions(MediaArchive inArchive, Asset inAsset)
+	{
+		Searcher tasksearcher = inArchive.getSearcher("conversiontask");
+
+		clearConversions(inArchive,tasksearcher,inAsset);
+		queueConversions(inArchive, tasksearcher, inAsset);
+	}
+
 }
