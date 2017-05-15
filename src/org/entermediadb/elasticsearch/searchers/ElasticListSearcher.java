@@ -156,7 +156,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	} 
 
 	@Override
-	protected void deleteAll(Collection<Data> inBuffer, User inUser)
+	public void deleteAll(Collection inBuffer, User inUser)
 	{
 		super.deleteAll(inBuffer, inUser);
 		getXmlSearcher().deleteAll(inUser);
