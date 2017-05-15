@@ -1,5 +1,5 @@
 <linktree>
-	<a folder="viewer" id="viewmediaviewer"  moduleid="asset" useajax="true" name="Preview"  ordering="100" />
+	<a folder="viewer" id="viewmediaviewer"  moduleid="asset" useajax="false" name="Preview"  ordering="100" />
 	<a folder="generalinformation"  id="metadatageneral" moduleid="asset" useajax="true" name="Edit Metadata" multiedit="true"  ordering="110"/>
 	<a folder="comment" id="comment"  moduleid="asset"  useajax="true" name="Comments" multiedit="false"  ordering="120"/>
 	<!-- <a folder="printpreview" id="printpreview" name="Print Preview" multiedit="false" /> -->

@@ -1,9 +1,13 @@
 #set( $catalogid = $asset.catalogId )
 #set( $sourcepath = $asset.sourcepath )
 #set($encode = $url_util.encode($sourcepath))
-#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
-#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${encode}/video.mp4" )
+#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${encode}/thumb.jpg" )
 #set($thumb = $thumb.replace(" ", "%20"))
+#set($source = $source.replace(" ", "%20"))
+
+
+
 
 #set( $root = "$context.siteRoot$home$page.directory")
 <!-- 1. skin -->
@@ -27,11 +31,9 @@
 
 <script>
 // run script after document is ready
-$(function () {
- 
+
    // install flowplayer to an element with CSS class "player"
   $(".player").flowplayer({ swf: "$apphome/components/javascript/swf/5.5.2/flowplayer.swf" });
    
  
-});
 </script>
