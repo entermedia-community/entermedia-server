@@ -23,8 +23,8 @@ public class MetaDataReader
 
 	public void updateAsset(MediaArchive archive, ContentItem itemFile, Asset target)
 	{
-		target.removeValue("pages");
-		target.removeValue("fileformat");
+		target.setValue("pages",1);
+		target.setValue("fileformat",null);
 		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
 		HashMap<String, String> externaldetails = new HashMap<String, String>();
 		for(Iterator i = details.iterator(); i.hasNext();)
