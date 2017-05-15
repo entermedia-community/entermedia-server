@@ -22,6 +22,8 @@ public class MetaDataReader
 
 	public void updateAsset(MediaArchive archive, ContentItem itemFile, Asset target)
 	{
+		target.removeValue("pages");
+		target.removeValue("fileformat");
 		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
 		HashMap<String, String> externaldetails = new HashMap<String, String>();
 		for(Iterator i = details.iterator(); i.hasNext();)
@@ -66,10 +68,7 @@ public class MetaDataReader
 			// inAsset.setProperty("recordmodificationdate", format.format(
 			// new Date() ) );
 			inAsset.setProperty("filesize", String.valueOf(inputFile.getLength()));
-			if (inAsset.getName() == null)
-			{
-				inAsset.setName(inputFile.getName());
-			}
+			inAsset.setName(inputFile.getName());
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
 			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
