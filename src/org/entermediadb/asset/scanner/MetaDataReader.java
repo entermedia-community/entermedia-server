@@ -14,6 +14,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class MetaDataReader
 {
@@ -22,6 +23,8 @@ public class MetaDataReader
 
 	public void updateAsset(MediaArchive archive, ContentItem itemFile, Asset target)
 	{
+		target.setValue("pages",1);
+		target.setValue("fileformat",null);
 		PropertyDetails details = archive.getAssetSearcher().getPropertyDetails();
 		HashMap<String, String> externaldetails = new HashMap<String, String>();
 		for(Iterator i = details.iterator(); i.hasNext();)
@@ -66,10 +69,14 @@ public class MetaDataReader
 			// inAsset.setProperty("recordmodificationdate", format.format(
 			// new Date() ) );
 			inAsset.setProperty("filesize", String.valueOf(inputFile.getLength()));
-			if (inAsset.getName() == null)
+			inAsset.setName(inputFile.getName());
+			String ext = PathUtilities.extractPageType(inputFile.getName());
+			if (ext != null)
 			{
-				inAsset.setName(inputFile.getName());
+				ext = ext.toLowerCase();
 			}
+			inAsset.setProperty("fileformat", ext);
+
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
 			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
