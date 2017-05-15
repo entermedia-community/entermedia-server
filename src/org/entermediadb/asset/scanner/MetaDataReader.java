@@ -14,6 +14,7 @@ import org.openedit.data.PropertyDetails;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.PathUtilities;
 
 public class MetaDataReader
 {
@@ -69,6 +70,13 @@ public class MetaDataReader
 			// new Date() ) );
 			inAsset.setProperty("filesize", String.valueOf(inputFile.getLength()));
 			inAsset.setName(inputFile.getName());
+			String ext = PathUtilities.extractPageType(inputFile.getName());
+			if (ext != null)
+			{
+				ext = ext.toLowerCase();
+			}
+			inAsset.setProperty("fileformat", ext);
+
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
 			for (Iterator iterator = getMetadataExtractors().iterator(); iterator.hasNext();)
