@@ -1671,10 +1671,21 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		String catid = getElasticIndexId();
 
-		// We cant use this for normal updates since we do not get back the id
-		// or the version for new data object
-
-		// final Map<String, Data> toversion = new HashMap(inBuffer.size());
+		if (inBuffer.size() < 99 ) // 100 was too low - caused shard exceptions
+			// due to thread pool size on large
+			// ingests..
+		{
+				for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();) {
+					Data object = (Data) iterator.next();
+					delete(object, inUser);
+				}
+				return;
+		}
+		
+		
+		
+		
+		
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
 		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
