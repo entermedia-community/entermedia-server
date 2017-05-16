@@ -216,6 +216,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		else
 		{
 			createBackground(inStructions, com, usepng, ext);
+			Boolean extent = Boolean.parseBoolean(inStructions.get("extent"));
+			if( extent)
+			{
+				String extentw = inStructions.get("extentwidth");
+				String extenth = inStructions.get("extentheight");
+				com.add("-extent");
+				com.add(extentw + "x" + extenth);
+			}
 		}
 		String dpi = inStructions.get("dpi");
 		if (dpi != null)
