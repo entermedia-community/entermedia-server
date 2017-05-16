@@ -13,6 +13,8 @@
     </path-action>
 
 	<path-action name="ProjectModule.addOpenCollection" />
+	<path-action name="ProjectModule.loadOpenCollections"/>
+	
 	<page-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</page-action>
