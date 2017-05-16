@@ -85,7 +85,7 @@ public class OauthModule extends BaseMediaModule
 				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
 				//.setRedirectURI("http://localhost:8080/googleauth.html")
 
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setResponseType("code").setScope("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid").buildQueryMessage();
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setResponseType("code").setScope("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/drive").buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
@@ -146,12 +146,12 @@ public class OauthModule extends BaseMediaModule
 				//Own response class is an easy way to deal with oauth providers that introduce modifications to
 				//OAuth specification
 				EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
-
 				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
 				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 				String accessToken = oAuthResponse.getAccessToken();
 
 				OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/oauth2/v1/userinfo").setAccessToken(accessToken).buildQueryMessage();
+				
 				OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
 				String userinfoJSON = resourceResponse.getBody();
 				JSONParser parser = new JSONParser();
