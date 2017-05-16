@@ -20,7 +20,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
 	#set( $viewerlink = $content.get("assetviewerlink") )
-	<div  class="emgallery" style="clear:both"  >
+	<div  class="emgallery"  >
 	    <div  id="emslidesheet" class="clearfix">
 		    #set( $rootid = $hits.sessionId )
 		    #set($count = 0)
