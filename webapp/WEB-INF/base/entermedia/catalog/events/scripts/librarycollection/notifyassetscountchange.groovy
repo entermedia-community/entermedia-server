@@ -18,7 +18,7 @@ public void init()
 	Date quietperiod = new Date(System.currentTimeMillis() - 60*1000*10);
 	
 	Map collections = new HashMap();
-	
+	sleep(5000); //give elastic a few extra seconds to keep up
 	HitTracker found = mediaArchive.query("librarycollection").match("lastmodifieddatedirty","true").search();
 	if( found.isEmpty() )
 	{
@@ -111,7 +111,7 @@ public void init()
 			String appid  = null;
 			if( profile != null)
 			{
-				appid = profile.get("preferedapp");
+				appid = profile.get("lastviewedapp");
 			}
 			if( appid == null)
 			{

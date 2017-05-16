@@ -22,8 +22,15 @@ public void init()
 	
 			if( followeruser != null && followeruser.getEmail() != null)
 			{
-				String appid =  context.getRequestParameter("applicationid");
+
+				Data profile = mediaArchive.getData("userprofile", userid);
 				
+				String appid = profile.get("lastviewedapp")l
+				if(appid == null){
+					appid = context.findValue("applicationid");
+				}
+				
+								
 				String template = "/" + appid + "/theme/emails/collection-add-new-follower.html";
 			
 				LibraryCollection collection = mediaArchive.getData("librarycollection",followerdata.get("librarycollection") );

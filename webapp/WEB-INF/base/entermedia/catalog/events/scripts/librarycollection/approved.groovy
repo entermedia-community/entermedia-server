@@ -22,7 +22,7 @@ public void init()
 	
 	UserProfile profile = mediaArchive.getData("userprofile", owner);
 	if(profile.getBoolean("sendapprovalnotifications") == true  ){
-		String template = "/" + profile.get("preferedapp") + "/theme/emails/collection-assets-approved.html";
+		String template = "/" + profile.get("lastviewedapp") + "/theme/emails/collection-assets-approved.html";
 		String note = context.getPageValue("note");
 		
 		Data librarycol = mediaArchive.getData("librarycollection", context.getPageValue("librarycollection"));

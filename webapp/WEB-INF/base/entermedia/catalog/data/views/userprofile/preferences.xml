@@ -3,5 +3,7 @@
 	<property id="modulehitsperpage" editable="true"/>
 	<property id="sendcollectionnotifications" editable="true"/>
 	<property id="sendapprovalnotifications" editable="true"/>
-	<property id="preferedapp" editable="true"/>
+	 <!-- 
+	<property id="lastviewedapp" editable="true"/>
+	 -->
 </properties> 
