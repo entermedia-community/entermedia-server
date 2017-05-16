@@ -36,6 +36,20 @@ public class Md5MetadataExtractor extends MetadataExtractor
 				Searcher assetsearcher = inArchive.getAssetSearcher();
 				HitTracker assets = assetsearcher.fieldSearch("md5hex", md5);
 				if(assets.size() >0){
+					if(assets.size() == 1){
+						Data otherone = assets.get(0);
+						Asset asset = (Asset) assetsearcher.loadData(otherone);
+						
+						
+						if(asset.getId().equals(inAsset.getId())){
+							if(inAsset.getBoolean("duplicate")){
+								asset.setValue("duplicate", false);
+								assetsearcher.saveData(inAsset, null);			
+							}
+							return false;
+						}
+					}
+					
 					inAsset.setValue("duplicate", true);
 					for (Iterator iterator = assets.iterator(); iterator.hasNext();)
 					{

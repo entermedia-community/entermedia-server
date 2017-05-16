@@ -142,12 +142,13 @@ public class AttachmentManager
 					attachment.setProperty("parentsourcepath", inFolderSourcePath);
 
 					Asset asset = new Asset(inArchive);
+					asset.setId(inAssetId);
 					getMetaDataReader().populateAsset(inArchive, page.getContentItem(), asset);
 					for (Iterator iterator2 = asset.keySet().iterator(); iterator2.hasNext();)
 					{
 						String key = (String) iterator2.next();
-						String value = asset.get(key);
-						attachment.setProperty(key, value);
+						Object value = asset.getValue(key);
+						attachment.setValue(key, value);
 					}
 					attachmentSearcher.saveData(attachment, null);
 				}
