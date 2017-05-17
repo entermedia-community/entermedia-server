@@ -337,17 +337,16 @@ color: #fff;
 
 #mainimageholder
 {
-	position: relative;
+	/*position: relative;*/
 	height:100%;
 	width:100%;
 	overflow: hidden;
+	text-align:center;
 }
 
 #mainimage
 {
-	position: absolute;
-	top: 20px;
-	left: 100px;
+
 }
 
 #footerholder

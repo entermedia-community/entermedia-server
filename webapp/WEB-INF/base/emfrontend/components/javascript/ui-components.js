@@ -1037,8 +1037,11 @@ uiload = function() {
 		var imageposition;
 		var zoom = 40;
 		var mainholder = $(this); 	
-		mainholder.height($(window).height());
-		mainholder.width($(window).width());
+		/*mainholder.height($(window).height());
+		mainholder.width($(window).width());*/
+		//mainholder.height($(this).parent().height());
+		console.log($("#mainholder").width());
+		mainholder.width($("#mainholder").width());
 		var mainimage = $("#mainimage",mainholder);
 /*		var centerimage = function()
 		{

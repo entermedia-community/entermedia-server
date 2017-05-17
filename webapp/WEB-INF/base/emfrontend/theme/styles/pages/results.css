@@ -291,8 +291,7 @@ span.glyphicon-triangle-right.overlay-nav {
 }
 
 .overlay-nav {
-
-	margin: 30px;
+	margin: 10px;
 	margin-top: 250px;
 
 }
@@ -307,7 +306,7 @@ span.glyphicon-triangle-right.overlay-nav {
 
 div#hiddenoverlay .overlay-margin {
 
-	width: 100px;
+	width: 90px;
 	position: relative;
 	float: left;
 
@@ -600,7 +599,7 @@ background-color: #eee;
 }
 .playerarea
 {
-	text-align: center;
+
 }
 .hiddenoverlay > div
 {

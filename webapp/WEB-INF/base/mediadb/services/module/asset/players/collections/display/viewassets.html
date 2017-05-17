@@ -1,7 +1,7 @@
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
-
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
+
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 #if( !$thumbsize )
