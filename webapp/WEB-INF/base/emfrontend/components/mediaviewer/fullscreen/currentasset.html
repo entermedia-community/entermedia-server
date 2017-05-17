@@ -19,6 +19,12 @@
 	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
 </div>
 
+#if( $hidenav == true )
+<div style="margin-top: 25px;">
+ <span style="color: white;">$asset</span>
+ </div>
+
+#else
 <div id="footerbase">
 	<div id="footermenu">
 		<ul class="nav navbar-nav">
@@ -62,7 +68,7 @@
 		</ul>
 	</div>
 </div>
-
+#end
 
 <style>
 /*
