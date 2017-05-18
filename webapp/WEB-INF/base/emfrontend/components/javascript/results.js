@@ -364,13 +364,13 @@ jQuery(document).ready(function(url,params)
 	
 	
 	
-	$("#mainimageholder").on("swipeleft",function(){
+	$("#hiddenoverlay").on("swipeleft",function(){
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
 		showOverlay(id);
 		});
-	$("#mainimageholder").on("swiperight",function(){
+	$("#hiddenoverlay").on("swiperight",function(){
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
