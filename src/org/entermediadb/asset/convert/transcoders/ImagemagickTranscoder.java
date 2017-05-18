@@ -219,10 +219,15 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			Boolean extent = Boolean.parseBoolean(inStructions.get("extent"));
 			if( extent)
 			{
+				//This gravity is the relative point of the crop marks
+				setValue("gravity", "center", inStructions, com);
+
 				String extentw = inStructions.get("extentwidth");
 				String extenth = inStructions.get("extentheight");
 				com.add("-extent");
 				com.add(extentw + "x" + extenth);
+				
+
 			}
 		}
 		String dpi = inStructions.get("dpi");
