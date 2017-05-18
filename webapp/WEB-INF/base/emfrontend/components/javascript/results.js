@@ -360,6 +360,41 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("next");
 		showOverlay(id);
 	});
+	
+	
+	
+	
+	$("#mainimageholder").on("swipeleft",function(){
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("previous");
+		showOverlay(id);
+		});
+	$("#mainimageholder").on("swiperight",function(){
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("next");
+		showOverlay(id);
+		});
+	
+	jQuery('div.goleftlick .glyphicon-triangle-left').livequery('click',function(e)
+			{
+				e.preventDefault();
+				var div = $("#main-media-viewer" );
+				var id = div.data("previous");
+				showOverlay(id);
+
+			});
+			
+			jQuery('div.gorightlick .glyphicon-triangle-right').livequery('click',function(e)
+			{
+				e.preventDefault();
+				var div = $("#main-media-viewer" );
+				var id = div.data("next");
+				showOverlay(id);
+			});
+	
+	
 	jQuery('a.stackedplayer').livequery('click',function(e)
 	{
 		e.preventDefault();
