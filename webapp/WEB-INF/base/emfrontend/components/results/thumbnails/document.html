@@ -28,6 +28,8 @@
 	#set($thumbsize = "thumb")
 #end
 
+
+
 <span id="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
@@ -41,8 +43,8 @@
 		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
 	#else	
 		<span class="emdropshadow">
-        	<img id="main-media" class="imagethumb  document   assetdragdrop" draggable="true" data-sourcepath="users/201604/33/ecc3439b5" data-name="3Page_DOC.docx"
-        	 src="$!cdn$home/${applicationid}/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.png" border="0" />
+        	<img id="main-media" class="imagethumb  document   assetdragdrop" draggable="true" data-sourcepath="users/201604/33/ecc3439b5" data-name="3Page_DOC.docx" data-hidenav="$hidenav"
+        	 src="$!cdn$home/${applicationid}/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
        	</span>	
 	</span>	
 	#end

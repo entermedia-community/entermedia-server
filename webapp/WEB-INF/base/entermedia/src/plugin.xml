@@ -2012,6 +2012,15 @@
 	
 	</bean>	
  	
- 	
+ 		<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule" >
+	<property name="googleManager">
+			<ref bean="googleManager" />
+		</property>
+	</bean>	
+	
+		<bean id="googleManager" class="org.entermediadb.google.GoogleManager" >
+	
+	</bean>	
+	
  	
 </beans>

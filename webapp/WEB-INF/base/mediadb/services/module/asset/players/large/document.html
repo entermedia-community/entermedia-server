@@ -1,52 +1,77 @@
 <div id="pdfviewer">
+
+#set( $hidenav = $context.getRequestParameter("hidenav") )
 #set( $pagenum = $context.getRequestParameter("pagenum") )
+
 #if( !$pagenum)
  #set( $pagenum = 1 )
 #end 
 
 #set( $name = $context.getRequestParameter("name") )
- #set ( $urlenc = $url_util.encode($asset.sourcepath))
-		#set($totalpages = $numberutils.toInt($asset.pages))
+#set ( $urlenc = $url_util.encode($asset.sourcepath))
+#set($totalpages = $numberutils.toInt($asset.pages))
+
+
+
+#if( $hidenav == true )
+<div id="mainholder" >
+			#if( $totalpages > 1 )
+	               <div id="jumpto" class="row">
+	                    <form id="jumptoform" class="ajaxform" targetdiv="pdfviewer" data-totalpages="$totalpages" action="$home$page.getPath()">
+	                    	<p><span>[[Jump To Page]] (1 - $totalpages)</span></p>
+							<p style="vertical-align: text-bottom;">
+	                       <input id="pagejumper" name="pagenum" value="$!pagenum" >
+	                       <input  type="hidden" name="assetid" value="$!asset.getId()" />
+	                       <input  type="hidden" name="name" value="$name" />
+	                       <input  type="hidden" name="hitssessionid" value="$!hitssessionid" />
+	                       <input  type="hidden" name="oemaxlevel" value="1" />
+	                       <input  type="hidden" name="hidenav" value="$hidenav" />
+	                      ##<input type="submit" id="gotopage" class="btn" value="Go" />
+	                      <a href="#" class="jumpto-left" ><span class="glyphicon glyphicon-triangle-left " style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
+	                       <a href="#" class="jumpto-right" ><span class="glyphicon glyphicon-triangle-right " style="color: rgb(200, 200, 200);font-size:1.8em;""></span></a>
+	                       </p>
+	                    </form>
+	                </div>                
+	         #end
+	<div id="mainimageholder">
+		<img id="mainimage" src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.png?pagenum=$!pagenum" alt="$!asset.name" />		
+	</div>	
+</div>
+#else
+
+<div style="color:#fff; text-align:center;">
+[[Click to drag. Mouse wheel to zoom]]
+</div>
+
+<div id="mainholder row" >
+	<div class="col-md-2" style="max-width:154px;">
+		$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
 		#if( $totalpages > 1 )
-		<div id="mainholder row" >
-			<div class="col-md-2" style="max-width:154px;">
-			$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
-
-		 	#if( $totalpages > 1 )
-                  <div id="jumpto" class="row">
-                       <form id="jumptoform" class="ajaxform" targetdiv="pdfviewer" data-totalpages="$totalpages" action="$home$page.getPath()">
-                       	<p><span>[[Jump To Page]] (1 - $totalpages)</span></p>
-						<p style="vertical-align: text-bottom;">
-                          <input id="pagejumper" name="pagenum" value="$!pagenum" >
-                          <input  type="hidden" name="assetid" value="$!asset.getId()" />
-                          <input  type="hidden" name="name" value="$name" />
-                          <input  type="hidden" name="hitssessionid" value="$!hitssessionid" />
-                          <input  type="hidden" name="oemaxlevel" value="1" />
-                         ## <input type="submit" id="gotopage" class="btn" value="Go" />
-                          <a href="#" class="jumpto-left" ><span class="glyphicon glyphicon-triangle-left " style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
-                          <a href="#" class="jumpto-right" ><span class="glyphicon glyphicon-triangle-right " style="color: rgb(200, 200, 200);font-size:1.8em;""></span></a>
-                          </p>
-                       </form>
-                   </div>                
-               #end
-
-			</div>
-			<div class="col-md-10">
-				<div id="mainimageholder"> 
-					<img id="mainimage" src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.png?pagenum=$!pagenum" alt="$!asset.name" />
-				</div>		
-			</div>
-			<div id="footerholder">[[Click to drag. Mouse wheel to zoom]]
-			</div>
-		</div>
-			
-		#else
-		<div id="mainholder" >
-		<div id="mainimageholder">
-			<img id="mainimage" src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.png?pagenum=$!pagenum" alt="$!asset.name" />		
-		</div>		
-		<div id="footerholder">[[Mouse wheel to zoom and click to drag]]
-		</div>
+	               <div id="jumpto" class="row">
+	                    <form id="jumptoform" class="ajaxform" targetdiv="pdfviewer" data-totalpages="$totalpages" action="$home$page.getPath()">
+	                    	<p><span>[[Jump To Page]] (1 - $totalpages)</span></p>
+				<p style="vertical-align: text-bottom;">
+	                       <input id="pagejumper" name="pagenum" value="$!pagenum" >
+	                       <input  type="hidden" name="assetid" value="$!asset.getId()" />
+	                       <input  type="hidden" name="name" value="$name" />
+	                       <input  type="hidden" name="hitssessionid" value="$!hitssessionid" />
+	                       <input  type="hidden" name="oemaxlevel" value="1" />
+	                       <input  type="hidden" name="hidenav" value="$hidenav" />
+	                      ## <input type="submit" id="gotopage" class="btn" value="Go" />
+	                       <a href="#" class="jumpto-left" ><span class="glyphicon glyphicon-triangle-left " style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
+	                       <a href="#" class="jumpto-right" ><span class="glyphicon glyphicon-triangle-right " style="color: rgb(200, 200, 200);font-size:1.8em;""></span></a>
+	                       </p>
+	                    </form>
+	                </div>                
+	         #end
 	</div>
-		#end	
+	<div class="col-md-10">
+		<div id="mainimageholder"> 
+			<img id="mainimage" src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/preview.png?pagenum=$!pagenum" alt="$!asset.name" />
+		</div>		
+	</div>
+</div>
+#end
 </div>		
+		
+		

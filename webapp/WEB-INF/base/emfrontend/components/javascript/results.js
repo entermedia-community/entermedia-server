@@ -130,7 +130,7 @@ jQuery(document).ready(function(url,params)
 	overlayResize = function()
 	{
 		var img = $("#hiddenoverlay #main-media");
-		var avwidth = $(window).width() - 200 - 2;
+		var avwidth = $(window).width() - 180;
 		$("#hiddenoverlay .playerarea").width(avwidth);
 		var w = img.data("width");
 		if(!isNaN(w) && w != "")
@@ -155,12 +155,14 @@ jQuery(document).ready(function(url,params)
 			else
 			{
 				var remaining = avheight - newh;
+				
 				if ( remaining > 0 )
 				{
 					remaining = remaining/2;
 					img.css("margin-top",remaining + "px");
 				}	
 			}
+			
 		}
 		else
 		{
@@ -358,6 +360,41 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("next");
 		showOverlay(id);
 	});
+	
+	
+	
+	
+	$("#hiddenoverlay").on("swipeleft",function(){
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("previous");
+		showOverlay(id);
+		});
+	$("#hiddenoverlay").on("swiperight",function(){
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("next");
+		showOverlay(id);
+		});
+	
+	jQuery('div.goleftlick .glyphicon-triangle-left').livequery('click',function(e)
+			{
+				e.preventDefault();
+				var div = $("#main-media-viewer" );
+				var id = div.data("previous");
+				showOverlay(id);
+
+			});
+			
+			jQuery('div.gorightlick .glyphicon-triangle-right').livequery('click',function(e)
+			{
+				e.preventDefault();
+				var div = $("#main-media-viewer" );
+				var id = div.data("next");
+				showOverlay(id);
+			});
+	
+	
 	jQuery('a.stackedplayer').livequery('click',function(e)
 	{
 		e.preventDefault();

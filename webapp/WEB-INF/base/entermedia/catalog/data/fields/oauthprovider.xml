@@ -41,6 +41,12 @@
       <language id="fr"><![CDATA[clientsecret]]></language> 
     </name> 
   </property>  
+  
+   <property id="refreshtoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">refresh token 
+   
+  </property>  
+  
+  
   <property id="redirecturi" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">redirecturi 
     <name> 
       <language id="de"><![CDATA[redirecturi]]></language>  

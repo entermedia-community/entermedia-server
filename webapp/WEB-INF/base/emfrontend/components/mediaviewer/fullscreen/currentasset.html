@@ -2,12 +2,12 @@
 #set( $index = $hits.indexOfId($asset.id))
 #set( $next = $hits.next($index))
 #set( $previous = $hits.previous($index))
-#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )	
-#set($searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
+#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 #set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
-#set($mediadbappid=$mediaarchive.getMediaDbId())
-
+#set( $mediadbappid=$mediaarchive.getMediaDbId())
+#set( $hidenav = $context.getPageValue("hidenav") )
 
 <div id="main-media-container">
 <div id="main-media-viewer" data-assetid="$asset.id" data-indexOf="$index"  data-next="$!next.id"  data-previous="$!previous.id" >
@@ -19,6 +19,12 @@
 	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
 </div>
 
+#if( $hidenav == true )
+<div style="margin-top: 25px;">
+ <span style="color: white;">$asset</span>
+ </div>
+
+#else
 <div id="footerbase">
 	<div id="footermenu">
 		<ul class="nav navbar-nav">
@@ -62,7 +68,7 @@
 		</ul>
 	</div>
 </div>
-
+#end
 
 <style>
 /*

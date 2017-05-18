@@ -112,6 +112,7 @@ public void init()
 			if( profile != null)
 			{
 				appid = profile.get("lastviewedapp");
+				log.info("User app id is set to " + appid);
 			}
 			if( appid == null)
 			{

@@ -1035,10 +1035,14 @@ uiload = function() {
 		}
 		var clickspot;
 		var imageposition;
-		var zoom = 40;
+		var zoom = 30;
 		var mainholder = $(this); 	
-		mainholder.height($(window).height());
-		mainholder.width($(window).width());
+		$("#mainimage" ).width($(window).width()/1.3);
+		/*mainholder.height($(window).height());
+		mainholder.width($(window).width());*/
+		//mainholder.height($(this).parent().height());
+		console.log($("#mainholder").width());
+		mainholder.width($("#mainimage").width());
 		var mainimage = $("#mainimage",mainholder);
 /*		var centerimage = function()
 		{

@@ -8,7 +8,7 @@
 <rsp stat="ok">
 <hits sessionid="$hits.sessionId" page="$hits.page" pages="$hits.totalPages" totalsize="$hits.size()">
 
-#set( $fields = $searcher.getPropertyDetails().findStoredProperties() )
+#set( $fields = $searcher.getPropertyDetails() )
 #foreach( $hit in $hits.getPageOfHits() )
 <hit #foreach( $field in $fields )
 #set( $value = false )
