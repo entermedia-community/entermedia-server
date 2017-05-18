@@ -1,0 +1,8 @@
+<page>
+	<property name="eventname">Sync Google Drive</property>	
+
+	<property name="virtual">true</property>
+	<path-action name="GoogleModule.syncAssets">
+		
+	</path-action>
+</page>
