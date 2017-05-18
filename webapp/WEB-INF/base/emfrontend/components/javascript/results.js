@@ -361,9 +361,6 @@ jQuery(document).ready(function(url,params)
 		showOverlay(id);
 	});
 	
-	
-	
-	
 	$("#hiddenoverlay").on("swipeleft",function(){
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
@@ -376,7 +373,6 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("next");
 		showOverlay(id);
 		});
-	
 	jQuery('div.goleftlick .glyphicon-triangle-left').livequery('click',function(e)
 			{
 				e.preventDefault();
@@ -395,6 +391,7 @@ jQuery(document).ready(function(url,params)
 			});
 	
 	
+
 	jQuery('a.stackedplayer').livequery('click',function(e)
 	{
 		e.preventDefault();

@@ -9,7 +9,11 @@
 	margin-left: auto;
 	margin-right: auto;
 }
-
+#main-media-viewer
+{
+	
+	margin-left: 15px;
+}
 #emcontainer .emplayerbox td
 {
 	padding: 10px;
