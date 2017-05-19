@@ -1120,7 +1120,7 @@ uiload = function() {
 	    var diffx = touch.pageX - startingx;
 	    var diffy = touch.pageY - startingy;
 	    var swipe = false;
-	    if( diffx > diffy )
+	    if(  Math.abs(diffx) >  Math.abs(diffy) )
 	    {
 	    	var change  = Math.abs(diffx) / div.width();
 	    	if( change > .2 )

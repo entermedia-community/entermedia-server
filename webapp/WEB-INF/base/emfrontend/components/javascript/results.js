@@ -388,7 +388,7 @@ jQuery(document).ready(function(url,params)
 	});
 	
 	$("#main-media").livequery("swipeleft",function(){
-		e.preventDefault();
+		
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
 		if( id ) 
@@ -397,7 +397,7 @@ jQuery(document).ready(function(url,params)
 		}	
 		});
 	$("#main-media").livequery("swiperight",function(){
-		console.log("Got Swiperight",this);
+	
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
 		if( id ) 
