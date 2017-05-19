@@ -265,36 +265,24 @@ div#hiddenoverlay .playerarea {
 	width: 100%;
 
 }
+.goleftclick, .gorightclick {
+	display: inline;
+}  
 
-#goleftclick span.glyphicon {
+.goleftclick span.glyphicon {
 
-	font-size: 50px;
-
+	font-size: 30px;
+	color: rgb(255,255,255);
+	display: inline;
 }
 
-#gorightclick span.glyphicon {
+.gorightclick span.glyphicon {
 
-	font-size: 50px;
-
+	font-size: 30px;
+	color: rgb(255,255,255);
+	display: inline;
 }
 
-.overlay-margin span.overlay-nav {
-
-	font-size: 50px;
-	color: rgb(200,200,200);
-
-}
-
-span.glyphicon-triangle-right.overlay-nav {
-
-	float: right;
-}
-
-.overlay-nav {
-	margin: 10px;
-	margin-top: 250px;
-
-}
 
 #emthumbholder img.mimethumb {
 
@@ -610,7 +598,7 @@ background-color: #eee;
 {
 	background-color: black;
 	display:none;
-	position: fixed;
+	position: relative;
     top: 0;
     left: 0;
     width: 100%;

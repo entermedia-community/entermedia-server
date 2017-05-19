@@ -1,7 +1,4 @@
 <page>
-
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<inner-layout>/${themeprefix}/layouts/application.html</inner-layout>
-	
-
 </page>

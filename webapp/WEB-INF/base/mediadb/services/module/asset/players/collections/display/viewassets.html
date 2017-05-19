@@ -1,18 +1,13 @@
 <div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
-
-
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
-#if( !$thumbsize )
-    #set( $thumbsize  = "thumb" )
-#end
-
 $context.putPageValue("showtoolbar", "false")
 
 #if( !$thumbsize )
     #set( $thumbsize  = "mediumplus" )
 #end
+
 #if ( $hits && $hits.size() > 0 )
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
   	$context.putPageValue("details",$details)

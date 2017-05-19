@@ -1,23 +1,20 @@
  <div id="cuepoint-products" data-cueid="${cue.id}">
-
 #if($canmanagevideos )	
 	<div class="row-fluid cuepoint-actions" >
-<div class="span1 offset9">
-<div class="btn-group">
-  <button class="btn btn-danger"> <i class="glyphicon  glyphicon-cog icon-white"></i> </button>
-  <button class="btn  btn-danger dropdown-toggle " data-toggle="dropdown">
-    <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu pull-right">
-		<li><a href="#" class="disabled"   >Cue: ${cue.timecode}s</a></li>
-		<li><a href="$apphome/simple.html?oemaxlevel=1"  data-target="#productModal"  data-toggle="modal"  >Add New Product</a></li>
-		<li><a href="$apphome/views/modules/product/addexisting.html?oemaxlevel=1&cueid=$cuepoint.id" data-remote="" data-target="#productModal"  data-toggle="modal"  >Add Existing Product</a></li>
-		<li><a href="#" data-remote="$apphome/components/dialogedit/edit.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >Cuepoint Details</a></li> 
-		<li><a href="#" data-remote="$apphome/components/dialogedit/delete.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >Delete Cue Point</a></li> 
-  </ul>
-</div>
-</div>
-</div>
+			<div class="span1 offset9">
+				<div class="btn-group">
+					  	<button class="btn btn-danger"> <i class="glyphicon  glyphicon-cog icon-white"></i> </button>
+				  		<button class="btn  btn-danger dropdown-toggle " data-toggle="dropdown"><span class="caret"></span></button>
+				 	 <ul class="dropdown-menu pull-right">
+						<li><a href="#" class="disabled"   >Cue: ${cue.timecode}s</a></li>
+						<li><a href="$apphome/simple.html?oemaxlevel=1"  data-target="#productModal"  data-toggle="modal"  >Add New Product</a></li>
+						<li><a href="$apphome/views/modules/product/addexisting.html?oemaxlevel=1&cueid=$cuepoint.id" data-remote="" data-target="#productModal"  data-toggle="modal"  >Add Existing Product</a></li>
+						<li><a href="#" data-remote="$apphome/components/dialogedit/edit.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >Cuepoint Details</a></li> 
+						<li><a href="#" data-remote="$apphome/components/dialogedit/delete.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >Delete Cue Point</a></li> 
+				  	</ul>
+				</div>
+		</div>
+  </div>
 #end
 
  <div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -25,7 +22,7 @@
       <div class="modal-content">
         <div class="modal-header">
           <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-          <h4 class="modal-title">Cuepoint Configuration</h4>
+          <h4 class="modal-title">[[Cuepoint Configuration]]</h4>
         </div>
         <div class="modal-body">
 			      
@@ -34,8 +31,8 @@
 </div>
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
+          <button type="button" class="btn btn-default" data-dismiss="modal">[[Close]]</button>
+          <button type="button" class="btn btn-primary">[[Save changes]]</button>
         </div>
       </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->

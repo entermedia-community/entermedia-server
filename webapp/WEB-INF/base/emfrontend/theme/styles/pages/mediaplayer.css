@@ -9,7 +9,6 @@
 	margin-left: auto;
 	margin-right: auto;
 }
-
 #emcontainer .emplayerbox td
 {
 	padding: 10px;
@@ -344,15 +343,77 @@ color: #fff;
 	text-align:center;
 }
 
-#mainimage
-{
-margin-left: 5%;
-}
 
 #footerholder
 {
-	position: absolute;
-	top: 2px;
-	left: 367px;
 	color: #eee;
+}
+
+/*
+#main-media:HOVER+#footerbase {
+	visibility: visible;
+}
+*/
+
+
+
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover
+{
+	    background-color: #121212
+}
+.nav>li>a:focus, .nav>li>a:hover
+{
+    background-color: #121212
+}
+
+#download-select 
+{
+	opacity: 1;
+}
+
+#footerbase { 
+	position: absolute;
+	width: 100%;
+	bottom:0px;
+	opacity: 0.8;
+	background-color: #333;
+}
+
+
+#footermenu {
+	width: 100%;
+	list-style: none;
+}
+#footermenu ul{
+	margin: 0;
+	padding: 0;
+}
+
+#footermenu li {
+	font-size: large;	
+	font-weight: normal;
+	padding-left: 5%;
+	float:left;
+	display:block;
+}
+
+#download-select
+{
+}
+
+
+#footermenu a {
+	color: white;	
+	margin-top: 4px;
+	display:block;
+}
+
+#footermenu div.dropup {
+}
+
+body.widthless500 #pdf-thumbnail-sidebar 
+{
+	display: none;
+
+
 }
