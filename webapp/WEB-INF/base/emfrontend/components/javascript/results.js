@@ -406,24 +406,6 @@ jQuery(document).ready(function(url,params)
 			showAsset(id);
 		}	
 		});
-	jQuery('div.goleftclick .glyphicon-triangle-left').livequery('click',function(e)
-			{
-				e.preventDefault();
-				var div = $("#main-media-viewer" );
-				var id = div.data("previous");
-				showAsset(id);
-
-			});
-			
-			jQuery('div.gorightclick .glyphicon-triangle-right').livequery('click',function(e)
-			{
-				e.preventDefault();
-				var div = $("#main-media-viewer" );
-				var id = div.data("next");
-				showAsset(id);
-			});
-	
-	
 
 	jQuery('a.stackedplayer').livequery('click',function(e)
 	{
