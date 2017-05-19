@@ -208,21 +208,22 @@ jQuery(document).ready(function(url,params)
 			}
 	}
 	
-	hideOverlay = function(inOverlay)
+	hideOverlayDiv = function(inOverlay)
 	{
-		$("html, body").css({"overflow":"auto","height":"inherit"});
+		//$("html, body").css({"overflow":"auto","height":"inherit"});
+		$("#application").show();
 		inOverlay.hide();
 	}
 	
 	showOverlayDiv = function(inOverlay)
 	{
-		$("html").css({"overflow":"hidden","height":"100%"});
-		$("body").css({"overflow":"hidden","height":"100%"});
+		//$("html").css({"overflow":"hidden","height":"100%"});
+		//$("body").css({"overflow":"hidden","height":"100%"});
+		$("#application").hide();
 		inOverlay.show();
 	}
 	
-	
-	showOverlay = function(assetid,pagenum)
+	showAsset = function(assetid,pagenum)
 	{
 		var hidden = getOverlay();
 		var grid = $(".masonry-grid");
@@ -264,7 +265,7 @@ jQuery(document).ready(function(url,params)
 			}
 			switch(e.which) {
 		        case 27: // esc
-		       	 hideOverlay(getOverlay());
+		       	 hideOverlayDiv(getOverlay());
 		        break;
 			    
 			    default: return; 
@@ -290,14 +291,14 @@ jQuery(document).ready(function(url,params)
 		        	var id = div.data("next");
 		        	if( id )
 		        	{
-			        	showOverlay(id);
+			        	showAsset(id);
 			        }	
 		        break;
 		        
 		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
 		        
 		        case 27: // esc
-		         	 hideOverlay(getOverlay());
+		         	 hideOverlayDiv(getOverlay());
 		        break;
 		
 		       
@@ -375,7 +376,7 @@ jQuery(document).ready(function(url,params)
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
-		showOverlay(id);
+		showAsset(id);
 
 	});
 	
@@ -384,7 +385,7 @@ jQuery(document).ready(function(url,params)
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
-		showOverlay(id);
+		showAsset(id);
 	});
 	
 	$("#main-media").livequery("swipeleft",function(){
@@ -393,7 +394,7 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("previous");
 		if( id ) 
 		{
-			showOverlay(id);
+			showAsset(id);
 		}	
 		});
 	$("#main-media").livequery("swiperight",function(){
@@ -402,7 +403,7 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("next");
 		if( id ) 
 		{
-			showOverlay(id);
+			showAsset(id);
 		}	
 		});
 	jQuery('div.goleftclick .glyphicon-triangle-left').livequery('click',function(e)
@@ -410,7 +411,7 @@ jQuery(document).ready(function(url,params)
 				e.preventDefault();
 				var div = $("#main-media-viewer" );
 				var id = div.data("previous");
-				showOverlay(id);
+				showAsset(id);
 
 			});
 			
@@ -419,7 +420,7 @@ jQuery(document).ready(function(url,params)
 				e.preventDefault();
 				var div = $("#main-media-viewer" );
 				var id = div.data("next");
-				showOverlay(id);
+				showAsset(id);
 			});
 	
 	
@@ -430,7 +431,7 @@ jQuery(document).ready(function(url,params)
 		var link = $(this);
 		var assetid = link.data("assetid");
 		var pagenum = link.data("pagenum"); 
-		showOverlay(assetid,pagenum);
+		showAsset(assetid,pagenum);
 		return false;
 	});
 	
@@ -439,8 +440,7 @@ jQuery(document).ready(function(url,params)
 	$("#hiddenoverlay .overlay-close").livequery('click',function(e)
 	{	
 		e.preventDefault();
-		var hidden = $("#hiddenoverlay");
-		hidden.hide();
+		hideOverlayDiv(getOverlay());
 	});
 	
 	$("#hiddenoverlay .overlay-popup span").livequery('click',function(e)
