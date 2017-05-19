@@ -1037,21 +1037,8 @@ uiload = function() {
 		var imageposition;
 		var zoom = 30;
 		var mainholder = $(this); 	
-		$("#mainimage" ).width($(window).width()/1.3);
-		/*mainholder.height($(window).height());
-		mainholder.width($(window).width());*/
-		//mainholder.height($(this).parent().height());
-		console.log($("#mainholder").width());
-		mainholder.width($("#mainimage").width());
 		var mainimage = $("#mainimage",mainholder);
-/*		var centerimage = function()
-		{
-			var left = ( $(window).width() - mainimage.width() - $(".overlay-margin").width() ) / 2;
-			mainimage.css({"left" : left + "px"});
-		};
-	 	mainimage.on("load",centerimage);
-*/	 	
-	
+		mainimage.width(mainholder.width());
 		$(window).bind('mousewheel DOMMouseScroll', function(event)
 		{
 			var mainimage = $("#mainimage");
@@ -1107,22 +1094,115 @@ uiload = function() {
 		});		
 	
 	});	
+
+
+	document.addEventListener('touchstart', function(e) 
+	{
+	 	var touch = e.touches[0];
+	 	var div = $(e.target)
+	 	div.data("touchstartx",touch.pageX);
+	 	div.data("touchstarty",touch.pageY);
+	});	
+	document.addEventListener('touchend', function(e) 
+	{
+	 	var touch = e.touches[0];
+	 	var div = $(e.target)
+	 	div.removeData("touchstartx");
+	 	div.removeData("touchstarty");
+	});
+
+	document.addEventListener('touchmove', function(e) 
+	{
+	    var touch = e.touches[0];
+	    var div = $(e.target);
+	    var startingx = div.data("touchstartx");
+	    var startingy = div.data("touchstarty");
+	    var diffx = touch.pageX - startingx;
+	    var diffy = touch.pageY - startingy;
+	    var swipe = false;
+	    if( diffx > diffy )
+	    {
+	    	var change  = Math.abs(diffx) / div.width();
+	    	if( change > .2 )
+	    	{
+	    		if(diffx > 0 )
+	    		{
+					swipe = "swiperight";	    			
+	    		}
+	    		else
+	    		{
+	    			swipe = "swipeleft";
+	    		}
+	    	}
+	    }
+	    else
+	    {
+	    	//do swipeup and swipedown
+	    	var change  = Math.abs(diffy) / div.height();
+	    	if( change > .2 )
+	    	{
+	    		if(diffy > 0 )
+	    		{
+					swipe = "swipedown";	    			
+	    		}
+	    		else
+	    		{
+	    			swipe = "swipeup";
+	    		}
+	    	}
+	    	
+	    }
+	    
+	    if( swipe )
+	    {
+	    	console.log(div);
+	    	var event = {};
+	    	event.originalEvent = e;
+	    	event.preventDefault = function() {};
+	    	//TODO: Find out why I can't trigger on $(e.target).trigger it ignores us
+	    	
+		    $("#" + div.attr("id") ).trigger(swipe);
+		}  
+	    
+	    
+	}, false);
 	
 }
 
 
 jQuery(document).ready(function() 
 { 
-	uiload();
-	$(window).on('resize',function()
+	var resizecss = function()
 	{
+		//Old stuff?
 		w1 = ( $('#main').width() - $('#left-col').width() - 41 );
 		$('#right-col .liquid-sizer').width(w1);
 		w2 = ( $('#data').width() - 40 );
 		$('#asset-data').width(w2);
-		//w3 = ( w2 - 23);
-		//$('#commenttext').width(w3);
-	});
+		
+		var body = $("body");
+
+		//TODO: use bootrap css?
+		body.removeClass("widthless100").removeClass("widthless500").removeClass("widthless1000");
+		
+		var width = $(window).width();
+		if( width < 100 )
+		{
+			body.addClass("widthless100");
+		}
+		else if( width < 500 )
+		{
+			body.addClass("widthless500");
+		}
+		else if( width < 1000 )
+		{
+			body.addClass("widthless1000");
+		}
+	};
+	$(window).on('resize',	resizecss );
+	resizecss();
+	
+	uiload();
 
 }); 
 

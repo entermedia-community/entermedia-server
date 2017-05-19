@@ -130,7 +130,12 @@ jQuery(document).ready(function(url,params)
 	overlayResize = function()
 	{
 		var img = $("#hiddenoverlay #main-media");
-		var avwidth = $(window).width() - 180;
+		var avwidth = $(window).width();
+		var wheight = $(window).height();
+		var overlay = $("#hiddenoverlay");
+		overlay.height(wheight);
+		overlay.width(avwidth);
+		
 		$("#hiddenoverlay .playerarea").width(avwidth);
 		var w = img.data("width");
 		if(!isNaN(w) && w != "")
@@ -161,6 +166,10 @@ jQuery(document).ready(function(url,params)
 					remaining = remaining/2;
 					img.css("margin-top",remaining + "px");
 				}	
+				else
+				{
+					img.css("margin-top","0px");
+				}	
 			}
 			
 		}
@@ -168,6 +177,7 @@ jQuery(document).ready(function(url,params)
 		{
 			img.width(avwidth);
 			img.css("height", "auto");
+			img.css("margin-top","0px");
 		}
 	}
 	$(window).resize(function(){
@@ -189,14 +199,29 @@ jQuery(document).ready(function(url,params)
 			if( inData == "")
 			{
 				$(inSpan).css("color","#333");
-				$(inSpan).hide();
+				$(inSpan).css("visibility","hidden");
 			}
 			else
 			{
 				$(inSpan).css("color","rgb(200,200,200)");
-				$(inSpan).show();
+				$(inSpan).css("visibility","visible");
 			}
 	}
+	
+	hideOverlay = function(inOverlay)
+	{
+		$("html, body").css({"overflow":"auto","height":"inherit"});
+		inOverlay.hide();
+	}
+	
+	showOverlayDiv = function(inOverlay)
+	{
+		$("html").css({"overflow":"hidden","height":"100%"});
+		$("body").css({"overflow":"hidden","height":"100%"});
+		inOverlay.show();
+	}
+	
+	
 	showOverlay = function(assetid,pagenum)
 	{
 		var hidden = getOverlay();
@@ -215,7 +240,9 @@ jQuery(document).ready(function(url,params)
 		}
 		jQuery.get(link, params, function(data) 
 		{
-			hidden.show();
+			
+			showOverlayDiv(hidden);
+			
 			var container = $("#main-media-container");
 			container.replaceWith(data);
 			overlayResize();
@@ -224,7 +251,6 @@ jQuery(document).ready(function(url,params)
 			enable(id,"span.glyphicon-triangle-left");
 			id = div.data("next");
 			enable(id,"span.glyphicon-triangle-right");
-			hidden.show();
 		});
 	}
 	
@@ -238,7 +264,7 @@ jQuery(document).ready(function(url,params)
 			}
 			switch(e.which) {
 		        case 27: // esc
-		       	 getOverlay().hide();
+		       	 hideOverlay(getOverlay());
 		        break;
 			    
 			    default: return; 
@@ -255,7 +281,7 @@ jQuery(document).ready(function(url,params)
 		        	var id = div.data("previous");
 		        	if( id )
 		        	{
-			        	showOverlay(id);
+			        	showOverlayDiv(id);
 			        }		        	
 		        break;
 		
@@ -271,7 +297,7 @@ jQuery(document).ready(function(url,params)
 		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
 		        
 		        case 27: // esc
-		         getOverlay().hide();
+		         	 hideOverlay(getOverlay());
 		        break;
 		
 		       
@@ -296,7 +322,7 @@ jQuery(document).ready(function(url,params)
 			}
 			
 			jQuery.ajax({ url:href,async: false, data: {oemaxlevel:1}, success: function(data) {
-				$('body').append(data);
+				$('body').prepend(data);
 				hidden = $("#hiddenoverlay");
 				initKeyBindings(hidden);
 			}
@@ -344,7 +370,7 @@ jQuery(document).ready(function(url,params)
 		
 	});
 	
-	jQuery('div.goleftlick .glyphicon-triangle-left').livequery('click',function(e)
+	jQuery('div.goleftclick .glyphicon-triangle-left').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
@@ -353,7 +379,7 @@ jQuery(document).ready(function(url,params)
 
 	});
 	
-	jQuery('div.gorightlick .glyphicon-triangle-right').livequery('click',function(e)
+	jQuery('div.gorightclick .glyphicon-triangle-right').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
@@ -361,19 +387,25 @@ jQuery(document).ready(function(url,params)
 		showOverlay(id);
 	});
 	
-	$("#hiddenoverlay").on("swipeleft",function(){
+	$("#main-media").livequery("swipeleft",function(){
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
-		showOverlay(id);
+		if( id ) 
+		{
+			showOverlay(id);
+		}	
 		});
-	$("#hiddenoverlay").on("swiperight",function(){
-		e.preventDefault();
+	$("#main-media").livequery("swiperight",function(){
+		console.log("Got Swiperight",this);
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
-		showOverlay(id);
+		if( id ) 
+		{
+			showOverlay(id);
+		}	
 		});
-	jQuery('div.goleftlick .glyphicon-triangle-left').livequery('click',function(e)
+	jQuery('div.goleftclick .glyphicon-triangle-left').livequery('click',function(e)
 			{
 				e.preventDefault();
 				var div = $("#main-media-viewer" );
@@ -382,7 +414,7 @@ jQuery(document).ready(function(url,params)
 
 			});
 			
-			jQuery('div.gorightlick .glyphicon-triangle-right').livequery('click',function(e)
+			jQuery('div.gorightclick .glyphicon-triangle-right').livequery('click',function(e)
 			{
 				e.preventDefault();
 				var div = $("#main-media-viewer" );

@@ -2,13 +2,6 @@
 ##otherwise just look for swipe events on image or on the sides of video
 <div id="hiddenoverlay">
 
-#if( $hidenav == true )
-  <div class="overlay-margin">
-	<div class="goleftlick" >
-		<span class="glyphicon glyphicon-triangle-left overlay-nav"></span>
-	</div>
-  </div>
-	 #end
   <div class="playerarea" >
   	##<img style="position: absolute; top: 15px; left: 15px;" src="$apphome/theme/images/icons/popup.svg"/>
 #if( $asset)
@@ -19,9 +12,5 @@
 #end		
   </div>
   
-#if( $hidenav == true )
-  <div class="overlay-margin">
-    <div class="overlay-close largeicon"><span class="glyphicon glyphicon-remove-circle"></span></div>		
-  </div>
-  #end
+  <div class="overlay-close largeicon"><span class="glyphicon glyphicon-remove-circle"></span></div>		
 </div>
