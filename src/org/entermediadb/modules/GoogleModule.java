@@ -21,9 +21,8 @@ public class GoogleModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(GoogleModule.class);
 
-
 	protected GoogleManager fieldGoogleManager;
-	
+
 	public GoogleManager getGoogleManager()
 	{
 		return fieldGoogleManager;
@@ -34,62 +33,69 @@ public class GoogleModule extends BaseMediaModule
 		fieldGoogleManager = inGoogleManager;
 	}
 
-	public void syncAssets(WebPageRequest inReq) throws Exception{
-		
+	public void syncAssets(WebPageRequest inReq) throws Exception
+	{
+
 		MediaArchive archive = getMediaArchive(inReq);
 		Data authinfo = archive.getData("oauthprovider", "google");
 		List files = new ArrayList();
 		String startkey = getGoogleManager().listDriveFile(authinfo, files, null);
-		
-		while(startkey != null){
-			 startkey = getGoogleManager().listDriveFile(authinfo, files, startkey);
+
+		while (startkey != null)
+		{
+			startkey = getGoogleManager().listDriveFile(authinfo, files, startkey);
+
+			if (files.size() > 500)
+			{
+
+				createList(archive, files);
+				files.clear();
+			}
 
 		}
-		for (Iterator iterator = files.iterator(); iterator.hasNext();)
+
+	}
+
+	private void createList(MediaArchive inArchive, List inFiles)
+	{
+		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 		{
 			JsonObject object = (JsonObject) iterator.next();
 			String id = object.get("id").getAsString();
-			 log.info(object.get("kind"));// "kind": "drive#file",
-
+			log.info(object.get("kind"));// "kind": "drive#file",
 			String filename = object.get("name").getAsString();
 			JsonElement webcontentelem = object.get("webContentLink");
-	
-			
+
 			JsonElement jsonElement = object.get("webViewLink");
-		
-			
-		//	String md5 = object.get("md5Checksum").getAsString();
-			Category google = archive.createCategoryPath("/Google Drive");//need to recreate folder structue still
-			Data asset = (Asset) archive.getAssetSearcher().query().exact("googleid", id).searchOne();
-			if(asset == null){
-				Asset newasset = (Asset) archive.getAssetSearcher().createNewData();
-				newasset.setSourcePath("/Google Drive/"+ id);
+
+			//	String md5 = object.get("md5Checksum").getAsString();
+			Category google = inArchive.createCategoryPath("/Google Drive");//need to recreate folder structue still
+			Data asset = (Asset) inArchive.getAssetSearcher().query().exact("googleid", id).searchOne();
+			if (asset == null)
+			{
+				Asset newasset = (Asset) inArchive.getAssetSearcher().createNewData();
+				newasset.setSourcePath("/Google Drive/" + id);
 				newasset.setValue("googleid", id);
 				newasset.setName(filename);
-				if(webcontentelem != null){
+				if (webcontentelem != null)
+				{
 					newasset.setValue("importstatus", "needsdownload");
 
-				newasset.setValue("fetchurl", webcontentelem.getAsString());
+					newasset.setValue("fetchurl", webcontentelem.getAsString());
 				}
-				if(jsonElement != null){
+				if (jsonElement != null)
+				{
 					newasset.setValue("google-view-link", jsonElement.getAsString());
 					newasset.setValue("fetchthumbnailurl", jsonElement.getAsString());
 
-					
 				}
-//				newasset.setValue("md5hex", md5);
+				//			newasset.setValue("md5hex", md5);
 				newasset.addCategory(google);
-				archive.getAssetSearcher().saveData(newasset);
-			}
-			
-			
+				inArchive.getAssetSearcher().saveData(newasset);
+			} // TODO Auto-generated method stub
+
 		}
-		
-		
-		
+
 	}
-	
-	
-	
-	
+
 }

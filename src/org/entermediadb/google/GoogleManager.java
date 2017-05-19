@@ -60,9 +60,7 @@ public class GoogleManager
 				String name = object.get("name").getAsString();
 				String id = object.get("id").getAsString();
 				filelist.add(object);
-//				JsonElement fileinfo = get(fileurl + "/" + id  + "?fields=*", "get", authinfo);
-//				filelist.add(fileinfo);
-//				log.info(fileinfo);
+
 				
 			}
 		    

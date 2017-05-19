@@ -63,20 +63,20 @@ public void init() {
 				{
 					current.setValue("assettype","embedded");
 				}
+				
+				
 				regenerate = true;
 			}
-			else
-			{	
-				String fetchthumbnailurl = current.fetchthumbnailurl;
-				if(fetchthumbnailurl != null )
-				{
-					String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/generated/" + current.getSourcePath()	+ "/customthumb.jpg";
-					Page finalfile = archive.getPageManager().getPage(path);
-					File image = new File(finalfile.getContentItem().getAbsolutePath());
-					archive.removeGeneratedImages(current, false);	
-					dl.download(fetchthumbnailurl, image);
-				}
-			}			
+			
+			String fetchthumbnailurl = current.fetchthumbnailurl;
+			if(fetchthumbnailurl != null )
+			{
+				String path = "/WEB-INF/data/"	+ archive.getCatalogId() + "/generated/" + current.getSourcePath()	+ "/customthumb.jpg";
+				Page finalfile = archive.getPageManager().getPage(path);
+				File image = new File(finalfile.getContentItem().getAbsolutePath());
+				archive.removeGeneratedImages(current, false);
+				dl.download(fetchthumbnailurl, image);
+			}
 			if( regenerate )
 			{
 				current.setValue("importstatus","imported");				
