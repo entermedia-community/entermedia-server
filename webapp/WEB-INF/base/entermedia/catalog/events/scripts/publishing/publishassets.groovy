@@ -142,7 +142,7 @@ protected firePublishEvent(String inOrderItemId)
 	event.setOperation("publishing/publishcomplete");
 	event.setUser(context.getUser());
 	event.setCatalogId(mediaarchive.getCatalogId());
-	mediaarchive.getEventManager().fireEvent();
+	mediaarchive.getEventManager().fireEvent(event);
 
 }
 
