@@ -3,7 +3,7 @@
 #if(!$asset)
 	#set( $asset = $mediaarchive.getAsset($context.getRequestParameter("dataid")) )   
 	#if(!$asset && $entry)
-	#set( $asset = $mediaarchive.getAsset($entry.assetid) )    
+		#set( $asset = $mediaarchive.getAsset($entry.assetid) )    
 	#end
 #end
 

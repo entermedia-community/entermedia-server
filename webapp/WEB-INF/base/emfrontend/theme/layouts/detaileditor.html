@@ -9,12 +9,12 @@
     #set( $moduleid = $context.findValue("module") )
     #set ( $hitssessionid = $context.findValue("hitssessionid") )
     #macro (displaydetails $filename $label $assetid $view $print)
-    $context.putPageValue("view", $view)
-    #if ($print && $print == "true")
-    $pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=$moduleid", $context)
-    #else
-    $pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=$moduleid",$context)
-    #end
+	    $context.putPageValue("view", $view)
+	    #if ($print && $print == "true")
+	    	$pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=$moduleid", $context)
+	    #else
+	    	$pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=$moduleid",$context)
+	    #end
     #end
     
     ##TODO: remove this, use a path action to load em up
@@ -22,16 +22,12 @@
 	#if($hitssessionid)
 		#set($hits = $context.getSessionValue($hitssessionid))
 		#if( $hits )$context.putPageValue("hits",$hits) #end
-	#end
-    
+	#end   
 
     #if( $asset )
-
-              $pages.include("$apphome/components/detaileditor/navigate.html", $context)
+            $pages.include("$apphome/components/detaileditor/navigate.html", $context)
    
-    #set( $assettab = $context.findValue("assettab") )
-    
-   
+    #set( $assettab = $context.findValue("assettab") )   
     
     <div id="detailarea">
         <div id="de-table">
@@ -42,25 +38,21 @@
                 <div class="title-bar" id="details-title">
                     <span>$section</span>
                 </div>
-                #if( $canviewassets )
-                
+                #if( $canviewassets )                
                 <div class="title-bar" style="border-right: none;">
-                #if( $hits && $hits.hasMultipleSelections() )
-                    <span style="text-align: center;">[[Selected Media]]</span>
-                #else
+	                #if( $hits && $hits.hasMultipleSelections() )
+	                    <span style="text-align: center;">[[Selected Media]]</span>
+	                #else
                     <span style="text-align: center;">#if($isattachments)[[Attachments]] #else [[Related Media]]#end</span>
-                #end    
+                	#end    
                 </div>
                 #end
             </div>
             <div class="tr">
                 <div id="de-side-nav" class="open">
-
                     $pages.include("$apphome/components/detaileditor/assetmenuul.html?moduleid=$moduleid",$context)
-
                 </div>
                 <div id="details">
-
                     <div id="resultslist">
                         #set( $inpreviewpage = $content.isPropertyTrue("showpreviewpage") )
                         #if( $content.assetrootfolder && $content.path.startsWith($content.assetrootfolder) )
@@ -74,15 +66,13 @@
                         #else
                            #set( $showviewer = $content.isPropertyTrue("showviewer") )
                             #if($showviewer)
-                            	                        $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
+                            	  $pages.include("$apphome/views/modules/$moduleid/editor/viewer/index.html", $context)
                             
                             #else
-								                            #set( $hidepreview = $content.isPropertyTrue("hidepreview" ))
-								                        #if(!$hidepreview)
-                                                        
-                                                        
-                                                        $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
-                                                        #end
+								 #set( $hidepreview = $content.isPropertyTrue("hidepreview" ))
+			                       #if(!$hidepreview)
+                                          $pages.include("$apphome/components/mediaviewer/player/mini.html", $context)
+                                   #end
                             #end
                             #set ($listid =  $content.tab )
                             #if ($content.subtab)
@@ -98,28 +88,20 @@
                                 </ul>
                             </div>
                             #end
-
-	      
-
                             $pages.includeContent()
-                            
                         #end
-
                     </div>
                 </div>
-                #if( $canviewassets || $order )
-                
-                #if( $hits && $hits.hasMultipleSelections() )
-                <div id="selected-media">
-                    $pages.include("$apphome/components/results/related/byselection.html",$context)
-                </div>
-                #else
-                <div id="related-media">
-
-                    $pages.include("$apphome/components/results/related/bykeyword.html",$context)
-                </div>
-                #end
-                
+                #if( $canviewassets || $order )                
+	                #if( $hits && $hits.hasMultipleSelections() )
+		                <div id="selected-media">
+		                    $pages.include("$apphome/components/results/related/byselection.html",$context)
+		                </div>
+	                #else
+	                <div id="related-media">
+	                    $pages.include("$apphome/components/results/related/bykeyword.html",$context)
+	                </div>
+               		 #end
                 #end
             </div>
         </div>
@@ -143,14 +125,8 @@
     </script>
 
     #else
-
-    <p class="info" style="margin: 20px;">
-        [[Asset is missing]]
-    </p>
-
+	    <p class="info" style="margin: 20px;">
+	        [[Asset is missing]]
+	    </p>
     #end
-
 </div>
-
-
-
