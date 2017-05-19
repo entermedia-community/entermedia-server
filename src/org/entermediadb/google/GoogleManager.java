@@ -1,7 +1,6 @@
 package org.entermediadb.google;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.net.URLEncoder;
 import java.util.Iterator;
 import java.util.List;
 
@@ -34,18 +33,26 @@ public class GoogleManager
 	private static final Log log = LogFactory.getLog(GoogleManager.class);
 
 	
-	public List listDriveFile(Data authinfo) throws Exception
+	public String listDriveFile(Data authinfo, List filelist, String startkey) throws Exception
 	{
 		String fileurl = "https://www.googleapis.com/drive/v3/files?fields=*";
-
+		if(startkey != null){
+			fileurl = fileurl + "&pageToken=" + URLEncoder.encode(startkey, "UTF-8");;
+		}
+		
 	
-		ArrayList filelist = new ArrayList();
 		try
 		{
 			
 			JsonElement elem = get(fileurl, "get", authinfo);
 		    JsonObject	array = elem.getAsJsonObject();
-		    
+			JsonElement pagekey = array.get("nextPageToken");
+			if(pagekey != null){
+				startkey = pagekey.getAsString();
+			} else{
+				startkey = null;
+			}
+
 		    JsonArray files = array.getAsJsonArray("files");
 		    for (Iterator iterator = files.iterator(); iterator.hasNext();)
 			{
@@ -70,7 +77,7 @@ public class GoogleManager
 
 		}
 		
-		return filelist;
+		return startkey;
 		
 		
 	}
@@ -99,7 +106,7 @@ public class GoogleManager
 		String content = IOUtils.toString(entity.getContent());
 		JsonParser parser = new JsonParser();
 		JsonElement elem = parser.parse(content);
-		log.info(content);
+		//log.info(content);
 		return elem;
 		
 	}
