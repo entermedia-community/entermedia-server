@@ -208,21 +208,24 @@ jQuery(document).ready(function(url,params)
 			}
 	}
 	
-	hideOverlay = function(inOverlay)
+	hideOverlayDiv = function(inOverlay)
 	{
-		$("html, body").css({"overflow":"auto","height":"inherit"});
+		//$("html, body").css({"overflow":"auto","height":"inherit"});
+		$("#application").show();
 		inOverlay.hide();
+		stopautoscroll = false;
 	}
 	
 	showOverlayDiv = function(inOverlay)
 	{
-		$("html").css({"overflow":"hidden","height":"100%"});
-		$("body").css({"overflow":"hidden","height":"100%"});
+		stopautoscroll = true;
+		//$("html").css({"overflow":"hidden","height":"100%"});
+		//$("body").css({"overflow":"hidden","height":"100%"});
+		$("#application").hide();
 		inOverlay.show();
 	}
 	
-	
-	showOverlay = function(assetid,pagenum)
+	showAsset = function(assetid,pagenum)
 	{
 		var hidden = getOverlay();
 		var grid = $(".masonry-grid");
@@ -264,7 +267,7 @@ jQuery(document).ready(function(url,params)
 			}
 			switch(e.which) {
 		        case 27: // esc
-		       	 hideOverlay(getOverlay());
+		       	 hideOverlayDiv(getOverlay());
 		        break;
 			    
 			    default: return; 
@@ -290,14 +293,14 @@ jQuery(document).ready(function(url,params)
 		        	var id = div.data("next");
 		        	if( id )
 		        	{
-			        	showOverlay(id);
+			        	showAsset(id);
 			        }	
 		        break;
 		        
 		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
 		        
 		        case 27: // esc
-		         	 hideOverlay(getOverlay());
+		         	 hideOverlayDiv(getOverlay());
 		        break;
 		
 		       
@@ -375,7 +378,7 @@ jQuery(document).ready(function(url,params)
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
-		showOverlay(id);
+		showAsset(id);
 
 	});
 	
@@ -384,7 +387,7 @@ jQuery(document).ready(function(url,params)
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
-		showOverlay(id);
+		showAsset(id);
 	});
 	
 	$("#main-media").livequery("swipeleft",function(){
@@ -393,7 +396,7 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("previous");
 		if( id ) 
 		{
-			showOverlay(id);
+			showAsset(id);
 		}	
 		});
 	$("#main-media").livequery("swiperight",function(){
@@ -402,27 +405,9 @@ jQuery(document).ready(function(url,params)
 		var id = div.data("next");
 		if( id ) 
 		{
-			showOverlay(id);
+			showAsset(id);
 		}	
 		});
-	jQuery('div.goleftclick .glyphicon-triangle-left').livequery('click',function(e)
-			{
-				e.preventDefault();
-				var div = $("#main-media-viewer" );
-				var id = div.data("previous");
-				showOverlay(id);
-
-			});
-			
-			jQuery('div.gorightclick .glyphicon-triangle-right').livequery('click',function(e)
-			{
-				e.preventDefault();
-				var div = $("#main-media-viewer" );
-				var id = div.data("next");
-				showOverlay(id);
-			});
-	
-	
 
 	jQuery('a.stackedplayer').livequery('click',function(e)
 	{
@@ -430,7 +415,7 @@ jQuery(document).ready(function(url,params)
 		var link = $(this);
 		var assetid = link.data("assetid");
 		var pagenum = link.data("pagenum"); 
-		showOverlay(assetid,pagenum);
+		showAsset(assetid,pagenum);
 		return false;
 	});
 	
@@ -439,8 +424,7 @@ jQuery(document).ready(function(url,params)
 	$("#hiddenoverlay .overlay-close").livequery('click',function(e)
 	{	
 		e.preventDefault();
-		var hidden = $("#hiddenoverlay");
-		hidden.hide();
+		hideOverlayDiv(getOverlay());
 	});
 	
 	$("#hiddenoverlay .overlay-popup span").livequery('click',function(e)
@@ -487,13 +471,13 @@ togglehits =  function(action)
        return false;       
 
 }
-var loadingscroll = false;
+var stopautoscroll = false;
 
 checkScroll = function()
 {
-		if( loadingscroll )
+		if( stopautoscroll )
 		{
-			console.log("loading scroll");
+			console.log("auto scroll canceled");
 			return;
 		}
 		//are we near the end? Are there more pages?
@@ -514,10 +498,10 @@ checkScroll = function()
 		 
 	    var page = parseInt(resultsdiv.data("pagenum"));   
 	    var total = parseInt(resultsdiv.data("totalpages"));
-		 console.log("checking scroll" + loadingscroll + " page " + page + " of " + total);
+		 console.log("checking scroll" + stopautoscroll + " page " + page + " of " + total);
 	    if( total > page)
 	    {
-		   loadingscroll = true; 
+		   stopautoscroll = true; 
 		   var session = resultsdiv.data("hitssessionid");
 		   page = page + 1;
 		   resultsdiv.data("pagenum",page);
@@ -529,8 +513,8 @@ checkScroll = function()
 			   var code = $(".masonry-grid",jdata).html();
 			   $(".masonry-grid",resultsdiv).append(code);
 			   gridResize();
-			   loadingscroll = false; 
 			   $(document).trigger("domchanged");
+			   stopautoscroll = false; 
 			});
 	     }   
 }
@@ -635,3 +619,4 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			});
 }
 	
+
