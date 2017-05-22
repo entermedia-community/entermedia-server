@@ -213,10 +213,12 @@ jQuery(document).ready(function(url,params)
 		//$("html, body").css({"overflow":"auto","height":"inherit"});
 		$("#application").show();
 		inOverlay.hide();
+		stopautoscroll = false;
 	}
 	
 	showOverlayDiv = function(inOverlay)
 	{
+		stopautoscroll = true;
 		//$("html").css({"overflow":"hidden","height":"100%"});
 		//$("body").css({"overflow":"hidden","height":"100%"});
 		$("#application").hide();
@@ -469,13 +471,13 @@ togglehits =  function(action)
        return false;       
 
 }
-var loadingscroll = false;
+var stopautoscroll = false;
 
 checkScroll = function()
 {
-		if( loadingscroll )
+		if( stopautoscroll )
 		{
-			console.log("loading scroll");
+			console.log("auto scroll canceled");
 			return;
 		}
 		//are we near the end? Are there more pages?
@@ -496,10 +498,10 @@ checkScroll = function()
 		 
 	    var page = parseInt(resultsdiv.data("pagenum"));   
 	    var total = parseInt(resultsdiv.data("totalpages"));
-		 console.log("checking scroll" + loadingscroll + " page " + page + " of " + total);
+		 console.log("checking scroll" + stopautoscroll + " page " + page + " of " + total);
 	    if( total > page)
 	    {
-		   loadingscroll = true; 
+		   stopautoscroll = true; 
 		   var session = resultsdiv.data("hitssessionid");
 		   page = page + 1;
 		   resultsdiv.data("pagenum",page);
@@ -511,8 +513,8 @@ checkScroll = function()
 			   var code = $(".masonry-grid",jdata).html();
 			   $(".masonry-grid",resultsdiv).append(code);
 			   gridResize();
-			   loadingscroll = false; 
 			   $(document).trigger("domchanged");
+			   stopautoscroll = false; 
 			});
 	     }   
 }
@@ -617,3 +619,4 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			});
 }
 	
+
