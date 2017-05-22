@@ -121,7 +121,7 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 					result.setComplete(true);
 				}
 				HttpEntity entity2 = response2.getEntity();
-				log.info( "Wordpress Server response: " + EntityUtils.toString(entity2));
+				log.info( "Wordpress Server response: " + response2.getStatusLine().getStatusCode() + " " + EntityUtils.toString(entity2));
 				// do something useful with the response body
 				// and ensure it is fully consumed
 				EntityUtils.consume(entity2);
