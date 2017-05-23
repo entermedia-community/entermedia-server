@@ -116,11 +116,11 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			else
 			{
+				inSearcher.delete(lock, null);
 				return null;
 			}
 		}
-
-		if (lock.isLocked())
+		else if (lock.isLocked())
 		{
 			return null;
 		}
