@@ -155,6 +155,7 @@ public class GoogleManager implements CatalogEnabled
 		JsonObject json = elem.getAsJsonObject();
 		if( json.get("error") != null) //Invalid Credentials
 		{
+			log.error("Could not connect API" + content);
 			authinfo.setValue("httprequesttoken",null);
 			getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
 		}
