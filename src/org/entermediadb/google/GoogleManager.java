@@ -251,7 +251,7 @@ public class GoogleManager implements CatalogEnabled
 				JsonObject folder = (JsonObject) iterator.next();
 				String id = folder.get("id").getAsString();
 				String foldername = folder.get("name").getAsString();
-				
+				foldername = foldername.trim();
 				Results folderresults = listDriveFiles(inAuthinfo,id);
 				String categorypath = inCategoryPath +  "/" + foldername;
 				processResults(inAuthinfo,categorypath,folderresults);
@@ -280,6 +280,7 @@ public class GoogleManager implements CatalogEnabled
 			{
 				Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
 				String filename = object.get("name").getAsString();
+				filename = filename.trim();
 				JsonElement webcontentelem = object.get("webContentLink");
 
 				newasset.setSourcePath(categoryPath + "/" + filename);
