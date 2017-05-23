@@ -42,7 +42,11 @@
     </name> 
   </property>  
   
-   <property id="refreshtoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">refresh token 
+   <property id="refreshtoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">OAUTH refresh token 
+   
+  </property>  
+  
+   <property id="httprequesttoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">HTTP Temp token 
    
   </property>  
   

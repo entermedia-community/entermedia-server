@@ -77,6 +77,7 @@ public void init() {
 				{
 					log.info("asset already being published ${asset}");
 					continue;
+					log.error("Continue does not work in groovy!");
 				}
 				PublishResult presult = null;
 				try
