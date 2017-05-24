@@ -2012,14 +2012,13 @@
 	
 	</bean>	
  	
- 		<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule" >
-	<property name="googleManager">
-			<ref bean="googleManager" />
-		</property>
+ 	<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule" >
 	</bean>	
 	
-		<bean id="googleManager" class="org.entermediadb.google.GoogleManager" >
-	
+	<bean id="googleManager" class="org.entermediadb.google.GoogleManager"  scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
 	</bean>	
 	
  	

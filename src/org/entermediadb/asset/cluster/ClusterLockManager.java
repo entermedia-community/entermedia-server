@@ -96,7 +96,6 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			//See if anyone else also happen to save a lock and delete the older one
 			SearchQuery q = inSearcher.createSearchQuery(); 
 			q.addExact("sourcepath", inPath);
-			q.addSortBy("date"); 
 			q.setHitsPerPage(1);
 			HitTracker tracker = inSearcher.search(q); //Make sure there was not a thread waiting
 			Iterator iter = tracker.iterator();
@@ -107,19 +106,8 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Data first = (Data)iter.next();
 			if (tracker.size() > 1) //Someone else also locked
 			{
-				//TODO: Delete the older one
-				for (Iterator iterator = iter; iterator.hasNext();)
-				{
-					Data old = (Data) iterator.next();
-					try
-					{
-						inSearcher.delete(old, null);
-					}
-					catch( Throwable ex)
-					{
-						log.error("Deleted already deleted lock");
-					}
-				}
+						inSearcher.delete(lock, null);
+						return null;
 			}
 			
 			if ( first.getId().equals(savedid))
@@ -128,11 +116,11 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			else
 			{
+				inSearcher.delete(lock, null);
 				return null;
 			}
 		}
-
-		if (lock.isLocked())
+		else if (lock.isLocked())
 		{
 			return null;
 		}

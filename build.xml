@@ -81,7 +81,7 @@
 		</fileset>
 	</copy>
 
-    <javac debug="true" destdir="${build}/compile" srcdir="${src}"  target="1.7">
+    <javac debug="true" destdir="${build}/compile" srcdir="${src}"  target="1.7" source="1.7">
       <classpath>
       	  <!--      <fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar">
       	 </fileset>

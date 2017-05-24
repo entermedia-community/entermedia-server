@@ -77,11 +77,14 @@ public void init() {
 				{
 					log.info("asset already being published ${asset}");
 					continue;
+					log.error("Continue does not work in groovy!");
 				}
+				log.info("Lock Version (${asset}): " + lock.get("version"));
 				PublishResult presult = null;
 				try
 				{
 					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
+					//Thread.sleep(3000);
 				}
 				finally
 				{

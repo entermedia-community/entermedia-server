@@ -448,6 +448,7 @@ jQuery(document).ready(function(url,params)
 	//END Gallery stuff
 	
 	$(window).on('resize',function(){
+		console.log("Window resized");
 		gridResize();
 	});
 	gridResize();
