@@ -161,6 +161,9 @@
 	  	<delete>
 	  	  	  <fileset dir="./lib" includes="mp4parser**.jar"/>
 	  	</delete>
+		<delete>
+	  	  	  <fileset dir="./lib" includes="isoparser**.jar"/>
+	  	</delete>	  	
 	  	<delete>
 	  	  	  <fileset dir="./lib" includes="aopalliance**.jar"/>
 	  	</delete>

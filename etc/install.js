@@ -66,6 +66,7 @@ files.deleteMatch( web + "/lib/groovy-*.jar");
 //files.deleteMatch( web + "/lib/aws-*.jar");
 files.deleteMatch( web + "/lib/gson-*.jar");
 files.deleteMatch( web + "/lib/mp4parser*.jar");
+files.deleteMatch( web + "/lib/isoparser*.jar");
 files.deleteMatch( web + "/lib/PDFBox*.jar");
 files.deleteMatch( web + "/lib/lucene*.jar");
 files.deleteMatch( web + "/lib/spring-*.jar");
@@ -81,23 +82,6 @@ files.deleteMatch( web + "/lib/org.apache.oltu.*.jar");
 files.deleteMatch( web + "/lib/slf*.jar");
 
 
-/*
-files.copyFileByMatch( tmp + "/WEB-INF/lib/entermedia*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/dev_entermedia*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/groovy-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/aws-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/gson-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/mp4parser-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/PDFBox*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/lucene*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/commons-net-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/spring-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/aopalliance-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/jaxen-*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/commons-codec*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/guava*.jar", web + "/lib/");
-files.copyFileByMatch( tmp + "/WEB-INF/lib/velocity-tools*.jar", web + "/lib/");
-*/
 files.copyFileByMatch( tmp + "/WEB-INF/lib/*.jar", web + "/lib/");
 
 

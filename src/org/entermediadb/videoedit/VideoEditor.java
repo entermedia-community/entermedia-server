@@ -3,19 +3,18 @@ package org.entermediadb.videoedit;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.channels.Channels;
+import java.nio.channels.WritableByteChannel;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.google.GoogleManager;
 import org.openedit.page.Page;
 
-import com.coremedia.iso.IsoBufferWrapperImpl;
-import com.coremedia.iso.IsoFile;
-import com.coremedia.iso.IsoOutputStream;
-import com.coremedia.iso.boxes.TimeToSampleBox;
+import com.coremedia.iso.boxes.Container;
+import com.googlecode.mp4parser.FileDataSourceImpl;
 import com.googlecode.mp4parser.authoring.Movie;
 import com.googlecode.mp4parser.authoring.Track;
 import com.googlecode.mp4parser.authoring.builder.DefaultMp4Builder;
@@ -29,7 +28,8 @@ public class VideoEditor
 	public void split(Page inVideo, double inStartTime, double inStopTime, OutputStream inOutput) throws IOException
 	{
 			File videofile = new File(inVideo.getContentItem().getAbsolutePath());
-			Movie movie = new MovieCreator().build(new IsoBufferWrapperImpl(videofile));
+			Movie movie = MovieCreator.build(new FileDataSourceImpl(videofile));
+			//Movie movie = new MovieCreator().build(new IsoBufferWrapperImpl(videofile));
 
 	        List<Track> tracks = movie.getTracks();
 	        movie.setTracks(new LinkedList<Track>());
@@ -48,7 +48,7 @@ public class VideoEditor
 
 	                    throw new RuntimeException("The startTime has already been corrected by another track with SyncSample. Not Supported.");
 	                }
-	                inStartTime = correctTimeToNextSyncSample(track, inStartTime);
+	                inStartTime = correctTimeToSyncSample(track, inStartTime, false);
 	                timeCorrected = true;
 	            }
 	        }
@@ -68,7 +68,7 @@ public class VideoEditor
 	
 		                    throw new RuntimeException("The startTime has already been corrected by another track with SyncSample. Not Supported.");
 		                }
-		                inStopTime = correctTimeToLastSyncSample(track, inStartTime, inStopTime);
+		                inStopTime = correctTimeToSyncSample(track, inStartTime, inStopTime, true);
 		                timeCorrected = true;
 		            }
 		        }
@@ -83,11 +83,10 @@ public class VideoEditor
 
 	            //https://github.com/sannies/mp4parser/blob/master/examples/src/main/java/com/ChopSuey.java
 	            //Get the start time
-	            for (int i = 0; i < track.getDecodingTimeEntries().size(); i++) 
-	            {
-	                TimeToSampleBox.Entry entry = track.getDecodingTimeEntries().get(i);
+		        for (int i = 0; i < track.getSampleDurations().length; i++) 
+		        {
+		            long delta = track.getSampleDurations()[i];
 	                //find the first sample
-	                for (int j = 0; j < entry.getCount(); j++) {
 	                    // entry.getDelta() is the amount of time the current sample covers.
 
 	                    if (currentTime <= inStartTime) {
@@ -97,34 +96,30 @@ public class VideoEditor
 	                        // current sample is after the end of the cropped video
 	                        break;
 	                    }
-	                    currentTime += (double) entry.getDelta() / (double) track.getTrackMetaData().getTimescale();
+	                    currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
 	                    currentSample++;
-	                }
-	            }
+	             }
 	            if( inStopTime > -1 )
 	            {
 		            currentSample = 0;
 		            currentTime = 0;
 
 		            //Match up the end time
-		            for (int i = 0; i < track.getDecodingTimeEntries().size(); i++) 
-		            {
-		                TimeToSampleBox.Entry entry = track.getDecodingTimeEntries().get(i);
+			        for (int i = 0; i < track.getSampleDurations().length; i++) 
+			        {
+			            long delta = track.getSampleDurations()[i];
 		                //find the first sample
-		                for (int j = 0; j < entry.getCount(); j++) 
-		                {
-		                    currentTime += (double) entry.getDelta() / (double) track.getTrackMetaData().getTimescale();
-		                    endSample = currentSample;
-		                    currentSample++;
-		                    // entry.getDelta() is the amount of time the current sample covers.
-		                    //log.info("Checking " + track.getType() + " checking " + currentTime + ">=" + inStopTime);
-		                    if (currentTime >= inStopTime) //past the end
-		                    {
-	                    		//we are good Stop looking 
-		                    	log.info("Checking " + track.getType() + " checking " + currentTime + ">=" + inStopTime);
-		                    	break;
-		                    }
-		                }
+	                    currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
+	                    endSample = currentSample;
+	                    currentSample++;
+	                    // entry.getDelta() is the amount of time the current sample covers.
+	                    //log.info("Checking " + track.getType() + " checking " + currentTime + ">=" + inStopTime);
+	                    if (currentTime >= inStopTime) //past the end
+	                    {
+                    		//we are good Stop looking 
+	                    	log.info("Checking " + track.getName() + " checking " + currentTime + ">=" + inStopTime);
+	                    	break;
+	                    }
 		            }
 	            } 
 	            else
@@ -136,60 +131,71 @@ public class VideoEditor
 	            movie.addTrack(new CroppedTrack(track, startSample, endSample));
 	        }
 	        
-	        IsoFile out = new DefaultMp4Builder().build(movie);
-	        IsoOutputStream stream = new IsoOutputStream(inOutput);
-	        out.getBox(stream);
-	        stream.flush();
+	        Container out = new DefaultMp4Builder().build(movie);
+	        //MovieHeaderBox mvhd = Path.getPath(out, "moov/mvhd");
+	        //mvhd.setMatrix(Matrix.ROTATE_180);
+	        WritableByteChannel channel = Channels.newChannel(inOutput);
+	        out.writeContainer(channel);
+	       // channel.close();
+	       // inOutput.flush();
+	        //inOutput.close();
 		}
 
-	    protected static double correctTimeToNextSyncSample(Track track, double cutHere) {
+	    private static double correctTimeToSyncSample(Track track, double cutHere, boolean next) {
 	        double[] timeOfSyncSamples = new double[track.getSyncSamples().length];
 	        long currentSample = 0;
 	        double currentTime = 0;
-	        for (int i = 0; i < track.getDecodingTimeEntries().size(); i++) {
-	            TimeToSampleBox.Entry entry = track.getDecodingTimeEntries().get(i);
-	            for (int j = 0; j < entry.getCount(); j++) {
-	                if (Arrays.binarySearch(track.getSyncSamples(), currentSample + 1) >= 0) {
-	                    // samples always start with 1 but we start with zero therefore +1
-	                    timeOfSyncSamples[Arrays.binarySearch(track.getSyncSamples(), currentSample + 1)] = currentTime;
-	                }
-	                currentTime += (double) entry.getDelta() / (double) track.getTrackMetaData().getTimescale();
-	                currentSample++;
+	        for (int i = 0; i < track.getSampleDurations().length; i++) {
+	            long delta = track.getSampleDurations()[i];
+	            if (Arrays.binarySearch(track.getSyncSamples(), currentSample + 1) >= 0) {
+	                // samples always start with 1 but we start with zero therefore +1
+	                timeOfSyncSamples[Arrays.binarySearch(track.getSyncSamples(), currentSample + 1)] = currentTime;
 	            }
+	            currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
+	            currentSample++;
 	        }
 	        double previous = 0;
 	        for (double timeOfSyncSample : timeOfSyncSamples) {
 	            if (timeOfSyncSample > cutHere) {
-	            	return previous;
+	                if (next) {
+	                    return timeOfSyncSample;
+	                } else {
+	                    return previous;
+	                }
 	            }
-                previous = timeOfSyncSample;
+	            previous = timeOfSyncSample;
 	        }
 	        return timeOfSyncSamples[timeOfSyncSamples.length - 1];
 	    }
-
-	    protected static double correctTimeToLastSyncSample(Track track, double start, double cutHere) {
+	    
+	    
+	    private static double correctTimeToSyncSample(Track track, double start, double cutHere, boolean next) 
+	    {
 	        double[] timeOfSyncSamples = new double[track.getSyncSamples().length];
 	        long currentSample = 0;
 	        double currentTime = 0;
-	        for (int i = 0; i < track.getDecodingTimeEntries().size(); i++) {
-	            TimeToSampleBox.Entry entry = track.getDecodingTimeEntries().get(i);
-	            for (int j = 0; j < entry.getCount(); j++) {
-	                if (Arrays.binarySearch(track.getSyncSamples(), currentSample + 1) >= 0) {
-	                    // samples always start with 1 but we start with zero therefore +1
-	                    timeOfSyncSamples[Arrays.binarySearch(track.getSyncSamples(), currentSample + 1)] = currentTime;
-	                }
-	                currentTime += (double) entry.getDelta() / (double) track.getTrackMetaData().getTimescale();
-	                currentSample++;
+	        for (int i = 0; i < track.getSampleDurations().length; i++) {
+	            long delta = track.getSampleDurations()[i];
+	            if (Arrays.binarySearch(track.getSyncSamples(), currentSample + 1) >= 0) {
+	                // samples always start with 1 but we start with zero therefore +1
+	                timeOfSyncSamples[Arrays.binarySearch(track.getSyncSamples(), currentSample + 1)] = currentTime;
 	            }
+	            currentTime += (double) delta / (double) track.getTrackMetaData().getTimescale();
+	            currentSample++;
 	        }
+	        double previous = 0;
 	        for (double timeOfSyncSample : timeOfSyncSamples) {
-	            if (timeOfSyncSample > cutHere && timeOfSyncSample > start) 
-	            {
-	                return timeOfSyncSample;
+	            if (timeOfSyncSample > cutHere && timeOfSyncSample > start) {  //check start
+	                if (next) {
+	                    return timeOfSyncSample;
+	                } else {
+	                    return previous;
+	                }
 	            }
+	            previous = timeOfSyncSample;
 	        }
-	        return -1;
+	        return -1; //end of file
 	    }
-
+	
 
 }
