@@ -20,7 +20,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload-1.2.1-patched.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/servlet-gzip.jar"/>
 	<classpathentry kind="lib" path="lib/compile/websocket-api.jar"/>
-	<classpathentry kind="lib" path="lib/mp4parser-0826.jar"/>
 	<classpathentry kind="lib" path="lib/jsch-0.1.43.jar"/>
 	<classpathentry kind="lib" path="lib/org.apache.oltu.oauth2.client-1.0.1.jar"/>
 	<classpathentry kind="lib" path="lib/activation-1.1.jar"/>
@@ -69,5 +68,6 @@
 	<classpathentry kind="lib" path="lib/velocity-tools-2.0.jar"/>
 	<classpathentry kind="lib" path="lib/velocity-tools-generic-2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/entermedia-core"/>
+	<classpathentry kind="lib" path="lib/isoparser-1.1.22.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

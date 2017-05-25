@@ -16,6 +16,8 @@ $(document).ready(function()
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
+	$("#clipdetails :input").prop('disabled', true);
+
 	var videoclip = jQuery("#videoclip");
 	var video = videoclip[0]; 
 
@@ -274,12 +276,15 @@ $(document).ready(function()
 	updateDetails = function(jumptoend)
 	{
 		var selected = $(".selectedclip");
+	
+		console.log("Enabled");	
+		$("#clipdetails :input").prop('disabled', false);
+		
 		$("#cliplabel\\.value").val( selected.data("cliplabel") );
-		var dec = selected.data("timecodestart");
-		dec = parseFloat(dec);
-		var start = parseTimeToText( dec );
+		var decstart = selected.data("timecodestart");
+		decstart = parseFloat(decstart);
+		var start = parseTimeToText( decstart );
 		$("#timecodestart-value").val( start );
-		//video.currentTime = dec; 
 	
 		var len = parseFloat(selected.data("timecodelength"));
 		var textlength = parseTimeToText( len);
@@ -287,14 +292,26 @@ $(document).ready(function()
 		
 		if( jumptoend )
 		{
-			video.currentTime = dec + len;
+			video.currentTime = decstart + len;
 		}	
-		else if( dec )
+		else if( decstart )
 		{
-			video.currentTime = dec;
+			video.currentTime = decstart;
 		}
 		$("a.btn-disabled").removeClass("btn-disabled");
 		$("a.btn-yellow").removeClass("btn-yellow");
+		
+		var link = $("#downloadclip");
+		
+		var mediadbappid =  $("#timelineviewer").data("mediadb");
+		var sourcepath =  $("#timelineviewer").data("sourcepath");
+		var source = "/" + mediadbappid + "/services/module/asset/downloads/converted/cache/" + sourcepath + "/video.mp4";
+		source = source + "?start=" + decstart;
+		source = source + "&endtime=" + (decstart + len);
+		source = source + "&forcedownload=true"; 
+		
+		link.attr("href",source);
+		
 	}
 
 /*

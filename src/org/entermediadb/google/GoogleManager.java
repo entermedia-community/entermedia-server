@@ -39,7 +39,13 @@ import com.google.gson.JsonParser;
 
 public class GoogleManager implements CatalogEnabled
 {
+	private static final Log log = LogFactory.getLog(GoogleManager.class);
 	protected String fieldCatalogId;
+	protected MediaArchive fieldMediaArchive;
+	protected ModuleManager fieldModuleManager;	
+	protected OutputFiller filler = new OutputFiller();
+
+	
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -59,7 +65,6 @@ public class GoogleManager implements CatalogEnabled
 	{
 		fieldModuleManager = inModuleManager;
 	}
-	protected MediaArchive fieldMediaArchive;
 	protected MediaArchive getMediaArchive()
 	{
 		if (fieldMediaArchive == null)
@@ -68,11 +73,6 @@ public class GoogleManager implements CatalogEnabled
 		}
 		return fieldMediaArchive;
 	}
-	protected ModuleManager fieldModuleManager;
-	
-	protected OutputFiller filler = new OutputFiller();
-	private static final Log log = LogFactory.getLog(GoogleManager.class);
-
 	public Results listDriveFiles(Data authinfo, String inParentId) throws Exception
 	{
 
@@ -190,9 +190,12 @@ public class GoogleManager implements CatalogEnabled
 		log.info("Google Manager Downloading " + item.getPath());
 		filler.fill(entity.getContent(),new FileOutputStream(output),true);
 		
-		getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(), inAsset);
+		//getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(), inAsset);
+		//ContentItem itemFile = getMediaArchive().getOriginalContent(inAsset);
+		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
+		inAsset.setProperty("previewstatus", "converting");
 		
-		//archive.fireMediaEvent( "importing/assetimported", user, current); //Run custom scripts?
+		getMediaArchive().fireMediaEvent( "importing/assetimported", null, inAsset); //Run custom scripts?
 		
 //		if( assettype != null && assettype.equals("embedded") )
 //		{

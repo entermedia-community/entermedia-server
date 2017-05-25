@@ -34,8 +34,8 @@ public class Mp4Generator extends ConvertGenerator
 				double timeoffset = Double.parseDouble(startbytes);
 				OutputStream stream = inOut.getStream();
 				
-				String cutending = inReq.getRequestParameter("end");
-				double cutto = 0;
+				String cutending = inReq.getRequestParameter("endtime");
+				double cutto = -1;
 				if( cutending != null)
 				{
 					cutto = Double.parseDouble(cutending);

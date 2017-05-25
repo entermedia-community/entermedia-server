@@ -7,13 +7,17 @@
 					data-toggle="dropdown" role="button" aria-haspopup="true"
 					aria-expanded="false" style="color: white;" >[[Options]] <span class="caret"></span></a>
 					<ul class="dropdown-menu">
-						<li><a href="#">[[Download Clip]]</a></li>
+##					#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+##					#set($encode = $url_util.encode($asset.sourcepath))
+##					#set( $source = "/${mediadbappid}/services/module/asset/downloads/converted/cache/${encode}/video.mp4?start=" )
+					
+						<li><a id="downloadclip" href="#">[[Download Clip]]</a></li>
 						<li><a href="#">[[Create Asset From Clip]]</a></li>
 					</ul>
 				</li>
 			</ul>
 		</div>
-		<div style="margin:-2 0 0 10px; padding:20px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
+		<div id="clipdetails" style="margin:-2 0 0 10px; padding:20px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
 			#set($detail =	$searcher.getPropertyDetails().getDetail("clips")) 
 			$context.putPageValue("detail",$detail)
 			$context.putPageValue("searcher",$searcher)

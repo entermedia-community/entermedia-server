@@ -19,17 +19,18 @@ public class VideoEditTest extends BaseEnterMediaTest
 		VideoEditor editor = (VideoEditor)getBean("videoEditor");
 		Page video = getPage(path);
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		editor.split(video,117,-1,output);
+		editor.split(video,10,-1,output);
 		long videosize = video.length();
 		long outputsize = output.size();
 		assertTrue( outputsize < videosize );
 
-		OutputStream foutput = new FileOutputStream(new File(video.getContentItem().getAbsolutePath() + "tmp.mp4"));
+		File outputfile = new File(video.getContentItem().getAbsolutePath() + "tmp.mp4");
+		OutputStream foutput = new FileOutputStream(outputfile);
 		foutput = new BufferedOutputStream(foutput);
-		editor.split(video,117,-1,foutput);
+		editor.split(video,3,20,foutput);
 		FileUtils.safeClose(foutput);
-		//long outputsize = foutput.size();
-		//assertTrue( outputsize == videosize );
+		outputsize = outputfile.length();
+		assertTrue( outputsize > 400000 );
 
 	}
 }
