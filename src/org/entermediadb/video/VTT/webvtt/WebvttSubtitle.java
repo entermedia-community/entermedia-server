@@ -1,0 +1,112 @@
+/*
+ * Copyright (C) 2014 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package org.entermediadb.video.VTT.webvtt;
+
+
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import org.entermediadb.video.VTT.Cue;
+
+/**
+ * A representation of a WebVTT subtitle.
+ */
+public final class WebvttSubtitle  {
+
+  private  List<WebvttCue> cues;
+  private  int numCues;
+  private  long[] cueTimesUs;
+  private  long[] sortedCueTimesUs;
+
+  public List<WebvttCue> getCues()
+{
+	return cues;
+}
+
+public void setCues(List<WebvttCue> inCues)
+{
+	cues = inCues;
+}
+
+/**
+   * @param cues A list of the cues in this subtitle.
+   */
+  public WebvttSubtitle(List<WebvttCue> cues) {
+    this.cues = cues;
+    numCues = cues.size();
+    cueTimesUs = new long[2 * numCues];
+    for (int cueIndex = 0; cueIndex < numCues; cueIndex++) {
+      WebvttCue cue = cues.get(cueIndex);
+      int arrayIndex = cueIndex * 2;
+      cueTimesUs[arrayIndex] = cue.startTime;
+      cueTimesUs[arrayIndex + 1] = cue.endTime;
+    }
+    sortedCueTimesUs = Arrays.copyOf(cueTimesUs, cueTimesUs.length);
+    Arrays.sort(sortedCueTimesUs);
+  }
+
+ 
+
+  
+
+//  @Override
+//  public List<Cue> getCues(long timeUs) {
+//    ArrayList<Cue> list = null;
+//    WebvttCue firstNormalCue = null;
+//    SpannableStringBuilder normalCueTextBuilder = null;
+//
+//    for (int i = 0; i < numCues; i++) {
+//      if ((cueTimesUs[i * 2] <= timeUs) && (timeUs < cueTimesUs[i * 2 + 1])) {
+//        if (list == null) {
+//          list = new ArrayList<>();
+//        }
+//        WebvttCue cue = cues.get(i);
+//        if (cue.isNormalCue()) {
+//          // we want to merge all of the normal cues into a single cue to ensure they are drawn
+//          // correctly (i.e. don't overlap) and to emulate roll-up, but only if there are multiple
+//          // normal cues, otherwise we can just append the single normal cue
+//          if (firstNormalCue == null) {
+//            firstNormalCue = cue;
+//          } else if (normalCueTextBuilder == null) {
+//            normalCueTextBuilder = new SpannableStringBuilder();
+//            normalCueTextBuilder.append(firstNormalCue.text).append("\n").append(cue.text);
+//          } else {
+//            normalCueTextBuilder.append("\n").append(cue.text);
+//          }
+//        } else {
+//          list.add(cue);
+//        }
+//      }
+//    }
+//    if (normalCueTextBuilder != null) {
+//      // there were multiple normal cues, so create a new cue with all of the text
+//      list.add(new WebvttCue(normalCueTextBuilder));
+//    } else if (firstNormalCue != null) {
+//      // there was only a single normal cue, so just add it to the list
+//      list.add(firstNormalCue);
+//    }
+//
+//    if (list != null) {
+//      return list;
+//    } else {
+//      return Collections.<Cue>emptyList();
+//    }
+//  }
+
+}

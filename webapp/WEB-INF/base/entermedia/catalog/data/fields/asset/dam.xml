@@ -436,6 +436,26 @@
     <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
     <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
   </property>
+  
+  
+  <property id="captions" index="true" stored="true" editable="true" datatype="objectarray" > 
+    <name> 
+      <language id="en"><![CDATA[Captions]]></language>  
+    </name> 
+    <property id="captiontext" index="true" stored="true" editable="true" multilanguage="true">
+    <name> 
+      <language id="en"><![CDATA[Caption Text]]></language>  
+    </name> 
+    </property>
+    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
+    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
+    <property id="alignment" index="true" stored="true" editable="true" type="list" >Alignment</property>   
+        <property id="line" index="true" stored="true" editable="true" type="number" >Line</property>   
+    
+  </property>
+  
+  
+  
   <!-- 
   <property id="talents" index="true" stored="true" editable="true" datatype="objectarray"  viewtype="timecodetable" > 
     <name> 
