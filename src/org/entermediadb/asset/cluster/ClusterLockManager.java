@@ -91,7 +91,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			lock.setLocked(true);
 			lock.setOwnerId(inOwner);
 			inSearcher.saveData(lock, null);
-			
+			log.info(lock.getId() +"being saved.  Current version " + lock.get(".version"));
 			String savedid = lock.getId();
 			//See if anyone else also happen to save a lock and delete the older one
 			SearchQuery q = inSearcher.createSearchQuery(); 
@@ -132,6 +132,8 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setLocked(true);
 			getLockSearcher().saveData(lock, null);
+			log.info(lock.getId() +"being saved.  Current version " + lock.get(".version"));
+
 		}
 		catch (ConcurrentModificationException ex)
 		{
@@ -282,7 +284,10 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Searcher searcher = getLockSearcher();
 			inLock.setLocked(false);
 			//inLock.setProperty("version", (String) null); //Once this is saved other people can go get it
+			log.info(inLock.getId() +"being released");
 			searcher.saveData(inLock, null);
+			log.info(inLock.getId() +"being saved on release.  Current version " + inLock.get(".version"));
+
 			return true;
 		}
 		return false;
