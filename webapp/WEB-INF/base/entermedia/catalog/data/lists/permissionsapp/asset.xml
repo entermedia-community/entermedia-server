@@ -32,7 +32,7 @@
 
 	<permission id="viewmetadatageneral" permissiontype="asset" name="View General Metadata" description="Enable general metadata viewing." ordering="354" />
 	<permission id="metadatageneral" permissiontype="asset" name="General Metadata" description="Enable general metadata edits on assets you are assigned to." ordering="338" />
-	<permission id="editallassets" permissiontype="asset" name="Edit" description="Allow editing metadata or deleting of any asset." ordering="339" />
+	<permission id="editallassets" permissiontype="asset" name="Edit All Assets" description="Allow editing of any asset." ordering="339" />
 
 	<permission id="viewattachments" permissiontype="asset" name="Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
 	<permission id="viewcomments" permissiontype="asset" name="Comments" description="Enables view-only access to the comments." ordering="358"/>

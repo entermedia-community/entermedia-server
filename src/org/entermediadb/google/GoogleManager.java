@@ -322,7 +322,8 @@ public class GoogleManager implements CatalogEnabled
 				{
 					//Clear old Drive categorties
 					Category root = getMediaArchive().createCategoryPath("Drive");
-					for (Iterator iterator2 = existing.getCategories().iterator(); iterator2.hasNext();)
+					Collection existingcategories = new ArrayList( existing.getCategories());
+					for (Iterator iterator2 = existingcategories.iterator(); iterator2.hasNext();)
 					{
 						Category drive = (Category ) iterator2.next();
 						if( root.isAncestorOf(drive) )
