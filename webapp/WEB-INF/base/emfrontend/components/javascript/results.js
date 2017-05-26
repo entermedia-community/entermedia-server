@@ -499,7 +499,7 @@ checkScroll = function()
 		 
 	    var page = parseInt(resultsdiv.data("pagenum"));   
 	    var total = parseInt(resultsdiv.data("totalpages"));
-		 console.log("checking scroll" + stopautoscroll + " page " + page + " of " + total);
+		console.log("checking scroll" + stopautoscroll + " page " + page + " of " + total);
 	    if( total > page)
 	    {
 		   stopautoscroll = true; 
@@ -508,14 +508,25 @@ checkScroll = function()
 		   resultsdiv.data("pagenum",page);
 		   var home = $('#application').data('home') + $('#application').data('apphome');
 		   console.log("loading page: " + home +" " + page);
-		   jQuery.get(home + "/components/results/stackedgallery.html", {hitssessionid:session,page:page,oemaxlevel:"1"}, function(data) 
-		   {
-			   var jdata = $(data);
-			   var code = $(".masonry-grid",jdata).html();
-			   $(".masonry-grid",resultsdiv).append(code);
-			   gridResize();
-			   $(document).trigger("domchanged");
-			   stopautoscroll = false; 
+		   
+		   var link = home + "/components/results/stackedgallery.html";
+
+		   jQuery.ajax({
+			   	url: link,
+			   	xhrFields: {
+			      withCredentials: true
+			   	},
+			   	cache: false,
+			   	data: {hitssessionid:session,page:page,oemaxlevel:"1"},
+				success: function(data) 
+			   	{
+				   var jdata = $(data);
+				   var code = $(".masonry-grid",jdata).html();
+				   $(".masonry-grid",resultsdiv).append(code);
+				   gridResize();
+				   $(document).trigger("domchanged");
+				   stopautoscroll = false; 
+					}
 			});
 	     }   
 }

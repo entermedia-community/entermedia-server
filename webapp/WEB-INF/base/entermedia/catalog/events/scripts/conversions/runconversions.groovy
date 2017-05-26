@@ -187,7 +187,7 @@ class ConvertRunner implements Runnable
 							tasksearcher.saveData(realtask, user);
 							//log.info("Marked " + hit.getSourcePath() +  " complete");
 							
-							mediaarchive.fireMediaEvent("conversions/conversioncomplete",user,asset);
+							mediaarchive.fireMediaEvent("conversions","conversioncomplete",user,asset);
 							//mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
 						}
 						else
@@ -217,7 +217,7 @@ class ConvertRunner implements Runnable
 						}
 
 						//	conversionfailed  conversiontask assetsourcepath, params[id=102], admin
-						mediaarchive.fireMediaEvent("conversions/conversionerror","conversiontask", realtask.getId(), user);
+						mediaarchive.fireMediaEvent("conversions","conversionerror",realtask.getId(),user);
 					}
 					else
 					{

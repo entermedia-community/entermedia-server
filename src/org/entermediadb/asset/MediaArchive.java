@@ -1151,6 +1151,10 @@ public class MediaArchive implements CatalogEnabled
 	}	
 	public void fireMediaEvent(String operation, User inUser, Asset asset)
 	{
+		if( operation.contains("/"))
+		{
+			log.error("Calling old style event");
+		}	
 		fireMediaEvent("asset",operation,inUser,asset);
 	}
 	public void fireMediaEvent(String inSearchType, String operation, User inUser, Asset asset)

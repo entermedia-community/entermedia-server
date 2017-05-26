@@ -74,7 +74,7 @@ public class VizOne{
 						
 						def tasksearcher = archive.getSearcher("conversiontask");
 
-						archive.fireMediaEvent( "importing/assetsimported", null, asset); //this will save the asset as imported
+						archive.fireMediaEvent( "importing","assetsimported", null, asset); //this will save the asset as imported
 					}
 					Category cat = archive.getCategorySearcher().createCategoryPath("Vizone");
 					asset.addCategory(cat);

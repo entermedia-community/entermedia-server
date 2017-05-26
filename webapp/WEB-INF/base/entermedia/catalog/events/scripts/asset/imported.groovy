@@ -49,7 +49,7 @@ public void init()
 			mediaarchive.saveAsset(asset,null);
 			if( foundretention )
 			{
-				mediaarchive.fireMediaEvent("asset/archivefiles",null,asset);
+				mediaarchive.fireMediaEvent("archivefiles",null,asset);
 			}
 		}
 	}	

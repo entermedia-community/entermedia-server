@@ -32,7 +32,7 @@ public void init()
 		pageManager.clearCache();
 		
 		log.info("now kick off import event");
-		archive.fireMediaEvent("importing/assetsimported", user);
+		archive.fireMediaEvent("importing","assetsimported", null,user);
 }
 
 init();
