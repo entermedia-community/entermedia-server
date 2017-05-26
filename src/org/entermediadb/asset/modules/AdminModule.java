@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
@@ -1326,4 +1327,14 @@ public class AdminModule extends BaseModule
 		}
 	}
 
+	public void allowAccesControl(WebPageRequest inReq)
+	{
+		HttpServletResponse req = inReq.getResponse();
+		if( req != null)
+		{
+			String domain = inReq.getSiteRoot();
+			req.setHeader("Access-Control-Allow-Origin",domain);
+		}	
+	}	
+	
 }

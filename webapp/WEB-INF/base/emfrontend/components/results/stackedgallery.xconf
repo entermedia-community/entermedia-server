@@ -4,4 +4,5 @@
 		<property name="searchtype">asset</property>
 		<property name="hitsname">hits</property>
 	</path-action>
+	<path-action name="Admin.allowAccesControl" />
 </page>
