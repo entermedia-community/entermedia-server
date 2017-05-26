@@ -937,7 +937,7 @@ public class BasePushManager implements PushManager
 				taskSearcher.saveData(newTask, null);
 			}
 			//TODO: Make sure it finished?
-			inArchive.fireMediaEvent("conversions/runconversion", null, inAsset);
+			inArchive.fireMediaEvent("conversions","runconversion", null, inAsset);
 		}
 		
 		//Add a publish task to the publish queue
@@ -961,7 +961,7 @@ public class BasePushManager implements PushManager
 			publishqeuerow.setValue("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			publishQueueSearcher.saveData(publishqeuerow, null);
 		}
-		inArchive.fireMediaEvent("publishing/publishasset", null, inAsset);
+		inArchive.fireMediaEvent("publishing","publishasset", null, inAsset);
 		
 		publishqeuerow =  (Data)publishQueueSearcher.searchById("remote" + publishqueueid);
 		return publishqeuerow;
@@ -1067,7 +1067,7 @@ public class BasePushManager implements PushManager
 			}
 		}
 		archive.saveAsset(target, inReq.getUser());
-		archive.fireMediaEvent("importing/pushassetimported", inReq.getUser(), target);
+		archive.fireMediaEvent("importing","pushassetimported", inReq.getUser(), target);
 
 	}
 	/*

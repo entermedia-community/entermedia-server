@@ -64,7 +64,7 @@ public class ConvertModule extends BaseMediaModule
 		{
 			return;
 		}
-		archive.fireMediaEvent("conversions/runconversion", inReq.getUser(), asset); //this blocks does not use the queue	
+		archive.fireMediaEvent("conversions" , "runconversion", inReq.getUser(), asset); //this blocks does not use the queue	
 		
 	}
 		

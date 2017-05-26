@@ -44,7 +44,7 @@ public class UrlDownloadImporter implements UrlMetadataImporter {
 		asset.addCategory(pcat);
 		inArchive.saveAsset(asset, inUser);
 		// This will download the asset in a catalog event handler
-		inArchive.fireMediaEvent("importing/fetchassetadded", inUser, asset);
+		inArchive.fireMediaEvent("importing" , "fetchassetadded", inUser, asset);
 		return asset;
 	}
 

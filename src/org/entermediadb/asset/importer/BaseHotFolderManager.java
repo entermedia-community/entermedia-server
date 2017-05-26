@@ -271,7 +271,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			file.mkdirs();
 			inNewrow.setProperty("externalpath",file.getAbsolutePath());				
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
-			archive.fireMediaEvent("hotfolder/googledrivesaved", "hotfolder", inNewrow.getId(), null);
+			archive.fireMediaEvent("hotfolder", "googledrivesaved", inNewrow.getId(), null);
 			
 		}
 		else if( "resiliodrive".equals(type))
@@ -284,7 +284,7 @@ public class BaseHotFolderManager implements HotFolderManager
 			file.mkdirs();
 			inNewrow.setProperty("externalpath",file.getAbsolutePath());				
 			getFolderSearcher(inCatalogId).saveData(inNewrow, null);
-			archive.fireMediaEvent("hotfolder/resiliodrivesaved", "hotfolder", inNewrow.getId(), null);
+			archive.fireMediaEvent("hotfolder","resiliodrivesaved", inNewrow.getId(), null);
 		}
 		else 
 		{
