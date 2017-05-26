@@ -2,20 +2,7 @@
 	<div style="margin-bottom:20px;">
 		<div style="background-color: #666; color: white; padding: 4px;">
 			[[Clip Details]]
-			<ul class="navx navbar-nav navbar-right" style="margin:0px">
-				<li class="dropdown"><a href="#" class="dropdown-toggle"
-					data-toggle="dropdown" role="button" aria-haspopup="true"
-					aria-expanded="false" style="color: white;" >[[Options]] <span class="caret"></span></a>
-					<ul class="dropdown-menu">
-##					#set( $mediadbappid = $mediaarchive.getMediaDbId() )
-##					#set($encode = $url_util.encode($asset.sourcepath))
-##					#set( $source = "/${mediadbappid}/services/module/asset/downloads/converted/cache/${encode}/video.mp4?start=" )
-					
-						<li><a id="downloadclip" href="#">[[Download Clip]]</a></li>
-						<li><a href="#">[[Create Asset From Clip]]</a></li>
-					</ul>
-				</li>
-			</ul>
+			
 		</div>
 		<div id="clipdetails" style="margin:-2 0 0 10px; padding:20px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
 			#set($detail =	$searcher.getPropertyDetails().getDetail("clips")) 
@@ -23,8 +10,9 @@
 			$context.putPageValue("searcher",$searcher)
 			$pages.include("/$applicationid/components/xml/detailedit.html", $context)
 		
-			<a id="playclip" href="#" class="btn btn-green btn-disabled" >[[Play Clip]]</a>
-			<a id="removeclip" href="#" class="btn btn-red btn-disabled" >[[Remove Clip]]</a>
+			<a id="playclip" href="#" class="btn btn-green btn-disabled" >[[Play]]</a>
+			<a id="removeclip" href="#" class="btn btn-red btn-disabled" >[[Remove]]</a>
+			<a id="downloadclip" href="#" class="btn btn-green btn-disabled">[[Download Clip]]</a>
 		</div>
 	</div>
 	

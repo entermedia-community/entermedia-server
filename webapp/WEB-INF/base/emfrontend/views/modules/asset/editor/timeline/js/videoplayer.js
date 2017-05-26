@@ -301,6 +301,21 @@ $(document).ready(function()
 		$("a.btn-disabled").removeClass("btn-disabled");
 		$("a.btn-yellow").removeClass("btn-yellow");
 		
+		var assetName =  $("#timelineviewer").data("assetname");
+		var clipname = selected.data("cliplabel");	
+		if( clipname )
+		{
+			if( clipname.length > 10)			
+			{
+				clipname=clipname.substring(0,10);
+			}
+		}
+		else 
+		{
+			clipname="clip";
+		}
+		clipname = assetName + "-" + clipname + "-"+ start +".mp4";
+		
 		var link = $("#downloadclip");
 		
 		var mediadbappid =  $("#timelineviewer").data("mediadb");
@@ -308,6 +323,7 @@ $(document).ready(function()
 		var source = "/" + mediadbappid + "/services/module/asset/downloads/converted/cache/" + sourcepath + "/video.mp4";
 		source = source + "?start=" + decstart;
 		source = source + "&endtime=" + (decstart + len);
+		source = source + "&downloadname=" + clipname;
 		source = source + "&forcedownload=true"; 
 		
 		link.attr("href",source);
