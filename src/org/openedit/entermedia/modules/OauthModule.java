@@ -84,8 +84,8 @@ public class OauthModule extends BaseMediaModule
 
 				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
 				//.setRedirectURI("http://localhost:8080/googleauth.html")
-
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setClientId(authinfo.get("clientid")).setParameter("prompt", "login consent").setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/drive").buildQueryMessage();
+			//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/drive").buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
