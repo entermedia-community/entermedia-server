@@ -1791,7 +1791,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			updateIndex(content, data, details);
 			content.endObject();
-			if (log.isDebugEnabled())
+			//if (log.isDebugEnabled())
 			{
 				log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
 			}
@@ -1812,7 +1812,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				data.setId(response.getId());
 			}
-			data.setProperty(".version", String.valueOf(response.getVersion()));
+			data.setValue(".version", response.getVersion());
 		}
 		catch (RemoteTransportException ex)
 		{
@@ -1845,13 +1845,12 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		if (isCheckVersions())
 		{
-			String version = data.get(".version");
+			Long version = (Long)data.getValue(".version");
 			if (version != null)
 			{
-				long val = Long.parseLong(version);
-				if (val > -1)
+				if (version.longValue() > -1)
 				{
-					builder.setVersion(val);
+					builder.setVersion(version);
 				}
 			}
 		}
