@@ -25,7 +25,6 @@ import org.openedit.util.DateStorageUtil;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData {
 	protected Map fieldSearchData;
-	protected long fieldVersion;
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
 	private static final Log log = LogFactory.getLog(SearchHitData.class);
@@ -50,12 +49,15 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 	}
 
-	public long getVersion() {
-		return fieldVersion;
+	public Long getVersion() 
+	{
+		Long l = getMap().getLong(".version");
+		return l;
 	}
 
-	public void setVersion(long inVersion) {
-		fieldVersion = inVersion;
+	public void setVersion(long inVersion) 
+	{
+		setValue(".version", inVersion);
 	}
 
 	public PropertyDetails getPropertyDetails() {
@@ -121,12 +123,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	}
 
 	protected Object getFromDb(String inId) {
-		if (inId.equals(".version")) {
-			if (getVersion() > -1) {
-				return String.valueOf(getVersion());
-			}
-			return null;
-		}
+//		if (inId.equals(".version")) {
+//			if (getVersion() > -1) {
+//				return String.valueOf(getVersion());
+//			}
+//			return null;
+//		}
 		//log.info(getSearchHit().getSourceAsString());
 		String detailid = inId;
 		if( detailid.endsWith("_int"))

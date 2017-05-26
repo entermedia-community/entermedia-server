@@ -2357,7 +2357,6 @@ public class BaseElasticSearcher extends BaseSearcher
 						SearchHitData sdata = new SearchHitData();
 						sdata.setPropertyDetails(getPropertyDetails());
 						sdata.setSearchData(response.getSource());
-						sdata.setVersion(response.getVersion());
 						data = sdata;
 						// data.setProperties(response.getSource());
 						//updateData(response.getSource(), data);
@@ -2369,7 +2368,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 					if (response.getVersion() > -1)
 					{
-						data.setProperty(".version", String.valueOf(response.getVersion()));
+						data.setValue(".version", response.getVersion());
 					}
 					return loadData(data);
 				}
