@@ -151,6 +151,8 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			throw ex;
 		}
+		log.info(lock.getId() +"being returned.  Line 154  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId());
+
 		return lock;
 
 	}
