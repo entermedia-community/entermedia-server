@@ -72,14 +72,14 @@ public void init() {
 			try
 			{
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
-				Lock lock = mediaArchive.getLockManager().lockIfPossible("assetpublish/" + asset.getSourcePath(), "admin");
+					Lock lock = mediaArchive.getLockManager().lockIfPossible("assetpublish/" + asset.getSourcePath(), "admin");
+				
 				if( lock == null)
 				{
 					log.info("asset already being published ${asset}");
 					continue;
-					log.error("Continue does not work in groovy!");
 				}
-				log.info("Lock Version (${asset}): " + lock.get("version"));
+				log.info("Lock Version (${asset}): " + lock.get("version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
 				PublishResult presult = null;
 				try
 				{
@@ -88,6 +88,8 @@ public void init() {
 				}
 				finally
 				{
+					log.info("Release Lock Version (${asset}): " + lock.get("version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+					
 					mediaArchive.releaseLock(lock);
 				}
 				if (presult == null)

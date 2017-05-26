@@ -85,14 +85,14 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	{
 		if( lock == null)
 		{
-			log.info("Lock was null, creating a new one owner " + inOwner + " path " + inPath + "Thread: " + Thread.currentThread().getId());
+			log.info("Lock was null, creating a new one owner " + inOwner + " path " + inPath + "Thread: " + Thread.currentThread().getId() + "Lock ID" );
 			lock = createLock(inPath, inSearcher);
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setDate(new Date());
 			lock.setLocked(true);
 			lock.setOwnerId(inOwner);
 			inSearcher.saveData(lock, null);
-			log.info(lock.getId() +"being saved.  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId());
+			log.info(lock.getId() +" being saved.  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 			String savedid = lock.getId();
 			//See if anyone else also happen to save a lock and delete the older one
 			SearchQuery q = inSearcher.createSearchQuery(); 
@@ -107,7 +107,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Data first = (Data)iter.next();
 			if (tracker.size() > 1) //Someone else also locked
 			{
-				log.info("Deleting lock!  Found a duplicate : version: " +  lock.get(".version") + "Thread: " + Thread.currentThread().getId());
+				log.info("Deleting lock!  Found a duplicate : version: " +  lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 
 						inSearcher.delete(lock, null);
 						return null;
@@ -125,7 +125,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 		}
 		else if (lock.isLocked())
 		{
-			log.info("Local was alread locked - returning null" + "Thread: " + Thread.currentThread().getId());
+			log.info("Local was alread locked - returning null" + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 			return null;
 		}
 		// set owner
@@ -136,7 +136,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setLocked(true);
 			getLockSearcher().saveData(lock, null);
-			log.info(lock.getId() +"being saved.  Line 139  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId());
+			log.info(lock.getId() +"being saved.  Line 139  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 
 		}
 		catch (ConcurrentModificationException ex)
@@ -151,7 +151,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			throw ex;
 		}
-		log.info(lock.getId() +"being returned.  Line 154  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId());
+		log.info(lock.getId() +"being returned.  Line 154  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() +  "Lock ID" + lock.getId());
 
 		return lock;
 
