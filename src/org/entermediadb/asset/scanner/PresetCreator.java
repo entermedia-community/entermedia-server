@@ -253,7 +253,7 @@ public class PresetCreator
 					}
 				}
 				inArchive.saveAsset(target, null);
-				inArchive.fireMediaEvent("asset/imported",null,target);
+				inArchive.fireMediaEvent("imported",null,target);
 				inArchive.fireSharedMediaEvent("importing/importcomplete");
 			}
 		}
