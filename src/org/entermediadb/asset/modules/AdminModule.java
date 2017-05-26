@@ -1334,6 +1334,7 @@ public class AdminModule extends BaseModule
 		{
 			String domain = inReq.getSiteRoot();
 			req.setHeader("Access-Control-Allow-Origin",domain);
+			req.setHeader("Access-Control-Allow-Credentials","true");
 		}	
 	}	
 	
