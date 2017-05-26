@@ -79,10 +79,10 @@ public void init() {
 					log.info("asset already being published ${asset}");
 					continue;
 				}
-				log.info("Lock Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
+				//log.info("Lock Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
 				PublishResult presult = null;
 				
-					log.info("Publishing  Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
+				//	log.info("Publishing  Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
 					
 					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
 					//Thread.sleep(3000);
@@ -136,7 +136,7 @@ public void init() {
 			finally
 			{
 				if(lock != null){
-					log.info("Release Lock Version (${asset}): Version: " + lock.get(".version") + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+				//	log.info("Release Lock Version (${asset}): Version: " + lock.get(".version") + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 					mediaArchive.releaseLock(lock);
 				}
 			}

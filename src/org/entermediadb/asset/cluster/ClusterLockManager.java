@@ -87,14 +87,14 @@ public class ClusterLockManager implements LockManager, Shutdownable
 		String savedid = null;
 		if( lock == null)
 		{
-			log.info("Lock was null, creating a new one owner " + inOwner + " path " + inPath + "Thread: " + Thread.currentThread().getId() + "Lock ID" );
+		//	log.info("Lock was null, creating a new one owner " + inOwner + " path " + inPath + "Thread: " + Thread.currentThread().getId() + "Lock ID" );
 			lock = createLock(inPath, inSearcher);
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setDate(new Date());
 			lock.setLocked(false);
 			lock.setOwnerId(inOwner);
 			inSearcher.saveData(lock, null);   
-			log.info(lock.getId() +" being saved.  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+		//	log.info(lock.getId() +" being saved.  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 			 savedid = lock.getId();
 			//See if anyone else also happen to save a lock and delete the older one
 		
@@ -113,7 +113,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			if (tracker.size() > 1) //Someone else also locked
 			{
-				log.info("Deleting lock!  Found a duplicate : version: " +  lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+		//		log.info("Deleting lock!  Found a duplicate : version: " +  lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 				inSearcher.delete(lock, null);
 				return null;
 			}
@@ -124,7 +124,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 		
 		if (lock.isLocked())
 		{
-			log.info("Local was alread locked - returning null" + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+	//		log.info("Local was alread locked - returning null" + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 			return null;
 		}
 		
@@ -139,12 +139,12 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setLocked(true);
 			getLockSearcher().saveData(lock, null);  //Both threads called this
-			log.info(lock.getId() +"being saved.  Line 139  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
+	//		log.info(lock.getId() +"being saved.  Line 139  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
 
 		}
 		catch (ConcurrentModificationException ex)
 		{
-			log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
+	//		log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
 
 			return null;
 		}
@@ -156,7 +156,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			throw ex;
 		}
-		log.info(lock.getId() +"being returned.  Line 154  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() +  "Lock ID" + lock.getId());
+	//	log.info(lock.getId() +"being returned.  Line 154  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() +  "Lock ID" + lock.getId());
 
 		return lock;
 
@@ -296,9 +296,9 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Searcher searcher = getLockSearcher();
 			inLock.setLocked(false);
 			//inLock.setProperty("version", (String) null); //Once this is saved other people can go get it
-			log.info(inLock.getId() +" being released Current version " + inLock.get(".version") + " Thread: " + Thread.currentThread().getId());
+		//	log.info(inLock.getId() +" being released Current version " + inLock.get(".version") + " Thread: " + Thread.currentThread().getId());
 			searcher.saveData(inLock, null);
-			log.info(inLock.getId() +" being saved on release.  Current version " + inLock.get(".version") + "Thread: " + Thread.currentThread().getId());
+		//	log.info(inLock.getId() +" being saved on release.  Current version " + inLock.get(".version") + "Thread: " + Thread.currentThread().getId());
 
 			return true;
 		}
