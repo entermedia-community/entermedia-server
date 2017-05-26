@@ -68,11 +68,11 @@ public void init() {
 					
 			String publishdestination = publishrequest.get("publishdestination");
 			Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
-
+			Lock lock = null;
 			try
 			{
 				Publisher publisher = getPublisher(mediaArchive, destination.get("publishtype"));
-					Lock lock = mediaArchive.getLockManager().lockIfPossible("assetpublish/" + asset.getSourcePath(), "admin");
+				lock = mediaArchive.getLockManager().lockIfPossible("assetpublish/" + asset.getSourcePath(), "admin");
 				
 				if( lock == null)
 				{
@@ -81,19 +81,13 @@ public void init() {
 				}
 				log.info("Lock Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
 				PublishResult presult = null;
-				try
-				{
+				
 					log.info("Publishing  Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
 					
 					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
 					//Thread.sleep(3000);
-				}
-				finally
-				{
-					log.info("Release Lock Version (${asset}): Version: " + lock.get(".version") + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
-					
-					mediaArchive.releaseLock(lock);
-				}
+				
+				
 				if (presult == null)
 				{
 					log.info("result from publisher is null, continuing");
@@ -123,6 +117,9 @@ public void init() {
 				}
 				//check for remotempublishstatus?
 			}
+			
+			
+			
 			catch( Throwable ex)
 			{
 				log.error("Problem publishing ${asset} to ${publishdestination}", ex);
@@ -134,6 +131,17 @@ public void init() {
 				publishrequest.setProperty("errordetails", "${destination} publish failed ${ex}");
 				queuesearcher.saveData(publishrequest, context.getUser());
 			}
+			
+			
+			finally
+			{
+				if(lock != null){
+					log.info("Release Lock Version (${asset}): Version: " + lock.get(".version") + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+					mediaArchive.releaseLock(lock);
+				}
+			}
+			
+			
 			asset = null; //This is kind of crappy code.
 		
 		}
