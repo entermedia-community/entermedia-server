@@ -476,7 +476,7 @@ public class AssetEditModule extends BaseMediaModule
 						{
 							tracker.removeSelection(asset.getId());
 						}
-						editor.getMediaArchive().fireMediaEvent("asset/deleted", inContext.getUser(), asset);
+						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 						Page original = editor.getMediaArchive().getOriginalDocument(asset);
 						editor.deleteAsset(asset);
 						String ok = inContext.getRequestParameter("deleteoriginal");
@@ -501,7 +501,7 @@ public class AssetEditModule extends BaseMediaModule
 						tracker.removeSelection(asset.getId());
 					}
 					Page original = editor.getMediaArchive().getOriginalDocument(asset);
-					editor.getMediaArchive().fireMediaEvent("asset/deleted", inContext.getUser(), asset);
+					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 					editor.deleteAsset(asset);
 					String ok = inContext.getRequestParameter("deleteoriginal");
 					if( Boolean.parseBoolean(ok))
@@ -618,54 +618,7 @@ public class AssetEditModule extends BaseMediaModule
 		asset.setValues(inFieldName, existing);
 		getMediaArchive(inReq).saveAsset(asset, inReq.getUser());
 	}
-//	public void addAssetKeyword(WebPageRequest inReq) throws OpenEditException 
-//	{
-//		AssetEditor editor = getAssetEditor(inReq);
-//		String key = inReq.getRequestParameter("keyword");
-//		if (key == null) {
-//			return;
-//		}
-//		Asset asset = getAsset(inReq);
-////		String id = inReq.getRequestParameter("assetid");
-////		
-////		if (id == null)
-////		{
-////			asset = editor.getCurrentAsset();
-////		}
-////		if( asset == null )
-////		{
-////			asset = getMediaArchive(inReq).getAsset(id,inReq);
-////		}
-//		asset.addKeywords(key);
-//		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
-//		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
-//		inReq.putPageValue("asset", asset);
-//	}
-//
-//	public void removeAssetKeyword(WebPageRequest inReq) throws OpenEditException 
-//	{
-//		AssetEditor editor = getAssetEditor(inReq);
-//		String key = inReq.getRequestParameter("keyword");
-//		if (key == null) {
-//			return;
-//		}
-//		Asset asset = getAsset(inReq);
-////		String id = inReq.getRequestParameter("assetid");
-////		if (id == null)
-////		{
-////			asset = editor.getCurrentAsset();
-////		}
-////		else
-////		{
-////			asset = getMediaArchive(inReq).getAsset(id,inReq);
-////		}
-//		asset.removeKeyword(key);
-//		editor.getMediaArchive().saveAsset(asset,inReq.getUser());
-//
-//		getMediaArchive(inReq).fireMediaEvent("asset/keywordsmodified", inReq.getUser(), asset);
-//		inReq.putPageValue("asset", asset);
-//
-//	}
+
 	protected XmpWriter getXmpWriter()
 	{
 		XmpWriter writer = (XmpWriter) getBeanLoader().getBean("xmpWriter");
@@ -978,7 +931,7 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				Map props = new HashMap();
 				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
-				archive.fireMediaEvent("savingoriginal","asset",sourcepath,props,user);
+				archive.fireMediaEvent("asset","savingoriginal",sourcepath,props,user);
 				page.moved = true;
 				getPageManager().movePage(page.inUpload, page.inDestPage);
 			}
@@ -996,7 +949,7 @@ public class AssetEditModule extends BaseMediaModule
 				Data asset = page.fieldAsset;
 				Map props = new HashMap();
 				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
-				archive.fireMediaEvent("savingoriginalcomplete","asset",asset.getSourcePath(),props,user);
+				archive.fireMediaEvent("asset","savingoriginalcomplete",asset.getSourcePath(),props,user);
 			}	
 		}
 		return tracker;
@@ -1800,7 +1753,7 @@ Change Collections to be normal categories path s and make createTree look at th
 		String type  = inReq.getPageProperty("asseteventtype");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		archive.fireMediaEvent("asset/" + type, inReq.getUser(), asset);
+		archive.fireMediaEvent(type, inReq.getUser(), asset);
 		
 	}
 	public WebServer getWebServer()
@@ -1888,7 +1841,7 @@ Change Collections to be normal categories path s and make createTree look at th
 			asset.setProperty("assetvotes", String.valueOf( hits.size()) );
 			MediaArchive archive = getMediaArchive(inReq);
 			//async asset save?
-			archive.fireMediaEvent("asset/assetsave", inReq.getUser(), asset);
+			archive.fireMediaEvent("assetsave", inReq.getUser(), asset);
 		}
 		
 	}
@@ -1910,7 +1863,7 @@ Change Collections to be normal categories path s and make createTree look at th
 		{
 			searcher.delete(row, user);
 		}
-		archive.fireMediaEvent("asset/userunlikes", user, asset);
+		archive.fireMediaEvent("userunlikes", user, asset);
 
 	}
 
@@ -1947,7 +1900,7 @@ Change Collections to be normal categories path s and make createTree look at th
 		row.setValue("username", inUser.getUserName());
 		row.setSourcePath(asset.getSourcePath());
 		searcher.saveData(row,inUser);
-		archive.fireMediaEvent("asset/userlikes", inUser, asset);
+		archive.fireMediaEvent("userlikes", inUser, asset);
 		//archive.getAssetSearcher().updateIndex(asset); //get the rank updated
 	}
 	
@@ -2213,9 +2166,9 @@ Change Collections to be normal categories path s and make createTree look at th
 			archive.saveAsset(current, null);
 			inReq.putPageValue("newasset", current);
 			inReq.setRequestParameter(detailid + ".value", current.getId());
-			archive.fireMediaEvent("importing/assetuploaded",inReq.getUser(),current);
-			archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),current);
-			archive.fireMediaEvent("importing/assetsimported",inReq.getUser(),current);
+			archive.fireMediaEvent("importing","assetuploaded",inReq.getUser(),current);
+			archive.fireMediaEvent("assetcreated",inReq.getUser(),current);
+			archive.fireMediaEvent("importing","assetsimported",inReq.getUser(),current);
 
 		}
 

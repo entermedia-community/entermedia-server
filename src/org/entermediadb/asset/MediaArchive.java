@@ -1151,6 +1151,10 @@ public class MediaArchive implements CatalogEnabled
 	}	
 	public void fireMediaEvent(String operation, User inUser, Asset asset)
 	{
+		fireMediaEvent("asset",operation,inUser,asset);
+	}
+	public void fireMediaEvent(String inSearchType, String operation, User inUser, Asset asset)
+	{
 		if( asset instanceof CompositeAsset )
 		{
 			fireMediaEvent(operation,inUser,(CompositeAsset)asset);
@@ -1184,7 +1188,7 @@ public class MediaArchive implements CatalogEnabled
 			getEventManager().fireEvent(event);
 	}
 
-	public void fireMediaEvent(String operation, String inMetadataType, String inId,  User inUser)
+	public void fireMediaEvent(String inMetadataType, String operation, String inId,  User inUser)
 	{
 			WebEvent event = new WebEvent();
 			event.setSearchType(inMetadataType);
@@ -1200,7 +1204,7 @@ public class MediaArchive implements CatalogEnabled
 	}
 	
 	//conversionfailed  conversiontask assetsourcepath, params[id=102], admin
-	public void fireMediaEvent(String operation, String inMetadataType, String inSourcePath, Map inParams, User inUser)
+	public void fireMediaEvent(String inMetadataType, String operation, String inSourcePath, Map inParams, User inUser)
 	{
 			WebEvent event = new WebEvent();
 			event.setProperties(inParams);
@@ -1216,7 +1220,7 @@ public class MediaArchive implements CatalogEnabled
 			getEventManager().fireEvent(event);
 	}
 
-	public void fireMediaEvent(String operation, String inMetadataType, Map inParams, User inUser)
+	public void fireMediaEvent( String inMetadataType,String operation, Map inParams, User inUser)
 	{
 			WebEvent event = new WebEvent();
 			event.setProperties(inParams);

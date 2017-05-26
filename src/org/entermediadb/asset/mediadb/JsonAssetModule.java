@@ -251,7 +251,7 @@ public class JsonAssetModule extends BaseJsonModule {
 		populateJsonData(inputdata, searcher, asset);
 
 		searcher.saveData(asset, inReq.getUser());
-		archive.fireMediaEvent("asset/assetedited", inReq.getUser(), asset);
+		archive.fireMediaEvent("assetedited", inReq.getUser(), asset);
 
 		inReq.putPageValue("asset", asset);
 		inReq.putPageValue("data", asset);

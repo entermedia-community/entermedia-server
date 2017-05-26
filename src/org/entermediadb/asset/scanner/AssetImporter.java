@@ -252,11 +252,11 @@ public class AssetImporter
 		inArchive.saveAsset(asset, inUser);
 		if( existing )
 		{
-			inArchive.fireMediaEvent("asset/originalmodified",inUser, asset);				
+			inArchive.fireMediaEvent("originalmodified",inUser, asset);				
 		}
 		else
 		{
-			inArchive.fireMediaEvent("asset/assetcreated",inUser, asset);
+			inArchive.fireMediaEvent("assetcreated",inUser, asset);
 		}
 		if( "needsdownload".equals( asset.get("importstatus") ) )
 		{

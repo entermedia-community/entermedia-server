@@ -123,11 +123,11 @@ public class AssetPathProcessor extends PathProcessor
 			
 			if( existingassets.contains(asset) )
 			{
-				getMediaArchive().fireMediaEvent("asset/originalmodified",inUser, asset);				
+				getMediaArchive().fireMediaEvent("originalmodified",inUser, asset);				
 			}
 			else
 			{
-				getMediaArchive().fireMediaEvent("asset/assetcreated",inUser, asset);
+				getMediaArchive().fireMediaEvent("assetcreated",inUser, asset);
 			}
 		}
 		//assetsids.addAll(someids);

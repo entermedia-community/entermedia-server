@@ -633,11 +633,7 @@ public class BaseOrderManager implements OrderManager {
 			orderItem.setProperty("publishqueueid",publishqeuerow.getId());
 
 			orderItemSearcher.saveData(orderItem, inUser);
-			//			if( !needstobecreated )
-			//			{
-			//				//Kick off the publish tasks
-			//				archive.fireMediaEvent("conversions/conversioncomplete", inUser, asset);
-			//			}
+			
 		}
 		order.setOrderStatus("processing");
 		saveOrder(archive.getCatalogId(), inUser, order);
