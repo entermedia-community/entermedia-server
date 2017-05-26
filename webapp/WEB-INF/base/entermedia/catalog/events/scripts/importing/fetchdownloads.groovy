@@ -87,7 +87,7 @@ public void init() {
 					tasksearcher.delete(it,user);		
 				}			
 				archive.saveAsset(current,user);
-				archive.fireMediaEvent( "importing/assetimported", user, current); //TODO: Fire more than one at a time
+				archive.fireMediaEvent( "assetimported", user, current); //TODO: Fire more than one at a time
 			}
 		}
 		catch( Exception ex )

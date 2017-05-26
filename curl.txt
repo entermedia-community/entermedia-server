@@ -1,3 +1,6 @@
+curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
+
+
 curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
 
 
