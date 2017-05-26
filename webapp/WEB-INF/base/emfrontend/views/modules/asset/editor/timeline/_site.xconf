@@ -13,6 +13,6 @@
  
   <script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/js/videoplayer.js" />
   <style id="videoplayer-css" href="/${applicationid}/views/modules/asset/editor/timeline/videoplayer.css"/>
-  		<property name="assettab">timeline</property>
+  		<property name="assettab">viewtimeline</property>
   
 </page>
