@@ -15,7 +15,7 @@
 	<permission id="editadvancedsearch" permissiontype="asset" name="Advanced Search" description="Enables the customization of initial search criteria." ordering="324"/>
 	<permission id="changeattachment" permissiontype="asset" name="Attachments" description="Enables the creation and customization of attachments." ordering="326"  />
 	<permission id="editassetcategories" permissiontype="asset" name="Assign Categories" description="Enables editing of an assets assigned categories" ordering="328" />
-	<permission id="editcategories" permissiontype="asset" name="Edit Categories" description="Enables editing of categories" ordering="330" />
+    <permission id="editcategories" permissiontype="asset" name="Edit Categories" description="Enables editing of categories" ordering="330" />
 	<permission id="showbadge" permissiontype="asset" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="360" />
 	<permission id="comment" permissiontype="asset" name="Add Comments" description="Enables commenting on media assets." ordering="334" />
 	<permission id="deletecomments" permissiontype="asset" name="Delete Comments" description="Enables the removal of comments." ordering="336" />
