@@ -5,4 +5,5 @@
 		<property name="hitsname">hits</property>
 	</path-action>
 	<path-action name="Admin.allowAccesControl" />
+	<permission name="view" ><boolean value="true" /></permission>
 </page>
