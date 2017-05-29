@@ -95,6 +95,7 @@ public class ConvertGenerator extends FileGenerator
 					{
 						public boolean isHtml() { return false;}
 					};
+			output.setName(inPage.getName());					
 			output.setPageSettings(inPage.getPageSettings());
 			output.setContentItem(result.getOutput());
 			WebPageRequest copy = inReq.copy(output);
