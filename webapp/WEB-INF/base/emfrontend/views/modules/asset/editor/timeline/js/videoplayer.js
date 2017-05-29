@@ -158,7 +158,25 @@ $(document).ready(function()
 	{
 		e.preventDefault();
 		var link = $(this);
-		video.play();		
+		
+		if( video.paused === false)
+		{
+			var play = link.data("playtext");
+			link.text(play);
+			video.pause();
+			
+		}
+		else
+		{
+			var stop = link.data("stoptext");
+			link.text(stop);
+			var starttext = $("#timecodestart-value").val();
+			var start = parseTimeFromText(starttext);
+			
+			video.currentTime = start;
+			video.play();		
+		}		
+		
 	});
 	
 	jQuery("#addnewcopy").livequery("click",function(e)
