@@ -16,7 +16,8 @@
 	<a folder="fatwire"  id="viewfatwire"  moduleid="asset"  useajax="true" name="Fatwire"  ordering="200"/>
 	<a folder="editshoppingcart"  id="editshoppingcart"  moduleid="asset"  useajax="true" name="Shopping Cart"  ordering="210"  multiedit="true" />
 	
-	<a folder="timeline"  id="viewtimeline"  moduleid="asset"  useajax="false" name="Timeline"  ordering="111"/>
+	<a folder="timeline"  id="viewtimeline"  moduleid="asset"  useajax="false" name="Timeline"  ordering="111" rendertype="video"/>
+	<a folder="videotrack"  id="viewvideotrack"  moduleid="asset"  useajax="false" name="Timeline"  ordering="112" rendertype="video"/>
 	
 		<a folder="videotrack"  id="viewvideotrack"  moduleid="asset"  useajax="false" name="Video Track"  ordering="112"/>
 	
