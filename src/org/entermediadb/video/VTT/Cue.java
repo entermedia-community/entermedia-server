@@ -33,6 +33,8 @@ public class Cue {
   public  int fieldPosition;
   public  long startTime;
   public  long endTime;
+  public  String fieldAlignment;
+  public  int fieldSize;
   
   
   
@@ -43,11 +45,9 @@ public class Cue {
 
 public void setAlignment(String inAlignment)
 {
-	fieldAlignment = inAlignment;
-}
+		fieldAlignment = inAlignment;
+	}
 
-public  String fieldAlignment;
-  public  int fieldSize;
 
   public CharSequence getText()
 {
@@ -103,6 +103,8 @@ public Cue() {
     this.fieldPosition = position;
     this.fieldAlignment = alignment;
     this.fieldSize = size;
+    this.startTime = startTime;
+    this.endTime = endTime;
   }
 
 }

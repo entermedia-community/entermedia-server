@@ -24,9 +24,7 @@ import org.entermediadb.video.VTT.Cue;
  */
 /* package */ final class WebvttCue extends Cue {
 
-  public final long startTime;
-  public final long endTime;
-
+ 
   public WebvttCue(CharSequence text) {
     this(Cue.UNSET_VALUE, Cue.UNSET_VALUE, text);
   }

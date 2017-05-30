@@ -3,20 +3,25 @@ package org.entermediadb.asset.modules;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.video.Timeline;
+import org.entermediadb.video.VTT.Cue;
+import org.entermediadb.video.VTT.webvtt.WebvttParser;
+import org.entermediadb.video.VTT.webvtt.WebvttSubtitle;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.page.Page;
 
 public class TimelineModule extends BaseMediaModule
 {
@@ -131,6 +136,82 @@ public class TimelineModule extends BaseMediaModule
 		assetsearcher.saveData(asset);
 		
 	}
+	
+	
+	
+	public void importTimeline(WebPageRequest inReq) throws Exception
+	{
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		
+		FileUpload command = (FileUpload) archive.getModuleManager().getBean("fileUpload");
+		UploadRequest properties = command.parseArguments(inReq);
+		
+		Asset asset = getAsset(inReq);
+	
+		
+		FileUploadItem item = properties.getFirstItem();
+		String fname = item.getName();
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/"
+				+ asset.getSourcePath() + "/" + fname;		
+		properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
+
+		
+		String[] fields = inReq.getRequestParameters("field");
+		
+		
+		
+		Collection timeline = new ArrayList();
+		
+		
+		
+		Page page = archive.getPageManager().getPage(path);
+		
+		WebvttParser parser = new WebvttParser();
+		WebvttSubtitle titles = parser.parse(page.getInputStream());
+
+	
+		Collection captions = new ArrayList();
+		
+		Searcher searcher = archive.getSearcher("videotrack");
+		Data cuetest = searcher.createNewData();
+		if(fields != null){
+		searcher.updateData(inReq, fields, cuetest);
+		}
+		
+		for (Iterator iterator = titles.getCues().iterator(); iterator.hasNext();)
+		{
+			Cue cue = (Cue) iterator.next();
+			
+			HashMap cuemap = new HashMap();
+			cuemap.put("captiontext", cue.getText().toString());
+			cuemap.put("timecodestart", cue.getPosition());
+			cuemap.put("alignment", cue.getAlignment());
+			cuemap.put("timecodestart", Double.valueOf(cue.getPosition()));
+			cuemap.put("timecodelength", cue.getSize());
+			captions.add(cuemap);
+
+
+		}
+		cuetest.setValue("captions", captions);
+		cuetest.setValue("assetid", asset.getId());
+		searcher.saveData(cuetest);
+		
+		
+		
+	
+		
+	
+
+	
+		
+		
+		
+	}
+	
+	
+	
 	
 	
 	

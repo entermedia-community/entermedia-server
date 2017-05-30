@@ -16,6 +16,8 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.video.VTT.Cue;
 import org.entermediadb.video.VTT.webvtt.WebvttParser;
 import org.entermediadb.video.VTT.webvtt.WebvttSubtitle;
+import org.openedit.Data;
+import org.openedit.data.Searcher;
 import org.openedit.modules.translations.LanguageMap;
 
 public class CaptionTest extends BaseEnterMediaTest {
@@ -42,48 +44,43 @@ public class CaptionTest extends BaseEnterMediaTest {
 		WebvttSubtitle titles = parser.parse(new FileInputStream(testfile));
 		MediaArchive archive = getMediaArchive("media/catalogs/public");
 
-		
-		Asset asset = archive.getAsset("captiontest");
-		if(asset != null){
-			archive.getAssetSearcher().delete(asset, null);
-		}
-		asset = (Asset) archive.getAssetSearcher().createNewData();
-		asset.setId("captiontest");
-		asset.setSourcePath("captiontest");
+	
 		Collection captions = new ArrayList();
+		
+		Searcher searcher = archive.getSearcher("videotrack");
+		searcher.deleteAll(null);
+		Data cuetest = searcher.createNewData();
+		cuetest.setName("Cuepoint Testing");
+
+		
 		for (Iterator iterator = titles.getCues().iterator(); iterator.hasNext();)
 		{
 			Cue cue = (Cue) iterator.next();
+			
 			HashMap cuemap = new HashMap();
-			LanguageMap map = new LanguageMap();
-			map.setText("en", cue.getText().toString());
-			map.setText("fr", "French Version");
-			cuemap.put("captiontext", map);
+			cuemap.put("captiontext", cue.getText().toString());
 			cuemap.put("timecodestart", cue.getPosition());
 			cuemap.put("alignment", cue.getAlignment());
 			cuemap.put("timecodestart", Double.valueOf(cue.getPosition()));
 			cuemap.put("timecodelength", cue.getSize());
 			captions.add(cuemap);
 
-			
 
 		}
-		asset.setValue("captions", captions);
-		archive.getAssetSearcher().saveData(asset);
-		asset = (Asset) archive.getAssetSearcher().searchById("captiontest");
-		captions = (Collection) asset.getValue("captions");
+		cuetest.setValue("captions", captions);
+
+		searcher.saveData(cuetest);
+		
+	
+		cuetest = archive.getData("videotrack", cuetest.getId());
+		
+		captions = (Collection) cuetest.getValue("captions");
 
 		assertNotNull(captions);
-		assertEquals(6,captions.size() );
+		assertEquals(8,captions.size() );
 		//Map values = captions.
 		
-		for (Iterator iterator = captions.iterator(); iterator.hasNext();)
-		{
-			Map cues = (Map) iterator.next();
-			assertTrue(cues.get("captiontext") instanceof LanguageMap);
-			
 		
-		}
 		
 		
 		
