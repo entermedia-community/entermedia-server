@@ -89,7 +89,7 @@ public void init()
 					   archive.removeGeneratedImages(asset, true);
 					 	archive.getAssetSearcher().delete(asset, null);
 						 archive.getAssetImporter().createAssetFromPage(archive, null, content);
-					   
+					   continue;
 				   }
 			   }
            }
