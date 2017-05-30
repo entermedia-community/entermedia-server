@@ -6,9 +6,14 @@
 	#set ( $urlenc =
 	$urlenc.replace("%2F", "/") ) 
 #end
+
+#set($assetwidth = $mediaarchive.getRealImageWidth($asset))
+#set($assetheight = $mediaarchive.getRealImageHeight($asset))
+
 <img id="main-media" class="emdropshadow  assetdragdrop"
 	draggable="true" data-sourcepath="$urlenc" data-assetid="$asset.id"
-	data-name="$asset.name" data-width="$!asset.width"
-	data-height="$!asset.height"
+	data-name="$asset.name" 
+	data-width="$assetwidth"
+	data-height="$assetheight"
 	src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/thumb.jpg"
 	alt="$!asset.name" />
