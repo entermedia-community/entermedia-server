@@ -437,6 +437,11 @@ public class ProjectManager implements CatalogEnabled
 			assetsearch.setSortBy(sort);
 		}
 		
+		if (assetsearch.getSortBy() == null)
+		{
+			assetsearch.setSortBy("assetaddeddateDown");
+		}	
+		
 		all = archive.getAssetSearcher().search(assetsearch);
 
 		if( inShowOnlyEditStatus != null && inShowOnlyEditStatus.equals("1"))
