@@ -1,18 +1,40 @@
-<properties beanname="dataSearcher">
+<properties>
 
-	<property id="id" index="true" stored="true" editable="true" internalfield="true" >Id</property>
-	<property id="name" index="true" stored="true" editable="true" internalfield="false" >Track Name</property>
-	<property id="assetid" index="true" stored="true" editable="true" internalfield="false" type="list" listid="asset">Asset Id</property>
-	<property id="locale" index="true" stored="true" editable="true" internalfield="false" type="list" listid="locale">Locale</property>
 
-  	<property id="captions" index="true" stored="true" editable="true" datatype="objectarray" > 
-    	<name> 
-      	<language id="en"><![CDATA[Captions]]></language>  
-    	</name> 
-	    <property id="captiontext" index="true" stored="true" editable="true" multilanguage="true">Caption Text </property>
-	    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
-	    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
-	    <property id="alignment" index="true" stored="true" editable="true" type="list" >Alignment</property>   
-	    <property id="line" index="true" stored="true" editable="true" type="number" >Line</property>   
-	</property>    
+ <property id="id" index="true" editable="false" stored="true" keyword="false" filter="false" sortable="true">Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  
+  <property id="name" editable="true" sortable="true" index="true" stored="true" keyword="false" filter="false">Label</property>
+    <property id="assetid" editable="true" sortable="true" index="true" stored="true" keyword="false" type="list" listid="asset">Label</property>
+  
+  <property id="sourcelang" index="true" stored="true" editable="true" type="list"  listid="locale">Language</property>   
+  
+  <property id="captions" index="true" stored="true" editable="true" datatype="objectarray" > 
+    <name> 
+      <language id="en"><![CDATA[Captions]]></language>  
+    </name> 
+    
+    <property id="captiontext" index="true" stored="true" editable="true" >
+    <name> 
+      <language id="en"><![CDATA[Caption Text]]></language>  
+    </name> 
+    </property>
+    
+    
+    <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
+    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
+    <property id="alignment" index="true" stored="true" editable="true" type="list" >Alignment</property>   
+    <property id="line" index="true" stored="true" editable="true" type="number" >Line</property>   
+    
+  </property>
+  
+
+    
+  
 </properties>
