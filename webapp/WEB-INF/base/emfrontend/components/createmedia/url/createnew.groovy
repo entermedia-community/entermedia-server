@@ -11,9 +11,6 @@ import org.openedit.util.PathUtilities
 MediaArchive mediaarchive = context.getPageValue("mediaarchive");
 
 Asset asset = mediaarchive.getAssetSearcher().createNewData();
-asset.setId(mediaarchive.getAssetSearcher().nextAssetNumber());
-String sourcepath = "newassets/${context.getUserName()}/${asset.id}";
-asset.setSourcePath(sourcepath);
 asset.setFolder(true);
 asset.setProperty("owner", context.userName);
 asset.setProperty("importstatus", "needsdownload")
@@ -90,6 +87,10 @@ else
 	asset.setProperty("assettype","embedded");
 }
 asset.setProperty("importstatus","needsdownload");
+
+String sourcepath = mediaarchive.getAssetImporter().getAssetUtilities().createSourcePath(context,mediaarchive,asset.getName());
+asset.setSourcePath(sourcepath);
+
 
 //String embed =  context.getRequestParameter("embeddedurl.value") 
 //if( embed != null )
