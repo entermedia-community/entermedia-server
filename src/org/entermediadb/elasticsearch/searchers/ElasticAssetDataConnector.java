@@ -544,6 +544,9 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 
 	public Data getDataBySourcePath(String inSourcePath, boolean inAutocreate)
 	{
+		if(inSourcePath.startsWith("/")){
+			inSourcePath = inSourcePath.substring(1, inSourcePath.length());
+		}
 		return (Data) searchByField("sourcepath", inSourcePath);
 
 	}
