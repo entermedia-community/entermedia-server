@@ -66,12 +66,13 @@ else if (externalmediainput.contains("vimeo") )
 }
 else
 {
-	int ques = externalmediainput.indexOf("?");
+	String name = externalmediainput;
+	int ques = name.indexOf("?");
 	if( ques > -1)
 	{
-		externalmediainput = externalmediainput.substring(0,ques);
+		name = name.substring(0,ques);
 	}
-	asset.setName( PathUtilities.extractFileName(externalmediainput));		
+	asset.setName( PathUtilities.extractFileName(name));		
 }
 
 //TODO: Use some parser interface and grab more metadata from youtube or vimeo, flickr
