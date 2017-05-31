@@ -10,5 +10,7 @@
 	<permission id="importcollection" permissiontype="library" name="Import Collection" description="Copy assets into a collection" ordering="525"/>
 	<permission id="exportcollection" permissiontype="library" name="Export Collection" description="Move assets in a collection into a Library" ordering="530"/>
 	<permission id="sharecollection" permissiontype="library" name="Share Collection" description="Email Links to a Collection" ordering="535"/>
+		<permission id="importworkspace" permissiontype="library" name="Import Workspace" description="Import Workspace files from remote" ordering="525"/>
+	
 </permissions>
 	 
