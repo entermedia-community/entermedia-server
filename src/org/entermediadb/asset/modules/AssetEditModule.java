@@ -1219,7 +1219,22 @@ Change Collections to be normal categories path s and make createTree look at th
 					}
 					if( col.length == 1)
 					{
-						asset.setValue(field, col[0]);						
+						PropertyDetail detail = archive.getAssetSearcher().getPropertyDetails().getDetail(field);
+						if(detail != null && detail.isDate()){
+							String targetval = col[0];
+							String format = "yyyy-MM-dd";
+							if (targetval.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}"))
+							{
+								format = "MM/dd/yyyy";
+							}
+							Date date = DateStorageUtil.getStorageUtil().parse(targetval, format);
+							
+							
+							asset.setValue(field, date);
+						}else{
+						
+							asset.setValue(field, col[0]);
+						}
 					}
 					else
 					{
