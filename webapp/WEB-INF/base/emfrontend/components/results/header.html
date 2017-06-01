@@ -119,7 +119,7 @@ $context.putPageValue("hits",$hits)
 				<li style="float: right;" >
 					<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
 				</li>								
-				<li style="float: right;padding-top:12px;padding-right: 6px;" >
+				<li style="float: right;padding-top:13px;padding-right: 6px;" >
 						#set ($alldetails = $searcher.getUserPropertyDetails() )
 						<select  onchange='return addColumn(jQuery(this).val())' name="addcolumn" >
 							<option>[[Add Column]]</option>
@@ -169,12 +169,14 @@ $context.putPageValue("hits",$hits)
 					</a>
 				</div>
 			</li>
+			#if( $hits.size() > 0)
 			<li style="float:right">
 			$pages.include("$apphome/components/results/pages.html",$context)
 			</li>
 			<li class="resultmenuitem" style="float:right">
 			<span class="text">[[Results]] $!hits.getPageStart() - $!hits.getPageEnd()</span>
 			</li>			
+			#end
 		#end	
 	</ul>
 </div>
