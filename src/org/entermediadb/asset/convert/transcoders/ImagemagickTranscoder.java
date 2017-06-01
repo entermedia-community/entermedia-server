@@ -53,7 +53,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		String outputpath = inOutFile.getAbsolutePath();
 
 		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath(),true);
-		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
+		boolean maintaintransparency = inStructions.isTransparencyMaintained(tmpinput);
 
 		String ext = null;
 		if(asset != null)
@@ -160,7 +160,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			//This gravity is the relative point of the crop marks
 			setValue("gravity", "NorthWest", inStructions, com);
 
-			createBackground(inStructions, com, usepng, ext);
+			createBackground(inStructions, com, maintaintransparency, ext);
 
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
@@ -215,7 +215,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		else
 		{
-			createBackground(inStructions, com, usepng, ext);
+			createBackground(inStructions, com, maintaintransparency, ext);
 			Boolean extent = Boolean.parseBoolean(inStructions.get("extent"));
 			if( extent)
 			{
@@ -257,7 +257,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			setValue("profile", getPathtoProfile(), inStructions, com);
 		}
-		else if (!usepng)
+		else if (!maintaintransparency)
 		{
 			if ("eps".equals(tmpinput) 
 					|| "pdf".equals(tmpinput) 
@@ -268,17 +268,18 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					|| "tiff".equals(tmpinput)
 					)
 			{
-				setValue("colorspace", "sRGB", inStructions, com);
+				//setValue("colorspace", "sRGB", inStructions, com);
 				//Not compatible with profile at the same time with colorspace
+				setValue("profile", getPathtoProfile(), inStructions, com);
 				
 			}
 			else
 			{
 				com.add("-strip"); //This removes the extra profile info
 				setValue("profile", getPathtoProfile(), inStructions, com);
-				com.add("-auto-orient");
 			}
 		}
+		com.add("-auto-orient");
 
 		if (isOnWindows())
 		{
