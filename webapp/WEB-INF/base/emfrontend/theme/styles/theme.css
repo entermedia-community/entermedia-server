@@ -1753,6 +1753,12 @@ small {
     display: block;
     font-weight: normal;
 }
+#eml-tab-subnav span.text, #sub-nav span.text {
+    color: #2790B0;
+    font-size: 13px;
+    font-weight: normal;
+}
+
 #eml-tab-subnav ul li a:hover, #sub-nav li a:hover, #sub-nav li:hover a, #sub-nav li.edit-columns:hover #column-editor {
     background: #81cee0;
     color: #fff;
@@ -7074,4 +7080,11 @@ a.addnewitem:hover
 	background-color: #aaa;
 	color: white;
 	
+}
+
+li.resultmenuitem {
+    height: 45px;
+    line-height: 45px;
+    margin:0px;
+    padding: 0 20px;
 }
