@@ -41,7 +41,7 @@
 			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Basket]]</a></li>
 		#end
 	#end
-	#if ($canmetadatageneral )
+	#if ($canmetadatageneral && $canmultiedit)
   		#set($multi = $hits.getSelectionSize() > 1)
   		#if ($multi)
   			#set($link = "editall.html")
@@ -53,7 +53,7 @@
 		<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a></li>
 	#end	
     	<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
-	#if($candeleteasset)	    
+	#if($candeleteasset && $canmultiedit)	    
  		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a></li>
    	#end    	
     	 <li><a href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>

@@ -38,10 +38,22 @@ $context.putPageValue("hits",$hits)
 			#if( $librarycol )
 			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
 			#else
-			<li><a #if( $enabled )href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" #else style="text-decoration:none;" #end>[[Download]]</a></li>
+				#if( $enabled )
+				<li>
+					<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
+				</li>	
+				#else
+				<li class="resultmenuitem">
+					<span class="text">Download</span>
+				</li>	
+				#end
 			#end
 		#end	
-		##Email and publish should be under share
+
+		#if($candeleteasset && $canmultiedit && $canquickdelete)	    
+	 		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a></li>
+	   	#end    	
+
 	
 		#if($canpublish || $canemaillink )
 			<li><a #if( !$enabled ) style="text-decoration:none;" #end>[[Share]]</a>
@@ -96,49 +108,44 @@ $context.putPageValue("hits",$hits)
 			#end
 		#end
   		#set( $edit = $context.getRequestParameter("editheader") )
-		#if($edit && $edit == "true"  )
-			<li>
-				<a class="drag-columns-text"><span class="ui-icon ui-icon-info" style="float: left; margin-top: 14px; margin-right: 5px;"></span>
-				[[Drag columns to move them]]</a>
-			</li>
-		#else
 			<li>
 				$pages.include("$apphome/components/results/selected/index.html",$context)
 			</li>
-			<li>
-			$pages.include("$apphome/components/results/pages.html",$context)
-			</li>
-		#end
+		
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
-			<li style="float: right;" class="edit-columns">	
-				<div style="position: relative;">
-					#if( $canedittablecolumns )
-					<div id="table-edit-outside">
-						#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
-						#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
-						<div id="column-editor">
-							<div id="column-editor-content">
-								#set ($alldetails = $searcher.getUserPropertyDetails() )
-								<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
-									<option>[[Add Column]]</option>
-									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
-									#end
-								</select>
-								<script type="text/javascript">
-									function addColumn(inId) {
-										jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
-									}
-								</script>
-							</div>
-						</div>
-						#end
-					</div>
-					#end
-				</div>
-			</li>
+			#if( $canedittablecolumns )
+			#if( $edit )
+				<li style="float: right;" >
+					<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+				</li>								
+				<li style="float: right;padding-top:13px;padding-right: 6px;" >
+						#set ($alldetails = $searcher.getUserPropertyDetails() )
+						<select  onchange='return addColumn(jQuery(this).val())' name="addcolumn" >
+							<option>[[Add Column]]</option>
+							#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+							#end
+						</select>
+						<script type="text/javascript">
+							function addColumn(inId) {
+								jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+								return false;	
+							}
+						</script>
+				</li>	
+			#else 
+				<li style="float: right;" >
+					<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
+				</li>
+			#end	
+			#end								
 		#end
-		
+		#if($edit && $edit == "true"  )
+			<li class="resultmenuitem" style="float: right;">
+					<span class="ui-icon ui-icon-info" style="display: inline;padding-right:15px;margin-right:5px;"> </span>
+					<span class="text" >[[Drag columns to move them]]</span>
+			</li>
+		#end		
 		#if(!$resultview)
 			#set($resultview = $userprofile.get("resultview"))
 			#if (!$resultview)
@@ -162,6 +169,15 @@ $context.putPageValue("hits",$hits)
 					</a>
 				</div>
 			</li>
+			#if( $hits.size() > 0)
+			<li style="float:right">
+			$pages.include("$apphome/components/results/pages.html",$context)
+			</li>
+			<li id="resultpageslabel" class="resultmenuitem" style="float:right">
+			<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size()</span>
+			</li>			
+			#end
 		#end	
 	</ul>
 </div>
+ 
