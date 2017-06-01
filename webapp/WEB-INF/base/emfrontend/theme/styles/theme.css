@@ -7080,3 +7080,10 @@ li.resultmenuitem {
     margin:0px;
     padding: 0 20px;
 }
+
+@media screen and ( max-width: 1000px) {
+	#resultpageslabel
+	{
+		display: none;
+	}
+}
