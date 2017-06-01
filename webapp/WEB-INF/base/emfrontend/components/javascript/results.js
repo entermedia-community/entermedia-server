@@ -437,6 +437,11 @@ jQuery(document).ready(function(url,params)
 				
 			});
 	
+	document.addEventListener('touchmove', function(e) 
+	{
+		checkScroll();
+	});
+	
 	$(window).on('scroll',function() 
 	{
 		checkScroll();
@@ -482,10 +487,14 @@ checkScroll = function()
 			return;
 		}
 		//are we near the end? Are there more pages?
-  		var totalHeight = document.body.offsetHeight;
-  		var visibleHeight = document.documentElement.clientHeight;
-		//var attop = $(window).scrollTop() < $(window).height(); //past one entire window
-		var atbottom = ($(window).scrollTop() + (visibleHeight + 200)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
+  		var visibleHeight = document.body.clientHeight;
+  		var totalHeight = $(window).height();
+  		if( totalHeight == visibleHeight)  //On iphone window.height is always the same as the content area
+  		{ 	
+  			totalHeight = window.screen.availHeight; //This is the total size of the monitor
+  		}
+  		//console.log($(window).scrollTop() + " + " +   (visibleHeight + 170)) + ">=" + totalHeight); 
+		var atbottom = ($(window).scrollTop() + (visibleHeight + 170)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
 		if(	!atbottom )
 	    {
 		  return;

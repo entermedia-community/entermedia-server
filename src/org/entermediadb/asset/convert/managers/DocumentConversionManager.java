@@ -152,6 +152,10 @@ public class DocumentConversionManager extends BaseConversionManager
 		//Now make the input image needed using the document as the input
 		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1024x768.png");
+		if( preset == null) //Legacy check
+		{
+			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1500x1500.png");
+		}	
 		
 		ConvertInstructions instructions2 = inStructions.copy(preset);
 		instructions2.setPageNumber(inStructions.getPageNumber());
