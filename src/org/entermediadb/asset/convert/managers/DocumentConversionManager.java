@@ -6,8 +6,8 @@ import org.entermediadb.asset.convert.BaseConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.MediaTranscoder;
-import org.entermediadb.users.AllowViewing;
 import org.openedit.Data;
+import org.openedit.repository.ContentItem;
 
 public class DocumentConversionManager extends BaseConversionManager
 {
@@ -134,13 +134,23 @@ public class DocumentConversionManager extends BaseConversionManager
 			}
 			inStructions.setInputFile(instructions2.getOutputFile());
 		}
-		else 
+		else if( inStructions.getInputFile() == null)
 		{
-			inStructions.setInputFile(getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem());
+			ContentItem tmpinput = null;
+			if( inStructions.getPageNumber() == 1)
+			{	
+				tmpinput = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb.png");
+			}	
+			if( tmpinput == null || !tmpinput.exists() )
+			{
+				tmpinput = getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem();
+			}	
+			inStructions.setInputFile(tmpinput);
 		}
 		
 		//Step 2 make PNG
 		//Now make the input image needed using the document as the input
+		
 		Data preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1024x768.png");
 		
 		ConvertInstructions instructions2 = inStructions.copy(preset);
