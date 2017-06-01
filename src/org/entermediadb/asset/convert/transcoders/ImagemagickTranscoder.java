@@ -259,9 +259,18 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		else if (!usepng)
 		{
-			if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
+			if ("eps".equals(tmpinput) 
+					|| "pdf".equals(tmpinput) 
+					|| "ps".equals(tmpinput)
+					|| "psd".equals(tmpinput)
+					|| "ai".equals(tmpinput)
+					|| "tif".equals(tmpinput)
+					|| "tiff".equals(tmpinput)
+					)
 			{
 				setValue("colorspace", "sRGB", inStructions, com);
+				//Not compatible with profile at the same time with colorspace
+				
 			}
 			else
 			{
