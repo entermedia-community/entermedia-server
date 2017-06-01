@@ -275,7 +275,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			else
 			{
-				com.add("-strip"); //This removes the extra profile info
+				com.add("-strip"); //This removes the extra profile info   TODO: Get rid of this fix
 				setValue("profile", getPathtoProfile(), inStructions, com);
 			}
 		}
@@ -352,7 +352,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	
 		List<String> com = new ArrayList<String>();
 
-		String prestrip = inStructions.get("fixcmyk");
+		String prestrip = inStructions.get("fixcmyk");  //Error case: JPG with CMYK Profile but marked as RBG 
 		if ("true".equals(prestrip))
 		{
 
@@ -360,7 +360,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			{
 				setValue("colorspace", "sRGB", inStructions, com);
 			}
-			else
+			else //jpg
 			{
 				com.add("-strip");
 				com.add("-profile");
