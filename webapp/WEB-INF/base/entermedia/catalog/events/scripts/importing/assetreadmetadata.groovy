@@ -14,15 +14,17 @@ public void init()
 		Searcher searcher = archive.getAssetSearcher();
 		
 		Asset asset = archive.getAsset("$assetid");
-		if (asset!=null){
+		if (asset!=null)
+		{
 			MetaDataReader reader = moduleManager.getBean("metaDataReader");
 			Page content = archive.getOriginalDocument( asset );
 			reader.populateAsset(archive, content.getContentItem(), asset);
 			archive.saveAsset(asset, null);
 			log.info("metadata reading complete");
-		} else {
+		} 
+		else 
+		{
 			log.info("unable to find $assetid, aborting");
 		}
 }
-
 init();
