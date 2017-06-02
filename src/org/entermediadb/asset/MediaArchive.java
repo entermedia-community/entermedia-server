@@ -1910,4 +1910,9 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 
+	public Object getBean(String inId)
+	{
+		return getModuleManager().getBean(getCatalogId(),inId);
+	}
+	
 }
