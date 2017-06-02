@@ -124,19 +124,26 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			if (!inStructions.isCrop())
 			{
-
 				com.add("-resize");
 				String prefix = null;
 				String postfix = null;
 				prefix = String.valueOf(inStructions.getMaxScaledSize().width);
 				postfix = String.valueOf(inStructions.getMaxScaledSize().height);
+				
+				String resizestring = prefix + "x" + postfix;
+				Boolean fillarea = Boolean.parseBoolean(inStructions.get("minsize"));
+				if(fillarea)
+				{
+					resizestring = resizestring + "^";
+				}
+
 				if (isOnWindows())
 				{
-					com.add("\"" + prefix + "x" + postfix + "\"");
+					com.add("\"" + resizestring + "\"");
 				}
 				else
 				{
-					com.add(prefix + "x" + postfix);
+					com.add(resizestring);
 				}
 			}
 
