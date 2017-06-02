@@ -1155,7 +1155,7 @@ uiload = function() {
 	    
 	    if( swipe )
 	    {
-	    	console.log(div);
+	    	//console.log(div);
 	    	var event = {};
 	    	event.originalEvent = e;
 	    	event.preventDefault = function() {};

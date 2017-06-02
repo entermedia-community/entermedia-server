@@ -424,7 +424,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			return;
 		}
 		if ("jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) ||
-				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) )// ||  "pdf".equalsIgnoreCase(format) )
+				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) ||  "pdf".equalsIgnoreCase(format) )
 		{	
 			//OR if we have CMYK with no profile input
 			String colorspace =  inAsset.get("colorspace");
@@ -440,9 +440,14 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			{
 				if( !isCMYKProfile(inInputFile) )
 				{
-					ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+					String formatinput = "jpg";
+					if( "pdf".equalsIgnoreCase(format))
+					{
+						formatinput = "png";
+					}
+					ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb." + formatinput);
 	
-			        ConversionManager c = inArchive.getTranscodeTools().getManagerByFileFormat("png");
+			        ConversionManager c = inArchive.getTranscodeTools().getManagerByFileFormat(formatinput);
 					ConvertInstructions instructions = c.createInstructions(inAsset);
 					instructions.setForce(true);
 					//instructions.setMaxScaledSize(1900, height);

@@ -1166,7 +1166,7 @@ public class MediaArchive implements CatalogEnabled
 		else
 		{
 			WebEvent event = new WebEvent();
-			event.setSearchType("asset");
+			event.setSearchType(inSearchType);
 			event.setCatalogId(getCatalogId());
 			event.setOperation(operation);
 			event.setUser(inUser);
@@ -1910,4 +1910,9 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 
+	public Object getBean(String inId)
+	{
+		return getModuleManager().getBean(getCatalogId(),inId);
+	}
+	
 }

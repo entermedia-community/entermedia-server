@@ -52,28 +52,6 @@
 <input class="field" name="secretkey.value" value="$!data.secretkey" />
 <div class="note">[[Your Amazon Secret Key]] </div>
 
-#elseif ($type == "googledrive")
-
-##<a href="http://entermediadb.org/knowledge/google-drive-hotfolder/">help me with Google Drive</a>
-
-<label>[[Folder Name]]</label>
-<input type="hidden" name="field" value="subfolder" />
-<input class="field" name="subfolder.value" value="$!data.subfolder" />
-<div class="note">[[Required: The unique name of folder such as "My Files". Do not include path information. No slashes allowed]] </div> 
-
-
-<label>[[Google Email]]</label>
-<input type="hidden" name="field" value="email" />
-<input class="field" name="email.value" value="$!data.email" />
-<div class="note">[[Google Email Address that has the folders you want to sync]] </div>
-
-
-<label>[[Access Code]]</label>
-<input type="hidden" name="field" value="accesskey" />
-<input class="field" name="accesskey.value" value="$!data.accesskey" />
-<div class="note">[[Temporary access key]] <a class="btn" target="_blank" href="https://goo.gl/jv797S">[[Get Google Key]]</a></div> 
-
- 
 #elseif ($type == "resiliodrive")
 
 <label>[[Folder Name]]</label>

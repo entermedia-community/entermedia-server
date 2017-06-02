@@ -16,8 +16,8 @@
         #set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$asset.id&pagenum=$pagenum&name=preview.png")
 	<a class="stackedplayer" data-assetid="$asset.id" data-pagenum="$pagenum" href="#" >
        <div class="emdropshadow">
-        	<img id="main-media" class=" #if( $totalpages > 1 ) document #end  assetdragdrop"  draggable="true"  data-sourcepath="$sourcepath" 
-        		data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/large/${asset.sourcepath}/preview.png?pagenum=$!pagenum" alt="[[Preview Image]]"/>
+        	<img id="main-media" style="max-width:76%;" class=" #if( $totalpages > 1 ) document #end  assetdragdrop"  draggable="true"  data-sourcepath="$sourcepath" 
+        		data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preset/${asset.sourcepath}/image1500x1500.png?pagenum=$!pagenum" alt="[[Preview Image]]"/>
        </div> 
         </a>
         #if ($pagenum != $totalpages)
