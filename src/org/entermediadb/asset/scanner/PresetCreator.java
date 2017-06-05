@@ -39,7 +39,7 @@ public class PresetCreator
 	{
 		getCacheManager().clear("preset_lookup");
 	}
-	protected Collection getPresets(MediaArchive inArchive, String rendertype)
+	public Collection getPresets(MediaArchive inArchive, String rendertype)
 	{
 		if(rendertype == null)
 		{
@@ -57,6 +57,34 @@ public class PresetCreator
 		}
 		return hits;
 	}
+	
+	
+	public Collection getPushPresets(MediaArchive inArchive, String rendertype)
+	{
+		if(rendertype == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
+		Collection hits = (Collection)getCacheManager().get("push_preset_lookup",rendertype);
+		if (hits == null)
+		{
+			Searcher presetsearcher = inArchive.getSearcher("convertpreset");
+			SearchQuery query = presetsearcher.createSearchQuery();
+			query.addMatches("onpush", "true");
+			query.addMatches("inputtype", rendertype);
+			hits = presetsearcher.search(query);
+			getCacheManager().put("push_preset_lookup",rendertype, hits);
+		}
+		return hits;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
 
 	public Collection createMissingOnImport(MediaArchive mediaarchive, Searcher tasksearcher, Data asset)
 	{
