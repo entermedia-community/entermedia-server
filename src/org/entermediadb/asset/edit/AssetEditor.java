@@ -98,7 +98,7 @@ public class AssetEditor
 		if (inAsset != null)
 		{
 			asset = new Asset(inAsset.getMediaArchive());
-			asset.setCatalogId(inAsset.getCatalogId());
+			//asset.setCatalogId(inAsset.getCatalogId());
 			asset.setName(inAsset.getName());
 			if (asset.getKeywords().size() > 0)
 			{
