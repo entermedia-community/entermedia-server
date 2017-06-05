@@ -3,5 +3,8 @@
 	<server id="em2" listingurl="https://raw.githubusercontent.com/entermedia-community/demoall/entermedia9/etc/emdistribution_em9dev.xml" caption="Development version of DemoAll site">EnterMediaDB 9 (Dev)</server>	
 	<server id="em3" listingurl="https://raw.githubusercontent.com/entermedia-community/extension-fatwire/master/etc/fatwireextension.xml" caption="External community">Fatwire</server>
 	<server id="em4" listingurl="https://raw.githubusercontent.com/entermedia-community/app-empush/dev/etc/pushextension.xml" caption="External community">EM Push</server>
+	
+	<server id="em5" listingurl="http://dev.entermediasoftware.com/jenkins/job/em9_extension-aws/lastSuccessfulBuild/artifact/deploy/awsextension-full.xml" caption="AWS Extension community">AWS Extension - Full Install</server>
+	<server id="em6" listingurl="http://dev.entermediasoftware.com/jenkins/job/em9_extension-aws/lastSuccessfulBuild/artifact/deploy/awsextension.xml" caption="External community">AWS Extension - Plugin Only</server>
 		
 </servers>

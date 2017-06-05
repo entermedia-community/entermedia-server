@@ -31,10 +31,6 @@
 	<classpathentry kind="lib" path="lib/compress-lzf-1.0.2.jar"/>
 	<classpathentry kind="lib" path="lib/HdrHistogram-2.1.6.jar"/>
 	<classpathentry kind="lib" path="lib/hppc-0.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-dataformat-cbor-2.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-dataformat-smile-2.6.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-dataformat-yaml-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/joda-convert-1.2.jar"/>
 	<classpathentry kind="lib" path="lib/joda-time-2.8.2.jar"/>
@@ -69,5 +65,9 @@
 	<classpathentry kind="lib" path="lib/velocity-tools-generic-2.0.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/entermedia-core"/>
 	<classpathentry kind="lib" path="lib/isoparser-1.1.22.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-core-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-cbor-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.6.2.jar"/>
+	<classpathentry kind="lib" path="lib/jackson-dataformat-yaml-2.6.2.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -136,7 +136,7 @@ public class XmlAssetArchive extends BaseDataArchive implements AssetArchive
 		if( item == null)
 		{
 			item = new Asset(getMediaArchive());
-			item.setCatalogId(getCatalogId());
+			//item.setCatalogId(getCatalogId());
 			item.setSourcePath(inSourcePath);
 			String url = buildXmlPath(item);
 			if( log.isDebugEnabled())
