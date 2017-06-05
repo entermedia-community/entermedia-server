@@ -18,14 +18,6 @@ import org.openedit.page.Page;
 public class ConversionTest extends BaseEnterMediaTest
 {
 	
-	protected void oneTimeSetup() throws Exception
-	{
-	    //executed only once, before the first test
-			MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-			archive.getAssetSearcher().reIndexAll();
-			Thread.sleep(1000);
-
-	}
 	
 	//conversion convertion  
 	public void testPreset() throws Exception

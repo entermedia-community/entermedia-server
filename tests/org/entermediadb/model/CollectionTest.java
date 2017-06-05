@@ -200,10 +200,7 @@ public class CollectionTest extends BaseEnterMediaTest
 //		
 //		
 //	}
-	protected void oneTimeSetup() throws Exception {
-		super.oneTimeSetup();
-		getMediaArchive().getSearcher("asset").reIndexAll();		
-	}
+	
 
 	public void testSnapshotAndImportCategories(){
 
