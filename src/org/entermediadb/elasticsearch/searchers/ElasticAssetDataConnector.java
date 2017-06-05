@@ -151,7 +151,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			processor.setRecursive(true);
 			processor.setRootPath(getPathToData());
 			processor.setPageManager(getPageManager());
-			processor.setIncludeMatches("xml");
+			processor.setIncludeMatches("*.xml");
 			processor.process();
 			updateIndex(tosave, null);
 			log.info("reindexed " + processor.getExecCount());
@@ -204,10 +204,10 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				ContentItem item = getMediaArchive().getOriginalFileManager().getOriginalContent(asset);
 				asset.setFolder(item.isFolder());				
 			}
-			if (asset.getCatalogId() == null)
-			{
-				asset.setCatalogId(getCatalogId());
-			}
+//			if (asset.getCatalogId() == null)
+//			{
+//				asset.setCatalogId(getCatalogId());
+//			}
 			//inContent.field("catalogid", asset.getCatalogId());
 
 			Set categories = buildCategorySet(asset);

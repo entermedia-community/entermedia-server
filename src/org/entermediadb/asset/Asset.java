@@ -582,11 +582,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 		return getMediaArchive().getCatalogId();
 	}
 
-	public void setCatalogId(String inCatalogId)
-	{
-		setValue("catalogid", inCatalogId);
-	}
-
 	public String getFileFormat()
 	{
 		String format = get("fileformat");
