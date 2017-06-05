@@ -155,12 +155,12 @@ public class XmlFileSearcherTest extends BaseEnterMediaTest
 	 */
 	public void xxxtestAssetArchiving() throws Exception
 	{
-		Asset asset = new Asset();
 		String catalog = "entermedia/catalogs/test";
-		asset.setCatalogId(catalog);
+		MediaArchive archive = getMediaArchive(catalog);
+		Asset asset = new Asset(archive);
+		//asset.setCatalogId(catalog);
 		String sourcepath = "another/new/sourcepath";
 		asset.setSourcePath(sourcepath);
-		MediaArchive archive = getMediaArchive(catalog);
 		asset.addCategory(archive.getCategoryArchive().getRootCategory());
 		asset.addKeyword("test");
 		asset.setFolder(false);
