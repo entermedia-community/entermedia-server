@@ -804,7 +804,7 @@ public class ProjectManager implements CatalogEnabled
 			inArchive.getSearcher("librarycollection").saveData(collection);
 		}
 		Data library = inArchive.getData("library", libraryid);
-		if(library == null && "default".equals(libraryid))
+		if(library == null)
 		{
 			/*
 			if( path == null)

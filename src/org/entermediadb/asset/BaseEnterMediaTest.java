@@ -1,5 +1,7 @@
 package org.entermediadb.asset;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.edit.AssetEditor;
 import org.entermediadb.asset.edit.CategoryEditor;
 import org.openedit.BaseTestCase;
@@ -8,7 +10,7 @@ import org.openedit.BaseTestCase;
 public class BaseEnterMediaTest extends BaseTestCase
 {
 	
-	  
+	private static final Log log = LogFactory.getLog(BaseEnterMediaTest.class);
 	public BaseEnterMediaTest(String inName)
 	{
 		super(inName);
@@ -79,6 +81,8 @@ public class BaseEnterMediaTest extends BaseTestCase
 	protected void oneTimeSetup() throws Exception
 	{
 	    //executed only once, before the first test
+		log.info("Reindex start");
+		
 			MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 			archive.getAssetSearcher().reIndexAll();
 			Thread.sleep(1000);
