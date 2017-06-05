@@ -53,7 +53,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		String outputpath = inOutFile.getAbsolutePath();
 
 		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath(),true);
-		boolean usepng = inStructions.isTransparencyMaintained(tmpinput);
+		boolean maintaintransparency = inStructions.isTransparencyMaintained(tmpinput);
 
 		String ext = null;
 		if(asset != null)
@@ -124,19 +124,26 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			if (!inStructions.isCrop())
 			{
-
 				com.add("-resize");
 				String prefix = null;
 				String postfix = null;
 				prefix = String.valueOf(inStructions.getMaxScaledSize().width);
 				postfix = String.valueOf(inStructions.getMaxScaledSize().height);
+				
+				String resizestring = prefix + "x" + postfix;
+				Boolean fillarea = Boolean.parseBoolean(inStructions.get("minsize"));
+				if(fillarea)
+				{
+					resizestring = resizestring + "^";
+				}
+
 				if (isOnWindows())
 				{
-					com.add("\"" + prefix + "x" + postfix + "\"");
+					com.add("\"" + resizestring + "\"");
 				}
 				else
 				{
-					com.add(prefix + "x" + postfix);
+					com.add(resizestring);
 				}
 			}
 
@@ -160,7 +167,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			//This gravity is the relative point of the crop marks
 			setValue("gravity", "NorthWest", inStructions, com);
 
-			createBackground(inStructions, com, usepng, ext);
+			createBackground(inStructions, com, maintaintransparency, ext);
 
 			com.add("-crop");
 			StringBuffer cropString = new StringBuffer();
@@ -215,7 +222,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		else
 		{
-			createBackground(inStructions, com, usepng, ext);
+			createBackground(inStructions, com, maintaintransparency, ext);
 			Boolean extent = Boolean.parseBoolean(inStructions.get("extent"));
 			if( extent)
 			{
@@ -257,19 +264,29 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			setValue("profile", getPathtoProfile(), inStructions, com);
 		}
-		else if (!usepng)
+		else if (!maintaintransparency)
 		{
-			if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
+			if ("eps".equals(tmpinput) 
+					|| "pdf".equals(tmpinput) 
+					|| "ps".equals(tmpinput)
+					|| "psd".equals(tmpinput)
+					|| "ai".equals(tmpinput)
+					|| "tif".equals(tmpinput)
+					|| "tiff".equals(tmpinput)
+					)
 			{
-				setValue("colorspace", "sRGB", inStructions, com);
+				//setValue("colorspace", "sRGB", inStructions, com);
+				//Not compatible with profile at the same time with colorspace
+				setValue("profile", getPathtoProfile(), inStructions, com);
+				
 			}
 			else
 			{
-				com.add("-strip"); //This removes the extra profile info
+				com.add("-strip"); //This removes the extra profile info   TODO: Get rid of this fix
 				setValue("profile", getPathtoProfile(), inStructions, com);
-				com.add("-auto-orient");
 			}
 		}
+		com.add("-auto-orient");
 
 		if (isOnWindows())
 		{
@@ -342,7 +359,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	
 		List<String> com = new ArrayList<String>();
 
-		String prestrip = inStructions.get("fixcmyk");
+		String prestrip = inStructions.get("fixcmyk");  //Error case: JPG with CMYK Profile but marked as RBG 
 		if ("true".equals(prestrip))
 		{
 
@@ -350,7 +367,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			{
 				setValue("colorspace", "sRGB", inStructions, com);
 			}
-			else
+			else //jpg
 			{
 				com.add("-strip");
 				com.add("-profile");

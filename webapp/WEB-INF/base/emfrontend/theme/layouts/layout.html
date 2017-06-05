@@ -18,8 +18,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
 $pages.include("${themeprefix}/layouts/includes.html")
+#if($content.usemap == "true")
 $pages.include("$apphome/components/map/includes.html")
-
+#end
 </head>
 <body id="embody" showadmintoolbar="$canshowadmintoolbar" style="direction:ltr">
    #if ( $browser.isMSIE() )	

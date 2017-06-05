@@ -21,6 +21,13 @@
   <data name="background" value="white" parameterdata="imagepreview" id="1447784755291"/> 
   <data name="layers" value="flatten" parameterdata="imagepreview" id="1447786760361"/>
 
+
+  <parameter id="documentlarge1" parameterdata="documentlarge" value="1500" >prefwidth</parameter> 
+  <parameter id="documentlarge2" parameterdata="documentlarge" value="1500" >prefheight</parameter> 
+  <data name="background" value="white" parameterdata="documentlarge" id="documentlarge3"/> 
+  <data name="layers" value="flatten" parameterdata="documentlarge" id="documentlarge4"/>
+
+
   <parameter id="imagelarge1" parameterdata="imagelarge" value="640" >prefwidth</parameter> 
   <parameter id="imagelarge2" parameterdata="imagelarge" value="480" >prefheight</parameter> 
   <parameter id="imagelarge3" parameterdata="imagelarge" value="76" >quality</parameter> 
