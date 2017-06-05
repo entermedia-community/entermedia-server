@@ -58,7 +58,7 @@ public class BaseEnterMediaTest extends BaseTestCase
 		asset.setId(newId); // just in case case matters
 		asset.setName("Test asset");
 		asset.setSourcePath("test/" + newId);
-		asset.setCatalogId(archive.getCatalogId());
+		//asset.setCatalogId(archive.getCatalogId());
 		asset.setFolder(true);
 		return asset;
 	}
