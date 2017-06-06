@@ -25,7 +25,7 @@ public class ConversionTest extends BaseEnterMediaTest
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
 		Asset asset = archive.getAsset("105"); //PDF
 		assertNotNull(asset);
-		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("image");
+		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("document");
 		ConvertInstructions instructions = manager.createInstructions(asset, "image1500x1500.jpg");				
 		ConvertResult result = manager.createOutput(instructions);
 		
