@@ -185,6 +185,7 @@ public abstract class BasePushManager  implements PushManager{
 	
 	
 		HitTracker hits = inArchive.getAssetSearcher().search(query);
+		log.info("Found "+ hits.size() +" Ready to be pushed");
 		return hits;
 	}
 
@@ -644,5 +645,18 @@ public abstract class BasePushManager  implements PushManager{
 			}
 		}
 		*/
-
+	public void 	saveAssetStatus(Searcher searcher, List savequeue, Asset target, String inNewStatus, User inUser)
+	{
+		String oldstatus = target.get("pushstatus");
+		if( oldstatus == null || !oldstatus.equals(inNewStatus))
+		{
+			target.setValue("pushstatus", inNewStatus);
+			savequeue.add(target);
+			if( savequeue.size() == 100 )
+			{
+				searcher.saveAllData(savequeue, inUser);
+				savequeue.clear();
+			}
+		}
+	}
 }

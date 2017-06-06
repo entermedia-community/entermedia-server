@@ -374,20 +374,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 	}
 
 
-	protected void 	saveAssetStatus(Searcher searcher, List savequeue, Asset target, String inNewStatus, User inUser)
-	{
-		String oldstatus = target.get("pushstatus");
-		if( oldstatus == null || !oldstatus.equals(inNewStatus))
-		{
-			target.setValue("pushstatus", inNewStatus);
-			savequeue.add(target);
-			if( savequeue.size() == 100 )
-			{
-				searcher.saveAllData(savequeue, inUser);
-				savequeue.clear();
-			}
-		}
-	}
+	
 
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset)
 	{
