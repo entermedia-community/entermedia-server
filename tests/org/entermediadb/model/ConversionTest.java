@@ -23,7 +23,7 @@ public class ConversionTest extends BaseEnterMediaTest
 	public void testPreset() throws Exception
 	{
 		MediaArchive archive = getMediaArchive("entermedia/catalogs/testcatalog");
-		Asset asset = archive.getAsset("105");
+		Asset asset = archive.getAsset("105"); //PDF
 		assertNotNull(asset);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("image");
 		ConvertInstructions instructions = manager.createInstructions(asset, "image1500x1500.jpg");				
@@ -38,7 +38,7 @@ public class ConversionTest extends BaseEnterMediaTest
 		Map settings = new HashMap();
 		settings.put("prefwidth", "100");
 		settings.put("prefheight", "100");
-		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(null, settings, "users/admin/105", "video1024x768.jpg");
+		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(null, settings, "users/admin/105", "image1500x1500.jpg");
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
 		//Make sure we save the right final file output
