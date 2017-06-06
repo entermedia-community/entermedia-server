@@ -26,7 +26,7 @@ public class ConversionTest extends BaseEnterMediaTest
 		Asset asset = archive.getAsset("105"); //PDF
 		assertNotNull(asset);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("document");
-		ConvertInstructions instructions = manager.createInstructions(asset, "image1500x1500.jpg");				
+		ConvertInstructions instructions = manager.createInstructions(asset, "image1500x1500.png");				
 		ConvertResult result = manager.createOutput(instructions);
 		
 		assertTrue(result.isOk());
@@ -38,11 +38,11 @@ public class ConversionTest extends BaseEnterMediaTest
 		Map settings = new HashMap();
 		settings.put("prefwidth", "100");
 		settings.put("prefheight", "100");
-		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(null, settings, "users/admin/105", "image1500x1500.jpg");
+		ConvertResult result = archive.getTranscodeTools().createOutputIfNeeded(null, settings, "users/admin/105", "image1500x1500.png");
 		assertTrue(result.isOk());
 		assertNotNull(result.getOutput());
 		//Make sure we save the right final file output
-		assertEquals("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/users/admin/105/image100x100.jpg",result.getOutput().getPath(), result.getOutput().getPath() );
+		assertEquals("/WEB-INF/data/entermedia/catalogs/testcatalog/generated/users/admin/105/image100x100.png",result.getOutput().getPath(), result.getOutput().getPath() );
 		
 	}
 	public void testVideo() throws Exception
