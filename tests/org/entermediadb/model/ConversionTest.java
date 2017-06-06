@@ -26,7 +26,7 @@ public class ConversionTest extends BaseEnterMediaTest
 		Asset asset = archive.getAsset("105");
 		assertNotNull(asset);
 		ConversionManager manager = archive.getTranscodeTools().getManagerByRenderType("image");
-		ConvertInstructions instructions = manager.createInstructions(asset, "image1024x768.jpg");				
+		ConvertInstructions instructions = manager.createInstructions(asset, "image1500x1500.jpg");				
 		ConvertResult result = manager.createOutput(instructions);
 		
 		assertTrue(result.isOk());
