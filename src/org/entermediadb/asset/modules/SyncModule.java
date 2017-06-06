@@ -16,20 +16,16 @@ public class SyncModule extends BaseMediaModule
 	private static final Log log = LogFactory.getLog(SyncModule.class);
 	protected PushManager fieldPushManager;
 
-	public PushManager getPushManager()
+	public PushManager getPushManager(MediaArchive inArchive)
 	{
-		return fieldPushManager;
+		return (PushManager) inArchive.getModuleManager().getBean(inArchive.getCatalogId(), "pushManager");
 	}
 
-	public void setPushManager(PushManager inPushManager)
-	{
-		fieldPushManager = inPushManager;
-	}
-
+	
 	public void acceptPush(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		getPushManager().acceptPush(inReq,archive);
+		getPushManager(archive).acceptPush(inReq,archive);
 	}
 
 	public void resetPushStatus(WebPageRequest inReq)
@@ -39,20 +35,20 @@ public class SyncModule extends BaseMediaModule
 		String old = inReq.findValue("oldpushstatus");
 		String newstatus = inReq.findValue("newpushstatus");
 		
-		getPushManager().resetPushStatus(archive, old, newstatus);
+		getPushManager(archive).resetPushStatus(archive, old, newstatus);
 	}
 
 	public void processPushQueue(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String ids = inReq.getRequestParameter("assetids");
-		getPushManager().processPushQueue(archive, ids, inReq.getUser());
+		getPushManager(archive).processPushQueue(archive, ids, inReq.getUser());
 	}
 	public void processDeletedAssets(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		//String ids = inReq.getRequestParameter("assetids");
-		getPushManager().processDeletedAssets(archive, inReq.getUser());
+		getPushManager(archive).processDeletedAssets(archive, inReq.getUser());
 	}
 
 	
@@ -87,7 +83,7 @@ public class SyncModule extends BaseMediaModule
 		{
 			archive.fireSharedMediaEvent("push/pushassets");
 		}
-		getPushManager().toggle(archive.getCatalogId());
+		getPushManager(archive).toggle(archive.getCatalogId());
 	}
 	public void clearQueue(WebPageRequest inReq) throws Exception
 	{
@@ -144,26 +140,26 @@ public class SyncModule extends BaseMediaModule
 		Collection all =  archive.getAssetSearcher().search(q);
 		inReq.putPageValue("assets", all);
 		
-		Collection importpending = getPushManager().getImportPendingAssets(archive);
+		Collection importpending = getPushManager(archive).getImportPendingAssets(archive);
 		inReq.putPageValue("importpending", importpending);
 
-		Collection importcomplete = getPushManager().getImportCompleteAssets(archive);
+		Collection importcomplete = getPushManager(archive).getImportCompleteAssets(archive);
 		inReq.putPageValue("importcomplete", importcomplete);
 
-		Collection importerror = getPushManager().getImportErrorAssets(archive);
+		Collection importerror = getPushManager(archive).getImportErrorAssets(archive);
 		inReq.putPageValue("importerror", importerror);
 		
 		//
-		Collection pusherror = getPushManager().getErrorAssets(archive);
+		Collection pusherror = getPushManager(archive).getErrorAssets(archive);
 		inReq.putPageValue("pusherror", pusherror);
 
-		Collection nogenerated = getPushManager().getNoGenerated(archive);
+		Collection nogenerated = getPushManager(archive).getNoGenerated(archive);
 		inReq.putPageValue("nogenerated", nogenerated);
 
-		Collection pushcomplete = getPushManager().getCompletedAssets(archive);
+		Collection pushcomplete = getPushManager(archive).getCompletedAssets(archive);
 		inReq.putPageValue("pushcomplete", pushcomplete);
 
-		Collection pushpending = getPushManager().getPendingAssets(archive);
+		Collection pushpending = getPushManager(archive).getPendingAssets(archive);
 		inReq.putPageValue("pushpending", pushpending);
 
 
@@ -172,7 +168,7 @@ public class SyncModule extends BaseMediaModule
 	public void pollRemotePublish(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		getPushManager().pollRemotePublish(archive);
+		getPushManager(archive).pollRemotePublish(archive);
 		//getPublishChecker().addCatalogToMonitor(archive.getCatalogId());
 		//getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
 	}

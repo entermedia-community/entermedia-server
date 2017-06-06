@@ -1147,7 +1147,7 @@
 
 
 	<bean id="SyncModule" class="org.entermediadb.asset.modules.SyncModule" >
-		<property name="pushManager"><ref bean="pushManager" /></property>
+		
 	</bean>
 
 	
@@ -1765,7 +1765,7 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-	<bean id="pushManager" class="model.push.BasePushManager">
+	<bean id="pushManager" class="model.push.EMPushManager">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
