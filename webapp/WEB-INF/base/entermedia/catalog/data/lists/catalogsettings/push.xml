@@ -14,8 +14,8 @@
 	
 	
 	
-	<property id="s3pushmask" value="${sourcepath}/${asset.name}" >Original Publish Mask for Amazon S3</property>
-	<property id="s3generatedmask" value="generated/${sourcepath}/${asset.name}/${preset.generatedoutputfile}" >Generated Files Publish Mask for S3</property>
+	<property id="s3pushmask" value="originals/${sourcepath}/${asset.name}" >Original Publish Mask for Amazon S3</property>
+	<property id="s3generatedmask" value="generated/${sourcepath}/${preset.generatedoutputfile}" >Generated Files Publish Mask for S3</property>
 	
 	
 	<property id="awssecretkey" value="" >AWS Secret Key</property>
