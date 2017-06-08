@@ -1,0 +1,35 @@
+
+        <div class="container">
+            <div id="header">
+                <div id="logo">
+                    <a class="ir" href="$home$apphome/index.html">Applications</a>
+                </div>
+                <div id="user-status">
+                    
+                </div>
+            </div>
+
+
+			<div class="clearfix">
+	
+<p class="app-title">Note: the default login is admin / admin</p>
+				
+			#set( $cat = $searcherManager.getData("system","catalog",$catalogid) )
+				<h3>$cat</h3>
+					<ul class="server-links">
+						#set( $sitesearcher = $searcherManager.getSearcher($cat.getId(),"app") )
+						#set( $sites = $sitesearcher.fieldSearch("id","*","nameDown") )
+						
+						#foreach( $site in $sites)
+								<li ><a class="section-title" href="$site.deploypath">  <span>($site.deploypath)</span> $site</a></li>
+						#end
+					</ul>
+			</div>
+
+			
+            
+            <div id="footer" class="col12 clearfix">
+                <p>
+                    Powered by EnterMedia | <a href="http://www.entermediadb.org">www.entermediadb.org</a>
+                </p>
+            </div>
