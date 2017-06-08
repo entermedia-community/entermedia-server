@@ -1,6 +1,6 @@
 <page>
 	<property name="virtual">true</property>
 	<path-action name="Script.run" allowduplicates="true">
-		<script>/${catalogid}/events/scripts/importing/assetreadmetadata.groovy</script>
+		<script>/${catalogid}/events/scripts/asset/assetreadmetadata.groovy</script>
 	</path-action>
 </page>

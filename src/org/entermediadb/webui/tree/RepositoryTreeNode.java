@@ -195,7 +195,6 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 
 		if (getContentItem().isFolder())
 		{
-			Collection childItems = getChildPaths();
 			//TODO: Clean up this class with an archive class or some other class
 			Page thisdir = null;
 			String thisdirpath = getContentItem().getPath();
@@ -211,7 +210,14 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 			{
 				loadfallback = Boolean.parseBoolean(load);
 			}
-			for ( Iterator iterator = childItems.iterator(); iterator.hasNext(); )
+			Collection actualfiles = getChildPaths(false);
+			
+			Collection allfiles = new ArrayList();
+			allfiles.addAll( actualfiles );
+			allfiles.addAll( getChildPaths(true) );
+
+			Set addedfiles = new HashSet();
+			for ( Iterator iterator = allfiles.iterator(); iterator.hasNext(); )
 			{
 //				Object  obj = iterator.next();
 //				if ( !(obj instanceof ContentItem))
@@ -221,90 +227,105 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 //				childItem = (ContentItem) obj;
 				
 				String npath = (String)iterator.next();
-				RepositoryTreeNode child = createNode( npath );
-				child.getName();
-				child.toString();
-				child.getURL();
-				boolean okToAdd = true;
-				if( checkpermissions && getFilter() != null && !child.isLeaf() )
+				String name = PathUtilities.extractFileName(npath);
+				if( addedfiles.contains(name))
 				{
-					okToAdd = getFilter().passes(npath);
+					continue;
 				}
-
-				if (okToAdd)
+				addedfiles.add(name);
+				RepositoryTreeNode child = createNode( thisdirpath + name );
+				if( !actualfiles.contains(npath))
 				{
-					child.setParent(this);
+					child.setVirtual(true);
+				}
+				
+//				boolean okToAdd = true;
+//				if( checkpermissions && getFilter() != null && !child.isLeaf() )
+//				{
+//					okToAdd = getFilter().passes(npath);
+//				}
+				child.setParent(this);
 
-					if (child.isLeaf())
-					{
+				if (child.isLeaf())
+				{
+					//Make sure it's not a fallback folder
+//					String tmp = thisdirpath + name + "/";
+//					Page folderpage = getPageManager().getPage(tmp	);
+//					if( folderpage.isFolder() )
+//					{
+//						child.getContentItem().setActualPath(folderpage.getAlternateContentPath());
+//						directories.add(child);						
+//					}
+//					else
+//					{
 						files.add(child);
-					}
-					else
-					{
-						directories.add(child);
-					}
+//					}	
+				}
+				else
+				{
+					directories.add(child);
 				}
 			}
-			if( loadfallback)
-			{
-				//clear cache not needed since the permission check has clear the cache getPageManager().clearCache(thisdirpath);
-				PageSettings fallback = thisdir.getPageSettings().getFallback();
-				if( fallback != null)
-				{
-					Set existingDirNames = new HashSet();
-					for (Iterator iterator = directories.iterator(); iterator.hasNext();)
-					{
-						RepositoryTreeNode item = (RepositoryTreeNode) iterator.next();
-						existingDirNames.add(item.getName());
-					}
-					Set existingFileNames = new HashSet();
-					for (Iterator iterator = files.iterator(); iterator.hasNext();)
-					{
-						RepositoryTreeNode item = (RepositoryTreeNode) iterator.next();
-						existingFileNames.add(item.getName());
-					}
-					String dirparent = PathUtilities.extractDirectoryPath(fallback.getPath());
-					//ContentItem basedir = getPageManager().getRepository().get(dirparent);
-					RepositoryTreeNode child = createNode( dirparent );
-					for (Iterator iterator = child.getChildPaths().iterator(); iterator.hasNext();)
-					{
-						String inbasepath = (String)iterator.next();
-						//ContentItem basechildItem = (ContentItem) iterator.next();
-						boolean okToAdd = true;
-						if( getFilter() != null )
-						{
-							okToAdd = getFilter().passes(inbasepath);
-						}
-	
-						if (!okToAdd)
-						{
-							continue;
-						}
-	
-						RepositoryTreeNode node = createNode( inbasepath );
-						node.setParent(this);
-	
-						if( node.isLeaf())
-						{
-							files.add(node);
-							node.setVirtual(true);
-							//If on list already then set the full path. Kind of annoying but otherwise can't click on the virtual one
-							if( existingFileNames.contains(node.getName()))
-							{
-								node.setUrl(inbasepath);
-							}
-						}
-						else 
-						{
-							if( !existingDirNames.contains(node.getName()))
-							{
-								directories.add(node);  //Only add if not already in there
-							}
-							node.setVirtual(true);
-						}
-					}
-				}
-			}				
+//			if( loadfallback)
+//			{
+//				//clear cache not needed since the permission check has clear the cache getPageManager().clearCache(thisdirpath);
+//				PageSettings fallback = thisdir.getPageSettings().getFallback();
+//				if( fallback != null)
+//				{
+//					Set existingDirNames = new HashSet();
+//					for (Iterator iterator = directories.iterator(); iterator.hasNext();)
+//					{
+//						RepositoryTreeNode item = (RepositoryTreeNode) iterator.next();
+//						existingDirNames.add(item.getName());
+//					}
+//					Set existingFileNames = new HashSet();
+//					for (Iterator iterator = files.iterator(); iterator.hasNext();)
+//					{
+//						RepositoryTreeNode item = (RepositoryTreeNode) iterator.next();
+//						existingFileNames.add(item.getName());
+//					}
+//					String dirparent = PathUtilities.extractDirectoryPath(fallback.getPath());
+//					//ContentItem basedir = getPageManager().getRepository().get(dirparent);
+//					RepositoryTreeNode child = createNode( dirparent );
+//					for (Iterator iterator = child.getChildPaths().iterator(); iterator.hasNext();)
+//					{
+//						String inbasepath = (String)iterator.next();
+//						//ContentItem basechildItem = (ContentItem) iterator.next();
+//						boolean okToAdd = true;
+//						if( getFilter() != null )
+//						{
+//							okToAdd = getFilter().passes(inbasepath);
+//						}
+//	
+//						if (!okToAdd)
+//						{
+//							continue;
+//						}
+//	
+//						RepositoryTreeNode node = createNode( inbasepath );
+//						node.setParent(this);
+//	
+//						if( node.isLeaf())
+//						{
+//							files.add(node);
+//							node.setVirtual(true);
+//							//If on list already then set the full path. Kind of annoying but otherwise can't click on the virtual one
+//							if( existingFileNames.contains(node.getName()))
+//							{
+//								node.setUrl(inbasepath);
+//							}
+//						}
+//						else 
+//						{
+//							if( !existingDirNames.contains(node.getName()))
+//							{
+//								directories.add(node);  //Only add if not already in there
+//							}
+//							node.setVirtual(true);
+//						}
+//					}
+//				}
+//			}				
 			// Make sure the files appear in lexicographically increasing
 			// order, with all the directories appearing before all the files.
 			Collections.sort(directories);
@@ -315,11 +336,11 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	}
 
 
-	protected Collection getChildPaths()
+	protected Collection getChildPaths(boolean includefallback)
 	{
 		if ( getContentItem().isFolder() )
 		{
-				Collection paths = getPageManager().getChildrenPaths(getContentItem().getPath());
+				Collection paths = getPageManager().getChildrenPaths(getContentItem().getPath(),includefallback);
 				return paths;
 //			if ( getContentItem() instanceof FileItem)
 //			{
@@ -354,40 +375,52 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 	 */
 	protected RepositoryTreeNode createNode(String inPath) 
 	{
-		//inPath may be the name of the fallback file. Rebuild the path 
-		String path = null;
-		if( getParent() == null)
+//		//inPath may be the name of the fallback file. Rebuild the path 
+//		String path = null;
+//		if( getParent() == null)
+//		{
+//			path = "/" + PathUtilities.extractFileName(inPath);
+//		}
+//		else
+//		{
+//			path = getURL() + "/" + PathUtilities.extractFileName(inPath);
+//		}
+//		ContentItem childItem = null;
+//		try
+//		{
+//			if( inPath.endsWith("/") )
+//			{
+//				childItem = getRepository().getStub(path + "/");
+//			}
+//			else
+//			{
+//				childItem = getRepository().getStub(path);
+//			}
+//		}
+//		catch (RepositoryException e)
+//		{
+//			throw new OpenEditRuntimeException(e);
+//		}
+//		if( childItem.getActualPath() != null && !path.equals(childItem.getActualPath()))
+//		{
+//			path = path + "_" + childItem.getActualPath(); //To make sure it is unique use virtual path + actual path on disk drive
+//		}
+		
+		Page folderpage = getPageManager().getPage(inPath);
+		if(!inPath.endsWith("/") && !folderpage.exists() && !folderpage.isFolder() )
 		{
-			path = "/" + PathUtilities.extractFileName(inPath);
-		}
-		else
-		{
-			path = getURL() + "/" + PathUtilities.extractFileName(inPath);
-		}
-		ContentItem childItem = null;
-		try
-		{
-			if( inPath.endsWith("/") )
+			Page isfolderpage = getPageManager().getPage(inPath + "/");
+			if(isfolderpage.isFolder())
 			{
-				childItem = getRepository().getStub(path + "/");
-			}
-			else
-			{
-				childItem = getRepository().getStub(path);
+				folderpage = isfolderpage;
 			}
 		}
-		catch (RepositoryException e)
-		{
-			throw new OpenEditRuntimeException(e);
-		}
-		if( childItem.getActualPath() != null && !path.equals(childItem.getActualPath()))
-		{
-			path = path + "_" + childItem.getActualPath(); //To make sure it is unique use virtual path + actual path on disk drive
-		}
-		String  id = PathUtilities.makeId(path);
+			
+		
+		String  id = PathUtilities.makeId(inPath);
 		id = id.replace('/', '_');
 	
-		RepositoryTreeNode node = new RepositoryTreeNode( getRepository(), childItem, id);
+		RepositoryTreeNode node = new RepositoryTreeNode( getRepository(), folderpage.getContentItem(), id);
 		node.setFilter(getFilter());
 		//node.setParent(this);
 		node.setPageManager(getPageManager());
