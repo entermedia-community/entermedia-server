@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<indextypes> 
+  <indextype id="analyzed"> 
+    <name> 
+      <language id="en"><![CDATA[Analyzed]]></language> 
+    </name> 
+  </indextype>  
+  <indextype id="not_analyzed">
+    <name>
+      <language id="en"><![CDATA[Not Analyzed]]></language>
+    </name>
+  </indextype>
+</indextypes>
