@@ -1047,6 +1047,16 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 	
+
+	public void deleteAsset(Asset inAsset, boolean deletefiles){
+		if(deletefiles){
+
+			removeGeneratedImages(inAsset, deletefiles);
+			removeOriginals(inAsset);
+		}
+		getAssetSearcher().delete(inAsset, null);
+	}
+	
 	public String toString()
 	{
 		return getCatalogId();
