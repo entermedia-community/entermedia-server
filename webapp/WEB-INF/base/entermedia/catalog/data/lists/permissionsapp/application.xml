@@ -16,6 +16,11 @@
 	<permission id="download" permissiontype="application" name="Download Original" description="Enables downloading of the original asset." ordering="245"/>
 	<permission id="downloadfpo" permissiontype="application" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="250"/>
 	
+	
+		<permission id="exportdata" permissiontype="application" name="Export Data" description="Enables exporting of data to CSV" ordering="245"/>
+	
+	
+	
 	<permission id="viewuploadmulti" permissiontype="application" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." ordering="255"/>
 	<permission id="viewupload" permissiontype="application" name="Upload Single File" description="Enables the upload of a single asset." ordering="260" />
 	<permission id="viewrecentuploads" permissiontype="application" name="View Recent Uploads" description="Allows users to view a page where the most recent uploaded files are shown." ordering="265"/>

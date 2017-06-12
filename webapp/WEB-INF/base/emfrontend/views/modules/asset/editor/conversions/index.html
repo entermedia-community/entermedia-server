@@ -56,7 +56,9 @@ p{
 <div class="info">
 <h2>[[Image Editor]]</h2>
 
+#if($canviewassetedit)
 <a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
+#end
 <a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
 
 ##<a class="btn">[[Rotate]]</a>

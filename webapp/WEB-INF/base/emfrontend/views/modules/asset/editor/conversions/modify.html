@@ -27,8 +27,10 @@ $pages.include("$home$apphome/views/modules/asset/editor/conversions/attachmenth
 #if( $presetdata.id != "0" )
 <a class="thickbox btn" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">Upload</a>
 #end
+
+#if($canviewassetedit)
 #set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
 #if($cancrop)
 <a class="btn previewcrop-btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">Crop</a>
 #end
-
+#end
