@@ -212,6 +212,19 @@ public class TimelineModule extends BaseMediaModule
 	
 	
 	
+	public void loadCaptions(WebPageRequest inReq){
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		Searcher searcher = archive.getSearcher("videotrack");
+		
+		String sourcelang = inReq.getRequestParameter("sourcelang");
+		
+		Data track =  searcher.query().exact("assetid", asset.getId()).exact("sourcelang", sourcelang).searchOne();
+		inReq.putPageValue("track", track);
+		
+		
+	}
+	
 	
 	
 	
