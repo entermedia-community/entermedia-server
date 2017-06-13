@@ -17,9 +17,8 @@
 	<a folder="editshoppingcart"  id="editshoppingcart"  moduleid="asset"  useajax="true" name="Shopping Cart"  ordering="210"  multiedit="true" />
 	
 	<a folder="timeline"  id="viewtimeline"  moduleid="asset"  useajax="false" name="Timeline"  ordering="111" rendertype="video"/>
-	<a folder="videotrack"  id="viewvideotrack"  moduleid="asset"  useajax="false" name="Timeline"  ordering="112" rendertype="video"/>
+	<a folder="videotrack"  id="viewvideotrack"  moduleid="asset"  useajax="false" name="Close Caption"  ordering="112" rendertype="video"/>
 	
-		<a folder="videotrack"  id="viewvideotrack"  moduleid="asset"  useajax="false" name="Video Track"  ordering="112"/>
 	
 	
 	<!-- <a folder="delete" id="deleteasset" multiedit="true" name="Remove Asset" icon="cancl_16x16.png" /> -->
