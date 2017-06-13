@@ -156,6 +156,12 @@ public class XmpWriter
 					val = remote.getName();
 				}
 			}
+			
+			if(detail.isList() || detail.isMultiValue()){
+				val = val.replace("[", "");
+				val = val.replace("]", "");
+
+			}
 //			if( detail.getId().equals("imageorientation"))
 //			{
 //				value = inAsset.get("rotation"); //custom rotation. this should be set by the rotation tool?
