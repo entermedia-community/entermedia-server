@@ -1385,7 +1385,9 @@ public class ProjectManager implements CatalogEnabled
 			Category root = collection.getCategory();
 			if(root == null){
 				configureCollection( collection, inReq.getUserName());
+				root = collection.getCategory();
 			}
+			
 			UserProfile profile = inReq.getUserProfile();
 			if( profile != null && profile.getViewCategories() != null)
 			{
@@ -1426,6 +1428,8 @@ public class ProjectManager implements CatalogEnabled
 				Category root = collection.getCategory();
 				if(root == null){
 					configureCollection(collection, inReq.getUserName());
+					root = collection.getCategory();
+
 				}
 				UserProfile profile = inReq.getUserProfile();
 				if( profile != null && profile.getViewCategories() != null)
