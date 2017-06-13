@@ -1623,7 +1623,7 @@ public class ProjectManager implements CatalogEnabled
 					String username = inUser;
 					collectioncategory.addValue("viewusers",username);
 					mediaArchive.getCategorySearcher().saveData(collectioncategory);
-					collection.setCatalogId(collectioncategory.getId());
+					collection.setValue("rootcategory", collectioncategory.getId());
 					mediaArchive.getSearcher("librarycollection").saveData(collection, null);
 					log.info("saving collection");
 				}
