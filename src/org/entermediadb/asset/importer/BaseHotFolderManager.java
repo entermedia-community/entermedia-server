@@ -124,17 +124,12 @@ public class BaseHotFolderManager implements HotFolderManager
 		{
 			Data folder = (Data) iterator.next();
 			String external = folder.get("externalpath");
-			String type = folder.get("hotfoldertype");
 
-			if( external != null || "s3".equals(type) || "syncthing".equals(type))
+			if( external != null )
 			{
 				String toplevelfolder =  folder.get("subfolder");
 				
-				if(type == null ||"mount".equals(type))
-				{
-					type = "mount";
-					
-				}
+				String	type = "mount";
 				String fullpath = originalpath + "/" + toplevelfolder;
 				//String versioncontrol = folder.get("versioncontrol");
 				Repository created = createRepo(type);
