@@ -372,7 +372,7 @@ public class AssetImporter
 		if (extension != null)
 		{
 			Asset asset = new Asset(inArchive); //throw away
-			asset.setCatalogId(inArchive.getCatalogId());
+			//asset.setCatalogId(inArchive.getCatalogId());
 	//		asset.setId(inArchive.getAssetArchive().nextAssetNumber());
 			asset.setSourcePath(inSourcePath);
 			extension = extension.toLowerCase();

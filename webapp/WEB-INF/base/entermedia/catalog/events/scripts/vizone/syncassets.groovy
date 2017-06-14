@@ -139,6 +139,6 @@ VizOne vz = new VizOne();
 vz.testLoadAsset(context);
 //vz.testUpload(context);
 
-vz.testSearch();
+//vz.testSearch();
 
 

@@ -183,7 +183,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 			processor.setRecursive(true);
 			processor.setRootPath(pathToData);
 			processor.setPageManager(getPageManager());
-			processor.setIncludeMatches("xml");
+			processor.setIncludeMatches("*.xml");
 			processor.process();
 			if (buffer.size()  > 0)
 			{

@@ -35,7 +35,7 @@ public void checkforTasks()
 		
 		if (realitem != null)
 		{
-			mediaarchive.removeGeneratedImages(realitem);
+			mediaarchive.removeGeneratedImages(realitem, true);
 			//mediaarchive.removeOriginals(realitem);
 			searcher.delete(realitem, context.getUser());
 		}

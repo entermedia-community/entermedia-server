@@ -20,14 +20,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.projects.LibraryCollection;
-import org.openedit.CatalogEnabled;
 import org.openedit.MultiValued;
-import org.openedit.data.ObjectArray;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
 import org.openedit.data.Searcher;
-import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
 import org.openedit.util.PathUtilities;
@@ -36,7 +33,7 @@ import org.openedit.util.PathUtilities;
  * @author cburkey
  * 
  */
-public class Asset extends SearchHitData implements MultiValued, SaveableData, CatalogEnabled
+public class Asset extends SearchHitData implements MultiValued, SaveableData
 {
 	private static final Log log = LogFactory.getLog(Asset.class);
 
@@ -580,11 +577,6 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData, C
 			return null;
 		}
 		return getMediaArchive().getCatalogId();
-	}
-
-	public void setCatalogId(String inCatalogId)
-	{
-		setValue("catalogid", inCatalogId);
 	}
 
 	public String getFileFormat()

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  	<property name="fallbackdirectory">/WEB-INF/base/emfrontend</property>
+  	
+  	<property name="assetviewerlink">/${applicationid}/views/modules/asset/editor/viewer/index.html</property>
+  	<property name="asseteditlink">/${applicationid}/views/modules/asset/editor/generalinformation/index.html</property>
+
+  	<path-action name="MediaArchiveModule.loadApplicationId" />
+	<path-action name="ProfileModule.loadUserProfile" />
+    <path-action alltypes="true" name="MediaArchiveModule.getMediaArchive"/>
+	<path-action bean="searcherManager" name="PageValue.loadPageVariable" allowduplicates="true" />		
+	<path-action bean="userManager" name="PageValue.loadPageVariable" allowduplicates="true" />
+    <path-action name="SessionValue.loadSessionVariable" bean="moduleManager" />
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+	<path-action name="TranslationModule.loadBrowserLanguage" />
+  	<path-action name="ProjectModule.loadOpenCollections"/>
+	
+	<inner-layout id="applevel">${themeprefix}/layouts/application.html</inner-layout>
+  	
+	<!-- Properties -->
+    <property name="themeid">emsharedefault</property>
+    <property name="recentactivityid">${parentapplicationid}</property>
+	<property name="profilemanagerid">${catalogid}</property>
+	<property name="login-path">/${applicationid}/authentication/nopermissions.html</property>
+	<property name="errorpage">${themeprefix}/layouts/errorpage.html</property>
+	<property name="shownav">true</property>
+	<property name="editable">false</property>
+	<property name="enableprofilefilters">true</property>
+	<property name="systemfromemail">noreply@entermediasoftware.com</property>
+	<property name="systemfromemailname">EnterMedia</property>
+	<property name="oetextfilter">translation</property>
+	<property name="makeversion">false</property>
+  	<property name="hitsname">hits</property>
+  	<property name="allowguestregistration">false</property>
+	<property name="homelink">http://entermediasoftware.com/</property>
+	<property name="section">home</property>
+	<property name="thumbsize">thumb</property>
+	<!-- property name="contentsiteroot">http://s3.amazonaws.com/emtube</property -->
+ 	<property name="themeprefix">/${applicationid}/theme</property>
+
+  <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
+  <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
+  <style id="categorypicker" href="${themeprefix}/styles/pages/categorypicker.css"/>
+  <style id="jqueryui" href="${themeprefix}/styles/jquery-ui.css"/>
+  
+  <style id="app-css" href="${themeprefix}/styles/theme.css"/>
+    
+  <script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
+  <script id="jquery-ui" src="/${applicationid}/components/javascript/jquery-ui-1.11.4.min.js"/>
+  <script id="jquery-ui-i18n" src="/${applicationid}/components/javascript/ui/i18n/jquery-ui-i18n.js"/>
+   
+  
+  
+  <script id="jplayer"  src="/${applicationid}/components/javascript/jquery.jplayer.min.js">  </script>
+  
+  <style id="jplayer-css"  href="/${applicationid}/theme/jplayer/premium.pixels/premium-pixels.css"/>
+    
+  <script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/js/bootstrap.js" />
+
+  
+  <script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
+   <script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
+  
+  <script id="jquery-validate" src="/${applicationid}/components/javascript/jquery.validation/jquery.validate.js"/>
+  <script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
+  <script id="validateandedit" src="/${applicationid}/components/javascript/validateandedit.js">     </script>
+  <script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
+  <script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
+  <script id="openedit" src="/openedit/components/javascript/openedit.js"/>
+  
+  
+  
+  <script id="detaileditor" src="/${applicationid}/components/xml/detaileditor.js"/>
+  
+  <script id="select2" src="/${applicationid}/components/javascript/select2/js/select2.full.js"/>
+  <style id="select2-css" href="/${applicationid}/components/javascript/select2/css/select2.css"/>
+  
+  <style id="results" href="${themeprefix}/styles/pages/results.css"/>
+  <script id="results" src="/${applicationid}/components/javascript/results.js"/>   
+
+   <script id="jangular" src="/${applicationid}/components/javascript/jAngular/js/jAngular.js"></script>
+   <style id="custom-css" href="${themeprefix}/styles/custom.css"/>
+   
+   
+   
+   
+  <property name="title">EM Share</property>
+  <property name="applicationid">emshare</property>
+  
+  
+</page>

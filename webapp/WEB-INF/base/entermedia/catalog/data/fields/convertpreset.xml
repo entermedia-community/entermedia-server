@@ -80,7 +80,13 @@
       <language id="es"><![CDATA[en importación]]></language>  
       <language id="fr"><![CDATA[Sur l&#39;importation]]></language> 
     </name> 
+  </property>
+  
+  <property id="onpush" type="boolean" index="true" stored="true" editable="true" keyword="false"  sortable="true">Push On Import 
+     
   </property>  
+  
+    
   <property id="ordering" type="number" index="true" stored="true" editable="true" keyword="false"  sortable="true">Ordering 
     <name> 
       <language id="de"><![CDATA[Bestellung]]></language>  

@@ -6,6 +6,8 @@
 	<property id="guid" />
 	<property id="fileexportformat" />
 	<property id="onimport" />
+	<property id="onpush" />
+	
 	<property id="ordering" />
 	<property id="display" />
 	<property id="singlepage" />

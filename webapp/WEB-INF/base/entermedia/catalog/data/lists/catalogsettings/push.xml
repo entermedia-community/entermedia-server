@@ -12,4 +12,22 @@
 	<property id="push_download_category" value="" >Download Category</property>
 	<property id="downloadpublisher" value="0" >Download Publisher</property>
 	
+	
+	
+	<property id="s3pushmask" value="originals/${sourcepath}/${asset.name}" >Original Publish Mask for Amazon S3</property>
+	<property id="s3generatedmask" value="generated/${sourcepath}/${preset.generatedoutputfile}" >Generated Files Publish Mask for S3</property>
+	
+	
+	<property id="awssecretkey" value="" >AWS Secret Key</property>
+	<property id="awsaccesskey" value="" >AWS Access Key</property>
+	<property id="awsbucket" value="" >AWS Bucket</property>
+	
+	
+	
+	
+	
+	
+	
+	
+	
 </properties>

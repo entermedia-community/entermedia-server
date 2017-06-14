@@ -553,7 +553,7 @@ public class MediaArchive implements CatalogEnabled
 	public Asset createAsset(String inId, String inSourcePath)
 	{
 		Asset asset = new Asset(this);
-		asset.setCatalogId(getCatalogId());
+		//asset.setCatalogId(getCatalogId());
 		if( inId == null)
 		{
 			inId = getAssetSearcher().nextAssetNumber();

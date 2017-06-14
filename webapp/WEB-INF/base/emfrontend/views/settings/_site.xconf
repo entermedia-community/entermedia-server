@@ -4,6 +4,8 @@
 	<style id="settings" href="${themeprefix}/styles/pages/settings.css" />
     <script id="jssettings" src="/${applicationid}/components/javascript/pages/settings.js"/>
 
+	<property name="usemap">false</property>
+	
 	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
 	<permission name="view">
 		<or>

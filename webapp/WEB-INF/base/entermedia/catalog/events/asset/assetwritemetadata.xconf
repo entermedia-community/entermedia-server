@@ -3,6 +3,6 @@
 
 
 <path-action name="Script.run">
-	<script>/${catalogid}/events/scripts/asset/writemetadata.groovy</script>
+	<script>/${catalogid}/events/scripts/asset/assetwritemetadata.groovy</script>
 </path-action>
 </page>
