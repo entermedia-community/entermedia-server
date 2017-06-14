@@ -5,7 +5,7 @@
 		<a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id" class="folder">
 			<div class="name">
 				<div class="alias" title="Alias">$folder.name</div>
-				#if( $folder.externalpath )
+				#if( $folder.subfolder )
 				<div class="path" title="$folder.subfolder">Path: $folder.subfolder</div> 
 				#end
 				#if( $folder.enabled )
