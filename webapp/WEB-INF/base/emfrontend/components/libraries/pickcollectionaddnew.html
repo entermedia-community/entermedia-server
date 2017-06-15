@@ -7,6 +7,13 @@
 <input type="hidden" name="field" value="owner" />
 <input type="hidden" name="owner.value" value="$!user.getId()" />
 
+#set( $data = $context.getData())
+$context.putPageValue("data",$data)
+
+<input type="hidden" name="field" value="rootcategory" />
+<input type="hidden" name="rootcategory.value" value="$!data.rootcategory" />
+
+
 $context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,$searchtype) )	
 $context.putPageValue("view","${searchtype}/${searchtype}addnew")	
 $pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)

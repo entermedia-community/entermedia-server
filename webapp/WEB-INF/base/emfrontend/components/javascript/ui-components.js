@@ -372,8 +372,8 @@ uiload = function() {
 				}
 				var link = dialog.attr("href");
 				
+				var options = dialog.data();
 				var param = dialog.data("parameterdata");
-				var options = {};
 				if( param )
 				{	
 					var element = $("#" + param );
