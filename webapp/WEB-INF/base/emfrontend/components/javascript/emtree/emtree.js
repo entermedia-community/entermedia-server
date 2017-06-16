@@ -287,6 +287,19 @@ jQuery(document).ready(function()
 		return false;
 	} );
 
+	$(".treecontext #createcollection").livequery('click', function(event) 
+	{
+		event.stopPropagation();
+		var node = getNode(this);
+		var nodeid = node.data('nodeid');
+		var button = $("#collectionidadd");
+		button.data("rootcategory",nodeid);
+		button.data("name",node.data("categoryname"));
+		
+		button[0].click();
+		return false;
+	} );
+
 	
   $("body").on("contextmenu", ".noderow", function(e) 
   {

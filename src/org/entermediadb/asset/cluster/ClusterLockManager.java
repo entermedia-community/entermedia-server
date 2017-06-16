@@ -262,7 +262,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	@Override
 	public Lock lockIfPossible(String inPath, String inOwnerId)
 	{
-		log.info(Thread.currentThread().getId() + " is trying to lock " + inPath);
+	//	log.info(Thread.currentThread().getId() + " is trying to lock " + inPath);
 		try
 		{
 			Lock lock = loadLock(inPath);

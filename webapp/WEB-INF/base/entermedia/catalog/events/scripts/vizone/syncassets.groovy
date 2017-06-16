@@ -1,18 +1,20 @@
 package vizone
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import org.apache.commons.logging.Log
+import org.apache.commons.logging.LogFactory
 import org.apache.http.client.HttpClient
 import org.apache.http.client.config.CookieSpecs
 import org.apache.http.client.config.RequestConfig
 import org.apache.http.impl.client.CloseableHttpClient
 import org.apache.http.impl.client.HttpClients
 import org.entermediadb.asset.Asset
-import org.entermediadb.asset.Category;
+import org.entermediadb.asset.Category
+import org.entermediadb.asset.ChunkySourcePathCreator
 import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.SourcePathCreator
 import org.entermediadb.asset.scanner.MetaDataReader
 import org.entermediadb.asset.search.AssetSearcher
-import org.entermediadb.email.ElasticPostMail;
+import org.entermediadb.email.ElasticPostMail
 import org.entermediadb.modules.update.Downloader
 import org.openedit.WebPageRequest
 import org.openedit.page.Page
@@ -56,7 +58,10 @@ public class VizOne{
 						asset.setValue("assettitle", itTitle);
 						asset.setName(it.derivativefilename.text());
 						asset.setValue("importstatus", "needsdownload");
-						asset.setSourcePath("vizone/${vizid}");
+						SourcePathCreator creator = new ChunkySourcePathCreator();
+						
+						String sourcepath = creator.createSourcePath(asset, vizid);
+						asset.setSourcePath("vizone/${sourcepath}");
 						assets.add(asset);
 
 						Downloader dl = new Downloader();

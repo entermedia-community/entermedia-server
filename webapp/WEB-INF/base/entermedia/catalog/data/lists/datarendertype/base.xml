@@ -26,5 +26,6 @@
 		<type id="timecodetable"  >Timecode Table</type>
 		<type id="searchsuggest"  >Suggestions</type>
 		<type id="tageditor"  >Tags</type>
+-		<type id="map"  >Map</type>
 
 </types>

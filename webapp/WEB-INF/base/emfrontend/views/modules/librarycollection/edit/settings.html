@@ -27,3 +27,23 @@ $pages.include($editlink)
 </div>
 </div>
 
+
+<div class="ui-widget uipanel" style="padding: 20px 5px 5px 5px;width: 60%">
+  	<div class="ui-widget-header">[[Category Path]]
+ ##   	<span class="widget-header-edit">
+##			 <a class="ir" href="/assets/emshare/views/settings/modules/librarycollection/metadata/views/index.html?viewid=librarycollectiongeneral&amp;viewpath=librarycollection/librarycollectiongeneral">Edit</a>
+##		</span>
+    </div>
+	<div class="ui-widget-content">
+
+		<p>$librarycol.getCategory().getCategoryPath() </p>
+		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+		
+		#if( $exists )
+		
+		#else
+			<a class="btn" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html?subfolder=$librarycol.getCategory().getCategoryPath()">Create Hotfolder</a>
+	#end
+
+</div>
+</div>

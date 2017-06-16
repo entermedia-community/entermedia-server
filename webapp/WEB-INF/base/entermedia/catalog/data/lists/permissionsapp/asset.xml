@@ -27,7 +27,7 @@
 	<preference id="capturehistory" permissiontype="asset" name="Save Usage" description="Logs the download history of an asset." ordering="348" />
 
 	<permission id="viewmap" permissiontype="asset" name="Map &amp; Geo-location" description="Enables access to asset latitude/ longitude and a mapping feature." ordering="350"/>
-	<permission id="viewassetedit" permissiontype="asset" name="Crop JPG" description="Enables cropping of JPG Images" ordering="351" />
+	<permission id="viewassetedit" permissiontype="asset" name="Cropping" description="Enables cropping" ordering="351" />
 	<permission id="viewmediaedit" permissiontype="asset" name="Media Editor" description="Enables access to a crop of thumbnails and rotate tool." ordering="352"/>
 
 	<permission id="viewmetadatageneral" permissiontype="asset" name="View General Metadata" description="Enable general metadata viewing." ordering="354" />
@@ -38,8 +38,8 @@
 	<permission id="viewcomments" permissiontype="asset" name="Comments" description="Enables view-only access to the comments." ordering="358"/>
 	<permission id="viewassets" permissiontype="asset" name="Asset Search" description="Enables access to assets." ordering="359" />
 	<permission id="showbadge" permissiontype="asset" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="360" />
-	<permission id="viewtimeline" permissiontype="asset" name="Video Timeline" description="Enables access to video timelines and cuepoints" ordering="361" />
-			<permission id="viewvideotrack" permissiontype="asset" name="Video Tracks" description="Enables access to video timelines and cuepoints" ordering="361" />
+	<permission id="viewtimeline" permissiontype="asset" name="Video Timeline" description="Enables access to video clips and metadata" ordering="361" />
+	<permission id="viewclosedcaptions" permissiontype="asset" name="Closed Captions" description="Closed Caption Support" ordering="361" />
 		
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	

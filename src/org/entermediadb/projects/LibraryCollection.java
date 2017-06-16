@@ -92,6 +92,9 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 
 	public Category getCategory()
 	{
+		if(getRootCategoryId() == null){
+			return null;
+		}
 		return getMediaArchive().getCategory(getRootCategoryId());
 	}
 	

@@ -27,6 +27,7 @@ public class ConvertInstructions
 	protected Asset fieldAsset;
 	protected ContentItem fieldOutputFile;
 	protected ContentItem fieldInputFile;
+	public static final String NULL = "null";
 	
 	public ConvertInstructions copy(Data inNewPreset)
 	{
@@ -257,6 +258,10 @@ public class ConvertInstructions
 
 	public void setProperty(String inName, String inValue)
 	{
+		if(inValue == null){
+			inValue = NULL;
+
+		}
 		getProperties().put(inName, inValue);
 		fieldOutputFile = null;
 	}
@@ -278,9 +283,15 @@ public class ConvertInstructions
 
 	public String getProperty(String inName)
 	{
+		
+		
+		
 		if (fieldProperties != null)
 		{
 			String value = getProperties().get(inName);
+			if(value == NULL){
+				return null;
+			}
 			if( value != null)
 			{
 				return value;
