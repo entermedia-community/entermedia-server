@@ -275,9 +275,9 @@ public class ImagemagickTranscoder extends BaseTranscoder
 					|| "tiff".equals(tmpinput)
 					)
 			{
-				//setValue("colorspace", "sRGB", inStructions, com);
+				setValue("colorspace", "sRGB", inStructions, com);
 				//Not compatible with profile at the same time with colorspace
-				setValue("profile", getPathtoProfile(), inStructions, com);
+				//setValue("profile", getPathtoProfile(), inStructions, com);
 				
 			}
 			else
