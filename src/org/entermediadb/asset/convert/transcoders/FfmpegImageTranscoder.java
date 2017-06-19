@@ -94,14 +94,23 @@ public class FfmpegImageTranscoder extends BaseTranscoder
 			log.error(e);
 			offset = "0";
 		}
-		if( input.getLength() < 1000000 )
+		double jumpoff = Double.parseDouble(offset); //Jump to within 2 seconds to speed up / more accurate creation
+		Double videolength = (Double)inStructions.getAsset().getDouble("length");
+		if( videolength != null)
+		{
+			if( jumpoff > videolength)
+			{
+				log.info("Video not long enough " + jumpoff);
+				jumpoff = videolength;
+			}
+		}
+		else if( input.getLength() < 1000000 )  //too small of video.mp4
 		{
 			offset = "0";
 		}
 		
 		List<String> com = new ArrayList<String>();
 
-		double jumpoff = Double.parseDouble(offset); //Jump to within 2 seconds to speed up / more accurate creation
 		if( jumpoff > 2 )
 		{
 			com.add("-ss");

@@ -296,7 +296,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						value = DateStorageUtil.getStorageUtil().checkFormat(value);
 						inAsset.setProperty(property.getId(), value);
 					}
-					else if (property.isList() )  //|| property.isDataType("number")
+					else if (property.isList() || property.isMultiValue())  //|| property.isDataType("number")
 					{
 						m = p.matcher(numbers[i]);
 						if (m.find())
@@ -317,7 +317,16 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 							}
 							else
 							{
+								value = value.replace("]", "");
+								value = value.replace("[", "");
+								String[] values = value.split(",");
+								if(values.length == 1){
+								
 								inAsset.setProperty(property.getId(), value);
+								} else{
+									ArrayList arrayList = new ArrayList(Arrays.asList(values));
+									inAsset.setValue(property.getId(), arrayList);
+								}
 							}
 						}
 					}

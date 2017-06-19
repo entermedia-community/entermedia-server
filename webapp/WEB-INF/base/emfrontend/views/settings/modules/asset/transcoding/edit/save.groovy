@@ -14,6 +14,8 @@ public void init()
 	ConversionManager manager = mediaarchive.getTranscodeTools().getManagerByRenderType(type);
 	
 	ConvertInstructions instructions = manager.createInstructions(null, data);
+	instructions.setProperty("timeoffset", ConvertInstructions.NULL);
+	
 	instructions.setAssetSourcePath("junk");
 	String name = instructions.getOutputFile().getName();
 	data.setValue("generatedoutputfile",name);

@@ -51,12 +51,17 @@
   			#set($text = "[[Edit Asset]]")
   		#end
 		<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a></li>
-	#end	
+	#end
+	#if($canexportdata)
     	<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
+#end
+
 	#if($candeleteasset && $canmultiedit)	    
  		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a></li>
    	#end    	
+#if($canprintpreview)
     	 <li><a href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>
+#end
 	</ul>
 </li>
 #end

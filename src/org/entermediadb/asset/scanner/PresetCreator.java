@@ -71,7 +71,11 @@ public class PresetCreator
 			Searcher presetsearcher = inArchive.getSearcher("convertpreset");
 			SearchQuery query = presetsearcher.createSearchQuery();
 			query.addMatches("onpush", "true");
-			query.addMatches("inputtype", rendertype);
+			//query.addMatches("inputtype", rendertype);
+			Collection vals = new ArrayList();
+			vals.add(rendertype);
+			vals.add("all");
+			query.addOrsGroup("inputtype", vals);
 			hits = presetsearcher.search(query);
 			getCacheManager().put("push_preset_lookup",rendertype, hits);
 		}

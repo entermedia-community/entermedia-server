@@ -92,6 +92,9 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
       <li><a id="createnode" tabindex="-1" href="#">[[Create]]</a></li>
       <li><a id="renamenode" tabindex="-1" href="#">[[Rename]]</a></li>
       <li><a id="deletenode" tabindex="-1" href="#">[[Delete]]</a></li>
+      #if($canaddnewcollection)
+      <li><a id="createcollection" tabindex="-1" href="#">[[Create Collection]]</a></li>
+      #end
 #end      
       <li><a id="nodeproperties" tabindex="-1" href="#">[[Properties]]</a></li>
       <li class="divider"></li>

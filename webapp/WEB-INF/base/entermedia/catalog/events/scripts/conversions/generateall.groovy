@@ -3,12 +3,14 @@ import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.scanner.PresetCreator
 import org.openedit.Data
 import org.openedit.data.Searcher
+import org.openedit.hittracker.HitTracker
 
 public void init()
 {
 		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher searcher = archive.getAssetSearcher();
-		Collection assets = searcher.getAllHits();
+		HitTracker assets = searcher.getAllHits();
+		assets.enableBulkOperations();
 		List assetsToSave = new ArrayList();
 		PresetCreator presets = archive.getPresetManager();
 
