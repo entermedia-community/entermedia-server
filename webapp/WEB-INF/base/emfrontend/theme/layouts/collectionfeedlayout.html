@@ -14,10 +14,10 @@
 		  <li class="ui-corner-top"><a id="approvaltab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/pending/${librarycol.getId()}.html" >[[Pending]]</a></li>
 		  #end
 	#if( $caneditdata)
-		  #if($canimportcollection )
+		  #if($canimportworkspace )
 		  <li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Revisions]]</a></li>
 		  #end
-		  #if($canviewupload)
+		  #if($canviewupload || $canimportworkspace || $cancopycategory)
 		  <li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
 		  #end
 		  #if($canassetannotate )
