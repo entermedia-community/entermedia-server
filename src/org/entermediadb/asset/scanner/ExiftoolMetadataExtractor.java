@@ -353,7 +353,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		}
 		
 		if(lat != null && lng != null){
-			inAsset.setProperty("geo_position", lat + " , " + lng);
+			inAsset.setProperty("geo_point", lat + " , " + lng);
 		}
 		
 		return foundtextvalues;
