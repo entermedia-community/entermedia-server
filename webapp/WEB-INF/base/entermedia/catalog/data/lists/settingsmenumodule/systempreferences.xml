@@ -2,7 +2,9 @@
 
 <properties>
 
-  <property id="appreferences"  menulevel="toplevel"  moduleid="system" path="/views/settings/applicationsetup/preferences/index.html" ordering="01">Theme Editor</property>
+  <property id="theme" sublabel="Theme"  parentid="theme"   menulevel="toplevel"  moduleid="system" path="/views/settings/applicationsetup/theme/index.html" ordering="1">Preferences</property>
+  <property id="emails"   parentid="theme"  moduleid="system" path="/views/settings/applicationsetup/emails/index.html" ordering="2">Email Templates</property>
+  <property id="parameters"  parentid="theme"   moduleid="system" path="/views/settings/applicationsetup/parameters/index.html" ordering="3">Catalog Parameters</property>
   
   
 </properties>
