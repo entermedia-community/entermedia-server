@@ -21,8 +21,6 @@
 	
 	
 	
-	<permission id="viewuploadmulti" permissiontype="application" name="Upload Multiple Files" description="Enables the upload of multiple assets simultaneously." ordering="255"/>
-	<permission id="viewupload" permissiontype="application" name="Upload Single File" description="Enables the upload of a single asset." ordering="260" />
 	<permission id="viewrecentuploads" permissiontype="application" name="View Recent Uploads" description="Allows users to view a page where the most recent uploaded files are shown." ordering="265"/>
 	
 	<permission id="editusersgroups" permissiontype="application" name="Edit Users and Groups" description="Allows user to create and edit users or groups" ordering="270"  />
