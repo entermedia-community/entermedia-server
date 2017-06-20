@@ -297,7 +297,13 @@ uiload = function() {
 			// allows for posting to a div in the parent from a fancybox.
 			
 			// closes the fancybox after submitting
-				
+			//Refreshing... <img src="/${applicationid}/theme/images/ajax-loader.gif">
+			if( form.hasClass("showwaiting") )
+			{
+				var app = jQuery("#application");
+				var apphome = app.data("home") + app.data("apphome");
+				$("#" + targetdiv).append('<img src="' + apphome + '/theme/images/ajax-loader.gif">');
+			}
 
 			form.ajaxSubmit({
 				target:"#" + targetdiv,
