@@ -1744,7 +1744,7 @@ public class MediaArchive implements CatalogEnabled
 	}
 	public void clearCaches()
 	{
-		getCacheManager().clear("library_lookup");
+		getCacheManager().clearAll();
 		getPresetManager().clearCaches();
 	}
 
@@ -1781,6 +1781,7 @@ public class MediaArchive implements CatalogEnabled
 		getSearcherManager().getPropertyDetailsArchive(getCatalogId()).clearCache();
 		getSearcherManager().clear();
 		getNodeManager().clear();
+		getPresetManager().clearCaches();
 		
 	}
 	
