@@ -50,14 +50,14 @@ import groovy.json.JsonSlurper;
  *
  * @author cnelson
  */
-public class FileUpload 
+public class FileUpload
 {
 	protected PageManager fieldPageManager;
 	protected File fieldRoot;
 	/** Defaults to 1MB */
 	public static final int BUFFER_SIZE = 1000000;
 	protected SearcherManager fieldSearcherManager;
-	
+
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -70,25 +70,27 @@ public class FileUpload
 
 	private static final Log log = LogFactory.getLog(FileUpload.class);
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.openedit.action.Command#execute(java.util.Map, java.util.Map)
 	 */
 	public UploadRequest uploadFiles(WebPageRequest inContext) throws OpenEditException
 	{
-		
+
 		if (inContext.getUser() == null)
 		{
 			throw new OpenEditException("You must be logged in to upload files");
-		} 
-		
-//		Object canUpload = inContext.getPageValue("canupload");
-//		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
-//		{
-//			throw new OpenEditException("You don't have enough permissions to upload files");
-//		}
-//		
+		}
+
+		//		Object canUpload = inContext.getPageValue("canupload");
+		//		if (!Boolean.parseBoolean(String.valueOf(canUpload)))
+		//		{
+		//			throw new OpenEditException("You don't have enough permissions to upload files");
+		//		}
+		//		
 		UploadRequest props = parseArguments(inContext);
-		if( props == null)
+		if (props == null)
 		{
 			return null;
 		}
@@ -98,18 +100,18 @@ public class FileUpload
 
 	public void saveFiles(WebPageRequest inContext, UploadRequest props) throws OpenEditException
 	{
-		String home = (String)inContext.getPageValue("home");
+		String home = (String) inContext.getPageValue("home");
 
 		for (Iterator iterator = props.getUploadItems().iterator(); iterator.hasNext();)
 		{
 			FileUploadItem item = (FileUploadItem) iterator.next();
-			if( item.getSavedPage() == null)
+			if (item.getSavedPage() == null)
 			{
-				props.saveFile(item,home,inContext);
+				props.saveFile(item, home, inContext);
 			}
 			//Page page = saveFile( props, finalpath, inContext );
 		}
-		inContext.putPageValue("uploadrequest",props);
+		inContext.putPageValue("uploadrequest", props);
 		//inContext.setRequestParameter("path", page.getPath());			
 	}
 
@@ -122,82 +124,83 @@ public class FileUpload
 		final UploadRequest upload = new UploadRequest();
 		upload.setPageManager(getPageManager());
 		upload.setRoot(getRoot());
-		
+
 		//upload.setProperties(inContext.getParameterMap());
-		if ( inContext.getRequest() == null) //used in unit tests
+		if (inContext.getRequest() == null) //used in unit tests
 		{
 			return upload;
 		}
 
 		String type = inContext.getRequest().getContentType();
-		if ( type == null || !type.startsWith("multipart"))
+		if (type == null || !type.startsWith("multipart"))
 		{
 			addAlreadyUploaded(inContext, upload);
 			return upload;
 		}
 		String uploadid = inContext.getRequestParameter("uploadid");
-		
+
 		String catalogid = inContext.findValue("catalogid");
-		if(uploadid != null && catalogid != null)
+		if (uploadid != null && catalogid != null)
 		{
 			upload.setUploadId(uploadid);
 			upload.setCatalogId(catalogid);
 			upload.setUserName(inContext.getUserName());
 			upload.setUploadQueueSearcher(loadQueueSearcher(catalogid));
 		}
-		
 
 		//Our factory will track these items as they are made. Each time some data comes in look over all the files and update the size		
-		FileItemFactory factory = (FileItemFactory)inContext.getPageValue("uploadfilefactory");
-		if( factory == null)
+		FileItemFactory factory = (FileItemFactory) inContext.getPageValue("uploadfilefactory");
+		if (factory == null)
 		{
 			DiskFileItemFactory dfactory = new DiskFileItemFactory();
-//			{
-//				public org.apache.commons.fileupload.FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) 
-//				{
-//					if( !isFormField )
-//					{
-//						upload.track(fieldName, contentType, isFormField, fileName);
-//					}
-//					return super.createItem(fieldName, contentType, isFormField, fileName);
-//				};
-//			}
+			//			{
+			//				public org.apache.commons.fileupload.FileItem createItem(String fieldName, String contentType, boolean isFormField, String fileName) 
+			//				{
+			//					if( !isFormField )
+			//					{
+			//						upload.track(fieldName, contentType, isFormField, fileName);
+			//					}
+			//					return super.createItem(fieldName, contentType, isFormField, fileName);
+			//				};
+			//			}
 			factory = dfactory;
-			
+
 		}
-		
-		
+
 		ServletFileUpload uploadreader = new ServletFileUpload(factory);
 		//upload.setSizeThreshold(BUFFER_SIZE);
-		if( uploadid != null)
+		if (uploadid != null)
 		{
 			uploadreader.setProgressListener(upload);
 		}
 		HttpServletRequest req = inContext.getRequest();
 		String encode = req.getCharacterEncoding();
-		if ( encode == null)
+		if (encode == null)
 		{
 			//log.info("Encoding not set.");
 			encode = "UTF-8";
 		}
 		//log.info("Encoding is set to " + encode);
 		uploadreader.setHeaderEncoding(encode);
-		
+
 		//upload.setHeaderEncoding()
 		//Content-Transfer-Encoding: binary
 		//upload.setRepositoryPath(repository.pathToFile("admin
 		uploadreader.setSizeMax(-1);
 
-		try {
+		try
+		{
 			readParameters(inContext, uploadreader, upload, encode);
-		} catch (UnsupportedEncodingException e) {
+		}
+		catch (UnsupportedEncodingException e)
+		{
 			throw new OpenEditException(e);
 		}
-		if( uploadid != null)
+		if (uploadid != null)
 		{
 			expireOldUploads(catalogid);
 		}
-		
+
 		return upload;
 	}
 
@@ -209,16 +212,16 @@ public class FileUpload
 	protected void expireOldUploads(String inCatalogId)
 	{
 		Searcher searcher = loadQueueSearcher(inCatalogId);
-		
+
 		SearchQuery q = searcher.createSearchQuery();
-		
+
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.HOUR, -48);
 		q.addBefore("date", cal.getTime());
 		//child.addMatches("status", "complete");
-		
+
 		HitTracker hits = searcher.search(q);
-		
+
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data queue = (Data) iterator.next();
@@ -230,7 +233,7 @@ public class FileUpload
 	{
 		List fileItems;
 		FileItemIterator itemIterator;
-		try 
+		try
 		{
 			fileItems = uploadreader.parseRequest(inContext.getRequest());
 
@@ -241,37 +244,41 @@ public class FileUpload
 			for (int i = 0; i < fileItems.size(); i++)
 			{
 				org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
-				int count = 0;				
+				int count = 0;
 				if (!tmp.isFormField())
 				{
-					if(tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json") )
+					if (tmp.getContentType() != null && tmp.getContentType().toLowerCase().contains("json"))
 					{
 						JsonSlurper slurper = new JsonSlurper();
 						String content = tmp.getString(encoding).trim();
-						Map jsonRequest = (Map)slurper.parseText(content); //this is real, the other way is just for t
-						inContext.setJsonRequest(jsonRequest);
+						Object target = slurper.parseText(content);
+						if (target instanceof Map)
+						{
+							Map jsonRequest = (Map) target;
+							inContext.setJsonRequest(jsonRequest);
+							continue;
+						}
 					}
-					else
-					{
+					
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setFileItem(tmp);
 						String name = tmp.getName();
-						if( name !=  null && name.contains("\\"))
+						if (name != null && name.contains("\\"))
 						{
-							name = name.substring(name.lastIndexOf("\\")+1);
+							name = name.substring(name.lastIndexOf("\\") + 1);
 						}
 						foundUpload.setName(name);
 						//String num = "0";
 						//int index = tmp.getFieldName().indexOf(".");
-	//					if(  index > -1)
-	//					{
-	//						num = tmp.getFieldName().substring(index+1);
-	//					}
-						
+						//					if(  index > -1)
+						//					{
+						//						num = tmp.getFieldName().substring(index+1);
+						//					}
+
 						foundUpload.setCount(count);
 						count++;
 						upload.addUploadItem(foundUpload);
-					}
+					
 				}
 			}
 		}
@@ -284,26 +291,26 @@ public class FileUpload
 		for (int i = 0; i < fileItems.size(); i++)
 		{
 			org.apache.commons.fileupload.FileItem tmp = (org.apache.commons.fileupload.FileItem) fileItems.get(i);
-			if (tmp.isFormField() )
+			if (tmp.isFormField())
 			{
 				Object vals = arguments.get(tmp.getFieldName());
 				String[] values = null;//(String[])
 
-				if( vals instanceof String)
+				if (vals instanceof String)
 				{
-					
+
 					values = new String[1];
-					
-					values[0] = (String)vals; //the old value?
+
+					values[0] = (String) vals; //the old value?
 				}
-				else if ( vals != null)
+				else if (vals != null)
 				{
-					values = (String[])vals;
+					values = (String[]) vals;
 				}
 				String tval = tmp.getString(encoding).trim();
-				if( !tval.isEmpty() )
+				if (!tval.isEmpty())
 				{
-					if( values == null)
+					if (values == null)
 					{
 						values = new String[1];
 					}
@@ -311,12 +318,12 @@ public class FileUpload
 					{
 						//grow by one
 						String[] newvalues = new String[values.length + 1];
-						System.arraycopy(values,0, newvalues,0, values.length);
+						System.arraycopy(values, 0, newvalues, 0, values.length);
 						values = newvalues;
 					}
-					values[values.length -1] = tval;
+					values[values.length - 1] = tval;
 				}
-				if( values != null)
+				if (values != null)
 				{
 					arguments.put(tmp.getFieldName(), values);
 				}
@@ -324,18 +331,22 @@ public class FileUpload
 		}
 		for (Iterator iterator = arguments.keySet().iterator(); iterator.hasNext();)
 		{
-			String param = (String)iterator.next();
+			String param = (String) iterator.next();
 			Object vals = arguments.get(param);
-			if( vals instanceof String[] )
+			if (vals instanceof String[])
 			{
-				String[] existing = (String[])vals;
+				String[] existing = (String[]) vals;
 				inContext.setRequestParameter(param, existing);
-				if(param.equals("jsonrequest") && existing.length > 0)
+				if (param.equals("jsonrequest") && existing.length > 0)
 				{
 					JsonSlurper slurper = new JsonSlurper();
 					String content = existing[0];
-					Map jsonRequest = (Map)slurper.parseText(content); //this is real, the other way is just for t
-					inContext.setJsonRequest(jsonRequest);
+					Object target = slurper.parseText(content);
+					if (target instanceof Map)
+					{
+						Map jsonRequest = (Map) target;
+						inContext.setJsonRequest(jsonRequest);
+					}
 				}
 			}
 		}
@@ -361,20 +372,24 @@ public class FileUpload
 			}
 		}
 	}
+
 	public PageManager getPageManager()
 	{
 		return fieldPageManager;
 	}
-	public void setPageManager( PageManager pageManager )
+
+	public void setPageManager(PageManager pageManager)
 	{
 		fieldPageManager = pageManager;
 	}
 
-	public File getRoot() {
+	public File getRoot()
+	{
 		return fieldRoot;
 	}
 
-	public void setRoot(File inRoot) {
+	public void setRoot(File inRoot)
+	{
 		fieldRoot = inRoot;
 	}
 }

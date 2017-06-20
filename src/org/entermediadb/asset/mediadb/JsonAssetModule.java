@@ -438,5 +438,111 @@ public class JsonAssetModule extends BaseJsonModule {
 		return result;
 
 	}
+	
+	
+
+	public void importAssetJson(WebPageRequest inReq) {
+		SearcherManager sm = (SearcherManager) inReq.getPageValue("searcherManager");
+
+		MediaArchive archive = (MediaArchive) inReq.getPageValue("mediaarchive");
+		AssetSearcher searcher = archive.getAssetSearcher();
+		// We will need to handle this differently depending on whether or not
+		// this asset has a real file attached to it.
+		// if it does, we should move it and use the asset importer to create it
+		// so metadata gets read, etc.
+
+		String importpath = inReq.findValue("importpath");
+		Page upload = archive.getPageManager().getPage(importpath);
+			
+		
+
+		AssetImporter importer = archive.getAssetImporter();
+
+		
+		JsonSlurper slurper = new JsonSlurper();
+		Collection array = (Collection) slurper.parse(upload.getReader());
+		
+		
+		for (Iterator iterator = array.iterator(); iterator.hasNext();)
+		{
+			Map asstdata = (Map) iterator.next();
+						
+			HashMap vals = new HashMap();
+			vals.putAll(inReq.getParameterMap());
+			
+			String guid = UUID.randomUUID().toString();
+			String sguid = guid.substring(0, Math.min(guid.length(), 13));
+			vals.put("guid", sguid);
+			vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3).replace("-", ""));
+			String df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyyMM");
+			vals.put("formatteddate", df);
+			df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
+			vals.put("formattedmonth", df);
+			Asset asset = null;
+			String id = (String) asstdata.get("id");
+			String sourcepath = null;
+			if (id == null) {
+				// id = searcher.nextAssetNumber();
+				vals.put("id", id);
+			}
+			else
+			{
+				asset = archive.getAsset(id);
+				if(asset != null ){
+					sourcepath = asset.getSourcePath();
+				}
+			}
+			if( asset == null)
+			{
+				sourcepath = (String) vals.get("sourcepath");
+		
+				if (sourcepath == null) {
+					sourcepath = archive.getCatalogSettingValue("catalogassetupload"); // ${division.uploadpath}/${user.userName}/${formateddate}
+				}
+				if (sourcepath == null || sourcepath.length() == 0) {
+					sourcepath = "receivedfiles/${id}";
+				}
+				sourcepath = sm.getValue(archive.getCatalogId(), sourcepath, vals);
+			}
+			
+
+			if (asset == null && vals.get("fetchURL") != null) {
+				asset = importer.createAssetFromFetchUrl(archive, (String) vals.get("fetchURL"), inReq.getUser(),
+						sourcepath, (String) vals.get("importfilename"), id);
+				
+			}
+
+		
+			if (asset == null) {
+				asset = new Asset(archive);// Empty Record
+				asset.setId(id);
+				asset.setProperty("sourcepath", sourcepath);
+				asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			}
+
+			populateJsonData(asstdata, searcher, asset);
+
+			importer.saveAsset(archive, inReq.getUser(), asset);
+
+			// JSONObject result = getAssetJson(sm, searcher, asset);
+			// String jsondata = result.toString();
+			inReq.putPageValue("searcher", searcher);
+			inReq.putPageValue("asset", asset);
+			inReq.putPageValue("data", asset);
+			
+			
+			
+		}
+		
+		
+		
+		
+
+
+	}
+	
+
+	
+	
 
 }
