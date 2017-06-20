@@ -592,12 +592,6 @@ public class OrderModule extends BaseMediaModule
 				inReq.putPageValue("orderitems", items);
 				inReq.putSessionValue(items.getSessionId(), items);
 			}	
-			String check = inReq.findValue("clearmissing");
-			if (Boolean.parseBoolean(check) && items != null)
-			{
-				//Make sure these have the same number of assets found
-				getOrderManager().removeMissingAssets(inReq, archive, basket, items);
-			}
 		}
 		catch ( Throwable ex )
 		{
