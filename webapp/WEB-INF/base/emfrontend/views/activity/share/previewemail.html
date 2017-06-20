@@ -1,15 +1,15 @@
 <form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/share/processorder.html">
 
-<p>From: $userManager.getScreenName( $order.userid )
+<p>[[From]]: $userManager.getScreenName( $order.userid )
 <br>
-To: $order.sharewithemail</p>
+[[To]]: $order.sharewithemail</p>
 
 <div id="email-preview">
 	$pages.include("$apphome/views/activity/email/sharetemplate.html",$context)
 </div>
 
 
-	<a href="$home$apphome/views/activity/delete.html?orderid=$order.id" class="btn small" >Discard</a>
+	<a href="$home$apphome/views/activity/delete.html?orderid=$order.id" class="btn small" >[[Discard]]</a>
 
     #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
       <input type="hidden" name="field" value="presetid"/>
@@ -30,6 +30,6 @@ To: $order.sharewithemail</p>
 <input type="hidden" name="catalogid" value="$catalogid"/>
 <input type="hidden" name="orderid" value="$order.id"/>
 	
-	<input class="btn small" style="float:right;" type="submit" value="Send" />
+	<input class="btn small" style="float:right;" type="submit" value="[[Send]]" />
 </div>
 </form>
