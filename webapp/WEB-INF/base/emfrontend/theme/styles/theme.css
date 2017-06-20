@@ -6371,6 +6371,9 @@ a.audio-filename:hover
     padding: 10px;
 
 }
+.ui-widget-header {
+	min-height:22px;
+}
 .ui-widget-header.sidetoggle {
 	cursor: pointer;
 	border-radius: 5px;
@@ -6380,10 +6383,11 @@ a.audio-filename:hover
 }
 .ui-widget-header.sidetoggle .widget-header-title {
 	background: url('../images/arrow-down.png') left 4px no-repeat;
-	padding-left: 18px;
+	padding: 0 10px 0 18px;
+	
 }
 .ui-widget-header.sidetoggle.expanded .widget-header-title {
-	background: url('../images/arrow-right.png') left 6px no-repeat;
+	background: url('../images/arrow-right.png') left 3px no-repeat;
 	padding-left: 18px;
 }
 
