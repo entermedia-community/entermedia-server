@@ -499,7 +499,6 @@ uiload = function() {
 			row.removeClass("emborderhover");
 			var table = row.closest("table");
 			var id = row.attr("rowid");
-			//var url = emselectable.data("clickpath");
 			var url = table.data("clickpath");
 			var form = emselectable.find("form");
 				
@@ -514,18 +513,26 @@ uiload = function() {
 			}
 			else if( url != undefined )
 			{
+			
 				if (url=="") {
 					return true;
 				}
 				var post = table.data("viewpostfix");
-				if( post != undefined )
+				if( emselectable.hasClass("showmodal") )
 				{
-					parent.document.location.href = url + id + post;
+					showmodal(emselectable,url);				
 				}
 				else
 				{
-					parent.document.location.href = url + id;
-				}
+					if( post != undefined )
+					{
+						parent.document.location.href = url + id + post;
+					}
+					else
+					{
+						parent.document.location.href = url + id;
+					}
+				}	
 			}
 			else
 			{
@@ -534,6 +541,28 @@ uiload = function() {
 		}	
 	}
 	);
+
+	showmodal = function()
+	{
+	
+			var id = "modals";
+			var modaldialog = $( "#" + id );
+			console.log(modaldialog.length );
+			if( modaldialog.length == 0 )
+			{
+				$("#emcontainer").append('<div class="modal " tabindex="-1" id="' + id + '" style="display:none" ></div>');
+				modaldialog = $("#" + id );
+			}
+
+	
+				modaldialog.load(link, options, function() { 
+					$(".modal-lg").css("min-width",width + "px" );
+					//$(".modal-lg").css("min-height",height + "px" );
+				
+        		 	modaldialog.modal({keyboard: true,backdrop:true, "show":true});
+	
+	}
+
 
 	jQuery('#emselectable table tr' ).livequery(
 	function()

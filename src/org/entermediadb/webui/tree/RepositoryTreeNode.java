@@ -135,6 +135,11 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		}
 	}
 
+	public String getFileFormat()
+	{
+		String format = PathUtilities.extractPageType(getName());
+		return format;
+	}
 	/**
 	 * Find the descendant of this node with the given path.
 	 *

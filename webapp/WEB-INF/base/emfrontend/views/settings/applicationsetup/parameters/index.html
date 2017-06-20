@@ -1,0 +1,21 @@
+<div id="emcontainer">
+<div id="emselectable">
+#set( $settings = $mediaarchive.getSearcher("catalogsettings") )
+<table id="main-results-table">
+
+#foreach( $data in $settings.query().all().sort("name").search() )
+<tr>
+<td>
+<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=/WEB-INF/base/emfrontend/theme/emails/collection-add-new-follower.html&origURL=/WEB-INF/base/emfrontend/theme/emails/collection-add-new-follower.html&path=/WEB-INF/base/emfrontend/theme/emails/collection-add-new-follower.html"> <b>$data</b></a>
+</td>
+<td>
+$!data.value
+</td>
+
+
+</tr>
+
+#end
+</table>
+</div>
+</div>
