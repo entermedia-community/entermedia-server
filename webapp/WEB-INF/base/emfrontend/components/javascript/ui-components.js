@@ -526,15 +526,6 @@ uiload = function() {
 				var link = url;
 				var post = table.data("viewpostfix");
 				if( post != undefined )
-<<<<<<< Updated upstream
-				{
-					parent.document.location.href = url + id + post;
-				}
-				else
-				{
-					parent.document.location.href = url + id;
-				}
-=======
 				{
 					link = link + id + post;
 				}
@@ -550,7 +541,6 @@ uiload = function() {
 				{
 					parent.document.location.href = link;
 				}	
->>>>>>> Stashed changes
 			}
 			else
 			{
@@ -560,8 +550,6 @@ uiload = function() {
 	}
 	);
 
-<<<<<<< Updated upstream
-=======
 	showmodal = function(emselecttable,url)
 	{
 			var id = "modals";
@@ -593,7 +581,6 @@ uiload = function() {
 	}
 
 
->>>>>>> Stashed changes
 	jQuery('#emselectable table tr' ).livequery(
 	function()
 	{
