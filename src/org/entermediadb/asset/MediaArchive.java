@@ -48,7 +48,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;

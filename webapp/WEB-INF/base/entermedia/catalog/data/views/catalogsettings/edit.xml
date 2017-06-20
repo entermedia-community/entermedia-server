@@ -1,6 +1,6 @@
 
 <properties>
-  <property id="id" />
-  <property id="name" />
+  <property id="id" editable="false" />
+  <property id="name" editable="false" />
   <property id="value" />
 </properties>

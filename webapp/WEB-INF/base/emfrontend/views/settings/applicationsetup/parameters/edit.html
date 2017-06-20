@@ -1,0 +1,20 @@
+<div id="editlayout">
+#set( $id = $context.getRequestParameter("id" ) )
+#set( $searcher = $mediaarchive.getSearcher("catalogsettings"))
+$context.putPageValue("searcher",$searcher)
+#set( $data = $searcher.searchById($id) )
+$context.putPageValue("data",$data)
+$context.putPageValue("view","catalogsettings/edit")
+		<form id="notset" name="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/parameters/save.html" enctype="multipart/form-data">
+			<input name="save" type="hidden" value="true" />
+			<input name="id" type="hidden" value="$!data.id" />
+			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+			<input name="searchtype" type="hidden" value="$searcher.searchType" />
+		<div id="edit-data">	
+		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		</div>
+		##<a class="btn red" style="margin-left: 20px;" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">[[Reset to Default]]</a>
+		<div id="messagearea">$!message
+		</div>
+		</form>
+</div>

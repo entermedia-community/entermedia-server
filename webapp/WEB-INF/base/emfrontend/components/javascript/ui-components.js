@@ -523,8 +523,10 @@ uiload = function() {
 				if (url=="") {
 					return true;
 				}
+				var link = url;
 				var post = table.data("viewpostfix");
 				if( post != undefined )
+<<<<<<< Updated upstream
 				{
 					parent.document.location.href = url + id + post;
 				}
@@ -532,6 +534,23 @@ uiload = function() {
 				{
 					parent.document.location.href = url + id;
 				}
+=======
+				{
+					link = link + id + post;
+				}
+				else
+				{
+					link = link + id;
+				}
+				if( emselectable.hasClass("showmodal") )
+				{
+					showmodal(emselectable,link);				
+				}
+				else
+				{
+					parent.document.location.href = link;
+				}	
+>>>>>>> Stashed changes
 			}
 			else
 			{
@@ -541,6 +560,40 @@ uiload = function() {
 	}
 	);
 
+<<<<<<< Updated upstream
+=======
+	showmodal = function(emselecttable,url)
+	{
+			var id = "modals";
+			var modaldialog = $( "#" + id );
+			var width = emselecttable.data("dialogwidth");
+			if( modaldialog.length == 0 )
+			{
+				$("#emcontainer").append('<div class="modal " tabindex="-1" id="' + id + '" style="display:none" ></div>');
+				modaldialog = $("#" + id );
+			}
+			
+			
+			
+			var options = emselecttable.data();
+			modaldialog.load(url, options, function() { 
+				$(".modal-lg").css("min-width",width + "px" );
+    			modaldialog.modal({keyboard: true,backdrop:true, "show":true});
+    			
+    				var title = emselecttable.data("dialogtitle");
+        		 	if( title)
+        		 	{
+	        		 	$(".modal-title",modaldialog).text(title);
+        		 	}
+    			
+        		$('form', modaldialog).find('*').filter(':input:visible:first').focus();
+    			
+    			
+    		});	
+	}
+
+
+>>>>>>> Stashed changes
 	jQuery('#emselectable table tr' ).livequery(
 	function()
 	{

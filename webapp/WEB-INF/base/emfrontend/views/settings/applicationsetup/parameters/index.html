@@ -1,0 +1,21 @@
+<div id="emcontainer">
+<div id="emselectable" class="showmodal" data-dialogwidth="500" data-dialogtitle="[[Edit Setting]]">
+#set( $settings = $mediaarchive.getSearcher("catalogsettings") )
+<table id="main-results-table" data-clickpath="$apphome/views/settings/applicationsetup/parameters/edit.html?id=" >
+
+#foreach( $data in $settings.query().all().sort("name").search() )
+<tr rowid="$data.getId()">
+<td>
+ <b>$data</b>
+</td>
+<td>
+$!data.value
+</td>
+
+
+</tr>
+
+#end
+</table>
+</div>
+</div>
