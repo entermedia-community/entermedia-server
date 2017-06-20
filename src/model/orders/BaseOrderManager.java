@@ -192,21 +192,54 @@ public class BaseOrderManager implements OrderManager {
 			//log.info("No items");
 			return null;
 		}
-		StringBuffer ids = new StringBuffer();
+		Collection ids = new ArrayList();
 		for (Iterator iterator = items.iterator(); iterator.hasNext();) {
 			Data hit = (Data) iterator.next();
-			ids.append(hit.get("assetid"));
-			if( iterator.hasNext() ) {
-				ids.append(" ");
-			}
+			ids.add(hit.get("assetid"));
 		}
+
 		Searcher assetsearcher = getSearcherManager().getSearcher(inCatalogid, "asset");
-		SearchQuery query = assetsearcher.createSearchQuery();
+		SearchQuery query = assetsearcher.query().all().getQuery();
 		query.setHitsName("orderassets");
-		query.addOrsGroup("id", ids.toString());
 		query.setProperty("orderid",inOrder.getId());
+		query.setSecurityIds(ids);
+		query.setSecurityAttached(true);
 		inReq.setRequestParameter("hitssessionid", "none");
 		HitTracker hits = assetsearcher.search(query);
+		
+		String check = inReq.findValue("clearmissing");
+		if (Boolean.parseBoolean(check))
+		{
+			//Make sure these have the same number of assets found
+			if( hits.size() != items.size() )
+			{
+				items.enableBulkOperations();
+				
+				Set assetids = new HashSet();
+				hits.enableBulkOperations();
+				for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+				{
+					Data data = (Data) iterator.next();
+					assetids.add(data.getId());
+				}
+				List allitems = new ArrayList(items);
+				List todelete = new ArrayList();
+				Searcher itemsearcher = getSearcherManager().getSearcher(inCatalogid, "orderitem");
+				for (Iterator iterator = allitems.iterator(); iterator.hasNext();)
+				{
+					Data item = (Data) iterator.next();
+					if( !assetids.contains( item.get("assetid") ) )
+					{
+						//asset deleted, remove it
+						//itemsearcher.delete(item, null);
+						todelete.add(item);
+					}
+				}
+				itemsearcher.deleteAll(todelete, null);
+				hits = assetsearcher.search(query);
+			}
+		}
+		
 		return hits;
 	}
 
