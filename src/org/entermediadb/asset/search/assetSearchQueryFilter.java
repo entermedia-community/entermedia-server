@@ -6,7 +6,7 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.Category;
+import org.entermediadb.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -71,14 +71,27 @@ AND(
 			User user = inPageRequest.getUser();
 			if (user == null || !user.isInGroup("administrators"))
 			{
-				SearchQuery child = inSearcher.createSearchQuery();
-				//child.setAndTogether(false);
+				SearchQuery orchild = inSearcher.createSearchQuery();
+				orchild.setAndTogether(false);
+				
 				UserProfile profile = inPageRequest.getUserProfile();
 				if( profile != null && profile.getViewCategories() != null)
 				{
 					//Get the libraries
 					ids.addAll(profile.getViewCategories());
 				}
+
+				if( ids.isEmpty() )
+				{
+					ids.add("none");
+				}
+				if( user != null)
+				{
+					orchild.addExact("owner",user.getId());
+				}
+				//Have clients use the category tree to give permissions as they do now on categories for visibility
+				orchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
+				
 				
 				//Also add to this list public collections
 				Collection<Category> privatecats = getMediaArchive(inSearcher.getCatalogId()).listHiddenCategories();
@@ -90,22 +103,15 @@ AND(
 					{
 						notshown.add(category.getId()); //This is a hidden one that is not in the view list
 					}
-				}
-				if( ids.isEmpty() )
-				{
-					ids.add("none");
-				}
-				//child.addMatch(inSearcher.getDetail("category"), ids);
-				child.addMatches("id", "*");
+				}				
+				SearchQuery child = inSearcher.createSearchQuery();
+				child.addChildQuery(orchild);
+				//child.addMatches("id", "*");
 				if( !notshown.isEmpty() )
 				{
 					child.addNots("category", notshown );  //Hidden categories that Im not part of
 				}
-//				if( user != null)
-//				{
-//					child.addExact("owner",user.getId());
-//				}
-
+				//log.info( child.toQuery() );
 //				Term term = inQuery.getTermByDetailId("editstatus");
 //				if( term == null) //TODO: Enforce??
 //				{
