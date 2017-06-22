@@ -53,15 +53,15 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter {
 		{
 			ids.add("-1");
 		}
-		QueryBuilder child = inSearcher.query().orgroup("library", ids);
+		QueryBuilder child = inSearcher.query().orgroup("library", ids).or().match("visibility", "1");
 		if( !catshidden.isEmpty() )
 		{
-			child.notgroup("rootcategory",catshidden);
+			inQuery.addNots("rootcategory",catshidden);
 		}	
 		inQuery.setChildren(null);
 		inQuery.addChildQuery(child.getQuery());
 		inQuery.setSecurityAttached(true);
-
+		log.info(inQuery.toQuery());
 		return inQuery;
 	}
 }
