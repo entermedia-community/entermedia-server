@@ -36,53 +36,40 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter {
 		}
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
-//		if(archive != null){
-//			boolean publiclibs = Boolean.parseBoolean(archive.getCatalogSettingValue("publiccollections"));
-//			if(publiclibs){
-//				return inQuery;
-//			}
-//		}
 
-		UserProfile profile = inPageRequest.getUserProfile();
-		if (profile != null)
-		{
-			
-			Collection<String> viewcategories = profile.getViewCategories();
-			if (log.isDebugEnabled())
-			{
-				log.debug("added security filer for " + inPageRequest.getUserProfile());
-			}
-			if (viewcategories.size() == 0)
-			{
-				viewcategories = new ArrayList();
-				viewcategories.add("-1");
-			}
-			Collection catshidden = archive.listHiddenCategories();
-			Collection hiddencatids = new ArrayList();
-			for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
-			{
-				Category cathidden = (Category)iterator.next();
-				if( !cathidden.hasSelf(viewcategories))
-				{
-					hiddencatids.add(cathidden.getId());
-				}
-				
-			}
-			//.or().orgroup("rootcategory", viewcategories).not("visibility", "3")
-			
-//			Searcher librarysearcher = inSearcher.getSearcherManager().getSearcher(inSearcher.getCatalogId(),"library");
-//			Collection<Data> libraries = librarysearcher.query().orgroup("categoryid", viewcategories).search();
-//			for(Data library: libraries)
+//		UserProfile profile = inPageRequest.getUserProfile();
+//		if (profile != null)
+//		{
+//			
+//			Collection<Category> viewcategories = profile.getViewCategories();
+//			if (log.isDebugEnabled())
 //			{
-//				ids.add(library.getId());
+//				log.debug("added security filer for " + inPageRequest.getUserProfile());
 //			}
-			SearchQuery child = inSearcher.query().all().notgroup("rootcategory", hiddencatids).getQuery();
-			//TODO: Clear old child queries
-			inQuery.setChildren(null);
-			inQuery.addChildQuery(child);
-			inQuery.setSecurityAttached(true);
-			//inTracker.getSearchQuery().setSecurityIds(libraryids);
-		}
+//			if (viewcategories.size() == 0)
+//			{
+//				viewcategories = new ArrayList();
+//				viewcategories.add("-1");
+//			}
+//			Collection catshidden = archive.listHiddenCategories();
+//			Collection hiddencatids = new ArrayList();
+//			for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
+//			{
+//				Category cathidden = (Category)iterator.next();
+//				if( !cathidden.hasSelf(viewcategories))
+//				{
+//					hiddencatids.add(cathidden.getId());
+//				}
+//				
+//			}
+//			
+//			SearchQuery child = inSearcher.query().all().notgroup("rootcategory", hiddencatids).getQuery();
+//			//TODO: Clear old child queries
+//			inQuery.setChildren(null);
+//			inQuery.addChildQuery(child);
+//			inQuery.setSecurityAttached(true);
+//			//inTracker.getSearchQuery().setSecurityIds(libraryids);
+//		}
 
 		return inQuery;
 	}

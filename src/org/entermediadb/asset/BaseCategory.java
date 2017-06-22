@@ -19,7 +19,7 @@ import org.openedit.data.BaseData;
  * @author cburkey
  * 
  */
-public class Category extends BaseData
+public class BaseCategory extends BaseData implements Category
 {
 	private static final Log log = LogFactory.getLog(Category.class);
 
@@ -34,17 +34,17 @@ public class Category extends BaseData
 	protected String fieldIndexId;
 	protected CategorySearcher fieldCategorySearcher;
 
-	public Category()
+	public BaseCategory()
 	{
 	}
 	
 
-	public Category(String inName)
+	public BaseCategory(String inName)
 	{
 		setName(inName);
 	}
 
-	public Category(String inId, String inName)
+	public BaseCategory(String inId, String inName)
 	{
 		setId(inId);
 		if (inName != null)
@@ -53,15 +53,23 @@ public class Category extends BaseData
 		}
 	}
 	
-	public Category(CategorySearcher inCategorySearcher)
+	public BaseCategory(CategorySearcher inCategorySearcher)
 	{
 		setCategorySearcher(inCategorySearcher);
 	}
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getIndexId()
+	 */
+	@Override
 	public String getIndexId()
 	{
 		return fieldIndexId;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setIndexId(java.lang.String)
+	 */
+	@Override
 	public void setIndexId(String inIndexId)
 	{
 		fieldIndexId = inIndexId;
@@ -78,6 +86,10 @@ public class Category extends BaseData
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#sortChildren(boolean)
+	 */
+	@Override
 	public void sortChildren(boolean inRecursive){
 		
 		Collections.sort(getChildren());
@@ -91,6 +103,10 @@ public class Category extends BaseData
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getRelatedCategoryIds()
+	 */
+	@Override
 	public List getRelatedCategoryIds()
 	{
 		if (fieldRelatedCategoryIds == null)
@@ -100,34 +116,55 @@ public class Category extends BaseData
 		return fieldRelatedCategoryIds;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setRelatedCategoryIds(java.util.List)
+	 */
+	@Override
 	public void setRelatedCategoryIds(List fieldRelatedCategoryIds)
 	{
 		this.fieldRelatedCategoryIds = fieldRelatedCategoryIds;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#toString()
+	 */
+	@Override
 	public String toString()
 	{
 		return getName();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getItemCount()
+	 */
+	@Override
 	public int getItemCount()
 	{
 		return fieldItemCount;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setItemCount(int)
+	 */
+	@Override
 	public void setItemCount(int inItemCount)
 	{
 		fieldItemCount = inItemCount;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#isContainsItems()
+	 */
+	@Override
 	public boolean isContainsItems()
 	{
 		return getItemCount() > 0;
 	}
 
-	/**
-	 * @return Returns the children.
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getChildren()
 	 */
+	@Override
 	public List getChildren()
 	{
 		if (fieldChildren == null)
@@ -137,10 +174,10 @@ public class Category extends BaseData
 		return fieldChildren;
 	}
 
-	/**
-	 * @param children
-	 *            The children to set.
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setChildren(java.util.List)
 	 */
+	@Override
 	public void setChildren(List inChildren)
 	{
 		fieldChildren = inChildren;
@@ -151,6 +188,10 @@ public class Category extends BaseData
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#addChild(org.entermediadb.asset.Category)
+	 */
+	@Override
 	public Category addChild(Category inNewChild)
 	{
 		inNewChild.setParentCategory(this);
@@ -168,6 +209,10 @@ public class Category extends BaseData
 		return inNewChild;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getChild(java.lang.String)
+	 */
+	@Override
 	public Category getChild(String inId)
 	{
 		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
@@ -181,6 +226,10 @@ public class Category extends BaseData
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#removeChild(org.entermediadb.asset.Category)
+	 */
+	@Override
 	public void removeChild(Category inChild)
 	{
 		Category child = getChild(inChild.getId());
@@ -199,6 +248,10 @@ public class Category extends BaseData
 		inChild.setParentCategory(null);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#hasParent(java.lang.String)
+	 */
+	@Override
 	public boolean hasParent(String inId)
 	{
 		Category parent = this;
@@ -213,15 +266,34 @@ public class Category extends BaseData
 		return false;
 	}
 
-	/**
-	 * @return
+	public boolean hasParentCategory(Category inId)
+	{
+		Category parent = this;
+		while (parent != null)
+		{
+			if (parent.equals(inId))
+			{
+				return true;
+			}
+			parent = parent.getParentCategory();
+		}
+		return false;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#hasChildren()
 	 */
+	@Override
 	public boolean hasChildren()
 	{
 		boolean has =  fieldChildren != null && fieldChildren.size() > 0;
 		return has;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#hasCatalog(java.lang.String)
+	 */
+	@Override
 	public boolean hasCatalog(String inId)
 	{
 		if (getId().equals(inId))
@@ -242,6 +314,10 @@ public class Category extends BaseData
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#hasChild(java.lang.String)
+	 */
+	@Override
 	public boolean hasChild(String inId)
 	{
 		if (hasChildren())
@@ -258,6 +334,10 @@ public class Category extends BaseData
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#isAncestorOf(org.entermediadb.asset.Category)
+	 */
+	@Override
 	public boolean isAncestorOf(Category inCatalog)
 	{
 		for (Iterator children = getChildren().iterator(); children.hasNext();)
@@ -275,11 +355,19 @@ public class Category extends BaseData
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getParentCategory()
+	 */
+	@Override
 	public Category getParentCategory()
 	{
 		return fieldParentCategory;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setParentCategory(org.entermediadb.asset.Category)
+	 */
+	@Override
 	public void setParentCategory(Category parentCatalog)
 	{
 		if( parentCatalog.hasParent(getId()))
@@ -300,16 +388,10 @@ public class Category extends BaseData
 		setValue("parents", getParentCategories());
 	}
 
-	/**
-	 * Returns a list of all the ancestors of this catalog, starting at the
-	 * catalog at the given level and ending at this catalog itself.
-	 * 
-	 * @param inStartLevel
-	 *            The level at which to start listing ancestors (0 is the root,
-	 *            1 is the first-level children, etc.)
-	 * 
-	 * @return The list of ancestors of this catalog
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#listAncestorsAndSelf(int)
 	 */
+	@Override
 	public List listAncestorsAndSelf(int inStartLevel)
 	{
 		LinkedList result = new LinkedList();
@@ -322,6 +404,10 @@ public class Category extends BaseData
 		return result.subList(inStartLevel, result.size());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getChildrenInRows(int)
+	 */
+	@Override
 	public List getChildrenInRows(int inColCount)
 	{
 		// Now break up the page into rows by dividing the count they wanted
@@ -339,6 +425,10 @@ public class Category extends BaseData
 		return rows;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getLevel()
+	 */
+	@Override
 	public int getLevel()
 	{
 		int i = 1;
@@ -351,11 +441,19 @@ public class Category extends BaseData
 		return i;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getDescription()
+	 */
+	@Override
 	public String getDescription()
 	{
 		return fieldDescription;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setDescription(java.lang.String)
+	 */
+	@Override
 	public void setDescription(String inDescription)
 	{
 		fieldDescription = inDescription;
@@ -386,21 +484,37 @@ public class Category extends BaseData
 //		return null;
 //	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getShortDescription()
+	 */
+	@Override
 	public String getShortDescription()
 	{
 		return fieldShortDecription;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setShortDescription(java.lang.String)
+	 */
+	@Override
 	public void setShortDescription(String inShortDecription)
 	{
 		fieldShortDecription = inShortDecription;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#clearChildren()
+	 */
+	@Override
 	public void clearChildren()
 	{
 		getChildren().clear();
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getChildByName(java.lang.String)
+	 */
+	@Override
 	public Category getChildByName(String inCatName)
 	{
 		for (Iterator iter = getChildren().iterator(); iter.hasNext();)
@@ -414,6 +528,10 @@ public class Category extends BaseData
 		return null;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getLink()
+	 */
+	@Override
 	public String getLink()
 	{
 		String path = get("path");
@@ -429,6 +547,10 @@ public class Category extends BaseData
 		return root + getId() + ".html";
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getParentCategories()
+	 */
+	@Override
 	public List getParentCategories()
 	{
 		List paths = new ArrayList();
@@ -441,6 +563,10 @@ public class Category extends BaseData
 		}
 		return paths;
 	}
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getParentCategoriesFrom(int)
+	 */
+	@Override
 	public List getParentCategoriesFrom(int inStartFrom)
 	{
 		List paths = new ArrayList();
@@ -465,38 +591,66 @@ public class Category extends BaseData
 		return paths;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#clearRelatedCategoryIds()
+	 */
+	@Override
 	public void clearRelatedCategoryIds()
 	{
 		fieldRelatedCategoryIds = new ArrayList();
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#addRelatedCategoryId(java.lang.String)
+	 */
+	@Override
 	public void addRelatedCategoryId(String inId)
 	{
 		getRelatedCategoryIds().add(inId);
 
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getLinkedToCategoryId()
+	 */
+	@Override
 	public String getLinkedToCategoryId()
 	{
 		return fieldLinkedToCategoryId;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setLinkedToCategoryId(java.lang.String)
+	 */
+	@Override
 	public void setLinkedToCategoryId(String inLinkedToCategoryId)
 	{
 		fieldLinkedToCategoryId = inLinkedToCategoryId;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getParentId()
+	 */
+	@Override
 	public String getParentId()
 	{
 		return get("parentid");
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#setParentId(java.lang.String)
+	 */
+	@Override
 	public void setParentId(String inParentId)
 	{
 		setValue("parentid", inParentId);
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#getCategoryPath()
+	 */
+	@Override
 	public String getCategoryPath()
 	{
 		String path = get("categorypath");
@@ -507,6 +661,10 @@ public class Category extends BaseData
 		return path;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#loadCategoryPath()
+	 */
+	@Override
 	public String loadCategoryPath()
 	{
 		String vale  = null;//get("sourcepath");
@@ -535,6 +693,10 @@ public class Category extends BaseData
 		return vale;
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#compareTo(org.entermediadb.asset.Category)
+	 */
+	@Override
 	public int compareTo(Category c2)
 	{
 		if( getName() == null )
@@ -552,6 +714,10 @@ public class Category extends BaseData
 		return getName().toLowerCase().compareTo(c2.getName().toLowerCase());
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#refresh()
+	 */
+	@Override
 	public boolean refresh()
 	{
 		if( isDirty() && getCategorySearcher() != null)
@@ -563,6 +729,10 @@ public class Category extends BaseData
 		return false;
 	}
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#isDirty()
+	 */
+	@Override
 	public boolean isDirty()
 	{
 		if( getCategorySearcher() != null && getCategorySearcher().getIndexId().equals(getIndexId()))
@@ -572,7 +742,10 @@ public class Category extends BaseData
 		return true;
 	}
 
-	 @Override
+	 /* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#equals(java.lang.Object)
+	 */
+	@Override
 	 public boolean equals(Object obj)
 	 {
 		 if( obj == this)
@@ -592,6 +765,10 @@ public class Category extends BaseData
 		 return false;
 	 }
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#hasParent(java.util.Collection)
+	 */
+	@Override
 	public boolean hasParent(Collection<String> inCategorids)
 	{
 		for(String id : inCategorids)
@@ -604,7 +781,23 @@ public class Category extends BaseData
 		return false;
 
 	}
+	public boolean hasParentCategory(Collection<Category> inCategorids)
+	{
+		for(Category id : inCategorids)
+		{
+			if( hasParentCategory(id) )
+			{
+				return true;
+			}
+		}
+		return false;
 
+	}
+
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#hasSelf(java.util.Collection)
+	 */
+	@Override
 	public boolean hasSelf(Collection<String> inCategorids)
 	{
 		for(String id : inCategorids)
@@ -618,6 +811,10 @@ public class Category extends BaseData
 
 	}
 	
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#findValue(java.lang.String)
+	 */
+	@Override
 	public Object findValue(String inString)
 	{
 		Object value = getValue(inString);
@@ -632,6 +829,10 @@ public class Category extends BaseData
 	}
 
 
+	/* (non-Javadoc)
+	 * @see org.entermediadb.asset.Category2#hasLoadedParent()
+	 */
+	@Override
 	public boolean hasLoadedParent()
 	{
 		return fieldParentCategory != null;

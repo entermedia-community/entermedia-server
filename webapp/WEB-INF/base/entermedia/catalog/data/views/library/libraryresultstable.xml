@@ -4,7 +4,8 @@
   <property id="name"/>
   <property id="division"/>
   <property id="projectstatus"/>  
-  <property id="folder"/>
   <property id="thumbnail"/>
-  
+  <property id="viewusers"/>  
+  <property id="viewgroups"/> 
+  <property id="viewroles"/>  
 </root>

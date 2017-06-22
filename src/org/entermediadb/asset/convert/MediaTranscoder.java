@@ -1,6 +1,5 @@
 package org.entermediadb.asset.convert;
 
-import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.page.manage.PageManager;
 import org.openedit.util.Exec;

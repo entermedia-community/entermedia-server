@@ -6,7 +6,7 @@ import org.entermediadb.asset.scanner.MetaDataReader
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
-import org.openedit.page.Page
+import org.openedit.repository.ContentItem
 
 public void init()
 {

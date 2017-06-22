@@ -13,7 +13,6 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
-import org.openedit.event.EventManager;
 import org.openedit.repository.ContentItem;
 
 public class ConvertStatusModule extends BaseMediaModule

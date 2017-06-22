@@ -3,14 +3,10 @@ package org.entermediadb.video;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
-import org.openedit.data.PropertyDetails;
 import org.openedit.data.SearcherManager;
 
 public class Timeline

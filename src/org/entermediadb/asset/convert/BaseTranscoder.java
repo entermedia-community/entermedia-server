@@ -1,15 +1,10 @@
 package org.entermediadb.asset.convert;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
@@ -19,7 +14,6 @@ import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
-import org.openedit.util.PathUtilities;
 
 public abstract class BaseTranscoder implements MediaTranscoder
 {

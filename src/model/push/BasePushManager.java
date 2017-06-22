@@ -2,15 +2,11 @@ package model.push;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.HttpPost;
-import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -20,19 +16,15 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.data.ImmutableData;
-import org.entermediadb.modules.update.Downloader;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.manage.PageManager;
-import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
-import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.XmlUtil;
 

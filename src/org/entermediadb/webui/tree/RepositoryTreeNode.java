@@ -22,9 +22,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.openedit.OpenEditRuntimeException;
 import org.openedit.page.Page;
-import org.openedit.page.PageSettings;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;

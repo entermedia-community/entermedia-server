@@ -2,7 +2,6 @@ package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
@@ -21,7 +20,6 @@ import org.openedit.data.SaveableData;
 import org.openedit.data.SearchData;
 import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
-import org.openedit.util.DateStorageUtil;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData {
 	protected Map fieldSearchData;

@@ -2,5 +2,4 @@
 
 <root>
   <property id="name"/>
-  <property id="folder"/>
 </root>

@@ -6,7 +6,6 @@ import java.io.Reader;
 import java.io.StringWriter;
 import java.text.DecimalFormat;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -30,9 +29,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.page.PageSettings;
 import org.openedit.page.manage.PageManager;
-import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
-import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 

@@ -1825,7 +1825,33 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 
-	
+	public Collection<Category> listHiddenCategories(Collection<Category> inViewCategories)
+	{
+		Collection<Category>  all  = listHiddenCategories();
+		
+		Collection<Category>  filtered = new ArrayList<Category>();
+		
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Category hidden = (Category) iterator.next();
+			boolean hideit = true;
+			for (Iterator iterator2 = inViewCategories.iterator(); iterator2.hasNext();)
+			{
+				Category allowed = (Category) iterator2.next();
+				if( allowed.equals(hidden.getId()))
+				{
+					hideit = false;
+					continue;
+				}
+			}
+			if( hideit )
+			{
+				filtered.add(hidden);
+			}
+		}
+		
+		return filtered;
+	}
 	public QueryBuilder query(String inSearchType)
 	{
 		return getSearcher(inSearchType).query();
@@ -1924,5 +1950,6 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getModuleManager().getBean(getCatalogId(),inId);
 	}
+
 	
 }

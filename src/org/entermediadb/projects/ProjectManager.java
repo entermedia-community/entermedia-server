@@ -3,7 +3,6 @@ package org.entermediadb.projects;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -931,7 +930,7 @@ public class ProjectManager implements CatalogEnabled
 		((MultiValued) librarynode).addValue("viewusers", user.getId());
 		inArchive.getCategorySearcher().saveData(librarynode);
 		//reload profile?
-		inProfile.getViewCategories().add(userlibrary.getId()); //Make sure I am in the list of users for the library
+		inProfile.getViewCategories().add(librarynode); //Make sure I am in the list of users for the library
 
 		userlibrary.setValue("categoryid", librarynode.getId());
 		inArchive.getSearcher("library").saveData(userlibrary, null);
@@ -1029,9 +1028,9 @@ public class ProjectManager implements CatalogEnabled
 			UserProfile profile = inReq.getUserProfile();
 			if( profile != null && profile.getViewCategories() != null)
 			{
-				for(String catid : profile.getViewCategories())
+				for(Category cat : profile.getViewCategories())
 				{
-					if( root.hasParent(catid) )
+					if( root.hasParent(cat.getId()) )
 					{
 						return true;
 					}
@@ -1072,9 +1071,9 @@ public class ProjectManager implements CatalogEnabled
 				UserProfile profile = inReq.getUserProfile();
 				if( profile != null && profile.getViewCategories() != null)
 				{
-					for(String catid : profile.getViewCategories())
+					for(Category cat : profile.getViewCategories())
 					{
-						if( root.hasParent(catid) )
+						if( root.hasParent(cat.getId()) )
 						{
 							return true;
 						}

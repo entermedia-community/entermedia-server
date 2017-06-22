@@ -9,7 +9,6 @@ import java.util.Map;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;

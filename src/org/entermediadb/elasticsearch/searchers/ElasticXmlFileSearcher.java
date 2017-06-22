@@ -11,7 +11,6 @@ import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.SourcePathCreator;
 import org.entermediadb.data.DataArchive;
-import org.entermediadb.data.XmlDataArchive;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;

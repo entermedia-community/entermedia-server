@@ -4,7 +4,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +15,6 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
-import org.openedit.data.Searcher;
-import org.openedit.modules.translations.LanguageMap;
 import org.openedit.page.Page;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;

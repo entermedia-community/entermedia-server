@@ -7,12 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.users.UserProfileManager;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
-import org.openedit.profile.UserProfileManager;
 import org.openedit.users.User;
 
 public class ProfileModule extends MediaArchiveModule

@@ -4,7 +4,6 @@
 package org.entermediadb.elasticsearch;
 
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.openedit.hittracker.SearchQuery;
 
 public class ElasticSearchQuery extends SearchQuery

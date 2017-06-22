@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.modules.update.Downloader;
@@ -70,13 +71,13 @@ public class YoutubeImporter implements UrlMetadataImporter
 		Category pcat = inArchive.getCategory("users");
 		if (pcat == null)
 		{
-			pcat = new Category("users", "Users");
+			pcat = new BaseCategory("users", "Users");
 			inArchive.getCategorySearcher().saveCategory(pcat);
 		}
 		Category cat = inArchive.getCategory("users_" + inUser.getId());
 		if( cat == null)
 		{
-			cat = new Category();
+			cat = new BaseCategory();
 			cat.setId("users_" + inUser.getId());
 			cat.setName(inUser.getScreenName() );
 			pcat.addChild(cat);

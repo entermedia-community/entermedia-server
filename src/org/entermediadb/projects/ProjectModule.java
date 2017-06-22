@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -323,15 +322,19 @@ public class ProjectModule extends BaseMediaModule
 			inReq.setRequestParameter("profilepreference","last_selected_library" );
 			inReq.setRequestParameter("profilepreference.value", saved.getId() );
 		}
+		
+		
+		//Make libraries public by default. Allow a hidden library check box and user/groups/roles on the hidden ones use a QueryFilter to enforce
+		
 //		//Make sure I am in the list of users for the library
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
-		{
-			//reload profile?
-			UserProfile profile = inReq.getUserProfile();
-			profile.getViewCategories().add(saved.getId());
-		}
+//		MediaArchive archive = getMediaArchive(inReq);
+//		ProjectManager manager = getProjectManager(inReq);
+//		if( manager.addUserToLibrary(archive,saved,inReq.getUser()) )
+//		{
+//			//reload profile?
+//			UserProfile profile = inReq.getUserProfile();
+//			profile.getViewCategories().add(saved.getId());
+//		}
 	}
 	public void createCollection(WebPageRequest inReq)
 	{

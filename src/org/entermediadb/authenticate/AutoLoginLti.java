@@ -6,7 +6,6 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.modules.AdminModule;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.StringEncryption;

@@ -295,12 +295,12 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		Collection<Category> exactcategories = inAsset.getCategories();
 		if (inProfile != null)
 		{
-			Collection<String> categorids = inProfile.getViewCategories();
-			if( categorids != null)
+			Collection<Category> allowedcats = inProfile.getViewCategories();
+			if( allowedcats != null)
 			{
 				for (Category cat : exactcategories)
 				{
-					if (cat.hasParent(categorids))
+					if (cat.hasParentCategory(allowedcats))
 					{
 						return true;
 					}

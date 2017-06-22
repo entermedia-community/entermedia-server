@@ -13,7 +13,6 @@ import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.util.MathUtils;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
 public class FfmpegImageTranscoder extends BaseTranscoder

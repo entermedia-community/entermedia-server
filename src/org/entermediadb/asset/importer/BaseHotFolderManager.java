@@ -34,7 +34,6 @@ import org.openedit.OpenEditException;
 import org.openedit.WebServer;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.event.WebEvent;
 import org.openedit.locks.Lock;
 import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
@@ -42,11 +41,9 @@ import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.XmlVersionRepository;
-import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
 import org.openedit.util.Exec;
-import org.openedit.util.ExecResult;
 import org.openedit.util.PathUtilities;
 
 public class BaseHotFolderManager implements HotFolderManager

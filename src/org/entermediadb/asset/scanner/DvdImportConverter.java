@@ -17,6 +17,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.CatalogConverter;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.ConvertStatus;
@@ -197,7 +198,7 @@ public class DvdImportConverter extends CatalogConverter
 		Category category = inArchive.getCategoryArchive().getCategory(catid);
 		if (category == null)
 		{
-			category = new Category();
+			category = new BaseCategory();
 			// category.setProperty("dvddate", dirdate);
 			category.setName(inTitle);
 			category.setId(catid);

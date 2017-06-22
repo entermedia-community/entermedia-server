@@ -2,7 +2,6 @@ package org.entermediadb.asset.mediadb;
 
 import java.awt.Dimension;
 import java.io.File;
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;

@@ -1,8 +1,5 @@
 package org.entermediadb.asset.publish.publishers;
 
-import java.io.InputStream;
-import java.io.OutputStream;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
@@ -11,13 +8,6 @@ import org.entermediadb.asset.publishing.BasePublisher;
 import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
-import org.openedit.page.Page;
-import org.openedit.users.User;
-import org.openedit.users.UserManager;
-import org.openedit.util.FileUtils;
-import org.openedit.util.OutputFiller;
-
-import jcifs.smb.SmbFile;
 
 
 

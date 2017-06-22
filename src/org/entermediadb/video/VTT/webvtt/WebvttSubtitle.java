@@ -17,12 +17,8 @@ package org.entermediadb.video.VTT.webvtt;
 
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
-
-import org.entermediadb.video.VTT.Cue;
 
 /**
  * A representation of a WebVTT subtitle.

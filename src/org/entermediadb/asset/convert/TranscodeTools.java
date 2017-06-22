@@ -12,7 +12,6 @@ import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.data.SearcherManager;
 import org.openedit.page.manage.PageManager;
-import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 /**
  * This deals with actual conversions from one file to another
