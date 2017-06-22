@@ -2,7 +2,9 @@ package org.entermediadb.asset.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -71,11 +73,16 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			{
 				//Get the libraries?
 			}
-			Collection ids = new ArrayList();
-			for (Iterator iterator = profile.getViewCategories().iterator(); iterator.hasNext();)
+			Set ids = new HashSet();
+
+			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
+			Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
+			allowed.addAll(profile.getViewCategories());
+			
+			for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
 			{
-				Category allowed = (Category) iterator.next();
-				ids.add(allowed.getId());
+				Category allowedcat = (Category) iterator.next();
+				ids.add(allowedcat.getId());
 			}
 			if (ids.isEmpty())
 			{
@@ -85,11 +92,12 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			{
 				orchild.addExact("owner", user.getId());
 			}
+			
 			//Have clients use the category tree to give permissions as they do now on categories for visibility
 			orchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
 
 			//Also add to this list public collections
-			Collection<Category> privatecats = getMediaArchive(inSearcher.getCatalogId()).listHiddenCategories(profile.getViewCategories());
+			Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
 			Collection<String> notshown = new ArrayList<String>();
 			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
 			{

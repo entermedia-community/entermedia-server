@@ -6,31 +6,51 @@
 
 
 #set( $selectedlibrary = $librarycol.getLibrary() )
+#set( $categoryid = $librarycol.getRootCategoryId())
 
 #set( $visible = $librarycol.visibility )
 
-<h4>[[View Permissions]]</h4>
+#set( $category = $librarycol.getCategory() )
+#if( $category && $category.getParentCategory() )
 
-#if( $visible && $visible == "3")
-<p class="error">
-<strong>[[Warning: Hidden from other users]]</strong>
-<br>
-</p>
-#else
-<p>[[Read only for users]]</p>
+	#set( $parent = $category.getParentCategory() )
+	#set( $users = $parent.findValue("viewusers") )
+	#set( $groups = $parent.findValue("viewgroups"))
+	#set( $roles = $parent.findValue("viewroles"))
+#if( $users || $groups || $roles )
+<h4>[[Folder Permissions]]</h4>
+
+
+	#if( $users ) [[Users]]: <br>
+		<div style="padding:20px;background:#EEE;font-weight:bold;">
+		#foreach( $auser in $users)
+			$!userManager.getScreenName($auser) <br>
+		#end
+		</div>
+	#end
+	
+	#if( $groups) [[Groups]]: <br>
+		<div style="padding:20px;background:#EEE;font-weight:bold;">
+		#foreach( $group in $groups)
+			$!userManager.getGroup($group) <br>
+		#end
+		</div>
+	#end
+	
+	
+	#if( $roles ) [[Roles]]: <br>
+		<div style="padding:20px;background:#EEE;font-weight:bold;">
+		#foreach( $role in $roles)
+		$!mediaarchive.getData("settingsgroup",$role) <br>
+		#end
+		</div>
+	#end
+	<br><br>
 #end
 
-#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
+#end
 
-<a class="btn" href="$editlink">[[Change Visibility]]</a>
-
-</p>
-<br>
-<hr>
-<br>
-
-#set( $categoryid = $librarycol.getRootCategoryId())
-<h4>[[Edit Permissions]]</h4>
+<h4>[[Collection Permissions]]</h4>
 		
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
 
@@ -56,9 +76,11 @@ $context.putPageValue("data", $data )
 #set( $origURL = $context.getRequestParameter("origURL" ) )
 #set ( $moduleid = $context.findValue("module") )
 #if($caneditdata)
+
 $pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
+
 #else
-##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
+
 $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
 #end
 #if( !$context.getRequestParameter("preview") )
@@ -68,7 +90,7 @@ $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly
     #if($caneditdata || $candelete)	
     <a class="btn right red ajax" targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin: 20px 20px 0 0; color: #fff;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
     #end
- #end   
+#end   
     </form>
     </div>
 	</div>

@@ -811,6 +811,18 @@ public class BaseCategory extends BaseData implements Category
 
 	}
 	
+	public boolean hasSelfCategory(Collection<Category> inCategorids)
+	{
+		for(Category id : inCategorids)
+		{
+			if( equals( id) )
+			{
+				return true;
+			}
+		}
+		return false;
+
+	}
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.Category2#findValue(java.lang.String)
 	 */
