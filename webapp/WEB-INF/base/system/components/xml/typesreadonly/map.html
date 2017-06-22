@@ -4,47 +4,43 @@
 #set ($view = $context.getRequestParameter('view')) 
 <!--  This would have the point details in it -->
 
- #if(!$hit)
- #set($hit = $data)
- #end
+    
+     
 
-  #set($latandlong = $data.get("$detail"))
+<div id="${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
+   #set($latandlong = $data.get("$detail.id"))
    #set( $lat = $!data.get("${detail.id}_lat") )
    #set( $lng = $!data.get("${detail.id}_lng") )
    #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
-
-<div id="$!{hit.id}_${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
    
+   <input type="hidden" name="field" value="${detail.id}_lat"/>
+    <input type="hidden" id="${detail.id}_lat" name="${detail.id}_lat.value" value="$!lat"/>
+    <input type="hidden" name="field" value="${detail.id}_lng"/>
+     <input type="hidden" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!lng"/>
+
   
+   <input type="hidden" id="${detail.id}_latandlong" size="40" name="${detail.id}.value" value="$!latandlong"/>
+
 
 <script type="text/javascript">
 
-$('#$!{hit.id}_${detail.id}_map').gmap({
+jQuery('#${detail.id}_map').gmap({
 	 'center':'$mediaarchive.getCatalogSettingValue("startinglatlong")',
 }).bind('init', function(ev, map) {
 	#if( $latandlong )
-	$('#$!{hit.id}_${detail.id}_map').gmap('addMarker', 
+	$('#${detail.id}_map').gmap('addMarker', 
 			{
 			'position': '$latandlong',
-			'draggable': false, 
+		
 		    'bounds': true
 		    #if($icon)
 				,'icon': '$icon.url'
 				#end
-			
-			})
-		    .dragend(function(event) 
-	    	  		{
-	    		 	
-	    		  jQuery('#${detail.id}_lat').val(event.latLng.lat());
-	              jQuery('#${detail.id}_lng').val(event.latLng.lng());
-	    	  	}       
-	    	).click(function() {
-		//$('#${detail.id}_map').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
-	});
-	    $('#$!{hit.id}_${detail.id}_map').gmap('option', 'zoom', 12);
+		    });
+		    
+	    $('#${detail.id}_map').gmap('option', 'zoom', 12);
 	#else
-	    $('#$!{hit.id}_${detail.id}_map').gmap('option', 'zoom', 2);
+	    $('#${detail.id}_map').gmap('option', 'zoom', 2);
 	#end
 
 }).click(function(e)
