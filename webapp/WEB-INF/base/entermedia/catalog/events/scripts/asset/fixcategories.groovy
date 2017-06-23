@@ -26,9 +26,17 @@ public void init(){
 	hits.each{
 		Data hit = it;
 //		if( hit.getValue("category-exact") == null)
-		String path = PathUtilities.extractDirectoryPath(hit.getSourcePath());
-		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path);
+		String path =hit.getValue("archivesourcepath");
+		if(path == null){
+			path = hit.getSourcePath();	
+		}		
 		Asset found = archive.getAssetSearcher().loadData(hit);
+
+		if(found.isFolder()){
+			path = PathUtilities.extractDirectoryPath(path);
+		}
+		
+		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path);
 		found.addCategory(catparent);
 		tosave.add(found);
 		savedsofar++;
@@ -83,8 +91,7 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 		{
 			parentcategory.addChild(found);
 		}
-		cats.add(found);
-		
+		cats.add(found);		
 	}
 	archive.getCacheManager().put("catfix", inPath, found );
 	
