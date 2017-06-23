@@ -534,7 +534,7 @@ public class TemplateWebEmail extends WebEmail implements Data
 		}
 		StringWriter out = new StringWriter();
 		String output = render(out);
-				
+		sendText(output);
 	}
 
 	protected void sendText(String output)
