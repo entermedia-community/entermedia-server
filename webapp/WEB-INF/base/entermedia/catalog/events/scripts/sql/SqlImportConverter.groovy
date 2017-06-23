@@ -12,8 +12,9 @@ import org.apache.commons.logging.Log
 import org.apache.commons.logging.LogFactory
 import org.dom4j.Element
 import org.entermediadb.asset.Asset
-import org.entermediadb.asset.Category
+import org.entermediadb.asset.BaseCategory
 import org.entermediadb.asset.CatalogConverter
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.ConvertStatus
 import org.entermediadb.asset.MediaArchive
 import org.openedit.ModuleManager
@@ -87,7 +88,7 @@ public class SqlImportConverter extends CatalogConverter
 	   Category parentCategory = inArchive.getCategoryArchive().getCategory(parentCategoryId);
 	   if (parentCategory == null)
 	   {
-		   parentCategory = new Category();
+		   parentCategory = new BaseCategory();
 		   parentCategory.setName(parentCategoryId);
 		   parentCategory.setId(parentCategoryId);
 		   inArchive.getCategoryArchive().addChild(parentCategory);
@@ -157,7 +158,7 @@ public class SqlImportConverter extends CatalogConverter
 
 			   if (cat == null)
 			   {
-				   cat = new Category();
+				   cat = new BaseCategory();
 				   cat.setName(categoryString);
 				   cat.setId(categoryId);
 				   parentCategory.addChild(cat);
@@ -186,7 +187,7 @@ public class SqlImportConverter extends CatalogConverter
 
 			   if (subcat == null)
 			   {
-				   subcat = new Category();
+				   subcat = new BaseCategory();
 				   subcat.setName(subCategoryString);
 				   subcat.setId(subCategoryId);
 				   cat.addChild(subcat);

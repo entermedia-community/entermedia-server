@@ -3,7 +3,6 @@ package org.entermediadb.projects;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -931,7 +930,7 @@ public class ProjectManager implements CatalogEnabled
 		((MultiValued) librarynode).addValue("viewusers", user.getId());
 		inArchive.getCategorySearcher().saveData(librarynode);
 		//reload profile?
-		inProfile.getViewCategories().add(userlibrary.getId()); //Make sure I am in the list of users for the library
+		inProfile.getViewCategories().add(librarynode); //Make sure I am in the list of users for the library
 
 		userlibrary.setValue("categoryid", librarynode.getId());
 		inArchive.getSearcher("library").saveData(userlibrary, null);
@@ -1029,9 +1028,9 @@ public class ProjectManager implements CatalogEnabled
 			UserProfile profile = inReq.getUserProfile();
 			if( profile != null && profile.getViewCategories() != null)
 			{
-				for(String catid : profile.getViewCategories())
+				for(Category cat : profile.getViewCategories())
 				{
-					if( root.hasParent(catid) )
+					if( root.hasParent(cat.getId()) )
 					{
 						return true;
 					}
@@ -1061,25 +1060,32 @@ public class ProjectManager implements CatalogEnabled
 			}
 
 			String visibility = collection.get("visibility");
-			if( visibility != null && !visibility.equals( "3" ) )
+			if( visibility != null)
 			{
-				Category root = collection.getCategory();
-				if(root == null){
-					configureCollection(collection, inReq.getUserName());
-					root = collection.getCategory();
-
-				}
-				UserProfile profile = inReq.getUserProfile();
-				if( profile != null && profile.getViewCategories() != null)
+				if( visibility.equals("1"))
 				{
-					for(String catid : profile.getViewCategories())
+					return true;
+				}
+				if(visibility.equals( "3" ) )
+				{
+					Category root = collection.getCategory();
+					if(root == null){
+						configureCollection(collection, inReq.getUserName());
+						root = collection.getCategory();
+	
+					}
+					UserProfile profile = inReq.getUserProfile();
+					if( profile != null && profile.getViewCategories() != null)
 					{
-						if( root.hasParent(catid) )
+						for(Category cat : profile.getViewCategories())
 						{
-							return true;
-						}
-					}	
-				}				
+							if( root.hasParent(cat.getId()) )
+							{
+								return true;
+							}
+						}	
+					}
+				}
 				return false;
 			}
 
@@ -1227,51 +1233,26 @@ public class ProjectManager implements CatalogEnabled
 	}
 
 	
-	public void configureCollection( LibraryCollection collection, String inUser){
+	public void configureCollection( LibraryCollection collection, String inUser)
+	{
 		//Make sure the root folder is within the library root folder
 		MediaArchive mediaArchive = getMediaArchive();	
-		String rootcatid = collection.get("rootcategory");
-				if( rootcatid == null)
-				{
-					Data library = collection.getLibrary();
-					if( library == null)
-					{
-						throw new OpenEditException("Library cannot be null");
-					}
-					String librarycategoryid = library.get("categoryid");
-					if( librarycategoryid == null)
-					{
-						String path = library.get("folder");
-						if( path == null)
-						{
-							path = "Libraries/" + library.getName();
-						}
-						Category parentcategory = mediaArchive.createCategoryPath(path);
-						librarycategoryid = parentcategory.getId();
-						library.setValue("categoryid",  librarycategoryid);
-						mediaArchive.getSearcher("library").saveData(library, null);
-					}	
-				}	
-				//Make sure we have a root category
-				String librarycategoryid = collection.getLibrary().get("categoryid");
-				Category librarycategory = mediaArchive.getCategory(librarycategoryid);
-				if( !collection.hasRootCategory() )
-				{
-					Category collectioncategory = mediaArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
-					String username = inUser;
-					collectioncategory.addValue("viewusers",username);
-					mediaArchive.getCategorySearcher().saveData(collectioncategory);
-					collection.setValue("rootcategory", collectioncategory.getId());
-					mediaArchive.getSearcher("librarycollection").saveData(collection, null);
-					log.info("saving collection");
-				}
-				//Make sure the name still matches
-				Category collectioncategory = collection.getCategory();
-				if( collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
-				{
-					collectioncategory.setName(collection.getName());
-					mediaArchive.getCategorySearcher().saveData(collectioncategory);
-				}
+		//Make sure we have a root category
+		if( !collection.hasRootCategory() )
+		{
+			Category collectioncategory = mediaArchive.createCategoryPath("Collections/" + collection.getLibrary() + "/" + collection.getName());
+			mediaArchive.getCategorySearcher().saveData(collectioncategory);
+			collection.setValue("rootcategory", collectioncategory.getId());
+			mediaArchive.getSearcher("librarycollection").saveData(collection, null);
+			log.info("saving collection");
+		}
+		//Make sure the name still matches
+		Category collectioncategory = collection.getCategory();
+		if( collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
+		{
+			collectioncategory.setName(collection.getName());
+			mediaArchive.getCategorySearcher().saveData(collectioncategory);
+		}
 				//Move the parents if needed
 //				if( !collectioncategory.hasParent(librarycategory.getId()))
 //				{

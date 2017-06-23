@@ -242,7 +242,7 @@
     </bean>
 	<bean id="translator" class="org.openedit.modules.translations.Translation" />
 
-	<bean id="userProfileManager" class="org.openedit.profile.UserProfileManager" >
+	<bean id="userProfileManager" class="org.entermediadb.users.UserProfileManager" >
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 		<property name="moduleManager"><ref bean="moduleManager"/></property>
 

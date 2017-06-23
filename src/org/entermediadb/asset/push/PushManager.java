@@ -2,14 +2,10 @@ package org.entermediadb.asset.push;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.http.client.HttpClient;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.WebPageRequest;
-import org.openedit.data.SearcherManager;
-import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 
 public interface PushManager

@@ -33,6 +33,45 @@
       <language id="fr"><![CDATA[Vignette]]></language> 
     </name> 
   </property>  
+    <property id="owner" index="true" viewtype="user" type="list" listid="user" keyword="true" stored="true" sortable="true" editable="true" filter="false"> 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
+    </name> 
+  </property>  
+ <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system"    type="list">Users 
+    <name> 
+      <language id="de"><![CDATA[Benutzer]]></language>  
+      <language id="en"><![CDATA[Users]]></language>  
+      <language id="es"><![CDATA[usuarios]]></language>  
+      <language id="fr"><![CDATA[Utilisateurs]]></language> 
+    </name> 
+  </property>  
+  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system"    type="list">Groups 
+    <name> 
+      <language id="de"><![CDATA[Gruppen]]></language>  
+      <language id="en"><![CDATA[Groups]]></language>  
+      <language id="es"><![CDATA[grupos]]></language>  
+      <language id="fr"><![CDATA[Groupes]]></language> 
+    </name> 
+  </property>  
+  <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"    type="list">Roles
+    <name>
+      <language id="de"><![CDATA[Rollen]]></language>
+      <language id="en"><![CDATA[Roles]]></language>
+      <language id="es"><![CDATA[Roles]]></language>
+      <language id="fr"><![CDATA[Rôles]]></language>
+    </name>
+  </property> 
+  <property id="privatelibrary" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Private Library]]></language>  
+    </name> 
+  </property> 
+  
+<!-- 
   <property id="folder" internalfield="true" editable="true" index="true" stored="true" note="Relative Folder hotfolder/sub1/song123" keyword="false" filter="false" sortable="true">Path 
     <name> 
       <language id="de"><![CDATA[Pfad]]></language>  
@@ -49,13 +88,7 @@
       <language id="fr"><![CDATA[ID Catégorie]]></language>
     </name>
   </property>
-    <property id="owner" index="true" viewtype="user" type="list" listid="user" keyword="true" stored="true" sortable="true" editable="true" filter="false"> 
-    <name> 
-      <language id="de"><![CDATA[Owner]]></language>  
-      <language id="en"><![CDATA[Owner]]></language>  
-      <language id="es"><![CDATA[Propietario]]></language>  
-      <language id="fr"><![CDATA[Propriétaire]]></language> 
-    </name> 
-  </property>  
+ -->
+
    
 </properties>

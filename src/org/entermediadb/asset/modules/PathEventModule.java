@@ -16,7 +16,6 @@ import org.openedit.page.Page;
 import org.openedit.page.PageAction;
 import org.openedit.page.PageProperty;
 import org.openedit.page.PageSettings;
-import org.openedit.users.User;
 
 public class PathEventModule extends BaseModule
 {

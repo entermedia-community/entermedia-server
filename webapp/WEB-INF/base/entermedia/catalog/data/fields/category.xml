@@ -91,6 +91,13 @@
     <name> 
       <language id="en"><![CDATA[Asset Sort]]></language>  
     </name> 
+  </property> 
+  
+  <property id="autocreatecollections" editable="true" index="true" stored="true" type="boolean" > 
+    <name> 
+      <language id="en"><![CDATA[Auto Create Collections]]></language>  
+    </name> 
   </property>  
+   
 
 </properties>

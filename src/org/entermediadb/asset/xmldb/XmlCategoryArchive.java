@@ -15,6 +15,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CategoryArchive;
 import org.entermediadb.data.BaseDataArchive;
@@ -40,7 +41,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 	protected PageManager fieldPageManager;
 	protected XmlUtil fieldXmlUtil;
 	protected CacheManager fieldCacheManager;
-	protected Category NULL = new Category();
+	protected Category NULL = new BaseCategory();
 	
 	public XmlCategoryArchive()
 	{
@@ -193,7 +194,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 	{
 		if (getRootCategory().getId().equals(inCategory.getId()))
 		{
-			//setRootCategory(new Category("index", "Index"));
+			//setRootCategory(new BaseCategory("index", "Index"));
 			for (Iterator iterator = inCategory.getChildren().iterator(); iterator.hasNext();)
 			{
 				Category child = (Category) iterator.next();
@@ -386,7 +387,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 			else
 			{
 				log.error("No catalog file found " + catalogFile.getPath());
-				Category root = new Category();
+				Category root = new BaseCategory();
 				root.setId("index");
 				root.setName("Index");
 				fieldRootCatalog  = root;//setRootCategory(root);
@@ -404,7 +405,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 	 */
 	protected Category createCatalog(Configuration inRootConfig) throws OpenEditException
 	{
-		Category cat = new Category();
+		Category cat = new BaseCategory();
 		cat.setId(inRootConfig.getAttribute("id"));
 		if (cat.getId() == null)
 		{
@@ -573,7 +574,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 		if (child == null)
 		{
 			// make sure we have a parent to put it in
-			child = new Category();
+			child = new BaseCategory();
 			child.setId(catid);
 
 			if (inNames != null)
@@ -653,7 +654,7 @@ public class XmlCategoryArchive extends BaseDataArchive implements CategoryArchi
 	public Category createNewCategory(String inLabel)
 	{
 		String id = createCategoryId(inLabel);
-		Category cat = new Category(id, inLabel);
+		Category cat = new BaseCategory(id, inLabel);
 		
 		return cat;
 	}

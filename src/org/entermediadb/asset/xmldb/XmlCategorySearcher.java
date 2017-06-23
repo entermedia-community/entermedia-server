@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CategoryArchive;
 import org.openedit.Data;
@@ -42,7 +43,7 @@ public class XmlCategorySearcher extends BaseSearcher implements CategorySearche
 	@Override
 	public Data createNewData()
 	{
-		return new Category();
+		return new BaseCategory();
 	}
 	@Override
 	public SearchQuery createSearchQuery()

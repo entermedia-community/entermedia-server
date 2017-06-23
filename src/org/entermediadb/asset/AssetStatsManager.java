@@ -2,8 +2,8 @@ package org.entermediadb.asset;
 
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.event.WebEvent;
 import org.openedit.event.EventManager;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;

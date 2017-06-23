@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.InputLoader;
 import org.openedit.repository.ContentItem;
-import org.openedit.util.Exec;
 
 public class OriginalInputLoader implements InputLoader
 {

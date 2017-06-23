@@ -6,7 +6,6 @@ import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.elasticsearch.searchers.LockSearcher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;

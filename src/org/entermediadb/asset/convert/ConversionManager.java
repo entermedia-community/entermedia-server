@@ -6,7 +6,6 @@ import java.util.Map;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
-import org.openedit.repository.ContentItem;
 
 public interface ConversionManager
 {

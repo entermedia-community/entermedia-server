@@ -27,6 +27,8 @@ public class LibraryManager extends EnterMediaObject
 	
 	public void assignLibraries(MediaArchive mediaarchive, Collection assets)
 	{
+		
+		/*
 		Searcher searcher = mediaarchive.getAssetSearcher();
 		Searcher librarySearcher = mediaarchive.getSearcher("library");
 		Searcher librarycollectionSearcher = mediaarchive.getSearcher("librarycollection");
@@ -86,5 +88,6 @@ public class LibraryManager extends EnterMediaObject
 			
 		}
 		mediaarchive.fireSharedMediaEvent("librarycollection/notifyassetscountchange");
+		*/
 	}
 }

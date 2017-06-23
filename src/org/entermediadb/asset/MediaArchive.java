@@ -1792,11 +1792,51 @@ public class MediaArchive implements CatalogEnabled
 		if( visibility == null)
 		{
 			visibility = getSearcher("librarycollection").query().exact("visibility", "3").search();
-			log.info(visibility.size() + " hidden collections ");
 			getCacheManager().put("hiddencollection", search.getIndexId(), visibility);
 		}
 		return visibility;
 	}
+	
+	public Collection<Data> listPublicCollections()
+	{
+		Searcher search = getSearcher("librarycollection");
+		Collection visibility = (Collection)getCacheManager().get("publiccollection", search.getIndexId()); //Expires after 5 min
+		if( visibility == null)
+		{
+			visibility = getSearcher("librarycollection").query().exact("visibility", "1").search();
+			getCacheManager().put("publiccollection", search.getIndexId(), visibility);
+		}
+		return visibility;
+	}
+	
+	public Collection<Category> listPublicCategories()	
+	{
+		Searcher search = getSearcher("librarycollection");
+		Collection<Category> categories = (Collection)getCacheManager().get("publiccollectioncategories", search.getIndexId()); //Expires after 5 min
+		if( categories == null)
+		{
+			categories = new ArrayList();
+
+			Collection publiccollections = listPublicCollections();
+			for (Iterator iterator = publiccollections.iterator(); iterator.hasNext();)
+			{
+				Data librarycollection = (Data) iterator.next();
+				String categoryid = librarycollection.get("rootcategory");
+				if( categoryid != null)
+				{
+					Category child = getCategory(categoryid);
+					if( child != null)
+					{
+						categories.add(child);
+					}
+				}
+			}
+			getCacheManager().put("publiccollectioncategories", search.getIndexId(), categories);
+		}	
+		return categories;
+		
+	}
+	
 	
 	public Collection<Category> listHiddenCategories()	
 	{
@@ -1825,7 +1865,33 @@ public class MediaArchive implements CatalogEnabled
 		
 	}
 
-	
+	public Collection<Category> listHiddenCategories(Collection<Category> inViewCategories)
+	{
+		Collection<Category>  all  = listHiddenCategories();
+		
+		Collection<Category>  filtered = new ArrayList<Category>();
+		
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Category hidden = (Category) iterator.next();
+			boolean hideit = true;
+			for (Iterator iterator2 = inViewCategories.iterator(); iterator2.hasNext();)
+			{
+				Category allowed = (Category) iterator2.next();
+				if( allowed.equals(hidden.getId()))
+				{
+					hideit = false;
+					continue;
+				}
+			}
+			if( hideit )
+			{
+				filtered.add(hidden);
+			}
+		}
+		
+		return filtered;
+	}
 	public QueryBuilder query(String inSearchType)
 	{
 		return getSearcher(inSearchType).query();
@@ -1924,5 +1990,6 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getModuleManager().getBean(getCatalogId(),inId);
 	}
+
 	
 }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.OpenEditException;
@@ -111,7 +112,7 @@ public class CategoryEditor {
 	 */
 	 public Category addNewCategory(String inId, String inName) throws OpenEditRuntimeException
 	 {
-		 Category newCat = new Category();
+		 Category newCat = new BaseCategory();
 		 newCat.setId(inId);
 		 newCat.setName(inName);
 		 if (getCurrentCategory() != null)

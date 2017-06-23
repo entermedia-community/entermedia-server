@@ -1,8 +1,5 @@
 package org.entermediadb.asset.publish.publishers;
 
-import java.io.IOException;
-import java.net.SocketException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.commons.net.ftp.FTPClient;
@@ -14,11 +11,9 @@ import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.error.ContentNotAvailableException;
 import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
-import org.openedit.users.UserManagerException;
 
 public class ftppublisher extends BasePublisher implements Publisher
 {

@@ -7,7 +7,6 @@ import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
-import org.openedit.Data;
 import org.openedit.page.Page;
 
 public class DefaultConversionManager extends BaseConversionManager

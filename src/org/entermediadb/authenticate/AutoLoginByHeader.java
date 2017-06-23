@@ -1,7 +1,6 @@
 package org.entermediadb.authenticate;
 
 import org.openedit.WebPageRequest;
-import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 

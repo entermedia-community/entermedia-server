@@ -10,7 +10,6 @@ import org.openedit.data.SearcherManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.RepositoryException;
-import org.openedit.repository.filesystem.FileItem;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.StringItem;
 

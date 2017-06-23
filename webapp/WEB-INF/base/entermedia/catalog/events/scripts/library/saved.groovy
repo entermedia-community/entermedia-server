@@ -21,28 +21,22 @@ public void init() {
 
 	if( library != null ) 
 	{
-		Category parentcategory = null;
-		if( library.get("categoryid") == null)
-		{
-			String path = library.get("folder");
-			if( path == null)
-			{
-				path = "Libraries/" + library.getName();
-			}
-			parentcategory = mediaArchive.createCategoryPath(path);
-			library.setValue("categoryid", parentcategory.getId() );
-			String username = context.getUserName();
-			parentcategory.addValue("viewusers",username);
-			mediaArchive.getCategorySearcher().saveData(parentcategory);
 		
-			String owner = library.get("owner");
-			if(owner == null){
-				library.setProperty("owner", username);
-				//library.setProperty("ownerprofile",context.getUserProfile().getId()); 
-				mediaArchive.getSearcher("library").saveData(library, null);
-			}
-			log.info("saving library $path");
+		String username = context.getUserName();
+		String owner = library.get("owner");
+		if(owner == null)
+		{
+			library.setProperty("owner", username);
 		}	
+		boolean isprivate = false;
+		if( library.getValue("viewusers") != null ||  library.getValue("viewroles") != null ||  library.getValue("viewgroups") != null)
+		{
+			isprivate  = true;
+		}
+		library.setValue("privatelibrary", isprivate);
+		//library.setProperty("ownerprofile",context.getUserProfile().getId()); 
+		log.info("saving library $library");
+		mediaArchive.getSearcher("library").saveData(library, null);
 	}
 }
 

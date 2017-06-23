@@ -2,11 +2,12 @@ package org.entermediadb.elasticsearch.categories;
 
 import java.util.List;
 
+import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.data.ValuesMap;
 
-public class ElasticCategory extends Category
+public class ElasticCategory extends BaseCategory
 {
 	public ElasticCategory(CategorySearcher inSearcher)
 	{

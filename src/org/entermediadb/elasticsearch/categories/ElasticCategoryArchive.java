@@ -7,10 +7,8 @@ import java.util.List;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.CategoryArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
-import org.entermediadb.asset.xmldb.XmlCategoryArchive;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
-import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.util.PathUtilities;
 

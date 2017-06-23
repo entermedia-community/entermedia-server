@@ -3,6 +3,7 @@ package asset;
 import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
+import asset.model.*;
 
 public void runit()
 {

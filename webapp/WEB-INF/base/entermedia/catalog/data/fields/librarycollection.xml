@@ -57,6 +57,8 @@
       <language id="fr"><![CDATA[Propriétaire]]></language> 
     </name> 
   </property>  
+  
+  
   <property id="library" required="true" index="true" stored="true" editable="true" sortable="true" type="list" viewtype="autocomplete" listid="library" datatype="list" keyword="false" filter="false">Library 
     <name> 
       <language id="de"><![CDATA[Bibliothek]]></language>  

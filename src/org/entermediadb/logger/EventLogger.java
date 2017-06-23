@@ -2,9 +2,7 @@ package org.entermediadb.logger;
 
 import java.util.Iterator;
 
-import org.entermediadb.elasticsearch.searchers.ElasticListSearcher;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;

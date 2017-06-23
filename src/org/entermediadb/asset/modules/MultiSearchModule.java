@@ -1,6 +1,5 @@
 package org.entermediadb.asset.modules;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,22 +11,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.EnterMedia;
+import org.entermediadb.asset.search.CompositeSearcher;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
-import org.openedit.data.CompositeSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.SearchQueryArchive;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.event.WebEvent;
 import org.openedit.event.EventManager;
+import org.openedit.event.WebEvent;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
-import org.openedit.profile.UserProfile;
 
 
 /**
@@ -439,19 +437,19 @@ public class MultiSearchModule extends BaseMediaModule
 		inReq.putPageValue("searcher", searcher);
 	}
 */
-	public void search(WebPageRequest inReq) throws Exception
-	{
-		String applicationid = inReq.findValue("applicationid");
-
-		CompositeSearcher searcher = (CompositeSearcher)getSearcherManager().getSearcher(applicationid, "compositeLucene");
-		SearchQuery inQuery = searcher.addStandardSearchTerms(inReq);
-		HitTracker hits = null;
-		if( inQuery != null)
-		{
-			hits = searcher.search(inReq,inQuery);
-		}
-		inReq.putPageValue("searcher", searcher);
-	}
+//	public void search(WebPageRequest inReq) throws Exception
+//	{
+//		String applicationid = inReq.findValue("applicationid");
+//
+//		CompositeSearcher searcher = (CompositeSearcher)getSearcherManager().getSearcher(applicationid, "compositeLucene");
+//		SearchQuery inQuery = searcher.addStandardSearchTerms(inReq);
+//		HitTracker hits = null;
+//		if( inQuery != null)
+//		{
+//			hits = searcher.search(inReq,inQuery);
+//		}
+//		inReq.putPageValue("searcher", searcher);
+//	}
 
 	
 	public void loadSavedQueryList(WebPageRequest inReq) throws Exception

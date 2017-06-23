@@ -159,36 +159,50 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 			// index/photo2/stuff1 nostuff
 			return true;
 		}
-		
+		*/
 		if( getUserProfile() != null && getUserProfile().getSettingsGroup().getId().equals("administrator"))
 		{
 			return true;
 		}
 		 
-		Collection<String> parents = getUserProfile().getViewCategories();
-		if( inCat.hasParent(parents) )
-		{
-			return true;
-		}
+		Collection<Category> viewableparents = getUserProfile().getViewCategories();
 
+		Collection<Category> privatecats = getMediaArchive().listHiddenCategories();
+		for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
+		{
+			Category hiddencategory = (Category)iterator.next();
+			for (Iterator iterator2 = viewableparents.iterator(); iterator2.hasNext();)
+			{
+				Category specificchild = (Category) iterator2.next();
+				if( specificchild.hasParent(inCat.getId()))
+				{
+					return true;
+				}
+			}
+			if( inCat.hasParent(hiddencategory.getId()) )  //This cat is within this hidden so check it well
+			{
+				return false;
+			}
+		}
+		
 		//In case it's new system TODO: Is this needed?
 		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null )
 		{
 			return true;
 		}
-*/
-		Collection<Category> pcats = getMediaArchive().listHiddenCategories();
-		for (Iterator iterator = pcats.iterator(); iterator.hasNext();)
+		Set allowed = new HashSet(getMediaArchive().listPublicCategories() );
+		allowed.addAll(getUserProfile().getViewCategories());
+		
+		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
 		{
-			Category category = (Category)iterator.next();
-			if( category.hasParent(inCat.getId()) && inCat.hasParent(category.getId()))
+			Category viewable = (Category) iterator.next();
+			if( inCat.hasParent(viewable.getId()))
 			{
-				return false;
+				return true;
 			}
-			
 		}
 		
-		return true;
+		return false;
 	}
 
 	public Set getHiddenCatalogs()

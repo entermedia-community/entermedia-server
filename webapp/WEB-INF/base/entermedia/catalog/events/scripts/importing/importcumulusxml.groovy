@@ -1,14 +1,15 @@
 package importing;
 
-import groovy.util.slurpersupport.GPathResult
-
 import org.entermediadb.asset.Asset
+import org.entermediadb.asset.BaseCategory
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.search.AssetSearcher
 import org.entermediadb.asset.xmldb.XmlCategoryArchive
 import org.openedit.data.PropertyDetail
 import org.openedit.data.PropertyDetails
 import org.openedit.page.Page
+
+import groovy.util.slurpersupport.GPathResult
 
 public void init() {
 	MediaArchive archive = context.getPageValue("mediaarchive");
@@ -138,7 +139,7 @@ public void createCategories(){
 		String name = properties.get(categoryname);
 		org.entermediadb.asset.Category category = catarc.getCategory(id);
 		if(category == null){
-			category = new org.entermediadb.asset.Category();
+			category = new BaseCategory();
 		}
 		if(pid != null && pid != "0"){
 			category.setParentId(pid);

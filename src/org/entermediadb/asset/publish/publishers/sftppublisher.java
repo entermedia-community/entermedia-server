@@ -10,14 +10,9 @@ import org.entermediadb.asset.publishing.Publisher;
 import org.entermediadb.asset.util.ssh.SftpUtil;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
-import org.openedit.error.ContentNotAvailableException;
 import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
-import org.openedit.users.UserManagerException;
-
-import com.jcraft.jsch.JSchException;
-import com.jcraft.jsch.SftpException;
 
 public class sftppublisher extends BasePublisher implements Publisher
 {

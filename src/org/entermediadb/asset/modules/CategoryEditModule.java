@@ -13,6 +13,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.BaseCategory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.edit.CategoryEditor;
@@ -161,7 +162,7 @@ public class CategoryEditModule extends BaseMediaModule {
 
 		String copy = inContext.getRequestParameter("saveasnew");
 		if (currentCatalog != null && Boolean.parseBoolean(copy)) {
-			currentCatalog = new Category(currentCatalog.getId() + "copy",
+			currentCatalog = new BaseCategory(currentCatalog.getId() + "copy",
 					currentCatalog.getName());
 			editor.getCurrentCategory().getParentCategory()
 					.addChild(currentCatalog);
@@ -175,7 +176,7 @@ public class CategoryEditModule extends BaseMediaModule {
 
 		String sortfield = inContext.getRequestParameter("sortfield");
 		if (sortfield == null || sortfield.length() < 1) {
-			currentCatalog.removeValue("sortfield");
+			currentCatalog.setValue("sortfield",null);
 		} else {
 			currentCatalog.setProperty("sortfield", sortfield);
 		}
@@ -195,11 +196,7 @@ public class CategoryEditModule extends BaseMediaModule {
 		for (int i = 0; i < fields.length; i++) {
 			String field = fields[i];
 			String value = inReq.getRequestParameter(field + ".value");
-			if (value != null) {
-				cat.setProperty(field, value);
-			} else {
-				cat.removeValue(field);
-			}
+			cat.setProperty(field, value);
 		}
 		editor.getMediaArchive().getCategoryArchive().saveCategory(cat);
 	}

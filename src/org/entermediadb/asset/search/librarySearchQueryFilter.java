@@ -2,16 +2,17 @@ package org.entermediadb.asset.search;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.MediaArchive;
 import org.openedit.WebPageRequest;
 import org.openedit.data.SearchQueryFilter;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.User;
+import org.openedit.users.Group;
 
 public class librarySearchQueryFilter implements SearchQueryFilter
 {
@@ -19,9 +20,56 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 
 	public SearchQuery  attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery) 
 	{
-		return inQuery;
+		if( inQuery.isSecurityAttached())
+		{
+			return inQuery;
+		}
+		
+		Object settings = inPageRequest.getPageValue("canviewsettings");
+		if (Boolean.parseBoolean(String.valueOf(settings)))
+		{
+			return inQuery;
+		}
 		
 		//TODO: Add Hidden Libraries
+		Collection groupids = new ArrayList();
+		UserProfile inUserprofile = inPageRequest.getUserProfile();
+		
+		if( inUserprofile == null || inUserprofile.getUser() == null)
+		{
+			groupids.add("anonymous");
+		}
+		else
+		{
+			for (Iterator iterator = inUserprofile.getUser().getGroups().iterator(); iterator.hasNext();)
+			{
+				Group group = (Group) iterator.next();
+				groupids.add(group.getId());
+			}
+		}
+		String roleid = null;
+		if( inUserprofile.getSettingsGroup() != null)
+		{
+			roleid = inUserprofile.getSettingsGroup().getId();
+		}
+		else
+		{
+			roleid = "anonymous";
+		}
+		
+		SearchQuery securityfilter = inSearcher.query().or().
+			match("privatelibrary", "false").
+			orgroup("viewgroups", groupids).
+			match("viewroles", roleid).
+			match("owner", inUserprofile.getUserId()).
+			match("viewusers", inUserprofile.getUserId()).getQuery();
+		
+		inQuery.addChildQuery(securityfilter);
+		
+		inQuery.setSecurityAttached(true);
+		
+		
+		return inQuery;
 		
 		/*
 		boolean enabled = inQuery.isEndUserSearch();

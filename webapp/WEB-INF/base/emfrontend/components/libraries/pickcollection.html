@@ -5,7 +5,7 @@
 		<table class="inlinesearch" style="" >
 			<tr>
 				<td  id="selectedlibraryui" style="min-width:220px; padding-right:20px;">
-					<form class="ajax" data-targetdiv="application" action="$home$apphome/views/modules/library/librarysearch.html">
+					<form class="ajaxform" data-targetdiv="collectionpickerinner" action="$home$apphome/components/libraries/pickcollection.html">
 						<input type="hidden" name="oemaxlevel" value="5" />
 						
 						#set( $detail = $searcher.getDetail("library"))
@@ -37,8 +37,12 @@
 					<form  action="$home$apphome/views/modules/librarycollection/media/index.html">
 						<input type="hidden" id="list-libraryvalue" name="selectedlibrary" value="$!library.getId()" />  
 						#set( $detail = $searcher.getDetail("name"))
+						#set( $text = $detail.getText($context))
+						#if( $selectedlibrary )
+							#set( $text = "[[Pick From]] $text" )
+						#end
 						<select name="collectionid" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end" data-addnewlabel="[Add New]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
-							data-placeholder="$detail.getText($context)" data-sortby="name">
+							data-placeholder="$text" data-sortby="name">
 							#if( $librarycol )
 							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
 							#end

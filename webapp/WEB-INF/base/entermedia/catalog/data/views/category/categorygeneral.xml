@@ -7,4 +7,6 @@
   <property id="viewroles"/>  
   <property id="id"/>
   <property id="assetsort"/>
+  <property id="autocreatecollections"/>
+  
 </root>

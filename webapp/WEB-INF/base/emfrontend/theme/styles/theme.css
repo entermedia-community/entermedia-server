@@ -1328,9 +1328,15 @@ small {
 }
 #cat-list .row .category {
     padding-left: 18px;
-    background: url('../images/folder-closed.gif') left -1px no-repeat;
+    background: url('../images/folder-closed.gif') left 0px no-repeat;
     margin: 0 3px;
 }
+
+.collectionheader #cat-list .row .category {
+    background: url('../images/icons/box.png') top 3px left 0px no-repeat;
+    
+} 
+
 #cat-list a:hover {
    text-decoration: underline;
 }

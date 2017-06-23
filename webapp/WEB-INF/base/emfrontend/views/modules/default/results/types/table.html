@@ -19,6 +19,12 @@
 $pages.include("${searchhome}/resultsactions.html",$context)
 
 
+#if( $caneditdata )
+	#set( $readonly = false)
+#else
+	#set( $readonly = true)
+#end
+
 <form name="selectionform" action="$home${content.searchhome}/common/selection/toggle.html">
 <input type="hidden" name="hitsname" value="hits"/>
 
@@ -86,8 +92,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 </thead>
 <tbody>
     
-    
-    
 #set( $even = true )
 #set($count = 0)
 #foreach ( $cell in $hits.getPageOfHits() )
@@ -97,7 +101,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
     
 	#set( $clink = "$home${content.linkprefix}${cell.id}${content.linksuffix}" )
         
-        <tr  #if( $caneditdata )  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=true&preview=true" #else rowid="$home$content.searchhome/view/view.html?id=${cell.id}&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=true&preview=true" #end >
+        <tr  rowid="$home$content.searchhome/edit/edit.html?id=${cell.id}&viewid=$defaultview.id&viewpath=$moduleid/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$moduleid&detailsreadonly=$readonly&preview=true">
    
     
 #if($content.isPropertyTrue("showactions"))
