@@ -1184,7 +1184,7 @@ public class MediaArchive implements CatalogEnabled
 			event.setProperty("sourcepath", asset.getSourcePath());
 			event.setProperty("assetids", asset.getId() );
 			event.setProperty("dataid", asset.getId() );
-
+			event.setValue("asset", asset);
 			//archive.getWebEventListener()
 			getEventManager().fireEvent(event);
 		}
