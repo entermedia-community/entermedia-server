@@ -1016,7 +1016,7 @@ public class BaseOrderManager implements OrderManager {
 			Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
 			String email = dest.get("administrativeemail");
 			if(email != null){
-				sendEmail(inArchive.getCatalogId(),context, email, "/" + appid + "/views/activity/email/admintemplate.html");
+				sendEmail(inArchive.getCatalogId(),context, email, "/" + appid + "/theme/emails/admintemplate.html");
 				//TODO: Save the fact that email was sent back to the publishtask?
 			}
 		}
@@ -1033,7 +1033,7 @@ public class BaseOrderManager implements OrderManager {
 					context.put("expiresondate", date);
 					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 				}
-				sendEmail(inArchive.getCatalogId(),context, emailto, "/" + appid + "/views/activity/email/sharetemplate.html");
+				sendEmail(inArchive.getCatalogId(),context, emailto, "/" + appid + "/theme/emails/sharetemplate.html");
 			}
 		}	
 		
@@ -1049,7 +1049,7 @@ public class BaseOrderManager implements OrderManager {
 //					if(owneremail != null)
 //					{
 //						context.put("sharewithemail", emailto); //Why would we need this
-//						sendEmail(inArchive.getCatalogId(),context, owneremail, "/" + appid + "/views/activity/email/usertemplate.html");
+//						sendEmail(inArchive.getCatalogId(),context, owneremail, "/" + appid + "/theme/emails/usertemplate.html");
 //					}
 //				}
 //			}

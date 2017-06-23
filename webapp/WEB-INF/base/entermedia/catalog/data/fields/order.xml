@@ -113,7 +113,7 @@
       <language id="fr"><![CDATA[Email]]></language> 
     </name> 
   </property>  
-  <property id="sharenote" viewtype="html" editable="true" stored="true" index="false" keyword="false" filter="false" sortable="true">Notes 
+  <property id="sharenote" viewtype="html" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Notizen]]></language>  
       <language id="en"><![CDATA[Notes]]></language>  
@@ -121,7 +121,7 @@
       <language id="fr"><![CDATA[Remarques]]></language> 
     </name> 
   </property>  
-  <property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true" stored="true" index="false" keyword="false" filter="false" sortable="true">Share Type 
+  <property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Share Type 
     <name> 
       <language id="de"><![CDATA[Aktien Typ]]></language>  
       <language id="en"><![CDATA[Share Type]]></language>  

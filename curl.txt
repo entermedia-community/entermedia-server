@@ -8,6 +8,8 @@ curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z
 curl -XGET 'http://localhost:9200/entermedia_catalogs_testcatalog/asset/_search?q=id:talent' | python -mjson.tool
 curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVPN6HCf8OKeBnSPyh4w' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/assets_catalog/order/_search?q=id:63a8f05b_090f_4fcc_b7e4_c9032912942d' | python -mjson.tool
+
 
 curl -XGET 'http://localhost:9200/media_catalogs_public/conversiontask/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
