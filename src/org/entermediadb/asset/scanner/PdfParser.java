@@ -5,14 +5,13 @@ import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pdfbox.encryption.DocumentEncryption;
 import org.apache.pdfbox.exceptions.CryptographyException;
-import org.apache.pdfbox.exceptions.InvalidPasswordException;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
+import org.apache.pdfbox.pdmodel.encryption.StandardDecryptionMaterial;
 import org.apache.pdfbox.util.PDFTextStripper;
 
 public class PdfParser
@@ -34,10 +33,14 @@ public class PdfParser
 
 			if (pdf.isEncrypted())
 			{
-				DocumentEncryption decryptor = new DocumentEncryption(pdf);
+				 StandardDecryptionMaterial sdm = new StandardDecryptionMaterial("");
+			        pdf.openProtection(sdm);
+			        // don't call decrypt() here
+			        
+/*				DocumentEncryption decryptor = new DocumentEncryption(pdf);
 				// Just try using the default password and move on
 				decryptor.decryptDocument("");
-			}
+*/			}
 
 			// collect text
 			PDFTextStripper stripper = new PDFTextStripper();
@@ -83,10 +86,10 @@ public class PdfParser
 		} catch (CryptographyException e)
 		{
 			log.error("Error decrypting document. " + e);
-		} catch (InvalidPasswordException e)
+		} /*catch (InvalidPasswordException e)
 		{
 			log.error("Can't decrypt document - invalid password. " + e);
-		} catch (Exception e)
+		}*/ catch (Exception e)
 		{ // run time exception
 			log.error("Can't be handled as pdf document. " + e);
 		} finally
