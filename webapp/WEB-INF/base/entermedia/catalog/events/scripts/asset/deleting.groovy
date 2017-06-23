@@ -1,4 +1,4 @@
-package asset
+package asset;
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
@@ -18,7 +18,7 @@ public void init() {
 		{
 			for(Data asset in hits)
 			{
-				if( asset.getId() != dataid)
+				if( !dataid.equals( asset.getId()  ) )
 				{
 					asset = mediaArchive.getAssetSearcher().loadData(asset);
 					asset.setValue("duplicate","false");

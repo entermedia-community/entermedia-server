@@ -96,8 +96,15 @@ public class GroovyScriptRunner implements ScriptRunner
 	public Object exec(final Script inScript, Map variableMap) throws OpenEditException
 	{
 			Page page = inScript.getPage();
+			if( !page.exists() )
+			{
+				throw new OpenEditException("Script not found : " + page.getPath() );
+			}
 			try 
 			{
+				
+				
+				
 				Object returned = null;
 
 //				removed, use Spring
