@@ -173,6 +173,12 @@
 	  	<delete>
 	  	  	  <fileset dir="./lib" includes="guava**.jar"/>
 	  	</delete>
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="pdfbox-app**.jar"/>
+	  	</delete>
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="PDFBox**.jar"/>
+	  	</delete>	  	
 	    <delete>
 	      <fileset dir="./lib" includes="http**.jar"/>
 	    </delete>
