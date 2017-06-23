@@ -32,7 +32,7 @@ public void init()
 	ArrayList assets = new ArrayList();
 	node.getChildren().each{
 		FilterNode child = it;
-		println child.getId();
+		//println child.getId();
 		HitTracker duplicates = searcher.fieldSearch("md5hex", child.getId());
 		duplicates.each{
 			Data hit = it;
@@ -46,8 +46,7 @@ public void init()
 		
 	}	
 	searcher.saveAllData(assets, null);
-	
-	
+
 		
 }
 
