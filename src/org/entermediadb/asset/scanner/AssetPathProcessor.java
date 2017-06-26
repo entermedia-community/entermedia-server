@@ -277,7 +277,15 @@ public class AssetPathProcessor extends PathProcessor
 //								{
 //									ignoretime = true; //If we are deeper than 3 and still showed a mod stamp then check everything
 //								}
-								processAssetFolder( item, inUser);
+								try {
+									processAssetFolder( item, inUser);
+								} catch (StackOverflowError e) {
+
+									e.printStackTrace();
+									
+									throw new OpenEditException("Error processing due to stack overflow: " + item.getName() + " : "  + item.getAbsolutePath());
+									
+								}
 							}
 							else
 							{
