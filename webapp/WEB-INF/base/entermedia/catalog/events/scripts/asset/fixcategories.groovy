@@ -9,51 +9,49 @@ import org.openedit.hittracker.HitTracker
 import org.openedit.util.PathUtilities
 
 
-class counterholder {
-	public static int count = 0;
-}
+
 
 public void init(){
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
-	counterholder.count++;
+	
 	HitTracker hits = archive.getAssetSearcher().query().match("id", "*").sort("id").search();
 	hits.enableBulkOperations();
 	List tosave = new ArrayList();
 	int savedsofar = 0;
-	
+	int loops = 0;
 	ArrayList cats = new ArrayList();
 	hits.each{
 		Data hit = it;
-//		if( hit.getValue("category-exact") == null)
-		String path =hit.getValue("archivesourcepath");
+		String path = hit.getValue("archivesourcepath");
 		if(path == null){
 			path = hit.getSourcePath();	
 		}		
 		Asset found = archive.getAssetSearcher().loadData(hit);
 
-		if(found.isFolder()){
+		if(!found.isFolder())   //   a/b/c.jpg -> a/b   if /a/b  --> a/b
+		{
 			path = PathUtilities.extractDirectoryPath(path);
 		}
 		
-		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path);
+		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path, loops, 0);
 		found.addCategory(catparent);
 		tosave.add(found);
 		savedsofar++;
 		
-		if( tosave.size() == 2000)
+		if( tosave.size() == 1000)
 		{
 			archive.getCategorySearcher().saveAllData(cats, null);
 			cats.clear();		
 			archive.saveAssets(tosave, null);
 			tosave.clear();
-			log.info("saved assets ${savedsofar}");
+			log.info("fixcategories saved: Categories :${savedsofar} of ${hits.size()} assets");
 		}
 		
 	}
 	archive.saveAssets(tosave, null);
 	archive.getCategorySearcher().saveAllData(cats, null);
-	log.info("Finished fixcategories saved: ${savedsofar} ${hits.size()}");
+	log.info("Finished fixcategories saved: Categories :${savedsofar} of ${hits.size()} assets");
 }
 
 init();
@@ -63,9 +61,9 @@ init();
 
 
 
-public Category createCategoryPath(MediaArchive archive, List cats, String inPath)
+public Category createCategoryPath(MediaArchive archive, List cats, String inPath, int loops, int childloop)
 {
-	Category cat = archive.getCacheManager().get("catfix", inPath);
+	Category cat = archive.getCacheManager().get("catfix", inPath);   ///Make sure we cache this
 	if(cat != null){
 		return cat;
 	}
@@ -80,13 +78,14 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 	Category found = (Category)archive.getCategorySearcher().loadData(hit);
 	if( found == null)
 	{
+		childloop++;
 		found = (Category)archive.getCategorySearcher().createNewData();
-		found.setId(String.valueOf(counterholder.count++));
+		found.setId(String.valueOf(loops) + "-" + childloop);
 		String name = PathUtilities.extractFileName(inPath);
 		found.setName(name);
 		//create parents and itself
 		String parent = PathUtilities.extractDirectoryPath(inPath);
-		Category parentcategory = createCategoryPath(archive, cats, parent);
+		Category parentcategory = createCategoryPath(archive, cats, parent, loops, childloop);
 		if( parentcategory != null)
 		{
 			parentcategory.addChild(found);
