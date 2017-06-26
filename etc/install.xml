@@ -178,7 +178,10 @@
 	  	</delete>
 	  	<delete>
 	  	  	  <fileset dir="./lib" includes="PDFBox**.jar"/>
-	  	</delete>	  	
+	  	</delete>	
+	  	<delete>
+	  	  	  <fileset dir="./lib" includes="FontBox**.jar"/>
+	  	</delete>  	
 	    <delete>
 	      <fileset dir="./lib" includes="http**.jar"/>
 	    </delete>

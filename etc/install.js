@@ -69,6 +69,8 @@ files.deleteMatch( web + "/lib/mp4parser*.jar");
 files.deleteMatch( web + "/lib/isoparser*.jar");
 files.deleteMatch( web + "/lib/PDFBox*.jar");
 files.deleteMatch( web + "/lib/pdfbox-app*.jar");
+files.deleteMatch( web + "/lib/FontBox*.jar");
+files.deleteMatch( web + "/lib/fontbox*.jar");
 files.deleteMatch( web + "/lib/lucene*.jar");
 files.deleteMatch( web + "/lib/spring-*.jar");
 files.deleteMatch( web + "/lib/aopalliance-*.jar");
