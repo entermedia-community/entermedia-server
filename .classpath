@@ -11,7 +11,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-io-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/mail-1.4.jar"/>
-	<classpathentry kind="lib" path="lib/pdfbox-app-1.8.13.jar"/>
 	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
 	<classpathentry exported="true" kind="lib" path="lib/jcifs-1.3.15.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-net-3.1.jar"/>
@@ -69,5 +68,7 @@
 	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-dataformat-yaml-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/fontbox-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-2.0.6.jar"/>
+	<classpathentry kind="lib" path="lib/pdfbox-app-2.0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

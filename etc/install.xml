@@ -174,7 +174,7 @@
 	  	  	  <fileset dir="./lib" includes="guava**.jar"/>
 	  	</delete>
 	  	<delete>
-	  	  	  <fileset dir="./lib" includes="pdfbox-app**.jar"/>
+	  	  	  <fileset dir="./lib" includes="pdfbox**.jar"/>
 	  	</delete>
 	  	<delete>
 	  	  	  <fileset dir="./lib" includes="PDFBox**.jar"/>
