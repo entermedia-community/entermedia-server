@@ -71,7 +71,7 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 		{
 			return "Root";
 		}
-		String name = PathUtilities.extractFileName(path);
+		String name = PathUtilities.extractFileName(path, false);
 		return name;
 	}
 
@@ -230,7 +230,7 @@ public class RepositoryTreeNode extends DefaultWebTreeNode implements Comparable
 //				childItem = (ContentItem) obj;
 				
 				String npath = (String)iterator.next();
-				String name = PathUtilities.extractFileName(npath);
+				String name = PathUtilities.extractFileName(npath, false);
 				if( addedfiles.contains(name))
 				{
 					continue;
