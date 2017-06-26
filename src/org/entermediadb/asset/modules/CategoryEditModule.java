@@ -276,6 +276,7 @@ public class CategoryEditModule extends BaseMediaModule {
 			if( tracker != null && tracker.size() > 0 )
 			{
 				int added = 0;
+				tracker.enableBulkOperations();
 				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 				{
 					Data data = (Data) iterator.next();
