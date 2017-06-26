@@ -67,8 +67,6 @@
 	<classpathentry kind="lib" path="lib/jackson-dataformat-cbor-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-dataformat-smile-2.6.2.jar"/>
 	<classpathentry kind="lib" path="lib/jackson-dataformat-yaml-2.6.2.jar"/>
-	<classpathentry kind="lib" path="lib/fontbox-2.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/pdfbox-2.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/pdfbox-app-2.0.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

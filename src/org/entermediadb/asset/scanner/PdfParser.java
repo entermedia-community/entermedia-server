@@ -5,14 +5,11 @@ import java.io.InputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.pdfbox.exceptions.CryptographyException;
-import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDDocumentInformation;
 import org.apache.pdfbox.pdmodel.PDPage;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.encryption.StandardDecryptionMaterial;
-import org.apache.pdfbox.util.PDFTextStripper;
+import org.apache.pdfbox.text.PDFTextStripper;
 
 public class PdfParser
 {
@@ -24,23 +21,8 @@ public class PdfParser
 		PDDocument pdf = null;
 		try
 		{
-
-			PDFParser parser = new PDFParser(inContent);
-//					new ByteArrayInputStream(inContent));
-			parser.parse();
-
-			pdf = parser.getPDDocument();
-
-			if (pdf.isEncrypted())
-			{
-				 StandardDecryptionMaterial sdm = new StandardDecryptionMaterial("");
-			        pdf.openProtection(sdm);
-			        // don't call decrypt() here
-			        
-/*				DocumentEncryption decryptor = new DocumentEncryption(pdf);
-				// Just try using the default password and move on
-				decryptor.decryptDocument("");
-*/			}
+			
+			pdf = PDDocument.load(inContent,"");
 
 			// collect text
 			PDFTextStripper stripper = new PDFTextStripper();
@@ -69,7 +51,7 @@ public class PdfParser
 			results.setTitle(title);
 			if( pdf.getNumberOfPages()  > 0)
 			{
-				PDPage page = (PDPage)pdf.getDocumentCatalog().getAllPages().get(0);
+				PDPage page = (PDPage)pdf.getDocumentCatalog().getPages().get(0);
 				PDRectangle mediaBox = page.getMediaBox();
 				if( mediaBox == null)
 				{
@@ -83,16 +65,12 @@ public class PdfParser
 			}
 	
 			//Thread.sleep(500); // Slow down PDF's loading
-		} catch (CryptographyException e)
+		}
+		catch (Exception e)
 		{
-			log.error("Error decrypting document. " + e);
-		} /*catch (InvalidPasswordException e)
-		{
-			log.error("Can't decrypt document - invalid password. " + e);
-		}*/ catch (Exception e)
-		{ // run time exception
 			log.error("Can't be handled as pdf document. " + e);
-		} finally
+		} 
+		finally
 		{
 			try
 			{
