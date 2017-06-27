@@ -27,7 +27,7 @@ public class VizOne{
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	public void testLoadAsset(WebPageRequest inReq){
 		//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?id=50"
-		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=1&num=100"
+		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=1&num=10000"
 		def conn = addr.toURL().openConnection()
 		conn.setRequestProperty( "Authorization", "Basic ${authString}" )
 		conn.setRequestProperty("Accept", "application/atom+xml;type=feed");
@@ -153,8 +153,12 @@ public class VizOne{
 					}
 					
 										
-					Category cat = archive.getCategorySearcher().createCategoryPath("Vizone");
+					
+					Category cat = archive.getCategorySearcher().searchById("AVyh5_tsmQeu4rFCDJ4S");
+					asset.clearCategories();
 					asset.addCategory(cat);
+					
+					
 					archive.saveAsset(asset,null);
 					
 					//Always update metadata  and save asset in case VIZ metadata changed?
