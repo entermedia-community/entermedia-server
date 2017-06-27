@@ -6,6 +6,7 @@ import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.WebPageRequest
 import org.openedit.hittracker.HitTracker
+import org.openedit.util.Counter
 import org.openedit.util.PathUtilities
 
 
@@ -18,6 +19,7 @@ public void init(){
 	HitTracker hits = archive.getAssetSearcher().query().match("id", "*").sort("id").search();
 	hits.enableBulkOperations();
 	List tosave = new ArrayList();
+	Counter counter = new Counter();
 	int savedsofar = 0;
 	int loops = 0;
 	ArrayList cats = new ArrayList();
@@ -34,8 +36,8 @@ public void init(){
 			path = PathUtilities.extractDirectoryPath(path);
 		}
 		
-		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path, loops, 0);
-		found.addCategory(catparent);
+		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path, counter);
+		found.addCategory(catparent);  //Load up with none since they are all deleted
 		tosave.add(found);
 		savedsofar++;
 		
@@ -61,7 +63,7 @@ init();
 
 
 
-public Category createCategoryPath(MediaArchive archive, List cats, String inPath, int loops, int childloop)
+public Category createCategoryPath(MediaArchive archive, List cats, String inPath, Counter counter)
 {
 	Category cat = archive.getCacheManager().get("catfix", inPath);   ///Make sure we cache this
 	if(cat != null){
@@ -78,14 +80,13 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 	Category found = (Category)archive.getCategorySearcher().loadData(hit);
 	if( found == null)
 	{
-		childloop++;
 		found = (Category)archive.getCategorySearcher().createNewData();
-		found.setId(String.valueOf(loops) + "-" + childloop);
+		found.setId(counter.printNext());
 		String name = PathUtilities.extractFileName(inPath);
 		found.setName(name);
 		//create parents and itself
 		String parent = PathUtilities.extractDirectoryPath(inPath);
-		Category parentcategory = createCategoryPath(archive, cats, parent, loops, childloop);
+		Category parentcategory = createCategoryPath(archive, cats, parent, counter);
 		if( parentcategory != null)
 		{
 			parentcategory.addChild(found);
