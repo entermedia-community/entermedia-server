@@ -47,13 +47,13 @@ public void init(){
 			cats.clear();		
 			archive.saveAssets(tosave, null);
 			tosave.clear();
-			log.info("fixcategories saved: Categories :${savedsofar} of ${hits.size()} assets");
+			log.info("fixcategories saved: New Categories :${counter.getCount()} on ${hits.size()} assets");
 		}
 		
 	}
 	archive.saveAssets(tosave, null);
 	archive.getCategorySearcher().saveAllData(cats, null);
-	log.info("Finished fixcategories saved: Categories :${savedsofar} of ${hits.size()} assets");
+	log.info("finishedcats saved: Categories :${counter.getCount()} on ${hits.size()} assets");
 }
 
 init();
