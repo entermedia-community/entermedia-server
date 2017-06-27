@@ -61,7 +61,6 @@ public class VizOne{
 					def conn2 = href.toURL().openConnection()
 					conn2.setRequestProperty( "Authorization", "Basic ${authString}" )
 					conn2.setRequestProperty("Accept", "application/vnd.vizrt.payload+xml");
-					//method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
 					
 					String mdata = conn2.content.text;
 					def extradata = new XmlSlurper().parseText(mdata  )
@@ -83,16 +82,19 @@ public class VizOne{
 						asset.setValue("fetchurl", itContent);
 					
 						
-						extradata.field.each{
-							String name = it.@name
-							String value = it.value.text;
-							if(name.contains("filename")){
-								asset.setName(value);
-							}
-							else if(name.contains("retentionPolicy")){
-								asset.setValue("vizoneretention", value);
-							}
+					extradata.field.each{
+						String name = it.@name
+						def val = it.'value';
+						
+						String value = it.'value'.text();
+						if(name.contains("importFileName")){
+							asset.setName(value);
 						}
+						else if(name.contains("retentionPolicy")){
+							asset.setValue("vizoneretention", value);
+						}
+					}
+					
 						
 						
 						asset.setValue("importstatus", "needsdownload");
@@ -139,7 +141,9 @@ public class VizOne{
 					
 					extradata.field.each{
 						String name = it.@name
-						String value = it.value.text;
+						def val = it.'value';
+						
+						String value = it.'value'.text();
 						if(name.contains("importFileName")){
 							asset.setName(value);
 						}

@@ -482,7 +482,7 @@ public class JsonAssetModule extends BaseJsonModule {
 			String sourcepath = null;
 			if (id == null) {
 				// id = searcher.nextAssetNumber();
-				vals.put("id", id);
+				//vals.put("id", id);
 			}
 			else
 			{
