@@ -638,7 +638,7 @@
       <language id="fr"><![CDATA[Mots-clés de l&#39;utilisateur]]></language>
     </name>
   </property> 
-    <property id="badge" editable="true" index="true" stored="true"   type="list" viewtype="multiselect">
+    <property id="badge" editable="false" index="true" stored="true"   type="list" viewtype="multiselect">
     <name>
       <language id="de"><![CDATA[Nutzer-Tags]]></language>
       <language id="en"><![CDATA[Badges]]></language>
