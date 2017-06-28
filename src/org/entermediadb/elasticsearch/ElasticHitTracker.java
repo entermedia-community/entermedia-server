@@ -452,11 +452,14 @@ public class ElasticHitTracker extends HitTracker
 		if (isShowOnlySelected() && fieldSelections != null && fieldSelections.size() > 0)
 		{
 			validids.addAll(fieldSelections);
+			validids = findCommonIds(validids,getSearchQuery().getSecurityIds());
 		}
-		//validids = findCommonIds(validids,getSearchQuery().getJoinsIds());		
-		validids = findCommonIds(validids,getSearchQuery().getSecurityIds());
+		else
+		{
+			validids = getSearchQuery().getSecurityIds();
+		}
 		
-		if (!validids.isEmpty())
+		if ( validids != null && !validids.isEmpty())
 		{
 			QueryBuilder fids = QueryBuilders.termsQuery("_id", validids);
 			//			QueryBuilder built = QueryBuilders.idsQuery(fieldSelected);
