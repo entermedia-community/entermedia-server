@@ -26,6 +26,7 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 <p>
 
 </p>
+#set($orderitems = $mediaarchive.getSearcher("orderitem").query().exact("orderid", $order.id).search())
 <hr />
 <p>[[Below is a list of assets available at the link above]]:</p>
 <table cellspacing="0" cellpadding="0" width="100%">		
