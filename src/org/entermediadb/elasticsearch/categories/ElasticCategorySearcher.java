@@ -245,6 +245,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //				log.info("loading category:"  + cat.getName() );
 //			}	
 		}
+		//log.info("returning" + cat.hashCode() + " " + cat.getName());
 		if( cat != null && !cat.hasLoadedParent())
 		{
 			String parentid = (String)cat.get("parentid");
@@ -315,6 +316,8 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	public void saveCategory(Category inCategory)
 	{
 		saveData(inCategory, null);
+		getCacheManager().put("category", inCategory.getId(),inCategory);
+		//log.info("saved" + inCategory.hashCode() + " " + inCategory.getName());
 	}
 	
 	public void saveData(Data inData, User inUser)

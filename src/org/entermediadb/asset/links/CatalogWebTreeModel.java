@@ -8,9 +8,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.elasticsearch.categories.ElasticCategorySearcher;
 import org.entermediadb.webui.tree.BaseTreeModel;
 import org.openedit.CatalogEnabled;
 import org.openedit.page.manage.PageManager;
@@ -19,6 +22,8 @@ import org.openedit.util.RequestUtils;
 
 public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 {
+	private static final Log log = LogFactory.getLog(CatalogWebTreeModel.class);
+
 	protected UserProfile fieldUserProfile;
 	protected Set fieldHiddenCatalogs;
 	protected Set fieldLimitToCatalogs;
@@ -316,7 +321,10 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 //		}
 		
 		//The children will be refreshed if needed based on the isDirty state
-		return getCategorySearcher().getCategory(fieldRootId);
+		Category cat = getCategorySearcher().getCategory(fieldRootId);
+		//log.info("returning" + cat.hashCode() + " " + cat.getName());
+
+		return cat;
 	}
 
 	public String getId(Object inNode)
