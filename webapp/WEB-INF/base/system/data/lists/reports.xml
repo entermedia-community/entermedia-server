@@ -17,10 +17,12 @@
     <name><![CDATA[Asset Previews]]></name>  
     <name><![CDATA[Asset Previews]]></name> 
   </reports>  
+ <!-- 
   <reports id="libraryusage" ordering="0" searchtype="asset" outputtype="libraryusage" script="asset/diskspacebylibrary.groovy" dashboard="true"> 
     <name><![CDATA[Disk Space By Library]]></name>  
     <name><![CDATA[Disk Space By Library]]></name> 
-  </reports>  
+  </reports>
+   -->  
   <reports id="diskusagefilemorat" ordering="2" searchtype="asset" outputtype="fileformatusage" script="asset/diskspacebyfileformat.groovy" dashboard="true"> 
     <name><![CDATA[Disk Space By File Format]]></name>  
     <name><![CDATA[Disk Space By File Format]]></name> 
