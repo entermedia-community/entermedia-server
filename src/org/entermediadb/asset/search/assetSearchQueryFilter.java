@@ -46,12 +46,19 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 	 */
 	public SearchQuery attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
 	{
-		boolean enabled = inQuery.isEndUserSearch();
+		
+		if (!inQuery.isEndUserSearch())
+        {
+            return inQuery;
+        }
+        String skipfilter = inPageRequest.findValue("assetskipfilter");
+        if (Boolean.parseBoolean(skipfilter))
+        {
+            return inQuery;
+        }
+		
 		//log.info( "security filer enabled "  + enabled );
-		if (!enabled)
-		{
-			return inQuery;
-		}
+		
 
 		//check for category joins
 		if (!inQuery.hasChildren())
@@ -63,12 +70,15 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				return inQuery;
 			}
 			
-			if(inQuery.getTermByDetailId("editstatus") == null){
-				inQuery.addNot("editstatus", "7");
-			}
+			
 			User user = inPageRequest.getUser();
 			SearchQuery child = inSearcher.createSearchQuery();
 
+			if(inQuery.getTermByDetailId("editstatus") == null){
+				child.addNot("editstatus", "7");
+			}
+			
+			
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
 
