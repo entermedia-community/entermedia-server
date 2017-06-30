@@ -2,6 +2,7 @@
 
 	<inner-layout>/${applicationid}/services/module/asset/players/collections/display/viewassets.html</inner-layout>
 	
+	<property name="assetskipfilter">true</property>
 	
 	<property name="hitsname">collectionhits</property>
 	<property name="virtual">true</property>
