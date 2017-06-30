@@ -1251,7 +1251,7 @@ public class ProjectManager implements CatalogEnabled
 		if( collectioncategory != null && !collectioncategory.getName().equals(collection.getName()))
 		{
 			collectioncategory.setName(collection.getName());
-			mediaArchive.getCategorySearcher().saveData(collectioncategory);
+			mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
 		}
 				//Move the parents if needed
 //				if( !collectioncategory.hasParent(librarycategory.getId()))
