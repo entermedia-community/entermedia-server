@@ -92,7 +92,7 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 		found.setName(name);
 		//create parents and itself
 		String parent = PathUtilities.extractDirectoryPath(inPath);
-		if( parent != null && !parent.isEmpty())
+		if( parent != null && !parent.trim().isEmpty())
 		{
 			try
 			{
