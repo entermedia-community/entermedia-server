@@ -3,6 +3,6 @@
 #foreach( $email in $emails)
 
 #set( $page = $mediaarchive.getPageManager().getPage($email))
-<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=/WEB-INF/base/emfrontend/theme/emails/collection-add-new-follower.html&origURL=/WEB-INF/base/emfrontend/theme/emails/collection-add-new-follower.html&path=/WEB-INF/base/emfrontend/theme/emails/collection-add-new-follower.html"> $page.getPageName()</a><br/>
+<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=$page.path&path=$page.path"> $page.getPageName()</a><br/>
 <br>
 #end
