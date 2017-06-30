@@ -746,6 +746,12 @@ public class BaseOrderManager implements OrderManager {
 				log.error("No items on order "  + inOrder.getId() + " " + inOrder.getOrderStatus() );
 				//error?
 				Date date = inOrder.getDate("date");
+				if(date == null){
+					date = new Date();
+
+					inOrder.setValue("date", date);
+					archive.getSearcher("order").saveData(inOrder);
+				}
 				Date monthold = new Date(System.currentTimeMillis() - (1000*60*60*24*30));
 				if( date.before(monthold))
 				{
