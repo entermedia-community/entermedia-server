@@ -62,6 +62,10 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			{
 				return inQuery;
 			}
+			
+			if(inQuery.getTermByDetailId("editstatus") == null){
+				inQuery.addNot("editstatus", "7");
+			}
 			User user = inPageRequest.getUser();
 			SearchQuery child = inSearcher.createSearchQuery();
 
