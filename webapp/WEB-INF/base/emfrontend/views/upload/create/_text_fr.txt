@@ -6,7 +6,7 @@ Add\ Media=Ajouter des médias
 Live\ Video\ Stream=Video Streaming en direct
 Make\ a\ live\ stream\ recording\ from\ your\ webcam=Faire un enregistrement en direct à partir de votre webcam
 Create\ empty\ data\ records\ then\ attach\ media\ later=Créer un enregistrement vide puis ajouter le média plus tard
-Upload\ Media=Téléverser un média
+Upload\ Media=Upload un média
 Next=Suivant
-Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Créer un item depuis une URL ou un lien imbriqué
+Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Créer un fcihier depuis une URL ou un lien imbriqué
 

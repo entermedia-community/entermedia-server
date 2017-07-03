@@ -1,18 +1,20 @@
 #
-#Fri Apr 28 09:29:16 CDT 2017
+#Mon Jul 03 09:36:48 CDT 2017
 Remove=Retirer
 Collection=Collection
 No\ results\ found=Aucun r\u00E9sultat trouv\u00E9
 No\ results\ found.=Aucun r\u00E9sultat trouv\u00E9.
-Delete\ Assets=Supprimer actifs
+Delete\ Assets=Supprimer fichiers
+Delete=Effacer
 Thumbnail=Miniature
 Table=Table
 Create\ a\ copy\ of\ this\ collection=Cr\u00E9er une copie de cette collection
-Edit\ one\ or\ more\ selected\ records=Modifier un ou des dossiers plus s\u00E9lectionn\u00E9s
+Edit\ one\ or\ more\ selected\ records=Modifier un ou plusieurs enregistrement s\u00E9lectionn\u00E9s
 Add\ Column=Ajouter une colonne
 Publish=Publier
-items=\u00E9l\u00E9ments
-Displaying\ records=Affichage des dossiers
+Results=R\u00E9sultats
+items=fichiers
+Displaying\ records=Affichage des enregistrements
 Download\ Options=Options de t\u00E9l\u00E9chargement
 Select\ This\ Page=S\u00E9lectionner cette page
 Share=Partager
@@ -20,18 +22,18 @@ Share=Partager
 Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les d\u00E9placer
 Share\ Gallery=Partager Galerie
 Cancel=Annuler
-Publish\ Assets\ to\ Server=Publier items vers serveur
+Publish\ Assets\ to\ Server=Publier fichiers vers serveur
 Copy\ Collection=Copier la collection
 Download=T\u00E9l\u00E9charger
 of=de
-Email\ Assets=Envoyer par courriel
+Email\ Assets=Envoyer par email
 Stacked=Superpos\u00E9
 Remove\ from\ collection?=Retirer de la collection?
 Edit\ Columns=Modifier les colonnes
 Remove\ from\ library\ and\ all\ collections?=Retirer de la biblioth\u00E8que et de toutes les collections?
 Remove\ from\ Library=Retirer de la biblioth\u00E8que
 Categories=Cat\u00E9gories
-Gallery=Galerie
+Gallery=Gallerie
 Folders=Dossiers
 Deselect\ All=Tout d\u00E9selectionner
 Select\ All\ Results=S\u00E9lectionner tous les r\u00E9sultats

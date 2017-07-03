@@ -1,3 +1,3 @@
 #Thu Apr 27 09:03:42 CDT 2017
-No\ Items\ in\ Basket=Aucun article dans le panier
+No\ Items\ in\ Basket=Aucun fichier dans le panier
 

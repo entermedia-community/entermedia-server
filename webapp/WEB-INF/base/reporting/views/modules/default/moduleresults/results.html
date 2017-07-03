@@ -1,5 +1,5 @@
 #if ( $hits.size() == 0 )
-No results found                                                                                                                                                                        
+[[No results found]]                                                                                                                                                                        
 #else
 #if(!$view)
 #set($view = $context.getRequestParameter("view"))
@@ -27,7 +27,7 @@ $view
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.text )
 					#if( $edit)
-						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="[[Remove]]" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 					
 					#end
 			</div>

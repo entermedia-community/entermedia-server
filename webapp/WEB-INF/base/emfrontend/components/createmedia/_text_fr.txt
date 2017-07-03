@@ -1,16 +1,16 @@
 #Thu Apr 27 09:03:42 CDT 2017
 Create\ Data\ Record=Créer Jeu de Données
-Upload\ media\ from\ local\ file\ system\ or\ camera=Téléverser un média depuis un fichier local ou un appareil photo
+Upload\ media\ from\ local\ file\ system\ or\ camera=Upload un média depuis un fichier local ou un appareil photo
 Add\ Remote\ Media=Ajouter un média distant
 Import\ files\ from\ user\ sync\ folder=Importer des fichiers depuis le dossier de synchronisation utilisateur
 Live\ Video\ Stream=Video Streaming en direct
 Make\ a\ live\ stream\ recording\ from\ your\ webcam=Faire un enregistrement en direct à partir de votre webcam
-Import\ Work\ Folder=Dossier de travail d&\#39;importation
+Import\ Work\ Folder=Importation dossier de travail
 Create\ empty\ data\ records\ then\ attach\ media\ later=Créer un enregistrement vide puis ajouter le média plus tard
 Copy\ Categories=Copier Catégories
 Copy\ existing\ folder\ or\ categories=Copier le dossier ou les catégories existantes
 Upload\ Media=Téléverser un média
 Import\ files\ from\ a\ previously\ exported\ zip\ file=Importer des fichiers à partir d&\#39;un fichier zip précédemment exporté
-Upload\ Collection\ Zip\ File=Télécharger le fichier Zip de la collection
-Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Créer un item depuis une URL ou un lien imbriqué
+Upload\ Collection\ Zip\ File=Upload le fichier Zip de la collection
+Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Créer un fichier depuis une URL ou un lien imbriqué
 

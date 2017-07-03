@@ -1,12 +1,12 @@
 #Thu Apr 27 09:03:42 CDT 2017
 Edit=Modifier
-Asset=Item
-Displaying\ records=Affichage des dossiers
+Asset=Fichier
+Displaying\ records=Affichage des enregistrements
 Library=Bibliothèque
 Search=Recherche
 $asset=$asset
 Collection=Collection
-items=éléments
+items=fichiers
 Add\ Field=Ajouter un champ
 Drag\ columns\ to\ move\ them=Faites glisser les colonnes pour les déplacer
 No\ results\ found=Aucun résultat trouvé
