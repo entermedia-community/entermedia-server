@@ -477,7 +477,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		command.add("-format");
 		command.add("'%[colorspace]'");
 		command.add(inOriginal.getAbsolutePath());
-		ExecResult result = getExec().runExec("identify",command, true);
+		ExecResult result = getExec().runExec("identify",command, true, 60000);
 		String sout = result.getStandardOut();
 //		String[] tokens = sout.split("\n");
 //		if (tokens.length > 0){
@@ -504,7 +504,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		command.add("-G0");
 		command.add("-ICC_Profile:ColorSpaceData");
 		command.add(inOriginal.getAbsolutePath());
-		ExecResult result = getExec().runExec("exiftool",command, true);
+		ExecResult result = getExec().runExec("exiftool",command, true, 60000);
 		String sout = result.getStandardOut();
 		if( sout.toLowerCase().contains("cmyk"))
 		{
