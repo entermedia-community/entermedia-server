@@ -421,8 +421,6 @@ public class ProjectManager implements CatalogEnabled
 		{
 			assetsearch.addOrsGroup("editstatus", inShowOnlyEditStatus);			
 		}
-		
-		assetsearch.setEndUserSearch(true);
 
 		String sort = (String)root.findValue("assetsort");
 		if( sort != null)
@@ -440,25 +438,28 @@ public class ProjectManager implements CatalogEnabled
 		{
 			assetsearch.setSortBy("assetaddeddateDown");
 		}	
-		
-		all = archive.getAssetSearcher().search(assetsearch);
+		assetsearch.setProperty("collectionid", collectionid);
+		assetsearch.setHitsName("collectionassets");
+
+		assetsearch.setEndUserSearch(true);
+
+		all = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);
 
 		if( inShowOnlyEditStatus != null && inShowOnlyEditStatus.equals("1"))
 		{
 			all.selectAll();
 		}
+		//Is this needed?
 		String hpp = inReq.getRequestParameter("page");
 		if (hpp != null)
 		{
 			all.setPage(Integer.parseInt(hpp));
 		}
-		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
-		if (usersettings != null)
-		{
-			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
-		}
-		all.getSearchQuery().setProperty("collectionid", collectionid);
-		all.getSearchQuery().setHitsName("collectionassets");
+//		UserProfile usersettings = (UserProfile) inReq.getUserProfile();
+//		if (usersettings != null)
+//		{
+//			all.setHitsPerPage(usersettings.getHitsPerPageForSearchType("asset"));
+//		}
 		return all;
 	}
 

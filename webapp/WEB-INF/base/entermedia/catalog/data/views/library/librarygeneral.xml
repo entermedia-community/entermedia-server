@@ -6,4 +6,9 @@
   <property id="viewusers"/>  
   <property id="viewgroups"/> 
   <property id="viewroles"/>  
+  <property id="categoryid"/>  
+    <property id="autocreatecollections"/>  
+  
+
+
 </root>

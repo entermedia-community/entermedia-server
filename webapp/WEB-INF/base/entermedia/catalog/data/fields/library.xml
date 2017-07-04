@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Propriétaire]]></language> 
     </name> 
   </property>  
- <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system"    type="list">Users 
+ <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user"     type="list">Users 
     <name> 
       <language id="de"><![CDATA[Benutzer]]></language>  
       <language id="en"><![CDATA[Users]]></language>  
@@ -49,7 +49,7 @@
       <language id="fr"><![CDATA[Utilisateurs]]></language> 
     </name> 
   </property>  
-  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system"    type="list">Groups 
+  <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group"    type="list">Groups 
     <name> 
       <language id="de"><![CDATA[Gruppen]]></language>  
       <language id="en"><![CDATA[Groups]]></language>  
@@ -80,6 +80,8 @@
       <language id="fr"><![CDATA[Chemin]]></language> 
     </name> 
   </property>  
+   -->
+  
   <property id="categoryid" internalfield="false" index="true" type="list" viewtype="category" listid="category" stored="true" note="Auto populated" editable="true" >
     <name>
       <language id="de"><![CDATA[Kategorie ID]]></language>
@@ -88,7 +90,11 @@
       <language id="fr"><![CDATA[ID Catégorie]]></language>
     </name>
   </property>
- -->
+
+ <property id="autocreatecollections" internalfield="false" index="true" type="boolean"  editable="true" >
+    Auto Create Collections on Save
+  </property>
+
 
    
 </properties>

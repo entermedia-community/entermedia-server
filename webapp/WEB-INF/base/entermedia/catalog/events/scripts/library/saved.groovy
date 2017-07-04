@@ -3,12 +3,14 @@ package library
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
+import org.openedit.data.Searcher
 
 public void init() {
 	String id = context.getRequestParameter("id");
 
 	Data library = context.getPageValue("data");
-	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
+	MediaArchive archive = (MediaArchive)context.getPageValue("mediaarchive");
+	
 	if(library == null){
 		if( id == null) {
 			id = context.getRequestParameter("id.value");
@@ -16,7 +18,7 @@ public void init() {
 		if( id == null) {
 			return;
 		}
-		library = mediaArchive.getSearcher("library").searchById(id);
+		library = archive.getSearcher("library").searchById(id);
 	}
 
 	if( library != null ) 
@@ -36,8 +38,35 @@ public void init() {
 		library.setValue("privatelibrary", isprivate);
 		//library.setProperty("ownerprofile",context.getUserProfile().getId()); 
 		log.info("saving library $library");
-		mediaArchive.getSearcher("library").saveData(library, null);
+		archive.getSearcher("library").saveData(library, null);
 	}
+	
+	if(library.getValue("autocreatecollections") == true){
+		String categoryid = library.categoryid;
+		Category cat = archive.getCategory(categoryid);
+		Searcher collectionsearcher = mediaarchive.getSearcher("librarycollection");
+		
+		if(cat != null){
+			cat.getChildren().each{
+				Category target = it;
+				Data collection = collectionsearcher.searchByField("rootcategory", target.getId());
+				if(collection == null){
+					collection = collectionsearcher.createNewData();
+					collection.setValue("rootcategory", target.getId());
+					collection.setValue("library", library.getId());
+					
+					collection.setName(target.getName());
+					collectionsearcher.saveData(collection);
+					
+
+				}
+				
+			}
+		}
+		
+	}
+	
+	
 }
 
 init();

@@ -37,9 +37,12 @@ public void init(){
 		}
 		
 		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path, counter);
-		found.addCategory(catparent);  //Load up with none since they are all deleted
-		tosave.add(found);
-		savedsofar++;
+		if( catparent != null)
+		{
+			found.addCategory(catparent);  //Load up with none since they are all deleted
+			tosave.add(found);
+			savedsofar++;
+		}	
 		
 		if( tosave.size() == 1000)
 		{
@@ -65,15 +68,18 @@ init();
 
 public Category createCategoryPath(MediaArchive archive, List cats, String inPath, Counter counter)
 {
-	Category cat = archive.getCacheManager().get("catfix", inPath);   ///Make sure we cache this
-	if(cat != null){
-		return cat;
-	}
-	
 	if( inPath.length() == 0 || inPath.equals("Index"))
 	{
 		return archive.getCategorySearcher().getRootCategory();
 	}
+	Category cat = archive.getCacheManager().get("catfix", inPath);   ///Make sure we cache this
+	
+	if(cat != null)
+	{
+		return cat;
+	}
+	
+	
 	//TODO: Find right way to do this not matches
 	Data hit = (Data)archive.getCategorySearcher().query().startsWith("categorypath", inPath).sort("categorypathUp").searchOne();
 	
@@ -86,12 +92,23 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 		found.setName(name);
 		//create parents and itself
 		String parent = PathUtilities.extractDirectoryPath(inPath);
-		Category parentcategory = createCategoryPath(archive, cats, parent, counter);
-		if( parentcategory != null)
+		if( parent != null && !parent.trim().isEmpty())
 		{
-			parentcategory.addChild(found);
+			try
+			{
+				Category parentcategory = createCategoryPath(archive, cats, parent, counter);
+				if( parentcategory != null)
+				{
+					parentcategory.addChild(found);
+				}
+				cats.add(found);
+			}
+			catch ( StackOverflowError error)
+			{
+				log.error("Failed to load: " + inPath);
+				return null;
+			}
 		}
-		cats.add(found);		
 	}
 	archive.getCacheManager().put("catfix", inPath, found );
 	
