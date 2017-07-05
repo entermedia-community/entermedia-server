@@ -89,10 +89,10 @@
 		<div >
 			<img id="target" src="$cropinputlink" alt="Crop Area" style="display:none;"/>
 		</div>
-		<div id="preview-panel" class="display-container"  style="display:none;"  >
+		<div id="preview-panel" class="display-container"   >
 			<div class="preview-container">
 				<a href="#fancybox-container" id="showpreview">
-					<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview" style="display:none;" />
+					<img id="preview-image" src="$cropinputlink" class="jcrop-preview" alt="Preview"  />
 				</a>
 			</div>
 			<div class="preview-labels">
@@ -251,7 +251,7 @@ function prepareCropUtil(boxwidth,boxheight){
 				trueSize: [1024,768]
 	*/			
 	function updatePreview(c){
-		/*
+		
 		if (parseInt(c.w) > 0){
 	    	var rx = xsize / c.w;
 	    	var ry = ysize / c.h;
@@ -263,14 +263,9 @@ function prepareCropUtil(boxwidth,boxheight){
 	        });
 	    	rx = ${width} / c.w;
 	    	ry = ${height} / c.h;
-	    	$("#fancybox-preview").css({
-	        	width: Math.round(rx * boundx) + 'px',
-	          	height: Math.round(ry * boundy) + 'px',
-	          	marginLeft: '-' + Math.round(rx * c.x) + 'px',
-	          	marginTop: '-' + Math.round(ry * c.y) + 'px'
-	        });
+	    	
 	  	}
-		*/
+		
 	  	var x1 = Math.round(c.x),
 	 		y1 = Math.round(c.y),
 	 		x2 = Math.round(c.x2),
