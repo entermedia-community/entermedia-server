@@ -284,7 +284,8 @@ jQuery(document).ready(function(url,params)
 		        	var id = div.data("previous");
 		        	if( id )
 		        	{
-			        	showOverlayDiv(id);
+			        	//showOverlayDiv(id);
+			        	showAsset(id);
 			        }		        	
 		        break;
 		
