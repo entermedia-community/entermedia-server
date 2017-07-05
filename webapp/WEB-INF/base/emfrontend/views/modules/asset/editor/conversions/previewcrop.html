@@ -83,10 +83,19 @@
 ##set crop link
 #set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/thumb.jpg?cache=false")
 
-<div style="padding:30px;">
+<div style="padding:10px;">
+<div id="infopanel">
+			<h2>[[Instructions]]</h2>
+			<ul>
+				<li>[[Select the]] <strong>[[crop-box selector]]</strong> [[shown on the large image, and manipulate its size and location. A small preview of the resulting crop will appear on the Preview Panel above.]]</li>
+				##<li>[[To see a preview of the resulting crop, select the image in the Preview Panel. The cropped image will be shown as a ${width}px x ${height}px image.]]</li>
+				<li>[[Select the Submit button to commit the crop.]]</li>
+			</ul>
+ 		</div>
+		<hr>
 	<div class="jc-demo-box">
 				##<label id="dimension"></label>
-		<div >
+		<div class="display-full" >
 			<img id="target" src="$cropinputlink" alt="Crop Area" style="display:none;"/>
 		</div>
 		<div id="preview-panel" class="display-container"   >
@@ -100,6 +109,7 @@
 				<label id="dimension"></label>
 			</div>
 		</div>
+		<div class="clearfix"></div>
 		#set( $savetoall = $context.getRequestParameter("savetoall"))
 		#if( $savetoall)
 		    <form id="coords" class="coords" method="post"  targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
@@ -131,15 +141,7 @@
 			</div>
 		</form>
 		
-		<div id="infopanel">
-			<h2>[[Instructions]]</h2>
-			<ul>
-				<li>[[Select the]] <strong>[[crop-box selector]]</strong> [[shown on the large image, and manipulate its size and location. A small preview of the resulting crop will appear on the Preview Panel above.]]</li>
-				<li>[[To see a preview of the resulting crop, select the image in the Preview Panel. The cropped image will be shown as a ${width}px x ${height}px image.]]</li>
-				<li>[[Select the Submit button to commit the crop.]]</li>
-			</ul>
- 		</div>
-		<hr>
+		
 		<div class="clearfix"></div>
 	</div>
 	<div id="fancybox-container" style="width:${width}px;height:${height}px;overflow:hidden;display:none;">
@@ -188,9 +190,9 @@
   overflow: hidden;
 }
 .display-container{
-  width:250px;
+  
   padding: 6px;
-  margin-top: 10px;
+  
   border: 1px rgba(0,0,0,.4) solid;
   background-color: white;
   -webkit-border-radius: 6px;
@@ -199,6 +201,12 @@
   -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
   -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
   box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
+  text-align:center;
+  float:left;
+}
+.display-full {
+	float:left;
+	padding:0 20px 20px 0;
 }
 .preview-labels {
 	margin:10px 0px; 
