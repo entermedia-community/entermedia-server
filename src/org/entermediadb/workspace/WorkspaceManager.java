@@ -137,6 +137,9 @@ public class WorkspaceManager
 		{
 			details.setBeanName("dataSearcher");
 		}
+		String file = "/WEB-INF/data/" + catalogid + "/fields/" + tablename + ".xml";
+
+		archive.savePropertyDetails(details, tablename, null, file);
 		
 		for (Iterator iterator = details.iterator(); iterator.hasNext();) {
 			PropertyDetail detail = (PropertyDetail) iterator.next();
