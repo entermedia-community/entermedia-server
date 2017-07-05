@@ -1,0 +1,9 @@
+<analyzers>
+    <analyzer id="t1" templatefilepath="/theme/emails/admintemplate.html" name="Administrative notification when assets have been published"/>
+	<analyzer id="t2" templatefilepath="/theme/emails/collection-add-new-follower.html" name="Email sent when a user is added to a collection"/>
+	<analyzer id="t3" templatefilepath="/theme/emails/collection-assets-approved.html" name="Email send when assets are approved"/>
+	<analyzer id="t4" templatefilepath="/theme/emails/collection-assets-rejected.html" name="Email send when assets are rejected"/>
+	<analyzer id="t5" templatefilepath="/theme/emails/collection-count-modified.html" name="Email send when assets are added or removed from a collection"/>
+	<analyzer id="t6" templatefilepath="/theme/emails/sharetemplate.html" name="Email send when an user shares asset"/>
+	<analyzer id="t7" templatefilepath="/theme/emails/usertemplate.html" name="Confirmation email sent to user after assets have been successfully shared"/>
+</analyzers>

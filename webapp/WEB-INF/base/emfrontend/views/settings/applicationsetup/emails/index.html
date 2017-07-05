@@ -1,8 +1,15 @@
-#set( $emails = $mediaarchive.getPageManager().getChildrenPaths("$apphome/theme/emails/",true) )
+#set( $emails = $mediaarchive.getList("templatefiles"))
 
-#foreach( $email in $emails)
-
-#set( $page = $mediaarchive.getPageManager().getPage($email))
-<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=$page.path&path=$page.path"> $page.getPageName()</a><br/>
-<br>
-#end
+<table class="emselectable striped download-table emdata" id="main-results-table" width="98%" >
+	#foreach( $email in $emails)
+		<tr>
+			<td class="row">
+				$email
+			</td>
+			<td class="row">
+				<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=$apphome$email.templatefilepath&path=$apphome$email.templatefilepath"> $apphome$email.templatefilepath</a><br/>
+				<br>
+			</td>
+		</tr>
+	#end
+</table>
