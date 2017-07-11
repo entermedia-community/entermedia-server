@@ -1239,9 +1239,14 @@ public class ProjectManager implements CatalogEnabled
 		//Make sure the root folder is within the library root folder
 		MediaArchive mediaArchive = getMediaArchive();	
 		//Make sure we have a root category
+		
+		String collectionroot = mediaArchive.getCatalogSettingValue("collection_root");
+		if(collectionroot == null){
+			collectionroot = "Collections"; 
+		}
 		if( !collection.hasRootCategory() )
 		{
-			Category collectioncategory = mediaArchive.createCategoryPath("Collections/" + collection.getLibrary() + "/" + collection.getName());
+			Category collectioncategory = mediaArchive.createCategoryPath( collectionroot + "/" + collection.getLibrary() + "/" + collection.getName());
 			mediaArchive.getCategorySearcher().saveData(collectioncategory);
 			collection.setValue("rootcategory", collectioncategory.getId());
 			mediaArchive.getSearcher("librarycollection").saveData(collection, null);
