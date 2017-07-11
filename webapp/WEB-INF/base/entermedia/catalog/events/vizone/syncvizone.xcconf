@@ -3,6 +3,12 @@
 	<path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/vizone/syncassets.groovy</script>
 	</path-action>
+	
+		<path-action name="Script.run" allowduplicates="true" >
+		<script>/${catalogid}/events/scripts/vizone/deleteassets.groovy</script>
+	</path-action>
+	
+	
 		<property name="period">5h</property>
 	
 </page>
