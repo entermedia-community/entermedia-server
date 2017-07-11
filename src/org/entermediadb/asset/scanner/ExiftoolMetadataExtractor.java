@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -106,7 +107,19 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			base.add(inputFile.getAbsolutePath());
 			ArrayList<String> comm = new ArrayList(base);
 			comm.add("-n");
+			
+			//--
+			long start = new Date().getTime();
+			log.info("Runnning identify");
+			//--
 			ExecResult result = getExec().runExec("exiftool", comm, true);
+			//--
+			long end = new Date().getTime();
+			double total = (end - start) / 1000.0;
+			log.info("Identify Done in:"+total);
+			//--
+			
+			
 			if (!result.isRunOk())
 			{
 				String error = result.getStandardError();
@@ -477,7 +490,17 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		command.add("-format");
 		command.add("'%[colorspace]'");
 		command.add(inOriginal.getAbsolutePath());
+		//--
+		//long start = new Date().getTime();
+		//log.info("Runnning identify");
+		//--
 		ExecResult result = getExec().runExec("identify",command, true, 60000);
+		//--
+		//long end = new Date().getTime();
+		//double total = (end - start) / 1000.0;
+		//log.info("Identify Done in:"+total);
+		//--
+		
 		String sout = result.getStandardOut();
 //		String[] tokens = sout.split("\n");
 //		if (tokens.length > 0){
