@@ -16,6 +16,7 @@ public void init()
 	
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Data followerdata = mediaArchive.getSearcher("librarycollectionshares").searchById(id);
+
 	if( followerdata != null ) 
 	{
 		Object sent = followerdata.getValue("sent");
@@ -32,8 +33,9 @@ public void init()
 				String appid =  context.getRequestParameter("applicationid");
 				
 				String template = "/" + appid + "/theme/emails/collection-add-new-follower.html";
-			
-				LibraryCollection collection = mediaArchive.getData("librarycollection",followerdata.get("librarycollection") );
+				
+				LibraryCollection collection = mediaArchive.getSearcher("librarycollection").searchById(followerdata.get("librarycollection"));
+				
 				
 			 	WebEmail templatemail = mediaArchive.createSystemEmail(followeruser, template);
 				templatemail.setSubject("[EM] " + collection.getName() + " Follower Added"); //TODO: Translate
@@ -41,6 +43,7 @@ public void init()
 				objects.put("followerdata",followerdata);
 				objects.put("librarycol",collection);
 				objects.put("apphome","/" + appid);
+				objects.put("siteroot", context.siteRoot);
 				templatemail.send(objects);
 				 
 				followerdata.setValue("sent", new Date() );
