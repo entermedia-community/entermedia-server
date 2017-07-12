@@ -44,7 +44,7 @@ $context.putPageValue("view", "theme/edit")
 	<link rel="stylesheet" type="text/css" href="$home$apphome/theme/styles/custom.css?cache=false" />
 
 #if( $data )
-<form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/preferences/save.html"  enctype="multipart/form-data">
+<form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/theme/save.html"  enctype="multipart/form-data">
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$data.id" />
 	<input name="themeid" type="hidden" value="$data.id" />
