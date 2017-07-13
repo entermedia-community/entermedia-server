@@ -21,7 +21,7 @@ public String readLastLines( String fileName , long chars) {
 		long start = fileLength - max;
 		fileHandler.seek( start );
 		Byte readByte = 0;
-		log.info( "Reading ${start} ${fileLength} ${max}");
+		// log.info( "Reading ${start} ${fileLength} ${max}"); //Casuing Infinity Loop
 		for(long i = 0;i < max;i++)
 		{
 		   readByte = fileHandler.readByte();
