@@ -697,8 +697,9 @@ public class BaseCategory extends BaseData implements Category
 	 * @see org.entermediadb.asset.Category2#compareTo(org.entermediadb.asset.Category)
 	 */
 	@Override
-	public int compareTo(Category c2)
+	public int compareTo(Object c)
 	{
+		Category c2 = (Category)c;
 		if( getName() == null )
 		{
 			if( c2.getName() == null)
