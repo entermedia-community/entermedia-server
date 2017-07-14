@@ -15,7 +15,7 @@ public void init()
 	log.info("id was " + id);
 	
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
-	Data followerdata = mediaArchive.getSearcher("librarycollectionshares").searchById(id);
+	Data followerdata = mediaArchive.getData("librarycollectionshares",id);
 	if( followerdata != null ) 
 	{
 		Object sent = followerdata.getValue("sent");
@@ -41,6 +41,7 @@ public void init()
 				objects.put("followerdata",followerdata);
 				objects.put("librarycol",collection);
 				objects.put("apphome","/" + appid);
+				objects.put("context", context);
 				templatemail.send(objects);
 				 
 				followerdata.setValue("sent", new Date() );
