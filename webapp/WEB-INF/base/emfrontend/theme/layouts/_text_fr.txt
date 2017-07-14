@@ -1,15 +1,15 @@
 #Thu Apr 27 09:03:43 CDT 2017
 Permissions=Autorisations
 Annotate=Annoter
-Library\ Assets=Actifs de la bibliothèque
-There\ was\ a\ problem\ completing\ this\ request=Il y a eu une difficulté à remplir cette demande
+Library\ Assets=Fichiers de la bibliothèque
+There\ was\ a\ problem\ completing\ this\ request=Impossible de compléter cette requête
 Related\ Media=Médias apparentés
 Followers=Abonnés
-Assets=Items
+Assets=Fichiers
 View\ Collection=Afficher la collection
 My\ Account=Mon compte
 View\ Folders=Afficher les dossiers
-Editing\ across\ $asset.size()\ records=Modification de $asset.size() items enregistrés
+Editing\ across\ $asset.size()\ records=Modification de $asset.size() fichiers enregistrés
 Selected\ Media=Médias sélectionnés
 View\ Category=Afficher la catégorie
 Applications=Applications
@@ -20,7 +20,7 @@ System\ Settings=Paramètres du système
 Language=Langue
 Properties=Propriétés
 Logout=Déconnexion
-Asset\ is\ missing=Item manquant
+Asset\ is\ missing=Fichier manquant
 Dashboard=Tableau de bord
 Reports=Rapports
 Folder=Dossier
@@ -32,4 +32,3 @@ Settings=Paramètres
 Add\ Media=Ajouter des médias
 View\ Library=Voir la bibliothèque
 Library\ Folders=Dossiers de bibliothèque
-

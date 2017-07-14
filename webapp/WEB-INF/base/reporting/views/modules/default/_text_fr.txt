@@ -1,5 +1,5 @@
 #Thu Apr 27 09:03:42 CDT 2017
 Export\ results\ with\ Friendly\ values=Exporter les résultats avec les valeurs simplifiées
-Delete\ Selected\ Items=Supprimer les éléments sélectionnés
+Delete\ Selected\ Items=Supprimer les fichiers sélectionnés
 Export\ results\ CSV=Exporter les résultats en CSV
 

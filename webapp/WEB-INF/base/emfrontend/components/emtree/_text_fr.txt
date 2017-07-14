@@ -1,10 +1,11 @@
-#Thu Apr 27 09:03:42 CDT 2017
-Properties=Propriétés
+#
+#Mon Jul 03 09:36:47 CDT 2017
+Add\ Media=Ajouter un m\u00E9dia
+Copy=Copier
+Create=Cr\u00E9er
+Create\ Collection=Cr\u00E9er une collection
 Rename=Renommer
-Create=Créer
-Paste=Coller
+Properties=Propri\u00E9t\u00E9s
 Cut=Couper
 Delete=Supprimer
-Copy=Copier
-Add\ Media=Ajouter un média
-
+Paste=Coller

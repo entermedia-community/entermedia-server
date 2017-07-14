@@ -1,10 +1,11 @@
-#Thu Apr 27 09:03:42 CDT 2017
-Details=Détails
-Libraries=Bibliothèques
-Assets=Items
-Create\ New=Créer nouveau
-add=ajouter
-Add\ Library=Ajouter une bibliothèque
-Collections=Collections
+#
+#Mon Jul 03 09:36:45 CDT 2017
+Add\ Library=Ajouter une biblioth\u00E8que
+Assets=Fichiers
+Create\ New=Cr\u00E9er nouveau
 Add\ Collection=Ajouter une collection
-
+Pick\ From=Choisir parmi
+Details=D\u00E9tails
+Libraries=Biblioth\u00E8ques
+Collections=Collections
+add=ajouter

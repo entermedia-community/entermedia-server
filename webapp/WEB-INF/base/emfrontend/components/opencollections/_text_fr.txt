@@ -2,7 +2,7 @@
 Open\ Collections=Collections ouvertes
 Recent\ Collections=Collections récentes
 Categories=Catégories
-Assets=Items
+Assets=Fichiers
 Create\ New=Créer nouveau
 Close\ Collection=Fermer Collection
 Details=Détails
