@@ -455,13 +455,13 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				if( isCMYKColorSpace(inInputFile) )
 				{
 					colorspace = "4";
-					inAsset.setProperty("colorspsace", colorspace);
+					inAsset.setProperty("colorspace", colorspace);
 				}
 			}
 			if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
 			{
-				if( !isCMYKProfile(inInputFile) )
-				{
+//				if( !isCMYKProfile(inInputFile) )
+//				{
 					String formatinput = "jpg";
 					if( "pdf".equalsIgnoreCase(format))
 					{
@@ -477,7 +477,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					instructions.setInputFile(inInputFile);
 					instructions.setOutputFile(custom);
 				 	c.createOutput(instructions);
-				}
+//				}
 			}
 		}
 	}
