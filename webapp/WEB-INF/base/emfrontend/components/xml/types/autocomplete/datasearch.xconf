@@ -17,5 +17,5 @@
 	</page-action>
 	<property name="enforcesecurity">true</property>
 	<generator name="velocityGenerator" />
-	<property name="hitsperpage">500</property>
+	<property name="hitsperpage">1000</property>
 </page>
