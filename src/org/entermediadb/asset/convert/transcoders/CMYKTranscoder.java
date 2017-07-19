@@ -136,8 +136,14 @@ public class CMYKTranscoder extends BaseTranscoder
 		com.add("-layers");
 		com.add("flatten");
 		setValue("quality", "89", inStructions, com);
-		
-		//setValue("profile", getPathtoProfile(), inStructions, com);
+		if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
+		{
+			
+		}
+		else
+		{
+			setValue("profile", getPathtoProfile(), inStructions, com);
+		}
 		com.add("-auto-orient");
 
 		if (isOnWindows())
@@ -180,12 +186,29 @@ public class CMYKTranscoder extends BaseTranscoder
 		return result;
 	}
 
+	protected boolean isCMYKProfile(ContentItem inOriginal)
+	{
+		List<String> command = new ArrayList<String>();
+		
+		command.add("-a");
+		command.add("-S");
+		command.add("-G0");
+		command.add("-ICC_Profile:ColorSpaceData");
+		command.add(inOriginal.getAbsolutePath());
+		ExecResult result = getExec().runExec("exiftool",command, true, 60000);
+		String sout = result.getStandardOut();
+		if( sout.toLowerCase().contains("cmyk"))
+		{
+			return true;
+		}
+		return false;
+	}
 	
 
 	protected List<String> createCommand(ConvertInstructions inStructions)
 	{
-
-		String tmpinput = PathUtilities.extractPageType(inStructions.getInputFile().getPath());
+		ContentItem input = inStructions.getInputFile();
+		String tmpinput = PathUtilities.extractPageType(input.getPath());
 	//			ext = tmpinput;
 	
 		List<String> com = new ArrayList<String>();
@@ -196,9 +219,12 @@ public class CMYKTranscoder extends BaseTranscoder
 		}
 		else //jpg
 		{
-			com.add("-strip");
-			com.add("-profile");
-			com.add(getPathCMYKProfile());
+			if( !isCMYKProfile(input) )
+			{
+				com.add("-strip");
+				com.add("-profile");
+				com.add(getPathCMYKProfile());
+			}
 		}
 
 		int page = inStructions.getPageNumber();

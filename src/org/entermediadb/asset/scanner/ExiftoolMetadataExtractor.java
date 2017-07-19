@@ -497,23 +497,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			
 		return false;
 	}
-	protected boolean isCMYKProfile(ContentItem inOriginal)
-	{
-		List<String> command = new ArrayList<String>();
-		
-		command.add("-a");
-		command.add("-S");
-		command.add("-G0");
-		command.add("-ICC_Profile:ColorSpaceData");
-		command.add(inOriginal.getAbsolutePath());
-		ExecResult result = getExec().runExec("exiftool",command, true, 60000);
-		String sout = result.getStandardOut();
-		if( sout.toLowerCase().contains("cmyk"))
-		{
-			return true;
-		}
-		return false;
-	}
+
 	public Exec getExec()
 	{
 		return fieldExec;
