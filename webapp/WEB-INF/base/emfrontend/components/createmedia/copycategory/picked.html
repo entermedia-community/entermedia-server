@@ -1,5 +1,4 @@
 	#set ($existing = $context.getRequestParameter("category.value") )
-	#if( $existing && !$existing.trim().isEmpty() )
 	   <input type="hidden" id="categoryvalues" name="category.value" value="$!existing" />
 	   
 	   <ul id="cat-list">
@@ -19,8 +18,5 @@
 			#end
 		#end
 		</ul>
-	#else
-	<div style="padding:20px;">[[No categories selected]]</div>			
-		
-	#end
+	
 	

@@ -1,3 +1,5 @@
 <page>
 	<path-action name="ProjectModule.addCategoryToCollection"/>
+		<path-action name="ProjectModule.redirectToCollection"/>
+	
 </page>
