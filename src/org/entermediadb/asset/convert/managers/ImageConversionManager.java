@@ -1,13 +1,19 @@
 package org.entermediadb.asset.convert.managers;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.BaseConversionManager;
+import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.entermediadb.asset.convert.transcoders.CMYKTranscoder;
 import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
+import org.openedit.repository.ContentItem;
 
 public class ImageConversionManager extends BaseConversionManager
 {
 	protected WaterMarkTranscoder fieldWaterMarkTranscoder;
+	protected BaseTranscoder fieldCMYKTranscoder;
+	
 	//To create the file we need to Look for input in several places
 	//CR 1024x768
 	//Custom thumb
@@ -15,6 +21,23 @@ public class ImageConversionManager extends BaseConversionManager
 	//video.mp4
 	//Original file
 	
+	public BaseTranscoder getCMYKTranscoder()
+	{
+		if (fieldCMYKTranscoder == null)
+		{
+			fieldCMYKTranscoder = (BaseTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"cmykTranscoder");
+		}
+
+		return fieldCMYKTranscoder;
+	}
+
+
+	public void setCMYKTranscoder(CMYKTranscoder inCMYKTranscoder)
+	{
+		fieldCMYKTranscoder = inCMYKTranscoder;
+	}
+
+
 	public WaterMarkTranscoder getWaterMarkTranscoder()
 	{
 		if (fieldWaterMarkTranscoder == null)
@@ -30,6 +53,7 @@ public class ImageConversionManager extends BaseConversionManager
 		fieldWaterMarkTranscoder = inWaterMarkTranscoder;
 	}
 
+	
 
 	//	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 //	{
@@ -51,6 +75,11 @@ public class ImageConversionManager extends BaseConversionManager
 //
     protected ConvertResult transcode(ConvertInstructions inStructions)
     {
+    	ContentItem input = makeCustomInput(getCMYKTranscoder(),"jpg",inStructions);
+    	if( input != null)
+    	{
+    		inStructions.setInputFile(input);
+    	}
     	ConvertResult result = super.transcode(inStructions);
     	if(inStructions.isWatermark())
     	{
@@ -59,6 +88,8 @@ public class ImageConversionManager extends BaseConversionManager
     	}
     	return result;
     }
+
+
 
 	
 	protected String getRenderType()

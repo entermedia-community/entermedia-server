@@ -20,7 +20,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 	private static final Log log = LogFactory.getLog(ImagemagickTranscoder.class);
 
 	protected String fieldPathToProfile;
-	protected String fieldPathToCMYKProfile;
 
 	public String getPathtoProfile()
 	{
@@ -30,16 +29,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			fieldPathToProfile = profile.getContentItem().getAbsolutePath();
 		}
 		return fieldPathToProfile;
-	}
-
-	public String getPathCMYKProfile()
-	{
-		if (fieldPathToCMYKProfile == null)
-		{
-			Page profile = getPageManager().getPage("/system/components/conversions/USWebCoatedSWOP.icc");
-			fieldPathToCMYKProfile = profile.getContentItem().getAbsolutePath();
-		}
-		return fieldPathToCMYKProfile;
 	}
 
 	@Override
@@ -259,12 +248,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add(inStructions.get("sampling-factor"));
 		}
 
-		String prestrip = inStructions.get("fixcmyk");
-		if ("true".equals(prestrip))
-		{
-			setValue("profile", getPathtoProfile(), inStructions, com);
-		}
-		else if (!maintaintransparency)
+		if (!maintaintransparency)
 		{
 			if ("eps".equals(tmpinput) 
 					|| "pdf".equals(tmpinput) 
@@ -358,23 +342,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 	
 		List<String> com = new ArrayList<String>();
-
-		String prestrip = inStructions.get("fixcmyk");  //Error case: JPG with CMYK Profile but marked as RBG 
-		if ("true".equals(prestrip))
-		{
-
-			if ("eps".equals(tmpinput) || "pdf".equals(tmpinput) || "ai".equals(tmpinput))
-			{
-				setValue("colorspace", "sRGB", inStructions, com);
-			}
-			else //jpg
-			{
-				com.add("-strip");
-				com.add("-profile");
-				com.add(getPathCMYKProfile());
-			}
-		}
-
+	
 		int page = inStructions.getPageNumber();
 		page--;
 		page = Math.max(0, page);

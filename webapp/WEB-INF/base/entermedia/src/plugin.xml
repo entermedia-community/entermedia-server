@@ -1701,6 +1701,10 @@
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
+	<bean id="cmykTranscoder" class="org.entermediadb.asset.convert.transcoders.CMYKTranscoder" scope="prototype" >
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
 
 	<bean id="ffmpegimageTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegImageTranscoder" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>

@@ -458,27 +458,6 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					inAsset.setProperty("colorspace", colorspace);
 				}
 			}
-			if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
-			{
-//				if( !isCMYKProfile(inInputFile) )
-//				{
-					String formatinput = "jpg";
-					if( "pdf".equalsIgnoreCase(format))
-					{
-						formatinput = "png";
-					}
-					ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb." + formatinput);
-	
-			        ConversionManager c = inArchive.getTranscodeTools().getManagerByFileFormat(formatinput);
-					ConvertInstructions instructions = c.createInstructions(inAsset);
-					instructions.setForce(true);
-					//instructions.setMaxScaledSize(1900, height);
-					instructions.setProperty("fixcmyk", "true");
-					instructions.setInputFile(inInputFile);
-					instructions.setOutputFile(custom);
-				 	c.createOutput(instructions);
-//				}
-			}
 		}
 	}
 	protected boolean isCMYKColorSpace(ContentItem inOriginal)

@@ -3,15 +3,36 @@ package org.entermediadb.asset.convert.managers;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.BaseConversionManager;
+import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.MediaTranscoder;
+import org.entermediadb.asset.convert.transcoders.CMYKTranscoder;
 import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 
 public class DocumentConversionManager extends BaseConversionManager
 {
 	private static final Log log = LogFactory.getLog(DocumentConversionManager.class);
+	
+	protected BaseTranscoder fieldCMYKTranscoder;
+	
+	public BaseTranscoder getCMYKTranscoder()
+	{
+		if (fieldCMYKTranscoder == null)
+		{
+			fieldCMYKTranscoder = (BaseTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"cmykTranscoder");
+		}
+		return fieldCMYKTranscoder;
+	}
+
+
+	public void setCMYKTranscoder(CMYKTranscoder inCMYKTranscoder)
+	{
+		fieldCMYKTranscoder = inCMYKTranscoder;
+	}
+
+	
 	//To create the file we need to Look for input in several places
 	//CR 1024x768
 	//Custom thumb
@@ -136,8 +157,8 @@ public class DocumentConversionManager extends BaseConversionManager
 		}
 		else if( inStructions.getInputFile() == null)
 		{
-			ContentItem tmpinput = null;
-			if( inStructions.getPageNumber() == 1)
+	    	ContentItem tmpinput = null;
+			if( tmpinput == null && inStructions.getPageNumber() == 1)
 			{	
 				tmpinput = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb.png");
 			}	
@@ -147,6 +168,13 @@ public class DocumentConversionManager extends BaseConversionManager
 			}	
 			inStructions.setInputFile(tmpinput);
 		}
+
+		ContentItem tmpinput = makeCustomInput(getCMYKTranscoder(),"png",inStructions);
+		if( tmpinput != null)
+		{
+			inStructions.setInputFile(tmpinput);
+		}
+
 		
 		//Step 2 make PNG
 		//Now make the input image needed using the document as the input

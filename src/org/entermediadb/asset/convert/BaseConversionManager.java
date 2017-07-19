@@ -296,5 +296,27 @@ public abstract class BaseConversionManager implements ConversionManager
 		MediaTranscoder transcoder = findTranscoder(inStructions);
 		return transcoder.convert(inStructions);
 	}
+	protected ContentItem makeCustomInput(BaseTranscoder imTranscoder, String format, ConvertInstructions inStructions)
+	{
+		String colorspace = inStructions.getAsset().get("colorspace");
+		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
+		{
+//			if( !isCMYKProfile(inInputFile) )
+//			{
+				Asset asset = inStructions.getAsset();
+				ContentItem custom = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb." + format);
+				if( !custom.exists() )
+				{
+					ConvertInstructions instructions = createInstructions(asset);
+					instructions.setForce(true);
+					instructions.setInputFile(inStructions.getOriginalDocument());
+					instructions.setOutputFile(custom);
+					imTranscoder.convert(instructions);
+				}
+				return custom;
+//			}
+		}
+		return null;
+	}
 
 }
