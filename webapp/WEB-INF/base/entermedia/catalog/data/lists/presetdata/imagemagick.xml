@@ -4,6 +4,8 @@
   <preset id="imagemediumsmall" >Image Medium Small</preset>
   <preset id="imagepreview" >Preview Extra Large</preset>
   <preset id="imagelarge" >Image Large</preset>
+  <preset id="documentlarge" >Document Large</preset>
+  
   <preset id="imagecrop" >Image Crop</preset>
     <preset id="imagecmyk" >CMYK Crop</preset>
     <preset id="imagepreviewfpo" >Preview - FPO</preset>
