@@ -496,9 +496,6 @@
 		<property name="exec">
 			<ref bean="exec" />
 		</property>
-		<property name="exiftoolThumbTranscoder">
-			<ref bean="exiftoolThumbTranscoder" />
-		</property>
 	</bean>
 
 	<bean id="md5MetadataExtractor"
@@ -1675,6 +1672,10 @@
 		<property name="defaultTranscoder">
 			<ref bean="imagemagickTranscoder" />
 		</property>
+		<property name="exiftoolThumbTranscoder">
+			<ref bean="exiftoolThumbTranscoder" />
+		</property>
+		
 		<property name="inputLoaders">
 			<list>
 				<ref bean="imageCacheLoader" />

@@ -37,7 +37,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 {
 	private static final String EMPTY_STRING = "";
 	private static final Log log = LogFactory.getLog(ExiftoolMetadataExtractor.class);
-	protected MediaTranscoder fieldExiftoolThumbTranscoder;
+	//protected MediaTranscoder fieldExiftoolThumbTranscoder;
 	protected Exec fieldExec;
 	protected Set fieldTextFields;
 
@@ -55,15 +55,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		return fieldTextFields;
 	}
 
-	public MediaTranscoder getExiftoolThumbTranscoder()
-	{
-		return fieldExiftoolThumbTranscoder;
-	}
 
-	public void setExiftoolThumbTranscoder(MediaTranscoder inExiftoolThumbTranscoder)
-	{
-		fieldExiftoolThumbTranscoder = inExiftoolThumbTranscoder;
-	}
 
 	public void setTextFields(Set inTextFields)
 	{
@@ -138,7 +130,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			boolean foundtext = parseNumericValues(inArchive, inAsset, details, numberinfo);
 			if (foundtext)
 			{
-				//Run it again
+				//Run it again TODO: Use text values all the time
 				ExecResult resulttext = getExec().runExec("exiftool", base, true);
 				if (!resulttext.isRunOk())
 				{
@@ -430,28 +422,28 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 
 	protected void extractThumb(MediaArchive inArchive, ContentItem inInputFile, Asset inAsset)
 	{
-		String format = inAsset.getFileFormat();
-		if ("indd".equalsIgnoreCase(format))
-		{
-			log.info("Extracting thumb from "+ inInputFile.getAbsolutePath());
-
-			ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
-	
-			//if we have embdeded thumb 
-			ConvertInstructions instructions = new ConvertInstructions(inArchive);
-			instructions.setForce(true);
-			instructions.setInputFile(inInputFile);
-			instructions.setOutputFile(custom);
-			ConvertResult res = getExiftoolThumbTranscoder().convert(instructions);
-			if (res.isOk())
-			{
-				return;
-			}
-		}
-		if( format == null)
-		{
-			return;
-		}
+//		String format = inAsset.getFileFormat();
+//		if ("indd".equalsIgnoreCase(format))  //TODO: Move to image
+//		{
+//			log.info("Extracting thumb from "+ inInputFile.getAbsolutePath());
+//
+//			ContentItem custom = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/customthumb.jpg");
+//	
+//			//if we have embdeded thumb 
+//			ConvertInstructions instructions = new ConvertInstructions(inArchive);
+//			instructions.setForce(true);
+//			instructions.setInputFile(inInputFile);
+//			instructions.setOutputFile(custom);
+//			ConvertResult res = getExiftoolThumbTranscoder().convert(instructions);
+//			if (res.isOk())
+//			{
+//				return;
+//			}
+//		}
+//		if( format == null)
+//		{
+//			return;
+//		}
 //		if ("jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) ||
 //				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) ||  "pdf".equalsIgnoreCase(format) )
 //		{	
