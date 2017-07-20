@@ -10,12 +10,12 @@ $!request.getAttribute( "oe-exception")
 		<div class="hr"></div>
 		<form name="login" id="login" action="$home$content.loginroot/login.html" method="POST" onsubmit="return confirmPassword(this);">
 			<input type="hidden" name="loginokpage" value="#esc($!loginok)"/>
-			<label for="login-email">[[Email or Username]]</label>
+			<label for="accountname">[[Email or Username]]</label>
 			<input class="field" type="text" id="accountname" name="accountname" autocapitalize="off"
                 autocorrect="off" />
 			
-			<label for="login-password">[[Password]]</label>
-			<input class="field" name="password" type="password" />
+			<label for="password">[[Password]]</label>
+			<input class="field" id="password" name="password" type="password" />
 			
 			<input class="btn float-right" name="submit" type="submit" id="login-submit" value="[[Login]]" />
 			#if ( $context.getPageValue("oe-exception") )
