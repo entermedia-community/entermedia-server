@@ -270,9 +270,16 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					
 					inAsset.setProperty("colorspace", value);
 				}
+				else if ( "PhotometricInterpretation".equals(key) )
+				{
+					if( "5".equalsIgnoreCase(value) )
+					{
+						inAsset.setProperty("colorspace", "4");
+					}
+				}
 				else if( "ColorMode".equals(key) ||  "ColorComponents".equals(key) || "ColorSpaceData".equals(key) || "SwatchGroupsColorantsMode".equals(key) )
 				{
-					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value))
+					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value) )
 					{
 						inAsset.setProperty("colorspace", "4");
 					}
