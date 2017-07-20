@@ -109,16 +109,15 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			comm.add("-n");
 			
 			//--
-			long start = new Date().getTime();
-			log.info("Runnning identify");
+			long start = System.currentTimeMillis();
+			//log.info("Runnning identify");
 			//--
 			ExecResult result = getExec().runExec("exiftool", comm, true);
 			//--
-			long end = new Date().getTime();
+			long end = System.currentTimeMillis();
 			double total = (end - start) / 1000.0;
-			log.info("Identify Done in:"+total);
+			log.info("Exiftool Done in:"+total);
 			//--
-			
 			
 			if (!result.isRunOk())
 			{
@@ -180,7 +179,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				String key = m.group(1);
 				String value = m.group(2);
 
-				if (key == null || value == null)
+				if (key == null || value == null || value.isEmpty() )
 				{
 					continue;
 				}
@@ -271,12 +270,20 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 				else if ("ColorSpace".equals(key))
 				{
-					if ("65535".equals(value))
+					if ("65535".equals(value) || "-1".equals(value))
 					{
 						//not valid
 						continue;
 					}
+					
 					inAsset.setProperty("colorspace", value);
+				}
+				else if( "ColorMode".equals(key) ||  "ColorComponents".equals(key) || "ColorSpaceData".equals(key) || "SwatchGroupsColorantsMode".equals(key) )
+				{
+					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value))
+					{
+						inAsset.setProperty("colorspace", "4");
+					}
 				}
 				else if ("GPSLatitude".equals(key))
 				{
@@ -445,20 +452,20 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 		{
 			return;
 		}
-		if ("jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) ||
-				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) ||  "pdf".equalsIgnoreCase(format) )
-		{	
-			//OR if we have CMYK with no profile input
-			String colorspace =  inAsset.get("colorspace");
-			if( colorspace == null)
-			{
-				if( isCMYKColorSpace(inInputFile) )
-				{
-					colorspace = "4";
-					inAsset.setProperty("colorspace", colorspace);
-				}
-			}
-		}
+//		if ("jpg".equalsIgnoreCase(format) || "jpeg".equalsIgnoreCase(format) ||
+//				"tiff".equalsIgnoreCase(format) || "tif".equalsIgnoreCase(format) ||  "pdf".equalsIgnoreCase(format) )
+//		{	
+//			//OR if we have CMYK with no profile input
+//			String colorspace =  inAsset.get("colorspace");
+//			if( colorspace == null)
+//			{
+//				if( isCMYKColorSpace(inInputFile) )
+//				{
+//					colorspace = "4";
+//					inAsset.setProperty("colorspace", colorspace);
+//				}
+//			}
+//		}
 	}
 	protected boolean isCMYKColorSpace(ContentItem inOriginal)
 	{
