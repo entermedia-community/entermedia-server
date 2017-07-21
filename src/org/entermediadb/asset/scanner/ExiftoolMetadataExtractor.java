@@ -283,6 +283,10 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					{
 						inAsset.setProperty("colorspace", "4");
 					}
+					else if( "ColorMode".equals(key) )
+					{
+						//? useful
+					}
 				}
 				else if ("GPSLatitude".equals(key))
 				{
