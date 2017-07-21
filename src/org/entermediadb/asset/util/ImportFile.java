@@ -11,6 +11,8 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.openedit.OpenEditException;
+
 public class ImportFile
 {
 	protected List fieldRows;
@@ -51,6 +53,16 @@ public class ImportFile
 		
 		String[] cells = getParser().readNext();
 		setHeader(new Header());
+		List valid = new ArrayList();
+		for (int i = 0; i < cells.length; i++)
+		{
+			String cell = cells[i];
+			if( cell == null || cell.trim().isEmpty() )
+			{
+				throw new OpenEditException("Empty header is not allowed");
+			}
+		}
+		
 		getHeader().setHeaders(cells);
 
 		//		while( line != null)
