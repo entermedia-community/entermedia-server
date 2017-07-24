@@ -168,6 +168,17 @@
       <language id="fr"><![CDATA[Dépend de la valeur]]></language> 
     </name> 
   </property>  
+   <property id="sort" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Default Sort 
+-    <name> 
+-      <language id="de"><![CDATA[Standardsortierung]]></language>  
+-      <language id="en"><![CDATA[Default Sort]]></language>  
+-      <language id="es"><![CDATA[Ordenar por defecto]]></language>  
+-      <language id="fr"><![CDATA[Tri par défaut]]></language> 
+     </name> 
+   </property>  
+  
+  
+  
   <property id="regex" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Regex 
     <name> 
       <language id="de"><![CDATA[Regex]]></language>  
