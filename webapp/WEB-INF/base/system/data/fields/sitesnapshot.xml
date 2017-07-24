@@ -5,4 +5,5 @@
 	<property id="folder" stored="true"  index="true" >Time</property>	
 	<property id="site" stored="true"  index="true" datatype="list" >Site ID</property>
 	<property id="snapshotstatus" stored="true"  index="true" datatype="list" >Snap Status</property>
+	<property id="configonly" type="boolean" stored="true"  index="true">Config only</property>
 </properties>

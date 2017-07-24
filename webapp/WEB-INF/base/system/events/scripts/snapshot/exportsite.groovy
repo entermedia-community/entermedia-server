@@ -36,7 +36,8 @@ public void init()
 		MediaArchive mediaarchive = (MediaArchive)moduleManager.getBean(catalogid,"mediaArchive");
 		
 		snapshotsearcher.saveData(snapshot);
-		export(mediaarchive, site, snapshot);
+		boolean configonly = Boolean.valueOf( snapshot.getValue("configonly") );
+		export(mediaarchive, site, snapshot, configonly);
 		snapshot.setValue("snapshotstatus", "complete");
 		snapshotsearcher.saveData(snapshot);
 		
@@ -68,7 +69,7 @@ public void init()
 }
 
 
-public void export(MediaArchive mediaarchive,Data inSite, Data inSnap)
+public void export(MediaArchive mediaarchive,Data inSite, Data inSnap, boolean configonly)
 {
 	String folder = inSnap.get("folder");
 	PropertyDetailsArchive archive = mediaarchive.getPropertyDetailsArchive();
@@ -77,92 +78,10 @@ public void export(MediaArchive mediaarchive,Data inSite, Data inSnap)
 	String rootfolder = "/WEB-INF/data/exports/" + mediaarchive.getCatalogId() + "/" + folder;
 	String catalogid = mediaarchive.getCatalogId();
 	log.info("Exporting " + rootfolder);
-	searchtypes.each{
-		String searchtype = it;
-		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
-		if(searcher instanceof ElasticListSearcher)
-		{
-			return;
-		}
-			PropertyDetails details = searcher.getPropertyDetails();
-			HitTracker hits = searcher.getAllHits();
-			hits.enableBulkOperations();
-			if(hits){
-
-				Page output = mediaarchive.getPageManager().getPage(rootfolder + "/" + searchtype + ".csv");
-
-				String realpath = output.getContentItem().getAbsolutePath();
-				File outputfile = new File(realpath);
-				File parent = outputfile.parentFile;
-
-				parent.mkdirs();
-				FileWriter out = new FileWriter(outputfile);
-				CSVWriter writer  = new CSVWriter(out);
-				HitTracker languages = searcherManager.getList(catalogid, "locale");
-				int count = 0;
-				int langcount = details.getMultilanguageFieldCount() ;
-				langcount = langcount * (languages.size() );
-
-				headers = new String[details.size() + langcount];
-
-
-
-				for (Iterator iterator = details.iterator(); iterator.hasNext();) {
-					PropertyDetail detail = (PropertyDetail) iterator.next();
-					if(detail.isMultiLanguage()){
-						languages.each{
-							String id = it.id ;
-							headers[count] = detail.getId() + "." + id;
-							count ++;
-						}
-					}
-					else{
-						headers[count] = detail.getId();
-						count++;
-					}
-				}
-				writer.writeNext(headers);
-				log.info("exporting: " + searchtype + ": " + hits.size() + " records");
-
-				for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-					hit =  iterator.next();
-					//tracker = searcher.searchById(hit.get("id"));
-					tracker = hit;
-
-					nextrow = new String[details.size() + langcount];//make an extra spot for c
-					int fieldcount = 0;
-					for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
-					{
-						PropertyDetail detail = (PropertyDetail) detailiter.next();
-
-
-						if(detail.isMultiLanguage()){
-							languages.each
-							{
-								String id = it.id ;
-								Object vals = tracker.getValue(detail.getId())
-
-								if(vals != null && vals instanceof Map){
-									nextrow[fieldcount] = vals.getText(id);
-								} else{
-									nextrow[fieldcount] = vals;
-								}
-
-								fieldcount ++;
-							}
-						} else{
-
-							String value = tracker.get(detail.getId());
-							nextrow[fieldcount] = value;
-							fieldcount++;
-						}
-					}
-					writer.writeNext(nextrow);
-				}
-				writer.close();
-		}
+	if( !configonly)
+	{
+		exportDatabase(mediaarchive, searchtypes, rootfolder);
 	}
-
 	Page fields = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
 	if (fields.exists()) {
 		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/fields/");
@@ -205,6 +124,91 @@ public void export(MediaArchive mediaarchive,Data inSite, Data inSnap)
 
 }
 
+public void exportDatabase(MediaArchive mediaarchive, List searchtypes, String rootfolder)
+{
+	String catalogid = mediaarchive.getCatalogId();
+	searchtypes.each{
+		String searchtype = it;
+		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
+		if(searcher instanceof ElasticListSearcher)
+		{
+			return;
+		}
+			PropertyDetails details = searcher.getPropertyDetails();
+			HitTracker hits = searcher.getAllHits();
+			hits.enableBulkOperations();
+			if(hits){
 
+				Page output = mediaarchive.getPageManager().getPage(rootfolder + "/" + searchtype + ".csv");
+
+				String realpath = output.getContentItem().getAbsolutePath();
+				File outputfile = new File(realpath);
+				File parent = outputfile.parentFile;
+
+				parent.mkdirs();
+				FileWriter out = new FileWriter(outputfile);
+				CSVWriter writer  = new CSVWriter(out);
+				HitTracker languages = searcherManager.getList(catalogid, "locale");
+				int count = 0;
+				int langcount = details.getMultilanguageFieldCount() ;
+				langcount = langcount * (languages.size() );
+
+				String[] headers = new String[details.size() + langcount];
+
+
+				for (Iterator iterator = details.iterator(); iterator.hasNext();) {
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					if(detail.isMultiLanguage()){
+						languages.each{
+							String id = it.id ;
+							headers[count] = detail.getId() + "." + id;
+							count ++;
+						}
+					}
+					else{
+						headers[count] = detail.getId();
+						count++;
+					}
+				}
+				writer.writeNext(headers);
+				log.info("exporting: " + searchtype + ": " + hits.size() + " records");
+
+				for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+					Data hit =  iterator.next();
+
+					String[] nextrow = new String[details.size() + langcount];//make an extra spot for c
+					int fieldcount = 0;
+					for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
+					{
+						PropertyDetail detail = (PropertyDetail) detailiter.next();
+
+
+						if(detail.isMultiLanguage()){
+							languages.each
+							{
+								String id = it.id ;
+								Object vals = hit.getValue(detail.getId())
+
+								if(vals != null && vals instanceof Map){
+									nextrow[fieldcount] = vals.getText(id);
+								} else{
+									nextrow[fieldcount] = vals;
+								}
+
+								fieldcount ++;
+							}
+						} else{
+
+							String value = hit.get(detail.getId());
+							nextrow[fieldcount] = value;
+							fieldcount++;
+						}
+					}
+					writer.writeNext(nextrow);
+				}
+				writer.close();
+		}
+	}
+}
 
 init();

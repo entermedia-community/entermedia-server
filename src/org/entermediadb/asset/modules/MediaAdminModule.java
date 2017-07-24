@@ -372,14 +372,20 @@ public class MediaAdminModule extends BaseMediaModule
 			manager.runSharedPathEvent("/system/events/snapshot/exportsite.html");
 			return;
 		}
-			
+		boolean configonly = Boolean.valueOf( inReq.getRequestParameter("configonly"));	
+		
 		
 		Data snapshot = snaps.createNewData();
 		String folder = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy-MM-dd-HH-mm-ss");
 		snapshot.setValue("folder", folder);
-		
-		snapshot.setName(folder);
+		String name = folder;
+		if( configonly)
+		{
+			name = name + "config";
+		}
+		snapshot.setName(name);
 		snapshot.setValue("site", siteid);
+		snapshot.setValue("configonly",true);
 		snapshot.setValue("snapshotstatus","pendingexport");
 		snaps.saveData(snapshot);
 		manager.runSharedPathEvent("/system/events/snapshot/exportsite.html");

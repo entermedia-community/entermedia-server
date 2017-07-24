@@ -50,7 +50,8 @@ public void init()
 		snapshotsearcher.saveData(snapshot);
 		try
 		{
-			restore(mediaarchive, site,snapshot);
+			boolean configonly = Boolean.valueOf( inSnap.getValue("configonly") );
+			restore(mediaarchive, site,snapshot,configonly);
 			snapshot.setValue("snapshotstatus", "complete");
 		}
 		catch( Exception ex)
@@ -68,7 +69,7 @@ public void init()
 	}
 }
 
-public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
+public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean configonly)
 {
 	String folder = inSnap.get("folder");
 
@@ -77,8 +78,10 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 	ElasticNodeManager nodeManager = mediaarchive.getNodeManager();
 	Date date = new Date();
 	String tempindex =  nodeManager.toId(mediaarchive.getCatalogId().replaceAll("_", "") +  date.getTime());
-	nodeManager.prepareIndex(tempindex);
-
+	if( !configonly )
+	{
+		nodeManager.prepareIndex(tempindex);
+	}
 	String rootfolder = "/WEB-INF/data/exports/" + mediaarchive.getCatalogId() + "/" + folder;
 
 	Collection files = mediaarchive.getPageManager().getChildrenPaths(rootfolder);
@@ -177,28 +180,34 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap)
 
 	}
 	pdarchive.clearCache();
-	
-	for( String type in ordereredtypes ) {
-		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + type + ".csv");
-		try{
-			if( upload.exists() ) {
-				importCsv(site, mediaarchive,type,upload, tempindex);
-			}
-		} catch (Exception e) {
-			deleteold=false;
-
-			log.error("Exception thrown importing upload: ${upload} ", e );
-			break;
-		}
-	}
-	
-	if(deleteold) 
+	if( configonly )
 	{
-		importPermissions(mediaarchive,rootfolder, tempindex);
-		nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
+		//Reindex all lists tables?
+		//Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/lists/");
 	}
-	else {
-		log.info("Import canceled");
+	else
+	{
+		for( String type in ordereredtypes ) {
+			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + type + ".csv");
+			try{
+				if( upload.exists() ) {
+					importCsv(site, mediaarchive,type,upload, tempindex);
+				}
+			} catch (Exception e) {
+				deleteold=false;
+	
+				log.error("Exception thrown importing upload: ${upload} ", e );
+				break;
+			}
+		}
+		if(deleteold) 
+		{
+			importPermissions(mediaarchive,rootfolder, tempindex);
+			nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
+		}
+		else {
+			log.info("Import canceled");
+		}
 	}
 }
 

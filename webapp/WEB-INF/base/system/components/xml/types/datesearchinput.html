@@ -1,0 +1,22 @@
+	var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><input type="text" class="datepicker " data-targetid="datebox${inputid}" /> ';
+			var twoinputs = '<input name="${inputname}.after"  id="dateafter${inputid}" value="$!after" size="8" type="hidden"> \
+						<input type="text" class="datepicker " data-targetid="dateafter${inputid}" value="$!after" size="8" /> \
+						<br />   \
+						<input name="${inputname}.before"  id="datebefore${inputid}" value="$!before" size="8" type="hidden">  \
+						<input type="text" class="datepicker " data-targetid="datebefore${inputid}" value="$!before" size="8" /> ';
+
+
+			if( value < 3 )
+			{
+				$("#dateinput${inputid}").html(oneinput);
+				//valueblock.style.display='block';
+				//rangeblock.style.display='none';
+			}
+			else if ( value == 3 )
+			{
+				$("#dateinput${inputid}").html(twoinputs);
+			}
+			else
+			{
+				$("#dateinput${inputid}").html("");
+			}
