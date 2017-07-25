@@ -790,7 +790,7 @@ public class BaseOrderManager implements OrderManager {
 				}
 				catch( Exception ex)
 				{
-					log.error(ex);
+					log.error("Could not send order notification" , ex);
 					inOrder.setOrderStatus("complete",": could not send notification " + ex );
 				}
 				saveOrder(archive.getCatalogId(), null, inOrder);
