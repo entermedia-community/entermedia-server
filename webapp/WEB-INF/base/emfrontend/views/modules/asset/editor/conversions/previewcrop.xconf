@@ -2,4 +2,8 @@
 	<page-action name="PageValue.loadPageVariable" bean="conversionUtil"/>
 	<page-action name="PageValue.loadPageVariable" bean="mathtool" class="org.entermediadb.asset.util.MathTool"/>
 	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils"/>
+	<property name="hidepreview">true</property>
+
+
+
 </page>
