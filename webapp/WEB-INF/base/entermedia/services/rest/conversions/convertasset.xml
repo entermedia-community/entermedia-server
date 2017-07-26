@@ -11,7 +11,7 @@
 #else
 	#set( $genname = $preset.get("generatedoutputfile") )
 	#if($genname)
-		#set( $link = "$home/$catalogid/downloads/generated/${asset.sourcePath}/${genname}/${exportname}")
+		#set( $link = "$home/$catalogid/downloads/preset/${asset.sourcePath}/${genname}")
 		<path>$link</path>
 	#else
 		<msg>Error: unable to find outputfile of preset id ${preset.id}</msg>
@@ -20,3 +20,6 @@
 </rsp>
 
 ##localhost:8080/media/services/rest/conversions/convertasset.xml?catalogid=media/catalogs/public&assetid=101&presetid=imagepreviewfpo
+
+
+###<source src="/humber/mediadb/services/module/asset/downloads/preset/2017/07/b3/5f741e025/audio.mp3" type="audio/mpeg">
