@@ -13,7 +13,7 @@ public init(){
 	log.info("Starting Pre-Deletion Event");
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
-	String assetids = context.getRequestParameter("assetids");
+	String assetids = context.getRequestParameter("id");
 	Collection hits = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
 	//http://vizmtlvamf.media.in.cbcsrc.ca/vms/#ItemPlace:2101409230000048521
 	vizone = mediaArchive.getModuleManager().getBean(mediaArchive.getCatalogId(), "VizOnepublisher");
