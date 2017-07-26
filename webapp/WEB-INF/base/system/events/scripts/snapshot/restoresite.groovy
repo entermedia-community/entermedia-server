@@ -138,7 +138,6 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	}
 
 	mediaarchive.getPageManager().clearCache();
-	
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
 	pdarchive.clearCache();
 
@@ -171,14 +170,16 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	 populateData(categories);
 	 }
 	 */
+	
 	Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
 	archiveFolder(mediaarchive.getPageManager(), target, tempindex);  //Dele all existing fields
+	pdarchive.clearCache();
 	
-	boolean deleteold = true;
-	ordereredtypes.each {
-		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/fields/" + it + ".xml");
-		prepFields(mediaarchive,it,upload, tempindex); //only move fields over that have data we care about
-
+	Collection paths = pageManager.getChildrenPaths(rootfolder + "/fields/");
+	for(String path:paths)
+	{
+		Page field = mediaarchive.getPageManager().getPage(path);
+		prepFields(mediaarchive,field,tempindex); //only move fields over that have data we care about
 	}
 	pdarchive.clearCache();
 	if( configonly )
@@ -188,6 +189,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	}
 	else
 	{
+		boolean deleteold = true;
 		for( String type in ordereredtypes ) {
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + type + ".csv");
 			try{
@@ -435,30 +437,24 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 	log.info("Saved " + searchtype + " "  +  tosave.size() );
 }
 
-
-
-public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) 
+/*
+public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex)
 {
-	if( !upload.exists())
-	{
-		return;
-	}
+
 	log.info("save fields " + upload.getPath());
-	Row trow = null;
-	ArrayList tosave = new ArrayList();
 	String catalogid = mediaarchive.getCatalogId();
 
 	PropertyDetails olddetails = null;
-
-	String filepath = upload.getPath();
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
-	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); // checks time
+	pdarchive.clearCache();
+	
+	PropertyDetails details = pdarchive.getPropertyDetails(searchtype);
+
+
+	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
+	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); 
 	if(settings.isExist())
 	{
-		pdarchive.clearCache();
-		
-		PropertyDetails details = pdarchive.getPropertyDetails(searchtype);
-
 		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
 		olddetails = new PropertyDetails(pdarchive,searchtype);
 		olddetails.setInputFile(settings);
@@ -498,6 +494,49 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 			mediaarchive.getPageManager().copyPage(inputed, target);
 		}
 	}
+}
+*/
+public void prepFields(MediaArchive mediaarchive, Page inFieldXml, String tempindex) 
+{
+	if( !inFieldXml.getName().endsWith(".xml"))
+	{
+		return;
+	}
+	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
+	String searchtype = inFieldXml.getPageName();
+	log.info("save fields " + inFieldXml.getPath());
+	String catalogid = mediaarchive.getCatalogId();
+
+	PropertyDetails basedetails = pdarchive.getPropertyDetails(searchtype);
+	
+	XmlFile newsettings = pdarchive.getXmlArchive().loadXmlFile(inFieldXml.getPath()); 
+	String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
+	PropertyDetails newdetails = new PropertyDetails(pdarchive,searchtype);
+	newdetails.setInputFile(newsettings);
+	pdarchive.setAllDetails(newdetails, searchtype, filename, newsettings.getRoot());
+
+	ArrayList toremove = new ArrayList();
+	newdetails.each{
+		PropertyDetail olddetail = it;
+
+		PropertyDetail current = basedetails.getDetail(olddetail.getId());
+		if(current == null){
+			current = basedetails.findCurrentFromLegacy(olddetail.getId());
+		}
+		
+		//Already in base, we can remove this 
+		if(current != null && !("name".equals(current.getId()) || "id".equals(current.getId())))
+		{
+
+			toremove.add(olddetail.getId());
+		}
+	}
+
+	toremove.each{
+		newdetails.removeDetail(it);
+	}
+	pdarchive.savePropertyDetails(newdetails, searchtype, null,  filename);
+	pdarchive.clearCache();
 }
 
 init();
