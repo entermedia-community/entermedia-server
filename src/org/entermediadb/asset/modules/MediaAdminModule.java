@@ -385,7 +385,7 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		snapshot.setName(name);
 		snapshot.setValue("site", siteid);
-		snapshot.setValue("configonly",true);
+		snapshot.setValue("configonly",configonly);
 		snapshot.setValue("snapshotstatus","pendingexport");
 		snaps.saveData(snapshot);
 		manager.runSharedPathEvent("/system/events/snapshot/exportsite.html");
@@ -400,12 +400,15 @@ public class MediaAdminModule extends BaseMediaModule
 	public void restoreSiteSnapshot(WebPageRequest inReq)
 	{
 		String snapid = inReq.getRequestParameter("snapid");
+		String configonly = inReq.getRequestParameter("configonly");
+		
 		Searcher snaps = getSearcherManager().getSearcher("system", "sitesnapshot");
 		Data snap = (Data)snaps.searchById(snapid);
 		PathEventManager manager = (PathEventManager)getModuleManager().getBean("system", "pathEventManager");
 
 		inReq.putPageValue("status", "Snapshots are pending");
 		snap.setValue("snapshotstatus","pendingrestore");
+		snap.setValue("configonly",configonly);
 		snaps.saveData(snap);
 		manager.runSharedPathEvent("/system/events/snapshot/restoresite.html");
 		inReq.putPageValue("snapshot", snap);
