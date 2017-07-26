@@ -141,29 +141,6 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
 	pdarchive.clearCache();
 
-	List ordereredtypes = new ArrayList();
-	ordereredtypes.add("category");
-
-	List childrennames = pdarchive.findChildTablesNames();
-	List searchtypes = pdarchive.getPageManager().getChildrenPaths(rootfolder + "/" );
-	searchtypes.each {
-		if( it.endsWith(".csv")) {
-			String searchtype = PathUtilities.extractPageName(it);
-			if(!childrennames.contains(searchtype)) {
-				ordereredtypes.add(searchtype);
-			}
-		}
-	}
-	ordereredtypes.addAll(childrennames);
-	ordereredtypes.removeAll("settingsgroup");
-	ordereredtypes.removeAll("propertydetail");
-	ordereredtypes.removeAll("lock");
-	ordereredtypes.removeAll("category");
-	ordereredtypes.removeAll("user");
-	ordereredtypes.removeAll("userprofile");
-	ordereredtypes.removeAll("group");
-	ordereredtypes.add(0,"category");
-
 	/*
 	 Page categories = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/dataexport/category.csv");
 	 if(categories.exists()){
@@ -189,6 +166,30 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	}
 	else
 	{
+		List ordereredtypes = new ArrayList();
+		ordereredtypes.add("category");
+	
+		List childrennames = pdarchive.findChildTablesNames();
+		List searchtypes = pdarchive.getPageManager().getChildrenPaths(rootfolder + "/" );
+		searchtypes.each {
+			if( it.endsWith(".csv")) {
+				String searchtype = PathUtilities.extractPageName(it);
+				if(!childrennames.contains(searchtype)) {
+					ordereredtypes.add(searchtype);
+				}
+			}
+		}
+		ordereredtypes.addAll(childrennames);
+		ordereredtypes.removeAll("settingsgroup");
+		ordereredtypes.removeAll("propertydetail");
+		ordereredtypes.removeAll("lock");
+		ordereredtypes.removeAll("category");
+		ordereredtypes.removeAll("user");
+		ordereredtypes.removeAll("userprofile");
+		ordereredtypes.removeAll("group");
+		ordereredtypes.add(0,"category");
+	
+	
 		boolean deleteold = true;
 		for( String type in ordereredtypes ) {
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + type + ".csv");

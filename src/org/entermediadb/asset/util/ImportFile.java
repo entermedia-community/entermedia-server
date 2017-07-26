@@ -59,11 +59,14 @@ public class ImportFile
 			String cell = cells[i];
 			if( cell == null || cell.trim().isEmpty() )
 			{
-				throw new OpenEditException("Empty header is not allowed");
+				//throw new OpenEditException("Empty header is not allowed");
+			}
+			else
+			{
+				valid.add(cell);
 			}
 		}
-		
-		getHeader().setHeaders(cells);
+		getHeader().setHeaders((String[]) valid.toArray(new String[valid.size()]));
 
 		//		while( line != null)
 //		{
