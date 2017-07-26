@@ -19,9 +19,13 @@
 #if( !$view )				
 	#set( $view = "${searcher.searchType}/${searcher.searchType}batchedit" )
 #end
-$context.putPageValue("view", $view)
+
+
+$context.putPageValue("viewid", "${searcher.searchType}batchedit")
+$context.putPageValue("viewpath", $view)
 $context.putPageValue("showcheckbox", true)
 
+$pages.include("./edit.html")
 
 <div id="messagearea">$!message
 </div>

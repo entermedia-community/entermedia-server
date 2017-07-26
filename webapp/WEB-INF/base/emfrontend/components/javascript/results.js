@@ -47,8 +47,11 @@ jQuery(document).ready(function(url,params)
 	jQuery("input.selectionbox").livequery("change", function(e) 
 	{
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
+		var searchtype = $('#resultsdiv').data('searchtype');
+		
+		//console.log("searchtype" + searchtype);
 		var dataid = jQuery(this).data('dataid');
-		refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: "asset", hitssessionid: hitssessionid });
+		refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: searchtype, hitssessionid: hitssessionid });
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
