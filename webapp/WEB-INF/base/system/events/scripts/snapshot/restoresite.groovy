@@ -451,10 +451,10 @@ public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload
 	PropertyDetails olddetails = null;
 
 	String filepath = upload.getPath();
+	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
 	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); // checks time
 	if(settings.isExist())
 	{
-		PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
 		pdarchive.clearCache();
 		
 		PropertyDetails details = pdarchive.getPropertyDetails(searchtype);
