@@ -265,6 +265,7 @@ public class ProfileModule extends MediaArchiveModule
 		if (changerequest != null )
 		{
 			userProfile.setProperty("resultview", changerequest);
+			userProfile.save();
 		}
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
 		if (hits == null)
