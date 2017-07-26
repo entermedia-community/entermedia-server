@@ -1,6 +1,5 @@
 #set( $siteid = $context.getRequestParameter("siteid") )
 #set ($site = $searcherManager.getData("system","site",$siteid))
-
 <div id="eventeditpage">
 <div  class="ui-widget" style="overflow: hidden;">
 <div  class="ui-widget-content" > 
@@ -8,7 +7,6 @@
 	<input name="siteid" value="$site.id" type="hidden"/>
 	Paste shared URL of snapshot image:
 	<input name="url"  size="100"/>
-	
 </form>
 <h2>Or</h2>
 <form name="uploadwizard0" id="uploadwizard0" method="post" enctype="multipart/form-data"  action="$home$apphome/views/sites/snapshots/uploadsnap.html">

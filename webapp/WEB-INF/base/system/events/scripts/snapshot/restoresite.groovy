@@ -43,20 +43,21 @@ public void init()
 		snapshotsearcher.saveData(snapshot);
 		Searcher sitesearcher = searcherManager.getSearcher("system", "site");
 		Data site = sitesearcher.query().match("id", snapshot.get("site")).searchOne();
-		log.info("restoring: " + site.get("rootpath"));
+		
 		String catalogid =  site.get("catalogid");
 		MediaArchive mediaarchive = (MediaArchive)moduleManager.getBean(catalogid,"mediaArchive");
 		
 		snapshotsearcher.saveData(snapshot);
 		try
 		{
-			boolean configonly = Boolean.valueOf( inSnap.getValue("configonly") );
+			boolean configonly = Boolean.valueOf( snapshot.getValue("configonly") );
+			log.info("restoring: " + site.get("rootpath") + " config="  + configonly);
 			restore(mediaarchive, site,snapshot,configonly);
 			snapshot.setValue("snapshotstatus", "complete");
 		}
 		catch( Exception ex)
 		{
-			log.error(ex);
+			log.error("Could not restore",ex);
 			snapshot.setValue("snapshotstatus", "error");
 		}	
 		finally
@@ -175,7 +176,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	
 	boolean deleteold = true;
 	ordereredtypes.each {
-		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + it + ".csv");
+		Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/fields/" + it + ".xml");
 		prepFields(mediaarchive,it,upload, tempindex); //only move fields over that have data we care about
 
 	}
@@ -438,23 +439,26 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 
 public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) 
 {
-
+	if( !upload.exists())
+	{
+		return;
+	}
 	log.info("save fields " + upload.getPath());
 	Row trow = null;
 	ArrayList tosave = new ArrayList();
 	String catalogid = mediaarchive.getCatalogId();
 
 	PropertyDetails olddetails = null;
-	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
-	pdarchive.clearCache();
-	
-	PropertyDetails details = pdarchive.getPropertyDetails(searchtype);
 
-
-	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
+	String filepath = upload.getPath();
 	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); // checks time
 	if(settings.isExist())
 	{
+		PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
+		pdarchive.clearCache();
+		
+		PropertyDetails details = pdarchive.getPropertyDetails(searchtype);
+
 		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
 		olddetails = new PropertyDetails(pdarchive,searchtype);
 		olddetails.setInputFile(settings);
