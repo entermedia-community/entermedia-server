@@ -112,65 +112,6 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	
 	
 	
-//	public void testLoadAsset(){
-//		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item/2101604190011378421"
-//		//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?num=1"
-//		def conn = addr.toURL().openConnection()
-//		conn.setRequestProperty( "Authorization", "Basic ${authString}" )
-//		conn.setRequestProperty("Accept", "application/atom+xml;type=feed");
-//
-//		String content = conn.content.text;
-//		//println content;
-//
-//		if( conn.responseCode == 200 ) {
-//			def rss = new XmlSlurper().parseText(content  )
-//
-//
-//			println rss.title
-//			rss.entry.link.each { println "- ${it.@rel}" }
-//		}
-//
-//	}
-
-
-//	public void testSearch(){
-//
-//		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
-//		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?format=opensearch"
-//		def conn = addr.toURL().openConnection();
-//		conn.setRequestProperty( "Authorization", "Basic ${authString}" );
-//		conn.setRequestProperty("Accept", "Accept: application/opensearchdescription+xml");
-//
-//		String content = conn.content.text;
-//		//println content;
-//
-//		if( conn.responseCode == 200 ) {
-//			def rss = new XmlSlurper().parseText(content  )
-//
-//
-//			println rss.Url.@template;
-//			String url = rss.Url.@template;
-//
-//			//rss.entry.link.each { println "- ${it.@rel}" }
-//		}
-//		//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
-//		def addr2 = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=1&num=20";
-//
-//		 conn = addr2.toURL().openConnection();
-//		conn.setRequestProperty( "Authorization", "Basic ${authString}" );
-//		conn.setRequestProperty("Accept", "Accept: application/atom+xml;type=feed");
-//		 String results =  conn.content.text;
-//		if( conn.responseCode == 200 ) {
-//			def rss = new XmlSlurper().parseText(results  )
-//
-//
-//			println rss.Url.@template;
-//			String url = rss.Url.@template;
-//
-//			//rss.entry.link.each { println "- ${it.@rel}" }
-//		}
-//	}
-	
 	
 	
 	public Element setMetadata(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception{

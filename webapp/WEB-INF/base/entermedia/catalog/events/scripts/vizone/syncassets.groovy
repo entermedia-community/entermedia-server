@@ -28,7 +28,7 @@ public class VizOne{
 		conn.setRequestProperty("Accept", "application/atom+xml;type=feed");
 
 		String content = conn.content.text;
-		log.info(content);
+		//log.info(content);
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		AssetSearcher assetsearcher = archive.getAssetSearcher();
 		ArrayList assets = new ArrayList();
@@ -113,7 +113,7 @@ public class VizOne{
 
 						asset.setValue("importstatus","imported");
 						asset.setValue("fromviz",true);
-
+						asset.setValue("assetaddeddate", new Date());
 						def tasksearcher = archive.getSearcher("conversiontask");
 
 						archive.fireMediaEvent( "importing","assetsimported", null, asset); //this will save the asset as imported
@@ -204,7 +204,7 @@ public class VizOne{
 			if( conn.responseCode == 200 ) {
 				Asset asset = archive.getAsset(it.id);
 				String content = conn.content.text;
-				log.info(content);
+			//	log.info(content);
 				def rss = new XmlSlurper().parseText(content  );
 
 				def url = rss.'**'.find { link-> link.@rel == 'describedby'};
@@ -241,25 +241,26 @@ public class VizOne{
 
 
 			} else if (conn.responseCode == 404){
-				todelete.add(it);
+				log.info("Will delete ${it.id} Got a 404" );
+
+				Asset asset = archive.getAsset(it.id);
+				archive.deleteAsset(asset, true);
 
 			}
 
 
 
 			else{
-				todelete.add(it);
+
+				log.info("Will delete ${it.id} - ");
+				Asset asset = archive.getAsset(it.id);
+				archive.deleteAsset(asset, true);
 			}
 
 
 		}
 
-		todelete.each {
-			Asset asset = archive.getAsset(it.id);
-			archive.deleteAsset(asset, true);
-
-		}
-
+	
 
 	}
 
@@ -273,8 +274,8 @@ public class VizOne{
 VizOne vz = new VizOne();
 
 
-vz.downloadNew(context);
-vz.validate(context);
+//vz.downloadNew(context);
+//vz.validate(context);
 
 
 

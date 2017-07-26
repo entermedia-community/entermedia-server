@@ -353,3 +353,9 @@ curl -XGET 'http://localhost:9200/assets_catalog/category/_search' -d '{ "query"
 
 curl -XGET 'http://localhost:9200/archive_catalog/librarycollection/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 curl -XGET  'http://localhost:9200/archive_catalog/librarycollection/_mapping?pretty=true'  | python -mjson.tool
+Get a single field def:
+_mapping/article/field/title
+curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=true'  
+
+
+
