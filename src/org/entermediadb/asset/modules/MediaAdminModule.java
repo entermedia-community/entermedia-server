@@ -385,7 +385,7 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		snapshot.setName(name);
 		snapshot.setValue("site", siteid);
-		snapshot.setValue("configonly",true);
+		snapshot.setValue("configonly",configonly);
 		snapshot.setValue("snapshotstatus","pendingexport");
 		snaps.saveData(snapshot);
 		manager.runSharedPathEvent("/system/events/snapshot/exportsite.html");
