@@ -68,6 +68,9 @@ public class UserProfileManager
 			inUserName = "anonymous";
 		}
 		String appid = inReq.findValue("applicationid");
+		if(appid == null){
+			return null;
+		}
 		UserProfile userprofile = loadProfile(inReq, inCatalogId, appid, inUserName);
 
 		if( userprofile != null)

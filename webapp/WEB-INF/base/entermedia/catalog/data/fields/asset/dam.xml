@@ -653,4 +653,32 @@
   </property>  
   
   
+  
+  <property id="audiobitrate" externalid="Audio Bitrate,AvgBitrate" index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+    <name>
+      <language id="en"><![CDATA[Audio Bit Rate]]></language>
+    </name>
+  </property>
+  
+  
+    <property id="audiobytespersec" externalid="AvgBytesPerSec" index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+    <name>
+      <language id="en"><![CDATA[Audio Bytes Per Second Rate]]></language>
+    </name>
+  </property>
+  
+  <property id="audiosamplerate" externalid="Audio Sample Rate,SampleRate" index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+    <name>
+      <language id="en"><![CDATA[Audio Sample Rate]]></language>
+    </name>
+  </property>
+  <property id="videobitrate" externalid="Video Bitrate,Max Bitrate,Avg Bitrate,Max Data Rate,Average Bitrate" index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+    <name>
+      <language id="en"><![CDATA[Video Bitrate]]></language>
+    </name>
+  </property>
+  
+  
+  
+  
 </page>
