@@ -266,7 +266,7 @@ public class PresetCreator
 				{
 					return;						
 				}
-				Asset target = (Asset)inArchive.getAssetSearcher().loadData(asset);
+				Asset target = (Asset)inArchive.getAssetSearcher().loadData(asset); //We should have a lock already
 				if( founderror)
 				{
 					target.setProperty("importstatus","error");
