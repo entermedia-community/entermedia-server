@@ -41,7 +41,7 @@
 	#end
 
    <input type="hidden" name="operation" value="orsgroup" />
-   	<input type="hidden" id="categoryvalues" name="${detailid}.value" value="$!existing" />
+   	<input type="hidden" id="categoryvalues" name="${detailid}.value" value="$!existing" class="#if($detail.isRequired() && !$multiedit) required #end"  />
    
    <a class="emdialog btn small" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&detailid=$detailid" data-cancelsubmit="true" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
 
