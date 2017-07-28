@@ -1020,10 +1020,12 @@ public class BaseOrderManager implements OrderManager {
 		String appid = inOrder.get("applicationid");
 		if(publishid != null){
 			Data dest = inArchive.getSearcherManager().getData(inArchive.getCatalogId(), "publishdestination", publishid);
+			if(dest != null){
 			String email = dest.get("administrativeemail");
 			if(email != null){
 				sendEmail(inArchive.getCatalogId(),context, email, "/" + appid + "/theme/emails/admintemplate.html");
 				//TODO: Save the fact that email was sent back to the publishtask?
+			}
 			}
 		}
 		String emailto = inOrder.get("sharewithemail");

@@ -24,7 +24,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
 		String mediatype = inArchive.getMediaRenderType(inAsset.getFileFormat());
-		if( "video".equals(mediatype )) 
+		if( "video".equals(mediatype ) || "audio".equals(mediatype)) 
 		{
 			//Run it again
 			List args = new ArrayList();
@@ -74,17 +74,34 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("height", String.valueOf( stream.get("height")) );
 						
 						String val =  (String)stream.get("duration");
+						if(val != null){
 						inAsset.setProperty("duration",val);
-						val = processDuration(val);
+											val = processDuration(val);
+					
 						inAsset.setValue("length",  Double.parseDouble( val ) ); //in fractional seconds
 						inAsset.setProperty("aspect_ratio", (String)stream.get("display_aspect_ratio"));
-						
+						}
 					}
 					if( "audio".equals( stream.get("codec_type") ) )
 					{
 						inAsset.setProperty("audiocodec", (String)stream.get("codec_name"));						
 					}
 				}
+				
+				if("audio".equals(mediatype)){
+					
+					 Map format = (Map) config.get("format");
+					 String bitrate = (String) format.get("bit_rate");
+					 inAsset.setProperty("audiobitrate", bitrate);
+				}
+				
+				if("video".equals(mediatype)){
+					
+					 Map format = (Map) config.get("format");
+					 String bitrate = (String) format.get("bit_rate");
+					 inAsset.setProperty("videobitrate", bitrate);
+				}
+				
 			} 
 			catch ( Throwable ex)
 			{
