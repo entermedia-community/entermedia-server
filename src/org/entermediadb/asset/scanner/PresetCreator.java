@@ -253,7 +253,7 @@ public class PresetCreator
 			else if( !"complete".equals( task.get("status") ) )
 			{
 				allcomplete = false;
-				break;
+				//Keep looking for errors break;
 			}
 		}	
 		//save importstatus
@@ -266,7 +266,7 @@ public class PresetCreator
 				{
 					return;						
 				}
-				Asset target = (Asset)inArchive.getAssetSearcher().loadData(asset);
+				Asset target = (Asset)inArchive.getAssetSearcher().loadData(asset); //We should have a lock already
 				if( founderror)
 				{
 					target.setProperty("importstatus","error");
@@ -285,7 +285,7 @@ public class PresetCreator
 					}
 				}
 				inArchive.saveAsset(target, null);
-				inArchive.fireMediaEvent("imported",null,target);
+				inArchive.fireMediaEvent("imported",null,target);   //Should this say assetimported? Or is it being handled in assetsimported?
 				inArchive.fireSharedMediaEvent("importing/importcomplete");
 			}
 		}

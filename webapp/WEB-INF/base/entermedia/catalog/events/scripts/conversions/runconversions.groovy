@@ -85,9 +85,6 @@ class CompositeConvertRunner implements Runnable
 			if( hasComplete())
 			{
 				fieldMediaArchive.conversionCompleted(asset);
-			}	
-			if( hasComplete() )
-			{
 				fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 			}
 		}
@@ -115,7 +112,7 @@ class ConvertRunner implements Runnable
 	
 	public boolean isComplete()
 	{
-		if( result != null && result.isComplete() )
+		if( result != null && (result.isComplete() || result.isError() ) )
 		{
 			return true;
 		}
