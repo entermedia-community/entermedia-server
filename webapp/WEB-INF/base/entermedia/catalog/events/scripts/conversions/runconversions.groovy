@@ -73,6 +73,12 @@ class CompositeConvertRunner implements Runnable
 					fieldCompleted = true;
 					//Slow? fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
 				}
+				if( runner.isError())
+				{
+					fieldCompleted = true;
+					//fieldMediaArchive.fireSharedMediaEvent("conversions/conversioncomplete");
+					break;
+				}
 			}
 		}
 		catch(Exception e){
@@ -113,6 +119,14 @@ class ConvertRunner implements Runnable
 	public boolean isComplete()
 	{
 		if( result != null && (result.isComplete() || result.isError() ) )
+		{
+			return true;
+		}
+		return false;
+	}
+	public boolean isError()
+	{
+		if( result != null && result.isError() )
 		{
 			return true;
 		}
