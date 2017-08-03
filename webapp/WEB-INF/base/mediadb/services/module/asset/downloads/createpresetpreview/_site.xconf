@@ -8,7 +8,6 @@
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/createpreset</property>
 	<property name="sourcepathhasfilename">true</property>	
 	<property name="exportnameinpath">true</property>	
-	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
 	
 	<generator name="convertArchiveDocument"/>
 </page>
