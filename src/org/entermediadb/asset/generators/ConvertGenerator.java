@@ -15,6 +15,7 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
+import org.openedit.util.PathUtilities;
 
 /**
  * This generator generates original asset documents from an MediaArchive
@@ -82,7 +83,15 @@ public class ConvertGenerator extends FileGenerator
 		if( name == null)
 		{
 			//throw new OpenEditException("exportname is not set on " + inPage.getPath() );
-			name = inPage.getName();
+			if( Boolean.parseBoolean( inPage.get("exportnameinpath")) )
+			{
+				name = inPage.getDirectoryName();
+				sourcePath = sourcePath.substring(0,sourcePath.length()  - name.length() - 1);
+			}
+			else
+			{
+				name = inPage.getName();
+			}
 		}
 		String themeprefix = inReq.findValue("themeprefix");
 		all.put("themeprefix", themeprefix);
