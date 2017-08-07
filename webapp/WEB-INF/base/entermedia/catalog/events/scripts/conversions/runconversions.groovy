@@ -345,7 +345,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 	}
 	else
 	{
-		log.info("Can't find media creator for type '${type}'");
+		log.info("Can't find media creator for type '${inAsset.getFileFormat()}'");
 	}
 	return result;
   }
