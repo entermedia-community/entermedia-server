@@ -236,7 +236,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				root.setId("index");
 				root.setName("Index");
 			}
-			saveCategoryTree(root);
+			List tosave = new ArrayList();
+			saveCategoryTree(root,tosave);
+	   		saveAllData(tosave, null);
 			//We are going to create a database tool to import categories.xml
 		}	
 		return root;
@@ -251,7 +253,22 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 			saveCategoryTree(child);
 		}
 	}
-
+    protected void saveCategoryTree(Category inRootCategory, List toSave)
+   	{
+   		//saveData(inRootCategory, null);
+    	toSave.add(inRootCategory);
+    	if( toSave.size() > 1000 )
+   		{
+   			saveAllData(toSave, null);
+   			toSave.clear();
+   		}
+   		for (Iterator iterator = inRootCategory.getChildren().iterator(); iterator.hasNext();)
+   		{
+   			Category child = (Category) iterator.next();
+   			saveCategoryTree(child, toSave);
+   		}
+   		
+   	}
 	//	public CategoryArchive getCategoryArchive()
 //	{
 //		if(fieldCategoryArchive != null){

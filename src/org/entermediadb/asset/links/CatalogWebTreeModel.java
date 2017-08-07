@@ -196,12 +196,12 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 			return true;
 		}
 		Set allowed = new HashSet(getMediaArchive().listPublicCategories() );
-		allowed.addAll(getUserProfile().getViewCategories());
+		allowed.addAll(viewableparents);
 		
 		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
 		{
 			Category viewable = (Category) iterator.next();
-			if( viewable.hasParent(inCat.getId()))
+			if( viewable.hasParentCategory(inCat) || inCat.hasParentCategory(viewable))
 			{
 				return true;
 			}
