@@ -1216,24 +1216,25 @@ Change Collections to be normal categories path s and make createTree look at th
 					String[] col = (String[])val;
 					if( col.length == 0)
 					{
-						asset.setValue(field, null);
+						continue;
 					}
 					if( col.length == 1)
 					{
+						if( col[0] == null || col[0].isEmpty())
+						{
+							continue; //dont blank out the value
+						}
 						PropertyDetail detail = archive.getAssetSearcher().getPropertyDetails().getDetail(field);
 						if(detail != null && detail.isDate()){
 							String targetval = col[0];
 							String format = "yyyy-MM-dd";
-							if (targetval.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}"))
+							if (targetval.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}"))  //TODO: clean this up
 							{
 								format = "MM/dd/yyyy";
 							}
 							Date date = DateStorageUtil.getStorageUtil().parse(targetval, format);
-							
-							
 							asset.setValue(field, date);
 						}else{
-						
 							asset.setValue(field, col[0]);
 						}
 					}

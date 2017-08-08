@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page> 
-  <property id="description" defaultoperation="freeform" index="true"   stored="false" editable="false" sortable="true">All Fields 
+  <property id="description" defaultoperation="freeform" index="true"   stored="true"  editable="false" sortable="true">All Fields 
     <name> 
       <language id="de"><![CDATA[All Fields]]></language>  
       <language id="en"><![CDATA[All Fields]]></language>  
@@ -391,7 +391,7 @@
       <language id="fr"><![CDATA[Titre]]></language> 
     </name> 
   </property>  
-  <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="false" sortable="true">Description 
+  <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="true"  sortable="true">Description 
     <name> 
       <language id="de"><![CDATA[Description]]></language>  
       <language id="en"><![CDATA[Description]]></language>  
@@ -598,7 +598,7 @@
       <language id="fr"><![CDATA[Type de contenu]]></language> 
     </name> 
   </property>  
-  <property id="md5hex" index="true" editable="false" indextype="not_analyzed"   stored="false" sortable="true">MD5 Hex Value 
+  <property id="md5hex" index="true" editable="false" indextype="not_analyzed"   stored="true" sortable="true">MD5 Hex Value 
     <name> 
       <language id="de"><![CDATA[md5 Hex-Wert]]></language>  
       <language id="en"><![CDATA[MD5 Hex Value]]></language>  
@@ -606,7 +606,7 @@
       <language id="fr"><![CDATA[MD5 Valeur Hex]]></language> 
     </name> 
   </property>  
-  <property id="duplicate" index="true" editable="true" type="boolean"  isbadge="true"  stored="false" sortable="true">
+  <property id="duplicate" index="true" editable="true" type="boolean"  isbadge="true"  stored="true"  sortable="true">
     <name> 
       <language id="de"><![CDATA[doppelte Vermögens]]></language>  
       <language id="en"><![CDATA[Duplicate Asset]]></language>  
