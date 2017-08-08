@@ -55,8 +55,11 @@ public class Md5MetadataExtractor extends MetadataExtractor
 					{
 						Data hit = (Data) iterator.next();
 						Asset asset = (Asset) assetsearcher.loadData(hit);
-						asset.setValue("duplicate", true);
-						assetsearcher.saveData(asset, null);
+						if( !asset.getBoolean("duplicate"))
+						{
+							asset.setValue("duplicate", true);
+							assetsearcher.saveData(asset, null);
+						}
 					}
 				}
 			}
