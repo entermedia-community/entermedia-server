@@ -33,7 +33,7 @@
 					</form>
 				</td>	
 
-				<td id="collectionidui" style="padding-right:20px;">
+				<td id="collectionidui" style="padding-right:5px;">
 					<form  action="$home$apphome/views/modules/librarycollection/media/index.html">
 						<input type="hidden" id="list-libraryvalue" name="selectedlibrary" value="$!library.getId()" />  
 						#set( $detail = $searcher.getDetail("name"))
@@ -47,11 +47,16 @@
 							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
 							#end
 						</select>
+						
+						
 						#if($canaddnewcollection)
 							<a id="collectionidadd" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker&library.value=$!library.getId()" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
 						#end
 					</form>
 				</td>	
+				<td>
+				<a class="emdialog sidebarsubmenu" title="[[Collection Search]]" data-hidefooter="true" href="$home$apphome/components/opencollections/searchcollection.html"><i class="glyphicon glyphicon-search"></i></a>
+				</td>
 			</tr>
 		</table>	
 	</div>
