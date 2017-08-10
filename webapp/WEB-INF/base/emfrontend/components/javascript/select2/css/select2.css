@@ -68,9 +68,19 @@
   padding: 0; }
 
 .select2-results__option {
-  padding: 6px;
-  user-select: none;
-  -webkit-user-select: none; }
+	padding: 6px;
+	user-select: none;
+	-webkit-user-select: none; 
+	
+	white-space: -moz-pre-wrap !important; 
+	white-space: -webkit-pre-wrap;  
+	white-space: -pre-wrap;     
+	white-space: -o-pre-wrap;   
+	white-space: pre-wrap;      
+	word-wrap: break-word;      
+	word-break: break-all;
+	white-space: normal;
+  }
   .select2-results__option[aria-selected] {
     cursor: pointer; }
 
