@@ -1,5 +1,6 @@
 package org.entermediadb.asset.orders;
 
+import java.util.Collection;
 import java.util.Date;
 
 import org.openedit.CatalogEnabled;
@@ -121,6 +122,11 @@ public class Order extends BaseData implements SaveableData, CatalogEnabled
 		}
 		return false;
 
+	}
+
+	public Collection findOrderAssets()
+	{
+		return getOrderManager().findOrderAssets(getCatalogId(), getId());
 	}
 	
 }
