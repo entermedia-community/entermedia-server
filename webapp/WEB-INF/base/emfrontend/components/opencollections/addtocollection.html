@@ -1,0 +1,45 @@
+<div id="emcontainer">
+<div  id="search-collections" >
+	<div id="searcharea" >
+	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+	$context.putPageValue("searcher",$searcher)
+	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
+	
+	Selected $hits.size()
+	
+	<form  class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresults.html">
+	
+		<input type="hidden" name="searchtype" value="librarycollection" />
+		<input type="hidden" name="sortby" value="name" />
+		<table class="inlinesearch" >
+			<tr>
+			#foreach( $detail in $details)
+				<td>
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+				</td>	
+			#end
+			</tr>
+		</table>
+	</form>
+	
+	
+	<div id="collectionresults">
+	$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
+	</div>
+	
+	</div>
+</div>	
+</div>
+
+<script>
+$(".rowclick").livequery('click', function(e){
+	$(this).closest(".modal").modal("hide");
+	var rowid = $(this).attr("rowid");
+    var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId' ;
+	//$("#left-col-opencollections").load(nextpage);
+	window.location.href = nextpage;
+
+
+});
+</script>

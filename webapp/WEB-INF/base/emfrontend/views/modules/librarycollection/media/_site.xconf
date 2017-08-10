@@ -15,14 +15,10 @@
 	<path-action name="ProjectModule.addOpenCollection" />
 	<path-action name="ProjectModule.loadOpenCollections"/>
 	
-	<page-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
-	</page-action>
-	<!--
-	<path-action name="ProjectModule.loadCategoriesOnCollection">
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</path-action>
-	-->
+	
 	
 	 <permission name="view">
 	 	<and>

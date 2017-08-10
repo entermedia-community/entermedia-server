@@ -19,6 +19,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.CatalogEnabled;
@@ -1268,6 +1269,28 @@ public class ProjectManager implements CatalogEnabled
 //				}
 
 	}
+	
+//	public void createCollectionFromSelection(HitTracker inSelection, User inUser)
+//	{
+//		//Collection assets  = inBasket.getOrderManager().findOrderAssets(inBasket.getCatalogId(), inBasket.getId());
+//		Collection assets  = inBasket.findOrderAssets();
+//		LibraryCollection collection = new LibraryCollection();
+//		
+//		String collectionid;
+//		
+//		addAssetToCollection(getMediaArchive(), collectionid, assets);
+		
+	//}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	
 	
 	

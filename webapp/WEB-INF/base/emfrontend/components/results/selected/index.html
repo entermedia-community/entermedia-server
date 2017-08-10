@@ -41,6 +41,10 @@
 			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Basket]]</a></li>
 		#end
 	#end
+	#if( $canaddnewcollection )
+	<li><a class="emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/components/opencollections/addtocollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a></li>
+	#end
+
 	#if ($canmetadatageneral && $canmultiedit)
   		#set($multi = $hits.getSelectionSize() > 1)
   		#if ($multi)
