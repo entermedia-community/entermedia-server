@@ -32,10 +32,12 @@
 			#end
 			#set($size=${afters.size()})
 			#set( $size = $size - 1 )
-			#if($size>0)
+			#if($size>0  )
 				#if ($afters.get($size)< $hits.getTotalPages() )
 					<li class="ellipsis">...</li>
-					<li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
+					#if($hits.size() < 9999)
+                                         <li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
+                                        #end
 				#end
 			#end
 			#if ( $hits.nextPage() )
