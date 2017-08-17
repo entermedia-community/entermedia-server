@@ -6,7 +6,7 @@
 
     <property id="enabled" header="blank" />
 
-	<property id="email" required="true" header="Contact Information" />
+	<property id="email" required="false" header="Contact Information" />
     <property id="phone" /> 
     <property id="country"  />
     <property id="address1"  />
