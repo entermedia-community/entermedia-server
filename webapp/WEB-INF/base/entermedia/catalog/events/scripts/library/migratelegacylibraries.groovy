@@ -1,9 +1,7 @@
 package library
 
-import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.projects.LibraryCollection
 import org.entermediadb.projects.ProjectManager
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -111,23 +109,29 @@ public void createProjects(){
 	Searcher libraries = mediaArchive.getSearcher("library");
 	Searcher collections = mediaArchive.getSearcher("librarycollection");
 	Searcher assets = mediaArchive.getSearcher("asset");
+	ProjectManager manager = mediaArchive.getProjectManager();
 	
 	libs = libraries.getAllHits();
 	
 	libs.each {
 		
 		HitTracker hits = collections.fieldSearch("library", it.id);
-		
+		Data lib = it;
 		if(hits.size() > 0){
 			
 			
 			hits.each{
 				HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
 				if(libraryassets.size() > 0){				
-					Data col = mediaArchive.getData("librarycollection", it.id);
-					col.setValue("division", lib.division);
-					col.setValue("collectionproject", newproject.getId());
-					collections.saveData(col);
+					Data newcollection = collections.searchById("subcol-${lib.id}");
+					if(newcollection == null){
+						newcollection = collections.createNewData();
+						newcollection.setId("subcol-${lib.id}");
+						newcollection.setName(lib.getName());
+						collections.saveData(newcollection);
+					}
+					newcollection.setProperty("division", lib.division);
+					manager.addAssetToCollection(mediaArchive, "subcol-${lib.id}", libraryassets);					
 					
 					
 				}
