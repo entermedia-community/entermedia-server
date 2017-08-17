@@ -42,6 +42,7 @@ public void init()
 		objects.put("assets",assets);
 		objects.put("librarycol",librarycol);
 		objects.put("note",note);
+		objects.put("mediaarchive",mediaArchive);
 		
 		objects.put("apphome","/" + appid);
 		templatemail.send(objects);

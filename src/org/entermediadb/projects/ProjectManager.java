@@ -1144,6 +1144,7 @@ public class ProjectManager implements CatalogEnabled
 			}
 		}
 		searcher.saveAllData(tosave,null);
+		inReq.putPageValue("approvedlist", inHits);
 		logAssetEvent(tosave,"approved",inReq.getUser(),inNote,inCollectionid);
 		return approved;
 	}
@@ -1247,7 +1248,8 @@ public class ProjectManager implements CatalogEnabled
 		}
 		if( !collection.hasRootCategory() )
 		{
-			Category collectioncategory = mediaArchive.createCategoryPath( collectionroot + "/" + collection.getLibrary() + "/" + collection.getName());
+			String path = collectionroot + "/" + collection.getLibrary() + "/" + collection.getName();
+			Category collectioncategory = mediaArchive.createCategoryPath( path);
 			mediaArchive.getCategorySearcher().saveData(collectioncategory);
 			collection.setValue("rootcategory", collectioncategory.getId());
 			mediaArchive.getSearcher("librarycollection").saveData(collection, null);
