@@ -43,7 +43,9 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			String url = destination.get("url");
 			
 			String password = destination.get("accesskey");
-			log.info("Publishing " + asset + " to EnterMedia server " + url);
+			String exportname = inPublishRequest.get("exportname");
+
+			log.info("Publishing " + asset + " to EnterMedia server " + url + "With export name: " + exportname);
 			
 			//http://hc.apache.org/httpcomponents-client-4.4.x/httpmime/examples/org/apache/http/examples/entity/mime/ClientMultipartFormPost.java
 			HttpPost method = new HttpPost(url);
@@ -56,7 +58,6 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			builder.addPart("accesskey", password) ;
 			builder.addPart("sourcepath", asset.getSourcePath());
 			builder.addPart("assetid", asset.getId());
-			String exportname = inPublishRequest.get("exportname");
 			builder.addPart("exportname", exportname);
 			builder.addPart("title", asset.toString());
 			builder.addPart("caption", asset.get("headline"));
