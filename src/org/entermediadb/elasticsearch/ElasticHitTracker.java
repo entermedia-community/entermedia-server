@@ -394,6 +394,7 @@ public class ElasticHitTracker extends HitTracker
 							//log.info("term " + parent.getName()  + " \\" + term);
 							FilterNode child = new FilterNode();
 							child.setId(term);
+							child.setPropertyDetail(detail);
 							if (detail != null && detail.isList())
 							{
 								Data data = getSearcher().getSearcherManager().getData(getCatalogId(), detail.getListId(), term);
