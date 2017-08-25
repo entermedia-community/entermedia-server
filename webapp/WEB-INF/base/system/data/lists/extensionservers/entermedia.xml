@@ -6,5 +6,10 @@
 	
 	<server id="em5" listingurl="http://dev.entermediasoftware.com/jenkins/job/em9_extension-aws/lastSuccessfulBuild/artifact/deploy/awsextension-full.xml" caption="Does a complete system upgrade including Server, OpenEdit EM Push and AWS tools">AWS Extension - Full Install</server>
 	<server id="em6" listingurl="http://dev.entermediasoftware.com/jenkins/job/em9_extension-aws/lastSuccessfulBuild/artifact/deploy/awsextension.xml" caption="Installs the AWS plugin only">AWS Extension - Plugin Only</server>
+
+	<server id="em7" listingurl="http://dev.entermediasoftware.com/jenkins/job/em9_extension-saml/lastSuccessfulBuild/artifact/deploy/samlextension-full.xml" caption="Does a complete system upgrade including Server and SAML tools">SAML Extension - Full Install</server>
+	<server id="em8" listingurl="http://dev.entermediasoftware.com/jenkins/job/em9_extension-saml/lastSuccessfulBuild/artifact/deploy/samlextension.xml" caption="Installs the SAML plugin only">SAML Extension - Plugin Only</server>
+
+
 		
 </servers>
