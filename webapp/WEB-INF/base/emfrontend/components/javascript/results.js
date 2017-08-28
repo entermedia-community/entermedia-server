@@ -403,7 +403,7 @@ jQuery(document).ready(function(url,params)
 	$("#main-media").livequery("swipeleft",function(){
 		
 		var div = $("#main-media-viewer" );
-		var id = div.data("previous");
+		var id = div.data("next");
 		if( id ) 
 		{
 			showAsset(id);
@@ -412,7 +412,7 @@ jQuery(document).ready(function(url,params)
 	$("#main-media").livequery("swiperight",function(){
 	
 		var div = $("#main-media-viewer" );
-		var id = div.data("next");
+		var id = div.data("previous");
 		if( id ) 
 		{
 			showAsset(id);

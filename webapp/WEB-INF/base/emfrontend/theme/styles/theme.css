@@ -5424,6 +5424,8 @@ p.resultsnumber {
     font-size: 11px;
     line-height: 22px;
     text-align: center;
+    max-width:140px;
+    margin:0 auto;
 }
 #jumpto #pagejumper {
     width: 30px;
