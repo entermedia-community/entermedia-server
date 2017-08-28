@@ -15,7 +15,7 @@
 </div>
 
 <div id="mainholder row" >
-	<div style="width:20%;max-width:154px;float:left;">
+	<div class="col-sm-2">
 		#if( $totalpages > 1 )
 					$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
 	               <div id="jumpto" class="row">
@@ -36,7 +36,7 @@
 	                </div>                
 	         #end
 	</div>
-	<div style="width:80%;float:left;"> 
+	<div class="col-sm-10"> 
 		<div id="mainimageholder"> 
 			<img id="mainimage" src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/image1500x1500.png?pagenum=$!pagenum" alt="$!asset.name" />
 		</div>		
