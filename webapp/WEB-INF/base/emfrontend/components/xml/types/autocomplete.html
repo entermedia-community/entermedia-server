@@ -29,8 +29,7 @@
 #end
 </select>
 
-#set ($mode = $user.get("oe_edit_mode"))
-#if($mode && ($mode == "debug" || $mode == "editing" ))
+ #if( $caneditlists)
 	<a class="emdialog addnewitem" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
 #end
 
