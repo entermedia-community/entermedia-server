@@ -411,9 +411,9 @@ color: #fff;
 #footermenu div.dropup {
 }
 
-body.widthless500 #pdf-thumbnail-sidebar 
+body.widthless1000 #pdf-thumbnail-sidebar 
 {
-	display: none;
+	/*display: none;*/
 
 
 }

@@ -254,9 +254,9 @@ jQuery(document).ready(function(url,params)
 			overlayResize();
 			var div = $("#main-media-viewer" );
 			var id = div.data("previous");
-			enable(id,"span.glyphicon-triangle-left");
+			enable(id,".goleftclick span");
 			id = div.data("next");
-			enable(id,"span.glyphicon-triangle-right");
+			enable(id,".gorightclick span");
 		});
 	}
 	
@@ -352,7 +352,12 @@ jQuery(document).ready(function(url,params)
 			input.val(current);
 			$("#jumptoform").submit();
 		}
-		jQuery('#jumptoform .jumpto-right').removeClass("disable");
+		else
+		{
+			jQuery('#jumptoform .jumpto-left').addClass("invisible");
+		}	
+
+		jQuery('#jumptoform .jumpto-right').removeClass("invisible");
 	});
 
 
@@ -365,15 +370,16 @@ jQuery(document).ready(function(url,params)
 		current++;
 		var totalpages = $("#jumptoform").data("totalpages");
 		totalpages = parseInt(totalpages);
-		if( current > totalpages )
-		{
-			$(this).addClass("disable");
-		}
-		else
+		if( current <= totalpages )
 		{
 			input.val(current);
 			$("#jumptoform").submit();
 		}	
+		if( current >= totalpages )
+		{
+			jQuery('#jumptoform .jumpto-right').addClass("invisible");
+		}	
+		jQuery('#jumptoform .jumpto-left').removeClass("invisible");
 		
 	});
 	
@@ -397,7 +403,7 @@ jQuery(document).ready(function(url,params)
 	$("#main-media").livequery("swipeleft",function(){
 		
 		var div = $("#main-media-viewer" );
-		var id = div.data("previous");
+		var id = div.data("next");
 		if( id ) 
 		{
 			showAsset(id);
@@ -406,7 +412,7 @@ jQuery(document).ready(function(url,params)
 	$("#main-media").livequery("swiperight",function(){
 	
 		var div = $("#main-media-viewer" );
-		var id = div.data("next");
+		var id = div.data("previous");
 		if( id ) 
 		{
 			showAsset(id);

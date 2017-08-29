@@ -15,7 +15,7 @@
 </div>
 
 <div id="mainholder row" >
-	<div style="width:20%;max-width:154px;float:left;">
+	<div class="col-sm-2 col-lg-1">
 		#if( $totalpages > 1 )
 					$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
 	               <div id="jumpto" class="row">
@@ -29,14 +29,14 @@
 	                       <input  type="hidden" name="oemaxlevel" value="1" />
 	                       <input  type="hidden" name="hidenav" value="$hidenav" />
 	                      ## <input type="submit" id="gotopage" class="btn" value="Go" />
-	                       <a href="#" class="jumpto-left" ><span class="glyphicon glyphicon-triangle-left " style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
-	                       <a href="#" class="jumpto-right" ><span class="glyphicon glyphicon-triangle-right " style="color: rgb(200, 200, 200);font-size:1.8em;""></span></a>
+	                       <a href="#" class="jumpto-left" ><span class="glyphicon glyphicon-triangle-left" style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
+	                       <a href="#" class="jumpto-right" ><span class="glyphicon glyphicon-triangle-right " style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
 	                       </p>
 	                    </form>
 	                </div>                
 	         #end
 	</div>
-	<div style="width:80%;float:left;"> 
+	<div class="col-sm-10"> 
 		<div id="mainimageholder"> 
 			<img id="mainimage" src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/image1500x1500.png?pagenum=$!pagenum" alt="$!asset.name" />
 		</div>		

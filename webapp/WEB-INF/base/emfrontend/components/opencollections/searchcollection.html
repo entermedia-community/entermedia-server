@@ -4,19 +4,39 @@
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
 	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
-	<form  class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresults.html">
+
+#if( $hits && $hits.getSelectionSize() > 0)	
+	<div class="alert alert-info">
+  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
+	</div>
+#end	
+	<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresults.html">
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
-		<table class="inlinesearch" >
-			<tr>
+		<table>
+		<tr>
+		<td width="100%">
+		<div  class="row inlinesearch" >
+		$context.putPageValue("autocomplete","off")
 			#foreach( $detail in $details)
-				<td>
+			<div class="col-md-3">
 					$context.putPageValue("detail", $detail)
 					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
-				</td>	
+			</div>
+			#if( $counter == 4)
+				</div>
+				<div  class="row" >
+			#end	
 			#end
-			</tr>
+		</div>	
+		</td>
+		#if($canaddnewcollection)
+		<td >
+			<a class="ajax btn" style="white-space: nowrap;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" href="$home$apphome/components/opencollections/pickcollectionaddnew.html">Add Collection</a>
+		</td>
+		#end
+		</tr>
 		</table>
 	</form>
 	
@@ -33,7 +53,12 @@
 $(".rowclick").livequery('click', function(e){
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
+	
+#if(  $hits && $hits.getSelectionSize() > 0 )	
+	 var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId' ;
+#else	
     var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
+#end   
 	//$("#left-col-opencollections").load(nextpage);
 	window.location.href = nextpage;
 

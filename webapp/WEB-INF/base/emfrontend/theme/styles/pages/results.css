@@ -624,7 +624,7 @@ background-color: #eee;
 	font-size:30px;
 	color: rgb(200,200,200);
 	position: fixed;
-	right:40px;
+	right:20px;
 	top: 10px;
 	z-index: 10001;
 }

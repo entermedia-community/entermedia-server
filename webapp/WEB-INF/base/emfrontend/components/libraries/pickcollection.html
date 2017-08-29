@@ -4,6 +4,7 @@
 		$context.putPageValue("searcher",$searcher)
 		<table class="inlinesearch" style="" >
 			<tr>
+	#if( $canshowlibrarypicker )
 				<td  id="selectedlibraryui" style="min-width:220px; padding-right:20px;">
 					<form class="ajaxform" data-targetdiv="collectionpickerinner" action="$home$apphome/components/libraries/pickcollection.html">
 						<input type="hidden" name="oemaxlevel" value="5" />
@@ -32,7 +33,7 @@
 						#end
 					</form>
 				</td>	
-
+	#end
 				<td id="collectionidui" style="padding-right:5px;">
 					<form  action="$home$apphome/views/modules/librarycollection/media/index.html">
 						<input type="hidden" id="list-libraryvalue" name="selectedlibrary" value="$!library.getId()" />  
