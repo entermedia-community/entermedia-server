@@ -158,6 +158,14 @@ public class ProjectModule extends BaseMediaModule
 		String librarycollection = inReq.getRequestParameter("collectionid");
 		if( librarycollection == null)
 		{
+			Data data = (Data)inReq.getPageValue("data");
+			if( data != null)
+			{
+				librarycollection = data.getId();
+			}
+		}
+		if( librarycollection == null)
+		{
 			log.error("librarycollection not found");
 			return;
 		}
