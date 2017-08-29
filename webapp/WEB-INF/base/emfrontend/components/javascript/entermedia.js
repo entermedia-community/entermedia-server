@@ -176,12 +176,14 @@ runajaxonthis = function(inlink,e)
 	var targetDiv = inlink.attr("targetdiv");
 	
 	var useparent = inlink.data("useparent");
+
+	var options = inlink.data();
 	
 	if( targetDiv)
 	{
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 		
-		jQuery.get(nextpage, {}, function(data) 
+		jQuery.get(nextpage, options, function(data) 
 			{
 				//console.log("Called REAL get on " ,arguments );
 				
@@ -210,7 +212,7 @@ runajaxonthis = function(inlink,e)
 		var loaddiv = inlink.attr("targetdivinner");
 		loaddiv = loaddiv.replace(/\//g, "\\/");
 		//jQuery("#"+loaddiv).load(nextpage);
-		jQuery.get(nextpage, {}, function(data) 
+		jQuery.get(nextpage, options, function(data) 
 				{
 					var cell;
 					
