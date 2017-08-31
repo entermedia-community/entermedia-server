@@ -266,7 +266,10 @@ public class ProjectModule extends BaseMediaModule
 		if(all == null){
 			return;
 		}
-		
+		if( Boolean.parseBoolean( inReq.findValue("alwaysresetpage") ) )
+		{
+			all.setPage(1);
+		}
 		Object caneditdata = inReq.getPageValue("caneditdata");
 		all.getSearchQuery().setValue("caneditdata", caneditdata);
 

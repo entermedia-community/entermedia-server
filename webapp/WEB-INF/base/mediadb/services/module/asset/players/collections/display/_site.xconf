@@ -14,6 +14,7 @@
     </path-action>
 
 	<path-action name="ProjectModule.searchForAssetsOnCollection" />
+	<property name="alwaysresetpage">true</property>
 	
    	<!--path-action name="MediaSearchModule.searchCategories"/ -->
    	

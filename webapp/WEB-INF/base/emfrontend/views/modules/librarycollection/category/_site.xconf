@@ -17,6 +17,7 @@
     </permission>
 
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
+	<property name="alwaysresetpage">true</property>
 
 	<property name="assetrootfolderXX">/${applicationid}/views/assets</property>
 

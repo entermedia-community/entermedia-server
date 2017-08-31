@@ -18,6 +18,7 @@
 	<path-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</path-action>
+	<property name="alwaysresetpage">true</property>
 	
 	
 	 <permission name="view">

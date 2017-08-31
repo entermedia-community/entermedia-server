@@ -503,10 +503,11 @@ checkScroll = function()
   		{ 	
   			totalHeight = window.screen.availHeight; //This is the total size of the monitor
   		}
-  		//console.log($(window).scrollTop() + " + " +   (visibleHeight + 170)) + ">=" + totalHeight); 
+  		//console.log($(window).scrollTop() + " + " +   (visibleHeight + 170) + ">=" + totalHeight); 
 		var atbottom = ($(window).scrollTop() + (visibleHeight + 170)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
 		if(	!atbottom )
 	    {
+	    	//console.log("Not At bottom");
 		  return;
 		}
 		var resultsdiv= $("#resultsdiv");
@@ -545,7 +546,7 @@ checkScroll = function()
 				   gridResize();
 				   $(document).trigger("domchanged");
 				   stopautoscroll = false; 
-					}
+				}
 			});
 	     }   
 }

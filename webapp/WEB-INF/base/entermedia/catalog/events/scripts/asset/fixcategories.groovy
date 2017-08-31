@@ -16,21 +16,32 @@ public void init(){
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
 	
-	HitTracker hits = archive.getAssetSearcher().query().match("id", "*").sort("id").search();
+	HitTracker hits = archive.getAssetSearcher().query().all().sort("sourcepath").search();
 	hits.enableBulkOperations();
+	log.info("Processing " + hits.size());
+	
 	List tosave = new ArrayList();
 	Counter counter = new Counter();
+	
 	int savedsofar = 0;
 	int loops = 0;
 	ArrayList cats = new ArrayList();
+	//archive.getCategorySearcher().deleteAll(null);
+	
+	Category root = archive.getCategorySearcher().getRootCategory();
+	archive.getCategorySearcher().saveCategory(root);
+	
 	hits.each{
 		Data hit = it;
 		String path = hit.getValue("archivesourcepath");
 		if(path == null){
 			path = hit.getSourcePath();	
-		}		
+		}	
+		//log.info("found " + path);
+			
 		Asset found = archive.getAssetSearcher().loadData(hit);
-
+		//found.clearCategories();
+		
 		if(!found.isFolder())   //   a/b/c.jpg -> a/b   if /a/b  --> a/b
 		{
 			path = PathUtilities.extractDirectoryPath(path);
@@ -68,6 +79,7 @@ init();
 
 public Category createCategoryPath(MediaArchive archive, List cats, String inPath, Counter counter)
 {
+	//log.info("top " + inPath);
 	if( inPath.length() == 0 || inPath.equals("Index"))
 	{
 		return archive.getCategorySearcher().getRootCategory();
@@ -78,7 +90,7 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 	{
 		return cat;
 	}
-	
+	//log.info("before " + inPath);
 	
 	//TODO: Find right way to do this not matches
 	Data hit = (Data)archive.getCategorySearcher().query().startsWith("categorypath", inPath).sort("categorypathUp").searchOne();
@@ -86,28 +98,32 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 	Category found = (Category)archive.getCategorySearcher().loadData(hit);
 	if( found == null)
 	{
+	//	log.info("not found " + inPath);
 		found = (Category)archive.getCategorySearcher().createNewData();
 		found.setId(counter.printNext());
 		String name = PathUtilities.extractFileName(inPath);
 		found.setName(name);
+		//log.info("Created " + inPath);
 		//create parents and itself
+		cats.add(found);
 		String parent = PathUtilities.extractDirectoryPath(inPath);
 		if( parent != null && !parent.trim().isEmpty())
 		{
 			try
 			{
 				Category parentcategory = createCategoryPath(archive, cats, parent, counter);
-				if( parentcategory != null)
-				{
-					parentcategory.addChild(found);
-				}
-				cats.add(found);
+				parentcategory.addChild(found);
 			}
 			catch ( StackOverflowError error)
 			{
 				log.error("Failed to load: " + inPath);
 				return null;
 			}
+		}
+		else if( found.getParentCategory() == null)
+		{
+			archive.getCategorySearcher().getRootCategory().addChild(found);
+			archive.getCategorySearcher().saveCategory(found);
 		}
 	}
 	archive.getCacheManager().put("catfix", inPath, found );
