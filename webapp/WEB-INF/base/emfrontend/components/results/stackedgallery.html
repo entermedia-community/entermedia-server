@@ -32,13 +32,19 @@ $context.putPageValue("showtoolbar", "false")
         $context.putPageValue("assetid", $hit.id)
         $context.putPageValue("count", $count )
         $context.putPageValue("sourcepath", $hit.sourcepath )
-         $context.putPageValue("thumbsize", "mediumplus" )
+        $context.putPageValue("thumbsize", "mediumplus" )
          
         #set($assetwidth = $mediaarchive.getRealImageWidth($hit))
         #set($assetheight = $mediaarchive.getRealImageHeight($hit))
         #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
-		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="cell${catalogid}_${hit.id}" data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight">
+        #set( $index = $hits.indexOfId($hit.id))
+        #set( $previous = false )
+		#set( $previous = $hits.previous($index))
+		#set( $next = false )
+		#set( $next = $hits.next($index))       
+        
+		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}" data-assetid="$hit.id" data-next="$!next.getId()" data-previous="$!previous.getId()" data-width="$assetwidth" data-height="$assetheight">
 		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
 		    	    <div class="grid-thumbimage assetdraggable"> 
 		    	    	#if( $type =="audio")
