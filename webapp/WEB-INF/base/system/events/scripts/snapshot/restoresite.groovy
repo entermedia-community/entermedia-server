@@ -294,7 +294,8 @@ public void importPermissions(MediaArchive mediaarchive, String rootfolder, Stri
 
 public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
-
+	Boolean fastmode = Boolean.parseBoolean(context.findValue("testimportmode")); //maybe store this in the system table/catalog somewhere
+	
 	log.info("Importing data " + upload.getPath());
 	Row trow = null;
 	ArrayList tosave = new ArrayList();
@@ -321,11 +322,11 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 		throw new OpenEditException("Could not define dynamic or static fields, check mapping errors");
 	}
 
-
+	int count = 0;
 	searcher.setForceBulk(true);
-	while( (trow = file.getNextRow()) != null )
+	while( (trow = file.getNextRow()) != null && ((fastmode && count < 1000) || !fastmode))
 	{
-
+		count++;
 		String id = trow.get("id");
 		Data newdata = searcher.createNewData();
 		newdata.setId(id);

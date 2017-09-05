@@ -280,10 +280,14 @@ public class BaseImporter extends EnterMediaObject
 	protected void addProperties(Searcher searcher, Row inRow, Data inData)
 	{
 		PropertyDetails details = getSearcher().getPropertyDetails();
+		int size = inRow.getHeader().getSize()-1;
 
 		for (int i = 0; i < inRow.getData().length; i++)
 		{
 			String val = inRow.getData(i);
+			if(i > size){
+				continue;
+			}
 			String header = inRow.getHeader().getColumn(i);
 			String headerid = PathUtilities.extractId(header, true);
 			if (header.contains("."))

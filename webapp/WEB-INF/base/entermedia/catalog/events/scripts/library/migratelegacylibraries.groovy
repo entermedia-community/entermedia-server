@@ -7,6 +7,37 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 
+
+
+
+//public void moveAssetsToCollections(){
+//	
+//	
+//	
+//	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
+//	Searcher colassets = mediaArchive.getSearcher("librarycollectionasset");
+//	
+//	ProjectManager projectmanager = (ProjectManager)moduleManager.getBean(catalogid,"projectManager");
+//	
+//	hits = colassets.getAllHits();
+//	hits.enableBulkOperations();
+//	hits.each{
+//		String assetid = it.asset;
+//		String collection = it.librarycollection;
+//		Data col= mediaArchive.getData("librarycollection", collection);
+//		if(col){
+//			projectmanager.addAssetToCollection(mediaArchive, collection, assetid);
+//		}else{
+//			log.info("No Collection ${collection} was found, skipping");
+//		}
+//		
+//		
+//	}
+//	
+//	
+//}
+
+
 public void migratePermissions() {
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
 	Searcher libraries = mediaArchive.getSearcher("library");
@@ -112,17 +143,23 @@ public void createProjects(){
 	ProjectManager manager = mediaArchive.getProjectManager();
 	
 	libs = libraries.getAllHits();
-	
+	libs.enableBulkOperations();
+	log.info("Found ${libs.size()} libs")
 	libs.each {
 		
 		HitTracker hits = collections.fieldSearch("library", it.id);
+		log.info("Found ${hits.size()} collections")
+		
+		hits.enableBulkOperations();
 		Data lib = it;
 		if(hits.size() > 0){
 			
 			
 			hits.each{
 				HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
-				if(libraryassets.size() > 0){				
+				log.info("Found ${libraryassets.size()} assets")
+				if(libraryassets.size() > 0){	
+					libraryassets.enableBulkOperations();			
 					Data newcollection = collections.searchById("subcol-${lib.id}");
 					if(newcollection == null){
 						newcollection = collections.createNewData();
@@ -152,16 +189,21 @@ public void createProjects(){
 
 
 
+
+
+
 //- If there is a library with assets that has no child collections, it becomes a collection   DONE
 //- Assign Divisions to Collections directly if the parent library has a division   
 //- If a library has child collections and is empty, do nothing 
-//- If a library has child collections and itself isn't empty, create a project and a collection with the same anme and move assets from the library to the collection with the same name
+//- If a library has child collections and itself isn't empty, create a new collection underneath that library with the same name and move assets from the library to the collection with the same name
 
 
 
 
+//moveAssetsToCollections();  Done with the importpermissions script
 
-convertLibrariesToCollections();
-assignDivisions();
+
+//convertLibrariesToCollections();
+//assignDivisions();
 createProjects();
-migratePermissions();
+//migratePermissions();

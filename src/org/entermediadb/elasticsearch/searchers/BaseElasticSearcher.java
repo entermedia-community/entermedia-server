@@ -1903,8 +1903,9 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
-				if( detail == null && !propid.equals("description"))
+				if( detail == null && !propid.equals("description") && !propid.contains("_int"))
 				{
+					
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					//setType(detail);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
@@ -2016,7 +2017,13 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					else if (value != null)
 					{
+						try{
 						val = Long.valueOf((String) value);
+						} catch(Exception e){
+	//						throw new OpenEditException("Bad Value for Number:  " + val + " trying to set: " + key);
+							log.info("Bad Value for Number:  " + val + " trying to set: " + key);
+
+						}
 					}
 					inContent.field(key, val);
 				}
@@ -2069,7 +2076,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				else if (detail.isDataType("geo_point"))
 				{
-					inContent.field(key, value);
+				//	inContent.field(key, value);
 				}
 				else if (key.equals("description")) // TODO: This should be
 													// moved to _all

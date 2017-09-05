@@ -298,7 +298,8 @@ public class ProjectManager implements CatalogEnabled
 				assetids.put(asset.getId(), asset);
 			}
 			Category root = getRootCategory(archive, librarycollection);
-			Collection existing = archive.getAssetSearcher().query().match("category", root.getId()).search();
+			HitTracker existing = archive.getAssetSearcher().query().match("category", root.getId()).search();
+			existing.enableBulkOperations();
 			for (Iterator iterator = existing.iterator(); iterator.hasNext();)
 			{
 				Data hit = (Data) iterator.next();
@@ -331,6 +332,7 @@ public class ProjectManager implements CatalogEnabled
 	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid)
 	{
 		Category root = getRootCategory(archive, collectionid);
+		
 		Asset asset = (Asset) archive.getAssetSearcher().searchById(assetid);
 		if (asset != null)
 		{
