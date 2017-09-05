@@ -492,7 +492,6 @@ checkScroll = function()
 {
 		if( stopautoscroll )
 		{
-			console.log("auto scroll canceled");
 			return;
 		}
 		//are we near the end? Are there more pages?
@@ -518,7 +517,7 @@ checkScroll = function()
 		 
 	    var page = parseInt(resultsdiv.data("pagenum"));   
 	    var total = parseInt(resultsdiv.data("totalpages"));
-		console.log("checking scroll" + stopautoscroll + " page " + page + " of " + total);
+		//console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
 	    if( total > page)
 	    {
 		   stopautoscroll = true; 
@@ -526,7 +525,7 @@ checkScroll = function()
 		   page = page + 1;
 		   resultsdiv.data("pagenum",page);
 		   var home = $('#application').data('home') + $('#application').data('apphome');
-		   console.log("loading page: " + home +" " + page);
+		   console.log("Loading page: #" + page +" - " + home);
 		   
 		   var link = home + "/components/results/stackedgallery.html";
 
@@ -559,7 +558,7 @@ gridResize = function()
 	{
 		return;
 	}
-	console.log("resized grid");
+	console.log("Resized grid.");
 	checkScroll();
 	
 	var fixedheight = grid.data("maxheight");
