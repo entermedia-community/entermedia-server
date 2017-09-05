@@ -6,6 +6,8 @@
 	<property name="uselegacythumbimages">false</property>
 	<property name="prefwidth">1024</property>
 	<property name="prefheight">768</property>
+	<property name="exportnameinpath">true</property>
+	
 </page>
 
 

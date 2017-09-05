@@ -301,6 +301,10 @@ public abstract class BaseConversionManager implements ConversionManager
 		String colorspace = inStructions.getAsset().get("colorspace");
 		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
 		{
+			if( inStructions.isCrop() ) //Let it use the standard 1020x768
+			{
+				return null;
+			}
 //			if( !isCMYKProfile(inInputFile) )
 //			{
 				Asset asset = inStructions.getAsset();

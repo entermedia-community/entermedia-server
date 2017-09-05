@@ -50,7 +50,7 @@ public class ImageCacheLoader implements InputLoader
 	{
 		ContentItem input = null;
 
-		if (inStructions.getPageNumber() == 1)
+		if (inStructions.getPageNumber() == 1 && !inStructions.isCrop() ) //Can only crop jpg preview
 		{
 			input = inStructions.getMediaArchive().getContent("/WEB-INF/data/" + inStructions.getMediaArchive().getCatalogId() + "/generated/" + inStructions.getAssetSourcePath() + "/customthumb." + cachetype);
 			if (input != null && input.getLength() > 2)
