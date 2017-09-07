@@ -144,9 +144,26 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	public void restoreSettings()
 	{
 		getPropertyDetailsArchive().clearCustomSettings(getSearchType());
-		reIndexAll();
+		super.deleteAll(null); //removes the index
+
+		String rootpath = "/WEB-INF/data/" + getCatalogId() + "/lists/" + getSearchType() + ".xml";
+		XmlFile file = getXmlSearcher().getXmlArchive().getXml(rootpath);
+		if( file.isExist() )
+		{
+			getXmlSearcher().getXmlArchive().deleteXmlFile(file);
+		}
+
+		rootpath = "/WEB-INF/data/" + getCatalogId() + "/lists/" + getSearchType() + "/custom.xml";
+		file = getXmlSearcher().getXmlArchive().getXml(rootpath);
+		if( file.isExist() )
+		{
+			getXmlSearcher().getXmlArchive().deleteXmlFile(file);
+		}
+		
+		reIndexAll(); //this will go back
 	}
 
+	
 	@Override
 	public void reloadSettings()
 	{
