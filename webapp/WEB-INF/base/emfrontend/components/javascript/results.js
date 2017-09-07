@@ -218,11 +218,19 @@ jQuery(document).ready(function(url,params)
 		$("#application").removeClass("noscroll");
 		inOverlay.hide();
 		stopautoscroll = false;
+		
+		var lastscroll = getOverlay().data("lastscroll");
+		$(window).scrollTop( lastscroll );
+		
 	}
 	
 	showOverlayDiv = function(inOverlay)
 	{
 		stopautoscroll = true;
+		var lastscroll = $(window).scrollTop();
+		getOverlay().data("lastscroll",lastscroll);
+		
+		
 		//$("html").css({"overflow":"hidden","height":"100%"});
 		//$("body").css({"overflow":"hidden","height":"100%"});
 		//$("#application").hide();
@@ -453,7 +461,7 @@ jQuery(document).ready(function(url,params)
 		checkScroll();
 	});
 	
-	$(window).on('scroll',function() 
+	$(window).on('scroll',function(e) 
 	{
 		checkScroll();
 	});
@@ -494,6 +502,16 @@ checkScroll = function()
 {
 		if( stopautoscroll )
 		{
+			//ignore scrolls
+			if( getOverlay().is(":visible") )
+			{
+				var lastscroll = getOverlay().data("lastscroll");
+				var currentscroll = $(window).scrollTop();
+				if( Math.abs(lastscroll -  currentscroll) > 50 )
+				{
+					$(window).scrollTop( lastscroll );
+				}
+			}
 			return;
 		}
 		//are we near the end? Are there more pages?
