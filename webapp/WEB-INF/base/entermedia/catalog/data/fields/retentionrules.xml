@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties beanname="folderSearcher"> 
-  <property id="id" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">ID 
+  <property id="id" editable="true" stored="true" index="true" >ID 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[ID]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[ID]]></language> 
     </name> 
   </property>  
-  <property id="name" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Name 
+  <property id="name" editable="true" stored="true" index="true" >Name 
     <name> 
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
-  <property id="archivepath" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Archive Path 
+  <property id="archivepath" editable="true" stored="true" index="true" >Archive Path 
     <name> 
       <language id="de"><![CDATA[Archivpfad]]></language>  
       <language id="en"><![CDATA[Archive Path]]></language>  
@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Chemin des archives]]></language> 
     </name> 
   </property>  
-  <property id="expirationperiod" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Expiration Period
+  <property id="expirationperiod" editable="true" stored="true" index="true" >Expiration Period
     <name>
       <language id="de"><![CDATA[Ablaufzeitraum]]></language>
       <language id="en"><![CDATA[Expiration Period]]></language>
@@ -33,5 +33,12 @@
       <language id="fr"><![CDATA[Période d&#39;expiration]]></language>
     </name>
   </property>  
+  <property id="deleteasset" editable="true" stored="true" index="true" >
+    <name>
+      <language id="en"><![CDATA[Auto Delete Asset]]></language>
+    </name>
+  </property>  
+  
+  
   <!--- library? --> 
 </properties>

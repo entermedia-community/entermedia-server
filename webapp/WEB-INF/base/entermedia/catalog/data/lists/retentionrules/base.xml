@@ -3,5 +3,6 @@
 	<rule id="100" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="Auto Archived" expirationperiod="0d"/>
 	<rule id="101" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="30 Days Old" expirationperiod="30d"/>
 	<rule id="102" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="1 Year" expirationperiod="12M"/>
+	<rule id="103" deleteasset="true" name="Delete after 2 Years" expirationperiod="24M"/>
 
 </page>

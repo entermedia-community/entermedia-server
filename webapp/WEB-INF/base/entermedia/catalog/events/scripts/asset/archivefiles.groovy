@@ -18,7 +18,12 @@ public void archiveAssets(Data retentionpolicy, Collection assets)
 {
 	assets.each
 	{
-		if( !it.archivesourcepath  )
+		if( Boolean.valueOf( retentionpolicy.get("deleteasset") ) )
+		{
+			Asset asset = mediaarchive.getAssetSearcher().loadData(it);
+			mediaarchive.deleteAsset(asset,true);
+		}
+		else if( !it.archivesourcepath  )
 		{
 			Asset asset = mediaarchive.getAssetSearcher().loadData(it);
 			Page fullpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + asset.getSourcePath() );
