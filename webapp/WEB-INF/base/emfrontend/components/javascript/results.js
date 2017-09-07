@@ -214,7 +214,8 @@ jQuery(document).ready(function(url,params)
 	hideOverlayDiv = function(inOverlay)
 	{
 		//$("html, body").css({"overflow":"auto","height":"inherit"});
-		$("#application").show();
+		//$("#application").show();
+		$("#application").removeClass("noscroll");
 		inOverlay.hide();
 		stopautoscroll = false;
 	}
@@ -224,7 +225,8 @@ jQuery(document).ready(function(url,params)
 		stopautoscroll = true;
 		//$("html").css({"overflow":"hidden","height":"100%"});
 		//$("body").css({"overflow":"hidden","height":"100%"});
-		$("#application").hide();
+		//$("#application").hide();
+		$("#application").addClass("noscroll");
 		inOverlay.show();
 	}
 	showAsset = function(assetid,pagenum)
