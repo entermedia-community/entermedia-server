@@ -213,30 +213,22 @@ jQuery(document).ready(function(url,params)
 	
 	hideOverlayDiv = function(inOverlay)
 	{
-		//$("html, body").css({"overflow":"auto","height":"inherit"});
-		//$("#application").show();
-		$("#application").removeClass("noscroll");
-		inOverlay.hide();
 		stopautoscroll = false;
-		
+		inOverlay.hide();
 		var lastscroll = getOverlay().data("lastscroll");
 		$(window).scrollTop( lastscroll );
-		
 	}
 	
 	showOverlayDiv = function(inOverlay)
 	{
 		stopautoscroll = true;
+		inOverlay.show();
 		var lastscroll = $(window).scrollTop();
 		getOverlay().data("lastscroll",lastscroll);
-		
-		
-		//$("html").css({"overflow":"hidden","height":"100%"});
-		//$("body").css({"overflow":"hidden","height":"100%"});
-		//$("#application").hide();
-		$("#application").addClass("noscroll");
-		inOverlay.show();
 	}
+	
+	
+	
 	showAsset = function(assetid,pagenum)
 	{
 		var hidden = getOverlay();
@@ -316,9 +308,6 @@ jQuery(document).ready(function(url,params)
 		         	 hideOverlayDiv(getOverlay());
 		        break;
 		
-		       
-		        //case : // space //toggle slideshow
-		        //break;
 		
 		        default: return; // exit this handler for other keys
 		    }
@@ -458,11 +447,13 @@ jQuery(document).ready(function(url,params)
 	
 	document.addEventListener('touchmove', function(e) 
 	{
+		//console.log("touchmove event");
 		checkScroll();
 	});
 	
 	$(window).on('scroll',function(e) 
 	{
+		//console.log("scroll event *");
 		checkScroll();
 	});
 	$(document).on('domchanged',function() 
@@ -578,7 +569,7 @@ gridResize = function()
 	{
 		return;
 	}
-	console.log("Resized grid.");
+	console.log("Resized grid");
 	checkScroll();
 	
 	var fixedheight = grid.data("maxheight");
