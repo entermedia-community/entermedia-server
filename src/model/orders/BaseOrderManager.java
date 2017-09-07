@@ -562,7 +562,14 @@ public class BaseOrderManager implements OrderManager {
 				{
 					presetid = properties.get("presetid.value");
 				}
-
+				
+				if( presetid == null )
+				{
+					presetid = inReq.findValue("presetid");
+				}
+				
+				
+				
 				if( presetid == null)
 				{
 					throw new OpenEditException("presetid is required");

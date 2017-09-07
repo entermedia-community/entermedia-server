@@ -125,9 +125,11 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 				#end
 			#end	
 			<!-- include submit to fatwire -->
-			#if($result.publishtofatwire == "true") 
+			###if($result.publishtofatwire == "true") 
 				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
-			#end
+				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
+				
+		##	#end
 		#end
 	</div>
 	#end

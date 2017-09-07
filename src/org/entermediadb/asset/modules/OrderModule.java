@@ -662,9 +662,13 @@ public class OrderModule extends BaseMediaModule
 		Map params = inReq.getParameterMap();
 		if (order.get("publishdestination") == null)
 		{
-			//String publishdestination = inReq.findValue("publishdestination.value");
+			String publishdestination = inReq.findValue("publishdestination.value");
+			if(publishdestination != null){
+				order.setProperty("publishdestination", publishdestination);//assume 0 for most orders, 0 can be told to use Aspera
+			} else{
 			//do something? default it to browser?
 			order.setProperty("publishdestination", "0");//assume 0 for most orders, 0 can be told to use Aspera
+			}
 		}
 		List assetids = manager.addConversionAndPublishRequest(inReq, order, archive, params, inReq.getUser());
 		// OrderHistory history =
