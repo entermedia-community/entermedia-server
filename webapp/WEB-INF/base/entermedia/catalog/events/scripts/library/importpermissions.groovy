@@ -33,22 +33,29 @@ public void init()
 		}
 		Category node = mediaArchive.getData("category",library.get("categoryid") );
 		
-		HitTracker users = mediaArchive.getSearcher("libraryusers").query().match("_parent",library.getId()).search();
+			
+		
+		HitTracker users = mediaArchive.getSearcher("libraryusers").query().match("libraryid",library.getId()).search();
 		users.each {
+			library.addValue("viewusers",it.userid);
 			node.addValue("viewusers",it.userid);
-		}	
+		}
+		
 
 		HitTracker groups = mediaArchive.getSearcher("librarygroups").query().match("libraryid",library.getId()).search();
 		groups.each {
+			library.addValue("viewgroups",it.groupid);
 			node.addValue("viewgroups",it.groupid);
 		}
 
 		HitTracker roles = mediaArchive.getSearcher("libraryroles").query().match("libraryid",library.getId()).search();
 		roles.each {
+			library.addValue("viewroles",it.roleid);
 			node.addValue("viewroles",it.roleid);
 		}
+		
+		libraries.saveData(library);
 		mediaArchive.getCategorySearcher().saveData(node);
-
 		log.info("saved  ${library.getName() }");
 	}
 

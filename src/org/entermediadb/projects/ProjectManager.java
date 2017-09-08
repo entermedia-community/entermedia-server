@@ -8,9 +8,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.logging.Log;
@@ -19,7 +21,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetUtilities;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.openedit.CatalogEnabled;
@@ -287,39 +288,36 @@ public class ProjectManager implements CatalogEnabled
 	public void addAssetToCollection(MediaArchive archive, String librarycollection, HitTracker assets)
 	{
 		List tosave = new ArrayList();
-		assets.setHitsPerPage(200);
-		for (int i = 0; i < assets.getTotalPages(); i++)
+		assets.enableBulkOperations();
+		Category root = getRootCategory(archive, librarycollection);
+
+		HitTracker existing = archive.getAssetSearcher().query().match("category", root.getId()).search();
+		existing.enableBulkOperations();
+
+		Set assetids = new HashSet(existing.size());
+	
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
 		{
-			assets.setPage(i + 1);
-			Map assetids = new HashMap();
-			for (Object hit : assets.getPageOfHits())
-			{
-				Data asset = (Data) hit;
-				assetids.put(asset.getId(), asset);
-			}
-			Category root = getRootCategory(archive, librarycollection);
-			HitTracker existing = archive.getAssetSearcher().query().match("category", root.getId()).search();
-			existing.enableBulkOperations();
-			for (Iterator iterator = existing.iterator(); iterator.hasNext();)
-			{
-				Data hit = (Data) iterator.next();
-				assetids.remove(hit.getId());
-			}
-			for (Iterator iterator = assetids.values().iterator(); iterator.hasNext();)
-			{
-				Data hit = (Data) iterator.next();
-				Asset asset = (Asset) archive.getAssetSearcher().loadData(hit);
+			Data hit = (Data) iterator.next();
+			assetids.add(hit.getId());
+		}
+		
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();) {
+			Data data = (Data) iterator.next();
+			if(!assetids.contains(data.getId())){
+				Asset asset = (Asset) archive.getAssetSearcher().loadData(data);
 				asset.addCategory(root);
 				tosave.add(asset);
-				if (tosave.size() > 200)
+				if (tosave.size() > 1000)
 				{
 					archive.getAssetSearcher().saveAllData(tosave, null);
 					tosave.clear();
-				}
+				}		
+		
 			}
-		}
+			
+		}		
 		archive.getAssetSearcher().saveAllData(tosave, null);
-
 	}
 
 	//	public void addAssetToCollection(MediaArchive archive, String libraryid, String collectionid, String assetid)

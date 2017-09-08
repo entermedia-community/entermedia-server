@@ -51,26 +51,7 @@ public void migratePermissions() {
 		if(catid != null){
 
 			Category cat = mediaArchive.getData("category", catid);
-			if(cat){
-				List users = it.getValues("viewusers");
-				List groups = it.getValues("viewgroups");
-				List roles = it.getValues("viewroles");
-
-
-				users.each {
-					cat.addValue("viewusers",it);
-				}
-
-				groups.each {
-					cat.addValue("viewgroups",it);
-				}
-
-				roles.each {
-					cat.addValue("viewroles",it);
-				}
-
-				tosave.add(cat);
-			}
+			
 		}
 	}
 
@@ -148,8 +129,18 @@ public void createProjects(){
 	libs = libraries.getAllHits();
 	libs.enableBulkOperations();
 	log.info("Found ${libs.size()} libs")
+	
+	
+	Data orphancollections = libraries.searchById("orphanlib");
+	if(orphancollections == null){
+		orphancollections == libraries.createNewData();
+		orphancollections.setId("orphanlib");
+		orphancollections.setName("Orphans");	
+		libraries.saveData(orphancollections);	
+	}
+	
 	libs.each {
-		HitTracker hits = collections.fieldSearch("library", it.id);
+		HitTracker childcollections = collections.fieldSearch("library", it.id);
 		log.info("Found ${hits.size()} collections")
 		hits.enableBulkOperations();
 		Data lib = it;
@@ -162,15 +153,34 @@ public void createProjects(){
 				newcollection = collections.createNewData();
 				newcollection.setId("subcol-${lib.id}");
 				newcollection.setName(lib.getName());
-				collections.saveData(newcollection);
+				
+				
+								
 			}
-			newcollection.setProperty("division", lib.division);
-			if(hits.size() > 0){
-				newcollection.setProperty("librarycollection", lib.id);				
-			} else{
+			
+			if(childcollections.size() > 0){ //The move to the child case
+				newcollection.setValue("library", lib.id);
+						
+			} else{				
+				newcollection.setValue("lbrary", "orphanlib");
 				libstodelete.add(it);
+				
+				
+				
+				
+				
 			}
-			manager.addAssetToCollection(mediaArchive, "subcol-${lib.id}", libraryassets);					
+			
+			newcollection.setProperty("division", lib.division);
+			collections.saveData(newcollection);
+			
+			manager.addAssetToCollection(mediaArchive, "subcol-${lib.id}", libraryassets);
+						
+			
+			
+			
+			
+								
 		}		
 	}
 	libraries.deleteAll(libstodelete, null);
@@ -179,43 +189,43 @@ public void createProjects(){
 
 
 
-public void prepareCategories(){
-	
-	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
-	Searcher libraries = mediaArchive.getSearcher("library");
-	Searcher collections = mediaArchive.getSearcher("librarycollection");
-	Searcher assets = mediaArchive.getSearcher("asset");
-	ProjectManager manager = mediaArchive.getProjectManager();
-	libs = libraries.getAllHits();
-	libs.enableBulkOperations();
-	log.info("Found ${libs.size()} libs")
-	libs.each {
-		HitTracker hits = collections.fieldSearch("library", it.id);
-		log.info("Found ${hits.size()} collections")
-		hits.enableBulkOperations();
-		Data lib = it;
-		HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
-		log.info("Found ${libraryassets.size()} assets")
-		if(libraryassets.size() > 0){
-			libraryassets.enableBulkOperations();
-			Data newcollection = collections.searchById("subcol-${lib.id}");
-			if(newcollection == null){
-				newcollection = collections.createNewData();
-				newcollection.setId("subcol-${lib.id}");
-				newcollection.setName(lib.getName());
-				collections.saveData(newcollection);
-			}
-			newcollection.setProperty("division", lib.division);
-			if(hits.size() > 0){
-				newcollection.setProperty("librarycollection", lib.id);
-			} else{
-				libstodelete.add(it);
-			}
-		}
-	}
-	libraries.deleteAll(libstodelete, null);
-	
-}
+//public void prepareCategories(){
+//	
+//	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
+//	Searcher libraries = mediaArchive.getSearcher("library");
+//	Searcher collections = mediaArchive.getSearcher("librarycollection");
+//	Searcher assets = mediaArchive.getSearcher("asset");
+//	ProjectManager manager = mediaArchive.getProjectManager();
+//	libs = libraries.getAllHits();
+//	libs.enableBulkOperations();
+//	log.info("Found ${libs.size()} libs")
+//	libs.each {
+//		HitTracker hits = collections.fieldSearch("library", it.id);
+//		log.info("Found ${hits.size()} collections")
+//		hits.enableBulkOperations();
+//		Data lib = it;
+//		HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
+//		log.info("Found ${libraryassets.size()} assets")
+//		if(libraryassets.size() > 0){
+//			libraryassets.enableBulkOperations();
+//			Data newcollection = collections.searchById("subcol-${lib.id}");
+//			if(newcollection == null){
+//				newcollection = collections.createNewData();
+//				newcollection.setId("subcol-${lib.id}");
+//				newcollection.setName(lib.getName());
+//				collections.saveData(newcollection);
+//			}
+//			newcollection.setProperty("division", lib.division);
+//			if(hits.size() > 0){
+//				newcollection.setProperty("librarycollection", lib.id);
+//			} else{
+//				libstodelete.add(it);
+//			}
+//		}
+//	}
+//	libraries.deleteAll(libstodelete, null);
+//	
+//}
 
 
 
@@ -239,5 +249,5 @@ public void prepareCategories(){
 
 //convertLibrariesToCollections();
 assignDivisions();
-//createProjects();
+createProjects();
 //migratePermissions();
