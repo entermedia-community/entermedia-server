@@ -133,7 +133,7 @@ public void createProjects(){
 	
 	Data orphancollections = libraries.searchById("orphanlib");
 	if(orphancollections == null){
-		orphancollections == libraries.createNewData();
+		orphancollections = libraries.createNewData();
 		orphancollections.setId("orphanlib");
 		orphancollections.setName("Orphans");	
 		libraries.saveData(orphancollections);	
@@ -141,8 +141,8 @@ public void createProjects(){
 	
 	libs.each {
 		HitTracker childcollections = collections.fieldSearch("library", it.id);
-		log.info("Found ${hits.size()} collections")
-		hits.enableBulkOperations();
+		log.info("Found ${childcollections.size()} collections")
+		childcollections.enableBulkOperations();
 		Data lib = it;
 		HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
 		log.info("Found ${libraryassets.size()} assets")
