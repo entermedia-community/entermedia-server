@@ -68,6 +68,15 @@ public void init() {
 					
 			String publishdestination = publishrequest.get("publishdestination");
 			Data destination = mediaArchive.getSearcherManager().getData(mediaArchive.getCatalogId(), "publishdestination",publishdestination);
+			if( destination == null)
+			{
+				publishrequest.setProperty('status', 'error');
+				publishrequest.setProperty("errordetails", "Publish destination is invalid " + publishdestination);
+				queuesearcher.saveData(publishrequest, context.getUser());
+				log.error("Publish destination is invalid " + publishdestination);
+				
+				continue;
+			}
 			Lock lock = null;
 			try
 			{
