@@ -14,7 +14,7 @@ $context.putPageValue("searcher", $searcher)
 
 #set($usestartswith = $page.isPropertyTrue('usestartswith'))
 $context.putPageValue("usestartswith",$usestartswith)
-$context.putPageValue("caneditlists","false")
+$context.putPageValue("caneditlists",false)
 			
 
 #set( $edit = $context.getRequestParameter("editadvsearch"))
