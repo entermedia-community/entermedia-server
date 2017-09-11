@@ -807,6 +807,13 @@ public class ProjectManager implements CatalogEnabled
 			library.setId("default");
 			library.setName("General");
 			librarysearcher.saveData(library);
+		} 
+		if(library == null){
+			library = librarysearcher.createNewData();
+			library.setId(libraryid);
+			library.setName(libraryid);
+			librarysearcher.saveData(library);
+
 		}
 		Category collectioncategory = inArchive.createCategoryPath("Collections/" + library.getName() + "/" + collection.getName());
 		return collectioncategory;
