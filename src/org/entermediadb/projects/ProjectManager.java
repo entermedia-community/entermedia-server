@@ -803,20 +803,12 @@ public class ProjectManager implements CatalogEnabled
 		Data library = inArchive.getData("library", libraryid);
 		if("default".equals(libraryid) && library == null)
 		{
-			/*
-			if( path == null)
-			{
-				path = "Libraries/" + library.getName();
-			}
-			Category parentcategory = mediaArchive.createCategoryPath(path);
-			 */
 			library = librarysearcher.createNewData();
 			library.setId("default");
 			library.setName("General");
 			librarysearcher.saveData(library);
 		}
-		Category librarycategory = createLibraryCategory(inArchive,library);
-		Category collectioncategory = inArchive.createCategoryPath(librarycategory.getCategoryPath() + "/" + collection.getName());
+		Category collectioncategory = inArchive.createCategoryPath("Collections/" + library.getName() + "/" + collection.getName());
 		return collectioncategory;
 	}
 
