@@ -63,7 +63,10 @@ public void init()
 		}
 		
 		libraries.saveData(library);
-		mediaArchive.getCategorySearcher().saveData(node);
+		if( node != null)
+		{
+			mediaArchive.getCategorySearcher().saveData(node);
+		}
 		log.info("saved  ${library.getName() }");
 	}
 
