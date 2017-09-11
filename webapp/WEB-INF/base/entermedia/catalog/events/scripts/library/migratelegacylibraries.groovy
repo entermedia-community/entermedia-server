@@ -131,11 +131,11 @@ public void createProjects(){
 	log.info("Found ${libs.size()} libs")
 	
 	
-	Data orphancollections = libraries.searchById("orphanlib");
+	Data orphancollections = libraries.searchById("default");
 	if(orphancollections == null){
 		orphancollections = libraries.createNewData();
-		orphancollections.setId("orphanlib");
-		orphancollections.setName("Orphans");	
+		orphancollections.setId("default");
+		orphancollections.setName("General");	
 		libraries.saveData(orphancollections);	
 	}
 	
@@ -162,7 +162,7 @@ public void createProjects(){
 				newcollection.setValue("library", lib.id);
 						
 			} else{				
-				newcollection.setValue("lbrary", "orphanlib");
+				newcollection.setValue("library", "default");
 				libstodelete.add(it);
 				
 				
@@ -174,7 +174,7 @@ public void createProjects(){
 			newcollection.setProperty("division", lib.division);
 			collections.saveData(newcollection);
 			
-			manager.addAssetToCollection(mediaArchive, "subcol-${lib.id}", libraryassets);
+			manager.addAssetToCollection(mediaArchive, newcollection.getId(), libraryassets);
 						
 			
 			

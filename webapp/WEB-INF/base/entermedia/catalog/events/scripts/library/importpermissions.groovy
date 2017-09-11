@@ -16,21 +16,21 @@ public void init()
 	libs = libraries.getAllHits();
 	libs.each {
 		Data library =  it;
-		if( library.get("categoryid") == null )
-		{
-			String path = library.get("folder");
-			if( path == null)
-			{
-				path = "Libraries/" + library.getName();
-			}
-			if( path == null)
-			{
-				return;
-			}
-			Category node = mediaArchive.createCategoryPath(path);
-			library.setValue("categoryid", node.getId() );
-			libraries.saveData(library);
-		}
+//		if( library.get("categoryid") == null )
+//		{
+//			String path = library.get("folder");
+//			if( path == null)
+//			{
+//				path = "Collections/" + library.getName();
+//			}
+//			if( path == null)
+//			{
+//				return;
+//			}
+//			Category node = mediaArchive.createCategoryPath(path);
+//			library.setValue("categoryid", node.getId() );
+//			libraries.saveData(library);
+//		}
 		Category node = mediaArchive.getData("category",library.get("categoryid") );
 		
 			
@@ -38,20 +38,28 @@ public void init()
 		HitTracker users = mediaArchive.getSearcher("libraryusers").query().match("libraryid",library.getId()).search();
 		users.each {
 			library.addValue("viewusers",it.userid);
-			node.addValue("viewusers",it.userid);
+			if(node != null) {
+				node.addValue("viewusers",it.userid);
+			}
 		}
 		
 
 		HitTracker groups = mediaArchive.getSearcher("librarygroups").query().match("libraryid",library.getId()).search();
 		groups.each {
 			library.addValue("viewgroups",it.groupid);
+			if(node != null) {
+				
 			node.addValue("viewgroups",it.groupid);
+			}
 		}
 
 		HitTracker roles = mediaArchive.getSearcher("libraryroles").query().match("libraryid",library.getId()).search();
 		roles.each {
 			library.addValue("viewroles",it.roleid);
+			if(node != null) {
+				
 			node.addValue("viewroles",it.roleid);
+			}
 		}
 		
 		libraries.saveData(library);
