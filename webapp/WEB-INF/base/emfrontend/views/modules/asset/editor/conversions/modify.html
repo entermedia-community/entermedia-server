@@ -25,7 +25,7 @@ $pages.include("$home$apphome/views/modules/asset/editor/conversions/attachmenth
 ## check whether we can crop on particular image
 
 #if( $presetdata.id != "0" )
-<a class="thickbox btn" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}&oemaxlevel=1">Upload</a>
+<a class="emdialog btn"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">Upload</a>
 #end
 
 #if($canviewassetedit)

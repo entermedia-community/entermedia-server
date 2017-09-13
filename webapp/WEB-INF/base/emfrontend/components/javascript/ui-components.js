@@ -601,30 +601,7 @@ uiload = function() {
 	});
 		
 	
-	jQuery("a.thickbox").livequery(
-			function() 
-			{
-				jQuery(this).fancybox(
-				{
-			    	openEffect	: 'elastic',
-			    	closeEffect	: 'elastic',
-			    	helpers : {
-			    		title : {
-			    			type : 'inside'
-			    		}
-			    	}
-				});
-	});
-	
-	
-	jQuery("#fancy_content .fancyclose").livequery( function() {
-		//if( $(this).parent.jQuery.fancybox )
-		{
-		//	$(this).parent.jQuery.fancybox.close();
-		}	
-		
-	});
-	
+
 	jQuery("img.framerotator").livequery(
 		function()
 		{
@@ -1201,7 +1178,7 @@ uiload = function() {
 	    
 	    if( swipe )
 	    {
-	    	//console.log(div);
+	    	console.log(div);
 	    	var event = {};
 	    	event.originalEvent = e;
 	    	event.preventDefault = function() {};
