@@ -3,8 +3,43 @@
 #set( $view = "${hits.getSearchType()}/${hits.getSearchType()}resultstable" )
 #set ($details = $hits.getSearcher().getDetailsForView($view, $userprofile))
 #end
+#set( $searchhome = "$home$apphome/components/table")
+#set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
 
+#set($targetdiv = "resultsdiv")
+<table style="float:right">
+<tr><td>
 $pages.include("${apphome}/components/table/pages.html", $context)
+</td>
+<td class="edit-columns">	
+			#set( $edit = $context.getRequestParameter("editheader"))
+#if( !$edit || $edit == "false")
+#set( $edit = false)
+#end
+			
+				<div >
+					#if( $canedittablecolumns )
+					<div id="table-edit-outside">
+						#if( !$edit ) 
+						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true"> <img  title="Edit Columns" src="/assets/emshare/theme/images/edit.gif"></a>
+						#else 
+							<div id="column-editor-content">
+								#set ($alldetails = $searcher.getUserPropertyDetails() )
+								<select  class="addremovecolumns" name="addcolumn" >
+									<option>[[Add Column]]</option>
+									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+									#end
+								</select>
+								
+						<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+							</div>
+						#end
+					</div>
+					#end
+				</div>
+	</td>
+	</tr>			
+</table>
 
 
 <div  class="tableholder">
@@ -51,6 +86,11 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 		#end
 	</tbody>
 </table>
+
+#if( $hits.size() == 0  )
+[[No results found]]
+#end
+
 
 </div>
 </div>
