@@ -1,3 +1,6 @@
+<div id="emresultscontent">
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="librarycollection" data-searchhome="$home$apphome/components/opencollections" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollectionresults", $userprofile))
@@ -5,6 +8,18 @@ $context.putPageValue("details",$details)
 $context.putPageValue("clickpath","")
 $context.putPageValue("viewpostfix",".html")
 $context.putPageValue("clickruncommand","closecollection")
+$context.putPageValue("module","librarycollection")
+
+#if( $hits && $hits.getTotalPages() >  1  )
+
+$pages.include("${apphome}/components/opencollections/pages.html", $context)
+
+
 $pages.include("${apphome}/components/table/results.html", $context)
 
+#else
+[[No results found]]
+#end
+</div>
+</div>
 

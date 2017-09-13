@@ -462,12 +462,38 @@ jQuery(document).ready(function(url,params)
 	});
 	//END Gallery stuff
 	
+	$('th.sortable').livequery('click', function(){
+            var id = $(this).attr('sortby');
+            var resultsarea = "#resultsdiv";
+            
+            var resultsdiv = $(this).closest("#resultsdiv");
+			var searchhome = resultsdiv.data('searchhome');
+			var sessionid = resultsdiv.data("hitssessionid");
+			var searchtype = resultsdiv.data("searchtype");
+            
+            if ( $(this).hasClass('currentsort') ) {
+                if ( $(this).hasClass('up') ) {
+                    jQuery(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                } else {
+                    jQuery(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
+                }
+            } else {
+                $('th.sortable').removeClass('currentsort');
+                $(this).addClass('currentsort');
+                jQuery(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+            }
+        }
+    );
+	
 	$(window).on('resize',function(){
-		console.log("Window resized");
 		gridResize();
 	});
+	
 	gridResize();
-	setTimeout(gridResize,50);
+	window.addEventListener('load', 
+	  function() { 
+	    	gridResize();
+	  }, false);
 	
 });        //document ready
         
@@ -505,6 +531,16 @@ checkScroll = function()
 			}
 			return;
 		}
+		
+		//No results?
+		var resultsdiv= $("#resultsdiv");
+		var lastcell = $(".masonry-grid-cell",resultsdiv).last();
+		 if( lastcell.length == 0 )
+		 {
+		 	return;
+		 }
+		
+		
 		//are we near the end? Are there more pages?
   		var visibleHeight = document.body.clientHeight;
   		var totalHeight = $(window).height();
@@ -512,25 +548,24 @@ checkScroll = function()
   		{ 	
   			totalHeight = window.screen.availHeight; //This is the total size of the monitor
   		}
-  		//console.log($(window).scrollTop() + " + " +   (visibleHeight + 170) + ">=" + totalHeight); 
-		var atbottom = ($(window).scrollTop() + (visibleHeight + 170)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
-		if(	!atbottom )
-	    {
-	    	//console.log("Not At bottom");
-		  return;
-		}
-		var resultsdiv= $("#resultsdiv");
-		var lastcell = $(".masonry-grid-cell",resultsdiv).last();
-		 if( lastcell.length == 0 )
-		 {
-		 	return;
-		 }
-		 
+
+
 	    var page = parseInt(resultsdiv.data("pagenum"));   
 	    var total = parseInt(resultsdiv.data("totalpages"));
 		//console.log("checking scroll " + stopautoscroll + " page " + page + " of " + total);
-	    if( total > page)
+	    if( page == total)
 	    {
+			return;
+		}
+
+  		//console.log($(window).scrollTop() + " + " +   (visibleHeight + 170) + ">=" + totalHeight); 
+		var atbottom = ($(window).scrollTop() + (visibleHeight + 250)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
+		if(	!atbottom )
+	    {
+	    	console.log("Not yet within 250px");
+		  return;
+		}
+		 
 		   stopautoscroll = true; 
 		   var session = resultsdiv.data("hitssessionid");
 		   page = page + 1;
@@ -539,6 +574,7 @@ checkScroll = function()
 		   console.log("Loading page: #" + page +" - " + home);
 		   
 		   var link = home + "/components/results/stackedgallery.html";
+	//			   	async: false,
 
 		   jQuery.ajax({
 			   	url: link,
@@ -557,7 +593,6 @@ checkScroll = function()
 				   stopautoscroll = false; 
 				}
 			});
-	     }   
 }
 
 
@@ -567,10 +602,10 @@ gridResize = function()
 	var grid = $(".masonry-grid");
 	if( grid.length == 0 )
 	{
+		console.log("No grid");
+		
 		return;
 	}
-	console.log("Resized grid");
-	checkScroll();
 	
 	var fixedheight = grid.data("maxheight");
 	if( fixedheight == null || fixedheight.length == 0)
@@ -635,8 +670,13 @@ gridResize = function()
 				$("img.imagethumb",div).height(fixedheight);
 				var neww = fixedheight * a - cellpadding;
 				div.width(Math.floor(neww - 1));
-			});
+	});
+	
+	//console.log("Resized grid");
+	checkScroll();
+	
 }
+
 /**
 A = W / H
 H = W / A

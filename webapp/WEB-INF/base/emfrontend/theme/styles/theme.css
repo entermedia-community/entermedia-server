@@ -3557,7 +3557,7 @@ body #emcontainer .emasseteditorarea {
     background: linear-gradient(to bottom, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
 }
-#emcontainer #emselectable #main-results-table #tableheader th, .settings-table #tableheader th {
+#emcontainer #emselectable #tableheader th, .settings-table #tableheader th {
 	position: relative;
     color: #fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.2);
@@ -3588,7 +3588,7 @@ body #emcontainer .emasseteditorarea {
     background: rgba(0,0,0,0.05);
     cursor: pointer;
 }
-#emcontainer #emselectable #main-results-table #tableheader th.sortable.currentsort {
+#emcontainer th.sortable.currentsort {
     box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
     border-right: none;
     
