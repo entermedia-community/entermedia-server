@@ -155,6 +155,20 @@ toggleajax = function(e)
 		);
 	}
 }
+
+findclosest = function(link,inid)
+{
+	var result = link.closest(inid);
+	if( result.length == 0 )
+	{
+		result = link.children(inid);
+		if( result.length == 0 )
+		{
+			result = jQuery(inid);
+		}
+	}
+	return result.first();
+}
 runajaxonthis = function(inlink,e)
 {
 	
@@ -194,7 +208,8 @@ runajaxonthis = function(inlink,e)
 				}
 				else
 				{
-					cell = jQuery("#" + targetDiv);
+					cell = findclosest(inlink,"#" + targetDiv); 
+					
 				}
 				
 				//Call replacer to pull $scope variables
@@ -222,7 +237,7 @@ runajaxonthis = function(inlink,e)
 					}
 					else
 					{
-						cell = jQuery("#" + loaddiv);
+						cell = findclosest(inlink,"#" + loaddiv);
 					}
 					cell.html(data);
 					$(window).trigger( "resize" );

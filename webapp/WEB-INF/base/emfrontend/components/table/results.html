@@ -1,7 +1,20 @@
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="librarycollection" data-searchhome="$home$apphome/components/table" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+#if(!$details)
+#set( $view = "${hits.getSearchType()}/${hits.getSearchType()}resultstable" )
+#set ($details = $hits.getSearcher().getDetailsForView($view, $userprofile))
+#end
+
+$pages.include("${apphome}/components/table/pages.html", $context)
+
+
 <div  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
 <div id="emselectable" class="emselectable" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
 #set( $sortby = $hits.getSearchQuery().getSortBy() )
+#set( $edit = $context.getRequestParameter("editheader"))
+#if( !$edit || $edit == "false")
+#set( $edit = false)
+#end
 
 <table  id="main-results-table" class="emdata striped greytxt table tbl-responsive"  data-clickpath="$clickpath"  data-viewpostfix="$!viewpostfix" data-hitssessionid="$!existingrecords.sessionId" data-runcommand="$clickruncommand">
 	<tr class="tableheader">
@@ -12,7 +25,8 @@
 		<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 				#text( $detail.name )
 				#if( $edit)
-					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
+						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 				
 				#end
 		</div>
@@ -38,4 +52,5 @@
 	</tbody>
 </table>
 
+</div>
 </div>

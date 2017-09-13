@@ -58,7 +58,7 @@
 						<div id="column-editor">
 							<div id="column-editor-content">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
-								<select  onchange='addColumn(jQuery(this).val())' name="addcolumn" >
+								<select  class="addremovecolumns" name="addcolumn" >
 									<option>[[Add Column]]</option>
 									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 									#end
@@ -77,9 +77,6 @@
 
 <script type="text/javascript">
 									
-									function addColumn(inId) {
-										jQuery('#emresultscontent').load("$content.searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
-									}
 									//This should be moved out of here
 									function refreshSelections() {
 										jQuery('#moduleselections').load("$content.searchhome/selections/selected.html?oemaxlevel=1&searchtype=${module.id}&hitssessionid=$hits.getSessionId()");

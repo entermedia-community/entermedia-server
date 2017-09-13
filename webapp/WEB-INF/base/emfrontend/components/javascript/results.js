@@ -462,6 +462,19 @@ jQuery(document).ready(function(url,params)
 	});
 	//END Gallery stuff
 	
+	$('select.addremovecolumns').livequery("change",function()
+	{
+		var selectedval = $(this).val();
+        var resultsdiv = $(this).closest("#resultsdiv");
+		var options = resultsdiv.data();
+		var searchhome = resultsdiv.data('searchhome');
+		jQuery.get(searchhome + "/addremovecolumns.html?oemaxlevel=1&editheader=true&addcolumn=" + selectedval,options, function(data) 
+		{	
+			resultsdiv.html(data);
+		});
+	});
+
+	
 	$('th.sortable').livequery('click', function(){
             var id = $(this).attr('sortby');
             var resultsarea = "#resultsdiv";
