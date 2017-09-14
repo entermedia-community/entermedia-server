@@ -146,7 +146,7 @@ $(document).ready(function(){
 	var windowwidth = $(window).width();
 	$(".previewcrop-btn").each(function(i,obj){
 		var href = $(this).attr("href");
-		if (!href.contains("displaywidth")){
+		if (href.indexOf("displaywidth")<0){
 			href = href + "&displaywidth="+windowwidth;
 			$(this).attr("href",href);
 		}

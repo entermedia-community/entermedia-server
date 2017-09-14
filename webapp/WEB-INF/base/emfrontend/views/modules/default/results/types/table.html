@@ -41,7 +41,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 <div id="emselectable" >
 
 
-<table class="striped" id="main-results-table" data-hitssessionid="$!hits.sessionId">
+<table class="striped" id="main-results-table" data-resultsarea="resultsarea" data-hitssessionid="$!hits.sessionId">
 
 <thead>
 <tr id="tableheader" >
@@ -159,25 +159,6 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 
 </form>
-
-<script>
-    $('th.sortable').on({
-        click: function(){
-            var id = $(this).attr('sortby');
-            if ( $(this).hasClass('currentsort') ) {
-                if ( $(this).hasClass('up') ) {
-                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
-                } else {
-                    jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
-                }
-            } else {
-                $('th.sortable').removeClass('currentsort');
-                $(this).addClass('currentsort');
-                jQuery('#resultsarea').load( '$home${searchhome}/columnsort.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
-            }
-        }
-    });
-</script>
 
 #if($enablepopup)
 <script>

@@ -46,22 +46,3 @@
 	
 </tr>
 
-<script>
-//TODO: Move this to results.js
-	$('th.sortable').on({
-		click: function(){
-			var id = $(this).attr('sortby');
-			if ( $(this).hasClass('currentsort') ) {
-				if ( $(this).hasClass('up') ) {
-					jQuery('#resultsdiv').load( '$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
-				} else {
-					jQuery('#resultsdiv').load( '$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Up');
-				}
-			} else {
-				$('th.sortable').removeClass('currentsort');
-				$(this).addClass('currentsort');
-				jQuery('#resultsdiv').load( '$home$apphome/components/results/columnsort.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&sortby=' + id + 'Down');
-			}
-		}
-	});
-</script>

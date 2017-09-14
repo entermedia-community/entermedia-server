@@ -1,0 +1,9 @@
+<page>
+
+	<inner-layout />
+	<property name="enforcesecurity">true</property>
+	<path-action name="DataEditModule.search" >
+		<property name="sortby">name</property>
+	</path-action>
+
+</page>
