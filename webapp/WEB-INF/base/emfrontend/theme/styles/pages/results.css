@@ -140,7 +140,6 @@ div#hiddenoverlay .playerarea {
 }
 
 /* PAGINATION */
-
 #emresultscontent #pages {
     float: right;
     margin: 10px 10px 0 0;
@@ -233,6 +232,11 @@ div#hiddenoverlay .playerarea {
 	position: relative;
 
 }
+
+.resultstablenav #pages { margin:0!important; }
+.resultstablenav {padding-bottom:10px;}
+.resultstablenav .resultmenuitem { line-height: 28px; height: 28px;}
+.resultstablenav .edit-columns { padding-top:4px}
 
 /*a span.glyphicon {
 
