@@ -7,15 +7,16 @@
 #set($resultsLink = "${searchhome}/results.html?hitssessionid=$hits.sessionId&searchtype=$hits.getSearchType()&hitsperpage=$!hits.hitsPerPage&oemaxlevel=1")
 
 #set($targetdiv = "resultsdiv")
+<div class="resultstablenav">
 <table style="float:right">
 <tr><td>
 $pages.include("${apphome}/components/table/pages.html", $context)
 </td>
 <td class="edit-columns">	
 			#set( $edit = $context.getRequestParameter("editheader"))
-#if( !$edit || $edit == "false")
-#set( $edit = false)
-#end
+			#if( !$edit || $edit == "false")
+			#set( $edit = false)
+			#end
 			
 				<div >
 					#if( $canedittablecolumns )
@@ -40,7 +41,8 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 	</td>
 	</tr>			
 </table>
-
+<div class="clearfix"></div>
+</div>
 
 <div  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
@@ -63,6 +65,13 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
 						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 				
+				#elseif ($sortby.startsWith($detail.getId()))
+		 				#if($sortby.endsWith("Up"))
+		 					#set($sorticon="top")
+		 				#else
+		 					#set($sorticon="bottom")
+		 				#end	
+		 				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
 				#end
 		</div>
 	 </th>
