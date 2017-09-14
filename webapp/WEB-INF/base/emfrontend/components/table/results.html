@@ -65,6 +65,13 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
 						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 				
+				#elseif ($sortby.startsWith($detail.getId()))
+		 				#if($sortby.endsWith("Up"))
+		 					#set($sorticon="top")
+		 				#else
+		 					#set($sorticon="bottom")
+		 				#end	
+		 				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
 				#end
 		</div>
 	 </th>

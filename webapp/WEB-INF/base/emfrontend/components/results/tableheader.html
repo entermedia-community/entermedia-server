@@ -34,9 +34,9 @@
 						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 					#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))
-		 				#set($sorticon="top")
-		 				#elseif ($sortby.endsWith("Down") )
-		 				#set($sorticon="bottom")
+		 					#set($sorticon="top")
+		 				#else
+		 					#set($sorticon="bottom")
 		 				#end	
 		 				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
 					#end
