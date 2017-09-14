@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
@@ -16,6 +17,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.FileEntity;
@@ -30,6 +32,7 @@ import org.entermediadb.asset.publishing.PublishResult;
 import org.entermediadb.asset.publishing.Publisher;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
 import org.openedit.page.Page;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
@@ -111,6 +114,61 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 	
 	
+	public void updateAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception{
+		
+		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
+		
+
+		
+		String addr       = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
+
+
+		
+		
+		
+		//Change URL - 
+		//String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field> <field name='asset.owner'><value>Img</value></field>  <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
+
+		HttpGet get = new HttpGet(addr);
+		
+		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
+		get.setHeader("Authorization", "Basic " + inAuthString);
+		get.setHeader("Expect", "" );
+
+		HttpResponse response = getClient().execute(get);
+		StatusLine sl = response.getStatusLine();           
+		int status = sl.getStatusCode();
+		if( status>=400)
+		{
+			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+		}
+		
+		Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
+		
+		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();)
+		{
+			Element field = (Element) iterator.next();
+			String name = field.attributeValue("name");
+			Element value = field.element("value");
+			String current = value.getText();
+			
+			PropertyDetail detail = inArchive.getAssetSearcher().getPropertyDetails().getDetailByProperty("vizonefield", name);
+			if(detail != null){
+				inAsset.setValue(detail.getId(),current);
+			}
+			
+		}
+		
+		
+		
+		
+	
+		//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
+}
+	
+	
+	
+	
 	
 	
 	
@@ -123,55 +181,63 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		String addr       = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
 
 
+		
+		
+		
 		//Change URL - 
-		String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field> <field name='asset.owner'><value>Img</value></field>  <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
+		//String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field> <field name='asset.owner'><value>Img</value></field>  <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
 
+		HttpGet get = new HttpGet(addr);
 		
-		Map metadata = inAsset.getProperties();
-		Calendar now = new GregorianCalendar();
-		now.add(now.DAY_OF_YEAR, 7);
-		Date oneweek = now.getTime();
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		String date = format.format(oneweek);
-		
-		
-		metadata.put("date",date );
-		String retention = inAsset.get("vizoneretention");
-		if(retention == null){
-			retention = "oneweek";
+		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
+		get.setHeader("Authorization", "Basic " + inAuthString);
+		get.setHeader("Expect", "" );
+
+		HttpResponse response = getClient().execute(get);
+		StatusLine sl = response.getStatusLine();           
+		int status = sl.getStatusCode();
+		if( status>=400)
+		{
+			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
-		if("remove".equals(retention)){
-			Date current = new Date();
+		
+		Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
+		
+		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();)
+		{
+			Element field = (Element) iterator.next();
+			String name = field.attributeValue("name");
+			Element value = field.element("value");
+			String current = value.getText();
 			
-			 date = format.format(current);
-			metadata.put("retentiondate",date );
-
+			PropertyDetail detail = inArchive.getAssetSearcher().getPropertyDetails().getDetailByProperty("vizonefield", name);
+			if(detail != null){
+				String assetvalue = inAsset.get(detail.getId());
+				value.setText(assetvalue);
+			}
+			
 		}
-		metadata.put("policy",retention );
-		metadata.put("title",inAsset.getName() );
-
 		
 		
-		data = inArchive.getReplacer().replace(data, metadata);
 		
 		HttpPut method = new HttpPut(addr);
 		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "" );
 
-		StringEntity params = new StringEntity(data);
+		StringEntity params = new StringEntity(elem.asXML());
 		method.setEntity(params);
 		
 		HttpResponse response2 = getClient().execute(method);
-		StatusLine sl = response2.getStatusLine();           
-		int status = sl.getStatusCode();
+		 sl = response2.getStatusLine();           
+		 status = sl.getStatusCode();
 		if( status>=400)
 		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
-		Element response = getXmlUtil().getXml(response2.getEntity().getContent(), "UTF-8");
+		Element response3 = getXmlUtil().getXml(response2.getEntity().getContent(), "UTF-8");
 		//String xml = response.asXML();
-		return response;
+		return response3;
 	
 		//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
 }

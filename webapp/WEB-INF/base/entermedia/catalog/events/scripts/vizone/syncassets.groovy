@@ -21,7 +21,9 @@ public class VizOne{
 	def authString = "EMDEV:3nterMed1a".getBytes().encodeBase64().toString();
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	public void downloadNew(WebPageRequest inReq){
-		//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?id=50"
+	
+		
+			//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?id=50"
 		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=1&num=10000"
 		def conn = addr.toURL().openConnection()
 		conn.setRequestProperty( "Authorization", "Basic ${authString}" )
@@ -30,6 +32,8 @@ public class VizOne{
 		String content = conn.content.text;
 		//log.info(content);
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
+		def viz = archive.getModuleManager().getBean(archive.getCatalogId(), "VizOnepublisher");
+		
 		AssetSearcher assetsearcher = archive.getAssetSearcher();
 		ArrayList assets = new ArrayList();
 		if( conn.responseCode == 200 ) {
@@ -93,7 +97,6 @@ public class VizOne{
 						}
 
 
-
 						asset.setValue("importstatus", "needsdownload");
 						SourcePathCreator creator = new ChunkySourcePathCreator();
 
@@ -148,12 +151,15 @@ public class VizOne{
 							asset.setValue("vizoneretention", value);
 						}
 					}
-
-
+				//	public void updateAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception{
+						
+					viz.updateAsset(archive,"http://vizmtlvamf.media.in.cbcsrc.ca/" , asset,authString);
+					
 
 					Category cat = archive.getCategorySearcher().searchById("AVyh5_tsmQeu4rFCDJ4S");
 					asset.clearCategories();
 					asset.addCategory(cat);
+					
 
 
 					archive.saveAsset(asset,null);
@@ -274,7 +280,7 @@ public class VizOne{
 VizOne vz = new VizOne();
 
 
-//vz.downloadNew(context);
+vz.downloadNew(context);
 //vz.validate(context);
 
 
