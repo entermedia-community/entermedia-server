@@ -29,6 +29,7 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
+import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -1643,7 +1644,14 @@ public class BaseElasticSearcher extends BaseSearcher
 		//		bulkProcessor.close();
 		try
 		{
+			bulkProcessor.flush();
 			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
+			
+			//This is in memory only flush
+			RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
+
+
+			
 		}
 		catch (InterruptedException e)
 		{
@@ -1665,6 +1673,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		// brb.add(Requests.indexRequest(indexName).type(getIndexType()).id(id).source(source));
 		// }
 		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
+		
+		//getClient().admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
+		
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
@@ -1742,8 +1753,12 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		try
 		{
+			bulkProcessor.flush();
 			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
 			clearIndex();
+			//This is in memory only flush
+			RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
+
 		}
 		catch (InterruptedException e)
 		{
@@ -2333,7 +2348,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	protected boolean flushChanges()
 	{
-		FlushRequest req = Requests.flushRequest(toId(getCatalogId()));
+		FlushRequest req = Requests.flushRequest(toId(getCatalogId()));  //To The disk drive
 		FlushResponse res = getClient().admin().indices().flush(req).actionGet();
 		if (res.getSuccessfulShards() > 0)
 		{

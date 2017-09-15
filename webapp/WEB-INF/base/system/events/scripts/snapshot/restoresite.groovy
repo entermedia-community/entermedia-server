@@ -148,17 +148,14 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	 }
 	 */
 	
-	Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
-	archiveFolder(mediaarchive.getPageManager(), target, tempindex);  //Dele all existing fields
-	pdarchive.clearCache();
-	
-	Collection paths = pageManager.getChildrenPaths(rootfolder + "/fields/");
-	for(String path:paths)
-	{
-		Page field = mediaarchive.getPageManager().getPage(path);
-		prepFields(mediaarchive,field,tempindex); //only move fields over that have data we care about
+	Page fields = mediaarchive.getPageManager().getPage(rootfolder + "/fields/");
+	if(fields.exists()) {
+		Page target = mediaarchive.getPageManager().getPage("/WEB-INF/data/" + catalogid + "/fields/");
+		archiveFolder(mediaarchive.getPageManager(), target, tempindex);
+		mediaarchive.getPageManager().copyPage(fields, target);
 	}
 	pdarchive.clearCache();
+	
 	if( configonly )
 	{
 		//Reindex all lists tables?
@@ -180,12 +177,11 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 			}
 		}
 		ordereredtypes.addAll(childrennames);
-		ordereredtypes.removeAll("settingsgroup");
 		ordereredtypes.removeAll("propertydetail");
 		ordereredtypes.removeAll("lock");
 		ordereredtypes.removeAll("category");
 		ordereredtypes.removeAll("user");
-		ordereredtypes.removeAll("userprofile");
+		//ordereredtypes.removeAll("userprofile");
 		ordereredtypes.removeAll("group");
 		ordereredtypes.add(0,"category");
 	
@@ -436,68 +432,11 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 	FileUtils.safeClose(reader);
 	searcher.setForceBulk(false);
 	searcher.setAlternativeIndex(null);
+	searcher.clearIndex();
 	log.info("Saved " + searchtype + " "  +  tosave.size() );
 }
 
-/*
-public void prepFields(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex)
-{
-
-	log.info("save fields " + upload.getPath());
-	String catalogid = mediaarchive.getCatalogId();
-
-	PropertyDetails olddetails = null;
-	PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
-	pdarchive.clearCache();
-	
-	PropertyDetails details = pdarchive.getPropertyDetails(searchtype);
-
-
-	String filepath = upload.getDirectory() +  "/fields/"  + searchtype + ".xml";
-	XmlFile settings = pdarchive.getXmlArchive().loadXmlFile(filepath); 
-	if(settings.isExist())
-	{
-		String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
-		olddetails = new PropertyDetails(pdarchive,searchtype);
-		olddetails.setInputFile(settings);
-		pdarchive.setAllDetails(olddetails, searchtype, filename, settings.getRoot());
-
-		ArrayList toremove = new ArrayList();
-
-
-		olddetails.each{
-			PropertyDetail olddetail = it;
-
-			PropertyDetail current = details.getDetail(olddetail.getId());
-			if(current == null){
-				current = details.findCurrentFromLegacy(olddetail.getId());
-			}
-			if(current != null && !("name".equals(current.getId()) || "id".equals(current.getId()))){
-
-				toremove.add(olddetail.getId());
-
-
-			}
-		}
-
-		toremove.each{
-			olddetails.removeDetail(it);
-		}
-		pdarchive.savePropertyDetails(olddetails, searchtype, null,  filename);
-		pdarchive.clearCache();
-	}
-	else
-	{
-		Page inputed = mediaarchive.getPageManager().getPage(filepath);
-		if( inputed.exists() )
-		{
-			String dest = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
-			Page target = mediaarchive.getPageManager().getPage(dest);
-			mediaarchive.getPageManager().copyPage(inputed, target);
-		}
-	}
-}
-*/
+/* Not needed
 public void prepFields(MediaArchive mediaarchive, Page inFieldXml, String tempindex) 
 {
 	if( !inFieldXml.getName().endsWith(".xml"))
@@ -540,5 +479,6 @@ public void prepFields(MediaArchive mediaarchive, Page inFieldXml, String tempin
 	pdarchive.savePropertyDetails(newdetails, searchtype, null,  filename);
 	pdarchive.clearCache();
 }
+*/
 
 init();
