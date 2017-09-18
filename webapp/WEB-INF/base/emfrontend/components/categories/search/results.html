@@ -23,28 +23,6 @@ $context.putPageValue("viewpostfix",".html")
 	#end
 	</tr>
 	<tbody ng-foreach="hit in dataresults">
-#set( $parent = $context.getRequestParameter("parents.value"))
-#if(  $parent )	
-	#set( $hit = $mediaarchive.getCategory($parent))
-	<tr  #if($candelete != "false") data-id="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
-	#foreach( $detail in $details)
-		#if( $velocityCount == 1)
-		<td class="category categorydraggable ui-draggable ui-draggable-handle" data-nodeid="$hit.id" data-categoryname="$hit.name">
-		#else
-		<td style="padding:4px;">
-		#end
-			#set( $val = "$!hit.get($detail.id)" )
-			#if($detail.render)
-				#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
-			#end
-			$context.putPageValue("detail",$detail)
-			$context.putPageValue("val",$val)
-			$pages.include("$xmledithome/detailreadonly.html", $context)
-		</td>
-	#end	
-	</tr>
-
-#end	
 		#foreach( $hit in $hits.getPageOfHits() )
 			<tr  #if($candelete != "false") data-id="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
 			#foreach( $detail in $details)

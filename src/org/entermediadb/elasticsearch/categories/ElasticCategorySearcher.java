@@ -145,7 +145,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				//log.info(hit.get("categorypath"));
 				ElasticCategory data = (ElasticCategory)loadData(hit);
 				String path = data.loadCategoryPath();
+				data.setValue("parents", data.getParentCategories());
 				data.setValue("categorypath", path);
+				
 				tosave.add(data);
 				if( tosave.size() > 1000)
 				{
