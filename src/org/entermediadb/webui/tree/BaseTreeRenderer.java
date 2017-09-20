@@ -104,11 +104,16 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	public void setSelectedNodes(Set inSelectedNodes)
 	{
 		fieldSelectedNodes = inSelectedNodes;
+		if(inSelectedNodes == null)
+		{
+			setSelectedNode(null);
+		}
 	}
 	public void selectNode(Object inNode)
 	{
 		if( inNode != null )
 		{
+			getSelectedNodes().clear();
 			getSelectedNodes().add(getId(inNode));
 			
 			Object parent = getWebTree().getModel().getParent(inNode);
@@ -117,6 +122,7 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 				expandNode(parent);
 			}
 		}
+		fieldSelectedNode = inNode;
 	}
 	public void unSelectNode(Object inNode)
 	{
@@ -124,18 +130,21 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	}
 	public void selectNodes(Collection inNodes)
 	{
+		setSelectedNode(null);
 		Set newselection = new HashSet();
-		if(inNodes != null){
-		for (Iterator iterator = inNodes.iterator(); iterator.hasNext();)
+		if(inNodes != null)
 		{
-			Object object = (Object) iterator.next();
-			newselection.add(getId(object));
-			Object parent = getWebTree().getModel().getParent(object);
-			if( parent != null )
+			for (Iterator iterator = inNodes.iterator(); iterator.hasNext();)
 			{
-				expandNode(parent);
+				Object object = (Object) iterator.next();
+				newselection.add(getId(object));
+				Object parent = getWebTree().getModel().getParent(object);
+				if( parent != null )
+				{
+					expandNode(parent);
+				}
+				setSelectedNode(object);
 			}
-		}
 		}
 		setSelectedNodes(newselection);
 		
@@ -531,11 +540,16 @@ public abstract class BaseTreeRenderer implements TreeRenderer
 	public void setSelectedNode(Object inSelectedNode)
 	{
 		fieldSelectedNode = inSelectedNode;
-		Object parent = getWebTree().getModel().getParent(inSelectedNode);
-		if( parent != null )
+		getSelectedNodes().clear();
+		if(inSelectedNode != null)
 		{
-			expandNode(parent);
-		}
+			getSelectedNodes().add(getId(inSelectedNode));
+			Object parent = getWebTree().getModel().getParent(inSelectedNode);
+			if( parent != null )
+			{
+				expandNode(parent);
+			}
+		}	
 
 	}
 	public String getUrlPostfix()

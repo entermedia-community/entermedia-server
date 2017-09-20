@@ -192,7 +192,6 @@ public class CategoryModule extends BaseMediaModule
 			{
 				Object target = tree.getModel().getChildById(catid);
 				//tree.getTreeRenderer().expandNode(target);
-				tree.getTreeRenderer().selectNodes(null);
 				tree.getTreeRenderer().selectNode(target);
 			}
 		}
