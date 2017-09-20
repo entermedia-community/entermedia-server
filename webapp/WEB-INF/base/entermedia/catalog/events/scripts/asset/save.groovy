@@ -10,7 +10,7 @@ import org.openedit.Data
 import org.openedit.data.Searcher
 
 public init(){
-	log.info("Starting Pre-Deletion Event");
+	log.info("Starting Pre-Save Event");
 	MediaArchive mediaArchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Searcher targetsearcher = mediaArchive.getAssetSearcher();
 	String assetids = context.getRequestParameter("id");

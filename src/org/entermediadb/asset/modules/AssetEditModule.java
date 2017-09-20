@@ -483,7 +483,7 @@ public class AssetEditModule extends BaseMediaModule
 						{
 							getPageManager().removePage(original);
 						}
-						editor.getMediaArchive().fireMediaEvent("delete", inContext.getUser(), asset);
+						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 					}
 				} 
 				catch (Exception e)
@@ -508,7 +508,7 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						getPageManager().removePage(original);
 					}
-					editor.getMediaArchive().fireMediaEvent("delete", inContext.getUser(), asset);
+					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 				}
 			}
 		}

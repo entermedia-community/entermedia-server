@@ -53,8 +53,14 @@ headers = new String[details.size()];
 for (Iterator iterator = details.iterator(); iterator.hasNext();)
 {
 	PropertyDetail detail = (PropertyDetail) iterator.next();
-	headers[count] = detail.getText(context);		
-	count++;
+
+	if(friendly){
+		headers[count] = detail.getText(context);
+		} else{
+		headers[count] = detail.getId();
+		
+		}
+		count++;
 }
 writer.writeNext(headers);
 	log.info("about to start: " + hits.size());
