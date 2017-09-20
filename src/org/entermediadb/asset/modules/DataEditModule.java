@@ -741,6 +741,17 @@ public class DataEditModule extends BaseMediaModule
 					Data data = (Data) searcher.searchById(id[i]);
 					if (data != null)
 					{
+						if(getEventManager() != null)
+						{
+							WebEvent event = new WebEvent();
+							event.setSearchType(searcher.getSearchType());
+							event.setCatalogId(searcher.getCatalogId());
+							event.setOperation("deleting");
+							event.setProperty("dataid", data.getId());
+							event.setProperty("id", data.getId());
+							event.setProperty("applicationid", inReq.findValue("applicationid"));
+							getEventManager().fireEvent(event);
+						}
 						searcher.delete(data, inReq.getUser());
 						changes++;
 						if(getEventManager() != null)
@@ -774,6 +785,20 @@ public class DataEditModule extends BaseMediaModule
 						
 						if(curdata != null)
 						{
+							if(getEventManager() != null)
+							{
+								WebEvent event = new WebEvent();
+								event.setSearchType(searcher.getSearchType());
+								event.setCatalogId(searcher.getCatalogId());
+								event.setOperation("deleting");
+								event.setProperty("dataid", curdata.getId());
+								event.setProperty("id", curdata.getId());
+
+								event.setProperty("applicationid", inReq.findValue("applicationid"));
+
+								getEventManager().fireEvent(event);
+							}
+							
 							searcher.delete(curdata, inReq.getUser());
 							
 							if(getEventManager() != null)
