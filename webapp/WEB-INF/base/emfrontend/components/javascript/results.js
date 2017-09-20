@@ -604,6 +604,12 @@ checkScroll = function()
 				   gridResize();
 				   $(document).trigger("domchanged");
 				   stopautoscroll = false; 
+				   //Once that is all done loading we can see if we need a second page?
+			   	   //console.log( page + " Loaded get some more?" + getOverlay().is(':hidden') );
+				   if( getOverlay().is(':hidden') )
+				   {
+				   		checkScroll(); //Might need to load up two pages worth
+				   }
 				}
 			});
 }

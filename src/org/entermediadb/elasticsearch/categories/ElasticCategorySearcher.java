@@ -145,7 +145,9 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				//log.info(hit.get("categorypath"));
 				ElasticCategory data = (ElasticCategory)loadData(hit);
 				String path = data.loadCategoryPath();
+				data.setValue("parents", data.getParentCategories());
 				data.setValue("categorypath", path);
+				
 				tosave.add(data);
 				if( tosave.size() > 1000)
 				{
@@ -196,29 +198,29 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 //	}
 	
 	@Override
-	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
+	protected void updateElasticIndex(PropertyDetails details, Data inData)
 	{
-		super.updateIndex(inContent,inData,inDetails);
-//
-//		try
-//		{
-//			ElasticCategory category = (ElasticCategory)inData;
-//			Collection values = (Collection)category.getMap().getValue("parents");
-//			if( values != null)
-//			{
-//				inContent.field("parents", values);
-//			}	
-//			
-//			String path = (String)category.getMap().getValue("categorypath");
-//			if( path != null)
-//			{
-//				inContent.field("categorypath", path);
-//			}	
-//		}
-//		catch ( IOException ex)
-//		{
-//			throw new OpenEditException(ex);
-//		}
+		super.updateElasticIndex(details,inData);
+		ElasticCategory category = (ElasticCategory)inData;
+		Collection values = (Collection)category.getMap().getValue("parents");
+		boolean edited = false;
+		if( values == null)
+		{
+			category.setValue("parents", category.getParentCategories()); //This requires the ID of the asset to be set before saving
+			edited = true;
+		}	
+		
+		String path = (String)category.getMap().getValue("categorypath");
+		if( path == null)
+		{
+			path = category.loadCategoryPath();
+			category.setValue("categorypath", path);
+			edited = true;
+		}	
+		if( edited )
+		{
+			super.updateElasticIndex(details,inData);
+		}
 		
 	}
 	@Override

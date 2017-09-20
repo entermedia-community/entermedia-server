@@ -384,8 +384,11 @@ public class BaseCategory extends BaseData implements Category
 		{
 			setParentId(null);
 		}
-		setValue("categorypath", loadCategoryPath());
-		setValue("parents", getParentCategories());
+		if( getId() != null)
+		{
+			setValue("categorypath", loadCategoryPath());
+			setValue("parents", getParentCategories());
+		}
 	}
 
 	/* (non-Javadoc)
