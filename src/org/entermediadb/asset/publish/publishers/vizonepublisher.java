@@ -159,6 +159,13 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 		String addr = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
 
+		String vizoneretention = inAsset.get("vizoneretention");
+		if(vizoneretention == null){
+			inAsset.setValue("vizoneretention", "oneweek");
+			inArchive.saveAsset(inAsset);
+		}
+		
+		
 		//Change URL - 
 		//String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field> <field name='asset.owner'><value>Img</value></field>  <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
 
@@ -196,6 +203,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				}
 			}
 		}
+		
+		
 
 		HttpPut method = new HttpPut(addr);
 		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
