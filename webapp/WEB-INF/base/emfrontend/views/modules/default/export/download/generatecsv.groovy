@@ -31,9 +31,10 @@ if(detaillist != null){
 } 
 else{
 	//log.info("here " + context.findValue("view"));
+	
 	if(context.findValue("view")){
-		details = searcher.getDetailsForView(context.findValue("view"), context.getUser());
-	//	log.info("details" + details);
+		details = searcher.getDetailsForView(context.findValue("view"), context.getUserProfile());
+		log.info("view" + context.findValue("view"));
 	} 
 	else{
 		
@@ -42,7 +43,7 @@ else{
 	}
 }
 
-if(details == null){
+if(details == null || !friendly){
 	details = searcher.getPropertyDetails();
 }
 
