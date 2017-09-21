@@ -84,7 +84,7 @@ public class OauthModule extends BaseMediaModule
 				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
 				//.setRedirectURI("http://localhost:8080/googleauth.html")
 			//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/drive").buildQueryMessage();
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("prompt", "login consent").setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/drive  https://www.googleapis.com/auth/admin.directory.user https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.google.com/m8/feeds/").buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
@@ -151,7 +151,10 @@ public class OauthModule extends BaseMediaModule
 				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 				String accessToken = oAuthResponse.getAccessToken();
 				String refresh = oAuthResponse.getRefreshToken();
+				if(refresh != null){
 				authinfo.setValue("refreshtoken", refresh);
+				authinfo.setValue("httprequesttoken", null);
+				}
 				archive.getSearcher("oauthprovider").saveData(authinfo);
 				
 				OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/oauth2/v1/userinfo").setAccessToken(accessToken).buildQueryMessage();
@@ -165,7 +168,7 @@ public class OauthModule extends BaseMediaModule
 				String firstname = (String)data.get("given_name");
 				String lastname = (String)data.get("family_name");
 				boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
-				handleLogin(inReq,  email, firstname, lastname,true, autocreate, authinfo);
+				handleLogin(inReq,  email, firstname, lastname,true, autocreate, authinfo,refresh);
 				
 			}
 			catch (Exception e)
@@ -197,13 +200,13 @@ public class OauthModule extends BaseMediaModule
 			JSONParser parser = new JSONParser();
 			
 			JSONObject data =  (JSONObject) parser.parse(userinfoJSON);
-			handleLogin(inReq,  (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),false, true, authinfo);
+			handleLogin(inReq,  (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),false, true, authinfo,null);
 			
 		}
 	//	inReq.redirect("/" + appid + "/index.html");
 	}
 
-	protected void handleLogin(WebPageRequest inReq,  String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate, Data authinfo)
+	protected void handleLogin(WebPageRequest inReq,  String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate, Data authinfo, String refreshtoken)
 	{
 		 
 		if(authinfo.getValue("alloweddomains") != null){
@@ -249,6 +252,14 @@ public class OauthModule extends BaseMediaModule
 			String value = target.getUserName() + "md542" + md5;
 			inReq.putPageValue("entermediakey", value);
 			inReq.putPageValue( "user", target);
+			if(refreshtoken != null){
+				target.setProperty("refreshtoken", refreshtoken);
+				
+				target.setProperty("clientid", authinfo.get("clientid"));
+			}
+			target.setProperty("httprefreshtoken", null);
+			archive.getSearcher("user").saveData(target);
+
 			if(getEventManager() != null)
 			{
 				WebEvent event = new WebEvent();

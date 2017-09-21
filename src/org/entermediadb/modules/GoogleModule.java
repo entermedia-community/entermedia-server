@@ -29,4 +29,20 @@ public class GoogleModule extends BaseMediaModule
 
 	}
 
+	
+	
+
+	public void syncContacts(WebPageRequest inReq) throws Exception
+	{
+
+		MediaArchive archive = getMediaArchive(inReq);
+		log.info("Running syncUsers");
+		
+		getGoogleManager(inReq).syncContacts(inReq.getUser());
+
+	}
+
+	
+	
+	
 }

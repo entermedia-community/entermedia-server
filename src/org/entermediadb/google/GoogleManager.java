@@ -30,6 +30,7 @@ import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
 
 import com.google.gson.JsonArray;
@@ -44,7 +45,7 @@ public class GoogleManager implements CatalogEnabled
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;	
 	protected OutputFiller filler = new OutputFiller();
-
+	
 	
 	public String getCatalogId()
 	{
@@ -228,6 +229,33 @@ public class GoogleManager implements CatalogEnabled
 		return accesstoken;
 	}
 
+	
+	
+	private String getUserAccessToken(User user) throws Exception
+	{
+		String accesstoken = user.get("httprequesttoken"); //Expired in 14 days 
+		Data authinfo  = getMediaArchive().getData("oauthprovider", "google");
+		if( accesstoken == null)
+		{
+		
+			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(user.get("refreshtoken")).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
+			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+			//Facebook is not fully compatible with OAuth 2.0 draft 10, access token response is
+			//application/x-www-form-urlencded, not json encoded so we use dedicated response class for that
+			//Own response class is an easy way to deal with oauth providers that introduce modifications to
+			//OAuth specification
+			EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
+			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
+			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
+			accesstoken = oAuthResponse.getAccessToken();
+			authinfo.setValue("httprequesttoken", accesstoken);
+			getMediaArchive().getSearcher("user").saveData(user);
+			
+		}	
+		return accesstoken;
+	}
+	
+	
 	public void syncAssets(Data inAuthinfo) 
 	{
 		try
@@ -349,5 +377,50 @@ public class GoogleManager implements CatalogEnabled
 		}
 		
 	}
+	
+	
+	
+	
+	public void syncContacts(User inAuthinfo) 
+	{
+		try
+		{
+			listContacts(inAuthinfo,"root");
+			
+		}
+		catch ( Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
+		
+	}
+	private void listContacts(User inAuthinfo, String inString) throws Exception
+	{
+		String url = "https://www.google.com/m8/feeds/contacts/default/full";
+
+		
+		CloseableHttpClient httpclient;
+		httpclient = HttpClients.createDefault();
+		HttpRequestBase httpmethod = null;
+		httpmethod = new HttpGet(url);
+		String accesstoken = getUserAccessToken(inAuthinfo);
+		httpmethod.addHeader("authorization", "Bearer " + accesstoken);
+
+		HttpResponse resp = httpclient.execute(httpmethod);
+
+		if (resp.getStatusLine().getStatusCode() != 200)
+		{
+			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
+		}
+
+		HttpEntity entity = resp.getEntity();
+		String content = IOUtils.toString(entity.getContent());
+		log.info(content);
+		
+		
+		
+	}
+	
+	
 	
 }
