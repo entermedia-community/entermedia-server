@@ -1330,7 +1330,7 @@ small {
 }
 #cat-list .row .category {
     padding-left: 18px;
-    background: url('../images/folder-closed.gif') left 0px no-repeat;
+    background: url('../images/folder-closed.gif') left 7px no-repeat;
     margin: 0 3px;
 }
 

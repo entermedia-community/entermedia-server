@@ -1,6 +1,8 @@
 #set( $categoryid = $context.getRequestParameter("categoryid"))
 #set( $category = $mediaarchive.getCategory($categoryid))
-<div id="cat-list" >
+
+
+<div id="cat-list" style="float:left">
 <div  class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" style="padding: 0;margin-top:-8px; border: 0px">
 <div class="category"  style="padding:8px 6px 3px 20px;">					
 	#foreach( $parent in $category.getParentCategoriesFrom(1))
@@ -8,4 +10,16 @@
 	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}">$parent</a>
 	#end
 </div>
-</div></div>
+</div>
+
+</div>
+#if( !$librarycol)
+#set($collection = $mediaarchive.getSearcher("librarycollection").query().match("rootcategory",$categoryid).searchOne())
+#if($collection)
+<div style="float:right; height:33px; background: #EEE; padding: 2px 15px 0px 10px;margin-left: 30px;margin-top:-20px">
+<a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="librarylabel " style="width:100%">
+					 	<span> [[Open Collection]]</span>
+					</a>
+</div>
+#end
+#end
