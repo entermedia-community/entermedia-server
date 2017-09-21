@@ -23,7 +23,6 @@ import org.openedit.util.DateStorageUtil
 import org.openedit.util.FileUtils
 import org.openedit.util.PathUtilities
 import org.openedit.util.XmlUtil
-import org.openedit.xml.XmlFile
 
 public void init() 
 {
@@ -66,6 +65,27 @@ public void init()
 		}
 		snapshotsearcher.saveData(snapshot);
 		mediaarchive.getSearcherManager().clear();		
+		
+		//Fix apps
+		//Fix app paths
+		//deploypath
+		Searcher appsearcher = mediaarchive.getSearcher("app");
+		//Loop over apps
+		appsearcher.deleteAll(null);
+		Collection paths = mediaarchive.getPageManager().getChildrenPaths(site.get("rootpath"));
+		for(String path:paths)
+		{
+			String name = PathUtilities.extractFileName(path);
+			PageSettings settings = mediaarchive.getPageManager().getPageSettingsManager().getPageSettings(path + "/_site.xconf");
+			if( settings.exists() && name != "catalog" )
+			{
+				Data newapp = appsearcher.createNewData();
+				newapp.setName(name);
+				newapp.setValue("deploypath", path);
+				appsearcher.saveData(newapp);
+				log.info("Fixed app " + path);
+			}
+		}
 
 	}
 }
@@ -205,8 +225,9 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 			importPermissions(mediaarchive,rootfolder, tempindex);
 			nodeManager.loadIndex(mediaarchive.getCatalogId(), tempindex, deleteold);
 		}
-		else {
-			log.info("Import canceled");
+		else 
+		{
+			log.info("Import canceled due to CSV import error");
 		}
 	}
 }
