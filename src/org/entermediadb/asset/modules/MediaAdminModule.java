@@ -286,6 +286,21 @@ public class MediaAdminModule extends BaseMediaModule
 		getWorkspaceManager().saveModule(catalogid, appid, module);
 	}
 
+	public void saveAllModules(WebPageRequest inReq) throws Exception
+	{
+		String appid = inReq.findValue("applicationid");
+		String catalogid = inReq.findValue("catalogid");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		Collection all = archive.getList("module");
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data module = (Data) iterator.next();
+			getWorkspaceManager().saveModule(catalogid, appid, module);			
+		}
+	}
+
+	
 	public void reloadSettings(WebPageRequest inReq) throws Exception
 	{
 		String catalogid = inReq.findValue("catalogid");

@@ -7,6 +7,7 @@ import org.entermediadb.asset.util.CSVReader
 import org.entermediadb.asset.util.ImportFile
 import org.entermediadb.asset.util.Row
 import org.entermediadb.elasticsearch.ElasticNodeManager
+import org.entermediadb.workspace.WorkspaceManager
 import org.openedit.Data
 import org.openedit.OpenEditException
 import org.openedit.data.PropertyDetail
@@ -84,8 +85,23 @@ public void init()
 				newapp.setValue("deploypath", path);
 				appsearcher.saveData(newapp);
 				log.info("Fixed app " + path);
+				
+				if( name == "emshare")
+				{
+					String appid = name;
+					
+					Collection all = mediaarchive.getList("module");
+					WorkspaceManager manager = mediaarchive.getBean("workspaceManager");
+					for (Iterator iterator = all.iterator(); iterator.hasNext();)
+					{
+						Data module = (Data) iterator.next();
+						manager.saveModule(catalogid, appid, module);
+					}
+				}
 			}
 		}
+		
+		
 
 	}
 }
