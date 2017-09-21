@@ -142,6 +142,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 					if (tosave.size() == 500)
 					{
 						updateIndex(tosave, null);
+						log.info("reindexed " + getExecCount());
 						tosave.clear();
 					}
 					incrementCount();
@@ -156,7 +157,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			log.info("reindexed " + processor.getExecCount());
 			flushChanges();
 			
-			super.reIndexAll();//Old elastic data
+			//super.reIndexAll();//Old elastic data
 			
 		}
 		catch (Exception e)
