@@ -2,6 +2,7 @@ package org.entermediadb.asset.publish.publishers;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -185,7 +186,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		}
 
 		Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
-
+		ArrayList done = new ArrayList();
 		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();)
 		{
 			Element field = (Element) iterator.next();
@@ -200,11 +201,38 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				if (detail != null)
 				{
 					String assetvalue = inAsset.get(detail.getId());
+					if(assetvalue != null){
 					value.setText(assetvalue);
+					done.add(detail.getId());
+					}
 				}
 			}
 		}
 		
+		
+		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			if(done.contains(detail.getId())){
+				continue;
+			}
+			String vizfield = detail.get("vizonefield");
+			if(vizfield != null){
+//				<field name="vpm.importFileName">
+//			    <value>ALQEYXQQMVPNAFPY</value>
+//			  </field>		
+				String assetvalue = inAsset.get(detail.getId());
+				if(assetvalue != null){
+				
+				
+				Element field = elem.addElement("field");
+				field.addAttribute("name", vizfield);
+				Element value = field.addElement("value");
+				value.setText(assetvalue);
+				}
+				
+			}
+		}
 		
 
 		HttpPut method = new HttpPut(addr);

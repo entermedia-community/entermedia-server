@@ -21,9 +21,8 @@ public class VizOne{
 	def authString = "EMDEV:3nterMed1a".getBytes().encodeBase64().toString();
 	protected ThreadLocal perThreadCache = new ThreadLocal();
 	public void downloadNew(WebPageRequest inReq){
+
 	
-		
-			//def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?id=50"
 		def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=1&num=10000"
 		def conn = addr.toURL().openConnection()
 		conn.setRequestProperty( "Authorization", "Basic ${authString}" )
@@ -44,15 +43,24 @@ public class VizOne{
 
 			rss.entry.each {
 				try{
-					if("deleted".equals(it.mediastatus.text())){
-						return;
-					}
+					
 
-
+					
 					String vizid =it.ardomeIdentity;
 
 					Asset asset = assetsearcher.searchByField("vizid", vizid);
 
+					
+					if("deleted".equals(it.mediastatus.text()) && asset.getValue("fromviz") == true){
+						if(asset){
+						archive.deleteAsset(asset, true);
+						}
+						return;
+					}
+					
+					
+					
+					
 					def url = it.'**'.find { link-> link.@rel == 'describedby'};
 
 					String href= url.@href;
@@ -94,6 +102,11 @@ public class VizOne{
 							else if(name.contains("retentionPolicy")){
 								asset.setValue("vizoneretention", value);
 							}
+						}
+						
+						if("remove".equals(asset.getValue("vizoneretention")))
+						{
+							return;
 						}
 
 
@@ -151,7 +164,14 @@ public class VizOne{
 							asset.setValue("vizoneretention", value);
 						}
 					}
-				//	public void updateAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception{
+					
+					if("remove".equals(asset.getValue("vizoneretention")) && asset.getValue("fromviz") == true)
+					{
+						archive.deleteAsset(asset, true);
+					}
+					else{
+					
+					
 						
 					viz.updateAsset(archive,"http://vizmtlvamf.media.in.cbcsrc.ca/" , asset,authString);
 					
@@ -160,13 +180,13 @@ public class VizOne{
 					asset.clearCategories();
 					asset.addCategory(cat);
 					
-
+					
 
 					archive.saveAsset(asset,null);
 
 					//Always update metadata  and save asset in case VIZ metadata changed?
 
-
+					}
 
 
 
@@ -198,7 +218,7 @@ public class VizOne{
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		AssetSearcher assetsearcher = archive.getAssetSearcher();
 		ArrayList todelete = new ArrayList();
-		HitTracker assets = assetsearcher.fieldSearch("vizid", "*");
+		HitTracker assets = assetsearcher.query().match("vizid", "*").match("fromviz", true).search();
 		assets.each{
 			def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item/${it.vizid}";
 
@@ -281,7 +301,7 @@ VizOne vz = new VizOne();
 
 
 vz.downloadNew(context);
-//vz.validate(context);
+vz.validate(context);
 
 
 
