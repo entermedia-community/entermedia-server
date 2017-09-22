@@ -408,7 +408,7 @@ onloadselectors = function()
 	jQuery(".googlecontactlist").livequery( function() 
 			{
 				var theinput = jQuery(this);
-				if( theinput && theinput.autocomplete )
+				if( theinput  )
 				{
 					var theinputhidden = theinput.attr("id") + "hidden";
 					theinput.autocomplete({

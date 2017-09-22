@@ -27,13 +27,11 @@ import org.openedit.util.StringEncryption;
 import org.openedit.util.URLUtilities;
 
 public class OauthModule extends BaseMediaModule
-{	
+{
 	private static final Log log = LogFactory.getLog(OauthModule.class);
 
-	
 	protected StringEncryption fieldCookieEncryption;
 	protected EventManager fieldEventManager;
-
 
 	public EventManager getEventManager()
 	{
@@ -58,9 +56,7 @@ public class OauthModule extends BaseMediaModule
 	public void redirectToHost(WebPageRequest inReq)
 	{
 		//http://yfrankfeng.blogspot.ca/2015/07/working-example-on-oauth2-spring.html
-		
-		
-		
+
 		try
 		{
 
@@ -69,22 +65,43 @@ public class OauthModule extends BaseMediaModule
 			String appid = inReq.findValue("applicationid");
 			Data authinfo = archive.getData("oauthprovider", provider);
 			String siteroot = inReq.findValue("siteroot");
-			
-			URLUtilities utils = (URLUtilities) inReq
-					.getPageValue(PageRequestKeys.URL_UTILITIES);
-			if (siteroot == null && utils != null) {
+
+			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+			if (siteroot == null && utils != null)
+			{
 
 				siteroot = utils.siteRoot();
 			}
-			
-			String redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+			String redirect = inReq.findValue("redirecturi");
+			if (redirect == null)
+			{
+				redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+			}
+			else
+			{
+				redirect = siteroot + "/" + redirect;
+			}
 			if ("google".equals(provider))
 			{
 
 				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
 				//.setRedirectURI("http://localhost:8080/googleauth.html")
-			//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("prompt", "login consent").setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope("https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid https://www.googleapis.com/auth/drive  https://www.googleapis.com/auth/admin.directory.user https://www.googleapis.com/auth/admin.directory.domain https://apps-apis.google.com/a/feeds/domain/ https://www.google.com/m8/feeds/").buildQueryMessage();
+				//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
+				String requestedpermissions = inReq.findValue("requestedpermissions");
+
+				if (requestedpermissions == null)
+				{
+					requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/";
+				}
+
+				String prompt = inReq.findValue("prompt");
+				if (prompt == null)
+				{
+					prompt = "";
+				}
+				
+				
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
@@ -115,29 +132,36 @@ public class OauthModule extends BaseMediaModule
 		String appid = inReq.findValue("applicationid");
 		MediaArchive archive = getMediaArchive(inReq);
 
-		String siteroot = inReq.findValue("siteroot");
-		
-		URLUtilities utils = (URLUtilities) inReq
-				.getPageValue(PageRequestKeys.URL_UTILITIES);
-		if (siteroot == null && utils != null) {
-
-			siteroot = utils.siteRoot();
-		}
-		
-		
 		if ("google".equals(provider))
 		{
 
 			Data authinfo = archive.getData("oauthprovider", provider);
 
+			String siteroot = inReq.findValue("siteroot");
+
+			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+			if (siteroot == null && utils != null)
+			{
+
+				siteroot = utils.siteRoot();
+			}
+			String redirect = inReq.findValue("redirecturi");
+			if (redirect == null)
+			{
+				redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+			}
+			else
+			{
+				redirect = siteroot + "/" + redirect;
+			}
+
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 			//GOOGLE
 
-			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
-		//	OAuthClientRequest refreshtoken = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
+			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).setCode(code).buildBodyMessage();
+			//	OAuthClientRequest refreshtoken = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
 
-			
 			try
 			{
 
@@ -151,25 +175,29 @@ public class OauthModule extends BaseMediaModule
 				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 				String accessToken = oAuthResponse.getAccessToken();
 				String refresh = oAuthResponse.getRefreshToken();
-				if(refresh != null){
-				authinfo.setValue("refreshtoken", refresh);
-				authinfo.setValue("httprequesttoken", null);
+				boolean systemwide = Boolean.parseBoolean(inReq.findValue("systemwide"));
+
+				if (refresh != null && systemwide)
+				{
+					authinfo.setValue("refreshtoken", refresh);
+					authinfo.setValue("httprequesttoken", null);
+					archive.getSearcher("oauthprovider").saveData(authinfo);
+
 				}
-				archive.getSearcher("oauthprovider").saveData(authinfo);
-				
+
 				OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://www.googleapis.com/oauth2/v1/userinfo").setAccessToken(accessToken).buildQueryMessage();
-				
+
 				OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
 				String userinfoJSON = resourceResponse.getBody();
 				JSONParser parser = new JSONParser();
-				
-				JSONObject data =  (JSONObject) parser.parse(userinfoJSON);
-				String email = (String)data.get("email");
-				String firstname = (String)data.get("given_name");
-				String lastname = (String)data.get("family_name");
+
+				JSONObject data = (JSONObject) parser.parse(userinfoJSON);
+				String email = (String) data.get("email");
+				String firstname = (String) data.get("given_name");
+				String lastname = (String) data.get("family_name");
 				boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
-				handleLogin(inReq,  email, firstname, lastname,true, autocreate, authinfo,refresh);
-				
+				handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh);
+
 			}
 			catch (Exception e)
 			{
@@ -184,7 +212,24 @@ public class OauthModule extends BaseMediaModule
 			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
 			String code = oar.getCode();
 
-			String redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+			String siteroot = inReq.findValue("siteroot");
+
+			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+			if (siteroot == null && utils != null)
+			{
+
+				siteroot = utils.siteRoot();
+			}
+			String redirect = inReq.findValue("redirecturi");
+			if (redirect == null)
+			{
+				redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+			}
+			else
+			{
+				redirect = siteroot + "/" + redirect;
+			}
+
 			OAuthClientRequest request = OAuthClientRequest.tokenLocation(authinfo.get("remoteroot") + "/oauth2/token").setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).setCode(code).buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
@@ -198,43 +243,42 @@ public class OauthModule extends BaseMediaModule
 			OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
 			String userinfoJSON = resourceResponse.getBody();
 			JSONParser parser = new JSONParser();
-			
-			JSONObject data =  (JSONObject) parser.parse(userinfoJSON);
-			handleLogin(inReq,  (String)data.get("email"), (String)data.get("name"), (String)data.get("lastname"),false, true, authinfo,null);
-			
+
+			JSONObject data = (JSONObject) parser.parse(userinfoJSON);
+			handleLogin(inReq, (String) data.get("email"), (String) data.get("name"), (String) data.get("lastname"), false, true, authinfo, null);
+
 		}
-	//	inReq.redirect("/" + appid + "/index.html");
+		//	inReq.redirect("/" + appid + "/index.html");
 	}
 
-	protected void handleLogin(WebPageRequest inReq,  String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate, Data authinfo, String refreshtoken)
+	protected void handleLogin(WebPageRequest inReq, String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate, Data authinfo, String refreshtoken)
 	{
-		 
-		if(authinfo.getValue("alloweddomains") != null){
-			
+
+		if (authinfo.getValue("alloweddomains") != null)
+		{
+
 			boolean ok = false;
 			String domains = authinfo.get("alloweddomains");
-			String [] domainlist = domains.split(",");
+			String[] domainlist = domains.split(",");
 			for (int i = 0; i < domainlist.length; i++)
 			{
 				String domain = domainlist[i];
-				if(email.endsWith(domain)){
+				if (email.endsWith(domain))
+				{
 					ok = true;
 				}
 			}
-			if(!ok)
+			if (!ok)
 			{
 				String appid = inReq.findValue("applicationid");
-				inReq.redirect("/" + appid + "/authentication/nopermissions.html" );
+				inReq.redirect("/" + appid + "/authentication/nopermissions.html");
 				return;
 			}
 		}
-		
-		
-		
-		
+
 		MediaArchive archive = getMediaArchive(inReq);
 		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
-		
+
 		User target = searcher.getUserByEmail(email);
 		if (autocreate && target == null)
 		{
@@ -243,24 +287,26 @@ public class OauthModule extends BaseMediaModule
 			target.setLastName(lastname);
 			target.setEmail(email);
 			target.setEnabled(true);
-			searcher.saveData(target, null);			
+			searcher.saveData(target, null);
 		}
-		if(target != null){
-			
+		if (target != null)
+		{
+
 			inReq.putSessionValue(searcher.getCatalogId() + "user", target);
 			String md5 = getCookieEncryption().getPasswordMd5(target.getPassword());
 			String value = target.getUserName() + "md542" + md5;
 			inReq.putPageValue("entermediakey", value);
-			inReq.putPageValue( "user", target);
-			if(refreshtoken != null){
+			inReq.putPageValue("user", target);
+			if (refreshtoken != null)
+			{
 				target.setProperty("refreshtoken", refreshtoken);
-				
+
 				target.setProperty("clientid", authinfo.get("clientid"));
 			}
 			target.setProperty("httprefreshtoken", null);
 			archive.getSearcher("user").saveData(target);
 
-			if(getEventManager() != null)
+			if (getEventManager() != null)
 			{
 				WebEvent event = new WebEvent();
 				event.setSearchType("userprofile");
@@ -273,7 +319,6 @@ public class OauthModule extends BaseMediaModule
 
 				getEventManager().fireEvent(event);
 			}
-
 
 		}
 

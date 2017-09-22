@@ -218,7 +218,7 @@ public class VizOne{
 		MediaArchive archive = inReq.getPageValue("mediaarchive");
 		AssetSearcher assetsearcher = archive.getAssetSearcher();
 		ArrayList todelete = new ArrayList();
-		HitTracker assets = assetsearcher.query().match("vizid", "*").match("fromviz", true).search();
+		HitTracker assets = assetsearcher.query().match("vizid", "*").match("fromviz", "true").search();
 		assets.each{
 			def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item/${it.vizid}";
 
