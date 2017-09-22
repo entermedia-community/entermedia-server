@@ -84,6 +84,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				String[] splits = id.split(":");
 
 				inAsset.setProperty("vizid", splits[4]);
+				inAsset.setValue("fromfiz", false);
 				String identifier = results.element("identifier").getText();
 				inAsset.setValue("vizidentifier", identifier);
 
@@ -158,7 +159,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
 
 		String addr = servername + "api/asset/item/" + inAsset.get("vizid") + "/metadata";
-
+		log.info("Updating metadata at " + addr);
 		String vizoneretention = inAsset.get("vizoneretention");
 		if(vizoneretention == null){
 			inAsset.setValue("vizoneretention", "oneweek");
