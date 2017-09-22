@@ -93,6 +93,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			}
 
 			uploadAsset(inMediaArchive, result, inAsset, inDestination, inPreset, authString);
+			Thread.sleep(5000);
 			//http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101604250011569821/metadata
 			setMetadata(inMediaArchive, inDestination.get("url"), inAsset, authString);
 
