@@ -169,7 +169,8 @@
 	<bean id="Reflector" class="org.openedit.modules.reflect.Reflector" />
 
 	<bean id="stringEncryption" class="org.openedit.util.StringEncryption">
-		<property name="rootDirectory"><ref bean="root" /></property>		
+		<property name="rootDirectory"><ref bean="root" /></property>
+		<property name="searcherManager"><ref bean="searcherManager"/></property>		
 	</bean>	
 	
 	<bean id="requestUtils" class="org.openedit.util.RequestUtils">
