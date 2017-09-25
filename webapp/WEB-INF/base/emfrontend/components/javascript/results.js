@@ -555,12 +555,8 @@ checkScroll = function()
 		
 		
 		//are we near the end? Are there more pages?
-  		var visibleHeight = document.body.clientHeight;
+  		var visibleHeight = $(window).height();
   		var totalHeight = $(document).height();
-  		if( totalHeight == visibleHeight)  //On iphone window.height is always the same as the content area
-  		{ 	
-  			totalHeight = window.screen.availHeight; //This is the total size of the monitor, might be the same as $(window).height()
-  		}
 
 
 	    var page = parseInt(resultsdiv.data("pagenum"));   
@@ -571,11 +567,11 @@ checkScroll = function()
 			return;
 		}
 
-  		//console.log($(window).scrollTop() + " + " +   (visibleHeight + 170) + ">=" + totalHeight); 
-		var atbottom = ($(window).scrollTop() + (visibleHeight + 501)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
+  		//console.log($(window).scrollTop() + " + " +   (visibleHeight*2 + 500) + ">=" + totalHeight); 
+		var atbottom = ($(window).scrollTop() + (visibleHeight*2 + 500)) >= totalHeight ; //is the scrolltop plus the visible equal to the total height?
 		if(	!atbottom )
 	    {
-	    	console.log("Not yet within 250px");
+	    	//console.log("Not yet within 500px");
 		  return;
 		}
 		 
