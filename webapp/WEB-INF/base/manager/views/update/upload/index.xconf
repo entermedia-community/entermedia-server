@@ -4,8 +4,6 @@
 		<value locale="es">OpenEdit - Administrador de Plugins</value>
 	</property>
 
-	<page-action name="UpdateModule.listPlugins">
-	</page-action>
 	<property name='text.Upgrade Plugins'>
         	<value>Upgrade Plugins</value>
 		<value locale="es">Actualizar Plugins</value>
