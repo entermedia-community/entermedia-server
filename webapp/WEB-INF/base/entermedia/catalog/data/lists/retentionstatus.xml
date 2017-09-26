@@ -1,5 +1,6 @@
 
 <retentionstatus>
-  <retentionstatus id="deletegenerated">Deleted Generated Asssets</projectstatus>
-  <retentionstatus id="deleteoriginal">Deleted Original</projectstatus>
+  <retentionstatus id="deletegenerated">Deleted Generated Asssets</retentionstatus>
+  <retentionstatus id="deleteoriginal">Deleted Original</retentionstatus>
+  <retentionstatus id="archived">Archived</retentionstatus>
 </retentionstatus>
