@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.commons.io.IOUtils;
@@ -318,6 +319,9 @@ public class GoogleManager implements CatalogEnabled
 				newasset.setSourcePath(categoryPath + "/" + filename);
 				newasset.setFolder(false);
 				newasset.setValue("googleid", id);
+				newasset.setValue("assetaddeddate", new Date());
+				//TODO: Add dates here
+				
 				newasset.setName(filename);
 //				if (webcontentelem != null)
 //				{
