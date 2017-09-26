@@ -1,16 +1,13 @@
 package asset
 
-import java.util.Iterator
-
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.TimeParser
 import org.openedit.Data
+import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
 import org.openedit.page.manage.PageManager
-
-import com.google.common.primitives.Booleans.BooleanArrayAsList
 
 
 MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
@@ -30,7 +27,8 @@ public void checkRules()
 		Date target = new Date(System.currentTimeMillis() -  daystokeep);
 		def nots = ["deletegenerated","deleteoriginal"];
 		
-		Collection assets = mediaarchive.getAssetSearcher().query().match("importstatus","complete").exact("retentionpolicy",it.id).notgroup("retentionstatus",nots).before("assetaddeddate", target).search();
+		HitTracker assets = mediaarchive.getAssetSearcher().query().match("importstatus","complete").exact("retentionpolicy",it.id).notgroup("retentionstatus",nots).before("assetaddeddate", target).search();
+		assets.enableBulkOperations();
 		log.info("Found ${assets.size()} for retention policy ${it} ${assets.query}");
 		archiveAssets(retentionpolicy, assets);
 	}
