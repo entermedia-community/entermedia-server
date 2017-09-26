@@ -3,4 +3,5 @@
   <retentionstatus id="deletegenerated">Deleted Generated Asssets</retentionstatus>
   <retentionstatus id="deleteoriginal">Deleted Original</retentionstatus>
   <retentionstatus id="archived">Archived</retentionstatus>
+ <retentionstatus id="error">Error</retentionstatus>
 </retentionstatus>

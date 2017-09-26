@@ -72,11 +72,13 @@ public void archiveAssets(Data retentionpolicy, Collection assets)
 				pageManager.movePage(fullpath,newpage);
 				log.info("Archived asset to ${newpage.getContentItem().getAbsolutePath()}");
 				asset.setFolder(fullpath.isFolder());
+				asset.setValue("retentionstatus","archived");
 				asset.setValue("archivesourcepath",newsourcepath);
 			}
 			else
 			{
 				log.info("could not move to archive: ${asset.getSourcePath()}");
+				asset.setValue("retentionstatus","error");
 			}
 		}
 		if( complete )
