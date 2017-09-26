@@ -15,7 +15,7 @@ public void init()
 		//HitTracker assets = searcher.getAllHits();
 		HitTracker assets = searcher.query().exact("importstatus","needsmetadata").search();
 		assets.enableBulkOperations();
-
+		assets.setHitsPerPage(100);
 		List assetsToSave = new ArrayList();
 		MetaDataReader reader = moduleManager.getBean("metaDataReader");
 		for (Data hit in assets)
