@@ -10,42 +10,13 @@ import org.openedit.Data
 import org.openedit.page.Page
 import org.openedit.page.manage.PageManager
 
+import com.google.common.primitives.Booleans.BooleanArrayAsList
+
 
 MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
 PageManager pageManager = mediaarchive.getPageManager();
 
-public void archiveAssets(Data retentionpolicy, Collection assets)
-{
-	assets.each
-	{
-		if( Boolean.valueOf( retentionpolicy.get("deleteasset") ) )
-		{
-			Asset asset = mediaarchive.getAssetSearcher().loadData(it);
-			mediaarchive.deleteAsset(asset,true);
-		}
-		else if( !it.archivesourcepath  )
-		{
-			Asset asset = mediaarchive.getAssetSearcher().loadData(it);
-			Page fullpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + asset.getSourcePath() );
-			if(fullpath.exists()){
-				String mask = retentionpolicy.get("archivepath");
-				String newsourcepath = mediaarchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask( mediaarchive, null, asset.getName(), mask, asset.getProperties());
-				
-				Page newpage = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + newsourcepath);
-				pageManager.movePage(fullpath,newpage);
-				log.info("Archived asset to ${newpage.getContentItem().getAbsolutePath()}");
-				asset.setFolder(fullpath.isFolder());
-				asset.setValue("archivesourcepath",newsourcepath);
-				mediaarchive.getAssetSearcher().saveData(asset);
-			}
-			else
-			{
-				log.info("Original did not exist to archive: ${asset.getSourcePath()}");
-			}
-		}
-	}
-	
-}
+
 
 public void checkRules()
 {
@@ -57,12 +28,65 @@ public void checkRules()
 		TimeParser parser = new TimeParser();
 		long daystokeep = parser.parse(it.expirationperiod);
 		Date target = new Date(System.currentTimeMillis() -  daystokeep);
-		 
-		Collection assets = mediaarchive.getAssetSearcher().query().exact("retentionpolicy",it.id).before("assetaddeddate", target).search();
+		def nots = ["deletegenerated","deleteoriginal"];
+		
+		Collection assets = mediaarchive.getAssetSearcher().query().match("importstatus","complete").exact("retentionpolicy",it.id).notgroup("retentionstatus",nots).before("assetaddeddate", target).search();
 		log.info("Found ${assets.size()} for retention policy ${it} ${assets.query}");
 		archiveAssets(retentionpolicy, assets);
 	}
 }	
+
+public void archiveAssets(Data retentionpolicy, Collection assets)
+{
+	assets.each
+	{
+		boolean complete = false;
+		Asset asset = mediaarchive.getAssetSearcher().loadData(it);
+		if( Boolean.valueOf( retentionpolicy.get("deletegenerated") ) )
+		{
+			asset.setValue("retentionstatus","deletegenerated");
+			mediaarchive.removeGeneratedImages(asset,true);
+			complete = true;
+		}
+		if( Boolean.valueOf( retentionpolicy.get("deleteoriginal") ) )
+		{
+			asset.setValue("retentionstatus","deleteoriginal");
+			mediaarchive.removeOriginals(asset);
+			complete = true;
+		}
+		if( Boolean.valueOf( retentionpolicy.get("deleteasset") ) )
+		{
+			mediaarchive.deleteAsset(asset,false);
+			complete = true;
+		}
+		else if( !it.archivesourcepath  )
+		{
+			Page fullpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + asset.getSourcePath() );
+			if(fullpath.exists()){
+				String mask = retentionpolicy.get("archivepath");
+				String newsourcepath = mediaarchive.getAssetImporter().getAssetUtilities().createSourcePathFromMask( mediaarchive, null, asset.getName(), mask, asset.getProperties());
+				
+				Page newpage = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + newsourcepath);
+				pageManager.movePage(fullpath,newpage);
+				log.info("Archived asset to ${newpage.getContentItem().getAbsolutePath()}");
+				asset.setFolder(fullpath.isFolder());
+				asset.setValue("archivesourcepath",newsourcepath);
+				asset.setValue("retentionstatus","archived");
+				mediaarchive.getAssetSearcher().saveData(asset);
+				complete = true;
+			}
+			else
+			{
+				log.info("Original did not exist to archive: ${asset.getSourcePath()}");
+			}
+		}
+		if( complete )
+		{
+			log.info("Applied retention policy ${retentionpolicy} on ${asset}");
+		}
+	}
+	
+}
 
 public boolean isEmpty( Page inParentFolder)
 {
@@ -101,8 +125,11 @@ public init()
 		checkRules();
 	}
 	else
-	{
-		Collection hits = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
+	{		
+		//These files are being MOVED so the conversions will still work
+		def nots = ["deletegenerated","deleteoriginal"];
+		
+		Collection hits = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).notgroup("retentionstatus",nots).search();
 		List assets = new ArrayList();
 		hits.each
 		{
