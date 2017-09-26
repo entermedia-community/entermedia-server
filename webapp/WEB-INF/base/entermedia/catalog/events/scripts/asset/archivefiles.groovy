@@ -59,7 +59,8 @@ public void archiveAssets(Data retentionpolicy, Collection assets)
 			mediaarchive.deleteAsset(asset,false);
 			complete = true;
 		}
-		else if( !it.archivesourcepath  )
+		 
+		if( !complete && !it.archivesourcepath  ) //Archive it
 		{
 			complete = true;
 			Page fullpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + asset.getSourcePath() );
@@ -75,7 +76,7 @@ public void archiveAssets(Data retentionpolicy, Collection assets)
 			}
 			else
 			{
-				log.info("Original did not exist to archive: ${asset.getSourcePath()}");
+				log.info("could not move to archive: ${asset.getSourcePath()}");
 			}
 		}
 		if( complete )
