@@ -196,6 +196,7 @@ public class GoogleManager implements CatalogEnabled
 		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
 		inAsset.setProperty("previewstatus", "converting");
 		getMediaArchive().saveAsset(inAsset);
+		inAsset.setProperty("retentionpolicy", "deleteoriginal");
 		getMediaArchive().fireMediaEvent( "assetimported", null, inAsset); //Run custom scripts?
 		
 //		if( assettype != null && assettype.equals("embedded") )

@@ -39,6 +39,21 @@
     </name>
   </property>  
   
+  <property id="deleteoriginal" editable="true" stored="true" index="true" >
+    <name>
+      <language id="en"><![CDATA[Auto Delete Originals]]></language>
+    </name>
+  </property>  
+ 
+ 
+  <property id="deletegenerated" editable="true" stored="true" index="true" >
+    <name>
+      <language id="en"><![CDATA[Auto Delete Thumbnails]]></language>
+    </name>
+  </property>  
+ 
+ 
+  
   
   <!--- library? --> 
 </properties>
