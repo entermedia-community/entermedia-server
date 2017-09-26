@@ -359,7 +359,7 @@
     </name> 
   </property>
   
-   <property id="retentionstatus" index="true" stored="true" datatype="list" listid="assetimportstatus" editable="true"   type="list">Retention Status 
+   <property id="retentionstatus" index="true" stored="true" datatype="list" listid="assetretentionstatus" editable="true"   type="list">Retention Status 
      
   </property>  
   

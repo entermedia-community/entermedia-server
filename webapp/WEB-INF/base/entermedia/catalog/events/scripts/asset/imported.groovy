@@ -44,14 +44,6 @@ public void init()
 				}	
 			}
 		}
-		if( foundone)
-		{
-			mediaarchive.saveAsset(asset,null);
-			if( foundretention )
-			{
-				mediaarchive.fireMediaEvent("archivefiles",null,asset);
-			}
-		}
 	}	
 }
 
