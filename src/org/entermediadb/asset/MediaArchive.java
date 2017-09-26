@@ -1040,9 +1040,8 @@ public class MediaArchive implements CatalogEnabled
 	
 	public void removeOriginals(Asset inAsset)
 	{
-		String path = "/WEB-INF/data/" + getCatalogId() + "/originals/" + inAsset.getSourcePath();
-		Page dir = getPageManager().getPage(path);
-		getPageManager().removePage(dir);
+		ContentItem item = getOriginalContent(inAsset);
+		getPageManager().getRepository().remove(item);
 		
 	}
 	
