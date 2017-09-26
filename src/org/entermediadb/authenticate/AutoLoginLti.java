@@ -6,6 +6,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.users.User;
 import org.openedit.util.StringEncryption;
@@ -81,7 +82,12 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 	    if( expected != null)
 	    {
 		    String url = inReq.getSiteUrl();//"https://weatherfordcollege.entermediadb.net/lti/index.html";
-		    String inPrivateKey = getStringEncryption().getEncryptionKey();
+		    String inPrivateKey = getStringEncryption().getEncryptionKey("ltiautologinkey");
+		    if( inPrivateKey == null)
+		    {
+		    	throw new OpenEditException("ltiautologinkey is not defined in WEB-INF/data/system/lists/systemsettings/custom.xml");
+		    }
+		    	
 		    String sha1 = createRequest(inPrivateKey, url, expected, map);
 		    if( expected.equals(sha1) )
 		    {

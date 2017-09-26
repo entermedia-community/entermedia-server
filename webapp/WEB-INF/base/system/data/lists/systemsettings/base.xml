@@ -2,4 +2,5 @@
   <property id="syncthing_server_apikey" value="dSDL71gjCwS7t0TqCdhljCoXffXx0ssN" >SyncThing API Key</property>
   <property id="syncthing_server_address" value="netevolved.com:8384" >SyncThing Server</property>
   <property id="syncthing_server_deviceid" value="YMEX3N3-PKITFHR-RAZRKIC-CSHFT5K-MFGNFTX-I7VJJT7-JSV3MCG-XFX4YAA" >SyncThing Server Device ID</property>
+  <property id="autologincookiekey" value="7939805759879766427939805759879766">Auto Login Cookie Key</property>
 </properties>
