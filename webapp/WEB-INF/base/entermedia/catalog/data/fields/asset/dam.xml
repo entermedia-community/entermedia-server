@@ -357,7 +357,14 @@
       <language id="es"><![CDATA[Estado de la importación]]></language>  
       <language id="fr"><![CDATA[Status de l&#39;importation]]></language> 
     </name> 
+  </property>
+  
+   <property id="retentionstatus" index="true" stored="true" datatype="list" listid="assetimportstatus" editable="true"   type="list">Retention Status 
+     
   </property>  
+  
+  
+    
   <property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" listid="assetpreviewstatus" datatype="list"   type="list">Preview Status 
     <name> 
       <language id="de"><![CDATA[Vorschau-Status]]></language>  
