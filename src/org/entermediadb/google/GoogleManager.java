@@ -80,8 +80,7 @@ public class GoogleManager implements CatalogEnabled
 
 		String url = "https://www.googleapis.com/drive/v3/files?fields=*";
 
-//		String search = "mimeType = 'application/vnd.google-apps.folder'";
-//		search = search + " and '" + inParentId + "' in parents";
+
 		String search = "'" + inParentId + "' in parents";
 		url = url + "&q=" + URLEncoder.encode(search);
 
@@ -110,7 +109,6 @@ public class GoogleManager implements CatalogEnabled
 			results.setResultToken(pagekey.getAsString());
 		}
 		JsonArray files = json.getAsJsonArray("files");
-		log.info(files);
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			JsonObject object = (JsonObject) iterator.next();
@@ -345,6 +343,17 @@ public class GoogleManager implements CatalogEnabled
 				newasset.addCategory(category);
 				//inArchive.getAssetSearcher().saveData(newasset);
 				tosave.add(newasset);
+				if(tosave.size() == 100){
+					getMediaArchive().saveAssets(tosave);
+
+					for (Iterator iterator2 = tosave.iterator(); iterator2.hasNext();)
+					{
+						Asset dl = (Asset) iterator2.next();
+					//	saveFile(authinfo, dl);
+						
+					}
+					tosave.clear();
+				}
 			} 
 			else
 			{
@@ -377,7 +386,7 @@ public class GoogleManager implements CatalogEnabled
 		for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-			saveFile(authinfo, asset);
+		//	saveFile(authinfo, asset);
 			
 		}
 		
