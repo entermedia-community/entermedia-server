@@ -13,7 +13,7 @@ public void init()
 		MediaArchive archive = context.getPageValue("mediaarchive");//Search for all files looking for videos
 		Searcher searcher = archive.getAssetSearcher();
 		//HitTracker assets = searcher.getAllHits();
-		HitTracker assets = searcher.query().exact("importstatus","needsmetadata").search();
+		HitTracker assets = searcher.query().exact("importstatus","needsmetadata").sort("sourcepath").search();
 		assets.enableBulkOperations();
 		assets.setHitsPerPage(100);
 		List assetsToSave = new ArrayList();
@@ -21,6 +21,7 @@ public void init()
 		for (Data hit in assets)
 		{
 			Asset asset = searcher.loadData(hit);
+			log.info("${asset.getSourcePath()}");
 			if( asset != null)
 			{
 				ContentItem content = archive.getOriginalContent( asset );

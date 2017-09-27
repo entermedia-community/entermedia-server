@@ -57,7 +57,6 @@ public class MetaDataReader
 			{
 				inputFile = getPageManager().getRepository().get(inputFile.getPath());
 			}	
-
 //			GregorianCalendar cal = new GregorianCalendar();
 //			cal.setTimeInMillis(inputFile.lastModified());
 //			cal.set(Calendar.MILLISECOND, 0);
@@ -76,6 +75,11 @@ public class MetaDataReader
 				ext = ext.toLowerCase();
 			}
 			inAsset.setProperty("fileformat", ext);
+			if( !inputFile.exists() )
+			{
+				log.info("Original asset missing " + inAsset.getSourcePath());
+				return;
+			}
 
 			long start = System.currentTimeMillis();
 			boolean foundone = false;
