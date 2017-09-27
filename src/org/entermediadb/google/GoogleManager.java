@@ -6,7 +6,9 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -30,6 +32,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.entermedia.util.EmTokenResponse;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
@@ -77,15 +80,18 @@ public class GoogleManager implements CatalogEnabled
 	}
 	public Results listDriveFiles(Data authinfo, String inParentId) throws Exception
 	{
-
-		String url = "https://www.googleapis.com/drive/v3/files?fields=*";
-
+		//https://developers.google.com/drive/v3/reference/files/list
+		//https://developers.google.com/drive/v3/web/search-parameters
+		String url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*";
 
 		String search = "'" + inParentId + "' in parents";
 		url = url + "&q=" + URLEncoder.encode(search);
+		
+		//TODO: Add date query from the last time we imported
 
 		Results results = new Results();
 
+		//List one folders worth of files
 		boolean keepgoing = false;
 		do
 		{
@@ -297,92 +303,94 @@ public class GoogleManager implements CatalogEnabled
 			return;
 		}
 		Category category = getMediaArchive().createCategoryPath(categoryPath);
-		Collection tosave = new ArrayList();
 		
+		Map onepage = new HashMap();
 		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 		{
 			JsonObject object = (JsonObject) iterator.next();
 			String id = object.get("id").getAsString();
+			onepage.put(id,object);
+			if(onepage.size() == 100)
+			{
+				createAssetsIfNeeded(authinfo,onepage, category);
+				onepage.clear();
+			}
+		}
+		createAssetsIfNeeded(authinfo,onepage,category);
+		
+	}
+	
+	private void createAssetsIfNeeded(Data authinfo, Map inOnepage, Category category) throws Exception
+	{
+		Collection tosave = new ArrayList();
+
+		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("googleid", inOnepage.keySet()).search();
+		
+		//Update category
+		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Asset existing = (Asset)getMediaArchive().getAssetSearcher().loadData(data);
+			//Remove existing assets
+			inOnepage.remove(existing.get("googleid"));
+			//existing.clearCategories();
+			if( !existing.isInCategory(category) )
+			{
+				//Clear old Drive categorties
+				Category root = getMediaArchive().createCategoryPath("Drive");
+				Collection existingcategories = new ArrayList( existing.getCategories());
+				for (Iterator iterator2 = existingcategories.iterator(); iterator2.hasNext();)
+				{
+					Category drive = (Category ) iterator2.next();
+					if( root.isAncestorOf(drive) )
+					{
+						existing.removeCategory(drive);
+					}
+				}
+				existing.addCategory(category);
+				getMediaArchive().saveAsset(existing);
+			}
+		}
+
+		//new Assets
+		for (Iterator iterator = inOnepage.keySet().iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			JsonObject object = (JsonObject)inOnepage.get(id);
+		
 			//log.info(object.get("kind"));// "kind": "drive#file",
 			//	String md5 = object.get("md5Checksum").getAsString();
-			Data asset = (Asset) getMediaArchive().getAssetSearcher().query().exact("googleid", id).searchOne();
-			if (asset == null)
+			Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
+			String filename = object.get("name").getAsString();
+			filename = filename.trim();
+			//JsonElement webcontentelem = object.get("webContentLink");
+
+			newasset.setSourcePath(category.getCategoryPath() + "/" + filename);
+			newasset.setFolder(false);
+			newasset.setValue("googleid", id);
+			newasset.setValue("assetaddeddate", new Date());
+			newasset.setValue("retentionpolicy", "deleteoriginal");  //Default
+			//TODO: Add dates here
+			
+			newasset.setName(filename);
+			JsonElement jsonElement = object.get("webViewLink");
+			if (jsonElement != null)
 			{
-				Asset newasset = (Asset) getMediaArchive().getAssetSearcher().createNewData();
-				String filename = object.get("name").getAsString();
-				filename = filename.trim();
-				JsonElement webcontentelem = object.get("webContentLink");
+				newasset.setValue("linkurl", jsonElement.getAsString());
 
-				newasset.setSourcePath(categoryPath + "/" + filename);
-				newasset.setFolder(false);
-				newasset.setValue("googleid", id);
-				newasset.setValue("assetaddeddate", new Date());
-
-				//TODO: Add dates here
-				
-				newasset.setName(filename);
-//				if (webcontentelem != null)
-//				{
-//					newasset.setValue("importstatus", "needsdownload");
-//					newasset.setValue("fetchurl", webcontentelem.getAsString());
-//				}
-				JsonElement jsonElement = object.get("webViewLink");
-				if (jsonElement != null)
-				{
-					newasset.setValue("linkurl", jsonElement.getAsString());
-
-				}
+			}
 //				JsonElement thumbnailLink = object.get("thumbnailLink");
 //				if (thumbnailLink != null)
 //				{
 //					newasset.setValue("fetchthumbnailurl", thumbnailLink.getAsString());
 //				}
 
-				
-				//			newasset.setValue("md5hex", md5);
-				newasset.addCategory(category);
-				String retentionpolicy = category.get("defaultretentionpolicy");
-				newasset.setProperty("retentionpolicy", retentionpolicy);
+			
+			//			newasset.setValue("md5hex", md5);
+			newasset.addCategory(category);
 
-				//inArchive.getAssetSearcher().saveData(newasset);
-				tosave.add(newasset);
-				if(tosave.size() == 100){
-					getMediaArchive().saveAssets(tosave);
-
-					for (Iterator iterator2 = tosave.iterator(); iterator2.hasNext();)
-					{
-						Asset dl = (Asset) iterator2.next();
-						saveFile(authinfo, dl);
-						
-					}
-					tosave.clear();
-				}
-			} 
-			else
-			{
-				//Update category
-				
-				//TODO: The clean up script should fix all these clearMissingOriginals
-				
-				Asset existing = (Asset)asset;
-				//existing.clearCategories();
-				if( !existing.isInCategory(category) )
-				{
-					//Clear old Drive categorties
-					Category root = getMediaArchive().createCategoryPath("Drive");
-					Collection existingcategories = new ArrayList( existing.getCategories());
-					for (Iterator iterator2 = existingcategories.iterator(); iterator2.hasNext();)
-					{
-						Category drive = (Category ) iterator2.next();
-						if( root.isAncestorOf(drive) )
-						{
-							existing.removeCategory(drive);
-						}
-					}
-					existing.addCategory(category);
-					getMediaArchive().saveAsset(existing);
-				}	
-			}
+			//inArchive.getAssetSearcher().saveData(newasset);
+			tosave.add(newasset);
 		}
 		getMediaArchive().saveAssets(tosave);
 
@@ -390,13 +398,8 @@ public class GoogleManager implements CatalogEnabled
 		{
 			Asset asset = (Asset) iterator.next();
 			saveFile(authinfo, asset);
-			
 		}
-		
 	}
-	
-	
-	
 	
 	public void syncContacts(User inAuthinfo) 
 	{
