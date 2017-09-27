@@ -8,5 +8,7 @@
   <property id="id"/>
   <property id="assetsort"/>
   <property id="autocreatecollections"/>
+    <property id="defaultretentionpolicy"/>
+  
   
 </root>

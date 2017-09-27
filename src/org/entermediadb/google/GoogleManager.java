@@ -317,7 +317,6 @@ public class GoogleManager implements CatalogEnabled
 				newasset.setFolder(false);
 				newasset.setValue("googleid", id);
 				newasset.setValue("assetaddeddate", new Date());
-				newasset.setProperty("retentionpolicy", "deleteoriginal");
 
 				//TODO: Add dates here
 				
@@ -342,6 +341,9 @@ public class GoogleManager implements CatalogEnabled
 				
 				//			newasset.setValue("md5hex", md5);
 				newasset.addCategory(category);
+				String retentionpolicy = category.get("defaultretentionpolicy");
+				newasset.setProperty("retentionpolicy", retentionpolicy);
+
 				//inArchive.getAssetSearcher().saveData(newasset);
 				tosave.add(newasset);
 				if(tosave.size() == 100){
