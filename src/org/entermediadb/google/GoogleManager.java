@@ -195,7 +195,6 @@ public class GoogleManager implements CatalogEnabled
 		getMediaArchive().getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(getMediaArchive(), item, inAsset);
 		inAsset.setProperty("previewstatus", "converting");
 		getMediaArchive().saveAsset(inAsset);
-		inAsset.setProperty("retentionpolicy", "deleteoriginal");
 		getMediaArchive().fireMediaEvent( "assetimported", null, inAsset); //Run custom scripts?
 		
 //		if( assettype != null && assettype.equals("embedded") )
@@ -318,6 +317,8 @@ public class GoogleManager implements CatalogEnabled
 				newasset.setFolder(false);
 				newasset.setValue("googleid", id);
 				newasset.setValue("assetaddeddate", new Date());
+				newasset.setProperty("retentionpolicy", "deleteoriginal");
+
 				//TODO: Add dates here
 				
 				newasset.setName(filename);
@@ -349,7 +350,7 @@ public class GoogleManager implements CatalogEnabled
 					for (Iterator iterator2 = tosave.iterator(); iterator2.hasNext();)
 					{
 						Asset dl = (Asset) iterator2.next();
-					//	saveFile(authinfo, dl);
+						saveFile(authinfo, dl);
 						
 					}
 					tosave.clear();
@@ -386,7 +387,7 @@ public class GoogleManager implements CatalogEnabled
 		for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-		//	saveFile(authinfo, asset);
+			saveFile(authinfo, asset);
 			
 		}
 		
