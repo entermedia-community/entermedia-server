@@ -82,7 +82,7 @@ public class GoogleManager implements CatalogEnabled
 	{
 		//https://developers.google.com/drive/v3/reference/files/list
 		//https://developers.google.com/drive/v3/web/search-parameters
-		String url = "https://www.googleapis.com/drive/v3/files?orderBy=modifiedTime desc,name&pageSize=1000&fields=*";
+		String url = "https://www.googleapis.com/drive/v3/files?orderBy="+ URLEncoder.encode("modifiedTime desc,name") + "&pageSize=1000&fields=*";
 
 		String search = "'" + inParentId + "' in parents";
 		url = url + "&q=" + URLEncoder.encode(search);
