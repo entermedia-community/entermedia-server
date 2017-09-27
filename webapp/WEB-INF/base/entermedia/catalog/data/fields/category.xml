@@ -99,11 +99,7 @@
     </name> 
   </property>  
    
-   
-   <property id="defaultretentionpolicy" editable="true" type="list" listid="retentionpolicy" viewtype="list" index="true" stored="true"   >Default Retention Policy 
-   
-  </property>  
-   
+ 
    
 
 </properties>
