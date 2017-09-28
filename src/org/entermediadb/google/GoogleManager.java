@@ -307,7 +307,9 @@ public class GoogleManager implements CatalogEnabled
 		Category category = getMediaArchive().createCategoryPath(categoryPath);
 
 		ContentItem item = getMediaArchive().getContent("/WEB-INF/" + getMediaArchive() + "/originals/" + categoryPath);
-		long leftkb = FileSystemUtils.freeSpaceKb(item.getAbsolutePath()); 
+		
+		long leftkb = new File(item.getAbsolutePath()).getFreeSpace()  / 1000;
+		//FileSystemUtils.freeSpaceKb(item.getAbsolutePath()); 
 		String free = getMediaArchive().getCatalogSettingValue("min_free_space");
 		if( free == null)
 		{
