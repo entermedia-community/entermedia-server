@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -278,6 +279,19 @@ public class GoogleManager implements CatalogEnabled
 
 	protected void processResults(Data inAuthinfo,  String inCategoryPath, Results inResults) throws Exception
 	{
+		ContentItem item = getMediaArchive().getContent("/WEB-INF/" + getMediaArchive() + "/originals/" + inCategoryPath);
+		long leftkb = FileSystemUtils.freeSpaceKb(item.getAbsolutePath()); 
+		String free = getMediaArchive().getCatalogSettingValue("min_free_space");
+		if( free == null)
+		{
+			free = "3000000";
+		}
+		if( leftkb < Long.parseLong( free) ) 
+		{
+			log.info("Not enough disk space left to download more " + leftkb + "<" + free );
+			return;
+		}
+		
 		createAssets(inAuthinfo, inCategoryPath,inResults.getFiles());
 		
 		if( inResults.getFolders() != null)
