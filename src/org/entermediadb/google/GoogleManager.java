@@ -323,16 +323,20 @@ public class GoogleManager implements CatalogEnabled
 		{
 			JsonObject object = (JsonObject) iterator.next();
 			String id = object.get("id").getAsString();
-			String size = object.get("size").getAsString();
-			onepage.put(id,object);
-			
-			if( size != null)
+			JsonElement fs = object.get("fileSize");
+			if( fs != null)
 			{
-				leftkb = leftkb - (Long.parseLong( size ) / 1000);
-				if( leftkb < Long.parseLong( free) ) 
+				String size = fs.getAsString();
+				onepage.put(id,object);
+				
+				if( size != null)
 				{
-					log.info("Not enough disk space left to download more " + leftkb + "<" + free );
-					return false;
+					leftkb = leftkb - (Long.parseLong( size ) / 1000);
+					if( leftkb < Long.parseLong( free) ) 
+					{
+						log.info("Not enough disk space left to download more " + leftkb + "<" + free );
+						return false;
+					}
 				}
 			}
 			
