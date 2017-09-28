@@ -279,51 +279,61 @@ public class GoogleManager implements CatalogEnabled
 
 	protected void processResults(Data inAuthinfo,  String inCategoryPath, Results inResults) throws Exception
 	{
-		ContentItem item = getMediaArchive().getContent("/WEB-INF/" + getMediaArchive() + "/originals/" + inCategoryPath);
+		if( createAssets(inAuthinfo, inCategoryPath,inResults.getFiles()) )
+		{
+			if( inResults.getFolders() != null)
+			{
+				for (Iterator iterator = inResults.getFolders().iterator(); iterator.hasNext();)
+				{
+					JsonObject folder = (JsonObject) iterator.next();
+					String id = folder.get("id").getAsString();
+					String foldername = folder.get("name").getAsString();
+					foldername = foldername.trim();
+					Results folderresults = listDriveFiles(inAuthinfo,id);
+					String categorypath = inCategoryPath +  "/" + foldername;
+					processResults(inAuthinfo,categorypath,folderresults);
+				}
+			}	
+		}
+
+	}
+
+	protected boolean createAssets(Data authinfo, String categoryPath, Collection inFiles) throws Exception
+	{
+		if( inFiles == null)
+		{
+			return true;
+		}
+		Category category = getMediaArchive().createCategoryPath(categoryPath);
+
+		ContentItem item = getMediaArchive().getContent("/WEB-INF/" + getMediaArchive() + "/originals/" + categoryPath);
 		long leftkb = FileSystemUtils.freeSpaceKb(item.getAbsolutePath()); 
 		String free = getMediaArchive().getCatalogSettingValue("min_free_space");
 		if( free == null)
 		{
 			free = "3000000";
 		}
-		if( leftkb < Long.parseLong( free) ) 
-		{
-			log.info("Not enough disk space left to download more " + leftkb + "<" + free );
-			return;
-		}
-		
-		createAssets(inAuthinfo, inCategoryPath,inResults.getFiles());
-		
-		if( inResults.getFolders() != null)
-		{
-			for (Iterator iterator = inResults.getFolders().iterator(); iterator.hasNext();)
-			{
-				JsonObject folder = (JsonObject) iterator.next();
-				String id = folder.get("id").getAsString();
-				String foldername = folder.get("name").getAsString();
-				foldername = foldername.trim();
-				Results folderresults = listDriveFiles(inAuthinfo,id);
-				String categorypath = inCategoryPath +  "/" + foldername;
-				processResults(inAuthinfo,categorypath,folderresults);
-			}
-		}	
 
-	}
 
-	protected void createAssets(Data authinfo, String categoryPath, Collection inFiles) throws Exception
-	{
-		if( inFiles == null)
-		{
-			return;
-		}
-		Category category = getMediaArchive().createCategoryPath(categoryPath);
 		
 		Map onepage = new HashMap();
 		for (Iterator iterator = inFiles.iterator(); iterator.hasNext();)
 		{
 			JsonObject object = (JsonObject) iterator.next();
 			String id = object.get("id").getAsString();
+			String size = object.get("size").getAsString();
 			onepage.put(id,object);
+			
+			if( size != null)
+			{
+				leftkb = leftkb - (Long.parseLong( size ) / 1000);
+				if( leftkb < Long.parseLong( free) ) 
+				{
+					log.info("Not enough disk space left to download more " + leftkb + "<" + free );
+					return false;
+				}
+			}
+			
 			if(onepage.size() == 100)
 			{
 				createAssetsIfNeeded(authinfo,onepage, category);
@@ -331,7 +341,7 @@ public class GoogleManager implements CatalogEnabled
 			}
 		}
 		createAssetsIfNeeded(authinfo,onepage,category);
-		
+		return true;
 	}
 	
 	private void createAssetsIfNeeded(Data authinfo, Map inOnepage, Category category) throws Exception
