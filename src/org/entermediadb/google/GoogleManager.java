@@ -324,11 +324,11 @@ public class GoogleManager implements CatalogEnabled
 		{
 			JsonObject object = (JsonObject) iterator.next();
 			String id = object.get("id").getAsString();
+			onepage.put(id,object);
 			JsonElement fs = object.get("size");
 			if( fs != null)
 			{
 				String size = fs.getAsString();
-				onepage.put(id,object);
 				
 				if( size != null)
 				{
