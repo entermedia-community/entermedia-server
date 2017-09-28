@@ -21,7 +21,7 @@ public void init()
 		for (Data hit in assets)
 		{
 			Asset asset = searcher.loadData(hit);
-			log.info("${asset.getSourcePath()}");
+			//log.info("${asset.getSourcePath()}");
 			if( asset != null)
 			{
 				ContentItem content = archive.getOriginalContent( asset );
