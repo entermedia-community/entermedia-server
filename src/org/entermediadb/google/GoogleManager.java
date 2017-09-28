@@ -279,7 +279,7 @@ public class GoogleManager implements CatalogEnabled
 
 	protected void processResults(Data inAuthinfo,  String inCategoryPath, Results inResults) throws Exception
 	{
-		if( createAssets(inAuthinfo, inCategoryPath,inResults.getFiles()) )
+ 		if( createAssets(inAuthinfo, inCategoryPath,inResults.getFiles()) )
 		{
 			if( inResults.getFolders() != null)
 			{
@@ -307,8 +307,9 @@ public class GoogleManager implements CatalogEnabled
 		Category category = getMediaArchive().createCategoryPath(categoryPath);
 
 		ContentItem item = getMediaArchive().getContent("/WEB-INF/" + getMediaArchive() + "/originals/" + categoryPath);
-		
-		long leftkb = new File(item.getAbsolutePath()).getFreeSpace()  / 1000;
+		File realfile = new File(item.getAbsolutePath());
+		realfile.mkdirs();
+		long leftkb = realfile.getFreeSpace()  / 1000;
 		//FileSystemUtils.freeSpaceKb(item.getAbsolutePath()); 
 		String free = getMediaArchive().getCatalogSettingValue("min_free_space");
 		if( free == null)
@@ -323,7 +324,7 @@ public class GoogleManager implements CatalogEnabled
 		{
 			JsonObject object = (JsonObject) iterator.next();
 			String id = object.get("id").getAsString();
-			JsonElement fs = object.get("fileSize");
+			JsonElement fs = object.get("size");
 			if( fs != null)
 			{
 				String size = fs.getAsString();
