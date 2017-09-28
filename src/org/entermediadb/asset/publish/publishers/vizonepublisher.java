@@ -17,6 +17,7 @@ import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
 import org.apache.http.client.config.RequestConfig;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -351,6 +352,43 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 	}
 
+	
+	
+	
+	
+	public void deleteAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
+	{
+
+		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
+
+		String addr = servername + "api/asset/item/" + inAsset.get("vizid");
+		
+		
+		
+		//Change URL - 
+		//String data = "<payload xmlns='http://www.vizrt.com/types' model=\"http://vizmtlvamf.media.in.cbcsrc.ca/api/metadata/form/vpm-item/r1\"><field name='asset.title'><value>${title}</value></field> <field name='asset.owner'><value>Img</value></field>  <field name='asset.retentionPolicy'>    <value>${policy}</value>  </field>     </payload>";
+
+		HttpDelete get = new HttpDelete(addr);
+
+		get.setHeader("Content-Type", "application/atom+xml;type=entry");
+		get.setHeader("Authorization", "Basic " + inAuthString);
+		get.setHeader("Expect", "");
+
+		HttpResponse response = getClient().execute(get);
+		StatusLine sl = response.getStatusLine();
+		int status = sl.getStatusCode();
+		if (status >= 400)
+		{
+			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+		}
+
+		
+	}
+	
+	
+	
+	
+	
 	public HttpClient getClient()
 	{
 

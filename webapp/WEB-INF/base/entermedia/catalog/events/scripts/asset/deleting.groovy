@@ -63,7 +63,7 @@ public checkViz(){
 			Asset asset = targetsearcher.loadData(hit);
 			asset.setValue("vizoneretention", "remove");
 			targetsearcher.saveData(asset);
-			vizone.setMetadata(mediaArchive, "http://vme.mtl.cbc.ca/", asset, authString );
+			vizone.deleteAsset(mediaArchive, "http://vme.mtl.cbc.ca/", asset, authString );
 			
 		}
 		
