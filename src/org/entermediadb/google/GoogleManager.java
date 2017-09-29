@@ -356,7 +356,7 @@ public class GoogleManager implements CatalogEnabled
 		Collection tosave = new ArrayList();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("googleid", inOnepage.keySet()).search();
-		
+		log.info("checking " + existingassets.size() + " assets ");
 		//Update category
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
@@ -380,6 +380,7 @@ public class GoogleManager implements CatalogEnabled
 				}
 				existing.addCategory(category);
 				getMediaArchive().saveAsset(existing);
+				log.info("Asset moved categories " + existing );
 			}
 		}
 
@@ -423,12 +424,15 @@ public class GoogleManager implements CatalogEnabled
 			//inArchive.getAssetSearcher().saveData(newasset);
 			tosave.add(newasset);
 		}
-		getMediaArchive().saveAssets(tosave);
-
-		for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+		if( tosave.isEmpty() )
 		{
-			Asset asset = (Asset) iterator.next();
-			saveFile(authinfo, asset);
+			getMediaArchive().saveAssets(tosave);
+			log.info("Saving new assets " + tosave.size() );
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				saveFile(authinfo, asset);
+			}
 		}
 	}
 	
