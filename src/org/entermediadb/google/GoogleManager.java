@@ -353,6 +353,11 @@ public class GoogleManager implements CatalogEnabled
 	
 	private void createAssetsIfNeeded(Data authinfo, Map inOnepage, Category category) throws Exception
 	{
+		if( inOnepage.isEmpty() )
+		{
+			log.info("empty map"); 
+			return;
+		}
 		Collection tosave = new ArrayList();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("googleid", inOnepage.keySet()).search();
