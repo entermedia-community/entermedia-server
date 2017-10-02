@@ -324,11 +324,11 @@ public class GoogleManager implements CatalogEnabled
 		{
 			JsonObject object = (JsonObject) iterator.next();
 			String id = object.get("id").getAsString();
+			onepage.put(id,object);
 			JsonElement fs = object.get("size");
 			if( fs != null)
 			{
 				String size = fs.getAsString();
-				onepage.put(id,object);
 				
 				if( size != null)
 				{
@@ -353,10 +353,15 @@ public class GoogleManager implements CatalogEnabled
 	
 	private void createAssetsIfNeeded(Data authinfo, Map inOnepage, Category category) throws Exception
 	{
+		if( inOnepage.isEmpty() )
+		{
+			log.info("empty map"); 
+			return;
+		}
 		Collection tosave = new ArrayList();
 
 		HitTracker existingassets = getMediaArchive().getAssetSearcher().query().orgroup("googleid", inOnepage.keySet()).search();
-		
+		log.info("checking " + existingassets.size() + " assets ");
 		//Update category
 		for (Iterator iterator = existingassets.iterator(); iterator.hasNext();)
 		{
@@ -380,6 +385,7 @@ public class GoogleManager implements CatalogEnabled
 				}
 				existing.addCategory(category);
 				getMediaArchive().saveAsset(existing);
+				log.info("Asset moved categories " + existing );
 			}
 		}
 
@@ -423,12 +429,15 @@ public class GoogleManager implements CatalogEnabled
 			//inArchive.getAssetSearcher().saveData(newasset);
 			tosave.add(newasset);
 		}
-		getMediaArchive().saveAssets(tosave);
-
-		for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+		if( tosave.isEmpty() )
 		{
-			Asset asset = (Asset) iterator.next();
-			saveFile(authinfo, asset);
+			getMediaArchive().saveAssets(tosave);
+			log.info("Saving new assets " + tosave.size() );
+			for (Iterator iterator = tosave.iterator(); iterator.hasNext();)
+			{
+				Asset asset = (Asset) iterator.next();
+				saveFile(authinfo, asset);
+			}
 		}
 	}
 	
