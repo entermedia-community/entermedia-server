@@ -5,6 +5,8 @@
 	<generator name="convertArchiveDocument"/>
 	<property name="prefwidth">150</property>
 	<property name="prefheight">150</property>
+	<property name="exportname">image150x150.jpg</property>
+	
 </page>
 
 
