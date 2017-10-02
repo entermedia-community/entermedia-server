@@ -1,23 +1,18 @@
 package org.entermediadb.google;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apache.oltu.oauth2.client.OAuthClient;
-import org.apache.oltu.oauth2.client.URLConnectionClient;
-import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
-import org.apache.oltu.oauth2.common.OAuthProviderType;
-import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.WebPageRequest;
 import org.openedit.data.BaseSearcher;
-import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
-public class GoogleContactSearcher extends BaseSearcher
-{
-
+public class GoogleContactSearcher extends BaseSearcher{
 	
 	protected GoogleManager fieldGoogleManager;
 	
@@ -93,5 +88,23 @@ public class GoogleContactSearcher extends BaseSearcher
 		// TODO Auto-generated method stub
 		
 	}
+	
+	
+	@Override
+	public HitTracker getAllHits(WebPageRequest inReq)
+	{
+		ArrayList contacts = getGoogleManager().syncContacts(inReq.getUser());
+		
+		return new ListHitTracker(contacts);
+				
+	}
 
+	
+//	@Override
+//	public HitTracker fieldSearch(WebPageRequest inReq) throws OpenEditException
+//	{
+//	ArrayList contacts = getGoogleManager().listContacts(inReq.getUser())	
+//	}
+//	
+	
 }

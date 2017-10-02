@@ -10,7 +10,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.commons.io.FileSystemUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +24,7 @@ import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
+import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
@@ -37,6 +37,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.XmlUtil;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -50,6 +51,7 @@ public class GoogleManager implements CatalogEnabled
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;	
 	protected OutputFiller filler = new OutputFiller();
+	protected XmlUtil fieldXmlUtil;
 	
 	
 	public String getCatalogId()
@@ -441,11 +443,11 @@ public class GoogleManager implements CatalogEnabled
 		}
 	}
 	
-	public void syncContacts(User inAuthinfo) 
+	public ArrayList syncContacts(User inAuthinfo) 
 	{
 		try
 		{
-			listContacts(inAuthinfo,"root");
+			return listContacts(inAuthinfo, null);
 			
 		}
 		catch ( Exception ex)
@@ -454,7 +456,7 @@ public class GoogleManager implements CatalogEnabled
 		}
 		
 	}
-	private void listContacts(User inAuthinfo, String inString) throws Exception
+	public ArrayList listContacts(User inAuthinfo, String inSearchTerm) throws Exception
 	{
 		String url = "https://www.google.com/m8/feeds/contacts/default/full";
 
@@ -476,9 +478,20 @@ public class GoogleManager implements CatalogEnabled
 		HttpEntity entity = resp.getEntity();
 		String content = IOUtils.toString(entity.getContent());
 		log.info(content);
+		Element root = getXmlUtil().getXml(entity.getContent(), "UTF-8");
+		return new ArrayList();
 		
 		
-		
+	}
+
+	public XmlUtil getXmlUtil()
+	{
+		return fieldXmlUtil;
+	}
+
+	public void setXmlUtil(XmlUtil inXmlUtil)
+	{
+		fieldXmlUtil = inXmlUtil;
 	}
 	
 	

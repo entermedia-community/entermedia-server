@@ -2026,5 +2026,10 @@
 		</property>
 	</bean>	
 	
+	<bean id="googleContactSearcher" class="org.entermediadb.google.GoogleContactSearcher" scope="prototype">
+	</bean>
+	
+	
+	
  	
 </beans>
