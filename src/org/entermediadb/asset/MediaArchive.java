@@ -65,6 +65,7 @@ import org.openedit.users.UserManager;
 import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
+import org.openedit.util.RequestUtils;
 
 public class MediaArchive implements CatalogEnabled
 {
@@ -72,16 +73,17 @@ public class MediaArchive implements CatalogEnabled
 	protected File BLANKFILE = new File("blank");
 	protected EmailErrorHandler fieldEmailErrorHandler;
 	protected PageManager fieldPageManager;
-	
+
 	protected EventManager fieldEventManager;
-	
-//	protected EventManager fieldMediaEventHandler;
-//	protected EventManager fieldLoggingEventHandler;
+
+	//	protected EventManager fieldMediaEventHandler;
+	//	protected EventManager fieldLoggingEventHandler;
 
 	public EventManager getEventManager()
 	{
 		return fieldEventManager;
 	}
+
 	public void setEventManager(EventManager inEventManager)
 	{
 		fieldEventManager = inEventManager;
@@ -90,7 +92,7 @@ public class MediaArchive implements CatalogEnabled
 	protected TranscodeTools fieldTranscodeTools;
 	protected AssetArchive fieldAssetArchive;
 	protected AssetArchive fieldMirrorAssetArchive;
-//	protected Map fieldTaxRates;
+	//	protected Map fieldTaxRates;
 	protected AssetSearcher fieldAssetSearcher;
 	protected CatalogConverter fieldImportConverter;
 	protected CategoryArchive fieldCategoryArchive;
@@ -102,17 +104,17 @@ public class MediaArchive implements CatalogEnabled
 	protected CategoryEditor fieldCategoryEditor;
 	protected AssetEditor fieldAssetEditor;
 	protected AssetImporter fieldAssetImporter;
-	
+
 	protected AssetStatsManager fieldAssetStatsManager;
 	protected Replacer fieldReplacer;
 	protected MimeTypeMap fieldMimeTypeMap;
 	protected LockManager fieldLockManager;
-	protected Map<String,Data> fieldLibraries;
+	protected Map<String, Data> fieldLibraries;
 	protected PresetCreator fieldPresetManager;
 	protected CacheManager fieldCacheManager;
 	protected OrderManager fieldOrderManager;
 	protected UserManager fieldUserManager;
-	
+
 	public CacheManager getCacheManager()
 	{
 		if (fieldCacheManager == null)
@@ -121,43 +123,46 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return fieldCacheManager;
 	}
+
 	public void setCacheManager(CacheManager inCacheManager)
 	{
 		fieldCacheManager = inCacheManager;
 	}
+
 	public PresetCreator getPresetManager()
 	{
-		if( fieldPresetManager == null)
+		if (fieldPresetManager == null)
 		{
 			fieldPresetManager = new PresetCreator();
 			fieldPresetManager.setCacheManager(getCacheManager());
 		}
 		return fieldPresetManager;
 	}
+
 	public void setPresetManager(PresetCreator inPresetManager)
 	{
 		fieldPresetManager = inPresetManager;
 	}
-	
+
 	public String getMimeTypeIcon(String inFormat)
 	{
 		String mime = getMimeTypeMap().getMimeType(inFormat);
-		if( mime != null)
+		if (mime != null)
 		{
-			mime = mime.replace('/','-');
-			if( mime.startsWith("image") )
+			mime = mime.replace('/', '-');
+			if (mime.startsWith("image"))
 			{
 				return "image-x-generic";
 			}
-			if( mime.startsWith("video") )
+			if (mime.startsWith("video"))
 			{
 				return "video-x-generic";
 			}
-			if( mime.startsWith("audio") )
+			if (mime.startsWith("audio"))
 			{
 				return "audio-x-generic";
 			}
-			if( mime.startsWith("text") )
+			if (mime.startsWith("text"))
 			{
 				return "text-x-generic";
 			}
@@ -168,6 +173,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return mime;
 	}
+
 	public MimeTypeMap getMimeTypeMap()
 	{
 		return fieldMimeTypeMap;
@@ -180,7 +186,7 @@ public class MediaArchive implements CatalogEnabled
 
 	public Replacer getReplacer()
 	{
-		if( fieldReplacer == null)
+		if (fieldReplacer == null)
 		{
 			fieldReplacer = new Replacer();
 			fieldReplacer.setCatalogId(getCatalogId());
@@ -206,10 +212,10 @@ public class MediaArchive implements CatalogEnabled
 	}
 
 	protected PropertyDetailsArchive fieldPropertyDetailsArchive;
-	
+
 	protected String fieldCatalogId;
 	protected String fieldThemePrefix;
-	
+
 	protected ModuleManager fieldModuleManager;
 
 	public MediaArchive()
@@ -289,9 +295,10 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return path;
 	}
-	
-	public ContentItem getOriginalContent(Asset inAsset){
-		
+
+	public ContentItem getOriginalContent(Asset inAsset)
+	{
+
 		return getOriginalFileManager().getOriginalContent(inAsset);
 	}
 
@@ -308,14 +315,14 @@ public class MediaArchive implements CatalogEnabled
 	//cached
 	public Asset getAssetBySourcePath(String inSourcePath)
 	{
-		return (Asset)getAssetSearcher().query().or().exact("sourcepath",  inSourcePath).exact("archivesourcepath",  inSourcePath).searchOne();
+		return (Asset) getAssetSearcher().query().or().exact("sourcepath", inSourcePath).exact("archivesourcepath", inSourcePath).searchOne();
 	}
-	
+
 	public String asLinkToPreview(String inSourcePath)
 	{
 		return getCatalogHome() + "/downloads/preview/cache/" + inSourcePath + "/preview.jpg";
 	}
-	
+
 	public int countSeries(String inAssetID) throws OpenEditException
 	{
 		Asset asset = (Asset) getAssetSearcher().searchById(inAssetID);
@@ -366,9 +373,9 @@ public class MediaArchive implements CatalogEnabled
 	public String getMediaDbId()
 	{
 		String mediadb = getCatalogSettingValue("mediadbappid");
-		if( ( mediadb == null || mediadb.isEmpty() ) && getCatalogId().endsWith("catalog") )
+		if ((mediadb == null || mediadb.isEmpty()) && getCatalogId().endsWith("catalog"))
 		{
-			mediadb = getCatalogId().substring(0, getCatalogId().length() - 7  ) + "mediadb";
+			mediadb = getCatalogId().substring(0, getCatalogId().length() - 7) + "mediadb";
 		}
 		return mediadb;
 	}
@@ -406,40 +413,45 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getTranscodeTools().getRenderTypeByFileFormat(inFileFormat);
 	}
+
 	public String getMediaRenderType(Data inAsset)
 	{
-		if(inAsset == null){
+		if (inAsset == null)
+		{
 			return "none";
 		}
 		String format = inAsset.get("fileformat");
 		return getMediaRenderType(format);
-	}	
+	}
+
 	public String getMediaPlayerType(Data inAsset)
 	{
-		if(inAsset == null){
+		if (inAsset == null)
+		{
 			return null;
 		}
-		
-		if( inAsset.get("embeddedurl") != null)
+
+		if (inAsset.get("embeddedurl") != null)
 		{
 			return "embedded";
 		}
 		String format = inAsset.get("fileformat");
 		return getTranscodeTools().getRenderTypeByFileFormat(format);
-	}	
+	}
+
 	public Data getDefaultAssetTypeForFile(String inFileName)
 	{
-		String ext = PathUtilities.extractPageType(inFileName,true);
-		if( ext == null)
+		String ext = PathUtilities.extractPageType(inFileName, true);
+		if (ext == null)
 		{
 			return null;
 		}
-		Collection list = getSearcherManager().getList(getCatalogId(),"assettype");
+		Collection list = getSearcherManager().getList(getCatalogId(), "assettype");
 		for (Iterator iterator = list.iterator(); iterator.hasNext();)
 		{
 			Data type = (Data) iterator.next();
 			String exts = type.get("extensions");
-			if( exts != null && exts.contains(ext))
+			if (exts != null && exts.contains(ext))
 			{
 				return type;
 			}
@@ -450,17 +462,17 @@ public class MediaArchive implements CatalogEnabled
 	public String getAttachmentForType(String inAttachmentType, Asset inAsset)
 	{
 		String value = inAsset.getAttachmentByType(inAttachmentType);
-		if( !"original".equals(inAttachmentType) )
+		if (!"original".equals(inAttachmentType))
 		{
-			if( value == null )
+			if (value == null)
 			{
 				String origvalue = inAsset.getAttachmentByType("original");
-				if ( origvalue != null )
+				if (origvalue != null)
 				{
-					String origtype = getMediaRenderType(PathUtilities.extractPageType( origvalue) );
-					if( origtype != null)
+					String origtype = getMediaRenderType(PathUtilities.extractPageType(origvalue));
+					if (origtype != null)
 					{
-						
+
 					}
 					value = origvalue;
 				}
@@ -468,50 +480,50 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return value;
 	}
-//	public boolean canConvert(Asset inAsset, String inOutputType, User inUser)
-//	{
-//		/*
-//		 * Note: we removed inUser.hasPermission("convert") checking.
-//		 * that permission doesn't seem to exist anymore.
-//		 */
-//		if (inAsset != null)
-//		{
-//			String type = inAsset.getFileFormat();
-//			if (type == null)
-//			{
-//				type = inAsset.getName();
-//			}
-//			if(type == null)
-//			{
-//				return false;
-//			}
-//			if (getMediaCreator().canConvert(type, inOutputType))
-//			{
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
-	
+	//	public boolean canConvert(Asset inAsset, String inOutputType, User inUser)
+	//	{
+	//		/*
+	//		 * Note: we removed inUser.hasPermission("convert") checking.
+	//		 * that permission doesn't seem to exist anymore.
+	//		 */
+	//		if (inAsset != null)
+	//		{
+	//			String type = inAsset.getFileFormat();
+	//			if (type == null)
+	//			{
+	//				type = inAsset.getName();
+	//			}
+	//			if(type == null)
+	//			{
+	//				return false;
+	//			}
+	//			if (getMediaCreator().canConvert(type, inOutputType))
+	//			{
+	//				return true;
+	//			}
+	//		}
+	//		return false;
+	//	}
+
 	public String getLinkToAssetDetails(String inSourcePath)
 	{
-		String assetroot = "/" + getCatalogId() + "/assets"; 
+		String assetroot = "/" + getCatalogId() + "/assets";
 		return assetroot + "/" + inSourcePath + ".html";
 	}
-	
+
 	public String getLinkToAssetViewer(String inSourcePath)
 	{
-		String viewerRoot = "/" + getCatalogId() + "/mediaviewer/"; 
+		String viewerRoot = "/" + getCatalogId() + "/mediaviewer/";
 		return viewerRoot + inSourcePath + ".html";
 	}
-	
+
 	public boolean isFolderAsset(String inSourcePath)
 	{
 		String path = "/WEB-INF/data/" + getCatalogId() + "/originals/" + inSourcePath;
 		boolean folder = getPageManager().getRepository().getStub(path).isFolder();
 		return folder;
 	}
-	
+
 	public TranscodeTools getTranscodeTools()
 	{
 		if (fieldTranscodeTools == null)
@@ -522,9 +534,10 @@ public class MediaArchive implements CatalogEnabled
 
 		return fieldTranscodeTools;
 	}
-	
-	/**The home for the catalog
-	 * The 
+
+	/**
+	 * The home for the catalog The
+	 * 
 	 * @return
 	 */
 	public File getRootDirectory()
@@ -536,7 +549,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		if (fieldOriginalFileManager == null)
 		{
-			fieldOriginalFileManager = (OriginalFileManager)getModuleManager().getBean(getCatalogId(), "originalFileManager");
+			fieldOriginalFileManager = (OriginalFileManager) getModuleManager().getBean(getCatalogId(), "originalFileManager");
 			fieldOriginalFileManager.setMediaArchive(this);
 		}
 
@@ -553,7 +566,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		Asset asset = new Asset(this);
 		//asset.setCatalogId(getCatalogId());
-		if( inId == null)
+		if (inId == null)
 		{
 			inId = getAssetSearcher().nextAssetNumber();
 		}
@@ -562,7 +575,7 @@ public class MediaArchive implements CatalogEnabled
 		String name = PathUtilities.extractFileName(inSourcePath);
 		asset.setName(name);
 		String ext = PathUtilities.extractPageType(name);
-		if( ext != null)
+		if (ext != null)
 		{
 			ext = ext.toLowerCase();
 		}
@@ -571,17 +584,17 @@ public class MediaArchive implements CatalogEnabled
 		return asset;
 	}
 
-	
 	public Asset createAsset(String inSourcePath)
 	{
-		return createAsset(null,inSourcePath);
+		return createAsset(null, inSourcePath);
 	}
 
 	public CategorySearcher getCategorySearcher()
 	{
-		CategorySearcher searcher = (CategorySearcher)getSearcher("category");
+		CategorySearcher searcher = (CategorySearcher) getSearcher("category");
 		return searcher;
 	}
+
 	/**
 	 * @deprecated use getCategorySearcher()
 	 * @return
@@ -591,11 +604,12 @@ public class MediaArchive implements CatalogEnabled
 		if (fieldCategoryArchive == null)
 		{
 			//CategorySearcher searcher = (CategorySearcher)getSearcher("category");
-			fieldCategoryArchive = (CategoryArchive)getModuleManager().getBean(getCatalogId(),"categoryArchive");
+			fieldCategoryArchive = (CategoryArchive) getModuleManager().getBean(getCatalogId(), "categoryArchive");
 			//fieldCategoryArchive.setCatalogId(getCatalogId());
 		}
 		return fieldCategoryArchive;
 	}
+
 	public Category createCategoryPath(String inPath)
 	{
 		//Break down each name and load the category
@@ -611,23 +625,23 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldCatalogId = inCatalogId;
 	}
-	
-	public Asset getAsset( String assetid, WebPageRequest inReq)
+
+	public Asset getAsset(String assetid, WebPageRequest inReq)
 	{
 		Asset asset = null;
-		if( assetid.startsWith("multiedit") )
+		if (assetid.startsWith("multiedit"))
 		{
 			asset = (CompositeAsset) inReq.getSessionValue(assetid);
-			if( asset == null )
+			if (asset == null)
 			{
-				String hitssessionid = assetid.substring("multiedit".length()  +1 );
+				String hitssessionid = assetid.substring("multiedit".length() + 1);
 				HitTracker hits = (HitTracker) inReq.getSessionValue(hitssessionid);
-				if( hits == null)
+				if (hits == null)
 				{
 					log.error("Could not find " + hitssessionid);
 					return null;
 				}
-				CompositeAsset composite = new CompositeAsset(this,hits);
+				CompositeAsset composite = new CompositeAsset(this, hits);
 				composite.setId(assetid);
 				asset = composite;
 			}
@@ -637,10 +651,9 @@ public class MediaArchive implements CatalogEnabled
 			asset = getAsset(assetid);
 		}
 		return asset;
-		
-		
+
 	}
-	
+
 	public Asset getAsset(String inId)
 	{
 		Asset asset = (Asset) getAssetSearcher().searchById(inId);
@@ -650,12 +663,12 @@ public class MediaArchive implements CatalogEnabled
 	public String getSourcePathForPage(WebPageRequest inReq)
 	{
 		String sourcepath = inReq.getRequestParameter("sourcepath");
-		if( sourcepath == null)
+		if (sourcepath == null)
 		{
 			Object asset = inReq.getPageValue("asset");
-			if( asset != null && asset instanceof Asset)
-			{	
-				sourcepath = ((Asset)asset).getSourcePath();
+			if (asset != null && asset instanceof Asset)
+			{
+				sourcepath = ((Asset) asset).getSourcePath();
 			}
 			else
 			{
@@ -664,7 +677,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return sourcepath;
 	}
-	
+
 	public String getSourcePathForPage(Page inPage)
 	{
 		String sourcePath = null;
@@ -691,32 +704,35 @@ public class MediaArchive implements CatalogEnabled
 	public void saveAsset(CompositeAsset inAssets, User inUser)
 	{
 		inAssets.saveChanges();
-//		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
-//		{
-//			Asset asset = (Asset) iterator.next();
-//			getAssetSearcher().saveData(asset, inUser);			
-//		}
+		//		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
+		//		{
+		//			Asset asset = (Asset) iterator.next();
+		//			getAssetSearcher().saveData(asset, inUser);			
+		//		}
 	}
 
 	public void saveAsset(Asset inAsset, User inUser)
 	{
-		if( inAsset instanceof CompositeAsset)
+		if (inAsset instanceof CompositeAsset)
 		{
-			saveAsset((CompositeAsset)inAsset,inUser);
+			saveAsset((CompositeAsset) inAsset, inUser);
 		}
 		else
 		{
 			getAssetSearcher().saveData(inAsset, inUser);
 		}
 	}
+
 	public void saveAsset(Asset inAsset)
 	{
 		getAssetSearcher().saveData(inAsset, null);
 	}
+
 	public void saveAssets(Collection inAssets)
 	{
-		saveAssets(inAssets, (User)null);
+		saveAssets(inAssets, (User) null);
 	}
+
 	public void saveAssets(Collection inAssets, User inUser)
 	{
 		getAssetSearcher().saveAllData((Collection<Data>) inAssets, inUser);
@@ -789,7 +805,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		fieldPropertyDetailsArchive = inPropertyDetailsArchive;
 	}
-	
+
 	public AssetExport getAssetExport()
 	{
 		return fieldAssetExport;
@@ -852,46 +868,45 @@ public class MediaArchive implements CatalogEnabled
 	{
 		String assetrootfolder = inPage.get("assetrootfolder");
 		//log.info(inPage.getPathUrl());
-		if( assetrootfolder == null || assetrootfolder.length() >= inPage.getPath().length() )
+		if (assetrootfolder == null || assetrootfolder.length() >= inPage.getPath().length())
 		{
 			return null;
 		}
-		if( !inPage.getPath().startsWith(assetrootfolder))
+		if (!inPage.getPath().startsWith(assetrootfolder))
 		{
 			return null;
 		}
-		String	sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
+		String sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
 		String stripfilename = inPage.getProperty("sourcepathhasfilename");
 		if (Boolean.parseBoolean(stripfilename))
 		{
-			sourcePath = PathUtilities.extractDirectoryPath(sourcePath); 
+			sourcePath = PathUtilities.extractDirectoryPath(sourcePath);
 		}
 		else
 		{
 			sourcePath = PathUtilities.extractPagePath(sourcePath);
 		}
-		
-		
+
 		Asset asset = getAssetBySourcePath(sourcePath);
-		
+
 		int index = sourcePath.length();
-		while(index > 0 && asset == null)
+		while (index > 0 && asset == null)
 		{
 			sourcePath = sourcePath.substring(0, index);
 			asset = getAssetBySourcePath(sourcePath);
 			index = sourcePath.lastIndexOf("/");
 		}
-		
+
 		return asset;
 	}
-	
-	public void reindexAll() throws OpenEditException 
+
+	public void reindexAll() throws OpenEditException
 	{
 		getAssetArchive().clearAssets(); // lets hope they are all saved
 		// before we delete em
 		getAssetSearcher().reIndexAll();
 	}
-	
+
 	public List getAssetsInCategory(Category inCategory) throws OpenEditException
 	{
 		if (inCategory == null)
@@ -901,7 +916,7 @@ public class MediaArchive implements CatalogEnabled
 		List assets = new ArrayList();
 		SearchQuery q = getAssetSearcher().createSearchQuery();
 		q.addMatches("category", inCategory.getId());
-		
+
 		HitTracker hits = getAssetSearcher().search(q);
 		if (hits != null)
 		{
@@ -910,14 +925,14 @@ public class MediaArchive implements CatalogEnabled
 				Data doc = (Data) it.next();
 				String id = doc.get("id");
 				Asset asset = getAsset(id);
-				if( id == null || asset.getId() == null )
+				if (id == null || asset.getId() == null)
 				{
 					throw new OpenEditException("ID cant be null");
 				}
 				if (asset != null)
 				{
 					assets.add(asset);
-				} 
+				}
 				else
 				{
 					log.info("Cannot find asset with id " + id);
@@ -942,9 +957,9 @@ public class MediaArchive implements CatalogEnabled
 		fieldCategoryEditor = categoryEditor;
 	}
 
-	public AssetEditor getAssetEditor() 
+	public AssetEditor getAssetEditor()
 	{
-		if (fieldAssetEditor == null) 
+		if (fieldAssetEditor == null)
 		{
 			fieldAssetEditor = (AssetEditor) getModuleManager().getBean(getCatalogId(), "assetEditor");
 			fieldAssetEditor.setMediaArchive(this);
@@ -952,7 +967,7 @@ public class MediaArchive implements CatalogEnabled
 		return fieldAssetEditor;
 	}
 
-	public void setAssetEditor(AssetEditor assetEditor) 
+	public void setAssetEditor(AssetEditor assetEditor)
 	{
 		fieldAssetEditor = assetEditor;
 	}
@@ -961,7 +976,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getCategorySearcher().getCategory(inCategoryId);
 	}
-	
+
 	public String getLinkToSize(String inSourcePath, String inSize)
 	{
 		if (inSize == null)
@@ -970,7 +985,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return getCatalogHome() + "/downloads/preview/" + inSize + "/" + inSourcePath + "/thumb.jpg";
 	}
-	
+
 	public String getLinkToSize(Asset inAsset, String inSize)
 	{
 		return getLinkToSize(inAsset.getSourcePath(), inSize);
@@ -978,83 +993,82 @@ public class MediaArchive implements CatalogEnabled
 
 	public void removeGeneratedImages(Asset inAsset)
 	{
-		removeGeneratedImages(inAsset,false);
+		removeGeneratedImages(inAsset, false);
 	}
-	
-	
-	
-	
+
 	public void removeGeneratedImages(Asset inAsset, final boolean everything)
 	{
-//		if(everything){
-//			removeGeneratedImages(inAsset);
-//			return;
-//		}
-		
+		//		if(everything){
+		//			removeGeneratedImages(inAsset);
+		//			return;
+		//		}
+
 		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
-		if(inAsset.isFolder() && !path.endsWith("/")){
-			path = path + "/"; 
-				
+		if (inAsset.isFolder() && !path.endsWith("/"))
+		{
+			path = path + "/";
+
 		}
-		
-		if(everything){
+
+		if (everything)
+		{
 			Page folder = getPageManager().getPage(path);
 			getPageManager().removePage(folder);
 			return;
 		}
-		
+
 		PathProcessor processor = new PathProcessor()
 		{
 			public void processFile(ContentItem inContent, User inUser)
 			{
 				//getPageManager().removePage(page);
-				if( inContent.getName().startsWith("customthumb"))
+				if (inContent.getName().startsWith("customthumb"))
 				{
 					return;
 				}
-				if( !everything && inContent.getName().equals("image1024x768.jpg"))
+				if (!everything && inContent.getName().equals("image1024x768.jpg"))
 				{
 					return;
 				}
-//				if( inContent.getName().equals("document.pdf"))
-//				{
-//					return;
-//				}
-				String type = PathUtilities.extractPageType(inContent.getPath()); 
+				//				if( inContent.getName().equals("document.pdf"))
+				//				{
+				//					return;
+				//				}
+				String type = PathUtilities.extractPageType(inContent.getPath());
 				String fileformat = getMediaRenderType(type);
-				if("image".equals(fileformat)){
+				if ("image".equals(fileformat))
+				{
 					Page page = getPageManager().getPage(inContent.getPath());
 					getPageManager().removePage(page);
 				}
-				
+
 			}
 		};
 		processor.setRecursive(true);
 		processor.setRootPath(path);
 		processor.setPageManager(getPageManager());
 		processor.process();
-		
 
-		
 	}
-	
+
 	public void removeOriginals(Asset inAsset)
 	{
 		ContentItem item = getOriginalContent(inAsset);
 		getPageManager().getRepository().remove(item);
-		
-	}
-	
 
-	public void deleteAsset(Asset inAsset, boolean deletefiles){
-		if(deletefiles){
+	}
+
+	public void deleteAsset(Asset inAsset, boolean deletefiles)
+	{
+		if (deletefiles)
+		{
 
 			removeGeneratedImages(inAsset, deletefiles);
 			removeOriginals(inAsset);
 		}
 		getAssetSearcher().delete(inAsset, null);
 	}
-	
+
 	public String toString()
 	{
 		return getCatalogId();
@@ -1065,22 +1079,22 @@ public class MediaArchive implements CatalogEnabled
 		String path = "/WEB-INF/data" + getCatalogHome() + "/originals/" + inAsset.getSourcePath();
 
 		String filename = inAsset.getAttachmentByType(inType);
-		if( filename != null)
+		if (filename != null)
 		{
 			path = path + "/" + filename;
 			return getPageManager().getPage(path);
 		}
 
 		filename = inAsset.getPrimaryFile();
-		if( filename != null)
+		if (filename != null)
 		{
 			String found = getMediaRenderType(PathUtilities.extractPageType(filename));
 			String fileformat = "";
-			if(inAsset.getFileFormat() != null)
+			if (inAsset.getFileFormat() != null)
 			{
 				fileformat = getMediaRenderType(inAsset.getFileFormat());
 			}
-			if( ( found != null && found.equals(inType) ) || fileformat.equals(inType))
+			if ((found != null && found.equals(inType)) || fileformat.equals(inType))
 			{
 				path = path + "/" + filename;
 				return getPageManager().getPage(path);
@@ -1088,10 +1102,10 @@ public class MediaArchive implements CatalogEnabled
 		}
 		String thistype = inAsset.getFileFormat();
 		String found = getMediaRenderType(thistype);
-		if( found != null && found.equals(inType))
+		if (found != null && found.equals(inType))
 		{
 			Page tryPage = getPageManager().getPage(path);
-			if(tryPage.exists())
+			if (tryPage.exists())
 			{
 				return tryPage;
 			}
@@ -1099,77 +1113,67 @@ public class MediaArchive implements CatalogEnabled
 			{
 				path = getCatalogHome() + "/users/" + inAsset.getSourcePath();
 				tryPage = getPageManager().getPage(path);
-				if(tryPage.exists())
+				if (tryPage.exists())
 				{
 					return tryPage;
 				}
 			}
-			
+
 		}
 		return null;
 	}
+
 	public void firePathEvent(String operation, User inUser, Collection inData)
 	{
 		String runpath = "/" + getCatalogId() + "/events/" + operation + ".html";
-		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(),"pathEventManager");
+		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
 		WebPageRequest request = manager.getRequestUtils().createPageRequest(runpath, inUser);
-		
+
 		request.setRequestParameter("catalogid", getCatalogId());
 		request.putPageValue("hits", inData);
 		manager.runPathEvent(runpath, request);
-	}	
-	/*
-	public void fireMediaEvent(String operation, User inUser, Asset asset, List<String> inids)
-	{
-		WebEvent event = new WebEvent();
-		event.setSearchType("asset");
-		event.setCatalogId(getCatalogId());
-		event.setOperation(operation);
-		event.setUser(inUser);
-		event.setSource(this);
-		event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
-		event.setProperty("sourcepath", asset.getSourcePath());
-		if( inids.size() < 10000)
-		{
-			StringBuffer paths = new StringBuffer();
-			
-			for (Iterator iterator = inids.iterator(); iterator.hasNext();)
-			{
-				String path = (String) iterator.next();
-				paths.append(path);
-				if( iterator.hasNext())
-				{
-					paths.append(",");
-				}
-			}
-			event.setProperty("assetids", paths.toString());
-		}
-		event.setValue("dataids", inids);
-		//archive.getWebEventListener()
-		getMediaEventHandler().eventFired(event);
 	}
-	*/
+
+	/*
+	 * public void fireMediaEvent(String operation, User inUser, Asset asset,
+	 * List<String> inids) { WebEvent event = new WebEvent();
+	 * event.setSearchType("asset"); event.setCatalogId(getCatalogId());
+	 * event.setOperation(operation); event.setUser(inUser);
+	 * event.setSource(this); event.setSourcePath(asset.getSourcePath());
+	 * //TODO: This should not be needed any more
+	 * event.setProperty("sourcepath", asset.getSourcePath()); if( inids.size()
+	 * < 10000) { StringBuffer paths = new StringBuffer();
+	 * 
+	 * for (Iterator iterator = inids.iterator(); iterator.hasNext();) { String
+	 * path = (String) iterator.next(); paths.append(path); if(
+	 * iterator.hasNext()) { paths.append(","); } }
+	 * event.setProperty("assetids", paths.toString()); }
+	 * event.setValue("dataids", inids); //archive.getWebEventListener()
+	 * getMediaEventHandler().eventFired(event); }
+	 */
 	public void fireMediaEvent(String operation, User inUser, CompositeAsset inAsset)
 	{
 		for (Iterator iterator = inAsset.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
-			fireMediaEvent(operation,inUser,asset);
+			fireMediaEvent(operation, inUser, asset);
 		}
-	}	
+	}
+
 	public void fireMediaEvent(String operation, User inUser, Asset asset)
 	{
-		if( operation.contains("/"))
+		if (operation.contains("/"))
 		{
 			log.error("Calling old style event");
-		}	
-		fireMediaEvent("asset",operation,inUser,asset);
+		}
+		fireMediaEvent("asset", operation, inUser, asset);
 	}
+
 	public void fireMediaEvent(String inSearchType, String operation, User inUser, Asset asset)
 	{
-		if( asset instanceof CompositeAsset )
+		if (asset instanceof CompositeAsset)
 		{
-			fireMediaEvent(operation,inUser,(CompositeAsset)asset);
+			fireMediaEvent(operation, inUser, (CompositeAsset) asset);
 		}
 		else
 		{
@@ -1181,86 +1185,86 @@ public class MediaArchive implements CatalogEnabled
 			event.setSource(this);
 			event.setSourcePath(asset.getSourcePath()); //TODO: This should not be needed any more
 			event.setProperty("sourcepath", asset.getSourcePath());
-			event.setProperty("assetids", asset.getId() );
-			event.setProperty("dataid", asset.getId() );
+			event.setProperty("assetids", asset.getId());
+			event.setProperty("dataid", asset.getId());
 			event.setValue("asset", asset);
 			//archive.getWebEventListener()
 			getEventManager().fireEvent(event);
 		}
 	}
+
 	public void fireMediaEvent(String operation, User inUser)
 	{
-			WebEvent event = new WebEvent();
-			event.setSearchType("asset");
-			event.setCatalogId(getCatalogId());
-			event.setOperation(operation);
-			event.setUser(inUser);
-			event.setSource(this);
-			//event.setSourcePath("/"); //TODO: This should not be needed any more
-			getEventManager().fireEvent(event);
+		WebEvent event = new WebEvent();
+		event.setSearchType("asset");
+		event.setCatalogId(getCatalogId());
+		event.setOperation(operation);
+		event.setUser(inUser);
+		event.setSource(this);
+		//event.setSourcePath("/"); //TODO: This should not be needed any more
+		getEventManager().fireEvent(event);
 	}
 
-	public void fireMediaEvent(String inMetadataType, String operation, String inId,  User inUser)
+	public void fireMediaEvent(String inMetadataType, String operation, String inId, User inUser)
 	{
-			WebEvent event = new WebEvent();
-			event.setSearchType(inMetadataType);
-			
-			event.setCatalogId(getCatalogId());
-			event.setOperation(operation);
-			event.setUser(inUser);
-			event.setSource(this);
-			//event.setProperty("sourcepath", inSourcePath);
-			event.setProperty("targetid", inId);
-			//archive.getWebEventListener()
-			getEventManager().fireEvent(event);
+		WebEvent event = new WebEvent();
+		event.setSearchType(inMetadataType);
+
+		event.setCatalogId(getCatalogId());
+		event.setOperation(operation);
+		event.setUser(inUser);
+		event.setSource(this);
+		//event.setProperty("sourcepath", inSourcePath);
+		event.setProperty("targetid", inId);
+		//archive.getWebEventListener()
+		getEventManager().fireEvent(event);
 	}
-	
+
 	//conversionfailed  conversiontask assetsourcepath, params[id=102], admin
 	public void fireMediaEvent(String inMetadataType, String operation, String inSourcePath, Map inParams, User inUser)
 	{
-			WebEvent event = new WebEvent();
-			event.setProperties(inParams);
-			event.setSearchType(inMetadataType);
-			
-			event.setCatalogId(getCatalogId());
-			event.setOperation(operation);
-			event.setUser(inUser);
-			event.setSource(this);
-			
-			event.setProperty("sourcepath", inSourcePath);
-			//archive.getWebEventListener()
-			getEventManager().fireEvent(event);
+		WebEvent event = new WebEvent();
+		event.setProperties(inParams);
+		event.setSearchType(inMetadataType);
+
+		event.setCatalogId(getCatalogId());
+		event.setOperation(operation);
+		event.setUser(inUser);
+		event.setSource(this);
+
+		event.setProperty("sourcepath", inSourcePath);
+		//archive.getWebEventListener()
+		getEventManager().fireEvent(event);
 	}
 
-	public void fireMediaEvent( String inMetadataType,String operation, Map inParams, User inUser)
+	public void fireMediaEvent(String inMetadataType, String operation, Map inParams, User inUser)
 	{
-			WebEvent event = new WebEvent();
-			event.setProperties(inParams);
-			event.setSearchType(inMetadataType);
-			
-			event.setCatalogId(getCatalogId());
-			event.setOperation(operation);
-			event.setUser(inUser);
-			event.setSource(this);
-			
-			//archive.getWebEventListener()
-			getEventManager().fireEvent(event);
+		WebEvent event = new WebEvent();
+		event.setProperties(inParams);
+		event.setSearchType(inMetadataType);
+
+		event.setCatalogId(getCatalogId());
+		event.setOperation(operation);
+		event.setUser(inUser);
+		event.setSource(this);
+
+		//archive.getWebEventListener()
+		getEventManager().fireEvent(event);
 	}
-	
-	
+
 	public Category getCategory(WebPageRequest inReq)
 	{
 		Category category = null;
 		String categoryId = inReq.getRequestParameter("selectedcategory");
 		String CATEGORYID = "categoryid";
-		if(categoryId == null)
+		if (categoryId == null)
 		{
 			categoryId = inReq.getRequestParameter(CATEGORYID);
-		}	
+		}
 		if (categoryId == null)
 		{
 			categoryId = inReq.getRequestParameter("nodeID");
-		}	
+		}
 		if (categoryId == null)
 		{
 			Page page = inReq.getPage();
@@ -1291,20 +1295,20 @@ public class MediaArchive implements CatalogEnabled
 		if (category == null)
 		{
 
-//			if (inReq.getContentPage() == inReq.getPage())
-//			{
-//				String val = inReq.findValue("showmissingcategories");
-//				if (!Boolean.parseBoolean(val))
-//				{
-//					inReq.redirect("/" + getCatalogId() + "/search/nosuchcategory.html");
-//				}
-//			}
+			//			if (inReq.getContentPage() == inReq.getPage())
+			//			{
+			//				String val = inReq.findValue("showmissingcategories");
+			//				if (!Boolean.parseBoolean(val))
+			//				{
+			//					inReq.redirect("/" + getCatalogId() + "/search/nosuchcategory.html");
+			//				}
+			//			}
 			log.error("No such category: " + categoryId);
 			return null;
 		}
-		if( category != null)
+		if (category != null)
 		{
-			inReq.putPageValue("category",category);
+			inReq.putPageValue("category", category);
 		}
 		return category;
 	}
@@ -1320,93 +1324,95 @@ public class MediaArchive implements CatalogEnabled
 	}
 
 	/**
-	 * Do not use this any more. Instead use xconf settings <action name="AssetControlModule.canViewAsset" />
+	 * Do not use this any more. Instead use xconf settings
+	 * <action name="AssetControlModule.canViewAsset" />
+	 * 
 	 * @deprecated
 	 * @param sourcepath
 	 * @param inReq
 	 */
 	public void loadAssetPermissions(String sourcepath, WebPageRequest inReq)
 	{
-		Asset asset = (Asset)inReq.getPageValue("asset");
-		if( asset == null)
+		Asset asset = (Asset) inReq.getPageValue("asset");
+		if (asset == null)
 		{
 			asset = getAssetBySourcePath(sourcepath);
 			inReq.putPageValue("asset", asset);
 		}
-		if(asset == null){
+		if (asset == null)
+		{
 			asset = findAsset(sourcepath);
 		}
-		
-		List<String> types = Arrays.asList(new String[]{"edit", "view", "forcewatermark"});
-		
+
+		List<String> types = Arrays.asList(new String[] { "edit", "view", "forcewatermark" });
+
 		for (Iterator iterator = types.iterator(); iterator.hasNext();)
 		{
 			String type = (String) iterator.next();
-			Boolean cando = getAssetSecurityArchive().canDo(this,inReq.getUser(),inReq.getUserProfile(),type,asset);
+			Boolean cando = getAssetSecurityArchive().canDo(this, inReq.getUser(), inReq.getUserProfile(), type, asset);
 			inReq.putPageValue("can" + type + "asset", cando);
 		}
 	}
-	
-	public Asset findAsset(String inSourcepath) {
+
+	public Asset findAsset(String inSourcepath)
+	{
 		Asset asset = getAssetBySourcePath(inSourcepath);
-		if(asset == null && inSourcepath.contains("/")){
+		if (asset == null && inSourcepath.contains("/"))
+		{
 			inSourcepath = inSourcepath.substring(0, inSourcepath.lastIndexOf("/"));
 			asset = getAssetBySourcePath(inSourcepath);
-			if(asset == null){
+			if (asset == null)
+			{
 				return findAsset(inSourcepath);
-			} else{
+			}
+			else
+			{
 				return asset;
 			}
 		}
 		return null;
 	}
-	
-	
+
 	/*
-	public void loadAllAssetPermissions(String inSourcepath, WebPageRequest inReq) 
-	{
-		String path = "/" + getCatalogId() + "/assets/" + inSourcepath + "/_site.xconf";
-		
-		Page assethome = getPageManager().getPage(path);
-		WebPageRequest req = inReq.copy(assethome);
-		
-		List permissions = assethome.getPermissions();
-		if (permissions != null)
-		{
-			for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
-			{
-				Permission per = (Permission) iterator.next();
-				boolean value = per.passes(req);
-				inReq.putPageValue("can" + per.getName(), Boolean.valueOf(value));
-			}
-		}
-	}
-	*/
+	 * public void loadAllAssetPermissions(String inSourcepath, WebPageRequest
+	 * inReq) { String path = "/" + getCatalogId() + "/assets/" + inSourcepath +
+	 * "/_site.xconf";
+	 * 
+	 * Page assethome = getPageManager().getPage(path); WebPageRequest req =
+	 * inReq.copy(assethome);
+	 * 
+	 * List permissions = assethome.getPermissions(); if (permissions != null) {
+	 * for (Iterator iterator = permissions.iterator(); iterator.hasNext();) {
+	 * Permission per = (Permission) iterator.next(); boolean value =
+	 * per.passes(req); inReq.putPageValue("can" + per.getName(),
+	 * Boolean.valueOf(value)); } } }
+	 */
 	public Data getCatalogSetting(String inId)
 	{
 		Data setting = getSearcherManager().getData(getCatalogId(), "catalogsettings", inId);
-			
+
 		return setting;
 	}
+
 	public String getCatalogSettingValue(String inId)
 	{
-		String value = (String)getCacheManager().get("catalogsettings", inId);
-		if( value ==  CacheManager.NULLVALUE)
+		String value = (String) getCacheManager().get("catalogsettings", inId);
+		if (value == CacheManager.NULLVALUE)
 		{
 			return null;
 		}
-		if( value != null)
+		if (value != null)
 		{
 			return value;
 		}
 		Data setting = getCatalogSetting(inId);
 		//log.info("Loading " + inId);
-		if( setting ==  null)
+		if (setting == null)
 		{
 			return null;
 		}
 		value = setting.get("value");
-		if( value == null)
+		if (value == null)
 		{
 			log.info("Null value " + getCatalogId() + " " + inId);
 			value = CacheManager.NULLVALUE;
@@ -1414,11 +1420,12 @@ public class MediaArchive implements CatalogEnabled
 		getCacheManager().put("catalogsettings", inId, value);
 		return value;
 	}
+
 	public void setCatalogSettingValue(String inId, String inValue)
 	{
 		Searcher search = getSearcher("catalogsettings");
-		Data setting = (Data)search.searchById(inId);
-		if( setting ==  null)
+		Data setting = (Data) search.searchById(inId);
+		if (setting == null)
 		{
 			setting = search.createNewData();
 			setting.setId(inId);
@@ -1428,12 +1435,11 @@ public class MediaArchive implements CatalogEnabled
 		getCacheManager().remove("catalogsettings", inId);
 	}
 
-	
 	public void loadCategoryPermissions(WebPageRequest inReq)
 	{
 		Page cathome = getPageManager().getPage(getCatalogHome());
 		WebPageRequest req = inReq.copy(cathome);
-		
+
 		List permissions = cathome.getPermissions();
 		if (permissions != null)
 		{
@@ -1445,27 +1451,27 @@ public class MediaArchive implements CatalogEnabled
 			}
 		}
 	}
-	
+
 	public boolean isTagSync(String inFileFormat)
 	{
-		if( inFileFormat == null )
+		if (inFileFormat == null)
 		{
 			return false;
 		}
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "fileformat");
 		Data hit = (Data) searcher.searchById(inFileFormat);
-		if(hit == null)
+		if (hit == null)
 		{
 			return false;
 		}
 		String property = "synctags";
-		if(hit.get(property) == null)
+		if (hit.get(property) == null)
 		{
 			return true;
 		}
 		return Boolean.parseBoolean(hit.get(property));
 	}
-	
+
 	public List getFilesIn(String inPath)
 	{
 		List pages = new ArrayList();
@@ -1473,12 +1479,12 @@ public class MediaArchive implements CatalogEnabled
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			String path = (String) iterator.next();
-			if( getPageManager().getPage(path).isFolder() )
+			if (getPageManager().getPage(path).isFolder())
 			{
 				continue;
 			}
 			String filename = PathUtilities.extractFileName(path);
-			if(!filename.endsWith("xconf"))
+			if (!filename.endsWith("xconf"))
 			{
 				Page page = getPageManager().getPage(path);
 				pages.add(page);
@@ -1490,22 +1496,23 @@ public class MediaArchive implements CatalogEnabled
 	public void logDownload(String inSourcePath, String inResult, User inUser)
 	{
 		getAssetStatsManager().logAssetDownload(getCatalogId(), inSourcePath, inResult, inUser);
-		
+
 	}
 
 	public String asContentDistributionSiteRoot(WebPageRequest inReq)
 	{
 		String contentsiteroot = inReq.findValue("contentsiteroot");
-		if( contentsiteroot == null)
+		if (contentsiteroot == null)
 		{
 			contentsiteroot = inReq.getSiteRoot();
 		}
 		return contentsiteroot;
 	}
-	public boolean doesAttachmentExist(Data asset, Data inPreset, int inPageNumber) 
+
+	public boolean doesAttachmentExist(Data asset, Data inPreset, int inPageNumber)
 	{
 		String outputfile = inPreset.get("generatedoutputfile");
-		if( inPageNumber > 1 )
+		if (inPageNumber > 1)
 		{
 			String name = PathUtilities.extractPageName(outputfile);
 			String ext = PathUtilities.extractPageType(outputfile);
@@ -1513,23 +1520,27 @@ public class MediaArchive implements CatalogEnabled
 		}
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
 		return page.getLength() > 1;
-		
+
 	}
-	public boolean doesAttachmentExist(String outputfile, Data asset) {
+
+	public boolean doesAttachmentExist(String outputfile, Data asset)
+	{
 		ContentItem page = getPageManager().getRepository().get("/WEB-INF/data/" + getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + outputfile);
-		return  page.getLength() > 1;
+		return page.getLength() > 1;
 	}
+
 	public String asExportFileName(Asset inAsset, Data inPreset)
 	{
 		return asExportFileName(null, inAsset, inPreset);
 	}
+
 	public String asExportFileName(User inUser, Asset inAsset, Data inPreset)
 	{
 		String format = inPreset.get("fileexportformat");
-		if( format == null)
+		if (format == null)
 		{
 			String name = inPreset.get("generatedoutputfile");
-			if( name == null)
+			if (name == null)
 			{
 				name = inAsset.getName();
 			}
@@ -1538,142 +1549,152 @@ public class MediaArchive implements CatalogEnabled
 		Date now = new Date();
 		SimpleDateFormat ymd = new SimpleDateFormat("yyyyMMdd");
 		SimpleDateFormat time = new SimpleDateFormat("kkmm");
-		
+
 		Map tmp = new HashMap(inPreset.getProperties());
 		tmp.put("assetid", inAsset.getId());
 		tmp.put("filename", inAsset.getName());
-		
+
 		String shortname = PathUtilities.extractPageName(inAsset.getName());
 		tmp.put("shortfilename", shortname);
-		
+
 		tmp.put("catalogid", inAsset.getCatalogId());
 		tmp.put("sourcepath", inAsset.getSourcePath());
 		tmp.put("date", ymd.format(now));
 		tmp.put("time", time.format(now));
 		tmp.put("asset", inAsset);
 		tmp.put("preset", inPreset);
-		if( inUser != null )
+		if (inUser != null)
 		{
-			tmp.put("user",inUser);
-			tmp.put("username",inUser.getUserName());
+			tmp.put("user", inUser);
+			tmp.put("username", inUser.getUserName());
 		}
-		
+
 		String result = getReplacer().replace(format, tmp);
 		return result;
 	}
+
 	public LockManager getLockManager()
 	{
-		if( fieldLockManager == null)
+		if (fieldLockManager == null)
 		{
-			fieldLockManager = (LockManager)getModuleManager().getBean(getCatalogId(),"lockManager");
+			fieldLockManager = (LockManager) getModuleManager().getBean(getCatalogId(), "lockManager");
 		}
 		return fieldLockManager;
 	}
+
 	public void setLockManager(LockManager inLockManager)
 	{
 		fieldLockManager = inLockManager;
 	}
+
 	public Lock lock(String inPath, String inOwner)
 	{
 		return getLockManager().lock(inPath, inOwner);
 	}
-	
+
 	public boolean releaseLock(Lock inLock)
 	{
-		if( inLock == null)
+		if (inLock == null)
 		{
 			throw new OpenEditException("Previous lock was null");
 		}
-		if( inLock.getId() == null)
+		if (inLock.getId() == null)
 		{
 			throw new OpenEditException("Previous lock id was null");
 		}
 
-		boolean ok = getLockManager().release( inLock);
+		boolean ok = getLockManager().release(inLock);
 		return ok;
 	}
-	
+
 	public String formatLength(Object inValue)
 	{
 		String secondstr = String.valueOf(inValue);
-		if(secondstr.length() == 0)
+		if (secondstr.length() == 0)
 		{
 			return "00:00:00";
 		}
 		int seconds = Integer.parseInt(secondstr);
-		if(seconds == 0)
+		if (seconds == 0)
 		{
 			return "00:00:00";
 		}
-		
+
 		Calendar cal = new GregorianCalendar();
 		cal.set(Calendar.HOUR, 0);
 		cal.set(Calendar.MINUTE, 0);
 		cal.set(Calendar.SECOND, 0);
 		cal.add(Calendar.SECOND, seconds);
-		
+
 		StringBuffer length = new StringBuffer();
-		if(cal.get(Calendar.HOUR) < 10)
+		if (cal.get(Calendar.HOUR) < 10)
 		{
 			length.append("0");
 		}
 		length.append(cal.get(Calendar.HOUR) + ":");
-		if(cal.get(Calendar.MINUTE) < 10)
+		if (cal.get(Calendar.MINUTE) < 10)
 		{
 			length.append("0");
 		}
 		length.append(cal.get(Calendar.MINUTE) + ":");
-		if(cal.get(Calendar.SECOND) < 10)
+		if (cal.get(Calendar.SECOND) < 10)
 		{
 			length.append("0");
 		}
 		length.append(cal.get(Calendar.SECOND));
-		
+
 		return length.toString();
 	}
+
 	public String formatMinutesAndSeconds(String inSeconds)
 	{
-		if (inSeconds==null||inSeconds.trim().length()==0)
+		if (inSeconds == null || inSeconds.trim().length() == 0)
 			return ":00";
 		StringBuilder sb = new StringBuilder();
 		int allSeconds = 0;
-		try{
+		try
+		{
 			float secs = Float.parseFloat(inSeconds);
 			allSeconds = new Float(secs).intValue();
-		}catch (NumberFormatException e){}//not handled
-		int minutes = allSeconds>60?allSeconds/60:0;
-		int seconds = allSeconds%60;
-		String min = minutes>0?String.valueOf(minutes):"";
-		String sec = seconds>=10?String.valueOf(seconds):seconds>0?"0"+String.valueOf(seconds):"00";
+		}
+		catch (NumberFormatException e)
+		{
+		} //not handled
+		int minutes = allSeconds > 60 ? allSeconds / 60 : 0;
+		int seconds = allSeconds % 60;
+		String min = minutes > 0 ? String.valueOf(minutes) : "";
+		String sec = seconds >= 10 ? String.valueOf(seconds) : seconds > 0 ? "0" + String.valueOf(seconds) : "00";
 		sb.append(min + ":" + sec);
 		return sb.toString();
 	}
-	
-	public Searcher getSearcher(String inSearchType){
+
+	public Searcher getSearcher(String inSearchType)
+	{
 		return getSearcherManager().getSearcher(getCatalogId(), inSearchType);
 	}
-	
+
 	public Data getData(String inSearchType, String inId)
 	{
-		if( inId == null)
+		if (inId == null)
 		{
 			return null;
 		}
 		Searcher searcher = getSearcher(inSearchType);
-		Data hit =  (Data)searcher.searchById(inId);
+		Data hit = (Data) searcher.searchById(inId);
 		hit = searcher.loadData(hit); //not needed?
 		return hit;
-		
+
 	}
-	
-	
-	public HitTracker getList(String inSearchType){
+
+	public HitTracker getList(String inSearchType)
+	{
 		return getSearcherManager().getList(getCatalogId(), inSearchType);
 	}
+
 	public Collection getCatalogSettingValues(String inKey)
 	{
 		String value = getCatalogSettingValue(inKey);
-		if( value == null)
+		if (value == null)
 		{
 			return null;
 		}
@@ -1682,65 +1703,70 @@ public class MediaArchive implements CatalogEnabled
 
 		return presets;
 	}
+
 	//force runs now instead of on a delay in the scheduler
-	public boolean fireSharedMediaEvent( String inName )
+	public boolean fireSharedMediaEvent(String inName)
 	{
-		PathEventManager manager = (PathEventManager)getModuleManager().getBean(getCatalogId(), "pathEventManager");
+		PathEventManager manager = (PathEventManager) getModuleManager().getBean(getCatalogId(), "pathEventManager");
 		return manager.runSharedPathEvent(getCatalogHome() + "/events/" + inName + ".html");
 	}
-	
+
 	//What is this for?
 	public HitTracker getTracker(int total)
 	{
 		List all = new ArrayList(total);
 		for (int i = 0; i < total; i++)
 		{
-			all.add(new Integer(i+1));
+			all.add(new Integer(i + 1));
 		}
 		HitTracker tracker = new ListHitTracker(all);
 		return tracker;
 	}
+
 	public Data getLibrary(String inId)
 	{
-		Data library = (Data)getCacheManager().get("library_lookup",inId);
-		if( library == null )
+		Data library = (Data) getCacheManager().get("library_lookup", inId);
+		if (library == null)
 		{
 			library = getSearcherManager().getData(getCatalogId(), "library", inId);
-			if( library == null )
+			if (library == null)
 			{
 				library = BaseData.NULL;
 			}
-			getCacheManager().put("library_lookup",inId,library);
+			getCacheManager().put("library_lookup", inId, library);
 		}
-		if ( library == BaseData.NULL )
+		if (library == BaseData.NULL)
 		{
 			return null;
 		}
 		return library;
 	}
-	
-	
-	public UserProfile getUserProfile(String inId){
-		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
-		
-	}
-	//Look for previews that should be marked as complete now
-	public void conversionCompleted(Asset asset) 
+
+	public UserProfile getUserProfile(String inId)
 	{
-		if( asset == null)
+		return (UserProfile) getSearcherManager().getSearcher(getCatalogId(), "userprofile").searchById(inId);
+
+	}
+
+	//Look for previews that should be marked as complete now
+	public void conversionCompleted(Asset asset)
+	{
+		if (asset == null)
 		{
 			return; //asset deleted
 		}
 		getPresetManager().conversionCompleted(this, asset);
 	}
+
 	public UserManager getUserManager()
 	{
-		if( fieldUserManager == null)
+		if (fieldUserManager == null)
 		{
-			fieldUserManager = (UserManager)getModuleManager().getBean(getCatalogId(),"userManager");
+			fieldUserManager = (UserManager) getModuleManager().getBean(getCatalogId(), "userManager");
 		}
 		return fieldUserManager;
 	}
+
 	public void clearCaches()
 	{
 		getCacheManager().clearAll();
@@ -1751,29 +1777,30 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return getPageManager().getRepository().getStub(inPath);
 	}
-	
+
 	public OrderManager getOrderManager()
 	{
 		if (fieldOrderManager == null)
 		{
-			fieldOrderManager = (OrderManager)getModuleManager().getBean(getCatalogId(),"orderManager");
+			fieldOrderManager = (OrderManager) getModuleManager().getBean(getCatalogId(), "orderManager");
 		}
 
 		return fieldOrderManager;
 	}
-	
-	public NodeManager getNodeManager(){
-		return (NodeManager)getModuleManager().getBean(getCatalogId(),"nodeManager");
+
+	public NodeManager getNodeManager()
+	{
+		return (NodeManager) getModuleManager().getBean(getCatalogId(), "nodeManager");
 	}
 
 	public ProjectManager getProjectManager()
 	{
-		ProjectManager manager = (ProjectManager)getModuleManager().getBean(getCatalogId(),"projectManager");
+		ProjectManager manager = (ProjectManager) getModuleManager().getBean(getCatalogId(), "projectManager");
 		return manager;
 	}
 
-	
-	public void clearAll(){
+	public void clearAll()
+	{
 		getCacheManager().clearAll();
 		getPageManager().clearCache();
 		getPageManager().getPageSettingsManager().clearCache();
@@ -1781,38 +1808,38 @@ public class MediaArchive implements CatalogEnabled
 		getSearcherManager().clear();
 		getNodeManager().clear();
 		getPresetManager().clearCaches();
-		
+
 	}
-	
+
 	public Collection<Data> listHiddenCollections()
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection visibility = (Collection)getCacheManager().get("hiddencollection", search.getIndexId()); //Expires after 5 min
-		if( visibility == null)
+		Collection visibility = (Collection) getCacheManager().get("hiddencollection", search.getIndexId()); //Expires after 5 min
+		if (visibility == null)
 		{
 			visibility = getSearcher("librarycollection").query().exact("visibility", "3").search();
 			getCacheManager().put("hiddencollection", search.getIndexId(), visibility);
 		}
 		return visibility;
 	}
-	
+
 	public Collection<Data> listPublicCollections()
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection visibility = (Collection)getCacheManager().get("publiccollection", search.getIndexId()); //Expires after 5 min
-		if( visibility == null)
+		Collection visibility = (Collection) getCacheManager().get("publiccollection", search.getIndexId()); //Expires after 5 min
+		if (visibility == null)
 		{
 			visibility = getSearcher("librarycollection").query().exact("visibility", "1").search();
 			getCacheManager().put("publiccollection", search.getIndexId(), visibility);
 		}
 		return visibility;
 	}
-	
-	public Collection<Category> listPublicCategories()	
+
+	public Collection<Category> listPublicCategories()
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection<Category> categories = (Collection)getCacheManager().get("publiccollectioncategories", search.getIndexId()); //Expires after 5 min
-		if( categories == null)
+		Collection<Category> categories = (Collection) getCacheManager().get("publiccollectioncategories", search.getIndexId()); //Expires after 5 min
+		if (categories == null)
 		{
 			categories = new ArrayList();
 
@@ -1821,27 +1848,26 @@ public class MediaArchive implements CatalogEnabled
 			{
 				Data librarycollection = (Data) iterator.next();
 				String categoryid = librarycollection.get("rootcategory");
-				if( categoryid != null)
+				if (categoryid != null)
 				{
 					Category child = getCategory(categoryid);
-					if( child != null)
+					if (child != null)
 					{
 						categories.add(child);
 					}
 				}
 			}
 			getCacheManager().put("publiccollectioncategories", search.getIndexId(), categories);
-		}	
+		}
 		return categories;
-		
+
 	}
-	
-	
-	public Collection<Category> listHiddenCategories()	
+
+	public Collection<Category> listHiddenCategories()
 	{
 		Searcher search = getSearcher("librarycollection");
-		Collection<Category> categories = (Collection)getCacheManager().get("hiddencollectioncategories", search.getIndexId()); //Expires after 5 min
-		if( categories == null)
+		Collection<Category> categories = (Collection) getCacheManager().get("hiddencollectioncategories", search.getIndexId()); //Expires after 5 min
+		if (categories == null)
 		{
 			categories = new ArrayList();
 			Collection visibility = listHiddenCollections();
@@ -1849,27 +1875,27 @@ public class MediaArchive implements CatalogEnabled
 			{
 				Data librarycollection = (Data) iterator.next();
 				String categoryid = librarycollection.get("rootcategory");
-				if( categoryid != null)
+				if (categoryid != null)
 				{
 					Category child = getCategory(categoryid);
-					if( child != null)
+					if (child != null)
 					{
 						categories.add(child);
 					}
 				}
 			}
 			getCacheManager().put("hiddencollectioncategories", search.getIndexId(), categories);
-		}	
+		}
 		return categories;
-		
+
 	}
 
 	public Collection<Category> listHiddenCategories(Collection<Category> inViewCategories)
 	{
-		Collection<Category>  all  = listHiddenCategories();
-		
-		Collection<Category>  filtered = new ArrayList<Category>();
-		
+		Collection<Category> all = listHiddenCategories();
+
+		Collection<Category> filtered = new ArrayList<Category>();
+
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			Category hidden = (Category) iterator.next();
@@ -1877,67 +1903,72 @@ public class MediaArchive implements CatalogEnabled
 			for (Iterator iterator2 = inViewCategories.iterator(); iterator2.hasNext();)
 			{
 				Category allowed = (Category) iterator2.next();
-				if( allowed.equals(hidden.getId()))
+				if (allowed.equals(hidden.getId()))
 				{
 					hideit = false;
 					continue;
 				}
 			}
-			if( hideit )
+			if (hideit)
 			{
 				filtered.add(hidden);
 			}
 		}
-		
+
 		return filtered;
 	}
+
 	public QueryBuilder query(String inSearchType)
 	{
 		return getSearcher(inSearchType).query();
 	}
+
 	public Collection getBadges(MultiValued inRow)
 	{
 		Collection badges = inRow.getValues("badge");
-		if( badges != null && !badges.isEmpty())
+		if (badges != null && !badges.isEmpty())
 		{
-			String id = inRow.get("badge");  //text version of the ids
-			List b = (List)getCacheManager().get("badges",id); //Expires after 5 min, sort it?
-			if( b == null)
+			String id = inRow.get("badge"); //text version of the ids
+			List b = (List) getCacheManager().get("badges", id); //Expires after 5 min, sort it?
+			if (b == null)
 			{
 				b = new ArrayList<Data>();
-				for (Iterator iterator = badges.iterator(); iterator.hasNext();) {
+				for (Iterator iterator = badges.iterator(); iterator.hasNext();)
+				{
 					String badgeid = (String) iterator.next();
 					Data badge = getData("badge", badgeid);
-					if (badge == null) {
+					if (badge == null)
+					{
 						log.info("badge not defined" + badgeid);
-					} else {
+					}
+					else
+					{
 						b.add(badge);
 					}
 				}
 				Collections.sort(b);
-				getCacheManager().put("badges",id, b);
-			}	
+				getCacheManager().put("badges", id, b);
+			}
 			return b;
 		}
 		return null;
-	} 
-	
-	
+	}
+
 	public TemplateWebEmail createSystemEmail(User inSendTo, String inTemplatePath)
 	{
 		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
-		
+
 		String fromemail = getCatalogSettingValue("system_from_email");
 		String fromemailname = getCatalogSettingValue("system_from_email_name");
-		
+
 		webmail.setFrom(fromemail);
 		webmail.setFromName(fromemailname);
-		
+
 		webmail.setMailTemplatePath(inTemplatePath);
 
 		try
 		{
-			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription() );
+			InternetAddress to = new InternetAddress(inSendTo.getEmail(), inSendTo.getShortDescription());
 			webmail.setRecipient(to);
 		}
 		catch (UnsupportedEncodingException e)
@@ -1946,12 +1977,12 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return webmail;
 	}
-	
+
 	public int getRealImageWidth(Data inHit)
 	{
 		String orientation = inHit.get("imageorientation");
 		String width = null;
-		if(orientation == null || orientation.equals("1") || orientation.equals("3"))
+		if (orientation == null || orientation.equals("1") || orientation.equals("3"))
 		{
 			width = inHit.get("width");
 		}
@@ -1959,17 +1990,18 @@ public class MediaArchive implements CatalogEnabled
 		{
 			width = inHit.get("height");
 		}
-		if( width == null)
+		if (width == null)
 		{
 			return 0;
 		}
 		return Integer.parseInt(width);
 	}
+
 	public int getRealImageHeight(Data inHit)
 	{
 		String orientation = inHit.get("imageorientation");
 		String height = null;
-		if(orientation == null || orientation.equals("1") || orientation.equals("3"))
+		if (orientation == null || orientation.equals("1") || orientation.equals("3"))
 		{
 			height = inHit.get("height");
 		}
@@ -1977,18 +2009,40 @@ public class MediaArchive implements CatalogEnabled
 		{
 			height = inHit.get("width");
 		}
-		if( height == null)
+		if (height == null)
 		{
 			return 0;
 		}
 		return Integer.parseInt(height);
-		
+
 	}
 
 	public Object getBean(String inId)
 	{
-		return getModuleManager().getBean(getCatalogId(),inId);
+		return getModuleManager().getBean(getCatalogId(), inId);
 	}
 
-	
+	public String asLinkToPreview(Data inAsset, String inGeneratedName)
+	{
+		String cdnprefix = getCatalogSettingValue("cdn_prefix");
+		String finalroot = null;
+		if (inGeneratedName.contains(".jpg"))
+		{
+			if (cdnprefix == null)
+			{
+				RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+				cdnprefix = rutil.getSiteRoot();
+
+			}
+			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preset/" + inAsset.getSourcePath() + "/" + inGeneratedName;
+		}
+		else
+		{	
+			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preview/"+ inGeneratedName +"/" + inAsset.getSourcePath() + "/thumb.jpg";
+
+		}
+		return finalroot;
+
+	}
+
 }
