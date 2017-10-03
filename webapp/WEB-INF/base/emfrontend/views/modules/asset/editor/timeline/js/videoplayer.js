@@ -458,6 +458,16 @@ $(document).ready(function()
 			}	
 		});	
 	});
+	
+	var jump = $("#timelineviewer").data("timecodejump");
+	//console.log(jump);
+	if( jump )
+	{
+		//$('[data-test="the_exact_value"]')
+		var selectedc = $(".data-selection" + '[data-timecodestart="' + jump + '"]');
+		//console.log(selectedc);
+		selectClip(selectedc);
+	}
 });	
 
 

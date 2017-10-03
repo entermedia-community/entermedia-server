@@ -431,11 +431,11 @@
     </name> 
   </property>
   
-   <property id="clips" index="true" stored="true" editable="true" datatype="objectarray" viewtype="timecodetable"> 
+   <property id="clips" index="true" keyword="true" stored="true" editable="true" datatype="objectarray" viewtype="timecodetable"> 
     <name> 
       <language id="en"><![CDATA[Clips]]></language>  
     </name> 
-    <property id="cliplabel" index="true" stored="true" editable="true" >
+    <property id="cliplabel" index="true" keyword="true" stored="true" editable="true" >
     <name> 
       <language id="en"><![CDATA[Clip Label]]></language>  
     </name> 

@@ -2504,7 +2504,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						for (Iterator iterator = maps.iterator(); iterator.hasNext();)
 						{
 							Map map = (Map) iterator.next();
-							for (Iterator miterator = det.getObjectDetails().iterator(); iterator.hasNext();)
+							for (Iterator miterator = det.getObjectDetails().iterator(); miterator.hasNext();)
 							{
 								PropertyDetail detal = (PropertyDetail) miterator.next();
 								if( detal.isKeyword() )
