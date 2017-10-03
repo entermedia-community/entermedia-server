@@ -13,7 +13,11 @@
 
 				<li class="list-group-item"><span class="badge"
 					title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
-					$!mediaarchive.getData("fileformat",$item.key)<br /></li> #end #end
+					#set( $data = false)
+					#set( $data = $mediaarchive.getData("fileformat",$item.key))
+					$context.getText($data)
+					
+					<br /></li> #end #end
 
 				<li class="list-group-item"><span class="badge">$!sizer.inEnglish($diskspacehits.getSum("filesize"))
 				</span> [[Total]]</li>
