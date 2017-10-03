@@ -37,12 +37,12 @@ public class ReportModule extends DataEditModule
 		fieldScriptManager = inScriptManager;
 	}
 
-	public void loadReport(WebPageRequest inReq){
+	public Data loadReport(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		String reportid = inReq.findValue("reportid");
 		if (reportid == null){
-			return;
+			return null;
 		}
 		
 		SearcherManager manager = getSearcherManager();
@@ -57,15 +57,13 @@ public class ReportModule extends DataEditModule
 		if(catalogid == null){
 			catalogid = "media/catalogs/public"; //Maybe should be last accessed catalog?  I'll pass in the profile value from the emshare app...
 		}
-	
 		inReq.putPageValue("reportcatalogid", catalogid);
 
 		if(searchtype != null){
-			Searcher searcher = archive.getSearcherManager().getSearcher(catalogid, searchtype);
+			Searcher searcher = archive.getSearcher(searchtype);
 			inReq.putPageValue("reportsearcher", searcher);
-			
-
 		}
+		return report;
 	}
 	
 	
@@ -74,27 +72,18 @@ public class ReportModule extends DataEditModule
 		
 		MediaArchive archive = getMediaArchive(inReq);
 
-		String reportid = inReq.findValue("reportid");
-		if (reportid == null){
+		Data report = loadReport(inReq);
+		if (report == null){
 			return;
 		}
-		SearcherManager manager = getSearcherManager();
-		Data report = manager.getData("system",  "reports",  reportid);
 		
-		inReq.putPageValue("report", report);
 		String script = report.get("script");
 		String searchtype = report.get("searchtype");
 		
-		//String catalogid = inReq.getUserProfileValue("reportcatalogid");
-		String catalogid = archive.getCatalogId();
 		
-		if(catalogid == null){
-			catalogid = "media/catalogs/public"; //Maybe should be last accessed catalog?  I'll pass in the profile value from the emshare app...
-		}
 		if(script == null){
 			script = "reporting/" +  searchtype + ".groovy";
 		} 
-		inReq.putPageValue("reportcatalogid", catalogid);
 		Page page = getPageManager().getPage("/system/events/scripts/" + script);
 		
 		if(!page.exists()){
