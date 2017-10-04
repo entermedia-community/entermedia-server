@@ -84,7 +84,34 @@ $(document).ready(function()
 			copyStartTime();	
 			copyLength();
 			updateClip();
-		}			
+		}	
+		var link = $("#playclip");
+				
+		if( video.paused )
+		{
+			link.text(link.data("playtext"));
+			link.removeClass("playing");
+		}
+		else
+		{
+			//If they pressed the playbutton on the details then stop
+			var selected = $(".selectedclip");
+			var start = selected.data("timecodestart");
+			var length = selected.data("timecodelength");
+			//console.log(video.currentTime , start , length );
+			if( video.currentTime > parseFloat(start) + parseFloat(length) )
+			{
+				video.pause();
+				link.text(link.data("playtext"));
+				link.removeClass("playing");
+			}
+			else
+			{
+				link.text(link.data("stoptext"));
+				link.addClass("playing");				
+			}
+		}
+		
 	});
 	$("#timecodestart-value").livequery("click",function(e)
 	{
@@ -99,7 +126,7 @@ $(document).ready(function()
 		}	
 		var selected = $(".selectedclip");
 		var start = selected.data("timecodestart");
-		video.currentTime = start;
+		video.currentTime = parseFloat(start);
 		input.addClass("selectedtime");
 			
 	});
@@ -116,7 +143,7 @@ $(document).ready(function()
 		var selected = $(".selectedclip");
 		var start = selected.data("timecodestart");
 		var length = selected.data("timecodelength");
-		video.currentTime = start + length;
+		video.currentTime = parseFloat(start) + parseFloat(length);
 		
 		input.addClass("selectedlength");
 		
@@ -158,7 +185,21 @@ $(document).ready(function()
 	{
 		e.preventDefault();
 		var link = $(this);
-		video.play();		
+		if( link.hasClass("playing") )
+		{
+			video.pause();
+			link.text(link.data("playtext"));
+			link.removeClass("playing");
+		}
+		else
+		{
+			var selected = $(".selectedclip");
+			var start = selected.data("timecodestart");
+			video.currentTime = parseFloat(start);
+			video.play();
+			link.text(link.data("stoptext"));
+			link.addClass("playing");
+		}
 	});
 	
 	jQuery("#addnewcopy").livequery("click",function(e)

@@ -44,6 +44,11 @@
 	#if( $permission == "true" && $link.id == "viewassetedit" && $asset.fileformat != "jpg")
 		#set( $permission = false)
 	#end
+	#set( $type = $mediaarchive.getMediaRenderType($asset))
+	#if( $permission && $link.id == "viewtimeline" &&  $type != "video")
+		#set( $permission = false)
+	#end
+
     #if( $permission == "true")
 
     ##Check for custom links, arguments and labels
@@ -59,7 +64,6 @@
     #elseif ($link.id == "assetpermissions")
     #set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
     #end
-
     #if( !$ismulti || $inmultiok )
     #set ($href = "$apphome/views/modules/asset/editor/${link.folder}/index.html")
     <li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end $link.id">
