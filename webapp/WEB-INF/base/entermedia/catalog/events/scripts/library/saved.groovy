@@ -4,6 +4,7 @@ import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.data.Searcher
+import org.openedit.hittracker.HitTracker
 
 public void init() {
 	String id = context.getRequestParameter("id");
@@ -65,6 +66,27 @@ public void init() {
 		}
 		
 	}
+	
+	String divid = library.getValue("division");
+	
+	
+	if(divid){
+		Category cat = archive.getCategory(categoryid);
+		Searcher collectionsearcher = mediaarchive.getSearcher("librarycollection");
+		
+		HitTracker cols = collectionsearcher.query().exact("library", library.getId());
+		cols.each{
+			if(!divid.equals(it.division)){
+				Data real = collectionsearcher.loadData(it);
+				real.setValue("division", divid);
+				collectionsearcher.saveData(real);
+			}
+		}
+		
+	}
+	
+	
+	
 	
 	
 }
