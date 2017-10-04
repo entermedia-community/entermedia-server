@@ -14,8 +14,6 @@ import org.openedit.users.User;
 
 public class GoogleContactSearcher extends BaseSearcher{
 	
-	protected GoogleManager fieldGoogleManager;
-	
 	
 	
 
@@ -25,13 +23,11 @@ public class GoogleContactSearcher extends BaseSearcher{
 	
 	public GoogleManager getGoogleManager()
 	{
-		return fieldGoogleManager;
+	
+		return (GoogleManager) getModuleManager().getBean(getCatalogId(), "googleManager");
 	}
 
-	public void setGoogleManager(GoogleManager inGoogleManager)
-	{
-		fieldGoogleManager = inGoogleManager;
-	}
+	
 
 	@Override
 	public void reIndexAll() throws OpenEditException
@@ -106,5 +102,18 @@ public class GoogleContactSearcher extends BaseSearcher{
 //	ArrayList contacts = getGoogleManager().listContacts(inReq.getUser())	
 //	}
 //	
-	
+	@Override
+	public HitTracker fieldSearch(WebPageRequest inReq) throws OpenEditException
+	{
+	   try
+	{
+		   String query = inReq.findValue("name.value");
+		ArrayList contacts = getGoogleManager().listContacts(inReq.getUser(), query);
+		return new ListHitTracker(contacts);
+	}
+	catch (Exception e)
+	{
+		throw new OpenEditException(e);
+	}
+	}
 }

@@ -2027,6 +2027,11 @@
 	</bean>	
 	
 	<bean id="googleContactSearcher" class="org.entermediadb.google.GoogleContactSearcher" scope="prototype">
+
+<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+
 	</bean>
 	
 	

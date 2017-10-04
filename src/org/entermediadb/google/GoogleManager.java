@@ -32,6 +32,7 @@ import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
+import org.openedit.data.BaseData;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
@@ -458,8 +459,11 @@ public class GoogleManager implements CatalogEnabled
 	}
 	public ArrayList listContacts(User inAuthinfo, String inSearchTerm) throws Exception
 	{
-		String url = "https://www.google.com/m8/feeds/contacts/default/full";
-
+		String url = "https://www.google.com/m8/feeds/contacts/default/full?v=3.0";
+		if(inSearchTerm != null){
+			url = url + "&q=" +  URLEncoder.encode(inSearchTerm);
+		}
+		ArrayList quicklist = new ArrayList();
 		
 		CloseableHttpClient httpclient;
 		httpclient = HttpClients.createDefault();
@@ -476,16 +480,38 @@ public class GoogleManager implements CatalogEnabled
 		}
 
 		HttpEntity entity = resp.getEntity();
-		String content = IOUtils.toString(entity.getContent());
-		log.info(content);
 		Element root = getXmlUtil().getXml(entity.getContent(), "UTF-8");
-		return new ArrayList();
+		for (Iterator iterator = root.elementIterator("entry"); iterator.hasNext();)
+		{
+			Element type = (Element) iterator.next();
+			try
+			{
+				BaseData googledata = new BaseData();
+				String email = type.element("email").attributeValue("address");
+				String display = type.element("title").getText();
+				googledata.setName(display + "(" + email + ")");
+				googledata.setId(email);
+				quicklist.add(googledata);
+			}
+			catch (Exception e)
+			{
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+			}
+		}
 		
+		return quicklist;
 		
 	}
 
 	public XmlUtil getXmlUtil()
 	{
+		if (fieldXmlUtil == null)
+		{
+			fieldXmlUtil = new XmlUtil();
+			
+		}
+
 		return fieldXmlUtil;
 	}
 
