@@ -1424,6 +1424,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
 				}
+				else if( detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
+				{
+					PropertyDetail first = (PropertyDetail)detail.getObjectDetails().iterator().next();
+					sort = SortBuilders.fieldSort(field + "." + first.getId());
+				}
 				else
 				{
 					sort = SortBuilders.fieldSort(field + ".exact");

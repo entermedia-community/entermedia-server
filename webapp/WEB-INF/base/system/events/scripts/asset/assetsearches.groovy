@@ -14,7 +14,7 @@ public void init(){
 	String catalogid = context.getPageValue("reportcatalogid");
 
 	Searcher searcher = searcherManager.getSearcher(catalogid, "assetsearchLog");
-	searcher.putMappings();//just in case it's never been done.
+//	searcher.putMappings();//just in case it's never been done.
 	
 	SearchQuery query = searcher.addStandardSearchTerms(context);
 	if(query == null){
