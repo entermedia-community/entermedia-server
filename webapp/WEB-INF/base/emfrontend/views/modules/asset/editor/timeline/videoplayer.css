@@ -1,23 +1,44 @@
-a.btn-green,input.btn-green
+a.btn-green,input.btn-green,a.btn-green:focus
 {
-	background:#336633;color:white;
+	background-color:#336633; 
+	background:#336633; 
+	color:white; 
 }
+
 
 a.btn-green:hover
 {
-	background:#336633;color:white;
+	color:black;
+	background-color:#eee;
+}
+
+
+
+a.btn-green.playing
+{
+	background-color:#eee; 
+	background:#eee; 
+	color:black; 
+}
+
+a.btn-green.playing:hover
+{
+	background-color:#eee !important; 
+	background:#eee !important;
+	color:black;
 }
 
  
  a.btn-red
  {
-	background:#663333;color:white; 
+	background:#663333;
+	color:white; 
  }
 
 a.btn-disabled
 {
-	background:#aaa;
-	color:white; !important 
+	background-color:#aaa;
+	color:white !important; 
 
 }
 a.btn-yellow
