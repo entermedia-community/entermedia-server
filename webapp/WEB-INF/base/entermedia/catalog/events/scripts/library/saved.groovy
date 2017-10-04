@@ -68,15 +68,16 @@ public void init() {
 	}
 	
 	String divid = library.getValue("division");
-	
+	log.info("Found division");
 	
 	if(divid){
-		Category cat = archive.getCategory(categoryid);
 		Searcher collectionsearcher = mediaarchive.getSearcher("librarycollection");
 		
-		HitTracker cols = collectionsearcher.query().exact("library", library.getId());
+		HitTracker cols = collectionsearcher.query().exact("library", library.getId()).search();
 		cols.each{
 			if(!divid.equals(it.division)){
+	log.info("Resetting division to ${it.division}");
+
 				Data real = collectionsearcher.loadData(it);
 				real.setValue("division", divid);
 				collectionsearcher.saveData(real);
