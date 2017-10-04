@@ -46,17 +46,14 @@ var data =
 
 #foreach($item in $breakdownhits.getAggregations().get("assettype_filesize").getBuckets())
 
-"$item.key" #if($foreach.hasNext),#end
+	#set( $data = false)
+	#set( $data = $mediaarchive.getData("assettype",$item.key))
+	"${context.getText($data)}"
+	#if($foreach.hasNext),#end
 
 #end
-        
-
-        
-        ],
-     
-        
-        
-        datasets: [{
+       ],
+       datasets: [{
             
             data: [
 #foreach($item in $breakdownhits.getAggregations().get("assettype_filesize").getBuckets())

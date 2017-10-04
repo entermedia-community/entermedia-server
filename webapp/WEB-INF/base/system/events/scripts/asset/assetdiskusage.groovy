@@ -11,27 +11,30 @@ import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
 
 public void init(){
-	log.info("Running aggregation search");
+	log.info("Running diskusage search");
 	WebPageRequest req = context;
 	String catalogid = context.getPageValue("reportcatalogid");
 
 	Searcher searcher = searcherManager.getSearcher(catalogid, "asset");
-	searcher.putMappings();//just in case it's never been done.
+	//searcher.putMappings();//just in case it's never been done.
 	
 	SearchQuery query = searcher.addStandardSearchTerms(context);
-	
 	if(query == null){
-		query = searcher.createSearchQuery();
+		query = searcher.query().all().getQuery();
 	}
 	AggregationBuilder b = AggregationBuilders.terms("assettype_filesize").field("assettype");
 	SumBuilder sum = new SumBuilder("assettype_sum");
 	sum.field("filesize");
 	b.subAggregation(sum);
 	query.setAggregation(b);
-	query.addMatches("id", "*");
+	//query.addMatches("id", "*");
+	//query.setEndUserSearch(false);
+
 	
-	HitTracker hits =searcher.search(query);
-	hits.enableBulkOperations();
+		HitTracker hits =searcher.search(query);
+		log.info("query:" + query.hasFilters());
+		
+			hits.enableBulkOperations();
 	hits.getFilterOptions();
 	StringTerms agginfo = hits.getAggregations().get("assettype_filesize");
 	context.putPageValue("breakdownhits", hits)

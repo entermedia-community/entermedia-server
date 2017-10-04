@@ -1,9 +1,5 @@
 #if($reportsearcher)
 	#set( $view = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")
-#if($reportsearcher.getSearchType() == "asset")
-	#set( $view = "asset/advancedsearch")
-#end
-
 #set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
 #if($details.size() > 0)
 
