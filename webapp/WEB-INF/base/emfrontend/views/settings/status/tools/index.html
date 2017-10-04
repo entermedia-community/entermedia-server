@@ -42,9 +42,11 @@
 
 <hr>
 
+#if($mediaarchive.getData("oauthprovider", "google").enabled == "true")
 <h3>Google Drive Connectivity</h3>
 
 <a class="btn" href="$apphome/views/settings/google/connect.html">Connect Google Drive and Admin</a>
+#end
 <h3>[[Search Logs]]</h3>
 
 <a class="btn btn-sm" href="togglesearchlogs.html" id="tools-lof-search">
@@ -57,4 +59,3 @@
 </p>
 
 
-<a class="btn" href="connect.html">Connect To Google</a>
