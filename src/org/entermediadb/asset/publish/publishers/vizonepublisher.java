@@ -291,7 +291,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		HttpPost method = new HttpPost(addr);
 
 		//method.setEntity(new ByteArrayEntity(data.bytes));
-		StringEntity params = new StringEntity(data);
+		StringEntity params = new StringEntity(data, "UTF-8");
 		//				method.setEntity(params);
 
 		//HttpEntity entity = new ByteArrayEntity(data.getBytes("UTF-8"));
