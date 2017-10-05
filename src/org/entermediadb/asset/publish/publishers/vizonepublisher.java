@@ -122,7 +122,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 		HttpGet get = new HttpGet(addr);
 
-		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
+		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
 
@@ -175,9 +175,11 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 		HttpGet get = new HttpGet(addr);
 
-		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
+		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
+		get.setHeader("Accept-Charset", "UTF-8");
+		
 
 		HttpResponse response = getClient().execute(get);
 		StatusLine sl = response.getStatusLine();
@@ -238,11 +240,15 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		
 
 		HttpPut method = new HttpPut(addr);
-		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml");
+		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "");
+		method.setHeader("Accept-Charset", "UTF-8");
 
-		StringEntity params = new StringEntity(elem.asXML());
+		
+		
+		
+		StringEntity params = new StringEntity(elem.asXML(), "UTF-8");
 		method.setEntity(params);
 
 		HttpResponse response2 = getClient().execute(method);
@@ -294,7 +300,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		method.setEntity(params);
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "");
-		method.setHeader("Content-Type", "application/atom+xml;type=entry");
+		method.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
 
 		HttpResponse response2 = getClient().execute(method);
 		StatusLine sl = response2.getStatusLine();
@@ -370,7 +376,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 		HttpDelete get = new HttpDelete(addr);
 
-		get.setHeader("Content-Type", "application/atom+xml;type=entry");
+		get.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
 
