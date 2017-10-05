@@ -20,6 +20,10 @@ uiload = function() {
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home") + app.data("themeprefix");
 	
+	$.fn.modal.Constructor.prototype.enforceFocus = function() {};
+	
+	
+	
 	$('#module-dropdown').click(function(e){
 		e.stopPropagation();
 		if ( $(this).hasClass('active') ) {
