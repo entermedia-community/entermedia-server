@@ -4,7 +4,9 @@
 	<path-action name="DataEditModule.saveData" >
 			<property name="searchtype">category</property>
 	</path-action>
-	<property name="reloadprofile">true</property>
+	<path-action name="DataEditModule.invalidateIndex" >
+			<property name="searchtype">userprofile</property>
+	</path-action>
 	
 	<path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>

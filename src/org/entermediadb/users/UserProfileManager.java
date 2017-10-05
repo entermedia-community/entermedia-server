@@ -89,19 +89,32 @@ public class UserProfileManager
 	{
 		String id = inCatalogId + "userprofile" + inUserName;
 
+		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
+
 		UserProfile userprofile;
 		if (inReq != null)
 		{
 			boolean reload = Boolean.parseBoolean(inReq.findValue("reloadprofile"));
+			
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
-			if (!reload && userprofile != null && inUserName.equals(userprofile.getUserId()) && inCatalogId.equals(userprofile.getCatalogId()))
-			{
-				return userprofile;
-			}
-			if (!reload)
+			if (userprofile == null)
 			{
 				userprofile = (UserProfile) inReq.getSessionValue(id);
 			}
+
+			if (!reload && userprofile != null && inUserName.equals(userprofile.getUserId()) && inCatalogId.equals(userprofile.getCatalogId()))
+			{
+				String index = mediaArchive.getSearcher("userprofile").getIndexId();
+				if( !index.equals(userprofile.getIndexId()) )
+				{
+					reload = true;
+				}
+				else
+				{
+					reload = false;
+				}
+			}
+
 			if (!reload && userprofile != null && inUserName.equals(userprofile.getUserId()))
 			{
 				// check searcher cache?
@@ -163,35 +176,7 @@ public class UserProfileManager
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
 
-//		String preferedapp = userprofile.get("preferedapp");
-//		if(preferedapp == null)
-//		{
-//			userprofile.setValue("preferedapp", appid);
-//			saveUserProfile(userprofile);
-//		}
-		
-		inReq.putSessionValue(id, userprofile);
-		inReq.putPageValue("userprofile", userprofile);
-
-		List ok = new ArrayList();
-
-		// check the parent first, then the appid
-//		String parentid = inReq.findValue("parentapplicationid");
-//		Collection catalogs = getSearcherManager().getSearcher(parentid, "catalogs").getAllHits();
-//
-//		for (Iterator iterator = catalogs.iterator(); iterator.hasNext();)
-//		{
-//			Data cat = (Data) iterator.next();
-//			Boolean canview = inReq.getPageStreamer().canView("/" + cat.getId());
-//			if (canview != null && canview)
-//			{
-//				ok.add(cat);
-//			}
-//		}
-//		userprofile.setCatalogs(new ListHitTracker(ok));
-//		userprofile.setUploadCatalogs(new ListHitTracker(ok));
-
-
+		userprofile.setIndexId( mediaArchive.getSearcher("userprofile").getIndexId() );
 
 		Collection modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id", "*").sort("name").search(inReq);
 		List<Data> okmodules = new ArrayList<Data>();
@@ -209,14 +194,9 @@ public class UserProfileManager
 		userprofile.setModules(okmodules);
 		loadLibraries(userprofile, inCatalogId);
 
-		//Why do we do this? Seems like we already check this when we load up the profile above
-		//		if (inReq.getUserName().equals(userprofile.getUserId()))
-		//		{
-		//		}
+		inReq.putSessionValue(id, userprofile);
+		inReq.putPageValue("userprofile", userprofile);
 
-		//		if (inReq.getUserName().equals(userprofile.getUserId())) {
-		//			inReq.putSessionValue(id, userprofile);
-		//		}
 		return userprofile;
 	}
 
@@ -265,66 +245,27 @@ public class UserProfileManager
 			}
 		}
 		
+		//Load all the collections they have rights to based okcategories + their parents
+		//categories+parents
+		//lava loop over every collection and mesh 		
 		inUserprofile.setViewCategories(okcategories);
-		/*
-		Collection found = searcher.fieldSearch("userid", inUserprofile.getUserId());
-
-		for (Iterator iterator = found.iterator(); iterator.hasNext();)
+		inUserprofile.setCollectionIds(null);
+		if( !okcategories.isEmpty() )
 		{
-			Data data = (Data) iterator.next();
-			all.add(data.get("_parent"));
-		}
-
-		if (!"anonymous".equals(inUserprofile.getUserId()))
-		{
-			searcher = getSearcherManager().getSearcher(inCatalogId, "librarygroups");
-
-			SearchQuery query = searcher.createSearchQuery();
-			StringBuffer groups = new StringBuffer();
-
-			User user = (User) getSearcherManager().getData(inCatalogId, "user", inUserprofile.getUserId());
-			if (user != null)
-			{
-				for (Iterator iterator = user.getGroups().iterator(); iterator.hasNext();)
-				{
-					Group group = (Group) iterator.next();
-					if (group != null)
-					{
-						groups.append(group.getId());
-						if (iterator.hasNext())
-						{
-							groups.append(" ");
-						}
-					}
-				}
-				query.addOrsGroup("groupid", groups.toString());
-				found = searcher.search(query);
-				for (Iterator iterator = found.iterator(); iterator.hasNext();)
-				{
-					Data data = (Data) iterator.next();
-					all.add(data.get("libraryid"));
-				}
-			}
-		}
-
-		searcher = getSearcherManager().getSearcher(inCatalogId, "libraryroles");
-		if (inUserprofile.getSettingsGroup() != null)
-		{
-			SearchQuery query = searcher.createSearchQuery();
-			query.addOrsGroup("roleid", "anonymous " + inUserprofile.getSettingsGroup().getId());
-			found = searcher.search(query);
-			
-			//= searcher.fieldSearch("roleid", inUserprofile.getSettingsGroup().getId());
-
+			Collection<String> okcollectionids = new ArrayList<String>();
+			HitTracker found = mediaArchive.query("librarycollection").all().search();
 			for (Iterator iterator = found.iterator(); iterator.hasNext();)
 			{
-				Data data = (Data) iterator.next();
-				all.add(data.get("libraryid"));
+				Data collection = (Data) iterator.next();
+				Category root = mediaArchive.getCategory(collection.get("rootcategory"));
+				if( root != null && root.hasParentCategory(okcategories) )
+				{
+					okcollectionids.add(collection.getId());
+				}
 			}
+			inUserprofile.setCollectionIds(okcollectionids);
 		}
-		//Add in special adminstrator rights?
-		inUserprofile.setViewCategories(all);
-	*/	
+		
 	}
 
 	public void saveUserProfile(UserProfile inUserProfile)
