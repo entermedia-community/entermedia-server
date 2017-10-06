@@ -2,6 +2,7 @@ package library
 
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.search.AssetSearcher
 import org.entermediadb.projects.ProjectManager
 import org.openedit.Data
 import org.openedit.data.Searcher
@@ -11,14 +12,14 @@ import org.openedit.hittracker.HitTracker
 
 
 //public void moveAssetsToCollections(){
-//	
-//	
-//	
+//
+//
+//
 //	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
 //	Searcher colassets = mediaArchive.getSearcher("librarycollectionasset");
-//	
+//
 //	ProjectManager projectmanager = (ProjectManager)moduleManager.getBean(catalogid,"projectManager");
-//	
+//
 //	hits = colassets.getAllHits();
 //	hits.enableBulkOperations();
 //	hits.each{
@@ -30,11 +31,11 @@ import org.openedit.hittracker.HitTracker
 //		}else{
 //			log.info("No Collection ${collection} was found, skipping");
 //		}
-//		
-//		
+//
+//
 //	}
-//	
-//	
+//
+//
 //}
 
 
@@ -51,7 +52,7 @@ public void migratePermissions() {
 		if(catid != null){
 
 			Category cat = mediaArchive.getData("category", catid);
-			
+
 		}
 	}
 
@@ -63,43 +64,43 @@ public void migratePermissions() {
 
 
 public void convertLibrariesToCollections(){
-	
+
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
 	Searcher libraries = mediaArchive.getSearcher("library");
 	Searcher collections = mediaArchive.getSearcher("librarycollection");
 	Searcher assets = mediaArchive.getSearcher("asset");
-	
+
 	libs = libraries.getAllHits();
-	
+
 	libs.each {
-		
+
 		HitTracker hits = collections.fieldSearch("library", it.id);
-		
+
 		if(hits.size() == 0){
 			Data newcol = collections.createNewData();
 			newcol.setId("lib" + it.id);
 			newcol.setProperty("division", it.division);
 			collections.saveData(newcol);
-			
-			
+
+
 		}
-		
+
 	}
-	
+
 }
 
 
 
 
 public void assignDivisions(){
-	
+
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
 	Searcher collections = mediaArchive.getSearcher("librarycollection");
-	
+
 	cols = collections.getAllHits();
-	
+
 	cols.each {
-		
+
 		String libraryid = it.library;
 		if(libraryid){
 			Data lib = mediaArchive.getData("library", libraryid);
@@ -108,37 +109,37 @@ public void assignDivisions(){
 				col.setValue("division", lib.division);
 				collections.saveData(col);
 			}
-			
+
 		}
-		
+
 	}
-	
+
 }
 
 
 public void createProjects(){
-	
+
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
 	Searcher libraries = mediaArchive.getSearcher("library");
 	Searcher collections = mediaArchive.getSearcher("librarycollection");
 	Searcher assets = mediaArchive.getSearcher("asset");
 	ProjectManager manager = mediaArchive.getProjectManager();
-	
+
 	ArrayList libstodelete = new ArrayList();
-	
+
 	libs = libraries.getAllHits();
 	libs.enableBulkOperations();
 	log.info("Found ${libs.size()} libs")
-	
-	
+
+
 	Data orphancollections = libraries.searchById("default");
 	if(orphancollections == null){
 		orphancollections = libraries.createNewData();
 		orphancollections.setId("default");
-		orphancollections.setName("General");	
-		libraries.saveData(orphancollections);	
+		orphancollections.setName("General");
+		libraries.saveData(orphancollections);
 	}
-	
+
 	libs.each {
 		HitTracker childcollections = collections.fieldSearch("library", it.id);
 		log.info("Found ${childcollections.size()} collections")
@@ -146,88 +147,150 @@ public void createProjects(){
 		Data lib = it;
 		HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
 		log.info("Found ${libraryassets.size()} assets")
-		if(libraryassets.size() > 0){	
-			libraryassets.enableBulkOperations();			
+		if(libraryassets.size() > 0){
+			libraryassets.enableBulkOperations();
 			Data newcollection = collections.searchById("subcol-${lib.id}");
 			if(newcollection == null){
 				newcollection = collections.createNewData();
 				newcollection.setId("subcol-${lib.id}");
 				newcollection.setName(lib.getName());
-				
-				
-								
 			}
-			
+			Category node =null;
+			Data library =  it;
+			String path = library.get("folder");
+			if( path == null)
+			{
+				path = "Collections/" + library.getName();
+			}
+			node = mediaArchive.createCategoryPath(path);
 			if(childcollections.size() > 0){ //The move to the child case
 				newcollection.setValue("library", lib.id);
-						
-			} else{				
+
+			} else{
 				newcollection.setValue("library", "default");
 				libstodelete.add(it);
-				
-				
-				
-				
-				
 			}
-			
+			newcollection.setValue("categoryid", node.getId());
 			newcollection.setProperty("division", lib.division);
 			collections.saveData(newcollection);
-			
 			manager.addAssetToCollection(mediaArchive, newcollection.getId(), libraryassets);
-						
-			
-			
-			
-			
-								
-		}		
+
+
+			HitTracker users = mediaArchive.getSearcher("libraryusers").query().match("libraryid",library.getId()).search();
+			users.each {
+				library.addValue("viewusers",it.userid);
+				if(node != null) {
+					node.addValue("viewusers",it.userid);
+				}
+			}
+
+
+			HitTracker groups = mediaArchive.getSearcher("librarygroups").query().match("libraryid",library.getId()).search();
+			groups.each {
+				library.addValue("viewgroups",it.groupid);
+				if(node != null) {
+
+					node.addValue("viewgroups",it.groupid);
+				}
+			}
+
+			HitTracker roles = mediaArchive.getSearcher("libraryroles").query().match("libraryid",library.getId()).search();
+			roles.each {
+				library.addValue("viewroles",it.roleid);
+				if(node != null) {
+
+					node.addValue("viewroles",it.roleid);
+				}
+			}
+
+			libraries.saveData(library);
+			if( node != null)
+			{
+				mediaArchive.getCategorySearcher().saveData(node);
+			}
+
+
+
+
+
+		}
 	}
 	libraries.deleteAll(libstodelete, null);
-	
+
 }
 
 
+public void setupAssetPermissions(){
+	
+	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
+	Searcher libraries = mediaArchive.getSearcher("library");
+	Searcher collections = mediaArchive.getSearcher("librarycollection");
+	Searcher assets = mediaArchive.getSearcher("asset");
+	ProjectManager manager = mediaArchive.getProjectManager();
+	
+	HitTracker groups = mediaArchive.getSearcher("group").getAllHits();
+	AssetSearcher searcher = mediaArchive.getAssetSearcher();
 
-//public void prepareCategories(){
-//	
-//	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
-//	Searcher libraries = mediaArchive.getSearcher("library");
-//	Searcher collections = mediaArchive.getSearcher("librarycollection");
-//	Searcher assets = mediaArchive.getSearcher("asset");
-//	ProjectManager manager = mediaArchive.getProjectManager();
-//	libs = libraries.getAllHits();
-//	libs.enableBulkOperations();
-//	log.info("Found ${libs.size()} libs")
-//	libs.each {
-//		HitTracker hits = collections.fieldSearch("library", it.id);
-//		log.info("Found ${hits.size()} collections")
-//		hits.enableBulkOperations();
-//		Data lib = it;
-//		HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
-//		log.info("Found ${libraryassets.size()} assets")
-//		if(libraryassets.size() > 0){
-//			libraryassets.enableBulkOperations();
-//			Data newcollection = collections.searchById("subcol-${lib.id}");
-//			if(newcollection == null){
-//				newcollection = collections.createNewData();
-//				newcollection.setId("subcol-${lib.id}");
-//				newcollection.setName(lib.getName());
-//				collections.saveData(newcollection);
-//			}
-//			newcollection.setProperty("division", lib.division);
-//			if(hits.size() > 0){
-//				newcollection.setProperty("librarycollection", lib.id);
-//			} else{
-//				libstodelete.add(it);
-//			}
-//		}
-//	}
-//	libraries.deleteAll(libstodelete, null);
-//	
-//}
+	
+	Data lib  = libraries.createNewData();
+	lib.setName("Shared Assets");
+	lib.setId("sharedassets");
+	libraries.saveData(lib);
+	
+	
+	groups.each{
+		HitTracker hits = searcher.query().exact("viewgroups", it.id).search();
+		if(hits.size() > 0){
+
+			Data newcollection = collections.searchById("groupcol-${it.id}");
+			if(newcollection == null){
+				newcollection = collections.createNewData();
+				newcollection.setId("groupcol-${it.id}");
+				newcollection.setName(it.getName());
+				newcollection.setProperty("library", "sharedassets");
+			}
+			String path  = "Shared Assets/Groups/" + it.getName();
+			
+			Category node = mediaArchive.createCategoryPath(path);
+			newcollection.setValue("categoryid",node.getId());
+			collections.saveData(newcollection);
+			manager.addAssetToCollection(mediaArchive, newcollection.getId(), hits);
+			
+		}
+		
+
+	}
 
 
+	HitTracker users = mediaArchive.getSearcher("user").getAllHits();
+	users.each{
+		HitTracker hits = searcher.query().exact("viewusers", it.id).search();
+		if(hits.size() > 0){
+
+			Data newcollection = collections.searchById("usercol-${it.id}");
+			if(newcollection == null){
+				newcollection = collections.createNewData();
+				newcollection.setId("usercol-${it.id}");
+				newcollection.setName(it.getName());
+			}
+			String path  = "Shared Assets/Users/" + it.getName();
+			
+			Category node = mediaArchive.createCategoryPath(path);
+			newcollection.setValue("categoryid",node.getId());
+			collections.saveData(newcollection);
+			manager.addAssetToCollection(mediaArchive, newcollection.getId(), hits);
+			
+		}
+		
+
+	}
+
+	
+	
+	
+	
+
+}
 
 
 
@@ -237,8 +300,8 @@ public void createProjects(){
 
 
 //- If there is a library with assets that has no child collections, it becomes a collection.  Library is Deleted   DONE
-//- assignDivisions() Assign Divisions to Collections directly if the parent library has a division   
-//- If a library has child collections and is empty, do nothing 
+//- assignDivisions() Assign Divisions to Collections directly if the parent library has a division
+//- If a library has child collections and is empty, do nothing
 //  createProjects() - If a library has child collections and itself isn't empty, create a new collection underneath that library with the same name and move assets from the library to the collection with the same name
 
 
@@ -250,4 +313,9 @@ public void createProjects(){
 //convertLibrariesToCollections();
 assignDivisions();
 createProjects();
+setupAssetPermissions();
+
+
+
+
 //migratePermissions();
