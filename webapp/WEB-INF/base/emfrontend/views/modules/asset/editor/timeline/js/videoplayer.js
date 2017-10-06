@@ -83,7 +83,7 @@ $(document).ready(function()
 		{ 
 			copyStartTime();	
 			copyLength();
-			updateClip();
+			updateSelectedClip();
 		}	
 		var link = $("#playclip");
 				
@@ -92,7 +92,7 @@ $(document).ready(function()
 			link.text(link.data("playtext"));
 			link.removeClass("playing");
 		}
-		else
+		else if(link.hasClass("playing") )
 		{
 			//If they pressed the playbutton on the details then stop
 			var selected = $(".selectedclip");
@@ -122,7 +122,7 @@ $(document).ready(function()
 		if( !input.val() )
 		{
 			copyStartTime();
-			updateClip();
+			updateSelectedClip();
 		}	
 		var selected = $(".selectedclip");
 		var start = selected.data("timecodestart");
@@ -138,7 +138,7 @@ $(document).ready(function()
 		if( !input.val() )
 		{
 			copyLength();
-			updateClip();
+			updateSelectedClip();
 		}		
 		var selected = $(".selectedclip");
 		var start = selected.data("timecodestart");
@@ -151,18 +151,18 @@ $(document).ready(function()
 	
 	$("#cliplabel\\.value").livequery("keyup", function()
 	{
-		updateClip();		
+		updateSelectedClip();		
 	});
 
 
 	$("#timecodestart-value").livequery("blur", function()
 	{
-		updateClip();
+		updateSelectedClip();
 	});
 
 	$("#timecodelength-value").livequery("blur", function()
 	{
-		updateClip();		
+		updateSelectedClip();		
 	});
 	
 	jQuery(".removetime").livequery("click",function(e)
@@ -207,13 +207,18 @@ $(document).ready(function()
 		e.preventDefault();
 		console.log("Make copy");
 		var template = $("#templateclip").clone();
-		template.attr("id","randomone");
+		var timestamp = new Date().getUTCMilliseconds();
+		template.attr("id",timestamp);
 		$(".selectedclip").removeClass("selectedclip");
 		template.addClass("selectedclip");
-		$("#timelinemetadata").prepend(template);
+		$("#timelinemetadata").append(template);
 		template.show();
-		updateDetails();
-		updateClip();	
+		//This copies the UI into the current selection
+		$("#cliplabel\\.value").val("");
+		var done = parseTimeToText(video.currentTime);
+		$("#timecodestart-value").val(done);
+		
+		updateSelectedClip();	
 		$("#cliplabel\\.value").focus();
 				
 	});
@@ -259,11 +264,19 @@ $(document).ready(function()
     	}); 
 	});
 	
-	jQuery(".addtime").livequery("click",function(e)
+	jQuery("#lesstime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
-		video.currentTime = video.currentTime + 1;
+		video.currentTime = video.currentTime - .5;
+		return false;
+	});
+	
+	jQuery("#addtime").livequery("click",function(e)
+	{
+		e.preventDefault();
+		var link = $(this);
+		video.currentTime = video.currentTime + .5;
 		return false;
 	});
 	
@@ -284,7 +297,8 @@ $(document).ready(function()
 		updateDetails();
 	}
 
-	updateClip = function()
+	//Saved the selected data
+	updateSelectedClip = function()
 	{
 		var text = $("#cliplabel\\.value").val();
 

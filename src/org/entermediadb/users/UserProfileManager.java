@@ -18,6 +18,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.locks.Lock;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.Group;
 import org.openedit.users.User;
@@ -91,7 +92,7 @@ public class UserProfileManager
 
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
-		UserProfile userprofile;
+		UserProfile userprofile = null;
 		if (inReq != null)
 		{
 			boolean reload = Boolean.parseBoolean(inReq.findValue("reloadprofile"));
@@ -117,9 +118,7 @@ public class UserProfileManager
 
 			if (!reload && userprofile != null && inUserName.equals(userprofile.getUserId()))
 			{
-				// check searcher cache?
 				inReq.putPageValue("userprofile", userprofile);
-
 				return userprofile;
 			}
 			if (inCatalogId == null)
@@ -127,6 +126,30 @@ public class UserProfileManager
 				return null;
 			}
 		}
+		Lock lock = null;
+		try
+		{
+			lock = mediaArchive.getLockManager().lock("userprofileloading/" + inUserName, "UserProfileManager.loadProfile");
+			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
+			if( userprofile == null || !index.equals(userprofile.getIndexId()) )
+			{
+				userprofile = readProfileOptions(inReq, id, inUserName, appid, mediaArchive);
+			}
+			inReq.putSessionValue(id, userprofile);
+			inReq.putPageValue("userprofile", userprofile);
+		}
+		finally
+		{
+			mediaArchive.releaseLock(lock);
+		}
+
+		return userprofile;
+	}
+
+	protected UserProfile readProfileOptions(WebPageRequest inReq, String id, String inUserName, String appid, MediaArchive mediaArchive)
+	{
+		String inCatalogId = mediaArchive.getCatalogId();
+		UserProfile userprofile;
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "userprofile");
 		userprofile = (UserProfile) searcher.searchById(inUserName);
 		if(userprofile == null)
@@ -197,8 +220,6 @@ public class UserProfileManager
 		}
 		userprofile.setModules(okmodules);
 		loadLibraries(userprofile, inCatalogId);
-
-
 		return userprofile;
 	}
 
