@@ -974,6 +974,10 @@ public class MediaArchive implements CatalogEnabled
 
 	public Category getCategory(String inCategoryId)
 	{
+		if( inCategoryId == null)
+		{
+			return null;
+		}
 		return getCategorySearcher().getCategory(inCategoryId);
 	}
 
