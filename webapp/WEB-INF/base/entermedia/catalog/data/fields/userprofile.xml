@@ -49,10 +49,10 @@
       <language id="fr"><![CDATA[Filtres utilisés par la Recherche]]></language> 
     </name> 
   </property>  
-  <property id="hideassettype" index="true" stored="true" internalfield="true" keyword="false" filter="false" editable="false" sortable="true">Hide Asset Types 
+  <property id="hideassettype" index="true" stored="true" internalfield="true" viewtype="multiselect" datatype="list" listid="assettype" editable="true"  type="list"> 
     <name> 
       <language id="de"><![CDATA[verstecken Asset-Typen]]></language>  
-      <language id="en"><![CDATA[Hide Asset Types]]></language>  
+      <language id="en"><![CDATA[Hidden Asset Types]]></language>  
       <language id="es"><![CDATA[Ocultar los tipos de activos]]></language>  
       <language id="fr"><![CDATA[Cacher les Types d&#39;item]]></language> 
     </name> 
