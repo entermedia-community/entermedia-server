@@ -142,13 +142,12 @@ public void createProjects(){
 
 	libs.each {
 		HitTracker childcollections = collections.fieldSearch("library", it.id);
-		log.info("Found ${childcollections.size()} collections")
 		childcollections.enableBulkOperations();
 		Data lib = it;
 		HitTracker libraryassets = assets.fieldSearch("libraries", it.id);
-		log.info("Found ${libraryassets.size()} assets")
+		libraryassets.enableBulkOperations();
+
 		if(libraryassets.size() > 0){
-			libraryassets.enableBulkOperations();
 			Data newcollection = collections.searchById("subcol-${lib.id}");
 			if(newcollection == null){
 				newcollection = collections.createNewData();
@@ -158,15 +157,28 @@ public void createProjects(){
 			Category node =null;
 			Data library =  it;
 			String path = library.get("folder");
-			if( path == null)
-			{
-				path = "Collections/" + library.getName();
-			}
-			node = mediaArchive.createCategoryPath(path);
+
 			if(childcollections.size() > 0){ //The move to the child case
+
+				if( path == null)
+				{
+					path = "Collections/" + library.getName();
+				}
+
+				//In this case, this was a library that has child collections, so we are making a parent collection
+				node = mediaArchive.createCategoryPath(path);
 				newcollection.setValue("library", lib.id);
 
 			} else{
+
+				if( path == null)
+				{
+					path = "Collections/General/" + newcollection.getName()
+				}
+
+
+				node = mediaArchive.createCategoryPath(path);
+				//In this case, this was a library that we are converting to a collection, it didn't have any child collections at all.
 				newcollection.setValue("library", "default");
 				libstodelete.add(it);
 			}
@@ -198,7 +210,6 @@ public void createProjects(){
 			roles.each {
 				library.addValue("viewroles",it.roleid);
 				if(node != null) {
-
 					node.addValue("viewroles",it.roleid);
 				}
 			}
@@ -221,23 +232,23 @@ public void createProjects(){
 
 
 public void setupAssetPermissions(){
-	
+
 	MediaArchive mediaArchive = context.getPageValue("mediaarchive");
 	Searcher libraries = mediaArchive.getSearcher("library");
 	Searcher collections = mediaArchive.getSearcher("librarycollection");
 	Searcher assets = mediaArchive.getSearcher("asset");
 	ProjectManager manager = mediaArchive.getProjectManager();
-	
+
 	HitTracker groups = mediaArchive.getSearcher("group").getAllHits();
 	AssetSearcher searcher = mediaArchive.getAssetSearcher();
 
-	
+
 	Data lib  = libraries.createNewData();
 	lib.setName("Shared Assets");
 	lib.setId("sharedassets");
 	libraries.saveData(lib);
-	
-	
+
+
 	groups.each{
 		HitTracker hits = searcher.query().exact("viewgroups", it.id).search();
 		if(hits.size() > 0){
@@ -250,14 +261,14 @@ public void setupAssetPermissions(){
 				newcollection.setProperty("library", "sharedassets");
 			}
 			String path  = "Shared Assets/Groups/" + it.getName();
-			
+
 			Category node = mediaArchive.createCategoryPath(path);
 			newcollection.setValue("categoryid",node.getId());
 			collections.saveData(newcollection);
 			manager.addAssetToCollection(mediaArchive, newcollection.getId(), hits);
-			
+
 		}
-		
+
 
 	}
 
@@ -274,21 +285,21 @@ public void setupAssetPermissions(){
 				newcollection.setName(it.getName());
 			}
 			String path  = "Shared Assets/Users/" + it.getName();
-			
+
 			Category node = mediaArchive.createCategoryPath(path);
 			newcollection.setValue("categoryid",node.getId());
 			collections.saveData(newcollection);
 			manager.addAssetToCollection(mediaArchive, newcollection.getId(), hits);
-			
+
 		}
-		
+
 
 	}
 
-	
-	
-	
-	
+
+
+
+
 
 }
 
