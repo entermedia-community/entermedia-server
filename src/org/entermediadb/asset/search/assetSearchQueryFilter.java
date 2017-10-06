@@ -51,7 +51,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
         {
             return inQuery;
         }
-        String skipfilter = inPageRequest.findValue("assetskipfilter");
+        String skipfilter = inPageRequest.getContentProperty("assetskipfilter");
         if (Boolean.parseBoolean(skipfilter))
         {
             return inQuery;
