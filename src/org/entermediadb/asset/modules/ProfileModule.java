@@ -305,6 +305,12 @@ public class ProfileModule extends MediaArchiveModule
 		}
 		UserProfile prof = loadUserProfile(inReq);
 		String value = inReq.getRequestParameter("profilepreference.value");
+		
+		String oldval = prof.get(field);
+		if( oldval == value || (oldval != null && oldval.equals(value)) )
+		{
+			return;
+		}
 		prof.setProperty(field, value);
 		getUserProfileManager().saveUserProfile(prof);
 
@@ -313,10 +319,18 @@ public class ProfileModule extends MediaArchiveModule
 	public void saveProperties(WebPageRequest inReq)
 	{
 		String[] fields = inReq.getRequestParameters("field");
+		UserProfile prof = loadUserProfile(inReq);
+
 		if (fields == null)
 		{
 			String field = inReq.getCurrentAction().getChildValue("field");
 			String value = inReq.getCurrentAction().getChildValue(field + ".value");
+			String oldval = prof.get(field);
+			if( oldval == value || (oldval != null && oldval.equals(value)) )
+			{
+				return;
+			}
+
 			if( field != null && value != null)
 			{
 				inReq.setRequestParameter("field", field );
@@ -328,7 +342,6 @@ public class ProfileModule extends MediaArchiveModule
 				return;
 			}
 		}
-		UserProfile prof = loadUserProfile(inReq);
 
 		Searcher profilesearcher = getSearcherManager().getSearcher(prof.getCatalogId(), "userprofile");
 

@@ -1,3 +1,4 @@
+#if( $canviewcategorynavcollections || $canviewcategorynav)
 #if ( $librarycol )
 <div class="ui-widget uipanel" id="left-col-libraries" >
 	<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
@@ -16,4 +17,3 @@ $pages.include("$apphome/components/librarycollection/tree.html")
 	</div>
 </div>
 #end
-

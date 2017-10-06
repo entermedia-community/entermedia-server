@@ -72,20 +72,28 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			
 			
 			User user = inPageRequest.getUser();
-			SearchQuery child = inSearcher.createSearchQuery();
+			UserProfile profile = inPageRequest.getUserProfile();
+			
+			SearchQuery required = inSearcher.createSearchQuery();
 
 			//TODO: Add userprofile asset type filtering
-			
-			if(inQuery.getTermByDetailId("editstatus") == null)
+			if( inPageRequest.hasPermission("hidedeletedassets"))
 			{
-				child.addNot("editstatus", "7");
+				if(inQuery.getTermByDetailId("editstatus") == null)
+				{
+					required.addNot("editstatus", "7");
+				}
+			}
+			Collection allowedassetstypes = profile.getValues("hideassettype");
+			if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
+			{
+				required.addNots("assettype", allowedassetstypes);
 			}
 			
-			
+						
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
 
-			UserProfile profile = inPageRequest.getUserProfile();
 			
 			Set ids = new HashSet();
 
@@ -118,16 +126,16 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				Category cat = (Category) iterator.next();
 				notshown.add(cat.getId());
 			}
-			child.addChildQuery(orchild);
+			required.addChildQuery(orchild);
 			//child.addMatches("id", "*");
 			if (!notshown.isEmpty())
 			{
-				child.addNots("category", notshown); //Hidden categories that Im not part of
+				required.addNots("category", notshown); //Hidden categories that Im not part of
 			}
 			inQuery.setSecurityAttached(true);
-			if (!child.isEmpty())
+			if (!required.isEmpty())
 			{
-				inQuery.addChildQuery(child);
+				inQuery.addChildQuery(required);
 			}
 
 			SearchQuery filterchild = null;
