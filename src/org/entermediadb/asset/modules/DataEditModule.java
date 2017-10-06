@@ -1843,4 +1843,8 @@ public class DataEditModule extends BaseMediaModule
 		getSearcherManager().clear();
 		
 	}
+	public void invalidateIndex(WebPageRequest inReq) throws Exception
+	{
+		loadSearcher(inReq).clearIndex();
+	}
 }

@@ -1257,6 +1257,7 @@ public class ProjectManager implements CatalogEnabled
 			collectioncategory.setName(collection.getName());
 			mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
 		}
+		mediaArchive.getSearcher("userprofile").clearIndex();
 				//Move the parents if needed
 //				if( !collectioncategory.hasParent(librarycategory.getId()))
 //				{
