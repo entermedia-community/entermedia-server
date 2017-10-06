@@ -3,6 +3,8 @@ package org.entermediadb.google;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -15,7 +17,8 @@ import org.openedit.users.User;
 public class GoogleContactSearcher extends BaseSearcher{
 	
 	
-	
+	private static final Log log = LogFactory.getLog(GoogleContactSearcher.class);
+
 
 	
 	
@@ -108,6 +111,7 @@ public class GoogleContactSearcher extends BaseSearcher{
 	   try
 	{
 		   String query = inReq.findValue("name.value");
+		   log.info("Search Google Contacts for " + query);
 		ArrayList contacts = getGoogleManager().listContacts(inReq.getUser(), query);
 		return new ListHitTracker(contacts);
 	}
