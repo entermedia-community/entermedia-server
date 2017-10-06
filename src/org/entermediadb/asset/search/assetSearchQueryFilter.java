@@ -74,7 +74,10 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			User user = inPageRequest.getUser();
 			SearchQuery child = inSearcher.createSearchQuery();
 
-			if(inQuery.getTermByDetailId("editstatus") == null){
+			//TODO: Add userprofile asset type filtering
+			
+			if(inQuery.getTermByDetailId("editstatus") == null)
+			{
 				child.addNot("editstatus", "7");
 			}
 			
@@ -83,10 +86,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			orchild.setAndTogether(false);
 
 			UserProfile profile = inPageRequest.getUserProfile();
-			if (profile != null && profile.getViewCategories() != null)
-			{
-				//Get the libraries?
-			}
+			
 			Set ids = new HashSet();
 
 			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
@@ -124,13 +124,6 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			{
 				child.addNots("category", notshown); //Hidden categories that Im not part of
 			}
-			//log.info( child.toQuery() );
-			//				Term term = inQuery.getTermByDetailId("editstatus");
-			//				if( term == null) //TODO: Enforce??
-			//				{
-			//					inQuery.addExact("editstatus","6");
-			//				}
-
 			inQuery.setSecurityAttached(true);
 			if (!child.isEmpty())
 			{
@@ -145,7 +138,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				{
 					continue;
 				}
-				if (!type.equals("library") && !type.equals("librarycollection"))
+				if (!type.equals("library") && !type.equals("librarycollection"))  //Join searches
 				{
 					continue;
 				}
