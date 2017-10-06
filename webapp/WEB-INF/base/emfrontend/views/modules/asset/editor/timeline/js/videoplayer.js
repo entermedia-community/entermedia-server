@@ -217,8 +217,19 @@ $(document).ready(function()
 		$("#cliplabel\\.value").val("");
 		var done = parseTimeToText(video.currentTime);
 		$("#timecodestart-value").val(done);
+
+		var lengthtext = $("#timecodelength-value").val();
+		if( !lengthtext )
+		{
+			$("#timecodelength-value").val("5");
+		}		
+
 		
 		updateSelectedClip();	
+		
+		
+		
+		updateDetails();
 		$("#cliplabel\\.value").focus();
 				
 	});
