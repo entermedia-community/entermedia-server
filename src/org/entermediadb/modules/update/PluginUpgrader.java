@@ -14,7 +14,9 @@ import org.entermediadb.modules.scriptrunner.ScriptModule;
 import org.entermediadb.scripts.Script;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.PlugIn;
+import org.openedit.Shutdownable;
 import org.openedit.WebPageRequest;
+import org.openedit.node.NodeManager;
 
 public class PluginUpgrader
 {
@@ -156,5 +158,16 @@ public class PluginUpgrader
 	public boolean isComplete()
 	{
 		return getCompleted().size() == getList().size();
+	}
+	public void shutdown()
+	{
+		Shutdownable manager = (Shutdownable)getScriptModule().getModuleManager().getBean("elasticNodeManager");
+		manager.shutdown();
+		
+		//Touch web.xml
+		File web = new File( getRoot(), "WEB-INF/web.xml");
+		web.setLastModified(System.currentTimeMillis());
+				
+
 	}
 }
