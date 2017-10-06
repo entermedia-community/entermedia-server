@@ -104,7 +104,7 @@ public class UserProfileManager
 
 			if (!reload && userprofile != null && inUserName.equals(userprofile.getUserId()) && inCatalogId.equals(userprofile.getCatalogId()))
 			{
-				String index = mediaArchive.getSearcher("userprofile").getIndexId();
+				String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
 				if( !index.equals(userprofile.getIndexId()) )
 				{
 					reload = true;
@@ -180,7 +180,7 @@ public class UserProfileManager
 		inReq.putSessionValue(id, userprofile);
 		inReq.putPageValue("userprofile", userprofile);
 
-		userprofile.setIndexId( mediaArchive.getSearcher("userprofile").getIndexId() );
+		userprofile.setIndexId( mediaArchive.getSearcher("settingsgroup").getIndexId() );
 
 		Collection modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id", "*").sort("name").search(inReq);
 		List<Data> okmodules = new ArrayList<Data>();
