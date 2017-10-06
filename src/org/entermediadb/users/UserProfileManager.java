@@ -176,6 +176,10 @@ public class UserProfileManager
 		userprofile.setSourcePath(inUserName);
 		userprofile.setCatalogId(inCatalogId);
 
+		//Must be set before we run actions below
+		inReq.putSessionValue(id, userprofile);
+		inReq.putPageValue("userprofile", userprofile);
+
 		userprofile.setIndexId( mediaArchive.getSearcher("userprofile").getIndexId() );
 
 		Collection modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id", "*").sort("name").search(inReq);
@@ -194,8 +198,6 @@ public class UserProfileManager
 		userprofile.setModules(okmodules);
 		loadLibraries(userprofile, inCatalogId);
 
-		inReq.putSessionValue(id, userprofile);
-		inReq.putPageValue("userprofile", userprofile);
 
 		return userprofile;
 	}
