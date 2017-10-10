@@ -19,6 +19,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
@@ -476,7 +477,10 @@ public class GoogleManager implements CatalogEnabled
 
 		if (resp.getStatusLine().getStatusCode() != 200)
 		{
-			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
+			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"  + resp.getStatusLine().getReasonPhrase());
+			String returned = EntityUtils.toString(resp.getEntity());
+			log.info(returned);
+
 		}
 
 		HttpEntity entity = resp.getEntity();
