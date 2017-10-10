@@ -15,6 +15,9 @@
 	<property id="notes" stored="true" index="true" editable="true">Notes</property>
 
 	<property id="groups" stored="true" index="true" type="list"   viewtype="multiselect"  listid="group" editable="false">Groups</property>
+	<property id="refreshtoken" stored="true" index="true" editable="true">Google Refresh Token</property>
+	<property id="httprefreshtoken" stored="true" index="true" editable="true">Google temporary Token</property>
+	<property id="clientid" stored="true" index="true" editable="true">Google Client ID</property>
 
 <!--  Custom fields -->
 
