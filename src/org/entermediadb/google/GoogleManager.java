@@ -433,7 +433,7 @@ public class GoogleManager implements CatalogEnabled
 			//inArchive.getAssetSearcher().saveData(newasset);
 			tosave.add(newasset);
 		}
-		if( tosave.isEmpty() )
+		if( ! tosave.isEmpty() )
 		{
 			getMediaArchive().saveAssets(tosave);
 			log.info("Saving new assets " + tosave.size() );
