@@ -411,10 +411,20 @@ public class GoogleManager implements CatalogEnabled
 			newasset.setValue("googleid", id);
 			newasset.setValue("assetaddeddate", new Date());
 			newasset.setValue("retentionpolicy", "deleteoriginal");  //Default
+		
+			
+			JsonElement jsonElement = object.get("webContentLink");
+			if (jsonElement != null)
+			{
+				newasset.setValue("googledownloadurl", jsonElement.getAsString());
+
+			}
+			
+			
 			//TODO: Add dates here
 			
 			newasset.setName(filename);
-			JsonElement jsonElement = object.get("webViewLink");
+			 jsonElement = object.get("webViewLink");
 			if (jsonElement != null)
 			{
 				newasset.setValue("linkurl", jsonElement.getAsString());
