@@ -54,8 +54,19 @@ public class GoogleManager implements CatalogEnabled
 	protected ModuleManager fieldModuleManager;	
 	protected OutputFiller filler = new OutputFiller();
 	protected XmlUtil fieldXmlUtil;
+	protected Date fieldTokenTime;
 	
 	
+	public Date getTokenTime()
+	{
+		return fieldTokenTime;
+	}
+
+	public void setTokenTime(Date inTokenTime)
+	{
+		fieldTokenTime = inTokenTime;
+	}
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -245,7 +256,16 @@ public class GoogleManager implements CatalogEnabled
 	{
 		String accesstoken = user.get("httprequesttoken"); //Expired in 14 days 
 		Data authinfo  = getMediaArchive().getData("oauthprovider", "google");
-		if( accesstoken == null)
+		Date ageoftoken = (Date) authinfo.getValue("accesstokentime");
+		boolean force = false;
+		if(ageoftoken != null){
+			Date now = new Date();
+			long minutes = (now.getTime() -  ageoftoken.getTime())/60000;
+			if(minutes > 5 ){
+				force = true;
+			}
+		}
+		if( accesstoken == null || force)
 		{
 		
 			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(user.get("refreshtoken")).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
@@ -260,6 +280,7 @@ public class GoogleManager implements CatalogEnabled
 			accesstoken = oAuthResponse.getAccessToken();
 			authinfo.setValue("httprequesttoken", accesstoken);
 			getMediaArchive().getSearcher("user").saveData(user);
+			authinfo.setValue("accesstokentime", new Date());
 			
 		}	
 		return accesstoken;
