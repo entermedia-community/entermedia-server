@@ -111,6 +111,11 @@ public class OriginalDocumentGenerator extends FileGenerator
 		{
 			archive.logDownload(filename, "missing", inReq.getUser());
 			log.error("Error for " + asset.getName() + ": " + e);
+			String applicationid = inReq.findValue("applicationid");
+			if(applicationid != null){
+				inReq.redirect("/" + applicationid + "/missingfile.html");
+
+			}
 			inReq.redirect(archive.getCatalogHome() + "/missingfile.html");
 			return;
 		}
