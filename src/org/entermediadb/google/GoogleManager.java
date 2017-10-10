@@ -263,6 +263,7 @@ public class GoogleManager implements CatalogEnabled
 			long minutes = (now.getTime() -  ageoftoken.getTime())/60000;
 			if(minutes > 5 ){
 				force = true;
+				log.info("Expiring token after 5 min");
 			}
 		}
 		if( accesstoken == null || force)
