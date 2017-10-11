@@ -230,9 +230,18 @@ public class GoogleManager implements CatalogEnabled
 	private String getAccessToken(Data authinfo) throws Exception
 	{
 		String accesstoken = authinfo.get("httprequesttoken"); //Expired in 14 days 
-		if( accesstoken == null)
-		{
 		
+		Date ageoftoken = (Date) authinfo.getValue("accesstokentime");
+		boolean force = false;
+		if(ageoftoken != null){
+			Date now = new Date();
+			double minutes = (now.getTime() -  ageoftoken.getTime())/60000;
+			if(minutes > 5 ){
+				force = true;
+				log.info("Expiring token after 5 min");
+			}
+		}
+		if( accesstoken == null || force){
 			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken")).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).buildBodyMessage();
 			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
 			//Facebook is not fully compatible with OAuth 2.0 draft 10, access token response is
@@ -244,6 +253,8 @@ public class GoogleManager implements CatalogEnabled
 			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 			accesstoken = oAuthResponse.getAccessToken();
 			authinfo.setValue("httprequesttoken", accesstoken);
+			authinfo.setValue("accesstokentime", new Date());
+
 			getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
 			
 		}	
@@ -256,7 +267,7 @@ public class GoogleManager implements CatalogEnabled
 	{
 		String accesstoken = user.get("httprequesttoken"); //Expired in 14 days 
 		Data authinfo  = getMediaArchive().getData("oauthprovider", "google");
-		Date ageoftoken = (Date) authinfo.getValue("accesstokentime");
+		Date ageoftoken = (Date) user.getValue("accesstokentime");
 		boolean force = false;
 		if(ageoftoken != null){
 			Date now = new Date();
@@ -279,9 +290,10 @@ public class GoogleManager implements CatalogEnabled
 			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
 			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 			accesstoken = oAuthResponse.getAccessToken();
-			authinfo.setValue("httprequesttoken", accesstoken);
+			user.setValue("httprequesttoken", accesstoken);
+			user.setValue("accesstokentime", new Date());
+
 			getMediaArchive().getSearcher("user").saveData(user);
-			authinfo.setValue("accesstokentime", new Date());
 			
 		}	
 		return accesstoken;
