@@ -235,10 +235,11 @@ public class GoogleManager implements CatalogEnabled
 		boolean force = false;
 		if(ageoftoken != null){
 			Date now = new Date();
-			double minutes = (now.getTime() -  ageoftoken.getTime())/60000;
-			if(minutes > 5 ){
+			long seconds = (now.getTime() -  ageoftoken.getTime())/1000;
+			Long expiresin = (Long) authinfo.getValue("expiresin");
+			if(seconds > (expiresin- 100)){
 				force = true;
-				log.info("Expiring token after 5 min");
+				log.info("Expiring token");
 			}
 		}
 		if( accesstoken == null || force){
@@ -254,7 +255,8 @@ public class GoogleManager implements CatalogEnabled
 			accesstoken = oAuthResponse.getAccessToken();
 			authinfo.setValue("httprequesttoken", accesstoken);
 			authinfo.setValue("accesstokentime", new Date());
-
+			Long expiresin = oAuthResponse.getExpiresIn();
+			authinfo.setValue("expiresin", expiresin);
 			getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
 			
 		}	
@@ -271,10 +273,11 @@ public class GoogleManager implements CatalogEnabled
 		boolean force = false;
 		if(ageoftoken != null){
 			Date now = new Date();
-			long minutes = (now.getTime() -  ageoftoken.getTime())/60000;
-			if(minutes > 5 ){
+			long seconds = (now.getTime() -  ageoftoken.getTime())/1000;
+			Long expiresin = (Long) user.getValue("expiresin");
+			if(seconds > (expiresin- 100)){
 				force = true;
-				log.info("Expiring token after 5 min");
+				log.info("Expiring token after expiry min");
 			}
 		}
 		if( accesstoken == null || force)
@@ -287,11 +290,13 @@ public class GoogleManager implements CatalogEnabled
 			//Own response class is an easy way to deal with oauth providers that introduce modifications to
 			//OAuth specification
 			EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
+			Long expiresin = oAuthResponse.getExpiresIn();
 			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
 			// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 			accesstoken = oAuthResponse.getAccessToken();
 			user.setValue("httprequesttoken", accesstoken);
 			user.setValue("accesstokentime", new Date());
+			user.setValue("expiresin", oAuthResponse.getExpiresIn());
 
 			getMediaArchive().getSearcher("user").saveData(user);
 			
