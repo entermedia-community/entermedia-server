@@ -43,7 +43,7 @@ window.onbeforeunload = function(){
 		}
 }togglevideo = function(){	if( $("#VideoRecorder").css('visibility') == 'visible')	{		$("#VideoRecorder").css('visibility', 'hidden');		$("#togglevideo").text("show");	}	else 	{		$("#VideoRecorder").css('visibility', 'visible');		$("#togglevideo").text("hide");				}}
 </script>
-<div class="wrapper" id="livearea" style="margin:auto;float:left; text-align:right; width:416px;"><a href="#" id="togglevideo" onclick="togglevideo()">hide</a><br>
+<div class="wrapper" id="livearea" style="margin:auto;float:left; text-align:right; width:416px;"><a href="#" id="togglevideo" onclick="togglevideo()">[[hide]]</a><br>
 	<div id="hdfvr-content" style="width:400px; >
 	<form action="uploadFromMobile.php" method="post" enctype="multipart/form-data" id="hdfvr-recording-form">
 		<input name="FileInput" id="hdfvr-file-input" type="file" accept="video/*" capture="camcorder" value="Start Recording" />
@@ -51,8 +51,8 @@ window.onbeforeunload = function(){
 	</form>
 	<img src="loaderb16.gif" id="hdfvr-loading-img" alt="Uploading please wait..."/>
 	<div id="output"></div>
-	</div>	<div id="instructions">	<p>Click Red Record button to start live streaming</p>	</div></div>
-<div style="float:right;margin-left: 20px; padding:20px; background-color: #eee; border-radius: 5px;"><h4>Live Stream Link</h4><div style="margin-left:12px"><a  class="btn" target="_new" title="Share this live recording with others" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()">Live Stream Link</a></div><h4>Live Stream Embed Code</h4>$pages.include("$apphome/components/share/embed.html?sourcepath=$asset.sourcePath")<h4>Screen Capture</h4><div style="margin-left:12px"><p>Download <a href="https://manycam.com/">ManyCam</a> (is limited to 720px)</p></div></div>
+	</div>	<div id="instructions">	<p>[[Click Red Record button to start live streaming]]</p>	</div></div>
+<div style="float:right;margin-left: 20px; padding:20px; background-color: #eee; border-radius: 5px;"><h4>[[Live Stream Link]]</h4><div style="margin-left:12px"><a  class="btn" target="_new" title="Share this live recording with others" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.getId()">[[Live Stream Link]]</a></div><h4>[[Live Stream Embed Code]]</h4>$pages.include("$apphome/components/share/embed.html?sourcepath=$asset.sourcePath")<h4>[[Screen Capture]]</h4><div style="margin-left:12px"><p>[[Download]] <a href="https://manycam.com/">ManyCam</a> ([[is limited to 720px]])</p></div></div>
 <script>			//document.VideoRecorder.record();		//$('#hdfvr-submit-btn').prop('value','Started Reorder');		
 	function userHasCamMic(cam_number,mic_number,recorderId){
 		//alert("userHasCamMic("+cam_number+","+mic_number+")");

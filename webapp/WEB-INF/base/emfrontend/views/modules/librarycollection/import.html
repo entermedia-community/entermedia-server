@@ -28,7 +28,7 @@
 			   method="post" action="$home$apphome/views/modules/librarycollection/publishsave.html">
 				<input type="hidden" name="collectionid" value="$librarycol.getId()" />
 				<br>
-				<input class="btn" type="submit" id="archiveassetsbutton" value="[[ Download ]]">	   
+				<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download]]">	   
 				<h5>
 					[[Download a copy to your User Folder:]] <b>$user.getUserName()/$librarycol.getName()/$count</b> 
 				</h5>
@@ -46,10 +46,10 @@
 		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 			<table width="50%" class="categoriescontainer hovertable" >
 			<tr>
-				<th>Revision</th>
-				<th>User</th>
-				<th>Date</th>
-				<th>Comment</th>
+				<th>[[Revision]]</th>
+				<th>[[User]]</th>
+				<th>[[Date]]</th>
+				<th>[[Comment]]</th>
 			</tr>
 			#foreach($i in [1..$count])
 				<tr> 
@@ -58,12 +58,7 @@
 			#end
 				</table>
 			</div>
-						
-			<a class="btn" href="#">Upload Changes</a>
+			<a class="btn" href="#">[[Upload Changes]]</a>
 		</div>
-		
 	</div>	
-	
 </div>
-	
-

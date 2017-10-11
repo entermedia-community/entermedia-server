@@ -2,48 +2,47 @@
 <div class="emtable">
 	<div class="row">
 		<span>[[Small Thumbnail]]: </span>
-		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/small/$asset.sourcepath/thumb.jpg">view</a>
+		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/small/$asset.sourcepath/thumb.jpg">[[view]]</a>
 			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home$apphome/downloads/preview/small/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Thumbnail]]: </span>
-		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg">view</a>
+		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg">[[view]]</a>
 			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home$apphome/downloads/preview/thumb/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Medium]]: </span>
-		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/medium/$asset.sourcepath/thumb.jpg">view</a>
+		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/medium/$asset.sourcepath/thumb.jpg">[[view]]</a>
 			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/medium/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Medium Plus]]: </span>
-		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$asset.sourcepath/thumb.jpg">view</a>
+		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$asset.sourcepath/thumb.jpg">[[view]]</a>
 			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$asset.sourcepath/thumb.jpg"/>
 		 </span>
 	</div>
 </div>
-
 <br>
 <h2>[[Large Formats]]</h2>
 
 <div class="emtable">
 	<div class="row">
 		<span>[[Desktop Size]]: </span>
-		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/cache/$asset.sourcepath/preview.jpg">view</a>
+		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/cache/$asset.sourcepath/preview.jpg">[[view]]</a>
 			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/preview/cache/$asset.sourcepath/preview.jpg"/>
 		 </span>
 	</div>
 	<div class="row">
 		<span>[[Full Size JPG]]: </span>
-		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/converted/cache/$asset.sourcepath/converted.jpg">view</a>
+		<span><a href="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/converted/cache/$asset.sourcepath/converted.jpg">[[view]]</a>
 			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home/${applicationid}/views/modules/asset/downloads/converted/cache/$asset.sourcepath/converted.jpg"/>
 		 </span>
@@ -52,10 +51,10 @@
 #if( $candownload)
 	<div class="row">
 		<span>[[Original Download]]: </span>
-	#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
-    #set ($link = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
+		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+	    #set ($link = "$home$apphome/views/modules/asset/downloads/originals/$originalpath")
 
-		<span><a href="$context.siteRoot$home$link">view</a>
+		<span><a href="$context.siteRoot$home$link">[[view]]</a>
 			<input size="50" type=text onclick="this.select();" readonly="readonly"
 			  value="$context.siteRoot$home$link"/>
 		 </span>
@@ -103,9 +102,7 @@ $context.siteRoot$home$apphome/views/modules/asset/downloads/converted/cache/$as
 	</div>
 	<div class="row">
 		<span>canforcewatermark=true</span>
-		<span>Adds a watermark</span>
+		<span>[[Adds a watermark]]</span>
 	</div>
 </div>
-
-
 </p> 

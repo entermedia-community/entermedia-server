@@ -27,7 +27,7 @@ $(document).ready(function(){
 	$("#related-media").html(info);
 	$(".swappable").on("click",function(e){
 		var src = e.currentTarget.src;
-		var html = "<img width=\"200\" class=\"emdropshadow assetdragdrop\" border=\"0\" src=\""+src+"\" data-sourcepath=\""+src+"\" draggable=\"true\" title=\"drag to download\" alt=\"\" assetid=\"${asset.id}\" catalogid=\"${catalogid}\" sourcepath=\"${asset.sourcepath}\">";		
+		var html = "<img width=\"200\" class=\"emdropshadow assetdragdrop\" border=\"0\" src=\""+src+"\" data-sourcepath=\""+src+"\" draggable=\"true\" title=\"[[drag to download]]\" alt=\"\" assetid=\"${asset.id}\" catalogid=\"${catalogid}\" sourcepath=\"${asset.sourcepath}\">";		
 		$("#emthumbholder").html(html);
 	});
 })

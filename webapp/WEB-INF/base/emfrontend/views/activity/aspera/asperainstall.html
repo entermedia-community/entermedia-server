@@ -28,12 +28,12 @@
   	  if (event.state == "ERROR") 
   	  {
   	    msg += "Installation Error - " + event.caption;
-  	    jQuery('#install_message').html( 'Your configuration cannot be auto installed. Please use <a href="http://www.asperasoft.com/en/products/client_software_2/aspera_client_2">this link</a> and download the installer ' );
+  	    jQuery('#install_message').html( '[[Your configuration cannot be auto installed. Please use]] <a href="http://www.asperasoft.com/en/products/client_software_2/aspera_client_2">[[this link]]</a> [[and download the installer]] ' );
   	    
   	  }
   	  else if ((event.state == "DOWNLOAD")||(event.state == "START")||(event.state == "INSTALL"))
   	  {
-  		msg = '<div class="ui-state-highlight"><img src="$home$themeprefix/images/spinner.gif"/> ' +  "Installing Aspera Plugin " + event.percent + "%" + '</div>';
+  		msg = '<div class="ui-state-highlight"><img src="$home$themeprefix/images/spinner.gif"/> ' +  "[[Installing Aspera Plugin]] " + event.percent + "%" + '</div>';
   		//$('aspera_progress_bar_percent').style.width = ""+evnt.percent+"%";
   	  }
   	  else if (event.state == "COMPLETE")
@@ -53,7 +53,7 @@
 		var aspera = jQuery('#aspera-web');
 		aspera.remove();
 		
-		var newone = '<object id="aspera-web2nd" type="application/x-aspera-web" width="1" height="1"><param name="AW_IMGSRV" value="" ></object>Please wait 10 seconds...';
+		var newone = '<object id="aspera-web2nd" type="application/x-aspera-web" width="1" height="1"><param name="AW_IMGSRV" value="" ></object>[[Please wait 10 seconds]]...';
 		jQuery( "#objectholder").html(newone);
 		
 		setTimeout(goback, 10000);//refresh the page to run checks again and report to the user
