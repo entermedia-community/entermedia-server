@@ -1,10 +1,12 @@
 package asset;
 
-import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
+import org.entermediadb.asset.search.AssetSearcher
 import org.openedit.Data
+import org.openedit.OpenEditException
 import org.openedit.WebPageRequest
+import org.openedit.data.BaseSearcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.util.Counter
 import org.openedit.util.PathUtilities
@@ -12,10 +14,11 @@ import org.openedit.util.PathUtilities
 
 
 
-public void init(){
+public void init()
+{
 	WebPageRequest req = context;
 	MediaArchive archive = req.getPageValue("mediaarchive");
-	
+
 	HitTracker hits = archive.getAssetSearcher().query().all().sort("sourcepath").search();
 	hits.enableBulkOperations();
 	log.info("Processing " + hits.size());
@@ -27,6 +30,15 @@ public void init(){
 	int loops = 0;
 	ArrayList cats = new ArrayList();
 	//archive.getCategorySearcher().deleteAll(null);
+	AssetSearcher assetsearcher = (AssetSearcher)archive.getAssetSearcher();
+	Collection collectionscatids = new HashSet();
+	
+	Category collectionsroot = archive.getCategorySearcher().createCategoryPath("Collections");
+	
+	populateChildren(collectionsroot, collectionscatids);
+	
+	collectionscatids.add("index");
+	deleteAllExcept(archive.getCategorySearcher(),collectionscatids);
 	
 	Category root = archive.getCategorySearcher().getRootCategory();
 	archive.getCategorySearcher().saveCategory(root);
@@ -36,30 +48,54 @@ public void init(){
 		String path = hit.getValue("archivesourcepath");
 		if(path == null){
 			path = hit.getSourcePath();	
+		}
+		else
+		{
+			path = path.substring("sourcepath".length() + 1);
 		}	
 		//log.info("found " + path);
 			
-		Asset found = archive.getAssetSearcher().loadData(hit);
+		//Asset found = archive.getAssetSearcher().loadData(hit);
+		Data found = hit;
 		//found.clearCategories();
 		
-		if(!found.isFolder())   //   a/b/c.jpg -> a/b   if /a/b  --> a/b
+		String folder = found.getValue("isfolder");
+		if(folder != null && Boolean.parseBoolean( folder ) )   //   a/b/c.jpg -> a/b   if /a/b  --> a/b
 		{
 			path = PathUtilities.extractDirectoryPath(path);
 		}
+		Collection assetexactids = found.getValues("categories-exact");
+		Collection tosaveExactcategory = new ArrayList();
+		Collection tosaveassetcategories = new ArrayList();
+		for (String id in assetexactids) {
+			if( collectionscatids.contains(id))
+			{
+				Category foundcollection = archive.getCategory(id);
+				tosaveExactcategory.add(foundcollection);
+				tosaveassetcategories.addAll(foundcollection.getParentCategories());
+			}
+		}
+		//only keep ones that are within collections
 		
 		org.entermediadb.asset.Category catparent = createCategoryPath(archive, cats, path, counter);
-		if( catparent != null)
+		if( catparent == null)
 		{
-			found.addCategory(catparent);  //Load up with none since they are all deleted
-			tosave.add(found);
-			savedsofar++;
-		}	
+			throw new OpenEditException("path made a null category " + path);
+		}
+		//found.addCategory(catparent);  //Load up with none since they are all deleted
+		tosaveExactcategory.add(catparent);
+		found.setValue("categories-exact",tosaveExactcategory);
+		found.setValue("category", tosaveassetcategories );
+		//Get the path and fill in categories strcture
+		
+		tosave.add(found);
+		savedsofar++;
 		
 		if( tosave.size() == 1000)
 		{
 			archive.getCategorySearcher().saveAllData(cats, null);
 			cats.clear();		
-			archive.saveAssets(tosave, null);
+			assetsearcher.updateIndex(tosave);
 			tosave.clear();
 			log.info("fixcategories saved: New Categories :${counter.getCount()} on ${hits.size()} assets");
 		}
@@ -72,7 +108,33 @@ public void init(){
 
 init();
 
+public void deleteAllExcept(BaseSearcher searcher,collectionscatids)
+{
+	HitTracker all = searcher.getAllHits();
+	all.enableBulkOperations();
+	Collection todelete = new ArrayList(1000);
+	for (Data cat in all) {
+		if( !collectionscatids.contains(cat.getId()) )
+		{
+			todelete.add(cat);
+		}
+		if( todelete.size() == 1000)
+		{
+			searcher.deleteAll(todelete, null);
+			todelete.clear();
+		}
+	}
+	searcher.deleteAll(todelete, null);
+}
 
+public void populateChildren(Category inRoot, Set ids )
+{
+	ids.add(inRoot.getId());
+	for (Category child in inRoot.getChildren()) 
+	{
+		populateChildren(child,ids);
+	}
+}
 
 
 
@@ -106,6 +168,7 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 		//log.info("Created " + inPath);
 		//create parents and itself
 		cats.add(found);
+		archive.getCacheManager().put("catfix", inPath, found );
 		String parent = PathUtilities.extractDirectoryPath(inPath);
 		if( parent != null && !parent.trim().isEmpty())
 		{
@@ -126,7 +189,6 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 			archive.getCategorySearcher().saveCategory(found);
 		}
 	}
-	archive.getCacheManager().put("catfix", inPath, found );
 	
 	return found;
 }

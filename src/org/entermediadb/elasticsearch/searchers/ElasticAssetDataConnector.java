@@ -190,6 +190,11 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
+		if( !(inData instanceof Asset))
+		{
+			super.updateIndex(inContent, inData, inDetails);
+			return;
+		}
 		Asset asset = (Asset) inData;
 
 		try

@@ -1600,7 +1600,8 @@ public class MediaArchive implements CatalogEnabled
 	{
 		if (inLock == null)
 		{
-			throw new OpenEditException("Previous lock was null");
+			//throw new OpenEditException("Previous lock was null");
+			return false;
 		}
 		if (inLock.getId() == null)
 		{

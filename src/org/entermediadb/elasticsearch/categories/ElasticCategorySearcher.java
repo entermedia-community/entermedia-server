@@ -200,8 +200,16 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	protected void updateElasticIndex(PropertyDetails details, Data inData)
 	{
+		ElasticCategory category = null;
+		if( inData instanceof ElasticCategory)
+		{
+			category = (ElasticCategory)inData;
+		}
+		else
+		{
+			category = (ElasticCategory)loadData(inData);
+		}
 		super.updateElasticIndex(details,inData);
-		ElasticCategory category = (ElasticCategory)inData;
 		Collection values = (Collection)category.getMap().getValue("parents");
 		boolean edited = false;
 		if( values == null)
@@ -237,6 +245,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 				root = (Category)createNewData();
 				root.setId("index");
 				root.setName("Index");
+			}
+			else
+			{
+				root = (Category)loadData(root);
 			}
 			List tosave = new ArrayList();
 			saveCategoryTree(root,tosave);
