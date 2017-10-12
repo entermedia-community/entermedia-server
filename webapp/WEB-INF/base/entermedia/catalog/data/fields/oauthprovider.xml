@@ -49,7 +49,7 @@
    <property id="httprequesttoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">HTTP Temp token 
    
   </property>  
-  <property id="accesstokentime" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Access Token Creation Time 
+  <property id="accesstokentime" type="date" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Access Token Creation Time 
    
   </property>  
   

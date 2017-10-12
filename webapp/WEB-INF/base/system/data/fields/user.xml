@@ -18,6 +18,7 @@
 	<property id="refreshtoken" stored="true" index="true" editable="true">Google Refresh Token</property>
 	<property id="httprefreshtoken" stored="true" index="true" editable="true">Google temporary Token</property>
 	<property id="clientid" stored="true" index="true" editable="true">Google Client ID</property>
+	<property id="accesstokentime" type="date" stored="true" index="true" editable="true">Access Token Time</property>
 
 <!--  Custom fields -->
 
