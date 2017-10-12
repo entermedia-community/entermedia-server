@@ -66,13 +66,13 @@
 				
 					#if($asset.googleid && $asset.googledownloadurl)
 					<!-- Google puts quotes on the returned data so the href is correct below.   -->
-										<a class="btn small" href="$asset.googledownloadurl">Download</a>
+										<a class="btn small" href="$asset.googledownloadurl">[[Download]]</a>
 					#elseif($asset.googleid && $asset.linkurl)
-															<a class="btn small" href=$asset.linkurl>Download</a>
+															<a class="btn small" href=$asset.linkurl>[[Download]]</a>
 					
 					#else
 					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-					<a class="btn small" href="$home$apphome/views/modules/asset/downloads/originals/$originalpath">Download</a>
+					<a class="btn small" href="$home$apphome/views/modules/asset/downloads/originals/$originalpath">[[Download]]</a>
 					#end
 					#set( $downloadall = true)
 					
@@ -83,7 +83,7 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-						<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">Download</a>
+						<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
 										#set( $downloadall = true)
 				</td>
 			#end
@@ -94,9 +94,8 @@
 			#if( $destination.publishtype == "aspera")
 			#if( $item.status == "complete" || $item.status == "delivered" )
 			<ul class="embuttons">
-				<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>
+				<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>[[Download]]</span></a></li>
 								#set( $downloadall = true)
-				
 			</ul>
 			#end
 		#end	
@@ -110,7 +109,6 @@
 	
 </table>
 #if($downloadall )
-	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >Download All (Zip)</a><br/><a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">Download Metadata</a></div>
+	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a><br/><a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">[[Download Metadata]]</a></div>
 #end	
-
 </div>

@@ -5,10 +5,9 @@
 		$context.putPageValue("details",$details)
 		#foreach( $detail in $details)
 		<td>
-		<strong>#text( $detail.name )</strong>
+			<strong>#text( $detail.name )</strong>
 		</td>
 		#end
-		
 	</tr>
 		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
@@ -18,33 +17,31 @@
 			$context.setRequestParameter("hidethumbnail", cepath)
 			
 			<tr class="assetrow" id="assetrow_${assetid}" >
-			#foreach( $detail in $details)
-				#set( $value = "")
-				#if( $detail.id == "name")
-					#if( $asset.name )
-			      		#set( $value = $asset.name )
-			      	#elseif ( $asset.title )
-			      		#set( $value = $asset.title )
-			      	#else
-			      		#set( $value = "(No name)" )
-			      	#end
-			    #else	
-					#set( $value = $asset.get($detail.id))
-				#end
-				$!context.putPageValue("detail",$detail)
-				$!context.putPageValue("val",$value)	
-				<td>
-					$pages.include("$apphome/components/xml/detailreadonly.html", $context)
-				</td>
-			#end	
+				#foreach( $detail in $details)
+					#set( $value = "")
+					#if( $detail.id == "name")
+						#if( $asset.name )
+				      		#set( $value = $asset.name )
+				      	#elseif ( $asset.title )
+				      		#set( $value = $asset.title )
+				      	#else
+				      		#set( $value = "(No name)" )
+				      	#end
+				    #else	
+						#set( $value = $asset.get($detail.id))
+					#end
+					$!context.putPageValue("detail",$detail)
+					$!context.putPageValue("val",$value)	
+					<td>
+						$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+					</td>
+				#end	
 			 </tr>	  
 		#end
 		</table>
 <br/>
 
 <p>
-To download or view these files, please click on the link below. 
+[[To download or view these files, please click on the link below.]] 
 </p>
-
-<a href="$context.siteRoot$home$apphome/views/activity/download/index.html?orderid=$order.id">View</a><br/><br/>
-
+<a href="$context.siteRoot$home$apphome/views/activity/download/index.html?orderid=$order.id">[[View]]</a><br/><br/>

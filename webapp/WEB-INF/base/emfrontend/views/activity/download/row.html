@@ -1,4 +1,3 @@
-
 <tr class="assetrow" id="assetrow_${assetid}" >
 	<td class="imagepad" valign="top"> 
 <input type="hidden" name="itemid" value="$item.id"/>
@@ -24,35 +23,29 @@
 		<td>
 			$!asset.name
 		</td>
-<td>
-
-	$context.putPageValue("data", $item)	 
-	$context.putPageValue("view", "order/downloaditem")	
-	$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
-
-		#set( $publishqueueid = $item.get("publishqueueid") )
-		#if( $publishqueueid)
-			#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$publishqueueid))
-			#if( "complete" == $publishqueue.get("status") )
-				#if( $order.ordertype == "download" )
-					#set($destination = $searcherManager.getData($catalogid, "publishdestination",$publishqueue.publishdestination))
-					#if( $destination.publishtype == "aspera")
-						#if( $item.status == "complete" || $item.status == "delivered" )
-						<ul class="embuttons">
-							<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>Download</span></a></li>	
-						</ul>
-						#end
-					#end	
-					<div >
-						Export Path: $!{destination.server}$!{destination.url}$!{item.filename}<br>
-					</div>
-				#end	
-			#end
-		#end
- </td>
-      
- </tr>	  
-
-  
- 
-   
+		<td>
+			$context.putPageValue("data", $item)	 
+			$context.putPageValue("view", "order/downloaditem")	
+			$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
+		
+				#set( $publishqueueid = $item.get("publishqueueid") )
+				#if( $publishqueueid)
+					#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$publishqueueid))
+					#if( "complete" == $publishqueue.get("status") )
+						#if( $order.ordertype == "download" )
+							#set($destination = $searcherManager.getData($catalogid, "publishdestination",$publishqueue.publishdestination))
+							#if( $destination.publishtype == "aspera")
+								#if( $item.status == "complete" || $item.status == "delivered" )
+								<ul class="embuttons">
+									<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>[[Download]]</span></a></li>	
+								</ul>
+								#end
+							#end	
+							<div >
+								Export Path: $!{destination.server}$!{destination.url}$!{item.filename}<br>
+							</div>
+						#end	
+					#end
+				#end
+		 </td>
+ </tr>	     

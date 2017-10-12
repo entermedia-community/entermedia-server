@@ -6,29 +6,28 @@
 
 		#set ( $depth = $depth + 1)
 		#set ( $padding = (15 * $depth) )
-		
 		#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
 		#foreach($file in $files)
 			#set( $filesource  = "${file.parentsourcepath}/${file.name}")
 			   <li class="noderow" id="${file.id}_row" data-nodeid="$file.id"><div style="padding-left: ${padding}px"><span class="#if ( $file.isfolder == 'true' )arrow down #end"></span>
 			   #if ( $file.isfolder == "true" ) 
 			   	<span id="${file.id}_display" class="name folder #if($isleaf) leaf #end" fileid="${file.id}">$file.name</span></span><span id="${file.id}_edit" class="name folder" style="display:none;">
-			   	<input class="field" type="text" value="$file.name" id="${file.id}_edit_field" /><a class="editsave btn">Save</a><a id="${file.id}" class="editcancel btn">Cancel</a></span>
+			   	<input class="field" type="text" value="$file.name" id="${file.id}_edit_field" /><a class="editsave btn">Save</a><a id="${file.id}" class="editcancel btn">[[Cancel]]</a></span>
 			   #else
 			   	#set( $subpath = $attachmentManager.parseFileSubPath($asset.sourcepath, ${file.parentsourcepath}, $file.name) )
-			    <span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name #if ( $asset.primaryFile == $subpath )<span class="small">([[Primary File]])</span>#end #if ( $asset.primaryThumb == $subpath )<span class="small">(Primary Thumbnail)</span>#end</span>
+			    <span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name #if ( $asset.primaryFile == $subpath )<span class="small">([[Primary File]])</span>#end #if ( $asset.primaryThumb == $subpath )<span class="small">([[Primary Thumbnail]])</span>#end</span>
 			   #end
 			   <span class="actions">
 			    #set( $downloadpath = "/WEB-INF/data/$catalogid/originals/$filesource/" )
 			   	#if ( $file.isfolder == "true" )
-			   		<a class="download-folder click-link ir tooltip" title="Download Folder" id="${file.id}" href="$home$attachmentroot/zip/${file.name}-attachments.zip?path=$downloadpath&stripfolders=$downloadpath">[[Download Folder]]</a>
-			   		<a class="add-folder ir tooltip" title="Add a new Folder" id="${file.id}">[[Add New Folder]]</a>
-			   		<a class="upload-file ir tooltip" title="Upload a new File" id="${file.id}" >[[Upload]]</a>
-			   		<a class="edit ir tooltip" title="Edit Folder Name">Edit</a>
-				   	<a class="delete ir tooltip" title="Delete Folder" fileid="${file.id}" >[[Delete]]</a></span></div>
+			   		<a class="download-folder click-link ir tooltip" title="[[Download Folder]]" id="${file.id}" href="$home$attachmentroot/zip/${file.name}-attachments.zip?path=$downloadpath&stripfolders=$downloadpath">[[Download Folder]]</a>
+			   		<a class="add-folder ir tooltip" title="[[Add a new Folder]]" id="${file.id}">[[Add New Folder]]</a>
+			   		<a class="upload-file ir tooltip" title="[[Upload a new File]]" id="${file.id}" >[[Upload]]</a>
+			   		<a class="edit ir tooltip" title="[[Edit Folder Name]]">[[Edit]]</a>
+				   	<a class="delete ir tooltip" title="[[Delete Folder]]" fileid="${file.id}" >[[Delete]]</a></span></div>
 			   	#else 
-			   		<a class="download-file click-link ir tooltip" title="Download File" id="${file.id}" href="$home/${applicationid}/views/modules/asset/downloads/originals/$filesource/${file.name}">[[Download File]]</a> 
-				   	<a class="delete ir tooltip" title="Delete File" fileid="${file.id}" >[[Delete]]</a></span></div>
+			   		<a class="download-file click-link ir tooltip" title="[[Download File]]" id="${file.id}" href="$home/${applicationid}/views/modules/asset/downloads/originals/$filesource/${file.name}">[[Download File]]</a> 
+				   	<a class="delete ir tooltip" title="[[Delete File]]" fileid="${file.id}" >[[Delete]]</a></span></div>
 			   	#end
 					#if($file.isfolder == "true")  
 						<ul class="open" > ##use cookies to open/close them?
@@ -38,12 +37,10 @@
 			   </li>
 			  #if ( $file.isfolder == "true" )
 			  	<li id="${file.id}_add-folder" style="display: none;">
-			  		<div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="New Folder" id="${file.id}_new" /><a data-parent="${file.id}"  class="addfoldersave btn">[[Save]]</a><a id="${file.id}" class="cancel btn">[[Cancel]]</a></span></div>
+			  		<div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="[[New Folder]]" id="${file.id}_new" /><a data-parent="${file.id}" class="addfoldersave btn">[[Save]]</a><a id="${file.id}" class="cancel btn">[[Cancel]]</a></span></div>
 			  	</li>
 			 	<li id="${file.id}_upload-file" style="display: none;"></li>
 			  #end	 	
-		
-			   		
 		#end
 #end
 <div class="tab-actions" style="text-align: right;">
@@ -56,19 +53,18 @@
 						<li class="noderow" id="toplevel_row" data-nodeid="toplevel" >
 							<div style="padding-left: 20px"><span class="arrow down"></span><span class="name folder" fileid="toplevel" sourcepath="$filesource" >[[Attachments]]</span>
 								<span class="actions">
-			   						<a class="download-folder click-link ir tooltip" title="Download Folder" id="toplevel" href="$home$attachmentroot/zip/${asset.name}-attachments.zip?path=$path&stripfolders=$path">[[Download Folder]]</a>
-									<a class="add-folder ir tooltip" title="Add a new Folder" id="toplevel">[[Add New Folder]]</a>
-									<a class="upload-file ir tooltip" title="Upload a new File" id="toplevel">[[Upload New File]]</a>
-									<a class="edit ir nope">Edit</a><a class="delete ir nope" data-parent="toplevel">[[Delete]]</a></span>
+			   						<a class="download-folder click-link ir tooltip" title="[[Download Folder]]" id="toplevel" href="$home$attachmentroot/zip/${asset.name}-attachments.zip?path=$path&stripfolders=$path">[[Download Folder]]</a>
+									<a class="add-folder ir tooltip" title="[[Add a new Folder]]" id="toplevel">[[Add New Folder]]</a>
+									<a class="upload-file ir tooltip" title="[]Upload a new File]]" id="toplevel">[[Upload New File]]</a>
+									<a class="edit ir nope">[[Edit]]</a><a class="delete ir nope" data-parent="toplevel">[[Delete]]</a></span>
 							</div>
 							<ul class="open" >							
 								#showattachments($asset.sourcePath, 1)
 							</ul>
 						</li>
-					 	<li id="toplevel_add-folder" style="display: none;"><div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="New Folder" id="toplevel_new" /><a data-parent="toplevel" class="addfoldersave btn">[[Save]]</a><a id="toplevel" class="cancel btn">[[Cancel]]</a></span></div></li>
+					 	<li id="toplevel_add-folder" style="display: none;"><div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="[[New Folder]]" id="toplevel_new" /><a data-parent="toplevel" class="addfoldersave btn">[[Save]]</a><a id="toplevel" class="cancel btn">[[Cancel]]</a></span></div></li>
 					 	<li id="toplevel_upload-file" style="display: none;"></li>
 					 </ul>	
-
 			</div>
 		<div id="preview-pane">
 		$pages.include("$attachmentroot/details.html")	
@@ -76,12 +72,7 @@
 		</div>
 	</div>
 ##$sizer.inEnglish($attachment.size)
-
-
 <script type="text/javascript">
-
-
-
 	$('#attachmenttree ul li div').livequery(function()
 	{ 
 	  $(this).on({
@@ -350,9 +341,6 @@
 	}
 	
 </script>
-
-
 <form id="uploadform" action="#">
-<div id="here"></div>
-
+	<div id="here"></div>
 </form>

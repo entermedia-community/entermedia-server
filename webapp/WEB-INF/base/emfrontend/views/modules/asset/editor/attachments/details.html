@@ -35,9 +35,9 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 #else
 <div id="primary-options" style="margin-top: 0; margin-bottom: 10px;">
 <a href="$home$apphome/views/modules/asset/editor/attachments/changeattachment.html?filename=${file.name}&assetid=$asset.id" 
-	class="btn flatright tooltip" title="Set this asset as the primary download." style="width: 60px; text-align: center;" >Primary</a>
+	class="btn flatright tooltip" title="[[Set this asset as the primary download.]]" style="width: 60px; text-align: center;" >[[Primary]]</a>
 <a href="$home$apphome/views/modules/asset/editor/attachments/changeattachment.html?imagefilename=${file.name}&assetid=$asset.id" 
-	class="btn flatleft tooltip" title="Set this asset as the primary thumbnail." style="width: 60px; text-align: center;" >Thumbnail</a>
+	class="btn flatleft tooltip" title="[[Set this asset as the primary thumbnail.]]" style="width: 60px; text-align: center;" >[[Thumbnail]]</a>
 </div>
 #end
 
@@ -67,4 +67,3 @@ $pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 		}
 	});
 </script>
-
