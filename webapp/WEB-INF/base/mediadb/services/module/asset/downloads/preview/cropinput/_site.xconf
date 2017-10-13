@@ -4,7 +4,11 @@
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/preview/cropinput</property>
 	<generator name="convertArchiveDocument"/>
 	<property name="uselegacythumbimages">false</property>
-	<property name="sourcefile">image</property>
+	<property name="prefwidth">1024</property>
+	<property name="prefheight">768</property>
+	<property name="exportnameinpath">true</property>
+	<property name="exportname">image1024x768.jpg</property>	
+	
 </page>
 
 
