@@ -3,11 +3,18 @@
 <page>
 	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/preview/large</property>
 	<generator name="convertArchiveDocument"/>
-	<property name="prefwidth">640</property>
-	<property name="prefheight">480</property>
+
 	<property name="uselegacythumbimages">false</property>
 	<property name="sourcefile">image</property>
 
+	<property name="exportname">image640x480.jpg</property>
+	
+	<!--
+	-->
+	
+	<property name="uselegacythumbimages">false</property>
+	<property name="sourcefile">image</property>  
+	
 </page>
 
 

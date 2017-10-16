@@ -6,4 +6,7 @@
 	</permission>	
 
 	<property name="sourcepathhasfilename">true</property>
+	
+	<property name="exportname">image1024x768.jpg</property>
+	
 </page>

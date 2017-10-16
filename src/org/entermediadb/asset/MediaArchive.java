@@ -2031,14 +2031,15 @@ public class MediaArchive implements CatalogEnabled
 	{
 		String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String finalroot = null;
+		if (cdnprefix == null)
+		{
+			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+			cdnprefix = rutil.getSiteRoot();
+
+		}
+
 		if (inGeneratedName.contains(".jpg"))
 		{
-			if (cdnprefix == null)
-			{
-				RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-				cdnprefix = rutil.getSiteRoot();
-
-			}
 			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preset/" + inAsset.getSourcePath() + "/" + inGeneratedName;
 		}
 		else

@@ -65,8 +65,8 @@ public void init()
 			path = PathUtilities.extractDirectoryPath(path);
 		}
 		Collection assetexactids = found.getValues("categories-exact");
-		Collection tosaveExactcategory = new ArrayList();
-		Collection tosaveassetcategories = new ArrayList();
+		Collection tosaveExactcategory = new HashSet();
+		Collection tosaveassetcategories = new HashSet();
 		for (String id in assetexactids) {
 			if( collectionscatids.contains(id))
 			{
@@ -84,7 +84,7 @@ public void init()
 		}
 		//found.addCategory(catparent);  //Load up with none since they are all deleted
 		tosaveExactcategory.add(catparent);
-		found.setValue("categories-exact",tosaveExactcategory);
+		found.setValue("category-exact",tosaveExactcategory);
 		found.setValue("category", tosaveassetcategories );
 		//Get the path and fill in categories strcture
 		

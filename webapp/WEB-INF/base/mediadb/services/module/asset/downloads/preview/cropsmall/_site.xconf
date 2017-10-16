@@ -11,6 +11,8 @@
 	<property name="y1">0</property>
 	<property name="uselegacythumbimages">false</property>
 	<property name="sourcefile">image</property>
+	<property name="exportname">image75x75cropped.jpg</property>
+	
 </page>
 
 

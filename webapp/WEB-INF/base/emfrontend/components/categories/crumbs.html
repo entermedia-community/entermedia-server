@@ -7,7 +7,7 @@
 <div class="category"  style="padding:8px 6px 3px 20px;">					
 	#foreach( $parent in $category.getParentCategoriesFrom(1))
 	#if( $velocityCount > 1) \ #end
-	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}">$parent</a>
+	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}&nodeID=${parent.id}">$parent</a>
 	#end
 </div>
 </div>
