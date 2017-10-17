@@ -979,38 +979,44 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			String inputsourcepath = inReq.findValue("sourcepath");
 			String assetsourcepath = null;
-			String path = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
-	
+			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
 			if(inputsourcepath == null)
 			{
 				assetsourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePath(inReq,inArchive,filename);
 				if( assetsourcepath.endsWith("/"))
 				{
-					path  = path + assetsourcepath + page.getName();			
-				}
-				else
-				{
-					path = path + assetsourcepath;
+					assetsourcepath  = assetsourcepath + page.getName();			
 				}
 			}
 			else if (inputsourcepath.endsWith("/") ) //EMBridge expects the filename to be added on
 			{
 				assetsourcepath = inputsourcepath + filename; 
-				path = path + assetsourcepath;
 			}
 			else
 			{
 				assetsourcepath = inputsourcepath;
-				path = path + assetsourcepath;
 			}
 		
-			Page dest = getPageManager().getPage( path );
+			Page dest = getPageManager().getPage( basepath + assetsourcepath );
+			int i = 2;
+			while( dest.exists())
+			{
+				String pagename = PathUtilities.extractPageName(assetsourcepath);
+				String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
+				dest = getPageManager().getPage( basepath + tmppath );
+				if( !dest.exists() )
+				{
+					assetsourcepath = tmppath;
+					break;
+				}
+				i++;
+			}
 			UploadedPage pagefound = new UploadedPage();
 			pagefound.sourcePath = assetsourcepath;
 			pagefound.inUpload = page;
 			pagefound.inDestPage = dest;
 			pages.put(assetsourcepath, pagefound);
-		}	
+		}
 		return pages;
 	}
 	private void saveAssetData(MediaArchive archive, ListHitTracker tracker, String currentcollection, User inUser)
