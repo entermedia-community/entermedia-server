@@ -1,0 +1,17 @@
+#if($ok)
+<div class="br-primary">
+</div>
+#else
+<div class="common-warning">
+We experienced a problem sending this email
+</div>
+
+#end
+
+<div class="panel panel-default">
+  <div class="panel-heading">Message was sent
+</div>
+  <div class="panel-body">
+$context.getRequestParameter("content")  </div>
+</div>
+

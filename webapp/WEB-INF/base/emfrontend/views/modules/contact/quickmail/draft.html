@@ -1,0 +1,46 @@
+#set($recipients = $context.getSessionValue("mailhits"))
+
+#set($recipients = $context.getSessionValue("mailhits"))
+#set ( $editPath = $entry.path )
+$context.putPageValue("height","500" )
+$context.putPageValue("editPath",$entry.path )
+
+#set ( $origURL = $context.getParam("origURL") )
+#if( !$origURL )
+ #set( $origURL = "$bloghome/admin/index.html")
+#end
+$context.putPageValue("origURL",$origURL )
+
+<div class="ui-widget uipanel" id="" style="padding:40px;">
+	
+	
+	<div class="ui-widget-header">Draft Email - $recipients.getSelectedHits().size() recipients selected
+			</div>
+	
+	
+	
+	<div class="ui-widget-content">
+
+			
+<form name="editForm" id="viewForm" method="post"  action="send.html">
+ <input type="hidden" name="entryId" value="$entry.id" />
+    
+ 
+  Subject: <input class="form-control" size="40" type="text" name="subject" value="$!entry.title" /> <br/>
+  From: <input class="form-control" size="40" type="text" name="from" value="$!user.email" />
+  <input type="hidden" name="editPath"  size="40" value=""/>
+<br/><br/>
+
+ $pages.stream("/openedit/components/html/embedded.html", $context)
+ <br/>
+ 
+   <input type="submit" name="Submit" value="Send Now">
+ 
+</form>
+
+
+	</div>
+	
+	
+	
+</div>

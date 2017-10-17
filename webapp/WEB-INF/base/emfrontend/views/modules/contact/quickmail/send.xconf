@@ -1,0 +1,10 @@
+<page>
+<path-action name="Script.run">
+ 	<script>./send.groovy</script>
+</path-action>
+<generator name="composite">
+<generator name="velocity"/>
+<generator name="velocity"/>
+
+</generator>
+</page>
