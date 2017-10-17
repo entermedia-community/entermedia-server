@@ -44,6 +44,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
@@ -58,7 +59,9 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.MatchPhrasePrefixQueryBuilder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -66,10 +69,10 @@ import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
-import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
+import org.elasticsearch.search.aggregations.metrics.avg.AvgAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.sum.SumAggregationBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -218,12 +221,13 @@ public class BaseElasticSearcher extends BaseSearcher
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 			search.setTypes(getSearchType());
+		//	search.setPreference(preference)
+			
 			if (isCheckVersions())
 			{
 				search.setVersion(true);
 			}
 			QueryBuilder terms = buildTerms(inQuery);
-
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
@@ -326,26 +330,28 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			if (detail.isDate())
 			{
-				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
-				builder.field(detail.getId());
-				builder.interval(DateHistogramInterval.DAY);
-
+				DateHistogramAggregationBuilder builder = new DateHistogramAggregationBuilder(detail.getId() + "_breakdown_day");
+				builder.field(detail.getId());				
+				builder.dateHistogramInterval(DateHistogramInterval.DAY);
+				
+				
+				
 				inSearch.addAggregation(builder);
 
-				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+				builder = new DateHistogramAggregationBuilder(detail.getId() + "_breakdown_week");
 				builder.field(detail.getId());
-				builder.interval(DateHistogramInterval.WEEK);
+				builder.dateHistogramInterval(DateHistogramInterval.WEEK);
 				inSearch.addAggregation(builder);
 
 			}
 
 			else if (detail.isNumber())
 			{
-				SumBuilder b = new SumBuilder(detail.getId() + "_sum");
+				SumAggregationBuilder b = new SumAggregationBuilder(detail.getId() + "_sum");
 				b.field(detail.getId());
 				inSearch.addAggregation(b);
 
-				AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
+				AvgAggregationBuilder avg = new AvgAggregationBuilder(detail.getId() + "_avg");
 				avg.field(detail.getId());
 
 			}
@@ -955,13 +961,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				return null;
 			}
 		}
-		else if ("childfilter".equals(inTerm.getOperation()))
-		{
-			ChildFilter filter = (ChildFilter) inTerm;
-			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue());
-			QueryBuilder haschild = QueryBuilders.hasChildQuery(filter.getChildTable(), parent);
-			return haschild;
-		}
+//		else if ("childfilter".equals(inTerm.getOperation()))
+//		{
+//			ChildFilter filter = (ChildFilter) inTerm;
+//			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue());
+//		
+//			QueryBuilder haschild = JoinQueryBuilders.hasChildQuery(filter.getChildTable(), parent);
+//			return haschild;
+//		}
 
 		// if( fieldid.equals("description"))
 		// {
@@ -1025,7 +1032,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			or.should(text);
 
 			valueof = valueof.replace("*", "");
-			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			MatchPhrasePrefixQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			phrase.maxExpansions(10);
 			or.should(phrase);
 			find = or;
@@ -1035,7 +1042,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			//TODO: Should startswith be exact or analysed phrases? 
 			//find = QueryBuilders.prefixQuery(fieldid, valueof);
 			//Left this in for now...
-			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			MatchPhrasePrefixQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
 		}
@@ -1094,7 +1101,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
 				valueof = valueof.replace("\"", "");
-				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+				MatchPhraseQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 				text.analyzer("lowersnowball");
 				find = text;
 
@@ -1109,11 +1116,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				String query = "+(" + valueof + ")";
 
 				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
-				text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+				text.defaultOperator(Operator.AND);
 				text.analyzer("lowersnowball");
 				text.defaultField("description");
 
-				MatchQueryBuilder text2 = QueryBuilders.matchPhrasePrefixQuery("description", String.valueOf(inValue));
+				MatchPhrasePrefixQueryBuilder text2 = QueryBuilders.matchPhrasePrefixQuery("description", String.valueOf(inValue));
 				text2.analyzer("lowersnowball");
 
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
@@ -1143,7 +1150,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			valueof = valueof.substring(0, valueof.length() - 1);
 
-			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			MatchPhrasePrefixQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
 		}
@@ -1155,7 +1162,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		else if (valueof.startsWith("\"") && valueof.endsWith("\""))
 		{
 			valueof.replaceAll("\"", "");
-			MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+			MatchPhraseQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 			text.analyzer("lowersnowball");
 			find = text;
 		}
@@ -1440,8 +1447,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				sort = SortBuilders.fieldSort(field);
 			}
-
-			sort.ignoreUnmapped(true);
+			
+			//sort.ignoreUnmapped(true);
 			if (direction)
 			{
 				sort.order(SortOrder.DESC);
@@ -1623,10 +1630,10 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				}
 				req = req.source(content);
-				// if( isRefreshSaves() )
-				// {
-				// req = req.refresh(true);
-				// }
+				
+				
+				 req = req.setRefreshPolicy(RefreshPolicy.WAIT_UNTIL);
+				
 				//				try
 				//				{
 				bulkProcessor.add(req);
@@ -1819,7 +1826,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			builder = builder.setSource(content);
 			if (isRefreshSaves())
 			{
-				builder = builder.setRefresh(true);
+				builder = builder.setRefreshPolicy(RefreshPolicy.IMMEDIATE);
 			}
 			if (isCheckVersions())
 			{
@@ -2291,7 +2298,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			delete.setParent(inData.get("_parent"));
 		}
-		delete.setRefresh(true).execute().actionGet();
+		delete.setRefreshPolicy(RefreshPolicy.IMMEDIATE).execute().actionGet();
 
 	}
 

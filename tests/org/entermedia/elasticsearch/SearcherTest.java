@@ -1,16 +1,5 @@
 package org.entermedia.elasticsearch;
 
-import java.util.Date;
-
-import org.elasticsearch.action.index.IndexRequestBuilder;
-import org.elasticsearch.action.index.IndexResponse;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.client.Client;
-import org.elasticsearch.common.xcontent.XContentFactory;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.node.NodeBuilder;
-import org.elasticsearch.search.SearchHit;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.BaseEnterMediaTest;
 import org.entermediadb.asset.search.BaseAssetSearcher;
@@ -25,54 +14,54 @@ import org.openedit.hittracker.SearchQuery;
 public class SearcherTest extends BaseEnterMediaTest
 {
 
-public void testBasicRead() throws Exception
-{
-		// on startup
-		//Node node = NodeBuilder.nodeBuilder().client(true).node();
-//    Settings settings = Settings.settingsBuilder()
-//    		.put("cluster.name", "entermedia")
-//            .build();
-	
-    NodeBuilder nb = NodeBuilder.nodeBuilder();//.client(client)local(true);
-	nb.settings().put("cluster.name", "entermedia");
-	nb.settings().put("path.home", ".");
-    
-//	Settings.Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name", "entermedia");
-//	Client client = new TransportClient(settings)
-//	        .addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
-
-	Client client = nb.build().client();
-	
-	//	AdminClient admin = client.admin();
-	//	ActionFuture<CreateIndexResponse> indexresponse = admin.indices().create(new CreateIndexRequest("test"));
-	//	log(indexresponse.isDone() + " done ");
-		
-		IndexRequestBuilder builder = client.prepareIndex("media_catalogs_video", "asset", "102");
-		IndexResponse response = builder.setSource(XContentFactory.jsonBuilder()
-	                .startObject()
-	                    .field("user", "simon2")
-	                    .field("postDate", new Date())
-	                    .field("message", "saved to database")
-	                .endObject()
-	              )
-	    .setRefresh(true)
-	    .execute()
-	    .actionGet();
-		// on shutdown
-		SearchResponse results = client.prepareSearch("media_catalogs_video")
-		        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
-		        .setQuery(QueryBuilders.termQuery("user", "simon2"))
-		        .setFrom(0).setSize(60).setExplain(true)
-//		        .addField("_all")
-		        .execute()
-		        .actionGet();
-		SearchHit hit = results.getHits().iterator().next();
-		
-		//client.g
-		Object message = hit.getSource().get("message");
-		assertEquals("saved to database",String.valueOf(message) );
-		client.close();
-	}
+//public void testBasicRead() throws Exception
+//{
+//		// on startup
+//		//Node node = NodeBuilder.nodeBuilder().client(true).node();
+////    Settings settings = Settings.settingsBuilder()
+////    		.put("cluster.name", "entermedia")
+////            .build();
+//	
+//    Settings.Builder nb = Settings.builder();
+//	nb.put("cluster.name", "entermedia");
+//	nb.put("path.home", ".");
+//    
+////	Settings.Builder settings = ImmutableSettings.settingsBuilder().put("cluster.name", "entermedia");
+////	Client client = new TransportClient(settings)
+////	        .addTransportAddress(new InetSocketTransportAddress("localhost", 9300));
+//
+//	Client client = nb.build().c
+//	
+//	//	AdminClient admin = client.admin();
+//	//	ActionFuture<CreateIndexResponse> indexresponse = admin.indices().create(new CreateIndexRequest("test"));
+//	//	log(indexresponse.isDone() + " done ");
+//		
+//		IndexRequestBuilder builder = client.prepareIndex("media_catalogs_video", "asset", "102");
+//		IndexResponse response = builder.setSource(XContentFactory.jsonBuilder()
+//	                .startObject()
+//	                    .field("user", "simon2")
+//	                    .field("postDate", new Date())
+//	                    .field("message", "saved to database")
+//	                .endObject()
+//	              )
+//	    .setRefresh(true)
+//	    .execute()
+//	    .actionGet();
+//		// on shutdown
+//		SearchResponse results = client.prepareSearch("media_catalogs_video")
+//		        .setSearchType(SearchType.DFS_QUERY_THEN_FETCH)
+//		        .setQuery(QueryBuilders.termQuery("user", "simon2"))
+//		        .setFrom(0).setSize(60).setExplain(true)
+////		        .addField("_all")
+//		        .execute()
+//		        .actionGet();
+//		SearchHit hit = results.getHits().iterator().next();
+//		
+//		//client.g
+//		Object message = hit.getSource().get("message");
+//		assertEquals("saved to database",String.valueOf(message) );
+//		client.close();
+//	}
 	
 	public void testAssetConnectorSearcher()
 	{
