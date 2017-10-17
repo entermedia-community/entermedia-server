@@ -23,12 +23,12 @@
 <script>
 jQuery(document).ready(function() 
 { 
-var collectionid = "AVqUofiZ0i9dpPpQ8giO";
+var collectionid = "AV8m6op89QBtTbvcC9Sc";
 
 
 	jQuery.ajax({
 		type: "GET",
-		url: "https://uncg.learningmediadb.com/assets/mediadb/services/module/librarycollection/viewassets.json?id=" + collectionid,
+		url: "https://planet.entermediadb.net/assets/mediadb/services/module/librarycollection/viewassets.json?id=" + collectionid,
 		async: false,
 		data: {"entermedia.key":"apimd5426a08c3d031575080ed050cd0b40df78754e3d"},
 		error: function(data, status, err) {
@@ -36,13 +36,13 @@ var collectionid = "AVqUofiZ0i9dpPpQ8giO";
 		},
 		success: function(data) {
 
-			var img = "https://uncg.learningmediadb.com/assets/mediadb/services/module/asset/downloads/preset/";
+			var img = "https://planet.entermediadb.net/assets/mediadb/services/module/asset/downloads/preset/";
 			
 
 			$.each(data, function(index, asset) {
 				var url = img + asset.sourcepath + "/image200x200.jpg";
 			
-				$("#stuff").append('<li class="list-group-item"> <a href=""><img src="' + url + '">' + asset.name + '</a></li>');				
+				$("#stuff").append('<div class="media"><img class="d-flex mr-3" src="' + url + '">    <div class="media-body"><p class="card-text">' + asset.name + '</p></div></div><hr/>');				
 			});
 				
 			$(window).trigger( "resize" );
@@ -59,8 +59,9 @@ var collectionid = "AVqUofiZ0i9dpPpQ8giO";
 </head>
 <body>
 
-<ul id="stuff" class="list-group">
-</ul>
+<div class="container" id="stuff" >
+
+</div>
 
 </body>
 </html>
