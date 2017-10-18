@@ -66,6 +66,7 @@ import org.openedit.util.PathProcessor;
 import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 import org.openedit.util.RequestUtils;
+import org.openedit.util.URLUtilities;
 
 public class MediaArchive implements CatalogEnabled
 {
@@ -2035,16 +2036,17 @@ public class MediaArchive implements CatalogEnabled
 		{
 			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
 			cdnprefix = rutil.getSiteRoot();
-
+			//Look up the home variable?
 		}
+		String sourcepath = URLUtilities.encode(inAsset.getSourcePath());
 
-		if (inGeneratedName.contains(".jpg"))
+		if (inGeneratedName.contains("."))
 		{
-			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preset/" + inAsset.getSourcePath() + "/" + inGeneratedName;
+			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preset/" + sourcepath + "/" + inGeneratedName;
 		}
 		else
 		{	
-			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preview/"+ inGeneratedName +"/" + inAsset.getSourcePath() + "/thumb.jpg";
+			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preview/"+ inGeneratedName +"/" + sourcepath + "/thumb.jpg";
 
 		}
 		return finalroot;
