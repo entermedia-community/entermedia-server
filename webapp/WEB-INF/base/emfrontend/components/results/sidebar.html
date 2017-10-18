@@ -16,7 +16,6 @@ $related.setPage($pageval)
     #end
     
     $context.putPageValue("assetrootfolder", "/$catalogid/assets")
-    #set( $thumbsize  = $context.findValue("thumbsize") )
     
     	#if( $category )
     		#set( $catid = $category.id )
@@ -42,7 +41,7 @@ $related.setPage($pageval)
                 #end
         			
        			#foreach ($hit in $related.getPageOfHits())
-        		<li class="mediathumb  embox$thumbsize #if( $asset && $hit.id == $asset.id ) currentsubtle #end" id="cell${catalogid}_${hit.id}" >
+        		<li class="mediathumb  #if( $asset && $hit.id == $asset.id ) currentsubtle #end" id="cell${catalogid}_${hit.id}" >
         			#set( $count = $related.getPage()+-1 )
         			#set( $count = $count*$related.getHitsPerPage() )	
         			#set( $count = $velocityCount + $count )

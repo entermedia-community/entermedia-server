@@ -1,0 +1,83 @@
+#set( $moduleid = $context.findValue("module") )
+#set($viewid = $context.findValue("viewid"))
+#set($viewpath = $context.findValue("viewpath"))
+#set( $origURL = $context.getRequestParameter("origURL" ) )
+    
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set($query = $viewsearcher.createSearchQuery().append("module",$moduleid).append("systemdefined","false") )
+$!query.addSortBy("ordering")   
+#set($views = $viewsearcher.search($query))
+
+##if( !$viewid && $views.size() > 0)               
+    ##set( $viewid = $views.first().getId() )
+    ##set( $viewpath = "${moduleid}/$viewid" )
+##end
+$context.putPageValue("view", $viewpath)
+	#set($hitssessionid = $context.findValue("hitssessionid"))
+    #set ($lastselected = $content.module )
+    #if(!$lastselected)
+        #set($lastselected = $userprofile.last_selected_module )
+    #end
+    #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+    
+    
+    <div class="ui-widget uipanel" style="margin: 10px;" >
+	
+	
+	<div class="ui-widget-header">$!data.name</div>
+				
+	
+	
+	
+	<div class="ui-widget-content">
+
+	   <div class="primary">
+            #set($profileimage = $mediaarchive.getAsset($data.thumbnail))
+             
+#if($profileimage)
+	#set( $smallthumb = "$home${apphome}/views/modules/asset/downloads/preview/thumb/${profileimage.sourcepath}/thumb.jpg" )
+#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!data.thumbnail&hitssessionid=$!rootid" )
+<a href="$click" >
+	<img class="emdropshadow" align="center" src="$smallthumb" />
+	</a>
+
+#else
+<img  class="emdropshadow" align="center" src="$home$apphome/views/modules/contact/images/profile150x150.jpg" />
+#end
+           
+<br/>
+			<a href="$apphome/views/modules/contact/quickmail/draft.html?id=$data.id"><img src="/system/images/toolbar/email.gif">&nbsp;   $!data.email</a>
+           #if ($data.company)
+             $!data.company
+           #end
+        
+           </div>
+
+
+	</div></div>
+	
+	
+	
+
+    
+    
+         
+        
+    
+<ul id="assetmenu" class="sidebar-list">
+      
+              #foreach( $target in $views)       
+                   
+                  <li class="#if($viewid == $target.id) current #end projects-$target.id" byassettype="$!target.byassettype">
+                  		
+                  	#if( $target.rendertable )
+			        	 <a class="tab" href="$home${searchhome}/edit/moduletable.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+	                     <span class="icon"></span><span class="text"> $target</span></a>
+                  	#else
+                      	<a class="tab" href="$home${searchhome}/edit/edit.html?id=$!{data.id}&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}&searchtype=$moduleid">
+                        	<span class="icon"></span><span class="text"> $target</span></a>
+                    #end
+                  </li>
+              #end
+       
+</ul>

@@ -32,11 +32,11 @@ $context.putPageValue("hits", $hits)
 	
 
     <ul class="nav navbar-nav">
-           <li>   <a  href="${content.searchhome}/index.html?cache=false">All $module</a></li>
-  		<li><a class="ajaxDialog"  data-title="Add New" data-target="$home${content.searchhome}/edit/addnew.html?viewpath=$module.id/addnew&oemaxlevel=1">Add New</a></li>
+           <li>   <a  href="${content.searchhome}/index.html?cache=false">[[All]] $module</a></li>
+  		<li><a class="ajaxDialog"  data-title="[[Add New]]" data-target="$home${content.searchhome}/edit/addnew.html?viewpath=$module.id/addnew&oemaxlevel=1">[[Add New]]</a></li>
   	#if($content.isPropertyTrue("showselections"))
       <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Selections<b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">[[Selections]]<b class="caret"></b></a>
         <ul class="dropdown-menu">
           $pages.include("/${content.searchhome}/selectionactions.html", $context)
         </ul>
@@ -45,17 +45,17 @@ $context.putPageValue("hits", $hits)
       #if($content.isPropertyTrue("showselections"))
     #if($caneditdata)
  <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions<b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">[[Actions]]<b class="caret"></b></a>
         <ul class="dropdown-menu">
           $pages.include("/${content.searchhome}/adminactions.html", $context)
         </ul>
       </li>
        <li class="dropdown">
-        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Display Options<b class="caret"></b></a>
+        <a href="#" class="dropdown-toggle" data-toggle="dropdown">[[Display Options]]<b class="caret"></b></a>
         <ul class="dropdown-menu">
-          ##<li><a class="profiletoggle" href="#" data-target="map">Map</a></li>
-         ## <li><a class="profiletoggle" href="#" data-target="gallery">Gallery</a></li>
-         ## <li><a class="profiletoggle" href="#" data-target="table">Table</a></li>
+          ##<li><a class="profiletoggle" href="#" data-target="map">[[Map]]</a></li>
+         ## <li><a class="profiletoggle" href="#" data-target="gallery">[[Gallery]]</a></li>
+         ## <li><a class="profiletoggle" href="#" data-target="table">[[Table]]</a></li>
           
           #if($canadmin)
           
@@ -75,18 +75,12 @@ $context.putPageValue("hits", $hits)
         <input type="hidden" class="form-control" placeholder="Search" name="operation" value="contains">
         
       </div>
-      <button type="submit" class="btn btn-default">Submit</button>
+      <button type="submit" class="btn btn-default">[[Submit]]</button>
       <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-  Advanced Search
+  [[Advanced Search]]
 </button>
     </form>
-    
-
-   
   </div><!-- /.navbar-collapse --></nav>
-
-
-		
 				
 					<div id="resultsdiv" data-searchhome="$home$content.searchhome" data-hitssessionid="$hits.sessionId">
 						<div id="emresultscontent">
@@ -130,22 +124,20 @@ jQuery(".profiletoggle").on("click",
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-        <h4 class="modal-title" id="myModalLabel">Advanced Search</h4>
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">[[Close]]</span></button>
+        <h4 class="modal-title" id="myModalLabel">[[Advanced Search]]</h4>
       </div>
       <div class="modal-body">
    $pages.include("./searchform.html")		
 
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        <button id="search" type="button" class="btn btn-primary">Search</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">[[Close]]</button>
+        <button id="search" type="button" class="btn btn-primary">[[Search]]</button>
       </div>
     </div>
   </div>
 </div>
-
-
 
 <script type="text/javascript">
 jQuery("#search").on("click", function(){

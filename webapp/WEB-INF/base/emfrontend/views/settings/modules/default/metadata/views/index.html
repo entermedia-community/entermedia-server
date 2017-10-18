@@ -22,7 +22,7 @@
 	<li class="header no-sort" id="views-header" style="height: 16px;">
 	    <span id="name">$context.getText($view.toString())</span>
 	    #if ( $view.rendertable )
-	    <span class="type">Table: $view.rendertable</span>
+	    <span class="type">[[Table]]: $view.rendertable</span>
 	    #end
 	    
 	    #set ( $systemdefined = "false" )
@@ -41,7 +41,7 @@
             #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
             
             <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
-                    <option value="default" >Default</option>
+                    <option value="default" >[[Default]]</option>
                         #foreach($item in $assettypesearcher.fieldSearch("id","*","nameUp"))
                             <option #if($current == $item.id) selected #end value="$item.id">$context.getText($item.toString())</option>
                         #end
@@ -98,17 +98,15 @@
 
             </div>
             #set($editpath = $context.findValue("editPath"))
-            <a class="ajax btn" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">Edit Permissions</a>
+            <a class="ajax btn" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
 <div id="permissionedit"></div>
             
             <div class="hr" style="margin: 5px 0 0 0"></div>
-            <input class="btn right" style="margin-top: 10px;" type="submit" value="Save" />
+            <input class="btn right" style="margin-top: 10px;" type="submit" value="[[Save]]" />
             #if($candevelop)
-            <a class="btn" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">Make Default</a>
+            <a class="btn" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
             #end
         </form>
-        
-	   
 	    </div>
     </div>
     <script>

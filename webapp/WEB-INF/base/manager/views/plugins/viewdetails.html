@@ -1,8 +1,8 @@
-List know versions locally
+[[List know versions locally]]
 
-Create new snapshot(version)
+[[Create new snapshot(version)]]
 
-List URL with last selected shown
+[[List URL with last selected shown]]
 
 #set( $installedpluginid = $context.getRequestParameter("id") )
 #set ($installedplugin = $searcherManager.getData("system","installedplugim",$installedpluginid))
@@ -10,7 +10,7 @@ List URL with last selected shown
 <div class="panel panel-default">
   <div class="panel-heading section-title">
            <img height="28" width="30" alt="EM Share" src="/manager/theme/images/small-server.png" style="float:left; margin: 	0px 15px 0 15px;">
-                 <span>Plugin: $installedplugin</span> 
+                 <span>[[Plugin]]: $installedplugin</span> 
    </div>              
   <div class="panel-body">
 <div id="oeadmin">
@@ -36,7 +36,5 @@ List URL with last selected shown
 #end
 </table>
 </form>
-
-<a href="addnew.html">Add New</a>
-
+<a href="addnew.html">[[Add New]]</a>
 </div>

@@ -34,7 +34,7 @@
 </td>
 <td valign="top" width="250" >
 #if( $plugin.getLongDescription() )<a href="#" onclick="toggleNote('description$plugin.getId()')">[[show]]</a>
-	<span id="description$plugin.getId()" style="display: none">#esc($plugin.getLongDescription()) <br><a href="$plugin.getInstallScript()">Installer</a><br>Depends: $plugin.getDependsOn() </span>
+	<span id="description$plugin.getId()" style="display: none">#esc($plugin.getLongDescription()) <br><a href="$plugin.getInstallScript()">[[Installer]]</a><br>Depends: $plugin.getDependsOn() </span>
 #end
 </td>
 <td>
@@ -69,7 +69,6 @@ onclick="javascript:togglePlugins( '$plugin.id'
 </form>
 
 <script> 
-
  function togglePlugins(callerid) //this is a magical function. don't try to understand it.
  {
 	 callerbox = document.getElementById('checkbox_' + callerid);

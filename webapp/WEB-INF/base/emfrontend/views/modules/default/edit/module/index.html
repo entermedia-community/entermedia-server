@@ -26,9 +26,7 @@ $!query.addSortBy("ordering")
     #set( $viewid = $views.first().getId() )
     #set( $viewpath = "${table}/$viewid" )
 
-<a  class="btn ajax" href="${home}/${applicationid}/components/detaileditor/generictablesave.html?candelete=true&amp;editpath=/emshare/components/detaileditor/generictablesave.html&amp;parentid=southamericanexpo&amp;catalogid=$catalogid&searchtype=$table&fieldexternalid=library&fieldexternalvalue=southamericanexpo&amp;&permissionname=&hitssessionid=hitslibrarymedia/catalogs/public&selectlink=/emshare/components/detaileditor/generictablesave.html&edit=true&amp;oemaxlevel=1" style="margin-left: 20px;" >Add New Inline</a>
-
-	<a class="btn ajax" targetdiv="libraryproject_taskseditor" href="$apphome/views/modules/${table}/edit/addnew.html?field=${field}${field}.value=${data.id}&viewid=&viewid&viewpath=$viewpath">Add New</a>
-
+<a  class="btn ajax" href="${home}/${applicationid}/components/detaileditor/generictablesave.html?candelete=true&amp;editpath=/emshare/components/detaileditor/generictablesave.html&amp;parentid=southamericanexpo&amp;catalogid=$catalogid&searchtype=$table&fieldexternalid=library&fieldexternalvalue=southamericanexpo&amp;&permissionname=&hitssessionid=hitslibrarymedia/catalogs/public&selectlink=/emshare/components/detaileditor/generictablesave.html&edit=true&amp;oemaxlevel=1" style="margin-left: 20px;" >[[Add New Inline]]</a>
+	<a class="btn ajax" targetdiv="libraryproject_taskseditor" href="$apphome/views/modules/${table}/edit/addnew.html?field=${field}${field}.value=${data.id}&viewid=&viewid&viewpath=$viewpath">[[Add New]]</a>
 #end
 </div>

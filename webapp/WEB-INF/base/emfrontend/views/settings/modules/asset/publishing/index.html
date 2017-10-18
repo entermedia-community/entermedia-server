@@ -9,8 +9,8 @@ $query.addSortBy("name")
 #set( $details = $searcher.getDetailsForView("publishdestination/results",$userprofile) )
 
 <div class="tab-actions">
-	<a class="btn" href="$home$content.searchhome/edit/addnew.html">Add New</a>
-	<a class="emdialog btn" href="$home$content.searchhome/edit/addsmartjog.html">Add SmartJog</a>
+	<a class="btn" href="$home$content.searchhome/edit/addnew.html">[[Add New]]</a>
+	<a class="emdialog btn" href="$home$content.searchhome/edit/addsmartjog.html">[[Add SmartJog]]</a>
 </div>
 <div id="emselectable">
 <table class="striped emdata">
@@ -34,8 +34,6 @@ $query.addSortBy("name")
 		#end
 		</td>
 	#end
-
-
 </tr>
 #end
 </tbody>
@@ -44,6 +42,3 @@ $query.addSortBy("name")
 	<input type="hidden" name="id" id="emselectedrow">
 </form>
 </div>
-
-
-

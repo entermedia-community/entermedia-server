@@ -1,15 +1,6 @@
-#set( $catalogid = $asset.catalogId )
-#set( $sourcepath = $asset.sourcepath )
-#set($encode = $url_util.encode($sourcepath))
-#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${encode}/video.mp4" )
-#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${encode}/thumb.jpg" )
-#set($thumb = $thumb.replace(" ", "%20"))
-#set($source = $source.replace(" ", "%20"))
-
-
-
-
-#set( $root = "$context.siteRoot$home$page.directory")
+#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4"))
+#set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
+$source
 <!-- 1. skin -->
 <link rel="stylesheet" href="$apphome/components/javascript/flowplayer/skin/entermedia.css">
   
@@ -17,8 +8,6 @@
 <script src="$apphome/components/javascript/flowplayer/flowplayer.min.js"></script>
 <!-- first try HTML5 playback: if serving as XML, expand `controls` to `controls="controls"` and autoplay likewise -->
 <!-- warning: playback does not work on iOS3 if you include the poster attribute! fixed in iOS4.0 -->
-
-
 
 <div class="player is-splash"  data-embed="false" style='background-color:#777; background-image:url("$thumb");'>
    

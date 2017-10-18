@@ -44,7 +44,7 @@
 #set( $showit = true )
 
 #if($errors)
-<p class="info">Your entry is invalid.  Please check your values and try again.</p>
+<p class="info">[[Your entry is invalid.  Please check your values and try again]].</p>
 #set($edit = "true")
 #end
 
@@ -55,7 +55,7 @@
 	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
 	<div class="addnew-generic panel-footer">
-	##<a class="btn btn-primary ajax" style="margin-left: 20px;" href="$home$editpath?candelete=false&$argsnoid&passalong=$passalong&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">Add New</a>
+	##<a class="btn btn-primary ajax" style="margin-left: 20px;" href="$home$editpath?candelete=false&$argsnoid&passalong=$passalong&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">[[Add New]]</a>
 	</div>
 	#end
 	
@@ -99,7 +99,7 @@
 		#end
 	<div class="panel-footer">
 			<a class="btn ajax btn-danger right" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
-			<input class="btn btn-primary "  type="submit" value="Save Values"/>
+			<input class="btn btn-primary "  type="submit" value="[[Save Values]]"/>
 			<a class="btn ajax btn-default" style="margin-left: 5px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
 		</div>
 	</form>
@@ -107,5 +107,5 @@
 	#end
 </div>
 #else ##showit
-	<p class="info">No data has been entered.</p>
+	<p class="info">[[No data has been entered]].</p>
 #end

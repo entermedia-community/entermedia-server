@@ -1249,6 +1249,8 @@ public class ProjectManager implements CatalogEnabled
 			collection.setValue("rootcategory", collectioncategory.getId());
 			mediaArchive.getSearcher("librarycollection").saveData(collection, null);
 			log.info("saving collection");
+			
+			
 		}
 		//Make sure the name still matches
 		Category collectioncategory = collection.getCategory();
@@ -1257,6 +1259,12 @@ public class ProjectManager implements CatalogEnabled
 			collectioncategory.setName(collection.getName());
 			mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
 		}
+		
+		ProjectManager manager = mediaArchive.getProjectManager();
+		((MultiValued) collectioncategory).addValue("viewusers", collection.get("owner"));
+		mediaArchive.getCategorySearcher().saveData(collectioncategory);
+		
+		
  				//Move the parents if needed
 //				if( !collectioncategory.hasParent(librarycategory.getId()))
 //				{

@@ -22,7 +22,7 @@
 							#set( $selectedlibrary = $librarycol.get("library") )
 							#set($library = $mediaarchive.getData("library",$selectedlibrary))
 						#end
-						<select  name="selectedlibrary" id="selectedlibrary"  class="listautocomplete selectautosubmit #if($canaddnewlibrary) selectaddnew #end"  data-addnewlabel="[Add New]"
+						<select  name="selectedlibrary" id="selectedlibrary"  class="listautocomplete selectautosubmit #if($canaddnewlibrary) selectaddnew #end"  data-addnewlabel="[[[Add New]]]"
 								data-searchfield="name" data-searchtype="library" data-placeholder="$detail.getText($context)" data-sortby="name">
 							#if( $library )
 							  <option value="$library.getId()" selected="selected">#esc($library.getName($context.locale))</option>
@@ -42,7 +42,7 @@
 						#if( $selectedlibrary )
 							#set( $text = "[[Pick From]] $text" )
 						#end
-						<select name="collectionid" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end" data-addnewlabel="[Add New]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+						<select name="collectionid" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
 							data-placeholder="$text" data-sortby="name">
 							#if( $librarycol )
 							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
@@ -62,6 +62,3 @@
 		</table>	
 	</div>
 #end
-
-
- 

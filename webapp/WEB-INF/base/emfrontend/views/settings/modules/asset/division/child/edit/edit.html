@@ -2,7 +2,7 @@
 #set( $parent = "$content.parenttype")
 #set( $child = "$content.childtype")
 
-<h6>Add New</h6>
+<h6>[[Add New]]</h6>
 
 	<div id="editlayout">
 	#set( $origURL = $context.getRequestParameter("origURL" ) )
@@ -27,18 +27,14 @@
 	#end
 	
 	$pages.include("/system/components/xml/detaileditor.html", $context)
-		<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">Save</a>
-		<a class="btn" href="$home$apphome/views/settings/modules/asset/$parent/parent/edit/edit.html?id=$parentid">Cancel</a>
+		<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();">[[Save]]</a>
+		<a class="btn" href="$home$apphome/views/settings/modules/asset/$parent/parent/edit/edit.html?id=$parentid">[[Cancel]]</a>
 	
 	<div id="messagearea">$!message
 	</div>
 	</form>
-	
-	
 	#if( $savedok && $origURL )
 		<a href="$origURL">[[Go Back]]</a>	
 	#end
-	
-	
 	</div>
 </div>

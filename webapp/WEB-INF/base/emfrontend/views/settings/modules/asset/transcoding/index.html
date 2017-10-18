@@ -8,7 +8,7 @@ $query.addSortBy("ordering")
 
 #set( $details = $searcher.getDetailsForView("convertpreset/results",$userprofile) )
 <div class="tab-actions">
-	<a class="btn" href="$home$content.searchhome/edit/addnew.html">Add New Conversion</a>
+	<a class="btn" href="$home$content.searchhome/edit/addnew.html">[[Add New Conversion]]</a>
 </div>
 <div  id="emselectable">
 <table class="striped emdata">
@@ -32,8 +32,6 @@ $query.addSortBy("ordering")
 		#end
 		</td>
 	#end
-
-
 </tr>
 #end
 </tbody>
@@ -42,5 +40,3 @@ $query.addSortBy("ordering")
 	<input type="hidden" name="id" id="emselectedrow">
 </form>
 </div>
-
-

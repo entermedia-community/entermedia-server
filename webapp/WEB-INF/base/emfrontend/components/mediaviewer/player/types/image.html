@@ -1,17 +1,10 @@
-#set ( $urlutils = $context.getPageValue("url_util"))
-#if (!$urlutils)
-	#set ($urlenc = $asset.sourcepath)
-#else
-	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
-	#set ( $urlenc = $urlenc.replace("%2F", "/") )
-#end
-
-##set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$urlenc/preview.jpg")
 #set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$asset.id&name=preview.jpg")
+#set( $img = $mediaarchive.asLinkToPreview($asset,"image550x350.jpg"))
 
 <a class="stackedplayer" data-assetid="$asset.id" href="#" >
 	<div class="emdropshadow">
-       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  data-sourcepath="$urlenc" data-name="$asset.name" src="$home/${applicationid}/views/modules/asset/downloads/preview/mediumplus/$urlenc/thumb.jpg" alt="$!asset.name"/>
+       <img id="main-media" class="assetdragdrop" title="[[Drag to collection]]"  draggable="true"  
+       data-sourcepath="$urlenc" data-name="$asset.name" src="$img" alt="$!asset.name"/>
     </div>  
 </a>
 <div id="badgecontainer">

@@ -1,8 +1,8 @@
-List know versions locally
+[[List know versions locally]]
 
-Create new snapshot(version)
+[[Create new snapshot(version)]]
 
-List URL with last selected shown
+[[List URL with last selected shown]]
 
 #set( $installedapplication = $context.getRequestParameter("siteid") )
 #set ($installedapp = $searcherManager.getData("system","installedapplications",$installedapplication))
@@ -16,7 +16,7 @@ List URL with last selected shown
 <div id="oeadmin">
 
 
-<a class="mbtn" href="viewsnapshots.html">Manage Snapshots</a>
+<a class="mbtn" href="viewsnapshots.html">[[Manage Snapshots]]</a>
 	
 <h2 style="margin-top: 0; padding-top: 0;">[[Available Versions]]</h2>
 #set( $sortedlist = $searcherManager.getList("system","installedapps") )
@@ -39,7 +39,5 @@ List URL with last selected shown
 #end
 </table>
 </form>
-
-<a href="addnew.html">Add New</a>
-
+<a href="addnew.html">[[Add New]]</a>
 </div>

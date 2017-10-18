@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="fallbackdirectory">/WEB-INF/base/emshare/views/modules/default</property>
+  <property name="module">contact</property>
+  <permission name="editdata">
+    <or>
+      <group id="contactviewedit"/>
+      <group id="administrators"/>
+      <group id="contactsviewedit"/>
+    </or>
+  </permission>
+  <permission name="view">
+    <or>
+      <group id="contactviewedit"/>
+      <group id="contactview"/>
+      <group id="administrators"/>
+      <group id="contactsview"/>
+      <group id="contactsviewedit"/>
+    </or>
+  </permission>
+</page>

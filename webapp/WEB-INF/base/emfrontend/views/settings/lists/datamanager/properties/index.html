@@ -18,8 +18,8 @@
 	<table class="striped emdata">
 		<tr class="tableheader">
 			<th #if ($detail.getExternalId ) colspan="2" #end>[[Field Name]]</th>
-			<th style="width:200px;">ID</th>
-			<th style="width:200px;">Field Type</th>
+			<th style="width:200px;">[[ID]]</th>
+			<th style="width:200px;">[[Field Type]]</th>
 		</tr>	
 	#foreach( $detail in $properties)
 	<tr rowid="$detail.id">
@@ -42,7 +42,6 @@
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
 	##	<td><a href="remove.html?$link">[[delete]]</a></td>
 	</form>
-	
 	</div>
 </div>
 

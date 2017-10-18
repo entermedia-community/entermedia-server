@@ -4,14 +4,8 @@
 	<ul id="sub-nav" class="search-views">
 
 
-<li><a href="$home${content.searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id">Add New</a></li>
+<li><a href="$home${content.searchhome}/edit/addnew.html?viewid=$defaultview.id&viewpath=$module.id/$defaultview.id">[[Add New]]</a></li>
 	#if($content.showactions)
-	$pages.include("$content.searchhome/selectionactions.html")
-	
-     #end
-			
-	
-			
-			
-	
+		$pages.include("$content.searchhome/selectionactions.html")
+    #end
 	</ul>

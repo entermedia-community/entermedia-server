@@ -6,11 +6,11 @@
 					  	<button class="btn btn-danger"> <i class="glyphicon  glyphicon-cog icon-white"></i> </button>
 				  		<button class="btn  btn-danger dropdown-toggle " data-toggle="dropdown"><span class="caret"></span></button>
 				 	 <ul class="dropdown-menu pull-right">
-						<li><a href="#" class="disabled"   >Cue: ${cue.timecode}s</a></li>
-						<li><a href="$apphome/simple.html?oemaxlevel=1"  data-target="#productModal"  data-toggle="modal"  >Add New Product</a></li>
-						<li><a href="$apphome/views/modules/product/addexisting.html?oemaxlevel=1&cueid=$cuepoint.id" data-remote="" data-target="#productModal"  data-toggle="modal"  >Add Existing Product</a></li>
-						<li><a href="#" data-remote="$apphome/components/dialogedit/edit.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >Cuepoint Details</a></li> 
-						<li><a href="#" data-remote="$apphome/components/dialogedit/delete.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >Delete Cue Point</a></li> 
+						<li><a href="#" class="disabled"   >[[Cue]]: ${cue.timecode}s</a></li>
+						<li><a href="$apphome/simple.html?oemaxlevel=1"  data-target="#productModal"  data-toggle="modal"  >[[Add New Product]]</a></li>
+						<li><a href="$apphome/views/modules/product/addexisting.html?oemaxlevel=1&cueid=$cuepoint.id" data-remote="" data-target="#productModal"  data-toggle="modal"  >[[Add Existing Product]]</a></li>
+						<li><a href="#" data-remote="$apphome/components/dialogedit/edit.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >[[Cuepoint Details]]</a></li> 
+						<li><a href="#" data-remote="$apphome/components/dialogedit/delete.html?oemaxlevel=1&id=$cue.id&searchtype=videocue&viewpath=videocue/videocuecue_edit" data-target="#editmodal"  data-toggle="modal" >[[Delete Cue Point]]</a></li> 
 				  	</ul>
 				</div>
 		</div>
@@ -121,7 +121,7 @@
 <div id="productmodal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 <div class="modal-header">
     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    <h3 id="myModalLabel">Add New Product</h3>
+    <h3 id="myModalLabel">[[Add New Product]]</h3>
   </div>
   <div class="modal-body">
     <p></p>
