@@ -129,6 +129,7 @@ public class UserProfileManager
 		Lock lock = null;
 		try
 		{
+			log.info("Trying to lock " + inUserName);
 			lock = mediaArchive.getLockManager().lock("userprofileloading/" + inUserName, "UserProfileManager.loadProfile");
 			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
 			if( userprofile == null || !index.equals(userprofile.getIndexId()) )
@@ -205,6 +206,8 @@ public class UserProfileManager
 
 		userprofile.setIndexId( mediaArchive.getSearcher("settingsgroup").getIndexId() );
 
+		log.info("Checking modules");
+		
 		Collection modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id", "*").sort("name").search(inReq);
 		List<Data> okmodules = new ArrayList<Data>();
 		for (Iterator iterator = modules.iterator(); iterator.hasNext();)
@@ -250,10 +253,14 @@ public class UserProfileManager
 		{
 			roleid = "anonymous";
 		}
+		//log.info("Searching categories");
+
 		HitTracker categories = searcher.query().or().
 			orgroup("viewgroups", groupids).
 			match("viewroles", roleid).
 			match("viewusers", inUserprofile.getUserId()).search();
+
+		//log.info("Checking modules found " + categories.size());
 
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
@@ -273,22 +280,25 @@ public class UserProfileManager
 		//lava loop over every collection and mesh 		
 		inUserprofile.setViewCategories(okcategories);
 		inUserprofile.setCollectionIds(new ArrayList());
-		if( !okcategories.isEmpty() )
+		if( !inUserprofile.hasPermission("viewsettings"))
 		{
-			Collection<String> okcollectionids = new ArrayList<String>();
-			HitTracker found = mediaArchive.query("librarycollection").all().search();
-			for (Iterator iterator = found.iterator(); iterator.hasNext();)
+			if( !okcategories.isEmpty() )
 			{
-				Data collection = (Data) iterator.next();
-				Category root = mediaArchive.getCategory(collection.get("rootcategory"));
-				if( root != null && root.hasParentCategory(okcategories) )
+				Collection<String> okcollectionids = new ArrayList<String>();
+				HitTracker found = mediaArchive.query("librarycollection").all().search();
+				found.enableBulkOperations();
+				for (Iterator iterator = found.iterator(); iterator.hasNext();)
 				{
-					okcollectionids.add(collection.getId());
+					Data collection = (Data) iterator.next();
+					Category root = mediaArchive.getCategory(collection.get("rootcategory"));
+					if( root != null && root.hasParentCategory(okcategories) )
+					{
+						okcollectionids.add(collection.getId());
+					}
 				}
+				inUserprofile.setCollectionIds(okcollectionids);
 			}
-			inUserprofile.setCollectionIds(okcollectionids);
 		}
-		
 	}
 
 	public void saveUserProfile(UserProfile inUserProfile)
