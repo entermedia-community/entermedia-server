@@ -57,6 +57,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.node.Node;
+import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
@@ -71,6 +72,8 @@ import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
+
+import groovy.util.NodeBuilder;
 
 public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 {
@@ -162,9 +165,25 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				File parent = new File(abs);
 				String webroot = parent.getParentFile().getParentFile().getAbsolutePath();
 				
+//				Node node =
+//					    nodeBuilder()
+//					        .settings(Settings.settingsBuilder().put("http.enabled", false))
+//					        .client(true)
+//					    .node();
+//				
+				//Node node = NodeBuilder.newInstance().settings(preparedsettings.build()).node();
+				
 				Node node = new Node(preparedsettings.build());
 
-				
+				try
+				{
+					node.start();
+				}
+				catch (NodeValidationException e)
+				{
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 				//nb.settings().put("path.plugins", webroot + "/WEB-INF/base/entermedia/elasticplugins");
 				
 				

@@ -538,7 +538,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties.field("date_detection", "false");
 
 			//"_all" : {"enabled" : false},
-			jsonproperties.startObject("_all").field("enabled", "false").endObject();
+			//jsonproperties.startObject("_all").field("enabled", "false").endObject();
 
 			jsonproperties = jsonproperties.startObject("properties");
 
@@ -565,7 +565,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			// detail.setId("namesorted");
 			// props.add(detail);
 			// }
-
 			for (Iterator i = props.iterator(); i.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) i.next();
@@ -589,7 +588,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.startObject(detail.getId() + "_int");
 					jsonproperties = jsonproperties.field("type", "object");
 
-					jsonproperties.startObject("properties");
+					jsonproperties = jsonproperties.startObject("properties");
 					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
 					for (Iterator iterator = languages.iterator(); iterator.hasNext();)
 					{
@@ -601,14 +600,14 @@ public class BaseElasticSearcher extends BaseSearcher
 						jsonproperties.field("type", "string");
 						if (detail.isAnalyzed())
 						{
-							jsonproperties.startObject("fields");
-							jsonproperties.startObject("exact");
+							jsonproperties = jsonproperties.startObject("fields");
+							jsonproperties = jsonproperties.startObject("exact");
 							jsonproperties = jsonproperties.field("type", "string");
 							jsonproperties = jsonproperties.field("index", "not_analyzed");
 							jsonproperties = jsonproperties.field("ignore_above", 256);
 
-							jsonproperties.endObject();
-							jsonproperties.endObject();
+							jsonproperties = jsonproperties.endObject();
+							jsonproperties = jsonproperties.endObject();
 						}
 
 						if (analyzer != null)
@@ -616,41 +615,33 @@ public class BaseElasticSearcher extends BaseSearcher
 							jsonproperties.field("analyzer", analyzer);
 						}
 						jsonproperties = jsonproperties.field("index", "analyzed");
-						jsonproperties.endObject();
+						jsonproperties= jsonproperties.endObject();
 					}
-					jsonproperties.endObject();
-					jsonproperties.endObject();
+					jsonproperties = jsonproperties.endObject();
+					jsonproperties = jsonproperties.endObject();
 
 					jsonproperties = jsonproperties.startObject(detail.getId());
 					jsonproperties = jsonproperties.field("type", "string");
-					jsonproperties = jsonproperties.field("include_in_all", "false");
+					//jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
-
 					continue;
 				}
 				
 				jsonproperties = jsonproperties.startObject(detail.getId());
 				configureDetail(detail, jsonproperties);
 				jsonproperties = jsonproperties.endObject();
-		
 				
-
 			}
-			
-			
-			
-			
-			
 			
 			jsonproperties = jsonproperties.endObject();
-			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
-			if (_parent != null)
-			{
-				jsonproperties = jsonproperties.startObject("_parent");
-				jsonproperties = jsonproperties.field("type", _parent.getListId());
-				jsonproperties = jsonproperties.endObject();
-			}
-			jsonBuilder = jsonproperties.endObject();
+//			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
+//			if (_parent != null)
+//			{
+//				jsonproperties = jsonproperties.startObject("_parent");
+//				jsonproperties = jsonproperties.field("type", _parent.getListId());
+//				jsonproperties = jsonproperties.endObject();
+//			}
+			jsonBuilder = jsonproperties.endObject().endObject();
 			String content = jsonproperties.string();
 			log.info(content);
 			return jsonproperties;
@@ -672,7 +663,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.field("analyzer", analyzer);
 			jsonproperties = jsonproperties.field("type", "string");
 			jsonproperties = jsonproperties.field("index", "analyzed");
-			jsonproperties = jsonproperties.field("include_in_all", "false");
+			//jsonproperties = jsonproperties.field("include_in_all", "false");
 			return;
 		}
 
@@ -680,14 +671,14 @@ public class BaseElasticSearcher extends BaseSearcher
 		if(detail.isDataType("objectarray")){
 		
 			jsonproperties = jsonproperties.field("type", "object");
-			jsonproperties.startObject("properties");
+			jsonproperties = jsonproperties.startObject("properties");
 			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();) {
 				PropertyDetail child = (PropertyDetail) iterator.next();
 				jsonproperties = jsonproperties.startObject(child.getId());
 				configureDetail(child, jsonproperties);
 				jsonproperties = jsonproperties.endObject();
 			}
-			jsonproperties.endObject();
+			jsonproperties = jsonproperties.endObject();
 			
 			
 			return;
@@ -741,15 +732,14 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.field("type", "string");
 			if (detail.isAnalyzed())
 			{
-				jsonproperties.startObject("fields");
-				jsonproperties.startObject("exact");
+				jsonproperties = jsonproperties.startObject("fields");
+				jsonproperties = jsonproperties.startObject("exact");
 				jsonproperties = jsonproperties.field("type", "string");
 				jsonproperties = jsonproperties.field("index", "not_analyzed");
 				if(!detail.getId().contains("path")){
 					jsonproperties = jsonproperties.field("ignore_above", 256);
 				}
-				jsonproperties.endObject();
-				jsonproperties.endObject();
+				jsonproperties = jsonproperties.endObject().endObject();
 			}
 
 		}
@@ -769,7 +759,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties = jsonproperties.field("index", indextype);
 		}
 
-		jsonproperties = jsonproperties.field("include_in_all", "false"); // Do
+		//jsonproperties = jsonproperties.field("include_in_all", "false"); // Do
 																			// not
 																			// use.
 																			// Use
