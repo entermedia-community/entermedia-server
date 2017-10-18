@@ -21,8 +21,8 @@ $context.putPageValue("searcher",$searcher)
                 <div class="table-cell">
                     <ul>
                         <li class="table-header">
-                            <span class="title">Song Title</span>
-                            <span class="status">Status</span>
+                            <span class="title">[[Song Title]]</span>
+                            <span class="status">[[Status]]</span>
                         </li>
                         #set( $songsearcher = $searcherManager.getSearcher($catalogid,"song") ) 
                         #set( $rows = $songsearcher.fieldSearch("mediaalbum_id",$parent.id) )
@@ -33,7 +33,7 @@ $context.putPageValue("searcher",$searcher)
                         </li>
                         #end
                         <li class="add-song">                        
-                            <a class="btn emdialog" href="$home$apphome/components/detaileditor/generictablesave.html?candelete=true&editpath=$apphome/components/detaileditor/generictablesave.html&parentid=$parent.id&searchtype=song&fieldexternalid=mediaalbum_id&fieldexternalvalue=${parent.id}&viewid=mediaalbumsongs&viewpath=mediaalbum/mediaalbumsongs&selectlink=$apphome/components/detaileditor/generictablesave.html&edit=true&oemaxlevel=1">Add New Song</a>
+                            <a class="btn emdialog" href="$home$apphome/components/detaileditor/generictablesave.html?candelete=true&editpath=$apphome/components/detaileditor/generictablesave.html&parentid=$parent.id&searchtype=song&fieldexternalid=mediaalbum_id&fieldexternalvalue=${parent.id}&viewid=mediaalbumsongs&viewpath=mediaalbum/mediaalbumsongs&selectlink=$apphome/components/detaileditor/generictablesave.html&edit=true&oemaxlevel=1">[[Add New Song]]</a>
                         </li>
                     </ul>
                 </div>

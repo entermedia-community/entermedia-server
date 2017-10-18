@@ -1,5 +1,3 @@
-
-
 <div id="vieweditorarea">
 
 #set($viewid = $context.getRequestParameter("viewid"))
@@ -13,10 +11,7 @@
 
 #set( $viewsroot = $content.viewsroot )
 
-
 <ul  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
-
-	
 #if( $viewid )
 
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
@@ -24,7 +19,7 @@
 	<li class="header no-sort" id="views-header" style="height: 16px;">
 	    <span id="name">$viewid</span>
 	    #if ( $view.rendertable )
-	    <span class="type">Table: $view.rendertable</span>
+	    <span class="type">[[Table]]: $view.rendertable</span>
 	    #end
 	    
 	    #set ( $systemdefined = "false" )
@@ -43,7 +38,7 @@
             #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
             
             <select id="assettype" name="assettype" onchange='loadViewsByAssetType(this.value,"$viewid")'>
-                    <option value="default" >Default</option>
+                    <option value="default" >[[Default]]</option>
                         #foreach($item in $assettypesearcher.fieldSearch("id","*","nameUp"))
                             <option #if($current == $item.id) selected #end value="$item.id">$item</option>
                         #end
@@ -68,7 +63,6 @@
             <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
                 [[Render as Table?]]
             	<input type="hidden" value="rendertype" name="field" />
-
             </div>
 
    <div class="checkbox"><input id="systemdefined" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
@@ -97,16 +91,15 @@
 				<div>[[Render Table Custom View]]</div>
 				<input type="hidden" value="rendercustomview" name="field" />
                 <input class="field" name="rendercustomview.value" value="$!view.rendercustomview" >
-
             </div>
             #set($editpath = $context.findValue("editPath"))
-            <a class="ajax btn" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">Edit Permissions</a>
+            <a class="ajax btn" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
 <div id="permissionedit"></div>
             
             <div class="hr" style="margin: 5px 0 0 0"></div>
-            <input class="btn right" style="margin-top: 10px;" type="submit" value="Save" />
+            <input class="btn right" style="margin-top: 10px;" type="submit" value="[[Save]]" />
             #if($candevelop)
-            <a class="btn" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">Make Default</a>
+            <a class="btn" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
             #end
         </form>
         
@@ -147,7 +140,7 @@
         #end
         #if( $canviewsettings )
         <div class="subheader-title">
-	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">Add New</a>
+	    <a href="$home$apphome/views/settings/lists/datamanager/properties/index.html?&searchtype=$searchtype" id="addnewfield">[[Add New]]</a>
 	    </div>
 	    #end
 	    <form name="addtoview" class="ajaxform" targetdiv="vieweditorarea" id="addtoview" action="$apphome/views/settings/lists/datamanager/views/addtoview.html" >
@@ -181,12 +174,10 @@
 					#if( $canviewsettings )
 					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype&viewid=${viewid}">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#else	
-						<A href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+						<a href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#end	
 					<a class="ajax delete-row" targetdiv="vieweditorarea" href="$apphome/views/settings/lists/datamanager/views/removefromview.html?searchtype=$moduleid&toremove=$pid&assettype=$assettype&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1"></a>
 				</li>
 			#end		
-		
 </ul>
-
 </div>

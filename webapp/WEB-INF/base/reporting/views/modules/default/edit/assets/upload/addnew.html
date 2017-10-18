@@ -14,13 +14,12 @@
 
 #set ($types = $searcherManager.getSearcher($catalogid, "assettype").getAllHits())
 
-<h2>Add New Record</h2>
-<p>Please select a catalog you would like to add to:</p>
+<h2>[[Add New Record]]</h2>
+<p>[[Please select a catalog you would like to add to]]:</p>
 
 <select onchange="selectCatalog(this.options[selectedIndex].value);">
 <option></option>
 #foreach ($type in $types)
 	<option value="$type.id">$type</option>
-
 #end
 </select>

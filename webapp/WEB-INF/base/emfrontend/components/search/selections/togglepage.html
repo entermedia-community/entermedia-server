@@ -39,7 +39,7 @@
     -->
     <td>&nbsp;</td>
     #if($content.isPropertyTrue("showselections"))
- <td>       <b>Selections: </b> ($!hits.getSelections().size()):  <a class="actionlink" href="#page" onclick="togglehits('page');return false;">  [[This Page]]  </a>|  <a class="actionlink" href="#all" onclick="togglehits('all');">  All $!hits.size()  </a> | <a  class="actionlink" href="#none" onclick="togglehits('none');return false;">[[Clear]]</a></td>
+ <td>       <b>Selections: </b> ($!hits.getSelections().size()):  <a class="actionlink" href="#page" onclick="togglehits('page');return false;">  [[This Page]]  </a>|  <a class="actionlink" href="#all" onclick="togglehits('all');">  [[All]] $!hits.size()  </a> | <a  class="actionlink" href="#none" onclick="togglehits('none');return false;">[[Clear]]</a></td>
  #end
     #if($content.isPropertyTrue("showactions"))
     <td>&nbsp;</td>

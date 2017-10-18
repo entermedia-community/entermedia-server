@@ -1,5 +1,3 @@
-
-
 #set($currentrole = $context.getRequestParameter("settingsgroupid")) 
 #set($permissiontype = $context.getRequestParameter("permissiontype")) 
 #set ($groupSearcher = $searcherManager.getSearcher($catalogid, "settingsgroup"))
@@ -12,7 +10,7 @@
        #foreach($settingsgroup in $groupSearcher.fieldSearch("id", "*", "textUp"))
            <option #if($currentrole == $settingsgroup.id) selected #end value="$settingsgroup.id">$settingsgroup</option>
        #end
-           <option value="new">-- Add New Role --</option>
+           <option value="new">-- [[Add New Role]] --</option>
     </select>
     
     <script>
