@@ -94,14 +94,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		fieldElasticNodeSettings = inElasticNodeSettings;
 	}
 
-	public Map getIndexSettings() {
-		if (fieldIndexSettings == null) {
-			fieldIndexSettings = new HashMap();
-			loadSettings();
-		}
-
-		return fieldIndexSettings;
-	}
 
 	protected void loadSettings()
 	{
@@ -123,11 +115,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		Element root = getXmlUtil().getXml(config.getInputStream(),"UTF-8");
 		
-		org.openedit.node.Node localNode = new org.openedit.node.Node(root);
+		fieldLocalNode = new org.openedit.node.Node(root);
 		String nodeid = getWebServer().getNodeId();
 		if( nodeid != null)
 		{
-			localNode.setId( nodeid );
+			getLocalNode().setId( nodeid );
 		}
 		
 		String abs = config.getContentItem().getAbsolutePath();
@@ -138,8 +130,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Replacer replace = new Replacer();
 
 		
-		getIndexSettings().clear();
-		getIndexSettings().put("mapper.dynamic","true");
+		fieldLocalNode.getIndexSettings().clear();
+		fieldLocalNode.getIndexSettings().put("mapper.dynamic","true");
 		//boolean dynamicmapdefined = false;
 		for (Iterator iterator = getLocalNode().getElement().elementIterator("property"); iterator.hasNext();)
 		{
@@ -147,14 +139,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			String key = prop.attributeValue("id");
 			String val = prop.getTextTrim();
 
-			val = localNode.getSetting(key);
-			if(key.startsWith("index")) 
+			val = fieldLocalNode.getSetting(key);
+			if(!key.startsWith("index")) 
 			{
-				key = key.substring("index.".length());
-				getIndexSettings().put(key, val);
-			} else {
 				preparedsettings.put(key, val);
-				
 			}
 //			if("index.mapper.dynamic".equals(key)){
 //				dynamicmapdefined = true;
@@ -735,6 +723,9 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 }
 }
 				 */
+				
+				
+				
 				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
