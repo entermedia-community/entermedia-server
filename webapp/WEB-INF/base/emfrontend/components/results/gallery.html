@@ -6,9 +6,6 @@ $context.putPageValue("showtoolbar",  $showtoolbar)
 #end
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
-#if( !$thumbsize )
-    #set( $thumbsize  = "thumb" )
-#end
 
 #if( $category )
     #set( $catid = $category.id )

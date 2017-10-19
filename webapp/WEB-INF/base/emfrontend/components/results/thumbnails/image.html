@@ -18,10 +18,13 @@
 	#set($usethumblink = "true")
 #end
 
-#set ($thumbsize = $context.getPageValue("thumbsize"))
-#if(!$thumbsize)
-	#set($thumbsize = "image200x200.jpg")
-#end
+	#if($thumbsize == "medium")
+		#set($thumbsize = "image300x300.jpg")
+	#elseif($thumbsize == "crop")
+		#set($thumbsize = "image110x62cropped.jpg")
+	#else
+		#set($thumbsize = "image200x200.jpg")
+	#end		
 
 <span id="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )

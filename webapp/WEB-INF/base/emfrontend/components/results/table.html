@@ -12,12 +12,6 @@ $pages.include("$apphome/components/results/header.html",$context)
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
-#if( !$thumbsize )
-	#set( $thumbsize  = "crop" )
-#end
-
-$context.putPageValue("thumbsize", $thumbsize)
-
 	#if( $category )
 		#set( $catid = $category.id )
 	#else
