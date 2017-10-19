@@ -68,12 +68,9 @@ import org.openedit.data.Searcher;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
-import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
-
-import groovy.util.NodeBuilder;
 
 public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 {
@@ -84,16 +81,102 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected List fieldMappingErrors;
 	protected Node fieldNode;
 	protected Map fieldIndexSettings;
+	protected Settings fieldElasticNodeSettings;
 	
 	
-	
+	public Settings getElasticNodeSettings()
+	{
+		return fieldElasticNodeSettings;
+	}
+
+	public void setElasticNodeSettings(Settings inElasticNodeSettings)
+	{
+		fieldElasticNodeSettings = inElasticNodeSettings;
+	}
+
 	public Map getIndexSettings() {
 		if (fieldIndexSettings == null) {
 			fieldIndexSettings = new HashMap();
-			
+			loadSettings();
 		}
 
 		return fieldIndexSettings;
+	}
+
+	protected void loadSettings()
+	{
+		// TODO Auto-generated method stub
+		//TODO: Move node.xml to system
+		//TODO: add locking file for this node and remove it when done
+		Settings.Builder preparedsettings = Settings.builder();
+
+		Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
+		if (!config.exists())
+		{
+			//throw new OpenEditException("Missing " + config.getPath());
+			config = getPageManager().getPage("/system/configuration/node.xml");
+		}
+
+		if( !config.exists())
+		{
+			throw new OpenEditException("WEB-INF/node.xml is not defined");
+		}
+		Element root = getXmlUtil().getXml(config.getInputStream(),"UTF-8");
+		
+		org.openedit.node.Node localNode = new org.openedit.node.Node(root);
+		String nodeid = getWebServer().getNodeId();
+		if( nodeid != null)
+		{
+			localNode.setId( nodeid );
+		}
+		
+		String abs = config.getContentItem().getAbsolutePath();
+		File parent = new File(abs);
+		Map params = new HashMap();
+		params.put("webroot", parent.getParentFile().getParentFile().getAbsolutePath());
+		params.put("nodeid", getLocalNodeId());
+		Replacer replace = new Replacer();
+
+		
+		getIndexSettings().clear();
+		getIndexSettings().put("mapper.dynamic","true");
+		//boolean dynamicmapdefined = false;
+		for (Iterator iterator = getLocalNode().getElement().elementIterator("property"); iterator.hasNext();)
+		{
+			Element prop = (Element) iterator.next();
+			String key = prop.attributeValue("id");
+			String val = prop.getTextTrim();
+
+			val = localNode.getSetting(key);
+			if(key.startsWith("index")) 
+			{
+				key = key.substring("index.".length());
+				getIndexSettings().put(key, val);
+			} else {
+				preparedsettings.put(key, val);
+				
+			}
+//			if("index.mapper.dynamic".equals(key)){
+//				dynamicmapdefined = true;
+//			}
+		}
+
+//		if(dynamicmapdefined == false){
+//			getIndexSettings().put("index.mapper.dynamic","false" );
+//			 		
+//		}
+		//String abs = config.getContentItem().getAbsolutePath();
+		//File parent = new File(abs);
+		//String webroot = parent.getParentFile().getParentFile().getAbsolutePath();
+		
+//		Node node =
+//			    nodeBuilder()
+//			        .settings(Settings.settingsBuilder().put("http.enabled", false))
+//			        .client(true)
+//			    .node();
+//		
+		//Node node = NodeBuilder.newInstance().settings(preparedsettings.build()).node();
+		setElasticNodeSettings(preparedsettings.build());
 	}
 
 	public void setIndexSettings(Map fieldIndexSettings) {
@@ -126,54 +209,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				{
 					return fieldClient;
 				}
-				Settings.Builder preparedsettings = Settings.builder();
-				//TODO: Move node.xml to system
-				//TODO: add locking file for this node and remove it when done
-
-				Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
-				if (!config.exists())
-				{
-					//throw new OpenEditException("Missing " + config.getPath());
-					config = getPageManager().getPage("/system/configuration/node.xml");
-				}
-				boolean dynamicmapdefined = false;
-				for (Iterator iterator = getLocalNode().getElement().elementIterator("property"); iterator.hasNext();)
-				{
-					Element prop = (Element) iterator.next();
-					String key = prop.attributeValue("id");
-					String val = prop.getTextTrim();
-
-					val = getSetting(key);
-					if(key.startsWith("index")) {
-						getIndexSettings().put(key, val);
-					} else {
-						preparedsettings.put(key, val);
-						
-					}
-					
-					
-					if("index.mapper.dynamic".equals(key)){
-						dynamicmapdefined = true;
-					}
-				}
-
-				if(dynamicmapdefined == false){
-					getIndexSettings().put("index.mapper.dynamic","false" );
-					 		
-				}
-				String abs = config.getContentItem().getAbsolutePath();
-				File parent = new File(abs);
-				String webroot = parent.getParentFile().getParentFile().getAbsolutePath();
-				
-//				Node node =
-//					    nodeBuilder()
-//					        .settings(Settings.settingsBuilder().put("http.enabled", false))
-//					        .client(true)
-//					    .node();
-//				
-				//Node node = NodeBuilder.newInstance().settings(preparedsettings.build()).node();
-				
-				Node node = new Node(preparedsettings.build());
+				loadSettings();
+				Node node = new Node(getElasticNodeSettings());
 
 				try
 				{
@@ -215,29 +252,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			}
 		}
 		return fieldClient;
-	}
-
-	protected String getSetting(String inId)
-	{
-		Page config = getPageManager().getPage("/WEB-INF/node.xml");
-		String abs = config.getContentItem().getAbsolutePath();
-		File parent = new File(abs);
-		Map params = new HashMap();
-		params.put("webroot", parent.getParentFile().getParentFile().getAbsolutePath());
-		params.put("nodeid", getLocalNodeId());
-		Replacer replace = new Replacer();
-
-		String value = getLocalNode().get(inId);
-		if (value == null)
-		{
-			return null;
-		}
-		if (value.startsWith("."))
-		{
-			value = PathUtilities.resolveRelativePath(value, abs);
-		}
-
-		return replace.replace(value, params);
 	}
 
 	//called from the lock manager
@@ -704,47 +718,53 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			try
 			{
 				
-				
-				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder().startObject().startObject("analysis")
-
-						/*
-						 * "index" : {
-            "analyzer" : {
-                "my_analyzer" : {
-                    "tokenizer" : "standard",
-                    "filter" : ["standard", "lowercase", "my_snow"]
-                }
-            },
-            "filter" : {
-                "my_snow" : {
-                    "type" : "snowball",
-                    "language" : "Lovins"
-                }
-            }
+				/*
+				 * "index" : {
+    "analyzer" : {
+        "my_analyzer" : {
+            "tokenizer" : "standard",
+            "filter" : ["standard", "lowercase", "my_snow"]
+        }
+    },
+    "filter" : {
+        "my_snow" : {
+            "type" : "snowball",
+            "language" : "Lovins"
         }
     }
-						 */
-						
-				.startObject("analyzer").startObject("lowersnowball").field("tokenizer", "standard").startArray("filter").value("standard").value("lowercase").value("stemfilter").endArray().
-				endObject().endObject()
-				.startObject("analyzer").startObject("tags").field("type", "custom").field("tokenizer", "keyword").startArray("filter").value("lowercase").endArray()					
-				.endObject().endObject()
-				.startObject("filter").startObject("stemfilter").field("type","snowball").field("language","English").endObject().endObject()
+}
+}
+				 */
+				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder()
+					.startObject()
+						.startObject("analysis")
+							.startObject("analyzer")
+								.startObject("lowersnowball").field("tokenizer", "standard").startArray("filter").value("standard").value("lowercase").value("stemfilter").endArray()
+								.endObject()
+							.endObject()
+							.startObject("analyzer")
+								.startObject("tags").field("type", "custom").field("tokenizer", "keyword").startArray("filter").value("lowercase").endArray()					
+								.endObject()
+							.endObject()
+							.startObject("filter")
+								.startObject("stemfilter").field("type","snowball").field("language","English")
+								.endObject()
+							.endObject()
+						.endObject();
 				
-				.endObject().endObject();
-				
+				settingsBuilder = settingsBuilder.startObject("settings").startObject("index");
 				Map settings = getIndexSettings();
 				
-				
-				settingsBuilder.startObject("settings").startArray("index");
 				for (Iterator iterator = settings.keySet().iterator(); iterator.hasNext();) {
 					String key = (String) iterator.next();
 					Object val = settings.get(key);
 					settingsBuilder.field(key, val);
 				}
-				settingsBuilder.endArray().endObject();
+				settingsBuilder = settingsBuilder.endObject()
+						.endObject()
+					.endObject();
 				
-				log.info(settingsBuilder.toString());
+				log.info(settingsBuilder.string());
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
 				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
 
@@ -904,7 +924,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					log.error("Index wasn't deleted");
 				}
 			}
-
+			if( e instanceof OpenEditException)
+			{
+				throw e;
+			}
 			throw new OpenEditException(e);
 		}
 		finally
