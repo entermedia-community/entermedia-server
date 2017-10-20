@@ -28,6 +28,8 @@ $query.addSortBy("ordering")
 		#set( $value = $row.get($detail.id) )
 		#if( $value)
 			$!context.putPageValue("val",$value)		
+			$!context.putPageValue("data",$row)		
+
 			$pages.include("$apphome/components/xml/detailreadonly.html", $context)
 		#end
 		</td>
