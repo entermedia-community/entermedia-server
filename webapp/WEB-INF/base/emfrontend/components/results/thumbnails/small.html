@@ -11,8 +11,13 @@
         #if( $type == "audio" || $type == "default")
             $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
         #else
-      
+      #set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
+     #if($tabletarget)
+      #set( $img = $mediaarchive.asLinkToPreview($hit,$tabletarget))  
+
+#else
       #set( $img = $mediaarchive.asLinkToPreview($hit,"image110x62cropped.jpg"))  
+#end
         
            <div class="emdropshadow">
             <img class="smallthumb assetdragdrop" title="[[Drag to collection]]"  draggable="true" data-sourcepath="$hit.sourcepath" data-name="$hit.name" src="$img" alt="$!hit.name" border="0" />
