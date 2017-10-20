@@ -819,23 +819,17 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
 }
 
 #searchform {
-    background: url("../images/search_icon.png") no-repeat scroll 10px 0px #F4F4F4;
-    border-radius: 4px 4px 4px 4px;
-    border-style: solid;
-    border-width: 1px;
-    height: 32px;
-    margin: 6px 0 0 9px;
-    width: 300px;
 }
 
 #searchform input {
-    border-style: none;
+    border-radius: 4px 4px 4px 4px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: rgb(170,170,170);
     color: #777;
-    height: 20px;
-    margin-left: 45px;
-    margin-top: 4px;
-    padding: 0 10px;
-    width: 220px;
+    margin-top: 1px;
+    height: 28px;
+    width: 300px;
 }
 
 .emactionheader {
