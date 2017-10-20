@@ -82,7 +82,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 			<tr  #if($candelete != "false") rowid="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
 			#foreach( $detail in $details)
 				<td style="padding:4px;">
-					#set( $val = "$!hit.get($detail.id)" )
+					#set( $val = "$!hit.get($detail.id)" ) ##TODO: Get rid of this
 					#if($detail.render)
 						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
 					#end

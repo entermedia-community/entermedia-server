@@ -5,21 +5,19 @@
 
 #if (!$thumbsize )
     #set($thumbsize = $context.getRequestParameter("thumbsize") )
-#end
-#if(!$thumbsize)
-    #set( $thumbsize = $content.thumbsize )
+	$!context.putPageValue("thumbsize",$thumbsize)
 #end
 
 #if($conversionerrors && $conversionerrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 	<img title="[[Conversion Error]]" class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/><br/>
-    <span style="color:red; font-size: 10px; position: relative; top: -2px;">Conversion Error</span>
+    <span style="color:red; font-size: 10px; position: relative; top: -2px;">[[Conversion Error]]</span>
 #elseif($publisherrors && $publisherrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
 	<img title="[[Publish Error]]" class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/><br/>
-    <span style="color:red; font-size: 10px; position: relative; top: -2px;">Publish Error</span>
+    <span style="color:red; font-size: 10px; position: relative; top: -2px;">[[Publish Error]]</span>
 #elseif( $hit.importstatus && $hit.importstatus == "complete")
     $context.putPageValue("hit",$hit)
     

@@ -3,7 +3,6 @@
 <div id="emresultscontent" >
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
-$context.putPageValue("thumbsize", $page.isPropertyTrue("thumbsize"))
 $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
 $context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
 #if( $showtoolbar )
