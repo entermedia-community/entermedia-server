@@ -15,9 +15,12 @@
 
 #if($thumbsize == "crop")
 	#set($thumbsize = "image110x62cropped.jpg")
+##elseif($thumbsize == "mediumplus")
+##	#set($thumbsize = "image300x300.jpg")
 #else
 	#set($thumbsize = "image300x300.jpg")
 #end		
+
 
 #set($tpath = $mediaarchive.asLinkToPreview($hit, $thumbsize))
 

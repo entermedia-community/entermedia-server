@@ -12,9 +12,10 @@
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
-
-	#if($thumbsize == "medium")
-		#set($thumbsize = "image300x300.jpg")
+	#if($videothumbsize == "videomediumplus")
+		#set($thumbsize = "image640x480.jpg")
+	#elseif($thumbsize == "mediumplus")
+		#set($thumbsize = "image550x350.jpg")
 	#elseif($thumbsize == "crop")
 		#set($thumbsize = "image110x62cropped.jpg")
 	#else
