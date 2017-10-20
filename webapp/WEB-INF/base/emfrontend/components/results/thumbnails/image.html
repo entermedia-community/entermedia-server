@@ -13,11 +13,6 @@
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
 
-#set ($usethumblink = $context.getPageValue("usethumblink"))
-#if(!$usethumblink)
-	#set($usethumblink = "true")
-#end
-
 	#if($thumbsize == "medium")
 		#set($thumbsize = "image300x300.jpg")
 	#elseif($thumbsize == "crop")

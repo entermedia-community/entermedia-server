@@ -13,22 +13,13 @@
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
 
-#set ($thumbsize = $context.getPageValue("thumbsize"))
-#if(!$thumbsize)
-	#set($thumbsize = "thumb")
-#end
+#if($thumbsize == "crop")
+	#set($thumbsize = "image110x62cropped.jpg")
+#else
+	#set($thumbsize = "image300x300.jpg")
+#end		
 
-#set ($usethumblink = $context.getPageValue("usethumblink"))
-#if(!$usethumblink)
-	#set($usethumblink = "true")
-#end
-
-#set ($thumbsize = $context.getPageValue("thumbsize"))
-#if(!$thumbsize)
-	#set($thumbsize = "thumb")
-#end
-
-
+#set($tpath = $mediaarchive.asLinkToPreview($hit, $thumbsize))
 
 <span id="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
@@ -43,8 +34,9 @@
 		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
 	#else	
 		<span class="emdropshadow">
-        	<img id="main-media" class="imagethumb  document   assetdragdrop" draggable="true" data-sourcepath="users/201604/33/ecc3439b5" data-name="3Page_DOC.docx" data-hidenav="$hidenav"
-        	 src="$!cdn$home/${applicationid}/views/modules/asset/downloads/preview/$thumbsize/$sourcepath/thumb.jpg" border="0" />
+        	<img id="main-media" style="height: 200px;" class="imagethumb  document   assetdragdrop" 
+        		draggable="true" data-sourcepath="users/201604/33/ecc3439b5" data-name="3Page_DOC.docx" data-hidenav="$hidenav"
+        	 src="$tpath" border="0" />
        	</span>	
 	</span>	
 	#end
