@@ -6392,12 +6392,12 @@ a.audio-filename:hover
 	border-radius: 5px 5px 0 0;
 }
 .ui-widget-header.sidetoggle .widget-header-title {
-	background: url('../images/arrow-down.png') left 4px no-repeat;
+	background: url('../images/arrow-right.png') left 4px no-repeat;
 	padding: 0 10px 0 18px;
 	
 }
 .ui-widget-header.sidetoggle.expanded .widget-header-title {
-	background: url('../images/arrow-right.png') left 3px no-repeat;
+	background: url('../images/arrow-down.png') left 3px no-repeat;
 	padding-left: 18px;
 }
 
