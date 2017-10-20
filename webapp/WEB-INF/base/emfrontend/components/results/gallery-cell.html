@@ -19,7 +19,7 @@
 	<div class="gallery-caption">
 		<div class="gallery-field-info">
 		
-			<a href="$click">#if($hit.assetttitle) $hit.assettitle #else $hit.getName($context.locale) #end</a>
+			<a href="$click"> #if($hit.assettitle) $hit.assettitle #else $hit.getName($context.locale) #end</a>
 		</div>
 		#if($canviewbasket)
 		$pages.include("$apphome/components/basket/toggleitem.html", $context)
