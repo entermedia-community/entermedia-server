@@ -12,9 +12,11 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
@@ -1899,23 +1901,23 @@ public class MediaArchive implements CatalogEnabled
 	public Collection<Category> listHiddenCategories(Collection<Category> inViewCategories)
 	{
 		Collection<Category> all = listHiddenCategories();
-
-		Collection<Category> filtered = new ArrayList<Category>();
+		if( inViewCategories.isEmpty() )
+		{
+			return all;
+		}
+		Set allowedset = new HashSet(inViewCategories.size());
+		for (Iterator iterator2 = inViewCategories.iterator(); iterator2.hasNext();)
+		{
+			Category allowed = (Category) iterator2.next();
+			allowedset.add(allowed.getId());
+		}
+		
+		Collection<Category> filtered = new ArrayList<Category>(all.size());
 
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
 			Category hidden = (Category) iterator.next();
-			boolean hideit = true;
-			for (Iterator iterator2 = inViewCategories.iterator(); iterator2.hasNext();)
-			{
-				Category allowed = (Category) iterator2.next();
-				if (allowed.equals(hidden.getId()))
-				{
-					hideit = false;
-					continue;
-				}
-			}
-			if (hideit)
+			if( !allowedset.contains( hidden.getId() ) )
 			{
 				filtered.add(hidden);
 			}
