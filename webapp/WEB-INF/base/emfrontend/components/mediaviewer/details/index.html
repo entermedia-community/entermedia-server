@@ -25,22 +25,20 @@
 			<div class="asset-details-more" style="width: 100%; padding: 0 0 20px 0">
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
-    				<h3>Libraries</h3>
+    				<h3>[[Libraries]]</h3>
     					<p style="line-height: 25px;">
             				#foreach($library in $libraries)
-            					  
             					 #set( $ldata = $searcherManager.getData($catalogid,"library",$library) )
             					 #set( $division = $searcherManager.getData($catalogid,"division",$ldata.division ) )
             					 
             					<a href="$home$apphome/views/search/search.html?searchtype=asset&field=libraries&operation=matches&libraries.value=$ldata.id" class="">$division / $ldata</a>
-            			
             				#end
     				</p>
 				#end
 				
 				
 				#if( $asset.hasKeywords() )
-				<h3>Related Tags</h3>
+				<h3>[[Related Tags]]</h3>
 					<p style="line-height: 25px;">
 						#foreach ($tag in $asset.keywords)
 							<a href="$home$apphome/views/search/search.html?searchtype=asset&field=$catalogid:asset/details:description&operation=matches&description.value=$tag">$tag</a>
@@ -57,7 +55,6 @@
 			#end
 				
 				#if ($canviewslideshow)
-				
     				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
     				#if( $type != "video" )
     					<div>	
@@ -66,10 +63,7 @@
     								title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
     					</div>
     				#end
-					
-				
 				#end		
-
 		</div>
 		
 		<div class="col2">
@@ -77,23 +71,21 @@
 			#if( $views > 0 )
 			<div class="attachments-views">
 				<span class="emdetailviews">
-					$views views
+					$views [[views]]
 				</span>
 			</div>
 			#end
 			
 			<div class="grey-box clearfix">
-			
-			#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
-			
-			
-						#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
-						  #set ($view = "asset/assettype/$asset.assettype/fileproperties")
-						#else
-						  #set ($view = "asset/assettype/default/fileproperties")
-						#end
-						$context.putPageValue("view",$view)	
-						$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+				#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+				
+				#if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
+				  #set ($view = "asset/assettype/$asset.assettype/fileproperties")
+				#else
+				  #set ($view = "asset/assettype/default/fileproperties")
+				#end
+				$context.putPageValue("view",$view)	
+				$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 			</div>
 		</div>
 		
@@ -102,7 +94,6 @@
 			<center><a class="btn showhide" style="border-top: none; margin: 0; border-radius: 0 0 5px 5px; font-size: 10px;" id="showmore">[[Show More]]</a></center>
 
 <script>
-	
 	$('#showmore').click(function() {
 		if ( $('#showmore').hasClass('more') ) 
 		{
@@ -135,5 +126,4 @@
 		}
 		
 	});
-	
 </script>

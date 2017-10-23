@@ -11,7 +11,7 @@
 
 <div class="row">
 
-Query: $breakdownhits.getSearchQuery().toFriendly()
+[[Query]]: $breakdownhits.getSearchQuery().toFriendly()
 
 
 
@@ -26,7 +26,7 @@ Query: $breakdownhits.getSearchQuery().toFriendly()
 
 <ul class="list-group">
  <a href="#" class="list-group-item active">
-    Asset Usage Breakdown
+    [[Asset Usage Breakdown]]
   </a>
 #foreach($item in $breakdownhits.getAggregations().get("assettype_filesize").getBuckets())
 #foreach($subitem in $item.getAggregations())
@@ -42,7 +42,7 @@ Query: $breakdownhits.getSearchQuery().toFriendly()
 
 <li class="list-group-item">
     <span class="badge">$!sizer.inEnglish($breakdownhits.getSum("filesize")) </span>
-  Total
+  [[Total]]
 
   </li>
   
@@ -52,15 +52,7 @@ Query: $breakdownhits.getSearchQuery().toFriendly()
 
 </div>
 
-
-
-
-
-
-
 <script>
-
-
 var ctx = document.getElementById("usagechart");
 var data =
 {

@@ -12,7 +12,7 @@
 	#set ($detaileditsuffix = "?detailsreadonly=true")
 #end
       
-<h3>File Properties</h3>
+<h3>[[File Properties]]</h3>
 $context.putPageValue("searcher", $searcher)
 $context.putPageValue("view", "assettype/default/fileproperties")
 $context.putPageValue("data", $asset)
@@ -21,7 +21,7 @@ $pages.include("$apphome/components/xml/detaileditor.html$detaileditsuffix", $co
 
 #if ($isediting == true)
 <p>
-	<input type="submit" value="Save"/>
+	<input type="submit" value="[[Save]]"/>
 </p>
 
 </form>
@@ -33,7 +33,7 @@ $pages.include("$apphome/components/xml/detaileditor.html$detaileditsuffix", $co
 	#if ($isediting)
 		
 	#else
-		<a href="$home$apphome/views/assets/index.html?sourcepath=${asset.sourcepath}&edit=true"><span>Edit</span></a>
+		<a href="$home$apphome/views/assets/index.html?sourcepath=${asset.sourcepath}&edit=true"><span>[[Edit]]</span></a>
 	#end
 </li>	
 </ul>

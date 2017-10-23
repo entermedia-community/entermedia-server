@@ -6,13 +6,11 @@
   	#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 				$context.putPageValue("cell", $asset)
   
-					$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
   	$context.putPageValue("searcher", $mediaarchive.getAssetSearcher())	 
 	$context.putPageValue("data", $asset)	 
 	$context.putPageValue("view", "asset/print")	
 	$pages.include("/${applicationid}/components/xml/bootstrapdetaileditor.html?detailsreadonly=true", $context)
-  
-  
   </div>
 </div>
 

@@ -1,4 +1,3 @@
-
 #if( $caneditasset)
 	#if( $asset.name )
 		#set ($assetSearcher = $mediaarchive.assetSearcher)
@@ -24,7 +23,7 @@
 		 	#if( $asset.name )
 		  <a href="$home$apphome/components/detaileditor/actions/move.html?sourcepath=$asset.sourcePath"   >[[Approve and Move]]</a> |
 		  	#else
-			<div><a href="$home$apphome/components/detaileditor/index.html?openview=assetdetails&assetid=$asset.id">Item Number</a> [[is not filled in]]</div>				  	
+			<div><a href="$home$apphome/components/detaileditor/index.html?openview=assetdetails&assetid=$asset.id">[[Item Number]]</a> [[is not filled in]]</div>				  	
 		  	#end
 		#end
 			<a href="$home$apphome/components/detaileditor/actions/print.html?sourcepath=$asset.sourcePath"  >[[Print Cutoff Sheet]]</a>

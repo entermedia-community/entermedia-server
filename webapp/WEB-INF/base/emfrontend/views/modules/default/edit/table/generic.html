@@ -27,10 +27,6 @@
 	$context.putPageValue("data", $data)	
 #end
 
-
-
-
-
 $context.putPageValue("searcher", $searcher)
 
 #set ( $openview = $context.getRequestParameter("openview") )
@@ -46,7 +42,6 @@ $context.putPageValue("searcher", $searcher)
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 
 	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="${view}editor" method="post" action="$home$editpath?oemaxlevel=1" >
-	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input type="hidden" name="save" value="true" />
 		<input type="hidden" name="catalogid" value="$!catalogid" />

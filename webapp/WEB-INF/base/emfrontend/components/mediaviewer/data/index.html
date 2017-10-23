@@ -68,9 +68,7 @@ $context.putPageValue("showalllanguagevalues",true)
 					</div>
 					</div>
 			</div>	
-				
 				#if ($canviewslideshow)
-				
     				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
     				#if( $type != "video" )
     					<div>	
@@ -79,9 +77,6 @@ $context.putPageValue("showalllanguagevalues",true)
     								title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
     					</div>
     				#end
-					
-				
 				#end		
-			
 	</div>		
 </div>

@@ -5,7 +5,7 @@ $pages.include($editlink)
 <div class="ui-widget uipanel" style="padding: 20px 5px 5px 5px;width: 60%">
   	<div class="ui-widget-header">[[Sharing]]
     	<span class="widget-header-edit">
-			 <a class="ir" href="/assets/emshare/views/settings/modules/librarycollection/metadata/views/index.html?viewid=librarycollectiongeneral&amp;viewpath=librarycollection/librarycollectiongeneral">Edit</a>
+			 <a class="ir" href="/assets/emshare/views/settings/modules/librarycollection/metadata/views/index.html?viewid=librarycollectiongeneral&amp;viewpath=librarycollection/librarycollectiongeneral">[[Edit]]</a>
 		</span>
     </div>
 	<div class="ui-widget-content">
@@ -42,7 +42,7 @@ $pages.include($editlink)
 		#if( $exists )
 		
 		#else
-			<a class="btn" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html?subfolder=$librarycol.getCategory().getCategoryPath()">Create Hotfolder</a>
+			<a class="btn" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html?subfolder=$librarycol.getCategory().getCategoryPath()">[[Create Hotfolder]]</a>
 	#end
 
 </div>

@@ -3,7 +3,7 @@
 #if(!$emtabid) #set( $emtabid = "list" ) #end
 	<ul data-targetdiv="collection-home-tab-content" data-defaulttab="mediatab" class="ui-tabs-nav nav pull-left emtabs">	
 		  <li class="ui-corner-top #if(!$emtabid || $emtabid =='list')emtabselected#end firstab"><a href="$home$apphome/index.html?emtabid=collectionlist&oemaxlayout=1" 
-		  	data-allwaysloadpage="false" data-layouts="2" id="collectionlist">Collections</a></li>
+		  	data-allwaysloadpage="false" data-layouts="2" id="collectionlist">[[Collections]]</a></li>
 		  	#foreach($col in $userprofile.getValues("opencollections") )
 		  		#set( $collection = false )
 		  		#set( $collection = $mediaarchive.getData("librarycollection",$col))
@@ -15,13 +15,11 @@
 			#end  
 	</ul>
 	<div class="clearfix"></div>
-	
 	<div class="ui-corner-top ui-corner-bottom tab-container" id="collection-home-tab-content">
 		  	<div id="collection${emtabid}panel" class="tab-pane">
 				$pages.includeContent()
 			</div>
 	</div>
-	
 </div>
 <script>
 
