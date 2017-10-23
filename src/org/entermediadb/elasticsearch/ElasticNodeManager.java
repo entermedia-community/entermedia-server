@@ -2,6 +2,7 @@ package org.entermediadb.elasticsearch;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,6 +55,7 @@ import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
+import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.node.Node;
@@ -68,6 +70,7 @@ import org.openedit.data.Searcher;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
+import org.openedit.util.FileUtils;
 import org.openedit.util.Replacer;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
@@ -81,26 +84,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected List fieldMappingErrors;
 	protected Node fieldNode;
 	protected Map fieldIndexSettings;
-	protected Settings fieldElasticNodeSettings;
 	
-	
-	public Settings getElasticNodeSettings()
-	{
-		return fieldElasticNodeSettings;
-	}
-
-	public void setElasticNodeSettings(Settings inElasticNodeSettings)
-	{
-		fieldElasticNodeSettings = inElasticNodeSettings;
-	}
-
-
 	protected void loadSettings()
 	{
 		// TODO Auto-generated method stub
 		//TODO: Move node.xml to system
 		//TODO: add locking file for this node and remove it when done
-		Settings.Builder preparedsettings = Settings.builder();
 
 		Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
 		if (!config.exists())
@@ -115,12 +104,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		Element root = getXmlUtil().getXml(config.getInputStream(),"UTF-8");
 		
-		fieldLocalNode = new org.openedit.node.Node(root);
+		fieldLocalNode = new org.openedit.node.Node();
 		String nodeid = getWebServer().getNodeId();
-		if( nodeid != null)
+		if( nodeid == null)
 		{
-			getLocalNode().setId( nodeid );
+			nodeid = root.attributeValue("id");
 		}
+		getLocalNode().setId(nodeid);
 		
 		String abs = config.getContentItem().getAbsolutePath();
 		File parent = new File(abs);
@@ -129,46 +119,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		params.put("nodeid", getLocalNodeId());
 		Replacer replace = new Replacer();
 
-		
-		fieldLocalNode.getIndexSettings().clear();
-		fieldLocalNode.getIndexSettings().put("mapper.dynamic","true");
-		//boolean dynamicmapdefined = false;
-		for (Iterator iterator = getLocalNode().getElement().elementIterator("property"); iterator.hasNext();)
+		for (Iterator iterator = root.elementIterator(); iterator.hasNext();)
 		{
-			Element prop = (Element) iterator.next();
-			String key = prop.attributeValue("id");
-			String val = prop.getTextTrim();
-
-			val = fieldLocalNode.getSetting(key);
-			if(!key.startsWith("index")) 
-			{
-				preparedsettings.put(key, val);
-			}
-//			if("index.mapper.dynamic".equals(key)){
-//				dynamicmapdefined = true;
-//			}
+			Element ele = (Element)iterator.next();
+			String key = ele.attributeValue("id");
+			String val = ele.getTextTrim();
+			//if( val.startsWith("."))
+			//{
+				val = replace.replace(val, params);
+			//}
+			getLocalNode().setValue(key, val);
 		}
-
-//		if(dynamicmapdefined == false){
-//			getIndexSettings().put("index.mapper.dynamic","false" );
-//			 		
-//		}
-		//String abs = config.getContentItem().getAbsolutePath();
-		//File parent = new File(abs);
-		//String webroot = parent.getParentFile().getParentFile().getAbsolutePath();
-		
-//		Node node =
-//			    nodeBuilder()
-//			        .settings(Settings.settingsBuilder().put("http.enabled", false))
-//			        .client(true)
-//			    .node();
-//		
-		//Node node = NodeBuilder.newInstance().settings(preparedsettings.build()).node();
-		setElasticNodeSettings(preparedsettings.build());
-	}
-
-	public void setIndexSettings(Map fieldIndexSettings) {
-		this.fieldIndexSettings = fieldIndexSettings;
 	}
 
 	protected boolean reindexing = false;
@@ -197,8 +158,35 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				{
 					return fieldClient;
 				}
-				loadSettings();
-				Node node = new Node(getElasticNodeSettings());
+				
+				Settings.Builder preparedsettings = Settings.builder();
+
+				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					if(key.startsWith("index") || !key.contains(".")) //Legacy
+					{
+						continue;
+					}
+
+					String val = getLocalNode().getSetting(key);
+					preparedsettings.put(key, val);
+				}
+
+				/*
+				 * 
+				 TODO: support using a Transport client to connect to an existing cluster
+				 Settings settings = ImmutableSettings.settingsBuilder()
+				 
+			    .put("client.transport.sniff", true)
+			    .put("cluster.name", "my-cluster").build();
+			Client client = new TransportClient(settings)
+			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost1", 9300))
+			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost2", 9300));
+				*/
+				//log.info(preparedsettings.toString());
+				
+				Node node = new Node(preparedsettings.build());
 
 				try
 				{
@@ -225,17 +213,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				fieldNode = node;
 				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
 				
-				/*
-				 * 
-				 TODO: support using a Transport client to connect to an existing cluster
-				 Settings settings = ImmutableSettings.settingsBuilder()
-				 
-			    .put("client.transport.sniff", true)
-			    .put("cluster.name", "my-cluster").build();
-			Client client = new TransportClient(settings)
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost1", 9300))
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost2", 9300));
-				*/
 				
 			}
 		}
@@ -314,7 +291,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public String createSnapShot(String inCatalogId, Lock inLock, boolean wholecluster)
 	{
 		String indexid = toId(inCatalogId);
-		String path = getSetting("repo.root.location") + "/" + indexid; //Store it someplace unique so we can be isolated?
+		String path = getLocalNode().getSetting("repo.root.location") + "/" + indexid; //Store it someplace unique so we can be isolated?
 
 		//log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
 
@@ -389,7 +366,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		String indexid = toId(inCatalogId);
 
-		String path = getSetting("repo.root.location") + "/" + indexid;
+		String path = getLocalNode().getSetting("repo.root.location") + "/" + indexid;
 
 		if (!new File(path).exists())
 		{
@@ -687,46 +664,22 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		AdminClient admin = getClient().admin();
 
-		
-		boolean indexexists = false;
-		//		AliasOrIndex indexToAliasesMap = admin.cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(alias);
-		//		if(indexToAliasesMap != null && !indexToAliasesMap.isAlias()){
-		//			    throw new OpenEditException("An old index exists with the name we want to use for the alias!");
-		//		}
-		//		if(indexToAliasesMap != null && indexToAliasesMap.isAlias()){
-		//		    indexexists = true;//we have an index already with this alias..
-		//			   index= indexToAliasesMap.getIndices().iterator().next().getIndex();;
-		//		} 
-
 		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index);
 		IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
 		boolean createdIndex = false;
 		if (!res.isExists())
 		{
+			InputStream in = null;
 			try
 			{
+				Page yaml = getPageManager().getPage("/system/configuration/elasticindex.yaml");
+				in = yaml.getInputStream();
+				Builder settingsBuilder = Settings.builder().loadFromStream(yaml.getName(), in);
+				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
+ 
 				
 				/*
-				 * "index" : {
-    "analyzer" : {
-        "my_analyzer" : {
-            "tokenizer" : "standard",
-            "filter" : ["standard", "lowercase", "my_snow"]
-        }
-    },
-    "filter" : {
-        "my_snow" : {
-            "type" : "snowball",
-            "language" : "Lovins"
-        }
-    }
-}
-}
-				 */
-				
-				
-				
-				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder()
+				 * 	XContentBuilder settingsBuilder = XContentFactory.jsonBuilder()
 					.startObject()
 						.startObject("analysis")
 							.startObject("analyzer")
@@ -742,23 +695,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 								.endObject()
 							.endObject()
 						.endObject();
+				 */
 				
-				settingsBuilder = settingsBuilder.startObject("settings").startObject("index");
-				Map settings = getIndexSettings();
-				
-				for (Iterator iterator = settings.keySet().iterator(); iterator.hasNext();) {
-					String key = (String) iterator.next();
-					Object val = settings.get(key);
-					settingsBuilder.field(key, val);
-				}
-				settingsBuilder = settingsBuilder.endObject()
-						.endObject()
-					.endObject();
-				
-				log.info(settingsBuilder.string());
-				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
-				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
-
 				if (newindexres.isAcknowledged())
 				{
 					log.info("index created " + index);
@@ -773,28 +711,19 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			}
 			catch (Exception e)
 			{
+				if(e instanceof RuntimeException )
+				{
+					throw (RuntimeException)e;
+				}
 				throw new OpenEditException(e);
+			}
+			finally
+			{
+				FileUtils.safeClose(in);
 			}
 			return createdIndex;
 		}
 
-		//TODO: This should have beeb already setup by the NodeManager
-
-		//from this point forward we can use the alias = media_catalogs_public instead of the actual index string..
-
-		//		ClusterState cs = admin.cluster().prepareState().setIndices(alias).execute().actionGet().getState();
-		//		IndexMetaData data = cs.getMetaData().index(alias);
-		//		if (data != null)
-		//		{
-		//			if (data.getMappings() != null)
-		//			{
-		//				MappingMetaData fields = data.getMappings().get(getSearchType());
-		//				if (fields != null && fields.source() != null)
-		//				{
-		//					runmapping = false;
-		//				}
-		//			}
-		//		}
 		RefreshRequest req = Requests.refreshRequest(index);
 		RefreshResponse rres = admin.indices().refresh(req).actionGet();
 		if (rres.getFailedShards() > 0)
@@ -803,12 +732,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 
 		return createdIndex;
-
-		//		if(createdIndex){
-		//			
-		//			initializeCatalog(getCatalogId());
-		//		}
-		//return runmapping;
 	}
 
 	

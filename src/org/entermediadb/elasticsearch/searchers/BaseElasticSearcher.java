@@ -643,7 +643,7 @@ public class BaseElasticSearcher extends BaseSearcher
 //			}
 			jsonBuilder = jsonproperties.endObject().endObject();
 			String content = jsonproperties.string();
-			log.info(content);
+			//log.info(content);
 			return jsonproperties;
 		}
 		catch (Throwable ex)
@@ -1588,7 +1588,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(0).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
 
 		//setConcurrentRequests = 1 sets concurrentRequests to 1, which means an asynchronous execution of the flush operation.
 
@@ -1622,7 +1622,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				req = req.source(content);
 				
 				
-				 req = req.setRefreshPolicy(RefreshPolicy.WAIT_UNTIL);
+				//Not supported req = req.setRefreshPolicy(RefreshPolicy.WAIT_UNTIL);
 				
 				//				try
 				//				{

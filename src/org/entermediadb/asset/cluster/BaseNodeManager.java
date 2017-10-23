@@ -81,6 +81,12 @@ public abstract class BaseNodeManager implements NodeManager
 
 		return fieldLocalNode;
 	}
+	protected void loadSettings()
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 	public String getLocalNodeId()
 	{
 		return getLocalNode().getId();
