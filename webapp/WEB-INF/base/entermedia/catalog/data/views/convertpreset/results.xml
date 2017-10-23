@@ -1,9 +1,10 @@
 <properties>
-	<property id="inputtype"/>
 	<property id="name" />
 	<property id="type" />
 	<property id="generatedoutputfile" />
 	<property id="onimport" />
+		<property id="inputtype"/>
+	
 </properties>
 
    

@@ -23,13 +23,13 @@
 		</form>
 	</div>
 	<div  class="collectionheaderright" id="addcollectionform">
-		<a href="$home$apphome/components/collectionfeed/addnewcollection.html" class="ajax" targetdiv="addcollectionform" title="Add Collection"><img src="$home$apphome/theme/images/icons/addgray.png"> </a>
+		<a href="$home$apphome/components/collectionfeed/addnewcollection.html" class="ajax" targetdiv="addcollectionform" title="[[Add Collection]]"><img src="$home$apphome/theme/images/icons/addgray.png"> </a>
 	</div>
 </div>
 <div class="clearfix"></div>
 		#if( $usercollections.size() == 0 )
 		<div style="margin:100px">
-		No collections on library
+		[[No collections on library]]
 		</div>
 		#end
 	<div >
@@ -51,7 +51,7 @@
 						</div>
 						<div class="ui-widget-content">	
 ##						    <div class="btn-toolbar">
-##						    	<a  href="$home$apphome/views/modules/librarycollection/media/${colid}.html?width=400">View Collection [$collectionassets.size()]</a> 
+##						    	<a  href="$home$apphome/views/modules/librarycollection/media/${colid}.html?width=400">[[View Collection]] [$collectionassets.size()]</a> 
 ##							</div>
 							#if( $collectionassets.size() > 0)
 									$context.putPageValue("collectionassets",$collectionassets)

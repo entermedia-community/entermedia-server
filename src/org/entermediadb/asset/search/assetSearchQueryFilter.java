@@ -117,20 +117,20 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			
 			//Have clients use the category tree to give permissions as they do now on categories for visibility
 			orchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
+			required.addChildQuery(orchild);
 
 			//Also add to this list public collections
 			Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
-			Collection<String> notshown = new ArrayList<String>();
-			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
-			{
-				Category cat = (Category) iterator.next();
-				notshown.add(cat.getId());
-			}
-			required.addChildQuery(orchild);
+//			Collection<String> notshown = new ArrayList<String>();
+//			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
+//			{
+//				Category cat = (Category) iterator.next();
+//				notshown.add(cat.getId());
+//			}
 			//child.addMatches("id", "*");
-			if (!notshown.isEmpty())
+			if (!privatecats.isEmpty())
 			{
-				required.addNots("category", notshown); //Hidden categories that Im not part of
+				required.addNots("category", privatecats); //Hidden categories that Im not part of
 			}
 			inQuery.setSecurityAttached(true);
 			if (!required.isEmpty())

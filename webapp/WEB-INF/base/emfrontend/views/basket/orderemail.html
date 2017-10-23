@@ -1,7 +1,7 @@
-<p>A new order has been placed.</p>
+<p>[[A new order has been placed]].</p>
 
  
-Order Number: $order.getId()
+[[Order Number]]: $order.getId()
 
 #set ($hostName = $page.getProperty("hostName"))
 #if(!$hostName || $hostName == "")
@@ -10,7 +10,7 @@ Order Number: $order.getId()
 
 
 <p>
-<h2>Customer: $user</h2>
+<h2>[[Customer]]: $user</h2>
 #set($usersearcher = $searcherManager.getSearcher($catalogid, "user"))
 $context.putPageValue("searcher", $usersearcher)	 
 $context.putPageValue("view", "user/useredit")	
@@ -20,7 +20,7 @@ $pages.include("/${content.parentapplicationid}/components/xml/detaileditor.html
 </p>
 
 
-<h2>Items</h2>
+<h2>[[Items]]</h2>
 
 
 #foreach( $item in $orderitems )
@@ -31,6 +31,4 @@ $pages.include("/${content.parentapplicationid}/components/xml/detaileditor.html
 #end
                                                                                                                
 
-<a href="${context.siteRoot}${home}$apphome/views/activity/details/vieworder.html?orderid=${order.getId()}">To review this order, click here</a> 
-
-
+<a href="${context.siteRoot}${home}$apphome/views/activity/details/vieworder.html?orderid=${order.getId()}">[[To review this order, click here]]</a> 

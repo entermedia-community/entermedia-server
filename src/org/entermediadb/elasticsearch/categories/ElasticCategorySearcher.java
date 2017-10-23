@@ -364,7 +364,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public Data loadData(Data inHit)
 	{
-		if( inHit == null || inHit instanceof Category )
+		if( inHit == null || inHit instanceof ElasticCategory )
 		{
 			return inHit;
 		}

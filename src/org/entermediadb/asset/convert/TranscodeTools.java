@@ -73,7 +73,7 @@ public class TranscodeTools
 			{
 				render = row.get("rendertype");
 			}
-			else
+			if( render == null)
 			{
 				render = "default";
 			}

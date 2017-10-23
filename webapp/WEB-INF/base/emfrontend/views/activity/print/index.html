@@ -2,7 +2,7 @@
 #set($order = $data)
 
 			#if( $order.userid != $user.getId() )
-			Invalid order
+			[[Invalid order]]
 			#end
 		
 			#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))

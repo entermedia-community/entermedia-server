@@ -709,10 +709,18 @@ uiload = function() {
 					select: function(event, ui) {
 						//set input that's just for display purposes
 						theinput.val(ui.item.value);
-						//theinput.submit();
+						$("#search_form").submit();
 						return false;
 					}
 				});
+			}
+			console.log(theinput);
+			
+			if( theinput.data("quicksearched") == true )
+			{
+				var strLength = theinput.val().length * 2;
+				theinput.focus();
+				theinput[0].setSelectionRange(strLength, strLength);
 			}
 		});
 

@@ -1,4 +1,3 @@
-
 #set($idcount = $context.getRequestParameter("idcount"))
 #if(!$idcount)
 	#set($idcount = "")
@@ -25,6 +24,6 @@
 ##end
 ##<input type="hidden" class="$detail.getId()-field" id="${detail.getId()}.value" name="${detail.getId()}.sourcepath" value="$!sourcepath" />
 
-<a href="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-width="90%" data-height="90%"  class="emdialog  btn btn-default" >Browse</a> 
+<a href="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-width="90%" data-height="90%"  class="emdialog  btn btn-default" >[[Browse]]</a> 
 
-or <input class="render-choose-file" type="file" name="file.${detail.getId()}" />
+[[or]] <input class="render-choose-file" type="file" name="file.${detail.getId()}" />

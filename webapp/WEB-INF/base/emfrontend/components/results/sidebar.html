@@ -36,7 +36,7 @@ $related.setPage($pageval)
                 #if ($related.getPage() > 1 )
 	 				<li class="textbutton">
                     #set ($pageval = $related.getPage() - 1)
-                   <a class="ajax" targetdiv="emresultscontent" href="$home$page.getPath()?sourcepath=$asset.sourcepath&page=$pageval&hitssessionid=$rootid&oemaxlevel=1"> << Previous Page </a>
+                   <a class="ajax" targetdiv="emresultscontent" href="$home$page.getPath()?sourcepath=$asset.sourcepath&page=$pageval&hitssessionid=$rootid&oemaxlevel=1"> << [[Previous Page]] </a>
     				</li>
                 #end
         			
@@ -69,7 +69,7 @@ $related.setPage($pageval)
                 #if ( $related.getPage() < $related.getTotalPages() )
                 <li class="textbutton">
                     #set ($pageholder = $related.getPage() + 1)
-                   <a class="ajax" targetdiv="emresultscontent" href="$home$page.getPath()?sourcepath=$asset.sourcepath&page=$pageholder&hitssessionid=$rootid&oemaxlevel=1"> Next Page >> </a>
+                   <a class="ajax" targetdiv="emresultscontent" href="$home$page.getPath()?sourcepath=$asset.sourcepath&page=$pageholder&hitssessionid=$rootid&oemaxlevel=1"> [[Next Page]] >> </a>
                 </li>
                 #end
  				

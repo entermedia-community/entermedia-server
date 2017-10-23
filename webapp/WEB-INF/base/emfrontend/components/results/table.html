@@ -3,7 +3,6 @@
 <div id="emresultscontent" >
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
-$context.putPageValue("thumbsize", $page.isPropertyTrue("thumbsize"))
 $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
 $context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
 #if( $showtoolbar )
@@ -11,12 +10,6 @@ $pages.include("$apphome/components/results/header.html",$context)
 #end
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
-
-#if( !$thumbsize )
-	#set( $thumbsize  = "crop" )
-#end
-
-$context.putPageValue("thumbsize", $thumbsize)
 
 	#if( $category )
 		#set( $catid = $category.id )

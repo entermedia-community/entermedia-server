@@ -1,21 +1,19 @@
 #if( $canviewassets )
-
-
-			<div class="ui-widget uipanel" id="left-col-search" >
-				<div  #if($userprofile.minimizeasearchcontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" #else class="ui-widget-header" #end data-target="asearchcontent">
-					<span class="widget-header-title">[[Search]] #if($librarycol)[[Collection]]#elseif($selectedlibrary)[[Library]]#else [[Assets]]#end</span> 
-					##<div style="display:inline-block;">
- 					##<span class="tooltip"  title="Allowed Search Modifiers: AND, OR"><i class="glyphicon glyphicon-question-sign"></i></span>
-					##</div>
-					
-					#if( $caneditadvancedsearch )
-						<span class="widget-header-right">
-						<a class="ajax " targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><i class="glyphicon glyphicon-edit"></i></a>
-						</span>
-					#end
-				</div>
-				<div  class="ui-widget-content" id="asearchcontent" #if($userprofile.minimizeasearchcontent == "true" && $cantogglesidebar) style="display: none;" #end>
-					$pages.include("$apphome/components/advancedsearch/index.html", $context)
-				</div>
-			</div>
+	<div class="ui-widget uipanel" id="left-col-search" >
+		<div  #if($userprofile.minimizeasearchcontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" #else class="ui-widget-header" #end data-target="asearchcontent">
+			<span class="widget-header-title">[[Search]] #if($librarycol)[[Collection]]#elseif($selectedlibrary)[[Library]]#else [[Assets]]#end</span> 
+			##<div style="display:inline-block;">
+				##<span class="tooltip"  title="Allowed Search Modifiers: AND, OR"><i class="glyphicon glyphicon-question-sign"></i></span>
+			##</div>
+			
+			#if( $caneditadvancedsearch )
+				<span class="widget-header-right">
+				<a class="ajax " targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><i class="glyphicon glyphicon-edit"></i></a>
+				</span>
+			#end
+		</div>
+		<div  class="ui-widget-content" id="asearchcontent" #if($userprofile.minimizeasearchcontent == "true" && $cantogglesidebar) style="display: none;" #end>
+			$pages.include("$apphome/components/advancedsearch/index.html", $context)
+		</div>
+	</div>
 #end

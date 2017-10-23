@@ -1,9 +1,8 @@
-
 #if( $pendingassets.size() > 0 )
 
 #foreach( $asset in $pendingassets.getPageOfHits() )
     
-	<div ><a href="$home$apphome/views/activity/delete.html?sourcepath=$asset.sourcePath&deleterecord=true"><img src="$home$themeprefix/images/navigation/deletesm.png" title="Remove Upload" align="top"/></a> $asset.name</div>
+	<div ><a href="$home$apphome/views/activity/delete.html?sourcepath=$asset.sourcePath&deleterecord=true"><img src="$home$themeprefix/images/navigation/deletesm.png" title="[[Remove Upload]]" align="top"/></a> $asset.name</div>
 	#if( $asset.getUploadPercentage() > 0)
 	
 	#set( $barsize=$asset.getUploadPercentage()*150)
@@ -18,5 +17,5 @@
 	#end
 #end
 #else
-Uploads complete
+[[Uploads complete]]
 #end

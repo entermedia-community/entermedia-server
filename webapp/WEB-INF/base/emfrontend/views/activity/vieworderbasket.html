@@ -1,16 +1,16 @@
 #if( $order.userid != $user.getId() )
-Invalid order
+[[Invalid order]]
 #else
 
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
 	#set($owner = $userManager.getUser($order.userid))
 	
-	<h2>Order Details</h2>
+	<h2>[[Order Details]]</h2>
 	
 	<ul>
-		<li>Order Id: $order.id </li>
-		<li>Order Date: $context.getDateTime($order.date)</li>
+		<li>[[Order Id]]: $order.id </li>
+		<li>[[Order Date]]: $context.getDateTime($order.date)</li>
 			
 	</ul>	
 	
@@ -21,9 +21,9 @@ Invalid order
 	<tr>
 	<th></th>
 	<th></th>
-	<th>Name</th>
-	<th>Conversion Type</th>
-	<th>Destination</th>
+	<th>[[Name]]</th>
+	<th>[[Conversion Type]]</th>
+	<th>[[Destination]]</th>
 	<th></th>
 	</tr>
 	
@@ -42,7 +42,7 @@ Invalid order
 	<input type="hidden" name="field" value="destinationid" />
 	<input type="hidden" name="field" value="presetid" />
 	<input type="hidden" name="orderid" value="$order.id"/>
-	<input type="submit" value="Submit"/>
+	<input type="submit" value="[[Submit]]"/>
 	</form>
 	</div>
 	<div id="itemsave"></div>

@@ -22,7 +22,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 					#if( $canedittablecolumns )
 					<div id="table-edit-outside">
 						#if( !$edit ) 
-						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true"> <img  title="Edit Columns" src="/assets/emshare/theme/images/edit.gif"></a>
+						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true"> <img  title="[[Edit Columns]]" src="/assets/emshare/theme/images/edit.gif"></a>
 						#else 
 							<div id="column-editor-content">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
@@ -63,7 +63,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 				#text( $detail.name )
 				#if( $edit)
 					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
-						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="[[Remove]]" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
 				
 				#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))
@@ -82,7 +82,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 			<tr  #if($candelete != "false") rowid="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
 			#foreach( $detail in $details)
 				<td style="padding:4px;">
-					#set( $val = "$!hit.get($detail.id)" )
+					#set( $val = "$!hit.get($detail.id)" ) ##TODO: Get rid of this
 					#if($detail.render)
 						#set( $val = $searcherManager.getValue($catalogid, $detail.render, $hit.properties))
 					#end

@@ -1,8 +1,6 @@
-
 <div class="ui-widget uipanel" style="margin: 20px;">
 		    <div class="ui-widget-header">[[Create Streaming Video]]</div>
 		    <div class="ui-widget-content">
-	
 
 #set( $catalog = $context.getRequestParameter('uploadcatalog') )
 #set( $sourcepath = $formatteddate )
@@ -12,18 +10,11 @@
 	
 <div id="eml-tab-green-container" class="clearfix">
 	<div class="inner-content">
-	
-
-
 		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 		$context.putPageValue("view","asset/assettype/default/createnewvideo")	
 
-
 		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
-		
-		
-
-<hr />
+	<hr />
 
 	<input class="btn" style="float: right" type="submit" id="finishbutton" value="[[Next]]">
 	
@@ -32,6 +23,5 @@
 </form>
 </div>
 </div>
-
 			</div>
 		</div>

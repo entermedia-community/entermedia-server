@@ -1,7 +1,7 @@
 #set($userprofilesearcher = $mediaarchive.getSearcher("userprofile"))
-#set($message = "The following asset has been imported to the DAM.")
+#set($message = "[[The following asset has been imported to the DAM]].")
 #if($hits.size() > 1)
-	#set($message = "The following ${hits.size()} assets have been imported to the DAM.")
+	#set($message = "[[The following]] ${hits.size()} [[assets have been imported to the DAM]].")
 #end
 
 #set($setting = $mediaarchive.getCatalogSetting("events_notify_app"))

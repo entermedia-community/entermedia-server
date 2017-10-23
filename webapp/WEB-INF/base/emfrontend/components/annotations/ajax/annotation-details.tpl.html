@@ -81,8 +81,8 @@
                     <form id="annotation-input{{annotation.id}}" >
                         <textarea class="user-comment-input" name="user-input" rows="7" cols="30" >{{annotation.comment}}</textarea>
                         <div class="pull-right">
-                            <button name="user-add-comment" class="btn btn-danger" ng-click='annotationEditor.cancelComment("{{annotation.id}}")'>Cancel</button>
-                            <button name="user-add-comment" class="btn btn-primary" ng-click='annotationEditor.saveComment("{{annotation.id}}")'>Add Comment</button>
+                            <button name="user-add-comment" class="btn btn-danger" ng-click='annotationEditor.cancelComment("{{annotation.id}}")'>[[Cancel]]</button>
+                            <button name="user-add-comment" class="btn btn-primary" ng-click='annotationEditor.saveComment("{{annotation.id}}")'>[[Add Comment]]</button>
                         </div>
                     </form>
                      <div class="separator" ></div>
@@ -108,8 +108,8 @@
                                 </div>
                             </div>
                             <div class="comment-meta">
-                                <button ng-click='annotationEditor.removeAnnotation("{{annotation.id}}")'>remove</button>
-                                <button ng-click='annotationEditor.toggleCommentEdit("{{annotation.id}}")' class="user-comment" >edit</button>
+                                <button ng-click='annotationEditor.removeAnnotation("{{annotation.id}}")'>[[remove]]</button>
+                                <button ng-click='annotationEditor.toggleCommentEdit("{{annotation.id}}")' class="user-comment" >[[edit]]</button>
                                 <span class="comment-timestamp pull-right">{{annotation.getFormattedDate()}}</span>
                             </div>
                         </div>

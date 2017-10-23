@@ -12,22 +12,21 @@
 	#set ( $sourcepath = $urlutils.encode($sourcepath))
 	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
 #end
-
-#set ($usethumblink = $context.getPageValue("usethumblink"))
-#if(!$usethumblink)
-	#set($usethumblink = "true")
-#end
-
-#set ($thumbsize = $context.getPageValue("thumbsize"))
-#if(!$thumbsize)
-	#set($thumbsize = "image200x200.jpg")
-#end
-
+#set( $imagesize = "image200x200.jpg")
+	#if($thumbsize == "mediumplus")
+		#if( $type == "video" )
+			#set($imagesize = "image640x480.jpg")
+		#else
+			#set($imagesize = "image550x350.jpg")
+		#end	
+	#elseif($thumbsize == "crop")
+		#set($imagesize = "image110x62cropped.jpg")
+	#end		
+		$context.putPageValue("thumbsize", $thumbsize)
 <span id="emthumbholder">
 	#if( $hit.importstatus && $hit.importstatus == "uploading" )
 		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
 	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
-		$context.putPageValue("thumbsize", $thumbsize)
 		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
 		
 	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
@@ -36,7 +35,7 @@
 		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
 	#else	
 	
-	#set($tpath = $mediaarchive.asLinkToPreview($hit, $thumbsize))
+	#set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
 	<div class="thumbimagecontainer">
 		<img class="imagethumb assetdragdrop" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="[[Drag to Library or Category]]"
 		draggable="true"  data-sourcepath="$sourcepath" data-name="$asset.name" 		

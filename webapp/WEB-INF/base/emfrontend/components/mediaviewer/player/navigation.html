@@ -38,13 +38,13 @@
 
 	#if($candeleteasset)
 	<li style="float: right; margin-right: 0px;">
-		<a class="btn tooltip delete" title="Delete Asset" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="[[Delete Asset]]" /></a>
+		<a class="btn tooltip delete" title="[[Delete Asset]]" href="$home$apphome/views/modules/asset/editor/delete/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/delete.png" title="[[Delete Asset]]" /></a>
 	</li>
 	#end
 	
 	#if( $asset.isFolder() )
 	<li style="float: right;">
-		<a class="btn tooltip attachments" title="View Attachments" href="$home$apphome/views/modules/asset/editor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="14" src="$home$themeprefix/images/navigation/attachments-icon.png" title="[[View Attachments]]" /></a>
+		<a class="btn tooltip attachments" title="[[View Attachments]]" href="$home$apphome/views/modules/asset/editor/attachments/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="14" src="$home$themeprefix/images/navigation/attachments-icon.png" title="[[View Attachments]]" /></a>
 	</li>
 	#end
 
@@ -56,7 +56,7 @@
 	
 	#if($canmetadatadetails)
 	<li style="float: right;">
-		<a class="btn tooltip edit" title="Edit Asset Metadata" href="$home$apphome/views/modules/asset/editor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="[[Edit Metadata]]" /></a>
+		<a class="btn tooltip edit" title="[[Edit Asset Metadata]]" href="$home$apphome/views/modules/asset/editor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="[[Edit Metadata]]" /></a>
 	</li>
 	#end
 
