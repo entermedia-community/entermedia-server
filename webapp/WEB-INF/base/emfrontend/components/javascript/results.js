@@ -258,6 +258,8 @@ jQuery(document).ready(function(url,params)
 			enable(id,".goleftclick span");
 			id = div.data("next");
 			enable(id,".gorightclick span");
+		   $(document).trigger("domchanged");
+
 		});
 	}
 	

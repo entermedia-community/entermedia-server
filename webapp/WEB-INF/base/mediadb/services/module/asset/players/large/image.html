@@ -1,11 +1,10 @@
 #set ( $urlutils = $context.getPageValue("url_util"))
  #if (!$urlutils)
 	#set ($urlenc = $asset.sourcepath) 
-#else #set ( $urlenc =
-	$urlutils.encode($asset.sourcepath)) 
-	#set ( $urlenc =
-	$urlenc.replace("%2F", "/") ) 
+#else #set ( $urlenc = $urlutils.encode($asset.sourcepath)) 
+	#set ( $urlenc = $urlenc.replace("%2F", "/") ) 
 #end
+#set($tpath = $mediaarchive.asLinkToPreview($asset, "image1024x768.jpg"))
 
 #set($assetwidth = $mediaarchive.getRealImageWidth($asset))
 #set($assetheight = $mediaarchive.getRealImageHeight($asset))
@@ -15,5 +14,5 @@
 	data-name="$asset.name" 
 	data-width="$assetwidth"
 	data-height="$assetheight"
-	src="$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/$urlenc/thumb.jpg"
+	src="$tpath"
 	alt="$!asset.name" />

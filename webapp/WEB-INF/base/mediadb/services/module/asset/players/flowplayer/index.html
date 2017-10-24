@@ -3,8 +3,9 @@
 <link href="$!cdn$home/${mediadbappid}/services/module/asset/players/flowplayer/skin/entermedia.css" rel="stylesheet" >
 
 #set( $sourcepath = $url_util.encode($asset.sourcepath) )
-#set( $source = "$!cdn$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/video.mp4/streaming.mp4" )
-#set( $thumb =  "$!cdn$home/${mediadbappid}/services/module/asset/downloads/generatedpreview/${sourcepath}/image1024x768.jpg/thumb.jpg" )
+
+#set($thumb = $mediaarchive.asLinkToPreview($asset, "image1024x768.jpg"))
+#set($source = $mediaarchive.asLinkToPreview($asset, "video.mp4"))
 
 <div id="play$asset.getId()" class="player is-splash"  data-embed="false" style='background-color:#000; background-image:url("$thumb");' data-fullscreen="true"
      data-native_fullscreen="true">
