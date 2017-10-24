@@ -92,10 +92,11 @@ public class UserProfileManager
 
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
+		boolean reload = false;
 		UserProfile userprofile = null;
 		if (inReq != null)
 		{
-			boolean reload = Boolean.parseBoolean(inReq.findValue("reloadprofile"));
+			reload = Boolean.parseBoolean(inReq.findValue("reloadprofile"));
 			
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 			if (userprofile == null)
@@ -132,7 +133,7 @@ public class UserProfileManager
 			log.info("Trying to lock " + inUserName);
 			lock = mediaArchive.getLockManager().lock("userprofileloading/" + inUserName, "UserProfileManager.loadProfile");
 			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-			if( userprofile == null || !index.equals(userprofile.getIndexId()) )
+			if( reload || userprofile == null || !index.equals(userprofile.getIndexId()) )
 			{
 				userprofile = readProfileOptions(inReq, id, inUserName, appid, mediaArchive);
 			}
