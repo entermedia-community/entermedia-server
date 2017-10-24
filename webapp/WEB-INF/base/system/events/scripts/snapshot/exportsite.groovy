@@ -2,6 +2,7 @@ package data;
 
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVWriter
+import org.entermediadb.data.NonExportable
 import org.entermediadb.elasticsearch.searchers.ElasticListSearcher
 import org.openedit.Data;
 import org.openedit.data.PropertyDetail
@@ -11,7 +12,6 @@ import org.openedit.data.Searcher
 import org.openedit.data.SearcherManager
 import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
-import org.openedit.util.DateStorageUtil
 
 
 public void init()
@@ -134,6 +134,10 @@ public void exportDatabase(MediaArchive mediaarchive, List searchtypes, String r
 		{
 			return;
 		}
+		if(searcher instanceof NonExportable)
+			{
+				return;
+			}
 			PropertyDetails details = searcher.getPropertyDetails();
 			HitTracker hits = searcher.getAllHits();
 			hits.enableBulkOperations();
