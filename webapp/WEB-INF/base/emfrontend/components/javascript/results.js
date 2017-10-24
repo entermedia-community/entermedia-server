@@ -150,7 +150,7 @@ jQuery(document).ready(function(url,params)
 			img.width(avwidth);
 			img.css("height", "auto");
 			//Only if limited by height
-			var avheight = $(window).height();
+			var avheight = $(window).height() - 35;
 
 			if( newh > avheight )
 			{ 
@@ -258,6 +258,8 @@ jQuery(document).ready(function(url,params)
 			enable(id,".goleftclick span");
 			id = div.data("next");
 			enable(id,".gorightclick span");
+		   $(document).trigger("domchanged");
+
 		});
 	}
 	

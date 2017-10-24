@@ -77,10 +77,13 @@ public class UserProfileManager
 		if( userprofile != null)
 		{
 			String lastviewedapp = userprofile.get("lastviewedapp");
-			if(lastviewedapp == null || !appid.equals(lastviewedapp))
+			if(lastviewedapp == null || !appid.equals(lastviewedapp) )
 			{
-				userprofile.setProperty("lastviewedapp", appid);
-				saveUserProfile(userprofile);
+				if( !appid.endsWith("mediadb"))
+				{
+					userprofile.setProperty("lastviewedapp", appid);
+					saveUserProfile(userprofile);
+				}	
 			}
 		}
 		return userprofile;
@@ -92,10 +95,11 @@ public class UserProfileManager
 
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
+		boolean reload = false;
 		UserProfile userprofile = null;
 		if (inReq != null)
 		{
-			boolean reload = Boolean.parseBoolean(inReq.findValue("reloadprofile"));
+			reload = Boolean.parseBoolean(inReq.findValue("reloadprofile"));
 			
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 			if (userprofile == null)
@@ -132,7 +136,7 @@ public class UserProfileManager
 			log.info("Trying to lock " + inUserName);
 			lock = mediaArchive.getLockManager().lock("userprofileloading/" + inUserName, "UserProfileManager.loadProfile");
 			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-			if( userprofile == null || !index.equals(userprofile.getIndexId()) )
+			if( reload || userprofile == null || !index.equals(userprofile.getIndexId()) )
 			{
 				userprofile = readProfileOptions(inReq, id, inUserName, appid, mediaArchive);
 			}
@@ -307,11 +311,20 @@ public class UserProfileManager
 		{
 			return;
 		}
-		Searcher searcher = getSearcherManager().getSearcher(inUserProfile.getCatalogId(), "userprofile");
-		if (inUserProfile.getSourcePath() == null)
+		MediaArchive archive = getMediaArchive(inUserProfile.getCatalogId());
+		Lock lock = archive.lock("userprofilesave" + inUserProfile.getUserId() , getClass().getName());
+		try
 		{
-			throw new OpenEditException("user profile source path is null");
+			Searcher searcher = getSearcherManager().getSearcher(inUserProfile.getCatalogId(), "userprofile");
+			if (inUserProfile.getSourcePath() == null)
+			{
+				throw new OpenEditException("user profile source path is null");
+			}
+			searcher.saveData(inUserProfile, null);
 		}
-		searcher.saveData(inUserProfile, null);
+		finally
+		{
+			archive.releaseLock(lock);
+		}
 	}
 }
