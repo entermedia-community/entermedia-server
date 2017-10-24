@@ -92,6 +92,10 @@ public class GoogleContactSearcher extends BaseSearcher{
 	@Override
 	public HitTracker getAllHits(WebPageRequest inReq)
 	{
+		if(inReq == null) {
+			return new ListHitTracker();
+
+		}
 		if(inReq.getUser() == null) {
 			//some script
 			return new ListHitTracker();
