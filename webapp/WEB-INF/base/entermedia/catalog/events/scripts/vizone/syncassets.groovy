@@ -175,12 +175,14 @@ public class VizOne{
 						
 					viz.updateAsset(archive,"http://vizmtlvamf.media.in.cbcsrc.ca/" , asset,authString);
 					
+					if(asset.getValue("fromviz")) {
+					
 
-					Category cat = archive.getCategorySearcher().searchById("AVyh5_tsmQeu4rFCDJ4S");
-					asset.clearCategories();
-					asset.addCategory(cat);
+						Category cat = archive.getCategorySearcher().searchById("AVyh5_tsmQeu4rFCDJ4S");
+						asset.clearCategories();
+						asset.addCategory(cat);
 					
-					
+					}
 
 					archive.saveAsset(asset,null);
 
