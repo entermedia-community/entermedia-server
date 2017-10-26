@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -168,6 +169,10 @@ public class ElasticHitTracker extends HitTracker
 							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME));
 						}
 						response = getSearcheRequestBuilder().execute().actionGet();
+						 
+						
+						
+						
 						setLastScrollId(response.getScrollId());
 						//log.info(getSearcher().getSearchType() + hashCode() + " search chunk: " + inChunk + " start from:" +  start );
 					}
@@ -188,6 +193,12 @@ public class ElasticHitTracker extends HitTracker
 						getChunks().put(0, first);
 					}
 					getChunks().put(chunk, response);
+					
+					if( (getSearchQuery().isEndUserSearch() || getSearchQuery().isFilter()) && fieldFilterOptions == null )
+					{
+					  getFilterOptions();
+					  getSearcheRequestBuilder().setAggregations(new HashMap());
+					}
 				}
 			}
 		}
@@ -491,4 +502,25 @@ public class ElasticHitTracker extends HitTracker
 		}
 		return both;
 	}
+	
+	
+	
+	@Override
+	protected void finalize() throws Throwable {
+		if(fieldLastScrollId != null){
+			clearScroll(fieldLastScrollId);
+		}
+	}
+	
+	
+	protected void clearScroll(String inScrollId){
+		ClearScrollRequest request = new ClearScrollRequest();
+		request.addScrollId(fieldLastScrollId);
+			
+		getElasticClient().clearScroll(request);
+		
+		
+	}
+	
+	
 }
