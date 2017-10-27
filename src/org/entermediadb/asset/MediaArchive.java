@@ -122,7 +122,7 @@ public class MediaArchive implements CatalogEnabled
 	{
 		if (fieldCacheManager == null)
 		{
-			fieldCacheManager = new CacheManager();
+			fieldCacheManager = new CacheManager();  //TODO remove this
 		}
 		return fieldCacheManager;
 	}

@@ -272,7 +272,7 @@
 	</bean>
 
 	<bean id="timedCacheManager" class="org.openedit.cache.CacheManager" scope="prototype" >
-			<property name="expiryTime"><value>5</value></property>
+			<property name="expiryTime"><value>15</value></property>
 	</bean>
 
 	<bean id="replacer" class="org.openedit.util.Replacer"  scope="prototype">
