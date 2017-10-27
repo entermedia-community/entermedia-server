@@ -248,4 +248,9 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			return getId();
 		}
 	}
+	
+	public String toJsonString(){
+		return getSearchHit().getSourceAsString();
+	}
+	
 }
