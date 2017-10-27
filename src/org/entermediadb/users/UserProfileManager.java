@@ -271,7 +271,8 @@ public class UserProfileManager
 		//categories+parents
 		//lava loop over every collection and mesh 		
 		inUserprofile.setViewCategories(okcategories);
-		inUserprofile.setCollectionIds(new ArrayList());
+		//inUserprofile.setCollectionIds(new ArrayList());
+		/*
 		if( !inUserprofile.hasPermission("viewsettings"))
 		{
 			if( !okcategories.isEmpty() )
@@ -291,6 +292,7 @@ public class UserProfileManager
 				inUserprofile.setCollectionIds(okcollectionids);
 			}
 		}
+		*/
 	}
 
 	public void saveUserProfile(UserProfile inUserProfile)

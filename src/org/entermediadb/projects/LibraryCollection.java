@@ -90,6 +90,25 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 		return get("rootcategory");
 	}
 
+	@Override
+	public Object getValue(String inKey)
+	{
+		if( inKey.equals("parentcategories"))
+		{
+			if(getRootCategoryId() == null){
+				return null;
+			}
+			Category root = getCategory();
+			if( root == null)
+			{
+				return null;
+			}
+			return root.getParentCategories();
+		}
+		// TODO Auto-generated method stub
+		return super.getValue(inKey);
+	}
+	
 	public Category getCategory()
 	{
 		if(getRootCategoryId() == null){
