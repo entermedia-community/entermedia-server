@@ -116,12 +116,13 @@ public class DataEditModule extends BaseMediaModule
 	 * @param inReq
 	 * @throws Exception
 	 */
-	public void search(WebPageRequest inReq) throws Exception
+	public HitTracker search(WebPageRequest inReq) throws Exception
 	{
 		Searcher searcher = loadSearcher(inReq);
+		HitTracker hits = null;
 		if (searcher != null)
 		{
-			HitTracker hits = searcher.fieldSearch(inReq);
+			hits = searcher.fieldSearch(inReq);
 
 			if (hits == null) //this seems unexpected. Should it be a new API such as searchAll?
 			{
@@ -135,6 +136,7 @@ public class DataEditModule extends BaseMediaModule
 			}
 		}
 		inReq.putPageValue("searcher", searcher);
+		return hits;
 	}
 	public void addDefaultValue(WebPageRequest inReq) throws Exception
 	{
@@ -1846,5 +1848,21 @@ public class DataEditModule extends BaseMediaModule
 	public void invalidateIndex(WebPageRequest inReq) throws Exception
 	{
 		loadSearcher(inReq).clearIndex();
+	}
+	
+	public void loadOrSearch(WebPageRequest inReq) throws Exception
+	{
+		String clear = inReq.getRequestParameter(resolveSearchType(inReq) + "clearresults");
+		HitTracker hits = null;
+		if (!Boolean.parseBoolean(clear))
+		{
+			hits = loadHits(inReq);
+		}
+		
+		if( hits == null)
+		{
+			hits = search(inReq);
+		}
+		
 	}
 }

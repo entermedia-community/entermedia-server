@@ -164,6 +164,11 @@ public class ElasticHitTracker extends HitTracker
 							refreshFilters(); //This seems like it should only be done once?
 						}
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
+						if( getSearchQuery().hasFilters() )
+						{
+							
+						}
+						
 						if (isUseServerCursor())
 						{
 							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME));
@@ -434,9 +439,9 @@ public class ElasticHitTracker extends HitTracker
 					}
 				}
 			}
+			getSearcheRequestBuilder().setAggregations(new HashMap());
 		}
 		return topfacets;
-
 	}
 
 	public void invalidate()
