@@ -35,18 +35,21 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 			//dont filter since its the admin
 			return inQuery;
 		}
-		//MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
+		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
 		UserProfile profile = inPageRequest.getUserProfile();
 
-//		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories());
+		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories());
 //		HashSet toshow = new HashSet(profile.getCollectionIds());
 //		for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
 //		{
 //			Category hidden = (Category) iterator.next();
 //			toshow.remove(hidden.getId());
 //		}
-		SearchQuery child = inSearcher.query().orgroup("parentcategories",profile.getViewCategories()).getQuery();
+		SearchQuery child = inSearcher.query()
+				.orgroup("parentcategories",profile.getViewCategories())
+				.notgroup("parentcategories", catshidden)
+				.getQuery();
 		inQuery.addChildQuery(child);
 		//Load all categories 1000
 		//Compare to the profile categories and parents
