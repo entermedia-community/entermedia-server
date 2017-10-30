@@ -28,7 +28,7 @@ public class UserProfileManager
 {
 	protected SearcherManager fieldSearcherManager;
 	protected ModuleManager	 fieldModuleManager;
-
+	
 	public ModuleManager getModuleManager()
 	{
 		return fieldModuleManager;
@@ -77,10 +77,13 @@ public class UserProfileManager
 		if( userprofile != null)
 		{
 			String lastviewedapp = userprofile.get("lastviewedapp");
-			if(lastviewedapp == null || !appid.equals(lastviewedapp))
+			if(lastviewedapp == null || !appid.equals(lastviewedapp) )
 			{
-				userprofile.setProperty("lastviewedapp", appid);
-				saveUserProfile(userprofile);
+				if( !appid.endsWith("mediadb"))
+				{
+					userprofile.setProperty("lastviewedapp", appid);
+					saveUserProfile(userprofile);
+				}	
 			}
 		}
 		return userprofile;
@@ -88,39 +91,26 @@ public class UserProfileManager
 
 	protected UserProfile loadProfile(WebPageRequest inReq, String inCatalogId, String appid, String inUserName)
 	{
-		String id = inCatalogId + "userprofile" + inUserName;
-
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
 		UserProfile userprofile = null;
 		if (inReq != null)
 		{
-			boolean reload = Boolean.parseBoolean(inReq.findValue("reloadprofile"));
-			
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
-			if (userprofile == null)
+			if( userprofile == null)
 			{
-				userprofile = (UserProfile) inReq.getSessionValue(id);
+				userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
 			}
-
-			if (!reload && userprofile != null && inUserName.equals(userprofile.getUserId()) && inCatalogId.equals(userprofile.getCatalogId()))
+			if (userprofile != null)
 			{
 				String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-				if( !index.equals(userprofile.getIndexId()) )
+				if( index.equals(userprofile.getIndexId()) )
 				{
-					reload = true;
-				}
-				else
-				{
-					reload = false;
-				}
+					inReq.putPageValue("userprofile", userprofile);
+					return userprofile;
+				}	
 			}
 
-			if (!reload && userprofile != null && inUserName.equals(userprofile.getUserId()))
-			{
-				inReq.putPageValue("userprofile", userprofile);
-				return userprofile;
-			}
 			if (inCatalogId == null)
 			{
 				return null;
@@ -129,15 +119,18 @@ public class UserProfileManager
 		Lock lock = null;
 		try
 		{
-			log.info("Trying to lock " + inUserName);
 			lock = mediaArchive.getLockManager().lock("userprofileloading/" + inUserName, "UserProfileManager.loadProfile");
+			userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
 			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-			if( userprofile == null || !index.equals(userprofile.getIndexId()) )
+
+			if( userprofile != null && index.equals(userprofile.getIndexId()) )
 			{
-				userprofile = readProfileOptions(inReq, id, inUserName, appid, mediaArchive);
+				inReq.putPageValue("userprofile", userprofile);
+				return userprofile;
 			}
-			inReq.putSessionValue(id, userprofile);
+			userprofile = readProfileOptions(inReq, inUserName, appid, mediaArchive);
 			inReq.putPageValue("userprofile", userprofile);
+			mediaArchive.getCacheManager().put("userprofile", inUserName,userprofile);
 		}
 		finally
 		{
@@ -147,7 +140,7 @@ public class UserProfileManager
 		return userprofile;
 	}
 
-	protected UserProfile readProfileOptions(WebPageRequest inReq, String id, String inUserName, String appid, MediaArchive mediaArchive)
+	protected UserProfile readProfileOptions(WebPageRequest inReq, String inUserName, String appid, MediaArchive mediaArchive)
 	{
 		String inCatalogId = mediaArchive.getCatalogId();
 		UserProfile userprofile;
@@ -201,7 +194,6 @@ public class UserProfileManager
 		userprofile.setCatalogId(inCatalogId);
 
 		//Must be set before we run actions below
-		inReq.putSessionValue(id, userprofile);
 		inReq.putPageValue("userprofile", userprofile);
 
 		userprofile.setIndexId( mediaArchive.getSearcher("settingsgroup").getIndexId() );
@@ -279,7 +271,8 @@ public class UserProfileManager
 		//categories+parents
 		//lava loop over every collection and mesh 		
 		inUserprofile.setViewCategories(okcategories);
-		inUserprofile.setCollectionIds(new ArrayList());
+		//inUserprofile.setCollectionIds(new ArrayList());
+		/*
 		if( !inUserprofile.hasPermission("viewsettings"))
 		{
 			if( !okcategories.isEmpty() )
@@ -299,6 +292,7 @@ public class UserProfileManager
 				inUserprofile.setCollectionIds(okcollectionids);
 			}
 		}
+		*/
 	}
 
 	public void saveUserProfile(UserProfile inUserProfile)
@@ -307,11 +301,20 @@ public class UserProfileManager
 		{
 			return;
 		}
-		Searcher searcher = getSearcherManager().getSearcher(inUserProfile.getCatalogId(), "userprofile");
-		if (inUserProfile.getSourcePath() == null)
+		MediaArchive archive = getMediaArchive(inUserProfile.getCatalogId());
+		Lock lock = archive.lock("userprofilesave" + inUserProfile.getUserId() , getClass().getName());
+		try
 		{
-			throw new OpenEditException("user profile source path is null");
+			Searcher searcher = getSearcherManager().getSearcher(inUserProfile.getCatalogId(), "userprofile");
+			if (inUserProfile.getSourcePath() == null)
+			{
+				throw new OpenEditException("user profile source path is null");
+			}
+			searcher.saveData(inUserProfile, null);
 		}
-		searcher.saveData(inUserProfile, null);
+		finally
+		{
+			archive.releaseLock(lock);
+		}
 	}
 }

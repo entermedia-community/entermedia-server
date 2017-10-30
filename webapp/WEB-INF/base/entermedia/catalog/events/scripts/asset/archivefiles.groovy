@@ -126,10 +126,12 @@ public init()
 	for( Data row : defaultcats)
 	{
 		Category root = mediaarchive.getCategory(row.get("categoryid"));
-		Page mountedpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + root.getCategoryPath());
-		log.info("checking for empty folders: " + mountedpath.getPath());
-		
-		isEmpty(mountedpath);
+		if(root) {
+			Page mountedpath = pageManager.getPage("/WEB-INF/data/" + mediaarchive.getCatalogId() + "/originals/" + root.getCategoryPath());
+			log.info("checking for empty folders: " + mountedpath.getPath());
+			
+			isEmpty(mountedpath);
+		}
 	}
 }
 

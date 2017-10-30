@@ -1,3 +1,12 @@
-#set( $type = $mediaarchive.getMediaRenderType($asset))
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+$context.putPageValue("cdn",$cdnprefix)
 
+<html>
+<head>
+<script src="$!cdn$home/${mediadbappid}/services/module/asset/players/flowplayer/jquery-1.11.1.min.js"></script>
+</head>
+<body>
+#set( $type = $mediaarchive.getMediaRenderType($asset))
 $pages.include("$apphome/services/module/asset/players/types/${type}.html", $context)
+</body>
+</html>

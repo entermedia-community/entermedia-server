@@ -5,13 +5,23 @@
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
 #set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+$context.putPageValue("cdn",$cdnprefix)
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
+#set( $hits = $context.getSessionValue($hitssessionid))
+#set( $index = $hits.indexOfId($asset.id))
+#set( $previous = false )
+#set( $previous = $hits.previous($index))
+#set( $next = false )
+#set( $next = $hits.next($index))       
+
 <div id="main-media-container">
-<div id="main-media-viewer" data-assetid="$asset.id" >
+<div id="main-media-viewer" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()" >
 	#if( !$mediadbappid)
-		<p style="color: white;">[[mediadbappid not defined in datamanage]]r</p>
+		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
+	$hits
+	$index
 	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
 </div>
 <div id="footerbase">

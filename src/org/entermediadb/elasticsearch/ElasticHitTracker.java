@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.Client;
@@ -163,11 +164,20 @@ public class ElasticHitTracker extends HitTracker
 							refreshFilters(); //This seems like it should only be done once?
 						}
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
+						if( getSearchQuery().hasFilters() )
+						{
+							
+						}
+						
 						if (isUseServerCursor())
 						{
 							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME));
 						}
 						response = getSearcheRequestBuilder().execute().actionGet();
+						 
+						
+						
+						
 						setLastScrollId(response.getScrollId());
 						//log.info(getSearcher().getSearchType() + hashCode() + " search chunk: " + inChunk + " start from:" +  start );
 					}
@@ -181,19 +191,64 @@ public class ElasticHitTracker extends HitTracker
 					setLastPageLoaded(inChunk);
 					fieldLastPullTime = now;
 
-					if (getChunks().size() > 30)
+					if (getChunks().size() > 30)   //TODO: Keep the pages near us
 					{
 						SearchResponse first = getChunks().get(0);
 						getChunks().clear();
 						getChunks().put(0, first);
 					}
 					getChunks().put(chunk, response);
+					
+					if( (getSearchQuery().isEndUserSearch() || getSearchQuery().isFilter()) && fieldFilterOptions == null )
+					{
+					  getFilterOptions();
+					  getSearcheRequestBuilder().setAggregations(new HashMap());
+					}
 				}
 			}
 		}
 		return response;
 	}
-
+	@Override
+	public int indexOfId(String inId)
+	{
+		if( inId == null || inId.startsWith("multiedit:") || inId.trim().isEmpty() )
+		{
+			return -1;
+		}
+		for (Iterator iterator = getChunks().keySet().iterator(); iterator.hasNext();)
+		{
+			Integer page = (Integer) iterator.next();
+			int found = findIdOnPage(inId,getPage());
+			if( found > -1)
+			{
+				return found;
+			}
+		}
+		int found = -1;
+		if( getTotalPages() > getPage() )
+		{
+			//Look one after
+			found = findIdOnPage(inId,getPage() + 1);
+			if( found > -1)
+			{
+				return found;
+			}
+		}
+		//Look one before
+		if( getPage() > 1 )
+		{
+			found = findIdOnPage(inId,getPage() -1);
+			if( found > -1)
+			{
+				return found;
+			}
+		}
+	
+		return -1;
+		
+	}
+	
 	protected Map<Integer, SearchResponse> getChunks()
 	{
 		if (fieldChunks == null)
@@ -423,9 +478,9 @@ public class ElasticHitTracker extends HitTracker
 					}
 				}
 			}
+			getSearcheRequestBuilder().setAggregations(new HashMap());
 		}
 		return topfacets;
-
 	}
 
 	public void invalidate()
@@ -491,4 +546,25 @@ public class ElasticHitTracker extends HitTracker
 		}
 		return both;
 	}
+	
+	
+	
+	@Override
+	protected void finalize() throws Throwable {
+		if(fieldLastScrollId != null){
+			clearScroll(fieldLastScrollId);
+		}
+	}
+	
+	
+	protected void clearScroll(String inScrollId){
+		ClearScrollRequest request = new ClearScrollRequest();
+		request.addScrollId(fieldLastScrollId);
+			
+		getElasticClient().clearScroll(request);
+		
+		
+	}
+	
+	
 }

@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.data.NonExportable;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -14,7 +15,7 @@ import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
-public class GoogleContactSearcher extends BaseSearcher{
+public class GoogleContactSearcher extends BaseSearcher implements NonExportable{
 	
 	
 	private static final Log log = LogFactory.getLog(GoogleContactSearcher.class);
@@ -92,6 +93,14 @@ public class GoogleContactSearcher extends BaseSearcher{
 	@Override
 	public HitTracker getAllHits(WebPageRequest inReq)
 	{
+		if(inReq == null) {
+			return new ListHitTracker();
+
+		}
+		if(inReq.getUser() == null) {
+			//some script
+			return new ListHitTracker();
+		}
 		ArrayList contacts = getGoogleManager().syncContacts(inReq.getUser());
 		
 		return new ListHitTracker(contacts);
