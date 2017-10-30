@@ -102,8 +102,10 @@ public void init()
 		}
 		
 		
-
+		mediaarchive.getCategorySearcher().reIndexAll();
 	}
+	
+
 }
 
 public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean configonly)
