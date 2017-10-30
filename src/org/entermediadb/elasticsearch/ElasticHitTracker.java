@@ -191,7 +191,7 @@ public class ElasticHitTracker extends HitTracker
 					setLastPageLoaded(inChunk);
 					fieldLastPullTime = now;
 
-					if (getChunks().size() > 30)
+					if (getChunks().size() > 30)   //TODO: Keep the pages near us
 					{
 						SearchResponse first = getChunks().get(0);
 						getChunks().clear();
