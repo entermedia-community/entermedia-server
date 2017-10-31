@@ -70,9 +70,16 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				return inQuery;
 			}
 			
-			
 			User user = inPageRequest.getUser();
 			UserProfile profile = inPageRequest.getUserProfile();
+			if (profile != null)
+			{
+				if( "administrator".equals( profile.get("settingsgroup")))
+				{
+					return inQuery;					
+				}
+			}
+			
 			SearchQuery required = inSearcher.createSearchQuery();
 
 			//TODO: Add userprofile asset type filtering
@@ -94,7 +101,6 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 						
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
-
 			
 			Set ids = new HashSet();
 
@@ -102,7 +108,11 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
 			if( profile != null)
 			{
-				allowed.addAll(profile.getViewCategories());
+				Collection canview = profile.getViewCategories();
+				if( canview != null )
+				{
+					allowed.addAll(canview);
+				}
 			}
 			for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
 			{
