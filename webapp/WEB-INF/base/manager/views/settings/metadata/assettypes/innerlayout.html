@@ -8,8 +8,9 @@
 #set($searcher = $searcherManager.getSearcher($catalogid, "assettype"))
 <div  class="ui-widget-content emselectmenu">
 <ul class="vlist">
-#foreach($item in $searcher.fieldSearch("id","*","textUp"))
- <li #if($current == $item.id) class="active" #end ><a href="$home$apphome/views/settings/metadata/assettypes/views/index.html?assettype=$item.id">$item</a></li>
+#foreach($item in $searcher.fieldSearch("id","*","nameUp"))
+ <li #if($current == $item.id) class="active" #end >
+ 	<a href="$home$apphome/views/settings/metadata/assettypes/views/index.html?assettype=$item.id">$item</a></li>
 #end
 </ul>
 <br>

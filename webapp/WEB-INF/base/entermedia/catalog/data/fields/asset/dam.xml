@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page> 
-  <property id="description" defaultoperation="freeform" index="true"   stored="true"  editable="false" sortable="true">All Fields 
+  <property id="description" defaultoperation="freeform" index="true"   stored="true"  editable="false" >All Fields 
     <name> 
       <language id="de"><![CDATA[All Fields]]></language>  
       <language id="en"><![CDATA[All Fields]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[Tous les champs]]></language> 
     </name> 
   </property>  
-  <property id="sourcepath" internalfield="false" index="true" stored="true"   editable="false" sortable="true">Source Path 
+  <property id="sourcepath" internalfield="false" index="true" stored="true"   editable="false" >Source Path 
     <name> 
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  
@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Categories]]></language> 
     </name> 
   </property>  
-  <property id="location" index="true" editable="true" stored="true" externalid="Location" type="list" writenametoexif="true" autocreatefromexif="true"   sortable="true">Location 
+  <property id="location" index="true" editable="true" stored="true" externalid="Location" type="list" writenametoexif="true" autocreatefromexif="true"   >Location 
     <name> 
       <language id="de"><![CDATA[Lage]]></language>  
       <language id="en"><![CDATA[Location]]></language>  
@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Folder Based]]></language> 
     </name> 
   </property>  
-  <property id="category" index="true" keyword="true" editable="true" viewtype="category" indextype="not_analyzed" type="list" stored="true" listid="category" externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id"  sortable="true">Categories 
+  <property id="category" index="true" keyword="true" editable="true" viewtype="category" indextype="not_analyzed" type="list" stored="true" listid="category" externalidXXX="assetcategory.categoryid" query="assetcategory.assetid = asset.id"  >Categories 
     <name> 
       <language id="de"><![CDATA[Kategorien]]></language>  
       <language id="en"><![CDATA[Categories]]></language>  
@@ -63,7 +63,7 @@
   <!--  
 		property id="relatedasset" index="true" stored="true" datatype="textjoin" externalid="assetrelated.parentid" query="assetrelated.assetid = asset.id">Related Assets</property>
 	-->  
-  <property id="hasfulltext" index="true" type="boolean" stored="true"   editable="false" sortable="true">Has Full Text 
+  <property id="hasfulltext" index="true" type="boolean" stored="true"   editable="false" >Has Full Text 
     <name> 
       <language id="de"><![CDATA[hat Volltext]]></language>  
       <language id="en"><![CDATA[Has Full Text]]></language>  
@@ -90,7 +90,7 @@
     </name> 
   </property>  
   <!--  These are writen to by outside API -->  
-  <property id="assetvotes" searchcomponent="numbersearch" type="number" index="true" stored="true"   editable="false" sortable="true">Vote Rank 
+  <property id="assetvotes" searchcomponent="numbersearch" type="number" index="true" stored="true"   editable="false" >Vote Rank 
     <name> 
       <language id="de"><![CDATA[Abstimmung Rang]]></language>  
       <language id="en"><![CDATA[Vote Rank]]></language>  
@@ -187,7 +187,7 @@
       <language id="fr"><![CDATA[Vitesse d&#39;obturation]]></language> 
     </name> 
   </property>  
-  <property id="aperture" externalid="Aperture" index="true" stored="true"   editable="false" sortable="true">Aperture 
+  <property id="aperture" externalid="Aperture" index="true" stored="true"   editable="false" >Aperture 
     <name> 
       <language id="de"><![CDATA[Öffnung]]></language>  
       <language id="en"><![CDATA[Aperture]]></language>  
@@ -205,7 +205,7 @@
       <language id="fr"><![CDATA[Longueur]]></language> 
     </name> 
   </property>  
-  <property id="duration" index="true" stored="true"   editable="false" sortable="true">Duration Stamp 
+  <property id="duration" index="true" stored="true"   editable="false" >Duration Stamp 
     <name> 
       <language id="de"><![CDATA[Dauer Stempel]]></language>  
       <language id="en"><![CDATA[Duration Stamp]]></language>  
@@ -231,7 +231,7 @@
     </name> 
   </property>  
   <!-- IPTC/EXIFF/XMP -->  
-  <property id="videocodec" index="true" stored="true"   editable="false" sortable="true">Video Codec 
+  <property id="videocodec" index="true" stored="true"   editable="false" >Video Codec 
     <name> 
       <language id="de"><![CDATA[Video-Codec]]></language>  
       <language id="en"><![CDATA[Video Codec]]></language>  
@@ -239,7 +239,7 @@
       <language id="fr"><![CDATA[Codec Vidéo]]></language> 
     </name> 
   </property>  
-  <property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true"   editable="false" sortable="true">Audio Codec 
+  <property id="audiocodec" externalid="Audio Codec Name,Audio Format" index="true" stored="true"   editable="false" >Audio Codec 
     <name> 
       <language id="de"><![CDATA[Audio-Codec]]></language>  
       <language id="en"><![CDATA[Audio Codec]]></language>  
@@ -255,7 +255,7 @@
       <language id="fr"><![CDATA[Rotation d&#39;image]]></language> 
     </name> 
   </property>  
-  <property id="localpath" internalfield="true" index="true" stored="true" editable="false"   sortable="true">Local Path 
+  <property id="localpath" internalfield="true" index="true" stored="true" editable="false"   >Local Path 
     <name> 
       <language id="de"><![CDATA[lokalen Pfad]]></language>  
       <language id="en"><![CDATA[Local Path]]></language>  
@@ -264,7 +264,7 @@
     </name> 
   </property>  
   <!-- Uploading -->  
-  <property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type"  sortable="true">File Format 
+  <property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type"  >File Format 
     <name> 
       <language id="de"><![CDATA[Datei Format]]></language>  
       <language id="en"><![CDATA[File Format]]></language>  
@@ -312,7 +312,7 @@
       <language id="fr"><![CDATA[Dernière modification]]></language> 
     </name> 
   </property>  
-  <property id="recordmodificationdate" index="true" type="date" searchcomponent="datesearch" stored="true" editable="false"   sortable="true">Record Edit Date 
+  <property id="recordmodificationdate" index="true" type="date" searchcomponent="datesearch" stored="true" editable="false"   >Record Edit Date 
     <name> 
       <language id="de"><![CDATA[Rekord bearbeiten Datum]]></language>  
       <language id="en"><![CDATA[Record Edit Date]]></language>  
@@ -337,7 +337,7 @@
       <language id="fr"><![CDATA[Propriétaire]]></language> 
     </name> 
   </property>  
-  <property id="primaryfile" internalfield="true" index="true" stored="true"   editable="false" sortable="true">Primary File Name 
+  <property id="primaryfile" internalfield="true" index="true" stored="true"   editable="false" >Primary File Name 
     <name> 
       <language id="de"><![CDATA[primäre Dateinamen]]></language>  
       <language id="en"><![CDATA[Primary File Name]]></language>  
@@ -345,7 +345,7 @@
       <language id="fr"><![CDATA[Nom du fichier original]]></language> 
     </name> 
   </property>  
-  <property id="imagefile" internalfield="true" index="true" stored="true"   editable="false" sortable="true"> 
+  <property id="imagefile" internalfield="true" index="true" stored="true"   editable="false" > 
     <name> 
       <language id="en"><![CDATA[Thumbnail File]]></language>  
     </name> 
@@ -398,7 +398,7 @@
       <language id="fr"><![CDATA[Titre]]></language> 
     </name> 
   </property>  
-  <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="true"  sortable="true">Description 
+  <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="true"  >Description 
     <name> 
       <language id="de"><![CDATA[Description]]></language>  
       <language id="en"><![CDATA[Description]]></language>  
@@ -406,7 +406,7 @@
       <language id="fr"><![CDATA[Description]]></language> 
     </name> 
   </property>  
-  <property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   sortable="true">Tags 
+  <property id="keywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   > 
     <name> 
       <language id="de"><![CDATA[Tags]]></language>  
       <language id="en"><![CDATA[Tags]]></language>  
@@ -414,7 +414,7 @@
       <language id="fr"><![CDATA[Tags]]></language> 
     </name> 
   </property>  
-  <property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords"  sortable="true">Extra Keywords 
+  <property id="extrakeywords" keyword="true" index="true" stored="true" editable="true" externalid="Keywords"  >Extra Keywords 
     <name> 
       <language id="de"><![CDATA[zusätzliche Schlüsselwörter]]></language>  
       <language id="en"><![CDATA[Extra Keywords]]></language>  
@@ -478,7 +478,7 @@
       <language id="fr"><![CDATA[Spécificitée ethnique]]></language> 
     </name> 
   </property>  
-  <property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp"   type="list">Language 
+  <property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="nameUp"   type="list">Language 
     <name> 
       <language id="de"><![CDATA[Sprache]]></language>  
       <language id="en"><![CDATA[Language]]></language>  
@@ -518,7 +518,7 @@
       <language id="fr"><![CDATA[État]]></language> 
     </name> 
   </property>  
-  <property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked"   sortable="true"> 
+  <property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked"   > 
     <name> 
       <language id="de"><![CDATA[Copyright Status]]></language>  
       <language id="en"><![CDATA[Copyright Status]]></language>  
@@ -526,7 +526,7 @@
       <language id="fr"><![CDATA[Status droit d&#39;auteur]]></language> 
     </name> 
   </property>  
-  <property id="copyrightnotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright"   sortable="true">
+  <property id="copyrightnotice" editable="true" index="true" stored="true" externalid="XMP-dc:Rights,iptc:CopyrightNotice,exif:Copyright"   >
     <name> 
       <language id="de"><![CDATA[Copyright Notice]]></language>  
       <language id="en"><![CDATA[Copyright Notice]]></language>  
@@ -534,13 +534,13 @@
       <language id="fr"><![CDATA[Notification droit d&#39;auteur]]></language> 
     </name> 
   </property>  
-  <property id="rightsusageinstructions" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms"   sortable="true">
+  <property id="rightsusageinstructions" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms"   >
     <name> 
       <language id="en"><![CDATA[Rights Usage Instructions]]></language>  
       <language id="es"><![CDATA[Derechos de Uso Instruciones]]></language>  
     </name> 
   </property>  
-  <property id="rightsusageterms" editable="true" isbadge="true" index="true" type="list" stored="true"   sortable="true">
+  <property id="rightsusageterms" editable="true" isbadge="true" index="true" type="list" stored="true"   >
     <name> 
       <language id="de"><![CDATA[Rights Usage Terms]]></language>  
       <language id="en"><![CDATA[Rights Usage Terms]]></language>  
@@ -548,7 +548,7 @@
       <language id="fr"><![CDATA[Mentions légales & CGU]]></language> 
     </name> 
   </property>  
-  <property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions"   sortable="true"> 
+  <property id="instructions" editable="true" index="true" stored="true" externalid="XMP-photoshop:Instructions,iptc:SpecialInstructions"   > 
     <name> 
       <language id="de"><![CDATA[Instructions]]></language>  
       <language id="en"><![CDATA[Instructions]]></language>  
@@ -567,29 +567,12 @@
   <!-- Approvals -->  
   <!--property id="assetclients.clientid" datatype="textjoin" index="true" stored="true" listid="clients" query="assetclients.assetid = asset.id">Asset Clients</property -->  
   <!-- Geo Location -->  
-  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch"   editable="true" sortable="true">Position 
+  <property id="geo_point" internalfield="false" type="geo_point" datatype="geo_point" viewtype="map" index="true" stored="true" externalid="GPS Latitude,GPS Longitude" searchcomponent="locationsearch"   editable="true" >Position 
     <name> 
       <language id="de"><![CDATA[Position]]></language>  
       <language id="en"><![CDATA[Position]]></language>  
       <language id="es"><![CDATA[Posición]]></language>  
       <language id="fr"><![CDATA[Position]]></language> 
-    </name> 
-  </property>  
-  <!--  Client specific -->  
-  <!-- 
-	<property id="stocknumber" index="true" keyword="true" editable="true" stored="true">Stock Number</property>
-	<property id="term" internalfield="true" keyword="true" editable="true" index="true" stored="true" type="list" listid="clients/terms">Term</property>
-	<property id="fatwireid"  internalfield="true"  index="true" stored="true">FatWire ID</property>
-	<property id="uploadteam" index="true"  keyword="true" stored="true"  editable="true"  catalogid="system" type="list" listid="group" sort="namesortedUp">Upload Team</property>
-	<property id="jobnotes" internalfield="true" keyword="true" editable="true" index="true" stored="true" externalid="Notes">Job Notes</property>	
-	<property id="cumulusid" internalfield="true" index="true" stored="true">Cumulus ID</property>
-	 -->  
-  <property id="editgroups" index="true" stored="true" editable="true" viewtype="multiselect" internalfield="true" listcatalogid="system" listid="group"   sortable="true">Edit Groups 
-    <name> 
-      <language id="de"><![CDATA[Gruppen bearbeiten]]></language>  
-      <language id="en"><![CDATA[Edit Groups]]></language>  
-      <language id="es"><![CDATA[Editar Grupos]]></language>  
-      <language id="fr"><![CDATA[Modifier les groupes]]></language> 
     </name> 
   </property>  
   <!-- 
@@ -605,7 +588,7 @@
       <language id="fr"><![CDATA[Type de contenu]]></language> 
     </name> 
   </property>  
-  <property id="md5hex" index="true" editable="false" indextype="not_analyzed"   stored="true" sortable="true">MD5 Hex Value 
+  <property id="md5hex" index="true" editable="false" indextype="not_analyzed"   stored="true" >MD5 Hex Value 
     <name> 
       <language id="de"><![CDATA[md5 Hex-Wert]]></language>  
       <language id="en"><![CDATA[MD5 Hex Value]]></language>  
@@ -613,7 +596,7 @@
       <language id="fr"><![CDATA[MD5 Valeur Hex]]></language> 
     </name> 
   </property>  
-  <property id="duplicate" index="true" editable="true" type="boolean"  isbadge="true"  stored="true"  sortable="true">
+  <property id="duplicate" index="true" editable="true" type="boolean"  isbadge="true"  stored="true"  >
     <name> 
       <language id="de"><![CDATA[doppelte Vermögens]]></language>  
       <language id="en"><![CDATA[Duplicate Asset]]></language>  
@@ -629,7 +612,7 @@
       <language id="fr"><![CDATA[Politique de rétention]]></language> 
     </name> 
   </property>  
-  <property id="archivesourcepath" editable="true" index="true" stored="true"   sortable="true">Archive Source Path 
+  <property id="archivesourcepath" editable="true" index="true" stored="true"   >Archive Source Path 
     <name> 
       <language id="de"><![CDATA[Archivquellenpfad]]></language>  
       <language id="en"><![CDATA[Archive Source Path]]></language>  

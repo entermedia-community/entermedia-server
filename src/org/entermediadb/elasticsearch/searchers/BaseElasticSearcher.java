@@ -245,7 +245,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			//		    },
 
 			search.setFetchSource(null, "description");
-			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
+			ElasticHitTracker hits = new ElasticHitTracker(getElasticNodeManager(), search, terms, inQuery.getHitsPerPage());
 
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
@@ -594,33 +594,22 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						Data locale = (Data) iterator.next();
 						String id = locale.getId();
-						 
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
-						if (detail.isAnalyzed())
-						{
-							jsonproperties = jsonproperties.startObject("fields");
+						jsonproperties = jsonproperties.startObject("fields");
 							jsonproperties = jsonproperties.startObject("exact");
-							jsonproperties = jsonproperties.field("type", "string");
-							jsonproperties = jsonproperties.field("index", "not_analyzed");
-							jsonproperties = jsonproperties.field("ignore_above", 256);
-
+							jsonproperties = jsonproperties.field("type", "keyword");
+							//jsonproperties = jsonproperties.field("ignore_above", 256);
+	
 							jsonproperties = jsonproperties.endObject();
-							jsonproperties = jsonproperties.endObject();
-						}
-
-						if (analyzer != null)
-						{
-							jsonproperties.field("analyzer", analyzer);
-						}
-						jsonproperties = jsonproperties.field("index", "analyzed");
+						jsonproperties = jsonproperties.endObject();
 						jsonproperties= jsonproperties.endObject();
 					}
 					jsonproperties = jsonproperties.endObject();
 					jsonproperties = jsonproperties.endObject();
 
-					jsonproperties = jsonproperties.startObject(detail.getId());
+					jsonproperties = jsonproperties.startObject(detail.getId()); //why is this here, legacy support?
 					jsonproperties = jsonproperties.field("type", "string");
 					//jsonproperties = jsonproperties.field("include_in_all", "false");
 					jsonproperties = jsonproperties.endObject();
@@ -642,7 +631,7 @@ public class BaseElasticSearcher extends BaseSearcher
 //				jsonproperties = jsonproperties.endObject();
 //			}
 			jsonBuilder = jsonproperties.endObject().endObject();
-			String content = jsonproperties.string();
+			//String content = jsonproperties.string();
 			//log.info(content);
 			return jsonproperties;
 		}
@@ -661,7 +650,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			String analyzer = "lowersnowball";
 			jsonproperties = jsonproperties.field("analyzer", analyzer);
-			jsonproperties = jsonproperties.field("type", "string");
+			jsonproperties = jsonproperties.field("type", "text");
 			jsonproperties = jsonproperties.field("index", "analyzed");
 			//jsonproperties = jsonproperties.field("include_in_all", "false");
 			return;
@@ -679,10 +668,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.endObject();
 			}
 			jsonproperties = jsonproperties.endObject();
-			
-			
 			return;
-			
 		}
 		
 		// First determine type
@@ -713,9 +699,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			jsonproperties = jsonproperties.field("type", "geo_point");
 		}
-		
-		
-		
 		else if (detail.isList()) // Or multi valued?
 		{
 			if (Boolean.parseBoolean(detail.get("nested")))
@@ -724,26 +707,37 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else
 			{
-				jsonproperties = jsonproperties.field("type", "string");
+				jsonproperties = jsonproperties.field("type", "keyword");
 			}
 		}
 		else
 		{
-			jsonproperties = jsonproperties.field("type", "string");
-			if (detail.isAnalyzed())
-			{
-				jsonproperties = jsonproperties.startObject("fields");
-				jsonproperties = jsonproperties.startObject("exact");
-				jsonproperties = jsonproperties.field("type", "string");
-				jsonproperties = jsonproperties.field("index", "not_analyzed");
-				if(!detail.getId().contains("path")){
-					jsonproperties = jsonproperties.field("ignore_above", 256);
+				if (detail.isAnalyzed())
+				{
+					jsonproperties = jsonproperties.field("type", "text");
+					jsonproperties = jsonproperties.startObject("fields");
+					jsonproperties = jsonproperties.startObject("exact");
+					jsonproperties = jsonproperties.field("type", "keyword");
+					//jsonproperties = jsonproperties.field("index", "not_analyzed");
+					if(!detail.getId().contains("path")){
+						jsonproperties = jsonproperties.field("ignore_above", 256);
+					}
+					jsonproperties = jsonproperties.endObject().endObject();
 				}
-				jsonproperties = jsonproperties.endObject().endObject();
-			}
+				else
+				{
+					jsonproperties = jsonproperties.field("type", "keyword");
+				}
 
 		}
-
+		if (detail.isAnalyzed())
+		{
+			String analyzer = detail.get("analyzer");
+			if (analyzer != null)
+			{
+				jsonproperties = jsonproperties.field("analyzer", analyzer);
+			}
+		}
 		// Now determine index
 		String indextype = detail.get("indextype");
 
@@ -758,18 +752,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			jsonproperties = jsonproperties.field("index", indextype);
 		}
-
-		//jsonproperties = jsonproperties.field("include_in_all", "false"); // Do
-																			// not
-																			// use.
-																			// Use
-																			// _description
-
-		String analyzer = detail.get("analyzer");
-		if (analyzer != null)
-		{
-			jsonproperties = jsonproperties.field("analyzer", analyzer);
-		}		
 	}
 
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
@@ -1401,6 +1383,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		for (Iterator iterator = inQuery.getSorts().iterator(); iterator.hasNext();)
 		{
 			String field = (String) iterator.next();
+			log.info("Adding sort on " + getSearchType() + " " + field);
 			boolean direction = false;
 			if (field.endsWith("Down"))
 			{
@@ -1415,7 +1398,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isAnalyzed())
+			if (detail != null)
 			{
 				if (detail.isMultiLanguage())
 				{
@@ -1426,13 +1409,19 @@ public class BaseElasticSearcher extends BaseSearcher
 					PropertyDetail first = (PropertyDetail)detail.getObjectDetails().iterator().next();
 					sort = SortBuilders.fieldSort(field + "." + first.getId());
 				}
-				else
+				else if ( detail.isAnalyzed() )
 				{
 					sort = SortBuilders.fieldSort(field + ".exact");
 				}
-
+				else if (field.equals("id")) //Elastic default is to add a sub field called of ID columns.keyword
+				{
+					sort = SortBuilders.fieldSort(field + ".keyword");
+				}
+				else
+				{
+					sort = SortBuilders.fieldSort(field);
+				}
 			}
-
 			else
 			{
 				sort = SortBuilders.fieldSort(field);
@@ -1920,9 +1909,9 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
-				if( detail == null && !propid.equals("description") && !propid.contains("_int"))
+				//Create Property
+				if( detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("id"))
 				{
-					
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					//setType(detail);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);

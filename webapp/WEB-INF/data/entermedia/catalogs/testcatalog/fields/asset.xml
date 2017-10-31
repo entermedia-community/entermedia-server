@@ -1,0 +1,8 @@
+
+<properties>
+  <property id="categories" index="true" editable="true" stored="true">New
+    <name>
+      <language id="en"><![CDATA[categories]]></language>
+    </name>
+  </property>
+</properties>

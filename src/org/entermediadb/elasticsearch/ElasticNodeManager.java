@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -56,11 +58,12 @@ import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
-import org.elasticsearch.common.xcontent.XContentBuilder;
-import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeValidationException;
+import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.snapshots.SnapshotInfo;
+import org.elasticsearch.transport.Netty3Plugin;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.openedit.OpenEditException;
@@ -74,6 +77,12 @@ import org.openedit.util.FileUtils;
 import org.openedit.util.Replacer;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
+
+class MyNode extends Node {
+    public MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
+        super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
+    }
+}
 
 public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 {
@@ -110,8 +119,24 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		{
 			nodeid = root.attributeValue("id");
 		}
-		getLocalNode().setId(nodeid);
+		if( nodeid == null)
+		{
+			for (Iterator iterator = root.elementIterator(); iterator.hasNext();)
+			{
+				Element ele = (Element)iterator.next();
+				String key = ele.attributeValue("id");
+				if( key.equals("node.name"))
+				{
+					nodeid = ele.getTextTrim();
+				}
+			}
+		}
+		if( nodeid == null)
+		{
+			nodeid = root.attributeValue("id");
+		}
 		
+		getLocalNode().setId(nodeid);
 		String abs = config.getContentItem().getAbsolutePath();
 		File parent = new File(abs);
 		Map params = new HashMap();
@@ -130,6 +155,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			//}
 			getLocalNode().setValue(key, val);
 		}
+		getLocalNode().setValue("node.name", nodeid);
+
 	}
 
 	protected boolean reindexing = false;
@@ -164,13 +191,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
 				{
 					String key = (String) iterator.next();
-					if(key.startsWith("index") || !key.contains(".")) //Legacy
+					if(!key.startsWith("index") && key.contains(".") ) //Legacy
 					{
-						continue;
-					}
-
-					String val = getLocalNode().getSetting(key);
-					preparedsettings.put(key, val);
+						String val = getLocalNode().getSetting(key);
+						preparedsettings.put(key, val);
+					}	
 				}
 
 				/*
@@ -186,7 +211,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				*/
 				//log.info(preparedsettings.toString());
 				
-				Node node = new Node(preparedsettings.build());
+				
+//				Collection plugins = Arrays.asList(Netty3Plugin.class);
+//				Node node = new PluginConfigurableNode(preparedsettings.build(), plugins).start();
+				
+				Collection plugins = Arrays.asList(Netty3Plugin.class);
+				Node node = new MyNode(preparedsettings.build(),plugins);
 
 				try
 				{
@@ -800,6 +830,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		List mappedtypes = getMappedTypes(id);
 
 		String newindex = null;
+		String searchtype = null;
 		try
 		{
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
@@ -810,10 +841,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			newindex = prepareTemporaryIndex(inCatalogId, mappedtypes);
 
 			mappedtypes.remove("lock");
-
+			
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
-				String searchtype = (String) iterator.next();
+				searchtype = (String) iterator.next();
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 				
 				searcher.setAlternativeIndex(newindex);//Should		
@@ -830,6 +861,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		catch (Throwable e)
 		{
+			log.error("Could not reindex " + searchtype);
 			if (newindex != null)
 			{
 				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(newindex)).actionGet();

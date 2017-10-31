@@ -4,18 +4,17 @@ number_of_replicas: 1
 #mapper.dynamic: true
 analysis: 
  analyzer: 
+  tags:
+   type: "custom"
+   tokenizer: "keyword"
+   filter:
+    - "lowercase"
   lowersnowball:
    tokenizer: "standard"
    filter:
     - standard
     - lowercase
     - stemfilter
- analyzer:
-  tags:
-   type: "custom"
-   tokenizer: "keyword"
-   filter:
-    - lowercase
  filter:
   stemfilter:
    type: "snowball"

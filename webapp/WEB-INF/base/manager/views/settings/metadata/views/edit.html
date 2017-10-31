@@ -17,7 +17,7 @@ $!view.root.attributeValue('usagelabel')
 	Asset Type:
 	<select name="view">
 		<option id="$viewgroup">Default</option>
-	#foreach($item in $typesearcher.fieldSearch("id","*","textUp"))
+	#foreach($item in $typesearcher.fieldSearch("id","*","nameUp"))
 		<option>$item</option>
 	#end
 	</select>

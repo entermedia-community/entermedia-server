@@ -78,5 +78,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/securesm-1.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/spatial4j-0.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/javax.mail.jar"/>
+	<classpathentry kind="lib" path="lib/transport-netty3-client-5.6.3.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
