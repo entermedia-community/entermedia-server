@@ -166,7 +166,7 @@ public class ElasticHitTracker extends HitTracker
 						}
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
 						
-						String nodes = getNodeManager().getLocalNode().getSetting("search.only_nodes");
+						String nodes = getNodeManager().getLocalNode().getSetting("entermedia.search.only_nodes");
 						if( nodes != null)
 						{
 							getSearcheRequestBuilder().setPreference("_only_nodes:" + nodes);

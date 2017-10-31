@@ -101,7 +101,6 @@ import org.openedit.util.IntCounter;
 
 public class BaseElasticSearcher extends BaseSearcher
 {
-
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");

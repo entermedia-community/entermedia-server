@@ -131,11 +131,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 			}
 		}
-		if( nodeid == null)
-		{
-			nodeid = root.attributeValue("id");
-		}
-		
 		getLocalNode().setId(nodeid);
 		String abs = config.getContentItem().getAbsolutePath();
 		File parent = new File(abs);
@@ -191,7 +186,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
 				{
 					String key = (String) iterator.next();
-					if(!key.startsWith("index") && key.contains(".") ) //Legacy
+					if(!key.startsWith("index.") && !key.startsWith("entermedia.") && key.contains(".") ) //Legacy
 					{
 						String val = getLocalNode().getSetting(key);
 						preparedsettings.put(key, val);
