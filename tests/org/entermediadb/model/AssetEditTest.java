@@ -308,7 +308,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 	}
 
 	
-	public void testDeleteFromIndex() throws Exception
+	public void XXXtestDeleteFromIndex() throws Exception
 	{
 		Asset asset = getMediaArchive().createAsset("666","multitest/666");
 		
