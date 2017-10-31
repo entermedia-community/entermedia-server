@@ -738,19 +738,19 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.field("analyzer", analyzer);
 			}
 		}
-		// Now determine index
-		String indextype = detail.get("indextype");
-//		if (indextype == null)
+//		// Now determine index
+//		String indextype = detail.get("indextype");
+////		if (indextype == null)
+////		{
+////			if (!detail.isAnalyzed())
+////			{
+////				indextype = "not_analyzed";
+////			}
+////		}
+//		if (indextype != null)
 //		{
-//			if (!detail.isAnalyzed())
-//			{
-//				indextype = "not_analyzed";
-//			}
+//			jsonproperties = jsonproperties.field("index", indextype);  //true or false?
 //		}
-		if (indextype != null)
-		{
-			jsonproperties = jsonproperties.field("index", indextype);  //true or false?
-		}
 	}
 
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
