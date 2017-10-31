@@ -90,6 +90,15 @@
 		<delete quiet="true">
 			<fileset dir="./lib" includes="dev_entermedia**.jar"/>
 		</delete>
+		<delete quiet="true">
+			<fileset dir="./lib" includes="em9**.jar"/>
+		</delete>
+		<delete quiet="true">
+			<fileset dir="./lib" includes="em9dev**.jar"/>
+		</delete>
+		<delete quiet="true">
+			<fileset dir="./lib" includes="dev_entermedia**.jar"/>
+		</delete>
 		
 		<mkdir dir="./lib"/>
 	    <delete>
