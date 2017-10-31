@@ -70,8 +70,11 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				return inQuery;
 			}
 			
-			
 			User user = inPageRequest.getUser();
+			if (user != null && user.isInGroup("administrators"))
+			{
+				return inQuery;
+			}
 			UserProfile profile = inPageRequest.getUserProfile();
 			
 			SearchQuery required = inSearcher.createSearchQuery();
@@ -93,14 +96,16 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 						
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
-
 			
 			Set ids = new HashSet();
 
 			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
 			Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
-			allowed.addAll(profile.getViewCategories());
-			
+			Collection canview = profile.getViewCategories();
+			if( canview != null )
+			{
+				allowed.addAll(canview);
+			}
 			for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
 			{
 				Category allowedcat = (Category) iterator.next();
