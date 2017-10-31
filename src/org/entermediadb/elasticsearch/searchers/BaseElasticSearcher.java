@@ -1155,13 +1155,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
 				before = c.getTime();
-				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
+				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before.getTime());
 			}
 			else if ("afterdate".equals(inTerm.getOperation()))
 			{
 				Date before = new Date(Long.MAX_VALUE);
 				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
-				find = QueryBuilders.rangeQuery(fieldid).from(after);// .to(before);
+				find = QueryBuilders.rangeQuery(fieldid).from(after.getTime());// .to(before);
 			}
 			else if ("betweendates".equals(inTerm.getOperation()))
 			{
@@ -1183,7 +1183,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				// inTerm.getParameter("beforeDate");
 
 				// String before
-				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
+				find = QueryBuilders.rangeQuery(fieldid).from(after.getTime()).to(before.getTime());
 			}
 
 			else
@@ -1204,7 +1204,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				Date before = calendar.getTime();
 
-				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before);
+				find = QueryBuilders.rangeQuery(fieldid).from(after.getTime()).to(before.getTime());
 
 				// find = QueryBuilders.termQuery(fieldid, valueof); //TODO make
 				// it a range query? from 0-24 hours
