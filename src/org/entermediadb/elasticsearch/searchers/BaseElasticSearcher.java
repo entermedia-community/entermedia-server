@@ -740,17 +740,16 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 		// Now determine index
 		String indextype = detail.get("indextype");
-
-		if (indextype == null)
-		{
-			if (!detail.isAnalyzed())
-			{
-				indextype = "not_analyzed";
-			}
-		}
+//		if (indextype == null)
+//		{
+//			if (!detail.isAnalyzed())
+//			{
+//				indextype = "not_analyzed";
+//			}
+//		}
 		if (indextype != null)
 		{
-			jsonproperties = jsonproperties.field("index", indextype);
+			jsonproperties = jsonproperties.field("index", indextype);  //true or false?
 		}
 	}
 
