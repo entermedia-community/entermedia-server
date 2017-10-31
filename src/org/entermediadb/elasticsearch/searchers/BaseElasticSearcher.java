@@ -356,7 +356,12 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else
 			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+				String path = detail.getId();
+				if( detail.isAnalyzed())
+				{
+					path = path + ".exact";
+				}
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(path).size(100);
 				inSearch.addAggregation(b);
 			}
 
@@ -1381,7 +1386,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		for (Iterator iterator = inQuery.getSorts().iterator(); iterator.hasNext();)
 		{
 			String field = (String) iterator.next();
-			log.info("Adding sort on " + getSearchType() + " " + field);
+			//log.info("Adding sort on " + getSearchType() + " " + field);
 			boolean direction = false;
 			if (field.endsWith("Down"))
 			{
@@ -2629,7 +2634,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				tosave.clear();
 			}
 		}
-		updateInBatch(tosave, null);
+		updateIndex(tosave, null);
 
 	}
 	/**
