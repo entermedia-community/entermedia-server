@@ -71,11 +71,14 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			}
 			
 			User user = inPageRequest.getUser();
-			if (user != null && user.isInGroup("administrators"))
-			{
-				return inQuery;
-			}
 			UserProfile profile = inPageRequest.getUserProfile();
+			if (profile != null)
+			{
+				if( "administrator".equals( profile.get("settingsgroup")))
+				{
+					return inQuery;					
+				}
+			}
 			
 			SearchQuery required = inSearcher.createSearchQuery();
 
