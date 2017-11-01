@@ -57,18 +57,4 @@
       <language id="fr"><![CDATA[Nombre d&#39;erreur]]></language>
     </name>
   </property> 
-  
-  
-  
-  <!--  Data Merge -->
-    <property id="name" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" multilanguage="true">New
-    <name>
-      <language id="de"><![CDATA[Identität]]></language>
-      <language id="en"><![CDATA[Name]]></language>
-      <language id="es"><![CDATA[Nombre]]></language>
-      <language id="fr"><![CDATA[Identité]]></language>
-    </name>
-  </property>
-  
-  
 </properties>

@@ -90,6 +90,15 @@
 		<delete quiet="true">
 			<fileset dir="./lib" includes="dev_entermedia**.jar"/>
 		</delete>
+		<delete quiet="true">
+			<fileset dir="./lib" includes="em9**.jar"/>
+		</delete>
+		<delete quiet="true">
+			<fileset dir="./lib" includes="em9dev**.jar"/>
+		</delete>
+		<delete quiet="true">
+			<fileset dir="./lib" includes="dev_entermedia**.jar"/>
+		</delete>
 		
 		<mkdir dir="./lib"/>
 	    <delete>
@@ -126,22 +135,10 @@
 	      <fileset dir="./lib" includes="EdenLib.jar"/>
 	    </delete>
 	    <delete>
-	      <fileset dir="./lib" includes="velocity-**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="commons-fileupload-**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="commons-net-**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="commons-logging-**.jar"/>
+	      <fileset dir="./lib" includes="commons-**.jar"/>
 	    </delete>
 	    <delete>
 	      <fileset dir="./lib" includes="log4j**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="dom4j**.jar"/>
 	    </delete>
 	    <delete>
 	      <fileset dir="./lib" includes="jazzy**.jar"/>
@@ -186,8 +183,92 @@
 	      <fileset dir="./lib" includes="http**.jar"/>
 	    </delete>
 	    <delete>
-	      <fileset dir="./lib" includes="servlet-gzip.jar"/>
-	    </delete>
+	  	  	  <fileset dir="./lib" includes="asm**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="compiler**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="compress**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="elasticsearch**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="gson**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="Hdr**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="hppc**.jar"/>
+	  	</delete>
+	    	    <delete>
+	  	  	  <fileset dir="./lib" includes="isoparser**.jar"/>
+	  	</delete>
+	   	<delete>
+	  	  	  <fileset dir="./lib" includes="jackson**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="java-version**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="javax.mail**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="jcif**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="jna**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="joda**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="jopt**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="js**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="jts**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="lucene**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="netty**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="org.apache**.jar"/>
+	 	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="pdfbox**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="plugin-cli**.jar"/>
+	  	</delete>
+	    <delete>
+	  	  	  <fileset dir="./lib" includes="securesm**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="servlet**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="snakeyaml**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="spatial**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="t-digest**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="transport**.jar"/>
+	  	</delete>
+	     <delete>
+	  	  	  <fileset dir="./lib" includes="velocity**.jar"/>
+	  	</delete>
 
 		
 	  	<delete dir="../base/openedit"/>

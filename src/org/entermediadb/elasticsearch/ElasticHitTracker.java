@@ -38,7 +38,18 @@ public class ElasticHitTracker extends HitTracker
 	protected int SCROLL_CACHE_TIME = 900000; //15 minutes
 	protected long fieldLastPullTime = -1;
 	protected String fieldLastScrollId;
-	protected Client fieldElasticClient;
+	protected ElasticNodeManager fieldNodeManager;
+	
+	public ElasticNodeManager getNodeManager()
+	{
+		return fieldNodeManager;
+	}
+
+	public void setNodeManager(ElasticNodeManager inNodeManager)
+	{
+		fieldNodeManager = inNodeManager;
+	}
+
 	protected int fieldLastPageLoaded;
 
 	public int getLastPageLoaded()
@@ -56,22 +67,12 @@ public class ElasticHitTracker extends HitTracker
 
 	}
 
-	public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms, int inHitsPerPage)
+	public ElasticHitTracker(ElasticNodeManager inManager, SearchRequestBuilder builder, QueryBuilder inTerms, int inHitsPerPage)
 	{
-		setElasticClient(inClient);
+		setNodeManager(inManager);
 		setTerms(inTerms);
 		setSearcheRequestBuilder(builder);
 		setHitsPerPage(inHitsPerPage);
-	}
-
-	public Client getElasticClient()
-	{
-		return fieldElasticClient;
-	}
-
-	public void setElasticClient(Client inElasticClient)
-	{
-		fieldElasticClient = inElasticClient;
 	}
 
 	public String getLastScrollId()
@@ -164,18 +165,17 @@ public class ElasticHitTracker extends HitTracker
 							refreshFilters(); //This seems like it should only be done once?
 						}
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
-						if( getSearchQuery().hasFilters() )
-						{
-							
-						}
 						
+						String nodes = getNodeManager().getLocalNode().getSetting("entermedia.search.only_nodes");
+						if( nodes != null)
+						{
+							getSearcheRequestBuilder().setPreference("_only_nodes:" + nodes);
+						}
 						if (isUseServerCursor())
 						{
 							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME));
 						}
 						response = getSearcheRequestBuilder().execute().actionGet();
-						 
-						
 						
 						
 						setLastScrollId(response.getScrollId());
@@ -186,12 +186,12 @@ public class ElasticHitTracker extends HitTracker
 						//Only call this if we are moving forward in the scroll
 						//scroll to the right place if within timeout 
 						log.info(getSearcher().getSearchType() + " hash:" + hashCode() + " scrolling to chunk " + inChunk + " " + getHitsPerPage());
-						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
+						response = getNodeManager().getClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
 					}
 					setLastPageLoaded(inChunk);
 					fieldLastPullTime = now;
 
-					if (getChunks().size() > 30)
+					if (getChunks().size() > 30)   //TODO: Keep the pages near us
 					{
 						SearchResponse first = getChunks().get(0);
 						getChunks().clear();
@@ -202,14 +202,53 @@ public class ElasticHitTracker extends HitTracker
 					if( (getSearchQuery().isEndUserSearch() || getSearchQuery().isFilter()) && fieldFilterOptions == null )
 					{
 					  getFilterOptions();
-					  getSearcheRequestBuilder().setAggregations(new HashMap());
+					  //getSearcheRequestBuilder().(new HashMap()); No API
 					}
 				}
 			}
 		}
 		return response;
 	}
-
+	@Override
+	public int indexOfId(String inId)
+	{
+		if( inId == null || inId.startsWith("multiedit:") || inId.trim().isEmpty() )
+		{
+			return -1;
+		}
+		for (Iterator iterator = getChunks().keySet().iterator(); iterator.hasNext();)
+		{
+			Integer page = (Integer) iterator.next();
+			int found = findIdOnPage(inId,getPage());
+			if( found > -1)
+			{
+				return found;
+			}
+		}
+		int found = -1;
+		if( getTotalPages() > getPage() )
+		{
+			//Look one after
+			found = findIdOnPage(inId,getPage() + 1);
+			if( found > -1)
+			{
+				return found;
+			}
+		}
+		//Look one before
+		if( getPage() > 1 )
+		{
+			found = findIdOnPage(inId,getPage() -1);
+			if( found > -1)
+			{
+				return found;
+			}
+		}
+	
+		return -1;
+		
+	}
+	
 	protected Map<Integer, SearchResponse> getChunks()
 	{
 		if (fieldChunks == null)
@@ -439,7 +478,6 @@ public class ElasticHitTracker extends HitTracker
 					}
 				}
 			}
-			getSearcheRequestBuilder().setAggregations(new HashMap());
 		}
 		return topfacets;
 	}
@@ -522,7 +560,7 @@ public class ElasticHitTracker extends HitTracker
 		ClearScrollRequest request = new ClearScrollRequest();
 		request.addScrollId(fieldLastScrollId);
 			
-		getElasticClient().clearScroll(request);
+		getNodeManager().getClient().clearScroll(request);
 		
 		
 	}

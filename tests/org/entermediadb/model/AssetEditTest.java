@@ -37,9 +37,9 @@ public class AssetEditTest extends BaseEnterMediaTest
 
 	protected void setUp() throws Exception
 	{
-		if(getMediaArchive().getAssetSearcher().getAllHits().size() == 0){
-			getMediaArchive().getAssetSearcher().reIndexAll();
-		}
+//		if(getMediaArchive().getAssetSearcher().getAllHits().size() == 0){
+//			getMediaArchive().getAssetSearcher().reIndexAll();
+//		}
 		Category blank = getCategoryEditor().getCategory("GOODSTUFF"); 
 		if( blank == null)
 		{
@@ -321,13 +321,13 @@ public class AssetEditTest extends BaseEnterMediaTest
 		
 		WebPageRequest req = getFixture().createPageRequest();
 
-		HitTracker tracker = getMediaArchive().getAssetSearcher().cachedSearch(req,q);
+		HitTracker tracker = getMediaArchive().getAssetSearcher().search(q);
 		int size = tracker.size();
 		
 		getMediaArchive().getAssetArchive().deleteAsset(asset);
 		getMediaArchive().getAssetSearcher().deleteFromIndex(asset);
 
-		tracker = getMediaArchive().getAssetSearcher().cachedSearch(req,q);
+		tracker = getMediaArchive().getAssetSearcher().search(q);
 		assertEquals( tracker.size() + 1, size);
 	
 	}

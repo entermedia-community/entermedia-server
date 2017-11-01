@@ -9,12 +9,14 @@
 
 <table width="50%" class="striped">
 <tr>
-<th>Name</th><th>Sections</th><th></th>
+<th>Name</th><th>Shards</th><th>Status</th>
 </tr>
 #foreach( $snap in $snapshots)
-	<tr><td>$snap.name()</td>
+	<tr><td>$snap.snapshotId().getName()</td>
 	<td>$snap.totalShards()</td>
-	<td><a href="./restore.html?id=$snap.name()" class="btn"> Restore</td>
+	<td>$snap.status()</td>
+	
+	<td><a href="./restore.html?id=$snap.snapshotId().getName()" class="btn"> Restore</td>
 	</tr>
 #end
 </table>

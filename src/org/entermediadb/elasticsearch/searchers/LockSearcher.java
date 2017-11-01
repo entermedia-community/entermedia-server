@@ -5,9 +5,11 @@ import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.SearchHit;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggregationBuilder;
 
 public class LockSearcher extends BaseElasticSearcher 
 {
@@ -60,7 +62,7 @@ public class LockSearcher extends BaseElasticSearcher
 		    for (SearchHit hit : response.getHits().hits()) 
 		    {
 				DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), hit.getId());
-				delete.setRefresh(false).execute().actionGet();
+				delete.setRefreshPolicy(RefreshPolicy.IMMEDIATE).execute().actionGet();
 		    }
 		
 		log.info("Deleted nodeid=" + id + " records database " + getSearchType() );

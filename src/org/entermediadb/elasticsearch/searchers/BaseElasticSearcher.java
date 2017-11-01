@@ -44,6 +44,7 @@ import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.ClearScrollRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
@@ -58,7 +59,9 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
-import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.MatchPhrasePrefixQueryBuilder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
+import org.elasticsearch.index.query.Operator;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -66,10 +69,10 @@ import org.elasticsearch.index.query.WildcardQueryBuilder;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
+import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramAggregationBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
-import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
+import org.elasticsearch.search.aggregations.metrics.avg.AvgAggregationBuilder;
+import org.elasticsearch.search.aggregations.metrics.sum.SumAggregationBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
 import org.elasticsearch.search.sort.SortBuilders;
 import org.elasticsearch.search.sort.SortOrder;
@@ -98,7 +101,6 @@ import org.openedit.util.IntCounter;
 
 public class BaseElasticSearcher extends BaseSearcher
 {
-
 	private static final Log log = LogFactory.getLog(BaseElasticSearcher.class);
 	public static final Pattern VALUEDELMITER = Pattern.compile("\\s*\\|\\s*");
 	protected static final Pattern operators = Pattern.compile("(\\sAND\\s|\\sOR\\s|\\sNOT\\s)");
@@ -218,12 +220,13 @@ public class BaseElasticSearcher extends BaseSearcher
 			SearchRequestBuilder search = getClient().prepareSearch(toId(getCatalogId()));
 			search.setSearchType(SearchType.DFS_QUERY_THEN_FETCH);
 			search.setTypes(getSearchType());
+		//	search.setPreference(preference)
+			
 			if (isCheckVersions())
 			{
 				search.setVersion(true);
 			}
 			QueryBuilder terms = buildTerms(inQuery);
-
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
@@ -241,7 +244,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			//		    },
 
 			search.setFetchSource(null, "description");
-			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
+			ElasticHitTracker hits = new ElasticHitTracker(getElasticNodeManager(), search, terms, inQuery.getHitsPerPage());
 
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
@@ -326,32 +329,39 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			if (detail.isDate())
 			{
-				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
-				builder.field(detail.getId());
-				builder.interval(DateHistogramInterval.DAY);
-
+				DateHistogramAggregationBuilder builder = new DateHistogramAggregationBuilder(detail.getId() + "_breakdown_day");
+				builder.field(detail.getId());				
+				builder.dateHistogramInterval(DateHistogramInterval.DAY);
+				
+				
+				
 				inSearch.addAggregation(builder);
 
-				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
+				builder = new DateHistogramAggregationBuilder(detail.getId() + "_breakdown_week");
 				builder.field(detail.getId());
-				builder.interval(DateHistogramInterval.WEEK);
+				builder.dateHistogramInterval(DateHistogramInterval.WEEK);
 				inSearch.addAggregation(builder);
 
 			}
 
 			else if (detail.isNumber())
 			{
-				SumBuilder b = new SumBuilder(detail.getId() + "_sum");
+				SumAggregationBuilder b = new SumAggregationBuilder(detail.getId() + "_sum");
 				b.field(detail.getId());
 				inSearch.addAggregation(b);
 
-				AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
+				AvgAggregationBuilder avg = new AvgAggregationBuilder(detail.getId() + "_avg");
 				avg.field(detail.getId());
 
 			}
 			else
 			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+				String path = detail.getId();
+				if( detail.isAnalyzed())
+				{
+					path = path + ".exact";
+				}
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(path).size(100);
 				inSearch.addAggregation(b);
 			}
 
@@ -532,7 +542,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			jsonproperties.field("date_detection", "false");
 
 			//"_all" : {"enabled" : false},
-			jsonproperties.startObject("_all").field("enabled", "false").endObject();
+			//jsonproperties.startObject("_all").field("enabled", "false").endObject();
 
 			jsonproperties = jsonproperties.startObject("properties");
 
@@ -559,7 +569,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			// detail.setId("namesorted");
 			// props.add(detail);
 			// }
-
 			for (Iterator i = props.iterator(); i.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) i.next();
@@ -583,70 +592,51 @@ public class BaseElasticSearcher extends BaseSearcher
 					jsonproperties = jsonproperties.startObject(detail.getId() + "_int");
 					jsonproperties = jsonproperties.field("type", "object");
 
-					jsonproperties.startObject("properties");
+					jsonproperties = jsonproperties.startObject("properties");
 					HitTracker languages = getSearcherManager().getList(getCatalogId(), "locale");
 					for (Iterator iterator = languages.iterator(); iterator.hasNext();)
 					{
 						Data locale = (Data) iterator.next();
 						String id = locale.getId();
-						 
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
-						if (detail.isAnalyzed())
-						{
-							jsonproperties.startObject("fields");
-							jsonproperties.startObject("exact");
-							jsonproperties = jsonproperties.field("type", "string");
-							jsonproperties = jsonproperties.field("index", "not_analyzed");
-							jsonproperties = jsonproperties.field("ignore_above", 256);
-
-							jsonproperties.endObject();
-							jsonproperties.endObject();
-						}
-
-						if (analyzer != null)
-						{
-							jsonproperties.field("analyzer", analyzer);
-						}
-						jsonproperties = jsonproperties.field("index", "analyzed");
-						jsonproperties.endObject();
+						jsonproperties = jsonproperties.startObject("fields");
+							jsonproperties = jsonproperties.startObject("exact");
+							jsonproperties = jsonproperties.field("type", "keyword");
+							//jsonproperties = jsonproperties.field("ignore_above", 256);
+	
+							jsonproperties = jsonproperties.endObject();
+						jsonproperties = jsonproperties.endObject();
+						jsonproperties= jsonproperties.endObject();
 					}
-					jsonproperties.endObject();
-					jsonproperties.endObject();
-
-					jsonproperties = jsonproperties.startObject(detail.getId());
-					jsonproperties = jsonproperties.field("type", "string");
-					jsonproperties = jsonproperties.field("include_in_all", "false");
+					jsonproperties = jsonproperties.endObject();
 					jsonproperties = jsonproperties.endObject();
 
+					jsonproperties = jsonproperties.startObject(detail.getId()); //why is this here, legacy support?
+					jsonproperties = jsonproperties.field("type", "string");
+					//jsonproperties = jsonproperties.field("include_in_all", "false");
+					jsonproperties = jsonproperties.endObject();
 					continue;
 				}
 				
 				jsonproperties = jsonproperties.startObject(detail.getId());
 				configureDetail(detail, jsonproperties);
 				jsonproperties = jsonproperties.endObject();
-		
 				
-
 			}
-			
-			
-			
-			
-			
 			
 			jsonproperties = jsonproperties.endObject();
-			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
-			if (_parent != null)
-			{
-				jsonproperties = jsonproperties.startObject("_parent");
-				jsonproperties = jsonproperties.field("type", _parent.getListId());
-				jsonproperties = jsonproperties.endObject();
-			}
-			jsonBuilder = jsonproperties.endObject();
-			String content = jsonproperties.string();
-			log.info(content);
+//			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
+//			if (_parent != null)
+//			{
+//				jsonproperties = jsonproperties.startObject("_parent");
+//				jsonproperties = jsonproperties.field("type", _parent.getListId());
+//				jsonproperties = jsonproperties.endObject();
+//			}
+			jsonBuilder = jsonproperties.endObject().endObject();
+			//String content = jsonproperties.string();
+			//log.info(content);
 			return jsonproperties;
 		}
 		catch (Throwable ex)
@@ -664,9 +654,9 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			String analyzer = "lowersnowball";
 			jsonproperties = jsonproperties.field("analyzer", analyzer);
-			jsonproperties = jsonproperties.field("type", "string");
+			jsonproperties = jsonproperties.field("type", "text");
 			jsonproperties = jsonproperties.field("index", "analyzed");
-			jsonproperties = jsonproperties.field("include_in_all", "false");
+			//jsonproperties = jsonproperties.field("include_in_all", "false");
 			return;
 		}
 
@@ -674,18 +664,15 @@ public class BaseElasticSearcher extends BaseSearcher
 		if(detail.isDataType("objectarray")){
 		
 			jsonproperties = jsonproperties.field("type", "object");
-			jsonproperties.startObject("properties");
+			jsonproperties = jsonproperties.startObject("properties");
 			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();) {
 				PropertyDetail child = (PropertyDetail) iterator.next();
 				jsonproperties = jsonproperties.startObject(child.getId());
 				configureDetail(child, jsonproperties);
 				jsonproperties = jsonproperties.endObject();
 			}
-			jsonproperties.endObject();
-			
-			
+			jsonproperties = jsonproperties.endObject();
 			return;
-			
 		}
 		
 		// First determine type
@@ -716,9 +703,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			jsonproperties = jsonproperties.field("type", "geo_point");
 		}
-		
-		
-		
 		else if (detail.isList()) // Or multi valued?
 		{
 			if (Boolean.parseBoolean(detail.get("nested")))
@@ -727,53 +711,50 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else
 			{
-				jsonproperties = jsonproperties.field("type", "string");
+				jsonproperties = jsonproperties.field("type", "keyword");
 			}
 		}
 		else
 		{
-			jsonproperties = jsonproperties.field("type", "string");
-			if (detail.isAnalyzed())
-			{
-				jsonproperties.startObject("fields");
-				jsonproperties.startObject("exact");
-				jsonproperties = jsonproperties.field("type", "string");
-				jsonproperties = jsonproperties.field("index", "not_analyzed");
-				if(!detail.getId().contains("path")){
-					jsonproperties = jsonproperties.field("ignore_above", 256);
+				if (detail.isAnalyzed())
+				{
+					jsonproperties = jsonproperties.field("type", "text");
+					jsonproperties = jsonproperties.startObject("fields");
+					jsonproperties = jsonproperties.startObject("exact");
+					jsonproperties = jsonproperties.field("type", "keyword");
+					//jsonproperties = jsonproperties.field("index", "not_analyzed");
+					if(!detail.getId().contains("path")){
+						jsonproperties = jsonproperties.field("ignore_above", 256);
+					}
+					jsonproperties = jsonproperties.endObject().endObject();
 				}
-				jsonproperties.endObject();
-				jsonproperties.endObject();
-			}
+				else
+				{
+					jsonproperties = jsonproperties.field("type", "keyword");
+				}
 
 		}
-
-		// Now determine index
-		String indextype = detail.get("indextype");
-
-		if (indextype == null)
+		if (detail.isAnalyzed())
 		{
-			if (!detail.isAnalyzed())
+			String analyzer = detail.get("analyzer");
+			if (analyzer != null)
 			{
-				indextype = "not_analyzed";
+				jsonproperties = jsonproperties.field("analyzer", analyzer);
 			}
 		}
-		if (indextype != null)
-		{
-			jsonproperties = jsonproperties.field("index", indextype);
-		}
-
-		jsonproperties = jsonproperties.field("include_in_all", "false"); // Do
-																			// not
-																			// use.
-																			// Use
-																			// _description
-
-		String analyzer = detail.get("analyzer");
-		if (analyzer != null)
-		{
-			jsonproperties = jsonproperties.field("analyzer", analyzer);
-		}		
+//		// Now determine index
+//		String indextype = detail.get("indextype");
+////		if (indextype == null)
+////		{
+////			if (!detail.isAnalyzed())
+////			{
+////				indextype = "not_analyzed";
+////			}
+////		}
+//		if (indextype != null)
+//		{
+//			jsonproperties = jsonproperties.field("index", indextype);  //true or false?
+//		}
 	}
 
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
@@ -955,13 +936,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				return null;
 			}
 		}
-		else if ("childfilter".equals(inTerm.getOperation()))
-		{
-			ChildFilter filter = (ChildFilter) inTerm;
-			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue());
-			QueryBuilder haschild = QueryBuilders.hasChildQuery(filter.getChildTable(), parent);
-			return haschild;
-		}
+//		else if ("childfilter".equals(inTerm.getOperation()))
+//		{
+//			ChildFilter filter = (ChildFilter) inTerm;
+//			QueryBuilder parent = QueryBuilders.termQuery(filter.getChildColumn(), filter.getValue());
+//		
+//			QueryBuilder haschild = JoinQueryBuilders.hasChildQuery(filter.getChildTable(), parent);
+//			return haschild;
+//		}
 
 		// if( fieldid.equals("description"))
 		// {
@@ -1025,7 +1007,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			or.should(text);
 
 			valueof = valueof.replace("*", "");
-			MatchQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			MatchPhrasePrefixQueryBuilder phrase = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			phrase.maxExpansions(10);
 			or.should(phrase);
 			find = or;
@@ -1035,7 +1017,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			//TODO: Should startswith be exact or analysed phrases? 
 			//find = QueryBuilders.prefixQuery(fieldid, valueof);
 			//Left this in for now...
-			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			MatchPhrasePrefixQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
 		}
@@ -1094,7 +1076,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			if ((valueof.startsWith("\"") && valueof.endsWith("\"")))
 			{
 				valueof = valueof.replace("\"", "");
-				MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+				MatchPhraseQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 				text.analyzer("lowersnowball");
 				find = text;
 
@@ -1109,11 +1091,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				String query = "+(" + valueof + ")";
 
 				QueryStringQueryBuilder text = QueryBuilders.queryStringQuery(query);
-				text.defaultOperator(QueryStringQueryBuilder.Operator.AND);
+				text.defaultOperator(Operator.AND);
 				text.analyzer("lowersnowball");
 				text.defaultField("description");
 
-				MatchQueryBuilder text2 = QueryBuilders.matchPhrasePrefixQuery("description", String.valueOf(inValue));
+				MatchPhrasePrefixQueryBuilder text2 = QueryBuilders.matchPhrasePrefixQuery("description", String.valueOf(inValue));
 				text2.analyzer("lowersnowball");
 
 				BoolQueryBuilder or = QueryBuilders.boolQuery();
@@ -1143,7 +1125,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			valueof = valueof.substring(0, valueof.length() - 1);
 
-			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+			MatchPhrasePrefixQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
 		}
@@ -1155,7 +1137,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		else if (valueof.startsWith("\"") && valueof.endsWith("\""))
 		{
 			valueof.replaceAll("\"", "");
-			MatchQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
+			MatchPhraseQueryBuilder text = QueryBuilders.matchPhraseQuery(inTerm.getId(), valueof);
 			text.analyzer("lowersnowball");
 			find = text;
 		}
@@ -1177,13 +1159,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				c.set(Calendar.SECOND, 59);
 				c.set(Calendar.MILLISECOND, 999);
 				before = c.getTime();
-				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before);
+				find = QueryBuilders.rangeQuery(inDetail.getId()).to(before.getTime());
 			}
 			else if ("afterdate".equals(inTerm.getOperation()))
 			{
 				Date before = new Date(Long.MAX_VALUE);
 				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
-				find = QueryBuilders.rangeQuery(fieldid).from(after);// .to(before);
+				find = QueryBuilders.rangeQuery(fieldid).from(after.getTime());// .to(before);
 			}
 			else if ("betweendates".equals(inTerm.getOperation()))
 			{
@@ -1205,7 +1187,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				// inTerm.getParameter("beforeDate");
 
 				// String before
-				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
+				find = QueryBuilders.rangeQuery(fieldid).from(after.getTime()).to(before.getTime());
 			}
 
 			else
@@ -1226,7 +1208,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				Date before = calendar.getTime();
 
-				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before);
+				find = QueryBuilders.rangeQuery(fieldid).from(after.getTime()).to(before.getTime());
 
 				// find = QueryBuilders.termQuery(fieldid, valueof); //TODO make
 				// it a range query? from 0-24 hours
@@ -1404,6 +1386,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		for (Iterator iterator = inQuery.getSorts().iterator(); iterator.hasNext();)
 		{
 			String field = (String) iterator.next();
+			//log.info("Adding sort on " + getSearchType() + " " + field);
 			boolean direction = false;
 			if (field.endsWith("Down"))
 			{
@@ -1418,7 +1401,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isAnalyzed())
+			if (detail != null)
 			{
 				if (detail.isMultiLanguage())
 				{
@@ -1429,19 +1412,25 @@ public class BaseElasticSearcher extends BaseSearcher
 					PropertyDetail first = (PropertyDetail)detail.getObjectDetails().iterator().next();
 					sort = SortBuilders.fieldSort(field + "." + first.getId());
 				}
-				else
+				else if ( detail.isAnalyzed() )
 				{
 					sort = SortBuilders.fieldSort(field + ".exact");
 				}
-
+				else if (field.equals("id")) //Elastic default is to add a sub field called of ID columns.keyword
+				{
+					sort = SortBuilders.fieldSort(field + ".keyword");
+				}
+				else
+				{
+					sort = SortBuilders.fieldSort(field);
+				}
 			}
-
 			else
 			{
 				sort = SortBuilders.fieldSort(field);
 			}
-
-			sort.ignoreUnmapped(true);
+			
+			//sort.ignoreUnmapped(true);
 			if (direction)
 			{
 				sort.order(SortOrder.DESC);
@@ -1591,7 +1580,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				log.info(failure);
 				errors.add(failure);
 			}
-		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(0).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
 
 		//setConcurrentRequests = 1 sets concurrentRequests to 1, which means an asynchronous execution of the flush operation.
 
@@ -1623,10 +1612,10 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				}
 				req = req.source(content);
-				// if( isRefreshSaves() )
-				// {
-				// req = req.refresh(true);
-				// }
+				
+				
+				//Not supported req = req.setRefreshPolicy(RefreshPolicy.WAIT_UNTIL);
+				
 				//				try
 				//				{
 				bulkProcessor.add(req);
@@ -1819,7 +1808,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			builder = builder.setSource(content);
 			if (isRefreshSaves())
 			{
-				builder = builder.setRefresh(true);
+				builder = builder.setRefreshPolicy(RefreshPolicy.IMMEDIATE);
 			}
 			if (isCheckVersions())
 			{
@@ -1923,9 +1912,9 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
-				if( detail == null && !propid.equals("description") && !propid.contains("_int"))
+				//Create Property
+				if( detail == null && !propid.equals("description") && !propid.contains("_int") && !propid.equals("id"))
 				{
-					
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
 					//setType(detail);
 					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
@@ -2291,7 +2280,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			delete.setParent(inData.get("_parent"));
 		}
-		delete.setRefresh(true).execute().actionGet();
+		delete.setRefreshPolicy(RefreshPolicy.IMMEDIATE).execute().actionGet();
 
 	}
 
@@ -2645,7 +2634,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				tosave.clear();
 			}
 		}
-		updateInBatch(tosave, null);
+		updateIndex(tosave, null);
 
 	}
 	/**

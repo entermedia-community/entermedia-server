@@ -253,7 +253,7 @@ jQuery(document).ready(function(url,params)
 			var container = $("#main-media-container");
 			container.replaceWith(data);
 			overlayResize();
-			var div = $("#gallerycell_" + assetid );
+			var div = $("#main-media-viewer");
 			var id = div.data("previous");
 			enable(id,".goleftclick span");
 			id = div.data("next");
@@ -286,7 +286,7 @@ jQuery(document).ready(function(url,params)
 			}
 		    switch(e.which) {
 		        case 37: // left
-					var div = $("#gallerycell_" + getCurrentAssetId() );
+					var div = $("#main-media-viewer" );
 		        	var id = div.data("previous");
 		        	if( id )
 		        	{
@@ -296,7 +296,7 @@ jQuery(document).ready(function(url,params)
 		        break;
 		
 				case 39: // right
-					var div = $("#gallerycell_" + getCurrentAssetId() );
+					var div = $("#main-media-viewer" );
 		        	var id = div.data("next");
 		        	if( id )
 		        	{
@@ -386,7 +386,7 @@ jQuery(document).ready(function(url,params)
 	jQuery('div.goleftclick .glyphicon-triangle-left').livequery('click',function(e)
 	{
 		e.preventDefault();
-		var div = $("#gallerycell_" + getCurrentAssetId() );
+		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
 		showAsset(id);
 
@@ -395,14 +395,14 @@ jQuery(document).ready(function(url,params)
 	jQuery('div.gorightclick .glyphicon-triangle-right').livequery('click',function(e)
 	{
 		e.preventDefault();
-		var div = $("#gallerycell_" + getCurrentAssetId() );
+		var div = $("#main-media-viewer" );
 		var id = div.data("next");
 		showAsset(id);
 	});
 	
 	$("#main-media").livequery("swipeleft",function(){
 		
-		var div = $("#gallerycell_" + getCurrentAssetId() );
+		var div = $("#main-media-viewer" );
 		var id = div.data("next");
 		if( id ) 
 		{
@@ -411,7 +411,7 @@ jQuery(document).ready(function(url,params)
 		});
 	$("#main-media").livequery("swiperight",function(){
 	
-		var div = $("#gallerycell_" + getCurrentAssetId() );
+		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
 		if( id ) 
 		{

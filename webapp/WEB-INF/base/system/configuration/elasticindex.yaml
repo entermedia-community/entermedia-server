@@ -1,0 +1,21 @@
+number_of_shards: 5
+number_of_replicas: 1
+#mapping._id.indexed: true
+#mapper.dynamic: true
+analysis: 
+ analyzer: 
+  tags:
+   type: "custom"
+   tokenizer: "keyword"
+   filter:
+    - "lowercase"
+  lowersnowball:
+   tokenizer: "standard"
+   filter:
+    - standard
+    - lowercase
+    - stemfilter
+ filter:
+  stemfilter:
+   type: "snowball"
+   language: "English"

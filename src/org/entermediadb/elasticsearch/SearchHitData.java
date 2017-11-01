@@ -23,6 +23,7 @@ import org.openedit.modules.translations.LanguageMap;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData {
 	protected Map fieldSearchData;
+	
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
 	private static final Log log = LogFactory.getLog(SearchHitData.class);
@@ -46,7 +47,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		setVersion(inSearchHit.getVersion());
 
 	}
-
+	
 	public Long getVersion() 
 	{
 		Long l = getMap().getLong(".version");
@@ -97,11 +98,6 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		return one;
 	}
 
-	
-	
-
-	
-	
 	@Override
 	public Object getValue(String inId) {
 		if (inId == null) {
@@ -139,19 +135,16 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		if (detail != null && detail.isMultiLanguage()) {
 			key = key + "_int";
 		}
-
-		if (getSearchHit() != null) {
-			SearchHitField field = getSearchHit().field(key);
-			if (field != null) {
-				value = field.getValue();
-			}
-		}
-		if (value == null && getSearchData() != null) {
+		
+		if (getSearchData() != null)
+		{
 			value = getSearchData().get(key);
-			if (value instanceof Map) {
+			if (value instanceof Map) 
+			{
 				Map map = (Map)value;
-				if(map.isEmpty()){
-					value = null;
+				if(map.isEmpty())
+				{
+					value = null; //Save to map as null?
 				}
 			}
 		}
@@ -164,8 +157,9 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				{
 					value = getSearchData().get(legacy);
 				}
-				if (value == null && !inId.equals(key)) {
-					value = getSearchData().get(inId); //check without the _int if !inId.equals(key) ?
+				if (value == null && !inId.equals(key)) 
+				{
+					value = getSearchData().get(inId);
 				}
 			}
 		}
@@ -190,6 +184,21 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			value = map.get("en");
 		}
 
+		return value;
+	}
+
+	protected Object lookupValue( String detailid,String inId)
+	{
+		Object value = null;
+		try
+		{
+			value = getSearchData().get(inId); //check without the _int if !inId.equals(key) ?
+		}
+		catch ( Throwable ex)
+		{
+			log.error("Could not read value on " + getPropertyDetails().getId() + " " + detailid + " using " + inId ,ex);
+			return null;
+		}
 		return value;
 	}
 
@@ -239,4 +248,9 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 			return getId();
 		}
 	}
+	
+	public String toJsonString(){
+		return getSearchHit().getSourceAsString();
+	}
+	
 }
