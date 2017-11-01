@@ -1,5 +1,8 @@
 package snapshot;
 
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
+
 import org.dom4j.Attribute
 import org.dom4j.Element
 import org.entermediadb.asset.MediaArchive
@@ -24,6 +27,10 @@ import org.openedit.util.DateStorageUtil
 import org.openedit.util.FileUtils
 import org.openedit.util.PathUtilities
 import org.openedit.util.XmlUtil
+
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.stream.JsonReader
 
 public void init() 
 {
@@ -247,8 +254,61 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		{
 			log.info("Import canceled due to CSV import error");
 		}
+		
+		List jsonfiles = pdarchive.getPageManager().getChildrenPaths(rootfolder + "/json/" );
+		
+		orderedtypes = new ArrayList();
+		jsonfiles.each {
+			if( it.endsWith(".zip")) {
+				String searchtype = PathUtilities.extractPageName(it);
+				if(!childrennames.contains(searchtype)) {
+					ordereredtypes.add(searchtype);
+				}
+			}
+		}
+		ordereredtypes.addAll(childrennames);
+		ordereredtypes.removeAll("propertydetail");
+		ordereredtypes.removeAll("lock");
+		ordereredtypes.removeAll("category");
+		ordereredtypes.removeAll("user");
+		//ordereredtypes.removeAll("userprofile");
+		ordereredtypes.removeAll("group");
+		ordereredtypes.add(0,"category");
+		
+		
+		for( String type in ordereredtypes ) {
+			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + type + ".zip");
+			try{
+				if( upload.exists() ) {
+					importJson(site, mediaarchive,type,upload, tempindex);
+				}
+			} catch (Exception e) {
+				deleteold=false;
+	
+				log.error("Exception thrown importing upload: ${upload} ", e );
+				break;
+			}
+		}
+		
+		
+				
 	}
 }
+
+
+
+public void importJSON() {
+	
+	
+	
+	
+	
+	
+	
+}
+
+
+
 
 public void fixXconfs(PageManager pageManager, Page site,String catalogid)
 {
@@ -474,6 +534,47 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 	searcher.clearIndex();
 	log.info("Saved " + searchtype + " "  +  tosave.size() );
 }
+
+
+
+
+
+public void importJson(Data site, MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
+	
+		
+	
+	
+	
+		Searcher searcher = mediaarchive.getSearcher(searchtype);
+		searcher.setAlternativeIndex(tempindex);
+		
+		
+		ZipInputStream unzip = new ZipInputStream(upload.getInputStream());
+		ZipEntry entry = unzip.getNextEntry();
+		
+		JsonReader reader = new JsonReader(new InputStreamReader(unzip, "UTF-8"));
+	
+		
+		JsonArray result = reader.getJsonArray(searchtype);
+		int i=-1;
+		for (JsonObject single : result.getValuesAs(JsonObject.class)) {
+		log.info(single);
+		
+		}
+		searcher.setAlternativeIndex(null);
+	
+		FileUtils.safeClose(reader);
+		searcher.setForceBulk(false);
+		searcher.setAlternativeIndex(null);
+		searcher.clearIndex();
+		log.info("Saved " + searchtype + " "  +  tosave.size() );
+}
+
+
+
+
+
+
 
 /* Not needed
 public void prepFields(MediaArchive mediaarchive, Page inFieldXml, String tempindex) 

@@ -1,4 +1,5 @@
-package utils
+package snapshot;
+
 
 import org.entermediadb.asset.MediaArchive
 import org.openedit.node.NodeManager;

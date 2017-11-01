@@ -1,11 +1,19 @@
-package data;
+package snapshot;
 
+
+import java.util.zip.ZipEntry
+import java.util.zip.ZipOutputStream
+
+import org.apache.commons.io.IOUtils
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest
+import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse
+import org.elasticsearch.cluster.metadata.MappingMetaData
+import org.elasticsearch.common.collect.ImmutableOpenMap
 import org.entermediadb.asset.MediaArchive
-import org.entermediadb.asset.util.CSVWriter
-import org.entermediadb.data.NonExportable
+import org.entermediadb.elasticsearch.SearchHitData
 import org.entermediadb.elasticsearch.searchers.ElasticListSearcher
 import org.openedit.Data;
-import org.openedit.data.PropertyDetail
+import org.openedit.data.NonExportable
 import org.openedit.data.PropertyDetails
 import org.openedit.data.PropertyDetailsArchive
 import org.openedit.data.Searcher
@@ -14,56 +22,54 @@ import org.openedit.hittracker.HitTracker
 import org.openedit.page.Page
 
 
-public void init()
-{
+public void init() {
 
 	SearcherManager searcherManager = context.getPageValue("searcherManager");
 	Searcher snapshotsearcher = searcherManager.getSearcher("system", "sitesnapshot");
 	HitTracker exports = snapshotsearcher.query().match("snapshotstatus","pendingexport").search();
-	if( exports.isEmpty() )
-		{
-			log.info("No pending snapshotstatus  = pendingexport");
-			return;
-		}
+	if( exports.isEmpty() ) {
+		log.info("No pending snapshotstatus  = pendingexport");
+		return;
+	}
 	//Link files in the FileManager. Keep exports in data/system
 	for(Data snapshot:exports)
 	{
 		snapshot.setValue("snapshotstatus", "exporting"); //Like a lock
 		snapshotsearcher.saveData(snapshot);
 		Searcher sitesearcher = searcherManager.getSearcher("system", "site");
-		Data site = sitesearcher.query().match("id", snapshot.get("site")).searchOne(); 
+		Data site = sitesearcher.query().match("id", snapshot.get("site")).searchOne();
 		String catalogid =  site.get("catalogid");
 		MediaArchive mediaarchive = (MediaArchive)moduleManager.getBean(catalogid,"mediaArchive");
-		
+
 		snapshotsearcher.saveData(snapshot);
 		boolean configonly = Boolean.valueOf( snapshot.getValue("configonly") );
 		export(mediaarchive, site, snapshot, configonly);
 		snapshot.setValue("snapshotstatus", "complete");
 		snapshotsearcher.saveData(snapshot);
-		
-	}
-	
 
-	
+	}
+
+
+
 
 	/*  Do this based on the database as a seperate script
-	Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
-	Collections.reverse(paths);
-	int keep = 0;
-	for (Iterator iterator = paths.iterator(); iterator.hasNext();)
-	{
-		String path = (String) iterator.next();
-		if( PathUtilities.extractFileName(path).length() == 19)
-		{
-			keep++;
-			if( keep > 100 )
-			{
-				Page page = mediaarchive.getPageManager().getPage(path);
-				mediaarchive.getPageManager().removePage(page);
-			}
-		}
-	}
-	*/
+	 Collection paths = mediaarchive.getPageManager().getChildrenPathsSorted("/WEB-INF/data/" + catalogid + "/dataexport/");
+	 Collections.reverse(paths);
+	 int keep = 0;
+	 for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+	 {
+	 String path = (String) iterator.next();
+	 if( PathUtilities.extractFileName(path).length() == 19)
+	 {
+	 keep++;
+	 if( keep > 100 )
+	 {
+	 Page page = mediaarchive.getPageManager().getPage(path);
+	 mediaarchive.getPageManager().removePage(page);
+	 }
+	 }
+	 }
+	 */
 
 
 }
@@ -101,118 +107,113 @@ public void export(MediaArchive mediaarchive,Data inSite, Data inSnap, boolean c
 	}
 	String rootpath = inSite.get("rootpath");
 	Page site = mediaarchive.getPageManager().getPage(rootpath);
-	if (site.exists()) 
+	if (site.exists())
 	{
 		Page target = mediaarchive.getPageManager().getPage(rootfolder + "/site");
 		mediaarchive.getPageManager().copyPage(site, target);
 	}
-	
-	
-//	Collection apps = mediaarchive.getList("app");
-//	for(Data app in apps)
-//	{
-//		String deploypath = app.get("deploypath");
-//		if(deploypath != null)
-//		{
-//			Page page = mediaarchive.getPageManager().getPage(deploypath);
-//			if (page.exists()){
-//				Page target = mediaarchive.getPageManager().getPage(rootfolder + "/application/" + deploypath);
-//				mediaarchive.getPageManager().copyPage(page, target);
-//			}
-//		}
-//	}
+
+
+	//	Collection apps = mediaarchive.getList("app");
+	//	for(Data app in apps)
+	//	{
+	//		String deploypath = app.get("deploypath");
+	//		if(deploypath != null)
+	//		{
+	//			Page page = mediaarchive.getPageManager().getPage(deploypath);
+	//			if (page.exists()){
+	//				Page target = mediaarchive.getPageManager().getPage(rootfolder + "/application/" + deploypath);
+	//				mediaarchive.getPageManager().copyPage(page, target);
+	//			}
+	//		}
+	//	}
 
 }
 
 public void exportDatabase(MediaArchive mediaarchive, List searchtypes, String rootfolder)
 {
 	String catalogid = mediaarchive.getCatalogId();
+	String elasticid;
+	
+	
+	String cat = mediaarchive.getCatalogId().replace("/", "_");
+	String indexid = mediaarchive.getNodeManager().getIndexNameFromAliasName(cat);
+	
+//	GetMappingsRequest req = new GetMappingsRequest().indices(indexid);
+//	GetMappingsResponse resp = mediaarchive.getNodeManager().getClient().admin().indices().getMappings(req).actionGet();
+//
+	
+	GetMappingsResponse getMappingsResponse = mediaarchive.getNodeManager().getClient().admin().indices().getMappings(new GetMappingsRequest().indices(indexid)).actionGet();
+	ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexToMappings = getMappingsResponse.getMappings();
+	
+	
 	searchtypes.each{
 		String searchtype = it;
+	
 		Searcher searcher = searcherManager.getSearcher(catalogid, searchtype);
 		if(searcher instanceof ElasticListSearcher)
 		{
 			return;
 		}
 		if(searcher instanceof NonExportable)
-			{
-				return;
-			}
-			PropertyDetails details = searcher.getPropertyDetails();
-			HitTracker hits = searcher.getAllHits();
-			hits.enableBulkOperations();
-			if(hits){
-
-				Page output = mediaarchive.getPageManager().getPage(rootfolder + "/" + searchtype + ".csv");
-
-				String realpath = output.getContentItem().getAbsolutePath();
-				File outputfile = new File(realpath);
-				File parent = outputfile.parentFile;
-
-				parent.mkdirs();
-				FileWriter out = new FileWriter(outputfile);
-				CSVWriter writer  = new CSVWriter(out);
-				HitTracker languages = searcherManager.getList(catalogid, "locale");
-				int count = 0;
-				int langcount = details.getMultilanguageFieldCount() ;
-				langcount = langcount * (languages.size() );
-
-				String[] headers = new String[details.size() + langcount];
-
-
-				for (Iterator iterator = details.iterator(); iterator.hasNext();) {
-					PropertyDetail detail = (PropertyDetail) iterator.next();
-					if(detail.isMultiLanguage()){
-						languages.each{
-							String id = it.id ;
-							headers[count] = detail.getId() + "." + id;
-							count ++;
-						}
-					}
-					else{
-						headers[count] = detail.getId();
-						count++;
-					}
-				}
-				writer.writeNext(headers);
-				log.info("exporting: " + searchtype + ": " + hits.size() + " records");
-
-				for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
-					Data hit =  iterator.next();
-
-					String[] nextrow = new String[details.size() + langcount];//make an extra spot for c
-					int fieldcount = 0;
-					for (Iterator detailiter = details.iterator(); detailiter.hasNext();)
-					{
-						PropertyDetail detail = (PropertyDetail) detailiter.next();
-
-
-						if(detail.isMultiLanguage()){
-							languages.each
-							{
-								String id = it.id ;
-								Object vals = hit.getValue(detail.getId())
-
-								if(vals != null && vals instanceof Map){
-									nextrow[fieldcount] = vals.getText(id);
-								} else{
-									nextrow[fieldcount] = vals;
-								}
-
-								fieldcount ++;
-							}
-						} else{
-
-							String value = hit.get(detail.getId());
-							nextrow[fieldcount] = value;
-							fieldcount++;
-						}
-					}
-					writer.writeNext(nextrow);
-				}
-				writer.close();
+		{
+			return;
 		}
+	
+			PropertyDetails details = searcher.getPropertyDetails();
+		HitTracker hits = searcher.getAllHits();
+		hits.enableBulkOperations();
+		if(hits.size() > 0){
+			
+			Page output = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + searchtype + ".zip");
+
+			OutputStream os = output.getContentItem().getOutputStream();
+			ZipOutputStream finalZip = new ZipOutputStream(os);
+			ZipEntry ze = new ZipEntry(searchtype + ".json");
+
+			finalZip.putNextEntry(ze);
+			IOUtils.write("{ \"${searchtype}\": [", finalZip, "UTF-8");
+			
+			hits.each{
+				SearchHitData hit = it;
+				IOUtils.write(hit.toJsonString(), finalZip, "UTF-8");
+				if(it != hits.last()) {
+				IOUtils.write(",", finalZip, "UTF-8");
+				}
+				
+			}
+			IOUtils.write("]}", finalZip, "UTF-8");
+			
+			finalZip.flush();
+			finalZip.closeEntry();
+			finalZip.close();
+			
+			os.close();
+
+			
+			MappingMetaData actualMapping = indexToMappings.get(indexid).get(searchtype);
+			
+			
+			if(actualMapping) {
+			String json = actualMapping.source().string();
+			Page mappings = mediaarchive.getPageManager().getPage(rootfolder + "/json/${searchtype}-mapping.json");
+			mediaarchive.getPageManager().saveContent(mappings, null, json, "Saved mapping");
+			} else {
+				log.info("no mapping found for ${searchtype}");
+			}
+			
+		}
+
 	}
+	
+
+
+
+	
+	
+	
+	
+
 }
 
 init();
