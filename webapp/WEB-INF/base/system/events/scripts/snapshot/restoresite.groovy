@@ -28,7 +28,7 @@ import org.openedit.util.FileUtils
 import org.openedit.util.PathUtilities
 import org.openedit.util.XmlUtil
 
-import com.google.gson.JsonArray
+import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.stream.JsonReader
 
@@ -553,14 +553,18 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 		ZipEntry entry = unzip.getNextEntry();
 		
 		JsonReader reader = new JsonReader(new InputStreamReader(unzip, "UTF-8"));
-	
-		
-		JsonArray result = reader.getJsonArray(searchtype);
-		int i=-1;
-		for (JsonObject single : result.getValuesAs(JsonObject.class)) {
-		log.info(single);
-		
+	Gson gson = new Gson();
+	reader.beginObject();
+		while (reader.hasNext()) {
+			
+		JsonObject object = 	gson.fromJson(reader, JsonObject.class);
+		log.info(object);
 		}
+		reader.endArray();
+		reader.close();
+		
+		
+		
 		searcher.setAlternativeIndex(null);
 	
 		FileUtils.safeClose(reader);
