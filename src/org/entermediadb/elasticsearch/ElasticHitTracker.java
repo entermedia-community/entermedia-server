@@ -171,6 +171,16 @@ public class ElasticHitTracker extends HitTracker
 						{
 							getSearcheRequestBuilder().setPreference("_only_nodes:" + nodes);
 						}
+						else
+						{
+							String preference = getNodeManager().getLocalNode().getSetting("entermedia.search.preference");
+							if( preference == null)
+							{
+								preference = "_local";
+							}
+							getSearcheRequestBuilder().setPreference(preference);
+						}
+						
 						if (isUseServerCursor())
 						{
 							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME));
