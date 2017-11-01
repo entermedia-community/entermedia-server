@@ -1401,29 +1401,28 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null)
+			if (detail == null)
 			{
-				if (detail.isMultiLanguage())
-				{
-					sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
-				}
-				else if( detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
-				{
-					PropertyDetail first = (PropertyDetail)detail.getObjectDetails().iterator().next();
-					sort = SortBuilders.fieldSort(field + "." + first.getId());
-				}
-				else if ( detail.isAnalyzed() )
-				{
-					sort = SortBuilders.fieldSort(field + ".exact");
-				}
-				else if (field.equals("id")) //Elastic default is to add a sub field called of ID columns.keyword
-				{
-					sort = SortBuilders.fieldSort(field + ".keyword");
-				}
-				else
-				{
-					sort = SortBuilders.fieldSort(field);
-				}
+				//throw new OpenEditException("Could not find field " + getSearchType() + " " + field);
+				log.error("Could not sort by missing field " + getSearchType() + " " + field);
+				return;
+			}
+			if (detail.isMultiLanguage())
+			{
+				sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
+			}
+			else if( detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
+			{
+				PropertyDetail first = (PropertyDetail)detail.getObjectDetails().iterator().next();
+				sort = SortBuilders.fieldSort(field + "." + first.getId());
+			}
+			else if ( detail.isAnalyzed() )
+			{
+				sort = SortBuilders.fieldSort(field + ".exact");
+			}
+			else if (field.equals("id")) //Elastic default is to add a sub field called of ID columns.keyword
+			{
+				sort = SortBuilders.fieldSort(field + ".keyword");
 			}
 			else
 			{
