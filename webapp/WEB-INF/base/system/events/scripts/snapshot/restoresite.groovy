@@ -235,7 +235,9 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		for( String type in ordereredtypes ) {
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/" + type + ".csv");
 			try{
-				if( upload.exists() ) {
+				if( upload.exists() ) 
+				{
+					mediaarchive.clearCaches();
 					importCsv(site, mediaarchive,type,upload, tempindex);
 				}
 			} catch (Exception e) {
