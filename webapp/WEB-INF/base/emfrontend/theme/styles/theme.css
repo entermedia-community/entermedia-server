@@ -7071,17 +7071,16 @@ input.defaulttext
 a.addnewitem
 {
 	background-color: #eee;
-	display:table-cell;
 	padding: 2px 10px 2px 10px;
 	border: 1px solid #aaa;
-	margin-left: 2px;
-	font-size: .85em;
+	margin: 2px;
+	font-size: 80%;
 }
 a.addnewitem:hover
 {
-	background-color: #aaa;
+	background-color: #999;
 	color: white;
-	
+	text-decoration: none;
 }
 
 li.resultmenuitem {
