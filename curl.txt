@@ -392,5 +392,6 @@ Get a single field def:
 _mapping/article/field/title
 curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=true'  
 
+curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?preference=_only_nodes:testnode' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool | more
 
 
