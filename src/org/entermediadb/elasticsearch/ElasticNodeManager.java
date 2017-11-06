@@ -3,9 +3,10 @@ package org.entermediadb.elasticsearch;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,19 +53,20 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
+import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.node.InternalSettingsPreparer;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.plugins.Plugin;
 import org.elasticsearch.snapshots.SnapshotInfo;
-import org.elasticsearch.transport.Netty3Plugin;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
@@ -192,51 +194,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						preparedsettings.put(key, val);
 					}	
 				}
+				
+				
+				try {
+					
+					fieldClient = new PreBuiltTransportClient(preparedsettings.build()).addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName("localhost"), 9305));
+				} catch (UnknownHostException e) {
+					throw new OpenEditException(e);
+				}
+				        
 
-				/*
-				 * 
-				 TODO: support using a Transport client to connect to an existing cluster
-				 Settings settings = ImmutableSettings.settingsBuilder()
+				
 				 
-			    .put("client.transport.sniff", true)
-			    .put("cluster.name", "my-cluster").build();
-			Client client = new TransportClient(settings)
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost1", 9300))
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost2", 9300));
-				*/
-				//log.info(preparedsettings.toString());
-				
-				
-//				Collection plugins = Arrays.asList(Netty3Plugin.class);
-//				Node node = new PluginConfigurableNode(preparedsettings.build(), plugins).start();
-				
-				Collection plugins = Arrays.asList(Netty3Plugin.class);
-				Node node = new MyNode(preparedsettings.build(),plugins);
-
-				try
-				{
-					node.start();
-				}
-				catch (NodeValidationException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//nb.settings().put("path.plugins", webroot + "/WEB-INF/base/entermedia/elasticplugins");
-				
-				
-				//nb.settings().put("index.mapper.dynamic",false);
-				
-				//			     <property id="path.plugins">${webroot}/WEB-INF/base/entermedia/elasticplugins</property>
-
-				//extras
-				//nb.settings().put("index.store.type", "mmapfs");
-				//nb.settings().put("index.store.fs.mmapfs.enabled", "true");
-				//nb.settings().put("index.merge.policy.merge_factor", "20");
-				// nb.settings().put("discovery.zen.ping.unicast.hosts", "localhost:9300");
-				// nb.settings().put("discovery.zen.ping.unicast.hosts", elasticSearchHostsList);
-				fieldNode = node;
-				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
 				
 				
 			}

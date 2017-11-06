@@ -14,8 +14,13 @@
 
 	<property id="transport.type">local</property>     
 	<property id="http.enabled">true</property>     
-	<property id="http.type">netty3</property>    
-	<property id="transport.type">netty3</property>    
+	<property id="http.type">netty4</property>    
+	<property id="transport.type">netty4</property>  
+	<property id="xpack.security.user">elastic:changeme</property>
+	
+	
+	
+	
 	<property id="discovery.zen.ping.unicast.hosts">localhost</property>
 	  
 </node>
