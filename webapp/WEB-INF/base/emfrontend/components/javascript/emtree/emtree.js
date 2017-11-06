@@ -301,11 +301,35 @@ jQuery(document).ready(function()
 	} );
 
 	
+function getPosition(e) {
+  var posx = 0;
+  var posy = 0;
+
+  if (!e) var e = window.event;
+
+  if (e.pageX || e.pageY) {
+    posx = e.pageX;
+    posy = e.pageY;
+  } else if (e.clientX || e.clientY) {
+    posx = e.clientX + document.body.scrollLeft + 
+                       document.documentElement.scrollLeft;
+    posy = e.clientY + document.body.scrollTop + 
+                       document.documentElement.scrollTop;
+  }
+
+  return {
+    x: posx,
+    y: posy
+  }
+}
+	
+	
   $("body").on("contextmenu", ".noderow", function(e) 
   {
   	var noderow = $(this); // LI is the think that has context .find("> .noderow");
-	var xPos = e.pageX;
-	var yPos = e.pageY - 10;
+  	var pos = getPosition(e);
+	var xPos = pos.x;
+	var yPos = pos.y - 10;
 	noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
 	var emtreediv = noderow.closest(".emtree");
 	
