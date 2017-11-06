@@ -1,9 +1,7 @@
 
 #set( $tab = $context.findValue("tab") )
-
-<div class="subcolumns">
-          <div class="c25l" id="left-col">
-          	
+  <div class="row justify-content-md-center">
+    <div class="col col-lg-2 c25l" id="left-col">
      		#set ($lastselected = $content.module )
  			#if(!$lastselected)
  				#set($lastselected = $userprofile.last_selected_module )
@@ -66,7 +64,7 @@
 
 
          </div>
-         <div id="right-col">	
+        <div class="col" id="right-col">	
 			<div class="liquid-sizer settings">
 				$pages.includeContent()
 			</div>

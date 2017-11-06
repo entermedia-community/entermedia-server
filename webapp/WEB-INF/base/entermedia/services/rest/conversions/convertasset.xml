@@ -14,7 +14,7 @@
 		#set( $link = "$home/$catalogid/downloads/preset/${asset.sourcePath}/${genname}")
 		<path>$link</path>
 	#else
-		<msg>Error: unable to find outputfile of preset id ${preset.id}</msg>
+		<msg>Error: unable to find preset or generatedoutputfile of preset id $context.findValue("presetid")</msg>
 	#end
 #end
 </rsp>
