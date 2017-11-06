@@ -1,8 +1,11 @@
+import java.util.Date
+
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.OpenEditException
 import org.openedit.data.Searcher
+import org.openedit.util.DateStorageUtil
 
 public void init()
 {
@@ -22,15 +25,28 @@ public void init()
 	}
 	context.putPageValue("asset", asset);
 	
+	Data preset = archive.getData("convertpreset", presetid);
+	context.putPageValue("preset", preset);
+	
 	while( true )
 	{
 		loop++;
 		Data one = tasksearcher.query().exact("assetid", assetid).exact("presetid", presetid).searchOne();
 		if( one == null)
 		{
-			//Queing?
-			log.error("No task found on asset "+ assetid + "preset " + presetid);
-			return;
+			one = tasksearcher.createNewData();
+			log.error("Creating task for asset "+ assetid + "preset " + presetid);
+			one.setSourcePath(asset.getSourcePath());
+			one.setProperty("status", "new");
+			one.setProperty("assetid", asset.getId() );
+			one.setProperty("presetid", preset.getId() );
+			one.setProperty("ordering", preset.get("ordering") );
+			String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
+			one.setProperty("submitteddate", nowdate);
+			tasksearcher.saveData(one, null);
+			archive.fireSharedMediaEvent("conversions/runconversions");
+			Thread.sleep(200);
+			continue;
 		}
 		String status = one.get("status");
 		
@@ -49,8 +65,6 @@ public void init()
 		|| "expired".equals( status)
 		|| "missinginput".equals( status)
 		){
-			Data preset = archive.getData("convertpreset", presetid);
-			context.putPageValue("preset", preset);
 			context.putPageValue("conversiontask", one);
 			context.putPageValue("catalogid", catalogid);
 			//log.info("finidhes" + preset);
