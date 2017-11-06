@@ -187,7 +187,14 @@ public class UserProfileManager
 			}
 			userprofile.setSourcePath(inUserName);
 			userprofile.setCatalogId(inCatalogId);
-			saveUserProfile(userprofile);
+			try
+			{
+				saveUserProfile(userprofile);
+			}
+			catch( Exception ex)
+			{
+				log.error(ex);
+			}
 		}
 		userprofile.setUser(user);
 		userprofile.setSourcePath(inUserName);
