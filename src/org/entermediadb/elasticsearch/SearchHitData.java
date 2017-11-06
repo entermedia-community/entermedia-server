@@ -10,7 +10,7 @@ import java.util.Set;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHitField;
+import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.data.BaseData;
@@ -146,6 +146,11 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				{
 					value = null; //Save to map as null?
 				}
+			}
+			if( detail != null && detail.isGeoPoint() && value instanceof Map)
+			{
+				Position pos = new Position((Map)value);
+				value = pos;
 			}
 		}
 		if (value == null) {
