@@ -5579,6 +5579,8 @@ ul.filters-sidebar li a:hover
     border: none;
     margin: 0;
     padding: 0;
+    max-width:200px;
+    max-height:200px;
 }
 .emgallery .emthumbimage.emthumb:hover img.emdropshadow:hover {
     box-shadow: none;
