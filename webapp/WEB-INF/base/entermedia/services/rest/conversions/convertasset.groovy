@@ -33,13 +33,27 @@ public void init()
 			return;
 		}
 		String status = one.get("status");
-		if( "complete".equals( status) )
-		{
+		
+		/*
+		 * <property id="missinginput">Input Missing</property>
+	<property id="submitted">Processing</property>
+	<property id="complete">Complete</property>
+	<property id="retry">Retry</property>
+	<property id="expired">Expired</property>
+	
+	<property id="error">Error</property>
+		 */
+		
+		if("complete".equals( status) 
+		|| "error".equals( status)
+		|| "expired".equals( status)
+		|| "missinginput".equals( status)
+		){
 			Data preset = archive.getData("convertpreset", presetid);
 			context.putPageValue("preset", preset);
 			context.putPageValue("conversiontask", one);
 			context.putPageValue("catalogid", catalogid);
-			log.info("finidhes" + preset);
+			//log.info("finidhes" + preset);
 			return;
 		}
 		if( loop > 27000)
