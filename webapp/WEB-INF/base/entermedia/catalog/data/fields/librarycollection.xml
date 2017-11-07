@@ -59,7 +59,7 @@
   </property>  
   
   
-  <property id="library" required="true" index="true" stored="true" editable="true"  type="list" viewtype="autocomplete" listid="library" datatype="list" >Library 
+  <property id="library" index="true" stored="true" editable="true"  type="list" viewtype="autocomplete" listid="library" datatype="list" >Library 
     <name> 
       <language id="de"><![CDATA[Bibliothek]]></language>  
       <language id="en"><![CDATA[Library]]></language>  
