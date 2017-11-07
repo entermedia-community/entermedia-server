@@ -627,7 +627,15 @@ public class BaseHotFolderManager implements HotFolderManager
 			}
 			finally
 			{
-				inArchive.releaseLock(lock);
+				try
+				{
+					inArchive.releaseLock(lock);
+				}
+				catch ( Exception ex)
+				{
+					//We somehow got a version error. Someone save it from under us
+					//TOOD: Delete them all?
+				}
 			}
 		}
 	
