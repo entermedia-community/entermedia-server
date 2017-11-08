@@ -12,5 +12,7 @@
 
 	 <property id="discovery.zen.ping.unicast.hosts">localhost</property>
 	 
+	  <property id="cluster.routing.allocation.disk.watermark.high">10gb</property>
+<property id="cluster.routing.allocation.disk.watermark.low">10gb</property>
 	  
 </node>
