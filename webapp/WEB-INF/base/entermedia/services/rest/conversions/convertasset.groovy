@@ -69,7 +69,6 @@ public void init()
 			context.putPageValue("conversiontask", one);
 			context.putPageValue("catalogid", catalogid);
 			//log.info("finidhes" + preset);
-			archive
 			
 			String exportname = preset.get("generatedoutputfile");
 			ContentItem custom = archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + exportname);
