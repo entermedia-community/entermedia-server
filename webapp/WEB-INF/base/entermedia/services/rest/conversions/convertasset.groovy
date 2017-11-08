@@ -5,6 +5,7 @@ import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
 import org.openedit.OpenEditException
 import org.openedit.data.Searcher
+import org.openedit.repository.ContentItem
 import org.openedit.util.DateStorageUtil
 
 public void init()
@@ -68,6 +69,20 @@ public void init()
 			context.putPageValue("conversiontask", one);
 			context.putPageValue("catalogid", catalogid);
 			//log.info("finidhes" + preset);
+			archive
+			
+			String exportname = preset.get("generatedoutputfile");
+			ContentItem custom = archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + exportname);
+			if( !custom.exists())
+			{
+				one.setProperty("status", "retry");
+				tasksearcher.saveData(one, null);
+				Thread.sleep(200);
+				archive.fireSharedMediaEvent("conversions/runconversions");
+				Thread.sleep(200);
+				continue;
+			}
+			
 			return;
 		}
 		if( loop > 27000)
