@@ -244,4 +244,11 @@
     </name> 
   </property>  
   
+  
+   <property id="wordpressfield" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Wordpress field mapping
+  
+  </property>  
+  
+  
+  
 </properties>
