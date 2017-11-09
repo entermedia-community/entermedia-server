@@ -67,6 +67,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/lucene-spatial3d-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/netty-3.10.6.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/log4j-to-slf4j-2.9.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
