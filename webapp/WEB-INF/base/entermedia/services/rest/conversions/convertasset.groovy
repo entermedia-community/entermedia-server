@@ -90,7 +90,7 @@ public void init()
 			
 			return;
 		}
-		if( loop > 27000)
+		if( loop > 27000) //27000 * 200 = 5400S = 90Minutes
 		{
 			throw new OpenEditException("Conversion timeout on long running api call " + assetid + "  preset:" + presetid);
 		}
