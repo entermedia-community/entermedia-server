@@ -15,6 +15,8 @@ public void init()
 	
 	//load up the preset id
 	String presetid = context.findValue("presetid");
+	Data preset = archive.getData("convertpreset", presetid);
+	context.putPageValue("preset", preset);
 	String assetid = context.findValue("assetid");
 	Searcher tasksearcher = archive.getSearcher("conversiontask");
 	int loop = 0;
@@ -25,10 +27,14 @@ public void init()
 		return;
 	}
 	context.putPageValue("asset", asset);
+
+	if(preset.get("transcoderid") == "original")
+	{
+		log.info("Getting original transcoder");
+		return;
+	}
 	
-	Data preset = archive.getData("convertpreset", presetid);
-	context.putPageValue("preset", preset);
-	
+		
 	while( true )
 	{
 		loop++;
@@ -36,7 +42,7 @@ public void init()
 		if( one == null)
 		{
 			one = tasksearcher.createNewData();
-			log.error("Creating task for asset "+ assetid + "preset " + presetid);
+			log.error("Creating missing task for asset "+ assetid + "preset " + presetid);
 			one.setSourcePath(asset.getSourcePath());
 			one.setProperty("status", "new");
 			one.setProperty("assetid", asset.getId() );
@@ -77,8 +83,7 @@ public void init()
 				one.setProperty("status", "retry");
 				tasksearcher.saveData(one, null);
 				Thread.sleep(200);
-				archive.fireSharedMediaEvent("conversions/runconversions");
-				Thread.sleep(200);
+				log.info("Generated output not found. Recreating asset "+ assetid + "preset " + presetid);
 				continue;
 			}
 			
