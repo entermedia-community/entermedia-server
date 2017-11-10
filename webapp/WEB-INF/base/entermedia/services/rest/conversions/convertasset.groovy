@@ -21,6 +21,7 @@ public void init()
 	Searcher tasksearcher = archive.getSearcher("conversiontask");
 	int loop = 0;
 	Asset asset = archive.getAsset(assetid);
+	context.putPageValue("catalogid", catalogid);
 	if( asset == null)
 	{
 		log.error("No such asset "+ assetid);
@@ -73,7 +74,7 @@ public void init()
 		|| "missinginput".equals( status)
 		){
 			context.putPageValue("conversiontask", one);
-			context.putPageValue("catalogid", catalogid);
+	
 			//log.info("finidhes" + preset);
 			
 			String exportname = preset.get("generatedoutputfile");
