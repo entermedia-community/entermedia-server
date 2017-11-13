@@ -88,6 +88,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SearchData;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.ChildFilter;
 import org.openedit.hittracker.GeoFilter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
