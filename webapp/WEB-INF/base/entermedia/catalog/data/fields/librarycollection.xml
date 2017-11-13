@@ -128,7 +128,7 @@
     </name>
   </property> 
   
-   <property id="parentcategories"  index="true" viewtype="multiselect" datatype="list" listid="category" stored="true" note="Auto populated"  editable="false" >
+   <property id="parentcategories"  index="true" viewtype="text" datatype="list" listid="category" stored="true" note="Auto populated"  editable="false" >
     <name>
       <language id="en"><![CDATA[Parent Categories]]></language>
     </name>
