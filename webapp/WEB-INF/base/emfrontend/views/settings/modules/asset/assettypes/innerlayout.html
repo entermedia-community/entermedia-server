@@ -11,9 +11,8 @@
 <div  class="ui-widget-content emselectmenu">
 <h4>[[Select an Asset Type]]</h4>
 <ul class="vlist">
-#foreach($item in $searcher.fieldSearch("id","*","nameUp"))
- <li #if($current == $item.id) class="active" #end >
- <a href="$home$apphome/views/settings/modules/asset/assettypes/views/index.html?assettype=$item.id">$item.getName($context.locale)</a></li>
+#foreach($item in $searcher.fieldSearch("id","*","textUp"))
+ <li #if($current == $item.id) class="active" #end ><a href="$home$apphome/views/settings/modules/asset/assettypes/views/index.html?assettype=$item.id">$item.getName($context.locale)</a></li>
 #end
 </ul>
 <a class="btn" href='$home$apphome/views/settings/modules/asset/assettypes/edit/addnew.html'>[[Add New]]</a>

@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Type]]></language> 
     </name> 
   </property>  
-  <property id="parentid" index="true" stored="true" editable="true" type="list" filter="false" sortable="true">Parent 
+  <property id="parentid" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Parent 
     <name> 
       <language id="de"><![CDATA[Elternteil]]></language>  
       <language id="en"><![CDATA[Parent]]></language>  

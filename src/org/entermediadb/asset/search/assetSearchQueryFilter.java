@@ -90,14 +90,12 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 					required.addNot("editstatus", "7");
 				}
 			}
-			if( profile != null)
+			Collection allowedassetstypes = profile.getValues("hideassettype");
+			if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
 			{
-				Collection allowedassetstypes = profile.getValues("hideassettype");
-				if( allowedassetstypes != null && !allowedassetstypes.isEmpty())
-				{
-					required.addNots("assettype", allowedassetstypes);
-				}
-			}			
+				required.addNots("assettype", allowedassetstypes);
+			}
+			
 						
 			SearchQuery orchild = inSearcher.createSearchQuery();
 			orchild.setAndTogether(false);
@@ -106,13 +104,10 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 
 			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
 			Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
-			if( profile != null)
+			Collection canview = profile.getViewCategories();
+			if( canview != null )
 			{
-				Collection canview = profile.getViewCategories();
-				if( canview != null )
-				{
-					allowed.addAll(canview);
-				}
+				allowed.addAll(canview);
 			}
 			for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
 			{
@@ -133,20 +128,17 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			required.addChildQuery(orchild);
 
 			//Also add to this list public collections
-			if( profile != null)
+			Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
+//			Collection<String> notshown = new ArrayList<String>();
+//			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
+//			{
+//				Category cat = (Category) iterator.next();
+//				notshown.add(cat.getId());
+//			}
+			//child.addMatches("id", "*");
+			if (!privatecats.isEmpty())
 			{
-				Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
-	//			Collection<String> notshown = new ArrayList<String>();
-	//			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
-	//			{
-	//				Category cat = (Category) iterator.next();
-	//				notshown.add(cat.getId());
-	//			}
-				//child.addMatches("id", "*");
-				if (!privatecats.isEmpty())
-				{
-					required.addNots("category", privatecats); //Hidden categories that Im not part of
-				}
+				required.addNots("category", privatecats); //Hidden categories that Im not part of
 			}
 			inQuery.setSecurityAttached(true);
 			if (!required.isEmpty())
@@ -178,6 +170,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 
 				//First find any matching libraries or collections
 				Collection<Data> parenthits = othersearcher.search(othersearch);
+				Collection<Data> libraryhits = null;
 				Collection<String> categoryids = new ArrayList();
 
 				if (type.equals("library"))

@@ -5,12 +5,5 @@
 	<rule id="102" archivepath="archive/${formatteddate}/${splitguid}-${filename}" name="1 Year" expirationperiod="12M"/>
 	<rule id="103" deleteasset="true" deleteoriginal="true" deletegenerated="true" name="Delete after 2 Years" expirationperiod="24M"/>
 	<rule id="deleteoriginals" deleteoriginal="true" name="Delete Original Immediately" expirationperiod="0d" />
-	
-	<rule id="delete30" deleteasset="true" deleteoriginal="true" deletegenerated="true"  name="Delete after 30 days" expirationperiod="30d" />
-	<rule id="delete60" deleteasset="true" deleteoriginal="true" deletegenerated="true"  name="Delete after 60 days" expirationperiod="60d" />
-	<rule id="delete90" deleteasset="true" deleteoriginal="true" deletegenerated="true" name="Delete after 90 days" expirationperiod="90d" />
-	<rule id="delete365" deleteasset="true" deleteoriginal="true" deletegenerated="true" name="Delete after one year" expirationperiod="365d" />
-
-
 
 </page>

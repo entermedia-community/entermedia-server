@@ -78,7 +78,6 @@
 	<property id="odt"  synctags="true"  rendertype="document" >ODT</property>
 	<property id="ods"  synctags="true"  rendertype="document" >ODS</property>
 	<property id="odp"  synctags="true"  rendertype="document" >ODP</property>
-	<property id="pub"  synctags="true"  rendertype="document" >PUB</property>
 	
 	<property id="html"  >HTML</property>
 	<property id="xml"  >XML</property>

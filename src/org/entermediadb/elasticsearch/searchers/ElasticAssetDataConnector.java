@@ -18,7 +18,6 @@ import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.action.support.WriteRequest.RefreshPolicy;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -95,7 +94,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	{
 		// TODO Auto-generated method stub
 		DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), inId);
-		delete.setRefreshPolicy(RefreshPolicy.IMMEDIATE).execute().actionGet();
+		delete.setRefresh(true).execute().actionGet();
 		// delete()
 	}
 

@@ -1,38 +1,3 @@
-curl -XGET  'http://localhost:9200/assets_catalog/assettype/_mapping?pretty=true'  | python -mjson.tool
-
-curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
-  "from" : 0,
-  "size" : 15,
-  "query" : {
-    "bool" : {
-      "must" : [
-        {
-          "match_all" : {
-            "boost" : 1.0
-          }
-        }
-      ],
-      "disable_coord" : false,
-      "adjust_pure_negative" : true,
-      "boost" : 1.0
-    }
-  },
-  "explain" : false,
-  "_source" : {
-    "includes" : [ ],
-    "excludes" : [
-      "description"
-    ]
-  },
-  "sort" : [
-    {
-      "name_int.en.exact" : {
-        "order" : "asc"
-      }
-    }
-  ]
-}' | python -mjson.tool
-
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
 
 
@@ -392,6 +357,5 @@ Get a single field def:
 _mapping/article/field/title
 curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=true'  
 
-curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?preference=_only_nodes:testnode' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool | more
 
 

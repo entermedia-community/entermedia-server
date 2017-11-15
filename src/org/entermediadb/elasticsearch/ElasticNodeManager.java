@@ -1,13 +1,9 @@
 package org.entermediadb.elasticsearch;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -40,6 +36,8 @@ import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsRequest;
 import org.elasticsearch.action.admin.indices.exists.indices.IndicesExistsResponse;
 import org.elasticsearch.action.admin.indices.exists.types.TypesExistsRequest;
+import org.elasticsearch.action.admin.indices.flush.FlushRequest;
+import org.elasticsearch.action.admin.indices.flush.FlushResponse;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsRequest;
 import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
@@ -57,13 +55,11 @@ import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
-import org.elasticsearch.common.settings.Settings.Builder;
-import org.elasticsearch.node.InternalSettingsPreparer;
+import org.elasticsearch.common.xcontent.XContentBuilder;
+import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.node.NodeValidationException;
-import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
-import org.elasticsearch.transport.Netty3Plugin;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.openedit.OpenEditException;
@@ -73,16 +69,10 @@ import org.openedit.data.Searcher;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
-import org.openedit.util.FileUtils;
+import org.openedit.util.PathUtilities;
 import org.openedit.util.Replacer;
 
 import com.carrotsearch.hppc.cursors.ObjectObjectCursor;
-
-class MyNode extends Node {
-    public MyNode(Settings preparedSettings, Collection<Class<? extends Plugin>> classpathPlugins) {
-        super(InternalSettingsPreparer.prepareEnvironment(preparedSettings, null), classpathPlugins);
-    }
-}
 
 public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 {
@@ -92,67 +82,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected boolean fieldShutdown = false;
 	protected List fieldMappingErrors;
 	protected Node fieldNode;
-	protected Map fieldIndexSettings;
-	
-	protected void loadSettings()
-	{
-		// TODO Auto-generated method stub
-		//TODO: Move node.xml to system
-		//TODO: add locking file for this node and remove it when done
-
-		Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
-		if (!config.exists())
-		{
-			//throw new OpenEditException("Missing " + config.getPath());
-			config = getPageManager().getPage("/system/configuration/node.xml");
-		}
-
-		if( !config.exists())
-		{
-			throw new OpenEditException("WEB-INF/node.xml is not defined");
-		}
-		Element root = getXmlUtil().getXml(config.getInputStream(),"UTF-8");
-		
-		fieldLocalNode = new org.openedit.node.Node();
-		String nodeid = getWebServer().getNodeId();
-		if( nodeid == null)
-		{
-			nodeid = root.attributeValue("id");
-		}
-		if( nodeid == null)
-		{
-			for (Iterator iterator = root.elementIterator(); iterator.hasNext();)
-			{
-				Element ele = (Element)iterator.next();
-				String key = ele.attributeValue("id");
-				if( key.equals("node.name"))
-				{
-					nodeid = ele.getTextTrim();
-				}
-			}
-		}
-		getLocalNode().setId(nodeid);
-		String abs = config.getContentItem().getAbsolutePath();
-		File parent = new File(abs);
-		Map params = new HashMap();
-		params.put("webroot", parent.getParentFile().getParentFile().getAbsolutePath());
-		params.put("nodeid", getLocalNodeId());
-		Replacer replace = new Replacer();
-
-		for (Iterator iterator = root.elementIterator(); iterator.hasNext();)
-		{
-			Element ele = (Element)iterator.next();
-			String key = ele.attributeValue("id");
-			String val = ele.getTextTrim();
-			//if( val.startsWith("."))
-			//{
-				val = replace.replace(val, params);
-			//}
-			getLocalNode().setValue(key, val);
-		}
-		getLocalNode().setValue("node.name", nodeid);
-
-	}
 
 	protected boolean reindexing = false;
 	
@@ -180,49 +109,40 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				{
 					return fieldClient;
 				}
-				
-				Settings.Builder preparedsettings = Settings.builder();
+				NodeBuilder nb = NodeBuilder.nodeBuilder();//.client(client)local(true);
 
-				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
+				//TODO: Move node.xml to system
+				//TODO: add locking file for this node and remove it when done
+
+				Page config = getPageManager().getPage("/WEB-INF/node.xml"); //Legacy DO Not use REMOVE sometime
+				if (!config.exists())
 				{
-					String key = (String) iterator.next();
-					if(!key.startsWith("index.") && !key.startsWith("entermedia.") && key.contains(".") ) //Legacy
-					{
-						String val = getLocalNode().getSetting(key);
-						preparedsettings.put(key, val);
-					}	
+					//throw new OpenEditException("Missing " + config.getPath());
+					config = getPageManager().getPage("/system/configuration/node.xml");
+				}
+				boolean dynamicmapdefined = false;
+				for (Iterator iterator = getLocalNode().getElement().elementIterator("property"); iterator.hasNext();)
+				{
+					Element prop = (Element) iterator.next();
+					String key = prop.attributeValue("id");
+					String val = prop.getTextTrim();
+
+					val = getSetting(key);
+
+					nb.settings().put(key, val);
+					if("index.mapper.dynamic".equals(key)){
+						dynamicmapdefined = true;
+					}
 				}
 
-				/*
-				 * 
-				 TODO: support using a Transport client to connect to an existing cluster
-				 Settings settings = ImmutableSettings.settingsBuilder()
-				 
-			    .put("client.transport.sniff", true)
-			    .put("cluster.name", "my-cluster").build();
-			Client client = new TransportClient(settings)
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost1", 9300))
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost2", 9300));
-				*/
-				//log.info(preparedsettings.toString());
-				
-				
-//				Collection plugins = Arrays.asList(Netty3Plugin.class);
-//				Node node = new PluginConfigurableNode(preparedsettings.build(), plugins).start();
-				
-				Collection plugins = Arrays.asList(Netty3Plugin.class);
-				Node node = new MyNode(preparedsettings.build(),plugins);
-
-				try
-				{
-					node.start();
+				if(dynamicmapdefined == false){
+					 nb.settings().put("index.mapper.dynamic",false );
+					 		
 				}
-				catch (NodeValidationException e)
-				{
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				//nb.settings().put("path.plugins", webroot + "/WEB-INF/base/entermedia/elasticplugins");
+				String abs = config.getContentItem().getAbsolutePath();
+				File parent = new File(abs);
+				String webroot = parent.getParentFile().getParentFile().getAbsolutePath();
+				nb.settings().put("path.plugins", webroot + "/WEB-INF/base/entermedia/elasticplugins");
 				
 				
 				//nb.settings().put("index.mapper.dynamic",false);
@@ -235,56 +155,81 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				//nb.settings().put("index.merge.policy.merge_factor", "20");
 				// nb.settings().put("discovery.zen.ping.unicast.hosts", "localhost:9300");
 				// nb.settings().put("discovery.zen.ping.unicast.hosts", elasticSearchHostsList);
-				fieldNode = node;
+				fieldNode = nb.node();
 				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
 				
+				/*
+				 * 
+				 TODO: support using a Transport client to connect to an existing cluster
+				 Settings settings = ImmutableSettings.settingsBuilder()
+				 
+			    .put("client.transport.sniff", true)
+			    .put("cluster.name", "my-cluster").build();
+			Client client = new TransportClient(settings)
+			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost1", 9300))
+			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost2", 9300));
+				*/
 				
 			}
 		}
 		return fieldClient;
 	}
 
+	protected String getSetting(String inId)
+	{
+		Page config = getPageManager().getPage("/WEB-INF/node.xml");
+		String abs = config.getContentItem().getAbsolutePath();
+		File parent = new File(abs);
+		Map params = new HashMap();
+		params.put("webroot", parent.getParentFile().getParentFile().getAbsolutePath());
+		params.put("nodeid", getLocalNodeId());
+		Replacer replace = new Replacer();
+
+		String value = getLocalNode().get(inId);
+		if (value == null)
+		{
+			return null;
+		}
+		if (value.startsWith("."))
+		{
+			value = PathUtilities.resolveRelativePath(value, abs);
+		}
+
+		return replace.replace(value, params);
+	}
+
 	//called from the lock manager
 	public void shutdown()
 	{
 
-		try
+		synchronized (this)
 		{
-			synchronized (this)
-			{
 
-				if (!fieldShutdown)
+			if (!fieldShutdown)
+			{
+				if (fieldClient != null)
 				{
-					if (fieldClient != null)
+					try
 					{
-						try
+						//TODO: Should we call FlushRequest req = Requests.flushRequest(toId(getCatalogId()));  ? To The disk drive
+						fieldClient.close();
+					}
+					finally
+					{
+						if (fieldNode != null)
 						{
-							//TODO: Should we call FlushRequest req = Requests.flushRequest(toId(getCatalogId()));  ? To The disk drive
-							fieldClient.close();
-						}
-						finally
-						{
-							if (fieldNode != null)
-							{
-								fieldNode.close();
-							}
 							fieldNode.close();
 						}
-					}
-					if (fieldNode != null)
-					{
 						fieldNode.close();
 					}
 				}
-				fieldShutdown = true;
-				System.out.println("Elastic shutdown complete");
+				if (fieldNode != null)
+				{
+					fieldNode.close();
+				}
 			}
-		}
-		catch (IOException e)
-		{
+			fieldShutdown = true;
 			System.out.println("Elastic shutdown complete");
-			e.printStackTrace();
-			throw new OpenEditException(e);
 		}
 	}
 
@@ -316,11 +261,11 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	public String createSnapShot(String inCatalogId, Lock inLock, boolean wholecluster)
 	{
 		String indexid = toId(inCatalogId);
-		String path = getLocalNode().getSetting("path.repo") + "/" + indexid; //Store it someplace unique so we can be isolated?
+		String path = getSetting("repo.root.location") + "/" + indexid; //Store it someplace unique so we can be isolated?
 
 		//log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
 
-		Settings settings = Settings.builder().put("location", path).build();
+		Settings settings = Settings.settingsBuilder().put("location", path).build();
 		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
 		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
 				.execute().actionGet();
@@ -367,12 +312,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			if (list.size() > 0)
 			{
 				SnapshotInfo recent = (SnapshotInfo) list.iterator().next();
-				Date date = new Date(recent.startTime());
+				SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+				Date date = format.parse(recent.name());
 				Calendar yesterday = new GregorianCalendar();
 				yesterday.add(Calendar.DAY_OF_YEAR, -1);
 				if (date.after(yesterday.getTime()))
 				{
-					return String.valueOf(recent.startTime());
+					return recent.name();
 				}
 			}
 			return createSnapShot(inCatalogId, lock, wholedatabase);
@@ -391,13 +337,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	{
 		String indexid = toId(inCatalogId);
 
-		String path = getLocalNode().getSetting("path.repo") + "/" + indexid;
+		String path = getSetting("repo.root.location") + "/" + indexid;
 
 		if (!new File(path).exists())
 		{
 			return Collections.emptyList();
 		}
-		Settings settings = Settings.builder().put("location", path).build();
+		Settings settings = Settings.settingsBuilder().put("location", path).build();
 
 		PutRepositoryRequestBuilder putRepo = new PutRepositoryRequestBuilder(getClient().admin().cluster(), PutRepositoryAction.INSTANCE);
 		putRepo.setName(indexid).setType("fs").setSettings(settings) //With Unique location saved for each catalog
@@ -414,7 +360,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			@Override
 			public int compare(SnapshotInfo inO1, SnapshotInfo inO2)
 			{
-				return (int) (inO1.startTime()-inO2.startTime());
+				return inO1.name().toLowerCase().compareTo(inO2.name().toLowerCase());
 			}
 		});
 		Collections.reverse(results);
@@ -435,66 +381,64 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		try
 		{
-			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+
+			try
+			{
+				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+			}
+			catch (Exception ex)
+			{
+				log.error(ex);
+			}
+
+			String currentindex = getIndexNameFromAliasName(indexid); //This is the current index that the alias 
+			clearAlias(indexid);
+			try
+			{
+
+				CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
+				closeIndexRequestBuilder.setIndices(currentindex);
+				closeIndexRequestBuilder.execute().actionGet();
+				// Now execute the actual restore action
+				RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(), RestoreSnapshotAction.INSTANCE);
+				restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId);
+				RestoreSnapshotResponse response = restoreBuilder.execute().actionGet();
+				//			List <String> restored = response.getRestoreInfo().indices();
+				//			if(restored.size() == 1){
+				//				clearAlias(indexid);
+				//				loadIndex(indexid,restored.get(0), true);
+				//			} else{
+				//				loadIndex(indexid, currentindex, false);
+				//
+				//				throw new OpenEditException("Cannot Restore Snapshot - restored" + restored +" indeces");
+				//			}
+				String loadedindexid = getIndexNameFromAliasName(indexid);
+				if (!loadedindexid.equals(currentindex))
+				{
+					DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(currentindex)).actionGet();
+				}
+				ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+			}
+			catch (Exception ex)
+			{
+				log.error(ex);
+
+			}
 		}
-		catch (Exception ex)
+		catch (Throwable ex)
 		{
 			log.error(ex);
-			throw new OpenEditException(ex);
 		}
-
-		String currentindex = getIndexNameFromAliasName(indexid); //This is the current index that the alias 
-		clearAlias(indexid);
-		boolean undo = false;
+		admin.indices().open(new OpenIndexRequest(indexid));
 		try
 		{
-			//Close it first
-			CloseIndexRequestBuilder closeIndexRequestBuilder = new CloseIndexRequestBuilder(getClient(), CloseIndexAction.INSTANCE);
-			closeIndexRequestBuilder.setIndices(currentindex);
-			closeIndexRequestBuilder.execute().actionGet();
-			// Now execute the actual restore action
-			//Sleep a little?
-			
-			RestoreSnapshotRequestBuilder restoreBuilder = new RestoreSnapshotRequestBuilder(getClient(), RestoreSnapshotAction.INSTANCE);
-			restoreBuilder.setRepository(indexid).setSnapshot(inSnapShotId).setWaitForCompletion(true);
-			RestoreSnapshotResponse response = restoreBuilder.execute().actionGet();
-			//Cant read index information on a closed index
-			List <String> restored = response.getRestoreInfo().indices();
-			if(restored.isEmpty())
-			{
-				loadIndex(indexid, currentindex, false);
-				throw new OpenEditException("Cannot Restore Snapshot - restored" + restored +" indeces");
-			}
-			String loadedindexid = getIndexNameFromAliasName(indexid);
-			if (!loadedindexid.equals(currentindex))
-			{
-				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(currentindex)).actionGet();
-			}
 			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
 		}
 		catch (Exception ex)
 		{
-			undo = true;
-			log.error("Could not restore" , ex);
+			log.info(ex);
 		}
-		try
-		{
-			if( undo)
-			{
-				admin.indices().open(new OpenIndexRequest(currentindex));				
-			}
-			else
-			{
-				admin.indices().open(new OpenIndexRequest(indexid));				
-			}
-			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
-		}
-		catch (Exception ex)
-		{
-			log.error("Could to finalize " + undo,ex);
-			throw new OpenEditException(ex);
-		}
-}
+	}
 
 	//	public void exportKnapsack(String inCatalogId)
 	//	{
@@ -691,39 +635,56 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		AdminClient admin = getClient().admin();
 
+		
+		boolean indexexists = false;
+		//		AliasOrIndex indexToAliasesMap = admin.cluster().state(Requests.clusterStateRequest()).actionGet().getState().getMetaData().getAliasAndIndexLookup().get(alias);
+		//		if(indexToAliasesMap != null && !indexToAliasesMap.isAlias()){
+		//			    throw new OpenEditException("An old index exists with the name we want to use for the alias!");
+		//		}
+		//		if(indexToAliasesMap != null && indexToAliasesMap.isAlias()){
+		//		    indexexists = true;//we have an index already with this alias..
+		//			   index= indexToAliasesMap.getIndices().iterator().next().getIndex();;
+		//		} 
+
 		IndicesExistsRequest existsreq = Requests.indicesExistsRequest(index);
 		IndicesExistsResponse res = admin.indices().exists(existsreq).actionGet();
 		boolean createdIndex = false;
 		if (!res.isExists())
 		{
-			InputStream in = null;
 			try
 			{
-				Page yaml = getPageManager().getPage("/system/configuration/elasticindex.yaml");
-				in = yaml.getInputStream();
-				Builder settingsBuilder = Settings.builder().loadFromStream(yaml.getName(), in);
+				XContentBuilder settingsBuilder = XContentFactory.jsonBuilder().startObject().startObject("analysis")
+
+						/*
+						 * "index" : {
+            "analyzer" : {
+                "my_analyzer" : {
+                    "tokenizer" : "standard",
+                    "filter" : ["standard", "lowercase", "my_snow"]
+                }
+            },
+            "filter" : {
+                "my_snow" : {
+                    "type" : "snowball",
+                    "language" : "Lovins"
+                }
+            }
+        }
+    }
+						 */
+						
+				.startObject("analyzer").startObject("lowersnowball").field("tokenizer", "standard").startArray("filter").value("standard").value("lowercase").value("stemfilter").endArray().
+				endObject().endObject()
+				.startObject("analyzer").startObject("tags").field("type", "custom").field("tokenizer", "keyword").startArray("filter").value("lowercase").endArray()					
+				.endObject().endObject()
+				.startObject("filter").startObject("stemfilter").field("type","snowball").field("language","English").endObject().endObject()
+				
+				.endObject().endObject();
+
+				log.info(settingsBuilder.toString());
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
- 
-				
-				/*
-				 * 	XContentBuilder settingsBuilder = XContentFactory.jsonBuilder()
-					.startObject()
-						.startObject("analysis")
-							.startObject("analyzer")
-								.startObject("lowersnowball").field("tokenizer", "standard").startArray("filter").value("standard").value("lowercase").value("stemfilter").endArray()
-								.endObject()
-							.endObject()
-							.startObject("analyzer")
-								.startObject("tags").field("type", "custom").field("tokenizer", "keyword").startArray("filter").value("lowercase").endArray()					
-								.endObject()
-							.endObject()
-							.startObject("filter")
-								.startObject("stemfilter").field("type","snowball").field("language","English")
-								.endObject()
-							.endObject()
-						.endObject();
-				 */
-				
+				//CreateIndexResponse newindexres = admin.indices().prepareCreate(cluster).execute().actionGet();
+
 				if (newindexres.isAcknowledged())
 				{
 					log.info("index created " + index);
@@ -738,19 +699,28 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			}
 			catch (Exception e)
 			{
-				if(e instanceof RuntimeException )
-				{
-					throw (RuntimeException)e;
-				}
 				throw new OpenEditException(e);
-			}
-			finally
-			{
-				FileUtils.safeClose(in);
 			}
 			return createdIndex;
 		}
 
+		//TODO: This should have beeb already setup by the NodeManager
+
+		//from this point forward we can use the alias = media_catalogs_public instead of the actual index string..
+
+		//		ClusterState cs = admin.cluster().prepareState().setIndices(alias).execute().actionGet().getState();
+		//		IndexMetaData data = cs.getMetaData().index(alias);
+		//		if (data != null)
+		//		{
+		//			if (data.getMappings() != null)
+		//			{
+		//				MappingMetaData fields = data.getMappings().get(getSearchType());
+		//				if (fields != null && fields.source() != null)
+		//				{
+		//					runmapping = false;
+		//				}
+		//			}
+		//		}
 		RefreshRequest req = Requests.refreshRequest(index);
 		RefreshResponse rres = admin.indices().refresh(req).actionGet();
 		if (rres.getFailedShards() > 0)
@@ -759,9 +729,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 
 		return createdIndex;
-	}
 
-	
+		//		if(createdIndex){
+		//			
+		//			initializeCatalog(getCatalogId());
+		//		}
+		//return runmapping;
+	}
 
 	public String getIndexNameFromAliasName(final String aliasName)
 	{
@@ -774,7 +748,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		if (indexToAliasesMap.isAlias() && indexToAliasesMap.getIndices().size() > 0)
 		{
-			return indexToAliasesMap.getIndices().iterator().next().getIndex().getName();
+			return indexToAliasesMap.getIndices().iterator().next().getIndex();
 		}
 
 		return null;
@@ -795,7 +769,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = indexToAliasesMap.getIndices().iterator(); iterator.hasNext();)
 			{
 				IndexMetaData metadata = (IndexMetaData) iterator.next();
-				String indexid = metadata.getIndex().getName();
+				String indexid = metadata.getIndex();
 
 				getClient().admin().indices().prepareAliases().removeAlias(indexid, aliasName).execute().actionGet();
 
@@ -827,7 +801,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		List mappedtypes = getMappedTypes(id);
 
 		String newindex = null;
-		String searchtype = null;
 		try
 		{
 			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
@@ -838,10 +811,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			newindex = prepareTemporaryIndex(inCatalogId, mappedtypes);
 
 			mappedtypes.remove("lock");
-			
+
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
-				searchtype = (String) iterator.next();
+				String searchtype = (String) iterator.next();
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 				
 				searcher.setAlternativeIndex(newindex);//Should		
@@ -858,7 +831,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		catch (Throwable e)
 		{
-			log.error("Could not reindex " + searchtype);
 			if (newindex != null)
 			{
 				DeleteIndexResponse delete = getClient().admin().indices().delete(new DeleteIndexRequest(newindex)).actionGet();
@@ -867,10 +839,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					log.error("Index wasn't deleted");
 				}
 			}
-			if( e instanceof OpenEditException)
-			{
-				throw e;
-			}
+
 			throw new OpenEditException(e);
 		}
 		finally

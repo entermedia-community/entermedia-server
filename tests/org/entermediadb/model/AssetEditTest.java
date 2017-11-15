@@ -37,9 +37,9 @@ public class AssetEditTest extends BaseEnterMediaTest
 
 	protected void setUp() throws Exception
 	{
-//		if(getMediaArchive().getAssetSearcher().getAllHits().size() == 0){
-//			getMediaArchive().getAssetSearcher().reIndexAll();
-//		}
+		if(getMediaArchive().getAssetSearcher().getAllHits().size() == 0){
+			getMediaArchive().getAssetSearcher().reIndexAll();
+		}
 		Category blank = getCategoryEditor().getCategory("GOODSTUFF"); 
 		if( blank == null)
 		{

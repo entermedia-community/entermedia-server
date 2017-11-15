@@ -1243,12 +1243,13 @@ public class ProjectManager implements CatalogEnabled
 		}
 		if( !collection.hasRootCategory() )
 		{
-			String path = collectionroot + "/" + collection.getLibrary() + "/" + collection.getName();
-			Category collectioncategory = mediaArchive.createCategoryPath( path);
-			mediaArchive.getCategorySearcher().saveData(collectioncategory);
-			collection.setValue("rootcategory", collectioncategory.getId());
-			mediaArchive.getSearcher("librarycollection").saveData(collection, null);
-			log.info("saving collection");
+			getRootCategory(mediaArchive,collection);
+//			String path = collectionroot + "/" + collection.getLibrary() + "/" + collection.getName();
+//			Category collectioncategory = mediaArchive.createCategoryPath( path);
+//			mediaArchive.getCategorySearcher().saveData(collectioncategory);
+//			collection.setValue("rootcategory", collectioncategory.getId());
+//			mediaArchive.getSearcher("librarycollection").saveData(collection, null);
+			log.info("saving root on collection");
 			
 			
 		}

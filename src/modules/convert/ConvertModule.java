@@ -49,7 +49,7 @@ public class ConvertModule extends BaseMediaModule
 			one.setProperty("presetid", preset.getId() );
 			one.setProperty("ordering", preset.get("ordering") );
 			String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date() );
-			one.setProperty("submitteddate", nowdate);
+			one.setProperty("submitted", nowdate);
 			tasksearcher.saveData(one, null);
 		}
 		

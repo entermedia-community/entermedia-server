@@ -13,8 +13,21 @@ public void init() {
 	LibraryCollection collection = mediaArchive.getSearcher("librarycollection").searchById(id);
 	if( collection != null ) 
 	{
+		if(collection.getValue("creationdate") == null){
+			collection.setValue("creationdate", new Date());
+			mediaArchive.getSearcher("librarycollection").saveData(collection);
+		}
+		
 		mediaArchive.getProjectManager().configureCollection( collection, context.getUserName());
+	
+		
+			
 	}
+	
+	
+	
+	
+	
 }
 
 init();

@@ -132,7 +132,7 @@ public class PresetCreator
 			{
 				rerun = true;
 			}
-			else if( !"complete".equals( existing.get("status" ) ) && existing.getValue("submitteddate") == null )
+			else if( !"complete".equals( existing.get("status" ) ) && existing.getValue("submitted") == null )
 			{
 				rerun = true;				
 			}
@@ -142,7 +142,7 @@ public class PresetCreator
 				existing.setProperty("status","retry");
 				existing.setProperty("errordetails",null);
 				String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
-				existing.setProperty("submitteddate", nowdate);
+				existing.setProperty("submitted", nowdate);
 				tosave.add(existing);
 				added = added + 1;
 			}
@@ -221,7 +221,7 @@ public class PresetCreator
 		found.setProperty("presetid", preset.getId());
 		found.setProperty("ordering", preset.get("ordering"));
 		String nowdate = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
-		found.setProperty("submitteddate", nowdate);
+		found.setProperty("submitted", nowdate);
 		if (thepage > 0)
 		{
 			found.setProperty("pagenumber", String.valueOf(thepage));

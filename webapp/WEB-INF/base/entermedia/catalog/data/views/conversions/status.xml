@@ -2,7 +2,7 @@
 	
 	<property id="assetid"   >Asset Id</property>
 	<property id="status"       >Status</property>
-	<property id="submitteddate" >Submission Date</property>
+	<property id="submitted" >Submission Date</property>
 	<property id="presetid"   >Preset ID</property>
 	<property id="errordetails"    >Error Details</property>
 
