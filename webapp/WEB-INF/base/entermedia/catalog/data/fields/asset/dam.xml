@@ -398,7 +398,7 @@
       <language id="fr"><![CDATA[Titre]]></language> 
     </name> 
   </property>  
-  <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="true"  >Description 
+  <property id="longcaption" keyword="true" index="true" editable="true" externalid="XMP-dc:Description,exif:Image Description,iptc:Caption-Abstract"  stored="true"  sortable="true" wordpressfield="description">Description 
     <name> 
       <language id="de"><![CDATA[Description]]></language>  
       <language id="en"><![CDATA[Description]]></language>  

@@ -32,7 +32,7 @@ public class AllTests {
 
 		//PDF conversions are failing
 		//suite.addTestSuite( ConversionTest.class );
-		suite.addTestSuite( CollectionTest.class );
+		//suite.addTestSuite( CollectionTest.class );
 		//suite.addTestSuite( XmlFileSearcherTest.class );
 		boolean ffmpeg = true;
 		try

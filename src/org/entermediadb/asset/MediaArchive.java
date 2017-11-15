@@ -1816,7 +1816,7 @@ public class MediaArchive implements CatalogEnabled
 		getSearcherManager().clear();
 		getNodeManager().clear();
 		getPresetManager().clearCaches();
-
+		getPropertyDetailsArchive().clearCache();
 	}
 
 	public Collection<Data> listHiddenCollections()
@@ -1901,7 +1901,7 @@ public class MediaArchive implements CatalogEnabled
 	public Collection<Category> listHiddenCategories(Collection<Category> inViewCategories)
 	{
 		Collection<Category> all = listHiddenCategories();
-		if( inViewCategories.isEmpty() )
+		if( inViewCategories == null || inViewCategories.isEmpty() )
 		{
 			return all;
 		}

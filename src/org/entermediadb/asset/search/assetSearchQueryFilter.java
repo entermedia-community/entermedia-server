@@ -100,9 +100,10 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 
 			MediaArchive mediaArchive = getMediaArchive(inSearcher.getCatalogId());
 			Collection allowed = new ArrayList(mediaArchive.listPublicCategories() );
-			if( profile != null)
+		Collection canview = profile.getViewCategories();
+			if( canview != null )
 			{
-				allowed.addAll(profile.getViewCategories());
+				allowed.addAll(canview);
 			}
 			for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
 			{

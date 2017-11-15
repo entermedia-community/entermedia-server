@@ -12,6 +12,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.publishing.BasePublisher;
@@ -20,6 +21,8 @@ import org.entermediadb.asset.publishing.Publisher;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.data.PropertyDetail;
+import org.openedit.data.PropertyDetails;
 import org.openedit.page.Page;
 import org.openedit.util.HttpRequestBuilder;
 
@@ -60,10 +63,35 @@ public class wordpresspublisher extends BasePublisher implements Publisher
 			builder.addPart("assetid", asset.getId());
 			builder.addPart("exportname", exportname);
 			builder.addPart("title", asset.toString());
-			builder.addPart("caption", asset.get("headline"));
-			builder.addPart("description", asset.get("longcaption")); 
+//			builder.addPart("caption", asset.get("headline"));
+//			builder.addPart("description", asset.get("longcaption")); 
 			builder.addPart("uploadby", "entermedia");
 
+			for (Iterator iterator = mediaArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
+			{
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+				
+				String wordpressfield = detail.get("wordpressfield");
+				if(wordpressfield != null){
+//				
+					String assetvalue = asset.get(detail.getId());
+					if(assetvalue != null){					
+						if(detail.isList()){
+							Data remote = mediaArchive.getData(detail.getListId(), assetvalue);
+							if(remote!= null){
+								assetvalue = remote.getName();
+							}
+						}
+					}
+					if(assetvalue != null){
+						builder.addPart(wordpressfield, assetvalue);
+					}
+					
+				}
+			}
+			
+			
+			
 			if( asset.getKeywords().size() > 0 )
 			{
 				StringBuffer buffer = new StringBuffer();

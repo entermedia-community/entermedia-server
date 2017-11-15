@@ -51,6 +51,7 @@ import org.elasticsearch.client.Requests;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.geo.GeoDistance;
+import org.elasticsearch.common.geo.GeoPoint;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
@@ -82,6 +83,7 @@ import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.entermediadb.location.Position;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseSearcher;
@@ -2082,7 +2084,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				else if (detail.isDataType("geo_point"))
 				{
-				//	inContent.field(key, value);
+					//Saved it as two fields?
+					if( value instanceof Position )
+					{
+						Position pos = (Position)value;
+						GeoPoint point = new GeoPoint(pos.getLatitude(),pos.getLongitude());
+						inContent.field(key, point);  
+					}
 				}
 				else if (key.equals("description")) // TODO: This should be
 													// moved to _all

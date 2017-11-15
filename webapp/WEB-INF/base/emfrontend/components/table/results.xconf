@@ -2,8 +2,12 @@
 
 	<inner-layout />
 	<property name="enforcesecurity">true</property>
-	<path-action name="DataEditModule.search" >
+	<path-action name="DataEditModule.loadOrSearch" >
 		<property name="sortby">name</property>
 	</path-action>
+	
+	
+	  <path-action name="DataEditModule.loadPageOfSearch"></path-action>
+	
 
 </page>

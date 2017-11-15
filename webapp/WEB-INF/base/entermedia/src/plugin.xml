@@ -1707,6 +1707,11 @@
 		<property name="exec"><ref bean="exec" /></property>
 	</bean>
 
+	<bean id="gsTranscoder" class="org.entermediadb.asset.convert.transcoders.GsTranscoder" scope="prototype" >
+		<property name="pageManager"><ref bean="pageManager" /></property>
+		<property name="exec"><ref bean="exec" /></property>
+	</bean>
+
 	<bean id="ffmpegimageTranscoder" class="org.entermediadb.asset.convert.transcoders.FfmpegImageTranscoder" scope="prototype">
 		<property name="pageManager"><ref bean="pageManager" /></property>
 		<property name="exec"><ref bean="exec" /></property>

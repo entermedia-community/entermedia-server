@@ -847,7 +847,7 @@ public class UpdateModule extends BaseMediaModule {
 				ScriptLogger logger = new ScriptLogger();
 				logger.startCapture();
 				variables.put("log", logger);
-				Script script = getScriptManager().loadScript("/WEB-INF/temp/upgrade/etc/install.js");
+				Script script = getScriptManager().loadScript(scriptpage.getPath());
 				getScriptManager().execScript(variables, script);
 			}
 

@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<page-action name="ConvertModule.convertAsset" alltypes="true"/>   
+	<!-- page-action name="ConvertModule.convertAsset" alltypes="true"/ -->
+	<path-action name="Script.run" alltypes="true" >
+		<script>./convertasset.groovy</script>
+	</path-action>   
 	<property name="searchtype">asset</property>
 </page>

@@ -16,6 +16,7 @@ public class DocumentConversionManager extends BaseConversionManager
 	private static final Log log = LogFactory.getLog(DocumentConversionManager.class);
 	
 	protected BaseTranscoder fieldCMYKTranscoder;
+	protected BaseTranscoder fieldGsTranscoder;
 	
 	public BaseTranscoder getCMYKTranscoder()
 	{
@@ -30,6 +31,15 @@ public class DocumentConversionManager extends BaseConversionManager
 	public void setCMYKTranscoder(CMYKTranscoder inCMYKTranscoder)
 	{
 		fieldCMYKTranscoder = inCMYKTranscoder;
+	}
+
+	public BaseTranscoder getGsTranscoder()
+	{
+		if (fieldGsTranscoder == null)
+		{
+			fieldGsTranscoder = (BaseTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"gsTranscoder");
+		}
+		return fieldGsTranscoder;
 	}
 
 	
@@ -174,7 +184,7 @@ public class DocumentConversionManager extends BaseConversionManager
 		{
 			inStructions.setInputFile(tmpinput);
 		}
-
+		
 		
 		//Step 2 make PNG
 		//Now make the input image needed using the document as the input
@@ -184,9 +194,20 @@ public class DocumentConversionManager extends BaseConversionManager
 		{
 			preset = getMediaArchive().getPresetManager().getPresetByOutputName(inStructions.getMediaArchive(),"document","image1500x1500.png");
 		}	
-		
+
 		ConvertInstructions instructions2 = inStructions.copy(preset);
 		instructions2.setPageNumber(inStructions.getPageNumber());
+		instructions2.setAsset(inStructions.getAsset());
+		if( tmpinput == null)
+		{ //Not CMYK, is PDF
+			if("pdf".equals(fileFormat))
+			{
+				instructions2.setInputFile(getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem());
+				ConvertResult pre = getGsTranscoder().convertIfNeeded( instructions2 ); //pre convert
+				instructions2.setInputFile(pre.getOutput());
+			}
+		}
+		
 		MediaTranscoder transcoder = findTranscoder(instructions2);
 		
 		ConvertResult result = transcoder.convertIfNeeded(instructions2);

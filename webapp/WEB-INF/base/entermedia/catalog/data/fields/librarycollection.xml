@@ -59,7 +59,7 @@
   </property>  
   
   
-  <property id="library" required="true" index="true" stored="true" editable="true"  type="list" viewtype="autocomplete" listid="library" datatype="list" >Library 
+  <property id="library" index="true" stored="true" editable="true"  type="list" viewtype="autocomplete" listid="library" datatype="list" >Library 
     <name> 
       <language id="de"><![CDATA[Bibliothek]]></language>  
       <language id="en"><![CDATA[Library]]></language>  
@@ -128,7 +128,7 @@
     </name>
   </property> 
   
-   <property id="parentcategories"  index="true" viewtype="multiselect" datatype="list" listid="category" stored="true" note="Auto populated"  editable="false" >
+   <property id="parentcategories"  index="true" viewtype="text" datatype="list" listid="category" stored="true" note="Auto populated"  editable="false" >
     <name>
       <language id="en"><![CDATA[Parent Categories]]></language>
     </name>

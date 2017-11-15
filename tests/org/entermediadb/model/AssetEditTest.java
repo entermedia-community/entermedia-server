@@ -308,7 +308,7 @@ public class AssetEditTest extends BaseEnterMediaTest
 	}
 
 	
-	public void testDeleteFromIndex() throws Exception
+	public void XXXtestDeleteFromIndex() throws Exception
 	{
 		Asset asset = getMediaArchive().createAsset("666","multitest/666");
 		
@@ -321,13 +321,13 @@ public class AssetEditTest extends BaseEnterMediaTest
 		
 		WebPageRequest req = getFixture().createPageRequest();
 
-		HitTracker tracker = getMediaArchive().getAssetSearcher().cachedSearch(req,q);
+		HitTracker tracker = getMediaArchive().getAssetSearcher().search(q);
 		int size = tracker.size();
 		
 		getMediaArchive().getAssetArchive().deleteAsset(asset);
 		getMediaArchive().getAssetSearcher().deleteFromIndex(asset);
 
-		tracker = getMediaArchive().getAssetSearcher().cachedSearch(req,q);
+		tracker = getMediaArchive().getAssetSearcher().search(q);
 		assertEquals( tracker.size() + 1, size);
 	
 	}
