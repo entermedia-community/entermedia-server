@@ -51,14 +51,7 @@
       <language id="fr"><![CDATA[Chemin d&#39;accès externe]]></language> 
     </name> 
   </property>  
-  <property id="email" index="true" stored="true" keyword="true" editable="true" required="true" indextype="not_analyzed" filter="false" sortable="true">Email 
-    <name> 
-      <language id="de"><![CDATA[Email]]></language>  
-      <language id="en"><![CDATA[Email]]></language>  
-      <language id="es"><![CDATA[Email]]></language>  
-      <language id="fr"><![CDATA[Email]]></language> 
-    </name> 
-  </property>  
+ 
   <!-- Amazon S3 -->  
   <property id="bucket" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Bucket 
     <name> 
