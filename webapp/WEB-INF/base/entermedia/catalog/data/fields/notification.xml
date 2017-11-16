@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="notes" index="true" editable="true" keyword="true">New
+    <name> 
+      <language id="en"><![CDATA[Notes]]></language> 
+    </name> 
+  </property>  
+  <property id="id" index="true" editable="true" keyword="true">New
+    <name> 
+      <language id="en"><![CDATA[id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" editable="true" keyword="true">New
+    <name> 
+      <language id="en"><![CDATA[Name]]></language> 
+    </name> 
+  </property>  
+  <property id="senddate" index="true" editable="true" keyword="true" internalfield="false" isbadge="false" required="false" filter="false" multilanguage="false" datatype="date" autocreatefromexif="false" writenametoexif="false">New
+    <name>
+      <language id="en"><![CDATA[Date]]></language>
+    </name>
+  </property>  
+  <property id="notificationstatus" index="true" editable="true" keyword="true" internalfield="false" isbadge="false" required="false" filter="false" multilanguage="false" datatype="list" autocreatefromexif="false" writenametoexif="false">New
+    <name> 
+      <language id="en"><![CDATA[Notification Status]]></language> 
+    </name> 
+  </property>
+
+  <property id="notificationtype" index="true" editable="true" keyword="true" internalfield="false" isbadge="false" required="false" filter="false" multilanguage="false" datatype="list" autocreatefromexif="false" writenametoexif="false">Notification Type</property>
+  
+  <property id="notificationsubject" index="true" editable="true" keyword="true">
+    <name> 
+      <language id="en"><![CDATA[Subject]]></language> 
+    </name> 
+  </property>  
+  
+  
+  <property id="notificationemails" index="true" editable="true" keyword="true"  >
+    <name> 
+      <language id="en"><![CDATA[Recipients]]></language> 
+    </name> 
+  </property>  
+  
+  
+  <property id="notificationfrom" index="true" editable="true" keyword="true">
+    <name> 
+      <language id="en"><![CDATA[Email From]]></language> 
+    </name> 
+  </property>  
+  
+  
+  
+  
+  
+   
+</properties>

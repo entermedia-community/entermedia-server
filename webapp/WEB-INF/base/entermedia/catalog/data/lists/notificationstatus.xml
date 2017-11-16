@@ -1,0 +1,6 @@
+
+<notificationstatus>
+  <notificationstatus id="pending">Pending</notificationstatus>
+    <notificationstatus id="sent">Sent</notificationstatus>
+  
+</notificationstatus>
