@@ -198,6 +198,7 @@ public class DocumentConversionManager extends BaseConversionManager
 		ConvertInstructions instructions2 = inStructions.copy(preset);
 		instructions2.setPageNumber(inStructions.getPageNumber());
 		instructions2.setAsset(inStructions.getAsset());
+
 		if( tmpinput == null)
 		{ //Not CMYK, is PDF
 			if("pdf".equals(fileFormat))
@@ -205,6 +206,8 @@ public class DocumentConversionManager extends BaseConversionManager
 				instructions2.setInputFile(getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem());
 				ConvertResult pre = getGsTranscoder().convertIfNeeded( instructions2 ); //pre convert
 				instructions2.setInputFile(pre.getOutput());
+				instructions2.setForce(true);
+
 			}
 		}
 		
