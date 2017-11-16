@@ -75,6 +75,7 @@ public void init()
 		){
 			context.putPageValue("conversiontask", one);
 			context.putPageValue("catalogid", catalogid);
+
 			//log.info("finidhes" + preset);
 			
 			String exportname = preset.get("generatedoutputfile");

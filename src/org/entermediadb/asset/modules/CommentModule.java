@@ -17,7 +17,6 @@ import org.openedit.users.User;
 public class CommentModule extends BaseMediaModule 
 {
 	protected CommentArchive fieldCommentArchive;
-	protected WebEventListener fieldWebEventListener;
 	
 	public CommentArchive getCommentArchive() {
 		return fieldCommentArchive;
@@ -131,8 +130,8 @@ public class CommentModule extends BaseMediaModule
 			}
 		}
 		
-		WebEvent event = createEvent(comment, type + "commentadded", inReq);
-		getWebEventListener().eventFired(event);
+//		WebEvent event = createEvent(comment, type + "commentadded", inReq);
+//		getWebEventListener().eventFired(event);
 		String catalogid = inReq.findValue("catalogid");
 		String sourcepath = findSourcePath(inReq);
 		getCommentArchive().addComment(catalogid, sourcepath, comment);
@@ -162,12 +161,5 @@ public class CommentModule extends BaseMediaModule
 		
 	}
 
-	public WebEventListener getWebEventListener()
-	{
-		return fieldWebEventListener;
-	}
-	public void setWebEventListener(WebEventListener webEventListener)
-	{
-		fieldWebEventListener = webEventListener;
-	}
+	
 }

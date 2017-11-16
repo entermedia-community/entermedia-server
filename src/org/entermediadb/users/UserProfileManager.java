@@ -93,15 +93,18 @@ public class UserProfileManager
 	{
 		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
 
+		boolean forcereload = false;
+		
 		UserProfile userprofile = null;
 		if (inReq != null)
 		{
+			forcereload = Boolean.parseBoolean( inReq.findValue("reloadprofile"));
 			userprofile = (UserProfile) inReq.getPageValue("userprofile");
 			if( userprofile == null)
 			{
 				userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
 			}
-			if (userprofile != null)
+			if (forcereload == false && userprofile != null)
 			{
 				String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
 				if( index.equals(userprofile.getIndexId()) )
@@ -123,7 +126,7 @@ public class UserProfileManager
 			userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
 			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
 
-			if( userprofile != null && index.equals(userprofile.getIndexId()) )
+			if( forcereload == false && userprofile != null && index.equals(userprofile.getIndexId()) )
 			{
 				inReq.putPageValue("userprofile", userprofile);
 				return userprofile;
@@ -318,6 +321,7 @@ public class UserProfileManager
 				throw new OpenEditException("user profile source path is null");
 			}
 			searcher.saveData(inUserProfile, null);
+			archive.getCacheManager().remove("userprofile", inUserProfile.getUserId());
 		}
 		finally
 		{
