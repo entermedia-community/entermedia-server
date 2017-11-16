@@ -4,6 +4,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.QueueManager;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
@@ -221,4 +222,11 @@ public class ConvertStatusModule extends BaseMediaModule
 		inReq.redirect(path + "/index.html?assetid=" + asset.getId());
 	}
 	
+	public void queueConversions(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		QueueManager manager = (QueueManager)getModuleManager().getBean(archive.getCatalogId(),"queueManager");
+		manager.checkQueue();
+		
+	}
 }
