@@ -15,7 +15,17 @@ public class AssetConversions implements Runnable
 {
 	private static final Log log = LogFactory.getLog(AssetConversions.class);
 	
-	String fieldAssetId;
+	Asset fieldAsset;
+	public Asset getAsset()
+	{
+		return fieldAsset;
+	}
+
+	public void setAsset(Asset inAsset)
+	{
+		fieldAsset = inAsset;
+	}
+
 	MediaArchive fieldMediaArchive;
 	List<ConversionTask> runners = new ArrayList<ConversionTask>();
 	User user;
@@ -55,18 +65,17 @@ public class AssetConversions implements Runnable
 	public AssetConversions(MediaArchive inArchive, String inAssetId, Lock lock)
 	{
 		fieldMediaArchive = inArchive;
-		fieldAssetId = inAssetId;
+		fieldAsset = inArchive.getAsset( inAssetId );
 		fieldLock = lock;
 	}
 
 	public void run()
 	{
-		Asset asset = fieldMediaArchive.getAsset(fieldAssetId);
 		try
 		{
 			for (ConversionTask runner : runners)
 			{
-				runner.asset = asset;
+				runner.asset = getAsset();
 				runner.convert();
 				if (runner.isComplete())
 				{
@@ -83,7 +92,7 @@ public class AssetConversions implements Runnable
 		}
 		catch (Exception e)
 		{
-			log.error("ERRORS converting: " + fieldAssetId ,e);
+			log.error("ERRORS converting: " + getAssetId() ,e);
 		}
 		finally
 		{
@@ -100,7 +109,7 @@ public class AssetConversions implements Runnable
 
 	public String getAssetId()
 	{
-		return fieldAssetId;
+		return getAsset().getId();
 	}
 
 	public void addTask(ConversionTask task)

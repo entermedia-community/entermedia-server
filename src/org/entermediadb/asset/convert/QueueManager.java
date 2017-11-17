@@ -211,10 +211,18 @@ public class QueueManager implements ConversionEventListener
 
 	public void finishedConversions(AssetConversions inAssetconversions)
 	{
-		fieldRunningAssetConversions.remove(inAssetconversions.getAssetId());
-		getMediaArchive().releaseLock(inAssetconversions.getLock());
-		getMediaArchive().fireSharedMediaEvent("conversions/conversioncomplete");
-		checkQueue();
+		try
+		{
+			fieldRunningAssetConversions.remove(inAssetconversions.getAssetId());
+			getMediaArchive().releaseLock(inAssetconversions.getLock());
+			getMediaArchive().conversionCompleted(inAssetconversions.getAsset());
+			getMediaArchive().fireSharedMediaEvent("conversions/conversioncomplete");
+			checkQueue();
+		}
+		catch ( Exception ex)
+		{
+			log.error("Problem finishing conversions ",ex);
+		}
 	}
 	public void ranConversions(AssetConversions inAssetConversions)
 	{
