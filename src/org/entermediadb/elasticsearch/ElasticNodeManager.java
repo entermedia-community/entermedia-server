@@ -138,6 +138,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 		Replacer replace = new Replacer();
 
+		Element basenode = getXmlUtil().getXml(getPageManager().getPage("/system/configuration/basenode.xml").getInputStream(),"UTF-8");
+		for (Iterator iterator = basenode.elementIterator(); iterator.hasNext();)
+		{
+			Element ele = (Element)iterator.next();
+			String key = ele.attributeValue("id");
+			String val = ele.getTextTrim();
+			val = replace.replace(val, params);
+			getLocalNode().setValue(key, val);
+		}
+
+		
 		for (Iterator iterator = root.elementIterator(); iterator.hasNext();)
 		{
 			Element ele = (Element)iterator.next();

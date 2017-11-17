@@ -1,0 +1,27 @@
+<node>
+
+    <property id="node.name">${nodeid}</property>
+    
+    <!--  This should be 1 for single node systems and 2 for more than one node 
+     <property id="index.number_of_replicas">1</property>
+     <property id="index.number_of_shards">5</property>
+     -->
+    <!--  ES2 -->
+    <property id="index.mapping._id.indexed">true</property>
+    <property id="path.home">${webroot}/WEB-INF/elastic/${nodeid}</property>
+    <property id="path.logs">${webroot}/WEB-INF/elastic/${nodeid}/logs</property>
+    <property id="path.repo">${webroot}/WEB-INF/data/repos</property>     
+
+<!-- ES5 
+	<property id="transport.type">local</property>     
+	<property id="http.enabled">true</property>     
+	<property id="http.type">netty3</property>    
+	<property id="transport.type">netty3</property>    
+-->
+	<property id="discovery.zen.ping.unicast.hosts">localhost</property>
+ 	<property id="cluster.routing.allocation.disk.watermark.high">5gb</property>
+	<property id="cluster.routing.allocation.disk.watermark.low">10gb</property>
+ 
+ 
+</node>
+
