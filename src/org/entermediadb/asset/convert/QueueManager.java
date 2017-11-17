@@ -92,7 +92,8 @@ public class QueueManager implements ConversionEventListener
 		}
 
 		HitTracker newtasks = tasksearcher.search(query);
-		newtasks.enableBulkOperations();
+		newtasks.setHitsPerPage(500);  //Just enought to fill up the queue
+		//newtasks.enableBulkOperations();
 		//newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
 		//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
 		if (newtasks.size() > 0)
@@ -112,6 +113,7 @@ public class QueueManager implements ConversionEventListener
 		for (Iterator iterator = newtasks.iterator(); iterator.hasNext();)
 		{
 			Data hit = (Data) iterator.next();
+			
 			//If locked skip it, someone is already processing it
 			String assetid = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
 
@@ -192,7 +194,7 @@ public class QueueManager implements ConversionEventListener
 
 	protected ConversionTask createRunnable(Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
 	{
-		ConversionTask runner = (ConversionTask)getModuleManager().getBean(getCatalogId(),"conversionTask");
+		ConversionTask runner = (ConversionTask)getModuleManager().getBean(getCatalogId(),"conversionTask",false);
 		runner.mediaarchive = getMediaArchive();
 		runner.tasksearcher = tasksearcher;
 		runner.presetsearcher = presetsearcher;

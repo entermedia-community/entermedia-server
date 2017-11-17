@@ -56,7 +56,7 @@ public class ConversionTask
 		}
 		if (realtask != null)
 		{
-			String presetid = hit.get("presetid");
+			String presetid = realtask.get("presetid");
 			//log.debug("starting preset ${presetid}");
 			Data preset = (Data)presetsearcher.searchById(presetid);
 			Date started = new Date();
@@ -225,7 +225,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 		
 		//inStructions.setOutputExtension(inPreset.get("extension"));
 		//log.info( inStructions.getProperty("guid") );
-		if( inAsset.get("editstatus") == "7") 
+		if( "7".equals( inAsset.get("editstatus")) ) 
 		{
 			throw new OpenEditException("Could not run conversions on deleted asset " + inAsset.getSourcePath());
 		}
@@ -248,7 +248,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 		}
 		else
 		{
-			log.info(inTask.getId() + " task id with " + status + " status not submitted, new, missinginput or retry, is index out of date? ");
+			log.info(inTask.getId() + " task id with status:" + status + " Should have been: submitted, new, missinginput or retry, is index out of date? ");
 		}
 	}
 	else

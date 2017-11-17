@@ -105,6 +105,7 @@ public class AssetConversions implements Runnable
 
 	public void addTask(ConversionTask task)
 	{
+		log.info("Added: " + task.hashCode() + " " + task.hit.get("status"));
 		runners.add(task);
 	}
 }
