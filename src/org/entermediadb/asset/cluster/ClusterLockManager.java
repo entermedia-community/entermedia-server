@@ -112,7 +112,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			if (tracker.size() > 1) //Someone else also locked
 			{
-		//		log.info("Deleting lock!  Found a duplicate : version: " +  lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+				log.info("Deleting lock!  Found a duplicate : version: " +  lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 				inSearcher.delete(lock, null);
 				return null;
 			}
