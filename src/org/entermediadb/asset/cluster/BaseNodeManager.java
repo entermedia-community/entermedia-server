@@ -76,23 +76,15 @@ public abstract class BaseNodeManager implements NodeManager
 	{
 		if (fieldLocalNode == null)
 		{
-			Page page = getPageManager().getPage("/WEB-INF/node.xml");
-			if( !page.exists())
-			{
-				throw new OpenEditException("WEB-INF/node.xml is not defined");
-			}
-			Element root = getXmlUtil().getXml(page.getInputStream(),"UTF-8");
-			
-			fieldLocalNode = new Node(root);
-			String nodeid = getWebServer().getNodeId();
-			if( nodeid != null)
-			{
-				fieldLocalNode.setId( nodeid );
-			}
-			
+			loadSettings();
 		}
 
 		return fieldLocalNode;
+	}
+	protected void loadSettings()
+	{
+		// TODO Auto-generated method stub
+		
 	}
 	public String getLocalNodeId()
 	{
