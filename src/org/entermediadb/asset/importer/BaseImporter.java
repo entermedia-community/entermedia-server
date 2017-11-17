@@ -29,6 +29,27 @@ public class BaseImporter extends EnterMediaObject
 	protected HashMap<String, Map> fieldLookUps;
 	protected Searcher fieldSearcher;
 	protected boolean fieldMakeId;
+	protected String fieldPrefix;
+	protected boolean fieldStripPrefix;
+	
+	
+	
+	
+	public String getPrefix() {
+		return fieldPrefix;
+	}
+
+	public void setPrefix(String inPrefix) {
+		fieldPrefix = inPrefix;
+	}
+
+	public boolean isStripPrefix() {
+		return fieldStripPrefix;
+	}
+
+	public void setStripPrefix(boolean inStripPrefix) {
+		fieldStripPrefix = inStripPrefix;
+	}
 
 	public Searcher getSearcher()
 	{
@@ -60,6 +81,13 @@ public class BaseImporter extends EnterMediaObject
 
 				Data target = null;
 				String idCell = trow.get("id");
+				if(fieldStripPrefix){
+					if(idCell.startsWith(getPrefix())){
+							idCell = idCell.substring(getPrefix().length(), idCell.length());
+					
+					}
+				}
+				
 				PropertyDetail parent = getSearcher().getDetail("_parent");
 				String parentid = null;
 				if (parent != null)
