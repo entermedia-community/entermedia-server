@@ -65,7 +65,7 @@ public class ConversionTask
 			{
 				if(asset == null)
 				{
-					throw new OpenEditException("Asset could not be loaded ${realtask.getSourcePath()} marking as error");
+					throw new OpenEditException("Asset could not be loaded " + realtask.getSourcePath() + " marking as error");
 				}
 				try
 				{
@@ -146,7 +146,7 @@ public class ConversionTask
 						}
 						else
 						{
-							log.debug("conversion had no error and will try again later for ${assetid}");
+							log.debug("conversion had no error and will try again later for "+ assetid);
 							realtask.setProperty("status", "missinginput");
 						}	
 						tasksearcher.saveData(realtask, user);
@@ -155,9 +155,9 @@ public class ConversionTask
 			}
 			else
 			{
-				log.info("Can't run conversion for task '${realtask.getId()}': Invalid presetid ${presetid}");
+				log.info("Can't run conversion for task '" + realtask.getId() + "': Invalid presetid " + presetid);
 				realtask.setProperty("status", "error");
-				realtask.setProperty("errordetails", "Invalid presetid ${presetid}" );
+				realtask.setProperty("errordetails", "Invalid presetid " + presetid);
 				String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
 				realtask.setProperty("completed",completed);
 				tasksearcher.saveData(realtask, user);
@@ -165,7 +165,7 @@ public class ConversionTask
 		}
 		else
 		{
-			log.info("Can't find task object with id '${hit.getId()}'. Index missing data?");
+			log.info("Can't find task object with id '" + hit.getId() + "'. Index missing data?");
 		}
 	}
 
@@ -227,7 +227,7 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 		//log.info( inStructions.getProperty("guid") );
 		if( inAsset.get("editstatus") == "7") 
 		{
-			throw new OpenEditException("Could not run conversions on deleted asset ${inAsset.getSourcePath()}");
+			throw new OpenEditException("Could not run conversions on deleted asset " + inAsset.getSourcePath());
 		}
 		//inStructions.setAssetSourcePath(asset.getSourcePath());
 //		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
@@ -248,12 +248,12 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 		}
 		else
 		{
-			log.info("${inTask.getId()} task id with ${status} status not submitted, new, missinginput or retry, is index out of date? ");
+			log.info(inTask.getId() + " task id with " + status + " status not submitted, new, missinginput or retry, is index out of date? ");
 		}
 	}
 	else
 	{
-		log.info("Can't find media creator for type '${inAsset.getFileFormat()}'");
+		log.info("Can't find media creator for type '" + inAsset.getFileFormat() + "'");
 	}
 	return result;
   }
