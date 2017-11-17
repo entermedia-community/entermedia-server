@@ -2,8 +2,8 @@
 	<property name="eventname">Run media conversions</property>	
 	<property name="eventdescription">Check for conversions that need to be run</property>	
 	<property name="period">5m</property>
-	<!-- path-action name="ConvertStatusModule.checkQueue"  /-->
-	<path-action name="Script.run" allowduplicates="true" >
+	<path-action name="ConvertModule.checkQueue"  />
+	<!--path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/conversions/runconversions.groovy</script>
-	</path-action>
+	</path-action -->
 </page>

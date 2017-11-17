@@ -4,7 +4,9 @@ import java.util.Date;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.QueueManager;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -15,8 +17,6 @@ public class ConvertModule extends BaseMediaModule
 	
 	public void convertAsset(WebPageRequest inReq) throws Exception
 	{
-		String catalogid = inReq.findValue("catalogid");
-		
 		//load up the preset id
 		String presetid = inReq.findValue("presetid");
 		String assetid = inReq.findValue("assetid");
@@ -67,5 +67,15 @@ public class ConvertModule extends BaseMediaModule
 		archive.fireMediaEvent("conversions" , "runconversion", inReq.getUser(), asset); //this blocks does not use the queue	
 		
 	}
-		
+	public void checkQueue(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		QueueManager manager = (QueueManager)getModuleManager().getBean(archive.getCatalogId(),"queueManager");
+		manager.checkQueue();
+		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
+		if( logger != null)
+		{
+			logger.info("running: " + manager.runningProcesses());
+		}
+	}	
 }

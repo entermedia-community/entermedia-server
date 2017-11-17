@@ -3,6 +3,8 @@ package org.entermediadb.asset.convert;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
@@ -11,11 +13,12 @@ import org.openedit.users.User;
 
 public class AssetConversions implements Runnable
 {
+	private static final Log log = LogFactory.getLog(AssetConversions.class);
+	
 	String fieldAssetId;
 	MediaArchive fieldMediaArchive;
 	List<ConversionTask> runners = new ArrayList<ConversionTask>();
 	User user;
-	ScriptLogger log;
 	boolean fieldCompleted;
 	Lock fieldLock;
 	ConversionEventListener fieldEventListener;
@@ -58,13 +61,6 @@ public class AssetConversions implements Runnable
 
 	public void run()
 	{
-		Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + fieldAssetId, "CompositeConvertRunner.run");
-
-		if (lock == null)
-		{
-			log.info("asset already being processed ${fieldAssetId}");
-			return;
-		}
 		Asset asset = fieldMediaArchive.getAsset(fieldAssetId);
 		try
 		{
@@ -87,7 +83,7 @@ public class AssetConversions implements Runnable
 		}
 		catch (Exception e)
 		{
-			log.error("ERRORS ${fieldAssetId}");
+			log.error("ERRORS converting: " + fieldAssetId ,e);
 		}
 		finally
 		{

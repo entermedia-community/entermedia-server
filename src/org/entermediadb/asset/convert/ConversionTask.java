@@ -6,6 +6,8 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.scripts.ScriptLogger;
@@ -22,10 +24,10 @@ public class ConversionTask
 	Searcher presetsearcher;
 	Searcher itemsearcher;
 	Data hit;
-	ScriptLogger log;
 	User user;
 	Asset asset;
 	ConvertResult result = null;
+	private static final Log log = LogFactory.getLog(ConversionTask.class);
 	
 	public boolean isComplete()
 	{
@@ -61,12 +63,12 @@ public class ConversionTask
 			
 			if(preset != null)
 			{
+				if(asset == null)
+				{
+					throw new OpenEditException("Asset could not be loaded ${realtask.getSourcePath()} marking as error");
+				}
 				try
 				{
-					if(asset == null)
-					{
-						throw new OpenEditException("Asset could not be loaded ${realtask.getSourcePath()} marking as error");
-					}
 					result = doConversion(mediaarchive, realtask, preset,asset);
 				}
 				catch(Throwable e)

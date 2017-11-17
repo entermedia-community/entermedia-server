@@ -221,12 +221,5 @@ public class ConvertStatusModule extends BaseMediaModule
 		String path = inReq.getContentPage().getDirectory();
 		inReq.redirect(path + "/index.html?assetid=" + asset.getId());
 	}
-	
-	public void queueConversions(WebPageRequest inReq)
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		QueueManager manager = (QueueManager)getModuleManager().getBean(archive.getCatalogId(),"queueManager");
-		manager.checkQueue();
-		
-	}
+
 }

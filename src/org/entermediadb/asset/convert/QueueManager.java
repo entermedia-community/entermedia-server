@@ -31,6 +31,17 @@ public class QueueManager implements ConversionEventListener
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;
 	protected Map fieldRunningAssetConversions = new HashMap();
+	protected String fieldCatalogId;
+	
+	public String getCatalogId()
+	{
+		return fieldCatalogId;
+	}
+
+	public void setCatalogId(String inCatalogId)
+	{
+		fieldCatalogId = inCatalogId;
+	}
 
 	public ModuleManager getModuleManager()
 	{
@@ -44,6 +55,10 @@ public class QueueManager implements ConversionEventListener
 
 	public MediaArchive getMediaArchive()
 	{
+		if (fieldMediaArchive == null)
+		{
+			fieldMediaArchive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		}
 		return fieldMediaArchive;
 	}
 
@@ -78,11 +93,11 @@ public class QueueManager implements ConversionEventListener
 
 		HitTracker newtasks = tasksearcher.search(query);
 		newtasks.enableBulkOperations();
-		newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
+		//newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
 		//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
 		if (newtasks.size() > 0)
 		{
-			log.info("processing ${newtasks.size()} new submitted retry missinginput conversions");
+			log.info("processing " + newtasks.size() + " new submitted retry missinginput conversions");
 		}
 		else
 		{
@@ -113,20 +128,22 @@ public class QueueManager implements ConversionEventListener
 			if (existing == null)
 			{
 				//lock and create
+				if (count >= availableProcessors())
+				{
+					break;
+				}
+
 				Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
 				if (lock == null)
 				{
 					assetstoprocess.put(assetid, ISLOCKED);
+					log.info("Asset is already being processed " + assetid);
 					continue;
 				}
 				count++;
 				assetconversions = new AssetConversions(getMediaArchive(), assetid, lock);
 				assetconversions.setEventListener(this);
-				if (count >= availableProcessors())
-				{
-					break;
-				}
-				assetstoprocess.put(assetid, ISLOCKED);
+				assetstoprocess.put(assetid, assetconversions);
 			}
 			if (existing == ISLOCKED)
 			{
@@ -168,10 +185,14 @@ public class QueueManager implements ConversionEventListener
 		total = total - fieldRunningAssetConversions.size();
 		return total;
 	}
+	public int runningProcesses()
+	{
+		return fieldRunningAssetConversions.size();
+	}
 
 	protected ConversionTask createRunnable(Searcher tasksearcher, Searcher presetsearcher, Searcher itemsearcher, Data hit)
 	{
-		ConversionTask runner = new ConversionTask();
+		ConversionTask runner = (ConversionTask)getModuleManager().getBean(getCatalogId(),"conversionTask");
 		runner.mediaarchive = getMediaArchive();
 		runner.tasksearcher = tasksearcher;
 		runner.presetsearcher = presetsearcher;
@@ -193,17 +214,17 @@ public class QueueManager implements ConversionEventListener
 		getMediaArchive().fireSharedMediaEvent("conversions/conversioncomplete");
 		checkQueue();
 	}
+	public void ranConversions(AssetConversions inAssetConversions)
+	{
+		getMediaArchive().releaseLock(inAssetConversions.getLock());
 
+	}
 	public ExecutorManager getThreads()
 	{
 		ExecutorManager queue = (ExecutorManager) getModuleManager().getBean(getMediaArchive().getCatalogId(), "executorManager");
 		return queue;
 	}
 
-	public void ranConversions(AssetConversions inAssetConversions)
-	{
-		getMediaArchive().releaseLock(inAssetConversions.getLock());
 
-	}
 
 }

@@ -2039,6 +2039,15 @@
 
 	</bean>
 	
+	<bean id="queueManager" class="org.entermediadb.asset.convert.QueueManager"  scope="prototype" >
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	</bean>	
+	
+	<bean id="conversionTask" class="org.entermediadb.asset.convert.ConversionTask"  scope="prototype" >
+		
+	</bean>	
 	
 	
  	
