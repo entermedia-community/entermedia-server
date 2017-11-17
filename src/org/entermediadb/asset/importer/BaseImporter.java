@@ -82,8 +82,10 @@ public class BaseImporter extends EnterMediaObject
 				Data target = null;
 				String idCell = trow.get("id");
 				if(fieldStripPrefix){
-					idCell = idCell.replace(getPrefix(), "");
+					if(idCell.startsWith(getPrefix())){
+							idCell = idCell.substring(getPrefix().length(), idCell.length());
 					
+					}
 				}
 				
 				PropertyDetail parent = getSearcher().getDetail("_parent");
