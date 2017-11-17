@@ -2,12 +2,13 @@
 
     <property id="node.name">${nodeid}</property>
     
-    <!--  This should be 1 for single node systems and 2 for more than one node 
-     <property id="index.number_of_replicas">1</property>
-     <property id="index.number_of_shards">5</property>
-     -->
-    <!--  ES2 -->
+    <!--  This should be 1 for single node systems and 2 for more than one node  -->
+    <property id="index.number_of_shards">5</property>
+    <property id="index.number_of_replicas">1</property>
+    
+    <!--  ES2 only -->
     <property id="index.mapping._id.indexed">true</property>
+    
     <property id="path.home">${webroot}/WEB-INF/elastic/${nodeid}</property>
     <property id="path.logs">${webroot}/WEB-INF/elastic/${nodeid}/logs</property>
     <property id="path.repo">${webroot}/WEB-INF/data/repos</property>     

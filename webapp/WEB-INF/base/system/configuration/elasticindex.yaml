@@ -1,13 +1,3 @@
-number_of_shards: 5
-number_of_replicas: 1
-cluster
- routing
-  allocation
-   disk
-    watermark
-     high:"5gb"
-     low:"10gb"
- 
 #mapping._id.indexed: true
 #mapper.dynamic: true
 analysis: 
