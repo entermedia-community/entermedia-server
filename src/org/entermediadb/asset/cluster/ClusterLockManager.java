@@ -263,7 +263,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Lock lock = loadLock(inPath);
 			if (lock != null && lock.isLocked())
 			{
-				log.error("Locked " + lock + " " + inPath);
+				log.info(inPath + " Already Locked by " + lock.getOwnerId() + " on " + lock.getNodeId());
 				return null;
 			}
 			lock = grabLock(lock, inOwnerId, inPath);

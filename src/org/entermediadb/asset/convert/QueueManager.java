@@ -103,6 +103,7 @@ public class QueueManager implements ConversionEventListener
 		}
 
 		HitTracker newtasks = tasksearcher.search(query);
+		newtasks.enableBulkOperations();
 		newtasks.setHitsPerPage(500);  //Just enought to fill up the queue
 		//newtasks.enableBulkOperations();
 		//newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
@@ -116,10 +117,7 @@ public class QueueManager implements ConversionEventListener
 		{
 			return;
 		}
-		
-		AssetConversions assetconversions = null;
-		String lastassetid = null;
-		String sourcepath = null;
+		//log.info("Thread checking: " + Thread.currentThread().getName() + " class:" + hashCode() );
 		long count = 0;
 		Map assetstoprocess = new HashMap();
 		for (Iterator iterator = newtasks.iterator(); iterator.hasNext();)
@@ -136,8 +134,10 @@ public class QueueManager implements ConversionEventListener
 				missingdata.setProperty("status", "error");
 				missingdata.setProperty("errordetails", "asset id is null");
 				tasksearcher.saveData(missingdata, null);
+				assetstoprocess.put(assetid, ISLOCKED);
 				continue;
 			}
+
 			AssetConversions existing = (AssetConversions) assetstoprocess.get(assetid);
 			if (existing == null)
 			{
@@ -153,6 +153,7 @@ public class QueueManager implements ConversionEventListener
 					missingdata.setProperty("status", "error");
 					missingdata.setProperty("errordetails", "asset not found " + assetid);
 					tasksearcher.saveData(missingdata, null);
+					assetstoprocess.put(assetid, ISLOCKED);
 					continue;
 				}
 				Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
@@ -163,17 +164,17 @@ public class QueueManager implements ConversionEventListener
 					continue;
 				}
 				count++;
-				assetconversions = new AssetConversions(getMediaArchive(), lock);
-				assetconversions.setAsset(asset);
-				assetconversions.setEventListener(this);
-				assetstoprocess.put(assetid, assetconversions);
+				existing = new AssetConversions(getMediaArchive(), lock);
+				existing.setAsset(asset);
+				existing.setEventListener(this);
+				assetstoprocess.put(assetid, existing);
 			}
 			if (existing == ISLOCKED)
 			{
 				continue;
 			}
 			ConversionTask task = createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
-			assetconversions.addTask(task);
+			existing.addTask(task);
 
 		}
 		for (Iterator iterator = assetstoprocess.keySet().iterator(); iterator.hasNext();)
@@ -182,9 +183,11 @@ public class QueueManager implements ConversionEventListener
 			AssetConversions tasks = (AssetConversions) assetstoprocess.get(assetid);
 			if (tasks != ISLOCKED)
 			{
-				queueConversion(assetconversions);
+				queueConversion(tasks);
 			}
 		}
+		//log.info("Thread finished: " + Thread.currentThread().getName() );
+
 	}
 
 	private boolean hasRunningConversions()
@@ -226,6 +229,7 @@ public class QueueManager implements ConversionEventListener
 
 	private void queueConversion(AssetConversions inAssetconversions)
 	{
+		log.info("ADDING" + inAssetconversions.getAssetId());
 		fieldRunningAssetConversions.put(inAssetconversions.getAssetId(), inAssetconversions);
 		getThreads().execute("conversions", inAssetconversions);
 	}
@@ -236,8 +240,10 @@ public class QueueManager implements ConversionEventListener
 		{
 			fieldRunningAssetConversions.remove(inAssetconversions.getAssetId());
 			getMediaArchive().releaseLock(inAssetconversions.getLock());
+			//log.info("RELEASED" + inAssetconversions.getAssetId());
 			getMediaArchive().conversionCompleted(inAssetconversions.getAsset());
 			getMediaArchive().fireSharedMediaEvent("conversions/conversioncomplete");
+			//log.info("Thread complete: " + Thread.currentThread().getName() );
 			checkQueue();
 		}
 		catch ( Exception ex)
@@ -248,6 +254,7 @@ public class QueueManager implements ConversionEventListener
 	public void ranConversions(AssetConversions inAssetConversions)
 	{
 		getMediaArchive().releaseLock(inAssetConversions.getLock());
+		//log.info("RELEASED after run" + inAssetConversions.getAssetId());
 
 	}
 	public ExecutorManager getThreads()
