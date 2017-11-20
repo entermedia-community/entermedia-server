@@ -1,4 +1,25 @@
-curl -XGET  'http://localhost:9200/assets_catalog/assettype/_mapping?pretty=true'  | python -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+INFO: media_catalogs_public/lock/_search' -d '{
+  "from" : 0,
+  "size" : 1,
+  "query" : {
+    "bool" : {
+      "must" : {
+        "term" : {
+          "sourcepath" : "assetconversions/AV_Z-kegsMSY4Mu3GOb8"
+        }
+      }
+    }
+  },
+  "version" : true,
+  "explain" : false,
+  "_source" : {
+    "includes" : [ ],
+    "excludes" : [ "description" ]
+  }
+}' 
+
+curl -XGET  'http://localhost:9200/assets_catalog/asset/_mapping?pretty=true'  | python -mjson.tool
 
 curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
   "from" : 0,

@@ -75,7 +75,8 @@ public class ConvertModule extends BaseMediaModule
 		ScriptLogger logger = (ScriptLogger)inReq.getPageValue("log");
 		if( logger != null)
 		{
-			logger.info("running: " + manager.runningProcesses());
+			logger.info("Total Pending Tasks: " + manager.getTotalPending());
+			logger.info("Threads running: " + manager.runningProcesses());
 		}
 	}	
 }

@@ -1415,7 +1415,7 @@
 		<property name="clearIndexOnStart"><value>true</value></property>
 		
 	</bean>
-	<bean id="elasticLockManager" class="org.entermediadb.asset.cluster.ClusterLockManager" >
+	<bean id="elasticLockManager" class="org.entermediadb.asset.cluster.ClusterLockManager" scope="prototype">
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>

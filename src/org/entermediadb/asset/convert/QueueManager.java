@@ -1,13 +1,13 @@
 package org.entermediadb.asset.convert;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -32,7 +32,18 @@ public class QueueManager implements ConversionEventListener
 	protected ModuleManager fieldModuleManager;
 	protected Map fieldRunningAssetConversions = new HashMap();
 	protected String fieldCatalogId;
+	protected int fieldTotalPending;
 	
+	public int getTotalPending()
+	{
+		return fieldTotalPending;
+	}
+
+	public void setTotalPending(int inTotalPending)
+	{
+		fieldTotalPending = inTotalPending;
+	}
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -96,6 +107,7 @@ public class QueueManager implements ConversionEventListener
 		//newtasks.enableBulkOperations();
 		//newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
 		//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
+		setTotalPending(newtasks.size());
 		if (newtasks.size() > 0)
 		{
 			log.info("processing " + newtasks.size() + " new submitted retry missinginput conversions");
@@ -104,7 +116,7 @@ public class QueueManager implements ConversionEventListener
 		{
 			return;
 		}
-
+		
 		AssetConversions assetconversions = null;
 		String lastassetid = null;
 		String sourcepath = null;
@@ -134,16 +146,25 @@ public class QueueManager implements ConversionEventListener
 				{
 					break;
 				}
-
+				Asset asset = getMediaArchive().getAsset( assetid );
+				if( asset == null)
+				{
+					Data missingdata = tasksearcher.loadData(hit);
+					missingdata.setProperty("status", "error");
+					missingdata.setProperty("errordetails", "asset not found " + assetid);
+					tasksearcher.saveData(missingdata, null);
+					continue;
+				}
 				Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
 				if (lock == null)
 				{
 					assetstoprocess.put(assetid, ISLOCKED);
-					log.info("Asset is already being processed " + assetid);
+					log.info("Asset is already being processed " + assetid + " in catalog " + getMediaArchive().getCatalogId());
 					continue;
 				}
 				count++;
-				assetconversions = new AssetConversions(getMediaArchive(), assetid, lock);
+				assetconversions = new AssetConversions(getMediaArchive(), lock);
+				assetconversions.setAsset(asset);
 				assetconversions.setEventListener(this);
 				assetstoprocess.put(assetid, assetconversions);
 			}

@@ -24,7 +24,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	protected SearcherManager fieldSearcherManager;
 	protected NodeManager fieldNodeManager;
 	protected String fieldCatalogId;
-	
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -46,17 +46,17 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	{
 		Searcher searcher = getLockSearcher();
 		Lock lock = loadLock(inPath);
-		
+
 		//See if I already have the lock, because I created it or because I called this twice in a row
-		
+
 		int tries = 0;
 		while (true)
 		{
-			Lock found = grabLock(lock,inOwnerId, inPath, searcher);
-			if( found != null)
+			Lock found = grabLock(lock, inOwnerId, inPath, searcher);
+			if (found != null)
 			{
 				return found;
-			}			
+			}
 			tries++;
 			if (tries > 9)
 			{
@@ -76,86 +76,82 @@ public class ClusterLockManager implements LockManager, Shutdownable
 		}
 		throw new OpenEditException("Could not lock file " + inPath + " locked by " + lock.getNodeId() + " " + lock.getOwnerId());
 	}
-	public Lock grabLock(Lock lock, String inOwner, String inPath )
+
+	public Lock grabLock(Lock lock, String inOwner, String inPath)
 	{
-		return grabLock(lock, inOwner, inPath,getLockSearcher());
+		return grabLock(lock, inOwner, inPath, getLockSearcher());
 	}
-	public Lock grabLock(Lock lock, String inOwner, String inPath, Searcher inSearcher )
+
+	public Lock grabLock(Lock lock, String inOwner, String inPath, Searcher inSearcher)
 	{
-		
-		String savedid = null;
-		if( lock == null)
+		if (lock == null)
 		{
-		//	log.info("Lock was null, creating a new one owner " + inOwner + " path " + inPath + "Thread: " + Thread.currentThread().getId() + "Lock ID" );
+			//	log.info("Lock was null, creating a new one owner " + inOwner + " path " + inPath + "Thread: " + Thread.currentThread().getId() + "Lock ID" );
 			lock = createLock(inPath, inSearcher);
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setDate(new Date());
 			lock.setLocked(false);
 			lock.setOwnerId(inOwner);
-			inSearcher.saveData(lock, null);   
-		//	log.info(lock.getId() +" being saved.  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
-			 savedid = lock.getId();
+			inSearcher.saveData(lock, null);
+			//	log.info(lock.getId() +" being saved.  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 			//See if anyone else also happen to save a lock and delete the older one
-		
-			SearchQuery q = inSearcher.createSearchQuery(); 
+
+			SearchQuery q = inSearcher.createSearchQuery();
 			q.addExact("sourcepath", inPath);
 			q.setHitsPerPage(1);
 			HitTracker tracker = inSearcher.search(q); //Make sure there was not a thread waiting
 			Iterator iter = tracker.iterator();
-			if( !iter.hasNext() )
+			if (!iter.hasNext())
 			{
 				throw new OpenEditException("Searching by sourcepath not working" + inPath);
 			}
-			Data first = (Data)iter.next();
-			if(first.get("version") != lock.getVersion() ){
+			Data first = (Data) iter.next();
+			if (first.get("version") != lock.getVersion())
+			{
 				return null;
 			}
 			if (tracker.size() > 1) //Someone else also locked
 			{
-				log.info("Deleting lock!  Found a duplicate : version: " +  lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+				//log.info("Deleting lock!  Found a duplicate : version: " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 				inSearcher.delete(lock, null);
 				return null;
 			}
-			 
-			 
-			 
+
 		}
-		
+
 		if (lock.isLocked())
 		{
-	//		log.info("Local was alread locked - returning null" + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+			log.info("Local was alread locked - returning null" + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 			return null;
 		}
-		
-		
-		
-		
-				
+
 		try
 		{
 			lock.setOwnerId(inOwner);
 			lock.setDate(new Date());
 			lock.setNodeId(getNodeManager().getLocalNodeId());
 			lock.setLocked(true);
-			getLockSearcher().saveData(lock, null);  //Both threads called this
-	//		log.info(lock.getId() +"being saved.  Line 139  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
+			getLockSearcher().saveData(lock, null); //Both threads called this
+			//		log.info(lock.getId() +"being saved.  Line 139  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
 
 		}
 		catch (ConcurrentModificationException ex)
 		{
-	//		log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
+			//		log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
 
 			return null;
 		}
 		catch (OpenEditException ex)
 		{
+			log.info("saving lock conflict"); //May not be an issue
 			if (ex.getCause() instanceof ConcurrentModificationException)
 			{
+				
 				return null;
 			}
 			throw ex;
 		}
-	//	log.info(lock.getId() +"being returned.  Line 154  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() +  "Lock ID" + lock.getId());
+		//	log.info(lock.getId() +"being returned.  Line 154  Current version " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() +  "Lock ID" + lock.getId());
 
 		return lock;
 
@@ -178,17 +174,17 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	@Override
 	public Lock loadLock(String inPath)
 	{
-//		return loadLock(inPath, false, null);
-//	}
-//	public Lock loadLock(String inPath, boolean lockIt, String inOwner)
-//	{
+		//		return loadLock(inPath, false, null);
+		//	}
+		//	public Lock loadLock(String inPath, boolean lockIt, String inOwner)
+		//	{
 		Searcher searcher = getLockSearcher();
 
-		SearchQuery q = searcher.createSearchQuery(); 
+		SearchQuery q = searcher.createSearchQuery();
 		q.addExact("sourcepath", inPath);
 		q.setHitsPerPage(1);
 		HitTracker tracker = searcher.search(q);
-		if( tracker.size() == 0)
+		if (tracker.size() == 0)
 		{
 			return null;
 		}
@@ -224,7 +220,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 
 	public Searcher getLockSearcher()
 	{
-		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(),"lock");
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "lock");
 		return searcher;
 	}
 
@@ -261,11 +257,11 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	@Override
 	public Lock lockIfPossible(String inPath, String inOwnerId)
 	{
-	//	log.info(Thread.currentThread().getId() + " is trying to lock " + inPath);
+		//	log.info(Thread.currentThread().getId() + " is trying to lock " + inPath);
 		try
 		{
 			Lock lock = loadLock(inPath);
-			if(lock != null && lock.isLocked())
+			if (lock != null && lock.isLocked())
 			{
 				log.error("Locked " + lock + " " + inPath);
 				return null;
@@ -273,12 +269,12 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			lock = grabLock(lock, inOwnerId, inPath);
 			return lock;
 		}
-		catch( Throwable ex)
+		catch (Throwable ex)
 		{
 			log.error(ex);
 			return null;
 		}
-	
+
 	}
 
 	/*
@@ -295,9 +291,9 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Searcher searcher = getLockSearcher();
 			inLock.setLocked(false);
 			//inLock.setProperty("version", (String) null); //Once this is saved other people can go get it
-		//	log.info(inLock.getId() +" being released Current version " + inLock.get(".version") + " Thread: " + Thread.currentThread().getId());
+			//	log.info(inLock.getId() +" being released Current version " + inLock.get(".version") + " Thread: " + Thread.currentThread().getId());
 			searcher.saveData(inLock, null);
-		//	log.info(inLock.getId() +" being saved on release.  Current version " + inLock.get(".version") + "Thread: " + Thread.currentThread().getId());
+			//	log.info(inLock.getId() +" being saved on release.  Current version " + inLock.get(".version") + "Thread: " + Thread.currentThread().getId());
 
 			return true;
 		}
@@ -313,8 +309,8 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	@Override
 	public void releaseAll(String inPath)
 	{
-		Lock existing = loadLock( inPath);
-		release( existing);
+		Lock existing = loadLock(inPath);
+		release(existing);
 	}
 
 	public SearcherManager getSearcherManager()
@@ -336,18 +332,18 @@ public class ClusterLockManager implements LockManager, Shutdownable
 	{
 		fieldNodeManager = inNodeManager;
 	}
-	
+
 	@Override
 	public void shutdown()
 	{
-//		LockSearcher searcher = (LockSearcher)getLockSearcher();
-//		try
-//		{
-//			searcher.clearStaleLocks();
-//		}
-//		catch( Throwable ex)
-//		{
-//			log.info(ex);
-//		}
+		//		LockSearcher searcher = (LockSearcher)getLockSearcher();
+		//		try
+		//		{
+		//			searcher.clearStaleLocks();
+		//		}
+		//		catch( Throwable ex)
+		//		{
+		//			log.info(ex);
+		//		}
 	}
 }

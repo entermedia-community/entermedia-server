@@ -62,10 +62,9 @@ public class AssetConversions implements Runnable
 	{
 	}
 
-	public AssetConversions(MediaArchive inArchive, String inAssetId, Lock lock)
+	public AssetConversions(MediaArchive inArchive, Lock lock)
 	{
 		fieldMediaArchive = inArchive;
-		fieldAsset = inArchive.getAsset( inAssetId );
 		fieldLock = lock;
 	}
 
