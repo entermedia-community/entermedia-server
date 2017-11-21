@@ -4,7 +4,6 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
-import org.entermediadb.asset.convert.QueueManager;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.openedit.Data;
@@ -14,6 +13,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.event.WebEvent;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
 public class ConvertStatusModule extends BaseMediaModule
@@ -190,9 +190,9 @@ public class ConvertStatusModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-//		Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg"); 
-//		Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
-//		getPageManager().copyPage(s1024, crop1024);
+		Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg"); 
+		Page crop1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/customthumb.jpg");
+		getPageManager().copyPage(s1024, crop1024);
 		archive.removeGeneratedImages(asset, false);
 		reloadThumbnails( inReq, archive, asset);
 	}
