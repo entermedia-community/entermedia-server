@@ -8,7 +8,16 @@
 	<property id="view_asset_resultstable" index="true" stored="true"  internalfield="true" >View Table Results</property>
 	<property id="view_asset_advancedsearch" index="true" stored="true"  internalfield="true" >Asset Search</property>
 	<property id="profilesearchfilters" index="true" stored="true"  internalfield="true" >Filters Used By Search</property>
-	<property id="hideassettype" index="true" stored="true"  internalfield="true" >Hide Asset Types</property>
+
+<property id="hideassettype" index="true" stored="true" internalfield="true" viewtype="multiselect" datatype="list" listid="assettype" editable="true"  type="list"> 
+    <name> 
+      <language id="de"><![CDATA[verstecken Asset-Typen]]></language>  
+      <language id="en"><![CDATA[Hidden Asset Types]]></language>  
+      <language id="es"><![CDATA[Ocultar los tipos de activos]]></language>  
+      <language id="fr"><![CDATA[Cacher les Types d&#39;item]]></language> 
+    </name> 
+  </property>  
+
 	<property id="maximize_screen" index="true" stored="true"  internalfield="true" >Maximize</property>
 	<property id="sourcepath" index="true" stored="true"  internalfield="true">Source Path</property>	
 	<property id="last_selected_module" index="true" stored="true"  internalfield="true">Last Selected Module</property>

@@ -4,7 +4,6 @@
 	<property id="settingsgroup" editable="true" index="true" stored="true" datatype="list">Role</property>
 	<property id="view_asset_resultstable" index="true" stored="true"  internalfield="true" >View Table Results</property>
 	<property id="profilesearchfilters" index="true" stored="true"  internalfield="true" >Filters Used By Search</property>
-	<property id="hideassettype" index="true" stored="true"  internalfield="true" >Hide Asset Types</property>
 	<property id="maximize_screen" index="true" stored="true"  internalfield="true" >Maximize</property>
 	<property id="sourcepath" index="true" stored="true"  internalfield="true">Source Path</property>	
 	<property id="last_selected_module" index="true" stored="true"  internalfield="true">Last Selected Module</property>
