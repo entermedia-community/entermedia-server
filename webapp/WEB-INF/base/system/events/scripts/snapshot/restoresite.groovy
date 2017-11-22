@@ -554,6 +554,10 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 	if(searcher instanceof ElasticListSearcher){
 		return;
 	}
+
+	
+	try{
+	
 	searcher.setAlternativeIndex(tempindex);
 
 
@@ -614,6 +618,11 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 			System.out.println("Unprocessed property: " + fieldName);
 			jp.skipChildren();
 		}
+	}
+	} 
+	finally{
+		searcher.setAlternativeIndex(null);
+		
 	}
 }
 

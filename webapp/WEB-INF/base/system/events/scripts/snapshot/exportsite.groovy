@@ -173,11 +173,13 @@ public void exportDatabase(MediaArchive mediaarchive, List searchtypes, String r
 
 			finalZip.putNextEntry(ze);
 			IOUtils.write("{ \"${searchtype}\": [", finalZip, "UTF-8");
-			
+			int size = hits.size();
+			int count = 0;
 			hits.each{
+				count++;
 				SearchHitData hit = it;
 				IOUtils.write(hit.toJsonString(), finalZip, "UTF-8");
-				if(it != hits.last()) {
+				if(size != count) {
 				IOUtils.write(",", finalZip, "UTF-8");
 				}
 				
