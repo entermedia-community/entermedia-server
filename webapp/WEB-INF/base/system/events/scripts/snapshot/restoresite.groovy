@@ -10,6 +10,7 @@ import org.entermediadb.asset.util.CSVReader
 import org.entermediadb.asset.util.ImportFile
 import org.entermediadb.asset.util.Row
 import org.entermediadb.elasticsearch.ElasticNodeManager
+import org.entermediadb.elasticsearch.searchers.ElasticListSearcher
 import org.entermediadb.workspace.WorkspaceManager
 import org.openedit.Data
 import org.openedit.OpenEditException
@@ -32,6 +33,7 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.MappingJsonFactory
+import com.fasterxml.jackson.databind.ObjectMapper
 
 
 
@@ -549,6 +551,9 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 
 
 	Searcher searcher = mediaarchive.getSearcher(searchtype);
+	if(searcher instanceof ElasticListSearcher){
+		return;
+	}
 	searcher.setAlternativeIndex(tempindex);
 
 
@@ -584,10 +589,22 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 					if(data == null){
 						data = searcher.createNewData();
 					}
-
 					
-					// And now we have random access to everything in the object
-					log.info(node);
+					ObjectMapper mapper = new ObjectMapper();
+					Map<String, Object> result = mapper.convertValue(node, Map.class);
+					
+					for (Iterator iterator = result.keySet().iterator(); iterator.hasNext();) {
+						String key = (String) iterator.next();
+						Object val = result.get(key);
+						data.setValue(key, val);
+						
+					}
+					
+					searcher.saveData(data);
+					
+					
+					
+					
 				}
 			} else {
 				System.out.println("Error: records should be an array: skipping.");
