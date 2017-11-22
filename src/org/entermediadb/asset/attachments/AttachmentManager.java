@@ -148,7 +148,9 @@ public class AttachmentManager
 					{
 						String key = (String) iterator2.next();
 						Object value = asset.getValue(key);
+						if(!"id".equals(key)){
 						attachment.setValue(key, value);
+						}
 					}
 					attachmentSearcher.saveData(attachment, null);
 				}
