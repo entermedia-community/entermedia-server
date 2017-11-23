@@ -94,8 +94,15 @@ public class ConvertStatusModule extends BaseMediaModule
         
 		ConvertInstructions instructions = manager.createInstructions(asset,preset,settings.getProperties() );
         
+		
+		
+		
 		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("generatedoutputfile"));
 		instructions.setOutputFile(outputpage);
+		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
+			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg");
+			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
+		}
 		manager.createOutput(instructions); //This will go back to the original if needed
 
 //		//TODO: Re-enamble version control
