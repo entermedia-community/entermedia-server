@@ -8,4 +8,8 @@
   <property id="exporthistory" path="/views/modules/asset/editor/historyexports/index.html" >Transfers</property>
   <property id="viewassetedithistory" path="/views/modules/asset/editor/historyedits/index.html" >Edits</property>
 
+  <property id="viewassetnotificationhistory" path="/views/modules/asset/editor/historynotifications/index.html" >Renewal Notifications</property>
+
+
+
 </properties>

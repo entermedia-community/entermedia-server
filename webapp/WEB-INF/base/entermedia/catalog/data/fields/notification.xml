@@ -36,7 +36,7 @@
   </property>  
   
   
-  <property id="notificationemails" index="true" editable="true" keyword="true"  >
+  <property id="notificationemails" index="true" editable="true" keyword="true" analyzer="not_analyzed" >
     <name> 
       <language id="en"><![CDATA[Recipients]]></language> 
     </name> 
@@ -49,6 +49,20 @@
     </name> 
   </property>  
   
+  <property id="dataid" index="true" editable="true" keyword="true" analyzer="not_analyzed">
+    <name> 
+      <language id="en"><![CDATA[Parent Data]]></language> 
+    </name> 
+  </property>  
+  
+  
+  <property id="notificationproperties" index="true" keyword="true" stored="true" editable="true" datatype="objectarray" viewtype="notificationproperties"> 
+    <name> 
+      <language id="en">Properties</language>  
+    </name> 
+    <property id="key" index="true" stored="true" editable="true">key</property>
+    <property id="value" index="true" stored="true" editable="true">Value</property>   
+  </property>
   
   
   

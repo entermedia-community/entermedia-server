@@ -1,0 +1,20 @@
+
+#set( $searchtype = "notification")
+#set( $fieldexternalid = "dataid")
+#set( $fieldexternalvalue = $asset.getId())
+#set( $permissionname = "caneditasset")
+#set ($view = "notification/details")
+#set($viewid = $context.getRequestParameter("viewid"))
+
+#set( $args = "parentid=$asset.id&dataid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
+#set( $args = "$args&selectlink=$home$content.searchhome/editor/historyrenewal/index.html")
+
+$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
+  
+
+  <div class="tab-actions">
+	##<a class="btn emdialog" href="$home$apphome/views/modules/asset/editor/converthistory/reloadthumbs.html?assetid=$asset.id">Re-Convert</a>
+	##<a class="btn emdialog" href="$home$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue now</a>
+	
+</div>
+  

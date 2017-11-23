@@ -685,7 +685,9 @@
     </name>
   </property>
   
-  
+   <property id="renewalpolicy" datatype="list" editable="true" index="true" stored="true"   type="list">Renewal Policy 
+ 
+  </property>  
   
   
 </page>

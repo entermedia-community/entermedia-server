@@ -600,7 +600,9 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 					for (Iterator iterator = result.keySet().iterator(); iterator.hasNext();) {
 						String key = (String) iterator.next();
 						Object val = result.get(key);
+						key = key.replace("_int", "");
 						data.setValue(key, val);
+						//Maps like _int have the wrong key!  Need to be fixed so we don't lose data.
 						
 					}
 					

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="notes" />  
+  <property id="senddate" />  
+  <property id="notificationstatus" />
+
+  <property id="notificationtype" />
+  <property id="notificationsubject" />
+  
+  
+  <property id="notificationemails" />
+  
+  
+  <property id="notificationfrom" />
+  
+  
+  
+  
+  
+   
+</properties>
