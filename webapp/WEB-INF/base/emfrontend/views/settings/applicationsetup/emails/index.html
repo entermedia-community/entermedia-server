@@ -1,5 +1,5 @@
 #set( $emails = $mediaarchive.getList("templatefiles"))
-
+#set($notifications = $mediaarchive.getList("notificationtype"))
 <table class="emselectable striped download-table emdata" id="main-results-table" width="98%" >
 	#foreach( $email in $emails)
 		<tr>
@@ -8,6 +8,17 @@
 			</td>
 			<td class="row">
 				<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=$apphome$email.templatefilepath&path=$apphome$email.templatefilepath"> $apphome$email.templatefilepath</a><br/>
+				<br>
+			</td>
+		</tr>
+	#end
+#foreach( $email in $notifications)
+		<tr>
+			<td class="row">
+				$email
+			</td>
+			<td class="row">
+				<a  href="/openedit/components/html/edit/text/index.html?width=1000editPath=$apphome/theme/emails/notifications/${email.id}.html&path=$apphome$apphome/theme/emails/notifications/${email.id}.html"> $apphome/theme/emails/notifications/${email.id}.html</a><br/>
 				<br>
 			</td>
 		</tr>

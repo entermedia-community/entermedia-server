@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties > 
+  <property id="id" editable="true" stored="true" index="true" >ID 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" editable="true" stored="true" index="true" >Name 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[Prénom]]></language> 
+    </name> 
+  </property>  
+
+  <property id="renewalperiod" editable="true" stored="true" index="true" >Renewal Period
+    <name>
+      <language id="de"><![CDATA[Ablaufzeitraum]]></language>
+      <language id="en"><![CDATA[Expiration Period]]></language>
+      <language id="es"><![CDATA[Período de caducidad]]></language>
+      <language id="fr"><![CDATA[Période d&#39;expiration]]></language>
+    </name>
+  </property>  
+ 
+</properties>

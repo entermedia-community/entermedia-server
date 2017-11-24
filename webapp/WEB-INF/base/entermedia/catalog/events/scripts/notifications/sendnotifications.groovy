@@ -53,10 +53,10 @@ public boolean dispatchEmail(MediaArchive inArchive, WebPageRequest inReq, Data 
 	Data setting = inArchive.getCatalogSetting("events_notify_app");
 	String appid = setting.get("value");
 	
-	String templatePath = "/${appid}/theme/emails/${inNotificationRequest.notificationtype}-template.html";
+	String templatePath = "/${appid}/theme/emails/notifications/${inNotificationRequest.notificationtype}.html";
 	Page template = inArchive.getPageManager().getPage(templatePath);
 	if(!template.exists()){
-		 template = inArchive.getPageManager().getPage("/${appid}/theme/emails/generic-template.html");
+		 template = inArchive.getPageManager().getPage("/${appid}/theme/emails/notifications/generic.html");
 		
 	}
 	String from = inNotificationRequest.get("notificationfrom");
@@ -77,6 +77,7 @@ public boolean dispatchEmail(MediaArchive inArchive, WebPageRequest inReq, Data 
 	TemplateWebEmail mailer = mail.getTemplateWebEmail();
 	mailer.setFrom(from);
 	mailer.loadSettings(newcontext);
+	
 	mailer.setMailTemplatePath(templatePath);
 	mailer.setRecipientsFromCommas(inNotificationRequest.getValues("notificationemails"));
 	

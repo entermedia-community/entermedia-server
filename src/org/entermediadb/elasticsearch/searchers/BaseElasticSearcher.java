@@ -509,7 +509,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// }
 	}
 
-	protected void putMapping(AdminClient admin, String indexid, XContentBuilder source)
+	public void putMapping(AdminClient admin, String indexid, XContentBuilder source)
 	{
 		PutMappingRequest req = Requests.putMappingRequest(indexid).updateAllTypes(true).type(getSearchType());
 		req = req.source(source);
@@ -995,7 +995,8 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		if (valueof.equals("*"))
 		{
-			find = QueryBuilders.matchAllQuery();
+			find = QueryBuilders.wildcardQuery(fieldid, "*");
+			
 			// ExistsFilterBuilder filter =
 			// FilterBuilders.existsFilter(fieldid);
 			// find = QueryBuilders.filteredQuery(all, filter);
@@ -1603,10 +1604,12 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			try
 			{
+				
+				
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateIndex(content, data2, details);
-
+				
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
 				PropertyDetail parent = details.getDetail("_parent");
@@ -1819,6 +1822,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 
 			builder = builder.setSource(content);
+			
 			if (isRefreshSaves())
 			{
 				builder = builder.setRefresh(true);

@@ -1,0 +1,12 @@
+<page>
+
+	
+	
+	<rule id="renew30" renewalperiod="30d" >30 Days</rule>
+	<rule id="renew60" renewalperiod="60d" >60 Days</rule>
+	<rule id="renew90" renewalperiod="90d" >90 Days</rule>
+	<rule id="renew365" renewalperiod="365d" >One Year</rule>
+
+
+
+</page>
