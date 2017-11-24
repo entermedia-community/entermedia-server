@@ -1,28 +1,4 @@
-<node id="singlenode" name="Default Single Node">
-
+<node>
     <property id="cluster.name">entermedia-testcluster</property>
-     <property id="index.number_of_replicas">1</property>
-     <property id="index.number_of_shards">5</property>
-     <property id="index.mapping._id.indexed">true</property>
-    <property id="path.home">${webroot}/WEB-INF/elastic/${nodeid}</property>
-
-    <property id="path.data">${webroot}/WEB-INF/elastic/${nodeid}/data</property>
-     <property id="path.logs">${webroot}/WEB-INF/elastic/${nodeid}/logs</property>
-     <property id="path.work">${webroot}/WEB-INF/elastic/${nodeid}/work</property>
-     <property id="repo.root.location">${webroot}/WEB-INF/elastic/repos</property>     
-     <property id="path.repo">/home/ian/repos</property>     
-
-	 <property id="discovery.zen.ping.unicast.hosts">localhost</property>
-	 <!--
-	 
-	  .put("node.master", false)
-                    .put("node.data", false)
-                    .put("client.transport.sniff", false) 
-                    
-	   .put("client.transport.sniff", true)
-			    .put("cluster.name", "my-cluster").build();
-			Client client = new TransportClient(settings)
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost1", 9300))
-			    .addTransportAddress(new InetSocketTransportAddress("elasticsearchhost2", 9300));
-	-->		    
+    <property id="node.name">singlenode</property>
 </node>
