@@ -105,7 +105,10 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 				{
 					user = getUserManager(inReq).createUser(username, null);
 				}
-				user.setEmail(email);
+				if( email != null)
+				{
+					user.setEmail(email);
+				}
 				String given = (String)map.get("lis_person_name_given");
 				if( given != null)
 				{
