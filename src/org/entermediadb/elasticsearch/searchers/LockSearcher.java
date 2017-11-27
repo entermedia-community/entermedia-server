@@ -3,12 +3,7 @@ package org.entermediadb.elasticsearch.searchers;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
-import org.elasticsearch.action.delete.DeleteRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.action.search.SearchType;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.TermQueryBuilder;
-import org.elasticsearch.search.SearchHit;
+import org.openedit.hittracker.HitTracker;
 
 public class LockSearcher extends BaseElasticSearcher 
 {
@@ -48,33 +43,10 @@ public class LockSearcher extends BaseElasticSearcher
 	{
 		String id = getElasticNodeManager().getLocalNodeId();
 		
-		TermQueryBuilder builder = QueryBuilders.termQuery("nodeid", id);
-		   SearchResponse response = getClient().prepareSearch(toId(getCatalogId()))
-		            .setSearchType(SearchType.QUERY_THEN_FETCH)
-		            .setQuery(builder)
-		            .setTypes(getSearchType())
-		            .setSize(10000)//Investigate deleting other ways (plugin)
-		           // .addFields("id")
-		            .execute()
-		            .actionGet();
-
-		    for (SearchHit hit : response.getHits().hits()) 
-		    {
-				DeleteRequestBuilder delete = getClient().prepareDelete(toId(getCatalogId()), getSearchType(), hit.getId());
-				delete.setRefresh(false).execute().actionGet();
-		    }
-		
+		HitTracker hits = query().exact("nodeid", id).search();
+		deleteAll(hits, null);
 		log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
 		
-		//This is in memory only flush
-		String catid = getElasticIndexId();
-		RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
-
-		
-//		DeleteByQueryRequestBuilder delete = getClient().prepareDeleteByQuery(toId(getCatalogId()));
-//		delete.setTypes(getSearchType());
-//		TermQueryBuilder builder = QueryBuilders.termQuery("nodeid", id);
-//		delete.setQuery(builder).execute().actionGet();
 		
 	}
 
