@@ -2,6 +2,7 @@ package org.entermediadb.elasticsearch.searchers;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
@@ -64,6 +65,12 @@ public class LockSearcher extends BaseElasticSearcher
 		    }
 		
 		log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
+		
+		//This is in memory only flush
+		String catid = getElasticIndexId();
+		RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
+
+		
 //		DeleteByQueryRequestBuilder delete = getClient().prepareDeleteByQuery(toId(getCatalogId()));
 //		delete.setTypes(getSearchType());
 //		TermQueryBuilder builder = QueryBuilders.termQuery("nodeid", id);
