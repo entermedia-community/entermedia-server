@@ -137,7 +137,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 		}
 		catch (ConcurrentModificationException ex)
 		{
-			//		log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
+			log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
 
 			return null;
 		}
