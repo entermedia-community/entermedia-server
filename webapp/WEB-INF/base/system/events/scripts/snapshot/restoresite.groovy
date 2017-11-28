@@ -1,10 +1,18 @@
 package snapshot;
 
+import java.util.concurrent.TimeUnit
 import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
 
 import org.dom4j.Attribute
 import org.dom4j.Element
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
+import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse
+import org.elasticsearch.action.admin.indices.refresh.RefreshResponse
+import org.elasticsearch.action.bulk.BulkProcessor
+import org.elasticsearch.action.index.IndexRequest
+import org.elasticsearch.client.AdminClient
+import org.elasticsearch.client.Requests
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.util.CSVReader
 import org.entermediadb.asset.util.ImportFile
@@ -33,7 +41,6 @@ import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.MappingJsonFactory
-import com.fasterxml.jackson.databind.ObjectMapper
 
 
 
@@ -261,6 +268,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		}
 
 		List jsonfiles = pdarchive.getPageManager().getChildrenPaths(rootfolder + "/json/" );
+		List mappings = new ArrayList();
 
 		orderedtypes = new ArrayList();
 		jsonfiles.each {
@@ -270,6 +278,11 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 					ordereredtypes.add(searchtype);
 				}
 			}
+			if( it.endsWith(".json")) {
+				String filename = PathUtilities.extractPageName(it);
+				mappings.add(filename);
+			}
+
 		}
 		ordereredtypes.addAll(childrennames);
 		ordereredtypes.removeAll("propertydetail");
@@ -279,6 +292,14 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		//ordereredtypes.removeAll("userprofile");
 		ordereredtypes.removeAll("group");
 		ordereredtypes.add(0,"category");
+
+		mappings.each{
+			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + it + ".json");
+			String searchtype = it.substring(0, it.indexOf("-"));
+			putMapping( mediaarchive,searchtype,upload, tempindex);
+
+		}
+
 
 
 		for( String type in ordereredtypes ) {
@@ -300,17 +321,6 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 	}
 }
 
-
-
-public void importJSON() {
-
-
-
-
-
-
-
-}
 
 
 
@@ -543,7 +553,6 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 
 
 
-
 public void importJson(Data site, MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
 
@@ -555,77 +564,94 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 		return;
 	}
 
+	ArrayList errors = new ArrayList();
+	BulkProcessor processor = mediaarchive.getNodeManager().getBulkProcessor(errors);
 	
 	try{
-	
-	searcher.setAlternativeIndex(tempindex);
 
 
-	ZipInputStream unzip = new ZipInputStream(upload.getInputStream());
-	ZipEntry entry = unzip.getNextEntry();
+		ZipInputStream unzip = new ZipInputStream(upload.getInputStream());
+		ZipEntry entry = unzip.getNextEntry();
 
 
 
-	MappingJsonFactory f = new MappingJsonFactory();
-	JsonParser jp = f.createParser(new InputStreamReader(unzip, "UTF-8"));
-	
-	JsonToken current;
+		MappingJsonFactory f = new MappingJsonFactory();
+		JsonParser jp = f.createParser(new InputStreamReader(unzip, "UTF-8"));
 
-	current = jp.nextToken();
-	if (current != JsonToken.START_OBJECT) {
-		System.out.println("Error: root should be object: quiting.");
-		return;
-	}
+		JsonToken current;
 
-	while (jp.nextToken() != JsonToken.END_OBJECT) {
-		String fieldName = jp.getCurrentName();
-		// move from field name to field value
 		current = jp.nextToken();
-		if (fieldName.equals(searchtype)) {
-			if (current == JsonToken.START_ARRAY) {
-				// For each of the records in the array
-				while (jp.nextToken() != JsonToken.END_ARRAY) {
-					// read the record into a tree model,
-					// this moves the parsing position to the end of it
-					JsonNode node = jp.readValueAsTree();
-					String id = node.get("id");
-					Data data = searcher.searchById(id);
-					if(data == null){
-						data = searcher.createNewData();
+		if (current != JsonToken.START_OBJECT) {
+			System.out.println("Error: root should be object: quiting.");
+			return;
+		}
+
+		while (jp.nextToken() != JsonToken.END_OBJECT) {
+			String fieldName = jp.getCurrentName();
+			// move from field name to field value
+			current = jp.nextToken();
+			if (fieldName.equals(searchtype)) {
+				if (current == JsonToken.START_ARRAY) {
+					// For each of the records in the array
+					while (jp.nextToken() != JsonToken.END_ARRAY) {
+						// read the record into a tree model,
+						// this moves the parsing position to the end of it
+						JsonNode node = jp.readValueAsTree();
+						String json  = node.toString();
+
+						IndexRequest req = Requests.indexRequest(tempindex).type(searchtype);
+						req.source(json);
+						processor.add(req);
+
+
+
+
+
+
+
 					}
-					
-					ObjectMapper mapper = new ObjectMapper();
-					Map<String, Object> result = mapper.convertValue(node, Map.class);
-					
-					for (Iterator iterator = result.keySet().iterator(); iterator.hasNext();) {
-						String key = (String) iterator.next();
-						Object val = result.get(key);
-						key = key.replace("_int", "");
-						data.setValue(key, val);
-						//Maps like _int have the wrong key!  Need to be fixed so we don't lose data.
-						
-					}
-					
-					searcher.saveData(data);
-					
-					
-					
-					
+				} else {
+					System.out.println("Error: records should be an array: skipping.");
+					jp.skipChildren();
 				}
 			} else {
-				System.out.println("Error: records should be an array: skipping.");
+				System.out.println("Unprocessed property: " + fieldName);
 				jp.skipChildren();
 			}
-		} else {
-			System.out.println("Unprocessed property: " + fieldName);
-			jp.skipChildren();
 		}
 	}
-	} 
 	finally{
-		searcher.setAlternativeIndex(null);
+
 		
+			processor.flush();
+			processor.awaitClose(5, TimeUnit.MINUTES);
+
+			//This is in memory only flush
+			//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
+
+
+
+	
+
+
+
 	}
+
+}
+
+
+
+public void putMapping(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
+
+	AdminClient admin = mediaarchive.getNodeManager().getClient().admin();
+	PutMappingRequest req = Requests.putMappingRequest(tempindex).updateAllTypes(true).type(searchtype);
+	req = req.source(upload.getContent());
+
+	req.validate();
+	PutMappingResponse pres = admin.indices().putMapping(req).actionGet();
+
+
+
 }
 
 
@@ -641,82 +667,5 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 
 
 
-
-
-
-
-
-//
-//		Gson gson = new GsonBuilder().create();
-//
-//		// Read file in stream mode
-//		JsonReader reader = new JsonReader(new InputStreamReader(unzip, "UTF-8"));
-//
-//		JsonToken peak = reader.peek();
-//
-//		// Read file in stream mode
-//		reader.beginObject();
-//		 peak = reader.peek();
-//		while (reader.hasNext()) {
-//			// Read data into object model
-//			String data = reader.nextString();
-//			log.info(data.toString());
-//		}
-//				reader.close();
-//
-//
-//
-//		searcher.setAlternativeIndex(null);
-//
-//		FileUtils.safeClose(reader);
-//		searcher.setForceBulk(false);
-//		searcher.setAlternativeIndex(null);
-//		searcher.clearIndex();
-//		log.info("Saved " + searchtype + " "  +  tosave.size() );
-
-
-
-
-
-
-
-
-/* Not needed
- public void prepFields(MediaArchive mediaarchive, Page inFieldXml, String tempindex) 
- {
- if( !inFieldXml.getName().endsWith(".xml"))
- {
- return;
- }
- PropertyDetailsArchive pdarchive = mediaarchive.getPropertyDetailsArchive();
- String searchtype = inFieldXml.getPageName();
- log.info("save fields " + inFieldXml.getPath());
- String catalogid = mediaarchive.getCatalogId();
- PropertyDetails basedetails = pdarchive.getPropertyDetails(searchtype);
- XmlFile newsettings = pdarchive.getXmlArchive().loadXmlFile(inFieldXml.getPath()); 
- String filename = "/WEB-INF/data/" + catalogid + "/fields/" + searchtype + ".xml";
- PropertyDetails newdetails = new PropertyDetails(pdarchive,searchtype);
- newdetails.setInputFile(newsettings);
- pdarchive.setAllDetails(newdetails, searchtype, filename, newsettings.getRoot());
- ArrayList toremove = new ArrayList();
- newdetails.each{
- PropertyDetail olddetail = it;
- PropertyDetail current = basedetails.getDetail(olddetail.getId());
- if(current == null){
- current = basedetails.findCurrentFromLegacy(olddetail.getId());
- }
- //Already in base, we can remove this 
- if(current != null && !("name".equals(current.getId()) || "id".equals(current.getId())))
- {
- toremove.add(olddetail.getId());
- }
- }
- toremove.each{
- newdetails.removeDetail(it);
- }
- pdarchive.savePropertyDetails(newdetails, searchtype, null,  filename);
- pdarchive.clearCache();
- }
- */
 
 init();

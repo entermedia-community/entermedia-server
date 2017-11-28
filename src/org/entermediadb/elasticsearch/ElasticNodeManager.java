@@ -42,6 +42,8 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.bulk.BackoffPolicy;
+import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkProcessor.Listener;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -55,11 +57,15 @@ import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
+import org.elasticsearch.common.unit.ByteSizeUnit;
+import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
@@ -1060,4 +1066,49 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		getClient().admin().indices().clearCache(new ClearIndicesCacheRequest()).actionGet();
 	}
 
+	
+	
+	public BulkProcessor getBulkProcessor(ArrayList errors) {
+		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
+		{
+			@Override
+			public void beforeBulk(long executionId, BulkRequest request)
+			{
+
+			}
+
+			@Override
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
+			{
+				for (int i = 0; i < response.getItems().length; i++)
+				{
+					// request.getFromContext(key)
+					BulkItemResponse res = response.getItems()[i];
+					if (res.isFailed())
+					{
+						log.info(res.getFailureMessage());
+						errors.add(res.getFailureMessage());
+
+					}
+					// Data toupdate = toversion.get(res.getId());
+					
+				}
+				//	request.refresh(true);
+			}
+
+			@Override
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
+			{
+				log.info(failure);
+				errors.add(failure);
+			}
+		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+		
+		
+		return bulkProcessor;
+	}
+	
+	
+	
+	
 }
