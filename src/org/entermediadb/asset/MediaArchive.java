@@ -2065,4 +2065,9 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 
+	public boolean isCatalogSettingTrue(String string) {
+		String catalogSettingValue = getCatalogSettingValue(string);
+		return Boolean.parseBoolean(catalogSettingValue);
+	}
+
 }
