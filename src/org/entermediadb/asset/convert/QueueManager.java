@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,7 +31,7 @@ public class QueueManager implements ConversionEventListener
 	protected AssetConversions ISLOCKED = new AssetConversions();
 	protected MediaArchive fieldMediaArchive;
 	protected ModuleManager fieldModuleManager;
-	protected Map fieldRunningAssetConversions = new HashMap();
+	protected Map fieldRunningAssetConversions = new ConcurrentHashMap();
 	protected String fieldCatalogId;
 	protected int fieldTotalPending;
 	
@@ -87,107 +88,112 @@ public class QueueManager implements ConversionEventListener
 		}
 
 		//Lock searching for tasks
-
-		Searcher tasksearcher = getMediaArchive().getSearcher("conversiontask");
-		Searcher itemsearcher = getMediaArchive().getSearcher("orderitem");
-		Searcher presetsearcher = getMediaArchive().getSearcher("convertpreset");
-
-		SearchQuery query = tasksearcher.createSearchQuery();
-		query.addOrsGroup("status", "new submitted retry missinginput");
-		query.addSortBy("assetidDown");
-		query.addSortBy("ordering");
-		//TODO: Exclude any existing asseids we are already processing
-		if (hasRunningConversions())
+		try
 		{
-			query.addNots("assetid", getRunningAssetIds());
-		}
-
-		HitTracker newtasks = tasksearcher.search(query);
-		newtasks.enableBulkOperations();
-		newtasks.setHitsPerPage(500);  //Just enought to fill up the queue
-		//newtasks.enableBulkOperations();
-		//newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
-		//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
-		setTotalPending(newtasks.size());
-		if (newtasks.size() > 0)
-		{
-			log.info("processing " + newtasks.size() + " new submitted retry missinginput conversions");
-		}
-		else
-		{
-			return;
-		}
-		//log.info("Thread checking: " + Thread.currentThread().getName() + " class:" + hashCode() );
-		long count = 0;
-		Map assetstoprocess = new HashMap();
-		for (Iterator iterator = newtasks.iterator(); iterator.hasNext();)
-		{
-			Data hit = (Data) iterator.next();
-			
-			//If locked skip it, someone is already processing it
-			String assetid = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
-
-			if (assetid == null)
+			Searcher tasksearcher = getMediaArchive().getSearcher("conversiontask");
+			Searcher itemsearcher = getMediaArchive().getSearcher("orderitem");
+			Searcher presetsearcher = getMediaArchive().getSearcher("convertpreset");
+	
+			SearchQuery query = tasksearcher.createSearchQuery();
+			query.addOrsGroup("status", "new submitted retry missinginput");
+			query.addSortBy("assetidDown");
+			query.addSortBy("ordering");
+			//TODO: Exclude any existing asseids we are already processing
+			if (hasRunningConversions())
 			{
-				log.info("No assetid set");
-				Data missingdata = tasksearcher.loadData(hit);
-				missingdata.setProperty("status", "error");
-				missingdata.setProperty("errordetails", "asset id is null");
-				tasksearcher.saveData(missingdata, null);
-				assetstoprocess.put(assetid, ISLOCKED);
-				continue;
+				query.addNots("assetid", getRunningAssetIds());
 			}
-
-			AssetConversions existing = (AssetConversions) assetstoprocess.get(assetid);
-			if (existing == null)
+	
+			HitTracker newtasks = tasksearcher.search(query);
+			newtasks.enableBulkOperations();
+			newtasks.setHitsPerPage(500);  //Just enought to fill up the queue
+			//newtasks.enableBulkOperations();
+			//newtasks.setHitsPerPage(25); //We want to make sure scroll does not expire 
+			//newtasks.setHitsPerPage(20000);  //This is a problem. Since the data is being edited while we change pages we skip every other page. Only do one page at a time
+			setTotalPending(newtasks.size());
+			if (newtasks.size() > 0)
 			{
-				//lock and create
-				if (count >= availableProcessors())
+				log.info("processing " + newtasks.size() + " new submitted retry missinginput conversions");
+			}
+			else
+			{
+				return;
+			}
+			//log.info("Thread checking: " + Thread.currentThread().getName() + " class:" + hashCode() );
+			long count = 0;
+			Map assetstoprocess = new HashMap();
+			for (Iterator iterator = newtasks.iterator(); iterator.hasNext();)
+			{
+				Data hit = (Data) iterator.next();
+				
+				//If locked skip it, someone is already processing it
+				String assetid = hit.get("assetid"); //Since each converter locks the asset we want to group these into one sublist
+	
+				if (assetid == null)
 				{
-					break;
-				}
-				Asset asset = getMediaArchive().getAsset( assetid );
-				if( asset == null)
-				{
+					log.info("No assetid set");
 					Data missingdata = tasksearcher.loadData(hit);
 					missingdata.setProperty("status", "error");
-					missingdata.setProperty("errordetails", "asset not found " + assetid);
+					missingdata.setProperty("errordetails", "asset id is null");
 					tasksearcher.saveData(missingdata, null);
-					assetstoprocess.put(assetid, ISLOCKED);
+					//assetstoprocess.put(assetid, ISLOCKED);
 					continue;
 				}
-				Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
-				if (lock == null)
+	
+				AssetConversions existing = (AssetConversions) assetstoprocess.get(assetid);
+				if (existing == null)
 				{
-					assetstoprocess.put(assetid, ISLOCKED);
-					log.info("Asset is already being processed " + assetid + " in catalog " + getMediaArchive().getCatalogId());
+					//lock and create
+					if (count >= availableProcessors())
+					{
+						break;
+					}
+					Asset asset = getMediaArchive().getAsset( assetid );
+					if( asset == null )
+					{
+						Data missingdata = tasksearcher.loadData(hit);
+						missingdata.setProperty("status", "error");
+						missingdata.setProperty("errordetails", "asset not found " + assetid);
+						tasksearcher.saveData(missingdata, null);
+						assetstoprocess.put(assetid, ISLOCKED);
+						continue;
+					}
+					Lock lock = fieldMediaArchive.getLockManager().lockIfPossible("assetconversions/" + assetid, "CompositeConvertRunner.run");
+					if (lock == null)
+					{
+						assetstoprocess.put(assetid, ISLOCKED);
+						log.info("Asset is already being processed " + assetid + " in catalog " + getMediaArchive().getCatalogId());
+						continue;
+					}
+					count++;
+					existing = new AssetConversions(getMediaArchive(), lock);
+					existing.setAsset(asset);
+					existing.setEventListener(this);
+					assetstoprocess.put(assetid, existing);
+				}
+				if (existing == ISLOCKED)
+				{
 					continue;
 				}
-				count++;
-				existing = new AssetConversions(getMediaArchive(), lock);
-				existing.setAsset(asset);
-				existing.setEventListener(this);
-				assetstoprocess.put(assetid, existing);
+				ConversionTask task = createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
+				existing.addTask(task);
+	
 			}
-			if (existing == ISLOCKED)
+			for (Iterator iterator = assetstoprocess.keySet().iterator(); iterator.hasNext();)
 			{
-				continue;
+				String assetid = (String) iterator.next();
+				AssetConversions tasks = (AssetConversions) assetstoprocess.get(assetid);
+				if (tasks != ISLOCKED)
+				{
+					queueConversion(tasks);
+				}
 			}
-			ConversionTask task = createRunnable(tasksearcher, presetsearcher, itemsearcher, hit);
-			existing.addTask(task);
-
+			//log.info("Thread finished: " + Thread.currentThread().getName() );
 		}
-		for (Iterator iterator = assetstoprocess.keySet().iterator(); iterator.hasNext();)
+		catch ( Throwable ex)
 		{
-			String assetid = (String) iterator.next();
-			AssetConversions tasks = (AssetConversions) assetstoprocess.get(assetid);
-			if (tasks != ISLOCKED)
-			{
-				queueConversion(tasks);
-			}
+			log.error("Could not process queue ", ex);
 		}
-		//log.info("Thread finished: " + Thread.currentThread().getName() );
-
 	}
 
 	private boolean hasRunningConversions()
