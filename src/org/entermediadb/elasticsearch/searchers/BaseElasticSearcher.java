@@ -394,7 +394,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		return true;
 	}
 
-	private String getElasticIndexId()
+	protected String getElasticIndexId()
 	{
 		String indexid = getAlternativeIndex();
 

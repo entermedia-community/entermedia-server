@@ -1214,11 +1214,12 @@ jQuery(document).ready(function()
 	var resizecss = function()
 	{
 		//Old stuff?
+		/*
 		w1 = ( $('#main').width() - $('#left-col').width() - 41 );
 		$('#right-col .liquid-sizer').width(w1);
 		w2 = ( $('#data').width() - 40 );
 		$('#asset-data').width(w2);
-		
+		*/
 		var body = $("body");
 
 		//TODO: use bootrap css?

@@ -112,7 +112,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			}
 			if (tracker.size() > 1) //Someone else also locked
 			{
-				//log.info("Deleting lock!  Found a duplicate : version: " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+				log.info("Deleting lock!  Found a duplicate : version: " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
 				inSearcher.delete(lock, null);
 				return null;
 			}
@@ -121,7 +121,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 
 		if (lock.isLocked())
 		{
-			log.info("Local was alread locked - returning null" + "Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId());
+			//log.info("Local was alreadY locked - returning null. CatalogID:" + inSearcher.getCatalogId() + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId() + " Searcher: " + inSearcher.getClass());
 			return null;
 		}
 
@@ -137,7 +137,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 		}
 		catch (ConcurrentModificationException ex)
 		{
-			//		log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
+			log.info("Lock was not available " + lock.get(".version") + "Thread: " + Thread.currentThread().getId() + " Lock ID " + lock.getId());
 
 			return null;
 		}
