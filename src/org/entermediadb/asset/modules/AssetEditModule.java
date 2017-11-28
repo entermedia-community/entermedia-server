@@ -2178,12 +2178,23 @@ Change Collections to be normal categories path s and make createTree look at th
 
 			properties.saveFileAs(item, path, inReq.getUser());
 
+			boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
+			
+			
 			//MediaArchive inArchive, User inUser, Page inAssetPage)
 			 
 			Asset current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
 			archive.saveAsset(current, inReq.getUser());
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
+			
+			if(assigncategory) {
+				Category defaultcat = archive.getCategorySearcher().createCategoryPath(sourcepath);
+				current.clearCategories();
+				current.addCategory(defaultcat);
+			}
+			
+			
 //			current.setProperty("owner", inReq.getUser().getId());
 			archive.removeGeneratedImages(current, true);
 			archive.saveAsset(current, null);

@@ -10,4 +10,11 @@
 	  -->
 	<property id="hotholder_tags_origins" value="asdf/import/">Hotfolder Tags Origins</property>
 	
+	
+	
+	<data id="assigncategoryonupload" value="true">
+    <name><![CDATA[Assign assets to categories based on their upload masks/sourcepath]]></name>
+  </data>
+	
+	
 </properties>
