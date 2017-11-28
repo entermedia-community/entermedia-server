@@ -1068,7 +1068,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 
 	
 	
-	public BulkProcessor getBulkProcessor(ArrayList errors) {
+	public BulkProcessor getBulkProcessor(final ArrayList errors) {
 		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
 		{
 			@Override
