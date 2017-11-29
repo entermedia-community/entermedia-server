@@ -46,134 +46,128 @@ public class ConversionTask
 		return false;
 	}
 
-	public void convert()
+public void convert()
+{
+	Data realtask = tasksearcher.loadData(hit);
+	//log.info("should be ${hit.status} but was ${realtask.status}");
+	if( asset == null)
 	{
-		Data realtask = tasksearcher.loadData(hit);
-		//log.info("should be ${hit.status} but was ${realtask.status}");
-		if( asset == null)
+		asset = mediaarchive.getAsset(hit.get("assetid"));
+	}
+	String presetid = realtask.get("presetid");
+	//log.debug("starting preset ${presetid}");
+	Data preset = (Data)presetsearcher.searchById(presetid);
+	Date started = new Date();
+	String errorcondition = null;
+	if(preset == null)
+	{
+		errorcondition = "Invalid presetid " + presetid;
+	}
+	if(asset == null)
+	{
+		errorcondition = "Asset could not be loaded " + realtask.getSourcePath() + " marking as error";
+	}
+	if(errorcondition != null)
+	{
+		log.info("Can't run conversion for task '" + realtask.getId() + " " + errorcondition);
+		realtask.setProperty("status", "error");
+		realtask.setProperty("errordetails",errorcondition );
+		
+		String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+		realtask.setProperty("completed",completed);
+		tasksearcher.saveData(realtask, user);
+		mediaarchive.fireMediaEvent("conversions","conversionerror",realtask.getId(),user);
+		return;
+	}
+	try
+	{
+		result = doConversion(mediaarchive, realtask, preset,asset);
+	}
+	catch(Throwable e)
+	{
+		result = new ConvertResult();
+		result.setOk(false);
+		result.setError(e.toString());
+		log.error("Conversion Failed",e);
+	}
+		
+	realtask.setValue("submitteddate", started);
+	if(result.isOk())
+	{
+		if(result.isComplete())
 		{
-			asset = mediaarchive.getAsset(hit.get("assetid"));
-		}
-		if (realtask != null)
-		{
-			String presetid = realtask.get("presetid");
-			//log.debug("starting preset ${presetid}");
-			Data preset = (Data)presetsearcher.searchById(presetid);
-			Date started = new Date();
+			realtask.setProperty("status", "complete");
+			String itemid = realtask.get("itemid");
+			if(itemid != null)
+			{
+				//The item should have a pointer to the conversion, not the other way around
+				Data item = (Data)itemsearcher.searchById(itemid);
+				item.setProperty("status", "converted");
+				itemsearcher.saveData(item, null);
+			}
+			realtask.setProperty("externalid", result.get("externalid"));
+			realtask.setValue("completed",new Date());
+			realtask.setProperty("errordetails","");
+			tasksearcher.saveData(realtask, user);
+			//log.info("Marked " + hit.getSourcePath() +  " complete");
 			
-			if(preset != null)
-			{
-				if(asset == null)
-				{
-					throw new OpenEditException("Asset could not be loaded " + realtask.getSourcePath() + " marking as error");
-				}
-				try
-				{
-					result = doConversion(mediaarchive, realtask, preset,asset);
-				}
-				catch(Throwable e)
-				{
-					result = new ConvertResult();
-					result.setOk(false);
-					result.setError(e.toString());
-					log.error("Conversion Failed",e);
-				}
-				
-				if(result != null)
-				{
-					realtask.setValue("submitteddate", started);
-					if(result.isOk())
-					{
-						if(result.isComplete())
-						{
-							realtask.setProperty("status", "complete");
-							String itemid = realtask.get("itemid");
-							if(itemid != null)
-							{
-								//The item should have a pointer to the conversion, not the other way around
-								Data item = (Data)itemsearcher.searchById(itemid);
-								item.setProperty("status", "converted");
-								itemsearcher.saveData(item, null);
-							}
-							realtask.setProperty("externalid", result.get("externalid"));
-							realtask.setValue("completed",new Date());
-							realtask.setProperty("errordetails","");
-							tasksearcher.saveData(realtask, user);
-							//log.info("Marked " + hit.getSourcePath() +  " complete");
-							
-							mediaarchive.fireMediaEvent("conversions","conversioncomplete",user,asset);
-							//mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
-						}
-						else
-						{
-							realtask.setProperty("status", "submitted");
-							realtask.setProperty("externalid", result.get("externalid"));
-							tasksearcher.saveData(realtask, user);
-						}
-						
-					}
-					else if ( result.isError() )
-					{
-						realtask.setProperty("status", "error");
-						realtask.setProperty("errordetails", result.getError() );
-						String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
-						realtask.setProperty("completed",completed);
-						tasksearcher.saveData(realtask, user);
-						
-						//TODO: Remove this one day
-						String itemid = realtask.get("itemid");
-						if(itemid != null)
-						{
-							Data item = (Data)itemsearcher.searchById(itemid);
-							item.setProperty("status", "error");
-							item.setProperty("errordetails", result.getError() );
-							itemsearcher.saveData(item, null);
-						}
-
-						//	conversionfailed  conversiontask assetsourcepath, params[id=102], admin
-						mediaarchive.fireMediaEvent("conversions","conversionerror",realtask.getId(),user);
-					}
-					else
-					{
-						String assetid = realtask.get("assetid");
-						Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitted"));
-						Calendar cal = new GregorianCalendar();
-						cal.add(Calendar.DAY_OF_YEAR,-2);
-						if( olddate != null && olddate.before(cal.getTime()))
-						{
-							realtask.setProperty("status", "error");
-							realtask.setProperty("errordetails", "Missing input expired" );
-						}
-						else
-						{
-							log.debug("conversion had no error and will try again later for "+ assetid);
-							realtask.setProperty("status", "missinginput");
-						}	
-						tasksearcher.saveData(realtask, user);
-					}
-				}
-			}
-			else
-			{
-				log.info("Can't run conversion for task '" + realtask.getId() + "': Invalid presetid " + presetid);
-				realtask.setProperty("status", "error");
-				realtask.setProperty("errordetails", "Invalid presetid " + presetid);
-				String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
-				realtask.setProperty("completed",completed);
-				tasksearcher.saveData(realtask, user);
-			}
+			mediaarchive.fireMediaEvent("conversions","conversioncomplete",user,asset);
+			//mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
 		}
 		else
 		{
-			log.info("Can't find task object with id '" + hit.getId() + "'. Index missing data?");
+			realtask.setProperty("status", "submitted");
+			realtask.setProperty("externalid", result.get("externalid"));
+			tasksearcher.saveData(realtask, user);
 		}
+		
 	}
+	else if ( result.isError() )
+	{
+		realtask.setProperty("status", "error");
+		realtask.setProperty("errordetails", result.getError() );
+		String completed = DateStorageUtil.getStorageUtil().formatForStorage(new Date());
+		realtask.setProperty("completed",completed);
+		tasksearcher.saveData(realtask, user);
+		
+		//TODO: Remove this one day
+		String itemid = realtask.get("itemid");
+		if(itemid != null)
+		{
+			Data item = (Data)itemsearcher.searchById(itemid);
+			item.setProperty("status", "error");
+			item.setProperty("errordetails", result.getError() );
+			itemsearcher.saveData(item, null);
+		}
+
+		//	conversionfailed  conversiontask assetsourcepath, params[id=102], admin
+		mediaarchive.fireMediaEvent("conversions","conversionerror",realtask.getId(),user);
+	}
+	else
+	{
+		String assetid = realtask.get("assetid");
+		Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitted"));
+		Calendar cal = new GregorianCalendar();
+		cal.add(Calendar.DAY_OF_YEAR,-2);
+		if( olddate != null && olddate.before(cal.getTime()))
+		{
+			realtask.setProperty("status", "error");
+			realtask.setProperty("errordetails", "Missing input expired" );
+		}
+		else
+		{
+			log.debug("conversion had no error and will try again later for "+ assetid);
+			realtask.setProperty("status", "missinginput");
+		}	
+		tasksearcher.saveData(realtask, user);
+	}
+}
 
 protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data inPreset, Asset inAsset)
 {
 	String status = inTask.get("status");
-	
-	String type = inPreset.get("transcoderid"); //rhozet, ffmpeg, etc
+	ConvertResult tmpresult = null;
+	//String type = inPreset.get("transcoderid"); //rhozet, ffmpeg, etc
 	ConversionManager manager = inArchive.getTranscodeTools().getManagerByFileFormat(inAsset.getFileFormat());
 	//log.debug("Converting with type: ${type} using ${creator.class} with status: ${status}");
 	
@@ -240,21 +234,26 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 //			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
 //			Page output = inArchive.getPageManager().getPage(outputpage);
 //			log.debug("Running Media type: ${type} on asset ${inAsset.getSourcePath()}" );
-			result = manager.createOutput(inStructions);
+			tmpresult = manager.createOutput(inStructions);
 		}
 		else if("submitted".equals(status))
 		{
-			result = manager.updateStatus(inTask,inStructions);
+			tmpresult = manager.updateStatus(inTask,inStructions);
 		}
 		else
 		{
-			log.info(inTask.getId() + " task id with status:" + status + " Should have been: submitted, new, missinginput or retry, is index out of date? ");
+			tmpresult = new ConvertResult();
+			tmpresult.setOk(false);
+			tmpresult.setError(inTask.getId() + " task id with status:" + status + " Should have been: submitted, new, missinginput or retry, is index out of date? ");
 		}
 	}
 	else
 	{
 		log.info("Can't find media creator for type '" + inAsset.getFileFormat() + "'");
+		tmpresult = new ConvertResult();
+		tmpresult.setOk(false);
+		tmpresult.setError("Can't find media creator for type '" + inAsset.getFileFormat() + "'");
 	}
-	return result;
+	return tmpresult;
   }
 }
