@@ -1,6 +1,7 @@
 <page>
 	<property name="eventname">Import Complete</property>	
 	
+	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/publishing/publishassets.html" allowduplicates="true" />
 	
 	<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/asset/archivefiles.html" allowduplicates="true" />
 	

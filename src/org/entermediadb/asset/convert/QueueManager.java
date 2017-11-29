@@ -136,7 +136,6 @@ public class QueueManager implements ConversionEventListener
 					missingdata.setProperty("status", "error");
 					missingdata.setProperty("errordetails", "asset id is null");
 					tasksearcher.saveData(missingdata, null);
-					//assetstoprocess.put(assetid, ISLOCKED);
 					continue;
 				}
 	
@@ -235,7 +234,7 @@ public class QueueManager implements ConversionEventListener
 
 	private void queueConversion(AssetConversions inAssetconversions)
 	{
-		log.info("ADDING" + inAssetconversions.getAssetId());
+		//log.info("ADDING" + inAssetconversions.getAssetId());
 		fieldRunningAssetConversions.put(inAssetconversions.getAssetId(), inAssetconversions);
 		getThreads().execute("conversions", inAssetconversions);
 	}
@@ -248,7 +247,7 @@ public class QueueManager implements ConversionEventListener
 			getMediaArchive().releaseLock(inAssetconversions.getLock());
 			//log.info("RELEASED" + inAssetconversions.getAssetId());
 			getMediaArchive().conversionCompleted(inAssetconversions.getAsset());
-			getMediaArchive().fireSharedMediaEvent("conversions/conversioncomplete");
+			//getMediaArchive().fireMediaEvent("conversions/conversioncomplete",null,inAssetconversions.getAsset());
 			//log.info("Thread complete: " + Thread.currentThread().getName() );
 			checkQueue();
 		}

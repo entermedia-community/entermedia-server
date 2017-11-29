@@ -82,7 +82,7 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 	    if( expected != null)
 	    {
 		    String url = inReq.getSiteUrl();//"https://weatherfordcollege.entermediadb.net/lti/index.html";
-		    String inPrivateKey = getStringEncryption().getEncryptionKey("ltiautologinkey");
+		    String inPrivateKey = getStringEncryption().getEncryptionKey("ltiautologinkey");  //TODO: Cache this?
 		    if( inPrivateKey == null)
 		    {
 		    	throw new OpenEditException("ltiautologinkey is not defined in WEB-INF/data/system/lists/systemsettings/custom.xml");
