@@ -258,6 +258,7 @@ public class QueueManager implements ConversionEventListener
 	}
 	public void ranConversions(AssetConversions inAssetConversions)
 	{
+		fieldRunningAssetConversions.remove(inAssetConversions.getAssetId());
 		getMediaArchive().releaseLock(inAssetConversions.getLock());
 		//log.info("RELEASED after run" + inAssetConversions.getAssetId());
 
