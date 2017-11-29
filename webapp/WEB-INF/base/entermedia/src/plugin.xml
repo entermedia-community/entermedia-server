@@ -502,6 +502,14 @@
 		class="org.entermediadb.asset.scanner.Md5MetadataExtractor">
 	</bean>
 
+
+<bean id="geoTiffExtractor"
+		class="org.entermediadb.asset.scanner.GeoTiffMetadataExtractor">
+		<property name="exec">
+			<ref bean="exec" />
+		</property>
+	</bean>
+
 	<bean id="ffmpegMetadataExtractor"
 		class="org.entermediadb.asset.scanner.FfmpegMetadataExtractor">
 		<property name="exec">
@@ -1919,6 +1927,8 @@
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />
 				<ref bean="md5MetadataExtractor" />
+				<ref bean="geoTiffExtractor" />
+				
 			</list>
 		</property>
 	</bean>
