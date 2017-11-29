@@ -1690,6 +1690,12 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	public void deleteAll(Collection inBuffer, User inUser)
 	{
+		if( inBuffer instanceof HitTracker)
+		{
+			HitTracker htracker = (HitTracker)inBuffer;
+			htracker.enableBulkOperations();
+			
+		}
 		String catid = getElasticIndexId();
 
 		if (inBuffer.size() < 99 ) // 100 was too low - caused shard exceptions
