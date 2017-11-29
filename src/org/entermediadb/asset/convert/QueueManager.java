@@ -12,9 +12,9 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
-import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.util.ExecutorManager;
 
@@ -94,17 +94,17 @@ public class QueueManager implements ConversionEventListener
 			Searcher itemsearcher = getMediaArchive().getSearcher("orderitem");
 			Searcher presetsearcher = getMediaArchive().getSearcher("convertpreset");
 	
-			SearchQuery query = tasksearcher.createSearchQuery();
-			query.addOrsGroup("status", "new submitted retry missinginput");
-			query.addSortBy("assetidDown");
-			query.addSortBy("ordering");
+			QueryBuilder query = tasksearcher.query();
+			query.orgroup("status", "new submitted retry missinginput");
+			query.sort("assetidDown");
+			query.sort("ordering");
 			//TODO: Exclude any existing asseids we are already processing
 			if (hasRunningConversions())
 			{
-				query.addNots("assetid", getRunningAssetIds());
+				query.notgroup("assetid", getRunningAssetIds());
 			}
 	
-			HitTracker newtasks = tasksearcher.search(query);
+			HitTracker newtasks = tasksearcher.search(query.getQuery());
 			newtasks.enableBulkOperations();
 			newtasks.setHitsPerPage(500);  //Just enought to fill up the queue
 			//newtasks.enableBulkOperations();

@@ -246,7 +246,7 @@ public class PresetCreator
 			Data task = (Data)object;
 			if( "error".equals( task.get("status") ) )
 			{
-				log.info(asset.getId() + "Found an error");
+				log.info(asset.getId() + " Found an error");
 				founderror = true;
 				break;
 			}
