@@ -53,8 +53,7 @@ public class GeoTiffMetadataExtractor extends MetadataExtractor
 				
 				base.add(inFile.getAbsolutePath());
 				ArrayList<String> comm = new ArrayList(base);
-				comm.add("-n");
-				
+			
 				//--
 				long start = System.currentTimeMillis();
 				//log.info("Runnning identify");

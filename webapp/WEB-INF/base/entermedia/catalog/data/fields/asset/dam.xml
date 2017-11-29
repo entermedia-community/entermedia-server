@@ -688,6 +688,9 @@
    <property id="renewalpolicy" datatype="list" editable="true" index="true" stored="true"   type="list">Renewal Policy 
  
   </property>  
+    <property id="geotiff"  index="true" stored="true"  >Geotiff Data 
+ 
+  </property>  
   
   
 </page>

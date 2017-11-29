@@ -1915,23 +1915,7 @@
 	
 	
 	
-	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-	
-		<property name="metadataExtractors">
-			<list>
-				<ref bean="pdfExtractor" />
-				<ref bean="oofficeTextExtractor" />
-				<ref bean="exiftoolMetadataExtractor" />
-				<ref bean="ffmpegMetadataExtractor" />
-				<ref bean="md5MetadataExtractor" />
-				<ref bean="geoTiffExtractor" />
-				
-			</list>
-		</property>
-	</bean>
+
 	
 	
 	
@@ -1969,6 +1953,8 @@
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />
 				<ref bean="md5MetadataExtractor" />
+								<ref bean="geoTiffExtractor" />
+				
 			</list>
 		</property>
 	</bean>
