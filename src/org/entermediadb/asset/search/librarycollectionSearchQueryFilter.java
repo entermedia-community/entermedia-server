@@ -27,7 +27,10 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		{
 			return inQuery;
 		}
-
+		if( inQuery.isSecurityAttached() )
+		{
+			return inQuery;
+		}
 		User user = inPageRequest.getUser();
 		//log.info( "found filer user  "  + user + " " + user.isInGroup("administrators"));
 		if (user != null && user.isInGroup("administrators"))
@@ -57,7 +60,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		//inQuery.setSecurityIds(toshow);
 		inQuery.setSecurityAttached(true);
 		
-		//log.info(inQuery.toQuery());
+		log.info("Collection search " + inQuery.toQuery());
 		return inQuery;
 	}
 }
