@@ -111,7 +111,7 @@ public void convert()
 			tasksearcher.saveData(realtask, user);
 			//log.info("Marked " + hit.getSourcePath() +  " complete");
 			
-			mediaarchive.fireMediaEvent("conversions","conversioncomplete",user,asset);
+			//mediaarchive.fireMediaEvent("conversions","conversioncomplete",user,asset);
 			//mediaarchive.updateAssetConvertStatus(hit.get("sourcepath"));
 		}
 		else
@@ -168,92 +168,95 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 	String status = inTask.get("status");
 	ConvertResult tmpresult = null;
 	//String type = inPreset.get("transcoderid"); //rhozet, ffmpeg, etc
+	if( "7".equals( inAsset.get("editstatus")) ) 
+	{
+		tmpresult = new ConvertResult();
+		tmpresult.setOk(false);
+		tmpresult.setError("Could not run conversions on deleted asset " + inAsset.getSourcePath());
+		return tmpresult;
+	}
+
 	ConversionManager manager = inArchive.getTranscodeTools().getManagerByFileFormat(inAsset.getFileFormat());
 	//log.debug("Converting with type: ${type} using ${creator.class} with status: ${status}");
 	
-	if (manager != null)
-	{
-		Map props = new HashMap();
-		
-		String guid = inPreset.get("guid");
-		if( guid != null)
-		{
-			Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "presetdata" );
-			Data presetdata = (Data)presetdatasearcher.searchById(guid);
-			//copy over the preset properties..
-			props.put("guid", guid); //needed?
-			props.put("presetdataid", guid); //needed?
-			if( presetdata != null && presetdata.getProperties() != null)
-			{
-				props.putAll(presetdata.getProperties());
-			}
-		}
-		String pagenumber = inTask.get("pagenumber");
-		if( pagenumber != null )
-		{
-			props.put("pagenum",pagenumber);
-		}
-		if(Boolean.parseBoolean(inTask.get("crop")))
-		{
-			props.put("iscrop","true");
-			props.putAll(inTask.getProperties() );
-			
-			if(inTask.get("prefwidth") == null)
-			{
-				props.put("prefwidth", inTask.get("cropwidth"));
-			}
-			if(inTask.get("prefheight") == null)
-			{
-				props.put("prefheight", inTask.get("cropheight"));
-			}
-			props.put("useoriginalasinput", "true");//hard-coded a specific image size (large)
-			props.put("croplast", "true");//hard-coded a specific image size (large)
-			
-			if(Boolean.parseBoolean(inTask.get("force")))
-			{
-				props.put("isforced","true");
-			}
-		}
-
-		ConvertInstructions inStructions = manager.createInstructions(inAsset,inPreset,props);
-		
-		//inStructions.setOutputExtension(inPreset.get("extension"));
-		//log.info( inStructions.getProperty("guid") );
-		if( "7".equals( inAsset.get("editstatus")) ) 
-		{
-			throw new OpenEditException("Could not run conversions on deleted asset " + inAsset.getSourcePath());
-		}
-		//inStructions.setAssetSourcePath(asset.getSourcePath());
-//		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
-//		inStructions.setOutputExtension(extension);
-
-		//new submitted retry missinginput
-		if("new".equals(status) || "submitted".equals(status) || "retry".equals(status)  || "missinginput".equals(status))
-		{
-			//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
-//			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
-//			Page output = inArchive.getPageManager().getPage(outputpage);
-//			log.debug("Running Media type: ${type} on asset ${inAsset.getSourcePath()}" );
-			tmpresult = manager.createOutput(inStructions);
-		}
-		else if("submitted".equals(status))
-		{
-			tmpresult = manager.updateStatus(inTask,inStructions);
-		}
-		else
-		{
-			tmpresult = new ConvertResult();
-			tmpresult.setOk(false);
-			tmpresult.setError(inTask.getId() + " task id with status:" + status + " Should have been: submitted, new, missinginput or retry, is index out of date? ");
-		}
-	}
-	else
+	if (manager == null)
 	{
 		log.info("Can't find media creator for type '" + inAsset.getFileFormat() + "'");
 		tmpresult = new ConvertResult();
 		tmpresult.setOk(false);
 		tmpresult.setError("Can't find media creator for type '" + inAsset.getFileFormat() + "'");
+		return tmpresult;
 	}
+	Map props = new HashMap();
+	
+	String guid = inPreset.get("guid");
+	if( guid != null)
+	{
+		Searcher presetdatasearcher = inArchive.getSearcherManager().getSearcher(inArchive.getCatalogId(), "presetdata" );
+		Data presetdata = (Data)presetdatasearcher.searchById(guid);
+		//copy over the preset properties..
+		props.put("guid", guid); //needed?
+		props.put("presetdataid", guid); //needed?
+		if( presetdata != null && presetdata.getProperties() != null)
+		{
+			props.putAll(presetdata.getProperties());
+		}
+	}
+	String pagenumber = inTask.get("pagenumber");
+	if( pagenumber != null )
+	{
+		props.put("pagenum",pagenumber);
+	}
+	if(Boolean.parseBoolean(inTask.get("crop")))
+	{
+		props.put("iscrop","true");
+		props.putAll(inTask.getProperties() );
+		
+		if(inTask.get("prefwidth") == null)
+		{
+			props.put("prefwidth", inTask.get("cropwidth"));
+		}
+		if(inTask.get("prefheight") == null)
+		{
+			props.put("prefheight", inTask.get("cropheight"));
+		}
+		props.put("useoriginalasinput", "true");//hard-coded a specific image size (large)
+		props.put("croplast", "true");//hard-coded a specific image size (large)
+		
+		if(Boolean.parseBoolean(inTask.get("force")))
+		{
+			props.put("isforced","true");
+		}
+	}
+
+	ConvertInstructions inStructions = manager.createInstructions(inAsset,inPreset,props);
+	
+	//inStructions.setOutputExtension(inPreset.get("extension"));
+	//log.info( inStructions.getProperty("guid") );
+	//inStructions.setAssetSourcePath(asset.getSourcePath());
+//		String extension = PathUtilities.extractPageType(inPreset.get("outputfile") );
+//		inStructions.setOutputExtension(extension);
+
+	//new submitted retry missinginput
+	if("new".equals(status) || "submitted".equals(status) || "retry".equals(status)  || "missinginput".equals(status))
+	{
+		//String outputpage = "/WEB-INF/data/${inArchive.catalogId}/generated/${asset.sourcepath}/${inPreset.outputfile}";
+//			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
+//			Page output = inArchive.getPageManager().getPage(outputpage);
+//			log.debug("Running Media type: ${type} on asset ${inAsset.getSourcePath()}" );
+		tmpresult = manager.createOutput(inStructions);
+	}
+	else if("submitted".equals(status))
+	{
+		tmpresult = manager.updateStatus(inTask,inStructions);
+	}
+	else
+	{
+		tmpresult = new ConvertResult();
+		tmpresult.setOk(false);
+		tmpresult.setError(inTask.getId() + " task id with status:" + status + " Should have been: submitted, new, missinginput or retry, is index out of date? ");
+	}
+	
 	return tmpresult;
   }
 }
