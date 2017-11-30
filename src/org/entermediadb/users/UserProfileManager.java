@@ -208,7 +208,7 @@ public class UserProfileManager
 
 		userprofile.setIndexId( mediaArchive.getSearcher("settingsgroup").getIndexId() );
 
-		log.info("Checking modules");
+		log.info("Checking modules for " + inUserName + " catalog:" + inCatalogId);
 		
 		Collection modules = getSearcherManager().getSearcher(inCatalogId, "module").query().match("id", "*").sort("name").search(inReq);
 		List<Data> okmodules = new ArrayList<Data>();
