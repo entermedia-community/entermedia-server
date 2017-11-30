@@ -59,11 +59,10 @@ public class XmpWriter
 			addKeyword(key, inComm);
 		}
 	}
-
-	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception
+	
+	
+	public boolean saveMetadata(MediaArchive inArchive, String path, Asset inAsset) throws Exception
 	{
-		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
-		
 		Map props = new HashMap();
 		props.put("absolutepath", path);
 		inArchive.fireMediaEvent("savingoriginal","asset",inAsset.getSourcePath(),props,null);
@@ -84,6 +83,14 @@ public class XmpWriter
 			inArchive.fireMediaEvent("savingoriginalcomplete","asset",inAsset.getSourcePath(),props,null);			
 		}
 		return ok;
+	}
+	
+
+	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception
+	{
+		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
+		return saveMetadata(inArchive, path, inAsset);
+		
 
 	}	
 	

@@ -225,4 +225,10 @@
  
   
   
+   <property id="includemetadata" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="boolean" >
+	Include Metadata when publishing
+  </property>
+  
+  
+  
 </properties>

@@ -21,6 +21,10 @@
 	<property id="administrativecontact" />
 	<property id="administrativeemail" />
 	
+	
+	
+		<property id="includemetadata" />
+	
 	<!-- This stuff is dumb
 	
 	<property id="company" />
