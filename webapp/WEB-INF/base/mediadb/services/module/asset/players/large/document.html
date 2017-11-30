@@ -38,7 +38,11 @@
 	</div>
 	<div class="col-sm-10"> 
 		<div id="mainimageholder"> 
-			#set($tpath = $mediaarchive.asLinkToPreview($asset, "image1500x1500.png"))
+			#set( $size = "image1500x1500.png")
+			#if( $mediaarchive.isCatalogSettingTrue("uselegacypreview") )
+				#set( $size = "image1024x768.jpg")
+			#end			
+			#set($tpath = $mediaarchive.asLinkToPreview($asset, $size))
 		
 			<img id="mainimage" src="$tpath?pagenum=$!pagenum" alt="$!asset.name" />
 		</div>		

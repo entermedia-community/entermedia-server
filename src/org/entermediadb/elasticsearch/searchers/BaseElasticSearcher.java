@@ -1360,18 +1360,17 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				find = or;
 			}
-			else if ("andgroup".equals(inTerm.getOperation()))
-			{
-				Object[] values = inTerm.getValues();
-				for (int i = 0; i < values.length; i++)
-				{
-					Object val = values[i];
-					find = QueryBuilders.matchQuery(fieldid, val);
-
-				}
-
-			}
-
+//			else if ("andgroup".equals(inTerm.getOperation())) //This seems not needed. All fields can be anded together
+//			{
+//				Object[] values = inTerm.getValues();
+//				find = QueryBuilders.termQuery(fieldid, values);
+////				for (int i = 0; i < values.length; i++)
+////				{
+////					Object val = values[i];
+////					find = QueryBuilders.termQuery(fieldid, val);
+////				}
+//			}
+//
 			else if ("matches".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.matchQuery(fieldid, valueof); // this is
