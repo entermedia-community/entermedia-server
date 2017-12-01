@@ -16,8 +16,12 @@
         #set( $link = "/${applicationid}/components/mediaviewer/player/zoom/index.html?assetid=$asset.id&pagenum=$pagenum&name=preview.png")
 	<a class="stackedplayer" data-assetid="$asset.id" data-pagenum="$pagenum" href="#" >
        <div class="emdropshadow">
+       		#set( $size = "image1500x1500.png")
+			#if( $mediaarchive.isCatalogSettingTrue("uselegacypreview") )
+				#set( $size = "image1024x768.jpg")
+			#end			
        
-       		#set( $img = $mediaarchive.asLinkToPreview($asset,"image1500x1500.png"))
+       		#set( $img = $mediaarchive.asLinkToPreview($asset,$size))
         	<img id="main-media" style="max-width:76%;" class=" #if( $totalpages > 1 ) document #end  assetdragdrop"  draggable="true"  data-sourcepath="$sourcepath" 
         		data-name="$asset.name" src="$img?pagenum=$!pagenum" alt="[[Preview Image]]"/>
        </div> 
