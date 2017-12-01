@@ -102,7 +102,7 @@ public void init() {
 					Page inputpage = publisher.findInputPage(mediaArchive, asset, preset);
 					XmpWriter writer = (XmpWriter) mediaArchive.getModuleManager().getBean("xmpWriter");
 					if(inputpage.exists()){
-						writer.saveMetadata(mediaArchive, inputpage.getContentItem().getAbsolutePath(), asset);
+						writer.saveMetadata(mediaArchive, inputpage.getContentItem(), asset);
 						
 					}
 						

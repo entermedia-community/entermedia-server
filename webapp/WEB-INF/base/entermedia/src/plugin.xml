@@ -2045,6 +2045,14 @@
 		
 	</bean>	
 	
+	 <bean id="uniqueId" class="org.entermediadb.asset.cluster.UniqueId" scope="prototype"/>
 	
- 	
+ 	<bean id="idManager" class="org.entermediadb.asset.cluster.IdManager" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="nodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+	</bean>
 </beans>

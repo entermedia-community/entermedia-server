@@ -60,7 +60,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 			{
 				try
 				{
-					writer.saveMetadata(archive, item.getAbsolutePath(), asset);
+					writer.saveMetadata(archive, item, asset);
 				}
 				catch (Exception e)
 				{

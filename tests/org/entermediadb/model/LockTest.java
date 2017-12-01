@@ -1,6 +1,7 @@
 package org.entermediadb.model;
 
 import org.entermediadb.asset.BaseEnterMediaTest;
+import org.entermediadb.asset.cluster.IdManager;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 
@@ -107,6 +108,20 @@ public class LockTest extends BaseEnterMediaTest
 
 		
 	}
+	
+	public void testIds() throws Exception
+	{
+		String catid = "entermedia/catalogs/testcatalog";
+		final IdManager manager = (IdManager)getStaticFixture().getModuleManager().getBean(catid,"idManager");
+		
+		String test = manager.nextId("test");
+		String test2 = manager.nextId("test");
+		assertNotSame( test2, test);
+		
+		
+		
+	}
+	
 
 	
 	

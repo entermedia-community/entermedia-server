@@ -16,6 +16,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.GenericsUtil;
@@ -61,8 +62,11 @@ public class XmpWriter
 	}
 	
 	
-	public boolean saveMetadata(MediaArchive inArchive, String path, Asset inAsset) throws Exception
+	public boolean saveMetadata(MediaArchive inArchive, ContentItem inItem, Asset inAsset) throws Exception
 	{
+		
+		String path = inItem.getAbsolutePath();
+
 		Map props = new HashMap();
 		props.put("absolutepath", path);
 		inArchive.fireMediaEvent("savingoriginal","asset",inAsset.getSourcePath(),props,null);
@@ -86,10 +90,11 @@ public class XmpWriter
 	}
 	
 
-	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception
+	public boolean saveMetadata(MediaArchive inArchive,  Asset inAsset) throws Exception
 	{
-		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
-		return saveMetadata(inArchive, path, inAsset);
+		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
+		
+		return saveMetadata(inArchive, item, inAsset);
 		
 
 	}	
