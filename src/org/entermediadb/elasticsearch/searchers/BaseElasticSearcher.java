@@ -1342,23 +1342,24 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 			{
-				BoolQueryBuilder or  = QueryBuilders.boolQuery();
-				Object[] values = inTerm.getValues();
-				for (int i = 0; i < values.length; i++)
-				{
-					Object val = values[i];
-
-					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
-					if("notgroup".equals(inTerm.getOperation()))
-					{
-						or.mustNot(item);
-					}
-					else
-					{
-						or.should(item);						
-					}
-				}
-				find = or;
+				find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); //This is an OR
+//				BoolQueryBuilder or  = QueryBuilders.boolQuery();
+//				Object[] values = inTerm.getValues();
+//				for (int i = 0; i < values.length; i++)
+//				{
+//					Object val = values[i];
+//
+//					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
+//					if("notgroup".equals(inTerm.getOperation()))
+//					{
+//						or.mustNot(item);
+//					}
+//					else
+//					{
+//						or.should(item);						
+//					}
+//				}
+//				find = or;
 			}
 //			else if ("andgroup".equals(inTerm.getOperation())) //This seems not needed. All fields can be anded together
 //			{
