@@ -113,6 +113,7 @@ public class LockTest extends BaseEnterMediaTest
 	{
 		String catid = "entermedia/catalogs/testcatalog";
 		final IdManager manager = (IdManager)getStaticFixture().getModuleManager().getBean(catid,"idManager");
+		manager.getIdSearcher().deleteAll(null);
 		
 		String test = manager.nextId("test");
 		String test2 = manager.nextId("test");

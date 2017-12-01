@@ -158,6 +158,7 @@ public class IdManager
 		UniqueId lockrequest = (UniqueId) searcher.createNewData();
 		lockrequest.setSourcePath(inPath);
 		lockrequest.setLocked(false);
+		lockrequest.setValue("countervalue", new Long(1L));
 		return lockrequest;
 	}
 
@@ -195,6 +196,7 @@ public class IdManager
 		UniqueId lock = new UniqueId();
 		lock.setId(first.getId());
 		lock.getProperties().putAll(first.getProperties());
+		lock.setValue("countervalue", new Long(1L));
 		return lock;
 	}
 
@@ -278,17 +280,30 @@ public class IdManager
 		
 		UniqueId counter = lock(inType);
 		
-		Long current = (Long) counter.getValue("countvalue");
-		
-		if(current == null){
-			current = 1L;
+		Long current = null;
+		try
+		{
+			Object val = counter.getValue("countvalue");
+			if(val instanceof Integer){
+				current = ((Integer)val).longValue();
+			} 
+			if(val instanceof Long){
+				current = (Long) val;
+			}
+			if(current == null){
+				current = 1L;
+			}
+			
+			current++;
+			counter.setValue("countvalue", current);
 		}
-		
-		current ++;
-		counter.setValue("countvalue", current);
-		
-		release(counter);
-		
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
+		finally{
+			release(counter);
+		}
 		return String.valueOf(current);
 		
 		

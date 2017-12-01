@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties class="uniqueId"> 
+<properties beanname="dataSearcher" class="uniqueId"> 
   <property id="id" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Lock Id 
     <name> 
       <language id="de"><![CDATA[Lock-ID]]></language>  
@@ -17,14 +17,7 @@
       <language id="fr"><![CDATA[Node Id]]></language> 
     </name> 
   </property>  
-  <property id="ownerid" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Owner Id 
-    <name> 
-      <language id="de"><![CDATA[Inhaber-ID]]></language>  
-      <language id="en"><![CDATA[Owner Id]]></language>  
-      <language id="es"><![CDATA[Propietario Id]]></language>  
-      <language id="fr"><![CDATA[Id Propriétaire]]></language> 
-    </name> 
-  </property>  
+ 
   <property id="date" editable="true" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" sortable="true" type="date">Date 
     <name> 
       <language id="de"><![CDATA[Datum]]></language>  
@@ -49,4 +42,9 @@
       <language id="fr"><![CDATA[Chemin]]></language>
     </name>
   </property> 
+  
+   <property id="countervalue" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="number">Counter Value
+  </property>  
+  
+  
 </properties>

@@ -67,7 +67,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 	
 	public Data createNewData()
 	{
-		if( fieldNewDataName == null)
+		if( getNewDataName() == null)
 		{
 			ElementData data = new ElementData();
 			
