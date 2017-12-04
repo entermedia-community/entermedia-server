@@ -43,7 +43,7 @@
     </name>
   </property> 
   
-   <property id="countervalue" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="number">Counter Value
+   <property id="countvalue" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true" type="number">Counter Value
   </property>  
   
   
