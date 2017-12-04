@@ -158,7 +158,7 @@ public class IdManager
 		UniqueId lockrequest = (UniqueId) searcher.createNewData();
 		lockrequest.setSourcePath(inPath);
 		lockrequest.setLocked(false);
-		lockrequest.setValue("countervalue", new Long(1L));
+		lockrequest.setValue("countvalue", new Long(1L));
 		return lockrequest;
 	}
 
@@ -196,7 +196,7 @@ public class IdManager
 		UniqueId lock = new UniqueId();
 		lock.setId(first.getId());
 		lock.getProperties().putAll(first.getProperties());
-		lock.setValue("countervalue", new Long(1L));
+		lock.setValue("countvalue", first.getValue("countvalue"));
 		return lock;
 	}
 
