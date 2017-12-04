@@ -18,6 +18,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
+import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsResponse;
 import org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryAction;
 import org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequestBuilder;
 import org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotAction;
@@ -65,7 +67,6 @@ import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.cluster.BaseNodeManager;
-import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
@@ -211,7 +212,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 				fieldNode = nb.node();
 				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
-				
 				
 				//nb.settings().put("index.mapper.dynamic",false);
 				
@@ -1109,6 +1109,36 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	}
 	
 	
-	
+	public NodeStats getNodeStats(){
+		
+		
+		 NodesStatsResponse response = getClient().admin().cluster().prepareNodesStats().setJvm(true).setFs(true).setOs(true).setNodesIds(getLocalNodeId()).setThreadPool(true).get();
+		 
+		 ClusterHealthResponse healths = getClient().admin().cluster().prepareHealth().get();
+		 for (Iterator iterator = response.getNodesMap().keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			NodeStats stats = response.getNodesMap().get(key);
+			String id = stats.getNode().getId();
+			String name = stats.getNode().getName();
+			if(getLocalNodeId().equals(name)){
+				stats.getJvm().getMem().getHeapMax();
+				stats.getJvm().getMem().getHeapUsed();
+				stats.getJvm().getMem().getHeapUsedPercent();
+				stats.getOs().getCpuPercent();
+				stats.getOs().getLoadAverage();
+				stats.getOs().getMem().getFree();
+				stats.getFs().getTotal();
+				log.info(response);
+
+				return stats;
+			}
+		}
+		 
+		// NodeStats stats = response.getNodesMap().get(getLocalNodeId());
+
+		 
+//		 stats.getJvm().getMem().getHeapCommitted();
+		 return null;
+	}
 	
 }
