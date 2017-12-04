@@ -42,7 +42,7 @@ public void init()
 	
 	Category root = archive.getCategorySearcher().getRootCategory();
 	archive.getCategorySearcher().saveCategory(root);
-	
+	archive.clearCaches();
 	hits.each{
 		Data hit = it;
 		String path = hit.getValue("archivesourcepath");
@@ -60,19 +60,17 @@ public void init()
 		//found.clearCategories();
 		
 		String folder = found.getValue("isfolder");
-		if(folder != null && Boolean.parseBoolean( folder ) )   //   a/b/c.jpg -> a/b   if /a/b  --> a/b
+		if(folder != null && !Boolean.parseBoolean( folder ) )   //   a/b/c.jpg -> a/b   if /a/b  --> a/b
 		{
 			path = PathUtilities.extractDirectoryPath(path);
 		}
 		Collection assetexactids = found.getValues("categories-exact");
 		Collection tosaveExactcategory = new HashSet();
-		Collection tosaveassetcategories = new HashSet();
 		for (String id in assetexactids) {
 			if( collectionscatids.contains(id))
 			{
 				Category foundcollection = archive.getCategory(id);
 				tosaveExactcategory.add(foundcollection);
-				tosaveassetcategories.addAll(foundcollection.getParentCategories());
 			}
 		}
 		//only keep ones that are within collections
@@ -83,8 +81,15 @@ public void init()
 			throw new OpenEditException("path made a null category " + path);
 		}
 		//found.addCategory(catparent);  //Load up with none since they are all deleted
+		
 		tosaveExactcategory.add(catparent);
 		found.setValue("category-exact",tosaveExactcategory);
+		
+		List tosaveassetcategories = new ArrayList();
+		for( Category exact in tosaveExactcategory)
+		{
+			tosaveassetcategories.addAll(exact.getParentCategories());
+		}
 		found.setValue("category", tosaveassetcategories );
 		//Get the path and fill in categories strcture
 		
@@ -101,8 +106,8 @@ public void init()
 		}
 		
 	}
-	archive.saveAssets(tosave, null);
 	archive.getCategorySearcher().saveAllData(cats, null);
+	archive.saveAssets(tosave, null);
 	log.info("finishedcats saved: Categories :${counter.getCount()} on ${hits.size()} assets");
 }
 
@@ -155,7 +160,7 @@ public Category createCategoryPath(MediaArchive archive, List cats, String inPat
 	//log.info("before " + inPath);
 	
 	//TODO: Find right way to do this not matches
-	Data hit = (Data)archive.getCategorySearcher().query().startsWith("categorypath", inPath).sort("categorypathUp").searchOne();
+	Data hit = (Data)archive.getCategorySearcher().query().exact("categorypath", inPath).searchOne();
 	
 	Category found = (Category)archive.getCategorySearcher().loadData(hit);
 	if( found == null)
