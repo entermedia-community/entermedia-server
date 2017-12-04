@@ -1837,7 +1837,7 @@ public class MediaArchive implements CatalogEnabled
 		Collection visibility = (Collection) getCacheManager().get("publiccollection", search.getIndexId()); //Expires after 5 min
 		if (visibility == null)
 		{
-			visibility = getSearcher("librarycollection").query().exact("visibility", "1").search();
+			visibility = getSearcher("librarycollection").query().orgroup("visibility", "1|2").search();
 			getCacheManager().put("publiccollection", search.getIndexId(), visibility);
 		}
 		return visibility;

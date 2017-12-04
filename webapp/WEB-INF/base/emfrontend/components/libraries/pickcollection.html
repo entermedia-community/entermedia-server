@@ -42,8 +42,10 @@
 						#if( $selectedlibrary )
 							#set( $text = "[[Pick From]] $text" )
 						#end
+						#set( $namedetail = $searcher.getDetail("name"))
+						
 						<select name="collectionid" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
-							data-placeholder="$text" data-sortby="name">
+							data-placeholder="$text" data-sortby="$namedetail.getDefaultSort()">
 							#if( $librarycol )
 							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
 							#end

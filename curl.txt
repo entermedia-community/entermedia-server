@@ -21,6 +21,7 @@ INFO: media_catalogs_public/lock/_search' -d '{
 
 curl -XGET  'http://localhost:9200/assets_catalog/asset/_mapping?pretty=true'  | python -mjson.tool
 
+
 curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
   "from" : 0,
   "size" : 15,
@@ -362,6 +363,17 @@ curl -XGET localhost:9200/temp2/tweet/_search -d '{
 
 curl -XGET localhost:9200/temp2/tweet/_search -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 
+curl -XGET localhost:9200/_cluster/health/?level=shards | python -mjson.tool
+
+
+curl -XGET  'http://localhost:9200/assets_catalog/_aliases' | python -mjson.tool
+
+curl -XPOST 'http://localhost:9200/_aliases' -d '
+{
+   "actions" : [
+       { "remove" : { "index" : "assets_catalog-0", "alias" : "assets_catalog" } }
+   ]
+}'
 
 curl -XPOST 'http://localhost:9200/_aliases' -d '
 {
@@ -369,6 +381,14 @@ curl -XPOST 'http://localhost:9200/_aliases' -d '
        { "remove" : { "index" : "assets_catalog1470076538744", "alias" : "assets_catalog" } }
    ]
 }'
+
+curl -XPOST 'http://localhost:9200/_aliases' -d '
+{
+   "actions" : [
+       { "remove" : { "index" : "assets_catalog1470076538744", "alias" : "assets_catalog" } }
+   ]
+}'
+
 
 curl -XPOST 'http://localhost:9200/_aliases' -d '
 {

@@ -14,7 +14,7 @@
 	#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #end
 
-#set($label = $searcherManager.getLabel($detail,$foundrow) )
+#set($label = $searcherManager.getLabel($detail,$foundrow,$context.locale) )
 
 #if( $searcherManager.getSearcher( $detail.getListCatalogId(),$detail.getListId() ).getPropertyDetails().getRender() )
 	#set($searchfield = "description")

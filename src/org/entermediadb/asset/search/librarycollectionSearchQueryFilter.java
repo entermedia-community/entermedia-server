@@ -3,6 +3,7 @@ package org.entermediadb.asset.search;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -49,8 +50,16 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 //			Category hidden = (Category) iterator.next();
 //			toshow.remove(hidden.getId());
 //		}
+		
+		Set allowedcats = new HashSet(profile.getViewCategories());
+		Collection allowed = archive.listPublicCategories();
+		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
+		{
+			Category publiccat = (Category) iterator.next();
+			allowedcats.add(publiccat);
+		}
 		SearchQuery child = inSearcher.query()
-				.orgroup("parentcategories",profile.getViewCategories())
+				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)
 				.getQuery();
 		inQuery.addChildQuery(child);
