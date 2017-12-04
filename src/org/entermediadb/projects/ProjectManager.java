@@ -1059,7 +1059,7 @@ public class ProjectManager implements CatalogEnabled
 			String visibility = collection.get("visibility");
 			if( visibility != null)
 			{
-				if( visibility.equals("1"))
+				if( visibility.equals("1") || visibility.equals("2"))
 				{
 					return true;
 				}
