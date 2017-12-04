@@ -16,7 +16,12 @@ public void init() {
 	submissions.each{
 		String id = it.id;
 		String worknumber = null;
+		if(it.worknumber != null) {
+			return;
+		}
+		
 		Data real = searcher.loadData(it);
+
 		if(id.startsWith("A")){
 			worknumber = "H" +  manager.nextId("submission");
 		} else{
