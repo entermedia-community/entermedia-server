@@ -7,8 +7,11 @@ import org.openedit.hittracker.HitTracker
 public void init() {
 	
 	MediaArchive archive = context.getPageValue("mediaarchive");
-	
-	Searcher searcher = archive.getSearcher("submission");
+	String searcherid = context.findValue("countsearcher");
+	if(searcherid == null) {
+		searcherid = "submission";
+	}
+	Searcher searcher = archive.getSearcher(searcherid);
 	HitTracker submissions = searcher.getAllHits();
 	IdManager manager = archive.getModuleManager().getBean(archive.getCatalogId(),"idManager");
 	ArrayList everything = new ArrayList();
