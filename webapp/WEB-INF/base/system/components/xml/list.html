@@ -44,11 +44,7 @@
 	#set ($o = $query.addMatches("id", "*"))
 #end
 
-#if ($detail.sort)
-	$query.setSortBy($detail.sort)
-#else
-	$query.setSortBy("name")
-#end
+$query.setSortBy($detail.getDefaultSort())
 ####$lsearcher.addShowOnly($context, $query) 
 #set ($types = $lsearcher.search($context, $query))
 #if( !$value )
