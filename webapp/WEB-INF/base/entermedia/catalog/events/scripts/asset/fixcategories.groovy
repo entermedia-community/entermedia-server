@@ -45,13 +45,11 @@ public void init()
 	archive.clearCaches();
 	hits.each{
 		Data hit = it;
-		String path = hit.getValue("archivesourcepath");
-		if(path == null){
-			path = hit.getSourcePath();	
-		}
-		else
-		{
+		String path = hit.getSourcePath();	
+		if(path != null && path.startsWith("sourcepath")) {
+		
 			path = path.substring("sourcepath".length() + 1);
+			
 		}	
 		//log.info("found " + path);
 			
