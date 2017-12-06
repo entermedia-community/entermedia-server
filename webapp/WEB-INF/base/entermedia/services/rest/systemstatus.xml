@@ -7,4 +7,16 @@
  <cache id="$key">$cache.size()</cache>
 #end
 
+
+
+#set($stats =$mediaarchive.getNodeManager().getNodeStats())
+
+<heapused>$stats.getJvm().getMem().getHeapUsed()</heapused>
+<heapusedpercent> $stats.getJvm().getMem().getHeapUsedPercent()</heapusedpercent>
+<loadaverage>$stats.getOs().getLoadAverage()</loadaverage>
+<servermemory>$stats.getOs().getMem().getFree()</servermemory>
+
+
+
+
 </rsp>
