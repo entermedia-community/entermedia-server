@@ -5,7 +5,7 @@
     <!--  This should be 1 for single node systems and 2 for more than one node  -->
     <property id="index.number_of_shards">5</property>
     <property id="index.number_of_replicas">1</property>
-    
+    <property id="index.max_result_window">100000</property>
     <!--  ES2 only -->
     <property id="index.mapping._id.indexed">true</property>
     
