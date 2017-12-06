@@ -690,6 +690,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				Page yaml = getPageManager().getPage("/system/configuration/elasticindex.yaml");
 				in = yaml.getInputStream();
 				Builder settingsBuilder = Settings.builder().loadFromStream(yaml.getName(), in);
+				
+				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					if(key.startsWith("index.") ) //Legacy
+					{
+						String val = getLocalNode().getSetting(key);
+						settingsBuilder.put(key, val);
+					}	
+				}				
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
  
 				
