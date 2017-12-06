@@ -688,7 +688,7 @@
    <property id="renewalpolicy" datatype="list" editable="true" index="true" stored="true"   type="list">Renewal Policy 
  
   </property>  
-    <property id="geotiff"  index="true" stored="true"  >Geotiff Data 
+    <property id="geotiff"  index="true" stored="true" viewtype="textarea" >Geotiff Data 
  
   </property>  
   
