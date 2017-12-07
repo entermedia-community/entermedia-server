@@ -51,7 +51,9 @@ public class AutoLoginLti extends BaseAutoLogin implements AutoLoginProvider
 				String value = (String) sorted.get(key);
 				base.append(encode(key));
 				base.append("%3D");
-				base.append(encode(encode(value)));
+				//Why do this twice?
+				//base.append(encode(encode(value)));
+				base.append(encode(value));
 				//base.append(value);
 				if( log.isDebugEnabled() )
 				{
