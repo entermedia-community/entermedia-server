@@ -128,7 +128,7 @@ public class ImageConversionManager extends BaseConversionManager
 			//if we have embdeded thumb 
 			ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 			instructions.setForce(true);
-			instructions.setInputFile(instructions.getInputFile());
+			instructions.setInputFile(inStructions.getInputFile());
 			instructions.setOutputFile(custom);
 			ConvertResult res = inExiftoolThumbTranscoder.convert(instructions);
 			if (res.isOk())
