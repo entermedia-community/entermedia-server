@@ -9,7 +9,7 @@
 
 
 
-#set($stats =$mediaarchive.getNodeManager().getNodeStats())
+#set($stats =$elasticNodeManager.getNodeStats())
 
 <heapused>$stats.getJvm().getMem().getHeapUsed()</heapused>
 <heapusedpercent> $stats.getJvm().getMem().getHeapUsedPercent()</heapusedpercent>
