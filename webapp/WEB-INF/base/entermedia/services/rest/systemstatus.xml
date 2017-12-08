@@ -17,6 +17,13 @@
 <servermemory>$stats.getOs().getMem().getFree()</servermemory>
 
 
+			
+<diskfree>$stats.getFs().getTotal().getFree()</diskfree>
+<disktotal>$stats.getFs().getTotal().getTotal()</disktotal>
+<diskavailable>$stats.getFs().getTotal().getAvailable()</diskavailable>
+
+
+
 
 
 </rsp>
