@@ -185,7 +185,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		instructions.setInputFile(archive.getContent( input ) );
 	 	c.createOutput(instructions);
 
-	 	String png1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1024x768.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
+	 	String png1024 = "/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + current.getSourcePath() + "/image1500x1500.png"; //TODO: Should run a conversion here first to ensure this is a large JPG
 		instructions.setOutputFile(archive.getContent( png1024) );
 	 	c.createOutput(instructions);
 		
