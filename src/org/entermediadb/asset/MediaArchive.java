@@ -1057,6 +1057,44 @@ public class MediaArchive implements CatalogEnabled
 		processor.process();
 
 	}
+	
+	
+	public void removeGeneratedPages(Asset inAsset, String prefix)
+	{
+	
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
+		if (inAsset.isFolder() && !path.endsWith("/"))
+		{
+			path = path + "/";
+
+		}
+		log.info(inAsset);
+
+	
+
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				log.info(inContent.getName());
+				if(inContent.getName().contains(prefix) && inContent.getName().contains("page")) {
+					
+				
+					Page page = getPageManager().getPage(inContent.getPath());
+					getPageManager().removePage(page);
+				}
+
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(path);
+		processor.setPageManager(getPageManager());
+		processor.process();
+
+	}
+	
+	
+	
 
 	public void removeOriginals(Asset inAsset)
 	{
