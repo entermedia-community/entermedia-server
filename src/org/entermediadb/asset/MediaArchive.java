@@ -1059,7 +1059,7 @@ public class MediaArchive implements CatalogEnabled
 	}
 	
 	
-	public void removeGeneratedPages(Asset inAsset, String prefix)
+	public void removeGeneratedPages(Asset inAsset, final String prefix)
 	{
 	
 		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
