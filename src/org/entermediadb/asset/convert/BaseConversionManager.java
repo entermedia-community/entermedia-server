@@ -247,7 +247,19 @@ public abstract class BaseConversionManager implements ConversionManager
     		result.setError("Input is " + input + " input loaders failed to load");
     		return result;
 		}
-    	
+    	if( !inStructions.isForce() )
+    	{
+	    	ContentItem output = inStructions.getOutputFile();
+			if( output.getLength() > 2 )
+			{
+				ConvertResult result = new ConvertResult();
+				result.setOutput(output);
+				result.setOk(true);
+				result.setComplete(true);
+				result.setInstructions(inStructions);
+				return result;
+			}
+    	}
     	ConvertResult result = transcode(inStructions);
 
     	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
