@@ -213,7 +213,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 			Data data = (Data)object;
 			try
 			{
-				updateElasticIndex(details, data); //Cant use bulk operations because id wont be set
+				createContentBuilder(details, data); //Cant use bulk operations because id wont be set
 				getXmlSearcher().saveData(data, inUser);
 			}
 			catch(Throwable ex)
@@ -231,7 +231,7 @@ public class ElasticListSearcher extends BaseElasticSearcher implements Reloadab
 
 		try
 		{
-			updateElasticIndex(details, inData);
+			createContentBuilder(details, inData);
 			getXmlSearcher().saveData(inData, inUser);
 			clearIndex();
 		}
