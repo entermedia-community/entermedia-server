@@ -245,7 +245,7 @@ public class ElasticHitTracker extends HitTracker
 			}
 		}
 	
-		return -1;
+		return super.indexOfId(inId);
 		
 	}
 	
