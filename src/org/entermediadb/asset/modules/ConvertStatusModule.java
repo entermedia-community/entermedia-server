@@ -94,6 +94,7 @@ public class ConvertStatusModule extends BaseMediaModule
         
 		ConvertInstructions instructions = manager.createInstructions(asset,preset,settings.getProperties() );
         
+		instructions.setForce(true);
 		
 		
 		
