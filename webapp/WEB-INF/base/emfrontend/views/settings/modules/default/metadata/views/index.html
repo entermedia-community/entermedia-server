@@ -179,10 +179,10 @@
 			#set($details = false)
 			#set($details =  $searcher.getDetailsForView($viewpath, $user))
 			#foreach( $element in $details)
-				#set( $pid = $element.id)
-				<li id="viewid_$pid" ><span class="drag-and-drop"></span>
+				#set( $pid = "${element.searchType}.${element.id}")
+				<li id="viewid_$pid" ><span class="drag-and-drop"></span> 
 					#if( $canviewsettings )
-					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">${element.searchType} / $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#else	
 						<A href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#end	
