@@ -246,13 +246,13 @@ public class ElasticHitTracker extends HitTracker
 		// Get the relative location based on the page we are on
 
 		// ie 50 / 40 = 1
-		int chunk = inCount / getHitsPerPage();
+		int chunkindex = inCount / getHitsPerPage();
 
 		// 50 - (1 * 40) = 10 relative
-		int indexlocation = inCount - (chunk * getHitsPerPage());
+		int indexlocation = inCount - (chunkindex * getHitsPerPage());
 
 		// get the chunk 1
-		SearchResponse searchResponse = getSearchResponse(chunk);
+		SearchResponse searchResponse = getSearchResponse(chunkindex);
 		SearchHit[] hits = searchResponse.getHits().getHits();
 		if (indexlocation >= hits.length)
 		{
