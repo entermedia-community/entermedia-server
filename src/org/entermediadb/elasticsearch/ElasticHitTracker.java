@@ -219,26 +219,8 @@ public class ElasticHitTracker extends HitTracker
 		for (Iterator iterator = getChunks().keySet().iterator(); iterator.hasNext();)
 		{
 			Integer page = (Integer) iterator.next();
-			int found = findIdOnPage(inId,getPage());
-			if( found > -1)
-			{
-				return found;
-			}
-		}
-		int found = -1;
-		if( getTotalPages() > getPage() )
-		{
-			//Look one after
-			found = findIdOnPage(inId,getPage() + 1);
-			if( found > -1)
-			{
-				return found;
-			}
-		}
-		//Look one before
-		if( getPage() > 1 )
-		{
-			found = findIdOnPage(inId,getPage() -1);
+			
+			int found = findIdOnPage(inId,page);
 			if( found > -1)
 			{
 				return found;
