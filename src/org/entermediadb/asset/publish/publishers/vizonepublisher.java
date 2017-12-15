@@ -25,7 +25,11 @@ import org.apache.http.entity.FileEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.dom4j.Attribute;
 import org.dom4j.Element;
+import org.dom4j.Namespace;
+import org.dom4j.QName;
+import org.dom4j.tree.DefaultElement;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.publishing.BasePublisher;
@@ -97,7 +101,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			Thread.sleep(5000);
 			//http://vizmtlvamf.media.in.cbcsrc.ca/api/asset/item/2101604250011569821/metadata
 			setMetadata(inMediaArchive, inDestination.get("url"), inAsset, authString);
-
+			setAcl(inMediaArchive, inDestination.get("url"), inAsset, authString);
 			result.setComplete(true);
 			log.info("publishished  ${asset} to FTP server ${servername}");
 			return result;
@@ -265,6 +269,87 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
 	}
 
+	private boolean updateAcl(Element elemRoot, QName qname) {
+		Element elemAcl = elemRoot.element(qname);
+		boolean externalAppElementFound = false;
+		if (elemAcl != null) {
+			
+			//acl:media element found. search for "External applications" element
+			for (Iterator iterator = elemAcl.elementIterator(); iterator.hasNext();) {
+				Element _elem = (Element) iterator.next();
+				//System.out.println(_elem);
+				Attribute att_v = _elem.attribute("name");
+				//System.out.println(att_v);
+				if (att_v != null && att_v.getStringValue().equals("External applications")) {
+					externalAppElementFound = true;
+					
+				} 
+			}
+			if (externalAppElementFound) {
+				Element nElement = new DefaultElement("acl:group");
+				nElement.addAttribute("name", "External applications");
+				nElement.addAttribute("read", "1");
+				nElement.addAttribute("write", "1");
+				nElement.addAttribute("admin", "1");
+				elemAcl.add(nElement);
+			}
+		}
+		return externalAppElementFound;
+	}
+	
+	public Element setAcl(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
+	{
+
+		//	curl --insecure --user "$VMEUSER:$VMEPASS" --include --header "Accept: application/opensearchdescription+xml" "https://vmeserver/thirdparty/asset/item?format=opensearch"
+
+		String addr = servername + "api/asset/item/" + inAsset.get("vizid");
+		log.info("Updating Acl at " + addr);
+		
+		HttpGet get = new HttpGet(addr);
+
+		get.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
+		get.setHeader("Authorization", "Basic " + inAuthString);
+		get.setHeader("Expect", "");
+
+		HttpResponse response = getClient().execute(get);
+		StatusLine sl = response.getStatusLine();
+		int status = sl.getStatusCode();
+		if (status >= 400)
+		{
+			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+		}
+
+		Element elemRoot = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
+		
+		QName qname = new QName("asset", new Namespace("acl", "http://www.vizrt.com/2012/acl"), "acl:asset");
+		boolean doPut = updateAcl(elemRoot, qname);
+		qname = new QName("media", new Namespace("acl", "http://www.vizrt.com/2012/acl"), "acl:media");
+		doPut = updateAcl(elemRoot, qname) || doPut;
+		
+		if (doPut) {
+			HttpPut method = new HttpPut(addr);
+			method.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
+			method.setHeader("Authorization", "Basic " + inAuthString);
+			method.setHeader("Expect", "");
+			method.setHeader("Accept-Charset", "UTF-8");
+			
+			StringEntity params = new StringEntity(elemRoot.asXML(), "UTF-8");
+			method.setEntity(params);
+
+			HttpResponse response2 = getClient().execute(method);
+			sl = response2.getStatusLine();
+			status = sl.getStatusCode();
+			if (status >= 400)
+			{
+				throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
+			}
+			Element response3 = getXmlUtil().getXml(response2.getEntity().getContent(), "UTF-8");
+			//String xml = response.asXML();
+			return response3;
+		}
+		return null;
+	}
+	
 	public Element createAsset(MediaArchive inArchive, Data inDestination, Asset inAsset, String inAuthString) throws Exception
 	{
 
