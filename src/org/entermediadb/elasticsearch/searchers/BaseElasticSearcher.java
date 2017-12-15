@@ -1364,11 +1364,15 @@ public class BaseElasticSearcher extends BaseSearcher
 			else if ("andgroup".equals(inTerm.getOperation()))
 			{
 				Object[] values = inTerm.getValues();
+				BoolQueryBuilder or  = QueryBuilders.boolQuery();
 				for (int i = 0; i < values.length; i++)
 				{
 					Object val = values[i];
-					find = QueryBuilders.termQuery(fieldid, val);
+					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);					
+					or.must(item);						
+					
 				}
+				find = or;
 			}
 			else if ("matches".equals(inTerm.getOperation()))
 			{
