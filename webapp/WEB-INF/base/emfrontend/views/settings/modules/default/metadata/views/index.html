@@ -89,7 +89,13 @@
                 <div>[[Render Table External ID]]</div>
             	<input type="hidden" value="renderexternalid" name="field" />
                 <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
-                <div>[[Render Table Default Sort]]</div>
+            
+   		 <div>[[Link to Module]]</div>
+            	<input type="hidden" value="linktomodule" name="field" />
+                <input type="checkbox" name="linktomodule.value" value="true" #if($!view.linktomodule == "true") checked #end >
+            
+
+    <div>[[Render Table Default Sort]]</div>
 				<input type="hidden" value="rendersort" name="field" />
                 <input class="field" name="rendersort.value" value="$!view.rendersort" >
 				<div>[[Render Table Custom View]]</div>
