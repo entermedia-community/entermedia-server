@@ -1,24 +1,27 @@
 package categories
 
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.Data
+import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
 
 public void init()
 {
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
 	
-	List categories = mediaarchive.getCategoryArchive().listAllCategories();
-
-	for (Category cat in categories)
+	HitTracker categories = mediaarchive.getCategorySearcher().getAllHits();
+	categories.enableBulkOperations();
+	for (Data data in categories)
 	{
 		SearchQuery q = mediaarchive.getAssetSearcher().createSearchQuery();
-		q.addExact("category", cat.getId() );
+		q.addExact("category", data.getId() );
 		q.addNot("editstatus","7");
-		Data data = mediaarchive.getAssetSearcher().searchByQuery(q);
-		if( data == null )
+		Data oneasset = mediaarchive.getAssetSearcher().searchByQuery(q);
+		if( oneasset == null )
 		{
-			mediaarchive.getCategoryArchive().deleteCategory(cat);
+			Category cat = mediaarchive.getCategorySearcher().loadData(data);
+			mediaarchive.getCategorySearcher().deleteCategoryTree(cat);
 			log.info("removed ${cat}" );
 		}
 	}

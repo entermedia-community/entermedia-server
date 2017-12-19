@@ -37,9 +37,9 @@ public class ElasticOrderSearcher extends BaseElasticSearcher implements OrderSe
 //	}
 	
 	
-	protected void updateElasticIndex(PropertyDetails details, Data inData) {
+	protected void createContentBuilder(PropertyDetails details, Data inData) {
 		//getOrderManager().loadOrderHistory(getCatalogId(),(Order)inData);
-		super.updateElasticIndex(details, inData);
+		super.createContentBuilder(details, inData);
 	}
 	
 }

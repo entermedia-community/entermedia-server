@@ -218,34 +218,16 @@ public class ElasticHitTracker extends HitTracker
 		}
 		for (Iterator iterator = getChunks().keySet().iterator(); iterator.hasNext();)
 		{
-			Integer page = (Integer) iterator.next();
-			int found = findIdOnPage(inId,getPage());
-			if( found > -1)
-			{
-				return found;
-			}
-		}
-		int found = -1;
-		if( getTotalPages() > getPage() )
-		{
-			//Look one after
-			found = findIdOnPage(inId,getPage() + 1);
-			if( found > -1)
-			{
-				return found;
-			}
-		}
-		//Look one before
-		if( getPage() > 1 )
-		{
-			found = findIdOnPage(inId,getPage() -1);
+			Integer chunkindex = (Integer) iterator.next();
+			
+			int found = findIdOnPage(inId,chunkindex+1);
 			if( found > -1)
 			{
 				return found;
 			}
 		}
 	
-		return -1;
+		return super.indexOfId(inId);
 		
 	}
 	
@@ -264,13 +246,13 @@ public class ElasticHitTracker extends HitTracker
 		// Get the relative location based on the page we are on
 
 		// ie 50 / 40 = 1
-		int chunk = inCount / getHitsPerPage();
+		int chunkindex = inCount / getHitsPerPage();
 
 		// 50 - (1 * 40) = 10 relative
-		int indexlocation = inCount - (chunk * getHitsPerPage());
+		int indexlocation = inCount - (chunkindex * getHitsPerPage());
 
 		// get the chunk 1
-		SearchResponse searchResponse = getSearchResponse(chunk);
+		SearchResponse searchResponse = getSearchResponse(chunkindex);
 		SearchHit[] hits = searchResponse.getHits().getHits();
 		if (indexlocation >= hits.length)
 		{

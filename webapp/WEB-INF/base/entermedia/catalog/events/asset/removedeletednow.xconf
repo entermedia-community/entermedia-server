@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Remove deleted now</property>	
+
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${catalogid}/events/scripts/asset/removedeletednow.groovy</script>
+	</path-action>
+</page>

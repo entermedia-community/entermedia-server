@@ -1361,17 +1361,19 @@ public class BaseElasticSearcher extends BaseSearcher
 //				}
 //				find = or;
 			}
-//			else if ("andgroup".equals(inTerm.getOperation())) //This seems not needed. All fields can be anded together
-//			{
-//				Object[] values = inTerm.getValues();
-//				find = QueryBuilders.termQuery(fieldid, values);
-////				for (int i = 0; i < values.length; i++)
-////				{
-////					Object val = values[i];
-////					find = QueryBuilders.termQuery(fieldid, val);
-////				}
-//			}
-//
+			else if ("andgroup".equals(inTerm.getOperation()))
+			{
+				Object[] values = inTerm.getValues();
+				BoolQueryBuilder or  = QueryBuilders.boolQuery();
+				for (int i = 0; i < values.length; i++)
+				{
+					Object val = values[i];
+					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);					
+					or.must(item);						
+					
+				}
+				find = or;
+			}
 			else if ("matches".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.matchQuery(fieldid, valueof); // this is
@@ -1493,7 +1495,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		// list.add((Data) inData);
 		// saveAllData(list, inUser);
 		PropertyDetails details = getPropertyDetailsArchive().getPropertyDetailsCached(getSearchType());
-		updateElasticIndex(details, inData);
+		createContentBuilder(details, inData);
 		clearIndex();
 	}
 
@@ -1549,7 +1551,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					throw new OpenEditException("Data was null!");
 				}
-				updateElasticIndex(details, data);
+				createContentBuilder(details, data);
 			}
 		}
 		clearIndex();
@@ -1803,7 +1805,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
-	protected void updateElasticIndex(PropertyDetails details, Data data)
+	protected void createContentBuilder(PropertyDetails details, Data data)
 	{
 		try
 		{
@@ -1909,12 +1911,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			log.info("Null Data");
 		}
-		populateDoc(inContent, inData, inDetails);
-	}
-
-	protected void populateDoc(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
-	{
-
 		// Map props = inData.getProperties();
 		// HashSet everything = new HashSet(props.keySet());
 		// everything.add("id");

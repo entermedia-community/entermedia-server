@@ -342,8 +342,9 @@ public class DataEditModule extends BaseMediaModule
 		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		String toremove = inReq.getRequestParameter("toremove");
-
-		Element element = file.getElementById(toremove);
+		//toremove might have a . in it
+		
+		Element element = loadViewElement(file, toremove);
 		file.deleteElement(element);
 
 		if( file.getRoot().elements().size() == 0)
@@ -358,6 +359,17 @@ public class DataEditModule extends BaseMediaModule
 		searcher.getPropertyDetailsArchive().clearCache();
 
 	}
+
+protected Element loadViewElement(XmlFile file, String toremove)
+{
+	Element element = file.getElementById(toremove);
+	if( element == null && toremove.contains("."))
+	{
+		toremove = toremove.substring(toremove.indexOf(".") + 1,toremove.length());
+		element = file.getElementById(toremove);
+	}
+	return element;
+}
 
 	public PropertyDetail loadProperty(WebPageRequest inReq) throws Exception
 	{
@@ -1552,9 +1564,14 @@ public class DataEditModule extends BaseMediaModule
 		List tosave = new ArrayList();
 		for (int i = 0; i < sorted.length; i++)
 		{
-			Element sourceelement = file.getElementById(sorted[i]);
-			sourceelement.setParent(null);
-			tosave.add(sourceelement);
+			//Element sourceelement = file.getElementById();
+			String id = sorted[i];
+			Element sourceelement = loadViewElement(file,id );
+			if( sourceelement != null)
+			{
+				sourceelement.setParent(null);
+				tosave.add(sourceelement);
+			}
 		}
 		if(tosave.isEmpty())
 		{
@@ -1579,10 +1596,10 @@ public class DataEditModule extends BaseMediaModule
 		file.setElementName("property");
 
 		String source = inReq.getRequestParameter("source");
-		Element sourceelement = file.getElementById(source);
+		Element sourceelement = loadViewElement(file, source);
 
 		String destination = inReq.getRequestParameter("destination");
-		Element destinationelement = file.getElementById(destination);
+		Element destinationelement =  loadViewElement(file, destination);
 		
 		int sindex = file.getElements().indexOf(sourceelement);
 		int dindex = file.getElements().indexOf(destinationelement);

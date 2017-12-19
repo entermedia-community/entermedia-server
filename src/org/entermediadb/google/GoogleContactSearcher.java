@@ -106,7 +106,14 @@ public class GoogleContactSearcher extends BaseSearcher implements NonExportable
 		return new ListHitTracker(contacts);
 				
 	}
-
+  
+	
+	@Override
+	public void reindexInternal() throws OpenEditException {
+	return;
+	}
+	
+	
 	
 //	@Override
 //	public HitTracker fieldSearch(WebPageRequest inReq) throws OpenEditException
@@ -129,4 +136,11 @@ public class GoogleContactSearcher extends BaseSearcher implements NonExportable
 		throw new OpenEditException(e);
 	}
 	}
+	
+	
+	
+	
+	
+	
+	
 }

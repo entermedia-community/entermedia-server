@@ -89,7 +89,13 @@
                 <div>[[Render Table External ID]]</div>
             	<input type="hidden" value="renderexternalid" name="field" />
                 <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
-                <div>[[Render Table Default Sort]]</div>
+            
+   		 <div>[[Link to Module]]</div>
+            	<input type="hidden" value="linktomodule" name="field" />
+                <input type="checkbox" name="linktomodule.value" value="true" #if($!view.linktomodule == "true") checked #end >
+            
+
+    <div>[[Render Table Default Sort]]</div>
 				<input type="hidden" value="rendersort" name="field" />
                 <input class="field" name="rendersort.value" value="$!view.rendersort" >
 				<div>[[Render Table Custom View]]</div>
@@ -179,10 +185,10 @@
 			#set($details = false)
 			#set($details =  $searcher.getDetailsForView($viewpath, $user))
 			#foreach( $element in $details)
-				#set( $pid = $element.id)
-				<li id="viewid_$pid" ><span class="drag-and-drop"></span>
+				#set( $pid = "${element.searchType}.${element.id}")
+				<li id="viewid_$pid" ><span class="drag-and-drop"></span> 
 					#if( $canviewsettings )
-					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
+					<a href="$home$apphome/views/settings/lists/datamanager/properties/edit.html?id=$pid&searchtype=$searchtype">${element.searchType} / $element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#else	
 						<A href="#">$element.getText($context)<span class="type-of-field">#if( $element.getDataType() ) $element.getDataType() #else textbox #end<span></a>
 					#end	
