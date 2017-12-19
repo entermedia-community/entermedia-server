@@ -55,7 +55,7 @@ public void archiveAssets(Data retentionpolicy, Collection assets)
 		if( Boolean.valueOf( retentionpolicy.get("deleteasset") ) )
 		{
 			mediaarchive.deleteAsset(asset,false);
-			complete = true;
+			return;
 		}
 		 
 		if( !complete && !it.archivesourcepath  ) //Archive it
