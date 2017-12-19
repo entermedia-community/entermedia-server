@@ -311,6 +311,7 @@ public abstract class BasePushManager  implements PushManager{
 					}
 				}
 			}
+			log.info("Received a pushed asset: " + target.getId() +" at " + target.getSourcePath() +  " : "  );
 			archive.saveAsset(target, inReq.getUser());
 			archive.fireMediaEvent("importing","pushassetimported", inReq.getUser(), target);
 	
@@ -640,11 +641,12 @@ public abstract class BasePushManager  implements PushManager{
 	public void 	saveAssetStatus(Searcher searcher, List savequeue, Asset target, String inNewStatus, User inUser)
 	{
 		String oldstatus = target.get("pushstatus");
+		log.info("Old Status was : " + oldstatus);
 		if( oldstatus == null || !oldstatus.equals(inNewStatus))
 		{
 			target.setValue("pushstatus", inNewStatus);
 			savequeue.add(target);
-			if( savequeue.size() == 100 )
+			if( savequeue.size() == 50)
 			{
 				searcher.saveAllData(savequeue, inUser);
 				savequeue.clear();
