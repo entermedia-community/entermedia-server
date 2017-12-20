@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Restore newest snapshots</property>	
+	<property name="eventdescription">Watches for new snapshots and restores them when found.  Only run on the backup cluster</property>	
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/utils/autorestorelatestsnapshot.groovy</script>
+	</path-action>
+</page>

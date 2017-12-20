@@ -1,7 +1,13 @@
 package org.entermediadb.elasticsearch;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -408,6 +414,31 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Collections.reverse(results);
 		return results;
 	}
+	
+	
+	public String restoreLatest(String inCatalogId, String lastrestored) {
+		
+		List snapshots = listSnapShots(inCatalogId);
+		if(snapshots.size() == 0) {
+			return null;
+		}
+		SnapshotInfo info = (SnapshotInfo) snapshots.get(0);
+		if(lastrestored == null) {
+			lastrestored="";
+		}
+		
+		if(lastrestored.equals(info.name())) {
+			return null;
+		}
+			
+		
+		restoreSnapShot(inCatalogId, info.name());
+		
+		return info.name();
+		
+	}
+	
+	
 
 	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
 	{
@@ -1120,7 +1151,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	
 	
 	public NodeStats getNodeStats(){
-		
+		 NumberFormat nf = NumberFormat.getNumberInstance();
+		 for (Path root : FileSystems.getDefault().getRootDirectories()) {
+
+		     System.out.print(root + ": ");
+		     try {
+		         FileStore store = Files.getFileStore(root);
+		         System.out.println("available=" + nf.format(store.getUsableSpace())
+		                             + ", total=" + nf.format(store.getTotalSpace()));
+		     } catch (IOException e) {
+		         System.out.println("error querying space: " + e.toString());
+		     }
+		 }
 		
 		 NodesStatsResponse response = getClient().admin().cluster().prepareNodesStats().setJvm(true).setFs(true).setOs(true).setNodesIds(getLocalNodeId()).setThreadPool(true).get();
 		 
@@ -1137,12 +1179,20 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				stats.getOs().getCpuPercent();
 				stats.getOs().getLoadAverage();
 				stats.getOs().getMem().getFree();
-				stats.getFs().getTotal();
+				stats.getFs().getTotal().getAvailable();
+				stats.getFs().getTotal().getTotal();
+				stats.getFs().getTotal().getFree();
 				log.info(response);
 
 				return stats;
 			}
 		}
+		 
+		 
+		 
+		 
+	
+		 
 		 
 		// NodeStats stats = response.getNodesMap().get(getLocalNodeId());
 
