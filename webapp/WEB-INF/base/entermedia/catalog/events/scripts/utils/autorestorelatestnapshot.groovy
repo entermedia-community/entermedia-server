@@ -12,7 +12,7 @@ public void runit()
 	String id = nodeManager.restoreLatest(mediaArchive.getCatalogId(), latest);
 	if(id != null){
 		log.info("Restored newer snapshot" + id);
-		mediaArchive.saveCatalogSettingValue("latestrestoredsnap", id);
+		mediaArchive.setCatalogSettingValue("latestrestoredsnap", id);
 	} else {
 		
 		log.info("No new snapshot detected");
