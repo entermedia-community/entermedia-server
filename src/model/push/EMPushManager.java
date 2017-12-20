@@ -178,6 +178,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 			{
 				upload(target, archive, "generated", filestosend);
 				target.setValue("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				log.info("pushed " + target.getId());
 				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
 
 			}
