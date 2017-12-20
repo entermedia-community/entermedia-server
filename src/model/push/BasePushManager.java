@@ -642,6 +642,8 @@ public abstract class BasePushManager  implements PushManager{
 	{
 		String oldstatus = target.get("pushstatus");
 		log.info("Old Status was : " + oldstatus);
+		log.info("New Status was : " + inNewStatus);
+		
 		if( oldstatus == null || !oldstatus.equals(inNewStatus))
 		{
 			target.setValue("pushstatus", inNewStatus);
