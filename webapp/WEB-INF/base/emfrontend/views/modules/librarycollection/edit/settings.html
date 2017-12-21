@@ -2,7 +2,7 @@
 
 $pages.include($editlink)
 
-#if( $librarycol.isVisibility("2") || $librarycol.isVisibility("1") )
+#if( !$librarycol.isVisibility("3") )
 <div class="ui-widget uipanel" style="padding: 20px 5px 5px 5px;width: 60%">
   	<div class="ui-widget-header">[[Sharing]]
     	<span class="widget-header-edit">
@@ -29,7 +29,7 @@ $pages.include($editlink)
 </div>
 #end
 
-#if( $caneditdata )
+#if( $caneditdata && $canviewsettings)
 <div class="ui-widget uipanel" style="padding: 20px 5px 5px 5px;width: 60%">
   	<div class="ui-widget-header">[[Category Path]]
  ##   	<span class="widget-header-edit">
