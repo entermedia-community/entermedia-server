@@ -451,7 +451,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		String guid = UUID.randomUUID().toString();
 		String sguid = guid.substring(0, Math.min(guid.length(), 13));
 		vals.put("guid", sguid);
-		vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3).replace("-", ""));
+		sguid = sguid.replace("-", "");
+		vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3));
+		vals.put("shortguid", sguid.substring(0, 2) + "/" + sguid.substring(3,Math.min(guid.length(), 6)));
 
 		Date now = new Date();
 		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy/MM"); //TODO: Use DataStorage
