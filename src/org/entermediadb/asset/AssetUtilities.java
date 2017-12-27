@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.scanner.MetaDataReader;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -369,11 +370,20 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 		if (currentcollectionid != null)
 		{
-			Data coll = inArchive.getData("librarycollection", currentcollectionid);
+			LibraryCollection coll = (LibraryCollection)inArchive.getData("librarycollection", currentcollectionid);
 			if (coll != null)
 			{
-				vals.put("librarycollection", currentcollectionid);
+				vals.put("librarycollection", coll);
 				vals.put("library", coll.get("library"));
+				Category uploadto = coll.getCategory();
+				String uploadcategoryid = inReq.getRequestParameter("category.value");
+				
+				if( uploadcategoryid != null)
+				{
+					uploadto  = inArchive.getCategory(uploadcategoryid);
+				}
+				
+				vals.put("categorypath", uploadto.getCategoryPath());
 			}
 		}
 		String[] fields = inReq.getRequestParameters("field");

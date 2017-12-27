@@ -12,7 +12,7 @@
 	
 	
 	
-	<data id="assigncategoryonupload" value="true">
+	<data id="assigncategoryonupload" value="false">
     <name><![CDATA[Assign assets to categories based on their upload masks/sourcepath]]></name>
   </data>
 	
