@@ -356,20 +356,23 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		{
 			currentcollectionid = inReq.getRequestParameter("currentcollection.value");
 		}
+		Map vals = new HashMap();
+		vals.putAll(inReq.getPageMap());
+
 		if (currentcollectionid == null)
 		{
 			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}
+			String uploadcategoryid = inReq.getRequestParameter("category.value");
+			
+			if( uploadcategoryid != null)
+			{
+				Category uploadto  = inArchive.getCategory(uploadcategoryid);
+				vals.put("categorypath", uploadto.getCategoryPath());
+			}
 		}
 		else
 		{
 			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}	
-		}
-
-		Map vals = new HashMap();
-		vals.putAll(inReq.getPageMap());
-
-		if (currentcollectionid != null)
-		{
 			LibraryCollection coll = (LibraryCollection)inArchive.getData("librarycollection", currentcollectionid);
 			if (coll != null)
 			{

@@ -11,7 +11,7 @@
 
 	<property id="catalogassetforcewatermarkusers" value="">Admin Catalog Asset View Users</property>
 	<property id="catalogassetforcewatermarkgroups" value="">Admin Catalog Asset View Groups</property>
-	<property id="projectassetupload" value="${library.folder||library.name}/${formatteddate}/${splitguid}/">Add Media Upload Path</property>
+	<property id="projectassetupload" value="${categorypath}/${formatteddate}/${splitguid}/">Add Media Upload Path</property>
 	<property id="collectionassetupload" value="${categorypath}/${filename}">Collection Media Upload Path</property>
 	<property id="catalogassetupload" value="${formattedmonth}/${splitguid}/">API Upload Path</property>
 	<property id="movecollectionpath" value="${newlibrary.folder||newlibrary.name}/${year}/${splitname}">Collection Export Path</property>
