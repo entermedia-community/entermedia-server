@@ -366,6 +366,17 @@ curl -XGET localhost:9200/temp2/tweet/_search -d '{ "query" : {	"match_all" : {}
 curl -XGET localhost:9200/_cluster/health/?level=shards | python -mjson.tool
 
 
+curl localhost:9200/_nodes/ | python -mjson.tool
+
+
+curl -XGET localhost:9200/_nodes/stats?pretty
+curl -XGET localhost:9200/_cat/
+
+curl -XGET localhost:9200/_cat/shards
+
+curl -XGET localhost:9200/assets_catalog/indices | python -mjson.tool
+
+
 curl -XGET  'http://localhost:9200/assets_catalog/_aliases' | python -mjson.tool
 
 curl -XPOST 'http://localhost:9200/_aliases' -d '

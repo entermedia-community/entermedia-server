@@ -125,6 +125,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 				{
 					resizestring = resizestring + "^";
 				}
+				else
+				{
+					Boolean scaleup = Boolean.parseBoolean(inStructions.get("scaleup"));
+					if(scaleup == false) 
+					{
+						resizestring = resizestring + ">"; //Default behavior
+					}
+				}
 
 				if (isOnWindows())
 				{
