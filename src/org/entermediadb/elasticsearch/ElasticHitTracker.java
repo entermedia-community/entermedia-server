@@ -199,10 +199,13 @@ public class ElasticHitTracker extends HitTracker
 					}
 					getChunks().put(chunk, response);
 					
-					if( (getSearchQuery().isEndUserSearch() || getSearchQuery().isFilter()) && fieldFilterOptions == null )
+					if( getSearchQuery().isEndUserSearch() || getSearchQuery().isFilter() )
 					{
-					  getFilterOptions();
-					  getSearcheRequestBuilder().setAggregations(new HashMap());
+						if( fieldFilterOptions == null )
+						{
+						  getFilterOptions();
+						  getSearcheRequestBuilder().setAggregations(new HashMap());
+						}
 					}
 				}
 			}

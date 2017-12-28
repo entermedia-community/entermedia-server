@@ -312,7 +312,7 @@
       <language id="fr"><![CDATA[Dernière modification]]></language> 
     </name> 
   </property>  
-  <property id="recordmodificationdate" index="true" type="date" searchcomponent="datesearch" stored="true" editable="false"   sortable="true">Record Edit Date 
+  <property id="recordmodificationdate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false"   sortable="true">Record Edit Date 
     <name> 
       <language id="de"><![CDATA[Rekord bearbeiten Datum]]></language>  
       <language id="en"><![CDATA[Record Edit Date]]></language>  
