@@ -2159,6 +2159,9 @@ public class BaseElasticSearcher extends BaseSearcher
 						LanguageMap map = new LanguageMap();
 						map.setText("en", target);
 						value = map;
+					} 
+					if(!(value instanceof LanguageMap)) {
+						throw new OpenEditException("Unexpexted value for MultiLanguage enabled field : " + value + " detail: " + detail.getId() + "Data Was: " + inData.getId() + " searchtype " + getSearchType());
 					}
 					LanguageMap map = (LanguageMap) value;
 					for (Iterator iterator2 = locales.iterator(); iterator2.hasNext();)
