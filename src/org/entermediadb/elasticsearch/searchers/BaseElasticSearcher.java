@@ -2125,6 +2125,10 @@ public class BaseElasticSearcher extends BaseSearcher
 						Position pos = (Position)value;
 						GeoPoint point = new GeoPoint(pos.getLatitude(),pos.getLongitude());
 						inContent.field(key, point);  
+					} else if(value instanceof String) {
+						GeoPoint point = new GeoPoint((String)value);
+						inContent.field(key, point);  
+
 					}
 				}
 				else if (key.equals("description")) // TODO: This should be
