@@ -12,17 +12,13 @@
 
 <div id="${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
    #set($latandlong = $data.get("$detail.id"))
-   #set( $lat = $!data.get("${detail.id}_lat") )
-   #set( $lng = $!data.get("${detail.id}_lng") )
+   #set( $lat = $!data.getValue("${detail.id}").getLatitude() )
+   #set( $lng = $!data.getValue("${detail.id}").getLongitude() )
    #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
    
-   <input type="hidden" name="field" value="${detail.id}_lat"/>
-    <input type="hidden" id="${detail.id}_lat" name="${detail.id}_lat.value" value="$!lat"/>
-    <input type="hidden" name="field" value="${detail.id}_lng"/>
-     <input type="hidden" id="${detail.id}_lng" name="${detail.id}_lng.value" value="$!lng"/>
 
   
-   Position: <input type="text" id="${detail.id}_latandlong" size="40" name="${detail.id}.value" value="$!latandlong"/>
+   Position: <input type="text" id="${detail.id}_latandlong" size="40" name="${detail.id}.value" value="$lat,$lng"/>
 
 
 <script type="text/javascript">
@@ -33,7 +29,7 @@ jQuery('#${detail.id}_map').gmap({
 	#if( $latandlong )
 	$('#${detail.id}_map').gmap('addMarker', 
 			{
-			'position': '$latandlong',
+			'position': '$lat,$lng',
 			'draggable': true, 
 		    'bounds': true
 		    #if($icon)
@@ -43,15 +39,12 @@ jQuery('#${detail.id}_map').gmap({
 		    .dragend(function(event) 
 	    	  		{
 	    		 	
-	    		   jQuery('#${detail.id}_lat').val(event.latLng.lat());
-	              jQuery('#${detail.id}_lng').val(event.latLng.lng());
 	              
 	              jQuery('#${detail.id}_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
 	              
 	              
 	    	  	}       
 	    	).click(function() {
-		//$('#${detail.id}_map').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
 	});
 	    $('#${detail.id}_map').gmap('option', 'zoom', 12);
 	#else
@@ -82,8 +75,7 @@ dosearch = function ()
 	    	  }).dragend(function(event) 
 	    	  		{
 	    		 	
-	    		  jQuery('#${detail.id}_lat').val(event.latLng.lat());
-	              jQuery('#${detail.id}_lng').val(event.latLng.lng());
+	    		  
 	              
 	              jQuery('#${detail.id}_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
 	                
@@ -96,8 +88,7 @@ dosearch = function ()
 	    	$('#${detail.id}_map').gmap('get', 'map').panTo(results[0].geometry.location);
 	       $('#${detail.id}_map').gmap('option', 'zoom', 12);
 
- 		  jQuery('#${detail.id}_lat').val(results[0].geometry.location.lat());
-          jQuery('#${detail.id}_lng').val(results[0].geometry.location.lng());
+ 		
           jQuery('#${detail.id}_latandlong').val(results[0].geometry.location.lat() + "," + results[0].geometry.location.lng());
 
 	    }
