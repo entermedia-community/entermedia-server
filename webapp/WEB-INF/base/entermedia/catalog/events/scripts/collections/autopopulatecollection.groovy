@@ -43,6 +43,7 @@ public void init(){
 		categories.enableBulkOperations();
 		if(categories.size() > 0){
 			ArrayList rootcats = findCommonRoots(categories);
+			
 			rootcats.remove(collection.get("rootcategory"));
 			context.putPageValue("foundcategories", rootcats);
 		}
@@ -76,6 +77,9 @@ public List findCommonRoots(HitTracker inCategories){
 	String lastroot = "_";
 	sorted.each{
 		Data hit = (Data)it;
+		if(hit.getName().contains("Collections")) {
+			return;
+		}
 		String catpath = hit.get("categorypath");
 		if( !catpath.startsWith(lastroot))
 		{
@@ -88,6 +92,9 @@ public List findCommonRoots(HitTracker inCategories){
 		}
 
 	}
+	
+	
+	
 	log.info("got  " + finallist.size());
 	return finallist;
 }
