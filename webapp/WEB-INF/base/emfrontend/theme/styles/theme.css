@@ -7097,3 +7097,19 @@ li.resultmenuitem {
 		display: none;
 	}
 }
+
+
+.hidden-sm-xs {
+  display: none;
+}
+
+@media screen and (min-width: 700px) {
+.hidden-sm-xs {
+    display: block;
+  }
+}
+@media screen and (max-width: 900px) {
+	#eml-tab-subnav ul li a, #sub-nav li a {
+		padding:0 10px;
+	}
+}
