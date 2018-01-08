@@ -607,4 +607,54 @@ public class MediaAdminModule extends BaseMediaModule
 		return snapshot;
 
 	}
+	public boolean checkAcceptConnections(WebPageRequest inReq) throws Exception
+	{
+		//Look in DB to see if I am the primary server or not
+		//Primary domain
+		MediaArchive archive = getMediaArchive(inReq);
+		String primaryserverurl = archive.getCatalogSettingValue("primary-server-healthcheck-url");
+		Boolean acceptconnections = true;
+		if( primaryserverurl != null)
+		{
+			StringBuffer ctx = inReq.getRequest().getRequestURL();
+			String me = ctx.substring( 0, ctx.indexOf("/", 8) ); //8 comes from https://
+			if( !primaryserverurl.startsWith(me) )
+			{
+				//Connect to the remote server and make sure it's running ok
+				Downloader downloader = new Downloader();
+				try
+				{
+					String health = downloader.downloadToString(primaryserverurl);
+					if( health.contains("\"accepting\":\"true\""))
+					{
+						acceptconnections = false;
+						inReq.putPageValue("message","Primary Server is reachable " + primaryserverurl);
+						//Set the status
+						log.error("Primary Server is reachable " + primaryserverurl);
+						inReq.getResponse().sendError(503,"Primary Server is reachable " + primaryserverurl);
+					}
+					else
+					{
+						inReq.putPageValue("message","Primary Server returned false " + health);	
+					}
+				}
+				catch( Exception ex)
+				{
+					log.error("Server not reachable " + primaryserverurl ,ex);
+					inReq.putPageValue("message","Primary server not reachable " + primaryserverurl);
+				}
+			}
+			else
+			{
+				inReq.putPageValue("message","this is the primary server" );
+			}
+		}
+		else
+		{
+			inReq.putPageValue("message","primary-server-healthcheck-url not set" );
+		}
+		inReq.putPageValue("acceptconnections",acceptconnections);
+		return acceptconnections;
+	}
+	
 }
