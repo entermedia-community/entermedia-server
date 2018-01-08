@@ -612,18 +612,22 @@ public class MediaAdminModule extends BaseMediaModule
 		//Look in DB to see if I am the primary server or not
 		//Primary domain
 		MediaArchive archive = getMediaArchive(inReq);
-		String primaryserverurl = archive.getCatalogSettingValue("primary-server-healthcheck-url");
+		String primaryserverip = archive.getCatalogSettingValue("primary-server-healthcheck-ip");
 		Boolean acceptconnections = true;
-		if( primaryserverurl != null)
+		if( primaryserverip != null)
 		{
 			StringBuffer ctx = inReq.getRequest().getRequestURL();
 			String me = ctx.substring( 0, ctx.indexOf("/", 8) ); //8 comes from https://
-			if( !primaryserverurl.startsWith(me) )
+
+			if( !primaryserverip.startsWith(me) )
 			{
+				String primaryserverurl = archive.getCatalogSettingValue("primary-server-healthcheck-url");
+
 				//Connect to the remote server and make sure it's running ok
 				Downloader downloader = new Downloader();
 				try
 				{
+					log.error(primaryserverip + "did not match. Checking " + primaryserverurl + " from " + me);
 					String health = downloader.downloadToString(primaryserverurl);
 					if( health.contains("\"accepting\":\"true\""))
 					{
