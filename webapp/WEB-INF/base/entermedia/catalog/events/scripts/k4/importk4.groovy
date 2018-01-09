@@ -462,10 +462,8 @@ public class XMLPathProcessor extends PathProcessor {
 			parser.parse(inContent.getInputStream());
 		}
 		catch (Exception e){
-			if (canLog("low")) {
-				getLogger().info("Exception caught parsing K4 file, ${e.getMessage()}");
-			}
-			return;
+			throw new OpenEditException(e);
+			
 		}
 			
 		//keep track of id and name of each entity to build logical paths
