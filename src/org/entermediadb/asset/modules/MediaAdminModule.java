@@ -612,13 +612,13 @@ public class MediaAdminModule extends BaseMediaModule
 		//Look in DB to see if I am the primary server or not
 		//Primary domain
 		MediaArchive archive = getMediaArchive(inReq);
-		String nodeid = archive.getCatalogSettingValue("primary-server-primary-nodeid");
+		Collection nodeids = archive.getCatalogSettingValues("primary-server-primary-nodeids");
 		Boolean acceptconnections = true;
-		if( nodeid != null)
+		if( nodeids != null && nodeids.isEmpty())
 		{
 			String me = archive.getNodeManager().getLocalNodeId();
 			
-			if( !nodeid.equals(me) )
+			if( !nodeids.contains(me) )
 			{
 				String primaryserverurl = archive.getCatalogSettingValue("primary-server-healthcheck-url");
 
@@ -626,7 +626,7 @@ public class MediaAdminModule extends BaseMediaModule
 				Downloader downloader = new Downloader();
 				try
 				{
-					log.error(nodeid + "did not match. Checking " + primaryserverurl + " from " + me);
+					log.error("nodes did not match. Checking " + primaryserverurl + " from " + me);
 					String health = downloader.downloadToString(primaryserverurl);
 					if( health.contains("\"accepting\":\"true\""))
 					{
