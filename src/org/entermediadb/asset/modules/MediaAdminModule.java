@@ -614,7 +614,7 @@ public class MediaAdminModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Collection nodeids = archive.getCatalogSettingValues("primary-server-primary-nodeids");
 		Boolean acceptconnections = true;
-		if( nodeids != null && nodeids.isEmpty())
+		if( nodeids != null && !nodeids.isEmpty())
 		{
 			String me = archive.getNodeManager().getLocalNodeId();
 			
@@ -654,7 +654,7 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		else
 		{
-			inReq.putPageValue("message","primary-server-healthcheck-url not set" );
+			inReq.putPageValue("message","primary-server-primary-nodeids not set" );
 		}
 		inReq.putPageValue("acceptconnections",acceptconnections);
 		return acceptconnections;
