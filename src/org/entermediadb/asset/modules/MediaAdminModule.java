@@ -20,6 +20,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.node.Node;
 import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
@@ -612,16 +613,14 @@ public class MediaAdminModule extends BaseMediaModule
 		//Look in DB to see if I am the primary server or not
 		//Primary domain
 		MediaArchive archive = getMediaArchive(inReq);
-		Collection nodeids = archive.getCatalogSettingValues("primary-server-primary-nodeids");
+		String primaryserverurl = archive.getCatalogSettingValue("primary-server-healthcheck-url");
 		Boolean acceptconnections = true;
-		if( nodeids != null && !nodeids.isEmpty())
+		if( primaryserverurl != null )
 		{
-			String me = archive.getNodeManager().getLocalNodeId();
+			String me = archive.getNodeManager().getLocalNode().getNodeType();
 			
-			if( !nodeids.contains(me) )
+			if( !me.equals(Node.PRIMARY) )
 			{
-				String primaryserverurl = archive.getCatalogSettingValue("primary-server-healthcheck-url");
-
 				//Connect to the remote server and make sure it's running ok
 				Downloader downloader = new Downloader();
 				try
