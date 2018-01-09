@@ -310,6 +310,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			if (detail.isFilter())
 			{
 				allFilters.add(detail);
+				
+				
+				
 			}
 		}
 
@@ -352,9 +355,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				avg.field(detail.getId());
 
 			}
+			else if (detail.isList()){
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+				inSearch.addAggregation(b);
+			}
 			else
 			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
 				inSearch.addAggregation(b);
 			}
 
