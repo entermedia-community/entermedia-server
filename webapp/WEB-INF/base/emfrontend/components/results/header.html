@@ -170,10 +170,10 @@ $context.putPageValue("hits",$hits)
 				</div>
 			</li>
 			#if( $hits.size() > 0)
-			<li style="float:right" class="hidden-xs hidden-sm")>
+			<li style="float:right" class=" hidden-sm-xs hidden-xs hidden-sm hidden-md">
 			$pages.include("$apphome/components/results/pages.html",$context)
-			</li>
-			<li id="resultpageslabel" class="resultmenuitem" style="float:right">
+			</li>	
+			<li id="resultpageslabel" class="resultmenuitem hidden-sm-xs hidden-xs hidden-sm hidden-md" style="float:right">
 			<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size()</span>
 			</li>			
 			#end

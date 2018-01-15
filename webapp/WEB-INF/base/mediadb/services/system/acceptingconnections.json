@@ -1,0 +1,7 @@
+{
+"response":
+	{
+    	"accepting":"$acceptconnections",
+    	"message":"$message"
+	}
+}

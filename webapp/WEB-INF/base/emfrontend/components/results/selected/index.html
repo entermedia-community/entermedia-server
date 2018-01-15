@@ -22,13 +22,12 @@
 
 #if( $hits.hasSelections() )
 
-<li><a>[[Actions]] (
+<li><a>[[Actions]]
 #if( $hits.isShowOnlySelected() )
-[[All]] $hits.getSelectionSize()
+([[All]] $hits.getSelectionSize())
 #else 
- $hits.getSelectionSize() / $hits.size()
-#end
- )</a>
+($hits.getSelectionSize()/$hits.size())
+#end</a>
 	<ul>
 	#if( $librarycol && $caneditdata )
 		<li><a class="emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a></li>

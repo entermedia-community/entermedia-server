@@ -1,6 +1,8 @@
 <node>
 
     <property id="node.name">${nodeid}</property>
+    <property id="entermedia.nodetype">primary</property>
+    <property id="cluster.name">entermedia-cluster</property>
     
     <!--  This should be 1 for single node systems and 2 for more than one node  -->
     <property id="index.number_of_shards">5</property>
