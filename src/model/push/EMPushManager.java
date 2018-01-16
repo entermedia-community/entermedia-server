@@ -143,10 +143,10 @@ public class EMPushManager extends BasePushManager implements PushManager
 
 		List<ContentItem> filestosend = new ArrayList<ContentItem>();
 
-		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath();
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getPath();
 		
 		readFiles( archive.getPageManager(), path, path, filestosend );
-		ContentItem item = archive.getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + target.getSourcePath() + "/fulltext.txt");
+		ContentItem item = archive.getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + target.getPath() + "/fulltext.txt");
 		if( item.exists() )
 		{
 			filestosend.add(item);
@@ -380,7 +380,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 			return mediaArchive.getOriginalDocument(asset);
 
 		}
-		String input = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + inPreset.get("generatedoutputfile");
+		String input = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getPath() + "/" + inPreset.get("generatedoutputfile");
 		Page inputpage = mediaArchive.getPageManager().getPage(input);
 		return inputpage;
 
@@ -590,7 +590,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 			String type = null;
 			if( !"original".equals(preset.get("transcoderid")))
 			{
-				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile");
+				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getPath() + "/" + preset.get("generatedoutputfile");
 				inputpage= inArchive.getPageManager().getPage(input);
 				type = "generated";
 			}
