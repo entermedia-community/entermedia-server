@@ -1767,6 +1767,12 @@ protected Element loadViewElement(XmlFile file, String toremove)
 					if(type == null || !archive.viewExists( path ) )
 					{
 						path =	module + "/assettype/default/" + view.getId();
+						List detailsForView = getSearcherManager().getSearcher(catalogid, "asset").getDetailsForView(path, inReq.getUser());
+						if(detailsForView == null || detailsForView.size() == 0) {
+							continue;
+						}
+						
+						
 					}
 				}
 				else
