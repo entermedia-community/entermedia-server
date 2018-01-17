@@ -98,12 +98,24 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		
 		
-		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("generatedoutputfile"));
+		
+		
+		
+		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getPath() + "/" + preset.get("generatedoutputfile"));
 		instructions.setOutputFile(outputpage);
-		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
-			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg");
+		//always use the 1024 - otherwise larger crops are incorrect
+		
+		//TODO: should do some scaling math based on the input file it selects and the numbers we got so there is no loss in quality
+		
+		
+		//if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
+			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getPath() + "/image1024x768.jpg");
 			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
-		}
+		//}
+			
+		
+		
+		
 		manager.createOutput(instructions); //This will go back to the original if needed
 
 //		//TODO: Re-enamble version control
