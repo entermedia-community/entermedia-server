@@ -113,8 +113,8 @@ public class ConvertStatusModule extends BaseMediaModule
 			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
 		}
 		
-		
-		if(instructions.getMaxScaledSize().getHeight() > 768 || instructions.getMaxScaledSize().getWidth() > 1024) {
+		String hasheight = instructions.get("cropheight");
+		if(hasheight != null && (instructions.getMaxScaledSize().getHeight() > 768 || instructions.getMaxScaledSize().getWidth() > 1024)) {
 			//input will be the original
 			double originalheight = Double.parseDouble(asset.get("height"));
 			double originalwidth = Double.parseDouble(asset.get("width"));
@@ -123,8 +123,9 @@ public class ConvertStatusModule extends BaseMediaModule
 			if(originalheight > originalwidth) {
 				wide = false;				
 			}
+			
 			//{cropheight=165, assetid=AWEEgnrnvcTz0GAGVvnK, presetdataid=test, croplast=true, y1=101, x1=269, force=true, cropwidth=220, crop=true, outputextension=jpg, cachefilename=image.jpg}
-			Double cropheight = Double.parseDouble(instructions.get("cropheight"));
+			Double cropheight = Double.parseDouble(hasheight);
 			Double cropwidth = Double.parseDouble(instructions.get("cropwidth"));
 			Double x1 = Double.parseDouble(instructions.get("x1"));
 			Double y1 = Double.parseDouble(instructions.get("y1"));
