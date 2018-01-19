@@ -355,7 +355,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				avg.field(detail.getId());
 
 			}
-			else if (detail.isList()){
+			else if (detail.isList() || detail.isBoolean()){
 				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
 				inSearch.addAggregation(b);
 			}
