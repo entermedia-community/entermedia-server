@@ -63,8 +63,12 @@
     #elseif ($link.id == "assetpermissions")
     #set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
       #elseif ($link.id == "metadatageneral")
+   #if($caneditasset)
     #set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}&edit=true")
-    
+
+   #else
+    #set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
+    #end
     #end
     #if( !$ismulti || $inmultiok )
     #set ($href = "$apphome/views/modules/asset/editor/${link.folder}/index.html")
