@@ -625,14 +625,14 @@ public class MediaAdminModule extends BaseMediaModule
 				Downloader downloader = new Downloader();
 				try
 				{
-					log.error("nodes did not match. Checking " + primaryserverurl + " from " + me);
+					log.info("nodes is " + me + " Checking " + primaryserverurl + " from " + me);
 					String health = downloader.downloadToString(primaryserverurl);
 					if( health.contains("\"accepting\":\"true\""))
 					{
 						acceptconnections = false;
 						inReq.putPageValue("message","Primary Server is reachable " + primaryserverurl);
 						//Set the status
-						log.error("Primary Server is reachable " + primaryserverurl);
+						log.info("Primary Server is reachable " + primaryserverurl);
 						inReq.getResponse().sendError(503,"Primary Server is reachable " + primaryserverurl);
 					}
 					else
@@ -653,7 +653,7 @@ public class MediaAdminModule extends BaseMediaModule
 		}
 		else
 		{
-			inReq.putPageValue("message","primary-server-primary-nodeids not set" );
+			inReq.putPageValue("message","primary-server-healthcheck-url not set" );
 		}
 		inReq.putPageValue("acceptconnections",acceptconnections);
 		return acceptconnections;
