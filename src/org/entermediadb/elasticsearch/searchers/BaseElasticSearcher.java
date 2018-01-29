@@ -1479,6 +1479,13 @@ public class BaseElasticSearcher extends BaseSearcher
 					sort = SortBuilders.fieldSort(field);
 				}
 			}
+
+			if(sort == null) {
+				sort = SortBuilders.fieldSort(field);
+
+			}
+			
+			
 			sort.ignoreUnmapped(true);
 			if (direction)
 			{
@@ -1489,6 +1496,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				sort.order(SortOrder.ASC);
 			}
 			search.addSort(sort);
+			
 		}
 	}
 
