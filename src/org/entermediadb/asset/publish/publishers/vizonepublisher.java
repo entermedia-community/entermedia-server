@@ -13,6 +13,8 @@ import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
+import org.apache.http.Header;
+import org.apache.http.HttpMessage;
 import org.apache.http.StatusLine;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.config.CookieSpecs;
@@ -48,9 +50,12 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 	private static final Log log = LogFactory.getLog(vizonepublisher.class);
 	protected XmlUtil fieldXmlUtil;
-
+	private static final String CACHE = "VIZ_Cookies";
+	private static final String COOKIES = "Cookies";
+	
 	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
+		
 
 		try
 		{
@@ -66,7 +71,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			String servername = inDestination.get("server");
 			String username = inDestination.get("username");
 			String url = inDestination.get("url");
-
+			
 			log.info("Publishing ${asset} to ftp server ${servername}, with username ${username}.");
 
 			String password = inDestination.get("password");
@@ -83,7 +88,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 			String vizid = inAsset.get("vizid");
 
-			if (vizid == null)
+			if (true) //vizid == null (Marie-Eve asked to re-push the asset as if it was a new image 
 			{
 				Element results = createAsset(inMediaArchive, inDestination, inAsset, authString);
 				String id = results.element("id").getText();
@@ -114,6 +119,26 @@ public class vizonepublisher extends BasePublisher implements Publisher
 
 	}
 
+	private void storeCookies(MediaArchive inArchive, HttpResponse response) {
+		//log.info("*** storeCookies");
+		Header[] headers = response.getHeaders("Set-Cookie");
+		if (headers != null && headers[0].getValue() != null) {
+			inArchive.getCacheManager().put(CACHE, COOKIES, headers[0].getValue());
+			//log.info("*** storeCookies: "+headers[0].getValue());
+		}
+		
+	}
+	
+	private void setCookies(MediaArchive inArchive, HttpMessage method) {
+		//log.info("*** setCookies");
+		Object header = inArchive.getCacheManager().get(CACHE, COOKIES);
+		if (header != null) {
+			method.setHeader("Cookie", header.toString());
+			//log.info("*** setCookies: "+header.toString());
+		}
+	}
+	
+	
 	public void updateAsset(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
 	{
 
@@ -129,8 +154,10 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
-
+		setCookies(inArchive, get);
+		
 		HttpResponse response = getClient().execute(get);
+		
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
 		if (status >= 400)
@@ -183,7 +210,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
 		get.setHeader("Accept-Charset", "UTF-8");
-		
+		setCookies(inArchive, get);
 
 		HttpResponse response = getClient().execute(get);
 		StatusLine sl = response.getStatusLine();
@@ -231,26 +258,45 @@ public class vizonepublisher extends BasePublisher implements Publisher
 //			  </field>		
 				String assetvalue = inAsset.get(detail.getId());
 				if(assetvalue != null){
-				
-				
-				Element field = elem.addElement("field");
-				field.addAttribute("name", vizfield);
-				Element value = field.addElement("value");
-				value.setText(assetvalue);
+					Element field = elem.addElement("field");
+					field.addAttribute("name", vizfield);
+					Element value = field.addElement("value");
+					value.setText(assetvalue);		
+					log.info("*** value.setText: "+assetvalue +" for "+vizfield);
+					
 				}
-				
 			}
 		}
-		
+		//check if owner exists
+		boolean assetOwner_IMG = false;
+		for (Iterator iterator = elem.elementIterator(); iterator.hasNext();) {
+			Element _elem = (Element) iterator.next();
+			Attribute att_v = _elem.attribute("name");
+			if (att_v != null && att_v.getStringValue().equals("asset.owner")) {
+				Element _elem_value = _elem.element("value");
+				if (_elem_value != null) {
+					_elem_value.setText("Img");
+				} else {
+					//asset.owner present but empty
+					Element value = _elem.addElement("value");
+					value.setText("Img");
+				}
+				assetOwner_IMG = true;
+			} 
+		}
+		if (!assetOwner_IMG) {
+			Element field = elem.addElement("field");
+			field.addAttribute("name", "asset.owner");
+			Element value = field.addElement("value");
+			value.setText("Img");
+		}
 
 		HttpPut method = new HttpPut(addr);
 		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "");
 		method.setHeader("Accept-Charset", "UTF-8");
-
-		
-		
+		setCookies(inArchive, method);
 		
 		StringEntity params = new StringEntity(elem.asXML(), "UTF-8");
 		method.setEntity(params);
@@ -285,16 +331,17 @@ public class vizonepublisher extends BasePublisher implements Publisher
 					
 				} 
 			}
-			if (externalAppElementFound) {
+			if (!externalAppElementFound) {
 				Element nElement = new DefaultElement("acl:group");
 				nElement.addAttribute("name", "External applications");
 				nElement.addAttribute("read", "1");
 				nElement.addAttribute("write", "1");
-				nElement.addAttribute("admin", "1");
+				nElement.addAttribute("admin", "0");
 				elemAcl.add(nElement);
+				return true;
 			}
 		}
-		return externalAppElementFound;
+		return false;
 	}
 	
 	public Element setAcl(MediaArchive inArchive, String servername, Asset inAsset, String inAuthString) throws Exception
@@ -310,7 +357,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
-
+		setCookies(inArchive, get);
+		
 		HttpResponse response = getClient().execute(get);
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
@@ -332,6 +380,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			method.setHeader("Authorization", "Basic " + inAuthString);
 			method.setHeader("Expect", "");
 			method.setHeader("Accept-Charset", "UTF-8");
+			setCookies(inArchive, method);
 			
 			StringEntity params = new StringEntity(elemRoot.asXML(), "UTF-8");
 			method.setEntity(params);
@@ -386,8 +435,13 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		method.setHeader("Authorization", "Basic " + inAuthString);
 		method.setHeader("Expect", "");
 		method.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
-
+		
+		setCookies(inArchive, method);
+		
 		HttpResponse response2 = getClient().execute(method);
+		storeCookies(inArchive, response2);
+
+		
 		StatusLine sl = response2.getStatusLine();
 		int status = sl.getStatusCode();
 		if (status >= 400)
@@ -414,7 +468,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			HttpPut method = new HttpPut(addr);
 			method.setHeader("Authorization", "Basic " + inAuthString);
 			method.setHeader("Expect", "");
-
+			setCookies(archive, method);
+			
 			HttpResponse response2 = getClient().execute(method);
 
 			String addr2 = response2.getFirstHeader("Location").getValue();
@@ -422,7 +477,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			HttpPut upload = new HttpPut(addr2);
 			upload.setHeader("Authorization", "Basic " + inAuthString);
 			upload.setHeader("Expect", "");
-
+			setCookies(archive, upload);
+			
 			FileEntity entity = new FileEntity(new File(inputpage.getContentItem().getAbsolutePath()));
 			upload.setEntity(entity);
 
@@ -464,7 +520,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		get.setHeader("Content-Type", "application/atom+xml;type=entry;charset=utf-8");
 		get.setHeader("Authorization", "Basic " + inAuthString);
 		get.setHeader("Expect", "");
-
+		setCookies(inArchive, get);
+		
 		HttpResponse response = getClient().execute(get);
 		StatusLine sl = response.getStatusLine();
 		int status = sl.getStatusCode();
@@ -504,3 +561,4 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	}
 
 }
+
