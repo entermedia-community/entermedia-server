@@ -603,7 +603,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
-						if (detail.isAnalyzed())
+						if (detail.isAnalyzed() )
 						{
 							jsonproperties.startObject("fields");
 							jsonproperties.startObject("exact");
@@ -1445,29 +1445,47 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null && detail.isAnalyzed())
+			if (detail != null )
 			{
 				if (detail.isMultiLanguage())
 				{
-					sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
+					if( detail.isAnalyzed() )
+					{
+						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
+					}
+					else
+					{
+						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage());
+					}
 				}
 				else if( detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
 				{
 					PropertyDetail first = (PropertyDetail)detail.getObjectDetails().iterator().next();
-					sort = SortBuilders.fieldSort(field + "." + first.getId());
+					if( first.isAnalyzed() )
+					{
+						sort = SortBuilders.fieldSort(field + "." + first.getId() + ".exact");
+					}
+					else
+					{
+						sort = SortBuilders.fieldSort(field + "." + first.getId());
+					}
 				}
-				else
+				else if( detail.isAnalyzed() )
 				{
 					sort = SortBuilders.fieldSort(field + ".exact");
 				}
-
+				else
+				{
+					sort = SortBuilders.fieldSort(field);
+				}
 			}
 
-			else
-			{
+			if(sort == null) {
 				sort = SortBuilders.fieldSort(field);
-			}
 
+			}
+			
+			
 			sort.ignoreUnmapped(true);
 			if (direction)
 			{
@@ -1478,6 +1496,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				sort.order(SortOrder.ASC);
 			}
 			search.addSort(sort);
+			
 		}
 	}
 

@@ -808,6 +808,8 @@ public class ProjectManager implements CatalogEnabled
 			library.setName("General");
 			librarysearcher.saveData(library);
 		} 
+		
+		
 		if(library == null){
 			library = librarysearcher.createNewData();
 			library.setId(libraryid);
@@ -815,7 +817,13 @@ public class ProjectManager implements CatalogEnabled
 			librarysearcher.saveData(library);
 
 		}
-		Category collectioncategory = inArchive.createCategoryPath("Collections/" + library.getName() + "/" + collection.getName());
+		String collectionroot = inArchive.getCatalogSettingValue("collection_root");
+		if(collectionroot == null){
+			collectionroot = "Collections"; 
+		}
+		
+		
+		Category collectioncategory = inArchive.createCategoryPath(collectionroot + "/" + library.getName() + "/" + collection.getName());
 		return collectioncategory;
 	}
 
@@ -832,7 +840,13 @@ public class ProjectManager implements CatalogEnabled
 			String folder = library.get("folder");
 			if (folder == null || folder.isEmpty())
 			{
-				folder = "Collections/" + library.getName();
+				String collectionroot = inArchive.getCatalogSettingValue("collection_root");
+				if(collectionroot == null){
+					collectionroot = "Collections"; 
+				}
+				
+				
+				folder = collectionroot + "/" + library.getName();
 			}
 			librarycategory = inArchive.createCategoryPath(folder);
 			library.setValue("categoryid", librarycategory.getId());
