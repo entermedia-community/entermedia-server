@@ -1,5 +1,6 @@
 package org.entermediadb.asset.modules;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,7 +22,10 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
+import org.openedit.util.FileUtils;
+import org.openedit.util.PathUtilities;
 
 public class TimelineModule extends BaseMediaModule
 {
@@ -137,7 +141,36 @@ public class TimelineModule extends BaseMediaModule
 		
 	}
 	
-	
+	public void loadClosedCaption(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Searcher captionsearcher = archive.getSearcher("videotrack");
+		Asset asset = getAsset(inReq);
+		
+		String type = inReq.getContentPage().getPageName();
+		int place = type.lastIndexOf("-");
+		String lang = null;
+		if( place == type.length() - 3) 
+		{
+			lang = type.substring(place + 1);
+			//track.setProperty("sourcelang", lang);
+		}
+		if( lang == null)
+		{
+			lang = inReq.getLanguage();
+		}
+		HitTracker tracks = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", lang).search();
+
+		if( tracks.size() == 0)
+		{
+			tracks = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", "en").search();
+		}
+		
+		inReq.putPageValue("tracks", tracks);
+		inReq.putPageValue("captionsearcher", captionsearcher);
+		
+	}
 	
 	public void importTimeline(WebPageRequest inReq) throws Exception
 	{
@@ -169,16 +202,28 @@ public class TimelineModule extends BaseMediaModule
 		Page page = archive.getPageManager().getPage(path);
 		
 		WebvttParser parser = new WebvttParser();
-		WebvttSubtitle titles = parser.parse(page.getInputStream());
-
-	
+		InputStream input = page.getInputStream();
+		WebvttSubtitle titles = parser.parse(input);
+		FileUtils.safeClose(input);
+		Searcher searcher = archive.getSearcher("videotrack");
+		HitTracker existing = searcher.query().exact("assetid", asset.getId()).search();
+		searcher.deleteAll(existing, null);
+		
 		Collection captions = new ArrayList();
 		
-		Searcher searcher = archive.getSearcher("videotrack");
-		Data cuetest = searcher.createNewData();
-		if(fields != null){
-		searcher.updateData(inReq, fields, cuetest);
+		Data track = searcher.createNewData();
+		if(fields != null)
+		{
+			searcher.updateData(inReq, fields, track);
 		}
+		String type = PathUtilities.extractPageName(fname);
+		int place = type.lastIndexOf("-");
+		if( place == type.length() - 3) 
+		{
+			
+			String lang = type.substring(place + 1);
+			track.setProperty("sourcelang", lang);
+		}	
 		
 		for (Iterator iterator = titles.getCues().iterator(); iterator.hasNext();)
 		{
@@ -188,15 +233,15 @@ public class TimelineModule extends BaseMediaModule
 			cuemap.put("captiontext", cue.getText().toString());
 			cuemap.put("timecodestart", cue.getPosition());
 			cuemap.put("alignment", cue.getAlignment());
-			cuemap.put("timecodestart", Double.valueOf(cue.getPosition()));
-			cuemap.put("timecodelength", cue.getSize());
+			cuemap.put("timecodestart", cue.getStartTime());
+			cuemap.put("timecodeend", cue.getEndTime());
 			captions.add(cuemap);
 
 
 		}
-		cuetest.setValue("captions", captions);
-		cuetest.setValue("assetid", asset.getId());
-		searcher.saveData(cuetest);
+		track.setValue("captions", captions);
+		track.setValue("assetid", asset.getId());
+		searcher.saveData(track);
 		
 		
 		

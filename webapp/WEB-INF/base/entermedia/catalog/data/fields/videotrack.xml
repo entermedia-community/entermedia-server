@@ -1,4 +1,4 @@
-<properties beanname="dataSearcher">
+<properties beanname="dataSearcher" class="videoTrack">
 
 
  <property id="id" index="true" editable="false" stored="true" keyword="false" filter="false" sortable="true">Id 
@@ -28,7 +28,7 @@
     
     
     <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
-    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videolength">Duration</property>   
+    <property id="timecodeend" index="true" stored="true" editable="true" datatype="double" viewtype="videotime">End Time</property>   
     <property id="alignment" index="true" stored="true" editable="true" type="list" >Alignment</property>   
     <property id="line" index="true" stored="true" editable="true" type="number" >Line</property>   
     
