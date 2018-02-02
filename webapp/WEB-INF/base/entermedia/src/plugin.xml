@@ -2017,6 +2017,12 @@
  	<bean id="TimelineModule" class="org.entermediadb.asset.modules.TimelineModule" >
 	
 	</bean>	
+
+ 	<bean id="videoTrack" class="org.entermediadb.video.VideoTrack" scope="prototype"  >
+	
+	</bean>	
+ 	
+ 	
  	
  	<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule" >
 	</bean>	

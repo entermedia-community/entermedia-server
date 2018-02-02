@@ -283,7 +283,9 @@ public class ProjectModule extends BaseMediaModule
 		String collectionid = loadCollectionId(inReq);
 		if( collectionid != null)
 		{
-			return getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+			Data collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+			inReq.putPageValue("librarycol",collection);
+			return collection;
 		}
 		return null;
 	}

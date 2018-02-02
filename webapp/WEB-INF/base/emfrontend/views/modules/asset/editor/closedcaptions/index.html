@@ -13,12 +13,10 @@ $asset
 #set($captionsearcher = $mediaarchive.getSearcher("videotrack"))
 
 #set($tracks = $captionsearcher.query().exact("assetid", $asset.getId()).search())
-$tracks.size()
+<ul>
 #foreach($track in $tracks)
-$track
-#foreach($caption in $track.getValue("captions"))
-	$caption.captiontext
-	$caption.timecodestart
-
+#set( $track = $captionsearcher.loadData($track) )
+<li><a href="$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/${asset.name}-$track.sourcelang.vtt">$track.sourcelang Closed Caption</a>
+</li>
 #end
-#end
+</ul>

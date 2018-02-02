@@ -93,7 +93,11 @@ public void init()
 			ContentItem custom = archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + exportname);
 			if( !custom.exists())
 			{
-				one.setProperty("status", "retry");
+				if("error".equals('status'))){
+					return;
+				} else{
+					one.setProperty("status", "retry");
+				}
 				tasksearcher.saveData(one, null);
 				Thread.sleep(200);
 				log.info("Generated output not found. Recreating asset "+ assetid + "preset " + presetid);

@@ -72,6 +72,22 @@ public class MathUtils
 		return result.doubleValue();
 	}
 
+	public static String toDuration(long inDuration)
+	{
+		//00:03:03.167
+		//HOURS:MM:SS.MICROSECONDS
+		long second = (inDuration / 1000) % 60;
+		long minute = (inDuration / (1000 * 60)) % 60;
+		long hour = (inDuration / (1000 * 60 * 60)) % 24;
+		String millis = String.valueOf( inDuration );
+		if( millis.length() > 4)
+		{
+			millis = millis.substring(millis.length() - 4);
+		}
+		String time = String.format("%02d:%02d:%02d", hour, minute, second);
+		time = time + ":" + millis;
+		return time;
+	}
 	
 	public static double parseDuration(String inSeconds)
 	{

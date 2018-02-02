@@ -36,8 +36,8 @@ import org.entermediadb.video.VTT.Cue;
   public WebvttCue(long startTime, long endTime, CharSequence text, int line, int position,
       String alignment, int size) {
     super(text, line, position, alignment, size);
-    this.startTime = startTime;
-    this.endTime = endTime;
+    this.fieldStartTime = startTime;
+    this.fieldEndTime = endTime;
   }
 
   /**
