@@ -93,7 +93,7 @@ public void init()
 			ContentItem custom = archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + exportname);
 			if( !custom.exists())
 			{
-				if("error".equals('status')){
+				if("error".equals(status)){
 					return;
 				} else{
 					one.setProperty("status", "retry");
