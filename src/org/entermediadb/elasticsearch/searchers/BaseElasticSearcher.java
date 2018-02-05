@@ -2154,6 +2154,8 @@ public class BaseElasticSearcher extends BaseSearcher
 					} else if(value instanceof String) {
 						GeoPoint point = new GeoPoint((String)value);
 						inContent.field(key, point);  
+						Position position = new Position(point.getLat(), point.getLon());
+						inData.setValue(key, position);
 
 					}
 				}
