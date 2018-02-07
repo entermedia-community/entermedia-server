@@ -12,9 +12,15 @@
       <source type="video/mp4"  src="$source"  autoplay="false">
       #set( $short = $url_util.getPathUtilities().extractPagePath($source) )
       <source type="video/flash"  src="mp4:$short"  autoplay="false">
+      $tracks
+      #if( $tracks && !$tracks.isEmpty() )
+      	#foreach( $track in $tracks)
+      <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
+      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/${asset.name}-${track.sourcelang}.vtt" default>
+      	#end
+      #end
    </video>
 </div>
-
 <script>
 $(function () {
   $("#play$asset.getId()").flowplayer({swf: "$!cdn$home/${mediadbappid}/services/module/asset/players/flowplayer/flowplayer.swf" });

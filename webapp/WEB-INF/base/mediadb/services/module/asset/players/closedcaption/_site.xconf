@@ -1,0 +1,9 @@
+<page>
+
+	<property name="virtual">true</property>
+	<property name="assetfolderid">true</property>
+	<path-action name="TimelineModule.loadClosedCaption" alltypes="true"/>
+	<property name="forcelayout">true</property>
+	<layout>/${applicationid}/services/module/asset/players/closedcaption/webvtt.txt</layout>
+	<generator name="velocityGenerator" />
+</page>

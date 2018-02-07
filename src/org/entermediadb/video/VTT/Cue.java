@@ -28,15 +28,35 @@ public class Cue {
   public static final int UNSET_VALUE = -1;
 
   public  CharSequence text;
-
   public  int fieldLine;
-  public  int fieldPosition;
-  public  long startTime;
-  public  long endTime;
-  public  String fieldAlignment;
-  public  int fieldSize;
+  public  int fieldPosition;  //percentage of the width of the video viewpoint
+  public  long fieldStartTime;
+  public  long fieldEndTime;
+  public  String fieldAlignment;  //Text aligment
+  public  int fieldSize; //How big of a font to use
   
   
+  
+  public long getStartTime()
+{
+	return fieldStartTime;
+}
+
+public void setStartTime(long inStartTime)
+{
+	fieldStartTime = inStartTime;
+}
+
+public long getEndTime()
+{
+	return fieldEndTime;
+}
+
+public void setEndTime(long inEndTime)
+{
+	fieldEndTime = inEndTime;
+}
+
   
   public String getAlignment()
 {
@@ -103,8 +123,8 @@ public Cue() {
     this.fieldPosition = position;
     this.fieldAlignment = alignment;
     this.fieldSize = size;
-    this.startTime = startTime;
-    this.endTime = endTime;
+    this.fieldStartTime = fieldStartTime;
+    this.fieldEndTime = fieldEndTime;
   }
 
 }

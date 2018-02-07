@@ -40,6 +40,13 @@ uiload = function() {
 		input.select2();
 	});
 	
+	jQuery("select.listdropdown").livequery( function() 
+	{
+		var input = jQuery(this);
+		input.select2();
+	});
+	
+	
 	jQuery("input.select2editable").livequery( function() 
 	{
 	 	var input = jQuery(this);
