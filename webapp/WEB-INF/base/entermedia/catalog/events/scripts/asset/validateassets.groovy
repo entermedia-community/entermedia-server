@@ -20,6 +20,9 @@ public init()
 	
 	Searcher searcher = mediaarchive.getSearcher("validation");
 	HitTracker hits = searcher.getAllHits();
+	hits.enableBulkOperations();
+	ArrayList tosave = new ArrayList();
+	
 	hits.each{
 		Data data = searcher.loadData(it);
 		String assetid = data.getAt("assetid");
@@ -38,9 +41,9 @@ public init()
 				data.setValue("original", false)
 			}
 		}
-		searcher.saveData(data);
+		tosave.add(data);
 	}
-	
+	searcher.saveAllData(tosave, null);
 }
 
 init();
