@@ -77,15 +77,15 @@ uiload = function() {
 				 , data: arr
 		});
 	});	
-	/*
-	 * Removed to validate forms only on submit
-	jQuery(".validate-inputs").livequery(
+	
+	 
+	jQuery(".force-validate-inputs").livequery(
 			function() 
 			{
-//				jQuery(".required",this).each(function()
-//				{
-//					//jQuery(this).attr("required","true");
-//				});
+				jQuery(".required",this).each(function()
+				{
+					//jQuery(this).attr("required","true");
+				});
 				
 				
 				var theform = jQuery(this).closest("form");
@@ -105,7 +105,7 @@ uiload = function() {
 							
 			}
 		);
-		*/
+		
 		jQuery("select.ajax").livequery('change',
 			function(e) 
 			{
