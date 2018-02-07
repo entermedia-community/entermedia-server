@@ -252,7 +252,7 @@ public abstract class BasePushManager  implements PushManager{
 			String k4processed = inReq.getRequestParameter("k4processed.value");
 			
 			
-			if( k4processed == "true" || editstatus == "override") 
+			if(  "true".equals(k4processed) || "override".equals(editstatus)) 
 			{
 				archive.getAssetSearcher().updateData(inReq, fields, target);
 			}
