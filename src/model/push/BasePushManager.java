@@ -254,6 +254,8 @@ public abstract class BasePushManager  implements PushManager{
 			
 			if(  "true".equals(k4processed) || "override".equals(editstatus)) 
 			{
+				
+				
 				archive.getAssetSearcher().updateData(inReq, fields, target);
 			}
 			else
@@ -311,7 +313,7 @@ public abstract class BasePushManager  implements PushManager{
 					}
 				}
 			}
-			log.info("Received a pushed asset: " + target.getId() +" at " + target.getSourcePath() +  " : "  );
+			log.info("Received a pushed asset: " + target.getId() +" at " + target.getSourcePath() +  " : "  + "details(k4 / edit status) : " + k4processed + " / " + editstatus );
 			archive.saveAsset(target, inReq.getUser());
 			archive.fireMediaEvent("importing","pushassetimported", inReq.getUser(), target);
 	
