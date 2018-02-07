@@ -255,6 +255,8 @@ public abstract class BasePushManager  implements PushManager{
 			if(  "true".equals(k4processed) || "override".equals(editstatus)) 
 			{
 				
+				log.info("OVERRIDE WAS " + editstatus);
+				log.info("Fields were" + fields);
 				
 				archive.getAssetSearcher().updateData(inReq, fields, target);
 			}
