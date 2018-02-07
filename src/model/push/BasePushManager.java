@@ -248,11 +248,11 @@ public abstract class BasePushManager  implements PushManager{
 			String[] fields = inReq.getRequestParameters("field");
 			
 			//Make sure we ADD libraries not replace them
-			String editstatus = inReq.getRequestParameter("editstatus.value");
-			String k4processed = inReq.getRequestParameter("k4processed.value");
+			String editstatus = inReq.getRequestParameter("editstatus.value").trim();
+			String k4processed = inReq.getRequestParameter("k4processed.value").trim();
+			log.info("OVERRIDE: " + "override".equals(editstatus));
 			
-			
-			if(  "true".equals(k4processed) || "override".equals(editstatus)) 
+			if("true".equals(k4processed) || "override".equals(editstatus)) 
 			{
 				
 				log.info("OVERRIDE WAS " + editstatus);
