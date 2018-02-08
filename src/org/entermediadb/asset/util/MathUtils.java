@@ -80,13 +80,26 @@ public class MathUtils
 		long minute = (inDuration / (1000 * 60)) % 60;
 		long hour = (inDuration / (1000 * 60 * 60)) % 24;
 		String millis = String.valueOf( inDuration );
-		if( millis.length() > 4)
+		if( millis.length() > 3)
 		{
-			millis = millis.substring(millis.length() - 4);
+			millis = millis.substring(millis.length() - 3);
 		}
-		String time = String.format("%02d:%02d:%02d", hour, minute, second);
-		time = time + ":" + millis;
-		return time;
+		else
+		{
+			millis = "000";
+		}
+		if( hour > 0)
+		{
+			String time = String.format("%02d:%02d:%02d", hour, minute, second);
+			time = time + "." + millis;
+			return time;
+		}
+		else
+		{
+			String time = String.format("%02d:%02d", minute, second);
+			time = time + "." + millis;
+			return time;
+		}
 	}
 	
 	public static double parseDuration(String inSeconds)

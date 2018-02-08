@@ -348,7 +348,7 @@ function getPosition(e) {
 	}	
   });
 		  
-   $('body').click(function () {
+   $('body').livequery('click', function () {
      	var $contextMenu = $(".treecontext");
      	$contextMenu.hide();
      	$(".categorydroparea:first").removeClass('selected');     	
