@@ -123,8 +123,6 @@ public Cue() {
     this.fieldPosition = position;
     this.fieldAlignment = alignment;
     this.fieldSize = size;
-    this.fieldStartTime = fieldStartTime;
-    this.fieldEndTime = fieldEndTime;
   }
 
 }

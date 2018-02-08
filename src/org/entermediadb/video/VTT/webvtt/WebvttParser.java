@@ -202,7 +202,7 @@ public final class WebvttParser {
       textBuilder.setLength(0);
       while (((line = webvttData.readLine()) != null) && (!line.isEmpty())) {
         if (textBuilder.length() > 0) {
-          textBuilder.append("<br>");
+          textBuilder.append("\n");
         }
         textBuilder.append(line.trim());
       }
@@ -245,7 +245,7 @@ public final class WebvttParser {
     for (String group : parts[0].split(":")) {
       value = value * 60 + Long.parseLong(group);
     }
-    long finalval = (value * 1000 + Long.parseLong(parts[1])) * 1000;
+    long finalval = (value + Long.parseLong(parts[1])) * 1000;
     return finalval;
   }
 

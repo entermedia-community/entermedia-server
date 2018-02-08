@@ -16,7 +16,7 @@ $asset
 <ul>
 #foreach($track in $tracks)
 #set( $track = $captionsearcher.loadData($track) )
-<li><a href="$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/${asset.name}-$track.sourcelang.vtt">$track.sourcelang Closed Caption</a>
+<li><a href="$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/${asset.name}-${track.sourcelang}.vtt">$track.sourcelang Closed Caption</a>
 </li>
 #end
 </ul>

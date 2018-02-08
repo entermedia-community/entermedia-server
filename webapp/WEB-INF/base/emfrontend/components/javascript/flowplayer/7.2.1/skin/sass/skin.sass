@@ -1,0 +1,645 @@
+@import 'icons'
+@import 'state'
+@import 'modifiers'
+@import 'animation'
+@import 'chromecast'
+@import 'playlist'
+@import 'edgy'
+@import 'no-svg'
+
+// used often
+%absolute
+  position: absolute
+  width: 100%
+
+// outermost container for video and UI
+.flowplayer
+  font-family: avenir, sans-serif
+  font-size: 16px
+  position: relative
+  max-height: 100%
+  overflow: hidden
+  border-radius: .24em
+  background-position: center
+  background-repeat: no-repeat
+  background-size: contain
+  zoom: 1 !important
+  width: 100%
+  display: inline-block
+
+  .fp-hidden
+    display: none
+
+  .fp-shown
+    display: block !important
+
+  *
+    box-sizing: border-box
+
+  &.is-ready:not(.is-poster)
+    background-color: #333
+
+  .fp-engine
+    // must be block with <!DOCTYPE html>
+    display: block
+    width: 100%
+    position: absolute
+    top: 0
+    bottom: 0
+    left: 0
+    right: 0
+    height: 100%
+    width: 100%
+
+  video.fp-engine:not(.native-subtitles)::-webkit-media-controls
+    display: none !important
+
+  .fp-player
+    @extend %absolute
+    position: absolute
+    bottom: 0
+    top: 0
+
+  .fp-waiting
+    display: none
+    // no svg support
+    p
+      opacity: 0
+      color: #ccc
+      font-weight: bold
+
+  // container for UI
+  .fp-ui
+    @extend %absolute
+    height: 100%
+    top: 0
+    background-image: none
+    transition: background-image .1s
+    // needs gradient so the white icons will show over light videos
+    text-align: center
+    cursor: pointer
+    color: #fff
+    a, strong
+      color: inherit !important
+      font-style: normal !important
+      text-decoration: none !important
+    strong
+      font-weight: bold !important
+    > *
+      transition: opacity .1s
+      opacity: 0
+
+  &.fp-ui-shown, &.is-paused, &.is-mouseover, &.is-loading
+    .fp-ui
+      background-image: linear-gradient(to top, rgba(#000, .25), transparent 15%)
+      > *
+        opacity: 1
+
+  // topmost elements and actions
+  .fp-header
+    @extend %absolute
+    top: 0
+    background-image: linear-gradient(to bottom, rgba(#000, .25), transparent)
+    text-align: left
+    height: 3.6em
+    transition: opacity 0.3s
+    padding-left: .9em
+
+    .fp-icon
+      margin: .9em .9em 0 0
+      &.fp-active
+        color: #ec6c4c
+
+    .fp-fullscreen, .fp-unload
+      float: right
+
+    .fp-unload
+      display: none
+
+  // TODO fix this
+  .fp-help
+    display: none
+
+  // generic message
+  .fp-message
+    background-color: rgba(#000, .5)
+    text-align: left
+    font-size: 1.2em
+    overflow: hidden
+    opacity: 0
+    padding: .6em .9em
+    transition: opacity 0.3s
+    &.fp-shown
+      opacity: 1
+  .fp-message.fp-shown+.fp-header
+    opacity: 0
+
+  .fp-textarea
+    background-color: rgba(#000, .5)
+    width: 80%
+    position: absolute
+    left: 10%
+    top: 15%
+    color: #fff
+    outline: 0
+    border-radius: .2em
+    border: 0
+    min-height: 60%
+
+  .fp-logo
+    position: absolute
+    bottom: 3em
+    left: 0.9em
+
+    img
+      width: 100%
+
+  // captions (can stay below the controlbar)
+  .fp-captions
+    @extend %absolute
+    bottom: 1.2em
+    display: none
+
+    text-align: center
+    color: #fff
+
+    p
+      background-color: rgba(#000, .65)
+      border-radius: .2em
+      font-size: 110%
+      display: inline-block
+      padding: .1em .3em
+      margin: .1em
+
+  // Speed indicator
+  .fp-speed-flash
+    position: absolute
+    left: 0
+    right: 0
+    bottom: 0
+    top: 0
+    margin: auto
+    font-size: 4em
+    color: #fff
+    font-weight: bold
+    text-shadow: 0 0 10px rgba(#000, 0.3)
+    opacity: 0 !important
+    transform: scale(.8)
+    transition: all .2s
+    width: 4em
+    height: 2em
+    display: none
+    &.fp-hilite
+      opacity: 1 !important
+      transform: scale(1)
+
+  // the big play button on center
+  .fp-play, .fp-pause, .fp-waiting
+    .fp-playbtn
+      display: none
+    svg
+      position: absolute
+      pointer-events: none
+      left: 0
+      right: 0
+      bottom: 0
+      top: 0
+      width: 6em
+      height: 6em
+      opacity: 0
+      margin: auto
+      max-height: 30%
+      transform: scale(.8)
+      transition: all .2s
+      display: none
+      &.fp-play-rounded-fill, &.fp-pause-rounded-fill, &.fp-loading-rounded-fill
+        display: block
+
+    &.fp-visible
+      svg
+        transform: scale(1.5)
+        opacity: 1
+
+  .fp-remaining
+    display: none
+
+
+  // bottom controls
+  .fp-controls
+    @extend %absolute
+
+    display: -ms-flexbox
+    display: -webkit-flex
+    display: flex
+
+    -ms-flex-pack: justify
+    -webkit-justify-content: space-around
+    justify-content: space-around
+
+    -ms-flex-align: center
+    -webkit-align-items: center
+    align-items: center
+
+    height: 2.4em
+    bottom: 0
+    z-index: 2
+    padding-left: 0.3em
+    padding-right: 0.3em
+
+    > *
+      margin: 0 .6em
+
+    > strong
+      letter-spacing: 1px
+
+    img
+      width: 1.2em
+
+  // generic bar (timeline and volume)
+  .fp-bar
+    background-color: #ccc
+    background-color: rgba(#fff, .5)
+    position: relative
+    cursor: col-resize
+    height: .9em
+    border-radius: 0.24em
+    -ms-flex: 1
+    flex: 1
+
+    > *
+      background-color: rgba(#fff, .6)
+      position: absolute
+      height: 100%
+      border-radius: 0.24em
+      &.fp-progress.animated
+        transition-timing-function: linear
+        transition-property: width, height
+      &.fp-buffer
+        transition: width .25s linear
+    &.no-animation
+      > *
+        transition: none
+
+
+  // timeline
+  .fp-timeline
+    transition: height .2s
+
+
+  // cuepoints
+  .fp-cuepoint
+    background-color: #000
+    position: absolute
+    height: 100%
+    width: 2px
+
+  .fp-timestamp
+    background-color: rgba(#000, .65)
+    display: none
+    border-radius: .2em
+    padding: .1em .3em
+    font-size: 90%
+    bottom: 1.4em
+    height: auto
+  .fp-timeline:hover .fp-timestamp
+    display: inline
+
+  // volume container (mute & bar)
+  .fp-volume
+    display: -ms-flexbox
+    display: flex
+    height: 100%
+
+    -ms-flex-align: center
+    align-items: center
+  .fp-volumebtn
+    display: none
+  .fp-bar-slider
+    @extend .fp-bar
+    background-color: transparent
+    user-select: none
+    transition: height .2s
+    white-space: nowrap
+    -ms-flex: 1 0 auto
+    em
+      border-radius: 2px
+      display: inline-block
+      width: 5px
+      height: 100%
+      position: relative
+      vertical-align: top
+      margin-left: 3px
+      transition: transform 0.4s
+      transform-origin: bottom
+      user-select: none
+      transform: scale(1.1)
+      &:hover
+        transform: scaleY(1.35)
+        transition: transform 0.2s
+      &.fp-grey
+        background-color: rgba(#fff, 0.75)
+
+  // IE8-9 mostly (.no-flex must be before skin options)
+  &.no-flex
+    .fp-controls
+      white-space: nowrap
+
+      > *
+        display: inline-block
+        vertical-align: center
+        margin: 0 .3em
+
+    .fp-timeline
+      width: 40%
+
+
+    &.fp-full .fp-timeline
+      margin-bottom: .6em
+      height: .9em
+
+    &.fp-fat .fp-bar
+      height: .9em !important
+
+
+
+  // tall timeline
+  &.fp-fat
+    .fp-bar
+      height: 100%
+      border-radius: 0
+    .fp-bar > *
+      border-radius: 0
+
+    .fp-timestamp
+      bottom: 3.2em
+    .fp-bar-slider
+      em
+        transform: scaleY(0.6)
+        transform-origin: center
+        &:hover
+          transform: scaleY(0.75)
+
+  // slim timeline
+  &.fp-slim
+    .fp-timeline
+      height: .2em
+
+    .fp-controls:hover .fp-timeline
+      height: .9em
+
+    .fp-cue
+      width: 4px
+
+    .fp-bar-slider
+      height: .2em
+    .fp-controls:hover .fp-bar-slider
+      height: 0.9em
+
+
+
+  // full timeline over the controls
+  &.fp-full
+
+    .fp-timeline
+      position: absolute
+      height: .3em
+      bottom: 2.8em
+      margin: 0
+      width: 100%
+      border-radius: 0
+      overflow: inherit
+      left: 0
+
+      // more space for mouseover
+      &:before
+        content: ""
+        width: 100%
+        height: 1.2em
+        position: absolute
+        top: -1.2em
+        left: 0
+
+    .fp-controls
+      height: 2.8em
+
+      &:hover .fp-timeline
+        height: 1em
+
+    .fp-volume
+      margin-right: auto
+
+    .fp-duration, .fp-remaining
+      margin-left: 0
+
+      &:before
+        position: relative
+        content: "/"
+        left: -.3em
+
+
+  // minimal skin (only fullscreen button, progress and big play)
+  &.fp-minimal
+    @extend .fp-outlined
+
+    .fp-controls
+      background-color: transparent !important
+
+      > *
+        display: none
+
+    .fp-header
+      > *
+        display: none
+
+      .fp-fullscreen
+        display: inherit
+
+    .fp-timeline
+      height: .3em
+      max-width: 12em
+      width: 100%
+      display: block
+      margin: 0 auto
+      flex: none
+  &.fp-playful
+    @extend .fp-fat
+
+    .fp-color, .fp-color-play
+      background-color: #ec6c4c
+      fill: #ec6c4c
+    .fp-controls
+      background-color: #006680
+
+
+  // menu
+  .fp-selected:before
+    content: "✓ "
+
+  .fp-menu
+    background-color: rgba(#000, .5)
+    border-radius: .24em
+    position: absolute
+    width: 8em
+    right: .5em
+    z-index: 2
+    font-size: 90%
+    transition: opacity .2s, transform .2s, height .2s
+    transform: scale(.95)
+    bottom: -100%
+    height: 0
+    opacity: 0 !important
+
+    &.fp-active
+      transform: scale(1)
+      height: auto
+      bottom: 3.2em
+      opacity: 1 !important
+
+
+    > *
+      display: block
+      padding: .4em 1.2em
+      text-align: right
+
+    // title
+    strong
+      display: block
+      padding: .7em 1.2em
+      border-bottom: 1px solid rgba(#fff, .2)
+      background-color: rgba(#000, .3)
+      text-transform: uppercase
+      letter-spacing: 1px
+      cursor: default
+      font-size: 90%
+
+    a
+      color: rgba(#fff, .8)
+
+    a:hover:not(.fp-selected)
+      background-color: #000
+      color: #fff
+
+    .fp-icon
+      cursor: pointer
+
+      &:before
+        margin-right: .1em
+        font-size: 1.5em
+        vertical-align: -0.1em
+  .fp-qsel-menu
+    width: auto
+  .fp-context-menu
+    width: auto
+    right: auto
+    bottom: auto !important
+    display: none
+    &.fp-active
+      display: block
+    a, strong
+      text-align: left
+      color: #fff
+      white-space: nowrap
+  .fp-subtitle-menu
+    width: 9em
+  .fp-share-menu
+    width: 9em
+    padding-bottom: 0.2em
+    &.fp-active
+      bottom: auto
+
+    a, strong
+      text-align: left
+
+  &.fp-outlined
+    .fp-play, .fp-pause, .fp-waiting
+      svg.fp-play-rounded-fill, svg.fp-pause-rounded-fill, svg.fp-loading-rounded-fill
+        display: none
+      svg.fp-play-rounded-outline, svg.fp-pause-rounded-outline, svg.fp-loading-rounded-outline
+        display: block
+
+    .fp-airplay:before
+      content: "\e201"
+
+    .fp-fullscreen:before
+      content: "\e202"
+
+    .fp-checked:before
+      content: "\e203"
+
+    .fp-embed:before
+      content: "\e204"
+
+    .fp-chromecast:before
+      content: "\e205"
+
+    .fp-email:before
+      content: "\e206"
+
+    .fp-playbtn:before
+      content: "\e207"
+
+    .fp-share:before
+      content: "\e209"
+
+    .fp-share2:before
+      content: "\e20a"
+
+    .fp-twitter:before
+      content: "\e20c"
+
+    .fp-facebook:before
+      content: "\e20a"
+
+    .fp-volumebtn:before
+      content: "\e20b"
+
+    .fp-volume-off:before
+      content: "\e20d"
+
+    .fp-unload:before
+      content: "\e20f"
+
+    .fp-prevbtn:before
+      content: "\e211"
+
+    .fp-nextbtn:before
+      content: "\e212"
+
+
+  .fp-color
+    background-color: #00abcd
+    fill: rgba(#000, .2)
+  .fp-color-play
+    fill: transparent
+
+  // RTL
+  &.is-rtl
+    direction: rtl
+
+    .fp-icon
+      transform: rotate(180deg)
+    .fp-menu
+      .fp-icon
+        transform: none
+
+
+  // effects
+  &.-grayscale video.fp-engine
+    -webkit-filter: grayscale(100%)
+    filter: grayscale(100%)
+
+  &.-sepia video.fp-engine
+    -webkit-filter: sepia(100%)
+    filter: sepia(100%)
+
+  &.-blur video.fp-engine
+    -webkit-filter: blur(5px)
+    filter: blur(5px)
+
+
+
+.fp-filters
+  width: 0 !important
+  height: 0 !important
+  overflow: hidden !important
+  position: absolute

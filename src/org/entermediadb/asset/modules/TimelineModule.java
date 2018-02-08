@@ -143,6 +143,10 @@ public class TimelineModule extends BaseMediaModule
 	
 	public void loadClosedCaption(WebPageRequest inReq) throws Exception
 	{
+		if( inReq.getResponse() != null)
+		{
+			inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		Searcher captionsearcher = archive.getSearcher("videotrack");

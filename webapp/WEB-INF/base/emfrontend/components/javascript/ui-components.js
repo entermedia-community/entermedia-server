@@ -24,7 +24,7 @@ uiload = function() {
 	
 	
 	
-	$('#module-dropdown').click(function(e){
+	$('#module-dropdown').livequery("click", function(e){
 		e.stopPropagation();
 		if ( $(this).hasClass('active') ) {
 			$(this).removeClass('active');
@@ -1245,6 +1245,9 @@ jQuery(document).ready(function()
 		{
 			body.addClass("widthless1000");
 		}
+		var height = $(window).height();
+		$(".autoheightless40").height(height - 40)		
+		
 	};
 	$(window).on('resize',	resizecss );
 	resizecss();

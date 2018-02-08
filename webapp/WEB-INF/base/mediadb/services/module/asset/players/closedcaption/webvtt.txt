@@ -1,4 +1,4 @@
-WEBVTT
+WEBVTT FILE
 
 #set( $counter = 1 )
 #foreach($track in $tracks) #set( $track = $captionsearcher.loadData($track) )
