@@ -1,9 +1,13 @@
 {
 #set($type =$mediaarchive.getMediaRenderType($asset.fileformat))
+			#set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${asset.sourcepath}/$asset.getMediaName()")
+
 #set($hits = $conversionUtil.getActivePresetList($catalogid,$type) )
 	"response":
 		{
             "status":"ok",
+   			"original": "$origUrl",
+            
 			"totalhits" : "$hits.size()",
 			"searchtype" : "presetdata",
 			"page": 1,
@@ -12,21 +16,33 @@
 			{
 				"search":"assetid:$asset.id"
 			}
+		
 		},
+	
 	"results":[
+
+
 #set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
 #foreach( $preset in $hits )#if( $velocityCount != 1 ), #end
 {	
 	"name":#jesc($preset.name),	
+	"id":#jesc($preset.id),	
+
 #if( $preset.getId() == "0")
 	#set( $url = "$home$apphome/services/module/asset/downloads/originals/${asset.sourcepath}/$asset.getMediaName()")
 #else
-	#set( $outputfile = "${preset.outputfile}/$mediaarchive.asExportFileName($asset, $preset)")
+	#set( $outputfile = "${preset.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $preset)")
 	"outputfile":#jesc($outputfile),
-	#set( $url = "$home$apphome/services/module/asset/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
+	#set( $url = "$home$apphome/services/module/asset/downloads/preset/${asset.sourcepath}/${preset.generatedoutputfile}")
 #end	
 	"url":"$url",
+	"downloadurl":"$home$apphome/services/module/asset/downloads/generated/${asset.sourcepath}/${preset.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $preset)?includemetadata=true",
 	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $preset.id))
 	"iscomplete":"$isready"}#end
+
+
+	
 ]
 }
+##<a class="thickbox btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/${asset.sourcepath}/${presetdata.generatedoutputfile}?cache=false">[[Preview]]</a>
+##<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${presetdata.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
