@@ -73,7 +73,7 @@ $types.enableBulkOperations()
 	#end
 		
 		<select id="${valueid}.value" multiple name="$!detailprefix${valueid}.values" 
-		class="select2 #if($detail.isRequired() && !$multiedit) required #end" 
+		class="select2 form-control #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" 
 		data-listid="$listid" 
 		data-placeholder=" "
