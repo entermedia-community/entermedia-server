@@ -256,8 +256,15 @@ public abstract class BasePushManager  implements PushManager{
 			{
 				
 				log.info("OVERRIDE WAS " + editstatus);
-				log.info("Fields were" + fields);
+				log.info("Fields were:");
+				for (int i = 0; i < fields.length; i++) {
+					String string = fields[i];
+					String val = inReq.getRequestParameter(string + ".value");
+					log.info(string + ":" + val);
+
+				}
 				
+				//THIS IS NOT WORKING?
 				archive.getAssetSearcher().updateData(inReq, fields, target);
 			}
 			else
