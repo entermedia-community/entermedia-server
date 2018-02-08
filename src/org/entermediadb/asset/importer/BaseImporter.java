@@ -345,7 +345,7 @@ public class BaseImporter extends EnterMediaObject
 						inData.setValue(splits[0], map);
 					}
 				}
-				
+				continue;
 			}
 			val = URLUtilities.escapeUtf8(val); //The XML parser will clean up the & and stuff when it saves it
 			if ("sourcepath".equals(header))
