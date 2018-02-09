@@ -5091,6 +5091,23 @@ p.resultsnumber {
 #de-side-nav .current.converthistory .icon {
     background-position: -183px -26px;
 }
+
+#de-side-nav .viewtimeline .icon {
+    background-position: -364px 0;
+}
+#de-side-nav .current.viewtimeline .icon {
+    background-position: -364px -26px;
+}
+
+#de-side-nav .viewclosedcaptions .icon {
+    background-position: -131px 0;
+}
+#de-side-nav .current.viewclosedcaptions .icon {
+    background-position: -131px -26px;
+}
+
+
+
 #de-side-nav.open #opener .icon {
     background-position: -264px -26px;
     width: 19px;

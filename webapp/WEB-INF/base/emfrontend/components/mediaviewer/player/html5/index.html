@@ -36,7 +36,8 @@ mediaplayer flowplayer player is-splash #if( $embed == "true") embededplayer #en
      #if( $tracks && !$tracks.isEmpty() )
       	#foreach( $track in $tracks)
       <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
-      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt" default>
+      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+      	#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
       	#end
       #end
 	</video>

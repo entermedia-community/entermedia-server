@@ -1,22 +1,62 @@
-$asset
+<link rel="stylesheet" href="$home$apphome/theme/styles/jquery/timeslider.css">
 
-<form name="csvproductupload" method="post" enctype="multipart/form-data" action="./importfinish.html">
-	 	 <input type="hidden" size="25" name="assetid" value="$asset.id"> 
-	 
-	 
-	 <input type="file" size="25" name="file"> 
-	 <input type=submit value="Import" />
-	 
-	 
-</form>
+#set( $sourcepath = $asset.sourcepath )
+#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $clientroot = $context.getContentProperty("clientroot") )
 
-#set($captionsearcher = $mediaarchive.getSearcher("videotrack"))
+<div class="container-fluid" style="padding:10px 10px 10px 90px;">
+	<div class="row" >
+		<div class="col-md-10" style="padding: 10px; background-color:#eee; width:900px">	
+			$pages.include("$clientroot/details/video.html")
+		</div>
+		<div class="col-md-2" style="padding: 0px;"></div>
+	</div>	
+</div>	
+
+#set( $timecodejump = $context.getRequestParameter("timecodejump"))
+
+
+<div id="table-container" style="margin: 0 0px 40px 40px">
+		<div id="side-nav-inner">
+			<div id="viewlist">
+
+<ul data-path="/assets/emshare/views/settings/modules/asset/metadata/views/moveviews.html?searchtype=view&amp;field=ordering" class="listsort ui-sortable" data-searchtype="view" data-field="ordering">
+		
+	<li class="header no-sort ui-sortable-handle">Languages</li>
+	<li class="no-sort ui-sortable-handle" id="addeditbox">
+		<a class="ajax" targetdivinner="addeditbox" 
+		href="/assets/emshare/views/settings/modules/asset/metadata/views/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
+    
+    #set($captionsearcher = $mediaarchive.getSearcher("videotrack"))
 
 #set($tracks = $captionsearcher.query().exact("assetid", $asset.getId()).search())
-<ul>
 #foreach($track in $tracks)
 #set( $track = $captionsearcher.loadData($track) )
-<li><a href="$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/${asset.name}-${track.sourcelang}.vtt">$track.sourcelang Closed Caption</a>
-</li>
+	<li id="view_general" data-ordering="$velocityCount" class="ui-sortable-handle" byassettype="true">
+	  <a class="ajax" targetdivinner="vieweditorarea"
+	   href="$home$apphome/views/modules/asset/editor/closedcaptions/trackedit.html?oemaxlevel=1&sourcelang=$track.sourcelang&assetid=$asset.id">
+		<span class="drag-and-drop"></span>$track.sourcelang</a>
+	<a class="ajax delete-row" targetdiv="" href="$home$apphome/views/modules/asset/editor/closedcaptions/trackdelete.html?sourcelang=$track.sourcelang&assetid=$asset.id"></a>
+    </li>
 #end
-</ul>
+    
+	</ul>
+
+	</div>
+</div>
+<div id="workarea">
+	<div id="vieweditorarea">
+
+
+Select or add a track
+
+
+
+	</div>
+</div>
+</div>
+
+
+

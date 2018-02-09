@@ -224,6 +224,7 @@ runajaxonthis = function(inlink,e)
 	}	
 	else
 	{
+		//add oemaxlevel as data
 		var loaddiv = inlink.attr("targetdivinner");
 		loaddiv = loaddiv.replace(/\//g, "\\/");
 		//jQuery("#"+loaddiv).load(nextpage);

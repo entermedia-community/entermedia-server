@@ -50,6 +50,9 @@
 		#if( $permission && $link.id == "viewtimeline" &&  $type != "video")
 			#set( $permission = false)
 		#end
+		#if( $permission && $link.id == "viewclosedcaptions" &&  $type != "video")
+			#set( $permission = false)
+		#end
 
 		#if( $permission == "true")
 			##Check for custom links, arguments and labels
