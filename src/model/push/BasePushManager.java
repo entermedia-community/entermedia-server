@@ -259,11 +259,14 @@ public abstract class BasePushManager  implements PushManager{
 				log.info("Fields were:");
 				for (int i = 0; i < fields.length; i++) {
 					String string = fields[i];
+					if("description".equals(string)) {
+						fields[i] = "";
+					}
 					String val = inReq.getRequestParameter(string + ".value");
 					log.info(string + ":" + val);
 
 				}
-				
+				target.setValue("description", null);
 				//THIS IS NOT WORKING?
 				archive.getAssetSearcher().updateData(inReq, fields, target);
 			}
@@ -323,7 +326,7 @@ public abstract class BasePushManager  implements PushManager{
 				}
 			}
 			log.info("Received a pushed asset: " + target.getId() +" at " + target.getSourcePath() +  " : "  + "details(k4 / edit status) : " + k4processed + " / " + editstatus );
-			archive.saveAsset(target, inReq.getUser());
+			archive.getAssetSearcher().saveData(target);
 			archive.fireMediaEvent("importing","pushassetimported", inReq.getUser(), target);
 	
 		}
