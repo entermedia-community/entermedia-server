@@ -239,7 +239,7 @@ public abstract class BasePushManager  implements PushManager{
 				target.setSourcePath(sourcepath);
 			}
 			
-	
+			
 			String categorypath = PathUtilities.extractDirectoryPath(sourcepath);
 			Category category = archive.getCategorySearcher().createCategoryPath(categorypath);
 			archive.getCategorySearcher().saveData(category);
@@ -270,6 +270,9 @@ public abstract class BasePushManager  implements PushManager{
 
 				}
 				target.setValue("description", null);
+				String id = inReq.getRequestParameter("id");
+				target.setId(id);
+
 				//THIS IS NOT WORKING?
 				archive.getAssetSearcher().updateData(inReq, fields, target);
 			}
