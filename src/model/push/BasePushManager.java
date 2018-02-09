@@ -262,6 +262,9 @@ public abstract class BasePushManager  implements PushManager{
 					if("description".equals(string)) {
 						fields[i] = "";
 					}
+					if("id".equals(string)) {
+						fields[i] = "";
+					}
 					String val = inReq.getRequestParameter(string + ".value");
 					log.info(string + ":" + val);
 
