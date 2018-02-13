@@ -95,7 +95,7 @@ public abstract class BasePushManager  implements PushManager{
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{			
 			Data hit = (Data) iterator.next();
-			Asset asset = (Asset) archive.getAssetBySourcePath(hit.getSourcePath());
+			Asset asset = (Asset) searcher.loadData(hit);
 			if( asset != null )
 			{
 				savequeue.add(asset);
@@ -228,12 +228,14 @@ public abstract class BasePushManager  implements PushManager{
 			command.setPageManager(archive.getPageManager());
 			UploadRequest properties = command.parseArguments(inReq);
 	
+			String id = inReq.getRequestParameter("id");
+			Asset target = archive.getAsset(id);
+			
+			
 			String sourcepath = inReq.getRequestParameter("sourcepath");
 			
-			Asset target = archive.getAssetBySourcePath(sourcepath);
 			if (target == null)
 			{
-				String id = inReq.getRequestParameter("id");
 				target = (Asset) archive.getAssetSearcher().createNewData();
 				target.setId(id);
 				target.setSourcePath(sourcepath);
@@ -270,7 +272,6 @@ public abstract class BasePushManager  implements PushManager{
 
 				}
 				target.setValue("description", null);
-				String id = inReq.getRequestParameter("id");
 				target.setId(id);
 
 				//THIS IS NOT WORKING?
