@@ -131,13 +131,21 @@ public class ScriptManager
 		long start = System.currentTimeMillis();
 		try
 		{
-		logger.startCapture();
-		logger.debug("Running "  +inScript.getPage() );
-		returned = runner.exec(inScript, variableMap);
+			logger.startCapture();
+			logger.debug("Running "  +inScript.getPage() );
+			returned = runner.exec(inScript, variableMap);
 		}
 		catch( Throwable ex)
 		{
 			logger.error("Error running "  +inScript.getPage(), ex );
+			if( ex instanceof OpenEditException)
+			{
+				throw ex;
+			}
+			else
+			{
+				throw new OpenEditException(ex);
+			}
 		}
 		finally 
 		{

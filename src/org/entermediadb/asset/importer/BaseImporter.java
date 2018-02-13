@@ -128,7 +128,7 @@ public class BaseImporter extends EnterMediaObject
 					}
 				}
 
-				addProperties(fieldSearcher, trow, target);
+				addProperties(trow, target);
 				target.setId(idCell);
 				data.add(target);
 				if (data.size() == 10000)
@@ -298,14 +298,13 @@ public class BaseImporter extends EnterMediaObject
 			if (detail == null && !header.contains("."))
 			{
 				detail = getSearcher().getPropertyDetailsArchive().createDetail(id, id);
-
-				
 				getSearcher().getPropertyDetailsArchive().savePropertyDetail(detail, getSearcher().getSearchType(), context.getUser());
+				getSearcher().putMappings();
 			}
 		}
 	}
 
-	protected void addProperties(Searcher searcher, Row inRow, Data inData)
+	protected void addProperties(Row inRow, Data inData)
 	{
 		PropertyDetails details = getSearcher().getPropertyDetails();
 		int size = inRow.getHeader().getSize()-1;
@@ -323,7 +322,7 @@ public class BaseImporter extends EnterMediaObject
 				String splits[] = header.split("\\.");
 				if (splits.length > 1)
 				{
-					PropertyDetail detail = searcher.getDetail(splits[0]);
+					PropertyDetail detail = getSearcher().getDetail(splits[0]);
 					if (detail != null && detail.isMultiLanguage())
 					{
 						LanguageMap map = null;
