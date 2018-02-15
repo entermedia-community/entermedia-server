@@ -47,19 +47,12 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		
 		long timeout = inStructions.getConversionTimeout();
 		String inOutputType = inStructions.getOutputExtension();
-		if ("wma".equalsIgnoreCase(inputExt) || "aac".equalsIgnoreCase(inputExt) || "m4a".equalsIgnoreCase(inputExt) || "flac".equalsIgnoreCase(inputExt) || "ogg".equalsIgnoreCase(inputExt))
-		{
-			runFfmpeg(input, inStructions, result, timeout);
-		}
-		else
-		{
-			runLame(input, inStructions, result, timeout);
-		}
+		runFfmpeg(input, inStructions, result, timeout);
 		if (result.isOk())
 		{
 			result.setComplete(true);
 		}
-
+		
 		return result;
 	}
 

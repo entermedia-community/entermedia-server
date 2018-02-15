@@ -146,10 +146,10 @@ public void convert()
 	else
 	{
 		String assetid = realtask.get("assetid");
-		Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitted"));
+		Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitteddate"));
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_YEAR,-2);
-		if( olddate != null && olddate.before(cal.getTime()))
+		if( olddate == null || olddate.before(cal.getTime()) )
 		{
 			realtask.setProperty("status", "error");
 			realtask.setProperty("errordetails", "Missing input expired" );
