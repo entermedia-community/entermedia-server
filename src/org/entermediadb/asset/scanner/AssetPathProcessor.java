@@ -465,7 +465,14 @@ public class AssetPathProcessor extends PathProcessor
 					pathtocheck =folderlist[0];
 				}
 				Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);
-				if(asset != null){
+				if(asset != null)
+				{
+					if( isShowLogs() )
+					{
+						log.error("Found top level asset " + inStartingPoint + " " + "checked: " + pathtocheck);
+						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "error", 
+								"Found top level asset " + pathtocheck , null);
+					}
 					return;
 				}
 			}
