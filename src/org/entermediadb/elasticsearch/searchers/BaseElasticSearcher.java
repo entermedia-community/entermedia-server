@@ -1829,6 +1829,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			log.error("Bulk delete errors" + errors);
 			//TODO: Throw exception?
 		}
+		clearIndex();
 	}
 
 	protected void createContentBuilder(PropertyDetails details, Data data)

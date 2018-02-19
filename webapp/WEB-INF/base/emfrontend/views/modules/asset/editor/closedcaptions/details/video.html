@@ -10,8 +10,17 @@
 			<video id="videoclip" preload="no" controls="true" webkit-playsinline poster="$thumb" style="width:550px">
 				<source src="$source" type="video/mp4" />
 				<source src="$webmsource" type="video/webm" />
+			  #if( $tracks && !$tracks.isEmpty() )
+		       #foreach( $track in $tracks)
+			      <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
+			      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+			      	#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+		      	#end
+		      #end
+	</video>
+				
 			</video>
 	   </section>
 	</div>									
 </div>
-$pages.include("$apphome/views/modules/asset/editor/timeline/details/edit.html", $context)
+$pages.include("${clientroot}/details/edit.html", $context)

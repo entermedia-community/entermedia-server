@@ -135,9 +135,10 @@ public class AssetPathProcessor extends PathProcessor
 		//archive.firePathEvent("importing/assetsuploaded",inReq.getUser(),getAssetsToSave());
 		//archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
 		getMediaArchive().firePathEvent("importing/assetscreated",inUser,getAssetsToSave());
-		
-		getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saved", String.valueOf( getAssetsToSave().size()), null);
-
+		if( isShowLogs() )
+		{
+			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saved", String.valueOf( getAssetsToSave().size()), null);
+		}
 		getAssetsToSave().clear();
 	}
 
@@ -337,7 +338,7 @@ public class AssetPathProcessor extends PathProcessor
 								" skipfile:"+ skipfile + 
 								" rejectfile:" + rejectfile + 
 								" path:" + inInput.getPath(), null);
-						log.info("skipped folder:" + inInput.getPath());
+						log.info("processAssetFolder folder:" + inInput.getPath());
 					}
 					
 				}

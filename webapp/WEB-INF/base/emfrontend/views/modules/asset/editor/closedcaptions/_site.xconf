@@ -2,13 +2,11 @@
 	<property name="assettab">viewclosedcaptions</property>
 	<property name="clientroot">/${applicationid}/views/modules/asset/editor/closedcaptions</property>
 	<property name="hidepreview">true</property>
-<property name="fullwidth">true</property>
-
-	<path-action name="TimelineModule.loadTimeline" />
-	
+	<property name="fullwidth">true</property>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="TimelineModule.loadCaptionEditor" />
 	<script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />
- 
-  <script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/js/videoplayer.js" />
-  <style id="videoplayer-css" href="/${applicationid}/views/modules/asset/editor/timeline/videoplayer.css"/>
+  	<script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/js/videoplayer.js" />
+  	<style id="videoplayer-css" href="/${applicationid}/views/modules/asset/editor/timeline/videoplayer.css"/>
   
 </page>

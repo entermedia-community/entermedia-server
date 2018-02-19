@@ -806,6 +806,18 @@ uiload = function() {
 	jQuery("input.grabfocus").livequery( function() 
 	{
 		var theinput = jQuery(this);
+		
+		theinput.click(function() 
+		{
+			var initial = ta.data("initialtext");
+			if( theinput.val() == initial) 
+			{
+				theinput.val('');
+				theinput.unbind('click');
+			}
+		});
+		
+		
 		theinput.focus();
 	});
 

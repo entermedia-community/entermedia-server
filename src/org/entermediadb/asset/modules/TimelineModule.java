@@ -141,7 +141,7 @@ public class TimelineModule extends BaseMediaModule
 		
 	}
 	
-	public void loadClosedCaption(WebPageRequest inReq) throws Exception
+	public void loadClosedCaption(WebPageRequest inReq) 
 	{
 		if( inReq.getResponse() != null)
 		{
@@ -197,11 +197,7 @@ public class TimelineModule extends BaseMediaModule
 		
 		String[] fields = inReq.getRequestParameters("field");
 		
-		
-		
-		Collection timeline = new ArrayList();
-		
-		
+		//Collection timeline = new ArrayList();
 		
 		Page page = archive.getPageManager().getPage(path);
 		
@@ -224,7 +220,6 @@ public class TimelineModule extends BaseMediaModule
 		int place = type.lastIndexOf("-");
 		if( place == type.length() - 3) 
 		{
-			
 			String lang = type.substring(place + 1);
 			track.setProperty("sourcelang", lang);
 		}	
@@ -247,31 +242,31 @@ public class TimelineModule extends BaseMediaModule
 		track.setValue("assetid", asset.getId());
 		searcher.saveData(track);
 		
-		
-		
-	
-		
-	
-
-	
-		
-		
-		
 	}
 	
 	
-	
-	public void loadCaptions(WebPageRequest inReq){
+	public void loadCaptionEditor(WebPageRequest inReq)
+	{
 		MediaArchive archive = getMediaArchive(inReq);
+		
+		Searcher captionsearcher = archive.getSearcher("videotrack");
 		Asset asset = getAsset(inReq);
-		Searcher searcher = archive.getSearcher("videotrack");
+	
+		//Select the current language
+		String selectedlang = (String)inReq.getSessionValue("selectedlang");
+		if( selectedlang == null)
+		{
+			selectedlang = inReq.getLanguage();
+		}
+		inReq.putPageValue("selectedlang", selectedlang);
 		
-		String sourcelang = inReq.getRequestParameter("sourcelang");
-		
-		Data track =  searcher.query().exact("assetid", asset.getId()).exact("sourcelang", sourcelang).searchOne();
-		inReq.putPageValue("track", track);
+		//Available languages from a list?
 		
 		
+		HitTracker tracks = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).search();
+		
+		inReq.putPageValue("tracks", tracks);
+		inReq.putPageValue("captionsearcher", captionsearcher);
 	}
 	
 	

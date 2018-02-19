@@ -6,7 +6,7 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = $context.getContentProperty("clientroot") )
 
-<div class="container-fluid" style="padding:10px 10px 10px 90px;">
+<div class="container-fluid" style="padding:10px 10px 0px 20px;">
 	<div class="row" >
 		<div class="col-md-10" style="padding: 10px; background-color:#eee; width:900px">	
 			$pages.include("$clientroot/details/video.html")
@@ -17,46 +17,21 @@
 
 #set( $timecodejump = $context.getRequestParameter("timecodejump"))
 
+<div style="padding:0px; max-width:500px;">
+	<div class="row" >
+		<div class="col-md-3" style="padding: 0 0 0 40px; background-color:#eee;">	
 
-<div id="table-container" style="margin: 0 0px 40px 40px">
-		<div id="side-nav-inner">
-			<div id="viewlist">
-
-<ul data-path="/assets/emshare/views/settings/modules/asset/metadata/views/moveviews.html?searchtype=view&amp;field=ordering" class="listsort ui-sortable" data-searchtype="view" data-field="ordering">
 		
-	<li class="header no-sort ui-sortable-handle">Languages</li>
-	<li class="no-sort ui-sortable-handle" id="addeditbox">
-		<a class="ajax" targetdivinner="addeditbox" 
-		href="/assets/emshare/views/settings/modules/asset/metadata/views/addneweditingbox.html?oemaxlevel=1">Add New</a></li>
-    
-    #set($captionsearcher = $mediaarchive.getSearcher("videotrack"))
+	<a id="lesstime" href="#" class="btn btn-green" style="margin-left:0px;" >Play 8s</a> 
+##	<a id="addtime" href="#" class="btn btn-green" style="margin-left:0px;" >Move Right +</a>
 
-#set($tracks = $captionsearcher.query().exact("assetid", $asset.getId()).search())
-#foreach($track in $tracks)
-#set( $track = $captionsearcher.loadData($track) )
-	<li id="view_general" data-ordering="$velocityCount" class="ui-sortable-handle" byassettype="true">
-	  <a class="ajax" targetdivinner="vieweditorarea"
-	   href="$home$apphome/views/modules/asset/editor/closedcaptions/trackedit.html?oemaxlevel=1&sourcelang=$track.sourcelang&assetid=$asset.id">
-		<span class="drag-and-drop"></span>$track.sourcelang</a>
-	<a class="ajax delete-row" targetdiv="" href="$home$apphome/views/modules/asset/editor/closedcaptions/trackdelete.html?sourcelang=$track.sourcelang&assetid=$asset.id"></a>
-    </li>
-#end
-    
-	</ul>
+		</div>
+		<div class="col-md-9" style="padding: 0px;">
+			<input class="grabfocus" name="newcaption" data-initialtext="press tab key to play video and press enter to save captions"" value="press tab key to play video and press enter to save captions" style="width:400px;" />
+		</div>
+	</div>	
+</div>	
 
-	</div>
-</div>
-<div id="workarea">
-	<div id="vieweditorarea">
-
-
-Select or add a track
-
-
-
-	</div>
-</div>
-</div>
 
 
 
