@@ -231,6 +231,7 @@ public abstract class BasePushManager  implements PushManager{
 			String id = inReq.getRequestParameter("id");
 			Asset target = archive.getAsset(id);
 			
+			log.info("ID from push was : " + id);
 			
 			String sourcepath = inReq.getRequestParameter("sourcepath");
 			
