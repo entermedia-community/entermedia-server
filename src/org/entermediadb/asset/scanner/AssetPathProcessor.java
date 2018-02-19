@@ -210,6 +210,11 @@ public class AssetPathProcessor extends PathProcessor
 				List paths = getPageManager().getChildrenPaths(inInput.getPath());
 				if( paths.size() == 0 )
 				{
+					if( isShowLogs() )
+					{
+						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", 
+								"Empty folder: " + inInput.getAbsolutePath(), null);
+					}
 					return;
 				}
 				if( paths.size() > 3000 )
