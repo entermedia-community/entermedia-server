@@ -442,3 +442,11 @@ curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=tr
 
 
 
+<!-- Run this in a 2 or 3 node cluster -->
+
+curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
+{
+    "persistent" : {
+        "discovery.zen.minimum_master_nodes" : "2"
+    }
+}'
