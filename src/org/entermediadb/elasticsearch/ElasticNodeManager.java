@@ -1154,13 +1154,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		 NumberFormat nf = NumberFormat.getNumberInstance();
 		 for (Path root : FileSystems.getDefault().getRootDirectories()) {
 
-		     System.out.print(root + ": ");
+		    // System.out.print(root + ": ");
 		     try {
 		         FileStore store = Files.getFileStore(root);
-		         System.out.println("available=" + nf.format(store.getUsableSpace())
-		                             + ", total=" + nf.format(store.getTotalSpace()));
+		        // System.out.println("available=" + nf.format(store.getUsableSpace()) + ", total=" + nf.format(store.getTotalSpace()));
 		     } catch (IOException e) {
-		         System.out.println("error querying space: " + e.toString());
+		        log.error("error querying space: " + e.toString());
 		     }
 		 }
 		
@@ -1182,7 +1181,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				stats.getFs().getTotal().getAvailable();
 				stats.getFs().getTotal().getTotal();
 				stats.getFs().getTotal().getFree();
-				log.info(response);
+				//log.info(response);
 
 				return stats;
 			}
