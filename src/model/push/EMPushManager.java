@@ -481,7 +481,8 @@ public class EMPushManager extends BasePushManager implements PushManager
 			for (Iterator iterator = inAsset.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				if("category".equals(key) || "category-exact".equals(key) || "description".equals(key)){
+				//TODO: handle geopoints
+				if("category".equals(key) || "category-exact".equals(key) || "description".equals(key) || "geo_point".equals(key) || "position".equals(key)){
 					continue; //we care creating this automatically from the sourcepath
 				}
 
