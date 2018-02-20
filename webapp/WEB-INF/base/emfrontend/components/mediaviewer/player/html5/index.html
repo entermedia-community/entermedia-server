@@ -10,16 +10,13 @@
 #set( $catalogid = $asset.catalogId )
 
 <link rel="stylesheet"	href="$apphome/components/javascript/flowplayer/7.2.1/skin/entermedia.css">
-
 <script src="$apphome/components/javascript/flowplayer/7.2.1/flowplayer-7.2.1.min.js"></script>
 
 <div id="content">
 
 ##Add back full screen button, Autoplay and escape handling
 
-mediaplayer flowplayer player is-splash #if( $embed == "true") embededplayer #end
-
-<div id="playarea" class="mediaplayer flowplayer player is-splash #if( $embed == "true") embededplayer autoheightless40 #end"
+<div id="playarea" class="mediaplayer html5player player is-splash #if( $embed == "true") embededplayer autoheightless40 #end"
 	data-embed="false"
 	style='background-image: url("$thumb");'
 	data-share="false" 
@@ -41,6 +38,13 @@ mediaplayer flowplayer player is-splash #if( $embed == "true") embededplayer #en
       	#end
       #end
 	</video>
+
+<script>
+	$(".html5player").livequery(function()
+	{
+		$(this).flowplayer();
+	});
+</script>
 
 </div>
 </div>
