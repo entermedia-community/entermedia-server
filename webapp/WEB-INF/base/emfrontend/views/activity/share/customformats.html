@@ -1,4 +1,3 @@
-<form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/share/previewemail.html">
 <div class="emrounded">
 <input type="hidden" name="searchtype" value="order"/>
 <input type="hidden" name="catalogid" value="$catalogid"/>
@@ -7,7 +6,7 @@
 	<p>[[Please choose a download format for each asset.]]</p>
 	<table id="shared-asset-table" class="striped download-table" width="100%" >
 
-<tr id="" >
+<tr id="" >  
 #set($resultdetail = $mediaarchive.getAssetSearcher().getDetailsForView("asset/share", $userprofile))
 <th>[[Preview]]</th>
 <th>[[Name]]</th>
@@ -91,7 +90,27 @@
   			<select name="${item.id}.presetid.value">
   	   	    <option value="preview">[[Preview Only]]</option>
   	    	#foreach ($preset in $results)
+  	    		#if($preset.display == "true")
+  	    		#set($cancrop = $conversionUtil.canCrop($catalogid,$preset.id,$asset.id))
+ 		
+  	    
+  	    		
+	#if(!$cancrop)
+		#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+			#set($show = false)
+		#else
+		
+			#set($show = true)
+		#end
+	#else
+		#set($show = true)
+	#end
+  	    		
+  	    		
+  	    		#if($show)
   	    		<option value="$preset.id">$preset</option>
+  	    		#end
+  	    		#end
   	    	#end
   	    	</select>
 
@@ -103,5 +122,4 @@
 	<div id="itemsave"></div>
 	<input class="btn small" style="float: right; margin-top: 20px;" type="submit" value="[[Next]]" />
 </div>
-</form>
 </div>

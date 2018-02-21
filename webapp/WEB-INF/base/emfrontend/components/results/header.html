@@ -7,7 +7,7 @@ $context.putPageValue("hits",$hits)
 #set( $hits = $orderassets)
 $context.putPageValue("hits",$hits)
 #end
-
+ 
 #if($hits)
 	#set( $collectionid = $hits.getInput("collectionid") )
 	#if( $collectionid && !$librarycol)
@@ -34,13 +34,18 @@ $context.putPageValue("hits",$hits)
 	
 		#set ($enabled=$hits.getSelectionSize() > 0)
 	
-		#if( $candownload || $canconvert || $candownloadfpo )
+		#if( $candownload || $canconvert || $candownloadfpo ) 
 			#if( $librarycol )
 			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
 			#else
 				#if( $enabled )
 				<li>
+					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+					<a href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					
+					#else
 					<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
+					#end
 				</li>	
 				#else
 				<li class="resultmenuitem">
