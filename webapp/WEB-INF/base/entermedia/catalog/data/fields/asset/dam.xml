@@ -691,6 +691,10 @@
     <property id="geotiff"  index="true" stored="true" viewtype="textarea" >Geotiff Data 
  
   </property>  
-  
+    <property id="entermediaexif" editable="true" index="true" stored="true" externalid="XMP-dc:entermediaexif"   sortable="true">
+    <name> 
+      <language id="en"><![CDATA[EnterMedia ExifData]]></language> 
+    </name> 
+  </property>  
   
 </page>
