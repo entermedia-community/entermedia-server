@@ -83,6 +83,10 @@
 	  	<copy todir="../WEB-INF/base/themes" preservelastmodified="true" overwrite="true">
 	  		<fileset dir="${workdir}/WEB-INF/base/themes" />
 	  	</copy>
+		
+		<copy todir="../WEB-INF/" preservelastmodified="true" overwrite="true">
+	  		<fileset dir="${workdir}/WEB-INF/" includes="version.txt" />
+	  	</copy>
 
 		<delete quiet="true">
 			<fileset dir="./lib" includes="entermedia**.jar"/>

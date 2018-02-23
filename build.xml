@@ -60,6 +60,11 @@
        			<include name="entermedia/_site.xconf" />
         		<include name="*.*" />
     		</fileset>
+		</copy>	
+		<copy todir="${wardir}/WEB-INF/"  preservelastmodified="true">
+			<fileset dir="${basedir}">
+    			<include name="version.txt" />
+			</fileset>
     	</copy>
 
   	<mkdir dir="${build}/tmp/" />
