@@ -196,7 +196,8 @@ public class XmpWriter
 		{
 			if( inTags[i].contains(":") ) //Only write back to iptc: or xmp: fields
 			{
-				inComm.add("-" + inTags[i] + "=" + inValue);
+				inComm.add("-" + inTags[i] + "=" + inValue  ) ;
+				
 			}
 		}
 	}

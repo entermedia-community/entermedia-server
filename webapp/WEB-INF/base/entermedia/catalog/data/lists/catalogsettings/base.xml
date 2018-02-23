@@ -23,5 +23,6 @@
 	<property id="extractmd5" value="true">Create MD5 Checksum values on import</property>
 	<property id="show_hotfolder_status" value="false">Track Hotfolder ingesting in database</property>
 
+	<property id="preventupscaling" value="false">Prevent upscaling of asset conversions</property>
 
 </properties>
