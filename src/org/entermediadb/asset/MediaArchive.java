@@ -2024,6 +2024,31 @@ public class MediaArchive implements CatalogEnabled
 		return webmail;
 	}
 
+	//Made by Thomas
+	public TemplateWebEmail createSystemEmail(String email, String inTemplatePath)
+	{
+		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+
+		String fromemail = getCatalogSettingValue("system_from_email");
+		String fromemailname = getCatalogSettingValue("system_from_email_name");
+
+		webmail.setFrom(fromemail);
+		webmail.setFromName(fromemailname);
+
+		webmail.setMailTemplatePath(inTemplatePath);
+
+		try
+		{
+			InternetAddress to = new InternetAddress(email, "");
+			webmail.setRecipient(to);
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+	}
+
 	public int getRealImageWidth(Data inHit)
 	{
 		String orientation = inHit.get("imageorientation");

@@ -1,29 +1,16 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
 <rsp stat="ok">
-
-
 #foreach( $key in $cacheManager.getCaches().keySet() )
 #set( $cache = $cacheManager.getCaches().get($key) )
  <cache id="$key">$cache.size()</cache>
 #end
-
-
-
 #set($stats =$elasticNodeManager.getNodeStats())
-
 <heapused>$stats.getJvm().getMem().getHeapUsed()</heapused>
 <heapusedpercent> $stats.getJvm().getMem().getHeapUsedPercent()</heapusedpercent>
 <loadaverage>$stats.getOs().getLoadAverage()</loadaverage>
-<servermemory>$stats.getOs().getMem().getFree()</servermemory>
-
-
-			
-<diskfree>$stats.getFs().getTotal().getFree()</diskfree>
-<disktotal>$stats.getFs().getTotal().getTotal()</disktotal>
-<diskavailable>$stats.getFs().getTotal().getAvailable()</diskavailable>
-
-
-
-
-
+<servermemoryfree>$stats.getOs().getMem().getFree().getMb()</servermemoryfree>
+<servermemorytotal>$stats.getOs().getMem().getTotal().getMb()</servermemorytotal>
+<diskfree>$stats.getFs().getTotal().getFree().getMb()</diskfree>
+<disktotal>$stats.getFs().getTotal().getTotal().getMb()</disktotal>
+<diskavailable>$stats.getFs().getTotal().getAvailable().getMb()</diskavailable>
 </rsp>
