@@ -6,17 +6,24 @@
 #if($monitored.isreachable == "false")
 	[[The instance seems to be down]]: <a href="$monitored.url">$monitored.url</a><br/><br/>
 #else
-	#if($monitored.isdisk == "true")
-		[[The instance is running out of disk space]]: ${monitored.diskfree}Mb remaining of ${monitored.disktotal}Mb.<br/><br/>
+	#if ($monitored.nodisk == "false")
+		#foreach($partition in $monitored.getValue("partitions"))
+			#if($partition.isOverloaded() == true)
+				[[The following instance's partition is running out of disk space]]: <b>"${partition.name}"</b> <b>${partition.freePartitionSpace}Mb</b> [[remaining of]] <b>${partition.totalCapacity}Mb</b>.<br/><br/>
+			#end
+		#end
+	#else
+		[[Monitor tool has no disk partitions configured for this]] <a href="$monitored.url">[[instance]]</a>.<br/><br/>		
 	#end
+	
 	#if($monitored.iscpu == "true")
-		[[The instance's CPUs are overloaded]]: $monitored.loadaverage currently used.<br/><br/>
+		[[The instance's CPUs are overloaded]]: <b>$monitored.loadaverage</b> [[currently used]].<br/><br/>
 	#end
 	#if($monitored.isheap == "true")
-		[[The instance's heap partition is running out of space]]: $monitored.heapusedpercent currenlty used.<br/><br/>
+		[[The instance's heap partition is running out of space]]: <b>$monitored.heapusedpercent</b> [[currenlty used]].<br/><br/>
 	#end
 	#if($monitored.ismemory == "true")
-		[[The instance is running out of memory]]: ${monitored.servermemoryfree}Mb remaining of ${monitored.servermemorytotal}Mb.
+		[[The instance is running out of memory]]: <b>${monitored.servermemoryfree}Mb</b> [[remaining of]] <b>${monitored.servermemorytotal}Mb</b>.
 	#end
 #end
 
