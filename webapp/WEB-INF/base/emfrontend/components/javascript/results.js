@@ -620,8 +620,7 @@ gridResize = function()
 	var grid = $(".masonry-grid");
 	if( grid.length == 0 )
 	{
-		console.log("No grid");
-		
+		//console.log("No grid");
 		return;
 	}
 	
