@@ -15,7 +15,25 @@
 	<label for="preset.value">[[Create New Conversion]]:</label>
 	<select name="presetid.value" id="newpreset">
 	#foreach ($result in $results)
-		#if(!$conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
+	
+	
+		#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
+ 		
+  	    
+  	    		
+	#if(!$cancrop)
+		#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+			#set($show = false)
+		#else
+		
+			#set($show = true)
+		#end
+	#else
+		#set($show = true)
+	#end
+  	    		
+	
+		#if(!$conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
 	<option value="$result.id">$result.name</option>
 		#end
 	#end
