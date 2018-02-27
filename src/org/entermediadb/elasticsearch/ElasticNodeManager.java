@@ -72,7 +72,9 @@ import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.BaseNodeManager;
+import org.entermediadb.elasticsearch.searchers.LockSearcher;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
@@ -506,7 +508,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				admin.indices().open(new OpenIndexRequest(indexid));				
 			}
+			
 			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+			MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaarchive");
+			LockSearcher locks = (LockSearcher) archive.getSearcher("lock");
+			locks.clearStaleLocks();
+			archive.clearAll();
+
+			
 		}
 		catch (Exception ex)
 		{
