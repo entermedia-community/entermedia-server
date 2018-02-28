@@ -1016,7 +1016,7 @@ uiload = function() {
 				url =  url + "&defaultvalue=" + defaultvalue + "&defaultvalueid=" + defaultvalueid;
 			}
 			
-			var dropdownParent = $(body);
+			var dropdownParent = $("body");
 			var parent = theinput.closest(".modal-dialog");
 			if( parent.length )
 			{
