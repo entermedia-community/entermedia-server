@@ -1,10 +1,12 @@
+#set( $clientroot = $context.getContentProperty("clientroot") )
+
 <div class="clipedit" style="width:300px;float:left;margin:0px 0 20px 12px;">
 	<div style="margin-bottom:20px;">
 		<div style="background-color: #666; color: white; padding: 4px;">
 			[[Transcribing Tools]]
 			
 		</div>
-		<div id="clipdetails" style="margin:-2 0 0 10px; padding:20px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
+		<div id="closedcaptiondetails" style="margin:-2 0 0 10px; padding:20px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
 
 <p>Select the language you are working in</p>
 #set($languages = $mediaarchive.getList("locale"))
@@ -25,10 +27,11 @@
 	  <strong>[[Note]]:</strong> [[unsaved changes to timeline]]
 	</div>
 	<br><br>
-		<a id="lesstime" href="#" class="btn btn-green" style="margin-left:0px;" >Automatic Transcode</a> 
+		<a id="lesstime" href="#" class="btn btn-green" style="margin-left:0px;" >Automatic Captions</a> 
+		<br><br>
+		<a id="lesstime" href="#" class="btn btn-green" style="margin-left:0px;" >Automatic Translate</a> 
 	<br><br>
-		<a href="#" class="btn btn-green" style="margin-left:0px;" >Import VTT File</a> 
+		<a href="$clientroot/details/importstart.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-green" style="margin-left:0px;" >Import Captions (VTT file)</a> 
 		<a id="lesstime" href="#" class="btn btn-green" style="margin-left:0px;" >Export</a> 
-		<a id="lesstime" href="#" class="btn btn-green" style="margin-left:0px;" >Translate</a> 
 	
 </div>

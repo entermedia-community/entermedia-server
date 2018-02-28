@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
+import org.openedit.MultiValued;
 import org.openedit.data.SearcherManager;
 
 public class Timeline
@@ -91,7 +92,7 @@ public class Timeline
 		fieldPxWidth = inPxWidth;
 	}
 
-	public Collection loadClips(Asset inAsset, String inField)
+	public Collection loadClips(MultiValued inAsset, String inField)
 	{
 		fieldClips = new ArrayList();
 		Collection rows = inAsset.getValues(inField);

@@ -19,6 +19,7 @@ import org.entermediadb.video.VTT.Cue;
 import org.entermediadb.video.VTT.webvtt.WebvttParser;
 import org.entermediadb.video.VTT.webvtt.WebvttSubtitle;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -190,8 +191,8 @@ public class TimelineModule extends BaseMediaModule
 		
 		FileUploadItem item = properties.getFirstItem();
 		String fname = item.getName();
-		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/"
-				+ asset.getSourcePath() + "/" + fname;		
+		String path = "/WEB-INF/temp/" + archive.getCatalogId() + "/uploads-"
+				+ inReq.getUserName() + "-" + fname;		
 		properties.saveFileAs(properties.getFirstItem(), path, inReq.getUser());
 
 		
@@ -206,8 +207,6 @@ public class TimelineModule extends BaseMediaModule
 		WebvttSubtitle titles = parser.parse(input);
 		FileUtils.safeClose(input);
 		Searcher searcher = archive.getSearcher("videotrack");
-		HitTracker existing = searcher.query().exact("assetid", asset.getId()).search();
-		searcher.deleteAll(existing, null);
 		
 		Collection captions = new ArrayList();
 		
@@ -216,34 +215,84 @@ public class TimelineModule extends BaseMediaModule
 		{
 			searcher.updateData(inReq, fields, track);
 		}
-		String type = PathUtilities.extractPageName(fname);
-		int place = type.lastIndexOf("-");
-		if( place == type.length() - 3) 
+		String selectedlang = inReq.getRequestParameter("selectedlang");
+		if( selectedlang == null)
 		{
-			String lang = type.substring(place + 1);
-			track.setProperty("sourcelang", lang);
-		}	
+			String type = PathUtilities.extractPageName(fname);
+			int place = type.lastIndexOf("-");
+			if( place == type.length() - 3) 
+			{
+				selectedlang = type.substring(place + 1);
+			}	
+		}
+		if( selectedlang == null)
+		{	
+			selectedlang = inReq.getLocale();
+		}
+		track.setProperty("sourcelang", selectedlang);
 		
 		for (Iterator iterator = titles.getCues().iterator(); iterator.hasNext();)
 		{
 			Cue cue = (Cue) iterator.next();
 			
 			HashMap cuemap = new HashMap();
-			cuemap.put("captiontext", cue.getText().toString());
-			cuemap.put("timecodestart", cue.getPosition());
+			cuemap.put("cliplabel", cue.getText().toString());
+			//cuemap.put("position", cue.getPosition());
 			cuemap.put("alignment", cue.getAlignment());
 			cuemap.put("timecodestart", cue.getStartTime());
-			cuemap.put("timecodeend", cue.getEndTime());
+			long length = cue.getEndTime() - cue.getStartTime();
+			cuemap.put("timecodelength", length);
 			captions.add(cuemap);
-
-
 		}
 		track.setValue("captions", captions);
 		track.setValue("assetid", asset.getId());
+
+		//Remove old ones
+		HitTracker existing = searcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).search(); //TODO per lang
+		searcher.deleteAll(existing, null);
+		
 		searcher.saveData(track);
+		getPageManager().removePage(page);
 		
 	}
+	public void addCaption(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Searcher captionsearcher = archive.getSearcher("videotrack");
+		Asset asset = getAsset(inReq);
 	
+		String selectedlang = (String)inReq.getSessionValue("selectedlang");
+		if( selectedlang == null)
+		{
+			selectedlang = inReq.getLanguage();
+		}
+		Data lasttrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).searchOne();
+		if( lasttrack == null)
+		{
+			lasttrack = captionsearcher.createNewData();
+			lasttrack.setProperty("sourcelang", selectedlang);
+			lasttrack.setProperty("assetid",  asset.getId());
+		}
+		Collection captions = (Collection)lasttrack.getValue("captions");
+		if( captions == null)
+		{
+			captions = new ArrayList();
+		}
+		Map cuemap = new HashMap();
+		
+		String cliplabel = inReq.getRequestParameter("cliplabel");
+		cuemap.put("cliplabel", cliplabel);
+
+		String starttime = inReq.getRequestParameter("timecodestart");
+		cuemap.put("timecodestart", starttime);
+
+		String timecodelength = inReq.getRequestParameter("timecodelength");
+		cuemap.put("timecodelength", timecodelength);
+		captions.add(cuemap);
+		lasttrack.setValue("captions",captions);
+		captionsearcher.saveData(lasttrack);
+	}	
 	
 	public void loadCaptionEditor(WebPageRequest inReq)
 	{
@@ -251,7 +300,6 @@ public class TimelineModule extends BaseMediaModule
 		
 		Searcher captionsearcher = archive.getSearcher("videotrack");
 		Asset asset = getAsset(inReq);
-	
 		//Select the current language
 		String selectedlang = (String)inReq.getSessionValue("selectedlang");
 		if( selectedlang == null)
@@ -262,11 +310,28 @@ public class TimelineModule extends BaseMediaModule
 		
 		//Available languages from a list?
 		
-		
-		HitTracker tracks = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).search();
-		
-		inReq.putPageValue("tracks", tracks);
+		MultiValued track = (MultiValued)captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).sort("timecodestart").searchOne();
+		track = (MultiValued)captionsearcher.loadData(track);
+		inReq.putPageValue("track", track);
 		inReq.putPageValue("captionsearcher", captionsearcher);
+		
+		Double videolength = (Double)asset.getDouble("length");
+		if( videolength == null)
+		{
+			return;
+		}
+		Timeline timeline = new Timeline();
+		timeline.setLength(videolength);
+		timeline.setPxWidth(1200);
+		timeline.loadClips(track,"captions");
+		inReq.putPageValue("timeline", timeline);
+
+		//		String selected = inReq.getRequestParameter("timecodejump");
+//		timeline.selectClip(selected);
+		
+		inReq.putPageValue("timeline", timeline);
+
+		
 	}
 	
 	

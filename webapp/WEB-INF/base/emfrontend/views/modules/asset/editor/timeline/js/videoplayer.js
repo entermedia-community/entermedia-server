@@ -524,7 +524,6 @@ $(document).ready(function()
 			}	
 		});	
 	});
-	
 	var jump = $("#timelineviewer").data("timecodejump");
 	//console.log(jump);
 	if( jump )
@@ -534,6 +533,8 @@ $(document).ready(function()
 		//console.log(selectedc);
 		selectClip(selectedc);
 	}
+	
+	
 });	
 
 

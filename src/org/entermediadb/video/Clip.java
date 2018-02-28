@@ -26,6 +26,12 @@ public class Clip implements Comparable
 		}
 		return d;
 	}
+	
+	public String getLabel()
+	{
+		String cliplabel = (String)getData().get("cliplabel");
+		return cliplabel;
+	}
 	public double getLength()
 	{
 		Double d = getData().getDouble("timecodelength");

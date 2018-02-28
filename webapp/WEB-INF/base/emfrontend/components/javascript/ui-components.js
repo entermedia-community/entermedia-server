@@ -19,7 +19,8 @@ uiload = function() {
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home") + app.data("themeprefix");
-	
+
+	//https://github.com/select2/select2/issues/600	
 	$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 	
 	
@@ -42,8 +43,37 @@ uiload = function() {
 	
 	jQuery("select.listdropdown").livequery( function() 
 	{
-		var input = jQuery(this);
-		input.select2();
+		var theinput = jQuery(this);
+		var dropdownParent = $("body");
+		var parent = theinput.closest(".modal-dialog");
+		if( parent.length )
+		{
+			dropdownParent = parent;
+			console.log("found modal parent, skipping");
+			//https://github.com/select2/select2-bootstrap-theme/issues/41
+		}
+		else
+		{
+			theinput = theinput.select2({
+				allowClear: true,
+				minimumInputLength : 0,
+				dropdownParent: dropdownParent,
+	//			dropdownCssClass: 'custom-dropdown'
+	//			}).on("select2:opening", 
+	//			    function(){
+	//			        dropdownParent.removeAttr("tabindex");
+	//				}).on("select2:close", 
+	//				    function(){ 
+	//				        //dropdownParent.attr("tabindex", "-1");
+	//				    });
+			});	
+			
+	//		theinput.on('select2:open', function(e){
+	//		    $('.custom-dropdown').parent().css('z-index', 99999);
+	//		});
+	//		dropdownParent.removeAttr("tabindex");
+		}
+	
 	});
 	
 	
@@ -388,7 +418,7 @@ uiload = function() {
 				var modaldialog = $( "#" + id );
 				if( modaldialog.length == 0 )
 				{
-					$("#emcontainer").append('<div class="modal " tabindex="-1" id="' + id + '" style="display:none" ></div>');
+					$("body").append('<div class="modal " tabindex="-1" id="' + id + '" style="display:none" ></div>');
 					modaldialog = $("#" + id );
 				}
 				var link = dialog.attr("href");
@@ -806,11 +836,18 @@ uiload = function() {
 	jQuery("input.grabfocus").livequery( function() 
 	{
 		var theinput = jQuery(this);
-		
+		theinput.css("color","#666");
+		if( theinput.val() == "" )
+		{
+			var newval = theinput.data("initialtext");
+			theinput.val( newval);
+		}
 		theinput.click(function() 
 		{
-			var initial = ta.data("initialtext");
-			if( theinput.val() == initial) 
+			theinput.css("color","#000");
+			var initial = theinput.data("initialtext");
+			console.log(initial,theinput.val());
+			if( theinput.val() === initial) 
 			{
 				theinput.val('');
 				theinput.unbind('click');
@@ -954,7 +991,6 @@ uiload = function() {
 	);
 
 	jQuery("select.listautocomplete").livequery(function()   //select2
-	//jQuery.fn.liveajax("select.listautocomplete", function()   //select2
 	{
 		var theinput = jQuery(this);
 		var searchtype = theinput.data('searchtype');
@@ -979,11 +1015,24 @@ uiload = function() {
 			{
 				url =  url + "&defaultvalue=" + defaultvalue + "&defaultvalueid=" + defaultvalueid;
 			}
+			
+			var dropdownParent = $(body);
+			var parent = theinput.closest(".modal-dialog");
+			if( parent.length )
+			{
+				dropdownParent = parent;
+				console.log("found modal parent");
+			}
+			else
+			{
+				console.log("use body parent");
+			}
 			//var value = theinput.val();
 			theinput.select2({
 				placeholder : defaulttext,
 				allowClear: true,
 				minimumInputLength : 0,
+				dropdownParent: dropdownParent,
 				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
 					url : url,
 					dataType : 'json',

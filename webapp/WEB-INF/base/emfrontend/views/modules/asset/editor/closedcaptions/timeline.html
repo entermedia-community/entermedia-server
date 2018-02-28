@@ -1,0 +1,41 @@
+<div id="timeline">
+	<div id="slider123" class="time-slider" style="height: 45px;">
+		<div class="ruler" style="height: 66px;">
+		#set( $added = 0)		
+		#set( $space = 15)
+		#foreach($block in $timeline.getTicks())
+
+			<div id="title_${added}"	class="graduation-title"   style="left: ${added}px">$block.getLabel()</div>
+			#set( $added = $added + $space)
+
+			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+			#set( $added = $added + $space)
+
+			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+			#set( $added = $added + $space)
+
+			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+			#set( $added = $added + $space)
+
+			<div id="tick_${added}" 	class="graduation" style="left: ${added}px"></div>
+			<div id="middle_${added}" 	class="graduation middle" style="left: ${added}px"></div>
+
+		#end
+		<div class="bg" style="width:${added}px"></div>
+		</div>
+	</div>
+	
+	<div class="iconbar" style="width:${added}px;margin-top:30px; height: 66px; background-color:#000;position:relative;">
+	#set( $space = 15*8)	
+	#set( $added = 60)
+	#foreach($block in $timeline.getTicks())
+
+		#if( $block.showThumb() )
+			<div  style="position:absolute;left: ${added}px; top:2px;">
+			<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getStartOffset()&assetid=$asset.id" title="$block.getLabel()"/></div>
+			#set( $added = $added + $space)
+		#end
+
+	#end
+	</div>
+</div>

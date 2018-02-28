@@ -63,16 +63,19 @@ $context.putPageValue("longform",false)
  
 	#set($val = false)
 	#set($target = "${detail.id}.value")
+	#set( $val = false)
 	#set( $val = $context.getRequestParameter($target))		
 	#if( !$val)
 		#set( $val = $!{data.get($detail.getId())} )
 	#end
 
-	$!context.putPageValue("detail",$detail)
 
+	$!context.putPageValue("detail",$detail)
+	$!context.putPageValue("val",$val)
  	<div class="form-group">
     <label for="exampleTextarea">$detail.getText($context)</label>
+    <div>
    	$pages.include("$xmledithome/detailedit.html", $context)
-  	</div>	
+  	</div></div>	
 	
 #end

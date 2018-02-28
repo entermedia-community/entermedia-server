@@ -1,3 +1,4 @@
 <page>
 <path-action name="TimelineModule.importTimeline"/>
+<path-action name="TimelineModule.loadCaptionEditor" />
 </page>

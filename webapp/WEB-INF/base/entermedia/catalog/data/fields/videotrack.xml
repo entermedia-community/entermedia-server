@@ -20,7 +20,7 @@
       <language id="en"><![CDATA[Captions]]></language>  
     </name> 
     
-    <property id="captiontext" index="true" stored="true" editable="true" >
+    <property id="cliplabel" index="true" stored="true" editable="true" >
     <name> 
       <language id="en"><![CDATA[Caption Text]]></language>  
     </name> 
@@ -28,7 +28,7 @@
     
     
     <property id="timecodestart" index="true" stored="true" editable="true"  datatype="double" viewtype="videotime">Start Time</property>
-    <property id="timecodeend" index="true" stored="true" editable="true" datatype="double" viewtype="videotime">End Time</property>   
+    <property id="timecodelength" index="true" stored="true" editable="true" datatype="double" viewtype="videotime">End Time</property>   
     <property id="alignment" index="true" stored="true" editable="true" type="list" >Alignment</property>   
     <property id="line" index="true" stored="true" editable="true" type="number" >Line</property>   
     

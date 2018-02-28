@@ -6,7 +6,7 @@
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="TimelineModule.loadCaptionEditor" />
 	<script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />
-  	<script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/js/videoplayer.js" />
+  	<script id="closedcaptionplayer" src="/${applicationid}/views/modules/asset/editor/closedcaptions/closedcaptions.js" />
   	<style id="videoplayer-css" href="/${applicationid}/views/modules/asset/editor/timeline/videoplayer.css"/>
   
 </page>
