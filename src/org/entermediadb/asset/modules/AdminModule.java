@@ -992,29 +992,29 @@ public class AdminModule extends BaseModule
 	 */
 	public void redirectInternal(WebPageRequest inReq) throws OpenEditException
 	{
-		String path = inReq.getCurrentAction().getChildValue("redirectpath");
-		String rootdir = inReq.getCurrentAction().getChildValue("redirectroot");
+		String path = inReq.getCurrentAction().get("redirectpath");
+		path = inReq.getPage().getPageSettings().replaceProperty(path);
+		String rootdir = inReq.getCurrentAction().get("redirectroot");
+		rootdir = inReq.getPage().getPageSettings().replaceProperty(rootdir);
 		URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
-		String server = utils.buildRoot();
-		if (server.endsWith("/"))
-		{
-			server = server.substring(0, server.length() - 1);
-		}
+//		String server = utils.buildRoot();
+//		if (server.endsWith("/"))
+//		{
+//			server = server.substring(0, server.length() - 1);
+//		}
 		String ending = utils.requestPathWithArgumentsNoContext();
-		String newEnding;
+		String redirectPath;
 
-		if (rootdir.equals("*"))
+		if (rootdir == null || rootdir.equals("*"))
 		{
-			newEnding = path;
+			redirectPath = path;
 		}
 		else
 		{
-			newEnding = ending.replace(rootdir, path);
+			redirectPath = ending.replace(rootdir, path);
 		}
 
-		String redirectPath = server + newEnding;
-
-		if (!newEnding.equals(ending))
+		if (!redirectPath.equals(ending))
 		{
 			inReq.redirectPermanently(redirectPath);
 		}

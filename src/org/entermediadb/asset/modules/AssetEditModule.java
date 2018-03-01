@@ -2093,9 +2093,17 @@ Change Collections to be normal categories path s and make createTree look at th
 		
 	}
 	
-	
-	
-	public void handleUploads(WebPageRequest inReq) {
+
+	public void handleUploads(WebPageRequest inReq) 
+	{
+		
+//		final MediaArchive archive = getMediaArchive(inReq);
+//		final Map metadata = readMetaData(inReq,archive,"");
+//
+//		final Map pages = savePages(inReq,archive,inPages);
+//		final User user = inReq.getUser();
+//		
+				
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
@@ -2108,6 +2116,7 @@ Change Collections to be normal categories path s and make createTree look at th
 		}
 		String searchtype = inReq.findValue("searchtype");
 		String id = inReq.getRequestParameter("id");
+		final String currentcollection = inReq.getRequestParameter("collectionid");
 		
 		Data target = null;
 		
@@ -2195,6 +2204,10 @@ Change Collections to be normal categories path s and make createTree look at th
 			}
 			
 			
+			//TODO: Use the standard ways we upload 
+			//		Collection tracker = saveFilesAndImport(archive, currentcollection, metadata, pages, user);
+
+			
 //			current.setProperty("owner", inReq.getUser().getId());
 			archive.removeGeneratedImages(current, true);
 			archive.saveAsset(current, null);
@@ -2204,6 +2217,11 @@ Change Collections to be normal categories path s and make createTree look at th
 			archive.fireMediaEvent("assetcreated",inReq.getUser(),current);
 			archive.fireMediaEvent("importing","assetsimported",inReq.getUser(),current);
 
+			if( currentcollection != null)
+			{
+				ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+				manager.addAssetToCollection(archive,currentcollection,current.getId());
+			}
 		}
 
 	}
