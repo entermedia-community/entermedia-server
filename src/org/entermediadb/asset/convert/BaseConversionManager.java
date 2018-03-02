@@ -310,6 +310,9 @@ public abstract class BaseConversionManager implements ConversionManager
 	}
 	protected ContentItem makeCustomInput(BaseTranscoder imTranscoder, String format, ConvertInstructions inStructions)
 	{
+		if(inStructions.getAsset() == null){
+			return null;
+		}
 		String colorspace = inStructions.getAsset().get("colorspace");
 		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
 		{

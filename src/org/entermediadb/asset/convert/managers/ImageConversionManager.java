@@ -115,6 +115,9 @@ public class ImageConversionManager extends BaseConversionManager
 	private ContentItem makeIndd(MediaTranscoder inExiftoolThumbTranscoder, ConvertInstructions inStructions)
 	{
 		Asset asset = inStructions.getAsset();
+		if(asset == null){
+			return null;
+		}
 		String format = asset.getFileFormat();
 		if ("indd".equalsIgnoreCase(format))  //TODO: Move to image
 		{
