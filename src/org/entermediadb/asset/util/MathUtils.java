@@ -72,14 +72,14 @@ public class MathUtils
 		return result.doubleValue();
 	}
 
-	public static String toDuration(long inDuration)
+	public static String toDuration(long inDurationinMilli)
 	{
 		//00:03:03.167
 		//HOURS:MM:SS.MICROSECONDS
-		long second = (inDuration / 1000) % 60;
-		long minute = (inDuration / (1000 * 60)) % 60;
-		long hour = (inDuration / (1000 * 60 * 60)) % 24;
-		String millis = String.valueOf( inDuration );
+		long second = (inDurationinMilli / 1000) % 60;
+		long minute = (inDurationinMilli / (1000 * 60)) % 60;
+		long hour = (inDurationinMilli / (1000 * 60 * 60)) % 24;
+		String millis = String.valueOf( inDurationinMilli );
 		if( millis.length() > 3)
 		{
 			millis = millis.substring(millis.length() - 3);

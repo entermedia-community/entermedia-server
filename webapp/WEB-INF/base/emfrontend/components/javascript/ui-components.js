@@ -349,13 +349,19 @@ uiload = function() {
 				var apphome = app.data("home") + app.data("apphome");
 				$("#" + targetdiv).append('<img src="' + apphome + '/theme/images/ajax-loader.gif">');
 			}
+			var oemaxlevel = form.data("oemaxlevel");
+			if( !oemaxlevel)
+			{
+				oemaxlevel= 1;
+			}
 
 			form.ajaxSubmit({
 				target:"#" + targetdiv,
 				error: function(data ) {
 					alert("error");
 					$("#" + targetdiv).html(data);
-				}
+				},
+				data: { oemaxlevel: oemaxlevel }
 			 });
 			
 				

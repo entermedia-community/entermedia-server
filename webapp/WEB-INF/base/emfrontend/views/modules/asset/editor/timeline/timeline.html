@@ -32,7 +32,7 @@
 
 		#if( $block.showThumb() )
 			<div  style="position:absolute;left: ${added}px; top:2px;">
-			<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getStartOffset()&assetid=$asset.id" title="$block.getLabel()"/></div>
+			<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/></div>
 			#set( $added = $added + $space)
 		#end
 

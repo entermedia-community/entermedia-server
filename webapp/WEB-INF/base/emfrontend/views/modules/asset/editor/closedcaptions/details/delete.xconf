@@ -1,4 +1,4 @@
 <page>
-<path-action name="TimelineModule.importCaptions"/>
+<path-action name="TimelineModule.deleteTrack"/>
 <path-action name="TimelineModule.loadCaptionEditor" />
 </page>

@@ -275,7 +275,7 @@ $(document).ready(function()
     	}); 
 	});
 	
-	jQuery("#lesstime").livequery("click",function(e)
+	jQuery("#removetime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);

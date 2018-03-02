@@ -16,7 +16,7 @@ public class Timeline
 	//20 chunks at 15 * 4 = 60px each
 	//20 * 60 = 1200px wide
 	
-	protected double fieldLength;
+	protected long fieldLength;
 	protected int fieldPxWidth;
 	protected Collection fieldTicks;
 	protected Collection fieldClips;
@@ -49,13 +49,14 @@ public class Timeline
 			//divide into 60 blocks
 			fieldTicks = new ArrayList();
 			
-			double chunck = getLength() / 20d;
+			double chunck = (double)getLength() / 20d;
 			for (int i = 0; i < 21; i++)
 			{
 				Block block = new Block();
 				//block.setTime(i * chunck);
 				block.setCounter(i);
-				block.setStartOffset(chunck * (double)i);
+				double offsetmili = chunck * (double)i;
+				block.setStartOffset(Math.round( offsetmili ));
 				if( i < 20)
 				{
 					block.setShowThumb((i % 2) == 0);
@@ -72,12 +73,12 @@ public class Timeline
 		fieldTicks = inTicks;
 	}
 
-	public double getLength()
+	public long getLength()
 	{
 		return fieldLength;
 	}
 
-	public void setLength(double inLength)
+	public void setLength(long inLength)
 	{
 		fieldLength = inLength;
 	}
@@ -92,33 +93,36 @@ public class Timeline
 		fieldPxWidth = inPxWidth;
 	}
 
-	public Collection loadClips(MultiValued inAsset, String inField)
+	public Collection loadClips(MultiValued inParent, String inField)
 	{
 		fieldClips = new ArrayList();
-		Collection rows = inAsset.getValues(inField);
-		if( rows != null)
+		if( inParent != null)
 		{
-			for (Iterator iterator = rows.iterator(); iterator.hasNext();)
+			Collection rows = inParent.getValues(inField);
+			if( rows != null)
 			{
-				Map data = (Map) iterator.next();
-				Clip clip = new Clip();
-				clip.setData(data);
-				fieldClips.add(clip);
+				for (Iterator iterator = rows.iterator(); iterator.hasNext();)
+				{
+					Map data = (Map) iterator.next();
+					Clip clip = new Clip();
+					clip.setData(data);
+					fieldClips.add(clip);
+				}
+				Collections.sort((ArrayList)fieldClips);
+	
 			}
-			Collections.sort((ArrayList)fieldClips);
-
 		}
 		return fieldClips;
 	}
 	public int getPxStart(Clip inClip)
 	{
-		double ratio = inClip.getStart() / getLength();
+		double ratio = (double)inClip.getStart() / (double)getLength();
 		double px = (double)getPxWidth() * ratio;
 		return (int)Math.round(px);
 	}
 	public int getPxLength(Clip inClip)
 	{
-		double ratio = inClip.getLength() / getLength();
+		double ratio = (double)inClip.getLength() / (double)getLength();
 		double px = (double)getPxWidth() * ratio;
 		if( px < 10)
 		{
@@ -128,7 +132,7 @@ public class Timeline
 	}
 	public double getPxToTimeRatio()
 	{
-		return (double)getPxWidth() / getLength();
+		return (double)getPxWidth() / (double)getLength();
 	}
 
 	public void selectClip(String inSelected)

@@ -8,8 +8,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.ZipGroup;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -30,6 +33,8 @@ import org.openedit.util.PathUtilities;
 
 public class TimelineModule extends BaseMediaModule
 {
+	private static final Log log = LogFactory.getLog(TimelineModule.class);
+
 	public void loadTimeline(WebPageRequest inReq)
 	{
 		Asset asset = (Asset)inReq.getPageValue("asset");
@@ -49,7 +54,8 @@ public class TimelineModule extends BaseMediaModule
 			return;
 		}
 		Timeline timeline = new Timeline();
-		timeline.setLength(videolength);
+		long mili = Math.round( videolength*1000d );
+		timeline.setLength(mili);
 		timeline.setPxWidth(1200);
 		
 //		String selected = inReq.getRequestParameter("timecodejump");
@@ -177,7 +183,7 @@ public class TimelineModule extends BaseMediaModule
 		
 	}
 	
-	public void importTimeline(WebPageRequest inReq) throws Exception
+	public void importCaptions(WebPageRequest inReq) throws Exception
 	{
 		
 		MediaArchive archive = getMediaArchive(inReq);
@@ -239,7 +245,8 @@ public class TimelineModule extends BaseMediaModule
 			cuemap.put("cliplabel", cue.getText().toString());
 			//cuemap.put("position", cue.getPosition());
 			cuemap.put("alignment", cue.getAlignment());
-			cuemap.put("timecodestart", cue.getStartTime());
+			long start = cue.getStartTime();
+			cuemap.put("timecodestart", start);
 			long length = cue.getEndTime() - cue.getStartTime();
 			cuemap.put("timecodelength", length);
 			captions.add(cuemap);
@@ -285,15 +292,31 @@ public class TimelineModule extends BaseMediaModule
 		cuemap.put("cliplabel", cliplabel);
 
 		String starttime = inReq.getRequestParameter("timecodestart");
-		cuemap.put("timecodestart", starttime);
+		cuemap.put("timecodestart", Long.parseLong( starttime) );
 
 		String timecodelength = inReq.getRequestParameter("timecodelength");
-		cuemap.put("timecodelength", timecodelength);
+		cuemap.put("timecodelength", Long.parseLong( timecodelength ));
+		log.info("Saved " + starttime + " " + timecodelength);
 		captions.add(cuemap);
 		lasttrack.setValue("captions",captions);
 		captionsearcher.saveData(lasttrack);
 	}	
+	public void deleteTrack(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Searcher captionsearcher = archive.getSearcher("videotrack");
+		Asset asset = getAsset(inReq);
 	
+		String selectedlang = (String)inReq.getSessionValue("selectedlang");
+		if( selectedlang == null)
+		{
+			selectedlang = inReq.getLanguage();
+		}
+		Data lasttrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).searchOne();
+	
+		captionsearcher.delete(lasttrack,null);
+	}	
 	public void loadCaptionEditor(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -321,7 +344,8 @@ public class TimelineModule extends BaseMediaModule
 			return;
 		}
 		Timeline timeline = new Timeline();
-		timeline.setLength(videolength);
+		long mili = Math.round( videolength*1000d );
+		timeline.setLength(mili);
 		timeline.setPxWidth(1200);
 		timeline.loadClips(track,"captions");
 		inReq.putPageValue("timeline", timeline);
