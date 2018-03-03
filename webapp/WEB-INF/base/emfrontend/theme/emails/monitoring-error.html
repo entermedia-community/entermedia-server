@@ -8,8 +8,8 @@
 #else
 	#if ($monitored.nodisk == "false")
 		#foreach($partition in $monitored.getValue("partitions"))
-			#if($partition.isOverloaded() == true)
-				[[The following instance's partition is running out of disk space]]: <b>"${partition.name}"</b> <b>${partition.fieldFreePartitionSpace}Mb</b> [[remaining of]] <b>${partition.fieldUsablePartitionSpace}Mb</b>.<br/><br/>
+			#if($partition.isIsOverloaded() == true)
+				[[The following instance's partition is running out of disk space]]: <b>$partition.getName()</b> <b>${partition.getFreePartitionSpace()}Mb</b> [[remaining of]] <b>${partition.getUsablePartitionSpace()}Mb</b>.<br/><br/>
 			#end
 		#end
 	#else

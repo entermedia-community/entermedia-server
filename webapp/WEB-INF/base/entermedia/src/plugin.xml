@@ -2061,4 +2061,10 @@
 			<ref bean="elasticNodeManager" />
 		</property>
 	</bean>
+	<bean id="DiskModule" class="org.entermediadb.sitemanager.DiskModule">
+	</bean>
+	<bean id="diskManager" class="org.entermediadb.sitemanager.DiskManager" scope="prototype">
+	</bean>
+ 	
+	
 </beans>
