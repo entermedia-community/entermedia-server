@@ -26,9 +26,9 @@ import org.openedit.util.OutputFiller;
 public class Downloader
 {
 
-	public void download(String inUrl, String inOutput) throws OpenEditException
+	public void download(String inUrl, String inAbsoluteFilePath) throws OpenEditException
 	{
-		download(inUrl,new File( inOutput));
+		download(inUrl,new File( inAbsoluteFilePath));
 	}
 	
 	public void download(String inStrUrl, File outputFile) throws OpenEditException
