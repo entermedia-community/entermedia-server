@@ -2,10 +2,13 @@ package org.entermediadb.sitemanager;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 
 public class DiskManager implements CatalogEnabled
@@ -18,22 +21,28 @@ public class DiskManager implements CatalogEnabled
 
 		try
 		{
-			String filePath = archive.getCatalogSettingValue("diskpartitions");
-
-			if (filePath == null || (filePath != null && filePath.isEmpty()))
+			Collection<String> fileNames = archive.getCatalogSettingValues("diskpartitions");
+			if( fileNames == null )
 			{
-				throw new OpenEditException("No partitions declared in catalogsettings");
+				fileNames = new ArrayList();
 			}
-
-			//check for duplicates
-			String[] fileNames = filePath.split(",");
-
+			fileNames.add("/");
+			fileNames.add( archive.getRootDirectory().getAbsolutePath() );
+			
+			Collection all = archive.getSearcher("hotfolder").getAllHits();
+			for (Iterator iterator = all.iterator(); iterator.hasNext();)
+			{
+				Data hotfolder = (Data) iterator.next();
+				String path = hotfolder.get("externalpath");
+				if( path != null)
+				{
+					fileNames.add(path);
+				}
+			}
 
 			for (String file : fileNames)
 			{
-				//create new JSON and put it in a GET route
 				File partition = new File(file);
-
 				Long totalCapacity = (long) (partition.getTotalSpace() / 1000000.00);
 				Long freePartitionSpace = (long) (partition.getFreeSpace() / 1000000.00);
 				Long usablePartitionSpace = (long) (partition.getUsableSpace() / 1000000.00);
@@ -49,40 +58,6 @@ public class DiskManager implements CatalogEnabled
 		}
 		return new ArrayList<DiskPartition>();
 	}
-
-//	private void toJSON(JSONObject inJsonObject, String partition, Long totalCapacity, Long freePartitionSpace, Long usablePartitionSpace)
-//	{
-//		JSONArray partitions = null;
-//
-//		if (inJsonObject == null)
-//		{
-//			throw new OpenEditException("JSON Object not initialized");
-//		}
-//		partitions = (JSONArray) inJsonObject.get("partitions");
-//
-//		JSONObject obj = new JSONObject();
-//		obj.put("totalcapacity", totalCapacity);
-//		obj.put("freepartitionspace", freePartitionSpace);
-//		obj.put("usablepartitionspace", usablePartitionSpace);
-//		obj.put("name", partition);
-//		partitions.add(obj);
-//	}
-//
-//	private void writeToFile(JSONObject inJsonObject)
-//	{
-//	    BufferedWriter writer;
-//		try
-//		{
-//			writer = new BufferedWriter(new FileWriter("/root/disks.json"));
-//		    writer.write(inJsonObject.toJSONString());
-//		     
-//		    writer.close();
-//		}
-//		catch (IOException e)
-//		{
-//			e.printStackTrace();
-//		}
-//	}
 
 	public String getCatalogId()
 	{
