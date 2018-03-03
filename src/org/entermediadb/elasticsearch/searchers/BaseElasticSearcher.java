@@ -99,6 +99,8 @@ import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.IntCounter;
 
+import groovy.json.JsonOutput;
+
 public class BaseElasticSearcher extends BaseSearcher
 {
 
@@ -532,7 +534,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 
 	}
-
+	
 	public XContentBuilder buildMapping()
 	{
 		try
@@ -2076,7 +2078,28 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					inContent.field(key, val);
 				}
-
+				else if (detail.isDataType("long"))
+				{
+					Long val = null;
+					if( value instanceof Double && detail.getId().contains("timecode"))
+					{
+						Double d = (Double)value;
+						val = Math.round( d * 1000d);
+					}
+					else if (value instanceof Double)
+					{
+						val = Math.round( (Double) value ); //Throw exception?
+					}
+					else if( value instanceof Integer)
+					{
+						val = ((Integer)value).longValue();
+					}
+					else if (value != null)
+					{
+						val = Long.valueOf(value.toString());
+					}
+					inContent.field(key, val);
+				}
 				else if (detail.isDataType("number"))
 				{
 					Number val = 0;
@@ -2721,4 +2744,35 @@ public class BaseElasticSearcher extends BaseSearcher
 		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 		return archive.getCatalogSettingValue(inKey);
 	}
+	
+	public String getExistingMapping()
+	{
+		String cat = getCatalogId().replace("/", "_");
+		String indexid = getElasticNodeManager().getIndexNameFromAliasName(cat);
+		
+		GetMappingsResponse getMappingsResponse = getElasticNodeManager().getClient().admin().indices().getMappings(new GetMappingsRequest().indices(indexid)).actionGet();
+		ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexToMappings = getMappingsResponse.getMappings();
+		
+		MappingMetaData actualMapping = indexToMappings.get(indexid).get(getSearchType());
+		if(actualMapping != null)
+		{
+			String jsonString;
+			try
+			{
+				jsonString = actualMapping.source().string();
+//				JSONObject config = (JSONObject) new JSONParser().parse(returned);
+				jsonString = JsonOutput.prettyPrint(jsonString);
+//				JSONObject json = new JSONObject(jsonString); // Convert text to object
+//				SjsonString = json.toString(4);
+				return jsonString;
+			}
+			catch (IOException e)
+			{
+				new OpenEditException(e);
+			}
+			
+		}		
+		return null;
+	}
+	
 }

@@ -171,14 +171,10 @@ public class TimelineModule extends BaseMediaModule
 		{
 			lang = inReq.getLanguage();
 		}
-		HitTracker tracks = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", lang).search();
-
-		if( tracks.size() == 0)
-		{
-			tracks = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", "en").search();
-		}
 		
-		inReq.putPageValue("tracks", tracks);
+		MultiValued track = (MultiValued)captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", lang).sort("timecodestart").searchOne();
+		track = (MultiValued)captionsearcher.loadData(track);
+		inReq.putPageValue("track", track);
 		inReq.putPageValue("captionsearcher", captionsearcher);
 		
 	}
