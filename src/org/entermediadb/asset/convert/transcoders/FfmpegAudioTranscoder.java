@@ -140,8 +140,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		comm.add(input.getAbsolutePath());
 		comm.add("-y");
 		//audio
-		comm.add("-acodec");
-		comm.add("libmp3lame");
+		setValue("acodec", "libmp3lame", inStructions, comm); // libmp3lame libopus
 
 		//comm.add("libfaac"); //libfaac  libmp3lame
 		comm.add("-ab");
@@ -165,10 +164,13 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
 
 		//boolean ok =  runExec("ffmpeg", comm);
-		boolean ok = runExec("avconv", comm, inTimeout);
-
-		result.setOk(ok);
-		log.info("ok: ${ok} in " + (System.currentTimeMillis() - start) / 1000L + " seconds");
+		ExecResult exec = getExec().runExec("avconv", comm, inTimeout);
+		log.info("ok: ${exec.isRunOk()} in " + (System.currentTimeMillis() - start) / 1000L + " seconds");
+		result.setOk(exec.isRunOk());
+		if( !exec.isRunOk() )
+		{
+			result.setError("Error creating audio " + exec.getStandardError());
+		}
 	}
 
 

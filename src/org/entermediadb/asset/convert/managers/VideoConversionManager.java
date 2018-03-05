@@ -59,7 +59,8 @@ public class VideoConversionManager extends BaseConversionManager
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
 		//if output == jpg and no time offset - standard
-		if(inStructions.getOutputRenderType().equals("video"))
+		String outputRenderType = inStructions.getOutputRenderType();
+		if(outputRenderType.equals("video") || outputRenderType.equals("audio"))
 		{
 			return findTranscoder(inStructions).convertIfNeeded(inStructions);
 		}

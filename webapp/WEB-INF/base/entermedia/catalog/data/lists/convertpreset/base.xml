@@ -17,6 +17,7 @@
     <data id="cropdocument" guid="cropdocument" generatedoutputfile="image110x62cropped.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="document" onimport="true" ordering="06" singlepage="true" name="Document Crop"/>
     <preset id="mp3audio" guid="mp3audio"  generatedoutputfile="audio.mp3" outputextension="mp3"  fileexportformat="${shortfilename}.mp3" transcoderid="audio" extension="mp3"  inputtype="audio" onimport="true" ordering="06">Mp3 Audio</preset>
 
+
 <!--gui= ffmpeg480p or ffmpegpreviewmp4 -->
     <preset id="previewffmpeg" guid="ffmpeg480p" display="true" generatedoutputfile="video.mp4"  outputfile="video.mp4" outputextension="mp4"  fileexportformat="${shortfilename}proxy.mp4" transcoderid="ffmpeg" extension="mp4"  inputtype="video" onimport="true" ordering="06">Video MP4 Preview</preset>
     <preset id="previewflv" guid="ffmpegpreviewmp4" display="true" generatedoutputfile="video720x480.flv" outputextension="flv"  fileexportformat="${shortfilename}.flv" transcoderid="ffmpeg" extension="mp4" inputtype="video" ordering="07">Video FLV</preset>
@@ -27,8 +28,9 @@
     <preset id="videoimagelarge" guid="imagelarge"  generatedoutputfile="image640x480.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}640x480.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="11" >Video Large Image</preset>
     <preset id="videoimagemediumsmall" guid="imagemediumsmall"  generatedoutputfile="image300x300.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}300x300.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="11" >Video Medium Small</preset>
     <preset id="videoimagecrop" guid="imagecrop"  generatedoutputfile="image110x62cropped.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="12" >Video Crop Image</preset>
+    <preset id="videoaudio" guid="videoaudio"  generatedoutputfile="audio.flac" outputextension="flac"  fileexportformat="${shortfilename}.flac" transcoderid="audio" extension="flac"  inputtype="video" onimport="false" ordering="13">Video Audio Lossless</preset>
 
-    <preset id="streamserver" display="false" generatedoutputfile="video.flv"  outputfile="video.flv"  outputextension="jpg"  fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="11">Streaming Video</preset>
+    <preset id="streamserver" display="false" generatedoutputfile="video.flv"  outputfile="video.flv"  outputextension="jpg"  fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="14">Streaming Video</preset>
 
     <!-- 
     <preset id="preview" generatedoutputfile="preview-rhozet.mp4" fileexportformat="${shortfilename}LQ.mp4" transcoderid="rhozet" extension="mp4" guid="21F5E3B8-FD4D-452A-A351-173FCC26FA0E" inputtype="video" ordering="01">Video Rhozet LQ MP4</preset>
