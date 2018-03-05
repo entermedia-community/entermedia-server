@@ -140,8 +140,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		comm.add(input.getAbsolutePath());
 		comm.add("-y");
 		//audio
-		comm.add("-acodec");
-		comm.add("libmp3lame");
+		setValue("acodec", "libmp3lame", inStructions, comm); // libmp3lame libopus
 
 		//comm.add("libfaac"); //libfaac  libmp3lame
 		comm.add("-ab");
