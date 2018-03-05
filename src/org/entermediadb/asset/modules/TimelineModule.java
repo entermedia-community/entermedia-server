@@ -16,7 +16,7 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.asset.util.MathUtils;
-import org.entermediadb.video.CloudTrancodeManager;
+import org.entermediadb.video.CloudTranscodeManager;
 import org.entermediadb.video.Timeline;
 import org.entermediadb.video.VTT.Cue;
 import org.entermediadb.video.VTT.webvtt.WebvttParser;
@@ -362,7 +362,7 @@ public class TimelineModule extends BaseMediaModule
 		String selectedlang = inReq.getRequestParameter("selectedlang");
 
 		Asset asset = getAsset(inReq);
-		CloudTrancodeManager manager = (CloudTrancodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
+		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
 		manager.transcodeCaptions(asset,selectedlang);
 	}
 	

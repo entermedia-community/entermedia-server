@@ -2066,5 +2066,17 @@
 	<bean id="diskManager" class="org.entermediadb.sitemanager.DiskManager" scope="prototype">
 	</bean>
  	
+ 	
+ 	
+ 	<bean id="cloudTranscodeManager" class="org.entermediadb.video.CloudTranscodeManager" scope="prototype">
+	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	
+	</bean>
+ 	
+ 	
+ 	
+ 	
 	
 </beans>
