@@ -14,9 +14,10 @@ public class VideoTrack extends BaseData
 	}
 	public String formatEnd(Map inClip)
 	{
-		Long start = (Long)inClip.get("timecodestart");
-		Long length = (Long)inClip.get("timecodelength");
-		return MathUtils.toDuration(start + length);
+		Number start = (Number)inClip.get("timecodestart");
+		Number length = (Number)inClip.get("timecodelength");
+		return MathUtils.toDuration(toLong(start) + toLong(length));
 	}
 
+	
 }

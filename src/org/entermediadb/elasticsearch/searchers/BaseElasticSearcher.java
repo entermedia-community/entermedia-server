@@ -638,16 +638,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.startObject(detail.getId());
 				configureDetail(detail, jsonproperties);
 				jsonproperties = jsonproperties.endObject();
-		
-				
-
 			}
-			
-			
-			
-			
-			
-			
 			jsonproperties = jsonproperties.endObject();
 			PropertyDetail _parent = getPropertyDetails().getDetail("_parent");
 			if (_parent != null)
@@ -2025,10 +2016,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				if( value !=null && detail.isDataType("objectarray"))
 				{
 					if(!(value instanceof Collection)){
-						throw new OpenEditException("Data was not an array");
+						throw new OpenEditException("Data was not a collection " + value.getClass() );
 					}
-				}
-				if (detail.isDate())
+					inContent.field(key, value);  //This seems to map Long data types to Integer when they are read again
+				} 
+				else if (detail.isDate())
 				{
 					if (value != null)
 					{
@@ -2175,12 +2167,13 @@ public class BaseElasticSearcher extends BaseSearcher
 						Position pos = (Position)value;
 						GeoPoint point = new GeoPoint(pos.getLatitude(),pos.getLongitude());
 						inContent.field(key, point);  
-					} else if(value instanceof String) {
+					} 
+					else if(value instanceof String) 
+					{
 						GeoPoint point = new GeoPoint((String)value);
 						inContent.field(key, point);  
 						Position position = new Position(point.getLat(), point.getLon());
 						inData.setValue(key, position);
-
 					}
 				}
 				else if (key.equals("description")) // TODO: This should be
