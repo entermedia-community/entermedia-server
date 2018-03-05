@@ -359,10 +359,11 @@ public class TimelineModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String catalogid = archive.getCatalogId();
-		
+		String selectedlang = inReq.getRequestParameter("selectedlang");
+
 		Asset asset = getAsset(inReq);
 		CloudTrancodeManager manager = (CloudTrancodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
-		manager.transcodeCaptions(asset);
+		manager.transcodeCaptions(asset,selectedlang);
 	}
 	
 }
