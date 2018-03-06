@@ -162,9 +162,15 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		comm.add(outpath);
 		new File(outpath).getParentFile().mkdirs();
 		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
-
-		//boolean ok =  runExec("ffmpeg", comm);
-		ExecResult exec = getExec().runExec("avconv", comm, inTimeout);
+		ExecResult exec = null;
+		if( inStructions.isStreaming() )
+		{
+			exec = getExec().runExecStream("avconv", comm,inStructions.getOutputStream(), inTimeout);
+		}
+		else
+		{
+			exec = getExec().runExec("avconv", comm, inTimeout);
+		}
 		log.info("ok: ${exec.isRunOk()} in " + (System.currentTimeMillis() - start) / 1000L + " seconds");
 		result.setOk(exec.isRunOk());
 		if( !exec.isRunOk() )
