@@ -3,6 +3,8 @@ package org.entermediadb.video;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
@@ -15,6 +17,9 @@ import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.ConversionManager;
+import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.google.GoogleManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -101,9 +106,22 @@ public class CloudTranscodeManager implements CatalogEnabled
 	
 		ContentItem item = archive.getOriginalContent(inAsset);
 		
+	
+		TranscodeTools transcodetools = archive.getTranscodeTools();
+		Map all = new HashMap(); //TODO: Get parent ones as well
+		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat("flac");
+		ConvertInstructions instructions = manager.createInstructions(inAsset, "audio.flac");
 		ByteArrayOutputStream output = new ByteArrayOutputStream();
-		OutputFiller filler = new OutputFiller();
-		filler.fill(item.getInputStream(), output);
+		instructions.setOutputStream(output);
+		instructions.setProperty("timeoffset", "0");
+		instructions.setProperty("duration", "50");
+		//https://stackoverflow.com/questions/20295398/ffmpeg-clip-audio-interval-with-starting-and-end-time
+		
+		
+		manager.createOutput(instructions);
+		
+		
+		
 		
 		Data authinfo = archive.getData("oauthprovider", "google");
 		
@@ -123,6 +141,9 @@ public class CloudTranscodeManager implements CatalogEnabled
 	public ArrayList getTranscodeData(Data inAuthinfo, byte[]  inAudioContent) throws Exception 
 	{
 		String url = "https://speech.googleapis.com/v1/speech:recognize";
+	
+		
+		
 		String encodedString = Base64.encodeBase64String(inAudioContent);
 		
 		
