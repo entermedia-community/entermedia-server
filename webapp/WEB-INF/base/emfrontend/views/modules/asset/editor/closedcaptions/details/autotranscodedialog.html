@@ -1,0 +1,19 @@
+#set( $clientroot = $context.getContentProperty("clientroot") )
+	<form name="vttupload" id="vttupload" method="post"  class="ajaxform" data-oemaxlevel="1" targetdiv="starttranscode"
+		 enctype="multipart/form-data" action="$clientroot/details/autotranscode.html">
+	 	<input type="hidden" name="assetid" value="$asset.id"> 
+		 
+		<p>[[Automatically transcode your media file]]</p>
+		#set($languages = $mediaarchive.getList("locale"))
+		<select class="select2 lenguagepicker" name="selectedlang" >
+				#foreach($locale in $languages)
+				<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
+				#end
+		</select>
+		 
+	</form>
+
+	<div id="starttranscode" >
+	
+	
+	</div>

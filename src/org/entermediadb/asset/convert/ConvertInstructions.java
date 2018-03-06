@@ -1,6 +1,7 @@
 package org.entermediadb.asset.convert;
 
 import java.awt.Dimension;
+import java.io.OutputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -27,7 +28,28 @@ public class ConvertInstructions
 	protected ContentItem fieldOutputFile;
 	protected ContentItem fieldInputFile;
 	public static final String NULL = "null";
+	protected boolean fieldStreaming;
+	protected OutputStream fieldOutputStream;
 	
+	
+	
+	
+	public OutputStream getOutputStream() {
+		return fieldOutputStream;
+	}
+
+	public void setOutputStream(OutputStream inOutputStream) {
+		fieldOutputStream = inOutputStream;
+	}
+
+	public boolean isStreaming() {
+		return fieldStreaming;
+	}
+
+	public void setStreaming(boolean fieldStreaming) {
+		this.fieldStreaming = fieldStreaming;
+	}
+
 	public ConvertInstructions copy(Data inNewPreset)
 	{
 		ConvertInstructions copy = new ConvertInstructions(fieldMediaArchive);

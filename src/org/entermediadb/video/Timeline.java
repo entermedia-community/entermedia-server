@@ -126,7 +126,7 @@ public class Timeline
 		double px = (double)getPxWidth() * ratio;
 		if( px < 10)
 		{
-			px = 10;
+			px = 50;
 		}
 		return (int)Math.round(px);
 	}
