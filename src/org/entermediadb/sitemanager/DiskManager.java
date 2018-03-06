@@ -9,7 +9,6 @@ import java.util.List;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 
 public class DiskManager implements CatalogEnabled
 {
@@ -24,15 +23,15 @@ public class DiskManager implements CatalogEnabled
 			Collection<String> fileNames = archive.getCatalogSettingValues("diskpartitions");
 			if( fileNames == null )
 			{
-				fileNames = new ArrayList();
+				fileNames = new ArrayList<String>();
 			}
 			fileNames.add("/");
 			fileNames.add( archive.getRootDirectory().getAbsolutePath() );
 			
-			Collection all = archive.getSearcher("hotfolder").getAllHits();
-			for (Iterator iterator = all.iterator(); iterator.hasNext();)
+			Collection<Data> all = archive.getSearcher("hotfolder").getAllHits();
+			for (Iterator<Data> iterator = all.iterator(); iterator.hasNext();)
 			{
-				Data hotfolder = (Data) iterator.next();
+				Data hotfolder = iterator.next();
 				String path = hotfolder.get("externalpath");
 				if( path != null)
 				{
