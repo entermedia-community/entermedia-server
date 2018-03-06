@@ -2159,7 +2159,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						}
 					}
 				}
-				else if (detail.isDataType("geo_point"))
+				else if (value != null && detail.isGeoPoint())
 				{
 					//Saved it as two fields?
 					if( value instanceof Position )
@@ -2171,9 +2171,11 @@ public class BaseElasticSearcher extends BaseSearcher
 					else if(value instanceof String) 
 					{
 						GeoPoint point = new GeoPoint((String)value);
-						inContent.field(key, point);  
-						Position position = new Position(point.getLat(), point.getLon());
-						inData.setValue(key, position);
+						inData.setValue(key, point);
+					}
+					else if(value instanceof GeoPoint) 
+					{
+						inData.setValue(key, value);
 					}
 				}
 				else if (key.equals("description")) // TODO: This should be
