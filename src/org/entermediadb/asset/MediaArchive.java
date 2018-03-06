@@ -1855,6 +1855,9 @@ public class MediaArchive implements CatalogEnabled
 		getNodeManager().clear();
 		getPresetManager().clearCaches();
 		getPropertyDetailsArchive().clearCache();
+		getCategorySearcher().clearIndex();
+		getCategoryArchive().clearCategories();
+		
 	}
 
 	public Collection<Data> listHiddenCollections()

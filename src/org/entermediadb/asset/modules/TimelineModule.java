@@ -363,7 +363,7 @@ public class TimelineModule extends BaseMediaModule
 
 		Asset asset = getAsset(inReq);
 		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
-		manager.transcodeCaptions(asset,selectedlang);
+	//	manager.transcodeCaptions(asset,selectedlang);
 	}
 	
 }
