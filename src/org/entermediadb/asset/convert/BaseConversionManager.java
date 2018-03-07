@@ -228,15 +228,7 @@ public abstract class BaseConversionManager implements ConversionManager
     	if( input == null && getInputLoaders() != null)
     	{
 	    	//Load input
-	    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
-			{
-				InputLoader loader = (InputLoader) iterator.next();
-				input = loader.loadInput(inStructions);
-				if( input != null)
-				{
-					break;
-				}
-			}
+	    	input = findInput(inStructions);
 			inStructions.setInputFile(input);
     	}	
     	if(input == null || !input.exists())
@@ -247,7 +239,7 @@ public abstract class BaseConversionManager implements ConversionManager
     		result.setError("Input is " + input + " input loaders failed to load");
     		return result;
 		}
-    	if( !inStructions.isForce() )
+    	if( !inStructions.isForce() && !inStructions.isStreaming() )
     	{
 	    	ContentItem output = inStructions.getOutputFile();
 			if( output.getLength() > 2 )
@@ -275,6 +267,19 @@ public abstract class BaseConversionManager implements ConversionManager
 			}
     	}
     	return result;
+	}
+
+	public ContentItem findInput(ConvertInstructions inStructions) {
+		for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
+		{
+			InputLoader loader = (InputLoader) iterator.next();
+			ContentItem input = loader.loadInput(inStructions);
+			if( input != null)
+			{
+				return input;
+			}
+		}
+		return null;
 	}
     
     protected ConvertResult transcode(ConvertInstructions inStructions)

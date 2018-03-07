@@ -28,7 +28,7 @@ public class ConvertInstructions
 	protected ContentItem fieldOutputFile;
 	protected ContentItem fieldInputFile;
 	public static final String NULL = "null";
-	protected boolean fieldStreaming;
+	protected boolean fieldStreaming = false;
 	protected OutputStream fieldOutputStream;
 	
 	
@@ -122,6 +122,9 @@ public class ConvertInstructions
 
 	public ContentItem findOutputFile()
 	{
+		if(isStreaming()) {
+			return null;
+		}
 		StringBuffer path = new StringBuffer();
 		//legacy for people who want to keep their images in the old location
 		String prefix = getProperty("pathprefix");

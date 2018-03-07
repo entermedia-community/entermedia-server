@@ -4,6 +4,8 @@
 
 <properties >
 	<property id="ai"  synctags="true"  rendertype="image" creator="imagemagick" >AI</property>
+	<property id="flac"  synctags="true"  rendertype="audio"  conversiontimeout="43200000" creator="ffmpeg">FLAC</property>
+	
 	<property id="asf"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg">ASF</property>
 	<property id="avi"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg">AVI</property>
 	<property id="bmp"  synctags="true"  rendertype="image" creator="imagemagick">BMP</property>
