@@ -197,6 +197,11 @@ public abstract class WebEmail
 			{
 				subject = (String) inContext.getPageValue("subject");
 			}
+			String prefix = (String) inContext.getPageValue("subjectprefix");
+			if( prefix != null)
+			{
+				subject = prefix + " " + subject;
+			}
 			setSubject(subject);
 		}
 		if (getRecipients() == null || getRecipients().size() == 0)

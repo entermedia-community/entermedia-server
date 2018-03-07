@@ -28,7 +28,7 @@
     <preset id="videoimagelarge" guid="imagelarge"  generatedoutputfile="image640x480.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}640x480.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="11" >Video Large Image</preset>
     <preset id="videoimagemediumsmall" guid="imagemediumsmall"  generatedoutputfile="image300x300.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}300x300.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="11" >Video Medium Small</preset>
     <preset id="videoimagecrop" guid="imagecrop"  generatedoutputfile="image110x62cropped.jpg" outputextension="jpg"  display="true" fileexportformat="${shortfilename}110x62cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="video" onimport="true"  ordering="12" >Video Crop Image</preset>
-    <preset id="videoaudio" guid="videoaudio"  generatedoutputfile="audio.flac" outputextension="flac"  fileexportformat="${shortfilename}.flac" transcoderid="audio" extension="flac"  inputtype="video" onimport="false" ordering="13">Video Audio Lossless</preset>
+    <preset id="videoaudio" guid="videoaudio"  generatedoutputfile="audio.flac" outputextension="flac"  fileexportformat="${shortfilename}.flac" transcoderid="audio" extension="flac"  inputtype="video|audio" onimport="false" ordering="13">Lossless Audio Only</preset>
 
     <preset id="streamserver" display="false" generatedoutputfile="video.flv"  outputfile="video.flv"  outputextension="jpg"  fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="14">Streaming Video</preset>
 

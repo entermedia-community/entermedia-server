@@ -160,7 +160,37 @@ $(document).ready(function()
 		video.currentTime = video.currentTime + .5;
 		return false;
 	});
+
+	selectClip = function(div)
+	{
+		var div = $(div).closest(".data-selection");
+		$(".data-selection").removeClass("selectedclip");
+		div.addClass("selectedclip");
+		updateDetails();
+	}
 	
+	updateDetails = function(jumptoend)
+	{
+		var selected = $(".selectedclip");
+	
+		$("#captioninput").val( selected.data("cliplabel") );
+		var decstart = selected.data("timecodestart");
+		decstart = parseFloat(decstart);
+		if( decstart )
+		{
+			video.currentTime = decstart / 1000;
+		}
+		//enable the delete icon
+		//make sure it saves on top
+	}
+
+	
+	jQuery(".data-selection").livequery("click",function(e)
+	{
+		e.preventDefault();
+		selectClip(this);
+		updateDetails();
+	});	
 	
 		
 });
