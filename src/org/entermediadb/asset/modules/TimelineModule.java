@@ -257,7 +257,6 @@ public class TimelineModule extends BaseMediaModule
 			
 			HashMap cuemap = new HashMap();
 			cuemap.put("cliplabel", cue.getText().toString());
-			//cuemap.put("position", cue.getPosition());
 			cuemap.put("alignment", cue.getAlignment());
 			long start = cue.getStartTime();
 			cuemap.put("timecodestart", start);
@@ -399,7 +398,7 @@ public class TimelineModule extends BaseMediaModule
 	}
 	
 	
-	public void autoTranscode(WebPageRequest inReq)
+	public void autoTranscode(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String catalogid = archive.getCatalogId();
@@ -407,7 +406,7 @@ public class TimelineModule extends BaseMediaModule
 
 		Asset asset = getAsset(inReq);
 		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
-	//	manager.transcodeCaptions(asset,selectedlang);
+		manager.transcodeCaptions(asset,selectedlang);
 	}
 	
 }
