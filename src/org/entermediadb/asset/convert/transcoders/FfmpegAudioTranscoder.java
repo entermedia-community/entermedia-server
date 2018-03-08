@@ -169,7 +169,12 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 			comm.add(inStructions.getTimeOffset());
 			
 		}
-		
+		if( inStructions.get("compressionlevel")!= null) {
+			comm.add("-compression_level");
+			comm.add(inStructions.get("compressionlevel"));
+			
+			
+		}
 		if(inStructions.get("duration") != null) {
 			
 			comm.add("-t");
