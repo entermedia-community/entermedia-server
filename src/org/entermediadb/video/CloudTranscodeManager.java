@@ -116,10 +116,10 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		Collection captions = new ArrayList();
 		lasttrack.setValue("captions", captions);
 		
-		for (double i = 0; i < length; i += 60) {
+		for (double i = 0; i < length; i += 58) {
 
 			instructions.setProperty("timeoffset", String.valueOf(i));
-			instructions.setProperty("duration", "60");
+			instructions.setProperty("duration", "58");
 			instructions.setProperty("compressionlevel", "12");
 
 			// instructions.setStre(true);
@@ -137,6 +137,12 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				OutputFiller filler = new OutputFiller();
 				filler.fill(tempfile.getInputStream(), output);
 				JsonObject elem = getTranscodeData(authinfo, output.toByteArray());
+				if( elem == null)
+				{
+					log.error("Security error ");
+					
+					return;
+				}
 				JsonArray results = (JsonArray)elem.get("results");
 					if( results == null)
 					{
@@ -219,7 +225,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 					+ resp.getStatusLine().getReasonPhrase());
 			String returned = EntityUtils.toString(resp.getEntity());
 			log.info(returned);
-
+			return null;
 		}
 
 		else {
@@ -229,7 +235,6 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			return elem;
 
 		}
-		return null;
 	}
 
 }
