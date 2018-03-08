@@ -425,9 +425,10 @@ public class TimelineModule extends BaseMediaModule
 	public void autoTranscodeQueue(WebPageRequest inReq) throws Exception
 	{
 		//<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/autotranscode.html" allowduplicates="true" />
-		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
 
 		MediaArchive archive = getMediaArchive(inReq);
+		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(archive.getCatalogId(), "cloudTranscodeManager");
+
 		Searcher captionsearcher = archive.getSearcher("videotrack");
 
 		String catalogid = archive.getCatalogId();
