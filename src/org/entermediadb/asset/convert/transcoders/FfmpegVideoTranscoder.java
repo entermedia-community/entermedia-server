@@ -9,6 +9,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
@@ -209,10 +210,14 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 				if (tmp.exists())
 				{
 					long old = tmp.lastModified();
-					if (System.currentTimeMillis() - old < (1000 * 60 * 60)) //something is processing this
+					if (System.currentTimeMillis() - old < (1000 * 60 * 60)) //something is processing this within the last hour
 					{
-						log.info("Video still being processed, skipping 2nd request");
-						return result;
+						log.info("Existing video conversion trying again " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
+						
+					}
+					else
+					{
+						throw new OpenEditException("Older video existing conversion found, marking as error " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
 					}
 				}
 			}
@@ -229,7 +234,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			if (!execresult.isRunOk())
 			{
 				String output = execresult.getStandardError();
-				result.setError(output);
+				result.setError("Error: " + output);
 				return result;
 			}
 			if (h264)
