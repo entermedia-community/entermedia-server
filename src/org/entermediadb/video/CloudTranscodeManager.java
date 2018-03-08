@@ -138,7 +138,11 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				filler.fill(tempfile.getInputStream(), output);
 				JsonObject elem = getTranscodeData(authinfo, output.toByteArray());
 				JsonArray results = (JsonArray)elem.get("results");
-
+					if( results == null)
+					{
+						log.error("Got back " + elem );
+						return;
+					}
 					for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
 						Map cuemap = new HashMap();
 						JsonObject alternative = (JsonObject) iterator2.next();
@@ -161,24 +165,8 @@ public class CloudTranscodeManager implements CatalogEnabled {
 							cuemap.put("timecodelength", Math.round((finaloffset - extraoffset)*1000d));
 							log.info("Saved " + cliplabel + " : " + " " + i + " " + finaloffset);
 							captions.add(cuemap);
-							
-							
-							
 						}
-						
-						
-					
-					
-					
-					
-					
 				}
-
-				
-					
-
-				
-
 				captionsearcher.saveData(lasttrack);
 
 			} catch (Exception e) {
@@ -193,8 +181,6 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 		String encodedString = Base64.encodeBase64String(inAudioContent);
 
-	
-
 		CloseableHttpClient httpclient;
 		httpclient = HttpClients.createDefault();
 		HttpPost httpmethod = new HttpPost(url);
@@ -206,7 +192,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 		JsonObject config = new JsonObject();
 		config.addProperty("encoding", "FLAC");
-		config.addProperty("sampleRateHertz", 48000);
+		//config.addProperty("sampleRateHertz", 44100);
 		config.addProperty("languageCode", "en-US");
 		config.addProperty("enableWordTimeOffsets", true);
 		object.add("config", config);

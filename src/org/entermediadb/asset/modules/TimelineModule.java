@@ -394,10 +394,7 @@ public class TimelineModule extends BaseMediaModule
 //		timeline.selectClip(selected);
 		
 		inReq.putPageValue("timeline", timeline);
-
-		
 	}
-	
 	
 	public void addAutoTranscode(WebPageRequest inReq) throws Exception
 	{
@@ -415,12 +412,13 @@ public class TimelineModule extends BaseMediaModule
 			lasttrack.setProperty("sourcelang", selectedlang);
 			lasttrack.setProperty("assetid",  asset.getId());
 		}
-		lasttrack.setValue("transcodeingstatus", "needstranscode");
+		lasttrack.setValue("transcribestatus", "needstranscribe");
 		captionsearcher.saveData(lasttrack);
-//		
+		inReq.putPageValue("track", lasttrack);
+//		inRe
 //		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
 //		manager.transcodeCaptions(asset,selectedlang);
-		archive.fireMediaEvent("autotranscode", inReq.getUser(), asset);
+		archive.fireSharedMediaEvent("asset/autotranscribe");
 	}
 	public void autoTranscodeQueue(WebPageRequest inReq) throws Exception
 	{
@@ -431,9 +429,8 @@ public class TimelineModule extends BaseMediaModule
 
 		Searcher captionsearcher = archive.getSearcher("videotrack");
 
-		String catalogid = archive.getCatalogId();
 		String selectedlang = inReq.getRequestParameter("selectedlang");
-		Collection hits = captionsearcher.query().exact("transcodeingstatus", "needstranscode").search();
+		Collection hits = captionsearcher.query().exact("transcribestatus", "needstranscribe").search();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data track = (Data) iterator.next();
@@ -443,7 +440,7 @@ public class TimelineModule extends BaseMediaModule
 				if( lock != null)
 				{
 					manager.transcodeCaptions(track);
-					track.setValue("transcodeingstatus", "complete");
+					track.setValue("transcribestatus", "complete");
 					captionsearcher.saveData(track);
 				}
 			} finally

@@ -1,0 +1,4 @@
+<properties>
+  <property id="needstranscribe" >Needs Transcribe</property>
+  <property id="complete" >Complete</property>
+ </properties>
