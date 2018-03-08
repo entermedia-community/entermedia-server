@@ -134,28 +134,35 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				OutputFiller filler = new OutputFiller();
 				filler.fill(tempfile.getInputStream(), output);
 				JsonObject elem = getTranscodeData(authinfo, output.toByteArray());
-				JsonArray results = elem.get("results").getAsJsonArray();
-				JsonObject firstalternative = results.get(0).getAsJsonObject();
-				JsonArray alternatives = firstalternative.get("alternatives").getAsJsonArray();
+				JsonArray results = (JsonArray)elem.get("results");
 
-					for (Iterator iterator2 = alternatives.iterator(); iterator2.hasNext();) {
+					for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
 						Map cuemap = new HashMap();
 						JsonObject alternative = (JsonObject) iterator2.next();
-						String cliplabel = alternative.get("transcript").getAsString();
-						JsonArray words = alternative.get("words").getAsJsonArray();
-						JsonObject firstword = (JsonObject)words.get(0);
-						String offsetstring = firstword.get("startTime").getAsString().replaceAll("s", "");
-						JsonObject lastword = (JsonObject)words.get(words.size()-1);
-						String laststring  = lastword.get("endTime").getAsString().replaceAll("s", "");
+						JsonArray alternatives = (JsonArray)alternative.get("alternatives");
+						for (Iterator iterator = alternatives.iterator(); iterator.hasNext();) {
+							
+							JsonObject data = (JsonObject)iterator.next();
+							String cliplabel = data.get("transcript").getAsString();
+							JsonArray words = data.get("words").getAsJsonArray();
+							JsonObject firstword = (JsonObject)words.get(0);
+							String offsetstring = firstword.get("startTime").getAsString().replaceAll("s", "");
+							JsonObject lastword = (JsonObject)words.get(words.size()-1);
+							String laststring  = lastword.get("endTime").getAsString().replaceAll("s", "");
 
-						double extraoffset = Double.parseDouble(offsetstring);
-						double finaloffset = Double.parseDouble(laststring);
+							double extraoffset = Double.parseDouble(offsetstring);
+							double finaloffset = Double.parseDouble(laststring);
 
-						cuemap.put("cliplabel", cliplabel);
-						cuemap.put("timecodestart", Math.round( (i+extraoffset)*1000d));
-						cuemap.put("timecodelength", Math.round((finaloffset - extraoffset)*1000d));
-						log.info("Saved " + cliplabel + " : " + " " + i + " " + finaloffset);
-						captions.add(cuemap);
+							cuemap.put("cliplabel", cliplabel);
+							cuemap.put("timecodestart", Math.round( (i+extraoffset)*1000d));
+							cuemap.put("timecodelength", Math.round((finaloffset - extraoffset)*1000d));
+							log.info("Saved " + cliplabel + " : " + " " + i + " " + finaloffset);
+							captions.add(cuemap);
+							
+							
+							
+						}
+						
 						
 					
 					
