@@ -2769,5 +2769,61 @@ public class BaseElasticSearcher extends BaseSearcher
 		}		
 		return null;
 	}
+
+	protected Map checkTypes(Map inData)
+	{
+		for (Iterator iterator = inData.keySet().iterator(); iterator.hasNext();)
+		{
+			String type = (String) iterator.next();
+			PropertyDetail detail = getDetail(type);
+			if( detail != null)
+			{
+				if( detail.isDataType("objectarray") )
+				{
+					Object childdata = inData.get(type);
+					if( childdata instanceof List)
+					{
+						Collection childdatalist = (List)childdata;
+						for (Iterator iterator2 = childdatalist.iterator(); iterator2.hasNext();)
+						{
+							Map map = (Map) iterator2.next();
+							for (Iterator iterator3 = detail.getObjectDetails().iterator(); iterator3.hasNext();) 
+							{
+								PropertyDetail childdetail = (PropertyDetail) iterator3.next();
+								fixTypes(map, childdetail);
+							}
+						}
+					}	
+				}
+				else
+				{
+					fixTypes(inData, detail);
+				}
+			}	
+		}
+		return inData;
+	}
+
+	protected void fixTypes(Map inFields, PropertyDetail detail)
+	{
+		if( detail.isDataType("long") )
+		{
+			Object num = inFields.get(detail.getId());
+			if( num != null)
+			{
+				if( num instanceof String)
+				{
+					num = Long.parseLong((String)num);						
+				}
+				if( num instanceof Integer)
+				{
+					num = ((Integer)num).longValue();
+				}
+			}
+			inFields.put(detail.getId(), num);
+		}
+	}
+
+
 	
 }

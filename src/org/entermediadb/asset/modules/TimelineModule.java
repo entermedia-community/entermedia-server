@@ -179,6 +179,24 @@ public class TimelineModule extends BaseMediaModule
 		
 	}
 	
+	
+	public void loadClosedCaptions(WebPageRequest inReq) 
+	{
+		if( inReq.getResponse() != null)
+		{
+			inReq.getResponse().setHeader("Access-Control-Allow-Origin","*");
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		Searcher captionsearcher = archive.getSearcher("videotrack");
+		Asset asset = getAsset(inReq);
+		
+		Collection tracks = captionsearcher.query().exact("assetid", asset.getId()).sort("sourcelang").search(inReq);
+		inReq.putPageValue("tracks", tracks);
+		inReq.putPageValue("captionsearcher", captionsearcher);
+		
+	}
+	
 	public void importCaptions(WebPageRequest inReq) throws Exception
 	{
 		
@@ -277,6 +295,10 @@ public class TimelineModule extends BaseMediaModule
 			lasttrack.setProperty("sourcelang", selectedlang);
 			lasttrack.setProperty("assetid",  asset.getId());
 		}
+		else
+		{
+			lasttrack = captionsearcher.loadData(lasttrack);
+		}
 		Collection captions = (Collection)lasttrack.getValue("captions");
 		if( captions == null)
 		{
@@ -293,10 +315,32 @@ public class TimelineModule extends BaseMediaModule
 		String timecodelength = inReq.getRequestParameter("timecodelength");
 		cuemap.put("timecodelength", Long.parseLong( timecodelength ));
 		log.info("Saved " + starttime + " " + timecodelength);
+		captions = removeDuplicate(captions,cuemap);
 		captions.add(cuemap);
 		lasttrack.setValue("captions",captions);
 		captionsearcher.saveData(lasttrack);
 	}	
+	protected Collection removeDuplicate(Collection inCaptions, Map inCuemap)
+	{
+		Long start = (Long)inCuemap.get("timecodestart");
+		Long length = (Long)inCuemap.get("timecodelength");
+		
+		Collection copy = new ArrayList(inCaptions);
+		
+		for (Iterator iterator = inCaptions.iterator(); iterator.hasNext();)
+		{
+			Map existing = (Map) iterator.next();
+			Long exstart = (Long)existing.get("timecodestart");
+			Long exlength = (Long)existing.get("timecodelength");
+			if(exstart.equals(start) && exlength.equals( length))
+			{
+				copy.remove(existing);
+			}
+		}
+		return copy;
+		
+	}
+
 	public void deleteTrack(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

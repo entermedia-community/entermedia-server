@@ -1555,10 +1555,10 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		String type = resolveSearchType(inReq);
 		String items = inReq.getRequestParameter("items");
 		String[] sorted = MultiValued.VALUEDELMITER.split(items);	
-		
+		PropertyDetailsArchive propertyarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		XmlFile file = (XmlFile)loadView(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
+		String path = propertyarchive.findSavePath() + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		file.setElementName("property");
 		List tosave = new ArrayList();
@@ -1577,10 +1577,11 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		{
 			throw new OpenEditException("Should not be removing all fields");
 		}
+		//TODO: Move to PropertyDetailsArchive.saveView
 		file.getElements().clear();
 		file.getElements().addAll(tosave);
 		getXmlArchive().saveXml(file, inReq.getUser());
-		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
+		propertyarchive.clearCache();
 
 		//log.info(catalogid + type + items);
 		
