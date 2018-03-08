@@ -27,6 +27,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.locks.Lock;
 import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
@@ -398,15 +399,57 @@ public class TimelineModule extends BaseMediaModule
 	}
 	
 	
-	public void autoTranscode(WebPageRequest inReq) throws Exception
+	public void addAutoTranscode(WebPageRequest inReq) throws Exception
 	{
+		//<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/autotranscode.html" allowduplicates="true" />
 		MediaArchive archive = getMediaArchive(inReq);
 		String catalogid = archive.getCatalogId();
 		String selectedlang = inReq.getRequestParameter("selectedlang");
 
 		Asset asset = getAsset(inReq);
-		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
-		manager.transcodeCaptions(asset,selectedlang);
+		Searcher captionsearcher = archive.getSearcher("videotrack");
+		Data lasttrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).searchOne();
+		if( lasttrack == null)
+		{
+			lasttrack = captionsearcher.createNewData();
+			lasttrack.setProperty("sourcelang", selectedlang);
+			lasttrack.setProperty("assetid",  asset.getId());
+		}
+		lasttrack.setValue("transcodeingstatus", "needstranscode");
+		captionsearcher.saveData(lasttrack);
+//		
+//		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
+//		manager.transcodeCaptions(asset,selectedlang);
+		archive.fireMediaEvent("autotranscode", inReq.getUser(), asset);
 	}
-	
+	public void autoTranscodeQueue(WebPageRequest inReq) throws Exception
+	{
+		//<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/autotranscode.html" allowduplicates="true" />
+		CloudTranscodeManager manager = (CloudTranscodeManager)getModuleManager().getBean(catalogid, "cloudTranscodeManager");
+
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher captionsearcher = archive.getSearcher("videotrack");
+
+		String catalogid = archive.getCatalogId();
+		String selectedlang = inReq.getRequestParameter("selectedlang");
+		Collection hits = captionsearcher.query().exact("transcodeingstatus", "needstranscode").search();
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
+			Data track = (Data) iterator.next();
+			Lock lock = archive.getLockManager().lockIfPossible("transcode" + track.get("assetid"), "autoTranscodeQueue");
+			try
+			{
+				if( lock != null)
+				{
+					manager.transcodeCaptions(track);
+					track.setValue("transcodeingstatus", "complete");
+					captionsearcher.saveData(track);
+				}
+			} finally
+			{
+				archive.releaseLock(lock);
+			}
+		}
+		
+	}	
 }

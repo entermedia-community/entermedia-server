@@ -1,6 +1,6 @@
 <page>
 
 	<inner-layout />
-	<path-action name="TimelineModule.autoTranscode"  />
+	<path-action name="TimelineModule.addAutoTranscode"  />
 
 </page>

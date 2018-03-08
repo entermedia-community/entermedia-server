@@ -80,7 +80,12 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		fieldCatalogId = inCatalogId;
 	}
 
-	public void transcodeCaptions(Asset inAsset, String inLang) throws RepositoryException, IOException {
+	public void transcodeCaptions(Data inTrack) throws RepositoryException, IOException 
+	{
+		
+		Asset inAsset = getMediaArchive().getAsset(inTrack.get("assetid"));
+		String inLang = inTrack.get("sourcelang");
+		
 		// start saving the transcode into the database
 		Searcher tracksearcher = getMediaArchive().getSearcher("videotrack");
 		// Data lasttrack = tracksearcher.query().exact("assetid",
@@ -126,10 +131,8 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 			manager.createOutput(instructions);
 
-			
-			
-
-			try {
+			try 
+			{
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				OutputFiller filler = new OutputFiller();
 				filler.fill(tempfile.getInputStream(), output);
