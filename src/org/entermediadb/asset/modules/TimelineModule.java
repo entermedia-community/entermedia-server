@@ -316,7 +316,10 @@ public class TimelineModule extends BaseMediaModule
 		cuemap.put("timecodelength", Long.parseLong( timecodelength ));
 		log.info("Saved " + starttime + " " + timecodelength);
 		captions = removeDuplicate(captions,cuemap);
-		captions.add(cuemap);
+		if( cliplabel != null && !cliplabel.isEmpty() )
+		{
+			captions.add(cuemap);			
+		}
 		lasttrack.setValue("captions",captions);
 		captionsearcher.saveData(lasttrack);
 	}	
