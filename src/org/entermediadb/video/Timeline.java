@@ -124,7 +124,7 @@ public class Timeline
 	{
 		double ratio = (double)inClip.getLength() / (double)getLength();
 		double px = (double)getPxWidth() * ratio;
-		if( px < 10)
+		if( px < 50)
 		{
 			px = 50;
 		}

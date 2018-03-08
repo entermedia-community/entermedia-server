@@ -243,9 +243,10 @@ public final class WebvttParser {
     String[] parts = s.split("\\.", 2);
     long value = 0;
     for (String group : parts[0].split(":")) {
-      value = value * 60 + Long.parseLong(group);
+      value = (value * 60L) + Long.parseLong(group);
     }
-    long finalval = (value + Long.parseLong(parts[1])) * 1000;
+    //long finalval = (value + Long.parseLong(parts[1])) * 1000l;
+    long finalval = (value * 1000l) + Long.parseLong(parts[1]);
     return finalval;
   }
 
