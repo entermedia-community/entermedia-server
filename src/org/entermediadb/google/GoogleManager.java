@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
@@ -29,15 +30,19 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
+import org.openedit.data.PropertyDetail;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.XmlUtil;
 
@@ -532,6 +537,37 @@ public class GoogleManager implements CatalogEnabled {
 
 	public void setXmlUtil(XmlUtil inXmlUtil) {
 		fieldXmlUtil = inXmlUtil;
+	}
+	
+	
+	public void uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, String inMetadata) throws Exception {
+		
+		HttpRequestBuilder builder = new HttpRequestBuilder();
+		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";
+		//TODO: Use HttpRequestBuilder.addPart()
+		HttpPost method = new HttpPost(url);
+		method.addHeader("authorization", "Bearer " + getAccessToken(inAuthInfo));
+
+		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
+		method.setHeader("Content-Type","multipart/related; boundary=file");
+		builder.addPart("metadata", inMetadata); //What should this be called?
+		
+
+		File file = new File(inItem.getAbsolutePath());
+		
+		if( !file.exists() )
+		{
+			throw new OpenEditException("Input file missing " + file.getPath() );
+		}
+		builder.addPart("file", file);
+		long size = inMetadata.getBytes().length + file.getTotalSpace();
+
+		method.setHeader("Content-Length",String.valueOf(size));
+
+		
+		
+		method.setEntity(builder.build());
+		
 	}
 
 }
