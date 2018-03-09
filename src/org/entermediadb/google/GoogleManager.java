@@ -541,7 +541,7 @@ public class GoogleManager implements CatalogEnabled {
 	
 	
 	public void uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, String inMetadata) throws Exception {
-		
+	//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	
 		HttpRequestBuilder builder = new HttpRequestBuilder();
 		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";
 		//TODO: Use HttpRequestBuilder.addPart()
