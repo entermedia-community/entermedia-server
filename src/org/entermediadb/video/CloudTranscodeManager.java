@@ -140,14 +140,13 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				if( elem == null)
 				{
 					log.error("Security error ");
-					
-					return;
+					throw new OpenEditException("Security error");
 				}
 				JsonArray results = (JsonArray)elem.get("results");
 					if( results == null)
 					{
 						log.error("Got back " + elem );
-						return;
+						throw new OpenEditException("Invalid results " + elem);
 					}
 					for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
 						Map cuemap = new HashMap();
@@ -175,7 +174,13 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				}
 				captionsearcher.saveData(lasttrack);
 
-			} catch (Exception e) {
+			}
+			catch (Exception e) 
+			{
+				if( e instanceof OpenEditException)
+				{
+					throw (OpenEditException)e;
+				}
 				throw new OpenEditException(e);
 			}
 			finally

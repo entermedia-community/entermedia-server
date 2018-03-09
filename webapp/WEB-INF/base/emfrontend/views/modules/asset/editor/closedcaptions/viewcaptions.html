@@ -2,6 +2,7 @@
 <div id="captionview" #if( $track.transcribestatus == "needstranscribe") class="ajaxstatus" #end ajaxpath="$clientroot/viewcaptions.html?oemaxlevel=1&assetid=$asset.id">
 
 #if( $track.transcribestatus == "needstranscribe") [[transcribing...]] #end
+#if( $track.transcribestatus == "error") [[error auto transcribing...]] #end
 
 	#set( $clips = $timeline.getClips() )
 	#set( $padded = $timeline.getPxWidth()+60)

@@ -11,7 +11,7 @@
   </property>  
   
   <property id="name" editable="true" sortable="true" index="true" stored="true" keyword="false" filter="false">Label</property>
-  <property id="assetid" editable="true" sortable="true" index="true" stored="true" keyword="false" type="list" listid="asset">Label</property>
+  <property id="assetid" editable="true" sortable="true" index="true" stored="true" keyword="false" type="list" listid="asset">Asset</property>
   <property id="transcribestatus" editable="true" index="true" stored="true" type="list" listid="transcribestatus" >Transcribe Status</property>
   
   <property id="sourcelang" index="true" stored="true" editable="true" type="list"  listid="locale">Language</property>   
