@@ -1651,6 +1651,7 @@
 		</property>
 		<property name="inputLoaders">
 			<list>
+				<ref bean="videoCacheLoader" />
 				<ref bean="originalInputLoader" />
 			</list>
 		</property>	
