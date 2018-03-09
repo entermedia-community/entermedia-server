@@ -1,4 +1,9 @@
 #set( $clientroot = $context.getContentProperty("clientroot") )
+<div id="captionview" #if( $track.transcribestatus == "needstranscribe") class="ajaxstatus" #end ajaxpath="$clientroot/viewcaptions.html?oemaxlevel=1&assetid=$asset.id">
+
+#if( $track.transcribestatus == "needstranscribe") [[transcribing...]] #end
+#if( $track.transcribestatus == "error") [[error auto transcribing...]] #end
+
 	#set( $clips = $timeline.getClips() )
 	#set( $padded = $timeline.getPxWidth()+60)
 <div id="scrollarea" style="width:${padded}px;height: 350px; overflow: scroll;">	
@@ -22,3 +27,5 @@
 </div>
 
 $pages.include("$clientroot/timeline.html")
+
+</div>

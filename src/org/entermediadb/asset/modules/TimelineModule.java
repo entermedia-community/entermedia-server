@@ -291,6 +291,7 @@ public class TimelineModule extends BaseMediaModule
 		Data lasttrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).searchOne();
 		if( lasttrack == null)
 		{
+			log.info("Creating track " + asset.getId() + " " + selectedlang);
 			lasttrack = captionsearcher.createNewData();
 			lasttrack.setProperty("sourcelang", selectedlang);
 			lasttrack.setProperty("assetid",  asset.getId());
@@ -403,7 +404,6 @@ public class TimelineModule extends BaseMediaModule
 	{
 		//<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/conversions/autotranscode.html" allowduplicates="true" />
 		MediaArchive archive = getMediaArchive(inReq);
-		String catalogid = archive.getCatalogId();
 		String selectedlang = inReq.getRequestParameter("selectedlang");
 
 		Asset asset = getAsset(inReq);
@@ -411,6 +411,7 @@ public class TimelineModule extends BaseMediaModule
 		Data lasttrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", selectedlang).searchOne();
 		if( lasttrack == null)
 		{
+			log.info("Creating track " + asset.getId() + " " + selectedlang);
 			lasttrack = captionsearcher.createNewData();
 			lasttrack.setProperty("sourcelang", selectedlang);
 			lasttrack.setProperty("assetid",  asset.getId());
@@ -444,10 +445,16 @@ public class TimelineModule extends BaseMediaModule
 				{
 					manager.transcodeCaptions(track);
 					track.setValue("transcribestatus", "complete");
-					captionsearcher.saveData(track);
 				}
-			} finally
+			}
+			catch (Throwable ex)
 			{
+				log.error("Could not prcoess" , ex);
+				track.setValue("transcribestatus", "error");				
+			} 
+			finally
+			{
+				captionsearcher.saveData(track);
 				archive.releaseLock(lock);
 			}
 		}

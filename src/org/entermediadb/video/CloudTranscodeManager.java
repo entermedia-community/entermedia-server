@@ -116,14 +116,14 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		Collection captions = new ArrayList();
 		lasttrack.setValue("captions", captions);
 		
-		for (double i = 0; i < length; i += 60) {
+		for (double i = 0; i < length; i += 58) {
 
 			instructions.setProperty("timeoffset", String.valueOf(i));
-			instructions.setProperty("duration", "60");
+			instructions.setProperty("duration", "58");
 			instructions.setProperty("compressionlevel", "12");
 
 			// instructions.setStre(true);
-			Page page = archive.getPageManager().getPage("/WEB-INF/temp/data.flac");
+			Page page = archive.getPageManager().getPage("/WEB-INF/temp/" + inAsset.getId() + "data.flac");
 			archive.getPageManager().removePage(page);
 			ContentItem tempfile = page.getContentItem();
 
@@ -137,11 +137,16 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				OutputFiller filler = new OutputFiller();
 				filler.fill(tempfile.getInputStream(), output);
 				JsonObject elem = getTranscodeData(authinfo, output.toByteArray());
+				if( elem == null)
+				{
+					log.error("Security error ");
+					throw new OpenEditException("Security error");
+				}
 				JsonArray results = (JsonArray)elem.get("results");
 					if( results == null)
 					{
 						log.error("Got back " + elem );
-						return;
+						throw new OpenEditException("Invalid results " + elem);
 					}
 					for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
 						Map cuemap = new HashMap();
@@ -169,8 +174,18 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				}
 				captionsearcher.saveData(lasttrack);
 
-			} catch (Exception e) {
+			}
+			catch (Exception e) 
+			{
+				if( e instanceof OpenEditException)
+				{
+					throw (OpenEditException)e;
+				}
 				throw new OpenEditException(e);
+			}
+			finally
+			{
+				archive.getPageManager().removePage(page);
 			}
 
 		}
@@ -219,7 +234,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 					+ resp.getStatusLine().getReasonPhrase());
 			String returned = EntityUtils.toString(resp.getEntity());
 			log.info(returned);
-
+			return null;
 		}
 
 		else {
@@ -229,7 +244,6 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			return elem;
 
 		}
-		return null;
 	}
 
 }
