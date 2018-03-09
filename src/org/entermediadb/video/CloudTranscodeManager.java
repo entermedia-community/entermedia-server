@@ -21,6 +21,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
 import org.entermediadb.asset.convert.ConvertInstructions;
+import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.TranscodeTools;
 import org.entermediadb.google.GoogleManager;
 import org.openedit.CatalogEnabled;
@@ -109,12 +110,9 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		double length = (Double) inAsset.getValue("length");
 
 		Searcher captionsearcher = archive.getSearcher("videotrack");
-		Data lasttrack = captionsearcher.createNewData();
-		lasttrack.setProperty("sourcelang", inLang);
-		lasttrack.setProperty("assetid", inAsset.getId());
 		
 		Collection captions = new ArrayList();
-		lasttrack.setValue("captions", captions);
+		inTrack.setValue("captions", captions);
 		
 		for (double i = 0; i < length; i += 58) {
 
@@ -129,8 +127,11 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 			instructions.setOutputFile(tempfile);
 
-			manager.createOutput(instructions);
-
+			ConvertResult result = manager.createOutput(instructions);
+			if( !result.isOk() )
+			{
+				throw new OpenEditException("Could not transcode flac");
+			}
 			try 
 			{
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
@@ -172,7 +173,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 							captions.add(cuemap);
 						}
 				}
-				captionsearcher.saveData(lasttrack);
+				captionsearcher.saveData(inTrack);
 
 			}
 			catch (Exception e) 
