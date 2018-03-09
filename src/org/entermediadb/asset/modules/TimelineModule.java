@@ -444,10 +444,16 @@ public class TimelineModule extends BaseMediaModule
 				{
 					manager.transcodeCaptions(track);
 					track.setValue("transcribestatus", "complete");
-					captionsearcher.saveData(track);
 				}
-			} finally
+			}
+			catch (Throwable ex)
 			{
+				log.error("Could not prcoess" , ex);
+				track.setValue("transcribestatus", "error");				
+			} 
+			finally
+			{
+				captionsearcher.saveData(track);
 				archive.releaseLock(lock);
 			}
 		}

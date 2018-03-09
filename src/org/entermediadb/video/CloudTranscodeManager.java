@@ -123,7 +123,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			instructions.setProperty("compressionlevel", "12");
 
 			// instructions.setStre(true);
-			Page page = archive.getPageManager().getPage("/WEB-INF/temp/data.flac");
+			Page page = archive.getPageManager().getPage("/WEB-INF/temp/" + inAsset.getId() + "data.flac");
 			archive.getPageManager().removePage(page);
 			ContentItem tempfile = page.getContentItem();
 
@@ -177,6 +177,10 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 			} catch (Exception e) {
 				throw new OpenEditException(e);
+			}
+			finally
+			{
+				archive.getPageManager().removePage(page);
 			}
 
 		}
