@@ -1324,9 +1324,20 @@ small {
 }
 #cat-list .row .category {
     padding-left: 18px;
+    padding-top: 10px;
     background: url('../images/folder-closed.gif') left 7px no-repeat;
     margin: 0 3px;
 }
+
+
+#cat-list .row .asset {
+    padding-left: 18px;
+    padding-top: 10px;
+    background: url('../images/attachments-archive.png') left 7px no-repeat;
+    margin: 0 3px;
+}
+
+
 
 .collectionheader #cat-list .row .category {
     background: url('../images/icons/box.png') top 3px left 0px no-repeat;
