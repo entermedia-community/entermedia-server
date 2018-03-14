@@ -65,7 +65,7 @@ public void init()
 		{
 			path = PathUtilities.extractDirectoryPath(path);
 		}
-		Collection assetexactids = found.getValues("categories-exact");
+		Collection assetexactids = found.getValues("category-exact");
 		Collection tosaveExactcategory = new HashSet();
 		for (String id in assetexactids) {
 			if( collectionscatids.contains(id))
