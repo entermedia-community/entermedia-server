@@ -493,7 +493,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 					{
 						builder.addPart("field",key);
 						builder.addPart(key+ ".value",value);
-						log.info(inAsset.getName() + " " + key + " " + value);
+//						log.info(inAsset.getName() + " " + key + " " + value);
 					}
 				}
 				
