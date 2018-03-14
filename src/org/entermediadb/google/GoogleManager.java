@@ -549,8 +549,7 @@ public class GoogleManager implements CatalogEnabled {
 		method.addHeader("authorization", "Bearer " + getAccessToken(inAuthInfo));
 
 		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
-		method.setHeader("Content-Type","multipart/related; boundary=file");
-		builder.addPart("metadata", inMetadata); //What should this be called?
+		builder.addPart("metadata", inMetadata,"application/json"); //What should this be called?
 		
 
 		File file = new File(inItem.getAbsolutePath());
@@ -562,11 +561,31 @@ public class GoogleManager implements CatalogEnabled {
 		builder.addPart("file", file);
 		long size = inMetadata.getBytes().length + file.getTotalSpace();
 
-		method.setHeader("Content-Length",String.valueOf(size));
+		//method.setHeader("Content-Length",String.valueOf(size));
 
 		
 		
 		method.setEntity(builder.build());
+		String contenttype = method.getEntity().getContentType().getValue();
+		String boundary = contenttype.substring(contenttype.indexOf("boundary=")+9, contenttype.length());
+		method.setHeader("Content-Type","multipart/related; boundary=" + boundary);
+
+		CloseableHttpClient httpclient;
+		httpclient = HttpClients.createDefault();
+		
+		HttpResponse resp = httpclient.execute(method);
+
+		if (resp.getStatusLine().getStatusCode() != 200) {
+			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
+					+ resp.getStatusLine().getReasonPhrase());
+			String returned = EntityUtils.toString(resp.getEntity());
+			log.info(returned);
+
+		}
+
+		HttpEntity entity = resp.getEntity();
+		
+		
 		
 	}
 
