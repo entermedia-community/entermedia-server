@@ -599,5 +599,43 @@ public class GoogleManager implements CatalogEnabled {
 		return elem.getAsJsonObject();
 		
 	}
+	
+	
+	public JsonObject listFiles( String bucket) throws Exception {
+		//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	
+			HttpRequestBuilder builder = new HttpRequestBuilder();
+			String url = "https://www.googleapis.com/storage/v1/b/" + bucket +"/o/" ;
+			//TODO: Use HttpRequestBuilder.addPart()
+			HttpGet method = new HttpGet(url);
+			method.addHeader("authorization", "Bearer " + getAccessToken(getMediaArchive().getData("oauthprovider", "google")));
+
+			//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
+						
+			
+			CloseableHttpClient httpclient;
+			httpclient = HttpClients.createDefault();
+			
+			HttpResponse resp = httpclient.execute(method);
+
+			if (resp.getStatusLine().getStatusCode() != 200) {
+				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
+						+ resp.getStatusLine().getReasonPhrase());
+				String returned = EntityUtils.toString(resp.getEntity());
+				log.info(returned);
+
+			}
+
+			HttpEntity entity = resp.getEntity();
+			JsonParser parser = new JsonParser();
+			String content = IOUtils.toString(entity.getContent());
+
+			JsonElement elem = parser.parse(content);
+			return elem.getAsJsonObject();
+			//This needs to loop over to get more than 1000 results
+		}
+	
+	
+	
+	
 
 }
