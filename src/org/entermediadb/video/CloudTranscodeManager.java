@@ -305,7 +305,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 				JsonObject config = new JsonObject();
 				config.addProperty("encoding", "FLAC");
-				 config.addProperty("sampleRateHertz", 48000);
+			//	 config.addProperty("sampleRateHertz", 48000);
 				config.addProperty("languageCode", "en-US");
 				config.addProperty("enableWordTimeOffsets", true);
 				object.add("config", config);
