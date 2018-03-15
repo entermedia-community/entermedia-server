@@ -25,4 +25,9 @@
 
 	<property id="preventupscaling" value="false">Prevent upscaling of asset conversions</property>
 
+	<property id="transcodebucket" value="emtranscribe">Google Cloud Storage transcode bucket</property>
+
+
+
+
 </properties>
