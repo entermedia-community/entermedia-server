@@ -25,6 +25,8 @@ import org.apache.oltu.oauth2.client.OAuthClient;
 import org.apache.oltu.oauth2.client.URLConnectionClient;
 import org.apache.oltu.oauth2.client.request.OAuthClientRequest;
 import org.apache.oltu.oauth2.common.OAuthProviderType;
+import org.apache.oltu.oauth2.common.exception.OAuthProblemException;
+import org.apache.oltu.oauth2.common.exception.OAuthSystemException;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
@@ -214,57 +216,63 @@ public class GoogleManager implements CatalogEnabled {
 
 	}
 
-	public String getAccessToken(Data authinfo) throws Exception {
-		String accesstoken = authinfo.get("httprequesttoken"); // Expired in 14 days
-		Object accesstokendate = authinfo.getValue("accesstokentime");
-		boolean force = false;
+	public String getAccessToken(Data authinfo) throws OpenEditException {
+		try {
+			String accesstoken = authinfo.get("httprequesttoken"); // Expired in 14 days
+			Object accesstokendate = authinfo.getValue("accesstokentime");
+			boolean force = false;
 
-		if (accesstokendate instanceof Date) {
-			Date ageoftoken = (Date) accesstokendate;
+			if (accesstokendate instanceof Date) {
+				Date ageoftoken = (Date) accesstokendate;
 
-			if (ageoftoken != null) {
-				Date now = new Date();
-				long seconds = (now.getTime() - ageoftoken.getTime()) / 1000;
-				Long expiresin = (Long) authinfo.getValue("expiresin");
-				if (seconds > (expiresin - 100)) {
-					force = true;
-					log.info("Expiring token");
+				if (ageoftoken != null) {
+					Date now = new Date();
+					long seconds = (now.getTime() - ageoftoken.getTime()) / 1000;
+					Long expiresin = (Long) authinfo.getValue("expiresin");
+					if (seconds > (expiresin - 100)) {
+						force = true;
+						log.info("Expiring token");
+					}
 				}
+			} else {
+				
+				
+				force=true;
 			}
-		} else {
 			
-			
-			force=true;
-		}
-		
 
-		if (accesstoken == null || force) {
-			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE)
-					.setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken"))
-					.setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret"))
-					.buildBodyMessage();
-			OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
-			// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
-			// response is
-			// application/x-www-form-urlencded, not json encoded so we use dedicated
-			// response class for that
-			// Own response class is an easy way to deal with oauth providers that introduce
-			// modifications to
-			// OAuth specification
-			EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
-			// final OAuthAccessTokenResponse oAuthResponse =
-			// oAuthClient.accessToken(request, "POST");
-			// final OAuthAccessTokenResponse oAuthResponse =
-			// oAuthClient.accessToken(request);
-			accesstoken = oAuthResponse.getAccessToken();
-			authinfo.setValue("httprequesttoken", accesstoken);
-			authinfo.setValue("accesstokentime", new Date());
-			Long expiresin = oAuthResponse.getExpiresIn();
-			authinfo.setValue("expiresin", expiresin);
-			getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
+			if (accesstoken == null || force) {
+				OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE)
+						.setGrantType(GrantType.REFRESH_TOKEN).setRefreshToken(authinfo.get("refreshtoken"))
+						.setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret"))
+						.buildBodyMessage();
+				OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+				// Facebook is not fully compatible with OAuth 2.0 draft 10, access token
+				// response is
+				// application/x-www-form-urlencded, not json encoded so we use dedicated
+				// response class for that
+				// Own response class is an easy way to deal with oauth providers that introduce
+				// modifications to
+				// OAuth specification
+				EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
+				// final OAuthAccessTokenResponse oAuthResponse =
+				// oAuthClient.accessToken(request, "POST");
+				// final OAuthAccessTokenResponse oAuthResponse =
+				// oAuthClient.accessToken(request);
+				accesstoken = oAuthResponse.getAccessToken();
+				authinfo.setValue("httprequesttoken", accesstoken);
+				authinfo.setValue("accesstokentime", new Date());
+				Long expiresin = oAuthResponse.getExpiresIn();
+				authinfo.setValue("expiresin", expiresin);
+				getMediaArchive().getSearcher("oauthprovider").saveData(authinfo);
 
+			}
+			return accesstoken;
+		} catch (OAuthSystemException e) {
+			throw new OpenEditException(e);
+		} catch (OAuthProblemException e) {
+			throw new OpenEditException(e);
 		}
-		return accesstoken;
 	}
 
 	public String getUserAccessToken(User user) throws Exception {
@@ -540,7 +548,7 @@ public class GoogleManager implements CatalogEnabled {
 	}
 	
 	
-	public void uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, String inMetadata) throws Exception {
+	public JsonObject uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, String inMetadata) throws Exception {
 	//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	
 		HttpRequestBuilder builder = new HttpRequestBuilder();
 		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";
@@ -584,8 +592,11 @@ public class GoogleManager implements CatalogEnabled {
 		}
 
 		HttpEntity entity = resp.getEntity();
-		
-		
+		JsonParser parser = new JsonParser();
+		String content = IOUtils.toString(entity.getContent());
+
+		JsonElement elem = parser.parse(content);
+		return elem.getAsJsonObject();
 		
 	}
 

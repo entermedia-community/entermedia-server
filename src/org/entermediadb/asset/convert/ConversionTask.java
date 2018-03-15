@@ -116,9 +116,18 @@ public void convert()
 		}
 		else
 		{
-			realtask.setProperty("status", "submitted");
-			realtask.setProperty("externalid", result.get("externalid"));
-			tasksearcher.saveData(realtask, user);
+			if(!"submitted".equals(realtask.getValue("status"))){
+				realtask.setProperty("status", "submitted");
+				realtask.setProperty("externalid", result.get("externalid"));
+				tasksearcher.saveData(realtask, user);
+			} else{
+				try {
+					Thread.sleep(60*1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}

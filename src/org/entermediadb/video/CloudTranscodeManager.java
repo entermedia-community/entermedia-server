@@ -9,9 +9,12 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -35,6 +38,7 @@ import org.openedit.repository.RepositoryException;
 import org.openedit.util.OutputFiller;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
@@ -81,12 +85,11 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		fieldCatalogId = inCatalogId;
 	}
 
-	public void transcodeCaptions(Data inTrack) throws RepositoryException, IOException 
-	{
-		
+	public void transcodeCaptions(Data inTrack) throws RepositoryException, IOException {
+
 		Asset inAsset = getMediaArchive().getAsset(inTrack.get("assetid"));
 		String inLang = inTrack.get("sourcelang");
-		
+
 		// start saving the transcode into the database
 		Searcher tracksearcher = getMediaArchive().getSearcher("videotrack");
 		// Data lasttrack = tracksearcher.query().exact("assetid",
@@ -101,7 +104,6 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat("flac");
 		ConvertInstructions instructions = manager.createInstructions(inAsset, "audio.flac");
 		ContentItem item = manager.findInput(instructions);
-		
 
 		if (item == null) {
 			item = archive.getOriginalContent(inAsset);
@@ -110,10 +112,10 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		double length = (Double) inAsset.getValue("length");
 
 		Searcher captionsearcher = archive.getSearcher("videotrack");
-		
+
 		Collection captions = new ArrayList();
 		inTrack.setValue("captions", captions);
-		
+
 		for (double i = 0; i < length; i += 58) {
 
 			instructions.setProperty("timeoffset", String.valueOf(i));
@@ -128,64 +130,55 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			instructions.setOutputFile(tempfile);
 
 			ConvertResult result = manager.createOutput(instructions);
-			if( !result.isOk() )
-			{
+			if (!result.isOk()) {
 				throw new OpenEditException("Could not transcode flac");
 			}
-			try 
-			{
+			try {
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				OutputFiller filler = new OutputFiller();
 				filler.fill(tempfile.getInputStream(), output);
 				JsonObject elem = getTranscodeData(authinfo, output.toByteArray());
-				if( elem == null)
-				{
+				if (elem == null) {
 					log.error("Security error ");
 					throw new OpenEditException("Security error");
 				}
-				JsonArray results = (JsonArray)elem.get("results");
-					if( results == null)
-					{
-						log.error("Got back " + elem );
-						throw new OpenEditException("Invalid results " + elem);
+				JsonArray results = (JsonArray) elem.get("results");
+				if (results == null) {
+					log.error("Got back " + elem);
+					throw new OpenEditException("Invalid results " + elem);
+				}
+				for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
+					Map cuemap = new HashMap();
+					JsonObject alternative = (JsonObject) iterator2.next();
+					JsonArray alternatives = (JsonArray) alternative.get("alternatives");
+					for (Iterator iterator = alternatives.iterator(); iterator.hasNext();) {
+
+						JsonObject data = (JsonObject) iterator.next();
+						String cliplabel = data.get("transcript").getAsString();
+						JsonArray words = data.get("words").getAsJsonArray();
+						JsonObject firstword = (JsonObject) words.get(0);
+						String offsetstring = firstword.get("startTime").getAsString().replaceAll("s", "");
+						JsonObject lastword = (JsonObject) words.get(words.size() - 1);
+						String laststring = lastword.get("endTime").getAsString().replaceAll("s", "");
+
+						double extraoffset = Double.parseDouble(offsetstring);
+						double finaloffset = Double.parseDouble(laststring);
+
+						cuemap.put("cliplabel", cliplabel);
+						cuemap.put("timecodestart", Math.round((i + extraoffset) * 1000d));
+						cuemap.put("timecodelength", Math.round((finaloffset - extraoffset) * 1000d));
+						log.info("Saved " + cliplabel + " : " + " " + i + " " + finaloffset);
+						captions.add(cuemap);
 					}
-					for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
-						Map cuemap = new HashMap();
-						JsonObject alternative = (JsonObject) iterator2.next();
-						JsonArray alternatives = (JsonArray)alternative.get("alternatives");
-						for (Iterator iterator = alternatives.iterator(); iterator.hasNext();) {
-							
-							JsonObject data = (JsonObject)iterator.next();
-							String cliplabel = data.get("transcript").getAsString();
-							JsonArray words = data.get("words").getAsJsonArray();
-							JsonObject firstword = (JsonObject)words.get(0);
-							String offsetstring = firstword.get("startTime").getAsString().replaceAll("s", "");
-							JsonObject lastword = (JsonObject)words.get(words.size()-1);
-							String laststring  = lastword.get("endTime").getAsString().replaceAll("s", "");
-
-							double extraoffset = Double.parseDouble(offsetstring);
-							double finaloffset = Double.parseDouble(laststring);
-
-							cuemap.put("cliplabel", cliplabel);
-							cuemap.put("timecodestart", Math.round( (i+extraoffset)*1000d));
-							cuemap.put("timecodelength", Math.round((finaloffset - extraoffset)*1000d));
-							log.info("Saved " + cliplabel + " : " + " " + i + " " + finaloffset);
-							captions.add(cuemap);
-						}
 				}
 				captionsearcher.saveData(inTrack);
 
-			}
-			catch (Exception e) 
-			{
-				if( e instanceof OpenEditException)
-				{
-					throw (OpenEditException)e;
+			} catch (Exception e) {
+				if (e instanceof OpenEditException) {
+					throw (OpenEditException) e;
 				}
 				throw new OpenEditException(e);
-			}
-			finally
-			{
+			} finally {
 				archive.getPageManager().removePage(page);
 			}
 
@@ -208,7 +201,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 
 		JsonObject config = new JsonObject();
 		config.addProperty("encoding", "FLAC");
-		//config.addProperty("sampleRateHertz", 44100);
+		// config.addProperty("sampleRateHertz", 44100);
 		config.addProperty("languageCode", "en-US");
 		config.addProperty("enableWordTimeOffsets", true);
 		object.add("config", config);
@@ -245,6 +238,207 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			return elem;
 
 		}
+	}
+
+	public void asyncTranscodeCaptions(Data inTrack) throws RepositoryException, IOException {
+
+		Asset inAsset = getMediaArchive().getAsset(inTrack.get("assetid"));
+		String inLang = inTrack.get("sourcelang");
+
+		// start saving the transcode into the database
+		Searcher tracksearcher = getMediaArchive().getSearcher("videotrack");
+		// Data lasttrack = tracksearcher.query().exact("assetid",
+		// inAsset.getId()).exact("sourcelang", inLang).searchOne();
+		// tracksearcher.delete(lasttrack, null);
+
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
+		Data authinfo = archive.getData("oauthprovider", "google");
+
+		TranscodeTools transcodetools = archive.getTranscodeTools();
+		Map all = new HashMap(); // TODO: Get parent ones as well
+
+		String currentstatus = inTrack.get("transcribestatus");
+		if ("needstranscribe".equals(currentstatus)) {
+
+			ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat("flac");
+			ConvertInstructions instructions = manager.createInstructions(inAsset, "audio.flac");
+			ContentItem item = manager.findInput(instructions);
+
+			if (item == null) {
+				item = archive.getOriginalContent(inAsset);
+			}
+			instructions.setInputFile(item);
+			instructions.setProperty("compressionlevel", "12");
+			Searcher captionsearcher = archive.getSearcher("videotrack");
+
+			Collection captions = new ArrayList();
+			inTrack.setValue("captions", captions);
+			ConvertResult result = manager.createOutput(instructions);
+
+			String bucket = getMediaArchive().getCatalogSettingValue("transcodebucket");
+			JsonObject data = new JsonObject();
+			String googlename = "temp/" + inAsset.getId() + "data.flac";
+			data.addProperty("name", googlename);
+			try {
+				if(inTrack.get("selfLink") == null){
+				JsonObject response = getGoogleManager().uploadToBucket(authinfo, bucket, result.getOutput(),data.toString());
+				
+				inTrack.setValue("googleid", response.get("id").getAsString());
+				String selflink = response.get("selfLink").getAsString();
+				inTrack.setValue("selfLink", selflink);
+				inTrack.setValue("mediaLink", response.get("mediaLink").getAsString());
+				inTrack.setValue("transcribestatus", "inprogress");
+				}
+				
+				String url = "https://speech.googleapis.com/v1/speech:longrunningrecognize";
+
+
+				CloseableHttpClient httpclient;
+				httpclient = HttpClients.createDefault();
+				HttpPost httpmethod = new HttpPost(url);
+
+				String accesstoken = getGoogleManager().getAccessToken(authinfo);
+				httpmethod.addHeader("authorization", "Bearer " + accesstoken);
+				httpmethod.addHeader("Content-Type", "application/json; charset=utf-8");
+
+				JsonObject object = new JsonObject();
+
+				JsonObject config = new JsonObject();
+				config.addProperty("encoding", "FLAC");
+				 config.addProperty("sampleRateHertz", 48000);
+				config.addProperty("languageCode", "en-US");
+				config.addProperty("enableWordTimeOffsets", true);
+				object.add("config", config);
+				
+				JsonObject audio = new JsonObject();
+				audio.addProperty("uri", "gs://" + bucket + "/" + googlename);
+				object.add("audio", audio);
+				
+				
+				String jsonstring = object.toString();
+
+				StringEntity params = new StringEntity(jsonstring, "UTF-8");
+				// method.setEntity(params);
+
+				// HttpEntity entity = new ByteArrayEntity(data.getBytes("UTF-8"));
+				// StringEntity xmlEntity = new StringEntity(data,
+				// "application/atom+xml;type=entry","UTF-8");
+
+				httpmethod.setEntity(params);
+
+				HttpResponse resp = httpclient.execute(httpmethod);
+
+				if (resp.getStatusLine().getStatusCode() != 200) {
+					log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
+							+ resp.getStatusLine().getReasonPhrase());
+					String returned = EntityUtils.toString(resp.getEntity());
+					log.info(returned);
+
+				}
+
+				HttpEntity entity = resp.getEntity();
+				JsonParser parser = new JsonParser();
+				String content = IOUtils.toString(entity.getContent());
+
+				JsonElement elem = parser.parse(content);
+				JsonObject taskinfo = elem.getAsJsonObject();
+				
+				inTrack.setValue("taskname", taskinfo.get("name").getAsString());
+				
+				inTrack.setValue("transcribestatus", "inprogress");
+				
+				
+			} catch (Exception e) {
+				throw new OpenEditException(e);
+			}
+
+		} else if("inprogress".equals(currentstatus)){
+			
+			log.info("Making progress!");
+			String url = "https://speech.googleapis.com/v1/operations/" + inTrack.get("taskname");
+			CloseableHttpClient httpclient;
+			httpclient = HttpClients.createDefault();
+			HttpGet httpmethod = new HttpGet(url);
+			
+			String accesstoken = getGoogleManager().getAccessToken(authinfo);
+			httpmethod.addHeader("authorization", "Bearer " + accesstoken);
+			httpmethod.addHeader("Content-Type", "application/json; charset=utf-8");
+			
+			
+			HttpResponse resp = httpclient.execute(httpmethod);
+
+			if (resp.getStatusLine().getStatusCode() != 200) {
+				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
+						+ resp.getStatusLine().getReasonPhrase());
+				String returned = EntityUtils.toString(resp.getEntity());
+				log.info(returned);
+
+			}
+
+			HttpEntity entity = resp.getEntity();
+			JsonParser parser = new JsonParser();
+			String content = IOUtils.toString(entity.getContent());
+
+			JsonElement elem = parser.parse(content);
+			JsonObject taskinfo = elem.getAsJsonObject();
+			
+			if(taskinfo.get("done") != null && taskinfo.get("done").getAsBoolean()){
+				
+				Collection captions = new ArrayList();
+				inTrack.setValue("captions", captions);
+				
+				JsonArray results = taskinfo.get("response").getAsJsonObject().get("results").getAsJsonArray();
+				
+				for (Iterator iterator2 = results.iterator(); iterator2.hasNext();) {
+					Map cuemap = new HashMap();
+					JsonObject alternative = (JsonObject) iterator2.next();
+					JsonArray alternatives = (JsonArray) alternative.get("alternatives");
+					for (Iterator iterator = alternatives.iterator(); iterator.hasNext();) {
+
+						JsonObject data = (JsonObject) iterator.next();
+						String cliplabel = data.get("transcript").getAsString();
+						JsonArray words = data.get("words").getAsJsonArray();
+						JsonObject firstword = (JsonObject) words.get(0);
+						String offsetstring = firstword.get("startTime").getAsString().replaceAll("s", "");
+						JsonObject lastword = (JsonObject) words.get(words.size() - 1);
+						String laststring = lastword.get("endTime").getAsString().replaceAll("s", "");
+
+						double extraoffset = Double.parseDouble(offsetstring);
+						double finaloffset = Double.parseDouble(laststring);
+
+						
+						
+						cuemap.put("timecodestart", Math.round((extraoffset) * 1000d));
+						cuemap.put("timecodelength", Math.round((finaloffset - extraoffset) * 1000d));
+						cuemap.put("cliplabel", cliplabel);
+						
+						log.info("Saved " + cliplabel + " : " + " "  );
+						captions.add(cuemap);
+					}
+				}
+				inTrack.setValue("transcribestatus", "complete");
+				tracksearcher.saveData(inTrack);
+				
+				
+				
+				
+			} else{
+				try{
+				int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
+				inTrack.setValue("percentcomplete", percent);
+				
+				} catch(Exception e){
+					log.info("didn't get percentage yet");
+					
+				}
+			}
+			
+			//go check google and parse if we're done
+			
+			
+			
+		}
+
 	}
 
 }

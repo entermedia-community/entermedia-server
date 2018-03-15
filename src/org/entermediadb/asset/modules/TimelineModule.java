@@ -413,8 +413,9 @@ public class TimelineModule extends BaseMediaModule
 			lasttrack = captionsearcher.createNewData();
 			lasttrack.setProperty("sourcelang", selectedlang);
 			lasttrack.setProperty("assetid",  asset.getId());
+			lasttrack.setValue("transcribestatus", "needstranscribe");
+
 		}
-		lasttrack.setValue("transcribestatus", "needstranscribe");
 		captionsearcher.saveData(lasttrack);
 		inReq.putPageValue("track", lasttrack);
 //		inRe
@@ -432,7 +433,7 @@ public class TimelineModule extends BaseMediaModule
 		Searcher captionsearcher = archive.getSearcher("videotrack");
 
 		String selectedlang = inReq.getRequestParameter("selectedlang");
-		Collection hits = captionsearcher.query().exact("transcribestatus", "needstranscribe").search();
+		Collection hits = captionsearcher.query().or().exact("transcribestatus", "inprogress").exact("transcribestatus", "needstranscribe").search();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data track = (Data) iterator.next();
@@ -441,8 +442,9 @@ public class TimelineModule extends BaseMediaModule
 			{
 				if( lock != null)
 				{
-					manager.transcodeCaptions(track);
-					track.setValue("transcribestatus", "complete");
+//					manager.transcodeCaptions(track);
+//					track.setValue("transcribestatus", "complete");
+					manager.asyncTranscodeCaptions(track);
 				}
 			}
 			catch (Throwable ex)

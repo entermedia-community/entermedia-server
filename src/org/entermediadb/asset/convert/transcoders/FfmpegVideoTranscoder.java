@@ -213,7 +213,9 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 					if (System.currentTimeMillis() - old < (1000 * 60 * 60)) //something is processing this within the last hour
 					{
 						log.info("Existing video conversion trying again " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
-						
+						result.setComplete(false);
+						result.setOk(true);
+						return result;
 					}
 					else
 					{
