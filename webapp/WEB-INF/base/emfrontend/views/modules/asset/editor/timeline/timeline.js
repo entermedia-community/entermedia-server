@@ -35,7 +35,7 @@ $(document).ready(function()
 			var selected = $(".selectedclip");
 			var start = selected.data("timecodestart");
 			//take off the start
-			var done = parseTimeToText(inTime - start);
+			var done = parseTimeToText(inTime - (start/1000));
 			$(".selectedlength").val(done);  //00:00.000
 			
 	}
@@ -56,25 +56,26 @@ $(document).ready(function()
 	}
 	parseTimeFromText = function(inText)
 	{
+		var seconds = 0;
 		var parts = inText.split(":");
 		if( parts.length == 1)
 		{
-			return parseFloat(parts[0]);
+			seconds =  parseFloat(parts[0]);
 		}
 		if( parts.length == 2)
 		{
 			var totals = 60 * parseFloat(parts[0]);
 			totals = totals +  parseFloat(parts[1]);
-			return totals;
+			seconds = totals;
 		}	
 		if( parts.length == 3)
 		{
 			var totals =  60 * 60 * parseFloat(parts[0]);				
 			totals = totals +  60 * parseFloat(parts[1]);
 			totals = totals +  parseFloat(parts[2]);
-			return totals;
+			seconds = totals;
 		}	
-		
+		return seconds * 1000;
 	}
 
 	videoclip.on("timeupdate",function(e)
@@ -143,7 +144,8 @@ $(document).ready(function()
 		var selected = $(".selectedclip");
 		var start = selected.data("timecodestart");
 		var length = selected.data("timecodelength");
-		video.currentTime = parseFloat(start) + parseFloat(length);
+		var millis = parseFloat(start) + parseFloat(length);
+		video.currentTime = millis / 1000;
 		
 		input.addClass("selectedlength");
 		
@@ -349,11 +351,11 @@ $(document).ready(function()
 		$("#cliplabel\\.value").val( selected.data("cliplabel") );
 		var decstart = selected.data("timecodestart");
 		decstart = parseFloat(decstart);
-		var start = parseTimeToText( decstart );
+		var start = parseTimeToText( decstart / 1000 );
 		$("#timecodestart-value").val( start );
 	
 		var len = parseFloat(selected.data("timecodelength"));
-		var textlength = parseTimeToText( len);
+		var textlength = parseTimeToText( len / 1000);
 		$("#timecodelength-value").val( textlength );
 		
 		if( jumptoend )
@@ -417,6 +419,8 @@ $(document).ready(function()
 	jQuery(".grabresize").livequery(function()
 	{
 		var mainimage = $(this).closest(".timecell");
+		var slider = $(this).closest(".time-slider");
+		
 		var clickspot;
 		var startwidth;
 		mainimage.on("mousedown", function(event)
@@ -435,12 +439,17 @@ $(document).ready(function()
 			clickspot = false;
 			return false;
 		});
-		mainimage.on("mouseleave", function(event)
+		slider.on("mouseup", function(event)
 		{
 			clickspot = false;
 			return false;
 		});
-		mainimage.on("mousemove", function(event)
+		slider.on("mouseleave", function(event)
+		{
+			clickspot = false;
+			return false;
+		});
+		slider.on("mousemove", function(event)
 		{
 			if( clickspot )
 			{
@@ -456,11 +465,11 @@ $(document).ready(function()
 				var ratio = $("#timelinemetadata").data("ratio");
 				ratio = parseFloat(ratio);
 				
-				var seconds = width / ratio;
+				var miliseconds = (width / ratio );
 				var selected = $(".selectedclip");
 				
 				
-				selected.data("timecodelength",seconds);
+				selected.data("timecodelength",miliseconds);
 				updateDetails(true);
 				event.preventDefault();
 				return false;

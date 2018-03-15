@@ -128,7 +128,8 @@ public class Timeline
 		{
 			px = 50;
 		}
-		return (int)Math.round(px);
+		int pxi = (int)Math.round(px);
+		return pxi;
 	}
 	public double getPxToTimeRatio()
 	{

@@ -5,7 +5,7 @@
 }
 
 .time-slider {
-    height: 32px;
+    min-height: 32px;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -94,7 +94,6 @@
 
 
 .time-slider .timecell {
-    top: 7px;
     min-height: 30px;
     padding: 10px 0 0 0;
     position: absolute;

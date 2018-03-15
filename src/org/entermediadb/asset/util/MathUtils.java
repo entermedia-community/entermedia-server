@@ -136,7 +136,7 @@ public class MathUtils
 		}
 		return  Double.parseDouble(inSeconds);
 	}
-	public static void cleanTypes(Map inMap)
+	public static void cleanLongTypes(Map inMap)
 	{
 		Collection keys = new ArrayList(inMap.keySet());
 		for (Iterator iterator = keys.iterator(); iterator.hasNext();)
@@ -145,7 +145,16 @@ public class MathUtils
 			Object m = inMap.get(type);
 			if( m instanceof BigDecimal)
 			{
-				inMap.put(type, ((BigDecimal)m).doubleValue() );
+				double d = ((BigDecimal)m).doubleValue();
+				inMap.put(type, Math.round(d) );
+			}
+			if( m instanceof Double)
+			{
+				inMap.put(type, Math.round((Double)m) );
+			}
+			if( m instanceof Integer)
+			{
+				inMap.put(type, ((Integer)m).longValue() );
 			}
 		}
 	}

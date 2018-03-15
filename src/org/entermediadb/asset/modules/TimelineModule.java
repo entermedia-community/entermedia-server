@@ -87,8 +87,9 @@ public class TimelineModule extends BaseMediaModule
 		for (Iterator iterator = clips.iterator(); iterator.hasNext();)
 		{
 			Map clip = (Map) iterator.next();
-			MathUtils.cleanTypes(clip);			
+			MathUtils.cleanLongTypes(clip);			
 		}
+		log.info(clips);
 		asset.setValue("clips", clips);
 		
 		archive.saveAsset(asset);
