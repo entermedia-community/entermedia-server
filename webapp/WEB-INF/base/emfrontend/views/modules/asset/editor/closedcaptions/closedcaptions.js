@@ -125,6 +125,11 @@ $(document).ready(function()
 		
 	});
 	
+	jQuery(".lenguagepicker").on("change",function(e)
+	{
+		var selected = $(this);
+		$("#langform").submit();
+	});
 	
 	jQuery("#videoclip").on("timeupdate",function(e)
 	{

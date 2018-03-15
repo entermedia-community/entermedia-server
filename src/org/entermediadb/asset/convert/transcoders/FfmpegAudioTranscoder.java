@@ -199,7 +199,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 			new File(outpath).getParentFile().mkdirs();
 			exec = getExec().runExec("avconv", comm, inTimeout);
 		}
-		log.info("ok: ${exec.isRunOk()} in " + (System.currentTimeMillis() - start) / 1000L + " seconds");
+		log.info(exec.isRunOk() + " in " + (System.currentTimeMillis() - start) / 1000D + " seconds");
 		result.setOk(exec.isRunOk());
 		if( !exec.isRunOk() )
 		{
