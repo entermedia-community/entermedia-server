@@ -5,7 +5,7 @@
 	#foreach($clip in $clips)
 		#set( $index = $velocityCount - 1)
 		<div id="slider123" class="time-slider data-selection"  
-			data-cliplabel='$!clip.getLabel()' 
+			data-cliplabel='#esc($clip.getLabel())' 
 			data-timecodestart="$clip.getStart()"
 			data-timecodelength="$clip.getLength()">
 			<div class="ruler" >
