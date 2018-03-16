@@ -3,10 +3,9 @@
 <page>
 	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preview/thumbsmall</property>
 	<generator name="convertArchiveDocument"/>
-	<property name="prefwidth">150</property>
-	<property name="prefheight">150</property>
-	<property name="exportname">image150x150.jpg</property>
-	
+	<property name="prefwidth">300</property>
+	<property name="prefheight">300</property>
+	<property name="exportname">image300x300.jpg</property>
 </page>
 
 
