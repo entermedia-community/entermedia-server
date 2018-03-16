@@ -47,10 +47,10 @@
 			#set( $permission = false)
 		#end
 		#set( $type = $mediaarchive.getMediaRenderType($asset))
-		#if( $permission && $link.id == "viewtimeline" &&  $type != "video")
+		#if( $permission && $link.id == "viewtimeline" &&  !($type == "video" || $type == "audio"))
 			#set( $permission = false)
 		#end
-		#if( $permission && $link.id == "viewclosedcaptions" &&  $type != "video")
+		#if( $permission && $link.id == "viewclosedcaptions" && !($type == "video" || $type == "audio"))
 			#set( $permission = false)
 		#end
 
