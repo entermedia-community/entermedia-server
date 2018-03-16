@@ -4,8 +4,17 @@
 		<property name="reloadprofile">true</property>
 
 
+	<path-action name="DataEditModule.clearCache" allowduplicates="true" >
+		
+	</path-action>
+	
+
+
 	<path-action name="Script.run" allowduplicates="true" >
 		<script>/${catalogid}/events/scripts/users/setuplibraries.groovy</script>
 	</path-action>
+	
+	
+	
 	
 </page>

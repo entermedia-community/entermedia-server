@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.BaseCompositeData;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -1889,4 +1890,29 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		}
 		
 	}
+	
+	
+	
+	public void clearCache(WebPageRequest inReq) throws Exception{
+		
+		Searcher searcher = loadSearcher(inReq);
+		
+		
+		Data currentdata = (Data)inReq.getPageValue("data");
+		String dataid = null;
+		if(currentdata == null){
+			dataid = inReq.getRequestParameter("dataid");
+		} else{
+			 dataid = currentdata.getId();
+		}
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getCacheManager().remove(searcher.getSearchType(), dataid);
+		
+		
+		
+		
+	}
+	
+	
 }
