@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Run media conversions</property>	
+	<property name="eventdescription">Check for conversions that need to be run</property>	
+	<property name="period">5m</property>
+	<path-action name="TimelineModule.autoTranscodeQueue"  />
+	
+</page>
