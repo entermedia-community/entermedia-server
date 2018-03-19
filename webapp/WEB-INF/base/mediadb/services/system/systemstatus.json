@@ -1,13 +1,22 @@
 {
-"response":
+	"response":
 	{
 	    "status":"ok"
 	},
-"results":[
-#foreach( $key in $cacheManager.getCaches().keySet() )
-#set( $cache = $cacheManager.getCaches().get($key) )
- 
- #if( $velocityCount != 1 ), #end {"$key":"$cache.size()"} 
-#end
-]
+	"partitions":[	
+			#foreach( $partition in $partitions )
+				#if( $velocityCount != 1 ), #end
+				{"name":"$partition.name","totalcapacity": $partition.totalCapacity, "freepartitionspace": $partition.freePartitionSpace, "usablepartitionspace": $partition.usablePartitionSpace }
+			#end 
+	],
+	"stats":[	
+			#foreach( $stat in $stats )
+				#if( $velocityCount != 1 ), #end
+				#if ( $stat.isError )
+					{"name":"$stat.name","value": 0,"error": $stat.errorMsg}
+				#else
+					{"name":"$stat.name","value": $stat.value,"error": ""}
+				#end
+			#end 
+	]	
 }
