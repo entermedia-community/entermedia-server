@@ -14,6 +14,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.scanner.MetaDataReader;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -355,25 +356,37 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		{
 			currentcollectionid = inReq.getRequestParameter("currentcollection.value");
 		}
+		Map vals = new HashMap();
+		vals.putAll(inReq.getPageMap());
+
 		if (currentcollectionid == null)
 		{
 			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}
+			String uploadcategoryid = inReq.getRequestParameter("category.value");
+			
+			if( uploadcategoryid != null)
+			{
+				Category uploadto  = inArchive.getCategory(uploadcategoryid);
+				vals.put("categorypath", uploadto.getCategoryPath());
+			}
 		}
 		else
 		{
 			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}	
-		}
-
-		Map vals = new HashMap();
-		vals.putAll(inReq.getPageMap());
-
-		if (currentcollectionid != null)
-		{
-			Data coll = inArchive.getData("librarycollection", currentcollectionid);
+			LibraryCollection coll = (LibraryCollection)inArchive.getData("librarycollection", currentcollectionid);
 			if (coll != null)
 			{
-				vals.put("librarycollection", currentcollectionid);
+				vals.put("librarycollection", coll);
 				vals.put("library", coll.get("library"));
+				Category uploadto = coll.getCategory();
+				String uploadcategoryid = inReq.getRequestParameter("category.value");
+				
+				if( uploadcategoryid != null)
+				{
+					uploadto  = inArchive.getCategory(uploadcategoryid);
+				}
+				
+				vals.put("categorypath", uploadto.getCategoryPath());
 			}
 		}
 		String[] fields = inReq.getRequestParameters("field");
@@ -438,7 +451,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		String guid = UUID.randomUUID().toString();
 		String sguid = guid.substring(0, Math.min(guid.length(), 13));
 		vals.put("guid", sguid);
-		vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3).replace("-", ""));
+		sguid = sguid.replace("-", "");
+		vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3));
+		vals.put("shortguid", sguid.substring(0, 2) + "/" + sguid.substring(3,Math.min(guid.length(), 6)));
 
 		Date now = new Date();
 		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy/MM"); //TODO: Use DataStorage

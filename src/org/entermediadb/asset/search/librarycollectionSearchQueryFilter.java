@@ -3,6 +3,7 @@ package org.entermediadb.asset.search;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,7 +28,10 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		{
 			return inQuery;
 		}
-
+		if( inQuery.isSecurityAttached() )
+		{
+			return inQuery;
+		}
 		User user = inPageRequest.getUser();
 		//log.info( "found filer user  "  + user + " " + user.isInGroup("administrators"));
 		if (user != null && user.isInGroup("administrators"))
@@ -46,8 +50,16 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 //			Category hidden = (Category) iterator.next();
 //			toshow.remove(hidden.getId());
 //		}
+		
+		Set allowedcats = new HashSet(profile.getViewCategories());
+		Collection allowed = archive.listPublicCategories();
+		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
+		{
+			Category publiccat = (Category) iterator.next();
+			allowedcats.add(publiccat);
+		}
 		SearchQuery child = inSearcher.query()
-				.orgroup("parentcategories",profile.getViewCategories())
+				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)
 				.getQuery();
 		inQuery.addChildQuery(child);
@@ -57,7 +69,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		//inQuery.setSecurityIds(toshow);
 		inQuery.setSecurityAttached(true);
 		
-		//log.info(inQuery.toQuery());
+		log.info("Collection search " + inQuery.toQuery());
 		return inQuery;
 	}
 }

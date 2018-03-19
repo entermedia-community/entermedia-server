@@ -1,24 +1,51 @@
-$asset
+<div id="closedcaptioneditor">
+#set( $sourcepath = $asset.sourcepath )
+#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $clientroot = $context.getContentProperty("clientroot") )
 
-<form name="csvproductupload" method="post" enctype="multipart/form-data" action="./importfinish.html">
-	 	 <input type="hidden" size="25" name="assetid" value="$asset.id"> 
-	 
-	 
-	 <input type="file" size="25" name="file"> 
-	 <input type=submit value="Import" />
-	 
-	 
-</form>
+<div class="container-fluid" style="padding:10px 10px 0px 20px;background-color:#eee;">
+	<div class="row" >
+		<div class="col-md-10" style="padding: 10px; background-color:#eee; width:900px">	
+			$pages.include("$clientroot/details/video.html")
+		</div>
+		<div class="col-md-2" style="padding: 0px;"></div>
+	</div>	
+</div>	
 
-#set($captionsearcher = $mediaarchive.getSearcher("videotrack"))
+#set( $timecodejump = $context.getRequestParameter("timecodejump"))
 
-#set($tracks = $captionsearcher.query().exact("assetid", $asset.getId()).search())
-$tracks.size()
-#foreach($track in $tracks)
-$track
-#foreach($caption in $track.getValue("captions"))
-	$caption.captiontext
-	$caption.timecodestart
+<div style="padding:0px; background-color:#eee;">
+	<div class="row" style=" width:800px">
+		<div class="col-md-3" style="padding: 6px 0 0 40px;">	
+		<span id="captionstart">00:00.0</span> -
+				<span id="captionend">00:00.0</span>
+		</div>
+		<div class="col-md-6" style="padding: 0px;">
+			<form id="addcaption" data-targetdiv="captionview" action="$clientroot/addcaption.html" >
+				<input type="hidden" name="assetid" value="$asset.id" />
+				<input type="hidden" name="oemaxlevel" value="1" />
+				<input type="hidden" id="timecodestart" name="timecodestart" value="0" />
+				<input type="hidden" id="timecodelength" name="timecodelength" value="8000" />
+				<input  id="captioninput" name="cliplabel" 
+					data-initialtext="press tab key to play video and press enter to save captions"
+					value="" style="width:400px;" />
+			</form>
+		</div>
+		<div class="col-md-3" style="padding: 0 0 0 40px;">	
+			##<a id="playtab" href="#"   data-playtext="[[Play 8s]]" data-stoptext="[[Stop]]" 
+			##	class="btn btn-green" style="margin-left:0px;" >[[Play 8s]]</a> 
+			<a id="removetime" class="btn btn-green" style="margin-left:0px;" >-</a>
+			<a id="addtime" class="btn btn-green" style="margin-left:0px;" >+</a>
+			<a id="removecaption" class="btn btn-green" style="margin-left:0px;" >remove</a>
+			
+		</div>
+	</div>	
+	<div class="row" style="background-color:#fff;" >
+			$pages.include("$clientroot/viewcaptions.html")
+	</div>
+</div>	
 
-#end
-#end
+
+</div>

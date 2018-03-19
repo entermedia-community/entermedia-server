@@ -1,0 +1,10 @@
+WEBVTT FILE
+
+#set( $counter = 1 )
+#foreach($caption in $track.getValue("captions"))
+$counter
+#set( $counter = $counter + 1 )
+$track.formatTime($caption.timecodestart) --> $track.formatEnd($caption)
+$caption.cliplabel
+
+#end

@@ -126,6 +126,12 @@ public class BaseMediaModule extends BaseModule
 			asset = archive.getAsset(id);
 		}
 		
+
+		if( Boolean.parseBoolean( inReq.getContentProperty("assetfolderid") ) ) 
+		{
+			String id = PathUtilities.extractDirectoryName(inReq.getPath());
+			asset = archive.getAsset(id);
+		}
 		if( asset == null)
 		{
 			String sourcePath = inReq.getRequestParameter("sourcepath");

@@ -1,6 +1,6 @@
 <page>
 <path-action name="OauthModule.login"/>
-<property name="provider">google</property>
+<property name="provider">facebook</property>
 <path-action name="Admin.redirect">
 	  <redirectpath>/${applicationid}/index.html</redirectpath>
 

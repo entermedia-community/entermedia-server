@@ -240,7 +240,7 @@ jQuery(document).ready(function(url,params)
 		}
 		
 		var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
-		var params = {playerareawidth: $(window).width() - 200, assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
+		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
 			params.pagenum = pagenum;
@@ -258,7 +258,8 @@ jQuery(document).ready(function(url,params)
 			enable(id,".goleftclick span");
 			id = div.data("next");
 			enable(id,".gorightclick span");
-		   $(document).trigger("domchanged");
+		    $(document).trigger("domchanged");
+			$(window).trigger( "resize" );
 
 		});
 	}
@@ -619,8 +620,7 @@ gridResize = function()
 	var grid = $(".masonry-grid");
 	if( grid.length == 0 )
 	{
-		console.log("No grid");
-		
+		//console.log("No grid");
 		return;
 	}
 	

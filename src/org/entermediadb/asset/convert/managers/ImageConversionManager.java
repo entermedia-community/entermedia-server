@@ -115,6 +115,9 @@ public class ImageConversionManager extends BaseConversionManager
 	private ContentItem makeIndd(MediaTranscoder inExiftoolThumbTranscoder, ConvertInstructions inStructions)
 	{
 		Asset asset = inStructions.getAsset();
+		if(asset == null){
+			return null;
+		}
 		String format = asset.getFileFormat();
 		if ("indd".equalsIgnoreCase(format))  //TODO: Move to image
 		{
@@ -128,7 +131,7 @@ public class ImageConversionManager extends BaseConversionManager
 			//if we have embdeded thumb 
 			ConvertInstructions instructions = new ConvertInstructions(getMediaArchive());
 			instructions.setForce(true);
-			instructions.setInputFile(instructions.getInputFile());
+			instructions.setInputFile(inStructions.getInputFile());
 			instructions.setOutputFile(custom);
 			ConvertResult res = inExiftoolThumbTranscoder.convert(instructions);
 			if (res.isOk())

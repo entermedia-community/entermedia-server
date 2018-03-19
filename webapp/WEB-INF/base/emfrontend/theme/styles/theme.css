@@ -1324,9 +1324,20 @@ small {
 }
 #cat-list .row .category {
     padding-left: 18px;
+    padding-top: 10px;
     background: url('../images/folder-closed.gif') left 7px no-repeat;
     margin: 0 3px;
 }
+
+
+#cat-list .row .asset {
+    padding-left: 18px;
+    padding-top: 10px;
+    background: url('../images/attachments-icon.png') left 7px no-repeat;
+    margin: 0 3px;
+}
+
+
 
 .collectionheader #cat-list .row .category {
     background: url('../images/icons/box.png') top 3px left 0px no-repeat;
@@ -1743,7 +1754,7 @@ small {
     font-size: 13px;
     height: 45px;
     line-height: 45px;
-    padding: 0 20px;
+    padding: 0 15px;
     display: block;
     font-weight: normal;
 }
@@ -2151,6 +2162,7 @@ center #addcoment {
     margin: 0;
     min-height: 100%;
     min-width: 100%;
+    width:100%;
     border-radius: 0 0 5px 0;
 }
 .ui-widget-header, #nav, #header .navlinks {
@@ -5090,6 +5102,23 @@ p.resultsnumber {
 #de-side-nav .current.converthistory .icon {
     background-position: -183px -26px;
 }
+
+#de-side-nav .viewtimeline .icon {
+    background-position: -364px 0;
+}
+#de-side-nav .current.viewtimeline .icon {
+    background-position: -364px -26px;
+}
+
+#de-side-nav .viewclosedcaptions .icon {
+    background-position: -131px 0;
+}
+#de-side-nav .current.viewclosedcaptions .icon {
+    background-position: -131px -26px;
+}
+
+
+
 #de-side-nav.open #opener .icon {
     background-position: -264px -26px;
     width: 19px;
@@ -7094,5 +7123,21 @@ li.resultmenuitem {
 	#resultpageslabel
 	{
 		display: none;
+	}
+}
+
+
+.hidden-sm-xs {
+  display: none;
+}
+
+@media screen and (min-width: 700px) {
+.hidden-sm-xs {
+    display: block;
+  }
+}
+@media screen and (max-width: 900px) {
+	#eml-tab-subnav ul li a, #sub-nav li a {
+		padding:0 10px;
 	}
 }

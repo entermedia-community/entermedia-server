@@ -20,8 +20,6 @@ $context.putPageValue("cdn",$cdnprefix)
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
-	$hits
-	$index
 	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
 </div>
 <div id="footerbase">

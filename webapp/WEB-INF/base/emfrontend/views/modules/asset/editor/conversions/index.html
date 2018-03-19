@@ -3,7 +3,7 @@ h1{
 	font-family:Arial,Helvetica,sans-serif;
 	font-size:24px;
 	color:black;
-}
+}   
 h2{
 	font-family:Arial,Helvetica,sans-serif;
 	font-size:22px;
@@ -88,7 +88,22 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 
 #foreach ($result in $results)
 
-	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id))
+
+	#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
+	#if(!$cancrop)
+		#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+			#set($show = false)
+		#else
+		
+			#set($show = true)
+		#end
+	#else
+		#set($show = true)
+	#end
+	
+	
+	
+	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
 <div class="info" >
 
 		<!-- include name + info -->
@@ -119,7 +134,6 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 			<!--  include share -->
 			$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
 			#if( $canviewconversions )
-				#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
 				#if(!$cancrop)
 					<span style="font-size:smaller;margin: 0 20px 20px;">[[Image is too small to crop to the desired crop dimension]]</span>
 				#end

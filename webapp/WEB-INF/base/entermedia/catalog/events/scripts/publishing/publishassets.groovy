@@ -1,15 +1,19 @@
 package publishing;
 
+import java.awt.JobAttributes.DestinationType
+
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.publishing.PublishResult
 import org.entermediadb.asset.publishing.Publisher
+import org.entermediadb.asset.xmp.XmpWriter
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.event.WebEvent
 import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
 import org.openedit.locks.Lock
+import org.openedit.page.Page
 
 
 public void init() {
@@ -92,6 +96,20 @@ public void init() {
 				PublishResult presult = null;
 				
 				//	log.info("Publishing  Version (${asset}): Version:  " + lock.get(".version") + "Thread: " + Thread.currentThread().getId()  + "Lock ID" + lock.getId());
+				
+				if(Boolean.parseBoolean(destination.get("includemetadata"))){
+				
+					Page inputpage = publisher.findInputPage(mediaArchive, asset, preset);
+					XmpWriter writer = (XmpWriter) mediaArchive.getModuleManager().getBean("xmpWriter");
+					if(inputpage.exists()){
+						writer.saveMetadata(mediaArchive, inputpage.getContentItem(), asset);
+						
+					}
+						
+				}
+				
+				
+				
 					
 					presult = publisher.publish(mediaArchive,asset,publishrequest, destination,preset);
 					//Thread.sleep(3000);

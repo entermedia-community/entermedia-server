@@ -3,11 +3,8 @@
 <page>
 	<property name="assetrootfolder">/${catalogid}/downloads/preview/large</property>
 	<generator name="convertArchiveDocument"/>
-	<property name="prefwidth">640</property>
-	<property name="prefheight">480</property>
 	<property name="virtual">true</property>
 	<property name="uselegacythumbimages">false</property>
-	<property name="sourcefile">image</property>
 	<property name="exportname">image1024x768.jpg</property>
 </page>
 

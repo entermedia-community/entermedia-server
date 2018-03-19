@@ -14,7 +14,7 @@
 	#set( $foundrow = $searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$val) )  
 #end
 
-#set($label = $searcherManager.getLabel($detail,$foundrow) )
+#set($label = $searcherManager.getLabel($detail,$foundrow,$context.locale) )
 
 #if( $searcherManager.getSearcher( $detail.getListCatalogId(),$detail.getListId() ).getPropertyDetails().getRender() )
 	#set($searchfield = "description")
@@ -22,7 +22,7 @@
 
 #set( $detailid = $detail.getId().replace('.','-') )
 
-<select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"  class="listautocomplete #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" data-searchfield="$searchfield" data-searchtype="$detail.listId" 
+<select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"  class="listautocomplete form-control #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" data-searchfield="$searchfield" data-searchtype="$detail.listId" 
 	data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-placeholder="$detail.getText($context)" data-sortby="$!detail.sort">
 #if( $foundrow )
   <option value="$!val" selected="selected">#esc($label)</option>

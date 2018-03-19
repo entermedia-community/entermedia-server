@@ -1104,10 +1104,14 @@ public class AssetEditModule extends BaseMediaModule
 					for (int j = 0; j < language.length; j++)
 					{
 						String lang = language[j];
-						String langval = inReq.getRequestParameter(prefix + afield + ".language." + (j + 1));
+						String langval = inReq.getRequestParameter(prefix + afield + "." + lang + ".value");
 						if( langval == null)
 						{
 							langval = inReq.getRequestParameter(prefix + afield + "." + lang); //legacy
+						}
+						if( langval == null)
+						{
+							langval = inReq.getRequestParameter(prefix + afield + ".language." + (j + 1)); //legacy
 						}
 						if( langval != null)
 						{
@@ -2093,9 +2097,17 @@ Change Collections to be normal categories path s and make createTree look at th
 		
 	}
 	
-	
-	
-	public void handleUploads(WebPageRequest inReq) {
+
+	public void handleUploads(WebPageRequest inReq) 
+	{
+		
+//		final MediaArchive archive = getMediaArchive(inReq);
+//		final Map metadata = readMetaData(inReq,archive,"");
+//
+//		final Map pages = savePages(inReq,archive,inPages);
+//		final User user = inReq.getUser();
+//		
+				
 		FileUpload command = new FileUpload();
 		command.setPageManager(getPageManager());
 		UploadRequest properties = command.parseArguments(inReq);
@@ -2108,6 +2120,7 @@ Change Collections to be normal categories path s and make createTree look at th
 		}
 		String searchtype = inReq.findValue("searchtype");
 		String id = inReq.getRequestParameter("id");
+		final String currentcollection = inReq.getRequestParameter("collectionid");
 		
 		Data target = null;
 		
@@ -2178,12 +2191,27 @@ Change Collections to be normal categories path s and make createTree look at th
 
 			properties.saveFileAs(item, path, inReq.getUser());
 
+			boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
+			
+			
 			//MediaArchive inArchive, User inUser, Page inAssetPage)
 			 
 			Asset current = getAssetImporter().getAssetUtilities().populateAsset(null, item.getSavedPage().getContentItem(), archive, sourcepath, inReq.getUser());
 			archive.saveAsset(current, inReq.getUser());
 			current.setPrimaryFile(item.getName());
 			current.setProperty("name", item.getName());
+			
+			if(assigncategory) {
+				Category defaultcat = archive.getCategorySearcher().createCategoryPath(sourcepath);
+				current.clearCategories();
+				current.addCategory(defaultcat);
+			}
+			
+			
+			//TODO: Use the standard ways we upload 
+			//		Collection tracker = saveFilesAndImport(archive, currentcollection, metadata, pages, user);
+
+			
 //			current.setProperty("owner", inReq.getUser().getId());
 			archive.removeGeneratedImages(current, true);
 			archive.saveAsset(current, null);
@@ -2193,6 +2221,11 @@ Change Collections to be normal categories path s and make createTree look at th
 			archive.fireMediaEvent("assetcreated",inReq.getUser(),current);
 			archive.fireMediaEvent("importing","assetsimported",inReq.getUser(),current);
 
+			if( currentcollection != null)
+			{
+				ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
+				manager.addAssetToCollection(archive,currentcollection,current.getId());
+			}
 		}
 
 	}

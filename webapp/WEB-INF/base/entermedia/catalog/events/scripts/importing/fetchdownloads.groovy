@@ -55,14 +55,14 @@ public void init() {
 				current.setPrimaryFile(image.getName());
 				current.setFolder(true);
 				
-				String assettype = current.assettype;
+				//String assettype = current.assettype;
 				
 				MetaDataReader reader = archive.getModuleManager().getBean("metaDataReader");
 				reader.populateAsset(archive, finalfile.getContentItem(), current);
-				if( assettype != null && assettype.equals("embedded") )
-				{
-					current.setValue("assettype","embedded");
-				}
+				//if( assettype != null && assettype.equals("embedded") )
+				//{
+					current.setValue("assettype","video");
+				//}
 				
 				
 				regenerate = true;

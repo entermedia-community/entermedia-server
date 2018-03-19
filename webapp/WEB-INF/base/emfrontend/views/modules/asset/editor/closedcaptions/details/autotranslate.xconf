@@ -1,0 +1,7 @@
+<page>
+
+	<inner-layout />
+	<path-action name="TimelineModule.addAutoTranslate"  />
+	<path-action name="TimelineModule.loadCaptionEditor" />
+
+</page>

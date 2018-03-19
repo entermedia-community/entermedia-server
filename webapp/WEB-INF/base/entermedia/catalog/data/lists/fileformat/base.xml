@@ -4,6 +4,8 @@
 
 <properties >
 	<property id="ai"  synctags="true"  rendertype="image" creator="imagemagick" >AI</property>
+	<property id="flac"  synctags="true"  rendertype="audio"  conversiontimeout="43200000" creator="ffmpeg">FLAC</property>
+	
 	<property id="asf"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg">ASF</property>
 	<property id="avi"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg">AVI</property>
 	<property id="bmp"  synctags="true"  rendertype="image" creator="imagemagick">BMP</property>
@@ -17,6 +19,8 @@
 	<property id="indd"  synctags="true"  rendertype="image" creator="imagemagick">INDD</property>
 	<property id="ico"  synctags="true"  rendertype="image" creator="imagemagick">ICO</property>
 	<property id="jpg"  synctags="true"  rendertype="image" creator="imagemagick">JPG</property>
+	<property id="jp2"  synctags="true"  rendertype="image" creator="imagemagick">JP2</property>
+
 	<property id="jpeg"  synctags="true"  rendertype="image" creator="imagemagick">JPEG</property>
 	<property id="mov"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg" >MOV</property>
 	<property id="moov"  synctags="true"  rendertype="video"  conversiontimeout="43200000" creator="ffmpeg"  >MooV</property>

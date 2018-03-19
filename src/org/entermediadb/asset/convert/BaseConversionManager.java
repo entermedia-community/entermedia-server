@@ -228,15 +228,7 @@ public abstract class BaseConversionManager implements ConversionManager
     	if( input == null && getInputLoaders() != null)
     	{
 	    	//Load input
-	    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
-			{
-				InputLoader loader = (InputLoader) iterator.next();
-				input = loader.loadInput(inStructions);
-				if( input != null)
-				{
-					break;
-				}
-			}
+	    	input = findInput(inStructions);
 			inStructions.setInputFile(input);
     	}	
     	if(input == null || !input.exists())
@@ -247,7 +239,19 @@ public abstract class BaseConversionManager implements ConversionManager
     		result.setError("Input is " + input + " input loaders failed to load");
     		return result;
 		}
-    	
+    	if( !inStructions.isForce() && !inStructions.isStreaming() )
+    	{
+	    	ContentItem output = inStructions.getOutputFile();
+			if( output.getLength() > 2 )
+			{
+				ConvertResult result = new ConvertResult();
+				result.setOutput(output);
+				result.setOk(true);
+				result.setComplete(true);
+				result.setInstructions(inStructions);
+				return result;
+			}
+    	}
     	ConvertResult result = transcode(inStructions);
 
     	if( getOutputFilters() != null && result.isOk() && result.isComplete() )
@@ -263,6 +267,19 @@ public abstract class BaseConversionManager implements ConversionManager
 			}
     	}
     	return result;
+	}
+
+	public ContentItem findInput(ConvertInstructions inStructions) {
+		for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
+		{
+			InputLoader loader = (InputLoader) iterator.next();
+			ContentItem input = loader.loadInput(inStructions);
+			if( input != null)
+			{
+				return input;
+			}
+		}
+		return null;
 	}
     
     protected ConvertResult transcode(ConvertInstructions inStructions)
@@ -298,10 +315,16 @@ public abstract class BaseConversionManager implements ConversionManager
 	}
 	protected ContentItem makeCustomInput(BaseTranscoder imTranscoder, String format, ConvertInstructions inStructions)
 	{
+		if(inStructions.getAsset() == null){
+			return null;
+		}
 		String colorspace = inStructions.getAsset().get("colorspace");
 		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
 		{
-			if( inStructions.isCrop() ) //Let it use the standard 1020x768
+			
+			ContentItem originalDocument = inStructions.getOriginalDocument();
+			boolean exists = originalDocument.exists();
+			if( inStructions.isCrop() || !exists ) //Let it use the standard 1020x768
 			{
 				return null;
 			}
@@ -313,7 +336,7 @@ public abstract class BaseConversionManager implements ConversionManager
 				{
 					ConvertInstructions instructions = createInstructions(asset);
 					instructions.setForce(true);
-					instructions.setInputFile(inStructions.getOriginalDocument());
+					instructions.setInputFile(originalDocument);
 					instructions.setOutputFile(custom);
 					imTranscoder.convert(instructions);
 				}

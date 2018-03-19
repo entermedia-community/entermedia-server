@@ -5,6 +5,7 @@ import org.entermediadb.projects.ProjectManager
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
+import org.openedit.hittracker.SearchQuery
 
 
 
@@ -25,6 +26,7 @@ public void init(){
 	ProjectManager projects = archive.getProjectManager();
 	collections.enableBulkOperations();
 	Searcher catsearcher = archive.getSearcher("category");
+	ArrayList rootcats = new ArrayList(); 
 	collections.each{
 		String name = it.name;
 
@@ -42,12 +44,35 @@ public void init(){
 		
 		categories.enableBulkOperations();
 		if(categories.size() > 0){
-			ArrayList rootcats = findCommonRoots(categories);
+			rootcats = findCommonRoots(categories);
 			rootcats.remove(collection.get("rootcategory"));
+			
 			context.putPageValue("foundcategories", rootcats);
 		}
+	
+		Searcher assets = archive.getAssetSearcher();
+		SearchQuery query = assets.createSearchQuery();
+		query.addContains("description", searchstring);
+	
+		rootcats.each{
+			query.addNot("category", it);
+		}
+		HitTracker hits = assets.search(query);
+		
+		context.putPageValue("assets", hits);
+		
+		
 	}
+	
+
+	
+	
+	
 }
+
+
+
+
 
 
 public List findCommonRoots(HitTracker inCategories){
@@ -76,7 +101,11 @@ public List findCommonRoots(HitTracker inCategories){
 	String lastroot = "_";
 	sorted.each{
 		Data hit = (Data)it;
-		String catpath = hit.get("categorypath");
+		String catpath = hit.getValue("categorypath");
+		
+		if(catpath.contains("Collections")) {
+			return;
+		}
 		if( !catpath.startsWith(lastroot))
 		{
 			finallist.add(hit.getId());
@@ -88,6 +117,9 @@ public List findCommonRoots(HitTracker inCategories){
 		}
 
 	}
+	
+	
+	
 	log.info("got  " + finallist.size());
 	return finallist;
 }

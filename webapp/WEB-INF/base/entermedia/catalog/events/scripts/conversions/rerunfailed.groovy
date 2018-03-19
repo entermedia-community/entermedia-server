@@ -15,6 +15,7 @@ public void init()
 		query.addMatches("status", "error");
 		
 		HitTracker tasks = tasksearcher.search(query);
+		tasks.enableBulkOperations();
 		List all = new ArrayList(tasks);
 		for (Data hit in all)
 		{

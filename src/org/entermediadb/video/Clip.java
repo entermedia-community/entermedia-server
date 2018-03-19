@@ -17,21 +17,27 @@ public class Clip implements Comparable
 	{
 		fieldData = new ValuesMap(inData);
 	}
-	public double getStart()
+	public long getStart()
 	{
-		Double d = getData().getDouble("timecodestart");
+		Long d = getData().getLong("timecodestart");
 		if( d == null)
 		{
-			return 0d;
+			return 0L;
 		}
 		return d;
 	}
-	public double getLength()
+	
+	public String getLabel()
 	{
-		Double d = getData().getDouble("timecodelength");
+		String cliplabel = (String)getData().get("cliplabel");
+		return cliplabel;
+	}
+	public long getLength()
+	{
+		Long d = getData().getLong("timecodelength");
 		if( d == null)
 		{
-			return 0d;
+			return 0L;
 		}
 		return d;
 	}

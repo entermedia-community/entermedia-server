@@ -16,6 +16,7 @@ import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
 import org.openedit.util.GenericsUtil;
@@ -59,11 +60,13 @@ public class XmpWriter
 			addKeyword(key, inComm);
 		}
 	}
-
-	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception
+	
+	
+	public boolean saveMetadata(MediaArchive inArchive, ContentItem inItem, Asset inAsset) throws Exception
 	{
-		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
 		
+		String path = inItem.getAbsolutePath();
+
 		Map props = new HashMap();
 		props.put("absolutepath", path);
 		inArchive.fireMediaEvent("savingoriginal","asset",inAsset.getSourcePath(),props,null);
@@ -84,6 +87,15 @@ public class XmpWriter
 			inArchive.fireMediaEvent("savingoriginalcomplete","asset",inAsset.getSourcePath(),props,null);			
 		}
 		return ok;
+	}
+	
+
+	public boolean saveMetadata(MediaArchive inArchive,  Asset inAsset) throws Exception
+	{
+		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
+		
+		return saveMetadata(inArchive, item, inAsset);
+		
 
 	}	
 	
@@ -184,7 +196,8 @@ public class XmpWriter
 		{
 			if( inTags[i].contains(":") ) //Only write back to iptc: or xmp: fields
 			{
-				inComm.add("-" + inTags[i] + "=" + inValue);
+				inComm.add("-" + inTags[i] + "=" + inValue  ) ;
+				
 			}
 		}
 	}

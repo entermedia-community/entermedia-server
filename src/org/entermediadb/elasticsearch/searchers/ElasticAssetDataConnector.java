@@ -6,6 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -31,6 +32,7 @@ import org.entermediadb.asset.search.DataConnector;
 import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetails;
 import org.openedit.hittracker.HitTracker;
@@ -190,15 +192,19 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
 	{
-		if( !(inData instanceof Asset))
-		{
-			super.updateIndex(inContent, inData, inDetails);
-			return;
-		}
-		Asset asset = (Asset) inData;
-
 		try
 		{
+			if( !(inData instanceof Asset))
+			{
+				MultiValued values = (MultiValued)inData;
+				saveArray(inContent, "category",values.getValues("category"));
+				saveArray(inContent, "category-exact",values.getValues("category-exact"));
+				super.updateIndex(inContent, inData, inDetails);
+			
+				return;
+			}
+			Asset asset = (Asset) inData;
+		
 			String fileformat = asset.getFileFormat();
 			if (fileformat != null)
 			{
@@ -220,19 +226,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			categories.add(getMediaArchive().getCategorySearcher().getRootCategory());
 			inContent.field("description", desc);
 
-			String[] catids = new String[categories.size()];
-			int i = 0;
-			for (Iterator iterator = categories.iterator(); iterator.hasNext();)
-			{
-				Category cat = (Category) iterator.next();
-				catids[i++] = cat.getId();
-			}
-			if (i > 0)
-			{
-				inContent.field("category", catids);
-			}
-			
-			
+			saveArray(inContent, "category",categories);
 
 			// Searcher searcher =
 			// getSearcherManager().getSearcher(asset.getCatalogId(),"assetalbums");
@@ -258,16 +252,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			// }
 
 			//This is for saving and loading.
-			ArrayList<String> realcats = new ArrayList();
-			for (Iterator iterator = asset.getCategories().iterator(); iterator.hasNext();)
-			{
-				Category cat = (Category) iterator.next();
-				String catid = cat.getId();
-				realcats.add(catid);
-			}
-			String[] array = new String[realcats.size()];
-			array = realcats.toArray(array);
-			inContent.field("category-exact", array);
+			saveArray(inContent, "category-exact",asset.getCategories());
 			//populatePermission(inContent, asset, "viewasset");
 
 		}
@@ -278,6 +263,31 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				throw (OpenEditException)ex;
 			}
 			throw new OpenEditException(ex);
+		}
+	}
+
+	protected void saveArray(XContentBuilder inContent, String inType, Collection inData) throws IOException
+	{
+		List ids = new ArrayList(inData.size());
+		for (Iterator iterator = inData.iterator(); iterator.hasNext();)
+		{
+			Object object = iterator.next();
+			String id = null;
+			if( object instanceof Data)
+			{
+				id = ((Data)object).getId();
+			}
+			else
+			{
+				id = String.valueOf( object );
+			}
+			ids.add(id);
+		}
+		if( ids.size() > 0)
+		{
+			String[] array = new String[ids.size()];
+			Object oa = ids.toArray(array);
+			inContent.field(inType, oa);
 		}
 	}
 

@@ -41,6 +41,12 @@
   <parameter id="previewffmpegthumb2" parameterdata="previewffmpegthumb" value="1024" >prefwidth</parameter> 
   <parameter id="previewffmpegthumb3" parameterdata="previewffmpegthumb" value="768" >prefheight</parameter> 
 
+  <parameter id="videoaudio0" parameterdata="videoaudio" value="flac" >acodec</parameter> 
+  <parameter id="videoaudio1" parameterdata="videoaudio" value="flac" >outputextension</parameter> 
+  <parameter id="videoaudio2" parameterdata="videoaudio" value="64" >bitrate</parameter> 
+  <parameter id="videoaudio3" parameterdata="videoaudio" value="22.05" >resample</parameter> 
+  <parameter id="videoaudio4" parameterdata="videoaudio" value="1" >channels</parameter> 
+  <parameter id="videoaudio5" parameterdata="videoaudio" value="true" >useoriginalmediawhenpossible</parameter> 
 
   
 </properties>

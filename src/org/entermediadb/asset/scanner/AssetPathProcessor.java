@@ -135,9 +135,10 @@ public class AssetPathProcessor extends PathProcessor
 		//archive.firePathEvent("importing/assetsuploaded",inReq.getUser(),getAssetsToSave());
 		//archive.fireMediaEvent("asset/assetcreated",inReq.getUser(),sample,listids); //This does not do much
 		getMediaArchive().firePathEvent("importing/assetscreated",inUser,getAssetsToSave());
-		
-		getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saved", String.valueOf( getAssetsToSave().size()), null);
-
+		if( isShowLogs() )
+		{
+			getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "saved", String.valueOf( getAssetsToSave().size()), null);
+		}
 		getAssetsToSave().clear();
 	}
 
@@ -209,6 +210,11 @@ public class AssetPathProcessor extends PathProcessor
 				List paths = getPageManager().getChildrenPaths(inInput.getPath());
 				if( paths.size() == 0 )
 				{
+					if( isShowLogs() )
+					{
+						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "update", "optimization", 
+								"Empty folder: " + inInput.getAbsolutePath(), null);
+					}
 					return;
 				}
 				if( paths.size() > 3000 )
@@ -337,7 +343,7 @@ public class AssetPathProcessor extends PathProcessor
 								" skipfile:"+ skipfile + 
 								" rejectfile:" + rejectfile + 
 								" path:" + inInput.getPath(), null);
-						log.info("skipped folder:" + inInput.getPath());
+						log.info("processAssetFolder folder:" + inInput.getPath());
 					}
 					
 				}
@@ -459,7 +465,14 @@ public class AssetPathProcessor extends PathProcessor
 					pathtocheck =folderlist[0];
 				}
 				Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);
-				if(asset != null){
+				if(asset != null)
+				{
+					if( isShowLogs() )
+					{
+						log.error("Found top level asset " + inStartingPoint + " " + "checked: " + pathtocheck);
+						getAssetImporter().fireHotFolderEvent(getMediaArchive(), "init", "error", 
+								"Found top level asset " + pathtocheck , null);
+					}
 					return;
 				}
 			}

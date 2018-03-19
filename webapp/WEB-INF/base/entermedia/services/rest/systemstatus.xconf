@@ -1,4 +1,7 @@
 <page>
 			<path-action bean="cacheManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
 <permission name="view"><blank/></permission>
+			<path-action bean="elasticNodeManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
+
+
 </page>

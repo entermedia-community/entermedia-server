@@ -13,13 +13,15 @@ public class TimeCalculator
 			time.setBefore(true);
 		}
 		long abs = Math.abs(thetime);
-		if( abs > 1000*60*60*24*365)
+		long oneyear = 1000L*60L*60L*24L*365L;
+		long oneday = 1000L*60L*60L*24L;
+		if( abs > oneyear )
 		{
 			time.setType("y");
 			float round = (float)abs/(float)(1000*60*60*24*365);
 			time.setValue(round);
 		}
-		else if( abs > 1000*60*60*24)
+		else if( abs > oneday)
 		{
 			time.setType("d");
 			float round = (float)abs/(float)(1000*60*60*24);

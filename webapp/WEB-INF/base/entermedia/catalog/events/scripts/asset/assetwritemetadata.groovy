@@ -20,6 +20,10 @@ public void init()
 	
 
 	String assetid = context.findValue("assetid");
+	if(assetid == null) {
+	 assetid = context.getRequestParameter("id");
+		
+	}
 	log.info("Writing metadata for asset $assetid");
 	
 	XmpWriter writer = (XmpWriter) archive.getModuleManager().getBean("xmpWriter");

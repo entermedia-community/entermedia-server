@@ -1,4 +1,5 @@
 import org.entermediadb.asset.util.CSVWriter
+import org.entermediadb.location.Position
 import org.openedit.Data
 import org.openedit.data.*
 import org.openedit.hittracker.HitTracker
@@ -68,6 +69,23 @@ writer.writeNext(headers);
 				{
 					PropertyDetail detail = (PropertyDetail) detailiter.next();
 					String value = hit.get(detail.getId());
+					if(detail.getBoolean("skipexport")) {
+						value = null;
+						fieldcount++;
+						continue;
+					}
+					if("geo_point".equals(detail.getDataType())){
+						
+						log.info("GEO:" +hit.getValue("geo_point"));
+						Position pos = hit.getValue(detail.getId());
+						if(pos) {
+						value = "${pos.getLatitude()},${pos.getLongitude()}";
+						nextrow[fieldcount] = value;
+						fieldcount ++;
+						continue;
+						}
+						
+					}
 					//do special logic here
 					if(value != null && detail.isList() && friendly)
 					{

@@ -330,11 +330,11 @@ public class BaseHotFolderManager implements HotFolderManager
 			path = path + "/" + inSubChangePath;
 			checkformod = true;
 		}
-		importer.fireHotFolderEvent(inArchive, "update", "start", "Scanning " + path, null);
+		importer.fireHotFolderEvent(inArchive, "scan", "start", "Scanning " + path, null);
 		log.info(path + " scan started. mod check = " + checkformod);
 		
 		List<String> paths = importer.processOn(base, path, checkformod, inArchive, null);
-		importer.fireHotFolderEvent(inArchive, "update", "finish", String.valueOf( paths.size()), null);
+		importer.fireHotFolderEvent(inArchive, "scan", "finish", String.valueOf( paths.size()), null);
 		inFolder.setProperty("lastscanstart", DateStorageUtil.getStorageUtil().formatForStorage(started));
 		getFolderSearcher(inArchive.getCatalogId()).saveData(inFolder, null);
 

@@ -169,8 +169,17 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 	
 	public void delete(Data inData, User inUser)
 	{
-		super.delete(inData, inUser); //delete the index
-		getXmlUserArchive().deleteUser((User)inData);
+		User user = null;
+		if( inData instanceof User)
+		{
+			user = (User)inData;
+		}
+		else
+		{
+			user = (User) loadData(inData);
+		}
+		super.delete(user, inUser); //delete the index
+		getXmlUserArchive().deleteUser(user);
 	}
 	
 	protected void updateIndex(XContentBuilder inContent, Data inData, PropertyDetails inDetails)
@@ -178,7 +187,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 		super.updateIndex(inContent, inData, inDetails);
 		User user = null;
 		if(!(inData instanceof User)){
-			user = (User) searchById(inData.getId());
+			user = (User) loadData(inData);
 		}
 		try
 		{
@@ -200,7 +209,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			throw new OpenEditException(ex);	
 		}
 	}
-
+	
 	public Data loadData(Data inHit)
 	{
 		if( inHit == null)
@@ -225,7 +234,7 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			//Old indexes did not contain the password
 			user = getXmlUserArchive().loadUser(user, getGroupSearcher());
 			if(user != null &&  user.getPassword() != null){
-				updateElasticIndex(getPropertyDetails(), user);
+				createContentBuilder(getPropertyDetails(), user);
 			} else{
 				log.info("User " + user.getId() + " Had no password.  Please set one.");
 				

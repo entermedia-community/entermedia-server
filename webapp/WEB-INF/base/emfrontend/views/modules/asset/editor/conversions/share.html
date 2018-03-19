@@ -7,14 +7,14 @@
 #if(${presetdata.id} != "0") 
 
 <a class="thickbox btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/${asset.sourcepath}/${presetdata.generatedoutputfile}?cache=false">[[Preview]]</a>
-<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${presetdata.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $presetdata)">[[Download]]</a>
+<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${presetdata.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
 #if($canembedasset)
 <a class="btn ajax" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" 
 	href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1">Embed</a>
 #end
 
 #else
-<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/${asset.sourcepath}/$mediaarchive.asExportFileName($asset, $presetdata)">[[Download]]</a>
+<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/${asset.sourcepath}/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
 <a class="btn ajax" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" href="$home$apphome/views/modules/asset/editor/conversions/embedorig.html?assetid=${asset.id}&outputfile=${asset.getMediaName()}&oemaxlevel=1">Embed</a>
 #end
 

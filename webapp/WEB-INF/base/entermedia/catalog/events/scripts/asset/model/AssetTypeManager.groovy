@@ -49,6 +49,11 @@ public class AssetTypeManager extends EnterMediaObject {
 	}
 	public Asset checkForEdits(MediaArchive inArchive,  Data hit)
 	{
+		if( hit.get("assettype") != null)
+		{
+			return null;
+		}
+		
 		String sourcepath = hit.sourcepath;
 		Searcher typesearcher = inArchive.getSearcher("assettype");
 		String fileformat = hit.fileformat;

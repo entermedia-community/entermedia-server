@@ -28,7 +28,16 @@
 						#if( $asset.getId().startsWith("multiedit:") )
 							<li><a  href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
 						#else
-    				            		<li><a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
+    				            		<li>
+
+#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+					<a href="$home$apphome/views/activity/customdownloadassets.html?assetid=$asset.id"  data-hidefooter="true" >[[Download]]</a>
+					
+					#else
+<a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
+					#end
+
+
 						#end
 					   
     				            #end

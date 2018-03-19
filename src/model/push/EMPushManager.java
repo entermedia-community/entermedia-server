@@ -143,10 +143,10 @@ public class EMPushManager extends BasePushManager implements PushManager
 
 		List<ContentItem> filestosend = new ArrayList<ContentItem>();
 
-		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getSourcePath();
+		String path = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + target.getPath();
 		
 		readFiles( archive.getPageManager(), path, path, filestosend );
-		ContentItem item = archive.getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + target.getSourcePath() + "/fulltext.txt");
+		ContentItem item = archive.getPageManager().getRepository().getStub("/WEB-INF/data/" + archive.getCatalogId() +"/assets/" + target.getPath() + "/fulltext.txt");
 		if( item.exists() )
 		{
 			filestosend.add(item);
@@ -178,6 +178,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 			{
 				upload(target, archive, "generated", filestosend);
 				target.setValue("pusheddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+				log.info("pushed " + target.getId());
 				saveAssetStatus(searcher, savequeue, target, "complete", inUser);
 
 			}
@@ -276,7 +277,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			Asset asset = archive.getAssetBySourcePath(data.getSourcePath());
+			Asset asset = (Asset)searcher.loadData(data);
 			if( asset == null )
 			{
 				log.error("Reindex assets" + data.getSourcePath() );
@@ -379,7 +380,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 			return mediaArchive.getOriginalDocument(asset);
 
 		}
-		String input = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + inPreset.get("generatedoutputfile");
+		String input = "/WEB-INF/data/" + mediaArchive.getCatalogId() + "/generated/" + asset.getPath() + "/" + inPreset.get("generatedoutputfile");
 		Page inputpage = mediaArchive.getPageManager().getPage(input);
 		return inputpage;
 
@@ -480,7 +481,8 @@ public class EMPushManager extends BasePushManager implements PushManager
 			for (Iterator iterator = inAsset.keySet().iterator(); iterator.hasNext();)
 			{
 				String key = (String) iterator.next();
-				if("category".equals(key) || "category-exact".equals(key)){
+				//TODO: handle geopoints
+				if("category".equals(key) || "category-exact".equals(key) || "description".equals(key) || "geo_point".equals(key) || "position".equals(key)){
 					continue; //we care creating this automatically from the sourcepath
 				}
 
@@ -491,7 +493,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 					{
 						builder.addPart("field",key);
 						builder.addPart(key+ ".value",value);
-						//log.info(inAsset.getName() + " " + key + " " + value);
+//						log.info(inAsset.getName() + " " + key + " " + value);
 					}
 				}
 				
@@ -559,7 +561,16 @@ public class EMPushManager extends BasePushManager implements PushManager
 	protected void runRemotePublish(MediaArchive inArchive, String server, String targetcatalogid, Element hit) throws Exception
 	{
 		String sourcepath = hit.attributeValue("assetsourcepath");
-		Asset asset = inArchive.getAssetBySourcePath(sourcepath);
+		String assetid = hit.attributeValue("assetid");
+		Asset asset = null;
+		if( assetid != null)
+		{
+			asset = inArchive.getAsset(assetid);
+		}
+		if( asset == null)
+		{
+			asset = inArchive.getAssetBySourcePath(sourcepath);
+		}
 		String publishtaskid = hit.attributeValue("id");
 		String saveurl = server + "/media/services/rest/savedata.xml?save=true&catalogid=" + targetcatalogid + "&searchtype=publishqueue&id=" + publishtaskid;
 		if( asset == null )
@@ -589,7 +600,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 			String type = null;
 			if( !"original".equals(preset.get("transcoderid")))
 			{
-				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getSourcePath() + "/" + preset.get("generatedoutputfile");
+				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getPath() + "/" + preset.get("generatedoutputfile");
 				inputpage= inArchive.getPageManager().getPage(input);
 				type = "generated";
 			}

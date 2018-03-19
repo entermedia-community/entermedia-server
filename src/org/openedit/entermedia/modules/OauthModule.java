@@ -91,7 +91,7 @@ public class OauthModule extends BaseMediaModule
 
 				if (requestedpermissions == null)
 				{
-					requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.google.com/m8/feeds/";
+					requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.googleapis.com/auth/contacts.readonly";
 				}
 
 				String prompt = inReq.findValue("prompt");
@@ -117,6 +117,38 @@ public class OauthModule extends BaseMediaModule
 				inReq.redirect(locationUri);
 
 			}
+			
+			
+			
+			if ("facebook".equals(provider))
+			{
+
+				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
+				//.setRedirectURI("http://localhost:8080/googleauth.html")
+				//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
+				String requestedpermissions = inReq.findValue("requestedpermissions");
+
+				if (requestedpermissions == null)
+				{
+					requestedpermissions = "email public_profile";
+				}
+
+				String prompt = inReq.findValue("prompt");
+				if (prompt == null)
+				{
+					prompt = "";
+				}
+				
+				
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.FACEBOOK).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
+
+				String locationUri = request.getLocationUri();
+				inReq.redirect(locationUri);
+			}
+			
+			
+			
+			
 
 		}
 		catch (Exception e)
@@ -196,7 +228,7 @@ public class OauthModule extends BaseMediaModule
 				String firstname = (String) data.get("given_name");
 				String lastname = (String) data.get("family_name");
 				boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
-				handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh);
+				handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh, null);
 
 			}
 			catch (Exception e)
@@ -204,6 +236,87 @@ public class OauthModule extends BaseMediaModule
 				throw new OpenEditException(e);
 			}
 		}
+		
+		
+		if ("facebook".equals(provider))
+		{
+
+			Data authinfo = archive.getData("oauthprovider", provider);
+
+			String siteroot = inReq.findValue("siteroot");
+
+			URLUtilities utils = (URLUtilities) inReq.getPageValue(PageRequestKeys.URL_UTILITIES);
+			if (siteroot == null && utils != null)
+			{
+
+				siteroot = utils.siteRoot();
+			}
+			String redirect = inReq.findValue("redirecturi");
+			if (redirect == null)
+			{
+				redirect = siteroot + "/" + appid + authinfo.get("redirecturi");
+			}
+			else
+			{
+				redirect = siteroot + "/" + redirect;
+			}
+
+			OAuthAuthzResponse oar = OAuthAuthzResponse.oauthCodeAuthzResponse(inReq.getRequest());
+			String code = oar.getCode();
+			//GOOGLE
+
+			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.FACEBOOK).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).setCode(code).buildBodyMessage();
+			//	OAuthClientRequest refreshtoken = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
+
+			try
+			{
+
+				OAuthClient oAuthClient = new OAuthClient(new URLConnectionClient());
+				//Facebook is not fully compatible with OAuth 2.0 draft 10, access token response is
+				//application/x-www-form-urlencded, not json encoded so we use dedicated response class for that
+				//Own response class is an easy way to deal with oauth providers that introduce modifications to
+				//OAuth specification
+				EmTokenResponse oAuthResponse = oAuthClient.accessToken(request, EmTokenResponse.class);
+				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request, "POST");
+				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
+				String accessToken = oAuthResponse.getAccessToken();
+				String refresh = oAuthResponse.getRefreshToken();
+				boolean systemwide = Boolean.parseBoolean(inReq.findValue("systemwide"));
+
+				if (refresh != null && systemwide)
+				{
+					authinfo.setValue("refreshtoken", refresh);
+					authinfo.setValue("httprequesttoken", null);
+					archive.getSearcher("oauthprovider").saveData(authinfo);
+
+				}
+
+				OAuthClientRequest bearerClientRequest = new OAuthBearerClientRequest("https://graph.facebook.com/me?fields=name,email").setAccessToken(accessToken).buildQueryMessage();
+
+				OAuthResourceResponse resourceResponse = oAuthClient.resource(bearerClientRequest, "GET", OAuthResourceResponse.class);
+				String userinfoJSON = resourceResponse.getBody();
+				JSONParser parser = new JSONParser();
+
+				JSONObject data = (JSONObject) parser.parse(userinfoJSON);
+				String facebookid = (String) data.get("id");
+				String screenname = (String) data.get("name");
+				String email = (String) data.get("email");
+				String firstname = (String) data.get("given_name");
+				String lastname = (String) data.get("family_name");
+				boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
+				handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh, "fb" + facebookid);
+
+			}
+			catch (Exception e)
+			{
+				throw new OpenEditException(e);
+			}
+		}
+
+		
+		
+		
+		
 
 		if ("drupal".equals(provider))
 		{
@@ -245,13 +358,13 @@ public class OauthModule extends BaseMediaModule
 			JSONParser parser = new JSONParser();
 
 			JSONObject data = (JSONObject) parser.parse(userinfoJSON);
-			handleLogin(inReq, (String) data.get("email"), (String) data.get("name"), (String) data.get("lastname"), false, true, authinfo, null);
+			handleLogin(inReq, (String) data.get("email"), (String) data.get("name"), (String) data.get("lastname"), false, true, authinfo, null, null);
 
 		}
 		//	inReq.redirect("/" + appid + "/index.html");
 	}
 
-	protected void handleLogin(WebPageRequest inReq, String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate, Data authinfo, String refreshtoken)
+	protected void handleLogin(WebPageRequest inReq, String email, String firstname, String lastname, boolean matchOnEmail, boolean autocreate, Data authinfo, String refreshtoken, String userid)
 	{
 
 		if (authinfo.getValue("alloweddomains") != null)
@@ -278,8 +391,21 @@ public class OauthModule extends BaseMediaModule
 
 		MediaArchive archive = getMediaArchive(inReq);
 		UserSearcher searcher = (UserSearcher) archive.getSearcher("user");
-
-		User target = searcher.getUserByEmail(email);
+		User target = null;
+		
+		if( email != null) {
+			target = searcher.getUserByEmail(email);
+			
+		}
+		
+		
+		if(target == null && userid != null) {
+			target = searcher.getUser(userid);
+		}
+		
+		
+		
+		
 		if (autocreate && target == null)
 		{
 			target = (User) searcher.createNewData();
@@ -287,8 +413,12 @@ public class OauthModule extends BaseMediaModule
 			target.setLastName(lastname);
 			target.setEmail(email);
 			target.setEnabled(true);
+			target.setId(userid);
 			searcher.saveData(target, null);
 		}
+		
+		
+		
 		if (target != null)
 		{
 

@@ -5,17 +5,21 @@ import org.entermediadb.asset.util.MathUtils;
 public class Block
 {
 	protected String fieldLabel;
-	protected double fieldStartOffset;
+	protected long fieldStartOffset;
 	protected int fieldCounter;
 	protected boolean fieldShowThumb;
-	public double getStartOffset()
+	public long getStartOffset()
 	{
 		return fieldStartOffset;
 	}
-	public void setStartOffset(double inTime)
+	public double getSeconds()
 	{
-		fieldStartOffset = MathUtils.roundDouble(inTime,3);
-		int totalseconds = (int)Math.round( inTime);
+		return (double)fieldStartOffset / 1000d;
+	}
+	public void setStartOffset(long inTimeMilli)  //this is in milli
+	{
+		fieldStartOffset = inTimeMilli;//MathUtils.roundDouble(inTimeMilli,3);
+		int totalseconds = (int)Math.round( (double)inTimeMilli / 1000d);
 		int hours = (int)MathUtils.divide(totalseconds, (60d*60d));
 		
 		int remainingseconds = totalseconds - (hours*60*60);
@@ -23,7 +27,7 @@ public class Block
 		int minutes = (int)MathUtils.divide(remainingseconds , 60d);
 		int seconds = (int)(remainingseconds - (minutes * 60));
 		
-		if(inTime > (60d*60d)) // hours
+		if(inTimeMilli > (60d*60d*1000d)) // over an hour
 		{
 			String formated = String.format("%02d:%02d:%02d", hours, minutes, seconds);
 			fieldLabel = formated;

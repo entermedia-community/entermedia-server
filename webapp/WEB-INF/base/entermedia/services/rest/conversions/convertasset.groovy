@@ -16,6 +16,11 @@ public void init()
 	//load up the preset id
 	String presetid = context.findValue("presetid");
 	Data preset = archive.getData("convertpreset", presetid);
+	if( preset == null)
+	{
+		log.error("No such preset "+ presetid);
+		return;
+	}
 	context.putPageValue("preset", preset);
 	String assetid = context.findValue("assetid");
 	Searcher tasksearcher = archive.getSearcher("conversiontask");
@@ -35,6 +40,12 @@ public void init()
 		return;
 	}
 	
+	if( asset.getFileFormat() != null && asset.getFileFormat().endsWith("mp3"))
+	{
+		log.info("Mp3 uses original as output");
+		return; //No output expected
+	}
+
 		
 	while( true )
 	{
@@ -82,7 +93,11 @@ public void init()
 			ContentItem custom = archive.getContent( "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + asset.getSourcePath() + "/" + exportname);
 			if( !custom.exists())
 			{
-				one.setProperty("status", "retry");
+				if("error".equals(status)){
+					return;
+				} else{
+					one.setProperty("status", "retry");
+				}
 				tasksearcher.saveData(one, null);
 				Thread.sleep(200);
 				log.info("Generated output not found. Recreating asset "+ assetid + "preset " + presetid);

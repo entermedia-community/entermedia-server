@@ -12,7 +12,7 @@
                 <ul style="width: {{scope.totaliconwidth}}px">
                     <li ng-repeat="image in assets" >
                     	<a id="thumb{{image.id}}" class="thumb">
-                            <img ng-click='annotationEditor.switchToAsset("{{image.id}}")' ng-src="$home$apphome/views/modules/asset/downloads/preview/thumbsmall/{{image.sourcepath}}/thumb.jpg"></img>
+                            <img ng-click='annotationEditor.switchToAsset("{{image.id}}")' style="width:150px;" ng-src="$home$apphome/views/modules/asset/downloads/preview/thumbsmall/{{image.sourcepath}}/thumb.jpg"></img>
                         </a>
                     </li>
                 </ul>

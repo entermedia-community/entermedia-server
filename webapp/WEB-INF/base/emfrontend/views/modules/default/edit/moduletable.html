@@ -20,10 +20,10 @@
 #set( $fieldexternalvalue = $id )
 
 $context.putPageValue("canedittable", $caneditdata)
-##set($ismodule = false )
-##set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
-#if($ismodule)
-	####set( $jumptomodule = true ) <!--  This isn't working very well...  -->
+#set($ismodule = false )
+#set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
+#if($ismodule && $viewdata.linktomodule == "true" )
+	#set( $jumptomodule = true ) <!--  This isn't working very well...  -->
 #end
 
 ##TODO: Create a new type of table.html component that runs locally using searchhome and has a TableModel with it passed along with sessionids

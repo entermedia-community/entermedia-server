@@ -1,0 +1,8 @@
+
+#set($stats =$mediaarchive.getNodeManager().getNodeStats())
+
+Committed Heap: $mediaarchive.getNodeManager().getNodeStats().getJvm().getMem().getHeapCommitted()
+Heap Used: $stats.getJvm().getMem().getHeapUsed();
+Heap Used Percentage: $stats.getJvm().getMem().getHeapUsedPercent();
+CPU Load Average: $stats.getOs().getLoadAverage();
+OS Memory Free: $stats.getOs().getMem().getFree();

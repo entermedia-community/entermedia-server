@@ -1,10 +1,12 @@
 package k4;
 
+
 import java.text.SimpleDateFormat
 
 import org.dom4j.Document
 import org.dom4j.DocumentHelper
 import org.dom4j.Element
+import org.dom4j.Node
 import org.dom4j.xpath.DefaultXPath
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.MediaArchive
@@ -12,6 +14,7 @@ import org.entermediadb.asset.search.AssetSearcher
 import org.entermediadb.scripts.ScriptLogger
 import org.openedit.Data
 import org.openedit.MultiValued
+import org.openedit.OpenEditException
 import org.openedit.data.Searcher
 import org.openedit.hittracker.HitTracker
 import org.openedit.hittracker.SearchQuery
@@ -77,7 +80,7 @@ public void init(){
 	
 	String datetime = context.getDateTime(new Date());
 	String sessionName = "Import K4: $datetime";
-	
+//	
 	XMLPathProcessor processor = new XMLPathProcessor();
 	processor.setIncludeXMLFiles(include);
 	processor.setSessionName(sessionName);
@@ -94,6 +97,10 @@ public void init(){
 	processor.preProcess();
 	processor.process();
 	processor.postProcess();
+
+
+	
+//	processor.processContentItem(archive.getPageManager().getPage("/k4sample.xml").getContentItem());
 }
 
 public class XMLPathProcessor extends PathProcessor {
@@ -245,7 +252,7 @@ public class XMLPathProcessor extends PathProcessor {
 				return (fieldDebugLevel == "high");
 			}
 		}
-		return false;
+		return true;
 	}
 	
 	public List<LogEntry> getLogEntries()
@@ -462,10 +469,8 @@ public class XMLPathProcessor extends PathProcessor {
 			parser.parse(inContent.getInputStream());
 		}
 		catch (Exception e){
-			if (canLog("low")) {
-				getLogger().info("Exception caught parsing K4 file, ${e.getMessage()}");
-			}
-			return;
+			throw new OpenEditException(e);
+			
 		}
 			
 		//keep track of id and name of each entity to build logical paths
@@ -582,6 +587,8 @@ public class XMLPathProcessor extends PathProcessor {
 		boolean isTOC = asset.getName().toUpperCase().contains("_TOC");
 		Searcher searcher = fieldArchive.getSearcher("k4toasset");
 		HitTracker hits = searcher.getAllHits();
+		hits.enableBulkOperations();
+		
 		hits.each{
 			String key = it.metadata;
 			if (key){
@@ -753,6 +760,8 @@ public class XMLPathProcessor extends PathProcessor {
 		SearchQuery query = searcher.createSearchQuery();
 		query.addMatches("name", screenpdfname.replace("[", "\\[").replace("]", "\\]"));
 		HitTracker hits = searcher.search(query);
+		hits.enableBulkOperations();
+		
 		int positivehits = 0;
 		hits.each{
 			Data data = (Data) it;
@@ -807,6 +816,7 @@ public class XMLPathProcessor extends PathProcessor {
 		Map<String,String> metadata = new HashMap<String,String>();
 		Searcher searcher = fieldArchive.getSearcher("k4toasset");
 		HitTracker hits = searcher.getAllHits();
+		hits.enableBulkOperations();
 		hits.each{
 			String k4id = it.k4id;//k4 specific field in one of the maps
 			String siblingk4id = it.siblingk4id;//refers to an attachment sibling to search on
@@ -1010,16 +1020,26 @@ public class XMLPathProcessor extends PathProcessor {
 		String value = null;
 		Element element = (Element) map.get("_xml");
 		value = element.elementText(K4ID);
+		
+		
 		if (value || K4ID == "\$") {
 			return value;
 		}
 		try{
 			if (siblingK4ID){
+				log.info("Sibling was: " + siblingK4ID);
 				DefaultXPath xpath = new DefaultXPath(siblingK4ID);
-				Map<String,String> namespaces  = new TreeMap<String,String>();
-				namespaces.put("x","http://www.vjoon.com/K4Export/2.2");
-				xpath.setNamespaceURIs(namespaces);
-				Node node = xpath.selectSingleNode(element);
+				if(element.getNamespace() != null) {
+					element.remove(element.getNamespace());
+				}
+
+				Map<String,String> namespaces = new TreeMap<String,String>();
+		namespaces.put("x","http://www.vjoon.com/K4Export/2.5");
+		xpath.setNamespaceURIs(namespaces);
+				
+								
+				org.dom4j.Node node = xpath.selectSingleNode(element);
+				
 				if (node){
 					String searchFor = node.asXML().replaceAll("<.*?>"," ").trim();
 					List<Map<String,Object>> siblings = getAttachmentSiblings();
@@ -1027,22 +1047,32 @@ public class XMLPathProcessor extends PathProcessor {
 						if (sibling.get("k4id") != searchFor)
 							continue;
 						element = (Element) sibling.get("_xml");
+						
+						
 						break;
 					}
 				}
 			}
 			DefaultXPath xpath = new DefaultXPath(K4ID);
+	
+			if(element.getNamespace() != null) {
+				element.remove(element.getNamespace());
+			}
+			
 			Map<String,String> namespaces = new TreeMap<String,String>();
-			namespaces.put("x","http://www.vjoon.com/K4Export/2.2");
+			namespaces.put("x","http://www.vjoon.com/K4Export/2.5");
 			xpath.setNamespaceURIs(namespaces);
-			Node node = xpath.selectSingleNode(element);
-			if (node){
+			
+			org.dom4j.Node node = xpath.selectSingleNode(element);
+			if (node != null){
 				value = node.asXML().replaceAll("<.*?>"," ").trim();
+				log.info("Value found for " + K4ID + ":"+ value );
+			} else {
+				log.info("No value found for " + K4ID + ":" + node + "" );
+				
 			}
 		}catch (Exception e){
-			if (canLog("high")) {
-				getLogger().info("Exception caught searching for $K4ID, ${e.getMessage()}");
-			}
+			throw new OpenEditException(e);
 		}
 		return value;
 	}

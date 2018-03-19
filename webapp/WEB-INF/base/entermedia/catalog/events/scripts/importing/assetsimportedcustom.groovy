@@ -1,10 +1,13 @@
 package importing;
 
+import org.entermediadb.asset.Asset
+import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.openedit.data.Searcher
 import org.openedit.hittracker.SearchQuery
-import model.assets.LibraryManager
+
 import asset.model.AssetTypeManager
+import model.assets.LibraryManager
 
 
 
@@ -39,6 +42,24 @@ public void readProjectData()
 	librarymanager.log = log;
 	librarymanager.assignLibraries(mediaArchive, hits);
 
+	boolean assigncategory = mediaArchive.isCatalogSettingTrue("assigncategoryonupload");
+	
+			
+			
+			if(assigncategory) {
+				hits.each{
+					Asset current = it;
+					Category defaultcat = mediaArchive.getCategorySearcher().createCategoryPath(current.sourcePath);
+					
+					current.clearCategories();
+					current.addCategory(defaultcat);
+					mediaArchive.saveAsset(current, context.getUser());
+					
+				}
+			
+				
+			}	
+	
 }
 
 readProjectData();

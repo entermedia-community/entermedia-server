@@ -502,6 +502,14 @@
 		class="org.entermediadb.asset.scanner.Md5MetadataExtractor">
 	</bean>
 
+
+<bean id="geoTiffExtractor"
+		class="org.entermediadb.asset.scanner.GeoTiffMetadataExtractor">
+		<property name="exec">
+			<ref bean="exec" />
+		</property>
+	</bean>
+
 	<bean id="ffmpegMetadataExtractor"
 		class="org.entermediadb.asset.scanner.FfmpegMetadataExtractor">
 		<property name="exec">
@@ -1643,6 +1651,7 @@
 		</property>
 		<property name="inputLoaders">
 			<list>
+				<ref bean="videoCacheLoader" />
 				<ref bean="originalInputLoader" />
 			</list>
 		</property>	
@@ -1907,21 +1916,7 @@
 	
 	
 	
-	<bean id="metaDataReader" class="org.entermediadb.asset.scanner.MetaDataReader">
-		<property name="pageManager">
-			<ref bean="pageManager" />
-		</property>
-	
-		<property name="metadataExtractors">
-			<list>
-				<ref bean="pdfExtractor" />
-				<ref bean="oofficeTextExtractor" />
-				<ref bean="exiftoolMetadataExtractor" />
-				<ref bean="ffmpegMetadataExtractor" />
-				<ref bean="md5MetadataExtractor" />
-			</list>
-		</property>
-	</bean>
+
 	
 	
 	
@@ -1959,6 +1954,8 @@
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />
 				<ref bean="md5MetadataExtractor" />
+								<ref bean="geoTiffExtractor" />
+				
 			</list>
 		</property>
 	</bean>
@@ -2021,6 +2018,12 @@
  	<bean id="TimelineModule" class="org.entermediadb.asset.modules.TimelineModule" >
 	
 	</bean>	
+
+ 	<bean id="videoTrack" class="org.entermediadb.video.VideoTrack" scope="prototype"  >
+	
+	</bean>	
+ 	
+ 	
  	
  	<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule" >
 	</bean>	
@@ -2049,6 +2052,32 @@
 		
 	</bean>	
 	
+	 <bean id="uniqueId" class="org.entermediadb.asset.cluster.UniqueId" scope="prototype"/>
 	
+ 	<bean id="idManager" class="org.entermediadb.asset.cluster.IdManager" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="nodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+	</bean>
+	<bean id="DiskModule" class="org.entermediadb.sitemanager.DiskModule">
+	</bean>
+	<bean id="diskManager" class="org.entermediadb.sitemanager.DiskManager" scope="prototype">
+	</bean>
  	
+ 	
+ 	
+ 	<bean id="cloudTranscodeManager" class="org.entermediadb.video.CloudTranscodeManager" scope="prototype">
+	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	
+	</bean>
+ 	
+ 	
+ 	
+ 	
+	
 </beans>

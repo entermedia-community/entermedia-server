@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.BaseCompositeData;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -342,8 +343,9 @@ public class DataEditModule extends BaseMediaModule
 		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		String toremove = inReq.getRequestParameter("toremove");
-
-		Element element = file.getElementById(toremove);
+		//toremove might have a . in it
+		
+		Element element = loadViewElement(file, toremove);
 		file.deleteElement(element);
 
 		if( file.getRoot().elements().size() == 0)
@@ -358,6 +360,17 @@ public class DataEditModule extends BaseMediaModule
 		searcher.getPropertyDetailsArchive().clearCache();
 
 	}
+
+protected Element loadViewElement(XmlFile file, String toremove)
+{
+	Element element = file.getElementById(toremove);
+	if( element == null && toremove.contains("."))
+	{
+		toremove = toremove.substring(toremove.indexOf(".") + 1,toremove.length());
+		element = file.getElementById(toremove);
+	}
+	return element;
+}
 
 	public PropertyDetail loadProperty(WebPageRequest inReq) throws Exception
 	{
@@ -1543,27 +1556,33 @@ public class DataEditModule extends BaseMediaModule
 		String type = resolveSearchType(inReq);
 		String items = inReq.getRequestParameter("items");
 		String[] sorted = MultiValued.VALUEDELMITER.split(items);	
-		
+		PropertyDetailsArchive propertyarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		XmlFile file = (XmlFile)loadView(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
+		String path = propertyarchive.findSavePath() + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		file.setElementName("property");
 		List tosave = new ArrayList();
 		for (int i = 0; i < sorted.length; i++)
 		{
-			Element sourceelement = file.getElementById(sorted[i]);
-			sourceelement.setParent(null);
-			tosave.add(sourceelement);
+			//Element sourceelement = file.getElementById();
+			String id = sorted[i];
+			Element sourceelement = loadViewElement(file,id );
+			if( sourceelement != null)
+			{
+				sourceelement.setParent(null);
+				tosave.add(sourceelement);
+			}
 		}
 		if(tosave.isEmpty())
 		{
 			throw new OpenEditException("Should not be removing all fields");
 		}
+		//TODO: Move to PropertyDetailsArchive.saveView
 		file.getElements().clear();
 		file.getElements().addAll(tosave);
 		getXmlArchive().saveXml(file, inReq.getUser());
-		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
+		propertyarchive.clearCache();
 
 		//log.info(catalogid + type + items);
 		
@@ -1579,10 +1598,10 @@ public class DataEditModule extends BaseMediaModule
 		file.setElementName("property");
 
 		String source = inReq.getRequestParameter("source");
-		Element sourceelement = file.getElementById(source);
+		Element sourceelement = loadViewElement(file, source);
 
 		String destination = inReq.getRequestParameter("destination");
-		Element destinationelement = file.getElementById(destination);
+		Element destinationelement =  loadViewElement(file, destination);
 		
 		int sindex = file.getElements().indexOf(sourceelement);
 		int dindex = file.getElements().indexOf(destinationelement);
@@ -1750,6 +1769,12 @@ public class DataEditModule extends BaseMediaModule
 					if(type == null || !archive.viewExists( path ) )
 					{
 						path =	module + "/assettype/default/" + view.getId();
+						List detailsForView = getSearcherManager().getSearcher(catalogid, "asset").getDetailsForView(path, inReq.getUser());
+						if(detailsForView == null || detailsForView.size() == 0) {
+							continue;
+						}
+						
+						
 					}
 				}
 				else
@@ -1865,4 +1890,29 @@ public class DataEditModule extends BaseMediaModule
 		}
 		
 	}
+	
+	
+	
+	public void clearCache(WebPageRequest inReq) throws Exception{
+		
+		Searcher searcher = loadSearcher(inReq);
+		
+		
+		Data currentdata = (Data)inReq.getPageValue("data");
+		String dataid = null;
+		if(currentdata == null){
+			dataid = inReq.getRequestParameter("dataid");
+		} else{
+			 dataid = currentdata.getId();
+		}
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getCacheManager().remove(searcher.getSearchType(), dataid);
+		
+		
+		
+		
+	}
+	
+	
 }

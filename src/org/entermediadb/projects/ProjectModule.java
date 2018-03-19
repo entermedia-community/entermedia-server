@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -191,6 +192,21 @@ public class ProjectModule extends BaseMediaModule
 			inReq.putPageValue("added" , "1" );
 		}	
 	}
+	
+	
+	public void addAssetsToCollection(WebPageRequest inReq){
+		String[] assetids = inReq.getRequestParameters("assetid");
+		MediaArchive archive = getMediaArchive(inReq);
+		String librarycollection = inReq.getRequestParameter("collectionid");
+		ProjectManager manager = getProjectManager(inReq);
+		for (int i = 0; i < assetids.length; i++) {
+			String assetid = assetids[i];
+			manager.addAssetToCollection(archive, librarycollection, assetid);
+			
+		}
+	}
+	
+	
 	public void removeAssetFromCollection(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -283,7 +299,9 @@ public class ProjectModule extends BaseMediaModule
 		String collectionid = loadCollectionId(inReq);
 		if( collectionid != null)
 		{
-			return getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+			Data collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+			inReq.putPageValue("librarycol",collection);
+			return collection;
 		}
 		return null;
 	}

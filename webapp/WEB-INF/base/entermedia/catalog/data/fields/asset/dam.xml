@@ -312,7 +312,7 @@
       <language id="fr"><![CDATA[Dernière modification]]></language> 
     </name> 
   </property>  
-  <property id="recordmodificationdate" index="true" type="date" searchcomponent="datesearch" stored="true" editable="false"   sortable="true">Record Edit Date 
+  <property id="recordmodificationdate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false"   sortable="true">Record Edit Date 
     <name> 
       <language id="de"><![CDATA[Rekord bearbeiten Datum]]></language>  
       <language id="en"><![CDATA[Record Edit Date]]></language>  
@@ -688,6 +688,13 @@
    <property id="renewalpolicy" datatype="list" editable="true" index="true" stored="true"   type="list">Renewal Policy 
  
   </property>  
-  
+    <property id="geotiff"  index="true" stored="true" viewtype="textarea" >Geotiff Data 
+ 
+  </property>  
+    <property id="entermediaexif" editable="true" index="true" stored="true" externalid="XMP-dc:entermediaexif"   sortable="true">
+    <name> 
+      <language id="en"><![CDATA[EnterMedia ExifData]]></language> 
+    </name> 
+  </property>  
   
 </page>

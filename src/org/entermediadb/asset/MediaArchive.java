@@ -1057,6 +1057,44 @@ public class MediaArchive implements CatalogEnabled
 		processor.process();
 
 	}
+	
+	
+	public void removeGeneratedPages(Asset inAsset, final String prefix)
+	{
+	
+		String path = "/WEB-INF/data/" + getCatalogId() + "/generated/" + inAsset.getSourcePath();
+		if (inAsset.isFolder() && !path.endsWith("/"))
+		{
+			path = path + "/";
+
+		}
+		log.info(inAsset);
+
+	
+
+		PathProcessor processor = new PathProcessor()
+		{
+			public void processFile(ContentItem inContent, User inUser)
+			{
+				log.info(inContent.getName());
+				if(inContent.getName().contains(prefix) && inContent.getName().contains("page")) {
+					
+				
+					Page page = getPageManager().getPage(inContent.getPath());
+					getPageManager().removePage(page);
+				}
+
+			}
+		};
+		processor.setRecursive(true);
+		processor.setRootPath(path);
+		processor.setPageManager(getPageManager());
+		processor.process();
+
+	}
+	
+	
+	
 
 	public void removeOriginals(Asset inAsset)
 	{
@@ -1817,6 +1855,9 @@ public class MediaArchive implements CatalogEnabled
 		getNodeManager().clear();
 		getPresetManager().clearCaches();
 		getPropertyDetailsArchive().clearCache();
+		getCategorySearcher().clearIndex();
+		getCategoryArchive().clearCategories();
+		
 	}
 
 	public Collection<Data> listHiddenCollections()
@@ -1837,7 +1878,7 @@ public class MediaArchive implements CatalogEnabled
 		Collection visibility = (Collection) getCacheManager().get("publiccollection", search.getIndexId()); //Expires after 5 min
 		if (visibility == null)
 		{
-			visibility = getSearcher("librarycollection").query().exact("visibility", "1").search();
+			visibility = getSearcher("librarycollection").query().orgroup("visibility", "1|2").search();
 			getCacheManager().put("publiccollection", search.getIndexId(), visibility);
 		}
 		return visibility;
@@ -1986,6 +2027,31 @@ public class MediaArchive implements CatalogEnabled
 		return webmail;
 	}
 
+	//Made by Thomas
+	public TemplateWebEmail createSystemEmail(String email, String inTemplatePath)
+	{
+		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+
+		String fromemail = getCatalogSettingValue("system_from_email");
+		String fromemailname = getCatalogSettingValue("system_from_email_name");
+
+		webmail.setFrom(fromemail);
+		webmail.setFromName(fromemailname);
+
+		webmail.setMailTemplatePath(inTemplatePath);
+
+		try
+		{
+			InternetAddress to = new InternetAddress(email, "");
+			webmail.setRecipient(to);
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+	}
+
 	public int getRealImageWidth(Data inHit)
 	{
 		String orientation = inHit.get("imageorientation");
@@ -2063,6 +2129,11 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return finalroot;
 
+	}
+
+	public boolean isCatalogSettingTrue(String string) {
+		String catalogSettingValue = getCatalogSettingValue(string);
+		return Boolean.parseBoolean(catalogSettingValue);
 	}
 
 }

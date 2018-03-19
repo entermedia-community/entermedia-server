@@ -9,6 +9,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.ExecResult;
@@ -65,47 +66,55 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			comm.add("-i");
 			comm.add(inputpage.getAbsolutePath());
 			comm.add("-y");
+
+// this option and it's attribute is probably unnecessary for aac now. the native aac codec is considered as stable (if avconv source is younger than Dec 5 2015).
 			comm.add("-strict");
 			comm.add("experimental");
 
 			//audio
-			setValue("acodec", "aac", inStructions, comm); //libfaac  libmp3lame libvo_aacenc				
+			setValue("acodec", "aac", inStructions, comm); // libmp3lame libopus
 
-			if (inStructions.get("fpre") == null) //legacy?
+			if (inStructions.get("pre") == null)  // changed to 'pre' in avconv. presetname: 'foo' -> 'libx264-foo.avpreset' in '~/.avconv' / filename: [codec]-[presetname].avpreset / http://libav.org/avconv.html#Preset-files
 			{
-				setValue("ab", "96k", inStructions, comm);
-				setValue("ar", "44100", inStructions, comm);
-				setValue("ac", "1", inStructions, comm);
+				setValue("ab", "96k", inStructions, comm); //legacy. audio bit rate, alias for 'b:a', see code below.
+				setValue("ar", "44100", inStructions, comm); //audio sample rate
+				setValue("ac", "1", inStructions, comm); //audiochannels
 			}
 			else
 			{
-				comm.add("-fpre");
-				comm.add(inStructions.get("fpre"));
+				comm.add("-pre");
+				comm.add(inStructions.get("pre"));
 			}
 			comm.add("-nostats");
-			//video
-			setValue("vcodec", "libx264", inStructions, comm);
-			setValue("preset", null, inStructions, comm);
-			setValue("vpre", null, inStructions, comm); //legacy?
-			setValue("crf", "28", inStructions, comm); //legacy?
-			setValue("framerate", null, inStructions, comm);
 
-			//One-pass CRF (Constant Rate Factor) using the slow preset. One-pass CRF is good for general encoding and is what I use most often. Adjust -crf to change the quality. Lower numbers mean higher quality and a larger output file size. A sane range is 18 to 28.
-			//ffmpeg -i input.avi -acodec libfaac -ab 128k -ac 2 -vcodec libx264 -vpre slow -crf 22 -threads 0 output.mp4
+			setValue("threads", "2", inStructions, comm); // 0=auto, but leave some cores for the server's workload
+			setValue("b", null, inStructions, comm); // Legacy. Overall bitrate of the file, it might be better to specify it individually for video and audio streams.
+//video
+			setValue("vcodec", "libx264", inStructions, comm); // libvpx libvpx-vp9 libx265 vaapi_h264/265 vaapi_vp8/9 hw codecs if supported
+			setValue("preset", null, inStructions, comm); // codec-specific preset (e.g. for x264: ultrafast, superfast, veryfast, faster, fast, medium (default), slow, slower, veryslow)
+// 			setValue("vpre", null, inStructions, comm); // comes from ffmpeg, not supported in simplified avconv anymore. use 'pre' instead.
+			setValue("b:v", null, inStructions, comm); // Bitrate video
+			setValue("crf", "28", inStructions, comm); //constant rate factor (constant quality mode). Lower numbers mean higher quality and a larger output file size. A sane range is 18 to 28. Defaults to 23. A change of ±6 should result in about half/double the file size.
+			setValue("qscale", null, inStructions, comm); // Use fixed quality scale (VBR).
+			setValue("r", null, inStructions, comm); //the framerate setting. converts the video to the desired framerate, if set.
+			setValue("profile:v", null, inStructions, comm); // libx264: baseline, main, high, ... 
+			setValue("filter:v", null, inStructions, comm); //videofilters (yadif, hqn3d, ...) 
+//more audio / why here?
+			setValue("b:a", null, inStructions, comm); // Bitrate Audio. same as 'ab' above.
+			setValue("profile:a", null, inStructions, comm); // aac_low (default) aac_main
+			setValue("filter:a", null, inStructions, comm); //audiofilters (channelmap, volume, ...) 
 
 			//comm.add("-aspect");
 			//comm.add("640:480");
-			setValue("threads", "2", inStructions, comm); //legacy?
-			setValue("b:v", null, inStructions, comm); //legacy?
-			setValue("b:a", null, inStructions, comm); //legacy?
-			setValue("b", null, inStructions, comm); //legacy?
-			setValue("qscale", null, inStructions, comm); //legacy?
-			//setValue("qscale",null,inStructions,comm); //legacy?
+
 
 			if (inStructions.get("setpts") != null) //what is this?!?
+// to slow down or speed up. this is actually an attribute to '-filter:v'.
+// there is 'setpts' (video) and also 'setapts' (audio) to change the presetation time of the mediastream.
 			{
-				comm.add("setpts=" + inStructions.get("setpts") + "*PTS"); //one block?
+				comm.add("-filter:v setpts=" + inStructions.get("setpts") + "*PTS"); //one block?
 			}
+
 			//add calculations to fix letterbox problems
 			//http://howto-pages.org/ffmpeg/
 			int width = inStructions.intValue("prefwidth", 640);
@@ -201,10 +210,16 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 				if (tmp.exists())
 				{
 					long old = tmp.lastModified();
-					if (System.currentTimeMillis() - old < (1000 * 60 * 60)) //something is processing this
+					if (System.currentTimeMillis() - old < (1000 * 60 * 60)) //something is processing this within the last hour
 					{
-						log.info("Video still being processed, skipping 2nd request");
+						log.info("Existing video conversion trying again " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
+						result.setComplete(false);
+						result.setOk(true);
 						return result;
+					}
+					else
+					{
+						throw new OpenEditException("Older video existing conversion found, marking as error " + inStructions.getMediaArchive().getCatalogId() + " " + inStructions.getAssetId());
 					}
 				}
 			}
@@ -221,7 +236,7 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			if (!execresult.isRunOk())
 			{
 				String output = execresult.getStandardError();
-				result.setError(output);
+				result.setError("Error: " + output);
 				return result;
 			}
 			if (h264)

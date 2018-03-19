@@ -35,7 +35,7 @@ $('#map').gmap({
 	 #if($location.geo_point)
       	$('#map').gmap('addMarker', 
 		{
-			'position': '$!location.geo_point'		    
+			'position': '$!location.getValue("geo_point").getLatitude(), $location.getValue("geo_point").getLongitude()'		    
 	 	}).click(function() {
 	 		var location = this;
 	 		jQuery.get("$apphome/components/map/mapbubble.html?id=$location.id", function (content){

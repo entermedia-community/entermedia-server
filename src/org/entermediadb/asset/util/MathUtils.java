@@ -72,6 +72,35 @@ public class MathUtils
 		return result.doubleValue();
 	}
 
+	public static String toDuration(long inDurationinMilli)
+	{
+		//00:03:03.167
+		//HOURS:MM:SS.MICROSECONDS
+		long second = (inDurationinMilli / 1000) % 60;
+		long minute = (inDurationinMilli / (1000 * 60)) % 60;
+		long hour = (inDurationinMilli / (1000 * 60 * 60)) % 24;
+		String millis = String.valueOf( inDurationinMilli );
+		if( millis.length() > 3)
+		{
+			millis = millis.substring(millis.length() - 3);
+		}
+		else
+		{
+			millis = "000";
+		}
+		if( hour > 0)
+		{
+			String time = String.format("%02d:%02d:%02d", hour, minute, second);
+			time = time + "." + millis;
+			return time;
+		}
+		else
+		{
+			String time = String.format("%02d:%02d", minute, second);
+			time = time + "." + millis;
+			return time;
+		}
+	}
 	
 	public static double parseDuration(String inSeconds)
 	{
@@ -107,7 +136,7 @@ public class MathUtils
 		}
 		return  Double.parseDouble(inSeconds);
 	}
-	public static void cleanTypes(Map inMap)
+	public static void cleanLongTypes(Map inMap)
 	{
 		Collection keys = new ArrayList(inMap.keySet());
 		for (Iterator iterator = keys.iterator(); iterator.hasNext();)
@@ -116,7 +145,16 @@ public class MathUtils
 			Object m = inMap.get(type);
 			if( m instanceof BigDecimal)
 			{
-				inMap.put(type, ((BigDecimal)m).doubleValue() );
+				double d = ((BigDecimal)m).doubleValue();
+				inMap.put(type, Math.round(d) );
+			}
+			if( m instanceof Double)
+			{
+				inMap.put(type, Math.round((Double)m) );
+			}
+			if( m instanceof Integer)
+			{
+				inMap.put(type, ((Integer)m).longValue() );
 			}
 		}
 	}

@@ -19,10 +19,6 @@
 </div>
 
 <input type="hidden" name="${detail.id}.value" id="${detail.id}-value" value="$!foundrow.id"/>
-##if($detail.sourcepath)
-##<input type="hidden" name="${detail.id}.sourcepath" id="${detail.id}-sourcepath" value="$detail.sourcepath"/>
-##end
-##<input type="hidden" class="$detail.getId()-field" id="${detail.getId()}.value" name="${detail.getId()}.sourcepath" value="$!sourcepath" />
 
 <a href="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-target="$home$apphome/components/assetpicker/search/searchassets.html?targetdiv=${detail.id}-value&detailid=${detail.id}" data-width="90%" data-height="90%"  class="emdialog  btn btn-default" >[[Browse]]</a> 
 

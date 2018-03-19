@@ -1,0 +1,81 @@
+#set( $xmledithome = $context.getPageProperty("xmledithome"))
+#set( $readonly = "false" )
+#set( $readonly = $context.getRequestParameter("detailsreadonly"))
+#set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
+#set( $multiedit = "false")
+#set( $multiedit = $context.getRequestParameter("multiedit"))
+
+#if ( $multiedit == "true" )
+	#set( $multiedit = true)
+#else
+	#set( $multiedit = false)
+#end
+$context.putPageValue("multiedit",$multiedit)
+$context.putPageValue("longform",false)
+
+
+#if(!$view)
+
+#if($viewid)
+		#set($view = "${searcher.searchType}/${viewid}")
+
+#end
+
+#end
+
+
+##We need 3 things passed in: $searcher, $view, $data
+#if ($view)
+	#if( $context.getUserProfile() )
+		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	#else
+		#set ($details = $searcher.getDetailsForView($view))
+	#end
+	#if( !$details)
+		[[No details available for this view.  Please configure your view settings.]]
+
+	#end
+#else
+	##leagacy check. We used to pass in the $details
+	#if( !$details)
+	#set ($details = $searcher.getPropertyDetails())
+	#end
+#end	
+
+  #set ($mode = $user.get("oe_edit_mode"))
+   #if($viewid)
+   #if($mode && ($mode == "debug" || $mode == "editing" ))
+		<span class="widget-header-edit">
+		<a class="ir emdialog" data-autoclose="false" href="$apphome/views/settings/lists/datamanager/views/indexdialog.html?viewpath=$view&searchtype=$searcher.searchType&viewid=$viewid">
+		[[Edit]]
+		</a>
+		</span>
+	#end
+	#end
+
+  
+	
+<div class="oeinputform validate-inputs detaileditor">
+<div id="allerrors">
+</div>
+
+ #foreach( $detail in $details )
+ 
+	#set($val = false)
+	#set($target = "${detail.id}.value")
+	#set( $val = false)
+	#set( $val = $context.getRequestParameter($target))		
+	#if( !$val)
+		#set( $val = $!{data.get($detail.getId())} )
+	#end
+
+
+	$!context.putPageValue("detail",$detail)
+	$!context.putPageValue("val",$val)
+ 	<div class="form-group">
+    <label for="exampleTextarea">$detail.getText($context)</label>
+    <div>
+   	$pages.include("$xmledithome/detailedit.html", $context)
+  	</div></div>	
+	
+#end

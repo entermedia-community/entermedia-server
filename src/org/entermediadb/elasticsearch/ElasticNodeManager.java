@@ -1,7 +1,13 @@
 package org.entermediadb.elasticsearch;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,6 +24,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.node.stats.NodeStats;
+import org.elasticsearch.action.admin.cluster.node.stats.NodesStatsResponse;
 import org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryAction;
 import org.elasticsearch.action.admin.cluster.repositories.put.PutRepositoryRequestBuilder;
 import org.elasticsearch.action.admin.cluster.snapshots.create.CreateSnapshotAction;
@@ -42,6 +50,8 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.bulk.BackoffPolicy;
+import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.bulk.BulkProcessor.Listener;
 import org.elasticsearch.action.bulk.BulkRequest;
@@ -55,11 +65,16 @@ import org.elasticsearch.cluster.metadata.MappingMetaData;
 import org.elasticsearch.common.collect.ImmutableOpenMap;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.settings.Settings.Builder;
+import org.elasticsearch.common.unit.ByteSizeUnit;
+import org.elasticsearch.common.unit.ByteSizeValue;
+import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.BaseNodeManager;
+import org.entermediadb.elasticsearch.searchers.LockSearcher;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
@@ -205,7 +220,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				}
 				fieldNode = nb.node();
 				fieldClient = fieldNode.client(); //when this line executes, I get the error in the other node 
-				
 				
 				//nb.settings().put("index.mapper.dynamic",false);
 				
@@ -402,6 +416,31 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Collections.reverse(results);
 		return results;
 	}
+	
+	
+	public String restoreLatest(String inCatalogId, String lastrestored) {
+		
+		List snapshots = listSnapShots(inCatalogId);
+		if(snapshots.size() == 0) {
+			return null;
+		}
+		SnapshotInfo info = (SnapshotInfo) snapshots.get(0);
+		if(lastrestored == null) {
+			lastrestored="";
+		}
+		
+		if(lastrestored.equals(info.name())) {
+			return null;
+		}
+			
+		
+		restoreSnapShot(inCatalogId, info.name());
+		
+		return info.name();
+		
+	}
+	
+	
 
 	public void restoreSnapShot(String inCatalogId, String inSnapShotId)
 	{
@@ -469,7 +508,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				admin.indices().open(new OpenIndexRequest(indexid));				
 			}
+			
 			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+			MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaarchive");
+			LockSearcher locks = (LockSearcher) archive.getSearcher("lock");
+			locks.clearStaleLocks();
+			archive.clearAll();
+
+			
 		}
 		catch (Exception ex)
 		{
@@ -684,6 +730,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				Page yaml = getPageManager().getPage("/system/configuration/elasticindex.yaml");
 				in = yaml.getInputStream();
 				Builder settingsBuilder = Settings.builder().loadFromStream(yaml.getName(), in);
+				
+				for (Iterator iterator = getLocalNode().getProperties().keySet().iterator(); iterator.hasNext();)
+				{
+					String key = (String) iterator.next();
+					if(key.startsWith("index.") ) //Legacy
+					{
+						String val = getLocalNode().getSetting(key);
+						settingsBuilder.put(key, val);
+					}	
+				}				
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
  
 				
@@ -1060,4 +1116,97 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		getClient().admin().indices().clearCache(new ClearIndicesCacheRequest()).actionGet();
 	}
 
+	
+	
+	public BulkProcessor getBulkProcessor(final ArrayList errors) {
+		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
+		{
+			@Override
+			public void beforeBulk(long executionId, BulkRequest request)
+			{
+
+			}
+
+			@Override
+			public void afterBulk(long executionId, BulkRequest request, BulkResponse response)
+			{
+				for (int i = 0; i < response.getItems().length; i++)
+				{
+					// request.getFromContext(key)
+					BulkItemResponse res = response.getItems()[i];
+					if (res.isFailed())
+					{
+						log.info(res.getFailureMessage());
+						errors.add(res.getFailureMessage());
+
+					}
+					// Data toupdate = toversion.get(res.getId());
+					
+				}
+				//	request.refresh(true);
+			}
+
+			@Override
+			public void afterBulk(long executionId, BulkRequest request, Throwable failure)
+			{
+				log.info(failure);
+				errors.add(failure);
+			}
+		}).setBulkActions(-1).setBulkSize(new ByteSizeValue(10, ByteSizeUnit.MB)).setFlushInterval(TimeValue.timeValueMinutes(4)).setConcurrentRequests(1).setBackoffPolicy(BackoffPolicy.exponentialBackoff(TimeValue.timeValueMillis(100), 10)).build();
+		
+		
+		return bulkProcessor;
+	}
+	
+	
+	public NodeStats getNodeStats(){
+		 NumberFormat nf = NumberFormat.getNumberInstance();
+		 for (Path root : FileSystems.getDefault().getRootDirectories()) {
+
+		    // System.out.print(root + ": ");
+		     try {
+		         FileStore store = Files.getFileStore(root);
+		        // System.out.println("available=" + nf.format(store.getUsableSpace()) + ", total=" + nf.format(store.getTotalSpace()));
+		     } catch (IOException e) {
+		        log.error("error querying space: " + e.toString());
+		     }
+		 }
+		
+		 NodesStatsResponse response = getClient().admin().cluster().prepareNodesStats().setJvm(true).setFs(true).setOs(true).setNodesIds(getLocalNodeId()).setThreadPool(true).get();
+		 
+		 ClusterHealthResponse healths = getClient().admin().cluster().prepareHealth().get();
+		 for (Iterator iterator = response.getNodesMap().keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			NodeStats stats = response.getNodesMap().get(key);
+			String id = stats.getNode().getId();
+			String name = stats.getNode().getName();
+			if(getLocalNodeId().equals(name)){
+				stats.getJvm().getMem().getHeapMax();
+				stats.getJvm().getMem().getHeapUsed();
+				stats.getJvm().getMem().getHeapUsedPercent();
+				stats.getOs().getCpuPercent();
+				stats.getOs().getLoadAverage();
+				stats.getOs().getMem().getFree();
+				stats.getFs().getTotal().getAvailable();
+				stats.getFs().getTotal().getTotal();
+				stats.getFs().getTotal().getFree();
+				//log.info(response);
+
+				return stats;
+			}
+		}
+		 
+		 
+		 
+		 
+	
+		 
+		 
+		// NodeStats stats = response.getNodesMap().get(getLocalNodeId());
+
+		 
+//		 stats.getJvm().getMem().getHeapCommitted();
+		 return null;
+	}
+	
 }
