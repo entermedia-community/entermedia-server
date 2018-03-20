@@ -1,6 +1,8 @@
 package org.entermediadb.sitemonitor;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
@@ -22,5 +24,9 @@ public class SiteMonitorModule extends BaseMediaModule
 
 		List<Stat> stats = statManager.getStats();
 		inReq.putPageValue("stats", stats);
+		
+		Random rnd = new Random();
+		Long random = Math.abs(System.currentTimeMillis() - rnd.nextLong());
+		inReq.putPageValue("random", random.toString());
 	}
 }

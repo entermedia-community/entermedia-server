@@ -1,7 +1,8 @@
 {
 	"response":
 	{
-	    "status":"ok"
+	    "status":"ok",
+	    "uid": $random
 	},
 	"partitions":[	
 			#foreach( $partition in $partitions )
@@ -18,5 +19,5 @@
 					{"name":"$stat.name","value": $stat.value,"error": ""}
 				#end
 			#end 
-	]	
+	]
 }
