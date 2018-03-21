@@ -119,7 +119,7 @@ public void init() {
 		}
 
 
-		mediaarchive.getCategorySearcher().reIndexAll();
+		//mediaarchive.getCategorySearcher().reIndexAll();
 	}
 
 
@@ -238,7 +238,6 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		ordereredtypes.removeAll("user");
 		//ordereredtypes.removeAll("userprofile");
 		ordereredtypes.removeAll("group");
-		ordereredtypes.add(0,"category");
 
 
 		boolean deleteold = true;
@@ -296,14 +295,19 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		mappings.each{
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + it + ".json");
 			String searchtype = it.substring(0, it.indexOf("-"));
+			
 			putMapping( mediaarchive,searchtype,upload, tempindex);
 
 		}
 
+		Searcher categories = mediaarchive.getSearcher("category");
+		categories.setAlternativeIndex(tempindex);
 
-
+		categories.putMappings();
+		categories.setAlternativeIndex(null);
 		for( String type in ordereredtypes ) {
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + type + ".zip");
+			
 			try{
 				if( upload.exists() ) {
 					importJson(site, mediaarchive,type,upload, tempindex);
@@ -556,7 +560,7 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 public void importJson(Data site, MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
 
-
+	
 
 
 	Searcher searcher = mediaarchive.getSearcher(searchtype);
@@ -625,7 +629,9 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 		
 			processor.flush();
 			processor.awaitClose(5, TimeUnit.MINUTES);
-
+			if(errors.size() > 0) {
+				throw new OpenEditException("Errors from bulk import!");
+			}
 			//This is in memory only flush
 			//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
 
@@ -642,10 +648,11 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 
 
 public void putMapping(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
-
+	
 	AdminClient admin = mediaarchive.getNodeManager().getClient().admin();
 	PutMappingRequest req = Requests.putMappingRequest(tempindex).updateAllTypes(true).type(searchtype);
-	req = req.source(upload.getContent());
+	String uploadGetContent = upload.getContent()
+	req = req.source(uploadGetContent);
 
 	req.validate();
 	PutMappingResponse pres = admin.indices().putMapping(req).actionGet();

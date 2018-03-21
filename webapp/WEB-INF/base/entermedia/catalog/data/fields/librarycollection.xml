@@ -150,7 +150,11 @@
       <language id="en"><![CDATA[Recently Edited]]></language>  
     </name> 
   </property>  
-  
+     <property id="expirydate"  index="true" searchcomponent="datesearch" viewtype="datetime" type="date" stored="true"  >
+    <name> 
+      <language id="en"><![CDATA[Expiry Date]]></language>  
+    </name> 
+  </property>  
   
   
 </properties>

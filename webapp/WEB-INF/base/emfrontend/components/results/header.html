@@ -71,6 +71,10 @@ $context.putPageValue("hits",$hits)
 					#if( $canpublish)
 					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a></li>
 					#end
+#if( $canquickgallery)
+					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a></li>
+					#end
+
 					##if( $canpublish)
 					##<li><a href="$home$apphome/views/activity/sharegallery.html?hitssessionid=$!hits.getSessionId()&field=publishdestination&publishdestination.value=gallery&field=ordertype&ordertype.value=gallery&field=publishtype&publishtype.value=gallery" >[[Share Gallery]]</a></li>
 					##end

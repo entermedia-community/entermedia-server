@@ -42,6 +42,8 @@
 	<permission id="showbadge" permissiontype="asset" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="360" />
 	<permission id="viewtimeline" permissiontype="asset" name="Video Timeline" description="Enables access to video clips and metadata" ordering="361" />
 	<permission id="viewclosedcaptions" permissiontype="asset" name="Closed Captions" description="Closed Caption Support" ordering="362" />
+	<permission id="quickgallery" permissiontype="asset" name="Create a Gallery" description="Enables the creation of a shareable gallery" ordering="363" />
+	
 		
 	<!-- 
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	

@@ -9,6 +9,7 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
@@ -154,7 +155,7 @@ public class ProjectModule extends BaseMediaModule
 		//TODO: Support multiple selections
 		MediaArchive archive = getMediaArchive(inReq);
 		
-		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		
 		//String libraryid = inReq.getRequestParameter("libraryid");
 		String librarycollection = inReq.getRequestParameter("collectionid");
 		if( librarycollection == null)
@@ -171,6 +172,7 @@ public class ProjectModule extends BaseMediaModule
 			return;
 		}
 		ProjectManager manager = getProjectManager(inReq);
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
 		if( hitssessionid != null )
 		{
 			HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
@@ -781,4 +783,59 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("rejected",count);
 		
 	}
+	
+	public void createQuickGallery(WebPageRequest inReq) {
+		
+		
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		HitTracker tracker = null;
+		if( hitssessionid != null )
+		{
+			 tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
+		
+		}
+		
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher assetsearcher = archive.getAssetSearcher();
+		Searcher collections = archive.getSearcher("librarycollection");
+		LibraryCollection collection = (LibraryCollection) collections.createNewData();
+		String [] fields = inReq.getRequestParameters("field");
+		collections.updateData(inReq, fields, collection);
+		
+		collection.setValue("visibility", "hidden");
+		
+		Searcher categories = archive.getSearcher("category");
+		Category newcat = (Category) categories.createNewData();
+		newcat.setValue("visibility", "hidden");
+		newcat.setName(collection.getName());
+
+		categories.saveData(newcat);
+		
+		
+		collection.setValue("rootcategory", newcat.getId());
+		collection.setValue("creationdate", new Date());
+		collection.setValue("owner",inReq.getUserName() );
+
+		ArrayList assets = new ArrayList();
+		
+		for (Iterator iterator = tracker.getSelectedHitracker().iterator(); iterator.hasNext();) {
+			Data hit = (Data) iterator.next();
+			Asset asset = (Asset) assetsearcher.loadData(hit);
+			asset.addCategory(newcat);
+			assets.add(asset);
+			if(assets.size() > 1000) {
+				assetsearcher.saveAllData(assets, null);
+				assets.clear();
+			}
+			
+		}
+		assetsearcher.saveAllData(assets, null);
+		collections.saveData(collection);
+		
+		inReq.putPageValue("librarycol", collection);
+	}
+	
+	
+	
 }
