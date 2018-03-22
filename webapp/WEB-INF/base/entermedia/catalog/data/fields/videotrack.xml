@@ -45,6 +45,24 @@
 Completed On  </property>  
 
 
-    
+     <property id="length" index="true" editble="true" viewtype="timelength" stored="true" datatype="double" searchcomponent="numbersearch"   editable="false" type="double"> 
+    <name> 
+      <language id="de"><![CDATA[Länge]]></language>  
+      <language id="en"><![CDATA[Length]]></language>  
+      <language id="es"><![CDATA[Longitud]]></language>  
+      <language id="fr"><![CDATA[Longueur]]></language> 
+    </name> 
+  </property>  
+  
+  <property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" >Owner 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
+    </name> 
+  </property>  
+  
+  
   
 </properties>

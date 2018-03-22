@@ -416,6 +416,7 @@ public class TimelineModule extends BaseMediaModule
 			lasttrack.setValue("transcribestatus", "needstranscribe");
 			lasttrack.setValue("requesteddate", new Date());
 			lasttrack.setValue("owner", inReq.getUserName());
+			lasttrack.setValue("length", asset.getValue("length"));
 		}
 		captionsearcher.saveData(lasttrack);
 		inReq.putPageValue("track", lasttrack);
@@ -445,6 +446,8 @@ public class TimelineModule extends BaseMediaModule
 				{
 //					manager.transcodeCaptions(track);
 //					track.setValue("transcribestatus", "complete");
+					
+
 					manager.asyncTranscodeCaptions(track);
 				}
 			}
