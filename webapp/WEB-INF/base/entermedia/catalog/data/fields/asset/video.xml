@@ -9,4 +9,11 @@
       <language id="fr"><![CDATA[Bande passante]]></language>
     </name>
   </property> 
+  
+  <property id="closecaptionstatus" index="true" stored="true" editable="true" datatype="list" isbadge="true"  type="list"> 
+    Close Caption Status
+  </property>  
+  
+  
+  
 </page>

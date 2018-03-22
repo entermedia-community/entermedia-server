@@ -4,6 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -258,8 +259,9 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		Map all = new HashMap(); // TODO: Get parent ones as well
 
 		String currentstatus = inTrack.get("transcribestatus");
+		
 		if ("needstranscribe".equals(currentstatus)) {
-
+			inAsset.setValue("closecaptionstatus", "inprogress");
 			ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat("flac");
 			ConvertInstructions instructions = manager.createInstructions(inAsset, "audio.flac");
 			ContentItem item = manager.findInput(instructions);
@@ -353,7 +355,8 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			}
 
 		} else if("inprogress".equals(currentstatus)){
-			
+			inAsset.setValue("closecaptionstatus", "inprogress");
+
 			log.info("Making progress!");
 			String url = "https://speech.googleapis.com/v1/operations/" + inTrack.get("taskname");
 			CloseableHttpClient httpclient;
@@ -459,9 +462,12 @@ public class CloudTranscodeManager implements CatalogEnabled {
 					}
 				}
 				inTrack.setValue("transcribestatus", "complete");
+				inTrack.setValue("completeddate", new Date());
+
 				tracksearcher.saveData(inTrack);
 				
-				
+				inAsset.setValue("closecaptionstatus", "complete");
+
 				
 				
 			} else{
@@ -476,7 +482,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			}
 			
 			//go check google and parse if we're done
-			
+			getMediaArchive().saveAsset(inAsset);
 			
 			
 		}
