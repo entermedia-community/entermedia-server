@@ -23,3 +23,6 @@
 </div>
 #end
 #end
+#if($librarycol.projectstatus)
+<strong> ($mediaarchive.getData("projectstatus", $librarycol.projectstatus))</strong>
+#end
