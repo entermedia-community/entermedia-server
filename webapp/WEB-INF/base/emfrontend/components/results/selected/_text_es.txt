@@ -1,5 +1,5 @@
 #
-#Thu Apr 20 13:21:33 CDT 2017
+#Mon Mar 26 16:11:10 EDT 2018
 View\ Selections=Ver Selecciones
 Edit\ Asset=Editar activo
 Reject=Rechazar
@@ -7,6 +7,7 @@ Multi\ Edit=Multiedici\u00F3n
 Results=resultados
 Deselect\ All=Anular todas las selecciones
 Show\ All\ Results=Mostrar todos los resultados
+Export\ results\ (friendly)=Resultados de exportaci\u00F3n (amigable)
 Select\ All\ Results=Seleccionar todos los resultados
 Add\ To\ Basket=A\u00F1adir al carrito
 Approve\ Pending=Aprobar Pendiente
@@ -17,10 +18,13 @@ Show\ All=Mostrar todo
 Approve=Aprobar
 Select\ This\ Page=Seleccionar esta p\u00E1gina
 Edit\ selected\ records=Editar registros seleccionados
+Add\ to\ Collection=A\u00F1adir a la colecci\u00F3n
 Remove\ From\ Basket=Quitar de la Cesta
 Selections=Trozos escogidos
 Show\ Only\ Selections=Mostrar \u00FAnicamente Selecciones
 Print\ Assets=Imprimir activos
 Reject\ Pending=Rechazar Pendiente
 Edit=Editar
+Add\ To\ Collection=A\u00F1adir a la colecci\u00F3n
 Actions=Comportamiento
+Export\ results=Exportar resultados

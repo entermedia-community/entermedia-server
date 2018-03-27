@@ -159,4 +159,22 @@ public class MathUtils
 		}
 	}
 	
+	public Integer toInt(Object inObject)
+	{
+		if( inObject == null)
+		{
+			return null;
+		}
+		if( inObject instanceof String)
+		{
+			return Integer.parseInt( (String)inObject );
+		}
+		if( inObject instanceof Number)
+		{
+			return ((Number)inObject).intValue();
+		}
+		return (Integer)inObject;
+	}
+	
+	
 }

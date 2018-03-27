@@ -75,7 +75,7 @@ log.info("4. REPLACE LIBS");
 //files.deleteMatch( web + "/lib/spring-*.jar");
 //files.deleteMatch( web + "/lib/aopalliance-*.jar");
 //files.deleteMatch( web + "/lib/jaxen-*.jar");
-//files.deleteMatch( web + "/lib/commons-codec*.jar");
+//files.deleteMatch( web + "/lib/commons*.jar");
 //files.deleteMatch( web + "/lib/guava-*.jar");
 //files.deleteMatch( web + "/lib/velocity-tools*.jar");
 //files.deleteMatch( web + "/lib/http*.jar");

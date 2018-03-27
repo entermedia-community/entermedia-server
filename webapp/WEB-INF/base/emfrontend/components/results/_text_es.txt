@@ -1,14 +1,17 @@
 #
-#Thu Apr 20 13:21:29 CDT 2017
+#Mon Mar 26 16:11:10 EDT 2018
 Share=Compartir
 No\ results\ found.=No se han encontrado resultados.
 Copy\ Collection=Copiar Colecci\u00F3n
 Categories=Categor\u00EDas
+Thumbnail=Miniatura
 Table=Mesa
 Download=Descargar
 Download\ Options=Opciones de descarga
+Results=Resultados
 Deselect\ All=Anular todas las selecciones
 Email\ Assets=Activos de correo electr\u00F3nico
+Delete=Borrar
 Publish=Publicar
 Select\ All\ Results=Seleccionar todos los resultados
 Folders=carpetas
@@ -19,9 +22,9 @@ Remove\ from\ Collection=Sacar de la colecci\u00F3n
 Select\ This\ Page=Seleccionar esta p\u00E1gina
 Gallery=Galer\u00EDa
 of=de
-Add\ Column=A\u00F1adir columna
-Cancel=Cancelar
 Share\ Gallery=Compartir Galer\u00EDa
+Cancel=Cancelar
+Add\ Column=A\u00F1adir columna
 Edit\ Columns=Editar columnas
 Remove\ from\ collection?=Quitar de colecci\u00F3n?
 No\ results\ found=No se han encontrado resultados
@@ -29,5 +32,5 @@ Remove=retirar
 Remove\ from\ Library=Eliminar de la biblioteca
 Stacked=apilada
 Collection=Colecci\u00F3n
-Edit\ one\ or\ more\ selected\ records=Editar una o m\u00E1s registros seleccionados
 Drag\ columns\ to\ move\ them=Arrastrar las columnas para moverlos
+Edit\ one\ or\ more\ selected\ records=Editar una o m\u00E1s registros seleccionados
