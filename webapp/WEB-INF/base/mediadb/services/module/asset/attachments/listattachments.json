@@ -6,7 +6,7 @@
  "primaryfile":"$!asset.getMediaName()",
  "attachments":[
   #foreach( $hit in $attachments )
-	#if( $velocityCount != 1), #end 
+	#if( ${foreach.count} != 1), #end 
 	{ 
 		"id":"$hit.id" ,
 		"name":"$hit.name" ,		

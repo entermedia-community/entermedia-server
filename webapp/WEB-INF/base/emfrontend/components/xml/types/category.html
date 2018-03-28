@@ -25,7 +25,7 @@
 			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()" style="padding:4px;background-color: #FFF">
 					<div class="category "  style="padding-left:20px;">					
 #foreach( $parent in $category.getParentCategoriesFrom(1))
-#if( $velocityCount > 1) \ #end
+#if( ${foreach.count} > 1) \ #end
 <a  href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${category.id}&nodeID=${category.id}">$parent</a>
 #end
 				<div class="collectionIcons">

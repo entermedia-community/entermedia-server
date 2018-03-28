@@ -12,7 +12,7 @@
 					<div class="category "  style="padding-left:20px;">					
 			#if( $longform)
 #foreach( $parent in $category.getParentCategoriesFrom(1))
-#if( $velocityCount > 1) \ #end
+#if( ${foreach.count} > 1) \ #end
 <a  href="$home$apphome/views/categories/${category.id}.html">$parent</a>
 #end
 			#end	

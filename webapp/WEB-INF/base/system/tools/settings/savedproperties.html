@@ -5,14 +5,14 @@
 	#foreach( $property in $configeditsession.config.getUserProperties() )
 		<tr>
 			#set( $usesvaluetag = false )			
-			#set( $rownum = $velocityCount )
+			#set( $rownum = ${foreach.count} )
 			<td align="right" class="proplabel"><input type="hidden" name="property.${rownum}.name" value="$property"><b>$property: </b></td>
 			
 			#set( $propconfig = "" )
 			#set( $propconfig = $configeditsession.config.getProperty($property) )
 			#foreach( $value in $propconfig.getChildren("value") )
 			#set( $usesvaluetag = true )			
-			#if( $velocityCount > 1)
+			#if( ${foreach.count} > 1)
 				</tr>
 				<tr><td></td>	
 			#end

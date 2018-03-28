@@ -1030,7 +1030,7 @@ public class UserManagerModule extends BaseMediaModule
 		all.setCatalogId(getUserSearcher(inReq).getCatalogId());
 		inReq.putPageValue(all.getHitsName(), all);
 		inReq.putSessionValue(all.getSessionId(), all);
-		log.info(all.size());
+		log.info(all.getHitsName() + " = " + all.size());
 		inReq.putPageValue("searcher", getUserSearcher(inReq));
 	}
 	

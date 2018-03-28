@@ -28,7 +28,7 @@ var myChart = new Chart(ctx, {
 
 #foreach($child in $node.getChildren())
 
-                '$mediaarchive.getData("color", $velocityCount).get("colorcode")',
+                '$mediaarchive.getData("color", ${foreach.count}).get("colorcode")',
                 #end
                 #end
             ],

@@ -1,7 +1,7 @@
 [
 #foreach($hit in $hits)
  
- #if($velocityCount > 1)
+ #if(${foreach.count} > 1)
  ,
  #end
  {

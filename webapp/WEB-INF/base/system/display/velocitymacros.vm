@@ -35,7 +35,7 @@ $invalue
 #set($rendercomma = true)#end
 "${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
 #foreach($value in $hit.getValues($detail.id))
-#if($velocityCount > 1),#end
+#if(${foreach.count} > 1),#end
 #datajsonmin($detail $value)
 #end]
 #elseif($detail.isList())

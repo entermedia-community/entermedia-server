@@ -15,7 +15,7 @@
 			}
 		},
 	"results":[
-		#foreach($hit in $hits.getPageOfHits())#if( $velocityCount != 1 ), #end
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 		#json($hit $searcher.getPropertyDetails())
 		#end
 		]

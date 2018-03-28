@@ -10,7 +10,7 @@
 	},
 	"results":[
 	#foreach( $id in $upgrader.list ) #set( $logreturned = $upgrader.upgrade($id,$context) )
-		#if( $velocityCount != 1 ), #end
+		#if( ${foreach.count} != 1 ), #end
 		{"id":"$id","loglines": "$logreturned.size()" }
 	#end 
 	]

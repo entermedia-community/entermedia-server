@@ -61,9 +61,9 @@
                             <h5><strong>[[Tags]]</strong></h5>
                             <p>
                             #foreach ($tag in $asset.getKeywords())
-                                #if ( $velocityCount <= 10 )
+                                #if ( ${foreach.count} <= 10 )
                                 <a href="$home$apphome/views/search/search.html?field=keywords&operation=matches&keywords.value=$tag">$tag</a> 
-                                #elseif ( $velocityCount == 11 )
+                                #elseif ( ${foreach.count} == 11 )
                                     <a class="ajax tooltip" title="View All Tags" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
@@ -75,9 +75,9 @@
                             <h5><strong>[[Categories]]</strong></h5>
                             <p>
                             #foreach ($category in $asset.getCategories())
-                                #if ( $velocityCount <= 8 )
+                                #if ( ${foreach.count} <= 8 )
                                 <a href="$home$apphome/views/categories/${category.id}.html">$category</a> 
-                                #elseif ( $velocityCount == 9 )
+                                #elseif ( ${foreach.count} == 9 )
                                     <a class="ajax tooltip" title="[[View All Categories]]" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end

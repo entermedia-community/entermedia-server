@@ -6,13 +6,13 @@
 	},
 	"partitions":[	
 			#foreach( $partition in $partitions )
-				#if( $velocityCount != 1 ), #end
+				#if( ${foreach.count} != 1 ), #end
 				{"name":"$partition.name","totalcapacity": $partition.totalCapacity, "freepartitionspace": $partition.freePartitionSpace, "usablepartitionspace": $partition.usablePartitionSpace }
 			#end 
 	],
 	"stats":[	
 			#foreach( $stat in $stats )
-				#if( $velocityCount != 1 ), #end
+				#if( ${foreach.count} != 1 ), #end
 				#if ( $stat.isError )
 					{"name":"$stat.name","value": 0,"error": $stat.errorMsg}
 				#else

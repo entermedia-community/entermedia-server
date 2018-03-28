@@ -16,7 +16,7 @@ $pages.include("$apphome/components/html/browse/navigate.html", $context)
 	<div class="col-md-2" style="padding-left:0px">
 			#set( $count = $hits.getPage()+-1 )
 			#set( $count = $count*$hits.getHitsPerPage() )	
-			#set( $count = $velocityCount + $count )
+			#set( $count = ${foreach.count} + $count )
 			$context.putPageValue("hitindex",$count )
 		
 			$context.putPageValue("cell", $hit)

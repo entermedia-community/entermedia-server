@@ -23,7 +23,7 @@
 			"lastrun":#jesc($!event.getFormattedLastRun()),
 			"period":"$event.getPeriod()",
 			"enabled":"$event.isEnabled()"
-		 }	#if( $velocityCount != $hits.size() ), #end
+		 }	#if( ${foreach.count} != $hits.size() ), #end
 
 #end		
 	]

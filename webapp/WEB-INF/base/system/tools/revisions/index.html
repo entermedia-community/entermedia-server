@@ -11,14 +11,14 @@
         #foreach ( $revision in $revisions.revisions )
             <tr>
 			   <td>
-                #if ( $velocityCount == 1 )
+                #if ( ${foreach.count} == 1 )
                     <b>$!revision.version (current)</b>
                 #else
                     <a href="$home${content.revisioneditorhome}/showrevision.html?editPath=${url_util.encode( $revisions.editPath )}&version=$revision.version">$revision.version</a>
                 #end
               </td>
               <td>
-              	#if ( $velocityCount == 1 )
+              	#if ( ${foreach.count} == 1 )
                     <b>$!revision.author</b>
                 #else
                     $!revision.author
@@ -26,14 +26,14 @@
               </td>
               <td>
                 #set ( $dateString = $dateformat.format( $revision.lastModified() ) )
-              	#if ( $velocityCount == 1 )
+              	#if ( ${foreach.count} == 1 )
                     <b>$dateString.replaceAll( " ", "&nbsp;" )</b>
                 #else
                     $dateString.replaceAll( " ", "&nbsp;" )
                 #end
               </td>
               <td>
-                #if ( $velocityCount == 1 )
+                #if ( ${foreach.count} == 1 )
                     #if ( !$revision.version && !$revision.message )
                     	$context.getPageProperty('text.nonversioning')
                     #else

@@ -7,7 +7,7 @@
 #foreach( $key in $cacheManager.getCaches().keySet() )
 #set( $cache = $cacheManager.getCaches().get($key) )
  
- #if( $velocityCount != 1 ), #end {"$key":"$cache.size()"} 
+ #if( ${foreach.count} != 1 ), #end {"$key":"$cache.size()"} 
 #end
 ]
 }

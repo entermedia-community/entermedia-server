@@ -60,7 +60,7 @@ $context.putPageValue("showalllanguagevalues",true)
 					#foreach ($category in $asset.categories)
 						<div  class="row category" style="padding-left:24px;">						
 #foreach( $parent in $category.getParentCategoriesFrom(1))
-#if( $velocityCount > 1) \ #end
+#if( ${foreach.count} > 1) \ #end
 <a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
 #end
 						</div>

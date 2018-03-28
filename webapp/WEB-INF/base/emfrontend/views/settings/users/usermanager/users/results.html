@@ -1,13 +1,14 @@
 <div id="datamanager-workarea">
 
-				$pages.include("./search.html")
+$pages.include("./search.html")
 
            
 <div id="emselectable" class="commentbox"  >
 
-
+#ifnull($userTracker)
 #set( $userTracker = $hits)
-$context.putPageValue("hits", $hits)
+#end
+$context.putPageValue("hits", $userTracker)
 
 #set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 #set( $oeview = "user/results")
@@ -39,9 +40,12 @@ $context.putPageValue("hits", $hits)
 	</thead>
 #set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
 <tbody>
+
 #foreach ( $hit in $userTracker.getPageOfHits() )
 	<tr rowid="${hit.id}" #if ($hit.enabled != true) style="border-style:solid;border-color:red;border-width:2px;" #end >
+
 	#foreach( $detail in $details ) 
+	
 		#set( $newval = "$!hit.get($detail.getId())")
 		#if($newval != "" && $detail.isList())  
 			#set( $newval = "$!searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$newval)" )

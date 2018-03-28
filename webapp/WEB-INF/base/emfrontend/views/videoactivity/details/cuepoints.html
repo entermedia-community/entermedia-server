@@ -26,7 +26,7 @@
 											<a class="ajax thumbnail" data-cueid="$cue.id" data-dataid="$cue.assetid" id="aslide-${cue.id}" targetdivinner="$target" href="$home$clientroot/details/cuepointdetails.html?oemaxlevel=1&id=$cue.id&assetid=$!cue.assetid&dataid=$!cue.assetid">
 												<img  title="$!cue.name $cue.timecode seconds" src="$smallthumb"/></a>
 										</li>
-										#if($velocityCount % 6 == 0) <!--  Could use pages instead. -->
+										#if(${foreach.count} % 6 == 0) <!--  Could use pages instead. -->
 											#set($count = $count + 1)
 											</ul>
 											</div>
