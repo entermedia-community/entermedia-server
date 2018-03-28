@@ -175,6 +175,20 @@ public class MathUtils
 		}
 		return (Integer)inObject;
 	}
-	
-	
+	public Double createDouble(Object inObject)
+	{
+		if( inObject == null)
+		{
+			return null;
+		}
+		if( inObject instanceof String)
+		{
+			return Double.parseDouble( (String)inObject );
+		}
+		if( inObject instanceof Number)
+		{
+			return ((Number)inObject).doubleValue();
+		}
+		return (Double)inObject;
+	}
 }
