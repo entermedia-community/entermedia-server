@@ -74,7 +74,6 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		RightCodes.put("2", "Y");
 	}
 
-	
 	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
 		
