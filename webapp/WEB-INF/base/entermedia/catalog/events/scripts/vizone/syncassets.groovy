@@ -33,7 +33,7 @@ public class VizOne {
 		while(!finished) {
 			def addr       = "http://vizmtlvamf.media.in.cbcsrc.ca/thirdparty/asset/item?start=${itemStart}&num=${ITEMS_PER_CALL}"; //10000
 			def conn = addr.toURL().openConnection();
-	        	
+				
 			setCookies(archive, conn);
 			conn.setRequestProperty( "Authorization", "Basic ${authString}" )
 			conn.setRequestProperty("Accept", "application/atom+xml;type=feed");
@@ -42,7 +42,7 @@ public class VizOne {
 			AssetSearcher assetsearcher = archive.getAssetSearcher();
 			ArrayList assets = new ArrayList();
 			if( conn.responseCode == 200 ) {
-	            		storeCookies(archive, conn);
+						storeCookies(archive, conn);
 				def rss = new XmlSlurper().parseText(content  )
 	
 				def totalResults = Integer.valueOf(rss.totalResults.text());
@@ -52,9 +52,9 @@ public class VizOne {
 				if (itemStart > totalResults) {
 					finished = true;
 				}
-				log.info("MSG : Next itemStart "+itemStart + " Last Round " + finished); 
+				log.info("MSG : Next itemStart "+itemStart + " Last Round " + finished);
 
-                               rss.entry.each {
+							   rss.entry.each {
 					try{
 						String vizid =it.ardomeIdentity;
 						Asset asset = assetsearcher.searchByField("vizid", vizid);
@@ -171,10 +171,10 @@ public class VizOne {
 					}
 				}
 			}
-               }
+			   }
 	}
 
-        private void storeCookies(MediaArchive inArchive, java.net.HttpURLConnection conn) {
+		private void storeCookies(MediaArchive inArchive, java.net.HttpURLConnection conn) {
 		//log.info("*** storeCookies");
 		String cookie = conn.getHeaderField("Set-Cookie");
 		if (cookie != null) {
@@ -223,7 +223,7 @@ public class VizOne {
 				try{def conn2 = href.toURL().openConnection()
 					conn2.setRequestProperty( "Authorization", "Basic ${authString}" )
 					conn2.setRequestProperty("Accept", "application/vnd.vizrt.payload+xml");
-                                        setCookies(archive, conn2);
+										setCookies(archive, conn2);
 					String mdata = conn2.content.text;
 					def extradata = new XmlSlurper().parseText(mdata  )
 					extradata.field.each{
@@ -264,5 +264,6 @@ VizOne vz = new VizOne();
 
 vz.downloadNew(context);
 vz.validate(context);
+
 
 
