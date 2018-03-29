@@ -273,7 +273,6 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			}
 		}
 		
-		/*
 		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
@@ -287,39 +286,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 					Element field = elem.addElement("field");
 					field.addAttribute("name", vizfield);
 					Element value = field.addElement("value");
-					if (vizfield.equals("news.eventDate")) {
-  					    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		                Date date = sdf.parse(assetvalue);
-		                assetvalue = sdf.format(date);
-					}
 					value.setText(assetvalue);		
-					log.info("*** value.setText: "+assetvalue +" for "+vizfield);
-					
-				}
-			}
-		}
-		*/
-		
-		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if(done.contains(detail.getId())){
-				continue;
-			}
-			String vizfield = detail.get("vizonefield");
-			if(vizfield != null){		
-				String assetvalue = inAsset.get(detail.getId());
-				if(assetvalue != null){
-					Element field = elem.addElement("field");
-					field.addAttribute("name", vizfield);
-					Element value = field.addElement("value");
-					/*if (vizfield.equals("news.eventDate")) {
-  					    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		                Date date = sdf.parse(assetvalue);
-		                assetvalue = sdf.format(date);
-					}*/
-					value.setText(assetvalue);		
-					log.info("*** value.setText: "+assetvalue +" for "+vizfield);
+					//log.info("*** value.setText: "+assetvalue +" for "+vizfield);
 					
 				}
 			}
@@ -390,7 +358,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 					Element value = _elem.addElement("value");
 					value.setText(val);
 				}
-				log.info("*** value.setText: "+val +" for "+key);
+				//log.info("*** value.setText: "+val +" for "+key);
 				isKeyExists = true;
 			} 
 		}
@@ -399,7 +367,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			field.addAttribute("name", key);
 			Element value = field.addElement("value");
 			value.setText(val);
-			log.info("*** value.setText: "+val +" for "+key);
+			//log.info("*** value.setText: "+val +" for "+key);
 		}
 	}
 	
@@ -416,7 +384,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	                Date date = sdf.parse(assetvalue);
 	                assetvalue = sdf.format(date);
 	                setField(inAsset, elem, "news.eventDate", assetvalue);
-	                log.info("***setAssetDate value.setText: "+assetvalue +" for "+vizfield);
+	                //log.info("***setAssetDate value.setText: "+assetvalue +" for "+vizfield);
 	                return;
 				}
 			}
@@ -458,10 +426,10 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		boolean ret = false;
 		if (elemAcl != null) {
 			
-			ret = updateAclElement(elemAcl, "External applications", new String[] {"1","1","1"});
-			ret = updateAclElement(elemAcl, "Newsroom Plug-In", new String[] {"1","1","1"}) || ret;
-			ret = updateAclElement(elemAcl, "Administrators", new String[] {"1","1","1"}) || ret;
-			ret = updateAclElement(elemAcl, "vizrtadmins", new String[] {"1","1","1"}) || ret;
+			ret = updateAclElement(elemAcl, "External applications", new String[] {"1","1","0"});
+			ret = updateAclElement(elemAcl, "Newsroom Plug-In", new String[] {"1","1","0"}) || ret;
+			ret = updateAclElement(elemAcl, "Administrators", new String[] {"1","1","0"}) || ret;
+			//ret = updateAclElement(elemAcl, "vizrtadmins", new String[] {"1","1","0"}) || ret;
 			
 			return ret;
 			
@@ -488,7 +456,7 @@ public class vizonepublisher extends BasePublisher implements Publisher
 			nElement.addAttribute("read", rra[0]);
 			nElement.addAttribute("write", rra[1]);
 			nElement.addAttribute("admin", rra[2]);
-			log.info("***updateAclElement: read: "+rra[0] +" write: "+rra[1] +" admin: " +rra[2] +" for "+elementName);
+			//log.info("***updateAclElement: read: "+rra[0] +" write: "+rra[1] +" admin: " +rra[2] +" for "+elementName);
 			elemAcl.add(nElement);
 			return true;
 		}
