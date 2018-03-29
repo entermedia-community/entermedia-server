@@ -261,7 +261,6 @@ public class VizOne {
 
 VizOne vz = new VizOne();
 
-
 vz.downloadNew(context);
 vz.validate(context);
 
