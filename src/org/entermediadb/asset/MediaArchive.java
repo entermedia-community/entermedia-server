@@ -2105,17 +2105,21 @@ public class MediaArchive implements CatalogEnabled
 		{
 			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
 			cdnprefix = rutil.getSiteRoot();
-			//TODO: Look up the home variable?
-			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
-			Data prefix = (Data)searcher.searchById("cdn_prefix");
-			if( prefix == null)
+			if( cdnprefix.contains("localhost"))
 			{
-				prefix = searcher.createNewData();
-				prefix.setId("cdn_prefix");
+				cdnprefix = "";
 			}
-			prefix.setValue("value", cdnprefix);
-			searcher.saveData(prefix);
-			getCacheManager().clear("catalogsettings");
+//			//TODO: Look up the home variable?
+//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
+//			Data prefix = (Data)searcher.searchById("cdn_prefix");
+//			if( prefix == null)
+//			{
+//				prefix = searcher.createNewData();
+//				prefix.setId("cdn_prefix");
+//			}
+//			prefix.setValue("value", cdnprefix);
+//			searcher.saveData(prefix);
+//			getCacheManager().clear("catalogsettings");
 		}
 		String sourcepath = URLUtilities.encode(inAsset.getSourcePath());
 
