@@ -10,9 +10,10 @@
 	<table class="striped emdata">
 		<thead>
 			<tr class="tableheader">
-				<th>Next Run</th>
 				<th>Name</th>
+				<th>Path</th>
 				<th colspan="4">Status</th>
+				
 			</tr>
 		</thead>
 		<tbody>
@@ -20,7 +21,6 @@
 
 			#set( $event = $runner.getPathEvent() )
 			<tr rowid="$event.getPage().getPath()">
-				<td> $patheventmanager.getTimeCalculator().findTimeFrom($runner.getTimeToStart()) </td>
 				<td><b>$context.getText($event.getName())</b></td>
 				<td> $event.getPage().getName()
 				<div class="emselectabledetails">
@@ -29,14 +29,21 @@
 				#if( $event.getLastRun() )
 				<div>
 					[[last run]]:
-					$context.getDateTime($event.getLastRun() )
+					$context.getDateTime($event.getLastRun() )					
 				</div> #end </td>
 				<td> #if( $event.isRunning() )
 				[[running]]
 				#end </td>
-				<td> #if( $event.getPeriod() > 0 )
+				<td> 
+				[[runs]]: $event.getTotalRunCount()
+				#if( $event.getPeriod() > 0 )
 				[[repeats every]] $event.getFormattedPeriod()
-				#end </td>
+				#end
+				#if( $event.getStartingFromMidnight() )
+					[[starting:]] $event.getStartingFromFormated()
+				#end
+				
+				 </td>
 			</tr>
 			#end
 		</tbody>

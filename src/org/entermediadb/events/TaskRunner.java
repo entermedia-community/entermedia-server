@@ -18,6 +18,16 @@ public class TaskRunner extends java.util.TimerTask
 	protected Date fieldTimeToStart;
 	protected boolean fieldWithParameters;
 	protected boolean fieldRunAgainSoon;
+	protected boolean fieldQueuedToRun;
+	
+	public boolean isQueuedToRun()
+	{
+		return fieldQueuedToRun;
+	}
+	public void setQueuedToRun(boolean inQueuedToRun)
+	{
+		fieldQueuedToRun = inQueuedToRun;
+	}
 	protected Map fieldParams;
 	public Map getParams()
 	{
@@ -148,6 +158,7 @@ public class TaskRunner extends java.util.TimerTask
 	{
 		try
 		{
+			setQueuedToRun(true);
 			Runnable execrun = new Runnable()
 			{
 				public void run()
@@ -181,9 +192,10 @@ public class TaskRunner extends java.util.TimerTask
 		}
 		finally
 		{
-			if( isRunAgainSoon() )
+			if( event.isEnabled() && isRunAgainSoon() )
 			{
 				setRunAgainSoon(false);
+				setQueuedToRun(false);
 				getEventManager().runSharedPathEvent(getPathEvent().getPage().getPath());
 			}
 			else
@@ -192,6 +204,7 @@ public class TaskRunner extends java.util.TimerTask
 				{
 					getEventManager().getRunningTasks().remove(this);
 				}
+				setQueuedToRun(false);
 			}
 		}
 		
