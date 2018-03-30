@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Create Snapshot</property>	
+	<property name="eventname">Create Elastic Snapshot</property>	
 	
 	<path-action name="Script.run" alltypes="true" >
 		<script>/${catalogid}/events/scripts/data/createsnapshot.groovy</script>
