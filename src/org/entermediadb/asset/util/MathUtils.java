@@ -167,7 +167,13 @@ public class MathUtils
 		}
 		if( inObject instanceof String)
 		{
-			return Integer.parseInt( (String)inObject );
+			String str = (String)inObject;
+			
+			if (str.isEmpty())
+			{
+				return 0;
+			}
+			return Integer.parseInt( str );
 		}
 		if( inObject instanceof Number)
 		{
@@ -175,6 +181,7 @@ public class MathUtils
 		}
 		return (Integer)inObject;
 	}
+
 	public Double createDouble(Object inObject)
 	{
 		if( inObject == null)
@@ -183,6 +190,12 @@ public class MathUtils
 		}
 		if( inObject instanceof String)
 		{
+			String str = (String)inObject;
+			
+			if (str.isEmpty())
+			{
+				return 0.0;
+			}
 			return Double.parseDouble( (String)inObject );
 		}
 		if( inObject instanceof Number)
