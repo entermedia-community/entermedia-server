@@ -1,0 +1,102 @@
+#set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
+
+{
+	"response":
+		{
+		    "status":"ok",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"terms":[
+					#foreach( $term in $hits.getSearchQuery().getTerms() )#if( $foreach.count != 1 ), #end
+					 { "id":"$term.getId()","operation":#jesc($term.getOperation())
+					 	#if( $term.getValue() ),"value":#jesc($term.getValue())#end
+					 	#if($term.getValues())
+					 		,"values": [
+					 			#foreach( $val in $term.getValues() )#if( $foreach.count != 1 ), #end
+					 				#jesc($val)
+					 			#end
+					 		]
+					 	#end		
+					 }
+					#end
+				]	
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( $foreach.count != 1 ), #end
+		{
+			#jsonpartial($hit $searcher.getPropertyDetails()) 
+			#set($type =$mediaarchive.getMediaRenderType($hit.fileformat))
+			#set( $origUrl = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$asset.getMediaName()")
+			#set($presets = $conversionUtil.getActivePresetList($catalogid,$type) )
+			
+			
+			
+			
+			
+			
+			,"downloads":[
+		#foreach( $preset in $presets )#if( ${foreach.count} != 1 ), #end
+		{	
+			"name":#jesc($preset.name),	
+			"id":#jesc($preset.id),	
+
+			#if( $preset.getId() == "0")
+				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
+			#else
+			####set( $outputfile = "${preset.generatedoutputfile}/$mediaarchive.asExportFileName($hit, $preset)")
+			"outputfile":#jesc($outputfile),
+			#set( $url = "$home$apphome/services/module/asset/downloads/preset/${hit.sourcepath}/${preset.generatedoutputfile}")
+			#end	
+			"url":"$url",
+			"downloadurl":"$home$apphome/services/module/asset/downloads/generated/${hit.sourcepath}/${preset.generatedoutputfile}/$mediaarchive.asExportFileName($hit, $preset)?includemetadata=true",
+			#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$hit.id,$hit.sourcePath, $preset.id))
+			"iscomplete":"$isready"
+		
+		}
+		
+		
+		#end
+		]
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		}
+		#end
+		]		
+ #if( $hits.getSearchQuery().hasFilters() )
+ , "filters":[
+	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )#if( $foreach.count != 1 ), #end #set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+		{ "id":"$selectedfilter.getId()", "name":#jesc($selectedfilter.getName()) }
+	#end
+  ]	
+#end	
+#if( $filteroptions)		
+, "filteroptions":[
+	#foreach($type in $filteroptions )#if( $foreach.count != 1 ), #end
+		#if(!$hits.isChildFacetSelected($type))
+		 {"id":"$type.getId()","name":#jesc($type.getName()),"children":
+		    [
+			#foreach($entry in $type.children)#if( $foreach.count != 1 ), #end
+			{"id":"$entry.getId()","name":#jesc($entry.getName()),"count":#jesc($entry.count)}
+			#end
+			]
+		}
+		#end
+	#end
+    ]		
+#end		
+}

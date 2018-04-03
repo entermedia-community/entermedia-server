@@ -48,3 +48,25 @@ $invalue
 #end
 #end}
 #end
+#macro(jsonpartial $hit $details)
+
+#set($rendercomma = false)
+#foreach($detail in $details)
+#set($val = false)#set($val = $hit.get(${detail.id}))
+#if($val)#if($rendercomma),#else
+#set($rendercomma = true)#end
+"${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
+#foreach($value in $hit.getValues($detail.id))
+#if(${foreach.count} > 1),#end
+#datajsonmin($detail $value)
+#end]
+#elseif($detail.isList())
+#datajsonmin($detail $val)
+#elseif($detail.isMultiLanguage())
+#jsonmap($detail $hit.getValue($detail.id))
+#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDate($val)"
+#else#jesc($val) 
+#end
+#end
+#end
+#end
