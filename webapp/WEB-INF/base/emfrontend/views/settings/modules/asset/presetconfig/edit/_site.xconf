@@ -1,5 +1,6 @@
 <page>
 	<path-action name="DataEditModule.loadSearcherForEdit" />
+	<property name="searchhome">/${applicationid}/views/settings/modules/asset/presetconfig</property>
 	
 	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
 </page>
