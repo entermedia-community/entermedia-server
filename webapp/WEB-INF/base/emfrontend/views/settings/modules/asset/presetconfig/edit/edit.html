@@ -1,10 +1,9 @@
 <div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">Settings</div>
+<div class="ui-widget-header">[[Parameters]]</div>
 <div  class="ui-widget-content">
 
 <div id="editlayout">
 #set( $origURL = $context.getRequestParameter("origURL" ) )
-#set( $categoryid = $context.getRequestParameter("categoryid" ) )
 
 #if( !$view )				
 	#set( $view = "${searcher.searchType}/edit" )
@@ -63,6 +62,8 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 $context.putPageValue("canedittable", $caneditdata)
 
 #set( $args = "id=$id&parentid=$id&viewdetailspath=$!viewdetailspath&viewid=presetparameter/edit&viewpath=presetparameter/edit&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$!fieldexternalid&fieldexternalvalue=$!fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&hitssessionid=$hitssessionid")
+
+##set( $args = "$args&editorpath=${content.searchhome}/edit/edit.html?id=$id")
 
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
 #end

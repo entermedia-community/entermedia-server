@@ -1,5 +1,4 @@
 #set($uploadtype = $context.getRequestParameter("uploadtype"))
-#set($catalogid = $context.getRequestParameter("catalogid"))
 #set($originalpath = $mediaarchive.asLinkToOriginal($newasset))
 <script type="text/javascript">
 window.parent.CKEDITOR.tools.callFunction(1,"$home$apphome/views/modules/asset/downloads/originals/$originalpath"); 

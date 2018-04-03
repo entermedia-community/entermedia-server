@@ -11,6 +11,7 @@
 #end
 $context.putPageValue("view", $view)
 
+
 <form id="dataeditor-settings" name="dataeditor-settings" method="post" action="$home$content.searchhome/edit/save.html" >
 	<input name="save" type="hidden" value="true" />
 	<input name="id" type="hidden" value="$!data.id" />
@@ -22,6 +23,12 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 
 <a class="btn" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
 <a class="btn"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
+<a class="btn" style="margin-left:20px" 
+	href='$home$apphome/views/settings/modules/asset/presetconfig/edit/edit.html?id=imagepreviewfpo'>
+[[View Parameters]]
+</a>	
+
+
 <a class="btn red" style="float: right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
 		[[Delete]]

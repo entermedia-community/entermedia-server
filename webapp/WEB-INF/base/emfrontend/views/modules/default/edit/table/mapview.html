@@ -20,10 +20,8 @@
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 #set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $moduleid = $context.findValue("module") )
-
-#set ($catalogId = $context.getRequestParameter("catalogid") )
 			
-#set( $joinsearcher = $searcherManager.getSearcher($catalogId, $searchtype))
+#set( $joinsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 #if(!$existingrecords)
 
 	##set ($existingrecords = $joinsearcher.fieldSearch($fieldexternalid,$fieldexternalvalue))
