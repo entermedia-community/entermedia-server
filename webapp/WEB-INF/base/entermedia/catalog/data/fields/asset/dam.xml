@@ -312,7 +312,7 @@
       <language id="fr"><![CDATA[Dernière modification]]></language> 
     </name> 
   </property>  
-  <property id="recordmodificationdate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false"   sortable="true">Record Edit Date 
+  <property id="recordmodificationdate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false" sortable="true">Record Edit Date 
     <name> 
       <language id="de"><![CDATA[Rekord bearbeiten Datum]]></language>  
       <language id="en"><![CDATA[Record Edit Date]]></language>  
@@ -321,7 +321,7 @@
     </name> 
   </property>  
   <!--  should be a date -->  
-  <property id="assetaddeddate" filter="true" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch" externalid="Record Creation Date"  type="date">Uploaded Date 
+  <property id="assetaddeddate" filter="true" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch"  type="date">Uploaded Date 
     <name> 
       <language id="de"><![CDATA[uploaded Datum]]></language>  
       <language id="en"><![CDATA[Uploaded Date]]></language>  
