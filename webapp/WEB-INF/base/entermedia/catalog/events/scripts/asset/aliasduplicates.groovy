@@ -1,16 +1,13 @@
 package asset;
 
 
-import org.elasticsearch.search.aggregations.AggregationBuilder
-import org.elasticsearch.search.aggregations.AggregationBuilders
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.Category
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.asset.search.AssetSearcher
 import org.openedit.Data
-import org.openedit.hittracker.FilterNode
 import org.openedit.hittracker.HitTracker
-import org.openedit.hittracker.SearchQuery
+import org.openedit.repository.ContentItem
 
 
 
@@ -44,7 +41,7 @@ public void init()
 				{
 					currentasset.addCategory(cat);
 				}
-				todelete.add(duplicate);
+				todelete.add(older);
 				currentasset.setValue("duplicate",false);
 				tosave.add(currentasset);
 			}
@@ -54,10 +51,17 @@ public void init()
 			}
 		}
 	}
-	log.info("Deleting " + todelete.size());
-	searcher.deleteAll(todelete, null)
 	log.info("Keeping " + tosave.size());
 	searcher.saveAllData(tosave, null);
+	log.info("Deleting " + todelete.size());
+	for(Asset oldjunk : todelete)
+	{
+		ContentItem item = archive.getOriginalContent(oldjunk);
+		archive.getPageManager().getRepository().remove(item);
+		log.info("Deduplication deleted " + item.getAbsolutePath());
+		archive.removeGeneratedImages(oldjunk);
+	}	
+	searcher.deleteAll(todelete, null)
 		
 }
 
