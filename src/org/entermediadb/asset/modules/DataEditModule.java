@@ -1893,7 +1893,10 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		}
 		if( hits == null)
 		{
-			hits = search(inReq);
+			//hits = search(inReq);
+			Searcher searcher = loadSearcher(inReq);
+			hits = searcher.getAllHits(inReq);
+			hits.getSearchQuery().setProperty("userinputsearch", "true");  //So it caches
 		}
 		
 	}

@@ -1979,7 +1979,6 @@ public class MediaArchive implements CatalogEnabled
 		{
 			String id = inRow.get("badge"); //text version of the ids
 			List b = (List) getCacheManager().get("badges", id); //Expires after 5 min, sort it?
-			b = null;
 			if (b == null)
 			{
 				b = new ArrayList<Data>();
