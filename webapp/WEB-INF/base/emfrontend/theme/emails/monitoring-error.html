@@ -8,15 +8,12 @@
 #else
 	#if($monitored.isssl == "true")
 		#if($monitored.sslstatus == "torenew")
-			[[The instance's SSL certificate is expiring in]] <b>$monitored.expirationdate</b> [[days]]. [[Please renew it by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
-
+			[[The instance's SSL certificate will expires in ]]$monitored.daystoexpiration[[ days, ]][[on ]]<b>$monitored.expirationdate</b>. [[Please renew it by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
 		#elseif($monitored.sslstatus == "expired")
 			[[The instance's SSL certificate has expired on]] <b>$monitored.expirationdate</b>. [[Please deploy a new one by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
-
 		#elseif($monitored.sslstatus == "error")
 			[[Can't retrieve any SSL certificate for the following instance: ]]: <a href="$monitored.url">$monitored.url</a><br/><br/>
 		#end
-
 	#else
 		#if ($monitored.isdisk == "true")
 			#foreach($partition in $monitored.getValue("partitions"))
@@ -34,7 +31,6 @@
 		#if($monitored.ismemory == "true")
 			[[The instance is running out of memory]]: <b>${monitored.servermemoryfree}Mb</b> [[remaining of]] <b>${monitored.servermemorytotal}Mb</b>.
 		#end
-
 	#end
 #end
 
