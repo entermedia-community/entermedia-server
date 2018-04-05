@@ -13,10 +13,10 @@
 	"stats":[	
 			#foreach( $stat in $stats )
 				#if( ${foreach.count} != 1 ), #end
-				#if ( $stat.isError )
-					{"name":"$stat.name","value": 0,"error": $stat.errorMsg}
+				#if( $$stat.name == "clusterhealth" )
+					{"name":"$stat.name","value": "$stat.value"}
 				#else
-					{"name":"$stat.name","value": $stat.value,"error": ""}
+					{"name":"$stat.name","value": $stat.value}
 				#end
 			#end 
 	]
