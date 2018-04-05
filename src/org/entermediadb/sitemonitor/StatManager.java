@@ -1,8 +1,10 @@
 package org.entermediadb.sitemonitor;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import java.lang.management.ManagementFactory;
 import java.lang.management.OperatingSystemMXBean;
@@ -16,27 +18,14 @@ public class StatManager implements CatalogEnabled
 	private Stat buildStat(Stat stat, String inName, Object inValue, String error)
 	{
 		stat.setName(inName);
-		if (inValue instanceof Long)
+		if (!inName.contains("Cpu"))
 		{
-			if (!inName.contains("Cpu"))
-			{
-				stat.setValue((Long) inValue / SiteMonitorModule.MEGABYTE);
-			}
-			else
-			{
-				stat.setValue((Long) inValue);
-			}
+			Long tmp = (Long)inValue / SiteMonitorModule.MEGABYTE;
+			stat.setValue((Object)tmp);
 		}
-		if (inValue instanceof Double)
+		else
 		{
-			if (!inName.contains("Cpu"))
-			{
-				stat.setValue((Double) inValue / SiteMonitorModule.MEGABYTE);
-			}
-			else
-			{
-				stat.setValue((Double) inValue);
-			}
+			stat.setValue(inValue);
 		}
 		if (error != null)
 		{
@@ -46,7 +35,16 @@ public class StatManager implements CatalogEnabled
 		return stat;
 	}
 
-	public List<Stat> getStats()
+	private Stat getTotalAssetsCount(MediaArchive archive) {
+		Stat stat = new Stat();
+
+		stat.setName("totalassets");
+		Collection assets = archive.getAssetSearcher().query().all().search();
+		stat.setValue(assets.size());
+		return stat;
+	}
+	
+	public List<Stat> getStats(MediaArchive archive)
 	{
 		List<Stat> stats = new ArrayList<Stat>();
 
@@ -74,6 +72,7 @@ public class StatManager implements CatalogEnabled
 					stats.add(stat);
 				}
 			}
+			stats.add(getTotalAssetsCount(archive));
 			return stats;
 		}
 		catch (Exception e)

@@ -22,7 +22,7 @@ public class SiteMonitorModule extends BaseMediaModule
 		List<DiskPartition> partitions = diskManager.getPartitionsStats(archive);
 		inReq.putPageValue("partitions", partitions);
 
-		List<Stat> stats = statManager.getStats();
+		List<Stat> stats = statManager.getStats(archive);
 		inReq.putPageValue("stats", stats);
 		
 		Random rnd = new Random();

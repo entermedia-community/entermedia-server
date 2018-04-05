@@ -28,16 +28,12 @@ public class Stat
 		return fieldValue;
 	}
 
-	public void setValue(Double inValue)
+	public void setValue(Object inObject)
 	{
-		fieldValue = inValue;
-	}
+		fieldValue = inObject;
 
-	public void setValue(Long inValue)
-	{
-		fieldValue = inValue;
 	}
-
+	
 	public boolean isError()
 	{
 		return isError;
