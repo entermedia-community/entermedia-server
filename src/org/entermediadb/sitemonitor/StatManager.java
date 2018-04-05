@@ -18,19 +18,21 @@ public class StatManager implements CatalogEnabled
 	private Stat buildStat(Stat stat, String inName, Object inValue, String error)
 	{
 		stat.setName(inName);
-		if (!inName.contains("Cpu"))
+		if (error != null)
 		{
-			Long tmp = (Long)inValue / SiteMonitorModule.MEGABYTE;
-			stat.setValue((Object)tmp);
+			stat.setValue(error);
 		}
 		else
 		{
-			stat.setValue(inValue);
-		}
-		if (error != null)
-		{
-			stat.setError(true);
-			stat.setErrorMsg(error);
+			if (!inName.contains("Cpu"))
+			{
+				Long tmp = (Long)inValue / SiteMonitorModule.MEGABYTE;
+				stat.setValue((Object)tmp);
+			}
+			else
+			{
+				stat.setValue(inValue);
+			}
 		}
 		return stat;
 	}
@@ -41,6 +43,23 @@ public class StatManager implements CatalogEnabled
 		stat.setName("totalassets");
 		Collection assets = archive.getAssetSearcher().query().all().search();
 		stat.setValue(assets.size());
+		return stat;
+	}
+
+	private Stat getClusterStatusHealth(MediaArchive archive) {
+		Stat stat = new Stat();
+
+		stat.setName("clusterhealth");
+		String health = archive.getNodeManager().getClusterHealth();
+		
+		if (health != null)
+		{
+			stat.setValue(health);
+		}
+		else
+		{
+			stat.setValue("can't retrieve cluster health status");
+		}
 		return stat;
 	}
 	
@@ -72,7 +91,9 @@ public class StatManager implements CatalogEnabled
 					stats.add(stat);
 				}
 			}
+
 			stats.add(getTotalAssetsCount(archive));
+			stats.add(getClusterStatusHealth(archive));
 			return stats;
 		}
 		catch (Exception e)

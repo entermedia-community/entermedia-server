@@ -59,6 +59,8 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
+import org.elasticsearch.cluster.health.ClusterHealthStatus;
+import org.elasticsearch.cluster.health.ClusterIndexHealth;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
@@ -1195,18 +1197,25 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				return stats;
 			}
 		}
-		 
-		 
-		 
-		 
-	
-		 
-		 
 		// NodeStats stats = response.getNodesMap().get(getLocalNodeId());
 
-		 
 //		 stats.getJvm().getMem().getHeapCommitted();
 		 return null;
 	}
 	
+	public String getClusterHealth()
+	{
+		String healthstatus = null;
+		
+		try
+		{
+			ClusterHealthResponse healths = getClient().admin().cluster().prepareHealth().get();
+			healthstatus = healths.getStatus().toString();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return healthstatus;
+	}
+
 }
