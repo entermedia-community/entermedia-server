@@ -2171,11 +2171,13 @@ public class BaseElasticSearcher extends BaseSearcher
 					else if(value instanceof String) 
 					{
 						GeoPoint point = new GeoPoint((String)value);
-						inData.setValue(key, point);
+						//inData.setValue(key, point);
+						inContent.field(key, point);  
 					}
 					else if(value instanceof GeoPoint) 
 					{
-						inData.setValue(key, value);
+						//inData.setValue(key, value);
+						inContent.field(key, (GeoPoint)value);  
 					}
 				}
 				else if (key.equals("description")) // TODO: This should be
