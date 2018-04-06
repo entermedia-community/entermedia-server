@@ -8,7 +8,7 @@
 
 
 <div id="default-top" class="clearfix" style="margin: -20px 0 20px 0; border-top: 1px solid #ddd;">
-     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
+    #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
     
