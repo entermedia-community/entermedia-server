@@ -5,29 +5,29 @@
 #if( !$searchtype)
 	#set( $searchtype = $moduleid)
 #end
+
+
 <div id="default-top" class="clearfix" style="margin: -20px 0 20px 0; border-top: 1px solid #ddd;">
      #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
     
-    
-    
       <div class="main-info" style="padding-bottom: 20px; margin-top: 20px;">
       	#foreach($detail in $details)     	
-        	#set($val = $data.get($detail.id))
-        	
         	#if($detail.isList())
-        	      #set($val = $searcherManager.getData($catalogid, "${detail.id}", $val).getName())
+        	    #set($val = $searcherManager.getData($catalogid, "${detail.id}", $val))
+        	#else
+            	#set($val = $data.getValue($detail.id))
             #end
-	        #if(${foreach.count} == 1)
+            #if(${foreach.count} == 1)
 		        <div class="primary">
-		          $module / $!val
+		          $module / #text($val)
 		        </div>
-			#else        
-	        	<div class="secondary">
-	        		$!val         
-	        	</div>
-	   		 #end
+			#else   
+        	<div class="secondary">
+            	#text( $val )
+        	</div>
+        	#end
 	   		 #set($val = "")
 	    #end
       	</div>

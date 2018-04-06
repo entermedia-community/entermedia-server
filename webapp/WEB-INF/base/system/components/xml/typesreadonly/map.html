@@ -29,11 +29,7 @@ initialize = function()
  var centerloc = getLatLngFromString('$mediaarchive.getCatalogSettingValue("startinglatlong")');
 #end
  var map = new google.maps.Map(jQuery('#${detail.id}_map')[0], {
-    #if( $latandlong )
-    zoom: 8
-    #else
-    zoom: 12
-    #end,
+    zoom: 8,
     center:centerloc,
     mapTypeControl: true,
     mapTypeControlOptions: {

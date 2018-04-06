@@ -62,8 +62,8 @@ jQuery(document).ready(function()
 			var selectlist = $(".lenguagepicker option", data);
 			if( $(selectlist).length > 0)
 			{
-				$("#languagesextra_"+detailid).append(data);
-				$("#colanguagesextra_" + detailid ).data("count",count);
+				$("#languagesextra_"+detailid,div).append(data);
+				$("#colanguagesextra_" + detailid,div ).data("count",count);
 				$(document).trigger("domchanged");
 			}	
 		})	

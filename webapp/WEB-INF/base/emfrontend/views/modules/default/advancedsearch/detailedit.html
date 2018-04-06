@@ -50,6 +50,7 @@
 			$context.putPageValue("term",$term)			
 			$context.putPageValue("val",$value)
 			$context.putPageValue("values",$values)
+			$context.putPageValue("data",$hits.getSearchQuery())			
 		#end	
 		
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
