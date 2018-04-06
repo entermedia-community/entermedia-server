@@ -24,7 +24,7 @@
 
  <a class="btn ajax" targetdivinner="eventstatus" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
  <a class="btn emdialog" href="$apphome/views/settings/events/triggers/edit/scripts/scripteditor.html?eventpath=$pathevent.getPage().getPath()">[[Edit Script]]</a> 
-
+&nbsp;&nbsp;<a class="btn ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">Clear Log</a>
 </form>
 
 </div>
@@ -33,9 +33,7 @@
 <div class="edit-permissions">
 $pages.include("$apphome/views/settings/events/triggers/edit/log.html")
 </div>
-
-<p> 
+<p>
 <a class="btn ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">Clear Log</a>
 </p>
-
 </div>
