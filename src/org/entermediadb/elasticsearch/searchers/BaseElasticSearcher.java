@@ -1211,7 +1211,28 @@ public class BaseElasticSearcher extends BaseSearcher
 				// String before
 				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
 			}
+			else if ("ondate".equals(inTerm.getOperation()))
+			{
+				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 
+				Calendar c = new GregorianCalendar();
+				c.setTime(target);
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				c.set(Calendar.MILLISECOND, 0);
+				Date fromtime = c.getTime();
+
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				c.set(Calendar.MILLISECOND, 999);
+
+				// inTerm.getParameter("beforeDate");
+
+				// String before
+				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(fromtime).to(c.getTime()).includeUpper(true).includeLower(true);
+			}
 			else
 			{
 				// Think this doesn't ever run. I think we use betweendates.
