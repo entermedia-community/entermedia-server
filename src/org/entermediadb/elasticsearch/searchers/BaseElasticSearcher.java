@@ -1987,6 +1987,9 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
+				if(detail == null) {
+					detail = inDetails.getLegacyDetail(propid);
+				}
 				if( detail == null && !propid.equals("description") && !propid.contains("_int"))
 				{
 					
