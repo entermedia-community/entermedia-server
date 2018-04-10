@@ -46,7 +46,7 @@
    
   </property>  
   
-   <property id="expiresin" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true" type="long" datatype="long">OAUTH refresh expiration
+   <property id="expiresin" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true" type="date" datatype="date">OAUTH refresh expiration
    
   </property> 
   
