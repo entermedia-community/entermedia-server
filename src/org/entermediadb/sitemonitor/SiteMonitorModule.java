@@ -1,6 +1,5 @@
 package org.entermediadb.sitemonitor;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
