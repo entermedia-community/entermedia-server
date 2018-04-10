@@ -1,7 +1,7 @@
 #set( $q = $searchstring)
 [
 #foreach ($res in $suggestions)#set( $s = $res.get('synonyms'))
-#if( $velocityCount > 1 ),#end
+#if( ${foreach.count} > 1 ),#end
 {"label": "$!jsonUtil.escape("$s ($res.get('hitcount'))")", "value": "$!jsonUtil.escape($s)"}
 #end
 ]

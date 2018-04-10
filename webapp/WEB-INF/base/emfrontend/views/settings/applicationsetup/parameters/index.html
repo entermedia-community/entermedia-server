@@ -6,7 +6,8 @@
 #foreach( $data in $settings.query().all().sort("name").search() )
 <tr rowid="$data.getId()">
 <td>
- <b>$data</b>
+ <b>$data</b><br>
+ &nbsp;&nbsp;<i> $data.id </i>
 </td>
 <td>
 $!data.value

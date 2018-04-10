@@ -1882,11 +1882,21 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		if (!Boolean.parseBoolean(clear))
 		{
 			hits = loadHits(inReq);
+			if( hits != null)
+			{
+				String input = hits.getSearchQuery().get("userinputsearch");
+				if( !Boolean.parseBoolean( input ) )
+				{
+					hits = null;
+				}
+			}
 		}
-		
 		if( hits == null)
 		{
-			hits = search(inReq);
+			//hits = search(inReq);
+			Searcher searcher = loadSearcher(inReq);
+			hits = searcher.getAllHits(inReq);
+			hits.getSearchQuery().setProperty("userinputsearch", "true");  //So it caches
 		}
 		
 	}

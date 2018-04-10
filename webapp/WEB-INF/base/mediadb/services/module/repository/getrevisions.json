@@ -12,7 +12,7 @@
 			}
 		},
 	"results":[
-#foreach( $revision in $hits )#if( $velocityCount != 1 ), #end
+#foreach( $revision in $hits )#if( ${foreach.count} != 1 ), #end
 {	
 	"number":"$revision.getVersion()", 
 	"bytes":"$revision.getLength()",

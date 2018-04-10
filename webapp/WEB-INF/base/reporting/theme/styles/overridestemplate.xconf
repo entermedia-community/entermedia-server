@@ -5,6 +5,6 @@
 	
 	<path-action name="MediaArchiveModule.getMediaArchive" alltypes="true" allowduplicates="true"/>
 	<!--
-	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.apache.commons.lang.math.NumberUtils" alltypes="true"/>
+	<page-action name="PageValue.loadPageVariable" bean="numberutils" class="org.entermediadb.asset.util.MathUtils" alltypes="true"/>
 	-->
 </page>

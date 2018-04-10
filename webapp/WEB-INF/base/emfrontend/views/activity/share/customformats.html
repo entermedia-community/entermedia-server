@@ -31,7 +31,8 @@
 		 
 				$context.putPageValue("asset", $asset)
 				$context.putPageValue("item", $item)
-				$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+	   	#set( $sourcepath = $asset.sourcePath )
+		$context.setRequestParameter("sourcepath", $sourcepath)					
 	
 	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
 		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
@@ -47,7 +48,6 @@
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
-		   	#set( $sourcepath = $asset.sourcePath )
 		   	$context.putPageValue("thumbsize", "crop")
 			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
 </td>

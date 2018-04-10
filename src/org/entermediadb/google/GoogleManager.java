@@ -636,6 +636,39 @@ public class GoogleManager implements CatalogEnabled {
 	
 	
 	
-	
+	public void saveCloudFile(Data authinfo, String inUrl, ContentItem inItem) throws Exception {
+		CloseableHttpClient httpclient = HttpClients.createDefault();
+
+		// GET
+		// https://www.googleapis.com/drive/v3/files/0B9jNhSvVjoIVM3dKcGRKRmVIOVU?alt=media
+		// Authorization: Bearer <ACCESS_TOKEN>
+
+		HttpRequestBase httpmethod = new HttpGet(inUrl);
+		String accesstoken = getAccessToken(authinfo);
+		httpmethod.addHeader("authorization", "Bearer " + accesstoken);
+
+		HttpResponse resp = httpclient.execute(httpmethod);
+
+		if (resp.getStatusLine().getStatusCode() != 200) {
+			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode());
+		}
+
+		HttpEntity entity = resp.getEntity();
+
+		File output = new File(inItem.getAbsolutePath());
+		output.getParentFile().mkdirs();
+		log.info("Google Manager Downloading " + inItem.getPath());
+		filler.fill(entity.getContent(), new FileOutputStream(output), true);
+
+		// getMediaArchive().getAssetImporter().reImportAsset(getMediaArchive(),
+		// inAsset);
+		
+
+		// if( assettype != null && assettype.equals("embedded") )
+		// {
+		// current.setValue("assettype","embedded");
+		// }
+
+	}
 
 }

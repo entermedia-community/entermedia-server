@@ -1,4 +1,3 @@
-#set ($catalogid = $context.getRequestParameter('catalogid'))
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
 #set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 #set ($view = $context.getRequestParameter('view')) 
@@ -11,51 +10,74 @@
      
 
 <div id="${detail.id}_map" align style="width: 100%; height:400px; margin-bottom: 15px;"></div>
-   #set($latandlong = $data.get("$detail.id"))
-   #set( $lat = $!data.getValue("${detail.id}").getLatitude() )
-   #set( $lng = $!data.getValue("${detail.id}").getLongitude() )
-   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
+   #set($latandlong = $data.getValue($detail.getId()))
    
+   #set( $lat = $latandlong.getLatitude() )
+   #set( $lng = $latandlong.getLongitude() )
+   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
 
   
    Position: <input type="text" id="${detail.id}_latandlong" size="40" name="${detail.id}.value" value="$lat,$lng"/>
 
-
 <script type="text/javascript">
 
-jQuery('#${detail.id}_map').gmap({
-	 'center':'$mediaarchive.getCatalogSettingValue("startinglatlong")',
-}).bind('init', function(ev, map) {
-	#if( $latandlong )
-	$('#${detail.id}_map').gmap('addMarker', 
-			{
-			'position': '$lat,$lng',
-			'draggable': true, 
-		    'bounds': true
-		    #if($icon)
-				,'icon': '$icon.url'
-				#end
-		    })
-		    .dragend(function(event) 
-	    	  		{
-	    		 	
-	              
-	              jQuery('#${detail.id}_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
-	              
-	              
-	    	  	}       
-	    	).click(function() {
-	});
-	    $('#${detail.id}_map').gmap('option', 'zoom', 12);
-	#else
-	    $('#${detail.id}_map').gmap('option', 'zoom', 2);
-	#end
+function getLatLngFromString(ll) {
+    var latlng = ll.split(/, ?/)
+    return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
+}
 
-}).click(function(e)
-		{
-			//alert( "click");
+initialize = function() 
+{
+
+#if($latandlong)
+ var centerloc = getLatLngFromString('$lat,$lng');
+#else
+ var centerloc = getLatLngFromString('$mediaarchive.getCatalogSettingValue("startinglatlong")');
+#end
+ var map = new google.maps.Map(jQuery('#${detail.id}_map')[0], {
+    #if( $latandlong )
+    zoom: 8
+    #else
+    zoom: 2
+    #end,
+    center:centerloc,
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+      mapTypeIds: ['roadmap', 'terrain']
+    }
+  });
+
+     var marker = new google.maps.Marker({
+		position: getLatLngFromString('$lat,$lng'),
+		draggable: true, 
+		bounds: true,
+        map: map,
+	    #if($icon)
+		icon: '$icon.url',
+		#end
+        title: '$asset.getName()'
+     });
+     
+     
+     google.maps.event.addListener(marker, 'dragend', function(event)
+	    {
+	    	console.log(marker.getPosition());
+            jQuery('#${detail.id}_latandlong').val(marker.getPosition().lat()+ "," + marker.getPosition().lng());
 		});
 
+
+	jQuery('#${detail.id}_search').click(dosearch);
+	jQuery('#${detail.id}_address').keypress(function(e)
+	{
+		if (e.keyCode == 13) 
+		{
+			dosearch()
+		}
+	});
+			
+		
+}
 
 dosearch = function () 
 {
@@ -96,15 +118,6 @@ dosearch = function ()
 	
 }
 
-
-jQuery('#${detail.id}_search').click(dosearch);
-jQuery('#${detail.id}_address').keypress(function(e)
-{
-	if (e.keyCode == 13) 
-	{
-		dosearch()
-	}
-});
-		
+initialize(); //Onload?
 
 </script>

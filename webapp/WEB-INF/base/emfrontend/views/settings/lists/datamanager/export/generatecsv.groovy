@@ -115,10 +115,10 @@ writer.writeNext(headers);
 							{
 								String lang = it.id ;
 								String label = vals.getText(lang);
-								if( label == null && detail.getId().equals("name") )
-								{
-									label = hit.getName(lang);
-								}
+//								if( label == null && detail.getId().equals("name") )
+//								{
+//									label = hit.getName(lang);
+//								}
 								nextrow[fieldcount] = label;
 								fieldcount ++;
 							}

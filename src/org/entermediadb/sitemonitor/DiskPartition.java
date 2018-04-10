@@ -1,4 +1,4 @@
-package org.entermediadb.sitemanager;
+package org.entermediadb.sitemonitor;
 
 public class DiskPartition
 {

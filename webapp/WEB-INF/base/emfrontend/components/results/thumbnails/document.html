@@ -15,9 +15,15 @@
 
 #set( $imagesize = "image200x200.jpg")
 
-#if($thumbsize == "crop")
-	#set($imagesize = "image110x62cropped.jpg")
-#end		
+#if($thumbsize == "mediumplus")
+		
+			#set($imagesize = "image550x350.jpg")
+			
+	#elseif($thumbsize == "crop")
+		#set($imagesize = "image110x62cropped.jpg")
+	#end		
+
+
 #set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
 
 <span id="emthumbholder">

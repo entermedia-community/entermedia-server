@@ -5,8 +5,8 @@
 		<td class="rowselector"></td>
 		#foreach( $col in $sheet.getColumns() )
 			#set( $id = "id_$col.getId()")				
-			#set( $velocityCount0 = $velocityCount + -1) 
-			<th id="$col.getId()" class="colcontextmenu" style="width:${col.getWidth()}px;" colIndex="$velocityCount0"  onclick="selectCol('$col.getId()')">
+			#set( ${foreach.count}0 = ${foreach.count} + -1) 
+			<th id="$col.getId()" class="colcontextmenu" style="width:${col.getWidth()}px;" colIndex="${foreach.count}0"  onclick="selectCol('$col.getId()')">
 $col.getText() 
 			</th>
 		#end
@@ -43,7 +43,7 @@ $col.getText()
 		#set ($rowcolor = "")
 		#set ($rowcolor = $sheet.pickColorForRow($row))
 		<tr id="row_$row.getId()" >
-			<td class="rowselector rowcontextmenu" rowIndex="$velocityCount" rowid="$row.getId()" #if($row.getHeight() > -1) style="height: ${row.getHeight()}px"#end id="$row.getId()" #if($caneditspreadsheet) onclick="selectRow('$row.getId()')#end">$velocityCount</td>
+			<td class="rowselector rowcontextmenu" rowIndex="${foreach.count}" rowid="$row.getId()" #if($row.getHeight() > -1) style="height: ${row.getHeight()}px"#end id="$row.getId()" #if($caneditspreadsheet) onclick="selectRow('$row.getId()')#end">${foreach.count}</td>
 			#set( $rid = $row.getId() )
 			#foreach( $cell in $row.getCells() )
 				#set( $cid = $cell.getId() )

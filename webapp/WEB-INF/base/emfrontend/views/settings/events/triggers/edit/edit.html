@@ -7,6 +7,7 @@
 <table class="settings-table" cellpadding="5">
 <tr><td>Name:</td><td><input type="text" size="15" name="eventname" value='$!pathevent.getPage().getProperty("eventname")'/></td></tr>
 <tr><td>Period:</td><td><input type="text" size="4" name="period" value="$!pathevent.getFormattedPeriod()"/> [[in milliseconds (can use s, h, d or m)]]</td></tr>
+<tr><td>Starting:</td><td><input type="text" size="4" name="startingfrommidnight" value="$!pathevent.getStartingFromMidnight()"/> [[time from midnight (can use s, h, d or m)]]</td></tr>
 <tr><td>Enabled:</td><td><input name="enabled"  value="true" type="checkbox" #if($pathevent.isEnabled()) checked #end/></td></tr>
 #if( $pathevent)
 <tr><td>Event URL:</td><td>$!pathevent.getPage().getPath()</td></tr>
@@ -17,14 +18,13 @@
 #if ( $pathevent.getFormattedLastRun()  )
 <tr><td>Last ran on: </td><td> $!pathevent.getFormattedLastRun()</td></tr>
 #end 
- 	
 </table>
 
 <input class="btn" type="submit" value="[[Save]]"/>
 
  <a class="btn ajax" targetdivinner="eventstatus" href="../run.html?forcerun=true&runpath=$pathevent.getPage().getPath()&oemaxlevel=1">[[Run Now]]</a> 
  <a class="btn emdialog" href="$apphome/views/settings/events/triggers/edit/scripts/scripteditor.html?eventpath=$pathevent.getPage().getPath()">[[Edit Script]]</a> 
-
+&nbsp;&nbsp;<a class="btn ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">Clear Log</a>
 </form>
 
 </div>
@@ -33,9 +33,7 @@
 <div class="edit-permissions">
 $pages.include("$apphome/views/settings/events/triggers/edit/log.html")
 </div>
-
-<p> 
+<p>
 <a class="btn ajax" targetdivinner="eventeditpage"  href="$home$apphome/views/settings/events/triggers/edit/clear.html?eventpath=$pathevent.getPage().getPath()">Clear Log</a>
 </p>
-
 </div>

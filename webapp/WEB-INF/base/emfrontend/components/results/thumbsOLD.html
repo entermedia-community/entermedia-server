@@ -43,7 +43,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 		<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}" >
 			#set( $count = $hits.getPage()+-1 )
 			#set( $count = $count*$hits.getHitsPerPage() )	
-			#set( $count = $velocityCount + $count )
+			#set( $count = ${foreach.count} + $count )
 			$context.putPageValue("hitindex",$count )
 			#set ($sourcepath = $hit.sourcepath)
 		

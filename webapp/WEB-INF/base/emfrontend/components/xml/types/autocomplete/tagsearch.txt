@@ -6,7 +6,7 @@
   "incomplete_results": false,
   "rows": [ 
 	#foreach ($tag in $unique)
-	#if( $velocityCount > 1 ),#end
+	#if( ${foreach.count} > 1 ),#end
 	{ "id" : #jesc($tag) , "name": #jesc($tag)}
 	#end
 	]

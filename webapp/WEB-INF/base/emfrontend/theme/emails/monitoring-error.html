@@ -6,24 +6,31 @@
 #if($monitored.isreachable == "false")
 	[[The instance seems to be down]]: <a href="$monitored.url">$monitored.url</a><br/><br/>
 #else
-	#if ($monitored.nodisk == "false")
-		#foreach($partition in $monitored.getValue("partitions"))
-			#if($partition.isIsOverloaded() == true)
-				[[The following instance's partition is running out of disk space]]: <b>$partition.getName()</b> <b>${partition.getFreePartitionSpace()}Mb</b> [[remaining of]] <b>${partition.getUsablePartitionSpace()}Mb</b>.<br/><br/>
-			#end
+	#if($monitored.isssl == "true")
+		#if($monitored.sslstatus == "torenew")
+			[[The instance's SSL certificate will expires in ]]$monitored.daystoexpiration[[ days, ]][[on ]]<b>$monitored.expirationdate</b>. [[Please renew it by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
+		#elseif($monitored.sslstatus == "expired")
+			[[The instance's SSL certificate has expired on]] <b>$monitored.expirationdate</b>. [[Please deploy a new one by running sudo /home/entermedia/letsencrypt/letsencrypt-auto renew on the corresponding instance's server]].
+		#elseif($monitored.sslstatus == "error")
+			[[Can't retrieve any SSL certificate for the following instance: ]]: <a href="$monitored.url">$monitored.url</a><br/><br/>
 		#end
 	#else
-		[[Monitor tool has no disk partitions configured for this]] <a href="$monitored.url">[[instance]]</a>.<br/><br/>		
-	#end
-	
-	#if($monitored.iscpu == "true")
-		[[The instance's CPUs are overloaded]]: <b>$monitored.loadaverage</b> [[currently used]].<br/><br/>
-	#end
-	#if($monitored.isheap == "true")
-		[[The instance's heap partition is running out of space]]: <b>$monitored.heapusedpercent</b> [[currenlty used]].<br/><br/>
-	#end
-	#if($monitored.ismemory == "true")
-		[[The instance is running out of memory]]: <b>${monitored.servermemoryfree}Mb</b> [[remaining of]] <b>${monitored.servermemorytotal}Mb</b>.
+		#if ($monitored.isdisk == "true")
+			#foreach($partition in $monitored.getValue("partitions"))
+				#if($partition.isIsOverloaded() == true)
+					[[The following instance's partition is running out of disk space]]: <b>$partition.getName()</b> <b>${partition.getFreePartitionSpace()}Mb</b> [[remaining of]] <b>${partition.getUsablePartitionSpace()}Mb</b>.<br/><br/>
+				#end
+			#end
+		#end
+		#if($monitored.iscpu == "true")
+			[[The instance's CPUs are overloaded]]: <b>$monitored.loadaverage</b> [[currently used]].<br/><br/>
+		#end
+		#if($monitored.isheap == "true")
+			[[The instance's heap partition is running out of space]]: <b>$monitored.heapusedpercent</b> [[currenlty used]].<br/><br/>
+		#end
+		#if($monitored.ismemory == "true")
+			[[The instance is running out of memory]]: <b>${monitored.servermemoryfree}Mb</b> [[remaining of]] <b>${monitored.servermemorytotal}Mb</b>.
+		#end
 	#end
 #end
 

@@ -1,3 +1,5 @@
 <page>
 	<property name="enabled">true</property>
+	<path-action name="PathEventModule.sleep" sleeptime="500" allowduplicates="true"/>
+	
 </page>

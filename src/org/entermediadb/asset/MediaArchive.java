@@ -1574,12 +1574,12 @@ public class MediaArchive implements CatalogEnabled
 		return page.getLength() > 1;
 	}
 
-	public String asExportFileName(Asset inAsset, Data inPreset)
+	public String asExportFileName(Data inAsset, Data inPreset)
 	{
 		return asExportFileName(null, inAsset, inPreset);
 	}
 
-	public String asExportFileName(User inUser, Asset inAsset, Data inPreset)
+	public String asExportFileName(User inUser, Data inAsset, Data inPreset)
 	{
 		String format = inPreset.get("fileexportformat");
 		if (format == null)
@@ -1602,7 +1602,7 @@ public class MediaArchive implements CatalogEnabled
 		String shortname = PathUtilities.extractPageName(inAsset.getName());
 		tmp.put("shortfilename", shortname);
 
-		tmp.put("catalogid", inAsset.getCatalogId());
+		tmp.put("catalogid", getCatalogId());
 		tmp.put("sourcepath", inAsset.getSourcePath());
 		tmp.put("date", ymd.format(now));
 		tmp.put("time", time.format(now));
@@ -2104,17 +2104,21 @@ public class MediaArchive implements CatalogEnabled
 		{
 			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
 			cdnprefix = rutil.getSiteRoot();
-			//TODO: Look up the home variable?
-			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
-			Data prefix = (Data)searcher.searchById("cdn_prefix");
-			if( prefix == null)
+			if( cdnprefix.contains("localhost"))
 			{
-				prefix = searcher.createNewData();
-				prefix.setId("cdn_prefix");
+				cdnprefix = "";
 			}
-			prefix.setValue("value", cdnprefix);
-			searcher.saveData(prefix);
-			getCacheManager().clear("catalogsettings");
+//			//TODO: Look up the home variable?
+//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
+//			Data prefix = (Data)searcher.searchById("cdn_prefix");
+//			if( prefix == null)
+//			{
+//				prefix = searcher.createNewData();
+//				prefix.setId("cdn_prefix");
+//			}
+//			prefix.setValue("value", cdnprefix);
+//			searcher.saveData(prefix);
+//			getCacheManager().clear("catalogsettings");
 		}
 		String sourcepath = URLUtilities.encode(inAsset.getSourcePath());
 

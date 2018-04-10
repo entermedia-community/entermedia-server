@@ -27,7 +27,7 @@ $pages.include("${themeprefix}/entermedia/layouts/resultsheader.html", $context)
 		#set($audiofilepath = "$home$mediaarchive.getCatalogHome()/downloads/mp3/$hit.sourcepath/audio.mp3")
 	
 		$context.putPageValue("path","$audiofilepath")
-		$context.putPageValue("id","$velocityCount")
+		$context.putPageValue("id","${foreach.count}")
 		$context.putPageValue("autostart","false")
 		$pages.include("/$applicationid/components/audioplayer/minimal.html", $context)
 		

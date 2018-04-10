@@ -16,7 +16,7 @@
 		
 		    #set($tags = "")
 			#foreach( $parent in $category.getParentCategories() )
-				 #if( $velocityCount > 1) #set($tags = "$tags > ") #end
+				 #if( ${foreach.count} > 1) #set($tags = "$tags > ") #end
 				 #set($tags = "$tags $parent.getName()" )
 			#end	
 			<a class="row category" href="$home$apphome/views/categories/${category.id}.html" title="$tags">$tags</a>

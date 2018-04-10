@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.lucene.queryparser.classic.QueryParser;
@@ -1211,7 +1211,28 @@ public class BaseElasticSearcher extends BaseSearcher
 				// String before
 				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
 			}
+			else if ("ondate".equals(inTerm.getOperation()))
+			{
+				Date target = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 
+				Calendar c = new GregorianCalendar();
+				c.setTime(target);
+				c.set(Calendar.HOUR_OF_DAY, 0);
+				c.set(Calendar.MINUTE, 0);
+				c.set(Calendar.SECOND, 0);
+				c.set(Calendar.MILLISECOND, 0);
+				Date fromtime = c.getTime();
+
+				c.set(Calendar.HOUR_OF_DAY, 23);
+				c.set(Calendar.MINUTE, 59);
+				c.set(Calendar.SECOND, 59);
+				c.set(Calendar.MILLISECOND, 999);
+
+				// inTerm.getParameter("beforeDate");
+
+				// String before
+				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(fromtime).to(c.getTime()).includeUpper(true).includeLower(true);
+			}
 			else
 			{
 				// Think this doesn't ever run. I think we use betweendates.
@@ -1966,6 +1987,9 @@ public class BaseElasticSearcher extends BaseSearcher
 					continue;
 				}
 				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
+				if(detail == null) {
+					detail = inDetails.getLegacyDetail(propid);
+				}
 				if( detail == null && !propid.equals("description") && !propid.contains("_int"))
 				{
 					
@@ -2171,11 +2195,16 @@ public class BaseElasticSearcher extends BaseSearcher
 					else if(value instanceof String) 
 					{
 						GeoPoint point = new GeoPoint((String)value);
-						inData.setValue(key, point);
+						inContent.field(key, point);  
+						Position position = new Position(point.getLat(), point.getLon());
+						inData.setValue(key, position); //For next time?
 					}
 					else if(value instanceof GeoPoint) 
 					{
-						inData.setValue(key, value);
+						GeoPoint point = (GeoPoint)value;
+						inContent.field(key, point);  
+						Position position = new Position(point.getLat(), point.getLon());
+						inData.setValue(key, position); //For next time?
 					}
 				}
 				else if (key.equals("description")) // TODO: This should be

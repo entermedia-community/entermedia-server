@@ -3,7 +3,7 @@
   "incomplete_results": false,
   "rows": [
 	#foreach ($res in $autocomplete.getPageOfHits())
-	#if( $velocityCount > 1 ),#end
+	#if( ${foreach.count} > 1 ),#end
 	#set($label = $searcherManager.getLabel($searcher,$res))
 	{"id": "$res.get('id')", "name": #jesc($label), "sourcepath" : "$res.sourcepath"}
 	#end

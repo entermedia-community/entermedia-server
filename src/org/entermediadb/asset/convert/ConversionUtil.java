@@ -301,7 +301,9 @@ public class ConversionUtil {
 		SearcherManager sm = getSearcherManager();
 		Collection both = new ArrayList();
 		both.add("all");
+		if(mediatype != null) {
 		both.add(mediatype);
+		}
 		HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").orgroup("inputtype", both).sort("ordering").search();
 		//HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").sort("ordering").search();
 		return all;

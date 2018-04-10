@@ -17,7 +17,9 @@
   	#end
 	#if( $caneditdata || $librarycol.isVisibility("2") )
 		  #if($canviewupload || $canimportworkspace || $cancopycategory)
-		  <li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
+#if($librarycol.projectstatus != "finalized")		
+  <li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
+#end
 		  #end
 	#end	  
     #if($caneditdata && $canassetannotate )

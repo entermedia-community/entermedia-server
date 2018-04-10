@@ -20,7 +20,7 @@
 	#else
 		$term.getValue()
 	#end
-	#if($velocityCount != $query.getTerms().size())
+	#if(${foreach.count} != $query.getTerms().size())
 		#if($query.isAndTogether())
 			[[and]]
 		#else
@@ -44,7 +44,7 @@
 	#else
 		$term.getValue()
 	#end
-	#if($velocityCount != $child.getTerms().size())
+	#if(${foreach.count} != $child.getTerms().size())
 		#if($child.isAndTogether()) 
 			[[and]]
 		#else

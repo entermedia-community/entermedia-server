@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <page>
-<property name="virtual">true</property>
-			<path-action bean="cacheManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
-<permission name="view"><blank/></permission>
+	<path-action name="SiteMonitorModule.checkDisks">
+	</path-action>
+	 <permission name="view"><boolean value="true" /></permission>
 </page>

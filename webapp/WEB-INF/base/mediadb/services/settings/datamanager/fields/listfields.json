@@ -12,7 +12,7 @@
 	},
 	"results":[
 #foreach( $detail in $hits )
-		{"id": "$detail.id" }	#if( $velocityCount != $hits.size() ), #end
+		{"id": "$detail.id" }	#if( ${foreach.count} != $hits.size() ), #end
 
 #end		
 	]

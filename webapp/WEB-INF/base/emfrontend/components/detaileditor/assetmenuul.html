@@ -26,7 +26,7 @@
     #end
     #foreach( $link in $links)
 	
-		#if( $velocityCount == 2)
+		#if( ${foreach.count} == 2)
 			##render editing boxes
 			$pages.include("$apphome/components/detaileditor/assetdatatables.html",$context)
 		#end

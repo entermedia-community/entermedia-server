@@ -1,6 +1,8 @@
 package org.entermediadb.asset.modules;
 
+import java.util.Calendar;
 import java.util.Collections;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -20,7 +22,8 @@ import org.openedit.page.PageSettings;
 public class PathEventModule extends BaseModule
 {
 	private static final Log log = LogFactory.getLog(PathEventModule.class);
-
+	public static long sleepcount;
+	
 	public boolean runEvent(WebPageRequest inReq)
 	{
 		String runpath = inReq.findValue("runpath");
@@ -119,6 +122,9 @@ public class PathEventModule extends BaseModule
 		event.setDelay(inReq.getRequestParameter("delay"));
 		String enabled = inReq.getRequestParameter("enabled");
 		event.setEnabled("true".equals(enabled));
+
+		String startingfrommidnight = inReq.getRequestParameter("startingfrommidnight");
+		event.setStartingFromMidnight(startingfrommidnight);
 		
 //		Page eventpage = event.getPage();
 //		eventpage.setProperty("period", event.getFormattedPeriod());
@@ -135,6 +141,10 @@ public class PathEventModule extends BaseModule
 		settings.putProperty(prop);
 		prop = new PageProperty("enabled");
 		prop.setValue(String.valueOf(event.isEnabled()));
+		settings.putProperty(prop);
+
+		prop = new PageProperty("startingfrommidnight");
+		prop.setValue(event.getStartingFromMidnight());
 		settings.putProperty(prop);
 		
 		prop = new PageProperty("eventname");
@@ -258,5 +268,15 @@ public class PathEventModule extends BaseModule
 		return false;
 	}
 
-	
+	public void sleep(WebPageRequest inReq) throws Exception
+	{
+		String sleep = inReq.findValue("sleeptime");
+		if( sleep == null)
+		{
+			sleep = "1000";
+		}
+		long sleeptime = Long.parseLong(sleep);
+		Thread.currentThread().sleep(sleeptime);
+		sleepcount = sleepcount + sleeptime;
+	}
 }

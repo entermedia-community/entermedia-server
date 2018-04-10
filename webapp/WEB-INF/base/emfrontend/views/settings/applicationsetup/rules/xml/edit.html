@@ -13,7 +13,7 @@ $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 	#foreach( $child in $filter.filters)	
 		
 		#set( $level = $inLevel+1)
-		#set( $zeroCount = $velocityCount+-1)
+		#set( $zeroCount = ${foreach.count}+-1)
 			    
 		#set( $newtraverse = "${inTraverse}/${zeroCount}")
 		<li>#showfilter2($child $level $newtraverse)</li>

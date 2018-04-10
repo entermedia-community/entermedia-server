@@ -38,7 +38,9 @@ uiload = function() {
 	jQuery("select.select2").livequery( function() 
 	{
 		var input = jQuery(this);
-		input.select2();
+		input.select2({
+				allowClear: true
+		});		
 	});
 	
 	jQuery("select.listdropdown").livequery( function() 

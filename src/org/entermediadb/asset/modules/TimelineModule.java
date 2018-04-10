@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -31,7 +32,6 @@ import org.openedit.locks.Lock;
 import org.openedit.modules.translations.Translation;
 import org.openedit.page.Page;
 import org.openedit.util.FileUtils;
-import org.openedit.util.PathUtilities;
 
 public class TimelineModule extends BaseMediaModule
 {
@@ -414,7 +414,9 @@ public class TimelineModule extends BaseMediaModule
 			lasttrack.setProperty("sourcelang", selectedlang);
 			lasttrack.setProperty("assetid",  asset.getId());
 			lasttrack.setValue("transcribestatus", "needstranscribe");
-
+			lasttrack.setValue("requesteddate", new Date());
+			lasttrack.setValue("owner", inReq.getUserName());
+			lasttrack.setValue("length", asset.getValue("length"));
 		}
 		captionsearcher.saveData(lasttrack);
 		inReq.putPageValue("track", lasttrack);
@@ -444,6 +446,8 @@ public class TimelineModule extends BaseMediaModule
 				{
 //					manager.transcodeCaptions(track);
 //					track.setValue("transcribestatus", "complete");
+					
+
 					manager.asyncTranscodeCaptions(track);
 				}
 			}

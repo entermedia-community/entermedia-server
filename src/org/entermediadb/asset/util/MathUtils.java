@@ -159,4 +159,49 @@ public class MathUtils
 		}
 	}
 	
+	public Integer toInt(Object inObject)
+	{
+		if( inObject == null)
+		{
+			return null;
+		}
+		if( inObject instanceof String)
+		{
+			String str = (String)inObject;
+			
+			if (str.isEmpty())
+			{
+				return 0;
+			}
+			return Integer.parseInt( str );
+		}
+		if( inObject instanceof Number)
+		{
+			return ((Number)inObject).intValue();
+		}
+		return (Integer)inObject;
+	}
+
+	public Double createDouble(Object inObject)
+	{
+		if( inObject == null)
+		{
+			return null;
+		}
+		if( inObject instanceof String)
+		{
+			String str = (String)inObject;
+			
+			if (str.isEmpty())
+			{
+				return 0.0;
+			}
+			return Double.parseDouble( (String)inObject );
+		}
+		if( inObject instanceof Number)
+		{
+			return ((Number)inObject).doubleValue();
+		}
+		return (Double)inObject;
+	}
 }

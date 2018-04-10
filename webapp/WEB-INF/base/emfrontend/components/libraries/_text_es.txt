@@ -1,10 +1,13 @@
 #
-#Thu Apr 20 13:21:24 CDT 2017
-Details=detalles
-Libraries=bibliotecas
+#Mon Mar 26 16:11:06 EDT 2018
+Add\ Library=A\u00F1adir biblioteca
+[Add\ New=[Agregar nuevo
 Assets=Bienes
 Create\ New=Crear nuevo
-Add\ Library=A\u00F1adir biblioteca
-add=a\u00F1adir
 Add\ Collection=A\u00F1adir colecci\u00F3n
+Pick\ From=Escoge de
+Details=detalles
+Libraries=bibliotecas
 Collections=Colecciones
+Collection\ Search=B\u00FAsqueda de colecciones
+add=a\u00F1adir

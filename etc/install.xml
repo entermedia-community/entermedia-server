@@ -133,16 +133,13 @@
 	      <fileset dir="./lib" includes="velocity-**.jar"/>
 	    </delete>
 	    <delete>
-	      <fileset dir="./lib" includes="commons-fileupload-**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="commons-net-**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="commons-logging-**.jar"/>
+	      <fileset dir="./lib" includes="commons-**.jar"/>
 	    </delete>
 	    <delete>
 	      <fileset dir="./lib" includes="log4j**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="slf4j**.jar"/>
 	    </delete>
 	    <delete>
 	      <fileset dir="./lib" includes="dom4j**.jar"/>

@@ -6684,10 +6684,6 @@ div#left-col-libraries div.ui-widget-content
 }
 
 
-.detail-select {
- max-width: 200px;
-}
-
 div.tableheaderactions 
 {
 	padding: 10px;
@@ -7083,7 +7079,10 @@ div.languagesaddform div.languageinput input
 
 input.textinput
 {
-	width: 228px;
+	width: 270px;
+}
+.detail-select {
+ max-width: 280px;
 }
 a.textlink
 {

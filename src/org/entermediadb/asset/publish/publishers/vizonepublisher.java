@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -53,6 +54,26 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	private static final String CACHE = "VIZ_Cookies";
 	private static final String COOKIES = "Cookies";
 	
+	
+	//vpm.restrictions should contain the values of UserRestrictions and UserRestInstruction seperated by ','
+	//
+	private static Map UserRestInstruction = new HashMap(); //rightsusageinstructions 
+	private static Map UserRestrictions = new HashMap();   //restrictions
+	private static Map RightCodes = new HashMap();  
+	static {
+		UserRestInstruction.put("1", "Nouvelles seulement");
+		UserRestInstruction.put("2", "Utilisation unique");
+		UserRestInstruction.put("3", "Émission spécifique");
+		UserRestInstruction.put("4", "Utilisation équitable seulement");
+		UserRestInstruction.put("5", "Utilisation éditoriale seulement");
+		
+		UserRestrictions.put("1", "Aucune");
+		UserRestrictions.put("2", "Oui");
+		
+		RightCodes.put("1", "G");
+		RightCodes.put("2", "Y");
+	}
+
 	public PublishResult publish(MediaArchive inMediaArchive, Asset inAsset, Data inPublishRequest, Data inDestination, Data inPreset)
 	{
 		
@@ -196,7 +217,8 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		log.info("Updating metadata at " + addr);
 		String vizoneretention = inAsset.get("vizoneretention");
 		if(vizoneretention == null){
-			inAsset.setValue("vizoneretention", "oneweek");
+			vizoneretention = "oneweek";
+			inAsset.setValue("vizoneretention", vizoneretention);
 			inArchive.saveAsset(inAsset);
 		}
 		
@@ -219,9 +241,15 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		{
 			throw new OpenEditException("error from server " + status + "  " + sl.getReasonPhrase());
 		}
-
+		//Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
+		//ArrayList done = new ArrayList();
+        
 		Element elem = getXmlUtil().getXml(response.getEntity().getContent(), "UTF-8");
 		ArrayList done = new ArrayList();
+		/**
+		 * or each element in the response, check for vizonefield locally and if it's found then force its value instead
+		 * of the received one.
+		 */
 		for (Iterator iterator = elem.elementIterator("field"); iterator.hasNext();)
 		{
 			Element field = (Element) iterator.next();
@@ -237,13 +265,13 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				{
 					String assetvalue = inAsset.get(detail.getId());
 					if(assetvalue != null){
-					value.setText(assetvalue);
-					done.add(detail.getId());
+						log.info("***Already DONE assetvalue: "+assetvalue +" for "+name);
+					    value.setText(assetvalue);
+					    done.add(detail.getId());
 					}
 				}
 			}
 		}
-		
 		
 		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
 		{
@@ -252,45 +280,40 @@ public class vizonepublisher extends BasePublisher implements Publisher
 				continue;
 			}
 			String vizfield = detail.get("vizonefield");
-			if(vizfield != null){
-//				<field name="vpm.importFileName">
-//			    <value>ALQEYXQQMVPNAFPY</value>
-//			  </field>		
+			if(vizfield != null){		
 				String assetvalue = inAsset.get(detail.getId());
 				if(assetvalue != null){
 					Element field = elem.addElement("field");
 					field.addAttribute("name", vizfield);
 					Element value = field.addElement("value");
 					value.setText(assetvalue);		
-					log.info("*** value.setText: "+assetvalue +" for "+vizfield);
+					//log.info("*** value.setText: "+assetvalue +" for "+vizfield);
 					
 				}
 			}
 		}
-		//check if owner exists
-		boolean assetOwner_IMG = false;
-		for (Iterator iterator = elem.elementIterator(); iterator.hasNext();) {
-			Element _elem = (Element) iterator.next();
-			Attribute att_v = _elem.attribute("name");
-			if (att_v != null && att_v.getStringValue().equals("asset.owner")) {
-				Element _elem_value = _elem.element("value");
-				if (_elem_value != null) {
-					_elem_value.setText("Img");
-				} else {
-					//asset.owner present but empty
-					Element value = _elem.addElement("value");
-					value.setText("Img");
-				}
-				assetOwner_IMG = true;
-			} 
+		//the date saved in emshare should be formatted for viz
+		setAssetDate(inArchive, inAsset, elem);
+		setField(inAsset, elem, "asset.retentionPolicy", vizoneretention);
+		setField(inAsset, elem, "asset.owner", "Img");
+		String restrictionVal = getRestrictionValue(inAsset);
+		
+		if (restrictionVal != null) {
+			setField(inAsset, elem, "vpm.restrictions", restrictionVal);
 		}
-		if (!assetOwner_IMG) {
-			Element field = elem.addElement("field");
-			field.addAttribute("name", "asset.owner");
-			Element value = field.addElement("value");
-			value.setText("Img");
+		
+        String rightsCode = (String)RightCodes.get(inAsset.get("restrictions"));
+		
+		if (rightsCode != null) {
+			setField(inAsset, elem, "asset.rightsCode", rightsCode);
 		}
 
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.DATE, 7);  // number of days to add
+        String dt = sdf.format(c.getTime());
+        setField(inAsset, elem, "asset.retentionDate", dt);
+        
 		HttpPut method = new HttpPut(addr);
 		method.setHeader("Content-Type", "application/vnd.vizrt.payload+xml;charset=utf-8");
 		method.setHeader("Authorization", "Basic " + inAuthString);
@@ -298,7 +321,12 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		method.setHeader("Accept-Charset", "UTF-8");
 		setCookies(inArchive, method);
 		
+		
+		
 		StringEntity params = new StringEntity(elem.asXML(), "UTF-8");
+		
+		log.info("*** value.setAll "+elem.asXML());
+		
 		method.setEntity(params);
 
 		HttpResponse response2 = getClient().execute(method);
@@ -315,31 +343,122 @@ public class vizonepublisher extends BasePublisher implements Publisher
 		//	Accept: application/atom+xml;type=feed" "https://vmeserver/thirdparty/asset/item?start=1&num=20&sort=-search.modificationDate&q=breakthrough
 	}
 
+	private void setField(Asset inAsset, Element elem, String key, String val) {
+		//check if key exists
+		boolean isKeyExists = false;
+		for (Iterator iterator = elem.elementIterator(); iterator.hasNext();) {
+			Element _elem = (Element) iterator.next();
+			Attribute att_v = _elem.attribute("name");
+			if (att_v != null && att_v.getStringValue().equals(key)) {
+				Element _elem_value = _elem.element("value");
+				if (_elem_value != null) {
+					_elem_value.setText(val);
+				} else {
+					//asset.owner present but empty
+					Element value = _elem.addElement("value");
+					value.setText(val);
+				}
+				//log.info("*** value.setText: "+val +" for "+key);
+				isKeyExists = true;
+			} 
+		}
+		if (!isKeyExists) {
+			Element field = elem.addElement("field");
+			field.addAttribute("name", key);
+			Element value = field.addElement("value");
+			value.setText(val);
+			//log.info("*** value.setText: "+val +" for "+key);
+		}
+	}
+	
+	private void setAssetDate(MediaArchive inArchive, Asset inAsset, Element elem) throws Exception {
+		for (Iterator iterator = inArchive.getAssetSearcher().getPropertyDetails().iterator(); iterator.hasNext();)
+		{
+			PropertyDetail detail = (PropertyDetail) iterator.next();
+			
+			String vizfield = detail.get("vizonefield");
+			if(vizfield != null && vizfield.equals("news.eventDate")){		
+				String assetvalue = inAsset.get(detail.getId());
+				if(assetvalue != null){
+					SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	                Date date = sdf.parse(assetvalue);
+	                assetvalue = sdf.format(date);
+	                setField(inAsset, elem, "news.eventDate", assetvalue);
+	                //log.info("***setAssetDate value.setText: "+assetvalue +" for "+vizfield);
+	                return;
+				}
+			}
+		}
+	}
+	
+	
+	private String getRestrictionValue(Asset inAsset) {
+		String rest_val = (String)UserRestrictions.get(inAsset.get("restrictions"));
+		String right_val = (String)UserRestInstruction.get(inAsset.get("rightsusageinstructions"));
+		String term_val = (String)inAsset.get("rightsusageterms");
+		//log.info("*** getRestrictionValue: "+rest_val +" , "+right_val +" , "+term_val);
+		
+		String ret = "";
+		if (rest_val != null) 
+			ret = rest_val + "-";
+		if (right_val != null) 
+			ret = ret + right_val + "-";
+		if (term_val != null) 
+			ret = ret + term_val + "-";
+		
+		if (ret.length() > 0) {
+			ret = ret.substring(0, ret.length()-1);
+			return ret;
+		}
+		/*
+		if (rest_val != null && right_val != null) {
+			return rest_val + " - " + right_val;
+		} else if (rest_val != null) {
+			return rest_val;
+		} else if (right_val != null) {
+			return right_val;
+		}*/
+		return null;
+	}
+
 	private boolean updateAcl(Element elemRoot, QName qname) {
 		Element elemAcl = elemRoot.element(qname);
-		boolean externalAppElementFound = false;
+		boolean ret = false;
 		if (elemAcl != null) {
 			
-			//acl:media element found. search for "External applications" element
-			for (Iterator iterator = elemAcl.elementIterator(); iterator.hasNext();) {
-				Element _elem = (Element) iterator.next();
-				//System.out.println(_elem);
-				Attribute att_v = _elem.attribute("name");
-				//System.out.println(att_v);
-				if (att_v != null && att_v.getStringValue().equals("External applications")) {
-					externalAppElementFound = true;
-					
-				} 
-			}
-			if (!externalAppElementFound) {
-				Element nElement = new DefaultElement("acl:group");
-				nElement.addAttribute("name", "External applications");
-				nElement.addAttribute("read", "1");
-				nElement.addAttribute("write", "1");
-				nElement.addAttribute("admin", "0");
-				elemAcl.add(nElement);
-				return true;
-			}
+			ret = updateAclElement(elemAcl, "External applications", new String[] {"1","1","0"});
+			ret = updateAclElement(elemAcl, "Newsroom Plug-In", new String[] {"1","1","0"}) || ret;
+			ret = updateAclElement(elemAcl, "Administrators", new String[] {"1","1","0"}) || ret;
+			//ret = updateAclElement(elemAcl, "vizrtadmins", new String[] {"1","1","0"}) || ret;
+			
+			return ret;
+			
+		}
+		return false;
+	}
+	
+	private boolean  updateAclElement(Element elemAcl, String elementName, String[] rra) {
+		boolean externalAppElementFound = false;
+		//acl:media element found. search for "External applications" element
+		for (Iterator iterator = elemAcl.elementIterator(); iterator.hasNext();) {
+			Element _elem = (Element) iterator.next();
+			//System.out.println(_elem);
+			Attribute att_v = _elem.attribute("name");
+			//System.out.println(att_v);
+			if (att_v != null && att_v.getStringValue().equals(elementName)) {
+				externalAppElementFound = true;
+				
+			} 
+		}
+		if (!externalAppElementFound) {
+			Element nElement = new DefaultElement("acl:group");
+			nElement.addAttribute("name", elementName);
+			nElement.addAttribute("read", rra[0]);
+			nElement.addAttribute("write", rra[1]);
+			nElement.addAttribute("admin", rra[2]);
+			//log.info("***updateAclElement: read: "+rra[0] +" write: "+rra[1] +" admin: " +rra[2] +" for "+elementName);
+			elemAcl.add(nElement);
+			return true;
 		}
 		return false;
 	}
@@ -561,4 +680,5 @@ public class vizonepublisher extends BasePublisher implements Publisher
 	}
 
 }
+
 

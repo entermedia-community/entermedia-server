@@ -23,7 +23,7 @@
 
 
 #set( $cdn = $mediaarchive.getCatalogSettingValue("cdn_prefix"))	
-#foreach( $preset in $hits )#if( $velocityCount != 1 ), #end
+#foreach( $preset in $hits )#if( ${foreach.count} != 1 ), #end
 {	
 	"name":#jesc($preset.name),	
 	"id":#jesc($preset.id),	

@@ -30,4 +30,10 @@
   <reports id="assetscreated" searchtype="asset" outputtype="assetadded" dashboard="true">
     <name><![CDATA[Assets over time]]></name>
   </reports>
+  <reports id="transcribereport" searchtype="videotrack" outputtype="captions" dashboard="false" script="videotrack/closecaptions.groovy">
+    <name><![CDATA[Automatic Transcriptions]]></name>
+  </reports>
+  
+  
+  
 </reportss>

@@ -24,7 +24,7 @@
 </div>
 <div style="margin-left: 100px">
 #foreach( $parent in $data.getParentCategoriesFrom(1))
-#if( $velocityCount > 1) \ #end
+#if( ${foreach.count} > 1) \ #end
 <a  href="$home$apphome/views/modules/category/edit/edit.html?id=${parent.id}&viewid=categorygeneral&viewpath=category/categorygeneral&hitssessionid=hitscategorymedia/catalogs/public&searchtype=category&detailsreadonly=true&preview=true">$parent</a>
 #end
 </div>          

@@ -1,4 +1,3 @@
-#set ($catalogid = $context.getRequestParameter("catalogid"))
 #set ($view = "asset/geolocation")
 #set ($id = $context.getRequestParameter("id"))
 <div style="padding: 20px;">
@@ -37,7 +36,7 @@
     #else 
     
     #end
-    	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="${view}editor" method="post" action="$home$apphome/views/modules/asset/editor/map/save.html?oemaxlevel=1" >
+    	<form name="formedit$view" id="formedit$view" targetdiv="${view}editor" method="post" action="$home$apphome/views/modules/asset/editor/map/save.html" >
     
     		<input type="hidden" name="saveasnew" value="false" />
     		<input type="hidden" name="save" value="true" />

@@ -1,4 +1,4 @@
-package org.entermediadb.sitemanager;
+package org.entermediadb.sitemonitor;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,9 +42,9 @@ public class DiskManager implements CatalogEnabled
 			for (String file : fileNames)
 			{
 				File partition = new File(file);
-				Long totalCapacity = (long) (partition.getTotalSpace() / 1000000.00);
-				Long freePartitionSpace = (long) (partition.getFreeSpace() / 1000000.00);
-				Long usablePartitionSpace = (long) (partition.getUsableSpace() / 1000000.00);
+				Long totalCapacity = (long) (partition.getTotalSpace() / SiteMonitorModule.MEGABYTE);
+				Long freePartitionSpace = (long) (partition.getFreeSpace() / SiteMonitorModule.MEGABYTE);
+				Long usablePartitionSpace = (long) (partition.getUsableSpace() / SiteMonitorModule.MEGABYTE);
 				
 				partitions.add(new DiskPartition(file, totalCapacity, freePartitionSpace, usablePartitionSpace));
 			}

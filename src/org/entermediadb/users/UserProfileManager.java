@@ -322,6 +322,8 @@ public class UserProfileManager
 			}
 			searcher.saveData(inUserProfile, null);
 			archive.getCacheManager().remove("userprofile", inUserProfile.getUserId());
+			archive.getCacheManager().put("userprofile", inUserProfile.getUserId(),inUserProfile);
+
 		}
 		finally
 		{

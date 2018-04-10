@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionUtil;
 import org.entermediadb.asset.orders.Order;
@@ -31,6 +32,8 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
+
+import com.google.gson.JsonObject;
 
 import groovy.json.JsonSlurper;
 
@@ -541,6 +544,47 @@ public class JsonAssetModule extends BaseJsonModule {
 	}
 	
 
+	
+	public void createCategoryTree(WebPageRequest inReq) {
+		JSONObject object = new JSONObject();
+		
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		Map request = inReq.getJsonRequest();
+		
+		String categoryid = (String) request.get("categoryid");
+		if(categoryid == null) {
+			categoryid = "index";
+		}
+		Category root = archive.getCategory(categoryid);
+		
+		populateCategoryJson(object, root);
+		String jsondata = object.toString();
+		inReq.putPageValue("json", jsondata);
+		
+		
+	}
+
+	protected void populateCategoryJson(JSONObject inObject, Category inRoot) {
+		if(inRoot.hasChildren()) {
+			JSONArray children = new JSONArray();
+			inObject.put("children", children);
+
+			for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();) {
+				Category child = (Category) iterator.next();
+				JSONObject nextchild = new JSONObject();
+				children.add(nextchild);
+				populateCategoryJson(nextchild, child);
+			}
+			
+		}
+		inObject.put("id", inRoot.getId());
+		inObject.put("name", inRoot.getName());
+		inObject.put("categorypath", inRoot.getCategoryPath());
+		
+		
+		
+	}
 	
 	
 

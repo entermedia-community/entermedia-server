@@ -172,6 +172,7 @@ findclosest = function(link,inid)
 runajaxonthis = function(inlink,e)
 {
 	
+	jQuery(".ajaxprogress").show();
 	var inText = jQuery(inlink).data("confirm");
 	if(e && inText && !confirm(inText) )
 	{
@@ -218,6 +219,8 @@ runajaxonthis = function(inlink,e)
 			}
 		).always(function()
 		{
+			jQuery(".ajaxprogress").hide();
+
 			//inlink.css("enabled",true);
 			inlink.removeAttr('disabled');
 		});
@@ -244,6 +247,8 @@ runajaxonthis = function(inlink,e)
 					$(window).trigger( "resize" );
 				}).always(function()
 						{
+					jQuery(".ajaxprogress").hide();
+
 							//inlink.css("enabled",true);
 							inlink.removeAttr('disabled');
 						});		
