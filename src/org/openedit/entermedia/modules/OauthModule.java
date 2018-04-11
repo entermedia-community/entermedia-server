@@ -126,7 +126,7 @@ public class OauthModule extends BaseMediaModule
 				//.setClientId("1028053038230-v8g3isffne0b6d3vj8ceok61h2bfk9hg.apps.googleusercontent.com")
 				//.setRedirectURI("http://localhost:8080/googleauth.html")
 				//	.setParameter("prompt", "login consent")  Add this for google drive to confirm 
-				String requestedpermissions = inReq.findValue("requestedpermissions");
+				String requestedpermissions = null;//inReq.findValue("requestedpermissions");
 
 				if (requestedpermissions == null)
 				{
