@@ -102,8 +102,8 @@ public class Downloader
 			URLConnection con = url.openConnection();
 		    con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows; U; Windows NT 6.1; en-GB;     rv:1.9.2.13) Gecko/20101203 Firefox/3.6.13 (.NET CLR 3.5.30729)");
 
-		    con.setConnectTimeout(5 * 1000);
-		    con.setReadTimeout(5 * 1000);
+		    con.setConnectTimeout(10 * 1000);
+		    con.setReadTimeout(10 * 1000);
 			con.setUseCaches(false);
 			con.connect(); 
 			
