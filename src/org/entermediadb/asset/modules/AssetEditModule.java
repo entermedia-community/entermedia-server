@@ -882,6 +882,8 @@ public class AssetEditModule extends BaseMediaModule
 	protected void createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
+		final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
+		
 		final Map metadata = readMetaData(inReq,archive,"");
 		final String currentcollection = (String)metadata.get("collectionid");
 
@@ -903,19 +905,19 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				public void run()
 				{
-					saveFilesAndImport(archive, currentcollection, metadata, pages, user);
+					saveFilesAndImport(archive, currentcollection, createCategories, metadata, pages, user);
 				}
 			};
 			manager.execute("importing",runthis);
 		}
 		else
 		{
-			Collection tracker = saveFilesAndImport(archive, currentcollection, metadata, pages, user);
+			Collection tracker = saveFilesAndImport(archive, currentcollection, createCategories, metadata, pages, user);
 			inReq.putPageValue("assets", tracker);
 		}
 	}
 	
-	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final Map metadata, final Map pages, final User user)
+	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
 		ListHitTracker tracker = new ListHitTracker();
 		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
@@ -936,7 +938,7 @@ public class AssetEditModule extends BaseMediaModule
 				page.moved = true;
 				getPageManager().movePage(page.inUpload, page.inDestPage);
 			}
-			page.fieldAsset = createAsset(archive,metadata, sourcepath,page.inDestPage, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+			page.fieldAsset = createAsset(archive,metadata, sourcepath, createCategories, page.inDestPage, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
 		}
 		saveAssetData(archive, tracker, currentcollection, user);
 		
@@ -1193,9 +1195,9 @@ Change Collections to be normal categories path s and make createTree look at th
 		return vals;
 	}
 	
-	protected Asset createAsset(MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+	protected Asset createAsset(MediaArchive archive, Map inMetadata, String assetsourcepath, boolean createCategories, Page dest, User inUser, ListHitTracker output)
 	{
-		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, false, assetsourcepath, inUser);
+		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, createCategories, assetsourcepath, inUser);
 		getAssetImporter().getAssetUtilities().readMetadata(asset, dest.getContentItem(), archive);
 		asset.setProperty("importstatus", "imported");
 		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)

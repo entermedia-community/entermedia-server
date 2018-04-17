@@ -67,7 +67,8 @@ public class WindowsAuthenticator extends BaseAuthenticator
 			}
 			//password may be different than what's in the xml we should set it
 			//it will get encrypted and saved after login
-			inAReq.getUser().setPassword(inAReq.getPassword());
+			//Securrity issue inAReq.getUser().setPassword(inAReq.getPassword());
+			inAReq.getUser().setEnabled(true);
 			return true;
 		}
 		catch (Exception ex)

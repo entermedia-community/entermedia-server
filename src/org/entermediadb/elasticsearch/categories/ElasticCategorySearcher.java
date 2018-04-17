@@ -425,12 +425,18 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 	@Override
 	public Category createCategoryPath(String inPath)
 	{
+		
 		if( inPath.length() == 0 || inPath.equals("Index"))
 		{		
 			return getRootCategory();
 		}
 		//TODO: Find right way to do this not matches
 		inPath = inPath.replace('\\', '/'); //Unix paths
+		
+		if (inPath.endsWith("/"))
+		{
+			inPath = inPath.substring(0,inPath.length()-1);
+		}
 		Data hit = (Data)query().exact("categorypath", inPath).sort("categorypathUp").searchOne();
 //		if( hit == null)
 //		{

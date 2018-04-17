@@ -32,6 +32,8 @@ var uploadid;
 	        	$(startb).text("Upload");
     			$(startb).removeAttr('disabled');
 	        	jQuery("#uploadinstructionsafter").show();
+	        	jQuery(".showonselect").show();
+	        	
 	        	 
 	        	 var regex = new RegExp("currentupload", 'g');  
 	        	 
@@ -183,8 +185,9 @@ $(document).ready(function()
 	        	 if( !haderror)
 	        	{
 	        			var startb = $("#startbutton");
-	        			$(startb).text("Upload Complete");
-    				   allfiles = new Array();
+	        			var complete = startb.data("complete");
+	        			$(startb).text(complete);
+    				    allfiles = new Array();
     				   
 		   				var completed = $("#up-files-list-completed li span");
 						jQuery.each(completed,function()
@@ -197,6 +200,7 @@ $(document).ready(function()
     				   var viewassets = $("#viewassetsbtn");
 	        		   viewassets.removeAttr('disabled');
     				   
+    				   $("#autofinishbutton").trigger("click");
     				   //$(".media_results_tab").data("tabloaded",false);
 	        	}
 	
