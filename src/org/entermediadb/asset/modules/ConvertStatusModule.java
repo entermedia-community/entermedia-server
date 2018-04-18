@@ -89,6 +89,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
+		settings.setProperty("gravity", "NorthWest");
         //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
         
