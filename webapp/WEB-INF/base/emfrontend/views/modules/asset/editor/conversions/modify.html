@@ -1,11 +1,13 @@
 #set($status = $conversionUtil.getConversionStatus($catalogid,$asset.id,$presetdata.id))
-
+#set( $task = $conversionUtil.getConversionTask($mediaarchive,$asset.id,$presetdata.id))
 <h5>
 
 ##File Name: $presetdata.generatedoutputfile
-
+#set($date = $task.getValue("completed") )
 <span class="h3e">
-	Status: $status
+
+	Status: $status $!context.getDateTime($date)
+	#if( $task.errordetails ) <pre>$task.errordetails</pre>#end
 </span>
 
 

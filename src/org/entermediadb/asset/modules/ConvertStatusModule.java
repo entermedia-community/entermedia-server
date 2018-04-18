@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import java.util.Date;
+
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -164,7 +166,20 @@ public class ConvertStatusModule extends BaseMediaModule
 //		//TODO: Re-enamble version control
 //		if(outputpage.exists()){
 //			getPageManager().putPage(outputpage); // this should create a new version
-//		}
+//		}archive
+		Searcher tasks = archive.getSearcher("conversiontask");
+		Data task = tasks.query().exact("presetid", preset.getId()).exact("assetid", asset.getId()).searchOne();
+
+		if( task == null)
+		{
+			task = tasks.createNewData();
+			task.setProperty("presetid", preset.getId());
+			task.setProperty("assetid", asset.getId());
+		}
+		task.setValue("submitteddate", new Date());
+		task.setValue("completed", new Date());
+		task.setValue("status", "complete");
+		tasks.saveData(task);
 		processConversions(inReq);//non-block
 	}
 	
