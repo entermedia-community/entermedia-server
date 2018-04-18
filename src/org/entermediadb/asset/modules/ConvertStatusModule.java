@@ -180,6 +180,9 @@ public class ConvertStatusModule extends BaseMediaModule
 		task.setValue("completed", new Date());
 		task.setValue("status", "complete");
 		tasks.saveData(task);
+		
+		archive.fireMediaEvent("usercrop",inReq.getUser(),asset );
+		
 		processConversions(inReq);//non-block
 	}
 	
