@@ -3,12 +3,13 @@
 	
 	
 <form class="validate ajaxformXX" data-targetdivXX="orderdialog" id="usereditform" method="post" action="$home$apphome/views/activity/creategallerycollectionfinish.html">
-#set($searcher = $searcherManager.getSearcher($catalogid, "librarycolleciton"))
+#set($searcher = $searcherManager.getSearcher($catalogid, "librarycollection"))
 $context.putPageValue("searcher", $searcher)	 
 $context.putPageValue("view", "librarycollection/quickgallery")	
 <input type="hidden" name="view" value="librarycollection/quickgallery"/>
 <input type="hidden" name="hitssessionid" value="$context.getRequestParameter('hitssessionid')"/>
 
+<input type="hidden" name="searchtype" value="librarycollection"/>
 
 <br/>
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)

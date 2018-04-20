@@ -803,11 +803,18 @@ public class ProjectModule extends BaseMediaModule
 		String [] fields = inReq.getRequestParameters("field");
 		collections.updateData(inReq, fields, collection);
 		
-		collection.setValue("visibility", "hidden");
+		//collection.setValue("visibility", "hidden");
 		
 		Searcher categories = archive.getSearcher("category");
-		Category newcat = (Category) categories.createNewData();
-		newcat.setValue("visibility", "hidden");
+
+		String collectionroot = archive.getCatalogSettingValue("gallery_root");
+		if(collectionroot == null){
+			collectionroot = "Collections";
+		}
+		
+		Category newcat = archive.createCategoryPath(collectionroot + "/Galleries/" + inReq.getUserName() + "/" + collection.getName());
+
+		//newcat.setValue("visibility", "hidden");
 		newcat.setName(collection.getName());
 
 		categories.saveData(newcat);
@@ -816,7 +823,7 @@ public class ProjectModule extends BaseMediaModule
 		collection.setValue("rootcategory", newcat.getId());
 		collection.setValue("creationdate", new Date());
 		collection.setValue("owner",inReq.getUserName() );
-
+		collection.setValue("visibility", "3");
 		ArrayList assets = new ArrayList();
 		
 		for (Iterator iterator = tracker.getSelectedHitracker().iterator(); iterator.hasNext();) {
