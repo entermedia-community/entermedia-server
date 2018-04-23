@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<endpoints> 
+  <endpoint id="showmappings" name="Show Elastic Mappings" url="/${applicationid}/services/elastic/assets_catalog/asset/_mapping" port="9200" docsection="elastic" caption="Check Mapping" httpmethod="GET"/>
+   
+  <endpoint id="systemstatus" name="Show System Cache Status" url="/${applicationid}/services/system/systemstatus" docsection="1418334117799" caption="Shows a status report of overall cache usage" httpmethod="GET">Show System Cache Status</endpoint>  
+ </endpoints>
