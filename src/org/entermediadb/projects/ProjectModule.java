@@ -198,6 +198,9 @@ public class ProjectModule extends BaseMediaModule
 	
 	public void addAssetsToCollection(WebPageRequest inReq){
 		String[] assetids = inReq.getRequestParameters("assetid");
+		if(assetids == null) {
+			return;
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		String librarycollection = inReq.getRequestParameter("collectionid");
 		ProjectManager manager = getProjectManager(inReq);
