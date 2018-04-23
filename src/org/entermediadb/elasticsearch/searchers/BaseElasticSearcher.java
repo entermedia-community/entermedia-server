@@ -377,6 +377,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
 
 		}
+		
+		
+		
 
 	}
 
@@ -2289,31 +2292,12 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				inContent.field("badge", badges);
 			}
-			/*
-			if (inDetails.isAllowDynamicFields())
-			{
-				Map props = inData.getProperties();
-				for (Iterator iterator = props.keySet().iterator(); iterator.hasNext();)
-				{
-					String key = (String) iterator.next();
-					if (shoudSkipField(key))
-					{
-						continue;
-					}
-					if (inDetails.getDetail(key) == null)
-					{
-						Object val = props.get(key);
-						7if (val != null)
-						{
-							checkMapping(key);
+			
+		
+			addCustomFields( inContent, inData);
 
-							inContent.field(key, val);
-						}
-					}
-				}
-			}
-			*/
 		}
+
 		catch (Exception ex)
 		{
 			if (ex instanceof OpenEditException)
@@ -2323,6 +2307,11 @@ public class BaseElasticSearcher extends BaseSearcher
 			throw new OpenEditException(ex);
 		}
 
+	}
+
+public void addCustomFields(XContentBuilder inContent, Data inData) {
+		// TODO Auto-generated method stub  Override this for custom searchers
+		
 	}
 
 //	private void setType(PropertyDetail detail) {

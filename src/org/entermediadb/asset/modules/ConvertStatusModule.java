@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import java.util.Date;
+
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -89,6 +91,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
+		settings.setProperty("gravity", "NorthWest");
         //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
         
@@ -163,7 +166,23 @@ public class ConvertStatusModule extends BaseMediaModule
 //		//TODO: Re-enamble version control
 //		if(outputpage.exists()){
 //			getPageManager().putPage(outputpage); // this should create a new version
-//		}
+//		}archive
+		Searcher tasks = archive.getSearcher("conversiontask");
+		Data task = tasks.query().exact("presetid", preset.getId()).exact("assetid", asset.getId()).searchOne();
+
+		if( task == null)
+		{
+			task = tasks.createNewData();
+			task.setProperty("presetid", preset.getId());
+			task.setProperty("assetid", asset.getId());
+		}
+		task.setValue("submitteddate", new Date());
+		task.setValue("completed", new Date());
+		task.setValue("status", "complete");
+		tasks.saveData(task);
+		
+		archive.fireMediaEvent("usercrop",inReq.getUser(),asset );
+		
 		processConversions(inReq);//non-block
 	}
 	

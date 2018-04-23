@@ -25,7 +25,6 @@
 	
 	
 	<property id="show_add_media_collection" value="false">Show a collection picker on the simple Add Media page</property>
-	<property id="show_add_media_on_nav" value="true">Show Add Media Button On Header</property>
 
 
 

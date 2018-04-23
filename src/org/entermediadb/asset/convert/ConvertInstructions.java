@@ -205,7 +205,7 @@ public class ConvertInstructions
 				if(getProperty("colorspace") != null){
 					path.append(getProperty("colorspace"));
 				}
-				if(isCrop())
+				if(isCrop() || Boolean.parseBoolean( getProperty("extent") ) )
 				{
 					path.append("cropped");
 				}

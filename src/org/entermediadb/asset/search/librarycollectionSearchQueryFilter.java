@@ -41,6 +41,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 			SearchQuery child = inSearcher.query()
 					
 					.not("visibility", "hidden")
+					.not("visibility", "3")
 					.getQuery();
 			inQuery.addChildQuery(child);
 			return inQuery;
@@ -68,6 +69,8 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)
 				.not("visibility", "hidden")
+				.not("visibility", "3")
+
 				.getQuery();
 		inQuery.addChildQuery(child);
 		//Load all categories 1000
