@@ -1008,6 +1008,15 @@
 		<property name="root"><ref bean="root" /></property>
 		
     </bean>
+    
+    
+    <bean id="shellScriptRunner" class="org.entermediadb.scripts.ShellScriptRunner" >
+	   
+		<property name="exec"><ref bean="exec" /></property>
+		
+    </bean>
+    
+    
     <bean id="bshScriptRunner" class="org.entermediadb.scripts.BshScriptRunner" />
     <bean id="rhinoScriptRunner" class="org.entermediadb.scripts.RhinoScriptRunner" />
     <bean id="bsfScriptRunner" class="org.entermediadb.scripts.BsfScriptRunner" />

@@ -97,10 +97,15 @@ public class ScriptManager
 			{
 				script.setType("groovy");
 			}
+			else if (code.endsWith(".sh") || code.endsWith(".bat"))
+			{
+				script.setType("shell");
+			}
 			else
 			{
 				script.setType("bsf");
 			}
+		
 
 			return script;
 		}
