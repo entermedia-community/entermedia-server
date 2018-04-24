@@ -928,6 +928,13 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 
 		String fieldid = inDetail.getId();
+		if(inDetail.isMultiLanguage()) {
+
+			if(!fieldid.contains("_int")) {
+				fieldid = fieldid + "_int.en";//default to search the english
+			}
+		
+		}
 
 		if ("searchjoin".equals(inDetail.getDataType()))
 		{
