@@ -186,11 +186,13 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			}
 			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 			asset.setProperty("assetviews", "1");
-			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
-			if (assettype != null)
-			{
-				asset.setProperty("assettype", assettype.getId());
-			}
+			
+			//Don't set this here, there isn't enough info.  AssetTypeManager will handle it.
+//			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
+//			if (assettype != null)
+//			{
+//				asset.setProperty("assettype", assettype.getId());
+//			}
 		}
 		if (importedasset)
 		{
