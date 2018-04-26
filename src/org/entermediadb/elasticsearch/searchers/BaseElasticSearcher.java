@@ -2063,7 +2063,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						{
 							date = (Date) value;
 						}
-						else
+						else if(value instanceof String)
 						{
 							date = DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
 						}
