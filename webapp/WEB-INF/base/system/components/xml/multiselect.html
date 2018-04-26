@@ -90,10 +90,12 @@ $types.enableBulkOperations()
    </select>		
 
 #else
-	No values found in data file ${listid}).xml 
+	[[No values found]]
 #end
 
-
+ #if( $caneditlists)
+		<a class="emdialog addnewitem" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$listid&update=$csslistid" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+  #end
 
 </div>
 
