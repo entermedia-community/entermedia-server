@@ -37,8 +37,12 @@
 		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 			#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
+			#if($fileformat)
+				#set( $rendertypeid = $mediaarchive.getMediaRenderType($fileformat) )
+			#else
+			#set( $rendertypeid = "none" )
+			#end
 			
-			#set( $rendertypeid = $mediaarchive.getMediaRenderType($fileformat) )
 			#set($found = false)
 			#foreach( $ft in $filetypes)		   ##TODO: This is ugly in-line code. replace with objects
 				#if ($ft.get(0).equals($rendertypeid))

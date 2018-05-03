@@ -34,6 +34,9 @@
 			<a href="$click" alt="$asset" name="$asset" style="text-decoration: none;">
 		
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+			#if(!$type)
+			#set ($type = "none")
+			#end
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
 			$context.putPageValue("thumbsize", "crop")

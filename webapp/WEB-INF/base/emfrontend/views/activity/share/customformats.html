@@ -45,7 +45,11 @@
 		#end
 			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
 		
-			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+			#if($asset.fileFormat)
+                        #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+#else
+                #set( $type = "none")
+#end
 			$context.putPageValue("cell", $asset)
 			$context.putPageValue("showdetails", "false")
 		   	$context.putPageValue("thumbsize", "crop")

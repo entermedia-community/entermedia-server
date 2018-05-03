@@ -414,6 +414,9 @@ public class MediaArchive implements CatalogEnabled
 
 	public String getMediaRenderType(String inFileFormat)
 	{
+		if(inFileFormat == null){
+			return "none";
+		}
 		return getTranscodeTools().getRenderTypeByFileFormat(inFileFormat);
 	}
 
@@ -439,7 +442,11 @@ public class MediaArchive implements CatalogEnabled
 			return "embedded";
 		}
 		String format = inAsset.get("fileformat");
-		return getTranscodeTools().getRenderTypeByFileFormat(format);
+		String finalformat =getTranscodeTools().getRenderTypeByFileFormat(format);
+		if(finalformat == null){
+			finalformat = "none";
+		}
+		return finalformat; 
 	}
 
 	public Data getDefaultAssetTypeForFile(String inFileName)
