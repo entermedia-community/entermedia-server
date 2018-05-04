@@ -1,5 +1,6 @@
 package org.entermediadb.asset.modules;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,6 +48,7 @@ import org.openedit.util.PathUtilities;
 
 public class AssetEditModule extends BaseMediaModule
 {
+	
 	protected WebServer fieldWebServer;
 	protected static final String CATEGORYID = "categoryid";
 	protected FileUpload fieldFileUpload;
@@ -799,10 +801,9 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		String sourcepath = inReq.findValue("sourcepath");
 		String catalogid = inReq.findValue("catalogid");
-		String unzip = inReq.findValue("unzip");
 		
-		Asset asset = getAssetImporter().createAssetFromExistingFile(getMediaArchive(catalogid), inReq.getUser(), Boolean.valueOf(unzip), sourcepath);
-		getAssetImporter().saveAsset(getMediaArchive(inReq), inReq.getUser(), asset);
+		Asset asset = getAssetImporter().createAssetFromExistingFile(getMediaArchive(catalogid), inReq.getUser(), sourcepath);
+ 		getAssetImporter().saveAsset(getMediaArchive(inReq), inReq.getUser(), asset);
 		if(asset == null)
 		{
 			return;
@@ -925,9 +926,10 @@ public class AssetEditModule extends BaseMediaModule
 			String sourcepath = (String) iterator.next();
 			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
 			UploadedPage page = (UploadedPage)pages.get(sourcepath);
-			if( page.inDestPage.exists())
+			boolean existing = page.inDestPage.exists();
+			if( currentcollection == null && existing)
 			{
-				log.error("Asset already exists in collection " + sourcepath);
+				log.error("Asset already exists in filesystem " + sourcepath);
 				continue;
 			}
 			else if(!page.inUpload.getPath().equals(page.inDestPage.getPath()))//move from tmp location to final location
@@ -938,7 +940,15 @@ public class AssetEditModule extends BaseMediaModule
 				page.moved = true;
 				getPageManager().movePage(page.inUpload, page.inDestPage);
 			}
-			page.fieldAsset = createAsset(archive,metadata, sourcepath, createCategories, page.inDestPage, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output)
+			if( existing ) //Dont make a new asset?
+			{
+				//Make thumbnails?
+				page.fieldAsset = archive.getAssetBySourcePath(page.sourcePath);
+			}
+			if( page.fieldAsset == null)
+			{
+				page.fieldAsset = createAsset(archive,metadata, sourcepath, createCategories, page.inDestPage, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output);
+			}
 		}
 		saveAssetData(archive, tracker, currentcollection, user);
 		
@@ -969,6 +979,9 @@ public class AssetEditModule extends BaseMediaModule
 	
 	protected Map savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
 	{
+		//if we are uploading into a collection?
+		Boolean incollection = inReq.findValue("currentcollection") != null;
+		
 		Map pages = new HashMap();
 		for (Iterator iterator = inPages.iterator(); iterator.hasNext();)
 		{
@@ -979,6 +992,7 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				filename = filename.substring(filename.indexOf('_') + 1);
 			}
+
 			String inputsourcepath = inReq.findValue("sourcepath");
 			String assetsourcepath = null;
 			String basepath = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals/";
@@ -998,26 +1012,59 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				assetsourcepath = inputsourcepath;
 			}
-		
-			Page dest = getPageManager().getPage( basepath + assetsourcepath );
-			int i = 2;
-			while( dest.exists())
+
+			if( incollection && filename.toLowerCase().endsWith(".zip"))
 			{
-				String pagename = PathUtilities.extractPageName(assetsourcepath);
-				String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
-				dest = getPageManager().getPage( basepath + tmppath );
-				if( !dest.exists() )
-				{
-					assetsourcepath = tmppath;
-					break;
-				}
-				i++;
+					try
+					{
+						Page unzipfolder = getPageManager().getPage(page.getDirectory() + "unzip/");
+						File folder = new File( unzipfolder.getContentItem().getAbsolutePath());
+						folder.mkdirs();
+						String collectionfolder = PathUtilities.extractDirectoryPath( assetsourcepath);
+						Collection files = getPageManager().getZipUtil().unzip(page.getInputStream(),folder);
+						for (Iterator iterator2 = files.iterator(); iterator2.hasNext();) 
+						{
+							File one = (File) iterator2.next();
+							String ending = one.getAbsolutePath().substring( folder.getAbsolutePath().length() ).replace("\\", "/");
+							Page upload  = getPageManager().getPage(unzipfolder + ending);
+							
+							//Change source paths for each file and subfolders
+							UploadedPage pagefound = new UploadedPage();
+							pagefound.sourcePath = collectionfolder + ending;
+							pagefound.inUpload = upload;
+							Page dest  = getPageManager().getPage(basepath + pagefound.sourcePath);
+							pagefound.inDestPage = dest;
+							pages.put(pagefound.sourcePath, pagefound);
+							//This will replace the assets
+						}
+					}
+					catch (Exception ex)
+					{
+						log.error("Could not unzip : " + filename,ex);
+					}
 			}
-			UploadedPage pagefound = new UploadedPage();
-			pagefound.sourcePath = assetsourcepath;
-			pagefound.inUpload = page;
-			pagefound.inDestPage = dest;
-			pages.put(assetsourcepath, pagefound);
+			else
+			{
+				Page dest = getPageManager().getPage( basepath + assetsourcepath );
+				int i = 2;
+				while( dest.exists())
+				{
+					String pagename = PathUtilities.extractPageName(assetsourcepath);
+					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
+					dest = getPageManager().getPage( basepath + tmppath );
+					if( !dest.exists() )
+					{
+						assetsourcepath = tmppath;
+						break;
+					}
+					i++;
+				}
+				UploadedPage pagefound = new UploadedPage();
+				pagefound.sourcePath = assetsourcepath;
+				pagefound.inUpload = page;
+				pagefound.inDestPage = dest;
+				pages.put(assetsourcepath, pagefound);
+			}
 		}
 		return pages;
 	}
@@ -2226,7 +2273,7 @@ Change Collections to be normal categories path s and make createTree look at th
 			if( currentcollection != null)
 			{
 				ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
-				manager.addAssetToCollection(archive,currentcollection,current.getId());
+				manager.addAssetToCollection(archive,currentcollection,current);
 			}
 		}
 

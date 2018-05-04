@@ -278,7 +278,7 @@ public class UploadRequest implements ProgressListener
 	}
 	public List unzipFiles(boolean inForceUnzip) throws OpenEditException
 	{
-		List unzippedPages = new ArrayList();
+		List allpages = new ArrayList();
 		PageManager pm = getPageManager();
 		for (Iterator iterator = getUploadItems().iterator(); iterator.hasNext();)
 		{
@@ -300,7 +300,7 @@ public class UploadRequest implements ProgressListener
 					{
 						log.error("Could not unzip : " + in.getAbsolutePath());
 						log.error( ex );
-						return unzippedPages;
+						return allpages;
 					}
 					getPageManager().removePage(page);
 					for (Iterator iterator2 = unzippedFiles.iterator(); iterator2.hasNext();) {
@@ -310,12 +310,16 @@ public class UploadRequest implements ProgressListener
 						upath = page.getDirectory() + "/" + upath;
 						Page unz = getPageManager().getPage(upath);
 						
-						unzippedPages.add(unz);
+						allpages.add(unz);
 					}
 				}
 			}
+			else
+			{
+				allpages.add(page);
+			}
 		}
-		return unzippedPages;
+		return allpages;
 	}
 	public File getRoot()
 	{

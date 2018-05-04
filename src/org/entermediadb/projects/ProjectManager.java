@@ -40,6 +40,7 @@ import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.FileUtils;
+import org.openedit.util.PathUtilities;
 
 public class ProjectManager implements CatalogEnabled
 {
@@ -306,7 +307,8 @@ public class ProjectManager implements CatalogEnabled
 			Data data = (Data) iterator.next();
 			if(!assetids.contains(data.getId())){
 				Asset asset = (Asset) archive.getAssetSearcher().loadData(data);
-				asset.addCategory(root);
+				Category specific = findSpecificRoot(archive, root, asset);
+				asset.addCategory(specific);
 				tosave.add(asset);
 				if (tosave.size() > 1000)
 				{
@@ -329,14 +331,37 @@ public class ProjectManager implements CatalogEnabled
 	//
 	public void addAssetToCollection(MediaArchive archive, String collectionid, String assetid)
 	{
-		Category root = getRootCategory(archive, collectionid);
-		
 		Asset asset = (Asset) archive.getAssetSearcher().searchById(assetid);
+		addAssetToCollection(archive,collectionid,asset);
+	}
+	public void addAssetToCollection(MediaArchive archive, String collectionid, Asset asset)
+	{
 		if (asset != null)
 		{
+			//If the asset sourcepath starts with the root then put it right into the right place
+			Category root = getRootCategory(archive, collectionid);
+			root = findSpecificRoot(archive, root,asset);
 			asset.addCategory(root);
 			archive.getAssetSearcher().saveData(asset);
 		}
+	}
+
+	private Category findSpecificRoot(MediaArchive archive, Category root, Asset asset) {
+		String path = null;
+		if( asset.isFolder() )
+		{
+			path = asset.getSourcePath();
+		}
+		else
+		{
+			path = PathUtilities.extractDirectoryPath( asset.getSourcePath() );
+			
+		}
+		if(path.startsWith( root.getCategoryPath() ) )
+		{
+			root = archive.createCategoryPath(path);
+		}
+		return root;
 	}
 
 	//	public void addAssetToLibrary(MediaArchive archive, String libraryid, HitTracker assets)
