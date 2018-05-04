@@ -67,13 +67,11 @@
 			#if( $presetid == "0")
 				<td></td>
 				<td>
-				
 					#if($asset.googleid && $asset.googledownloadurl)
 					<!-- Google puts quotes on the returned data so the href is correct below.   -->
-										<a class="btn small" href="$asset.googledownloadurl">[[Download]]</a>
+						<a class="btn small" href="$asset.googledownloadurl">[[Download]]</a>
 					#elseif($asset.googleid && $asset.linkurl)
-															<a class="btn small" href=$asset.linkurl>[[Download]]</a>
-					
+						<a class="btn small" href=$asset.linkurl>[[Download]]</a>
 					#else
 					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
 					<a class="btn small" href="$home$apphome/views/modules/asset/downloads/originals/#urlencode($originalpath)">[[Download]]</a>
