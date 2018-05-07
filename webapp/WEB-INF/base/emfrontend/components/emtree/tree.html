@@ -12,7 +12,6 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 #end
 
 #macro(showtreecategories $cat $depth) 
-		#set ( $padding = (15 * $depth) )
 		#set($children = $model.getChildren($cat))
 		#if( $children.size() > 0)
 			#set( $haschildren = true)
@@ -24,17 +23,18 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 		#set( $isselected = $render.isNodeSelected($cat))
 		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth" data-categoryname="$cat.name">
 			#set( $checked = $render.isIdSelected($cat.id) )
+			#set ( $padding = (15 * $depth) )
 			<div class="categorydroparea #if( $isselected ) selected #end #if( $checked) idchecked #end" style="padding-left: ${padding}px" title="id: $cat.id">
 				#if($haschildren)<span class="arrow #if($expanded) down #end "></span>#end 
 				<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end" title="$cat.getCategoryPath()" >$cat.name</span>
 			</div>
 		#if($haschildren && $expanded)
-		   <ul class="open" >
-			#set ( $depth = $depth + 1)
-			#foreach( $subcategory in $children)
-				  #showtreecategories($subcategory, $depth)
+		   <ul class="open" > <!-- Open with $cat.name $children.size() -->
+			#foreach( $subcategory in $children) 
+				#set ( $newdepth = $depth + 1) ##weird bug when this was above the loop 3 = 1 + 1
+				#showtreecategories($subcategory, $newdepth)
 		    #end
-		   </ul>
+		   </ul>  <!-- Close on $cat.name $children.size() -->
 		#end
 		</li>
 		
