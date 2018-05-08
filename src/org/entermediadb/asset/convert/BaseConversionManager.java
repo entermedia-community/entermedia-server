@@ -65,10 +65,18 @@ public abstract class BaseConversionManager implements ConversionManager
 	
 	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath, String exportName)
 	{
-//		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
-//		ContentItem output = instructions.getOutputFile();
 		
-		ContentItem existing = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + inSourcePath + "/" + exportName);
+		ContentItem existing = null;
+		Object val = inSettings.get("canforcewatermarkasset");
+		if(val != null && (Boolean)val)
+		{
+			ConvertInstructions instructions = createInstructions(inSourcePath,exportName,inSettings);
+			existing = instructions.getOutputFile();
+		}
+		else
+		{
+			existing= getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + inSourcePath + "/" + exportName);
+		}	
 		ConvertResult result = new ConvertResult();
 		result.setOutput(existing);
 		result.setOk(true);

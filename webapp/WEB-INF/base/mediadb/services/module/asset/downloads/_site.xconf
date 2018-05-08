@@ -23,6 +23,12 @@
   	  </permission>	
 	-->
 	
+	<permission name="forcewatermarkasset">
+		<userprofile property="forcewatermarkasset" equals="true" />
+	</permission>
+  
+	
+	
 	<path-action name="Admin.allowViewing" alltypes="true" forbid="true"/>
 
 	<property name="oe.enableautologinparam">true</property>
