@@ -35,7 +35,7 @@
 
 
 
-#if( $idprefix != "search" && $canviewsettings && $foundrow )
+#if( $idprefix != "search"  && $foundrow )
 	#set($module = $searcherManager.getData($catalogid, "module", $detail.listId ) )
 	#if($module)
 	
@@ -44,12 +44,25 @@
 		#else
 			#set ( $defaultview = $userprofile.getDefaultViewForModule($module.id) )
 			#set($link = "$home$apphome/views/modules/${module.id}/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$module.id")
+			
 		#end
 	
 	#elseif( $detail.listid == "user")
 		#set($link = "$home$apphome/views/settings/users/usermanager/user/index.html?username=$val")
+		
 	#else
 		#set($link = "$home$apphome/views/settings/lists/datamanager/edit/edit.html?id=$val&searchtype=$detail.listId")
+		
 	#end
- 	<a class="btn" href="$link">[[View]]</a>
+ 	
+ 	
 #end
+
+
+#if($link)
+#if($pages.canView($link))
+ 	<a class="btn" href="$link">[[View]]</a>
+
+#end
+#end
+
