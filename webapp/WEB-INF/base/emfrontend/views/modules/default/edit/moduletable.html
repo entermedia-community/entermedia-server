@@ -22,7 +22,11 @@
 $context.putPageValue("canedittable", $caneditdata)
 #set($ismodule = false )
 #set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
-#if($ismodule && $viewdata.linktomodule == "true" )
+#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
+
+
+#if(!$jumptomodule && $ismodule && $viewdata.linktomodule == "true" )
+	
 	#set( $jumptomodule = true ) <!--  This isn't working very well...  -->
 #end
 
