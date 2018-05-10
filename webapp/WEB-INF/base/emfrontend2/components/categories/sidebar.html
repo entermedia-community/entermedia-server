@@ -1,0 +1,37 @@
+ #if( $canviewcategorynav )
+			<div class="ui-widget  uipanel" id="left-col-categories" >
+				<div  #if($userprofile.minimizecategoriescontent == "false" && $cantogglesidebar) 
+							class="ui-widget-header sidetoggle expanded" 
+				      #elseif($cantogglesidebar) 
+				      		class="ui-widget-header sidetoggle" 
+				      #else 
+				      		class="ui-widget-header" 
+				      #end 
+				      data-target="categoriescontent">
+					  <span class="widget-header-title">[[Categories]]</span>
+					  <i class="fas fa-angle-down ui-widget-toggle"></i>
+					   <span class="widget-header-setup">
+						<a class="emdialog sidebarsubmenu" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
+						<i class="fas fa-search"></i></a>
+				</span>
+				</div>
+				<div  class="ui-widget-content  ui-widget-content-wide categories-widget categories-navigation" id="categoriescontent" #if($userprofile.minimizecategoriescontent == "true" && $cantogglesidebar) style="display: none;" #end>
+					$pages.include("$apphome/components/categories/inline.html")
+				</div>
+			</div>
+#end
+<!-- 
+<script>
+	$(document).ready(function() { 
+		var width = $('#emcategoryinlineinner').width();
+		$('#emcategoryinline .dTreeNodeSel').css('width', width);
+		$('.emtreehover').css('width', width);
+	});
+	
+	$('.treerowinside a').click(function(){
+		var width = $('#emcategoryinlineinner').width();
+		$('#emcategoryinline .dTreeNodeSel').css('width', width);
+		$('.emtreehover').css('width', width);
+	});
+</script>
+ -->
