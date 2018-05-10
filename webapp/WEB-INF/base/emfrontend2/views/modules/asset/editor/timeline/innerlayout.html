@@ -1,0 +1,25 @@
+
+#set( $sourcepath = $asset.sourcepath )
+#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
+#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
+#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
+#set( $clientroot = $context.getContentProperty("clientroot") )
+
+<div class="container-fluid" style="padding:10px 10px 10px 90px;">
+	<div class="row" >
+		<div class="col-md-10" style="padding: 10px; background-color:#eee; width:900px">	
+			$pages.include("$clientroot/details/video.html")
+		</div>
+		<div class="col-md-2" style="padding: 0px;"></div>
+	</div>	
+</div>	
+
+#set( $timecodejump = $context.getRequestParameter("timecodejump"))
+<div class="container-fluid" style="padding:0px:margin:0px">
+	<div class="row" style="padding:0px:margin:0px">
+		<div id="timelineviewer" class="col-md-12" data-sourcepath="$asset.sourcepath" data-assetname="$asset.name" data-timecodejump="$!timecodejump" data-mediadb="$mediaarchive.getMediaDbId()" style="overflow:auto;padding-top:0px;margin-top:0px	">
+			$pages.include("$clientroot/timelinedata.html")
+			$pages.include("$clientroot/timeline.html")
+		</div>
+	</div>
+</div>

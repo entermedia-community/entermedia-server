@@ -1,0 +1,32 @@
+#set( $attachmentroot = $content.attachmentroot )
+#set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
+
+#macro(listattachments $parentfolder)
+	#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
+	#foreach($file in $files)
+		#set( $filesource  = "${file.parentsourcepath}/${file.name}")
+	    #set( $downloadpath = "/WEB-INF/data/$catalogid/originals/$filesource/" )
+	   	#if ( $file.folder != "true" && $file.name != "product.xml")
+	   		<li class="mediathumb emboxcrop ">
+	   			#set( $type = $mediaarchive.getMediaPlayerType($file) )
+	   			#if( $type == "video" || $type == "document" || $type == "image" )
+	   			<img class="swappable sidebar-image" src="$home/${applicationid}/views/modules/asset/downloads/preview/medium/$filesource/thumb.jpg" alt="${file.name}" width="200" ><br>
+	   			${file.name}
+	   			#else
+	   			${file.name}
+	   			#end
+	   		</li>
+	   	#end
+	#end
+#end
+<ul style="list-style: outside none none;">
+#listattachments($asset.sourcePath)
+</ul>
+<a href="$home/emshare/views/modules/asset/editor/attachments/index.html?assetid=$asset.getId()">Media Manager</a>
+<style>
+.mediathumb
+{
+	padding: 5px;
+}
+
+</style>

@@ -1,0 +1,12 @@
+#if( $asset )
+	#set( $hit = $asset )
+#end
+   #set( $voted = $searcherManager.getData($catalogid, "assetvotes","${user.getId()}_${hit.id}") )
+   #if(  $hit.assetvotes )
+	    <a href="$home$apphome/views/modules/asset/editor/voting/showvotes.html?assetid=${hit.id}" class="emdialog" title="[[Show Approvals]]">$hit.assetvotes</a>
+  #end
+   #if( $voted )
+	 	<a class="ajax star full tooltip"  title="[[Remove Approval]]" targetdivinner="votebox${hit.id}" href="$home$apphome/components/voting/removeVote.html?assetid=$hit.id"></a> 
+	#else
+		<a class="ajax star empty tooltip"  title="[[Add Approvals]]"  targetdivinner="votebox${hit.id}" href="$home$apphome/components/voting/addVote.html?assetid=$hit.id"></a>
+	#end

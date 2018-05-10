@@ -1,0 +1,9 @@
+<page>
+
+	<property name="assettab">metadatageneral</property>
+	<property name="scrollable">true</property>
+	<path-action name="DataEditModule.loadHits" >
+		<property name="searchtype">${module}</property>
+	</path-action>
+	
+</page>

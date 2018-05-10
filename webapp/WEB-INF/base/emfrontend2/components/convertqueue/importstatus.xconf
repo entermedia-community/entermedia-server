@@ -1,0 +1,9 @@
+<page>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<page-action name="Script.run">
+		<script>/${catalogid}/events/scripts/asset/loadassetstatus.groovy</script>
+	</page-action>
+	<page-action name="PageValue.loadPageVariable" bean="mathutil" />	
+	
+	<inner-layout />
+</page>

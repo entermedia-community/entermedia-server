@@ -1,0 +1,8 @@
+<page>
+	
+<path-action name="DataEditModule.selectHits"/>
+<path-action name="DataEditModule.loadPageOfSearch"/>
+<inner-layout />
+<layout/>
+
+</page>

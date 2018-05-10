@@ -1,0 +1,15 @@
+<page>
+	<layout/>
+	<inner-layout/>
+    
+	<path-action name="AutoCompleteModule.searchSuggestions" alltypes="true">
+		<property name="cancelactions">true</property>
+		<property name="hitsname">suggestions</property>
+		<property name="searchtype">asset</property>
+	</path-action>
+	
+		<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+	
+	<generator name="velocityGenerator" />
+	
+</page>

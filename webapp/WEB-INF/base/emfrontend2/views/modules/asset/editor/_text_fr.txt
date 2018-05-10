@@ -1,0 +1,4 @@
+#
+#Thu Apr 27 09:16:54 CDT 2017
+records\ found=Enregistrements trouv\u00E9s
+Searched\ By=Recherch\u00E9 par

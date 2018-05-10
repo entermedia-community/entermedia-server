@@ -1,0 +1,7 @@
+<page>
+	<path-action name="DataEditModule.saveData"/>
+	<path-action name="ProjectModule.savedLibrary"/>
+	<path-action name="ProfileModule.savePreference"/>
+	<path-action name="ProfileModule.reLoadUserProfile"/>
+	<inner-layout />
+</page>

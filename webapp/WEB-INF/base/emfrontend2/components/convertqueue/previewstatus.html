@@ -1,0 +1,79 @@
+
+#if ( !$hit )
+    #set( $hit = $asset )
+#end
+
+#if (!$thumbsize )
+    #set($thumbsize = $context.getRequestParameter("thumbsize") )
+#end
+#if(!$thumbsize)
+    #set( $thumbsize = $content.thumbsize )
+#end
+
+#if($conversionerrors && $conversionerrors.size() >0)
+	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+	<img title="[[Conversion Error]]" class="mimethumb" style="height:64px" src="$home$thumbpath" border="0"/>
+#elseif($publisherrors && $publisherrors.size() >0)
+    <span style="color:red; font-size: 10px; position: relative; top: -2px;">Publish Error</span>
+#elseif( $hit.previewstatus && $hit.previewstatus == "2")  
+    $context.putPageValue("hit",$hit)
+    
+    #if($thumbsize == "thumb")
+    $pages.include("$apphome/components/results/thumbnails/image.html",$context)
+    #else
+    $pages.include("$apphome/components/results/thumbnails/small.html",$context)
+    #end        
+
+#elseif($publish && $publish.size() >0 )
+    <div id="status$hit.id"  class="ajaxstatus "   data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+    <div class="uiinfo	 proxythumb" title="Publishing Proxy $publish.size()" ><div class="loadingbar" style="width:30px;"></div></div> 
+     </div>
+#elseif($conversions && $conversions.size() == 0)
+    <div id="status$hit.id" class="ajaxstatus"  data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+        <div class="uiinfo	 proxythumb" title="Queing Conversions" ><div class="loadingbar" style="width:20px;"></div></div> 
+    </div>
+#else
+    <div id="status$hit.id" class="ajaxstatus  " data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
+        #set( $totalcount = $conversions.size() )
+
+        #if( $conversionsremaining )
+        	#set( $remaining = $conversions.size() )
+        #else
+        	#set( $remaining = $totalcount )
+        #end
+        
+        #set( $completed = $totalcount - $remaining )
+        #set( $total = 80 * $mathutil.getPercentage($completed, $totalcount) )
+        #set( $total = $total + 20 )
+        <div class="uiinfo proxythumb" title="Conversions Completed $completed / $totalcount"><div class="loadingbar" style="width:${total}px;"></div></div>
+    </div>
+
+#end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+		
+	</td>

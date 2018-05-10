@@ -1,0 +1,5 @@
+#
+#Tue Oct 11 01:59:35 EDT 2016
+Filters=filtros
+Show\ Less=Muestra menos
+Show\ More=Mostrar m\u00E1s

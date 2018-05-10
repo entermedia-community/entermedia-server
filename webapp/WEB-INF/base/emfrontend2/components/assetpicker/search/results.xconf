@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  
+  <path-action name="DataEditModule.loadHits">
+  </path-action>
+  
+  <path-action name="DataEditModule.loadPageOfSearch">
+
+  </path-action>
+		<property name="searchtype">asset</property>
+  
+
+  
+  
+ 
+
+
+</page>

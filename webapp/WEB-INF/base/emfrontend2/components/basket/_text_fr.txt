@@ -1,0 +1,9 @@
+#Thu Apr 27 09:03:42 CDT 2017
++=+
+Remove\ from\ Basket=Retirer du panier
+Basket=Panier
+Add\ To\ Basket=Ajouter au panier
+Remove\ From\ Basket=Retirer du panier
+Add\ to\ Basket=Ajouter au panier
+-=-
+

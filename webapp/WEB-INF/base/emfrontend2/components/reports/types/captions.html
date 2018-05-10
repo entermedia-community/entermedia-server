@@ -1,0 +1,24 @@
+<div class="container-fluid">
+	<div class="row">
+		
+		<div class="col-md-12">
+			<ul class="list-group">
+				<a href="#" class="list-group-item active"> [[Transcoding by Owner]] </a>
+				#foreach($item in $hits.getAggregations().get("breakdownbyowner").getBuckets())
+				#foreach($subitem in $item.getAggregations())
+
+				<li class="list-group-item"><span class="badge"
+					title="$item.key">$subitem.getValue() [[Seconds]] </span>
+					#set( $data = false)
+					#set( $data = $mediaarchive.getData("user",$item.key))
+					$context.getText($data)
+					
+					<br /></li> #end #end
+
+				<li class="list-group-item"><span class="badge">$hits.getSum("length") [[Seconds]]
+				</span> [[Total]]</li>
+
+			</ul>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,10 @@
+<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+	<div class="ui-widget-header">$hits.getSelectionSize() [[Assets Approved]] </div>
+	<div class="ui-widget-content">
+		<form id="okform" action="$apphome/views/modules/librarycollection/media/index.html">
+			<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+			<input type="hidden" name="assetclearresults" value="true" />
+			<input type="submit" value="[[View Assets]]" />
+		</form>
+	</div>
+</div>

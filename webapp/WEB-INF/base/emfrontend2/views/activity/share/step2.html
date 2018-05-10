@@ -1,0 +1,9 @@
+#if( $order.shareformattype == "onlineviewer")
+	$pages.include("./previewemail.html")
+#else
+<form class="validate" id="usereditform" method="post" action="$home$apphome/views/activity/share/previewemail.html">
+
+	$pages.include("./customformats.html")
+	</form>
+	
+#end

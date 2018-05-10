@@ -1,0 +1,13 @@
+#set ($print = "true")
+<div id="printpreview-top">
+
+</div>
+
+<div id="printpreview-metadata">
+    
+#foreach( $viewpath in $views.keySet() )
+    #set( $target = $views.get($viewpath) ) 
+    #displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+#end
+ 
+</div>

@@ -1,0 +1,14 @@
+<page>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing">
+			<login-path>/${applicationid}/authentication/nopermissions.html</login-path>
+	</path-action>
+	<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<userprofile property="editallassets" equals="true" />
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>
+</page>

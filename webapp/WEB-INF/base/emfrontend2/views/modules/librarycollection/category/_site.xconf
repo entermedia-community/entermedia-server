@@ -1,0 +1,24 @@
+<page>
+	<path-action name="ProjectModule.loadCollectionFromFolder"/>
+
+	<path-action name="MediaSearchModule.searchCategories">
+		<property name="exact-search">true</property>
+	</path-action>
+	
+	<property name="searchcategory">true</property>
+
+	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
+	
+	<property name="hitsname">hits</property>
+	<property name="virtual">true</property>
+	
+	 <permission name="view">
+    		<action name="ProjectModule.checkViewCollection" />
+    </permission>
+
+	 <page-action name="DataEditModule.loadPageOfSearch"/>
+	<property name="alwaysresetpage">true</property>
+
+	<property name="assetrootfolderXX">/${applicationid}/views/assets</property>
+
+</page>

@@ -1,0 +1,14 @@
+#set( $defaultwordpresspublisher = $mediaarchive.getCatalogSettingValue("defaultwordpresspublisher") )
+#if( $defaultwordpresspublisher )
+<div id="sendfile$presetdata.id">
+<form class="ajaxform" targetdiv="sendfile$presetdata.id" method="post" action="$home$apphome/views/activity/publish/fullpublish.html">
+	<input type="hidden" id="oemaxlevel" name="oemaxlevel" value="1"/>
+	<input type="hidden" id="publishassetid" name="publishassetid" value="$asset.id"/>
+	<input type="hidden" id="presetid" name="presetid" value="$presetdata.id"/>
+	<input type="hidden" name="field" value="publishdestination"/>
+	<input type="hidden" name="publishdestination.value" value="$defaultwordpresspublisher"/>
+	<input type="hidden" id="assetid" name="assetid" value="$asset.id"/>
+	<input class="btn" type="submit" value="Submit To Falcon"/>
+</form>
+</div>
+#end

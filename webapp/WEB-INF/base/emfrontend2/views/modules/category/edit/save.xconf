@@ -1,0 +1,13 @@
+<page>
+	
+	<path-action name="DataEditModule.loadData" allowduplicates="true" >
+			<pageval>selectedcategory</pageval>
+			<idname>id</idname>
+			<searchtype>category</searchtype>
+    </path-action>
+	
+	<property name="reloadprofile">true</property>
+
+			
+			
+</page>

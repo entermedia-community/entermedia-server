@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<path-action name="ProjectModule.setCurrentLibrary"/>
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+	
+	
+	
+	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
+  	<property name="module">library</property>
+  	<property name="enforcesecurity">true</property>
+  	<inner-layout>/${applicationid}/theme/layouts/librarylayout.html</inner-layout>
+  
+   <permission name="delete">
+ 	<or>
+		<group name="administrators" />
+	</or>
+ 	</permission>
+ 	<permission name="editdata">
+ 	<or>
+		<group name="administrators" />
+	</or>
+ 	</permission>
+ 	
+ 	<permission name="editdata">
+		<or>
+			<group name="administrators" />
+			<dataproperty beanname="selectedlibrary" name="owner" value="${user.id}"/>
+		</or>
+	</permission>
+</page>

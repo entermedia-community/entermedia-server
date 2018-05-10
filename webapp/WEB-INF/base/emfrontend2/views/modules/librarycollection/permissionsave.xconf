@@ -1,0 +1,18 @@
+<page>
+    <property name="defaulttab">permissionstab</property>
+	
+	<path-action name="DataEditModule.saveData" >
+			<property name="searchtype">category</property>
+	</path-action>
+	<path-action name="DataEditModule.invalidateIndex" >
+			<property name="searchtype">settingsgroup</property>
+	</path-action>
+	
+	<path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<searchtype>${module}</searchtype>
+			<idname>collectionid</idname>
+    </path-action>
+
+
+</page>

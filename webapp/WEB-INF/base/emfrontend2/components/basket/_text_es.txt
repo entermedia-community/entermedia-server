@@ -1,0 +1,7 @@
+#
+#Thu Apr 20 13:39:36 CDT 2017
++=+
+Basket=cesta
+Add\ To\ Basket=A\u00F1adir al carrito
+Remove\ From\ Basket=Eliminar de la cesta
+-=-

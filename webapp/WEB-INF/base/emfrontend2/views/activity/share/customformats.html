@@ -1,0 +1,129 @@
+<div class="emrounded">
+<input type="hidden" name="searchtype" value="order"/>
+<input type="hidden" name="catalogid" value="$catalogid"/>
+<input type="hidden" name="orderid" value="$order.id"/>
+	<div>
+	<p>[[Please choose a download format for each asset.]]</p>
+	<table id="shared-asset-table" class="striped download-table" width="100%" >
+
+<tr id="" >  
+#set($resultdetail = $mediaarchive.getAssetSearcher().getDetailsForView("asset/share", $userprofile))
+<th>[[Preview]]</th>
+<th>[[Name]]</th>
+
+#foreach( $detail in $resultdetail )
+		<th  class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
+			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
+					#text( $detail.text )
+					#if( $edit)
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=$moduleid&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="[[Remove]]" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+					#end
+			</div>
+		 </th>  
+#end
+<th>[[Format]]</th>
+</tr>
+	#foreach( $item in $orderitems )
+		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+	<tr>
+	<td>		
+		<input type="hidden" name="itemid" value="$item.id"/>
+		 
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("item", $item)
+	   	#set( $sourcepath = $asset.sourcePath )
+		$context.setRequestParameter("sourcepath", $sourcepath)					
+	
+	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+		#set( $tsize = "$home$thumbend" )
+		
+		#if( $parenthits )
+			#set( $rootid = $parenthits.sessionId )
+		#else
+			#set( $rootid = $hits.sessionId )
+		#end
+			#set( $click = "$home$apphome/views/assetdialog/index.html?width=600&height=500&sourcepath=${asset.sourcepath}&hitssessionid=$rootid" )
+		
+			#if($asset.fileFormat)
+                        #set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+#else
+                #set( $type = "none")
+#end
+			$context.putPageValue("cell", $asset)
+			$context.putPageValue("showdetails", "false")
+		   	$context.putPageValue("thumbsize", "crop")
+			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+</td>
+<td class="asset-name">${asset.name}</td>
+
+#foreach( $detail in $resultdetail )
+<td class="editfield highlightMe" halign="right">
+   <div id="edit_${cell.id}_$detail.id" class="popupdetails" data-id="${cell.id}">
+		#set($val = false)	
+		#set( $val =  $asset.get($detail.id) )
+      	#if( !$val && $detail.render )	
+			#set($val = $searcherManager.getValue($catalogid,$detail.render, $cell.properties) ) 
+		#end	
+		#if( !$val )
+			#set($val = "")	
+		#end		
+        $context.putPageValue('val',  $val)
+        $context.putPageValue('detail',  $detail)
+        $pages.include("$apphome/components/search/cell.html", $context)    
+    </div>
+</td>
+#end
+
+<td align="right">
+	      #set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
+	      <input type="hidden" name="field" value="presetid"/>
+<!-- 
+  	   	    #set( $presetquery = $presetsearcher.createSearchQuery() )
+  	   	    $presetquery.setAndTogether(false)
+  	   	    #set( $rendertype = false)
+  	   	    #set( $rendertype = $mediaarchive.getMediaRenderType($asset.fileFormat) )
+  	   	    #if( $rendertype )
+	  	   	    $presetquery.addExact("inputtype",$rendertype);
+  	   	    #end
+  	   	    $presetquery.addExact("inputtype","all");
+  	   	    $presetquery.addSortBy("ordering");
+  	   	    #set( $results = $presetsearcher.search($presetquery) )
+ -->
+  			<select name="${item.id}.presetid.value">
+  	   	    <option value="preview">[[Preview Only]]</option>
+  	   	    #if( $candownload)
+  	   	    <option value="0">[[Original]]</option>
+			#end
+  	   	    
+  	    	#foreach ($preset in $results)
+  	    		#if($preset.display == "true")
+  	    		#set($cancrop = $conversionUtil.canCrop($catalogid,$preset.id,$asset.id))
+	#if(!$cancrop)
+		#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
+			#set($show = false)
+		#else
+		
+			#set($show = true)
+		#end
+	#else
+		#set($show = true)
+	#end
+  	    		
+  	    		
+  	    		#if($show)
+  	    		<option value="$preset.id">$preset</option>
+  	    		#end
+  	    		#end
+  	    	#end
+  	    	</select>
+
+	</td>
+	</tr>	
+	#end
+	
+</table>
+	<div id="itemsave"></div>
+	<input class="btn small" style="float: right; margin-top: 20px;" type="submit" value="[[Next]]" />
+</div>
+</div>

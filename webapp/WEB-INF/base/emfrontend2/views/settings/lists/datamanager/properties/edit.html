@@ -1,0 +1,88 @@
+#set( $dataroot = $content.dataroot )
+<div class="tab-actions">
+	<strong>Editing $!property.name</strong>
+	<div style="float:right;">
+	#if($detail.isList() || $detail.isMultiValue())
+		<a class="btn" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">Edit Values</a>
+	#end
+[[Current Field]]:
+	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px; width: 80px;" >
+		<option value="" ></option>
+			#foreach( $detail in $searcher.getPropertyDetails())
+				<option value="$detail.id" #if($property.id == $detail.id)selected="selected"#end>$detail.text</option>
+			#end
+		</select>
+	</div>
+</div>
+#set($viewid = $context.getRequestParameter("viewid"))
+
+#set ( $moduleid = $context.findValue("searchtype") )		
+
+
+
+
+<div id="editlayout">
+#set( $origURL = $context.getRequestParameter("origURL" ) )		
+		
+<form id="dataeditor" name="dataeditor" method="post" action="$home$dataroot/properties/save.html" >
+	<input name="save" type="hidden" value="true" />
+	<input name="id" type="hidden" value="$!property.id" />
+	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+	<input name="searchtype" type="hidden" value="$searcher.getSearchType()" />
+	#if($viewid)
+		<input name="viewpath" type="hidden" value="${moduleid}/${viewid}"/>
+	#end
+
+<div id="edit-data" class="oeinputform validate-inputs">	
+$context.putPageValue("searchtype", "propertydetail")
+$context.putPageValue("view", "propertydetail/edit")
+$context.putPageValue("data", $property)
+
+$context.putPageValue("searcher",$mediaarchive.getSearcher("propertydetail"))
+
+$pages.include("$apphome/components/xml/detaileditor.html", $context)
+
+<div id="advanced" style="display: none;">
+<h3>Advanced Options</h3>
+$context.putPageValue("view", "propertydetail/advanced")
+$pages.include("$apphome/components/xml/detaileditor.html", $context)
+
+</div>
+</div>
+
+
+<input class="btn right" style="margin-right: 20px;" type="submit" value="Save" />
+
+</form>
+
+#if( $savedok && $origURL )
+<div class="embutton">
+	<a href="$origURL">[[Go Back]]</a>	
+</div>	
+#end
+
+
+<a class="btn red" style="margin-left: 20px; margin-right: 5px;" href="remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
+<a class="btn" style="margin-top: 3px;" id="viewadvanced">View Advanced Options</a>
+
+
+
+<script>
+    $('#viewadvanced').click(function(){
+        if ( $(this).hasClass('show') ) {
+            $('#advanced').hide();
+            $(this).html('View Advanced Options');
+            $(this).removeClass('show');
+        } else {
+            $('#advanced').show();
+            $(this).html('Hide Advanced Options');
+            $(this).addClass('show');
+        }  
+    });
+
+	loadPropertyEdit = function(selectedid) {
+
+		jQuery("#propertyEditPanel").load("$home${dataroot}/properties/edit.html?id=" + selectedid + "&oemaxlevel=1&catalogid=${mediaarchive.getCatalogId()}&searchtype=${searcher.getSearchType()}");
+	}
+
+</script>

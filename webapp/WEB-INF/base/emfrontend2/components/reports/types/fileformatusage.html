@@ -1,0 +1,84 @@
+#set($assetsearcher = $mediaarchive.getSearcher("asset"))
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6 ">
+			<canvas id="fileformatusagechart"></canvas>
+		</div>
+		<div class="col-md-6">
+			<ul class="list-group">
+				<a href="#" class="list-group-item active"> [[File Formats]] </a>
+				#foreach($item in
+				$diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
+				#foreach($subitem in $item.getAggregations())
+
+				<li class="list-group-item"><span class="badge"
+					title="$item.key">$!sizer.inEnglish($subitem.getValue()) </span>
+					#set( $data = false)
+					#set( $data = $mediaarchive.getData("fileformat",$item.key))
+					$context.getText($data)
+					
+					<br /></li> #end #end
+
+				<li class="list-group-item"><span class="badge">$!sizer.inEnglish($diskspacehits.getSum("filesize"))
+				</span> [[Total]]</li>
+
+			</ul>
+		</div>
+	</div>
+</div>
+
+
+<script>
+
+
+var ctx = document.getElementById("fileformatusagechart");
+var data =
+{
+        labels: [
+
+#foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
+
+"$item.key" #if($foreach.hasNext),#end
+
+#end
+        
+
+        
+        ],
+     
+        
+        
+        datasets: [{
+            
+            data: [
+#foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
+#foreach($subitem in $item.getAggregations())
+$subitem.getValue() ,
+#end
+#end
+                  
+                   
+                   ],
+                   #set($count = 1)
+
+        backgroundColor: [
+#foreach($item in $diskspacehits.getAggregations().get("fileformat_filesize").getBuckets())
+#foreach($subitem in $item.getAggregations())
+                #if($count != 1) , #end '$mediaarchive.getData("color", "$count").get("colorcode")'
+                #set($count = $count + 1)
+                #end
+                #end
+            ]
+        
+        
+            
+    }],
+
+}
+
+var myChart = new Chart(ctx, {
+    type: 'pie',
+    data: data
+    
+});
+</script>

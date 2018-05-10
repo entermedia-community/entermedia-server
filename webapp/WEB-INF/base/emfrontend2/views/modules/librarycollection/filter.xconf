@@ -1,0 +1,10 @@
+<page>
+	<path-action name="DataEditModule.changeFilters"/> 
+	<path-action name="DataEditModule.loadHits"/> 
+    <path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<idname>collectionid</idname>
+			<searchtype>librarycollection</searchtype>
+    </path-action>
+	
+</page>

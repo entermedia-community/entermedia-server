@@ -1,0 +1,13 @@
+#set( $moduleid = $page.get("module") )
+#set($resulttype = $userprofile.get("${moduleid}-display"))
+
+
+#if(!$resulttype)
+#set($resulttype = "table")
+#end
+
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="$moduleid" data-searchhome="$home$content.searchhome" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+			
+$pages.include("$apphome/views/modules/$moduleid/results/types/${resulttype}.html",$context)
+
+</div>

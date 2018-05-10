@@ -1,0 +1,16 @@
+<page>
+	<property name="section">reporting</property>
+	<property name="sectiontitle">
+	        <value>Reporting</value>
+    	    <value locale="fr">Rapport</value>
+	</property>
+    <script id="chartjs" src="/${applicationid}/components/javascript/chart/Chart.bundle.js" />
+
+	<inner-layout>${themeprefix}/layouts/dashboardlayout.html</inner-layout>
+	<permission name="view">
+		<or>
+			<pagevalue name="canviewsettings" equals="true" />
+			<pagevalue name="canviewreporting" equals="true" />
+		</or>	
+	</permission>
+</page>

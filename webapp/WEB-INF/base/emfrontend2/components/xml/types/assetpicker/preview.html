@@ -1,0 +1,44 @@
+#set($detailid = $detail.id )
+#if( !$detailid)
+	#set( $detailid = $context.getRequestParameter("detailid"))
+#end	
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+#if(!$val)
+	#set($val = $context.getRequestParameter('assetid'))
+#end
+#if($val && $val != "")
+#set( $foundrow = $mediaarchive.getAsset($val)  )
+#end
+
+#if( $foundrow )
+#set( $rootid = $hits.sessionId )
+
+#set( $click = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$!val&hitssessionid=$!rootid" )
+
+<div  id="${detailid}-previewlink" style="display: table-cell; text-align:right;">
+<a href="$click" alt="$foundrow" name="$foundrow.sourcepath" style="text-decoration: none;" >
+
+	#set( $type = $mediaarchive.getMediaRenderType($foundrow.fileFormat))
+	
+	$context.putPageValue("cell", $foundrow)
+	$context.putPageValue("hit", $foundrow)
+	
+	$context.putPageValue("showdetails", "false")
+	$context.putPageValue("thumbsize", "image200x200.jpg")
+  	$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+</a>
+
+#if($foundrow && !$context.getRequestParameter("readonly") == "true")
+<br>
+<a href="#"  onclick='$("#${detailid}-value").val("");$("#${detailid}-previewlink").html(""); return false;' > [[clear]]</a>
+#end
+
+</div>
+
+	#if( $type == "audio")
+	<a href="$click" alt="$foundrow" class="audio-filename"> $foundrow.name	</a>
+	#end
+#end			

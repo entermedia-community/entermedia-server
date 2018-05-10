@@ -1,0 +1,21 @@
+<page>
+	<path-action name="ProjectModule.addCollectionTab" />
+	
+	<property name="hitsname">hits</property>
+	<property name="virtual">true</property>
+	
+    <path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<idname>collectionid</idname>
+			<searchtype>librarycollection</searchtype>
+    </path-action>
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>librarycollection</searchtype>
+	</path-action>
+	
+	 <permission name="view">
+    		<action name="ProjectModule.checkViewCollection" />
+    </permission>
+	 <path-action name="DataEditModule.loadPageOfSearch"/>
+	
+</page>

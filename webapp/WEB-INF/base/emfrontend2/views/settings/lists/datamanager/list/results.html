@@ -1,0 +1,112 @@
+#set( $view = $context.getRequestParameter("view") )
+#if( !$view )
+    #set( $view = "${searcher.searchType}/${searcher.searchType}search.xml")
+#end
+    $context.putPageValue("hits",$datalist) 
+    #if( $view )
+        #set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
+    #else
+    #set( $details = $searcher.getSearchProperties($user) )
+    #end
+    $context.putPageValue("details",$details) 
+    
+    
+ #set( $view = "${searcher.searchType}/${searcher.searchType}results.xml")
+        #set( $details = $searcher.getDetailsForView($view, $userprofile) ) 
+        #if(!$details)
+        #set( $details = $searcher.getStoredProperties() )
+        #end
+        $context.putPageValue("details",$details) 
+
+<div class="tab" id="data-tab">
+	
+	$pages.include("$apphome/views/settings/lists/datamanager/list/actions.html", $context)
+
+	
+
+	<div id="dm-containerx">
+		<div id="emselectable">
+		<table class="emdata striped greytxt table tbl-responsive" id="main-results-table" 
+		 data-hitssessionid="$datalist.sessionId" data-origURL="$!origURL" data-catalogid="$searcher.catalogId" data-searchtype="$searcher.searchType" >
+		<tr id="tableheader">
+		#set( $sortby = $datalist.getSearchQuery().getSortBy() )
+		#foreach( $detail in $details )
+		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">
+			$detail.getText($context)
+			#if ($sortby.startsWith($detail.getId()))
+ 				#if($sortby.endsWith("Up"))
+ 					#set($sorticon="bottom")
+ 				#else
+ 					#set($sorticon="top")
+ 				#end	
+ 				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
+			#end
+		</th>
+		#end
+		</tr>	
+		   
+		
+    
+		
+		
+		#set( $origURL = $context.getRequestParameter("origURL" ) )				
+			
+		#foreach ( $hit in $datalist.getPageOfHits() )
+		  $context.putPageValue('data', $hit)
+    $context.putPageValue('cell', $hit)
+    
+			<tr rowid="$hit.id">
+			#foreach( $detail in $details )
+				
+				<td nowrap>
+				
+				 $context.putPageValue('val',  $!hit.get($detail.id))
+              $context.putPageValue('detail',  $detail)
+              $pages.include("$apphome/components/search/cell.html", $context)    
+				
+				</td>
+			#end
+			</tr>
+		#end
+		</table>
+			<form name="editrow" action="$home$content.dataroot/edit/edit.html">
+				<input type="hidden" name="id" id="emselectedrow" />
+				<input type="hidden" name="origURL" id="$!origURL" />
+				<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
+			</form>
+		</div>
+	
+	</div>
+	
+	
+	<div id="pages" style="text-align: left; padding-left: 20px;">
+	
+		#if ( $datalist.totalPages == 0 )
+		#elseif( $datalist.totalPages == 1 )
+		#elseif( $datalist )
+			#set($thispage = $datalist.getPage())
+			[[Page]] <b>$thispage</b> [[of]] $datalist.totalPages  
+			&nbsp;&nbsp;
+			
+			#if( $datalist.prevPage() )
+			<a href="$home$content.dataroot/list/results.html?page=$datalist.prevPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b>&lt;&lt;  [[Back]]</b></a>
+			#end
+			
+			#if ( $datalist.nextPage() )
+			<a style="margin-left: 10px;" href="$home$content.dataroot/list/results.html?page=$datalist.nextPage()&hitssessionid=$datalist.sessionId&origURL=$!origURL&searchtype=$searcher.searchType" ><b> [[Forward]] &gt;&gt;</b></a>
+			#end
+		#end
+	</div>
+		<p style="padding-left: 20px; padding-top: 5px;">[[Found]] $datalist.size() [[Records]]</p>
+	
+	
+	#set( $thispage = $datalist.getPage()+-1)
+	#set( $start = $datalist.getHitsPerPage() * $thispage )
+	#set( $end = $start + $datalist.getPageOfHits().size() )
+	#set( $start = $start + 1)
+	
+</div>
+
+
+
+

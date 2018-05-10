@@ -1,0 +1,40 @@
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set($cdnprefix = $!{mediaarchive.getCatalogSettingValue("cdn_prefix")})
+#if( !$cdnprefix )
+#set( $cdnprefix = $context.siteRoot )
+#end
+
+#if(${presetdata.id} != "0") 
+
+<a class="thickbox btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preset/${asset.sourcepath}/${presetdata.generatedoutputfile}?cache=false">[[Preview]]</a>
+<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${presetdata.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
+#if($canembedasset)
+<a class="btn ajax" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" 
+	href="$home$apphome/views/modules/asset/editor/conversions/embed.html?assetid=${asset.id}&outputfile=${presetdata.generatedoutputfile}&oemaxlevel=1">Embed</a>
+#end
+
+#else
+<a class="btn" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/${asset.sourcepath}/$mediaarchive.asExportFileName($asset, $presetdata)?includemetadata=true">[[Download]]</a>
+<a class="btn ajax" id="${presetdata.id}-btn" targetdivinner="${presetdata.id}-embed" href="$home$apphome/views/modules/asset/editor/conversions/embedorig.html?assetid=${asset.id}&outputfile=${asset.getMediaName()}&oemaxlevel=1">Embed</a>
+#end
+
+
+
+<div id="${presetdata.id}-embed"></div>
+
+<script>
+	$( "#${presetdata.id}-btn" ).click(function() {
+		var status = $(this).attr("isShowing");
+		if (status == undefined){
+			$( this ).attr("isShowing", "true");
+			return;
+		}
+		if (status == "true"){
+			$( this ).attr("isShowing", "false");
+			$("#${presetdata.id}-embed").hide();
+		} else {
+			$( this ).attr("isShowing", "true");
+			$("#${presetdata.id}-embed").show();
+		}
+	});
+</script>

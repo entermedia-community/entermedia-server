@@ -1,0 +1,42 @@
+
+
+#set( $moduleid = $context.findValue("module") )
+#set( $searchhome = $context.findValue("searchhome") )
+$pages.include("${searchhome}/resultsactions.html",$context)
+#set($positiondetail = $context.findValue("positiondetail"))
+#if(!$positiondetail)
+#set($positiondetail = "geo_point")
+#end
+
+<script type="text/javascript">
+
+jQuery(document).ready(function(){ 
+$('#map').gmap({
+	 'center':'39.025818619038375,-95.03089171562499',
+}).bind('init', function(ev, map) {
+	#foreach($location in $hits.getPageOfHits())
+		
+      	$('#map').gmap('addMarker', 
+		{
+			'position': '$!location.get("$positiondetail")'		    
+	 	}).click(function() {
+	 		var location = this;
+	 		jQuery.get("$apphome/views/modules/${moduleid}/search/mapbubble.html?id=$location.id&sourcepath=$location.sourcepath", function (content){
+	 			$('#map').gmap('openInfoWindow', {'content': content}, location);
+
+	 		});
+
+		});;
+	
+	#end
+});
+});
+    
+
+
+   
+    </script>
+<div id="map" align style="width: 100%; height: 750px;"></div>
+
+
+

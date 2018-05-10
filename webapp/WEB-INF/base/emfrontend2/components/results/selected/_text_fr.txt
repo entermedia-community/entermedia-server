@@ -1,0 +1,26 @@
+#Thu Apr 27 09:03:42 CDT 2017
+View\ Selections=Voir les sélections
+Edit\ Asset=Modifier le Fichier
+Reject=Rejeter
+Multi\ Edit=Multi Édition
+Results=Résultats
+Deselect\ All=Tout déselectionner
+Show\ All\ Results=Afficher tous les résultats
+Select\ All\ Results=Sélectionnez tous les résultats
+Add\ To\ Basket=Ajouter au panier
+Approve\ Pending=Approbation en attente
+Export\ to\ CSV=Exporter au format CSV
+All=Tout
+Delete\ Assets=Supprimer Fichiers
+Show\ All=Tout montrer
+Approve=Approuver
+Select\ This\ Page=Sélectionner cette page
+Edit\ selected\ records=Modifier les enregistrements sélectionnés
+Remove\ From\ Basket=Retirer du panier
+Selections=Sélections
+Show\ Only\ Selections=Afficher uniquement les sélections
+Print\ Assets=Imprimer fichiers
+Reject\ Pending=Rejet en attente
+Edit=Modifier
+Edit\ one\ or\ more\ selected\ records=Modifier un ou plusieurs enregistrement(s) sélectionné(s)
+Actions=Actions

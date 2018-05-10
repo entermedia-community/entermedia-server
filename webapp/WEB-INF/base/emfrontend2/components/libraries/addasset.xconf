@@ -1,0 +1,6 @@
+<page>
+	<path-action name="ProjectModule.addAssetToLibrary"/>
+	<permission name="view">
+		<user />
+	</permission>
+</page>

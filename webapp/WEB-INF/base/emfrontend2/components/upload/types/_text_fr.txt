@@ -1,0 +1,16 @@
+#
+#Thu Apr 27 13:15:15 CDT 2017
+Upload\ Queue=File de t\u00E9l\u00E9versement
+Edit=modifier
+Pick\ Files=Choisir les fichiers
+Pick\ More\ Files...=Choisir plus de fichiers ...
+Upload=T\u00E9l\u00E9verser
+View\ Uploads=Voir les t\u00E9l\u00E9versements
+Drop\ files\ here\!=D\u00E9poser les fichiers ici\!
+View\ Collection=Voir Collection
+Metadata=M\u00E9tadonn\u00E9es
+Upload\ Complete=T\u00E9l\u00E9versement termin\u00E9
+View\ Pending=Vue en attente
+Upload\ multiple\ files\ by\ using\ the=T\u00E9l\u00E9verser plusieurs fichiers en utilisant la touche
+key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=de votre clavier pour s\u00E9lectionner les fichiers que vous souhaitez t\u00E9l\u00E9verser
+Shift=Majuscule

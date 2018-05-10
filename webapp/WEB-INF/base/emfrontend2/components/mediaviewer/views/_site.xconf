@@ -1,0 +1,13 @@
+<page>
+	<property name="hitsname">loghits</property>
+	<property name="sortby">dateDown</property>
+	
+	<path-action name="DataEditModule.search">
+		
+	</path-action>
+	
+	
+	
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
+	
+</page>

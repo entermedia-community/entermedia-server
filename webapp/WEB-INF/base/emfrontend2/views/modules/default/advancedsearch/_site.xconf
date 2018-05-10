@@ -1,0 +1,9 @@
+<page>
+		<path-action name="DataEditModule.loadSearcherForEdit" >
+		<property name="searchtype">${module}</property>
+	</path-action>
+		<property name="xmledithome">/${applicationid}/components/xml</property>
+
+		<property name="usestartswith">true</property>
+		
+</page>

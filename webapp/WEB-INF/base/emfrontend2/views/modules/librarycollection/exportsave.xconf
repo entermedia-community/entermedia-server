@@ -1,0 +1,12 @@
+<page>
+	<path-action name="ProjectModule.moveCollection"/>
+
+    <path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<idname>collectionid</idname>
+			<searchtype>librarycollection</searchtype>
+    </path-action>
+    <property name="defaulttab">exporttab</property>
+
+	
+</page>

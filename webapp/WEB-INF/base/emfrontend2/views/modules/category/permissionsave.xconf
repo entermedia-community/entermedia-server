@@ -1,0 +1,16 @@
+<page>
+	<path-action name="AssetEditModule.handleUploads"/>
+    <property name="defaulttab">permissionstab</property>
+	
+	<path-action name="DataEditModule.saveData" >
+			<property name="searchtype">category</property>
+	</path-action>
+	<property name="reloadprofile">true</property>
+	
+	<path-action name="DataEditModule.loadData" allowduplicates="true" >
+			<pageval>selectedcategory</pageval>
+			<idname>categoryid</idname>
+			<searchtype>category</searchtype>
+    </path-action>
+
+</page>

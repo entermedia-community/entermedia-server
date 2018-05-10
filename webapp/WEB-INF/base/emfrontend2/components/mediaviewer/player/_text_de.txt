@@ -1,0 +1,11 @@
+#
+#Tue Oct 11 16:11:54 EDT 2016
+Previous\ Five=letzten f\u00FCnf
+as\ jpeg=als JPEG
+Contact=Kontakt
+Categories=Kategorien
+$asset=$asset
+Tags=Tags
+drag=ziehen
+Next\ Five=n\u00E4chsten f\u00FCnf
+Shopping\ Cart=Einkaufswagen

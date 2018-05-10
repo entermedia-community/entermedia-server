@@ -1,0 +1,15 @@
+<page>
+	<layout/>
+	<inner-layout/>
+	
+	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+	
+	
+	<path-action name="Admin.autoLogin" alltypes="true"/>
+	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>	 
+	
+	
+	<page-action name="GoogleModule.searchContacts" alltypes="true">
+	</page-action>
+	
+</page>

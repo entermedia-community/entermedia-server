@@ -1,0 +1,10 @@
+<page>
+
+	<path-action name="DataEditModule.loadSearcherForEdit" alltypes="true" />
+	
+	<path-action name="DataEditModule.saveData"  alltypes="true" />
+	<property name="save">true</property>
+<generator name="velocity" />
+
+			
+</page>

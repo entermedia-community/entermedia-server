@@ -1,0 +1,21 @@
+#
+#Thu Apr 27 13:11:50 CDT 2017
+Tools=Outils
+Data\ Management=Gestion de donn\u00E9es
+Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Les sauvegardes instantan\u00E9es sont utilis\u00E9es par ElasticSearch pour enregistrer et restaurer l'\u00E9tat de la base de donn\u00E9es.
+View\ Snapshots=Voir Snapshots
+Disabled=d\u00E9sactiv\u00E9
+Validate\ All\ Mapping\ Schema=Valider tout le sch\u00E9ma de mappage
+View\ Known\ Mapping\ Conflicts=Afficher les conflits de mappage connus
+Reloading\ lists\ should\ be\ performed\ after\ an\ upgrade=Les listes doivent \u00EAtre recharg\u00E9es apr\u00E8s une mise \u00E0 jour.
+Knapsack\ snapshots\ are\ used\ to\ create\ text\ based\ backups\ that\ can\ be\ moved\ between\ servers=Les images instantan\u00E9es sont utilis\u00E9es pour cr\u00E9er des sauvegarde au format texte pouvant \u00EAtre d\u00E9placer sur des serveurs.
+Reindex=Reindex
+Full\ reindex\ is\ complete=Full-reindex est complet
+This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists.=Permets aux listes charg\u00E9es depuis l'installation d'\u00EAtre int\u00E9gr\u00E9es \u00E0 vos propres listes.
+Reload\ lists=Recharger listes
+Clear\ Cached\ Data=Effacer les donn\u00E9es mises en cache
+Knapsack\ is\ used\ to\ create\ JSON\ based\ backups\ that\ can\ be\ moved\ between\ servers=Knapsack est utilis\u00E9 pour cr\u00E9er des sauvegardes bas\u00E9es sur JSON qui peuvent \u00EAtre d\u00E9plac\u00E9es entre les serveurs
+View\ Knapsack=Voir sac \u00E0 dos
+Enabled=Activ\u00E9e
+Search\ Logs=Rechercher des journaux
+This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists=Cela permet d&\#39;int\u00E9grer les listes charg\u00E9es depuis l&\#39;installation avec vos propres listes

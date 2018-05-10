@@ -1,0 +1,17 @@
+#
+#Thu Apr 20 13:39:05 CDT 2017
+You\ can\ only\ select=S\u00F3lo puede seleccionar
+Loading\ more\ results=Cargando m\u00E1s resultados
+chars\ more=Chars m\u00E1s
+Search=Buscar
+chars\ less=Caracteres menos
+entries=Entradas
+Enter\ a\ Custom\ Range=Introduzca una Serie personalizada
+Please\ enter=Por favor escribe
+No\ results=No hay resultados
+Searching=buscando
+Remove=retirar
+entry=entrada
+Pick\ Categories=Escoja Categor\u00EDas
+Over=encima
+Enter\ comma\ separated\ tags=Introducir etiquetas separadas por comas

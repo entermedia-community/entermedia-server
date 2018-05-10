@@ -1,0 +1,18 @@
+
+#set( $searchtype = "notification")
+#set( $fieldexternalid = "dataid")
+#set( $fieldexternalvalue = $asset.getId())
+#set( $permissionname = "caneditasset")
+#set ($view = "notification/details")
+#set($viewid = $context.getRequestParameter("viewid"))
+
+#set( $args = "parentid=$asset.id&dataid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
+#set( $args = "$args&selectlink=$home$content.searchhome/editor/historynotifications/index.html")
+
+$pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
+  
+
+  <div class="tab-actions">
+	
+</div>
+  

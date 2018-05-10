@@ -1,0 +1,20 @@
+#set( $pagenum = $context.getRequestParameter("pagenum") )
+#set( $name = $context.getRequestParameter("name") )
+
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $asset.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
+
+<div id="mainholder">
+<img id="mainimage" src="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/$urlenc/${name}?pagenum=$!pagenum" />
+
+<div id="footerholder">
+[[click to pan, scroll to zoom]]
+</div>
+
+
+</div>

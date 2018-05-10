@@ -1,0 +1,8 @@
+#
+#Thu Jan 28 15:43:40 EST 2016
+Next=N\u00E4chster
+Please\ choose\ a\ download\ format\ for\ each\ type\ of\ asset.=w\u00E4hlen Sie bitte ein Format zum Herunterladen f\u00FCr jede Art von Verm\u00F6genswerten.
+Session\ expired,\ Reload\ browser=Sitzung abgelaufen ist, reload Browser
+Downloading=Herunterladen
+Items=Artikel
+Invalid\ order,\ username\ does\ not\ match=ung\u00FCltige Ordnung, Benutzernamen stimmt nicht \u00FCberein

@@ -1,0 +1,20 @@
+#set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+
+  <div class="primary">$asset.id</div>
+  <div id="embedded-player-table" class="thickbox" >
+
+	$asset.embeddedurl
+
+  </div>
+  
+    <div id="mp-asset-info">
+      <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitsessionid" class="views">$views<span class="">&nbsp;</span></a>
+      <a style="margin-right: 0;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitsessionsid" class="comments">$comments.size()<span>&nbsp;</span></a>                 
+    </div>
+  
+  <div class="asset-details-more">
+     <p style="line-height: 25px; text-align: left; color: #fff;">
+      </p>
+      <p style="line-height: 25px; text-align: left; color: #fff; ">
+      </p>
+   </div>

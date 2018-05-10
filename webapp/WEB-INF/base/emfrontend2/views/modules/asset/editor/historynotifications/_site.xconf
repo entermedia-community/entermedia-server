@@ -1,0 +1,7 @@
+<page>
+	<property name="tab">asseteditorhistory</property>
+	<property name="subtab">historyrenewal</property>
+	<property name="assettab">historyrenewal</property>
+	<property name="searchtype">notification</property>
+	
+</page>

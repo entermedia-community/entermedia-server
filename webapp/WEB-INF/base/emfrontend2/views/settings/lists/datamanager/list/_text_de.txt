@@ -1,0 +1,22 @@
+#
+#Fri Feb 13 10:39:03 EST 2015
+Data\ Search=Datensuche
+Data=Daten
+Export=Export
+Records=Datensätze
+Search=Suche
+Reindex=indizieren
+Customize\ Views=Ansichten anpassen
+Import=Import
+Page=Seite
+of=von
+Delete\ Table=Tabelle löschen
+Data\ Type=Datentyp
+Found=gefunden
+Copy\ to\ defaults=zu Standardwerten kopieren
+Add\ New\ Record=neuen Datensatz hinzufügen
+Back=zurück
+Delete\ Records=Datensätze löschen
+Customize\ Fields=Felder anpassen
+Forward=vorwärts
+

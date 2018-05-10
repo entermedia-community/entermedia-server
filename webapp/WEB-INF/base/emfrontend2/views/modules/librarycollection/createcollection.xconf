@@ -1,0 +1,13 @@
+<page>
+	
+	
+	<path-action name="DataEditModule.saveData"/>
+	<path-action name="ProjectModule.addAssetToCollection" />
+	
+	<path-action name="ProjectModule.redirectToCollection">
+		<searchtype>librarycollection</searchtype>
+	</path-action>
+	
+	<property name="virtual">true</property>
+	
+</page>

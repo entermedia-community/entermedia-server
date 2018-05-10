@@ -1,0 +1,5 @@
+#if( $asset.editstatus == "recording" )
+$pages.include("$apphome/components/mediaviewer/player/hwd/index.html",$context)
+#else
+$pages.include("$apphome/components/mediaviewer/player/html5/index.html",$context)
+#end

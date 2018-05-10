@@ -1,0 +1,10 @@
+#Thu Apr 27 09:03:42 CDT 2017
+No\ users\ found.=Aucun utilisateur trouvé.
+Next=Suivant
+Create\ User=Créer un utilisateur
+Search=Recherche
+Page=Page
+Reindex=Reindexer
+Role=Rôle
+Previous=Précédent
+

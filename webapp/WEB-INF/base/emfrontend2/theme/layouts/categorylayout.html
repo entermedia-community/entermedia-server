@@ -1,0 +1,25 @@
+#if( $selectedcategory )
+
+<div style="float:left;margin-top: 20px;">
+	$pages.include("$apphome/components/categories/crumbs.html?categoryid=$selectedcategory.id")
+</div>
+<div id="collectiontoplevel" >
+		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
+		  <li class="ui-corner-top"><a id="mediatab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/category/categorysearch.html?selectedcategory=${selectedcategory.getId()}&nodeID=${selectedcategory.id}" >[[Category Assets]]</a></li>
+		  
+		  #set( $link = "$home$apphome/views/modules/category/edit/index.html?id=${selectedcategory.getId()}&categoryid=$selectedcategory.getId()&viewid=categorygeneral&viewpath=category/categorygeneral&searchtype=category")
+		  <li class="ui-corner-top" ><a id="settingstab" href="$link" >[[Properties]]</a></li>
+
+		  #set( $link = "$home$apphome/views/modules/category/permissions.html?categoryid=${selectedcategory.getId()}")
+		  <li class="ui-corner-top" ><a id="permissionstab" href="$link" >[[Permissions]]</a></li>
+		</ul>
+		<div class="clearfix"></div>
+		<div  id="collection-tab-content" >
+		  <div class="tab-pane" id="loadedpanel" >
+		  	$pages.includeContent()
+		  </div>
+		</div>
+</div>
+#else
+$pages.includeContent()
+#end

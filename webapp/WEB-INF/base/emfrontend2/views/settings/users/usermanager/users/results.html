@@ -1,0 +1,129 @@
+<div id="datamanager-workarea">
+
+$pages.include("./search.html")
+
+           
+<div id="emselectable" class="commentbox"  >
+
+#ifnull($userTracker)
+#set( $userTracker = $hits)
+#end
+$context.putPageValue("hits", $userTracker)
+
+#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
+#set( $oeview = "user/results")
+#set( $details = $userSearcher.getDetailsForView($oeview,$user))
+
+<table width="100%" class="striped emdata" id="main-results-table">
+	#set( $origURL = $context.getRequestParameter("origURL" ) )				
+	#set( $selecteduser = $context.getRequestParameter("username" ) )
+	<thead>
+		<tr id="tableheader">
+		#set( $sortby = $userTracker.getSearchQuery().getSortBy() )
+		#foreach( $detail in $details )
+		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">
+		$detail.getText($context)
+		#if ($sortby.startsWith($detail.getId()))
+				#if($sortby.endsWith("Up"))
+					#set($sorticon="bottom")
+				#else
+					#set($sorticon="top")
+				#end	
+				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
+		#end
+		</th>
+		#end
+		<th>
+			[[Role]] 
+		</th>
+	</tr>
+	</thead>
+#set ($userProfileSearcher = $searcherManager.getSearcher($catalogid, "userprofile"))
+<tbody>
+
+#foreach ( $hit in $userTracker.getPageOfHits() )
+	<tr rowid="${hit.id}" #if ($hit.enabled != true) style="border-style:solid;border-color:red;border-width:2px;" #end >
+
+	#foreach( $detail in $details ) 
+	
+		#set( $newval = "$!hit.get($detail.getId())")
+		#if($newval != "" && $detail.isList())  
+			#set( $newval = "$!searcherManager.getData($detail.getListCatalogId(),$detail.getListId(),$newval)" )
+	
+		#end		
+		<td nowrap>
+			$newval
+		</td>
+	#end
+		<td nowrap style="padding:4px;text-align:left;">
+		#set($userprofilehit = false)  
+		#set ($userprofilehit = $userProfileSearcher.searchById($hit.id))
+		#if ($userprofilehit)
+			#set( $newval = $userprofilehit.get('settingsgroup') )
+			#if( $newval )
+				#set( $sgroup = $searcherManager.getData($catalogid,'settingsgroup',$newval) )
+				$sgroup
+			#end	
+		#end
+		</td>
+	</tr>
+#end
+#if ($userTracker.size() == 0)
+	<tr>
+		<!-- <td colspan="${details.size()}" align="center"> -->
+			<td colspan="3" align="center">
+			[[No users found.]]
+		</td>
+	</tr>
+#end
+</tbody>
+</table>
+
+<form name="useredit" action="$home$usermanagerhome/user/index.html">
+	<input type="hidden" id="emselectedrow" name="username" />
+</form>
+
+</div>
+
+
+##$pages.include("$apphome/components/results/pages.html",$context)
+ 
+#if ( $userTracker.totalPages == 0 )
+#elseif( $userTracker.totalPages == 1 )
+#elseif( $userTracker )
+
+<div style="text-align: left; padding-left: 20px; pading-top: 5px;">
+		#set($thispage = $userTracker.getPage())
+		
+		#if( $userTracker.prevPage() )
+            <a style="margin-right: 15px;" href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.prevPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>&lt;&lt; [[Previous]]</b></a>
+        #end
+        
+		[[Page]] <b>$thispage</b>/$userTracker.totalPages  
+		#if ( $userTracker.nextPage() )
+			<a style="margin-left: 15px;" href="#" onclick="jQuery('#usersearchresultspanel').load('$home$usermanagerhome/users/results.html', {page:'$userTracker.nextPage()', oeview:'$oeview', hitssessionid:'$userTracker.sessionId', oemaxlevel:'1'}); return false;"><b>[[Next]] &gt;&gt;</b></a>
+		#end
+</div>
+
+#end
+ 
+    <script>
+        $('th.sortable').on({
+            click: function(){
+                var id = $(this).attr('id');
+                if ( $(this).hasClass('currentsort') ) {
+                    if ( $(this).hasClass('up') ) {
+                        jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
+                    } else {
+                        jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Up');
+                    }
+                } else {
+                    $('th.sortable').removeClass('currentsort');
+                    $(this).addClass('currentsort');
+                    jQuery('#datamanager-workarea').load( '$home$usermanagerhome/users/columnsort.html?oemaxlevel=1&catalogid=$&hitssessionid=$userTracker.sessionId&origURL=$!origURL&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&sortby=' + id + 'Down');
+                }
+            }
+        });
+    </script>
+ 
+ </div>

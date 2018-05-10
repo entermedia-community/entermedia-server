@@ -1,0 +1,31 @@
+  
+<div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
+	<!-- Nav tabs -->
+	<div class="row">
+		<div class="col-md-4">
+		<div class="collectionheaderactions">
+		#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")		
+		<a href="$editlink" class="librarylabel"  data-targetdiv="left-col-libraries" title="$!{librarycol.notes}"><span> $librarycol.getName() ($hits.size())</span></a>
+		</div>
+		</div>
+		<div class="col-md-8 ui-tabs">
+			<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="mediatab" data-targetdiv="collection-tab-content" >
+			  <li class="ui-corner-top emtabselected"><a id="mediatab" data-layouts="2" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Media]]</a></li>
+			  <li class="ui-corner-top" ><a id="addmediatab"   href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
+			  <li class="ui-corner-top "><a  id="emannotationstab" data-loadpageonce="true"  href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotations]]</a></li>
+	#set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?collectionid=${librarycol.getId()}&viewid=librarycollectionassets&viewpath=librarycollection/librarycollectionassets&searchtype=librarycollection")		
+			  <li  class="ui-corner-top "><a id="approvalstab"  href="$link" >[[Discussions]]</a></li>
+	#set( $link = "$home$apphome/views/modules/librarycollection/edit/moduletable.html?collectionid=${librarycol.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection")		
+			  <li class="ui-corner-top "><a  id="sharetab"  href="$link" >[[Share]]</a></li>
+			  <li class="ui-corner-top" ><a id="publishtab"   href="$home$apphome$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Publish]]</a></li>
+			  <li class="ui-corner-top " ><a id="settingstab" href="$editlink" >[[Settings]]</a></li>
+			</ul>
+			<div class="clearfix"></div>
+			</div>
+	</div>
+	<!-- Tab panes -->
+		<div  id="collection-tab-content" class="ui-corner-top ui-corner-bottom" >
+		  <div class="tab-pane" id="loadedpanel" >$pages.includeContent()</div>
+		</div>
+
+</div>

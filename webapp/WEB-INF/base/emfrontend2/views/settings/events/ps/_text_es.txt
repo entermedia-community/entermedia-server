@@ -1,0 +1,7 @@
+#
+#Thu Apr 20 13:26:17 CDT 2017
+No\ events\ in\ queue=No hay eventos en cola
+running=corriendo
+Refresh=Refrescar
+last\ run=\u00FAltima carrera
+repeats\ every=Repite cada

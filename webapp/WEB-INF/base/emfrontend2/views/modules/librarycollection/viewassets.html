@@ -1,0 +1,34 @@
+$context.putPageValue("showhover", "false")
+$context.putPageValue("showcaption", "true")
+$context.putPageValue("hideheader", "true")
+#set( $downloadsearcher = $mediaarchive.getSearcher("librarycollectiondownloads") )
+#set( $downloads = $downloadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
+
+#if(!$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if($categoryid)
+		#set($category = $mediaarchive.getData("category",$categoryid))
+		#if($category)
+			$context.putPageValue("category",$category)
+		#end
+	#end
+#end
+
+###always go to index - don't care about resultview
+
+#if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
+
+
+$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
+
+<script type="text/javascript">
+	jQuery(document).ready(function(){
+		jQuery("#poptrigger").trigger("click");
+	});
+</script>
+
+#else
+<div id="viewassets">		
+		$pages.include("$apphome/components/results/index.html",$context)
+</div>
+#end

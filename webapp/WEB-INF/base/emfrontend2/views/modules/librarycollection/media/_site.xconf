@@ -1,0 +1,32 @@
+<page>
+
+	<inner-layout>/${applicationid}/views/modules/librarycollection/viewassets.html</inner-layout>
+	<property name="defaulttab">mediatab</property>
+	
+	<property name="hitsname">hits</property>
+	<property name="virtual">true</property>
+	
+    <path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<idname>collectionid</idname>
+			<searchtype>librarycollection</searchtype>
+    </path-action>
+
+	<path-action name="ProjectModule.addOpenCollection" />
+	<path-action name="ProjectModule.loadOpenCollections"/>
+	
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>librarycollection</searchtype>
+	</path-action>
+	<property name="alwaysresetpage">true</property>
+	
+	
+	 <permission name="view">
+	 	<and>
+	 	   	<pagevalue name="canviewopencollections" equals="true" />
+    		<action name="ProjectModule.checkViewCollection" />
+    	</and>	
+    </permission>
+	 <page-action name="DataEditModule.loadPageOfSearch"/>
+	 
+</page>

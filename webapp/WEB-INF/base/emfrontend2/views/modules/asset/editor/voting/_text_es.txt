@@ -1,0 +1,16 @@
+#
+#Thu Apr 20 13:39:42 CDT 2017
+You\ like\ this=Si te gusta este
+others=otros
+Be\ the\ first\ to\ approve\ this=Sea el primero en aprobar este
+approves=Aprueba
+and=y
+have\ approved\ this=Han aprobado esta
+likes\ this=le gusta esto
+You=usted
+Be\ the\ first\ to\ like\ this\ asset\!=\u00A1S\u00E9 el primero en recibir este activo \!
+You\ approved=Has aprobado
+like\ this=como este
+Approve=Aprobar
+Remove\ Approval=Eliminar aprobaci\u00F3n
+approved=aprobado
