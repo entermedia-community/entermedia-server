@@ -13,12 +13,18 @@
 	$context.putPageValue("showcaption", "true")
 	$context.putPageValue("related", $related)
 	$context.putSessionValue($related.sessionId, $related)
-	$pages.include("$apphome/components/results/sidebar.html",$context)
 	
-                <center>
-                    <a class="btn" style="margin-top: 15px; margin-bottom: 30px;" href="$home$apphome/views/categories/${category.getId()}.html">[[All Related]]</a>
-                </center>
-	
-#else	
 
+<hr>
+<div class="aside-content">
+	<div class="aside-header">
+	[[Related Assets]]
+	#if( $canmultiedit )
+	  <a href="$home$apphome/views/categories/${category.getId()}.html" class="btn btn-sm btn-light float-right">[[All Related]]</a>
+	#end
+	</div>
+	<div class="aside-block">
+		$pages.include("$apphome/components/results/sidebar.html",$context)
+	</div>
+</div>
 #end

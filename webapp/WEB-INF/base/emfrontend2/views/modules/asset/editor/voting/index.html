@@ -1,7 +1,7 @@
 #if($alreadyvoted)
-	<a class="ajax full" title="[[Remove Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1"><i class="fas fa-heart red"></i></a>
+	<a class="ajax full" title="[[Remove Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1"><i class="fas fa-thumbs-up liked"></i></a>
 #else
-	<a class="ajax empty"  title="[[Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1"><i class="fas fa-heart"></i></a>
+	<a class="ajax empty"  title="[[Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1"><i class="fas fa-thumbs-up"></i></a>
 #end
 #set($size = $voteshits.size() )
 
@@ -38,6 +38,6 @@
 	    [[have liked this]]
 	#end
 #else
-    [[Be the first to like this]]
+    
 #end
 

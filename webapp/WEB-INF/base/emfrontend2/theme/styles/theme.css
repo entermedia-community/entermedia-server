@@ -483,11 +483,18 @@
 .media-player-mini .media-info-more { border-top:1px solid #333; padding-top: 10px; margin-top:10px; }
 
 .media-likes {padding-right:15px; display:inline-block;}
-.media-likes .red {color:#fff;}
+.media-likes .liked {color:#fff;}
 
 .media-data-table { background-color: #efefef;}
 
 
+.aside-content { margin:0 0 50px;}
+.aside-content .aside-header { height:40px; width: 100%; padding: 10px; margin: 0 0 10px;}
+
+.aside-content .aside-block { padding: 10px;}
+
+.aside-media { list-style:none; height: 80px; margin:0; padding:0; }
+.aside-media li { float: left; margin-right:10px;}
 
 
 

@@ -28,7 +28,7 @@ $related.setPage($pageval)
     	#if ( $related && $related.size() > 0 )
         	#set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
         	$context.putPageValue("details",$details)
-        	<ul class="sidebar-media">
+        	<ul class="aside-media">
         			#set($count = 0)
         			
         			#set( $rootid = $related.sessionId )
