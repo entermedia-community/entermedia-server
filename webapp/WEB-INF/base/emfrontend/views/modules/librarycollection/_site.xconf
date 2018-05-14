@@ -20,5 +20,7 @@
 			<action name="ProjectModule.canEditCollection" />
 		</or>
 	</permission>
+		<path-action name="ProfileModule.changeResultView"/>
+	
 
 </page>

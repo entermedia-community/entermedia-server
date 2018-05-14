@@ -1,5 +1,9 @@
+#if($caneditdata)
 #set( $editlink = "$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
+#else
+#set( $editlink = "$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection&detailreadonly=true&readonly=true")
 
+#end
 $pages.include($editlink)
 
 #if( !$librarycol.isVisibility("3") )
