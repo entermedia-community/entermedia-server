@@ -1,0 +1,19 @@
+#
+#Tue Oct 11 16:13:20 EDT 2016
+Results=Ergebnisse
+Edit=bearbeiten
+Embed=einbetten
+Save\ values=Werte speichern
+Email=Email
+No\ data\ has\ been\ entered.=Es wurdenkeine Daten eingegeben.
+Delete\ Assets=Assets l\u00F6schen
+File=Datei
+Saved=Gerettet
+Share=Teilen
+Add\ to\ Project=Zum Projekt hinzuf\u00FCgen
+Download=Download
+Print=drucken
+Publish=ver\u00F6ffentlichen
+Cancel=abbrechen
+Delete=l\u00F6schen
+Edit\ =bearbeiten

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
+	<property name="module">category</property>
+	<property name="enforcesecurity">true</property>
+  
+  	<path-action name="DataEditModule.loadData" allowduplicates="true" >
+			<pageval>selectedcategory</pageval>
+			<idname>categoryid</idname>
+			<searchtype>category</searchtype>
+    </path-action>
+  
+    <inner-layout>/${applicationid}/theme/layouts/categorylayout.html</inner-layout>
+</page>

@@ -1,0 +1,20 @@
+#if ( $canviewlibrarysearch &&  !$userprofile.getCombinedLibraries().isEmpty() )
+<div class="ui-widget uipanel" id="left-col-search" >
+	<div class="ui-widget-header">[[Libraries]]</div>
+<div  class="ui-widget-content">
+		<ul class="sidebar-list">
+	#set($selected = false )
+	#set($selected = $hits.getInput("libraries") )
+    	#foreach($libraryid in $userprofile.getCombinedLibraries() )
+    		 #set( $library = $searcherManager.getData($catalogid,"library",$libraryid ) )
+    		 #set( $project = false )
+    		 #set( $project = $searcherManager.getData($catalogid,"project",$library.project ) )
+    		 
+    		<li class="#if( $selected && $selected == $libraryid) currentsubtle #end "> 
+    				<a  href="$home$apphome/views/search/search.html?field=libraries&operation=exact&libraries.value=$library.id">$project / $library</a>
+    		</li>		
+    	#end
+    	</ul>
+</div>
+</div>
+#end

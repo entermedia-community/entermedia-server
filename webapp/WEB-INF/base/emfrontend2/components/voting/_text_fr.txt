@@ -1,0 +1,5 @@
+#Thu Apr 27 09:03:42 CDT 2017
+Remove\ Approval=Supprimer l&\#39;approbation
+Add\ Approvals=Approuver
+Show\ Approvals=Afficher les approbations
+

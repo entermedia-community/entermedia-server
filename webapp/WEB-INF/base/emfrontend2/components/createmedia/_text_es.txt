@@ -1,0 +1,16 @@
+#
+#Thu Apr 20 13:38:51 CDT 2017
+Create\ Data\ Record=Crear registro de datos
+Upload\ media\ from\ local\ file\ system\ or\ camera=Carga de medios desde el sistema de archivos local o la c\u00E1mara
+Add\ Remote\ Media=Agregar medios remotos
+Import\ files\ from\ user\ sync\ folder=Importar archivos de la carpeta de sincronizaci\u00F3n del usuario
+Live\ Video\ Stream=Transmisi\u00F3n de video en vivo
+Make\ a\ live\ stream\ recording\ from\ your\ webcam=Realice una grabaci\u00F3n en directo desde su c\u00E1mara web
+Import\ Work\ Folder=Carpeta de trabajo de importaci\u00F3n
+Create\ empty\ data\ records\ then\ attach\ media\ later=Crear registros de datos vac\u00EDos y adjuntar medios m\u00E1s tarde
+Copy\ Categories=Copiar categor\u00EDas
+Copy\ existing\ folder\ or\ categories=Copiar carpeta o categor\u00EDas existentes
+Import\ files\ from\ a\ previously\ exported\ zip\ file=Importar archivos de un archivo zip previamente exportado
+Upload\ Media=Subir Medios
+Upload\ Collection\ Zip\ File=Subir Colecci\u00F3n Archivo Zip
+Create\ media\ assets\ from\ a\ URL\ or\ Embed\ code=Crear activos multimedia desde una URL o C\u00F3digo incrustado

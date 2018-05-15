@@ -1,0 +1,8 @@
+<page>
+<inner-layout>/${applicationid}/components/quickshare/innerlayout.html</inner-layout>
+<property name="quicksharefrom">ian@netevolved.com</property>
+<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/quickshare/createsession.groovy</script>
+	</path-action>
+
+</page>

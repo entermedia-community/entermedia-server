@@ -1,0 +1,57 @@
+
+
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set( $view = $context.findValue("editview") )
+		$context.putPageValue("view", $view)
+				#set( $targetselect = $context.getRequestParameter("update" ) )
+		
+		
+		<form id="inlinedata" name="dataeditor"   >
+			<input name="save" type="hidden" value="true" />
+			<input name="id" type="hidden" value="$!data.id" />
+			<input name="catalogid" type="hidden" value="$searcher.catalogId" />
+			<input name="searchtype" type="hidden" value="$searcher.searchType" />
+			<input name="origURL"  type="hidden" value="$!origURL" />
+		<div id="edit-data">	
+		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		<input id="inlinesave" class="btn right" style="margin-right: 20px;" type="button" value="Save" />
+
+		</div>
+		<div id="messagearea">$!message
+		</div>
+		
+		<br/><br/><br/>
+		</form>
+
+		
+		<script type="text/javascript">
+		
+		$(document).on("keypress", "form", function(event) { 
+		    return event.keyCode != 13;
+		});
+		
+		
+		
+		jQuery("#inlinesave").on("click", function(){
+			var queryString = $('#inlinedata').formSerialize(); 
+			var url = apphome + "/views/settings/lists/datamanager/edit/inlinesave.json?" + queryString;
+			var targetselect = "$targetselect";
+			$.getJSON(url, function(data) {
+				$('#' + targetselect).append($('<option>', {
+				    value: data.id,
+				    text: data.name
+				}));
+				$("#" + targetselect).val(data.id);
+				
+			});
+			
+			jQuery(".modal").modal('hide');
+			
+		}
+		
+		);
+		
+	
+
+		
+		</script>

@@ -1,0 +1,21 @@
+[[Assets you uploaded to]] $librarycol.getName() [[have been approved]].
+#if( $note )
+<pre>
+$note
+</pre>
+#end
+[[The Following Assets have been approved]]:
+<table>
+#foreach($assetid in $assets)
+#set($asset = $mediaarchive.getAsset($assetid))
+<tr>
+<td>
+<img  src="$content.siteroot$home$apphome/views/modules/asset/downloads/preview/thumb/${asset.sourcepath}/thumb.jpg" border="0" />
+</td>
+<td>
+$asset.name
+</td>
+</tr>
+#end
+</table>
+<a href="$context.siteRoot$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html">[[View collection]]</a>

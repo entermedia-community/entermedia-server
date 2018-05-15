@@ -1,0 +1,23 @@
+#
+#Thu Apr 27 09:16:42 CDT 2017
+Share=Partager
+Save\ values=Enregistrer les valeurs
+No\ data\ has\ been\ entered=Aucune donn\u00E9e n&\#39;a \u00E9t\u00E9 saisie
+File=Fichier
+Yes=Oui
+Download=T\u00E9l\u00E9charger
+No=Non
+Results=R\u00E9sultats
+Embed=Int\u00E9grer
+Delete=Effacer
+Publish=Publier
+Edit\ =modifier
+Print=Impression
+Delete\ Assets=Supprimer les actifs
+No\ data\ has\ been\ entered.=Aucune donn\u00E9e n'a \u00E9t\u00E9 entr\u00E9e
+Cancel=Annuler
+Are\ you\ sure?=\u00CAtes-vous s\u00FBr?
+Edit=Modifier
+Email=Email
+see\ more\ details=Voir plus de d\u00E9tails
+Add\ to\ Project=Ajouter au projet

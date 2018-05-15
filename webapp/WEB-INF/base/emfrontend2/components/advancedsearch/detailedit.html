@@ -1,0 +1,58 @@
+<tr>
+	<td id="detail_${detail.id}" valign="middle">
+	  	<label class="emsearchfield"> 
+			#if ($edit == "true")
+				<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
+				<i class="glyphicon glyphicon-plus"></i>
+				</a>
+			#end
+			$!detail.getText($context) #if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
+		</label>
+		
+		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
+
+		#set( $viewtype = $detail.searchcomponent )
+		#if (!$viewtype)
+			#if (!$viewtype)
+				#set( $viewtype = $detail.viewType )
+			#end
+			#if (!$viewtype)
+				#set ($viewtype = $detail.dataType)
+			#end
+			#if (!$viewtype || $viewtype == "text" || $detail.isMultiLanguage() || $viewtype == "textarea" || $viewtype == "html")
+				#set ($viewtype = "default")
+			#end
+			#if ($viewtype == "date")
+				#set ($viewtype = "datesearch")
+			#end
+		#end	
+
+		#if(!$detail.isDate() && $detail.getId() != "category" && !$viewtype.endsWith("search") )
+			#if($detail.defaultoperation && $detail.defaultoperation != "")
+				<input name="operation" value="$detail.defaultoperation" type="hidden" />
+			#elseif($detail.isList() || $detail.isBoolean() || $viewtype == "multiselect")
+				<input name="operation" value="matches" type="hidden" />
+			#else
+				<input name="operation" value="startswith" type="hidden" />
+			#end
+		#end
+			
+		#if (!$viewtype || $viewtype == "boolean")
+			#set ($viewtype = "booleansearch")
+		#end
+
+		#if( $hits.getSearchQuery() )
+			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
+			#set( $values = $hits.getSearchQuery().getInputs($detail.id) )
+			
+			#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
+			$context.putPageValue("term",$term)			
+			$context.putPageValue("val",$value)
+			$context.putPageValue("values",$values)
+			$context.putPageValue("data",$hits.getSearchQuery())
+		#end	
+		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
+		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
+	</td>
+</tr>
+

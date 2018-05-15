@@ -1,0 +1,18 @@
+#
+#Thu Apr 08 15:12:35 EDT 2010
+Retype\ Password=Passwort wiederholen
+Permission\ Groups=Gruppenrechte
+Import\ Users=Importieren von Benutzern
+USER=BENUTZER
+Home\ Page\ Does\ Not\ Exist=Startseite existiert nicht
+Change\ Password=Passwort ändern
+Home\ Page=Startseite
+Orders=Bestellungen
+Password=Kennwort
+Export\ Users=Benutzer exportieren
+Reload\ Search\ Index=Suchindex erneut laden
+User\ Search=Benutzer suchen
+Create\ New\ User=Erstellen eines neuen Benutzers
+Add=hinzufügen
+Save\ Changes=Änderungen speichern
+

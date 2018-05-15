@@ -1,0 +1,4 @@
+<page>
+<path-action name="ConvertStatusModule.rerunAllThumbnails" />
+<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
+</page>

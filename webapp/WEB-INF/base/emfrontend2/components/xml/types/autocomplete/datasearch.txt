@@ -1,0 +1,12 @@
+{
+#set( $nameprop = $searcher.getDetail("name") )
+  "total_count": $autocomplete.size(),
+  "incomplete_results": false,
+  "rows": [
+	#foreach ($res in $autocomplete.getPageOfHits())
+	#if( ${foreach.count} > 1 ),#end
+	#set($label = $searcherManager.getLabel($nameprop,$res,$context.locale))
+	{"id": "$res.get('id')", "name": #jesc($label), "sourcepath" : "$res.sourcepath"}
+	#end
+	]
+}

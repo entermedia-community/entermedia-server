@@ -1,0 +1,14 @@
+#
+#Thu Jan 28 15:44:08 EST 2016
+Results=Ergebnisse
+No\ results\ found.=keine Ergebnisse gefunden.
+Batch\ Edit=Stapelverarbeitung
+Delete\ Selected\ Items=ausgew\u00E4hlte Artikel l\u00F6schen
+Edit\ Columns=Spalten bearbeiten
+Custom\ Export=benutzerdefinierter Export
+Add\ New=neue hinzuf\u00FCgen
+Export\ results=Ergebnisse exportieren
+Download\ Assets=Assets herunterladen
+Export\ results\ (friendly)=Ergebnisse exportieren ( freundlich)
+Add\ Column=Spalte hinzuf\u00FCgen
+Cancel=abbrechen

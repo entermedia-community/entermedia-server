@@ -1,0 +1,45 @@
+#set( $tab = $context.findValue("tab") )
+
+<div class="subcolumns">
+	<div class="c25l" id="left-col">
+		<div class="ui-widget">
+			<div class="ui-widget-header">[[My Account]]</div>
+			<div class="ui-widget-content categories-widget no-padding-for-real">
+				<ul id="settings-menu" class="sidebar-list">
+				
+					#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
+					#set( $screens = $searcher.query().match("menulevel","toplevel").match("moduleid", "user").sort("orderingUp").search() ) 
+					#foreach($screen in	$screens)
+						#if($screen.permission)
+							#set($canview = $context.getPageValue("can${screen.permission}"))
+						#else
+							#set($canview = true)
+						#end
+						#if($canview)
+							<li id="$screen.id" #if( $tab== "$screen.id" ) class="current" #end>
+								<a href="$home$apphome${screen.path}">$context.getText($screen.getName())</a>
+							</li>
+						#end
+					#end
+				</ul>
+			</div>
+		</div>
+
+#if ( $canviewopencollections )
+$pages.include("$apphome/components/opencollections/sidebar.html",$context)
+#end
+
+##$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+		
+		
+	</div>
+	<div id="right-col" >
+				$pages.includeContent()
+	</div>
+</div>
+
+
+
+
+
+

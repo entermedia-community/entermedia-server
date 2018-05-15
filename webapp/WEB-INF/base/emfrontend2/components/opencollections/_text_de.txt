@@ -1,0 +1,13 @@
+#
+#Tue Oct 11 16:10:34 EDT 2016
+Open\ Collections=offene Sammlungen
+Categories=Kategorien
+Assets=Assets
+Create\ New=neue
+Close\ Collection=schlie\u00DFen Sammlung
+Libraries=Bibliotheken
+Details=Einzelheiten
+Project\ Tracker=Projekt-Tracker
+Publish=ver\u00F6ffentlichen
+Collections=Sammlungen
+Collection\ Search=Sammlung Suche

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
+    <property name="module">librarycollection</property>
+    
+	<inner-layout>/${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
+	<path-action name="ProfileModule.savePreference"/>
+	
+	<property name="defaulttab">mediatab</property>
+
+	<style id="uploadstyle" href="${themeprefix}/styles/pages/upload.css" />
+	<property name="uploadtab">single</property>
+	<script id="upload" src="/${applicationid}/components/upload/types/html5/upload.js" />
+	<script id="html5_upload" src="/${applicationid}/components/javascript/upload/jquery.html5_upload.js" />
+
+	<permission name="editdata">
+		<or>
+			<group name="administrators" />
+			<action name="ProjectModule.canEditCollection" />
+		</or>
+	</permission>
+
+</page>

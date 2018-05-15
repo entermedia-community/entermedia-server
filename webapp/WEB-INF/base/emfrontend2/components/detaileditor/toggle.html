@@ -1,0 +1,51 @@
+#set($pluginpath = $context.getRequestParameter('pluginpath') )
+#set($assetid = $context.getRequestParameter('assetid'))
+#set($viewpath = $context.getRequestParameter('view'))
+#set($viewid = $url_util.getPathUtilities().extractFileName($viewpath) )
+#set($label = $context.getRequestParameter('label'))
+
+#set( $plugin = $pages.getPage($pluginpath))
+
+#set ($openview = $context.getRequestParameter("openview"))
+
+#set ($finishedname = "${view}complete")
+#set ($finished = $asset.get($finishedname))
+#if(  $userprofile.getValue($viewpath) == "true" )
+	#set( $open = "down")
+#else
+	#set( $open = "up")
+#end
+#set ( $module = $context.findValue("module"))
+
+
+
+  <div class="card">
+    <div class="card-header" id="heading$!viewid">
+      <h5 class="mb-0">
+        <button class="btn btn-link" data-toggle="collapse" data-target="#collapse$!viewid" aria-expanded="true" aria-controls="collapse$!viewid">
+          $context.getText($label.toString())
+        </button>
+        #if( $caneditmetadatasetup )
+			#if ( $viewpath.contains("$asset.assettype") )
+				#set ( $type = $asset.assettype )
+			#else
+				##set ( $type = false )
+			#end
+			 <a href="$home$apphome/views/settings/modules/$module/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type" class="float-right btn btn-sm btn-light"><i class="fas fa-cog"></i> [[Edit]]</a>
+		#end
+      </h5>
+    </div>
+
+    <div id="collapse$!viewid" class="collapse show" aria-labelledby="heading$!viewid" data-parent="#accordion">
+      <div class="card-body">
+        	$context.putPageValue("finished",$finished)
+			$pages.include("$plugin?origURL=$origURL", $context)
+      </div>
+    </div>
+   </div>
+
+
+
+
+
+

@@ -1,0 +1,59 @@
+#if (!$hit)
+	#set ($hit = $asset)
+#end
+
+#if (!$hit)
+	#set ($hit = $data)
+#end
+
+#set ($sourcepath = $hit.sourcepath)
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if ($urlutils)
+	#set ( $sourcepath = $urlutils.encode($sourcepath))
+	#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+#end
+
+#set( $imagesize = "image200x200.jpg")
+
+#if($thumbsize == "mediumplus")
+		
+			#set($imagesize = "image550x350.jpg")
+			
+	#elseif($thumbsize == "crop")
+		#set($imagesize = "image110x62cropped.jpg")
+	#end		
+
+
+#set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
+
+<span id="emthumbholder">
+	#if( $hit.importstatus && $hit.importstatus == "uploading" )
+		$pages.include("$apphome/components/uploadqueue/uploadstatus.html?assetid=${hit.id}",$context)	
+	#elseif( !$hit.importstatus || $hit.importstatus != "complete" )
+		$context.putPageValue("thumbsize", $thumbsize)
+		$pages.include("$apphome/components/convertqueue/importstatus.html?assetid=$!{hit.id}",$context)
+		
+	#elseif( $hit.previewstatus && $hit.previewstatus == "mime")
+		#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+		#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+		<img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
+	#else	
+		<span class="emdropshadow">
+        	<img id="main-media"  class="imagethumb  document   assetdragdrop" 
+        		draggable="true" data-sourcepath="$sourcepath" data-name="$hit.name" data-hidenav="$hidenav"
+        	 src="$tpath" border="0" />
+       	</span>	
+	</span>	
+	#end
+</span>
+	<div id="badgecontainer">
+	
+	#set( $badges = $mediaarchive.getBadges($hit) )
+	<div class="badgetarget">
+	#if($canshowbadge)
+		#foreach($badge in $badges)
+			<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
+		#end
+	#end
+	</div>
+</div>

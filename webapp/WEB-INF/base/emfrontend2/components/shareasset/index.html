@@ -1,0 +1,23 @@
+        #if( $asset.getId().startsWith("multiedit:") )
+		#set($multi = true)
+	#end
+
+	<ul class="emdetailactions clearfix" style="border-bottom: none; height: inherit;">
+		
+		##$home$apphome/views/activity/emailassets.html?assetid=$asset.id
+		<li id="email">
+			<a class="btn ajax" targetdivinner="shareOptionsContainer" href="">[[Email]]</a>
+		</li>
+		#end
+		#if( $canembedasset && !$multi)
+		##$home$apphome/components/share/embed.html?sourcepath=$asset.sourcepath&width=700&height=200
+		<li id="embed">
+			<a class="btn ajax" targetdivinner="shareOptionsContainer" href="">[[Embed]]</a>
+		</li>
+		#end <!-- li  id="facebook"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="$home$apphome/components/share/facebook.html?sourcepath=$asset.sourcepath&oemaxlevel=1">Facebook</a></li>
+		<li  id="twitter"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="">Twitter</a></li>
+		<li id="google-plus"><a class="btn ajax" targetdivinner="shareOptionsContainer" href="">Google +</a></li -->
+		
+		
+	</ul>
+	<div id="shareOptionsContainer"></div>

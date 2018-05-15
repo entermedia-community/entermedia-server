@@ -1,0 +1,9 @@
+#
+#Thu Jan 28 15:08:13 EST 2016
+Editing\ across\ $asset.size()\ records=Bearbeitung \u00FCber $asset.size() Aufzeichnungen
+records=Aufzeichnungen
+Next=n\u00E4chste
+Slideshow=Diashow
+Editing\ across=Bearbeitung f\u00FCr
+Go\ Back=zur\u00FCckgehen
+Previous=Voriger

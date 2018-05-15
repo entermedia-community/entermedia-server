@@ -1,0 +1,53 @@
+<div id="browse-resultsarea">
+$context.putPageValue("assetrootfolder", "/${catalogid}/assets")
+#if( !$thumbsize )
+	#set( $thumbsize  = "thumbsmall" )
+	
+#end
+#set($targetdiv = $context.getRequestParameter("targetdiv"))
+#set( $showcaption  = "true" )
+$context.putPageValue("thumbsize", $thumbsize)
+$context.putPageValue("showhover", "true")
+$context.putPageValue("showcaption", "true")
+$pages.include("$apphome/components/html/browse/navigate.html", $context)
+
+<div class="row">
+	#foreach ($hit in $hits.getPageOfHits())
+	<div class="col-md-2" style="padding-left:0px">
+			#set( $count = $hits.getPage()+-1 )
+			#set( $count = $count*$hits.getHitsPerPage() )	
+			#set( $count = ${foreach.count} + $count )
+			$context.putPageValue("hitindex",$count )
+		
+			$context.putPageValue("cell", $hit)
+			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+			$context.putPageValue("type", $type)
+			#set ($sourcepath = $hit.sourcepath)
+			#set( $click = "$home/openedit/components/html/${content.pickermode}/details.html?sourcepath=${sourcepath}&hitssessionid=$rootid" )
+		<div class="panel panel-default">
+	  		<div class="panel-heading" style="height:40px;">$!hit.name</div>
+			<div class="panel-body" style="height:180px;">
+				<div class="thumbnail">
+				<img src="$home$cataloghome/downloads/preview/thumbsmall/$sourcepath/thumb.jpg"/>
+				</div>
+			</div>
+			<div class="panel-footer" style="padding: 5px;">
+				<div class="form-horizontal">
+					<div >
+							<a class="btn btn-default btn-block  asset-select" style=" box-sizing: inherit;" data-assetid="${hit.id}" href="#">[[Select]]</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>	
+	#end
+</div>
+#if ( $hits.totalPages == 0 )
+<p>
+[[No results found]].
+</p>
+#end
+$pages.include("$apphome/components/html/browse/navigate.html", $context)
+
+</div>
+	

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+  <path-action name="DataEditModule.loadData" allowduplicates="true" >
+			<pageval>selectedcategory</pageval>
+			<idname>categoryid</idname>
+			<searchtype>category</searchtype>
+    </path-action>
+    
+  	<inner-layout>/${applicationid}/theme/layouts/categorylayout.html</inner-layout>
+    
+    <property name="defaulttab">settingstab</property>
+</page>

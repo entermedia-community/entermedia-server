@@ -1,0 +1,8 @@
+<page>
+
+	<path-action name="DataEditModule.search">
+		<searchtype>${module}</searchtype>
+	</path-action>
+	
+	<property name="assetrootfolder">/${applicationid}/assets</property>
+</page>

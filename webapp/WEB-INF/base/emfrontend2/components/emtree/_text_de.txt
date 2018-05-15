@@ -1,0 +1,9 @@
+#
+#Tue Oct 11 16:10:37 EDT 2016
+Properties=Eigenschaften
+Create=erstellen
+Rename=umbenennen
+Paste=Paste
+Cut=schneiden
+Delete=l\u00F6schen
+Copy=Kopieren

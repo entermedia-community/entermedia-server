@@ -1,0 +1,192 @@
+#if( !$hits )
+#set( $hits = $collectionassets)
+$context.putPageValue("hits",$hits)
+#end
+
+#if( !$hits )
+#set( $hits = $orderassets)
+$context.putPageValue("hits",$hits)
+#end
+ 
+#if($hits)
+	#set( $collectionid = $hits.getInput("collectionid") )
+	#if( $collectionid && !$librarycol)
+	
+		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
+		$context.putPageValue("librarycol",$librarycol)
+	#end
+	#set( $caneditdata = $hits.getSearchQuery().getValue("caneditdata") )
+	#if( $caneditdata )
+		$context.putPageValue("caneditdata",$caneditdata)
+	#end
+	#set( $catid = $hits.getInput("categoryid") )
+	#if( $catid && !$category)
+	#set( $category = $mediaarchive.getData("category",$catid) )
+	#end
+	#set( $orderid = $hits.getInput("orderid") )
+	#if( $orderid)
+		#set( $order = $mediaarchive.getData("order",$orderid) )
+		$context.putPageValue("order",$order)
+	#end
+#end	
+<div id="sub-nav">
+	<ul  class="search-views">
+	
+		#set ($enabled=$hits.getSelectionSize() > 0)
+	
+		#if( $candownload || $canconvert || $candownloadfpo ) 
+			#if( $librarycol )
+			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
+			#else
+				#if( $enabled )
+				<li>
+					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+					<a href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					
+					#else
+					<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
+					#end
+				</li>	
+				#else
+				<li class="resultmenuitem">
+					<span class="text">[[Download]]</span>
+				</li>	
+				#end
+			#end
+		#end	
+
+		#if($candeleteasset && $canmultiedit && $canquickdelete)	    
+	 		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a></li>
+	   	#end    	
+
+	
+		#if($canpublish || $canemaillink )
+			<li><a #if( !$enabled ) style="text-decoration:none;" #end>[[Share]]</a>
+				#if( $enabled )
+				<ul>
+
+					#if( $canemaillink )
+					<li><a class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a></li>
+					#end
+					#if( $canpublish)
+					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a></li>
+					#end
+#if( $canquickgallery)
+					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a></li>
+					#end
+
+					##if( $canpublish)
+					##<li><a href="$home$apphome/views/activity/sharegallery.html?hitssessionid=$!hits.getSessionId()&field=publishdestination&publishdestination.value=gallery&field=ordertype&ordertype.value=gallery&field=publishtype&publishtype.value=gallery" >[[Share Gallery]]</a></li>
+					##end
+				</ul>
+				#end
+			</li>
+		#end
+		
+		#if($canquickpublish )
+
+		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
+		
+		<li><a>[[Publish]]</a>
+				<ul>
+					#foreach($item in $quickpublishlist)
+						<li><a href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a></li>
+					#end
+				</ul>
+			</li>
+		#end
+		
+			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
+				<li><a>[[Collection]]</a>	
+				<ul>
+					#if( $canaddnewcollection)
+<li><a class="emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]" 
+					 >[[Copy Collection]]</a></li>
+					 #end
+					 #if( $caneditdata)
+					<li><a href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
+					class="confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
+					#end
+				</ul>
+				</li>
+				#end
+		
+		#if ( $canviewbasket )
+			#if($order)
+				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
+			#end
+		#end
+  		#set( $edit = $context.getRequestParameter("editheader") )
+			<li>
+				$pages.include("$apphome/components/results/selected/index.html",$context)
+			</li>
+		
+		#set ($resultview = $userprofile.get('resultview'))
+		#if (!$resultview || $resultview == 'table')
+			#if( $canedittablecolumns )
+			#if( $edit )
+				<li style="float: right;" >
+					<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+				</li>								
+				<li style="float: right;padding-top:13px;padding-right: 6px;" >
+						#set ($alldetails = $searcher.getUserPropertyDetails() )
+						<select  onchange='return addColumn(jQuery(this).val())' name="addcolumn" >
+							<option>[[Add Column]]</option>
+							#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+							#end
+						</select>
+						<script type="text/javascript">
+							function addColumn(inId) {
+								jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+								return false;	
+							}
+						</script>
+				</li>	
+			#else 
+				<li style="float: right;">
+					<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
+				</li>
+			#end	
+			#end								
+		#end
+		#if($edit && $edit == "true"  )
+			<li class="resultmenuitem" style="float: right;">
+					<span class="ui-icon ui-icon-info" style="display: inline;padding-right:15px;margin-right:5px;"> </span>
+					<span class="text" >[[Drag columns to move them]]</span>
+			</li>
+		#end		
+		#if(!$resultview)
+			#set($resultview = $userprofile.get("resultview"))
+			#if (!$resultview)
+				#set($resultview = "table")
+			#end
+		#end
+		#if(!$edit || $edit == "false"  )
+			<li style="float: right;">
+				<div style="position: relative;">
+					<a class="table-edit-close">
+						<select name="resultview" id="selectresultview" class="smalldropdown" 
+							data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()">
+#set( $types = $mediaarchive.getList("resulttype"))
+#foreach($type in $types)
+							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
+#end
+##							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery]]</option>
+##							<option value="stackedgallery" #if( $resultview == "stackedgallery") selected #end>[[Stacked]]</option>
+##							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Folders]]</option>
+						</select>
+					</a>
+				</div>
+			</li>
+			#if( $hits.size() > 0)
+			<li style="float:right" class=" hidden-sm-xs hidden-xs hidden-sm hidden-md">
+			$pages.include("$apphome/components/results/pages.html",$context)
+			</li>	
+			<li id="resultpageslabel" class="resultmenuitem hidden-sm-xs hidden-xs hidden-sm hidden-md" style="float:right">
+			<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size()</span>
+			</li>			
+			#end
+		#end	
+	</ul>
+</div>
+ 

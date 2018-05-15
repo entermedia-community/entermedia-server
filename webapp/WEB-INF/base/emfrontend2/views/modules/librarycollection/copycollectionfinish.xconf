@@ -1,0 +1,11 @@
+<page>
+	
+	
+	
+	<path-action name="ProjectModule.copyCollection">
+		<searchtype>librarycollection</searchtype>
+	</path-action>
+	
+	<property name="virtual">true</property>
+	
+</page>

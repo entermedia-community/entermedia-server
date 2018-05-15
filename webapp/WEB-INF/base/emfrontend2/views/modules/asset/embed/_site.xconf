@@ -1,0 +1,9 @@
+<page>
+	
+	<inner-layout>/${applicationid}/theme/layouts/embedlayout.html</inner-layout>
+
+	<permission name="view">
+		<boolean value="true" />
+	</permission>
+	
+</page>

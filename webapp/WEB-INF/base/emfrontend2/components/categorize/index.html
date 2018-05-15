@@ -1,0 +1,43 @@
+#if($asset.getId().startsWith("multiedit"))
+	#set($postfix = 'multi')
+#else
+	#set($postfix = $asset.id )
+#end
+<div id="assetdetailscategorylist$postfix">
+<h3>[[Categories]]</h3>
+#set( $rootpath = "${apphome}/components/categorize")
+
+#set ($categories = $asset.getCategories())
+<div class="emtable clearfix" >
+    
+    #if ( $categories.size() > 0 )
+    
+	#foreach($category in $categories)
+		
+		    #set($tags = "")
+			#foreach( $parent in $category.getParentCategories() )
+				 #if( ${foreach.count} > 1) #set($tags = "$tags > ") #end
+				 #set($tags = "$tags $parent.getName()" )
+			#end	
+			<a class="row category" href="$home$apphome/views/categories/${category.id}.html" title="$tags">$tags</a>
+			#if($caneditasset)
+				<a class="ajax delete-row" targetdiv="assetdetailscategorylist$postfix" href="$home$rootpath/removeassetcategory.html?assetid=${asset.id}&categoryid=$category.id"></a>
+			#end
+	
+	#end
+	
+	#else 
+	   <p class="info">[[There are no categories associated with this asset.  Add categories below.]]</p>
+	#end
+	#if($caneditasset)
+    
+        <div id="addcategory$postfix" style="margin: 20px 0;">
+            <a class="emdialog btn small" href="$home$rootpath/picker.html?assetid=$asset.id" >[[Pick Categories]]</a>
+        </div>
+    #end
+</div>
+
+
+</div>
+
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preview/cropinput</property>
+	<generator name="convertArchiveDocument"/>
+	<property name="uselegacythumbimages">false</property>
+	<property name="prefwidth">1024</property>
+	<property name="prefheight">768</property>
+	<property name="exportnameinpath">true</property>
+	
+</page>
+
+

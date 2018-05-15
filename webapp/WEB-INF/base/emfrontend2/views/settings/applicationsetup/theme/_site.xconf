@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+<property name="subtab">theme</property>
+	<!-- This is not used any longer -->
+  
+	<script id="jquery-minicolors" src="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.js" />
+	
+	<style  id="jquery-minicolors-css" href="/${applicationid}/components/javascript/colorpicker/jquery.minicolors.css" />
+</page>

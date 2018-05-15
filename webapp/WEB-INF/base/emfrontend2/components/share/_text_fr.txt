@@ -1,0 +1,5 @@
+#Thu Apr 27 09:03:42 CDT 2017
+Preview\ Page=Page d&\#39;aperçu
+Select\ code\ then\ right\ click\ to\ copy=Sélectionnez le code puis cliquez avec le bouton droit de la souris pour copier
+Original\ Media\ Download=Télécharger Original Media
+

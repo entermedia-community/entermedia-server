@@ -1,0 +1,27 @@
+<div class="ui-widget uipanel" style="margin: 20px;">
+		    <div class="ui-widget-header">[[Create Streaming Video]]</div>
+		    <div class="ui-widget-content">
+
+#set( $catalog = $context.getRequestParameter('uploadcatalog') )
+#set( $sourcepath = $formatteddate )
+<form  name="wizard" method="post" 
+	action="$home/${applicationid}/components/createmedia/video/createnew.html">
+	<input type="hidden" name="categoryid" value="index"/>
+	
+<div id="eml-tab-green-container" class="clearfix">
+	<div class="inner-content">
+		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+		$context.putPageValue("view","asset/assettype/default/createnewvideo")	
+
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+	<hr />
+
+	<input class="btn" style="float: right" type="submit" id="finishbutton" value="[[Next]]">
+	
+				<div style="clear: both;"></div>
+</div>
+</form>
+</div>
+</div>
+			</div>
+		</div>

@@ -1,0 +1,5 @@
+#
+#Tue Oct 11 02:03:30 EDT 2016
+Choose\ Table=Elija la tabla
+selected=seleccionado
+Create\ New\ Table=Crear nueva tabla

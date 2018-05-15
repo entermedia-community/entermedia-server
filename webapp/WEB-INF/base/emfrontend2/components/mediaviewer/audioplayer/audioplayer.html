@@ -1,0 +1,17 @@
+## Required: path, id
+## Optional: width, autostart, hit or asset (for the file name)
+#set ( $urlutils = $context.getPageValue("url_util"))
+#if (!$urlutils)
+	#set ($urlenc = $asset.sourcepath)
+#else
+	#set ( $urlenc = $urlutils.encode($asset.sourcepath))
+	#set ( $urlenc = $urlenc.replace("%2F", "/") )
+#end
+
+#set ($path = "$!prefix$home/${mediadbappid}/services/module/asset/downloads/preset/$urlenc/audio.mp3")
+
+#set( $name = $asset.name )
+
+    <audio  controls>
+  <source src="$path" type="audio/mpeg">
+    </audio>

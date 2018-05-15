@@ -1,0 +1,4 @@
+#
+#Thu Apr 20 13:21:35 CDT 2017
+Drag\ to\ Library\ or\ Category=Arrastre a la biblioteca o categor\u00EDa
+Drag\ to\ collection=Arrastre para la colecci\u00F3n

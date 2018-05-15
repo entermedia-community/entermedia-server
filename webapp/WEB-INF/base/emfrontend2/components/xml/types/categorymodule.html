@@ -1,0 +1,52 @@
+
+#set( $rootpath = "${apphome}/components/categorize")
+
+<div id="addcategory" >
+	#set ($existing = $context.getRequestParameter($property.getId() + ".values") )
+	#if( $existing && !$existing.trim().isEmpty() )
+	 	#set ($existing = $existing.replace("||","|"))
+	    <ul id="cat-list" >
+		#foreach($categoryid in $existing.split("\s*\|\s*"))
+			#set($category  = $mediaarchive.getCategory($categoryid))
+			<li class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()" style="padding:4px;background-color: #FFF">
+					<div class="category "  style="padding-left:20px;">					
+			#if( $longform)
+#foreach( $parent in $category.getParentCategoriesFrom(1))
+#if( ${foreach.count} > 1) \ #end
+<a  href="$home$apphome/views/categories/${category.id}.html">$parent</a>
+#end
+			#end	
+				<div class="collectionIcons">
+						<a href="#" title="[[Remove]]">
+							<span class="closecategory ui-icon ui-icon-closethick " data-categoryid="$categoryid"></span>
+						</a>
+				</div>
+			</div>
+			</li>
+		#end
+		</ul>
+	#end
+   <input type="hidden" name="operation" value="orsgroup" />
+   	<input type="hidden" id="categoryvalues" name="category.values" value="$!existing" />
+   
+   <a class="emdialog btn small" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&longform=$!longform" data-hidefooter="true" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
+
+<script>
+
+	$("#cat-list .closecategory").on("click",function() 
+			{
+				var link = $(this);
+				link.closest("li").hide();
+				
+				var id = link.data("categoryid");
+				var existing = $("#categoryvalues").val();
+				existing = existing.replace(id,"");
+				existing = existing.replace("||","|");
+				$("#categoryvalues").val(existing);
+				
+				
+			}
+	);
+
+</script>
+</div>

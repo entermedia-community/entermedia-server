@@ -1,0 +1,13 @@
+<table class="settings-table" id="likes" style="width:500px">
+<tr id="tableheader">
+	<th style="text-align: left;">User</th>
+	<th> [[Approval On]]</th>
+</tr>
+#foreach($hit in $voteshits)
+<tr>
+	##<td><a target="_parent" href="$home/$applicationid/users/$hit.get('username')/index.html">$userManager.getUser($hit.get("username"))</a></td>
+	<td>$userManager.getUser($hit.get("username"))</td>
+	<td>$context.getDateTime( $hit.get("votetime") )</td>
+</tr>
+#end
+</table>

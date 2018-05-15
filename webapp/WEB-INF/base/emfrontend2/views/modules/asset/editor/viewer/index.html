@@ -1,0 +1,15 @@
+<div id="mediaviewer">
+	#set( $ismultifine = $asset.id.startsWith("multiedit:") )
+	#if($ismultifine )
+	        <h2>[[Editing across $asset.size() records]]</h2>
+	#else
+        <div id="mediaplayer" class="media-player">
+            $pages.include("$apphome/components/mediaviewer/player/index.html", $context)
+        </div>
+	          
+	    <div id="mediadata" class="media-data-table">
+	          $pages.include("$apphome/components/mediaviewer/data/index.html", $context)
+	    </div>
+    #end        
+   	#set( $root = "$!prefix$home$page.directory")
+ </div>

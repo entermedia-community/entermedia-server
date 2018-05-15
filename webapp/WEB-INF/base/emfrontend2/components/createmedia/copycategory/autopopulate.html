@@ -1,0 +1,61 @@
+   <ul id="cat-list">
+
+
+
+			<li class="row  collectionBox  " >
+								<a class="" title="Select All"  href="#" >&nbsp; </a>
+				
+				<div class="collectionIcons">
+
+				Select All: <input type="checkbox" id="select-all" class="select-all" /> 
+
+				</div>
+			</li>
+
+
+			#foreach($categoryid in $foundcategories)
+			#set($category  = $mediaarchive.getCategory($categoryid))
+
+			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+				<a class="category" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/categories/${category.id}.html" >$category.getCategoryPath() </a>
+				<div class="collectionIcons">
+
+				<input type="checkbox" id="categoryvalues" class="collection-list" name="categoryid" value="$categoryid" />
+
+				</div>
+			</li>
+		#end
+
+#foreach($asset in $assets)
+			
+
+			<li id="auto-${categoryid}" class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+				<a class="asset" title="$category.getCategoryPath()" target="_blank" href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >$asset.sourcepath $asset</a>
+				<div class="collectionIcons">
+
+				<input type="checkbox" id="assetvalues" class="collection-list" name="assetid" value="$asset.id" />
+
+				</div>
+			</li>
+		#end
+
+
+		
+		
+		
+		</ul>
+
+   
+   
+   
+   <script type="text/javascript">
+   jQuery("#select-all").on("click", function () {
+		if(jQuery(this).is(":checked")){
+			jQuery(".collection-list").prop('checked', true);
+		} else{
+			jQuery(".collection-list").prop('checked', false);
+		}
+	   
+	} );
+   
+   </script>

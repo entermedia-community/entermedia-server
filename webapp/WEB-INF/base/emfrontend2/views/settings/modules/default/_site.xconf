@@ -1,0 +1,3 @@
+<page>
+  <property name="editPath">/${applicationid}/views/modules/${module}/_site.xconf</property>
+  </page>

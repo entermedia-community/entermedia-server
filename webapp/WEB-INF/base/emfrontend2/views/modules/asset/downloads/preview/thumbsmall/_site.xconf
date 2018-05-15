@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preview/thumbsmall</property>
+	<generator name="convertArchiveDocument"/>
+	<property name="prefwidth">300</property>
+	<property name="prefheight">300</property>
+	<property name="exportname">image300x300.jpg</property>
+</page>
+
+

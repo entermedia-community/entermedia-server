@@ -1,0 +1,24 @@
+#
+#Tue Oct 11 02:03:35 EDT 2016
+Delete\ All=Eliminar todos
+Data\ Search=B\u00FAsqueda de Datos
+Data=Datos
+Export=Exportar
+Records=Registros
+Search=Buscar
+Reindex=Reindex
+Customize\ Views=Vistas personalizar
+Import=Importar
+Elastic\ System\ Info=El\u00E1stica Informaci\u00F3n del Sistema
+Page=P\u00E1gina
+of=de
+Delete\ Table=eliminar la tabla
+Data\ Type=Tipo de Datos
+Found=Encontrados
+Copy\ to\ defaults=Copiar a los valores predeterminados
+Add\ New\ Record=A\u00F1adir Nuevo Registro
+Back=Atr\u00E1s
+Reset\ Settings=Reiniciar ajustes
+Add\ New=Agregar nuevo
+Forward=Adelante
+Customize\ Fields=Personalizaci\u00F3n de los campos

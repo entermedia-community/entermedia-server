@@ -1,0 +1,54 @@
+<div id="emvalueeditor">
+
+<h3>[[Libraries]]</h3>
+	#if ( $asset.getLibraries().isEmpty() )
+        <p class="info">[[There are no project associated with this asset.  Add project below.]]</p>
+    #else
+	<div id="valuelist" class="emtable clearfix">
+    	#foreach($library in $asset.getLibraries())
+    		  
+    		 #set( $library = false )
+    		 #set( $project = false )
+    		 #set( $project = $searcherManager.getData($catalogid,"project",$library.project ) )
+ 			<a class="row tag" href="$home$apphome/views/modules/library/userpermissions/index.html?id=$libraryid&searchtype=library">#if($project) $!project / #end $library #if( $library.folder ) ( $library.folder )#end</a>    
+    		#if($caneditasset)
+    			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$libraryid"></a>
+    		#end
+    		</a>
+		#set($project = "")
+    	#end
+	</div>
+	#end
+	
+#if($caneditasset)
+	<div id="valueadd" style="margin: 20px 0">
+	   <a class="ajax btn small" targetdiv="valueadd" href="$home$apphome/components/assetlibraries/add.html?oemaxlevel=1&assetid=${asset.id}&sourcepath=${asset.sourcepath}">[[Add Library]]</a>
+	</div>
+#end
+
+#set( $lca = $mediaarchive.getSearcher("librarycollectionasset"))
+#set( $results = $lca.query().match("asset",$asset.getId() ).search($context) ) 
+
+#if( $results.size() > 0)
+<br>
+<h3>[[Collections]]</h3>
+
+<div id="valuelist" class="emtable clearfix">
+	#foreach($collectionasset in $results)
+	
+    		 #set( $library = false )
+    		 #set( $collection = false )
+    		 #set( $collection = $mediaarchive.getData("librarycollection",$collectionasset.librarycollection) )
+    		 #set( $library = $mediaarchive.getData("library",$collection.library) )
+    		 #if( $collection )
+	 			<a class="row librarylabel" style="padding-left: 30px;" href="$home$apphome//views/modules/librarycollection/media/${collection.getId()}.html"><span>$library / $collection</span>  
+##	    		#if($caneditasset)
+##	    			<a style="display:inline;" class="ajax delete-row" targetdiv="emvalueeditor" href="$home$apphome/components/assetlibraries/remove.html?fieldname=libraries&assetid=${asset.id}&libraries.value=$libraryid"></a>
+##	    		#end
+	    		</a>
+	    	#end	
+		#set($project = "")
+    #end
+</div>
+#end
+</div>

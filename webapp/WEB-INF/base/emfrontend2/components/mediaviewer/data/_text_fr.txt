@@ -1,0 +1,6 @@
+#Thu Apr 27 09:03:42 CDT 2017
+Libraries=Bibliothèques
+Slideshow=Diaporama
+Categories=Catégories
+Collections=Collections
+

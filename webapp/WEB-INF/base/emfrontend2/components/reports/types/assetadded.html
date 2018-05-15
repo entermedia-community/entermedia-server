@@ -1,0 +1,38 @@
+<canvas id="$report.id-report" ></canvas>
+
+<script>
+var ctx = document.getElementById("$report.id-report");
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [
+
+#foreach($node in $hits.loadHistogram("assetaddeddate_breakdown_week"))
+	#foreach($child in $node.getChildren())
+		"$context.getDate($child.toString())",
+	#end
+#end
+        ]    
+        ,
+        datasets: [{
+            label: '[[Asset Creation over time]]',
+            data: [
+#foreach($node in $hits.loadHistogram("assetaddeddate_breakdown_week"))
+#foreach($child in $node.getChildren())
+	$child.get("count"),
+#end
+#end           
+                   ]          
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>

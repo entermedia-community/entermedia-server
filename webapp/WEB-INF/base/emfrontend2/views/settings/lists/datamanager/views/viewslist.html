@@ -1,0 +1,37 @@
+#set($viewid = $context.getRequestParameter("viewid"))
+
+#set ( $moduleid = $context.findValue("searchtype") )		
+
+
+#set($views = $mediaarchive.getPropertyDetailsArchive().listViews($moduleid))
+$context.putPageValue("views", $views)
+
+
+#set( $viewsroot = $content.viewsroot )
+
+<ul data-path="$home$viewsroot/moveviews.html?searchtype=view&field=ordering" class="" data-searchtype="view" data-field="ordering">
+		
+				<li class="header no-sort">[[System Views]]</li>
+				<li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1&searchtype=${moduleid}">[[Add New]]</a></li>
+
+              
+			#foreach( $target in $views)
+                
+                
+                		#set($sortid = $target.id.replaceAll("_", "||"))
+				<li id="view_$sortid" data-ordering="${view.ordering}" class="#if($viewid == $target) current #end " byassettype="$!target.byassettype">
+				   
+					#if( ($target.byassettype && $target.byassettype == "true") )
+						#set( $viewpath = "${moduleid}/assettype/default/$target.id")
+					#else
+						#set( $viewpath = "${moduleid}/$target")
+					#end
+					<a href="$home$viewsroot/index.html?viewid=$target&viewpath=$viewpath&searchtype=${moduleid}">
+					$context.getText($target.toString())</a>
+					<a class="ajax delete-row" targetdiv="" href="./deleteview.html?searchtype=${moduleid}&id=${target.id}&viewpath=$viewpath&searchtype=${moduleid}"></a>
+
+                </li>
+			
+			#end			
+								
+			</ul>

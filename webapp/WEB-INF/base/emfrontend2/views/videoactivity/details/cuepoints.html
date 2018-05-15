@@ -1,0 +1,80 @@
+#set( $clientroot = $context.getContentProperty("clientroot") )
+#set($searcher = $mediaarchive.getSearcher("cuepoint"))
+#if(!$asset)
+	#set($asset = $mediaarchive.getAsset($context.getRequestParameter("assetid")))
+#end
+#if(!$asset)
+	#set($asset = $mediaarchive.getAsset($context.getRequestParameter("id")))
+#end
+#set($cues = $searcher.query().exact("assetid", $asset.getId()).sort("timecode").search())	
+							
+<div id="bottom-slider" class="row">								
+			<div id="btmcontent" class="row">
+					<a id="next" class=" col-md-1" href="#myCarousel" data-slide="prev"><img src="$apphome/views/client/img/arrow1_l.png"></a>
+					<div id="myCarousel" class="carousel slide col-md-10">
+							<div class="carousel-inner">
+									#set($count = 0)
+								    <div class="active item" data-page="$count" >							    	
+							    	<ul id="slider_vdo" class="thumbnails videolinks" >
+									#foreach( $cue in $cues) 
+										set( $smallthumb = "$home${apphome}/views/modules/asset/downloads/preview/widethumb/${asset.sourcepath}/thumb.jpg?timeoffset=$cue.timecode&assetid=$asset.id" )										
+										#set($target = $question.cuetarget)										
+										#if(!$target || $target == "")
+											#set($target = "right-panel")
+										#end										
+										<li  class="col-md-2" id="slide${cue.id}" data-assetid="$cue.assetid" data-dataid="$cue.assetid" data-target="$target" data-timecode="$cue.timecode" data-link="$home$clientroot/details/cuepointdetails.html?oemaxlevel=1&id=$cue.id&assetid=$!cue.assetid&dataid=$!cue.assetid" >
+											<a class="ajax thumbnail" data-cueid="$cue.id" data-dataid="$cue.assetid" id="aslide-${cue.id}" targetdivinner="$target" href="$home$clientroot/details/cuepointdetails.html?oemaxlevel=1&id=$cue.id&assetid=$!cue.assetid&dataid=$!cue.assetid">
+												<img  title="$!cue.name $cue.timecode seconds" src="$smallthumb"/></a>
+										</li>
+										#if(${foreach.count} % 6 == 0) <!--  Could use pages instead. -->
+											#set($count = $count + 1)
+											</ul>
+											</div>
+											  <div class="item" data-page="$count"> 
+										    	<ul id="slider_vdo" class=" videolinks">
+										#end
+									#end
+												</ul>
+									   	</div>
+								</div>
+						</div>
+				#set($target = "")
+				<a class=" col-md-1" id="prev" href="#myCarousel" data-slide="next"><img src="$apphome/views/client/img/arrow1_r.png"></a>
+		</div>
+</div>
+		
+<script>
+<!--
+  var slides = {};
+  cuepoint.init(slides);
+  console.log("loaded");  
+  	jQuery( ".videolinks li").each(
+	 	function() {
+	 		var li = $(this);
+	 		var timecode = li.data("timecode");
+	 		var assetid = li.data("assetid");
+	 		var assetid = li.data("assetid");
+	 		var link = li.data("link");
+			cuepoint.addSlide( assetid, timecode, link );
+		}
+	); 
+  //setup links to un/highlight when they are clicked
+ 	jQuery( ".videolinks li a").click( function()
+	{
+ 			jQuery( ".videolinks li a").removeClass("current");
+ 			var a = $(this);
+ 			a.addClass("current");
+ 			var timecode = a.parent().data("timecode");
+ 			console.log("time " + timecode);
+ 			var paused = cuepoint.video.paused;
+ 			cuepoint.setTime(timecode);
+ 			if (paused) {
+ 				pause();
+ 			} 	}); 
+  
+  //$(window).resize();
+  #if(!$context.getRequestParameter("paused") =="true" )
+  cuepoint.play();
+  #end
+//-->
+</script>

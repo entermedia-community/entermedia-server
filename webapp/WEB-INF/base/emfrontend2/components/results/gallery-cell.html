@@ -1,0 +1,29 @@
+<div class="emthumbbox embox$thumbsize" id="cell${catalogid}_${hit.id}">
+	#if($showtoolbar)
+	<div class="gallery-checkbox">
+		<input type="checkbox" class="selectionbox" name="count" value=""
+			#if($hits.isSelectedOnPage(${hit.id})) checked #end
+			data-dataid="${hit.id}" />
+	</div>
+	#end #if( $canviewvoting )
+	<div id="assetVoteTool">
+		<div class="votebox" id="votebox${hit.id}">
+			$pages.include("$apphome/components/voting/status.html",$context)</div>
+	</div>
+	#end <a class="hovering" href="$click">
+		<div class="emthumbimage em$thumbsize assetdraggable"
+			data-assetid="${hit.id}" title="$sourcepath">
+			$pages.include("$apphome/components/results/thumbnails/${type}.html",
+			$context)</div>
+	</a> #if( $showcaption )
+	<div class="gallery-caption">
+		<div class="gallery-field-info">
+		
+			<a href="$click"> #if($hit.assettitle) $hit.assettitle #else $hit.getName($context.locale) #end</a>
+		</div>
+		#if($canviewbasket)
+		$pages.include("$apphome/components/basket/toggleitem.html", $context)
+		#end
+	</div>
+	#end
+</div>

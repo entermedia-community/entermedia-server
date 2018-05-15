@@ -1,0 +1,22 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Exported Work]]</div>
+   <div class="ui-widget-content">
+	
+#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
+
+	<div id="exportpath" class="alert alert-success">
+	  <strong>[[Export complete]]</strong> [[Please check local drive for syncronized files]]. $exportpath
+	  
+	  [[Once you are done editing you can import your changes]].
+	</div> 
+	<a class="btn ajax" targetdivinner="addcategoryform" href="$home$apphome/components/createmedia/importwork/index.html?collectionid=$librarycol.getId()&oemaxlevel=1">[[Add Media]]</a> 
+  </div>
+<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
+</div>
+
+	
+	
+
+

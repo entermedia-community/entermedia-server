@@ -1,0 +1,55 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+#set($auto = $context.getRequestParameter("autorun"))
+
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Copy Existing Folders]]</div>
+   <div class="ui-widget-content">
+	
+
+<form  name="wizard" method="post"  class="" targetdiv="addcategoryform"
+	action="$home$apphome/components/createmedia/copycategory/createnew.html">
+    <input type="hidden" name="collectionid" id="urlcurrentcollection" value="$collectionid"/>
+#if($auto == "true")
+<div class="alert alert-info" role="alert">[[This collection hasn't been populated yet!  Please choose the categories and assets you'd like to show below]]</div>
+
+#end
+    <a #if($auto == "true") style="display: none;" #end class="ajax btn" id="poptrigger" targetdivinner="auto-pop"  
+			  	data-hidefooter="true" href="$apphome/components/createmedia/copycategory/autopopulate.html?collectionid=${collectionid}" class="btn" ><span class="glyphicon glyphicon-download" aria-hidden="true"></span> Auto Populate</a>
+	
+   <a class="emdialog btn" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=autocategoriespicked&clearselection=$!clear&action=${page.directory}/picked.html"
+    data-hidefooter="true" data-parameterdata="categoryvalues"><i class="glyphicon glyphicon-search"></i> [[Select Additional Categories]]</a>
+	
+	<div class="ajaxprogress" style="display:none;">[[Loading, please wait..]]<img src="$apphome/components/search/images/spinner.gif"/></div>
+
+	
+	<div class="inner-content" style="width: 90%; " id="autocategoriespicked">
+	$pages.include("$apphome/components/createmedia/copycategory/picked.html",$context)	
+	</div>
+	<div id="auto-pop" style="width: 90%; "></div>
+	<br><br>
+	<input class="btn" type="submit" value="Import" />	
+
+</div>
+	
+	
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
+
+	<script type="text/javascript">
+	jQuery(".auto-remove").livequery("click", function() {
+		var catid = jQuery(this).data('categoryid');
+		
+		jQuery("#auto-" + catid).remove();
+		
+		
+	});
+	
+
+	
+	
+	</script>		
+
+
+	</div>
+
+	
+	

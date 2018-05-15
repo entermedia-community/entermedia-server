@@ -1,0 +1,7 @@
+#Thu Apr 27 09:03:42 CDT 2017
+There\ are\ no\ comments\ on\ this\ asset.=Il n&\#39;y a aucun commentaire sur cet atout.
+register\ here.=Inscrivez-vous ici.
+Save\ Comment=Enregistrer un commentaire
+If\ you\ don't\ have\ an\ account,\ please=Si vous n&\#39;avez pas de compte, s&\#39;il vous plaît
+You\ must\ be\ logged\ in\ to\ leave\ your\ own\ comments.=Vous devez être connecté pour laisser vos propres commentaires.
+

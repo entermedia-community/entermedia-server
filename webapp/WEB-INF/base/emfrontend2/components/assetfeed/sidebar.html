@@ -1,0 +1,11 @@
+#set( $searcher = $hits.getSearcher())
+
+<div class="list-group" id="dashboard-menu" >
+		#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
+		#set( $searcher = $mediaarchive.getAssetSearcher())
+		#set( $dashboards = $mediaarchive.getSearcher("dashboard").query().all().sort("id").search($context) )
+		#foreach( $dashboard in $dashboards)
+			<a class="list-group-item ajax activelistener #if( ${foreach.count} ==1) active #end" targetdivinner="dashboard-content" href="$home$apphome${dashboard.link}&oemaxlevel=1"><span class="badge">#evaluate($dashboard.count)</span>
+						$dashboard.name</a>
+		#end
+</div>

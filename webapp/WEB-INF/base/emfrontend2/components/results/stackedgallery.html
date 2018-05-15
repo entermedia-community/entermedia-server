@@ -1,0 +1,68 @@
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+
+#set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
+$context.putPageValue("showtoolbar",  $showtoolbar)
+#if( $hideheader &&  $hideheader != "true")
+	$pages.include("$apphome/components/results/header.html",$context) 
+#end
+
+$context.putPageValue("assetrootfolder", "/$catalogid/assets")
+
+$context.putPageValue("showtoolbar", "false")
+
+#if( !$thumbsize )
+    #set( $thumbsize  = "medium" ) 
+#end
+
+#if ( $hits && $hits.size() > 0 )
+    #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
+    $context.putPageValue("details",$details)
+
+<div class="masonry-grid" data-maxheight="$!mediaarchive.getCatalogSettingValue("stacked_gallery_imagesize")"  >
+ 	#set( $rootid = $hits.sessionId )
+    #set($count = 0)
+    #set( $viewerlink = $content.get("assetviewerlink") )
+    #foreach ($hit in $hits.getPageOfHits())
+    
+        #set ($sourcepath = $hit.sourcepath)
+        
+        $context.putPageValue("hit", $hit)
+        #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+        $context.putPageValue("type", $type)
+        $context.putPageValue("assetid", $hit.id)
+        $context.putPageValue("count", $count )
+        $context.putPageValue("sourcepath", $hit.sourcepath )
+        $context.putPageValue("thumbsize", "mediumplus" )
+         
+        #set($assetwidth = $mediaarchive.getRealImageWidth($hit))
+        #set($assetheight = $mediaarchive.getRealImageHeight($hit))
+        #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
+        
+		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}"
+			 data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight">
+		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
+		    	    <div class="grid-thumbimage assetdraggable"> 
+		    	    	#if( $type =="audio")
+		    	    		#set( $type = "mime" )
+		    	    	#end
+		        	   $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+		        	</div>
+		    	</a>
+		      <div class="caption">
+			      <div class="grid-gallery-checkbox">
+			          <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
+			      </div>
+		         <div class="stacked-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a href="$click">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div>
+		     </div>
+		</div>
+        #set ( $count = $count + 1)
+    #end
+</div>	
+#end
+#if ( $hits.totalPages == 0 )
+	<p class="info" style="margin: 20px;">
+	[[No results found.]]
+	</p>
+#end
+</div>
+

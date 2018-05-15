@@ -1,0 +1,6 @@
+<page>
+	<inner-layout>${themeprefix}/layouts/application.html</inner-layout>
+	<script id="upload" src="/${applicationid}/components/upload/types/html5/upload.js" />
+	<script id="html5_upload" src="/${applicationid}/components/javascript/upload/jquery.html5_upload.js" />
+
+</page>

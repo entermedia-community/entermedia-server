@@ -1,0 +1,4 @@
+<page>
+<property name="fallbackdirectory">/WEB-INF/base/emfrontend/components/html/browse</property>
+<property name="pickermode">assetpicker</property>
+</page>

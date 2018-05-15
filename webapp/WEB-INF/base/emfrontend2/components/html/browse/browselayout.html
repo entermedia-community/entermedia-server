@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+#foreach( $script in $content.getScriptPaths() )
+<script type="text/javascript" src="$home$script">
+	
+</script>
+#end #foreach( $style in $content.getStylePaths() )
+<link rel="stylesheet" type="text/css" href="$home$style" />
+#end
+</head>
+
+<body class="embody">
+
+	<div id="detailinfo"
+		data-targetdiv="$context.getRequestParameter('targetdiv')"
+		data-detailid="$context.getRequestParameter('detailid')"></div>
+	<nav class="navbar navbar-default" role="navigation">
+		<!-- Brand and toggle get grouped for better mobile display -->
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse"
+				data-target="#bs-example-navbar-collapse-1">
+				<span class="sr-only">[[Toggle navigation]]</span> <span
+					class="icon-bar"></span> <span class="icon-bar"></span> <span
+					class="icon-bar"></span>
+			</button>
+			<a class="navbar-brand" href="#">[[Media Browser]]</a>
+		</div>
+
+		<!-- Collect the nav links, forms, and other content for toggling -->
+		<div class="collapse navbar-collapse"
+			id="bs-example-navbar-collapse-1">
+			<ul class="nav navbar-nav">
+				<li class="active"><a
+					href="$apphome/components/html/${content.pickermode}/index.html?targetdiv=${context.getRequestParameter('targetdiv')}&detailid=${context.getRequestParameter('detailid')}">[[All Assets]]</a></li> #if($content.pickermode == "browse")
+
+				<li class="active"><a
+					href="$apphome/components/html/${content.pickermode}/filepicker/index.html">[[All Files]]</a></li> #end
+			</ul>
+			<ul class="nav navbar-nav navbar-right">
+				<li class="navbar-form">$pages.include("./upload.html")</li>
+				<li>
+					<form class="navbar-form navbar-left ajaxform"
+						targetdiv="resultsarea" role="search"
+						action="$home$apphome/components/html/${content.pickermode}/quicksearch.html">
+						<div class="form-group">
+							<input type="hidden" name="field" value="description" /> <input
+								type="hidden" name="operation" value="contains" /> <input
+								type="hidden" name="oemaxlevel" value="1" /> <input
+								type="hidden" name="targetdiv"
+								value="$!context.getRequestParameter('targetdiv')" /> <input
+								type="hidden" name="detailid"
+								value="$!context.getRequestParameter('detailid')" /> <input
+								type="text" class="form-control" placeholder="Search"
+								name="description.value">
+						</div>
+						<button type="submit" class="btn btn-default"
+							style="margin-left: 26px">[[Submit]]</button>
+					</form>
+
+				</li>
+			</ul>
+		</div>
+	</nav>
+	<div id="openedit">$pages.includeContent()</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-hidden="true">&times;</button>
+					<h4 class="modal-title" id="myModalLabel">[[Upload New Media]]</h4>
+				</div>
+				<div class="modal-body">
+					$pages.include("$apphome/components/html/${content.pickermode}/upload.html?targetdiv=${context.getRequestParameter('targetdiv')}&detailid=${context.getRequestParameter('detailid')}")
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">[[Close]]</button>
+					<button type="button" class="btn btn-primary" onclick='doUpload();'>[[Save changes]]</button>
+				</div>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+	<!-- /.modal -->
+
+</body>
+
+<script type="text/javascript">
+	jQuery("body").on(
+			"click",
+			".asset-select",
+			function() {
+
+				var targetdiv = jQuery('#detailinfo').data('targetdiv');
+				var detailid = jQuery('#detailinfo').data('detailid');
+
+				var assetid = jQuery(this).data('assetid');
+				if (jQuery.fancybox == null) {
+					//This works for bootstrap based front ends or anywhere we load inline/ajaxxy
+					jQuery("#" + targetdiv).attr("value", assetid);
+					jQuery("#" + detailid + "-preview").load(
+							"$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid="
+									+ assetid, function() {
+								alert("target div was " + targetdiv);
+								$('#editmodal').modal('hide');
+								$('.modal-backdrop').remove();
+								e.stopPropagation();
+
+							});
+				} else { //This is for fancybox
+					parent.jQuery("#" + detailid + "-preview").load(
+							"$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid="
+									+ assetid + "&detailid=" + detailid,
+							function() {
+								parent.jQuery("#" + targetdiv).attr("value",
+										assetid);
+								parent.jQuery(".fancybox-close").trigger(
+										"click");
+								parent.jQuery('#editmodal').modal('hide');
+								parent.jQuery('.modal-backdrop').remove();
+							});
+				}
+
+			});
+</script>
+</html>

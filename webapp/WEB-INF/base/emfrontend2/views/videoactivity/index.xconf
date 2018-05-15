@@ -1,0 +1,7 @@
+<page>
+
+<path-action name="Admin.createGuestUser" />
+
+	<path-action name="TestBenchModule.createTest"/>
+
+</page>

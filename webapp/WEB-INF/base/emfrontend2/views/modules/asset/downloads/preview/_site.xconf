@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+	<permission name="view">
+		<pagevalue name="canviewasset" equals="true"/>
+	</permission>	
+	<property name="sourcepathhasfilename">true</property>
+	
+	<property name="exportname">image1024x768.jpg</property>
+	
+</page>

@@ -1,0 +1,26 @@
+#set( $rootpath = "${apphome}/components/categorize")
+#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+<div class="modal-dialog modal-lg" id="searcharea" >
+	<div class="modal-content">
+	<div  class="modal-header" >
+	    <h4 class="modal-title">[[Pick Category]]</h4>
+	</div>
+	<div class="modal-body"  >
+		<div id="assetdetailscategorylist">
+		<div id="emcategorypicker" >
+		<div id="empickerbody">
+			<form name="savednodes" id="savednodes" class="ajaxform"  data-userparent="true" targetdiv="${targetdiv}" action="$home$apphome/components/xml/types/category.html?oemaxlevel=1">
+				<div id="treescroller">
+			        $pages.include("$apphome/components/emtree/index.html?tree-name=categorySearchPickerTree&showchecks=true&editabletree=true&allowselections=true",$context)
+			    </div>
+				<input type="hidden" name="save" value="true" />
+			 </form>   
+		</div>
+		<div class="modal-footer">
+	      <button type="button" class="btn btn-default" data-dismiss="modal">[[Close]]</button>
+	      <button type="submit" form="savednodes"  value="[[Save]]" id="submit" name="submit" class="btn btn-primary">
+	    </div>
+		</div>
+		</div>
+	</div>
+</div>

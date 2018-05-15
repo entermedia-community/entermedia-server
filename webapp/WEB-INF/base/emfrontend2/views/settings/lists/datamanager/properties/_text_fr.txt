@@ -1,0 +1,5 @@
+#
+#Thu Apr 27 15:48:26 CDT 2017
+Delete\ Field=Supprimer le champ
+Go\ Back=Retourner
+Current\ Field=Champ actuel

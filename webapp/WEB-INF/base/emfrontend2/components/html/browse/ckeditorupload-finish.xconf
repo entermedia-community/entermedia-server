@@ -1,0 +1,6 @@
+<page>
+	
+	<path-action name="AssetEditModule.handleUploads"/>
+	
+<inner-layout>/${applicationid}/components/html/browse/assetlayout.html</inner-layout>
+</page>

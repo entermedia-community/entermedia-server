@@ -1,0 +1,16 @@
+##Use one touch in middle to show all the toolbars and metadata
+##otherwise just look for swipe events on image or on the sides of video
+<div id="hiddenoverlay">
+
+  <div class="playerarea" >
+  	##<img style="position: absolute; top: 15px; left: 15px;" src="$apphome/theme/images/icons/popup.svg"/>
+#if( $asset)
+		$pages.include("$apphome/components/mediaviewer/fullscreen/currentasset.html",$context)
+#else
+<div id="main-media-container" > [[Loading]]... 
+</div>		
+#end		
+  </div>
+  
+  <div class="overlay-close largeicon"><span class="glyphicon glyphicon-remove-circle"></span></div>		
+</div>

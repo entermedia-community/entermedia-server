@@ -1,0 +1,9 @@
+#
+#Thu Apr 20 13:21:28 CDT 2017
+Collection\ Search=colecci\u00F3n B\u00FAsqueda
+Close\ Collection=Cerrar Colecci\u00F3n
+Publish=Publicar
+Create\ New=Crear nuevo
+Open\ Collections=Colecciones abiertas
+Recent\ Collections=Colecciones recientes
+Categories=Categor\u00EDas

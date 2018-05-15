@@ -1,0 +1,109 @@
+#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+<div id="embed-wrapper" style="padding: 15px;">
+<div class="embedlink">
+
+#set( $prefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#if(!$prefix) #set( $prefix = $context.siteRoot ) #end
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+
+#if( $mediadbappid )
+#set( $sharelink = "$prefix$home/${mediadbappid}/services/module/asset/players/play/${asset.getId()}.html")
+#else
+#set( $sharelink = "$prefix$home$apphome/views/modules/asset/embed/index.html?type=$type&sourcepath=$asset.sourcepath&embed=true")
+#end
+
+
+<strong>[[Select code then right click to copy]]</strong>
+#if ( $cansharetosocialmedia  && !$multi)
+
+		##set ( $sharelink = "$context.siteRoot$home$apphome/views/share/viewer.html?sourcepath=$asset.sourcepath&embed=true" )
+		
+		<div id="share">
+			<!-- AddThis Button BEGIN -->
+			<div class="addthis_toolbox addthis_default_style"
+			addthis:url="$sharelink"
+			addthis:title="$asset"
+			addthis:description="#if ( $asset.longcaption ) $asset.longcaption #else Check this out! #end">
+				<a class="addthis_button_facebook"></a>
+				<a class="addthis_button_twitter"></a>
+				<a class="addthis_button_google"></a>
+<button class="accordion2"></button>
+<div class="panel2">
+                                <a class="addthis_button_evernote"></a>
+                                <a class="addthis_button_reddit"></a>
+                                <a class="addthis_button_pinterest_share"></a>
+                                <a class="addthis_button_skype"></a>
+                                <a class="addthis_button_tumblr"></a>
+                                <a class="addthis_button_whatsapp"></a>
+                                <a class="addthis_button_hootsuite"></a>
+                                <a class="addthis_button_delicious"></a>
+                                <a class="addthis_button_flipboard"></a>
+                                <a class="addthis_button_gmail"></a>
+</div>
+				<!-- <a class="addthis_button_compact"></a> -->
+				<a class="addthis_counter addthis_bubble_style"></a>
+			</div>
+
+<script type="text/javascript">
+	var addthis_config = {
+    	ui_click: true
+    };
+</script>
+
+
+<script type="text/javascript">
+    // Call this function once the rest of the document is loaded
+    jQuery(document).ready(function() 
+	{ 
+		var script = document.createElement('script');
+		script.src = "https://s7.addthis.com/js/300/addthis_widget.js#async=1";
+		script.onload = function () {
+		    //do stuff with the script
+			addthis.toolbox('.addthis_toolbox');    
+		};
+		
+		document.head.appendChild(script); 
+    	
+    });
+</script>			<!-- AddThis Button END -->
+		</div>
+#end
+<textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="45">
+#if( $type == "audio" )
+<iframe src="$sharelink" width="350" height="150" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true">
+#else 
+<iframe src="$sharelink" width="550" height="400" style="border:none" webkitallowfullscreen="true" mozallowfullscreen="true" allowfullscreen="true">
+#end
+</iframe>
+</textarea>
+
+<p class="hyphenate"> 
+<strong>[[Preview Page]]</strong><br> 
+<a href="$sharelink">$sharelink</a>
+</p>
+
+#if( $mediadbappid )
+#set( $downloadlink = "$home/${mediadbappid}/services/module/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+#else
+#set( $downloadlink = "$home$apphome/views/modules/asset/downloads/originals/$asset.getSourcePath()/$asset.getMediaName()")
+#end
+
+<p class="hyphenate"> 
+<strong>[[Original Media Download]]</strong><br> 
+<a href="$downloadlink">$downloadlink</a>
+</p>
+
+</div>
+</div>
+
+<script>
+var acc = document.getElementsByClassName("accordion2");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+    acc[i].onclick = function(){
+        this.classList.toggle("active");
+        this.nextElementSibling.classList.toggle("show");
+  }
+}
+</script>

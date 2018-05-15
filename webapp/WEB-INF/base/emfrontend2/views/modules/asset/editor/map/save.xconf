@@ -1,0 +1,11 @@
+<page>
+	<path-action name="DataEditModule.saveData"/>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	
+	<property name="searchtype">asset</property>
+	<permission name="view">
+		<pagevalue name="caneditasset" equals="true"/>
+	</permission>
+	<property name="showinfo">false</property>
+	
+</page>

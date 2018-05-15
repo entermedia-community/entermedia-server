@@ -1,0 +1,7 @@
+<p>Validation Results:</p>
+
+#if(!$nodeManager.checkAllMappings($catalogid))
+	$pages.include("./mappingerrors.html")
+#else
+	[[Passed ok!]]
+#end

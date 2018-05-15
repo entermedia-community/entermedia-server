@@ -1,0 +1,25 @@
+
+<div class="tab-actions ">
+	<div id="user-search"> 
+	
+	
+	
+	#set( $searcher = $searcherManager.getSearcher($catalogid,"user"))
+	
+	$context.putPageValue("details",$searcher.getDetailsForView("usernormalsearch", $user))	
+		
+		<form class="ajaxform" id="usersearchform" name="search" targetdiv="usersearchresultspanel" action="$home$usermanagerhome/users/fieldsearch.html">
+			<input type="hidden" name="hitsperpage" value="12"/>
+			<input type="hidden" name="sortby" value="enabledDown,lastNameUp"/>
+		<a class="btn btn-sm" href='$home$usermanagerhome/users/reindex.html'>[[Reindex]]</a>
+		<a class="btn btn-sm green" href='$home$usermanagerhome/users/adduser.html?iframe=true&height=200&width=300'>[[Create User]]</a>
+		<a class="btn btn-sm right" href="#" onclick='jQuery("#usersearchform").submit();'>[[Search]]</a>
+		$pages.include("/${applicationid}/components/xml/searchfields.html",$context)
+	
+	
+	
+	
+		</form>
+	</div>
+</div>
+<div class="clearfix"></div>

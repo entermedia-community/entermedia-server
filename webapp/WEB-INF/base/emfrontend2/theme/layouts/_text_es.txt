@@ -1,0 +1,23 @@
+#
+#Thu Apr 20 13:39:35 CDT 2017
+Permissions=Permisos
+Annotate=Anotar
+Library\ Assets=Activos de la biblioteca
+Related\ Media=Medios Relacionados
+Followers=Seguidores
+Assets=Bienes
+My\ Account=Mi cuenta
+Selected\ Media=Medios seleccionados
+Applications=aplicaciones
+Attachments=Archivos adjuntos
+Revisions=Revisiones
+System\ Settings=Ajustes del sistema
+Language=Idioma
+Properties=Propiedades
+Logout=Cerrar sesi\u00F3n
+Asset\ is\ missing=Falta el activo
+Dashboard=Tablero
+Pending=Pendiente
+Login=Iniciar sesi\u00F3n
+Settings=ajustes
+Add\ Media=A\u00F1adir medios

@@ -1,0 +1,3 @@
+#Thu Apr 27 09:03:42 CDT 2017
+Settings\ Area=Section paramètres
+

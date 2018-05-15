@@ -1,0 +1,12 @@
+#set( $cat = $node)
+#set( $depths = $context.getRequestParameter("depth" ) )
+#set( $depth = 0 )
+#set( $depth = $depth.parseInt($depths) )
+#set ( $padding = (15 * $depth) )
+
+#set( $checked = $render.isIdSelected($cat.id) )
+#if($haschildren)<span class="arrow #if($expanded) down #end "></span>#end 
+<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end #if( $editable )editablecategory#end" >
+	<input class="field autosavename" type="text" value="$cat.name" data-categoryid="${cat.id}" id="${cat.id}_edit_field" />		
+</span>
+

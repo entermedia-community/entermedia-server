@@ -1,0 +1,45 @@
+#set( $action = $context.getRequestParameter("action") ) 
+#set( $targetdiv = $context.getRequestParameter("targetdiv") )
+
+
+<div id="search-categories" >
+	<div id="searcharea" >
+		#set( $searcher = $mediaarchive.getSearcher("asset") )
+		$context.putPageValue("searcher",$searcher)
+		#set ($details = $searcher.getDetailsForView("asset/advancedsearch", $userprofile))
+		<form  class="autosubmit"  data-targetdiv="assetsearchresults" action="$home$apphome/components/assetpicker/search/searchassetresults.html">
+		
+
+		<table class="inlinesearch" >
+			<tr>
+			#foreach( $detail in $details)
+				<td>
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+				</td>	
+			#end
+			</tr>
+		</table>
+		
+		</form>
+		
+		<div id="assetsearchresults">
+			$pages.include("$home$apphome/components/assetpicker/search/searchassetresults.html",$context)
+		</div>
+		
+	</div>
+</div>	
+
+<script type="text/javascript">
+	var targetdiv = "$context.getRequestParameter('targetdiv')";
+	var detailid = "$context.getRequestParameter('detailid')";
+	
+	
+	jQuery("#search-categories").on("click", ".selectrowclick", function() {
+		var assetid = jQuery(this).data('assetid');
+		jQuery("#" + targetdiv).attr("value", assetid);
+		jQuery("#" + detailid + "-preview").load("$apphome/components/xml/types/assetpicker/preview.html?oemaxlevel=1&assetid=" + assetid, function(){
+			jQuery(".modal").modal('hide');
+	});
+	});
+</script>

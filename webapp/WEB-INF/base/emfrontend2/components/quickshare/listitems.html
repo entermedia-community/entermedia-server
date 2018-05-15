@@ -1,0 +1,70 @@
+<div class="page-header">
+  <h1>[[Downloads]] <small>[[Download shared files]]</small></h1>
+</div>
+<div >
+	<table id="shared-asset-table" class="tbl" >
+
+#set( $downloadall = false)
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+#set($mediadbappid=$mediaarchive.getMediaDbId())
+#if( !$cdnprefix )
+#set( $cdnprefix = $context.siteRoot )
+#end
+#foreach( $asset in $orderassets )
+
+    ##set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+	#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
+
+	<tr>
+	<td class="asset-thumb">		
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("item", $item)
+				$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+	
+	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+		#set( $tsize = "$home$thumbend" )
+		
+		#if( $parenthits )
+			#set( $rootid = $parenthits.sessionId )
+		#else
+			#set( $rootid = $hits.sessionId )
+		#end
+	#set ($assetsourcepath = $asset.sourcepath)
+
+		##	#set( $tsize = "$home$cataloghome/downloads/preview/thumbsmall/$assetsourcepath/thumb.jpg")
+		
+		##<img src="$tsize"/>
+
+		
+	</td>
+	<td class="asset-name">${asset}</td>
+
+		#if( $order.orderstatus == "error" )
+			<td></td>
+			<td>[[Error, download not available]]</td> ##Link to my orders
+			#set( $downloadall = false)
+		#else	
+	
+			
+				<td></td>
+				<td>
+					#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )
+					<a class="btn small" href="$home$apphome/views/modules/asset/downloads/originals/$originalpath"">[[Download]]</a>
+					#set( $downloadall = true)
+					
+				</td>
+			
+			#end
+		
+	
+	
+	</tr>	
+	
+	#end
+</table>
+#if($downloadall )
+	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a><br/></div>
+#end	
+
+</div>
