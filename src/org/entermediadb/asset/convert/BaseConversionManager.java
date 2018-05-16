@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 import org.openedit.Data;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
@@ -16,6 +17,7 @@ import org.openedit.util.PathUtilities;
 public abstract class BaseConversionManager implements ConversionManager
 {
 	private static final Log log = LogFactory.getLog(BaseConversionManager.class);
+	protected WaterMarkTranscoder fieldWaterMarkTranscoder;
 
 	protected MediaArchive fieldMediaArchive;
 	protected Collection fieldInputLoaders;
@@ -26,6 +28,23 @@ public abstract class BaseConversionManager implements ConversionManager
 	{
 		return fieldDefaultTranscoder;
 	}
+	
+	
+	public WaterMarkTranscoder getWaterMarkTranscoder()
+	{
+		if (fieldWaterMarkTranscoder == null)
+		{
+			fieldWaterMarkTranscoder = 	(WaterMarkTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"waterMarkTranscoder");
+		}
+		return fieldWaterMarkTranscoder;
+	}
+
+
+	public void setWaterMarkTranscoder(WaterMarkTranscoder inWaterMarkTranscoder)
+	{
+		fieldWaterMarkTranscoder = inWaterMarkTranscoder;
+	}
+
 
 	public void setDefaultTranscoder(MediaTranscoder inDefaultTranscoder)
 	{

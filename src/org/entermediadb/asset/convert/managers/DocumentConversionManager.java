@@ -8,6 +8,7 @@ import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.MediaTranscoder;
 import org.entermediadb.asset.convert.transcoders.CMYKTranscoder;
+import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 import org.openedit.Data;
 import org.openedit.repository.ContentItem;
 
@@ -225,6 +226,15 @@ public class DocumentConversionManager extends BaseConversionManager
 		
 		//Step 3 Make jpg
 		result = transcoder.convertIfNeeded(inStructions);
+		
+		
+		if(inStructions.isWatermark())
+    	{
+    		inStructions.setInputFile(inStructions.getOutputFile());
+    		result = getWaterMarkTranscoder().convert(inStructions);
+    	}
+		
+		
 		if(!result.isComplete())
 		{
 			return result;
@@ -232,7 +242,6 @@ public class DocumentConversionManager extends BaseConversionManager
 		return result;
 		
 	}
-	
 	
 	
 	

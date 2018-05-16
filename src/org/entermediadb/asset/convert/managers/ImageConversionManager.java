@@ -39,20 +39,6 @@ public class ImageConversionManager extends BaseConversionManager
 	}
 
 
-	public WaterMarkTranscoder getWaterMarkTranscoder()
-	{
-		if (fieldWaterMarkTranscoder == null)
-		{
-			fieldWaterMarkTranscoder = 	(WaterMarkTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"waterMarkTranscoder");
-		}
-		return fieldWaterMarkTranscoder;
-	}
-
-
-	public void setWaterMarkTranscoder(WaterMarkTranscoder inWaterMarkTranscoder)
-	{
-		fieldWaterMarkTranscoder = inWaterMarkTranscoder;
-	}
 
 	
 
