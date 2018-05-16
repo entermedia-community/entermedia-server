@@ -11,7 +11,7 @@ import org.openedit.hittracker.HitTracker
 import org.openedit.util.PathUtilities
 
 public class AssetTypeManager extends EnterMediaObject {
-	public void saveAssetTypes(Collection inAssets) {
+	public void saveAssetTypes(Collection inAssets, boolean force) {
 		MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");//Search for all files looking for videos
 
 		AssetSearcher searcher = mediaarchive.getAssetSearcher();
@@ -20,7 +20,7 @@ public class AssetTypeManager extends EnterMediaObject {
 		List tosave = new ArrayList();
 		for (Data hit in inAssets)
 		{
-			Asset real = checkForEdits( mediaarchive, hit);
+			Asset real = checkForEdits( mediaarchive, hit, force);
 			if( real == null )
 			{
 				real = checkLibrary(mediaarchive,hit);
@@ -47,9 +47,9 @@ public class AssetTypeManager extends EnterMediaObject {
 	{
 		return loadedAsset;
 	}
-	public Asset checkForEdits(MediaArchive inArchive,  Data hit)
+	public Asset checkForEdits(MediaArchive inArchive,  Data hit, boolean always)
 	{
-		if( hit.get("assettype") != null)
+		if( hit.get("assettype") != null && !always)
 		{
 			return null;
 		}
