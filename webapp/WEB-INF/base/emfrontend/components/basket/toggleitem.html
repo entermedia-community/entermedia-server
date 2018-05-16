@@ -1,5 +1,7 @@
 #set( $assetid = $context.getRequestParameter("assetid") )
-
+#if(!$assetid)
+#set( $assetid = $hit.id )
+#end
 <div id="assettoggle$assetid" class="assettoggle$assetid" style="text-align: right; float: right;">
 
 <a class="updatebasket" targetdiv="assettoggle$assetid" href="$home$apphome/components/basket/toggleitem.html?assetid=$assetid">
