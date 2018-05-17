@@ -1,6 +1,8 @@
 #set($hitssessionid = $hits.sessionId )
 $context.putPageValue("showalllanguagevalues",true)
-<div class="container-fluid">
+<div class="card">
+<div class="card-header">[[Edit Metadata]]</div>
+<div class="card-box card-box-asset-preview">
 <div class="row" >
 	<div class="col-sm-6">
 			#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
@@ -17,9 +19,9 @@ $context.putPageValue("showalllanguagevalues",true)
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						
 						$context.putPageValue("view",$viewpath)
-						<h3>$context.getText($target.toString())</h3>
-						<div class="asset-data-detail">
-						$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+						<h4>$context.getText($target.toString())</h4>
+							<div class="asset-data-detail">
+							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
 					#end
 				#end
@@ -28,10 +30,10 @@ $context.putPageValue("showalllanguagevalues",true)
 			#end
 	</div>		
 	<div class="col-sm-6">						
-			<div class="" style="padding: 0 0 20px 0">
+			<div>
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
-    				<h3>[[Libraries]]</h3>
+    				<h4>[[Libraries]]</h4>
     				<div class="asset-data-detail">
     				<div class="emtable">
             				#foreach($library in $libraries)
@@ -46,7 +48,7 @@ $context.putPageValue("showalllanguagevalues",true)
             				#end
     					</div>
     				</div>
-					<h3>[[Collections]]</h3>
+					<h4>[[Collections]]</h4>
 						<div class="asset-data-detail">
 							#foreach ($collection in $asset.getCollections())
 								 <a class="librarylabel" href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="collection">$collection</a>
@@ -54,7 +56,7 @@ $context.putPageValue("showalllanguagevalues",true)
 						</div>
 				#end						
 
-				<h3>[[Categories]]</h3>
+				<h4>[[Categories]]</h4>
 					<div class="asset-data-detail">
 					<div  id="cat-list" class="emtable">
 					#foreach ($category in $asset.categories)
@@ -80,4 +82,5 @@ $context.putPageValue("showalllanguagevalues",true)
 				#end		
 	</div>
 	</div>		
+</div>
 </div>

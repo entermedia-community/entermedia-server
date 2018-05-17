@@ -40,6 +40,7 @@
 			<fileset dir="../WEB-INF/base/reporting/" />
 
 			<fileset dir="../WEB-INF/base/emfrontend/" />
+			<fileset dir="../WEB-INF/base/emfrontend2/" />
 			<fileset dir="../WEB-INF/base/modulefrontend/" />
 			<fileset dir="../WEB-INF/base/sfentermedia/" />
 			<fileset dir="../WEB-INF/base/themes/baseem" />
@@ -62,6 +63,10 @@
 
 		<copy todir="../WEB-INF/base/emfrontend" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/emfrontend" />
+		</copy>
+
+		<copy todir="../WEB-INF/base/emfrontend2" preservelastmodified="true" overwrite="true">
+			<fileset dir="${workdir}/WEB-INF/base/emfrontend2" />
 		</copy>
 
 		<copy todir="../WEB-INF/base/modulefrontend" preservelastmodified="true" overwrite="true">
