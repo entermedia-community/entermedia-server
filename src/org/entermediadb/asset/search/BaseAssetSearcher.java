@@ -543,5 +543,11 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
 		return archive.getCatalogSettingValue(inKey);
 	}
+
+	@Override
+	public void saveJson(Collection inJsonArray)
+	{
+		getDataConnector().saveJson(inJsonArray);
+	}
 	
 }

@@ -1831,6 +1831,19 @@ public class MediaArchive implements CatalogEnabled
 		return getPageManager().getRepository().getStub(inPath);
 	}
 
+	public Collection<ContentItem> listGeneratedFiles(Data inHit)
+	{
+		String sourcepath = inHit.getSourcePath();
+		Collection paths = getPageManager().getChildrenPaths("/WEB-INF/data/" + getCatalogId() + "/generated/" + sourcepath + "/");
+		Collection<ContentItem> children = new ArrayList();
+		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		{
+			String path = (String) iterator.next();
+			children.add(getContent(path));
+		}
+		return children;
+	}
+	
 	public OrderManager getOrderManager()
 	{
 		if (fieldOrderManager == null)

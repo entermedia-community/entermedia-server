@@ -237,7 +237,6 @@ public class BaseElasticSearcher extends BaseSearcher
 				addFacets(inQuery, search);
 			}
 			
-			;
 			// addAggregations(inQuery, search);
 
 			//			 "_source": {
@@ -1195,7 +1194,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			else if ("afterdate".equals(inTerm.getOperation()))
 			{
-				Date before = new Date(Long.MAX_VALUE);
 				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(valueof);
 				find = QueryBuilders.rangeQuery(fieldid).from(after);// .to(before);
 			}
@@ -1861,15 +1859,22 @@ public class BaseElasticSearcher extends BaseSearcher
 		try
 		{
 			String catid = getElasticIndexId();
+			XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 
 			IndexRequestBuilder builder = null;
 			if (data.getId() == null)
 			{
-				builder = getClient().prepareIndex(catid, getSearchType());
+				builder = getClient().prepareIndex(catid, getSearchType()); //Should we preface the id?
 			}
 			else
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
+			}
+			PropertyDetail hasmaster = details.getDetail("masternodeid");
+			if( hasmaster != null)
+			{
+				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
+				content.field("masternodeid", getElasticNodeManager().getLocalNodeId() );
 			}
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
@@ -1885,8 +1890,6 @@ public class BaseElasticSearcher extends BaseSearcher
 					return; // Can't save data that doesn't have a parent!
 				}
 			}
-
-			XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 
 			updateIndex(content, data, details);
 			content.endObject();

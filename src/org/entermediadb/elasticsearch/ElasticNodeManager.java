@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -59,8 +60,6 @@ import org.elasticsearch.action.bulk.BulkResponse;
 import org.elasticsearch.client.AdminClient;
 import org.elasticsearch.client.Client;
 import org.elasticsearch.client.Requests;
-import org.elasticsearch.cluster.health.ClusterHealthStatus;
-import org.elasticsearch.cluster.health.ClusterIndexHealth;
 import org.elasticsearch.cluster.metadata.AliasOrIndex;
 import org.elasticsearch.cluster.metadata.IndexMetaData;
 import org.elasticsearch.cluster.metadata.MappingMetaData;
@@ -77,13 +76,17 @@ import org.elasticsearch.transport.RemoteTransportException;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.BaseNodeManager;
 import org.entermediadb.elasticsearch.searchers.LockSearcher;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
 import org.openedit.util.Replacer;
 
@@ -1216,6 +1219,23 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			e.printStackTrace();
 		}
 		return healthstatus;
+	}
+	
+	public Collection getRemoteNodeList(String inCatalog)
+	{
+		Collection nodes = getSearcherManager().getList(inCatalog,"emnode");
+		Collection others = new ArrayList();
+		
+		//TODO cache this
+		for (Iterator iterator = others.iterator(); iterator.hasNext();)
+		{
+			Data node = (Data) iterator.next();
+			if( !node.getId().equals(getLocalNodeId()))
+			{
+				others.add(node);
+			}
+		}
+		return others;
 	}
 
 }

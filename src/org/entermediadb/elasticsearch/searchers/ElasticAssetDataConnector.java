@@ -13,12 +13,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -29,7 +33,9 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.search.DataConnector;
+import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.data.DataArchive;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -569,6 +575,37 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	public String getPathToData()
 	{
 		return "/WEB-INF/data/" + getCatalogId() + "/assets";
+	}
+
+	@Override
+	public void saveJson(Collection inJsonArray)
+	{
+		ArrayList errors = new ArrayList();
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
+
+		for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
+		{
+			String json = (String) iterator.next();
+			IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
+			req.source(json);
+			processor.add(req);
+			
+		}
+		
+		processor.flush();
+		try
+		{
+			processor.awaitClose(5, TimeUnit.MINUTES);
+		}
+		catch (InterruptedException e)
+		{
+			errors.add("Could not save " + e);
+		}
+		if(errors.size() > 0) 
+		{
+			throw new OpenEditException("Errors from bulk import!");
+		}
+
 	}
 
 }

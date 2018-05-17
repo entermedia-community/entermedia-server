@@ -1,0 +1,47 @@
+{
+	"response":
+		{
+		    "status":"ok",
+			"totalhits" : $hits.size(),
+			"searchtype" : "$searcher.getSearchType()",
+			"hitsperpage": $hits.getHitsPerPage(),			
+			"page": $hits.getPage(),
+			"pages": $hits.totalPages,
+			"hitsessionid": "$hits.getSessionId()",
+			"query":
+			{
+				"friendly":#jesc($hits.getSearchQuery().toFriendly()),
+				"terms":[
+					#foreach( $term in $hits.getSearchQuery().getTerms() )#if( ${foreach.count} != 1 ), #end
+					 { "id":"$term.getId()","operation":#jesc($term.getOperation())
+					 	#if( $term.getValue() ),"value":#jesc($term.getValue())#end
+					 	#if($term.getValues())
+					 		,"values": [
+					 			#foreach( $val in $term.getValues() )#if( ${foreach.count} != 1 ), #end
+					 				#jesc($val)
+					 			#end
+					 		]
+					 	#end		
+					 }
+					#end
+				]	
+			}
+		},
+	"results":[
+		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+		$hit.toJsonString()
+		#end
+		]		
+ , "generated":[
+	#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
+		{ "id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath), "files":
+		[ #foreach($item in $archive.listGeneratedFiles($hit) )#if( ${foreach.count} != 1 ), #end
+			{"filename": #jesc($item.getName()), "lastmodified" : #jesc($item.getLastModified() )} 
+		  #end
+		]}
+	#end
+
+	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )#if( ${foreach.count} != 1 ), #end #set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+	#end
+  ]	
+}

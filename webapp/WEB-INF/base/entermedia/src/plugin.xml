@@ -2078,8 +2078,6 @@
 	<bean id="statManager" class="org.entermediadb.sitemonitor.StatManager" scope="prototype">
 	</bean>
  	
- 	
- 	
  	<bean id="cloudTranscodeManager" class="org.entermediadb.video.CloudTranscodeManager" scope="prototype">
 	<property name="moduleManager">
 			<ref bean="moduleManager" />
@@ -2087,8 +2085,14 @@
 	
 	</bean>
  	
- 	
- 	
+ 	<bean id="pullManager" class="org.entermediadb.asset.pull.PullManager" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="nodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+	</bean>
  	
 	
 </beans>

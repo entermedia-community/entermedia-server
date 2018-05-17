@@ -27,6 +27,8 @@ import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.Searcher;
+import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 
@@ -40,6 +42,17 @@ public class ElasticHitTracker extends HitTracker
 	protected String fieldLastScrollId;
 	protected Client fieldElasticClient;
 	protected int fieldLastPageLoaded;
+	protected SearcherManager fieldSearcherManager;
+	
+	public SearcherManager getSearcherManager()
+	{
+		return fieldSearcherManager;
+	}
+
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
+		fieldSearcherManager = inSearcherManager;
+	}
 
 	public int getLastPageLoaded()
 	{
@@ -185,7 +198,7 @@ public class ElasticHitTracker extends HitTracker
 					{
 						//Only call this if we are moving forward in the scroll
 						//scroll to the right place if within timeout 
-						log.info(getSearcher().getSearchType() + " hash:" + hashCode() + " scrolling to chunk " + inChunk + " " + getHitsPerPage());
+						//log.info(getSearchType() + " hash:" + hashCode() + " scrolling to chunk " + inChunk + " " + getHitsPerPage());
 						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
 					}
 					setLastPageLoaded(inChunk);
@@ -264,11 +277,12 @@ public class ElasticHitTracker extends HitTracker
 			throw new OpenEditException("row request falls beyond one page of results " + indexlocation + ">=" + hits.length);
 		}
 		SearchHit hit = hits[indexlocation];
-		SearchHitData data = new SearchHitData(hit, getSearcher().getPropertyDetails());
-		//		if (searchResponse.getVersion() > -1)
-		//		{
-		//			data.setProperty(".version", String.valueOf(searchResponse.getVersion()));
-		//		}
+		Searcher searcher = getSearcher();
+		if( searcher == null && getSearcherManager() != null)
+		{
+			searcher = getSearcherManager().getSearcher(getCatalogId(), hit.getType());
+		}
+		SearchHitData data = new SearchHitData(hit, searcher);
 
 		return data;
 	}

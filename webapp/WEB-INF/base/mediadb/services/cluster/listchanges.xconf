@@ -1,0 +1,5 @@
+<page>
+<permission name="view"><blank/></permission>
+<property name="virtual">true</property>
+ <path-action name="SyncModule.listChanges" alltypes="true"/>
+</page>

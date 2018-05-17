@@ -19,22 +19,37 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SaveableData;
 import org.openedit.data.SearchData;
+import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
 
-public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData {
+public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData 
+{
+	private static final Log log = LogFactory.getLog(SearchHitData.class);
+
 	protected Map fieldSearchData;
 	protected SearchHit fieldSearchHit;
 	protected PropertyDetails fieldPropertyDetails;
-	private static final Log log = LogFactory.getLog(SearchHitData.class);
+	protected Searcher fieldSearcher;
 
-	public SearchHitData(SearchHit inHit, PropertyDetails inPropertyDetails) {
+
+	public SearchHitData(SearchHit inHit, Searcher inSearcher) {
 		setSearchHit(inHit);
-		setPropertyDetails(inPropertyDetails);
+		setSearcher(inSearcher);
+		setPropertyDetails(inSearcher.getPropertyDetails());
 	}
 
 	public SearchHitData() {
 
+	}
+	public Searcher getSearcher()
+	{
+		return fieldSearcher;
+	}
+
+	public void setSearcher(Searcher inSearcher)
+	{
+		fieldSearcher = inSearcher;
 	}
 
 	public SearchHit getSearchHit() {
