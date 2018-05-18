@@ -168,11 +168,13 @@ public class PullManager implements CatalogEnabled
 						ContentItem found = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath + "/" + filename);
 						if( !found.exists() || found.getLastModified() != datetime)
 						{
-							HttpResponse genfile = inConnection.sharedPost(url + "/mediadb/services/modules/asset/..",inParams);
+							//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
+							HttpResponse genfile = inConnection.sharedPost(url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename,inParams);
 							StatusLine filestatus = genfile.getStatusLine();           
 							if (filestatus.getStatusCode() != 200)
 							{
 								//Save to local file
+								log.info("Saving :" + sourcepath + "/" + filename);
 								InputStream stream = genfile.getEntity().getContent();
 //								InputStreamItem item  = new InputStreamItem();
 //								item.setAbsolutePath(found.getAbsolutePath());
