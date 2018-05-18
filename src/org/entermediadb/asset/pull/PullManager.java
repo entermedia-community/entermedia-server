@@ -1,6 +1,8 @@
 package org.entermediadb.asset.pull;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,9 +27,11 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpRequestBuilder;
+import org.openedit.util.OutputFiller;
 
 public class PullManager implements CatalogEnabled
 {
@@ -35,7 +39,7 @@ public class PullManager implements CatalogEnabled
 	protected SearcherManager fieldSearcherManager;
 	protected NodeManager fieldNodeManager;
 	protected String fieldCatalogId;
-	
+	OutputFiller filler = new OutputFiller();
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -169,10 +173,17 @@ public class PullManager implements CatalogEnabled
 							if (filestatus.getStatusCode() != 200)
 							{
 								//Save to local file
-								File tosave = new File(found.getAbsolutePath());
-								FileItem saveitem = new FileItem(tosave);
-								inArchive.getPageManager().getRepository().put(saveitem);
+								InputStream stream = genfile.getEntity().getContent();
+//								InputStreamItem item  = new InputStreamItem();
+//								item.setAbsolutePath(found.getAbsolutePath());
+//								item.setInputStream(genfile.getEntity().getContent());
+//								inArchive.getPageManager().getRepository().put(item);
 								//Change the timestamp to match
+								File tosave = new File(found.getAbsolutePath());
+								FileOutputStream fos = new FileOutputStream(tosave);
+								filler.fill(stream, fos);
+								filler.close(stream);
+								filler.close(fos);
 								tosave.setLastModified(datetime);
 							}
 						}	
