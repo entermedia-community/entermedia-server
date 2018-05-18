@@ -1227,10 +1227,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Collection others = new ArrayList();
 		
 		//TODO cache this
-		for (Iterator iterator = others.iterator(); iterator.hasNext();)
+		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
 			Data node = (Data) iterator.next();
-			if( !node.getId().equals(getLocalNodeId()))
+			if( !node.getName().equals(getLocalNodeId()))
 			{
 				others.add(node);
 			}
