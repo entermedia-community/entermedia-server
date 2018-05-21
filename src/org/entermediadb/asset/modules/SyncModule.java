@@ -181,6 +181,7 @@ public class SyncModule extends BaseMediaModule
 	
 	public void processPullQueue(WebPageRequest inReq)
 	{
+		log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
 		getPullManager(archive.getCatalogId()).processPullQueue(archive);
 	}
