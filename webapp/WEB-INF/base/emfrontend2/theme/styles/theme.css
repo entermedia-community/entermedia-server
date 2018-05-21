@@ -39,6 +39,12 @@
 }
 
 
+.select2-selection__choice  /* Selected Tag Style in Select2 Objects*/ 
+{
+	color: #fff;
+    background-color: #007bff;
+}
+
 
 
 /*Boostrap Overwrites*/
@@ -85,7 +91,8 @@
 	}
 }
 
-.ui-widget-content .select2 { 
+.select2 { 
+	min-width: 250px;
 	max-width: 100%; 
 }
 
@@ -506,7 +513,7 @@
 
 
 
-
+.metadatainput .select2 { width: 100%; }
 
 
 

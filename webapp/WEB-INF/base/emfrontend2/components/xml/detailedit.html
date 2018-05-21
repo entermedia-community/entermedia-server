@@ -13,7 +13,7 @@
 	#set ($viewtype = "default")
 #end
 
-
+<div class="emfield-${viewtype}">
 #if($showcheckbox)
 	<input type="checkbox" value="$detail.id" name="field"/>
 #else
@@ -21,3 +21,4 @@
 #end
 	
 $pages.include("$xmledithome/types/${viewtype}.html", $context)
+</div>
