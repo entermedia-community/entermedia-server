@@ -1223,7 +1223,8 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	
 	public Collection getRemoteNodeList(String inCatalog)
 	{
-		Collection nodes = getSearcherManager().getList(inCatalog,"emnode");
+		//Not cached
+		Collection nodes = getSearcherManager().getSearcher(inCatalog,"emnode").getAllHits();
 		Collection others = new ArrayList();
 		
 		//TODO cache this

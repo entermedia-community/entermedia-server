@@ -115,6 +115,7 @@ public class PullManager implements CatalogEnabled
 					{
 						params.put("lastpulldate", node.get("lastpulldate"));
 					}
+					Date now = new Date();
 					
 					HttpResponse response2 = connection.post(url + "/mediadb/services/cluster/listchanges.json", params);
 					StatusLine sl = response2.getStatusLine();           
@@ -125,10 +126,15 @@ public class PullManager implements CatalogEnabled
 						continue;
 					}
 					String returned = EntityUtils.toString(response2.getEntity());
+					Map parsed = (Map)new JSONParser().parse(returned);
 
-					importChanges(inArchive, returned);
+					importChanges(inArchive, returned, parsed);
 
-					downloadGeneratedFiles(inArchive,connection,node,params,returned);
+					downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+					
+					node.setValue("lastpulldate", now);
+					getSearcherManager().getSearcher(inArchive.getCatalogId(),"emnode").saveData(node);
+					
 				}
 				
 			}
@@ -140,14 +146,13 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpRequestBuilder inConnection, Data node, Map inParams, String inReturned)
+	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpRequestBuilder inConnection, Data node, Map inParams, Map parsed)
 	{
 		String url = node.get("baseurl");
 		try
 		{
 			//How do I get the sourcepath list?
-			Map root = (Map)new JSONParser().parse(inReturned);
-			Collection changes = (Collection)root.get("generated");
+			Collection changes = (Collection)parsed.get("generated");
 			
 			for (Iterator iterator2 = changes.iterator(); iterator2.hasNext();)
 			{
@@ -199,16 +204,21 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
-	protected Collection importChanges(MediaArchive inArchive, String returned)
+	protected Collection importChanges(MediaArchive inArchive, String returned, Map parsed)
 	{
 		//I dont want to edit the json in any way, so using original
-		Collection array = new JsonUtil().parseArray("results", returned);
+		Collection array = new JsonUtil().parseArray("results", returned); //I wanted to use the data in raw form
 		
 		inArchive.getAssetSearcher().saveJson(array);
 	
 		return array;
 	}
 
+	/**
+	 * Should this be in realtime? Maybe we should have as database journal to track local edits and push them out slowly...yes!
+	 * @param inType
+	 * @param inAssetIds
+	 */
 	public void pushLocalChangesToMaster(String inType, Collection<String> inAssetIds)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);

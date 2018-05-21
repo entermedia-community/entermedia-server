@@ -37,6 +37,8 @@ import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -580,30 +582,37 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	@Override
 	public void saveJson(Collection inJsonArray)
 	{
+		JSONParser parser = new JSONParser();
+
 		ArrayList errors = new ArrayList();
 		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
 
-		for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
-		{
-			String json = (String) iterator.next();
-			IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
-			req.source(json);
-			processor.add(req);
-			
-		}
-		
-		processor.flush();
 		try
 		{
+			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
+			{
+				String json = (String) iterator.next();
+				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
+				req.source(json);
+				//Parse the json and save it with id
+				Map assetdata = (Map)parser.parse(json);
+				String id = (String)assetdata.get("id");
+				if( id != null)
+				{
+					req.id(id);
+				}
+				processor.add(req);
+			}
+			processor.flush();
 			processor.awaitClose(5, TimeUnit.MINUTES);
 		}
-		catch (InterruptedException e)
+		catch (Exception e)
 		{
 			errors.add("Could not save " + e);
 		}
 		if(errors.size() > 0) 
 		{
-			throw new OpenEditException("Errors from bulk import!");
+			throw new OpenEditException("Errors from bulk import!" + errors);
 		}
 
 	}
