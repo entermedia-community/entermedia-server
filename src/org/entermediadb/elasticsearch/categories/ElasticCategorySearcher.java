@@ -423,7 +423,7 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 		return id;
 	}
 	@Override
-	public Category createCategoryPath(String inPath)
+	public synchronized Category createCategoryPath(String inPath)
 	{
 		
 		if( inPath.length() == 0 || inPath.equals("Index"))

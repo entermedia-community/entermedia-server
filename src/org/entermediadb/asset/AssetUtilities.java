@@ -106,7 +106,6 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		 * getAssetUtilities().getMetaDataReader().populateAsset(archive,
 		 * itemFile, asset); archive.saveAsset(asset, inUser);
 		 */
-		boolean importedasset = true;
 		if (asset != null)
 		{
 			// Incremental conversion
@@ -194,8 +193,8 @@ public class AssetUtilities //TODO: Rename to AssetManager
 //				asset.setProperty("assettype", assettype.getId());
 //			}
 		}
-		if (importedasset)
-		{
+//		if (importedasset)
+//		{
 			String status = asset.get("importstatus");
 			asset.setProperty("importstatus", "needsmetadata");
 			String previewstatus = asset.get("previewstatus");
@@ -216,8 +215,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				populateCategory(asset, inContent, inArchive, inUser);
 			}
 			return asset;
-		}
-		return null;
+		//}
 	}
 
 	public void populateCategory(Asset inAsset, ContentItem inContent, final MediaArchive inArchive, User inUser)
@@ -255,6 +253,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			//This now is really long, unique, and has a GUID...lets strip off the last folder?
 
 			category = inArchive.createCategoryPath(folderPath); //
+			log.info("created category " + category.getId() + " from " + folderPath);
 		}
 		else
 		{
