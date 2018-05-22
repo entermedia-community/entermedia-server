@@ -3,6 +3,8 @@ package org.entermediadb.asset.pull;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -174,14 +176,16 @@ public class PullManager implements CatalogEnabled
 						if( !found.exists() || found.getLastModified() != datetime)
 						{
 							//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
-							String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
-							HttpResponse genfile = inConnection.sharedPost(fullURL, inParams);
+							//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
+							URI fullURI = new URI(url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename);
+							fullURI = fullURI.toURL().toURI();
+							HttpResponse genfile = inConnection.sharedPost(fullURI, inParams);
 							StatusLine filestatus = genfile.getStatusLine();           
 							if (filestatus.getStatusCode() == 200)
 							{
 								//Save to local file
 								log.info("Saving :" + sourcepath + "/" + filename);
-								log.info("URL:" + fullURL);
+								log.info("URL:" + fullURI);
 								InputStream stream = genfile.getEntity().getContent();
 //								InputStreamItem item  = new InputStreamItem();
 //								item.setAbsolutePath(found.getAbsolutePath());
