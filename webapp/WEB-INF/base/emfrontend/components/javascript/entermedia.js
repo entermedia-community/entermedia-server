@@ -818,10 +818,14 @@ onloadselectors = function()
 			{
 				var uid = $(this).attr("id");
 				var isrunning = $(this).data("ajaxrunning");
-				var timeout = 3000;
+				var timeout = $(this).data("reloadspeed");
+				if( timeout == undefined)
+				{
+					timeout = 3000;
+				}
 				if( isrunning == undefined)
 				{
-					timeout = 500; //First one is always faster
+					timeout = 500; //Make the first run a quick one
 				}
 				setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
 			}

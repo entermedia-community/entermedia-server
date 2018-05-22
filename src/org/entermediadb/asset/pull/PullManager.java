@@ -34,6 +34,7 @@ import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.URLUtilities;
 
 public class PullManager implements CatalogEnabled
 {
@@ -88,7 +89,11 @@ public class PullManager implements CatalogEnabled
 				builder.after("recordmodificationdate", startingfrom);
 			}
 			HitTracker hits = builder.search();
-			hits.enableBulkOperations();
+			if( !hits.isEmpty() )
+			{
+				hits.enableBulkOperations();
+				log.info("Found changes " + hits.size());
+			}
 			return hits;
 
 	}
@@ -177,15 +182,13 @@ public class PullManager implements CatalogEnabled
 						{
 							//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
 							//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
-							URI fullURI = new URI(url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename);
-							fullURI = fullURI.toURL().toURI();
-							HttpResponse genfile = inConnection.sharedPost(fullURI, inParams);
+							String path = url + URLUtilities.encode("/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename );
+							HttpResponse genfile = inConnection.sharedPost(path, inParams);
 							StatusLine filestatus = genfile.getStatusLine();           
 							if (filestatus.getStatusCode() == 200)
 							{
 								//Save to local file
-								log.info("Saving :" + sourcepath + "/" + filename);
-								log.info("URL:" + fullURI);
+								log.info("Saving :" + sourcepath + "/" + filename + " URL:" + path);
 								InputStream stream = genfile.getEntity().getContent();
 //								InputStreamItem item  = new InputStreamItem();
 //								item.setAbsolutePath(found.getAbsolutePath());
@@ -217,7 +220,7 @@ public class PullManager implements CatalogEnabled
 		Collection array = new JsonUtil().parseArray("results", returned); //I wanted to use the data in raw form
 		
 		inArchive.getAssetSearcher().saveJson(array);
-	
+		log.info("saved " + array.size() + " changed asset ");
 		return array;
 	}
 
