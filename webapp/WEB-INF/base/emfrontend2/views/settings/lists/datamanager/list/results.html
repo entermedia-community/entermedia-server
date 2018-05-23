@@ -24,27 +24,28 @@
 
 	
 
-	<div id="dm-containerx">
+	<div style="overflow-x:auto;">
 		<div id="emselectable">
-		<table class="emdata striped greytxt table tbl-responsive" id="main-results-table" 
+		<table class="emdata table" id="main-results-table" 
 		 data-hitssessionid="$datalist.sessionId" data-origURL="$!origURL" data-catalogid="$searcher.catalogId" data-searchtype="$searcher.searchType" >
-		<tr id="tableheader">
-		#set( $sortby = $datalist.getSearchQuery().getSortBy() )
-		#foreach( $detail in $details )
-		<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">
-			$detail.getText($context)
-			#if ($sortby.startsWith($detail.getId()))
- 				#if($sortby.endsWith("Up"))
- 					#set($sorticon="bottom")
- 				#else
- 					#set($sorticon="top")
- 				#end	
- 				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
+		 <thead>
+			<tr id="tableheader" class="thead-dark">
+			#set( $sortby = $datalist.getSearchQuery().getSortBy() )
+			#foreach( $detail in $details )
+			<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">
+				$detail.getText($context)
+				#if ($sortby.startsWith($detail.getId()))
+	 				#if($sortby.endsWith("Up"))
+	 					#set($sorticon="down")
+	 				#else
+	 					#set($sorticon="up")
+	 				#end	
+	 				&nbsp;&nbsp;<i class="fas fa-sort-$sorticon"></i>
+				#end
+			</th>
 			#end
-		</th>
-		#end
-		</tr>	
-		   
+			</tr>	
+		   </thead>
 		
     
 		

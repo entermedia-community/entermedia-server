@@ -37,13 +37,16 @@
 .asset-menu li a {
 	color:#626b7a;
 }
-
-
 .select2-selection__choice  /* Selected Tag Style in Select2 Objects*/ 
 {
 	color: #fff;
     background-color: #007bff;
 }
+.table .thead-dark th {
+	background-color:rgba(52,73,94,.94);
+	color:#ECF0F1;
+}
+
 
 
 
@@ -62,13 +65,13 @@
 }
 
 /**MainContent*/
-
+#application #emcontainer { padding: 0 2px; }
 
 
 /*Leftsidebar*/
 .col-sidebar {
 	position: fixed;
-    z-index: 1050;
+    z-index: 1000;
     top: 0;
     left:-80%;
     display: block!important;
@@ -507,6 +510,11 @@
 
 
 
+
+/*Module: Settings*/
+.settings-header {
+	padding: 10px;
+}
 
 
 
