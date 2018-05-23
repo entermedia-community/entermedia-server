@@ -688,7 +688,7 @@ protected Element loadViewElement(XmlFile file, String toremove)
 				event.setProperty("id", data.getId());
 				event.setProperty("note", "old field diff" );
 				event.setProperty("applicationid", inReq.findValue("applicationid"));
-
+				event.setUser(inReq.getUser());
 				getEventManager().fireEvent(event);
 			}
 			inReq.putPageValue("rowsedited", String.valueOf(count));

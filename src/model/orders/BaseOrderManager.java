@@ -101,6 +101,7 @@ public class BaseOrderManager implements OrderManager {
 		event.setSourcePath(order.getSourcePath());
 		event.setSearchType("order");
 		event.setCatalogId(inCatlogId);
+		event.setUser(inUser);
 		getEventManager().fireEvent(event);
 
 		return order;
