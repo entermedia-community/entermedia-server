@@ -2,6 +2,6 @@
 
 <page>  
 <!--
-	<inner-layout>${themeprefix}/layouts/layout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/layout.html</inner-layout>
 	-->
 </page>

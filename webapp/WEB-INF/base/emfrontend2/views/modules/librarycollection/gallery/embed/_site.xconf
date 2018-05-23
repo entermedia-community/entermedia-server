@@ -28,11 +28,11 @@
   	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
   	<script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
   	<script id="theme-js" src="/${applicationid}/components/javascript/ui-components.js"/>
-	<style id="results" href="${themeprefix}/styles/pages/results.css"/>
+	<style id="results" href="/${applicationid}/theme/styles/pages/results.css"/>
   	<script id="results" src="/${applicationid}/components/javascript/results.js"/>   
 	 
-    <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
-    <Xstyle id="app-css" href="${themeprefix}/styles/theme.css"/>
+    <style id="mediaplayer" href="/${applicationid}/theme/styles/pages/mediaplayer.css"/>
+    <Xstyle id="app-css" href="/${applicationid}/theme/styles/theme.css"/>
     
 
     

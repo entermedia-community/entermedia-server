@@ -1,7 +1,7 @@
 <page>
 	<property name="eventroot">/${applicationid}/views/settings/events/triggers</property>
 
-	<inner-layout>${themeprefix}/layouts/settingssubtablayoutnomargin.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayoutnomargin.html</inner-layout>
 	<property name="tab">scheduler</property>
 	<property name="subtab">scheduler</property>
 	

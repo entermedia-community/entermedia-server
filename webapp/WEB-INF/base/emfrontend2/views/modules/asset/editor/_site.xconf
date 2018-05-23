@@ -12,12 +12,12 @@
 	
 	<property name="saveokpage">/tools/edit/saveok.html</property>
 	
-	<inner-layout>${themeprefix}/layouts/mediaviewer.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/mediaviewer.html</inner-layout>
 	
 	<script id="jcrop" src="/${applicationid}/components/javascript/jcrop/js/jquery.Jcrop.min.js" />
     <style id="jcrop" href="/${applicationid}/components/javascript/jcrop/css/jquery.Jcrop.min.css" />
 	
-	<style id="detaileditor" href="${themeprefix}/styles/pages/detaileditor.css" />
+	<style id="detaileditor" href="/${applicationid}/theme/styles/pages/detaileditor.css" />
 	
 	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
 	<permission name="viewasset">

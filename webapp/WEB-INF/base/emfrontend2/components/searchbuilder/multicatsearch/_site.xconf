@@ -1,6 +1,6 @@
 <page>
 
 	<property name="matttabstabid">results</property>
-	<inner-layout>${themeprefix}/entermedia/layouts/searchresultslayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/entermedia/layouts/searchresultslayout.html</inner-layout>
 
 </page>

@@ -29,6 +29,6 @@
  	
   	<!-- include tooltips for generating previews on results table -->
   	<script id="tooltips" src="/${applicationid}/components/javascript/tooltip/jquery.powertip.min.js"/>
-  	<style id="tooltips-css" href="${themeprefix}/styles/tooltip/jquery.powertip-blue.min.css" />
+  	<style id="tooltips-css" href="/${applicationid}/theme/styles/tooltip/jquery.powertip-blue.min.css" />
  
 </page>

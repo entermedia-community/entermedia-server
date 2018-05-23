@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
 
 <page>  
-	<inner-layout>${themeprefix}/layouts/searchlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/searchlayout.html</inner-layout>
 </page>

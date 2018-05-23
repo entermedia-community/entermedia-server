@@ -1,4 +1,4 @@
-<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="${themeprefix}" data-browserlanguage="$!{browserlanguage}" data-mediadbappid="$!mediaarchive.getMediaDbId()">
+<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="/${applicationid}/theme" data-browserlanguage="$!{browserlanguage}" data-mediadbappid="$!mediaarchive.getMediaDbId()">
 
     #if ( $canviewerrors )
 	<div id="errordiv"></div>
@@ -7,7 +7,7 @@
 
 	<div id="emcontainer">
 		<div id="header" role="banner">
-			$pages.include("${themeprefix}/layouts/header.html")
+			$pages.include("/${applicationid}/theme/layouts/header.html")
 			<div id="site-title">$!content.tagline</div>
 		</div>
  
@@ -18,7 +18,7 @@
 	<div class="clearfix"></div>
 		
 		<div id="footer" role="contentinfo">
-	    	 $pages.include("${themeprefix}/layouts/footer.html")
+	    	 $pages.include("/${applicationid}/theme/layouts/footer.html")
 		</div>
  
 	</div>

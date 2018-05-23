@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayout.html</inner-layout>
 	<property name="tab">tools</property>
 	<permission name="view">
 			<or>

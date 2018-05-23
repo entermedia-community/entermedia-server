@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayout.html</inner-layout>
 	<property name="module">asset</property>
 	<property name="fallbackdirectory">/emshare/views/settings/modules/default</property>
 </page>

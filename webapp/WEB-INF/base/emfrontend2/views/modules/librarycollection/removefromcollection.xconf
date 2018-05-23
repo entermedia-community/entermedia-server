@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>${themeprefix}/layouts/collectionlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/collectionlayout.html</inner-layout>
 	<property name="hitsname">hits</property>
 	<property name="searchtype">asset</property>
 	

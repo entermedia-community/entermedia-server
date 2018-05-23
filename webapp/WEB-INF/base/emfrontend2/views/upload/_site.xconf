@@ -3,5 +3,5 @@
 	<property name="subtab">userupload</property>
 	<property name="sectiontitle">Add Media</property>
 	<property name="section">upload</property>
-	<inner-layout>${themeprefix}/layouts/myaccount.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/myaccount.html</inner-layout>
 </page>

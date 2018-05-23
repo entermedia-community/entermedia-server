@@ -171,7 +171,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 <script>
     $('.popupdetails').on({
 		powerTipPreRender: function() {
-			$(this).data('powertip' , '<div class="details"><img src="${themeprefix}/styles/tooltip/tooltip-loader-blue.gif" /></div>');
+			$(this).data('powertip' , '<div class="details"><img src="/${applicationid}/theme/styles/tooltip/tooltip-loader-blue.gif" /></div>');
 		},
 		powerTipRender: function() {
 			var id = $(this).data("id");

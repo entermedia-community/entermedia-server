@@ -2,5 +2,5 @@
 	<property name="editview">events/edit</property> 
 	<property name="searchtype">event</property>
 	<path-action name="PathEventModule.loadPathEvent"/>
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayout.html</inner-layout>
 </page>

@@ -6,7 +6,7 @@
 	</property>
     <script id="chartjs" src="/${applicationid}/components/javascript/chart/Chart.bundle.js" />
 
-	<inner-layout>${themeprefix}/layouts/dashboardlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/dashboardlayout.html</inner-layout>
 	<permission name="view">
 		<or>
 			<pagevalue name="canviewsettings" equals="true" />

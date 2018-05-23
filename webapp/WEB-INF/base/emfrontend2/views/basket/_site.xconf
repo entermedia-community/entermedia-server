@@ -9,5 +9,5 @@
   	<property name="section">basket</property>
   	<property name="module">asset</property>
   	
-  	<inner-layout>/${themeprefix}/layouts/searchlayout.html</inner-layout>
+  	<inner-layout>//${applicationid}/theme/layouts/searchlayout.html</inner-layout>
 </page>

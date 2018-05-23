@@ -6,5 +6,5 @@
 	<property name="iconwidth">16</property>
 	<inner-layout />
 		<layout />
-	<property name="iconhome">${themeprefix}/images/tree/select</property>
+	<property name="iconhome">/${applicationid}/theme/images/tree/select</property>
 </page>

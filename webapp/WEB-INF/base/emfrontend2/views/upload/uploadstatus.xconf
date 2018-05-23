@@ -2,6 +2,6 @@
 	<page-action name="AssetSyncModule.searchForPendingAssets"/>
 	
 		<property name="searchcurrentcatalogonly">true</property>
-		<inner-layout>/${themeprefix}/layouts/searchlayout.html</inner-layout>
+		<inner-layout>//${applicationid}/theme/layouts/searchlayout.html</inner-layout>
 </page>
 

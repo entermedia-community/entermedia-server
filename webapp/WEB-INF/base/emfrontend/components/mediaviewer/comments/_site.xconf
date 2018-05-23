@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>/${themeprefix}/layouts/mediaviewer.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/mediaviewer.html</inner-layout>
 
 	<path-action name="MediaArchiveModule.getAsset"  />
 	<path-action name="Admin.loadPermissions"/>

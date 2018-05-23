@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>/${themeprefix}/layouts/mediaviewercategory.html</inner-layout>
+	<inner-layout>//${applicationid}/theme/layouts/mediaviewercategory.html</inner-layout>
 	<path-action name="MediaSearchModule.searchCategories"/>
 	<property name="sortby">assetaddeddateDown</property>
 	<property name="section">assets</property>

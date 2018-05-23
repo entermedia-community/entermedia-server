@@ -10,7 +10,7 @@
 
 	<path-action name="AssetEditModule.createAssetFromUploads"/>
 
-	<inner-layout>/${themeprefix}/layouts/detaileditor.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/detaileditor.html</inner-layout>
 
 	<!-- Need to check for invites, may tweak the viewasset permission -->
 	<path-action name="MediaArchiveModule.getAsset"  />

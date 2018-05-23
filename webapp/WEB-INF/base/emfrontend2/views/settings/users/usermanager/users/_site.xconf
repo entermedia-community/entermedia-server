@@ -4,7 +4,7 @@
 	<property name="sectiontitle">
     	<value>User Manager</value>
   	</property>
-  <inner-layout>${themeprefix}/layouts/settingssubtablayoutnomargin.html</inner-layout>
+  <inner-layout>/${applicationid}/theme/layouts/settingssubtablayoutnomargin.html</inner-layout>
   <property name="tab">users</property>
   <property name="subtab">users</property>
   <property name="oeuseradmintabid">userstab</property>

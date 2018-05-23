@@ -1,6 +1,6 @@
 <page>
 
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayout.html</inner-layout>
 	<property name="subsettinglist">system</property>
 	
 	

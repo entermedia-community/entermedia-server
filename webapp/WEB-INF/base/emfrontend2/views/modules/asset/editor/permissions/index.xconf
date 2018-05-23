@@ -1,10 +1,10 @@
 <page>
 <!--
-	<style id="jquery-autocompletecss" href="${themeprefix}/styles/jquery/jquery.autocomplete.css" />
+	<style id="jquery-autocompletecss" href="/${applicationid}/theme/styles/jquery/jquery.autocomplete.css" />
 	<script id="jquery-autocomplete" src="/${applicationid}/components/javascript/jquery.autocomplete.js" />
 	<script id="assetpermissionsscript" src="/${applicationid}/components/javascript/autocomplete.js" />
 -->
-	<style  id="assetpermissions" href="${themeprefix}/styles/pages/permissions.css" />
+	<style  id="assetpermissions" href="/${applicationid}/theme/styles/pages/permissions.css" />
 	
 	<page-action name="AssetControlModule.listAssetViewPermissions" />
 	<page-action name="AssetControlModule.isAllGroups" />

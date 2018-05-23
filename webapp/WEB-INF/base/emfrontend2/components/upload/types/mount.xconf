@@ -22,6 +22,6 @@
   <property name="text.Enter full path">
     <value locale="es">Ingrese la ruta completa</value>
   </property>
-  	<inner-layout>${themeprefix}/entermedia/layouts/dialoglayout.html</inner-layout>
+  	<inner-layout>/${applicationid}/theme/entermedia/layouts/dialoglayout.html</inner-layout>
   
 </page>

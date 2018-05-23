@@ -1,5 +1,5 @@
 <page>
-	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingslayout.html</inner-layout>
 	<property name="searchtype">module</property>
 	<property name="tab">modules</property>
 </page>

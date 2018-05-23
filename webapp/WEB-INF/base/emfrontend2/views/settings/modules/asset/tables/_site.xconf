@@ -1,4 +1,4 @@
 <page>
 	<property name="tab">assettables</property>
-	<inner-layout>${themeprefix}/layouts/settingslayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingslayout.html</inner-layout>
 </page>

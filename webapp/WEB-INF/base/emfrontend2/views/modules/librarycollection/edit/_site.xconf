@@ -8,7 +8,7 @@
 			<searchtype>librarycollection</searchtype>
     </path-action>
 
-   	<inner-layout>/${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
+   	<inner-layout>//${applicationid}/theme/layouts/collectionfeedlayout.html</inner-layout>
     
     <property name="defaulttab">settingstab</property>
 </page>

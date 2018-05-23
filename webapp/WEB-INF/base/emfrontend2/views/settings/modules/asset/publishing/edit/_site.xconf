@@ -1,4 +1,4 @@
 <page>
 	<path-action name="DataEditModule.loadSearcherForEdit" />
-	<inner-layout>${themeprefix}/layouts/settingssubtablayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayout.html</inner-layout>
 </page>

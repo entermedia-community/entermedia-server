@@ -22,6 +22,6 @@
 	 
  	<property name="tab">preferences</property>
 	<property name="subtab">presets</property>
-	<inner-layout>${themeprefix}/layouts/settingssubtablayoutnomargin.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayoutnomargin.html</inner-layout>
 	
 </page>

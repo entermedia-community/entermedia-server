@@ -12,13 +12,13 @@
 <table style="border-spacing: 10px; border-collapse: separate">
 <tr>
 <td>
-<a href="#" onclick="cropImage(); return false;"><img src="$home${themeprefix}/images/buttons/crop_16x16.png" border="0" title="[[Crop Image]]" />
+<a href="#" onclick="cropImage(); return false;"><img src="$home/${applicationid}/theme/images/buttons/crop_16x16.png" border="0" title="[[Crop Image]]" />
 	[[Crop Image]]
 	</a>
 
 </td>
 <td>
-##<a href="#" onclick="resizeImage();return false;"><img src="$home${themeprefix}/images/buttons/aspectratio_16x16.png" border="0" title="[[Resize Image]]" />
+##<a href="#" onclick="resizeImage();return false;"><img src="$home/${applicationid}/theme/images/buttons/aspectratio_16x16.png" border="0" title="[[Resize Image]]" />
 ##	[[Resize Image]]</a>
 #set($currentOrientation = $asset.get("imageorientation"))
 #set ( $searcher = $searcherManager.getSearcher($catalogid ) )
@@ -45,7 +45,7 @@
 <td>
 
 <a href="$home${apphome}/views/modules/asset/editor/historyimageedit/index.html?editPath=${editPath}&assetid=${asset.id}">
-	<img src="$home${themeprefix}/images/buttons/undo_16x16.png" border="0"/> Versions
+	<img src="$home/${applicationid}/theme/images/buttons/undo_16x16.png" border="0"/> Versions
 </a>
 
 </td>

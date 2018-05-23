@@ -8,7 +8,7 @@
 	<property name="assettab">viewassetedit</property>
 	
 	<script id="imgareaselect" src="/${applicationid}/components/javascript/jquery.imgareaselect.js"/>
-    <style id="imgareaselect-css" href="${themeprefix}/styles/jquery/imgareaselect-default.css"/>
+    <style id="imgareaselect-css" href="/${applicationid}/theme/styles/jquery/imgareaselect-default.css"/>
 
 	<!-- jcrop tool -->
   
