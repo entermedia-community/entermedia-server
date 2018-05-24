@@ -846,6 +846,14 @@ public class ProjectModule extends BaseMediaModule
 		inReq.putPageValue("librarycol", collection);
 	}
 	
-	
+	public void loadUserUpload(WebPageRequest inReq) throws Exception
+	{
+		String page = inReq.getPage().getName();
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher userupload = archive.getSearcher("userupload");
+		Data upload = userupload.query().exact("uploadcategory", PathUtilities.extractPageName( page)).searchOne();
+		inReq.putPageValue("userupload", upload);
+	}
+
 	
 }
