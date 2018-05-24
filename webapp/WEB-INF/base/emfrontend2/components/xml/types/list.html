@@ -3,19 +3,23 @@
 
 #set ($catalogid = $context.getRequestParameter('catalogid'))
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
-#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+#ifnull ($fieldname)
+	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+#end
 #set ($view = $context.getRequestParameter('view')) 
-
-<div id="listdetail_$fieldname" class="listdetailpicker">
 ##we need to load up the existing detail object
 
 #set( $originalsearcher = $searcherManager.getSearcher($catalogid, $searchtype))
 #if( !$detail) ##this is new. To reduce complexity we want to just load up the detail all the time
+	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 	#set( $detail = $originalsearcher.getDetailForView($view, $fieldname, $user) )
 #end
 
+#set ($fieldname = $detail.id)
 #set( $listid = $detail.getListId())
 #set( $csslistid = "list-$!detailprefix${detail.id}")
+
+<div id="listdetail_$fieldname" class="listdetailpicker">
 
 #set( $lsearcher = $searcherManager.getSearcher( $detail.getListCatalogId(), $listid ))	
 ##optional things to filter the list
@@ -47,24 +51,24 @@
 $query.setSortBy($detail.getDefaultSort())
 ####$lsearcher.addShowOnly($context, $query) 
 #set ($types = $lsearcher.search($context, $query))
-#if( !$value )
-	#set ($value = $context.getRequestParameter('value'))
+
+#ifnull ($value)
+	#set ($value = $context.getRequestParameter('val'))
 #end
-##if (!$value)
-##  #set ($value = $context.getRequestParameter("${fieldname}.value"))
-##end
+#ifnull ($value)
+	#set ($value = $val)
+#end
 
 #set( $valueid = "$fieldname" )
-
 #if($types)
-$types.enableBulkOperations()
+	$types.enableBulkOperations()
 	#if( $foreignkeyid)
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");
 		</script>
 	#end
 		
-	<select  id="$csslistid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
+	<select  id="$csslistid" data-placeholder=" " name="${fieldname}.value" 
 		class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" id="${valueid}.value"
 		data-listid="$listid" 

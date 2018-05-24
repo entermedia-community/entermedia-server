@@ -61,8 +61,8 @@ $context.putPageValue("longform",false)
 
  #foreach( $detail in $details )
  
-	#set($val = false)
-	#set($target = "${detail.id}.value")
+	#set( $val = false)
+	#set( $target = "${detail.id}.value")
 	#set( $val = false)
 	#set( $val = $context.getRequestParameter($target))		
 	#if( !$val)
