@@ -436,6 +436,7 @@ public class TimelineModule extends BaseMediaModule
 
 		String selectedlang = inReq.getRequestParameter("selectedlang");
 		Collection hits = captionsearcher.query().or().exact("transcribestatus", "inprogress").exact("transcribestatus", "needstranscribe").search();
+		log.info("Transcribing: " + hits.size() );
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{
 			Data track = (Data) iterator.next();
@@ -477,20 +478,7 @@ public class TimelineModule extends BaseMediaModule
 		{
 			throw new OpenEditException("No existing translation available to translate lang:" + selectedlang);
 		}
-		
-		Collection<Map> existingcaptions = (Collection)lasttrack.getValue("captions");
-		Collection<Map> captions = new ArrayList(existingcaptions);
-		Translation server = new Translation();
-		for(Map caption : captions)
-		{
-			String cliplabel = (String)caption.get("cliplabel"); 
-			if( cliplabel != null && !cliplabel.isEmpty() )
-			{
-				cliplabel = server.webTranslate(cliplabel,selectedlang,targetlang);
-				caption.put("cliplabel", cliplabel);
-			}
-		}
-		
+
 		Data newtrack = captionsearcher.query().exact("assetid", asset.getId()).exact("sourcelang", targetlang).searchOne();
 		if( newtrack == null)
 		{
@@ -499,6 +487,31 @@ public class TimelineModule extends BaseMediaModule
 			newtrack.setProperty("sourcelang", targetlang);
 			newtrack.setProperty("assetid",  asset.getId());
 		}
+
+		
+		Collection<Map> existingcaptions = (Collection)lasttrack.getValue("captions");
+		Collection<Map> captions = new ArrayList(existingcaptions);
+		Translation server = new Translation();
+		int counter = 0;
+		for(Map caption : captions)
+		{
+			String cliplabel = (String)caption.get("cliplabel"); 
+			if( cliplabel != null && !cliplabel.isEmpty() )
+			{
+				counter++;
+				cliplabel = server.webTranslate(cliplabel,selectedlang,targetlang);
+				caption.put("cliplabel", cliplabel);
+				newtrack.setValue("captions", captions);
+				if( counter == 25)
+				{
+					counter =0;
+					captionsearcher.saveData(newtrack);
+					Thread.sleep(1000);
+				}	
+
+			}
+		}
+		
 		newtrack.setValue("captions", captions);
 		captionsearcher.saveData(newtrack);
 		inReq.putPageValue("track", newtrack);

@@ -46,6 +46,7 @@ import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
+import org.openedit.util.URLUtilities;
 import org.openedit.util.XmlUtil;
 
 import com.google.gson.JsonArray;
@@ -548,17 +549,11 @@ public class GoogleManager implements CatalogEnabled {
 	}
 	
 	
-	public JsonObject uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, String inMetadata) throws Exception {
-	//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload	
-		HttpRequestBuilder builder = new HttpRequestBuilder();
-		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";
-		//TODO: Use HttpRequestBuilder.addPart()
-		HttpPost method = new HttpPost(url);
-		method.addHeader("authorization", "Bearer " + getAccessToken(inAuthInfo));
-
-		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
-		builder.addPart("metadata", inMetadata,"application/json"); //What should this be called?
+	public JsonObject uploadToBucket(Data inAuthInfo, String bucket, ContentItem inItem, JsonObject inMetadata) throws Exception {
+	//https://cloud.google.com/storage/docs/json_api/v1/how-tos/multipart-upload
 		
+		String filename = URLUtilities.encode( inMetadata.get("name").getAsString());
+		String geturl = "https://www.googleapis.com/storage/v1/b/" + bucket + "/o/" + filename;
 
 		File file = new File(inItem.getAbsolutePath());
 		
@@ -566,11 +561,55 @@ public class GoogleManager implements CatalogEnabled {
 		{
 			throw new OpenEditException("Input file missing " + file.getPath() );
 		}
+
+		
+		HttpRequestBuilder builder = new HttpRequestBuilder();
+		
+		HttpGet getmethod = new HttpGet(geturl);
+		getmethod.addHeader("authorization", "Bearer " + getAccessToken(inAuthInfo));
+
+		CloseableHttpClient httpclient;
+		httpclient = HttpClients.createDefault();
+		
+		HttpResponse getresp = httpclient.execute(getmethod);
+		int code = getresp.getStatusLine().getStatusCode();
+		if( code == 404)
+		{
+			//do nothing
+		}
+		else if (code != 200) 
+		{
+			log.error("Google Server error returned " + getresp.getStatusLine().getStatusCode() );
+			
+		}
+		else
+		{
+			//chek the size of the file
+			HttpEntity entity = getresp.getEntity();
+			JsonParser parser = new JsonParser();
+			String content = IOUtils.toString(entity.getContent(),entity.getContentEncoding().getValue());
+			JsonElement elem = parser.parse(content);
+			JsonObject json = elem.getAsJsonObject();
+			long existingsize = json.get("size").getAsLong();
+			if( file.length() == existingsize)
+			{
+				return json;
+			}
+		}
+		
+		String url = "https://www.googleapis.com/upload/storage/v1/b/" + bucket + "/o?uploadType=multipart";
+		//TODO: Use HttpRequestBuilder.addPart()
+		HttpPost method = new HttpPost(url);
+		method.addHeader("authorization", "Bearer " + getAccessToken(inAuthInfo));
+
+		//POST https://www.googleapis.com/upload/storage/v1/b/myBucket/o?uploadType=multipart
+		builder.addPart("metadata", inMetadata.toString(),"application/json"); //What should this be called?
+		
+
 		builder.addPart("file", file);
-		long size = inMetadata.getBytes().length + file.getTotalSpace();
+		//long size = inMetadata.getBytes().length + file.getTotalSpace();
 
 		//method.setHeader("Content-Length",String.valueOf(size));
-
 		
 		
 		method.setEntity(builder.build());
@@ -578,17 +617,14 @@ public class GoogleManager implements CatalogEnabled {
 		String boundary = contenttype.substring(contenttype.indexOf("boundary=")+9, contenttype.length());
 		method.setHeader("Content-Type","multipart/related; boundary=" + boundary);
 
-		CloseableHttpClient httpclient;
-		httpclient = HttpClients.createDefault();
-		
 		HttpResponse resp = httpclient.execute(method);
 
 		if (resp.getStatusLine().getStatusCode() != 200) {
 			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
 					+ resp.getStatusLine().getReasonPhrase());
 			String returned = EntityUtils.toString(resp.getEntity());
-			log.info(returned);
-
+			log.error(returned);
+			return null;
 		}
 
 		HttpEntity entity = resp.getEntity();
