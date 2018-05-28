@@ -138,7 +138,8 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				ByteArrayOutputStream output = new ByteArrayOutputStream();
 				OutputFiller filler = new OutputFiller();
 				filler.fill(tempfile.getInputStream(), output);
-				JsonObject elem = getTranscodeData(authinfo, output.toByteArray());
+
+				JsonObject elem = getTranscodeData(authinfo, inLang, output.toByteArray());
 				if (elem == null) {
 					log.error("Security error ");
 					throw new OpenEditException("Security error");
@@ -186,7 +187,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		}
 	}
 
-	public JsonObject getTranscodeData(Data inAuthinfo, byte[] inAudioContent) throws Exception {
+	public JsonObject getTranscodeData(Data inAuthinfo, String inLang, byte[] inAudioContent) throws Exception {
 		String url = "https://speech.googleapis.com/v1/speech:recognize";
 
 		String encodedString = Base64.encodeBase64String(inAudioContent);
@@ -203,7 +204,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 		JsonObject config = new JsonObject();
 		config.addProperty("encoding", "FLAC");
 		// config.addProperty("sampleRateHertz", 44100);
-		config.addProperty("languageCode", "en-US");
+		config.addProperty("languageCode", inLang);//"en-US");
 		config.addProperty("enableWordTimeOffsets", true);
 		object.add("config", config);
 
@@ -282,14 +283,24 @@ public class CloudTranscodeManager implements CatalogEnabled {
 			String googlename = "temp/" + inAsset.getId() + "data.flac";
 			data.addProperty("name", googlename);
 			try {
-				if(inTrack.get("selfLink") == null){
-				JsonObject response = getGoogleManager().uploadToBucket(authinfo, bucket, result.getOutput(),data.toString());
-				
-				inTrack.setValue("googleid", response.get("id").getAsString());
-				String selflink = response.get("selfLink").getAsString();
-				inTrack.setValue("selfLink", selflink);
-				inTrack.setValue("mediaLink", response.get("mediaLink").getAsString());
-				inTrack.setValue("transcribestatus", "inprogress");
+				if(inTrack.get("selfLink") == null)
+				{
+					log.info("Uploading to bucket: " + inAsset.getName() );
+					JsonObject response = getGoogleManager().uploadToBucket(authinfo, bucket, result.getOutput(),data);
+					if( response == null)
+					{
+						log.error("Could not upload to bucket");
+						inTrack.setValue("transcribestatus", "error");
+						captionsearcher.saveData(inTrack);
+						return;
+					}
+					log.info("Uploading complete: " + inAsset.getName() );
+					inTrack.setValue("googleid", response.get("id").getAsString());
+					String selflink = response.get("selfLink").getAsString();
+					inTrack.setValue("selfLink", selflink);
+					inTrack.setValue("mediaLink", response.get("mediaLink").getAsString());
+					inTrack.setValue("transcribestatus", "inprogress");
+					captionsearcher.saveData(inTrack);
 				}
 				
 				String url = "https://speech.googleapis.com/v1/speech:longrunningrecognize";
@@ -308,7 +319,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				JsonObject config = new JsonObject();
 			//	config.addProperty("encoding", "FLAC");
 			//	 config.addProperty("sampleRateHertz", 48000);
-				config.addProperty("languageCode", "en-US");
+				config.addProperty("languageCode", inLang);//"en-US");
 				config.addProperty("enableWordTimeOffsets", true);
 				object.add("config", config);
 				
@@ -348,7 +359,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				inTrack.setValue("taskname", taskinfo.get("name").getAsString());
 				
 				inTrack.setValue("transcribestatus", "inprogress");
-				
+				log.info("Conversion in progress for " + inAsset.getName());
 				
 			} catch (Exception e) {
 				throw new OpenEditException(e);
@@ -442,23 +453,12 @@ public class CloudTranscodeManager implements CatalogEnabled {
 								firstword = (JsonObject) worddata;
 								buffer = new StringBuffer();
 								charcount = 0;
-								
-								
 							} 
 							lastword = worddata;
 							buffer.append(word);
 							buffer.append(" ");
 							
 						}
-						
-						
-						
-						
-						
-						
-						
-						
-						
 					}
 				}
 				inTrack.setValue("transcribestatus", "complete");
@@ -467,17 +467,19 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				tracksearcher.saveData(inTrack);
 				
 				inAsset.setValue("closecaptionstatus", "complete");
-
 				
-				
-			} else{
-				try{
-				int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
-				inTrack.setValue("percentcomplete", percent);
-				
-				} catch(Exception e){
-					log.info("didn't get percentage yet");
-					
+			}
+			else
+			{
+				try
+				{
+					int percent = taskinfo.get("metadata").getAsJsonObject().get("progressPercent").getAsInt();
+					inTrack.setValue("percentcomplete", percent);
+					tracksearcher.saveData(inTrack);
+				}
+				catch(Exception e)
+				{
+					log.info("didn't get percentage yet",e);
 				}
 			}
 			
