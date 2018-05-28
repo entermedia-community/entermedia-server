@@ -1283,6 +1283,13 @@ uiload = function() {
 	    
 	}, false);
 	
+	$("video").each(function(){
+		jQuery(this).append('controlsList="nodownload"')
+		jQuery(this).on('contextmenu', function(e) {
+		    e.preventDefault();
+		});
+	});
+	
 }
 
 
