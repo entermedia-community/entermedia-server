@@ -24,29 +24,29 @@ $context.putPageValue("cdn",$cdnprefix)
 </div>
 <div id="footerbase">
 	<div id="footermenu">
-		<ul class="">
+		<ul>
 		
-			<li >
-				<div class="goleftclick" >
-				<span class="glyphicon glyphicon-triangle-left overlay-nav"></span>
+			<li>
+				<div class="goleftclick gotoarrows" >
+				<span class="fas fa-caret-left overlay-nav gocaret"></span>
 				</div>	
-				<div class="gorightclick" >
-				<span class="glyphicon glyphicon-triangle-right overlay-nav"></span>
+				<div class="gorightclick gotoarrows" >
+				<span class="fas fa-caret-right overlay-nav gocaret"></span>
 				</div>	
 				
 			</li>
 		
 			<li  class="botmenulink">	
 				#if( $canmetadatageneral )
-				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()" class="nav-link" > $asset </a>
+				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()"> $asset </a>
 				#else
-				<a href="#" class="nav-link" > $asset </a>
+				<a href="#" title="[[View $asset]]" >$asset</a>
 				#end
 			 </il>
 			 #if($candownload || $canconvert)
 				<li id="download-select" >		
-					<div class="dropup">
-						<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="glyphicon glyphicon-download" style="color: #fff;"> </span>  [[Downloads]]
+					
+						<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]
 							<span class="caret"></span></a>
 						
 						#if( !$cdnprefix )
@@ -63,13 +63,13 @@ $context.putPageValue("cdn",$cdnprefix)
 										#end
 									#end
 								</ul>
-					   </div>
+					   
 				  </li>
 			 #end
 		  <li>
 	#if(  $asset.getFileFormat()  == "pdf")
 		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
-            	<span class="glyphicon glyphicon-blackboard" style="color: #fff;"> </span> [[View PDF]]
+            	<span class="fas fa-blackboard"> </span> [[View PDF]]
             </a> 
 	#end
 		  </li>

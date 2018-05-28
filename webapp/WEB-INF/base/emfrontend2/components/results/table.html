@@ -29,12 +29,12 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
        #end    
 	$context.putPageValue("details",$details)
 	
-<div id="emselectable"  >	
+<div id="emselectable">	
 <div class="autoresize-inner">	
 
 #set( $viewerlink = $content.get("assetviewerlink") )
 
-	<table id="main-results-table" class="emdownloadlisting emresultscontent striped" data-clickpath="$home$viewerlink?hitssessionid=${hits.sessionId}&assetid=">
+	<table id="main-results-table" class="table" data-clickpath="$home$viewerlink?hitssessionid=${hits.sessionId}&assetid=">
 			$pages.include("$apphome/components/results/tableheader.html",$context)
 			#set($count = 0)
 			#foreach( $hit in $hits.getPageOfHits() )

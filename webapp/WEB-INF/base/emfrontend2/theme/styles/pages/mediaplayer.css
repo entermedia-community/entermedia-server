@@ -390,12 +390,21 @@ color: #fff;
 }
 
 #footermenu li {
-	font-size: large;	
+	font-size:90%;
 	font-weight: normal;
 	padding-left: 5%;
 	float:left;
 	display:block;
 }
+#footermenu li a { line-height: 2; }
+
+#footermenu .gotoarrows { font-size: 200%; }
+#footermenu .gotoarrows span { cursor:pointer;} 
+#footermenu .gotoarrows span:hover { color:#fff; }
+
+
+
+
 
 #download-select
 {

@@ -384,7 +384,7 @@ jQuery(document).ready(function(url,params)
 		
 	});
 	
-	jQuery('div.goleftclick .glyphicon-triangle-left').livequery('click',function(e)
+	jQuery('div.goleftclick .gocaret').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
@@ -393,7 +393,7 @@ jQuery(document).ready(function(url,params)
 
 	});
 	
-	jQuery('div.gorightclick .glyphicon-triangle-right').livequery('click',function(e)
+	jQuery('div.gorightclick .gocaret').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
