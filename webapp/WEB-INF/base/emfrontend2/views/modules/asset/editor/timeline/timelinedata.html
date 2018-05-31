@@ -1,6 +1,7 @@
 #set( $clientroot = $context.getContentProperty("clientroot") )
 
-<div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()" data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="margin-left:60px;">
+<div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()" 
+	data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="margin:0 10px;">
 	#set( $clips = $timeline.loadClips($asset,"clips") )
 	#foreach($clip in $clips)
 		#set( $index = ${foreach.count} - 1)

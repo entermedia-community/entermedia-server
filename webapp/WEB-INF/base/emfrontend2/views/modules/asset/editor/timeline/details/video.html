@@ -3,8 +3,9 @@
 #set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = $context.getContentProperty("clientroot") )
-
-<div id="video-container" style="float:left;">
+<div class="row">
+<div class="col-sm-7">
+	<div id="video-container" style="float:left;">
 	<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
 		<section id='cuePlayer' style="padding:6px;">
 			<video id="videoclip" preload="no" controls="true" webkit-playsinline poster="$thumb" style="width:550px">
@@ -14,4 +15,8 @@
 	   </section>
 	</div>									
 </div>
+</div>
+<div class="col-sm-5">
 $pages.include("$apphome/views/modules/asset/editor/timeline/details/edit.html", $context)
+</div>
+</div>
