@@ -141,6 +141,7 @@ jQuery(document).ready(function(url,params)
 		
 		$("#hiddenoverlay .playerarea").width(avwidth);
 		var w = img.data("width");
+		var avheight = $(window).height() - 40;
 		if(!isNaN(w) && w != "")
 		{
 			w = parseInt(w);
@@ -150,7 +151,7 @@ jQuery(document).ready(function(url,params)
 			img.width(avwidth);
 			img.css("height", "auto");
 			//Only if limited by height
-			var avheight = $(window).height() - 35;
+			
 
 			if( newh > avheight )
 			{ 
@@ -159,6 +160,7 @@ jQuery(document).ready(function(url,params)
 				//var neww2 = Math.floor( avheight * w / h );
 				//img.width(neww2);
 				img.css("width", "auto");
+				img.css("height", avheight);
 			}
 			else
 			{
@@ -174,12 +176,14 @@ jQuery(document).ready(function(url,params)
 					img.css("margin-top","0px");
 				}	
 			}
+			img.css("height", avheight);
 			
 		}
 		else
 		{
 			img.width(avwidth);
-			img.css("height", "auto");
+			//img.css("height", "auto");
+			img.css("height", avheight);
 			img.css("margin-top","0px");
 		}
 	}

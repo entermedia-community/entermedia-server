@@ -69,7 +69,9 @@
         </ul>
    </li>
    #end
-
+   <li>
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]">[[Edit]]</a>
+   <ul class="dropdown-menu">
    #if ( $asset.id.startsWith("multiedit:") )
         #set  ( $ismulti = true)
     #end
@@ -131,7 +133,8 @@
 			#end
 		#end
 	#end
-    
+	</ul>
+    </li>
 </ul>
 </div>
 <script>

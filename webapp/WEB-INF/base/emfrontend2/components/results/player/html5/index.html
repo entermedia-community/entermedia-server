@@ -1,6 +1,10 @@
+#ifnull($hit)
+	#set ($hit = $asset)
+#end
 
 #set( $source = $mediaarchive.asLinkToPreview($hit,"video.mp4")) 
-#set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480.jpg"))
+##set( $thumb = $mediaarchive.asLinkToPreview($hit,"image640x480.jpg"))
+#set( $thumb = $mediaarchive.asLinkToPreview($hit,"image1024x768.jpg"))
 
 #set( $embed = $context.getRequestParameter("embed") )
 #set( $autoplay = $context.getRequestParameter("autoplay") )
@@ -11,20 +15,17 @@
 #set( $catalogid = $asset.catalogId )
 
 
-##Add back full screen button, Autoplay and escape handling
-<div id="playarea-$hit.id" 
-	class=""
-	data-embed="false"
 	
-	data-share="false"
-	>
 
-	<video id="video-$hit.id" class="video-js vjs-default-skin"  width="480" height="310"
-		##Use this? poster='$thumb'
+##Add back full screen button, Autoplay and escape handling
+<div id="playarea-$hit.id" class="player">
+	<video id="video-$hit.id" class="video-js" width="480" height="320"
+		poster='$thumb'
 		#if( $autoplay && $autoplay == "true") autoplay #end
 		#if( $loop && $loop == "true") loop #end
 		controls
-		data-setup="{}" >
+		preload="auto"
+		data-setup=''>
 		<source type="video/mp4" src="$source">
 		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
 		<source type="video/flash" src="mp4:$short">
@@ -39,13 +40,7 @@
       		#end
       	#end
 	</video>
-
-<script>
-
-##	$(".html5player").livequery(function()
-##	{
-##		$(this).flowplayer();
-##	});
-</script>
-
 </div>
+<script>
+var myPlayer = videojs('video-$hit.id');
+</script>

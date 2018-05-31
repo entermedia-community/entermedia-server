@@ -15,12 +15,15 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $next = false )
 #set( $next = $hits.next($index))       
 
-<div id="main-media-container">
-<div id="main-media-viewer" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()" >
+<div id="main-media-container" style="height: 100%;">
+<div id="main-media" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
-	$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
+	##$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
+	$pages.include("$apphome/components/results/player/large/${type}.html",$context)
+	
+	
 </div>
 <div id="footerbase">
 	<div id="footermenu">
@@ -77,6 +80,5 @@ $context.putPageValue("cdn",$cdnprefix)
 		</ul>
 	</div>
 </div>
-
 </div>
 

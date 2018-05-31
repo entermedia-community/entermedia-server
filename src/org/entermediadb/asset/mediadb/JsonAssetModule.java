@@ -134,24 +134,29 @@ public class JsonAssetModule extends BaseJsonModule {
 		df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
 		vals.put("formattedmonth", df);
 
+		Asset asset = null;
+		String sourcepath = null;
+		String id = null;
 		if( request == null)
 		{
-			throw new OpenEditException("JSON not parsed ");
+			//throw new OpenEditException("JSON not parsed ");
+			
+			
 		}
-		Asset asset = null;
-		String id = (String) request.get("id");
-		String sourcepath = null;
-		if (id == null) {
-			// id = searcher.nextAssetNumber();
-			vals.put("id", id);
-		}
-		else
-		{
-			asset = archive.getAsset(id);
-			if(asset != null ){
-				sourcepath = asset.getSourcePath();
+		else {
+			id = (String) request.get("id");
+			if (id == null) {
+				// id = searcher.nextAssetNumber();
+				vals.put("id", id);
+			}
+			else {
+				asset = archive.getAsset(id);
+				if(asset != null ){
+					sourcepath = asset.getSourcePath();
+				}
 			}
 		}
+		
 		if( asset == null)
 		{
 			sourcepath = (String) vals.get("sourcepath");
@@ -210,8 +215,9 @@ public class JsonAssetModule extends BaseJsonModule {
 			asset.setProperty("sourcepath", sourcepath);
 			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		}
-
-		populateJsonData(request, searcher, asset);
+		if (request!=null) {
+			populateJsonData(request, searcher, asset);
+		}
 
 		importer.saveAsset(archive, inReq.getUser(), asset);
 

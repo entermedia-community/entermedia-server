@@ -110,6 +110,7 @@ span.emdropshadow {
     min-width: 40px;
     min-height: 40px;
 }
+.playerarea { height: 100%;	}
 
 .playerarea span.emdropshadow {
     padding: 0px;
@@ -130,6 +131,18 @@ span.emdropshadow {
 	height:100%;
 	width:100%;
 	background-size: 100% auto;
+}
+
+.playerarea .player {
+	padding:20px;
+	max-height: 100%;
+	height: 100%;
+    justify-content: space-between;
+}
+.player .video-js {
+    position: relative;
+    min-width: 100%!important;
+    min-height: 100%!important;
 }
 
 div#hiddenoverlay .playerarea {
@@ -664,6 +677,7 @@ span.glyphicon-triangle-left.overlay-nav {
 {
 	display:block;
     margin:auto;
+    position:relative;
 }
 
 #emcontainer #emselectable  #main-results-table .tableresults tr td {
@@ -712,4 +726,6 @@ span.glyphicon-triangle-left.overlay-nav {
 	background-color: transparent;
 	background-size: 25px 30px;
 }
+
+
 
