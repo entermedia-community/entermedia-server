@@ -479,7 +479,7 @@ public class CloudTranscodeManager implements CatalogEnabled {
 				}
 				catch(Exception e)
 				{
-					log.info("didn't get percentage yet",e);
+					log.info("didn't get percentage yet " + taskinfo,e);
 				}
 			}
 			
