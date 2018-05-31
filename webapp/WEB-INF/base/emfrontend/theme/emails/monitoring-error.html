@@ -4,7 +4,7 @@
 [[Review below]]:
 <br/><br/>
 #if($monitored.isreachable == "false")
-	[[The instance seems to be down]]: <a href="$monitored.url">$monitored.url</a><br/><br/>
+	[[The instance seems to be down]]: <a href="$monitored.fullurl">$monitored.fullurl</a><br/><br/>
 #else
 	#if($monitored.isssl == "true")
 		#if($monitored.sslstatus == "torenew")
