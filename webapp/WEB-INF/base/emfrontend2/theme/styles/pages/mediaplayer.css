@@ -389,35 +389,33 @@ color: #fff;
 	padding: 0;
 }
 
-#footermenu li {
+#footermenu li.footermenu {
 	font-size:90%;
 	font-weight: normal;
 	padding-left: 5%;
 	float:left;
 	display:block;
 }
-#footermenu li a { line-height: 2; }
+#footermenu li.footermenu a { line-height: 2; }
 
 #footermenu .gotoarrows { font-size: 200%; }
 #footermenu .gotoarrows span { cursor:pointer;} 
 #footermenu .gotoarrows span:hover { color:#fff; }
 
-
-
-
-
-#download-select
-{
-}
-
-
-#footermenu a {
+#footermenu li a {
 	color: white;	
 	margin-top: 4px;
 	display:block;
 }
 
-#footermenu div.dropup {
+#footermenu .dropdown-menu a {
+	color:#000;
+	font-size:90%;
+	padding: 2px 6px;
+}
+#footermenu .dropdown-menu a:hover {
+	background-color: #a8a8a8;
+	text-decoration: none;
 }
 
 body.widthless1000 #pdf-thumbnail-sidebar 
