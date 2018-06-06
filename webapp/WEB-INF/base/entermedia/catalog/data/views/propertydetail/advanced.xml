@@ -16,6 +16,7 @@
 	<property id="rendermask"  editable="true" stored="true" index="true">Render Mask</property>	
 	<property id="autocreatefromexif"  editable="true" stored="true" index="true">Auto Create Metadata from Exif</property>	
 	<property id="writenametoexif"  editable="true" stored="true" index="true">Write Name to Exif</property>	
+		<property id="xmpmask"  editable="true" stored="true" index="true"/>
 	
 	<property id="indextype"  editable="true" stored="true" index="true">Indexing Rule</property>	
 	<property id="analyzer"   editable="true" stored="true" index="true">Analyzer</property>

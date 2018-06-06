@@ -1,5 +1,7 @@
 package org.entermediadb.asset.generators;
 
+import java.util.HashMap;
+
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.xmp.XmpWriter;
@@ -60,7 +62,7 @@ public class GeneratedMediaGenerator extends FileGenerator
 			{
 				try
 				{
-					writer.saveMetadata(archive, item, asset);
+					writer.saveMetadata(archive, item, asset, new HashMap());
 				}
 				catch (Exception e)
 				{

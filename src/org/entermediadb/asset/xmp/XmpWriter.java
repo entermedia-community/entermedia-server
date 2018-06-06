@@ -62,7 +62,7 @@ public class XmpWriter
 	}
 	
 	
-	public boolean saveMetadata(MediaArchive inArchive, ContentItem inItem, Asset inAsset) throws Exception
+	public boolean saveMetadata(MediaArchive inArchive, ContentItem inItem, Asset inAsset, HashMap inExtraDetails) throws Exception
 	{
 		
 		String path = inItem.getAbsolutePath();
@@ -74,7 +74,7 @@ public class XmpWriter
 		try
 		{
 			List<String> comm = createCommand(inArchive);
-			addSaveFields(inArchive, inAsset, comm);		
+			addSaveFields(inArchive, inAsset, comm, inExtraDetails);		
 			List removekeywords = new ArrayList(comm);
 			removekeywords.add("-Subject="); //This only works on a line by itself
 			removekeywords.add(path);
@@ -94,7 +94,7 @@ public class XmpWriter
 	{
 		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
 		
-		return saveMetadata(inArchive, item, inAsset);
+		return saveMetadata(inArchive, item, inAsset, new HashMap());
 		
 
 	}	
@@ -143,7 +143,7 @@ public class XmpWriter
 	}
 
 	
-	public void addSaveFields(MediaArchive inArchive, Asset inAsset, List<String> inComm)
+	public void addSaveFields(MediaArchive inArchive, Asset inAsset, List<String> inComm, HashMap inExtraDetails)
 	{
 		PropertyDetails details = inArchive.getAssetPropertyDetails();
 		for(Object o: details)
@@ -171,6 +171,13 @@ public class XmpWriter
 				val = val.replace("]", "");
 
 			}
+			
+			if(detail.get("xmpmask") != null) {
+				inExtraDetails.putAll(inAsset.getProperties());
+				val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), detail.get("xmpmask"), inExtraDetails);
+			}
+			
+			
 //			if( detail.getId().equals("imageorientation"))
 //			{
 //				value = inAsset.get("rotation"); //custom rotation. this should be set by the rotation tool?
@@ -182,6 +189,9 @@ public class XmpWriter
 //					continue; //Only set the value if rotation is set
 //				}
 //			}
+			
+			
+			
 			addTags(tags, val, inComm);
 		}
 	}

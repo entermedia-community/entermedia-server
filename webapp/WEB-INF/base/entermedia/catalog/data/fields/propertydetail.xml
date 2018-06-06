@@ -248,7 +248,8 @@
    <property id="wordpressfield" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Wordpress field mapping
   
   </property>  
-  
+  <property id="xmpmask" multilanguage="true" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">XMP Mask
+  </property>  
   
   
 </properties>
