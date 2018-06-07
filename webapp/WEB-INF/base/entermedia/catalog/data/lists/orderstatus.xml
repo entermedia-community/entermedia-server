@@ -1,7 +1,7 @@
 <properties>
-	<property id="preorder">[[Pre-Ordered]]</property> <!--  Being built by user GUI -->
-	<property id="processing">[[Processing]]</property> <!--  id="ordered">Ordered -->
-	<property id="complete">[[Complete]]</property> <!-- This means our server has finished it's job -->
+	<property id="preorder">Pre-Ordered</property> <!--  Being built by user GUI -->
+	<property id="processing">Processing</property> <!--  id="ordered">Ordered -->
+	<property id="complete">Complete</property> <!-- This means our server has finished it's job -->
 <!-- 
 	<property id="0">Pending</property>
 	<property id="1">Processed</property>
