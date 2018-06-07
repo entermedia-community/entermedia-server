@@ -724,6 +724,15 @@ public class BaseOrderManager implements OrderManager {
 	 */
 	public void updateStatus(MediaArchive archive, Order inOrder)
 	{
+		//Finalize should be only for complete orders.
+		if( "checkout".equals( inOrder.get("ordertype")) )
+		{
+			if( !inOrder.getBoolean("downloadapproved") )
+			{
+				log.info("Order not approved for email yet " + inOrder.getId());
+				return; //dont send email yet
+			}
+		}
 		
 		//look up all the tasks
 		//if all done then save order status
@@ -790,7 +799,6 @@ public class BaseOrderManager implements OrderManager {
 			int itemSuccessCount = temphistory.getItemSuccessCount();
 			if((itemErrorCount + itemSuccessCount) == size )
 			{
-				//Finalize should be only for complete orders.
 				inOrder.setOrderStatus("complete");
 				try
 				{
@@ -1020,6 +1028,7 @@ public class BaseOrderManager implements OrderManager {
 
 	protected void sendOrderNotifications(MediaArchive inArchive, Order inOrder) 
 	{
+		
 		Map context = new HashMap();
 		context.put("orderid", inOrder.getId());
 		context.put("order", inOrder);
@@ -1100,7 +1109,6 @@ public class BaseOrderManager implements OrderManager {
 		inHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		orderHistorySearcher.saveData(inHistory, null);
 	}
-
 
 	protected ModuleManager getModuleManager()
 	{

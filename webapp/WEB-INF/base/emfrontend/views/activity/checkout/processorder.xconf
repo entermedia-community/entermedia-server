@@ -1,0 +1,5 @@
+<page>
+	<path-action name="OrderModule.checkoutCart"/>	
+	<path-action name="OrderModule.updatePendingOrders"/>
+
+</page>

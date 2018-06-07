@@ -35,9 +35,9 @@
     #end	
     #if ( $canviewbasket  )
 		#if($order)
-			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Basket]]</a></li>
+			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a></li>
 		#else
-			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Basket]]</a></li>
+			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Cart]]</a></li>
 		#end
 	#end
 	#if( $canaddnewcollection )

@@ -111,15 +111,15 @@ $context.putPageValue("hits",$hits)
 				</li>
 				#end
 		
+  		#set( $edit = $context.getRequestParameter("editheader") )
+			<li>
+				$pages.include("$apphome/components/results/selected/index.html",$context)
+			</li>
 		#if ( $canviewbasket )
 			#if($order)
 				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
 			#end
 		#end
-  		#set( $edit = $context.getRequestParameter("editheader") )
-			<li>
-				$pages.include("$apphome/components/results/selected/index.html",$context)
-			</li>
 		
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
@@ -187,6 +187,13 @@ $context.putPageValue("hits",$hits)
 			</li>			
 			#end
 		#end	
+
+		#if ( $canviewbasket )
+			#if($order)
+				<li style="float: right;" ><a class="updatebasket btn-checkout emdialog" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Basket]]">[[Checkout]]</a></li>				
+			#end
+		#end
+
 	</ul>
 </div>
  

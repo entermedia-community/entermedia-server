@@ -14,6 +14,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.orders.Order;
+import org.entermediadb.asset.orders.OrderHistory;
 import org.entermediadb.asset.orders.OrderManager;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
@@ -1040,6 +1041,40 @@ public class OrderModule extends BaseMediaModule
 			return true;
 		}
 		return false;
+	}
+	public Data checkoutCart(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		String applicationid = inReq.findValue("applicationid");
+
+		Order basket = loadOrderBasket(inReq);
+
+		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
+		order.setValue("ordertype", "checkout");
+		inReq.putPageValue("order", order);
+
+		//OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
+
+		
+		String presetid = inReq.getRequestParameter("presetid");
+		if( presetid == null)
+		{
+			presetid = "0";
+		}
+		
+		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
+		inReq.setRequestParameter("orderid", order.getId());
+		
+		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
+		HitTracker basketitems = getOrderManager().findOrderItems(inReq, catalogid, basket);
+		for (Iterator iterator = basketitems.iterator(); iterator.hasNext();)
+		{
+			Data orderitem = (Data) iterator.next();
+			orderitem.setValue("orderid", order.getId());
+			orderitem.setValue("presetid", presetid); //for now
+		}
+		
+		return order;
 	}
 
 }
