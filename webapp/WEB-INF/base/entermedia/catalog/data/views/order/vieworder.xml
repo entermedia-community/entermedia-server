@@ -1,8 +1,10 @@
 <properties>
 	<property id="id" />
+	<property id="date" />
 	<property id="orderstatus" />
 	<property id="ordertype" />
 	<property id="userid" />
-	<property id="downloadapproved" />
+	<property id="checkoutapproved" />
+	<property id="expireson" />
 	
 </properties>

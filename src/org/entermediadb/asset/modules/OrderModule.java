@@ -3,6 +3,7 @@ package org.entermediadb.asset.modules;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,9 +15,9 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.orders.Order;
-import org.entermediadb.asset.orders.OrderHistory;
 import org.entermediadb.asset.orders.OrderManager;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
@@ -437,41 +438,58 @@ public class OrderModule extends BaseMediaModule
 			return false;
 		}
 		MediaArchive archive = getMediaArchive(inReq);
-
-		// Searcher ordersearcher =
-		// archive.getSearcherManager().getSearcher(archive.getCatalogId(),
-		// "order");
-		// SearchQuery search = ordersearcinKeyher.createSearchQuery();
-		// search.addExact("userid", inReq.getUser().getId());
-		// search.addExact("orderstatus", "processed");
-		// search.addSortBy("date");
-		// HitTracker hits = ordersearcher.search(search);
-		// look for the most recent order for an approved asset
-		Asset asset = (Asset) inReq.getPageValue("asset");
-		String sourcepath = null;
-		if (asset != null)
-		{
-			sourcepath = asset.getSourcePath();
-		}
-		else
-		{
-			sourcepath = archive.getSourcePathForPage(inReq);
-		}
-		if (sourcepath == null)
+		String orderid = inReq.getRequestParameter("orderid");
+		Order order = (Order)archive.getData("order", orderid);
+		if( order == null)
 		{
 			return false;
 		}
-		Searcher itemsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-		SearchQuery search = itemsearcher.createSearchQuery();
-		search.addExact("userid", inReq.getUser().getId());
-		search.addExact("assetsourcepath", sourcepath);
-		search.addMatches("status", "approved");
-		HitTracker results = itemsearcher.search(search);
-		if (results.size() > 0)
+		
+		//Check expired
+		Date expireson = (Date)order.getValue("expireson");
+		if( expireson == null )
+		{
+			Date date = (Date)order.getValue("date");
+			expireson = new Date(date.getTime() + (1000L * 60L * 60L * 24L * 30L));
+		}
+		
+		Date today = new Date();
+		if( today.after( expireson) )
+		{
+			log.error("Order is expired " + orderid);
+			return false;
+		}
+		
+		if( order.getBoolean("checkoutapproved"))
 		{
 			return true;
 		}
 		return false;
+//		Asset asset = (Asset) inReq.getPageValue("asset");
+//		String sourcepath = null;
+//		if (asset != null)
+//		{
+//			sourcepath = asset.getSourcePath();
+//		}
+//		else
+//		{
+//			sourcepath = archive.getSourcePathForPage(inReq);
+//		}
+//		if (sourcepath == null)
+//		{
+//			return false;
+//		}
+//		Searcher itemsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+//		SearchQuery search = itemsearcher.createSearchQuery();
+//		search.addExact("userid", inReq.getUser().getId());
+//		search.addExact("assetsourcepath", sourcepath);
+//		search.addMatches("status", "approved");
+//		HitTracker results = itemsearcher.search(search);
+//		if (results.size() > 0)
+//		{
+//			return true;
+//		}
+//		return false;
 	}
 
 	public void removeSelectionFromOrderBasket(WebPageRequest inReq)
@@ -1052,6 +1070,16 @@ public class OrderModule extends BaseMediaModule
 
 		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
 		order.setValue("ordertype", "checkout");
+		order.setValue("orderstatus", "processing");
+		
+		if( inReq.getUser().getEmail() == null)
+		{
+			throw new OpenEditException("Please set an email address");
+		}
+		order.setValue("sharewithemail", inReq.getUser().getEmail());
+		order.setValue("date", new Date());
+		//Expiration
+		
 		inReq.putPageValue("order", order);
 
 		//OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");

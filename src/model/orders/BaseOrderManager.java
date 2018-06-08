@@ -729,7 +729,7 @@ public class BaseOrderManager implements OrderManager {
 		//Finalize should be only for complete orders.
 		if( "checkout".equals( inOrder.get("ordertype")) )
 		{
-			if( !inOrder.getBoolean("downloadapproved") )
+			if( !inOrder.getBoolean("checkoutapproved") )
 			{
 				log.info("Order not approved for email yet " + inOrder.getId());
 				return; //dont send email yet
@@ -1060,7 +1060,18 @@ public class BaseOrderManager implements OrderManager {
 					context.put("expiresondate", date);
 					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 				}
-				sendEmail(inArchive.getCatalogId(),context, emailto, "/" + appid + "/theme/emails/sharetemplate.html");
+				String template = null;
+						
+				if( "checkout".equals( inOrder.get("ordertype")) )
+				{
+					template = "/" + appid + "/theme/emails/checkouttemplate.html";
+				}
+				else
+				{
+					template = "/" + appid + "/theme/emails/sharetemplate.html";
+				}
+				
+				sendEmail(inArchive.getCatalogId(),context, emailto, template);
 			}
 		}	
 		

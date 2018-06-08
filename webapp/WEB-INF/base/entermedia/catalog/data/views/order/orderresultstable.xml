@@ -2,9 +2,10 @@
 
 <root>
   <property id="ordertype"/>
-  <property id="id"/>
+  <property id="date"/>
   <property id="userid"/>
   <property id="historyuserstatus"/>
   <property id="historydate"/>
-  <property id="downloadapproved"/>
+  <property id="checkoutapproved"/>
+  <property id="id"/>
 </root>

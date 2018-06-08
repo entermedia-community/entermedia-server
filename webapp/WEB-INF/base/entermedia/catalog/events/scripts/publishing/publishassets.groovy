@@ -46,7 +46,7 @@ public void init() {
 	//query.addNot("remotepublish","true");
 	
 	HitTracker tracker = queuesearcher.search(query);
-	log.info("publishing " + tracker.size() + " assets" + queuesearcher);
+	log.info("publishing " + tracker.size() + " assets" + queuesearcher.getCatalogId());
 	if( tracker.size() > 0)
 	{
 		for( Data result:tracker)

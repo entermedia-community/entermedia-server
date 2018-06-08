@@ -196,9 +196,9 @@
     </name>
   </property>
   
-  <property id="downloadapproved" index="true" stored="true"   editable="true" type="boolean">
+  <property id="checkoutapproved" index="true" stored="true"   editable="true" type="boolean">
     <name> 
-      <language id="en"><![CDATA[Download Approved]]></language>  
+      <language id="en"><![CDATA[Approved Checkout]]></language>  
     </name> 
   </property>  
   
