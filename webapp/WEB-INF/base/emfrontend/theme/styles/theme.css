@@ -2559,7 +2559,8 @@ tr.odd {
     font-size: 14px !important;
     margin-top: 20px;
 }
-#eml-tab-subnav ul li a, #sub-nav li a.btn-checkout {
+
+#sub-nav li a.btn-checkout {
     line-height: 37px;
     height: 37px;
     margin-top: 3px;
