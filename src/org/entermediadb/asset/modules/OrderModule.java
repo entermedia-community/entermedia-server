@@ -1046,6 +1046,7 @@ public class OrderModule extends BaseMediaModule
 	{
 		String catalogid = inReq.findValue("catalogid");
 		String applicationid = inReq.findValue("applicationid");
+		MediaArchive archive = getMediaArchive(inReq);
 
 		Order basket = loadOrderBasket(inReq);
 
@@ -1062,7 +1063,6 @@ public class OrderModule extends BaseMediaModule
 			presetid = "0";
 		}
 		
-		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 		inReq.setRequestParameter("orderid", order.getId());
 		
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
@@ -1078,6 +1078,9 @@ public class OrderModule extends BaseMediaModule
 			tosave.add(orderitem);
 		}
 		itemsearcher.saveAllData(tosave, null);
+		getOrderManager().sendRequestForApproval(order, archive);
+		order.setValue("emailsent", true);
+		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 		return order;
 	}
 

@@ -92,5 +92,7 @@ public interface OrderManager
 	void removeMissingAssets(WebPageRequest inReq, MediaArchive archive, Order basket, Collection items);
 
 	void toggleItemInOrder(MediaArchive inArchive, Order inBasket, Asset inAsset);
+	
+	void sendRequestForApproval(Order inOrder, MediaArchive inArchive);
 
 }
