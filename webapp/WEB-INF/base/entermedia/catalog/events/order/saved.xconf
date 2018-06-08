@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Order Saved</property>	
+	<property name="virtual">true</property>
+
+	<path-action name="PathEventModule.runSharedEvent" allowduplicates="true">
+		<runpath>/${catalogid}/events/ordering/checkorderstatus.html</runpath>
+	</path-action>
+	
+</page>

@@ -62,6 +62,7 @@ curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AVgCKIL5wq4Z5
 
 curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/assets_catalog/order/_search?q=id:b0173a11_f45e_4be6_9465_b5985d023382' | python -mjson.tool
 
 
 curl -XGET 'http://localhost:9200/entermedia_catalogs_testcatalog/asset/_search?q=id:talent' | python -mjson.tool

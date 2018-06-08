@@ -1109,7 +1109,6 @@ public class BaseOrderManager implements OrderManager {
 		mailer.loadSettings(newcontext);
 		mailer.setMailTemplatePath(templatePage);
 		mailer.setRecipientsFromCommas(email);
-		mailer.setSubject("[EM][Request for collection approval]");
 		//mailer.setMessage(inOrder.get("sharenote"));
 		//mailer.setWebPageContext(context);
 		mailer.send();

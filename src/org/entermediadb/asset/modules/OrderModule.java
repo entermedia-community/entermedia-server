@@ -439,7 +439,8 @@ public class OrderModule extends BaseMediaModule
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 		String orderid = inReq.getRequestParameter("orderid");
-		Order order = (Order)archive.getData("order", orderid);
+		
+		Order order = getOrderManager().loadOrder(archive.getCatalogId(), orderid);
 		if( order == null)
 		{
 			return false;
@@ -449,7 +450,7 @@ public class OrderModule extends BaseMediaModule
 		Date expireson = (Date)order.getValue("expireson");
 		if( expireson == null )
 		{
-			Date date = (Date)order.getValue("date");
+			Date date = order.getDate("date");
 			expireson = new Date(date.getTime() + (1000L * 60L * 60L * 24L * 30L));
 		}
 		
