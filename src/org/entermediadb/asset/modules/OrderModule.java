@@ -432,11 +432,6 @@ public class OrderModule extends BaseMediaModule
 
 	public boolean checkItemApproval(WebPageRequest inReq) throws Exception
 	{
-
-		if (inReq.getUser() == null)
-		{
-			return false;
-		}
 		MediaArchive archive = getMediaArchive(inReq);
 		String orderid = inReq.getRequestParameter("orderid");
 		
