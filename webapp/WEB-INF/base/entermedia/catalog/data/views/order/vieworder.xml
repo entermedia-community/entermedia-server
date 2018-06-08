@@ -3,6 +3,6 @@
 	<property id="orderstatus" />
 	<property id="ordertype" />
 	<property id="userid" />
-	<property id="project" />
+	<property id="downloadapproved" />
 	
 </properties>

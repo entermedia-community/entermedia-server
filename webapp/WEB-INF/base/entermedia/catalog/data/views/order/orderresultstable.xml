@@ -6,4 +6,5 @@
   <property id="userid"/>
   <property id="historyuserstatus"/>
   <property id="historydate"/>
+  <property id="downloadapproved"/>
 </root>

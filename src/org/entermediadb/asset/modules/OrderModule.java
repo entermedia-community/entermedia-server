@@ -1067,13 +1067,17 @@ public class OrderModule extends BaseMediaModule
 		
 		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
 		HitTracker basketitems = getOrderManager().findOrderItems(inReq, catalogid, basket);
+		List tosave = new ArrayList();
+		
 		for (Iterator iterator = basketitems.iterator(); iterator.hasNext();)
 		{
 			Data orderitem = (Data) iterator.next();
+			orderitem =  itemsearcher.loadData(orderitem);
 			orderitem.setValue("orderid", order.getId());
 			orderitem.setValue("presetid", presetid); //for now
+			tosave.add(orderitem);
 		}
-		
+		itemsearcher.saveAllData(tosave, null);
 		return order;
 	}
 
