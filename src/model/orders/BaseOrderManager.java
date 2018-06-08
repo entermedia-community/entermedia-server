@@ -1122,22 +1122,6 @@ public class BaseOrderManager implements OrderManager {
 		inHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		orderHistorySearcher.saveData(inHistory, null);
 	}
-	
-	public void sendRequestForApproval(Order inOrder, MediaArchive inArchive)
-	{
-		Map context = new HashMap();
-		context.put("orderid", inOrder.getId());
-		context.put("order", inOrder);
-		//context.put("user", inArchive.getUser)
-		String appid = inOrder.get("applicationid");
-		String email = inArchive.getCatalogSettingValue("requestapproveremail");
-
-		if(email != null){
-			sendEmail(inArchive.getCatalogId(),context, email, "/" + appid + "/theme/emails/order-request-for-approval.html");
-			//TODO: Save the fact that email was sent back to the publishtask?
-		}
-		
-	}
 
 	protected ModuleManager getModuleManager()
 	{

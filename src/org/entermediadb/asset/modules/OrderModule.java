@@ -1107,7 +1107,6 @@ public class OrderModule extends BaseMediaModule
 			tosave.add(orderitem);
 		}
 		itemsearcher.saveAllData(tosave, null);
-		getOrderManager().sendRequestForApproval(order, archive);
 		order.setValue("emailsent", true);
 		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 		return order;
