@@ -7151,3 +7151,38 @@ li.resultmenuitem {
 		padding:0 10px;
 	}
 }
+
+
+
+.card {
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	border:1px solid #efefef;	
+}
+
+.card-collections {
+	float:left; width:260px; height:80px; margin:0 20px 20px 0;padding:15px 10px;
+	
+}
+.card-collections-all {
+	background-color: #efefef;
+}
+
+.card-collections .card-body {
+	font-size: 120%;
+}
+.card-collections a {
+	display:block; padding-left:25px; line-height:24px;
+}
+
+
+.float_center {
+  float: right;
+
+  position: relative;
+  left: -50%; /* or right 50% */
+  text-align: left;
+}
+.float_center > .float_child {
+  position: relative;
+  left: 50%;
+}
