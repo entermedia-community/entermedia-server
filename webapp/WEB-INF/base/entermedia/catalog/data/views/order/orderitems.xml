@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root> 
+  <property id="assetid"/>  
+  <property id="assetsourcepath"/>  
+  <property id="status"/>  
+  <property id="presetid"/>  
+  <property id="publishqueueid"/>
+</root>
