@@ -6,4 +6,7 @@
   <property id="orderadvancedsearch" moduleid="order" systemdefined="true" byassettype="false">Advanced Search</property>
   <property id="orderresultstable" moduleid="order" systemdefined="true" byassettype="false">Results Table</property>
   <property id="orderbatchedit" moduleid="order" systemdefined="true" byassettype="false">Batch Edit</property>
+  <property id="orderitems" moduleid="order" systemdefined="false" ordering="2" rendertable="orderitem" renderexternalid="orderid">Items</property>
+
+
 </properties>
