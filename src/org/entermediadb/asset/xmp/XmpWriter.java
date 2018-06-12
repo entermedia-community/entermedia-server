@@ -163,8 +163,13 @@ public class XmpWriter
 		{
 			PropertyDetail detail = (PropertyDetail) o;
 			Object value = inAsset.getValue(detail.getId());
-			if(value == null || detail.getExternalId() == null || !detail.isEditable())
+			if(detail.getExternalId() == null || !detail.isEditable())
 			{
+				continue;
+			}
+			if(value == null && detail.get("xmpmask") != null) {
+				value="";
+			} else {
 				continue;
 			}
 			String[] tags = detail.getExternalIds();
