@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -98,6 +99,18 @@ public class XmpWriter
 		
 
 	}	
+
+	public boolean saveMetadata(MediaArchive inArchive,  Asset inAsset, HashMap inExtraDetails) throws Exception
+	{
+		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
+		
+		return saveMetadata(inArchive, item, inAsset, inExtraDetails);
+		
+
+	}	
+	
+	
+	
 	
 	public boolean saveKeywords(MediaArchive inArchive, Asset inAsset) throws Exception
 	{
@@ -171,10 +184,13 @@ public class XmpWriter
 				val = val.replace("]", "");
 
 			}
+
+			
 			
 			if(detail.get("xmpmask") != null) {
 				inExtraDetails.putAll(inAsset.getProperties());
 				val = inArchive.getSearcherManager().getValue(inArchive.getCatalogId(), detail.get("xmpmask"), inExtraDetails);
+				inExtraDetails.remove(detail.getId());
 			}
 			
 			
@@ -194,6 +210,18 @@ public class XmpWriter
 			
 			addTags(tags, val, inComm);
 		}
+		
+		for (Iterator iterator = inExtraDetails.keySet().iterator(); iterator.hasNext();) {
+			String key = (String) iterator.next();
+			String val2 = (String) inExtraDetails.get(key);
+			String[] tag = new String[1];
+			tag[0] = key;
+			addTags(tag, val2, inComm);
+			
+
+		}
+		
+		
 	}
 
 	public void addTags(String[] inTags, String inValue, List<String> inComm)
