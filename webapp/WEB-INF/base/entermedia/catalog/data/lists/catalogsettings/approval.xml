@@ -1,0 +1,5 @@
+<properties>
+	
+	<property id="requestapproveremail" value="">Default Request for Approval Admin Email</property>
+	
+</properties>

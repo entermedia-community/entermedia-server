@@ -24,8 +24,11 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
+import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.URLUtilities;
 
 public class OrderModule extends BaseMediaModule
 {
@@ -1104,9 +1107,16 @@ public class OrderModule extends BaseMediaModule
 		itemsearcher.saveAllData(tosave, null);
 		//order.setValue("emailsent", true);
 		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
-		
+
+		UserManager userManager = getUserManager(inReq);
+		URLUtilities utils = (URLUtilities) inReq
+				.getPageValue(PageRequestKeys.URL_UTILITIES);
+		String base = utils.siteRoot() + utils.relativeHomePrefix();
+
+		String orderModuleURL = base + "/" + applicationid + "/"  + "views/modules/order/index.html?field=last_selected_module&last_selected_module.value=order";
+
 		//Send an email
-		
+		getOrderManager().sendEmailForApproval(catalogid, archive, userManager, applicationid, orderModuleURL);
 		
 		return order;
 	}

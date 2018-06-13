@@ -1,0 +1,5 @@
+<page>
+	<property name="subject">An approval request has been submitted</property>
+	<page-action name="OrderModule.findOrderItems"/>
+	<permission name="view"><boolean value="true" /></permission>
+</page>

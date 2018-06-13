@@ -43,6 +43,7 @@ import org.openedit.locks.LockManager;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
+import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
 
@@ -1116,6 +1117,31 @@ public class BaseOrderManager implements OrderManager {
 		log.info("email sent to :" + email);
 	}
 
+	public void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, String inOrderModuleURL)
+	{
+		String email = inArchive.getCatalogSettingValue("requestapproveremail");
+		if (email == null || (email != null && email.isEmpty()))
+		{
+			throw new OpenEditException("No approver email provided, set catalogsettings.requestapproveremail to fix it");
+		}
+
+		User followerUser = (User) userManager.getUserByEmail(email);
+		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+		UserProfile profile = (UserProfile) getSearcherManager().getData(inCatalogId,"userprofile",followerUser.getId());
+		String template = "/" + inAppId + "/theme/emails/checkoutrequesttemplate.html";
+		WebEmail templatemail = inArchive.createSystemEmail(followerUser, template);
+
+		Map context = new HashMap();
+		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(template,followerUser,profile); 
+		newcontext.putPageValues(context);
+
+		templatemail.loadSettings(newcontext);
+	    Map objects = new HashMap();
+	    
+	    objects.put("ordermoduleurl", inOrderModuleURL);
+	    templatemail.send(objects);
+	}
+	
 	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){
 		Searcher orderHistorySearcher = inArchive.getSearcher("orderhistory");
 		inOrder.setRecentOrderHistory(inHistory);

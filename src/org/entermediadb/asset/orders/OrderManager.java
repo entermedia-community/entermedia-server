@@ -13,6 +13,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.event.EventManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.users.User;
+import org.openedit.users.UserManager;
 
 public interface OrderManager
 {
@@ -92,5 +93,7 @@ public interface OrderManager
 	void removeMissingAssets(WebPageRequest inReq, MediaArchive archive, Order basket, Collection items);
 
 	void toggleItemInOrder(MediaArchive inArchive, Order inBasket, Asset inAsset);
+	
+	void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, String inOrderModuleURL);
 	
 }
