@@ -5,6 +5,8 @@
 	<property id="ordertype" />
 	<property id="userid" />
 	<property id="checkoutapproved" />
+	<property id="sharewithemail" />
+	<property id="sharenote" />
 	<property id="expireson" />
 	
 </properties>

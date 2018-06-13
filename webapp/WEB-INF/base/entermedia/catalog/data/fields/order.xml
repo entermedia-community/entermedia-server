@@ -196,9 +196,9 @@
     </name>
   </property>
   
-  <property id="checkoutapproved" index="true" stored="true"   editable="true" type="boolean">
+  <property id="checkoutstatus" index="true" stored="true"   editable="true" type="list" >
     <name> 
-      <language id="en"><![CDATA[Approved Checkout]]></language>  
+      <language id="en"><![CDATA[Checkout Status]]></language>  
     </name> 
   </property>  
   

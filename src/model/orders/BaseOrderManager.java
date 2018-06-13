@@ -729,7 +729,8 @@ public class BaseOrderManager implements OrderManager {
 		//Finalize should be only for complete orders.
 		if( "checkout".equals( inOrder.get("ordertype")) )
 		{
-			if( !inOrder.getBoolean("checkoutapproved") )
+			String status = inOrder.get("checkoutstatus");
+			if( status == null || status.equals("pending"))
 			{
 				log.info("Order not approved for email yet " + inOrder.getId());
 				return; //dont send email yet
@@ -1092,7 +1093,7 @@ public class BaseOrderManager implements OrderManager {
 //				}
 //			}
 //		}
-		inOrder.setProperty("emailsent", "true");
+		inOrder.setValue("emailsent", true);
 	}
 
 

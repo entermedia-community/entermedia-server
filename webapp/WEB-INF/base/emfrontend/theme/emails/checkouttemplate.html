@@ -10,8 +10,11 @@
 </p>
 #end
 
+#set( $status = $order.get("checkoutstatus") )
+#if( $status == "approved")
 <p>[[Please review the assets at this link]]: <a href="$context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderid=$order.id" style="font-size: 14px; color: blue;">
 $context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderid=$order.id</a></p>
+#end
 
 #if( $order.expireson)
 [[Access to these files will expire on ]]

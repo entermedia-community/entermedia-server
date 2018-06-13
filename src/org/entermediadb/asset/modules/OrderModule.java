@@ -442,7 +442,7 @@ public class OrderModule extends BaseMediaModule
 		}
 		
 		//Check expired
-		Date expireson = (Date)order.getValue("expireson");
+		Date expireson = order.getDate("expireson");
 		if( expireson == null )
 		{
 			Date date = order.getDate("date");
@@ -455,8 +455,8 @@ public class OrderModule extends BaseMediaModule
 			log.error("Order is expired " + orderid);
 			return false;
 		}
-		
-		if( order.getBoolean("checkoutapproved"))
+		String status = order.get("checkoutstatus");
+		if( status != null && status.equals("approved"))
 		{
 			return true;
 		}
@@ -1067,6 +1067,7 @@ public class OrderModule extends BaseMediaModule
 		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
 		order.setValue("ordertype", "checkout");
 		order.setValue("orderstatus", "processing");
+		order.setValue("checkoutstatus", "pending");
 		
 		if( inReq.getUser().getEmail() == null)
 		{
@@ -1079,7 +1080,6 @@ public class OrderModule extends BaseMediaModule
 		inReq.putPageValue("order", order);
 
 		//OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
-
 		
 		String presetid = inReq.getRequestParameter("presetid");
 		if( presetid == null)
@@ -1102,8 +1102,12 @@ public class OrderModule extends BaseMediaModule
 			tosave.add(orderitem);
 		}
 		itemsearcher.saveAllData(tosave, null);
-		order.setValue("emailsent", true);
+		//order.setValue("emailsent", true);
 		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
+		
+		//Send an email
+		
+		
 		return order;
 	}
 
