@@ -1122,12 +1122,18 @@ public class BaseOrderManager implements OrderManager {
 		String email = inArchive.getCatalogSettingValue("requestapproveremail");
 		if (email == null || (email != null && email.isEmpty()))
 		{
-			throw new OpenEditException("No approver email provided, set catalogsettings.requestapproveremail to fix it");
+			throw new OpenEditException("No approver email provided, please contact your administrator");
 		}
 
 		User followerUser = (User) userManager.getUserByEmail(email);
+		if (followerUser == null)
+		{
+			throw new OpenEditException("The approver email (" + email  + ") is not linked to any active account, please contact your administrator");
+		}
+		
+		
 		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
-		UserProfile profile = (UserProfile) getSearcherManager().getData(inCatalogId,"userprofile",followerUser.getId());
+		UserProfile profile = (UserProfile) getSearcherManager().getData(inCatalogId,"userprofile","admin");
 		String template = "/" + inAppId + "/theme/emails/checkoutrequesttemplate.html";
 		WebEmail templatemail = inArchive.createSystemEmail(followerUser, template);
 
