@@ -140,7 +140,8 @@ public class XmpWriter {
 			}
 			if (value == null && detail.get("xmpmask") != null) {
 				value = "";
-			} else {
+			} 
+			if(value ==null ) {
 				continue;
 			}
 			String[] tags = detail.getExternalIds();
