@@ -57,6 +57,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public Asset(MediaArchive inMediaArchive)
 	{
+		super(inMediaArchive.getAssetSearcher());
 		setMediaArchive(inMediaArchive);
 	}
 

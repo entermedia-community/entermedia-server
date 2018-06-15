@@ -2499,7 +2499,7 @@ public void addCustomFields(XContentBuilder inContent, Data inData) {
 					}
 					else
 					{
-						SearchHitData sdata = new SearchHitData();
+						SearchHitData sdata = new SearchHitData(this);
 						sdata.setPropertyDetails(getPropertyDetails());
 						sdata.setSearchData(response.getSource());
 						data = sdata;
