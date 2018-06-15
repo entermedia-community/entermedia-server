@@ -71,6 +71,9 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 			Category publiccat = (Category) iterator.next();
 			allowedcats.add(publiccat);
 		}
+		if (user != null && user.isInGroup("administrators"))
+			{
+		
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)
@@ -79,6 +82,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 
 				.getQuery();
 		inQuery.addChildQuery(child);
+			}
 		//Load all categories 1000
 		//Compare to the profile categories and parents
 		//run a securty fileter on collectionids
