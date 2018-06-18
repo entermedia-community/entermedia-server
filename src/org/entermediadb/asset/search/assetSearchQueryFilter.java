@@ -64,8 +64,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 		if (!inQuery.hasChildren())
 		{
 			Object settings = inPageRequest.getPageValue("canviewsettings");
-
-			if (Boolean.parseBoolean(String.valueOf(settings)))
+			if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
 			{
 				return inQuery;
 			}

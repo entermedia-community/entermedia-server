@@ -32,15 +32,17 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 	protected PropertyDetails fieldPropertyDetails;
 	protected Searcher fieldSearcher;
 
-
+	public SearchHitData()
+	{
+	}
 	public SearchHitData(SearchHit inHit, Searcher inSearcher) {
 		setSearchHit(inHit);
 		setSearcher(inSearcher);
-		setPropertyDetails(inSearcher.getPropertyDetails());
 	}
 
-	public SearchHitData() {
-
+	public SearchHitData(Searcher inSearcher)
+	{
+		setSearcher(inSearcher);
 	}
 	public Searcher getSearcher()
 	{
@@ -74,7 +76,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		setValue(".version", inVersion);
 	}
 
-	public PropertyDetails getPropertyDetails() {
+	public PropertyDetails getPropertyDetails() 
+	{
+		if( fieldPropertyDetails == null && fieldSearcher != null)
+		{
+			return fieldSearcher.getPropertyDetails();
+		}
 		return fieldPropertyDetails;
 	}
 

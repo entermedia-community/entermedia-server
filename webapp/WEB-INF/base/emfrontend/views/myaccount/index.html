@@ -1,4 +1,6 @@
 #set($selectedUser = $user)
+$selectedUser.getEmail()
+
 
 #set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 $context.putPageValue("searcher", $userSearcher)     
@@ -43,8 +45,8 @@ $context.putPageValue("data", $selectedUser)
             <input type="hidden" name="username" value="$selectedUser.id"/> ## so the page loads after we save
             <input type="hidden" name="method" value="edituser"/>
                         <input type="hidden" name="oemaxlevel" value="1"/>
+            <input type="hidden" name="reloadprofile" value="true"/>
             
-              
             <div class="clearfix">
                     #if ($saved)
                     <div class="saved fader">
@@ -63,7 +65,6 @@ $context.putPageValue("data", $selectedUser)
                     $context.getText($message)  $!errors
                 </div>
             #end
-
             <a href="#" class="btn right" style="margin: 20px 20px 0 0" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
         </form>
     

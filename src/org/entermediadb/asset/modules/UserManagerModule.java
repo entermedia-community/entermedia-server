@@ -816,7 +816,7 @@ public class UserManagerModule extends BaseMediaModule
 			OpenEditException
 	{
 		User user = getUser( inReq );
-		if( user != inReq.getUser())
+		if( !user.getId().equals(  inReq.getUser().getId() ) )
 		{
 			checkAdminPermission(inReq);
 		}
@@ -838,8 +838,14 @@ public class UserManagerModule extends BaseMediaModule
 			}
 		}
 		inReq.putPageValue("status","Saved");
-		inReq.putPageValue("saved","saved");
+		inReq.putPageValue("saved",true);
 		getUserSearcher(inReq).saveData( user ,inReq.getUser());
+		String catalogid = inReq.findValue("catalogid");
+		if( user.getId().equals(  inReq.getUser().getId() ) )
+		{
+			inReq.putSessionValue(catalogid + "user",user);
+			inReq.putPageValue("user",user);
+		}
 	}
 
 	/**
