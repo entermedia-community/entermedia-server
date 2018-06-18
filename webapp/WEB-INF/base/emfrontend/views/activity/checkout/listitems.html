@@ -4,7 +4,7 @@
 
 #set( $downloadall = false)
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
-#set($mediadbappid=$mediaarchive.getMediaDbId())
+#set( $mediadbappid=$mediaarchive.getMediaDbId())
 #if( !$cdnprefix )
 #set( $cdnprefix = $context.siteRoot )
 #end
@@ -54,33 +54,9 @@
 	#set( $publishqueueid = $item.get("publishqueueid"))
 	#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
 
-	#set( $presetid = $publishqueue.get("presetid") )
-		#if( $order.orderstatus == "error" )
-			<td></td>
-			<td>[[Error, download not available]]</td> ##Link to my orders
-			#set( $downloadall = false)
-		#else	
-	
-				<td></td>
-				<td>
-					#if($asset.googleid && $asset.googledownloadurl)
-					<!-- Google puts quotes on the returned data so the href is correct below.   -->
-						<a class="btn small" href="$asset.googledownloadurl">[[Download]]</a>
-					#elseif($asset.googleid && $asset.linkurl)
-						<a class="btn small" href=$asset.linkurl>[[Download]]</a>
-					#else
-					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-					<a class="btn small" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
-					#end
-					#set( $downloadall = true)
-					
-				</td>
-		#end	
+
 	</tr>	
 	#end
 	
 </table>
-#if($downloadall )
-	<div style="float:right; margin:20px 55px;"> <a class="btn" href="$home$apphome/views/activity/download/zip/${order.id}.zip?orderid=${order.id}" >[[Download All (Zip)]]</a><br/><a class="btn" href="$home$apphome/views/activity/download/metadata/export.csv?hitssessionid=none&orderid=$order.id&friendly=true">[[Download Metadata]]</a></div>
-#end	
 </div>

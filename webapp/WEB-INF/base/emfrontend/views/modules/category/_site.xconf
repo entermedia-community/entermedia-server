@@ -13,4 +13,9 @@
     </path-action>
   
     <inner-layout>/${applicationid}/theme/layouts/categorylayout.html</inner-layout>
+
+    <permission name="view">
+    	<userprofile name="viewsettings" value="true"/>
+    </permission>
+
 </page>

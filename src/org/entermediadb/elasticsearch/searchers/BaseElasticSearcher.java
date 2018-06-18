@@ -1394,11 +1394,19 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				Object[] values = inTerm.getValues();
 				BoolQueryBuilder or  = QueryBuilders.boolQuery();
+				
 				for (int i = 0; i < values.length; i++)
 				{
 					Object val = values[i];
-					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);					
-					or.must(item);						
+					if(inDetail.isAnalyzed()){
+						MatchQueryBuilder item = QueryBuilders.matchQuery(fieldid, val);
+						or.must(item);
+					} else{
+						TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
+						or.must(item);
+
+					}
+											
 					
 				}
 				find = or;
@@ -2491,7 +2499,7 @@ public void addCustomFields(XContentBuilder inContent, Data inData) {
 					}
 					else
 					{
-						SearchHitData sdata = new SearchHitData();
+						SearchHitData sdata = new SearchHitData(this);
 						sdata.setPropertyDetails(getPropertyDetails());
 						sdata.setSearchData(response.getSource());
 						data = sdata;

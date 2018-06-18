@@ -515,7 +515,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			}
 			
 			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
-			MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaarchive");
+			MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaArchive");
 			LockSearcher locks = (LockSearcher) archive.getSearcher("lock");
 			locks.clearStaleLocks();
 			archive.clearAll();
