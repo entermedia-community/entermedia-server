@@ -129,7 +129,7 @@ $context.putPageValue("cdn",$cdnprefix)
 			##Check for custom links, arguments and labels
 			#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
 			#if($link.id =="comment")
-				#set( $text = "$text)" )
+				#set( $text = "$text" )
 				#set ($args = "assetid=$asset.getId()&sourcepath=$sourcepath&hitssessionid=$!{hitssessionid}")
 			#elseif ($link.id == "viewassetedit")
 				#set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
