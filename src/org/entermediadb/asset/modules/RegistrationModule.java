@@ -664,7 +664,9 @@ public class RegistrationModule extends BaseMediaModule
 		UserProfile p = (UserProfile) getSearcherManager().getData(archive.getCatalogId(), "userprofile", userid );
 		inReq.putPageValue("target", p);
 		User user = p.getUser();
-		
+		if(user == null){
+			user = getUserManager().getUser(userid);
+		}
 		inReq.putPageValue("password", getUserManager().decryptPassword(user));
 		
 		email.loadSettings(inReq);
