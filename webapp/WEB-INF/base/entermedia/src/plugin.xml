@@ -1119,6 +1119,7 @@
 		
 		
 	</bean>
+	<!-- 
 		<bean id="RegistrationModule" class="org.entermediadb.asset.modules.RegistrationModule" >
 		<property name="userManager">
 			<ref bean="userManager" />
@@ -1130,6 +1131,7 @@
 			<ref bean="postMail" />
 		</property>
 	</bean>
+	 -->
 	<!-- Catalog based user details (not like preferences) -->
 	<!-- 
 	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
