@@ -71,18 +71,14 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 			Category publiccat = (Category) iterator.next();
 			allowedcats.add(publiccat);
 		}
-		if (user != null && user.isInGroup("administrators"))
-			{
 		
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)
 				.not("visibility", "hidden")
 				.not("visibility", "3")
-
 				.getQuery();
 		inQuery.addChildQuery(child);
-			}
 		//Load all categories 1000
 		//Compare to the profile categories and parents
 		//run a securty fileter on collectionids
