@@ -58,6 +58,7 @@ public class CategoryModule extends BaseMediaModule
 			name = inRequest.findValue("tree-name");
 		}
 		String appid = inRequest.findValue("applicationid");
+		String root = inRequest.getRequestParameter(name + "root");
 		
 		String treeid = inRequest.getRequestParameter("treeid");
 		if( treeid == null)
@@ -65,7 +66,6 @@ public class CategoryModule extends BaseMediaModule
 			treeid = name + "_" + appid + "_" + archive.getCatalogId() + "_" + inRequest.getUserName();
 		}		
 		WebTree webTree = (WebTree) inRequest.getPageValue( treeid );
-		String root = inRequest.getRequestParameter(name + "root");
 		String reload = inRequest.getRequestParameter("reloadtree");
 
 		if( root != null && webTree != null && !root.equals( webTree.getRootId() ) )

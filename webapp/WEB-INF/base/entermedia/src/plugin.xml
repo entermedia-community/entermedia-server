@@ -2096,5 +2096,8 @@
 		</property>
 	</bean>
  	
+ 	 	
+ 	<bean id="TaskModule" class="org.entermediadb.tasks.TaskModule" >
+	</bean>	
 	
 </beans>

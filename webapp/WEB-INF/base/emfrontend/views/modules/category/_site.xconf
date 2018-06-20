@@ -14,8 +14,20 @@
   
     <inner-layout>/${applicationid}/theme/layouts/categorylayout.html</inner-layout>
 
-    <permission name="view">
+
+   <permission name="delete">
+ 	<or>
     	<userprofile name="viewsettings" value="true"/>
-    </permission>
+		<pagevalue name="editcategorytree" equals="true"/>
+	</or>
+ 	</permission>
+ 	
+ 	<permission name="editdata">
+ 	<or>
+    	<userprofile name="viewsettings" value="true"/>
+    	<pagevalue name="editcategorytree" equals="true"/>
+	</or>
+ 	</permission>
+ 
 
 </page>
