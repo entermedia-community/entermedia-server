@@ -25,7 +25,7 @@ jQuery(document).ready(function()
 			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth, 
 				function()
 				{
-					//$(window).trigger( "resize" ) 
+					$(window).trigger( "resize" ) 
 				});
 	});
 
@@ -40,18 +40,15 @@ jQuery(document).ready(function()
 		var nodeid = node.data('nodeid');	
 		
 		var prefix = tree.data("url-prefix");
-		console.log(prefix);
 		var targetdiv = tree.data("targetdiv");
-		var maxlevel = 2;
 		if(targetdiv ==  undefined || targetdiv == "" )
 		{
 			targetdiv = "searchlayout";
-			maxlevel = 3;
 		}
 		if( prefix)
 		{
 			var postfix = tree.data("url-postfix");
-			gotopage(tree,node,maxlevel,prefix, postfix);
+			gotopage(tree,node,prefix, postfix);
 		}
 		else
 		{
@@ -67,8 +64,15 @@ jQuery(document).ready(function()
 		$(document).trigger(event);
 	});
 	
-	gotopage = function(tree, node, maxlevel, prefix, postfix)
+	gotopage = function(tree, node, prefix, postfix)
 	{
+
+		var params = $(tree).closest(".treecontext").data();
+		if( params == undefined )
+		{
+			params = new Array();
+		}
+
 		var treeholder = $("div#categoriescontent");
 		var toplocation =  parseInt( treeholder.scrollTop() );
 		var leftlocation =  parseInt( treeholder.scrollLeft() );
@@ -76,7 +80,7 @@ jQuery(document).ready(function()
 		if(targetdiv ==  undefined || targetdiv == "" )
 		{
 			targetdiv = "searchlayout";
-			maxlevel = 3;
+			params['oemaxlevel'] = 3;
 		}
 		
 		var nodeid = node.data('nodeid');
@@ -90,15 +94,14 @@ jQuery(document).ready(function()
 		
 		var depth = node.data('depth');
 		
+		params['tree-name'] = tree.data("treename");
+		params['nodeID'] = nodeid;
+		params['treetoplocation'] = toplocation;
+		params['treeleftlocation'] = leftlocation;
+		params['depth'] = depth;
+		
 		jQuery.get(prefix + nodeid + postfix,
-				{
-					'oemaxlevel':maxlevel,
-					'tree-name':tree.data("treename"),
-					'nodeID':nodeid,							
-					'treetoplocation':toplocation,
-					'treeleftlocation':leftlocation,
-					'depth': depth
-				},	
+				params,	
 				function(data) 
 				{
 					var cell = jQuery("#" + targetdiv); //view-picker-content
@@ -222,7 +225,6 @@ jQuery(document).ready(function()
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
 				var nodeid = node.data('nodeid');
-				var maxlevel = 2;
 				
 				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
 				var url = tree.data("home") + "/components/createmedia/upload/index.html?";
@@ -232,7 +234,7 @@ jQuery(document).ready(function()
 				if( collectionid )
 				{
 					postfix = "&collectionid=" + collectionid;
-					gotopage(tree,node,maxlevel,url,postfix);
+					gotopage(tree,node,url,postfix);
 				}
 				else
 				{

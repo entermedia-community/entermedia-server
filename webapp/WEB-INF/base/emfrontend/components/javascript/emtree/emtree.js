@@ -42,7 +42,11 @@ jQuery(document).ready(function()
 		var prefix = tree.data("url-prefix");
 		console.log(prefix);
 		var targetdiv = tree.data("targetdiv");
-		var maxlevel = 2;
+		var maxlevel = tree.data("maxlevelclick");
+		if(maxlevel ==  undefined || maxlevel == "" )
+		{
+			maxlevel = 2;
+		}
 		if(targetdiv ==  undefined || targetdiv == "" )
 		{
 			targetdiv = "searchlayout";

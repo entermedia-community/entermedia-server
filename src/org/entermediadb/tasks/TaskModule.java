@@ -12,6 +12,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 
@@ -54,9 +55,20 @@ public class TaskModule extends BaseMediaModule
 			log.info("Collection not found");
 			return;
 		}
-		
-		//TODO: Limit it by department
-		HitTracker tracker = searcher.query().exact("collectionid", collection.getId()).search();
+
+		String department = inReq.getRequestParameter("nodeID");
+		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
+		if( department != null)
+		{
+			Category selected = archive.getCategory(department);
+			Collection goalids = selected.getValues("projectgoals");
+			if( goalids == null || goalids.isEmpty())
+			{
+				return;
+			}
+			builder.ids(goalids);
+		}
+		HitTracker tracker = builder.search();
 		inReq.putPageValue("goals", tracker);
 		Collection topgoals = new ArrayList();
 		Collection ten = new ArrayList();
