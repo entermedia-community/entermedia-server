@@ -82,7 +82,7 @@ public class PullManager implements CatalogEnabled
 	{
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
 			Date startingfrom = null;
-			QueryBuilder builder = searcher.query().exact("importstatus","complete").exact("mastereditcluster", getNodeManager().getLocalClusterId());
+			QueryBuilder builder = searcher.query().exact("importstatus","complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
 			if( inLastpulldate != null)
 			{
 				startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
@@ -239,7 +239,7 @@ public class PullManager implements CatalogEnabled
 			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 			{
 				Data node = (Data) iterator.next();
-				HitTracker hits = searcher.query().ids(inAssetIds).exact("mastereditcluster", node.getId()).search();
+				HitTracker hits = searcher.query().ids(inAssetIds).exact("mastereditclusterid", node.getId()).search();
 				if( !hits.isEmpty())
 				{
 					String url = node.get("baseurl");

@@ -1878,11 +1878,11 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
-			PropertyDetail hasmaster = details.getDetail("mastereditcluster");
+			PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
 			if( hasmaster != null)
 			{
 				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				content.field("mastereditcluster", getElasticNodeManager().getLocalClusterId() );
+				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId() );
 			}
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
