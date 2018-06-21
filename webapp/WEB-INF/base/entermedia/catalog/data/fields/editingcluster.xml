@@ -33,6 +33,11 @@
       <language id="fr"><![CDATA[entermediadkey]]></language>
     </name>
   </property> 
+  <property id="clustername" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">
+    <name>
+      <language id="en"><![CDATA[Cluster Name]]></language>
+    </name>
+  </property> 
  
   <property id="lastpulldate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false" sortable="true">Record Edit Date 
     <name> 

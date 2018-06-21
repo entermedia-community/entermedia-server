@@ -142,6 +142,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				if( key.equals("node.name"))
 				{
 					nodeid = ele.getTextTrim();
+					break;
 				}
 			}
 		}
@@ -1221,17 +1222,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return healthstatus;
 	}
 	
-	public Collection getRemoteNodeList(String inCatalog)
+	public Collection getRemoteEditClusters(String inCatalog)
 	{
 		//Not cached
-		Collection nodes = getSearcherManager().getSearcher(inCatalog,"emnode").getAllHits();
+		Collection nodes = getSearcherManager().getSearcher(inCatalog,"editingcluster").getAllHits();
 		Collection others = new ArrayList();
 		
 		//TODO cache this
 		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 		{
 			Data node = (Data) iterator.next();
-			if( !node.getName().equals(getLocalNodeId()))
+			String clusterid = node.get("clustername");
+			if( !clusterid.equals(getLocalClusterId()))
 			{
 				others.add(node);
 			}

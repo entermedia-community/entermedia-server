@@ -82,7 +82,7 @@ public class PullManager implements CatalogEnabled
 	{
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
 			Date startingfrom = null;
-			QueryBuilder builder = searcher.query().exact("importstatus","complete").exact("masternodeid", getNodeManager().getLocalNodeId());
+			QueryBuilder builder = searcher.query().exact("importstatus","complete").exact("mastereditcluster", getNodeManager().getLocalClusterId());
 			if( inLastpulldate != null)
 			{
 				startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
@@ -105,7 +105,7 @@ public class PullManager implements CatalogEnabled
 		//Run a search based on las time I pulled it down
 		try
 		{
-			Collection nodes = getNodeManager().getRemoteNodeList(inArchive.getCatalogId());
+			Collection nodes = getNodeManager().getRemoteEditClusters(inArchive.getCatalogId());
 			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 			{
 				Data node = (Data) iterator.next();
@@ -232,14 +232,14 @@ public class PullManager implements CatalogEnabled
 	public void pushLocalChangesToMaster(String inType, Collection<String> inAssetIds)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-		Collection nodes = getNodeManager().getRemoteNodeList(getCatalogId());
+		Collection nodes = getNodeManager().getRemoteEditClusters(getCatalogId());
 		HttpRequestBuilder builder = new HttpRequestBuilder();
 		try
 		{
 			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
 			{
 				Data node = (Data) iterator.next();
-				HitTracker hits = searcher.query().ids(inAssetIds).exact("masternodeid", node.getId()).search();
+				HitTracker hits = searcher.query().ids(inAssetIds).exact("mastereditcluster", node.getId()).search();
 				if( !hits.isEmpty())
 				{
 					String url = node.get("baseurl");
