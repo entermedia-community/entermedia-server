@@ -25,7 +25,7 @@ jQuery(document).ready(function()
 			node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth, 
 				function()
 				{
-					$(window).trigger( "resize" ) 
+					//$(window).trigger( "resize" ) 
 				});
 	});
 
