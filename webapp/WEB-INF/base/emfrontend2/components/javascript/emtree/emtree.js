@@ -67,7 +67,7 @@ jQuery(document).ready(function()
 	gotopage = function(tree, node, prefix, postfix)
 	{
 
-		var params = $(tree).closest(".treecontext").data();
+		var params = $(tree).closest(".treeclickparameters").data();
 		if( params == undefined )
 		{
 			params = new Array();
