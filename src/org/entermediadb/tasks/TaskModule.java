@@ -90,4 +90,38 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("topgoals", topgoals);
 		
 	}
+	
+	public void loadGoal(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String goalid = inReq.getRequestParameter("goalid");
+		Data goal = (Data)archive.getData("projectgoal",goalid);
+		inReq.putPageValue("data", goal);
+		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
+		HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
+		inReq.putPageValue("goaltasks", tasks);
+	}
+	
+	
+	public void addGoalToCategory(WebPageRequest inReq)
+	{
+		String goalid = inReq.getRequestParameter("goalid");
+		String categoryid = inReq.getRequestParameter("categoryid");
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher goalsearcher = archive.getSearcher("projectgoal");
+		Data goal = (Data)goalsearcher.searchById(goalid);
+		Category cat = archive.getCategory(categoryid);
+		//Make goaltask
+		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
+		
+		Data task = tasksearcher.createNewData(); //TODO: Cjheck for existing
+		task.setValue("projectgoal",goal.getId());
+		task.setValue("projectdepartment",categoryid);
+		task.setName(cat.getName()); //TODO: Support comments
+		
+		//Add to array on category
+		tasksearcher.saveData(task);
+		
+	}
+	
 }

@@ -1,6 +1,4 @@
 #set($selectedUser = $user)
-$selectedUser.getEmail()
-
 
 #set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 $context.putPageValue("searcher", $userSearcher)     
