@@ -866,5 +866,23 @@ public class BaseCategory extends BaseData implements Category
 	{
 		return fieldParentCategory != null;
 	}
-
+	
+	public boolean hasCountData()
+	{
+		if( getValue("countdata") == null )
+		{
+			return false;
+		}
+		if( getValues("countdata").isEmpty() )
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public int getCount()
+	{
+		Collection counted = getValues("countdata");
+		return counted.size();
+	}
 }

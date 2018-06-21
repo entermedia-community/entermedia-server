@@ -61,9 +61,10 @@ public class TaskModule extends BaseMediaModule
 		if( department != null)
 		{
 			Category selected = archive.getCategory(department);
-			Collection goalids = selected.getValues("projectgoals");
+			Collection goalids = selected.getValues("countdata");
 			if( goalids == null || goalids.isEmpty())
 			{
+				log.info("No goals set");
 				return;
 			}
 			builder.ids(goalids);
@@ -77,7 +78,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			Data hit = (Data) iterator.next();
 			ten.add(hit);
-			if( ten.size() == 10)
+			if( ten.size() == 5)
 			{
 				if( topgoals.size() == 3)
 				{
@@ -131,6 +132,17 @@ public class TaskModule extends BaseMediaModule
 		task.setValue("projectdepartment",categoryid);
 		task.setName(cat.getName()); //TODO: Support comments
 		
+		Collection goalids = cat.getValues("countdata");
+		if( goalids == null)
+		{
+			goalids = new ArrayList();
+		}
+		if( !goalids.contains(goalid))
+		{
+			goalids.add(goalid); //Put in front?
+		}
+		cat.setValue("countdata",goalids);
+		archive.getCategorySearcher().saveData(cat);
 		//Add to array on category
 		tasksearcher.saveData(task);
 		
