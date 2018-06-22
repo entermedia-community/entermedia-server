@@ -81,7 +81,7 @@
 						#if( $status == "pending" )
 							[[Pending]]
 						#else
-						<a class="btn small" href="$home$apphome/views/modules/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+						<a class="btn small" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
 						#end
 					#end
 					#set( $downloadall = true)
