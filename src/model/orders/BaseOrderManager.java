@@ -29,7 +29,6 @@ import org.entermediadb.email.WebEmail;
 import org.openedit.BaseWebPageRequest;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
-import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -42,6 +41,7 @@ import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
@@ -121,7 +121,7 @@ public class BaseOrderManager implements OrderManager {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.add(Calendar.MONTH, -3);
 		query.addAfter("date", cal.getTime());
-		query.addSortBy("historydateDown");
+		query.addSortBy("dateDown");
 		query.addExact("userid", inUser.getId());
 		return ordersearcher.search(query);
 	}
@@ -705,6 +705,20 @@ public class BaseOrderManager implements OrderManager {
 		}
 		String exportname = archive.asExportFileName(inUser, inAsset, preset);
 		publishqeuerow.setProperty("exportname", exportname);
+		
+		if( inPresetId.equals("0"))
+		{
+			ContentItem item = archive.getOriginalContent(inAsset);
+			if( item.exists() )
+			{
+				publishstatus = "complete";
+			}
+			else
+			{
+				publishstatus = "error";
+				publishqeuerow.setProperty("errordetails","Original does not exists");
+			}
+		}
 		publishqeuerow.setProperty("status", publishstatus);
 
 		publishqeuerow.setSourcePath(inAsset.getSourcePath());
