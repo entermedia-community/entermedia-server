@@ -162,4 +162,19 @@ public class TaskModule extends BaseMediaModule
 		newcomment.setValue("date", new Date());
 		commentsearcher.saveData(newcomment);
 	}
+	public void saveTask(WebPageRequest inReq)
+	{
+		String taskid = inReq.getRequestParameter("taskid");
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher tasksearcher = archive.getSearcher("goaltask");
+		Data task = (Data)tasksearcher.searchById(taskid);
+		String taskstatus = inReq.getRequestParameter("taskstatus");
+		task.setValue("taskstatus", taskstatus);
+		tasksearcher.saveData(task);	
+		inReq.putPageValue("task", task);
+		
+		//TODO: Add a comment
+		
+		
+	}
 }
