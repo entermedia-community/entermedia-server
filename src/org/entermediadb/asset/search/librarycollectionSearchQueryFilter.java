@@ -85,7 +85,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		//inQuery.setSecurityIds(toshow);
 		inQuery.setSecurityAttached(true);
 		
-		log.info("Collection search " + inQuery.toQuery());
+		//log.info("Collection search " + inQuery.toQuery());
 		return inQuery;
 	}
 }

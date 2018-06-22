@@ -38,6 +38,8 @@ public interface OrderManager
 
 	HitTracker findOrderItems(WebPageRequest inReq, String inCatalogid, String inOrderId);
 
+	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination);
+
 	/**
 	 * @deprecated Use {@link WebPageRequest}
 	 * @param inCatalogid

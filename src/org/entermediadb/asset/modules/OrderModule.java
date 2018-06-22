@@ -1102,6 +1102,13 @@ public class OrderModule extends BaseMediaModule
 			orderitem =  itemsearcher.loadData(orderitem);
 			orderitem.setValue("orderid", order.getId());
 			orderitem.setValue("presetid", presetid); //for now
+			String assetid = orderitem.get("assetid");
+			Asset asset = archive.getAsset(assetid);
+			//Save the publishqueue
+			Data publishqueue = getOrderManager().createPublishQueue(archive,inReq.getUser(),asset,"0","0");
+			
+			orderitem.setValue("publishqueueid",publishqueue.getId());
+			
 			tosave.add(orderitem);
 		}
 		itemsearcher.saveAllData(tosave, null);

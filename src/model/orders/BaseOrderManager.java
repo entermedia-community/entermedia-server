@@ -685,6 +685,38 @@ public class BaseOrderManager implements OrderManager {
 		return assetids;
 	}
 
+	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination)
+	{
+
+		String publishstatus = "new";
+		Searcher publishQueueSearcher = archive.getSearcher("publishqueue");
+		Data publishqeuerow = publishQueueSearcher.createNewData();
+
+		publishqeuerow.setProperty("assetid", inAsset.getId());
+		publishqeuerow.setProperty("assetsourcepath", inAsset.getSourcePath() );
+
+		publishqeuerow.setProperty("publishdestination", inPublishDestination);
+		publishqeuerow.setProperty("presetid", inPresetId);
+
+		Data preset = (Data) archive.getData("convertpreset", inPresetId);
+		if( preset == null)
+		{
+			throw new OpenEditException("Preset missing " + inPresetId);
+		}
+		String exportname = archive.asExportFileName(inUser, inAsset, preset);
+		publishqeuerow.setProperty("exportname", exportname);
+		publishqeuerow.setProperty("status", publishstatus);
+
+		publishqeuerow.setSourcePath(inAsset.getSourcePath());
+		publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		publishQueueSearcher.saveData(publishqeuerow, inUser);
+
+		if( publishqeuerow.getId() == null )
+		{
+			throw new OpenEditException("Id should not be null");
+		}
+		return publishqeuerow;
+	}
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#getPresetForOrderItem(java.lang.String, org.openedit.Data)
 	 */

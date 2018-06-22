@@ -1,5 +1,7 @@
 
 <div >
+#set( $status = $order.get("checkoutstatus") )
+
 	<table id="shared-asset-table" class="striped download-table" >
 
 #set( $downloadall = false)
@@ -52,18 +54,19 @@
 
 	</td>
 	#set( $publishqueueid = $item.get("publishqueueid"))
-	#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
---- $publishqueue
-	#set( $presetid = $publishqueue.get("presetid") )
-	#if( $publishqueue.publishdestination == "0" || $publishqueue.publishdestination == "pushhttp")   ##download with the browser
-	
+	#ifnull($publishqueueid)
+		#set( $presetid ="0") 
+	#end
+	#if(!$presetid)
+		#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
+		#set( $presetid = $publishqueue.get("presetid") )
+	#end
+
 		#if( $order.orderstatus == "error" )
 			<td></td>
 			<td>[[Error, download not available]]</td> ##Link to my orders
 			#set( $downloadall = false)
 		#else	
-	
-			#set( $presetid = $publishqueue.get("presetid") )
 			#if( $presetid == "0")
 				<td></td>
 				<td>
@@ -73,39 +76,30 @@
 					#elseif($asset.googleid && $asset.linkurl)
 						<a class="btn small" href=$asset.linkurl>[[Download]]</a>
 					#else
-					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-					<a class="btn small" href="$home$apphome/views/modules/asset/downloads/originals/#urlencode($originalpath)">[[Download]]</a>
+						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
+						
+						#if( $status == "pending" )
+							[[Pending]]
+						#else
+						<a class="btn small" href="$home$apphome/views/modules/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+						#end
 					#end
 					#set( $downloadall = true)
 					
 				</td>
 			#else
+			
+				##TODO: Support specific sized for generated orders
 				<td>
 				${publishqueue.exportname}
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
+					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/orders/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end
 		#end	
-	#elseif( $publishqueue.publishdestination == "1" )
-		<td></td>
-		<td>
-			#if( $destination.publishtype == "aspera")
-			#if( $item.status == "complete" || $item.status == "delivered" )
-			<ul class="embuttons">
-				<li><a href="$home$apphome/views/activity/aspera/asperadownload.html?orderid=$order.id&itemid=$item.id"><span>[[Download]]</span></a></li>
-								#set( $downloadall = true)
-			</ul>
-			#end
-		#end	
-		</td>
-	#else
-		<td></td>		
-		<td><a class="btn" href="$click" >[[View]]</a></td>
-	#end
 
 
 	</tr>	
