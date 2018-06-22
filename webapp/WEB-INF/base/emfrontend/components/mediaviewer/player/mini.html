@@ -58,8 +58,8 @@
                 <div class="asset-details-more">
                     <p>
                         #if ($asset.getKeywords().size() > 0)
-                            <h5><strong>[[Tags]]</strong></h5>
-                            <p>
+                            <h5 style="margin-bottom:5px"><strong>[[Tags]]</strong></h5>
+                            <div class="tageditor-viewer">
                             #foreach ($tag in $asset.getKeywords())
                                 #if ( ${foreach.count} <= 10 )
                                 <a href="$home$apphome/views/search/search.html?field=keywords&operation=matches&keywords.value=$tag">$tag</a> 
@@ -67,13 +67,14 @@
                                     <a class="ajax tooltip" title="View All Tags" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
-                            </p>
+                            </div>
+                            <div class="clearfix"></div>
                         #end
                      
                      
                         #if ($asset.getCategories().size() > 0)
-                            <h5><strong>[[Categories]]</strong></h5>
-                            <p>
+                            <h5 style="margin:10px 0 5px"><strong>[[Categories]]</strong></h5>
+                            <div class="tageditor-viewer">
                             #foreach ($category in $asset.getCategories())
                                 #if ( ${foreach.count} <= 8 )
                                 <a href="$home$apphome/views/categories/${category.id}.html">$category</a> 
@@ -81,7 +82,7 @@
                                     <a class="ajax tooltip" title="[[View All Categories]]" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
                                 #end
                             #end
-                            </p>
+                            </div>
                         #end
                      
                      #set($contact = $mediaarchive.getSearcher("contact").query().exact("thumbnail", $asset.id).searchOne())
