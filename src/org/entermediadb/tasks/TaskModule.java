@@ -2,6 +2,7 @@ package org.entermediadb.tasks;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
@@ -37,7 +38,7 @@ public class TaskModule extends BaseMediaModule
 			cat = (Category)archive.getCategorySearcher().createNewData();
 			cat.setId(id);
 			collection.getCategory().addChild(cat);
-			cat.setName("Actions");
+			cat.setName("Teams");
 			archive.getCategorySearcher().saveData(cat);
 		}
 	}
@@ -147,5 +148,18 @@ public class TaskModule extends BaseMediaModule
 		tasksearcher.saveData(task);
 		
 	}
-	
+
+	public void saveComment(WebPageRequest inReq)
+	{
+		String taskid = inReq.getRequestParameter("taskid");
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher commentsearcher = archive.getSearcher("goaltaskcomments");
+		Data newcomment = commentsearcher.createNewData();
+		String comment = inReq.getRequestParameter("comment");
+		newcomment.setValue("goaltaskid", taskid);
+		newcomment.setValue("commenttext", comment);
+		newcomment.setValue("author", inReq.getUserName());
+		newcomment.setValue("date", new Date());
+		commentsearcher.saveData(newcomment);
+	}
 }
