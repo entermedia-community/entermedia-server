@@ -37,7 +37,7 @@ public class TaskModule extends BaseMediaModule
 			cat = (Category)archive.getCategorySearcher().createNewData();
 			cat.setId(id);
 			collection.getCategory().addChild(cat);
-			cat.setName("Departments");
+			cat.setName("Actions");
 			archive.getCategorySearcher().saveData(cat);
 		}
 	}
@@ -107,7 +107,7 @@ public class TaskModule extends BaseMediaModule
 	public void loadGoal(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String goalid = inReq.getRequestParameter("goalid");
+		String goalid = inReq.getRequestParameter("id");
 		Data goal = (Data)archive.getData("projectgoal",goalid);
 		inReq.putPageValue("data", goal);
 		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
