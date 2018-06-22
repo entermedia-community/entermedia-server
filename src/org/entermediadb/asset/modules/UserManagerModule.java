@@ -844,6 +844,7 @@ public class UserManagerModule extends BaseMediaModule
 		if( user.getId().equals(  inReq.getUser().getId() ) )
 		{
 			inReq.putSessionValue(catalogid + "user",user);
+			inReq.putSessionValue("systemuser",user);
 			inReq.putPageValue("user",user);
 		}
 	}
