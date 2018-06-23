@@ -56,8 +56,7 @@ $context.putPageValue("longform",false)
   
 	
 <div class="oeinputform validate-inputs detaileditor">
-<div id="allerrors">
-</div>
+	<div id="allerrors"></div>
 
  #foreach( $detail in $details )
  
@@ -74,8 +73,8 @@ $context.putPageValue("longform",false)
 	$!context.putPageValue("val",$val)
  	<div class="form-group">
     <label for="exampleTextarea">$detail.getText($context)</label>
-    <div>
-   	$pages.include("$xmledithome/detailedit.html", $context)
-  	</div></div>	
+    $pages.include("$xmledithome/detailedit.html", $context)
+    </div>	
 	
 #end
+</div>

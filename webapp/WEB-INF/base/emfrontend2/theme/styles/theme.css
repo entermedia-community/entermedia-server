@@ -54,8 +54,14 @@
 .btn {
 	cursor:pointer;		
 }
-
-
+.btn-xs {
+    padding: .15rem .25rem;
+    font-size: .725rem;
+    font-weight: normal;
+    line-height: 1;
+    border-radius: .2rem;
+}
+.clearfix { clear: both;}
 
 #emcontent { position: relative;}
 #emfooter {   
@@ -266,7 +272,13 @@
     filter: alpha(opacity=100);	
 }
 
-
+.ui-draggable-dragging {
+	opacity: 0.7;
+}
+.dragoverselected {
+	background-color: #868e96;
+	color:#fff;
+}
 
 
 

@@ -30,7 +30,7 @@ jQuery(document).ready(function()
 	});
 
 	//Select a node
-	$('.emtree-widget ul li div').livequery('click', function(event) 
+	$('.emtree-widget ul li div span.name').livequery('click', function(event) 
 	{
 		event.stopPropagation();
 		$('.emtree ul li div').removeClass('selected');

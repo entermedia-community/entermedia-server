@@ -109,11 +109,13 @@ public class TaskModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String goalid = inReq.getRequestParameter("id");
-		Data goal = (Data)archive.getData("projectgoal",goalid);
-		inReq.putPageValue("data", goal);
-		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
-		HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
-		inReq.putPageValue("goaltasks", tasks);
+		if (goalid != null) {
+			Data goal = (Data)archive.getData("projectgoal",goalid);
+			inReq.putPageValue("data", goal);
+			Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
+			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
+			inReq.putPageValue("goaltasks", tasks);
+		}
 	}
 	
 	
