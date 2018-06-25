@@ -28,9 +28,9 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 				#if($haschildren)<span class="arrow"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></span>#end 
 				<span id="${cat.id}_display" class="name folder #if($haschildren) leaf #end" title="$cat.getCategoryPath()" >
 				$cat.name
-				</span>
-				<span class="catcount">
+				<b class="catcount">
 				#if($cat.hasCountData()) ($cat.getCount()) #end
+				</b>
 				</span>
 			</div>
 		#if($haschildren && $expanded)
@@ -88,7 +88,6 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 			</ul>
 	</div>
 </div>
-#end
 
 #if($caneditcategorytree || $editcategories)
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
@@ -110,3 +109,8 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
     </ul>
   </div>
   #end
+
+
+
+#end
+
