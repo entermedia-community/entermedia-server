@@ -25,12 +25,12 @@
       <language id="fr"><![CDATA[URL]]></language>
     </name>
   </property> 
-  <property id="entermediadkey" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">
+  <property id="entermediakey" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">
     <name>
-      <language id="de"><![CDATA[entermediadkey]]></language>
-      <language id="en"><![CDATA[entermediadkey]]></language>
-      <language id="es"><![CDATA[entermediadkey]]></language>
-      <language id="fr"><![CDATA[entermediadkey]]></language>
+      <language id="de"><![CDATA[entermediakey]]></language>
+      <language id="en"><![CDATA[entermediakey]]></language>
+      <language id="es"><![CDATA[entermediakey]]></language>
+      <language id="fr"><![CDATA[entermediakey]]></language>
     </name>
   </property> 
   <property id="clustername" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">

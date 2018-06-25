@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.pull.PullManager;
 import org.entermediadb.asset.push.PushManager;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -183,18 +184,37 @@ public class SyncModule extends BaseMediaModule
 	{
 		//log.info("Starting pulling");
 		MediaArchive archive = getMediaArchive(inReq);
-		getPullManager(archive.getCatalogId()).processPullQueue(archive);
-		log.info("Pulling finished");
+		long total = getPullManager(archive.getCatalogId()).processPullQueue(archive);
+		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
+		if ( log != null)
+		{
+			log.info("imported " + total  + " assets");
+		}
 
 	}
 
 	public void listChanges(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String lastpulldate = inReq.getRequestParameter("lastpulldate");
-		HitTracker hits = getPullManager(archive.getCatalogId()).listRecentChanges("asset",lastpulldate);
+		
+		String fulldownload = inReq.getRequestParameter("fulldownload");
+		HitTracker hits = null;
+		if(true || fulldownload != null && Boolean.parseBoolean( fulldownload) )
+		{
+			hits = archive.getAssetSearcher().getAllHits(inReq);
+		}
+		else
+		{
+			String lastpulldate = inReq.getRequestParameter("lastpulldate");
+			hits = getPullManager(archive.getCatalogId()).listRecentChanges("asset",lastpulldate);
+		}
+		hits.enableBulkOperations();
+		hits.setHitsPerPage(15);//TMP
 		inReq.putPageValue("hits", hits);
 		inReq.putPageValue("searcher", hits.getSearcher() );
+		
+		//hitsassetassets/catalog
+		inReq.putSessionValue("hitssessionid", hits.getSessionId());
 		inReq.putSessionValue(hits.getSessionId(), hits);
 		inReq.putPageValue("archive",archive); 
 	}

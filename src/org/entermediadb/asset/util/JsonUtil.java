@@ -41,35 +41,43 @@ public class JsonUtil
 			return all;
 		}
 		int startarray = inJsonArray.indexOf("[",name);
-		int endarray = inJsonArray.lastIndexOf("]"); //Array within array issues?
-		String arraydata = inJsonArray.substring(startarray,endarray);
-		int objectindex = arraydata.indexOf("{");
-		if(objectindex > -1)
+		//int arrayopen = inJsonArray.indexOf("]",startarray);
+		String arraydata = inJsonArray;//inJsonArray.substring(startarray,endarray);
+		int objectindex = arraydata.indexOf("{",startarray);
+		while(objectindex > -1)
 		{
-			//Count up the { and }
-			int deep = 0;
-			int start = objectindex;
-			int end = 0;
-			for (int i = objectindex; i < arraydata.length(); i++)
-			{
-				char c = arraydata.charAt(i);
-				if(c == '{' )
+				//Count up the { and }
+				int deep = 0;
+				int start = objectindex;
+				int end = 0;
+				for (int i = objectindex; i < arraydata.length(); i++)
 				{
-					deep++;
+					char c = arraydata.charAt(i);
+					if(c == '{' )
+					{
+						deep++;
+					}
+					if(c == '}' )
+					{
+						deep--;
+					}
+					if( deep == 0)
+					{
+						end = i + 1;
+						objectindex = arraydata.indexOf("{",end);
+						if( objectindex != -1)
+						{
+							int endarray = arraydata.indexOf("]",end);
+							if( endarray < objectindex) //the array ended and this is an invalid object so exit
+							{
+								objectindex = -1;
+							}
+						}
+						break;
+					}
 				}
-				if(c == '}' )
-				{
-					deep--;
-				}
-				if( deep == 0)
-				{
-					end = i + 1;
-					objectindex = arraydata.indexOf("{",end);
-					break;
-				}
-			}
-			String json = arraydata.substring(start, end);
-			all.add(json);
+				String json = arraydata.substring(start, end);
+				all.add(json);
 		}
 		return all;
 		

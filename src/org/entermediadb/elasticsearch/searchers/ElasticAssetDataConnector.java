@@ -594,6 +594,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 				String json = (String) iterator.next();
 				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
 				req.source(json);
+				//log.info("savinng " + json);
 				//Parse the json and save it with id
 				Map assetdata = (Map)parser.parse(json);
 				String id = (String)assetdata.get("id");

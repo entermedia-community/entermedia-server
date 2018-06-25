@@ -95,7 +95,11 @@ public class AllowViewing
 					 }
 					 else
 					 {
-						log.error("No view permission" + filter + " for " + page.getPath() + " sending redirect");
+						log.error(inReq.getUserName() + " has no view permission" + filter + " for " + page.getPath() + " sending redirect to login. Profile ");
+						if(inReq.getUserProfile() != null)
+						{
+							log.error("Profile was " + inReq.getUserProfile() );
+						}
 						inReq.putPageValue("oe-exception", "You do not have permission to view "+ page.getPath()  );
 	
 						 //this is the original page someone might have been on. Used in login
