@@ -62,6 +62,7 @@ public class TaskModule extends BaseMediaModule
 		if( department != null)
 		{
 			Category selected = archive.getCategory(department);
+			inReq.putPageValue("selectedcat", selected);
 			Collection goalids = selected.getValues("countdata");
 			if( goalids == null || goalids.isEmpty())
 			{
@@ -143,11 +144,11 @@ public class TaskModule extends BaseMediaModule
 		if( !goalids.contains(goalid))
 		{
 			goalids.add(goalid); //Put in front?
+			cat.setValue("countdata",goalids);
+			archive.getCategorySearcher().saveData(cat);
+			//Add to array on category
+			tasksearcher.saveData(task);
 		}
-		cat.setValue("countdata",goalids);
-		archive.getCategorySearcher().saveData(cat);
-		//Add to array on category
-		tasksearcher.saveData(task);
 		
 	}
 
