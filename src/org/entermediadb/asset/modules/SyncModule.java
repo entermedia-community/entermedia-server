@@ -199,7 +199,7 @@ public class SyncModule extends BaseMediaModule
 		
 		String fulldownload = inReq.getRequestParameter("fulldownload");
 		HitTracker hits = null;
-		if(true || fulldownload != null && Boolean.parseBoolean( fulldownload) )
+		if(fulldownload != null && Boolean.parseBoolean( fulldownload) )
 		{
 			hits = archive.getAssetSearcher().getAllHits(inReq);
 		}
