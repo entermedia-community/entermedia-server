@@ -1822,7 +1822,12 @@ public class MediaArchive implements CatalogEnabled
 		}
 		getPresetManager().conversionCompleted(this, asset);
 	}
-
+	public User getUser(String inId)
+	{
+		User user = getUserManager().getUserSearcher().getUser(inId);
+		return user;
+	}
+	
 	public UserManager getUserManager()
 	{
 		if (fieldUserManager == null)

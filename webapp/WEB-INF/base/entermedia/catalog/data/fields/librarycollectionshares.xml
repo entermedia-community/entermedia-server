@@ -55,10 +55,10 @@
     </name> 
   </property>
   -->   
-  <property id="note" editable="true" viewtype="html" index="true" stored="true"   > 
+  <property id="note" editable="true" viewtype="textarea" index="true" stored="true"   > 
     <name> 
       <language id="de"><![CDATA[Hinweis]]></language>  
-      <language id="en"><![CDATA[Note]]></language>  
+      <language id="en"><![CDATA[Leave a comment]]></language>  
       <language id="es"><![CDATA[Nota]]></language>  
       <language id="fr"><![CDATA[Remarque]]></language> 
     </name> 
@@ -79,5 +79,16 @@
       <language id="fr"><![CDATA[Envoyée par]]></language>
     </name>
   </property> 
+  <property id="agreetoterms"  index="true" stored="true"  type="boolean" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[I want to join]]></language>  
+    </name> 
+  </property>  
+  <property id="whatsappnumber"  index="true" stored="true" editable="true" > 
+    <name> 
+      <language id="en"><![CDATA[WhatsApp]]></language>  
+    </name> 
+  </property>  
+  
 
 </properties>

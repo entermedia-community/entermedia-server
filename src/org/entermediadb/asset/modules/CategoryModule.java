@@ -147,7 +147,13 @@ public class CategoryModule extends BaseMediaModule
 			{
 				renderer.setIconWidth(Integer.parseInt(iconwidth));
 			}
-
+			String expandparents = inRequest.findValue( "expandroots" );
+			if( expandparents != null)
+			{
+				expandChildren(webTree,main,Integer.parseInt( expandparents));
+			}
+			
+			
 			inRequest.putSessionValue(treeid, webTree);
 			inRequest.putPageValue(webTree.getName(), webTree);
 		//	inRequest.putPageValue("selectednodes", webTree.getTreeRenderer().getSelectedNodes());
@@ -166,6 +172,19 @@ public class CategoryModule extends BaseMediaModule
 
 		
 		return webTree;
+	}
+	private void expandChildren(WebTree inWebTree, Category inParent, int inParseInt)
+	{
+		inWebTree.getTreeRenderer().expandNode(inParent);
+		inParseInt--;
+		if(inParseInt > 0 && inParent.hasChildren())
+		{
+		for (Iterator iterator = inParent.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			expandChildren(inWebTree,child,inParseInt);
+		}
+		}
 	}
 	public void selectNodes(WebPageRequest inReq)
 	{
