@@ -218,6 +218,11 @@ public class PullManager implements CatalogEnabled
 			}
 			return assetcount;
 		}
+		else if ( ok != null && ok.equals("empty") )
+		{
+			//No changes found
+			return 0;
+		}
 		else 
 		{
 			log.error("Initial data could not be loaded " + returned);

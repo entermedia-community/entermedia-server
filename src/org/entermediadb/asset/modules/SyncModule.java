@@ -209,7 +209,7 @@ public class SyncModule extends BaseMediaModule
 			hits = getPullManager(archive.getCatalogId()).listRecentChanges("asset",lastpulldate);
 		}
 		hits.enableBulkOperations();
-		hits.setHitsPerPage(15);//TMP
+		hits.setHitsPerPage(200);//TMP
 		inReq.putPageValue("hits", hits);
 		inReq.putPageValue("searcher", hits.getSearcher() );
 		
