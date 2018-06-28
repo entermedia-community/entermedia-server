@@ -384,6 +384,8 @@ public class BaseCategory extends BaseData implements Category
 		{
 			setParentId(null);
 		}
+		
+		//These will be set in indexing
 		if( getId() != null)
 		{
 			setValue("categorypath", loadCategoryPath());
