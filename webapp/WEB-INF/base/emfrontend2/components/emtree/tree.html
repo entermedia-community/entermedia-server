@@ -11,7 +11,7 @@
 $!webtree.getTreeRenderer().selectNodes($selectednodes)
 #end
 
-#macro(showtreecategories $cat $depth) 
+#macro(showtreecategories2 $cat $depth) 
 		#set($children = $model.getChildren($cat))
 		#if( $children.size() > 0)
 			#set( $haschildren = true)
@@ -37,7 +37,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 		   <ul class="open" > <!-- Open with $cat.name $children.size() -->
 			#foreach( $subcategory in $children) 
 				#set ( $newdepth = $depth + 1) ##weird bug when this was above the loop 3 = 1 + 1
-				#showtreecategories($subcategory, $newdepth)
+				#showtreecategories2($subcategory, $newdepth)
 		    #end
 		   </ul>  <!-- Close on $cat.name $children.size() -->
 		#end
@@ -55,7 +55,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 	#set( $depths = $context.getRequestParameter("depth" ) )
 	#set( $depth = 0 )
 	#set( $depth = $depth.parseInt($depths) )
-	#showtreecategories($target, $depth)
+	#showtreecategories2($target, $depth)
 
 #elseif( $adding && $adding == "true" )
 	#set( $nodeid = $context.getRequestParameter("nodeID" ) )
@@ -64,7 +64,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 	#set( $depths = $context.getRequestParameter("depth" ) )
 	#set( $depth = 0 )
 	#set( $depth = $depth.parseInt($depths) )
-	#showtreecategories($target, $depth)
+	#showtreecategories2($target, $depth)
 	
 #else
 #if($category && $content.isPropertyTrue("searchcategory") )
@@ -84,7 +84,7 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 		data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix" data-targetdiv="$!targetdiv"
 		>
 			<ul  class="open" >
-			#showtreecategories($rootcategory, 1)
+			#showtreecategories2($rootcategory, 1)
 			</ul>
 	</div>
 </div>

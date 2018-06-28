@@ -67,7 +67,7 @@ public class TaskModule extends BaseMediaModule
 			department = inReq.getRequestParameter("categoryid");
 		}
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-		builder.notgroup("projectstatus", Arrays.asList("archived","completed"));
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		Collection topgoals = null;
 		String page = inReq.getRequestParameter("page");
 
@@ -111,7 +111,7 @@ public class TaskModule extends BaseMediaModule
 			inReq.putPageValue("nextpage", thispage + 1);
 		}
 		
-		Collection archived = searcher.query().orgroup("projectstatus", Arrays.asList("archived","completed")).search(inReq);
+		Collection archived = searcher.query().orgroup("projectstatus", Arrays.asList("closed","completed")).search(inReq);
 		inReq.putPageValue("closedgoals", archived);
 		
 		
@@ -184,7 +184,7 @@ public class TaskModule extends BaseMediaModule
 		MultiValued goal = (MultiValued)inReq.getPageValue("data");
 		String projectstatus = goal.get("projectstatus");
 		//search for goals
-		Collection tasks = archive.query("goaltask").exact("goalid", goal.getId()).search();
+		Collection tasks = archive.query("goaltask").exact("projectgoal", goal.getId()).search();
 		for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
 		{
 			Data task = (Data) iterator.next();
@@ -196,28 +196,35 @@ public class TaskModule extends BaseMediaModule
 				{
 					goalids = new ArrayList();
 				}
-				boolean changed = false;
-				if( projectstatus.equals("completed") && goalids.contains(task.getId()))
+				else
 				{
-					goalids.remove(task.getId());
-					changed = true;
+					goalids = new ArrayList(goalids);
 				}
-				else if( !goalids.contains(task.getId()))
+				boolean changed = false;
+				if( goalids.contains(goal.getId()))
+				{
+					if( projectstatus.equals("completed") || projectstatus.equals("closed") )
+					{
+						goalids.remove(goal.getId());
+						changed = true;
+					}
+				}
+				else if( !(projectstatus.equals("completed") || projectstatus.equals("closed") ) )
 				{
 					changed = true;
 					//Add to the front
 					if( goalids.isEmpty() )
 					{
-						goalids.add(task.getId());
+						goalids.add(goal.getId());
 					}
 					else
 					{
-						goalids.add(0,task.getId());
+						goalids.add(0,goal.getId());
 					}
-					
 				}
 				if( changed )
 				{
+					cat.setValue("countdata",goalids);
 					archive.getCategorySearcher().saveData(cat);
 				}
 			}
@@ -254,6 +261,10 @@ public class TaskModule extends BaseMediaModule
 		if( goalids == null)
 		{
 			goalids = new ArrayList();
+		}
+		else
+		{
+			goalids = new ArrayList(goalids);
 		}
 		//if( !goalids.contains(goalid))
 		{
@@ -337,7 +348,7 @@ public class TaskModule extends BaseMediaModule
 		}
 	
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-		builder.orgroup("projectstatus", Arrays.asList("archived","completed"));
+		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
 		Collection archived = builder.search();
 		inReq.putPageValue("closedgoals", archived);
 		
@@ -355,6 +366,10 @@ public class TaskModule extends BaseMediaModule
 		if(goalids ==  null )
 		{
 			goalids = new ArrayList();
+		}
+		else
+		{
+			goalids = new ArrayList(goalids);
 		}
 		if(!goalids.contains(goalid))
 		{
