@@ -188,6 +188,10 @@ public class SyncModule extends BaseMediaModule
 		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
 		if ( log != null)
 		{
+			if( total == -1)
+			{
+				log.info("Pull error happened, check logs");
+			}
 			log.info("imported " + total  + " assets");
 		}
 
