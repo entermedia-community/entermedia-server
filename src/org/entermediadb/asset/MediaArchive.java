@@ -1462,15 +1462,22 @@ public class MediaArchive implements CatalogEnabled
 		//log.info("Loading " + inId);
 		if (setting == null)
 		{
-			return null;
-		}
-		value = setting.get("value");
-		if (value == null)
-		{
-			log.info("Null value " + getCatalogId() + " " + inId);
 			value = CacheManager.NULLVALUE;
 		}
+		else
+		{
+			value = setting.get("value");
+			if (value == null)
+			{
+				log.info("Null value " + getCatalogId() + " " + inId);
+				value = CacheManager.NULLVALUE;
+			}
+		}	
 		getCacheManager().put("catalogsettings", inId, value);
+		if (value == CacheManager.NULLVALUE)
+		{
+			return null;
+		}
 		return value;
 	}
 

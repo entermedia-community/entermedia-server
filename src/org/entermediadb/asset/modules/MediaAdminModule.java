@@ -619,7 +619,7 @@ public class MediaAdminModule extends BaseMediaModule
 		{
 			String me = archive.getNodeManager().getLocalNode().getNodeType();
 			
-			if(true || !me.equals(Node.PRIMARY) )
+			if(!me.equals(Node.PRIMARY) )
 			{
 				//Connect to the remote server and make sure it's running ok
 				Downloader downloader = new Downloader();

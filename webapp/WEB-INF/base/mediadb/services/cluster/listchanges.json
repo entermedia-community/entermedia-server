@@ -1,7 +1,7 @@
 {
 	"response":
 		{
-		    "status":#if($hits)"ok"#else"missinghits"#end
+		    "status":#if($hits.isEmpty())"empty"#elseif($hits)"ok"#else"missinghits"#end
 		    #if( $hits )
 		    ,"totalhits" : $hits.size(),
 			"searchtype" : "$searcher.getSearchType()",

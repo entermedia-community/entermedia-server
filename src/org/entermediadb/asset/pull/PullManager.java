@@ -166,7 +166,8 @@ public class PullManager implements CatalogEnabled
 		StatusLine sl = response2.getStatusLine();           
 		if (sl.getStatusCode() != 200)
 		{
-			node.setProperty("lasterrormessage", sl.getStatusCode() + " " + sl.getReasonPhrase());
+			node.setProperty("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
+			node.setValue("lasterrordate",new Date()); 
 			getSearcherManager().getSearcher(inArchive.getCatalogId(),"editingcluster").saveData(node);
 			log.error("Initial data server error " + sl);
 			return -1;
@@ -197,6 +198,8 @@ public class PullManager implements CatalogEnabled
 				if (sl.getStatusCode() != 200)
 				{
 					node.setProperty("lasterrormessage", sl.getStatusCode() + " " + sl.getReasonPhrase());
+					node.setValue("lasterrordate",new Date()); 
+
 					getSearcherManager().getSearcher(inArchive.getCatalogId(),"editingcluster").saveData(node);
 					log.error("Page server error " + sl);
 					return -1;
@@ -217,6 +220,11 @@ public class PullManager implements CatalogEnabled
 
 			}
 			return assetcount;
+		}
+		else if ( ok != null && ok.equals("empty") )
+		{
+			//No changes found
+			return 0;
 		}
 		else 
 		{
@@ -263,7 +271,8 @@ public class PullManager implements CatalogEnabled
 							StatusLine filestatus = genfile.getStatusLine();           
 							if (filestatus.getStatusCode() != 200)
 							{
-								log.error("Could not download generated " + filestatus);
+								log.error("Could not download generated " + filestatus + " " + path);
+								continue;
 							}
 							
 								//Save to local file
@@ -351,7 +360,7 @@ public class PullManager implements CatalogEnabled
 						StatusLine sl = response2.getStatusLine();           
 						if (sl.getStatusCode() != 200)
 						{
-							node.setProperty("lasterrormessage", sl.getStatusCode() + " " + sl.getReasonPhrase());
+							node.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 							getSearcherManager().getSearcher(getCatalogId(),"editingcluster").saveData(node);
 							log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 							continue;

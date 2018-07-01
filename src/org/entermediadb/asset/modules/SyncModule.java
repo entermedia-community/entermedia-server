@@ -188,6 +188,10 @@ public class SyncModule extends BaseMediaModule
 		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
 		if ( log != null)
 		{
+			if( total == -1)
+			{
+				log.info("Pull error happened, check logs");
+			}
 			log.info("imported " + total  + " assets");
 		}
 
@@ -199,7 +203,7 @@ public class SyncModule extends BaseMediaModule
 		
 		String fulldownload = inReq.getRequestParameter("fulldownload");
 		HitTracker hits = null;
-		if(true || fulldownload != null && Boolean.parseBoolean( fulldownload) )
+		if(fulldownload != null && Boolean.parseBoolean( fulldownload) )
 		{
 			hits = archive.getAssetSearcher().getAllHits(inReq);
 		}
@@ -209,7 +213,7 @@ public class SyncModule extends BaseMediaModule
 			hits = getPullManager(archive.getCatalogId()).listRecentChanges("asset",lastpulldate);
 		}
 		hits.enableBulkOperations();
-		hits.setHitsPerPage(15);//TMP
+		hits.setHitsPerPage(200);//TMP
 		inReq.putPageValue("hits", hits);
 		inReq.putPageValue("searcher", hits.getSearcher() );
 		
