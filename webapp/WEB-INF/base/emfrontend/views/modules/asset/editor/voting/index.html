@@ -38,7 +38,7 @@
 #end
 </div>
 #if($alreadyvoted)
-	<a class="ajax star full" title="[[Remove Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1"></a>
+	<a class="ajax star full" title="[[Remove Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favourites"></a>
 #else
-	<a class="ajax star empty"  title="[[Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1"></a>
+	<a class="ajax star empty"  title="[[Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favourites"></a>
 #end
