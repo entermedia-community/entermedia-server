@@ -205,6 +205,7 @@ public class PullManager implements CatalogEnabled
 					return -1;
 				}
 				returned = EntityUtils.toString(response2.getEntity());
+				//log.info("Got page of json: " + returned);
 				parsed = (Map)new JSONParser().parse(returned);
 				response = (Map)parsed.get("response");
 				ok = (String)response.get("status");
@@ -254,6 +255,11 @@ public class PullManager implements CatalogEnabled
 				Collection files = (Collection)changed.get("files");
 				if( files != null)
 				{
+					if( files.isEmpty() )
+					{
+						log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());
+						return;
+					}
 					for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
 					{
 						Map filelisting = (Map) iterator3.next();

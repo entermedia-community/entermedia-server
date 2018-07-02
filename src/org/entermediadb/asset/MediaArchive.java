@@ -1859,6 +1859,10 @@ public class MediaArchive implements CatalogEnabled
 	{
 		String sourcepath = inHit.getSourcePath();
 		Collection paths = getPageManager().getChildrenPaths("/WEB-INF/data/" + getCatalogId() + "/generated/" + sourcepath + "/");
+		if( paths.isEmpty() )
+		{
+			return Collections.EMPTY_LIST;
+		}
 		Collection<ContentItem> children = new ArrayList();
 		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
 		{

@@ -220,6 +220,6 @@ public class SyncModule extends BaseMediaModule
 		//hitsassetassets/catalog
 		inReq.putSessionValue("hitssessionid", hits.getSessionId());
 		inReq.putSessionValue(hits.getSessionId(), hits);
-		inReq.putPageValue("archive",archive); 
+		//inReq.putPageValue("mediaarchive",archive); 
 	}
 }
