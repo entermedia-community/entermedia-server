@@ -51,6 +51,7 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsResponse;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -69,6 +70,7 @@ import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.discovery.zen.elect.ElectMasterService;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
@@ -80,13 +82,10 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
-import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
 import org.openedit.util.Replacer;
 
@@ -107,7 +106,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected List fieldMappingErrors;
 	protected Node fieldNode;
 	protected Map fieldIndexSettings;
-	
+	protected boolean checkedNodeCount = false;
 	protected void loadSettings()
 	{
 		// TODO Auto-generated method stub
@@ -713,6 +712,22 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
 					//				searcher.initialize();	
 					//			}
+					
+					if ( health.getNumberOfNodes() > 1 )
+					{
+						if( !checkedNodeCount )
+						{
+						  Settings settings = Settings.builder()
+						            .put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2")
+						            .build();
+							UpdateSettingsResponse changesettings = admin.indices().prepareUpdateSettings(index).setSettings(settings).execute().actionGet();
+							if( changesettings.isAcknowledged() )
+							{
+								log.info("Checked number of masternodes");
+							}
+							checkedNodeCount = true;
+						}	
+					}					
 					return true;
 				}	
 			}	
@@ -792,16 +807,20 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				FileUtils.safeClose(in);
 			}
-			return createdIndex;
 		}
-
-		RefreshRequest req = Requests.refreshRequest(index);
-		RefreshResponse rres = admin.indices().refresh(req).actionGet();
-		if (rres.getFailedShards() > 0)
+		else
 		{
-			log.error("Could not refresh shards");
+			RefreshRequest req = Requests.refreshRequest(index);
+			RefreshResponse rres = admin.indices().refresh(req).actionGet();
+			if (rres.getFailedShards() > 0)
+			{
+				log.error("Could not refresh shards");
+			}
 		}
-
+		
+		//Check the number of nodes
+		
+		
 		return createdIndex;
 	}
 
