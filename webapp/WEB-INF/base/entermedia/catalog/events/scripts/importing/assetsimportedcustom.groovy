@@ -35,7 +35,7 @@ public void readProjectData()
 	AssetTypeManager manager = new AssetTypeManager();
 	manager.context = context;
 	manager.log = log;
-	manager.saveAssetTypes(hits);
+	manager.saveAssetTypes(hits, true);
 	
 	//Look for collections and libraries
 	LibraryManager librarymanager = new LibraryManager();

@@ -1,0 +1,25 @@
+<div id="application" data-home="$home" data-apphome="$apphome" data-themeprefix="/${applicationid}/theme" data-browserlanguage="$!{browserlanguage}" data-mediadbappid="$!mediaarchive.getMediaDbId()">
+
+    #if ( $canviewerrors )
+	<div id="errordiv"></div>
+	#end
+
+
+	<div id="emcontainer">
+		<div id="header" role="banner">
+			$pages.include("/${applicationid}/theme/layouts/header.html")
+			<div id="site-title">$!content.tagline</div>
+		</div>
+ 
+		<div id="emcontent">
+		       $pages.includeContent()
+		</div>
+	
+	<div class="clearfix"></div>
+		
+		<div id="footer" role="contentinfo">
+	    	 $pages.include("/${applicationid}/theme/layouts/footer.html")
+		</div>
+ 
+	</div>
+</div>

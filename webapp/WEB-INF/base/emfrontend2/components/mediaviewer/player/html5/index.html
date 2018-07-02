@@ -1,0 +1,45 @@
+#ifnull($hit)
+	#set ($hit = $asset)
+#end
+
+#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
+#set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
+
+#set( $embed = $context.getRequestParameter("embed") )
+#set( $autoplay = $context.getRequestParameter("autoplay") )
+#set( $loop = $context.getRequestParameter("loop") )
+
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+#set( $root = "$!prefix$home$page.directory")
+#set( $catalogid = $asset.catalogId )
+
+	<script id="videojs" src="$apphome/components/javascript/videojs/video.min.js"></script>
+	<style  id="videojs-css"  href="$apphome/components/javascript/videojs/video-js.css"></style>
+	
+##Add back full screen button, Autoplay and escape handling
+<div id="playarea-$hit.id" class="player">
+	<video id="video-$hit.id" class="video-js" width="480" height="320"
+		poster='$thumb'
+		#if( $autoplay && $autoplay == "true") autoplay #end
+		#if( $loop && $loop == "true") loop #end
+		controls
+		preload="auto"
+		data-setup=''>
+		<source type="video/mp4" src="$source">
+		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
+		<source type="video/flash" src="mp4:$short">
+     	#if( $tracks && !$tracks.isEmpty() )
+      		#foreach( $track in $tracks)
+     		 <track 
+     		 	label="$track.sourcelang subtitles" 
+     		 	kind="subtitles" 
+     		 	srclang="$track.sourcelang" 
+      			src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+      		#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+      		#end
+      	#end
+	</video>
+</div>
+<script>
+var myPlayer = videojs('video-$hit.id');
+</script>

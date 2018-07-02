@@ -12,7 +12,7 @@
 	},
 	"results":[
 #foreach( $table in $hits )
-		{"name": "$table" }	#if( $velocityCount != $hits.size() ), #end
+		{"name": "$table" }	#if( ${foreach.count} != $hits.size() ), #end
 
 #end		
 	]

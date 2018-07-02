@@ -7,7 +7,7 @@ $context.putPageValue("hits",$hits)
 #set( $hits = $orderassets)
 $context.putPageValue("hits",$hits)
 #end
-
+ 
 #if($hits)
 	#set( $collectionid = $hits.getInput("collectionid") )
 	#if( $collectionid && !$librarycol)
@@ -34,13 +34,18 @@ $context.putPageValue("hits",$hits)
 	
 		#set ($enabled=$hits.getSelectionSize() > 0)
 	
-		#if( $candownload || $canconvert || $candownloadfpo )
+		#if( $candownload || $canconvert || $candownloadfpo ) 
 			#if( $librarycol )
 			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
 			#else
 				#if( $enabled )
 				<li>
+					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+					<a href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					
+					#else
 					<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
+					#end
 				</li>	
 				#else
 				<li class="resultmenuitem">
@@ -66,6 +71,10 @@ $context.putPageValue("hits",$hits)
 					#if( $canpublish)
 					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a></li>
 					#end
+#if( $canquickgallery)
+					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a></li>
+					#end
+
 					##if( $canpublish)
 					##<li><a href="$home$apphome/views/activity/sharegallery.html?hitssessionid=$!hits.getSessionId()&field=publishdestination&publishdestination.value=gallery&field=ordertype&ordertype.value=gallery&field=publishtype&publishtype.value=gallery" >[[Share Gallery]]</a></li>
 					##end
@@ -102,15 +111,15 @@ $context.putPageValue("hits",$hits)
 				</li>
 				#end
 		
+  		#set( $edit = $context.getRequestParameter("editheader") )
+			<li>
+				$pages.include("$apphome/components/results/selected/index.html",$context)
+			</li>
 		#if ( $canviewbasket )
 			#if($order)
 				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
 			#end
 		#end
-  		#set( $edit = $context.getRequestParameter("editheader") )
-			<li>
-				$pages.include("$apphome/components/results/selected/index.html",$context)
-			</li>
 		
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
@@ -170,7 +179,7 @@ $context.putPageValue("hits",$hits)
 				</div>
 			</li>
 			#if( $hits.size() > 0)
-			<li style="float:right" class=" hidden-sm-xs hidden-xs hidden-sm">
+			<li style="float:right" class=" hidden-sm-xs hidden-xs hidden-sm hidden-md">
 			$pages.include("$apphome/components/results/pages.html",$context)
 			</li>	
 			<li id="resultpageslabel" class="resultmenuitem hidden-sm-xs hidden-xs hidden-sm hidden-md" style="float:right">
@@ -178,6 +187,13 @@ $context.putPageValue("hits",$hits)
 			</li>			
 			#end
 		#end	
+
+		#if ( $canviewbasket )
+			#if($order)
+				<li style="float: right;" ><a class="updatebasket btn-checkout emdialog" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout]]</a></li>				
+			#end
+		#end
+
 	</ul>
 </div>
  

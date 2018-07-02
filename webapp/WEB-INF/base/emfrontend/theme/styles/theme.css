@@ -1324,9 +1324,20 @@ small {
 }
 #cat-list .row .category {
     padding-left: 18px;
+    padding-top: 10px;
     background: url('../images/folder-closed.gif') left 7px no-repeat;
     margin: 0 3px;
 }
+
+
+#cat-list .row .asset {
+    padding-left: 18px;
+    padding-top: 10px;
+    background: url('../images/attachments-icon.png') left 7px no-repeat;
+    margin: 0 3px;
+}
+
+
 
 .collectionheader #cat-list .row .category {
     background: url('../images/icons/box.png') top 3px left 0px no-repeat;
@@ -2548,6 +2559,17 @@ tr.odd {
     font-size: 14px !important;
     margin-top: 20px;
 }
+
+#sub-nav li a.btn-checkout {
+    line-height: 37px;
+    height: 37px;
+    margin-top: 3px;
+   	background-color: #088c25;
+   	color: white;
+   	font-size: 14px !important;
+   	margin-right: 50px;
+}
+
 #upload {
     width: 250px;
     padding-top: 15px;
@@ -5091,6 +5113,23 @@ p.resultsnumber {
 #de-side-nav .current.converthistory .icon {
     background-position: -183px -26px;
 }
+
+#de-side-nav .viewtimeline .icon {
+    background-position: -364px 0;
+}
+#de-side-nav .current.viewtimeline .icon {
+    background-position: -364px -26px;
+}
+
+#de-side-nav .viewclosedcaptions .icon {
+    background-position: -131px 0;
+}
+#de-side-nav .current.viewclosedcaptions .icon {
+    background-position: -131px -26px;
+}
+
+
+
 #de-side-nav.open #opener .icon {
     background-position: -264px -26px;
     width: 19px;
@@ -6656,10 +6695,6 @@ div#left-col-libraries div.ui-widget-content
 }
 
 
-.detail-select {
- max-width: 200px;
-}
-
 div.tableheaderactions 
 {
 	padding: 10px;
@@ -7055,7 +7090,10 @@ div.languagesaddform div.languageinput input
 
 input.textinput
 {
-	width: 228px;
+	width: 270px;
+}
+.detail-select {
+ max-width: 280px;
 }
 a.textlink
 {
@@ -7112,4 +7150,39 @@ li.resultmenuitem {
 	#eml-tab-subnav ul li a, #sub-nav li a {
 		padding:0 10px;
 	}
+}
+
+
+
+.card {
+	box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+	border:1px solid #efefef;	
+}
+
+.card-collections {
+	float:left; width:260px; height:80px; margin:0 20px 20px 0;padding:15px 10px;
+	
+}
+.card-collections-all {
+	background-color: #efefef;
+}
+
+.card-collections .card-body {
+	font-size: 120%;
+}
+.card-collections a {
+	display:block; padding-left:25px; line-height:24px;
+}
+
+
+.float_center {
+  float: right;
+
+  position: relative;
+  left: -50%; /* or right 50% */
+  text-align: left;
+}
+.float_center > .float_child {
+  position: relative;
+  left: 50%;
 }

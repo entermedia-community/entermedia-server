@@ -57,6 +57,7 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public Asset(MediaArchive inMediaArchive)
 	{
+		super(inMediaArchive.getAssetSearcher());
 		setMediaArchive(inMediaArchive);
 	}
 
@@ -815,5 +816,37 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		}
 		return false;
 	}
+	
+	public boolean clearParentCategories() {
+		
+		ArrayList toclear = new ArrayList();
+		
+		for (Iterator iterator = getCategories().iterator(); iterator.hasNext();) {
+			Category cat = (Category) iterator.next();
+			for (Iterator iterator2 = cat.getParentCategories().iterator(); iterator2.hasNext();) {
+				Category parent = (Category) iterator2.next();
+				if(parent.getId().equals(cat.getId())) {
+					continue;
+				}
+				if(isInCategory(parent)) {
+					toclear.add(parent);
+				}
+			}
+			
+		}
+		for (Iterator iterator = toclear.iterator(); iterator.hasNext();) {
+			Category cat = (Category) iterator.next();
+			removeCategory(cat);
+		}
+		if(toclear.size() > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	
+	
+	
 
 }

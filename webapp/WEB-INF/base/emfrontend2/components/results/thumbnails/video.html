@@ -1,0 +1,5 @@
+#if( $asset.editstatus == "recording" )
+$pages.include("$apphome/components/results/player/hwd/index.html",$context)
+#else
+$pages.include("$apphome/components/results/player/html5/index.html",$context)
+#end

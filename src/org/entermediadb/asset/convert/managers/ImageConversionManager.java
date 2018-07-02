@@ -39,20 +39,6 @@ public class ImageConversionManager extends BaseConversionManager
 	}
 
 
-	public WaterMarkTranscoder getWaterMarkTranscoder()
-	{
-		if (fieldWaterMarkTranscoder == null)
-		{
-			fieldWaterMarkTranscoder = 	(WaterMarkTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"waterMarkTranscoder");
-		}
-		return fieldWaterMarkTranscoder;
-	}
-
-
-	public void setWaterMarkTranscoder(WaterMarkTranscoder inWaterMarkTranscoder)
-	{
-		fieldWaterMarkTranscoder = inWaterMarkTranscoder;
-	}
 
 	
 
@@ -115,6 +101,9 @@ public class ImageConversionManager extends BaseConversionManager
 	private ContentItem makeIndd(MediaTranscoder inExiftoolThumbTranscoder, ConvertInstructions inStructions)
 	{
 		Asset asset = inStructions.getAsset();
+		if(asset == null){
+			return null;
+		}
 		String format = asset.getFileFormat();
 		if ("indd".equalsIgnoreCase(format))  //TODO: Move to image
 		{

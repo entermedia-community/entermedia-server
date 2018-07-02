@@ -1,0 +1,13 @@
+#
+#Thu Apr 20 13:39:36 CDT 2017
+Results=Resultados
+Embed=Embed
+Email=Email
+Delete\ Assets=Eliminar Activos
+File=Archivo
+Add\ to\ Project=A\u00F1adir al proyecto
+Share=Compartir
+Download=Descargar
+Print=Imprimir
+Publish=Publicar
+Delete=Borrar

@@ -1,0 +1,5 @@
+#Thu Apr 27 09:03:42 CDT 2017
+Select\ Category=Choisir une catégorie
+Categories=Catégories
+Search\ Categories=Rechercher Catégories
+

@@ -5,7 +5,8 @@
 		<commandbase>./WEB-INF/bin/linux</commandbase>
 		<exiftoolthumb>./exiftoolthumb.sh</exiftoolthumb>
 		<asperaupload>./aspera/upload.sh</asperaupload>
-		
+		<avconv>ffmpeg</avconv>
+        <avprobe>ffprobe</avprobe>
 	</commandmap>
 	<commandmap os="WINDOWS">
 		<commandbase>./WEB-INF/bin/windows</commandbase>

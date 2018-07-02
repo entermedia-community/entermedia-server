@@ -1,5 +1,6 @@
 package org.entermedia.elasticsearch;
 
+import java.util.Collection;
 import java.util.Date;
 
 import org.elasticsearch.action.index.IndexRequestBuilder;
@@ -139,10 +140,10 @@ public void testBasicRead() throws Exception
 		Data hit = (Data)searcher.searchById("102");
 		assertNotNull(hit);
 		
-		searcher.getAllHits();
-		
+		Collection all = searcher.getAllHits();
+		assertEquals(all.size(),1);
 		SearchQuery q = searcher.createSearchQuery();
-		q.addExact("name", "Bermuda");
+		q.addMatches("name", "Bermuda");
 		HitTracker tracker = searcher.search(q);
 		assertTrue(tracker.size() > 0);
 	}

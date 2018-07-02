@@ -313,7 +313,6 @@ public class ProfileModule extends MediaArchiveModule
 		}
 		prof.setProperty(field, value);
 		getUserProfileManager().saveUserProfile(prof);
-
 	}
 
 	public void saveProperties(WebPageRequest inReq)

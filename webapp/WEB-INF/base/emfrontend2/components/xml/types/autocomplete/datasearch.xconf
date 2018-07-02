@@ -1,0 +1,21 @@
+<page>
+	<layout/>
+	<inner-layout/>
+	
+	<path-action bean="jsonUtil" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>		
+	
+	
+	<path-action name="Admin.autoLogin" alltypes="true"/>
+	<path-action name="ProfileModule.loadUserProfile"  alltypes="true"/>	 
+	
+	
+	<page-action name="DataEditModule.search" alltypes="true">
+		<property name="hitsname">autocomplete</property>
+	</page-action>
+	<page-action name="DataEditModule.addDefaultValue" alltypes="true">
+		<property name="hitsname">autocomplete</property>
+	</page-action>
+	<property name="enforcesecurity">true</property>
+	<generator name="velocityGenerator" />
+	<property name="hitsperpage">1000</property>
+</page>

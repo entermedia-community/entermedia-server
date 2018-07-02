@@ -1,0 +1,426 @@
+
+#emcontainer #emplayerplayer
+{
+	width: 600px;
+}
+#emcontainer .emplayerbox
+{
+	text-align: left;
+	margin-left: auto;
+	margin-right: auto;
+}
+#emcontainer .emplayerbox td
+{
+	padding: 10px;
+}
+#emcontainer #emplayerplayer  .embox
+{
+	min-height: 400px;
+	width: 100%;
+}
+
+#emcontainer #emviewerdetails
+{
+	width: 180px;
+}
+#emcontainer #emviewerdetails  .embox
+{
+	min-height: 400px;
+  	background: url(../../images/backgrounds/gradientmenu.png) no-repeat top center;
+}
+#emcontainer #emplayerresults
+{
+	width: 100%;
+	
+}
+#emcontainer #emplayerresults .embox
+{
+	min-height: 600px;
+	background: url(../../images/backgrounds/gradientresults.png) no-repeat top center;
+	
+}
+
+.emdetailsbox
+{
+	text-align: left;
+	margin-left:auto;
+	margin-right:auto;
+	width: 260px;
+}
+
+#emcontainer .emdetailactions a
+{
+	display:block;
+	text-decoration: none;
+}
+#emcontainer .emdetailactions a img
+{
+	vertical-align: top;
+}
+#emcontainer .emdetailactions a:hover
+{
+	display:block;
+	text-decoration: none;
+}
+
+.emdetailvotes 
+{
+	line-height: 20px;
+}
+
+.emdetailvotes img
+{
+	vertical-align: middle;
+}
+
+.emdetaildownload
+{
+}
+
+.emdetaildownload img
+{
+	vertical-align: middle;
+}
+
+#emcommentarea
+{
+	padding-top: 10px;
+}
+
+/*********************************
+	Comments
+*********************************/
+#emcontainer #emcomments {
+	padding-left: 9px;
+}
+#emcontainer .emcomment {
+	margin-bottom: 5px;
+	display: table;
+	padding: 5px;
+}
+#emcontainer .emcommentuser {
+	font-weight: bold;
+	
+}
+#emcontainer .emcommenttext {
+}
+#emcontainer .emcommentdate
+{
+	display: block;
+	color: #888888;
+}
+.emtabs 
+{
+	margin-left: 20px;
+	margin-right: 20px;
+}
+.emtabs li
+{
+	float: left;
+	margin-left: 10px;
+	border: 1px solid #a3c8d4;
+  	position: relative;
+  	margin-top: 0px;
+  	overflow: hidden;
+}
+.emtabs li a
+{
+  background: #ddd;
+  color: #666;
+  padding: 5px 5px 5px 5px;
+  pasition: absolute;
+}
+
+.emtabs li.emtab a
+{
+  padding: 5px 25px 5px 5px;
+  
+}
+.emtabs li.emtabselected 
+{
+	margin-top: 1px;
+	background: #fff;
+	border-bottom: 0 none !important;
+}
+.emtabs li.emtabselected A 
+{
+	background: #fff;
+	font-weight: bold;
+}
+.emtabs li.ui-state-default A
+{
+	padding-right: 5px
+}
+#homelayout div.collectionheaderleft {
+    width: 250px;
+    float: left;
+ }
+#homelayout div.collectionheaderright {
+    float: left;
+    padding: 20px 0 0 0;
+ }
+
+
+#homelayout .emtabs span.ui-icon-closethick
+{
+	position: absolute;
+	display: block;
+	right: 3px;
+	z-index: 500;
+	top:3px;
+	cursor: pointer; 
+}
+#homelayout .ui-icon-newwin
+{
+	right: 3px;
+	z-index: 1000;
+	top:3px;
+	font-size: 2.2em;
+	float: right;
+	 zoom: 1.6;
+}
+
+#homelayout 
+{
+	background: white;
+}
+
+#emcontent .tab-container {
+  border: 1px solid #a3c8d4;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, .1);
+  margin: -1px 10px 10px 10px;
+  padding: 0 0 15px 0;
+}
+
+#emcontent .carousel-window>ul
+{
+	margin: 0 0 0 20px;
+	padding: 0;
+	list-style: none;
+}
+
+
+#emcontent .media-carousel {
+  position: relative;
+}
+#emcontent .media-carousel .carousel-window {
+   overflow: hidden;
+}
+#emcontent .media-carousel>ul
+{
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+#emcontent .media-carousel ul li.carousel-item {
+ 
+ width: 171px;
+  float: left;
+  margin: 15px 10px 0 0px;
+  text-align: center;
+  border-radius: 0;
+  cursor: pointer;
+  overflow: hidden;
+
+}
+
+li.carousel-item .footer
+{
+	color: #EEE;
+}
+
+li.carousel-item .ui-widget-content
+{
+	height: 250px;
+} 
+#collectionfeed .vcarousel {
+	height: 210px;
+} 
+
+#emcontent .media-carousel ul li.carousel-item .thumbframe {
+  text-align: center;
+  border-radius: 0;
+  cursor: pointer;
+  background-color: #fff;
+  overflow: hidden;
+  margin: 4px;
+
+}
+#emcontent .media-carousel ul li.carousel-item>a  {
+  display: block;
+}
+
+#emcontent .media-carousel ul li.active {
+	background: yellow;
+}
+
+#emcontent .media-carousel ul li.carousel-item a.thumb  img {
+  min-height: 80px;
+  max-width: 120px;
+}
+#emcontent .media-carousel ul>a.thumb:hover {
+  background: #fff;
+}
+#emcontent .media-carousel ul>a.thumb.active {
+  background: #abdcef;
+}
+#emcontent .media-carousel a.previous,
+#emcontent .media-carousel a.next {
+  height: 20px;
+  width: 20px;
+  display: block;
+  background: none;
+  cursor: pointer;
+  
+}
+#emcontent .media-carousel a.previous .icon,
+#emcontent .media-carousel a.next .icon {
+  fill: #333;
+}
+#emcontent .media-carousel a.previous:hover .icon,
+#emcontent .media-carousel a.next:hover .icon {
+  fill: #777;
+}
+#emcontent .media-carousel a.previous {
+  float: left;
+  margin:35px 5px 0;
+}
+
+#emcontent .media-carousel a.next {
+  float: right;
+  margin:35px 5px 0;
+}
+
+
+.media-carousel .nextpage {
+	
+}
+
+.media-carousel .nextpage,
+.media-carousel .prevpage {
+	width:50px;
+	height: 100px;
+	opacity: 0.2;
+	position: absolute;
+	top:20px;
+}
+.media-carousel .nextpage:hover,
+.media-carousel .prevpage:hover {
+	opacity: 0.8;
+}
+.media-carousel .nextpage {
+	background: url('http://demo.entermediadb.com/emshare/theme/images/pdf-next-page.png');
+	right:5px;
+}
+.media-carousel .prevpage {
+	background: url('http://demo.entermediadb.com/emshare/theme/images/pdf-prev-page.png');
+	left:5px;
+}
+
+#collectionfeed #librarychange div.listautocomplete {
+    min-width: 220px;
+    max-width: 220px;
+    margin: 0 0 8px 0;
+}
+#collectionfeed  .collheader th
+{
+color: #fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+}
+
+#collectionfeed  .btn-toolbar  a:hover
+{
+	 text-decoration: underline;
+	 
+}
+
+#mainimageholder
+{
+	/*position: relative;*/
+	height:100%;
+	width:100%;
+	overflow: hidden;
+	text-align:center;
+}
+
+
+#footerholder
+{
+	color: #eee;
+}
+
+/*
+#main-media:HOVER+#footerbase {
+	visibility: visible;
+}
+*/
+
+
+
+.nav .open>a, .nav .open>a:focus, .nav .open>a:hover
+{
+	    background-color: #121212
+}
+.nav>li>a:focus, .nav>li>a:hover
+{
+    background-color: #121212
+}
+
+#download-select 
+{
+	opacity: 1;
+}
+
+#footerbase { 
+	position: absolute;
+	width: 100%;
+	bottom:0px;
+	opacity: 0.8;
+	background-color: #333;
+}
+
+
+#footermenu {
+	width: 100%;
+	list-style: none;
+}
+#footermenu ul{
+	margin: 0;
+	padding: 0;
+}
+
+#footermenu li.footermenu {
+	font-size:90%;
+	font-weight: normal;
+	padding-left: 5%;
+	float:left;
+	display:block;
+}
+#footermenu li.footermenu a { line-height: 2; }
+
+#footermenu .gotoarrows { font-size: 200%; }
+#footermenu .gotoarrows span { cursor:pointer;} 
+#footermenu .gotoarrows span:hover { color:#fff; }
+
+#footermenu li a {
+	color: white;	
+	margin-top: 4px;
+	display:block;
+}
+
+#footermenu .dropdown-menu a {
+	color:#000;
+	font-size:90%;
+	padding: 2px 6px;
+}
+#footermenu .dropdown-menu a:hover {
+	background-color: #a8a8a8;
+	text-decoration: none;
+}
+
+body.widthless1000 #pdf-thumbnail-sidebar 
+{
+	/*display: none;*/
+
+
+}

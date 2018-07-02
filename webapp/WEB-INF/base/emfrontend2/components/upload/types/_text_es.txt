@@ -1,0 +1,24 @@
+#
+#Thu Apr 20 13:38:59 CDT 2017
+Create\ a\ new\ asset.=Crear un nuevo Art\u00EDculo.
+Upload\ multiple\ files\ by\ using\ the=Subir varios archivos utilizando el
+Shift=Cambio
+New\ Asset=Nuevo Art\u00EDculo
+Choose\ a\ media\ file\ to\ upload.=Elija un archivo para subir.
+Uploading,\ please\ wait...=Cargando, por favor espere ...
+View\ Uploads=Ver subidas
+Upload\ Queue=Cola de carga
+Please,\ enter\ the\ URL\ to\ the\ YouTube\ video=Por favor, introduzca la URL del v\u00EDdeo YouTube
+Metadata=Metadatos
+Grab\ asset=Obtener art\u00EDculo
+preview=vista previa
+Upload=Subir
+Drop\ files\ here\!=Soltar archivos aqu\u00ED\!
+key\ on\ your\ keyboard\ while\ selecting\ the\ files\ you\ wish\ to\ upload=En el teclado mientras selecciona los archivos que desea subir
+Unzip\ on\ server=Descomprimir en el servidor
+Pick\ Files=Seleccionar archivos
+Edit=Editar
+View\ Pending=Ver Pendiente
+Please,\ enter\ the\ URL\ to\ the\ asset=Por favor, introduzca la URL al art\u00EDculo
+Select\ a\ folder\ or\ any\ file\ format\ that\ you\ want\ to\ share.=Seleccione una carpeta o cualquier archivo que desee compartir.
+Zip\ files\ will\ be\ unzipped\ and\ one\ asset\ will\ be\ created\ per\ each\ contained\ file.=Archivos zip se descomprimir\u00E1n y se crear\u00E1 un art\u00EDculo por cada archivo contenido.

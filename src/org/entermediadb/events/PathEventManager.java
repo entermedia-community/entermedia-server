@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import java.util.TimerTask;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.scanner.Parse;
 import org.entermediadb.asset.util.TimeCalculator;
 import org.openedit.CatalogEnabled;
 import org.openedit.ModuleManager;
@@ -138,17 +140,13 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
-	public boolean runSharedPathEvent(String runpath)
-	{
-		return runSharedPathEvent(runpath,false);
-	}
 	
 	/**
 	 * This will only add the event if it is not already queued up. There is no reason to queue up multiple copies. Kind of like mouse events. 
 	 * @param runpath
 	 * @return
 	 */
-	public boolean runSharedPathEvent(String runpath, boolean inUpdateRunTimes )
+	public boolean runSharedPathEvent(String runpath)
 	{
 		if (runpath == null)
 		{
@@ -158,44 +156,23 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		if (event != null)
 		{ 
 			String name = event.getName();
-//			if( name.equals("Run media conversions") )
-//			{
-//				log.info("Running YYYY conversion task ");
-//			}
 			synchronized (getRunningTasks())
 			{
-				Date now = new Date();
 				TaskRunner runner = null;
-				//Date soon = new Date( System.currentTimeMillis() + 10000L);//is it already going to run within the next 10 seconds
 				List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
 				for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 				{
 					TaskRunner task = (TaskRunner) iterator.next();
 					if( name.equals( task.getPathEvent().getName() ) )
 					{
-//						if( name.equals("Run media conversions") )
-//						{
-//							log.info("Found conversion task " + now + "  "  + name + " " + task.isRepeating());
-//						}
-						if( task.getPathEvent().isRunning() )
+						if( task.isQueuedToRun() || task.getPathEvent().isRunning() )
 						{
-							//task.run();
 							task.setRunAgainSoon(true);
-//							if(task.isRepeating())
-//							{
-//								task.setRunAgainSoon(true); //Will cause it to run again after it finishes
-//								return true;
-//							}
+							return true;  //Already about to run
 						}
-//						else if( task.getTimeToStart().before(now) )
-//						{
-//							return true;
-//						}
 						else
 						{
-							//update the start time and call run now
-							//task.setTimeToStart(now);
-							task.run();
+							task.run();  //this is async
 						}
 						runner = task;
 						break;
@@ -205,15 +182,8 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 				if( runner == null)
 				{
 					runner = new TaskRunner(event, this);
-					//runner.setWithParameters(true); //To make sure we only run this once since the scheduled one should already be in there
-					//runner.setTimeToStart(now);
 					getRunningTasks().push(runner);
 					runner.run();
-				}
-				if(runner.isRepeating() && inUpdateRunTimes)
-				{
-					long later  = now.getTime() + runner.getPathEvent().getPeriod();
-					runner.setTimeToStart(new Date(later));
 				}
 			}
 			return true;
@@ -542,6 +512,8 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 	{
 		PathEvent event = getPathEvent(inEventPath);
 		getPathEvents().remove(event);
+		 	
+		//Remove the old one
 		List<TaskRunner> copy = new ArrayList<TaskRunner>(getRunningTasks());
 		for (Iterator iterator = copy.iterator(); iterator.hasNext();)
 		{
@@ -549,21 +521,27 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 			if( event == runner.getPathEvent() )
 			{
 				getRunningTasks().remove(runner);
-//				if(runner.isRepeating())
-//				{
-//					long later  = new Date().getTime() + runner.getTask().getPeriod();
-//					runner.setTimeToStart(new Date(later));
-//				}
 			}
 		}
 		
-		loadPathEvent(inEventPath);
+		event = loadPathEvent(inEventPath);
+
+		if (event.isEnabled())
+		{
+			if (event.getPeriod() > 0)
+			{
+				TaskRunner runner = new TaskRunner(event, this);
+				//runner.setRepeating(true);
+				getRunningTasks().push(runner);
+			}
+		}
+		
 		reloadScheduler();
 		
 		
 	}
 
-	private void reloadScheduler()
+	protected void reloadScheduler()
 	{
 		if (fieldTimer != null)
 		{
@@ -582,8 +560,31 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 			PathEvent type = (PathEvent) iterator.next();
 			if( type.getPeriod() > 0)
 			{
+				long startwhen = 0; //now
+				String startingfrommidnight = type.getStartingFromMidnight();
+				if( startingfrommidnight != null)
+				{
+					int milli = type.getStartingFromMidnightMilli();
+					GregorianCalendar cal = new GregorianCalendar();
+					cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
+					cal.set(GregorianCalendar.MINUTE, 0);
+					cal.set(GregorianCalendar.SECOND, 0);
+					cal.add(GregorianCalendar.DAY_OF_MONTH, 1); //Tomorrow
+					cal.add(GregorianCalendar.MILLISECOND, milli);
+					//How much to get to the next midnight?
+					long now = System.currentTimeMillis();
+					long nextstart = cal.getTime().getTime();
+					startwhen = nextstart - now; //How much remaining?
+				}
+				else
+				{
+					startwhen = type.getPeriod();
+				}
+				
 				RunSharedEventPath runthing = new RunSharedEventPath(type.getPage().getPath() );
-				getTimer().schedule(runthing, type.getPeriod(), type.getPeriod());
+				getTimer().schedule(runthing, startwhen, type.getPeriod());
+				//getRunningTasks().push(runner);
+
 			}
 		}
 	}
@@ -597,7 +598,7 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		}
 		public void run()
 		{
-			runSharedPathEvent(path,true);
+			runSharedPathEvent(path);
 		}
 	}
 
@@ -607,5 +608,6 @@ public class PathEventManager implements Shutdownable, CatalogEnabled
 		loadTasks();
 		reloadScheduler();
 	}
+	
 	
 }

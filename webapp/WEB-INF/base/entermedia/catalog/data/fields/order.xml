@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties class="order"> 
-  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Id 
+  <property id="id" index="true" stored="true"   editable="false" >Id 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[Id]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="name" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Order Number 
+  <property id="name" index="true" stored="true"   editable="false" >Order Number 
     <name> 
       <language id="de"><![CDATA[Bestellnummer]]></language>  
       <language id="en"><![CDATA[Order Number]]></language>  
@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Numéro de commande]]></language> 
     </name> 
   </property>  
-  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">SourcePath 
+  <property id="sourcepath" index="true" stored="true"   editable="false" >SourcePath 
     <name> 
       <language id="de"><![CDATA[SourcePath]]></language>  
       <language id="en"><![CDATA[SourcePath]]></language>  
@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language> 
     </name> 
   </property>  
-  <property id="ordertype" editable="true" index="true" stored="true" type="list" listid="order/ordertype" keyword="false" filter="false" sortable="true">Order Type 
+  <property id="ordertype" editable="true" index="true" stored="true" type="list" listid="order/ordertype"   >Order Type 
     <name> 
       <language id="de"><![CDATA[Auftragsart]]></language>  
       <language id="en"><![CDATA[Order Type]]></language>  
@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Type de commande]]></language> 
     </name> 
   </property>  
-  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">User 
+  <property id="userid" type="list" listid="user" editable="true" index="true" stored="true"   >User 
     <name> 
       <language id="de"><![CDATA[Benutzer]]></language>  
       <language id="en"><![CDATA[User]]></language>  
@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Utilisateur]]></language> 
     </name> 
   </property>  
-  <property id="date" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date 
+  <property id="date" datatype="date" viewtype="time" index="true" stored="true"   editable="false"  type="date">Date 
     <name> 
       <language id="de"><![CDATA[Datum]]></language>  
       <language id="en"><![CDATA[Date]]></language>  
@@ -49,7 +49,7 @@
       <language id="fr"><![CDATA[Date]]></language> 
     </name> 
   </property>  
-  <property id="orderstatus" editable="true" datatype="list" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Status 
+  <property id="orderstatus" editable="true" datatype="list" index="true" stored="true"    type="list">Status 
     <name> 
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
@@ -57,7 +57,7 @@
       <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
-  <property id="orderstatusdetails" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Status Details 
+  <property id="orderstatusdetails" editable="true" index="true" stored="true"   >Status Details 
     <name> 
       <language id="de"><![CDATA[Statusdetails]]></language>  
       <language id="en"><![CDATA[Status Details]]></language>  
@@ -65,7 +65,7 @@
       <language id="fr"><![CDATA[Détails du Statut]]></language> 
     </name> 
   </property>  
-  <property id="project" editable="true" datatype="list" listid="order/projects" index="true" stored="true" keyword="false" filter="false" sortable="true" type="list">Project 
+  <property id="project" editable="true" datatype="list" listid="order/projects" index="true" stored="true"    type="list">Project 
     <name> 
       <language id="de"><![CDATA[Projekt]]></language>  
       <language id="en"><![CDATA[Project]]></language>  
@@ -73,7 +73,7 @@
       <language id="fr"><![CDATA[Projet]]></language> 
     </name> 
   </property>  
-  <property id="applicationid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Application Ordered 
+  <property id="applicationid" index="true" stored="true"   editable="false" >Application Ordered 
     <name> 
       <language id="de"><![CDATA[Anwendung bestellt]]></language>  
       <language id="en"><![CDATA[Application Ordered]]></language>  
@@ -81,7 +81,7 @@
       <language id="fr"><![CDATA[Demande commandée]]></language> 
     </name> 
   </property>  
-  <property id="sharedby" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Shared By 
+  <property id="sharedby" index="true" stored="true"   editable="false" >Shared By 
     <name> 
       <language id="de"><![CDATA[geteilt von]]></language>  
       <language id="en"><![CDATA[Shared By]]></language>  
@@ -89,7 +89,7 @@
       <language id="fr"><![CDATA[Partagé par]]></language> 
     </name> 
   </property>  
-  <property id="publishdestination" editable="true" type="list" index="true" stored="true" keyword="false" filter="false" sortable="true">Destination Id 
+  <property id="publishdestination" editable="true" type="list" index="true" stored="true"   >Destination Id 
     <name> 
       <language id="de"><![CDATA[Ziel-ID]]></language>  
       <language id="en"><![CDATA[Destination Id]]></language>  
@@ -97,7 +97,7 @@
       <language id="fr"><![CDATA[Id Destination]]></language> 
     </name> 
   </property>  
-  <property id="expireson" editable="true" type="date" index="true" stored="true" keyword="false" filter="false" sortable="true">Expires On 
+  <property id="expireson" editable="true" type="date" index="true" stored="true"   >Expires On 
     <name> 
       <language id="de"><![CDATA[Läuft aus am]]></language>  
       <language id="en"><![CDATA[Expires On]]></language>  
@@ -105,7 +105,7 @@
       <language id="fr"><![CDATA[Expire le]]></language> 
     </name> 
   </property>  
-  <property id="sharewithemail" editable="true" note="separated by commas" index="true" stored="true" keyword="false" filter="false" sortable="true">Email 
+  <property id="sharewithemail" editable="true" note="separated by commas" index="true" stored="true"   >Email 
     <name> 
       <language id="de"><![CDATA[Email]]></language>  
       <language id="en"><![CDATA[Email]]></language>  
@@ -113,7 +113,7 @@
       <language id="fr"><![CDATA[Email]]></language> 
     </name> 
   </property>  
-  <property id="sharenote" viewtype="html" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true"> 
+  <property id="sharenote" viewtype="html" editable="true" stored="true" index="true"   > 
     <name> 
       <language id="de"><![CDATA[Notizen]]></language>  
       <language id="en"><![CDATA[Notes]]></language>  
@@ -121,7 +121,7 @@
       <language id="fr"><![CDATA[Remarques]]></language> 
     </name> 
   </property>  
-  <property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true" stored="true" index="true" keyword="false" filter="false" sortable="true">Share Type 
+  <property id="shareformattype" type="list" viewtype="radioselect" listid="order/shareformattypes" editable="true" stored="true" index="true"   >Share Type 
     <name> 
       <language id="de"><![CDATA[Aktien Typ]]></language>  
       <language id="en"><![CDATA[Share Type]]></language>  
@@ -129,7 +129,7 @@
       <language id="fr"><![CDATA[Type de partage]]></language> 
     </name> 
   </property>  
-  <property id="emailsent" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Email Sent 
+  <property id="emailsent" type="boolean" editable="true" index="true" stored="true"   >Email Sent 
     <name> 
       <language id="de"><![CDATA[E-Mail gesendet]]></language>  
       <language id="en"><![CDATA[Email Sent]]></language>  
@@ -137,7 +137,7 @@
       <language id="fr"><![CDATA[Email Envoyé]]></language> 
     </name> 
   </property>  
-  <property id="historytype" stored="true" index="true" type="list" listid="order/historytype" keyword="false" filter="false" editable="false" sortable="true">History Status 
+  <property id="historytype" stored="true" index="true" type="list" listid="order/historytype"   editable="false" >History Status 
     <name> 
       <language id="de"><![CDATA[Geschichte Status]]></language>  
       <language id="en"><![CDATA[History Status]]></language>  
@@ -145,7 +145,7 @@
       <language id="fr"><![CDATA[Statut de l&#39;historique]]></language> 
     </name> 
   </property>  
-  <property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date" keyword="false" filter="false" sortable="true">Status Updated 
+  <property id="historydate" editable="false" index="true" stored="true" viewtype="time" type="date"   >Status Updated 
     <name> 
       <language id="de"><![CDATA[Status aktualisiert]]></language>  
       <language id="en"><![CDATA[Status Updated]]></language>  
@@ -153,7 +153,7 @@
       <language id="fr"><![CDATA[Statut Mis à jour]]></language> 
     </name> 
   </property>  
-  <property id="historyitemsuccesscount" editable="false" stored="true" index="true" keyword="false" filter="false" sortable="true">Complete Count 
+  <property id="historyitemsuccesscount" editable="false" stored="true" index="true"   >Complete Count 
     <name> 
       <language id="de"><![CDATA[Vollzähligkeit]]></language>  
       <language id="en"><![CDATA[Complete Count]]></language>  
@@ -161,7 +161,7 @@
       <language id="fr"><![CDATA[Décompte complet]]></language> 
     </name> 
   </property>  
-  <property id="historyitemerrorcount" editable="false" stored="true" index="true" keyword="false" filter="false" sortable="true">Error Count 
+  <property id="historyitemerrorcount" editable="false" stored="true" index="true"   >Error Count 
     <name> 
       <language id="de"><![CDATA[Fehleranzahl]]></language>  
       <language id="en"><![CDATA[Error Count]]></language>  
@@ -169,7 +169,7 @@
       <language id="fr"><![CDATA[Nombre d&#39;erreur]]></language> 
     </name> 
   </property>  
-  <property id="basket" index="true" stored="true" type="boolean" keyword="false" filter="false" editable="false" sortable="true">Is an order basket
+  <property id="basket" index="true" stored="true" type="boolean"   editable="false" >Is an order basket
     <name>
       <language id="de"><![CDATA[Korb ist ein Auftrag]]></language>
       <language id="en"><![CDATA[Is an order basket]]></language>
@@ -179,7 +179,7 @@
   </property> 
   
   <!--  Data Merge -->
-  <property id="rendertype" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list">New 
+  <property id="rendertype" index="true"   stored="true" editable="true"  type="list">New 
     <name> 
       <language id="de"><![CDATA[render-Typ]]></language>  
       <language id="en"><![CDATA[Render Type]]></language>  
@@ -187,7 +187,7 @@
       <language id="fr"><![CDATA[Type de rendu]]></language> 
     </name> 
   </property>  
-  <property id="presetid" index="true" keyword="false" filter="false" stored="true" editable="true" sortable="true" type="list" viewtype="list" listid="convertpreset">New
+  <property id="presetid" index="true"   stored="true" editable="true"  type="list" viewtype="list" listid="convertpreset">New
     <name>
       <language id="de"><![CDATA[Preset-ID]]></language>
       <language id="en"><![CDATA[Preset ID]]></language>
@@ -195,4 +195,12 @@
       <language id="fr"><![CDATA[Preset ID]]></language>
     </name>
   </property>
+  
+  <property id="checkoutstatus" index="true" stored="true"   editable="true" type="list" >
+    <name> 
+      <language id="en"><![CDATA[Checkout Status]]></language>  
+    </name> 
+  </property>  
+  
+  
 </properties>

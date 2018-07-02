@@ -1,0 +1,6 @@
+<badges>
+  <badge id="asset_closecaptionstatus_complete" >Close Captions Complete</badge>
+  <badge id="asset_closecaptionstatus_error" >Close Caption Error</badge>
+  <badge id="asset_closecaptionstatus_inprogress" >Close Caption in Progress</badge>
+
+</badges>

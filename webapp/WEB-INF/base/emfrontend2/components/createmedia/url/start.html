@@ -1,0 +1,96 @@
+<div class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+
+		    <div class="ui-widget-header">[[Add Remote Media]]</div>
+		    <div class="ui-widget-content">
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+
+<p>
+	[[Fetch an external asset by its URL or embed code (may not be protected by a login)]].
+	[[The EnterMedia scheduler will then download the file and create thumbnails or conversions]].
+</p> 
+
+<form  name="wizard" method="post" class="ajaxform" targetdiv="addedcomplete"
+	action="$home$apphome/components/createmedia/url/createnew.html">
+	<input type="hidden" name="categoryid" value="index"/>
+    <input type="hidden" name="currentcollection" id="urlcurrentcollection" value="$!collectionid"/>
+
+<div id="eml-tab-green-container" class="clearfix">
+	<div class="inner-content">
+<script>
+
+	$("#externalmediainput").on("change",function()
+	{
+		var externalmediainput = $(this).val();
+		var youtubeid = false;
+		if( externalmediainput.startsWith("https://youtu.be/") )			//https://youtu.be/n7GxnhQjBaw		
+		{
+			youtubeid = externalmediainput.substring(17);
+		}
+		else if (externalmediainput.indexOf("youtube.com/") > -1 ) //https://www.youtube.com/watch?v=n7GxnhQjBaw
+		{
+			var start = externalmediainput.indexOf("watch?v=");
+			youtubeid = externalmediainput.substring( start + 8);
+		}
+		if( youtubeid )
+		{
+			var code = '<iframe width="560" height="315" src="https://www.youtube.com/embed/' + youtubeid + '" frameborder="0" allowfullscreen></iframe>';
+			$("#embeddedurl").val(code);
+		}
+		
+		if( externalmediainput.indexOf("vimeo") > -1) 
+		{
+			var vimeoid = externalmediainput.substring(externalmediainput.lastIndexOf("/") + 1);
+			var code = '<iframe src="https://player.vimeo.com/video/' + vimeoid +'" width="500" height="281" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>';
+			$("#embeddedurl").val(code);
+		}
+		
+	});
+
+</script>	
+
+<style>
+
+#embeddedurl
+{
+	width: 450px;
+	height: 60px;
+}
+#detail_embeddedurl
+{
+	margin-bottom: 10px;
+}
+.detail-note {
+	font-style: italic;
+}
+#externalmediainput
+{
+	width: 450px;
+	border: 2px solid #444;
+}
+</style>
+<div class="inputformrow">
+	<span class="emdatafield">
+			[[Media URL Address]]: 
+	</span>
+	<div id="detail_embeddedurl" class="emdatafieldvalue ">
+		<input name="externalmediainput" id="externalmediainput"  />
+		<span class="detail-note">[[URL to external asset or YouTube/Vimeo link]]<span></span></span>
+	</div>
+</div>
+
+		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+		$context.putPageValue("view","asset/assettype/default/createnewurl")	
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+	<input class="btn" style="margin-left:260px" type="submit" id="finishbutton" value="[[Import URL]]"> <span id="addedcomplete"></span>
+				
+				<div style="clear: both"></div>
+				
+</div>
+</form>
+</div>
+</div>
+
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
+	</div>
+</div>

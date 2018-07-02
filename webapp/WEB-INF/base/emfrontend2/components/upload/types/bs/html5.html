@@ -1,0 +1,123 @@
+#set( $root = "$home$apphome/components/upload/types/bs")
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+<div class="row">
+     <div class="col col-lg-4" style="padding: 0 20px 0 0; width:400px;">
+
+          <input id="upload_field" type="file" style="position:absolute; top:-100px;" multiple="multiple"  />
+
+     			<div class="uploadinstructions">
+        			        <a class="btn large" href="#" id="filePicker" style="margin-top: 0">[[Pick Files]]...</a>
+			    ##    <p>[[Drag media here]]</p>
+			    ##    <p>[[Or, if you prefer]]...</p> 
+			             <p class="hints" style="text-align: left; padding: 0 20px;" id="drag-and-drop-instructions">
+			                [[Upload multiple files by using the]] <strong>[[Shift]]</strong> [[key on your keyboard while selecting the files you wish to upload]].
+			             </p>			             
+				</div>				
+				<ul id="up-files-list" class="up-files-list">				
+				</ul>	
+				
+				<div class="uploadinstructions">	  
+	             <div id="drop-area" >
+					<div class="drop-over"></div>
+					<div class="hints" >[[Drop files here!]]</div>
+				</div>
+				</div>	
+				
+				<!-- This is not shown -->
+		        <div id="progress_report_template" style="display:none;">
+			        <li class="uploadprogressrow" >
+						<span id="progress_report_barcurrentupload" style="width: 0px;" class="uploadprogress"></span>
+						<a href="#">
+							<span  id="progress_report_namecurrentupload"  class="name"></span>
+							<span id="progress_report_sizecurrentupload"  class="size"></span>
+							<span id="progress_report_statuscurrentupload"  class="uploadstatus"></span>
+						</a>	
+					</li>
+				</div>				
+					             
+        
+    </div>
+    <div class="col col-lg-8" id="main-area" style="vertical-align: top;">
+
+<form id="uploaddata" name="wizard" onSubmit="return false;"
+				    action="$root/finish.html" class="validate"  >
+		<div id="uploadmetadata">
+		
+						#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid)
+		##TODO - Add library filtering here..
+		<div class="ui-widget uipanel" style="padding-bottom: 5px;">
+		    <div  class="ui-widget-header">[[Choose Collection]]
+							</div>
+						    <div  class="ui-widget-content">
+					
+						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
+							#if( $librarycol )
+							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
+							#end
+						</select>
+				
+		
+		</div></div>
+		
+				#end
+		
+		<div class="ui-widget uipanel">
+		    <div  class="ui-widget-header">[[Metadata]]
+		    	#if( $caneditmetadatasetup )
+		    	<span class="widget-header-edit">
+				 <a class="ir" href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload">[[Edit]]</a>
+				</span>
+				#end
+		    </div>
+		    <div  class="ui-widget-content">
+				
+
+					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+					
+					#if( $collectionid)
+						$context.putPageValue("view","asset/multipleuploadcollection")	
+						#set( $collection = $mediaarchive.getData("librarycollection",$collectionid) )
+						$!context.setRequestParameter("libraries.value",$collection.library)
+						<input type="hidden" name="currentcollection" id="currentcollection" value="$!collectionid"/>
+					#else
+				
+					#end
+
+					#set( $nodeId = $context.getRequestParameter("nodeID") )
+					#if($nodeId)
+						<input type="hidden" name="field" value="category" />
+						<input type="hidden" name="category.value" value="$nodeId"/>
+					#end
+
+
+					$context.putPageValue("view","asset/multipleupload")	
+					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+				##have the cancel delete these assets?
+			        <div id="uploadinstructionsafter" style="display: none">
+				       <a class="btn" id="startbutton" href="#">[[Upload]]</a>
+		        	</div>
+			</div>
+		</div>
+		</div>
+				</form>
+		
+		<div id="completed-uploads" style="display:none;margin-top:10px;" >
+		<div class="ui-widget uipanel">
+		    <div  class="ui-widget-header">[[Upload Queue]]</div>
+		    <div  class="ui-widget-content">
+					<a id="viewassetsbtn" class="btn" disabled 
+					#if( $collectionid ) 
+						href="$home$apphome/views/modules/librarycollection/pending/${collectionid}.html">[[View Pending]]
+					#else
+						 href="$home$apphome/views/search/search.html?hitssessionid=$hits.getSessionId()&sortby=assetaddeddateDown">[[View Uploads]]
+					#end
+					</a>	 
+					<ul id="up-files-list-completed" class="up-files-list" >
+					</ul>	
+			</div>
+		</div>	
+		</div>
+	</div>
+</div>

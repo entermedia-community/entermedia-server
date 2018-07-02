@@ -9,5 +9,7 @@
 	<row id="8"  webeventlistener="logger" action="asset/download" ></row>	
 	<row id="9"  webeventlistener="logger" action="asset/approved" ></row>	
 	<row id="10"  webeventlistener="logger" action="asset/rejected" ></row>	
+	<row id="11"  webeventlistener="logger" action="hotfolder/update" ></row>	
+	<row id="em12"  webeventlistener="logger" action="asset/usercrop" ></row>	
 	
 </rows>

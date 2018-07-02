@@ -20,6 +20,7 @@ import java.util.Set;
 
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang3.time.DurationFormatUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.convert.TranscodeTools;
@@ -414,6 +415,9 @@ public class MediaArchive implements CatalogEnabled
 
 	public String getMediaRenderType(String inFileFormat)
 	{
+		if(inFileFormat == null){
+			return "none";
+		}
 		return getTranscodeTools().getRenderTypeByFileFormat(inFileFormat);
 	}
 
@@ -439,7 +443,11 @@ public class MediaArchive implements CatalogEnabled
 			return "embedded";
 		}
 		String format = inAsset.get("fileformat");
-		return getTranscodeTools().getRenderTypeByFileFormat(format);
+		String finalformat =getTranscodeTools().getRenderTypeByFileFormat(format);
+		if(finalformat == null){
+			finalformat = "none";
+		}
+		return finalformat; 
 	}
 
 	public Data getDefaultAssetTypeForFile(String inFileName)
@@ -1454,15 +1462,22 @@ public class MediaArchive implements CatalogEnabled
 		//log.info("Loading " + inId);
 		if (setting == null)
 		{
-			return null;
-		}
-		value = setting.get("value");
-		if (value == null)
-		{
-			log.info("Null value " + getCatalogId() + " " + inId);
 			value = CacheManager.NULLVALUE;
 		}
+		else
+		{
+			value = setting.get("value");
+			if (value == null)
+			{
+				log.info("Null value " + getCatalogId() + " " + inId);
+				value = CacheManager.NULLVALUE;
+			}
+		}	
 		getCacheManager().put("catalogsettings", inId, value);
+		if (value == CacheManager.NULLVALUE)
+		{
+			return null;
+		}
 		return value;
 	}
 
@@ -1574,12 +1589,12 @@ public class MediaArchive implements CatalogEnabled
 		return page.getLength() > 1;
 	}
 
-	public String asExportFileName(Asset inAsset, Data inPreset)
+	public String asExportFileName(Data inAsset, Data inPreset)
 	{
 		return asExportFileName(null, inAsset, inPreset);
 	}
 
-	public String asExportFileName(User inUser, Asset inAsset, Data inPreset)
+	public String asExportFileName(User inUser, Data inAsset, Data inPreset)
 	{
 		String format = inPreset.get("fileexportformat");
 		if (format == null)
@@ -1602,7 +1617,7 @@ public class MediaArchive implements CatalogEnabled
 		String shortname = PathUtilities.extractPageName(inAsset.getName());
 		tmp.put("shortfilename", shortname);
 
-		tmp.put("catalogid", inAsset.getCatalogId());
+		tmp.put("catalogid", getCatalogId());
 		tmp.put("sourcepath", inAsset.getSourcePath());
 		tmp.put("date", ymd.format(now));
 		tmp.put("time", time.format(now));
@@ -1713,6 +1728,17 @@ public class MediaArchive implements CatalogEnabled
 		sb.append(min + ":" + sec);
 		return sb.toString();
 	}
+	
+	
+	
+	
+	public String formatSeconds(String inSeconds, String inMask) {
+		
+		Long millis = Long.parseLong(inSeconds)* 1000;
+		
+		return DurationFormatUtils.formatDuration(millis, inMask);
+		
+	}
 
 	public Searcher getSearcher(String inSearchType)
 	{
@@ -1803,7 +1829,12 @@ public class MediaArchive implements CatalogEnabled
 		}
 		getPresetManager().conversionCompleted(this, asset);
 	}
-
+	public User getUser(String inId)
+	{
+		User user = getUserManager().getUserSearcher().getUser(inId);
+		return user;
+	}
+	
 	public UserManager getUserManager()
 	{
 		if (fieldUserManager == null)
@@ -1824,6 +1855,19 @@ public class MediaArchive implements CatalogEnabled
 		return getPageManager().getRepository().getStub(inPath);
 	}
 
+	public Collection<ContentItem> listGeneratedFiles(Data inHit)
+	{
+		String sourcepath = inHit.getSourcePath();
+		Collection paths = getPageManager().getChildrenPaths("/WEB-INF/data/" + getCatalogId() + "/generated/" + sourcepath + "/");
+		Collection<ContentItem> children = new ArrayList();
+		for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+		{
+			String path = (String) iterator.next();
+			children.add(getContent(path));
+		}
+		return children;
+	}
+	
 	public OrderManager getOrderManager()
 	{
 		if (fieldOrderManager == null)
@@ -1855,6 +1899,9 @@ public class MediaArchive implements CatalogEnabled
 		getNodeManager().clear();
 		getPresetManager().clearCaches();
 		getPropertyDetailsArchive().clearCache();
+		getCategorySearcher().clearIndex();
+		getCategoryArchive().clearCategories();
+		
 	}
 
 	public Collection<Data> listHiddenCollections()
@@ -2024,6 +2071,31 @@ public class MediaArchive implements CatalogEnabled
 		return webmail;
 	}
 
+	//Made by Thomas
+	public TemplateWebEmail createSystemEmail(String email, String inTemplatePath)
+	{
+		TemplateWebEmail webmail = (TemplateWebEmail) getModuleManager().getBean("templateWebEmail");//from spring
+
+		String fromemail = getCatalogSettingValue("system_from_email");
+		String fromemailname = getCatalogSettingValue("system_from_email_name");
+
+		webmail.setFrom(fromemail);
+		webmail.setFromName(fromemailname);
+
+		webmail.setMailTemplatePath(inTemplatePath);
+
+		try
+		{
+			InternetAddress to = new InternetAddress(email, "");
+			webmail.setRecipient(to);
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		return webmail;
+	}
+
 	public int getRealImageWidth(Data inHit)
 	{
 		String orientation = inHit.get("imageorientation");
@@ -2076,17 +2148,21 @@ public class MediaArchive implements CatalogEnabled
 		{
 			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
 			cdnprefix = rutil.getSiteRoot();
-			//TODO: Look up the home variable?
-			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
-			Data prefix = (Data)searcher.searchById("cdn_prefix");
-			if( prefix == null)
+			if( cdnprefix.contains("localhost"))
 			{
-				prefix = searcher.createNewData();
-				prefix.setId("cdn_prefix");
+				cdnprefix = "";
 			}
-			prefix.setValue("value", cdnprefix);
-			searcher.saveData(prefix);
-			getCacheManager().clear("catalogsettings");
+//			//TODO: Look up the home variable?
+//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
+//			Data prefix = (Data)searcher.searchById("cdn_prefix");
+//			if( prefix == null)
+//			{
+//				prefix = searcher.createNewData();
+//				prefix.setId("cdn_prefix");
+//			}
+//			prefix.setValue("value", cdnprefix);
+//			searcher.saveData(prefix);
+//			getCacheManager().clear("catalogsettings");
 		}
 		String sourcepath = URLUtilities.encode(inAsset.getSourcePath());
 

@@ -1,0 +1,20 @@
+<div class="em-rounded" id="orderdialog">
+	
+	
+	
+<form class="validate ajaxformXX" data-targetdivXX="orderdialog" id="usereditform" method="post" action="$home$apphome/views/activity/creategallerycollectionfinish.html">
+#set($searcher = $searcherManager.getSearcher($catalogid, "librarycollection"))
+$context.putPageValue("searcher", $searcher)	 
+$context.putPageValue("view", "librarycollection/quickgallery")	
+<input type="hidden" name="view" value="librarycollection/quickgallery"/>
+<input type="hidden" name="hitssessionid" value="$context.getRequestParameter('hitssessionid')"/>
+
+<input type="hidden" name="searchtype" value="asset"/>
+
+<br/>
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+ 
+<input style="margin-left: 300px;" type="submit" name="submit" value="Next"/> 
+
+</form>
+</div>

@@ -16,6 +16,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
 import org.entermediadb.asset.BaseCompositeData;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
@@ -687,7 +688,7 @@ protected Element loadViewElement(XmlFile file, String toremove)
 				event.setProperty("id", data.getId());
 				event.setProperty("note", "old field diff" );
 				event.setProperty("applicationid", inReq.findValue("applicationid"));
-
+				event.setUser(inReq.getUser());
 				getEventManager().fireEvent(event);
 			}
 			inReq.putPageValue("rowsedited", String.valueOf(count));
@@ -1555,10 +1556,10 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		String type = resolveSearchType(inReq);
 		String items = inReq.getRequestParameter("items");
 		String[] sorted = MultiValued.VALUEDELMITER.split(items);	
-		
+		PropertyDetailsArchive propertyarchive = getSearcherManager().getPropertyDetailsArchive(catalogid);
 		XmlFile file = (XmlFile)loadView(inReq);
 		String viewpath = inReq.getRequestParameter("viewpath");
-		String path = "/WEB-INF/data/" + catalogid + "/views/" + viewpath + ".xml";
+		String path = propertyarchive.findSavePath() + "/views/" + viewpath + ".xml";
 		file.setPath(path);
 		file.setElementName("property");
 		List tosave = new ArrayList();
@@ -1577,10 +1578,11 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		{
 			throw new OpenEditException("Should not be removing all fields");
 		}
+		//TODO: Move to PropertyDetailsArchive.saveView
 		file.getElements().clear();
 		file.getElements().addAll(tosave);
 		getXmlArchive().saveXml(file, inReq.getUser());
-		getSearcherManager().getPropertyDetailsArchive(catalogid).clearCache();
+		propertyarchive.clearCache();
 
 		//log.info(catalogid + type + items);
 		
@@ -1767,6 +1769,12 @@ protected Element loadViewElement(XmlFile file, String toremove)
 					if(type == null || !archive.viewExists( path ) )
 					{
 						path =	module + "/assettype/default/" + view.getId();
+						List detailsForView = getSearcherManager().getSearcher(catalogid, "asset").getDetailsForView(path, inReq.getUser());
+						if(detailsForView == null || detailsForView.size() == 0) {
+							continue;
+						}
+						
+						
 					}
 				}
 				else
@@ -1874,12 +1882,47 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		if (!Boolean.parseBoolean(clear))
 		{
 			hits = loadHits(inReq);
+			if( hits != null)
+			{
+				String input = hits.getSearchQuery().get("userinputsearch");
+				if( !Boolean.parseBoolean( input ) )
+				{
+					hits = null;
+				}
+			}
 		}
-		
 		if( hits == null)
 		{
-			hits = search(inReq);
+			//hits = search(inReq);
+			Searcher searcher = loadSearcher(inReq);
+			hits = searcher.getAllHits(inReq);
+			hits.getSearchQuery().setProperty("userinputsearch", "true");  //So it caches
 		}
 		
 	}
+	
+	
+	
+	public void clearCache(WebPageRequest inReq) throws Exception{
+		
+		Searcher searcher = loadSearcher(inReq);
+		
+		
+		Data currentdata = (Data)inReq.getPageValue("data");
+		String dataid = null;
+		if(currentdata == null){
+			dataid = inReq.getRequestParameter("dataid");
+		} else{
+			 dataid = currentdata.getId();
+		}
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getCacheManager().remove(searcher.getSearchType(), dataid);
+		
+		
+		
+		
+	}
+	
+	
 }

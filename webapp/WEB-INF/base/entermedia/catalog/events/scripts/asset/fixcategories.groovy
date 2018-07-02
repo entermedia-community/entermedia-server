@@ -58,14 +58,14 @@ public void init()
 		//found.clearCategories();
 		
 		String folder = found.getValue("isfolder");
-		if(Boolean.parseBoolean( folder ) )   //   a/b/c.jpg -> a/b   if /a/b  --> a/b
+		if(Boolean.parseBoolean( folder ) )  
 		{
 		}
 		else
 		{
 			path = PathUtilities.extractDirectoryPath(path);
 		}
-		Collection assetexactids = found.getValues("categories-exact");
+		Collection assetexactids = found.getValues("category-exact");
 		Collection tosaveExactcategory = new HashSet();
 		for (String id in assetexactids) {
 			if( collectionscatids.contains(id))

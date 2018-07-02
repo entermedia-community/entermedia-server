@@ -1,0 +1,21 @@
+<page>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="AssetControlModule.loadAssetPermissions"/>
+	<path-action name="Admin.allowViewing"/>
+	<path-action bean="commentArchive" name="PageValue.loadPageVariable"/>
+	<property name="assetrootfolder">/${catalogid}/assets</property>
+	<property name="subtab">viewassetedit</property>
+	<property name="assettab">viewassetedit</property>
+	
+	<script id="imgareaselect" src="/${applicationid}/components/javascript/jquery.imgareaselect.js"/>
+    <style id="imgareaselect-css" href="/${applicationid}/theme/styles/jquery/imgareaselect-default.css"/>
+
+	<!-- jcrop tool -->
+  
+	<permission name="view">
+		<not>
+			<pagevalue name="canviewasset" equals="false" />
+		</not>
+	</permission>
+
+</page>

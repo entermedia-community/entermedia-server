@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+	<property name="assetrootfolder">/${applicationid}/services/module/asset/downloads/orders/originals</property>
+	<property name="sourcepathhasfilename">true</property>
+	
+	<generator name="originalDownloadGenerator"/>
+	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
+	
+	<permission name="view">
+		   <action name="OrderModule.checkItemApproval" />
+	</permission>	
+		
+</page>

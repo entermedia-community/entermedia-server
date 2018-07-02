@@ -1,0 +1,32 @@
+#set( $clientroot = $context.getContentProperty("clientroot") )
+<div id="captionview" #if( $track.transcribestatus == "needstranscribe") class="ajaxstatus" #end ajaxpath="$clientroot/viewcaptions.html?oemaxlevel=1&assetid=$asset.id">
+
+#if( $track.transcribestatus == "needstranscribe") [[pending auto transcribing]] #end
+#if( $track.transcribestatus == "inprogress") [[in progress]] ${track.percentcomplete}% #end
+#if( $track.transcribestatus == "error") [[error auto transcribing]] #end
+
+	#set( $clips = $timeline.getClips() )
+	#set( $padded = $timeline.getPxWidth()+60)
+<div id="scrollarea" style="width:${padded}px;height: 350px; overflow: scroll;">	
+<div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()"
+	 data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="margin-left:60px;">
+	#foreach($clip in $clips)
+		#set( $index = ${foreach.count} - 1)
+		<div id="slider123" class="time-slider data-selection"  
+			data-cliplabel="#esc($clip.getLabel())" 
+			data-timecodestart="$clip.getStart()"
+			data-timecodelength="$clip.getLength()">
+			<div class="ruler" >
+				<div class="timecell" style="left: ${timeline.getPxStart($clip)}px; width: ${timeline.getPxLength($clip)}px; cursor: move;position:relative;">
+					<div class="grabresize"></div>
+					<span class="cliptext">#esc($!clip.getLabel())</span>
+				</div>
+			</div>
+		</div>
+	#end
+</div>
+</div>
+
+$pages.include("$clientroot/timeline.html")
+
+</div>

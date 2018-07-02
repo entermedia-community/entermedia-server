@@ -37,6 +37,38 @@ public class XmpTest extends BaseEnterMediaTest{
 		assertTrue(newasset.getKeywords().contains("test1"));
 		assertTrue(newasset.getKeywords().contains("test2"));
 	}
+
+	public void testCustomXmp() throws Exception
+	{
+		Asset asset = new Asset(getMediaArchive());
+		asset.setValue("entermedia-exif", "EnterMedia");
+			
+		
+		asset.setSourcePath("testassets/dog.jpg");
+		File assetfile = new File(getRoot(), "../etc/testassets/dog.jpg");
+
+		XmpWriter writer = (XmpWriter) getBean("xmpWriter");
+		assertNotNull(writer);
+		writer.saveMetadata(getMediaArchive(), asset);
+		
+		Asset newasset = new Asset(getMediaArchive());
+		
+		ExiftoolMetadataExtractor reader= (ExiftoolMetadataExtractor)getBean("exiftoolMetadataExtractor");
+		MediaArchive mediaArchive = getMediaArchive();
+		
+		FileItem item = new FileItem();
+		item.setPath("/etc/testassets/dog.jpg");
+		item.setFile(assetfile);
+		
+		reader.extractData(mediaArchive, item, newasset);
+		assertEquals(newasset.getValue("entermedia-exif"), "EnterMedia");
+
+	}
+	
+
+	
+	
+	
 	
 
 }

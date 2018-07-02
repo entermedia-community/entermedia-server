@@ -24,7 +24,7 @@
 	#end
 	#if ($content.isPropertyTrue("showaddselections") && $canviewbasket)
 	<li>
-		<a class="toggleitem ajax btn" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">[[Add to Basket]]</a>
+		<a class="toggleitem ajax btn" targetdiv="basketmenu"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()">[[Add to Cart]]</a>
 	</li>
 	#end
 
@@ -59,12 +59,6 @@
 		<a class="btn tooltip edit" title="[[Edit Asset Metadata]]" href="$home$apphome/views/modules/asset/editor/generalinformation/index.html?sourcepath=$asset.sourcepath&hitssessionid=$!{hitssessionid}"><img width="12" src="$home$themeprefix/images/navigation/write-note.png" title="[[Edit Metadata]]" /></a>
 	</li>
 	#end
-
-	##if( $canviewvoting )
-	##<li class="emdetaileditasset" style="float: right;">
-	##	$pages.include("$apphome/components/voting/index.html?catalogid=$catalogid&sourcepath=$asset.sourcepath", $context)
-	##</li>
-	##end
 	
 </ul>
 

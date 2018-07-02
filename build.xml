@@ -60,6 +60,11 @@
        			<include name="entermedia/_site.xconf" />
         		<include name="*.*" />
     		</fileset>
+		</copy>	
+		<copy todir="${wardir}/WEB-INF/"  preservelastmodified="true">
+			<fileset dir="${basedir}">
+    			<include name="version.txt" />
+			</fileset>
     	</copy>
 
   	<mkdir dir="${build}/tmp/" />
@@ -81,7 +86,7 @@
 		</fileset>
 	</copy>
 
-    <javac debug="true" destdir="${build}/compile" srcdir="${src}"  target="1.7" source="1.7">
+    <javac debug="true" destdir="${build}/compile" srcdir="${src}"  target="1.8" source="1.8">
       <classpath>
       	  <!--      <fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar">
       	 </fileset>
@@ -151,7 +156,7 @@
     
   <target name="junit">
   	
-    <javac debug="true" destdir="${build}/compile" srcdir="${testsrc}" target="1.7">
+    <javac debug="true" destdir="${build}/compile" srcdir="${testsrc}" target="1.8">
       <classpath>
 <!--      	<fileset file="/home/cburkey/eiiprojects/anthill/Cumulus_6_Java_SDK/CumulusJC.jar"/> -->
         <fileset dir="${lib}" >

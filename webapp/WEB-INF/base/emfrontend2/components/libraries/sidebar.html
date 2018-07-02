@@ -1,0 +1,71 @@
+##if ( $canviewlibrarysearch )
+
+<div class="ui-widget uipanel" id="left-col-libraries" >
+	<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
+		#else class="ui-widget-header" #end data-target="projectscontent">
+		<span class="widget-header-title">[[Libraries]]</span>
+	</div>
+	<div  class="ui-widget-content"  id="projectscontent" #if($userprofile.minimizeprojectscontent == "true" && $cantogglesidebar) style="display: none;" #end>
+#if( $content.isPropertyTrue("libraryreloadpage") )
+<form name="librarychange" id="librarychange"   > 
+#else
+<form name="librarychange" id="librarychange" action="$home$apphome/components/libraries/sidebar.html" class="ajaxform" targetdiv="left-col-libraries"  > 
+#end
+		<div class="collectionheaderleft">
+
+	##		<input name="completefield" class="listautocomplete" id="sidebarlibraryvalue" value="#esc($!selectedlibrary.getName())"  
+	##		data-searchfield="name" data-searchtype="library" data-showicon="true" data-listcatalogid="$catalogid" data-foreignkeyid="" 
+	##		data-sortby="name" onChange='$("#librarychange").submit()' />
+
+			<input name="profilepreference"    value="last_selected_library" type="hidden" />
+			<select name="profilepreference.value"  id="listprofilepreferencevalue"  class="listautocomplete" data-searchfield="name" data-searchtype="library" 
+				data-listcatalogid="$catalogid" onChange='$("#librarychange").submit()' >
+			#if( $selectedlibrary )
+			  <option value="$selectedlibrary.getId()" selected="selected">#esc($selectedlibrary.getName())</option>
+			#end
+			</select>
+
+		</div>		
+#set( $caneditlibrary = $context.getPageStreamer().canDo("editdata","$apphome/views/modules/library/index.html"))
+#if ($caneditlibrary)		
+		<div class="collectionheaderright">
+			<a href="$home$apphome/components/libraries/addnewlibrary.html" class="emdialog" title="Add Library"><img src="$home$themeprefix/images/icons/addgray.png"> </a>
+		</div>
+		
+#end		
+<div class="clearfix"></div>
+</form>
+
+#set( $moduleid= $content.module )
+#if( $moduleid == "librarycollection" )
+	#set( $inmodule = true )
+#end
+
+#if( $selectedlibrary )
+	<div class="librarymenu" >
+		<a href="$home$apphome/views/modules/library/edit/edit.html?id=${selectedlibrary.id}&viewid=librarygeneral&viewpath=library/librarygeneral&hitssessionid=hitslibrarymedia/catalogs/public&searchtype=library" class="librarydetails"><span> [[Details]]</span></a>
+		<a href="$home$apphome/views/search/search.html?field=category&operation=exact&category.value=$selectedlibrary.categoryid" #if ($user) class="librarydroparea" #end data-targetdiv="left-col-libraries" data-libraryid="$selectedlibrary.id" data-count="$librarysize" data-label="Assets"><span> $librarysize [[Assets]]</span></a>
+	</div>
+	<div class="librarylabels"><h2>[[Collections]]</h2>
+   	<ul >
+   		#foreach( $usercollection in $usercollections )
+		<li>
+			#set( $selected = false )
+			#if( $inmodule && $librarycol && $usercollection.getId() == $librarycol.id )
+				#set( $selected = true )
+			#end
+			<a href="$home$apphome/views/modules/librarycollection/media/${usercollection.getId()}.html" data-dropsaveurl="$home$apphome/components/libraries/addassettocollection.html?libraryid=${selectedlibrary.id}&collectionid=${usercollection.getId()}" 
+				class="librarylabel #if ($user) librarycollectiondroparea #end #if ($selected ) selected #end"  data-targetdiv="left-col-libraries" title="$!{usercollection.getCollection().notes}"><span> $usercollection.getName() ($usercollection.getAssetCount())</span></a>
+		</li>
+		#end
+		#if ($canaddnewcollection)
+		<li>
+			<div id="createnewarea"><a class="ajax collectionnew" targetdivinner="createnewarea" data-oemaxlevel="1" href="$home$apphome/components/libraries/addnewchild.html?libraryid=$selectedlibrary.id" >[[Create New]]</a></div>
+		</li>
+		#end
+	</ul>	
+	</div>
+#end
+	</div>
+</div>
+##end

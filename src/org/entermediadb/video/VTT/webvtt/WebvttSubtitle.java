@@ -50,8 +50,8 @@ public void setCues(List<WebvttCue> inCues)
     for (int cueIndex = 0; cueIndex < numCues; cueIndex++) {
       WebvttCue cue = cues.get(cueIndex);
       int arrayIndex = cueIndex * 2;
-      cueTimesUs[arrayIndex] = cue.startTime;
-      cueTimesUs[arrayIndex + 1] = cue.endTime;
+      cueTimesUs[arrayIndex] = cue.fieldStartTime;
+      cueTimesUs[arrayIndex + 1] = cue.fieldEndTime;
     }
     sortedCueTimesUs = Arrays.copyOf(cueTimesUs, cueTimesUs.length);
     Arrays.sort(sortedCueTimesUs);

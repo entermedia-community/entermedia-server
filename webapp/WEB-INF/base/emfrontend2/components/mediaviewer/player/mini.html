@@ -1,0 +1,114 @@
+#set($totalpages = $numberutils.toInt($asset.pages))
+#set ( $hitssessionid = $context.findValue("hitssessionid"))
+<div id="mediaplayer" class="media-player-mini">
+	#if( $asset.getId().startsWith("multiedit:") )
+	    <div class="media-info">
+	    	<div class="primary" style="text-align: center">[[Editing across]] $asset.size() [[assets]]</div>
+		</div>
+	#else            
+        <div class="row">
+        	<div class="col-sm-3">
+            <div class="media-thumbnail">
+                #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+                #if( !$thumbsize )
+                    #set( $thumbsize  = "thumb" )
+                #end
+                $context.putPageValue("thumbsize",$thumbsize)
+                #if ( $type == "image" || $type == "document" )
+                	#set ( $urlutils = $context.getPageValue("url_util"))
+					#if ($urlutils)
+						#set ( $sourcepath = $urlutils.encode($asset.sourcepath))
+						#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+					#else
+						#set ( $sourcepath = $asset.sourcepath)
+					#end
+                    #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
+                    <a class="thickbox" href="$home$link" target="_parent" title="[[drag]] $asset [[as jpeg]]">
+                        $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+                    </a>
+                #else
+                    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+                #end 
+            </div>
+            </div>
+        	<div class="col-sm-9">
+            <div class="media-info">
+                <div class="media-info-primary">
+                    <strong>$asset</strong> 
+                    #if ($totalpages > 1) 
+                    	<a class="propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2">($totalpages [[Pages]])</a> 
+                    #end
+                </div>
+                <div class="media-info-primary">
+	                 #if ($attachmentcount > 0)
+	                 	<a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>
+	                 #end
+	                 #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+	                 <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views" title="$views [[Asset Views]]"><i class="fas fa-eye"></i> $views</a>
+	                 <a style="margin-left:10px;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments"><i class="fas fa-comments"></i> $!comments.size()</a>
+	                 <br>
+	                 [[Source Path]]: $asset.sourcepath
+                </div>
+                
+                #set($contact = $mediaarchive.getSearcher("contact").query().exact("thumbnail", $asset.id).searchOne())
+                
+                #if ($asset.getKeywords().size() > 0 || $asset.getCategories().size() > 0 || $contact || $canviewshoppingcart)
+                <div class="media-info-more">
+                        #if ($asset.getKeywords().size() > 0)
+                            <strong>[[Tags]]</strong>
+                            <p>
+                            #foreach ($tag in $asset.getKeywords())
+                                #if ( ${foreach.count} <= 10 )
+                                <a href="$home$apphome/views/search/search.html?field=keywords&operation=matches&keywords.value=$tag" class="badge badge-primary">$tag</a> 
+                                #elseif ( ${foreach.count} == 11 )
+                                    <a class="ajax" title="[[View All Tags]]" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/tags/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">[[All Tags]]...</a>
+                                #end
+                            #end
+                            </p>
+                        #end
+                     
+                     
+                        #if ($asset.getCategories().size() > 0)
+                            <strong>[[Categories]]</strong>
+                            <p>
+                            #foreach ($category in $asset.getCategories())
+                                #if ( ${foreach.count} <= 8 )
+                                <a href="$home$apphome/views/categories/${category.id}.html">$category</a> 
+                                #elseif ( ${foreach.count} == 9 )
+                                    <a class="ajax tooltip" title="[[View All Categories]]" targetdiv="detaileditor" href="$home$apphome/views/modules/asset/editor/categorize/index.html?assetid=$asset.id&hitssessionid=$hitssessionid&oemaxlevel=2">...</a>
+                                #end
+                            #end
+                            </p>
+                        #end
+                   
+                     #if($contact)
+                      <strong>[[Contact]]</strong>
+     	                 <p>          
+                         <a href="$home$apphome/views/modules/contact/edit/edit.html?id=${contact.id}&viewid=contactcontact_details&viewpath=contact/contactcontact_details&searchtype=contact&detailsreadonly=true&preview=true">$contact</a> 
+	                     </p>
+                     #end
+                     
+                     #if($canviewshoppingcart)
+                     	#if($asset.shoppingcartlink)
+                     		<strong>[[Shopping Cart]]</strong>
+                     		<p>
+                            $pages.include("/$applicationid/views/modules/asset/editor/editshoppingcart/shoppingcartbutton.html",$context)
+                        	</p>
+                        #end
+                     #end
+                </div>
+                #end
+            </div>
+            </div>
+        </div>
+               #end 
+</div>
+
+<script>
+    $('#mp-player img').load(function(){
+        var $wimg = $('#mp-player img').width();
+        $('#mp-player').width($wimg);
+        $('#mp-asset-title').show();
+        $('#mp-asset-info').show();
+    });
+</script>

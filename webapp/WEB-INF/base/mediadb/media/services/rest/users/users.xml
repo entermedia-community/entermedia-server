@@ -25,7 +25,7 @@
 #set( $selecteduser = false )
 #set( $selecteduser = $searcher.searchById($hit.id) )
 #if( $selecteduser )
-groups="#foreach( $group in $selecteduser.getGroups() )#if( $velocityCount > 1 ) | #end$group.getId()#end"
+groups="#foreach( $group in $selecteduser.getGroups() )#if( ${foreach.count} > 1 ) | #end$group.getId()#end"
 #end
 />
 

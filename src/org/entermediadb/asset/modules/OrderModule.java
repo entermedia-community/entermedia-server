@@ -3,6 +3,7 @@ package org.entermediadb.asset.modules;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -16,14 +17,18 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.orders.Order;
 import org.entermediadb.asset.orders.OrderManager;
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.PageRequestKeys;
 import org.openedit.users.User;
+import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.URLUtilities;
 
 public class OrderModule extends BaseMediaModule
 {
@@ -430,47 +435,60 @@ public class OrderModule extends BaseMediaModule
 
 	public boolean checkItemApproval(WebPageRequest inReq) throws Exception
 	{
-
-		if (inReq.getUser() == null)
-		{
-			return false;
-		}
 		MediaArchive archive = getMediaArchive(inReq);
-
-		// Searcher ordersearcher =
-		// archive.getSearcherManager().getSearcher(archive.getCatalogId(),
-		// "order");
-		// SearchQuery search = ordersearcinKeyher.createSearchQuery();
-		// search.addExact("userid", inReq.getUser().getId());
-		// search.addExact("orderstatus", "processed");
-		// search.addSortBy("date");
-		// HitTracker hits = ordersearcher.search(search);
-		// look for the most recent order for an approved asset
-		Asset asset = (Asset) inReq.getPageValue("asset");
-		String sourcepath = null;
-		if (asset != null)
-		{
-			sourcepath = asset.getSourcePath();
-		}
-		else
-		{
-			sourcepath = archive.getSourcePathForPage(inReq);
-		}
-		if (sourcepath == null)
+		String orderid = inReq.getRequestParameter("orderid");
+		
+		Order order = getOrderManager().loadOrder(archive.getCatalogId(), orderid);
+		if( order == null)
 		{
 			return false;
 		}
-		Searcher itemsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
-		SearchQuery search = itemsearcher.createSearchQuery();
-		search.addExact("userid", inReq.getUser().getId());
-		search.addExact("assetsourcepath", sourcepath);
-		search.addMatches("status", "approved");
-		HitTracker results = itemsearcher.search(search);
-		if (results.size() > 0)
+		
+		//Check expired
+		Date expireson = order.getDate("expireson");
+		if( expireson == null )
+		{
+			Date date = order.getDate("date");
+			expireson = new Date(date.getTime() + (1000L * 60L * 60L * 24L * 30L));
+		}
+		
+		Date today = new Date();
+		if( today.after( expireson) )
+		{
+			log.error("Order is expired " + orderid);
+			return false;
+		}
+		String status = order.get("checkoutstatus");
+		if( status != null && status.equals("approved"))
 		{
 			return true;
 		}
 		return false;
+//		Asset asset = (Asset) inReq.getPageValue("asset");
+//		String sourcepath = null;
+//		if (asset != null)
+//		{
+//			sourcepath = asset.getSourcePath();
+//		}
+//		else
+//		{
+//			sourcepath = archive.getSourcePathForPage(inReq);
+//		}
+//		if (sourcepath == null)
+//		{
+//			return false;
+//		}
+//		Searcher itemsearcher = archive.getSearcherManager().getSearcher(archive.getCatalogId(), "orderitem");
+//		SearchQuery search = itemsearcher.createSearchQuery();
+//		search.addExact("userid", inReq.getUser().getId());
+//		search.addExact("assetsourcepath", sourcepath);
+//		search.addMatches("status", "approved");
+//		HitTracker results = itemsearcher.search(search);
+//		if (results.size() > 0)
+//		{
+//			return true;
+//		}
+//		return false;
 	}
 
 	public void removeSelectionFromOrderBasket(WebPageRequest inReq)
@@ -1040,6 +1058,74 @@ public class OrderModule extends BaseMediaModule
 			return true;
 		}
 		return false;
+	}
+	public Data checkoutCart(WebPageRequest inReq)
+	{
+		String catalogid = inReq.findValue("catalogid");
+		String applicationid = inReq.findValue("applicationid");
+		MediaArchive archive = getMediaArchive(inReq);
+
+		Order basket = loadOrderBasket(inReq);
+
+		Order order = (Order) getOrderManager().createNewOrder(applicationid, catalogid, inReq.getUserName());
+		order.setValue("ordertype", "checkout");
+		order.setValue("orderstatus", "processing");
+		order.setValue("checkoutstatus", "pending");
+		
+		if( inReq.getUser().getEmail() == null)
+		{
+			throw new OpenEditException("Please set an email address");
+		}
+		order.setValue("sharewithemail", inReq.getUser().getEmail());
+		order.setValue("date", new Date());
+		//Expiration
+		
+		inReq.putPageValue("order", order);
+
+		//OrderHistory history = getOrderManager().createNewHistory(catalogid, order, inReq.getUser(), "newrecord");
+		
+		String presetid = inReq.getRequestParameter("presetid");
+		if( presetid == null)
+		{
+			presetid = "0";
+		}
+		
+		inReq.setRequestParameter("orderid", order.getId());
+		
+		Searcher itemsearcher = getSearcherManager().getSearcher(catalogid, "orderitem");
+		HitTracker basketitems = getOrderManager().findOrderItems(inReq, catalogid, basket);
+		List tosave = new ArrayList();
+		
+		for (Iterator iterator = basketitems.iterator(); iterator.hasNext();)
+		{
+			Data orderitem = (Data) iterator.next();
+			orderitem =  itemsearcher.loadData(orderitem);
+			orderitem.setValue("orderid", order.getId());
+			orderitem.setValue("presetid", presetid); //for now
+			String assetid = orderitem.get("assetid");
+			Asset asset = archive.getAsset(assetid);
+			//Save the publishqueue
+			Data publishqueue = getOrderManager().createPublishQueue(archive,inReq.getUser(),asset,"0","0");
+			
+			orderitem.setValue("publishqueueid",publishqueue.getId());
+			
+			tosave.add(orderitem);
+		}
+		itemsearcher.saveAllData(tosave, null);
+		//order.setValue("emailsent", true);
+		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
+
+		UserManager userManager = getUserManager(inReq);
+		URLUtilities utils = (URLUtilities) inReq
+				.getPageValue(PageRequestKeys.URL_UTILITIES);
+		String base = utils.siteRoot() + utils.relativeHomePrefix();
+
+		String orderModuleURL = base + "/" + applicationid + "/"  + "views/modules/order/index.html?field=last_selected_module&last_selected_module.value=order";
+
+		//Send an email
+		getOrderManager().sendEmailForApproval(catalogid, archive, userManager, applicationid, orderModuleURL);
+		
+		return order;
 	}
 
 }

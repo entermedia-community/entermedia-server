@@ -16,6 +16,7 @@
 			<action name="AssetControlModule.canEditAsset" />
 		</or>
 	</permission>
+	<path-action name="PageValue.loadPageVariable" bean="conversionUtil"  alltypes="true" />
 
 
 </page>

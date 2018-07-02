@@ -40,6 +40,7 @@
 			<fileset dir="../WEB-INF/base/reporting/" />
 
 			<fileset dir="../WEB-INF/base/emfrontend/" />
+			<fileset dir="../WEB-INF/base/emfrontend2/" />
 			<fileset dir="../WEB-INF/base/modulefrontend/" />
 			<fileset dir="../WEB-INF/base/sfentermedia/" />
 			<fileset dir="../WEB-INF/base/themes/baseem" />
@@ -64,6 +65,10 @@
 			<fileset dir="${workdir}/WEB-INF/base/emfrontend" />
 		</copy>
 
+		<copy todir="../WEB-INF/base/emfrontend2" preservelastmodified="true" overwrite="true">
+			<fileset dir="${workdir}/WEB-INF/base/emfrontend2" />
+		</copy>
+
 		<copy todir="../WEB-INF/base/modulefrontend" preservelastmodified="true" overwrite="true">
 			<fileset dir="${workdir}/WEB-INF/base/modulefrontend" />
 		</copy>
@@ -82,6 +87,10 @@
 
 	  	<copy todir="../WEB-INF/base/themes" preservelastmodified="true" overwrite="true">
 	  		<fileset dir="${workdir}/WEB-INF/base/themes" />
+	  	</copy>
+		
+		<copy todir="../WEB-INF/" preservelastmodified="true" overwrite="true">
+	  		<fileset dir="${workdir}/WEB-INF/" includes="version.txt" />
 	  	</copy>
 
 		<delete quiet="true">
@@ -129,16 +138,13 @@
 	      <fileset dir="./lib" includes="velocity-**.jar"/>
 	    </delete>
 	    <delete>
-	      <fileset dir="./lib" includes="commons-fileupload-**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="commons-net-**.jar"/>
-	    </delete>
-	    <delete>
-	      <fileset dir="./lib" includes="commons-logging-**.jar"/>
+	      <fileset dir="./lib" includes="commons-**.jar"/>
 	    </delete>
 	    <delete>
 	      <fileset dir="./lib" includes="log4j**.jar"/>
+	    </delete>
+	    <delete>
+	      <fileset dir="./lib" includes="slf4j**.jar"/>
 	    </delete>
 	    <delete>
 	      <fileset dir="./lib" includes="dom4j**.jar"/>

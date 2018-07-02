@@ -1,0 +1,61 @@
+#hdfvr-file-input[type=file]{
+	/* Add a top and bottom margin to the input */
+	margin-top:10px;
+	margin-bottom:10px;
+	/* to make sure the button is center aligned horizontally*/
+	display: inline-block;
+}
+#hdfvr-file-input::-webkit-file-upload-button {
+	/* hide the button and label*/
+  display:none;
+}
+#hdfvr-file-input::before {
+  /* center align text within button*/
+  text-align:center;
+  content: '1. Record or select a video file';
+  display: inline-block;
+  background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+  border: 1px solid #999;
+  border-radius: 3px;
+  /* add some height ot the button */
+  padding: 5px 8px;
+  outline: none;
+  white-space: nowrap;
+  -webkit-user-select: none;
+  /* fill in the area */
+  width:100%;
+}
+/*
+#hdfvr-file-input:active::before {
+  background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9); 
+}*/
+
+#hdfvr-submit-btn{
+  display: inline-block;
+  background: -webkit-linear-gradient(top, #f9f9f9, #e3e3e3);
+  border: 1px solid #999;
+  border-radius: 3px;
+  padding: 5px 8px;
+  outline: none;
+  /* somehow 83 here will fit with 100 above */
+  width:83%;
+
+}
+
+#hdfvr-content{
+	/* Center mobile elements (buttons) within the area */
+	text-align:center;
+	/* These wxh vals are used by the mobile version, in desktop they're overwritten by the embedSWF function below*/
+	width:100%;
+	height:120px;
+}
+
+#hdfvr-recording-form{
+	padding:0px;
+	margin:0px;
+	margin-bottom:10px;
+}
+#hdfvr-loading-img{
+	/* Do not display the uploading gif when the page loads up */
+	display:none;
+}

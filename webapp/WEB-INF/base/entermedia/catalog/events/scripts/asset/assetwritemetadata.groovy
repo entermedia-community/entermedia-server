@@ -20,6 +20,10 @@ public void init()
 	
 
 	String assetid = context.findValue("assetid");
+	if(assetid == null) {
+	 assetid = context.getRequestParameter("id");
+		
+	}
 	log.info("Writing metadata for asset $assetid");
 	
 	XmpWriter writer = (XmpWriter) archive.getModuleManager().getBean("xmpWriter");
@@ -45,7 +49,8 @@ public void writeAsset(MediaArchive archive,XmpWriter writer, Asset asset)
 {
 	if( archive.isTagSync(asset.getFileFormat() ) )
 		{
-			boolean didSave = writer.saveMetadata(archive, asset);
+			HashMap additionaldetail = new HashMap();
+			boolean didSave = writer.saveMetadata(archive, asset, additionaldetail);
 			if(!didSave){
 				log.info("Failed to write metadata for asset " + asset.getId());
 			

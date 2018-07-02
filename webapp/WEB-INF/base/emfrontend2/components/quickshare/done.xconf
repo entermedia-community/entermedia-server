@@ -1,0 +1,16 @@
+<page>
+	
+	<!--
+	
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/quickshare/sendemail.groovy</script>
+	</path-action>
+	-->
+	
+	
+	<property name="subject">New Files Shared with you</property>
+		<property name="from">ian@netevolved.com</property>
+	
+	
+	<property name="virtual">true</property>
+</page>

@@ -1,0 +1,19 @@
+#set ($print = "true")
+
+
+
+<div id="printpreview-top">
+#set( $msize = "$home$apphome/views/modules/asset/downloads/preview/large/$asset.sourcepath/thumb.jpg")
+<p>
+<img class="center-block" src="$msize"/>
+</p>
+</div>
+
+<div id="printpreview-metadata">
+    
+#foreach( $viewpath in $views.keySet() )
+    #set( $target = $views.get($viewpath) )
+    #displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+#end
+ 
+</div>

@@ -1,0 +1,8 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#set( $searcher = $mediaarchive.getSearcher($searchtype))
+<select id="fieldnames" name="newone" onchange="jQuery('#addtoview').submit()"  >
+                <option value=""> </option>
+                #foreach( $detail in $searcher.getUserPropertyDetails() )
+				<option value="${searchtype}.${detail.id}">$detail.getText($context)</option>
+                #end
+</select>

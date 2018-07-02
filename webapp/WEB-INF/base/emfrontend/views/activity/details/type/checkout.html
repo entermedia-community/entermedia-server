@@ -1,0 +1,31 @@
+<div class="em-rounded" >
+			#if( $order.userid != $user.getId() )
+			[[Invalid order]]
+			#end
+		
+			#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+			#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+			#set($owner = $userManager.getUser($order.userid))
+			<form name="activitydetails" method="post" action="$home$apphome/views/activity/details/save.html">
+				<input name="orderid" type="hidden" value="$order.id" />
+			<div style="padding-left:10px;" class="autosubmitdetails">	
+				<h3>[[Activity Details]]</h3>
+			
+				<div style="padding-left: 20px">	
+				$context.putPageValue("searcher", $ordersearcher)	 
+				$context.putPageValue("data", $order)	 
+				$context.putPageValue("view", "order/vieworder")	
+				
+				$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
+				#if( $savedok)<div class="emfadeout">[[saved]]</div>#end
+				</div>
+			</div>
+			</form>
+</div>
+<h3>[[Checkout Items]]</h3>
+##if( $canviewassets || !$expired )
+	$pages.include("$apphome/views/activity/checkout/listitems.html")
+##end
+
+
+

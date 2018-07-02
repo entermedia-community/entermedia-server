@@ -1,0 +1,6 @@
+#
+#Wed Feb 04 07:55:35 EST 2015
+Basket=Korb
+Add\ To\ Basket=in den Warenkorb
+Remove\ From\ Basket=aus dem Warenkorb entfernen
+

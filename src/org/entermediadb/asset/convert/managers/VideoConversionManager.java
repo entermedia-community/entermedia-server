@@ -59,7 +59,8 @@ public class VideoConversionManager extends BaseConversionManager
 	public ConvertResult transcode(ConvertInstructions inStructions)
 	{
 		//if output == jpg and no time offset - standard
-		if(inStructions.getOutputRenderType().equals("video"))
+		String outputRenderType = inStructions.getOutputRenderType();
+		if(outputRenderType.equals("video") || outputRenderType.equals("audio"))
 		{
 			return findTranscoder(inStructions).convertIfNeeded(inStructions);
 		}
@@ -103,6 +104,13 @@ public class VideoConversionManager extends BaseConversionManager
 		//IMinstructions.setMaxScaledSize(inStructions.getMaxScaledSize());
 		inStructions.setInputFile(instructions2.getOutputFile());
 		result = findTranscoder(inStructions).convertIfNeeded(inStructions);
+		if(inStructions.isWatermark())
+    	{
+    		inStructions.setInputFile(inStructions.getOutputFile());
+    		result = getWaterMarkTranscoder().convert(inStructions);
+    	}
+		
+		
 		if(!result.isComplete())
 		{
 			return result;

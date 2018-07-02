@@ -1,0 +1,19 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+<div id="media-carousel$collectionid" class="vcarousel content light" >
+#if( !$collectionassets)
+	#set( $manager = $moduleManager.getBean($catalogid,"projectManager") )
+	#set( $collectionassets = $manager.loadAssetsInCollection($context,$mediaarchive, $collectionid ) )
+	$!collectionassets.setHitsPerPage(100)			
+#end
+	<ul>
+	#foreach( $hit in $collectionassets.getPageOfHits())
+		<li>
+		<a id="thumb${hit.id}" class="thumb" href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$collectionassets.getSessionId()&assetid=$hit.getId()">
+			<div class="thumbframe">
+				<img src="$home$apphome/views/modules/asset/downloads/preview/thumb/${hit.sourcepath}/thumb.jpg" />
+			</div>	
+		</a>
+	</li> 
+	#end
+	</ul>
+</div>

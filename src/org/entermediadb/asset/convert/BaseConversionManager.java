@@ -8,6 +8,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 import org.openedit.Data;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
@@ -16,6 +17,7 @@ import org.openedit.util.PathUtilities;
 public abstract class BaseConversionManager implements ConversionManager
 {
 	private static final Log log = LogFactory.getLog(BaseConversionManager.class);
+	protected WaterMarkTranscoder fieldWaterMarkTranscoder;
 
 	protected MediaArchive fieldMediaArchive;
 	protected Collection fieldInputLoaders;
@@ -26,6 +28,23 @@ public abstract class BaseConversionManager implements ConversionManager
 	{
 		return fieldDefaultTranscoder;
 	}
+	
+	
+	public WaterMarkTranscoder getWaterMarkTranscoder()
+	{
+		if (fieldWaterMarkTranscoder == null)
+		{
+			fieldWaterMarkTranscoder = 	(WaterMarkTranscoder)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"waterMarkTranscoder");
+		}
+		return fieldWaterMarkTranscoder;
+	}
+
+
+	public void setWaterMarkTranscoder(WaterMarkTranscoder inWaterMarkTranscoder)
+	{
+		fieldWaterMarkTranscoder = inWaterMarkTranscoder;
+	}
+
 
 	public void setDefaultTranscoder(MediaTranscoder inDefaultTranscoder)
 	{
@@ -65,10 +84,18 @@ public abstract class BaseConversionManager implements ConversionManager
 	
 	public ConvertResult loadExistingOuput(Map inSettings, String inSourcePath, String exportName)
 	{
-//		ConvertInstructions instructions = createInstructions(inSourcePath, inSettings);
-//		ContentItem output = instructions.getOutputFile();
 		
-		ContentItem existing = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + inSourcePath + "/" + exportName);
+		ContentItem existing = null;
+		Object val = inSettings.get("canforcewatermarkasset");
+		if(val != null && (Boolean)val)
+		{
+			ConvertInstructions instructions = createInstructions(inSourcePath,exportName,inSettings);
+			existing = instructions.getOutputFile();
+		}
+		else
+		{
+			existing= getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + inSourcePath + "/" + exportName);
+		}	
 		ConvertResult result = new ConvertResult();
 		result.setOutput(existing);
 		result.setOk(true);
@@ -228,15 +255,7 @@ public abstract class BaseConversionManager implements ConversionManager
     	if( input == null && getInputLoaders() != null)
     	{
 	    	//Load input
-	    	for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
-			{
-				InputLoader loader = (InputLoader) iterator.next();
-				input = loader.loadInput(inStructions);
-				if( input != null)
-				{
-					break;
-				}
-			}
+	    	input = findInput(inStructions);
 			inStructions.setInputFile(input);
     	}	
     	if(input == null || !input.exists())
@@ -247,7 +266,7 @@ public abstract class BaseConversionManager implements ConversionManager
     		result.setError("Input is " + input + " input loaders failed to load");
     		return result;
 		}
-    	if( !inStructions.isForce() )
+    	if( !inStructions.isForce() && !inStructions.isStreaming() )
     	{
 	    	ContentItem output = inStructions.getOutputFile();
 			if( output.getLength() > 2 )
@@ -275,6 +294,19 @@ public abstract class BaseConversionManager implements ConversionManager
 			}
     	}
     	return result;
+	}
+
+	public ContentItem findInput(ConvertInstructions inStructions) {
+		for (Iterator iterator = getInputLoaders().iterator(); iterator.hasNext();)
+		{
+			InputLoader loader = (InputLoader) iterator.next();
+			ContentItem input = loader.loadInput(inStructions);
+			if( input != null)
+			{
+				return input;
+			}
+		}
+		return null;
 	}
     
     protected ConvertResult transcode(ConvertInstructions inStructions)
@@ -310,6 +342,9 @@ public abstract class BaseConversionManager implements ConversionManager
 	}
 	protected ContentItem makeCustomInput(BaseTranscoder imTranscoder, String format, ConvertInstructions inStructions)
 	{
+		if(inStructions.getAsset() == null){
+			return null;
+		}
 		String colorspace = inStructions.getAsset().get("colorspace");
 		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
 		{

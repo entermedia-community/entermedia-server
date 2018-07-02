@@ -1,0 +1,11 @@
+<page>
+	<path-action name="DataEditModule.search">
+		<searchtype>${module}</searchtype>
+	</path-action>
+	<path-action name="AutoCompleteModule.updateHits" >
+		<searchtype>${module}</searchtype>
+	</path-action>
+	<!-- DON't do this! It saves every time you search
+	<path-action name="SavedQueryModule.addPreviousSearch"/>
+-->
+</page>

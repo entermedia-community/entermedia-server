@@ -1,0 +1,5 @@
+#
+#Tue Oct 11 16:11:36 EDT 2016
+Libraries=Bibliotheken
+Slideshow=Diashow
+Categories=Kategorien

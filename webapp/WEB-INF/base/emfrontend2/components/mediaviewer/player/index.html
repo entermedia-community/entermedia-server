@@ -1,0 +1,57 @@
+#set ($pagenum = $context.findValue("pagenum") )
+#if ( $pagenum ) 
+	#set($pagenum = $numberutils.toInt($pagenum))
+#else
+    #set ( $pagenum = 1)
+#end
+#set($totalpages = $numberutils.toInt($asset.pages))
+    
+    ##TODO Move this to ./player/types/documentpages.html
+    #if( $totalpages > 1 )
+    $pages.include("$apphome/components/mediaviewer/player/pages.html",$context)
+    #end
+    
+  
+<div id="media-player" class="#if( $totalpages > 1 ) document #end">
+
+    <div id="mp-player">
+        <div id="mp-asset-title">
+        	#set(  $tostring = $asset.toString($context.locale))
+        	<span class="name" title="$tostring">$tostring</span> 
+
+
+        	#if( $totalpages > 1 ) <span class="pagenum">([[Page]] $pagenum of $totalpages)</span> #end
+        	</div>
+    	#if( !$asset.importstatus || $asset.importstatus != "complete" )
+    		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
+    	#else
+    		$pages.include("$apphome/components/mediaviewer/player/player.html",$context)
+    	#end
+    	<div class="media-info">
+    
+    	
+	    	#if ( $canviewvoting )
+			    
+			      <span class="media-likes">$pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)</span>
+			    
+			#end
+				
+    		
+    	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+    	    #if ($attachmentcount && $attachmentcount.size() > 1)
+    	   <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">$attachmentcount.size()<span>&nbsp;</span></a>
+    	   #end
+           #if($canviewassetpreviewhistory)
+	   			<a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views"><i class="fas fa-eye"></i> $views</a>
+			#end
+            #if($canviewcomments)
+            	<a style="margin-left:10px;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments"><i class="fas fa-comments"></i> $comments.size()</a>
+            #end
+                <a class="stackedplayer" data-assetid="${asset.id}" href="#" >
+            	<span class="fas window-maximize" style="color: #fff;"> </span>
+            </a> 
+            
+        </div>
+    </div>
+</div>
+

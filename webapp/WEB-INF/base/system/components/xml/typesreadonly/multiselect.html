@@ -8,7 +8,11 @@
 			#set( $row = false )
 			#set( $row = $searcher.searchById($type) )
 		    #if( $row )
+		    #if( $searcher.getDetail("name").isMultiLanguage())
+		    <li>$row.getName($context.getLocale())</li>
+		    #else
 		    <li>$row</li>
+		    #end
 		    #end 
 		#end	
 	</ul>

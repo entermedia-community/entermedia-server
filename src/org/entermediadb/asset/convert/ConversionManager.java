@@ -5,7 +5,9 @@ import java.util.Map;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
 import org.openedit.Data;
+import org.openedit.repository.ContentItem;
 
 public interface ConversionManager
 {
@@ -24,5 +26,8 @@ public interface ConversionManager
 
 	public void setInputLoaders(Collection inList);
 	public void setMediaArchive(MediaArchive inMediaArchive);
+	public ContentItem findInput(ConvertInstructions inStructions);
+
+	public WaterMarkTranscoder getWaterMarkTranscoder();
 
 }

@@ -1,0 +1,37 @@
+##$pages.include("$apphome/components/libraries/selector.html",$context)
+
+#if(!$librarycol)
+	#set( $selectedcollection = $context.getRequestParameter("collectionid"))
+	#if( $selectedcollection)
+		#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
+		$context.putPageValue("librarycol",$librarycol)
+	#end	
+#end
+#set( $selectedlibraryid = $context.getRequestParameter("selectedlibrary"))
+#if($selectedlibraryid)
+	#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+	$context.putPageValue("selectedlibrary",$selectedlibrary)
+#elseif( $librarycol )
+	#set( $selectedlibraryid = $librarycol.get("library") )
+	#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+	$context.putPageValue("selectedlibrary",$selectedlibrary)
+#end
+
+#if( $librarycol)
+
+$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+#else
+$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+$pages.include("$apphome/components/dontshow/sidebar.html",$context)
+$pages.include("$apphome/components/categories/sidebar.html", $context)
+#end
+
+#if ( $canviewopencollections )
+$pages.include("$apphome/components/opencollections/sidebar.html",$context)
+#end
+
+##if($selectedlibrary)
+##$pages.include("$apphome/components/libraries/sidebar.html",$context)
+##end

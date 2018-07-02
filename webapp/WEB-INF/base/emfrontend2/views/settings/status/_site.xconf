@@ -1,0 +1,10 @@
+<page>
+	<inner-layout>/${applicationid}/theme/layouts/settingssubtablayout.html</inner-layout>
+	<property name="tab">tools</property>
+	<permission name="view">
+			<or>
+				<pagevalue name="canviewsettings" equals="true" />
+				<user name="admin" />
+			</or>	
+	</permission>
+</page>

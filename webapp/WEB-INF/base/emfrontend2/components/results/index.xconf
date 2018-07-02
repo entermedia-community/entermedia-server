@@ -1,0 +1,7 @@
+<page>
+ <property name="hitsperpage">100</property>
+ <path-action name="ProfileModule.saveValues" />
+ <path-action name="DataEditModule.loadPageOfSearch"/>
+ <inner-layout />
+  
+</page>

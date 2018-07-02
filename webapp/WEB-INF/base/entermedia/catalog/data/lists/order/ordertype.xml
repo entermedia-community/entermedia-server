@@ -7,5 +7,6 @@
 	<property id="download" >Download</property>
 	<property id="upload" >Upload</property>
 	<property id="gallery" >Gallery</property>
+	<property id="checkout" >Checkout</property>
 
 </properties>

@@ -98,6 +98,14 @@
       <language id="en"><![CDATA[Auto Create Collections]]></language>  
     </name> 
   </property>  
+
+  <property id="countdata" editable="true" index="true" stored="true" viewtype="multiselect" indextype="not_analyzed" >
+    <name>
+      <language id="en"><![CDATA[Counts]]></language>
+    </name>
+  </property> 
+
+
    
  
    

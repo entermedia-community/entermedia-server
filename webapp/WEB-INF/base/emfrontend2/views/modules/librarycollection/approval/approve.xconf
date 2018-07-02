@@ -1,0 +1,8 @@
+<page>
+<path-action name="DataEditModule.loadHits">
+	<searchtype>asset</searchtype>
+</path-action>
+<path-action name="ProjectModule.approveSelection" />
+
+
+</page>

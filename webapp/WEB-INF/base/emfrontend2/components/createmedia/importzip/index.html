@@ -1,0 +1,24 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Import Work Changes]]</div>
+   <div class="ui-widget-content">
+	
+#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
+
+
+		<p>[[Import latest edits and changes from zip]]: </p>				
+	<form name="uploadform" acton="$home$apphome/views/modules/librarycollection/uploadzip.html">
+	<input type="file" name="file.0"/>
+	<input type="submit"/>
+	
+	</form>			
+				
+				
+
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
+
+</div>
+
+	
+	

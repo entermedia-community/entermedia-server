@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+  <skinMode>static</skinMode>
+  <playListXml>player/xml/playlist.xml</playListXml>
+  <playListOpen>true</playListOpen>
+  <playListAutoStart>true</playListAutoStart>
+  <autoStart>true</autoStart>
+  <buffer>3</buffer>
+  <stretch>fill</stretch>
+  <volumeLevel>50</volumeLevel>
+  <emailPhp>player/php/email.php</emailPhp>
+  <playPauseDock>true</playPauseDock>
+  <controlBar>true</controlBar>
+  <progressBar>true</progressBar>  
+  <timerDock>true</timerDock>
+  <shareDock>true</shareDock>
+  <volumeDock>true</volumeDock>
+  <fullScreenDock>true</fullScreenDock>
+  <playDock>true</playDock>
+  <playList>true</playList>
+</config>

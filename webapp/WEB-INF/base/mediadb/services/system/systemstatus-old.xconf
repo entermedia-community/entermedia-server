@@ -1,0 +1,5 @@
+<page>
+<property name="virtual">true</property>
+			<path-action bean="cacheManager" name="PageValue.loadPageVariable" allowduplicates="true" alltypes="true"/>
+<permission name="view"><blank/></permission>
+</page>

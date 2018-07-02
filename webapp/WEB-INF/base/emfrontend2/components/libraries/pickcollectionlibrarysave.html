@@ -1,0 +1,6 @@
+#set( $searchtype = $context.getRequestParameter("searchtype"))
+#if( $searchtype == "library")
+	$pages.include("./pickcollection.html?selectedlibrary=$data.id")
+#else
+	$pages.include("./pickcollection.html?collectionid=$data.id")
+#end	

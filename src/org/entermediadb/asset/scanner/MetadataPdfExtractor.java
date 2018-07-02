@@ -54,6 +54,17 @@ public class MetadataPdfExtractor extends MetadataExtractor
 				InputStream in = null;
 				try
 				{
+					long maxsize = 100000000;
+					String sizeval = inArchive.getCatalogSettingValue("maxpdfsize");
+					if(sizeval != null){
+						maxsize = Long.valueOf(sizeval);
+					}
+					if(inFile.getLength() > maxsize){
+						log.info("PDF was too large to extract metadata. Consider increasing max size: " + sizeval);
+						return false;
+					}
+						
+
 					in = inFile.getInputStream();
 //					try
 //					{
@@ -64,6 +75,8 @@ public class MetadataPdfExtractor extends MetadataExtractor
 //						FileUtils.safeClose(in);
 //					}
 //					byte[] bytes = out.toByteArray();
+					
+					
 					Parse results = parser.parse(in); //Do we deal with encoding?
 					//We need to limit this size
 					String fulltext = results.getText();

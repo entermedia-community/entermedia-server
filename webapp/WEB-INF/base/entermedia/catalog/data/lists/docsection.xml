@@ -14,5 +14,9 @@
   <docsection name="User" id="1420730727080">Users</docsection>  
   <docsection name="System" id="1418334117799">System</docsection>  
   <docsection id="moduletestmodule" name="Test Module"/>  
+
   <docsection id="modulegroups" name="Groups"/>
+  <docsection id="elastic" name="Elasticsearch"/>
+
+
 </docsections>

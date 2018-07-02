@@ -1,0 +1,34 @@
+$pages.include("$apphome/components/xml/types/select2translations.html",$context)
+
+#set($idcount = $context.getRequestParameter("idcount"))
+#if(!$idcount)
+	#set($idcount = "")
+#end
+
+#set($searchfield = $detail.getId() )
+#set( $detailid = $detail.getId().replace('.','-') )
+
+##TODO Use $values
+#set( $vals = $val.split("\s*\|\s*") )
+
+<select name="${detail.getId()}.value" 
+		id="list-${detailid}${idcount}value" 
+		multiple="multiple" 
+		class="listtags select2-container--bootstrap4 #if($detail.isRequired() && !$multiedit) required #end" 
+		data-searchfield="$searchfield"
+		data-searchtype="$searcher.getSearchType()" 
+		data-listcatalogid="$detail.listCatalogId" 
+		data-foreignkeyid="$!detail.foreignkeyid" 
+		data-sortby="$!detail.sort" 
+		data-placeholder="[[Search]]"
+		data-width="100%"
+		>
+	#foreach($vtag in $vals)
+		#if($vtag && $vtag != "")
+			<option value="$!vtag" selected="selected">#esc($vtag)</option>
+		#end
+	#end
+	#if( $foundrow )
+	  <option value="$!val" selected="selected">#esc($label)</option>
+	#end
+</select>

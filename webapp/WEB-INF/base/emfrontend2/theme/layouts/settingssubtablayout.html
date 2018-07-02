@@ -1,0 +1,32 @@
+#set( $subtab = $context.findValue("subtab") )
+
+#if( $subtab )
+
+#set ( $module = $context.findValue("module") )
+#set ( $parentid = $context.findValue("tab") )
+<div id="eml-tab-subnav">
+	<ul>
+		#set( $searcher = $searcherManager.getSearcher($catalogid,"settingsmenumodule") )
+		#set( $query = $searcher.createSearchQuery() )
+		#set( $null = $query.addExact("parentid", $parentid ))
+		$!query.addSortBy("ordering")
+		#foreach($screen in $searcher.cachedSearch($context,$query) )
+		<li #if( $subtab == "$screen.id" ) class="current" #end>
+			<a  href="$home$apphome${screen.path}">#if ( $screen.sublabel ) $context.getText($screen.sublabel.toString()) #else $context.getText($screen.toString()) #end </a>
+		</li>
+		#end
+	</ul>
+</div>
+
+<div id="eml-tab-green-container" class="clearfix">
+			
+			$pages.includeContent()
+			
+</div>
+
+#else
+<div style="padding:20px">
+			$pages.includeContent()
+</div>
+
+#end

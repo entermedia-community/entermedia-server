@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preview/medium</property>
+	<generator name="convertArchiveDocument"/>
+	<property name="exportname">image300x300.jpg</property>
+</page>
+
+

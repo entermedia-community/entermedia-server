@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preview/HD</property>
+	<generator name="convertArchiveDocument"/>
+	<property name="prefwidth">1920</property>
+	<property name="prefheight">1080</property>
+	<property name="virtual">true</property>
+	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
+	<property name="uselegacythumbimages">false</property>
+	<property name="sourcefile">image</property>
+
+</page>
+
+

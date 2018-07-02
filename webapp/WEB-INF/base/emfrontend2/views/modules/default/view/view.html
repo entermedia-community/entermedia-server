@@ -1,0 +1,20 @@
+#set( $moduleid = $context.findValue("module") )
+
+<div id="default-fields" >
+    <div id="editlayout">
+
+#set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
+#set($views = $viewsearcher.query().exact("moduleid",$moduleid).exact("systemdefined","false").sort("ordering").search($context) )
+#foreach( $view in $views)
+#if( $view.rendertable )
+    ###set( $results = $mediaarchive.getSearcher($view.rendertable).query(""))
+	##<a hhref="$home$apphome/views/modules/${moduleid}/edit/moduletable.html?id=$data.getId()&viewid=$view.getId()&viewpath=$moduleid/$view.getId()&searchtype=$moduleid"></a>
+#else
+	$context.putPageValue("view","$moduleid/$view.getId()")
+	$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+	##$pages.include("/$applicationid/views/modules/${moduleid}/edit/edit.html?id=$data.getId()&viewid=$view.getId()&viewpath=$moduleid/$view.getId()&searchtype=$moduleid&detailsreadonly=true&alwaysshow=true", $context)
+#end
+#end
+
+</div>
+</div>

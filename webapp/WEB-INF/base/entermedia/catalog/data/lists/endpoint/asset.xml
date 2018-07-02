@@ -99,5 +99,10 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
 	<samplerequest><![CDATA[{  "sourcepath": "users/admin/2014/06/IMG_4838_2107.JPG" }]]></samplerequest>
   </endpoint>
 
+  <endpoint id="categorytree" name="Retrieve Category Tree" url="/${applicationid}/services/module/category/tree" docsection="assetmedia" caption="Heirarchical category tree" httpmethod="POST" uploadfile="false">
+	<samplerequest><![CDATA[{  "categoryid": "index" }]]></samplerequest>
+  </endpoint>
+
+
 
 </endpoints>

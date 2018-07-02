@@ -25,6 +25,7 @@ public void init()
 	AggregationBuilder b = AggregationBuilders.terms("md5hex-detect").minDocCount(2).field("md5hex").size(1000);
 	query.setAggregation(b);
 	HitTracker hits = searcher.search(query);
+	hits.enableBulkOperations();
 	FilterNode node = hits.findFilterNode("md5hex-detect");
 	
 	
@@ -34,6 +35,7 @@ public void init()
 		FilterNode child = it;
 		//println child.getId();
 		HitTracker duplicates = searcher.fieldSearch("md5hex", child.getId());
+		duplicates.enableBulkOperations();
 		duplicates.each{
 			Data hit = it;
 			Asset asset = searcher.loadData(hit);
@@ -59,7 +61,7 @@ public void clearDuplicateFlag(){
 	SearchQuery query = searcher.createSearchQuery();
 	query.addMatches("duplicate", "true");
 	HitTracker hits = searcher.search(query);
-	
+	hits.enableBulkOperations();
 	ArrayList assets = new ArrayList();
 	hits.each{
 		Data hit = it;

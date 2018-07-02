@@ -1,0 +1,14 @@
+<form name="adder" class="ajaxform" targetdiv="left-col-opencollections" action="$home$apphome/components/opencollections/addchildfinish.html"> 
+	<input type="hidden" name="save" value="true"  />
+	<input type="hidden" name="searchtype" value="librarycollection"  />
+	<input type="hidden" name="field" value="name" />
+	<input type="hidden" name="categoryid" value="$!context.getRequestParameter('categoryid')"  />
+	#set($name = $context.getRequestParameter('categoryname'))
+	<input type="hidden" name="categoryname" value="$!name"  />
+	#if( $name )
+		<input type="text" name="name.value" value="$name" /> 
+	#else
+		<input type="text" name="name.value"  class="initialtext" data-initialtext="[[enter name]]" placeholder="[[Enter Name]]" />
+	#end
+	<input class="btn btn-sm" type="submit" value="[[Save]]" />
+</form>

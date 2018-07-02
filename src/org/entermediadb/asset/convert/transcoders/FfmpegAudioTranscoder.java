@@ -23,8 +23,9 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 	public ConvertResult convert(ConvertInstructions inStructions)
 	{
 		ConvertResult result = new ConvertResult();
+		if(!inStructions.isStreaming()) {
 		result.setOutput(inStructions.getOutputFile());
-
+		}
 		Asset asset = inStructions.getAsset();
 		ContentItem input = inStructions.getInputFile();
 		if (input == null || !input.exists())
@@ -46,20 +47,16 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		String outputExt = inStructions.getOutputExtension();
 		
 		long timeout = inStructions.getConversionTimeout();
+		if(timeout < 0) {
+			
+		}
 		String inOutputType = inStructions.getOutputExtension();
-		if ("wma".equalsIgnoreCase(inputExt) || "aac".equalsIgnoreCase(inputExt) || "m4a".equalsIgnoreCase(inputExt) || "flac".equalsIgnoreCase(inputExt) || "ogg".equalsIgnoreCase(inputExt))
-		{
-			runFfmpeg(input, inStructions, result, timeout);
-		}
-		else
-		{
-			runLame(input, inStructions, result, timeout);
-		}
+		runFfmpeg(input, inStructions, result, timeout);
 		if (result.isOk())
 		{
 			result.setComplete(true);
 		}
-
+		
 		return result;
 	}
 
@@ -147,8 +144,7 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		comm.add(input.getAbsolutePath());
 		comm.add("-y");
 		//audio
-		comm.add("-acodec");
-		comm.add("libmp3lame");
+		setValue("acodec", "libmp3lame", inStructions, comm); // libmp3lame libopus
 
 		//comm.add("libfaac"); //libfaac  libmp3lame
 		comm.add("-ab");
@@ -166,16 +162,49 @@ public class FfmpegAudioTranscoder extends BaseTranscoder
 		comm.add("-vn");
 		String outpath = null;
 
-		outpath = inStructions.getOutputFile().getAbsolutePath();
-		comm.add(outpath);
-		new File(outpath).getParentFile().mkdirs();
+//		ffmpeg -ss 10 -t 6 -i input.mp3 output.mp3
+
+		if(inStructions.getTimeOffset() != null) {
+			comm.add("-ss");
+			comm.add(inStructions.getTimeOffset());
+			
+		}
+		if( inStructions.get("compressionlevel")!= null) {
+			comm.add("-compression_level");
+			comm.add(inStructions.get("compressionlevel"));
+			
+			
+		}
+		if(inStructions.get("duration") != null) {
+			
+			comm.add("-t");
+			comm.add(inStructions.get("duration"));
+			
+		}
 		//Check the mod time of the video. If it is 0 and over an hour old then delete it?
+		ExecResult exec = null;
+		if( inStructions.isStreaming() )
+		{
+			comm.add("-f");
+			comm.add(inStructions.getOutputExtension());
+			comm.add("pipe:1");
+			
+			exec = getExec().runExecStream("avconv", comm,inStructions.getOutputStream(), inTimeout);
+		}
+		else
+		{
 
-		//boolean ok =  runExec("ffmpeg", comm);
-		boolean ok = runExec("avconv", comm, inTimeout);
-
-		result.setOk(ok);
-		log.info("ok: ${ok} in " + (System.currentTimeMillis() - start) / 1000L + " seconds");
+			outpath = inStructions.getOutputFile().getAbsolutePath();
+			comm.add(outpath);
+			new File(outpath).getParentFile().mkdirs();
+			exec = getExec().runExec("avconv", comm, inTimeout);
+		}
+		log.info(exec.isRunOk() + " in " + (System.currentTimeMillis() - start) / 1000D + " seconds");
+		result.setOk(exec.isRunOk());
+		if( !exec.isRunOk() )
+		{
+			result.setError("Error creating audio " + exec.getStandardError());
+		}
 	}
 
 

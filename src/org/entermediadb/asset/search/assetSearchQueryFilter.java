@@ -64,8 +64,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 		if (!inQuery.hasChildren())
 		{
 			Object settings = inPageRequest.getPageValue("canviewsettings");
-
-			if (Boolean.parseBoolean(String.valueOf(settings)))
+			if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
 			{
 				return inQuery;
 			}
@@ -124,7 +123,17 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			}
 			
 			//Have clients use the category tree to give permissions as they do now on categories for visibility
-			orchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
+			if( inPageRequest.hasPermission("showonlyapprovedassets"))
+			{
+				SearchQuery hidependingchild = inSearcher.createSearchQuery();
+				hidependingchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
+				hidependingchild.addExact("editstatus", "6");
+				orchild.addChildQuery(hidependingchild);
+			}
+			else
+			{
+				orchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
+			}
 			required.addChildQuery(orchild);
 
 			//Also add to this list public collections
@@ -140,6 +149,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 			{
 				required.addNots("category", privatecats); //Hidden categories that Im not part of
 			}
+			
 			inQuery.setSecurityAttached(true);
 			if (!required.isEmpty())
 			{
@@ -196,6 +206,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				{
 					categoryids.add("nocategoryhits");
 				}
+				
 				filterchild.addOrsGroup(inSearcher.getDetail("category"), categoryids); //This will filter in specific assets
 			}
 			if (filterchild != null)

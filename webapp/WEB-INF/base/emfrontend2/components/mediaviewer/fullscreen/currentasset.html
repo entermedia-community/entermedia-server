@@ -1,0 +1,174 @@
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
+#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+
+#set( $type = $mediaarchive.getMediaPlayerType($asset))
+#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+$context.putPageValue("cdn",$cdnprefix)
+#set( $mediadbappid=$mediaarchive.getMediaDbId())
+
+#set( $hits = $context.getSessionValue($hitssessionid))
+#set( $index = $hits.indexOfId($asset.id))
+#set( $previous = false )
+#set( $previous = $hits.previous($index))
+#set( $next = false )
+#set( $next = $hits.next($index))       
+
+<div id="main-media-container" style="height: 100%;">
+<div id="main-media" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
+	#if( !$mediadbappid)
+		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
+	#end
+	##$pages.include("/${mediadbappid}/services/module/asset/players/large/${type}.html", $context)
+	$pages.include("$apphome/components/results/player/large/${type}.html",$context)
+	
+	
+</div>
+<div id="footerbase">
+	<div id="footermenu">
+		<ul>
+		
+			<li class="footermenu">
+				<div class="goleftclick gotoarrows" >
+				<span class="fas fa-caret-left overlay-nav gocaret"></span>
+				</div>	
+				<div class="gorightclick gotoarrows" >
+				<span class="fas fa-caret-right overlay-nav gocaret"></span>
+				</div>	
+				
+			</li>
+		
+			<li  class="botmenulink footermenu">	
+				#if( $canmetadatageneral )
+				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()"> $asset </a>
+				#else
+				<a href="#" title="[[View $asset]]" >$asset</a>
+				#end
+			 </il>
+			 #if($candownload || $canconvert)
+				<li id="download-select" class="footermenu" >		
+					
+						<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]
+							<span class="caret"></span></a>
+						
+						#if( !$cdnprefix )
+							#set( $cdnprefix = $context.siteRoot )
+						#end
+						<ul class="dropdown-menu dropup">
+								
+									 #if($candownload)				
+										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
+									#end	
+									#if($canconvert)
+										#foreach($result in $results )						
+												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
+										#end
+									#end
+								</ul>
+					   
+				  </li>
+			 #end
+			 
+			 
+			 
+			 <li class="footermenu">
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Edit]]</a>
+   <ul class="dropdown-menu">
+   #set($moduleid = "asset")
+	#set( $sourcepath = $asset.getSourcePath() )
+	
+	#if( $parenthits )
+		#set( $rootid = $parenthits.sessionId )
+	#else
+		#set( $rootid = $hits.sessionId )
+	#end
+   	#set( $searcher = $searcherManager.getSearcher($catalogid,"detaileditormenu") )
+	#set( $query = $searcher.createSearchQuery().append("moduleid",$moduleid) )
+	#set( $nil = $query.addSortBy("ordering") ) 
+	#set( $links = $searcher.cachedSearch($context,$query) )
+	
+	#set ( $urlutils = $context.getPageValue("url_util"))
+	#if ($urlutils)
+		#set($sourcepath = $urlutils.encode($sourcepath))
+		#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+	#end
+   #if ( $asset.id.startsWith("multiedit:") )
+        #set  ( $ismulti = true)
+    #end
+    #foreach( $link in $links)
+		#if( ${foreach.count} == 2)
+			##render editing boxes
+			$pages.include("$apphome/components/detaileditor/assetdatatables.html",$context)
+		#end
+
+		#set( $pname = "can${link.id}")
+		#set( $permission = false)
+		#set( $permission = "$!context.getPageValue($pname)")
+		#set( $inmultiok = ($link.multiedit && $link.multiedit == "true") )
+		#set( $text = $link.name)
+		
+		#if($link.id == "metadatageneral"  &&  $caneditmetadatageneral == "false" && $canviewmetadatageneral=="true")
+			#set( $text = "View Metadata") ##change label
+            #set( $permission = true)
+		#end
+
+		#if( $permission == "true" && $link.id == "viewassetedit" && $asset.fileformat != "jpg")
+			#set( $permission = false)
+		#end
+		
+		#set( $type = $mediaarchive.getMediaRenderType($asset))
+		#if( $permission && $link.id == "viewtimeline" &&  !($type == "video" || $type == "audio"))
+			#set( $permission = false)
+		#end
+		#if( $permission && $link.id == "viewclosedcaptions" && !($type == "video" || $type == "audio"))
+			#set( $permission = false)
+		#end
+
+		#if( $permission == "true")
+			##Check for custom links, arguments and labels
+			#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
+			#if($link.id =="comment")
+				#set( $text = "$text" )
+				#set ($args = "assetid=$asset.getId()&sourcepath=$sourcepath&hitssessionid=$!{hitssessionid}")
+			#elseif ($link.id == "viewassetedit")
+				#set ($path = "/WEB-INF/data/$catalogid/originals/$sourcepath")
+				#set ($args = "path=$path&${args}")
+			#elseif ($link.id == "assetpermissions")
+				#set($args = "editPath=$apphome/asset/$sourcepath/_site.xconf&$args")
+			#elseif ($link.id == "metadatageneral")
+				#if($canmetadatageneral)
+					#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}&edit=true&cemg=$canmetadatageneral")
+				#else
+					#set($args = "assetid=$asset.getId()&hitssessionid=$!{hitssessionid}")
+				#end
+			#end
+			#if( !$ismulti || $inmultiok )
+				#set ($href = "$apphome/views/modules/asset/editor/${link.folder}/index.html")
+				<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end $link.id">
+				<a title="$context.getText($text)" href="$home$href?$args" targetdiv="detaileditor" #if($target) target="$target" #end >
+				<span class="icon"></span>
+				<span class="text">$context.getText($text)</span>
+				</a>
+				</li>
+			#end
+		#end
+	#end
+	</ul>
+    </li>
+    
+    
+			 
+		  <li>
+	#if(  $asset.getFileFormat()  == "pdf")
+		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+            	<span class="fas fa-blackboard"> </span> [[View PDF]]
+            </a> 
+	#end
+		  </li>
+		  
+		</ul>
+	</div>
+</div>
+</div>
+

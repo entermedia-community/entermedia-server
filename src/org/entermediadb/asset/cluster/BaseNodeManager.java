@@ -90,7 +90,13 @@ public abstract class BaseNodeManager implements NodeManager
 	{
 		return getLocalNode().getId();
 	}
-//	public String createDailySnapShot(String inCatalogId)
+
+	public String getLocalClusterId()
+	{
+		return getLocalNode().get("cluster.name");
+	}
+
+	//	public String createDailySnapShot(String inCatalogId)
 //	{		
 //		throw new OpenEditException("Not implemented");
 //	}

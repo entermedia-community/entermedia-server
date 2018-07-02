@@ -1,0 +1,11 @@
+<page>
+	<path-action name="DataEditModule.loadSearcherForEdit" cancel="true" />
+
+	<path-action name="AssetEditModule.handleUploads"/>
+	<path-action name="DataEditModule.loadSearcherForEdit" />
+	
+	<path-action name="DataEditModule.saveData" />
+	<property name="save">true</property>
+
+			
+</page>

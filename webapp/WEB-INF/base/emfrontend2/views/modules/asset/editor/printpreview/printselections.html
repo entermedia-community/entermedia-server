@@ -1,0 +1,41 @@
+  #macro (displaydetails $filename $label $assetid $view $print)
+    $context.putPageValue("view", $view)
+    #if ($print && $print == "true")
+    $pages.include("$apphome/components/detaileditor/$filename?assetid=$assetid&view=$view&print=true&pluginpath=$apphome/components/detaileditor/$filename&module=$moduleid", $context)
+    #else
+    $pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=$moduleid",$context)
+    #end
+    #end
+
+#foreach($hit in $hits.getSelectedHits())
+
+
+#set ($print = "true")
+
+
+
+<div id="printpreview-top">
+#set( $msize = "$home$apphome/views/modules/asset/downloads/preview/large/$hit.sourcepath/thumb.jpg")
+<p>
+<img class="center-block" src="$msize"/>
+</p>
+</div>
+
+
+<div id="printpreview-metadata">
+    
+#foreach( $viewpath in $views.keySet() )
+    #set( $target = $views.get($viewpath) ) 
+    #displaydetails("generic.html" $target.name "$hit.id" $viewpath $print)
+#end
+ 
+</div>
+<P CLASS="breakhere">
+
+#end
+
+
+
+<STYLE TYPE="text/css">
+     P.breakhere {page-break-before: always}
+</STYLE>

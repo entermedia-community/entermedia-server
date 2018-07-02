@@ -1,5 +1,7 @@
 package org.entermediadb.asset.modules;
 
+import java.util.Date;
+
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionManager;
@@ -89,6 +91,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		settings.setProperty("presetdataid", preset.get("guid"));
 		settings.setProperty("croplast", "true");
 		settings.setProperty("force", "true");
+		settings.setProperty("gravity", "NorthWest");
         //archive.getTranscodeTools().createOutputIfNeeded(settings, sourcePath, "jpg");
 		ConversionManager manager = archive.getTranscodeTools().getManagerByFileFormat(asset.getFileFormat());
         
@@ -98,18 +101,88 @@ public class ConvertStatusModule extends BaseMediaModule
 		
 		
 		
-		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getSourcePath() + "/" + preset.get("generatedoutputfile"));
+		
+		
+		
+		ContentItem outputpage = archive.getContent("/WEB-INF/data/" + archive.getCatalogId() + "/generated/"+ asset.getPath() + "/" + preset.get("generatedoutputfile"));
 		instructions.setOutputFile(outputpage);
+		//always use the 1024 - otherwise larger crops are incorrect
+		
+		//TODO: should do some scaling math based on the input file it selects and the numbers we got so there is no loss in quality
+		
+		
 		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
-			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getSourcePath() + "/image1024x768.jpg");
+			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getPath() + "/image1024x768.jpg");
 			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
 		}
+		
+		String hasheight = instructions.get("cropheight");
+		if(hasheight != null && (instructions.getMaxScaledSize().getHeight() > 768 || instructions.getMaxScaledSize().getWidth() > 1024)) {
+			//input will be the original
+			double originalheight = Double.parseDouble(asset.get("height"));
+			double originalwidth = Double.parseDouble(asset.get("width"));
+			boolean wide = true;
+			instructions.setInputFile(archive.getOriginalDocument(asset).getContentItem());
+			if(originalheight > originalwidth) {
+				wide = false;				
+			}
+			
+			//{cropheight=165, assetid=AWEEgnrnvcTz0GAGVvnK, presetdataid=test, croplast=true, y1=101, x1=269, force=true, cropwidth=220, crop=true, outputextension=jpg, cachefilename=image.jpg}
+			Double cropheight = Double.parseDouble(hasheight);
+			Double cropwidth = Double.parseDouble(instructions.get("cropwidth"));
+			Double x1 = Double.parseDouble(instructions.get("x1"));
+			Double y1 = Double.parseDouble(instructions.get("y1"));
+			
+			Double scalefactor;
+			if(wide) {
+				scalefactor = 1024/originalwidth;
+			} else {
+				scalefactor = 768/originalheight;
+			}
+
+			cropheight = cropheight/scalefactor;
+			cropwidth = cropwidth/scalefactor;
+			x1 = x1/scalefactor;
+			y1 = y1/scalefactor;
+			
+			instructions.setProperty("cropheight", Integer.toString(cropheight.intValue()));
+			instructions.setProperty("cropwidth", Integer.toString(cropwidth.intValue()));
+			instructions.setProperty("x1", Integer.toString(x1.intValue()));
+			instructions.setProperty("y1", Integer.toString(y1.intValue()));
+			instructions.setOutputFile(outputpage);
+			
+					
+			
+			
+			
+			
+			
+		}
+		
+		
+		
 		manager.createOutput(instructions); //This will go back to the original if needed
 
 //		//TODO: Re-enamble version control
 //		if(outputpage.exists()){
 //			getPageManager().putPage(outputpage); // this should create a new version
-//		}
+//		}archive
+		Searcher tasks = archive.getSearcher("conversiontask");
+		Data task = tasks.query().exact("presetid", preset.getId()).exact("assetid", asset.getId()).searchOne();
+
+		if( task == null)
+		{
+			task = tasks.createNewData();
+			task.setProperty("presetid", preset.getId());
+			task.setProperty("assetid", asset.getId());
+		}
+		task.setValue("submitteddate", new Date());
+		task.setValue("completed", new Date());
+		task.setValue("status", "complete");
+		tasks.saveData(task);
+		
+		archive.fireMediaEvent("usercrop",inReq.getUser(),asset );
+		
 		processConversions(inReq);//non-block
 	}
 	

@@ -1,0 +1,20 @@
+<page>
+	<inner-layout>/${applicationid}/theme/layouts/collectionlayout.html</inner-layout>
+	<property name="hitsname">hits</property>
+	<property name="searchtype">asset</property>
+	
+	<path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<searchtype>${module}</searchtype>
+			<idname>collectionid</idname>
+    </path-action>
+	
+	<path-action name="ProjectModule.removeAssetFromCollection"/>
+	<path-action name="ProjectModule.searchForAssetsOnCollection"/>
+	
+	  <permission name="view">
+    		<action name="ProjectModule.checkViewCollection" />
+    </permission>
+	
+	
+</page>

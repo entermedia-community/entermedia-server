@@ -1,0 +1,9 @@
+#Thu Apr 27 09:03:42 CDT 2017
+Add\ a\ New\ Group=Ajouter un nouveau groupe
+Reload\ Search\ Index=Recharger Index de recherche
+Please\ select\ a\ group=Veuillez sélectionner un groupe
+Add=Ajouter
+selected=choisi
+Select\ a\ Group=Sélectionner un groupe
+Groups=Groupes
+

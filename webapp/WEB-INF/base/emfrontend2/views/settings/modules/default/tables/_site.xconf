@@ -1,0 +1,3 @@
+<page>
+	<inner-layout>/${applicationid}/theme/layouts/settingslayout.html</inner-layout>
+</page>

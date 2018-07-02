@@ -1,0 +1,6 @@
+
+<projectstatuss>
+  <projectstatus id="open">Open</projectstatus>
+  <projectstatus id="closed">Closed</projectstatus>
+  <projectstatus id="completed">Completed</projectstatus>
+</projectstatuss>

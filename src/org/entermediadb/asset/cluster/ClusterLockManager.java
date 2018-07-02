@@ -121,7 +121,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 
 		if (lock.isLocked())
 		{
-			//log.info("Local was alreadY locked - returning null. CatalogID:" + inSearcher.getCatalogId() + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId() + " Searcher: " + inSearcher.getClass());
+			log.info("Local was alreadY locked - returning null. CatalogID:" + inSearcher.getCatalogId() + " Thread: " + Thread.currentThread().getId() + "Lock ID" + lock.getId() + " Searcher: " + inSearcher.getClass());
 			return null;
 		}
 

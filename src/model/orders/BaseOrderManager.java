@@ -25,6 +25,7 @@ import org.entermediadb.asset.orders.OrderHistory;
 import org.entermediadb.asset.orders.OrderManager;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
+import org.entermediadb.email.WebEmail;
 import org.openedit.BaseWebPageRequest;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -40,7 +41,9 @@ import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
 
@@ -101,6 +104,7 @@ public class BaseOrderManager implements OrderManager {
 		event.setSourcePath(order.getSourcePath());
 		event.setSearchType("order");
 		event.setCatalogId(inCatlogId);
+		event.setUser(inUser);
 		getEventManager().fireEvent(event);
 
 		return order;
@@ -117,7 +121,7 @@ public class BaseOrderManager implements OrderManager {
 		GregorianCalendar cal = new GregorianCalendar();
 		cal.add(Calendar.MONTH, -3);
 		query.addAfter("date", cal.getTime());
-		query.addSortBy("historydateDown");
+		query.addSortBy("dateDown");
 		query.addExact("userid", inUser.getId());
 		return ordersearcher.search(query);
 	}
@@ -681,6 +685,52 @@ public class BaseOrderManager implements OrderManager {
 		return assetids;
 	}
 
+	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination)
+	{
+
+		String publishstatus = "new";
+		Searcher publishQueueSearcher = archive.getSearcher("publishqueue");
+		Data publishqeuerow = publishQueueSearcher.createNewData();
+
+		publishqeuerow.setProperty("assetid", inAsset.getId());
+		publishqeuerow.setProperty("assetsourcepath", inAsset.getSourcePath() );
+
+		publishqeuerow.setProperty("publishdestination", inPublishDestination);
+		publishqeuerow.setProperty("presetid", inPresetId);
+
+		Data preset = (Data) archive.getData("convertpreset", inPresetId);
+		if( preset == null)
+		{
+			throw new OpenEditException("Preset missing " + inPresetId);
+		}
+		String exportname = archive.asExportFileName(inUser, inAsset, preset);
+		publishqeuerow.setProperty("exportname", exportname);
+		
+		if( inPresetId.equals("0"))
+		{
+			ContentItem item = archive.getOriginalContent(inAsset);
+			if( item.exists() )
+			{
+				publishstatus = "complete";
+			}
+			else
+			{
+				publishstatus = "error";
+				publishqeuerow.setProperty("errordetails","Original does not exists");
+			}
+		}
+		publishqeuerow.setProperty("status", publishstatus);
+
+		publishqeuerow.setSourcePath(inAsset.getSourcePath());
+		publishqeuerow.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+		publishQueueSearcher.saveData(publishqeuerow, inUser);
+
+		if( publishqeuerow.getId() == null )
+		{
+			throw new OpenEditException("Id should not be null");
+		}
+		return publishqeuerow;
+	}
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.orders.OrderManager#getPresetForOrderItem(java.lang.String, org.openedit.Data)
 	 */
@@ -723,6 +773,16 @@ public class BaseOrderManager implements OrderManager {
 	 */
 	public void updateStatus(MediaArchive archive, Order inOrder)
 	{
+		//Finalize should be only for complete orders.
+		if( "checkout".equals( inOrder.get("ordertype")) )
+		{
+			String status = inOrder.get("checkoutstatus");
+			if( status == null || status.equals("pending"))
+			{
+				log.info("Order not approved for email yet " + inOrder.getId());
+				return; //dont send email yet
+			}
+		}
 		
 		//look up all the tasks
 		//if all done then save order status
@@ -789,7 +849,6 @@ public class BaseOrderManager implements OrderManager {
 			int itemSuccessCount = temphistory.getItemSuccessCount();
 			if((itemErrorCount + itemSuccessCount) == size )
 			{
-				//Finalize should be only for complete orders.
 				inOrder.setOrderStatus("complete");
 				try
 				{
@@ -1019,6 +1078,7 @@ public class BaseOrderManager implements OrderManager {
 
 	protected void sendOrderNotifications(MediaArchive inArchive, Order inOrder) 
 	{
+		
 		Map context = new HashMap();
 		context.put("orderid", inOrder.getId());
 		context.put("order", inOrder);
@@ -1048,7 +1108,18 @@ public class BaseOrderManager implements OrderManager {
 					context.put("expiresondate", date);
 					context.put("expiresformat", new SimpleDateFormat("MMM dd, yyyy"));
 				}
-				sendEmail(inArchive.getCatalogId(),context, emailto, "/" + appid + "/theme/emails/sharetemplate.html");
+				String template = null;
+						
+				if( "checkout".equals( inOrder.get("ordertype")) )
+				{
+					template = "/" + appid + "/theme/emails/checkouttemplate.html";
+				}
+				else
+				{
+					template = "/" + appid + "/theme/emails/sharetemplate.html";
+				}
+				
+				sendEmail(inArchive.getCatalogId(),context, emailto, template);
 			}
 		}	
 		
@@ -1069,7 +1140,7 @@ public class BaseOrderManager implements OrderManager {
 //				}
 //			}
 //		}
-		inOrder.setProperty("emailsent", "true");
+		inOrder.setValue("emailsent", true);
 	}
 
 
@@ -1092,6 +1163,37 @@ public class BaseOrderManager implements OrderManager {
 		log.info("email sent to :" + email);
 	}
 
+	public void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, String inOrderModuleURL)
+	{
+		String email = inArchive.getCatalogSettingValue("requestapproveremail");
+		if (email == null || (email != null && email.isEmpty()))
+		{
+			throw new OpenEditException("No approver email provided, please contact your administrator");
+		}
+
+		User followerUser = (User) userManager.getUserByEmail(email);
+		if (followerUser == null)
+		{
+			throw new OpenEditException("The approver email (" + email  + ") is not linked to any active account, please contact your administrator");
+		}
+		
+		
+		RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+		UserProfile profile = (UserProfile) getSearcherManager().getData(inCatalogId,"userprofile","admin");
+		String template = "/" + inAppId + "/theme/emails/checkoutrequesttemplate.html";
+		WebEmail templatemail = inArchive.createSystemEmail(followerUser, template);
+
+		Map context = new HashMap();
+		BaseWebPageRequest newcontext = (BaseWebPageRequest) rutil.createVirtualPageRequest(template,followerUser,profile); 
+		newcontext.putPageValues(context);
+
+		templatemail.loadSettings(newcontext);
+	    Map objects = new HashMap();
+	    
+	    objects.put("ordermoduleurl", inOrderModuleURL);
+	    templatemail.send(objects);
+	}
+	
 	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){
 		Searcher orderHistorySearcher = inArchive.getSearcher("orderhistory");
 		inOrder.setRecentOrderHistory(inHistory);
@@ -1099,7 +1201,6 @@ public class BaseOrderManager implements OrderManager {
 		inHistory.setProperty("date", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		orderHistorySearcher.saveData(inHistory, null);
 	}
-
 
 	protected ModuleManager getModuleManager()
 	{
@@ -1118,4 +1219,5 @@ public class BaseOrderManager implements OrderManager {
 	{
 		fieldPageManager = inManager;
 	}	
+
 }

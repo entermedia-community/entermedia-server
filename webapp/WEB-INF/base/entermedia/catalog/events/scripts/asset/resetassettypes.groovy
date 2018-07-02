@@ -17,7 +17,7 @@ assets.enableBulkOperations();
 AssetTypeManager manager = new AssetTypeManager();
 manager.context = context;
 manager.log = log;
-manager.saveAssetTypes(assets);
+manager.saveAssetTypes(assets, true);
 
 }
 

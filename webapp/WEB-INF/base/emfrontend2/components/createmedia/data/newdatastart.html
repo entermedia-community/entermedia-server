@@ -1,0 +1,46 @@
+<div class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+		    <div class="ui-widget-header">[[Create New Record]]</div>
+		    <div class="ui-widget-content">
+	
+
+
+
+#set( $catalog = $context.getRequestParameter('uploadcatalog') )
+#set( $sourcepath = $formatteddate )
+<form  name="wizard" method="post"  class="ajaxform" targetdiv="addedcomplete"
+	action="$home$apphome/components/createmedia/data/createnew.html">
+	<input type="hidden" name="categoryid" value="index"/>
+    <input type="hidden" name="currentcollection" id="urlcurrentcollection"/>
+	
+<div id="eml-tab-green-container" class="clearfix">
+	<div class="inner-content">
+	
+
+
+		$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+		$context.putPageValue("view","asset/assettype/default/createnewdata")	
+
+
+		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
+
+	<input class="btn" style="margin-left:260px"  type="submit" id="finishbutton" value="[[Create Data]]">
+	 <span id="addedcomplete"></span>
+				<div style="clear: both;"></div>
+</div>
+</form>
+<script>
+	var collectionid = $("#collectiontoplevel").data("collectionid");
+	if( collectionid )
+	{
+		 $("#urlcurrentcollection").val(collectionid);
+	}
+</script>	
+
+
+</div>
+</div>
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
+
+			</div>
+		</div>

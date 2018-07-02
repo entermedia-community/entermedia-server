@@ -1,0 +1,7 @@
+<page>
+
+	<property name="sectiontitle">Home</property>
+	<property name="libraryreloadpage">true</property>
+	<inner-layout>//${applicationid}/theme/layouts/homelayout.html</inner-layout>
+
+	</page>

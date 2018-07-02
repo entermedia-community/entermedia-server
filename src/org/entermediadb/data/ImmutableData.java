@@ -30,7 +30,7 @@ public class ImmutableData extends BaseData
 			return;
 		}
 		Object existing = getTarget().getValue(inKey);
-		if( existing == null)
+		if( existing == null || "".equals(existing))
 		{
 			getTarget().setValue(inKey, inValue);
 		}

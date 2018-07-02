@@ -1,0 +1,9 @@
+#set( $moduleid = $context.findValue("module") )
+#set($resulttype = $userprofile.get("${moduleid}-display"))
+
+
+#if(!$resulttype)
+#set($resulttype = "table")
+#end
+
+$pages.include("$apphome/views/modules/$moduleid/results/types/${resulttype}.html",$context)

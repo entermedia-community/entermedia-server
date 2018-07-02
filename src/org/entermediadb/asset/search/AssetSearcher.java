@@ -6,6 +6,7 @@ import java.util.List;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetArchive;
 import org.entermediadb.asset.Category;
+import org.json.simple.JSONArray;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
@@ -52,6 +53,8 @@ public interface AssetSearcher extends Searcher
 	public Asset getAssetBySourcePath(String inSourcepath);
 
 	public String getFulltext(Asset asset);
+
+	public void saveJson(Collection inJsonArray);
 
 
 }

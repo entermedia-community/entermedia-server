@@ -4,6 +4,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -16,6 +17,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.WebServer;
 import org.openedit.page.Page;
 import org.openedit.users.User;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
 
 public class PathEvent implements Comparable, TextAppender
@@ -36,10 +38,49 @@ public class PathEvent implements Comparable, TextAppender
 	protected boolean fieldEnabled = true;
 	protected int fieldRunningCount = 0;
 	protected RequestUtils fieldRequestUtils;
+	protected long fieldTotalRunCount;
+	protected String fieldStartingFromMidnight;
 	
+	public String getStartingFromMidnight()
+	{
+		return fieldStartingFromMidnight;
+	}
+	public int getStartingFromMidnightMilli()
+	{
+		return (int)parse(getStartingFromMidnight());
+	}
+	
+	public String getStartingFromFormated()
+	{
+		int milli = getStartingFromMidnightMilli();
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.set(GregorianCalendar.HOUR_OF_DAY, 0);
+		cal.set(GregorianCalendar.MINUTE, 0);
+		cal.set(GregorianCalendar.SECOND, 0);
+		cal.add(GregorianCalendar.MILLISECOND, milli);
+		String res = DateStorageUtil.getStorageUtil().formatDateObj(cal.getTime(), "h:mm a z");
+		return res;
+	}
+	
+	public void setStartingFromMidnight(String inStartingFromMidnight)
+	{
+		fieldStartingFromMidnight = inStartingFromMidnight;
+	}
+
+	public long getTotalRunCount()
+	{
+		return fieldTotalRunCount;
+	}
+
+	public void setTotalRunCount(long inTotalRunCount)
+	{
+		fieldTotalRunCount = inTotalRunCount;
+	}
+
 	public PathEvent()
 	{
 	}
+
 	
 	public boolean isRunning() 
 	{
@@ -121,6 +162,10 @@ public class PathEvent implements Comparable, TextAppender
 		else if (key.equals("startdelay"))
 		{
 			setDelay(value);
+		}
+		else if (key.equals("startingfrommidnight"))
+		{
+			setStartingFromMidnight(value);
 		}
 		else if (key.equals("period"))
 		{
@@ -278,6 +323,7 @@ public class PathEvent implements Comparable, TextAppender
 //		}
 		//Track if two parameterized events execute at the same moment. 
 		fieldRunningCount++;
+		fieldTotalRunCount++;
 		try
 		{
 			return runNow(inReq);
@@ -438,6 +484,7 @@ public class PathEvent implements Comparable, TextAppender
 		setDelay(inPage.getProperty("delay"));
 		setEnabled(Boolean.parseBoolean(inPage.getProperty("enabled")));
 		setPeriod(inPage.getProperty("period"));
+		setStartingFromMidnight(inPage.getProperty("startingfrommidnight"));
 	}
 	public String toString()
 	{

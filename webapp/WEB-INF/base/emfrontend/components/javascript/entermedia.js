@@ -172,6 +172,7 @@ findclosest = function(link,inid)
 runajaxonthis = function(inlink,e)
 {
 	
+	jQuery(".ajaxprogress").show();
 	var inText = jQuery(inlink).data("confirm");
 	if(e && inText && !confirm(inText) )
 	{
@@ -218,12 +219,15 @@ runajaxonthis = function(inlink,e)
 			}
 		).always(function()
 		{
+			jQuery(".ajaxprogress").hide();
+
 			//inlink.css("enabled",true);
 			inlink.removeAttr('disabled');
 		});
 	}	
 	else
 	{
+		//add oemaxlevel as data
 		var loaddiv = inlink.attr("targetdivinner");
 		loaddiv = loaddiv.replace(/\//g, "\\/");
 		//jQuery("#"+loaddiv).load(nextpage);
@@ -243,6 +247,8 @@ runajaxonthis = function(inlink,e)
 					$(window).trigger( "resize" );
 				}).always(function()
 						{
+					jQuery(".ajaxprogress").hide();
+
 							//inlink.css("enabled",true);
 							inlink.removeAttr('disabled');
 						});		
@@ -812,10 +818,14 @@ onloadselectors = function()
 			{
 				var uid = $(this).attr("id");
 				var isrunning = $(this).data("ajaxrunning");
-				var timeout = 3000;
+				var timeout = $(this).data("reloadspeed");
+				if( timeout == undefined)
+				{
+					timeout = 3000;
+				}
 				if( isrunning == undefined)
 				{
-					timeout = 500; //First one is always faster
+					timeout = 500; //Make the first run a quick one
 				}
 				setTimeout('showajaxstatus("' + uid +'");',timeout); //First one is always faster			
 			}
@@ -899,62 +909,6 @@ jQuery(document).ready(function()
 }); 
 
 emcomponents = function() {
-	$("#savedquerylist a").click(function(e)
-			{
-				e.preventDefault();
-				var a = jQuery(this);
-				var link = a.attr("href");
-				
-				jQuery.get(link, {}, function(data) 
-						{
-							var toreplace = jQuery("#searcheditor");
-							toreplace.html(data);
-							
-							var tmp = jQuery("#savedquerylist #newterm");
-							tmp.remove();
-							var top = a.position().top;
-							top = top + a.height() + 40;
-							jQuery("#eml-green-dialog").css("top",top);
-							
-							jQuery("#arrow").show();
-							var padleft = a.position().left;
-							padleft = padleft + a.width() / 2;
-							padleft = padleft  - 42; //arrow width
-							jQuery("#arrow").css("left",padleft);
-
-						}
-				);
-				return false;
-			}
-	);
-	
-	$("#addterm").click(function(e)
-		{
-			e.preventDefault();
-			var a = jQuery(this);
-			var link = a.attr("href");
-			
-			jQuery.get(link, {}, function(data) 
-					{
-						var toreplace = jQuery("#searcheditor");
-						toreplace.html(data);
-						
-						jQuery("#savedquerylist span").append('<span id="newterm">new term</span>');
-						var a = jQuery("#savedquerylist #newterm");
-						var top = a.position().top;
-						top = top + a.height() + 40;
-						jQuery("#eml-green-dialog").css("top",top);
-						
-						jQuery("#arrow").show();
-						var padleft = a.position().left;
-						padleft = padleft + a.width() / 2;
-						padleft = padleft  - 42; //arrow width
-						jQuery("#arrow").css("left",padleft);
-					}
-			);
-			return false;
-		}
-	);
 
 	if( jQuery.fn.draggable )
 	{

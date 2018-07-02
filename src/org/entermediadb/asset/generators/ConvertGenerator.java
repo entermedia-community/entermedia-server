@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
@@ -15,7 +17,6 @@ import org.openedit.generators.FileGenerator;
 import org.openedit.generators.Output;
 import org.openedit.page.Page;
 import org.openedit.page.PageProperty;
-import org.openedit.util.PathUtilities;
 
 /**
  * This generator generates original asset documents from an MediaArchive
@@ -26,7 +27,7 @@ import org.openedit.util.PathUtilities;
  */
 public class ConvertGenerator extends FileGenerator
 {
-	//private static final Log log = LogFactory.getLog(ConvertGenerator.class);
+	private static final Log log = LogFactory.getLog(ConvertGenerator.class);
 
 	protected ModuleManager fieldModuleManager;
 
@@ -117,10 +118,9 @@ public class ConvertGenerator extends FileGenerator
 				archive.logDownload(sourcePath, "success", inReq.getUser()); //does this work?
 			}
 		}
-		
-		
 		else 
 		{
+			log.info("Error " + result.getError());
 			String missingImage = inReq.getContentProperty("missingimagepath");
 			if(missingImage == null)
 			{

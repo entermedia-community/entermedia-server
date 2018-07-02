@@ -1,0 +1,5 @@
+<page>
+	<property name="tab">hotfolders</property>
+	<property name="searchtype">hotfolder</property>
+	<inner-layout>/${applicationid}/theme/layouts/settingslayout.html</inner-layout>
+</page>

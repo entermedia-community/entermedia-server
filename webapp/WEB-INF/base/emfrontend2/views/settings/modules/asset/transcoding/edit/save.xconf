@@ -1,0 +1,13 @@
+<page>
+	
+	<path-action name="DataEditModule.saveData" />
+	<page-action name="Script.run">
+		<script>./save.groovy</script>
+	</page-action>
+	
+	<path-action name="DataEditModule.search" />
+	<property name="save">true</property>
+ 
+    <path-action name="MediaArchiveModule.clearCache" />
+			
+</page>

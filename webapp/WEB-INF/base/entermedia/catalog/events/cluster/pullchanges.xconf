@@ -1,0 +1,9 @@
+<page>
+
+	<property name="eventname">Pull changes from Nodes</property>	
+	<path-action name="SyncModule.processPullQueue" />
+	<property name="period">30s</property>
+	<property name="enabled">false</property>
+
+</page>
+

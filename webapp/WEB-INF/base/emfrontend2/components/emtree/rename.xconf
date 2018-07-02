@@ -1,0 +1,6 @@
+<page>
+<permission name="view">
+		<userprofile property="editcategorytree" equals="true" />
+	</permission>
+	<path-action name="CategoryModule.loadNode"/>
+</page>

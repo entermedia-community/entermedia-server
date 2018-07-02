@@ -1,0 +1,16 @@
+<page>
+	<property name="section">settings</property>
+	<property name="sectiontitle">Settings</property>
+	<style id="settings" href="/${applicationid}/theme/styles/pages/settings.css" />
+    <script id="jssettings" src="/${applicationid}/components/javascript/pages/settings.js"/>
+
+	<property name="usemap">false</property>
+	
+	<inner-layout>/${applicationid}/theme/layouts/settingslayout.html</inner-layout>
+	<permission name="view">
+		<or>
+			<pagevalue name="canviewsettings" equals="true" />
+			<pagevalue name="canviewmodulesettings" equals="true" />
+		</or>	
+	</permission>
+</page>

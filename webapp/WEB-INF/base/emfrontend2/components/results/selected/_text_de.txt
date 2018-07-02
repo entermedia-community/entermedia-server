@@ -1,0 +1,19 @@
+#
+#Thu Jan 14 13:11:03 EST 2016
+Remove\ From\ Basket=aus dem Warenkorb entfernen
+View\ Selections=Auswahlen zeigen
+Results=Ergebnisse
+Show\ All\ Results=Alle Ergebnisse anzeigen
+Edit=bearbeiten
+Edit\ selected\ records=ausgew\u00E4hlte Datens\u00E4tze bearbeiten
+Export\ to\ CSV=Export nach CSV
+Select\ All\ Results=W\u00E4hlen Sie alle Ergebnisse
+selected=ausgew\u00E4hlt
+Multi\ Edit=Multi-Edit-
+Clear\ Selections=nichts ausw\u00E4hlen
+Show\ Selected=Ausgew\u00E4hlte anzeigen
+Show\ All=alle anzeigen
+Show\ Only\ Selections=zeigen nur Selektionen
+Deselect\ All=Alle abw\u00E4hlen
+Select\ This\ Page=w\u00E4hlen Sie diese Seite
+Add\ To\ Basket=zum Korb hinzuf\u00FCgen

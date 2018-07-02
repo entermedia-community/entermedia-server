@@ -1,6 +1,8 @@
 #
-#Thu Apr 20 13:39:00 CDT 2017
+#Mon Mar 26 16:11:07 EDT 2018
+New=Nuevo
 404\ on\ view=404 en la vista
 No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=No hay datos disponibles para esta vista . Por favor configure las opciones
+Add\ New=Agregar nuevo
 Add\ New\ $detail=A\u00F1adir nuevo detalle de $
 required=requerido

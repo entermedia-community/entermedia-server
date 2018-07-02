@@ -1,0 +1,62 @@
+#if( !$hits )
+#set( $hits = $collectionassets)
+$context.putPageValue("hits",$hits)
+#end
+
+#if( !$hits )
+#set( $hits = $orderassets)
+$context.putPageValue("hits",$hits)
+#end
+
+#if($hits)
+	#set( $collectionid = $hits.getInput("collectionid") )
+	#if( $collectionid && !$librarycol)
+	
+		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
+		$context.putPageValue("librarycol",$librarycol)
+	#end
+	#set( $catid = $hits.getInput("categoryid") )
+	#if( $catid && !$category)
+	#set( $category = $mediaarchive.getData("category",$catid) )
+	#end
+	#set( $orderid = $hits.getInput("orderid") )
+	#if( $orderid)
+		#set( $order = $mediaarchive.getData("order",$orderid) )
+		$context.putPageValue("order",$order)
+	#end
+#end	
+<div id="resultheader">
+	<ul id="sub-nav" class="search-views">
+		
+		#set ($enabled=$hits.getSelectionSize() > 0)
+	
+		
+		#set ($resultview = $userprofile.get('resultview'))
+	
+		
+		#if(!$resultview)
+			#set($resultview = $userprofile.get("resultview"))
+			#if (!$resultview)
+				#set($resultview = "table")
+			#end
+		#end
+		#if(!$edit || $edit == "false"  )
+			<li style="float: right;">
+				<div style="position: relative;">
+					<a class="table-edit-close">
+						<select name="resultview" id="selectresultview" class="smalldropdown" 
+							data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()" data-hitsperpage="$hits.getHitsPerPage()">
+#set( $types = $mediaarchive.getList("resulttype"))
+#foreach($type in $types)
+							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
+#end
+##							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery]]</option>
+##							<option value="stackedgallery" #if( $resultview == "stackedgallery") selected #end>[[Stacked]]</option>
+##							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Folders]]</option>
+						</select>
+					</a>
+				</div>
+			</li>
+		#end	
+	</ul>
+</div>

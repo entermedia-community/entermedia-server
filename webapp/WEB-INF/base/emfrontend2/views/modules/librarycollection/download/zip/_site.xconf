@@ -1,0 +1,13 @@
+<page>
+
+	<path-action name="Admin.autoLogin" alltypes="true"/>
+	<path-action name="ProfileModule.loadUserProfile" alltypes="true"></path-action>
+	<path-action name="MultiSearchModule.getEnterMedia"  alltypes="true" />
+
+	<path-action name="ProjectModule.exportCollection" alltypes="true"/>
+	
+	<property name="virtual">true</property>
+	<layout/>
+	<inner-layout/>
+	<generator name="zipGenerator"/>
+</page>

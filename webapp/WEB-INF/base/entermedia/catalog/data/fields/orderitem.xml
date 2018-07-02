@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine de l&#39;item]]></language> 
     </name> 
   </property>  
-  <property id="assetid" type="list" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+  <property id="assetid" type="list" viewtype="asset" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
     <name> 
       <language id="de"><![CDATA[Asset-ID]]></language>  
       <language id="en"><![CDATA[Asset Id]]></language>  

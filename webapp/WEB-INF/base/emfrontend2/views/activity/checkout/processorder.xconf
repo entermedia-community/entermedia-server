@@ -1,0 +1,5 @@
+<page>
+	<path-action name="OrderModule.checkoutCart"/>	
+	<path-action name="OrderModule.updatePendingOrders"/>
+	<property name="sectiontitle">Request for Approval Submitted</property>
+</page>

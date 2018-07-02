@@ -1008,6 +1008,15 @@
 		<property name="root"><ref bean="root" /></property>
 		
     </bean>
+    
+    
+    <bean id="shellScriptRunner" class="org.entermediadb.scripts.ShellScriptRunner" >
+	   
+		<property name="exec"><ref bean="exec" /></property>
+		
+    </bean>
+    
+    
     <bean id="bshScriptRunner" class="org.entermediadb.scripts.BshScriptRunner" />
     <bean id="rhinoScriptRunner" class="org.entermediadb.scripts.RhinoScriptRunner" />
     <bean id="bsfScriptRunner" class="org.entermediadb.scripts.BsfScriptRunner" />
@@ -1110,6 +1119,7 @@
 		
 		
 	</bean>
+	<!-- 
 		<bean id="RegistrationModule" class="org.entermediadb.asset.modules.RegistrationModule" >
 		<property name="userManager">
 			<ref bean="userManager" />
@@ -1121,6 +1131,7 @@
 			<ref bean="postMail" />
 		</property>
 	</bean>
+	 -->
 	<!-- Catalog based user details (not like preferences) -->
 	<!-- 
 	<bean id="profileSearcher" class="org.openedit.data.XmlFileSearcher"	scope="prototype">
@@ -1651,6 +1662,7 @@
 		</property>
 		<property name="inputLoaders">
 			<list>
+				<ref bean="videoCacheLoader" />
 				<ref bean="originalInputLoader" />
 			</list>
 		</property>	
@@ -2017,6 +2029,12 @@
  	<bean id="TimelineModule" class="org.entermediadb.asset.modules.TimelineModule" >
 	
 	</bean>	
+
+ 	<bean id="videoTrack" class="org.entermediadb.video.VideoTrack" scope="prototype"  >
+	
+	</bean>	
+ 	
+ 	
  	
  	<bean id="GoogleModule" class="org.entermediadb.modules.GoogleModule" >
 	</bean>	
@@ -2055,4 +2073,31 @@
 			<ref bean="elasticNodeManager" />
 		</property>
 	</bean>
+	<bean id="SiteMonitorModule" class="org.entermediadb.sitemonitor.SiteMonitorModule">
+	</bean>
+	<bean id="diskManager" class="org.entermediadb.sitemonitor.DiskManager" scope="prototype">
+	</bean>
+	<bean id="statManager" class="org.entermediadb.sitemonitor.StatManager" scope="prototype">
+	</bean>
+ 	
+ 	<bean id="cloudTranscodeManager" class="org.entermediadb.video.CloudTranscodeManager" scope="prototype">
+	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+	
+	</bean>
+ 	
+ 	<bean id="pullManager" class="org.entermediadb.asset.pull.PullManager" scope="prototype">
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="nodeManager">
+			<ref bean="elasticNodeManager" />
+		</property>
+	</bean>
+ 	
+ 	 	
+ 	<bean id="TaskModule" class="org.entermediadb.tasks.TaskModule" >
+	</bean>	
+	
 </beans>

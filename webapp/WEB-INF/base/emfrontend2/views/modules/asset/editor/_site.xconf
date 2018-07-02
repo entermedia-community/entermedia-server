@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page>
+	<path-action name="AssetEditModule.loadAssetFromSelection"/>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+	<path-action name="CommentModule.loadComments" />
+	<path-action name="DataEditModule.loadHits" allowduplicates="true">
+		<property name="searchtype">asset</property>
+		<property name="hitsname">hits</property>
+	</path-action>	
+	
+	<property name="saveokpage">/tools/edit/saveok.html</property>
+	
+	<inner-layout>/${applicationid}/theme/layouts/mediaviewer.html</inner-layout>
+	
+	<script id="jcrop" src="/${applicationid}/components/javascript/jcrop/js/jquery.Jcrop.min.js" />
+    <style id="jcrop" href="/${applicationid}/components/javascript/jcrop/css/jquery.Jcrop.min.css" />
+    
+   	<script id="videojs" src="/${applicationid}/components/javascript/videojs/video.min.js" />
+	<style  id="videojs-css"  href="/${applicationid}/components/javascript/videojs/video-js.css" />
+	
+	<style id="detaileditor" href="/${applicationid}/theme/styles/pages/detaileditor.css" />
+	
+	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
+	<permission name="viewasset">
+		<or>
+			<action name="AssetControlModule.canViewAsset" />
+			<action name="OrderModule.canViewAsset"/>
+		</or>
+	</permission>	
+
+	<permission name="view">
+		<or>
+			<pagevalue name="canviewasset" equals="true"/>
+		</or>
+	</permission>	
+
+	<permission name="download">
+		<and>
+			<userprofile property="download" equals="true" />
+			<pagevalue name="canviewasset" equals="true"/>
+		</and>
+	</permission>	
+
+	<property name="section">details</property>
+	
+	<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<userprofile property="editallassets" equals="true" />
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>
+	
+	
+</page>

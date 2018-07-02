@@ -166,7 +166,7 @@ public class AssetImporter
 	}
 
 
-	public Asset createAssetFromExistingFile( MediaArchive inArchive, User inUser, boolean unzip,  String inSourcepath)
+	public Asset createAssetFromExistingFile( MediaArchive inArchive, User inUser, String inSourcepath)
 	{
 		String catalogid = inArchive.getCatalogId();
 		
@@ -178,47 +178,7 @@ public class AssetImporter
 		}
 
 		String ext = PathUtilities.extractPageType(page.getName());
-		if(unzip && "zip".equalsIgnoreCase(ext))
-		{
-			//unzip and create
-			List assets = new ArrayList();
-			//the folder we are in
-			Page parentfolder = getPageManager().getPage( page.getParentPath() );
-			File dest = new File(parentfolder.getContentItem().getAbsolutePath());
-			String destpath = dest.getAbsolutePath();
-			ZipUtil zip = new ZipUtil();
-			zip.setPageManager(getPageManager());
-			try
-			{
-				List files = zip.unzip(page.getContentItem().getInputStream(), dest);
-				for(Object o: files)
-				{
-					File f = (File) o;
-					String path = f.getAbsolutePath().substring(destpath.length());
-					path = path.replace('\\', '/');
-					path =parentfolder.getPath() + path; //fix slashes
-					Page p = getPageManager().getPage(path);
-					Asset asset = createAssetFromPage(inArchive, inUser, p);
-					if(asset != null)
-					{
-						assets.add(asset);
-					}
-				}
-				
-				getPageManager().removePage(page);
-				CompositeAsset results = new CompositeAsset(inArchive,new ListHitTracker(assets));
-
-				return results;
-			}
-			catch (Exception e)
-			{
-				throw new OpenEditException(e);
-			}
-		}
-		else
-		{
-			return createAssetFromPage(inArchive, inUser, page);
-		}
+		return createAssetFromPage(inArchive, inUser, page);
 	}
 	public Asset createAssetFromPage(MediaArchive inArchive, boolean includefilename, User inUser, Page inAssetPage, String inAssetId)
 	{

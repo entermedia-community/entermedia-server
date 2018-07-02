@@ -1,0 +1,4 @@
+<page>
+	<property name="bgcolor">FFFFFF</property>
+	<inner-layout>/${applicationid}/theme/layouts/uploadlayout.html</inner-layout>
+</page>

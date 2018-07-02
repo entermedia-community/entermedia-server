@@ -1,3 +1,5 @@
+curl -XGET 'http://localhost:9200/assets_catalog/imporiting/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+
 curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
 INFO: media_catalogs_public/lock/_search' -d '{
   "from" : 0,
@@ -60,6 +62,7 @@ curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AVgCKIL5wq4Z5
 
 curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
 
+curl -XGET 'http://localhost:9200/assets_catalog/order/_search?q=id:b0173a11_f45e_4be6_9465_b5985d023382' | python -mjson.tool
 
 
 curl -XGET 'http://localhost:9200/entermedia_catalogs_testcatalog/asset/_search?q=id:talent' | python -mjson.tool
@@ -167,6 +170,7 @@ curl -XGET 'http://localhost:9200/assets_catalog/_analyze' -d '
 
 curl -XGET  'http://192.168.100.24:9200/assets_catalog/lock/_mapping?pretty=true'  | python -mjson.tool
 
+curl -XGET  'http://localhost:9200/oi_catalog/country/_mapping?pretty=true'  | python -mjson.tool
 curl -XGET  'http://localhost:9200/assets_catalog/lock/_mapping?pretty=true'  | python -mjson.tool
 
 curl -XGET  'http://localhost:9200/assets_catalog/settingsgroup/_mapping?pretty=true'  | python -mjson.tool
@@ -179,7 +183,7 @@ $userprofile.getPermissions()
 $userprofile.getSettingsGroup().getValues("permissions")
 
 
-curl -XPUT "http://localhost:9200/assets_catalog/settingsgroup/administrator" -d ' {"id":"administrator","name":"Administrators","namesorted":"Administrators","profilesearchfilters":"hideassettype","permissions":["viewmap","viewcomments","metadatageneral","convert","converthistory","maximize","download","view","viewmetadatageneral","api-manage-users","deleteasset","asseteditorlibraries","api-load-data","editassettags","api-delete-data","viewbasket","viewcategorynav","filterbyassettype","viewupload","assetpermissions","viewassets","viewlibrarysearch","createnewrecord","editlists","viewuploadmulti","viewsettings","api-manage-events","sharetosocialmedia","addnewcollection","viewattachments","deletecomments","api-create-data","api-search-data","editcategories","multiedit","viewmediaedit","api-update-data","editmetadatasetup","editassetcategories","changeattachment","embedasset","viewassetpreviewhistory","editadvancedsearch","viewconversions","api-manage-list","api-manage-modules","capturehistory","asseteditorpickanylibrary","edittablecolumns","editusersgroups","viewhomelink","publish","shareasset","viewassetedit","viewmyaccount","viewvoting","comment","emaillink","togglesidebar"]}' | python -mjson.tool
+ curl -XPUT "http://localhost:9200/assets_catalog/settingsgroup/administrator" -d ' {"id":"administrator","name":"Administrators","namesorted":"Administrators","profilesearchfilters":"hideassettype","permissions":["viewmap","viewcomments","metadatageneral","convert","converthistory","maximize","download","view","viewmetadatageneral","api-manage-users","deleteasset","asseteditorlibraries","api-load-data","editassettags","api-delete-data","viewbasket","viewcategorynav","filterbyassettype","viewupload","assetpermissions","viewassets","viewlibrarysearch","createnewrecord","editlists","viewuploadmulti","viewsettings","api-manage-events","sharetosocialmedia","addnewcollection","viewattachments","deletecomments","api-create-data","api-search-data","editcategories","multiedit","viewmediaedit","api-update-data","editmetadatasetup","editassetcategories","changeattachment","embedasset","viewassetpreviewhistory","editadvancedsearch","viewconversions","api-manage-list","api-manage-modules","capturehistory","asseteditorpickanylibrary","edittablecolumns","editusersgroups","viewhomelink","publish","shareasset","viewassetedit","viewmyaccount","viewvoting","comment","emaillink","togglesidebar"]}' | python -mjson.tool
 
 curl -XGET  'http://localhost:9200/assets_catalog/lock/_mapping?pretty=true'  | python -mjson.tool
 
@@ -389,14 +393,7 @@ curl -XPOST 'http://localhost:9200/_aliases' -d '
 curl -XPOST 'http://localhost:9200/_aliases' -d '
 {
    "actions" : [
-       { "remove" : { "index" : "assets_catalog1470076538744", "alias" : "assets_catalog" } }
-   ]
-}'
-
-curl -XPOST 'http://localhost:9200/_aliases' -d '
-{
-   "actions" : [
-       { "remove" : { "index" : "assets_catalog1470076538744", "alias" : "assets_catalog" } }
+       { "remove" : { "index" : "assets_catalog1516394804332", "alias" : "assets_catalog" } }
    ]
 }'
 
@@ -446,3 +443,11 @@ curl -XGET  'http://localhost:9200/festi_system/_mapping/field/country?pretty=tr
 
 
 
+<!-- Run this in a 2 or 3 node cluster -->
+
+curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
+{
+    "persistent" : {
+        "discovery.zen.minimum_master_nodes" : "2"
+    }
+}'

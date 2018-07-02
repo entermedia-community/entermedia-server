@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  
+  <path-action name="DataEditModule.search" >
+		<property name="searchtype">category</property>
+		<property name="sortby">categorypathUp</property>
+  </path-action>
+  <property name="hitsperpage">24</property>
+
+</page>

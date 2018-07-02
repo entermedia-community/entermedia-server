@@ -1,0 +1,7 @@
+#
+#Tue Apr 27 17:04:25 EDT 2010
+Reload\ List\ and\ Restart=Liste erneut laden und neustarten
+Disabled=inaktiv
+repeating=wiederholen
+
+

@@ -1,0 +1,6 @@
+#set( $assetid = $context.getRequestParameter("recorderId" ) )
+#set( $asset = $mediaarchive.getAsset($assetid))
+#set( $streamname = "flv:livestream${assetid}")
+#set($transcoder = $mediaarchive.getData("transcoder","wowza"))
+#set($url = "$home$apphome/views/upload/create/video/recorder/finish.html?assetid=$assetid")
+donot=removethis&connectionstring=rtmp://${transcoder.serverid}:1935/hdfvr/&languagefile=translations/en.xml&qualityurl=&maxRecordingTime=86400&userId=&outgoingBuffer=0&skipInitalScreen=1&playbackBuffer=1&autoPlay=false&deleteUnsavedFlv=false&hideSaveButton=1&onSaveSuccessURL=#uuencode($url)&snapshotSec=5&snapshotEnable=false&minRecordTime=5&backgroundColor=0xf6f6f6&menuColor=0xe9e9e9&radiusCorner=8&showFps=true&recordAgain=true&useUserId=false&streamPrefix=videoStream_&streamName=${streamname}&disableAudio=false&chmodStreams=&padding=0&countdownTimer=false&overlayPath=fullStar.png&overlayPosition=tr&loopbackMic=false&showMenu=true&showTimer=true&showSoundBar=true&flipImageHorizontally=false&hidePlayButton=1&enablePauseWhileRecording=0&enableBlinkingRec=1µphoneGain=50&allowAudioOnlyRecording=1&enableFFMPEGConverting=1&ffmpegCommand=ffmpeg -i [THE_INPUT_FLV_FILE] -c:v libx264 [THE_OUTPUT_MP4_FILE]&autoSaveVideo=1

@@ -116,9 +116,18 @@ public void convert()
 		}
 		else
 		{
-			realtask.setProperty("status", "submitted");
-			realtask.setProperty("externalid", result.get("externalid"));
-			tasksearcher.saveData(realtask, user);
+			if(!"submitted".equals(realtask.getValue("status"))){
+				realtask.setProperty("status", "submitted");
+				realtask.setProperty("externalid", result.get("externalid"));
+				tasksearcher.saveData(realtask, user);
+			} else{
+				try {
+					Thread.sleep(60*1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 		}
 		
 	}
@@ -146,10 +155,10 @@ public void convert()
 	else
 	{
 		String assetid = realtask.get("assetid");
-		Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitted"));
+		Date olddate = DateStorageUtil.getStorageUtil().parseFromStorage(realtask.get("submitteddate"));
 		Calendar cal = new GregorianCalendar();
 		cal.add(Calendar.DAY_OF_YEAR,-2);
-		if( olddate != null && olddate.before(cal.getTime()))
+		if( olddate == null || olddate.before(cal.getTime()) )
 		{
 			realtask.setProperty("status", "error");
 			realtask.setProperty("errordetails", "Missing input expired" );

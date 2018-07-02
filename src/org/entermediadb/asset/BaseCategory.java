@@ -384,6 +384,8 @@ public class BaseCategory extends BaseData implements Category
 		{
 			setParentId(null);
 		}
+		
+		//These will be set in indexing
 		if( getId() != null)
 		{
 			setValue("categorypath", loadCategoryPath());
@@ -428,6 +430,19 @@ public class BaseCategory extends BaseData implements Category
 		return rows;
 	}
 
+	public List getChildren(int inColCount)
+	{
+		// Now break up the page into rows by dividing the count they wanted
+		List children = getChildren();
+		List rows = new ArrayList();
+		int inMax = Math.min(inColCount, children.size());
+		for (int i = 0; i < inMax; i++)
+		{
+			rows.add(children.get(i));
+		}
+		return rows;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.Category2#getLevel()
 	 */
@@ -853,5 +868,23 @@ public class BaseCategory extends BaseData implements Category
 	{
 		return fieldParentCategory != null;
 	}
-
+	
+	public boolean hasCountData()
+	{
+		if( getValue("countdata") == null )
+		{
+			return false;
+		}
+		if( getValues("countdata").isEmpty() )
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	public int getCount()
+	{
+		Collection counted = getValues("countdata");
+		return counted.size();
+	}
 }

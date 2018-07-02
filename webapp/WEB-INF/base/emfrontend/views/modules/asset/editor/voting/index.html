@@ -5,9 +5,9 @@
 	#set( $first = $voteshits.get(0).username )
 	#if ( $size == 1 )
 	   #if ( $alreadyvoted )
-	       [[You approved]]
+	       [[You Liked]]
 	   #else
-	       $userManager.getScreenName($first) [[approved]]
+	       $userManager.getScreenName($first) [[liked]]
 	   #end
 	#end
 	#if($size == 2)
@@ -21,7 +21,7 @@
 		#if( $second == $context.getUserName() )
 			#set( $second = $voteshits.get(0).get('username') )
 		#end
-		 and $userManager.getScreenName($second) [[approves]]
+		 and $userManager.getScreenName($second) [[likes]]
 	#end
 	#if( $size > 2 )
 		#set($size = $size - 1)
@@ -31,14 +31,14 @@
            $userManager.getScreenName($first)
         #end 
 			[[and]] <a class="thickbox" data-fancybox-type="ajax" href="$home$apphome/views/modules/asset/editor/voting/showvotes.html?sourcepath=$asset.sourcepath&catalogid=$catalogid&oemaxlevel=1">$size [[others]]</a> 
-	    [[have approved this]]
+	    [[have liked this]]
 	#end
 #else
-    [[Be the first to approve this]]
+    [[Be the first to like this]]
 #end
 </div>
 #if($alreadyvoted)
-	<a class="ajax star full" title="[[Remove Approval]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1"></a>
+	<a class="ajax star full" title="[[Remove Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favourites"></a>
 #else
-	<a class="ajax star empty"  title="[[Approve]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1"></a>
+	<a class="ajax star empty"  title="[[Like]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favourites"></a>
 #end

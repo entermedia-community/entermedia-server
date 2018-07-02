@@ -2,7 +2,10 @@
 #macro(urlencode $invalue)$!url_util.encode($invalue)#end
 #macro(esc $invalue)$!url_util.xmlEscape($invalue)#end
 #macro(escwrap $invalue $inwrap)$!url_util.xmlEscapeWithWrap($invalue, $inwrap)#end
-#macro(text $t)$!context.getText($t)#end
+#macro(text $t)
+#set( $text = $context.getText($t) )
+$!url_util.xmlEscape($text)
+#end
 #macro( translate $text )
 $!translations.getEntryForLocale($context.getLocale(), $text, $content.isPropertyTrue("auto_translate_${context.getLocale()}"))
 #end
@@ -35,7 +38,7 @@ $invalue
 #set($rendercomma = true)#end
 "${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
 #foreach($value in $hit.getValues($detail.id))
-#if($velocityCount > 1),#end
+#if(${foreach.count} > 1),#end
 #datajsonmin($detail $value)
 #end]
 #elseif($detail.isList())
@@ -47,4 +50,26 @@ $invalue
 #end
 #end
 #end}
+#end
+#macro(jsonpartial $hit $details)
+
+#set($rendercomma = false)
+#foreach($detail in $details)
+#set($val = false)#set($val = $hit.get(${detail.id}))
+#if($val)#if($rendercomma),#else
+#set($rendercomma = true)#end
+"${detail.id}":#if($detail.isMultiValue() || $detail.id == "category")[
+#foreach($value in $hit.getValues($detail.id))
+#if(${foreach.count} > 1),#end
+#datajsonmin($detail $value)
+#end]
+#elseif($detail.isList())
+#datajsonmin($detail $val)
+#elseif($detail.isMultiLanguage())
+#jsonmap($detail $hit.getValue($detail.id))
+#elseif($detail.isDate()||$detail.isDateTime())"$jsonUtil.formatDate($val)"
+#else#jesc($val) 
+#end
+#end
+#end
 #end

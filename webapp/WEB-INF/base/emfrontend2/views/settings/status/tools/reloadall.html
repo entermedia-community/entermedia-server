@@ -1,0 +1,7 @@
+<p>Reloading Settings is complete:</p>
+
+#if(!$nodeManager.reindexInternal($catalogid))
+	$pages.include("./mappingerrors.html")
+#else
+	[[Full reindex is complete]]
+#end

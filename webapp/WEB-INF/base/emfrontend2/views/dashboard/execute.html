@@ -1,0 +1,24 @@
+#if($reportsearcher)
+	#set( $view = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")
+#set ($details = $reportsearcher.getDetailsForView($view, $userprofile)) 
+#if($details.size() > 0)
+
+<form action="executefinish.html">
+	<input type= "hidden" name="reportid" value="$data.id"/>
+	$context.putPageValue("searcher", $reportsearcher)
+	 #foreach( $detail in $details)
+	        $context.putPageValue("detail", $detail)
+	        #if ($detail.isLeaf())
+	            $pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
+	        #else
+	            $pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
+	        #end
+	    #end
+	    <hr>
+	<input type="submit" name="[[Run Report]]" value="[[Run Report]]"/>
+</form>
+#end
+#end
+
+
+

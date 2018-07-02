@@ -27,5 +27,8 @@
 		<type id="searchsuggest"  >Suggestions</type>
 		<type id="tageditor"  >Tags</type>
 -		<type id="map"  >Map</type>
+		<type id="secondstotime">Seconds to Time</type>
+
+
 
 </types>

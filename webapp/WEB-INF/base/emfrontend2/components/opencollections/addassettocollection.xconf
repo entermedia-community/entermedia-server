@@ -1,0 +1,4 @@
+<page>
+	<path-action name="ProjectModule.addAssetToCollection"/>
+	<path-action name="ProjectModule.addCategoryToCollection"/>
+</page>

@@ -17,7 +17,7 @@
     #else
         $term.getValue()
     #end
-    #if($velocityCount != $query.getTerms().size())
+    #if(${foreach.count} != $query.getTerms().size())
         #if($query.isAndTogether())
             [[and]]
         #else
@@ -39,7 +39,7 @@
     #else
         $term.getValue()
     #end
-    #if($velocityCount != $child.getTerms().size())
+    #if(${foreach.count} != $child.getTerms().size())
         #if($child.isAndTogether()) 
             [[and]]
         #else
@@ -56,6 +56,6 @@ in
 #set( $catsearcher = $searcherManager.getSearcher(${applicationid}, "catalogs") )
  #foreach($catalogid in $query.getCatalogs())
   #set( $item = $catsearcher.searchById($catalogid) )
-   $item #if($velocityCount != $query.getCatalogs().size()) and #end
+   $item #if(${foreach.count} != $query.getCatalogs().size()) and #end
  #end
 #end

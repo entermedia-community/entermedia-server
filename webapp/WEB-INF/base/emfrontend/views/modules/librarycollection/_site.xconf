@@ -4,7 +4,7 @@
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend/views/modules/default</property>
     <property name="module">librarycollection</property>
     
-	<inner-layout>/${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
+	<inner-layout>${themeprefix}/layouts/collectionfeedlayout.html</inner-layout>
 	<path-action name="ProfileModule.savePreference"/>
 	
 	<property name="defaulttab">mediatab</property>
@@ -20,5 +20,7 @@
 			<action name="ProjectModule.canEditCollection" />
 		</or>
 	</permission>
+		<path-action name="ProfileModule.changeResultView"/>
+	
 
 </page>

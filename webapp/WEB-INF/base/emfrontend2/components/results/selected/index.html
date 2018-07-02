@@ -1,0 +1,72 @@
+<li><a>[[Selections]]</a>
+	<ul>
+	  	<li><a class="ajax selectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
+    	<li><a class="ajax  selectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
+ #if( !$hits.isShowOnlySelected() )
+		<li><a 
+			title="[[View Selections]]"
+			href="$home$apphome/views/search/index.html?assetshowonlyselections=true&hitssessionid=$hits.getSessionId()&page=1">
+				[[Show Only Selections]]</a></li>
+#else				
+		<li id="resultselection"><a #if( $hits.isShowOnlySelected() )class="active" #end
+			title="[[Show All]]"
+			href="$home$apphome/views/search/index.html?assetshowonlyselections=false&hitssessionid=$hits.getSessionId()">
+				[[Show All Results]]</a></li>
+#end		
+#if( $hits.getSelectionSize() > 0)
+    	<li><a class="ajax  deselectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
+#end
+	</ul>
+</li>
+
+
+#if( $hits.hasSelections() )
+
+<li><a>[[Actions]]
+#if( $hits.isShowOnlySelected() )
+([[All]] $hits.getSelectionSize())
+#else 
+($hits.getSelectionSize()/$hits.size())
+#end</a>
+	<ul>
+	#if( $librarycol && $caneditdata )
+		<li><a class="emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a></li>
+    	<li><a class="emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a></li>
+    #end	
+    #if ( $canviewbasket  )
+		#if($order)
+			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Basket]]</a></li>
+		#else
+			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Basket]]</a></li>
+		#end
+	#end
+	#if( $canaddnewcollection )
+	<li><a class="emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a></li>
+	#end
+
+	#if ($canmetadatageneral && $canmultiedit)
+  		#set($multi = $hits.getSelectionSize() > 1)
+  		#if ($multi)
+  			#set($link = "editall.html")
+  			#set($text = "[[Multi Edit]]")
+  		#else
+  			#set($link = "index.html")
+  			#set($text = "[[Edit Asset]]")
+  		#end
+		<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a></li>
+	#end
+	#if($canexportdata)
+    	
+	<li><a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a></li>
+				<li ><a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a></li>
+##<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
+#end
+	#if($candeleteasset && $canmultiedit)	    
+ 		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a></li>
+   	#end    	
+#if($canprintpreview)
+    	 <li><a href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>
+#end
+	</ul>
+</li>
+#end

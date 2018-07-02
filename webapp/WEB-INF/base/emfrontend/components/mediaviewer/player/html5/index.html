@@ -1,27 +1,50 @@
-#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4"))
+#set( $source = $mediaarchive.asLinkToPreview($asset,"video.mp4")) 
 #set( $thumb = $mediaarchive.asLinkToPreview($asset,"image640x480.jpg"))
-<!-- 1. skin -->
-<link rel="stylesheet" href="$apphome/components/javascript/flowplayer/skin/entermedia.css">
-  
-<!-- 3. flowplayer -->
-<script src="$apphome/components/javascript/flowplayer/flowplayer.min.js"></script>
-<!-- first try HTML5 playback: if serving as XML, expand `controls` to `controls="controls"` and autoplay likewise -->
-<!-- warning: playback does not work on iOS3 if you include the poster attribute! fixed in iOS4.0 -->
 
-<div class="player is-splash"  data-embed="false" style='background-color:#777; background-image:url("$thumb");'>
-   
-   <video autoplay="true" >
-      <source type="video/mp4"  src="$source">
-      #set( $short = $url_util.getPathUtilities().extractPagePath($source) )
-      <source type="video/flash"  src="mp4:$short"></video>
-   </video>
-</div>
+#set( $embed = $context.getRequestParameter("embed") )
+#set( $autoplay = $context.getRequestParameter("autoplay") )
+#set( $loop = $context.getRequestParameter("loop") )
+
+#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+#set( $root = "$!prefix$home$page.directory")
+#set( $catalogid = $asset.catalogId )
+
+<link rel="stylesheet"	href="$apphome/components/javascript/flowplayer/7.2.1/skin/entermedia.css">
+<script src="$apphome/components/javascript/flowplayer/7.2.1/flowplayer-7.2.1.min.js"></script>
+
+<div id="content">
+
+##Add back full screen button, Autoplay and escape handling
+
+<div id="playarea" class="mediaplayer html5player player is-splash #if( $embed == "true") embededplayer autoheightless40 #end"
+	data-embed="false"
+	style='background-image: url("$thumb");'
+	data-share="false" 
+	>
+
+	<video  
+			##Use this? poster='$thumb'
+			#if( $autoplay && $autoplay == "true") autoplay #end
+			#if( $loop && $loop == "true") loop #end
+	controls >
+		<source type="video/mp4" src="$source">
+		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
+		<source type="video/flash" src="mp4:$short">
+     #if( $tracks && !$tracks.isEmpty() )
+      	#foreach( $track in $tracks)
+      <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
+      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+      	#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
+      	#end
+      #end
+	</video>
 
 <script>
-// run script after document is ready
-
-   // install flowplayer to an element with CSS class "player"
-  $(".player").flowplayer({ swf: "$apphome/components/javascript/swf/5.5.2/flowplayer.swf" });
-   
- 
+	$(".html5player").livequery(function()
+	{
+		$(this).flowplayer();
+	});
 </script>
+
+</div>
+</div>

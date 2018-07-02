@@ -1,0 +1,9 @@
+<page>
+	
+	<path-action name="TranslationModule.changeLanguage" />
+	<path-action name="Admin.redirectToOriginal" >
+		
+	</path-action>
+	
+		
+</page>

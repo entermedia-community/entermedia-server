@@ -1,0 +1,43 @@
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )	
+
+<div id="addcategoryform" class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
+   <div class="ui-widget-header">[[Imported]]</div>
+   <div class="ui-widget-content">
+	
+#if(!$errormsg)
+		<div class="alert alert-success">
+		  <strong>[[Import complete]]</strong>
+ 
+		</div> 
+
+		 <a href="$home$apphome/views/modules/librarycollection/media/${collectionid}.html">[[Review your changes]]</a>
+#else
+
+<div class="alert alert-danger">
+		  <strong>[[Import failed to complete]].</strong>
+ 
+		</div> 
+
+<button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+  [[Show Full Error]]
+</button>
+<div class="collapse" id="collapseExample">
+  <div class="well">
+$e.printStackTrace()
+
+
+  </div>
+</div>
+
+
+#end					
+
+</div>
+	
+	
+	<a class="ajax btn gobacklink" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html?collectionid=$collectionid">[[Go Back]]</a>
+
+
+	</div>
+

@@ -1,0 +1,79 @@
+#set($hitssessionid = $hits.sessionId )
+$context.putPageValue("showalllanguagevalues",true)
+
+			#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
+			#foreach( $viewpath in $views.keySet() )
+			 
+				#set( $target = $views.get($viewpath) )
+				 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+			                       #if("$!permissionvalue" == "" || $permissionvalue == true)
+			     
+					#if( !$target.rendertable )
+						##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+						$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+						$context.putPageValue("data",$asset)	
+						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+						
+						$context.putPageValue("view",$viewpath)
+						<h4>$context.getText($target.toString())</h4>
+							<div class="asset-data-detail">
+							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+						</div>
+					#end
+				#end
+                #set($permissionvalue = "")
+				
+			#end
+						
+			<div>
+				#set( $libraries = $asset.getLibraries())
+				#if( $libraries.size() > 0)
+    				<h4>[[Libraries]]</h4>
+    				<div class="asset-data-detail">
+    				<div class="emtable">
+            				#foreach($library in $libraries)
+            					 #set( $division = $mediaarchive.getData("division",$library.division ) )
+            					 #if($division)
+            					 	#set($ldata = "$division.getName($context.locale) / $library.getName($context.locale)" )
+            					 #else
+            					 	#set($ldata = $library.getName($context.locale) )
+            					 #end
+            					<a href="$home$apphome/views/modules/library/view/view.html?id=$library.getId()" class="row tag">$ldata</a>
+            			
+            				#end
+    					</div>
+    				</div>
+					<h4>[[Collections]]</h4>
+						<div class="asset-data-detail">
+							#foreach ($collection in $asset.getCollections())
+								 <a class="librarylabel" href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="collection">$collection</a>
+							#end
+						</div>
+				#end						
+
+				<h4>[[Categories]]</h4>
+					<div class="asset-data-detail">
+					<div  id="cat-list" class="emtable">
+					#foreach ($category in $asset.categories)
+						<div  class="row category" style="padding-left:24px;">						
+#foreach( $parent in $category.getParentCategoriesFrom(1))
+#if( ${foreach.count} > 1) \ #end
+<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
+#end
+						</div>
+					#end
+					</div>
+					</div>
+			</div>	
+				#if ($canviewslideshow)
+    				#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
+    				#if( $type != "video" )
+    					<div>	
+    							<a class="slideshow emdialog" href="$home$link" target="_parent"
+    								pageturner="$home$apphome/components/lightbox/pageturner.xml?hitssessionid=$hits.getSessionId()&amp;index=$indexOf"
+    								title="[[Slideshow]]"><img style="vertical-align:middle;padding-right: 10px;" src="$home$themeprefix/images/buttons/fullscreen.png" /></a>
+    					</div>
+    				#end
+				#end		
+	
+		

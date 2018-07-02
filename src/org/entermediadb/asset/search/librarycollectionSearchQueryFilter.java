@@ -26,19 +26,32 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		//log.info( "security filer enabled "  + enabled );
 		if (!enabled)
 		{
+			
 			return inQuery;
 		}
 		if( inQuery.isSecurityAttached() )
 		{
+			
 			return inQuery;
 		}
 		User user = inPageRequest.getUser();
 		//log.info( "found filer user  "  + user + " " + user.isInGroup("administrators"));
-		if (user != null && user.isInGroup("administrators"))
+		
+		Object settings = inPageRequest.getPageValue("canviewsettings");
+		if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
 		{
-			//dont filter since its the admin
 			return inQuery;
 		}
+//		if (user != null && user.isInGroup("administrators"))
+//		{
+//			SearchQuery child = inSearcher.query()
+//					.not("visibility", "hidden")
+//					.not("visibility", "3")
+//					.getQuery();
+//			inQuery.addChildQuery(child);
+//			return inQuery;
+//		}
+		
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
 		UserProfile profile = inPageRequest.getUserProfile();
@@ -58,9 +71,12 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 			Category publiccat = (Category) iterator.next();
 			allowedcats.add(publiccat);
 		}
+		
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)
+				.not("visibility", "hidden")
+				.not("visibility", "3")
 				.getQuery();
 		inQuery.addChildQuery(child);
 		//Load all categories 1000
@@ -69,7 +85,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		//inQuery.setSecurityIds(toshow);
 		inQuery.setSecurityAttached(true);
 		
-		log.info("Collection search " + inQuery.toQuery());
+		//log.info("Collection search " + inQuery.toQuery());
 		return inQuery;
 	}
 }

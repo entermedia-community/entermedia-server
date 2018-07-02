@@ -44,7 +44,7 @@ $related.setPage($pageval)
         		<li class="mediathumb  #if( $asset && $hit.id == $asset.id ) currentsubtle #end" id="cell${catalogid}_${hit.id}" >
         			#set( $count = $related.getPage()+-1 )
         			#set( $count = $count*$related.getHitsPerPage() )	
-        			#set( $count = $velocityCount + $count )
+        			#set( $count = ${foreach.count} + $count )
         			$context.putPageValue("hitindex",$count )
         			#set ($sourcepath = $hit.sourcepath)
         		

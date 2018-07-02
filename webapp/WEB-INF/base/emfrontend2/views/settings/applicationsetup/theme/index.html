@@ -1,0 +1,63 @@
+<div style="padding-top: 10px">
+
+<div id="editlayout" >
+#set($searcher = $mediaarchive.getSearcher("theme"))
+
+#set( $themeid = $context.getRequestParameter("themeid"))
+#if(!$themeid)
+
+	#set( $themeid = $content.get("themeid") )
+#end
+
+<div class="row">
+<div class="col-md-6">
+<h2>[[Theme Editor]]</h2>
+</div>
+<div class="col-md-6">
+<form name="picker" action="index.html">
+	
+	<input name="reload" type="hidden" value="true" />
+	
+	<select name="themeid"  style="margin: 8px;" onchange="this.form.submit()">
+		
+	#set( $themes = $mediaarchive.getList("theme") )
+	#foreach( $theme in $themes)
+		<option value="$theme.id" #if( $theme.id == $themeid)selected#end>$theme</option>		
+	#end
+	</select>
+	
+	<input type=button  onClick='location.href = "./copy.html?themeid=$!themeid"' value="Copy" />
+	<input type=button  onClick='location.href = "./remove.html?themeid=$!themeid"' value="Remove" />
+	<input type=button  onClick='location.href = "$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme"' value="Export" />
+	
+	
+</form>
+</div>
+</div>
+#set($data = $mediaarchive.getData("theme", $themeid))
+
+$context.putPageValue("searcher", $searcher)
+$context.putPageValue("data", $data)
+
+$context.putPageValue("view", "theme/edit")
+
+	<link rel="stylesheet" type="text/css" href="$home$apphome/theme/styles/custom.css?cache=false" />
+
+#if( $data )
+<form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/theme/save.html"  enctype="multipart/form-data">
+	<input name="save" type="hidden" value="true" />
+	<input name="id" type="hidden" value="$data.id" />
+	<input name="themeid" type="hidden" value="$data.id" />
+	
+	<input name="searchtype" type="hidden" value="theme" />
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+
+<input type="submit" value="Save" style="width:100px; height: 60px; padding:20px" />
+<div id="messagearea">$!message
+</div>
+</form>
+
+#end
+
+</div>
+</div>

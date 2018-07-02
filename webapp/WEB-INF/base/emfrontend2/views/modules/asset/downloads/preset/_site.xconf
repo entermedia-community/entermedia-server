@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+                                                                                                                                   
+<page>
+	<!-- No permission check on asset, fast pre loading, dynamic creation -->
+	
+    <!-- This URL will look like this /downloads/preset/sourcepath/presetname.jpg -->
+	<property name="virtual">true</property>
+	
+	<property name="assetrootfolder">/${applicationid}/views/modules/asset/downloads/preset</property>
+	
+	<property name="sourcepathhasfilename">true</property>	
+	<generator name="convertArchiveDocument"/>
+</page>
+
+

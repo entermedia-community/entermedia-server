@@ -1,0 +1,26 @@
+<script type="text/javascript" src="$home$apphome/components/mediaviewer/player/hwd/player/js/hdwplayer.js"></script>
+<style>
+#iframe1
+            {
+                height:   100%;
+                left:     0px;
+                position: absolute;
+                top:      0px;
+                width:    100%;
+            }
+</style>
+<div id="player"></div>
+<script>
+hdwplayer({ 
+	id       : 'player',
+	swf      : '$home$apphome/components/mediaviewer/player/hwd/player/player.swf',
+	width    : '630',
+	height   : '360',
+	type	 : 'rtmp',	
+#set( $transcoder = $mediaarchive.getData("transcoder","wowza") )
+#set( $serverid = $transcoder.get("serverid") )	
+	streamer : 'rtmp://${serverid}:1935/hdfvr',
+	video    : 'flv:livestream${asset.getId()}',
+	autoStart: 'true'
+});
+</script>

@@ -194,7 +194,12 @@ public class ConversionUtil {
 		}
 		return null;
 	}
-	
+	public Data getConversionTask(MediaArchive inArchive, String inAssetId, String inPresetId) throws Exception 
+	{
+		Searcher ctsearcher = inArchive.getSearcher("conversiontask");
+		Data task = ctsearcher.query().exact("presetid", inPresetId).exact("assetid",inAssetId).searchOne();
+		return task;	
+	}
 	public String getConversionStatus(String inCatalogId, String inAssetId, String inPresetId) throws Exception {
 		String status = NOTHING_FOUND;
 		SearcherManager sm = getSearcherManager();
@@ -301,7 +306,9 @@ public class ConversionUtil {
 		SearcherManager sm = getSearcherManager();
 		Collection both = new ArrayList();
 		both.add("all");
+		if(mediatype != null) {
 		both.add(mediatype);
+		}
 		HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").orgroup("inputtype", both).sort("ordering").search();
 		//HitTracker all = sm.getSearcher(inCatalogId, "convertpreset").query().match("display", "true").sort("ordering").search();
 		return all;

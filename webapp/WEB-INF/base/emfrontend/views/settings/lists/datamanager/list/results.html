@@ -44,7 +44,7 @@
 		</th>
 		#end
 		</tr>	
-		
+		   
 		
     
 		
@@ -52,17 +52,19 @@
 		#set( $origURL = $context.getRequestParameter("origURL" ) )				
 			
 		#foreach ( $hit in $datalist.getPageOfHits() )
+		  $context.putPageValue('data', $hit)
+    $context.putPageValue('cell', $hit)
+    
 			<tr rowid="$hit.id">
 			#foreach( $detail in $details )
-				#set( $newval = "$!hit.get($detail.getId())")
-				#if($newval && $newval != "" && $detail.isList())
 				
-					#set( $newval = $searcherManager.getListData($detail,$newval) )
-				#end			
-				#if($detail.render)
-					#set( $newval = 	$searcherManager.getValue($catalogid, $detail.render, $hit.properties))
-				#end
-				<td nowrap>$newval </td>
+				<td nowrap>
+				
+				 $context.putPageValue('val',  $!hit.get($detail.id))
+              $context.putPageValue('detail',  $detail)
+              $pages.include("$apphome/components/search/cell.html", $context)    
+				
+				</td>
 			#end
 			</tr>
 		#end

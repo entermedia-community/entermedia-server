@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="id" index="true" stored="true"  editable="false" >
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" stored="true" editable="true"  > 
+    <name> 
+      <language id="de"><![CDATA[Name]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[Prénom]]></language> 
+    </name> 
+  </property>  
+  <property id="baseurl" index="true" stored="true" editable="true"  >
+    <name>
+      <language id="de"><![CDATA[URL]]></language>
+      <language id="en"><![CDATA[URL]]></language>
+      <language id="es"><![CDATA[URL]]></language>
+      <language id="fr"><![CDATA[URL]]></language>
+    </name>
+  </property> 
+  <property id="entermediakey" index="true" stored="true" editable="true"  >
+    <name>
+      <language id="de"><![CDATA[entermediakey]]></language>
+      <language id="en"><![CDATA[entermediakey]]></language>
+      <language id="es"><![CDATA[entermediakey]]></language>
+      <language id="fr"><![CDATA[entermediakey]]></language>
+    </name>
+  </property> 
+  <property id="clustername" index="true" stored="true" editable="true"  >
+    <name>
+      <language id="en"><![CDATA[Cluster Name]]></language>
+    </name>
+  </property> 
+ 
+  <property id="lastpulldate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false" >Record Edit Date 
+    <name> 
+      <language id="en"><![CDATA[Last Pull Date]]></language>  
+    </name> 
+  </property>  
+
+  <property id="lasterrormessage" index="true" stored="true" editable="true"  >
+    <name>
+      <language id="en"><![CDATA[Previous Error]]></language>
+    </name>
+  </property> 
+
+  <property id="lasterrordate" index="true" stored="true" editable="true" datatype="date" viewtype="time"  >
+    <name>
+      <language id="en"><![CDATA[Previous Error Date]]></language>
+    </name>
+  </property> 
+
+
+  
+  
+</properties>

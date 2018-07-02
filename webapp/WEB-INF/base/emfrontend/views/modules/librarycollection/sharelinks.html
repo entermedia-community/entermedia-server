@@ -1,0 +1,15 @@
+<p>[[Link to Collection]]
+#set($link = "$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${librarycol.getId()}&resultview=stackedgallery" )
+</p><input value="$link" style="width:550px; background-color: #EEE;" enabled=false  /><a href="$link" class="btn">[[Collection Home link]]</a>
+
+<p>[[Sharable, embeddable read-only version of these assets]]</p>
+		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
+		
+		#set( $link = "$context.getSiteRoot()/$mediadbappid/services/module/asset/players/collections/display/${librarycol.getId()}.html")
+		<input value="$link" style="width:550px; background-color: #EEE;" enabled=false  /><a  class="btn" target="_new" href="$link">[[Preview]]</a>
+<br><br><br>
+		<p>[[Or embed on a web page]]</p>
+
+<textarea cols="100" rows="3" onclick="this.select();" style="width:550px; background-color: #EEE;" enabled=false readonly="readonly" >
+<script type="text/javascript" src="$context.getSiteRoot()/$mediadbappid/views/display/embed.js" collectionid="${librarycol.getId()}"> </script>
+</textarea>

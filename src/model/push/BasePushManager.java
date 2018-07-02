@@ -95,7 +95,7 @@ public abstract class BasePushManager  implements PushManager{
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
 		{			
 			Data hit = (Data) iterator.next();
-			Asset asset = (Asset) archive.getAssetBySourcePath(hit.getSourcePath());
+			Asset asset = (Asset) searcher.loadData(hit);
 			if( asset != null )
 			{
 				savequeue.add(asset);
@@ -228,18 +228,21 @@ public abstract class BasePushManager  implements PushManager{
 			command.setPageManager(archive.getPageManager());
 			UploadRequest properties = command.parseArguments(inReq);
 	
+			String id = inReq.getRequestParameter("id");
+			Asset target = archive.getAsset(id);
+			
+			log.info("ID from push was : " + id);
+			
 			String sourcepath = inReq.getRequestParameter("sourcepath");
 			
-			Asset target = archive.getAssetBySourcePath(sourcepath);
 			if (target == null)
 			{
-				String id = inReq.getRequestParameter("id");
 				target = (Asset) archive.getAssetSearcher().createNewData();
 				target.setId(id);
 				target.setSourcePath(sourcepath);
 			}
 			
-	
+			
 			String categorypath = PathUtilities.extractDirectoryPath(sourcepath);
 			Category category = archive.getCategorySearcher().createCategoryPath(categorypath);
 			archive.getCategorySearcher().saveData(category);
@@ -250,10 +253,29 @@ public abstract class BasePushManager  implements PushManager{
 			//Make sure we ADD libraries not replace them
 			String editstatus = inReq.getRequestParameter("editstatus.value");
 			String k4processed = inReq.getRequestParameter("k4processed.value");
+			log.info("OVERRIDE: " + "override".equals(editstatus));
 			
-			
-			if( k4processed == "true" || editstatus == "override") 
+			if("true".equals(k4processed) || "override".equals(editstatus)) 
 			{
+				
+				log.info("OVERRIDE WAS " + editstatus);
+				log.info("Fields were:");
+				for (int i = 0; i < fields.length; i++) {
+					String string = fields[i];
+					if("description".equals(string)) {
+						fields[i] = "";
+					}
+					if("id".equals(string)) {
+						fields[i] = "";
+					}
+					String val = inReq.getRequestParameter(string + ".value");
+					log.info(string + ":" + val);
+
+				}
+				target.setValue("description", null);
+				target.setId(id);
+
+				//THIS IS NOT WORKING?
 				archive.getAssetSearcher().updateData(inReq, fields, target);
 			}
 			else
@@ -311,8 +333,8 @@ public abstract class BasePushManager  implements PushManager{
 					}
 				}
 			}
-			log.info("Received a pushed asset: " + target.getId() +" at " + target.getSourcePath() +  " : "  );
-			archive.saveAsset(target, inReq.getUser());
+			log.info("Received a pushed asset: " + target.getId() +" at " + target.getSourcePath() +  " : "  + "details(k4 / edit status) : " + k4processed + " / " + editstatus );
+			archive.getAssetSearcher().saveData(target);
 			archive.fireMediaEvent("importing","pushassetimported", inReq.getUser(), target);
 	
 		}

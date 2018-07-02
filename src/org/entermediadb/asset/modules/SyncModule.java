@@ -5,10 +5,13 @@ import java.util.Collection;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.pull.PullManager;
 import org.entermediadb.asset.push.PushManager;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 
 public class SyncModule extends BaseMediaModule
@@ -18,9 +21,13 @@ public class SyncModule extends BaseMediaModule
 
 	public PushManager getPushManager(MediaArchive inArchive)
 	{
-		return (PushManager) inArchive.getModuleManager().getBean(inArchive.getCatalogId(), "pushManager");
+		return (PushManager) getModuleManager().getBean(inArchive.getCatalogId(), "pushManager");
 	}
 
+	public PullManager getPullManager(String inCatalogId)
+	{
+		return (PullManager) getModuleManager().getBean(inCatalogId, "pullManager");
+	}
 	
 	public void acceptPush(WebPageRequest inReq)
 	{
@@ -173,4 +180,46 @@ public class SyncModule extends BaseMediaModule
 		//getPushManager().pollRemotePublish(archive); //search for publish tasks and complete them with a push
 	}
 	
+	public void processPullQueue(WebPageRequest inReq)
+	{
+		//log.info("Starting pulling");
+		MediaArchive archive = getMediaArchive(inReq);
+		long total = getPullManager(archive.getCatalogId()).processPullQueue(archive);
+		ScriptLogger log = (ScriptLogger)inReq.getPageValue("log");
+		if ( log != null)
+		{
+			if( total == -1)
+			{
+				log.info("Pull error happened, check logs");
+			}
+			log.info("imported " + total  + " assets");
+		}
+
+	}
+
+	public void listChanges(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String fulldownload = inReq.getRequestParameter("fulldownload");
+		HitTracker hits = null;
+		if(fulldownload != null && Boolean.parseBoolean( fulldownload) )
+		{
+			hits = archive.getAssetSearcher().getAllHits(inReq);
+		}
+		else
+		{
+			String lastpulldate = inReq.getRequestParameter("lastpulldate");
+			hits = getPullManager(archive.getCatalogId()).listRecentChanges("asset",lastpulldate);
+		}
+		hits.enableBulkOperations();
+		hits.setHitsPerPage(200);//TMP
+		inReq.putPageValue("hits", hits);
+		inReq.putPageValue("searcher", hits.getSearcher() );
+		
+		//hitsassetassets/catalog
+		inReq.putSessionValue("hitssessionid", hits.getSessionId());
+		inReq.putSessionValue(hits.getSessionId(), hits);
+		inReq.putPageValue("archive",archive); 
+	}
 }

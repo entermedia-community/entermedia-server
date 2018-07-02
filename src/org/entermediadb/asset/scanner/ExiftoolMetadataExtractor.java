@@ -25,6 +25,7 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.Searcher;
 import org.openedit.modules.translations.LanguageMap;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
@@ -85,11 +86,13 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 			PropertyDetails details = inArchive.getAssetPropertyDetails();
 			ArrayList<String> base = new ArrayList<String>();
 
-			ContentItem etConfig = inArchive.getPageManager().getRepository().getStub(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
+
+			Page etConfig = inArchive.getPageManager().getPage(inArchive.getCatalogHome() + "/configuration/exiftool.conf");
+
 			if (etConfig.exists())
 			{
 				base.add("-config");
-				base.add(etConfig.getAbsolutePath());
+				base.add(etConfig.getContentItem().getAbsolutePath());
 			}
 
 			base.add("-S");

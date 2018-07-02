@@ -1,0 +1,7 @@
+#Thu Apr 27 09:03:42 CDT 2017
+None=Aucun
+All=Tous
+Filters=Filtres
+Show\ Less=En montrer moins
+Show\ More=En montrer plus
+

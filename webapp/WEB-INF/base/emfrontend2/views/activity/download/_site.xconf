@@ -1,0 +1,6 @@
+<page>
+
+	<inner-layout>/${applicationid}/theme/layouts/section.html</inner-layout>
+	<property name="sectiontitle">Download</property>
+
+</page>

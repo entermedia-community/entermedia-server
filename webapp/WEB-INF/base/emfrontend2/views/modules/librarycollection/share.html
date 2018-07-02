@@ -1,0 +1,18 @@
+<div class="publishtabcontainer">
+	
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+		<div class="ui-widget-header">[[Followers]] </div>
+		<div class="ui-widget-content">
+
+		#set( $link = "$apphome/views/modules/librarycollection/edit/moduletable.html?collectionid=${librarycol.getId()}&id=${librarycol.getId()}&viewid=librarycollectionshares&viewpath=librarycollection/librarycollectionshares&searchtype=librarycollection")
+		
+		$pages.include($link, $context)		
+			
+		</div>
+		
+	</div>	
+
+	
+</div>
+	
+

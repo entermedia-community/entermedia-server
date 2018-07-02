@@ -1,0 +1,48 @@
+<tr id="tableheader">
+#if( $showtoolbar )
+	<th class="firstheader" id="th-checkbox">
+		
+		<div id="th-checkbox-right">
+	    <div class="anchor">
+    	    <div class="select-dropdown-open down"></div>
+    	    <ul class="select-dropdown" style="display: none;">
+    	        <li><a class="ajax selectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
+    	        <li><a class="ajax  selectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
+    	        <li><a class="ajax  deselectpage" targetdiv="resultheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
+    	    </ul>
+    	</div>
+    	</div>
+    	<div id="th-checkbox-left">
+			<input name="pagetoggle" type="checkbox" #if($hits.isPageSelected()) checked #end />
+		</div>
+	</th>
+#end	
+
+#set( $edit = $context.getRequestParameter("editheader"))
+#if( !$edit || $edit == "false")
+#set( $edit = false)
+#end
+	<th id="th-thumbnail"> [[Thumbnail]]  </th>
+	#set( $sortby = $hits.getSearchQuery().getSortBy() )
+	#foreach( $detail in $details)
+	
+		<th  class="sortable #if($edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" sortby="$detail.id">
+					
+			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
+					#text( $detail.name )
+					#if($edit)
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+					#elseif ($sortby.startsWith($detail.getId()))
+		 				#if($sortby.endsWith("Up"))
+		 					#set($sorticon="top")
+		 				#else
+		 					#set($sorticon="bottom")
+		 				#end	
+		 				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
+					#end
+			</div>
+		 </th>
+	#end
+	
+</tr>
+

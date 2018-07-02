@@ -13,12 +13,16 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
+import org.elasticsearch.action.bulk.BulkProcessor;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchType;
+import org.elasticsearch.client.Requests;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
@@ -29,8 +33,12 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.search.DataConnector;
+import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.data.DataArchive;
+import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -569,6 +577,45 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 	public String getPathToData()
 	{
 		return "/WEB-INF/data/" + getCatalogId() + "/assets";
+	}
+
+	@Override
+	public void saveJson(Collection inJsonArray)
+	{
+		JSONParser parser = new JSONParser();
+
+		ArrayList errors = new ArrayList();
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
+
+		try
+		{
+			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
+			{
+				String json = (String) iterator.next();
+				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
+				req.source(json);
+				//log.info("savinng " + json);
+				//Parse the json and save it with id
+				Map assetdata = (Map)parser.parse(json);
+				String id = (String)assetdata.get("id");
+				if( id != null)
+				{
+					req.id(id);
+				}
+				processor.add(req);
+			}
+			processor.flush();
+			processor.awaitClose(5, TimeUnit.MINUTES);
+		}
+		catch (Exception e)
+		{
+			errors.add("Could not save " + e);
+		}
+		if(errors.size() > 0) 
+		{
+			throw new OpenEditException("Errors from bulk import!" + errors);
+		}
+
 	}
 
 }

@@ -1,0 +1,98 @@
+#set($lastselected = $userprofile.last_selected_module )
+ 
+#if(!$lastselected)
+	#set ($lastselected = $content.module )	
+	
+#end
+#if(!$lastselected)
+	#set($lastselected = "asset" )
+#end
+
+#set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+
+#set($logourl = "$home$themeprefix/images/logo.png")
+<div class="navlinks">
+
+<nav class="navbar navbar-expand-md navbar-light bg-light">
+
+	<a class="navbar-brand" href="$home$apphome/views/modules/${module.getId()}/index.html">
+	<img class="logo" src="$logourl" alt="EnterMedia $!catalog.name" />
+	</a>
+	
+  
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="[[Toggle navigation]]">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse justify-content-end" id="navbarNavDropdown">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+			#if( $user )
+		    	#if( $canviewmyaccount ) 
+		    		<a class="nav-link" href="$home$apphome/views/myaccount/myassets/index.html">[[My Account]]</a>
+		    	#end 
+		    #else 
+		    	<a class="nav-link" href="$home$apphome/authentication/login.html" class="first">[[Login]]</a> 
+		    #end
+		 </li>
+		 #if($user)
+		 <li class="nav-item">
+		 	<a class="nav-link" href="$home$apphome/authentication/logout.html">[[Logout]]</a>
+		 </li>
+			#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+	       	#set($currentlang = $localesearcher.searchById($context.language))
+	       	<li class="nav-item dropdown">
+		      	#if($currentlang)
+		 			<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">$currentlang</a> 
+		    	#else
+		 			<a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">[[Language]]</a> 
+		     	#end
+		  
+			  	<div id="language-bar-select" class="dropdown-menu">
+					#set( $localesearcher = $mediaarchive.getSearcher("locale") )
+					#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
+					#foreach( $lang in $languages)
+						<a class="dropdown-item" href="$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=#uuencode($context.getPathUrl())">$lang </a>
+					#end
+		    	</div> 
+			</li>
+		#end	
+			
+	    #if($canviewsettings)
+	   		<li class="nav-item"><a class="nav-link" href="$home$apphome/views/dashboard/index.html">[[Dashboard]]</a></li> 
+	   		<li class="nav-item"><a class="nav-link" #if ( $module ) href="$home$apphome/views/settings/modules/$module.id/index.html" #else href="$home$apphome/views/settings/index.html" #end>[[Settings]]</a></li> 
+	    #end 
+		
+		#set($lastselected = $userprofile.last_selected_module )
+		#if(!$lastselected)
+			#set ($lastselected = $content.module )
+		#end
+		#if(!$lastselected)
+		      #set($lastselected = "asset" )
+		#end   
+		#if( $userprofile.getModules().size() > 1 )
+		    #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
+			#if( !$module ) 
+				##in case they deleted an old selected module 
+			    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
+			#end
+			
+			#set( $urlbase = "$home$apphome/views/modules" )
+			<li class="nav-item dropdown">
+				<a  class="nav-link dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context.locale)</a> 
+				<div id="module-bar-select" class="dropdown-menu">
+					#foreach ( $amodule in $userprofile.getModules() )
+						<a class="dropdown-item" href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
+					#end
+				</div>
+			</li>
+		#end
+	  </ul>
+  </div>
+</nav>
+
+
+
+
+
+
+</div>

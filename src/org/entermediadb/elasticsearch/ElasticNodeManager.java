@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
@@ -72,14 +73,20 @@ import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
 import org.elasticsearch.transport.RemoteTransportException;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.cluster.BaseNodeManager;
+import org.entermediadb.elasticsearch.searchers.LockSearcher;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
+import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
 import org.openedit.util.Replacer;
 
@@ -135,6 +142,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				if( key.equals("node.name"))
 				{
 					nodeid = ele.getTextTrim();
+					break;
 				}
 			}
 		}
@@ -506,7 +514,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				admin.indices().open(new OpenIndexRequest(indexid));				
 			}
+			
 			ClusterHealthResponse health = admin.cluster().prepareHealth(indexid).setWaitForYellowStatus().execute().actionGet();
+			MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(inCatalogId, "mediaArchive");
+			LockSearcher locks = (LockSearcher) archive.getSearcher("lock");
+			locks.clearStaleLocks();
+			archive.clearAll();
+
+			
 		}
 		catch (Exception ex)
 		{
@@ -1154,13 +1169,12 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		 NumberFormat nf = NumberFormat.getNumberInstance();
 		 for (Path root : FileSystems.getDefault().getRootDirectories()) {
 
-		     System.out.print(root + ": ");
+		    // System.out.print(root + ": ");
 		     try {
 		         FileStore store = Files.getFileStore(root);
-		         System.out.println("available=" + nf.format(store.getUsableSpace())
-		                             + ", total=" + nf.format(store.getTotalSpace()));
+		        // System.out.println("available=" + nf.format(store.getUsableSpace()) + ", total=" + nf.format(store.getTotalSpace()));
 		     } catch (IOException e) {
-		         System.out.println("error querying space: " + e.toString());
+		        log.error("error querying space: " + e.toString());
 		     }
 		 }
 		
@@ -1182,23 +1196,49 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				stats.getFs().getTotal().getAvailable();
 				stats.getFs().getTotal().getTotal();
 				stats.getFs().getTotal().getFree();
-				log.info(response);
+				//log.info(response);
 
 				return stats;
 			}
 		}
-		 
-		 
-		 
-		 
-	
-		 
-		 
 		// NodeStats stats = response.getNodesMap().get(getLocalNodeId());
 
-		 
 //		 stats.getJvm().getMem().getHeapCommitted();
 		 return null;
 	}
 	
+	public String getClusterHealth()
+	{
+		String healthstatus = null;
+		
+		try
+		{
+			ClusterHealthResponse healths = getClient().admin().cluster().prepareHealth().get();
+			healthstatus = healths.getStatus().toString();
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return healthstatus;
+	}
+	
+	public Collection getRemoteEditClusters(String inCatalog)
+	{
+		//Not cached
+		Collection nodes = getSearcherManager().getSearcher(inCatalog,"editingcluster").getAllHits();
+		Collection others = new ArrayList();
+		
+		//TODO cache this
+		for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+		{
+			Data node = (Data) iterator.next();
+			String clusterid = node.get("clustername");
+			if( !clusterid.equals(getLocalClusterId()))
+			{
+				others.add(node);
+			}
+		}
+		return others;
+	}
+
 }

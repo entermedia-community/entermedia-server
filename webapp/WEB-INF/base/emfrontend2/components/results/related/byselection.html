@@ -1,0 +1,19 @@
+$context.putPageValue("showhover", "false")
+$context.putPageValue("thumbsize", "thumb")
+$context.putPageValue("showcaption", "true")
+#set( $related = $hits.getSelectedHitracker() )
+$!related.setHitsPerPage(10)
+$context.putPageValue("related", $related )
+$context.putSessionValue($related.sessionId, $related)
+<hr>
+<div class="aside-content">
+	<div class="aside-header">
+	[[Selected Assets]]
+	#if( $canmultiedit )
+	  <a href="$home$apphome/views/modules/asset/editor/multiedit/editall.html?hitssessionid=$related.sessionId" class="btn btn-sm btn-light float-right">[[Edit All]]</a>
+	#end
+	</div>
+	<div class="aside-block">
+		$pages.include("$apphome/components/results/sidebar.html",$context)
+	</div>
+</div>

@@ -2,6 +2,6 @@
 	<!--
 	<page-action name="PageValue.loadPageVariable" bean="numberutil" class="org.apache.velocity.tools.generic.NumberTool"/>
 	-->
-		<page-action name="PageValue.loadPageVariable" bean="numberutil" class="org.apache.commons.lang.math.NumberUtils"/>
+		<page-action name="PageValue.loadPageVariable" bean="numberutil" class="org.entermediadb.asset.util.MathUtils"/>
 	
 </page>

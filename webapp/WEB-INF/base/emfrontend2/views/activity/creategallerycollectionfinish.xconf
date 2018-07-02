@@ -1,0 +1,6 @@
+<page>
+<path-action name="DataEditModule.loadHits"/>
+
+<path-action name="ProjectModule.createQuickGallery"/>
+<property name="sectiontitle">Publish to Server</property>
+</page>

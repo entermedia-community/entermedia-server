@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.convert.ConversionUtil;
 import org.entermediadb.asset.orders.Order;
@@ -31,6 +32,8 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
+
+import com.google.gson.JsonObject;
 
 import groovy.json.JsonSlurper;
 
@@ -131,24 +134,29 @@ public class JsonAssetModule extends BaseJsonModule {
 		df = DateStorageUtil.getStorageUtil().formatDateObj(new Date(), "yyyy/MM");
 		vals.put("formattedmonth", df);
 
+		Asset asset = null;
+		String sourcepath = null;
+		String id = null;
 		if( request == null)
 		{
-			throw new OpenEditException("JSON not parsed ");
+			//throw new OpenEditException("JSON not parsed ");
+			
+			
 		}
-		Asset asset = null;
-		String id = (String) request.get("id");
-		String sourcepath = null;
-		if (id == null) {
-			// id = searcher.nextAssetNumber();
-			vals.put("id", id);
-		}
-		else
-		{
-			asset = archive.getAsset(id);
-			if(asset != null ){
-				sourcepath = asset.getSourcePath();
+		else {
+			id = (String) request.get("id");
+			if (id == null) {
+				// id = searcher.nextAssetNumber();
+				vals.put("id", id);
+			}
+			else {
+				asset = archive.getAsset(id);
+				if(asset != null ){
+					sourcepath = asset.getSourcePath();
+				}
 			}
 		}
+		
 		if( asset == null)
 		{
 			sourcepath = (String) vals.get("sourcepath");
@@ -207,8 +215,9 @@ public class JsonAssetModule extends BaseJsonModule {
 			asset.setProperty("sourcepath", sourcepath);
 			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		}
-
-		populateJsonData(request, searcher, asset);
+		if (request!=null) {
+			populateJsonData(request, searcher, asset);
+		}
 
 		importer.saveAsset(archive, inReq.getUser(), asset);
 
@@ -541,6 +550,47 @@ public class JsonAssetModule extends BaseJsonModule {
 	}
 	
 
+	
+	public void createCategoryTree(WebPageRequest inReq) {
+		JSONObject object = new JSONObject();
+		
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		Map request = inReq.getJsonRequest();
+		
+		String categoryid = (String) request.get("categoryid");
+		if(categoryid == null) {
+			categoryid = "index";
+		}
+		Category root = archive.getCategory(categoryid);
+		
+		populateCategoryJson(object, root);
+		String jsondata = object.toString();
+		inReq.putPageValue("json", jsondata);
+		
+		
+	}
+
+	protected void populateCategoryJson(JSONObject inObject, Category inRoot) {
+		if(inRoot.hasChildren()) {
+			JSONArray children = new JSONArray();
+			inObject.put("children", children);
+
+			for (Iterator iterator = inRoot.getChildren().iterator(); iterator.hasNext();) {
+				Category child = (Category) iterator.next();
+				JSONObject nextchild = new JSONObject();
+				children.add(nextchild);
+				populateCategoryJson(nextchild, child);
+			}
+			
+		}
+		inObject.put("id", inRoot.getId());
+		inObject.put("name", inRoot.getName());
+		inObject.put("categorypath", inRoot.getCategoryPath());
+		
+		
+		
+	}
 	
 	
 

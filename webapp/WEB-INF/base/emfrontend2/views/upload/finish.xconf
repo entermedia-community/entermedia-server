@@ -1,0 +1,6 @@
+<page>
+	<path-action name="AssetSyncModule.createAssetFromLocalPaths"/>
+	<!-- path-action name="OrderModule.createOrderFromUpload"/ -->
+	<inner-layout>/${applicationid}/theme/layouts/searchlayout.html</inner-layout>
+</page>
+
