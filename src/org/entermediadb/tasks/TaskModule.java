@@ -116,7 +116,8 @@ public class TaskModule extends BaseMediaModule
 			inReq.putPageValue("nextpage", thispage + 1);
 		}
 		
-		Collection archived = searcher.query().orgroup("projectstatus", Arrays.asList("closed","completed")).search(inReq);
+		Collection archived = searcher.query().orgroup("projectstatus", Arrays.asList("closed","completed"))
+				.exact("collectionid", collection.getId()).search(inReq);
 		inReq.putPageValue("closedgoals", archived);
 		
 		
