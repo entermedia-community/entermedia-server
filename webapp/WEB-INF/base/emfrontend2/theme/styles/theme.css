@@ -379,7 +379,7 @@
 .emtree ul li div {
     padding: 0 0 0 20px;
     border-bottom: 1px solid #E2EFF4;
-    height: 27px;
+    min-height: 27px;
     line-height: 27px;
     display: block;
     cursor: pointer;
