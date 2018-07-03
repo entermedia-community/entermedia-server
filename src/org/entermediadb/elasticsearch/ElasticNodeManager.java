@@ -677,10 +677,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					{
 						throw new OpenEditException("Could not get yellow status for " + alias);
 					}
-
-					
 					String index = getIndexNameFromAliasName(alias);//see if we already have an index
-		
 					//see if an actual index exists
 		
 					if (index == null)
@@ -694,7 +691,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					//			}
 		
 		
-					boolean createdIndex = prepareIndex(index);
+					boolean createdIndex = prepareIndex(health, index);
 					getConnectedCatalogIds().put(inCatalogId, index);
 					if (createdIndex)
 					{
@@ -713,21 +710,6 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					//				searcher.initialize();	
 					//			}
 					
-					if ( health.getNumberOfNodes() > 1 )
-					{
-						if( !checkedNodeCount )
-						{
-						  Settings settings = Settings.builder()
-						            .put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2")
-						            .build();
-							UpdateSettingsResponse changesettings = admin.indices().prepareUpdateSettings(index).setSettings(settings).execute().actionGet();
-							if( changesettings.isAcknowledged() )
-							{
-								log.info("Checked number of masternodes");
-							}
-							checkedNodeCount = true;
-						}	
-					}					
 					return true;
 				}	
 			}	
@@ -735,7 +717,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		return false;//Created a ne
 	}
 
-	public boolean prepareIndex(String index)
+	public boolean prepareIndex(ClusterHealthResponse health, String index)
 	{
 
 		AdminClient admin = getClient().admin();
@@ -760,7 +742,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						String val = getLocalNode().getSetting(key);
 						settingsBuilder.put(key, val);
 					}	
-				}				
+				}			
+				
+				if ( health != null && health.getNumberOfNodes() > 1 )
+				{
+					settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
+				}	
+				
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
  
 				
@@ -950,7 +938,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Date date = new Date();
 		String id = toId(inCatalogId);
 		String tempindex = id + date.getTime();
-		prepareIndex(tempindex);
+		prepareIndex(null,tempindex);
 		//need to reset/creat the mappings here!
 		getMappingErrors().clear();
 

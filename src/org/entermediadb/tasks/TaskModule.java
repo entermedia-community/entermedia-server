@@ -2,10 +2,15 @@ package org.entermediadb.tasks;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -318,6 +323,7 @@ public class TaskModule extends BaseMediaModule
 		if( taskstatus != null && taskstatus.equals("3"))
 		{
 			task.setValue("completedby", inReq.getUserName());
+			task.setValue("completedon", new Date());
 		}
 		
 		tasksearcher.saveData(task);	
@@ -447,6 +453,69 @@ public class TaskModule extends BaseMediaModule
 		selectedgoal.setValue("countdata",taskids);
 		archive.getSearcher("projectgoal").saveData(selectedgoal);
 		log.info("saved taskids on goal" + selectedgoal.getId() + "="+ taskids);
+
+	}
+
+	public void loadDashboard(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( collection == null)
+		{
+			log.info("Collection not found");
+			return;
+		}
+		//Search for all tasks with updated dates?
+		GregorianCalendar cal = new GregorianCalendar();
+		cal.set(Calendar.DAY_OF_MONTH, 1);
+		cal.set(Calendar.HOUR_OF_DAY, 0);
+		cal.set(Calendar.MINUTE, 0);
+
+		String monthsback = inReq.getRequestParameter("monthsback");
+		if( monthsback != null)
+		{
+			int count = Integer.parseInt(monthsback);
+			cal.add(Calendar.MONTH, 0 - count);
+			inReq.putPageValue("monthsback", count+1);
+		}
+		else
+		{
+			inReq.putPageValue("monthsback", 1);
+		}
+		inReq.putPageValue("since", cal.getTime());
+		Searcher tasksearcher = archive.getSearcher("goaltask");
+		Date start = cal.getTime();
+		cal.add(Calendar.MONTH,1);
+		Date onemonth = cal.getTime();
+		HitTracker all = tasksearcher.query().match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
+		log.info("Query: " + all.getSearchQuery());
+		Map byperson = new HashMap();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data  task = (Data ) iterator.next();
+			List completed = (List)byperson.get(task.get("completedby"));
+			if( completed == null)
+			{
+				completed = new ArrayList();
+			}
+			completed.add(task);
+			byperson.put(task.get("completedby"),completed);
+		}
+		
+		inReq.putPageValue("byperson", byperson);
+
+		ArrayList users = new ArrayList();
+		for (Iterator iterator = byperson.keySet().iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			User user = archive.getUser(userid);
+			if( user != null)
+			{
+				users.add(user);
+			}
+		}
+		Collections.sort(users);
+		inReq.putPageValue("users", users);
 
 	}
 	

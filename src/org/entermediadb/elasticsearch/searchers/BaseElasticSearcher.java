@@ -1217,7 +1217,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				// inTerm.getParameter("beforeDate");
 
 				// String before
-				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
+				//TODO: Use gte ?
+				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before).includeUpper(true).includeLower(true);
 			}
 			else if ("ondate".equals(inTerm.getOperation()))
 			{
