@@ -370,7 +370,7 @@ public class BaseCategory extends BaseData implements Category
 	@Override
 	public void setParentCategory(Category parentCatalog)
 	{
-		if( parentCatalog.hasParent(getId()))
+		if(parentCatalog != null && parentCatalog.hasParent(getId()))
 		{
 			log.error("Called myself as a child");
 			return;

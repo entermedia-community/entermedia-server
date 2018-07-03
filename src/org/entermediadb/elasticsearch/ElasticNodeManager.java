@@ -305,6 +305,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Lock lock = null;
 		try
 		{
+			log.info("Creating snapshot. Locking table");
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
 			return createSnapShot(inCatalogId, lock, wholecluster);
 		}

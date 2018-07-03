@@ -49,10 +49,21 @@ public class CategoryEditModule extends BaseMediaModule {
 		inContext.putPageValue("category", newcategory);
 	}
 
-	public void moveCategory(WebPageRequest inContext) throws OpenEditException {
+	public void moveCategory(WebPageRequest inContext) throws OpenEditException 
+	{
 		CategoryEditor categoryeditor = getCategoryEditor(inContext);
+
+		String category1Id = inContext.getRequestParameter("categoryid");
+		Category category1 = null;
+		if( category1Id == null)
+		{
+			category1 = categoryeditor.getCurrentCategory();
+		}
+		else
+		{
+			category1 = categoryeditor.getCategory(category1Id);
+		}
 		String category2Id = inContext.getRequestParameter("categoryid2");
-		Category category1 = categoryeditor.getCurrentCategory();
 		Category category2 = categoryeditor.getCategory(category2Id);
 
 		if (category1 != null && category2 != null) {

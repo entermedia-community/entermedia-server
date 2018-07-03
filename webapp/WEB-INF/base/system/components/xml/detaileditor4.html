@@ -1,9 +1,13 @@
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
-#set( $readonly = "false" )
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
+#ifnull($readonly)
+#set( $readonly = "false" )
+#end
 #set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
-#set( $multiedit = "false")
 #set( $multiedit = $context.getRequestParameter("multiedit"))
+#ifnull($multiedit)
+#set( $multiedit = "false")
+#end
 
 #if ( $multiedit == "true" )
 	#set( $multiedit = true)
