@@ -35,20 +35,20 @@ public class TaskList
 		sortedIds = inSortedIds;
 	}
 
-	public TaskList(MultiValued inGoal, HitTracker inTasks)
+	public TaskList(MultiValued inParent, HitTracker inChildren)
 	{
-		Collection sorted = inGoal.getValues("countdata");
+		Collection sorted = inParent.getValues("countdata");
 		if( sorted == null)
 		{
 			sorted = new ArrayList();
 		}
 		setSortedIds((List)sorted);
-		sortGoals(inTasks);
+		sort(inChildren);
 	}
 
-	public void sortGoals(HitTracker tasks)
+	public void sort(HitTracker children)
 	{
-		ArrayList sorted = new ArrayList(tasks);
+		ArrayList sorted = new ArrayList(children);
 		sorted.sort(new Comparator<MultiValued>()
 		{
 			@Override

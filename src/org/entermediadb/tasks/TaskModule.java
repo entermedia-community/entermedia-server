@@ -165,7 +165,8 @@ public class TaskModule extends BaseMediaModule
 		{
 			goalid = inReq.getRequestParameter("id");
 		}
-		if (goalid != null) {
+		if (goalid != null) 
+		{
 			MultiValued goal = (MultiValued)archive.getData("projectgoal",goalid);
 			inReq.putPageValue("data", goal);
 			inReq.putPageValue("selectedgoal", goal);
@@ -321,8 +322,15 @@ public class TaskModule extends BaseMediaModule
 		
 		tasksearcher.saveData(task);	
 		inReq.putPageValue("task", task);
-		
-		String comment = "Status:" + archive.getData("taskstatus", taskstatus).getName(inReq.getLocale()); 
+		String comment = null;
+		if( taskstatus == null)
+		{
+			comment = "Reset";
+		}
+		else
+		{
+			comment = "Status:" + archive.getData("taskstatus", taskstatus).getName(inReq.getLocale());
+		}
 		addComment(archive, taskid, inReq.getUser(),comment);
 
 	}
@@ -396,4 +404,50 @@ public class TaskModule extends BaseMediaModule
 
 	}
 
+	public void insertTask(WebPageRequest inReq)
+	{
+		String goalid = inReq.getRequestParameter("goalid");
+		
+		String taskid = inReq.getRequestParameter("taskid");
+		String targettaskid = inReq.getRequestParameter("targettaskid");
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
+		List taskids = (List)selectedgoal.getValues("countdata");
+		if(taskids ==  null )
+		{
+			taskids = new ArrayList();
+		}
+		else
+		{
+			taskids = new ArrayList(taskids);
+		}
+		if(!taskids.contains(taskid))
+		{
+			taskids.add(taskid);
+		}
+		if(!taskids.contains(targettaskid))
+		{
+			taskids.add(targettaskid);
+		}
+		int targetlocation = taskids.indexOf(targettaskid);
+		int oldlocation = taskids.indexOf(taskid);
+		
+		//moving to the right:
+		taskids.remove(taskid);
+		if( targetlocation < oldlocation)
+		{
+			if( targetlocation > taskids.size())
+			{
+				targetlocation = taskids.size();
+			}
+		}
+		
+		taskids.add(targetlocation, taskid);
+		selectedgoal.setValue("countdata",taskids);
+		archive.getSearcher("projectgoal").saveData(selectedgoal);
+		log.info("saved taskids on goal" + selectedgoal.getId() + "="+ taskids);
+
+	}
+	
 }
