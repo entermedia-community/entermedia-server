@@ -178,7 +178,19 @@ public class TaskModule extends BaseMediaModule
 			
 			Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
 			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
-
+			//Legacy: Make sure all tasks have parents
+			List tosave = new ArrayList();
+			for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
+			{
+				MultiValued existig = (MultiValued) iterator.next();
+				if( existig.getValue("projectdepartmentparents") == null)
+				{
+					Category child = archive.getCategory(existig.get("projectdepartment"));
+					existig.setValue("projectdepartmentparents",child.getParentCategories());
+					tosave.add(existig);
+				}
+			}
+			tasksearcher.saveAllData(tosave, null);
 			TaskList goaltasks = new TaskList(goal,tasks);
 			inReq.putPageValue("tasklist", goaltasks);
 		}
@@ -259,6 +271,9 @@ public class TaskModule extends BaseMediaModule
 		Data task = tasksearcher.createNewData(); //TODO: Cjheck for existing
 		task.setValue("projectgoal",goal.getId());
 		task.setValue("projectdepartment",categoryid);
+		
+		task.setValue("projectdepartmentparents",cat.getParentCategories());
+		
 		task.setValue("creationdate",new Date());
 		
 		task.setName(cat.getName()); //TODO: Support comments
@@ -324,6 +339,11 @@ public class TaskModule extends BaseMediaModule
 		{
 			task.setValue("completedby", inReq.getUserName());
 			task.setValue("completedon", new Date());
+		}
+		else if( taskstatus != null && taskstatus.equals("1"))
+		{
+			task.setValue("startedby", inReq.getUserName());
+			task.setValue("startedon", new Date());
 		}
 		
 		tasksearcher.saveData(task);	
@@ -487,7 +507,10 @@ public class TaskModule extends BaseMediaModule
 		Date start = cal.getTime();
 		cal.add(Calendar.MONTH,1);
 		Date onemonth = cal.getTime();
-		HitTracker all = tasksearcher.query().match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
+		String rootid = "tasks" + collection.getId();
+
+		HitTracker all = tasksearcher.query().exact("projectdepartmentparents",rootid)
+				.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
 		log.info("Query: " + all.getSearchQuery());
 		Map byperson = new HashMap();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
@@ -519,4 +542,58 @@ public class TaskModule extends BaseMediaModule
 
 	}
 	
+	public void loadTaskByStatus(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( collection == null)
+		{
+			log.info("Collection not found");
+			return;
+		}
+		Searcher tasksearcher = archive.getSearcher("goaltask");
+		
+		
+		String status = inReq.getRequestParameter("taskstatus");
+		if( status == null)
+		{
+			status = "1";
+		}
+		String rootid = "tasks" + collection.getId();
+		HitTracker all = tasksearcher.query().exact("taskstatus",status).exact("projectdepartmentparents",rootid ).search();
+		Map byperson = new HashMap();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data  task = (Data ) iterator.next();
+			String startedby = task.get("startedby");
+			if( startedby == null)
+			{
+				startedby = "admin";
+			}
+			List completed = (List)byperson.get(startedby);
+			if( completed == null)
+			{
+				completed = new ArrayList();
+			}
+			completed.add(task);
+			byperson.put(startedby,completed);
+		}
+		
+		inReq.putPageValue("byperson", byperson);
+
+		ArrayList users = new ArrayList();
+		for (Iterator iterator = byperson.keySet().iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			User user = archive.getUser(userid);
+			if( user != null)
+			{
+				users.add(user);
+			}
+		}
+		Collections.sort(users);
+		inReq.putPageValue("users", users);
+
+	}
+
 }
