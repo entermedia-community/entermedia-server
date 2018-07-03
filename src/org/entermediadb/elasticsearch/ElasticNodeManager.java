@@ -1011,7 +1011,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		String id = toId(inCatalogId);
 
 		String tempindex = id + date.getTime();
-		prepareIndex(tempindex);
+		prepareIndex(null,tempindex);
 		//need to reset/creat the mappings here!
 		getMappingErrors().clear();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
