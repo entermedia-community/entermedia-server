@@ -368,10 +368,11 @@ public class TaskModule extends BaseMediaModule
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Data task = (Data)tasksearcher.searchById(taskid);
 		tasksearcher.delete(task,null);
-		String cat = task.get("projectdepartmentparents");
+		String cat = task.get("projectdepartment");
 		Category folder = archive.getCategory(cat);
-		List goalids = new ArrayList(folder.getValues("countdata"));
-		goalids.remove(taskid);
+		ArrayList list = new ArrayList(folder.getValues("countdata"));
+		list.remove(task.get("projectgoal"));
+		folder.setValue("countdata",list);
 		archive.getCategorySearcher().saveData(folder);
 		
 	}
