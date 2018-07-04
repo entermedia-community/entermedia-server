@@ -367,7 +367,12 @@ public class TaskModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Data task = (Data)tasksearcher.searchById(taskid);
-		tasksearcher.delete(task,null);	
+		tasksearcher.delete(task,null);
+		String cat = task.get("projectdepartmentparents");
+		Category folder = archive.getCategory(cat);
+		List goalids = new ArrayList(folder.getValues("countdata"));
+		goalids.remove(taskid);
+		archive.getCategorySearcher().saveData(folder);
 		
 	}
 	//Everything over 15

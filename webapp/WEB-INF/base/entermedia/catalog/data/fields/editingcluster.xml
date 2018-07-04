@@ -39,7 +39,7 @@
     </name>
   </property> 
  
-  <property id="lastpulldate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false" >Record Edit Date 
+  <property id="lastpulldate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="true" >Record Edit Date 
     <name> 
       <language id="en"><![CDATA[Last Pull Date]]></language>  
     </name> 

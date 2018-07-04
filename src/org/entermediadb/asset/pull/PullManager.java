@@ -81,11 +81,10 @@ public class PullManager implements CatalogEnabled
 	public HitTracker listRecentChanges(String inType, String inLastpulldate)
 	{
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-			Date startingfrom = null;
 			QueryBuilder builder = searcher.query().exact("importstatus","complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
 			if( inLastpulldate != null)
 			{
-				startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
+				Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 				builder.after("recordmodificationdate", startingfrom);
 			}
 			HitTracker hits = builder.search();
