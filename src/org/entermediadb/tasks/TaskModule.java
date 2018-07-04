@@ -257,6 +257,11 @@ public class TaskModule extends BaseMediaModule
 		{
 			goalid = inReq.getRequestParameter("id");
 		}
+		if( goalid == null)
+		{
+			log.error("No goals");
+			return;
+		}
 		String categoryid = inReq.getRequestParameter("targetcategoryid");
 		if( categoryid == null)
 		{
@@ -289,23 +294,19 @@ public class TaskModule extends BaseMediaModule
 			goalids = new ArrayList(goalids);
 		}
 		//if( !goalids.contains(goalid))
-		{
-			if( goalids.isEmpty())
-			{	
-				goalids.add(goalid);
-			}
-			else
-			{
-				goalids.add(0,goalid); //Put in front?
-			}
-			cat.setValue("countdata",goalids);
-			archive.getCategorySearcher().saveData(cat);
-			//Add to array on category
-			tasksearcher.saveData(task);
-			
-			
-			
+		if( goalids.isEmpty())
+		{	
+			goalids.add(goalid);
 		}
+		else
+		{
+			goalids.add(0,goalid); //Put in front?
+		}
+		cat.setValue("countdata",goalids);
+		archive.getCategorySearcher().saveData(cat);
+		//Add to array on category
+		tasksearcher.saveData(task);
+			
 		
 	}
 
