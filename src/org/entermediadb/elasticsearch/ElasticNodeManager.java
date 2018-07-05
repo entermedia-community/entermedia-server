@@ -717,7 +717,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		}
 		return false;//Created a ne
 	}
-
+	public boolean prepareIndex(String index)
+	{
+		return prepareIndex(null,index);
+	}
 	public boolean prepareIndex(ClusterHealthResponse health, String index)
 	{
 

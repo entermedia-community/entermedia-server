@@ -306,7 +306,8 @@ public class TaskModule extends BaseMediaModule
 		archive.getCategorySearcher().saveData(cat);
 		//Add to array on category
 		tasksearcher.saveData(task);
-			
+		String comment = "Requested";
+		addComment(archive, task.getId(), inReq.getUser(),comment);
 		
 	}
 

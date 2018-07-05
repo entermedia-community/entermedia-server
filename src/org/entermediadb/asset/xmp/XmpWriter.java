@@ -138,6 +138,8 @@ public class XmpWriter {
 			if (detail.getExternalId() == null || !detail.isEditable()) {
 				continue;
 			}
+			
+			//XMP-AGBU:Pagenumber
 			if (value == null && detail.get("xmpmask") != null) {
 				value = "";
 			} 
@@ -193,7 +195,7 @@ public class XmpWriter {
 
 				String[] tag = new String[1];
 				tag[0] = key;
-				addTags(tag, (String) val2, inComm);
+				addTags(tag, (String) val2, inComm); //Why is this called again?
 			}
 
 		}
