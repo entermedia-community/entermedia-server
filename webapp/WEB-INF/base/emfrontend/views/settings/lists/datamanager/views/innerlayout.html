@@ -38,7 +38,7 @@ $context.putPageValue("views", $views)
 		{
 			view = "asset/assettype/" + assettypeid + "/" + viewid;
 		}
-		document.location.href = "$home$viewsroot/index.html?viewid=" + viewid + "&viewpath=" + view + "&assettype=" +  assettypeid +"&searchtype=${searcher.getSearchType()}";
+		document.location.href = "$home$viewsroot/index.html?viewid=" + viewid + "&viewpath=" + view + "&assettype=" +  assettypeid +"&searchtype=${viewsearcher.getSearchType()}";
 	}
 /*
 	removeProperty = function() {
