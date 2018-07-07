@@ -203,6 +203,12 @@ public class ProjectModule extends BaseMediaModule {
 				return;
 			}
 		}
+		String assetid = inReq.findValue("assetid");
+		if(assetid != null){
+	
+			manager.removeAssetFromCollection(archive, collectionid, assetid);
+		}
+		
 	}
 
 	// public void searchForAssetsInLibrary(WebPageRequest inReq)

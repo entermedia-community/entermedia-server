@@ -548,6 +548,16 @@ public class ProjectManager implements CatalogEnabled {
 		}
 		inArchive.getAssetSearcher().saveAllData(tosave, null);
 	}
+	
+	public void removeAssetFromCollection(MediaArchive inArchive, String inCollectionid, String assetid) {
+		LibraryCollection col = getLibraryCollection(inArchive, inCollectionid);
+		Category cat = getRootCategory(inArchive, col);
+		Asset asset = (Asset) inArchive.getAssetSearcher().searchById(assetid);
+		asset.removeChildCategory(cat); //
+		inArchive.getAssetSearcher().saveData(asset, null);
+	}
+	
+	
 	/*
 	 * public Collection<LibraryCollection> loadRecentCollections(WebPageRequest
 	 * inReq) { //enable filters to show the asset count on each collection node
