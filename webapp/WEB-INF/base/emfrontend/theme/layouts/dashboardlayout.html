@@ -18,7 +18,7 @@
 					#set ($reports = $searcherManager.getList("system", "reports") )
 					#foreach($screen in $reports )
 					<li id="$screen.id" #if( $report.id == "$screen.id" ) class="current" #end>
-						<a href="$home$apphome/views/dashboard/executefinish.html?reportid=$screen.id">$context.getText($screen.toString())</a>
+						<a href="$home$apphome/views/dashboard/executefinish.html?reportid=$screen.id&cache=false">$context.getText($screen.toString())</a>
 					</li>
 					#end
 				</ul>
