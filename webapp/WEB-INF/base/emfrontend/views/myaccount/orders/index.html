@@ -1,44 +1,11 @@
 <div id="default-top" class="clearfix">
      <div class="main-info" style="padding-bottom: 30px;">
         <div class="primary">
-           Order History
+           [[Order History]]
         </div>
         <div class="secondary">
-            View your order history below
+            [[View your order history below]]
         </div>
     </div>
-    
 </div>
-#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
-#set($query = $ordersearcher.createSearchQuery().append("userid", $user.id))
-<!--
-$query.setSortBy("dateDown")
--->
-#set($orders = $ordersearcher.search($query))
-
-#if ( $orders.size() > 0 )
-
-<div id="emselectable">
-<table class="striped emdata" width="100%">
-    <tr id="tableheader">
-        <th style="text-align: left; padding-left: 10px; border-right: 1px dashed #bbb;">Order Number</th>
-        <th style="width: 150px; border-right: 1px dashed #bbb;">Date</th>
-        <th style="width: 150px;">Status</th>
-    </tr>
-#foreach( $order in $orders )
-#if(!$order.getId().contains("basket"))
-#set( $status = $searcherManager.getData($catalogid,"orderstatus",$order.orderstatus ))
-
-	<tr rowid="$order.id"><td>$order.id</td><td>$!context.getDateTime($order.date)</td><td>$!status </tr>
-#end
-#end
-</table>
-<form name="pickorder" action="$home$apphome/views/myaccount/orders/vieworder.html">
-<input name="orderid" id="emselectedrow" type="hidden" />
-</form>
-
-</div>
-
-#else
-<p>No orders placed</p>
-#end
+$pages.include("$apphome/views/activity/listorders.html")
