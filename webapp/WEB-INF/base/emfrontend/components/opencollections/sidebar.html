@@ -16,6 +16,9 @@
 		
 	 #if($canaddtofavorites)
 		#set( $collection = $mediaarchive.getProjectManager().getFavoritesCollection($user) )
+		#if( $librarycol && $collection.getId() == $librarycol.id )
+				#set( $selected = true )
+			#end
 		<li class="librarycollectiondroparea #if ($selected ) selected #end"
 				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html"
 				data-collectionid="$collection.getId()"
