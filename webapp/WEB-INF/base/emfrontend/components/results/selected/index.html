@@ -44,8 +44,8 @@
 	<li><a class="emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a></li>
 	#end
 	
-	#if( $canaddtofavourites && $librarycol.id != "${user.id}-favourites" )
-	<li><a class="emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favourites">[[Add To Favorites]]</a></li>
+	#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
+	<li><a class="emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a></li>
 	#end
 	
 
