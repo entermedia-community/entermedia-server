@@ -162,7 +162,9 @@ public class ProjectManager implements CatalogEnabled {
 		if (opencollections == null) {
 			return Collections.EMPTY_LIST;
 		}
-
+		opencollections = new ArrayList(opencollections);
+		opencollections.remove(inReq.getUserName() + "-favorites");
+		
 		if (opencollections.size() > 0) // May not have any collections
 		{
 			// Build list of ID's
@@ -232,6 +234,7 @@ public class ProjectManager implements CatalogEnabled {
 		inReq.putPageValue("librarysize", assetsize);
 
 		//TODO: This seems like a long way around
+		/*
 		LibraryCollection favorites = getFavoritesCollection(inReq, inArchive);
 		LibraryCollection loadedfavs = null;
 		for (Iterator iterator = usercollections.iterator(); iterator.hasNext();) {
@@ -246,6 +249,7 @@ public class ProjectManager implements CatalogEnabled {
 			usercollections.remove(loadedfavs);
 		}
 		usercollections.add(0, favorites);
+		*/
 		
 		// Show all the collections for a library
 		inReq.putPageValue("allcollections", usercollections);
@@ -278,22 +282,23 @@ public class ProjectManager implements CatalogEnabled {
 		return usercollections;
 	}
 
-	public LibraryCollection getFavoritesCollection(WebPageRequest inReq, MediaArchive archive) {
-
-		Searcher collections = archive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) collections.searchById(inReq.getUserName() + "-favorites");
-		if (collection == null) {
+	public LibraryCollection getFavoritesCollection(User inUser) 
+	{
+		Searcher collections = getMediaArchive().getSearcher("librarycollection");
+		LibraryCollection collection = (LibraryCollection) collections.searchById(inUser.getId() + "-favorites");
+		if (collection == null) 
+		{
 			collection = (LibraryCollection) collections.createNewData();
-			collection.setName(inReq.getUser().toString() + " Favorites");
-			collection.setId(inReq.getUserName() + "-favorites");
-			Searcher categories = archive.getSearcher("category");
+			collection.setName(inUser.toString());
+			collection.setId(inUser.getId() + "-favorites");
+			Searcher categories = getMediaArchive().getSearcher("category");
 
-			String collectionroot = archive.getCatalogSettingValue("collection_root");
+			String collectionroot = getMediaArchive().getCatalogSettingValue("collection_root");
 			if (collectionroot == null) {
 				collectionroot = "Collections";
 			}
 
-			Category newcat = archive.createCategoryPath(collectionroot + "/Favorites/" + collection.getName());
+			Category newcat = getMediaArchive().createCategoryPath(collectionroot + "/Favorites/" + collection.getName());
 
 			newcat.setName(collection.getName());
 
@@ -301,11 +306,15 @@ public class ProjectManager implements CatalogEnabled {
 
 			collection.setValue("rootcategory", newcat.getId());
 			collection.setValue("creationdate", new Date());
-			collection.setValue("owner", inReq.getUserName());
+			collection.setValue("owner", inUser.getId());
 			//collection.setValue("visibility", "3");  //Private We dont want hundreds of these slowing down searches
 			collection.setValue("collectiontype", "2");
 			collections.saveData(collection);
 		}
+		
+		HitTracker hits = getMediaArchive().getAssetSearcher().query().hitsPerPage(1).exact("category", collection.getRootCategoryId()).search();
+		collection.setAssetCount(hits.size());
+		
 		return collection;
 	}
 
