@@ -1,0 +1,52 @@
+
+#set($order = $data)
+#if( $order.userid != $user.getId()  && !$user.id=="admin" )
+Invalid order
+#else
+
+	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	#set($owner = $userManager.getUser($order.userid))
+	
+	<ul>
+		<li>Order Id: $order.id </li>
+		<li>Order Date: $context.getDateTime($order.date)</li>
+			
+	</ul>	
+	
+	<div >
+	<form name="download" action="$home$apphome/components/orders/download/${order.id}.zip" method="post">
+	
+	<table class="striped" width="80%">
+	<tr>
+	<th></th>
+	<th>Name</th>
+	<th>Status</th>
+	<th></th>
+	</tr>
+	
+	
+	#foreach( $item in $orderitems )
+		
+		 #set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+		 
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("item", $item)
+				$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+				$pages.include("${apphome}/components/orders/row.html", $context)
+		
+		
+		
+	#end
+	
+	</table>
+	#if( $order.orderstatus == "1" ) 
+	<input type="submit" value="Download All"/>
+	#end
+	</form>
+	</div>
+	<div id="itemsave"></div>
+
+#end
+
+

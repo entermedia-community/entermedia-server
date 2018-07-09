@@ -1,0 +1,9 @@
+<page>
+<path-action name="OrderModule.updateOrder"/>
+<path-action name="OrderModule.saveItems"/>
+<path-action name="DataEditModule.saveData">
+<property name="searchtype">order</property>
+</path-action>
+
+<inner-layout/>
+</page>

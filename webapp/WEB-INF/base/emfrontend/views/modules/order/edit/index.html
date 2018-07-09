@@ -1,0 +1,35 @@
+<div id="orderresults">
+
+<h2>Orders</h2>
+
+$context.putPageValue("targetdiv","orderresults")
+$context.putPageValue("hits",$orders)
+$context.putPageValue("resultsPage","$cataloghome/settings/orders/index.html?oemaxlevel=1")
+$pages.include("$cataloghome/components/results/pages.html",$context)
+
+<div id="emselectable">
+<table class="striped" width="100%">
+<tr>
+<th>Order Number</th>
+<th>User</th>
+<th>Date</th>
+<th>Status</th>
+
+#foreach( $order in $orders.getPageOfHits() )
+	#set( $status = false )
+	#set( $status = $searcherManager.getData($catalogid,"orderstatus",$order.orderstatus ))
+	#set($owner = $userManager.getUser($order.userid))
+
+	<tr rowid="$order.id"><td>$order.id</td><td>$owner.getShortDescription()</td><td>$!context.getDateTime($order.date)</td><td>#if( $status )$status#end</tr>
+#end
+</table>
+<form name="pickorder" action="$home$cataloghome/settings/orders/vieworder.html">
+<input name="orderid" id="emselectedrow" type="hidden" />
+<input name="id" id="emselectedrow" type="hidden" />
+</form>
+</div>
+
+
+
+</div>
+
