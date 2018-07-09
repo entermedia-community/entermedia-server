@@ -230,11 +230,13 @@ public class ProjectManager implements CatalogEnabled {
 			assetsize = 0;
 		}
 		inReq.putPageValue("librarysize", assetsize);
-		LibraryCollection favourites = getFavouritesCollection(inReq, inArchive);
+
+		//TODO: This seems like a long way around
+		LibraryCollection favorites = getFavoritesCollection(inReq, inArchive);
 		LibraryCollection loadedfavs = null;
 		for (Iterator iterator = usercollections.iterator(); iterator.hasNext();) {
 			LibraryCollection col = (LibraryCollection) iterator.next();
-			if (col.getId().equals(inReq.getUserName() + "-favourites")) {
+			if (col.getId().equals(inReq.getUserName() + "-favorites")) {
 				loadedfavs = col;
 			}
 		}
@@ -243,7 +245,8 @@ public class ProjectManager implements CatalogEnabled {
 
 			usercollections.remove(loadedfavs);
 		}
-		usercollections.add(0, favourites);
+		usercollections.add(0, favorites);
+		
 		// Show all the collections for a library
 		inReq.putPageValue("allcollections", usercollections);
 
@@ -275,16 +278,15 @@ public class ProjectManager implements CatalogEnabled {
 		return usercollections;
 	}
 
-	public LibraryCollection getFavouritesCollection(WebPageRequest inReq, MediaArchive archive) {
+	public LibraryCollection getFavoritesCollection(WebPageRequest inReq, MediaArchive archive) {
 
-		Searcher assetsearcher = archive.getAssetSearcher();
 		Searcher collections = archive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) collections.searchById(inReq.getUserName() + "-favourites");
+		LibraryCollection collection = (LibraryCollection) collections.searchById(inReq.getUserName() + "-favorites");
 		if (collection == null) {
 			collection = (LibraryCollection) collections.createNewData();
 			// collection.setValue("visibility", "hidden");
-			collection.setName(inReq.getUser().toString() + " Favourites");
-			collection.setId(inReq.getUserName() + "-favourites");
+			collection.setName(inReq.getUser().toString() + " Favorites");
+			collection.setId(inReq.getUserName() + "-favorites");
 			Searcher categories = archive.getSearcher("category");
 
 			String collectionroot = archive.getCatalogSettingValue("collection_root");
@@ -292,9 +294,10 @@ public class ProjectManager implements CatalogEnabled {
 				collectionroot = "Collections";
 			}
 
-			Category newcat = archive.createCategoryPath(collectionroot + "/Favourites/" + collection.getName());
+			Category newcat = archive.createCategoryPath(collectionroot + "/Favorites/" + collection.getName());
 
 			// newcat.setValue("visibility", "hidden");
+			newcat.setValue("collectiontype", "2");
 			newcat.setName(collection.getName());
 
 			categories.saveData(newcat);
@@ -1261,8 +1264,15 @@ public class ProjectManager implements CatalogEnabled {
 			mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
 		}
 
-		ProjectManager manager = mediaArchive.getProjectManager();
+		//ProjectManager manager = mediaArchive.getProjectManager();
 		((MultiValued) collectioncategory).addValue("viewusers", collection.get("owner"));
+		
+		String type = collection.get("collectiontype");
+		if( type == null)
+		{
+			collection.setValue("collectiontype", "1");
+		}
+
 		mediaArchive.getCategorySearcher().saveData(collectioncategory);
 
 		// Move the parents if needed

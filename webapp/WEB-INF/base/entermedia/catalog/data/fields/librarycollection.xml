@@ -118,6 +118,13 @@
       <language id="fr"><![CDATA[Description du projet]]></language> 
     </name> 
   </property>  
+
+  <property id="collectiontype" index="true" stored="true" editable="true" type="list" viewtype="list"  datatype="list"  > 
+    <name> 
+      <language id="en"><![CDATA[Collection Type]]></language>  
+    </name> 
+  </property>  
+
  
   <property id="rootcategory"  index="true" type="list" viewtype="category" listid="category" stored="true" note="Auto populated"  editable="false" >Category ID
     <name>
