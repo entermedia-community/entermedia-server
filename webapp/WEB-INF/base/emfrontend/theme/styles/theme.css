@@ -6569,15 +6569,23 @@ a.librarylabel
 	padding-bottom: 10px;
 	width: 85%;
 	display:inline-block;
-	
-	
+		
 }
 a.librarylabel .collectionlabel {
 	width: 140px;
 	display: inline-block;
 	
 }
-
+a.librarylabel.favorite
+{
+	padding-left: 28px;
+	background: url("../images/icons/favorite-color.png") no-repeat scroll 4px 4px;
+	padding-top: 8px;
+	padding-bottom: 10px;
+	width: 85%;
+	display:inline-block;
+		
+}
 a.collectioncrumb
 {
 	padding-left: 26px;

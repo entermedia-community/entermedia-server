@@ -27,7 +27,7 @@
 			>
 				<div class="collectionBox">
 					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
-					 	class="librarylabel #if ($selected ) selected #end"  
+					 	class="librarylabel #if ($selected ) selected #end #if(${collection.collectiontype}=='2') favorite #end"  
 					 	title="$!{collection.getCollection().notes}"
 					 	data-collectionname="${collection.getName()}">
 					 	<span> $collection.getName() ($collection.getAssetCount())</span>
