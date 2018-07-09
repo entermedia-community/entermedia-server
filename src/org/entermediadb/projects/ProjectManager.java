@@ -284,7 +284,6 @@ public class ProjectManager implements CatalogEnabled {
 		LibraryCollection collection = (LibraryCollection) collections.searchById(inReq.getUserName() + "-favorites");
 		if (collection == null) {
 			collection = (LibraryCollection) collections.createNewData();
-			// collection.setValue("visibility", "hidden");
 			collection.setName(inReq.getUser().toString() + " Favorites");
 			collection.setId(inReq.getUserName() + "-favorites");
 			Searcher categories = archive.getSearcher("category");
@@ -296,8 +295,6 @@ public class ProjectManager implements CatalogEnabled {
 
 			Category newcat = archive.createCategoryPath(collectionroot + "/Favorites/" + collection.getName());
 
-			// newcat.setValue("visibility", "hidden");
-			newcat.setValue("collectiontype", "2");
 			newcat.setName(collection.getName());
 
 			categories.saveData(newcat);
@@ -305,7 +302,8 @@ public class ProjectManager implements CatalogEnabled {
 			collection.setValue("rootcategory", newcat.getId());
 			collection.setValue("creationdate", new Date());
 			collection.setValue("owner", inReq.getUserName());
-			collection.setValue("visibility", "3");
+			//collection.setValue("visibility", "3");  //Private We dont want hundreds of these slowing down searches
+			collection.setValue("collectiontype", "2");
 			collections.saveData(collection);
 		}
 		return collection;
@@ -1241,7 +1239,15 @@ public class ProjectManager implements CatalogEnabled {
 		// Make sure the root folder is within the library root folder
 		MediaArchive mediaArchive = getMediaArchive();
 		// Make sure we have a root category
+		String type = collection.get("collectiontype");
+		if( type == null)
+		{
+			collection.setValue("collectiontype", "1");
+			mediaArchive.getSearcher("librarycollection").saveData(collection);
+		}
 
+
+		
 		String collectionroot = mediaArchive.getCatalogSettingValue("collection_root");
 		if (collectionroot == null) {
 			collectionroot = "Collections";
@@ -1267,12 +1273,6 @@ public class ProjectManager implements CatalogEnabled {
 		//ProjectManager manager = mediaArchive.getProjectManager();
 		((MultiValued) collectioncategory).addValue("viewusers", collection.get("owner"));
 		
-		String type = collection.get("collectiontype");
-		if( type == null)
-		{
-			collection.setValue("collectiontype", "1");
-		}
-
 		mediaArchive.getCategorySearcher().saveData(collectioncategory);
 
 		// Move the parents if needed
