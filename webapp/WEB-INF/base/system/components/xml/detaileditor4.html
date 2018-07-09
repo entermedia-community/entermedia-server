@@ -75,9 +75,11 @@ $context.putPageValue("longform",false)
 
 	$!context.putPageValue("detail",$detail)
 	$!context.putPageValue("val",$val)
- 	<div class="form-group">
-    <label for="exampleTextarea">$detail.getText($context)</label>
+ 	<div class="form-group row">
+    <label for="exampleTextarea" class="col-2 col-form-label">$detail.getText($context)</label>
+    <div class="col-10">
     $pages.include("$xmledithome/detailedit.html", $context)
+    </div>
     </div>	
 	
 #end

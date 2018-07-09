@@ -99,8 +99,30 @@ public class TaskModule extends BaseMediaModule
 				return;
 			}
 			log.info("loaded goalids" + selected.getId() + "="+ goalids);
-			builder.ids(goalids);
+			Collection copy = new ArrayList();
+			for (Iterator iterator = goalids.iterator(); iterator.hasNext();)
+			{
+				String gid = (String) iterator.next();
+				if( gid != null)
+				{
+					copy.add(gid);
+				}
+			}
+			builder.ids(copy);
 			tracker = builder.search();
+			
+			if( tracker.size() != goalids.size() )
+			{
+				copy = new ArrayList();
+				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+				{
+					Data hit = (Data) iterator.next();
+					copy.add(hit.getId());
+				}
+				selected.setValue("countdata",copy);
+				archive.getCategorySearcher().saveCategory(selected);
+			}
+			
 			GoalList list = new GoalList(selected,tracker);
 			topgoals = makeColumns(list.getSorted(),percolumn,startfrom);
 		}
@@ -166,35 +188,46 @@ public class TaskModule extends BaseMediaModule
 	public void loadGoal(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);
-		String goalid = inReq.getRequestParameter("goalid");
-		if(goalid == null)
+		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
+		if( goal == null)
 		{
-			goalid = inReq.getRequestParameter("id");
-		}
-		if (goalid != null) 
-		{
-			MultiValued goal = (MultiValued)archive.getData("projectgoal",goalid);
-			inReq.putPageValue("data", goal);
-			inReq.putPageValue("selectedgoal", goal);
-			
-			Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
-			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
-			//Legacy: Make sure all tasks have parents
-			List tosave = new ArrayList();
-			for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
+			String goalid = inReq.getRequestParameter("goalid");
+			if(goalid == null)
 			{
-				MultiValued existig = (MultiValued) iterator.next();
-				if( existig.getValue("projectdepartmentparents") == null)
-				{
-					Category child = archive.getCategory(existig.get("projectdepartment"));
-					existig.setValue("projectdepartmentparents",child.getParentCategories());
-					tosave.add(existig);
-				}
+				goalid = inReq.getRequestParameter("id");
 			}
-			tasksearcher.saveAllData(tosave, null);
-			TaskList goaltasks = new TaskList(goal,tasks);
-			inReq.putPageValue("tasklist", goaltasks);
+			if (goalid != null) 
+			{
+				goal = (MultiValued)archive.getData("projectgoal",goalid);
+				inReq.putPageValue("data", goal);
+				inReq.putPageValue("selectedgoal", goal);
+				inReq.putPageValue("goal", goal);
+			}
 		}
+			
+		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
+		
+		//		#set( $tasks = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
+		
+		HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
+		//Legacy: Make sure all tasks have parents
+		List tosave = new ArrayList();
+		for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
+		{
+			MultiValued existig = (MultiValued) iterator.next();
+			if( existig.getValue("projectdepartmentparents") == null)
+			{
+				Category child = archive.getCategory(existig.get("projectdepartment"));
+				existig.setValue("projectdepartmentparents",child.getParentCategories());
+				tosave.add(existig);
+			}
+		}
+		tasksearcher.saveAllData(tosave, null);
+		TaskList goaltasks = new TaskList(goal,tasks);
+		inReq.putPageValue("tasklist", goaltasks);
+		inReq.putPageValue("tasks", goaltasks.getSortedTasks());
+		
+
 	}
 	
 	public void checkGoalCount(WebPageRequest inReq)
@@ -306,8 +339,7 @@ public class TaskModule extends BaseMediaModule
 		archive.getCategorySearcher().saveData(cat);
 		//Add to array on category
 		tasksearcher.saveData(task);
-		String comment = "Made Request";
-		addComment(archive, task.getId(), inReq.getUser(),comment);
+		addComment(archive, task.getId(), inReq.getUser(),"0",null);
 		
 	}
 
@@ -316,10 +348,10 @@ public class TaskModule extends BaseMediaModule
 		String taskid = inReq.getRequestParameter("taskid");
 		MediaArchive archive = getMediaArchive(inReq);
 		String comment = inReq.getRequestParameter("comment");
-		addComment(archive, taskid, inReq.getUser(),comment);
+		addComment(archive, taskid, inReq.getUser(),null,comment);
 	}
 
-	protected void addComment(MediaArchive archive, String taskid, User inUser, String inComment)
+	protected void addComment(MediaArchive archive, String taskid, User inUser, String taskstatus, String inComment)
 	{
 		Searcher commentsearcher = archive.getSearcher("goaltaskcomments");
 		Data newcomment = commentsearcher.createNewData();
@@ -327,6 +359,9 @@ public class TaskModule extends BaseMediaModule
 		newcomment.setValue("commenttext", inComment);
 		newcomment.setValue("author", inUser.getId());
 		newcomment.setValue("date", new Date());
+		newcomment.setValue("date", new Date());
+		newcomment.setValue("statuschange", taskstatus);
+		
 		commentsearcher.saveData(newcomment);
 	}
 	public void saveTaskStatus(WebPageRequest inReq)
@@ -351,16 +386,11 @@ public class TaskModule extends BaseMediaModule
 		
 		tasksearcher.saveData(task);	
 		inReq.putPageValue("task", task);
-		String comment = null;
 		if( taskstatus == null)
 		{
-			comment = "Reset";
+			taskstatus = "0";
 		}
-		else
-		{
-			comment = "Status:" + archive.getData("taskstatus", taskstatus).getName(inReq.getLocale());
-		}
-		addComment(archive, taskid, inReq.getUser(),comment);
+		addComment(archive, taskid, inReq.getUser(),taskstatus, null);
 
 	}
 	public void removeTask(WebPageRequest inReq)
@@ -402,7 +432,10 @@ public class TaskModule extends BaseMediaModule
 		String goalid = inReq.getRequestParameter("goalid");
 		String targetgoalid = inReq.getRequestParameter("targetgoalid");
 		String categoryid = inReq.getRequestParameter("categoryid");
-		
+		if( categoryid == null)
+		{
+			return;
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		Category selected = archive.getCategory(categoryid);
 		List goalids = (List)selected.getValues("countdata");
@@ -445,7 +478,10 @@ public class TaskModule extends BaseMediaModule
 		
 		String taskid = inReq.getRequestParameter("taskid");
 		String targettaskid = inReq.getRequestParameter("targettaskid");
-		
+		if( targettaskid == null)
+		{
+			return;
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
 		List taskids = (List)selectedgoal.getValues("countdata");
@@ -602,6 +638,59 @@ public class TaskModule extends BaseMediaModule
 		}
 		Collections.sort(users);
 		inReq.putPageValue("users", users);
+
+	}
+
+	public void loadLikes(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("projectgoal");
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( collection == null)
+		{
+			log.info("Collection not found");
+			return;
+		}
+	
+		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
+		builder.match("userlikes", "*");
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		builder.sort("recorddate");
+		
+		HitTracker likes = builder.search();
+		inReq.putPageValue("likes", likes);
+	}
+	
+	public void toggleGoalLike(WebPageRequest inReq)
+	{
+		MultiValued goal = (MultiValued)inReq.getPageValue("goal");
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("projectgoal");
+		if( goal == null)
+		{
+			String goalid = inReq.getRequestParameter("goalid");
+			goal = (MultiValued)searcher.searchById(goalid);
+		}	
+		Collection found = goal.getValues("userlikes");
+		if( found == null)
+		{
+			found = new ArrayList();
+		}
+		else
+		{
+			found = new ArrayList(found);
+		}
+		if( found.contains(inReq.getUserName()))
+		{
+			found.remove(inReq.getUserName());
+		}
+		else
+		{
+			found.add(inReq.getUserName());
+		}
+		goal.setValue("userlikes",found);
+		searcher.saveData(goal);
+		inReq.putPageValue("goal", goal);
 
 	}
 

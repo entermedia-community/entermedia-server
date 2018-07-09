@@ -275,6 +275,10 @@
 .ui-draggable-dragging {
 	opacity: 0.7;
 }
+.dragoverselected {
+	background-color: #868e96!important;
+	color:#fff!important;
+}
 
 
 
@@ -372,23 +376,21 @@
     color: #444;
     font-size: 11px;
 }
-.emtree ul li div.treerow {
-	position: relative;
-    padding: 7px 0 7px 10px;
-    min-height: 28px;
+.emtree ul li div {
+    padding: 0 0 0 20px;
+    border-bottom: 1px solid #E2EFF4;
+    min-height: 27px;
+    line-height: 27px;
     display: block;
     cursor: pointer;
     white-space: no-wrap;
 }
-.emtree .arrow {
-	position:absolute;
-	width:13px;
-	padding-left:2px;
-	font-size:116%;
+.cramped .emtree ul li div {
+    height: 26px;
+    line-height: 26px;
 }
-.emtree .name {
-	margin-left:12px;
-	padding-left:2px;
+.emtree ul li div {
+    position: relative;
 }
 .emtree .checkbox {
     position: absolute;
@@ -400,22 +402,20 @@
     padding: 10px;
     text-align: center;
 }
-.emtree .checkbox .field,
-.emtree .treerow:hover,
-.emtree .treerow.selected,
-.emtree .treerow.selected:hover {
-    background-color: #c9e8f2;
+.emtree .checkbox .field
+.emtree ul li div.selected {
+    background: #c9e8f2;
+}
+.emtree ul li div.selected:hover {
+    background: #c9e8f2;
+}
+.emtree ul li div:hover {
+    background: #c9e8f2;
 }
 .emtree ul li div span a.btn {
     line-height: 11px;
     margin-left: 5px;
 }
-.treerow.dragoverselected {
-	background-color: #868e96;
-	color:#333;
-	border:1px dashed #999;
-}
-
 #details .emtree ul li div span input[type="text"] {
     padding: 5px 10px 3px 10px;
     font-size: 11px;
