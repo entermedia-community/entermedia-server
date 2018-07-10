@@ -62,10 +62,17 @@ var myChart = new Chart(ctx, {
 
 
 
+<ul class="list-group">
+				<a href="#" class="list-group-item active"> [[Asset Edit History]] </a>
 
 #foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
-	$child.get("count"), "$context.getDate($child.toString())",
+	
+	<li class="list-group-item">
+	$child
+	<b> $context.getDate($child.toString())</b> : Overall Edits: $child.get("count")	<a class=" pull-right" href="$home$apphome/views/modules/asseteditLog/fieldsearch.html?field=date&date.value=${context.getSearchDate($child.toString())}&operation=exact">View Details</a><br/>
+	 
+	</li>
 #end
 #end
 
