@@ -749,39 +749,60 @@ onloadselectors = function()
 				jQuery(this).droppable(
 					{
 						drop: function(event, ui) {
-							var assetid = ui.draggable.data("assetid");
 							var node = $(this);
 							var categoryid = node.parent().data("nodeid");
+							var targetcategoryid = ui.draggable.data("nodeid")
 							
-							var hitssessionid = $("#resultsdiv").data("hitssessionid");
-							if( !hitssessionid )
+							if( targetcategoryid )
 							{
-								hitssessionid = $("#main-results-table").data("hitssessionid");
-							}
-							//this is a category
-							var moveit = false;
-							if( node.closest(".assetdropcategorymove").length > 0 )
-							{
-								moveit = true;
-							}
-							var rootcategory = node.closest(".emtree").data("rootnodeid");
+								var tree = node.closest(".emtree");
+								var params = tree.data();
+								params['categoryid'] = targetcategoryid;//Remove from self
+								params['categoryid2'] = categoryid;
+								params['oemaxlevel'] = "1";
+								params['tree-name'] = tree.data("treename"); 
 								
-							jQuery.get(apphome + "/components/categorize/addassetcategory.html", 
-									{
-										assetid:assetid,
-										categoryid:categoryid,
-										hitssessionid:hitssessionid,
-										moveasset: moveit,
-										rootcategoryid: rootcategory
-									},
-									function(data) 
-									{
-										node.append("<span class='fader'>&nbsp;+" + data + "</span>");
-										node.find(".fader").fadeOut(3000);
-										node.removeClass("selected");
-									}
-							);
-
+								jQuery.get(apphome + "/components/emtree/movecategory.html", 
+										params,
+										function(data) 
+										{
+											tree.closest("#treeholder").replaceWith(data);
+										}
+								);
+							}
+							else
+							{
+								var assetid = ui.draggable.data("assetid");
+								var hitssessionid = $("#resultsdiv").data("hitssessionid");
+								if( !hitssessionid )
+								{
+									hitssessionid = $("#main-results-table").data("hitssessionid");
+								}
+								
+								//this is a category
+								var moveit = false;
+								if( node.closest(".assetdropcategorymove").length > 0 )
+								{
+									moveit = true;
+								}
+								var rootcategory = node.closest(".emtree").data("rootnodeid");
+									
+								jQuery.get(apphome + "/components/categorize/addassetcategory.html", 
+										{
+											assetid:assetid,
+											categoryid:categoryid,
+											hitssessionid:hitssessionid,
+											moveasset: moveit,
+											rootcategoryid: rootcategory
+										},
+										function(data) 
+										{
+											node.append("<span class='fader'>&nbsp;+" + data + "</span>");
+											node.find(".fader").fadeOut(3000);
+											node.removeClass("selected");
+										}
+								);		
+							}
 						},
 						tolerance: 'pointer',
 						over: outlineSelectionCol,
