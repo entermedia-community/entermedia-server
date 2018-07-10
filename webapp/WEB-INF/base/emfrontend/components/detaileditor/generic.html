@@ -26,8 +26,6 @@
 	$context.putPageValue("data", $data)	
 #end
 
-$context.putPageValue("searcher", $searcher)
-
 #set ( $openview = $context.getRequestParameter("openview") )
 #set ( $edit = $context.getRequestParameter("edit") )
 #set ($editpath = $context.getRequestParameter("editorpath"))
@@ -37,6 +35,13 @@ $context.putPageValue("searcher", $searcher)
 #if($data.getId().startsWith("multiedit"))
 	#set($multiedit = true)
 #end
+
+#set($viewdata = $searcher.getViewData($view))
+#if( $viewdata.rendertype == "external")
+	#set( $searcher = $searcherManager.getSearcher($catalogid,$viewdata.rendertable))
+#end
+
+$context.putPageValue("searcher", $searcher)
 
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 
@@ -51,10 +56,16 @@ $context.putPageValue("searcher", $searcher)
 		<input type="hidden" name="label" value="$label" />
 		
 		#if( $searchtype == "asset" )
-##			<input type="hidden" name="field" value="assetid" />
-##			<input type="hidden" name="assetid.value" value="$asset.getId()" />
 			<input type="hidden" name="assetid" value="$asset.getId()" />
 		#end
+		
+		#if( $viewdata.rendertype == "external")
+			<input type="hidden" name="field" value="$viewdata.renderexternalid" />
+			<input type="hidden" name="${viewdata.renderexternalid}.value" value="$asset.getId()" />
+			#set( $data = $searcher.query().exact($viewdata.renderexternalid,$asset.getId()).searchOne() )
+			$context.putPageValue("data",$data)
+		#end
+		
 		<input type="hidden" name="id" value="$!data.id" />
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")

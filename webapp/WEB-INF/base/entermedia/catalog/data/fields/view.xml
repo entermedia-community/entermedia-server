@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties beanname="folderSearcher"> 
-  <property id="id" index="true" editable="true" stored="true" keyword="false" filter="false" sortable="true">Id 
+  <property id="id" index="true" editable="true" stored="true" keyword="false" filter="false" >Id 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[Id]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name 
+  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" >Name 
     <name> 
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
-  <property id="byassettype" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">By Asset Type 
+  <property id="byassettype" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" >By Asset Type 
     <name> 
       <language id="de"><![CDATA[nach Art der Vermögenswerte]]></language>  
       <language id="en"><![CDATA[By Asset Type]]></language>  
@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Par Type d&#39;actif]]></language> 
     </name> 
   </property>  
-  <property id="systemdefined" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">System Defined 
+  <property id="systemdefined" type="boolean" editable="true" index="true" stored="true" keyword="false" filter="false" >System Defined 
     <name> 
       <language id="de"><![CDATA[System definiert]]></language>  
       <language id="en"><![CDATA[System Defined]]></language>  
@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Défini par le système]]></language> 
     </name> 
   </property>  
-  <property id="moduleid" index="true" stored="true" legacy="module" keyword="false" filter="false" editable="false" sortable="true">Module 
+  <property id="moduleid" index="true" stored="true" legacy="module" keyword="false" filter="false" editable="false" >Module 
     <name> 
       <language id="de"><![CDATA[Modul]]></language>  
       <language id="en"><![CDATA[Module]]></language>  
@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Module]]></language> 
     </name> 
   </property>  
-  <property id="ordering" type="number" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Ordering 
+  <property id="ordering" type="number" editable="true" index="true" stored="true" keyword="false" filter="false" >Ordering 
     <name> 
       <language id="de"><![CDATA[Bestellung]]></language>  
       <language id="en"><![CDATA[Ordering]]></language>  
@@ -49,7 +49,7 @@
       <language id="fr"><![CDATA[Commande]]></language> 
     </name> 
   </property>  
-  <property id="rendertype" type="list" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Render Type 
+  <property id="rendertype" type="list" editable="true" index="true" stored="true" keyword="false" filter="false" listid="viewrendertype">Render Type 
     <name> 
       <language id="de"><![CDATA[render-Typ]]></language>  
       <language id="en"><![CDATA[Render Type]]></language>  
@@ -57,7 +57,7 @@
       <language id="fr"><![CDATA[Type de rendu]]></language> 
     </name> 
   </property>  
-  <property id="rendertable" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Table 
+  <property id="rendertable" index="true" stored="true" keyword="false" filter="false" editable="false" >Table 
     <name> 
       <language id="de"><![CDATA[Tabelle]]></language>  
       <language id="en"><![CDATA[Table]]></language>  
@@ -65,7 +65,7 @@
       <language id="fr"><![CDATA[Tableau]]></language> 
     </name> 
   </property>  
-  <property id="renderexternalid" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Table External ID 
+  <property id="renderexternalid" index="true" stored="true" keyword="false" filter="false" editable="false" >Table External ID 
     <name> 
       <language id="de"><![CDATA[Tabelle externe ID]]></language>  
       <language id="en"><![CDATA[Table External ID]]></language>  
@@ -73,7 +73,7 @@
       <language id="fr"><![CDATA[Tableau ID externe]]></language> 
     </name> 
   </property>  
-  <property id="rendercustomview" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Renderer Custom View
+  <property id="rendercustomview" index="true" stored="true" keyword="false" filter="false" editable="false" >Renderer Custom View
     <name>
       <language id="de"><![CDATA[Renderer benutzerdefinierte Ansicht]]></language>
       <language id="en"><![CDATA[Renderer Custom View]]></language>
