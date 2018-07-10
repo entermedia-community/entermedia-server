@@ -1,5 +1,13 @@
+<div class="acceptterms">
 <form id="processorder" name="placeorder" action="$apphome/views/activity/checkout/processorder.html">
+
+$context.putPageValue("searcher",$mediaarchive.getSearcher("order") )	
+$context.putPageValue("view","order/ordercheckoutconfirm")	
+$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+
 $pages.include("$apphome/views/activity/checkout/termsconditions.html")
+
 
 </form>
 
+</div>

@@ -1077,6 +1077,10 @@ public class OrderModule extends BaseMediaModule
 			throw new OpenEditException("Please set an email address");
 		}
 		order.setValue("sharewithemail", inReq.getUser().getEmail());
+		
+		String[] fields = inReq.getRequestParameters("field");
+		archive.getSearcher("order").updateData(inReq, fields, order);
+		
 		order.setValue("date", new Date());
 		//Expiration
 		

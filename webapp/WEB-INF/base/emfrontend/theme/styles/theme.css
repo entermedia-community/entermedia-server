@@ -7194,3 +7194,9 @@ li.resultmenuitem {
   position: relative;
   left: 50%;
 }
+
+.acceptterms .emdatafield
+{
+	font-size: 1.2em;
+	font-weight: bold;
+}
