@@ -208,25 +208,26 @@ public class TaskModule extends BaseMediaModule
 		Searcher tasksearcher = (Searcher)archive.getSearcher("goaltask");
 		
 		//		#set( $tasks = $mediaarchive.getSearcher("goaltask").query().exact("projectgoal", $goal.getId()).not("taskstatus","complete").search() )
-		
-		HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
-		//Legacy: Make sure all tasks have parents
-		List tosave = new ArrayList();
-		for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
+		if( goal != null)
 		{
-			MultiValued existig = (MultiValued) iterator.next();
-			if( existig.getValue("projectdepartmentparents") == null)
+			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
+			//Legacy: Make sure all tasks have parents
+			List tosave = new ArrayList();
+			for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
 			{
-				Category child = archive.getCategory(existig.get("projectdepartment"));
-				existig.setValue("projectdepartmentparents",child.getParentCategories());
-				tosave.add(existig);
+				MultiValued existig = (MultiValued) iterator.next();
+				if( existig.getValue("projectdepartmentparents") == null)
+				{
+					Category child = archive.getCategory(existig.get("projectdepartment"));
+					existig.setValue("projectdepartmentparents",child.getParentCategories());
+					tosave.add(existig);
+				}
 			}
-		}
-		tasksearcher.saveAllData(tosave, null);
-		TaskList goaltasks = new TaskList(goal,tasks);
-		inReq.putPageValue("tasklist", goaltasks);
-		inReq.putPageValue("tasks", goaltasks.getSortedTasks());
-		
+			tasksearcher.saveAllData(tosave, null);
+			TaskList goaltasks = new TaskList(goal,tasks);
+			inReq.putPageValue("tasklist", goaltasks);
+			inReq.putPageValue("tasks", goaltasks.getSortedTasks());
+		}		
 
 	}
 	
