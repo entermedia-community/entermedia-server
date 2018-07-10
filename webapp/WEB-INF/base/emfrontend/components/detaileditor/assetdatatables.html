@@ -4,7 +4,7 @@
 #set($hitssessionid = $context.findValue("hitssessionid"))
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false").append("rendertable","*") )
+#set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false").append("rendertype","table") )
 $!query.addSortBy("ordering")   
 #set($views = $viewsearcher.search($query))
 
