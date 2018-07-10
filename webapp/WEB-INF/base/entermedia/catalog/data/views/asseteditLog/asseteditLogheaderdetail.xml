@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root> 
+  <property id="date"/>  
+  <property id="user"/>  
+  <property id="operation"/>  
+  <property id="details"/>
+</root>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="asseteditLoggeneral" moduleid="asseteditLog" systemdefined="false" byassettype="false">General</property>  
+  <property id="asseteditLogadvancedsearch" moduleid="asseteditLog" systemdefined="true" byassettype="false">Advanced Search</property>  
+  <property id="asseteditLogresultstable" moduleid="asseteditLog" systemdefined="true" byassettype="false">Results</property>  
+  <property id="asseteditLogheaderdetail" moduleid="asseteditLog" systemdefined="true" byassettype="false">Header Details</property> 
+</properties>
