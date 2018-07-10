@@ -132,7 +132,7 @@ public class CategoryModule extends BaseMediaModule
 			renderer.setAllowSelections(Boolean.parseBoolean(allowselections));
 
 			String editable = inRequest.findValue( "editabletree" );
-			if( editable == null )
+			if( editable == null || Boolean.parseBoolean(editable) )
 			{
 				Boolean val = (Boolean)inRequest.getPageValue("caneditcategories");
 				if( val != null )
