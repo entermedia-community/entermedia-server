@@ -61,3 +61,13 @@ var myChart = new Chart(ctx, {
 </script>
 
 
+
+
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+#foreach($child in $node.getChildren())
+	$child.get("count"), "$context.getDate($child.toString())",
+#end
+#end
+
+
+
