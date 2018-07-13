@@ -40,6 +40,8 @@
 			#set ($viewtype = "booleansearch")
 		#end
 
+
+
 		#if( $hits.getSearchQuery() )
 			#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
 			#set( $values = $hits.getSearchQuery().getInputs($detail.id) )

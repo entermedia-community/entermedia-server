@@ -42,7 +42,7 @@
       <language id="fr"><![CDATA[ID Item]]></language> 
     </name> 
   </property>  
-  <property id="date" datatype="date" viewtype="time" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date
+  <property id="date" datatype="date" viewtype="date" searchcomponent="datesearch" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true" type="date">Date
     <name>
       <language id="de"><![CDATA[Datum]]></language>
       <language id="en"><![CDATA[Date]]></language>
