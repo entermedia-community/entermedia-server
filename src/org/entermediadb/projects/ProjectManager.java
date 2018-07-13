@@ -285,6 +285,9 @@ public class ProjectManager implements CatalogEnabled {
 	public LibraryCollection getFavoritesCollection(User inUser) 
 	{
 		Searcher collections = getMediaArchive().getSearcher("librarycollection");
+		if(inUser == null) {
+			return null;
+		}
 		LibraryCollection collection = (LibraryCollection) collections.searchById(inUser.getId() + "-favorites");
 		if (collection == null) 
 		{

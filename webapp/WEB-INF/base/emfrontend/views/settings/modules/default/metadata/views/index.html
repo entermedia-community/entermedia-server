@@ -83,7 +83,11 @@
             	<input type="hidden" value="systemdefined" name="field" />
 
             </div>
+  <div class="checkbox"><input id="systemdefined" type="checkbox" name="printview.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
+                [[Print View?]]
+            	<input type="hidden" value="printview" name="field" />
 
+            </div>
                 <div>[[External Table]]</div>
             	<input type="hidden" value="rendertable" name="field" />
                 <input class="field" name="rendertable.value" value="$!view.rendertable" >

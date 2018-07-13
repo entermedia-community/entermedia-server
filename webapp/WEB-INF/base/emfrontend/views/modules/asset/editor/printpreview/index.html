@@ -13,7 +13,11 @@
     
 #foreach( $viewpath in $views.keySet() )
     #set( $target = $views.get($viewpath) )
+   #if($target.printview == "true")
     #displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+    #end
+    
 #end
+     #displaydetails("generic.html" "Asset Details" "$asset.id" "asset/print" $print)
  
 </div>
