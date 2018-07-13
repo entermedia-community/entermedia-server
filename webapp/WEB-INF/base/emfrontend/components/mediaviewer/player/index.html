@@ -31,21 +31,21 @@
     
     	
 	    	#if ( $canviewvoting )
-			    <div id="assetVoteCount" class="col-sm-7">
+			    <div id="assetVoteCount" class="col-sm-6">
 			        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
 			    </div>
 			#end
 				
-    		<div class="col-sm-5">
+    		<div class="col-sm-6">
     	    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
     	    #if ($attachmentcount && $attachmentcount.size() > 1)
     	   <a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="attachments">$attachmentcount.size()<span>&nbsp;</span></a>
     	   #end
            #if($canviewassetpreviewhistory)
-	   <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views<span class="">&nbsp;</span></a>
+	   <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views">$views <i class="glyphicon glyphicon-eye-open"></i></a>
 #end
             #if($canviewcomments)
-            <a href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments">$comments.size()<span>&nbsp;</span></a>
+            <a href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments">$comments.size() <i class="glyphicon glyphicon-comment"></i></a>
             #end
                 <a class="stackedplayer" data-assetid="${asset.id}" href="#" >
             	<span class="glyphicon glyphicon-fullscreen" style="color: #fff;"> </span>

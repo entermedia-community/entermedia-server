@@ -5209,6 +5209,7 @@ p.resultsnumber {
     color: #fff;
     margin: 0 10px 0 0;
     opacity: 0.8;
+    line-height: 1.5;
     
 }
 #mp-asset-info a:hover {
@@ -5740,14 +5741,14 @@ max-width:200px;
 }
 #assetVoteCount .star {
     display: block;
-    width: 26px;
-    height: 26px;
-    background: url('../images/likeonasset.svg');
     float: right;
     margin: 0px 2px 0 2;
+    color:#eee;
+    font-size:140%;
+    line-height: 1;
 }
 #assetVoteCount .star.full {
-    background-position: 27px 0;
+    color:#FEDC71;
 }
 #assetVoteCount a {
     color: #3490B2;
@@ -5755,7 +5756,7 @@ max-width:200px;
 #assetVoteCount a:hover {
     text-decoration: underline;
 }
-#assetVoteCount .voting-label { float:right;}
+#assetVoteCount .voting-label { float:right; line-height: 1.5;}
 #assetVoteTool {
     display: inline-block;
     position: relative;
@@ -5767,7 +5768,7 @@ max-width:200px;
    background: white;
     border-left: 1px solid #DDD;
      border-bottom: 1px solid #DDD;
-    padding: 4px 0px 0 3px;
+    padding: 2px 0px 0 3px;
     position: relative;
     top: 0px;
     height: 27px;
@@ -5778,17 +5779,17 @@ max-width:200px;
 #assetVoteTool .star {
     display: block;
     width: 26px;
-    height: 26px;
-    background: url('../images/likeonasset.svg');
-    float: right;
-    margin: -4px 5px 0 3px;
+    margin: 1px 5px 0 3px;
+    font-size: 150%;
+    color:#afafaf;
 }
 #assetVoteTool .votecounter {
 	 text-decoration: none;
 	 margin-right: 5px;
 }
+#assetVoteTool .star:hover, 
 #assetVoteTool .star.full {
-    background-position: 27px 0;
+      color:#FEDC71;
 }
 #assetVoteTool a {
     color: #3490B2;
