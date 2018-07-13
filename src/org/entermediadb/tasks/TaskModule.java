@@ -47,7 +47,7 @@ public class TaskModule extends BaseMediaModule
 			cat = (Category)archive.getCategorySearcher().createNewData();
 			cat.setId(id);
 			collection.getCategory().addChild(cat);
-			cat.setName("Teams");
+			cat.setName("Inbox");
 			archive.getCategorySearcher().saveData(cat);
 		}
 	}
@@ -71,8 +71,10 @@ public class TaskModule extends BaseMediaModule
 		{
 			department = inReq.getRequestParameter("categoryid");
 		}
-		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		if( department == null)
+		{
+			department = "tasks" + collection.getId();
+		}
 		Collection topgoals = null;
 		String page = inReq.getRequestParameter("page");
 
@@ -86,64 +88,125 @@ public class TaskModule extends BaseMediaModule
 			thispage = Integer.parseInt(page);
 			startfrom = thispage * perpage;
 		}
-		
-		HitTracker tracker = null;
-		if( department != null)
+		Category selected = archive.getCategory(department);
+		inReq.putPageValue("selectedcat", selected);
+
+		Collection alltasks = archive.getSearcher("goaltask").query().exact("projectdepartment",department).search();
+		alltasks.size();
+		Collection opengoalsids = new ArrayList();
+		Collection closedgoalids = new ArrayList();
+
+		Collection<String> allgoalsids = new ArrayList<String>();
+
+		for (Iterator iterator = alltasks.iterator(); iterator.hasNext();)
 		{
-			Category selected = archive.getCategory(department);
-			inReq.putPageValue("selectedcat", selected);
-			Collection goalids = selected.getValues("countdata");
-			if( goalids == null || goalids.isEmpty())
+			Data task = (Data) iterator.next();
+			allgoalsids.add(task.get("projectgoal"));
+		}
+		for (Iterator iterator = alltasks.iterator(); iterator.hasNext();)
+		{
+			Data task = (Data) iterator.next();
+			String goalid = task.get("projectgoal");
+			if("3".equals( task.get("taskstatus")) )
 			{
-				log.info("No goals set");
+				closedgoalids.add(goalid);
+			}
+			else
+			{
+				opengoalsids.add(goalid);
+			}
+		}
+		Collection opengoals = null;
+		if(! opengoalsids.isEmpty() )
+		{
+			QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
+			builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+			builder.ids(opengoalsids);
+			opengoals = builder.search();
+		}
+		
+		Collection closedgoals = null;
+		if(! closedgoalids.isEmpty() )
+		{
+			QueryBuilder builderclosed = searcher.query().exact("collectionid", collection.getId());
+			builderclosed.notgroup("projectstatus", Arrays.asList("closed","completed"));
+			builderclosed.ids(closedgoalids);
+			closedgoals = builderclosed.search();
+		}
+		if( opengoals == null)
+		{
+			if( closedgoals == null)
+			{
 				return;
 			}
-			log.info("loaded goalids" + selected.getId() + "="+ goalids);
-			Collection copy = new ArrayList();
-			for (Iterator iterator = goalids.iterator(); iterator.hasNext();)
+			else
 			{
-				String gid = (String) iterator.next();
-				if( gid != null)
-				{
-					copy.add(gid);
-				}
+				topgoals = new ArrayList();
+				topgoals.add(new ArrayList());
+				topgoals.add(new ArrayList());
+				topgoals.add(new ArrayList());
+				topgoals.add(closedgoals);
 			}
-			builder.ids(copy);
-			tracker = builder.search();
-			
-			if( tracker.size() != goalids.size() )
-			{
-				copy = new ArrayList();
-				for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-				{
-					Data hit = (Data) iterator.next();
-					copy.add(hit.getId());
-				}
-				selected.setValue("countdata",copy);
-				archive.getCategorySearcher().saveCategory(selected);
-			}
-			
-			GoalList list = new GoalList(selected,tracker);
-			topgoals = makeColumns(list.getSorted(),percolumn,startfrom);
 		}
-		else
+		if( topgoals == null)
 		{
-			tracker = builder.sort("creationdateDown").search();
-			topgoals = makeColumns(tracker,percolumn,startfrom);
+			GoalList list = new GoalList(selected,opengoals);
+			topgoals = makeColumns(list.getSorted(),percolumn,startfrom);
+			if( closedgoals != null && !closedgoals.isEmpty() )
+			{
+				topgoals.add(closedgoals);
+			}
 		}
+		Collection goalids = selected.getValues("countdata");
+		if ( goalids == null)
+		{
+			goalids = Collections.emptyList();
+		}
+		if( opengoalsids.size() != goalids.size() )
+		{
+			selected.setValue("countdata",opengoalsids);
+			archive.getCategorySearcher().saveCategory(selected);
+		}
+		
 		inReq.putPageValue("topgoals", topgoals);
-		inReq.putPageValue("goals", tracker);
-		if( tracker.size() > (thispage + 1) * perpage )
+		if( opengoals != null && opengoals.size() > (thispage + 1) * perpage )
 		{
 			inReq.putPageValue("nextpage", thispage + 1);
 		}
 		
 		Collection archived = searcher.query().orgroup("projectstatus", Arrays.asList("closed","completed"))
-				.exact("collectionid", collection.getId()).search(inReq);
+				.ids(allgoalsids).exact("collectionid", collection.getId()).search(inReq);
 		inReq.putPageValue("closedgoals", archived);
+		StringBuffer out = new  StringBuffer();
+		for (Iterator iterator = archived.iterator(); iterator.hasNext();)
+		{
+			Data goal = (Data) iterator.next();
+			out.append(goal.getId());
+			if( iterator.hasNext())
+			{
+				out.append("|");
+			}
+		}
+		inReq.putPageValue("closedids",out.toString());
 		
 		
 	}
+
+	private Collection findRemovedGoals(HitTracker inGoaltracker, Collection<String> inAllgoalsids)
+	{
+		List goals = new ArrayList();
+		for (Iterator iterator = inGoaltracker.iterator(); iterator.hasNext();)
+		{
+			Data goal = (Data) iterator.next();
+			if( !inAllgoalsids.contains( goal.getId()))
+			{
+				goals.add(goal);
+			}
+		}
+		return goals;
+	}
+
+
 
 	protected Collection makeColumns(Collection tracker, int percolumn, int startfrom)
 	{
@@ -378,6 +441,10 @@ public class TaskModule extends BaseMediaModule
 		{
 			task.setValue("completedby", inReq.getUserName());
 			task.setValue("completedon", new Date());
+			
+			//remove task from tree
+			removeCount(archive, task);
+			
 		}
 		else if( taskstatus != null && taskstatus.equals("1"))
 		{
@@ -401,13 +468,18 @@ public class TaskModule extends BaseMediaModule
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Data task = (Data)tasksearcher.searchById(taskid);
 		tasksearcher.delete(task,null);
+		removeCount(archive, task);
+		
+	}
+
+	protected void removeCount(MediaArchive archive, Data task)
+	{
 		String cat = task.get("projectdepartment");
 		Category folder = archive.getCategory(cat);
 		ArrayList list = new ArrayList(folder.getValues("countdata"));
 		list.remove(task.get("projectgoal"));
 		folder.setValue("countdata",list);
 		archive.getCategorySearcher().saveData(folder);
-		
 	}
 	//Everything over 15
 	public void searchClosedGoals(WebPageRequest inReq) throws Exception
@@ -423,6 +495,11 @@ public class TaskModule extends BaseMediaModule
 	
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
 		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
+		String ids = inReq.getRequestParameter("ids");
+		if( ids != null)
+		{
+			builder.orgroup("id", ids);
+		}
 		Collection archived = builder.search();
 		inReq.putPageValue("closedgoals", archived);
 		
