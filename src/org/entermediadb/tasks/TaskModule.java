@@ -175,8 +175,19 @@ public class TaskModule extends BaseMediaModule
 		}
 		
 		Collection archived = searcher.query().orgroup("projectstatus", Arrays.asList("closed","completed"))
-				.exact("collectionid", collection.getId()).search(inReq);
+				.ids(allgoalsids).exact("collectionid", collection.getId()).search(inReq);
 		inReq.putPageValue("closedgoals", archived);
+		StringBuffer out = new  StringBuffer();
+		for (Iterator iterator = archived.iterator(); iterator.hasNext();)
+		{
+			Data goal = (Data) iterator.next();
+			out.append(goal.getId());
+			if( iterator.hasNext())
+			{
+				out.append("|");
+			}
+		}
+		inReq.putPageValue("closedids",out.toString());
 		
 		
 	}
@@ -484,6 +495,11 @@ public class TaskModule extends BaseMediaModule
 	
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
 		builder.orgroup("projectstatus", Arrays.asList("closed","completed"));
+		String ids = inReq.getRequestParameter("ids");
+		if( ids != null)
+		{
+			builder.orgroup("id", ids);
+		}
 		Collection archived = builder.search();
 		inReq.putPageValue("closedgoals", archived);
 		
