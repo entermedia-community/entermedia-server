@@ -240,10 +240,10 @@ public class OrderModule extends BaseMediaModule
 
 	public Collection saveItems(WebPageRequest inReq) throws Exception
 	{
-		String[] fields = inReq.getRequestParameters("field");
-		if (fields != null)
+		String[] items = inReq.getRequestParameters("itemid");
+		if (items != null)
 		{
-			String[] items = inReq.getRequestParameters("itemid");
+			String[] fields = inReq.getRequestParameters("field");
 			String catalogid = inReq.findValue("catalogid");
 			ArrayList toSave = getOrderManager().saveItems(catalogid, inReq, fields, items);
 			return toSave;

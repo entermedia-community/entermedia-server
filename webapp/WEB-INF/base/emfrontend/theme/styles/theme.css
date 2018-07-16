@@ -45,14 +45,14 @@
 	#footer {
 		border-top: 4px #90002a;
 	}
-	#header a {
+	#header .navlinks a {
 		font-family: Verdana, Geneva, sans-serif;
 		font-size:11px;
 		font-weight: normal;
 		color:#666;
 		text-decoration: none;
 	}
-	#header a:focus,#header a:hover,#header a:active {
+	#header .navlinks a:focus,#header .navlinks a:hover,#header a:active {
 		text-decoration: underline;
 		background-color: transparent;
 		color:#39578a;
@@ -7200,4 +7200,21 @@ li.resultmenuitem {
 {
 	font-size: 1.2em;
 	font-weight: bold;
+}
+
+#headerstatusarea
+{
+	float:right;
+	margin: 10px 10px 0 0;
+	min-width: 200px;
+	min-height: 40px;
+}
+
+.alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1;
 }

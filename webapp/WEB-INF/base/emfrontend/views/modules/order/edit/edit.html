@@ -13,20 +13,9 @@
     $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
    
    
-    <form class="ajaxform" targetdiv="itemsave" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
+    <form class="ajaxform" targetdiv="order-details" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
     <h2 style="border-top: 1px solid #bbb;">Order Details</h2>
     <table class="settings-table" id="order-details">
-     <tr>
-         <td>Order Id</td>
-         <td>$!order.id</td>
-     </tr>
-     <tr>
-         <td>Order Date</td>
-         <td>$!context.getDateTime($order.date)</td>
-     </tr>
-     
-     <tr>
-         
        <input type="hidden" name="id" value="$order.id"/>
        <input type="hidden" name="orderid" value="$order.id"/>
           <input type="hidden" name="sourcepath" value="$order.sourcepath"/>
@@ -105,11 +94,10 @@
 
 <script type="text/javascript">
 
-jQuery("#approveall").bind("click", function () {
+jQuery("#approveall").bind("click", function (e) {
 	jQuery(".statusfield").val("approved");
-	jQuery("#list-checkoutstatus").val("approved");
-	jQuery("#itemsave").submit();
-
+	$("#itemsave #list-checkoutstatus").val("approved");
+	jQuery("#itemsave").trigger("submit");
 	return false;
 } );
 jQuery("#sendnotification").bind("click", function () {
