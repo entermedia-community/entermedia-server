@@ -437,7 +437,8 @@ ul.emheaderbuttons li {
     display: inline;
     line-height: 50px;
     /*For ignore double margin in IE6*/
-    margin: 0 10px;
+    margin: 0 6px;
+    
 }
 
 ul.emheaderbuttons li a {
@@ -2225,7 +2226,7 @@ center #addcoment {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65c3dd', endColorstr='#39a2bf',GradientType=0 ); /* IE6-9 */
 }
 #nav li.navselected a.navbutton, #nav li a.navbutton:active, #module-dropdown.active, #module-dropdown.active:hover {
-    border-width: 2px;
+    border-width: 1px;
 
 }
 #nav .selectaddnew { 

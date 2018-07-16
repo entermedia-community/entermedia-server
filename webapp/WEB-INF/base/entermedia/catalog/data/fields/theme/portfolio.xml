@@ -207,7 +207,15 @@
       <language id="es"><![CDATA[Botón de navegación de la libración del gradiente del color]]></language>  
       <language id="fr"><![CDATA[Navigation bouton sensitif Dégradé de couleur]]></language> 
     </name> 
-  </property>  
+  </property>
+  <property id="navbuttonhoverbordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Border 
+    <name> 
+      <language id="de"><![CDATA[Navigationstaste Grenze]]></language>  
+      <language id="en"><![CDATA[Navigation Hover Button Border]]></language>  
+      <language id="es"><![CDATA[Frontera botón de navegación]]></language>  
+      <language id="fr"><![CDATA[Bouton de navigation Border]]></language> 
+    </name> 
+  </property>    
   <!-- left column -->  
   <property id="leftcolumnnavcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Color 
     <name> 

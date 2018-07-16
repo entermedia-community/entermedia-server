@@ -72,6 +72,7 @@
   <!-- end navigation font hover -->
   <property id="navbuttonhovercolor" />
   <property id="navbuttonhovercolorgradient" />
+  <property id="navbuttonhoverbordercolor" />
   
   <!-- navigation links -->
   <property id="navlinksbackgroundcolor" />
