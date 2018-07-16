@@ -121,12 +121,12 @@ uiload = function() {
 	jQuery(".force-validate-inputs").livequery(
 			function() 
 			{
+/*
 				jQuery(".required",this).each(function()
 				{
 					//jQuery(this).attr("required","true");
 				});
-				
-				
+*/				
 				var theform = jQuery(this).closest("form");
 				
 				theform.on("click", function()
@@ -134,11 +134,11 @@ uiload = function() {
 					theform.valid();
 				});
 				
-				$.validator.setDefaults({ignore: ".ignore"});
+				$.validator.setDefaults({ignore: [".ignore"]});
 
 				
 				theform.validate({
-					  ignore: ".ignore"
+					  ignore: [".ignore"]
 				});
 					
 							
@@ -326,7 +326,7 @@ uiload = function() {
 			if( form.validate )
 			{
 				form.validate({
-				  ignore: ".ignore"
+					ignore: [".ignore"]
 				});
 	    		var isvalidate = form.valid();
 				if(!isvalidate)

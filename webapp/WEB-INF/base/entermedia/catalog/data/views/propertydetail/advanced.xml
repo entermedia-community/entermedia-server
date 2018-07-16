@@ -1,27 +1,27 @@
 <properties >
 
-	<property id="stored"  editable="true" stored="true" index="true">Stored</property>	
-	<property id="externalid"  editable="true" stored="true" index="true">External ID</property>	
-	<property id="keyword"  editable="true" stored="true" index="true">Used in Keywords</property>	
-	<property id="filter"  editable="true" stored="true" index="true">Used in Filters</property>	
-	<property id="multilanguage"  editable="true" stored="true" index="true">Mutlilanguage Enabled</property>	
-	<property id="filtercount"  editable="true" stored="true" index="true">Filter Count</property>	
-	<property id="note"  editable="true" stored="true" index="true">Note</property>	
-	<property id="listid"  editable="true" stored="true" index="true">listid</property>	
-	<property id="sort"  editable="true" stored="true" index="true">Default Sort</property>	
-	<property id="foreignkeyid"  editable="true" stored="true" index="true">Foreign Key</property>	
-	<property id="dependson"  editable="true" stored="true" index="true">Depends On Field</property>	
-	<property id="dependsonvalue"  editable="true" stored="true" index="true">Depends on Value</property>	
-	<property id="regex"  editable="true" stored="true" index="true">Regex</property>	
-	<property id="rendermask"  editable="true" stored="true" index="true">Render Mask</property>	
-	<property id="autocreatefromexif"  editable="true" stored="true" index="true">Auto Create Metadata from Exif</property>	
-	<property id="writenametoexif"  editable="true" stored="true" index="true">Write Name to Exif</property>	
-		<property id="xmpmask"  editable="true" stored="true" index="true"/>
-	
-	<property id="indextype"  editable="true" stored="true" index="true">Indexing Rule</property>	
-	<property id="analyzer"   editable="true" stored="true" index="true">Analyzer</property>
-	<property id="isbadge"   editable="true" stored="true" index="true" type="boolean">Is Badge</property>
-		<property id="wordpressfield"   editable="true" stored="true" index="true" />
+	<property id="stored" />	
+	<property id="externalid" />	
+	<property id="keyword" />	
+	<property id="filter" />	
+	<property id="multilanguage" />	
+	<property id="filtercount" />	
+	<property id="note" />	
+	<property id="listid" />	
+	<property id="listcatalogid" />	
+	<property id="sort" />	
+	<property id="foreignkeyid" />	
+	<property id="dependson" />	
+	<property id="dependsonvalue" />	
+	<property id="regex" />
+	<property id="rendermask" />	
+	<property id="autocreatefromexif" />	
+	<property id="writenametoexif" />	
+	<property id="xmpmask"  />
+	<property id="indextype" />	
+	<property id="analyzer"  />
+	<property id="isbadge" type="boolean" />
+	<property id="wordpressfield"    />
 	
 	
 </properties>
