@@ -123,17 +123,25 @@ public class UserProfileManager
 		try
 		{
 			lock = mediaArchive.getLockManager().lock("userprofileloading/" + inUserName, "UserProfileManager.loadProfile");
-			userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
-			String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
-
-			if( forcereload == false && userprofile != null && index.equals(userprofile.getIndexId()) )
+			if( lock != null)
 			{
+				userprofile = (UserProfile)mediaArchive.getCacheManager().get("userprofile", inUserName);
+				String index = mediaArchive.getSearcher("settingsgroup").getIndexId();
+	
+				if( forcereload == false && userprofile != null && index.equals(userprofile.getIndexId()) )
+				{
+					inReq.putPageValue("userprofile", userprofile);
+					return userprofile;
+				}
+				userprofile = readProfileOptions(inReq, inUserName, appid, mediaArchive);
 				inReq.putPageValue("userprofile", userprofile);
-				return userprofile;
+				mediaArchive.getCacheManager().put("userprofile", inUserName,userprofile);
 			}
-			userprofile = readProfileOptions(inReq, inUserName, appid, mediaArchive);
-			inReq.putPageValue("userprofile", userprofile);
-			mediaArchive.getCacheManager().put("userprofile", inUserName,userprofile);
+			else
+			{
+				throw new OpenEditException("User profile allready being loaded " + inUserName);
+			}
+			
 		}
 		finally
 		{
