@@ -870,6 +870,10 @@ protected Element loadViewElement(XmlFile file, String toremove)
 			 */
 			HitTracker  hits = searcher.loadPageOfSearch(inReq);
 			inReq.putPageValue("searcher", searcher);
+			if( hits != null)
+			{
+				inReq.putPageValue(hits.getHitsName(), hits);
+			}
 		}
 	}
 
