@@ -1682,6 +1682,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
+				updateMasterClusterId(details, data2, content);
 				updateIndex(content, data2, details);
 				
 				content.endObject();
@@ -1760,6 +1761,20 @@ public class BaseElasticSearcher extends BaseSearcher
 		
 		//getClient().admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
 		
+	}
+
+	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content) throws IOException
+	{
+
+		PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
+		if( hasmaster != null)
+		{
+			if( inData.getValue("mastereditclusterid") == null)
+			{
+				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
+				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId() );
+			}
+		}
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
@@ -1879,12 +1894,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
-			PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
-			if( hasmaster != null)
-			{
-				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId() );
-			}
+			updateMasterClusterId(details, data, content);
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{

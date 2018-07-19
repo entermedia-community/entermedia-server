@@ -184,6 +184,8 @@ public class ConvertStatusModule extends BaseMediaModule
 		archive.fireMediaEvent("usercrop",inReq.getUser(),asset );
 		
 		processConversions(inReq);//non-block
+		
+		archive.saveAsset(asset); //Updates the lastmoddate for push
 	}
 	
 	public void processConversions(WebPageRequest inReq)

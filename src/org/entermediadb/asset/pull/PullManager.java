@@ -125,7 +125,7 @@ public class PullManager implements CatalogEnabled
 					}
 					if( node.get("lastpulldate") != null)
 					{
-						params.put("lastpulldate", node.get("lastpulldate"));
+						params.put("lastpulldate", node.get("lastpulldate")); //Tostring
 					}
 					params.put("searchtype", "asset"); //Loop over all of the types
 					if( inArchive.getAssetSearcher().getAllHits().isEmpty() )
@@ -161,6 +161,15 @@ public class PullManager implements CatalogEnabled
 		String baseurl = node.get("baseurl");
 		
 		String url = baseurl + "/mediadb/services/cluster/listchanges.json";
+		StringBuffer link = new StringBuffer();
+		link.append("?");
+		link.append("entermedia.key=");
+		link.append(node.get("entermediakey"));
+		link.append("&lastpulldate=");
+		link.append(node.get("lastpulldate"));
+		link.append("searchtype=");
+		link.append(node.get("searchtype"));
+		log.info("Checking: " + url + link);
 		HttpResponse response2 = connection.sharedPost(url , params);
 		StatusLine sl = response2.getStatusLine();           
 		if (sl.getStatusCode() != 200)
@@ -191,7 +200,10 @@ public class PullManager implements CatalogEnabled
 			for (int count = 2; count <= pages; count++)
 			{
 				url = baseurl + "/mediadb/services/cluster/nextpage.json";
+		
 				params.put("page",String.valueOf( count));
+				
+				log.info("next page: " + url + link + "&page=" + count + "&hitssessionid=" + hitssessionid);
 				response2 = connection.sharedPost(url , params);
 				sl = response2.getStatusLine();           
 				if (sl.getStatusCode() != 200)
