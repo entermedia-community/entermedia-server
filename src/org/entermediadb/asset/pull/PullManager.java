@@ -164,11 +164,14 @@ public class PullManager implements CatalogEnabled
 		StringBuffer link = new StringBuffer();
 		link.append("?");
 		link.append("entermedia.key=");
-		link.append(node.get("entermediakey"));
+		link.append(params.get("entermedia.key"));
 		link.append("&lastpulldate=");
-		link.append(node.get("lastpulldate"));
+		if( params.get("lastpulldate") != null)
+		{
+			link.append(params.get("lastpulldate"));
+		}
 		link.append("searchtype=");
-		link.append(node.get("searchtype"));
+		link.append(params.get("searchtype"));
 		log.info("Checking: " + url + link);
 		HttpResponse response2 = connection.sharedPost(url , params);
 		StatusLine sl = response2.getStatusLine();           
@@ -278,6 +281,8 @@ public class PullManager implements CatalogEnabled
 						String filename = (String)filelisting.get("filename");
 						String lastmodified = (String)filelisting.get("lastmodified");
 						long datetime = Long.parseLong(lastmodified);
+						//TODO:remove any milliseconds? Does this match rsync?
+						
 						ContentItem found = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath + "/" + filename);
 						if( !found.exists() || found.getLastModified() != datetime)
 						{

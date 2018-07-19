@@ -52,6 +52,48 @@ public class TaskModule extends BaseMediaModule
 		}
 	}
 	
+	public void searchGoals(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("projectgoal");
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( collection == null)
+		{
+			log.info("Collection not found");
+			return;
+		}
+		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		
+		//Look for text or filter
+		//Sort them based on priority
+		Map priorities = new HashMap();
+		HitTracker all = builder.search();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data goal = (Data) iterator.next();
+			String p = goal.get("prioritylevel");
+			if( p == null)
+			{
+				p = "0";
+			}
+			List list = (List)priorities.get(p);
+			if( list == null)
+			{
+				list = new ArrayList();
+				priorities.put(p,list);
+			}
+			list.add(goal);
+		}
+		for (Iterator iterator = priorities.keySet().iterator(); iterator.hasNext();)
+		{
+			String p = (String) iterator.next();
+			List values = (List)priorities.get(p);
+			Collections.sort(values, new GoalSorter());
+			inReq.putPageValue("goalhits" + p, values);
+		}
+		
+	}	
 	public void loadGoals(WebPageRequest inReq) throws Exception
 	{
 		//Each category points to a bunch of stories (sorted)

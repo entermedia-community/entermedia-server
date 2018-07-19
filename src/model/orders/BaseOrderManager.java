@@ -779,7 +779,7 @@ public class BaseOrderManager implements OrderManager {
 			String status = inOrder.get("checkoutstatus");
 			if( status == null || status.equals("pending"))
 			{
-				log.info("Order not approved for email yet " + inOrder.getId());
+				log.debug("Order not approved for email yet " + inOrder.getId());
 				return; //dont send email yet
 			}
 		}

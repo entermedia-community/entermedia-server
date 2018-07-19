@@ -5,5 +5,8 @@
 <property name="searchtype">order</property>
 </path-action>
 
+<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/ordering/checkorderstatus.html"  allowduplicates="true"/>
+
+
 <inner-layout/>
 </page>

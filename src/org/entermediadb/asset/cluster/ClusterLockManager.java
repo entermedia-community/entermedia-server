@@ -289,6 +289,9 @@ public class ClusterLockManager implements LockManager, Shutdownable
 		if (inLock != null)
 		{
 			Searcher searcher = getLockSearcher();
+			
+			//TODO: Is there a synchronized needed here? 
+
 			inLock.setLocked(false);
 			//inLock.setProperty("version", (String) null); //Once this is saved other people can go get it
 			//	log.info(inLock.getId() +" being released Current version " + inLock.get(".version") + " Thread: " + Thread.currentThread().getId());

@@ -45,7 +45,7 @@ public class LockSearcher extends BaseElasticSearcher
 		
 		HitTracker hits = query().exact("nodeid", id).search();
 		deleteAll(hits, null);
-		log.info("Deleted nodeid=" + id + " records database " + getSearchType() );
+		log.info("Deleted nodeid=" + id + " size" + hits.size() + " records from " + getSearchType() + " table");
 		
 		
 	}
