@@ -1003,6 +1003,10 @@ public class MediaArchive implements CatalogEnabled
 
 	public String getLinkToSize(Asset inAsset, String inSize)
 	{
+		if( inAsset == null)
+		{
+			return null;
+		}
 		return getLinkToSize(inAsset.getSourcePath(), inSize);
 	}
 
