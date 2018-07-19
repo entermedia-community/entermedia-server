@@ -251,6 +251,15 @@ public abstract class BaseConversionManager implements ConversionManager
     @Override
 	public ConvertResult createOutput(ConvertInstructions inStructions)
 	{
+    	if(inStructions.getConvertPreset() != null && inStructions.getConvertPreset().getId().equals("0")) {
+    		ConvertResult result = new ConvertResult();
+			result.setOutput(inStructions.getInputFile());
+			result.setOk(true);
+			result.setComplete(true);
+			result.setInstructions(inStructions);
+			return result;
+			//converting to original
+    	}
     	ContentItem input = inStructions.getInputFile();
     	if( input == null && getInputLoaders() != null)
     	{
