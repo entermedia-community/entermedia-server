@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -295,6 +296,9 @@ public class OrderModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 
+		Collection tosave = Arrays.asList(fields);
+		tosave.remove("status");
+		fields = (String[])tosave.toArray(new String[tosave.size()]);
 		searcher.updateData(inReq, fields, order);
 		searcher.saveData(order, inReq.getUser());
 		return order;
