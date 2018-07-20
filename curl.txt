@@ -57,7 +57,7 @@ curl -XGET 'http://localhost:9200/assets_catalog/assettype/_search' -d '{
   ]
 }' | python -mjson.tool
 
-curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/lock/_search?q=id:AWSudkEOitp-LpW3ZyZX' | python -mjson.tool
 
 
 curl -XGET 'http://localhost:9200/assets_catalog/asset/_search?q=id:AVgCKIL5wq4Z5Vbw3Sw6' | python -mjson.tool
@@ -186,6 +186,9 @@ $userprofile.getSettingsGroup().getValues("permissions")
  curl -XPUT "http://localhost:9200/assets_catalog/settingsgroup/administrator" -d ' {"id":"administrator","name":"Administrators","namesorted":"Administrators","profilesearchfilters":"hideassettype","permissions":["viewmap","viewcomments","metadatageneral","convert","converthistory","maximize","download","view","viewmetadatageneral","api-manage-users","deleteasset","asseteditorlibraries","api-load-data","editassettags","api-delete-data","viewbasket","viewcategorynav","filterbyassettype","viewupload","assetpermissions","viewassets","viewlibrarysearch","createnewrecord","editlists","viewuploadmulti","viewsettings","api-manage-events","sharetosocialmedia","addnewcollection","viewattachments","deletecomments","api-create-data","api-search-data","editcategories","multiedit","viewmediaedit","api-update-data","editmetadatasetup","editassetcategories","changeattachment","embedasset","viewassetpreviewhistory","editadvancedsearch","viewconversions","api-manage-list","api-manage-modules","capturehistory","asseteditorpickanylibrary","edittablecolumns","editusersgroups","viewhomelink","publish","shareasset","viewassetedit","viewmyaccount","viewvoting","comment","emaillink","togglesidebar"]}' | python -mjson.tool
 
 curl -XGET  'http://localhost:9200/assets_catalog/lock/_mapping?pretty=true'  | python -mjson.tool
+curl -XGET 'http://localhost:9200/assets_catalog/lock/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool
+curl -XDELETE 'http://localhost:9200/assets_catalog/lock/AWSutPnzs12lHoNKThY8'
+
 
 
 curl -XGET 'http://localhost:9200/system/searchtypes/_search' -d '{ "query" : {	"match_all" : {} } }' | python -mjson.tool

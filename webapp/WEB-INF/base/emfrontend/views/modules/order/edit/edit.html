@@ -13,15 +13,12 @@
     $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
    
    
-    <form class="ajaxform" targetdiv="order-details" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
+    <form class="ajaxform" targetdiv="itemsaved" id="itemsave" name="itemform" method="POST" action="$home$apphome/views/modules/order/edit/saveitems.html" >
     <h2 style="border-top: 1px solid #bbb;">Order Details</h2>
     <table class="settings-table" id="order-details">
        <input type="hidden" name="id" value="$order.id"/>
        <input type="hidden" name="orderid" value="$order.id"/>
-          <input type="hidden" name="sourcepath" value="$order.sourcepath"/>
-       
-       <input type="hidden" name="field" value="orderstatus"/>
-        #set($statuslist = $searcherManager.getList($catalogid, "orderstatus"))
+       <input type="hidden" name="sourcepath" value="$order.sourcepath"/>      
      </tr>
     
     
@@ -43,7 +40,7 @@
        $pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=false", $context)
    
    
-    <h2 style="border-top: 1px solid #bbb;">Assets
+    <h2 style="border-top: 1px solid #bbb;">
     
     <div style="float: right">
             <input class="btn" type="button" id="approveall" value="Approve All"/>
@@ -52,7 +49,7 @@
       ##      <input class="btn" type="button" name="Send" id="sendnotification" value="Send Notification"/>
   
         </div>
-        <span id="itemsave"></span>
+        <span id="itemsaved"></span>
         <span id="itemsent"></span>
     </h2>
     <table class="emdata" width="100%">
@@ -61,15 +58,21 @@
             <th>Status</th>
         </tr>
     
+    ##TODO: Use another form or ajax to deal with items
+    
         #foreach( $item in $orderitems )
         	#set($asset = false)
-		#set( $asset = $mediaarchive.getAsset($item.assetid))
+			#set( $asset = $mediaarchive.getAsset($item.assetid))
         	
-			$context.putPageValue("asset", $asset)
-			$context.putPageValue("item", $item)
-			$context.putPageValue("order", $order)
-			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
-			$pages.include("$apphome/components/orders/row.html", $context)
+        	#if( $asset )
+				$context.putPageValue("asset", $asset)
+				$context.putPageValue("item", $item)
+				$context.putPageValue("order", $order)
+				$context.setRequestParameter("sourcepath", $asset.sourcepath)
+				$pages.include("$apphome/components/orders/row.html", $context)
+            #else
+                <tr><td>Asset missing</td></tr>
+            #end
 		
         #end
     
@@ -94,18 +97,19 @@
 
 <script type="text/javascript">
 
-jQuery("#approveall").bind("click", function (e) {
+jQuery("#approveall").livequery("click", function (e) {
 	jQuery(".statusfield").val("approved");
 	$("#itemsave #list-checkoutstatus").val("approved");
+		e.preventDefault();
 	jQuery("#itemsave").trigger("submit");
 	return false;
 } );
-jQuery("#sendnotification").bind("click", function () {
+jQuery("#sendnotification").livequery("click", function (e) {
 	jQuery("#emailform").submit();
 	return false;
 } );
 
-jQuery("#rejectall").bind("click", function () {
+jQuery("#rejectall").livequery("click", function () {
 	jQuery(".statusfield").val("rejected");
 	jQuery("#list-checkoutstatus").val("rejected");
 	jQuery("#itemsave").submit();
