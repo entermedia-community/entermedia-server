@@ -296,7 +296,7 @@ public class OrderModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 
-		Collection tosave = Arrays.asList(fields);
+		Collection tosave = new ArrayList(Arrays.asList(fields));
 		tosave.remove("status");
 		fields = (String[])tosave.toArray(new String[tosave.size()]);
 		searcher.updateData(inReq, fields, order);
