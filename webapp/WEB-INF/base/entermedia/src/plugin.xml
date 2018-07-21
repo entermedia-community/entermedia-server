@@ -2099,5 +2099,11 @@
  	 	
  	<bean id="TaskModule" class="org.entermediadb.tasks.TaskModule" >
 	</bean>	
+
+ 	<bean id="projectGoal" class="org.entermediadb.tasks.ProjectGoal" scope="prototype">
+ 	</bean>
+
+
+
 	
 </beans>

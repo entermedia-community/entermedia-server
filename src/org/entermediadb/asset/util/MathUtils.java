@@ -74,11 +74,15 @@ public class MathUtils
 
 	public static String toDuration(long inDurationinMilli)
 	{
+		return toDuration(inDurationinMilli,false);
+	}
+	public static String toDuration(long inDurationinMilli, boolean alwaysshowhours)
+	{
 		//00:03:03.167
 		//HOURS:MM:SS.MICROSECONDS
 		long second = (inDurationinMilli / 1000) % 60;
 		long minute = (inDurationinMilli / (1000 * 60)) % 60;
-		long hour = (inDurationinMilli / (1000 * 60 * 60)) % 24;
+		long hour = (inDurationinMilli / (1000 * 60 * 60));
 		String millis = String.valueOf( inDurationinMilli );
 		if( millis.length() > 3)
 		{
@@ -88,7 +92,14 @@ public class MathUtils
 		{
 			millis = "000";
 		}
-		if( hour > 0)
+		if( hour > 24)
+		{
+			String time = String.format("%03d:%02d:%02d", hour, minute, second);
+			time = time + "." + millis;
+			return time;
+			
+		}
+		else if( hour > 0 || alwaysshowhours)
 		{
 			String time = String.format("%02d:%02d:%02d", hour, minute, second);
 			time = time + "." + millis;

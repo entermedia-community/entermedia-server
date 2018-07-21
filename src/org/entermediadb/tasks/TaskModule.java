@@ -24,6 +24,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.users.User;
 
 public class TaskModule extends BaseMediaModule
@@ -62,16 +63,29 @@ public class TaskModule extends BaseMediaModule
 			log.info("Collection not found");
 			return;
 		}
-		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		
-		//Look for text or filter
-		//Sort them based on priority
+		HitTracker all = (HitTracker)inReq.getPageValue("goalhits");
+		
+		if( all == null)
+		{
+			SearchQuery userq = searcher.addStandardSearchTerms(inReq);
+			QueryBuilder builder = searcher.query().enduser(true).exact("collectionid", collection.getId());
+			if( userq == null) 
+			{
+				userq = builder.getQuery();
+			}
+			else
+			{
+				userq.addChildQuery(builder.getQuery());
+			}
+			all = searcher.cachedSearch(inReq, userq);
+		}
+		
 		Map priorities = new HashMap();
-		HitTracker all = builder.search();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
-			Data goal = (Data) iterator.next();
+			Data hit = (Data) iterator.next();
+			ProjectGoal goal = (ProjectGoal)searcher.loadData(hit);
 			String p = goal.get("prioritylevel");
 			if( p == null)
 			{
@@ -89,9 +103,11 @@ public class TaskModule extends BaseMediaModule
 		{
 			String p = (String) iterator.next();
 			List values = (List)priorities.get(p);
-			Collections.sort(values, new GoalSorter());
+			Collections.sort(values);
 			inReq.putPageValue("goalhits" + p, values);
 		}
+		
+		inReq.putPageValue("goalhits", all); //Not needed?
 		
 	}	
 	public void loadGoals(WebPageRequest inReq) throws Exception
@@ -405,6 +421,10 @@ public class TaskModule extends BaseMediaModule
 		if( categoryid == null)
 		{
 			categoryid = inReq.getRequestParameter("categoryid");
+		}
+		if( categoryid == null)
+		{
+			return;
 		}
 		MediaArchive archive = getMediaArchive(inReq);
 		Searcher goalsearcher = archive.getSearcher("projectgoal");
@@ -775,7 +795,7 @@ public class TaskModule extends BaseMediaModule
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
 		builder.match("userlikes", "*");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-		builder.sort("recorddate");
+		builder.sort("recordmodificationdate");
 		
 		HitTracker likes = builder.search();
 		inReq.putPageValue("likes", likes);
