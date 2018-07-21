@@ -72,6 +72,7 @@ public class TaskModule extends BaseMediaModule
 			QueryBuilder builder = searcher.query().enduser(true).exact("collectionid", collection.getId());
 			if( userq == null) 
 			{
+				builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 				userq = builder.getQuery();
 			}
 			else
@@ -793,12 +794,19 @@ public class TaskModule extends BaseMediaModule
 		}
 	
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-		builder.match("userlikes", "*");
+		builder.match("userlikes", "*").sort("owner").sort("creationdate");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-		builder.sort("recordmodificationdate");
 		
 		HitTracker likes = builder.search();
-		inReq.putPageValue("likes", likes);
+		List sorted = new ArrayList();
+		for (Iterator iterator = likes.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			ProjectGoal goal = (ProjectGoal)searcher.loadData(hit);
+			sorted.add(goal);
+		}
+		
+		inReq.putPageValue("likes", sorted);
 	}
 	
 	public void toggleGoalLike(WebPageRequest inReq)
