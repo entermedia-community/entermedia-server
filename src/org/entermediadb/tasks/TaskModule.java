@@ -209,9 +209,15 @@ public class TaskModule extends BaseMediaModule
 		{
 			goalids = Collections.emptyList();
 		}
-		if( opengoalsids.size() != goalids.size() )
+		if( opengoals.size() != goalids.size() )
 		{
-			selected.setValue("countdata",opengoalsids);
+			Collection ids = new ArrayList();
+			for (Iterator iterator = opengoals.iterator(); iterator.hasNext();)
+			{
+				Data goal = (Data) iterator.next();
+				ids.add(goal.getId());
+			}
+			selected.setValue("countdata",ids);
 			archive.getCategorySearcher().saveCategory(selected);
 		}
 		
@@ -325,8 +331,11 @@ public class TaskModule extends BaseMediaModule
 				if( existigtask.getValue("projectdepartmentparents") == null)
 				{
 					Category child = archive.getCategory(existigtask.get("projectdepartment"));
-					existigtask.setValue("projectdepartmentparents",child.getParentCategories());
-					tosave.add(existigtask);
+					if( child != null)
+					{
+						existigtask.setValue("projectdepartmentparents",child.getParentCategories());
+						tosave.add(existigtask);
+					}
 				}
 				extrataskids.remove(existigtask.getId());
 				if(!alltaskids.contains(existigtask.getId()))
