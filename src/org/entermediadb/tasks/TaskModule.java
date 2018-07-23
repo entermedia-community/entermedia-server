@@ -312,16 +312,35 @@ public class TaskModule extends BaseMediaModule
 			HitTracker tasks = tasksearcher.query().exact("projectgoal", goal.getId()).search();
 			//Legacy: Make sure all tasks have parents
 			List tosave = new ArrayList();
+			Collection values = goal.getValues("countdata");
+			if( values == null)
+			{
+				values = new ArrayList();
+			}
+			Collection alltaskids = new ArrayList(values);
+			Collection extrataskids = new ArrayList(values);
 			for (Iterator iterator = tasks.iterator(); iterator.hasNext();)
 			{
-				MultiValued existig = (MultiValued) iterator.next();
-				if( existig.getValue("projectdepartmentparents") == null)
+				MultiValued existigtask = (MultiValued) iterator.next();
+				if( existigtask.getValue("projectdepartmentparents") == null)
 				{
-					Category child = archive.getCategory(existig.get("projectdepartment"));
-					existig.setValue("projectdepartmentparents",child.getParentCategories());
-					tosave.add(existig);
+					Category child = archive.getCategory(existigtask.get("projectdepartment"));
+					existigtask.setValue("projectdepartmentparents",child.getParentCategories());
+					tosave.add(existigtask);
+				}
+				extrataskids.remove(existigtask.getId());
+				if(!alltaskids.contains(existigtask.getId()))
+				{
+					alltaskids.add(existigtask.getId());
 				}
 			}
+			alltaskids.removeAll(extrataskids);
+			if( !alltaskids.equals(values))
+			{
+				goal.setValue("countdata",alltaskids);
+				archive.saveData("projectgoal", goal);
+			}
+			
 			tasksearcher.saveAllData(tosave, null);
 			TaskList goaltasks = new TaskList(goal,tasks);
 			inReq.putPageValue("tasklist", goaltasks);
