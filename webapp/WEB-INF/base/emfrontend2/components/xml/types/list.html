@@ -1,7 +1,10 @@
 ##required: catalogid, searchtype, view, fieldname
 ##optional: value, foreignkeyid and foreignkeyvalue
 
-#set ($catalogid = $context.getRequestParameter('catalogid'))
+#set ($catalogidother = $context.getRequestParameter('catalogid'))
+#if($catalogidother)
+	#set ($catalogid = $catalogidother); 
+#end
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
 #ifnull ($fieldname)
 	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified

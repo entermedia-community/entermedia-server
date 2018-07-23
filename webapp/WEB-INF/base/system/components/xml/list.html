@@ -1,7 +1,10 @@
 ##required: catalogid, searchtype, view, fieldname
 ##optional: value, foreignkeyid and foreignkeyvalue
 
-#set ($catalogid = $context.getRequestParameter('catalogid'))
+#set ($catalogidother = $context.getRequestParameter('catalogid'))
+#if($catalogidother)
+	#set ($catalogid = $catalogidother); 
+#end
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
 #set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 #set ($view = $context.getRequestParameter('view')) 
@@ -62,8 +65,9 @@ $types.enableBulkOperations()
 		<script type="text/javascript">
 			addListListener("$foreignkeyid", "${fieldname}");
 		</script>
+
 	#end
-		
+
 	<select  id="$csslistid" data-placeholder=" " name="$!detailprefix${valueid}.value" 
 		class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 		listid="$listid" id="${valueid}.value"

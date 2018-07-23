@@ -69,7 +69,7 @@ public class TaskModule extends BaseMediaModule
 		if( all == null)
 		{
 			SearchQuery userq = searcher.addStandardSearchTerms(inReq);
-			QueryBuilder builder = searcher.query().enduser(true).exact("collectionid", collection.getId());
+			QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(100).exact("collectionid", collection.getId());
 			if( userq == null) 
 			{
 				builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
@@ -98,8 +98,16 @@ public class TaskModule extends BaseMediaModule
 				list = new ArrayList();
 				priorities.put(p,list);
 			}
-			list.add(goal);
+			if( list.size() > 99)
+			{
+				inReq.putPageValue("toomanygoals", true);
+			}
+			else
+			{
+				list.add(goal);
+			}
 		}
+		
 		for (Iterator iterator = priorities.keySet().iterator(); iterator.hasNext();)
 		{
 			String p = (String) iterator.next();
@@ -184,37 +192,17 @@ public class TaskModule extends BaseMediaModule
 			opengoals = builder.search();
 		}
 		
-		Collection closedgoals = null;
-		if(! closedgoalids.isEmpty() )
-		{
-			QueryBuilder builderclosed = searcher.query().exact("collectionid", collection.getId());
-			builderclosed.notgroup("projectstatus", Arrays.asList("closed","completed"));
-			builderclosed.ids(closedgoalids);
-			closedgoals = builderclosed.search();
-		}
 		if( opengoals == null)
 		{
-			if( closedgoals == null)
-			{
-				return;
-			}
-			else
-			{
-				topgoals = new ArrayList();
-				topgoals.add(new ArrayList());
-				topgoals.add(new ArrayList());
-				topgoals.add(new ArrayList());
-				topgoals.add(closedgoals);
-			}
+			topgoals = new ArrayList();
+			topgoals.add(new ArrayList());
+			topgoals.add(new ArrayList());
+			topgoals.add(new ArrayList());
 		}
 		if( topgoals == null)
 		{
 			GoalList list = new GoalList(selected,opengoals);
 			topgoals = makeColumns(list.getSorted(),percolumn,startfrom);
-			if( closedgoals != null && !closedgoals.isEmpty() )
-			{
-				topgoals.add(closedgoals);
-			}
 		}
 		Collection goalids = selected.getValues("countdata");
 		if ( goalids == null)
@@ -269,40 +257,29 @@ public class TaskModule extends BaseMediaModule
 
 	protected Collection makeColumns(Collection tracker, int percolumn, int startfrom)
 	{
-		
 		Collection topgoals = new ArrayList();
-		Collection ten = new ArrayList();
-		topgoals.add(ten);
+		Collection col0 = new ArrayList();
+		Collection col1 = new ArrayList();
+		Collection col2 = new ArrayList();
+		topgoals.add(col0);
+		topgoals.add(col1);
+		topgoals.add(col2);
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
-			if( startfrom > 0)
+			Data goal = (Data)iterator.next();
+			String col = goal.get("prioritylevel");
+			if( col == null || col.equals("0"))
 			{
-				startfrom--;
-				continue;
+				col0.add(goal);
 			}
-			Data hit = (Data) iterator.next();
-			ten.add(hit);
-			if( ten.size() == percolumn)  //so 15 per page
+			else if( col.equals("1"))
 			{
-				if( topgoals.size() == 3)
-				{
-					break;
-				}
-				ten = new ArrayList();
-				topgoals.add(ten);
+				col1.add(goal);
 			}
-		}
-		if( topgoals.size() ==0)
-		{
-			topgoals.add(new ArrayList());
-		}
-		if( topgoals.size() == 1)
-		{
-			topgoals.add(new ArrayList());
-		}
-		if( topgoals.size() == 2)
-		{
-			topgoals.add(new ArrayList());
+			else if( col.equals("2"))
+			{
+				col2.add(goal);
+			}
 		}
 		return topgoals;
 	}
@@ -468,6 +445,7 @@ public class TaskModule extends BaseMediaModule
 		tasksearcher.saveData(task);
 		addComment(archive, task.getId(), inReq.getUser(),"0",null);
 		
+		inReq.putPageValue("goal", goal);
 	}
 
 	public void saveComment(WebPageRequest inReq)
@@ -503,7 +481,10 @@ public class TaskModule extends BaseMediaModule
 		if( taskstatus != null && taskstatus.equals("3"))
 		{
 			task.setValue("completedby", inReq.getUserName());
-			task.setValue("completedon", new Date());
+			if( task.getValue("completedon") == null )
+			{
+				task.setValue("completedon", new Date());
+			}
 			
 			//remove task from tree
 			removeCount(archive, task);
@@ -512,7 +493,10 @@ public class TaskModule extends BaseMediaModule
 		else if( taskstatus != null && taskstatus.equals("1"))
 		{
 			task.setValue("startedby", inReq.getUserName());
-			task.setValue("startedon", new Date());
+			if( task.getValue("startedon") == null )
+			{
+				task.setValue("startedon", new Date());
+			}	
 		}
 		
 		tasksearcher.saveData(task);	
@@ -842,4 +826,15 @@ public class TaskModule extends BaseMediaModule
 
 	}
 
+	public void moveToColumn(WebPageRequest inReq)
+	{
+		String goalid = inReq.getRequestParameter("goalid");
+		String col = inReq.getRequestParameter("col");
+		MediaArchive archive = getMediaArchive(inReq);
+		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
+		selectedgoal.setValue("prioritylevel",col);
+		archive.saveData("projectgoal",selectedgoal);
+		
+	}
+	
 }

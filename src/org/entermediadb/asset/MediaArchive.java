@@ -2192,4 +2192,9 @@ public class MediaArchive implements CatalogEnabled
 		return Boolean.parseBoolean(catalogSettingValue);
 	}
 
+	public void saveData(String inString, Data inSelectedgoal)
+	{
+		getSearcher(inString).saveData(inSelectedgoal);
+	}
+
 }
