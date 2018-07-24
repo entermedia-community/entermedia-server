@@ -27,7 +27,11 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 			<div class="treerow categorydroparea #if( $isselected ) selected #end #if( $checked) idchecked #end" style="padding-left: ${padding}px" title="id: $cat.id">
 				#if($haschildren)<div class="arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>#end 
 				<div id="${cat.id}_display" class="name folder #if($haschildren) leaf #end" title="$cat.getCategoryPath()" >
-				$cat.name
+				#if( $cat.getCounts() > 0)
+					<b>$cat.name</b> 
+				#else
+					$cat.name
+				#end
 				<b class="catcount">
 				#if($cat.hasCountData()) ($cat.getCount()) #end
 				</b>
