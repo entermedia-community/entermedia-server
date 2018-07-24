@@ -52,6 +52,7 @@ public void init(){
 	
 		Searcher assets = archive.getAssetSearcher();
 		SearchQuery query = assets.createSearchQuery();
+		query.addSortBy("sourcepath");
 		query.addContains("description", searchstring);
 	
 		rootcats.each{
