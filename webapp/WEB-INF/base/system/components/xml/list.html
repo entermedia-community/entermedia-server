@@ -3,7 +3,7 @@
 
 #set ($catalogidother = $context.getRequestParameter('catalogid'))
 #if($catalogidother)
-	#set ($catalogid = $catalogidother); 
+	#set ($catalogid = $catalogidother)
 #end
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
 #set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
