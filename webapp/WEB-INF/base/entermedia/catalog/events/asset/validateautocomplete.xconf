@@ -1,0 +1,8 @@
+<page>
+	<property name="virtual">true</property>
+	<property name="eventname">Validate type ahead suggestions for asset searches</property>	
+
+	<path-action name="Script.run" allowduplicates="true">
+		<script>/${catalogid}/events/scripts/asset/validateautocomplete.groovy</script>		
+	</path-action>
+</page>
