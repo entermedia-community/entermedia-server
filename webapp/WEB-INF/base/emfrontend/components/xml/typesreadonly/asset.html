@@ -5,13 +5,17 @@
 #end
 
 #if($val && $val != "")
+
 #set( $foundrow = $mediaarchive.getAsset($val)  )
+#if(!$foundrow &&  $detail.getId().contains("sourcepath"))
+#set( $foundrow = $mediaarchive.getAssetBySourcePath($val)  )
+#end
 
 
 #if($foundrow)
 <div id="${detail.id}-preview" class="assetdraggable ui-draggable" data-assetid="$foundrow.getId()">
 	
-	$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val&readonly=true", $context)
+	$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=${foundrow.getId()}&readonly=true", $context)
 </div>
 #end
 

@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language> 
     </name> 
   </property>  
-  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path 
+  <property id="sourcepath" index="true" stored="true" viewtype="asset" keyword="false" filter="false" editable="false" sortable="true">Source Path 
     <name> 
       <language id="de"><![CDATA[Source-Pfad]]></language>  
       <language id="en"><![CDATA[Source Path]]></language>  

@@ -9,9 +9,13 @@
 
 #if($val && $val != "")
 #set( $foundrow = $mediaarchive.getAsset($val)  )
+#if(!$foundrow &&  $detail.getId().contains("sourcepath"))
+#set( $foundrow = $mediaarchive.getAssetBySourcePath($val)  )
+#end
+
 #if($foundrow)
 
-	$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$val", $context)
+	$pages.include("$apphome/components/xml/types/assetpicker/preview.html?assetid=$foundrow.id", $context)
 #else
 ##set( $foundrow = "")
 #end

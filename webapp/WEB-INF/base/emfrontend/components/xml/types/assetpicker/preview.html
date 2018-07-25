@@ -6,12 +6,14 @@
 #if(!$idcount)
 	#set($idcount = "")
 #end
-#if(!$val)
+####if(!$val)
 	#set($val = $context.getRequestParameter('assetid'))
-#end
+####end
 #if($val && $val != "")
 #set( $foundrow = $mediaarchive.getAsset($val)  )
 #end
+
+
 
 #if( $foundrow )
 #set( $rootid = $hits.sessionId )
