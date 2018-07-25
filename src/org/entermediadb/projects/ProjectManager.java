@@ -221,8 +221,22 @@ public class ProjectManager implements CatalogEnabled {
 			}
 			usercollections.add(uc);
 		}
-		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category")
-				.named("librarysidebar").search();
+		
+		
+		SearchQuery query = inArchive.getAssetSearcher().createSearchQuery();
+		query.addOrsGroup("category", categoryids);
+		query.addAggregation("category");
+		query.setHitsName("librarysidebar");
+		if( inReq.hasPermission("showonlyapprovedassets"))
+		{	
+		SearchQuery hidependingchild = inArchive.getAssetSearcher().createSearchQuery();
+		hidependingchild.addExact("editstatus", "6");
+		query.addChildQuery(hidependingchild);
+		}
+		
+		HitTracker hits = inArchive.getAssetSearcher().cachedSearch(inReq, query);
+		
+		
 		// log.info( hits.getSearchQuery() );
 		int assetsize = 0;
 		if (hits != null) {
