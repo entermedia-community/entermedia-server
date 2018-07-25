@@ -257,7 +257,7 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 //		}
 		if (inData == null || inData.getSourcePath() == null || inData.getId() == null)
 		{
-			throw new OpenEditException("Cannot delete null data.");
+			log.info("Cannot delete null data from XML.  Removing from index");
 		}
 		//getDataArchive().delete(inData, inUser);
 		super.delete(inData, inUser);
