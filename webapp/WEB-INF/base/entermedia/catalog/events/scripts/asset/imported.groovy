@@ -16,7 +16,7 @@ public void init()
 	}
 	MediaArchive mediaarchive = (MediaArchive)context.getPageValue("mediaarchive");
 	Collection assets = mediaarchive.getAssetSearcher().query().orgroup("id",assetids).search();
-	
+	log.info("Found ${assets.size()} Assets");
 	Searcher searcher = mediaarchive.getSearcher("categorydefaultdata");
 	assets.each
 	{
@@ -43,6 +43,9 @@ public void init()
 					foundone = true;
 				}	
 			}
+		}
+		if(foundone){
+			mediaarchive.saveAsset(asset);
 		}
 	}	
 }
