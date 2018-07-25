@@ -98,8 +98,9 @@
 <script type="text/javascript">
 
 jQuery("#approveall").livequery("click", function (e) {
-	jQuery(".statusfield").val("approved");
-	$("#itemsave #list-checkoutstatus").val("approved");
+	jQuery("#itemsave .statusfield").val("approved");
+	$("#itemsave #list-checkoutstatus").val("approved").trigger("change", true);
+	
 		e.preventDefault();
 	jQuery("#itemsave").trigger("submit");
 	return false;
@@ -110,8 +111,8 @@ jQuery("#sendnotification").livequery("click", function (e) {
 } );
 
 jQuery("#rejectall").livequery("click", function () {
-	jQuery(".statusfield").val("rejected");
-	jQuery("#list-checkoutstatus").val("rejected");
+	jQuery("#itemsave .statusfield").val("rejected");
+	jQuery("#itemsave #list-checkoutstatus").val("rejected").trigger("change", true);
 	jQuery("#itemsave").submit();
 
 	return false;
