@@ -1,5 +1,5 @@
- #set($dl = $mediaarchive.getSearcher("asseteditLog")) #set($dlhits =
-$dl.getAllHits($context))
+ #set($dl = $mediaarchive.getSearcher("asseteditLog"))
+ #set($dlhits = $hits)
 <canvas id="viewchart"></canvas>
 <script>
 var ctx = document.getElementById("viewchart");
