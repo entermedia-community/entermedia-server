@@ -113,7 +113,7 @@
       <language id="fr"><![CDATA[Email]]></language> 
     </name> 
   </property>  
-  <property id="sharenote" viewtype="html" editable="true" stored="true" index="true"   > 
+  <property id="sharenote" viewtype="textarea" editable="true" stored="true" index="true"   > 
     <name> 
       <language id="de"><![CDATA[Notizen]]></language>  
       <language id="en"><![CDATA[Notes]]></language>  
