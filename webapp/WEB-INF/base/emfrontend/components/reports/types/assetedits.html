@@ -1,8 +1,8 @@
  #set($dl = $mediaarchive.getSearcher("asseteditLog"))
  #set($dlhits = $hits)
-<canvas id="viewchart"></canvas>
+<canvas id="viewchart2"></canvas>
 <script>
-var ctx = document.getElementById("viewchart");
+var ctx = document.getElementById("viewchart2");
 var myChart = new Chart(ctx, {
     type: 'bar',
     data: {
@@ -76,5 +76,5 @@ var myChart = new Chart(ctx, {
 #end
 #end
 
-
+</ul>
 
