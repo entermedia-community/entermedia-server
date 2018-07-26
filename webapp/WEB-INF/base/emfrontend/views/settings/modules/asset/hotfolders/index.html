@@ -1,6 +1,7 @@
 <ul id="folders" class="fwlist">
 	
-	#foreach($folder in $folders )
+	#foreach($source in $sources )
+		#set( $folder = $source.getConfig() )
 	<li class="auto">
 		<a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id" class="folder">
 			<div class="name">

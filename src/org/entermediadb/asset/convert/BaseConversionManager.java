@@ -112,11 +112,11 @@ public abstract class BaseConversionManager implements ConversionManager
 				String type = PathUtilities.extractPageType(exportName);
 				if( asset.getFileFormat().equals(type) )
 				{
-					Page original = getMediaArchive().getOriginalDocument(asset);
+					ContentItem original = getMediaArchive().getOriginalContent(asset);
 					if( original.exists() )
 					{
 						result.setComplete(true);
-						result.setOutput(original.getContentItem());
+						result.setOutput(original);
 					}
 				}
 			}

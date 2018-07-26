@@ -194,6 +194,7 @@ public class TaskModule extends BaseMediaModule
 		
 		if( opengoals == null)
 		{
+			opengoals = Collections.emptyList();
 			topgoals = new ArrayList();
 			topgoals.add(new ArrayList());
 			topgoals.add(new ArrayList());

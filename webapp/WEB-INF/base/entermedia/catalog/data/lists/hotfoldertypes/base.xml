@@ -3,7 +3,5 @@
 	<property id="mount">A Local Folder</property>
 	<property id="googledrive">Google Drive</property>
 	<property id="s3">Amazon S3 Drive</property>
-	<property id="syncthing">SyncThing</property>
-	<property id="resiliodrive">Resilio Drive</property>
 	
 </properties>

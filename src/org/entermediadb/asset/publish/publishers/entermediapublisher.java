@@ -94,7 +94,7 @@ public class entermediapublisher extends BasePublisher implements Publisher
 	}
 	*/
 	
-	
+	/*
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid)
 	{
 		if( presetid == null)
@@ -104,6 +104,6 @@ public class entermediapublisher extends BasePublisher implements Publisher
 		Data preset = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "convertpreset", presetid);
 		return findInputPage(mediaArchive,asset,(Data)preset);
 	}
-	
+	*/
 	
 }

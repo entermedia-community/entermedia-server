@@ -708,12 +708,23 @@
 		</property>
 	</bean>
 
-	<bean id="originalFileManager" class="org.entermediadb.asset.OriginalFileManager"
+	<bean id="mountAssetSource" class="org.entermediadb.asset.sources.OriginalsAssetSource"
 		scope="prototype">
-		<property name="pageManager">
-			<ref bean="pageManager" />
+		<property name="webServer"><ref bean="WebServer" /></property>		
+			<property name="pageManager">
+				<ref bean="pageManager" />
+			</property>
+			<property name="folderMonitor">
+				<ref bean="folderMonitor" />
+			</property>
+	</bean>
+	<bean id="assetSourceManager" class="org.entermediadb.asset.sources.AssetSourceManager"
+		scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
 		</property>
 	</bean>
+
 
 	<bean id="assetEditor" class="org.entermediadb.asset.edit.AssetEditor" scope="prototype">
 		<property name="pageManager">
@@ -1758,20 +1769,7 @@
 		</property>
 	</bean>
 	<bean id="LibraryManager" class="model.assets.LibraryManager" />
-	<bean id="hotFolderManager" class="org.entermediadb.asset.importer.BaseHotFolderManager" >
-			<property name="searcherManager">
-				<ref bean="searcherManager" />
-			</property>
-			<property name="pageManager">
-				<ref bean="pageManager" />
-			</property>
-			<property name="webServer">
-				<ref bean="WebServer" />
-			</property>
-			<property name="folderMonitor">
-				<ref bean="folderMonitor" />
-			</property>
-	</bean>
+	
 	<bean id="folderMonitor" class="org.entermediadb.asset.importer.FolderMonitor" >
 			<property name="executorManager">
 				<ref bean="executorManager" />

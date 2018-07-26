@@ -80,21 +80,21 @@ public class XmpWriter {
 	}
 
 	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception {
-		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
+		ContentItem item = inArchive.getOriginalContent(inAsset);
 
 		return saveMetadata(inArchive, item, inAsset, new HashMap());
 
 	}
 
 	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset, HashMap inExtraDetails) throws Exception {
-		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
+		ContentItem item = inArchive.getOriginalContent(inAsset);
 
 		return saveMetadata(inArchive, item, inAsset, inExtraDetails);
 
 	}
 
 	public boolean saveKeywords(MediaArchive inArchive, Asset inAsset) throws Exception {
-		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
+		String path = inArchive.getOriginalContent(inAsset).getAbsolutePath();
 
 		Map props = new HashMap();
 		props.put("absolutepath", path);

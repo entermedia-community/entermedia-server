@@ -221,7 +221,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		Page setup = archive.getPageManager().getPage("/WEB-INF/data/entermedia/catalogs/testcatalog/originals/importfolder");
 		archive.getPageManager().copyPage(samples, setup);
 		Asset existingasset = archive.getAsset("106");
-		ContentItem item = archive.getOriginalFileManager().getOriginalContent(existingasset);
+		ContentItem item = archive.getAssetManager().getOriginalContent(existingasset);
 		InputStream input = item.getInputStream();
 		try
 		{

@@ -73,7 +73,7 @@ public void init()
 		String conversiontaskid = null;
 		if( "original".equals( preset.get("type") ) )
 		{
-			needstobecreated = !archive.getOriginalDocument(asset).exists();
+			needstobecreated = !archive.getOriginalContent(asset).exists();
 		}
 		else if( archive.doesAttachmentExist(outputfile, asset) )
 		{

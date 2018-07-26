@@ -122,7 +122,7 @@ public class ConvertStatusModule extends BaseMediaModule
 			double originalheight = Double.parseDouble(asset.get("height"));
 			double originalwidth = Double.parseDouble(asset.get("width"));
 			boolean wide = true;
-			instructions.setInputFile(archive.getOriginalDocument(asset).getContentItem());
+			instructions.setInputFile(archive.getOriginalContent(asset));
 			if(originalheight > originalwidth) {
 				wide = false;				
 			}

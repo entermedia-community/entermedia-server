@@ -34,6 +34,7 @@ public abstract class BasePublisher implements Publisher
 		Page inputpage= mediaArchive.getPageManager().getPage(input);
 		return inputpage;
 	}
+	/*
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, String presetid) {
 		if( presetid == null) {
 			return mediaArchive.getOriginalDocument(asset);
@@ -41,7 +42,7 @@ public abstract class BasePublisher implements Publisher
 		Data preset = mediaArchive.getSearcherManager().getData( mediaArchive.getCatalogId(), "convertpreset", presetid);
 		return findInputPage(mediaArchive,asset,(Data)preset);
 	}
-
+	 */
 
 	public PublishResult publish(MediaArchive mediaArchive,Asset inAsset, Data inPublishRequest,  Data inDestination, List inPresets) {
 		PublishResult result = new PublishResult();

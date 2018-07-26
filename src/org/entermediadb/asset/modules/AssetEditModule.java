@@ -64,7 +64,7 @@ public class AssetEditModule extends BaseMediaModule
 	
 	private static final Log log = LogFactory.getLog(AssetEditModule.class);
 	
-	public List getUploadedPages(WebPageRequest inReq)
+	public List<ContentItem> getUploadedPages(WebPageRequest inReq)
 	{
 		List pages = new ArrayList();
 
@@ -85,7 +85,7 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						FileUploadItem uploadItem = (FileUploadItem) iterator.next();
 						Page uploaded = uploadItem.getSavedPage();
-						pages.add(uploadItem.getSavedPage());
+						pages.add(uploaded.getContentItem());
 					}
 				}
 			}		
@@ -478,12 +478,11 @@ public class AssetEditModule extends BaseMediaModule
 							tracker.removeSelection(asset.getId());
 						}
 						editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
-						Page original = editor.getMediaArchive().getOriginalDocument(asset);
 						editor.deleteAsset(asset);
 						String ok = inContext.getRequestParameter("deleteoriginal");
 						if( Boolean.parseBoolean(ok))
 						{
-							getPageManager().removePage(original);
+							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 						}
 						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 					}
@@ -502,13 +501,12 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						tracker.removeSelection(asset.getId());
 					}
-					Page original = editor.getMediaArchive().getOriginalDocument(asset);
 					editor.getMediaArchive().fireMediaEvent("deleting", inContext.getUser(), asset);
 					editor.deleteAsset(asset);
 					String ok = inContext.getRequestParameter("deleteoriginal");
 					if( Boolean.parseBoolean(ok))
 					{
-						getPageManager().removePage(original);
+						editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 					}
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
 				}
@@ -648,32 +646,19 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 		Asset asset = getAsset(inReq);
-		List<Page> temppages = getUploadedPages(inReq);
+		List<ContentItem> temppages = getUploadedPages(inReq);
 		
 		//copy the temppages in to the originals folder, but first check if this is a folder based asset
 		if(!asset.isFolder())
 		{
 			makeFolderAsset(inReq);
 		}
-		
-		//move the pages
-		String destination = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + asset.getSourcePath();
-		Page dest = getPageManager().getPage(destination);
-		if(!dest.exists()){
-			log.info("Could not attach file destination folder didn't exist: " + dest.getPath());
-		}
-		for (Iterator<Page> iterator = temppages.iterator(); iterator.hasNext();)
-		{
-			Page page = (Page) iterator.next();
-			if(!page.exists()){
-				log.info("Could not attach file temp file doesn't exist: " + page.getPath());
-			}
-			getPageManager().movePage(page, dest);
-		}
+		archive.getAssetManager().addNewAsset(asset, temppages);
 		getAttachmentManager().processAttachments(archive, asset, false);//don't reprocess everything else
 		
 		inReq.putPageValue("asset", asset);
 	}
+
 	
 	
 	public void replacePrimaryAsset(WebPageRequest inReq) throws Exception
@@ -681,7 +666,7 @@ public class AssetEditModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		//String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 		Asset asset = getAsset(inReq);
-		List<Page> temppages = getUploadedPages(inReq);
+		List<ContentItem> temppages = getUploadedPages(inReq);
 		
 		if( temppages.isEmpty() )
 		{
@@ -694,26 +679,7 @@ public class AssetEditModule extends BaseMediaModule
 			makeFolderAsset(inReq);
 		}
 		
-		String destination = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + asset.getSourcePath();
-		//copy the temppages in to the originals folder, but first check if this is a folder based asset
-		Page dest = getPageManager().getPage(destination);
-			
-		Page page = (Page) temppages.iterator().next();
-		if(!page.exists()){
-			log.info("Could not attach file temp file doesn't exist: " + page.getPath());
-		}
-		dest.setProperty("makeversion","true");
-		getPageManager().movePage(page, dest);
-		asset = archive.getAssetBySourcePath(asset.getSourcePath());
-		asset.setPrimaryFile(page.getName());
-		ContentItem item = archive.getOriginalContent(asset);
-		archive.removeGeneratedImages(asset,true);
-
-		getAssetImporter().getAssetUtilities().getMetaDataReader().updateAsset(archive, item, asset);
-		asset.setProperty("editstatus", "1");
-		asset.setProperty("importstatus", "reimported");
-		asset.setProperty("previewstatus", "converting");
-		archive.saveAsset(asset, null);
+		archive.getAssetManager().replaceOriginal(asset, temppages);
 
 		//TODO:Call reimport
 		
@@ -728,10 +694,8 @@ public class AssetEditModule extends BaseMediaModule
 	
 	public void createAssetFromUploads(final WebPageRequest inReq) throws Exception
 	{
-		final MediaArchive archive = getMediaArchive(inReq);
-		final String basepath  = "/WEB-INF/data" + archive.getCatalogHome() + "/temp/" + inReq.getUserName() + "/";
 		final List pages = getUploadedPages(inReq);
-		createAssetsFromPages(pages,basepath,inReq);
+		createAssetsFromPages(pages,inReq);
 	}
 	
 	public void appendRecentUploads(WebPageRequest inReq) throws Exception
@@ -880,7 +844,7 @@ public class AssetEditModule extends BaseMediaModule
 			
 		}
 	}
-	protected void createAssetsFromPages(List<Page> inPages, String inBasepath, WebPageRequest inReq)
+	protected void createAssetsFromPages(List<Page> inPages, WebPageRequest inReq)
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
 		final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
@@ -926,19 +890,25 @@ public class AssetEditModule extends BaseMediaModule
 			String sourcepath = (String) iterator.next();
 			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
 			UploadedPage page = (UploadedPage)pages.get(sourcepath);
+			
+			Page inUploadContent = page.inUpload;
+			ContentItem destContent = page.inDestPage.getContentItem();
 			boolean existing = page.inDestPage.exists();
 			if( currentcollection == null && existing)
 			{
 				log.error("Asset already exists in filesystem " + sourcepath);
 				continue;
 			}
-			else if(!page.inUpload.getPath().equals(page.inDestPage.getPath()))//move from tmp location to final location
+			else
 			{
-				Map props = new HashMap();
-				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
-				archive.fireMediaEvent("asset","savingoriginal",sourcepath,props,user);
-				page.moved = true;
-				getPageManager().movePage(page.inUpload, page.inDestPage);
+				if(!inUploadContent.getPath().equals(destContent.getPath()))//move from tmp location to final location
+				{
+					Map props = new HashMap();
+					props.put("absolutepath", destContent.getAbsolutePath());
+					archive.fireMediaEvent("asset","savingoriginal",sourcepath,props,user);
+					page.moved = true;
+					getPageManager().movePage(inUploadContent, page.inDestPage);
+				}
 			}
 			if( existing ) //Dont make a new asset?
 			{
@@ -959,10 +929,13 @@ public class AssetEditModule extends BaseMediaModule
 			UploadedPage page = (UploadedPage)pages.get(sourcepath);
 			if( page.moved )
 			{
-				Data asset = page.fieldAsset;
+				Asset asset = page.fieldAsset;
 				Map props = new HashMap();
 				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
 				archive.fireMediaEvent("asset","savingoriginalcomplete",asset.getSourcePath(),props,user);
+				
+				archive.getAssetManager().assetAdded(asset,page.inDestPage.getContentItem());
+				
 			}	
 		}
 		return tracker;

@@ -31,6 +31,7 @@ import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.search.AssetSecurityArchive;
+import org.entermediadb.asset.sources.AssetSourceManager;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.error.EmailErrorHandler;
@@ -58,6 +59,7 @@ import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.node.NodeManager;
 import org.openedit.page.Page;
+import org.openedit.page.PageSettings;
 import org.openedit.page.Permission;
 import org.openedit.page.manage.MimeTypeMap;
 import org.openedit.page.manage.PageManager;
@@ -102,7 +104,7 @@ public class MediaArchive implements CatalogEnabled
 	protected CategoryArchive fieldCategoryArchive;
 	protected AssetExport fieldAssetExport;
 	protected SearcherManager fieldSearcherManager;
-	protected OriginalFileManager fieldOriginalFileManager;
+	protected AssetSourceManager fieldAssetManager;
 	protected AssetSecurityArchive fieldAssetSecurityArchive;
 
 	protected CategoryEditor fieldCategoryEditor;
@@ -292,23 +294,34 @@ public class MediaArchive implements CatalogEnabled
 	 */
 	public Page getOriginalDocument(Asset inAsset)
 	{
-		Page path = getOriginalFileManager().getOriginalDocument(inAsset);
-		if (path == null)
+		ContentItem item = getAssetManager().getOriginalContent(inAsset);
+		if (item == null)
 		{
 			return null;
 		}
-		return path;
+		Page page = new Page() //SPEED UP
+		{
+			public boolean isHtml() { return false;}
+		};
+		page.setName(item.getName());					
+		//Is this needed?
+		String tmppath = getCatalogHome() + "/originals";
+		PageSettings settings = getPageManager().getPageSettingsManager().getPageSettings(tmppath);
+		page.setPageSettings(settings);
+		page.setContentItem(item);
+		
+		return page;
 	}
 
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
 
-		return getOriginalFileManager().getOriginalContent(inAsset);
+		return getAssetManager().getOriginalContent(inAsset);
 	}
 
 	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException
 	{
-		return getOriginalFileManager().getOriginalDocumentStream(inAsset);
+		return getAssetManager().getOriginalDocumentStream(inAsset);
 	}
 
 	public PropertyDetails getAssetPropertyDetails()
@@ -556,20 +569,20 @@ public class MediaArchive implements CatalogEnabled
 		return new File(getPageManager().getRepository().getStub(getCatalogHome()).getAbsolutePath());
 	}
 
-	public OriginalFileManager getOriginalFileManager()
+	public AssetSourceManager getAssetManager()
 	{
-		if (fieldOriginalFileManager == null)
+		if (fieldAssetManager == null)
 		{
-			fieldOriginalFileManager = (OriginalFileManager) getModuleManager().getBean(getCatalogId(), "originalFileManager");
-			fieldOriginalFileManager.setMediaArchive(this);
+			fieldAssetManager = (AssetSourceManager) getModuleManager().getBean(getCatalogId(), "assetSourceManager");
+			fieldAssetManager.setMediaArchive(this);
 		}
 
-		return fieldOriginalFileManager;
+		return fieldAssetManager;
 	}
 
-	public void setOriginalFileManager(OriginalFileManager inOriginalFileManager)
+	public void setAssetManager(AssetSourceManager inAssetManager)
 	{
-		fieldOriginalFileManager = inOriginalFileManager;
+		fieldAssetManager = inAssetManager;
 	}
 
 	//Only use on old style sourcepaths

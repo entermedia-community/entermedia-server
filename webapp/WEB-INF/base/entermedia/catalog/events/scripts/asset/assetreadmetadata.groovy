@@ -1,4 +1,4 @@
-package importing
+package asset;
 
 import org.entermediadb.asset.Asset
 import org.entermediadb.asset.CompositeAsset
@@ -7,6 +7,7 @@ import org.entermediadb.asset.scanner.MetaDataReader
 import org.openedit.Data
 import org.openedit.data.Searcher
 import org.openedit.page.Page
+import org.openedit.repository.*
 
 public void init()
 {
@@ -42,8 +43,8 @@ public void init()
 
 public void readAsset(MediaArchive archive, MetaDataReader reader, Asset asset)
 {
-	Page content = archive.getOriginalDocument( asset );
-	reader.populateAsset(archive, content.getContentItem(), asset);
+	ContentItem content = archive.getOriginalContent( asset );
+	reader.populateAsset(archive, content, asset);
 	archive.saveAsset(asset, null);
 	log.info("metadata reading complete");
 

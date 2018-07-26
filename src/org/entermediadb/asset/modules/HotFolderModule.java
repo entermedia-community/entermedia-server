@@ -4,22 +4,22 @@ import java.util.Collection;
 import java.util.List;
 
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.scanner.HotFolderManager;
+import org.entermediadb.asset.sources.AssetSource;
+import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 
 public class HotFolderModule extends BaseMediaModule
 {
-	public void loadHotFolders(WebPageRequest inReq)  throws Exception
+	public void loadSources(WebPageRequest inReq)  throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);		
-		Collection folders = getHotFolderManager().loadFolders(archive.getCatalogId());
-		inReq.putPageValue("folders", folders);
+		Collection folders = archive.getAssetManager().getAssetSources();
+		inReq.putPageValue("sources", folders);
 	}
 	
-	//TODO:Move to a super class
-	public Data loadHotFolder(WebPageRequest inReq)  throws Exception
+	public AssetSource loadSource(WebPageRequest inReq)  throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
@@ -27,26 +27,18 @@ public class HotFolderModule extends BaseMediaModule
 		{
 			return null;
 		}
-		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(),"hotfolder");
-		Data data = (Data)searcher.searchById(id);
-		inReq.putPageValue("data", data);
-		return data;
+		AssetSource source = archive.getAssetManager().getSourceById(id);
+		inReq.putPageValue("data", source.getConfig());
+		return source;
 	}	
-	public void saveHotFolders(WebPageRequest inReq) throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);
-		
-		getHotFolderManager().saveMounts(archive.getCatalogId());
-		
-	}
+	
 	public void removeHotFolder(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
 		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(),"hotfolder");
 		Data data = (Data)searcher.searchById(id);
-		searcher.delete(data, inReq.getUser());
-		getHotFolderManager().saveMounts(archive.getCatalogId());
+		archive.getAssetManager().removeSource(data);
 		
 	}
 	public void saveFolder(WebPageRequest inReq) throws Exception
@@ -67,23 +59,24 @@ public class HotFolderModule extends BaseMediaModule
 		}
 		searcher.updateData(inReq, fields, data);			
 
-		getHotFolderManager().saveFolder(archive.getCatalogId(),data);
+		archive.getAssetManager().saveSourceConfig(data);
 	}
-	protected HotFolderManager getHotFolderManager()
+	
+	
+	public void scanFolders(WebPageRequest inReq) throws Exception
 	{
-		return (HotFolderManager)getModuleManager().getBean("hotFolderManager");
+		ScriptLogger inLog = (ScriptLogger)inReq.getPageValue("log");
+		MediaArchive archive = getMediaArchive(inReq);
+		archive.getAssetManager().scanSources(inLog);
+		
 	}
+	
 	public void importFolder(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 
-		Data folder = loadHotFolder(inReq);
-		List found = getHotFolderManager().importHotFolder(archive,folder);
+		AssetSource source = loadSource(inReq);
+		List found = archive.getAssetManager().importHotFolder(source, null);
 		inReq.putPageValue("found", found);
-	}
-	public void saveMounts(WebPageRequest inReq)  throws Exception
-	{
-		MediaArchive archive = getMediaArchive(inReq);		
-		getHotFolderManager().saveMounts(archive.getCatalogId());
 	}
 }

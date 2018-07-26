@@ -220,7 +220,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			}
 			Object folderval = asset.getValue("isfolder");
 			if(folderval == null){
-				ContentItem item = getMediaArchive().getOriginalFileManager().getOriginalContent(asset);
+				ContentItem item = getMediaArchive().getAssetManager().getOriginalContent(asset);
 				asset.setFolder(item.isFolder());				
 			}
 //			if (asset.getCatalogId() == null)

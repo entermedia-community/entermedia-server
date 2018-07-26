@@ -89,14 +89,14 @@ public class ZipGroup
 			missingAssetsStr.append("    - ");
 			missingAssetsStr.append(asset.getName());
 			missingAssetsStr.append(" (");
-			Page path = getMediaArchive().getOriginalDocument(asset);
+			ContentItem path = getMediaArchive().getOriginalContent(asset);
 			if (path == null)
 			{
 				missingAssetsStr.append("no file name specified");
 			}
 			else
 			{
-				missingAssetsStr.append(path.getContentItem().getAbsolutePath());
+				missingAssetsStr.append(path.getAbsolutePath());
 			}
 			missingAssetsStr.append(")\n");
 		}
@@ -114,12 +114,12 @@ public class ZipGroup
 		{
 			for (Asset asset: inAssets.keySet())
 			{
-				Page documentFile = getMediaArchive().getOriginalDocument(asset);
+				ContentItem documentFile = getMediaArchive().getOriginalContent(asset);
 				if (documentFile == null || !documentFile.exists())
 				{
 					if (documentFile != null)
 					{
-						log.info("Image missing:" + documentFile.getContentItem().getAbsolutePath());
+						log.info("Image missing:" + documentFile.getAbsolutePath());
 					}
 					missing.add(asset);
 				}
@@ -144,7 +144,7 @@ public class ZipGroup
 						}
 						else
 						{
-							source = new File(documentFile.getContentItem().getAbsolutePath());
+							source = new File(documentFile.getAbsolutePath());
 							temp = new File(source.getParentFile(), asset.getSaveAsName());
 						}
 
@@ -225,11 +225,11 @@ public class ZipGroup
 		try
 		{
 			
-			String documentFile = getMediaArchive().getOriginalFileManager().getDataAssetsPath(inAsset.getSourcePath());
-			File input = new File( documentFile );
+			ContentItem item = getMediaArchive().getOriginalContent(inAsset);
+			File input = new File( item.getAbsolutePath() );
 			if (!input.exists())
 			{
-				writeStringToZip(zos, "Attachments missing "  + documentFile , "missing.txt");
+				writeStringToZip(zos, "Attachments missing "  + item.getAbsolutePath() , "missing.txt");
 			}
 			else
 			{

@@ -198,10 +198,10 @@ public class EMPushManager extends BasePushManager implements PushManager
 		
 		if("mp3".equalsIgnoreCase(target.getFileFormat())){
 		
-			Page inputpage = archive.getOriginalDocument(target);
+			ContentItem inputpage = archive.getOriginalContent(target);
 			ArrayList mp3 = new ArrayList();
 			
-			mp3.add(inputpage.getContentItem());
+			mp3.add(inputpage);
 			upload(target, archive, "original", mp3);
 			
 		}
@@ -371,7 +371,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 
 
 	
-
+/*
 	protected Page findInputPage(MediaArchive mediaArchive, Asset asset, Data inPreset)
 	{
 //		http://demo.entermediasoftware.com
@@ -385,6 +385,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 		return inputpage;
 
 	}
+*/	
 	protected Element execute(String inCatalogId, HttpPost inMethod)
 	{
 		try
@@ -596,20 +597,20 @@ public class EMPushManager extends BasePushManager implements PushManager
 
 			Data publishedtask = convertAndPublish(inArchive, asset, publishtaskid, preset, destinationid, exportpath);
 
-			Page inputpage = null;
+			ContentItem inputpage = null;
 			String type = null;
 			if( !"original".equals(preset.get("transcoderid")))
 			{
 				String input= "/WEB-INF/data/" + inArchive.getCatalogId() +  "/generated/" + asset.getPath() + "/" + preset.get("generatedoutputfile");
-				inputpage= inArchive.getPageManager().getPage(input);
+				inputpage= inArchive.getPageManager().getRepository().getStub(input);
 				type = "generated";
 			}
 			else
 			{
-				inputpage = inArchive.getOriginalDocument(asset);
+				inputpage = inArchive.getOriginalContent(asset);
 				type = "originals";
 			}
-			if( inputpage.length() == 0 )
+			if( inputpage.getLength() == 0 )
 			{
 				saveurl = saveurl + "&field=status&status.value=error";
 				//saveurl = saveurl + "&field=remotempublishstatus&remotempublishstatus.value=error";
@@ -639,7 +640,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 				//If this is a browser download then we need to upload the file
 				List<ContentItem> filestosend = new ArrayList<ContentItem>(1);
 
-				filestosend.add(inputpage.getContentItem());
+				filestosend.add(inputpage);
 
 				//String 	rootpath = "/WEB-INF/data/" + inArchive.getCatalogId() +  "/originals/" + asset.getSourcePath();
 			
