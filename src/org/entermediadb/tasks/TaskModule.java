@@ -807,7 +807,7 @@ public class TaskModule extends BaseMediaModule
 		}
 	
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-		builder.match("userlikes", "*").sort("owner").sort("creationdate");
+		builder.match("userlikes", "*").sort("owner").sort("userlikes");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		
 		HitTracker likes = builder.search();
