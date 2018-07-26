@@ -59,6 +59,7 @@ public class AssetSourceManager implements CatalogEnabled
 
 	public AssetSource getDefaultAssetSource()
 	{
+		//TODO: Define this
 		return fieldDefaultAssetSource;
 	}
 
@@ -195,8 +196,14 @@ public class AssetSourceManager implements CatalogEnabled
 	 */
 	public void saveSourceConfig(Data inNewrow)
 	{
-		removeSource(inNewrow);
-		AssetSource source = loadSource(inNewrow);
+		AssetSource source = getSourceById(inNewrow.getId());
+		if( source != null)
+		{
+			source.detach();
+			getAssetSources().remove(source);
+		}
+
+		source = loadSource(inNewrow);
 		source.saveConfig();
 		/*
 		String type = inNewrow.get("hotfoldertype");
@@ -372,8 +379,11 @@ public class AssetSourceManager implements CatalogEnabled
 	public void removeSource(Data inData)
 	{
 		AssetSource source = getSourceById(inData.getId());
-		source.detach();
-		getAssetSources().remove(source);
+		if( source != null)
+		{
+			source.detach();
+			getAssetSources().remove(source);
+		}
 		getMediaArchive().getSearcher( "hotfolder").delete(inData, null);
 	}
 	

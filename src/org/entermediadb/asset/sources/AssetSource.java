@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.repository.ContentItem;
