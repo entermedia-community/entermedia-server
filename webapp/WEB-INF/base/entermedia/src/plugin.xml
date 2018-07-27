@@ -707,6 +707,18 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
+	
+	<bean id="defaultAssetSource" class="org.entermediadb.asset.sources.DefaultAssetSource"
+		scope="prototype">
+		<property name="webServer"><ref bean="WebServer" /></property>		
+			<property name="pageManager">
+				<ref bean="pageManager" />
+			</property>
+			<property name="folderMonitor">
+				<ref bean="folderMonitor" />
+			</property>
+	</bean>
+
 
 	<bean id="mountAssetSource" class="org.entermediadb.asset.sources.OriginalsAssetSource"
 		scope="prototype">

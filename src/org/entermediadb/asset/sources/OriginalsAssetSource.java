@@ -118,7 +118,12 @@ public class OriginalsAssetSource extends BaseAssetSource
 	@Override
 	public boolean handles(Asset inAsset)
 	{
-		return true;
+		String name = getConfig().get("subfolder");
+		if( inAsset.getSourcePath().startsWith(name))
+		{
+			return true;
+		}
+		return false;
 	}
 
 	@Override

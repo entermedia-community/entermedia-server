@@ -10,13 +10,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.importer.PathChangedListener;
 import org.entermediadb.asset.util.TimeParser;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
+import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.locks.Lock;
 import org.openedit.repository.ContentItem;
@@ -59,7 +59,16 @@ public class AssetSourceManager implements CatalogEnabled
 
 	public AssetSource getDefaultAssetSource()
 	{
-		//TODO: Define this
+		if (fieldDefaultAssetSource == null)
+		{
+//			String type = "mount";
+			fieldDefaultAssetSource = (AssetSource)getMediaArchive().getBean("defaultAssetSource");
+//			Data config = new BaseData();
+//			fieldDefaultAssetSource.setConfig(config);
+			fieldDefaultAssetSource.setMediaArchive(getMediaArchive());
+
+		}
+
 		return fieldDefaultAssetSource;
 	}
 
