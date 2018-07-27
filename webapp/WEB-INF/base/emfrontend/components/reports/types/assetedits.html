@@ -67,12 +67,13 @@ var myChart = new Chart(ctx, {
 
 #foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
 #foreach($child in $node.getChildren())
-	
+	#if($child.get("count") != 0)
 	<li class="list-group-item">
-	$child
+	
 	<b> $context.getDate($child.toString())</b> : Overall Edits: $child.get("count")	<a class=" pull-right" href="$home$apphome/views/modules/asseteditLog/fieldsearch.html?field=date&date.value=${context.getSearchDate($child.toString())}&operation=equals">View Details</a><br/>
 	 
 	</li>
+	#end
 #end
 #end
 

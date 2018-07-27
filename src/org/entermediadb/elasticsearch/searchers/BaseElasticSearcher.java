@@ -70,6 +70,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
+import org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Order;
 import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -336,12 +337,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
 				builder.field(detail.getId());
 				builder.interval(DateHistogramInterval.DAY);
-
+				builder.order(Order.KEY_DESC);
 				inSearch.addAggregation(builder);
 
 				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
 				builder.field(detail.getId());
 				builder.interval(DateHistogramInterval.WEEK);
+				builder.order(Order.COUNT_DESC);
+
 				inSearch.addAggregation(builder);
 
 			}

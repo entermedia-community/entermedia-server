@@ -28,6 +28,8 @@
 $context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderid=$order.id</a></p>
 #end
 
+
+
 #if( $order.expireson)
 [[Access to these files will expire on ]]
 	#if( $expiresondate )  ##Use this since events do not have a locale
@@ -85,3 +87,9 @@ $context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderi
 		</tr>
 	#end
 </table>
+
+
+#if($order.sharenote)
+[[Below is a note that was attached]]:</p>
+<blockquote>$order.sharenote</blockquote>
+<hr />

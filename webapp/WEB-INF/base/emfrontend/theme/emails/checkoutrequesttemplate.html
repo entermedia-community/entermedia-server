@@ -2,3 +2,7 @@
 <p>[[Hello]],</p>
 <br />
 <p>[[You have one pending assets approval request, please review your]] <a href=$ordermoduleurl>orders module</a> [[and review it]].
+#if($order.sharenote)
+[[Below is a note that was attached]]:</p>
+<blockquote>$order.sharenote</blockquote>
+<hr />
