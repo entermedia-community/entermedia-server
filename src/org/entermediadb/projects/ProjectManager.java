@@ -30,6 +30,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
@@ -222,19 +223,18 @@ public class ProjectManager implements CatalogEnabled {
 			usercollections.add(uc);
 		}
 		
-		
-		SearchQuery query = inArchive.getAssetSearcher().createSearchQuery();
-		query.addOrsGroup("category", categoryids);
-		query.addAggregation("category");
-		query.setHitsName("librarysidebar");
+		//Why are we doing this? This should come from facets
+		QueryBuilder query = inArchive.query("asset");
+		query.orgroup("category", categoryids);
+		query.hitsPerPage(1);
+		query.addFacet("category");
+		query.named("librarysidebar");
 		if( inReq.hasPermission("showonlyapprovedassets"))
 		{	
-		SearchQuery hidependingchild = inArchive.getAssetSearcher().createSearchQuery();
-		hidependingchild.addExact("editstatus", "6");
-		query.addChildQuery(hidependingchild);
+			query.exact("editstatus", "6");
 		}
 		
-		HitTracker hits = inArchive.getAssetSearcher().cachedSearch(inReq, query);
+		HitTracker hits = query.search();
 		
 		
 		// log.info( hits.getSearchQuery() );
@@ -281,9 +281,13 @@ public class ProjectManager implements CatalogEnabled {
 						if (counted == -1) {
 							// These fell off the radar of the agregation because there are too many random
 							// categories
-							Collection assets = inArchive.getAssetSearcher().query()
-									.exact("category", collection.getRootCategoryId()).named("librarysidebarexact")
-									.search();
+							QueryBuilder q = inArchive.getAssetSearcher().query()
+									.exact("category", collection.getRootCategoryId()).named("librarysidebarexact");
+									if( inReq.hasPermission("showonlyapprovedassets"))
+									{	
+										q.exact("editstatus", "6");
+									}
+							Collection assets =	q.search();
 							log.info("Too many other categories within collection:" + collection.getName());
 							counted = assets.size();
 						}
@@ -324,7 +328,11 @@ public class ProjectManager implements CatalogEnabled {
 			collection.setValue("rootcategory", newcat.getId());
 			collection.setValue("creationdate", new Date());
 			collection.setValue("owner", inUser.getId());
-			//collection.setValue("visibility", "3");  //Private We dont want hundreds of these slowing down searches
+			
+			/**
+			 * We cant make this private because then assets would become hidden from regular users
+				collection.setValue("visibility", "3");
+			 */
 			collection.setValue("collectiontype", "2");
 			collections.saveData(collection);
 		}

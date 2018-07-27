@@ -15,6 +15,7 @@ import org.entermediadb.asset.importer.FolderMonitor;
 import org.entermediadb.asset.importer.PathChangedListener;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.search.AssetSearcher;
+import org.entermediadb.asset.util.TimeParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebServer;
@@ -230,6 +231,33 @@ public class OriginalsAssetSource extends BaseAssetSource
 			
 		}
 
+		protected boolean skipModCheck()
+		{
+			long sincedate = 0;
+			String since = getConfig().get("lastscanstart");
+			if( since != null )
+			{
+				sincedate = DateStorageUtil.getStorageUtil().parseFromStorage(since).getTime();
+			}
+			boolean skipmodcheck = false;
+			if( since != null )
+			{
+				long now = System.currentTimeMillis();
+				String mod = getMediaArchive().getCatalogSettingValue("importing_modification_interval");
+				if( mod == null)
+				{
+					mod = "1d";
+				}
+				long time = new TimeParser().parse(mod);
+				long expires = sincedate + time; //once a week
+				if( now < expires ) //our last time + 24 hours
+				{
+					skipmodcheck = true;
+				}
+			}
+			return skipmodcheck;
+		}
+
 		
 		public List<String> importAssets(String inSubChangePath)
 		{
@@ -241,12 +269,13 @@ public class OriginalsAssetSource extends BaseAssetSource
 
 			Date started = new Date();
 			
-			boolean checkformod = false;
+			boolean checkformod = skipModCheck();
 			if( inSubChangePath != null )
 			{
 				path = path + "/" + inSubChangePath;
 				checkformod = true;
 			}
+			
 			importer.fireHotFolderEvent(getMediaArchive(), "scan", "start", "Scanning " + path, null);
 			log.info(path + " scan started. mod check = " + checkformod);
 			

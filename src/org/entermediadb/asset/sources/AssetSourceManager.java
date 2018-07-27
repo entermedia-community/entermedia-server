@@ -304,11 +304,6 @@ public class AssetSourceManager implements CatalogEnabled
 		{
 			AssetSource source = (AssetSource)iterator.next();
 			Data data = source.getConfig();
-			if( skipCheck(data))
-			{
-				inLog.info("Source already checked");
-				continue;
-			}
 //			String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
 			String name = data.get("subfolder");
 //			String path = base + "/" + name ;
@@ -358,32 +353,6 @@ public class AssetSourceManager implements CatalogEnabled
 		}
 	}
 
-	protected boolean skipCheck(Data inFolder)
-	{
-		long sincedate = 0;
-		String since = inFolder.get("lastscanstart");
-		if( since != null )
-		{
-			sincedate = DateStorageUtil.getStorageUtil().parseFromStorage(since).getTime();
-		}
-		boolean skipmodcheck = false;
-		if( since != null )
-		{
-			long now = System.currentTimeMillis();
-			String mod = getMediaArchive().getCatalogSettingValue("importing_modification_interval");
-			if( mod == null)
-			{
-				mod = "1d";
-			}
-			long time = new TimeParser().parse(mod);
-			long expires = sincedate + time; //once a week
-			if( now < expires ) //our last time + 24 hours
-			{
-				skipmodcheck = true;
-			}
-		}
-		return skipmodcheck;
-	}
 
 	public void removeSource(Data inData)
 	{
