@@ -1,7 +1,3 @@
 <properties>
-	<property id="sharenote" >Expected Usage
-	 <name> 
-      <language id="en"><![CDATA[Expected Usage]]></language>  
-	</name>
-	</property>
+	<property id="expectedusage" />
 </properties>

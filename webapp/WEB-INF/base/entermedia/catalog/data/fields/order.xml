@@ -202,9 +202,7 @@
     </name> 
   </property> 
   
-   <property id="expectedusage" index="true" editable="true" stored="true" internalfield="false" isbadge="false" viewtype="ht
-ml" rendertype="html" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="false" write
-nametoexif="false">New 
+   <property id="expectedusage" index="true" editable="true" stored="true" internalfield="false" isbadge="false"    viewtype="html" rendertype="html" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="false" writenametoexif="false">
     <name> 
       <language id="en"><![CDATA[Expected Usage]]></language> 
     </name> 

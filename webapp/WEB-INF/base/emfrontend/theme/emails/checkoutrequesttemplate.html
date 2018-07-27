@@ -1,9 +1,17 @@
-#set( $apphome = "/${order.applicationid}")
+#set( $applicationid = "${order.applicationid}")
 <p>[[Hello]],</p>
 <br />
-<p>[[You have one pending assets approval request, please review your]] <a href=$ordermoduleurl>orders module</a> [[and review it]].
-#if($order.expectedusage)
-[[Expected Usage]]:</p>
-<blockquote>$order.expectedusage</blockquote>
-#end
+#set( $ordermoduleurl = "${context.siteRoot}/${frontendappid}/views/modules/order/index.html?field=last_selected_module&last_selected_module.value=order")
+<p>[[You have a pending assets approval request, please review your]] <a href=$ordermoduleurl>orders module</a> [[and review it]].
+
 <hr />
+
+$context.putPageValue("searcher",$mediaarchive.getSearcher("order") )	
+$context.putPageValue("view","order/ordercheckoutconfirm")	
+$context.putPageValue("data",$order)
+$context.putPageValue("applicationid",$applicationid)
+
+$pages.include("/${applicationid}/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
+
+$pages.include("/$applicationid/views/activity/checkout/termsconditions.html")
+

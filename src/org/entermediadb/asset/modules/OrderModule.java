@@ -1124,14 +1124,9 @@ public class OrderModule extends BaseMediaModule
 		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 
 		UserManager userManager = getUserManager(inReq);
-		URLUtilities utils = (URLUtilities) inReq
-				.getPageValue(PageRequestKeys.URL_UTILITIES);
-		String base = utils.siteRoot() + utils.relativeHomePrefix();
-
-		String orderModuleURL = base + "/" + applicationid + "/"  + "views/modules/order/index.html?field=last_selected_module&last_selected_module.value=order";
 
 		//Send an email
-		getOrderManager().sendEmailForApproval(catalogid, archive, userManager, applicationid, orderModuleURL);
+		getOrderManager().sendEmailForApproval(catalogid, archive, userManager, applicationid, order);
 		
 		return order;
 	}
