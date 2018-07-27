@@ -65,7 +65,7 @@ var myChart = new Chart(ctx, {
 <ul class="list-group">
 				<a href="#" class="list-group-item active"> [[Asset Edit History]] </a>
 
-#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day", true))
 #foreach($child in $node.getChildren())
 	#if($child.get("count") != 0)
 	<li class="list-group-item">

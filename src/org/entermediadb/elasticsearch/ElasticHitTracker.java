@@ -345,9 +345,9 @@ public class ElasticHitTracker extends HitTracker
 	}
 
 	
-	public List loadHistogram(String inField) //parse em
+	public List loadHistogram(String inField, boolean inReverse) //parse em
 	{
-		List topfacets = new ArrayList();
+		ArrayList topfacets = new ArrayList();
 		SearchResponse response = getSearchResponse(0);
 		//TODO: Should save the response and only load it if someone needs the data
 		if (response.getAggregations() != null)
@@ -386,15 +386,24 @@ public class ElasticHitTracker extends HitTracker
 							child.setId(term);
 							child.setName(term);
 							child.setProperty("count", String.valueOf(count));
-							parent.addChild(child);
+							
+							if(inReverse){
+								parent.addChildToStart(child);
+							} else{
+								parent.addChild(child);
+							}
 						}
-						topfacets.add(parent);
+						topfacets.add(parent);				
 					}
 				}
 			
 		}
+		
 		return topfacets;
 
+	}
+	public List loadHistogram(String inField){
+		return loadHistogram(inField, false);
 	}
 	
 	
