@@ -1192,6 +1192,7 @@ public class BaseOrderManager implements OrderManager {
 	    
 	    objects.put("ordermoduleurl", inOrderModuleURL);
 	    templatemail.send(objects);
+	    log.info("Sent approval request to " + email);
 	}
 	
 	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){

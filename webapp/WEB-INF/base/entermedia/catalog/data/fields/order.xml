@@ -200,7 +200,16 @@
     <name> 
       <language id="en"><![CDATA[Checkout Status]]></language>  
     </name> 
+  </property> 
+  
+   <property id="expectedusage" index="true" editable="true" stored="true" internalfield="false" isbadge="false" viewtype="ht
+ml" rendertype="html" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="false" write
+nametoexif="false">New 
+    <name> 
+      <language id="en"><![CDATA[Expected Usage]]></language> 
+    </name> 
   </property>  
+   
   
   
 </properties>
