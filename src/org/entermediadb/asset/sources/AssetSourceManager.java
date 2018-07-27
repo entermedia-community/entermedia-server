@@ -356,6 +356,10 @@ public class AssetSourceManager implements CatalogEnabled
 
 	public void removeSource(Data inData)
 	{
+		if(inData == null)
+		{
+			return;
+		}
 		AssetSource source = getSourceById(inData.getId());
 		if( source != null)
 		{
