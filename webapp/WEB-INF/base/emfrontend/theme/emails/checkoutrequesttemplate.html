@@ -1,7 +1,7 @@
 #set( $applicationid = "${order.applicationid}")
 <p>[[Hello]],</p>
 <br />
-#set( $ordermoduleurl = "${context.siteRoot}/${frontendappid}/views/modules/order/index.html?field=last_selected_module&last_selected_module.value=order")
+#set( $ordermoduleurl = "${context.siteRoot}/${applicationid}/views/modules/order/index.html?field=last_selected_module&last_selected_module.value=order")
 <p>[[You have a pending assets approval request, please review your]] <a href=$ordermoduleurl>orders module</a> [[and review it]].
 
 <hr />
