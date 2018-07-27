@@ -708,10 +708,10 @@ public class TaskModule extends BaseMediaModule
 		Date onemonth = cal.getTime();
 		String rootid = "tasks" + collection.getId();
 
-		String sortby = inReq.findValue("sortdashboard");
 		HitTracker all = tasksearcher.query().exact("projectdepartmentparents",rootid)
-				.match("completedby", "*").between("completedon", start,onemonth).sort(sortby).search();
+				.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
 		log.info("Query: " + all.getSearchQuery());
+			
 		Map byperson = new HashMap();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
