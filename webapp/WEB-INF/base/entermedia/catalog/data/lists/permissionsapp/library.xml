@@ -14,6 +14,8 @@
 	<permission id="importworkspace" permissiontype="library" name="Import Workspace" description="Import Workspace files from remote" ordering="525"/>
 	<permission id="copycategory" permissiontype="library" name="Copy Categories into Collections" description="Enables users to auto-populate collections" ordering="255"/>
 		<permission id="addtofavorites" permissiontype="library" name="Add files to favorites" description="Enables users to add files to their favorites collection" ordering="255"/>
+			<permission id="viewcategorynavcollections" permissiontype="library" name="View Folders in Collections" description="Enables users to view folders inside collections" ordering="255"/>
+	
 	
 </permissions>
 	 
