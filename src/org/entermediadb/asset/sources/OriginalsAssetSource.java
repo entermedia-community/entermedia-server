@@ -81,11 +81,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
 		String originalpath = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals";
-		String alternative = inAsset.get("archivesourcepath");
-		if( alternative == null)
-		{
-			alternative = inAsset.getSourcePath();
-		}
+		String alternative = getSourcePath(inAsset);
 		originalpath = originalpath + "/" + alternative;
 		String primaryname = inAsset.getPrimaryFile();
 		if(primaryname != null && inAsset.isFolder() )
@@ -97,6 +93,8 @@ public class OriginalsAssetSource extends BaseAssetSource
 		return page;
 
 	}
+
+	
 	
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.Bob#getPageManager()

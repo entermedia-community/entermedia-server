@@ -3,6 +3,7 @@ package org.entermediadb.asset.sources;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
@@ -64,6 +65,18 @@ public abstract class BaseAssetSource implements AssetSource
 	protected String getFolderPath()
 	{
 		return getConfig().get("subfolder");
+	}
+
+
+
+	protected String getSourcePath(Asset inAsset)
+	{
+		String alternative = inAsset.get("archivesourcepath");
+		if( alternative == null)
+		{
+			alternative = inAsset.getSourcePath();
+		}
+		return alternative;
 	}
 
 	
