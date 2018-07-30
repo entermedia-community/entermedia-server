@@ -686,15 +686,19 @@ public class TaskModule extends BaseMediaModule
 		}
 		//Search for all tasks with updated dates?
 		GregorianCalendar cal = new GregorianCalendar();
-		cal.set(Calendar.DAY_OF_MONTH, 1);
+		//cal.set(Calendar.DAY_OF_MONTH, 1);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
-
+		int week = cal.get(Calendar.WEEK_OF_YEAR);
+		week = week - 4;
+		cal.set(Calendar.WEEK_OF_YEAR,week);
 		String monthsback = inReq.getRequestParameter("monthsback");
 		if( monthsback != null)
 		{
 			int count = Integer.parseInt(monthsback);
-			cal.add(Calendar.MONTH, 0 - count);
+			//cal.add(Calendar.MONTH, 0 - count);
+			week = week - (count*4);
+			cal.set(Calendar.WEEK_OF_YEAR,week);
 			inReq.putPageValue("monthsback", count+1);
 		}
 		else
@@ -704,7 +708,9 @@ public class TaskModule extends BaseMediaModule
 		inReq.putPageValue("since", cal.getTime());
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Date start = cal.getTime();
-		cal.add(Calendar.MONTH,1);
+		week = week + 5;
+		cal.set(Calendar.WEEK_OF_YEAR,week);
+
 		Date onemonth = cal.getTime();
 		String rootid = "tasks" + collection.getId();
 
@@ -715,14 +721,14 @@ public class TaskModule extends BaseMediaModule
 		Map byperson = new HashMap();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
-			Data  task = (Data ) iterator.next();
-			List completed = (List)byperson.get(task.get("completedby"));
+			MultiValued  task = (MultiValued) iterator.next();
+			CompletedTasks completed = (CompletedTasks)byperson.get(task.get("completedby"));
 			if( completed == null)
 			{
-				completed = new ArrayList();
+				completed = new CompletedTasks();
+				byperson.put(task.get("completedby"),completed);
 			}
-			completed.add(task);
-			byperson.put(task.get("completedby"),completed);
+			completed.addTask(task);
 		}
 		
 		inReq.putPageValue("byperson", byperson);
