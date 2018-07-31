@@ -76,7 +76,7 @@ public class HotFolderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 
 		AssetSource source = loadSource(inReq);
-		List found = archive.getAssetManager().importHotFolder(source, null);
+		int found = archive.getAssetManager().importHotFolder(source, null);
 		inReq.putPageValue("found", found);
 	}
 }

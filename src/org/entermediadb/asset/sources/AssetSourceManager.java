@@ -289,7 +289,7 @@ public class AssetSourceManager implements CatalogEnabled
 		return source;
 	}
 
-	public List<String> importHotFolder(AssetSource inSource, String basepath)
+	public int importHotFolder(AssetSource inSource, String basepath)
 	{
 		return inSource.importAssets(basepath);
 	}
@@ -326,15 +326,13 @@ public class AssetSourceManager implements CatalogEnabled
 				try
 				{
 					//pullGit(path,1);
-					Collection found = source.importAssets(null); 
-					if( found != null)
-					{
-						inLog.info(name + " Imported " + found.size() + " assets");
-					}
+					int found = source.importAssets(null); 
+					inLog.info(name + " Imported " + found + " assets");
 				}
 				catch( Exception ex)
 				{
-					log.error("Could not process folder ${path}",ex);
+					inLog.error("Could not process folder " + name ,ex);
+					log.error("Could not process folder " + name,ex);
 				}
 				
 			}

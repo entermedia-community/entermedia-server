@@ -35,7 +35,7 @@ public interface AssetSource
 
 	void saveConfig();
 
-	List<String> importAssets(String inBasepath);
+	int importAssets(String inBasepath);
 
 	public void checkForDeleted();	
 

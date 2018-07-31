@@ -246,7 +246,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 		}
 
 		
-		public List<String> importAssets(String inSubChangePath)
+		public int importAssets(String inSubChangePath)
 		{
 			String base = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
 			String name = getConfig().get("subfolder");
@@ -294,7 +294,7 @@ public class OriginalsAssetSource extends BaseAssetSource
 				}
 			}
 			
-			return paths;
+			return paths.size();
 		}
 		
 		protected AssetImporter createImporter()

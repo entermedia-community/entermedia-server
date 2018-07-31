@@ -230,16 +230,16 @@ public class S3CmdAssetSource extends BaseAssetSource
 	 * aws s3api list-objects --bucket <bucket name> --query "Contents[?LastModified > '2017-08-03T23' && LastModified < '2017-08-03T23:15']"
 	 */
 	@Override
-	public List<String> importAssets(String inBasepath)
+	public int importAssets(String inBasepath)
 	{
 		List cmd = new ArrayList();
 		//aws s3 cp file.txt s3://
 		cmd.add("s3api");
 		cmd.add("list-objects");
 		cmd.add("--max-items");
-		cmd.add("2");
+		cmd.add("500");
 		cmd.add("--page-size"); //1000 by default
-		cmd.add("2");		
+		cmd.add("500");		
 		cmd.add("--bucket");
 		cmd.add(getBucket());
 		//2017-08-03T23
@@ -250,14 +250,22 @@ public class S3CmdAssetSource extends BaseAssetSource
 			//2013-09-17T00:55:03.000Z //Amazon
 			//"yyyy-MM-dd'T'HH:mm:ssZ"  https://developers.google.com/gmail/markup/reference/datetime-formatting
 			since = DateStorageUtil.getStorageUtil().formatDate(since, "yyyy-MM-dd'T'HH:mm:ssZ");
-			cmd.add("Contents[?LastModified > '" + since + "'");
+			cmd.add("Contents[?LastModified > '" + since + "']");
 		}
+		Date started = new Date();
+		
 		ExecResult res = getExec().runExec("aws", cmd, true);
 		if( !res.isRunOk() )
 		{
 			throw new OpenEditException("Could not download " + res.getStandardOut() + " " + cmd + " " );
 		}
 		String out = res.getStandardOut();
+		if( out.startsWith("[]"))
+		{
+			getConfig().setValue("lastscanstart", started);
+			getMediaArchive().saveData("hotfolder", getConfig());
+			return 0;
+		}
 		if( !out.startsWith("{"))
 		{
 			throw new OpenEditException("Could not parse returned ");	
@@ -284,22 +292,27 @@ public class S3CmdAssetSource extends BaseAssetSource
 			 */
 			//save assets
 			Collection assets = (Collection)parsed.get("Contents");
-			importAssets(assets);
+			int counted = importAssets(assets);
 			
 			String token = (String)parsed.get("NextToken");
-			importPagesOfAssets(token);
+			counted = counted + importPagesOfAssets(token);
+			
+			getConfig().setValue("lastscanstart", started);
+			getMediaArchive().saveData("hotfolder", getConfig());
+			
+			return counted;
+			
 			
 		}
 		catch (ParseException e)
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new OpenEditException(e);
 		}
-		return null;
 	}
 
-	protected String importPagesOfAssets(String token) throws ParseException
+	protected int importPagesOfAssets(String token) throws ParseException
 	{
+		int counted = 0;
 		while( token != null)
 		{
 			//aws s3api list-objects --bucket my-bucket --max-items 100 --starting-token
@@ -308,9 +321,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 			cmd2.add("s3api");
 			cmd2.add("list-objects");
 			cmd2.add("--max-items");
-			cmd2.add("2");
+			cmd2.add("500");
 			cmd2.add("--page-size"); //1000 by default
-			cmd2.add("2");		
+			cmd2.add("500");		
 			cmd2.add("--bucket");
 			cmd2.add(getBucket());
 			cmd2.add("--starting-token");
@@ -328,12 +341,12 @@ public class S3CmdAssetSource extends BaseAssetSource
 			JSONObject parsed2 = (JSONObject)new JSONParser().parse(out2);
 			Collection assets2 = (Collection)parsed2.get("Contents");
 			token = (String)parsed2.get("NextToken");
-			importAssets(assets2);
+			counted = counted + importAssets(assets2);
 		}
-		return token;
+		return counted;
 	}
 
-	protected void importAssets(Collection inAssets)
+	protected int importAssets(Collection inAssets)
 	{
 		log.info("Importing " + inAssets.size() + " assets");
 		Searcher assetsearcher = getMediaArchive().getAssetSearcher();
@@ -389,6 +402,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 		}
 		assetsearcher.saveAllData(tosave, null);
 		getMediaArchive().firePathEvent("importing/assetscreated",null,tosave);
+		return tosave.size();
 		
 	}
 
