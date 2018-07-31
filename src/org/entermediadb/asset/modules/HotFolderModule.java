@@ -23,7 +23,7 @@ public class HotFolderModule extends BaseMediaModule
 	{
 		MediaArchive archive = getMediaArchive(inReq);
 		String id = inReq.getRequestParameter("id");
-		if( "new".equals(id ) )
+		if( id==null || "new".equals(id ))
 		{
 			return null;
 		}
@@ -58,7 +58,7 @@ public class HotFolderModule extends BaseMediaModule
 			data = (Data)searcher.searchById(id);
 		}
 		searcher.updateData(inReq, fields, data);			
-
+		searcher.saveData(data);
 		archive.getAssetManager().saveSourceConfig(data);
 	}
 	

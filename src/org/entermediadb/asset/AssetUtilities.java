@@ -183,7 +183,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			{
 				asset.setProperty("owner", inUser.getUserName());
 			}
-			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
+			asset.setValue("assetaddeddate", new Date());
 			asset.setProperty("assetviews", "1");
 			
 			//Don't set this here, there isn't enough info.  AssetTypeManager will handle it.

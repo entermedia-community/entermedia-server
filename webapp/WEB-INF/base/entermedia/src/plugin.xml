@@ -719,6 +719,16 @@
 			</property>
 	</bean>
 
+	<bean id="s3AssetSource" class="org.entermediadb.asset.sources.S3CmdAssetSource"
+		scope="prototype">
+			<property name="folderMonitor">
+				<ref bean="folderMonitor" />
+			</property>
+			<property name="exec">
+				<ref bean="exec" />
+			</property>
+	</bean>
+
 
 	<bean id="mountAssetSource" class="org.entermediadb.asset.sources.OriginalsAssetSource"
 		scope="prototype">

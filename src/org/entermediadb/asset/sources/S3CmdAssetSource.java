@@ -3,21 +3,37 @@ package org.entermediadb.asset.sources;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import java.io.PrintWriter;
+import java.nio.file.Files;
+import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.openedit.OpenEditException;
+import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
+import org.openedit.util.PathUtilities;
 
 public class S3CmdAssetSource extends BaseAssetSource
 {
+	private static final Log log = LogFactory.getLog(S3CmdAssetSource.class);
 	protected Exec fieldExec;
 	protected String getBucket()
 	{
@@ -74,9 +90,12 @@ public class S3CmdAssetSource extends BaseAssetSource
 		//aws s3 cp file.txt s3://
 		cmd.add("s3");
 		cmd.add("cp");
-		cmd.add("s3://" + getBucket() + "/" + inAsset.getSourcePath() );
+		
+		String awskey = inAsset.getSourcePath().substring(getFolderPath().length() + 1);
+		
+		cmd.add("s3://" + getBucket() + "/" + awskey );
 		cmd.add(file.getAbsolutePath());
-		ExecResult res = getExec().runExec("aws", cmd);
+		ExecResult res = getExec().runExec("aws", cmd,true);
 		if( !res.isRunOk() )
 		{
 			throw new OpenEditException("Could not download " + res.getStandardOut() + " " + cmd + " " );
@@ -89,20 +108,49 @@ public class S3CmdAssetSource extends BaseAssetSource
 	{
 		String sp = getSourcePath(inAsset);
 		String abpath = getExternalPath() + "/" + sp;
+		String primaryname = inAsset.getPrimaryFile();
+		if(primaryname != null && inAsset.isFolder() )
+		{
+			abpath = abpath + "/" + primaryname;
+		}
+
 		return new File(abpath);
 	}
 
 	@Override
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		File file = getFile(inAsset);
+		FileItem item = new FileItem(file);
+		
+		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
+		path = path + inAsset.getSourcePath(); //Check archived?
+		
+		String primaryname = inAsset.getPrimaryFile();
+		if(primaryname != null && inAsset.isFolder() )
+		{
+			path = path + "/" + primaryname;
+		}
+		item.setPath(path);
+		
+		//Check it exists and it matches
+		long size = inAsset.getLong("filesize");
+		if( item.getLength() != size)
+		{
+			download(inAsset, file);
+		}
+		
+		return item;
 	}
 
 	@Override
 	public boolean handles(Asset inAsset)
 	{
-		// TODO Auto-generated method stub
+		String name = getFolderPath();
+		if( inAsset.getSourcePath().startsWith(name))
+		{
+			return true;
+		}
 		return false;
 	}
 
@@ -144,7 +192,33 @@ public class S3CmdAssetSource extends BaseAssetSource
 	@Override
 	public void saveConfig()
 	{
-		// TODO Auto-generated method stub
+		//Save aws properties file
+		String home = System.getenv("HOME");
+		File cred = new File(home + "/.aws/credentials");
+		cred.getParentFile().mkdirs();
+/*		
+		[default]
+				aws_access_key_id = AKIAJXJZ3VUYQRWEFxxx
+				aws_secret_access_key = YNjnyHrbINjLQ9izF86Iz+XJ4NJHixxxx
+*/
+		try (PrintWriter out = new PrintWriter(cred)) 
+		{
+		    out.println("[default]");
+		    out.println("aws_access_key_id = " + getAccessKey());
+		    out.println("aws_secret_access_key = " + getSecretKey());
+		    out.close();
+		    
+		    Set<PosixFilePermission> perms = new HashSet<>();
+		    perms.add(PosixFilePermission.OWNER_READ);
+		    perms.add(PosixFilePermission.OWNER_WRITE);
+
+		    Files.setPosixFilePermissions(cred.toPath(), perms);
+		    
+		}
+		catch( Exception ex)
+		{
+			throw new OpenEditException(ex);
+		}
 		
 	}
 
@@ -163,22 +237,22 @@ public class S3CmdAssetSource extends BaseAssetSource
 		cmd.add("s3api");
 		cmd.add("list-objects");
 		cmd.add("--max-items");
-		cmd.add("500");
+		cmd.add("2");
 		cmd.add("--page-size"); //1000 by default
-		cmd.add("500");		
+		cmd.add("2");		
 		cmd.add("--bucket");
 		cmd.add(getBucket());
-		cmd.add("--query");
 		//2017-08-03T23
 		String since = getConfig().get("lastscanstart");
 		if( since != null)
 		{
+			cmd.add("--query");
 			//2013-09-17T00:55:03.000Z //Amazon
 			//"yyyy-MM-dd'T'HH:mm:ssZ"  https://developers.google.com/gmail/markup/reference/datetime-formatting
 			since = DateStorageUtil.getStorageUtil().formatDate(since, "yyyy-MM-dd'T'HH:mm:ssZ");
 			cmd.add("Contents[?LastModified > '" + since + "'");
 		}
-		ExecResult res = getExec().runExec("aws", cmd);
+		ExecResult res = getExec().runExec("aws", cmd, true);
 		if( !res.isRunOk() )
 		{
 			throw new OpenEditException("Could not download " + res.getStandardOut() + " " + cmd + " " );
@@ -190,8 +264,30 @@ public class S3CmdAssetSource extends BaseAssetSource
 		}
 		try
 		{
-			Map parsed = (Map)new JSONParser().parse(out);
+			//log.info(out);
+			JSONObject parsed = (JSONObject)new JSONParser().parse(out);
+			/*
+			 
+			 "NextToken": "eyJNYXJrZXIiOiAiMTgwMjA4L0NhcHR1cmUvMTgwMjA4XzAwNDIuTkVGIn0=", 
+    "Contents": [
+        {
+            "LastModified": "2018-07-24T15:02:14.000Z", 
+            "ETag": "\"3fa04f8eb0bb5852d0d24f6b6eb206b2\"", 
+            "StorageClass": "STANDARD", 
+            "Key": "180208/180208.cosessiondb", 
+            "Owner": {
+                "DisplayName": "cory", 
+                "ID": "515e06f26dc591bc438c596a2618c7f9028137adf01423b285610d59a09b18db"
+            }, 
+            "Size": 2486272
+        }, 
+			 */
 			//save assets
+			Collection assets = (Collection)parsed.get("Contents");
+			importAssets(assets);
+			
+			String token = (String)parsed.get("NextToken");
+			importPagesOfAssets(token);
 			
 		}
 		catch (ParseException e)
@@ -200,6 +296,100 @@ public class S3CmdAssetSource extends BaseAssetSource
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	protected String importPagesOfAssets(String token) throws ParseException
+	{
+		while( token != null)
+		{
+			//aws s3api list-objects --bucket my-bucket --max-items 100 --starting-token
+			ArrayList cmd2 = new ArrayList();
+			//aws s3 cp file.txt s3://
+			cmd2.add("s3api");
+			cmd2.add("list-objects");
+			cmd2.add("--max-items");
+			cmd2.add("2");
+			cmd2.add("--page-size"); //1000 by default
+			cmd2.add("2");		
+			cmd2.add("--bucket");
+			cmd2.add(getBucket());
+			cmd2.add("--starting-token");
+			cmd2.add(token);
+			ExecResult res2 = getExec().runExec("aws", cmd2, true);
+			if( !res2.isRunOk() )
+			{
+				throw new OpenEditException("Could not download " + res2.getStandardOut() + " " + cmd2 + " " );
+			}
+			String out2 = res2.getStandardOut();
+			if( !out2.startsWith("{"))
+			{
+				throw new OpenEditException("Could not parse returned ");	
+			}
+			JSONObject parsed2 = (JSONObject)new JSONParser().parse(out2);
+			Collection assets2 = (Collection)parsed2.get("Contents");
+			token = (String)parsed2.get("NextToken");
+			importAssets(assets2);
+		}
+		return token;
+	}
+
+	protected void importAssets(Collection inAssets)
+	{
+		log.info("Importing " + inAssets.size() + " assets");
+		Searcher assetsearcher = getMediaArchive().getAssetSearcher();
+		List tosave = new ArrayList(inAssets.size());
+		
+		//TODO: Speed up. DO a group search by ETag to see if we have them already in the DB
+		
+		for (Iterator iterator = inAssets.iterator(); iterator.hasNext();)
+		{
+			Map json = (Map) iterator.next();
+			/*
+			     "LastModified": "2018-07-24T15:02:14.000Z", 
+            "ETag": "\"3fa04f8eb0bb5852d0d24f6b6eb206b2\"", 
+            "StorageClass": "STANDARD", 
+            "Key": "180208/180208.cosessiondb", 
+            "Owner": {
+                "DisplayName": "cory", 
+                "ID": "515e06f26dc591bc438c596a2618c7f9028137adf01423b285610d59a09b18db"
+            }, 
+            "Size": 2486272
+			 */
+			String type = (String)json.get("StorageClass");
+			if( type != null && type.equals("STANDARD"))
+			{
+				String sourcepath = (String)json.get("Key");
+				sourcepath = getFolderPath() + "/" + sourcepath;
+				Asset asset = getMediaArchive().getAssetBySourcePath(sourcepath);
+				if( asset == null)
+				{
+					asset = (Asset)assetsearcher.createNewData();
+					asset.setSourcePath(sourcepath);
+				}
+				asset.setValue("filesize", json.get("Size"));
+				String lastmod = (String)json.get("LastModified");
+				Date edited = DateStorageUtil.getStorageUtil().parse(lastmod, "yyyy-MM-dd'T'HH:mm:ssZ");
+				asset.setValue("assetmodificationdate", edited);
+				asset.setValue("etagid", json.get("ETag"));
+				asset.setProperty("importstatus", "needsmetadata");//Will possibly cause a download based on size and time?
+				asset.setProperty("previewstatus", "0");
+				//asset.setProperty("pushstatus", "resend");
+				asset.setProperty("editstatus", "1");
+				
+				String foundprimary = PathUtilities.extractFileName(sourcepath);
+				asset.setPrimaryFile(foundprimary);
+				//getAssetUtilities().readMetadata(asset, found, getMediaArchive());
+				//getMediaArchive().getAssetImporter().getAssetUtilities().populateCategory(asset, inInput, getMediaArchive(), null);
+				String dir = PathUtilities.extractDirectoryPath(sourcepath);
+				Category category = getMediaArchive().createCategoryPath(dir);
+				asset.addCategory(category);
+				
+				tosave.add(asset);
+			}
+		}
+		assetsearcher.saveAllData(tosave, null);
+		getMediaArchive().firePathEvent("importing/assetscreated",null,tosave);
+		
 	}
 
 	@Override

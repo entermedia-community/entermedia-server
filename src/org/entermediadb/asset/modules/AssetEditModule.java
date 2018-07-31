@@ -1291,9 +1291,9 @@ Change Collections to be normal categories path s and make createTree look at th
 		{
 			asset.setProperty("importstatus", "imported");
 		}
-		if( asset.get("previewtatus") == null )
+		if( asset.get("previewstatus") == null )
 		{
-			asset.setProperty("previewtatus", "0");
+			asset.setProperty("previewstatus", "0");
 		}
 		
 		if( asset.get("assettype") == null)

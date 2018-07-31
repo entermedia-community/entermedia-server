@@ -11,7 +11,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.importer.FolderMonitor;
 import org.entermediadb.asset.importer.PathChangedListener;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.search.AssetSearcher;
@@ -33,7 +32,6 @@ import org.openedit.util.PathUtilities;
 public class OriginalsAssetSource extends BaseAssetSource
 {
 	private static final Log log = LogFactory.getLog(OriginalsAssetSource.class);
-	protected FolderMonitor fieldFolderMonitor;
 	protected PageManager fieldPageManager;
 	protected WebServer fieldWebServer;
 	
@@ -47,15 +45,6 @@ public class OriginalsAssetSource extends BaseAssetSource
 		fieldWebServer = inWebServer;
 	}
 
-	public FolderMonitor getFolderMonitor()
-	{
-		return fieldFolderMonitor;
-	}
-
-	public void setFolderMonitor(FolderMonitor inFolderMonitor)
-	{
-		fieldFolderMonitor = inFolderMonitor;
-	}
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.sources.AssetSource#getOriginalDocumentStream(org.entermediadb.asset.Asset)
 	 */

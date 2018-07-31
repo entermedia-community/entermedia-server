@@ -94,7 +94,7 @@ public class AssetPathProcessor extends PathProcessor
 	}
 
 
-	protected void saveImportedAssets(User inUser) throws OpenEditException
+	public void saveImportedAssets(User inUser) throws OpenEditException
 	{
 		if (getAssetsToSave().size() == 0)
 		{
@@ -464,6 +464,7 @@ public class AssetPathProcessor extends PathProcessor
 				} else{
 					pathtocheck =folderlist[0];
 				}
+				//TODO: This is super slow....Cache it for top level assets?
 				Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);
 				if(asset != null)
 				{
@@ -476,9 +477,6 @@ public class AssetPathProcessor extends PathProcessor
 					return;
 				}
 			}
-		
-			
-			
 			
 			process(inStartingPoint, inUser);
 			saveImportedAssets(inUser);

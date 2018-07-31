@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.importer.FolderMonitor;
 import org.openedit.Data;
 import org.openedit.data.Searcher;
 
@@ -36,6 +37,7 @@ public abstract class BaseAssetSource implements AssetSource
 
 	protected MediaArchive fieldMediaArchive;
 	protected Data fieldConfig;
+	protected FolderMonitor fieldFolderMonitor;
 	
 	public Data getConfig()
 	{
@@ -77,6 +79,20 @@ public abstract class BaseAssetSource implements AssetSource
 			alternative = inAsset.getSourcePath();
 		}
 		return alternative;
+	}
+
+
+
+	public FolderMonitor getFolderMonitor()
+	{
+		return fieldFolderMonitor;
+	}
+
+
+
+	public void setFolderMonitor(FolderMonitor inFolderMonitor)
+	{
+		fieldFolderMonitor = inFolderMonitor;
 	}
 
 	

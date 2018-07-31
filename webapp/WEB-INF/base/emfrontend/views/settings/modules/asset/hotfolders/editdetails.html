@@ -11,7 +11,7 @@
 #if( !$type )
  #set( $type = "mount")
 #end
-<select name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=${data.id}&type=" data-targetdiv="editdetails">
+<select name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=$!{data.id}&type=" data-targetdiv="editdetails">
 #set( $types = $mediaarchive.getList("hotfoldertypes"))
 #foreach( $hftype in $types)
 	<option value="$hftype.getId()" #if( $type == "$hftype.getId()") selected #end>$hftype.getName()</option>

@@ -53,10 +53,10 @@ public class MetaDataReader
 		{
 			//Make sure this is not a getStub so that S3 can cache it
 			//make sure it is fully loaded
-			if( inputFile.isStub() )
-			{
-				inputFile = getPageManager().getRepository().get(inputFile.getPath());
-			}	
+//			if( inputFile.isStub() )
+//			{
+//				inputFile = getPageManager().getRepository().get(inputFile.getPath());
+//			}	
 //			GregorianCalendar cal = new GregorianCalendar();
 //			cal.setTimeInMillis(inputFile.lastModified());
 //			cal.set(Calendar.MILLISECOND, 0);
