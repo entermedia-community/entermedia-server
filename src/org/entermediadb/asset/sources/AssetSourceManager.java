@@ -323,6 +323,7 @@ public class AssetSourceManager implements CatalogEnabled
 	}
 	public AssetSource loadSource(Data config)
 	{
+		getAssetSources();
 		AssetSource source = getSourceById(config.getId());
 		if( source == null)
 		{
@@ -334,7 +335,7 @@ public class AssetSourceManager implements CatalogEnabled
 			source = (AssetSource)getModuleManager().getBean(getCatalogId(),type + "AssetSource");
 			source.setConfig((MultiValued)config);
 			source.setMediaArchive(getMediaArchive());
-			fieldAssetSources.add(source);
+			getAssetSources().add(source);
 		}
 		//Sort?
 		return source;
