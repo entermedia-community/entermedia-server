@@ -3,7 +3,6 @@ package org.entermediadb.asset.sources;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,23 +11,19 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.sources.OriginalsAssetSource.UploadedPage;
-import org.entermediadb.asset.util.TimeParser;
 import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
-import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
 
 public class AssetSourceManager implements CatalogEnabled
 {
@@ -337,7 +332,7 @@ public class AssetSourceManager implements CatalogEnabled
 				type = "mount";
 			}
 			source = (AssetSource)getModuleManager().getBean(getCatalogId(),type + "AssetSource");
-			source.setConfig(config);
+			source.setConfig((MultiValued)config);
 			source.setMediaArchive(getMediaArchive());
 			fieldAssetSources.add(source);
 		}

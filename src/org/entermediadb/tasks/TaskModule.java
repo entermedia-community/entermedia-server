@@ -277,11 +277,11 @@ public class TaskModule extends BaseMediaModule
 			String col = goal.get("prioritylevel");
 			if( col == null || col.equals("0"))
 			{
-				col0.add(goal);
+				col1.add(goal);
 			}
 			else if( col.equals("1"))
 			{
-				col1.add(goal);
+				col0.add(goal);
 			}
 			else if( col.equals("2"))
 			{

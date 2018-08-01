@@ -3,6 +3,7 @@ package org.entermediadb.asset.sources;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -13,17 +14,72 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.FolderMonitor;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
+import org.openedit.util.EmStringUtils;
+import org.openedit.util.PathUtilities;
 
 public abstract class BaseAssetSource implements AssetSource
 {
 	protected List fieldImportLogs;
 	protected Searcher fieldFolderSearcher;
-	
+	protected Collection fieldExcludes;
+	public Collection getExcludes()
+	{
+		if (fieldExcludes == null)
+		{
+			String value = getConfig().get("excludes");
+			if( value == null)
+			{
+				fieldExcludes = Collections.EMPTY_LIST;
+			}
+			else
+			{
+				fieldExcludes = EmStringUtils.split(value);
+			}
+		}
+		return fieldExcludes;
+	}
+
+
+
+	public void setExcludes(Collection inExcludes)
+	{
+		fieldExcludes = inExcludes;
+	}
+
+
+
+	public Collection getIncludes()
+	{
+		if (fieldIncludes == null)
+		{
+			String value = getConfig().get("includes");
+			if( value == null)
+			{
+				fieldIncludes = Collections.EMPTY_LIST;
+			}
+			else
+			{
+				fieldIncludes = EmStringUtils.split(value);
+			}
+		}
+
+		return fieldIncludes;
+	}
+
+
+
+	public void setIncludes(Collection inIncludes)
+	{
+		fieldIncludes = inIncludes;
+	}
+
+	protected Collection fieldIncludes;
 	public Searcher getFolderSearcher()
 	{
 		return getMediaArchive().getSearcher("hotfolder");
@@ -46,17 +102,19 @@ public abstract class BaseAssetSource implements AssetSource
 	}
 
 	protected MediaArchive fieldMediaArchive;
-	protected Data fieldConfig;
+	protected MultiValued fieldConfig;
 	protected FolderMonitor fieldFolderMonitor;
 	
-	public Data getConfig()
+	public MultiValued getConfig()
 	{
 		return fieldConfig;
 	}
 
-	public void setConfig(Data inConfig)
+	public void setConfig(MultiValued inConfig)
 	{
 		fieldConfig = inConfig;
+		fieldExcludes = null;
+		fieldIncludes = null;
 	}
 
 	public MediaArchive getMediaArchive()
@@ -211,5 +269,32 @@ public abstract class BaseAssetSource implements AssetSource
 	{
 		//Do nothing
 	}
-	
+
+
+
+	protected boolean okToAdd(String inSourcepath)
+	{
+		for (Iterator iterator = getExcludes().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			if( PathUtilities.match(inSourcepath, key) )
+			{
+				return false;
+			}
+		}
+		if( !getIncludes().isEmpty() )
+		{
+			for (Iterator iterator = getIncludes().iterator(); iterator.hasNext();)
+			{
+				String key = (String) iterator.next();
+				if( PathUtilities.match(inSourcepath, key) )
+				{
+					return true;
+				}
+			}
+			return false;
+		}	
+		return true;
+	}
+
 }

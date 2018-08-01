@@ -7,8 +7,8 @@ import java.util.Map;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 
@@ -22,7 +22,7 @@ public interface AssetSource
 
 	boolean removeOriginal(Asset inAsset);
 
-	void setConfig(Data inConfig);
+	void setConfig(MultiValued inConfig);
 
 	void setMediaArchive(MediaArchive inMediaArchive);
 

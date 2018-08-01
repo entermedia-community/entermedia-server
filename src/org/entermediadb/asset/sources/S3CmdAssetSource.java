@@ -344,14 +344,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 			getMediaArchive().saveData("hotfolder", getConfig());
 			return 0;
 		}
-		if( !out.startsWith("{"))
-		{
-			throw new OpenEditException("Could not parse returned ");	
-		}
+//		if( !out.startsWith("{"))
+//		{
+//			throw new OpenEditException("Could not parse returned " + out);	
+//		}
 		try
 		{
 			//log.info(out);
-			JSONObject parsed = (JSONObject)new JSONParser().parse(out);
+			Object parsed = new JSONParser().parse(out);
 			/*
 			 
 			 "NextToken": "eyJNYXJrZXIiOiAiMTgwMjA4L0NhcHR1cmUvMTgwMjA4XzAwNDIuTkVGIn0=", 
@@ -369,10 +369,20 @@ public class S3CmdAssetSource extends BaseAssetSource
         }, 
 			 */
 			//save assets
-			Collection assets = (Collection)parsed.get("Contents");
+			String token  =null;
+			Collection assets = null;
+			if( parsed instanceof JSONObject)
+			{
+				JSONObject json =(JSONObject)parsed;
+				assets = (Collection)json.get("Contents");
+				token = (String)json.get("NextToken");			
+			}
+			else
+			{
+				assets = (Collection)parsed; //One result
+			}
 			int counted = importAssets(assets);
 			
-			String token = (String)parsed.get("NextToken");
 			counted = counted + importPagesOfAssets(token);
 			
 			getConfig().setValue("lastscanstart", started);
@@ -450,6 +460,10 @@ public class S3CmdAssetSource extends BaseAssetSource
 			if( type != null && type.equals("STANDARD"))
 			{
 				String sourcepath = (String)json.get("Key");
+				if( !okToAdd(sourcepath))
+				{
+					continue;
+				}
 				sourcepath = getFolderPath() + "/" + sourcepath;
 				Asset asset = getMediaArchive().getAssetBySourcePath(sourcepath);
 				if( asset == null)
@@ -461,6 +475,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 				String lastmod = (String)json.get("LastModified");
 				Date edited = DateStorageUtil.getStorageUtil().parse(lastmod, "yyyy-MM-dd'T'HH:mm:ssZ");
 				asset.setValue("assetmodificationdate", edited);
+				asset.setValue("assetaddeddate", new Date());
 				
 				asset.setValue("etagid", json.get("ETag"));
 				
@@ -489,7 +504,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 	@Override
 	public void checkForDeleted()
 	{
-		// TODO Auto-generated method stub
+		//TODO: Do a search for versions that have been deleted and make sure they are marked as such
 		
 	}
 
