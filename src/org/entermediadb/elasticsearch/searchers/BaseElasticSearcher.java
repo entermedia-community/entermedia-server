@@ -1402,7 +1402,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				for (int i = 0; i < values.length; i++)
 				{
 					Object val = values[i];
-					if(inDetail.isAnalyzed()){
+					if(inDetail.isAnalyzed() || "keywords".equals(fieldid)) {
 						MatchQueryBuilder item = QueryBuilders.matchQuery(fieldid, val);
 						or.must(item);
 					} else{
