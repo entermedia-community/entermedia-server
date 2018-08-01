@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Surnom]]></language> 
     </name> 
   </property>  
-  <property id="hotfoldertype" editable="true" index="true" type="list" stored="true" keyword="false" filter="false" sortable="true">Hot Folder Type 
+  <property id="hotfoldertype" editable="true" index="true" type="list" listid="hotfoldertypes" stored="true" keyword="false" filter="false" sortable="true">Hot Folder Type 
     <name> 
       <language id="de"><![CDATA[Hot Folder-Typ]]></language>  
       <language id="en"><![CDATA[Hot Folder Type]]></language>  
