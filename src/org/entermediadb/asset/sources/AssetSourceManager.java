@@ -355,11 +355,10 @@ public class AssetSourceManager implements CatalogEnabled
 		for(Iterator iterator = sources.iterator(); iterator.hasNext();)
 		{
 			AssetSource source = (AssetSource)iterator.next();
-			Data data = source.getConfig();
 //			String base = "/WEB-INF/data/" + inArchive.getCatalogId() + "/originals";
-			String name = data.get("subfolder");
+			String name = source.getName();
 //			String path = base + "/" + name ;
-			Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + data.getId(), "HotFolderManager");
+			Lock lock = getMediaArchive().getLockManager().lockIfPossible("scan-" + source.getId(), "HotFolderManager");
 			if( lock == null)
 			{
 				inLog.info("folder is already in lock table" + name);
@@ -367,8 +366,7 @@ public class AssetSourceManager implements CatalogEnabled
 			}
 			try
 			{
-				Object enabled = data.getValue("enabled");
-				if( enabled != null && "false".equals( enabled.toString() ) )
+				if( !source.isEnabled() )
 				{
 					inLog.info("Hot folder not enabled " + name);
 					continue;
@@ -432,6 +430,17 @@ public class AssetSourceManager implements CatalogEnabled
 			
 		}
 		return null;
+	}
+
+	public void reloadSources()
+	{
+		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
+		{
+			AssetSource source = (AssetSource) iterator.next();
+			source.detach();
+		}
+		fieldAssetSources = null;
+		
 	}
 
 }

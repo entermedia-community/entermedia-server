@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.attribute.PosixFilePermission;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -327,7 +329,12 @@ public class S3CmdAssetSource extends BaseAssetSource
 			cmd.add("--query");
 			//2013-09-17T00:55:03.000Z //Amazon
 			//"yyyy-MM-dd'T'HH:mm:ssZ"  https://developers.google.com/gmail/markup/reference/datetime-formatting
-			since = DateStorageUtil.getStorageUtil().formatDate(since, "yyyy-MM-dd'T'HH:mm:ssZ");
+			Date date = DateStorageUtil.getStorageUtil().parseFromStorage(since);//, "yyyy-MM-dd'T'HH:mm:ssZ");
+			
+			SimpleDateFormat dateFormatGmt = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
+			dateFormatGmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+			since = dateFormatGmt.format(date);
+			
 			cmd.add("Contents[?LastModified > '" + since + "']");
 		}
 		Date started = new Date();
@@ -338,7 +345,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 			throw new OpenEditException("Could not download " + res.getStandardOut() + " " + cmd + " " );
 		}
 		String out = res.getStandardOut();
-		if( out.startsWith("[]"))
+		if( out.startsWith("[]"))	
 		{
 			getConfig().setValue("lastscanstart", started);
 			getMediaArchive().saveData("hotfolder", getConfig());

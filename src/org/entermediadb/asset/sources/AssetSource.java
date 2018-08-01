@@ -46,5 +46,11 @@ public interface AssetSource
 
 	void assetUploaded(Asset inAsset);
 
+	String getName();
+
+	boolean isEnabled();
+
+	String getId();
+
 
 }

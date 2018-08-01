@@ -270,7 +270,11 @@ public abstract class BaseAssetSource implements AssetSource
 		//Do nothing
 	}
 
-
+	@Override
+	public String getId()
+	{
+		return getConfig().getId();
+	}
 
 	protected boolean okToAdd(String inSourcepath)
 	{
@@ -297,4 +301,20 @@ public abstract class BaseAssetSource implements AssetSource
 		return true;
 	}
 
+	@Override
+	public String getName()
+	{
+		return getConfig().getName();
+	}
+	@Override
+	public boolean isEnabled()
+	{	
+		Object enabled = getConfig().getValue("enabled");
+		if( enabled != null && "false".equals( enabled.toString() ) )
+		{
+			return true;
+		}
+		return false;
+	}
+	
 }

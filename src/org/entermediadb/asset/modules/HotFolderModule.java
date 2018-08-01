@@ -38,7 +38,8 @@ public class HotFolderModule extends BaseMediaModule
 		String id = inReq.getRequestParameter("id");
 		Searcher searcher = getSearcherManager().getSearcher(archive.getCatalogId(),"hotfolder");
 		Data data = (Data)searcher.searchById(id);
-		archive.getAssetManager().removeSource(data);
+		searcher.delete(data, null);
+		archive.getAssetManager().reloadSources();
 		
 	}
 	public void saveFolder(WebPageRequest inReq) throws Exception
@@ -59,7 +60,7 @@ public class HotFolderModule extends BaseMediaModule
 		}
 		searcher.updateData(inReq, fields, data);			
 		searcher.saveData(data);
-		archive.getAssetManager().saveSourceConfig(data);
+		archive.getAssetManager().reloadSources();
 	}
 	
 	
