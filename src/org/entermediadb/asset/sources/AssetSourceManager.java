@@ -441,6 +441,13 @@ public class AssetSourceManager implements CatalogEnabled
 			source.detach();
 		}
 		fieldAssetSources = null;
+		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
+		{
+			AssetSource source = (AssetSource) iterator.next();
+			source.saveConfig();
+		}
+		
+		
 		
 	}
 

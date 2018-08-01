@@ -17,7 +17,7 @@ public class HotFolderModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);		
 		Collection folders = archive.getAssetManager().getAssetSources();
 		inReq.putPageValue("sources", folders);
-	}
+	}	
 	
 	public AssetSource loadSource(WebPageRequest inReq)  throws Exception
 	{
@@ -60,6 +60,7 @@ public class HotFolderModule extends BaseMediaModule
 		}
 		searcher.updateData(inReq, fields, data);			
 		searcher.saveData(data);
+		
 		archive.getAssetManager().reloadSources();
 	}
 	
