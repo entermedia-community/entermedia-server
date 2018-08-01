@@ -309,12 +309,8 @@ public abstract class BaseAssetSource implements AssetSource
 	@Override
 	public boolean isEnabled()
 	{	
-		Object enabled = getConfig().getValue("enabled");
-		if( enabled != null && "false".equals( enabled.toString() ) )
-		{
-			return true;
-		}
-		return false;
+		String enabled = getConfig().get("enabled");
+		return Boolean.parseBoolean(enabled);
 	}
 	
 }
