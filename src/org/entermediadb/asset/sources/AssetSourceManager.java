@@ -3,14 +3,18 @@ package org.entermediadb.asset.sources;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.sources.OriginalsAssetSource.UploadedPage;
 import org.entermediadb.asset.util.TimeParser;
+import org.entermediadb.projects.ProjectManager;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -18,8 +22,12 @@ import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
 import org.openedit.data.Searcher;
+import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
 import org.openedit.locks.Lock;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 
 public class AssetSourceManager implements CatalogEnabled
@@ -158,12 +166,60 @@ public class AssetSourceManager implements CatalogEnabled
 		findAssetSource(inAsset).replaceOriginal(inAsset,inTemppages);
 	}
 
-	public void assetAdded(Asset inAsset, ContentItem inContentItem)
+	public void assetOrginalSaved(Asset inAsset)
 	{
 		// TODO Auto-generated method stub
-		findAssetSource(inAsset).assetAdded(inAsset,inContentItem);
+		findAssetSource(inAsset).assetOrginalSaved(inAsset);
 	}
 
+	public HitTracker saveFilesAndImport(final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
+	{
+		MediaArchive archive = getMediaArchive();
+		ListHitTracker tracker = new ListHitTracker();
+		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
+		{
+			String sourcepath = (String) iterator.next();
+			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
+			ContentItem upload = (ContentItem)pages.get(sourcepath);
+//			
+//			boolean existing = upload.exists();
+//			if( existing)
+//			{
+//				log.error("Asset already exists in filesystem " + sourcepath);
+//				continue;
+//			}
+
+			Asset asset = (Asset)archive.getAssetSearcher().createNewData();
+			asset.setSourcePath(sourcepath);
+			
+			AssetSource source = findAssetSource(asset);
+			asset = source.createAsset(asset,upload,metadata,sourcepath,createCategories,user);
+			tracker.add(asset);
+		}
+	
+		saveAssetData(archive, tracker, currentcollection, user);
+		
+		return tracker;
+	}
+
+	protected void saveAssetData(MediaArchive archive, ListHitTracker tracker, String currentcollection, User inUser)
+	{
+		archive.saveAssets(tracker, inUser);
+
+		if( currentcollection != null)
+		{
+			ProjectManager manager = (ProjectManager)getMediaArchive().getProjectManager();
+			manager.addAssetToCollection(archive,currentcollection,tracker);
+		}
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Asset asset = (Asset) iterator.next();
+			findAssetSource(asset).assetUploaded(asset);
+		}
+		
+		archive.firePathEvent("importing/assetsuploaded",inUser,tracker);
+		archive.firePathEvent("importing/assetsimported",inUser,tracker);
+	}
 
 	public Searcher getFolderSearcher(String inCatalogId)
 	{
@@ -294,6 +350,7 @@ public class AssetSourceManager implements CatalogEnabled
 		return inSource.importAssets(basepath);
 	}
 
+	
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.scanner.HotFolderManager2#importHotFolder(org.entermediadb.asset.MediaArchive, org.openedit.Data)
 	 */

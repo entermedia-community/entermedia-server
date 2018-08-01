@@ -2,29 +2,38 @@ package org.entermediadb.asset.sources;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
+import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.PathChangedListener;
 import org.entermediadb.asset.scanner.AssetImporter;
 import org.entermediadb.asset.search.AssetSearcher;
 import org.entermediadb.asset.util.TimeParser;
+import org.entermediadb.projects.ProjectManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebServer;
+import org.openedit.data.PropertyDetail;
 import org.openedit.data.QueryBuilder;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.ListHitTracker;
+import org.openedit.page.Page;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.Repository;
 import org.openedit.repository.filesystem.FileRepository;
 import org.openedit.repository.filesystem.XmlVersionRepository;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
 import org.openedit.util.PathUtilities;
@@ -165,8 +174,34 @@ public class OriginalsAssetSource extends BaseAssetSource
 			return asset;
 	}
 
+
+
+	protected ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser)
+	{
+		ContentItem dest = getOriginalContent(inAsset);
+		if(!inUploaded.getPath().equals(dest.getPath()))//move from tmp location to final location
+		{
+			Map props = new HashMap();
+			props.put("absolutepath", dest.getAbsolutePath());
+			getMediaArchive().fireMediaEvent("asset","savingoriginal",inAsset.getSourcePath(),props,inUser);
+			getPageManager().getRepository().move(inUploaded, dest);
+			getMediaArchive().fireMediaEvent("asset","savingoriginalcomplete",inAsset.getSourcePath(),props,inUser);
+		}
+		return dest;
+	}
+
+	
+	class UploadedPage
+	{
+		protected Page inUpload;
+		protected Page inDestPage;
+		protected String sourcePath;
+		protected Asset fieldAsset;
+		protected boolean moved;
+	}
+
 	@Override
-	public Asset assetAdded(Asset inAsset, ContentItem inContentItem)
+	public Asset assetOrginalSaved(Asset inAsset)
 	{
 		//Do nothing? The file is already in the oroiginasl folder
 		return inAsset;

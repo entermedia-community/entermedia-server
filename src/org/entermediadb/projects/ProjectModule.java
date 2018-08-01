@@ -368,7 +368,8 @@ public class ProjectModule extends BaseMediaModule {
 		}
 		if (collection != null) {
 			String collectionid = collection.getId();
-			if (cols == null || !cols.contains(collectionid)) {
+			if (cols == null || !cols.contains(collectionid)) 
+			{
 				profile.addValue("opencollections", collectionid);
 				cols = profile.getValues("opencollections");
 				if (cols.size() > 10) {
@@ -378,6 +379,7 @@ public class ProjectModule extends BaseMediaModule {
 				}
 			}
 			profile.setProperty("selectedcollection", collectionid);
+			profile.save(inReq.getUser());
 		}
 	}
 

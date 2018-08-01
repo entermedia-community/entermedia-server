@@ -640,7 +640,7 @@ public class AssetEditModule extends BaseMediaModule
 		Asset asset = getAsset(inReq);
 		archive.getAssetSearcher().saveDetails(inReq, fields, asset, assetid);
 	}
-	
+	//Attachment handling of files
 	public void attachToAssetFromUploads(WebPageRequest inReq) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inReq);
@@ -852,7 +852,7 @@ public class AssetEditModule extends BaseMediaModule
 		final Map metadata = readMetaData(inReq,archive,"");
 		final String currentcollection = (String)metadata.get("collectionid");
 
-		final Map pages = savePages(inReq,archive,inPages);
+		final Map<String,ContentItem> pages = savePages(inReq,archive,inPages);
 		final User user = inReq.getUser();
 		
 		//findUploadTeam(inReq, archive, tracker); TODO:Do this is assetsimportedcustom
@@ -884,73 +884,12 @@ public class AssetEditModule extends BaseMediaModule
 	
 	protected HitTracker saveFilesAndImport(final MediaArchive archive, final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
-		ListHitTracker tracker = new ListHitTracker();
-		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
-		{
-			String sourcepath = (String) iterator.next();
-			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
-			UploadedPage page = (UploadedPage)pages.get(sourcepath);
-			
-			Page inUploadContent = page.inUpload;
-			ContentItem destContent = page.inDestPage.getContentItem();
-			boolean existing = page.inDestPage.exists();
-			if( currentcollection == null && existing)
-			{
-				log.error("Asset already exists in filesystem " + sourcepath);
-				continue;
-			}
-			else
-			{
-				if(!inUploadContent.getPath().equals(destContent.getPath()))//move from tmp location to final location
-				{
-					Map props = new HashMap();
-					props.put("absolutepath", destContent.getAbsolutePath());
-					archive.fireMediaEvent("asset","savingoriginal",sourcepath,props,user);
-					page.moved = true;
-					getPageManager().movePage(inUploadContent, page.inDestPage);
-				}
-			}
-			if( existing ) //Dont make a new asset?
-			{
-				//Make thumbnails?
-				page.fieldAsset = archive.getAssetBySourcePath(page.sourcePath);
-			}
-			if( page.fieldAsset == null)
-			{
-				page.fieldAsset = createAsset(archive,metadata, sourcepath, createCategories, page.inDestPage, user,tracker); //MediaArchive archive, Map inMetadata, String assetsourcepath, Page dest, User inUser, ListHitTracker output);
-			}
-		}
-		saveAssetData(archive, tracker, currentcollection, user);
-		
-		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
-		{
-			String sourcepath = (String) iterator.next();
-			//Lock lock = archive.getLockManager().lock("importing" + sourcepath, "uploadprocess");
-			UploadedPage page = (UploadedPage)pages.get(sourcepath);
-			if( page.moved )
-			{
-				Asset asset = page.fieldAsset;
-				Map props = new HashMap();
-				props.put("absolutepath", page.inDestPage.getContentItem().getAbsolutePath());
-				archive.fireMediaEvent("asset","savingoriginalcomplete",asset.getSourcePath(),props,user);
-				
-				archive.getAssetManager().assetAdded(asset,page.inDestPage.getContentItem());
-				
-			}	
-		}
+		HitTracker tracker = archive.getAssetManager().saveFilesAndImport(currentcollection,createCategories,metadata,pages,user);
 		return tracker;
 	}
-
-	class UploadedPage
-	{
-		protected Page inUpload;
-		protected Page inDestPage;
-		protected String sourcePath;
-		protected Asset fieldAsset;
-		protected boolean moved;
-	}
 	
-	protected Map savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
+	
+	protected Map<String,ContentItem> savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
 	{
 		//if we are uploading into a collection?
 		Boolean incollection = inReq.findValue("currentcollection") != null;
@@ -1002,12 +941,7 @@ public class AssetEditModule extends BaseMediaModule
 							Page upload  = getPageManager().getPage(unzipfolder + ending);
 							
 							//Change source paths for each file and subfolders
-							UploadedPage pagefound = new UploadedPage();
-							pagefound.sourcePath = collectionfolder + ending;
-							pagefound.inUpload = upload;
-							Page dest  = getPageManager().getPage(basepath + pagefound.sourcePath);
-							pagefound.inDestPage = dest;
-							pages.put(pagefound.sourcePath, pagefound);
+							pages.put(collectionfolder + ending, upload);
 							//This will replace the assets
 						}
 					}
@@ -1018,13 +952,13 @@ public class AssetEditModule extends BaseMediaModule
 			}
 			else
 			{
-				Page dest = getPageManager().getPage( basepath + assetsourcepath );
+				ContentItem dest = getPageManager().getContent( basepath + assetsourcepath );
 				int i = 2;
 				while( dest.exists())
 				{
 					String pagename = PathUtilities.extractPageName(assetsourcepath);
 					String tmppath = assetsourcepath.replace(pagename, pagename + "_" + i);
-					dest = getPageManager().getPage( basepath + tmppath );
+					dest = getPageManager().getContent( basepath + tmppath );
 					if( !dest.exists() )
 					{
 						assetsourcepath = tmppath;
@@ -1032,28 +966,12 @@ public class AssetEditModule extends BaseMediaModule
 					}
 					i++;
 				}
-				UploadedPage pagefound = new UploadedPage();
-				pagefound.sourcePath = assetsourcepath;
-				pagefound.inUpload = page;
-				pagefound.inDestPage = dest;
-				pages.put(assetsourcepath, pagefound);
+				pages.put(assetsourcepath, page.getContentItem());
 			}
 		}
 		return pages;
 	}
-	private void saveAssetData(MediaArchive archive, ListHitTracker tracker, String currentcollection, User inUser)
-	{
-		archive.saveAssets(tracker, inUser);
 
-		if( currentcollection != null)
-		{
-			ProjectManager manager = (ProjectManager)getModuleManager().getBean(archive.getCatalogId(),"projectManager");
-			manager.addAssetToCollection(archive,currentcollection,tracker);
-		}
-
-		archive.firePathEvent("importing/assetsuploaded",inUser,tracker);
-		archive.firePathEvent("importing/assetsimported",inUser,tracker);
-	}
 	protected Map readMetaData(WebPageRequest inReq, MediaArchive archive, String prefix)
 	{
 		String[] fields = inReq.getRequestParameters("field");
@@ -1215,98 +1133,6 @@ Change Collections to be normal categories path s and make createTree look at th
 		return vals;
 	}
 	
-	protected Asset createAsset(MediaArchive archive, Map inMetadata, String assetsourcepath, boolean createCategories, Page dest, User inUser, ListHitTracker output)
-	{
-		Asset asset = getAssetImporter().getAssetUtilities().populateAsset(null, dest.getContentItem(), archive, createCategories, assetsourcepath, inUser);
-		getAssetImporter().getAssetUtilities().readMetadata(asset, dest.getContentItem(), archive);
-		asset.setProperty("importstatus", "imported");
-		for (Iterator iterator = inMetadata.keySet().iterator(); iterator.hasNext();)
-		{
-			String field  = (String)iterator.next();
-			Object val = inMetadata.get(field);
-			if( field.equals("keywords"))
-			{
-				//combine lists
-				String[] col = (String[])val;
-				for (int i = 0; i < col.length; i++)
-				{
-					asset.addKeyword(col[i]);					
-				}
-			}
-			else if( field.equals("categories"))
-			{
-				for (Iterator citerator = ((Collection)val).iterator(); citerator.hasNext();)
-				{
-					Category cat = (Category) citerator.next();
-					asset.addCategory(cat);
-				}				
-			}
-			else 
-			{
-				if( val instanceof String[] )
-				{
-					String[] col = (String[])val;
-					if( col.length == 0)
-					{
-						continue;
-					}
-					if( col.length == 1)
-					{
-						if( col[0] == null || col[0].isEmpty())
-						{
-							continue; //dont blank out the value
-						}
-						PropertyDetail detail = archive.getAssetSearcher().getPropertyDetails().getDetail(field);
-						if(detail != null && detail.isDate()){
-							String targetval = col[0];
-							String format = "yyyy-MM-dd";
-							if (targetval.matches("[0-9]{2}/[0-9]{2}/[0-9]{4}"))  //TODO: clean this up
-							{
-								format = "MM/dd/yyyy";
-							}
-							Date date = DateStorageUtil.getStorageUtil().parse(targetval, format);
-							asset.setValue(field, date);
-						}else{
-							asset.setValue(field, col[0]);
-						}
-					}
-					else
-					{
-						asset.setValue(field, Arrays.asList((String[])col) );
-					}
-				}
-				else
-				{
-					asset.setValue(field, val);
-				}
-			}
-		}
-		
-		if( asset.get("editstatus") == null )
-		{
-			asset.setProperty("editstatus","1");
-		}
-		//asset.setProperty("importstatus", "uploading");
-		if( asset.get("importstatus") == null )
-		{
-			asset.setProperty("importstatus", "imported");
-		}
-		if( asset.get("previewstatus") == null )
-		{
-			asset.setProperty("previewstatus", "0");
-		}
-		
-		if( asset.get("assettype") == null)
-		{
-			Data type = archive.getDefaultAssetTypeForFile(asset.getName());
-			if( type != null)
-			{
-				asset.setProperty("assettype", type.getId());
-			}
-		}
-		output.add(asset);
-		return asset;
-	}
 	public void checkHasPrimary(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset target = getAsset(inReq);

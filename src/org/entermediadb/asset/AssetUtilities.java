@@ -328,14 +328,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			oldFile = new File(inArchive.getRootDirectory(), "assets/" + oldSourcePath + ".xconf");
 			newFile = new File(inArchive.getRootDirectory(), "assets/" + sourcePath + ".xconf");
 		}
-		try
-		{
-			new FileUtils().move(oldFile, newFile);
-		}
-		catch (IOException e)
-		{
-			throw new OpenEditException(e);
-		}
+		new FileUtils().move(oldFile, newFile);
 	}
 
 	public String getDataDir(MediaArchive inArchive)

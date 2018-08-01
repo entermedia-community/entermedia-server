@@ -2,12 +2,15 @@ package org.entermediadb.asset.sources;
 
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.repository.ContentItem;
+import org.openedit.users.User;
 
 public interface AssetSource
 {
@@ -24,10 +27,12 @@ public interface AssetSource
 	void setMediaArchive(MediaArchive inMediaArchive);
 
 	Asset addNewAsset(Asset inAsset, List<ContentItem> inTemppages);
+	//public Asset createAsset(final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user);
+	Asset createAsset(Asset inAsset, ContentItem inUploaded, Map inMetadata, String inSourcepath, boolean inCreateCategories, User inUser);	
 
 	Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages);
 
-	Asset assetAdded(Asset inAsset, ContentItem inContentItem);
+	Asset assetOrginalSaved(Asset inAsset);
 
 	Data getConfig();
 
@@ -37,6 +42,9 @@ public interface AssetSource
 
 	int importAssets(String inBasepath);
 
-	public void checkForDeleted();	
+	public void checkForDeleted();
+
+	void assetUploaded(Asset inAsset);
+
 
 }

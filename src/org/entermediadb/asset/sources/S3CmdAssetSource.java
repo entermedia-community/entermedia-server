@@ -1,7 +1,6 @@
 package org.entermediadb.asset.sources;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.nio.file.Files;
@@ -9,6 +8,7 @@ import java.nio.file.attribute.PosixFilePermission;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -26,15 +26,33 @@ import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.repository.ContentItem;
 import org.openedit.repository.filesystem.FileItem;
+import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.Exec;
 import org.openedit.util.ExecResult;
+import org.openedit.util.FileUtils;
 import org.openedit.util.PathUtilities;
 
 public class S3CmdAssetSource extends BaseAssetSource
 {
 	private static final Log log = LogFactory.getLog(S3CmdAssetSource.class);
 	protected Exec fieldExec;
+	protected FileUtils fieldFileUtils;
+	
+	public FileUtils getFileUtils()
+	{
+		if (fieldFileUtils == null)
+		{
+			fieldFileUtils = new FileUtils();
+		}
+		return fieldFileUtils;
+	}
+
+	public void setFileUtils(FileUtils inFileUtils)
+	{
+		fieldFileUtils = inFileUtils;
+	}
+
 	protected String getBucket()
 	{
 		return getConfig().get("bucket");
@@ -63,25 +81,8 @@ public class S3CmdAssetSource extends BaseAssetSource
 	@Override
 	public InputStream getOriginalDocumentStream(Asset inAsset)
 	{
-		File file = getFile(inAsset);
-		if( !file.exists() )
-		{
-			//Fire command line to go download it
-			file = download(inAsset,file);
-			//Consider streaming this?
-		}
-		if( !file.exists() )
-		{
-			return null;
-		}
-		try
-		{
-			FileInputStream stream = new FileInputStream(file);
-			return stream;
-		} catch (Throwable ex)
-		{
-			throw new OpenEditException(ex);
-		}
+		ContentItem item = getOriginalContent(inAsset);
+		return item.getInputStream();
 	}
 
 	protected File download(Asset inAsset, File file)
@@ -104,9 +105,29 @@ public class S3CmdAssetSource extends BaseAssetSource
 		return file;
 	}
 
+	protected void upload(Asset inAsset, File file)
+	{
+		List cmd = new ArrayList();
+		//aws s3 cp file.txt s3://
+		cmd.add("s3");
+		cmd.add("cp");
+
+		cmd.add(file.getAbsolutePath());
+
+		String awskey = inAsset.getSourcePath().substring(getFolderPath().length() + 1);
+		
+		cmd.add("s3://" + getBucket() + "/" + awskey );
+		ExecResult res = getExec().runExec("aws", cmd,true);
+		if( !res.isRunOk() )
+		{
+			throw new OpenEditException("Could not upload " + res.getStandardOut() + " " + cmd + " " );
+		}
+	}
+
 	protected File getFile(Asset inAsset)
 	{
 		String sp = getSourcePath(inAsset);
+		sp = sp.substring(getFolderPath().length() + 1);
 		String abpath = getExternalPath() + "/" + sp;
 		String primaryname = inAsset.getPrimaryFile();
 		if(primaryname != null && inAsset.isFolder() )
@@ -120,6 +141,10 @@ public class S3CmdAssetSource extends BaseAssetSource
 	@Override
 	public ContentItem getOriginalContent(Asset inAsset)
 	{
+		return getOriginalContent(inAsset,true);
+	}
+	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
+	{
 		File file = getFile(inAsset);
 		FileItem item = new FileItem(file);
 		
@@ -132,12 +157,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 			path = path + "/" + primaryname;
 		}
 		item.setPath(path);
-		
-		//Check it exists and it matches
-		long size = inAsset.getLong("filesize");
-		if( item.getLength() != size)
+		if(downloadifNeeded)
 		{
-			download(inAsset, file);
+			//Check it exists and it matches
+			long size = inAsset.getLong("filesize");
+			if( item.getLength() != size)
+			{
+				download(inAsset, file);
+			}
 		}
 		
 		return item;
@@ -157,29 +184,80 @@ public class S3CmdAssetSource extends BaseAssetSource
 	@Override
 	public boolean removeOriginal(Asset inAsset)
 	{
-		// TODO Auto-generated method stub
-		return false;
+		//aws s3 rm s3://mybucket/test2.txt
+		List cmd = new ArrayList();
+		//aws s3 cp file.txt s3://
+		cmd.add("s3");
+		cmd.add("rm");
+		String sp = inAsset.getSourcePath();
+		if( sp.length() < 4)
+		{
+			throw new OpenEditException("Invalid sourcepath: " +sp);
+		}
+		String awskey = sp.substring(getFolderPath().length() + 1);
+		cmd.add("s3://" + getBucket() + "/" + awskey );
+		ExecResult res2 = getExec().runExec("aws", cmd, true);
+		if( !res2.isRunOk() )
+		{
+			throw new OpenEditException("Could not delete " + res2.getStandardOut() + " " + cmd + " " );
+		}
+		File old = getFile(inAsset);
+		boolean ok = old.delete();
+		//String out2 = res2.getStandardOut();
+		return ok;
 	}
 
 	@Override
 	public Asset addNewAsset(Asset inAsset, List<ContentItem> inTemppages)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		//Move the pages where they go
+//		if( inAsset.isFolder())
+//		{
+//			for (Iterator iterator = inTemppages.iterator(); iterator.hasNext();)
+//			{
+//				ContentItem contentItem = (ContentItem) iterator.next();
+//				//If it's a folder then put them all in there
+//				
+//			}
+//		}
+		if( inTemppages.size() == 1)
+		{
+			ContentItem one = inTemppages.iterator().next();
+			String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
+			path = path + inAsset.getSourcePath();
+
+			File file = getFile(inAsset);
+
+			if(!one.getPath().equals(path))
+			{
+				//move contents
+				FileItem dest = new FileItem(file);
+				getMediaArchive().getPageManager().getRepository().move(one, dest);
+			}
+			upload(inAsset, file);
+		}
+		else
+		{
+			throw new OpenEditException("Dont support folder uploading");
+		}
+		return inAsset;
 	}
 
 	@Override
 	public Asset replaceOriginal(Asset inAsset, List<ContentItem> inTemppages)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		throw new OpenEditException("Not implemented");
 	}
-
+	
+	/**
+	 * The move is already done for us
+	 */
 	@Override
-	public Asset assetAdded(Asset inAsset, ContentItem inContentItem)
+	public Asset assetOrginalSaved(Asset inAsset)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		File file = getFile(inAsset);
+		upload(inAsset, file);
+		return inAsset;
 	}
 
 	@Override
@@ -383,7 +461,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 				String lastmod = (String)json.get("LastModified");
 				Date edited = DateStorageUtil.getStorageUtil().parse(lastmod, "yyyy-MM-dd'T'HH:mm:ssZ");
 				asset.setValue("assetmodificationdate", edited);
+				
 				asset.setValue("etagid", json.get("ETag"));
+				
 				asset.setProperty("importstatus", "needsmetadata");//Will possibly cause a download based on size and time?
 				asset.setProperty("previewstatus", "0");
 				//asset.setProperty("pushstatus", "resend");
@@ -413,4 +493,25 @@ public class S3CmdAssetSource extends BaseAssetSource
 		
 	}
 
+	@Override
+	protected ContentItem checkLocation(Asset inAsset, ContentItem inUploaded, User inUser)
+	{
+		File dest = getFile(inAsset);
+		if(!inUploaded.getPath().equals(dest.getPath()))//move from tmp location to final location
+		{
+			Map props = new HashMap();
+			props.put("absolutepath", dest.getAbsolutePath());
+			getMediaArchive().fireMediaEvent("asset","savingoriginal",inAsset.getSourcePath(),props,inUser);
+			getFileUtils().move(new File(inUploaded.getAbsolutePath()), dest);
+			getMediaArchive().fireMediaEvent("asset","savingoriginalcomplete",inAsset.getSourcePath(),props,inUser);
+		}
+		return getOriginalContent(inAsset, false);
+	}
+	
+	public void assetUploaded(Asset inAsset)
+	{
+		//Upload
+		File file = getFile(inAsset);
+		upload(inAsset, file);
+	}
 }
