@@ -17,7 +17,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/commons-net-3.1.jar"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload-1.2.1-patched.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/servlet-gzip.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compile/websocket-api.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jsch-0.1.43.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/org.apache.oltu.oauth2.client-1.0.1.jar"/>
