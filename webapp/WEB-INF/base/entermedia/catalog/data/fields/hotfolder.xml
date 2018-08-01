@@ -117,7 +117,7 @@
       <language id="fr"><![CDATA[Activée]]></language> 
     </name> 
   </property>  
-  <property id="lastscanstart" index="true" stored="true" type="time" keyword="false" filter="false" editable="false" sortable="true">Last Scan Start 
+  <property id="lastscanstart" index="true" stored="true" type="time" keyword="false" filter="false" editable="true" sortable="true">Last Scan Start 
     <name> 
       <language id="de"><![CDATA[letzte Scanstart]]></language>  
       <language id="en"><![CDATA[Last Scan Start]]></language>  
