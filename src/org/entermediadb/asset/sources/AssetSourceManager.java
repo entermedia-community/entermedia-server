@@ -332,7 +332,7 @@ public class AssetSourceManager implements CatalogEnabled
 			{
 				type = "mount";
 			}
-			source = (AssetSource)getModuleManager().getBean(getCatalogId(),type + "AssetSource");
+			source = (AssetSource)getModuleManager().getBean(getCatalogId(),type + "AssetSource", false);
 			source.setConfig((MultiValued)config);
 			source.setMediaArchive(getMediaArchive());
 			getAssetSources().add(source);
