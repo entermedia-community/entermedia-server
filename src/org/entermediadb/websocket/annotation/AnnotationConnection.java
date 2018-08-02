@@ -9,13 +9,16 @@ import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
+import javax.websocket.server.ServerEndpoint;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
+import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
 
+@ServerEndpoint(value = "/org/entermediadb/websocket/annotation/AnnotationConnection") 
 public class AnnotationConnection  extends Endpoint implements MessageHandler.Partial<String>
 {
 	private static final Log log = LogFactory.getLog(AnnotationConnection.class);
@@ -23,10 +26,20 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCollectionId;
 	protected String fieldCatalogId;
-	protected HttpSession fieldSession;
 	protected JSONParser fieldJSONParser;
 	protected AnnotationServer fieldAnnotationServer;
+	protected ModuleManager fieldModuleManager;
 	
+	public ModuleManager getModuleManager()
+	{
+		return fieldModuleManager;
+	}
+
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
+		fieldModuleManager = inModuleManager;
+	}
+
 	protected StringBuffer fieldBufferedMessage;
 
 	 @Override
@@ -44,7 +57,8 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
    @Override
    public void onOpen(Session session, EndpointConfig endpointConfig) 
    {
-       javax.servlet.http.HttpSession http = (javax.servlet.http.HttpSession)session.getUserProperties().get("javax.servlet.http.HttpSession");
+      // javax.servlet.http.HttpSession http = (javax.servlet.http.HttpSession)session.getUserProperties().get("javax.servlet.http.HttpSession");
+	   
 //       Enumeration<String> enuma = http.getAttributeNames();
 //       while(enuma.hasMoreElements())
 //       {
@@ -59,16 +73,17 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 //	        ModuleManager manager  = (ModuleManager)http.getAttribute("moduleManager");
 //	        if( manager != null )
 //	        {
-//	        	setModuleManager(manager);
 //	        }
 //       }
-        AnnotationServer server = (AnnotationServer)session.getUserProperties().get("AnnotationServer");
+        ModuleManager modulemanager = (ModuleManager)session.getUserProperties().get("AnnotationServer");
+    	setModuleManager(modulemanager);
+    	
+        AnnotationServer server = (AnnotationServer) modulemanager.getBean("system","annotationServer");
         fieldAnnotationServer = server;
         
      	remoteEndpointBasic = session.getBasicRemote();
    		fieldCatalogId = catalogid;
    		fieldCollectionId = collectionid;
-   		fieldSession = http;
        
        //ws://localhost:8080/entermedia/services/websocket/echoProgrammatic?catalogid=emsite/catalog&collectionid=102
        
@@ -107,11 +122,6 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 	public void setJSONParser(JSONParser fieldJSONParser)
 	{
 		this.fieldJSONParser = fieldJSONParser;
-	}
-
-	
-	public HttpSession getSession() {
-		return fieldSession;
 	}
 
 	

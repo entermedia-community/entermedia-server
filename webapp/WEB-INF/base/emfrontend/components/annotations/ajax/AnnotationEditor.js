@@ -438,7 +438,7 @@ var AnnotationEditor = function(scope) {
 				var l = window.location;
 				var rootpath = ((l.protocol === "https:") ? "wss://" : "ws://") + l.hostname + (((l.port != 80) && (l.port != 443)) ? ":" + l.port : "");
 				
-				var base_destination =  rootpath + "/entermedia/services/websocket/echoProgrammatic";
+				var base_destination =  rootpath + "/org/entermediadb/websocket/annotation/AnnotationConnection";
 				var final_destination = base_destination + "?catalogid=" + scope.catalogid + "&collectionid=" + scope.collectionid;
 				connection = new socket(final_destination);
 				connection.onopen = function(e)

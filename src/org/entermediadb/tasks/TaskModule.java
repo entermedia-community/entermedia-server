@@ -69,16 +69,16 @@ public class TaskModule extends BaseMediaModule
 		if( all == null)
 		{
 			SearchQuery userq = searcher.addStandardSearchTerms(inReq);
-			QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(100).exact("collectionid", collection.getId());
 			if( userq == null) 
 			{
+				QueryBuilder builder = searcher.query().enduser(true).hitsPerPage(100).exact("collectionid", collection.getId());
 				builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 				userq = builder.getQuery();
 			}
-			else
-			{
-				userq.addChildQuery(builder.getQuery());
-			}
+//			else
+//			{
+//				userq.addChildQuery(builder.getQuery());
+//			}
 			all = searcher.cachedSearch(inReq, userq);
 		}
 		
