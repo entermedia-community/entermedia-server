@@ -357,7 +357,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 //		}
 		try
 		{
-			log.info(out);
+			//log.info(out);
 			Object parsed = new JSONParser().parse(out);
 			/*
 			 
