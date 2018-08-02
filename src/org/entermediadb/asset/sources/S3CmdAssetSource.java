@@ -493,6 +493,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 				
 				String foundprimary = PathUtilities.extractFileName(sourcepath);
 				asset.setPrimaryFile(foundprimary);
+				asset.setName(foundprimary);
 				//getAssetUtilities().readMetadata(asset, found, getMediaArchive());
 				//getMediaArchive().getAssetImporter().getAssetUtilities().populateCategory(asset, inInput, getMediaArchive(), null);
 				String dir = PathUtilities.extractDirectoryPath(sourcepath);
