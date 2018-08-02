@@ -317,9 +317,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 		cmd.add("s3api");
 		cmd.add("list-objects");
 		cmd.add("--max-items");
-		cmd.add("500");
+		cmd.add("100");
 		cmd.add("--page-size"); //1000 by default
-		cmd.add("500");		
+		cmd.add("100");		
 		cmd.add("--bucket");
 		cmd.add(getBucket());
 		//2017-08-03T23
@@ -357,7 +357,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 //		}
 		try
 		{
-			//log.info(out);
+			log.info(out);
 			Object parsed = new JSONParser().parse(out);
 			/*
 			 
@@ -416,9 +416,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 			cmd2.add("s3api");
 			cmd2.add("list-objects");
 			cmd2.add("--max-items");
-			cmd2.add("500");
+			cmd2.add("100");
 			cmd2.add("--page-size"); //1000 by default
-			cmd2.add("500");		
+			cmd2.add("100");		
 			cmd2.add("--bucket");
 			cmd2.add(getBucket());
 			cmd2.add("--starting-token");
