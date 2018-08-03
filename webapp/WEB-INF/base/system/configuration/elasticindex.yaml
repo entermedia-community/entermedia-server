@@ -13,6 +13,7 @@ analysis:
     - standard
     - lowercase
     - stemfilter
+    - asciifolding
  filter:
   stemfilter:
    type: "snowball"
