@@ -525,7 +525,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 			Map props = new HashMap();
 			props.put("absolutepath", dest.getAbsolutePath());
 			getMediaArchive().fireMediaEvent("asset","savingoriginal",inAsset.getSourcePath(),props,inUser);
-			getFileUtils().move(new File(inUploaded.getAbsolutePath()), dest);
+			getFileUtils().move(new File(inUploaded.getAbsolutePath()), dest, true);
 			getMediaArchive().fireMediaEvent("asset","savingoriginalcomplete",inAsset.getSourcePath(),props,inUser);
 		}
 		return getOriginalContent(inAsset, false);
