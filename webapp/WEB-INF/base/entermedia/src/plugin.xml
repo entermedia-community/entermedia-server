@@ -1918,13 +1918,6 @@
 	</bean>
 	
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" lazy-init="default" />
-
-	<bean  id="AnnotationModule" class="modules.annotations.AnnotationModule" lazy-init="default" />
-
-	
-	
- 	
- 	
  	
 	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
 		<property name="defaultTranscoder">
@@ -2123,6 +2116,8 @@
  	<bean id="projectGoal" class="org.entermediadb.tasks.ProjectGoal" scope="prototype">
  	</bean>
 
+ 	<bean id="annotationServer" class="org.entermediadb.websocket.annotation.AnnotationServer" scope="prototype">
+ 	</bean>
 
 
 	

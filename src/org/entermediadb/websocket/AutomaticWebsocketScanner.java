@@ -16,7 +16,9 @@
  */
 package org.entermediadb.websocket;
 
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.websocket.Endpoint;
@@ -25,25 +27,31 @@ import javax.websocket.server.ServerEndpointConfig;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.websocket.annotation.AnnotationConnection;
 
-public class AnnotationServerConfig implements ServerApplicationConfig
+public class AutomaticWebsocketScanner implements ServerApplicationConfig
 {
-	private static final Log log = LogFactory.getLog(AnnotationServerConfig.class);
-	GetHttpSessionConfigurator configurator = new GetHttpSessionConfigurator();
+	private static final Log log = LogFactory.getLog(AutomaticWebsocketScanner.class);
+	ModuleManagerLoader configurator = new ModuleManagerLoader();
 	
 	@Override
 	public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> scanned)
 	{
 		log.info("loading endpoints " + scanned.size());
 		Set<ServerEndpointConfig> result = new HashSet<ServerEndpointConfig>();
-		if (scanned.contains(AnnotationConnection.class))
+
+		for (Iterator iterator = scanned.iterator(); iterator.hasNext();)
 		{
-			ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(
-					AnnotationConnection.class, "/entermedia/services/websocket/echoProgrammatic")
-					.configurator(configurator).build();
-			result.add(conf);
-			log.info("configured /entermedia/services/websocket/echoProgrammatic");
+			Class endpoint = (Class) iterator.next();
+			String path = endpoint.getTypeName();
+			if (path.startsWith("org.entermediadb"))
+			{
+				path = path.replace(".", "/");
+				ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(
+						endpoint, "/" + path)
+						.configurator(configurator).build();
+				result.add(conf);
+				log.info("configured /" + path);
+			}	
 		}
 		return result;
 	}
@@ -51,19 +59,22 @@ public class AnnotationServerConfig implements ServerApplicationConfig
 	@Override
 	public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> scanned)
 	{
-		// Deploy all WebSocket endpoints defined by annotations in the examples
-		// web application. Filter out all others to avoid issues when running
-		// tests on Gump
+		/*
 		log.info("loading classes " + scanned.size());
 		Set<Class<?>> results = new HashSet<Class<?>>();
 		for (Class<?> clazz : scanned)
 		{
-			if (clazz.getPackage().getName().startsWith("org.entermediadb.websocket."))
+			if (clazz.getPackage().getName().startsWith("org.entermediadb"))
 			{
-				results.add(clazz);
-				log.info("configured " + clazz.getPackage().getName());
+				if(  javax.websocket.Endpoint.class.isAssignableFrom(clazz) )
+				{
+					results.add(clazz);
+					log.info("configured " + clazz.getPackage().getName());
+				}
 			}
 		}
 		return results;
+		*/
+		return Collections.emptySet();
 	}
 }
