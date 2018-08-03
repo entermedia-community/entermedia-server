@@ -170,6 +170,7 @@ public class AssetSourceManager implements CatalogEnabled
 	public HitTracker saveFilesAndImport(final String currentcollection, final boolean createCategories, final Map metadata, final Map pages, final User user)
 	{
 		MediaArchive archive = getMediaArchive();
+		log.info("Starting saving");
 		ListHitTracker tracker = new ListHitTracker();
 		for (Iterator iterator = pages.keySet().iterator(); iterator.hasNext();)
 		{
@@ -188,7 +189,9 @@ public class AssetSourceManager implements CatalogEnabled
 			asset.setSourcePath(sourcepath);
 			
 			AssetSource source = findAssetSource(asset);
+			log.info("Found source: " + source + " " + source.getConfig().getProperties());
 			asset = source.createAsset(asset,upload,metadata,sourcepath,createCategories,user);
+			
 			tracker.add(asset);
 		}
 	
