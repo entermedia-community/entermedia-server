@@ -28,8 +28,6 @@ import javax.websocket.server.ServerEndpointConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import websocket.echo.EchoEndpoint2;
-
 public class AutomaticWebsocketScanner implements ServerApplicationConfig
 {
 	private static final Log log = LogFactory.getLog(AutomaticWebsocketScanner.class);
