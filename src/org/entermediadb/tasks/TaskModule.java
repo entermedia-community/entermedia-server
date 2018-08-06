@@ -362,9 +362,9 @@ public class TaskModule extends BaseMediaModule
 			TaskList goaltasks = new TaskList(goal,tasks);
 			inReq.putPageValue("tasklist", goaltasks);
 			inReq.putPageValue("tasks", goaltasks.getSortedTasks());
-			if( goal.getValue("goalstatus") == null)
+			if( goal.getValue("projectstatus") == null)
 			{
-				goal.setValue("goalstatus","open");
+				goal.setValue("projectstatus","open");
 				archive.saveData("projectgoal", goal);
 			}
 		}	
@@ -485,9 +485,9 @@ public class TaskModule extends BaseMediaModule
 		tasksearcher.saveData(task);
 		addComment(archive, task.getId(), inReq.getUser(),"0",null);
 		
-		if( goal.getValue("goalstatus") == null)
+		if( goal.getValue("projectstatus") == null)
 		{
-			goal.setValue("goalstatus","open");
+			goal.setValue("projectstatus","open");
 			archive.saveData("projectgoal", goal);
 		}
 		
