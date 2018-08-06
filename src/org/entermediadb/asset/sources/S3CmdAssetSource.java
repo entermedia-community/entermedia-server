@@ -376,21 +376,8 @@ public class S3CmdAssetSource extends BaseAssetSource
         }, 
 			 */
 			//save assets
-			String token  =null;
-			Collection assets = null;
-			if( parsed instanceof JSONObject)
-			{
-				JSONObject json =(JSONObject)parsed;
-				assets = (Collection)json.get("Contents");
-				token = (String)json.get("NextToken");			
-			}
-			else
-			{
-				assets = (Collection)parsed; //One result
-			}
-			int counted = importAssets(assets);
-			
-			counted = counted + importPagesOfAssets(token);
+			ImportResult result = saveParsedAssets(parsed);
+			int counted = result.count + importPagesOfAssets(result.token);
 			
 			getConfig().setValue("lastscanstart", started);
 			getMediaArchive().saveData("hotfolder", getConfig());
@@ -403,6 +390,32 @@ public class S3CmdAssetSource extends BaseAssetSource
 		{
 			throw new OpenEditException(e);
 		}
+	}
+
+	class ImportResult
+	{
+		String token;
+		int count;
+	}
+	
+	protected ImportResult saveParsedAssets(Object inParsed)
+	{
+		ImportResult result = new ImportResult();
+		
+		Collection assets = null;
+		if( inParsed instanceof JSONObject)
+		{
+			JSONObject json =(JSONObject)inParsed;
+			assets = (Collection)json.get("Contents");
+			result.token = (String)json.get("NextToken");			
+		}
+		else
+		{
+			assets = (Collection)inParsed; //One result
+		}
+		result.count = importAssets(assets);
+
+		return result;
 	}
 
 	protected int importPagesOfAssets(String token) throws ParseException
@@ -429,14 +442,10 @@ public class S3CmdAssetSource extends BaseAssetSource
 				throw new OpenEditException("Could not download " + res2.getStandardOut() + " " + cmd2 + " " );
 			}
 			String out2 = res2.getStandardOut();
-			if( !out2.startsWith("{"))
-			{
-				throw new OpenEditException("Could not parse returned ");	
-			}
 			JSONObject parsed2 = (JSONObject)new JSONParser().parse(out2);
-			Collection assets2 = (Collection)parsed2.get("Contents");
-			token = (String)parsed2.get("NextToken");
-			counted = counted + importAssets(assets2);
+			ImportResult result = saveParsedAssets(parsed2);
+			token = result.token;
+			counted = counted + result.count;
 		}
 		return counted;
 	}
