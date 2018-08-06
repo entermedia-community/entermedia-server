@@ -82,6 +82,16 @@ public class TaskModule extends BaseMediaModule
 			all = searcher.cachedSearch(inReq, userq);
 		}
 		
+		sortIntoColumns(inReq, archive, all);
+		
+		inReq.putPageValue("goalhits", all); //Not needed?
+		
+	}
+
+	private void sortIntoColumns(WebPageRequest inReq, MediaArchive archive, HitTracker all)
+	{
+		Searcher searcher = archive.getSearcher("projectgoal");
+
 		Map priorities = new HashMap();
 		for (Iterator iterator = all.iterator(); iterator.hasNext();)
 		{
@@ -115,9 +125,6 @@ public class TaskModule extends BaseMediaModule
 			Collections.sort(values);
 			inReq.putPageValue("goalhits" + p, values);
 		}
-		
-		inReq.putPageValue("goalhits", all); //Not needed?
-		
 	}	
 	public void loadGoals(WebPageRequest inReq) throws Exception
 	{
@@ -355,8 +362,12 @@ public class TaskModule extends BaseMediaModule
 			TaskList goaltasks = new TaskList(goal,tasks);
 			inReq.putPageValue("tasklist", goaltasks);
 			inReq.putPageValue("tasks", goaltasks.getSortedTasks());
-		}		
-
+			if( goal.getValue("goalstatus") == null)
+			{
+				goal.setValue("goalstatus","open");
+				archive.saveData("projectgoal", goal);
+			}
+		}	
 	}
 	
 	public void checkGoalCount(WebPageRequest inReq)
@@ -473,6 +484,12 @@ public class TaskModule extends BaseMediaModule
 		//Add to array on category
 		tasksearcher.saveData(task);
 		addComment(archive, task.getId(), inReq.getUser(),"0",null);
+		
+		if( goal.getValue("goalstatus") == null)
+		{
+			goal.setValue("goalstatus","open");
+			archive.saveData("projectgoal", goal);
+		}
 		
 		inReq.putPageValue("goal", goal);
 	}
@@ -818,15 +835,9 @@ public class TaskModule extends BaseMediaModule
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
 		
 		HitTracker likes = builder.search();
-		List sorted = new ArrayList();
-		for (Iterator iterator = likes.iterator(); iterator.hasNext();)
-		{
-			Data hit = (Data) iterator.next();
-			ProjectGoal goal = (ProjectGoal)searcher.loadData(hit);
-			sorted.add(goal);
-		}
-		
-		inReq.putPageValue("likes", sorted);
+
+		sortIntoColumns(inReq, archive, likes);
+
 	}
 	
 	public void toggleGoalLike(WebPageRequest inReq)

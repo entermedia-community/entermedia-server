@@ -359,14 +359,17 @@ uiload = function() {
 			}
 
 			form.ajaxSubmit({
-				target:"#" + targetdiv,
 				error: function(data ) {
 					alert("error");
 					$("#" + targetdiv).html(data);
+					//$("#" + targetdiv).replaceWith(data);
 				},
+				success : function(result, status, xhr, $form) {
+                	$("#" + targetdiv).replaceWith(result);
+            	},
 				data: { oemaxlevel: oemaxlevel }
 			 });
-			
+
 				
 			var findmodal = form.closest(".modal");
 			if( findmodal && findmodal.modal )
