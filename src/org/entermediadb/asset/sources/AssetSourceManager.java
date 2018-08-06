@@ -189,7 +189,6 @@ public class AssetSourceManager implements CatalogEnabled
 			asset.setSourcePath(sourcepath);
 			
 			AssetSource source = findAssetSource(asset);
-			log.info("Found source: " + source + " " + source.getConfig().getProperties());
 			asset = source.createAsset(asset,upload,metadata,sourcepath,createCategories,user);
 			
 			tracker.add(asset);
@@ -428,7 +427,7 @@ public class AssetSourceManager implements CatalogEnabled
 		for (Iterator iterator = getAssetSources().iterator(); iterator.hasNext();)
 		{
 			AssetSource source = (AssetSource) iterator.next();
-			if( source.getConfig().getId().equals(inFolderId))
+			if( source.getId().equals(inFolderId))
 			{
 				return source;
 			}
