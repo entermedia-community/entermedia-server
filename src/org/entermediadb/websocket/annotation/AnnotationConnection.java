@@ -18,7 +18,7 @@ import org.json.simple.parser.JSONParser;
 import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
 
-@ServerEndpoint(value = "/org/entermediadb/websocket/annotation/AnnotationConnection") 
+//@ServerEndpoint(value = "/org/entermediadb/websocket/annotation/AnnotationConnection") 
 public class AnnotationConnection  extends Endpoint implements MessageHandler.Partial<String>
 {
 	private static final Log log = LogFactory.getLog(AnnotationConnection.class);
@@ -75,7 +75,11 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 //	        {
 //	        }
 //       }
-        ModuleManager modulemanager = (ModuleManager)session.getUserProperties().get("AnnotationServer");
+        ModuleManager modulemanager = (ModuleManager)session.getUserProperties().get("moduleManager");
+        if( modulemanager == null)
+        {
+        	throw new RuntimeException("modulemanager did not get set, lacking session?");
+        }
     	setModuleManager(modulemanager);
     	
         AnnotationServer server = (AnnotationServer) modulemanager.getBean("system","annotationServer");
@@ -118,13 +122,7 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 
 		return fieldBufferedMessage;
 	}
-	
-	public void setJSONParser(JSONParser fieldJSONParser)
-	{
-		this.fieldJSONParser = fieldJSONParser;
-	}
-
-	
+		
 	
 	@Override
 	public synchronized void onMessage(String inData, boolean completed)

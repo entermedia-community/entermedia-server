@@ -2117,6 +2117,9 @@
  	</bean>
 
  	<bean id="annotationServer" class="org.entermediadb.websocket.annotation.AnnotationServer" scope="prototype">
+	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
  	</bean>
 
 

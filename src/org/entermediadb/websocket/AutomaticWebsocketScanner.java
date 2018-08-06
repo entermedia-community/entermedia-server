@@ -28,17 +28,18 @@ import javax.websocket.server.ServerEndpointConfig;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import websocket.echo.EchoEndpoint2;
+
 public class AutomaticWebsocketScanner implements ServerApplicationConfig
 {
 	private static final Log log = LogFactory.getLog(AutomaticWebsocketScanner.class);
 	ModuleManagerLoader configurator = new ModuleManagerLoader();
-	
-	@Override
+	//This file is in jasper.jar META-INF/services/javax.servlet.ServletContainerInitializer
 	public Set<ServerEndpointConfig> getEndpointConfigs(Set<Class<? extends Endpoint>> scanned)
 	{
 		log.info("loading endpoints " + scanned.size());
 		Set<ServerEndpointConfig> result = new HashSet<ServerEndpointConfig>();
-
+		
 		for (Iterator iterator = scanned.iterator(); iterator.hasNext();)
 		{
 			Class endpoint = (Class) iterator.next();
@@ -47,7 +48,7 @@ public class AutomaticWebsocketScanner implements ServerApplicationConfig
 			{
 				path = path.replace(".", "/");
 				ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(
-						endpoint, "/" + path)
+						endpoint, "/entermedia/services/websocket/" + path)  //FYI: Path Configured in OpenEditFilter
 						.configurator(configurator).build();
 				result.add(conf);
 				log.info("configured /" + path);
@@ -56,7 +57,6 @@ public class AutomaticWebsocketScanner implements ServerApplicationConfig
 		return result;
 	}
 
-	@Override
 	public Set<Class<?>> getAnnotatedEndpointClasses(Set<Class<?>> scanned)
 	{
 		/*

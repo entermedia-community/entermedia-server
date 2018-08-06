@@ -217,6 +217,7 @@ public class AssetSourceManager implements CatalogEnabled
 		
 		archive.firePathEvent("importing/assetsuploaded",inUser,tracker);
 		archive.firePathEvent("importing/assetsimported",inUser,tracker);
+		log.info("Saved uploaded assets " + tracker.size() );
 	}
 
 	public Searcher getFolderSearcher(String inCatalogId)
