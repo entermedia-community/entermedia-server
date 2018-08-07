@@ -101,6 +101,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 		ExecResult res = getExec().runExec("aws", cmd,true);
 		if( !res.isRunOk() )
 		{
+			
 			throw new OpenEditException("Could not download " + res.getStandardOut() + " " + cmd + " " );
 		}
 		//How do we set the timestamp? From the asset?
@@ -382,7 +383,10 @@ public class S3CmdAssetSource extends BaseAssetSource
 			//save assets
 			ImportResult result = saveParsedAssets(parsed);
 			int counted = result.count + importPagesOfAssets(result.token);
-			
+			while(result.token != null) {
+				 counted = result.count + importPagesOfAssets(result.token);
+
+			}
 			getConfig().setValue("lastscanstart", started);
 			getMediaArchive().saveData("hotfolder", getConfig());
 			
