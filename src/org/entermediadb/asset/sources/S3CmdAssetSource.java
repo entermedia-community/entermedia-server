@@ -321,9 +321,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 		cmd.add("--page-size"); //1000 by default
 		cmd.add(COUNT);		
 		cmd.add("--cli-read-timeout");
-		cmd.add("300");
+		cmd.add("0");
 		cmd.add("--cli-connect-timeout");
-		cmd.add("300");
+		cmd.add("0");
 		cmd.add("--bucket");
 		cmd.add(getBucket());
 		//2017-08-03T23
@@ -437,9 +437,9 @@ public class S3CmdAssetSource extends BaseAssetSource
 			cmd2.add("--page-size"); //1000 by default
 			cmd2.add(COUNT);
 			cmd2.add("--cli-read-timeout");
-			cmd2.add("300");
+			cmd2.add("0");
 			cmd2.add("--cli-connect-timeout");
-			cmd2.add("300");
+			cmd2.add("0");
 			cmd2.add("--bucket");
 			cmd2.add(getBucket());
 			cmd2.add("--starting-token");
