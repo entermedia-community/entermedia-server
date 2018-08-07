@@ -40,7 +40,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 	private static final Log log = LogFactory.getLog(S3CmdAssetSource.class);
 	protected Exec fieldExec;
 	protected FileUtils fieldFileUtils;
-	
+	private static String COUNT = "300";
 	public FileUtils getFileUtils()
 	{
 		if (fieldFileUtils == null)
@@ -317,9 +317,13 @@ public class S3CmdAssetSource extends BaseAssetSource
 		cmd.add("s3api");
 		cmd.add("list-objects");
 		cmd.add("--max-items");
-		cmd.add("100");
+		cmd.add(COUNT);
 		cmd.add("--page-size"); //1000 by default
-		cmd.add("100");		
+		cmd.add(COUNT);		
+		cmd.add("--cli-read-timeout");
+		cmd.add("300");
+		cmd.add("--cli-connect-timeout");
+		cmd.add("300");
 		cmd.add("--bucket");
 		cmd.add(getBucket());
 		//2017-08-03T23
@@ -429,9 +433,13 @@ public class S3CmdAssetSource extends BaseAssetSource
 			cmd2.add("s3api");
 			cmd2.add("list-objects");
 			cmd2.add("--max-items");
-			cmd2.add("100");
+			cmd2.add(COUNT);
 			cmd2.add("--page-size"); //1000 by default
-			cmd2.add("100");		
+			cmd2.add(COUNT);
+			cmd2.add("--cli-read-timeout");
+			cmd2.add("300");
+			cmd2.add("--cli-connect-timeout");
+			cmd2.add("300");
 			cmd2.add("--bucket");
 			cmd2.add(getBucket());
 			cmd2.add("--starting-token");
