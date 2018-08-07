@@ -317,11 +317,15 @@ public class S3CmdAssetSource extends BaseAssetSource
 		cmd.add("s3api");
 		cmd.add("list-objects");
 		cmd.add("--max-items");
-		cmd.add("100");
+		cmd.add("1000");
 		cmd.add("--page-size"); //1000 by default
-		cmd.add("100");		
+		cmd.add("1000");		
 		cmd.add("--bucket");
 		cmd.add(getBucket());
+		cmd.add("--cli-read-timeout");
+		cmd.add("0");
+
+		
 		//2017-08-03T23
 		String since = getConfig().get("lastscanstart");
 		if( since != null)
@@ -429,13 +433,15 @@ public class S3CmdAssetSource extends BaseAssetSource
 			cmd2.add("s3api");
 			cmd2.add("list-objects");
 			cmd2.add("--max-items");
-			cmd2.add("100");
+			cmd2.add("1000");
 			cmd2.add("--page-size"); //1000 by default
-			cmd2.add("100");		
+			cmd2.add("1000");		
 			cmd2.add("--bucket");
 			cmd2.add(getBucket());
 			cmd2.add("--starting-token");
 			cmd2.add(token);
+			cmd2.add("--cli-read-timeout");
+			cmd2.add("0");
 			ExecResult res2 = getExec().runExec("aws", cmd2, true);
 			if( !res2.isRunOk() )
 			{
