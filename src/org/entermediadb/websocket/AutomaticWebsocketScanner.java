@@ -44,12 +44,12 @@ public class AutomaticWebsocketScanner implements ServerApplicationConfig
 			String path = endpoint.getTypeName();
 			if (path.startsWith("org.entermediadb"))
 			{
-				path = path.replace(".", "/");
+				path = "/entermedia/services/websocket/" + path.replace(".", "/");
 				ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(
-						endpoint, "/entermedia/services/websocket/" + path)  //FYI: Path Configured in OpenEditFilter
+						endpoint, path)  //FYI: Path Configured in OpenEditFilter
 						.configurator(configurator).build();
 				result.add(conf);
-				log.info("configured /" + path);
+				log.info("configured " + path);
 			}	
 		}
 		return result;
