@@ -480,7 +480,7 @@ public class S3CmdAssetSource extends BaseAssetSource
             }, 
             "Size": 2486272
 			 */
-			String newsize = (String)json.get("Size");
+			Long newsize = (long) json.get("Size");
 			if( newsize == null)
 			{
 				continue;
@@ -500,9 +500,8 @@ public class S3CmdAssetSource extends BaseAssetSource
 				}
 				else
 				{
-					long size = Long.parseLong( newsize );
 					File file = getFile(asset);
-					if( file.length() != size)
+					if( file.length() != newsize)
 					{
 						asset.setProperty("importstatus", "needsmetadata");//Will possibly cause a download based on size and time?
 					}
