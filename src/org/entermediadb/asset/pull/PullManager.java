@@ -112,6 +112,9 @@ public class PullManager implements CatalogEnabled
 				String url = node.get("baseurl");
 				if( url != null)
 				{
+					long time = System.currentTimeMillis();
+					time = time  - 10000L; //Buffer
+					Date now = new Date(time);
 					HttpRequestBuilder connection = new HttpRequestBuilder();
 					Map params = new HashMap();
 					if( node.get("entermediakey") != null)
@@ -125,6 +128,12 @@ public class PullManager implements CatalogEnabled
 					}
 					if( node.get("lastpulldate") != null)
 					{
+						Date pulldate = (Date)node.getValue("lastpulldate");
+						if( pulldate.after(now))
+						{
+							log.info("We just ran a pull within last 10 seconds");
+							continue;
+						}
 						params.put("lastpulldate", node.get("lastpulldate")); //Tostring
 					}
 					params.put("searchtype", "asset"); //Loop over all of the types
@@ -134,7 +143,6 @@ public class PullManager implements CatalogEnabled
 						params.put("fulldownload", "true");
 					}
 					
-					Date now = new Date();
 					long ok = downloadPages(inArchive, connection, node, params);
 					if( ok != -1 )
 					{
