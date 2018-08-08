@@ -480,14 +480,16 @@ public class S3CmdAssetSource extends BaseAssetSource
             }, 
             "Size": 2486272
 			 */
-			String type = (String)json.get("StorageClass");
-			if( type != null && type.equals("STANDARD"))
+			String newsize = (String)json.get("Size");
+			if( newsize == null)
 			{
-				String sourcepath = (String)json.get("Key");
-				if( !okToAdd(sourcepath))
-				{
-					continue;
-				}
+				continue;
+			}
+			String sourcepath = (String)json.get("Key");
+			if( !okToAdd(sourcepath))
+			{
+				continue;
+			}
 				sourcepath = getFolderPath() + "/" + sourcepath;
 				Asset asset = getMediaArchive().getAssetBySourcePath(sourcepath);
 				if( asset == null)
@@ -498,14 +500,14 @@ public class S3CmdAssetSource extends BaseAssetSource
 				}
 				else
 				{
-					long size = asset.getLong("filesize");
+					long size = Long.parseLong( newsize );
 					File file = getFile(asset);
 					if( file.length() != size)
 					{
 						asset.setProperty("importstatus", "needsmetadata");//Will possibly cause a download based on size and time?
 					}
 				}
-				asset.setValue("filesize", json.get("Size"));
+				asset.setValue("filesize",newsize);
 				String lastmod = (String)json.get("LastModified");
 				Date edited = DateStorageUtil.getStorageUtil().parse(lastmod, "yyyy-MM-dd'T'HH:mm:ssZ");
 				asset.setValue("assetmodificationdate", edited);
@@ -526,7 +528,6 @@ public class S3CmdAssetSource extends BaseAssetSource
 				asset.addCategory(category);
 				
 				tosave.add(asset);
-			}
 		}
 		assetsearcher.saveAllData(tosave, null);
 		getMediaArchive().firePathEvent("importing/assetscreated",null,tosave);

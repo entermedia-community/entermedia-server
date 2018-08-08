@@ -287,6 +287,10 @@ public abstract class BaseAssetSource implements AssetSource
 
 	protected boolean okToAdd(String inSourcepath)
 	{
+		if( inSourcepath == null)
+		{
+			return false;
+		}
 		for (Iterator iterator = getExcludes().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
