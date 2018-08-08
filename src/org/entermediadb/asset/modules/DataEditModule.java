@@ -1921,6 +1921,9 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		}
 		
 		MediaArchive archive = getMediaArchive(inReq);
+		if(searcher == null) {
+			return;
+		}
 		archive.getCacheManager().remove(searcher.getSearchType(), dataid);
 		
 		

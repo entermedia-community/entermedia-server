@@ -63,14 +63,22 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 		//check for category joins
 		if (!inQuery.hasChildren())
 		{
+			
+			
+			User user = inPageRequest.getUser();
+			UserProfile profile = inPageRequest.getUserProfile();
+			String profilefilters = profile.get(inSearcher.getSearchType() + "showonly");
+			if(profilefilters != null && profilefilters.length() != 0) {
+				inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery);
+			}
+			
 			Object settings = inPageRequest.getPageValue("canviewsettings");
 			if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
 			{
 				return inQuery;
 			}
 			
-			User user = inPageRequest.getUser();
-			UserProfile profile = inPageRequest.getUserProfile();
+			
 			if (profile != null)
 			{
 				if( "administrator".equals( profile.get("settingsgroup")))
@@ -78,6 +86,9 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 					return inQuery;					
 				}
 			}
+			
+			
+			
 			
 			SearchQuery required = inSearcher.createSearchQuery();
 

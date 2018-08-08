@@ -101,12 +101,16 @@ public class AssetTypeManager extends EnterMediaObject {
 		assettype = "none";
 	}
 	assettype = findCorrectAssetType(hit,assettype);
+	
 	if(!assettype.equals(currentassettype))
 	{
-		Asset real = inArchive.getAssetSearcher().loadData(hit);
-		real.setProperty("assettype", assettype);
-		return real;
+		return currentassettype;
+		
 	}
+	else {
+		return assettype;
+	}
+	
 	return null;
 }
 public Asset checkLibrary(MediaArchive mediaarchive, Data hit)
