@@ -383,10 +383,6 @@ public class S3CmdAssetSource extends BaseAssetSource
 			//save assets
 			ImportResult result = saveParsedAssets(parsed);
 			int counted = result.count + importPagesOfAssets(result.token);
-			while(result.token != null) {
-				 counted = result.count + importPagesOfAssets(result.token);
-
-			}
 			getConfig().setValue("lastscanstart", started);
 			getMediaArchive().saveData("hotfolder", getConfig());
 			
@@ -498,6 +494,16 @@ public class S3CmdAssetSource extends BaseAssetSource
 				{
 					asset = (Asset)assetsearcher.createNewData();
 					asset.setSourcePath(sourcepath);
+					asset.setProperty("importstatus", "needsmetadata");//Will possibly cause a download based on size and time?
+				}
+				else
+				{
+					long size = asset.getLong("filesize");
+					File file = getFile(asset);
+					if( file.length() != size)
+					{
+						asset.setProperty("importstatus", "needsmetadata");//Will possibly cause a download based on size and time?
+					}
 				}
 				asset.setValue("filesize", json.get("Size"));
 				String lastmod = (String)json.get("LastModified");
@@ -506,8 +512,6 @@ public class S3CmdAssetSource extends BaseAssetSource
 				asset.setValue("assetaddeddate", new Date());
 				
 				asset.setValue("etagid", json.get("ETag"));
-				
-				asset.setProperty("importstatus", "needsmetadata");//Will possibly cause a download based on size and time?
 				asset.setProperty("previewstatus", "0");
 				//asset.setProperty("pushstatus", "resend");
 				asset.setProperty("editstatus", "1");
