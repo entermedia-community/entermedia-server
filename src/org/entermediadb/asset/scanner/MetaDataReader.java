@@ -1,6 +1,7 @@
 package org.entermediadb.asset.scanner;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -13,7 +14,6 @@ import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
 public class MetaDataReader
@@ -63,8 +63,8 @@ public class MetaDataReader
 			// Asset Modification Date">2005-03-04 08:28:57
 
 			
-			String now =  DateStorageUtil.getStorageUtil().formatForStorage(inputFile.lastModified());
-			inAsset.setProperty("assetmodificationdate",now);
+			Date date = inputFile.lastModified();
+			inAsset.setValue("assetmodificationdate",date);
 			// inAsset.setProperty("recordmodificationdate", format.format(
 			// new Date() ) );
 			inAsset.setProperty("filesize", String.valueOf(inputFile.getLength()));
