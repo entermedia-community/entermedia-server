@@ -294,10 +294,10 @@ public class BaseJsonModule extends BaseMediaModule
 					rsearcher.saveData(remote, null);
 					inData.setProperty(key, targetid);
 			}
+			
 			else
 			{
-				//do something else?
-				log.info("Could not process " + key+  " : " + value);
+				inData.setValue(key, value);
 			}
 
 		}
