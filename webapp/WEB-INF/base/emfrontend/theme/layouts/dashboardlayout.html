@@ -21,6 +21,10 @@
 						<a href="$home$apphome/views/dashboard/executefinish.html?reportid=$screen.id&cache=false">$context.getText($screen.toString())</a>
 					</li>
 					#end
+				<li id="desktops" #if( $reportid == "desktops" ) class="current" #end>
+						<a href="$home$apphome/views/dashboard/desktops.html">[[Desktops]]</a>
+					</li>
+					
 				</ul>
 			</div>
 		</div>

@@ -2122,6 +2122,12 @@
 		</property>
  	</bean>
 
+ 	<bean id="desktopManager" class="org.entermediadb.desktops.DesktopManager" >
+ 	</bean>
+
+ 	<bean id="desktop" class="org.entermediadb.desktops.Desktop" scope="prototype">
+ 	</bean>
+
 
 	
 </beans>
