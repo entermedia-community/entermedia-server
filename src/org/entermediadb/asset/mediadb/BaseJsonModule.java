@@ -197,6 +197,9 @@ public class BaseJsonModule extends BaseMediaModule
 		for (Iterator iterator = inputdata.keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
+			if("categorypath".equalsIgnoreCase(key)) {
+				continue;
+			}
 			Object value = inputdata.get(key);
 			log.info("Got " + inputdata + " from JSON");
 			
