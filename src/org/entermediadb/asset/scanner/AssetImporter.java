@@ -196,7 +196,7 @@ public class AssetImporter
 		{
 			asset.setId(inAssetId);
 		}
-		saveAsset(inArchive, inUser, asset);
+		//saveAsset(inArchive, inUser, asset);
 		
 		
 		return asset;
