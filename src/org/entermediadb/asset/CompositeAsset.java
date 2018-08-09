@@ -3,15 +3,18 @@ package org.entermediadb.asset;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.data.ValuesMap;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.modules.translations.LanguageMap;
@@ -26,7 +29,17 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	protected List<Integer> fieldSelections;
 	protected PropertyDetails fieldPropertyDetails;
 	protected String fieldId;
+	protected Collection fieldEditFields;
+	protected Map<String,String> commonValues = new HashMap();
 	
+	public Collection getEditFields()
+	{
+		return fieldEditFields;
+	}
+	public void setEditFields(Collection inEditFields)
+	{
+		fieldEditFields = inEditFields;
+	}
 	public CompositeAsset(MediaArchive inMediaArchive, HitTracker inHits)
 	{
 		setMediaArchive(inMediaArchive);
@@ -337,7 +350,11 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 	
 	protected String getValueFromResults(String inKey) 
 	{
-		String val;
+		String val = commonValues.get(inKey);
+		if( val != null)
+		{
+			return val;
+		}
 		Iterator iterator = getSelectedResults().iterator();
 		if( !iterator.hasNext())
 		{
@@ -391,6 +408,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		{
 			val = "";
 		}
+		commonValues.put(inKey,val);
 		return val;
 	}
 	public void setValue(String inKey, Object inValue)
@@ -457,6 +475,51 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		//compare keywords, categories and data. 
 		List tosave = new ArrayList(500);
 
+		Map savedvalues = new HashMap();
+		
+		for (Iterator iterator = getEditFields().iterator(); iterator.hasNext();)
+		{
+			String field = (String) iterator.next();
+			String newval = getMap().getString(field); //set by the user since last save
+			//See if the values changed
+			String oldval = getValueFromResults(field);
+			
+			if( newval != null && newval.isEmpty())
+			{
+				newval = null;
+			}
+			if( oldval != null && oldval.isEmpty())
+			{
+				oldval = null;
+			}
+			if( newval != oldval) 
+			{
+				if( newval == null && oldval != null)
+				{
+					savedvalues.put(field,ValuesMap.NULLVALUE);
+				}
+				else
+				{
+					if( oldval == null && newval != null)
+					{
+						Object obj = getMap().getObject(field);
+						savedvalues.put(field,obj);
+					}
+					else
+					{
+						if( field.equals("category-exact") )
+						{
+							savedvalues.put(field,collectCats(newval));
+						}
+						else
+						{
+							savedvalues.put(field,newval);
+						}
+					}
+				}
+			}
+		}
+		
 		for (Iterator iterator = getSelectedResults().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
@@ -521,33 +584,36 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 					}
 				}
 			}
-			for (Iterator iterator2 = getMap().keySet().iterator(); iterator2.hasNext();)
+			for (Iterator iterator2 = savedvalues.keySet().iterator(); iterator2.hasNext();)
 			{
 				String key = (String) iterator2.next();
 				if( "assetid".equals(key))
 				{
 					continue;
 				}
-				Object value = getValue(key);
 				Object datavalue = data.getValue(key);
-				
-				if( datavalue == value )
+				Object newval = savedvalues.get(key);
+				if( datavalue == newval )
 				{
 					continue;
 				}
-				if( datavalue != null && datavalue.equals(value) )
+				if( datavalue != null && datavalue.equals(newval) )
 				{
 					continue;
 				}
-//				if( datavalue != null && datavalue == ValuesMap.NULLVALUE )
-//				{
-//					
-//				}
 				Asset asset = loadAsset( inloopasset, data, tosave);
 				if( asset != null )
 				{
 					PropertyDetail detail = getPropertyDetails().getDetail(key);
-					if( detail.isMultiLanguage() )
+					if( detail.isMultiValue() )
+					{
+						//Need to add any that are set by user in value 
+						Collection added = collect(newval);
+						Collection existing = collect(datavalue);
+						Collection previousCommonOnes = collect(getValueFromResults(key)); //Do this only once somehow 
+						saveMultiValues(asset, key, added, existing,previousCommonOnes);
+					}
+					else if( detail.isMultiLanguage() )
 					{
 						LanguageMap map = null;
 						if( datavalue instanceof LanguageMap)
@@ -558,32 +624,26 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 						{
 							map = new LanguageMap();
 						}
-						LanguageMap langs = (LanguageMap)value;
+						LanguageMap langs = (LanguageMap)newval;
 						for (Iterator iterator3 = langs.keySet().iterator(); iterator3.hasNext();)
 						{
 							String code = (String) iterator3.next();
 							map.setText(code, langs.getText(code));
 						}
+						asset.setValue(key, map);
 					}
 					else if( detail.getId().equals("category-exact") )
 					{
 						//Need to add any that are set by user in value 
-						Collection<Category> catsadded = (Collection)value;
+						Collection<Category> catsadded = (Collection<Category>)newval;
 						Collection<Category> catsexisting = collectCats(datavalue);
 						Collection<Category> catspreviousCommonOnes = collectCats(getValueFromResults(key)); //Do this only once somehow 
 						saveMultiValues(asset, key, catsadded, catsexisting,catspreviousCommonOnes);
 					}
-					else if( detail.isMultiValue() )
-					{
-						//Need to add any that are set by user in value 
-						Collection added = collect(value);
-						Collection existing = collect(datavalue);
-						Collection previousCommonOnes = collect(getValueFromResults(key)); //Do this only once somehow 
-						saveMultiValues(asset, key, added, existing,previousCommonOnes);
-					}
 					else
 					{
-						asset.setValue(key, value);
+						if( newval == ValuesMap.NULLVALUE) newval = null;
+						asset.setValue(key, newval);
 					}
 					inloopasset = asset;
 				}
@@ -597,6 +657,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 		getMediaArchive().saveAssets(tosave);
 		//getPropertiesPreviouslySaved().putAll(getPropertiesSet());
 		setSelectedResults(null);
+		commonValues = new HashMap(); 
 	}
 
 	protected Collection<Category> collectCats(Object existingvalue)
