@@ -198,6 +198,8 @@ public class BaseJsonModule extends BaseMediaModule
 		{
 			String key = (String) iterator.next();
 			Object value = inputdata.get(key);
+			log.info("Got " + inputdata + " from JSON");
+			
 			PropertyDetail detail = searcher.getDetail(key);
 			if( detail != null && detail.isMultiLanguage())
 			{
