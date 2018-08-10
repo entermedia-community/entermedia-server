@@ -313,25 +313,42 @@ public class OriginalsAssetSource extends BaseAssetSource
 			String monitor = getConfig().get("monitortree");
 			if(Boolean.valueOf(monitor) )
 			{
-				final ContentItem item = getPageManager().getRepository().getStub(path);
-				if(item.exists() && !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
-				{
-					//will scan each folder once then monitor it from now on
-					getFolderMonitor().addPathChangedListener(item.getAbsolutePath(), new PathChangedListener()
-					{
-						@Override
-						public void pathChanged(String inType, String inAbsolutePath)
-						{
-							String ending = inAbsolutePath.substring( item.getAbsolutePath().length() );
-							importAssets(ending);
-						}
-					});
-				}
+				initMonitor();
 			}
 			
 			return paths.size();
 		}
 		
+		protected void initMonitor()
+		{
+			String base = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
+			String name = getConfig().get("subfolder");
+			String path = base + "/" + name;
+			Collection paths = getPageManager().getChildrenPaths(path, false);
+			for (Iterator iterator = paths.iterator(); iterator.hasNext();)
+			{
+				String subdirectory = (String) iterator.next();
+				ContentItem item = getPageManager().getContent(subdirectory);
+				if( !item.getName().startsWith("."))
+				{
+					if(item.isFolder() && !getFolderMonitor().hasFolderTree(item.getAbsolutePath()))
+					{
+						//will scan each folder once then monitor it from now on
+						getFolderMonitor().addPathChangedListener(item.getAbsolutePath(), new PathChangedListener()
+						{
+							@Override
+							public void pathChanged(String inType, String inAbsolutePath)
+							{
+								String ending = inAbsolutePath.substring( item.getAbsolutePath().length() );
+								importAssets(ending);
+							}
+						});
+					}
+				}
+			}
+			
+		}
+
 		protected AssetImporter createImporter()
 		{
 			AssetImporter importer = (AssetImporter)getMediaArchive().getModuleManager().getBean("assetImporter"); //Dont cache bean
