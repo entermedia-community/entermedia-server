@@ -115,6 +115,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			{
 				//restore
 				asset.setProperty("importstatus", "needsmetadata");
+				asset.setValue("assetmodificationdate",inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
 				//readMetadata(asset, inContent, inArchive); //should we re-load metadata?
@@ -197,6 +198,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 //		{
 			String status = asset.get("importstatus");
 			asset.setProperty("importstatus", "needsmetadata");
+			asset.setValue("assetmodificationdate",inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 			String previewstatus = asset.get("previewstatus");
 			//			if( previewstatus == null || status.equals("2"))
 			//			{
