@@ -94,21 +94,27 @@ public class AssetTypeManager extends EnterMediaObject {
 		}
 	}
 
-	String currentassettype = hit.assettype;
+	String currentassettype = hit.assettype;  //Could have been set by the user
 	String assettype = typemap.get(fileformat);
 	if(assettype == null)
 	{
-		assettype = "none";
+		assettype = inArchive.getDefaultAssetTypeForFile(hit.getName());
 	}
 	assettype = findCorrectAssetType(hit,assettype);
 	
-	if(!assettype.equals(currentassettype))
+	
+	
+	
+	if(currentassettype == null || currentassettype.length()==0 || !assettype.equals(currentassettype))
 	{
-		return currentassettype;
+				Asset real = inArchive.getAssetSearcher().loadData(hit);
+				real.setProperty("assettype", assettype);
+				return real;
+		
 		
 	}
 	else {
-		return assettype;
+		return null;
 	}
 	
 	return null;
