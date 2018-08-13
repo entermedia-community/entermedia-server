@@ -2,14 +2,22 @@
 #if($collectionid)
 	#set( $librarycol = $mediaarchive.getData("librarycollection", $collectionid) )
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
-<h3>[[Work Folder]]</h3>
-
-<p>
-[[Copy files into your work folder]]:  $user.id/${librarycol.getName()}/{timestamp}/
+<h3>[[Desktop Download]]</h3>
 <form  name="archiveassets" id="archiveassets" 
    method="post" action="$home$apphome/views/modules/librarycollection/export.html">
+#if( $desktops.size() == 0 ) [[No desktop app connected]] #end
+
+#if( $desktops.size() > 1)
+Please close a desktop
+
+#else
+<p>[[File will be exported to your desktop]]: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
+</p>
+	<input type="hidden" name="desktopid" value="$desktop.getDesktopId()" />
+#end
+
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
-	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Export Folders]]">	   			
+	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Sync to Desktop]]">	   			
 </form>
 <h3>[[Zip File]]</h3>
 <form  name="archiveassets" id="archiveassets" 

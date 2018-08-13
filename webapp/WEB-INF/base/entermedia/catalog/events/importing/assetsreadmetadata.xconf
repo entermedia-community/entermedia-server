@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Read All Assets Metadata</property>	
+	<property name="eventname">Process Needs Metadata</property>	
 	<property name="enabled">true</property>
 	<path-action name="Script.run" allowduplicates="true">
 		<script>/${catalogid}/events/scripts/importing/assetsreadmetadata.groovy</script>

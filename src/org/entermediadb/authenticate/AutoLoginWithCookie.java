@@ -230,8 +230,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 			String name = getCookieEncryption().createMd5CookieName(inReq,AutoLoginWithCookie.ENTERMEDIAKEY,true);
 			try
 			{
-				String md5 = getCookieEncryption().getPasswordMd5(inUser.getPassword());
-				String value = inUser.getUserName() + "md542" + md5;
+				String value = getCookieEncryption().getEnterMediaKey(inUser);
 				Cookie cookie = new Cookie(name, value);
 				cookie.setMaxAge(Integer.MAX_VALUE);
 				//Needs new servelet api jar

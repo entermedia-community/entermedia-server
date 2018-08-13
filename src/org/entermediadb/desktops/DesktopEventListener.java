@@ -1,9 +1,8 @@
 package org.entermediadb.desktops;
 
-import org.entermediadb.projects.LibraryCollection;
+import java.util.Collection;
 
 public interface DesktopEventListener
 {
-	public void checkoutCollection(LibraryCollection inCollection);
-	public void uploadCollection(LibraryCollection inCollection);	
+	public void downloadFiles(Collection inAssets);
 }

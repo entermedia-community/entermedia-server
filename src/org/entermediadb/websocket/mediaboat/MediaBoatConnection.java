@@ -1,6 +1,7 @@
 package org.entermediadb.websocket.mediaboat;
 
 import java.io.StringReader;
+import java.util.Collection;
 
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
@@ -14,10 +15,12 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopEventListener;
 import org.entermediadb.desktops.DesktopManager;
-import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.ModuleManager;
+import org.openedit.data.SearcherManager;
+import org.openedit.users.User;
+import org.openedit.util.StringEncryption;
 
 public class MediaBoatConnection  extends Endpoint implements MessageHandler.Partial<String>, DesktopEventListener
 {
@@ -27,7 +30,39 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	protected ModuleManager fieldModuleManager;
 	protected Desktop fieldDesktop;
 	protected DesktopManager fieldDesktopManager;
+	protected StringEncryption fieldStringEncrytion;
+
+	protected SearcherManager fieldSearcherManager;
 	
+	
+	public SearcherManager getSearcherManager()
+	{
+		if (fieldSearcherManager == null)
+		{
+			fieldSearcherManager = (SearcherManager)getModuleManager().getBean("searcherManager");
+		}
+		return fieldSearcherManager;
+	}
+
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
+		fieldSearcherManager = inSearcherManager;
+	}
+
+	public StringEncryption getStringEncrytion()
+	{
+		if (fieldStringEncrytion == null)
+		{
+			fieldStringEncrytion = (StringEncryption)getModuleManager().getBean("stringEncryption");
+		}
+		return fieldStringEncrytion;
+	}
+
+	public void setStringEncrytion(StringEncryption inStringEncrytion)
+	{
+		fieldStringEncrytion = inStringEncrytion;
+	}
+
 	public DesktopManager getDesktopManager()
 	{
 		if (fieldDesktopManager == null)
@@ -48,7 +83,6 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		if (fieldDesktop == null)
 		{
 			fieldDesktop = (Desktop)getModuleManager().getBean("desktop");
-			
 		}
 
 		return fieldDesktop;
@@ -166,8 +200,20 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 				getDesktop().setDesktopId((String)map.get("desktopid"));
 				getDesktop().setHomeFolder((String)map.get("homefolder"));
 		   		getDesktop().setLastCompletedPercent(100);
+		   		getDesktop().setServerName((String)map.get("server"));
 		   		getDesktop().setListener(this);
 		   		getDesktopManager().addDesktop(getDesktop());
+		   		//authenticated
+		   		User user = (User)getSearcherManager().getData("system", "user", username);
+		   		String key = getStringEncrytion().getEnterMediaKey(user);
+		   		
+		   		//TODO: Authenticate
+		   		
+		   		JSONObject authenticated = new JSONObject();
+		   		authenticated.put("command", "authenticated");
+		   		authenticated.put("entermedia.key", key);
+				sendMessage(authenticated);
+		   		
 			}
 			else if ("annotation.modified".equals(command))
 			{
@@ -217,16 +263,14 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	}
 
 	@Override
-	public void checkoutCollection(LibraryCollection inCollection)
+	public void downloadFiles(Collection inAssets)
 	{
-		// TODO Auto-generated method stub
+		JSONObject command = new JSONObject();
+		command.put("command", "downloadto");
+		command.put("assetpaths", inAssets);
+		sendMessage(command);
 		
 	}
 
-	@Override
-	public void uploadCollection(LibraryCollection inCollection)
-	{
-		// TODO Auto-generated method stub
-		
-	}
+	
 }

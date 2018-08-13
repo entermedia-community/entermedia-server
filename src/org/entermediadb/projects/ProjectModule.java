@@ -21,7 +21,6 @@ import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.PathUtilities;
 
 public class ProjectModule extends BaseMediaModule {
@@ -568,30 +567,44 @@ public class ProjectModule extends BaseMediaModule {
 
 	}
 
+	public void listConnectedDesktops(WebPageRequest inReq)
+	{
+		ProjectManager manager = getProjectManager(inReq);
+		Collection desktops = manager.listConnectedDesktops(inReq.getUser());
+		inReq.putPageValue("desktops",desktops);
+		if( desktops.size() > 0)
+		{
+			inReq.putPageValue("desktop",desktops.iterator().next());
+		}
+	}
+	
 	public void exportCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		String collectionid = loadCollectionId(inReq);
 		User user = inReq.getUser();
-		if (user == null) {
+		if (user == null) 
+		{
 			throw new OpenEditException("User required ");
 		}
-		Data collection = archive.getData("librarycollection", collectionid);
+//		Data collection = archive.getData("librarycollection", collectionid);
 
 		// The trailing slash is needed for the recursive algorithm. Don't
 		// delete.
-		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
-				+ collection.getName();
+//		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
+//				+ collection.getName();
+//
+//		Date now = new Date();
+//
+//		String stamp = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy-MM-dd-HH-mm-ss");
+//
+//		infolder = infolder + "/" + stamp + "/";
 
-		Date now = new Date();
+		String desktopid = inReq.getRequestParameter("desktopid");
+		manager.downloadCollectionToClient(inReq, archive, collectionid, desktopid);
 
-		String stamp = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy-MM-dd-HH-mm-ss");
-
-		infolder = infolder + "/" + stamp + "/";
-
-		manager.exportCollection(archive, collectionid, infolder);
-
-		inReq.putPageValue("exportpath", infolder);
+		
+		//inReq.putPageValue("exportpath", infolder);
 
 		// if(getWebEventListener() != null)
 		// {
@@ -622,8 +635,6 @@ public class ProjectModule extends BaseMediaModule {
 		// librarycollectiondownloads.saveData(history);
 
 		// boolean zip = Boolean.parseBoolean(inReq.findValue("zip"));
-		inReq.setRequestParameter("path", infolder);
-		inReq.setRequestParameter("stripfolders", infolder);
 
 	}
 

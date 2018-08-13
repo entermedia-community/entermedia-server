@@ -1,5 +1,17 @@
 package org.entermediadb.desktops;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import org.entermediadb.asset.Category;
+import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.LibraryCollection;
+import org.openedit.MultiValued;
+import org.openedit.hittracker.HitTracker;
+
 public class Desktop
 {
 	protected DesktopEventListener fieldListener;
@@ -7,6 +19,11 @@ public class Desktop
 	public void setListener(DesktopEventListener inListener)
 	{
 		fieldListener = inListener;
+	}
+	
+	protected DesktopEventListener getDesktopListener()
+	{
+		return fieldListener;
 	}
 	protected String fieldUserId;
 	public String getUserId()
@@ -38,7 +55,18 @@ public class Desktop
 	protected int fieldLastCompletedPercent;
 	protected String fieldHomeFolder;
 	protected String fieldSpaceLeft;
+	protected String fieldServerName;
 	
+	public String getServerName()
+	{
+		return fieldServerName;
+	}
+
+	public void setServerName(String inServerName)
+	{
+		fieldServerName = inServerName;
+	}
+
 	public String getSpaceLeft()
 	{
 		return fieldSpaceLeft;
@@ -64,4 +92,59 @@ public class Desktop
 		fieldLastCompletedPercent = inLastCompletedPercent;
 	}
 	
+	public void checkoutCollection(MediaArchive inArchive, LibraryCollection inCollection)
+	{
+		Category cat = inCollection.getCategory();
+		downloadCat(inArchive, inCollection, cat);
+
+	}
+	private void downloadCat(MediaArchive inArchive, LibraryCollection inCollection, Category inCat)
+	{
+		List tosend = new ArrayList();
+		
+		String root = inCollection.getCategory().getCategoryPath();
+		String folder  = inCat.getCategoryPath().substring(root.length());
+		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
+		if( !folder.isEmpty())
+		{
+			path = path + "/" + folder;
+		}
+		
+		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
+		assets.enableBulkOperations();
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+		{
+			MultiValued asset = (MultiValued) iterator.next();
+			Map map = new HashMap();
+			map.put("id", asset.getId());
+			
+			String assetpath = inArchive.asLinkToOriginal(asset);
+			
+			String url = getServerName() + "/"  +  inArchive.getMediaDbId() + "/services/module/asset/downloads/originals/" + assetpath;
+			map.put("url", url);
+			
+			String primaryImageName = asset.get("primaryfile");
+			if (primaryImageName == null)
+			{
+				primaryImageName = asset.getName();
+			}
+			String savepath = path + "/" + primaryImageName;
+			map.put("savepath", savepath);
+			
+			map.put("filesize", asset.get("filesize"));
+			long time = asset.getDate("assetmodificationdate").getTime();
+			if( time > 0)
+			{
+				map.put("assetmodificationdate", String.valueOf(time));
+			}
+			tosend.add(map);
+		}
+		getDesktopListener().downloadFiles(tosend);
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			downloadCat(inArchive,inCollection, child);
+		}
+
+	}
 }

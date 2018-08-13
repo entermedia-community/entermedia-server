@@ -23,6 +23,8 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.desktops.Desktop;
+import org.entermediadb.desktops.DesktopManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -52,7 +54,17 @@ public class ProjectManager implements CatalogEnabled {
 	private int COPY = 1;
 	private int MOVE = 2;
 	protected ModuleManager fieldModuleManager;
+	protected DesktopManager fieldDesktopManager;
+	
+	public DesktopManager getDesktopManager()
+	{
+		if (fieldDesktopManager == null)
+		{
+			fieldDesktopManager = (DesktopManager)getModuleManager().getBean("desktopManager");
+		}
 
+		return fieldDesktopManager;
+	}
 	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
@@ -1003,13 +1015,15 @@ public class ProjectManager implements CatalogEnabled {
 		return userlibrary;
 	}
 
-	public void exportCollection(MediaArchive inMediaArchive, String inCollectionid, String inFolder) {
-		// Data collection = inMediaArchive.getData("librarycollection",
-		// inCollectionid);
-		AssetUtilities utilities = inMediaArchive.getAssetImporter().getAssetUtilities();
-		Category root = getRootCategory(inMediaArchive, inCollectionid);
-		ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
-		utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid, String inDesktopId) {
+		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
+		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
+		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+		
+		//Send the client a download request
+		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
+		desktop.checkoutCollection(inMediaArchive,collection);
 
 	}
 
@@ -1317,6 +1331,11 @@ public class ProjectManager implements CatalogEnabled {
 		// mediaArchive.getCategorySearcher().saveData(collectioncategory);
 		// }
 
+	}
+	public Collection listConnectedDesktops(User inUser)
+	{
+		Collection desktops = getDesktopManager().getDesktops(inUser.getId());
+		return desktops;
 	}
 
 	// public void createCollectionFromSelection(HitTracker inSelection, User
