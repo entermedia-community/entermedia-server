@@ -215,6 +215,12 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 				sendMessage(authenticated);
 		   		
 			}
+			else if("handledesktopsync".equals(command)){
+				log.info("See what we got back");
+				
+				
+				
+			}
 			else if ("annotation.modified".equals(command))
 			{
 			}
@@ -268,6 +274,15 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		JSONObject command = new JSONObject();
 		command.put("command", "downloadto");
 		command.put("assetpaths", inAssets);
+		sendMessage(command);
+		
+	}
+
+	@Override
+	public void collectFileList(String path) {
+		JSONObject command = new JSONObject();
+		command.put("command", "sendfilelist");
+		command.put("rootfolder", path);
 		sendMessage(command);
 		
 	}

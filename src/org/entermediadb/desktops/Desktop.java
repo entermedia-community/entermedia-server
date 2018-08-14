@@ -9,6 +9,7 @@ import java.util.Map;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
+import org.json.simple.JSONObject;
 import org.openedit.MultiValued;
 import org.openedit.hittracker.HitTracker;
 
@@ -98,6 +99,22 @@ public class Desktop
 		downloadCat(inArchive, inCollection, cat);
 
 	}
+
+	
+	public void importCollection(MediaArchive inArchive, LibraryCollection inCollection)
+	{
+		Category cat = inCollection.getCategory();
+
+		
+		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
+		getDesktopListener().collectFileList(path);
+
+	}
+
+	
+	
+	
+	
 	private void downloadCat(MediaArchive inArchive, LibraryCollection inCollection, Category inCat)
 	{
 		List tosend = new ArrayList();

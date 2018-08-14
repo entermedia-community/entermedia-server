@@ -484,33 +484,33 @@ public class ProjectModule extends BaseMediaModule {
 	// inReq.putPageValue("collectioncategories", categories);
 	// //inReq.putSessionValue(all.getSessionId(),all);
 	// }
-	public void importCollection(WebPageRequest inReq) {
-		MediaArchive archive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		LibraryCollection collection = (LibraryCollection) archive.getData("librarycollection", collectionid);
-
-		User user = inReq.getUser();
-		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
-				+ collection.getName() + "/";
-
-		List paths = archive.getPageManager().getChildrenPathsSorted(outfolder);
-		if (paths.isEmpty()) {
-			log.info("No import folders found ");
-			return;
-		}
-		Collections.reverse(paths);
-		String latest = (String) paths.iterator().next();
-		latest = latest + "/";
-		// Need to check if this is unique - increment a counter?
-		String note = inReq.getRequestParameter("note.value");
-		if (note == null) {
-			note = "Auto Created Revision on Import";
-		}
-		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, latest, note);
-		inReq.putPageValue("importstatus", "completed");
-
-	}
+//	public void importCollection(WebPageRequest inReq) {
+//		MediaArchive archive = getMediaArchive(inReq);
+//		ProjectManager manager = getProjectManager(inReq);
+//		String collectionid = loadCollectionId(inReq);
+//		LibraryCollection collection = (LibraryCollection) archive.getData("librarycollection", collectionid);
+//
+//		User user = inReq.getUser();
+//		String outfolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
+//				+ collection.getName() + "/";
+//
+//		List paths = archive.getPageManager().getChildrenPathsSorted(outfolder);
+//		if (paths.isEmpty()) {
+//			log.info("No import folders found ");
+//			return;
+//		}
+//		Collections.reverse(paths);
+//		String latest = (String) paths.iterator().next();
+//		latest = latest + "/";
+//		// Need to check if this is unique - increment a counter?
+//		String note = inReq.getRequestParameter("note.value");
+//		if (note == null) {
+//			note = "Auto Created Revision on Import";
+//		}
+//		manager.importCollection(inReq, inReq.getUser(), archive, collectionid, latest, note);
+//		inReq.putPageValue("importstatus", "completed");
+//
+//	}
 
 	public void copyCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
@@ -572,7 +572,7 @@ public class ProjectModule extends BaseMediaModule {
 		ProjectManager manager = getProjectManager(inReq);
 		Collection desktops = manager.listConnectedDesktops(inReq.getUser());
 		inReq.putPageValue("desktops",desktops);
-		if( desktops.size() > 0)
+		if( desktops != null && desktops.size() > 0)
 		{
 			inReq.putPageValue("desktop",desktops.iterator().next());
 		}
@@ -638,6 +638,72 @@ public class ProjectModule extends BaseMediaModule {
 
 	}
 
+	
+	
+	
+	public void importCollection(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = loadCollectionId(inReq);
+		User user = inReq.getUser();
+		if (user == null) 
+		{
+			throw new OpenEditException("User required ");
+		}
+//		Data collection = archive.getData("librarycollection", collectionid);
+
+		// The trailing slash is needed for the recursive algorithm. Don't
+		// delete.
+//		String infolder = "/WEB-INF/data/" + archive.getCatalogId() + "/workingfolders/" + user.getId() + "/"
+//				+ collection.getName();
+//
+//		Date now = new Date();
+//
+//		String stamp = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy-MM-dd-HH-mm-ss");
+//
+//		infolder = infolder + "/" + stamp + "/";
+
+		String desktopid = inReq.getRequestParameter("desktopid");
+		manager.retrieveFilesFromClient(inReq, archive, collectionid, desktopid);
+
+		
+		//inReq.putPageValue("exportpath", infolder);
+
+		// if(getWebEventListener() != null)
+		// {
+		// WebEvent event = new WebEvent();
+		// event.setSearchType(searcher.getSearchType());
+		// event.setCatalogId(searcher.getCatalogId());
+		// event.setOperation(searcher.getSearchType() + "/saved");
+		// event.setProperty("dataid", data.getId());
+		// event.setProperty("id", data.getId());
+		//
+		// event.setProperty("applicationid", inReq.findValue("applicationid"));
+		//
+		// getWebEventListener().eventFired(event);
+		// }
+
+		// Searcher librarycollectiondownloads =
+		// archive.getSearcher("librarycollectiondownloads");
+		//
+		// Data history = librarycollectiondownloads.createNewData();
+		//
+		// history.setValue("owner", inReq.getUserName());
+		// history.setValue("librarycollection", collectionid);
+		// history.setValue("date", new Date());
+		// history.setValue("revision", collection.get("revisions"));
+		//
+		// String fields[] = inReq.getRequestParameters("field");
+		// librarycollectiondownloads.updateData(inReq, fields, history);
+		// librarycollectiondownloads.saveData(history);
+
+		// boolean zip = Boolean.parseBoolean(inReq.findValue("zip"));
+
+	}
+
+	
+	
+	
 	public LibraryCollection loadCollectionFromFolder(WebPageRequest inReq) {
 		String colid = PathUtilities.extractDirectoryName(inReq.getPath());
 		ProjectManager manager = getProjectManager(inReq);

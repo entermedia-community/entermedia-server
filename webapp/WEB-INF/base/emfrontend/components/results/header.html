@@ -32,11 +32,20 @@ $context.putPageValue("hits",$hits)
 <div id="resultheader">
 	<ul id="sub-nav" class="search-views">
 	
+
+
 		#set ($enabled=$hits.getSelectionSize() > 0)
 	
 		#if( $candownload || $canconvert || $candownloadfpo ) 
 			#if( $librarycol )
+			#if( $desktops.size() == 1 )
+<li>
+					<a href="$home$apphome/views/activity/importfromdesktop.html?collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Import From Desktop]]</a>
+</li>
+#end
+			
 			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
+			
 			#else
 				#if( $enabled )
 				<li>

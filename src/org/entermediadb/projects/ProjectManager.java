@@ -1026,6 +1026,23 @@ public class ProjectManager implements CatalogEnabled {
 		desktop.checkoutCollection(inMediaArchive,collection);
 
 	}
+	
+	
+	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid, String inDesktopId) {
+		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
+		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
+		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+		
+		//Send the client a download request
+		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
+		desktop.importCollection(inMediaArchive, collection);
+
+	}
+	
+	
+	
+	
 
 	public void restoreSnapshot(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid,
 			String inRevision, String inNote) {
