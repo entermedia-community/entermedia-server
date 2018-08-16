@@ -2126,6 +2126,9 @@
  	</bean>
 
  	<bean id="desktop" class="org.entermediadb.desktops.Desktop" scope="prototype">
+ 	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
  	</bean>
 
 

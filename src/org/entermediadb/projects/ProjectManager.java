@@ -25,6 +25,7 @@ import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopManager;
+import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -1028,17 +1029,6 @@ public class ProjectManager implements CatalogEnabled {
 	}
 	
 	
-	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid, String inDesktopId) {
-		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
-		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
-		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
-		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
-		
-		//Send the client a download request
-		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
-		desktop.importCollection(inMediaArchive, collection);
-
-	}
 	
 	
 	
@@ -1354,6 +1344,40 @@ public class ProjectManager implements CatalogEnabled {
 		Collection desktops = getDesktopManager().getDesktops(inUser.getId());
 		return desktops;
 	}
+	
+	
+	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid, String inDesktopId) {
+		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
+		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
+		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+		
+		//Send the client a download request
+		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
+		desktop.importCollection(inMediaArchive, collection); //This eventually will cause saveCheckinRequest to get called by the desktop 
+		
+
+	}
+	
+	
+	
+	public void saveCheckinRequest(Desktop desktop, JSONObject inMap)
+	{
+		String collectionid = (String) inMap.get("collectionid");
+		MediaArchive archive = getMediaArchive();
+		
+		
+		//Save this request, and then somewhere start having the desktop uload files with:
+		
+//		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
+		//desktop.uploadFile(inMap);
+		
+		
+	}
+	
+	
+	
+	
 
 	// public void createCollectionFromSelection(HitTracker inSelection, User
 	// inUser)

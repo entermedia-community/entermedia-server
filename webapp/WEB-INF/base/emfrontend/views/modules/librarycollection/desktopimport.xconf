@@ -1,4 +1,6 @@
 <page>
+	<path-action name="ProjectModule.createSnapshot"/>
+
 	<path-action name="ProjectModule.importCollection"/>
 
     <path-action name="DataEditModule.loadData" >

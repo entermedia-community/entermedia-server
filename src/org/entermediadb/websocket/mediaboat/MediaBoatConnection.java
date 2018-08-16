@@ -2,6 +2,8 @@ package org.entermediadb.websocket.mediaboat;
 
 import java.io.StringReader;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
@@ -12,9 +14,11 @@ import javax.websocket.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopEventListener;
 import org.entermediadb.desktops.DesktopManager;
+import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.ModuleManager;
@@ -216,11 +220,12 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		   		
 			}
 			else if("handledesktopsync".equals(command)){
-				log.info("See what we got back");
 				
-				
+				getDesktop().checkinCollection(map);
 				
 			}
+		
+			
 			else if ("annotation.modified".equals(command))
 			{
 			}
@@ -279,10 +284,30 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	}
 
 	@Override
-	public void collectFileList(String path) {
+	public void collectFileList(MediaArchive inArchive,LibraryCollection inCollection,String path) {
 		JSONObject command = new JSONObject();
 		command.put("command", "sendfilelist");
 		command.put("rootfolder", path);
+		command.put("collectionid", inCollection.getId());
+		command.put("catalogid", inArchive.getCatalogId());
+		command.put("revision", inCollection.getCurentRevision());
+		sendMessage(command);
+		
+	}
+
+	public void uploadFile(String inPath, Map inVariables)
+	{
+		JSONObject command = new JSONObject();
+		command.put("path", inPath);
+		for (Iterator iterator = inVariables.keySet().iterator(); iterator.hasNext();)
+		{
+			String k	= (String) iterator.next();
+			Object val = inVariables.get(k);
+			command.put(k, val);
+		}
+		
+		command.put("command", "uploadtoserver");
+
 		sendMessage(command);
 		
 	}
