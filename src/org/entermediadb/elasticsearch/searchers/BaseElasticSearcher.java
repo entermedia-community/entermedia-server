@@ -2009,6 +2009,9 @@ public class BaseElasticSearcher extends BaseSearcher
 				PropertyDetail detail = (PropertyDetail) iterator.next();
 				allprops.add(detail.getId());
 			}
+			if(!allprops.contains("description")) {
+			allprops.add("description");
+			}
 			List badges = new ArrayList();
 
 			
@@ -2039,7 +2042,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						log.info("Added new detail " + propid + " to " + getSearchType() +  " as " + detail.getDataType());
 					}
 				}
-				if (detail == null || !detail.isIndex()) //&& !propid.contains("sourcepath")
+				if (detail == null || !detail.isIndex() && !propid.equals("description") ) //&& !propid.contains("sourcepath")
 				{
 					continue;
 				}
