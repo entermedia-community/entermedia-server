@@ -981,7 +981,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		  ImmutableOpenMap<String, MappingMetaData> mapping  = resp.mappings().get(oldindex);
 		   for (ObjectObjectCursor<String, MappingMetaData> c : mapping) {
 		      // System.out.println(c.key+" = "+c.value.source());
-		       types.add(c.key);
+			   if( !c.key.startsWith("$"))
+			   {
+				   types.add(c.key);
+			   }
 		   }
 
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);

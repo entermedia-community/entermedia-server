@@ -1365,14 +1365,66 @@ public class ProjectManager implements CatalogEnabled {
 	{
 		String collectionid = (String) inMap.get("collectionid");
 		MediaArchive archive = getMediaArchive();
+		LibraryCollection collection = getLibraryCollection(archive, collectionid);
+
+		Category topcategory = collection.getCategory();
+		Map remotefolder = (Map)inMap.get("root");
+
+		importClientFolder(remotefolder, topcategory);
 		
-		
+		//Commandlist to send to the client 
+//		fileinfo.put("filename",child.getName());
+//    	fileinfo.put("fullpath",child.getAbsolutePath());
+//    	fileinfo.put("size",child.length());
+//    	fileinfo.put("modificationdate",child.lastModified());
+//		
+//		inMap.
 		//Save this request, and then somewhere start having the desktop uload files with:
 		
 //		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
 		//desktop.uploadFile(inMap);
 		
 		
+	}
+	protected void importClientFolder(Map inRemotefolder, Category inTopcategory)
+	{
+		//String filename = (String)inRemotefolder.get("foldername");
+		Collection childfolders = (Collection)inRemotefolder.get("childfolders");
+		Map toremoveonserver = new HashMap();
+		for (Iterator iterator = inTopcategory.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			toremoveonserver.put(child.getName(),child);
+		}
+		for (Iterator iterator = childfolders.iterator(); iterator.hasNext();)
+		{
+			Map remotechildfolder = (Map) iterator.next();
+			String foldername = (String)remotechildfolder.get("foldername");
+			if( toremoveonserver.containsKey(foldername))
+			{
+				toremoveonserver.remove(foldername);
+			}
+			else
+			{
+				//addem
+				Category toadd = (Category)getMediaArchive().getCategorySearcher().createNewData();
+				toadd.setName(foldername);
+				inTopcategory.addChild(toadd);
+			}
+		}
+		for (Iterator iterator = toremoveonserver.values().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			Category child = (Category)toremoveonserver.get(key);
+			getMediaArchive().getCategorySearcher().delete(child, null);
+		}
+		Collection filelist = (Collection)inRemotefolder.get("filelist");
+		
+		//Save the files we need to get from the client in an uploadqueue table
+		Collection uploadlist = new ArrayList();
+		//search for assets within a category
+		HitTracker hits = getMediaArchive().query("asset").exact("category-exact", inTopcategory.getId()).search();
+
 	}
 	
 	

@@ -14,6 +14,7 @@
     #set( $sourcepath = $asset.sourcePath )
     
 	#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
+	
 
 	<tr>
 	<td class="asset-thumb">		
@@ -74,7 +75,7 @@
 						<a class="btn small" href=$asset.linkurl>[[Download]]</a>
 					#else
 					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-					<a class="btn small" href="$home$apphome/views/modules/asset/downloads/originals/#urlencode($originalpath)">[[Download]]</a>
+					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/#urlencode($originalpath)">[[Download]]</a>
 					#end
 					#set( $downloadall = true)
 					

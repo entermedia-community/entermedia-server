@@ -296,7 +296,7 @@ jQuery(document).ready(function()
 		event.stopPropagation();
 		var node = getNode(this);
 		var nodeid = node.data('nodeid');
-		var button = $("#collectionidadd");
+		var button = $("#collectionidaddbycategory");
 		button.data("rootcategory",nodeid);
 		button.data("name",node.data("categoryname"));
 		

@@ -4,4 +4,6 @@
 	<path-action name="Script.run">
 		<script>/${catalogid}/events/scripts/data/takesnapshot.groovy</script>
 	</path-action>
+	<property name="period">1d</property>
+	<property name="enabled">true</property>
 </page>

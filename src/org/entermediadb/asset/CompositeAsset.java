@@ -601,6 +601,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 				{
 					continue;
 				}
+				
 				Asset asset = loadAsset( inloopasset, data, tosave);
 				if( asset != null )
 				{
@@ -624,7 +625,7 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 						{
 							map = new LanguageMap();
 						}
-						LanguageMap langs = (LanguageMap)newval;
+						LanguageMap langs = (LanguageMap)datavalue;
 						for (Iterator iterator3 = langs.keySet().iterator(); iterator3.hasNext();)
 						{
 							String code = (String) iterator3.next();
