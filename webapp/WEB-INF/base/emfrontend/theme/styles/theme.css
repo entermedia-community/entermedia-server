@@ -1125,6 +1125,7 @@ p.noresults {
 }
 #table-editor, .table-edit-close {
     position: relative;
+    padding:0 5px!important;
 }
 #column-editor {
     position: absolute;
@@ -1745,7 +1746,7 @@ small {
     font-size: 13px;
     height: 45px;
     line-height: 45px;
-    padding: 0 15px;
+    padding: 0 12px;
     display: block;
     font-weight: normal;
 }

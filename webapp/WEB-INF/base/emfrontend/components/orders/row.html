@@ -40,7 +40,7 @@
 		</div>
 	</td>
    	<td >
-	       #set($statuslist = $searcherManager.getList($catalogid, "orderitem/status"))
+	       #set($statuslist = $searcherManager.getList($catalogid, "orderitem/approval"))
 	      
 	       	<select class="statusfield" name="${item.id}.status.value">
 	      		 #foreach($status in $statuslist)

@@ -115,7 +115,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			{
 				//restore
 				asset.setProperty("importstatus", "needsmetadata");
-				asset.setValue("assetmodificationdate",inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
+				asset.setValue("assetmodificationdate", inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
 				asset.setProperty("editstatus", "1"); //pending
 				asset.setProperty("pushstatus", "resend");
 				//readMetadata(asset, inContent, inArchive); //should we re-load metadata?
@@ -133,12 +133,12 @@ public class AssetUtilities //TODO: Rename to AssetManager
 				//				}
 				return asset;
 			}
-			
+
 			Date existingdate = asset.getDate("assetmodificationdate");
 			if (existingdate != null)
 			{
 				long filemmod = inContent.getLastModified();
-				if( asset.isEquals(filemmod) )
+				if (asset.isEquals(filemmod))
 				{
 					return null;
 				}
@@ -164,7 +164,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 					String invalid = (String) iterator.next();
 					sourcePath = sourcePath.replace(invalid, "");
 				}
-				sourcePath = "sourcepath/" + sourcePath ;
+				sourcePath = "sourcepath/" + sourcePath;
 				asset.setSourcePath(sourcePath);
 			}
 
@@ -186,37 +186,37 @@ public class AssetUtilities //TODO: Rename to AssetManager
 			}
 			asset.setValue("assetaddeddate", new Date());
 			asset.setProperty("assetviews", "1");
-			
+
 			//Don't set this here, there isn't enough info.  AssetTypeManager will handle it.
-//			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
-//			if (assettype != null)
-//			{
-//				asset.setProperty("assettype", assettype.getId());
-//			}
-		}
-//		if (importedasset)
-//		{
-			String status = asset.get("importstatus");
-			asset.setProperty("importstatus", "needsmetadata");
-			asset.setValue("assetmodificationdate",inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
-			String previewstatus = asset.get("previewstatus");
-			//			if( previewstatus == null || status.equals("2"))
+			//			Data assettype = inArchive.getDefaultAssetTypeForFile(asset.getName());
+			//			if (assettype != null)
 			//			{
-			asset.setProperty("previewstatus", "0");
+			//				asset.setProperty("assettype", assettype.getId());
 			//			}
+		}
+		//		if (importedasset)
+		//		{
+		String status = asset.get("importstatus");
+		asset.setProperty("importstatus", "needsmetadata");
+		asset.setValue("assetmodificationdate", inContent.lastModified()); //This needs to be set or it will keep thinking it's changed
+		String previewstatus = asset.get("previewstatus");
+		//			if( previewstatus == null || status.equals("2"))
+		//			{
+		asset.setProperty("previewstatus", "0");
+		//			}
 
-			asset.setProperty("pushstatus", "resend");
-			asset.setProperty("editstatus", "1");
+		asset.setProperty("pushstatus", "resend");
+		asset.setProperty("editstatus", "1");
 
-			//readMetadata(asset, inContent, inArchive);
-			
-			// TODO: clear out old cached thumbnails and conversions
-			// directory
-			if (inCludeCategories)
-			{
-				populateCategory(asset, inContent, inArchive, inUser);
-			}
-			return asset;
+		//readMetadata(asset, inContent, inArchive);
+
+		// TODO: clear out old cached thumbnails and conversions
+		// directory
+		if (inCludeCategories)
+		{
+			populateCategory(asset, inContent, inArchive, inUser);
+		}
+		return asset;
 		//}
 	}
 
@@ -359,29 +359,50 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		{
 			sourcepathmask = inArchive.getCatalogSettingValue("projectassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}
 			String uploadcategoryid = inReq.getRequestParameter("category.value");
-			
-			if( uploadcategoryid != null)
+
+			if (uploadcategoryid != null)
 			{
-				Category uploadto  = inArchive.getCategory(uploadcategoryid);
-				vals.put("categorypath", uploadto.getCategoryPath());
+
+				if (uploadcategoryid.contains("|"))
+				{
+					String[] cats = uploadcategoryid.split("\\|");
+					for (String catid : cats)
+					{
+						catid = catid.trim();
+						Category uploadto = inArchive.getCategory(catid);
+						if (uploadto != null)
+						{
+							vals.put("categorypath", uploadto.getCategoryPath());
+						}
+					}
+				}
+				else
+				{
+
+					Category uploadto = inArchive.getCategory(uploadcategoryid);
+					if (uploadto != null)
+					{
+						vals.put("categorypath", uploadto.getCategoryPath());
+					}
+				}
 			}
 		}
 		else
 		{
 			sourcepathmask = inArchive.getCatalogSettingValue("collectionassetupload"); //${division.uploadpath}/${user.userName}/${formateddate}	
-			LibraryCollection coll = (LibraryCollection)inArchive.getData("librarycollection", currentcollectionid);
+			LibraryCollection coll = (LibraryCollection) inArchive.getData("librarycollection", currentcollectionid);
 			if (coll != null)
 			{
 				vals.put("librarycollection", coll);
 				vals.put("library", coll.get("library"));
 				Category uploadto = coll.getCategory();
 				String uploadcategoryid = inReq.getRequestParameter("category.value");
-				
-				if( uploadcategoryid != null)
+
+				if (uploadcategoryid != null)
 				{
-					uploadto  = inArchive.getCategory(uploadcategoryid);
+					uploadto = inArchive.getCategory(uploadcategoryid);
 				}
-				
+
 				vals.put("categorypath", uploadto.getCategoryPath());
 			}
 		}
@@ -449,7 +470,7 @@ public class AssetUtilities //TODO: Rename to AssetManager
 		vals.put("guid", sguid);
 		sguid = sguid.replace("-", "");
 		vals.put("splitguid", sguid.substring(0, 2) + "/" + sguid.substring(3));
-		vals.put("shortguid", sguid.substring(0, 2) + "/" + sguid.substring(3,Math.min(guid.length(), 6)));
+		vals.put("shortguid", sguid.substring(0, 2) + "/" + sguid.substring(3, Math.min(guid.length(), 6)));
 
 		Date now = new Date();
 		String date = DateStorageUtil.getStorageUtil().formatDateObj(now, "yyyy/MM"); //TODO: Use DataStorage
