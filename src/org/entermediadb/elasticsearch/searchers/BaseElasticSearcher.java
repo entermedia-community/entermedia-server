@@ -360,8 +360,16 @@ public class BaseElasticSearcher extends BaseSearcher
 
 			}
 			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue()){
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
-				inSearch.addAggregation(b);
+				if(detail.isViewType("tageditor")){
+					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
+					inSearch.addAggregation(b);
+				}
+				else{
+				
+					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+					inSearch.addAggregation(b);
+					
+				}
 			}
 			else
 			{
@@ -738,10 +746,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.field("type", "string");
 			}
 		}
+		
 		else
 		{
 			jsonproperties = jsonproperties.field("type", "string");
-			if (detail.isAnalyzed())
+			if (detail.isAnalyzed() || detail.isViewType("tageditor"))
 			{
 				jsonproperties.startObject("fields");
 				jsonproperties.startObject("exact");
@@ -758,7 +767,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		// Now determine index
 		String indextype = detail.get("indextype");
-
+		
 		if (indextype == null)
 		{
 			if (!detail.isAnalyzed())
@@ -1921,7 +1930,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 
 			builder = builder.setSource(content);
-			
+			//log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
+
 			if (isRefreshSaves())
 			{
 				builder = builder.setRefresh(true);
