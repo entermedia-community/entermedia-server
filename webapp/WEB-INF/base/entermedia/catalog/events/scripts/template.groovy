@@ -1,4 +1,3 @@
-package asset;
 
 import org.openedit.data.*;
 import org.entermediadb.asset.*;

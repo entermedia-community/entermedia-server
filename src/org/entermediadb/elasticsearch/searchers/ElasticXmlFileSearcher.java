@@ -9,8 +9,10 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.dom4j.Element;
+import org.elasticsearch.action.search.ClearScrollRequest;
 import org.entermediadb.asset.SourcePathCreator;
 import org.entermediadb.data.DataArchive;
+import org.entermediadb.elasticsearch.ElasticHitTracker;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.OpenEditRuntimeException;
@@ -191,6 +193,25 @@ public class ElasticXmlFileSearcher extends BaseElasticSearcher
 				flushChanges();
 			}
 			log.info("reindexed " + processor.getExecCount());
+			ElasticHitTracker allhits = (ElasticHitTracker) getAllHits();
+			allhits.enableBulkOperations();
+			ArrayList tosave = new ArrayList();
+			for (Iterator iterator2 = allhits.iterator(); iterator2.hasNext();)
+			{
+				Data hit = (Data) iterator2.next();
+				Data real = (Data) loadData(hit);
+				tosave.add(real);
+				if (tosave.size() > 1000)
+				{
+					updateIndex(tosave, null);
+					tosave.clear();
+				}
+			}
+			updateIndex(tosave, null);
+			ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
+			clearScrollRequest.addScrollId(allhits.getLastScrollId());
+			getClient().clearScroll(clearScrollRequest).actionGet();
+
 		}
 		catch (Exception e)
 		{
