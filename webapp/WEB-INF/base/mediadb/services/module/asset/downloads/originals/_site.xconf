@@ -14,9 +14,12 @@
 	</path-action>
 	
 	<permission name="view">
+	<or>
 		<not>
 			<pagevalue name="candownload" equals="false"/>
 		</not>
+			<action name="OrderModule.canViewAsset" />
+	</or>
 	</permission>
 	
 	
