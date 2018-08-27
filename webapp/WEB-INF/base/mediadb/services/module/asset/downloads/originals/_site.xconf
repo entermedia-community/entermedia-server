@@ -21,10 +21,13 @@
 	
 	
 	<permission name="viewasset">
-		<and>
-			 <userprofile property="download" equals="true" />
-			<action name="AssetControlModule.canViewAsset" /> 
-		</and>
+		<or>
+			<and>
+			     <userprofile property="download" equals="true" />
+				<action name="AssetControlModule.canViewAsset" /> 
+			</and>
+			<action name="OrderModule.canViewAsset" />
+		</or>
 	</permission>	
 		
 </page>
