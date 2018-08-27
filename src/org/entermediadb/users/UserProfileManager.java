@@ -180,7 +180,7 @@ public class UserProfileManager
 			{
 				userprofile.setProperty("settingsgroup", "administrator");
 			}
-			else if( user != null)
+			else if( user != null && !"anonymous".equals(inUserName))
 			{
 				userprofile.setProperty("settingsgroup", "users");
 			}
