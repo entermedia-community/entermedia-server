@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root> 
+  <property id="assetid"/>
   <property id="user"/>  
   <property id="date"/>  
   <property id="details"/>  
   <property id="operation"/> 
+   
+
 </root>

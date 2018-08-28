@@ -34,13 +34,8 @@
     </name> 
   </property>  
   <property id="sourcepath" index="true" stored="true">Source Path</property>  
-  <property id="assetid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
-    <name> 
-      <language id="de"><![CDATA[Asset-ID]]></language>  
-      <language id="en"><![CDATA[Asset Id]]></language>  
-      <language id="es"><![CDATA[identificación del activo]]></language>  
-      <language id="fr"><![CDATA[ID Item]]></language> 
-    </name> 
+  <property id="assetid" index="true" type="list" stored="true" keyword="false" filter="false" editable="false" sortable="true" viewtype="asset">Asset 
+   
   </property>  
   <property id="date" datatype="date" viewtype="date" searchcomponent="datesearch" index="true" stored="true" keyword="false" filter="true" editable="false" sortable="true" type="date">Date
     <name>

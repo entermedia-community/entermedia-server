@@ -2022,6 +2022,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			if(!allprops.contains("description")) {
 			allprops.add("description");
 			}
+			if(!allprops.contains("id")) {
+				allprops.add("id");
+				}
 			List badges = new ArrayList();
 
 			
