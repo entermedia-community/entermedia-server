@@ -2062,8 +2062,8 @@ public class BaseElasticSearcher extends BaseSearcher
 					inContent.field(key, new Date());
 					continue;
 				}
-
-				Object value = inData.getValue(key);
+				
+ 				Object value = inData.getValue(key);
 				
 				
 				if (value != null)
