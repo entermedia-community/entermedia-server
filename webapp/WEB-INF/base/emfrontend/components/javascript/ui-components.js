@@ -51,7 +51,7 @@ uiload = function() {
 		if( parent.length )
 		{
 			dropdownParent = parent;
-			console.log("found modal parent, skipping");
+			//console.log("found modal parent, skipping");
 			//https://github.com/select2/select2-bootstrap-theme/issues/41
 		}
 		else
@@ -108,7 +108,7 @@ uiload = function() {
 				{
 					if ($(data).filter(function() { return this.text.localeCompare(term)===0; } ).length===0)
 					{
-						console.log("picking" + term );
+						//console.log("picking" + term );
 						return {id:term, text:term};
 					}
 				 }
@@ -410,7 +410,6 @@ uiload = function() {
 	jQuery(".submitform").livequery("click", function()
 			{
 				var theform = $(this).closest('form');
-				console.log(theform);
 				theform.submit();
 	});
 
@@ -726,7 +725,7 @@ uiload = function() {
 		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').removeClass('up');
 		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').addClass('down');
 		$(this).closest('.select-dropdown').hide();
-		console.log("Clicked");
+		//console.log("Clicked");
 	});
 
 	function select2formatResult(emdata)
@@ -770,7 +769,7 @@ uiload = function() {
 					}
 				});
 			}
-			console.log(theinput);
+			//console.log(theinput);
 
 			if( theinput.data("quicksearched") == true )
 			{
@@ -861,7 +860,7 @@ uiload = function() {
 		{
 			theinput.css("color","#000");
 			var initial = theinput.data("initialtext");
-			console.log(initial,theinput.val());
+			//console.log(initial,theinput.val());
 			if( theinput.val() === initial)
 			{
 				theinput.val('');
@@ -1036,11 +1035,11 @@ uiload = function() {
 			if( parent.length )
 			{
 				dropdownParent = parent;
-				console.log("found modal parent");
+				//console.log("found modal parent");
 			}
 			else
 			{
-				console.log("use body parent");
+				//console.log("use body parent");
 			}
 			//var value = theinput.val();
 			theinput.select2({
@@ -1190,7 +1189,7 @@ uiload = function() {
 		{
 			clickspot = event;
 			imageposition = mainimage.position();
-			console.log(event);
+			//console.log(event);
 			return false;
 		});
 
@@ -1277,7 +1276,7 @@ uiload = function() {
 
 	    if( swipe )
 	    {
-	    	console.log(div);
+	    	//console.log(div);
 	    	var event = {};
 	    	event.originalEvent = e;
 	    	event.preventDefault = function() {};
