@@ -274,6 +274,9 @@ button, input[type="button"], input[type="reset"], input[type="submit"] {
     cursor: pointer;
     -webkit-appearance: button;
 }
+.submitform {
+    cursor: pointer;
+}
 input[type="checkbox"], input[type="radio"] {
     box-sizing: border-box;
 }
@@ -880,7 +883,9 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
 #emcontainer  .emselectmenu  .active {
     font-weight: bold;
 }
-
+#emcontainer #emselectable table {
+	width: 100%;
+}
 #emcontainer #emselectable table th {
     white-space: nowrap;
     padding: 4px 0;
