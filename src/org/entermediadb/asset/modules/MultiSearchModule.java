@@ -253,7 +253,7 @@ public class MultiSearchModule extends BaseMediaModule
 			}
 			// term.setValue(val);
 			query.setProperty(term.getId(), val);
-			term.addParameter("op", operation[i]);
+			term.addValue("op", operation[i]);
 			counters.put(detail.getId(), new Integer(index));
 
 			if (operation[i].equals("is"))

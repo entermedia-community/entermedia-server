@@ -139,7 +139,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		{
 			svalue = getFromDb(inId);
 		}
-
+//		if(svalue == null){
+//			svalue = 
+//		}
+//		
+		
+		
 		return svalue;
 	}
 

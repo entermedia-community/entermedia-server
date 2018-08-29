@@ -1214,17 +1214,10 @@ public class BaseElasticSearcher extends BaseSearcher
 				// String end =
 				// DateStorageUtil.getStorageUtil().formatForStorage(new
 				// Date(Long.MAX_VALUE));
-				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(inTerm.getParameter("afterDate"));
-				Date before = DateStorageUtil.getStorageUtil().parseFromStorage(inTerm.getParameter("beforeDate"));
+				Date before = (Date) inTerm.getValue("beforeDate");
+				Date after = (Date)inTerm.getValue("afterDate");
 
-				Calendar c = new GregorianCalendar();
-
-				c.setTime(before);
-				c.set(Calendar.HOUR_OF_DAY, 23);
-				c.set(Calendar.MINUTE, 59);
-				c.set(Calendar.SECOND, 59);
-				c.set(Calendar.MILLISECOND, 999);
-				before = c.getTime();
+			
 
 				// inTerm.getParameter("beforeDate");
 
@@ -1285,14 +1278,14 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				if (inDetail.isDataType("double"))
 				{
-					Double lowval = Double.valueOf(inTerm.getParameter("lowval"));
-					Double highval = Double.valueOf(inTerm.getParameter("highval"));
+					Double lowval = (Double) inTerm.getValue("lowval");
+					Double highval =  (Double) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
 				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
 				{
-					Long lowval = Long.valueOf(inTerm.getParameter("lowval"));
-					Long highval = Long.valueOf(inTerm.getParameter("highval"));
+					Long lowval =  (Long) inTerm.getValue("lowval");
+					Long highval = (Long) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
 			}
@@ -2071,6 +2064,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 
 				Object value = inData.getValue(key);
+				
+				
 				if (value != null)
 				{
 					if (value instanceof String && ((String) value).isEmpty())
