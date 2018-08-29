@@ -1341,6 +1341,9 @@ public class ProjectManager implements CatalogEnabled {
 	}
 	public Collection listConnectedDesktops(User inUser)
 	{
+		if(inUser == null){
+			return null;
+		}
 		Collection desktops = getDesktopManager().getDesktops(inUser.getId());
 		return desktops;
 	}
