@@ -59,7 +59,7 @@
 		<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
 		#end
 		<li>
-			<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$context.getText($entry.getName())" href="#">
+			<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#">
 			<span> $entry.getText($context) ($entry.count)</span>
 			</a>
 		</li>
