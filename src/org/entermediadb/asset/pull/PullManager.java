@@ -128,7 +128,14 @@ public class PullManager implements CatalogEnabled
 					}
 					if( node.get("lastpulldate") != null)
 					{
-						Date pulldate = (Date)node.getValue("lastpulldate");
+						Object dateob = node.getValue("lastpulldate");
+						Date pulldate = null;
+						if(dateob instanceof String){
+							pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
+						} else{
+							 pulldate = (Date)node.getValue("lastpulldate");	
+						}
+						
 						if( pulldate.after(now))
 						{
 							log.info("We just ran a pull within last 10 seconds");
