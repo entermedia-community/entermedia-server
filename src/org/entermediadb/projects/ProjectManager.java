@@ -1024,6 +1024,10 @@ public class ProjectManager implements CatalogEnabled {
 		
 		//Send the client a download request
 		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
+		if( desktop == null)
+		{
+			throw new OpenEditException("Desktop disconnected");
+		}
 		desktop.checkoutCollection(inMediaArchive,collection);
 
 	}
@@ -1362,9 +1366,9 @@ public class ProjectManager implements CatalogEnabled {
 
 	}
 	
+	/*
 	
-	
-	public void saveCheckinRequest(Desktop desktop, JSONObject inMap)
+	public void processCheckinRequest(Desktop desktop, JSONObject inMap)
 	{
 		String collectionid = (String) inMap.get("collectionid");
 		MediaArchive archive = getMediaArchive();
@@ -1372,24 +1376,13 @@ public class ProjectManager implements CatalogEnabled {
 
 		Category topcategory = collection.getCategory();
 		Map remotefolder = (Map)inMap.get("root");
-
+		
+		//get a version name
+		long revision = collection.getCurentRevision();
 		importClientFolder(remotefolder, topcategory);
-		
-		//Commandlist to send to the client 
-//		fileinfo.put("filename",child.getName());
-//    	fileinfo.put("fullpath",child.getAbsolutePath());
-//    	fileinfo.put("size",child.length());
-//    	fileinfo.put("modificationdate",child.lastModified());
-//		
-//		inMap.
-		//Save this request, and then somewhere start having the desktop uload files with:
-		
-//		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
-		//desktop.uploadFile(inMap);
-		
-		
+			
 	}
-	protected void importClientFolder(Map inRemotefolder, Category inTopcategory)
+	protected Collection importClientFolder(Map inRemotefolder, Category inTopcategory)
 	{
 		//String filename = (String)inRemotefolder.get("foldername");
 		Collection childfolders = (Collection)inRemotefolder.get("childfolders");
@@ -1423,14 +1416,16 @@ public class ProjectManager implements CatalogEnabled {
 		}
 		Collection filelist = (Collection)inRemotefolder.get("filelist");
 		
-		//Save the files we need to get from the client in an uploadqueue table
-		Collection uploadlist = new ArrayList();
 		//search for assets within a category
 		HitTracker hits = getMediaArchive().query("asset").exact("category-exact", inTopcategory.getId()).search();
 
+		//Save the files we need to get from the client in an uploadqueue table
+		Collection uploadlist = new ArrayList();
+
+		
 	}
 	
-	
+	*/
 	
 	
 

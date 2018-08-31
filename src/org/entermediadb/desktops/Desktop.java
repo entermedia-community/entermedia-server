@@ -125,10 +125,16 @@ public class Desktop
 		downloadCat(inArchive, inCollection, cat);
 
 	}
-
+	
+	/*
+	 * 1. UI is clicked
+	 * 2. We tell the client to send us a list of files they have MediaBoatConnection.collectFileList
+	 * 3. Once we have the files we diff it in "handledesktopsync" that calls Desktop.checkinCollection
+	 * 4. 
+	 */
 	public void importCollection(MediaArchive inArchive, LibraryCollection inCollection)
 	{
-		Category cat = inCollection.getCategory();
+		//Category cat = inCollection.getCategory();
 
 		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
 		getDesktopListener().collectFileList(inArchive, inCollection, path);
@@ -144,7 +150,7 @@ public class Desktop
 		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
 		if (!folder.isEmpty())
 		{
-			path = path + "/" + folder;
+			path = path + folder;
 		}
 
 		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
@@ -176,22 +182,13 @@ public class Desktop
 			}
 			tosend.add(map);
 		}
-		getDesktopListener().downloadFiles(tosend);
+		getDesktopListener().downloadFiles(path,tosend);
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
 			downloadCat(inArchive, inCollection, child);
 		}
 
-	}
-
-	public void checkinCollection(JSONObject map)
-	{		
-		String catalogid = (String) map.get("catalogid");
-		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
-		ProjectManager pm = archive.getProjectManager();
-		pm.saveCheckinRequest(this,map);
-		
 	}
 
 	public void uploadFile(JSONObject inMap)

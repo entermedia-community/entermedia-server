@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties> 
-  <property id="id" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">ID 
+  <property id="id" index="true" stored="true" keyword="false"  editable="false" >ID 
     <name> 
       <language id="de"><![CDATA[Ich würde]]></language>  
       <language id="en"><![CDATA[ID]]></language>  
@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[ID]]></language> 
     </name> 
   </property>  
-  <property id="name" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Name 
+  <property id="name" editable="true" index="true" stored="true" keyword="false"  >Name 
     <name> 
       <language id="de"><![CDATA[Name]]></language>  
       <language id="en"><![CDATA[Name]]></language>  
@@ -17,7 +17,7 @@
       <language id="fr"><![CDATA[Prénom]]></language> 
     </name> 
   </property>  
-  <property id="uploadstatus" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">Status 
+  <property id="uploadstatus" editable="true" index="true" stored="true" keyword="false"  >Status 
     <name> 
       <language id="de"><![CDATA[Status]]></language>  
       <language id="en"><![CDATA[Status]]></language>  
@@ -25,7 +25,7 @@
       <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
-  <property id="filesize" editable="true" type="number" index="true" stored="true" keyword="false" filter="false" sortable="true">File Size 
+  <property id="filesize" editable="true" type="number" index="true" stored="true" keyword="false"  >File Size 
     <name> 
       <language id="de"><![CDATA[Dateigröße]]></language>  
       <language id="en"><![CDATA[File Size]]></language>  
@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Taille du fichier]]></language> 
     </name> 
   </property>  
-  <property id="filesizeuploaded" editable="true" type="number" index="true" stored="true" keyword="false" filter="false" sortable="true">Upload So Far 
+  <property id="filesizeuploaded" editable="true" type="number" index="true" stored="true" keyword="false"  >Upload So Far 
     <name> 
       <language id="de"><![CDATA[laden so weit]]></language>  
       <language id="en"><![CDATA[Upload So Far]]></language>  
@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Télécharger jusqu&#39;ici]]></language> 
     </name> 
   </property>  
-  <property id="date" editable="true" type="date" viewtype="datetime" index="true" stored="true" keyword="false" filter="false" sortable="true">Date 
+  <property id="date" editable="true" type="date" viewtype="datetime" index="true" stored="true" keyword="false"  >Date 
     <name> 
       <language id="de"><![CDATA[Datum]]></language>  
       <language id="en"><![CDATA[Date]]></language>  
@@ -49,7 +49,7 @@
       <language id="fr"><![CDATA[Date]]></language> 
     </name> 
   </property>  
-  <property id="sourcepath" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Source Path
+  <property id="sourcepath" index="true" stored="true" keyword="false"  editable="false" >Source Path
     <name>
       <language id="de"><![CDATA[Source-Pfad]]></language>
       <language id="en"><![CDATA[Source Path]]></language>
@@ -57,4 +57,10 @@
       <language id="fr"><![CDATA[Chemin d&#39;accès d&#39;origine]]></language>
     </name>
   </property> 
+  <property id="versionid" index="true" stored="true" keyword="false" editable="true" >
+    <name>
+      <language id="en"><![CDATA[Version]]></language>
+    </name>
+  </property> 
+
 </properties>

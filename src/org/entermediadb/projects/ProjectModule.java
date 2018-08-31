@@ -2,10 +2,11 @@ package org.entermediadb.projects;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -13,6 +14,11 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.upload.FileUpload;
+import org.entermediadb.asset.upload.FileUploadItem;
+import org.entermediadb.asset.upload.UploadRequest;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -20,6 +26,7 @@ import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.profile.UserProfile;
+import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
@@ -737,10 +744,6 @@ public class ProjectModule extends BaseMediaModule {
 	//
 	// }
 
-	public void searchForAssetsOnLibrary(WebPageRequest inReq) {
-		MediaArchive archive = getMediaArchive(inReq);
-
-	}
 
 	public void approveSelection(WebPageRequest inReq) {
 		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
@@ -826,4 +829,161 @@ public class ProjectModule extends BaseMediaModule {
 		inReq.putPageValue("userupload", upload);
 	}
 
+	public void syncRemoteFolder(WebPageRequest inReq)
+	{
+		
+		Map params = inReq.getJsonRequest();
+		
+		String catalogid = (String)params.get("catalogid");
+		MediaArchive archive = getMediaArchive(catalogid);
+		Map folderdetails = (Map)params.get("folderdetails");
+		
+		//Loop over the existing files and diff it
+		String collectionid  = (String)params.get("collectionid");
+		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive, collectionid);
+		String catpath = collection.getCategory().getCategoryPath();
+		String subfolder = (String)params.get("subfolder");
+		if( subfolder != null && !subfolder.isEmpty() )
+		{
+			catpath = catpath + "/" + subfolder;
+		}
+		Category subcat = archive.createCategoryPath(catpath);
+		HitTracker tracker = archive.query("asset").exact("category-exact", subcat.getId() ).search();
+		Map existingassets = new HashMap(tracker.size());
+		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+		{
+			Data asset = (Data) iterator.next();
+			existingassets.put(asset.getName(), asset);
+		}
+		
+		Collection toupload = new ArrayList();
+		Collection files = (Collection)folderdetails.get("filelist");
+		for (Iterator iterator = files.iterator(); iterator.hasNext();)
+		{
+			Map fileinfo = (Map) iterator.next();
+			String filename = (String)fileinfo.get("filename");
+			long filesize = getLong(fileinfo.get("filesize"));
+			Data data = (Data)existingassets.get(filename);
+			existingassets.remove(filename);
+			if( data != null)
+			{
+				fileinfo.put("assetid", data.getId());
+			}
+			
+			boolean addit = false;
+			if( data == null)
+			{
+				addit = true;
+			}
+			else if( filesize != -1)
+			{
+				Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
+				ContentItem item = archive.getOriginalContent(asset);
+				if( item.getLength() != filesize)
+				{
+					addit = true;
+				}
+			}
+			//TODO: md5?
+			if( addit )
+			{
+				toupload.add(fileinfo);
+			}
+		}
+		Collection toremove = new ArrayList(existingassets.values());
+		for (Iterator iterator = toremove.iterator(); iterator.hasNext();)
+		{
+			Data data = (Data) iterator.next();
+			Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
+			asset.removeCategory(subcat);
+		}
+		archive.getAssetSearcher().saveAllData(toremove, null);
+		params.remove("folderdetails");
+		params.put("toupload",toupload);
+		inReq.putPageValue("params",new JSONObject(params));
+				
+	}
+
+	public void uploadFile(WebPageRequest inReq) throws Exception
+	{
+		//MediaArchive archive = getMediaArchive(inReq);
+		FileUpload command = new FileUpload();
+		command.setPageManager(getPageManager());
+		UploadRequest properties = command.parseArguments(inReq);
+		if (properties == null)
+		{
+			return;
+		}
+		//String folderdetailsstr = inReq.getRequestParameter("folderdetails");
+		//Map folderdetails = (Map)new JSONParser().parse(folderdetailsstr);
+		String subfolder = (String)inReq.getRequestParameter("subfolder");
+		String collectionid = (String)inReq.getRequestParameter("collectionid");
+		String assetid = inReq.getRequestParameter("assetid");
+		String catalogid = inReq.getRequestParameter("catalogid");
+		String assetmodificationdate = inReq.getRequestParameter("assetmodificationdate");
+		//Should only be one asset
+		FileUploadItem item = properties.getFirstItem();
+		//Move to right place
+		log.info("save to " + collectionid + subfolder + "/" + item.getFileItem().getName());
+		MediaArchive archive = getMediaArchive(catalogid);
+		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive, collectionid);
+		String sourcepath = collection.getCategory().getCategoryPath();
+		if( subfolder != null)
+		{
+			sourcepath = sourcepath + "/" + subfolder + "/" + item.getFileItem().getName();
+		}
+		else
+		{
+			sourcepath = sourcepath + "/" + item.getFileItem().getName();
+		}
+		String savepath = "/WEB-INF/data/" + catalogid +"/originals/" + sourcepath;
+		ContentItem contentitem = properties.saveFileAs(item, savepath, inReq.getUser());
+		//set mod date assetmodificationdate
+		Asset asset = null;
+		if( assetid != null)
+		{
+			asset = archive.getAsset(assetid);
+		}
+		if( asset == null)
+		{
+			asset = (Asset)archive.getAssetSearcher().createNewData();
+			asset.setSourcePath(sourcepath);
+		}
+		asset.setProperty("importstatus", "needsmetadata");
+		asset.setValue("assetmodificationdate",contentitem.lastModified()); //This needs to be set or it will keep thinking it's changed
+		asset.setProperty("editstatus", "1"); //pending
+
+		//Category use ID?
+		Category cat = null;
+		if( subfolder == null )
+		{
+			cat = collection.getCategory();
+		}
+		else
+		{
+			cat = archive.createCategoryPath( "/" + collection.getCategory().getCategoryPath() + "/" + subfolder );
+		}
+		asset.addCategory(cat);
+		archive.saveAsset(asset);
+		//Fire event
+		archive.fireSharedMediaEvent("importing/assetscreated");
+
+	}
+	private long getLong(Object inObject)
+	{
+		if( inObject == null)
+		{
+			return -1;
+		}
+		if( inObject instanceof String)
+		{
+			return Long.parseLong((String)inObject);
+		}
+		if( inObject instanceof Integer)
+		{
+			return Integer.valueOf((int)inObject);
+		}
+		return (long)inObject;
+	}
+	
 }

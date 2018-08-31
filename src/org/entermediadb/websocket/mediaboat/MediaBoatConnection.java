@@ -19,6 +19,7 @@ import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopEventListener;
 import org.entermediadb.desktops.DesktopManager;
 import org.entermediadb.projects.LibraryCollection;
+import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.ModuleManager;
@@ -219,22 +220,6 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 				sendMessage(authenticated);
 		   		
 			}
-			else if("handledesktopsync".equals(command)){
-				
-				getDesktop().checkinCollection(map);
-				
-			}
-		
-			
-			else if ("annotation.modified".equals(command))
-			{
-			}
-			else if ("annotation.removed".equals(command))
-			{
-			}
-			else if ("annotation.added".equals(command)) //Return all the annotation on this asset
-			{
-			}
 		}
 		catch (Exception e)
 		{
@@ -274,10 +259,11 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	}
 
 	@Override
-	public void downloadFiles(Collection inAssets)
+	public void downloadFiles(String inPath,Collection inAssets)
 	{
 		JSONObject command = new JSONObject();
 		command.put("command", "downloadto");
+		command.put("path", inPath);
 		command.put("assetpaths", inAssets);
 		sendMessage(command);
 		
@@ -286,10 +272,11 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	@Override
 	public void collectFileList(MediaArchive inArchive,LibraryCollection inCollection,String path) {
 		JSONObject command = new JSONObject();
-		command.put("command", "sendfilelist");
+		command.put("command", "checkincollection");
 		command.put("rootfolder", path);
 		command.put("collectionid", inCollection.getId());
 		command.put("catalogid", inArchive.getCatalogId());
+		command.put("mediadbid", inArchive.getMediaDbId());
 		command.put("revision", inCollection.getCurentRevision());
 		sendMessage(command);
 		

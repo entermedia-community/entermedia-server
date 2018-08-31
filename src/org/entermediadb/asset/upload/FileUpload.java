@@ -259,7 +259,8 @@ public class FileUpload
 							continue;
 						}
 					}
-					
+					else
+					{
 						FileUploadItem foundUpload = new FileUploadItem();
 						foundUpload.setFileItem(tmp);
 						String name = tmp.getName();
@@ -278,7 +279,7 @@ public class FileUpload
 						foundUpload.setCount(count);
 						count++;
 						upload.addUploadItem(foundUpload);
-					
+					}
 				}
 			}
 		}

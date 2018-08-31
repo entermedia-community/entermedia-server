@@ -1,5 +1,4 @@
 <page>
-	<path-action name="ProjectModule.createSnapshot"/>
 
 	<path-action name="ProjectModule.importCollection"/>
 

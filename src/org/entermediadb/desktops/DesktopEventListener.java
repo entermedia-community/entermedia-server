@@ -8,7 +8,7 @@ import org.entermediadb.projects.LibraryCollection;
 
 public interface DesktopEventListener
 {
-	public void downloadFiles(Collection inAssets);
+	public void downloadFiles(String inPath,Collection inAssets);
 
 	public void collectFileList(MediaArchive inArchive,LibraryCollection inCollection, String path);
 
