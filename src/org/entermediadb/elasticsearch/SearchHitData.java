@@ -211,7 +211,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				}
 			}
 			if(value ==null){
-				
+				if(getSearchData() != null){
 					value = getSearchData().get(inId + "_int");
 					if(value != null && value instanceof Map){
 						LanguageMap map = new LanguageMap((Map) value);
@@ -221,7 +221,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 							return map.toString();
 						}
 					}
-				 
+				}
 			}
 			
 			
