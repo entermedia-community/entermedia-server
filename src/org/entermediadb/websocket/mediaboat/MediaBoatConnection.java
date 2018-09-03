@@ -209,10 +209,32 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		   		getDesktop().setListener(this);
 		   		getDesktopManager().addDesktop(getDesktop());
 		   		//authenticated
+		   		String keyorpasswordentered = (String)map.get("entermedia.key");
 		   		User user = (User)getSearcherManager().getData("system", "user", username);
+		   		if( user == null)
+		   		{
+		   			JSONObject authenticated = new JSONObject();
+			   		authenticated.put("command", "authenticatefail");
+			   		authenticated.put("reason", "User did not exist");
+					sendMessage(authenticated);
+					return;
+		   		}
 		   		String key = getStringEncrytion().getEnterMediaKey(user);
-		   		
-		   		//TODO: Authenticate
+
+		   		if( !key.equals(keyorpasswordentered))
+		   		{
+		   			//check password
+		   			String clearpassword = getStringEncrytion().decryptIfNeeded(user.getPassword());
+		   			if( !keyorpasswordentered.equals(clearpassword))
+		   			{
+				   		JSONObject authenticated = new JSONObject();
+				   		authenticated.put("command", "authenticatefail");
+				   		authenticated.put("reason", "Password did not match");
+						sendMessage(authenticated);
+						return;
+		   			}
+		   		}
+
 		   		
 		   		JSONObject authenticated = new JSONObject();
 		   		authenticated.put("command", "authenticated");

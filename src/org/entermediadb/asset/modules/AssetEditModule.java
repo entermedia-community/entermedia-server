@@ -114,7 +114,7 @@ public class AssetEditModule extends BaseMediaModule
 
 	public void writeXmpData(WebPageRequest inReq) throws Exception
 	{
-		XmpWriter writer = (XmpWriter) getModuleManager().getBean("xmpWriter");
+		//XmpWriter writer = (XmpWriter) getModuleManager().getBean("xmpWriter");
 		String assetid = inReq.getRequestParameter("assetid");
 		if( assetid == null)
 		{
@@ -694,7 +694,7 @@ public class AssetEditModule extends BaseMediaModule
 	
 	public void createAssetFromUploads(final WebPageRequest inReq) throws Exception
 	{
-		final List pages = getUploadedPages(inReq);
+		final List<ContentItem> pages = getUploadedPages(inReq);
 		createAssetsFromPages(pages,inReq);
 	}
 	
@@ -844,7 +844,7 @@ public class AssetEditModule extends BaseMediaModule
 			
 		}
 	}
-	protected void createAssetsFromPages(List<Page> inPages, WebPageRequest inReq)
+	protected void createAssetsFromPages(List<ContentItem> inPages, WebPageRequest inReq)
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
 		final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
@@ -889,7 +889,7 @@ public class AssetEditModule extends BaseMediaModule
 	}
 	
 	
-	protected Map<String,ContentItem> savePages(WebPageRequest inReq, MediaArchive inArchive, List<Page> inPages)
+	protected Map<String,ContentItem> savePages(WebPageRequest inReq, MediaArchive inArchive, List<ContentItem> inPages)
 	{
 		//if we are uploading into a collection?
 		Boolean incollection = inReq.findValue("currentcollection") != null;
@@ -897,9 +897,9 @@ public class AssetEditModule extends BaseMediaModule
 		Map pages = new HashMap();
 		for (Iterator iterator = inPages.iterator(); iterator.hasNext();)
 		{
-			Page page = (Page) iterator.next();
+			ContentItem contentitem = (ContentItem) iterator.next();
 			
-			String filename = page.getName();
+			String filename = contentitem.getName();
 			if(filename.startsWith("tmp") && filename.indexOf('_') > -1)
 			{
 				filename = filename.substring(filename.indexOf('_') + 1);
@@ -913,7 +913,7 @@ public class AssetEditModule extends BaseMediaModule
 				assetsourcepath = inArchive.getAssetImporter().getAssetUtilities().createSourcePath(inReq,inArchive,filename);
 				if( assetsourcepath.endsWith("/"))
 				{
-					assetsourcepath  = assetsourcepath + page.getName();			
+					assetsourcepath  = assetsourcepath + contentitem.getName();			
 				}
 			}
 			else if (inputsourcepath.endsWith("/") ) //EMBridge expects the filename to be added on
@@ -929,11 +929,13 @@ public class AssetEditModule extends BaseMediaModule
 			{
 					try
 					{
-						Page unzipfolder = getPageManager().getPage(page.getDirectory() + "unzip/");
+						String directory = PathUtilities.extractDirectoryPath(contentitem.getPath());
+
+						Page unzipfolder = getPageManager().getPage(directory + "unzip/");
 						File folder = new File( unzipfolder.getContentItem().getAbsolutePath());
 						folder.mkdirs();
 						String collectionfolder = PathUtilities.extractDirectoryPath( assetsourcepath);
-						Collection files = getPageManager().getZipUtil().unzip(page.getInputStream(),folder);
+						Collection files = getPageManager().getZipUtil().unzip(contentitem.getInputStream(),folder);
 						for (Iterator iterator2 = files.iterator(); iterator2.hasNext();) 
 						{
 							File one = (File) iterator2.next();
@@ -966,7 +968,7 @@ public class AssetEditModule extends BaseMediaModule
 					}
 					i++;
 				}
-				pages.put(assetsourcepath, page.getContentItem());
+				pages.put(assetsourcepath, contentitem);
 			}
 		}
 		return pages;

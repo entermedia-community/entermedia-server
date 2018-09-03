@@ -904,6 +904,17 @@ public class ProjectModule extends BaseMediaModule {
 				
 	}
 
+	/*
+	 *
+Server ProjectManager.retrieveFilesFromClient
+Server Desktop.importCollection
+Client AppController.checkinFiles
+Client EnterMediaModel.pushFolder
+Server ProjectModule.syncRemoteFolder
+Client EnterMediaModule.uploadFilesIntoCollection
+Server ProjectModule.uploadFile
+
+	 */
 	public void uploadFile(WebPageRequest inReq) throws Exception
 	{
 		//MediaArchive archive = getMediaArchive(inReq);
