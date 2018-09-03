@@ -490,7 +490,11 @@
 		</property>
 	</bean>	
 	
-
+<bean id="scriptedExtractor" class="org.entermediadb.asset.scanner.ScriptMetadataExtractor" >
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>	
 	<bean id="exiftoolMetadataExtractor"
 		class="org.entermediadb.asset.scanner.ExiftoolMetadataExtractor">
 		<property name="exec">
@@ -1978,7 +1982,8 @@
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />
 				<ref bean="md5MetadataExtractor" />
-								<ref bean="geoTiffExtractor" />
+				<ref bean="geoTiffExtractor" />
+				<ref bean="scriptedExtractor" />
 				
 			</list>
 		</property>
