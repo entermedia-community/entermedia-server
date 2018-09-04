@@ -843,11 +843,16 @@ public class ProjectModule extends BaseMediaModule {
 		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive, collectionid);
 		String catpath = collection.getCategory().getCategoryPath();
 		String subfolder = (String)params.get("subfolder");
+		Category subcat = null;
 		if( subfolder != null && !subfolder.isEmpty() )
 		{
 			catpath = catpath + "/" + subfolder;
+			subcat = archive.createCategoryPath(catpath);
 		}
-		Category subcat = archive.createCategoryPath(catpath);
+		else
+		{
+			subcat = collection.getCategory();
+		}
 		HitTracker tracker = archive.query("asset").exact("category-exact", subcat.getId() ).search();
 		Map existingassets = new HashMap(tracker.size());
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
@@ -858,6 +863,7 @@ public class ProjectModule extends BaseMediaModule {
 		
 		Collection toupload = new ArrayList();
 		Collection files = (Collection)folderdetails.get("filelist");
+		log.info("Keep these files: " + files);
 		for (Iterator iterator = files.iterator(); iterator.hasNext();)
 		{
 			Map fileinfo = (Map) iterator.next();
@@ -895,11 +901,13 @@ public class ProjectModule extends BaseMediaModule {
 		{
 			Data data = (Data) iterator.next();
 			Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
+			log.info("removed old asset " + data.getName());
 			asset.removeCategory(subcat);
 		}
 		archive.getAssetSearcher().saveAllData(toremove, null);
 		params.remove("folderdetails");
 		params.put("toupload",toupload);
+		log.info("Requesting to upload " + toupload);
 		inReq.putPageValue("params",new JSONObject(params));
 				
 	}
@@ -941,7 +949,7 @@ Server ProjectModule.uploadFile
 		String sourcepath = collection.getCategory().getCategoryPath();
 		if( subfolder != null)
 		{
-			sourcepath = sourcepath + "/" + subfolder + "/" + item.getFileItem().getName();
+			sourcepath = sourcepath + subfolder + "/" + item.getFileItem().getName();
 		}
 		else
 		{
@@ -972,7 +980,7 @@ Server ProjectModule.uploadFile
 		}
 		else
 		{
-			cat = archive.createCategoryPath( "/" + collection.getCategory().getCategoryPath() + "/" + subfolder );
+			cat = archive.createCategoryPath( collection.getCategory().getCategoryPath() + subfolder );
 		}
 		asset.addCategory(cat);
 		archive.saveAsset(asset);

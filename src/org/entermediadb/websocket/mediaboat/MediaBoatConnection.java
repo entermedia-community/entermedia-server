@@ -19,7 +19,6 @@ import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopEventListener;
 import org.entermediadb.desktops.DesktopManager;
 import org.entermediadb.projects.LibraryCollection;
-import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.ModuleManager;
@@ -36,10 +35,19 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	protected Desktop fieldDesktop;
 	protected DesktopManager fieldDesktopManager;
 	protected StringEncryption fieldStringEncrytion;
-
 	protected SearcherManager fieldSearcherManager;
+	protected String fieldCurrentConnectionId;
 	
-	
+	public String getCurrentConnectionId()
+	{
+		return fieldCurrentConnectionId;
+	}
+
+	public void setCurrentConnectionId(String inCurrentConnectionId)
+	{
+		fieldCurrentConnectionId = inCurrentConnectionId;
+	}
+
 	public SearcherManager getSearcherManager()
 	{
 		if (fieldSearcherManager == null)
@@ -234,8 +242,8 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 						return;
 		   			}
 		   		}
-
-		   		
+		   		String connectionid = (String)map.get("connectionid");
+		   		setCurrentConnectionId(connectionid);
 		   		JSONObject authenticated = new JSONObject();
 		   		authenticated.put("command", "authenticated");
 		   		authenticated.put("entermedia.key", key);
@@ -264,8 +272,10 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	{
 		try
 		{
+			String command = (String)json.get("command");
+			json.put("connectionid",getCurrentConnectionId());
 			remoteEndpointBasic.sendText(json.toJSONString());
-			log.info("sent message");
+			log.info("sent " + command + " to  " + getCurrentConnectionId() );
 		}
 		catch (Exception e)
 		{
@@ -290,7 +300,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		sendMessage(command);
 		
 	}
-
+	
 	@Override
 	public void collectFileList(MediaArchive inArchive,LibraryCollection inCollection,String path) {
 		JSONObject command = new JSONObject();
