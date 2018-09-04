@@ -66,12 +66,16 @@ public class AssetEditModule extends BaseMediaModule
 	
 	public List<ContentItem> getUploadedPages(WebPageRequest inReq)
 	{
-		List pages = new ArrayList();
+		List contentitems = new ArrayList();
 
 		List unzipped = (List) inReq.getPageValue("unzippedfiles");
 		if(unzipped != null && unzipped.size() > 0)
 		{
-			pages.addAll(unzipped);
+			for (Iterator iterator = unzipped.iterator(); iterator.hasNext();)
+			{
+				Page page = (Page) iterator.next();
+				contentitems.add(page.getContentItem());
+			}
 		}
 		else
 		{
@@ -85,13 +89,13 @@ public class AssetEditModule extends BaseMediaModule
 					{
 						FileUploadItem uploadItem = (FileUploadItem) iterator.next();
 						Page uploaded = uploadItem.getSavedPage();
-						pages.add(uploaded.getContentItem());
+						contentitems.add(uploaded.getContentItem());
 					}
 				}
 			}		
 		}
 		
-		return pages;
+		return contentitems;
 	}
 	public boolean makeFolderAsset(WebPageRequest inReq) throws Exception
 	{
