@@ -8,7 +8,6 @@ import org.dom4j.Attribute
 import org.dom4j.Element
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequest
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse
-import org.elasticsearch.action.admin.indices.refresh.RefreshResponse
 import org.elasticsearch.action.bulk.BulkProcessor
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.client.AdminClient
@@ -295,7 +294,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		mappings.each{
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + it + ".json");
 			String searchtype = it.substring(0, it.indexOf("-"));
-			
+
 			putMapping( mediaarchive,searchtype,upload, tempindex);
 
 		}
@@ -307,7 +306,7 @@ public void restore(MediaArchive mediaarchive, Data site, Data inSnap, boolean c
 		categories.setAlternativeIndex(null);
 		for( String type in ordereredtypes ) {
 			Page upload = mediaarchive.getPageManager().getPage(rootfolder + "/json/" + type + ".zip");
-			
+
 			try{
 				if( upload.exists() ) {
 					importJson(site, mediaarchive,type,upload, tempindex);
@@ -560,7 +559,7 @@ public void importCsv(Data site, MediaArchive mediaarchive, String searchtype, P
 public void importJson(Data site, MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
 
 
-	
+
 
 
 	Searcher searcher = mediaarchive.getSearcher(searchtype);
@@ -569,7 +568,8 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 	}
 
 	ArrayList errors = new ArrayList();
-	BulkProcessor processor = mediaarchive.getNodeManager().getBulkProcessor(errors);
+
+	ArrayList tosave = new ArrayList();
 	
 	try{
 
@@ -601,17 +601,29 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 						// read the record into a tree model,
 						// this moves the parsing position to the end of it
 						JsonNode node = jp.readValueAsTree();
-						String json  = node.toString();
+						Data object = searcher.createNewData();
+						Map nodedata = node.getProperties();
+						nodedata.keySet().each{
+							Object val = nodedata.get(it);
+							object.setValue(it, val);
+						}
+						JsonNode id = node.get("id");
+						String finalid = null;
+						if(id != null){
+							finalid = id.asText();
+							object.setId(finalid);
+							//log.info("Set ID to " + finalid);
+						}
+						tosave.add(object);
 
-						IndexRequest req = Requests.indexRequest(tempindex).type(searchtype);
-						req.source(json);
-						processor.add(req);
 
 
 
 
-
-
+						if(tosave.size() > 1000){
+							searcher.saveAllData(tosave, null);
+						tosave.clear();
+						}
 
 					}
 				} else {
@@ -626,29 +638,24 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 	}
 	finally{
 
+
 		
-			processor.flush();
-			processor.awaitClose(5, TimeUnit.MINUTES);
-			if(errors.size() > 0) {
-				throw new OpenEditException("Errors from bulk import!");
-			}
-			//This is in memory only flush
-			//RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
+		
 
 
 
-	
 
 
 
 	}
-
+	searcher.saveAllData(tosave, null);
+	
 }
 
 
 
 public void putMapping(MediaArchive mediaarchive, String searchtype, Page upload, String tempindex) throws Exception{
-	
+
 	AdminClient admin = mediaarchive.getNodeManager().getClient().admin();
 	PutMappingRequest req = Requests.putMappingRequest(tempindex).updateAllTypes(true).type(searchtype);
 	String uploadGetContent = upload.getContent()
