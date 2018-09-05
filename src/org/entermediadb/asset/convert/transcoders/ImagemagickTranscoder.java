@@ -280,6 +280,12 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		com.add("-auto-orient");
 
+		if (inStructions.get("sepia-tone") != null)
+		{
+			com.add("-sepia-tone");
+			com.add(inStructions.get("sepia-tone") + "%");
+		}
+
 		if (isOnWindows())
 		{
 			// windows needs quotes if paths have a space
@@ -289,6 +295,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			com.add(outputpath);
 		}
+		
 
 		long start = System.currentTimeMillis();
 		new File(outputpath).getParentFile().mkdirs();
