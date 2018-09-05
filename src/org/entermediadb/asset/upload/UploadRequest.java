@@ -227,6 +227,7 @@ public class UploadRequest implements ProgressListener
 	public ContentItem saveFileAs(FileUploadItem inItem, final String path, User inUser)
 			throws OpenEditException
 	{
+		log.info("What the heck?");
 		Page page = getPageManager().getPage( path, true );
 		InputStreamItem revision = new InputStreamItem();
 //	final Date lastModified = new Date();
