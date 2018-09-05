@@ -21,7 +21,7 @@ public void init(){
 		Data word = autocompletesearcher.loadData(it);
 		
 		def search = word.get("synonyms");
-		
+		if(search){
 		HitTracker assets = searcher.query().freeform("description", search).search();
 		
 		if(assets.size() == 0){
@@ -31,7 +31,7 @@ public void init(){
 			word.setProperty("timestamp", DateStorageUtil.getStorageUtil().formatForStorage(new Date()) );
 			autocompletesearcher.saveData(word);
 		}
-		
+		}
 		
 		
 		

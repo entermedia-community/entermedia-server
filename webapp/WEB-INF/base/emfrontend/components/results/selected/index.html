@@ -66,7 +66,7 @@
 				<li ><a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a></li>
 ##<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
 #end
-	#if($candeleteasset && ($canmultiedit || $canmultidelete))	    
+	#if(($canmultiedit || $canmultidelete))	    
  		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a></li>
    	#end    	
 #if($canprintpreview)

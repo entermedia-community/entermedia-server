@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -338,10 +339,14 @@ public class BaseElasticSearcher extends BaseSearcher
 				builder.field(detail.getId());
 				builder.interval(DateHistogramInterval.DAY);
 				builder.order(Order.KEY_DESC);
+				String timezone = TimeZone.getDefault().getID();
+				builder.timeZone(timezone);
 				inSearch.addAggregation(builder);
 
 				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
 				builder.field(detail.getId());
+				builder.timeZone(timezone);
+
 				builder.interval(DateHistogramInterval.WEEK);
 				builder.order(Order.COUNT_DESC);
 
