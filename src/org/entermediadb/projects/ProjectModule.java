@@ -842,7 +842,7 @@ public class ProjectModule extends BaseMediaModule {
 		String collectionid  = (String)params.get("collectionid");
 		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive, collectionid);
 		String catpath = collection.getCategory().getCategoryPath();
-		String subfolder = (String)params.get("subfolder");
+		String subfolder = (String)folderdetails.get("subfolder");
 		Category subcat = null;
 		if( subfolder != null && !subfolder.isEmpty() )
 		{
