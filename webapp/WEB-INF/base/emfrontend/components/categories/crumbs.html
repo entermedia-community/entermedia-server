@@ -3,8 +3,8 @@
 
 
 <div id="cat-list" style="float:left">
-<div  class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" style="padding: 0;margin-top:-8px; border: 0px">
-<div class="category"  style="padding:8px 6px 3px 20px;">					
+<div  class="row categorydraggable ui-draggable ui-draggable-handle collectionBox" style="padding: 0;margin-top:10px; border: 0px">
+<div class="category"  style="padding:6px 6px 2px 20px;">					
 	#foreach( $parent in $category.getParentCategoriesFrom(1))
 	#if( ${foreach.count} > 1) \ #end
 	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}&nodeID=${parent.id}">$parent</a>
