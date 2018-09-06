@@ -5,7 +5,7 @@
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
     </path-action>
-    <property name="defaulttab">addmediatab</property>
+	<property name="defaulttab">mediatab</property>
 	<path-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</path-action>

@@ -1,0 +1,37 @@
+#set( $collectionid = $context.getRequestParameter("collectionid"))
+#if($collectionid)
+
+<div style="padding: 0 20px 20px 20px;">
+	#set( $librarycol = $mediaarchive.getData("librarycollection", $collectionid) )
+	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
+
+<p>Local path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/</p>
+<form  name="download" id="download" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html">
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+<div  class="alert alert-primary" role="alert">
+	<i class="glyphicon glyphicon-info-sign"></i> Existing local files will be replaced
+</div>
+	
+	<p>Will download all the files and sub-directories to your local desktop application</p>
+	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download]]">	   			
+</form>
+
+#if($desktop.isEdited($librarycol.getName()) )
+<form  name="archiveassets" id="archiveassets" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopimportstart.html"
+   style="padding-top: 20px;"
+   >
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+
+<div  class="alert alert-primary" role="alert">
+	<i class="glyphicon glyphicon-info-sign"></i> [[Upload your local work folder into this collection]]
+</div>
+	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Upload]]">	   			
+</form>
+#end
+
+</div>
+
+#end
+

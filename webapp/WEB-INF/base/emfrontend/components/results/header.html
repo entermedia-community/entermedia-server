@@ -36,18 +36,11 @@ $context.putPageValue("hits",$hits)
 
 		#set ($enabled=$hits.getSelectionSize() > 0)
 	
-		#if( $candownload || $canconvert || $candownloadfpo ) 
+		#if( $candownload || $canconvert || $candownloadfpo )
 			#if( $librarycol )
-			#if( $desktops.size() == 1 )
-<li>
-					<a href="$home$apphome/views/activity/importfromdesktop.html?collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Import From Desktop]]</a>
-</li>
-#end
-			
-			<li><a href="$home$apphome/views/modules/asset/download.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" title="[[Download Options]]" >[[Download]]</a></li>
-			
-			#else
-				#if( $enabled )
+			$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
+			#end
+			#if( $enabled )
 				<li>
 					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
 					<a href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
@@ -56,13 +49,12 @@ $context.putPageValue("hits",$hits)
 					<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
 					#end
 				</li>	
-				#else
+			#else
 				<li class="resultmenuitem">
 					<span class="text">[[Download]]</span>
 				</li>	
-				#end
 			#end
-		#end	
+		#end
 
 		#if($candeleteasset && $canmultiedit && $canquickdelete)	    
 	 		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a></li>

@@ -1,15 +1,17 @@
 package org.entermediadb.desktops;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
-import org.entermediadb.projects.ProjectManager;
 import org.json.simple.JSONObject;
 import org.openedit.ModuleManager;
 import org.openedit.MultiValued;
@@ -18,6 +20,17 @@ import org.openedit.hittracker.HitTracker;
 public class Desktop
 {
 	protected DesktopEventListener fieldListener;
+	protected boolean fieldBusy;
+	
+	public boolean isBusy()
+	{
+		return fieldBusy;
+	}
+
+	public void setBusy(boolean inBusy)
+	{
+		fieldBusy = inBusy;
+	}
 
 	public void setListener(DesktopEventListener inListener)
 	{
@@ -78,7 +91,25 @@ public class Desktop
 	protected String fieldSpaceLeft;
 	protected String fieldServerName;
 	protected ModuleManager fieldModuleManager;
-
+	protected Set fieldEditedCollections;
+	
+	public boolean isEdited(String inCollectionName)
+	{
+	
+		if( getEditedCollections().contains(inCollectionName))
+		{
+			return true;
+		}
+		return false;
+	}
+	public Set getEditedCollections()
+	{
+		if( fieldEditedCollections == null)
+		{
+			fieldEditedCollections = new HashSet();
+		}
+		return fieldEditedCollections;
+	}
 	public String getServerName()
 	{
 		return fieldServerName;
@@ -147,10 +178,10 @@ public class Desktop
 
 		String root = inCollection.getCategory().getCategoryPath();
 		String folder = inCat.getCategoryPath().substring(root.length());
-		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
+		String foldername = inCollection.getName();
 		if (!folder.isEmpty())
 		{
-			path = path + folder;
+			foldername = foldername + folder;
 		}
 
 		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
@@ -171,7 +202,7 @@ public class Desktop
 			{
 				primaryImageName = asset.getName();
 			}
-			String savepath = path + "/" + primaryImageName;
+			String savepath = foldername + "/" + primaryImageName;
 			map.put("savepath", savepath);
 
 			map.put("filesize", asset.get("filesize"));
@@ -182,7 +213,15 @@ public class Desktop
 			}
 			tosend.add(map);
 		}
-		getDesktopListener().downloadFiles(path,tosend);
+		
+		Collection<String> subfolders = new ArrayList();
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category subcat = (Category) iterator.next();
+			subfolders.add(subcat.getName());
+		}
+		
+		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category child = (Category) iterator.next();
@@ -196,5 +235,10 @@ public class Desktop
 		String path = (String) inMap.get("path");
 		getDesktopListener().uploadFile(path,inMap);
 		
+	}
+
+	public void addEditedCollection(String inName)
+	{
+		getEditedCollections().add(inName);
 	}
 }

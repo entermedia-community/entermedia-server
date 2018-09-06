@@ -861,6 +861,10 @@ showajaxstatus = function(uid)
 	if( cell )
 	{
 		var path = cell.attr("ajaxpath");
+		if(!path || path =="")
+		{
+			path = cell.data("ajaxpath");
+		}
 		//console.log("Loading " + path );
 		if( path && path.length > 1)
 		{

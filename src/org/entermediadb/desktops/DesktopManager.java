@@ -1,16 +1,16 @@
 package org.entermediadb.desktops;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
+
+import org.openedit.users.User;
 
 public class DesktopManager
 {
-	protected Map<String, Collection> fieldConnectedClients;
+	protected Map<String, Desktop> fieldConnectedClients;
 
-	public Map<String, Collection> getConnectedClients()
+	public Map<String, Desktop> getConnectedClients()
 	{
 		if (fieldConnectedClients == null)
 		{
@@ -21,52 +21,32 @@ public class DesktopManager
 	}
 
 	
-	public void addDesktop(Desktop inDesktop)
+	public void setDesktop(Desktop inDesktop)
 	{
-		Collection found = getConnectedClients().get(inDesktop.getUserId());
-		if( found == null)
-		{
-			found = new ArrayList();
-			getConnectedClients().put(inDesktop.getUserId(),found);
-		}
-		found.add(inDesktop);
+		getConnectedClients().put(inDesktop.getUserId(),inDesktop);
 	}
 
 
 	public void removeDesktop(Desktop inDesktop)
 	{
-		Collection found = getConnectedClients().get(inDesktop.getUserId());
-		if( found == null)
-		{
-			found = new ArrayList();
-			getConnectedClients().put(inDesktop.getUserId(),found);
-		}
-		found.remove(inDesktop);
-		
-	}
-	public Collection getDesktops(String inUserId)
-	{
-		Collection found = getConnectedClients().get(inUserId);
-		
-		return found; 
+		getConnectedClients().remove(inDesktop.getUserId());
 	}
 	public Collection getUsers()
 	{
 		return getConnectedClients().keySet();
 	}
-
-
-	public Desktop getDesktop(String inUserId, String inDesktopId)
+	public Desktop getDesktop(User inUser)
 	{
-		Collection desktops = getDesktops(inUserId);
-		for (Iterator iterator = desktops.iterator(); iterator.hasNext();)
+		if( inUser == null)
 		{
-			Desktop desktop = (Desktop) iterator.next();
-			if( desktop.getDesktopId().equals(inDesktopId))
-			{
-				return desktop;
-			}
+			return null;
 		}
-		return null;
+		return getDesktop(inUser.getId());
+	}
+
+	public Desktop getDesktop(String inUserId)
+	{
+		Desktop desktop = getConnectedClients().get(inUserId);
+		return desktop;
 	}
 }

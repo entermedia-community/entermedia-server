@@ -17,8 +17,8 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
+import org.entermediadb.desktops.Desktop;
 import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -574,20 +574,23 @@ public class ProjectModule extends BaseMediaModule {
 
 	}
 
-	public void listConnectedDesktops(WebPageRequest inReq)
+	public void listConnectedDesktop(WebPageRequest inReq)
 	{
 		ProjectManager manager = getProjectManager(inReq);
-		Collection desktops = manager.listConnectedDesktops(inReq.getUser());
-		inReq.putPageValue("desktops",desktops);
-		if( desktops != null && desktops.size() > 0)
-		{
-			inReq.putPageValue("desktop",desktops.iterator().next());
-		}
+		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUser());
+		inReq.putPageValue("desktop",desktop);
 	}
 	
 	public void exportCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
+		
+		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		if( desktop.isBusy())
+		{
+			log.info("Desktop still busy");
+			return;
+		}
 		String collectionid = loadCollectionId(inReq);
 		User user = inReq.getUser();
 		if (user == null) 
@@ -607,8 +610,7 @@ public class ProjectModule extends BaseMediaModule {
 //
 //		infolder = infolder + "/" + stamp + "/";
 
-		String desktopid = inReq.getRequestParameter("desktopid");
-		manager.downloadCollectionToClient(inReq, archive, collectionid, desktopid);
+		manager.downloadCollectionToClient(inReq, archive, collectionid);
 
 		
 		//inReq.putPageValue("exportpath", infolder);
@@ -651,6 +653,13 @@ public class ProjectModule extends BaseMediaModule {
 	public void importCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
+		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		if( desktop.isBusy())
+		{
+			log.info("Desktop still busy");
+			return;
+		}
+
 		String collectionid = loadCollectionId(inReq);
 		User user = inReq.getUser();
 		if (user == null) 
@@ -670,8 +679,7 @@ public class ProjectModule extends BaseMediaModule {
 //
 //		infolder = infolder + "/" + stamp + "/";
 
-		String desktopid = inReq.getRequestParameter("desktopid");
-		manager.retrieveFilesFromClient(inReq, archive, collectionid, desktopid);
+		manager.retrieveFilesFromClient(inReq, archive, collectionid);
 
 		
 		//inReq.putPageValue("exportpath", infolder);
@@ -846,7 +854,7 @@ public class ProjectModule extends BaseMediaModule {
 		Category subcat = null;
 		if( subfolder != null && !subfolder.isEmpty() )
 		{
-			catpath = catpath + "/" + subfolder;
+			catpath = catpath + subfolder;
 			subcat = archive.createCategoryPath(catpath);
 		}
 		else
@@ -896,13 +904,14 @@ public class ProjectModule extends BaseMediaModule {
 				toupload.add(fileinfo);
 			}
 		}
-		Collection toremove = new ArrayList(existingassets.values());
-		for (Iterator iterator = toremove.iterator(); iterator.hasNext();)
+		Collection toremove = new ArrayList();
+		for (Iterator iterator = existingassets.values().iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
 			Asset asset  = (Asset)archive.getAssetSearcher().loadData(data);
 			log.info("removed old asset " + data.getName());
 			asset.removeCategory(subcat);
+			toremove.add(asset);
 		}
 		archive.getAssetSearcher().saveAllData(toremove, null);
 		params.remove("folderdetails");

@@ -22,6 +22,6 @@
 	</permission>
 		<path-action name="ProfileModule.changeResultView"/>
 	
- <path-action name="ProjectModule.listConnectedDesktops"/>
+ <path-action name="ProjectModule.listConnectedDesktop"/>
 
 </page>

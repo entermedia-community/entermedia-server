@@ -208,48 +208,25 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 			getDesktop().setLastCommand(command);
 			if ("login".equals(command)) //Return all the annotation on this asset
 			{
-				String username = (String)map.get("username");
-		        getDesktop().setUserId(username);
-				getDesktop().setDesktopId((String)map.get("desktopid"));
-				getDesktop().setHomeFolder((String)map.get("homefolder"));
-		   		getDesktop().setLastCompletedPercent(100);
-		   		getDesktop().setServerName((String)map.get("server"));
-		   		getDesktop().setListener(this);
-		   		getDesktopManager().addDesktop(getDesktop());
-		   		//authenticated
-		   		String keyorpasswordentered = (String)map.get("entermedia.key");
-		   		User user = (User)getSearcherManager().getData("system", "user", username);
-		   		if( user == null)
-		   		{
-		   			JSONObject authenticated = new JSONObject();
-			   		authenticated.put("command", "authenticatefail");
-			   		authenticated.put("reason", "User did not exist");
-					sendMessage(authenticated);
-					return;
-		   		}
-		   		String key = getStringEncrytion().getEnterMediaKey(user);
-
-		   		if( !key.equals(keyorpasswordentered))
-		   		{
-		   			//check password
-		   			String clearpassword = getStringEncrytion().decryptIfNeeded(user.getPassword());
-		   			if( !keyorpasswordentered.equals(clearpassword))
-		   			{
-				   		JSONObject authenticated = new JSONObject();
-				   		authenticated.put("command", "authenticatefail");
-				   		authenticated.put("reason", "Password did not match");
-						sendMessage(authenticated);
-						return;
-		   			}
-		   		}
-		   		String connectionid = (String)map.get("connectionid");
-		   		setCurrentConnectionId(connectionid);
-		   		JSONObject authenticated = new JSONObject();
-		   		authenticated.put("command", "authenticated");
-		   		authenticated.put("entermedia.key", key);
-				sendMessage(authenticated);
-		   		
+				receiveLogin(map);
+			}	
+			else if ("folderedited".equals(command)) //Return all the annotation on this asset
+			{
+				String foldername = (String)map.get("foldername");
+				getDesktop().addEditedCollection(foldername);
 			}
+			else if ("busychanged".equals(command)) //Return all the annotation on this asset
+			{
+				boolean busy = (boolean)map.get("isbusy");
+				getDesktop().setBusy(busy);
+			}
+			else if ("folderedited".equals(command)) //Return all the annotation on this asset
+			{
+				String foldername = (String)map.get("foldername");
+				getDesktop().addEditedCollection(foldername);
+			}
+			
+			
 		}
 		catch (Exception e)
 		{
@@ -267,6 +244,60 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	 * (IOException e1) { // Ignore } String message = String.format("* %s %s",
 	 * client.nickname, "has been disconnected."); broadcast(message); } }
 	 */
+
+	protected void receiveLogin(JSONObject map)
+	{
+		String username = (String)map.get("username");
+		getDesktop().setUserId(username);
+		getDesktop().setDesktopId((String)map.get("desktopid"));
+		getDesktop().setHomeFolder((String)map.get("homefolder"));
+		getDesktop().setLastCompletedPercent(100);
+		getDesktop().setServerName((String)map.get("server"));
+		getDesktop().setListener(this);
+		getDesktopManager().setDesktop(getDesktop());
+		//authenticated
+		String keyorpasswordentered = (String)map.get("entermedia.key");
+		User user = (User)getSearcherManager().getData("system", "user", username);
+		if( user == null)
+		{
+			JSONObject authenticated = new JSONObject();
+			authenticated.put("command", "authenticatefail");
+			authenticated.put("reason", "User did not exist");
+			sendMessage(authenticated);
+			return;
+		}
+		String key = getStringEncrytion().getEnterMediaKey(user);
+
+		if( !key.equals(keyorpasswordentered))
+		{
+			//check password
+			String clearpassword = getStringEncrytion().decryptIfNeeded(user.getPassword());
+			if( !keyorpasswordentered.equals(clearpassword))
+			{
+		   		JSONObject authenticated = new JSONObject();
+		   		authenticated.put("command", "authenticatefail");
+		   		authenticated.put("reason", "Password did not match");
+				sendMessage(authenticated);
+				return;
+			}
+		}
+		String connectionid = (String)map.get("connectionid");
+		setCurrentConnectionId(connectionid);
+		JSONObject authenticated = new JSONObject();
+		authenticated.put("command", "authenticated");
+		authenticated.put("entermedia.key", key);
+		
+		Collection existing = (Collection)map.get("existingcollections");
+		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
+		{
+			String name = (String) iterator.next();
+			//Looup this users collections by name?
+			getDesktop().addEditedCollection(name);
+			
+		}
+		
+		sendMessage(authenticated);
+	}
 
 	public void sendMessage(JSONObject json)
 	{
@@ -291,12 +322,13 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	}
 
 	@Override
-	public void downloadFiles(String inPath,Collection inAssets)
+	public void downloadFiles(String foldername,Collection<String> inSubFolders, Collection inAssets)
 	{
 		JSONObject command = new JSONObject();
 		command.put("command", "downloadto");
-		command.put("path", inPath);
+		command.put("foldername", foldername);
 		command.put("assetpaths", inAssets);
+		command.put("subfolders",inSubFolders);
 		sendMessage(command);
 		
 	}

@@ -229,7 +229,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 //			}
 			//inContent.field("catalogid", asset.getCatalogId());
 
-			Set categories = buildCategorySet(asset);
+			Set categories = asset.buildCategorySet();
 			String desc = populateDescription(asset, inDetails, categories);
 			categories.add(getMediaArchive().getCategorySearcher().getRootCategory());
 			inContent.field("description", desc);
@@ -400,28 +400,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return buffer.toString();
 	}
 
-	protected Set buildCategorySet(Asset inAsset)
-	{
-		HashSet allCatalogs = new HashSet();
-		Collection catalogs = inAsset.getCategories();
-		//allCatalogs.addAll(catalogs);
-		for (Iterator iter = catalogs.iterator(); iter.hasNext();)
-		{
-			Category catalog = (Category) iter.next();
-			buildCategorySet(catalog, allCatalogs);
-		}
-		return allCatalogs;
-	}
-
-	protected void buildCategorySet(Category inCatalog, Set inCatalogSet)
-	{
-		inCatalogSet.add(inCatalog);
-		Category parent = inCatalog.getParentCategory();
-		if (parent != null)
-		{
-			buildCategorySet(parent, inCatalogSet);
-		}
-	}
 
 	//	/**
 	//	 * @deprecated Need to simplify

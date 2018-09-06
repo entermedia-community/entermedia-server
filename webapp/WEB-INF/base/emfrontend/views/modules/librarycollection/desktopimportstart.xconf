@@ -1,5 +1,6 @@
 <page>
-	<path-action name="ProjectModule.exportCollection"/>
+
+	<path-action name="ProjectModule.importCollection"/>
 
     <path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>
@@ -7,6 +8,9 @@
 			<searchtype>librarycollection</searchtype>
     </path-action>
     <property name="defaulttab">addmediatab</property>
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>librarycollection</searchtype>
+	</path-action>
 
 	
 </page>

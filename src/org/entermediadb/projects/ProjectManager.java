@@ -1016,14 +1016,14 @@ public class ProjectManager implements CatalogEnabled {
 		return userlibrary;
 	}
 
-	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid, String inDesktopId) {
+	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid) {
 		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
 		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
 		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
 		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
 		
 		//Send the client a download request
-		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
+		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
 		if( desktop == null)
 		{
 			throw new OpenEditException("Desktop disconnected");
@@ -1343,24 +1343,15 @@ public class ProjectManager implements CatalogEnabled {
 		// }
 
 	}
-	public Collection listConnectedDesktops(User inUser)
-	{
-		if(inUser == null){
-			return null;
-		}
-		Collection desktops = getDesktopManager().getDesktops(inUser.getId());
-		return desktops;
-	}
 	
-	
-	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid, String inDesktopId) {
+	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid) {
 		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
 		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
 		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
 		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
 		
 		//Send the client a download request
-		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName(),inDesktopId);
+		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
 		desktop.importCollection(inMediaArchive, collection); //This eventually will cause saveCheckinRequest to get called by the desktop 
 		
 
