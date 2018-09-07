@@ -35,21 +35,22 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 			return inQuery;
 		}
 			
-		Object settings = inPageRequest.getPageValue("canviewsettings");
-		if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
+		UserProfile profile = inPageRequest.getUserProfile();
+		if (profile != null)
 		{
-			SearchQuery child = inSearcher.query()
-					.all()
-					.notgroup("collectiontype", Arrays.asList("0","2"))
-					.getQuery();
-			inQuery.addChildQuery(child);
-			inQuery.setSecurityAttached(true);
-			return inQuery;
+			if( "administrator".equals( profile.get("settingsgroup")))
+			{
+				SearchQuery child = inSearcher.query()
+						.all()
+						.notgroup("collectiontype", Arrays.asList("0","2"))
+						.getQuery();
+				inQuery.addChildQuery(child);
+				inQuery.setSecurityAttached(true);
+				return inQuery;
+			}	
 		}
 
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
-
-		UserProfile profile = inPageRequest.getUserProfile();
 
 		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories()); //The ones I cant see
 //		HashSet toshow = new HashSet(profile.getCollectionIds());

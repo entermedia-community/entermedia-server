@@ -72,13 +72,6 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery);
 			}
 			
-			Object settings = inPageRequest.getPageValue("canviewsettings");
-			if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
-			{
-				return inQuery;
-			}
-			
-			
 			if (profile != null)
 			{
 				if( "administrator".equals( profile.get("settingsgroup")))
@@ -86,9 +79,6 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 					return inQuery;					
 				}
 			}
-			
-			
-			
 			
 			SearchQuery required = inSearcher.createSearchQuery();
 
