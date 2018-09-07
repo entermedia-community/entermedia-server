@@ -361,6 +361,10 @@ body {
 #header .navlinks a:hover {
     color: #fff;
 }
+#header .navlinks>ul li.dropdown:last-child ul.dropdown-menu {
+  right: 0;
+  left: auto;
+}
 
 .ui-widget {
     -webkit-border-radius: 5px 5px;
