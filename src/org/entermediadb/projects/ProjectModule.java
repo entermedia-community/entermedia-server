@@ -914,6 +914,38 @@ public class ProjectModule extends BaseMediaModule {
 			toremove.add(asset);
 		}
 		archive.getAssetSearcher().saveAllData(toremove, null);
+		
+		Map existingcats = new HashMap();
+		for (Iterator iterator = subcat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category cat = (Category) iterator.next();
+			existingcats.put(cat.getName(), cat);
+		}
+		Collection childfolders = (Collection)folderdetails.get("childfolders");
+		for (Iterator iterator = childfolders.iterator(); iterator.hasNext();)
+		{
+			Map clientfolder = (Map) iterator.next();
+			String foldername = (String)clientfolder.get("foldername");
+			if( existingcats.containsKey(foldername))
+			{
+				existingcats.remove(foldername);
+			}
+			else
+			{
+				//add child
+				Category newsub = (Category)archive.getCategorySearcher().createNewData();
+				newsub.setName(foldername);
+				subcat.addChild(newsub);
+				archive.getCategorySearcher().saveCategory(newsub);
+			}
+		}
+		for (Iterator iterator = existingcats.values().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			//TODO: Remove this form it's assets
+			archive.getCategorySearcher().delete(child, null);
+		}
+		
 		params.remove("folderdetails");
 		params.put("toupload",toupload);
 		log.info("Requesting to upload " + toupload);
