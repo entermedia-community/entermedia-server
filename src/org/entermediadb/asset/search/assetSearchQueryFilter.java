@@ -72,12 +72,9 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 				inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery);
 			}
 			
-			if (profile != null)
+			if (profile != null && profile.isInRole("administrator"))
 			{
-				if( "administrator".equals( profile.get("settingsgroup")))
-				{
-					return inQuery;					
-				}
+				return inQuery;					
 			}
 			
 			SearchQuery required = inSearcher.createSearchQuery();

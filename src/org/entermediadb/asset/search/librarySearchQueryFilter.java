@@ -26,12 +26,9 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 		}
 		
 		UserProfile profile = inPageRequest.getUserProfile();
-		if (profile != null)
+		if (profile != null && profile.isInRole("administrator"))
 		{
-			if( "administrator".equals( profile.get("settingsgroup")))
-			{
-				return inQuery;					
-			}
+			return inQuery;					
 		}
 		
 		//TODO: Add Hidden Libraries

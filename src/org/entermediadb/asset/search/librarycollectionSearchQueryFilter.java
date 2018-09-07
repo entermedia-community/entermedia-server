@@ -36,18 +36,15 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		}
 			
 		UserProfile profile = inPageRequest.getUserProfile();
-		if (profile != null)
+		if (profile != null && profile.isInRole("administrator"))
 		{
-			if( "administrator".equals( profile.get("settingsgroup")))
-			{
-				SearchQuery child = inSearcher.query()
-						.all()
-						.notgroup("collectiontype", Arrays.asList("0","2"))
-						.getQuery();
-				inQuery.addChildQuery(child);
-				inQuery.setSecurityAttached(true);
-				return inQuery;
-			}	
+			SearchQuery child = inSearcher.query()
+					.all()
+					.notgroup("collectiontype", Arrays.asList("0","2"))
+					.getQuery();
+			inQuery.addChildQuery(child);
+			inQuery.setSecurityAttached(true);
+			return inQuery;
 		}
 
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
