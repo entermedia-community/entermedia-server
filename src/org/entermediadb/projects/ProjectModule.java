@@ -943,6 +943,16 @@ public class ProjectModule extends BaseMediaModule {
 		{
 			Category child = (Category) iterator.next();
 			//TODO: Remove this form it's assets
+			HitTracker existingcatassets = archive.query("asset").exact("category-exact", child.getId() ).search();
+			Collection tosave = new ArrayList();
+			for (Iterator iterator2 = existingcatassets.iterator(); iterator2.hasNext();)
+			{
+				Data data = (Data) iterator2.next();
+				Asset asset = (Asset)archive.getAssetSearcher().loadData(data);
+				asset.removeCategory(child);
+				tosave.add(asset);
+			}
+			archive.getAssetSearcher().saveAllData(tosave, null);
 			archive.getCategorySearcher().delete(child, null);
 		}
 		
