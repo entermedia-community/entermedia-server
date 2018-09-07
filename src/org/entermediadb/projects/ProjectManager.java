@@ -1092,6 +1092,11 @@ public class ProjectManager implements CatalogEnabled {
 
 	public Boolean canEditCollection(WebPageRequest inReq, String inCollectionid) {
 		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
+		return canEditCollection(inReq, collection);
+
+	}
+	protected Boolean canEditCollection(WebPageRequest inReq, LibraryCollection collection)
+	{
 		if (collection != null) {
 			String ownerid = collection.get("owner");
 			if (ownerid != null && ownerid.equals(inReq.getUserName())) {
@@ -1118,7 +1123,6 @@ public class ProjectManager implements CatalogEnabled {
 			}
 		}
 		return false;
-
 	}
 
 	public boolean canViewCollection(WebPageRequest inReq, String inCollectionid) {
@@ -1434,5 +1438,39 @@ public class ProjectManager implements CatalogEnabled {
 	// addAssetToCollection(getMediaArchive(), collectionid, assets);
 
 	// }
-
+	public Collection listEditableCollections(WebPageRequest inReq)
+	{
+		Collection hits = null;
+		UserProfile profile = inReq.getUserProfile();
+		
+		if (profile != null)
+		{
+			if( "administrator".equals( profile.get("settingsgroup")))
+			{
+				hits = getMediaArchive().query("librarycollection").all().search();
+			}
+			else
+			{
+				hits = new ArrayList();
+				HitTracker filtered = getMediaArchive().query("librarycollection").all().enduser(true).search(inReq);
+				int count = 0;
+				for (Iterator iterator = filtered.iterator(); iterator.hasNext();)
+				{
+					count++;
+					if( count > 2000)
+					{
+						break;
+					}
+					Data data = (Data) iterator.next();
+					LibraryCollection collection = (LibraryCollection)getMediaArchive().getSearcher("librarycollection").loadData(data);
+					if( canEditCollection(inReq,collection) )
+					{
+						hits.add(collection);
+					}
+				}
+			}
+		}
+		return hits;
+	}
+	
 }
