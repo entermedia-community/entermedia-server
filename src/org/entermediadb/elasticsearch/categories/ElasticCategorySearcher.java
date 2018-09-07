@@ -9,7 +9,6 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.elasticsearch.action.get.GetResponse;
-import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.asset.xmldb.XmlCategoryArchive;
@@ -68,6 +67,10 @@ public class ElasticCategorySearcher extends BaseElasticSearcher implements Cate
 
 	public List findChildren(Category inParent) 
 	{
+		
+		if(inParent== null || inParent.getId() == null) {
+			return new ArrayList();
+		}
 		Collection hits = query().exact("parentid", inParent.getId()).search();
 		List children = new ArrayList(hits.size());
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
