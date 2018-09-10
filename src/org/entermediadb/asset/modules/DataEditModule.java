@@ -1528,6 +1528,21 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		return result;
 
 	}
+	public Object loadDataByFolder(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		String path = inReq.getContentPage().getPath();
+		String id = PathUtilities.extractDirectoryName(path);
+		Object result = searcher.searchById(id);
+		String variablename = inReq.findValue("pageval");
+		if (variablename == null)
+		{
+			variablename = "data";
+		}
+		inReq.putPageValue(variablename, result);
+		return result;
+
+	}
 	
 	public void reindex(WebPageRequest inReq) throws Exception{
 		Searcher searcher = loadSearcher(inReq);
