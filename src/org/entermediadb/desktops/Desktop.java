@@ -152,6 +152,9 @@ public class Desktop
 
 	public void checkoutCollection(MediaArchive inArchive, LibraryCollection inCollection)
 	{
+	
+		setBusy(true);
+
 		Category cat = inCollection.getCategory();
 		downloadCat(inArchive, inCollection, cat);
 
@@ -166,6 +169,7 @@ public class Desktop
 	public void importCollection(MediaArchive inArchive, LibraryCollection inCollection)
 	{
 		//Category cat = inCollection.getCategory();
+		setBusy(true);
 
 		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
 		getDesktopListener().collectFileList(inArchive, inCollection, path);

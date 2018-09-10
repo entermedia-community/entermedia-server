@@ -1029,7 +1029,6 @@ public class ProjectManager implements CatalogEnabled {
 			throw new OpenEditException("Desktop disconnected");
 		}
 		desktop.checkoutCollection(inMediaArchive,collection);
-
 	}
 	
 	
