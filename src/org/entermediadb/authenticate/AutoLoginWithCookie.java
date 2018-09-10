@@ -165,7 +165,7 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 	@Override
 	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
-		log.info("Auto Login check");
+		//log.info("Auto Login check");
 
 		User ok = null;
 		if (inReq.getSessionValue("autologindone") == null)
@@ -181,8 +181,8 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 			}
 			if( ok == null && inReq.getRequest() != null)
 			{
-				md5 = inReq.getRequest().getHeader(ENTERMEDIAKEY);
-				log.info("Found MD5 in Header" + md5);
+				md5 = inReq.getRequest().getHeader("X-" + ENTERMEDIAKEY);
+				//log.info("Found MD5 in Header" + md5);
 				if (md5 != null)
 				{
 					ok = autoLoginFromMd5Value(inReq, md5);
