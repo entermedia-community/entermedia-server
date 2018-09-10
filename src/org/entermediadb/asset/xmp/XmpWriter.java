@@ -28,6 +28,7 @@ public class XmpWriter {
 	protected Exec fieldExec;
 
 	public void addKeyword(String inKeyword, List<String> inComm) {
+		inComm.add("-Subject-=" + inKeyword);
 		inComm.add("-Subject+=" + inKeyword);
 	}
 
@@ -66,10 +67,9 @@ public class XmpWriter {
 		try {
 			List<String> comm = createCommand(inArchive);
 			addSaveFields(inArchive, inAsset, comm, inExtraDetails);
-			List removekeywords = new ArrayList(comm);
-			removekeywords.add("-Subject="); // This only works on a line by
-												// itself
-			removekeywords.add(path);
+			comm.add("-Subject=");
+
+			
 			addSaveKeywords(inAsset.getKeywords(), comm);
 			comm.add(path);
 			ok = runExec(comm);
