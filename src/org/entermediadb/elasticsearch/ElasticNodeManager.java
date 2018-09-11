@@ -875,6 +875,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			throw new OpenEditException("Already reindexing");
 		}
 		reindexing = true;
+		Searcher reindexlogs = getSearcherManager().getSearcher("system", "reindexLog");
+		Data reindexhistory = reindexlogs.createNewData();
+		reindexhistory.setValue("date", new Date());
+		reindexhistory.setValue("operation", "started");
+		reindexhistory.setValue("catalogid", inCatalogId);
+		reindexlogs.saveData(reindexhistory);
+		
+		
 		
 		getPageManager().clearCache();
 		getSearcherManager().getCacheManager().clearAll();
@@ -898,6 +906,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
 				searchtype = (String) iterator.next();
+
+				 reindexhistory = reindexlogs.createNewData();
+				reindexhistory.setValue("date", new Date());
+				reindexhistory.setValue("operation", "progress");
+				reindexhistory.setValue("catalogid", inCatalogId);
+				reindexhistory.setValue("details", "Starting: " + searchtype);
+
+				reindexlogs.saveData(reindexhistory);
+				
+				
+				
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 				
 				searcher.setAlternativeIndex(newindex);//Should		
@@ -906,6 +925,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				long end = System.currentTimeMillis();
 				log.info("Reindex of " + searchtype + " took " + (end - start) / 1000L);
 				searcher.setAlternativeIndex(null);
+				
+				 reindexhistory = reindexlogs.createNewData();
+				reindexhistory.setValue("date", new Date());
+				reindexhistory.setValue("operation", "progress");
+				reindexhistory.setValue("catalogid", inCatalogId);
+				reindexhistory.setValue("details", "Finished: " + searchtype);
+
+				reindexlogs.saveData(reindexhistory);
+				
+				
+				
 			}
 
 			loadIndex(id, newindex, true);
@@ -913,7 +943,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			
 		}
 		catch (Throwable e)
-		{
+		{ reindexhistory = reindexlogs.createNewData();
+		reindexhistory.setValue("date", new Date());
+		reindexhistory.setValue("operation", "failed");
+		reindexhistory.setValue("catalogid", inCatalogId);
+		reindexhistory.setValue("details", "Errrored: " + e);
+
+		reindexlogs.saveData(reindexhistory);
 			log.error("Could not reindex " + searchtype);
 			if (newindex != null)
 			{
@@ -927,12 +963,20 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				throw e;
 			}
+			
 			throw new OpenEditException(e);
 		}
 		finally
 		{
 			reindexing = false;
 		}
+		
+		 reindexhistory = reindexlogs.createNewData();
+		reindexhistory.setValue("date", new Date());
+			reindexhistory.setValue("operation", "completed");
+			reindexhistory.setValue("catalogid", inCatalogId);
+		
+		
 		return true;
 
 	}
