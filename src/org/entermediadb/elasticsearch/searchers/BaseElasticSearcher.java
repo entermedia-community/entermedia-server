@@ -61,6 +61,7 @@ import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -1065,9 +1066,16 @@ public class BaseElasticSearcher extends BaseSearcher
 			//TODO: Should startswith be exact or analysed phrases? 
 			//find = QueryBuilders.prefixQuery(fieldid, valueof);
 			//Left this in for now...
+			
+			if(inDetail.isAnalyzed()) {
+			
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
+			} else {
+				PrefixQueryBuilder text = QueryBuilders.prefixQuery(fieldid, valueof);
+				find = text;
+			}
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
