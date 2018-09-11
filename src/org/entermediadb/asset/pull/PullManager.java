@@ -174,7 +174,7 @@ public class PullManager implements CatalogEnabled
 	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params) throws Exception
 	{
 		String baseurl = node.get("baseurl");
-		
+		//add origiginal support
 		String url = baseurl + "/mediadb/services/cluster/listchanges.json";
 		StringBuffer link = new StringBuffer();
 		link.append("?");
@@ -185,7 +185,7 @@ public class PullManager implements CatalogEnabled
 		{
 			link.append(params.get("lastpulldate"));
 		}
-		link.append("searchtype=");
+		link.append("&searchtype=");
 		link.append(params.get("searchtype"));
 		log.info("Checking: " + url + link);
 		HttpResponse response2 = connection.sharedPost(url , params);
