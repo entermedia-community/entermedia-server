@@ -42,7 +42,7 @@ public class AutomaticWebsocketScanner implements ServerApplicationConfig
 		{
 			Class endpoint = (Class) iterator.next();
 			String path = endpoint.getTypeName();
-			if (path.startsWith("org.entermediadb"))
+			if (path.startsWith("org.entermediadb") || path.startsWith("org.netevolved"))
 			{
 				path = "/entermedia/services/websocket/" + path.replace(".", "/");
 				ServerEndpointConfig conf = ServerEndpointConfig.Builder.create(
