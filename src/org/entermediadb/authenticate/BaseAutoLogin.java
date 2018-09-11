@@ -2,6 +2,7 @@ package org.entermediadb.authenticate;
 
 import org.openedit.ModuleManager;
 import org.openedit.WebPageRequest;
+import org.openedit.data.SearcherManager;
 import org.openedit.users.UserManager;
 
 public abstract class BaseAutoLogin implements AutoLoginProvider
@@ -16,6 +17,11 @@ public abstract class BaseAutoLogin implements AutoLoginProvider
 	public void setModuleManager(ModuleManager inModuleManager)
 	{
 		fieldModuleManager = inModuleManager;
+	}
+
+	protected SearcherManager getSearcherManager()
+	{
+		return (SearcherManager)getModuleManager().getBean( "searcherManager" );
 	}
 
 	protected UserManager getUserManager(WebPageRequest inReq)

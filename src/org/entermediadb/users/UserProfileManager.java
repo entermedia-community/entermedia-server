@@ -330,4 +330,23 @@ public class UserProfileManager
 			archive.releaseLock(lock);
 		}
 	}
+
+	public void setRoleOnUser(String inCatalogId, User inNewuser, String inRole)
+	{
+		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "userprofile");
+		UserProfile userprofile = (UserProfile) searcher.searchById(inNewuser.getId());
+		if(userprofile == null)
+		{
+			userprofile = (UserProfile) searcher.searchByField("userid", inNewuser.getId());
+		}
+		if(userprofile == null)
+		{
+			userprofile = (UserProfile)searcher.createNewData();
+			userprofile.setProperty("userid", inRole);
+			userprofile.setId(inNewuser.getId());
+		}
+		userprofile.setProperty("settingsgroup", inRole);
+		searcher.saveData(userprofile);
+		
+	}
 }
