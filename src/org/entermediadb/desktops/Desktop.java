@@ -175,7 +175,11 @@ public class Desktop
 		getDesktopListener().collectFileList(inArchive, inCollection, path);
 
 	}
-
+	public void openRemoteFolder(MediaArchive inArchive, LibraryCollection inCollection)
+	{	
+		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
+		getDesktopListener().openRemoteFolder(path);
+	}
 	private void downloadCat(MediaArchive inArchive, LibraryCollection inCollection, Category inCat)
 	{
 		List tosend = new ArrayList();

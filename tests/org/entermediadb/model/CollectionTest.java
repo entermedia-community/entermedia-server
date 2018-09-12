@@ -262,10 +262,10 @@ public class CollectionTest extends BaseEnterMediaTest
 		archive.saveAsset(other,null);
 		manager.addCategoryToCollection(null, archive, collection.getId(), cat.getParentId());		
 		
-		
+	/*	
 		//Import a new path
 		WebPageRequest req = getFixture().createPageRequest();
-		manager.exportCollection(getMediaArchive(), collection.getId(), folder);
+//		manager.downloadCollectionToClient(getMediaArchive(), collection.getId(), folder);
 
 		//Make sure we got the same asset as 106
 		Category newrootcategory = manager.getRootCategory(archive, collection.getId());
@@ -294,7 +294,7 @@ public class CollectionTest extends BaseEnterMediaTest
 		//manager.importCollection(req, req.getUser(), archive, collection.getId(), "/WEB-INF/data/entermedia/catalogs/testcatalog/originals/importfolder" ,"Some Note" );
 	
 
-
+*/
 		
 	}
 	

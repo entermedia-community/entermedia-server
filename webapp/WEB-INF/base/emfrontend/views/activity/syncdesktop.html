@@ -5,17 +5,16 @@
 	#set( $librarycol = $mediaarchive.getData("librarycollection", $collectionid) )
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 
-<p>Local path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/</p>
-<form  name="download" id="download" 
-   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html">
-	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
 <div  class="alert alert-primary" role="alert">
-	<i class="glyphicon glyphicon-info-sign"></i> Existing local files will be replaced
-</div>
+	<p id="openpath">
+	 <a class="btn ajax" data-targetdiv="openpathhidden" 
+	 	href="$apphome/views/activity/syncdesktop-open.html?collectionid=${librarycol.getId()}">Open Folder</a>
+	<i class="glyphicon glyphicon-info-sign"></i> 
+View local Path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
 	
-	<p>Will download all the files and sub-directories to your local desktop application</p>
-	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download]]">	   			
-</form>
+</p>
+</div>
+
 
 #if($desktop.isEdited($librarycol.getName()) )
 <form  name="archiveassets" id="archiveassets" 
@@ -24,12 +23,32 @@
    >
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
 
+	
 <div  class="alert alert-primary" role="alert">
-	<i class="glyphicon glyphicon-info-sign"></i> [[Upload your local work folder into this collection]]
+<input class="btn" type="submit" id="archiveassetsbutton" value="[[Upload]]">	 
+
+	<i class="glyphicon glyphicon-info-sign"></i> [[Uploads your local work folder into this collection]]
 </div>
-	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Upload]]">	   			
 </form>
 #end
+
+
+<form  name="download" id="download" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html">
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+	 	
+	<div  class="alert alert-primary" role="alert">
+	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download]]">
+	</input>
+
+<i class="glyphicon glyphicon-info-sign"></i> 
+	Replaces local files with contents of this collection
+	</p>
+	</div>
+	
+	
+</form>
+
 
 </div>
 

@@ -188,8 +188,11 @@ runajaxonthis = function(inlink,e)
 		inlink.addClass("active");
 	}
 	var nextpage= inlink.attr('href');
-	var targetDiv = inlink.attr("targetdiv");
-	
+	var targetDiv = inlink.data("targetdiv");
+	if( !targetDiv )
+	{
+		targetDiv = inlink.attr("targetdiv");
+	}
 	var useparent = inlink.data("useparent");
 
 	var options = inlink.data();
@@ -228,7 +231,11 @@ runajaxonthis = function(inlink,e)
 	else
 	{
 		//add oemaxlevel as data
-		var loaddiv = inlink.attr("targetdivinner");
+		var loaddiv = inlink.data("targetdivinner");
+		if( !loaddiv )
+		{
+			loaddiv = inlink.attr("targetdivinner");
+		}
 		loaddiv = loaddiv.replace(/\//g, "\\/");
 		//jQuery("#"+loaddiv).load(nextpage);
 		jQuery.get(nextpage, options, function(data) 
@@ -256,10 +263,10 @@ runajaxonthis = function(inlink,e)
 }
 runajax = function(e)
 {
-	runajaxonthis($(this),e);
 	 e.stopPropagation();
      e.preventDefault();
-	//return false;
+	runajaxonthis($(this),e);
+	return false;
 }
 
 showHoverMenu = function(inDivId)

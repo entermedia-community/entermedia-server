@@ -1055,5 +1055,16 @@ Server ProjectModule.uploadFile
 		}
 		return (long)inObject;
 	}
+
 	
+	public void desktopOpenFolder(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		String collectionid = inReq.getRequestParameter("collectionid");
+		LibraryCollection col = manager.getLibraryCollection(archive, collectionid);
+		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		desktop.openRemoteFolder(archive, col);
+		
+	}
 }

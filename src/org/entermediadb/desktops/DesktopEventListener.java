@@ -14,5 +14,7 @@ public interface DesktopEventListener
 
 	public void uploadFile(String path, Map inVariables);
 
+	public void openRemoteFolder(String inPath);
+
 
 }

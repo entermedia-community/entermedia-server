@@ -320,7 +320,14 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		return remoteEndpointBasic;
 		
 	}
-
+	public void openRemoteFolder(String fullpath)
+	{
+		JSONObject command = new JSONObject();
+		command.put("command", "openremotefolder");
+		command.put("fullpath", fullpath);
+		sendMessage(command);
+		
+	}
 	@Override
 	public void downloadFiles(String foldername,Collection<String> inSubFolders, Collection inAssets)
 	{
