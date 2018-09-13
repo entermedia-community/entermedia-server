@@ -5,6 +5,8 @@ import java.io.File;
 import java.io.InputStream;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.pull.PullManager;
@@ -19,7 +21,8 @@ public class EntermediaAssetSource extends BaseAssetSource
 
 	protected ModuleManager fieldModuleManager;
 	protected PullManager fieldPullManager;
-	
+	private static final Log log = LogFactory.getLog(EntermediaAssetSource.class);
+
 
 	public PullManager getPullManager()
 	{
@@ -46,7 +49,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
 	{
-		
+		log.info("Trying to get content from : " + inAsset.get("mastereditclusterid") + "For Asset: " + inAsset.getId());
 
 		return getPullManager().downloadOriginal(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
 	}
@@ -58,7 +61,9 @@ public class EntermediaAssetSource extends BaseAssetSource
 		
 		String localid = getMediaArchive().getNodeManager().getLocalClusterId();
 		String clusterid = inAsset.get("mastereditclusterid");
+		
 		if(clusterid != null && !clusterid.equals(localid) ) {
+			log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + " Handling it.");
 			return true;
 		}
 		return false;

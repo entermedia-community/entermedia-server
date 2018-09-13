@@ -87,6 +87,7 @@ public class AssetSourceManager implements CatalogEnabled
 			fieldAssetSources = new ArrayList();
 			Collection editingnodes =  getMediaArchive().query("editingcluster").all().search();
 			if(editingnodes.size() > 0) {
+				log.info("Editing clusters found, enabling EnterMediaAssetSource");
 				AssetSource source = (AssetSource) getModuleManager().getBean(getCatalogId(), "entermediaAssetSource");
 				source.setMediaArchive(getMediaArchive());
 				fieldAssetSources.add(source);
