@@ -157,7 +157,7 @@ public class Desktop
 
 		Category cat = inCollection.getCategory();
 		//Build one tree. Have the client pull the data for each one till it's done
-		Map root = addChildren(cat.getCategoryPath(),cat);
+		Map root = addChildren(cat.getParentCategory().getCategoryPath(),cat);
 		getDesktopListener().downloadFolders(inArchive,inCollection,root);
 	//	downloadCat(inArchive, inCollection, cat); //this checks out a ton of folders one chunck at a time
 
@@ -168,6 +168,7 @@ public class Desktop
 		Map inParent = new HashMap();
 		inParent.put("name",inCat.getName());
 		String remaining = inCat.getCategoryPath().substring(inRootPath.length());
+		inParent.put("categoryid",inCat.getId());
 		inParent.put("subpath",remaining);
 		
 		Collection inChildren = new ArrayList();
@@ -175,11 +176,8 @@ public class Desktop
 		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
 		{
 			Category cat = (Category) iterator.next();
-			if( cat.hasChildren())
-			{
-				Map child = addChildren(inRootPath,cat);
-				inChildren.add(child);
-			}
+			Map child = addChildren(inRootPath,cat);
+			inChildren.add(child);
 		}
 		return inParent;
 	}

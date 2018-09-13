@@ -334,7 +334,8 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	{
 		JSONObject command = new JSONObject();
 		command.put("command", "downloadfolders");
-		command.put("rootfolder", inRoot);
+		command.put("folderdetails", inRoot);
+		command.put("rootname", inCollection.getName());
 		command.put("catalogid",inArchive.getCatalogId());
 		command.put("mediadbid",inArchive.getMediaDbId());
 		command.put("collectionid",inCollection.getId());
