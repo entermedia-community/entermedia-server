@@ -127,19 +127,7 @@ public class S3CmdAssetSource extends BaseAssetSource
 		}
 	}
 
-	protected File getFile(Asset inAsset)
-	{
-		String sp = getSourcePath(inAsset);
-		sp = sp.substring(getFolderPath().length() + 1);
-		String abpath = getExternalPath() + "/" + sp;
-		String primaryname = inAsset.getPrimaryFile();
-		if(primaryname != null && inAsset.isFolder() )
-		{
-			abpath = abpath + "/" + primaryname;
-		}
-
-		return new File(abpath);
-	}
+	
 
 	@Override
 	public ContentItem getOriginalContent(Asset inAsset)

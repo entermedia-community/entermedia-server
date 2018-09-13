@@ -1,10 +1,10 @@
 package org.entermediadb.asset.pull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.elasticsearch.SearchHitData;
@@ -29,7 +30,6 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpRequestBuilder;
@@ -412,6 +412,108 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
+
+	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
+	{
+		
+		Data node = (Data) inArchive.getSearcher("editingcluster").searchByField("clustername", inAsset.get("mastereditclusterid"));
+		String url = node.get("baseurl");
+		
+		
+		FileItem item = new FileItem(inFile);
+
+		String path = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
+		path = path + inAsset.getSourcePath(); //Check archived?
+
+		String primaryname = inAsset.getPrimaryFile();
+		if (primaryname != null && inAsset.isFolder())
+		{
+			path = path + "/" + primaryname;
+		}
+		item.setPath(path);
+		if (ifneeded)
+		{
+			//Check it exists and it matches
+			long size = inAsset.getLong("filesize");
+			if (item.getLength() != size)
+			{
+				String finalurl = url + "mediadb/services/module/asset/downloads/originals/" +  URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+				HttpRequestBuilder connection = new HttpRequestBuilder();
+				Map params = new HashMap();
+				if( node.get("entermediakey") != null)
+				{
+					params.put("entermedia.key", node.get("entermediakey"));
+				}
+				
+				HttpResponse genfile = connection.sharedPost(finalurl, params);
+				StatusLine filestatus = genfile.getStatusLine();           
+				if (filestatus.getStatusCode() != 200)
+				{
+					log.error("Could not download generated " + filestatus + " " + path);
+					return null;
+				}
+				
+					//Save to local file
+					try
+					{
+						log.info("Saving :" + inAsset.getSourcePath() + "/" + inAsset.getName() + " URL:" + path);
+						InputStream stream = genfile.getEntity().getContent();
+
+						inFile.getParentFile().mkdirs();
+						FileOutputStream fos = new FileOutputStream(inFile);
+						filler.fill(stream, fos);
+						filler.close(stream);
+						filler.close(fos);
+						//inFile.setLastModified(datetime);
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+					throw new OpenEditException(e);
+					}
+				
+				
+				
+				
+				
+			}
+		}
+		
+		return item;
+		
+
+		
+	}
+
+
+	public InputStream getOriginalDocumentStream(MediaArchive inArchive, Asset inAsset)
+	{
+		try
+		{
+			Data node = (Data) inArchive.getSearcher("editingcluser").searchByField("clustername", inAsset.get("mastednodeid"));
+			String url = node.get("baseurl");
+			String finalurl = url + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+			HttpRequestBuilder connection = new HttpRequestBuilder();
+			Map params = new HashMap();
+			if( node.get("entermediakey") != null)
+			{
+				params.put("entermedia.key", node.get("entermediakey"));
+			}
+			
+			HttpResponse genfile = connection.sharedPost(finalurl, params);
+			return genfile.getEntity().getContent();
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+		throw new OpenEditException(e);
+		}
+
+		
+	}
+
+
+	
 
 
 }

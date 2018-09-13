@@ -734,6 +734,15 @@
 	</bean>
 
 
+<bean id="entermediaAssetSource" class="org.entermediadb.asset.sources.EntermediaAssetSource"
+		scope="prototype">
+			
+	</bean>
+
+
+
+
+
 	<bean id="mountAssetSource" class="org.entermediadb.asset.sources.OriginalsAssetSource"
 		scope="prototype">
 		<property name="webServer"><ref bean="WebServer" /></property>		

@@ -85,6 +85,12 @@ public class AssetSourceManager implements CatalogEnabled
 		if( fieldAssetSources == null)
 		{
 			fieldAssetSources = new ArrayList();
+			Collection editingnodes =  getMediaArchive().query("editingcluster").all().search();
+			if(editingnodes.size() > 0) {
+				AssetSource source = (AssetSource) getModuleManager().getBean(getCatalogId(), "entermediaAssetSource");
+				source.setMediaArchive(getMediaArchive());
+				fieldAssetSources.add(source);
+			}
 			//Search hot folders and load by type
 			Collection hits = getMediaArchive().query("hotfolder").all().sort("orderingDown").sort("lastscanstart").search();
 			for (Iterator iterator = hits.iterator(); iterator.hasNext();)
@@ -92,6 +98,8 @@ public class AssetSourceManager implements CatalogEnabled
 				Data config = (Data) iterator.next();
 				loadSource(config);
 			}
+			
+		
 		}
 		return fieldAssetSources;
 	}

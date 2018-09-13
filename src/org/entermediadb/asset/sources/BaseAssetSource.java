@@ -1,5 +1,6 @@
 package org.entermediadb.asset.sources;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -324,6 +325,20 @@ public abstract class BaseAssetSource implements AssetSource
 	{	
 		String enabled = getConfig().get("enabled");
 		return Boolean.parseBoolean(enabled);
+	}
+	
+	protected File getFile(Asset inAsset)
+	{
+		String sp = getSourcePath(inAsset);
+		sp = sp.substring(getFolderPath().length() + 1);
+		String abpath = getExternalPath() + "/" + sp;
+		String primaryname = inAsset.getPrimaryFile();
+		if(primaryname != null && inAsset.isFolder() )
+		{
+			abpath = abpath + "/" + primaryname;
+		}
+
+		return new File(abpath);
 	}
 	
 }
