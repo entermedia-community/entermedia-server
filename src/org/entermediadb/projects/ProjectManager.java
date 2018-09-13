@@ -1360,6 +1360,70 @@ public class ProjectManager implements CatalogEnabled {
 
 	}
 	
+	public Map listAssetMap(String serverPrefix, MediaArchive inArchive, LibraryCollection inCollection, Category inCat)
+	{
+		List tosend = new ArrayList();
+
+		String root = inCollection.getCategory().getCategoryPath();
+		String subfolder = inCat.getCategoryPath().substring(root.length());
+		String foldername = inCollection.getName();
+		if (!subfolder.isEmpty())
+		{
+			foldername = foldername + subfolder;
+		}
+
+		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
+		assets.enableBulkOperations();
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+		{
+			MultiValued asset = (MultiValued) iterator.next();
+			Map map = new HashMap();
+			map.put("id", asset.getId());
+
+			String assetpath = inArchive.asLinkToOriginal(asset);
+
+			String url = serverPrefix + "/" + inArchive.getMediaDbId() + "/services/module/asset/downloads/originals/" + assetpath;
+			map.put("url", url);
+
+			String primaryImageName = asset.get("primaryfile");
+			if (primaryImageName == null)
+			{
+				primaryImageName = asset.getName();
+			}
+			String savepath = foldername + "/" + primaryImageName;
+			map.put("savepath", savepath);
+
+			map.put("filesize", asset.get("filesize"));
+			long time = asset.getDate("assetmodificationdate").getTime();
+			if (time > 0)
+			{
+				map.put("assetmodificationdate", String.valueOf(time));
+			}
+			tosend.add(map);
+		}
+		
+		Collection<String> subfolders = new ArrayList();
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category subcat = (Category) iterator.next();
+			subfolders.add(subcat.getName());
+		}
+		Map response = new HashMap();
+		response.put("folder", inCollection.getName());
+		response.put("subpath", subfolder);
+		response.put("subfolders", subfolders);
+		response.put("assets", tosend);
+		return response;
+//		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
+//		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+//		{
+//			Category child = (Category) iterator.next();
+//			downloadCat(inArchive, inCollection, child);
+//		}
+
+	}
+
+	
 	/*
 	
 	public void processCheckinRequest(Desktop desktop, JSONObject inMap)

@@ -836,8 +836,25 @@ public class ProjectModule extends BaseMediaModule {
 		Data upload = userupload.query().exact("uploadcategory", PathUtilities.extractPageName(page)).searchOne();
 		inReq.putPageValue("userupload", upload);
 	}
-
-	public void syncRemoteFolder(WebPageRequest inReq)
+	public void downloadRemoteFolder(WebPageRequest inReq)
+	{
+		Map params = inReq.getJsonRequest();
+			
+		String catalogid = (String)params.get("catalogid");
+		MediaArchive archive = getMediaArchive(catalogid);
+		String categoryid = (String)params.get("categoryid");
+		String collectionid = (String)params.get("collectionid");
+		String server = (String)params.get("server");
+	
+		LibraryCollection collection = archive.getProjectManager().getLibraryCollection(archive,collectionid);
+		
+		Category cat = archive.getCategory(categoryid);
+		
+		Map assets = archive.getProjectManager().listAssetMap(server, archive, collection, cat);
+		inReq.putPageValue("assetmap", assets);
+		
+	}
+	public void uploadRemoteFolder(WebPageRequest inReq)
 	{
 		
 		Map params = inReq.getJsonRequest();

@@ -1,5 +1,5 @@
 <page>
 
 	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
-	<path-action name="ProjectModule.syncRemoteFolder" alltypes="true"/>
+	<path-action name="ProjectModule.uploadRemoteFolder" alltypes="true"/>
 </page>

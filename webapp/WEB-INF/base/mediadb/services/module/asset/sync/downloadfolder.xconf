@@ -1,0 +1,5 @@
+<page>
+
+	<path-action name="JsonAssetModule.preprocess" alltypes="true"/>
+	<path-action name="ProjectModule.downloadRemoteFolder" alltypes="true"/>
+</page>

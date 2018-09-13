@@ -156,10 +156,34 @@ public class Desktop
 		setBusy(true);
 
 		Category cat = inCollection.getCategory();
-		downloadCat(inArchive, inCollection, cat);
+		//Build one tree. Have the client pull the data for each one till it's done
+		Map root = addChildren(cat.getCategoryPath(),cat);
+		getDesktopListener().downloadFolders(inArchive,inCollection,root);
+	//	downloadCat(inArchive, inCollection, cat); //this checks out a ton of folders one chunck at a time
 
 	}
 	
+	protected Map addChildren(String inRootPath, Category inCat)
+	{
+		Map inParent = new HashMap();
+		inParent.put("name",inCat.getName());
+		String remaining = inCat.getCategoryPath().substring(inRootPath.length());
+		inParent.put("subpath",remaining);
+		
+		Collection inChildren = new ArrayList();
+		inParent.put("children",inChildren);
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category cat = (Category) iterator.next();
+			if( cat.hasChildren())
+			{
+				Map child = addChildren(inRootPath,cat);
+				inChildren.add(child);
+			}
+		}
+		return inParent;
+	}
+
 	/*
 	 * 1. UI is clicked
 	 * 2. We tell the client to send us a list of files they have MediaBoatConnection.collectFileList
@@ -172,7 +196,7 @@ public class Desktop
 		setBusy(true);
 
 		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
-		getDesktopListener().collectFileList(inArchive, inCollection, path);
+		getDesktopListener().importFiles(inArchive, inCollection, path);
 
 	}
 	public void openRemoteFolder(MediaArchive inArchive, LibraryCollection inCollection)
@@ -180,64 +204,7 @@ public class Desktop
 		String path = getHomeFolder() + "/EnterMedia/" + inCollection.getName();
 		getDesktopListener().openRemoteFolder(path);
 	}
-	private void downloadCat(MediaArchive inArchive, LibraryCollection inCollection, Category inCat)
-	{
-		List tosend = new ArrayList();
-
-		String root = inCollection.getCategory().getCategoryPath();
-		String folder = inCat.getCategoryPath().substring(root.length());
-		String foldername = inCollection.getName();
-		if (!folder.isEmpty())
-		{
-			foldername = foldername + folder;
-		}
-
-		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
-		assets.enableBulkOperations();
-		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
-		{
-			MultiValued asset = (MultiValued) iterator.next();
-			Map map = new HashMap();
-			map.put("id", asset.getId());
-
-			String assetpath = inArchive.asLinkToOriginal(asset);
-
-			String url = getServerName() + "/" + inArchive.getMediaDbId() + "/services/module/asset/downloads/originals/" + assetpath;
-			map.put("url", url);
-
-			String primaryImageName = asset.get("primaryfile");
-			if (primaryImageName == null)
-			{
-				primaryImageName = asset.getName();
-			}
-			String savepath = foldername + "/" + primaryImageName;
-			map.put("savepath", savepath);
-
-			map.put("filesize", asset.get("filesize"));
-			long time = asset.getDate("assetmodificationdate").getTime();
-			if (time > 0)
-			{
-				map.put("assetmodificationdate", String.valueOf(time));
-			}
-			tosend.add(map);
-		}
-		
-		Collection<String> subfolders = new ArrayList();
-		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
-		{
-			Category subcat = (Category) iterator.next();
-			subfolders.add(subcat.getName());
-		}
-		
-		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
-		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
-		{
-			Category child = (Category) iterator.next();
-			downloadCat(inArchive, inCollection, child);
-		}
-
-	}
-
+	
 	public void uploadFile(JSONObject inMap)
 	{
 		String path = (String) inMap.get("path");

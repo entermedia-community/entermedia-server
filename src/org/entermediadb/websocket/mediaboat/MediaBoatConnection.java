@@ -328,20 +328,22 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		sendMessage(command);
 		
 	}
+
 	@Override
-	public void downloadFiles(String foldername,Collection<String> inSubFolders, Collection inAssets)
+	public void downloadFolders(MediaArchive inArchive, LibraryCollection inCollection, Map inRoot)
 	{
 		JSONObject command = new JSONObject();
-		command.put("command", "downloadto");
-		command.put("foldername", foldername);
-		command.put("assetpaths", inAssets);
-		command.put("subfolders",inSubFolders);
+		command.put("command", "downloadfolders");
+		command.put("rootfolder", inRoot);
+		command.put("catalogid",inArchive.getCatalogId());
+		command.put("mediadbid",inArchive.getMediaDbId());
+		command.put("collectionid",inCollection.getId());
 		sendMessage(command);
-		
 	}
+
 	
 	@Override
-	public void collectFileList(MediaArchive inArchive,LibraryCollection inCollection,String path) {
+	public void importFiles(MediaArchive inArchive,LibraryCollection inCollection,String path) {
 		JSONObject command = new JSONObject();
 		command.put("command", "checkincollection");
 		command.put("rootfolder", path);
@@ -370,5 +372,4 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		
 	}
 
-	
 }

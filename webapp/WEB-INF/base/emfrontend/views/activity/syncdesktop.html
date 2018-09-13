@@ -5,16 +5,17 @@
 	#set( $librarycol = $mediaarchive.getData("librarycollection", $collectionid) )
 	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
 
+#if($desktop.isEdited($librarycol.getName()) )
+
 <div  class="alert alert-primary" role="alert">
 	<p id="openpath">
 	 <a class="btn ajax" data-targetdiv="openpathhidden" 
 	 	href="$apphome/views/activity/syncdesktop-open.html?collectionid=${librarycol.getId()}">Open Folder</a>
 	<i class="glyphicon glyphicon-info-sign"></i> 
 View local Path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
-	
 </p>
 </div>
-
+#end
 
 #if($desktop.isEdited($librarycol.getName()) )
 <form  name="archiveassets" id="archiveassets" 
@@ -42,7 +43,7 @@ View local Path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
 	</input>
 
 <i class="glyphicon glyphicon-info-sign"></i> 
-	Replaces local files with contents of this collection
+	Warning: Replaces local files with contents of this collection
 	</p>
 	</div>
 	
