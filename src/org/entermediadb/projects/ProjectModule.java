@@ -851,7 +851,7 @@ public class ProjectModule extends BaseMediaModule {
 		Category cat = archive.getCategory(categoryid);
 		
 		Map assets = archive.getProjectManager().listAssetMap(server, archive, collection, cat);
-		inReq.putPageValue("assetmap", assets);
+		inReq.putPageValue("assetmap", new JSONObject(assets));
 		
 	}
 	public void uploadRemoteFolder(WebPageRequest inReq)
