@@ -59,5 +59,8 @@
 
 
   
+  <property id="skipgenerated" index="true" stored="true" editable="true" datatype="boolean" >Don't download generated files</property>
+
+  
   
 </properties>

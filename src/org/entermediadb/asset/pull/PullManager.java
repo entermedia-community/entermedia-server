@@ -201,7 +201,8 @@ public class PullManager implements CatalogEnabled
 		String returned = EntityUtils.toString(response2.getEntity());
 		//log.info("returned:" + returned);
 		Map parsed = (Map)new JSONParser().parse(returned);
-		
+		Boolean skipgenerated = (Boolean) node.getValue("skipgenerated");
+
 		long assetcount = 0;
 		int page = 1;
 		Map response = (Map)parsed.get("response");
@@ -210,7 +211,10 @@ public class PullManager implements CatalogEnabled
 		{
 			Collection saved = importChanges(inArchive, returned, parsed);
 			assetcount = assetcount + saved.size();
+			if(!skipgenerated) {
+
 			downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+			}
 			int pages = Integer.parseInt( response.get("pages").toString() );
 			//loop over pages
 			String hitssessionid = (String)response.get("hitssessionid");
@@ -246,7 +250,9 @@ public class PullManager implements CatalogEnabled
 				log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
 				saved = importChanges(inArchive, returned, parsed);
 				assetcount = assetcount + saved.size();
-				downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+				if(!skipgenerated) {
+					downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+				}
 
 			}
 			return assetcount;
