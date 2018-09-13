@@ -437,7 +437,7 @@ public class PullManager implements CatalogEnabled
 			long size = inAsset.getLong("filesize");
 			if (item.getLength() != size)
 			{
-				String finalurl = url + "mediadb/services/module/asset/downloads/originals/" +  URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" +  URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
 				HttpRequestBuilder connection = new HttpRequestBuilder();
 				Map params = new HashMap();
 				if( node.get("entermediakey") != null)
