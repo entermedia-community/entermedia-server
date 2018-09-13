@@ -449,7 +449,7 @@ public class PullManager implements CatalogEnabled
 				StatusLine filestatus = genfile.getStatusLine();           
 				if (filestatus.getStatusCode() != 200)
 				{
-					log.error("Could not download generated " + filestatus + " " + path);
+					log.error("Could not download generated " + filestatus + " " + path + "Full URL: " + finalurl);
 					return null;
 				}
 				
