@@ -23,6 +23,12 @@ public class DesktopManager
 	
 	public void setDesktop(Desktop inDesktop)
 	{
+		Desktop oldesktop = (Desktop)getConnectedClients().get(inDesktop.getUserId());
+		if( oldesktop != null)
+		{
+			oldesktop.replacedWithNewDesktop(inDesktop);
+		}
+		
 		getConnectedClients().put(inDesktop.getUserId(),inDesktop);
 	}
 

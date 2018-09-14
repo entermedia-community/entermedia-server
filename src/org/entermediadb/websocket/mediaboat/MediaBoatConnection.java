@@ -283,6 +283,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		}
 		String connectionid = (String)map.get("connectionid");
 		setCurrentConnectionId(connectionid);
+		
 		JSONObject authenticated = new JSONObject();
 		authenticated.put("command", "authenticated");
 		authenticated.put("entermedia.key", key);
@@ -371,6 +372,16 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 
 		sendMessage(command);
 		
+	}
+
+	@Override
+	public void replacedWithNewDesktop(Desktop inOldDesktop)
+	{
+		JSONObject command = new JSONObject();
+		command.put("command", "replaceddesktop");
+		command.put("desktopid", inOldDesktop.getDesktopId());
+		sendMessage(command);
+
 	}
 
 }

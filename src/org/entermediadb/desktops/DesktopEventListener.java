@@ -16,6 +16,8 @@ public interface DesktopEventListener
 	public void openRemoteFolder(String inPath);
 
 	public void downloadFolders(MediaArchive inArchive,LibraryCollection inCollection, Map inRoot);
+
+	public void replacedWithNewDesktop(Desktop inDesktop);
 	
 
 }

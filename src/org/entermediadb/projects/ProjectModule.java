@@ -896,6 +896,10 @@ public class ProjectModule extends BaseMediaModule {
 			long filesize = getLong(fileinfo.get("filesize"));
 			Data data = (Data)existingassets.get(filename);
 			existingassets.remove(filename);
+			if( data == null)
+			{
+				data = (Asset)archive.getAssetSearcher().query().exact("name",filename ).exact("filesize", String.valueOf(filesize)).searchOne();
+			}
 			if( data != null)
 			{
 				fileinfo.put("assetid", data.getId());

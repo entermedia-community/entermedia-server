@@ -214,4 +214,9 @@ public class Desktop
 	{
 		getEditedCollections().add(inName);
 	}
+
+	public void replacedWithNewDesktop(Desktop inDesktop)
+	{
+		getDesktopListener().replacedWithNewDesktop(inDesktop);
+	}
 }
