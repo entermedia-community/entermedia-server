@@ -12,12 +12,11 @@
 <tr><th>User</th><th>Desktop</th><th>Last Command</th><th>Percent</th></tr>
 #set( $users = $manager.getUsers() )
 #foreach($userid in $users)
-#foreach($desktop in $manager.getDesktops($userid))
+#set( $desktop = $manager.getDesktop($userid))
 <tr>
 <td>$userid</td><td>$desktop.getDesktopId()</td><td>$desktop.getLastCommand()</td>
 <td>$desktop.getLastCompletedPercent()</td>
 </tr>
-#end
 #end
 </table>
 </div>
