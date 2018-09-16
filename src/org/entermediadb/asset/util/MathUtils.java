@@ -50,6 +50,9 @@ public class MathUtils
 	
 	
 	public String percent(Double inVal){
+		if(inVal == null){
+			return null;
+		}
 		try{
 		DecimalFormat percentFormat = new DecimalFormat("0.0%");
 		    percentFormat.setDecimalSeparatorAlwaysShown(false);
