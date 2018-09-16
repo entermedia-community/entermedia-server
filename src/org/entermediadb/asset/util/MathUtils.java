@@ -2,6 +2,7 @@ package org.entermediadb.asset.util;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -45,6 +46,15 @@ public class MathUtils
 		BigDecimal now=getBigDecimal(inSoFar);
 		BigDecimal total = getBigDecimal(inTotal);
 		return getPercentage(now, total);
+	}
+	
+	
+	public String percent(Double inVal){
+		 DecimalFormat percentFormat = new DecimalFormat("0.0%");
+		    percentFormat.setDecimalSeparatorAlwaysShown(false);
+		    percentFormat.setMinimumFractionDigits(0);
+		    percentFormat.setMaximumFractionDigits(2);
+		    return percentFormat.format(inVal);
 	}
 
 	public static double divide(double intop, double inbottom)
