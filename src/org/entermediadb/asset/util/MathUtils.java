@@ -61,6 +61,21 @@ public class MathUtils
 			return null;
 		}
 	}
+	
+	
+public String percent(String inVal){
+		
+		try{
+			Double val = Double.parseDouble(inVal);
+		DecimalFormat percentFormat = new DecimalFormat("0.0%");
+		    percentFormat.setDecimalSeparatorAlwaysShown(false);
+		    percentFormat.setMinimumFractionDigits(0);
+		    percentFormat.setMaximumFractionDigits(2);
+		    return percentFormat.format(val);
+		} catch(Exception e){
+			return null;
+		}
+	}
 
 	public static double divide(double intop, double inbottom)
 	{
