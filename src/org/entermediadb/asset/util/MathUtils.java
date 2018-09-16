@@ -50,11 +50,15 @@ public class MathUtils
 	
 	
 	public String percent(Double inVal){
-		 DecimalFormat percentFormat = new DecimalFormat("0.0%");
+		try{
+		DecimalFormat percentFormat = new DecimalFormat("0.0%");
 		    percentFormat.setDecimalSeparatorAlwaysShown(false);
 		    percentFormat.setMinimumFractionDigits(0);
 		    percentFormat.setMaximumFractionDigits(2);
 		    return percentFormat.format(inVal);
+		} catch(Exception e){
+			return null;
+		}
 	}
 
 	public static double divide(double intop, double inbottom)
