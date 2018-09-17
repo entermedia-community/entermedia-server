@@ -1,6 +1,6 @@
 <form id="eml-tab-green-container" class="validate-inputs" name="savemount" action="save.html" target="_top">
 	
-<h3>[[Hot Folder]]</h3>
+<h3>[[Asset Folder]]</h3>
 #set( $id = $context.getRequestParameter("id") )
 
 <input type="hidden" name="id" value="$id" />
@@ -19,31 +19,11 @@
 
 $pages.include("./editdetails.html")
 
-<label>[[Include Filters]]</label>
-<input type="hidden" name="field" value="includes" />
-<textarea class="field" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
-<div class="note">[[comma delimited]] *.jpg,*/Completed/*</div> 
-
-<label>[[Exclude Filter]]</label>
-<input type="hidden" name="field" value="excludes" />
-<textarea class="field" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old, *_tmp*#end</textarea>
-<div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div> 
-
-<label>[[Attachment Filter]]</label>
-<input type="hidden" name="field" value="attachmenttrigger" />
-<textarea class="field" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
-<div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts,*/attachments.txt</div> 
-
 <label>[[Priority]]</label>
 <input type="hidden" name="field" value="ordering" />
 <input class="field" name="ordering.value" value="$!data.ordering" />
 <div class="note">[[The order of this hot folder. 0-100 Higher comes first]]</div> 
 
-<div class="clearfix" style="margin-bottom: 20px;">
-<input type="hidden" name="field" value="monitortree" /> 
-<input type="checkbox" style="float: left;"   name="monitortree.value" value="true" #if($data.getValue("monitortree")) checked #end />
-<label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Live Monitor the file system for changes in real time. For less than 100,000 files]]</label> 
-</div>
 <div class="clearfix" style="margin-bottom: 20px;">
 	<input type="hidden" name="field" value="enabled" />
 	<div class="clearfix">

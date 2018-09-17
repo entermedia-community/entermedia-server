@@ -1,0 +1,99 @@
+#set( $apphome = "/${order.applicationid}")
+<p>[[Hello]],</p>
+<br />
+
+#set( $ordertype = $order.get("ordertype") )
+#set( $status = $order.get("checkoutstatus") )
+
+#if( $ordertype == "checkout")
+	#if( $status == "approved")
+		<p>[[Your request has been approved, you can now download the following assets]].
+	#else
+		<p>[[Your request has been rejected, review the below notes]].
+	#end
+#else
+<p>$userManager.getScreenName( $order.userid ) [[has shared some assets with you]].
+#end
+
+#if($order.sharenote)
+[[Below is a note that was attached]]:</p>
+<blockquote>$order.sharenote</blockquote>
+<hr />
+#else 
+</p>
+#end
+
+#if( $status == "approved")
+<p>[[Please review the assets at this link]]: <a href="$context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderid=$order.id" style="font-size: 14px; color: blue;">
+$context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderid=$order.id</a></p>
+#end
+
+
+
+#if( $order.expireson)
+[[Access to these files will expire on ]]
+	#if( $expiresondate )  ##Use this since events do not have a locale
+		$expiresformat.format($expiresondate)
+	#else
+		$context.getDateTime($order.expireson)	
+	#end	
+#end
+
+
+<p>
+
+</p>
+#set($orderitems = $mediaarchive.getSearcher("orderitem").query().exact("orderid", $order.id).search())
+<hr />
+#if( $status == "rejected")
+	<p>[[Below is a list of assets that has been rejected]]:</p>
+#else
+	<p>[[Below is a list of assets available at the link above]]:</p>
+#end	
+
+<style>
+
+th
+{
+ text-align: left;
+	
+}
+</style>
+
+<table cellspacing="0" cellpadding="0" width="100%">		
+	<tr>
+	<th style="text-align: left;">[[Title]]</th>
+	<th >[[File Name]]</th>
+	<th>[[Asset Type]]</th>
+	<th>[[Format]]</th>
+	</tr>
+
+	#foreach( $item in $orderitems )
+		#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+		$context.putPageValue("asset", $asset)
+		$context.putPageValue("item", $item)
+		$context.setRequestParameter("sourcepath", $asset.sourcepath)					
+		<tr>
+		<td>
+			$!asset.assettitle
+		</td>
+		<td>
+			$!asset.name
+		</td>
+		<td>
+			$!searcherManager.getData($catalogid,"assettype",$asset.assettype).getName($context.getLocale())
+		</td>
+		<td>
+		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
+		    #if( !$val)
+				#set( $val = $item.get("presetid") )		    	
+		    #end
+			#if( $val )
+				#set($preset = $searcherManager.getData($catalogid, "convertpreset",$val ))
+				$!preset.getName($context.getLocale())
+			#else
+				[[Online Preview]]
+			#end	
+		</tr>
+	#end
+</table>

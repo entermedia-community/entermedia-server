@@ -1,0 +1,19 @@
+<div id="editdetails" >
+
+
+<label>[[External Import Path]]</label>
+<input type="hidden" name="field" value="externalpath" />
+<input class="field" name="externalpath.value" value="$!data.externalpath" />
+<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
+
+<label>[[Internal Category Path]]</label>
+<input type="hidden" name="field" value="subfolder" />
+#set( $subfolder = $context.getRequestParameter("subfolder"))
+#if( !$subfolder )
+#set( $subfolder = $!data.subfolder )
+#end
+<input class="field" name="subfolder.value" value="$!subfolder" />
+<div class="note">[[Required: The path to the category location such as: ]] Marketing_Drive</div> 
+
+
+</div>

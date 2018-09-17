@@ -2,5 +2,5 @@
 
 	<inner-layout />
 	<layout />
- <path-action name="HotFolderModule.loadHotFolder"/>
+  <path-action name="HotFolderModule.loadSource"/>
 </page>

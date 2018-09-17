@@ -31,10 +31,13 @@
 	</permission>	
 
 	<permission name="view">
-		<or>
+		<and>
+		<userprofile property="view" equals="true" />
+	
 			<pagevalue name="canviewasset" equals="true"/>
-		</or>
-	</permission>	
+		
+		</and>
+	</permission>		
 
 	<permission name="download">
 		<and>

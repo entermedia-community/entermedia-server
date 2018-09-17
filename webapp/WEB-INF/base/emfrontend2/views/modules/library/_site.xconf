@@ -17,11 +17,7 @@
 		<group name="administrators" />
 	</or>
  	</permission>
- 	<permission name="editdata">
- 	<or>
-		<group name="administrators" />
-	</or>
- 	</permission>
+
  	
  	<permission name="editdata">
 		<or>

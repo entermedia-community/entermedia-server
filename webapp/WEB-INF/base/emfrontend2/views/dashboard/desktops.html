@@ -1,0 +1,23 @@
+
+#set( $manager = $mediaarchive.getBean("desktopManager") )
+
+<div id="desktopstatus"  class="ajaxstatus "  #if( $content == $page)data-ajaxrunning="true"#end  ajaxpath="$home${page.getPath()}?oemaxlevel=1" >
+
+<div class="container-fluid">
+<div class="page-header">
+  <h1> <small>Connected Desktops</small></h1>
+</div>
+
+<table style="margin:20px;width:100%">
+<tr><th>User</th><th>Desktop</th><th>Last Command</th><th>Percent</th></tr>
+#set( $users = $manager.getUsers() )
+#foreach($userid in $users)
+#set( $desktop = $manager.getDesktop($userid))
+<tr>
+<td>$userid</td><td>$desktop.getDesktopId()</td><td>$desktop.getLastCommand()</td>
+<td>$desktop.getLastCompletedPercent()</td>
+</tr>
+#end
+</table>
+</div>
+</div>

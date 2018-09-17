@@ -1,6 +1,6 @@
 <page>
 	<path-action name="AssetEditModule.writeXmpData"/>
-	<inner-layout>//${applicationid}/theme/entermedia/layouts/asseteditor.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/entermedia/layouts/asseteditor.html</inner-layout>
 	<path-action name="AssetEditModule.getAsset"  />
 	<permission name="view">
 		<not>

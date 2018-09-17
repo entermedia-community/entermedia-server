@@ -1,0 +1,57 @@
+#set( $collectionid = $context.getRequestParameter("collectionid"))
+#if($collectionid)
+
+<div style="padding: 0 20px 20px 20px;">
+	#set( $librarycol = $mediaarchive.getData("librarycollection", $collectionid) )
+	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
+
+#if($desktop.isEdited($librarycol.getName()) )
+
+<div  class="alert alert-primary" role="alert">
+	<p id="openpath">
+	 <a class="btn ajax" data-targetdiv="openpathhidden" 
+	 	href="$apphome/views/activity/syncdesktop-open.html?collectionid=${librarycol.getId()}">Open Folder</a>
+	<i class="glyphicon glyphicon-info-sign"></i> 
+View local Path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
+</p>
+</div>
+#end
+
+#if($desktop.isEdited($librarycol.getName()) )
+<form  name="archiveassets" id="archiveassets" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopimportstart.html"
+   style="padding-top: 20px;"
+   >
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+
+	
+<div  class="alert alert-primary" role="alert">
+<input class="btn" type="submit" id="archiveassetsbutton" value="[[Upload]]">	 
+
+	<i class="glyphicon glyphicon-info-sign"></i> [[Uploads your local work folder into this collection]]
+</div>
+</form>
+#end
+
+
+<form  name="download" id="download" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html">
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+	 	
+	<div  class="alert alert-primary" role="alert">
+	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download]]">
+	</input>
+
+<i class="glyphicon glyphicon-info-sign"></i> 
+	Warning: Replaces local files with contents of this collection
+	</p>
+	</div>
+	
+	
+</form>
+
+
+</div>
+
+#end
+

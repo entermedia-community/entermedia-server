@@ -188,8 +188,11 @@ runajaxonthis = function(inlink,e)
 		inlink.addClass("active");
 	}
 	var nextpage= inlink.attr('href');
-	var targetDiv = inlink.attr("targetdiv");
-	
+	var targetDiv = inlink.data("targetdiv");
+	if( !targetDiv )
+	{
+		targetDiv = inlink.attr("targetdiv");
+	}
 	var useparent = inlink.data("useparent");
 
 	var options = inlink.data();
@@ -228,7 +231,11 @@ runajaxonthis = function(inlink,e)
 	else
 	{
 		//add oemaxlevel as data
-		var loaddiv = inlink.attr("targetdivinner");
+		var loaddiv = inlink.data("targetdivinner");
+		if( !loaddiv )
+		{
+			loaddiv = inlink.attr("targetdivinner");
+		}
 		loaddiv = loaddiv.replace(/\//g, "\\/");
 		//jQuery("#"+loaddiv).load(nextpage);
 		jQuery.get(nextpage, options, function(data) 
@@ -256,10 +263,10 @@ runajaxonthis = function(inlink,e)
 }
 runajax = function(e)
 {
-	runajaxonthis($(this),e);
 	 e.stopPropagation();
      e.preventDefault();
-	//return false;
+	runajaxonthis($(this),e);
+	return false;
 }
 
 showHoverMenu = function(inDivId)
@@ -332,7 +339,7 @@ pageload = function(hash)
 // Everyone put your onload stuff in here:
 onloadselectors = function()
 {
-	autoheight("#emcontent"); 
+	//autoheight("#emcontent"); 
 	
 	jQuery("a.ajax").livequery('click', runajax);
 	
@@ -580,7 +587,6 @@ onloadselectors = function()
 			
 		}
 	);
-	
 	if( jQuery.history )
 	{
 		jQuery.history.init(pageload);
@@ -751,39 +757,60 @@ onloadselectors = function()
 				jQuery(this).droppable(
 					{
 						drop: function(event, ui) {
-							var assetid = ui.draggable.data("assetid");
 							var node = $(this);
 							var categoryid = node.parent().data("nodeid");
+							var targetcategoryid = ui.draggable.data("nodeid")
 							
-							var hitssessionid = $("#resultsdiv").data("hitssessionid");
-							if( !hitssessionid )
+							if( targetcategoryid )
 							{
-								hitssessionid = $("#main-results-table").data("hitssessionid");
-							}
-							//this is a category
-							var moveit = false;
-							if( node.closest(".assetdropcategorymove").length > 0 )
-							{
-								moveit = true;
-							}
-							var rootcategory = node.closest(".emtree").data("rootnodeid");
+								var tree = node.closest(".emtree");
+								var params = tree.data();
+								params['categoryid'] = targetcategoryid;//Remove from self
+								params['categoryid2'] = categoryid;
+								params['oemaxlevel'] = "1";
+								params['tree-name'] = tree.data("treename"); 
 								
-							jQuery.get(apphome + "/components/categorize/addassetcategory.html", 
-									{
-										assetid:assetid,
-										categoryid:categoryid,
-										hitssessionid:hitssessionid,
-										moveasset: moveit,
-										rootcategoryid: rootcategory
-									},
-									function(data) 
-									{
-										node.append("<span class='fader'>&nbsp;+" + data + "</span>");
-										node.find(".fader").fadeOut(3000);
-										node.removeClass("selected");
-									}
-							);
-
+								jQuery.get(apphome + "/components/emtree/movecategory.html", 
+										params,
+										function(data) 
+										{
+											tree.closest("#treeholder").replaceWith(data);
+										}
+								);
+							}
+							else
+							{
+								var assetid = ui.draggable.data("assetid");
+								var hitssessionid = $("#resultsdiv").data("hitssessionid");
+								if( !hitssessionid )
+								{
+									hitssessionid = $("#main-results-table").data("hitssessionid");
+								}
+								
+								//this is a category
+								var moveit = false;
+								if( node.closest(".assetdropcategorymove").length > 0 )
+								{
+									moveit = true;
+								}
+								var rootcategory = node.closest(".emtree").data("rootnodeid");
+									
+								jQuery.get(apphome + "/components/categorize/addassetcategory.html", 
+										{
+											assetid:assetid,
+											categoryid:categoryid,
+											hitssessionid:hitssessionid,
+											moveasset: moveit,
+											rootcategoryid: rootcategory
+										},
+										function(data) 
+										{
+											node.append("<span class='fader'>&nbsp;+" + data + "</span>");
+											node.find(".fader").fadeOut(3000);
+											node.removeClass("selected");
+										}
+								);		
+							}
 						},
 						tolerance: 'pointer',
 						over: outlineSelectionCol,
@@ -872,6 +899,10 @@ showajaxstatus = function(uid)
 	if( cell )
 	{
 		var path = cell.attr("ajaxpath");
+		if(!path || path =="")
+		{
+			path = cell.data("ajaxpath");
+		}
 		//console.log("Loading " + path );
 		if( path && path.length > 1)
 		{
@@ -882,7 +913,6 @@ showajaxstatus = function(uid)
 		}	
 	}
 }
-
 
 
 jQuery(document).ready(function() 

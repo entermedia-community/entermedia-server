@@ -1,0 +1,82 @@
+ #set($dl = $mediaarchive.getSearcher("asseteditLog"))
+ #set($dlhits = $hits)
+<canvas id="viewchart2"></canvas>
+<script>
+var ctx = document.getElementById("viewchart2");
+var myChart = new Chart(ctx, {
+    type: 'bar',
+    data: {
+        labels: [
+
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+	#foreach($child in $node.getChildren())
+		"$context.getDate($child.toString())",
+	#end
+#end
+        ]
+        
+        ,
+        datasets: [{
+            label: '[[Asset Edits Over Time]]',
+            data: [
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+#foreach($child in $node.getChildren())
+	$child.get("count"),
+#end
+#end
+                  
+                   
+                   ],
+            backgroundColor: [
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day"))
+
+#foreach($child in $node.getChildren())
+
+                '$mediaarchive.getData("color", ${foreach.count}).get("colorcode")',
+                #end
+                #end
+                
+            ],
+            borderColor: [
+                'rgba(255,99,132,1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            yAxes: [{
+                ticks: {
+                    beginAtZero:true
+                }
+            }]
+        }
+    }
+});
+</script>
+
+
+
+<ul class="list-group">
+				<a href="#" class="list-group-item active"> [[Asset Edit History]] </a>
+
+#foreach($node in $dlhits.loadHistogram("event_breakdown_day", true))
+#foreach($child in $node.getChildren())
+	#if($child.get("count") != 0)
+	<li class="list-group-item">
+	
+	<b> $context.getSearchDate($child.toString()) </b> : Overall Edits: $child.get("count")	<a class=" pull-right" href="$home$apphome/views/modules/asseteditLog/fieldsearch.html?field=date&date.value=${context.getSearchDate($child.toString())}&operation=equals">View Details</a><br/>
+	 
+	</li>
+	#end
+#end
+#end
+
+</ul>
+
+[[Note - Dates are relative to GMT, search results may be local time]]

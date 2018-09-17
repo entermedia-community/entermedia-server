@@ -1,0 +1,9 @@
+<page>
+<path-action name="OrderModule.updateOrder"/>
+<path-action name="OrderModule.saveItems"/>
+	
+<path-action name="PathEventModule.runSharedEvent" runpath="/${catalogid}/events/ordering/checkorderstatus.html"  allowduplicates="true"/>
+
+
+<inner-layout/>
+</page>
