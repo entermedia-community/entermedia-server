@@ -917,13 +917,16 @@ public class ProjectModule extends BaseMediaModule {
 				if( item.getLength() != filesize)
 				{
 					addit = true;
+				} else{
+					asset.addCategory(subcat);//make sure it's in the category!
+					archive.saveAsset(asset);
 				}
 			}
 			//TODO: md5?
 			if( addit )
 			{
 				toupload.add(fileinfo);
-			}
+			} 
 		}
 		Collection toremove = new ArrayList();
 		for (Iterator iterator = existingassets.values().iterator(); iterator.hasNext();)
