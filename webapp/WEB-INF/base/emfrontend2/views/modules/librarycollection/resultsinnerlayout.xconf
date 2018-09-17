@@ -1,5 +1,5 @@
 <page>
 
-	<inner-layout>//${applicationid}/theme/layouts/collectionfeedlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/collectionfeedlayout.html</inner-layout>
 	
 </page>
