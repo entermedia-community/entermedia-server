@@ -18,6 +18,7 @@ $context.putPageValue("hideheader", "true")
 
 #if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 
+		$pages.include("$apphome/components/results/header.html",$context)
 
 $pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
 
