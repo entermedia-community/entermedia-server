@@ -10,9 +10,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
-import org.openedit.OpenEditException;
 import org.openedit.data.Searcher;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
@@ -27,6 +25,18 @@ public class ConversionTask
 	User user;
 	Asset asset;
 	ConvertResult result = null;
+	Date started = null;
+	
+	
+	
+	public Data getHit()
+	{
+		return hit;
+	}
+	public void setHit(Data inHit)
+	{
+		hit = inHit;
+	}
 	private static final Log log = LogFactory.getLog(ConversionTask.class);
 	
 	public boolean isComplete()
@@ -253,7 +263,9 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 //			String outputpage = creator.populateOutputPath(inArchive, inStructions, inPreset);
 //			Page output = inArchive.getPageManager().getPage(outputpage);
 //			log.debug("Running Media type: ${type} on asset ${inAsset.getSourcePath()}" );
+		started = new Date();
 		tmpresult = manager.createOutput(inStructions);
+		
 	}
 	else if("submitted".equals(status))
 	{
@@ -268,4 +280,12 @@ protected ConvertResult doConversion(MediaArchive inArchive, Data inTask, Data i
 	
 	return tmpresult;
   }
+public Date getStarted()
+{
+	return started;
+}
+public void setStarted(Date inStarted)
+{
+	started = inStarted;
+}
 }
