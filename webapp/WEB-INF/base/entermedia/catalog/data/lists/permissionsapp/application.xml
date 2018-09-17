@@ -40,6 +40,8 @@
 	<permission id="viewrelatedkeywords" permissiontype="application" name="Related Keywords" description="Enables a list of related keywords when searching." ordering="295"/>
 	<permission id="togglesidebar" permissiontype="application" name="Show and Hide Sidebars" description="Allow users to toggle sidebar components on and off" ordering="296"/>
 
+	<permission id="viewmodulelist" permissiontype="application" name="Module List" description="Enables the Modules dropdown." ordering="297"/>
+
 </permissions>
 
 	

@@ -3,7 +3,7 @@
 
 
 <div id="printpreview-top">
-#set( $msize = "$home$apphome/views/modules/asset/downloads/preview/large/$asset.sourcepath/thumb.jpg")
+#set( $msize = "$home$apphome/views/modules/asset/downloads/preview/extralarge/$asset.sourcepath/thumb.jpg")
 <p>
 <img class="center-block" src="$msize"/>
 </p>
@@ -13,7 +13,11 @@
     
 #foreach( $viewpath in $views.keySet() )
     #set( $target = $views.get($viewpath) )
+   #if($target.printview == "true")
     #displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+    #end
+    
 #end
+     #displaydetails("generic.html" "Asset Details" "$asset.id" "asset/print" $print)
  
 </div>

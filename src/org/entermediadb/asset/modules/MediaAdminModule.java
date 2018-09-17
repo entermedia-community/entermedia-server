@@ -658,5 +658,14 @@ public class MediaAdminModule extends BaseMediaModule
 		inReq.putPageValue("acceptconnections",acceptconnections);
 		return acceptconnections;
 	}
+	public void catalogSnapshot(WebPageRequest inReq)
+	{
+		String targetcatalogid = inReq.findValue("catalogid");
+		
+		Data site = getSearcherManager().query("system", "site").exact("catalogid", targetcatalogid).searchOne();
+		inReq.setRequestParameter("id",site.getId());
+		createSiteSnapshot(inReq);
+		
+	}
 	
 }

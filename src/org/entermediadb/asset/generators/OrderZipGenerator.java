@@ -26,6 +26,7 @@ import org.openedit.generators.BaseGenerator;
 import org.openedit.generators.Output;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
+import org.openedit.repository.ContentItem;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.ZipUtil;
 
@@ -90,7 +91,7 @@ public class OrderZipGenerator extends BaseGenerator
 				Data publishtask = archive.getSearcherManager().getData(catalogid, "publishqueue", queid);
 				Asset asset = archive.getAssetBySourcePath(orderitem.get("assetsourcepath"));
 				
-				Page target = null;
+				ContentItem target = null;
 				String filename = null;
 				if(publishtask != null){
 					filename = publishtask.get("exportname");
@@ -121,13 +122,13 @@ public class OrderZipGenerator extends BaseGenerator
 					fileset.add(filename);
 				}
 				if(preset.getId().equals("0")){
-					 target = archive.getOriginalDocument(asset);
-					 util.addTozip(target.getContentItem(),filename , zos);
+					 target = archive.getOriginalContent(asset);
+					 util.addTozip(target,filename , zos);
 				}
 				else{
 					String pathToFile = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + orderitem.get("assetsourcepath") + "/" + preset.get("generatedoutputfile");
-					target = archive.getPageManager().getPage(pathToFile);
-					util.addTozip(target.getContentItem(),filename , zos);
+					target = archive.getPageManager().getContent(pathToFile);
+					util.addTozip(target,filename , zos);
 				}
 
 				

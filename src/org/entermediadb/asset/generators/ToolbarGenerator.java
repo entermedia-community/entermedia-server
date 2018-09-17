@@ -53,8 +53,13 @@ public class ToolbarGenerator extends BaseToolBarGenerator
 		{
 			return false;
 		}
+		String val = (String) inPageRequest.getSessionValue("oe_edit_mode");
+		if(val == null){
+			 val = user.get("oe_edit_mode");	
+		}
 		
-		String val = user.get("oe_edit_mode");
+		
+		
 		
 		if( "preview".equals( val ) )
 		{

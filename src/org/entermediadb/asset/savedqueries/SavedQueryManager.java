@@ -402,7 +402,7 @@ public class SavedQueryManager
 		}
 		if (t != null && realop != null)
 		{
-			t.addParameter("op", realop);
+			t.addValue("op", realop);
 		}
 		t.setId(term.getId());
 	}

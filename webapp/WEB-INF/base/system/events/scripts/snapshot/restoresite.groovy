@@ -601,17 +601,20 @@ public void importJson(Data site, MediaArchive mediaarchive, String searchtype, 
 						// read the record into a tree model,
 						// this moves the parsing position to the end of it
 						JsonNode node = jp.readValueAsTree();
-						String json  = node.toString();
-
 						IndexRequest req = Requests.indexRequest(tempindex).type(searchtype);
+						String json  = node.toString();
+						
 						req.source(json);
+						JsonNode id = node.get("id");
+						if( id == null)
+						{
+							log.info("No ID found " + searchtype + " node:" + node);
+						}
+						else
+						{
+							req.id(id.asText());
+						}	
 						processor.add(req);
-
-
-
-
-
-
 
 					}
 				} else {

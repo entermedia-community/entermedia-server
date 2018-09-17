@@ -186,6 +186,10 @@ public class JsonAssetModule extends BaseJsonModule {
 					sourcepath, (String) vals.get("importfilename"), id);
 			
 		}
+		
+		
+		
+		
 
 		if (asset == null && vals.get("localPath") != null) {
 			// log.info("HERE!!!");
@@ -219,6 +223,23 @@ public class JsonAssetModule extends BaseJsonModule {
 			populateJsonData(request, searcher, asset);
 		}
 
+		
+		Object categorypaths = vals.get("categorypath");
+		if(categorypaths instanceof Collection){
+			Collection <String> paths = (Collection) categorypaths;
+			for (String path : paths) {
+				Category cat = archive.createCategoryPath(path);
+				asset.addCategory(cat);
+				
+			}
+		} 
+		if(categorypaths instanceof String){
+			String path = (String) categorypaths;
+			
+			Category cat = archive.createCategoryPath(path);
+			asset.addCategory(cat);
+		}
+		
 		importer.saveAsset(archive, inReq.getUser(), asset);
 
 		// JSONObject result = getAssetJson(sm, searcher, asset);

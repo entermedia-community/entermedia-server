@@ -20,11 +20,11 @@ uiload = function() {
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home") + app.data("themeprefix");
 
-	//https://github.com/select2/select2/issues/600	
+	//https://github.com/select2/select2/issues/600
 	$.fn.modal.Constructor.prototype.enforceFocus = function() {};
-	
-	
-	
+
+
+
 	$('#module-dropdown').livequery("click", function(e){
 		e.stopPropagation();
 		if ( $(this).hasClass('active') ) {
@@ -35,15 +35,15 @@ uiload = function() {
 			$('#module-list').show();
 		}
 	});
-	jQuery("select.select2").livequery( function() 
+	jQuery("select.select2").livequery( function()
 	{
 		var input = jQuery(this);
 		input.select2({
 				allowClear: true
-		});		
+		});
 	});
-	
-	jQuery("select.listdropdown").livequery( function() 
+
+	jQuery("select.listdropdown").livequery( function()
 	{
 		var theinput = jQuery(this);
 		var dropdownParent = $("body");
@@ -51,7 +51,7 @@ uiload = function() {
 		if( parent.length )
 		{
 			dropdownParent = parent;
-			console.log("found modal parent, skipping");
+			//console.log("found modal parent, skipping");
 			//https://github.com/select2/select2-bootstrap-theme/issues/41
 		}
 		else
@@ -61,92 +61,92 @@ uiload = function() {
 				minimumInputLength : 0,
 				dropdownParent: dropdownParent,
 	//			dropdownCssClass: 'custom-dropdown'
-	//			}).on("select2:opening", 
+	//			}).on("select2:opening",
 	//			    function(){
 	//			        dropdownParent.removeAttr("tabindex");
-	//				}).on("select2:close", 
-	//				    function(){ 
+	//				}).on("select2:close",
+	//				    function(){
 	//				        //dropdownParent.attr("tabindex", "-1");
 	//				    });
-			});	
-			
+			});
+
 	//		theinput.on('select2:open', function(e){
 	//		    $('.custom-dropdown').parent().css('z-index', 99999);
 	//		});
 	//		dropdownParent.removeAttr("tabindex");
 		}
-	
+
 	});
-	
-	
-	jQuery("input.select2editable").livequery( function() 
+
+
+	jQuery("input.select2editable").livequery( function()
 	{
 	 	var input = jQuery(this);
 		var arr = new Array(); //[{id: 0, text: 'story'},{id: 1, text: 'bug'},{id: 2, text: 'task'}]
-		
+
 		var ulid = input.data("optionsul");
-		
+
 		var options = jQuery("#" + ulid + " li");
-		
+
 		if( !options.length )
 		{
 			return;
-		}		
-		
-		options.each(function() 
+		}
+
+		options.each(function()
 		{
 			var id = $(this).data('value');
 			var text = $(this).text();
 			//console.log(id + " " + text);
-		 	arr.push({id: id, text: text}); 
+		 	arr.push({id: id, text: text});
 		});
 
-		
+
 		//Be aware: calling select2 forces livequery to filter again
 	 	input.select2({
-				createSearchChoice: function(term, data) 
-				{ 
-					if ($(data).filter(function() { return this.text.localeCompare(term)===0; } ).length===0) 
+				createSearchChoice: function(term, data)
+				{
+					if ($(data).filter(function() { return this.text.localeCompare(term)===0; } ).length===0)
 					{
-						console.log("picking" + term );
+						//console.log("picking" + term );
 						return {id:term, text:term};
 					}
 				 }
 				 , multiple: false
 				 , data: arr
 		});
-	});	
-	
-	 
+	});
+
+
 	jQuery(".force-validate-inputs").livequery(
-			function() 
+			function()
 			{
+/*
 				jQuery(".required",this).each(function()
 				{
 					//jQuery(this).attr("required","true");
 				});
-				
-				
+*/
 				var theform = jQuery(this).closest("form");
-				
+
 				theform.on("click", function()
 				{
 					theform.valid();
 				});
-				
-				$.validator.setDefaults({ignore: ".ignore"});
 
-				
+				$.validator.setDefaults({ignore: [".ignore"]});
+
+
 				theform.validate({
-					  ignore: ".ignore"
+					  ignore: [".ignore"]
 				});
-					
-							
+
+
 			}
 		);
-		
+
 		jQuery("select.ajax").livequery('change',
-			function(e) 
+			function(e)
 			{
 				var inlink = jQuery(this);
 				var nextpage= inlink.data('href');
@@ -156,17 +156,17 @@ uiload = function() {
 					targetDiv = inlink.attr("targetdiv");
 				}
 				targetDiv = targetDiv.replace(/\//g, "\\/");
-				jQuery.get(nextpage, {}, function(data) 
+				jQuery.get(nextpage, {}, function(data)
 				{
 					var	cell = jQuery("#" + targetDiv);
 					cell.replaceWith(data);
 					$(window).trigger( "resize" );
-				});	
+				});
 			}
 		);
-	
+
 	jQuery("a.toggle-visible").livequery('click',
-			function(e) 
+			function(e)
 			{
 				e.preventDefault();
 				var div = jQuery(this).data("targetdiv");
@@ -184,8 +184,8 @@ uiload = function() {
           		}
 			}
 		);
-	
-	
+
+
 	if( jQuery.fn.selectmenu )
 	{
 		jQuery('.uidropdown select').livequery(
@@ -195,7 +195,7 @@ uiload = function() {
 				}
 		);
 	}
-	
+
 	var browserlanguage =  app.data("browserlanguage");
 	if( browserlanguage == undefined )
 	{
@@ -208,19 +208,19 @@ uiload = function() {
 			buttonImage: themeprefix + '/entermedia/images/cal.gif',
 			buttonImageOnly: true,
 			changeMonth: true,
-			changeYear: true, 
+			changeYear: true,
 			yearRange: '1900:2050'
 		}, jQuery.datepicker.regional[browserlanguage]));  //Move this to the layout?
-		
-			jQuery("input.datepicker").livequery( function() 
+
+			jQuery("input.datepicker").livequery( function()
 			{
 			var targetid = jQuery(this).data("targetid");
 			jQuery(this).datepicker( {
 				altField: "#"+ targetid,
-				altFormat: "yy-mm-dd", 
+				altFormat: "yy-mm-dd",
 				yearRange: '1900:2050'
 			});
-					
+
 			var current = jQuery("#" + targetid).val();
 			if(current != undefined)
 			{
@@ -236,7 +236,7 @@ uiload = function() {
 				{
 					date = jQuery.datepicker.parseDate('mm/dd/yy', current); //legacy support
 				}
-				jQuery(this).datepicker("setDate", date );					
+				jQuery(this).datepicker("setDate", date );
 			}
 			jQuery(this).blur(function()
 			{
@@ -262,12 +262,12 @@ uiload = function() {
 					return;
 				}
 				else
-				{	
+				{
 					e.preventDefault();
 				}
 			}
 		);
-	
+
 	jQuery(".uibutton").livequery(
 			function()
 			{
@@ -280,7 +280,7 @@ uiload = function() {
 				jQuery(this).fadeOut(1600, "linear");
 			}
 	);
-	
+
 	jQuery(".uipanel").livequery(
 			function()
 			{
@@ -290,11 +290,11 @@ uiload = function() {
 				{
 					//http://dev.jquery.it/ticket/9134
 					jQuery(this).wrapInner('<div class="ui-widget-content"/>');
-					jQuery(this).prepend('<div class="ui-widget-header">' + header + '</div>');					
+					jQuery(this).prepend('<div class="ui-widget-header">' + header + '</div>');
 				}
 			}
 		);
-	
+
 	if( jQuery.fn.tablesorter )
 	{
 		jQuery("#tablesorter").tablesorter();
@@ -302,31 +302,31 @@ uiload = function() {
 
 	jQuery(".ajaxchange select").livequery(
 			function()
-			{	
+			{
 				var select = jQuery(this);
 				var div = select.parent(".ajaxchange")
 				var url = div.attr("targetpath");
 				var divid = div.attr("targetdiv");
-				
+
 				select.change( function()
 					{
-					   var url2 = url + $(this).val();						
+					   var url2 = url + $(this).val();
 					   $("#" + divid).load(url2);
 					}
-				);	
+				);
 			}
 		);
 
-		jQuery("form.ajaxform").livequery('submit', //Make sure you use $(this).closest("form").trigger("submit")	
-		function(e) 
+		jQuery("form.ajaxform").livequery('submit', //Make sure you use $(this).closest("form").trigger("submit")
+		function(e)
 		{
 			e.preventDefault();
 			var form = jQuery(this);
-			
+
 			if( form.validate )
 			{
 				form.validate({
-				  ignore: ".ignore"
+					ignore: [".ignore"]
 				});
 	    		var isvalidate = form.valid();
 				if(!isvalidate)
@@ -335,14 +335,14 @@ uiload = function() {
 	            	//show message
 	            	return;
 	        	}
-	        }	
+	        }
 			var targetdiv = form.data("targetdiv");
 			if(!targetdiv){
 				targetdiv = form.attr("targetdiv");
 			}
 			targetdiv = targetdiv.replace(/\//g, "\\/");
 			// allows for posting to a div in the parent from a fancybox.
-			
+
 			// closes the fancybox after submitting
 			//Refreshing... <img src="/${applicationid}/theme/images/ajax-loader.gif">
 			if( form.hasClass("showwaiting") )
@@ -356,7 +356,7 @@ uiload = function() {
 			{
 				oemaxlevel= 1;
 			}
-
+			//TODO: Use closest div and success data
 			form.ajaxSubmit({
 				target:"#" + targetdiv,
 				error: function(data ) {
@@ -365,16 +365,16 @@ uiload = function() {
 				},
 				data: { oemaxlevel: oemaxlevel }
 			 });
-			
-				
+
+
 			var findmodal = form.closest(".modal");
 			if( findmodal && findmodal.modal )
 			{
 				findmodal.modal("hide");
-			}	
-			
+			}
 
-			var reset = form.data("reset") 
+
+			var reset = form.data("reset")
 			if( reset == true){
 				form.get(0).reset();
 			}
@@ -382,46 +382,52 @@ uiload = function() {
 		}
 	);
 
-	jQuery("form.autosubmit").livequery( function() 
+	jQuery("form.autosubmit").livequery( function()
 	{
 		var form = $(this);
 		var targetdiv = form.data('targetdiv');
-		jQuery("form.autosubmit select").change(function() 
+		jQuery("form.autosubmit select").change(function()
 		{
 			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
 		});
-		jQuery("form.autosubmit input").on("keyup",function() 
+		jQuery("form.autosubmit input").on("keyup",function()
 		{
 			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
 		});
 
 	});
-	
-	
-	jQuery("form.ajaxautosubmit").livequery( function() 
+
+
+	jQuery("form.ajaxautosubmit").livequery( function()
 			{
-				var theform = jQuery(this); 
+				var theform = jQuery(this);
 				theform.find("select").change( function()
 						{
 							theform.submit();
 						});
 	});
-	
-	
+
+	jQuery(".submitform").livequery("click", function()
+			{
+				var theform = $(this).closest('form');
+				theform.submit();
+	});
+
+
 	jQuery("a.emdialog").livequery("click",
-			function(event) 
+			function(event)
 			{
 				event.stopPropagation();
 				var dialog = jQuery(this);
 				var hidescrolling = dialog.data("hidescrolling");
-				
-	
+
+
 				var width = dialog.data("width");
 				if( !width )
 				{
 					width = "800";
 				}
-				
+
 				var id = "modals";
 				var modaldialog = $( "#" + id );
 				if( modaldialog.length == 0 )
@@ -430,20 +436,20 @@ uiload = function() {
 					modaldialog = $("#" + id );
 				}
 				var link = dialog.attr("href");
-				
+
 				var options = dialog.data();
 				var param = dialog.data("parameterdata");
 				if( param )
-				{	
+				{
 					var element = $("#" + param );
 					var name = element.prop("name");
-					options[name] = element.val(); 
+					options[name] = element.val();
 				}
-				
-				modaldialog.load(link, options, function() { 
+
+				modaldialog.load(link, options, function() {
 					$(".modal-lg").css("min-width",width + "px" );
 					//$(".modal-lg").css("min-height",height + "px" );
-				
+
         		 	modaldialog.modal({keyboard: true,backdrop:true, "show":true});
         		 	//fix submit button
         		 	var justok = dialog.data("cancelsubmit");
@@ -455,7 +461,7 @@ uiload = function() {
         		 	{
 	        		 	var id = $("form",modaldialog).attr("id");
 	        		 	$("#submitbutton",modaldialog).attr("form",id);
-	        		 }	
+	        		 }
         		 	var title = dialog.attr("title");
         		 	if( title == null)
         		 	{
@@ -469,11 +475,11 @@ uiload = function() {
         		 	}
         		 	$('form', modaldialog).find('*').filter(':input:visible:first').focus();
     			});
-    			
+
 				event.preventDefault();
 				return false;
 	});
-	
+
 	jQuery('.emrowpicker table td' ).livequery("click", function(event)
 	{
 		event.preventDefault();
@@ -483,8 +489,8 @@ uiload = function() {
 		var existing = row.hasClass("emrowselected");
 		row.toggleClass("emrowselected");
 		var id = row.data("id");
-		
-		var form = $(clicked.closest("form"));		
+
+		var form = $(clicked.closest("form"));
 		$('.emselectedrow',form ).each(function()
 		{
 			if( form.hasClass("emmultivalue" ) )
@@ -500,7 +506,7 @@ uiload = function() {
 					else
 					{
 						old = old +"|"+id;
-					}		
+					}
 				}
 				else
 				{
@@ -517,8 +523,8 @@ uiload = function() {
 		var targetdiv = form.data("targetdiv");
 		if( (typeof targetdiv) != "undefined" )
 		{
-			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );	
-		}	
+			jQuery(form).ajaxSubmit( {target:"#" + targetdiv} );
+		}
 		else
 		{
 			jQuery(form).trigger("submit");
@@ -527,10 +533,10 @@ uiload = function() {
 		{
 			form.closest(".modal").modal("hide");
 		}
-			
+
 	});
-		
-	
+
+
 	jQuery('#emselectable table td' ).livequery("click", function(event)
 	{
 		var clicked = jQuery(this);
@@ -543,15 +549,15 @@ uiload = function() {
 		}
 		var emselectable = clicked.closest("#emselectable");
 		var row = $(clicked.closest("tr"));
-		if ( row.hasClass("thickbox") ) 
+		if ( row.hasClass("thickbox") )
 		{
 			var href = row.data("href");
 			openFancybox(href);
 		}
-		else 
+		else
 		{
-			emselectable.find('table tr' ).each(function(index) 
-			{ 
+			emselectable.find('table tr' ).each(function(index)
+			{
 				clicked.removeClass("emhighlight");
 			});
 			row.addClass('emhighlight');
@@ -561,14 +567,14 @@ uiload = function() {
 			//var url = emselectable.data("clickpath");
 			var url = table.data("clickpath");
 			var form = emselectable.find("form");
-				
+
 			if( form.length > 0 )
 			{
 				emselectable.find( '#emselectedrow' ).val(id);
 				emselectable.find( '.emneedselection').each( function()
 				{
 					clicked.removeAttr('disabled');
-				});	
+				});
 				form.submit();
 			}
 			else if( url != undefined )
@@ -588,18 +594,18 @@ uiload = function() {
 				}
 				if( emselectable.hasClass("showmodal") )
 				{
-					showmodal(emselectable,link);				
+					showmodal(emselectable,link);
 				}
 				else
 				{
 					parent.document.location.href = link;
-				}	
+				}
 			}
 			else
 			{
 				parent.document.location.href = id;
 			}
-		}	
+		}
 	}
 	);
 
@@ -613,24 +619,24 @@ uiload = function() {
 				$("#emcontainer").append('<div class="modal " tabindex="-1" id="' + id + '" style="display:none" ></div>');
 				modaldialog = $("#" + id );
 			}
-			
-			
-			
+
+
+
 			var options = emselecttable.data();
-			modaldialog.load(url, options, function() { 
+			modaldialog.load(url, options, function() {
 				$(".modal-lg").css("min-width",width + "px" );
     			modaldialog.modal({keyboard: true,backdrop:true, "show":true});
-    			
+
     				var title = emselecttable.data("dialogtitle");
         		 	if( title)
         		 	{
 	        		 	$(".modal-title",modaldialog).text(title);
         		 	}
-    			
+
         		$('form', modaldialog).find('*').filter(':input:visible:first').focus();
-    			
-    			
-    		});	
+
+
+    		});
 	}
 
 
@@ -638,7 +644,7 @@ uiload = function() {
 	function()
 	{
 		jQuery(this).hover(
-			function () 
+			function ()
 			{
 			  	var row = jQuery(this).closest("tr");
 				var id = jQuery(row).attr("rowid");
@@ -646,14 +652,14 @@ uiload = function() {
 			    {
 				    jQuery(this).addClass("emborderhover");
 				}
-		 	}, 
+		 	},
 			function () {
 			    jQuery(this).removeClass("emborderhover");
 			}
 		);
 	});
-		
-	
+
+
 
 	jQuery("img.framerotator").livequery(
 		function()
@@ -671,19 +677,19 @@ uiload = function() {
 					var intval = jQuery(this).data("intval");
 					clearInterval(intval);
 				}
-			); 
+			);
 	});
-	
+
 
 	jQuery(".jp-play").livequery("click", function(){
-		
-	
+
+
 	//	alert("Found a player, setting it up");
 		var player = jQuery(this).closest(".jp-audio").find(".jp-jplayer");
 		var url = player.data("url");
 		var containerid = player.data("container");
 		var container = jQuery("#" + containerid);
-		
+
 		player.jPlayer({
 	        ready: function (event) {
 	        	player.jPlayer("setMedia", {
@@ -698,7 +704,7 @@ uiload = function() {
 	        wmode: "window",
 	        cssSelectorAncestor: "#" + containerid
 	    });
-		
+
 		//player.jPlayer("play");
 
 	});
@@ -719,9 +725,9 @@ uiload = function() {
 		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').removeClass('up');
 		$(this).closest('.select-dropdown').siblings('.select-dropdown-open').addClass('down');
 		$(this).closest('.select-dropdown').hide();
-		console.log("Clicked");
+		//console.log("Clicked");
 	});
-	
+
 	function select2formatResult(emdata)
 	{
 	/*	var element = $(this.element);
@@ -747,8 +753,8 @@ uiload = function() {
 //		container.closest("form").find("#" + id ).val(emdata.id);
 		return selectedoption.name || selectedoption.text;
 	}
-	
-	jQuery(".suggestsearchinput").livequery( function() 
+
+	jQuery(".suggestsearchinput").livequery( function()
 		{
 			var theinput = jQuery(this);
 			if( theinput && theinput.autocomplete )
@@ -763,8 +769,8 @@ uiload = function() {
 					}
 				});
 			}
-			console.log(theinput);
-			
+			//console.log(theinput);
+
 			if( theinput.data("quicksearched") == true )
 			{
 				var strLength = theinput.val().length * 2;
@@ -773,7 +779,7 @@ uiload = function() {
 			}
 		});
 
-	jQuery("input.defaulttext").livequery("click", function() 
+	jQuery("input.defaulttext").livequery("click", function()
 	{
 		var theinput = $(this);
 		var startingtext = theinput.data('startingtext');
@@ -784,7 +790,7 @@ uiload = function() {
 	});
 
 
-	jQuery("select.listtags").livequery( function() 
+	jQuery("select.listtags").livequery( function()
 	{
 		var theinput = jQuery(this);
 		var searchtype = theinput.data('searchtype');
@@ -797,7 +803,7 @@ uiload = function() {
 			defaulttext = "Search";
 		}
 		var url = apphome + "/components/xml/types/autocomplete/tagsearch.txt?catalogid=" + catalogid + "&field=" + searchfield + "&operation=startswith&searchtype=" + searchtype;
-	
+
 		theinput.select2({
 		  	tags: true,
 			placeholder : defaulttext,
@@ -808,7 +814,7 @@ uiload = function() {
 			ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
 				url : url,
 				dataType : 'json',
-				data : function(params) 
+				data : function(params)
 				{
 					var search = {
 						page_limit : 15,
@@ -829,19 +835,19 @@ uiload = function() {
 				}
 			},
 			escapeMarkup: function(m) { return m; },
-			templateResult : select2formatResult, 
+			templateResult : select2formatResult,
 			templateSelection : select2Selected,
 			tokenSeparators: ["|"],
 			separator: '|'
-		  }).change(function() { 
+		  }).change(function() {
 		  	if( $(this).parents(".ignore").length == 0 )
 		  	{
-			  $(this).valid(); 
+			  $(this).valid();
 			}
 		  });  //is this still needed?
 	});
 
-	jQuery("input.grabfocus").livequery( function() 
+	jQuery("input.grabfocus").livequery( function()
 	{
 		var theinput = jQuery(this);
 		theinput.css("color","#666");
@@ -850,28 +856,28 @@ uiload = function() {
 			var newval = theinput.data("initialtext");
 			theinput.val( newval);
 		}
-		theinput.click(function() 
+		theinput.click(function()
 		{
 			theinput.css("color","#000");
 			var initial = theinput.data("initialtext");
-			console.log(initial,theinput.val());
-			if( theinput.val() === initial) 
+			//console.log(initial,theinput.val());
+			if( theinput.val() === initial)
 			{
 				theinput.val('');
 				theinput.unbind('click');
 			}
 		});
-		
-		
+
+
 		theinput.focus();
 	});
 
-	$(".emtabs").livequery( function()   
+	$(".emtabs").livequery( function()
 	{
-		var tabs = $(this); 
-		
+		var tabs = $(this);
+
 		var tabcontent = $("#" + tabs.data("targetdiv"));
-		
+
 		//active the right tab
 		var hash = window.location.hash;
 		if( hash )
@@ -893,18 +899,18 @@ uiload = function() {
 			loadedpanel = $("#loadedpanel",tabcontent);
 			loadedpanel.attr("id",activelink.attr("id") + "panel");
 			activelink.data("tabloaded",true);
-		}	
+		}
 		activelink.parent("li").addClass("emtabselected");
 		activelink.data("loadpageonce",false);
-		
-		$("a:first-child",tabs).on("click", function (e)   
+
+		$("a:first-child",tabs).on("click", function (e)
 		{
 			e.preventDefault();
-			
+
 	    	var link = $(this); // activated tab
 			$("li",tabs).removeClass("emtabselected");
 	    	link.parent("li").addClass("emtabselected");
-	    	
+
 		    var id = link.attr("id");
 
 		    var url = link.attr("href");
@@ -914,8 +920,8 @@ uiload = function() {
 			{
 			  tab = tabcontent.append('<div class="tab-pane" id="' + panelid + '" ></div>');
 			  tab = $( "#" + panelid);
-			}	  
-			
+			}
+
 			var reloadpage = link.data("loadpageonce");
 			var alwaysreloadpage = link.data("alwaysreloadpage");
 			if( reloadpage || alwaysreloadpage )
@@ -934,7 +940,7 @@ uiload = function() {
 		    	url = url + "#" + id;
 				var loaded = link.data("tabloaded");
 				if( link.data("allwaysloadpage") )
-				{	
+				{
 					loaded = false;
 				}
 				if( !loaded )
@@ -944,7 +950,7 @@ uiload = function() {
 					{
 						levels = "1";
 					}
-					jQuery.get(url , {oemaxlevel:levels}, function(data) 
+					jQuery.get(url , {oemaxlevel:levels}, function(data)
 					{
 						tab.html(data);
 						link.data("tabloaded",true);
@@ -959,38 +965,38 @@ uiload = function() {
 					tab.show();
 					$(window).trigger( "resize" );
 				}
-			}	
+			}
 		});
 	});
-	
+
 	jQuery(".closetab").livequery('click',
-			function(e) 
+			function(e)
 			{
 				e.preventDefault();
 				var tab = $(this);
 				var nextpage = tab.data("closetab");
-				jQuery.get(nextpage, {oemaxlayout:1}, function(data) 
+				jQuery.get(nextpage, {oemaxlayout:1}, function(data)
 				{
 					var prevtab = tab.closest('li').prev();
 					prevtab.find('a').click();
-					
+
 					if (prevtab.hasClass('firstab')) {
 						tab.closest('li').remove();
 					}
-					
-					
+
+
 				});
 				return false;
 			}
 	);
-	
+
 	jQuery(".collectionclose").livequery('click',
-			function(e) 
+			function(e)
 			{
 				e.preventDefault();
 				var collection = $(this);
 				var nextpage = collection.data("closecollection");
-				jQuery.get(nextpage, {oemaxlayout:1}, function(data) 
+				jQuery.get(nextpage, {oemaxlayout:1}, function(data)
 				{
 					collection.closest('li').remove();
 				});
@@ -1023,17 +1029,17 @@ uiload = function() {
 			{
 				url =  url + "&defaultvalue=" + defaultvalue + "&defaultvalueid=" + defaultvalueid;
 			}
-			
+
 			var dropdownParent = $("body");
 			var parent = theinput.closest(".modal-dialog");
 			if( parent.length )
 			{
 				dropdownParent = parent;
-				console.log("found modal parent");
+				//console.log("found modal parent");
 			}
 			else
 			{
-				console.log("use body parent");
+				//console.log("use body parent");
 			}
 			//var value = theinput.val();
 			theinput.select2({
@@ -1044,7 +1050,7 @@ uiload = function() {
 				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
 					url : url,
 					dataType : 'json',
-					data : function(params) 
+					data : function(params)
 					{
 						var fkv = theinput.closest("form").find("#list-" + foreignkeyid + "value").val();
 						if( fkv == undefined )
@@ -1073,12 +1079,12 @@ uiload = function() {
 						 if( theinput.hasClass("selectaddnew") )
 						 {
 						 	if( params.page == 1 || !params.page)
-						 	{	
+						 	{
 						 		var addnewlabel = theinput.data('addnewlabel');
 							 	var addnewdata = { name: addnewlabel, id: "_addnew_" };
 							 	rows.unshift(addnewdata);
-							}	
-						 }	 
+							}
+						 }
 						 //addnew
 					 	 params.page = params.page || 1;
 						 return {
@@ -1090,10 +1096,10 @@ uiload = function() {
 					}
 				},
 				escapeMarkup: function(m) { return m; },
-				templateResult : select2formatResult, 
+				templateResult : select2formatResult,
 				templateSelection : select2Selected
 			});
-			
+
 			//TODO: Remove this?
 			theinput.on("change", function(e) {
 				if( e.val == "" ) //Work around for a bug with the select2 code
@@ -1102,15 +1108,15 @@ uiload = function() {
 					jQuery(id).val("");
 				}
 				else
-				{	
+				{
 					//Check for "_addnew_" show ajax form
 					var selectedid = theinput.val();
-					
+
 					if(  selectedid == "_addnew_" )
 					{
 						var clicklink = $("#" + theinput.attr("id") + "add");
 						clicklink.trigger("click");
-						
+
 						e.preventDefault();
 						theinput.select2("val", "");
 						return false;
@@ -1122,13 +1128,13 @@ uiload = function() {
 						{
 							var theform = jQuery(this).closest("form");
 							theform.closest("form").trigger("submit");
-						}	
+						}
 					}
-				}	
+				}
 
 			});
 		}
-	});		
+	});
 
 	if( jQuery.fn.minicolors )
 	{
@@ -1136,8 +1142,8 @@ uiload = function() {
 						defaultValue: '',
 						letterCase: 'uppercase'
 					});
-	}	
-	
+	}
+
 	jQuery(".sidebarsubmenu").livequery("click", function(e){
 		e.stopPropagation();
 	});
@@ -1151,7 +1157,7 @@ uiload = function() {
 		var clickspot;
 		var imageposition;
 		var zoom = 30;
-		var mainholder = $(this); 	
+		var mainholder = $(this);
 		var mainimage = $("#mainimage",mainholder);
 		mainimage.width(mainholder.width());
 		$(window).bind('mousewheel DOMMouseScroll', function(event)
@@ -1163,7 +1169,7 @@ uiload = function() {
 
 			if (event.originalEvent.wheelDelta > 0 || event.originalEvent.detail < 0) {
 		        // scroll up
-		        var w = mainimage.width(); 
+		        var w = mainimage.width();
 		    	mainimage.width(w+zoom);
 		    	var left = 	mainimage.position().left - zoom/2;
 		    	mainimage.css({"left" : left + "px"});
@@ -1171,28 +1177,28 @@ uiload = function() {
 		    }
 		    else {
 		        // scroll down
-		        var w = mainimage.width(); 
+		        var w = mainimage.width();
 		    	mainimage.width(w-zoom);
 		    	var left = 	mainimage.position().left + zoom/2;
 		    	mainimage.css({"left" : left + "px"});
 		    	return false;
 		    }
 		});
-		
+
 		mainimage.on("mousedown", function(event)
 		{
 			clickspot = event;
 			imageposition = mainimage.position();
-			console.log(event);
+			//console.log(event);
 			return false;
 		});
-	
+
 		mainimage.on("mouseup", function(event)
 		{
 			clickspot = false;
 			return false;
 		});
-		
+
 		mainimage.on("mousemove", function(event)
 		{
 			//if( isMouseDown() )
@@ -1200,25 +1206,25 @@ uiload = function() {
 			{
 				var changetop = clickspot.pageY - event.pageY;
 				var changeleft = clickspot.pageX - event.pageX;
-				
+
 				var left = imageposition.left - changeleft;
 				var top = imageposition.top - changetop;
-				
+
 				$(this).css({"left" : left + "px", "top" : top + "px"});
-			}	
-		});		
-	
-	});	
+			}
+		});
+
+	});
 
 
-	document.addEventListener('touchstart', function(e) 
+	document.addEventListener('touchstart', function(e)
 	{
 	 	var touch = e.touches[0];
 	 	var div = $(e.target)
 	 	div.data("touchstartx",touch.pageX);
 	 	div.data("touchstarty",touch.pageY);
-	});	
-	document.addEventListener('touchend', function(e) 
+	});
+	document.addEventListener('touchend', function(e)
 	{
 	 	var touch = e.touches[0];
 	 	var div = $(e.target)
@@ -1226,7 +1232,7 @@ uiload = function() {
 	 	div.removeData("touchstarty");
 	});
 
-	document.addEventListener('touchmove', function(e) 
+	document.addEventListener('touchmove', function(e)
 	{
 	    var touch = e.touches[0];
 	    var div = $(e.target);
@@ -1242,7 +1248,7 @@ uiload = function() {
 	    	{
 	    		if(diffx > 0 )
 	    		{
-					swipe = "swiperight";	    			
+					swipe = "swiperight";
 	    		}
 	    		else
 	    		{
@@ -1258,35 +1264,35 @@ uiload = function() {
 	    	{
 	    		if(diffy > 0 )
 	    		{
-					swipe = "swipedown";	    			
+					swipe = "swipedown";
 	    		}
 	    		else
 	    		{
 	    			swipe = "swipeup";
 	    		}
 	    	}
-	    	
+
 	    }
-	    
+
 	    if( swipe )
 	    {
-	    	console.log(div);
+	    	//console.log(div);
 	    	var event = {};
 	    	event.originalEvent = e;
 	    	event.preventDefault = function() {};
 	    	//TODO: Find out why I can't trigger on $(e.target).trigger it ignores us
-	    	
+
 		    $("#" + div.attr("id") ).trigger(swipe);
-		}  
-	    
-	    
+		}
+
+
 	}, false);
-	
+
 }
 
 
-jQuery(document).ready(function() 
-{ 
+jQuery(document).ready(function()
+{
 	var resizecss = function()
 	{
 		//Old stuff?
@@ -1300,7 +1306,7 @@ jQuery(document).ready(function()
 
 		//TODO: use bootrap css?
 		body.removeClass("widthless100").removeClass("widthless500").removeClass("widthless1000");
-		
+
 		var width = $(window).width();
 		if( width < 100 )
 		{
@@ -1315,14 +1321,12 @@ jQuery(document).ready(function()
 			body.addClass("widthless1000");
 		}
 		var height = $(window).height();
-		$(".autoheightless40").height(height - 40)		
-		
+		$(".autoheightless40").height(height - 40)
+
 	};
 	$(window).on('resize',	resizecss );
 	resizecss();
-	
+
 	uiload();
 
-}); 
-
-
+});

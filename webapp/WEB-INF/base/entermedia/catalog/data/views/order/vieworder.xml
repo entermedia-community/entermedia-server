@@ -1,12 +1,15 @@
 <properties>
-	<property id="id" />
-	<property id="date" />
-	<property id="orderstatus" />
-	<property id="ordertype" />
-	<property id="userid" />
-	<property id="checkoutstatus" />
-	<property id="sharewithemail" />
-	<property id="sharenote" />
-	<property id="expireson" />
+	
+  <property id="id"/>  
+  <property id="date"/>  
+  <property id="orderstatus"/>  
+  <property id="ordertype"/>  
+  <property id="userid"/>  
+  <property id="checkoutapproved"/>  
+  <property id="sharewithemail"/>  
+  <property id="sharenote"/>  
+  <property id="expireson"/>  
+  <property id="checkoutstatus"/>
+	
 	
 </properties>

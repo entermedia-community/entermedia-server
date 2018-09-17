@@ -51,6 +51,7 @@ import org.elasticsearch.action.admin.indices.mapping.get.GetMappingsResponse;
 import org.elasticsearch.action.admin.indices.open.OpenIndexRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshRequest;
 import org.elasticsearch.action.admin.indices.refresh.RefreshResponse;
+import org.elasticsearch.action.admin.indices.settings.put.UpdateSettingsResponse;
 import org.elasticsearch.action.bulk.BackoffPolicy;
 import org.elasticsearch.action.bulk.BulkItemResponse;
 import org.elasticsearch.action.bulk.BulkProcessor;
@@ -69,6 +70,7 @@ import org.elasticsearch.common.settings.Settings.Builder;
 import org.elasticsearch.common.unit.ByteSizeUnit;
 import org.elasticsearch.common.unit.ByteSizeValue;
 import org.elasticsearch.common.unit.TimeValue;
+import org.elasticsearch.discovery.zen.elect.ElectMasterService;
 import org.elasticsearch.node.Node;
 import org.elasticsearch.node.NodeBuilder;
 import org.elasticsearch.snapshots.SnapshotInfo;
@@ -80,13 +82,10 @@ import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.Shutdownable;
 import org.openedit.data.PropertyDetailsArchive;
-import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
-import org.openedit.hittracker.HitTracker;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
 import org.openedit.page.Page;
-import org.openedit.util.DateStorageUtil;
 import org.openedit.util.FileUtils;
 import org.openedit.util.Replacer;
 
@@ -107,7 +106,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 	protected List fieldMappingErrors;
 	protected Node fieldNode;
 	protected Map fieldIndexSettings;
-	
+	protected boolean checkedNodeCount = false;
 	protected void loadSettings()
 	{
 		// TODO Auto-generated method stub
@@ -306,6 +305,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Lock lock = null;
 		try
 		{
+			log.info("Creating snapshot. Locking table");
 			lock = getLockManager(inCatalogId).lock("snapshot", "elasticNodeManager");
 			return createSnapShot(inCatalogId, lock, wholecluster);
 		}
@@ -678,10 +678,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					{
 						throw new OpenEditException("Could not get yellow status for " + alias);
 					}
-
-					
 					String index = getIndexNameFromAliasName(alias);//see if we already have an index
-		
 					//see if an actual index exists
 		
 					if (index == null)
@@ -695,7 +692,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					//			}
 		
 		
-					boolean createdIndex = prepareIndex(index);
+					boolean createdIndex = prepareIndex(health, index);
 					getConnectedCatalogIds().put(inCatalogId, index);
 					if (createdIndex)
 					{
@@ -713,14 +710,18 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 					//				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, type);
 					//				searcher.initialize();	
 					//			}
+					
 					return true;
 				}	
 			}	
 		}
 		return false;//Created a ne
 	}
-
 	public boolean prepareIndex(String index)
+	{
+		return prepareIndex(null,index);
+	}
+	public boolean prepareIndex(ClusterHealthResponse health, String index)
 	{
 
 		AdminClient admin = getClient().admin();
@@ -745,7 +746,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 						String val = getLocalNode().getSetting(key);
 						settingsBuilder.put(key, val);
 					}	
-				}				
+				}			
+				
+				if ( health != null && health.getNumberOfNodes() > 1 )
+				{
+					settingsBuilder.put(ElectMasterService.DISCOVERY_ZEN_MINIMUM_MASTER_NODES, "2");
+				}	
+				
 				CreateIndexResponse newindexres = admin.indices().prepareCreate(index).setSettings(settingsBuilder).execute().actionGet();
  
 				
@@ -792,16 +799,20 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				FileUtils.safeClose(in);
 			}
-			return createdIndex;
 		}
-
-		RefreshRequest req = Requests.refreshRequest(index);
-		RefreshResponse rres = admin.indices().refresh(req).actionGet();
-		if (rres.getFailedShards() > 0)
+		else
 		{
-			log.error("Could not refresh shards");
+			RefreshRequest req = Requests.refreshRequest(index);
+			RefreshResponse rres = admin.indices().refresh(req).actionGet();
+			if (rres.getFailedShards() > 0)
+			{
+				log.error("Could not refresh shards");
+			}
 		}
-
+		
+		//Check the number of nodes
+		
+		
 		return createdIndex;
 	}
 
@@ -864,6 +875,14 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			throw new OpenEditException("Already reindexing");
 		}
 		reindexing = true;
+		Searcher reindexlogs = getSearcherManager().getSearcher("system", "reindexLog");
+		Data reindexhistory = reindexlogs.createNewData();
+		reindexhistory.setValue("date", new Date());
+		reindexhistory.setValue("operation", "started");
+		reindexhistory.setValue("catalogid", inCatalogId);
+		reindexlogs.saveData(reindexhistory);
+		
+		
 		
 		getPageManager().clearCache();
 		getSearcherManager().getCacheManager().clearAll();
@@ -887,6 +906,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			for (Iterator iterator = mappedtypes.iterator(); iterator.hasNext();)
 			{
 				searchtype = (String) iterator.next();
+
+				 reindexhistory = reindexlogs.createNewData();
+				reindexhistory.setValue("date", new Date());
+				reindexhistory.setValue("operation", "progress");
+				reindexhistory.setValue("catalogid", inCatalogId);
+				reindexhistory.setValue("details", "Starting: " + searchtype);
+
+				reindexlogs.saveData(reindexhistory);
+				
+				
+				
 				Searcher searcher = getSearcherManager().getSearcher(inCatalogId, searchtype);
 				
 				searcher.setAlternativeIndex(newindex);//Should		
@@ -895,6 +925,17 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 				long end = System.currentTimeMillis();
 				log.info("Reindex of " + searchtype + " took " + (end - start) / 1000L);
 				searcher.setAlternativeIndex(null);
+				
+				 reindexhistory = reindexlogs.createNewData();
+				reindexhistory.setValue("date", new Date());
+				reindexhistory.setValue("operation", "progress");
+				reindexhistory.setValue("catalogid", inCatalogId);
+				reindexhistory.setValue("details", "Finished: " + searchtype);
+
+				reindexlogs.saveData(reindexhistory);
+				
+				
+				
 			}
 
 			loadIndex(id, newindex, true);
@@ -902,7 +943,13 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			
 		}
 		catch (Throwable e)
-		{
+		{ reindexhistory = reindexlogs.createNewData();
+		reindexhistory.setValue("date", new Date());
+		reindexhistory.setValue("operation", "failed");
+		reindexhistory.setValue("catalogid", inCatalogId);
+		reindexhistory.setValue("details", "Errrored: " + e);
+
+		reindexlogs.saveData(reindexhistory);
 			log.error("Could not reindex " + searchtype);
 			if (newindex != null)
 			{
@@ -916,12 +963,20 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 			{
 				throw e;
 			}
+			
 			throw new OpenEditException(e);
 		}
 		finally
 		{
 			reindexing = false;
 		}
+		
+		 reindexhistory = reindexlogs.createNewData();
+		reindexhistory.setValue("date", new Date());
+			reindexhistory.setValue("operation", "completed");
+			reindexhistory.setValue("catalogid", inCatalogId);
+		
+		
 		return true;
 
 	}
@@ -931,7 +986,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		Date date = new Date();
 		String id = toId(inCatalogId);
 		String tempindex = id + date.getTime();
-		prepareIndex(tempindex);
+		prepareIndex(null,tempindex);
 		//need to reset/creat the mappings here!
 		getMappingErrors().clear();
 
@@ -970,7 +1025,10 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		  ImmutableOpenMap<String, MappingMetaData> mapping  = resp.mappings().get(oldindex);
 		   for (ObjectObjectCursor<String, MappingMetaData> c : mapping) {
 		      // System.out.println(c.key+" = "+c.value.source());
-		       types.add(c.key);
+			   if( !c.key.startsWith("$"))
+			   {
+				   types.add(c.key);
+			   }
 		   }
 
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
@@ -1004,7 +1062,7 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		String id = toId(inCatalogId);
 
 		String tempindex = id + date.getTime();
-		prepareIndex(tempindex);
+		prepareIndex(null,tempindex);
 		//need to reset/creat the mappings here!
 		getMappingErrors().clear();
 		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);

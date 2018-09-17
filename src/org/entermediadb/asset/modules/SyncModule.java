@@ -211,15 +211,17 @@ public class SyncModule extends BaseMediaModule
 		{
 			String lastpulldate = inReq.getRequestParameter("lastpulldate");
 			hits = getPullManager(archive.getCatalogId()).listRecentChanges("asset",lastpulldate);
+			
 		}
 		hits.enableBulkOperations();
 		hits.setHitsPerPage(200);//TMP
-		inReq.putPageValue("hits", hits);
+		hits.getSearchQuery().setHitsName(inReq.findValue("hitsname"));
+		inReq.putPageValue(hits.getHitsName(), hits);
 		inReq.putPageValue("searcher", hits.getSearcher() );
 		
 		//hitsassetassets/catalog
 		inReq.putSessionValue("hitssessionid", hits.getSessionId());
 		inReq.putSessionValue(hits.getSessionId(), hits);
-		inReq.putPageValue("archive",archive); 
+		//inReq.putPageValue("mediaarchive",archive); 
 	}
 }

@@ -38,7 +38,7 @@
  	 , "generated":[
 		#foreach($hit in $hits.getPageOfHits())#if( ${foreach.count} != 1 ), #end
 		{ "id":"$hit.getId()", "sourcepath":#jesc($hit.sourcepath), "files":
-		[ #foreach($item in $archive.listGeneratedFiles($hit) )#if( ${foreach.count} != 1 ), #end
+		[ #foreach($item in $mediaarchive.listGeneratedFiles($hit) )#if( ${foreach.count} != 1 ), #end
 			{"filename": #jesc($item.getName()), "lastmodified" : #jesc($item.getLastModified() )} 
 		  #end
 		]}

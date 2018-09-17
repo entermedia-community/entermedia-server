@@ -39,7 +39,7 @@
     </name>
   </property> 
  
-  <property id="lastpulldate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="false" >Record Edit Date 
+  <property id="lastpulldate" index="true" type="date" viewtype="time" searchcomponent="datesearch" stored="true" editable="true" >Record Edit Date 
     <name> 
       <language id="en"><![CDATA[Last Pull Date]]></language>  
     </name> 
@@ -57,6 +57,9 @@
     </name>
   </property> 
 
+
+  
+  <property id="skipgenerated" index="true" stored="true" editable="true" datatype="boolean" >Don't download generated files</property>
 
   
   

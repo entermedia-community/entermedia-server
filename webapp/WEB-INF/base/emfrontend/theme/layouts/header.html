@@ -53,7 +53,8 @@
 #end
 #if(!$lastselected)
       #set($lastselected = "asset" )
-#end   
+#end
+#if( $canviewmodulelist ) 
 #if( $userprofile.getModules().size() > 1 )
     #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 	#if( !$module ) 
@@ -68,6 +69,7 @@
 		#end
 	</ul>
 </li>
+#end
 #end
 
     </ul>

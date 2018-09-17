@@ -114,7 +114,7 @@ public class AssetSyncModule extends BaseMediaModule
 				toadd.setSourcePath(currentSourcePath);
 				toadd.setProperty("localpath", localpaths[i]);
 				toadd.setProperty("importstatus", "uploading");
-				toadd.setProperty("previewtatus", "0");
+				toadd.setProperty("previewstatus", "0");
 				toadd.setProperty("editstatus", "1");
 				toadd.setProperty("filesize", sizes[i]);
 				toadd.setProperty("owner", inReq.getUserName());

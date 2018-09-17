@@ -1,0 +1,80 @@
+
+<select name="googlecontactlist"  id="googlecontactlist"  class="googlecontactlist" data-searchfield="$searchfield" data-searchtype="$detail.listId" 
+	data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-placeholder="$detail.getText($context)" data-sortby="$!detail.sort">
+  <option value="$!val" selected="selected">#esc($label)</option>
+</select>
+
+<script type="text/javascript">
+
+jQuery("select.googlecontactlist").livequery(function()   //select2
+	//jQuery.fn.liveajax("select.listautocomplete", function()   //select2
+	{
+			var theinput = jQuery(this);
+		
+			var url = apphome + "/views/settings/google/contactsearch.txt";
+			
+			theinput.select2({
+				placeholder : "Search Contacts",
+				allowClear: true,
+				minimumInputLength : 0,
+				ajax : { // instead of writing the function to execute the request we use Select2's convenient helper
+					url : url,
+					dataType : 'json',
+					data : function(params) 
+					{
+						var fkv = theinput.closest("form").find("#list-" + foreignkeyid + "value").val();
+						if( fkv == undefined )
+						{
+							fkv = theinput.closest("form").find("#list-" + foreignkeyid).val();
+						}
+						var search = {
+							page_limit : 15,
+							page: params.page
+						};
+						search[searchfield+ ".value"] = params.term; //search term
+						if( fkv )
+						{
+							search["field"] = foreignkeyid; //search term
+							search["operation"] = "matches"; //search term
+							search[foreignkeyid+ ".value"] = fkv; //search term
+						}
+						if( sortby )
+						{
+							search["sortby"] = sortby; //search term
+						}
+						return search;
+					},
+					processResults: function(data, params) { // parse the results into the format expected by Select2.
+						 var rows = data.rows;
+						 if( theinput.hasClass("selectaddnew") )
+						 {
+						 	if( params.page == 1 || !params.page)
+						 	{	
+						 		var addnewlabel = theinput.data('addnewlabel');
+							 	var addnewdata = { name: addnewlabel, id: "_addnew_" };
+							 	rows.unshift(addnewdata);
+							}	
+						 }	 
+						 //addnew
+					 	 params.page = params.page || 1;
+						 return {
+					        results: rows,
+					        pagination: {
+					          more: false //(params.page * 30) < data.total_count
+					        }
+					      };
+					}
+				},
+				escapeMarkup: function(m) { return m; },
+				templateResult : select2formatResult, 
+				templateSelection : select2Selected
+			});
+			
+			
+		
+	});	
+
+	
+	
+	
+	</script>

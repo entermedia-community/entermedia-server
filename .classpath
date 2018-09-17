@@ -5,54 +5,53 @@
 	<classpathentry kind="src" path="webapp/WEB-INF/base/system/events/scripts"/>
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/src"/>
 	<classpathentry kind="src" path="webapp/WEB-INF/base/entermedia/catalog/events/scripts"/>
-	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/entermedia-core"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER">
+		<attributes>
+			<attribute name="module" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
+	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
+	<classpathentry exported="true" kind="lib" path="lib/activation-1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime-3.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/apache-log4j-extras-1.2.17.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-4.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/asm-commons-4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsf.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsh-bsf-2.0b4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bsh-core-2.0b4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-io-1.4.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/mail-1.4.jar"/>
-	<classpathentry exported="true" kind="con" path="org.apache.ivyde.eclipse.cpcontainer.IVYDE_CONTAINER/?ivyXmlPath=ivy.xml&amp;confs=*"/>
-	<classpathentry exported="true" kind="lib" path="lib/jcifs-1.3.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-net-3.1.jar"/>
-	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
-	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload-1.2.1-patched.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/servlet-gzip.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/compile/websocket-api.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsch-0.1.43.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/org.apache.oltu.oauth2.client-1.0.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/activation-1.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/antlr-runtime-3.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-4.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/asm-commons-4.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/commons-cli-1.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-fileupload-1.2.1-patched.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-net-3.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compiler-0.8.13.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/compress-lzf-1.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/elasticsearch-2.4.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/gson-2.3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/guava-18.0.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/HdrHistogram-2.1.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/hppc-0.7.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jna-4.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/joda-convert-1.2.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsr166e-1.1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jts-1.13.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/snakeyaml-1.15.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/spatial4j-0.5.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/t-digest-3.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/apache-log4j-extras-1.2.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/gson-2.3.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.17.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/securesm-1.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/guava-18.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-2.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-generic-2.0.jar"/>
-	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/entermedia-core"/>
 	<classpathentry exported="true" kind="lib" path="lib/isoparser-1.1.22.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/pdfbox-app-2.0.6.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/elasticsearch-2.4.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-annotations-2.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-core-2.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jackson-databind-2.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-dataformat-cbor-2.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-dataformat-smile-2.8.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jackson-dataformat-yaml-2.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/java-version-checker-5.6.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/javax.mail.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jcifs-1.3.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jna-4.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jna-4.4.0-1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/joda-convert-1.2.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/joda-time-2.9.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jopt-simple-5.0.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/js.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsch-0.1.43.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsr166e-1.1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jts-1.13.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/log4j-1.2.17.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-analyzers-common-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-backward-codecs-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-core-5.5.4.jar"/>
@@ -67,8 +66,17 @@
 	<classpathentry exported="true" kind="lib" path="lib/lucene-spatial-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-spatial3d-5.5.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/lucene-suggest-5.5.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/mail-1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/netty-3.10.6.Final.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-databind-2.8.1.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jackson-annotations-2.8.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/org.apache.oltu.oauth2.client-1.0.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/pdfbox-app-2.0.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/plugin-cli-5.6.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/securesm-1.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/snakeyaml-1.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/spatial4j-0.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/t-digest-3.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/velocity-tools-generic-2.0.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/compile/websocket-api.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -89,6 +89,8 @@ public class OriginalDocumentGenerator extends FileGenerator
 			WebPageRequest req = inReq.copy(content);
 			req.putProtectedPageValue(PageRequestKeys.CONTENT, content);
 			super.generate(req, content, inOut);
+			archive.logDownload(filename, "success", inReq.getUser());
+
 		}
 		else
 		{

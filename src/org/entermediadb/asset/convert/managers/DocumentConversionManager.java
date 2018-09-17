@@ -175,7 +175,7 @@ public class DocumentConversionManager extends BaseConversionManager
 			}	
 			if( tmpinput == null || !tmpinput.exists() )
 			{
-				tmpinput = getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem();
+				tmpinput = getMediaArchive().getOriginalContent(inStructions.getAsset());
 			}	
 			inStructions.setInputFile(tmpinput);
 		}
@@ -210,7 +210,7 @@ public class DocumentConversionManager extends BaseConversionManager
 		{ //Not CMYK, is PDF
 			if("pdf".equals(fileFormat))
 			{
-				instructions2.setInputFile(getMediaArchive().getOriginalDocument(inStructions.getAsset()).getContentItem());
+				instructions2.setInputFile(getMediaArchive().getOriginalContent(inStructions.getAsset()));
 				ConvertResult pre = getGsTranscoder().convertIfNeeded( instructions2 ); //pre convert
 				instructions2.setInputFile(pre.getOutput());
 				instructions2.setForce(true);

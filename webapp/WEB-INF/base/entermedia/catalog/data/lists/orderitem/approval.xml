@@ -1,0 +1,5 @@
+<properties>
+
+<property id="approved">Access Granted</property>
+<property id="rejected">Access Rejected</property>
+</properties>

@@ -1,6 +1,7 @@
 package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -240,10 +241,10 @@ public class OrderModule extends BaseMediaModule
 
 	public Collection saveItems(WebPageRequest inReq) throws Exception
 	{
-		String[] fields = inReq.getRequestParameters("field");
-		if (fields != null)
+		String[] items = inReq.getRequestParameters("itemid");
+		if (items != null)
 		{
-			String[] items = inReq.getRequestParameters("itemid");
+			String[] fields = inReq.getRequestParameters("field");
 			String catalogid = inReq.findValue("catalogid");
 			ArrayList toSave = getOrderManager().saveItems(catalogid, inReq, fields, items);
 			return toSave;
@@ -295,6 +296,9 @@ public class OrderModule extends BaseMediaModule
 		String catalogid = inReq.findValue("catalogid");
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "order");
 
+		Collection tosave = new ArrayList(Arrays.asList(fields));
+		tosave.remove("status");
+		fields = (String[])tosave.toArray(new String[tosave.size()]);
 		searcher.updateData(inReq, fields, order);
 		searcher.saveData(order, inReq.getUser());
 		return order;
@@ -1077,6 +1081,10 @@ public class OrderModule extends BaseMediaModule
 			throw new OpenEditException("Please set an email address");
 		}
 		order.setValue("sharewithemail", inReq.getUser().getEmail());
+		
+		String[] fields = inReq.getRequestParameters("field");
+		archive.getSearcher("order").updateData(inReq, fields, order);
+		
 		order.setValue("date", new Date());
 		//Expiration
 		
@@ -1116,14 +1124,9 @@ public class OrderModule extends BaseMediaModule
 		getOrderManager().saveOrder(catalogid, inReq.getUser(), order);
 
 		UserManager userManager = getUserManager(inReq);
-		URLUtilities utils = (URLUtilities) inReq
-				.getPageValue(PageRequestKeys.URL_UTILITIES);
-		String base = utils.siteRoot() + utils.relativeHomePrefix();
-
-		String orderModuleURL = base + "/" + applicationid + "/"  + "views/modules/order/index.html?field=last_selected_module&last_selected_module.value=order";
 
 		//Send an email
-		getOrderManager().sendEmailForApproval(catalogid, archive, userManager, applicationid, orderModuleURL);
+		getOrderManager().sendEmailForApproval(catalogid, archive, userManager, applicationid, order);
 		
 		return order;
 	}

@@ -1,4 +1,4 @@
-package asset;
+package notifications;
 
 import org.entermediadb.asset.MediaArchive
 import org.entermediadb.email.PostMail

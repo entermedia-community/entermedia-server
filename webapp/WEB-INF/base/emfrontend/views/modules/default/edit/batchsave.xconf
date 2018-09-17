@@ -3,4 +3,6 @@
     <path-action name="Script.run">
     	<script >${searchhome}/scripts/editor.groovy</script>
     </path-action>
+        	<property name="batchedit">true</property>
+    
 </page>

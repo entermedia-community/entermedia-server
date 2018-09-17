@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+  <property name="module">asseteditLog</property>
+  <property name="fallbackdirectory">/emshare/views/modules/default</property>
+</page>

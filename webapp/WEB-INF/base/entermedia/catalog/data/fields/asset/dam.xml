@@ -696,9 +696,16 @@
       <language id="en"><![CDATA[EnterMedia ExifData]]></language> 
     </name> 
   </property>  
-  <property id="mastereditclusterid" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">
+  <property id="mastereditclusterid" index="true" stored="true" editable="true">
     <name>
       <language id="en"><![CDATA[Master Edit Cluster]]></language>
     </name>
   </property> 
+  <property id="etagid" index="true" stored="true" editable="true" keyword="true" >
+    <name>
+      <language id="en"><![CDATA[ETag]]></language>
+    </name>
+  </property> 
+  
+  
 </page>

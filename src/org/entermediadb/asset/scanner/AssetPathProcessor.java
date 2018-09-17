@@ -94,7 +94,7 @@ public class AssetPathProcessor extends PathProcessor
 	}
 
 
-	protected void saveImportedAssets(User inUser) throws OpenEditException
+	public void saveImportedAssets(User inUser) throws OpenEditException
 	{
 		if (getAssetsToSave().size() == 0)
 		{
@@ -189,7 +189,7 @@ public class AssetPathProcessor extends PathProcessor
 			if( asset != null)
 			{
 				//check this one primary asset to see if it changed
-				if( asset.getPrimaryFile() != null)
+				if( asset.getPrimaryFile() != null) //Attachments only
 				{
 					inInput = getPageManager().getRepository().getStub(inInput.getPath() + "/" + asset.getPrimaryFile());
 					asset = getAssetUtilities().populateAsset(asset, inInput, getMediaArchive(), sourcepath, inUser);
@@ -283,9 +283,12 @@ public class AssetPathProcessor extends PathProcessor
 //								{
 //									ignoretime = true; //If we are deeper than 3 and still showed a mod stamp then check everything
 //								}
-								try {
+								try 
+								{
 									processAssetFolder( item, inUser);
-								} catch (StackOverflowError e) {
+								}
+								catch (StackOverflowError e) 
+								{
 
 									e.printStackTrace();
 									
@@ -464,6 +467,7 @@ public class AssetPathProcessor extends PathProcessor
 				} else{
 					pathtocheck =folderlist[0];
 				}
+				//TODO: This is super slow....Cache it for top level assets?
 				Asset asset = getMediaArchive().getAssetSearcher().getAssetBySourcePath(pathtocheck);
 				if(asset != null)
 				{
@@ -476,9 +480,6 @@ public class AssetPathProcessor extends PathProcessor
 					return;
 				}
 			}
-		
-			
-			
 			
 			process(inStartingPoint, inUser);
 			saveImportedAssets(inUser);

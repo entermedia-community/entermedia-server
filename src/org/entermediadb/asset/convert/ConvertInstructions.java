@@ -703,7 +703,7 @@ public class ConvertInstructions
 
 	public ContentItem getOriginalDocument()
 	{
-		return getMediaArchive().getOriginalDocument(getAsset()).getContentItem();
+		return getMediaArchive().getOriginalContent(getAsset());
 	}
 
 	public boolean isDocumentFormat()

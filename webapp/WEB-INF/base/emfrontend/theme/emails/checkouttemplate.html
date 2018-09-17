@@ -3,8 +3,14 @@
 <br />
 
 #set( $ordertype = $order.get("ordertype") )
+#set( $status = $order.get("checkoutstatus") )
+
 #if( $ordertype == "checkout")
-<p>Your request has been approved, you can now download the following assets.
+	#if( $status == "approved")
+		<p>[[Your request has been approved, you can now download the following assets]].
+	#else
+		<p>[[Your request has been rejected, review the below notes]].
+	#end
 #else
 <p>$userManager.getScreenName( $order.userid ) [[has shared some assets with you]].
 #end
@@ -17,11 +23,12 @@
 </p>
 #end
 
-#set( $status = $order.get("checkoutstatus") )
 #if( $status == "approved")
 <p>[[Please review the assets at this link]]: <a href="$context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderid=$order.id" style="font-size: 14px; color: blue;">
 $context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderid=$order.id</a></p>
 #end
+
+
 
 #if( $order.expireson)
 [[Access to these files will expire on ]]
@@ -38,11 +45,25 @@ $context.siteRoot$home$apphome/views/activity/checkout/emailedassets.html?orderi
 </p>
 #set($orderitems = $mediaarchive.getSearcher("orderitem").query().exact("orderid", $order.id).search())
 <hr />
-<p>[[Below is a list of assets available at the link above]]:</p>
+#if( $status == "rejected")
+	<p>[[Below is a list of assets that has been rejected]]:</p>
+#else
+	<p>[[Below is a list of assets available at the link above]]:</p>
+#end	
+
+<style>
+
+th
+{
+ text-align: left;
+	
+}
+</style>
+
 <table cellspacing="0" cellpadding="0" width="100%">		
 	<tr>
-	<th>[[Title]]</th>
-	<th>[[File Name]]</th>
+	<th style="text-align: left;">[[Title]]</th>
+	<th >[[File Name]]</th>
 	<th>[[Asset Type]]</th>
 	<th>[[Format]]</th>
 	</tr>

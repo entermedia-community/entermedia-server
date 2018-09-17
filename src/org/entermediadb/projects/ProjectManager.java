@@ -23,6 +23,9 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.entermediadb.desktops.Desktop;
+import org.entermediadb.desktops.DesktopManager;
+import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -30,6 +33,7 @@ import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.event.WebEvent;
@@ -51,7 +55,17 @@ public class ProjectManager implements CatalogEnabled {
 	private int COPY = 1;
 	private int MOVE = 2;
 	protected ModuleManager fieldModuleManager;
+	protected DesktopManager fieldDesktopManager;
+	
+	public DesktopManager getDesktopManager()
+	{
+		if (fieldDesktopManager == null)
+		{
+			fieldDesktopManager = (DesktopManager)getModuleManager().getBean("desktopManager");
+		}
 
+		return fieldDesktopManager;
+	}
 	public ModuleManager getModuleManager() {
 		return fieldModuleManager;
 	}
@@ -162,7 +176,9 @@ public class ProjectManager implements CatalogEnabled {
 		if (opencollections == null) {
 			return Collections.EMPTY_LIST;
 		}
-
+		opencollections = new ArrayList(opencollections);
+		opencollections.remove(inReq.getUserName() + "-favorites");
+		
 		if (opencollections.size() > 0) // May not have any collections
 		{
 			// Build list of ID's
@@ -219,8 +235,21 @@ public class ProjectManager implements CatalogEnabled {
 			}
 			usercollections.add(uc);
 		}
-		HitTracker hits = inArchive.getAssetSearcher().query().orgroup("category", categoryids).addFacet("category")
-				.named("librarysidebar").search();
+		
+		//Why are we doing this? This should come from facets
+		QueryBuilder query = inArchive.query("asset");
+		query.orgroup("category", categoryids);
+		query.hitsPerPage(1);
+		query.addFacet("category");
+		query.named("librarysidebar");
+		if( inReq.hasPermission("showonlyapprovedassets"))
+		{	
+			query.exact("editstatus", "6");
+		}
+		
+		HitTracker hits = query.search();
+		
+		
 		// log.info( hits.getSearchQuery() );
 		int assetsize = 0;
 		if (hits != null) {
@@ -230,11 +259,14 @@ public class ProjectManager implements CatalogEnabled {
 			assetsize = 0;
 		}
 		inReq.putPageValue("librarysize", assetsize);
-		LibraryCollection favourites = getFavouritesCollection(inReq, inArchive);
+
+		//TODO: This seems like a long way around
+		/*
+		LibraryCollection favorites = getFavoritesCollection(inReq, inArchive);
 		LibraryCollection loadedfavs = null;
 		for (Iterator iterator = usercollections.iterator(); iterator.hasNext();) {
 			LibraryCollection col = (LibraryCollection) iterator.next();
-			if (col.getId().equals(inReq.getUserName() + "-favourites")) {
+			if (col.getId().equals(inReq.getUserName() + "-favorites")) {
 				loadedfavs = col;
 			}
 		}
@@ -243,7 +275,9 @@ public class ProjectManager implements CatalogEnabled {
 
 			usercollections.remove(loadedfavs);
 		}
-		usercollections.add(0, favourites);
+		usercollections.add(0, favorites);
+		*/
+		
 		// Show all the collections for a library
 		inReq.putPageValue("allcollections", usercollections);
 
@@ -260,9 +294,13 @@ public class ProjectManager implements CatalogEnabled {
 						if (counted == -1) {
 							// These fell off the radar of the agregation because there are too many random
 							// categories
-							Collection assets = inArchive.getAssetSearcher().query()
-									.exact("category", collection.getRootCategoryId()).named("librarysidebarexact")
-									.search();
+							QueryBuilder q = inArchive.getAssetSearcher().query()
+									.exact("category", collection.getRootCategoryId()).named("librarysidebarexact");
+									if( inReq.hasPermission("showonlyapprovedassets"))
+									{	
+										q.exact("editstatus", "6");
+									}
+							Collection assets =	q.search();
 							log.info("Too many other categories within collection:" + collection.getName());
 							counted = assets.size();
 						}
@@ -275,36 +313,46 @@ public class ProjectManager implements CatalogEnabled {
 		return usercollections;
 	}
 
-	public LibraryCollection getFavouritesCollection(WebPageRequest inReq, MediaArchive archive) {
-
-		Searcher assetsearcher = archive.getAssetSearcher();
-		Searcher collections = archive.getSearcher("librarycollection");
-		LibraryCollection collection = (LibraryCollection) collections.searchById(inReq.getUserName() + "-favourites");
-		if (collection == null) {
+	public LibraryCollection getFavoritesCollection(User inUser) 
+	{
+		Searcher collections = getMediaArchive().getSearcher("librarycollection");
+		if(inUser == null) {
+			return null;
+		}
+		LibraryCollection collection = (LibraryCollection) collections.searchById(inUser.getId() + "-favorites");
+		if (collection == null) 
+		{
 			collection = (LibraryCollection) collections.createNewData();
-			// collection.setValue("visibility", "hidden");
-			collection.setName(inReq.getUser().toString() + " Favourites");
-			collection.setId(inReq.getUserName() + "-favourites");
-			Searcher categories = archive.getSearcher("category");
+			collection.setName(inUser.toString());
+			collection.setId(inUser.getId() + "-favorites");
+			Searcher categories = getMediaArchive().getSearcher("category");
 
-			String collectionroot = archive.getCatalogSettingValue("collection_root");
+			String collectionroot = getMediaArchive().getCatalogSettingValue("collection_root");
 			if (collectionroot == null) {
 				collectionroot = "Collections";
 			}
 
-			Category newcat = archive.createCategoryPath(collectionroot + "/Favourites/" + collection.getName());
+			Category newcat = getMediaArchive().createCategoryPath(collectionroot + "/Favorites/" + collection.getName());
 
-			// newcat.setValue("visibility", "hidden");
 			newcat.setName(collection.getName());
 
 			categories.saveData(newcat);
 
 			collection.setValue("rootcategory", newcat.getId());
 			collection.setValue("creationdate", new Date());
-			collection.setValue("owner", inReq.getUserName());
-			collection.setValue("visibility", "3");
+			collection.setValue("owner", inUser.getId());
+			
+			/**
+			 * We cant make this private because then assets would become hidden from regular users
+				collection.setValue("visibility", "3");
+			 */
+			collection.setValue("collectiontype", "2");
 			collections.saveData(collection);
 		}
+		
+		HitTracker hits = getMediaArchive().getAssetSearcher().query().hitsPerPage(1).exact("category", collection.getRootCategoryId()).search();
+		collection.setAssetCount(hits.size());
+		
 		return collection;
 	}
 
@@ -548,6 +596,16 @@ public class ProjectManager implements CatalogEnabled {
 		}
 		inArchive.getAssetSearcher().saveAllData(tosave, null);
 	}
+	
+	public void removeAssetFromCollection(MediaArchive inArchive, String inCollectionid, String assetid) {
+		LibraryCollection col = getLibraryCollection(inArchive, inCollectionid);
+		Category cat = getRootCategory(inArchive, col);
+		Asset asset = (Asset) inArchive.getAssetSearcher().searchById(assetid);
+		asset.removeChildCategory(cat); //
+		inArchive.getAssetSearcher().saveData(asset, null);
+	}
+	
+	
 	/*
 	 * public Collection<LibraryCollection> loadRecentCollections(WebPageRequest
 	 * inReq) { //enable filters to show the asset count on each collection node
@@ -958,15 +1016,26 @@ public class ProjectManager implements CatalogEnabled {
 		return userlibrary;
 	}
 
-	public void exportCollection(MediaArchive inMediaArchive, String inCollectionid, String inFolder) {
-		// Data collection = inMediaArchive.getData("librarycollection",
-		// inCollectionid);
-		AssetUtilities utilities = inMediaArchive.getAssetImporter().getAssetUtilities();
-		Category root = getRootCategory(inMediaArchive, inCollectionid);
-		ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
-		utilities.exportCategoryTree(inMediaArchive, root, childtarget);
-
+	public void downloadCollectionToClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid) {
+		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
+		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
+		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+		
+		//Send the client a download request
+		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
+		if( desktop == null)
+		{
+			throw new OpenEditException("Desktop disconnected");
+		}
+		desktop.checkoutCollection(inMediaArchive,collection);
 	}
+	
+	
+	
+	
+	
+	
 
 	public void restoreSnapshot(WebPageRequest inReq, User inUser, MediaArchive inArchive, String inCollectionid,
 			String inRevision, String inNote) {
@@ -1022,6 +1091,11 @@ public class ProjectManager implements CatalogEnabled {
 
 	public Boolean canEditCollection(WebPageRequest inReq, String inCollectionid) {
 		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
+		return canEditCollection(inReq, collection);
+
+	}
+	protected Boolean canEditCollection(WebPageRequest inReq, LibraryCollection collection)
+	{
 		if (collection != null) {
 			String ownerid = collection.get("owner");
 			if (ownerid != null && ownerid.equals(inReq.getUserName())) {
@@ -1048,7 +1122,6 @@ public class ProjectManager implements CatalogEnabled {
 			}
 		}
 		return false;
-
 	}
 
 	public boolean canViewCollection(WebPageRequest inReq, String inCollectionid) {
@@ -1228,7 +1301,15 @@ public class ProjectManager implements CatalogEnabled {
 		// Make sure the root folder is within the library root folder
 		MediaArchive mediaArchive = getMediaArchive();
 		// Make sure we have a root category
+		String type = collection.get("collectiontype");
+		if( type == null)
+		{
+			collection.setValue("collectiontype", "1");
+			mediaArchive.getSearcher("librarycollection").saveData(collection);
+		}
 
+
+		
 		String collectionroot = mediaArchive.getCatalogSettingValue("collection_root");
 		if (collectionroot == null) {
 			collectionroot = "Collections";
@@ -1251,8 +1332,9 @@ public class ProjectManager implements CatalogEnabled {
 			mediaArchive.getCategorySearcher().saveCategory(collectioncategory);
 		}
 
-		ProjectManager manager = mediaArchive.getProjectManager();
+		//ProjectManager manager = mediaArchive.getProjectManager();
 		((MultiValued) collectioncategory).addValue("viewusers", collection.get("owner"));
+		
 		mediaArchive.getCategorySearcher().saveData(collectioncategory);
 
 		// Move the parents if needed
@@ -1264,6 +1346,146 @@ public class ProjectManager implements CatalogEnabled {
 		// }
 
 	}
+	
+	public void retrieveFilesFromClient(WebPageRequest inReq, MediaArchive inMediaArchive, String inCollectionid) {
+		//Data collection = inMediaArchive.getData("librarycollection",inCollectionid);
+		LibraryCollection collection = getLibraryCollection(inMediaArchive, inCollectionid);
+		//ContentItem childtarget = inMediaArchive.getPageManager().getRepository().getStub(inFolder);
+		//utilities.exportCategoryTree(inMediaArchive, root, childtarget);
+		
+		//Send the client a download request
+		Desktop desktop = getDesktopManager().getDesktop(inReq.getUserName());
+		desktop.importCollection(inMediaArchive, collection); //This eventually will cause saveCheckinRequest to get called by the desktop 
+		
+
+	}
+	
+	public Map listAssetMap(String serverPrefix, MediaArchive inArchive, LibraryCollection inCollection, Category inCat)
+	{
+		List tosend = new ArrayList();
+
+		String root = inCollection.getCategory().getCategoryPath();
+		String subfolder = inCat.getCategoryPath().substring(root.length());
+		String foldername = inCollection.getName();
+		if (!subfolder.isEmpty())
+		{
+			foldername = foldername + subfolder;
+		}
+
+		HitTracker assets = inArchive.query("asset").exact("category-exact", inCat.getId()).search();
+		assets.enableBulkOperations();
+		for (Iterator iterator = assets.iterator(); iterator.hasNext();)
+		{
+			MultiValued asset = (MultiValued) iterator.next();
+			Map map = new HashMap();
+			map.put("id", asset.getId());
+
+			String assetpath = inArchive.asLinkToOriginal(asset);
+
+			String url = serverPrefix + "/" + inArchive.getMediaDbId() + "/services/module/asset/downloads/originals/" + assetpath;
+			map.put("url", url);
+
+			String primaryImageName = asset.get("primaryfile");
+			if (primaryImageName == null)
+			{
+				primaryImageName = asset.getName();
+			}
+			String savepath = foldername + "/" + primaryImageName;
+			map.put("savepath", savepath);
+
+			map.put("filesize", asset.get("filesize"));
+			long time = asset.getDate("assetmodificationdate").getTime();
+			if (time > 0)
+			{
+				map.put("assetmodificationdate", String.valueOf(time));
+			}
+			tosend.add(map);
+		}
+		
+		Collection<String> subfolders = new ArrayList();
+		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category subcat = (Category) iterator.next();
+			subfolders.add(subcat.getName());
+		}
+		Map response = new HashMap();
+		response.put("folder", inCollection.getName());
+		response.put("subpath", subfolder);
+		response.put("subfolders", subfolders);
+		response.put("assets", tosend);
+		return response;
+//		getDesktopListener().downloadFiles(foldername,subfolders,tosend);
+//		for (Iterator iterator = inCat.getChildren().iterator(); iterator.hasNext();)
+//		{
+//			Category child = (Category) iterator.next();
+//			downloadCat(inArchive, inCollection, child);
+//		}
+
+	}
+
+	
+	/*
+	
+	public void processCheckinRequest(Desktop desktop, JSONObject inMap)
+	{
+		String collectionid = (String) inMap.get("collectionid");
+		MediaArchive archive = getMediaArchive();
+		LibraryCollection collection = getLibraryCollection(archive, collectionid);
+
+		Category topcategory = collection.getCategory();
+		Map remotefolder = (Map)inMap.get("root");
+		
+		//get a version name
+		long revision = collection.getCurentRevision();
+		importClientFolder(remotefolder, topcategory);
+			
+	}
+	protected Collection importClientFolder(Map inRemotefolder, Category inTopcategory)
+	{
+		//String filename = (String)inRemotefolder.get("foldername");
+		Collection childfolders = (Collection)inRemotefolder.get("childfolders");
+		Map toremoveonserver = new HashMap();
+		for (Iterator iterator = inTopcategory.getChildren().iterator(); iterator.hasNext();)
+		{
+			Category child = (Category) iterator.next();
+			toremoveonserver.put(child.getName(),child);
+		}
+		for (Iterator iterator = childfolders.iterator(); iterator.hasNext();)
+		{
+			Map remotechildfolder = (Map) iterator.next();
+			String foldername = (String)remotechildfolder.get("foldername");
+			if( toremoveonserver.containsKey(foldername))
+			{
+				toremoveonserver.remove(foldername);
+			}
+			else
+			{
+				//addem
+				Category toadd = (Category)getMediaArchive().getCategorySearcher().createNewData();
+				toadd.setName(foldername);
+				inTopcategory.addChild(toadd);
+			}
+		}
+		for (Iterator iterator = toremoveonserver.values().iterator(); iterator.hasNext();)
+		{
+			String key = (String) iterator.next();
+			Category child = (Category)toremoveonserver.get(key);
+			getMediaArchive().getCategorySearcher().delete(child, null);
+		}
+		Collection filelist = (Collection)inRemotefolder.get("filelist");
+		
+		//search for assets within a category
+		HitTracker hits = getMediaArchive().query("asset").exact("category-exact", inTopcategory.getId()).search();
+
+		//Save the files we need to get from the client in an uploadqueue table
+		Collection uploadlist = new ArrayList();
+
+		
+	}
+	
+	*/
+	
+	
 
 	// public void createCollectionFromSelection(HitTracker inSelection, User
 	// inUser)
@@ -1279,5 +1501,39 @@ public class ProjectManager implements CatalogEnabled {
 	// addAssetToCollection(getMediaArchive(), collectionid, assets);
 
 	// }
-
+	public Collection listEditableCollections(WebPageRequest inReq)
+	{
+		Collection hits = null;
+		UserProfile profile = inReq.getUserProfile();
+		
+		if (profile != null)
+		{
+			if( "administrator".equals( profile.get("settingsgroup")))
+			{
+				hits = getMediaArchive().query("librarycollection").all().search();
+			}
+			else
+			{
+				hits = new ArrayList();
+				HitTracker filtered = getMediaArchive().query("librarycollection").all().enduser(true).search(inReq);
+				int count = 0;
+				for (Iterator iterator = filtered.iterator(); iterator.hasNext();)
+				{
+					count++;
+					if( count > 2000)
+					{
+						break;
+					}
+					Data data = (Data) iterator.next();
+					LibraryCollection collection = (LibraryCollection)getMediaArchive().getSearcher("librarycollection").loadData(data);
+					if( canEditCollection(inReq,collection) )
+					{
+						hits.add(collection);
+					}
+				}
+			}
+		}
+		return hits;
+	}
+	
 }

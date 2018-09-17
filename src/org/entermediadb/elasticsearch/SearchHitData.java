@@ -139,7 +139,12 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		{
 			svalue = getFromDb(inId);
 		}
-
+//		if(svalue == null){
+//			svalue = 
+//		}
+//		
+		
+		
 		return svalue;
 	}
 
@@ -169,6 +174,11 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				value = field.getValue();
 			}
 		}
+		
+		
+		
+		
+		
 		if (value == null && getSearchData() != null) {
 			value = getSearchData().get(key);
 			if (value instanceof Map) {
@@ -177,6 +187,10 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 					value = null;
 				}
 			}
+			
+			
+			
+			
 			if( detail != null && detail.isGeoPoint() && value instanceof Map)
 			{
 				Position pos = new Position((Map)value);
@@ -196,6 +210,22 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 					value = getSearchData().get(inId); //check without the _int if !inId.equals(key) ?
 				}
 			}
+			if(value ==null){
+				if(getSearchData() != null){
+					value = getSearchData().get(inId + "_int");
+					if(value != null && value instanceof Map){
+						LanguageMap map = new LanguageMap((Map) value);
+						if(map.keySet().size() == 1){
+							return map.get("en");
+						} else{
+							return map.toString();
+						}
+					}
+				}
+			}
+			
+			
+			
 		}
 
 		if (value != null && detail != null && detail.isMultiLanguage()) {

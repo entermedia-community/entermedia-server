@@ -10,4 +10,5 @@
     	<path-action name="DataEditModule.loadHits" >
     			<property name="searchtype">${module}</property>
     	</path-action>
+    	<property name="batchedit">true</property>
 </page>

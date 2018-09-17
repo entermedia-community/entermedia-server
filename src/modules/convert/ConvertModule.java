@@ -23,6 +23,10 @@ public class ConvertModule extends BaseMediaModule
 		
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = archive.getAsset(assetid);
+		if(asset == null){
+			return;//nothing to do, missing asset
+		}
+		
 		
 		Searcher presetsearcher = archive.getSearcher("convertpreset");
 		Searcher tasksearcher = archive.getSearcher("conversiontask");

@@ -45,27 +45,11 @@
 				    action="$root/finish.html" class="validate"  >
 		<div id="uploadmetadata">
 		
-						#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid)
-		##TODO - Add library filtering here..
-		<div class="ui-widget uipanel" style="padding-bottom: 5px;">
-		    <div  class="ui-widget-header">[[Choose Collection]]
-							</div>
-						    <div  class="ui-widget-content">
-					
-						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
-							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
-							#if( $librarycol )
-							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
-							#end
-						</select>
-				
-		
-		</div></div>
-		
-				#end
 		
 		<div class="ui-widget uipanel">
 		    <div  class="ui-widget-header">[[Metadata]]
+
+			
 		    	#if( $caneditmetadatasetup )
 		    	<span class="widget-header-edit">
 				 <a class="ir" href="$home$apphome/views/settings/modules/asset/metadata/views/index.html?viewid=multipleupload&viewpath=asset/multipleupload">[[Edit]]</a>
@@ -73,7 +57,21 @@
 				#end
 		    </div>
 		    <div  class="ui-widget-content">
-				
+				#if($mediaarchive.isCatalogSettingTrue("show_add_media_collection") && !$collectionid)
+				##TODO - Add library filtering here..
+				<div class="inputformrow">
+					<div class="emdatafield">[[Choose Collection]]</div>
+					<div class="emdatafieldvalue ">
+						<select name="currentcollection" id="collectionid"  class="listautocomplete selectautosubmit #if($canaddnewcollection) selectaddnew #end required" data-addnewlabel="[[[Add New]]]" data-searchfield="name" data-searchtype="librarycollection" data-foreignkeyid="library" 
+							data-placeholder="[[Choose Collection]]" data-sortby="$namedetail.getDefaultSort()">
+							#if( $librarycol )
+							  <option value="$collection.getId()" selected="selected">#esc($librarycol.getName($context.locale))</option>
+							#end
+						</select>
+					</div>
+					<hr>
+				</div>
+			#end
 
 					$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 					

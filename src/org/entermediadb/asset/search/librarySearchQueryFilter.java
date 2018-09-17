@@ -25,10 +25,10 @@ public class librarySearchQueryFilter implements SearchQueryFilter
 			return inQuery;
 		}
 		
-		Object settings = inPageRequest.getPageValue("canviewsettings");
-		if (Boolean.parseBoolean(String.valueOf(settings)))
+		UserProfile profile = inPageRequest.getUserProfile();
+		if (profile != null && profile.isInRole("administrator"))
 		{
-			return inQuery;
+			return inQuery;					
 		}
 		
 		//TODO: Add Hidden Libraries

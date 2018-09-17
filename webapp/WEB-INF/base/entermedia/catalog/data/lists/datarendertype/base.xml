@@ -7,6 +7,8 @@
 		<type id="double"  >Double</type>
 		<type id="date"  >Date</type>
 		<type id="datetime"  >Date/Time</type>
+				<type id="datesearch"  >Date Search Box</type>
+		
 		<type id="filesize"  >File Size</type>
 		<type id="numbersearch"  >Number Range</type>
 		<type id="list"  >List</type>

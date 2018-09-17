@@ -2,9 +2,11 @@ package org.entermediadb.asset;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.commons.logging.Log;
@@ -34,7 +36,15 @@ public class BaseCompositeData extends BaseData implements Data, CompositeData
 	protected List<Integer> fieldSelections;
 	protected PropertyDetails fieldPropertyDetails;
 	protected String fieldId;
-	
+	protected Collection fieldEditFields;
+	public Collection getEditFields()
+	{
+		return fieldEditFields;
+	}
+	public void setEditFields(Collection inEditFields)
+	{
+		fieldEditFields = inEditFields;
+	}	
 	public BaseCompositeData(Searcher inSearcher, HitTracker inHits)
 	{
 		setSearcher(inSearcher);

@@ -490,7 +490,11 @@
 		</property>
 	</bean>	
 	
-
+<bean id="scriptedExtractor" class="org.entermediadb.asset.scanner.ScriptMetadataExtractor" >
+		<property name="pageManager">
+			<ref bean="pageManager" />
+		</property>
+	</bean>	
 	<bean id="exiftoolMetadataExtractor"
 		class="org.entermediadb.asset.scanner.ExiftoolMetadataExtractor">
 		<property name="exec">
@@ -707,13 +711,55 @@
 			<ref bean="moduleManager" />
 		</property>
 	</bean>
-
-	<bean id="originalFileManager" class="org.entermediadb.asset.OriginalFileManager"
+	
+	<bean id="defaultAssetSource" class="org.entermediadb.asset.sources.DefaultAssetSource"
 		scope="prototype">
-		<property name="pageManager">
-			<ref bean="pageManager" />
+		<property name="webServer"><ref bean="WebServer" /></property>		
+			<property name="pageManager">
+				<ref bean="pageManager" />
+			</property>
+			<property name="folderMonitor">
+				<ref bean="folderMonitor" />
+			</property>
+	</bean>
+
+	<bean id="s3AssetSource" class="org.entermediadb.asset.sources.S3CmdAssetSource"
+		scope="prototype">
+			<property name="folderMonitor">
+				<ref bean="folderMonitor" />
+			</property>
+			<property name="exec">
+				<ref bean="exec" />
+			</property>
+	</bean>
+
+
+<bean id="entermediaAssetSource" class="org.entermediadb.asset.sources.EntermediaAssetSource"
+		scope="prototype">
+			
+	</bean>
+
+
+
+
+
+	<bean id="mountAssetSource" class="org.entermediadb.asset.sources.OriginalsAssetSource"
+		scope="prototype">
+		<property name="webServer"><ref bean="WebServer" /></property>		
+			<property name="pageManager">
+				<ref bean="pageManager" />
+			</property>
+			<property name="folderMonitor">
+				<ref bean="folderMonitor" />
+			</property>
+	</bean>
+	<bean id="assetSourceManager" class="org.entermediadb.asset.sources.AssetSourceManager"
+		scope="prototype">
+		<property name="moduleManager">
+			<ref bean="moduleManager" />
 		</property>
 	</bean>
+
 
 	<bean id="assetEditor" class="org.entermediadb.asset.edit.AssetEditor" scope="prototype">
 		<property name="pageManager">
@@ -1758,20 +1804,7 @@
 		</property>
 	</bean>
 	<bean id="LibraryManager" class="model.assets.LibraryManager" />
-	<bean id="hotFolderManager" class="org.entermediadb.asset.importer.BaseHotFolderManager" >
-			<property name="searcherManager">
-				<ref bean="searcherManager" />
-			</property>
-			<property name="pageManager">
-				<ref bean="pageManager" />
-			</property>
-			<property name="webServer">
-				<ref bean="WebServer" />
-			</property>
-			<property name="folderMonitor">
-				<ref bean="folderMonitor" />
-			</property>
-	</bean>
+	
 	<bean id="folderMonitor" class="org.entermediadb.asset.importer.FolderMonitor" >
 			<property name="executorManager">
 				<ref bean="executorManager" />
@@ -1898,13 +1931,6 @@
 	</bean>
 	
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" lazy-init="default" />
-
-	<bean  id="AnnotationModule" class="modules.annotations.AnnotationModule" lazy-init="default" />
-
-	
-	
- 	
- 	
  	
 	<bean id="documentConversionManager" class="org.entermediadb.asset.convert.managers.DocumentConversionManager" scope="prototype">
 		<property name="defaultTranscoder">
@@ -1965,7 +1991,8 @@
 				<ref bean="exiftoolMetadataExtractor" />
 				<ref bean="ffmpegMetadataExtractor" />
 				<ref bean="md5MetadataExtractor" />
-								<ref bean="geoTiffExtractor" />
+				<ref bean="geoTiffExtractor" />
+				<ref bean="scriptedExtractor" />
 				
 			</list>
 		</property>
@@ -2099,5 +2126,25 @@
  	 	
  	<bean id="TaskModule" class="org.entermediadb.tasks.TaskModule" >
 	</bean>	
+
+ 	<bean id="projectGoal" class="org.entermediadb.tasks.ProjectGoal" scope="prototype">
+ 	</bean>
+
+ 	<bean id="annotationServer" class="org.entermediadb.websocket.annotation.AnnotationServer" scope="prototype">
+	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+ 	</bean>
+
+ 	<bean id="desktopManager" class="org.entermediadb.desktops.DesktopManager" >
+ 	</bean>
+
+ 	<bean id="desktop" class="org.entermediadb.desktops.Desktop" scope="prototype">
+ 	<property name="moduleManager">
+			<ref bean="moduleManager" />
+		</property>
+ 	</bean>
+
+
 	
 </beans>

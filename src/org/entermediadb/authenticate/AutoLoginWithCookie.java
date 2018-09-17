@@ -4,6 +4,7 @@ import java.util.Date;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -164,6 +165,8 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 	@Override
 	public AutoLoginResult autoLogin(WebPageRequest inReq)
 	{
+		//log.info("Auto Login check");
+
 		User ok = null;
 		if (inReq.getSessionValue("autologindone") == null)
 		{
@@ -175,6 +178,15 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 			if (md5 != null)
 			{
 				ok = autoLoginFromMd5Value(inReq, md5);
+			}
+			if( ok == null && inReq.getRequest() != null)
+			{
+				md5 = inReq.getRequest().getHeader("X-" + ENTERMEDIAKEY);
+				//log.info("Found MD5 in Header" + md5);
+				if (md5 != null)
+				{
+					ok = autoLoginFromMd5Value(inReq, md5);
+				}
 			}
 		}
 		
@@ -221,4 +233,32 @@ public class AutoLoginWithCookie extends BaseAutoLogin implements AutoLoginProvi
 		return name;
 	}
 
+	public void saveCookieForUser(WebPageRequest inReq,User inUser)
+	{
+		HttpServletResponse res = inReq.getResponse();
+		if (res != null)
+		{
+			String name = getCookieEncryption().createMd5CookieName(inReq,AutoLoginWithCookie.ENTERMEDIAKEY,true);
+			try
+			{
+				String value = getCookieEncryption().getEnterMediaKey(inUser);
+				Cookie cookie = new Cookie(name, value);
+				cookie.setMaxAge(Integer.MAX_VALUE);
+				//Needs new servelet api jar
+				//				cookie.setHttpOnly(true);
+				
+				cookie.setPath("/"); // http://www.unix.org.ua/orelly/java-ent/servlet/ch07_04.htm   This does not really work. It tends to not send the data
+				res.addCookie(cookie);
+				inReq.putPageValue("entermediakey", value);
+			}
+			catch (Exception ex)
+			{
+				throw new OpenEditException(ex);
+			}
+			//TODO: Add a new alternative cookie that will auto login the user by passing the md5 of a secret key + their password
+			//TODO: If the MD5 matches on both sides then we are ok to log them in
+
+		}
+	}
+	
 }

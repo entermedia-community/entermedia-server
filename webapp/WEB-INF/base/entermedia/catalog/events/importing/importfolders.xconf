@@ -1,8 +1,6 @@
 <page>
 	<property name="eventname">Import Hot Folders</property>	
-	<path-action name="Script.run" allowduplicates="true" >
-		<script>/${catalogid}/events/scripts/importing/importfolders.groovy</script>
-	</path-action>
+	<path-action name="HotFolderModule.scanFolders" />
 	<property name="period">10m</property>
 	<property name="enabled">true</property>
 	

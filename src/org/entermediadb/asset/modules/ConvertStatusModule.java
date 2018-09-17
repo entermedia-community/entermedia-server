@@ -122,7 +122,7 @@ public class ConvertStatusModule extends BaseMediaModule
 			double originalheight = Double.parseDouble(asset.get("height"));
 			double originalwidth = Double.parseDouble(asset.get("width"));
 			boolean wide = true;
-			instructions.setInputFile(archive.getOriginalDocument(asset).getContentItem());
+			instructions.setInputFile(archive.getOriginalContent(asset));
 			if(originalheight > originalwidth) {
 				wide = false;				
 			}
@@ -184,6 +184,8 @@ public class ConvertStatusModule extends BaseMediaModule
 		archive.fireMediaEvent("usercrop",inReq.getUser(),asset );
 		
 		processConversions(inReq);//non-block
+		
+		archive.saveAsset(asset); //Updates the lastmoddate for push
 	}
 	
 	public void processConversions(WebPageRequest inReq)

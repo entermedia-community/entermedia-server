@@ -24,8 +24,8 @@ public class OriginalConversionManager extends BaseConversionManager
 
 	protected ContentItem createCacheFile(ConvertInstructions inStructions, ContentItem input)
 	{
-		Page page = getMediaArchive().getOriginalDocument(inStructions.getAsset());
-		return page.getContentItem();
+		ContentItem page = getMediaArchive().getOriginalContent(inStructions.getAsset());
+		return page;
 	}
 
 	@Override
@@ -33,9 +33,9 @@ public class OriginalConversionManager extends BaseConversionManager
 	{
 		// TODO Auto-generated method stub
 		ConvertResult result = new ConvertResult();
-		Page page = getMediaArchive().getOriginalDocument(inStructions.getAsset());
+		ContentItem page = getMediaArchive().getOriginalContent(inStructions.getAsset());
 		result.setComplete(true);
-		result.setOutput(page.getContentItem());
+		result.setOutput(page);
 		result.setOk(true);
 		return result;
 	}

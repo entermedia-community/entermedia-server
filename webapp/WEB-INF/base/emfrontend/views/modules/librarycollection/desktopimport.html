@@ -1,0 +1,19 @@
+<div id="desktopresults" class="ajaxstatus" data-ajaxpath="$page.getPath()?collectionid=$!{librarycol.getId()}&oemaxlevel=1&cache=false">
+#if( $desktop.isBusy() )
+	
+<div id="exportpath" class="alert alert-success"> ##use ajaxreloading to monitor this?
+	  <strong>Uploading started</strong> from  $desktop.getDesktopId(): ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
+</div>
+
+#else
+
+<div id="exportpath" class="alert alert-success"> 
+	  <strong>Upload Sync complete</strong>
+</div>
+
+#end
+	
+$pages.include("$apphome/views/modules/librarycollection/viewassets.html")
+
+</div>
+

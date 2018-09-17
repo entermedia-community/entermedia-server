@@ -35,7 +35,7 @@ public class GoalList
 		sortedIds = inSortedIds;
 	}
 
-	public GoalList(MultiValued inParent, HitTracker inChildren)
+	public GoalList(MultiValued inParent, Collection inChildren)
 	{
 		Collection sorted = inParent.getValues("countdata");
 		if( sorted == null)
@@ -46,7 +46,7 @@ public class GoalList
 		sort(inChildren);
 	}
 
-	public void sort(HitTracker goals)
+	public void sort(Collection goals)
 	{
 		ArrayList sorted = new ArrayList(goals);
 		sorted.sort(new Comparator<MultiValued>()

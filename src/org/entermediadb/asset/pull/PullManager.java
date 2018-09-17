@@ -1,10 +1,10 @@
 package org.entermediadb.asset.pull;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
-import java.net.URI;
-import java.net.URL;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -16,6 +16,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.elasticsearch.SearchHitData;
@@ -29,7 +30,6 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.NodeManager;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.InputStreamItem;
 import org.openedit.repository.filesystem.FileItem;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.HttpRequestBuilder;
@@ -81,11 +81,10 @@ public class PullManager implements CatalogEnabled
 	public HitTracker listRecentChanges(String inType, String inLastpulldate)
 	{
 			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-			Date startingfrom = null;
 			QueryBuilder builder = searcher.query().exact("importstatus","complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
 			if( inLastpulldate != null)
 			{
-				startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
+				Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 				builder.after("recordmodificationdate", startingfrom);
 			}
 			HitTracker hits = builder.search();
@@ -113,6 +112,9 @@ public class PullManager implements CatalogEnabled
 				String url = node.get("baseurl");
 				if( url != null)
 				{
+					long time = System.currentTimeMillis();
+					time = time  - 10000L; //Buffer
+					Date now = new Date(time);
 					HttpRequestBuilder connection = new HttpRequestBuilder();
 					Map params = new HashMap();
 					if( node.get("entermediakey") != null)
@@ -126,7 +128,20 @@ public class PullManager implements CatalogEnabled
 					}
 					if( node.get("lastpulldate") != null)
 					{
-						params.put("lastpulldate", node.get("lastpulldate"));
+						Object dateob = node.getValue("lastpulldate");
+						Date pulldate = null;
+						if(dateob instanceof String){
+							pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
+						} else{
+							 pulldate = (Date)node.getValue("lastpulldate");	
+						}
+						
+						if( pulldate.after(now))
+						{
+							log.info("We just ran a pull within last 10 seconds");
+							continue;
+						}
+						params.put("lastpulldate", node.get("lastpulldate")); //Tostring
 					}
 					params.put("searchtype", "asset"); //Loop over all of the types
 					if( inArchive.getAssetSearcher().getAllHits().isEmpty() )
@@ -135,7 +150,6 @@ public class PullManager implements CatalogEnabled
 						params.put("fulldownload", "true");
 					}
 					
-					Date now = new Date();
 					long ok = downloadPages(inArchive, connection, node, params);
 					if( ok != -1 )
 					{
@@ -160,8 +174,20 @@ public class PullManager implements CatalogEnabled
 	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params) throws Exception
 	{
 		String baseurl = node.get("baseurl");
-		
+		//add origiginal support
 		String url = baseurl + "/mediadb/services/cluster/listchanges.json";
+		StringBuffer link = new StringBuffer();
+		link.append("?");
+		link.append("entermedia.key=");
+		link.append(params.get("entermedia.key"));
+		link.append("&lastpulldate=");
+		if( params.get("lastpulldate") != null)
+		{
+			link.append(params.get("lastpulldate"));
+		}
+		link.append("&searchtype=");
+		link.append(params.get("searchtype"));
+		log.info("Checking: " + url + link);
 		HttpResponse response2 = connection.sharedPost(url , params);
 		StatusLine sl = response2.getStatusLine();           
 		if (sl.getStatusCode() != 200)
@@ -175,7 +201,8 @@ public class PullManager implements CatalogEnabled
 		String returned = EntityUtils.toString(response2.getEntity());
 		//log.info("returned:" + returned);
 		Map parsed = (Map)new JSONParser().parse(returned);
-		
+		boolean skipgenerated = (boolean) node.getValue("skipgenerated");
+
 		long assetcount = 0;
 		int page = 1;
 		Map response = (Map)parsed.get("response");
@@ -184,7 +211,10 @@ public class PullManager implements CatalogEnabled
 		{
 			Collection saved = importChanges(inArchive, returned, parsed);
 			assetcount = assetcount + saved.size();
+			if(!skipgenerated) {
+
 			downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+			}
 			int pages = Integer.parseInt( response.get("pages").toString() );
 			//loop over pages
 			String hitssessionid = (String)response.get("hitssessionid");
@@ -192,7 +222,10 @@ public class PullManager implements CatalogEnabled
 			for (int count = 2; count <= pages; count++)
 			{
 				url = baseurl + "/mediadb/services/cluster/nextpage.json";
+		
 				params.put("page",String.valueOf( count));
+				
+				log.info("next page: " + url + link + "&page=" + count + "&hitssessionid=" + hitssessionid);
 				response2 = connection.sharedPost(url , params);
 				sl = response2.getStatusLine();           
 				if (sl.getStatusCode() != 200)
@@ -205,6 +238,7 @@ public class PullManager implements CatalogEnabled
 					return -1;
 				}
 				returned = EntityUtils.toString(response2.getEntity());
+				//log.info("Got page of json: " + returned);
 				parsed = (Map)new JSONParser().parse(returned);
 				response = (Map)parsed.get("response");
 				ok = (String)response.get("status");
@@ -216,7 +250,9 @@ public class PullManager implements CatalogEnabled
 				log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
 				saved = importChanges(inArchive, returned, parsed);
 				assetcount = assetcount + saved.size();
-				downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+				if(!skipgenerated) {
+					downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+				}
 
 			}
 			return assetcount;
@@ -254,6 +290,11 @@ public class PullManager implements CatalogEnabled
 				Collection files = (Collection)changed.get("files");
 				if( files != null)
 				{
+					if( files.isEmpty() )
+					{
+						log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());
+						return;
+					}
 					for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
 					{
 						Map filelisting = (Map) iterator3.next();
@@ -261,6 +302,8 @@ public class PullManager implements CatalogEnabled
 						String filename = (String)filelisting.get("filename");
 						String lastmodified = (String)filelisting.get("lastmodified");
 						long datetime = Long.parseLong(lastmodified);
+						//TODO:remove any milliseconds? Does this match rsync?
+						
 						ContentItem found = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath + "/" + filename);
 						if( !found.exists() || found.getLastModified() != datetime)
 						{
@@ -375,6 +418,108 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
+
+	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
+	{
+		
+		Data node = (Data) inArchive.getSearcher("editingcluster").searchByField("clustername", inAsset.get("mastereditclusterid"));
+		String url = node.get("baseurl");
+		
+		
+		FileItem item = new FileItem(inFile);
+
+		String path = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
+		path = path + inAsset.getSourcePath(); //Check archived?
+
+		String primaryname = inAsset.getPrimaryFile();
+		if (primaryname != null && inAsset.isFolder())
+		{
+			path = path + "/" + primaryname;
+		}
+		item.setPath(path);
+		if (ifneeded)
+		{
+			//Check it exists and it matches
+			long size = inAsset.getLong("filesize");
+			if (item.getLength() != size)
+			{
+				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" +  URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+				HttpRequestBuilder connection = new HttpRequestBuilder();
+				Map params = new HashMap();
+				if( node.get("entermediakey") != null)
+				{
+					params.put("entermedia.key", node.get("entermediakey"));
+				}
+				
+				HttpResponse genfile = connection.sharedPost(finalurl, params);
+				StatusLine filestatus = genfile.getStatusLine();           
+				if (filestatus.getStatusCode() != 200)
+				{
+					log.error("Could not download generated " + filestatus + " " + path + "Full URL: " + finalurl);
+					return null;
+				}
+				
+					//Save to local file
+					try
+					{
+						log.info("Saving :" + inAsset.getSourcePath() + "/" + inAsset.getName() + " URL:" + path);
+						InputStream stream = genfile.getEntity().getContent();
+
+						inFile.getParentFile().mkdirs();
+						FileOutputStream fos = new FileOutputStream(inFile);
+						filler.fill(stream, fos);
+						filler.close(stream);
+						filler.close(fos);
+						//inFile.setLastModified(datetime);
+					}
+					catch (Exception e)
+					{
+						// TODO Auto-generated catch block
+					throw new OpenEditException(e);
+					}
+				
+				
+				
+				
+				
+			}
+		}
+		
+		return item;
+		
+
+		
+	}
+
+
+	public InputStream getOriginalDocumentStream(MediaArchive inArchive, Asset inAsset)
+	{
+		try
+		{
+			Data node = (Data) inArchive.getSearcher("editingcluser").searchByField("clustername", inAsset.get("mastednodeid"));
+			String url = node.get("baseurl");
+			String finalurl = url + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+			HttpRequestBuilder connection = new HttpRequestBuilder();
+			Map params = new HashMap();
+			if( node.get("entermediakey") != null)
+			{
+				params.put("entermedia.key", node.get("entermediakey"));
+			}
+			
+			HttpResponse genfile = connection.sharedPost(finalurl, params);
+			return genfile.getEntity().getContent();
+		}
+		catch (Exception e)
+		{
+			// TODO Auto-generated catch block
+		throw new OpenEditException(e);
+		}
+
+		
+	}
+
+
+	
 
 
 }

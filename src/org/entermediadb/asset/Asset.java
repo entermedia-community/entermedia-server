@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -189,13 +190,10 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public void removeCategory(Category inCategory)
 	{
-
-		Collection categories = (Collection) getValues("category-exact");
-		categories.remove(inCategory.getId());
-		Collection fullcategories = (Collection) getValues("category");
-		fullcategories.remove(inCategory.getId());
 		Category found = null;
-		for (Iterator iter = getCategories().iterator(); iter.hasNext();)
+		Collection cats = getCategories();
+
+		for (Iterator iter = cats.iterator(); iter.hasNext();)
 		{
 			Category element = (Category) iter.next();
 			if (element.getId().equals(inCategory.getId()))
@@ -206,10 +204,39 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		}
 		if (found != null)
 		{
-			getCategories().remove(found);
+			cats.remove(found);
+			getMap().put("category-exact",cats);
+		}
+		//Resave all the parents
+		Collection set = buildCategorySet();
+		getMap().put("category",set);
+		
+	}
+
+	public Set buildCategorySet()
+	{
+		HashSet allCatalogs = new HashSet();
+		Collection catalogs = getCategories();
+		//allCatalogs.addAll(catalogs);
+		for (Iterator iter = catalogs.iterator(); iter.hasNext();)
+		{
+			Category catalog = (Category) iter.next();
+			buildCategorySet(catalog, allCatalogs);
+		}
+		return allCatalogs;
+	}
+
+	protected void buildCategorySet(Category inCatalog, Set inCatalogSet)
+	{
+		inCatalogSet.add(inCatalog);
+		Category parent = inCatalog.getParentCategory();
+		if (parent != null)
+		{
+			buildCategorySet(parent, inCatalogSet);
 		}
 	}
 
+	
 	public Collection<Category> getCategories()
 	{
 		return (Collection<Category>) getValue("category-exact");

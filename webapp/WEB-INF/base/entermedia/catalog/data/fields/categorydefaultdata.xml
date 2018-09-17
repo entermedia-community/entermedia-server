@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="categoryid" type="list" viewtype="text" listid="category" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">CategoryID 
+  <property id="categoryid" type="list" viewtype="category" listid="category" editable="true" index="true" stored="true" keyword="false" filter="false" sortable="true">CategoryID 
     <name> 
       <language id="de"><![CDATA[Kategorie ID]]></language>  
       <language id="en"><![CDATA[CategoryID]]></language>  

@@ -81,7 +81,11 @@
 						#if( $status == "pending" )
 							[[Pending]]
 						#else
+							#if($item.status == "approved")
 						<a class="btn small" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+						#else
+						[[Not Approved for Download]] 
+						#end
 						#end
 					#end
 					#set( $downloadall = true)

@@ -45,14 +45,14 @@
 	#footer {
 		border-top: 4px #90002a;
 	}
-	#header a {
+	#header .navlinks a {
 		font-family: Verdana, Geneva, sans-serif;
 		font-size:11px;
 		font-weight: normal;
 		color:#666;
 		text-decoration: none;
 	}
-	#header a:focus,#header a:hover,#header a:active {
+	#header .navlinks a:focus,#header .navlinks a:hover,#header a:active {
 		text-decoration: underline;
 		background-color: transparent;
 		color:#39578a;
@@ -274,6 +274,9 @@ button, input[type="button"], input[type="reset"], input[type="submit"] {
     cursor: pointer;
     -webkit-appearance: button;
 }
+.submitform {
+    cursor: pointer;
+}
 input[type="checkbox"], input[type="radio"] {
     box-sizing: border-box;
 }
@@ -358,6 +361,10 @@ body {
 #header .navlinks a:hover {
     color: #fff;
 }
+#header .navlinks>ul li.dropdown:last-child ul.dropdown-menu {
+  right: 0;
+  left: auto;
+}
 
 .ui-widget {
     -webkit-border-radius: 5px 5px;
@@ -437,7 +444,8 @@ ul.emheaderbuttons li {
     display: inline;
     line-height: 50px;
     /*For ignore double margin in IE6*/
-    margin: 0 10px;
+    margin: 0 6px;
+    
 }
 
 ul.emheaderbuttons li a {
@@ -496,16 +504,6 @@ li.navactive a:hover span {
 
 .navactive:hover {
 
-}
-
-ul.emheaderbuttons li.navselected a {
-
-    -webkit-border-radius: 8px 8px 8px 8px;
-    -moz-border-radius: 8px 8px 8px 8px;
-    -o-border-radius: 8px 8px 8px 8px;
-    -ms-border-radius: 8px 8px 8px 8px;
-    -khtml-border-radius: 8px 8px 8px 8px;
-    border-radius: 8px 8px 8px 8px;
 }
 
 .asset-details h3 {
@@ -889,7 +887,9 @@ ul.emuploadbutton li a.current span, ul.emuploadbutton li a:hover span {
 #emcontainer  .emselectmenu  .active {
     font-weight: bold;
 }
-
+#emcontainer #emselectable table {
+	width: 100%;
+}
 #emcontainer #emselectable table th {
     white-space: nowrap;
     padding: 4px 0;
@@ -1134,6 +1134,7 @@ p.noresults {
 }
 #table-editor, .table-edit-close {
     position: relative;
+    padding:0 5px!important;
 }
 #column-editor {
     position: absolute;
@@ -1754,7 +1755,7 @@ small {
     font-size: 13px;
     height: 45px;
     line-height: 45px;
-    padding: 0 15px;
+    padding: 0 12px;
     display: block;
     font-weight: normal;
 }
@@ -2235,16 +2236,8 @@ center #addcoment {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#65c3dd', endColorstr='#39a2bf',GradientType=0 ); /* IE6-9 */
 }
 #nav li.navselected a.navbutton, #nav li a.navbutton:active, #module-dropdown.active, #module-dropdown.active:hover {
-    background: #2c7f96; /* Old browsers */
-    background: -moz-linear-gradient(top, #2c7f96 0%, #2a8097 7%, #2f89a2 21%, #308ca6 32%, #308ca6 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#2c7f96), color-stop(7%,#2a8097), color-stop(21%,#2f89a2), color-stop(32%,#308ca6), color-stop(100%,#308ca6)); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top, #2c7f96 0%,#2a8097 7%,#2f89a2 21%,#308ca6 32%,#308ca6 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top, #2c7f96 0%,#2a8097 7%,#2f89a2 21%,#308ca6 32%,#308ca6 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top, #2c7f96 0%,#2a8097 7%,#2f89a2 21%,#308ca6 32%,#308ca6 100%); /* IE10+ */
-    background: linear-gradient(top, #2c7f96 0%,#2a8097 7%,#2f89a2 21%,#308ca6 32%,#308ca6 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2c7f96', endColorstr='#308ca6',GradientType=0 ); /* IE6-9 */
-    border: 1px solid #63bfdd;
-    box-shadow: none;
+    border-width: 1px;
+
 }
 #nav .selectaddnew { 
 	min-width:220px;
@@ -5209,6 +5202,7 @@ p.resultsnumber {
     color: #fff;
     margin: 0 10px 0 0;
     opacity: 0.8;
+    line-height: 1.5;
     
 }
 #mp-asset-info a:hover {
@@ -5740,14 +5734,14 @@ max-width:200px;
 }
 #assetVoteCount .star {
     display: block;
-    width: 26px;
-    height: 26px;
-    background: url('../images/likeonasset.svg');
     float: right;
     margin: 0px 2px 0 2;
+    color:#eee;
+    font-size:140%;
+    line-height: 1;
 }
 #assetVoteCount .star.full {
-    background-position: 27px 0;
+    color:#FEDC71;
 }
 #assetVoteCount a {
     color: #3490B2;
@@ -5755,7 +5749,7 @@ max-width:200px;
 #assetVoteCount a:hover {
     text-decoration: underline;
 }
-#assetVoteCount .voting-label { float:right;}
+#assetVoteCount .voting-label { float:right; line-height: 1.5;}
 #assetVoteTool {
     display: inline-block;
     position: relative;
@@ -5767,7 +5761,7 @@ max-width:200px;
    background: white;
     border-left: 1px solid #DDD;
      border-bottom: 1px solid #DDD;
-    padding: 4px 0px 0 3px;
+    padding: 2px 0px 0 3px;
     position: relative;
     top: 0px;
     height: 27px;
@@ -5778,17 +5772,17 @@ max-width:200px;
 #assetVoteTool .star {
     display: block;
     width: 26px;
-    height: 26px;
-    background: url('../images/likeonasset.svg');
-    float: right;
-    margin: -4px 5px 0 3px;
+    margin: 1px 5px 0 3px;
+    font-size: 150%;
+    color:#afafaf;
 }
 #assetVoteTool .votecounter {
 	 text-decoration: none;
 	 margin-right: 5px;
 }
+#assetVoteTool .star:hover, 
 #assetVoteTool .star.full {
-    background-position: 27px 0;
+      color:#FEDC71;
 }
 #assetVoteTool a {
     color: #3490B2;
@@ -6569,15 +6563,23 @@ a.librarylabel
 	padding-bottom: 10px;
 	width: 85%;
 	display:inline-block;
-	
-	
+		
 }
 a.librarylabel .collectionlabel {
 	width: 140px;
 	display: inline-block;
 	
 }
-
+a.librarylabel.favorite
+{
+	padding-left: 28px;
+	background: url("../images/icons/favorite-color.png") no-repeat scroll 4px 4px;
+	padding-top: 8px;
+	padding-bottom: 10px;
+	width: 85%;
+	display:inline-block;
+		
+}
 a.collectioncrumb
 {
 	padding-left: 26px;
@@ -7185,4 +7187,27 @@ li.resultmenuitem {
 .float_center > .float_child {
   position: relative;
   left: 50%;
+}
+
+.acceptterms .emdatafield
+{
+	font-size: 1.2em;
+	font-weight: bold;
+}
+
+#headerstatusarea
+{
+	float:right;
+	margin: 10px 10px 0 0;
+	min-width: 200px;
+	min-height: 40px;
+}
+
+.alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1;
 }

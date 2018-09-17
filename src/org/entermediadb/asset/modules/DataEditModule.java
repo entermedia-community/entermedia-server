@@ -567,39 +567,37 @@ protected Element loadViewElement(XmlFile file, String toremove)
 			// We need to do this for multiediting so that we can get better record edit logs.
 			if (data instanceof CompositeData)
 			{
-				String val = null;
-				ArrayList<String> fieldswithvalues = new ArrayList<String>();
-				for(int i=0;i<fields.length;i++)
-				{
-					//see if we have boolean fields
-					PropertyDetail detail = searcher.getDetail(fields[i]);
-					if( detail == null)
-					{
-						continue;
-					}
-					if( detail.isBoolean() || detail.isMultiValue() )
-					{
-						fieldswithvalues.add(detail.getId());
-						continue;
-					}
-					
-					val = inReq.getRequestParameter(detail.getId()+".value");
-					if(val!= null && val.length() > 0)
-					{
-						fieldswithvalues.add(detail.getId());
-					}
-					String[] vals = inReq.getRequestParameters(detail.getId()+".values");
-					if(vals != null && vals.length > 0)
-					{
-						fieldswithvalues.add(detail.getId());
-					}
-				}
-				
+				//String val = null;
+//				ArrayList<String> fieldswithvalues = new ArrayList<String>();
+//				for(int i=0;i<fields.length;i++)
+//				{
+//					//see if we have boolean fields
+//					PropertyDetail detail = searcher.getDetail(fields[i]);
+//					if( detail == null)
+//					{
+//						continue;
+//					}
+//					if( detail.isBoolean() || detail.isMultiValue() || detail.isList() )
+//					{
+//						fieldswithvalues.add(detail.getId());
+//						continue;
+//					}
+//					
+//					val = inReq.getRequestParameter(detail.getId()+".value");
+//					if(val!= null && val.length() > 0)
+//					{
+//						fieldswithvalues.add(detail.getId());
+//					}
+//					String[] vals = inReq.getRequestParameters(detail.getId()+".values");
+//					if(vals != null && vals.length > 0)
+//					{
+//						fieldswithvalues.add(detail.getId());
+//					}
+//				}
+//				
 				CompositeData compositedata = (CompositeData) data;
-
-				String[] newfields = new String[fieldswithvalues.size()];
-				newfields = fieldswithvalues.toArray(newfields);
-				searcher.updateData(inReq, newfields, compositedata);
+				compositedata.setEditFields(Arrays.asList(fields));
+				searcher.updateData(inReq, fields, compositedata);
 //				for (Iterator iterator = compositedata.iterator(); iterator.hasNext();)
 //				{
 //					Data copy = (Data) iterator.next();
@@ -870,6 +868,10 @@ protected Element loadViewElement(XmlFile file, String toremove)
 			 */
 			HitTracker  hits = searcher.loadPageOfSearch(inReq);
 			inReq.putPageValue("searcher", searcher);
+			if( hits != null)
+			{
+				inReq.putPageValue(hits.getHitsName(), hits);
+			}
 		}
 	}
 
@@ -1526,6 +1528,21 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		return result;
 
 	}
+	public Object loadDataByFolder(WebPageRequest inReq) throws Exception
+	{
+		Searcher searcher = loadSearcher(inReq);
+		String path = inReq.getContentPage().getPath();
+		String id = PathUtilities.extractDirectoryName(path);
+		Object result = searcher.searchById(id);
+		String variablename = inReq.findValue("pageval");
+		if (variablename == null)
+		{
+			variablename = "data";
+		}
+		inReq.putPageValue(variablename, result);
+		return result;
+
+	}
 	
 	public void reindex(WebPageRequest inReq) throws Exception{
 		Searcher searcher = loadSearcher(inReq);
@@ -1917,6 +1934,9 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		}
 		
 		MediaArchive archive = getMediaArchive(inReq);
+		if(searcher == null) {
+			return;
+		}
 		archive.getCacheManager().remove(searcher.getSearchType(), dataid);
 		
 		

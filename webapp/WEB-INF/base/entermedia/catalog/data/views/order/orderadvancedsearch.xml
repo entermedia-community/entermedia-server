@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <root>
-  <property id="name"/>
-  <property id="ordertype"/>
+  <property id="orderstatus"/>
+  <property id="checkoutstatus"/>
   <property id="userid"/>
+  
 </root>

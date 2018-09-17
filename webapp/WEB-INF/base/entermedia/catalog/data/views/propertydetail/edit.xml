@@ -1,14 +1,12 @@
 <properties >
-	<property id="id" editable="true" stored="true" index="true">ID</property>
-	<property id="name" multilanguage="true" editable="true" stored="true" index="true">Name</property>	
-	<property id="editable"  editable="true" stored="true" index="true">Editable</property>	
-	<property id="internalfield"  editable="true" stored="true" index="true">Internal use</property>	
-	<property id="defaultoperation"  editable="true" stored="true" index="true">Default Search Operation</property>	
-	<property id="datatype"  editable="true" stored="true" index="true">Data Type</property>	
-	<property id="rendertype"  editable="true" stored="true" index="true">Render Type</property>	
-	<property id="required"  editable="true" stored="true" index="true">Required</property>	
-	<property id="index"  editable="true" stored="true" index="true">Searchable</property>	
-	<property id="searchcomponent"  editable="true" stored="true" index="true">Default Search View</property>	
-	
-	
+	<property id="id" />
+	<property id="name" />	
+	<property id="editable" />	
+	<property id="internalfield"  />	
+	<property id="defaultoperation"  />	
+	<property id="datatype"  />	
+	<property id="rendertype"   />	
+	<property id="required"   />	
+	<property id="index"  />	
+	<property id="searchcomponent"  />	
 </properties>

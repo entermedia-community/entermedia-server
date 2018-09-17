@@ -18,25 +18,25 @@
 #end
 
 #if( $librarycol)
-
-$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
-$pages.include("$apphome/components/dontshow/sidebar.html",$context)
-$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
-
-#if ( $canviewopencollections )
-$pages.include("$apphome/components/opencollections/sidebar.html",$context)
-#end
-
+	$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+	$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+	
+	#if ( $canviewopencollections )
+		$pages.include("$apphome/components/opencollections/sidebar.html",$context)
+	#end
+	
+	
+	$pages.include("$apphome/components/dontshow/sidebar.html",$context)
 
 #else
-$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+	$pages.include("$apphome/components/advancedsearch/sidebar.html", $context)
+	
+	#if ( $canviewopencollections )
+		$pages.include("$apphome/components/opencollections/sidebar.html",$context)
+	#end
 
-#if ( $canviewopencollections )
-$pages.include("$apphome/components/opencollections/sidebar.html",$context)
-#end
-
-$pages.include("$apphome/components/dontshow/sidebar.html",$context)
-$pages.include("$apphome/components/categories/sidebar.html", $context)
+	$pages.include("$apphome/components/categories/sidebar.html", $context)
+	$pages.include("$apphome/components/dontshow/sidebar.html",$context)
 #end
 
 

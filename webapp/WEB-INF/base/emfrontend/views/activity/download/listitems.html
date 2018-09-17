@@ -1,4 +1,3 @@
-
 <div >
 	<table id="shared-asset-table" class="striped download-table" >
 
@@ -14,6 +13,7 @@
     #set( $sourcepath = $asset.sourcePath )
     
 	#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
+	
 
 	<tr>
 	<td class="asset-thumb">		
@@ -74,7 +74,7 @@
 						<a class="btn small" href=$asset.linkurl>[[Download]]</a>
 					#else
 					#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
-					<a class="btn small" href="$home$apphome/views/modules/asset/downloads/originals/#urlencode($originalpath)">[[Download]]</a>
+					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
 					#end
 					#set( $downloadall = true)
 					
@@ -85,7 +85,7 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
+					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end

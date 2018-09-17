@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Import MediaDB</property>	
+	<property name="eventname">Import EM8 MediaDB</property>	
 	
 	<path-action name="Script.run" alltypes="true" >
 		<script>/${catalogid}/events/scripts/data/importdatabase.groovy</script>

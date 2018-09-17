@@ -19,6 +19,7 @@
 	</permission>
 	
 	<property name="autologingroup">guest</property>
+	<property name="autologinrole">users</property>
 	<property name="referredgroup">media</property>
 	  
 	<path-action name="Admin.checkExist" alltypes="true" />

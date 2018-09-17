@@ -1,9 +1,13 @@
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
-#set( $readonly = "false" )
 #set( $readonly = $context.getRequestParameter("detailsreadonly"))
+#ifnull($readonly)
+#set( $readonly = "false" )
+#end
 #set( $alwaysshow = $context.getRequestParameter("alwaysshow"))
-#set( $multiedit = "false")
 #set( $multiedit = $context.getRequestParameter("multiedit"))
+#ifnull($multiedit)
+#set( $multiedit = "false")
+#end
 
 #if ( $multiedit == "true" )
 	#set( $multiedit = true)
@@ -71,9 +75,11 @@ $context.putPageValue("longform",false)
 
 	$!context.putPageValue("detail",$detail)
 	$!context.putPageValue("val",$val)
- 	<div class="form-group">
-    <label for="exampleTextarea">$detail.getText($context)</label>
+ 	<div class="form-group row">
+    <label for="exampleTextarea" class="col-2 col-form-label">$detail.getText($context)</label>
+    <div class="col-10">
     $pages.include("$xmledithome/detailedit.html", $context)
+    </div>
     </div>	
 	
 #end

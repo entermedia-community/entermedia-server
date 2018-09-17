@@ -1,0 +1,9 @@
+<page>
+  <property name="tab">vieworders</property>
+  <property name="sortby">dateDown</property>
+  <property name="hitsname">orders</property>
+  <property name="sectiontitle">Order Manager</property>
+<path-action name="OrderModule.findOrderItems"/>
+
+
+</page>

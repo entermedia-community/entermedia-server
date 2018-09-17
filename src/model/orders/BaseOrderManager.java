@@ -39,6 +39,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.locks.Lock;
 import org.openedit.locks.LockManager;
+import org.openedit.page.PageRequestKeys;
 import org.openedit.page.manage.PageManager;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
@@ -46,6 +47,7 @@ import org.openedit.users.User;
 import org.openedit.users.UserManager;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.RequestUtils;
+import org.openedit.util.URLUtilities;
 
 public class BaseOrderManager implements OrderManager {
 	private static final Log log = LogFactory.getLog(BaseOrderManager.class);
@@ -779,7 +781,7 @@ public class BaseOrderManager implements OrderManager {
 			String status = inOrder.get("checkoutstatus");
 			if( status == null || status.equals("pending"))
 			{
-				log.info("Order not approved for email yet " + inOrder.getId());
+				log.debug("Order not approved for email yet " + inOrder.getId());
 				return; //dont send email yet
 			}
 		}
@@ -1163,7 +1165,7 @@ public class BaseOrderManager implements OrderManager {
 		log.info("email sent to :" + email);
 	}
 
-	public void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, String inOrderModuleURL)
+	public void sendEmailForApproval(String inCatalogId, MediaArchive inArchive, UserManager userManager, String inAppId, Order inOrder)
 	{
 		String email = inArchive.getCatalogSettingValue("requestapproveremail");
 		if (email == null || (email != null && email.isEmpty()))
@@ -1190,8 +1192,10 @@ public class BaseOrderManager implements OrderManager {
 		templatemail.loadSettings(newcontext);
 	    Map objects = new HashMap();
 	    
-	    objects.put("ordermoduleurl", inOrderModuleURL);
+	    objects.put("mediaarchive",inArchive);
+	    objects.put("order",inOrder);
 	    templatemail.send(objects);
+	    log.info("Sent approval request to " + email);
 	}
 	
 	public void saveOrderHistory(MediaArchive inArchive, OrderHistory inHistory,Order inOrder ){

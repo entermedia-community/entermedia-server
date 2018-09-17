@@ -32,6 +32,11 @@ public void checkRules()
 		log.info("Found ${assets.size()} for retention policy ${it} ${assets.query}");
 		archiveAssets(retentionpolicy, assets);
 	}
+	
+	
+	
+	
+	
 }	
 
 public void archiveAssets(Data retentionpolicy, Collection assets)

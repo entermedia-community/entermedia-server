@@ -224,7 +224,7 @@ public class UploadRequest implements ProgressListener
 			final String path = PathUtilities.resolveRelativePath( inPath, "/");
 			saveFileAs(inItem, path, inReq.getUser());
 	}
-	public void saveFileAs(FileUploadItem inItem, final String path, User inUser)
+	public ContentItem saveFileAs(FileUploadItem inItem, final String path, User inUser)
 			throws OpenEditException
 	{
 		Page page = getPageManager().getPage( path, true );
@@ -275,6 +275,7 @@ public class UploadRequest implements ProgressListener
 		//page.setContentItem(item);
 		getPageManager().putPage(page);  //FileReposityory will set the item.setOutputstream for us
 		inItem.setSavedPage(page);
+		return page.getContentItem();
 	}
 	public List unzipFiles(boolean inForceUnzip) throws OpenEditException
 	{

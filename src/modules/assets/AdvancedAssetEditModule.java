@@ -21,6 +21,12 @@ import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.util.PathUtilities;
 
+/**
+ * TODO: Remove this class, its redundant
+ * @deprecated
+ *
+ */
+
 public class AdvancedAssetEditModule extends AssetEditModule{
 	
 	private static final Log log = LogFactory.getLog(AdvancedAssetEditModule.class);
@@ -30,7 +36,7 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 		log.info("replacePrimary started");
 		MediaArchive archive = getMediaArchive(inReq);
 		Asset asset = getAsset(inReq);
-		List<Page> temppages = getUploadedPages(inReq);
+		List<ContentItem> temppages = getUploadedPages(inReq);
 		if( temppages.isEmpty() ){
 			throw new OpenEditException("No uploads found");
 		}
@@ -40,12 +46,12 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 		String destination = "/WEB-INF/data" + archive.getCatalogHome() + "/originals/" + asset.getSourcePath();
 		//copy the temppages in to the originals folder, but first check if this is a folder based asset
 		Page dest = getPageManager().getPage(destination);
-		Page page = (Page) temppages.iterator().next();
+		ContentItem page = (ContentItem) temppages.iterator().next();
 		if(!page.exists()){
 			throw new OpenEditException("Could not attach file: uploaded file doesn't exist [" + page.getPath()+"]");
 		}
 		dest.setProperty("makeversion","true");
-		getPageManager().movePage(page, dest);
+		getPageManager().getRepository().move(page, dest.getContentItem());
 		asset = archive.getAssetBySourcePath(asset.getSourcePath());//why load again?
 		asset.setPrimaryFile(page.getName());
 		
@@ -189,7 +195,7 @@ public class AdvancedAssetEditModule extends AssetEditModule{
 			{
 				target.setProperty("imagefile", PathUtilities.extractFileName(imagefilename));
 			}
-			Page itemFile = archive.getOriginalDocument(target);
+			//Page itemFile = archive.getOriginalDocument(target);
 			
 			//start insert
 			String primary = target.getPrimaryFile();

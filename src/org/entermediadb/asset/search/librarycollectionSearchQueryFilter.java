@@ -1,5 +1,6 @@
 package org.entermediadb.asset.search;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -14,7 +15,6 @@ import org.openedit.data.SearchQueryFilter;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
-import org.openedit.users.User;
 
 public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 {
@@ -34,29 +34,22 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 			
 			return inQuery;
 		}
-		User user = inPageRequest.getUser();
-		//log.info( "found filer user  "  + user + " " + user.isInGroup("administrators"));
-		
-		Object settings = inPageRequest.getPageValue("canviewsettings");
-		if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
+			
+		UserProfile profile = inPageRequest.getUserProfile();
+		if (profile != null && profile.isInRole("administrator"))
 		{
+			SearchQuery child = inSearcher.query()
+					.all()
+					.notgroup("collectiontype", Arrays.asList("0","2"))
+					.getQuery();
+			inQuery.addChildQuery(child);
+			inQuery.setSecurityAttached(true);
 			return inQuery;
 		}
-//		if (user != null && user.isInGroup("administrators"))
-//		{
-//			SearchQuery child = inSearcher.query()
-//					.not("visibility", "hidden")
-//					.not("visibility", "3")
-//					.getQuery();
-//			inQuery.addChildQuery(child);
-//			return inQuery;
-//		}
-		
+
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
-		UserProfile profile = inPageRequest.getUserProfile();
-
-		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories());
+		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories()); //The ones I cant see
 //		HashSet toshow = new HashSet(profile.getCollectionIds());
 //		for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
 //		{
@@ -75,8 +68,7 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)
-				.not("visibility", "hidden")
-				.not("visibility", "3")
+				.notgroup("collectiontype", Arrays.asList("0","2"))
 				.getQuery();
 		inQuery.addChildQuery(child);
 		//Load all categories 1000

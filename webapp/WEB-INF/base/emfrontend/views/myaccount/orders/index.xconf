@@ -1,0 +1,5 @@
+<page>
+<!-- This doesn't do what you think it does 
+	<page-action name="OrderModule.findOrdersForUser" />
+-->
+</page>

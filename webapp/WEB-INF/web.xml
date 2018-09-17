@@ -11,8 +11,8 @@
   	<cache-mapping url-pattern='*.jpg'       expires='25h'/>
 
 	<filter>
-	    <filter-name>gzip</filter-name>
-	    <filter-class>org.openedit.servlet.gzip.GzipFilter</filter-class>
+	  <filter-name>gzip</filter-name>
+	  <filter-class>org.openedit.servlet.gzip.GZipServletFilter</filter-class>
 	</filter>
 
 	<filter>

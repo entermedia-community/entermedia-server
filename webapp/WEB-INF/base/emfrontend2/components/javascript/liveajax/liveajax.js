@@ -57,11 +57,11 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     	var form = $(this);
     	var params = arguments[0];
     	var oldsucess = params.success;
-		params.success = function()
+		params.success = function(arg1,arg2,arg3,arg4)
 		{
 			if( oldsucess != null )
 			{
-				oldsucess.call(form);
+				oldsucess.call(form,arg1,arg2,arg3,arg4);
 			}	
 			$(document).trigger("domchanged"); //TODO: Put this in the success section	
 		};

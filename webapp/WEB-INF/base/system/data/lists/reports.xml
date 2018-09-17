@@ -33,7 +33,10 @@
   <reports id="transcribereport" searchtype="videotrack" outputtype="captions" dashboard="false" script="videotrack/closecaptions.groovy">
     <name><![CDATA[Automatic Transcriptions]]></name>
   </reports>
-  
+  <reports id="assetedits" ordering="0" searchtype="asseteditLog" outputtype="assetedits" dashboard="true"> 
+    <name><![CDATA[Asset Edits]]></name>  
+    <name><![CDATA[Asset Edits]]></name> 
+  </reports>  
   
   
 </reportss>

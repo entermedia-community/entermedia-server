@@ -1,7 +1,7 @@
 jQuery(document).ready(function() 
 { 
 	//Open and close the tree
-	$('.emtree-widget ul li div span.arrow').livequery('click', function(event){
+	$('.emtree-widget ul li div .arrow').livequery('click', function(event){
 			event.stopPropagation();
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest('.noderow');
@@ -30,7 +30,7 @@ jQuery(document).ready(function()
 	});
 
 	//Select a node
-	$('.emtree-widget ul li div span.name').livequery('click', function(event) 
+	$('.emtree-widget ul li div .name').livequery('click', function(event) 
 	{
 		event.stopPropagation();
 		$('.emtree ul li div').removeClass('selected');

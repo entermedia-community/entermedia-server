@@ -370,7 +370,7 @@ public class BaseCategory extends BaseData implements Category
 	@Override
 	public void setParentCategory(Category parentCatalog)
 	{
-		if( parentCatalog.hasParent(getId()))
+		if(parentCatalog != null && parentCatalog.hasParent(getId()))
 		{
 			log.error("Called myself as a child");
 			return;
@@ -881,10 +881,24 @@ public class BaseCategory extends BaseData implements Category
 		}
 		return true;
 	}
+	public int getCounts()
+	{
+		int self = getCount();
+		for (Iterator iterator = getChildren().iterator(); iterator.hasNext();)
+		{
+			BaseCategory child = (BaseCategory) iterator.next();
+			self = self + child.getCounts();
+		}
+		return self;
+	}
 	
 	public int getCount()
 	{
 		Collection counted = getValues("countdata");
+		if( counted == null)
+		{
+			return 0;
+		}
 		return counted.size();
 	}
 }

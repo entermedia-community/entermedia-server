@@ -116,19 +116,9 @@ public class AssetImporter
 
 	}
 	
-	protected void assetsImported( MediaArchive inArchive, java.util.List<Asset> inAssetsSaved)
-	{
-		//this might be overriden to push
-	}
 	public List<String> processOn(String inRootPath, String inStartingPoint, boolean checkformod, final MediaArchive inArchive, User inUser)
 	{
-		AssetPathProcessor finder = new AssetPathProcessor()
-		{
-			protected void assetsImported(java.util.List<Asset> inAssetsSaved)
-			{
-				AssetImporter.this.assetsImported(inArchive, inAssetsSaved);
-			};
-		};
+		AssetPathProcessor finder = new AssetPathProcessor();
 		finder.setModificationCheck(checkformod);
 		finder.setMediaArchive(inArchive);
 		finder.setAssetImporter(this);
@@ -196,7 +186,7 @@ public class AssetImporter
 		{
 			asset.setId(inAssetId);
 		}
-		saveAsset(inArchive, inUser, asset);
+		//saveAsset(inArchive, inUser, asset);
 		
 		
 		return asset;

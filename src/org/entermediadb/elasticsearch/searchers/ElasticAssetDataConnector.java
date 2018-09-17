@@ -6,9 +6,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -29,16 +27,12 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.AssetArchive;
-import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.search.DataConnector;
-import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.data.DataArchive;
-import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -220,7 +214,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			}
 			Object folderval = asset.getValue("isfolder");
 			if(folderval == null){
-				ContentItem item = getMediaArchive().getOriginalFileManager().getOriginalContent(asset);
+				ContentItem item = getMediaArchive().getAssetManager().getOriginalContent(asset);
 				asset.setFolder(item.isFolder());				
 			}
 //			if (asset.getCatalogId() == null)
@@ -229,7 +223,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 //			}
 			//inContent.field("catalogid", asset.getCatalogId());
 
-			Set categories = buildCategorySet(asset);
+			Set categories = asset.buildCategorySet();
 			String desc = populateDescription(asset, inDetails, categories);
 			categories.add(getMediaArchive().getCategorySearcher().getRootCategory());
 			inContent.field("description", desc);
@@ -400,28 +394,6 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		return buffer.toString();
 	}
 
-	protected Set buildCategorySet(Asset inAsset)
-	{
-		HashSet allCatalogs = new HashSet();
-		Collection catalogs = inAsset.getCategories();
-		//allCatalogs.addAll(catalogs);
-		for (Iterator iter = catalogs.iterator(); iter.hasNext();)
-		{
-			Category catalog = (Category) iter.next();
-			buildCategorySet(catalog, allCatalogs);
-		}
-		return allCatalogs;
-	}
-
-	protected void buildCategorySet(Category inCatalog, Set inCatalogSet)
-	{
-		inCatalogSet.add(inCatalog);
-		Category parent = inCatalog.getParentCategory();
-		if (parent != null)
-		{
-			buildCategorySet(parent, inCatalogSet);
-		}
-	}
 
 	//	/**
 	//	 * @deprecated Need to simplify
@@ -592,6 +564,15 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
 			{
 				String json = (String) iterator.next();
+				try
+				{
+					parser.parse(json);
+				}
+				catch (Exception e)
+				{
+					log.info("could not parse: " + json);
+					throw new OpenEditException("here is the prob!");
+				}
 				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
 				req.source(json);
 				//log.info("savinng " + json);
@@ -613,7 +594,7 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		}
 		if(errors.size() > 0) 
 		{
-			throw new OpenEditException("Errors from bulk import!" + errors);
+			
 		}
 
 	}

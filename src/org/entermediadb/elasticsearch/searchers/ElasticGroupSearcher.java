@@ -113,8 +113,16 @@ public class ElasticGroupSearcher extends BaseElasticSearcher implements
 			group = (Group)searchById(inGroupId);
 			if (group == null)
 			{
+				group = (Group)createNewData(); 
+				group.setId(inGroupId);
+				group = getXmlUserArchive().loadGroup(group);
+				if(group == null) {
 				log.error("Index is out of date, group " + inGroupId
 						+ " has since been deleted");
+				} else {
+					super.saveData(group); //update the index
+
+				}
 			}
 			else
 			{

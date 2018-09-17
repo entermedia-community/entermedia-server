@@ -28,9 +28,12 @@
 	</permission>	
 
 	<permission name="view">
-		<or>
+		<and>
+		<userprofile property="view" equals="true" />
+	
 			<pagevalue name="canviewasset" equals="true"/>
-		</or>
+		
+		</and>
 	</permission>	
 
 	<permission name="download">

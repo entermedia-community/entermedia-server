@@ -1,8 +1,0 @@
-<page>
-	<property name="eventname">Export MediaDB</property>	
-	
-	<path-action name="Script.run" alltypes="true" >
-		<script>/${catalogid}/events/scripts/data/dumpdatabase.groovy</script>
-	</path-action>
-	
-</page>

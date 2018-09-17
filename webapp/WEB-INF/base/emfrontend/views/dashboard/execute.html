@@ -6,8 +6,12 @@
 <form action="executefinish.html">
 	<input type= "hidden" name="reportid" value="$data.id"/>
 	$context.putPageValue("searcher", $reportsearcher)
+		$context.putPageValue("searchform", true)
+
 	 #foreach( $detail in $details)
 	        $context.putPageValue("detail", $detail)
+		$context.putPageValue("searchform", true)
+
 	        #if ($detail.isLeaf())
 	            $pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
 	        #else

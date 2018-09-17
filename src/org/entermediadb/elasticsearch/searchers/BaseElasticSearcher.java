@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -60,6 +61,7 @@ import org.elasticsearch.index.engine.VersionConflictEngineException;
 import org.elasticsearch.index.query.BoolQueryBuilder;
 import org.elasticsearch.index.query.GeoDistanceQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
+import org.elasticsearch.index.query.PrefixQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
@@ -70,6 +72,7 @@ import org.elasticsearch.search.aggregations.AggregationBuilder;
 import org.elasticsearch.search.aggregations.AggregationBuilders;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
 import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
+import org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Order;
 import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
 import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
 import org.elasticsearch.search.sort.FieldSortBuilder;
@@ -336,12 +339,18 @@ public class BaseElasticSearcher extends BaseSearcher
 				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
 				builder.field(detail.getId());
 				builder.interval(DateHistogramInterval.DAY);
-
+				builder.order(Order.KEY_DESC);
+				String timezone = TimeZone.getDefault().getID();
+				builder.timeZone(timezone);
 				inSearch.addAggregation(builder);
 
 				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
 				builder.field(detail.getId());
+				builder.timeZone(timezone);
+
 				builder.interval(DateHistogramInterval.WEEK);
+				builder.order(Order.COUNT_DESC);
+
 				inSearch.addAggregation(builder);
 
 			}
@@ -356,9 +365,17 @@ public class BaseElasticSearcher extends BaseSearcher
 				avg.field(detail.getId());
 
 			}
-			else if (detail.isList() || detail.isBoolean()){
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
-				inSearch.addAggregation(b);
+			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue()){
+				if(detail.isViewType("tageditor")){
+					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
+					inSearch.addAggregation(b);
+				}
+				else{
+				
+					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
+					inSearch.addAggregation(b);
+					
+				}
 			}
 			else
 			{
@@ -735,10 +752,11 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.field("type", "string");
 			}
 		}
+		
 		else
 		{
 			jsonproperties = jsonproperties.field("type", "string");
-			if (detail.isAnalyzed())
+			if (detail.isAnalyzed() || detail.isViewType("tageditor"))
 			{
 				jsonproperties.startObject("fields");
 				jsonproperties.startObject("exact");
@@ -755,7 +773,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		// Now determine index
 		String indextype = detail.get("indextype");
-
+		
 		if (indextype == null)
 		{
 			if (!detail.isAnalyzed())
@@ -1048,9 +1066,16 @@ public class BaseElasticSearcher extends BaseSearcher
 			//TODO: Should startswith be exact or analysed phrases? 
 			//find = QueryBuilders.prefixQuery(fieldid, valueof);
 			//Left this in for now...
+			
+			if(inDetail.isAnalyzed()) {
+			
 			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
 			text.maxExpansions(10);
 			find = text;
+			} else {
+				PrefixQueryBuilder text = QueryBuilders.prefixQuery(fieldid, valueof);
+				find = text;
+			}
 		}
 		else if ("freeform".equals(inTerm.getOperation()))
 		{
@@ -1202,22 +1227,16 @@ public class BaseElasticSearcher extends BaseSearcher
 				// String end =
 				// DateStorageUtil.getStorageUtil().formatForStorage(new
 				// Date(Long.MAX_VALUE));
-				Date after = DateStorageUtil.getStorageUtil().parseFromStorage(inTerm.getParameter("afterDate"));
-				Date before = DateStorageUtil.getStorageUtil().parseFromStorage(inTerm.getParameter("beforeDate"));
+				Date before = (Date) inTerm.getValue("beforeDate");
+				Date after = (Date)inTerm.getValue("afterDate");
 
-				Calendar c = new GregorianCalendar();
-
-				c.setTime(before);
-				c.set(Calendar.HOUR_OF_DAY, 23);
-				c.set(Calendar.MINUTE, 59);
-				c.set(Calendar.SECOND, 59);
-				c.set(Calendar.MILLISECOND, 999);
-				before = c.getTime();
+			
 
 				// inTerm.getParameter("beforeDate");
 
 				// String before
-				find = QueryBuilders.rangeQuery(fieldid).includeLower(true).includeLower(true).from(after).to(before).includeUpper(true).includeLower(true);
+				//TODO: Use gte ?
+				find = QueryBuilders.rangeQuery(fieldid).from(after).to(before).includeUpper(true).includeLower(true);
 			}
 			else if ("ondate".equals(inTerm.getOperation()))
 			{
@@ -1272,14 +1291,14 @@ public class BaseElasticSearcher extends BaseSearcher
 
 				if (inDetail.isDataType("double"))
 				{
-					Double lowval = Double.valueOf(inTerm.getParameter("lowval"));
-					Double highval = Double.valueOf(inTerm.getParameter("highval"));
+					Double lowval = (Double) inTerm.getValue("lowval");
+					Double highval =  (Double) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
 				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
 				{
-					Long lowval = Long.valueOf(inTerm.getParameter("lowval"));
-					Long highval = Long.valueOf(inTerm.getParameter("highval"));
+					Long lowval =  (Long) inTerm.getValue("lowval");
+					Long highval = (Long) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
 			}
@@ -1398,7 +1417,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				for (int i = 0; i < values.length; i++)
 				{
 					Object val = values[i];
-					if(inDetail.isAnalyzed()){
+					if(inDetail.isAnalyzed() || "keywords".equals(fieldid)) {
 						MatchQueryBuilder item = QueryBuilders.matchQuery(fieldid, val);
 						or.must(item);
 					} else{
@@ -1681,6 +1700,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
+				updateMasterClusterId(details, data2, content);
 				updateIndex(content, data2, details);
 				
 				content.endObject();
@@ -1759,6 +1779,20 @@ public class BaseElasticSearcher extends BaseSearcher
 		
 		//getClient().admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
 		
+	}
+
+	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content) throws IOException
+	{
+
+		PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
+		if( hasmaster != null)
+		{
+			if( inData.getValue("mastereditclusterid") == null)
+			{
+				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
+				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId() );
+			}
+		}
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
@@ -1878,12 +1912,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				builder = getClient().prepareIndex(catid, getSearchType(), data.getId());
 			}
-			PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
-			if( hasmaster != null)
-			{
-				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId() );
-			}
+			updateMasterClusterId(details, data, content);
 			PropertyDetail parent = details.getDetail("_parent");
 			if (parent != null)
 			{
@@ -1907,7 +1936,8 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 
 			builder = builder.setSource(content);
-			
+			//log.info("Saving " + getSearchType() + " " + data.getId() + " = " + content.string());
+
 			if (isRefreshSaves())
 			{
 				builder = builder.setRefresh(true);
@@ -1995,6 +2025,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				PropertyDetail detail = (PropertyDetail) iterator.next();
 				allprops.add(detail.getId());
 			}
+			if(!allprops.contains("description")) {
+			allprops.add("description");
+			}
+			if(!allprops.contains("id")) {
+				allprops.add("id");
+				}
 			List badges = new ArrayList();
 
 			
@@ -2025,7 +2061,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						log.info("Added new detail " + propid + " to " + getSearchType() +  " as " + detail.getDataType());
 					}
 				}
-				if (detail == null || !detail.isIndex()) //&& !propid.contains("sourcepath")
+				if (detail == null || !detail.isIndex() && !propid.equals("description") ) //&& !propid.contains("sourcepath")
 				{
 					continue;
 				}
@@ -2039,8 +2075,10 @@ public class BaseElasticSearcher extends BaseSearcher
 					inContent.field(key, new Date());
 					continue;
 				}
-
-				Object value = inData.getValue(key);
+				
+ 				Object value = inData.getValue(key);
+				
+				
 				if (value != null)
 				{
 					if (value instanceof String && ((String) value).isEmpty())

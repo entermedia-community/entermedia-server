@@ -57,7 +57,12 @@ $context.putPageValue("searchhome",$searchhome)
   
       <div id="detailarea">
         <div id="de-table">
-           
+           #if($content.isPropertyTrue("batchedit"))
+<div id="details">
+                     $pages.includeContent() fsad
+
+</div>
+#else
             <div class="tr">
                 #set( $expanded = $userprofile.isEnabled("expand_media_sidebar") )
                 <div id="de-side-nav" class="open">
@@ -70,6 +75,7 @@ $context.putPageValue("searchhome",$searchhome)
                      $pages.includeContent()
                 </div>
            </div>
+#end
         </div>
      </div>	               
                               

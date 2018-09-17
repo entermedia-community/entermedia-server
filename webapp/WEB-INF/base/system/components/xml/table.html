@@ -129,12 +129,15 @@
 #set($link = $context.getRequestParameter("selectlink"))
 
 #if($link)
+
 	#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
 	#if( $jumptomodule && $jumptomodule == "true")
 		#set( $link = "$apphome/views/modules/${searchtype}/edit/edit.html")
 		<form name="editrow" method="post" action="$home$link?$passalongdec">
-		#set($fieldname = "id" )
 		#set($fieldname = $context.getRequestParameter("fieldname"))
+		#if(!$fieldname)
+		#set($fieldname = "id" )
+		#end
 		<input type="hidden" id="emselectedrow" name="$fieldname" />	
 		<input type="hidden"  name="edit" value="true" />
 		<input type="hidden" name="searchtype" value="${searchtype}" />

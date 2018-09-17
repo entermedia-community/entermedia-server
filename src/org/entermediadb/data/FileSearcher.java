@@ -195,10 +195,8 @@ public class FileSearcher extends BaseSearcher implements PageAccessListener {
 
 			Term term = (Term) iterator.next();
 			if ("betweendates".equals(term.getOperation())) {
-				Date before = inQuery.getDateFormat().parse(
-						term.getParameter("lowDate"));
-				Date after = inQuery.getDateFormat().parse(
-						term.getParameter("highDate"));
+				Date before = 	(Date) term.getValue("lowDate");
+				Date after = (Date) term.getValue("highDate");
 				String id = term.getDetail().getId();// effectivedate
 				String date = inPage.getProperty(id);
 				if (date == null) {
@@ -211,7 +209,7 @@ public class FileSearcher extends BaseSearcher implements PageAccessListener {
 
 			} else if ("afterdate".equals(term.getOperation())) {
 				Date after = inQuery.getDateFormat().parse(
-						term.getParameter("highDate"));
+						(String) term.getValue("highDate"));
 				String id = term.getDetail().getId();// effectivedate
 				String date = inPage.getProperty(id);
 				if (date == null) {
@@ -224,7 +222,7 @@ public class FileSearcher extends BaseSearcher implements PageAccessListener {
 
 			} else if ("beforedate".equals(term.getOperation())) {
 				Date before = inQuery.getDateFormat().parse(
-						term.getParameter("lowDate"));
+						(String) term.getValue("lowDate"));
 				String id = term.getDetail().getId();// effectivedate
 				String date = inPage.getProperty(id);
 				if (date == null) {

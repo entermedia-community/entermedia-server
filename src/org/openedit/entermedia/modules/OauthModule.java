@@ -12,6 +12,7 @@ import org.apache.oltu.oauth2.common.OAuthProviderType;
 import org.apache.oltu.oauth2.common.message.types.GrantType;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.authenticate.AutoLoginWithCookie;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
@@ -91,7 +92,8 @@ public class OauthModule extends BaseMediaModule
 
 				if (requestedpermissions == null)
 				{
-					requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.googleapis.com/auth/contacts.readonly";
+					//requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid  https://www.googleapis.com/auth/contacts.readonly"; //Put it in the xocnf
+					requestedpermissions = "https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email openid";
 				}
 
 				String prompt = inReq.findValue("prompt");
@@ -436,6 +438,11 @@ public class OauthModule extends BaseMediaModule
 			target.setProperty("httprefreshtoken", null);
 			archive.getSearcher("user").saveData(target);
 
+			
+			AutoLoginWithCookie autologin = (AutoLoginWithCookie)getModuleManager().getBean(inReq.findValue("catalogid"),"autoLoginWithCookie");
+			autologin.saveCookieForUser(inReq, target);
+
+			
 			if (getEventManager() != null)
 			{
 				WebEvent event = new WebEvent();

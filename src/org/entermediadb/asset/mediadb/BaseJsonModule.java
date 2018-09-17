@@ -197,7 +197,12 @@ public class BaseJsonModule extends BaseMediaModule
 		for (Iterator iterator = inputdata.keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
+			if("categorypath".equalsIgnoreCase(key)) {
+				continue;
+			}
 			Object value = inputdata.get(key);
+			log.info("Got " + inputdata + " from JSON");
+			
 			PropertyDetail detail = searcher.getDetail(key);
 			if( detail != null && detail.isMultiLanguage())
 			{
@@ -289,10 +294,10 @@ public class BaseJsonModule extends BaseMediaModule
 					rsearcher.saveData(remote, null);
 					inData.setProperty(key, targetid);
 			}
+			
 			else
 			{
-				//do something else?
-				log.info("Could not process " + key+  " : " + value);
+				inData.setValue(key, value);
 			}
 
 		}

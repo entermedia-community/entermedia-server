@@ -1,7 +1,7 @@
 #set( $searchtype = $context.getRequestParameter("searchtype"))
 #set( $action = "$home$apphome/views/modules/librarycollection/createcollection.html")
 	
-<form name="adder" id="adder" class="validate-inputs" action="$action">
+<form name="adder" id="adder" class="validate-inputs force-validate-inputs" action="$action">
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="searchtype" value="$searchtype" />
 <input type="hidden" name="field" value="owner" />

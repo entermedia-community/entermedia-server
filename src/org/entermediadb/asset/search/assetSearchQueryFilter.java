@@ -63,20 +63,18 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 		//check for category joins
 		if (!inQuery.hasChildren())
 		{
-			Object settings = inPageRequest.getPageValue("canviewsettings");
-			if (settings != null && Boolean.parseBoolean(String.valueOf(settings)))
-			{
-				return inQuery;
-			}
+			
 			
 			User user = inPageRequest.getUser();
 			UserProfile profile = inPageRequest.getUserProfile();
-			if (profile != null)
+			String profilefilters = profile.get(inSearcher.getSearchType() + "showonly");
+			if(profilefilters != null && profilefilters.length() != 0) {
+				inSearcher.addShowOnlyFilter(inPageRequest, profilefilters, inQuery);
+			}
+			
+			if (profile != null && profile.isInRole("administrator"))
 			{
-				if( "administrator".equals( profile.get("settingsgroup")))
-				{
-					return inQuery;					
-				}
+				return inQuery;					
 			}
 			
 			SearchQuery required = inSearcher.createSearchQuery();

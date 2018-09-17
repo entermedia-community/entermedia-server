@@ -28,6 +28,7 @@ public class XmpWriter {
 	protected Exec fieldExec;
 
 	public void addKeyword(String inKeyword, List<String> inComm) {
+		inComm.add("-Subject-=" + inKeyword);
 		inComm.add("-Subject+=" + inKeyword);
 	}
 
@@ -66,10 +67,9 @@ public class XmpWriter {
 		try {
 			List<String> comm = createCommand(inArchive);
 			addSaveFields(inArchive, inAsset, comm, inExtraDetails);
-			List removekeywords = new ArrayList(comm);
-			removekeywords.add("-Subject="); // This only works on a line by
-												// itself
-			removekeywords.add(path);
+			comm.add("-Subject=");
+
+			
 			addSaveKeywords(inAsset.getKeywords(), comm);
 			comm.add(path);
 			ok = runExec(comm);
@@ -80,21 +80,21 @@ public class XmpWriter {
 	}
 
 	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset) throws Exception {
-		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
+		ContentItem item = inArchive.getOriginalContent(inAsset);
 
 		return saveMetadata(inArchive, item, inAsset, new HashMap());
 
 	}
 
 	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset, HashMap inExtraDetails) throws Exception {
-		ContentItem item = inArchive.getOriginalDocument(inAsset).getContentItem();
+		ContentItem item = inArchive.getOriginalContent(inAsset);
 
 		return saveMetadata(inArchive, item, inAsset, inExtraDetails);
 
 	}
 
 	public boolean saveKeywords(MediaArchive inArchive, Asset inAsset) throws Exception {
-		String path = inArchive.getOriginalDocument(inAsset).getContentItem().getAbsolutePath();
+		String path = inArchive.getOriginalContent(inAsset).getAbsolutePath();
 
 		Map props = new HashMap();
 		props.put("absolutepath", path);
@@ -138,6 +138,8 @@ public class XmpWriter {
 			if (detail.getExternalId() == null || !detail.isEditable()) {
 				continue;
 			}
+			
+			//XMP-AGBU:Pagenumber
 			if (value == null && detail.get("xmpmask") != null) {
 				value = "";
 			} 
@@ -193,7 +195,7 @@ public class XmpWriter {
 
 				String[] tag = new String[1];
 				tag[0] = key;
-				addTags(tag, (String) val2, inComm);
+				addTags(tag, (String) val2, inComm); //Why is this called again?
 			}
 
 		}
