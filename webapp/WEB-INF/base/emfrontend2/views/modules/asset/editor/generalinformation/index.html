@@ -12,8 +12,7 @@ $context.putPageValue("showalllanguagevalues",true)
 	#set( $target = $views.get($viewpath) )
 	 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
                        #if("$!permissionvalue" == "" || $permissionvalue == true)
-     
-		#if( !$target.rendertable )
+		#if( $target.rendertype != "table" )
 			#displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
 		#end
 	#end

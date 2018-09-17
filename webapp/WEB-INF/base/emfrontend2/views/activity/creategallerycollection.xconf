@@ -1,4 +1,4 @@
 <page>
 <property name="sectiontitle">Create Gallery</property>
-<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>
 </page>

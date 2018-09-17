@@ -26,6 +26,16 @@ public class AssetConversions implements Runnable
 		fieldAsset = inAsset;
 	}
 
+	public List<ConversionTask> getRunners()
+	{
+		return runners;
+	}
+
+	public void setRunners(List<ConversionTask> inRunners)
+	{
+		runners = inRunners;
+	}
+
 	MediaArchive fieldMediaArchive;
 	List<ConversionTask> runners = new ArrayList<ConversionTask>();
 	User user;

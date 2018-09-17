@@ -1,7 +1,0 @@
-<page>
-
-	<path-action name="OauthModule.login">
-		<property name="provider">google</property>
-	</path-action>
-<property name="systemwide">true</property>
-</page>

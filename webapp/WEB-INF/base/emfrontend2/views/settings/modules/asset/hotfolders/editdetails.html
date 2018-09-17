@@ -1,19 +1,24 @@
 <div id="editdetails" >
 
 
-<label>[[External Import Path]]</label>
-<input type="hidden" name="field" value="externalpath" />
-<input class="field" name="externalpath.value" value="$!data.externalpath" />
-<div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
+<label>[[Hot Folder Type]]</label>
+<input type="hidden" name="field" value="hotfoldertype" />
 
-<label>[[Internal Category Path]]</label>
-<input type="hidden" name="field" value="subfolder" />
-#set( $subfolder = $context.getRequestParameter("subfolder"))
-#if( !$subfolder )
-#set( $subfolder = $!data.subfolder )
+#set( $type = $context.getRequestParameter("type"))
+#if( !$type )
+ #set( $type = $data.get("hotfoldertype") )
 #end
-<input class="field" name="subfolder.value" value="$!subfolder" />
-<div class="note">[[Required: The path to the category location such as: ]] Marketing_Drive</div> 
+#if( !$type )
+ #set( $type = "mount")
+#end
+<select name="hotfoldertype.value" class="ajax" data-href="$home${page.path}?id=$!{data.id}&type=" data-targetdiv="editdetails">
+#set( $types = $mediaarchive.getList("hotfoldertypes"))
+#foreach( $hftype in $types)
+	<option value="$hftype.getId()" #if( $type == "$hftype.getId()") selected #end>$hftype.getName()</option>
+#end	
+</select>
+
+$pages.include("./types/${type}.html")
 
 
 </div>

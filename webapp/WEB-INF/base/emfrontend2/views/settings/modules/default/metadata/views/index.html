@@ -20,7 +20,7 @@
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
 	
 	<li class="header no-sort" id="views-header" style="height: 16px;">
-	    <span id="name">$context.getText($view.toString())</span>
+	    <span id="name">$context.getText($view)</span>
 	    #if ( $view.rendertable )
 	    <span class="type">[[Table]]: $view.rendertable</span>
 	    #end
@@ -34,8 +34,6 @@
 	
 	   #if($view.byassettype == "true" )
     
-    
-            
             <span style="float: right; margin: 0 8px 0 0">[[Asset Type]]: 
             #set($current = $context.getRequestParameter("assettype")) 
             #set($assettypesearcher = $searcherManager.getSearcher($catalogid, "assettype"))
@@ -63,14 +61,19 @@
             	<input type="hidden" value="byassettype" name="field" />
             </div>
 
-            <div class="checkbox"><input id="renderastable" type="checkbox" name="rendertype.value" value="table" #if($view.rendertable) checked #else #end/>
-                [[Render as Table?]]
-            	<input type="hidden" value="rendertype" name="field" />
-
+           	<input type="hidden" value="rendertype" name="field" />
+            <div class="checkbox">
+                [[Custom Render Type]]
+            	<select name="rendertype.value">
+            		<option value="default"></option>
+            		<option value="table" #if($view.rendertable) selected #end>One to Many</option>
+            		<option value="external" #if($view.rendertype == "external") selected #end>One to One</option>
+            	</select>
             </div>
 
-   <div class="checkbox"><input id="systemdefined" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
-                [[Show on registration section:]]
+			##what is this? TODO remove it
+   			<div class="checkbox"><input id="systemdefined" type="checkbox" name="showonregistration.value" value="true" #if($view.showonregistration == "true") checked #else #end/>
+                [[Show on registration section]]  
             	<input type="hidden" value="showonregistration" name="field" />
 
             </div>
@@ -80,22 +83,30 @@
             	<input type="hidden" value="systemdefined" name="field" />
 
             </div>
+  <div class="checkbox"><input id="systemdefined" type="checkbox" name="printview.value" value="true" #if($view.systemdefined == "true") checked #else #end/>
+                [[Print View?]]
+            	<input type="hidden" value="printview" name="field" />
 
-
-            <div id="rendertableoptions" #if (!$view.rendertable) style="display: none;" #end>
-                <div>[[Render Table]]</div>
+            </div>
+                <div>[[External Table]]</div>
             	<input type="hidden" value="rendertable" name="field" />
                 <input class="field" name="rendertable.value" value="$!view.rendertable" >
-                <div>[[Render Table External ID]]</div>
+
+                <div>[[External ID]]</div>
             	<input type="hidden" value="renderexternalid" name="field" />
                 <input class="field" name="renderexternalid.value" value="$!view.renderexternalid" >
+
+
+		<div class="clearfix"></div>
+
+            <div id="rendertableoptions">
             
-   		 <div>[[Link to Module]]</div>
+            <div class="checkbox">
             	<input type="hidden" value="linktomodule" name="field" />
                 <input type="checkbox" name="linktomodule.value" value="true" #if($!view.linktomodule == "true") checked #end >
-            
-
-    <div>[[Render Table Default Sort]]</div>
+   		 		[[Link to Module]]
+			</div>
+    	<div>[[Render Table Default Sort]]</div>
 				<input type="hidden" value="rendersort" name="field" />
                 <input class="field" name="rendersort.value" value="$!view.rendersort" >
 				<div>[[Render Table Custom View]]</div>

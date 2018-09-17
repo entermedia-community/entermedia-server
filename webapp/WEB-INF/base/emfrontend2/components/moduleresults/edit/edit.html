@@ -3,7 +3,7 @@
 #set( $moduleid = $context.findValue("module") )
 
 #set($view = $searcherManager.getData($catalogid, "view",$viewid))
-#if( $view.rendertype )
+#if( $view.rendertype == "table" )
 	#set( $action = "$home$content.searchhome/edit/savetable.html")
 #else
 	#set( $action = "$home$content.searchhome/edit/save.html")

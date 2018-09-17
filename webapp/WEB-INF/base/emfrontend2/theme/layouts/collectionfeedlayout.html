@@ -1,12 +1,13 @@
 #if( $librarycol )
 
 
-<div style="float:left;margin-top: 20px;" class="collectionheader">
-	$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
-</div>
 
 
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
+
+	<div style="float:left;" class="collectionheader">
+		$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
+	</div>
 		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Assets]]</a></li>
 		  #if( ( $caneditdata || $librarycol.isVisibility("2") ) && $librarycol.hasPendingAssets() )

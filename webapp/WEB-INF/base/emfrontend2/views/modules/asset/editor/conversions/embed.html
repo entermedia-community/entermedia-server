@@ -1,6 +1,6 @@
 #set($outputfile = $context.findValue("outputfile"))
 #set($mediadbappid = $!mediaarchive.getMediaDbId())
 <textarea class="embedlinktextarea" type=text onclick="this.select();" readonly="readonly" rows="7" cols="60">
-$!{mediaarchive.getCatalogSettingValue("cdn_prefix")}$home/$mediadbappid/services/module/asset/downloads/preset/${asset.sourcepath}/$outputfile
+$!{mediaarchive.getCatalogSettingValue("cdn_prefix")}$home/$mediadbappid/services/module/asset/downloads/preset/#uuencode($asset.sourcepath)/#uuencode($outputfile)
 </textarea>
 <p>[[Select code then right click to copy]]</p>

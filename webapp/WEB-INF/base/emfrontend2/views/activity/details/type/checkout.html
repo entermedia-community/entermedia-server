@@ -1,12 +1,4 @@
 <div class="em-rounded" >
-	<div class="emsectionheader"><h3>[[Status Log]]</h3>
-	</div>
-	<div class="subcolumns">
-		<div class="c66l">
-			$pages.include("$apphome/views/activity/status/showstatus.html")
-		</div>	
-	    <div class="c33r">
-        	<div class="subcr" >
 			#if( $order.userid != $user.getId() )
 			[[Invalid order]]
 			#end
@@ -24,16 +16,16 @@
 				$context.putPageValue("data", $order)	 
 				$context.putPageValue("view", "order/vieworder")	
 				
-				$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+				$pages.include("/${applicationid}/components/xml/detaileditor.html?detailsreadonly=true", $context)
 				#if( $savedok)<div class="emfadeout">[[saved]]</div>#end
 				</div>
 			</div>
 			</form>
-			</div>
-		</div>
-	</div>
 </div>
 <h3>[[Checkout Items]]</h3>
-$pages.include("$apphome/views/activity/checkout/listitems.html")
+##if( $canviewassets || !$expired )
+	$pages.include("$apphome/views/activity/checkout/listitems.html")
+##end
+
 
 

@@ -1,0 +1,56 @@
+<input type="hidden" name="itemid" value="$item.id"/>
+<input type="hidden" name="field" value="status"/>
+<input type="hidden" name="assetselect_$catalogid" value="${item.assetid}"/>
+
+<tr class="assetrow" id="assetrow_${assetid}" >
+	<td class="imagepad">
+	   	#set( $sourcepath = $asset.sourcePath )
+	   	#set( $assetpath = $mediaarchive.getLinkToAssetViewer($sourcepath) )
+		#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+		#set( $tsize = "$home$thumbend" )
+		
+		#if( $parenthits )
+			#set( $rootid = $parenthits.sessionId )
+		#else
+			#set( $rootid = $hits.sessionId )
+		#end
+		<div style="float: left; padding: 4px;">
+		<a href="${home}${cataloghome}//detailviewer/viewer/index.html?sourcepath=${sourcepath}.html&hitssessionid=${rootid}" alt="$asset.name" name="$asset.name" style="text-decoration: none;">
+			#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat)) 
+			$context.putPageValue("cell", $asset)
+			$context.putPageValue("showdetails", "false")
+    			$pages.include("${apphome}/components/results/thumbnails/${type}.html", $context)
+		</a>
+		</div>
+		<div>
+			#set($details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/orderitems",$user) )
+			#foreach( $detail in $details )
+				#set( $value = false )
+				#set($value = $item.get($detail.id) )
+				#if( !$value )
+					#set($value = $asset.get($detail.id) )
+				#end	
+				#if( $detail.isEditable() )
+					$detail.getText($context) :
+					<textarea name="${item.id}.${detail.id}.value" >#if( $value )$value#end</textarea><br>
+				#elseif( $value )
+					$detail.getText($context) : $value<br>
+				#end
+			#end
+		</div>
+	</td>
+   	<td >
+	       #set($statuslist = $searcherManager.getList($catalogid, "orderitem/approval"))
+	      
+	       	<select class="statusfield" name="${item.id}.status.value">
+	      		 #foreach($status in $statuslist)
+	       	  			<option #if($item.get("status") == $status.id) selected #end value="$status.id">$status</option>
+       		
+			       #end
+	       	</select>
+	</td>
+ </tr>	  
+
+  
+ 
+   

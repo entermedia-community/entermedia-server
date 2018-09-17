@@ -1,5 +1,7 @@
 
 <div >
+#set( $status = $order.get("checkoutstatus") )
+
 	<table id="shared-asset-table" class="striped download-table" >
 
 #set( $downloadall = false)
@@ -52,7 +54,56 @@
 
 	</td>
 	#set( $publishqueueid = $item.get("publishqueueid"))
-	#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
+	#ifnull($publishqueueid)
+		#set( $presetid ="0") 
+	#end
+	#if(!$presetid)
+		#set($publishqueue = $searcherManager.getData($catalogid, "publishqueue",$item.get("publishqueueid") ) )
+		#set( $presetid = $publishqueue.get("presetid") )
+	#end
+
+		#if( $order.orderstatus == "error" )
+			<td></td>
+			<td>[[Error, download not available]]</td> ##Link to my orders
+			#set( $downloadall = false)
+		#else	
+			#if( $presetid == "0")
+				<td></td>
+				<td>
+					#if($asset.googleid && $asset.googledownloadurl)
+					<!-- Google puts quotes on the returned data so the href is correct below.   -->
+						<a class="btn small" href="$asset.googledownloadurl">[[Download]]</a>
+					#elseif($asset.googleid && $asset.linkurl)
+						<a class="btn small" href=$asset.linkurl>[[Download]]</a>
+					#else
+						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
+						
+						#if( $status == "pending" )
+							[[Pending]]
+						#else
+							#if($item.status == "approved")
+						<a class="btn small" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+						#else
+						[[Not Approved for Download]] 
+						#end
+						#end
+					#end
+					#set( $downloadall = true)
+					
+				</td>
+			#else
+			
+				##TODO: Support specific sized for generated orders
+				<td>
+				${publishqueue.exportname}
+				</td>
+				<td align="right">
+						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
+					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/orders/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
+							#set( $downloadall = true)
+				</td>
+			#end
+		#end	
 
 
 	</tr>	

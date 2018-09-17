@@ -3,5 +3,4 @@
 <page>
   <property name="editable">false</property>
   <path-action name="HotFolderModule.saveFolder" />
-  <path-action name="HotFolderModule.saveMounts" />
 </page>

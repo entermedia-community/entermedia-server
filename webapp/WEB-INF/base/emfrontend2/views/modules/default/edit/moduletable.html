@@ -13,10 +13,17 @@
 
 #set( $permissionname = "canedit${searchtype}")
 #set ( $id = $context.getRequestParameter("id") )
-#if ( $!id )
+
+#if ( !$id )
     #set ( $id = $data.id )
     #set( $fieldexternalvalue = $data.getId())
 #end
+#if ( !$id )
+    #set ( $id = $context.getPageValue("id") )
+    #set( $fieldexternalvalue = $data.getId())
+#end
+
+
 #set( $fieldexternalvalue = $id )
 
 $context.putPageValue("canedittable", $caneditdata)
