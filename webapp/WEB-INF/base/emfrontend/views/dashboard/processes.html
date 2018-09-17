@@ -1,0 +1,32 @@
+<h1>Active Conversions</h1>
+<table class="table table-striped">
+#foreach($task in $mediaarchive.getBean("executorManager").getExecutor("conversions").getRunningTasks())
+<tr>
+
+
+#foreach($runner in $task.getRunners())
+
+<td>
+<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=AWXoGKPJSxpNo8OIs4I7">$task.getAsset()</a> 
+</td>
+
+
+<td>
+#if($runner.getStarted())
+$!runner.getStarted()
+#else
+Pending
+#end
+</td>
+<td>
+$mediaarchive.getData("convertpreset",$runner.getHit().presetid)
+</td>
+</tr>
+#end
+
+#end
+
+
+</table>
+
+$mediaarchive.getBean("executorManager").getExecutor("conversions")
