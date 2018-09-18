@@ -499,7 +499,12 @@ select + .select2-container {
 .emcollection .breadcrumbs { float:left; max-width: 50%;}
 
 
-.publishtabcontainer { padding: 20px;}
+.publishtabcontainer { padding: 20px; border-top:1px solid #efefef;}
+
+
+
+/*Upload*/
+.col-upload-option { width:240px; text-align:center; background-color:#efefef; margin:0 0 5px 5px;}
 
 
 

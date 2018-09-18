@@ -1,16 +1,18 @@
 <div class="publishtabcontainer">
 	
 	
+<h2>[[Collection Snapshot Logs]] </h2>
+
+
+	
 #set( $snapshotsearcher = $mediaarchive.getSearcher("librarycollectionsnapshot") )
 #set( $snaphits = $snapshotsearcher.query().match("librarycollection",$librarycol.getId()).sort("dateDown").search() )
-	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
-		<div class="ui-widget-header">[[Snapshot Logs]] </div>
-		<div class="ui-widget-content">
+
 		##set( $count = $librarycol.getValue("revisions") )
 		
 		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
 			#if( $snaphits.size() > 0)
-			<table width="100%" class="categoriescontainer hovertable" >
+			<table width="100%" class="table table-striped" >
 			<tr>
 				<th>[[Revision]]</th>
 				<th>[[User]]</th>
@@ -32,12 +34,12 @@
 				</tr>	
 			#end
 				</table>
+			#else
+			<p>[[Save a snapshot of current assets and folders in this collection]]</p>
 			#end	
 			</div>
-				<br />		
-				<p>
-				[[Save a snapshot of current assets and folders in this collection]]</p>
-			<a class="btn" href="$home$apphome/views/modules/librarycollection/createsnapshot.html?collectionid=$librarycol.getId()">[[Create Snapshot]]</a> 
-		</div>
-	</div>	
+						
+				
+			<a class="btn btn-sm btn-primary" href="$home$apphome/views/modules/librarycollection/createsnapshot.html?collectionid=$librarycol.getId()">[[Create Snapshot]]</a> 
+
 </div>

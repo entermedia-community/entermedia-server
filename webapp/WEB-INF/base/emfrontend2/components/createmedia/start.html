@@ -1,15 +1,15 @@
-<div id="createmediapanel" style="padding-top:20px;">
+<div id="createmediapanel">
 #set( $collectionid = $context.getRequestParameter("collectionid") )
 #set( $nodeID = $context.getRequestParameter("nodeID") )
-
-<div class="row" style="max-width: 850px;margin: auto;">
+<div class="container-fluid">
+<div class="row">
 
 #if( $canviewupload)
-     <div class="col-xs-3">
+     <div class="col-upload-option">
   		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid&nodeID=$!nodeID">
-      <img  src="$home$apphome/components/createmedia/upload/add.png" style="height: 100px; width: 100%; display: block;">
+      <img  src="$home$apphome/components/createmedia/upload/addi.png" >
       <div class="caption">
-        <h3>[[Upload Media]]</h3>
+        <h4>[[Upload Media]]</h4>
         <p>[[Upload media from local file system or camera]]</p>
       </div>
        </a>
@@ -17,30 +17,30 @@
   #end	
 
 #if( $collectionid && $cancopycategory)
-	<div class="col-xs-3">
+	<div class="col-upload-option">
   		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/copycategory/index.html?collectionid=$!collectionid">
-      <img  src="$home$apphome/components/createmedia/copycategory/add.png" style="height: 100px; width: 100%; display: block;">
+      <img  src="$home$apphome/components/createmedia/upload/addi.png" >
       <div class="caption">
-        <h3>[[Copy Categories]]</h3>
+        <h4>[[Copy Categories]]</h4>
         <p>[[Copy existing folder or categories]]</p>
       </div>
        </a>
     </div>
 #if($canimportworkspace)
-     <div class="col-xs-3">
+     <div class="col-upload-option">
   		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/importwork/index.html?collectionid=$!collectionid">
-      <img  src="$home$apphome/components/createmedia/importwork/add.png" style="height: 100px; width: 100%; display: block;">
+      <img  src="$home$apphome/components/createmedia/upload/addi.png" >
       <div class="caption">
-        <h3>[[Import Work Folder]]</h3>
+        <h4>[[Import Work Folder]]</h4>
         <p>[[Import files from user sync folder]]</p>
       </div>
        </a>
     </div>
-      <div class="col-xs-3">
+      <div class="col-upload-option">
   		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/importzip/index.html?collectionid=$!collectionid">
-      <img  src="$home$apphome/components/createmedia/importwork/add.png" style="height: 100px; width: 100%; display: block;">
+      <img  src="$home$apphome/components/createmedia/upload/addi.png" >
       <div class="caption">
-        <h3>[[Upload Collection Zip File]]</h3>
+        <h4>[[Upload Collection Zip File]]</h4>
         <p>[[Import files from a previously exported zip file]]</p>
       </div>
        </a>
@@ -52,37 +52,38 @@
 
 
   #if( $cancreatenewrecord)
-  <div class="col-xs-3">
+  <div class="col-upload-option">
   <a  class="ajax btnthumbnail" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/url/start.html?collectionid=$!collectionid" >
-      <img  src="$apphome/components/createmedia/url/add.png" style="height: 100px; width: 100%; display: block;">
+      <img  src="$home$apphome/components/createmedia/upload/addi.png" >
       <div class="caption">
-        <h3>[[Add Remote Media]]</h3>
+        <h4>[[Add Remote Media]]</h4>
         <p>[[Create media assets from a URL or Embed code]]</p>
       </div>
    </a>
    </div>
-  <div class="col-xs-3">
+  <div class="col-upload-option">
    <a  class="ajax btnthumbnail" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/data/newdatastart.html?collectionid=$!collectionid">  
-	<img  src="$apphome/components/createmedia/data/add.png" style="height: 100px; width: 100%; display: block;">  
+	<img  src="$home$apphome/components/createmedia/upload/addi.png" >  
 	 <div class="caption">
-        <h3>[[Create Data Record]]</h3>
+        <h4>[[Create Data Record]]</h4>
         <p>[[Create empty data records then attach media later]]</p>
       </div>
 	</a>       
     </div>
   #end
   #if( $cancreatelivemedia)
-  <div class="col-xs-3">
+  <div class="col-upload-option">
   <a  class="ajax" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/video/newvideostart.html?collectionid=$!collectionid" >
      <div class="btnthumbnail">
-       <img  src="$apphome/components/createmedia/video/add.png" style="height: 100px; width: 100%; display: block;">
+       <img  src="$home$apphome/components/createmedia/upload/addi.png" >
        <div class="caption">
-        <h3>[[Live Video Stream]]</h3>
+        <h4>[[Live Video Stream]]</h4>
         <p>[[Make a live stream recording from your webcam]]</p>
       </div>
     </div>
    </a>  
    </div> 
   #end  
+  </div>
   </div>
 </div>
