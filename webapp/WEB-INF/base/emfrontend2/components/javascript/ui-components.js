@@ -21,7 +21,7 @@ uiload = function() {
 	var themeprefix = app.data("home") + app.data("themeprefix");
 
 	//https://github.com/select2/select2/issues/600	
-	$.fn.modal.Constructor.prototype.enforceFocus = function() {};
+	//$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 	$.fn.select2.defaults.set( "theme", "bootstrap4" );
 	
 	

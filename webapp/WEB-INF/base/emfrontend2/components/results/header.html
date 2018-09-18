@@ -28,12 +28,11 @@ $context.putPageValue("hits",$hits)
 		#set( $order = $mediaarchive.getData("order",$orderid) )
 		$context.putPageValue("order",$order)
 	#end
-#end	
-<div id="resultheader">
-	<ul id="sub-nav" class="search-views">
-	
-
-
+#end
+<div class="resultsnav">	
+<nav class="navbar navbar-expand-lg">
+<div class="collapse navbar-collapse" id="resultsheader">
+	<ul id="sub-nav" class="navbar-nav">
 		#set ($enabled=$hits.getSelectionSize() > 0)
 	
 		#if( $candownload || $canconvert || $candownloadfpo )
@@ -41,28 +40,31 @@ $context.putPageValue("hits",$hits)
 			$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
 			#end
 			#if( $enabled )
-				<li>
+				<li class="nav-item">
 					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-					<a href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					<a class="nav-link" href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
 					
 					#else
-					<a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
+					<a class="nav-link" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
 					#end
 				</li>	
 			#else
 				<li class="resultmenuitem">
-					<span class="text">[[Download]]</span>
+					<a class="nav-link" href="#">[[Download]]</a>
 				</li>	
 			#end
 		#end
 
 		#if($candeleteasset && $canmultiedit && $canquickdelete)	    
-	 		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a></li>
+	 		<li class="nav-item">
+	 			<a class="nav-link emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a>
+	 			</li>
 	   	#end    	
 
 	
 		#if($canpublish || $canemaillink )
-			<li><a #if( !$enabled ) style="text-decoration:none;" #end>[[Share]]</a>
+			<li class="nav-item dropdown">
+			<a class="nav-link" #if( !$enabled ) style="text-decoration:none;" #end>[[Share]]</a>
 				#if( $enabled )
 				<ul>
 
@@ -88,7 +90,8 @@ $context.putPageValue("hits",$hits)
 
 		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
 		
-		<li><a>[[Publish]]</a>
+		<li class="nav-item">
+			<a class="nav-link">[[Publish]]</a>
 				<ul>
 					#foreach($item in $quickpublishlist)
 						<li><a href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a></li>
@@ -98,7 +101,7 @@ $context.putPageValue("hits",$hits)
 		#end
 		
 			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
-				<li><a>[[Collection]]</a>	
+				<li class="nav-item"><a class="nav-link">[[Collection]]</a>	
 				<ul>
 					#if( $canaddnewcollection)
 <li><a class="emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]" 
@@ -106,19 +109,19 @@ $context.putPageValue("hits",$hits)
 					 #end
 					 #if( $caneditdata)
 					<li><a href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
-					class="confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
+					class="nav-link confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
 					#end
 				</ul>
 				</li>
 				#end
 		
   		#set( $edit = $context.getRequestParameter("editheader") )
-			<li>
+			
 				$pages.include("$apphome/components/results/selected/index.html",$context)
-			</li>
+			
 		#if ( $canviewbasket )
 			#if($order)
-				<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
+				<li class="nav-item"><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
 			#end
 		#end
 		
@@ -196,6 +199,8 @@ $context.putPageValue("hits",$hits)
 		#end
 
 	</ul>
+</div>
+</nav>
 </div>
 <div class="clearfix"></div>
  
