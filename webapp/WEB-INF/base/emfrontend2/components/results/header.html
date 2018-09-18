@@ -172,13 +172,13 @@
 					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
 				#end
 				</select>
-				<a class="table-edit-close"></a>
+				
 			</li>
 			#if( $hits && $hits.size() > 0)
 				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
 					$pages.include("$apphome/components/results/pages.html",$context)
 				</li>	
-				<li class="resultscount hidden-sm-xs hidden-xs hidden-sm hidden-md">
+				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
 					<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size()</span>
 				</li>			
 			#end

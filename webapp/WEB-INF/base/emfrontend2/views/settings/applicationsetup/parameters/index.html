@@ -1,20 +1,26 @@
 <div id="emcontainer">
+	<div class="eml-content-title">
+	<div class="float-left">
+	<h2>[[Catalog Settings]]</h2>
+	</div>
+	</div>
+	<div class="clearfix"></div>
 <div id="emselectable" class="showmodal" data-dialogwidth="500" data-dialogtitle="[[Edit Setting]]">
 #set( $settings = $mediaarchive.getSearcher("catalogsettings") )
-<table id="main-results-table" data-clickpath="$apphome/views/settings/applicationsetup/parameters/edit.html?id=" >
+<table id="main-results-table"  class="table table-striped" data-clickpath="$apphome/views/settings/applicationsetup/parameters/edit.html?id=" >
 
 #foreach( $data in $settings.query().all().sort("name").search() )
-<tr rowid="$data.getId()">
-<td>
- <b>$data</b><br>
- &nbsp;&nbsp;<i> $data.id </i>
-</td>
-<td>
-$!data.value
-</td>
-
-
-</tr>
+	<tr rowid="$data.getId()">
+	<td>
+	 <b>$data</b><br>
+	 	&nbsp;&nbsp;<i> $data.id </i>
+	</td>
+	<td>
+	$!data.value
+	</td>
+	
+	
+	</tr>
 
 #end
 </table>
