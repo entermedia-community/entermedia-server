@@ -23,30 +23,31 @@
 
 #if( $hits.hasSelections() )
 
-<li><a>[[Actions]]
+<li class="nav-item dropdown">
+<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
 #if( $hits.isShowOnlySelected() )
 ([[All]] $hits.getSelectionSize())
 #else 
 ($hits.getSelectionSize()/$hits.size())
 #end</a>
-	<ul>
+	<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
 	#if( $librarycol && $caneditdata )
-		<li><a class="emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a></li>
-    	<li><a class="emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a></li>
+		<a class="dropdown-item emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a>
+    	<a class="dropdown-item emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a>
     #end	
     #if ( $canviewbasket  )
 		#if($order)
-			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a></li>
+			<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a>
 		#else
-			<li><a class="updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Cart]]</a></li>
+			<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Cart]]</a>
 		#end
 	#end
 	#if( $canaddnewcollection )
-	<li><a class="emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a></li>
+		<a class="dropdown-item emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a>
 	#end
 	
 	#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-	<li><a class="emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a></li>
+		<a class="dropdown-item emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 	#end
 	
 
@@ -59,21 +60,20 @@
   			#set($link = "index.html")
   			#set($text = "[[Edit Asset]]")
   		#end
-		<li><a href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a></li>
+		<a class="dropdown-item " href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
 	#end
 	#if($canexportdata)
     	
-	<li><a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a></li>
-				<li ><a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a></li>
-##<li><a href="$home$apphome/views/modules/asset/export/selected/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset">[[Export to CSV]]</a></li>
+	<a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
+	<a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
 #end
 	#if(($canmultiedit || $canmultidelete))	    
- 		<li><a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a></li>
+ 		<a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a>
    	#end    	
 #if($canprintpreview)
-    	 <li><a href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a></li>
+    	 <a href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
 #end
-	</ul>
+	</div>
 	
 </li>
 #end

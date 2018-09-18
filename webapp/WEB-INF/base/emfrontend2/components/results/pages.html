@@ -10,7 +10,7 @@
 	#set($thispage = $hits.getPage())
 	
 	#set($targetdiv = "emresultscontent")
-	<div id="pages">
+	<div class="pages">
 		<ul>
 			#if( $hits.prevPage() )
 				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="glyphicon glyphicon-triangle-left"></span></a></li>
@@ -36,8 +36,8 @@
 				#if ($afters.get($size)< $hits.getTotalPages() )
 					<li class="ellipsis">...</li>
 					#if($hits.size() < 9999)
-                                         <li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
-                                        #end
+                      <li><a  class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.getTotalPages()" >$hits.getTotalPages()</a></li>	
+                     #end
 				#end
 			#end
 			#if ( $hits.nextPage() )

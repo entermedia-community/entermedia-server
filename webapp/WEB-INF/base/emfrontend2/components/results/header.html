@@ -1,11 +1,11 @@
 #if( !$hits )
-#set( $hits = $collectionassets)
-$context.putPageValue("hits",$hits)
+	#set( $hits = $collectionassets)
+	$context.putPageValue("hits",$hits)
 #end
 
 #if( !$hits )
-#set( $hits = $orderassets)
-$context.putPageValue("hits",$hits)
+	#set( $hits = $orderassets)
+	$context.putPageValue("hits",$hits)
 #end
  
 #if($hits)
@@ -29,10 +29,9 @@ $context.putPageValue("hits",$hits)
 		$context.putPageValue("order",$order)
 	#end
 #end
-<div class="resultsnav">	
-<nav class="navbar navbar-expand-lg">
-<div class="collapse navbar-collapse" id="resultsheader">
-	<ul id="sub-nav" class="navbar-nav">
+<div id="resultsheader">
+<div id="sub-nav" class="emsubnav">
+	<ul class="resultsnav">
 		#set ($enabled=$hits.getSelectionSize() > 0)
 	
 		#if( $candownload || $canconvert || $candownloadfpo )
@@ -49,7 +48,7 @@ $context.putPageValue("hits",$hits)
 					#end
 				</li>	
 			#else
-				<li class="resultmenuitem">
+				<li class="nav-item">
 					<a class="nav-link" href="#">[[Download]]</a>
 				</li>	
 			#end
@@ -64,24 +63,19 @@ $context.putPageValue("hits",$hits)
 	
 		#if($canpublish || $canemaillink )
 			<li class="nav-item dropdown">
-			<a class="nav-link" #if( !$enabled ) style="text-decoration:none;" #end>[[Share]]</a>
+			<a class="nav-link dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Share]]</a>
 				#if( $enabled )
-				<ul>
-
+				<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
 					#if( $canemaillink )
-					<li><a class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a></li>
+						<a class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
 					#end
 					#if( $canpublish)
-					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a></li>
+						<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
 					#end
 #if( $canquickgallery)
-					<li><a  class="emdialog" data-hidefooter="true" href="$home$apphome/views/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a></li>
+						<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
 					#end
-
-					##if( $canpublish)
-					##<li><a href="$home$apphome/views/activity/sharegallery.html?hitssessionid=$!hits.getSessionId()&field=publishdestination&publishdestination.value=gallery&field=ordertype&ordertype.value=gallery&field=publishtype&publishtype.value=gallery" >[[Share Gallery]]</a></li>
-					##end
-				</ul>
+				</div>
 				#end
 			</li>
 		#end
@@ -91,37 +85,42 @@ $context.putPageValue("hits",$hits)
 		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
 		
 		<li class="nav-item">
-			<a class="nav-link">[[Publish]]</a>
-				<ul>
+			<a class="nav-link" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
+				<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
 					#foreach($item in $quickpublishlist)
-						<li><a href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a></li>
+						<a class="dropdown-item" href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
 					#end
-				</ul>
+				</div>
 			</li>
 		#end
 		
 			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
-				<li class="nav-item"><a class="nav-link">[[Collection]]</a>	
-				<ul>
-					#if( $canaddnewcollection)
-<li><a class="emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]" 
-					 >[[Copy Collection]]</a></li>
-					 #end
-					 #if( $caneditdata)
-					<li><a href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" 
-					class="nav-link confirm" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a></li>
-					#end
-				</ul>
+				<li class="nav-item dropdown">
+					<a class="nav-link dropdown-toggle" href="#" id="navbarCollectionsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Collection]]</a>	
+					<div class="dropdown-menu" aria-labelledby="navbarCollectionsDropdown">
+						#if( $canaddnewcollection)
+							<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]">[[Copy Collection]]</a>
+						 #end
+						 #if( $caneditdata)
+							<a class="dropdown-item confirm" href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
+						#end
 				</li>
 				#end
 		
   		#set( $edit = $context.getRequestParameter("editheader") )
 			
-				$pages.include("$apphome/components/results/selected/index.html",$context)
+		$pages.include("$apphome/components/results/selected/index.html",$context)
 			
+		
+		</ul>
+		
+		
+		<ul class="resultsnavright">
 		#if ( $canviewbasket )
 			#if($order)
-				<li class="nav-item"><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a></li>
+				<li class="nav-item">
+					<a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a>
+				</li>
 			#end
 		#end
 		
@@ -129,10 +128,10 @@ $context.putPageValue("hits",$hits)
 		#if (!$resultview || $resultview == 'table')
 			#if( $canedittablecolumns )
 			#if( $edit )
-				<li style="float: right;" >
+				<li asd>
 					<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
 				</li>								
-				<li style="float: right;padding-top:13px;padding-right: 6px;" >
+				<li class="resultsnavtitem">
 						#set ($alldetails = $searcher.getUserPropertyDetails() )
 						<select  onchange='return addColumn(jQuery(this).val())' name="addcolumn" >
 							<option>[[Add Column]]</option>
@@ -147,16 +146,15 @@ $context.putPageValue("hits",$hits)
 						</script>
 				</li>	
 			#else 
-				<li style="float: right;">
+				<li >
 					<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
 				</li>
 			#end	
 			#end								
 		#end
 		#if($edit && $edit == "true"  )
-			<li class="resultmenuitem" style="float: right;">
-					<span class="ui-icon ui-icon-info" style="display: inline;padding-right:15px;margin-right:5px;"> </span>
-					<span class="text" >[[Drag columns to move them]]</span>
+			<li class="resultsnavtitem">
+					<span class="small" style="padding-right: 10px;" >[[Drag columns to move them]]</span>
 			</li>
 		#end		
 		#if(!$resultview)
@@ -166,41 +164,34 @@ $context.putPageValue("hits",$hits)
 			#end
 		#end
 		#if(!$edit || $edit == "false"  )
-			<li style="float: right;">
-				<div style="position: relative;">
-					<a class="table-edit-close">
-						<select name="resultview" id="selectresultview" class="smalldropdown" 
-							data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()">
-#set( $types = $mediaarchive.getList("resulttype"))
-#foreach($type in $types)
-							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
-#end
-##							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery]]</option>
-##							<option value="stackedgallery" #if( $resultview == "stackedgallery") selected #end>[[Stacked]]</option>
-##							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Folders]]</option>
-						</select>
-					</a>
-				</div>
+			<li class="resultsnavtitem">
+				<select name="resultview" id="selectresultview" class="smalldropdown" 
+					data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()">
+				#set( $types = $mediaarchive.getList("resulttype"))
+				#foreach($type in $types)
+					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
+				#end
+				</select>
+				<a class="table-edit-close"></a>
 			</li>
 			#if( $hits && $hits.size() > 0)
-			<li style="float:right" class=" hidden-sm-xs hidden-xs hidden-sm hidden-md">
-			$pages.include("$apphome/components/results/pages.html",$context)
-			</li>	
-			<li id="resultpageslabel" class="resultmenuitem hidden-sm-xs hidden-xs hidden-sm hidden-md" style="float:right">
-			<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size()</span>
-			</li>			
+				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
+					$pages.include("$apphome/components/results/pages.html",$context)
+				</li>	
+				<li class="resultscount hidden-sm-xs hidden-xs hidden-sm hidden-md">
+					<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size()</span>
+				</li>			
 			#end
 		#end	
 
 		#if ( $canviewbasket )
 			#if($order)
-				<li style="float: right;" ><a class="updatebasket btn-checkout emdialog" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout]]</a></li>				
+				<li ><a class="updatebasket btn-checkout emdialog" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout]]</a></li>				
 			#end
 		#end
 
 	</ul>
 </div>
-</nav>
 </div>
 <div class="clearfix"></div>
  
