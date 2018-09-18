@@ -340,13 +340,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				builder.field(detail.getId());
 				builder.interval(DateHistogramInterval.DAY);
 				builder.order(Order.KEY_DESC);
-				String timezone = TimeZone.getDefault().getID();
-				builder.timeZone(timezone);
+			//	String timezone = TimeZone.getDefault().getID();
+		//		builder.timeZone(timezone);
 				inSearch.addAggregation(builder);
 
 				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
 				builder.field(detail.getId());
-				builder.timeZone(timezone);
+			//	builder.timeZone(timezone);
 
 				builder.interval(DateHistogramInterval.WEEK);
 				builder.order(Order.COUNT_DESC);
