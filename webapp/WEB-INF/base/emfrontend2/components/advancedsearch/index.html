@@ -84,7 +84,8 @@
 		
 		##TODO: Pass this view name in
 		#set ($alldetails = $searcher.getUserPropertyDetails() )
-		
+		<div class="advancedsearcheditform">
+		<strong>[[Edit Advanced Search Form]]:</strong>
 		<form id="searchaddfield" class="ajaxform" targetdiv="advsearchpanel" action="$home$apphome/components/advancedsearch/addfield.html" method="post">
 		
 			<input type="hidden" name="oemaxlevel" value="1"/>
@@ -92,8 +93,8 @@
 			<input type="hidden" name="view" value="$view"/>
 			<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
 			<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
-			
-			<select  class="select2"  name="field" onChange="jQuery('#searchaddfield').submit();">
+			<div class="form-group">
+			<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
 				<option value="">[[Asset]]</option>
 				#foreach( $detail in $alldetails)
 					#if($detail.isLeaf())
@@ -106,24 +107,30 @@
 					#end
 				#end	
 			</select>
-			<select class="select2" name="field" onChange="jQuery('#searchaddfield').submit();">
+			</div>
+			<div class="form-group">
+			<select class="form-control" name="field" onChange="jQuery('#searchaddfield').submit();">
 				<option value="">[[Collection]]</option>
 				#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
 				#foreach( $detail in $librarydetails)
 				<option value="librarycollection.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
 				#end
 			</select>
-			<select  class="select2"  name="field" onChange="jQuery('#searchaddfield').submit();">
+			</div>
+			<div class="form-group">
+			<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
 				<option value="">[[Library]]</option>
 				#set( $librarydetails = $mediaarchive.getSearcher("library").getUserPropertyDetails() )
 				#foreach( $detail in $librarydetails)
 				<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
 				#end
 			</select>
-		<div class="pull-right">
-			<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
+			</div>
+		<div class="form-group">
+			<a class="ajax btn btn-sm btn-secondary" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
 		</div>	
 		</form>
+		</div>
 		#end
 	
 		<script type="text/javascript">

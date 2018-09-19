@@ -700,7 +700,7 @@ span.glyphicon-triangle-left.overlay-nav {
     text-shadow:0 0 2px #121212;
 }
 
-#badgecontainer {  
+.badgecontainer {  
 	height: 0px;
 	position: relative;
 }

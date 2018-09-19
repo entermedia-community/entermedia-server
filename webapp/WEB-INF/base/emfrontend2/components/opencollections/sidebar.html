@@ -6,17 +6,37 @@
 		data-target="opencollectionscontent">
 		<span class="widget-header-title">[[ Collections]]</span>
 		<span class="widget-header-right">
-			<a class="emdialog sidebarsubmenu" title="[[Collection Search]]" data-hidefooter="true" href="$home$apphome/components/opencollections/searchcollection.html"><i class="glyphicon glyphicon-search"></i></a>			
+			<a class="emdialog sidebarsubmenu" title="[[Collection Search]]" data-hidefooter="true" href="$home$apphome/components/opencollections/searchcollection.html"><i class="fas fa-search"></i></a>
+			<i class="fas fa-angle-down ui-widget-toggle"></i>
 		</span>
 	</div>
 	<div  class="ui-widget-content"  id="opencollectionscontent" #if($userprofile.minimizeopencollectionscontent == "true" && $cantogglesidebar) style="display: none;" #end>
 
-##set( $caneditlibrary = $context.getPageStreamer().canDo("editdata","$apphome/views/modules/library/index.html"))
-	<div class="librarylabels">
+	<div class="opencollections">
 	<ul>
 		
+	 #if($canaddtofavorites)
+		#set( $collection = $mediaarchive.getProjectManager().getFavoritesCollection($user) )
+		#if( $librarycol && $collection.getId() == $librarycol.id )
+				#set( $selected = true )
+			#end
+		<li class="librarycollectiondroparea #if ($selected ) selected #end"
+				data-dropsaveurl="$home$apphome/components/opencollections/addassettocollection.html"
+				data-collectionid="$collection.getId()"
+				data-targetdiv="left-col-opencollections"
+			>
+				<div class="collectionrow">
+					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
+					 	class="collectionbox #if ($selected ) selected #end favorite"  
+					 	title="$!{collection}"
+					 	data-collectionname="${collection.getName()}">
+					 	[[Favorites]] ($collection.getAssetCount())
+					</a>
+				 </div>
+			</li>
+	#end
 	  	#foreach($collection in $usercollections )
-		   #set( $selected = false )
+		    #set( $selected = false )
 			#if( $librarycol && $collection.getId() == $librarycol.id )
 				#set( $selected = true )
 			#end
@@ -25,47 +45,35 @@
 				data-collectionid="$collection.getId()"
 				data-targetdiv="left-col-opencollections"
 			>
-				<div class="collectionBox">
+				<div class="collectionrow">
 					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
-					 	class="librarylabel #if ($selected ) selected #end"  
-					 	title="$!{collection.getCollection().notes}"
+					 	class="collectionbox #if ($selected ) selected #end"  
+					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">
-					 	<span> $collection.getName() ($collection.getAssetCount())</span>
+					 	$collection.getName() ($collection.getAssetCount())
 					</a>
-					<div class="collectionIcons">
+					<div class="collectionicons">
 						<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" 
 							class="collectionclose ajax" targetdiv="left-col-opencollections" title="[[Close Collection]]">
-							<span class="closecollection ui-icon ui-icon-closethick " data-collectionid="${collection.getId()}"></span>
+							<span class="closecollection fas fa-times " data-collectionid="${collection.getId()}"></span>
 						</a>
-						#set( $count = false )
-						#set( $count = $collection.getCategoryCount() )
-						#if( $count)
-						<a href="$home$apphome/views/modules/librarycollection/publish.html?collectionid=${collection.getId()}" 
-							collectionId="${collection.getId()}" 
-							class="categoryInCollection" 
-							title="[[Publish]] $count [[Categories]]">
-							<span class="glyphicon glyphicon-paperclip clip" aria-hidden="true"></span>
-						</a>	
-						#end
 					</div>
 				 </div>
 			</li>
 		#end
-##		#if ($canaddnewcollection)
-##		<li class="newcollectiondroparea">
-##			<div id="opencollectioncreatenewarea">
-## 				<a id="newCollection" class="ajax collectionnew librarylabel" 
-##					   targetdivinner="opencollectioncreatenewarea" data-oemaxlevel="1"
-##					   href="$home$apphome/components/opencollections/addnewchild.html?libraryid=$context.getUserName()" >
-##					   [[Create New]]
-##					</a>
-##		    </div>
-##		</li>
-##		#end	
+		#if ($canaddnewcollection)
+		<li class="newcollectiondroparea">
+			<div id="opencollectioncreatenewarea">
+ 				<a id="newCollection" class="ajax collectionnew btn btn-xs btn-secondary" 
+					   targetdivinner="opencollectioncreatenewarea" data-oemaxlevel="1"
+					   href="$home$apphome/components/opencollections/addnewchild.html?libraryid=$context.getUserName()" >
+					   [[Create New]]
+					</a>
+		    </div>
+		</li>
+		#end	
 	</ul>	
 	</div>
 	</div>
 </div>
 #end
-
-

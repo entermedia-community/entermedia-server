@@ -1,5 +1,6 @@
 <tr>
 	<td id="detail_${detail.id}" valign="middle">
+	<div class="form-group">
 	  	<label class="emsearchfield"> 
 			#if ($edit == "true")
 				<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
@@ -53,6 +54,7 @@
 		#end	
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
+		</div>
 	</td>
 </tr>
 

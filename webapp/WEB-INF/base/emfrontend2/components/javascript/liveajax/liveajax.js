@@ -224,7 +224,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 				eventlistener["scope"] = document;
 			}
 	    	eventregistry.push(eventlistener);
-	    	//console.log("Initial Registering  event" + eventlistener.selector );
+	    	console.log("Initial Registering  event" + eventlistener.selector );
 	    	node.data("livequery", true);
 	    	node.on(eventlistener.event,eventlistener.function);
 	    	//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);

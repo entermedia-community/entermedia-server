@@ -1,37 +1,27 @@
 #set ($sourcepath = $hit.sourcepath)
-
-    #if( $hit.previewstatus && $hit.previewstatus == "mime")
-        #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
-        #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
-        <img class="mimethumb" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
-    #elseif( $hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated")
-        $pages.include("$apphome/components/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
-    #else   
-        #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
-        #if( $type == "audio" || $type == "default")
-            $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
-        #else
-      #set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
-     #if($tabletarget)
-      #set( $img = $mediaarchive.asLinkToPreview($hit,$tabletarget))  
-
-#else
-      #set( $img = $mediaarchive.asLinkToPreview($hit,"image110x62cropped.jpg"))  
-#end
-        
-           <div class="emdropshadow">
-            <img class="smallthumb assetdragdrop" title="[[Drag to collection]]"  draggable="true" data-sourcepath="$hit.sourcepath" data-name="$hit.name" src="$img" alt="$!hit.name" border="0" />
-           </div> 
-        #end
-    #end
-    <div id="badgecontainer">
-	#set( $badges = $mediaarchive.getBadges($hit) )
-	<div class="badgetargetsmall">
-	#if($canshowbadge)
-		#foreach($badge in $badges)
-			<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
-		#end
-	#end
-	</div>
-	</div>
+   #if( $hit.previewstatus && $hit.previewstatus == "mime")
+       #set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+       #set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+       <div class="emdropshadow">
+       <img class="mimethumb  emnothumbnail" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
+       </div>
+   #elseif( $hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated")
+       $pages.include("$apphome/components/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+   #else   
+       #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
+       #if( $type == "audio" || $type == "default")
+           $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+       #else
+	     	#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
+	    	#if($tabletarget)
+	     		#set( $img = $mediaarchive.asLinkToPreview($hit,$tabletarget))  
+			#else
+		      	#set( $img = $mediaarchive.asLinkToPreview($hit,"image110x62cropped.jpg"))  
+			#end
+		       <div class="emdropshadow">
+		        <img class="smallthumb assetdragdrop" title="[[Drag to collection]]"  draggable="true" data-sourcepath="$hit.sourcepath" data-name="$hit.name" src="$img" alt="$!hit.name" border="0" />
+		       </div> 
+       #end
+   #end
     
+	

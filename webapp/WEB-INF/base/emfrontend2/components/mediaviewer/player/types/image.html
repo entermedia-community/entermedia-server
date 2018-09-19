@@ -7,7 +7,7 @@
        data-sourcepath="$urlenc" data-name="$asset.name" src="$img" alt="$!asset.name"/>
     </div>  
 </a>
-<div id="badgecontainer">
+
 #set( $badges = $mediaarchive.getBadges($asset) )
 <div class="badgetarget">
 #if($canshowbadge)
@@ -16,6 +16,3 @@
 	#end
 #end
 </div>
-</div>
-
-

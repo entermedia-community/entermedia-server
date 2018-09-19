@@ -7,7 +7,17 @@
 	</td>
 #end	
 	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >
-$pages.include("$apphome/components/results/thumbnails/small.html",$context)		
+		$pages.include("$apphome/components/results/thumbnails/small.html",$context)	
+		#set( $badges = $mediaarchive.getBadges($hit) )
+		#if($canshowbadge)
+			<div class="badgecontainer">
+				<div class="badgetargetsmall">
+				#foreach($badge in $badges)
+					<span id="$badge.getId()" class="embadge $badge.getId()" style="background-image:url('$home$themeprefix/images/badges/${badge.getId()}.svg')" title="$badge.getName()"> </span>
+				#end
+				</div>
+			</div>
+		#end	
 	</td>
 
 #foreach( $detail in $details)
