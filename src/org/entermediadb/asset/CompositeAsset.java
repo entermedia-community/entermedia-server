@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.openedit.Data;
+import org.openedit.OpenEditException;
 import org.openedit.data.CompositeData;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
@@ -501,9 +502,17 @@ public class CompositeAsset extends Asset implements Data, CompositeData
 			//See if the values changed
 			Object oldval = getValueFromResults(field);
 
-			if (newval != null && newval.toString().isEmpty())
+			if (newval != null)
 			{
-				newval = null;
+				String snewval = newval.toString();
+				if( snewval == null)
+				{
+					throw new OpenEditException("toString() should not return null "+ newval.getClass());
+				}
+				if( snewval.isEmpty())
+				{
+					newval = null;
+				}
 			}
 			if (oldval != null && oldval.toString().isEmpty())
 			{
