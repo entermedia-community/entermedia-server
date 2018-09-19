@@ -32,6 +32,11 @@
       <language id="fr"><![CDATA[Editable]]></language> 
     </name> 
   </property>  
+  
+  <property id="deleted" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Deleted  </property>  
+  
+  
+  
   <property id="internalfield" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Internal use 
     <name> 
       <language id="de"><![CDATA[interne Benutzung]]></language>  

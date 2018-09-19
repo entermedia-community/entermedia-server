@@ -427,8 +427,8 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		
 		PropertyDetail detail =  details.getDetail(id);
 		if(detail != null){		
-		
-		searcher.getPropertyDetailsArchive().deletePropertyDetail(detail, searchtype, inReq.getUser());
+			detail.setDeleted(true);
+			searcher.getPropertyDetailsArchive().savePropertyDetail(detail, searchtype, null);
 		}
 	}
 

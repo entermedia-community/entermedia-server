@@ -1,6 +1,8 @@
 <properties >
 	<property id="id" />
-	<property id="name" />	
+	<property id="name" />
+		
+		
 	<property id="editable" />	
 	<property id="internalfield"  />	
 	<property id="defaultoperation"  />	

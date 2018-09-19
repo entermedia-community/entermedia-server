@@ -239,7 +239,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				addFacets(inQuery, search);
 			}
-			
+
 			// addAggregations(inQuery, search);
 
 			//			 "_source": {
@@ -301,8 +301,6 @@ public class BaseElasticSearcher extends BaseSearcher
 	//
 	//
 
-	
-
 	protected void addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
 
@@ -314,9 +312,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			if (detail.isFilter())
 			{
 				allFilters.add(detail);
-				
-				
-				
+
 			}
 		}
 
@@ -340,13 +336,13 @@ public class BaseElasticSearcher extends BaseSearcher
 				builder.field(detail.getId());
 				builder.interval(DateHistogramInterval.DAY);
 				builder.order(Order.KEY_DESC);
-			//	String timezone = TimeZone.getDefault().getID();
-		//		builder.timeZone(timezone);
+				//	String timezone = TimeZone.getDefault().getID();
+				//		builder.timeZone(timezone);
 				inSearch.addAggregation(builder);
 
 				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
 				builder.field(detail.getId());
-			//	builder.timeZone(timezone);
+				//	builder.timeZone(timezone);
 
 				builder.interval(DateHistogramInterval.WEEK);
 				builder.order(Order.COUNT_DESC);
@@ -365,16 +361,19 @@ public class BaseElasticSearcher extends BaseSearcher
 				avg.field(detail.getId());
 
 			}
-			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue()){
-				if(detail.isViewType("tageditor")){
+			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue())
+			{
+				if (detail.isViewType("tageditor"))
+				{
 					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
 					inSearch.addAggregation(b);
 				}
-				else{
-				
+				else
+				{
+
 					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
 					inSearch.addAggregation(b);
-					
+
 				}
 			}
 			else
@@ -393,9 +392,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
 
 		}
-		
-		
-		
 
 	}
 
@@ -553,7 +549,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 
 	}
-	
+
 	public XContentBuilder buildMapping()
 	{
 		try
@@ -594,7 +590,9 @@ public class BaseElasticSearcher extends BaseSearcher
 			for (Iterator i = props.iterator(); i.hasNext();)
 			{
 				PropertyDetail detail = (PropertyDetail) i.next();
-
+				if(detail.isDeleted()){
+					continue;
+				}
 				if (detail.getId() == null || "_id".equals(detail.getId()) || "id".equals(detail.getId()))
 				{
 					// jsonproperties = jsonproperties.startObject("_id");
@@ -620,11 +618,11 @@ public class BaseElasticSearcher extends BaseSearcher
 					{
 						Data locale = (Data) iterator.next();
 						String id = locale.getId();
-						 
+
 						jsonproperties.startObject(id);
 						String analyzer = locale.get("analyzer");
 						jsonproperties.field("type", "string");
-						if (detail.isAnalyzed() )
+						if (detail.isAnalyzed())
 						{
 							jsonproperties.startObject("fields");
 							jsonproperties.startObject("exact");
@@ -653,7 +651,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 					continue;
 				}
-				
+
 				jsonproperties = jsonproperties.startObject(detail.getId());
 				configureDetail(detail, jsonproperties);
 				jsonproperties = jsonproperties.endObject();
@@ -679,9 +677,9 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-	protected void configureDetail(PropertyDetail detail, XContentBuilder jsonproperties) throws Exception{
-		
-		
+	protected void configureDetail(PropertyDetail detail, XContentBuilder jsonproperties) throws Exception
+	{
+
 		if ("description".equals(detail.getId()))
 		{
 			String analyzer = "lowersnowball";
@@ -693,23 +691,24 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 
 		//CHECK TIMECODE
-		if(detail.isDataType("objectarray")){
-		
+		if (detail.isDataType("objectarray"))
+		{
+
 			jsonproperties = jsonproperties.field("type", "object");
 			jsonproperties.startObject("properties");
-			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();) {
+			for (Iterator iterator = detail.getObjectDetails().iterator(); iterator.hasNext();)
+			{
 				PropertyDetail child = (PropertyDetail) iterator.next();
 				jsonproperties = jsonproperties.startObject(child.getId());
 				configureDetail(child, jsonproperties);
 				jsonproperties = jsonproperties.endObject();
 			}
 			jsonproperties.endObject();
-			
-			
+
 			return;
-			
+
 		}
-		
+
 		// First determine type
 		if (detail.isDate())
 		{
@@ -738,9 +737,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			jsonproperties = jsonproperties.field("type", "geo_point");
 		}
-		
-		
-		
+
 		else if (detail.isList()) // Or multi valued?
 		{
 			if (Boolean.parseBoolean(detail.get("nested")))
@@ -752,7 +749,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties = jsonproperties.field("type", "string");
 			}
 		}
-		
+
 		else
 		{
 			jsonproperties = jsonproperties.field("type", "string");
@@ -762,7 +759,8 @@ public class BaseElasticSearcher extends BaseSearcher
 				jsonproperties.startObject("exact");
 				jsonproperties = jsonproperties.field("type", "string");
 				jsonproperties = jsonproperties.field("index", "not_analyzed");
-				if(!detail.getId().contains("path")){
+				if (!detail.getId().contains("path"))
+				{
 					jsonproperties = jsonproperties.field("ignore_above", 256);
 				}
 				jsonproperties.endObject();
@@ -773,7 +771,7 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		// Now determine index
 		String indextype = detail.get("indextype");
-		
+
 		if (indextype == null)
 		{
 			if (!detail.isAnalyzed())
@@ -796,7 +794,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		if (analyzer != null)
 		{
 			jsonproperties = jsonproperties.field("analyzer", analyzer);
-		}		
+		}
 	}
 
 	protected QueryBuilder buildTerms(SearchQuery inQuery)
@@ -844,7 +842,6 @@ public class BaseElasticSearcher extends BaseSearcher
 		// }
 		// }
 
-		
 		if (inQuery.getChildren().size() > 0)
 		{
 			for (Iterator iterator = inQuery.getChildren().iterator(); iterator.hasNext();)
@@ -945,12 +942,14 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 
 		String fieldid = inDetail.getId();
-		if(inDetail.isMultiLanguage()) {
+		if (inDetail.isMultiLanguage())
+		{
 
-			if(!fieldid.contains("_int")) {
+			if (!fieldid.contains("_int"))
+			{
 				fieldid = fieldid + "_int.en";//default to search the english
 			}
-		
+
 		}
 
 		if ("searchjoin".equals(inDetail.getDataType()))
@@ -1024,7 +1023,7 @@ public class BaseElasticSearcher extends BaseSearcher
 		if (valueof.equals("*"))
 		{
 			find = QueryBuilders.wildcardQuery(fieldid, "*");
-			
+
 			// ExistsFilterBuilder filter =
 			// FilterBuilders.existsFilter(fieldid);
 			// find = QueryBuilders.filteredQuery(all, filter);
@@ -1066,13 +1065,16 @@ public class BaseElasticSearcher extends BaseSearcher
 			//TODO: Should startswith be exact or analysed phrases? 
 			//find = QueryBuilders.prefixQuery(fieldid, valueof);
 			//Left this in for now...
-			
-			if(inDetail.isAnalyzed()) {
-			
-			MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
-			text.maxExpansions(10);
-			find = text;
-			} else {
+
+			if (inDetail.isAnalyzed())
+			{
+
+				MatchQueryBuilder text = QueryBuilders.matchPhrasePrefixQuery(fieldid, valueof);
+				text.maxExpansions(10);
+				find = text;
+			}
+			else
+			{
 				PrefixQueryBuilder text = QueryBuilders.prefixQuery(fieldid, valueof);
 				find = text;
 			}
@@ -1228,9 +1230,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				// DateStorageUtil.getStorageUtil().formatForStorage(new
 				// Date(Long.MAX_VALUE));
 				Date before = (Date) inTerm.getValue("beforeDate");
-				Date after = (Date)inTerm.getValue("afterDate");
-
-			
+				Date after = (Date) inTerm.getValue("afterDate");
 
 				// inTerm.getParameter("beforeDate");
 
@@ -1292,12 +1292,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				if (inDetail.isDataType("double"))
 				{
 					Double lowval = (Double) inTerm.getValue("lowval");
-					Double highval =  (Double) inTerm.getValue("highval");
+					Double highval = (Double) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
 				if (inDetail.isDataType("long") || inDetail.isDataType("number"))
 				{
-					Long lowval =  (Long) inTerm.getValue("lowval");
+					Long lowval = (Long) inTerm.getValue("lowval");
 					Long highval = (Long) inTerm.getValue("highval");
 					find = QueryBuilders.rangeQuery(fieldid).from(lowval).to(highval);
 				}
@@ -1350,19 +1350,19 @@ public class BaseElasticSearcher extends BaseSearcher
 		else if (inDetail.isGeoPoint())
 		{
 			GeoFilter filter = (GeoFilter) inTerm;
-			if( filter.getLatitude() == 0)
+			if (filter.getLatitude() == 0)
 			{
-				find = QueryBuilders.termQuery("id", "-" + System.currentTimeMillis() );
+				find = QueryBuilders.termQuery("id", "-" + System.currentTimeMillis());
 			}
 			else
 			{
 				GeoDistanceQueryBuilder geoDistanceFilterBuilder = new GeoDistanceQueryBuilder(inDetail.getId());
 				geoDistanceFilterBuilder.point(filter.getLatitude(), filter.getLongitude());
-				geoDistanceFilterBuilder.distance(String.valueOf(  filter.getDistance()));
-				geoDistanceFilterBuilder.optimizeBbox("memory");       // Can be also "indexed" or "none"
+				geoDistanceFilterBuilder.distance(String.valueOf(filter.getDistance()));
+				geoDistanceFilterBuilder.optimizeBbox("memory"); // Can be also "indexed" or "none"
 				geoDistanceFilterBuilder.geoDistance(GeoDistance.ARC); // Or GeoDistance.PLANE
 				find = geoDistanceFilterBuilder;
-			}	
+			}
 		}
 		// DO not use _all use _description
 		// else if (fieldid.equals("description"))
@@ -1391,42 +1391,44 @@ public class BaseElasticSearcher extends BaseSearcher
 			else if ("orgroup".equals(inTerm.getOperation()) || "notgroup".equals(inTerm.getOperation()))
 			{
 				find = QueryBuilders.termsQuery(fieldid, inTerm.getValues()); //This is an OR
-//				BoolQueryBuilder or  = QueryBuilders.boolQuery();
-//				Object[] values = inTerm.getValues();
-//				for (int i = 0; i < values.length; i++)
-//				{
-//					Object val = values[i];
-//
-//					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
-//					if("notgroup".equals(inTerm.getOperation()))
-//					{
-//						or.mustNot(item);
-//					}
-//					else
-//					{
-//						or.should(item);						
-//					}
-//				}
-//				find = or;
+				//				BoolQueryBuilder or  = QueryBuilders.boolQuery();
+				//				Object[] values = inTerm.getValues();
+				//				for (int i = 0; i < values.length; i++)
+				//				{
+				//					Object val = values[i];
+				//
+				//					TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
+				//					if("notgroup".equals(inTerm.getOperation()))
+				//					{
+				//						or.mustNot(item);
+				//					}
+				//					else
+				//					{
+				//						or.should(item);						
+				//					}
+				//				}
+				//				find = or;
 			}
 			else if ("andgroup".equals(inTerm.getOperation()))
 			{
 				Object[] values = inTerm.getValues();
-				BoolQueryBuilder or  = QueryBuilders.boolQuery();
-				
+				BoolQueryBuilder or = QueryBuilders.boolQuery();
+
 				for (int i = 0; i < values.length; i++)
 				{
 					Object val = values[i];
-					if(inDetail.isAnalyzed() || "keywords".equals(fieldid)) {
+					if (inDetail.isAnalyzed() || "keywords".equals(fieldid))
+					{
 						MatchQueryBuilder item = QueryBuilders.matchQuery(fieldid, val);
 						or.must(item);
-					} else{
+					}
+					else
+					{
 						TermQueryBuilder item = QueryBuilders.termQuery(fieldid, val);
 						or.must(item);
 
 					}
-											
-					
+
 				}
 				find = or;
 			}
@@ -1494,11 +1496,11 @@ public class BaseElasticSearcher extends BaseSearcher
 			PropertyDetail detail = getDetail(field);
 			FieldSortBuilder sort = null;
 
-			if (detail != null )
+			if (detail != null)
 			{
 				if (detail.isMultiLanguage())
 				{
-					if( detail.isAnalyzed() )
+					if (detail.isAnalyzed())
 					{
 						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage() + ".exact");
 					}
@@ -1507,10 +1509,10 @@ public class BaseElasticSearcher extends BaseSearcher
 						sort = SortBuilders.fieldSort(field + "_int." + inQuery.getSortLanguage());
 					}
 				}
-				else if( detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
+				else if (detail.isDataType("objectarray") && detail.getObjectDetails() != null && !detail.getObjectDetails().isEmpty())
 				{
-					PropertyDetail first = (PropertyDetail)detail.getObjectDetails().iterator().next();
-					if( first.isAnalyzed() )
+					PropertyDetail first = (PropertyDetail) detail.getObjectDetails().iterator().next();
+					if (first.isAnalyzed())
 					{
 						sort = SortBuilders.fieldSort(field + "." + first.getId() + ".exact");
 					}
@@ -1519,7 +1521,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						sort = SortBuilders.fieldSort(field + "." + first.getId());
 					}
 				}
-				else if( detail.isAnalyzed() )
+				else if (detail.isAnalyzed())
 				{
 					sort = SortBuilders.fieldSort(field + ".exact");
 				}
@@ -1529,12 +1531,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 			}
 
-			if(sort == null) {
+			if (sort == null)
+			{
 				sort = SortBuilders.fieldSort(field);
 
 			}
-			
-			
+
 			sort.ignoreUnmapped(true);
 			if (direction)
 			{
@@ -1545,7 +1547,7 @@ public class BaseElasticSearcher extends BaseSearcher
 				sort.order(SortOrder.ASC);
 			}
 			search.addSort(sort);
-			
+
 		}
 	}
 
@@ -1696,13 +1698,12 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			try
 			{
-				
-				
+
 				Data data2 = (Data) iterator.next();
 				XContentBuilder content = XContentFactory.jsonBuilder().startObject();
 				updateMasterClusterId(details, data2, content);
 				updateIndex(content, data2, details);
-				
+
 				content.endObject();
 				IndexRequest req = Requests.indexRequest(catid).type(getSearchType());
 				PropertyDetail parent = details.getDetail("_parent");
@@ -1749,12 +1750,10 @@ public class BaseElasticSearcher extends BaseSearcher
 		{
 			bulkProcessor.flush();
 			bulkProcessor.awaitClose(5, TimeUnit.MINUTES);
-			
+
 			//This is in memory only flush
 			RefreshResponse actionGet = getClient().admin().indices().prepareRefresh(catid).execute().actionGet();
 
-
-			
 		}
 		catch (InterruptedException e)
 		{
@@ -1776,50 +1775,47 @@ public class BaseElasticSearcher extends BaseSearcher
 		// brb.add(Requests.indexRequest(indexName).type(getIndexType()).id(id).source(source));
 		// }
 		// if (brb.numberOfActions() > 0) brb.execute().actionGet();
-		
+
 		//getClient().admin().cluster().prepareHealth().setWaitForGreenStatus().execute().actionGet();
-		
+
 	}
 
 	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content) throws IOException
 	{
 
 		PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
-		if( hasmaster != null)
+		if (hasmaster != null)
 		{
-			if( inData.getValue("mastereditclusterid") == null)
+			if (inData.getValue("mastereditclusterid") == null)
 			{
 				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
-				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId() );
+				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId());
 			}
 		}
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
 	{
-		if( inBuffer instanceof HitTracker)
+		if (inBuffer instanceof HitTracker)
 		{
-			HitTracker htracker = (HitTracker)inBuffer;
+			HitTracker htracker = (HitTracker) inBuffer;
 			htracker.enableBulkOperations();
-			
+
 		}
 		String catid = getElasticIndexId();
 
-		if (inBuffer.size() < 99 ) // 100 was too low - caused shard exceptions
-			// due to thread pool size on large
-			// ingests..
+		if (inBuffer.size() < 99) // 100 was too low - caused shard exceptions
+		// due to thread pool size on large
+		// ingests..
 		{
-				for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();) {
-					Data object = (Data) iterator.next();
-					delete(object, inUser);
-				}
-				return;
+			for (Iterator iterator = inBuffer.iterator(); iterator.hasNext();)
+			{
+				Data object = (Data) iterator.next();
+				delete(object, inUser);
+			}
+			return;
 		}
-		
-		
-		
-		
-		
+
 		final List errors = new ArrayList();
 		// Make this not return till it is finished?
 		BulkProcessor bulkProcessor = BulkProcessor.builder(getClient(), new BulkProcessor.Listener()
@@ -1986,7 +1982,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	{
 		if (isCheckVersions())
 		{
-			Long version = (Long)data.getValue(".version");
+			Long version = (Long) data.getValue(".version");
 			if (version != null)
 			{
 				if (version.longValue() > -1)
@@ -2021,47 +2017,59 @@ public class BaseElasticSearcher extends BaseSearcher
 			Map props = inData.getProperties();
 			HashSet allprops = new HashSet();
 			allprops.addAll(props.keySet());
-			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();) {
+			for (Iterator iterator = inDetails.iterator(); iterator.hasNext();)
+			{
 				PropertyDetail detail = (PropertyDetail) iterator.next();
-				allprops.add(detail.getId());
-			}
-			if(!allprops.contains("description")) {
-			allprops.add("description");
-			}
-			if(!allprops.contains("id")) {
-				allprops.add("id");
+				if (!detail.isDeleted())
+				{
+					allprops.add(detail.getId());
 				}
+			}
+			if (!allprops.contains("description"))
+			{
+				allprops.add("description");
+			}
+			if (!allprops.contains("id"))
+			{
+				allprops.add("id");
+			}
 			List badges = new ArrayList();
 
-			
 			for (Iterator iterator = allprops.iterator(); iterator.hasNext();)
 			{
-				String propid = (String)iterator.next();
-				if(propid == null){
+				String propid = (String) iterator.next();
+				if (propid == null)
+				{
 					continue;
 				}
-				if(propid.contains(".")){
+				if (propid.contains("."))
+				{
 					continue;
 				}
-				PropertyDetail detail = (PropertyDetail)inDetails.getDetail(propid);
-				if(detail == null) {
+				PropertyDetail detail = (PropertyDetail) inDetails.getDetail(propid);
+				if (detail == null)
+				{
 					detail = inDetails.getLegacyDetail(propid);
 				}
-				if( detail == null && !propid.equals("description") && !propid.contains("_int"))
+				if (detail == null && !propid.equals("description") && !propid.contains("_int"))
 				{
-					
+
 					detail = getPropertyDetailsArchive().createDetail(propid, propid);
+					detail.setDeleted(false);
 					//setType(detail);
-					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);
+					getPropertyDetailsArchive().savePropertyDetail(detail, getSearchType(), null);					
 					inDetails.addDetail(detail);
-					if( !putMappings() )
+					
+					if (!putMappings())
 					{
 						throw new OpenEditException("could not map row of data " + propid + " rowid=" + inData.getId());
-					} else{
-						log.info("Added new detail " + propid + " to " + getSearchType() +  " as " + detail.getDataType());
+					}
+					else
+					{
+						log.info("Added new detail " + propid + " to " + getSearchType() + " as " + detail.getDataType());
 					}
 				}
-				if (detail == null || !detail.isIndex() && !propid.equals("description") ) //&& !propid.contains("sourcepath")
+				if (detail == null || !detail.isIndex() && !propid.equals("description")) //&& !propid.contains("sourcepath")
 				{
 					continue;
 				}
@@ -2075,10 +2083,9 @@ public class BaseElasticSearcher extends BaseSearcher
 					inContent.field(key, new Date());
 					continue;
 				}
-				
- 				Object value = inData.getValue(key);
-				
-				
+
+				Object value = inData.getValue(key);
+
 				if (value != null)
 				{
 					if (value instanceof String && ((String) value).isEmpty())
@@ -2091,18 +2098,19 @@ public class BaseElasticSearcher extends BaseSearcher
 				{
 					continue;
 				}
-				if( detail.isBadge() && value !=null)
+				if (detail.isBadge() && value != null)
 				{
 					badges.add(getSearchType() + "_" + detail.getId() + "_" + value);
 				}
-				
-				if( value !=null && detail.isDataType("objectarray"))
+
+				if (value != null && detail.isDataType("objectarray"))
 				{
-					if(!(value instanceof Collection)){
-						throw new OpenEditException("Data was not a collection " + value.getClass() );
+					if (!(value instanceof Collection))
+					{
+						throw new OpenEditException("Data was not a collection " + value.getClass());
 					}
-					inContent.field(key, value);  //This seems to map Long data types to Integer when they are read again
-				} 
+					inContent.field(key, value); //This seems to map Long data types to Integer when they are read again
+				}
 				else if (detail.isDate())
 				{
 					if (value != null)
@@ -2112,7 +2120,7 @@ public class BaseElasticSearcher extends BaseSearcher
 						{
 							date = (Date) value;
 						}
-						else if(value instanceof String)
+						else if (value instanceof String)
 						{
 							date = DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
 						}
@@ -2156,18 +2164,18 @@ public class BaseElasticSearcher extends BaseSearcher
 				else if (detail.isDataType("long"))
 				{
 					Long val = null;
-					if( value instanceof Double && detail.getId().contains("timecode"))
+					if (value instanceof Double && detail.getId().contains("timecode"))
 					{
-						Double d = (Double)value;
-						val = Math.round( d * 1000d);
+						Double d = (Double) value;
+						val = Math.round(d * 1000d);
 					}
 					else if (value instanceof Double)
 					{
-						val = Math.round( (Double) value ); //Throw exception?
+						val = Math.round((Double) value); //Throw exception?
 					}
-					else if( value instanceof Integer)
+					else if (value instanceof Integer)
 					{
-						val = ((Integer)value).longValue();
+						val = ((Integer) value).longValue();
 					}
 					else if (value != null)
 					{
@@ -2185,10 +2193,13 @@ public class BaseElasticSearcher extends BaseSearcher
 					}
 					else if (value != null)
 					{
-						try{
-						val = Long.valueOf((String) value);
-						} catch(Exception e){
-	//						throw new OpenEditException("Bad Value for Number:  " + val + " trying to set: " + key);
+						try
+						{
+							val = Long.valueOf((String) value);
+						}
+						catch (Exception e)
+						{
+							//						throw new OpenEditException("Bad Value for Number:  " + val + " trying to set: " + key);
 							log.info("Bad Value for Number:  " + val + " trying to set: " + key);
 
 						}
@@ -2245,23 +2256,23 @@ public class BaseElasticSearcher extends BaseSearcher
 				else if (value != null && detail.isGeoPoint())
 				{
 					//Saved it as two fields?
-					if( value instanceof Position )
+					if (value instanceof Position)
 					{
-						Position pos = (Position)value;
-						GeoPoint point = new GeoPoint(pos.getLatitude(),pos.getLongitude());
-						inContent.field(key, point);  
-					} 
-					else if(value instanceof String) 
+						Position pos = (Position) value;
+						GeoPoint point = new GeoPoint(pos.getLatitude(), pos.getLongitude());
+						inContent.field(key, point);
+					}
+					else if (value instanceof String)
 					{
-						GeoPoint point = new GeoPoint((String)value);
-						inContent.field(key, point);  
+						GeoPoint point = new GeoPoint((String) value);
+						inContent.field(key, point);
 						Position position = new Position(point.getLat(), point.getLon());
 						inData.setValue(key, position); //For next time?
 					}
-					else if(value instanceof GeoPoint) 
+					else if (value instanceof GeoPoint)
 					{
-						GeoPoint point = (GeoPoint)value;
-						inContent.field(key, point);  
+						GeoPoint point = (GeoPoint) value;
+						inContent.field(key, point);
 						Position position = new Position(point.getLat(), point.getLon());
 						inData.setValue(key, position); //For next time?
 					}
@@ -2298,8 +2309,9 @@ public class BaseElasticSearcher extends BaseSearcher
 						LanguageMap map = new LanguageMap();
 						map.setText("en", target);
 						value = map;
-					} 
-					if(!(value instanceof LanguageMap)) {
+					}
+					if (!(value instanceof LanguageMap))
+					{
 						throw new OpenEditException("Unexpexted value for MultiLanguage enabled field : " + value + " detail: " + detail.getId() + "Data Was: " + inData.getId() + " searchtype " + getSearchType());
 					}
 					LanguageMap map = (LanguageMap) value;
@@ -2344,13 +2356,12 @@ public class BaseElasticSearcher extends BaseSearcher
 				}
 				// log.info("Saved" + key + "=" + value );
 			}
-			if(  !badges.isEmpty())
+			if (!badges.isEmpty())
 			{
 				inContent.field("badge", badges);
 			}
-			
-		
-			addCustomFields( inContent, inData);
+
+			addCustomFields(inContent, inData);
 
 		}
 
@@ -2365,24 +2376,25 @@ public class BaseElasticSearcher extends BaseSearcher
 
 	}
 
-public void addCustomFields(XContentBuilder inContent, Data inData) {
+	public void addCustomFields(XContentBuilder inContent, Data inData)
+	{
 		// TODO Auto-generated method stub  Override this for custom searchers
-		
+
 	}
 
-//	private void setType(PropertyDetail detail) {
-//	
-//		
-//		
-//		String catid = getElasticIndexId();
-//		GetFieldMappingsRequest	 req = new GetFieldMappingsRequest().indices(catid).fields(detail.getId());
-//		GetFieldMappingsResponse resp = getClient().admin().indices().getFieldMappings(req).actionGet();
-//		Map data = resp.mappings();
-//		Object mappings = data.get(catid);
-//		if(mappings != null){
-//			Map types = (Map) data.get("blah");
-//		}
-//	}
+	//	private void setType(PropertyDetail detail) {
+	//	
+	//		
+	//		
+	//		String catid = getElasticIndexId();
+	//		GetFieldMappingsRequest	 req = new GetFieldMappingsRequest().indices(catid).fields(detail.getId());
+	//		GetFieldMappingsResponse resp = getClient().admin().indices().getFieldMappings(req).actionGet();
+	//		Map data = resp.mappings();
+	//		Object mappings = data.get(catid);
+	//		if(mappings != null){
+	//			Map types = (Map) data.get("blah");
+	//		}
+	//	}
 
 	private void checkMapping(String inKey) throws Exception
 	{
@@ -2436,7 +2448,7 @@ public void addCustomFields(XContentBuilder inContent, Data inData) {
 		HitTracker all = getAllHits();
 		all.enableBulkOperations();
 		deleteAll(all, inUser);
-		
+
 	}
 
 	public void delete(Data inData, User inUser)
@@ -2510,7 +2522,7 @@ public void addCustomFields(XContentBuilder inContent, Data inData) {
 
 	protected boolean flushChanges()
 	{
-		FlushRequest req = Requests.flushRequest(toId(getCatalogId()));  //To The disk drive
+		FlushRequest req = Requests.flushRequest(toId(getCatalogId())); //To The disk drive
 		FlushResponse res = getClient().admin().indices().flush(req).actionGet();
 		if (res.getSuccessfulShards() > 0)
 		{
@@ -2657,30 +2669,30 @@ public void addCustomFields(XContentBuilder inContent, Data inData) {
 						}
 					}
 				}
-				else if(det.isDataType("objectarray"))
+				else if (det.isDataType("objectarray"))
 				{
 					Object values = inData.getValue(det.getId());
-					if( values != null && det.getObjectDetails() != null)
+					if (values != null && det.getObjectDetails() != null)
 					{
-						Collection maps = (Collection)values;
+						Collection maps = (Collection) values;
 						for (Iterator iterator = maps.iterator(); iterator.hasNext();)
 						{
 							Map map = (Map) iterator.next();
 							for (Iterator miterator = det.getObjectDetails().iterator(); miterator.hasNext();)
 							{
 								PropertyDetail detal = (PropertyDetail) miterator.next();
-								if( detal.isKeyword() )
+								if (detal.isKeyword())
 								{
-									Object val = map.get(detal.getId()); 
-									if( val != null)
+									Object val = map.get(detal.getId());
+									if (val != null)
 									{
-										inFullDesc.append(String.valueOf( val) );
+										inFullDesc.append(String.valueOf(val));
 										inFullDesc.append(' ');
-									}	
-								}	
-								
+									}
+								}
+
 							}
-						}	
+						}
 					}
 				}
 				else
@@ -2805,42 +2817,43 @@ public void addCustomFields(XContentBuilder inContent, Data inData) {
 		updateInBatch(tosave, null);
 
 	}
+
 	/**
 	 * @override
 	 */
 	public String getConfigValue(String inKey)
 	{
-		MediaArchive archive = (MediaArchive)getModuleManager().getBean(getCatalogId(),"mediaArchive");
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		return archive.getCatalogSettingValue(inKey);
 	}
-	
+
 	public String getExistingMapping()
 	{
 		String cat = getCatalogId().replace("/", "_");
 		String indexid = getElasticNodeManager().getIndexNameFromAliasName(cat);
-		
+
 		GetMappingsResponse getMappingsResponse = getElasticNodeManager().getClient().admin().indices().getMappings(new GetMappingsRequest().indices(indexid)).actionGet();
 		ImmutableOpenMap<String, ImmutableOpenMap<String, MappingMetaData>> indexToMappings = getMappingsResponse.getMappings();
-		
+
 		MappingMetaData actualMapping = indexToMappings.get(indexid).get(getSearchType());
-		if(actualMapping != null)
+		if (actualMapping != null)
 		{
 			String jsonString;
 			try
 			{
 				jsonString = actualMapping.source().string();
-//				JSONObject config = (JSONObject) new JSONParser().parse(returned);
+				//				JSONObject config = (JSONObject) new JSONParser().parse(returned);
 				jsonString = JsonOutput.prettyPrint(jsonString);
-//				JSONObject json = new JSONObject(jsonString); // Convert text to object
-//				SjsonString = json.toString(4);
+				//				JSONObject json = new JSONObject(jsonString); // Convert text to object
+				//				SjsonString = json.toString(4);
 				return jsonString;
 			}
 			catch (IOException e)
 			{
 				new OpenEditException(e);
 			}
-			
-		}		
+
+		}
 		return null;
 	}
 
@@ -2850,54 +2863,52 @@ public void addCustomFields(XContentBuilder inContent, Data inData) {
 		{
 			String type = (String) iterator.next();
 			PropertyDetail detail = getDetail(type);
-			if( detail != null)
+			if (detail != null)
 			{
-				if( detail.isDataType("objectarray") )
+				if (detail.isDataType("objectarray"))
 				{
 					Object childdata = inData.get(type);
-					if( childdata instanceof List)
+					if (childdata instanceof List)
 					{
-						Collection childdatalist = (List)childdata;
+						Collection childdatalist = (List) childdata;
 						for (Iterator iterator2 = childdatalist.iterator(); iterator2.hasNext();)
 						{
 							Map map = (Map) iterator2.next();
-							for (Iterator iterator3 = detail.getObjectDetails().iterator(); iterator3.hasNext();) 
+							for (Iterator iterator3 = detail.getObjectDetails().iterator(); iterator3.hasNext();)
 							{
 								PropertyDetail childdetail = (PropertyDetail) iterator3.next();
 								fixTypes(map, childdetail);
 							}
 						}
-					}	
+					}
 				}
 				else
 				{
 					fixTypes(inData, detail);
 				}
-			}	
+			}
 		}
 		return inData;
 	}
 
 	protected void fixTypes(Map inFields, PropertyDetail detail)
 	{
-		if( detail.isDataType("long") )
+		if (detail.isDataType("long"))
 		{
 			Object num = inFields.get(detail.getId());
-			if( num != null)
+			if (num != null)
 			{
-				if( num instanceof String)
+				if (num instanceof String)
 				{
-					num = Long.parseLong((String)num);						
+					num = Long.parseLong((String) num);
 				}
-				if( num instanceof Integer)
+				if (num instanceof Integer)
 				{
-					num = ((Integer)num).longValue();
+					num = ((Integer) num).longValue();
 				}
 			}
 			inFields.put(detail.getId(), num);
 		}
 	}
 
-
-	
 }

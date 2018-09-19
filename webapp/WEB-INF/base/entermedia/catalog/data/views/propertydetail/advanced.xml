@@ -1,6 +1,7 @@
 <properties >
 
-	<property id="stored" />	
+	<property id="stored" />
+	<property id="deleted" />	
 	<property id="externalid" />	
 	<property id="keyword" />	
 	<property id="filter" />	
