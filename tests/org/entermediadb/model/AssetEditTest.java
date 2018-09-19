@@ -17,6 +17,7 @@ import org.entermediadb.asset.edit.CategoryEditor;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.modules.translations.LanguageMap;
 import org.openedit.users.User;
 
 /**
@@ -261,12 +262,24 @@ public class AssetEditTest extends BaseEnterMediaTest
 		q.addSortBy("categories");
 	
 		getMediaArchive().getSearcherManager().setShowSearchLogs(getMediaArchive().getCatalogId(),true);
+	
 		
 		HitTracker hits = getMediaArchive().getAssetSearcher().search(q);
 		hits.toggleSelected("1");
 		hits.toggleSelected("2");
 		assertEquals( 2, hits.getSelections().size() );
 		CompositeAsset composite = new CompositeAsset(getMediaArchive(),hits);
+		ArrayList fields = new ArrayList();
+		fields.add("keywords");
+		fields.add("headline");
+	
+		LanguageMap headline = new LanguageMap();
+		headline.setText("en", "English");
+		headline.setText("de", "German");
+		composite.setValue("headline", headline);
+		
+		composite.setEditFields(fields);
+		composite.setSearcher(getMediaArchive().getAssetSearcher());
 		Collection existing = composite.getValues("keywords");
 		assertEquals(existing.size() , 1);
 		assertTrue(existing.contains("1"));
@@ -303,7 +316,8 @@ public class AssetEditTest extends BaseEnterMediaTest
 		values = product.getValues("keywords");
 		assertEquals( 1 , values.size());
 		assertTrue(values.contains("2"));
-		
+		LanguageMap map = (LanguageMap) product.getValue("headline");
+		assertNotNull(map);
 
 	}
 
