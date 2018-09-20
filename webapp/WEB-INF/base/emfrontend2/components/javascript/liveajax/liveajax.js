@@ -178,7 +178,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  		});
  	});  //document.on
 	
-	lQuery = function(selector) 
+	lQuery = function(selector)  //https://api.jquery.com/selector/
 	{
 		var runner = {};
 		runner.livequery = function()
@@ -187,7 +187,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 			var nodes = jQuery(selector);
 			if( arguments.length == 1 )
 			{
-				var func = arguments[1];
+				var func = arguments[0];
 				var item = {"selector":selector,"function":func};    
 		    	regelements.push(item);
 		    	try
