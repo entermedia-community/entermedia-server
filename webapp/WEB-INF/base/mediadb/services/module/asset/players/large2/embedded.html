@@ -1,0 +1,11 @@
+<span class="clearfix" id="main-media"
+	data-width="600"
+	data-height="400">
+#if( $asset.youtubelink)
+	##future use?
+#elseif( $asset.embeddedurl)
+	$pages.include("$home/${mediadbappid}/services/module/asset/players/embeddedplayer/index.html",$context)
+#elseif ( $asset.fileformat == "swf")
+	$pages.include("$home/${mediadbappid}/services/module/asset/players/swf.html",$context)
+#end
+</span>

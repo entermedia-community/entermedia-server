@@ -1,0 +1,20 @@
+#if (!$cell)
+	#set ($cell = $asset)
+#end
+
+#if (!$cell)
+	#set ($cell = $data)
+#end
+
+
+#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
+#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
+
+#if (!$pages.doesExist($thumbpath))
+	#set ($thumbpath =  "$themeprefix/images/mimetypes/missing.png")
+#end
+<img id="main-media"
+	data-width="50"
+	data-height="50"
+	#if($cell.caption) alt = "${cell.caption}" #else alt="${cell.name}" #end 
+	src="$!cdn$home$thumbpath" border="0">

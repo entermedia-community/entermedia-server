@@ -1,0 +1,5 @@
+#Thu Apr 27 09:03:43 CDT 2017
+Original\ image=Image originale
+$asset=$asset
+Preview\ Image=Aperçu
+
