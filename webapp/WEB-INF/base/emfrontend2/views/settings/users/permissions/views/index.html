@@ -26,14 +26,14 @@
     
 	<input type="hidden" name="field" value="profilesearchfilters" />
 	<input type="hidden" name="profilesearchfilters.value" value="hideassettype" />
-	<div style="margin: 0 -20px;">
+	<div>
 
         #if ( !$permissiontype )
            #set ( $permissiontype = "*" )
         #end
         
 	    #set( $hits = $permissionsearcher.query().match("permissiontype",$permissiontype).sort("permissiontype").sort("ordering").search() )
-    	<table class="striped emdata settings-table">	
+    	<table class="table table-striped emdata settings-table">	
 	    
 	    #set( $section = "none")
     	#foreach($item in $hits )
@@ -59,9 +59,9 @@
     	#end
     	</table>
     </div>
+	<input class="btn btn-sm btn-primary small" type="submit" value="[[Save]]"/>
+<a class="btn btn-sm btn-wargning red"  href="$home$apphome/views/settings/users/permissions/views/delete.html?id=$groupid" onclick="return confirm('[[Are you sure you want to delete the security group]] $data.name')">[[Delete]]</a>
 	
-<a class="btn red"  href="$home$apphome/views/settings/users/permissions/views/delete.html?id=$groupid" onclick="return confirm('[[Are you sure you want to delete the security group]] $data.name')">[[Delete]]</a>
-	<input class="btn small" style="float: right;" type="submit" value="[[Save]]"/>
 </form>
 
 <script type="text/javascript">

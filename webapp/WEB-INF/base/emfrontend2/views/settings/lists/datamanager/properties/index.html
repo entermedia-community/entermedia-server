@@ -7,7 +7,7 @@
 			<form action="$home$dataroot/properties/addnew.html" name="addnewprop">
 				<input type="hidden" name="catalogid" value="$!catalogid" />
 				<input type="hidden" name="searchtype" value="$searchtype" />
-				<strong>[[Add New Field]]: </strong><input class="field" type="text" name="newproperty"  /><input class="btn" style="margin-top: -2px;" type="submit" value="[[Save]]" />
+				<strong>[[Add New Field]]: </strong><input class="field" type="text" name="newproperty"  /><input class="btn btn-sm btn-primary" style="margin-top: -2px;" type="submit" value="[[Save]]" />
 		</form>
 		#end
 	</div>
@@ -15,7 +15,7 @@
 	<a href="$dataroot/properties/makedefault.html?searchtype=$searchtype&catalogid=$catalogid" class="btn" >[[Copy to catalog defaults]]</a>
 	#end
 	<div id="emselectable">
-	<table class="striped emdata">
+	<table class="table table-striped emdata">
 		<tr class="tableheader">
 			<th #if ($detail.getExternalId ) colspan="2" #end>[[Field Name]]</th>
 			<th style="width:200px;">[[ID]]</th>

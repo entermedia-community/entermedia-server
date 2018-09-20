@@ -3,7 +3,7 @@
 	<strong>Editing $!property.name</strong>
 	<div style="float:right;">
 	#if($detail.isList() || $detail.isMultiValue())
-		<a class="btn" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">Edit Values</a>
+		<a class="btn btn-xs btn-primary" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">Edit Values</a>
 	#end
 [[Current Field]]:
 	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px; width: 80px;" >
@@ -51,21 +51,21 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 </div>
 
 
-<input class="btn right" style="margin-right: 20px;" type="submit" value="Save" />
+<input class="btn btn-sm btn-primary right" style="margin-right: 10px;" type="submit" value="Save" />
 
-</form>
+
 
 #if( $savedok && $origURL )
 <div class="embutton">
-	<a href="$origURL">[[Go Back]]</a>	
+	<a class="btn btn-sm btn-secondary" href="$origURL">[[Go Back]]</a>	
 </div>	
 #end
 
 
-<a class="btn red" style="margin-left: 20px; margin-right: 5px;" href="remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
-<a class="btn" style="margin-top: 3px;" id="viewadvanced">View Advanced Options</a>
+<a class="btn btn-sm btn-warning red" style="margin-right: 10px; margin-right: 5px;" href="remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
+<a class="btn btn-sm btn-secondary" style="" id="viewadvanced">View Advanced Options</a>
 
-
+</form>
 
 <script>
     $('#viewadvanced').click(function(){

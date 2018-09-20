@@ -1407,6 +1407,206 @@ div#folders.add .folder {
 
 
 
+#module-dropdown {
+    padding-left: 8px !important;
+    padding-right: 6px !important;
+    position: relative;
+}
+#module-dropdown span {
+    background: url('../images/sort-desc.png') 0 0 no-repeat;
+    width: 10px;
+    height: 10px;
+    margin: 0;
+    padding: 1px 0 2px 0;
+    position: relative;
+    top: -4px;left 4px;
+}
+#module-dropdown.active span {
+    background: url('../images/sort-asc.png') 0 0 no-repeat;
+}
+#module-list {
+    position: absolute;
+    background: #fff;
+    border: 1px solid #999;
+    border-radius: 5px 5px 5px 5px;
+    top: 38px;
+    z-index: 600;
+    padding: 0;
+    margin: 0;
+    box-shadow: 0 2px 6px 2px rgba(0,0,0,0.4);
+}
+#module-list li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    float: none;
+    border-bottom: 1px solid #ddd;
+}
+#module-list li:first-child {
+    border-top: 1px solid #ddd;
+    margin: 0;
+}
+#module-list li a {
+    background: none !important;
+    border: none;
+    color: #444;
+    padding: 10px;
+    box-shadow: none;
+    border-radius: 0;
+    text-align: left;
+    display: block;
+    float: none;
+    margin: 0;
+    font-weight: normal;
+}
+#module-list li a:hover {
+    background: #eee !important;
+}
+#module-list li a:active {
+    border: none;
+    top: 0;
+}
+#share-container .emdetailactions {
+    background: none;
+}
+
+/* DATA MANAGER CSS */
+
+.tabnav {
+    margin: 30px 0 0 0;
+    border-bottom: 1px solid #ddd;
+    padding: 0 20px;
+    height: 21px;
+}
+.tabnav a {
+    padding: 5px 10px;
+    background: #f9f9f9;
+    color: #999;
+    font-size: 14px;
+    border: 1px solid #eee;
+    border-bottom: none;
+    margin-right: 10px;
+}
+.tabnav a:hover {
+    background: #fff;
+    color: #3DAACD;
+    border-color: #ddd;
+    cursor: pointer;
+    box-shadow: 0 0 4px 1px rgba(0,0,0,0.05);
+}
+.tabnav a.current {
+    border-color: #ddd;
+    background: #fff;
+    color: #3DAACD;
+    padding-bottom: 6px;
+    box-shadow: 0 0 8px 1px rgba(0,0,0,0.1);
+}
+.tab-actions {
+    position: relative;
+    border-bottom: 1px solid #ddd;
+    padding: 8px 20px;
+    background: rgb(255,255,255); /* Old browsers */
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(239,239,239,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(239,239,239,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* IE10+ */
+    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(239,239,239,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#efefef',GradientType=0 ); /* IE6-9 */
+}
+.tab table {
+    width: 100%;
+}
+.tab table tr td:first-child {
+    padding-left: 20px !important;
+}
+.tab-actions .field {
+    width: 170px;
+    padding: 2px 5px 2px 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    margin: 0 5px;
+    height: 19px;
+    position: relative;
+    
+}
+.emselectabledetails {
+    font-size: 12px;
+    color: #666;
+}
+.tab .delete-row {
+    margin-top: 5px;
+    margin-right: 10px;
+}
+h2 {
+    margin-top: 0;
+}
+#geomap .emdatafield {
+    display: none;
+}
+#advanced-dm-search {
+    padding: 5px 0;
+    width: 100%;
+}
+.btn.flat-left {
+    border-radius: 0 5px 5px 0;
+}
+.btn.flat-right {
+    border-radius: 5px 0 0 5px;
+    border-right-color: #fff;
+}
+#advanced-dm-search .settings-table {
+    margin: 5px 0;
+    border: 2px solid #ddd !important;
+    width: inherit;
+}
+#advanced-dm-search .settings-table tr, #edit-data .settings-table tr {
+    padding: 2px 0;
+}
+#advanced-dm-search .settings-table tr:nth-child(even) {
+    background: #fff;
+}
+#advanced-dm-search .settings-table tr td, #edit-data .settings-table tr td, #settings-no-margin table tr td:first-child {
+    padding: 6px 10px;
+}
+#advanced-dm-search .settings-table tr td:first-child, #edit-data .settings-table tr td:first-child {
+    border-right: 1px dashed #ddd;
+    width: 100px;
+    text-align: right;
+}
+#advanced-dm-search .settings-table select, #edit-data .settings-table select {
+    margin: 9px 0;
+}
+#dm-container {
+    overflow-x: scroll;
+}
+.liquid-sizer {
+
+}
+.liquid-sizer h2 {
+    margin: 0 20px 20px 20px;
+}
+#embody #emcontainer .settings table tr td:first-child, #meta-no-margin table tr td:first-child {
+    padding: 4px 10px 4px 20px !important;
+}
+.tab-actions strong {
+    position: relative;
+    top: 2px;
+    line-height: 32px;
+}
+#meta-no-margin {
+    margin: -20px;
+}
+#meta-no-margin .buttons {
+    margin: 0 20px;
+}
+#meta-no-margin .info {
+    margin: 20px;
+}
+
+
+
+
 
 
 @font-face {

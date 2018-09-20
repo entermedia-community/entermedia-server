@@ -6,7 +6,7 @@ $context.putPageValue( "groupid", $group.id)
 
 <!--  under em -->
 <div class="ui-widget commentbox no-top-margin" style="overflow: hidden;">
-    <div class="ui-widget-header">$groupName</div>
+    <div class="ui-widget-header"><span class="widget-header-title">$groupName</span></div>
     <div class="ui-widget-content emselectmenu">
 		<table class="settings-table">
 			<tr><td><h4>[[Members]]</h4></td></tr>
@@ -35,8 +35,8 @@ $context.putPageValue( "groupid", $group.id)
                     $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
                     
                     <p>
-                    	<a class="btn" style="margin-top: 15px;" href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
-                    	<a class="btn red" style="float: right;" href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
+                    	<a class="btn btn-sm btn-primary" style="margin: 10px;" href="#" onclick="jQuery('#groupeditform').submit();" >[[Save Changes]]</a>
+                    	<a class="btn btn-sm btn-warning  red"  href="$home$usermanagerhome/groups/deletegroups.html?groupid=$group.id">[[Delete Group]]</a>	
                     </p>
                 </form>
     	</div>

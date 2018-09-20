@@ -1,15 +1,15 @@
 <h3>Server Status </h3>
 
 <p>
-<a class="btn btn-sm" href="mappingerrors.html" id="tools-view-errors">[[View Known Mapping Conflicts]]</a>
+<a class="btn btn-sm btn-primary" href="mappingerrors.html" id="tools-view-errors">[[View Known Mapping Conflicts]]</a>
 </p>
 
 <p>
-<a class="btn btn-sm" href="validateall.html" id="tools-fix-errors">[[Validate All Mapping Schema]]</a>
+<a class="btn btn-sm btn-primary" href="validateall.html" id="tools-fix-errors">[[Validate All Mapping Schema]]</a>
 </p>
 
 <p>
-<a class="btn btn-sm" href="reloadall.html" id="tools-fix-errors">[[Reindex]]</a>
+<a class="btn btn-sm btn-primary" href="reloadall.html" id="tools-fix-errors">[[Reindex]]</a>
 </p>
 
 
@@ -31,19 +31,19 @@
 <Br>
 </p>
 <p>
-<a class="btn btn-sm" href="reloadlists.html" id="tools-reload-lists">[[Reload lists]]</a>
+<a class="btn btn-sm btn-primary" href="reloadlists.html" id="tools-reload-lists">[[Reload lists]]</a>
 <br>
 [[This allows lists loaded from the installation to be integrated with your own lists]].
 
 </p>
 
 <p>
-<a class="btn btn-sm" href="./snapshots.html" id="tools-view/snapshots">[[View Snapshots]]</a>
+<a class="btn btn-sm btn-primary" href="./snapshots.html" id="tools-view/snapshots">[[View Snapshots]]</a>
 <br>
 [[Snapshots are used by ElasticSearch to store and restore database state]].
 </p>
 
-<a class="btn btn-sm" href="clearcaches.html" id="tools-reload-lists">[[Clear Cached Data]]</a>
+<a class="btn btn-sm btn-primary" href="clearcaches.html" id="tools-reload-lists">[[Clear Cached Data]]</a>
 <br>
 
 
@@ -53,11 +53,11 @@
 #if($mediaarchive.getData("oauthprovider", "google").enabled == "true")
 <h3>Google Drive Connectivity</h3>
 
-<a class="btn" href="$apphome/views/settings/google/connect.html">Connect Google Drive and Admin</a>
+<a class="btn btn-sm btn-primary" href="$apphome/views/settings/google/connect.html">Connect Google Drive and Admin</a>
 #end
 <h3>[[Search Logs]]</h3>
 
-<a class="btn btn-sm" href="togglesearchlogs.html" id="tools-lof-search">
+<a class="btn btn-sm  btn-primary" href="togglesearchlogs.html" id="tools-lof-search">
 #if($mediaarchive.getSearcherManager().getShowSearchLogs($catalogid) )
 [[Enabled]]
 #else
