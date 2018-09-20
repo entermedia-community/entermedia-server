@@ -2,7 +2,7 @@
           <div class="c33l">
             <div class="subcl">
 <div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">[[Asset Types]]</div>
+<div class="ui-widget-header"><span class="widget-header-title">[[Asset Types]]</span></div>
 #set($current = $context.getRequestParameter("assettype")) 
 #set($searcher = $searcherManager.getSearcher($catalogid, "assettype"))
 #if( $current)
@@ -15,9 +15,15 @@
  <li #if($current == $item.id) class="active" #end ><a href="$home$apphome/views/settings/modules/asset/assettypes/views/index.html?assettype=$item.id">$item.getName($context.locale)</a></li>
 #end
 </ul>
-<a class="btn" href='$home$apphome/views/settings/modules/asset/assettypes/edit/addnew.html'>[[Add New]]</a>
+
+
+<div  class="ui-widget-actions">
+<a class="btn btn-small btn-primary" href='$home$apphome/views/settings/modules/asset/assettypes/edit/addnew.html'>[[Add New]]</a>
+</div>
 
 </div>
+
+
 </div>
 
 </div>

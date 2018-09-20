@@ -14,15 +14,14 @@
 			#if($module)
 			<div class="ui-widget" >
 				<div  class="ui-widget-header">
-					<ul style="list-style: none; margin:2px;">#set( $urlbase = "$home$apphome/views/settings/modules" )
-						<li class="dropdown"><a href="#" data-toggle="dropdown">$module [[Settings]] <span class="caret"></span></a> 
-						   <ul id="language-bar-select" class="dropdown-menu">
-							#foreach ( $amodule in $userprofile.getModules() )
-								<li><a href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a></li>
+					<div class="widget-header-title">
+						<a class="dropdown-toggle" href="#" data-toggle="dropdown">$module [[Settings]]</a>
+						<div class="dropdown-menu">
+						#foreach ( $amodule in $userprofile.getModules() )
+								<a class="dropdown-item" href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
 							#end
-					      </ul>
-					    </li>
-					</ul>
+						</div>
+					</div>
 				</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
@@ -43,7 +42,9 @@
 			</div>
 			#end
 			<div class="ui-widget" >
-				<div  class="ui-widget-header">[[System Settings]]</div>
+				<div  class="ui-widget-header">
+				<span class="widget-header-title">[[System Settings]]</span>
+				</div>
 				<div  class="ui-widget-content categories-widget no-padding-for-real">
 					<ul id="settings-menu" class="sidebar-list">
 						
@@ -65,7 +66,7 @@
 </div>
 
 <div class="col-content" id="maincontent">
-	<div class="liquid-sizer settings">
+	<div class="settings">
 		$pages.includeContent()
 	</div>
 </div>

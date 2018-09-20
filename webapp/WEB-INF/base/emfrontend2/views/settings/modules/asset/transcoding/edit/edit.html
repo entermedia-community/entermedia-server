@@ -1,5 +1,5 @@
 <div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">[[Settings]]</div>
+<div class="ui-widget-header"><span class="widget-header-title">[[Settings]]</span></div>
 <div  class="ui-widget-content">
 
 <div id="editlayout">
@@ -20,19 +20,20 @@ $context.putPageValue("view", $view)
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
 $pages.include("/system/components/xml/detaileditor.html", $context)
-
-<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
-<a class="btn"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
-<a class="btn" style="margin-left:20px" 
+<div class="ui-widget-actions">
+<a class="btn btn-sm btn-primary" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
+<a class="btn btn-sm btn-secondary"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
+<a class="btn btn-sm btn-secondary" style="margin-left:20px" 
 	href='$home$apphome/views/settings/modules/asset/presetconfig/edit/edit.html?id=${data.id}'>
 [[View Parameters]]
 </a>	
 
 
-<a class="btn red" style="float: right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
+<a class="btn  btn-sm btn-warning red" style="float: right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
 		[[Delete]]
 	</span></a>
+</div>
 <br>
 <div id="messagearea">$!message
 </div>

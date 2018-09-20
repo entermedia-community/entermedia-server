@@ -1,3 +1,4 @@
+
 <ul id="folders" class="fwlist">
 	
 	#foreach($source in $sources )
@@ -23,14 +24,14 @@
 	<li class="add">
 			<div class="folder"></div>
 
-			<a class="btn right" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">Add Hot Folder</a>
+			<a class="btn btn-sm btn-primary float-right" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">Add Hot Folder</a>
 			
 			#set( $pathEventManager = $moduleManager.getBean($catalogid,"pathEventManager") )
 			#set( $event = $pathEventManager.getPathEvent("/$catalogid/events/importing/importfolders.html") )
 			#if( $event.isRunning() )
-				<a class="btn right">Scan in Progress</a>
+				<a class="btn btn-sm btn-primary float-right">Scan in Progress</a>
 			#else
-				<a class="btn right" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">Schedule Importing</a>
+				<a class="btn btn-sm btn-primary float-right" href="$home$apphome/views/settings/events/triggers/edit/edit.html?eventpath=/$catalogid/events/importing/importfolders.html">Schedule Importing</a>
 			#end
 	</li>
 	

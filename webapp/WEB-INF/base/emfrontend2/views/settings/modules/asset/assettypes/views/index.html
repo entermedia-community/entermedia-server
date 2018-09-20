@@ -5,7 +5,7 @@
 	#set($type = $typesearcher.searchById($assettype))
 
 	<div class="ui-widget emdetaileditorbox commentbox no-top-margin">
-	<div class="ui-widget-header">[[Properties]]
+	<div class="ui-widget-header"><span class="widget-header-title">[[Properties]]</span>
 	</div>	
 	<div class="ui-widget-content" id="editlayout">
 
@@ -21,9 +21,9 @@
 			$context.putPageValue("details", $details)
 			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 			
-			<a class="btn" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
+			<a class="btn btn-sm btn-primary" href="#" onclick="jQuery('#assettypeeditform').submit();" >[[Save Changes]]</a>
 #if( $type )
-<a class="btn red" onclick="return confirm('[[Are you sure you want to delete]] $type?')" href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>[[Delete]]</a>
+<a class="btn btn-sm btn-warning red" onclick="return confirm('[[Are you sure you want to delete]] $type?')" href='$home$apphome/views/settings/modules/asset/assettypes/edit/delete.html?id=$type.id'>[[Delete]]</a>
 #end			
 		</form>
 	</div>	
