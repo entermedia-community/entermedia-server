@@ -1,7 +1,7 @@
-jQuery(document).ready(function() 
+$(document).ready(function() 
 { 
 	//Open and close the tree
-	$('.emtree-widget ul li div .arrow').livequery('click', function(event){
+	lQuery('.emtree-widget ul li div .arrow').livequery('click', function(event){
 			event.stopPropagation();
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest('.noderow');
@@ -30,7 +30,7 @@ jQuery(document).ready(function()
 	});
 
 	//Select a node
-	$('.emtree-widget ul li div .name').livequery('click', function(event) 
+	lQuery('.emtree-widget ul li div .name').livequery('click', function(event) 
 	{
 		event.stopPropagation();
 		$('.emtree ul li div').removeClass('selected');
@@ -58,7 +58,7 @@ jQuery(document).ready(function()
 			//Not really needed?
 			//node.load(home + "/components/emtree/tree.html?toggle=true&tree-name=" + tree.data("treename") + "&nodeID=" + nodeid + "&depth=" + depth);
 		}
-		var event = jQuery.Event( "emtreeselect" );
+		var event = $.Event( "emtreeselect" );
 		event.tree = tree;
 		event.nodeid = nodeid;
 		$(document).trigger(event);
@@ -100,11 +100,11 @@ jQuery(document).ready(function()
 		params['treeleftlocation'] = leftlocation;
 		params['depth'] = depth;
 		
-		jQuery.get(prefix + nodeid + postfix,
+		$.get(prefix + nodeid + postfix,
 				params,	
 				function(data) 
 				{
-					var cell = jQuery("#" + targetdiv); //view-picker-content
+					var cell = $("#" + targetdiv); //view-picker-content
 					//console.log(cell);
 					cell.replaceWith(data);
 					//cell.html(data);
@@ -126,7 +126,7 @@ jQuery(document).ready(function()
 				var tree = $(this).closest(".emtree");
 				var home = tree.data("home");
 
-				jQuery.get(home + "/components/emtree/deletecategory.html", {
+				$.get(home + "/components/emtree/deletecategory.html", {
 					categoryid: id,
 					'tree-name': tree.data("treename"),
 					} ,function () {
@@ -141,7 +141,7 @@ jQuery(document).ready(function()
 	} );
 */			
 	//need to init this with the tree
-	$("div#treeholder").livequery( function()
+	lQuery("div#treeholder").livequery( function()
 	{	
 		var treeholder = $(this);
 		var top = treeholder.data("treetoplocation");
@@ -154,12 +154,12 @@ jQuery(document).ready(function()
 		}
 	});
 
-	$('#treeholder input').livequery('click', function(event)
+	lQuery('#treeholder input').livequery('click', function(event)
 	{
 		event.stopPropagation();
 	});
 
-	$("#treeholder input").livequery('keyup', function(event) 
+	lQuery("#treeholder input").livequery('keyup', function(event) 
 	{
        	var input = $(this);
        	var node = input.closest(".noderow");
@@ -208,7 +208,7 @@ jQuery(document).ready(function()
 		contextmenu.hide();
 		return node;
 	}
-	$(".treecontext #nodeproperties").livequery('click', function(event) 
+	lQuery(".treecontext #nodeproperties").livequery('click', function(event) 
 	{
 				event.stopPropagation();
 				var node = getNode(this);
@@ -219,7 +219,7 @@ jQuery(document).ready(function()
 				return false;
 	} );
 
-	$(".treecontext #addmedia").livequery('click', function(event) 
+	lQuery(".treecontext #addmedia").livequery('click', function(event) 
 	{
 				event.stopPropagation();
 				var node = getNode(this);
@@ -247,7 +247,7 @@ jQuery(document).ready(function()
 	} );
 
 	
-	$(".treecontext #renamenode").livequery('click', function(event) {
+	lQuery(".treecontext #renamenode").livequery('click', function(event) {
 				event.stopPropagation();
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
@@ -259,7 +259,7 @@ jQuery(document).ready(function()
 				});
 				return false;
 	} );
-	$(".treecontext #deletenode").livequery('click', function(event) {
+	lQuery(".treecontext #deletenode").livequery('click', function(event) {
 		event.stopPropagation();
 		var node = getNode(this);
 		var tree = node.closest(".emtree");
@@ -276,7 +276,7 @@ jQuery(document).ready(function()
 		}	
 		return false;
 	} );
-	$(".treecontext #createnode").livequery('click', function(event) {
+	lQuery(".treecontext #createnode").livequery('click', function(event) {
 		event.stopPropagation();
 		var node = getNode(this);
 		var tree = node.closest(".emtree");
@@ -289,7 +289,7 @@ jQuery(document).ready(function()
 		return false;
 	} );
 
-	$(".treecontext #createcollection").livequery('click', function(event) 
+	lQuery(".treecontext #createcollection").livequery('click', function(event) 
 	{
 		event.stopPropagation();
 		var node = getNode(this);
@@ -350,7 +350,7 @@ function getPosition(e) {
 	}	
   });
 		  
-   $('body').livequery('click', function () {
+  lQuery('body').livequery('click', function () {
      	var $contextMenu = $(".treecontext");
      	$contextMenu.hide();
      	$(".categorydroparea:first").removeClass('selected');     	

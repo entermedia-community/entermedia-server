@@ -27,11 +27,11 @@
 
 $(document).ready(function() 
 {
-	var app = jQuery("#application");
+	var app = $("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
-	var video = jQuery("#videoclip");
+	var video = $("#videoclip");
 	video = video[0]; 
 	
 	var inTime = video.currentTime;
@@ -46,7 +46,7 @@ $(document).ready(function()
 	    video.play();
 	    link.addClass("playing");
 	    link.text(link.data("stoptext"));
-	    jQuery("#captioninput").focus();
+	    $("#captioninput").focus();
 	};
 	
 	stopchunk = function()
@@ -54,7 +54,7 @@ $(document).ready(function()
 		video.pause();
 		link.removeClass("playing");
 	    link.text(link.data("playtext"));
-	    jQuery("#captioninput").focus();
+	    $("#captioninput").focus();
 	};			    
 
 	saveCaptionToServer = function()
@@ -82,9 +82,9 @@ $(document).ready(function()
 	}	
 
 	//Closed caption stuff
-	jQuery("#captioninput").livequery( "keydown",function(e) 
+	lQuery("#captioninput").livequery( "keydown",function(e) 
 	{
-			var theinput = jQuery(this);
+			var theinput = $(this);
 			
 			var keyCode = e.keyCode || e.which; 
 
@@ -105,13 +105,13 @@ $(document).ready(function()
 				saveCaptionToServer();
 			}
 	});
-	jQuery("#addcaption").livequery('submit',function(e)
+	lQuery("#addcaption").livequery('submit',function(e)
 	{ 
 		e.preventDefault();
 	 	return false;
 	});
 	
-	jQuery("#playtab").livequery("click",function(e)
+	lQuery("#playtab").livequery("click",function(e)
 	{
 		e.preventDefault();
 		if(link.hasClass("playing") )
@@ -125,13 +125,13 @@ $(document).ready(function()
 		
 	});
 	
-	jQuery(".lenguagepicker").on("change",function(e)
+	$(".lenguagepicker").on("change",function(e)
 	{
 		var selected = $(this);
 		$("#langform").submit();
 	});
 	
-	jQuery("#videoclip").on("timeupdate",function(e)
+	$("#videoclip").on("timeupdate",function(e)
 	{
 		var link = $("#playtab");
 		if( video.paused )
@@ -153,7 +153,7 @@ $(document).ready(function()
 		}
 	});	
 	
-	jQuery("#removetime").livequery("click",function(e)
+	lQuery("#removetime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
@@ -161,14 +161,14 @@ $(document).ready(function()
 		return false;
 	});
 	
-	jQuery("#addtime").livequery("click",function(e)
+	lQuery("#addtime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
 		video.currentTime = video.currentTime + .5;
 		return false;
 	});
-	jQuery("#removecaption").livequery("click",function(e)
+	lQuery("#removecaption").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
@@ -218,7 +218,7 @@ $(document).ready(function()
 	}
 
 	
-	jQuery(".data-selection").livequery("click",function(e)
+	lQuery(".data-selection").livequery("click",function(e)
 	{
 		e.preventDefault();
 		selectClip(this);

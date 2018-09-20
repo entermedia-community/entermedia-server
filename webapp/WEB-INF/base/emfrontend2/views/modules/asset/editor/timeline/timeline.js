@@ -12,13 +12,13 @@ function zeroPad(num, numZeros) {
 
 $(document).ready(function() 
 {
-	var app = jQuery("#application");
+	var app = $("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home")	+ app.data("themeprefix");
 
 	$("#clipdetails :input").prop('disabled', true);
 
-	var videoclip = jQuery("#videoclip");
+	var videoclip = $("#videoclip");
 	var video = videoclip[0]; 
 
 	copyStartTime = function()
@@ -114,7 +114,7 @@ $(document).ready(function()
 		}
 		
 	});
-	$("#timecodestart-value").livequery("click",function(e)
+	lQuery("#timecodestart-value").livequery("click",function(e)
 	{
 		var input = $(this);
 		$("input").removeClass("selectedtime");
@@ -131,7 +131,7 @@ $(document).ready(function()
 		input.addClass("selectedtime");
 			
 	});
-	$("#timecodelength-value").livequery("click",function(e)
+	lQuery("#timecodelength-value").livequery("click",function(e)
 	{
 		var input = $(this);
 		$("input").removeClass("selectedtime");
@@ -151,39 +151,39 @@ $(document).ready(function()
 		
 	});
 	
-	$("#cliplabel\\.value").livequery("keyup", function()
+	lQuery("#cliplabel\\.value").livequery("keyup", function()
 	{
 		updateSelectedClip();		
 	});
 
 
-	$("#timecodestart-value").livequery("blur", function()
+	lQuery("#timecodestart-value").livequery("blur", function()
 	{
 		updateSelectedClip();
 	});
 
-	$("#timecodelength-value").livequery("blur", function()
+	lQuery("#timecodelength-value").livequery("blur", function()
 	{
 		updateSelectedClip();		
 	});
 	
-	jQuery(".removetime").livequery("click",function(e)
+	lQuery(".removetime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		video.currentTime = video.currentTime - 1;
 		
 	});
-	jQuery(".addtime").livequery("click",function(e)
+	lQuery(".addtime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		video.currentTime = video.currentTime + 1;
 	});
-	jQuery("#removeclip").livequery("click",function(e)
+	lQuery("#removeclip").livequery("click",function(e)
 	{
 		e.preventDefault();
 		$(".selectedclip").remove();
 	});
-	jQuery("#playclip").livequery("click",function(e)
+	lQuery("#playclip").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
@@ -204,7 +204,7 @@ $(document).ready(function()
 		}
 	});
 	
-	jQuery("#addnewcopy").livequery("click",function(e)
+	lQuery("#addnewcopy").livequery("click",function(e)
 	{
 		e.preventDefault();
 		console.log("Make copy");
@@ -236,7 +236,7 @@ $(document).ready(function()
 				
 	});
 	
-	jQuery("#savetimeline").livequery("click",function(e)
+	lQuery("#savetimeline").livequery("click",function(e)
 	{
 		e.preventDefault();
 		//Grab all the dom... Submit it to a method, render
@@ -277,7 +277,7 @@ $(document).ready(function()
     	}); 
 	});
 	
-	jQuery("#removetime").livequery("click",function(e)
+	lQuery("#removetime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
@@ -285,7 +285,7 @@ $(document).ready(function()
 		return false;
 	});
 	
-	jQuery("#addtime").livequery("click",function(e)
+	lQuery("#addtime").livequery("click",function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
@@ -295,7 +295,7 @@ $(document).ready(function()
 	
 	
 	
-	jQuery(".data-selection").livequery("click",function(e)
+	lQuery(".data-selection").livequery("click",function(e)
 	{
 		e.preventDefault();
 		selectClip(this);
@@ -402,8 +402,8 @@ $(document).ready(function()
 #set($time = $context.getRequestParameter("jumpto"))
 #if($time)
 
-	 var video = jQuery("#video");
-	jQuery("#video").bind("loadeddata", function() {
+	 var video = $("#video");
+	$("#video").bind("loadeddata", function() {
 		jump('$time');
 		pause();
 	});
@@ -416,7 +416,7 @@ $(document).ready(function()
 		$("input").removeClass("selectedlength");
 	}
 
-	jQuery(".grabresize").livequery(function()
+	lQuery(".grabresize").livequery(function()
 	{
 		var mainimage = $(this).closest(".timecell");
 		var slider = $(this).closest(".time-slider");
@@ -477,7 +477,7 @@ $(document).ready(function()
 		});	
 	});
 
-	jQuery(".timecell").livequery(function()
+	lQuery(".timecell").livequery(function()
 	{
 		var mainimage = $(this);
 		var clickspot = false;

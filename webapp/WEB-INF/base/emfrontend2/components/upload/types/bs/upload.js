@@ -20,18 +20,18 @@ var uploadid;
  	        	    }
         	    }
         	    files = allfiles;
-				var inputbox = jQuery("#upload_field")[0];
-				jQuery("#upload_field").triggerHandler("html5_upload.setFiles",[allfiles]);
+				var inputbox = $("#upload_field")[0];
+				$("#upload_field").triggerHandler("html5_upload.setFiles",[allfiles]);
 				
 				inputbox.count = allfiles.length;
 				
-	         	//jQuery("#upload_field").setFiles( allfiles );
+	         	//$("#upload_field").setFiles( allfiles );
 	         	
-	         	jQuery("#uploadinstructionsafter").hide();
+	         	$("#uploadinstructionsafter").hide();
 	        	var startb = $("#startbutton");
 	        	$(startb).text("Upload");
     			$(startb).removeAttr('disabled');
-	        	jQuery("#uploadinstructionsafter").show();
+	        	$("#uploadinstructionsafter").show();
 	        	 
 	        	 var regex = new RegExp("currentupload", 'g');  
 	        	 
@@ -61,13 +61,13 @@ var uploadid;
 // wait for the DOM to be loaded 
 $(document).ready(function() 
 {	
-	home = jQuery("#application").data("home") + jQuery("#application").data("apphome"); 
-    $('#filePicker').livequery('click',function(e){
+	home = $("#application").data("home") + $("#application").data("apphome"); 
+	lQuery('#filePicker').livequery('click',function(e){
         $('#upload_field').trigger('click');
         e.preventDefault(); 
      });
 
-    jQuery("#startbutton").livequery('click',function(e) 
+	lQuery("#startbutton").livequery('click',function(e) 
     {
     	e.preventDefault(); 
     	var valid = $("#uploaddata").validate().form();
@@ -77,12 +77,12 @@ $(document).ready(function()
     	$(this).text("Uploading");
     	$(this).attr('disabled', 'disabled');
     	 $("#viewassetsbtn").attr('disabled', 'disabled');
-    	jQuery("#upload_field").triggerHandler("html5_upload.start");
+    	$("#upload_field").triggerHandler("html5_upload.start");
     	
     });
 
 
-	jQuery(".drop-over").livequery(function()
+	lQuery(".drop-over").livequery(function()
 	{
 		var div = $(this);
 		
@@ -105,7 +105,7 @@ $(document).ready(function()
 		            if(e.originalEvent.dataTransfer.files.length) {
 		                e.preventDefault();
 		                e.stopPropagation();
-						jQuery("#upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
+						$("#upload_field").triggerHandler('html5_upload.filesPicked', [e.originalEvent.dataTransfer.files]);						
 		            }   
 		        }
 		    }
@@ -113,7 +113,7 @@ $(document).ready(function()
 	
 	});
 				
-	jQuery("#upload_field").livequery( function() 
+	lQuery("#upload_field").livequery( function() 
 	{
 
 		var inputfield = $(this);
@@ -135,7 +135,7 @@ $(document).ready(function()
 	         sendBoundary: window.FormData || $.browser.mozilla,
 	         onStart: function(event, total, files) 
 	         {
-	        	 //jQuery(".uploadinstructions").hide();
+	        	 //$(".uploadinstructions").hide();
         	  	 console.log("On start " + files.length );
 	        	 var completed = $("#up-files-list li").clone();
 			    $("#up-files-list").empty();
@@ -187,12 +187,12 @@ $(document).ready(function()
     				   allfiles = new Array();
     				   
 		   				var completed = $("#up-files-list-completed li span");
-						jQuery.each(completed,function()
+						$.each(completed,function()
 						{
 							$(this).removeAttr("id");
 						});
-    				   jQuery("#filePicker").text("Pick More Files...");
-    				   jQuery("#upload_field").removeAttr('disabled');
+    				   $("#filePicker").text("Pick More Files...");
+    				   $("#upload_field").removeAttr('disabled');
     				   
     				   var viewassets = $("#viewassetsbtn");
 	        		   viewassets.removeAttr('disabled');

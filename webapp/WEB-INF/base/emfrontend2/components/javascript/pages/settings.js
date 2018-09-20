@@ -1,8 +1,8 @@
 
-	jQuery(document).ready(function() 
+	$(document).ready(function() 
 	{ 
 	
-	      $('#datamanager-workarea th.sortable').livequery("click",function()
+		lQuery('#datamanager-workarea th.sortable').livequery("click",function()
 	      {
 	      		var table = $("#main-results-table");
                 var args = {oemaxlevel:1,hitssessionid:table.data("hitssessionid"),origURL:table.data("origURL"),catalogid:table.data("catalogid"),searchtype:table.data("searchtype")};
@@ -21,29 +21,29 @@
                    column.addClass("up");
                    args.sortby=fieldid + 'Up';
                 }
-                jQuery('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html',args);
+                $('#datamanager-workarea').load( '$home$apphome/views/settings/lists/datamanager/list/columnsort.html',args);
         });
 	
 	
-/*		jQuery(".metadatadroppable").livequery(
+/*		$(".metadatadroppable").livequery(
 				function()
 				{
 				
 				
-					jQuery(this).draggable({
+					$(this).draggable({
 						start: function(){
-							var width = jQuery(this).width();
-							var id = jQuery(this).attr('id');
+							var width = $(this).width();
+							var id = $(this).attr('id');
 							
-					        jQuery(this).hide();
-					        jQuery(this).attr('id', 'old-' + id);
-					        jQuery('#' + id).width(width);
-					        jQuery(this).attr('id', id);
+					        $(this).hide();
+					        $(this).attr('id', 'old-' + id);
+					        $('#' + id).width(width);
+					        $(this).attr('id', id);
 					        
 						}
 							
 					});
-					jQuery(this).droppable(
+					$(this).droppable(
 						{
 							drop: function(event, ui) 
 							{
@@ -57,7 +57,7 @@
 								var viewid = ul.attr("viewid");
 								var path = ul.attr("path");
 								
-								jQuery("#workarea").load(path,
+								$("#workarea").load(path,
 									{
 									"source":source,
 									"destination":destination,
@@ -84,9 +84,9 @@ function replaceAll(str, find, replace) {
 function escapeRegExp(str) {
     return str.replace(/([.*+?^=!:${}()|\[\]\/\\])/g, "\\$1");
 }
-	jQuery('.sortviews').livequery(function()
+lQuery('.sortviews').livequery(function()
 	{
-		var sortable = jQuery(this);
+		var sortable = $(this);
 		var path = sortable.data("path");
 		
 		sortable.sortable({
@@ -103,7 +103,7 @@ function escapeRegExp(str) {
 		        args.searchtype = sortable.data("searchtype");
 		        args.assettype = sortable.data("assettype");
 		        args.viewid = sortable.data("viewid");
-		        jQuery.ajax({
+		        $.ajax({
 		            data: args,
 		            type: 'POST',
 		            url: path 		            
@@ -119,18 +119,18 @@ function escapeRegExp(str) {
 	     });   
 	});
 	
-	jQuery('.listsort').sortable({
+	$('.listsort').sortable({
 			  
 			axis: 'y',
 		    stop: function (event, ui) {
 		  
-				var path = jQuery(this).data("path");
+				var path = $(this).data("path");
 				
 		    	
-		        var data = jQuery(this).sortable('serialize');
+		        var data = $(this).sortable('serialize');
 		        
 		        // POST to server using $.post or $.ajax
-		        jQuery.ajax({
+		        $.ajax({
 		            data: data,
 		            type: 'POST',
 		            url: path 		            

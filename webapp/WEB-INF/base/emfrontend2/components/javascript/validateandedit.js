@@ -4,14 +4,14 @@ var app,home,apphome,themeprefix;
 
 
 
-jQuery(document).ready(function() 
+$(document).ready(function() 
 {
-	app = jQuery("#application");
+	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
 	themeprefix = app.data("home") + app.data("themeprefix");
 	
-	jQuery(document).on('change', ".lenguagepicker", function()
+	$(document).on('change', ".lenguagepicker", function()
 	{
 		//Makes sure the name matches the new value
 		var select = $(this);
@@ -22,7 +22,7 @@ jQuery(document).ready(function()
 		langinput.attr("name",detailid + "." +  lang + ".value" );
 	});
 	
-	$("textarea").livequery("keydown",function(e) {
+	lQuery("textarea").livequery("keydown",function(e) {
 		  var $this, end, start;
 		  if (e.keyCode === 9) {
 		    start = this.selectionStart;
@@ -34,7 +34,7 @@ jQuery(document).ready(function()
 		  }
 		});
 	
-	jQuery(".languagesavebtn").livequery('click', function(event){
+	lQuery(".languagesavebtn").livequery('click', function(event){
 		event.stopPropagation();
 		event.preventDefault();
 		
@@ -100,7 +100,7 @@ validate = function(inCatalogId, inDataType, inView , inFieldName)
 			value: val
 		};
 	//alert( params );
-	jQuery(div).load(apphome + '/components/xml/validatefield.html', params);
+	$(div).load(apphome + '/components/xml/validatefield.html', params);
 }
 */
 
@@ -157,11 +157,11 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 			//required: catalogid, searchtype, fieldname, value
 			//optional: query, foreignkeyid and foreignkeyvalue
 			
-			var rendertype = jQuery("#" + div).data("rendertype");
+			var rendertype = $("#" + div).data("rendertype");
 			if(rendertype == "multiselect"){
-				jQuery("#" + div).load(apphome + '/components/xml/multiselect.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+				$("#" + div).load(apphome + '/components/xml/multiselect.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
 			} else{
-				jQuery("#" + div).load(apphome + '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
+				$("#" + div).load(apphome + '/components/xml/list.html', {catalogid:catalogid, searchtype:searchtype, view:view, fieldname:childfieldname, foreignkeyid:fieldname, foreignkeyvalue:val, value:valueselection, oemaxlevel:1});
 			}
 		}
 	}
@@ -173,16 +173,16 @@ updatelisteners = function(catalogid, searchtype,view , fieldname)
 loadlist = function(indiv, catalogid, searchtype, inlabel, childfieldname, foreignkeyid, foreignkeyvalue, value )
 {
 	//what is this?
-	jQuery(indiv).load(apphome + '/components/xml/types/simplelist.html', {catalogid:catalogid, searchtype:searchtype, fieldname:childfieldname, label:inlabel, foreignkeyid:foreignkeyid, foreignkeyvalue:foreignkeyvalue, value:value, oemaxlevel:1});
+	$(indiv).load(apphome + '/components/xml/types/simplelist.html', {catalogid:catalogid, searchtype:searchtype, fieldname:childfieldname, label:inlabel, foreignkeyid:foreignkeyid, foreignkeyvalue:foreignkeyvalue, value:value, oemaxlevel:1});
 }
 //Don't use any form inputs named 'name'!
 postForm = function(inDiv, inFormId)
 {
 	var form = document.getElementById(inFormId);
-	if( jQuery )
+	if( $ )
 	{
 		var targetdiv = inDiv.replace(/\//g, "\\/");
-		jQuery(form).ajaxSubmit({
+		$(form).ajaxSubmit({
 					target:"#" + targetdiv
 				 });
 	}
@@ -199,7 +199,7 @@ postForm = function(inDiv, inFormId)
 	        }
 	     };
 	
-		jQuery("#"+inDiv).load( form.action, oOptions);
+		$("#"+inDiv).load( form.action, oOptions);
 	}	
 	return false;
 }	
@@ -210,11 +210,11 @@ postPath = function(inCss, inPath, inMaxLevel)
 	{
 		inMaxLevel = 1;
 	}
-	jQuery("#"+inCss).load( inPath,{oemaxlevel: inMaxLevel });	
+	$("#"+inCss).load( inPath,{oemaxlevel: inMaxLevel });	
 	return false;
 }
 
 toggleBox = function(inId, togglePath, inPath)
 {
-	jQuery("#"+inId).load( home + togglePath,{ pluginpath: inPath, propertyid: inId });
+	$("#"+inId).load( home + togglePath,{ pluginpath: inPath, propertyid: inId });
 }	

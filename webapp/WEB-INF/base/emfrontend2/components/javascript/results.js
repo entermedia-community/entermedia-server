@@ -1,16 +1,16 @@
-jQuery(document).ready(function(url,params) 
+$(document).ready(function(url,params) 
 { 
 	var home = $('#application').data('home') + $('#application').data('apphome');
 
 	var refreshdiv = function(url,params)
 	{
-		jQuery.get(url, params, function(data) 
+		$.get(url, params, function(data) 
 		{
-			jQuery("#resultheader").replaceWith(data);
+			$("#resultheader").replaceWith(data);
 		});	
 	}
 		
-	jQuery("select#selectresultview").livequery( function()
+	lQuery("select#selectresultview").livequery( function()
 	{
 		var select = $(this);
 		select.on("change",function() 
@@ -35,7 +35,7 @@ jQuery(document).ready(function(url,params)
 			}
 			args.resultview = select.val();
 						 
-			jQuery.get(href, args, function(data) 
+			$.get(href, args, function(data) 
 			{
 				$("#resultsdiv").html(data);
 				$(window).trigger( "resize" );
@@ -44,86 +44,86 @@ jQuery(document).ready(function(url,params)
 		
 	});
 		
-	jQuery("input.selectionbox").livequery("change", function(e) 
+	lQuery("input.selectionbox").livequery("change", function(e) 
 	{
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		var searchtype = $('#resultsdiv').data('searchtype');
 		
 		//console.log("searchtype" + searchtype);
-		var dataid = jQuery(this).data('dataid');
+		var dataid = $(this).data('dataid');
 		refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: searchtype, hitssessionid: hitssessionid });
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
 	});
 	
-	jQuery("a.selectpage").livequery( 'click', function() 
+	lQuery("a.selectpage").livequery( 'click', function() 
 	{
-		jQuery('input[name=pagetoggle]').prop('checked',true);
-		jQuery('.selectionbox').prop('checked',true);
+		$('input[name=pagetoggle]').prop('checked',true);
+		$('.selectionbox').prop('checked',true);
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
 		
 		
-	//    jQuery("#select-dropdown-open").click();
+	//    $("#select-dropdown-open").click();
 	
 	});
 		//Uses ajax
-	jQuery("a.deselectpage").livequery( 'click', function() 
+	lQuery("a.deselectpage").livequery( 'click', function() 
 	{
-		jQuery('input[name=pagetoggle]').removeProp('checked');
-		jQuery('.selectionbox').removeProp('checked'); //Not firing the page
-	//	jQuery("#select-dropdown-open").click();
+		$('input[name=pagetoggle]').removeProp('checked');
+		$('.selectionbox').removeProp('checked'); //Not firing the page
+	//	$("#select-dropdown-open").click();
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
 	
 	});
 	
-	jQuery("input[name=pagetoggle]").livequery( 'click', function() 
+	lQuery("input[name=pagetoggle]").livequery( 'click', function() 
 	{
 		  var home = $('#application').data('home');
 		  var apphome = $('#application').data('apphome');
 		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		   
-		   var status = jQuery('input[name=pagetoggle]').is(':checked');
+		   var status = $('input[name=pagetoggle]').is(':checked');
 		   if(status)
 		   {
 			   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"page"});
-			   jQuery('.selectionbox').prop('checked',true);
+			   $('.selectionbox').prop('checked',true);
 	       }
 	       else
 	       {
 	    	   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"pagenone"});         
-	   	       jQuery('.selectionbox').removeProp('checked');  
+	   	       $('.selectionbox').removeProp('checked');  
 	   	   }
-		   //jQuery("#select-dropdown-open").click();
+		   //$("#select-dropdown-open").click();
 	});
 	
 	
-	jQuery(".gallery-checkbox input").livequery( 'click', function() 
+	lQuery(".gallery-checkbox input").livequery( 'click', function() 
 	{
-		if ( jQuery(this).is(':checked') ) {
-			jQuery(this).closest(".emthumbbox").addClass("selected");
+		if ( $(this).is(':checked') ) {
+			$(this).closest(".emthumbbox").addClass("selected");
 		} else {
-			jQuery(this).closest(".emthumbbox").removeClass("selected");
+			$(this).closest(".emthumbbox").removeClass("selected");
 		}
 	});
 	
 	
-	jQuery(".moduleselectionbox").livequery("click", function(e) {
+	lQuery(".moduleselectionbox").livequery("click", function(e) {
 		
 		
 		e.stopPropagation();
 		
 		var searchhome = $('#resultsdiv').data('searchhome');
 		  
-		var dataid = jQuery(this).data("dataid");
-		var sessionid = jQuery(this).data("hitssessionid");
+		var dataid = $(this).data("dataid");
+		var sessionid = $(this).data("hitssessionid");
 		
 		
-		jQuery.get(searchhome + "/selections/toggle.html", {dataid:dataid, hitssessionid:sessionid});
+		$.get(searchhome + "/selections/toggle.html", {dataid:dataid, hitssessionid:sessionid});
 		
 			
 		return;
@@ -243,13 +243,13 @@ jQuery(document).ready(function(url,params)
 			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
 		}
 		
-		var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
+		var hitssessionid = $('#resultsdiv').data("hitssessionid");
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
 			params.pagenum = pagenum;
 		}
-		jQuery.get(link, params, function(data) 
+		$.get(link, params, function(data) 
 		{
 			
 			showOverlayDiv(hidden);
@@ -333,7 +333,7 @@ jQuery(document).ready(function(url,params)
 				 href = home + "/components/mediaviewer/fullscreen/index.html";	
 			}
 			
-			jQuery.ajax({ url:href,async: false, data: {oemaxlevel:1}, success: function(data) {
+			$.ajax({ url:href,async: false, data: {oemaxlevel:1}, success: function(data) {
 				$('body').prepend(data);
 				hidden = $("#hiddenoverlay");
 				initKeyBindings(hidden);
@@ -345,7 +345,7 @@ jQuery(document).ready(function(url,params)
 		
 	}
 	
-	jQuery('#jumptoform .jumpto-left').livequery('click',function(e)
+	lQuery('#jumptoform .jumpto-left').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var input = $("#jumptoform #pagejumper" );
@@ -359,14 +359,14 @@ jQuery(document).ready(function(url,params)
 		}
 		else
 		{
-			jQuery('#jumptoform .jumpto-left').addClass("invisible");
+			$('#jumptoform .jumpto-left').addClass("invisible");
 		}	
 
-		jQuery('#jumptoform .jumpto-right').removeClass("invisible");
+		$('#jumptoform .jumpto-right').removeClass("invisible");
 	});
 
 
-	jQuery('#jumptoform .jumpto-right').livequery('click',function(e)
+	lQuery('#jumptoform .jumpto-right').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var input = $("#jumptoform #pagejumper" );
@@ -382,13 +382,13 @@ jQuery(document).ready(function(url,params)
 		}	
 		if( current >= totalpages )
 		{
-			jQuery('#jumptoform .jumpto-right').addClass("invisible");
+			$('#jumptoform .jumpto-right').addClass("invisible");
 		}	
-		jQuery('#jumptoform .jumpto-left').removeClass("invisible");
+		$('#jumptoform .jumpto-left').removeClass("invisible");
 		
 	});
 	
-	jQuery('div.goleftclick .gocaret').livequery('click',function(e)
+	lQuery('div.goleftclick .gocaret').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
@@ -397,7 +397,7 @@ jQuery(document).ready(function(url,params)
 
 	});
 	
-	jQuery('div.gorightclick .gocaret').livequery('click',function(e)
+	lQuery('div.gorightclick .gocaret').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
@@ -405,7 +405,7 @@ jQuery(document).ready(function(url,params)
 		showAsset(id);
 	});
 	
-	$("#main-media").livequery("swipeleft",function(){
+	lQuery("#main-media").livequery("swipeleft",function(){
 		
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
@@ -414,7 +414,7 @@ jQuery(document).ready(function(url,params)
 			showAsset(id);
 		}	
 		});
-	$("#main-media").livequery("swiperight",function(){
+	lQuery("#main-media").livequery("swiperight",function(){
 	
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
@@ -424,7 +424,7 @@ jQuery(document).ready(function(url,params)
 		}	
 		});
 
-	jQuery('a.stackedplayer').livequery('click',function(e)
+	lQuery('a.stackedplayer').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var link = $(this);
@@ -436,17 +436,17 @@ jQuery(document).ready(function(url,params)
 	
 	
 	
-	$("#hiddenoverlay .overlay-close").livequery('click',function(e)
+	lQuery("#hiddenoverlay .overlay-close").livequery('click',function(e)
 	{	
 		e.preventDefault();
 		hideOverlayDiv(getOverlay());
 	});
 	
-	$("#hiddenoverlay .overlay-popup span").livequery('click',function(e)
+	lQuery("#hiddenoverlay .overlay-popup span").livequery('click',function(e)
 			{	
 				e.preventDefault();
 				// editor/viewer/index.html?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}
-				var hitssessionid = jQuery('#resultsdiv').data("hitssessionid");
+				var hitssessionid = $('#resultsdiv').data("hitssessionid");
 				var href = home + "/views/modules/asset/editor/viewer/index.html?hitssessionid=" + hitssessionid + "&assetid=" + getCurrentAssetId();
 				window.location = href;
 				
@@ -469,20 +469,20 @@ jQuery(document).ready(function(url,params)
 	});
 	//END Gallery stuff
 	
-	$('select.addremovecolumns').livequery("change",function()
+	lQuery('select.addremovecolumns').livequery("change",function()
 	{
 		var selectedval = $(this).val();
         var resultsdiv = $(this).closest("#resultsdiv");
 		var options = resultsdiv.data();
 		var searchhome = resultsdiv.data('searchhome');
-		jQuery.get(searchhome + "/addremovecolumns.html?oemaxlevel=1&editheader=true&addcolumn=" + selectedval,options, function(data) 
+		$.get(searchhome + "/addremovecolumns.html?oemaxlevel=1&editheader=true&addcolumn=" + selectedval,options, function(data) 
 		{	
 			resultsdiv.html(data);
 		});
 	});
 
 	
-	$('th.sortable').livequery('click', function(){
+	lQuery('th.sortable').livequery('click', function(){
             var id = $(this).attr('sortby');
             var resultsarea = "#resultsdiv";
             
@@ -493,14 +493,14 @@ jQuery(document).ready(function(url,params)
             
             if ( $(this).hasClass('currentsort') ) {
                 if ( $(this).hasClass('up') ) {
-                    jQuery(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
                 } else {
-                    jQuery(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
+                    $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Up');
                 }
             } else {
                 $('th.sortable').removeClass('currentsort');
                 $(this).addClass('currentsort');
-                jQuery(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
+                $(resultsdiv).load( searchhome + '/columnsort.html?oemaxlevel=1&searchtype=' + searchtype + '&hitssessionid=' + sessionid + '&sortby=' + id + 'Down');
             }
         }
     );
@@ -522,13 +522,13 @@ jQuery(document).ready(function(url,params)
 togglehits =  function(action)
 {
 	var searchhome = $('#resultsdiv').data('searchhome');
-	var sessionid = jQuery('#resultsdiv').data("hitssessionid");
+	var sessionid = $('#resultsdiv').data("hitssessionid");
 
-	jQuery.get(searchhome + "/selections/togglepage.html", {oemaxlevel:1, hitssessionid:sessionid, action:action});         
+	$.get(searchhome + "/selections/togglepage.html", {oemaxlevel:1, hitssessionid:sessionid, action:action});         
        if(action == 'all' || action== 'page'){
-    	   jQuery('.moduleselectionbox').attr('checked','checked');
+    	   $('.moduleselectionbox').attr('checked','checked');
         }else{
-        	jQuery('.moduleselectionbox').removeAttr('checked');  
+        	$('.moduleselectionbox').removeAttr('checked');  
         }
        return false;       
 
@@ -592,7 +592,7 @@ checkScroll = function()
 		   var link = home + "/components/results/stackedgallery.html";
 	//			   	async: false,
 
-		   jQuery.ajax({
+		   $.ajax({
 			   	url: link,
 			   	xhrFields: {
 			      withCredentials: true

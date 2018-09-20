@@ -7,7 +7,7 @@ var TableController = function(scope) {
 		loadSelectors : function()
 		{
 			var controller = this;
-			$("#annotation-list .comment").livequery(function()
+			lQuery("#annotation-list .comment").livequery(function()
 			{
 				var div = $(this);
 				if( div.data("author") != editor.userData.id)

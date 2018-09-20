@@ -16,7 +16,7 @@ var AnnotationEditor = function(scope) {
 			 : function()
 		{
 			var editor = this;
-			jQuery(".colorpicker-input").livequery(function()
+			lQuery(".colorpicker-input").livequery(function()
 			{
 				var picker = $(this);
 				var dialog = picker.colorpicker(
@@ -37,7 +37,7 @@ var AnnotationEditor = function(scope) {
 				out.colorPicker = dialog;
 			});
 			
-			$("#annotation-list .comment").livequery(function()
+			lQuery("#annotation-list .comment").livequery(function()
 			{
 				var div = $(this);
 				if( div.data("author") != editor.userData.id)
@@ -129,9 +129,9 @@ var AnnotationEditor = function(scope) {
 		toggleCommentEdit: function(annotationid)
 		{
 			var annotation = this.currentAnnotatedAsset.getAnnotationById(annotationid);
-			var html = jQuery("#annotation-template").html();
+			var html = $("#annotation-template").html();
 			
-			jQuery("#annotation" + annotationid).html(html); //replace div
+			$("#annotation" + annotationid).html(html); //replace div
 			var localscope = this.scope.createScope();
 			localscope.annotation = annotation;
 			jAngular.render("#annotation" + annotationid, localscope);
@@ -374,7 +374,7 @@ var AnnotationEditor = function(scope) {
 		,
 		loadAssetList: function()
 		{
-			jQuery.ajax({
+			$.ajax({
 				type: "GET",
 				url: scope.dbhome + "/services/module/librarycollection/viewassets.json?id=" + scope.collectionid,
 				async: false,
