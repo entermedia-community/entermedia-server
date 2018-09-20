@@ -78,8 +78,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
     {			
     	if( arguments.length == 3 )
 		{
-			console.log("Called FAKE get on " ,arguments );
-		
+			//console.log("Called FAKE get on " ,arguments );
 			var oldsucess = arguments[2];
 			return oldget.call($(this),arguments[0],arguments[1],function()
 			{
@@ -146,9 +145,6 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 	 			}		
  			});
 		});
-		 		
- 		
- 		
  		//TODO: Loop over events ones and register them
  		$.each(eventregistry,function()
  		{
@@ -180,58 +176,64 @@ If list2 not init: Make sure .html is correct and livequeryrunning
  				}
  			});
  		});
-
- 		
- 	});
-
-    $.fn.livequery = function() 
+ 	});  //document.on
+	
+	lQuery = function(selector) 
 	{
-		this.self = this;
-    	var node = $(this);
-		livequeryrunning  = true;
-		if( arguments.length == 1 )
+		var runner = {};
+		runner.livequery = function()
 		{
-			var func = arguments[0];
-			var item = {"selector":this.selector,"function":func};    
-	    	regelements.push(item);
-	    	try
- 			{
- 				node.each(function() { //We need to make sure each row is handled for datepicker
-	 				var onerow = $(this); 
-	    			onerow.data("livequeryinit" + item.selector, true);
-	 				func.call(onerow);
-	 			});	
-	    		//node.data("livequeryinit" + item.selector, true);
-	 			//func.call($(this));
-	 		} catch ( error ) 
-	 		{
-	 			console.log("Could not process: " + item.selector , error); 
-	 		}	
-	    } 
-	    else //Note: on does not support scope of selectors 
-	    {
-			var eventtype = arguments[0];
-			var eventlistener = {"selector":this.selector,"event":eventtype};
-
-			if( arguments.length == 3 )
-			{ 
-				eventlistener["scope"] = arguments[1];
-				eventlistener["function"] = arguments[2];
-			}
-			else
+			livequeryrunning  = true;
+			var nodes = jQuery(selector);
+			if( arguments.length == 1 )
 			{
-				eventlistener["function"] = arguments[1];
-				eventlistener["scope"] = document;
+				var func = arguments[1];
+				var item = {"selector":selector,"function":func};    
+		    	regelements.push(item);
+		    	try
+	 			{
+	 				nodes.each(function() //We need to make sure each row is initially handled
+	 				{ 
+		 				var onerow = $(this); 
+		    			onerow.data("livequeryinit" + selector, true);
+		 				func.call(onerow);
+		 			});	
+		 		} catch ( error ) 
+		 		{
+		 			console.log("Could not process: " + selector , error); 
+		 		}	
+		    } 
+		    else //Note: on does not support scope of selectors 
+		    {
+				var eventtype = arguments[0];  //click
+				var eventlistener = {"selector":selector,"event":eventtype};
+	
+				if( arguments.length == 2 )
+				{ 
+					eventlistener["function"] = arguments[1];
+					eventlistener["scope"] = document;
+				}
+				else
+				{
+					eventlistener["scope"] = arguments[1];
+					eventlistener["function"] = arguments[2];
+				}
+		    	eventregistry.push(eventlistener);
+		    	console.log("Initial Registering  event" + eventlistener.selector );
+		    	
+ 				nodes.each(function() //We need to make sure each row is initially handled
+ 				{ 
+	 				var node = $(this); 
+			    	node.data("livequery", true);
+	    			node.on(eventlistener.event,eventlistener.function);
+			    	//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
+	 			});	
+		    	
 			}
-	    	eventregistry.push(eventlistener);
-	    	console.log("Initial Registering  event" + eventlistener.selector );
-	    	node.data("livequery", true);
-	    	node.on(eventlistener.event,eventlistener.function);
-	    	//$(document).on(eventlistener.event,eventlistener.selector,eventlistener.function);
+			livequeryrunning = false;
+		    return this;
 		}
-		livequeryrunning = false;
-	    return this;
+		return runner;
 	}
- 	
- 
+	
 }( jQuery ));

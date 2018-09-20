@@ -34,7 +34,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 #set( $viewerlink = $content.get("assetviewerlink") )
 
-	<table id="main-results-table" class="emdownloadlisting emresultscontent striped" data-clickpath="$home$viewerlink?hitssessionid=${hits.sessionId}&assetid=">
+	<table id="main-results-table" class="emdownloadlisting emresultscontent table-striped showmodal" data-clickpath="$home$viewerlink?hitssessionid=${hits.sessionId}&assetid=">
 			$pages.include("$apphome/components/results/tableheader.html",$context)
 			#set($count = 0)
 			#foreach( $hit in $hits.getPageOfHits() )

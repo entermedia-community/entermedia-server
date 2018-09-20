@@ -8,18 +8,18 @@ var isCollectionCreatedByDragging = false;
 
 
 repaint = function(divid) {
-	var div = jQuery("#" + divid);
+	var div = $("#" + divid);
 	var href = div.data('href');
 	var args = div.data('args');
 	jQuery.get(href + "?" + args, {}, function(data) 
 			{
-				//var toreplace = jQuery("#" + targetDiv);
+				//var toreplace = $("#" + targetDiv);
 				div.replaceWith(data);
 			}
 	);
 }
 toggleUserProperty = function(property, onsuccess) {
-	app = jQuery("#application");
+	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
 	
@@ -33,7 +33,7 @@ toggleUserProperty = function(property, onsuccess) {
 }
 
 saveProfileProperty = function(property, value,onsuccess) {
-	app = jQuery("#application");
+	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
 	
@@ -49,7 +49,7 @@ saveProfileProperty = function(property, value,onsuccess) {
 
 
 setSessionValue = function(key, value) {
-	app = jQuery("#application");
+	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
 	
@@ -63,7 +63,7 @@ setSessionValue = function(key, value) {
 
 getSessionValue = function(key) {
 	var returnval = null;
-	app = jQuery("#application");
+	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
 	
@@ -89,34 +89,34 @@ getSessionValue = function(key) {
 
 outlineSelectionCol = function(event, ui)
 {
-	jQuery(this).addClass("selected");
-	jQuery(this).addClass("dragoverselected");
+	$(this).addClass("selected");
+	$(this).addClass("dragoverselected");
 }
 	
 unoutlineSelectionCol = function(event, ui)
 {
-	jQuery(this).removeClass("selected");
-	jQuery(this).removeClass("dragoverselected");
+	$(this).removeClass("selected");
+	$(this).removeClass("dragoverselected");
 }
 
 outlineSelectionRow = function(event, ui)
 {
-	jQuery(this).addClass("rowdraggableenabled");  
+	$(this).addClass("rowdraggableenabled");  
 	$(this).before('<li class="placeholder"></li>');
 }
 	
 unoutlineSelectionRow = function(event, ui)
 {
-	jQuery(this).removeClass("rowdraggableenabled");
+	$(this).removeClass("rowdraggableenabled");
 	$('.placeholder').remove();
 }
 
 toggleajax = function(e) 
 {
 	e.preventDefault();
-	var nextpage= jQuery(this).attr('href');
-	var loaddiv = jQuery(this).attr("targetdivinner");
-	var maxlevel = jQuery(this).data("oemaxlevel");
+	var nextpage= $(this).attr('href');
+	var loaddiv = $(this).attr("targetdivinner");
+	var maxlevel = $(this).data("oemaxlevel");
 	if( maxlevel )
 	{
 		if( !nextpage.contains("?") )
@@ -127,7 +127,7 @@ toggleajax = function(e)
 	}
 	
 	loaddiv = loaddiv.replace(/\//g, "\\/");
-	var cell = jQuery("#" + loaddiv);
+	var cell = $("#" + loaddiv);
 
 	if ( cell.hasClass("toggle_on") || cell.hasClass("toggle_off") ) 
 	{
@@ -164,7 +164,7 @@ findclosest = function(link,inid)
 		result = link.children(inid);
 		if( result.length == 0 )
 		{
-			result = jQuery(inid);
+			result = $(inid);
 		}
 	}
 	return result.first();
@@ -172,8 +172,8 @@ findclosest = function(link,inid)
 runajaxonthis = function(inlink,e)
 {
 	
-	jQuery(".ajaxprogress").show();
-	var inText = jQuery(inlink).data("confirm");
+	$(".ajaxprogress").show();
+	var inText = $(inlink).data("confirm");
 	if(e && inText && !confirm(inText) )
 	{
 		e.stopPropagation();
@@ -184,7 +184,7 @@ runajaxonthis = function(inlink,e)
 	
 	if( inlink.hasClass("activelistener") )
 	{
-		jQuery(".activelistener").removeClass("active");
+		$(".activelistener").removeClass("active");
 		inlink.addClass("active");
 	}
 	var nextpage= inlink.attr('href');
@@ -201,14 +201,14 @@ runajaxonthis = function(inlink,e)
 	{
 		targetDiv = targetDiv.replace(/\//g, "\\/");
 		
-		jQuery.get(nextpage, options, function(data) 
+		$.get(nextpage, options, function(data) 
 			{
 				//console.log("Called REAL get on " ,arguments );
 				
 				var cell;
 				if(useparent && useparent == "true")
 				{
-					cell = jQuery("#" + targetDiv, window.parent.document);
+					cell = $("#" + targetDiv, window.parent.document);
 				}
 				else
 				{
@@ -222,7 +222,7 @@ runajaxonthis = function(inlink,e)
 			}
 		).always(function()
 		{
-			jQuery(".ajaxprogress").hide();
+			$(".ajaxprogress").hide();
 
 			//inlink.css("enabled",true);
 			inlink.removeAttr('disabled');
@@ -237,14 +237,14 @@ runajaxonthis = function(inlink,e)
 			loaddiv = inlink.attr("targetdivinner");
 		}
 		loaddiv = loaddiv.replace(/\//g, "\\/");
-		//jQuery("#"+loaddiv).load(nextpage);
+		//$("#"+loaddiv).load(nextpage);
 		jQuery.get(nextpage, options, function(data) 
 				{
 					var cell;
 					
 					if(useparent && useparent == "true")
 					{
-						cell = jQuery("#" + loaddiv, window.parent.document);
+						cell = $("#" + loaddiv, window.parent.document);
 					}
 					else
 					{
@@ -254,7 +254,7 @@ runajaxonthis = function(inlink,e)
 					$(window).trigger( "resize" );
 				}).always(function()
 						{
-					jQuery(".ajaxprogress").hide();
+					$(".ajaxprogress").hide();
 
 							//inlink.css("enabled",true);
 							inlink.removeAttr('disabled');
@@ -271,7 +271,7 @@ runajax = function(e)
 
 showHoverMenu = function(inDivId)
 {
-	el = jQuery("#" + inDivId);
+	el = $("#" + inDivId);
 	if( el.attr("status") == "show")
 	{	
 		el.show();
@@ -281,16 +281,16 @@ showHoverMenu = function(inDivId)
 
 updatebasket = function(e)
 {
-		var nextpage= jQuery(this).attr('href');
-		var targetDiv = jQuery(this).attr("targetdiv");
+		var nextpage= $(this).attr('href');
+		var targetDiv = $(this).attr("targetdiv");
 		targetDiv = targetDiv.replace(/\//g, "\\/");
-		var action= jQuery(this).data('action');
-		jQuery("#"+targetDiv).load(nextpage, function()
+		var action= $(this).data('action');
+		$("#"+targetDiv).load(nextpage, function()
 			{
-			    jQuery("#basket-paint").load(apphome + "/components/basket/menuitem.html");
+			    $("#basket-paint").load(apphome + "/components/basket/menuitem.html");
 				if(action == 'remove'){
-					jQuery(".selectionbox:checked").closest("tr").hide("slow");
-					jQuery(".selectionbox:checked").closest(".emthumbbox").hide("slow");
+					$(".selectionbox:checked").closest("tr").hide("slow");
+					$(".selectionbox:checked").closest(".emthumbbox").hide("slow");
 				}
 			}
 		);
@@ -331,7 +331,7 @@ pageload = function(hash)
 		if(targetdiv != null && location!= null)
 		{
 			targetdiv = targetdiv.replace(/\//g, "\\/");
-			jQuery("#"+targetdiv).load(location);
+			$("#"+targetdiv).load(location);
 		}
 	} 
 }
@@ -341,20 +341,20 @@ onloadselectors = function()
 {
 	//autoheight("#emcontent"); 
 	
-	jQuery("a.ajax").livequery('click', runajax);
+	lQuery("a.ajax").livequery('click', runajax);
 	
-	jQuery("a.toggleajax").livequery('click', toggleajax);
+	lQuery("a.toggleajax").livequery('click', toggleajax);
 	
-	jQuery("a.updatebasket").livequery('click', updatebasket);
-//	jQuery("a.updatebasketonasset").livequery('click', updatebasketonasset);
+	lQuery("a.updatebasket").livequery('click', updatebasket);
+//	$("a.updatebasketonasset").livequery('click', updatebasketonasset);
 	
-	jQuery("a.propertyset").livequery('click', 
+	lQuery("a.propertyset").livequery('click', 
 			function(e)
 			{
-				var propertyname = jQuery(this).attr("propertyname");
-				var propertyvalue = jQuery(this).attr("propertyvalue");
+				var propertyname = $(this).attr("propertyname");
+				var propertyvalue = $(this).attr("propertyvalue");
 				var thelink = $(this);
-				app = jQuery("#application");
+				app = $("#application");
 				home =  app.data("home");
 				apphome = home + app.data("apphome");
 				
@@ -372,9 +372,9 @@ onloadselectors = function()
 	
 	
 	//move this to the settings.js or someplace similar 
-	jQuery(".addmygroupusers").livequery( function() 
+	lQuery(".addmygroupusers").livequery( function() 
 			{
-				var theinput = jQuery(this);
+				var theinput = $(this);
 				if( theinput && theinput.autocomplete )
 				{
 					var assetid = theinput.attr("assetid");
@@ -385,14 +385,14 @@ onloadselectors = function()
 						source: apphome + '/components/autocomplete/addmygroupusers.txt?assetid=' + assetid,
 						select: function(event, ui) {
 							//set input that's just for display purposes
-							jQuery(".addmygroupusers").val(ui.item.display);
+							$(".addmygroupusers").val(ui.item.display);
 							//set a hidden input that's actually used when the form is submitted
-							jQuery("#hiddenaddmygroupusers").val(ui.item.value);
-							var targetdiv = jQuery("#hiddenaddmygroupusers").attr("targetdiv");
-							var targeturl = jQuery("#hiddenaddmygroupusers").attr("postpath");
+							$("#hiddenaddmygroupusers").val(ui.item.value);
+							var targetdiv = $("#hiddenaddmygroupusers").attr("targetdiv");
+							var targeturl = $("#hiddenaddmygroupusers").attr("postpath");
 							jQuery.get(targeturl + ui.item.value, 
 									function(result) {
-										jQuery("#" + targetdiv).html(result);
+										$("#" + targetdiv).html(result);
 									}
 							);
 							return false;
@@ -400,9 +400,9 @@ onloadselectors = function()
 					});
 				}
 			});
-	jQuery(".userautocomplete").livequery( function() 
+	lQuery(".userautocomplete").livequery( function() 
 			{
-				var theinput = jQuery(this);
+				var theinput = $(this);
 				if( theinput && theinput.autocomplete )
 				{
 					var theinputhidden = theinput.attr("id") + "hidden";
@@ -412,16 +412,16 @@ onloadselectors = function()
 							//set input that's just for display purposes
 							theinput.val(ui.item.display);
 							//set a hidden input that's actually used when the form is submitted
-							jQuery("#" + theinputhidden).val(ui.item.value);
+							$("#" + theinputhidden).val(ui.item.value);
 							return false;
 						}
 					});
 				}
 			});
 
-	jQuery(".googlecontactlist").livequery( function() 
+	lQuery(".googlecontactlist").livequery( function() 
 			{
-				var theinput = jQuery(this);
+				var theinput = $(this);
 				if( theinput  )
 				{
 					var theinputhidden = theinput.attr("id") + "hidden";
@@ -431,7 +431,7 @@ onloadselectors = function()
 							//set input that's just for display purposes
 							theinput.val(ui.item.display);
 							//set a hidden input that's actually used when the form is submitted
-							jQuery("#" + theinputhidden).val(ui.item.value);
+							$("#" + theinputhidden).val(ui.item.value);
 							return false;
 						}
 					});
@@ -443,9 +443,9 @@ onloadselectors = function()
 	
 	
 	
-	jQuery(".addmygroups").livequery( function() 
+	lQuery(".addmygroups").livequery( function() 
 	{
-		var theinput = jQuery(this);
+		var theinput = $(this);
 		if( theinput && theinput.autocomplete )
 		{
 			var assetid = theinput.attr("assetid");
@@ -453,14 +453,14 @@ onloadselectors = function()
 					source:  apphome + '/components/autocomplete/addmygroups.txt?assetid=' + assetid,
 					select: function(event, ui) {
 						//set input that's just for display purposes
-						jQuery(".addmygroups").val(ui.item.label);
+						$(".addmygroups").val(ui.item.label);
 						//set a hidden input that's actually used when the form is submitted
-						jQuery("#hiddenaddmygroups").val(ui.item.value);
-						var targetdiv = jQuery("#hiddenaddmygroups").attr("targetdiv");
-						var targeturl = jQuery("#hiddenaddmygroups").attr("postpath");
+						$("#hiddenaddmygroups").val(ui.item.value);
+						var targetdiv = $("#hiddenaddmygroups").attr("targetdiv");
+						var targeturl = $("#hiddenaddmygroups").attr("postpath");
 						jQuery.get(targeturl + ui.item.value, 
 								function(result) {
-									jQuery("#" + targetdiv).html(result);
+									$("#" + targetdiv).html(result);
 						});
 						return false;
 					}
@@ -469,22 +469,22 @@ onloadselectors = function()
 	});
 	
 	
-	jQuery("table.striped tr:nth-child(even)").livequery( function()
+	lQuery("table.striped tr:nth-child(even)").livequery( function()
 		{
-			jQuery(this).addClass("odd");
+			$(this).addClass("odd");
 		});
 		
-	jQuery("div.emtable.striped div.row:nth-child(even)").livequery( function()
+	lQuery("div.emtable.striped div.row:nth-child(even)").livequery( function()
 			{
-				jQuery(this).addClass("odd");
+				$(this).addClass("odd");
 			});
 	
-	jQuery("#tree div:even").livequery( function(){
-		jQuery(this).addClass("odd");
+	lQuery("#tree div:even").livequery( function(){
+		$(this).addClass("odd");
 	});
-	jQuery('.commentresizer').livequery( function()
+	lQuery('.commentresizer').livequery( function()
 	{	
-		var ta = jQuery(this).find("#commenttext");
+		var ta = $(this).find("#commenttext");
 		ta.click(function() 
 		{
 			var initial = ta.attr("initialtext");
@@ -492,7 +492,7 @@ onloadselectors = function()
 			{
 				ta.val('');
 				ta.unbind('click');
-				var button = jQuery('.commentresizer #commentsubmit');
+				var button = $('.commentresizer #commentsubmit');
 				button.show();	
 			}
 		});
@@ -501,7 +501,7 @@ onloadselectors = function()
 	});
 	
 
-	jQuery(".initialtext").livequery('click', function() 
+	lQuery(".initialtext").livequery('click', function() 
 	{
 		var ta = $(this);
 		 
@@ -524,17 +524,17 @@ onloadselectors = function()
 		window.name = "uploader" + new Date().getTime();	
 	}
 	
-/*	var appletholder = jQuery('#emsyncstatus');
+/*	var appletholder = $('#emsyncstatus');
 //	if(appletholder.size() > 0)
 //	{
 //		appletholder.load('$home/${page.applicationid}/components/uploadqueue/index.html?appletname=' + window.name);
 //	}
 */	
-	jQuery('.baseemshowonhover' ).livequery( function() 
+	lQuery('.baseemshowonhover' ).livequery( function() 
 	{ 
-		var image = jQuery(this);
+		var image = $(this);
 		
-		jQuery(this).parent().hover(
+		$(this).parent().hover(
 				function () 
 				{
 					image.addClass("baseemshowonhovershow");
@@ -546,30 +546,30 @@ onloadselectors = function()
 	});
 	
 	// Handles emdropdowns
-	jQuery("div[id='emdropdown']").livequery(
+	lQuery("div[id='emdropdown']").livequery(
 		function()
 		{
-			jQuery(this).mouseleave(
+			$(this).mouseleave(
 				function(){
 					var el = document.getElementById("emdropdowndiv");
 					if( el )
 					{
-						jQuery(el).attr("status","hide"); // Beware this gets
+						$(el).attr("status","hide"); // Beware this gets
 															// called when popup
 															// is shown
 					}
 				});
 		
-			jQuery(this).click(
+			$(this).click(
 				function()
 				{
-					var el = jQuery(this).find(".emdropdowncontent");
+					var el = $(this).find(".emdropdowncontent");
 					el.bind("mouseleave",function()
 					{
-						jQuery(this).attr("status","hide");
-						jQuery(this).hide();
+						$(this).attr("status","hide");
+						$(this).hide();
 					});
-					//var offset = jQuery(this).offset();
+					//var offset = $(this).offset();
 					//var top = offset.top + 20;
 					//el.css("top",  top + "px");
 					//el.css("left", offset.left+ "px"); 
@@ -591,7 +591,7 @@ onloadselectors = function()
 	{
 		jQuery.history.init(pageload);
 		// set onlick event for buttons
-		jQuery("a[class='ajax']").click(function()
+		$("a[class='ajax']").click(function()
 		{
 			var hash = this.href;
 			var targetdiv = this.targetdiv;
@@ -607,15 +607,15 @@ onloadselectors = function()
 
 	// This clears out italics and grey coloring from the search box if it has a
 	// user-entered value
-	if(jQuery("#assetsearchinput").val() != "Search")
+	if($("#assetsearchinput").val() != "Search")
 	{
-		jQuery("#assetsearchinput").removeClass("defaulttext");
+		$("#assetsearchinput").removeClass("defaulttext");
 	}
 	
-	jQuery(".headerdraggable").livequery( 
+	lQuery(".headerdraggable").livequery( 
 			function()
 			{	
-				jQuery(this).draggable( 
+				$(this).draggable( 
 					{ 
 						helper: 'clone',
 						revert: 'invalid'
@@ -623,10 +623,10 @@ onloadselectors = function()
 				);
 			}
 		);
-	jQuery(".rowdraggable").livequery( 
+	lQuery(".rowdraggable").livequery( 
 			function()
 			{	
-				jQuery(this).draggable( 
+				$(this).draggable( 
 					{ 
 						helper: 'clone',
 						revert: 'invalid'
@@ -636,16 +636,16 @@ onloadselectors = function()
 		);
 	if( jQuery.fn.draggable )
 	{
-		jQuery(".assetdraggable").livequery( 
+		lQuery(".assetdraggable").livequery( 
 			function()
 			{	
-				jQuery(this).draggable( 
+				$(this).draggable( 
 					{ 
 						helper: function()
 						{
 							var cloned = $(this).clone();
 							
-							//var status = jQuery('input[name=pagetoggle]').is(':checked');
+							//var status = $('input[name=pagetoggle]').is(':checked');
 							 var n = $("input.selectionbox:checked").length;
 							 if( n > 1 )
 							 {
@@ -660,7 +660,7 @@ onloadselectors = function()
 					}
 				);
 				/*
-				jQuery(this).bind("drag", function(event, ui) {
+				$(this).bind("drag", function(event, ui) {
 				    ui.helper.css("background-color", "red");
 				    ui.helper.css("border", "2px solid red");
 				    ui.helper.append("3");
@@ -668,10 +668,10 @@ onloadselectors = function()
 				*/
 			}
 		);
-		jQuery(".categorydraggable").livequery( 
+		lQuery(".categorydraggable").livequery( 
 			function()
 			{	
-				jQuery(this).draggable( 
+				$(this).draggable( 
 					{
 						delay: 300,
 						helper: function()
@@ -682,7 +682,7 @@ onloadselectors = function()
 							$(cloned).css({"border":"1px solid blue",
 										   "background":"#c9e8f2"});
 
-							//var status = jQuery('input[name=pagetoggle]').is(':checked');
+							//var status = $('input[name=pagetoggle]').is(':checked');
 							 var n = $("input.selectionbox:checked").length;
 							 if( n > 1 )
 							 {
@@ -697,7 +697,7 @@ onloadselectors = function()
 					}
 				);
 				/*
-				jQuery(this).bind("drag", function(event, ui) {
+				$(this).bind("drag", function(event, ui) {
 				    ui.helper.css("background-color", "red");
 				    ui.helper.css("border", "2px solid red");
 				    ui.helper.append("3");
@@ -706,16 +706,16 @@ onloadselectors = function()
 			}
 		);
 	}
-	jQuery(".headerdroppable").livequery(
+	lQuery(".headerdroppable").livequery(
 			function()
 			{
 			
-				if( !jQuery(this).droppable )
+				if( !$(this).droppable )
 				{
 					return;
 				}
 			
-				jQuery(this).droppable(
+				$(this).droppable(
 					{
 						drop: function(event, ui) {
 							var source = ui.draggable.attr("id");
@@ -731,7 +731,7 @@ onloadselectors = function()
 							{
 								editing = false;
 							}
-							jQuery("#resultsdiv").load(apphome + "/components/results/savecolumns.html",
+							$("#resultsdiv").load(apphome + "/components/results/savecolumns.html",
 								{
 								"source":source,
 								"destination":destination,
@@ -739,7 +739,7 @@ onloadselectors = function()
 								searchtype:searchtype,
 								"hitssessionid":sessionid
 								});
-							//ui.helper.effect("transfer", { to: jQuery(this).children("a") }, 200);
+							//ui.helper.effect("transfer", { to: $(this).children("a") }, 200);
 						},
 						tolerance: 'pointer',
 						over: outlineSelectionCol,
@@ -751,10 +751,10 @@ onloadselectors = function()
 
 	if( jQuery.fn.droppable )
 	{
-    	jQuery(".assetdropcategory .categorydroparea").livequery(
+    	lQuery(".assetdropcategory .categorydroparea").livequery(
 			function()
 			{
-				jQuery(this).droppable(
+				$(this).droppable(
 					{
 						drop: function(event, ui) {
 							var node = $(this);
@@ -821,30 +821,30 @@ onloadselectors = function()
 		);
 		} //droppable
 		
-		jQuery(".autosubmitdetails").livequery(
+		lQuery(".autosubmitdetails").livequery(
 			function()
 			{
-				jQuery(this).find(".autosubmited").change(
+				$(this).find(".autosubmited").change(
 				  function() 
 				  {
-					  jQuery(this).parents("form").submit();
+					  $(this).parents("form").submit();
 				  }
 				);
 				
 			}
 		);		
-		jQuery(".emfadeout").livequery(
+		lQuery(".emfadeout").livequery(
 			function()
 			{
-				jQuery(this).fadeOut(3000, function() 
+				$(this).fadeOut(3000, function() 
 				 {
-					jQuery(this).html("");
+					$(this).html("");
 				 });
 			}
 		);	
 		var ranajaxon = new Array();
 		
-		jQuery(".ajaxstatus").livequery(
+		lQuery(".ajaxstatus").livequery(
 			function()
 			{
 				var uid = $(this).attr("id");
@@ -865,7 +865,7 @@ onloadselectors = function()
 			}
 		);
 		
-		jQuery(".sidetoggle.expanded").each(
+		$(".sidetoggle.expanded").each(
 			function()
 			{
 				$(this).find(".ui-widget-toggle").toggleClass("fa-angle-left");
@@ -895,7 +895,7 @@ autoheight = function(container)
 showajaxstatus = function(uid)
 {
 	//for each asset on the page reload it's status
-	var cell = jQuery("#" + uid);
+	var cell = $("#" + uid);
 	if( cell )
 	{
 		var path = cell.attr("ajaxpath");
@@ -915,13 +915,13 @@ showajaxstatus = function(uid)
 }
 
 
-jQuery(document).ready(function() 
+$(document).ready(function() 
 { 
 
 	jQuery.ajaxSetup({
 	    cache: false
 	});
-	app = jQuery("#application");
+	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
 	themeprefix = app.data("home") + app.data("themeprefix");	
@@ -933,7 +933,7 @@ jQuery(document).ready(function()
 				return;
 			}		
 				
-				var errordiv = jQuery("#errordiv")
+				var errordiv = $("#errordiv")
 				if( errordiv.length > 0)
 				{
 					
@@ -974,10 +974,10 @@ emcomponents = function() {
 
 	if( jQuery.fn.draggable )
 	{
-	   jQuery(".librarydroparea").livequery(
+	   lQuery(".librarydroparea").livequery(
 			function()
 			{
-				jQuery(this).droppable(
+				$(this).droppable(
 					{
 						drop: function(event, ui) {
 							
@@ -1004,7 +1004,7 @@ emcomponents = function() {
 									},
 									function(data) 
 									{
-										var	cell = jQuery("#" + targetDiv);
+										var	cell = $("#" + targetDiv);
 										cell.replaceWith(data);	
 									}
 							);
@@ -1019,7 +1019,7 @@ emcomponents = function() {
 		);
 	} //droppable
 	
-	jQuery("img.assetdragdrop").livequery( function()
+	lQuery("img.assetdragdrop").livequery( function()
 	{
 		var img = $(this);
 			
@@ -1055,10 +1055,10 @@ emcomponents = function() {
         
 	});
 
-	jQuery(".librarycollectiondroparea").livequery(
+	lQuery(".librarycollectiondroparea").livequery(
 			function()
 			{
-				jQuery(this).droppable(
+				$(this).droppable(
 				{
 					drop: function(event, ui) {
 						
@@ -1109,7 +1109,7 @@ emcomponents = function() {
 						params.hitssessionid=hitssessionid;
 						jQuery.get(nextpage, params, function(data) 
 						{
-							var	cell = jQuery("#" + targetDiv);
+							var	cell = $("#" + targetDiv);
 							cell.replaceWith(data);
 						});
 					},
@@ -1120,14 +1120,14 @@ emcomponents = function() {
 			}
 		);
 
-	jQuery(".sidetoggle").livequery("click",
+	lQuery(".sidetoggle").livequery("click",
 			function()
 			{
 				var div = $(this);
-				var target = jQuery(this).data("target");
+				var target = $(this).data("target");
 				toggleUserProperty("minimize" + target,
 					function() {
-						jQuery("#" + target).slideToggle("fast");
+						$("#" + target).slideToggle("fast");
 						div.toggleClass("expanded");
 						div.find(".ui-widget-toggle").toggleClass("fa-angle-left");
 					}
@@ -1135,10 +1135,10 @@ emcomponents = function() {
 			}
 	);
 	
-	jQuery(".newcollectiondroparea").livequery(
+	lQuery(".newcollectiondroparea").livequery(
 	function()
 	{
-		jQuery(this).droppable(
+		$(this).droppable(
 		{
 			drop: function(event, ui) 
 			{
@@ -1163,7 +1163,7 @@ emcomponents = function() {
 				}
 				jQuery.get(dropsaveurl, params, function(data) 
 				{
-					var cell = jQuery("#opencollectioncreatenewarea");
+					var cell = $("#opencollectioncreatenewarea");
 					cell.html(data);
 				});
 			},
