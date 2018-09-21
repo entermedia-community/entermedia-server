@@ -4,6 +4,6 @@
   <locale id="en" name="English" namesorted="English" enabled="true"/>  
   <locale id="fr" name="Français" enabled="true"/>  
   <locale id="es" name="Español" enabled="true"/>  
-  <locale id="de" name="Deutsche" enabled="true"/>
+  <locale id="de" name="Deutsch" enabled="true"/>
   <locale id="ar" name="عربى" enabled="true"/>
 </locales>
