@@ -1,15 +1,18 @@
-#
-#Tue Oct 11 15:54:52 EDT 2016
-Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Schnappsch\u00FCsse werden von elasticsearch zur Speicherung und Datenbankzustand wiederherzustellen
+#Fri Sep 21 13:32:18 EDT 2018
+Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Schnappschüsse werden von ElasticSearch zur Speicherung und Wiederherstellung des Datenbankzustandes verwendet.
 View\ Known\ Mapping\ Conflicts=Ansicht bekannten Mapping Konflikte
-Reindex=indizieren
-Disabled=behindert
-Validate\ All\ Mapping\ Schema=validieren alle Zuordnungsschema
-Knapsack\ is\ used\ to\ create\ JSON\ based\ backups\ that\ can\ be\ moved\ between\ servers=Ranzen wird verwendet, json basierte Backups zu erstellen, die zwischen Servern verschoben werden kann
-Enabled=freigegeben
-View\ Knapsack=Ansicht Ranzen
-Search\ Logs=Suchprotokollen
-Data\ Management=Datenmanagement
-This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists=dies erm\u00F6glicht es Listen von der Installation geladen mit eigenen Listen integriert werden
-View\ Snapshots=Ansicht Schnappsch\u00FCsse
-Reload\ lists=nachladen Listen
+Reindex=Neu-indizieren
+Disabled=eingeschränkt
+Validate\ All\ Mapping\ Schema=Validieren aller Zuordnungsschematas
+Knapsack\ is\ used\ to\ create\ JSON\ based\ backups\ that\ can\ be\ moved\ between\ servers=Knapsack wird verwendet, um JSON basierte Backups zu erstellen, die zwischen Servern verschoben werden können.
+Clear\ Cached\ Data=Im Cache gespeicherte Dateien löschen
+Enabled=Freigegeben
+Cluster\ ID=Cluster-ID
+View\ Knapsack=Ansicht Knapsack
+Search\ Logs=Suchprotokolle
+Data\ Management=Dateimanagement
+This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists=Dies erlaubt den geladenen Listen der Installation sich mit den eigenen Listen zu integrieren. 
+View\ Snapshots=Ansicht Schnappschüsse
+Node\ ID=Knoten-ID
+Reload\ lists=Listen neu laden
+

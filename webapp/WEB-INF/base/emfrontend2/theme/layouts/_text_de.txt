@@ -1,16 +1,15 @@
-#
-#Tue Oct 11 15:51:04 EDT 2016
+#Fri Sep 21 13:32:18 EDT 2018
 Share=Aktie
 Manager=Manager
 closed=geschlossen
 There\ was\ a\ problem\ completing\ this\ request=es gab ein Problem beim Abschluss dieser Anfrage
 Related\ Media=verwandte Medien
 My\ Account=mein Konto
-Selected\ Media=ausgew\u00E4hlte Medien
-open=ge\u00F6ffnet
+Selected\ Media=ausgewählte Medien
+open=geöffnet
 Media=Medien
 Applications=Anwendungen
-Attachments=Anh\u00E4nge
+Attachments=Anhänge
 System\ Settings=Systemeinstellungen
 Annotations=Anmerkungen
 Language=Sprache
@@ -18,6 +17,7 @@ Logout=Logout
 Asset\ is\ missing=Asset fehlt
 Dashboard=Instrumententafel
 Login=einloggen
-Add\ Media=Medien hinzuf\u00FCgen
+Add\ Media=Medien hinzufügen
 Settings=Einstellungen
 Approvals=Zulassungen
+

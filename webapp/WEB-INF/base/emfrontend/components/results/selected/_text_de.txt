@@ -1,19 +1,36 @@
-#
-#Thu Jan 14 13:11:03 EST 2016
-Remove\ From\ Basket=aus dem Warenkorb entfernen
+#Fri Sep 21 13:32:18 EDT 2018
 View\ Selections=Auswahlen zeigen
-Results=Ergebnisse
-Show\ All\ Results=Alle Ergebnisse anzeigen
-Edit=bearbeiten
-Edit\ selected\ records=ausgew\u00E4hlte Datens\u00E4tze bearbeiten
-Export\ to\ CSV=Export nach CSV
-Select\ All\ Results=W\u00E4hlen Sie alle Ergebnisse
-selected=ausgew\u00E4hlt
+Clear\ Selections=nichts auswählen
+Edit\ Asset=Asset bearbeiten
+Reject=ablehnen
 Multi\ Edit=Multi-Edit-
-Clear\ Selections=nichts ausw\u00E4hlen
-Show\ Selected=Ausgew\u00E4hlte anzeigen
+Results=Ergebnisse
+Deselect\ All=Alle abwählen
+Show\ All\ Results=Alle Ergebnisse anzeigen
+Export\ results\ (friendly)=Ergebnisse exportieren (freundlich)
+Select\ All\ Results=Wählen Sie alle Ergebnisse
+Add\ To\ Basket=zum Korb hinzufügen
+Approve\ Pending=genehmigen ausstehend
+Export\ to\ CSV=Export nach CSV
+All=alle
+Delete\ Assets=Löschen von Assets
 Show\ All=alle anzeigen
+Remove\ From\ Cart=aus dem Warenkorb entfernen
+Select\ This\ Page=wählen Sie diese Seite
+Approve=genehmigen
+Edit\ selected\ records=ausgewählte Datensätze bearbeiten
+Add\ to\ Collection=zur Sammlung hinzufügen
+Remove\ From\ Basket=aus dem Warenkorb entfernen
+selected=ausgewählt
+Show\ Selected=Ausgewählte anzeigen
+Selections=Auswahlen
 Show\ Only\ Selections=zeigen nur Selektionen
-Deselect\ All=Alle abw\u00E4hlen
-Select\ This\ Page=w\u00E4hlen Sie diese Seite
-Add\ To\ Basket=zum Korb hinzuf\u00FCgen
+Print\ Assets=Druckguthaben
+Add\ To\ Cart=in den Warenkorb legen
+Reject\ Pending=Zurückweisen anstehend
+Edit=bearbeiten
+Add\ To\ Collection=zur Sammlung hinzufügen
+Add\ To\ Favorites=Zu den Favoriten hinzufügen
+Actions=Aktionen
+Export\ results=Ergebnisse exportieren
+

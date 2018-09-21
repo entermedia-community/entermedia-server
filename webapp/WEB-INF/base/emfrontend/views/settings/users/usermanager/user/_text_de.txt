@@ -1,0 +1,11 @@
+#Fri Sep 21 13:32:18 EDT 2018
+Select\ a\ user=Wählen Sie einen Benutzer aus
+Delete\ User=Benutzer löschen
+Act\ As\ this\ user\ temporarily=Diesen Account vorübergehend benutzen.
+View\ Group=Gruppe anzeigen
+Edit\ Password=Passwort bearbeiten
+Remove=Löschen
+Profile=Profil
+Add=Hinzufügen
+Save\ Changes=Änderungen speichern
+

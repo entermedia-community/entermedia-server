@@ -1,4 +1,4 @@
-#Mon Oct 10 12:22:34 EDT 2016
+#Fri Sep 21 13:32:18 EDT 2018
 Actions=Aktionen
 Edit=bearbeiten
 Mounted\ Folders=Gemountete Ordner
@@ -9,3 +9,4 @@ Remove=entfernen
 Add\ new\ entry=Neuen Eintrag hinzufügen
 External\ Path=Externer Pfad
 By\ default\ all\ files\ are\ version\ controlled=Standardmäßig stehen alle Dateien unter Versionskontrolle
+

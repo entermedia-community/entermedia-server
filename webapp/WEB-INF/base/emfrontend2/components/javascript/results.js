@@ -232,18 +232,21 @@ $(document).ready(function(url,params)
 	}
 	
 	
-	
 	showAsset = function(assetid,pagenum)
 	{
+		var resultsdiv = $("#resultsdiv");
+		if( !pagenum )
+		{
+			pagenum = resultsdiv.data("pagenum"); 
+		}
 		var hidden = getOverlay();
-		var grid = $(".masonry-grid");
-		var link = grid.data("assettemplate");
+		var link = resultsdiv.data("assettemplate");
 		if( link == null )
 		{
 			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
 		}
 		
-		var hitssessionid = $('#resultsdiv').data("hitssessionid");
+		var hitssessionid = resultsdiv.data("hitssessionid");
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
@@ -431,6 +434,25 @@ $(document).ready(function(url,params)
 		var assetid = link.data("assetid");
 		var pagenum = link.data("pagenum"); 
 		showAsset(assetid,pagenum);
+		return false;
+	});
+	
+	lQuery('table.stackedplayertable td').livequery('click',function(e)
+	{
+		e.preventDefault();
+		
+		var clicked = $(this);
+		if(clicked.attr("noclick") =="true") {
+			return true;
+		}
+		if( $(event.target).is("input") )
+		{
+			return true;
+		}
+		var row = $(clicked.closest("tr"));
+		var assetid = row.data("rowid");
+		
+		showAsset(assetid);
 		return false;
 	});
 	

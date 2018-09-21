@@ -1698,13 +1698,30 @@ table.table-striped tbody tr:nth-of-type(odd) {
 }
 
 
-table.table-striped tbody tr.emborderhover
+table.stackedplayertable tbody tr
 {
 	background-color: #e2eff4;
 	cursor:pointer;
 }
-table tr.odd
+
+table tr.emborderhover td
 {
-	background-color: #02eff4;
+	background-color: #c9e8f2;
 }
 
+#headerstatusarea
+{
+	float:right;
+	margin: 10px 10px 0 0;
+	min-width: 200px;
+	min-height: 40px;
+}
+
+.alert-primary {
+    color: #004085;
+    background-color: #cce5ff;
+    border-color: #b8daff;
+    font-size: .9rem;
+    font-weight: 400;
+    line-height: 1;
+}

@@ -1,22 +1,29 @@
-#
-#Fri Feb 13 10:39:03 EST 2015
-Data\ Search=Datensuche
-Data=Daten
+#Fri Sep 21 13:32:18 EDT 2018
+View\ Mapping=Ansichtszuordnung
+Delete\ All=Alles löschen
+Data\ Search=Suche Dateien
+Data=Dateien
 Export=Export
 Records=Datensätze
 Search=Suche
-Reindex=indizieren
+Reindex=Neu indizieren
+Restore\ Table=Tabelle wiederherstellen
 Customize\ Views=Ansichten anpassen
 Import=Import
+Elastic\ System\ Info=elastisches Systeminfo
 Page=Seite
 of=von
 Delete\ Table=Tabelle löschen
-Data\ Type=Datentyp
+Data\ Type=Dateiart
+Delete\ All\ Records=Lösche alle Datensätze
 Found=gefunden
 Copy\ to\ defaults=zu Standardwerten kopieren
 Add\ New\ Record=neuen Datensatz hinzufügen
-Back=zurück
+Back=Zurück
 Delete\ Records=Datensätze löschen
+Please\ export\ data\ first=Bitte zuerst Dateien exportieren
+Reset\ Settings=Einstellungen zurücksetzen
+Add\ New=Neu hinzufügen
 Customize\ Fields=Felder anpassen
-Forward=vorwärts
+Forward=Vorwärts
 

@@ -1,9 +1,13 @@
-#
-#Tue Oct 11 16:10:37 EDT 2016
-Properties=Eigenschaften
-Create=erstellen
-Rename=umbenennen
-Paste=Paste
-Cut=schneiden
-Delete=l\u00F6schen
+#Fri Sep 21 13:32:18 EDT 2018
+Add\ Media=Medien hinzufügen
 Copy=Kopieren
+Create=Erstellen
+Create\ Collection=Sammlung erstellen
+Rename=Umbenennen
+Properties=Eigenschaften
+Add\ Collection=Sammlung hinzufügen
+Cut=schneiden
+add=hinzufügen
+Delete=löschen
+Paste=Paste
+

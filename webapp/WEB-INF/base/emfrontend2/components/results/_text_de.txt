@@ -1,5 +1,4 @@
-#
-#Tue Oct 11 16:10:38 EDT 2016
+#Fri Sep 21 13:32:18 EDT 2018
 Remove=entfernen
 Table\ View=Tabellenansicht
 Collection=Sammlung
@@ -7,21 +6,21 @@ No\ results\ found=keine Ergebnisse gefunden
 Add\ to\ Basket=in den Warenkorb
 Table=Tabelle
 View\ Gallery=Galerie ansehen
-Change\ Result\ View=\u00C4nderung Ergebnisansicht
+Change\ Result\ View=Änderung Ergebnisansicht
 Edit=bearbeiten
-Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgew\u00E4hlte Eintr\u00E4ge bearbeiten
-Add\ Column=Spalte hinzuf\u00FCgen
-Publish=ver\u00F6ffentlichen
+Edit\ one\ or\ more\ selected\ records=einen oder mehrere ausgewählte Einträge bearbeiten
+Add\ Column=Spalte hinzufügen
+Publish=veröffentlichen
 items=Objekte
-Displaying\ records=Anzeige von Datens\u00E4tzen
+Displaying\ records=Anzeige von Datensätzen
 Download\ Options=Download-Optionen
-Select\ This\ Page=diese Seite w\u00E4hlen
+Select\ This\ Page=diese Seite wählen
 View\ Table=Tabelle anzeigen
 Share=Teilen
 Drag\ columns\ to\ move\ them=Spalten ziehen, um sie zu bewegen
 Cancel=abbrechen
 Share\ Gallery=Galerie mit Anderen teilen
-Publish\ Assets\ to\ Server=Assets auf Server ver\u00F6ffentlichen
+Publish\ Assets\ to\ Server=Assets auf Server veröffentlichen
 Download=Download
 of=von
 Email\ Assets=Assets mailen
@@ -35,6 +34,7 @@ Categories=Kategorien
 Gallery=Galerie
 Folders=Ordner
 Gallery\ View=Galerie-Ansicht
-Deselect\ All=alle abw\u00E4hlen
-Select\ All\ Results=alle Ergebnisse ausw\u00E4hlen
+Deselect\ All=alle abwählen
+Select\ All\ Results=alle Ergebnisse auswählen
 Remove\ from\ Collection=aus der Sammlung zu entfernen
+

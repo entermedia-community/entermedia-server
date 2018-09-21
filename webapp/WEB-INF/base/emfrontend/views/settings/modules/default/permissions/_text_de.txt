@@ -1,8 +1,10 @@
-#
-#Thu Apr 08 15:20:42 EDT 2010
-Select\ a\ group=Wählen Sie eine Gruppe
+#Fri Sep 21 13:32:18 EDT 2018
+Select\ a\ group=Gruppe auswählen
 PERMISSIONS=BERECHTIGUNGEN
-Select\ a\ catalog=Wählen Sie einen Katalog
+Anyone=Jeder
+Select\ a\ catalog=Katalog auswählen
+Allow\:=Erlauben\:
 Catalogs=Kataloge
+Nobody=Keiner
 Groups=Gruppen
 

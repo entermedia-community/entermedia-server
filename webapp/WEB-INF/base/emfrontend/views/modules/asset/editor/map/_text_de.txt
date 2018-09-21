@@ -1,6 +1,5 @@
-#
-#Wed Feb 04 07:56:50 EST 2015
-Search\ for\ a\ location,\ drag\ the\ icon\ to\ the\ correct\ place\ and\ click\ the\ save\ button.\ Double\ left-click\ to\ zoom\ in,\ double\ right-click\ to\ zoom\ out=Suchen Sie einen Ort, ziehen Sie das Symbol an den richtigen Platz, und drücken Sie den Speicherknopf. Doppelter Linksklick zum Vergrößern, doppelter Rechtsklick zum Verkleinern.
-Save\ Values=Werte speichern
-
+#Fri Sep 21 13:32:18 EDT 2018
+Search\ for\ a\ location,\ drag\ the\ icon\ to\ the\ correct\ place\ and\ click\ the\ save\ button.\ Double\ left-click\ to\ zoom\ in,\ double\ right-click\ to\ zoom\ out=Suchen Sie einen Position, ziehen Sie das Symbol an den richtigen Platz, und drücken Sie "Speichern". Doppelter Linksklick zum Vergrößern, doppelter Rechtsklick zum Verkleinern.
+Your\ entry\ is\ invalid.\ \ Please\ check\ your\ values\ and\ try\ again=Ihre Eingabe ist ungültig. Bitte überprüfen Sie Ihre Angaben und versuchen Sie es erneut
+Save\ Values=Angaben speichern
 

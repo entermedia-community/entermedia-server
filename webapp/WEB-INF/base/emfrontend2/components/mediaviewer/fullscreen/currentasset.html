@@ -1,9 +1,12 @@
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
+#if( $type )
 #set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
+#else
+No template for $type
+#end
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 $context.putPageValue("cdn",$cdnprefix)
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
@@ -16,7 +19,7 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $next = $hits.next($index))       
 
 <div id="main-media-container" style="height: 100%;">
-<div id="main-media" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
+<div id="main-media-viewer" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end

@@ -1,14 +1,18 @@
-#
-#Thu Jan 28 15:44:08 EST 2016
+#Fri Sep 21 13:32:18 EDT 2018
+Map=Karte
 Results=Ergebnisse
-No\ results\ found.=keine Ergebnisse gefunden.
 Batch\ Edit=Stapelverarbeitung
-Delete\ Selected\ Items=ausgew\u00E4hlte Artikel l\u00F6schen
+No\ results\ found.=Keine Ergebnisse gefunden.
+Delete\ Selected\ Items=Ausgewählte Artikel löschen
 Edit\ Columns=Spalten bearbeiten
-Custom\ Export=benutzerdefinierter Export
-Add\ New=neue hinzuf\u00FCgen
+Custom\ Export=Benutzerdefinierter Export
+Add\ New=Neu hinzufügen
 Export\ results=Ergebnisse exportieren
-Download\ Assets=Assets herunterladen
+Download\ Assets=Dateien herunterladen
+Table=Tabelle
 Export\ results\ (friendly)=Ergebnisse exportieren ( freundlich)
-Add\ Column=Spalte hinzuf\u00FCgen
-Cancel=abbrechen
+Refreshing=erfrischend
+No\ results\ found=Keine Ergebnisse gefunden
+Add\ Column=Spalte hinzufügen
+Cancel=Abbrechen
+

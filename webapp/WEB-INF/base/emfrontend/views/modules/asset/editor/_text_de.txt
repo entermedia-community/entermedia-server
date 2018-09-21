@@ -1,5 +1,5 @@
-#
-#Wed Feb 04 07:56:57 EST 2015
-records\ found=Datensätze gefunden
-Searched\ By=Suche nach
+#Fri Sep 21 13:32:18 EDT 2018
+No\ records\ found=Keine Aufzeichnungen gefunden
+records\ found=Aufzeichnungen gefunden
+Searched\ By=Gesucht von
 

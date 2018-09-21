@@ -1,8 +1,14 @@
-#
-#Thu Jan 14 13:10:59 EST 2016
+#Fri Sep 21 13:32:18 EDT 2018
+Add\ Library=Bibliothek hinzufügen
+[Add\ New=[neue hinzufügen
+Assets=Assets
+Create\ New=neue
+Add\ Collection=Sammlung hinzufügen
+Pick\ From=Wählen Sie aus
 Libraries=Bibliotheken
 Details=Einzelheiten
-Assets=Assets
 Project\ Tracker=Projekt-Tracker
-Create\ New=neue
 Collections=Sammlungen
+Collection\ Search=Sammlungssuche
+add=hinzufügen
+

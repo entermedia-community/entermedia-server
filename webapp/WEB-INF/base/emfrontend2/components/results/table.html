@@ -34,7 +34,10 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 #set( $viewerlink = $content.get("assetviewerlink") )
 
-	<table id="main-results-table" class="table table-striped emresultstable" data-clickpath="$home$viewerlink?hitssessionid=${hits.sessionId}&assetid=">
+##	<a class="stackedplayer" data-assetid="$asset.id" data-pagenum="$pagenum" href="#" >
+
+
+	<table id="main-results-table" class="table table-striped emresultstable stackedplayertable" >
 			$pages.include("$apphome/components/results/tableheader.html",$context)
 			#set($count = 0)
 			#foreach( $hit in $hits.getPageOfHits() )

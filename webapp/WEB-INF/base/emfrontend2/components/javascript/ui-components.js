@@ -638,21 +638,22 @@ uiload = function() {
 	}
 
 
-	lQuery('#emselectable table tr' ).livequery(
+	lQuery('.stackedplayertable tr td' ).livequery(
 	function()
 	{
 		$(this).hover(
 			function () 
 			{
-			  	var row = $(this).closest("tr");
-				var id = $(row).attr("rowid");
+			  	var row = $($(this).closest("tr"));
+				var id = $(row).data("rowid");
 			    if( id != null )
 			    {
-				    $(this).addClass("emborderhover");
+				    row.addClass("emborderhover");
 				}
 		 	}, 
 			function () {
-			    $(this).removeClass("emborderhover");
+			  	var row = $($(this).closest("tr"));
+			    row.removeClass("emborderhover");
 			}
 		);
 	});

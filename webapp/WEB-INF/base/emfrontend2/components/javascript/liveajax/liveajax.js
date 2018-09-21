@@ -219,7 +219,7 @@ If list2 not init: Make sure .html is correct and livequeryrunning
 					eventlistener["function"] = arguments[2];
 				}
 		    	eventregistry.push(eventlistener);
-		    	console.log("Initial Registering  event" + eventlistener.selector );
+		    	//console.log("Initial Registering  event" + eventlistener.selector );
 		    	
  				nodes.each(function() //We need to make sure each row is initially handled
  				{ 

@@ -1,0 +1,11 @@
+#Fri Sep 21 13:32:18 EDT 2018
+File\ Formats=Dateiformate
+Total=gesamt
+Asset\ Previews\ Over\ Time=Asset-Vorschau im Zeitverlauf
+Logins\ Per\ Day=Logins pro Tag
+Note\ -\ Dates\ are\ relative\ to\ GMT,\ search\ results\ may\ be\ local\ time=Hinweis - Daten sind relativ zu GMT, Suchergebnisse können Ortszeit sein
+Asset\ Creation\ over\ time=Asset-Erstellung im Laufe der Zeit
+Downloads\ over\ time=Downloads im Laufe der Zeit
+Asset\ Edits\ Over\ Time=Asset-Editierungen im Zeitverlauf
+Asset\ Edit\ History=Asset-Bearbeitungsverlauf
+

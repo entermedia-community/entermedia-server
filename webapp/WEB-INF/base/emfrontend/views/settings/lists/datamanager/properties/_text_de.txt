@@ -1,0 +1,12 @@
+#Fri Sep 21 13:32:18 EDT 2018
+Field\ Name=Feldname
+Delete\ Field=Feld löschen
+Current\ Field=aktuelles Feld
+Go\ Back=Zurück
+Copy\ to\ catalog\ defaults=In Standardeinstellungen des Katalogs kopieren
+Field\ Type=Feldtyp
+ID=Identifizierung
+Add\ New\ Field=neues Feld hinzufügen
+delete=Löschen
+Save=Speichern
+

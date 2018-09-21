@@ -1,0 +1,20 @@
+#Fri Sep 21 13:32:18 EDT 2018
+Use\ Asset\ Type=Dateityp angeben
+Save=Speichern
+Render\ Table=Rendertabelle
+Render\ Table\ Custom\ View=Benutzerdefinierte Ansicht der Tabelle
+Render\ as\ Table?=als Tabelle darstellen?
+Table=Tabelle
+Show\ on\ registration\ section\:=Ansicht auf Registrierungsabschnitt\:
+Asset\ Type=Dateiart
+Render\ Table\ Default\ Sort=Rendertabelle Standardsortierung
+Default=Standard
+System\ Views=Systemansichten
+Edit\ Permissions=Berechtigungen bearbeiten
+System\ View?=Systemansicht?
+Render\ Table\ External\ ID=Darstellen einer Tabelle mit externer ID
+Make\ Default=als Standard verwenden
+View\ Name=Ansichtsname
+Settings=die Einstellungen
+Add\ New=Neu hinzufügen
+

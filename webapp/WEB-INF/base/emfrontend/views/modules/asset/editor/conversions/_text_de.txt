@@ -1,4 +1,16 @@
-#
-#Wed Feb 04 07:55:47 EST 2015
-Upload=laden
+#Fri Sep 21 13:32:18 EDT 2018
+Reload\ Original\ Thumbnails=Original-Thumbnails neu laden
+Upload=hochladen
+Preview=Vorschau
+Image\ Editor=Bildbearbeiter
+Select\ File=Datei aussuchen
+Create=erstellen
+Create\ New\ Conversion=Erstellen Sie eine neue Umwandlung
+Image\ is\ too\ small\ to\ crop\ to\ the\ desired\ crop\ dimension=Das Bild ist zu klein, um die gewünschte Schnittgröße zu erhalten
+Aspect\ Ratio=Seitenverhältnis
+Replace\ Image=Bild ersetzen
+Rotate=Drehen
+You\ can\ specify\ custom\ width,\ height\ or\ formats.\ For\ example,\ a\ large\ PDF=Sie können benutzerdefinierte Breite, Höhe oder Formate angeben, z.B. PDF-Größe.
+Download=herunterladen
+Crop=Schnitt
 
