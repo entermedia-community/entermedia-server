@@ -27,15 +27,15 @@
 	#set( $link = "${page.directory}/generictablesave.html" )
 #end
 
-#set($jumptomodule = $context.getRequestParameter("jumptomodule"))
+#set( $jumptomodule = $context.getRequestParameter("jumptomodule"))
 
 #set ($id = $context.getRequestParameter("id"))
 
 #set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 #set( $argsnoid = "candelete=$candelete&editpath=$editpath&parentid=$parentid&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$viewpath&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
 
-#set($viewdetailspath = $context.getRequestParameter("viewdetailspath"))
-#set ($passalong = "viewdetailspath=$!viewdetailspath&jumptomodule=$!jumptomodule&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
+#set( $viewdetailspath = $context.getRequestParameter("viewdetailspath"))
+#set( $passalong = "viewdetailspath=$!viewdetailspath&jumptomodule=$!jumptomodule&candelete=$candelete&viewid=$viewid&viewpath=$viewpath&parentid=$parentid&hitssessionid=$!hitssessionid&selectlink=$!link&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&$fieldexternalid=$!fieldexternalvalue")
 #set( $passalong = $passalong.replace("=","%3D").replace("&","%26").replace(" ","%20"))
 
 #set( $showit = true )
@@ -52,7 +52,7 @@
 	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
 	<div class="addnew-generic">
-	<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">[[Add New]]</a>
+	<a class="btn btn-sm btn-primary ajax" href="$home$editpath?$argsnoid&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">[[Add New]]</a>
 	</div>
 	#end
 	
@@ -74,10 +74,10 @@
 		  <a href="$home${viewdetailspath}?id=$id">[[see more details]]</a>
 		</div>
 		#end
-		<div style="margin: 20px 20px 0 20px;">
-			<a class="btn ajax red right" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='${viewid}editor' href="$home$apphome/components/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
-			<input class="btn "  type="submit" value="Save Values"/>
-			<a class="btn ajax" style="margin-left: 5px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+		<div style="margin: 20px 20px 0 0;">
+			<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
+			<a class="btn btn-sm btn-secondary ajax" style="margin-left: 5px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='${viewid}editor' href="$home$apphome/components/detaileditor/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
 		</div>
 
 		<input name="field" type="hidden" value="$fieldexternalid" />

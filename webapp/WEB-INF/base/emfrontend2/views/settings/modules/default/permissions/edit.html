@@ -1,5 +1,5 @@
 <div id="permissionedit" class="ui-widget">
-	<div class="ui-widget-header">Permissions Editor</div>
+	<div class="ui-widget-header"><span class="widget-header-title">Permissions Editor</span></div>
 	<div class="ui-widget-content" style="padding-top: 20px; ">
 
 <p>$permdata.name - $!permdata.caption</p>
@@ -8,7 +8,7 @@
 
 <form method="post" name="permissiontype"  class="ajaxform" targetdiv="permissionedit" action="./addgroup.html?id=$permdata.id&editPath=$editPath">
 	
-	<select name="addgroup">
+	<select name="addgroup" class="form-control" style="width:200px; margin-right:5px; float:left;">
 		<option value=""></option>
 		<option value="true">Anyone</option>
 		<option value="false">Nobody</option>
@@ -26,18 +26,19 @@
 #end	
 <!-- 		<option value="">Security Group Property</option>  -->
 
-	</select>	<input class="btn" type="submit" value="Add" />
+	</select>	
+	<input class="btn btn-sm btn-primary" type="submit" value="[[Add]]" />
 	
 </form>
-
+<div class="clearfix"></div>
 <div class="edit-permissions">
 #if( $issimple == "true" )
 
-<div id="editsimple" >
-<p><b>Allowed Groups:</b></p>
-<div style="padding: 10px;">
+<div id="editsimple" style="padding:20px 0" >
+<p><b>[[Allowed Groups]]:</b></p>
+<div style="padding: 5px 10px;">
 #if( $selgroups.size() > 0 )	
-	<table >
+	<table class="table table-striped">
 	#set( $count = 0 )
 	#foreach( $group in $selgroups )
 		<tr>
@@ -59,14 +60,12 @@
 
 </div>
 #else
-
 $pages.include("./xml/edit.html")
-
 #end
 
 </div>
 
-<a class="ajax btn"  targetdiv="permissionedit" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
+<a class="ajax btn btn-sm btn-secondary"  targetdiv="permissionedit" href="./reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
 
 </div>
 

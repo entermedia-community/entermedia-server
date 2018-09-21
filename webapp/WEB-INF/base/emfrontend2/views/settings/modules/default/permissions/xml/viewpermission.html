@@ -75,8 +75,8 @@
 		
 		<span id="add${permission.name}$traverse">	 
 		#if( $filter.isContainer())
-		 	<a class="ajax btn" targetdiv='add${permission.name}$traverse' href="$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse">[[Add Child]]</a>
+		 	<a class="ajax btn btn-sm btn-secondary" targetdiv='add${permission.name}$traverse' href="$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse">[[Add Child]]</a>
 		#elseif( $filter.isDelegator() && !$filter.filter )
-		 	<a class="ajax" targetdiv='add${permission.name}$traverse' href='$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse'>[[set child]]</a>
+		 	<a class="ajax  btn btn-sm btn-secondary" targetdiv='add${permission.name}$traverse' href='$home$content.permissionrootpath/addnewcondition.html?editPath=$editPath&name=$permission.name&traverse=$!traverse'>[[set child]]</a>
 		#end
 		</span>

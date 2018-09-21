@@ -19,17 +19,17 @@ $context.putPageValue("view", $view)
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
-$pages.include("/system/components/xml/detaileditor.html", $context)
+	$pages.include("$apphome/components/xml/detaileditor.html", $context)
 <div class="ui-widget-actions">
 <a class="btn btn-sm btn-primary" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
 <a class="btn btn-sm btn-secondary"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
-<a class="btn btn-sm btn-secondary" style="margin-left:20px" 
+<a class="btn btn-sm btn-secondary" style="margin-right:10px" 
 	href='$home$apphome/views/settings/modules/asset/presetconfig/edit/edit.html?id=${data.id}'>
 [[View Parameters]]
 </a>	
 
 
-<a class="btn  btn-sm btn-warning red" style="float: right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
+<a class="btn  btn-sm btn-danger red"  href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
 	<span>
 		[[Delete]]
 	</span></a>

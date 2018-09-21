@@ -8,10 +8,11 @@ $query.addSortBy("ordering")
 
 #set( $details = $searcher.getDetailsForView("presetdata/results",$userprofile) )
 <div class="tab-actions">
-	<a class="btn" href="$home$content.searchhome/edit/addnew.html">[[Add New Configuration]]</a>
+	<a class="btn btn-sm btn-primary float-right" href="$home$content.searchhome/edit/addnew.html">[[Add New Configuration]]</a>
+	<div class="clearfix"></div>
 </div>
 <div  id="emselectable">
-<table class="striped emdata">
+<table class="table table-striped emdata">
 <thead><tr class="tableheader">
 #foreach( $detail in $details)
 <th>$detail.getText($context)</th>

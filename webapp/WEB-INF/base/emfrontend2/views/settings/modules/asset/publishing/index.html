@@ -9,11 +9,11 @@ $query.addSortBy("name")
 #set( $details = $searcher.getDetailsForView("publishdestination/results",$userprofile) )
 
 <div class="tab-actions">
-	<a class="btn" href="$home$content.searchhome/edit/addnew.html">[[Add New]]</a>
-	<a class="emdialog btn" href="$home$content.searchhome/edit/addsmartjog.html">[[Add SmartJog]]</a>
+	<a class="btn btn-sm btn-primary" href="$home$content.searchhome/edit/addnew.html">[[Add New]]</a>
+	<a class="emdialog btn  btn-sm btn-primary" href="$home$content.searchhome/edit/addsmartjog.html">[[Add SmartJog]]</a>
 </div>
 <div id="emselectable">
-<table class="striped emdata">
+<table class="table table-striped emdata">
 <thead><tr class="tableheader">
 #foreach( $detail in $details)
 <th>$detail.getText($context)</th>

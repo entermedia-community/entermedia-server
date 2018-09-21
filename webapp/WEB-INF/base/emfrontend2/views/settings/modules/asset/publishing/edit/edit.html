@@ -1,6 +1,6 @@
 <br>
 <div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">[[Settings]]</div>
+<div class="ui-widget-header"><span class="widget-header-title">[[Settings]]</span></div>
 <div  class="ui-widget-content emselectmenu" > 
 
 <div id="editlayout">
@@ -18,12 +18,12 @@ $context.putPageValue("view", $view)
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
-$pages.include("/system/components/xml/detaileditor.html", $context)
+	$pages.include("$apphome/components/xml/detaileditor.html", $context)
 
 
-<a href="#" class="btn" onclick="jQuery(this).closest('form').submit();">[[Save]]</a>
-<a class="btn" href='$home$content.searchhome/index.html'>[[Cancel]]</a>
-<a class="btn red" style="float: right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>[[Delete]]</a>
+<a href="#" class="btn btn-sm btn-primary" onclick="jQuery(this).closest('form').submit();">[[Save]]</a>
+<a class="btn btn-sm btn-secondary" href='$home$content.searchhome/index.html'>[[Cancel]]</a>
+<a class="btn btn-sm btn-danger red" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>[[Delete]]</a>
 
 <div id="messagearea">$!message
 </div>

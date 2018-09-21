@@ -1,4 +1,4 @@
-<div id="edit$permission.name" style="background-color: rgb(253,252,220);">
+<div id="edit$permission.name" style="background-color: rgb(253,252,220); padding:10px;" >
 
 #set( $inparent = $context.getRequestParameter("inparent"))
 
@@ -6,15 +6,14 @@
 
 #set( $traverse = $context.getRequestParameter("traverse"))
 
-<br>	
-<b>[[Add Condition]]:</b>	
-	<select name="selecttype$permission.name" id="selecttype$permission.name" >
+<p><strong>[[Add Condition]]:</strong><p>	
+	<select name="selecttype$permission.name" id="selecttype$permission.name" class="form-control" style="width:200px; float:left; margin-left:5px;" >
 			<option value="">[[select a type]]</option>
 		#foreach( $condition in $list)
 			<option value="$condition.id">$condition.name</option>
 		#end
 	</select>
-	<input type="button" onclick="addCondition('$permission.name','$!traverse');" value="Ok" />
+	<input class="btn btn-sm btn-primary" type="button" onclick="addCondition('$permission.name','$!traverse');" value="[[Ok]]" />
 
 <script language="javascript">
 
@@ -26,6 +25,6 @@
 	}
 	//The parent javascript has showpath
 </script>
-
+<div class="clearix"></div>
 </div>
 	

@@ -17,7 +17,7 @@
 			
 			<input name="reload" type="hidden" value="true" />
 			
-			<select name="themeid"  style="margin: 8px;" onchange="this.form.submit()">
+			<select name="themeid" class="form-control" onchange="this.form.submit()" style="float:left; width:180px; margin-right:10px;">
 				
 			#set( $themes = $mediaarchive.getList("theme") )
 			#foreach( $theme in $themes)
@@ -25,10 +25,10 @@
 			#end
 			</select>
 			
-			<input type=button  onClick='location.href = "./copy.html?themeid=$!themeid"' value="Copy" />
-			<input type=button  onClick='location.href = "./remove.html?themeid=$!themeid"' value="Remove" />
-			<input type=button  onClick='location.href = "$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme"' value="Export" />
-			
+			<input class="btn btn-sm btn-primary" type=button  onClick='location.href = "./copy.html?themeid=$!themeid"' value="Copy" />
+			<input class="btn btn-sm btn-primary" type=button  onClick='location.href = "$home$apphome/views/settings/lists/datamanager/list/index.html?searchtype=theme"' value="Export" />
+			<input class="btn btn-sm btn-danger" type=button  onClick='location.href = "./remove.html?themeid=$!themeid"' value="Remove" />
+		
 			
 		</form>
 	</div>
@@ -53,7 +53,7 @@
 		<input name="searchtype" type="hidden" value="theme" />
 		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 	
-		<input type="submit" value="Save" style="width:100px; height: 60px; padding:20px" />
+		<input type="submit" value="[[Save]]" class="btn btn-primary" />
 		<div id="messagearea">$!message
 	</div>
 	</form>

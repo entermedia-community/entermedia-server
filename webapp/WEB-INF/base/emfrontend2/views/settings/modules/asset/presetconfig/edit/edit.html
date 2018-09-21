@@ -1,5 +1,5 @@
 <div class="ui-widget" style="overflow: hidden;">
-<div class="ui-widget-header">[[Parameters]]</div>
+<div class="ui-widget-header"><span class="widget-header-title">[[Parameters]]</span></div>
 <div  class="ui-widget-content">
 
 <div id="editlayout">
@@ -17,18 +17,14 @@ $context.putPageValue("view", $view)
 	<input name="catalogid" type="hidden" value="$searcher.catalogId" />
 	<input name="searchtype" type="hidden" value="$searcher.searchType" />
 	<input name="origURL"  type="hidden" value="$!origURL" />
-$pages.include("/system/components/xml/detaileditor.html", $context)
+	$pages.include("$apphome/components/xml/detaileditor.html", $context)
 
-
-<a class="btn" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
-<a class="btn"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
-<a class="btn red" style="float: right" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>
-	<span>
-		[[Delete]]
-	</span></a>
-<br>
-<div id="messagearea">$!message
+<div class="ui-widget-actions">
+<a class="btn btn-sm btn-primary" href="#" onclick="jQuery(this).closest('form').submit();"><span>[[Save]]</span></a>
+<a class="btn btn-sm btn-secondary"  href='$home$content.searchhome/index.html'><span>[[Cancel]]</span></a>
+<a class="btn btn-sm btn-danger red" href='$home$content.searchhome/edit/delete.html?searchtype=$searcher.searchType&catalogid=$searcher.catalogId&id=$!data.id'>[[Delete]]</a>
 </div>
+<div id="messagearea">$!message</div>
 </form>
 
 
@@ -42,9 +38,7 @@ $pages.include("/system/components/xml/detaileditor.html", $context)
 </div>
 </div>
 #if($data && $data.id)
-<h2>
-[[Preset Parameters]]
-</h2>
+<h2>[[Preset Parameters]]</h2>
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set( $viewdata = $viewsearcher.searchById($viewid))
 #set($viewdetailspath = "presetparameter/edit")

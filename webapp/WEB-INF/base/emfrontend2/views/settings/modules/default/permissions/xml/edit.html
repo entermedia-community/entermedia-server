@@ -1,4 +1,4 @@
-<div id="edit$permission.name">
+<div id="edit$permission.name" style="padding:15px; background-color: #efefef;margin:10px 0;">
 
 #set( $inparent = $context.getRequestParameter("inparent"))
 #macro(showfilter2 $filter $inLevel $inTraverse)
@@ -9,7 +9,7 @@ $!context.putPageValue("level", $inLevel)
 ##SHOW THE PERMISSION
 $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 
-	<ul style="list-style: none;">
+	<ul style="list-style: none; padding:10px 0; margin:0;">
 	#foreach( $child in $filter.filters)	
 		
 		#set( $level = $inLevel+1)
@@ -33,7 +33,7 @@ $pages.include("$content.permissionrootpath/viewpermission.html", $context)
 			##macro starts here
 			#showfilter2($filter 0 "0")
 			<p>
-				<input class="btn" type="submit" value="[[Save]]" />
+				<input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
 			##<a class="ajax btn red" targetdiv="edit$permission.name" href="$home$content.permissionrootpath/cancel.html?name=$permission.name">[[Cancel]]</a>
 			</p>	
 		</form>
