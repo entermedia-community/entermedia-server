@@ -199,8 +199,8 @@ public class PullManager implements CatalogEnabled
 		String returned = EntityUtils.toString(response2.getEntity());
 		//log.info("returned:" + returned);
 		Map parsed = (Map)new JSONParser().parse(returned);
-		boolean skipgenerated = (boolean) node.getValue("skipgenerated");
-		boolean skiporiginal = (boolean) node.getValue("skiporiginal");
+		boolean skipgenerated = (boolean) Boolean.parseBoolean(node.get("skipgenerated"));
+		boolean skiporiginal = (boolean) Boolean.parseBoolean(node.get("skiporiginal"));
 
 		long assetcount = 0;
 		int page = 1;
