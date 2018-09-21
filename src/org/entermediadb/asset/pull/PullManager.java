@@ -1,9 +1,7 @@
 package org.entermediadb.asset.pull;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Date;
@@ -202,6 +200,7 @@ public class PullManager implements CatalogEnabled
 		//log.info("returned:" + returned);
 		Map parsed = (Map)new JSONParser().parse(returned);
 		boolean skipgenerated = (boolean) node.getValue("skipgenerated");
+		boolean skiporiginal = (boolean) node.getValue("skiporiginal");
 
 		long assetcount = 0;
 		int page = 1;
@@ -215,6 +214,10 @@ public class PullManager implements CatalogEnabled
 
 			downloadGeneratedFiles(inArchive,connection,node,params,parsed);
 			}
+			if(!skiporiginal) {
+				//TODO:   Need the asset
+			}
+			
 			int pages = Integer.parseInt( response.get("pages").toString() );
 			//loop over pages
 			String hitssessionid = (String)response.get("hitssessionid");
@@ -251,6 +254,9 @@ public class PullManager implements CatalogEnabled
 				saved = importChanges(inArchive, returned, parsed);
 				assetcount = assetcount + saved.size();
 				if(!skipgenerated) {
+					downloadGeneratedFiles(inArchive,connection,node,params,parsed);
+				}
+				if(!skiporiginal) {
 					downloadGeneratedFiles(inArchive,connection,node,params,parsed);
 				}
 
@@ -347,11 +353,21 @@ public class PullManager implements CatalogEnabled
 	protected Collection importChanges(MediaArchive inArchive, String returned, Map parsed)
 	{
 		//I dont want to edit the json in any way, so using original
-		Collection array = new JsonUtil().parseArray("results", returned); //I wanted to use the data in raw form
+		Collection array;
+		try
+		{
+			array = new JsonUtil().parseArray("results", returned);
+			inArchive.getAssetSearcher().saveJson(array);
+			log.info("saved " + array.size() + " changed asset ");
+			return array;
+		}
+		catch (Exception e)
+		{
+			log.info("Error parsing following content: " + returned);
+			throw new OpenEditException(e);
+		}
 		
-		inArchive.getAssetSearcher().saveJson(array);
-		log.info("saved " + array.size() + " changed asset ");
-		return array;
+		
 	}
 
 	/**
@@ -518,7 +534,20 @@ public class PullManager implements CatalogEnabled
 		
 	}
 
+	protected File getFile(Asset inAsset)
+	{
+		String path = "/WEB-INF/data" + inAsset.getMediaArchive().getCatalogHome() + "/originals/";
+		path = path + inAsset.getSourcePath(); //Check archived?
 
+		String primaryname = inAsset.getPrimaryFile();
+		if (primaryname != null && inAsset.isFolder())
+		{
+			path = path + "/" + primaryname;
+		}
+		return new File(inAsset.getMediaArchive().getPageManager().getPage(path).getContentItem().getAbsolutePath());
+		
+		
+	}
 	
 
 
