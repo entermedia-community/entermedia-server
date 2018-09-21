@@ -4,7 +4,7 @@
 	#set( $seltype  ="events")
 #end
 <div class="tab-actions clearfix">
-	<select class="jump">
+	<select class="jump form-control form-control-sm">
 			<option value=""></option>
 		#foreach( $event in $pathevents )
 				#if( $type != $event.getPage().getDirectoryName() )
@@ -14,8 +14,9 @@
 			#end
 	</select>
 	<strong style="margin-left: 5px;">Select a group of triggers to display</strong>
-	  <a class="btn right" style="margin-left: 5px;" href="./reload.html">[[Stop Events]]</a>
-	 <a class="btn right" style="margin-left: 5px;" href="./edit/edit.html?new=true">[[New Event]]</a>
+	 <a class="btn btn-sm btn-primary float-right" style="margin-left: 5px;" href="./edit/edit.html?new=true">[[New Event]]</a>
+	  <a class="btn btn-sm btn-secondary float-right" style="margin-left: 5px;" href="./reload.html">[[Stop Events]]</a>
+	 
 </div>
 
 <script>
@@ -28,7 +29,7 @@
 
 
 <div id="emselectable">
-	<table class="striped emdata">
+	<table class="table table-striped table-hover emdata">
 		<thead>
 			<tr class="tableheader">
 				<th>Name</th>

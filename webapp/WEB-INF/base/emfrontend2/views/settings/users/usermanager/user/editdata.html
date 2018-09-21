@@ -1,4 +1,4 @@
-<div id="usereditproperties">
+<div id="usereditproperties" style="float:left; width:600px">
 	#set($selectedUser = $userManager.getUser($userName))
 
 				#if ($saved)
@@ -8,7 +8,7 @@
 			#end
 
 <div class="ui-widget commentbox columns-2" style="margin: 0 20px 0 0;">
-<div class="ui-widget-header">[[Profile]]</div>
+<div class="ui-widget-header"><span class="widget-header-title">[[Profile]]</span></div>
 <div  class="ui-widget-content" > 
 	#set ($userSearcher = $searcherManager.getSearcher($catalogid, "user"))
 		<form class="ajaxform validate" id="usereditform" targetdiv="usereditproperties" name="usereditform" action="$home$usermanagerhome/user/editdata.html">
@@ -31,13 +31,14 @@
 				</div>
 			#end
 
-
-			<a href="#" class="btn" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
-			<a class="btn red" style="float: right;" href="./removeuser.html?usertodelete=$selectedUser.id">[[Delete User]]</a>
-			<a href="$home$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn" >[[Edit Password]]</a>
-					#if($canactasotherusers)
-	<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn" >[[Act As this user temporarily]]</a>
-#end
+			<div class="ui-widget-actions">
+			<a href="#" class="btn btn-sm btn-primary" onclick="$('#usereditform').submit();" >[[Save Changes]]</a>
+			<a href="$home$content.usermanagerhome/user/setuserpassword.html?username=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Edit Password]]</a>
+			#if($canactasotherusers)
+			<a href="$home$content.usermanagerhome/user/switchtouser.html?userid=$selectedUser.id" class="btn btn-sm btn-secondary" >[[Act As this user temporarily]]</a>
+			<a class="btn btn-sm btn-danger red" href="./removeuser.html?usertodelete=$selectedUser.id">[[Delete User]]</a>
+			#end
+		    </div>
 		</form>
 </div>	
 </div>

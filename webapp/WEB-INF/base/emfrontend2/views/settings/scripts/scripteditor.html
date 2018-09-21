@@ -7,10 +7,11 @@
 	<input class="field" name="scriptpath" value="$script.getPath()"/> <span style="margin-left: 10px; font-weight: bold;">[[Script File Name]]</span>
 	<textarea spellcheck="false" style="width: 97%; height: 450px; overflow: scroll; white-space: pre;" name="scriptcode">$script.getContent()</textarea>
 	<p>
-		<input type="submit" class="btn small" value="[[Save]]">
-		<a href="$home$dataroot/import/scriptdelete.html?filename=$script.getName()" class="btn small right">[[Delete]]</a>
-        <a id="cancel-edit" style="cursor: pointer; margin-right: 5px;" class="btn small right">[[Cancel]]</a>
-		<a class="btn" target="_new" href="$home$editroot/run.html?oemaxlevel=1&scriptpath=$scriptpath">[[Debug]]</a>
+		<input type="submit" class="btn btn-sm btn-primary small" value="[[Save]]">
+			
+        <a id="cancel-edit" style="cursor: pointer; margin-right: 5px;" class="btn btn-sm btn-primary right">[[Cancel]]</a>
+		<a class="btn btn-sm btn-secondary" target="_new" href="$home$editroot/run.html?oemaxlevel=1&scriptpath=$scriptpath">[[Debug]]</a>
+		<a href="$home$dataroot/import/scriptdelete.html?filename=$script.getName()" class="btn btn-sm btn-danger right">[[Delete]]</a>
     </p>
 </form>	
 </div>

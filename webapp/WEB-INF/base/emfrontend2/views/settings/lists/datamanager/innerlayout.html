@@ -6,7 +6,7 @@
 
 <form style="float: right; margin-top: 4px; margin-right: 20px;" action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
-	[[Choose Table]]: <select name="searchtype" onchange="submit();">
+	[[Choose Table]]: <select name="searchtype" onchange="submit();" class="form-control form-control-sm" style="display:inline-block;">
 			<option value=""></option>
 		#foreach( $type in $searchtypes )
 			#if($type != "CVS")
@@ -14,8 +14,8 @@
 			#end
 		#end
 	</select>
-<a style="margin-top: 0px;" class="btn btn-sm btn-primary" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">[[Create New Table]]</a>
+<a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/lists/datamanager/addtable/index.html">[[Create New Table]]</a>
 </form>
-
+<div class="clearfix"></div>
 
 $pages.includeContent()

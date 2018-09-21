@@ -19,7 +19,7 @@
 
 	#set($view = $searcherManager.getData("$catalogid", "view", $viewid))
 	
-	<li class="header no-sort" id="views-header" style="height: 16px;">
+	<li class="header no-sort" id="views-header" style="height: 44px;">
 	    <span id="name">$context.getText($view)</span>
 	    #if ( $view.rendertable )
 	    <span class="type">[[Table]]: $view.rendertable</span>

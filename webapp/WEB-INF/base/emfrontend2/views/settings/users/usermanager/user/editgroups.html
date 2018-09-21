@@ -1,4 +1,4 @@
-<div id="groupeditor">
+<div id="groupeditor" style="float:left; width:360px; margin-right:20px;">
 
 <div class="ui-widget commentbox three-up">
 <div class="ui-widget-header">Groups</div>
@@ -10,7 +10,7 @@
         	<input name="username" type="hidden" value="$selectedUser.id" />
         	<input name="addUsernames" type="hidden" value="$selectedUser.id" />
             <span style="color: white; font-size: 11px; font-weight: bold;">Add</span>
-            <select name="groupid" id="groupselect" onchange="$('#groupAddForm').submit()">
+            <select name="groupid" id="groupselect" onchange="$('#groupAddForm').submit()" class="form-control">
             	<option value=""></option>
             	#foreach ( $group in $UserManager.getGroups() )
             		#if( !$selectedUser.isInGroup($group) )  
@@ -22,14 +22,13 @@
     </div>
 #end
 
-<div class="emtable clearfix" >
+<div class="emtable" >
 	#foreach ( $group in $selectedUser.getGroups() )
-		<a class="row group" href="$home$usermanagerhome/groups/modifygroup.html?groupid=$group.id">
-			$group
-			##if($caneditasset)
-				<a class="ajax delete-row" targetdiv="groupeditor" href="$home$usermanagerhome/user/editgroups.html?groupid=$group.id&removeUsernames=$selectedUser.getUserName()&username=$selectedUser.id">
-			##end
-		</a>
+		<div class="listbox">
+		<a class="listrow group" href="$home$usermanagerhome/groups/modifygroup.html?groupid=$group.id">
+			$group</a>
+		<a class="ajax delete-row" targetdiv="groupeditor" href="$home$usermanagerhome/user/editgroups.html?groupid=$group.id&removeUsernames=$selectedUser.getUserName()&username=$selectedUser.id"></a>
+		</div>
 	#end
 </div>
 

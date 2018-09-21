@@ -86,6 +86,19 @@ body {
 select.form-control:not([size]):not([multiple]) {
     height: calc(2rem);
 }
+.form-control-sm {
+	width:200px;
+	margin-right: 10px;
+	display:inline-block;
+	}
+.tooltip {
+    position: relative;
+    opacity: 1;
+    z-index: auto;
+    line-height: normal;
+}
+
+
 
 
 #emcontent { position: relative;}
@@ -151,6 +164,7 @@ select.form-control:not([size]):not([multiple]) {
 }
 .col-contet {
 	padding: 20px;
+	min-height: 200px;
 }
 @media (min-width: 992px) {
 	.col-sidebar {
@@ -161,7 +175,8 @@ select.form-control:not([size]):not([multiple]) {
 	    min-height: 100%;
 	}
 	.col-content {
-		margin-left: 280px
+		margin-left: 280px;
+		min-height: 200px;
 	}
 }
 
@@ -215,12 +230,12 @@ select.form-control:not([size]):not([multiple]) {
 .ui-widget-content-wide {
 	padding: 0;
 }
-
+.ui-widget-header {
+    padding: 4px 6px 4px 10px;
+}
 .widget-header-title {
 	font-size: 1.1em;
-    padding: 4px 6px 4px 10px;
-    line-height: 1.8;
-    display:block;
+	line-height: 1.8;
 }
 
 .ui-widget .sidetoggle .ui-widget-toggle {
@@ -940,7 +955,7 @@ table.greytxt {
     padding: 0;
 }
 #side-nav-inner {
-    width: 180px;
+    width: 240px;
     float: left;
 }
 #side-nav-inner ul {
@@ -980,6 +995,7 @@ table.greytxt {
 	right: 0;
 
 }
+.ui-sortable-handle {position:relative;}
 
 #side-nav-inner ul li.ui-sortable-helper a:hover {
     background: #fff;
@@ -995,7 +1011,29 @@ table.greytxt {
 #workarea ul {
     padding: 0;
     margin: 0;
-    min-width: 635px;
+    min-width: 700px;
+}
+#workarea ul li a {
+    color: #666;
+}
+#workarea ul li:hover a {
+    color: #444;
+}
+#workarea ul li a:hover {
+    text-decoration: underline;
+}
+.ir {
+    display: block;
+    border: 0;
+    text-indent: -999em;
+    overflow: hidden;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    text-align: left;
+    direction: ltr;
+}
+.ir br {
+    display: none;
 }
 .settings-icon {
     width: 11px;
@@ -1369,6 +1407,7 @@ form .field {
 .fields .note + input.btn {
     margin-top: 20px;
 }
+.inputformrow { margin-bottom:10px;}
 #right-col > .fields {
     margin: 10px;
 }
@@ -1553,9 +1592,8 @@ div#folders.add .folder {
     width: 170px;
     padding: 2px 5px 2px 5px;
     border-radius: 5px;
-    font-size: 12px;
+
     margin: 0 5px;
-    height: 19px;
     position: relative;
     
 }
@@ -1687,9 +1725,33 @@ h2 {
 .settings-table .emdatafieldvalue { padding: .25rem .5rem;} 
 .emdatafield { width:220px;}
 .nav-tabs {background-color:#efefef;}
-
-
-
+.listbox {
+	position:relative;
+}
+.listbox:hover {
+	background-color:#efefef;
+}
+.emtable .listrow {
+    padding: 7px 20px;
+    display: block;
+    border-bottom: 1px solid #CCC;
+    text-decoration: none;
+    color: #666;
+    
+}
+.delete-row {
+    background: url(../images/iconset-10x10.png) 20px 10px;
+    width: 10px;
+    height: 10px;
+    float: right;
+    position: absolute;
+    z-index: 3;
+    top:12px;
+    right:12px;
+}
+.common-success {
+	
+}
 
 .select2-container--bootstrap4 .select2-selection--single{height:calc(1.75rem + 1px)!important}
 .select2-container--bootstrap4 .select2-selection--single .select2-selection__placeholder{color:#757575;line-height:2.25rem}
@@ -1734,11 +1796,6 @@ tableheader th {
 	font-weight: bold;
 	font-size: 11px;
 }
-
-table.table-striped tbody tr:nth-of-type(odd) {
-    background-color: rgba(0,0,0,.1);
-}
-
 
 table.stackedplayertable tbody tr
 {
