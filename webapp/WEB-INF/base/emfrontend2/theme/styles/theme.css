@@ -433,16 +433,16 @@ select.form-control:not([size]):not([multiple]) {
 	position:relative;
 	text-align: center;
 	}
-#emselectable .autoresize-inner {
+#main-results-table .autoresize-inner {
     overflow-x: auto;
 }
-#emselectable th.sortable {
+#main-results-table th.sortable {
 	cursor:pointer;
 }
-#emselectable th.sortable.currentsort {
+#main-results-table th.sortable.currentsort {
     box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
 }
-#emselectable th.sortable div span.sorticon {
+#main-results-table th.sortable div span.sorticon {
     font-size: 16px;
     float: right;
     margin-top: 2px;

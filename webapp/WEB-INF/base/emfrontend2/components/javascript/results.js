@@ -439,8 +439,6 @@ $(document).ready(function(url,params)
 	
 	lQuery('table.stackedplayertable td').livequery('click',function(e)
 	{
-		e.preventDefault();
-		
 		var clicked = $(this);
 		if(clicked.attr("noclick") =="true") {
 			return true;
@@ -449,6 +447,10 @@ $(document).ready(function(url,params)
 		{
 			return true;
 		}
+		
+		e.preventDefault();
+		e.stopPropagation()
+		
 		var row = $(clicked.closest("tr"));
 		var assetid = row.data("rowid");
 		
