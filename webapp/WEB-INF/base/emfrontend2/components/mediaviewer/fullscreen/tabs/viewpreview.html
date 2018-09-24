@@ -1,0 +1,10 @@
+#set( $type = $mediaarchive.getMediaPlayerType($asset))
+#set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
+$context.putPageValue("cdn",$cdnprefix)
+#set( $mediadbappid=$mediaarchive.getMediaDbId())
+
+	#if( !$mediadbappid)
+		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
+	#end
+$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
+	

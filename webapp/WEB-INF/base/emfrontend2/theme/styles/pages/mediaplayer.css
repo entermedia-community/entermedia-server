@@ -383,6 +383,7 @@ color: #fff;
 #footermenu {
 	width: 100%;
 	list-style: none;
+	height: 30px;
 }
 #footermenu ul{
 	margin: 0;
@@ -392,7 +393,7 @@ color: #fff;
 #footermenu li.footermenu {
 	font-size:.9em;
 	font-weight: normal;
-	padding-left: 5%;
+	padding: 0 2% 0 2%;
 	float:left;
 	display:block;
 }
@@ -444,3 +445,22 @@ body.widthless1000 #pdf-thumbnail-sidebar
 
 
 }
+.bottomtab.tabselected
+{
+	background-color: #666;
+}
+.bottomtab:hover
+{
+	background-color: #666;
+}
+
+.bottomtab
+{
+	cursor: pointer;
+	text-align: center;
+	border-left: 1px solid black;
+	border-right: 1px solid black;
+	height: 37px;
+}
+
+

@@ -1,0 +1,8 @@
+<page>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="DataEditModule.loadHits"  >
+		<property name="searchtype">asset</property>
+	</path-action>
+	<layout />
+	<inner-layout />
+</page>

@@ -748,3 +748,26 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 }
 	
 
+	lQuery('div.assetproperties').livequery('click',function(e)
+	{
+		e.preventDefault();
+		$(".bottomtab").removeClass("tabselected");
+		$(this).closest(".bottomtab").addClass("tabselected");
+
+		var div = $("#main-media-viewer" );
+		var options = div.data();
+
+		var link = $(this).data("link");
+		div.load( link, options);
+
+	});
+	
+	lQuery('div.assetpreview').livequery('click',function(e)
+	{
+		e.preventDefault();
+		$(".bottomtab").removeClass("tabselected");
+		$(this).closest(".bottomtab").addClass("tabselected");
+		var div = $("#main-media-viewer" );
+		var id = div.data("assetid");
+		showAsset(id);
+	});

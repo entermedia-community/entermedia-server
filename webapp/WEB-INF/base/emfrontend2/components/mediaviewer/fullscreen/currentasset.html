@@ -19,14 +19,11 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $next = $hits.next($index))       
 
 <div id="main-media-container" style="height: 100%;">
-<div id="main-media-viewer" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
+<div id="main-media-viewer" data-oemaxlevel="1" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
 	$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
-
-	##$pages.include("$apphome/components/results/player/large/${type}.html",$context)
-	
 	
 </div>
 <div id="footerbase">
@@ -42,23 +39,21 @@ $context.putPageValue("cdn",$cdnprefix)
 				</div>	
 				
 			</li>
-			<li  class="footermenu">	
-			<div class="expandmenu" >
-				#if( $canmetadatageneral )
-				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()">
-				#else
-				<a href="#" title="[[View $asset]]" >
-				#end
-				<i class="fas fa-expand"></i> $asset</a>
+			<li  class="footermenu bottomtab tabselected">	
+				<div class="expandmenu assetpreview" 
+					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html" title="[[View $asset]]" >
+				<i class="fas fa-expand"></i> $asset
 				</div>
 			 </il>
-			 <li class="footermenu">
-				<div class="expandmenu" >
+			 <li class="footermenu bottomtab">
+				<div class="expandmenu assetproperties" 
+					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]" >
 				<i class="fas fa-info-circle"></i> [[Properties]]
 				</div>
 			</li>
-			 <li class="footermenu">
-				<div class="expandmenu" >
+			 <li class="footermenu bottomtab">
+				<div class="expandmenu assetproperties" 
+					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]" >
 				<i class="fas fa-comment-alt"></i> [[Collabotate]]
 				</div>
 			</li>
