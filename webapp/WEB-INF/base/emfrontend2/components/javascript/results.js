@@ -205,12 +205,14 @@ $(document).ready(function(url,params)
 	{
 			if( inData == "")
 			{
-				$(inSpan).css("color","#333");
-				$(inSpan).css("visibility","hidden");
+				$(inSpan).css("color","#222");
+				$(inSpan).data("enabled",false);
+				//$(inSpan).css("visibility","hidden");
 			}
 			else
 			{
 				$(inSpan).css("color","rgb(200,200,200)");
+				$(inSpan).data("enabled",true);
 				$(inSpan).css("visibility","visible");
 			}
 	}

@@ -42,42 +42,29 @@ $context.putPageValue("cdn",$cdnprefix)
 				</div>	
 				
 			</li>
-		
-			<li  class="botmenulink footermenu">	
+			<li  class="footermenu">	
+			<div class="expandmenu" >
 				#if( $canmetadatageneral )
-				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()"> $asset </a>
+				<a href="$home$apphome/views/modules/asset/editor/viewer/index.html?hitssessionid=$hitssessionid&assetid=$asset.getId()">
 				#else
-				<a href="#" title="[[View $asset]]" >$asset</a>
+				<a href="#" title="[[View $asset]]" >
 				#end
+				<i class="fas fa-expand"></i> $asset</a>
+				</div>
 			 </il>
-			 #if($candownload || $canconvert)
-				<li id="download-select" class="footermenu" >		
-					
-						<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]
-							<span class="caret"></span></a>
-						
-						#if( !$cdnprefix )
-							#set( $cdnprefix = $context.siteRoot )
-						#end
-						<ul class="dropdown-menu dropup">
-								
-									 #if($candownload)				
-										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
-									#end	
-									#if($canconvert)
-										#foreach($result in $results )						
-												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
-										#end
-									#end
-								</ul>
-					   
-				  </li>
-			 #end
-			 
-			 
-			 
 			 <li class="footermenu">
-   <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Edit]]</a>
+				<div class="expandmenu" >
+				<i class="fas fa-info-circle"></i> [[Properties]]
+				</div>
+			</li>
+			 <li class="footermenu">
+				<div class="expandmenu" >
+				<i class="fas fa-comment-alt"></i> [[Collabotate]]
+				</div>
+			</li>
+			
+			 <li class="footermenu">
+   <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
    <ul class="dropdown-menu">
    #set($moduleid = "asset")
 	#set( $sourcepath = $asset.getSourcePath() )
@@ -161,8 +148,26 @@ $context.putPageValue("cdn",$cdnprefix)
 	</ul>
     </li>
     
-    
-			 
+			 #if($candownload || $canconvert)
+				<li class="footermenu" >		
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]</a>
+   <ul class="dropdown-menu">
+						#if( !$cdnprefix )
+							#set( $cdnprefix = $context.siteRoot )
+						#end
+								
+									 #if($candownload)				
+										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
+									#end	
+									#if($canconvert)
+										#foreach($result in $results )						
+												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
+										#end
+									#end
+								</ul>
+					   
+				  </li>
+			 #end
 		  <li>
 	#if(  $asset.getFileFormat()  == "pdf")
 		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >

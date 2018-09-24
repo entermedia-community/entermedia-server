@@ -390,23 +390,16 @@ color: #fff;
 }
 
 #footermenu li.footermenu {
-	font-size:90%;
+	font-size:.9em;
 	font-weight: normal;
 	padding-left: 5%;
 	float:left;
 	display:block;
 }
-#footermenu li.footermenu a { line-height: 2; }
 
-#footermenu .gotoarrows { font-size: 200%; }
+#footermenu .gotoarrows { font-size: 2em; }
 #footermenu .gotoarrows span { cursor:pointer;} 
 #footermenu .gotoarrows span:hover { color:#fff; }
-
-#footermenu li a {
-	color: white;	
-	margin-top: 4px;
-	display:block;
-}
 
 #footermenu .dropdown-menu a {
 	color:#000;
@@ -417,6 +410,33 @@ color: #fff;
 	background-color: #a8a8a8;
 	text-decoration: none;
 }
+
+.goleftclick, .gorightclick {
+	display: inline;
+}  
+
+#footermenu li a {
+	color: white;	
+	display:block;
+}
+
+
+#footermenu .expandmenu 
+{
+	font-size: 1.5em;
+		margin-top: 4px;
+	
+	color:#FFF;
+}
+
+#footermenu .dropdown-toggle
+{
+	font-size: 1.5em;
+		margin-top: 4px;
+	
+	color:#FFF;
+}
+
 
 body.widthless1000 #pdf-thumbnail-sidebar 
 {
