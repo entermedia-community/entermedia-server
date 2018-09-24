@@ -6,17 +6,47 @@
 
 $context.putPageValue("showalllanguagevalues",true)
 
-<div id="accordion">
+<ul class="emtabs em2tabs" data-defaulttab="mediatab" data-targetdiv="assetpanel-tab-content">
 #foreach( $viewpath in $views.keySet() )
- 
-	#set( $target = $views.get($viewpath) )
-	 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
-                       #if("$!permissionvalue" == "" || $permissionvalue == true)
+ 	#set( $target = $views.get($viewpath) )
+ 	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+       #if("$!permissionvalue" == "" || $permissionvalue == true)
 		#if( $target.rendertype != "table" )
-			#displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+			##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+			#set( $filename = "generic.html" )
+			#set( $label = $target.name)
+			#set( $assetid = $asset.id)
+			#set( $view = $viewpath)
+			
+			<li class="emtabselected">
+			 	<a id="tab$target.id" data-layouts="2" data-alwaysreloadpage="true" href="">$label</a>
+			</li>
 		#end
 	#end
-	                  #set($permissionvalue = "")
+	#set($permissionvalue = "")
+	
+#end	 
+</ul>
+
+<div id="assetpanel-tab-content" class="em2tabs-tab-content">
+#foreach( $viewpath in $views.keySet() )
+ 	#set( $target = $views.get($viewpath) )
+ 	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+       #if("$!permissionvalue" == "" || $permissionvalue == true)
+		#if( $target.rendertype != "table" )
+			##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+			#set( $filename = "generic.html" )
+			#set( $label = $target.name)
+			#set( $assetid = $asset.id)
+			#set( $view = $viewpath)
+			##$pages.include("$apphome/components/detaileditor/toggle.html?pluginpath=$apphome/components/detaileditor/$filename&assetid=$assetid&label=$label&view=$view&module=$moduleid",$context)
+			<div class="tab-pane">
+        		$context.putPageValue("finished",$finished)
+				$pages.include("$apphome/components/detaileditor/generic.html?assetid=$assetid&label=$label&view=$view&module=$moduleid&origURL=$origURL", $context)
+      		</div>
+		#end
+	#end
+	#set($permissionvalue = "")
 	
 #end
 

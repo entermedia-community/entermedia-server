@@ -788,6 +788,51 @@ select + .select2-container {
 
 
 
+#main-media-viewer { height: calc(100% - 38px);}
+
+/*Asset Panel*/
+.assetpanel-container {
+  position:relative;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+.assetpanel-sidebar {
+	position: fixed;
+    z-index: 1000;
+    top: 0;
+    left:-80%;
+    display: block!important;
+    width: 80%;
+    height: 100%;
+    background-color:#d3d3d3;
+}
+.assetpanel-content {
+	padding: 20px;
+	min-height: 200px;
+	background-color:#d3d3d3;
+	margin-top:10px;
+}
+@media (min-width: 992px) {
+	.assetpanel-sidebar {
+	    position: absolute;
+	    left:10px;
+	    top:10px;
+	    width: 280px;
+	    height: calc(100% - 20px);
+	}
+	.assetpanel-content {
+		margin-left: 300px;
+		min-height: 200px;
+		height: calc(100% - 20px);
+		overflow: hidden;
+	}
+}
+
+.assetpanel-content .media-player-mini { background-color: #565656;}
+
+.assetpanel-metadata { border-top:1px solid #bfbfbf; margin-top:10px; padding-top:10px; display:table-row; height: auto;}
+
 
 
 /*Module: Assets*/
@@ -825,9 +870,9 @@ select + .select2-container {
 	display: block;
 	float:none;
 }
-#mediaplayer { background-color: #000; color:#fff; text-align: center;}
-#mediaplayer a { color:#afafaf; text-decoration: none;}
-#mediaplayer a:hover { color:#ffffff;  text-decoration: none;}
+.media-player-mini  { background-color: #000; color:#fff; text-align: center;}
+.media-player-mini  a { color:#afafaf; text-decoration: none;}
+.media-player-mini  a:hover { color:#ffffff;  text-decoration: none;}
 
 .media-player { text-align: center;}
 .media-player .media-info { text-align: center; padding:5px; font-size:90%}
@@ -878,6 +923,47 @@ select + .select2-container {
 
 
 
+.em2tabs {
+	display: table;
+    table-layout: fixed;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;	
+}
+.em2tabs li {
+	display: table-cell;
+	margin:0;
+	padding:0;
+	border:0 none;
+}
+.em2tabs li a {
+	display: block;
+    padding: .5em;
+    background: #eee;
+    border: 1px solid #ddd;
+    text-align: center;
+    color: #000;
+    text-decoration: none;
+}
+.em2tabs-tab-content {
+	background: #eee;
+	overflow-y: auto;
+	height: 100%;
+	
+}
+.em2tabs-tab-content .table .cellrow {
+    padding: 10px 5px;
+    border-bottom: 1px solid #eee;
+}
+.em2tabs-tab-content .table .cellrow .bodylabel {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}
+.em2tabs-tab-content .table .cellrow .bodycontent {
+    color: #666;
+}
 
 /* SUBTAB NAV */
 #eml-tab-subnav {
@@ -949,7 +1035,6 @@ table.greytxt {
 
 
 /* DATA TYPES CSS */
-
 #table-container {
     margin: 20px 0 0 0;
     padding: 0;

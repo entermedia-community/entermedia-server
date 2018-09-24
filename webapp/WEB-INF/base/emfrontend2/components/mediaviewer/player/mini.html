@@ -7,7 +7,7 @@
 		</div>
 	#else            
         <div class="row">
-        	<div class="col-sm-3">
+        	<div class="col-sm-2">
             <div class="media-thumbnail">
                 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
                 #if( !$thumbsize )
@@ -23,15 +23,13 @@
 						#set ( $sourcepath = $asset.sourcepath)
 					#end
                     #set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
-                    <a class="thickbox" href="$home$link" target="_parent" title="[[drag]] $asset [[as jpeg]]">
-                        $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
-                    </a>
+                    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
                 #else
                     $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
                 #end 
             </div>
             </div>
-        	<div class="col-sm-9">
+        	<div class="col-sm-8">
             <div class="media-info">
                 <div class="media-info-primary">
                     <strong>$asset</strong> 
