@@ -2,8 +2,8 @@
 Be\ the\ first\ to\ like\ this\ asset\!=seien Sie der Erste, dem dieser Datensatz gefällt\!
 likes\ this=gefällt das
 You=Sie
-You\ like\ this=Sie mögen dies
+You\ like\ this=Ihnen gefällt das
 others=andere
 and=und
-like\ this=lieben dies
+like\ this=lieben das
 

@@ -5,10 +5,10 @@ No\ results\ found.=keine Ergebnisse gefunden.
 Delete\ Selected\ Items=ausgewählte Artikel löschen
 Edit\ Columns=Spalten bearbeiten
 Custom\ Export=benutzerdefinierter Export
-Add\ New=neue hinzufügen
+Add\ New=Neu hinzufügen
 Export\ results=Ergebnisse exportieren
-Download\ Assets=Assets herunterladen
+Download\ Assets=Dateien herunterladen
 Export\ results\ (friendly)=Ergebnisse exportieren ( freundlich)
 Add\ Column=Spalte hinzufügen
-Cancel=abbrechen
+Cancel=Abbrechen
 

@@ -1,8 +1,8 @@
 #Fri Sep 21 13:32:18 EDT 2018
 Add\ Library=Bibliothek hinzufügen
-[Add\ New=[neue hinzufügen
-Assets=Assets
-Create\ New=neue
+[Add\ New=Neu hinzufügen
+Assets=Dateien
+Create\ New=Neue Erstellen
 Add\ Collection=Sammlung hinzufügen
 Pick\ From=Wählen Sie aus
 Libraries=Bibliotheken
@@ -10,5 +10,5 @@ Details=Einzelheiten
 Project\ Tracker=Projekt-Tracker
 Collections=Sammlungen
 Collection\ Search=Sammlungssuche
-add=hinzufügen
+add=Hinzufügen
 

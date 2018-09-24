@@ -6,8 +6,8 @@ Create\ Collection=Sammlung erstellen
 Rename=Umbenennen
 Properties=Eigenschaften
 Add\ Collection=Sammlung hinzufügen
-Cut=schneiden
-add=hinzufügen
-Delete=löschen
-Paste=Paste
+Cut=Zuschneiden
+add=Hinzufügen
+Delete=Löschen
+Paste=Einfügen
 

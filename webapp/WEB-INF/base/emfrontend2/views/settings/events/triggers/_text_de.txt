@@ -1,5 +1,5 @@
 #Fri Sep 21 13:32:18 EDT 2018
 Reload\ List\ and\ Restart=Liste erneut laden und neustarten
-Disabled=inaktiv
-repeating=wiederholen
+Disabled=Inaktiv
+repeating=Wiederholen
 

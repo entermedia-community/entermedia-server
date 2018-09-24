@@ -1,22 +1,22 @@
 #Fri Sep 21 13:32:18 EDT 2018
 Searching=Suche
-Enter\ a\ Custom\ Range=geben Sie einen benutzerdefinierten Bereich an
+Enter\ a\ Custom\ Range=Geben Sie einen benutzerdefinierten Bereich an
 entry=Eintrag
 Browse=Durchsuche
-chars\ less=Zeichen weniger
+chars\ less=Weniger Zeichen
 or=oder
 Search=Suche
 Please\ enter=Bitte eingeben
 entries=Einträge
-Enter\ comma\ separated\ tags=geben Sie durch Komma getrennte Tags ein
+Enter\ comma\ separated\ tags=Geben Sie durch Komma getrennte Tags an.
 Loading\ more\ results=Weitere Ergebnisse werden geladen
 Pick\ Categories=Kategorien wählen
-View=Aussicht
-You\ can\ only\ select=Sie können nur wählen
-chars\ more=Zeichen mehr
+View=Ansicht
+You\ can\ only\ select=Nur wählbar
+chars\ more=mehr Zeichen
 Remove=Löschen
-No\ results=keine Ergebnisse
-Add\ New=neue hinzufügen
+No\ results=Keine Ergebnisse
+Add\ New=Neu hinzufügen
 New=Neu
-Over=zu ende
+Over=Fertig
 

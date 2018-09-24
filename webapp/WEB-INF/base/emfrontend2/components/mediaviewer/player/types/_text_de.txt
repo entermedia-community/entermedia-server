@@ -1,6 +1,6 @@
 #Fri Sep 21 13:32:18 EDT 2018
-Drag\ to\ desktop=Ziehen auf den Desktop
-$asset=$asset
+Drag\ to\ desktop=Auf den Desktop ziehen
+$asset=$Datei
 Drag\ into\ applications\ as\ jpeg=Ziehen Sie in Anwendungen wie jpeg
 Drag\ to\ collection=Drag & Sammlung
 drag\ to\ download=Ziehen zum Herunterladen

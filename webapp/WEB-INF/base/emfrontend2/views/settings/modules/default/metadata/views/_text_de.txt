@@ -2,15 +2,15 @@
 Settings=Einstellungen
 System\ View?=Systemansicht?
 Render\ Table\ Custom\ View=Tabelle in benutzerdefinierter Ansicht
-Asset\ Type=Asset-Typ
+Asset\ Type=Dateiart
 View\ Name=Name anzeigen
 Show\ on\ registration\ section\:=Sektion bei Registrierung anzeigen\:
-Add\ New=neue hinzufügen
-$view\ Settings=Einstellungen für $view
-Use\ Asset\ Type=Asset-Typ benutzen
+Add\ New=Neu hinzufügen
+$view\ Settings=Einstellungen für $Ansicht
+Use\ Asset\ Type=Dateiart benutzen
 Render\ Table=Tabelle anzeigen
 Editing\ Boxes=Bearbeitungsboxen
 Render\ Table\ Default\ Sort=Tabelle in Standardsortierung
-Render\ as\ Table?=als Tabelle anzeigen?
+Render\ as\ Table?=Als Tabelle anzeigen?
 Render\ Table\ External\ ID=Tabelle mit externer ID anzeigen
 

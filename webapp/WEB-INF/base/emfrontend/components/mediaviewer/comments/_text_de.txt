@@ -2,6 +2,6 @@
 Write\ a\ comment=Schreiben Sie einen Kommentar
 register\ here.=Registrieren Sie sich hier.
 If\ you\ don't\ have\ an\ account,\ please=Wenn Sie noch kein Konto haben, bitte
-You\ must\ be\ logged\ in\ to\ leave\ your\ own\ comments.=Sie müssen, um Ihre eigenen Kommentare zu hinterlassen, eingeloggt sein.
+You\ must\ be\ logged\ in\ to\ leave\ your\ own\ comments.=Sie müssen eingeloggt sein, um Ihre eigenen Kommentare zu hinterlassen.
 Comments=Bemerkungen
 

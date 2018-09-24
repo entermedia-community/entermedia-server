@@ -1,19 +1,19 @@
 #Fri Sep 21 13:32:18 EDT 2018
-Optional\ Filter\ out\ of\ files=optionales Herausfiltern von Dateien
+Optional\ Filter\ out\ of\ files=Optionales Herausfiltern von Dateien
 Which\ catalog\ would\ you\ like\ to\ clear?=Welchen Katalog möchten Sie leeren?
 Which\ folder\ would\ you\ like\ to\ import?=Welchen Ordner möchten Sie importieren?
-Importing\ only\ adds\ assets.=Import fügt nur Assets hinzu.
-This\ tool\ will\ remove\ all\ assets\ for\ a\ given\ catalog/subfolder\ whose\ original\ files\ no\ longer\ exist.=Dieses Tool wird alle Assets aus einem bestimmten Katalog oder Unterordner entfernen, deren Originaldateien nicht mehr existieren.
+Importing\ only\ adds\ assets.=Import fügt nur Dateien hinzu.
+This\ tool\ will\ remove\ all\ assets\ for\ a\ given\ catalog/subfolder\ whose\ original\ files\ no\ longer\ exist.=Dieses Tool entfernt alle Dateien aus einem bestimmten Katalog oder Unterordner, deren Originaldateien nicht mehr existieren.
 Which\ file\ types\ would\ you\ like\ to\ import?=Welche Dateiarten möchten Sie importieren?
-You\ may\ specify\ a\ source\ path\ to\ only\ clear\ assets\ in\ that\ path.=Sie können einen Quellpfad angeben, um nur Assets in diesem Pfad zu löschen.
-Re-Import\ Assets=Re-Import von Assets
-Click\ here\ to\ remove\ missing\ assets.=Klicken Sie hier, um fehlende Assets zu entfernen.
-Import\ Assets=Assets importieren
-Clear\ Invalid\ Assets=lösche ungültige Assets
-Into\ which\ catalog\ should\ your\ assets\ be\ added?=Welchem Katalog sollen Ihre Assets hinzugefügt werden?
+You\ may\ specify\ a\ source\ path\ to\ only\ clear\ assets\ in\ that\ path.=Sie können einen Quellpfad angeben, um nur Dateien dieses Pfades zu löschen.
+Re-Import\ Assets=Re-Import von Dateien
+Click\ here\ to\ remove\ missing\ assets.=Klicken Sie hier, um "leere"  Dateien zu entfernen.
+Import\ Assets=Dateien importieren
+Clear\ Invalid\ Assets=Ungültige Dateien löschen
+Into\ which\ catalog\ should\ your\ assets\ be\ added?=Welchem Katalog sollen Ihre Dateien hinzugefügt werden?
 Scan\ Mounts\ Now=Mounts jetzt scannen
-All=alle
-Clear\ Assets=Assets entfernen
-space\ delimited=begrenzter Speicherplatz
+All=Alles
+Clear\ Assets=Dateien entfernen
+space\ delimited=Begrenzter Speicherplatz
 Enter\ full\ server\ path=Geben Sie den vollständigen Server-Pfad an
 

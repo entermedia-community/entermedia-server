@@ -12,6 +12,6 @@ Export\ Users=Benutzer exportieren
 Reload\ Search\ Index=Suchindex erneut laden
 User\ Search=Benutzer suchen
 Create\ New\ User=Erstellen eines neuen Benutzers
-Add=hinzufügen
+Add=Hinzufügen
 Save\ Changes=Änderungen speichern
 

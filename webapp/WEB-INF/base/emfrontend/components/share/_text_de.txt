@@ -1,6 +1,6 @@
 #Fri Sep 21 13:32:18 EDT 2018
-Share=Anteil
+Share=Teilen
 Edit\ Permissions=Berechtigungen bearbeiten
 Note\:\ Sharing\ enables\ access\ to\ anonymous\ visitors=Hinweis\: Die Freigabe ermöglicht den Zugriff für anonyme Besucher
-No\ owner=kein Eigentümer
+No\ owner=Kein Eigentümer
 

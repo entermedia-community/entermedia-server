@@ -2,5 +2,4 @@
 Edit\ Categories=Kategorien bearbeiten
 Select\ Category=Kategorie wählen
 Categories=Kategorien
-Search\ Categories=Suchkategorien kategorien~~POS\=HEADCOMP
-
+Search\ Categories=Suchkategorien 

@@ -1,7 +1,7 @@
 #Fri Sep 21 13:32:18 EDT 2018
-Select\ a\ group=Wählen Sie eine Gruppe
+Select\ a\ group=Wählen Sie eine Gruppe aus
 PERMISSIONS=BERECHTIGUNGEN
-Select\ a\ catalog=Wählen Sie einen Katalog
+Select\ a\ catalog=Wählen Sie einen Katalog aus
 Catalogs=Kataloge
 Groups=Gruppen
 

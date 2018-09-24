@@ -1,15 +1,15 @@
 #Fri Sep 21 13:32:18 EDT 2018
-Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Schnappschüsse werden von elasticsearch zur Speicherung und Datenbankzustand wiederherzustellen
-View\ Known\ Mapping\ Conflicts=Ansicht bekannten Mapping Konflikte
-Reindex=indizieren
-Disabled=behindert
-Validate\ All\ Mapping\ Schema=validieren alle Zuordnungsschema
-Knapsack\ is\ used\ to\ create\ JSON\ based\ backups\ that\ can\ be\ moved\ between\ servers=Ranzen wird verwendet, json basierte Backups zu erstellen, die zwischen Servern verschoben werden kann
-Enabled=freigegeben
+Snapshots\ are\ used\ by\ ElasticSearch\ to\ store\ and\ restore\ database\ state=Schnappschüsse werden von ElasticSearch zur Speicherung und Wiederherstellung des Datenbankzustandes genutzt.
+View\ Known\ Mapping\ Conflicts=Ansicht bekannter Mapping Konflikte
+Reindex=Neu-indizieren
+Disabled=eingechränkt
+Validate\ All\ Mapping\ Schema=Validieren aller Zuordnungsschematas
+Knapsack\ is\ used\ to\ create\ JSON\ based\ backups\ that\ can\ be\ moved\ between\ servers=Knapsack wird verwendet, um JSON basierte Backups zu erstellen, die zwischen Servern verschoben werden können
+Enabled=Freigegeben
 View\ Knapsack=Ansicht Ranzen
 Search\ Logs=Suchprotokollen
 Data\ Management=Datenmanagement
-This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists=dies ermöglicht es Listen von der Installation geladen mit eigenen Listen integriert werden
+This\ allows\ lists\ loaded\ from\ the\ installation\ to\ be\ integrated\ with\ your\ own\ lists=Ermöglicht es Listen, die von der Installation geladen sind, sich mit den eigenen Listen zu integrieren.
 View\ Snapshots=Ansicht Schnappschüsse
-Reload\ lists=nachladen Listen
+Reload\ lists=Listen neu laden
 

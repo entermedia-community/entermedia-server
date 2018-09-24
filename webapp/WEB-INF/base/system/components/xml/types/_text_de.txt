@@ -1,14 +1,14 @@
 #Fri Sep 21 13:32:18 EDT 2018
 Past\ year=Letztes Jahr
-Sorry\ -\ those\ did\ not\ match=Entschuldigung - diese haben nicht übereingestimmt
-Before\ Date=Vor Datum
-Equals=Ist gleich
+Sorry\ -\ those\ did\ not\ match=Entschuldigung - dies stimmte nicht überein!
+Before\ Date=Vor dem Datum
+Equals=gleichen
 Sorry\ -\ wrong\ format=Entschuldigung - falsches Format
 Past\ month=Letzter Monat
-Past\ 24\ hours=Letzte 24 Stunden
+Past\ 24\ hours=Letzten 24 Stunden
 Past\ week=Letzte Woche
 Retype\:=Wiederholen\:
-After\ Date=Nach Datum
+After\ Date=Nach dem Datum
 Enter\ a\ Custom\ Range=Geben Sie einen benutzerdefinierten Bereich an
 Time=Zeit
 Between=Zwischen

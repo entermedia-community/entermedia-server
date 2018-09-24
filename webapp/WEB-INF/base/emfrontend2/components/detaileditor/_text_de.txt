@@ -1,19 +1,19 @@
 #Fri Sep 21 13:32:18 EDT 2018
 Results=Ergebnisse
-Edit=bearbeiten
-Embed=einbetten
+Edit=Bearbeiten
+Embed=Einbetten
 Save\ values=Werte speichern
 Email=Email
-No\ data\ has\ been\ entered.=Es wurdenkeine Daten eingegeben.
-Delete\ Assets=Assets löschen
+No\ data\ has\ been\ entered.=Es wurden keine Daten eingegeben.
+Delete\ Assets=Dateien löschen
 File=Datei
-Saved=Gerettet
+Saved=Gespeichert
 Share=Teilen
 Add\ to\ Project=Zum Projekt hinzufügen
 Download=Download
-Print=drucken
-Publish=veröffentlichen
-Cancel=abbrechen
-Delete=löschen
-Edit\ =bearbeiten
+Print=Drucken
+Publish=Veröffentlichen
+Cancel=Abbrechen
+Delete=Löschen
+Edit\ =Bearbeiten
 

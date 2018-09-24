@@ -1,9 +1,9 @@
 #Fri Sep 21 13:32:18 EDT 2018
 New=Neu
 404\ on\ view=404 in Sicht
-No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=Keine Daten zur Ansicht zur Verfügung - bitte bearbeiten Sie die Ansichtseinstellungen.
-Edit=bearbeiten
-No\ values\ found=keine Werte gefunden
-Add\ New=neue hinzufügen
+No\ details\ available\ for\ this\ view.\ \ Please\ configure\ your\ view\ settings.=Keine Details zur Ansicht zur Verfügung - bitte bearbeiten Sie die Ansichtseinstellungen.
+Edit=Bearbeiten
+No\ values\ found=Keine Ergebnisse gefunden
+Add\ New=Neu hinzufügen
 required=erforderlich
 
