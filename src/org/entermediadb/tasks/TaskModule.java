@@ -97,7 +97,7 @@ public class TaskModule extends BaseMediaModule
 		{
 			Data hit = (Data) iterator.next();
 			ProjectGoal goal = (ProjectGoal)searcher.loadData(hit);
-			String p = goal.get("prioritylevel");
+			String p = goal.get("goaltrackercolumn.xml");
 			if( p == null)
 			{
 				p = "0";
@@ -281,7 +281,7 @@ public class TaskModule extends BaseMediaModule
 		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
 		{
 			Data goal = (Data)iterator.next();
-			String col = goal.get("prioritylevel");
+			String col = goal.get("goaltrackercolumn.xml");
 			if( col == null || col.equals("0"))
 			{
 				col1.add(goal);
@@ -879,7 +879,7 @@ public class TaskModule extends BaseMediaModule
 		String col = inReq.getRequestParameter("col");
 		MediaArchive archive = getMediaArchive(inReq);
 		MultiValued selectedgoal = (MultiValued)archive.getData("projectgoal",goalid);
-		selectedgoal.setValue("prioritylevel",col);
+		selectedgoal.setValue("goaltrackercolumn.xml",col);
 		archive.saveData("projectgoal",selectedgoal);
 		
 	}
