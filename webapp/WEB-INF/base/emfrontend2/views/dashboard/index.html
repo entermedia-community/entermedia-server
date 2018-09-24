@@ -9,7 +9,7 @@
 #foreach($report in $reportlist)
 <div class="col-md-6 ">
 <div class="panel panel-default">
-  <div class="panel-heading">$report <a class="pull-right" href="$apphome/views/dashboard/executefinish.html?reportid=${report.id}"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></a>
+  <div class="panel-heading">$report <a class="pull-right" href="$apphome/views/dashboard/executefinish.html?reportid=${report.id}"><i class="fas fa-search"></i></a>
   </div>
   <div class="panel-body">
 $pages.include("$apphome/components/reports/showreport.html?reportid=$report.id&cache=false")

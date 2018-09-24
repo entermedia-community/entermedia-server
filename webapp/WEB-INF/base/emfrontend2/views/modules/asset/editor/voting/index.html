@@ -9,7 +9,7 @@
 #end
 </div>
 #if($alreadyvoted)
-	<a class="ajax star full" title="[[Remove From Favorites]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favorites"><i class="glyphicon glyphicon-star"></i></a>
+	<a class="ajax star full" title="[[Remove From Favorites]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/removeVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i></a>
 #else
-	<a class="ajax star empty"  title="[[Add to Favorites]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favorites"><i class="glyphicon glyphicon-star"></i></a>
+	<a class="ajax star empty"  title="[[Add to Favorites]]" targetdivinner="assetVoteCount" href="$home$apphome/views/modules/asset/editor/voting/addVote.html?assetid=$asset.id&oemaxlevel=1&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i></a>
 #end

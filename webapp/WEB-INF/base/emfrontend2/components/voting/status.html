@@ -4,7 +4,7 @@
    #set( $voted = $searcherManager.getData($catalogid, "assetvotes","${user.getId()}_${hit.id}") )
    
    #if( $voted )
-	 	<a class="ajax star full"  title="[[Remove from favorites]]" targetdivinner="votebox${hit.id}" href="$home$apphome/components/voting/removeVote.html?assetid=$hit.id&collectionid=$user.getId()-favorites"><i class="glyphicon glyphicon-star"></i></a> 
+	 	<a class="ajax star full"  title="[[Remove from favorites]]" targetdivinner="votebox${hit.id}" href="$home$apphome/components/voting/removeVote.html?assetid=$hit.id&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i></a> 
 	#else
-		<a class="ajax star empty"  title="[[Add to favorites]]"  targetdivinner="votebox${hit.id}" href="$home$apphome/components/voting/addVote.html?assetid=$hit.id&collectionid=$user.getId()-favorites"><i class="glyphicon glyphicon-star"></i></a>
+		<a class="ajax star empty"  title="[[Add to favorites]]"  targetdivinner="votebox${hit.id}" href="$home$apphome/components/voting/addVote.html?assetid=$hit.id&collectionid=$user.getId()-favorites"><i class="fas fa-star"></i></a>
 	#end

@@ -25,11 +25,11 @@ $context.putPageValue("hits", $userTracker)
 		$detail.getText($context)
 		#if ($sortby.startsWith($detail.getId()))
 				#if($sortby.endsWith("Up"))
-					#set($sorticon="bottom")
+					#set($sorticon="up")
 				#else
-					#set($sorticon="top")
+					#set($sorticon="down")
 				#end	
-				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
+				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
 		#end
 		</th>
 		#end

@@ -67,11 +67,11 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 				
 				#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))
-		 					#set($sorticon="top")
+		 					#set($sorticon="up")
 		 				#else
-		 					#set($sorticon="bottom")
+		 					#set($sorticon="down")
 		 				#end	
-		 				&nbsp;&nbsp;&nbsp;<span class="glyphicon glyphicon-triangle-$sorticon"></span>
+		 				&nbsp;&nbsp;&nbsp;<i class="fas fa-caret-$sorticon"></i>
 				#end
 		</div>
 	 </th>
