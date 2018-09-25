@@ -5,8 +5,8 @@
 #end  
 
 $context.putPageValue("showalllanguagevalues",true)
-
-<ul class="emtabs em2tabs" data-defaulttab="mediatab" data-targetdiv="assetpanel-tab-content">
+<div class="em2tabs-tabcontainer">
+<ul class="emtabs em2tabs" data-defaulttab="tabgeneral" data-targetdiv="assetpanel-tab-content">
 #foreach( $viewpath in $views.keySet() )
  	#set( $target = $views.get($viewpath) )
  	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
@@ -18,8 +18,8 @@ $context.putPageValue("showalllanguagevalues",true)
 			#set( $assetid = $asset.id)
 			#set( $view = $viewpath)
 			
-			<li class="emtabselected">
-			 	<a id="tab$target.id" data-layouts="2" data-alwaysreloadpage="true" href="">$label</a>
+			<li class="">
+			 	<a id="tab$target.id" data-layouts="2" data-alwaysreloadpage="true" href="tab$target.id">$label</a>
 			</li>
 		#end
 	#end
@@ -27,7 +27,7 @@ $context.putPageValue("showalllanguagevalues",true)
 	
 #end	 
 </ul>
-
+</div>
 <div id="assetpanel-tab-content" class="em2tabs-tab-content">
 #foreach( $viewpath in $views.keySet() )
  	#set( $target = $views.get($viewpath) )

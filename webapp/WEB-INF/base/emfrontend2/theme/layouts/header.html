@@ -1,3 +1,5 @@
+<div id="header" class="emheader clearfix" role="banner">
+
 #set($lastselected = $userprofile.last_selected_module )
  
 #if(!$lastselected)
@@ -11,9 +13,12 @@
 #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 
 #set($logourl = "$home$themeprefix/images/logo.png")
-<a class="logocontainer" href="$home$apphome/views/modules/${module.getId()}/index.html"><img class="logo" src="$logourl" alt="EnterMedia Share" /></a>
 
-<span class="navlinks" style="position: relative;">
+<div class="logocontainer">
+	<a class="emlogo" href="$home$apphome/index.html"><img class="logo" src="$logourl" alt="EnterMedia EMShare" /></a>
+</div>
+
+<div class="navlinks">
 <ul> 
 	#if( $user )
     	#if( $canviewmyaccount ) 
@@ -53,8 +58,7 @@
 #end
 #if(!$lastselected)
       #set($lastselected = "asset" )
-#end
-#if( $canviewmodulelist ) 
+#end   
 #if( $userprofile.getModules().size() > 1 )
     #set($module = $searcherManager.getData($catalogid, "module", $lastselected ) )
 	#if( !$module ) 
@@ -70,8 +74,18 @@
 	</ul>
 </li>
 #end
-#end
 
     </ul>
- </span>
-
+ </div>
+#if( $userprofile.hasModule("order") )
+#set( $orders = $mediaarchive.query("order").exact("checkoutstatus","pending").search($context))
+#if( $orders.size() > 0)
+<div id="headerstatusarea"  class="alert alert-primary" role="alert">
+<a href="$apphome/views/modules/order/fieldsearch.html?field=checkoutstatus&checkoutstatus.value=pending&operation=exact">
+	<i class="fas fa-info-circle"></i>
+	[[Pending Orders]]  ($orders.size())</a>
+</div>
+#end
+#end
+<div id="site-title">$!content.tagline</div>
+</div>

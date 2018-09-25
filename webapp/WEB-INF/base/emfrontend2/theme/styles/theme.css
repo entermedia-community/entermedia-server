@@ -831,8 +831,30 @@ select + .select2-container {
 
 .assetpanel-content .media-player-mini { background-color: #565656;}
 
-.assetpanel-metadata { border-top:1px solid #bfbfbf; margin-top:10px; padding-top:10px; display:table-row; height: auto;}
+.assetpanel-content-metadata {
+	height: 100%;
+	width: 100%;
+	display:table;
+}
 
+.assetpanel-header {
+	display: table-row;
+	height: 155px;
+	margin-top:10px;
+}
+.assetpanel-separator {
+	border-top:1px solid #bfbfbf; 
+	margin-top:10px; 
+	height: 10px; 
+	display: table-row;
+}
+.assetpanel-editmetadata { 
+	display: table-row;
+}
+
+.em2tabs-tab-content {
+	max-height: 100%;
+}
 
 
 /*Module: Assets*/
@@ -949,11 +971,10 @@ select + .select2-container {
 .em2tabs-tab-content {
 	background: #eee;
 	overflow-y: auto;
-	height: 100%;
 	
 }
 .em2tabs-tab-content .table .cellrow {
-    padding: 10px 5px;
+    padding: 10px 10px;
     border-bottom: 1px solid #eee;
 }
 .em2tabs-tab-content .table .cellrow .bodylabel {
@@ -964,6 +985,7 @@ select + .select2-container {
 .em2tabs-tab-content .table .cellrow .bodycontent {
     color: #666;
 }
+
 
 /* SUBTAB NAV */
 #eml-tab-subnav {
