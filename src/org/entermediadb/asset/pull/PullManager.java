@@ -16,8 +16,9 @@ import org.apache.http.StatusLine;
 import org.apache.http.util.EntityUtils;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.asset.util.JsonUtil;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -356,10 +357,15 @@ public class PullManager implements CatalogEnabled
 		Collection array;
 		try
 		{
-			array = new JsonUtil().parseArray("results", returned);
-			inArchive.getAssetSearcher().saveJson(array);
-			log.info("saved " + array.size() + " changed asset ");
-			return array;
+			//array = new JsonUtil().parseArray("results", returned);
+			JSONParser parser = new JSONParser();
+			JSONObject everything = (JSONObject) parser.parse(returned);
+			
+			JSONArray jsonarray = (JSONArray) everything.get("results");
+			
+			inArchive.getAssetSearcher().saveJson(jsonarray);
+			log.info("saved " + jsonarray.size() + " changed asset ");
+			return jsonarray;
 		}
 		catch (Exception e)
 		{

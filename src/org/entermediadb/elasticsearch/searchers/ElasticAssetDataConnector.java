@@ -32,6 +32,7 @@ import org.entermediadb.asset.search.AssetSecurityArchive;
 import org.entermediadb.asset.search.DataConnector;
 import org.entermediadb.data.DataArchive;
 import org.entermediadb.elasticsearch.SearchHitData;
+import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.MultiValued;
@@ -563,22 +564,14 @@ public class ElasticAssetDataConnector extends ElasticXmlFileSearcher implements
 		{
 			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
 			{
-				String json = (String) iterator.next();
-				try
-				{
-					parser.parse(json);
-				}
-				catch (Exception e)
-				{
-					log.info("could not parse: " + json);
-					throw new OpenEditException("here is the prob!");
-				}
+				JSONObject json = (JSONObject) iterator.next();
+				
 				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
-				req.source(json);
+				req.source(json.toJSONString());
 				//log.info("savinng " + json);
 				//Parse the json and save it with id
-				Map assetdata = (Map)parser.parse(json);
-				String id = (String)assetdata.get("id");
+			
+				String id = (String)json.get("id");
 				if( id != null)
 				{
 					req.id(id);
