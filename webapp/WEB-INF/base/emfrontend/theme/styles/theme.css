@@ -7197,8 +7197,8 @@ li.resultmenuitem {
 #headerstatusarea
 {
 	float:right;
-	margin: 10px 10px 0 0;
-	min-width: 200px;
+	margin: 10px 0 0 0;
+	min-width: 180px;
 	min-height: 40px;
 }
 
