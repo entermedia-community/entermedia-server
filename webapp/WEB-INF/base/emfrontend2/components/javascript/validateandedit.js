@@ -69,6 +69,26 @@ $(document).ready(function()
 		})	
 		
 	});
+	/*
+	lQuery("textarea.htmleditor").livequery(new function() 
+	{
+		//$("textarea.htmleditor").each(function()
+		{
+			//console.log("Hit" + $(this));
+			var value = $(this).val()
+			var textname = $(this).attr("name");
+			var oFCKeditor = new FCKeditor( textname );
+			oFCKeditor.Config.StylesXmlPath		= '/system/tools/html/styles.xml';
+			oFCKeditor.BasePath	= "/system/tools/html/fckeditor/";
+		  	oFCKeditor.ToolbarSet = "Basic";
+			//oFCKeditor.Config.DefaultLanguage = "$context.getLanguage()";
+			oFCKeditor.Height = 300;
+			oFCKeditor.Width = 300;
+	        oFCKeditor.ReplaceTextarea();
+	    }
+	    
+	});
+	*/ 
 });
 
 

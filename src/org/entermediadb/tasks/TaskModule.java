@@ -126,6 +126,7 @@ public class TaskModule extends BaseMediaModule
 			inReq.putPageValue("goalhits" + p, values);
 		}
 	}	
+	/*
 	public void loadGoals(WebPageRequest inReq) throws Exception
 	{
 		//Each category points to a bunch of stories (sorted)
@@ -152,66 +153,15 @@ public class TaskModule extends BaseMediaModule
 		Collection topgoals = null;
 		String page = inReq.getRequestParameter("page");
 
-		int percolumn = 5;
-		int perpage = percolumn * 3;
-
-		int thispage = 0;
-		int startfrom = 0;
-		if( page != null)
-		{
-			thispage = Integer.parseInt(page);
-			startfrom = thispage * perpage;
-		}
 		Category selected = archive.getCategory(department);
 		inReq.putPageValue("selectedcat", selected);
 
 		Collection alltasks = archive.getSearcher("goaltask").query().exact("projectdepartment",department).search();
-		alltasks.size();
-		Collection opengoalsids = new ArrayList();
-		Collection closedgoalids = new ArrayList();
 
-		Collection<String> allgoalsids = new ArrayList<String>();
-
-		for (Iterator iterator = alltasks.iterator(); iterator.hasNext();)
-		{
-			Data task = (Data) iterator.next();
-			allgoalsids.add(task.get("projectgoal"));
-		}
-		for (Iterator iterator = alltasks.iterator(); iterator.hasNext();)
-		{
-			Data task = (Data) iterator.next();
-			String goalid = task.get("projectgoal");
-			if("3".equals( task.get("taskstatus")) )
-			{
-				closedgoalids.add(goalid);
-			}
-			else
-			{
-				opengoalsids.add(goalid);
-			}
-		}
-		Collection opengoals = null;
-		if(! opengoalsids.isEmpty() )
-		{
-			QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
-			builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-			builder.ids(opengoalsids);
-			opengoals = builder.search();
-		}
+		Collection projects = archive.getSearcher("collectiveproject").query().exact("parentcollectionid",collection.getId()).search();
 		
-		if( opengoals == null)
-		{
-			opengoals = Collections.emptyList();
-			topgoals = new ArrayList();
-			topgoals.add(new ArrayList());
-			topgoals.add(new ArrayList());
-			topgoals.add(new ArrayList());
-		}
-		if( topgoals == null)
-		{
-			GoalList list = new GoalList(selected,opengoals);
-			topgoals = makeColumns(list.getSorted(),percolumn,startfrom);
-		}
+		topgoals = makeColumns(list.getSorted(),percolumn,startfrom);
+
 		Collection goalids = selected.getValues("countdata");
 		if ( goalids == null)
 		{
@@ -252,52 +202,50 @@ public class TaskModule extends BaseMediaModule
 		
 		
 	}
+	*/
 
-	private Collection findRemovedGoals(HitTracker inGoaltracker, Collection<String> inAllgoalsids)
+//	private Collection findRemovedGoals(HitTracker inGoaltracker, Collection<String> inAllgoalsids)
+//	{
+//		List goals = new ArrayList();
+//		for (Iterator iterator = inGoaltracker.iterator(); iterator.hasNext();)
+//		{
+//			Data goal = (Data) iterator.next();
+//			if( !inAllgoalsids.contains( goal.getId()))
+//			{
+//				goals.add(goal);
+//			}
+//		}
+//		return goals;
+//	}
+
+
+
+//	protected Map makeColumns(Collection tracker, int percolumn, int startfrom)
+//	{
+//		Map topgoals = new HashMap();
+//		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
+//		{
+//			Data goal = (Data)iterator.next();
+//			Collection goals = getGoals(topgoals,goal);
+//			goals.add(goal);
+//		}
+//		return topgoals;
+//	}
+	protected Collection getGoals(Map topgoals, Data inRow)
 	{
-		List goals = new ArrayList();
-		for (Iterator iterator = inGoaltracker.iterator(); iterator.hasNext();)
+		String col = inRow.get("goaltrackercolumn");
+		if( col == null)
 		{
-			Data goal = (Data) iterator.next();
-			if( !inAllgoalsids.contains( goal.getId()))
-			{
-				goals.add(goal);
-			}
+			col = "0";
+		}
+		Collection goals = (Collection)topgoals.get(col);
+		if( goals == null)
+		{
+			goals = new ArrayList();
+			topgoals.put(col, goals);
 		}
 		return goals;
 	}
-
-
-
-	protected Collection makeColumns(Collection tracker, int percolumn, int startfrom)
-	{
-		Collection topgoals = new ArrayList();
-		Collection col0 = new ArrayList();
-		Collection col1 = new ArrayList();
-		Collection col2 = new ArrayList();
-		topgoals.add(col0);
-		topgoals.add(col1);
-		topgoals.add(col2);
-		for (Iterator iterator = tracker.iterator(); iterator.hasNext();)
-		{
-			Data goal = (Data)iterator.next();
-			String col = goal.get("goaltrackercolumn");
-			if( col == null || col.equals("0"))
-			{
-				col1.add(goal);
-			}
-			else if( col.equals("1"))
-			{
-				col0.add(goal);
-			}
-			else if( col.equals("2"))
-			{
-				col2.add(goal);
-			}
-		}
-		return topgoals;
-	}
-	
 	public void loadGoal(WebPageRequest inReq)
 	{
 		MediaArchive archive = getMediaArchive(inReq);

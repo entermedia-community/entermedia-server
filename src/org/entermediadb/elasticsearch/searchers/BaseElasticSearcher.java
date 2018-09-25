@@ -2062,7 +2062,7 @@ public class BaseElasticSearcher extends BaseSearcher
 					
 					if (!putMappings())
 					{
-						throw new OpenEditException("could not map row of data " + propid + " rowid=" + inData.getId());
+						throw new OpenEditException(getSearchType() + " could not put mapping on data " + propid + " rowid=" + inData.getId());
 					}
 					else
 					{
