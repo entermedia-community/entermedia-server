@@ -3,6 +3,7 @@ package org.entermediadb.projects;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -991,26 +992,20 @@ public class ProjectManager implements CatalogEnabled {
 
 	}
 
-	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile) {
+	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile) 
+	{
 		User user = inProfile.getUser();
 		Data userlibrary = inArchive.getData("library", user.getId());
-		if (userlibrary != null) {
+		if (userlibrary != null) 
+		{
 			return userlibrary;
 		}
 
 		userlibrary = inArchive.getSearcher("library").createNewData();
 		userlibrary.setId(user.getUserName());
 		userlibrary.setName(user.getScreenName());
-
-		String folder = "Users/" + user.getScreenName();
-
-		Category librarynode = inArchive.createCategoryPath(folder);
-		((MultiValued) librarynode).addValue("viewusers", user.getId());
-		inArchive.getCategorySearcher().saveData(librarynode);
-		// reload profile?
-		inProfile.getViewCategories().add(librarynode); // Make sure I am in the list of users for the library
-
-		userlibrary.setValue("categoryid", librarynode.getId());
+		userlibrary.setValue("privatelibrary",true);
+		userlibrary.setValue("viewusers", Arrays.asList(user.getId()));
 		inArchive.getSearcher("library").saveData(userlibrary, null);
 
 		return userlibrary;

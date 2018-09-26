@@ -337,23 +337,25 @@ public class ProjectModule extends BaseMediaModule {
 	}
 
 	public void createCollection(WebPageRequest inReq) {
-		createUserLibrary(inReq);
+		//createUserLibrary(inReq);
 		Data saved = (Data) inReq.getPageValue("data");
 		saved.setValue("creationdate", new Date());
 		saved.setValue("owner", inReq.getUserName());
-		saved.setValue("library", inReq.getUserName());
-
+		//saved.setValue("library", inReq.getRequestParameter("library.value"));  //optional
 		MediaArchive mediaArchive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		Data userlibrary = manager.loadUserLibrary(mediaArchive, inReq.getUserProfile());
+		saved.setValue("library", userlibrary.getId());
+
 		mediaArchive.getSearcher("librarycollection").saveData(saved, null);
 		inReq.setRequestParameter("librarycollection", saved.getId());
 		inReq.setRequestParameter("collectionid", saved.getId());
-		ProjectManager manager = getProjectManager(inReq);
-		Category cat = manager.getRootCategory(mediaArchive, (LibraryCollection) saved);
+		Category cat = manager.getRootCategory(mediaArchive, (LibraryCollection) saved); //This creates the library
 		((MultiValued) cat).addValue("viewusers", inReq.getUserName());
 		mediaArchive.getCategorySearcher().saveData(cat);
 
 	}
-
+/*
 	public Data createUserLibrary(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		UserProfile profile = inReq.getUserProfile();
@@ -363,7 +365,7 @@ public class ProjectModule extends BaseMediaModule {
 		inReq.setRequestParameter("profilepreference.value", userlibrary.getId());
 		return userlibrary;
 	}
-
+*/
 	public void addOpenCollection(WebPageRequest inReq) {
 		UserProfile profile = inReq.getUserProfile();
 		Collection cols = profile.getValues("opencollections");
