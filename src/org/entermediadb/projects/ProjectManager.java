@@ -1004,6 +1004,7 @@ public class ProjectManager implements CatalogEnabled {
 		userlibrary = inArchive.getSearcher("library").createNewData();
 		userlibrary.setId(user.getUserName());
 		userlibrary.setName(user.getScreenName());
+		userlibrary.setValue("owner",user.getId());
 		userlibrary.setValue("privatelibrary",true);
 		userlibrary.setValue("viewusers", Arrays.asList(user.getId()));
 		inArchive.getSearcher("library").saveData(userlibrary, null);
