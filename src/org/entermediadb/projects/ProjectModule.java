@@ -336,23 +336,27 @@ public class ProjectModule extends BaseMediaModule {
 		// }
 	}
 
-	public void createCollection(WebPageRequest inReq) {
-		//createUserLibrary(inReq);
-		Data saved = (Data) inReq.getPageValue("data");
+	public void createCollection(WebPageRequest inReq) 
+	{
+		MediaArchive mediaArchive = getMediaArchive(inReq);
+		ProjectManager manager = getProjectManager(inReq);
+		Searcher librarysearcher = mediaArchive.getSearcher("librarycollection");
+		Data saved = librarysearcher.createNewData();
+		librarysearcher.updateData(inReq, inReq.getRequestParameters("field"), saved);
 		saved.setValue("creationdate", new Date());
 		saved.setValue("owner", inReq.getUserName());
 		//saved.setValue("library", inReq.getRequestParameter("library.value"));  //optional
-		MediaArchive mediaArchive = getMediaArchive(inReq);
-		ProjectManager manager = getProjectManager(inReq);
 		Data userlibrary = manager.loadUserLibrary(mediaArchive, inReq.getUserProfile());
 		saved.setValue("library", userlibrary.getId());
+		librarysearcher.saveData(saved, null); //this fires event ProjectManager.configureCollection
 
-		mediaArchive.getSearcher("librarycollection").saveData(saved, null);
-		inReq.setRequestParameter("librarycollection", saved.getId());
-		inReq.setRequestParameter("collectionid", saved.getId());
+		/*
 		Category cat = manager.getRootCategory(mediaArchive, (LibraryCollection) saved); //This creates the library
 		((MultiValued) cat).addValue("viewusers", inReq.getUserName());
 		mediaArchive.getCategorySearcher().saveData(cat);
+		 */
+		inReq.setRequestParameter("librarycollection", saved.getId());
+		inReq.setRequestParameter("collectionid", saved.getId());
 
 	}
 /*
