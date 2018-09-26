@@ -43,7 +43,7 @@
 		    #set($link = "$home$apphome/views/modules/asset/editor/generalinformation/index.html?assetid=$val" )
 		#else
 			#set ( $defaultview = $userprofile.getDefaultViewForModule($module.id) )
-			#set($link = "$home$apphome/views/modules/${module.id}/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=${hits.sessionId}&searchtype=$module.id")
+			#set($link = "$home$apphome/views/modules/${module.id}/edit/edit.html?id=$val&viewid=$defaultview.id&viewpath=$module.id/$defaultview.id&hitssessionid=$!{hits.sessionId}&searchtype=$module.id")
 			
 		#end
 	
