@@ -97,7 +97,10 @@ select.form-control:not([size]):not([multiple]) {
     z-index: auto;
     line-height: normal;
 }
-
+h3 {
+    font-size: 24px;
+    margin-top: 20px;
+}
 
 
 
@@ -1930,4 +1933,62 @@ table tr.emborderhover td
     font-size: .9rem;
     font-weight: 400;
     line-height: 1;
+}
+
+
+#createmediapanel .btnthumbnail {
+	background-color: transparent;
+    border: 1px solid transparent;
+    min-height: 270px;
+    display:  block;
+    padding: 10px;
+    margin: 10px;
+}
+#createmediapanel a.btnthumbnail:hover {
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #C9E8F2;
+    text-decoration: none;
+}
+
+#createmediapanel .gobacklink
+{
+	width: 100px;
+	display:block;
+	margin: 20px;
+	text-decoration: none;
+}
+
+a {
+    color: #333;
+    text-decoration: none;
+}
+a:visited {
+    color: #333;
+}
+a:hover {
+    color: #333;
+}
+a:focus {
+    outline: thin dotted;
+}
+a:hover, a:active {
+    outline: 0;
+}
+
+img {
+    border: 0;
+    -ms-interpolation-mode: bicubic;
+    vertical-align: middle;
+    /*image-orientation: from-image;*/
+}
+
+.footer-p, .footer-p a {
+    font-size: 12px;
+    color: #aaa;
+    text-decoration: none;
+    margin-top:10px;
+}
+.footer-p a:hover {
+    color: #777;
 }
