@@ -3,7 +3,6 @@ package org.entermediadb.projects;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -165,7 +164,7 @@ public class ProjectManager implements CatalogEnabled {
 	public Collection<LibraryCollection> loadOpenCollections(WebPageRequest inReq, MediaArchive inArchive, int count) {
 		// get a library
 		// inReq.putPageValue("selectedlibrary",library);
-
+		log.info("working?");
 		Collection<LibraryCollection> usercollections = (Collection<LibraryCollection>) inReq
 				.getPageValue("usercollections");
 		if (usercollections != null) {
@@ -262,8 +261,8 @@ public class ProjectManager implements CatalogEnabled {
 		inReq.putPageValue("librarysize", assetsize);
 
 		//TODO: This seems like a long way around
-		/*
-		LibraryCollection favorites = getFavoritesCollection(inReq, inArchive);
+	
+		LibraryCollection favorites = getFavoritesCollection(inReq.getUser());
 		LibraryCollection loadedfavs = null;
 		for (Iterator iterator = usercollections.iterator(); iterator.hasNext();) {
 			LibraryCollection col = (LibraryCollection) iterator.next();
@@ -277,7 +276,7 @@ public class ProjectManager implements CatalogEnabled {
 			usercollections.remove(loadedfavs);
 		}
 		usercollections.add(0, favorites);
-		*/
+		
 		
 		// Show all the collections for a library
 		inReq.putPageValue("allcollections", usercollections);
@@ -992,21 +991,26 @@ public class ProjectManager implements CatalogEnabled {
 
 	}
 
-	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile) 
-	{
+	public Data loadUserLibrary(MediaArchive inArchive, UserProfile inProfile) {
 		User user = inProfile.getUser();
 		Data userlibrary = inArchive.getData("library", user.getId());
-		if (userlibrary != null) 
-		{
+		if (userlibrary != null) {
 			return userlibrary;
 		}
 
 		userlibrary = inArchive.getSearcher("library").createNewData();
 		userlibrary.setId(user.getUserName());
 		userlibrary.setName(user.getScreenName());
-		userlibrary.setValue("owner",user.getId());
-		userlibrary.setValue("privatelibrary",true);
-		userlibrary.setValue("viewusers", Arrays.asList(user.getId()));
+
+		String folder = "Users/" + user.getScreenName();
+
+		Category librarynode = inArchive.createCategoryPath(folder);
+		((MultiValued) librarynode).addValue("viewusers", user.getId());
+		inArchive.getCategorySearcher().saveData(librarynode);
+		// reload profile?
+		inProfile.getViewCategories().add(librarynode); // Make sure I am in the list of users for the library
+		userlibrary.setValue("viewusers", user.getId());
+		userlibrary.setValue("categoryid", librarynode.getId());
 		inArchive.getSearcher("library").saveData(userlibrary, null);
 
 		return userlibrary;
