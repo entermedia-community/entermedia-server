@@ -9,7 +9,6 @@
 				#end 
 				data-target="asearchcontent">
 				<span class="widget-header-title">[[Search]] #if($librarycol)[[Collection]]#elseif($selectedlibrary)[[Library]]#else [[Assets]]#end</span> 
-				<i class="fas fa-angle-down ui-widget-toggle"></i>
 				#if( $caneditadvancedsearch )
 					<span class="widget-header-setup">
 					<a class="ajax " targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">
