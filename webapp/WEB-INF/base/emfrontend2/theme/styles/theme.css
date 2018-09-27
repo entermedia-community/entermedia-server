@@ -131,28 +131,31 @@ h3 {
     border-radius: 0 0 5px 5px;
     padding: 1px 10px 5px 10px;
     color: #59bbd9;
+    line-height:1.2;
 }
 #header .navlinks>ul { list-style: none; margin:0; padding: 0;}
 #header .navlinks>ul li { float:left; padding:1px 8px; border-left:1px solid #fff; font-size:90%;}
 #header .navlinks>ul li.first { border-left: none;}
 #header ul.dropdown-menu li { float: none;}
 #header ul.dropdown-menu li a,#header ul.dropdown-menu li a:hover  { color:#111;}
-#header .navlinks a {
+#header .navlinks li>a {
     position: relative;
-    top: -1px;
     color: #fff;
     padding: 0 5px;
 }
-#header .navlinks a:hover {
+#header .navlinks li>a:hover {
     color: #fff;
 }
-#header .navlinks>ul li.dropdown:last-child ul.dropdown-menu {
+#header .navlinks>ul li.dropdown:last-child .dropdown-menu {
   right: 0;
   left: auto;
 }
-
+#header .navlinks .dropdown-item {
+	padding:.25rem 1rem;
+	font-size:0.8rem;
+}
 .emheader { height: 100px; }
-.emheader .logocontainer { float: left; padding: 10px 20px 0 10px;}
+.emheader .logocontainer { float: left; padding: 20px 20px 0 20px;}
 
 .emheader-right {
 	float:right;
@@ -358,11 +361,10 @@ h3 {
     margin: 0 4px 0 4px;
     text-decoration: none;
     display: block;
-    font-size: 12px;
+    font-size: 0.8rem;
     word-wrap: break-word;
     border-bottom: 1px solid #e5e5e5;
     color: #979797;
-    font-weight: bold;
 }
 .search-list li:last-child a.search-href, .sidebar-list li:last-child a {
     border-bottom: none;

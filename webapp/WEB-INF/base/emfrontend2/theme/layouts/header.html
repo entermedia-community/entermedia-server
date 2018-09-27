@@ -32,18 +32,18 @@
 	#set( $localesearcher = $mediaarchive.getSearcher("locale") )
        #set($currentlang = $localesearcher.searchById($context.language))
       #if($currentlang)
- 	<li class="dropdown"><a class="" href="#" data-toggle="dropdown">$currentlang <span class="caret"></span></a> 
+ 	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$currentlang</a> 
     #else
- 	<li class="dropdown"><a class="" href="#" data-toggle="dropdown">[[Language]] <span class="caret"></span></a> 
+ 	<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">[[Language]]</a> 
      #end
   
-  	<ul id="language-bar-select" class="dropdown-menu">
+  	<div id="language-bar-select" class="dropdown-menu">
 		#set( $localesearcher = $mediaarchive.getSearcher("locale") )
 		#set( $languages = $localesearcher.query().match("enabled", "true").search($context) )
 		#foreach( $lang in $languages)
-			<li ><a href="$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=#uuencode($context.getPathUrl())">$lang </a></li>
+			 <a class="dropdown-item" href="$home$apphome/components/languages/changelanguage.html?newlang=locale_$lang.id&origURL=#uuencode($context.getPathUrl())">$lang </a>
 		#end
-    </ul> 
+    </div> 
 	</li>
 	#end	
 	
@@ -66,12 +66,12 @@
 	    #set($module = $searcherManager.getData($catalogid, "module", "asset" ) )
 	#end
 #set( $urlbase = "$home$apphome/views/modules" )
-<li class="dropdown"><a class="" href="#" data-toggle="dropdown">$module.getName($context.locale) <span class="caret"></span></a> 
-	<ul id="module-bar-select" class="dropdown-menu">
+<li class="dropdown"><a class="dropdown-toggle" href="#" data-toggle="dropdown">$module.getName($context.locale)</a> 
+	<div id="module-bar-select" class="dropdown-menu">
 		#foreach ( $amodule in $userprofile.getModules() )
-			<li><a href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a></li>
+			<a class="dropdown-item" href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
 		#end
-	</ul>
+	</div>
 </li>
 #end
 
