@@ -3,15 +3,15 @@
 
 <div class="subcolumns">
     
-    <div id="right-sidebar" style="padding: 0 20px 0 0; width:400px;">
+    <div id="right-sidebar" style="padding: 0 30px 0 0; width:400px;">
 
-          <input id="upload_field" type="file" style="position:absolute; top:-100px;" multiple="multiple"  />
+          		<input id="upload_field" type="file" style="position:absolute; top:-200px;" multiple="multiple"  />
 
      			<div class="uploadinstructions">
-        			        <a class="btn large" href="#" id="filePicker" style="margin-top: 0">[[Pick Files]]...</a>
+        			        <a class="btn btn-primary btn-lg" href="#" id="filePicker" style="margin-top: 0"><i class="fas fa-upload"></i> [[Pick Files]]...</a>
 			    ##    <p>[[Drag media here]]</p>
 			    ##    <p>[[Or, if you prefer]]...</p> 
-			             <p class="hints" style="text-align: left; padding: 0 20px;" id="drag-and-drop-instructions">
+			             <p class="hints" style="text-align: left; padding: 5px 20px;" id="drag-and-drop-instructions">
 			                [[Upload multiple files by using the]] <strong>[[Shift]]</strong> [[key on your keyboard while selecting the files you wish to upload]].
 			             </p>			             
 				</div>				
@@ -95,7 +95,7 @@
 					$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
 				##have the cancel delete these assets?
 			        <div id="uploadinstructionsafter" style="display: none">
-				       <a class="btn" id="startbutton" data-complete="[[Upload Complete]]"  href="#">[[Upload]]</a>
+				       <a class="btn btn-sm btn-primary" id="startbutton" data-complete="[[Upload Complete]]"  href="#">[[Upload]]</a>
 		        	</div>
 			</div>
 		</div>
@@ -106,7 +106,7 @@
 		<div class="ui-widget uipanel">
 		    <div  class="ui-widget-header">[[Upload Queue]]</div>
 		    <div  class="ui-widget-content">
-					<a id="viewassetsbtn" class="btn" disabled 
+					<a id="viewassetsbtn" class="btn btn-sm brn-primary" disabled 
 					#if( $collectionid ) 
 						href="$home$apphome/views/modules/librarycollection/pending/${collectionid}.html">[[View Pending]]
 					#else
