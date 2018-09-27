@@ -262,20 +262,20 @@ public class ProjectManager implements CatalogEnabled {
 
 		//TODO: This seems like a long way around
 	
-		LibraryCollection favorites = getFavoritesCollection(inReq.getUser());
-		LibraryCollection loadedfavs = null;
-		for (Iterator iterator = usercollections.iterator(); iterator.hasNext();) {
-			LibraryCollection col = (LibraryCollection) iterator.next();
-			if (col.getId().equals(inReq.getUserName() + "-favorites")) {
-				loadedfavs = col;
-			}
-		}
-
-		if (loadedfavs != null) {
-
-			usercollections.remove(loadedfavs);
-		}
-		usercollections.add(0, favorites);
+//		LibraryCollection favorites = getFavoritesCollection(inReq.getUser());
+//		LibraryCollection loadedfavs = null;
+//		for (Iterator iterator = usercollections.iterator(); iterator.hasNext();) {
+//			LibraryCollection col = (LibraryCollection) iterator.next();
+//			if (col.getId().equals(inReq.getUserName() + "-favorites")) {
+//				loadedfavs = col;
+//			}
+//		}
+//
+//		if (loadedfavs != null) {
+//
+//			usercollections.remove(loadedfavs);
+//		}
+//		usercollections.add(0, favorites);
 		
 		
 		// Show all the collections for a library
