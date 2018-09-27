@@ -223,7 +223,8 @@ h3 {
 /*Widget*/
 .ui-widget {
 /*	font-size:0.8em; */
-	margin-bottom:20px;
+	margin: 0 auto;
+	margin-bottom:20px;	
 }
 .ui-widget .ui-widget {
 
