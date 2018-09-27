@@ -18,8 +18,12 @@ $context.putPageValue("showalllanguagevalues",true)
 			#set( $assetid = $asset.id)
 			#set( $view = $viewpath)
 			
+			#if(!$firstviewpath)
+				#set( $firstviewpath = $viewpath)
+			#end
 			<li class="">
-			 	<a id="tab$target.id" data-layouts="2" data-alwaysreloadpage="true" href="tab$target.id">$label</a>
+			 	<a id="tab$target.id" data-layouts="2" data-alwaysreloadpage="true" 
+			 	href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$viewpath&edit=$!caneditasset">$label</a>
 			</li>
 		#end
 	#end
@@ -30,6 +34,6 @@ $context.putPageValue("showalllanguagevalues",true)
 </div>
 <div id="assetpanel-tab-content" class="em2tabs-tab-content">
 	<div class="tab-pane">
-	$pages.include("./editform.html?view=$firstviewpath")
+	$pages.include("$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$firstviewpath&edit=$!caneditasset")
 	</div>
 </div>

@@ -1,0 +1,39 @@
+<page>
+
+	
+	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
+	<permission name="viewasset">
+		<or>
+			<action name="AssetControlModule.canViewAsset" />
+			<action name="OrderModule.canViewAsset"/>
+		</or>
+	</permission>	
+
+	<permission name="view">
+		<and>
+		<userprofile property="view" equals="true" />
+	
+			<pagevalue name="canviewasset" equals="true"/>
+		
+		</and>
+	</permission>	
+
+	<permission name="download">
+		<and>
+			<userprofile property="download" equals="true" />
+			<pagevalue name="canviewasset" equals="true"/>
+		</and>
+	</permission>	
+
+	<property name="section">details</property>
+	
+	<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<userprofile property="editallassets" equals="true" />
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>
+	
+	
+</page>

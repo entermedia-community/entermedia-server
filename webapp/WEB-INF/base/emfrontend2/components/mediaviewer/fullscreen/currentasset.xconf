@@ -4,5 +4,8 @@
 		<property name="searchtype">asset</property>
 	</path-action>
 	<layout />
+	
 	<inner-layout />
+	
+
 </page>

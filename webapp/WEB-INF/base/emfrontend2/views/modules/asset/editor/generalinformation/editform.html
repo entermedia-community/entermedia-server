@@ -1,14 +1,7 @@
-#set( $viewid = $context.getRequestParameter("viewid"))
+#set( $viewpath = $context.getRequestParameter("viewid"))
 
-#set( $view = $mediaarchive.getData("view",$viewid) )
-
-#set( $target = $views.get($viewpath) )
-
-	#set( $filename = "generic.html" )
-	#set( $label = $target.name)
 	#set( $assetid = $asset.id)
-	#set( $view = $viewpath)
 	$context.putPageValue("finished",$finished)
-	$pages.include("$apphome/components/detaileditor/generic.html?assetid=$assetid&label=$label&view=$view&module=$moduleid&origURL=$origURL", $context)
+	$pages.include("$apphome/components/detaileditor/generic.html?assetid=$asset.id&label=$label&view=$viewpath&module=asset", $context)
 
 $pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
