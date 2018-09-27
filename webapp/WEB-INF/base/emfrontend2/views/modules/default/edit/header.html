@@ -7,12 +7,12 @@
 #end
 
 
-<div id="default-top" class="clearfix" style="margin: -20px 0 20px 0; border-top: 1px solid #ddd;">
+<div id="default-top" class="clearfix" >
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
     
-      <div class="main-info" style="padding-bottom: 20px; margin-top: 20px;">
+      <div class="main-info">
       	#foreach($detail in $details)     	
         	#if($detail.isList())
         	    #set($val = $searcherManager.getData($catalogid, "${detail.id}", $val))
@@ -37,7 +37,6 @@
 </div>
 
 <div class="editholder">
-              <img style="padding-left: 15px;" src="$apphome/theme/images/toggle.png" class="sidetoggle" data-target="left-col">
-
-<a id="editboxlink" class="ir" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$searchtype">[[Edit]]</a>
+<img src="$apphome/theme/images/toggle.png" class="sidetoggle" data-target="left-col">
+<a id="editboxlink" class="float-right" href="$home$apphome/views/settings/modules/$moduleid/metadata/views/index.html?viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$searchtype"><i class="fas fa-edit"></i></a>
 </div>

@@ -11,7 +11,9 @@ $!query.addSortBy("ordering")
         
                 <li class="header no-sort">[[Editing Boxes]]</li>
                 #if ($systemdefined != "true")
-                <li class="no-sort" id="addeditbox" ><a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">[[Add New]]</a></li>
+                <li class="no-sort" id="addeditbox" >
+                	<a class="ajax" targetdivinner="addeditbox" href="$home$viewsroot/addneweditingbox.html?oemaxlevel=1">[[Add New]]</a>
+                	</li>
                 #end
               
             #foreach( $target in $views)

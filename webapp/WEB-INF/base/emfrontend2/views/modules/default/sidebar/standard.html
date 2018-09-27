@@ -1,20 +1,14 @@
-
 #set( $moduleid = $context.findValue("module") )
 #set( $searchhome = $context.findValue("searchhome") )
 <div class="ui-widget uipanel" id="left-col-search" >
-	
-	
-	<div  class="ui-widget-header">[[Search]]
+
+	<div  class="ui-widget-header"><span class="widget-header-title">[[Search]]</span>
 		#if( $canviewmodulesettings )
-			
-#set( $moduleid = $context.findValue("module") )
-#set( $view = "${moduleid}/${moduleid}advancedsearch") 
-						<span class="widget-header-edit">
-						<a class="ajax ir" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">Edit</a>
-						</span>
-				
-			
-			
+			#set( $moduleid = $context.findValue("module") )
+			#set( $view = "${moduleid}/${moduleid}advancedsearch") 
+			<span class="widget-header-edit">
+			<a class="ajax" targetdiv="advsearchpanel" href="$searchhome/advancedsearch/index.html?oemaxlevel=1&editadvsearch=true&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view"><i class="fas fa-edit"></i></a>
+			</span>
 		#end
 	</div>
 	

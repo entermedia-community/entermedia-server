@@ -1,4 +1,4 @@
-<div id="vieweditorarea">
+	<div id="vieweditorarea">
 
 #set($viewid = $context.getRequestParameter("viewid"))
 #set( $assettype = $context.getRequestParameter("assettype") )
@@ -129,7 +129,7 @@
     <script>
         $('#setup-view').click(function(){
             if ( $('#setup-view').hasClass('open') ) {
-                $('#views-header').height(16)
+                $('#views-header').height(44)
                 $('#views-settings').hide();
                 $('#setup-view').removeClass('open');
             }

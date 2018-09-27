@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
-	<property name="fallbackdirectory">/emshare/views/settings/modules/default</property>
+	<property name="fallbackdirectory">/emshare2/views/settings/modules/default</property>
 	<property name="module">category</property>
 </page>

@@ -19,15 +19,13 @@ $context.putPageValue("searchhome",$searchhome)
 $context.putPageValue("hits", $hits)
 
 
-<div id="searchplugin">
-	<div class="subcolumns">
-		<div class="c25l" id="left-col">
-#set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
-
-			<h2>$module</h2>
-				$pages.include("${searchhome}/sidebar/standard.html",$context)
-		</div>
-		<div id="right-col" class="module-inner">
+<div id="searchplugin" class="modules-layout">
+	<div class="col-sidebar" id="leftsidebar">
+		#set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
+		<h2>$module</h2>
+		$pages.include("${searchhome}/sidebar/standard.html",$context)
+	</div>
+	<div class="col-content" class="module-inner">
 				<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="$moduleid" data-searchhome="$home$content.searchhome" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 							<div id="resultsarea">
 								<div id="resultslist">
@@ -35,8 +33,7 @@ $context.putPageValue("hits", $hits)
 								</div>
 							</div>
 							
-						</div>
-					</div>
-
+				</div>
 	</div>
-</div>    
+
+</div> 
