@@ -323,7 +323,7 @@ public class ProjectManager implements CatalogEnabled {
 		if (collection == null) 
 		{
 			collection = (LibraryCollection) collections.createNewData();
-			collection.setName(inUser.toString());
+ 			collection.setName(inUser.toString() + " Favorites");
 			collection.setId(inUser.getId() + "-favorites");
 			Searcher categories = getMediaArchive().getSearcher("category");
 
