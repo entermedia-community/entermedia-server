@@ -53,7 +53,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 #set( $edit = false)
 #end
 
-<table  id="main-results-table" class="emdata striped greytxt table tbl-responsive"  data-clickpath="$clickpath"  data-viewpostfix="$!viewpostfix" data-hitssessionid="$!existingrecords.sessionId" data-runcommand="$clickruncommand">
+<table  id="main-results-table" class="emdata table table-striped table-hover emresultstable"  data-clickpath="$clickpath"  data-viewpostfix="$!viewpostfix" data-hitssessionid="$!existingrecords.sessionId" data-runcommand="$clickruncommand">
 	<tr class="tableheader">
 	#foreach( $detail in $details )
 	

@@ -1,15 +1,12 @@
-
 #if ( !$hit )
     #set( $hit = $asset )
 #end
-
 #if (!$thumbsize )
     #set($thumbsize = $context.getRequestParameter("thumbsize") )
 #end
 #if(!$thumbsize)
     #set( $thumbsize = $content.thumbsize )
 #end
-
 #if($conversionerrors && $conversionerrors.size() >0)
 	#set ($mime = $mediaarchive.getMimeTypeIcon($hit.fileformat))
 	#set( $thumbpath =  "$themeprefix/images/mimetypes/${mime}.png" )
@@ -26,7 +23,6 @@
     #else
     	$pages.include("$apphome/components/results/thumbnails/small.html",$context)
     #end        
-
 #elseif($publish && $publish.size() >0 )
     <div id="status$hit.id"  class="ajaxstatus "   data-firstrun="500" ajaxpath="$home$apphome/components/convertqueue/importstatus.html?assetid=$hit.id&thumbsize=$thumbsize" >
     	<div class="uiinfo	 proxythumb" title="Publishing Proxy $publish.size()" >
@@ -62,26 +58,3 @@
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-		
-	</td>

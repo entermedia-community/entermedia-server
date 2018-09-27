@@ -538,20 +538,21 @@ div.languagesaddform div.languageinput input
     height: 10px;
    
 }
-#emcontainer #emselectable #main-results-table tr td:first-child, #emcontainer #emselectable #main-results-table tr td:nth-child(2) {
+.emresultstable tr td:first-child, .emresultstable tr td:nth-child(2) {
     border-left: none;
 }
-#emcontainer #emselectable #main-results-table tr td.checkbox {
+.emresultstable tr td.checkbox {
     text-align: right;
 }
-#emcontainer #emselectable #main-results-table tr td.thumbnail {
+.emresultstable tr td.thumbnail {
     width: 130px;
     text-align: center;
     padding: 0 10px;
     background-color: transparent;
     border: 0px;
 }
-#emcontainer #emselectable #tableheader, .emresultstable tr.tableheader {
+.emresultstable .tableheader,
+#emcontainer #emselectable #tableheader {
     background: rgb(187,232,132);
     background: -moz-linear-gradient(top, rgba(187,232,132,1) 0%, rgba(126,170,75,1) 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(187,232,132,1)), color-stop(100%,rgba(126,170,75,1)));
@@ -561,7 +562,9 @@ div.languagesaddform div.languageinput input
     background: linear-gradient(to bottom, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
 }
-#emcontainer #emselectable #tableheader th, .settings-table #tableheader th {
+.settings-table .tableheader th,
+.settings-table #tableheader th,
+#emcontainer #emselectable #tableheader th {
 	position: relative;
     color: #fff;
     text-shadow: 0 1px 0 rgba(0,0,0,0.2);
@@ -576,7 +579,7 @@ div.languagesaddform div.languageinput input
     background: linear-gradient(to bottom, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
 }
-
+.rowclick { cursor: pointer;}
 .select-dropdown-open.down {
     background: url('../images/sort-desc.png') 5px 0 no-repeat;
 }

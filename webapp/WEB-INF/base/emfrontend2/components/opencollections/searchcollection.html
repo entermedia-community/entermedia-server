@@ -20,7 +20,7 @@
 		<div  class="row inlinesearch" >
 		$context.putPageValue("autocomplete","off")
 			#foreach( $detail in $details)
-			<div class="col-md-3">
+			<div class="col">
 					$context.putPageValue("detail", $detail)
 					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
 			</div>
@@ -33,7 +33,7 @@
 		</td>
 		#if($canaddnewcollection)
 		<td >
-			<a class="ajax btn" style="white-space: nowrap;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
+			<a class="ajax btn btn-sm btn-primary" style="white-space: nowrap; margin:-10px 0 0 5px;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
 				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hits.sessionId">[[New Collection]]</a>
 		</td>
 		#end
@@ -51,17 +51,16 @@
 </div>
 
 <script>
-$(".rowclick").livequery('click', function(e){
+jQuery("#collectionresults").on("click", ".rowclick", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
-	
-#if(  $hits && $hits.getSelectionSize() > 0 )	
-	 var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId' ;
-#else	
-    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
-#end   
-	//$("#left-col-opencollections").load(nextpage);
-	window.location.href = nextpage;
+	#if(  $hits && $hits.getSelectionSize() > 0 )	
+		 var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId' ;
+	#else	
+	    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
+	#end   
+		//$("#left-col-opencollections").load(nextpage);
+		window.location.href = nextpage;
 
 
 });

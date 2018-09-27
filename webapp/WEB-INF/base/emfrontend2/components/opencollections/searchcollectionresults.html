@@ -3,7 +3,7 @@
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("librarycollection/librarycollectionresultstable", $userprofile))
-$details
+
 $context.putPageValue("details",$details)
 $context.putPageValue("clickpath","")
 $context.putPageValue("viewpostfix",".html")
