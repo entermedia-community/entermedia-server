@@ -171,14 +171,28 @@ h3 {
 
 
 /*Main Columns*/
+html, body, #application, #emcontainer {
+	height: 100%;
+}
+#emcontent {
+	height:100%;
+	min-height: 100%;
+}
+.mainlayoutcontainer {
+	position:relative;
+	height: 100%;
+	
+}
 .col-sidebar {
 	position: fixed;
     z-index: 1000;
     top: 0;
+    bottom:0;
     left:-80%;
     display: block!important;
     width: 80%;
     height: 100%;
+    
 }
 .col-contet {
 	padding: 20px;
@@ -189,17 +203,19 @@ h3 {
 	    position: absolute;
 	    left:0;
 	    width: 280px;
-	    height: auto;
+	    
 	    min-height: 100%;
+    	
 	}
 	.col-content {
 		margin-left: 280px;
 		min-height: 200px;
 	}
 }
-
-
-
+.emfooter {
+	clear:both;
+	padding:50px 0 10px;
+}
 
 /*Sidebar*/
 .col-sidebar { padding-top: 20px; }
@@ -264,8 +280,8 @@ h3 {
     padding: 4px 6px 4px 10px;
 }
 .widget-header-title {
-	font-size: 1.1em;
-	line-height: 1.8;
+	font-size: 1em;
+	line-height: 1.2;
 }
 
 .ui-widget .sidetoggle .ui-widget-toggle {
@@ -278,7 +294,7 @@ h3 {
 .ui-widget .widget-header-edit {
 	opacity: 0.6;
     filter: alpha(opacity=60);
-	padding:5px 0;
+	
 	display:none;
 	float:right;
 }
@@ -2608,11 +2624,11 @@ ul.embuttons li a span {
 }
 .ui-widget-header.sidetoggle .widget-header-title {
 	background: url('../images/arrow-right.png') left 4px no-repeat;
-	padding: 0 10px 0 18px;
+	padding: 0 10px 0 14px;
 	
 }
 .ui-widget-header.sidetoggle.expanded .widget-header-title {
 	background: url('../images/arrow-down.png') left 3px no-repeat;
-	padding-left: 18px;
+	padding-left: 14px;
 }
 
