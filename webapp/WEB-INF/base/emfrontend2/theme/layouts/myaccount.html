@@ -1,7 +1,6 @@
 #set( $tab = $context.findValue("tab") )
 
-<div class="subcolumns">
-	<div class="c25l" id="left-col">
+<div class="col-sidebar" id="leftsidebar">
 		<div class="ui-widget">
 			<div class="ui-widget-header">[[My Account]]</div>
 			<div class="ui-widget-content categories-widget no-padding-for-real">
@@ -32,10 +31,9 @@ $pages.include("$apphome/components/opencollections/sidebar.html",$context)
 ##$pages.include("$apphome/components/dontshow/sidebar.html",$context)
 		
 		
-	</div>
-	<div id="right-col" >
-				$pages.includeContent()
-	</div>
+</div>
+<div class="col-content" id="maincontent">
+			$pages.includeContent()
 </div>
 
 

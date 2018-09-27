@@ -391,7 +391,6 @@ html, body, #application, #emcontainer {
     font-size: 0.8rem;
     word-wrap: break-word;
     border-bottom: 1px solid #e5e5e5;
-    color: #979797;
 }
 .search-list li:last-child a.search-href, .sidebar-list li:last-child a {
     border-bottom: none;
@@ -526,6 +525,11 @@ div.languagesaddform div.languageinput input
     width: 28px;
     text-align: right;
 }
+#emcontainer #emselectable #main-results-table tr td {
+    text-align: left;
+    border-left: 1px dashed #E2EFF4;
+    padding: 0 10px;
+}
 #th-checkbox-left, #th-checkbox-right {float: right; width:15px;height:18px; margin:2px 2px 0 0;}
 #th-checkbox-left input { margin: 0; }
 #th-checkbox-right .anchor { margin-top:5px;} 
@@ -534,6 +538,45 @@ div.languagesaddform div.languageinput input
     height: 10px;
    
 }
+#emcontainer #emselectable #main-results-table tr td:first-child, #emcontainer #emselectable #main-results-table tr td:nth-child(2) {
+    border-left: none;
+}
+#emcontainer #emselectable #main-results-table tr td.checkbox {
+    text-align: right;
+}
+#emcontainer #emselectable #main-results-table tr td.thumbnail {
+    width: 130px;
+    text-align: center;
+    padding: 0 10px;
+    background-color: transparent;
+    border: 0px;
+}
+#emcontainer #emselectable #tableheader, .emresultstable tr.tableheader {
+    background: rgb(187,232,132);
+    background: -moz-linear-gradient(top, rgba(187,232,132,1) 0%, rgba(126,170,75,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(187,232,132,1)), color-stop(100%,rgba(126,170,75,1)));
+    background: -webkit-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    background: -o-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    background: -ms-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    background: linear-gradient(to bottom, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
+}
+#emcontainer #emselectable #tableheader th, .settings-table #tableheader th {
+	position: relative;
+    color: #fff;
+    text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    background: rgba(0,0,0,0);
+    border-right: 1px dashed rgba(0,0,0,0.05);
+    background: rgb(187,232,132);
+    background: -moz-linear-gradient(top, rgba(187,232,132,1) 0%, rgba(126,170,75,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(187,232,132,1)), color-stop(100%,rgba(126,170,75,1)));
+    background: -webkit-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    background: -o-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    background: -ms-linear-gradient(top, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    background: linear-gradient(to bottom, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
+}
+
 .select-dropdown-open.down {
     background: url('../images/sort-desc.png') 5px 0 no-repeat;
 }
@@ -1997,7 +2040,9 @@ form .field {
 .inputformrow { margin-bottom:10px;}
 
 .addnewitem { margin:5px 0;}
-
+.form-actions {
+	padding:20px 0 0 10px;
+}
 #right-col > .fields {
     margin: 10px;
 }
@@ -2398,7 +2443,24 @@ table tr.emborderhover td
 	background-color: #c9e8f2;
 }
 
-
+.main-info .primary {
+    font-size: 16px;
+    font-weight: bold;
+    color: #444;
+    line-height: 30px;
+}
+#default-top .secondary {
+    font-size: 14px;
+    color: #666;
+}
+#default-top .secondary a {
+    font-size: 14px;
+    color: #34a3c2;
+    font-weight: normal;
+}
+#default-top .secondary a:hover {
+    color: #60bad3;
+}
 .alert-primary {
     color: #004085;
     background-color: #cce5ff;
