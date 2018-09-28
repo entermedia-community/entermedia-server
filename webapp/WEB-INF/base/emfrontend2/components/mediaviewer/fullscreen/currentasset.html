@@ -19,7 +19,7 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $next = $hits.next($index))       
 
 <div id="main-media-container" style="height: 100%;">
-<div id="main-media-viewer" data-hitssessionid="$hitssessionid" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
+<div id="main-media-viewer" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end

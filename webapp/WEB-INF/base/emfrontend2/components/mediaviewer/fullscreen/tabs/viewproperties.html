@@ -1,22 +1,3 @@
-
-#if( !$related )
-    #set ( $hitssessionid = $context.findValue("hitssessionid") )
-    #set ( $related = $context.getSessionValue($hitssessionid) )
-#end
-
-
-
-#set( $pagenum = $context.getRequestParameter("page") )
-#if( $pagenum )
-#set( $pageval = 1)
-#set( $pageval = $pageval.parseInt($pagenum))
-$related.setPage($pageval)
-#end
-				
-
-
-
-
 <div class="assetpanel-container">
 <div class="assetpanel-sidebar">
 <div class="container">
@@ -29,12 +10,11 @@ $related.setPage($pageval)
         
         <div class="carousel-inner">
             <div class="carousel-item active">
-			$hits.setHitsPerPage(4)
-			
+#set($pagecount = $hits.getHitsPerPage())
+$hits.setHitsPerPage(4)		
 #foreach($hit in $hits.getPageOfHits())
-			
-			#set( $count = $related.getPage()+-1 )
-        			#set( $count = $count*$related.getHitsPerPage() )	
+	#set( $count = $related.getPage()+-1 )
+	#set( $count = $count*$related.getHitsPerPage() )	
         			#set( $count = ${foreach.count} + $count )
         			$context.putPageValue("hitindex",$count )
         			#set ($sourcepath = $hit.sourcepath)    		
@@ -46,9 +26,10 @@ $related.setPage($pageval)
 			
 			    #set( $editlink = $content.get("asseteditlink") )
 			#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
-				<div class="row text-center text-lg-left">
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="$click" class="d-block mb-4 h-100">
+				<div class="row gallery-thumb #if($asset.id == $hit.id) active-asset #end " id="gallery-${hit.id}">
+				<div class="col-md-3"><input type="checkbox" /></div>
+        <div class="col-lg-9 col-md-9 col-xs-9">
+          <a  href="$click" class="d-block mb-4 h-100  " >
 #set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
           #set( $tsize = "$home$thumbend" )
           <img src="$!cdn$tsize"class="img-fluid img-thumbnail"  border="0" title="${name}" />
@@ -59,11 +40,10 @@ $related.setPage($pageval)
        
       </div>
       
-			#end
 			
 	
       
-      
+     #end
       	
       
       
@@ -183,16 +163,6 @@ $related.setPage($pageval)
        
     </div>
 </div>
- <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-            <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
-            <span class="sr-only">Previous</span>
-        </a>
-        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-            <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
-            <span class="sr-only">Next</span>
-        </a>
-
-
 
 </div>
 <div class="assetpanel-content">
@@ -212,3 +182,17 @@ $related.setPage($pageval)
 	
 </div>
 </div>
+<!-- New code
+ <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon bg-dark rounded-circle" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </a>
+        <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+            <span class="carousel-control-next-icon bg-dark rounded-circle" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </a>
+
+
+
+
+ -->

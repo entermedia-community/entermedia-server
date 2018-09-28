@@ -269,8 +269,15 @@ $(document).ready(function(url,params)
 			enable(id,".gorightclick span");
 		    $(document).trigger("domchanged");
 			$(window).trigger( "resize" );
+			$(".gallery-thumb").removeClass("active-asset");
+			$("#gallery-" + assetid).addClass("active-asset");
+			
+			
 
 		});
+		
+		
+		
 	}
 	
 	initKeyBindings = function(hidden)
