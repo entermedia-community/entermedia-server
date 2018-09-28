@@ -232,7 +232,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		archive.fireMediaEvent("saved", inReq.getUser(), current);
 
 		inReq.putPageValue("asset", current);
-		
+		archive.saveAsset(current);
 	}
 
 	public void handleCustomThumb(WebPageRequest inReq){
@@ -297,6 +297,7 @@ public class ConvertStatusModule extends BaseMediaModule
 		//archive.fireMediaEvent("asset/saved", inReq.getUser(), current);
 
 		inReq.putPageValue("asset", current);
+		archive.saveAsset(current);
 	}
 	public void reloadIndex(WebPageRequest inReq)
 	{
