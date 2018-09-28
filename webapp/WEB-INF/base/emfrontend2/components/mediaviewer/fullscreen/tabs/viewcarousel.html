@@ -1,4 +1,4 @@
-<div class="container">
+
 <ol class="carousel-indicators">
             <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
             <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
@@ -7,12 +7,12 @@
     <div id="carouselExampleControls" class="carousel vert slide" data-ride="carousel" >
         
         <div class="carousel-inner">
-            <div class="carousel-item active">
-#set($pagecount = $hits.getHitsPerPage())
-$hits.setHitsPerPage(4)		
-#foreach($hit in $hits.getPageOfHits())
-	#set( $count = $related.getPage()+-1 )
-	#set( $count = $count*$related.getHitsPerPage() )	
+            <div class="carousel-items">
+				#set($pagecount = $hits.getHitsPerPage())
+				$hits.setHitsPerPage(4)		
+				#foreach($hit in $hits.getPageOfHits())
+					#set( $count = $related.getPage()+-1 )
+					#set( $count = $count*$related.getHitsPerPage() )	
         			#set( $count = ${foreach.count} + $count )
         			$context.putPageValue("hitindex",$count )
         			#set ($sourcepath = $hit.sourcepath)    		
@@ -22,143 +22,19 @@ $hits.setHitsPerPage(4)
         			$context.putPageValue("clink", $clink)
         			$context.putPageValue("thumbsize",$thumbsize)
 			
-			    #set( $editlink = $content.get("asseteditlink") )
-			#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
+				    #set( $editlink = $content.get("asseteditlink") )
+					#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
 				<div class="row gallery-thumb #if($asset.id == $hit.id) active-asset #end " id="gallery-${hit.id}">
-				<div class="col-md-3"><input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
-</div>
-        <div class="col-lg-9 col-md-9 col-xs-9">
-          <a  href="$click" class="d-block mb-4 h-100  " >
-#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
-          #set( $tsize = "$home$thumbend" )
-          <img src="$!cdn$tsize"class="img-fluid img-thumbnail"  border="0" title="${name}" />
-          
-            
-          </a>
-        </div>
+        		<div class="col">
+          			<a class="stackedplayer gallery-item" data-assetid="$hit.id"   href="#" >
+						#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
+          				#set( $tsize = "$home$thumbend" )
+         				<img src="$!cdn$tsize"class="img-fluid img-thumbnail"  border="0" title="${hit.name}" />
+          			</a>
+        		</div>
        
-      </div>
-      
-			
-	
-      
-     #end
-      	
-      
-      
-     
-      
-      
-
-
-				
-				
-				
-			          </div>
-            <div class="carousel-item">
-   				
-   					<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
+      			</div>
+     			#end
+          </div>
         </div>
-       
-      </div>
-			
-			
-				<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
-        </div>
-       
-      </div>
-      
-      
-      	<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
-        </div>
-       
-      </div>
-      
-      
-      
-      	<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
-        </div>
-       
-      </div>
-      
-      
-   				
-   				
-   				
-   				
-            </div>
-            <div class="carousel-item">
-		
-			<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
-        </div>
-       
-      </div>
-			
-			
-				<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
-        </div>
-       
-      </div>
-      
-      
-      	<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
-        </div>
-       
-      </div>
-      
-      
-      
-      	<div class="row text-center text-lg-left">
-
-        <div class="col-lg-12 col-md-12 col-xs-12">
-          <a href="#" class="d-block mb-4 h-100">
-            <img class="img-fluid img-thumbnail" src="http://placehold.it/400x300" alt="">
-          </a>
-        </div>
-       
-      </div>
-      
-      
-		
-		
-				
-            </div>
-        </div>
-       
     </div>
-</div>

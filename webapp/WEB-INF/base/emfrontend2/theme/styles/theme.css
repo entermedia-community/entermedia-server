@@ -2725,6 +2725,21 @@ a.collectionbox.favorite
         transform: translate3d(0,-100%, 0);
 }
 
+.assetpanel-sidebar .carousel {
+	height: 100%;
+	overflow-y: auto;
+}
+.assetpanel-sidebar .gallery-item {
+	display: block;
+	padding:10px;
+	margin:20px;
+	text-align:center;
+}
+
+.assetpanel-sidebar .active-asset,
+.assetpanel-sidebar .gallery-thumb:hover {
+	background-color: #666;
+}
 
 
 .page-title {
@@ -2815,9 +2830,6 @@ a.collectionbox.favorite
 }
 
 
-.active-asset {
-	background-color: #aaa;
-}
 
 .btns { padding:10px 20px;}
 
