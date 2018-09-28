@@ -2694,3 +2694,13 @@ ul.embuttons li a span {
 	padding-left: 14px;
 }
 
+a.collectionbox.favorite
+{
+	padding-left: 23px;
+	background: url("../images/icons/favorite-color.png") no-repeat scroll 0px 7px;
+	padding-top: 8px;
+	padding-bottom: 10px;
+	width: 85%;
+	display:inline-block;
+		
+}
