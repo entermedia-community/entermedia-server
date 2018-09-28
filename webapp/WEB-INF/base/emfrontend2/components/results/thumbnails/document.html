@@ -46,7 +46,7 @@
 	</span>	
 	#end
 </span>
-	#set( $badges = $mediaarchive.getBadges($hit) )
+	type#set( $badges = $mediaarchive.getBadges($hit) )
 	#if($canshowbadge && $badges)
 	<div class="badgecontainer">
 		<div class="badgetarget">

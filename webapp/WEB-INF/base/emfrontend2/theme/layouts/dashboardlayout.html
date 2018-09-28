@@ -1,8 +1,7 @@
 #set( $tab = $context.findValue("tab") )
 #set( $reportid = $context.findValue("reportid") )
 
-<div class="subcolumns">
-       <div class="c25l" id="left-col">
+<div class="col-sidebar" id="leftsidebar">
 		<div class="ui-widget" >
 			<div  class="ui-widget-header">
 			<span class="widget-header-title">[[Reports]]</span>
@@ -31,12 +30,11 @@
 
 
          </div>
-         <div id="right-col">	
-			<div class="liquid-sizer settings">
+         <div class="col-content" id="maincontent">	
+			<div class="liquid-sizer settings dashboardcontainer">
 				$pages.includeContent()
 			</div>
          </div>
-</div>
 
 
 		

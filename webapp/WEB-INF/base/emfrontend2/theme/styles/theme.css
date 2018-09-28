@@ -2721,3 +2721,92 @@ a.collectionbox.favorite
 -webkit-transform: translate3d(0,-100%, 0);
         transform: translate3d(0,-100%, 0);
 }
+
+
+
+.page-title {
+    text-align: center;
+    margin-bottom: 50px;
+}
+.form-container {
+    width: 670px;
+    margin: 20px auto;
+}
+.form-container form label {
+    font-weight: bold;
+	display:block;
+	margin-bottom:0.2rem;
+    
+}
+.form-container form .field {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 8px;
+    width: 260px;
+    margin-bottom: 10px;
+    margin-top: 5px;
+    border: 1px solid #CCC;
+}
+.form-container small {
+    width: 100%;
+    font-size: 10px;
+    font-weight: bold;
+    display: block;
+    margin-bottom: 8px;
+}
+.form-container .small {
+    width: 90px !important;
+    margin-left: 10px;
+}
+#login-submit {
+    margin: 10px 0 0 0;
+}
+#registration-submit {
+    margin-top: 10px;
+}
+.login-form {
+    border-right: 1px solid #efefef;
+    padding: 0 0 30px;
+    margin: 0;
+    padding-right: 20px;
+    margin-right: 20px;
+}
+.password-helper a {
+    text-decoration: none;
+    position: relative;
+    top: 4px;
+}
+.password-helper a:hover {
+    text-decoration: underline;
+}
+#registration-form .oeinputform input, #password-reminder input[type="text"] {
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+    font-size: 16px;
+    padding: 8px;
+    width: 260px;
+    margin-bottom: 10px;
+    margin-top: 6px;
+}
+#registration-form .oeinputform h4 {
+    font-weight: bold;
+    padding-bottom: 8px;
+    width: 100%;
+    font-size: 14px;
+    text-align: left;
+    padding: 0;
+    margin: 0;
+}
+#password-reminder label {
+    clear: both;
+    display: block;
+    margin: 25px 0 0 0;
+    padding: 0;
+}
+.col4 {
+    width: 340px;
+    float: left;
+}

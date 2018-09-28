@@ -1336,5 +1336,3 @@ $(document).ready(function()
 	uiload();
 
 }); 
-
-
