@@ -1,4 +1,6 @@
 <page>
-<path-action name="DataEditModule.loadHits"/>
+	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
 
+
+<path-action name="DataEditModule.loadHits"/>
 </page>

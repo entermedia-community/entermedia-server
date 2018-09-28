@@ -27,7 +27,8 @@ $hits.setHitsPerPage(4)
 			    #set( $editlink = $content.get("asseteditlink") )
 			#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
 				<div class="row gallery-thumb #if($asset.id == $hit.id) active-asset #end " id="gallery-${hit.id}">
-				<div class="col-md-3"><input type="checkbox" /></div>
+				<div class="col-md-3"><input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
+</div>
         <div class="col-lg-9 col-md-9 col-xs-9">
           <a  href="$click" class="d-block mb-4 h-100  " >
 #set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
