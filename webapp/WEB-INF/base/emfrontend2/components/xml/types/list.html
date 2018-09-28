@@ -5,7 +5,9 @@
 #if($catalogidother)
 	#set ($catalogid = $catalogidother)
 #end
-#set ($searchtype = $context.getRequestParameter('searchtype')) ##product
+#if(!$searchtype)
+	#set ( $searchtype = $context.getRequestParameter("searchtype") )
+#end
 #ifnull ($fieldname)
 	#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
 #end

@@ -717,7 +717,9 @@ td.checkbox input, th.firstheader input {
 select + .select2-container {
   width: 100% !important;
 }
-
+.select2-container {
+	z-index: 20000;
+}
 
 
 
@@ -2814,10 +2816,8 @@ a.collectionbox.favorite
 
 
 .active-asset {
-	
 	background-color: #aaa;
-	
-	
 }
 
+.btns { padding:10px 20px;}
 

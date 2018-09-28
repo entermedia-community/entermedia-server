@@ -6,7 +6,7 @@ $(document).ready(function(url,params)
 	{
 		$.get(url, params, function(data) 
 		{
-			$("#resultheader").replaceWith(data);
+			jQuery("#resultheader").replaceWith(data);
 		});	
 	}
 		
@@ -91,12 +91,12 @@ $(document).ready(function(url,params)
 		   if(status)
 		   {
 			   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"page"});
-			   $('.selectionbox').prop('checked',true);
+			   $('.selectionbox').prop('checked', true);
 	       }
 	       else
 	       {
 	    	   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"pagenone"});         
-	   	       $('.selectionbox').removeProp('checked');  
+	   	       $('.selectionbox').prop('checked', false);  
 	   	   }
 		   //$("#select-dropdown-open").click();
 	});
