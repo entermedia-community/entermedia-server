@@ -41,11 +41,10 @@ $context.putPageValue("showtoolbar", "false")
 		<div class="float-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}"
 			 data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight">
 		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
-		    	    <div class="grid-thumbimage assetdraggable"> 
-		    	    	#if( $type =="audio")
+		    	    <div class="grid-thumbimage assetdraggable">
+		    	    	#if(!$type || $type =="audio")
 		    	    		#set( $type = "mime" )
-		    	    	#end
-		    	    	#if( $type =="video")
+		    	    	#elseif( $type =="video")
 		    	    		#set( $type = "videothumbnail" )
 		    	    	#end
 		        	   $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             

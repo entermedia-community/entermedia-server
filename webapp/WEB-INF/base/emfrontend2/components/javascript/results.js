@@ -59,8 +59,8 @@ $(document).ready(function(url,params)
 	
 	lQuery("a.selectpage").livequery( 'click', function() 
 	{
-		$('input[name=pagetoggle]').prop('checked',true);
-		$('.selectionbox').prop('checked',true);
+		lQuery('input[name=pagetoggle]').prop('checked',true);
+		lQuery('.selectionbox').prop('checked',true);
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -72,8 +72,8 @@ $(document).ready(function(url,params)
 		//Uses ajax
 	lQuery("a.deselectpage").livequery( 'click', function() 
 	{
-		$('input[name=pagetoggle]').removeProp('checked');
-		$('.selectionbox').removeProp('checked'); //Not firing the page
+		lQuery('input[name=pagetoggle]').removeProp('checked');
+		lQuery('.selectionbox').removeProp('checked'); //Not firing the page
 	//	$("#select-dropdown-open").click();
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
