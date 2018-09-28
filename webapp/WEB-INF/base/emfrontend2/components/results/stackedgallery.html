@@ -38,7 +38,7 @@ $context.putPageValue("showtoolbar", "false")
         #set($assetheight = $mediaarchive.getRealImageHeight($hit))
         #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
-		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}"
+		<div class="float-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}"
 			 data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight">
 		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
 		    	    <div class="grid-thumbimage assetdraggable"> 
@@ -55,7 +55,7 @@ $context.putPageValue("showtoolbar", "false")
 			      <div class="grid-gallery-checkbox">
 			          <input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelectedOnPage(${hit.id})) checked #end data-dataid="${hit.id}" />          
 			      </div>
-		         <div class="stacked-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a href="$click">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div>
+		         <div class="stacked-field-info" title="#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end" ><a class="stackedplayer" href="#"  data-assetid="$hit.id">#if( $hit.assettitle ) $hit.assettitle #else $hit.name #end</a></div>
 		     </div>
 		</div>
         #set ( $count = $count + 1)

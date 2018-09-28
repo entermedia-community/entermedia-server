@@ -26,7 +26,8 @@
   line-height: 1.6;
 }
 .jp-audio.mini {
-    width: 117px;
+    width: 120px;
+    margin: 0 auto;
     padding: 0;
 }
 .jp-audio a {

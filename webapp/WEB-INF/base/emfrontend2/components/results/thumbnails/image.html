@@ -45,8 +45,7 @@
 	
 	
 	#set( $badges = $mediaarchive.getBadges($hit) )
-	
-	#if($canshowbadge)
+	#if($canshowbadge && $badges)
 	<div class="badgecontainer">
 		<div class="badgetarget">
 			#foreach($badge in $badges)
