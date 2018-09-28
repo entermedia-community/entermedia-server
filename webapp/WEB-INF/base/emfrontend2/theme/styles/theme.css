@@ -1,7 +1,8 @@
-head/*Color*/
+/*Color*/
 .emnav {
 	border-bottom: 1px solid #3c586d;
 	background-color: #81A8B8;
+	min-height: 40px;
 }
 .emnav .navbutton {
 	color:#fff;
