@@ -22,7 +22,7 @@ uiload = function() {
 
 	//https://github.com/select2/select2/issues/600	
 	//$.fn.modal.Constructor.prototype.enforceFocus = function() {};
-	//$.fn.select2.defaults.set( "theme", "bootstrap4" );
+	$.fn.select2.defaults.set( "theme", "bootstrap4" );
 	
 	
 	lQuery('#module-dropdown').livequery("click", function(e){
