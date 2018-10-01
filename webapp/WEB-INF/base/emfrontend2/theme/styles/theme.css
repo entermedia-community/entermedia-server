@@ -21,7 +21,7 @@
 	background-color: #AEB6B9;
 }
 .col-sidebar {
-	background-color: #E8F3F8;
+    background: #d5eff7 url('../images/sidebar-shadow.png') right top repeat-y;
 }
 .col-sidebar-detaileditor {
 	background-color: #edf0f1;
@@ -264,8 +264,10 @@ html, body, #application, #emcontainer {
 .ui-widget input,
 .ui-widget select,
 .ui-widget textarea,
-.ui-widget button {
-	font-size: 1em;
+.ui-widget button, 
+.ui-widget a.btn-sm {
+	font-size: 11px;
+	line-height:1.5;
 }
 .ui-widget.ui-widget-content {
 	border: 1px solid #c5c5c5;
@@ -647,8 +649,8 @@ td.checkbox input, th.firstheader input {
 /*Emshare Nav Bar*/
 .emnav .navbutton {
 	display:block;
-	line-height: 30px;
-	padding:5px 25px!important;
+	line-height: 24px;
+	padding:5px 20px!important;
 	text-decoration:none;
 	margin-left: 10px;
 	border-radius: 6px;
@@ -706,6 +708,11 @@ td.checkbox input, th.firstheader input {
 .advancedsearchtable label { display: block;}
 
 .advancedsearcheditform { background-color: #efefef; padding:5px;}
+
+.btns-advancedsearch .btn-sm {
+	height: 30px;
+	padding:5px 15px;
+}
 
 .listdetailpicker .select2-container {
   position: relative;
