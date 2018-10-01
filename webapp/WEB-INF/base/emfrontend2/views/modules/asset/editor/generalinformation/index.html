@@ -24,7 +24,7 @@ $context.putPageValue("showalllanguagevalues",true)
 			#end
 			<li class="">
 			 	<a id="tab$target.id" data-layouts="1"  
-			 	href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$viewpath&edit=$!caneditasset">$label</a>
+			 	href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$viewpath&edit=$!caneditasset&assetid=${asset.id}">$label</a>
 			</li>
 		#end
 	#end
@@ -35,6 +35,6 @@ $context.putPageValue("showalllanguagevalues",true)
 </div>
 <div id="assetpanel-tab-content" class="em2tabs-tab-content">
 	<div class="tab-pane" id="tab${firsttarget.id}panel">
-	$pages.include("$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$firstviewpath&edit=$!caneditasset")
+	$pages.include("$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$firstviewpath&edit=$!caneditasset&assetid=${asset.id}")
 	</div>
 </div>
