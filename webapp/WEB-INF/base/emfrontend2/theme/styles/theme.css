@@ -727,7 +727,7 @@ td.checkbox input, th.firstheader input {
 select + .select2-container {
   width: 100% !important;
 }
-#main-media-viewer .select2-container {
+.select2-container {
 	z-index: 20000;
 }
 
