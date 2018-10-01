@@ -18,13 +18,23 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $next = false )
 #set( $next = $hits.next($index))       
 
+#set( $opentab = $userprofile.get("assetopentab"))
+#if( !$opentab)
+#set( $opentab = "viewproperties")
+#end
+
 <div id="main-media-container" style="height: 100%;">
-<div id="main-media-viewer" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
+<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
-	$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
-	
+	#if($opentab == "viewpreview")
+		$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
+	#elseif($opentab == "viewproperties")
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
+	#elseif($opentab == "viewcollaborate")
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html")
+	#end
 </div>
 <div id="footerbase">
 	<div id="footermenu">
@@ -39,20 +49,20 @@ $context.putPageValue("cdn",$cdnprefix)
 				</div>	
 				
 			</li>
-			<li  class="footermenu bottomtab tabselected">	
+			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
 				<div class="expandmenu assetpreview" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html" title="[[View $asset]]" >
 				<i class="fas fa-expand"></i> $asset
 				</div>
 			 </il>
-			 <li class="footermenu bottomtab">
+			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
 				<div class="expandmenu assetproperties" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]" >
 				<i class="fas fa-info-circle"></i> [[Properties]]
 				</div>
 			</li>
-			 <li class="footermenu bottomtab">
-				<div class="expandmenu assetproperties" 
+			 <li class="footermenu bottomtab #if($opentab == "viewcollaborate")tabselected#end">
+				<div class="expandmenu assetcollaborate" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]" >
 				<i class="fas fa-comment-alt"></i> [[Collabotate]]
 				</div>

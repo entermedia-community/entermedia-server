@@ -755,6 +755,17 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 }
 	
 
+	lQuery('div.assetpreview').livequery('click',function(e)
+	{
+		e.preventDefault();
+		$(".bottomtab").removeClass("tabselected");
+		$(this).closest(".bottomtab").addClass("tabselected");
+		var div = $("#main-media-viewer" );
+		var id = div.data("assetid");
+		showAsset(id);
+		saveProfileProperty("assetopentab","viewpreview",function(){});
+	});
+
 	lQuery('div.assetproperties').livequery('click',function(e)
 	{
 		e.preventDefault();
@@ -766,15 +777,21 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 
 		var link = $(this).data("link");
 		div.load( link, options);
-
+		saveProfileProperty("assetopentab","viewproperties",function(){});
 	});
 	
-	lQuery('div.assetpreview').livequery('click',function(e)
+	
+	lQuery('div.assetcollaborate').livequery('click',function(e)
 	{
 		e.preventDefault();
 		$(".bottomtab").removeClass("tabselected");
 		$(this).closest(".bottomtab").addClass("tabselected");
+
 		var div = $("#main-media-viewer" );
-		var id = div.data("assetid");
-		showAsset(id);
+		var options = div.data();
+
+		var link = $(this).data("link");
+		div.load( link, options);
+		saveProfileProperty("assetopentab","viewcollaborate",function(){});
+
 	});

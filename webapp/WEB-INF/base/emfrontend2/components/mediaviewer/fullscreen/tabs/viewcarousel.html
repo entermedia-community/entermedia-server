@@ -15,6 +15,7 @@
 					#set( $count = $count*$related.getHitsPerPage() )	
         			#set( $count = ${foreach.count} + $count )
         			$context.putPageValue("hitindex",$count )
+        			$hit
         			#set ($sourcepath = $hit.sourcepath)    		
         			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
         			$context.putPageValue("type", $type)
@@ -30,6 +31,7 @@
         		    	<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
         		    </div> 
           			<a class="stackedplayer gallery-item" data-assetid="$hit.id"   href="#" >
+          			
 						#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
           				#set( $tsize = "$home$thumbend" )
          				<img src="$!cdn$tsize"class="img-fluid img-thumbnail"  border="0" title="${hit.name}" />
