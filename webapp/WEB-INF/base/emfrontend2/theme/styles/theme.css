@@ -11,8 +11,8 @@
 	background-color: #376282;
 }
 .emsubnav, .emsubnav .dropdown-menu { 
-	background-color: #C2CBCE;
-	color:#333;
+	background: #81cee0;
+	color:#fff;
 }
 #sub-nav a { 
 	color:#fff;
@@ -362,7 +362,11 @@ html, body, #application, #emcontainer {
 	padding:0 15px;
 }
 
-.emsubnav .dropdown-menu { padding:0; margin:0;}
+.emsubnav .dropdown-menu { 
+	padding:0; 
+	margin:0;
+	min-width:11rem;
+	}
 
 .resultscount {
 	font-size:90%;
@@ -717,7 +721,7 @@ td.checkbox input, th.firstheader input {
 select + .select2-container {
   width: 100% !important;
 }
-.select2-container {
+#main-media-viewer .select2-container {
 	z-index: 20000;
 }
 
@@ -1038,7 +1042,7 @@ label.error {
 }
 .assetpanel-sidebar {
 	position: fixed;
-    z-index: 1000;
+    
     top: 0;
     left:-80%;
     display: block!important;
