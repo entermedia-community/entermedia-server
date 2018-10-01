@@ -30,9 +30,13 @@
         		    </div> 
           			<a class="stackedplayer gallery-item" data-assetid="$hit.id"   href="#" >
           			
-						#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "small") )
-          				#set( $tsize = "$home$thumbend" )
-         				<img src="$!cdn$tsize"class="img-fluid img-thumbnail"  border="0" title="${hit.name}" /> ${hit.name}
+          			$context.putPageValue("hit", $hit)
+				$context.putPageValue("count", $count)
+				$context.putPageValue("sourcepath", $hit.sourcepath)
+				
+						##set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "small") )
+						$pages.include("$apphome/components/results/thumbnails/small.html",$context) <br>
+ ${hit.name}
          				
           			</a>
         		</div>
