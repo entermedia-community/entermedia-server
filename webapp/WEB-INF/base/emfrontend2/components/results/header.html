@@ -1,5 +1,6 @@
 #if( !$hits )
 	#set( $hits = $collectionassets)
+	Here
 	$context.putPageValue("hits",$hits)
 #end
 
@@ -54,7 +55,7 @@
 			#end
 		#end
 
-		#if($candeleteasset && $canmultiedit && $canquickdelete)	    
+		#if($candeleteasset && $canmultiedit && $canquickdelete)
 	 		<li class="nav-item">
 	 			<a class="nav-link emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a>
 	 			</li>

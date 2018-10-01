@@ -6,7 +6,7 @@ $(document).ready(function(url,params)
 	{
 		$.get(url, params, function(data) 
 		{
-			jQuery("#resultheader").replaceWith(data);
+			jQuery("#resultsheader").replaceWith(data);
 		});	
 	}
 		
