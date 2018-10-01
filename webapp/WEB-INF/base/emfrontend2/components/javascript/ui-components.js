@@ -22,7 +22,7 @@ uiload = function() {
 
 	//https://github.com/select2/select2/issues/600	
 	//$.fn.modal.Constructor.prototype.enforceFocus = function() {};
-	$.fn.select2.defaults.set( "theme", "bootstrap4" );
+	//$.fn.select2.defaults.set( "theme", "bootstrap4" );
 	
 	
 	lQuery('#module-dropdown').livequery("click", function(e){
@@ -1296,6 +1296,20 @@ uiload = function() {
 	
 }
 
+$.fn.equalHeights = function(px) {
+	$(this).each(function(){
+		var currentTallest = 0;
+		$(this).children().each(function(i){
+			if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
+		});
+    if (!px && Number.prototype.pxToEm) currentTallest = currentTallest.pxToEm(); //use ems unless px is specified
+		// for ie6, set height since min-height isn't supported
+		if (typeof(document.body.style.minHeight) === "undefined") { $(this).children().css({'height': currentTallest}); }
+		$(this).children().css({'min-height': currentTallest}); 
+	});
+	return this;
+}
+
 
 $(document).ready(function() 
 { 
@@ -1309,6 +1323,8 @@ $(document).ready(function()
 		$('#asset-data').width(w2);
 		*/
 		var body = $("body");
+		
+		$('.cols-main').equalHeights();
 
 		//TODO: use bootrap css?
 		body.removeClass("widthless100").removeClass("widthless500").removeClass("widthless1000");
