@@ -189,7 +189,6 @@ html, body, #application, #emcontainer {
 }
 .col-sidebar {
 	position: fixed;
-    z-index: 1000;
     top: 0;
     bottom:0;
     left:-80%;
@@ -2843,3 +2842,18 @@ a.collectionbox.favorite
 
 .btns { padding:10px 20px;}
 
+/* Collection drop */
+.librarylabels ul li.dragoverselected, .dragoverselected
+{
+	border: 1px dashed #aaa;
+	background-color:#ccc;
+}
+
+.librarylabels ul li.selected
+{
+	background-color:#C9E8F2;
+}
+
+#createnewarea { padding: 10px 5px;}
+.collectionnew { display:block; text-decoration:underline; }
+#createnewarea input[type="text"] { width: 150px; margin-bottom:5px;}
