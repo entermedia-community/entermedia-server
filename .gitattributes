@@ -1,5 +1,5 @@
 *.js diff
 *.pl diff
 *.txt diff
-*.css diff
+*.css diff=astextplain
 *.html diff
