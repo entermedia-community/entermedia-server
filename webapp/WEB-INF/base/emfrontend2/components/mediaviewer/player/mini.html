@@ -29,7 +29,7 @@
                 #end 
             </div>
             </div>
-        	<div class="col-sm-8">
+        	<div class="col-sm-6">
             <div class="media-info">
                 <div class="media-info-primary">
                     <strong>$asset</strong> 
@@ -85,7 +85,7 @@
                          <a href="$home$apphome/views/modules/contact/edit/edit.html?id=${contact.id}&viewid=contactcontact_details&viewpath=contact/contactcontact_details&searchtype=contact&detailsreadonly=true&preview=true">$contact</a> 
 	                     </p>
                      #end
-                     
+                    
                      #if($canviewshoppingcart)
                      	#if($asset.shoppingcartlink)
                      		<strong>[[Shopping Cart]]</strong>
@@ -98,6 +98,11 @@
                 #end
             </div>
             </div>
+            <div class="col-sm-3"> #if ( $canviewvoting )
+			    <div id="assetVoteCount" style="padding: 10px;">
+			        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+			    </div>
+			#end</div>
         </div>
                #end 
 </div>
