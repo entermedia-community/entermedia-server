@@ -26,6 +26,9 @@
 					#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
 				<div class="row gallery-thumb #if($asset.id == $hit.id) active-asset #end " id="gallery-${hit.id}">
         		<div class="col">
+        			<div class="gallery-item-checkbox">
+        		    	<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
+        		    </div> 
           			<a class="stackedplayer gallery-item" data-assetid="$hit.id"   href="#" >
 						#set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "thumb") )
           				#set( $tsize = "$home$thumbend" )

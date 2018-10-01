@@ -2734,8 +2734,14 @@ a.collectionbox.favorite
 	padding:10px;
 	margin:20px;
 	text-align:center;
+	margin-left:25px
 }
+.assetpanel-sidebar .gallery-item-checkbox {
+   top: 50%;
+    position: absolute;
+    left: 25px;
 
+}
 .assetpanel-sidebar .active-asset,
 .assetpanel-sidebar .gallery-thumb:hover {
 	background-color: #666;
