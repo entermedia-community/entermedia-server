@@ -197,9 +197,9 @@ html, body, #application, #emcontainer {
     height: 100%;
     
 }
-.col-contet {
-	padding: 20px;
+.col-content {
 	min-height: 200px;
+	position:relative;
 }
 @media (min-width: 992px) {
 	.col-sidebar {
