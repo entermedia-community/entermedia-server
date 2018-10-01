@@ -1,10 +1,7 @@
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
-#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
-#if( $type )
-#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").search($context) )
-#else
+#if( !$type )
 No template for $type
 #end
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
@@ -165,6 +162,12 @@ $context.putPageValue("cdn",$cdnprefix)
 										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
 									#end	
 									#if($canconvert)
+
+									#if( $type )
+									#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+									#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").named("convertpresets").search($context) )
+									#end
+									
 										#foreach($result in $results )						
 												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
 										#end

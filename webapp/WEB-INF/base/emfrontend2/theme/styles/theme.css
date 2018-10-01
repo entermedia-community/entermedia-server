@@ -2744,7 +2744,7 @@ a.collectionbox.favorite
 	padding:10px;
 	margin:20px;
 	text-align:center;
-	margin-left:25px
+	margin-left:25px;
 }
 .assetpanel-sidebar .gallery-item-checkbox {
    top: 50%;
@@ -2752,9 +2752,23 @@ a.collectionbox.favorite
     left: 25px;
 
 }
-.assetpanel-sidebar .active-asset,
+.assetpanel-sidebar .active-asset
+{
+	background-color: #ccc;
+	border: 1px solid #ccc;
+}
+
+.assetpanel-sidebar .gallery-thumb {
+	border: solid 1px #d3d3d3;
+}
+
+.assetpanel-sidebar .gallery-thumb a
+{
+	text-decoration: none;
+}
 .assetpanel-sidebar .gallery-thumb:hover {
-	background-color: #666;
+	border: 1px solid #a3a3a3;
+	background-color: #d0e6ef;
 }
 
 
