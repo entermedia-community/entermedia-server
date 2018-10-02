@@ -7,7 +7,7 @@ Tags=Mots clés
 assets=fichiers
 drag=traîne
 Next\ Five=Cinq Suivant
-Shopping\ Cart=Chariot
+Shopping\ Cart=Panier
 Editing\ across=Édition à travers
 Page=Page
 
