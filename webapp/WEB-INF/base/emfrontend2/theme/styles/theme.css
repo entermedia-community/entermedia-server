@@ -2950,7 +2950,7 @@ a.collectionbox.favorite
     text-decoration: underline;
 }
 
-
-
-
-
+.ui-datepicker-trigger {
+	margin-left:10px;
+	padding-bottom:3px;
+}
