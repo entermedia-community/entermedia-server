@@ -402,6 +402,13 @@ color: #fff;
 #footermenu .gotoarrows span { cursor:pointer;} 
 #footermenu .gotoarrows span:hover { color:#fff; }
 
+#footermenu li.bottomtab .assetpreview {
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    display: inline-block;
+    white-space: nowrap;
+    max-width: 200px;
+}
 #footermenu .dropdown-menu a {
 	color:#000;
 	font-size:90%;

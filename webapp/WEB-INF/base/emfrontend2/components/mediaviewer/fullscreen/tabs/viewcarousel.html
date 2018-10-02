@@ -28,15 +28,15 @@
         			<div class="gallery-item-checkbox">
         		    	<input type="checkbox" class="selectionbox" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" />
         		    </div> 
-          			<a class="stackedplayer gallery-item" data-assetid="$hit.id"   href="#" >
+          			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hit.name}"   href="#" >
           			
           			$context.putPageValue("hit", $hit)
 				$context.putPageValue("count", $count)
 				$context.putPageValue("sourcepath", $hit.sourcepath)
 				
 						##set( $thumbend = $mediaarchive.getLinkToSize($sourcepath, "small") )
-						$pages.include("$apphome/components/results/thumbnails/small.html",$context) <br>
- ${hit.name}
+						$pages.include("$apphome/components/results/thumbnails/small.html",$context) 
+ 						<span class="gallery-item-title">${hit.name}</span>
          				
           			</a>
         		</div>

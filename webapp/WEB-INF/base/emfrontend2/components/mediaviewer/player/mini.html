@@ -28,8 +28,13 @@
                     $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
                 #end 
             </div>
+             #if ( $canviewvoting )
+					    <div id="assetVoteCount">
+					        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+					    </div>
+					#end
             </div>
-        	<div class="col-sm-6">
+        	<div class="col-sm-9">
             <div class="media-info">
                 <div class="media-info-primary">
                     <strong>$asset</strong> 
@@ -41,6 +46,7 @@
 	                 #if ($attachmentcount > 0)
 	                 	<a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>
 	                 #end
+	                 
 	                 #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
 	                 <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views" title="$views [[Asset Views]]"><i class="fas fa-eye"></i> $views</a>
 	                 <a style="margin-left:10px;" href="$home$apphome/views/modules/asset/editor/comment/index.html?assetid=$asset.id&sourcepath=$asset.sourcepath&hitssessionid=$hitssessionid" class="comments"><i class="fas fa-comments"></i> $!comments.size()</a>
@@ -98,11 +104,7 @@
                 #end
             </div>
             </div>
-            <div class="col-sm-3"> #if ( $canviewvoting )
-			    <div id="assetVoteCount" style="padding: 10px;">
-			        $pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
-			    </div>
-			#end</div>
+            
         </div>
                #end 
 </div>
