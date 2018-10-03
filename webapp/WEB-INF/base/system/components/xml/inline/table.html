@@ -1,0 +1,49 @@
+#set($hits = $mediaarchive.getList("clienthours"))
+$context.putPageValue("hits", $hits)
+$context.putPageValue("view", "clienthours/clienthoursresultstable")
+
+
+<div id="resultsdiv" class="tableresults" data-hitssessionid="$hits.getSessionId()" data-searchhome="$home$apphome/components/results"
+		data-category="$!category.getId()" data-searchtype="asset" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+<div id="emresultscontent" >
+
+#if ( $hits && $hits.size() > 0 )
+#if( $context.getUserProfile() )
+		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+	#else
+		#set ($details = $searcher.getDetailsForView($view))
+	#end
+	#if( !$details)
+		No details available for this view.  Please configure your view settings.	
+
+	#end
+$context.putPageValue("details",$details)
+	
+	
+<div id="emselectable"  >	
+<div class="autoresize-inner">	
+
+#set( $viewerlink = $content.get("assetviewerlink") )
+
+	<table id="main-results-table" class="emdownloadlisting emresultscontent table table-striped showmodal" >
+			$pages.include("$apphome/components/xml/inline/tableheader.html",$context)
+			#set($count = 0)
+			#foreach( $hit in $hits.getPageOfHits() )
+				$context.putPageValue("hit", $hit)
+				$context.putPageValue("count", $count)
+				$context.putPageValue("sourcepath", $hit.sourcepath)
+				$pages.include("${apphome}/components/xml/inline/row.html", $context)
+				#set($count = $count + 1)
+			#end
+	</table>
+
+</div>
+</div>	
+<p class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
+
+$pages.include("$apphome/components/xml/inline/pages.html",$context)
+#else
+<p class="info" style="margin: 20px;">[[No results found]]</p>
+#end
+</div>
+</div>

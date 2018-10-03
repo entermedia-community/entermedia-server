@@ -1,0 +1,8 @@
+<page>
+ <path-action name="DataEditModule.loadPageOfSearch"/>
+<property name="showhover">false</property>
+<property name="thumbsize">crop</property>
+<property name="showcaption">true</property>
+<property name="showtoolbar">false</property>
+  
+</page>

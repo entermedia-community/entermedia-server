@@ -16,7 +16,10 @@
 	<path-action name="ProjectModule.loadOpenCollections"/>
 	
 	<path-action name="ProjectModule.searchForAssetsOnCollection">
-		<searchtype>librarycollection</searchtype>
+
+		<!-- We think this is an error
+			<searchtype>librarycollection</searchtype>
+		-->
 	</path-action>
 	<property name="alwaysresetpage">true</property>
 	
@@ -24,6 +27,11 @@
 	 <permission name="view">
    		<action name="ProjectModule.checkViewCollection" />
     </permission>
-	 <page-action name="DataEditModule.loadPageOfSearch"/>
+	 
+	 <page-action name="DataEditModule.loadPageOfSearch">
+	 	<property name="searchtype">asset</property>
+	 </page-action>
+	 
+	 
 	 
 </page>
