@@ -9,9 +9,9 @@
 #set($targetdivinner = "resultsarea")
              #if ( $hits )
 
-        <p class="resultsnumber">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
+        <p class="resultsnumber float-left">[[Displaying records]] $!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total [[items]]</p>
     #end
-            <div id="pages">
+            <div id="pages-bottom" class="pages float-right">
        
                 <ul>
                     #if( $hits.prevPage() )

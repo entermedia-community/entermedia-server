@@ -10,7 +10,7 @@
 	#set($thispage = $hits.getPage())
 	
 	#set($targetdiv = "emresultscontent")
-	<div id="pages">
+	<div id="pages" class="pages">
 		<ul>
 			#if( $hits.prevPage() )
 				<li class="pagenav"><a class="ajax" targetdiv="$targetdiv" href="$resultsPage=$hits.prevPage()" title="Previous ( alt p enter)" accesskey="p" ><span class="fas fa-caret-left overlay-nav gocaret"></span></a></li>

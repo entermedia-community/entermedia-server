@@ -18,9 +18,7 @@
 <li id="moduleselections">		$pages.include("${content.searchhome}/selections/selected.html",$context)
 </li>
 #end
-<li>
-			$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
-			</li>
+
 
 #set( $edit = $context.getRequestParameter("editheader"))
 #if( !$edit || $edit == "false")
@@ -29,48 +27,51 @@
 
 
 
-#if(!$edit || $edit == "false" && $content.isPropertyTrue("enablemap") )
-			<li style="float: right;">
-				<div style="position: relative;">
-					<a class="table-edit-close">
-					<form id="changedisplay" action="$home$apphome/views/modules/${module.id}/changedisplay.html">
-						<input name="hitssessionid" type="hidden" value="$hits.sessionId"/>
-						<input name="resulttype" type="hidden" value="${module.id}-display"/>
+		#if(!$edit || $edit == "false" && $content.isPropertyTrue("enablemap") )
+		<li style="float: right;">
+			<div style="position: relative;">
+				<a class="table-edit-close">
+				<form id="changedisplay" action="$home$apphome/views/modules/${module.id}/changedisplay.html">
+					<input name="hitssessionid" type="hidden" value="$hits.sessionId"/>
+					<input name="resulttype" type="hidden" value="${module.id}-display"/>
+					
+					<select name="newresultview" id="" class="smalldropdown" onChange="jQuery('#changedisplay').submit();" >
+					
+						<option value="table" #if( $resulttype == "table") selected #end>[[Table]]</option>
+						<option value="map" #if( $resulttype == "map") selected #end>[[Map]]</option>
 						
-						<select name="newresultview" id="" class="smalldropdown" onChange="jQuery('#changedisplay').submit();" >
-						
-							<option value="table" #if( $resulttype == "table") selected #end>[[Table]]</option>
-							<option value="map" #if( $resulttype == "map") selected #end>[[Map]]</option>
-							
-						</select>
-					</form>
-					</a>
-				</div>
-			</li>
+					</select>
+				</form>
+				</a>
+			</div>
+		</li>
 		#end	
 
-<li style="float: right;" class="edit-columns">	
-				<div style="position: relative;">
-					#if( $canedittablecolumns )
-					<div id="table-edit-outside">
-						#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}t&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
-						#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
-						<div id="column-editor">
-							<div id="column-editor-content">
-								#set ($alldetails = $searcher.getUserPropertyDetails() )
-								<select  class="addremovecolumns" name="addcolumn" >
-									<option>[[Add Column]]</option>
-									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
-									#end
-								</select>
-								
-							</div>
+		<li style="float: right;" class="edit-columns">	
+			<div style="position: relative;">
+				#if( $canedittablecolumns )
+				<div id="table-edit-outside">
+					#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}t&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
+					#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+					<div id="column-editor">
+						<div id="column-editor-content">
+							#set ($alldetails = $searcher.getUserPropertyDetails() )
+							<select  class="addremovecolumns" name="addcolumn" >
+								<option>[[Add Column]]</option>
+								#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
+								#end
+							</select>
+							
 						</div>
-						#end
 					</div>
 					#end
 				</div>
-			</li>
+				#end
+			</div>
+		</li>
+		<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md float-right">
+		$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
+		</li>
 
 </ul>
 

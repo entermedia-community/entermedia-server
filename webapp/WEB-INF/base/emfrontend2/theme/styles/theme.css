@@ -1495,7 +1495,21 @@ label.error {
 	padding: 10px;
 }
 
-
+.collectionmodule {	1498.	
+		padding:20px 0 0 0;	1499.	
+	}		
+.collectionmodule-header {		
+		position:relative;		
+		height: 24px;		
+	}		
+.collectionmodule-header .breadcrumbs {		
+		padding-left: 5px;		
+	}		
+.collectionmodule .emtabs {		
+		position: absolute;		
+		bottom:0;		
+		right: 0;		
+}
 
 .em2tabs {
 	display: table;
@@ -1558,6 +1572,7 @@ label.error {
     margin: 0;
     padding: 0;
     border-bottom: 1px solid #a8dae4;
+     border-top: 1px solid #a8dae4;
 }
 #sub-nav.search-views {
     margin-bottom: 0;

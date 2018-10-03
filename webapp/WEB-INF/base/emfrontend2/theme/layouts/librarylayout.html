@@ -1,9 +1,11 @@
 #if( $selectedlibrary )
-	<div style="float:left;margin-top: 12px;margin-left: 15px">
-	<img src="$themeprefix/images/icons/book_5020.svg" style="height:28px"> <b>$selectedlibrary</b> 
+	
+<div id="collectiontoplevel" data-libraryid='${selectedlibrary.getId()}' data-catalogid='$catalogid'  class="collectionmodule" >
+<div class="collectionmodule-header">
+	<div style="float:left; padding-left:10px;">
+		<img src="$themeprefix/images/icons/book_5020.svg" style="height:28px"> <b>$selectedlibrary</b> 
 	</div>
-<div id="collectiontoplevel" data-libraryid='${selectedlibrary.getId()}' data-catalogid='$catalogid'>
-		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
+		<ul class="ui-tabs-nav nav pull-right emtabs float-right" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  
 		  #set( $link = "$home$apphome/views/modules/library/edit/index.html?id=${selectedlibrary.getId()}&selectedlibrary=$selectedlibrary.getId()&viewid=librarygeneral&viewpath=library/librarygeneral&searchtype=library")
 		  <li class="ui-corner-top" ><a id="settingstab" href="$link" >[[Properties]]</a></li>
@@ -16,6 +18,7 @@
 		  <div class="tab-pane" id="loadedpanel" >
 		  	$pages.includeContent()
 		  </div>
+		</div>
 		</div>
 </div>
 
