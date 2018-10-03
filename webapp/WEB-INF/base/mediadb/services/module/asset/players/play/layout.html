@@ -3,10 +3,11 @@ $context.putPageValue("cdn",$cdnprefix)
 
 <html>
 <head>
-<script src="$!cdn$home/${mediadbappid}/components/javascript/jquery-1.12.3.min.js"></script>
+
+<script src="$!cdn$home/${mediadbappid}/components/javascript/jquery-3.3.1.min.js"></script>
 <script src="$!cdn$home/${mediadbappid}/components/javascript/liveajax/liveajax.js">  </script>
 </head>
-<body>
+<body style="margin:0px;">
 #set( $type = $mediaarchive.getMediaRenderType($asset))
 $pages.include("$apphome/services/module/asset/players/types/${type}.html", $context)
 </body>

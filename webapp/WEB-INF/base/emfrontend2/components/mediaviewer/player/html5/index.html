@@ -13,18 +13,15 @@
 #set( $root = "$!prefix$home$page.directory")
 #set( $catalogid = $asset.catalogId )
 
-	<script id="videojs" src="$apphome/components/javascript/videojs/video.min.js"></script>
-	<style  id="videojs-css"  href="$apphome/components/javascript/videojs/video-js.css"></style>
-	
+	<script id="videojs" src="$apphome/components/javascript/videojs/7.2.4/video.js"></script>
+	<link href="$apphome/components/javascript/videojs/7.2.4/video-js.css" rel="stylesheet">
 ##Add back full screen button, Autoplay and escape handling
 <div id="playarea-$hit.id" class="player">
-	<video id="video-$hit.id" class="video-js" width="480" height="320"
+	<video id="video-$hit.id" class="video-js vjs-default-skin" style="position: relative;width: 100%!important; height: 100%!important;"
 		poster='$thumb'
-		#if( $autoplay && $autoplay == "true") autoplay #end
 		#if( $loop && $loop == "true") loop #end
-		controls
-		preload="auto"
-		data-setup=''>
+		data-setup='{ "controls": true, "autoplay": #if( $autoplay)$autoplay#else false #end, "preload": "auto" }'
+		>
 		<source type="video/mp4" src="$source">
 		#set( $short = $url_util.getPathUtilities().extractPagePath($source) )
 		<source type="video/flash" src="mp4:$short">
