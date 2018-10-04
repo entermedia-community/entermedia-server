@@ -22,11 +22,10 @@
 #if( !$edit || $edit == "false")
 #set( $edit = false)
 #end
-	<th id="th-thumbnail"> [[Thumbnail]]  </th>
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
 	
-		<th  class="sortable #if($edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" sortby="$detail.id">
+		<th  class="table-sortable changesort #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" data-sort="$detail.id#if($sortby.endsWith("Up"))up#elsedown#end">
 					
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )

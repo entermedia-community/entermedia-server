@@ -1,0 +1,20 @@
+<div style="background-color: #ddd; padding: 20px;" class="editor-details">
+
+#set($viewpath = $context.getRequestParameter("view"))
+#set($id = $data.id )
+#if( !$id )
+	#set( $id = $context.getRequestParameter("id") )
+#end
+
+	   	<input name="save" type="hidden" value="true" />
+    	<input name="id" type="hidden" value="$!id" />
+    	<input name="searchtype" type="hidden" value="$searcher.searchType" />
+    	
+    	$context.putPageValue("view", $viewpath)
+
+$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+ 
+    
+  
+    <button class="btn btn-danger table-save">Save changes</button>
+  </div>
