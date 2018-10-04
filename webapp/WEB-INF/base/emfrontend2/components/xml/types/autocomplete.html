@@ -30,7 +30,7 @@
 </select>
 
  #if( $caneditlists)
-	<a class="emdialog addnewitem btn btn-xs btn-secondary" style="padding:5px;" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
+	<a class="emdialog addnewitem btn btn-xs btn-light" href="$apphome/views/settings/lists/datamanager/edit/inline.html?searchtype=$detail.getListId()" title="[[Add New]] $detail" data-hidefooter="true">+ [[New]] $detail</a>
 #end
 
 
@@ -61,7 +61,7 @@
 
 #if($link)
 #if($pages.canView($link))
- 	<a class="btn" href="$link">[[View]]</a>
+ 	<a class="btn btn-xs btn-light" href="$link">[[View]]</a>
 
 #end
 #end
