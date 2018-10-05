@@ -124,6 +124,9 @@ h3 {
 .modal {
 	z-index: 25000;
 }
+.modal-title {
+	display: inline-block;
+} 
 
 
 #emcontent { position: relative;}
