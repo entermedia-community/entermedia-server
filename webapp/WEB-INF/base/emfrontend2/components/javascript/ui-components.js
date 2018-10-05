@@ -1,3 +1,4 @@
+//EMfrontend2 
 formatHitCountResult = function(inRow)
 {
 	return inRow[1];
@@ -471,7 +472,16 @@ uiload = function() {
         		 	{
         		 		$(".modal-footer",modaldialog).hide();
         		 	}
-        		 	$('form', modaldialog).find('*').filter(':input:visible:first').focus();
+        		 	var focuselement = dialog.data("focuson");
+        		 	console.log('here');
+        		 	if (focuselement) {
+        		 		console.log(focuselement);
+        		 		var elmnt = document.getElementById(focuselement);
+        		 		elmnt.scrollIntoView();
+        		 	}
+        		 	else {
+        		 		$('form', modaldialog).find('*').filter(':input:visible:first').focus();
+        		 	}
     			});
     			
 				event.preventDefault();
