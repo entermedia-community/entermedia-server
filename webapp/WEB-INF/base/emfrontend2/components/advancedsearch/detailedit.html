@@ -4,7 +4,7 @@
 	  	<label class="emsearchfield"> 
 			#if ($edit == "true")
 				<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
-				<i class="fas fa-plus"></i>
+				<i class="fas fa-times"></i>
 				</a>
 			#end
 			$!detail.getText($context) #if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end

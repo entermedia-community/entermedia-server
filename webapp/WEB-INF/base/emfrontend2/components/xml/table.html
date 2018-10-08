@@ -51,7 +51,7 @@
 #set($selectedid = $context.getRequestParameter("selectedid"))
 
 #if( $existingrecords && $existingrecords.size() > 0 )
-<table id="main-results-table" class="emdata table table-striped"  data-hitssessionid="$!existingrecords.sessionId">
+<table id="main-results-table" class="emdata table table-striped table-hover"  data-hitssessionid="$!existingrecords.sessionId">
 	<thead>
 	<tr id="tableheader">
 	#foreach( $detail in $details )
@@ -66,7 +66,7 @@
 	#foreach ( $hit in $existingrecords )
 		<tr #if($candelete != "false") rowid="$hit.id" #end #if($selectedid == $hit.id) class="emhighlight" #end>
 		#foreach( $detail in $details )
-			<td style="padding:4px;">
+			<td>
 			
 				#set( $val = "$!hit.get($detail.id)" )
 				#set( $values = false )

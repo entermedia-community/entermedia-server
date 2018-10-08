@@ -1,7 +1,9 @@
 <div class="publishtabcontainer">
 	
-	
-<h2>[[Collection Snapshot Logs]] </h2>
+	<div class="ui-widget uipanel" style="padding: 5px 5px 5px 5px;width: 60%">
+		<div class="ui-widget-header">[[Collection Snapshots]] </div>
+		<div class="ui-widget-content">	
+<h4>[[Collection Snapshot Logs]] </h4>
 
 
 	
@@ -10,10 +12,10 @@
 
 		##set( $count = $librarycol.getValue("revisions") )
 		
-		<div style="width: 100%; padding-top:10px"><!--class="librarylabels"  -->
+		<div><!--class="librarylabels"  -->
 			#if( $snaphits.size() > 0)
-			<table width="100%" class="table table-striped" >
-			<tr>
+			<table width="100%" class="emdata table table-striped table-hover" >
+			<tr class="tableheader">
 				<th>[[Revision]]</th>
 				<th>[[User]]</th>
 				<th>[[Date]]</th>
@@ -42,4 +44,6 @@
 				
 			<a class="btn btn-sm btn-primary" href="$home$apphome/views/modules/librarycollection/createsnapshot.html?collectionid=$librarycol.getId()">[[Create Snapshot]]</a> 
 
+</div>
+</div>
 </div>

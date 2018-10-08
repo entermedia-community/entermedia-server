@@ -43,11 +43,16 @@
 		#end
 	#end
 	#if( $canaddnewcollection )
-		<a class="dropdown-item emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a>
+		<a class="dropdown-item emdialog" 
+		   data-hidefooter="true" 
+		   title="[[Add to Collection]]"  
+		   href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a>
 	#end
 	
 	#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-		<a class="dropdown-item emdialog" data-hidefooter="true" title="[[Add to Collection]]"  href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
+		<a class="dropdown-item " 
+		   title="[[Add to Favorites]]"  
+		   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 	#end
 	
 

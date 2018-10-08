@@ -25,28 +25,6 @@
 #set( $edit = false)
 #end
 
-
-
-		#if(!$edit || $edit == "false" && $content.isPropertyTrue("enablemap") )
-		<li style="float: right;">
-			<div style="position: relative;">
-				<a class="table-edit-close">
-				<form id="changedisplay" action="$home$apphome/views/modules/${module.id}/changedisplay.html">
-					<input name="hitssessionid" type="hidden" value="$hits.sessionId"/>
-					<input name="resulttype" type="hidden" value="${module.id}-display"/>
-					
-					<select name="newresultview" id="" class="smalldropdown" onChange="jQuery('#changedisplay').submit();" >
-					
-						<option value="table" #if( $resulttype == "table") selected #end>[[Table]]</option>
-						<option value="map" #if( $resulttype == "map") selected #end>[[Map]]</option>
-						
-					</select>
-				</form>
-				</a>
-			</div>
-		</li>
-		#end	
-
 		<li style="float: right;" class="edit-columns">	
 			<div style="position: relative;">
 				#if( $canedittablecolumns )
@@ -69,6 +47,28 @@
 				#end
 			</div>
 		</li>
+
+		#if(!$edit || $edit == "false" && $content.isPropertyTrue("enablemap") )
+		<li style="float: right;">
+			<div style="position: relative;">
+				<a class="table-edit-close">
+				<form id="changedisplay" action="$home$apphome/views/modules/${module.id}/changedisplay.html">
+					<input name="hitssessionid" type="hidden" value="$hits.sessionId"/>
+					<input name="resulttype" type="hidden" value="${module.id}-display"/>
+					
+					<select name="newresultview" id="" class="smalldropdown" onChange="jQuery('#changedisplay').submit();" >
+					
+						<option value="table" #if( $resulttype == "table") selected #end>[[Table]]</option>
+						<option value="map" #if( $resulttype == "map") selected #end>[[Map]]</option>
+						
+					</select>
+				</form>
+				</a>
+			</div>
+		</li>
+		#end	
+
+		
 		<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md float-right">
 		$pages.include("$apphome/views/modules/default/pages.html", $context) ## views/modules/default/navigate.html",$context)
 		</li>

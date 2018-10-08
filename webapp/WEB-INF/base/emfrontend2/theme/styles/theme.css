@@ -520,7 +520,8 @@ div.languagesaddform div.languageinput input
 
 /*Results Table*/
 #main-results-table th,
-.emresultstable th { 
+.emresultstable th,
+.emdata th { 
 	padding:3px 3px; 
 	border-top:0 none;
 	border-right:1px solid #fff;
@@ -576,7 +577,7 @@ div.languagesaddform div.languageinput input
     background-color: transparent;
     border: 0px;
 }
-.emresultstable .tableheader,
+.emdata .tableheader,
 #emcontainer #emselectable #tableheader {
     background: rgb(187,232,132);
     background: -moz-linear-gradient(top, rgba(187,232,132,1) 0%, rgba(126,170,75,1) 100%);
@@ -587,6 +588,7 @@ div.languagesaddform div.languageinput input
     background: linear-gradient(to bottom, rgba(187,232,132,1) 0%,rgba(126,170,75,1) 100%);
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bbe884', endColorstr='#7eaa4b',GradientType=0 );
 }
+.emdata .tableheader th,
 .settings-table .tableheader th,
 .settings-table #tableheader th,
 #emcontainer #emselectable #tableheader th {
@@ -689,8 +691,13 @@ td.checkbox input, th.firstheader input {
 	padding:5px 10px 0 0;
 	width: 280px;
 }
+
 .emsubnav .dropdown:hover>.dropdown-menu {
   display: block;
+}
+
+.emsubnav .dropdown>.dropdown-toggle:active {
+    pointer-events: none;
 }
 .emsubnav .dropdown-menu {
 	border-top:0 none;
@@ -924,7 +931,7 @@ select + .select2-container {
 	}
 
 /*Collection Page*/
-.emcollection { height: 33px;}
+.emcollection { height: 36px;}
 .collectionheader { font-size:90; padding:5px;}
 .emcollection .breadcrumbs { float:left; max-width: 50%;}
 
@@ -1229,6 +1236,17 @@ label.error {
 #advsearchpanel .submit {
 	padding:10px 0;
 }
+#advsearchpanel .form-control {
+	max-width: 215px;
+}
+#advsearchpanel .datepicker {
+	margin-top:5px;
+	width:190px;
+}
+#advsearchpanel  .ui-datepicker-trigger {
+	margin-left:5px;
+}
+
 #de-table {
     display: table;
     width: 100%;
@@ -1512,10 +1530,10 @@ label.error {
 	}		
 .collectionmodule-header {		
 		position:relative;		
-		height: 24px;		
+		height: 32px;		
 	}		
 .collectionmodule-header .breadcrumbs {		
-		padding-left: 5px;		
+		padding:5px 5px 0px;		
 	}		
 .collectionmodule .emtabs {		
 		position: absolute;		
@@ -1609,14 +1627,22 @@ label.error {
     font-weight: normal;
 }
 
-#eml-tab-subnav ul li a:hover, #sub-nav li a:hover, #sub-nav li:hover a, #sub-nav li.edit-columns:hover #column-editor {
-    background: #81cee0;
+#eml-tab-subnav ul li a:hover, 
+#sub-nav li a:hover, 
+#sub-nav li:hover a, 
+#sub-nav li.edit-columns:hover #column-editor {
+    background-color: #81cee0;
     color: #fff;
 }
-#eml-tab-subnav ul li.current a, #sub-nav li.current a:hover {
+#sub-nav li:hover .dropdown-menu a:hover {
+	background-color: #319ABA;
+    color: #fff;
+}
+#eml-tab-subnav ul li.current a, 
+#sub-nav li.current a:hover {
     color: #fff;
     font-weight: bold;
-    background: #39b4d0;
+    background-color: #39b4d0;
 }
 table.greytxt {
     width: 100%;
@@ -2991,3 +3017,9 @@ a.collectionbox.favorite
 .resultstablenav {padding-bottom:10px;}
 .resultstablenav .resultmenuitem { line-height: 28px; height: 28px;}
 .resultstablenav .edit-columns { padding-top:4px}
+
+
+
+.modal-content .tableholder {
+	overflow-y:auto; 
+}

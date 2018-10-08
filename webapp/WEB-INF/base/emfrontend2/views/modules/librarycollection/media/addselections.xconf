@@ -1,4 +1,4 @@
 <page>
 <path-action name="ProjectModule.addAssetsToCollection"/>
-
+<path-action name="ProjectModule.redirectToCollection"/>
 </page>

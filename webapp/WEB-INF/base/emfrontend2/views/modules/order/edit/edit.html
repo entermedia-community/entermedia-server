@@ -54,8 +54,8 @@
     </h2>
     <table class="emdata table table-striped table-hover">
         <tr class="tableheader">
-            <th>Asset</th>
-            <th>Status</th>
+            <th>[[Asset]]</th>
+            <th>[[Status]]</th>
         </tr>
     
     ##TODO: Use another form or ajax to deal with items
@@ -71,7 +71,7 @@
 				$context.setRequestParameter("sourcepath", $asset.sourcepath)
 				$pages.include("$apphome/components/orders/row.html", $context)
             #else
-                <tr><td>Asset missing</td></tr>
+                <tr><td>[[Asset missing]]</td></tr>
             #end
 		
         #end
@@ -87,7 +87,7 @@
 <div style="display: none;">
   <form id="emailform" class="ajaxform" targetdiv="itemsent" name="emailform" action="$home$apphome/views/modules/order/edit/sendnotification.html">
     <input type="hidden" name="to" value="$owner.email"/>
-    <input type="submit" name="Send Notificaiton Email" value="Send Notification"/>
+    <input type="submit" name="Send Notificaiton Email" value="[[Send Notification]]"/>
     <input type="hidden" name="id" value="$order.id"/>
     
     

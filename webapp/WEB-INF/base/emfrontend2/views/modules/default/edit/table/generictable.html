@@ -56,7 +56,7 @@
 	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
 	<div class="addnew-generic">
-	<a class="btn ajax" style="margin-left: 20px;" href="$home$editpath?candelete=false&$argsnoid&passalong=$passalong&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">[[Add New]]</a>
+	<a class="btn btn-sm btn-primary ajax"  href="$home$editpath?candelete=false&$argsnoid&passalong=$passalong&edit=true&oemaxlevel=1" targetdiv="${viewid}editor">[[Add New]]</a>
 	</div>
 	#end
 	
@@ -85,10 +85,10 @@
 
 		  $pages.include("/$applicationid/components/xml/detaileditor.html",$context)
 		</div>
-		<div style="margin: 20px 20px 0 20px;">
-			<a class="btn ajax red right" data-confirm="[[Are you sure?]]" style="color: #fff;" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
-			<input class="btn "  type="submit" value="[[Save Values]]"/>
-			<a class="btn ajax" style="margin-left: 5px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+		<div style="margin: 20px 0 0">
+			<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
+			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="margin-left:10px;" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
+			<a class="btn btn-sm btn-secondary ajax" style="margin-left: 10px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
 		</div>
 
 		<input name="field" type="hidden" value="$fieldexternalid" />

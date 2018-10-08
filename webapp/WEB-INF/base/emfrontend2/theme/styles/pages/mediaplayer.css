@@ -128,9 +128,14 @@
   background: #ddd;
   color: #666;
   padding: 5px 5px 5px 5px;
-  pasition: absolute;
+  line-height: 1.8;
 }
+.emtabs li a:hover
+{
+	text-decoration: none;
+	color:#ddd;
 
+	}
 .emtabs li.emtab a
 {
   padding: 5px 25px 5px 5px;
