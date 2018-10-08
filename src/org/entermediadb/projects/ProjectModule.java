@@ -341,7 +341,7 @@ public class ProjectModule extends BaseMediaModule {
 		MediaArchive mediaArchive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
 		Searcher librarysearcher = mediaArchive.getSearcher("librarycollection");
-		Data saved = librarysearcher.createNewData();
+		LibraryCollection saved = (LibraryCollection)librarysearcher.createNewData();
 		librarysearcher.updateData(inReq, inReq.getRequestParameters("field"), saved);
 		saved.setValue("creationdate", new Date());
 		saved.setValue("owner", inReq.getUserName());
@@ -358,6 +358,8 @@ public class ProjectModule extends BaseMediaModule {
 		inReq.setRequestParameter("librarycollection", saved.getId());
 		inReq.setRequestParameter("collectionid", saved.getId());
 
+		manager.configureCollection(saved,inReq.getUserName());
+		inReq.putPageValue("librarycol", saved);
 	}
 /*
 	public Data createUserLibrary(WebPageRequest inReq) {

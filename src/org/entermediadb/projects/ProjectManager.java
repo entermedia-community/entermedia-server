@@ -1308,12 +1308,11 @@ public class ProjectManager implements CatalogEnabled {
 			mediaArchive.getSearcher("librarycollection").saveData(collection);
 		}
 
-
 		
-		String collectionroot = mediaArchive.getCatalogSettingValue("collection_root");
-		if (collectionroot == null) {
-			collectionroot = "Collections";
-		}
+//		String collectionroot = mediaArchive.getCatalogSettingValue("collection_root");
+//		if (collectionroot == null) {
+//			collectionroot = "Collections";
+//		}
 		if (!collection.hasRootCategory()) {
 			getRootCategory(mediaArchive, collection);
 			// String path = collectionroot + "/" + collection.getLibrary() + "/" +
