@@ -52,8 +52,8 @@
         		<td valign="middle" style="text-align: center; width: 35px;">
         		<input class="permission-radio" type="checkbox" name="permissions.value" value="$item.id" id="checkbox-$item.id" #if($val == "true" || $val == "full") checked #end/>
         		</td>
-        		<td valign="middle"><label for="checkbox-$item.id" style="padding:5px 0 1px 0;">$item</label></td>
-        		<td class="caption">$!item.caption</td>
+        		<td valign="middle"><label for="checkbox-$item.id" style="padding:5px 0 1px 0;">$context.getText($item.getName())</label></td>
+        		<td class="caption">$!item.caption.getName()</td>
         			
         		</tr>
     	#end
