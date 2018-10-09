@@ -36,7 +36,7 @@
                 #set( $section = $searcherManager.getData($catalogid,"detaileditormenu",$assettab) )
 
                 <div class="title-bar" id="details-title">
-                    <span>$section</span>
+                    <span>$context.getText($section.getName())</span>
                 </div>
                 #if( $canviewassets )                
                 <div class="title-bar" style="border-right: none;">
@@ -83,7 +83,7 @@
                                     #set( $screens = $searcherManager.query($catalogid,$listid).all().sort("name").search() )
                                     #foreach($screen in $screens)
                                     <li #if( $content.subtab == "$screen.id" ) class="current" #end>
-                                        <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$screen </a>
+                                        <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$context.getText($screen.getName()) </a>
                                     </li>
                                     #end
                                 </ul>

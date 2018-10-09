@@ -5,12 +5,14 @@
       <language id="de"><![CDATA[Dokumente]]></language>  
       <language id="en"><![CDATA[Documents]]></language>  
       <language id="es"><![CDATA[Documentos]]></language> 
+      <language id="fr"><![CDATA[Documents]]></language>  
     </name> 
   </property>  
   <property id="photo" extensions="jpg png" ordering="0">
     <name>
       <language id="de"><![CDATA[Fotos]]></language>
       <language id="en"><![CDATA[Photos]]></language>
+      <language id="fr"><![CDATA[Photos]]></language>
       <language id="es"><![CDATA[Fotos]]></language>
     </name>
   </property>  
@@ -21,6 +23,7 @@
       <language id="de"><![CDATA[Unbekannt]]></language>  
       <language id="en"><![CDATA[None]]></language>  
       <language id="es"><![CDATA[Ninguno]]></language> 
+      <language id="fr"><![CDATA[Aucun]]></language> 
     </name> 
   </property> 
 </properties>	

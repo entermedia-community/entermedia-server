@@ -1,15 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties>
-  <property id="converthistory" path="/views/modules/asset/editor/converthistory/index.html" >Conversions</property>
+  <property id="converthistory" path="/views/modules/asset/editor/converthistory/index.html" >
+  	<name>
+      <language id="de"><![CDATA[Conversions]]></language>  
+      <language id="en"><![CDATA[Conversions]]></language>  
+      <language id="es"><![CDATA[Conversiones]]></language> 
+      <language id="fr"><![CDATA[Conversions]]></language> 
+	</name>
+  </property>
 
-  <property id="viewassetpreviewhistory" path="/views/modules/asset/editor/historypreviews/index.html" >Views</property>
+  <property id="viewassetpreviewhistory" path="/views/modules/asset/editor/historypreviews/index.html" >
+  	<name>
+      <language id="de"><![CDATA[Views]]></language>  
+      <language id="en"><![CDATA[Views]]></language>  
+      <language id="es"><![CDATA[Vistas]]></language> 
+      <language id="fr"><![CDATA[Vues]]></language> 
+	</name>
+  </property>
   <!-- property id="viewassetpreviewhistory" path="/views/modules/asset/editor/historypreviews/index.html" >Orders</property -->
-  <property id="exporthistory" path="/views/modules/asset/editor/historyexports/index.html" >Transfers</property>
-  <property id="viewassetedithistory" path="/views/modules/asset/editor/historyedits/index.html" >Edits</property>
-
-  <property id="viewassetnotificationhistory" path="/views/modules/asset/editor/historynotifications/index.html" >Renewal Notifications</property>
-
-
-
+  <property id="exporthistory" path="/views/modules/asset/editor/historyexports/index.html" >
+  	<name>
+      <language id="de"><![CDATA[Transfers]]></language>  
+      <language id="en"><![CDATA[Transfers]]></language>  
+      <language id="es"><![CDATA[Transferencias]]></language> 
+      <language id="fr"><![CDATA[Transferts]]></language> 
+	</name>
+  </property>
+  <property id="viewassetedithistory" path="/views/modules/asset/editor/historyedits/index.html" >
+  	<name>
+      <language id="de"><![CDATA[Edits]]></language>  
+      <language id="en"><![CDATA[Edits]]></language>  
+      <language id="es"><![CDATA[Ediciones]]></language> 
+      <language id="fr"><![CDATA[Editions]]></language> 
+	</name>
+  </property>
+  <property id="viewassetnotificationhistory" path="/views/modules/asset/editor/historynotifications/index.html" >
+  	<name>
+      <language id="de"><![CDATA[Renewal Notifications]]></language>  
+      <language id="en"><![CDATA[Renewal Notifications]]></language>  
+      <language id="es"><![CDATA[Renewal Notifications]]></language> 
+      <language id="fr"><![CDATA[Renewal Notifications]]></language> 
+	</name>
+ </property>
 </properties>
