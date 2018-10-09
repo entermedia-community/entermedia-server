@@ -91,25 +91,20 @@
 
 
 <script type="text/javascript">
-
-jQuery(document).ready(function() 
-{ 
-
-	jQuery('.addfilter').bind('click',function(e)
-	{	
-		e.preventDefault();
-		//TODO: Why not update the results with new data like VD does?
-			var link = $(this);
-			var picked = link.data("filtertype");
-			jQuery('#filtertype').val(picked);
-			var value = link.data("filtervalue");
-			jQuery('#filtervalue').val(value);
-			var label = link.data("filterlabel");
-			jQuery('#filterlabel').val(label);
-
-			jQuery('#dontshow').submit();
-			
-	});
+lQuery('.addfilter').livequery('click',function(e)
+{		
+	e.preventDefault();
+	//TODO: Why not update the results with new data like VD does?
+		var link = $(this);
+		var picked = link.data("filtertype");
+		$('#filtertype').val(picked);
+		var value = link.data("filtervalue");
+		$('#filtervalue').val(value);
+		var label = link.data("filterlabel");
+		$('#filterlabel').val(label);
+		console.log(value);
+		$('#dontshow').submit();
+		
 });
 </script>
 
