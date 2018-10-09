@@ -707,4 +707,47 @@ public class GoogleManager implements CatalogEnabled {
 
 	}
 
+//	public void publishToYoutube(Asset inAsset, ContentItem inContentItem)
+//	{
+//		CloseableHttpClient httpclient;
+//		httpclient = HttpClients.createDefault();
+//		HttpRequestBuilder builder = new HttpRequestBuilder();
+//
+//		String url = "https://www.googleapis.com/upload/youtube/v3/videos";
+//		//TODO: Use HttpRequestBuilder.addPart()
+//		HttpPost method = new HttpPost(url);
+//		method.addHeader("authorization", "Bearer " + getAccessToken(getMediaArchive().getData("oauthprovider", "google")));
+//
+//		File file = new File(inContentItem.getAbsolutePath());
+//
+//		builder.addPart("file", file);
+//		//long size = inMetadata.getBytes().length + file.getTotalSpace();
+//
+//		//method.setHeader("Content-Length",String.valueOf(size));
+//		
+//		
+//		method.setEntity(builder.build());
+//		String contenttype = method.getEntity().getContentType().getValue();
+//		String boundary = contenttype.substring(contenttype.indexOf("boundary=")+9, contenttype.length());
+//		method.setHeader("Content-Type","multipart/related; boundary=" + boundary);
+//
+//		HttpResponse resp = httpclient.execute(method);
+//
+//		if (resp.getStatusLine().getStatusCode() != 200) {
+//			log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
+//					+ resp.getStatusLine().getReasonPhrase());
+//			String returned = EntityUtils.toString(resp.getEntity());
+//			log.error(returned);
+//			return null;
+//		}
+//
+//		HttpEntity entity = resp.getEntity();
+//		JsonParser parser = new JsonParser();
+//		String content = IOUtils.toString(entity.getContent());
+//
+//		JsonElement elem = parser.parse(content);
+//		return elem.getAsJsonObject();
+//				
+//	}
+
 }

@@ -325,6 +325,9 @@
 		</property>
 	</bean>
 
-	
+		<bean id="chatServer" class="org.entermediadb.websocket.chat.ChatServer" >
+		  	<property name="moduleManager"><ref bean="moduleManager" /></property>
+		
+    </bean>
 	
 </beans>
