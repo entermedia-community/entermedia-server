@@ -117,25 +117,27 @@
 .emtabs li
 {
 	float: left;
-	margin-left: 10px;
+	margin-left: 6px;
 	border: 1px solid #a3c8d4;
   	position: relative;
   	margin-top: 0px;
   	overflow: hidden;
 }
 .emtabs li a
+
 {
-  background: #ddd;
+  background-color: #efefef;
   color: #666;
-  padding: 5px 5px 5px 5px;
+  padding: 5px 8px 5px 8px;
   line-height: 1.8;
 }
 .emtabs li a:hover
 {
 	text-decoration: none;
-	color:#ddd;
+	color:#000;
+	background-color: #c1c1c1;
 
-	}
+}
 .emtabs li.emtab a
 {
   padding: 5px 25px 5px 5px;
@@ -143,16 +145,16 @@
 }
 .emtabs li.emtabselected 
 {
-	margin-top: 1px;
-	background: #fff;
 	border-bottom: 0 none !important;
 }
-.emtabs li.emtabselected A 
+.emtabs li.emtabselected a
 {
-	background: #fff;
-	font-weight: bold;
+	text-decoration: none;
+	color:#000;
+	background-color: #fff;
+
 }
-.emtabs li.ui-state-default A
+.emtabs li.ui-state-default a
 {
 	padding-right: 5px
 }
@@ -362,14 +364,6 @@ color: #fff;
 
 
 
-.nav .open>a, .nav .open>a:focus, .nav .open>a:hover
-{
-	    background-color: #121212
-}
-.nav>li>a:focus, .nav>li>a:hover
-{
-    background-color: #121212
-}
 
 #download-select 
 {
@@ -396,7 +390,7 @@ color: #fff;
 }
 
 #footermenu li.footermenu {
-	font-size:.9em;
+	font-size:.65rem;
 	font-weight: normal;
 	padding: 0 2% 0 2%;
 	float:left;
@@ -475,7 +469,7 @@ body.widthless1000 #pdf-thumbnail-sidebar
 	text-align: center;
 	border-left: 1px solid black;
 	border-right: 1px solid black;
-	height: 37px;
+	height: 32px;
 }
 
 

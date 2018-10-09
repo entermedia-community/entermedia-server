@@ -1124,11 +1124,21 @@ label.error {
 .assetpanel-editmetadata { 
 	display: table-row;
 }
-
-.em2tabs-tab-content {
-	max-height: 100%;
+.assetpanel-editmetadata .emtabs li.emtabselected {
+	background-color: #efefef;
+}
+.assetpanel-editmetadata .emtabs li.emtabselected a
+{
+	color:#000;
+	background-color: rgba(0,0,0,.05);
 }
 
+.em2tabs-tab-content {
+	height: calc(100% - 40px);
+}
+.em2tabs-tabcontainer {
+	height: 40px;main
+}
 
 /*Module: Assets*/
 .asset-menu {
@@ -1565,7 +1575,7 @@ label.error {
     text-decoration: none;
 }
 .em2tabs-tab-content {
-	background: #eee;
+	background: #efefef;
 	overflow-y: auto;
 	
 }
@@ -2833,7 +2843,7 @@ a.collectionbox.favorite
 
 
 
-.btns { padding:10px 20px;}
+.btns { padding:10px 10px;}
 
 /* Collection drop */
 .librarylabels ul li.dragoverselected, .dragoverselected
