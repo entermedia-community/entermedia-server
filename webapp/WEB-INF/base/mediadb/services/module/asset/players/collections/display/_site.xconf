@@ -37,8 +37,10 @@
     </permission>
 	 <page-action name="DataEditModule.loadPageOfSearch"/>
 
-  	<script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
-    <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css" />
+  	
+  	<script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
+  	
+    <style id="bootstrap" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
    	<script id="jquery-liveajax" src="/${applicationid}/components/javascript/liveajax/liveajax.js"/>
   	<script id="entermedia" src="/${applicationid}/components/javascript/entermedia.js"/>
   	<script id="emtree" src="/${applicationid}/components/javascript/emtree/emtree.js"/>
@@ -46,7 +48,14 @@
 	<style id="results" href="${themeprefix}/styles/pages/results.css"/>
   	<script id="results" src="/${applicationid}/components/javascript/results.js"/>   
   	<script id="jquery-form" src="/${applicationid}/components/javascript/jquery.form.js"/>
-	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/js/bootstrap.js" />
+	<script id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
+  	<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
+  	
+  	<style id="fonts-css"  href="/${applicationid}/components/javascript/bootstrap/fonts/css/fontawesome-all.min.css"/>
+  	
+  	<script id="select2" src="/${applicationid}/components/javascript/select2/4.0.6/js/select2.full.js"/>
+  	<style  id="select2-css" href="/${applicationid}/components/javascript/select2/4.0.6/css/select2.css"/>
+    
     <style id="mediaplayer" href="${themeprefix}/styles/pages/mediaplayer.css"/>
     <style id="app-css" href="${themeprefix}/styles/theme.css"/>
     

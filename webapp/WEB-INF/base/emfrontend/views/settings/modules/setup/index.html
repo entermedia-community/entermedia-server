@@ -4,17 +4,17 @@
    
         #foreach ( $module in $modules )
     <li>
-        <a href="$home$apphome/views/settings/modules/${module.id}/info/module-setup.html?id=$module.id&field=last_selected_module&last_selected_module.value=${module.id}" class="folder module">      <div class="name">      <div style="margin-top: 8px" class="alias" title="Alias">$module</div>            </div>        </a>
+        <a href="$home$apphome/views/settings/modules/${module.id}/info/module-setup.html?id=$module.id&field=last_selected_module&last_selected_module.value=${module.id}" class="folder module">      <div class="name">      <div style="margin-top: 8px" class="alias" title="Alias">$context.getText($module.getName())</div>            </div>        </a>
        
         <div class="scan">
-             <a class="btn" href="$home$apphome/views/modules/${module.id}/index.html">Data</a>
+             <a class="btn" href="$home$apphome/views/modules/${module.id}/index.html">[[Data]]</a>
         </div>
     </li>
     #end
     
     <li class="add">
             <div class="folder module"></div>
-            <a class="btn right" href="$home$apphome/views/settings/modules/setup/add-new-module.html">Add Module</a>
+            <a class="btn right" href="$home$apphome/views/settings/modules/setup/add-new-module.html">[[Add Module]]</a>
     </li>
     
     <!-- 
