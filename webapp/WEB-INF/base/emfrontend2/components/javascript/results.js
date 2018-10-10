@@ -446,6 +446,27 @@ $(document).ready(function(url,params)
 		return false;
 	});
 	
+	lQuery('.stackedplayertable tr td' ).livequery(
+	function()
+	{
+		$(this).hover(
+			function () 
+			{
+			  	var row = $($(this).closest("tr"));
+				var id = $(row).data("rowid");
+			    if( id != null )
+			    {
+				    row.addClass("emborderhover");
+				}
+		 	}, 
+			function () {
+			  	var row = $($(this).closest("tr"));
+			    row.removeClass("emborderhover");
+			}
+		);
+	});
+		
+	
 	lQuery('table.stackedplayertable td').livequery('click',function(e)
 	{
 		var clicked = $(this);
@@ -464,7 +485,7 @@ $(document).ready(function(url,params)
 		var assetid = row.data("rowid");
 		
 		showAsset(assetid);
-		return false;
+		 
 	});
 	
 	

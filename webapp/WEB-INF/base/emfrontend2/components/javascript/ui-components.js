@@ -545,7 +545,7 @@ uiload = function() {
 	});
 		
 	
-	lQuery('#emselectable table td' ).livequery("click", function(event)
+	lQuery('#emselectableclick table td' ).livequery("click", function(event)
 	{
 		var clicked = $(this);
 		if(clicked.attr("noclick") =="true") {
@@ -648,27 +648,6 @@ uiload = function() {
 	}
 
 
-	lQuery('.stackedplayertable tr td' ).livequery(
-	function()
-	{
-		$(this).hover(
-			function () 
-			{
-			  	var row = $($(this).closest("tr"));
-				var id = $(row).data("rowid");
-			    if( id != null )
-			    {
-				    row.addClass("emborderhover");
-				}
-		 	}, 
-			function () {
-			  	var row = $($(this).closest("tr"));
-			    row.removeClass("emborderhover");
-			}
-		);
-	});
-		
-	
 
 	lQuery("img.framerotator").livequery(
 		function()
