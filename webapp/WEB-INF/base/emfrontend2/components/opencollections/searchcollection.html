@@ -51,16 +51,16 @@
 </div>
 
 <script>
-lQuery("#collectionresults").on("click", ".rowclick", function(e) {
+lQuery("#collectionresults .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
 	#if(  $hits && $hits.getSelectionSize() > 0 )	
-		 var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId' ;
+		 #var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId' ;
 	#else	
 	    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
 	#end   
-		//$("#left-col-opencollections").load(nextpage);
-		window.location.href = nextpage;
+	//$("#left-col-opencollections").load(nextpage);
+	window.location.href = nextpage;
 
 
 });

@@ -473,7 +473,7 @@ uiload = function() {
         		 		$(".modal-footer",modaldialog).hide();
         		 	}
         		 	var focuselement = dialog.data("focuson");
-        		 	console.log('here');
+        		 	
         		 	if (focuselement) {
         		 		console.log(focuselement);
         		 		var elmnt = document.getElementById(focuselement);
@@ -545,7 +545,7 @@ uiload = function() {
 	});
 		
 	
-	lQuery('#emselectableclick table td' ).livequery("click", function(event)
+	lQuery('#emselectable table td' ).livequery("click", function(event)
 	{
 		var clicked = $(this);
 		if(clicked.attr("noclick") =="true") {
