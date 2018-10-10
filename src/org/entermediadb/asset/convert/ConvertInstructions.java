@@ -193,8 +193,11 @@ public class ConvertInstructions
 					path.append(getProperty("timeoffset"));
 				}
 				if(isWatermark())
-				{
-					path.append("wm");
+				{				
+					if( rendertype.equals("image") || rendertype.equals("document"))
+					{						
+						path.append("wm");
+					}
 				}
 				String frame = getProperty("frame");
 				if( frame != null)
