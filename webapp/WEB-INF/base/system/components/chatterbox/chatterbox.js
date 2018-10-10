@@ -40,8 +40,15 @@ function chatterbox() {
 function connect() {
     var username = "$context.getUserName()";
     
+    var protocol = location.protocol;
+
+    if (protocol === "https:") {
+    	connection = new WebSocket("wss://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection");	
+    } else{
+    	connection = new WebSocket("ws://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection");
+    }
     
-    connection = new WebSocket("ws://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection");
+    
     connection.onmessage = function(event) {
     	
     	var app = jQuery("#application");
