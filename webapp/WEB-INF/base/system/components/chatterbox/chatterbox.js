@@ -40,9 +40,8 @@ function chatterbox() {
 function connect() {
     var username = "$context.getUserName()";
     
-    var host = "localhost:8080";
     
-    connection = new WebSocket("ws://" +host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection");
+    connection = new WebSocket("ws://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection");
     connection.onmessage = function(event) {
     	
     	var app = jQuery("#application");
