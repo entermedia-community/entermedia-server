@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="date" index="true" filter="false" deleted="true" datatype="date" editable="false" stored="true" sortable="true" keyword="false">New
+    <name> 
+      <language id="de"><![CDATA[Datum]]></language>  
+      <language id="en"><![CDATA[Date]]></language>  
+      <language id="es"><![CDATA[Fecha]]></language>  
+      <language id="fr"><![CDATA[Date]]></language> 
+    </name> 
+  </property>  
+  <property id="channel" index="true" deleted="true" editable="true" stored="true" indextype="not_analyzed">New
+    <name> 
+      <language id="en"><![CDATA[channel]]></language> 
+    </name> 
+  </property>  
+  <property id="message" index="true" deleted="true" editable="true" stored="true">New
+    <name> 
+      <language id="en"><![CDATA[message]]></language> 
+    </name> 
+  </property>  
+  <property id="user" index="true" filter="false" deleted="true" editable="false" stored="true" viewtype="user" sortable="true" keyword="false" datatype="list">New
+    <name>
+      <language id="de"><![CDATA[Benutzername]]></language>
+      <language id="en"><![CDATA[User Name]]></language>
+      <language id="es"><![CDATA[Nombre de usuario]]></language>
+      <language id="fr"><![CDATA[Nom d&#39;utilisateur]]></language>
+    </name>
+  </property>
+</properties>
