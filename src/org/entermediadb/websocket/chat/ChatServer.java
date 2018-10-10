@@ -16,26 +16,21 @@
  */
 package org.entermediadb.websocket.chat;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.json.simple.JSONArray;
+import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
-import org.openedit.hittracker.HitTracker;
-import org.openedit.util.DateStorageUtil;
 
 public class ChatServer {
 
@@ -111,6 +106,23 @@ public class ChatServer {
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			chatConnection.sendMessage(inMap);
 		}
+		
+	}
+
+	public void saveMessage(JSONObject inMap)
+	{
+		String catalogid = (String) inMap.get("catalogid");
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+		Searcher chats = archive.getSearcher("chatterbox");
+		Data chat = chats.createNewData();
+		chat.setValue("date", new Date());
+		chat.setValue("message", inMap.get("content"));
+		chat.setValue("user", inMap.get("user"));
+		chat.setValue("channel", inMap.get("channel"));
+		
+		chats.saveData(chat);
+		inMap.put("messageid", chat.getId());
+		
 		
 	}
 

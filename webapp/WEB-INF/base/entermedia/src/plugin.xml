@@ -2145,6 +2145,7 @@
 		</property>
  	</bean>
 
-
+	<bean id="ChatModule" class="org.entermediadb.websocket.chat.ChatModule" >
+	</bean>	
 	
 </beans>

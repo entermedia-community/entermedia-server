@@ -159,10 +159,16 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 //			message = message.replaceAll("null", "\"null\"");
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
-//			if ("login".equals(command)) //Return all the annotation on this asset
-//			{
-//				receiveLogin(map);
-//			}	
+			
+			
+			if ("login".equals(command)) //Return all the annotation on this asset
+			{
+				receiveLogin(map);
+			}
+			else if("messagereceived".equals(command)){
+				getChatServer().saveMessage(map);
+				
+			}
 //			else if ("folderedited".equals(command)) //Return all the annotation on this asset
 //			{
 //				String foldername = (String)map.get("foldername");
@@ -186,10 +192,9 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 
 	
 
-//	protected void receiveLogin(JSONObject map)
-//	{
+	protected void receiveLogin(JSONObject map)
+	{
 //		String username = (String)map.get("username");
-//		
 //		//authenticated
 //		String keyorpasswordentered = (String)map.get("entermedia.key");
 //		User user = (User)getSearcherManager().getData("system", "user", username);
@@ -231,7 +236,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 //		}
 //		
 //		sendMessage(authenticated);
-//	}
+	}
 
 	public void sendMessage(JSONObject json) {
 		try {

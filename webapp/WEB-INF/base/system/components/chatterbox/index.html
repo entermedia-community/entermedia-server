@@ -1,8 +1,26 @@
+<div class="card">
+  <div class="card-body">
+<ul class="list-unstyled chatterbox-message-list" >
+  #foreach($message in $messages)
+  
+  
+  #set($type = $message.type)
+  $context.putPageValue("chat", $message)
+  #if(!$type)
+  #set($type = "default")
+  #end  
+
+ 	$pages.include("$apphome/components/chatterbox/types/${type}.html", $context)
+ 
+  
+  #end
+</ul>
+</div></div>
+
 
 
        
-                    <textarea class="form-control" readonly="true" rows="10" cols="80" id="log"></textarea>
                 
                     <input class="form-control" type="text" size="51" id="msg" placeholder="Message"/>
-                    <button type="button" onclick="send();" >Send</button>
+                    <button type="button" class="chatter-send"  >Send</button>
               
