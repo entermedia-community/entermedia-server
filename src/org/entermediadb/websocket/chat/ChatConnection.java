@@ -160,27 +160,17 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
 			
-			
+			log.info("Command was: " + command);
 			if ("login".equals(command)) //Return all the annotation on this asset
 			{
-				receiveLogin(map);
+				receiveLogin(map); 
 			}
 			else if("messagereceived".equals(command)){
+			
 				getChatServer().saveMessage(map);
 				
 			}
-//			else if ("folderedited".equals(command)) //Return all the annotation on this asset
-//			{
-//				String foldername = (String)map.get("foldername");
-//			}
-//			else if ("busychanged".equals(command)) //Return all the annotation on this asset
-//			{
-//				boolean busy = (boolean)map.get("isbusy");
-//			}
-//			else if ("folderedited".equals(command)) //Return all the annotation on this asset
-//			{
-//				String foldername = (String)map.get("foldername");
-//			}
+
 			getChatServer().broadcastMessage(map);
 
 		} catch (Exception e) {
