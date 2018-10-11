@@ -1,9 +1,13 @@
 <div class="page-header">
-  <h1>$data <small><br/>URL: <input id="url" type="text" value="$content.replaceProperty( $data.url )" size="50"/> $data.httpmethod</small></h1>
+  <h1>$data </h1>
+  URL ($data.httpmethod): 
+  <input id="url" class="form-control" style="width:90%;" type="text" value="$content.replaceProperty( $data.url )" size="50"/> 
 </div>
 $!data.caption
 <div id="jsontext" style="display: none;">
+#if ($data.samplerequest)
 $data.samplerequest
+#end
 </div>
 
 <form name="requestform" id="requestform">
@@ -27,29 +31,23 @@ $data.samplerequest
 
 <h2>[[Formatted and Raw Response]]:</h2>
 
-<div id="responsearea" cass="row">
-
-
-
-<textarea id="test" class="form-control  col-md-6" style="width:45%;" rows="20">
-
-
-</textarea>
-
-<textarea id="testraw" class="form-control col-md-6" style="width:45%;" disabled rows="20">
-
-
-</textarea>
-
+<div id="responsearea" class="row">
+	<div class="col-sm-6">
+		<textarea id="test" class="form-control" rows="20"></textarea>
+	</div>
+	<div class="col-sm-6">
+	<textarea id="testraw" class="form-control" disabled rows="20"></textarea>
+	</div>
 </div>
 
 <script type="text/javascript">
 jQuery(document).ready(function(){
-	var original = jQuery("#jsontext").html();
-	var data = jQuery.parseJSON(original);
-	var string  = JSON.stringify(data,undefined, 2);
-    jQuery("#request").val(string);
-
+	var original = jQuery("#jsontext").html().trim();
+	if (original) {
+		var data = jQuery.parseJSON(original);
+		var string  = JSON.stringify(data,undefined, 2);
+	    jQuery("#request").val(string);
+	}
 	
 });
 

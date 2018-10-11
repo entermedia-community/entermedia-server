@@ -9,9 +9,10 @@
 	
 	
 	
-<script id="jquery" src="/${applicationid}/components/javascript/jquery-1.12.3.min.js"/>
-<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/js/bootstrap.js" />
-<style id="bootstrap" href='/${applicationid}/components/javascript/bootstrap/css/bootstrap.min.css' />
+<script id="jquery" src="/${applicationid}/components/javascript/jquery-3.3.1.min.js"/>
+<style id="bootstrap-css" href="/${applicationid}/components/javascript/bootstrap/4/css/bootstrap.min.css" />
+<script id="bootstrap-popper" src="/${applicationid}/components/javascript/bootstrap/4/js/popper.min.js" />
+<script id="bootstrap" src="/${applicationid}/components/javascript/bootstrap/4/js/bootstrap.min.js" />
 <script id="docs" src="/${applicationid}/docs/theme/javascript/docs.js" />
   
 
