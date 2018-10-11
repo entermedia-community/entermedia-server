@@ -3033,3 +3033,33 @@ a.collectionbox.favorite
 .modal-content .tableholder {
 	overflow-y:auto; 
 }
+
+.cat-list {
+    padding: 0;
+    margin: 0 0 10px;
+}
+
+.cat-list .cat-row {
+    padding: 7px 0;
+    border-bottom: 1px solid #eee;
+    list-style: none;
+    
+}
+.cat-list .cat-row:hover {
+	background-color:#efefef;
+}
+.cat-list .cat-row .category {
+    padding-left: 18px;
+    padding-top: 0px;
+    background: url('../images/folder-closed.gif') left 2px no-repeat;
+    margin: 0 10px 0 0 ;
+    position:relative;
+}
+
+
+.cat-list .cat-row .asset {
+    padding-left: 18px;
+    padding-top: 10px;
+    background: url('../images/attachments-icon.png') left 7px no-repeat;
+    margin: 0 3px;
+}

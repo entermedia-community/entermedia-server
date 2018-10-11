@@ -14,9 +14,9 @@ $context.putPageValue("viewpostfix",".html")
 #set( $action = $context.getRequestParameter("actionurl") ) 
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 
-<div id="emrowpicker" class="emrowpicker" style="min-height: 450px"  >
+<div id="emrowpicker" class="emrowpicker" style="min-height: 400px"  >
 
-<table  id="main-results-table" class="emdata striped greytxt table tbl-responsive" >
+<table  id="main-results-table" class="emdata table table-striped table-hover" >
 	<tr class="tableheader">
 	#foreach( $detail in $details )
 	<th class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id">$detail.text</th>
@@ -27,9 +27,9 @@ $context.putPageValue("viewpostfix",".html")
 			<tr  #if($candelete != "false") data-id="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
 			#foreach( $detail in $details)
 				#if( ${foreach.count} == 1)
-				<td class="category categorydraggable ui-draggable ui-draggable-handle" data-nodeid="$hit.id" data-categoryname="$hit.name">
+				<td class="category categorydraggable ui-draggable ui-draggable-handle" style="padding:.20rem .75rem" data-nodeid="$hit.id" data-categoryname="$hit.name">
 				#else
-				<td style="padding:4px;">
+				<td style="padding:.20rem .75rem;">
 				#end
 					#set( $val = "$!hit.get($detail.id)" )
 					#if($detail.render)
