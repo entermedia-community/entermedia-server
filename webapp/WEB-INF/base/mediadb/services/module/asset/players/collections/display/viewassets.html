@@ -1,4 +1,4 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+<div >
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
@@ -12,7 +12,12 @@ $context.putPageValue("showtoolbar", "false")
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
   	$context.putPageValue("details",$details)
 	$context.putPageValue("thumbsize", $thumbsize )
-<div class="row masonry-grid" data-maxhei$home$apphome/services/module/asset/players/fullscreen/index.htmlght="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"  
+<div class="row masonry-grid"
+    id="resultsdiv" 
+    data-hitssessionid="$hits.getSessionId()" 
+    data-pagenum="$hits.getPage()"  
+    data-totalpages="$hits.getTotalPages()" 
+    data-maxheight="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"  
 	data-viewertemplate="$home$apphome/services/module/asset/players/fullscreen/index.html"
 	data-assettemplate="$home$apphome/services/module/asset/players/fullscreen/currentasset.html" >
 	

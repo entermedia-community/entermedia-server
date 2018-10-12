@@ -70,7 +70,7 @@ td.resultstablecell .proxythumb {
 	padding-bottom:15px;
 }
 
-td.resultstablecell .proxythumb .loadingbar {
+.proxythumb .loadingbar {
     height: 8px;
     margin-top: 22px;
     margin-left: 4px;

@@ -2,7 +2,7 @@
 #set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
 #if( !$type )
-No template for $type
+	No template for $type
 #end
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 $context.putPageValue("cdn",$cdnprefix)
@@ -14,11 +14,18 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $previous = $hits.previous($index))
 #set( $next = false )
 #set( $next = $hits.next($index))       
-
+#set( $previewonly = $context.getPageValue("previewonly"))
+#if( !$previewonly)
+	#set( $previewonly = false)
+#end
 #set( $opentab = $userprofile.get("assetopentab"))
 #if( !$opentab)
-#set( $opentab = "viewproperties")
+	#if( $canmetadatageneral )
+		#set( $opentab = "viewproperties")
+	#end
 #end
+
+$previewonly
 
 <div id="main-media-container" style="height: 100%;">
 <div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
@@ -52,19 +59,23 @@ $context.putPageValue("cdn",$cdnprefix)
 				<i class="fas fa-expand"></i> $asset
 				</div>
 			 </il>
+			 #if( !$previewonly && $canmetadatageneral )
 			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
 				<div class="expandmenu assetproperties" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]" >
 				<i class="fas fa-info-circle"></i> [[Properties]]
 				</div>
 			</li>
+			#end
+			#if( !$previewonly )
 			 <li class="footermenu bottomtab #if($opentab == "viewcollaborate")tabselected#end">
 				<div class="expandmenu assetcollaborate" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]" >
 				<i class="fas fa-comment-alt"></i> [[Collabotate]]
 				</div>
 			</li>
-			
+			#end
+			#if( !$previewonly )
 			 <li class="footermenu">
    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
    <ul class="dropdown-menu">
@@ -149,6 +160,7 @@ $context.putPageValue("cdn",$cdnprefix)
 	#end
 	</ul>
     </li>
+    #end
     
 			 #if($candownload || $canconvert)
 				<li class="footermenu" >		
@@ -176,14 +188,14 @@ $context.putPageValue("cdn",$cdnprefix)
 					   
 				  </li>
 			 #end
-		  <li>
-	#if(  $asset.getFileFormat()  == "pdf")
-		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
-            	<span class="fas fa-blackboard"> </span> [[View PDF]]
-            </a> 
-	#end
-		  </li>
 		  
+			#if(  $asset.getFileFormat()  == "pdf")
+			<li>
+			    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+	            	<span class="fas fa-blackboard"> </span> [[View PDF]]
+	            </a>
+            </li> 
+			#end
 		</ul>
 	</div>
 </div>
