@@ -1,7 +1,7 @@
-<div class="card">
+<div class="card" style="min-height: 90%;">
   <div class="card-body" >
 <ul class="list-unstyled chatterbox-message-list" >
-  #foreach($message in $messages)
+  #foreach($message in $messages.getPageOfHits())
   
   
   #set($type = $message.type)
