@@ -473,7 +473,7 @@ $(document).ready(function(url,params)
 		if(clicked.attr("noclick") =="true") {
 			return true;
 		}
-		if( $(event.target).is("input") )
+		if( $(e.target).is("input") )
 		{
 			return true;
 		}

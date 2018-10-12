@@ -128,8 +128,8 @@
 {
   background-color: #efefef;
   color: #666;
-  padding: 5px 8px 5px 8px;
-  line-height: 1.8;
+  padding: 4px 8px;
+  display: block;
 }
 .emtabs li a:hover
 {
@@ -145,7 +145,7 @@
 }
 .emtabs li.emtabselected 
 {
-	border-bottom: 0 none !important;
+	border-bottom: 0 none;;
 }
 .emtabs li.emtabselected a
 {

@@ -930,14 +930,17 @@ select + .select2-container {
 	display: block;
 	}
 
-/*Collection Page*/
-.emcollection { height: 36px;}
-.collectionheader { font-size:90; padding:5px;}
-.emcollection .breadcrumbs { float:left; max-width: 50%;}
+/*Tabs on Results Page*/
+
+.results-header { border-bottom:1px solid #a8dae4;}
+.results-header-left { font-size:0.8rem; padding:5px; width:50%;}
+.results-header .breadcrumbs { }
+.results-header-tabs { padding:5px 5px 0 0;}
+.results-header-tabs .emtabs li { margin-bottom:-1px;}
+.results-header-tabs .emtabs li.emtabselected { border-bottom:1px solid #fff;}
 
 
 .publishtabcontainer { padding: 20px; border-top:1px solid #efefef;}
-
 
 
 /*Upload*/
@@ -1612,7 +1615,7 @@ label.error {
     margin: 0;
     padding: 0;
     border-bottom: 1px solid #a8dae4;
-     border-top: 1px solid #a8dae4;
+  /*  border-top: 1px solid #a8dae4;*/
 }
 #sub-nav.search-views {
     margin-bottom: 0;
