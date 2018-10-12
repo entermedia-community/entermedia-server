@@ -23,6 +23,7 @@ import java.util.concurrent.CopyOnWriteArraySet;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -31,6 +32,7 @@ import org.openedit.ModuleManager;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
+import org.openedit.users.User;
 
 public class ChatServer {
 
@@ -120,7 +122,57 @@ public class ChatServer {
 		chat.setValue("message", inMap.get("content"));
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
+		chat.setValue("type", "message");
+		chats.saveData(chat);
+		inMap.put("messageid", chat.getId());
 		
+		
+	}
+
+	public void approveAsset(JSONObject inMap)
+	{
+		String catalogid = (String) inMap.get("catalogid");
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+		Asset asset = archive.getAsset((String) inMap.get("assetid"));
+		User user = archive.getUser((String) inMap.get("user"));
+		String collectionid = (String) inMap.get("collectionid");
+		String message = (String) inMap.get("content");
+		
+		archive.getProjectManager().approveAsset(asset, user, message, collectionid, false);
+
+		Searcher chats = archive.getSearcher("chatterbox");
+		Data chat = chats.createNewData();
+		chat.setValue("date", new Date());
+		chat.setValue("message", inMap.get("content"));
+		chat.setValue("user", inMap.get("user"));
+		chat.setValue("channel", inMap.get("channel"));
+		chat.setValue("type", "approved");
+		chats.saveData(chat);
+		inMap.put("messageid", chat.getId());
+		
+		
+	}
+	
+	
+	public void rejectAsset(JSONObject inMap)
+	{
+		String catalogid = (String) inMap.get("catalogid");
+		MediaArchive archive = (MediaArchive) getModuleManager().getBean(catalogid, "mediaArchive");
+		Asset asset = archive.getAsset((String) inMap.get("assetid"));
+		User user = archive.getUser((String) inMap.get("user"));
+		String collectionid = (String) inMap.get("collectionid");
+		String message = (String) inMap.get("content");
+		
+		archive.getProjectManager().rejectAsset(asset, user, message, collectionid, false);
+
+		Searcher chats = archive.getSearcher("chatterbox");
+		Data chat = chats.createNewData();
+		chat.setValue("date", new Date());
+		chat.setValue("message", inMap.get("content"));
+		chat.setValue("user", inMap.get("user"));
+		chat.setValue("channel", inMap.get("channel"));
+		chat.setValue("type", "rejected");
+		chat.setValue("collectionid", collectionid);
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 		

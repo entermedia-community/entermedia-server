@@ -24,15 +24,23 @@ function chatterbox() {
 		var data = chatter.data();
 	    var content = document.getElementById("msg").value;
 	    data.content = content;
-	    data.command="messagereceived";
+	    data.command= button.data("command");
 	    var json = JSON.stringify(data);
+	    content.value="";
 	    
 	    connection.send(json);
 		
 	}
 	);
 
-
+	$('.chatter-text').keyup(function(e){
+	    if(e.keyCode == 13)
+	    {
+	    	
+			var button = jQuery('div[data-command="messagereceived"]');		    	
+	    	button.trigger("click");
+	    }
+	});
 }
 
 

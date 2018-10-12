@@ -75,6 +75,7 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 //	        {
 //	        }
 //       }
+       
         ModuleManager modulemanager = (ModuleManager)session.getUserProperties().get("moduleManager");
         if( modulemanager == null)
         {

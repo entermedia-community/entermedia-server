@@ -25,6 +25,7 @@ import org.entermediadb.asset.scanner.PresetCreator;
 import org.entermediadb.asset.xmldb.CategorySearcher;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopManager;
+import org.entermediadb.websocket.chat.ChatServer;
 import org.json.simple.JSONObject;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
@@ -1207,19 +1208,41 @@ public class ProjectManager implements CatalogEnabled {
 			approved++;
 			if (tosave.size() > 400) {
 				searcher.saveAllData(tosave, null);
-				logAssetEvent(tosave, "approved", inReq.getUser(), inNote, inCollectionid);
+				logAssetEvent(tosave, "approved", inReq.getUser(), inNote, inCollectionid, true);
 				tosave.clear();
 			}
 		}
 		searcher.saveAllData(tosave, null);
 		inReq.putPageValue("approvedlist", inHits);
-		logAssetEvent(tosave, "approved", inReq.getUser(), inNote, inCollectionid);
+		logAssetEvent(tosave, "approved", inReq.getUser(), inNote, inCollectionid, true);
 		return approved;
 	}
+	
+	
+	public void approveAsset(Asset inAsset, User inUser, String inNote, String inCollectionid, boolean addChatEntry){
+		inAsset.setValue("editstatus", "6");
+		ArrayList tosave = new ArrayList();
+		tosave.add(inAsset);		
+		logAssetEvent(tosave, "approved",  inUser, inNote, inCollectionid, addChatEntry);
+		
+	}
+
+	public void rejectAsset(Asset inAsset, User inUser, String inNote, String inCollectionid, boolean addChatEntry){
+		inAsset.setValue("editstatus", "6");
+		ArrayList tosave = new ArrayList();
+		tosave.add(inAsset);		
+		logAssetEvent(tosave, "rejected",  inUser, inNote, inCollectionid, addChatEntry);
+		
+	}
+	
+	
+	
 
 	protected void logAssetEvent(Collection<Asset> inTosave, String inOperation, User inUser, String inNote,
-			String inCollectionid) {
+			String inCollectionid, boolean addChat) {
 		HashMap ownerassetmap = new HashMap();
+		ArrayList chatentries = new ArrayList();
+		Searcher chats = getMediaArchive().getSearcher("chatterbox");
 
 		for (Iterator iterator = inTosave.iterator(); iterator.hasNext();) {
 			Asset asset = (Asset) iterator.next();
@@ -1250,8 +1273,29 @@ public class ProjectManager implements CatalogEnabled {
 			// TODO: Log in one database table called collectionevents
 			// archive.getWebEventListener()
 			getMediaArchive().getEventManager().fireEvent(event);
+			
+			
+			if(addChat){
+				
+				Data chat = chats.createNewData();
+				chat.setValue("date", new Date());
+				chat.setValue("message", inNote);
+				chat.setValue("user", inUser );
+				String channel = "asset-" + asset.getId();
+				chat.setValue("channel", channel);
+				chat.setValue("type", inOperation);
+				chat.setValue("collectionid", inCollectionid);
+				
+				chatentries.add(chat);
+				
+				
+			}
+			
+			
 
 		}
+		chats.saveAllData(chatentries, inUser);
+
 
 		for (Iterator iterator = ownerassetmap.keySet().iterator(); iterator.hasNext();) {
 			String key = (String) iterator.next();
@@ -1270,6 +1314,12 @@ public class ProjectManager implements CatalogEnabled {
 			getMediaArchive().getEventManager().fireEvent(event);
 
 		}
+		
+		
+		
+		
+		
+		
 
 	}
 
@@ -1286,13 +1336,13 @@ public class ProjectManager implements CatalogEnabled {
 			approved++;
 			if (tosave.size() > 400) {
 				searcher.saveAllData(tosave, null);
-				logAssetEvent(tosave, "rejected", inReq.getUser(), inNote, inCollectionid);
+				logAssetEvent(tosave, "rejected", inReq.getUser(), inNote, inCollectionid, true);
 				tosave.clear();
 			}
 		}
 		// TODO: Save this event to a log
 		searcher.saveAllData(tosave, null);
-		logAssetEvent(tosave, "rejected", inReq.getUser(), inNote, inCollectionid);
+		logAssetEvent(tosave, "rejected", inReq.getUser(), inNote, inCollectionid, true);
 
 		return approved;
 	}

@@ -1,26 +1,22 @@
 package org.entermediadb.websocket.chat;
 
 import java.io.StringReader;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.websocket.CloseReason;
 import javax.websocket.Endpoint;
 import javax.websocket.EndpointConfig;
 import javax.websocket.MessageHandler;
-import javax.websocket.OnMessage;
 import javax.websocket.RemoteEndpoint;
 import javax.websocket.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.ModuleManager;
 import org.openedit.data.SearcherManager;
+import org.openedit.users.User;
 
 public class ChatConnection extends Endpoint implements  MessageHandler.Partial<String> {
 	private static final Log log = LogFactory.getLog(ChatConnection.class);
@@ -106,6 +102,8 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 //	        {
 //	        }
 //       }
+		HttpSession current = (HttpSession) session.getUserProperties().get(HttpSession.class.getName());
+		User user = (User) current.getServletContext().getAttribute("user");
 		ModuleManager modulemanager = (ModuleManager) session.getUserProperties().get("moduleManager");
 		if (modulemanager == null) {
 			throw new RuntimeException("modulemanager did not get set, Web site must be accessed with a session");
@@ -168,10 +166,21 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			else if("messagereceived".equals(command)){
 			
 				getChatServer().saveMessage(map);
+				getChatServer().broadcastMessage(map);
 				
 			}
-
-			getChatServer().broadcastMessage(map);
+			else if("approveasset".equals(command)){
+				
+				getChatServer().approveAsset(map);
+				getChatServer().broadcastMessage(map);
+				
+			}	
+			else if("rejectasset".equals(command)){
+				
+				getChatServer().rejectAsset(map);
+				getChatServer().broadcastMessage(map);
+				
+			}
 
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
