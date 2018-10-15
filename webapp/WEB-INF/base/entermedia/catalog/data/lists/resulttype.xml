@@ -21,7 +21,7 @@
 	      <language id="de"><![CDATA[Stapel]]></language> 
     </name>
 	</property>
-	
+	<!-- 
 	<property id="hierarchy" >
 	<name> 
 	      <language id="en"><![CDATA[Folders]]></language>  
@@ -29,6 +29,7 @@
 	      <language id="de"><![CDATA[Ordner]]></language> 
     </name>
 	</property>
+	 -->
 	<property id="map" >
 	<name> 
 	      <language id="en"><![CDATA[Map]]></language>  

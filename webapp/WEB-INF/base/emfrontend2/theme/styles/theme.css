@@ -1064,7 +1064,7 @@ label.error {
 }
 
 
-#main-media-viewer { height: calc(100% - 38px);}
+#main-media-viewer { height: calc(100% - 36px);}
 
 /*Asset Panel*/
 .assetpanel-container {
@@ -1099,6 +1099,7 @@ label.error {
 	}
 	.assetpanel-content {
 		margin-left: 300px;
+		margin-right:10px;
 		min-height: 200px;
 		height: calc(100% - 20px);
 		overflow: hidden;
@@ -2941,14 +2942,14 @@ a.collectionbox.favorite
     text-decoration: underline;
 }
 
-#assetVoteTool {
+.assetVoteTool {
     display: inline-block;
     position: relative;
     float:right;
     height:0px;
-    padding: 10px;
+
 }
-#assetVoteTool .votebox 
+.assetVoteTool .votebox 
 {
    background: white;
     border-left: 1px solid #DDD;
@@ -2961,25 +2962,25 @@ a.collectionbox.favorite
     border-radius: 0 5px 0 5px;
 }
 
-#assetVoteTool .star {
+.assetVoteTool .star {
     display: block;
     width: 26px;
-    margin: 1px 5px 0 3px;
-    font-size: 150%;
+    margin: 0 5px 0 3px;
+    font-size: 120%;
     color:#afafaf;
 }
-#assetVoteTool .votecounter {
+.assetVoteTool .votecounter {
 	 text-decoration: none;
 	 margin-right: 5px;
 }
-#assetVoteTool .star:hover, 
-#assetVoteTool .star.full {
+.assetVoteTool .star:hover, 
+.assetVoteTool .star.full {
       color:#FEDC71;
 }
-#assetVoteTool a {
+.assetVoteTool a {
     color: #3490B2;
 }
-#assetVoteTool a:hover {
+.assetVoteTool a:hover {
     text-decoration: underline;
 }
 

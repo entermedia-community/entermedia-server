@@ -3,14 +3,13 @@
 <div id="hiddenoverlay">
 
   <div class="playerarea" >
-  	##<img style="position: absolute; top: 15px; left: 15px;" src="$apphome/theme/images/icons/popup.svg"/>
-#if( $asset)
-		$pages.include("$apphome/components/mediaviewer/fullscreen/currentasset.html",$context)
-#else
-<div id="main-media-container" > [[Loading]]... 
-</div>		
-#end		
+	#if( $asset)
+			$pages.include("$apphome/components/mediaviewer/fullscreen/currentasset.html",$context)
+	#else
+	<div id="main-media-container" > [[Loading]]... 
+	</div>		
+	#end		
   </div>
   
-  <div class="overlay-close largeicon"><span title="Esc to Close" class="fas fa-times-circle""></span></div>		
+  <div class="overlay-close largeicon"><span title="[[Esc to Close]]" class="fas fa-window-close""></span></div>		
 </div>
