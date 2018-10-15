@@ -1103,11 +1103,14 @@ label.error {
 		height: calc(100% - 20px);
 		overflow: hidden;
 	}
+	.assetpanel-content-chatterbox {
+		min-height: 200px;
+		height: calc(100% - 20px);
+		overflow: hidden;
+	}
 }
 
-.assetpanel-content .media-player-mini { background-color: #565656;}
-
-.assetpanel-content-metadata {
+.assetpanel-content-inside {
 	height: 100%;
 	width: 100%;
 	display:table;
@@ -1118,13 +1121,17 @@ label.error {
 	height: 155px;
 	margin-top:10px;
 }
+.assetpanel-header .media-player-mini { 
+	background-color: #565656;
+}
 .assetpanel-separator {
 	border-top:1px solid #bfbfbf; 
 	margin-top:10px; 
 	height: 10px; 
 	display: table-row;
 }
-.assetpanel-editmetadata { 
+.assetpanel-editmetadata,
+.assetpanel-chatterbox { 
 	display: table-row;
 }
 .assetpanel-editmetadata .emtabs li.emtabselected {
@@ -1141,6 +1148,57 @@ label.error {
 }
 .em2tabs-tabcontainer {
 	height: 40px;main
+}
+.assetpanel-content-chatterbox {
+		padding:0 20px 20px;
+}
+.assetpanel-chatterbox-header { 
+	display: table-row;
+	height: 50px;
+	padding: 0 20px;
+}
+.assetpanel-chatterbox-card {
+	height: 100%;
+	display: table-cell;
+}
+
+.chatterbox-container {
+	height: 100%;
+	width: 100%;
+	display:table;
+}
+.chatterbox-body {
+	display: table-row;
+}
+.chatterbox-inputarea {
+	height: 36px;
+	display: table-row;
+}
+.chatterbox-body-inside {
+	overflow-y: auto;
+	height: 100%;
+	
+	background-color: #fff;
+	padding:10px 20px;
+}
+
+.chatterbox-inputarea-inside {
+	border-top:1px solid #ccc;
+	padding-top:10px;
+	position:relative;
+}
+.chatterbox-message-list {
+	/*
+	position:relative;
+	height: 100%;*/
+}
+.chatterbox-chat {
+	/*
+	position:absolute;
+	bottom: 0px;*/
+}
+.chatterbox-inputarea-inside .chatter-text {
+	padding:.2rem .75rem;
 }
 
 /*Module: Assets*/

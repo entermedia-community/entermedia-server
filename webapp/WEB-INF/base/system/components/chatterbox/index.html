@@ -1,38 +1,50 @@
-<div class="card" style="min-height: 90%;">
-  <div class="card-body" >
-<ul class="list-unstyled chatterbox-message-list" >
-  #foreach($message in $messages.getPageOfHits())
-  
-  
-  #set($type = $message.type)
-  $context.putPageValue("chat", $message)
-  #if(!$type)
-  #set($type = "default")
-  #end  
-
- 	$pages.include("$apphome/components/chatterbox/types/${type}.html", $context)
- 
-  
-  #end
-</ul>
-<hr/>
-
-<div class="input-group mb-3">
-  <div class="input-group-prepend">
-    <button class="btn btn-outline-secondary chatter-send" data-command="approveasset" type="button">Approve</button>
-    <button class="btn btn-outline-secondary chatter-send" data-command="rejectasset" type="button">Reject</button>
-    <button class="btn btn-outline-secondary chatter-send" data-command="replaceasset" type="button">Replace</button>
-    <button class="btn btn-outline-secondary chatter-send" data-command="messagereceived" type="button">Send</button>
-    
-  </div>
-  <input type="text" class="form-control chatter-text" id="msg"  placeholder="" aria-label="" aria-describedby="basic-addon1">
+<div class="assetpanel-chatterbox-card">
+	
+	  <div class="card-bodyX chatterbox-container" >
+	  	<div class="chatterbox-body">
+	  		<div class="chatterbox-body-inside">
+				<div class="chatterbox-message-list" >
+				  #foreach($message in $messages.getPageOfHits())
+				  
+				  
+				  #set($type = $message.type)
+				  $context.putPageValue("chat", $message)
+				  #if(!$type)
+				  #set($type = "default")
+				  #end  
+				
+				 	$pages.include("$apphome/components/chatterbox/types/${type}.html", $context)
+				 
+				  
+				  #end
+				</div>
+			</div>
+		</div>
+		<div class="chatterbox-inputarea">
+			<div class="chatterbox-inputarea-inside">
+				<div class="form-row">
+	    			<div class="col  col-md-10">
+				  		<input type="text" class="form-control chatter-text" id="msg"  placeholder="" aria-label="" aria-describedby="basic-addon1">
+				  	</div>
+				  	<div class="col">
+					  <button class="btn btn-primary btn-sm chatter-send float-left" data-command="messagereceived" type="button">[[Send]]</button>
+					  <div class="dropdown  float-left" style="margin-left:10px;">
+					  <button class="btn btn-secondary  btn-sm dropdown-toggle" type="button" id="dropdownChatterMenuActions" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					    [[Actions]]
+					  </button>
+					  <div class="dropdown-menu" aria-labelledby="dropdownChatterMenuActions">
+							<a class="dropdown-item" href="#" data-command="approveasset">Approve</a>
+						    <a class="dropdown-item" href="#" data-command="rejectasset">Reject</a>
+						    <a class="dropdown-item" href="#"data-command="replaceasset">Replace</a>
+					  </div>
+					  </div>
+					</div>
+				</div>
+			</div>
+		</div>
+		</div>
+	
 </div>
-                
-                
-              
-              
-</div></div>
-     
                 
                 
            
