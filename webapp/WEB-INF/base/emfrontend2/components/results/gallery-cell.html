@@ -6,20 +6,20 @@
 			data-dataid="${hit.id}" />
 	</div>
 	#end #if( $canviewvoting )
-	<div id="assetVoteTool">
+	<div class="assetVoteTool">
 		<div class="votebox" id="votebox${hit.id}">
 			$pages.include("$apphome/components/voting/status.html",$context)</div>
 	</div>
-	#end <a class="hovering" href="$click">
+	#end 
+	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
 		<div class="emthumbimage em$thumbsize assetdraggable"
 			data-assetid="${hit.id}" title="$sourcepath">
-			$pages.include("$apphome/components/results/thumbnails/${type}.html",
-			$context)</div>
-	</a> #if( $showcaption )
+			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)</div>
+	</a> 
+	#if( $showcaption )
 	<div class="gallery-caption">
 		<div class="gallery-field-info">
-		
-			<a href="$click"> #if($hit.assettitle) $hit.assettitle #else $hit.getName($context.locale) #end</a>
+			<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> #if($hit.assettitle) $hit.assettitle #else $hit.getName($context.locale) #end</a>
 		</div>
 		#if($canviewbasket)
 		$pages.include("$apphome/components/basket/toggleitem.html", $context)
