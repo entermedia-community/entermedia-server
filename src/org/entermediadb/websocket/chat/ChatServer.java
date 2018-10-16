@@ -16,6 +16,7 @@
  */
 package org.entermediadb.websocket.chat;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Set;
@@ -34,11 +35,12 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.users.User;
 
-public class ChatServer {
+public class ChatServer
+{
 
 	private static final Log log = LogFactory.getLog(ChatServer.class);
 
-	private static final Set<ChatConnection> connections = new CopyOnWriteArraySet<ChatConnection>();
+	private Set<ChatConnection> connections = new CopyOnWriteArraySet<ChatConnection>();
 
 	private static final String CACHENAME = "ChatServer";
 
@@ -47,68 +49,96 @@ public class ChatServer {
 	protected SearcherManager fieldSearcherManager;
 	protected JSONParser fieldJSONParser;
 
-	public JSONParser getJSONParser() {
-		if (fieldJSONParser == null) {
+	public JSONParser getJSONParser()
+	{
+		if (fieldJSONParser == null)
+		{
 			fieldJSONParser = new JSONParser();
 		}
 		return fieldJSONParser;
 	}
 
-	public SearcherManager getSearcherManager() {
-		if (fieldSearcherManager == null) {
+	public SearcherManager getSearcherManager()
+	{
+		if (fieldSearcherManager == null)
+		{
 			fieldSearcherManager = (SearcherManager) getModuleManager().getBean("searcherManager");
 		}
 		return fieldSearcherManager;
 	}
 
-	public void setSearcherManager(SearcherManager inSearcherManager) {
+	public void setSearcherManager(SearcherManager inSearcherManager)
+	{
 		fieldSearcherManager = inSearcherManager;
 	}
 
-	public ModuleManager getModuleManager() {
+	public ModuleManager getModuleManager()
+	{
 		return fieldModuleManager;
 	}
 
-	public void setModuleManager(ModuleManager inModuleManager) {
+	public void setModuleManager(ModuleManager inModuleManager)
+	{
 		fieldModuleManager = inModuleManager;
 	}
 
-	public CacheManager getCacheManager() {
-		if (fieldCacheManager == null) {
+	public CacheManager getCacheManager()
+	{
+		if (fieldCacheManager == null)
+		{
 			fieldCacheManager = (CacheManager) getModuleManager().getBean("cacheManager");// new CacheManager();
 		}
 
 		return fieldCacheManager;
 	}
 
-	public void setCacheManager(CacheManager inCacheManager) {
+	public void setCacheManager(CacheManager inCacheManager)
+	{
 		fieldCacheManager = inCacheManager;
 	}
 
-	public void removeConnection(ChatConnection inChatConnection) {
-		for (Iterator iterator = connections.iterator(); iterator.hasNext();) {
+	public void removeConnection(ChatConnection inChatConnection)
+	{
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+		{
 			ChatConnection annotationConnection2 = (ChatConnection) iterator.next();
 
-			if (inChatConnection == annotationConnection2) {
+			if (inChatConnection == annotationConnection2)
+			{
 				connections.remove(annotationConnection2);
 				break;
 			}
 		}
 	}
 
-	public void addConnection(ChatConnection inConnection) {
+	public void addConnection(ChatConnection inConnection)
+	{
+		String sessionid = inConnection.getSessionId();
+		ArrayList toremove = new ArrayList();
+		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
+		{
+			ChatConnection chatConnection = (ChatConnection) iterator.next();
+			String oldid = chatConnection.getSessionId();
+			if(oldid.equals(sessionid)) {
+				toremove.add(chatConnection);
+			}
+		}
+
+		connections.removeAll(toremove);
+		
 		// TODO Auto-generated method stub
 		connections.add(inConnection);
 	}
 
 	public void broadcastMessage(JSONObject inMap)
 	{
+		log.info("Sending " + inMap.toJSONString()		+" to " + connections.size() + "Clients");
 		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 		{
 			ChatConnection chatConnection = (ChatConnection) iterator.next();
 			chatConnection.sendMessage(inMap);
 		}
-		
+
 	}
 
 	public void saveMessage(JSONObject inMap)
@@ -125,8 +155,7 @@ public class ChatServer {
 		chat.setValue("type", "message");
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
-		
-		
+
 	}
 
 	public void approveAsset(JSONObject inMap)
@@ -137,7 +166,7 @@ public class ChatServer {
 		User user = archive.getUser((String) inMap.get("user"));
 		String collectionid = (String) inMap.get("collectionid");
 		String message = (String) inMap.get("content");
-		
+
 		archive.getProjectManager().approveAsset(asset, user, message, collectionid, false);
 
 		Searcher chats = archive.getSearcher("chatterbox");
@@ -149,11 +178,9 @@ public class ChatServer {
 		chat.setValue("type", "approved");
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
-		
-		
+
 	}
-	
-	
+
 	public void rejectAsset(JSONObject inMap)
 	{
 		String catalogid = (String) inMap.get("catalogid");
@@ -162,7 +189,7 @@ public class ChatServer {
 		User user = archive.getUser((String) inMap.get("user"));
 		String collectionid = (String) inMap.get("collectionid");
 		String message = (String) inMap.get("content");
-		
+
 		archive.getProjectManager().rejectAsset(asset, user, message, collectionid, false);
 
 		Searcher chats = archive.getSearcher("chatterbox");
@@ -175,8 +202,7 @@ public class ChatServer {
 		chat.setValue("collectionid", collectionid);
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
-		
-		
+
 	}
 
 }

@@ -6,7 +6,6 @@
 				<div class="chatterbox-message-list" >
 				  #foreach($message in $messages.getPageOfHits())
 				  
-				  
 				  #set($type = $message.type)
 				  $context.putPageValue("chat", $message)
 				  #if(!$type)
@@ -24,7 +23,7 @@
 			<div class="chatterbox-inputarea-inside">
 				<div class="form-row">
 	    			<div class="col  col-md-10">
-				  		<input type="text" class="form-control chatter-text" id="msg"  placeholder="" aria-label="" aria-describedby="basic-addon1">
+				  		<input type="text" class="form-control chatter-text" id="chatter-msg"  placeholder="" aria-label="" aria-describedby="basic-addon1">
 				  	</div>
 				  	<div class="col">
 					  <button class="btn btn-primary btn-sm chatter-send float-left" data-command="messagereceived" type="button">[[Send]]</button>
@@ -33,9 +32,9 @@
 					    [[Actions]]
 					  </button>
 					  <div class="dropdown-menu" aria-labelledby="dropdownChatterMenuActions">
-							<a class="dropdown-item" href="#" data-command="approveasset">Approve</a>
-						    <a class="dropdown-item" href="#" data-command="rejectasset">Reject</a>
-						    <a class="dropdown-item" href="#"data-command="replaceasset">Replace</a>
+							<a class="dropdown-item chatter-send" href="#" data-command="approveasset">Approve</a>
+						    <a class="dropdown-item chatter-send" href="#" data-command="rejectasset">Reject</a>
+						  ##  <a class="dropdown-item" href="#"data-command="replaceasset">Replace</a>
 					  </div>
 					  </div>
 					</div>

@@ -1,6 +1,8 @@
 package org.entermediadb.websocket.chat;
 
 import java.io.StringReader;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.CloseReason;
@@ -26,7 +28,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 	protected SearcherManager fieldSearcherManager;
 	protected String fieldCurrentConnectionId;
 	protected ChatServer fieldChatServer;
-	
+	protected String fieldSessionID;
 	
 	
 	
@@ -42,13 +44,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 		this.fieldChatServer = fieldChatServer;
 	}
 
-	public String getCurrentConnectionId() {
-		return fieldCurrentConnectionId;
-	}
-
-	public void setCurrentConnectionId(String inCurrentConnectionId) {
-		fieldCurrentConnectionId = inCurrentConnectionId;
-	}
+	
 
 	public SearcherManager getSearcherManager() {
 		if (fieldSearcherManager == null) {
@@ -79,6 +75,9 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 
 	@Override
 	public void onClose(Session session, CloseReason closeReason) {
+
+		
+		getChatServer().removeConnection(this);
 		super.onClose(session, closeReason);
 
 	}
@@ -102,15 +101,27 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 //	        {
 //	        }
 //       }
+		log.info(session.getId());
+		Map props = endpointConfig.getUserProperties();
 		HttpSession current = (HttpSession) session.getUserProperties().get(HttpSession.class.getName());
 		User user = (User) current.getServletContext().getAttribute("user");
+		
+		String query = session.getQueryString();
+		Map params = getQueryMap(query);
+		
+		fieldSessionID = (String) params.get("sessionid");
+		
+		
+		
 		ModuleManager modulemanager = (ModuleManager) session.getUserProperties().get("moduleManager");
 		if (modulemanager == null) {
 			throw new RuntimeException("modulemanager did not get set, Web site must be accessed with a session");
 		}
+			
 		setModuleManager(modulemanager);
 
 		remoteEndpointBasic = session.getBasicRemote();
+		
 		// ws://localhost:8080/entermedia/services/websocket/echoProgrammatic?catalogid=emsite/catalog&collectionid=102
 
 		// TODO: Load from spring0
@@ -118,8 +129,18 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 		// AnnotationConnection(getSearcherManager(),catalogid,
 		// collectionid,http,remoteEndpointBasic, this);
 		session.addMessageHandler(this);
-		  getChatServer().addConnection(this);	
+		getChatServer().addConnection(this);	
 		// session.addMessageHandler(new EchoMessageHandlerBinary(remoteEndpointBasic));
+	}
+
+	public String getSessionId()
+	{
+		return fieldSessionID;
+	}
+
+	public void setSessionId(String inSessionID)
+	{
+		fieldSessionID = inSessionID;
 	}
 
 	public JSONParser getJSONParser() {
@@ -161,7 +182,7 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 			log.info("Command was: " + command);
 			if ("login".equals(command)) //Return all the annotation on this asset
 			{
-				receiveLogin(map); 
+				//receiveLogin(map); 
 			}
 			else if("messagereceived".equals(command)){
 			
@@ -191,58 +212,12 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 
 	
 
-	protected void receiveLogin(JSONObject map)
-	{
-//		String username = (String)map.get("username");
-//		//authenticated
-//		String keyorpasswordentered = (String)map.get("entermedia.key");
-//		User user = (User)getSearcherManager().getData("system", "user", username);
-//		if( user == null)
-//		{
-//			JSONObject authenticated = new JSONObject();
-//			authenticated.put("command", "authenticatefail");
-//			authenticated.put("reason", "User did not exist");
-//			sendMessage(authenticated);
-//			return;
-//		}
-//		String key = getStringEncrytion().getEnterMediaKey(user);
-//
-//		if( !key.equals(keyorpasswordentered))
-//		{
-//			//check password
-//			String clearpassword = getStringEncrytion().decryptIfNeeded(user.getPassword());
-//			if( !keyorpasswordentered.equals(clearpassword))
-//			{
-//		   		JSONObject authenticated = new JSONObject();
-//		   		authenticated.put("command", "authenticatefail");
-//		   		authenticated.put("reason", "Password did not match");
-//				sendMessage(authenticated);
-//				return;
-//			}
-//		}
-//		String connectionid = (String)map.get("connectionid");
-//		setCurrentConnectionId(connectionid);
-//		JSONObject authenticated = new JSONObject();
-//		authenticated.put("command", "authenticated");
-//		authenticated.put("entermedia.key", key);
-//		
-//		Collection existing = (Collection)map.get("existingcollections");
-//		for (Iterator iterator = existing.iterator(); iterator.hasNext();)
-//		{
-//			String name = (String) iterator.next();
-//			//Looup this users collections by name?
-//			
-//		}
-//		
-//		sendMessage(authenticated);
-	}
+
 
 	public void sendMessage(JSONObject json) {
 		try {
 			String command = (String) json.get("command");
-			json.put("connectionid", getCurrentConnectionId());
 			remoteEndpointBasic.sendText(json.toJSONString());
-			log.info("sent " + command + " to  " + getCurrentConnectionId());
 		} catch (Exception e) {
 			log.error(e);
 //			throw new OpenEditException(e);
@@ -254,7 +229,18 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 
 	}
 
-
+	 private  Map<String, String> getQueryMap(String query)  
+     {  
+         String[] params = query.split("&");  
+         Map<String, String> map = new HashMap<String, String>();  
+         for (String param : params)  
+         {  
+             String name = param.split("=")[0];  
+             String value = param.split("=")[1];  
+             map.put(name, value);  
+         }  
+         return map;  
+    }
 	
 
 }

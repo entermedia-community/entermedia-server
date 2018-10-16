@@ -1224,15 +1224,17 @@ public class ProjectManager implements CatalogEnabled {
 		ArrayList tosave = new ArrayList();
 		tosave.add(inAsset);		
 		logAssetEvent(tosave, "approved",  inUser, inNote, inCollectionid, addChatEntry);
-		
+		getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
+
 	}
 
 	public void rejectAsset(Asset inAsset, User inUser, String inNote, String inCollectionid, boolean addChatEntry){
-		inAsset.setValue("editstatus", "6");
+		inAsset.setValue("editstatus", "rejected");
 		ArrayList tosave = new ArrayList();
 		tosave.add(inAsset);		
 		logAssetEvent(tosave, "rejected",  inUser, inNote, inCollectionid, addChatEntry);
-		
+		getMediaArchive().getAssetSearcher().saveAllData(tosave, null);
+
 	}
 	
 	
@@ -1281,7 +1283,7 @@ public class ProjectManager implements CatalogEnabled {
 				chat.setValue("date", new Date());
 				chat.setValue("message", inNote);
 				chat.setValue("user", inUser );
-				String channel = "asset-" + asset.getId();
+				String channel = "asset" + asset.getId();
 				chat.setValue("channel", channel);
 				chat.setValue("type", inOperation);
 				chat.setValue("collectionid", inCollectionid);
