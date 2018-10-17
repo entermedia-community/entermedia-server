@@ -88,6 +88,10 @@ function connect() {
         var channel = message.channel;
         var id = message.messageid;
         message.id = id;
+        var existing = jQuery("#chatter-message-" + id);
+        if(existing){
+        	return;
+        }
 		var chatter = jQuery('div[data-channel="' + channel + '"]');		
 		var listarea = chatter.find(".chatterbox-message-list")
 		var urls =  apphome + "/components/chatterbox/message.html";
