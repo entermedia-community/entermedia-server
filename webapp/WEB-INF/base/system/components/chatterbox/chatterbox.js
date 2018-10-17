@@ -1,12 +1,16 @@
 var connection;
-
+var open = false;
 
 function chatterbox() {	
-			
+	
 	var app = jQuery("#application");
 	var apphome = app.data("home") + app.data("apphome");
 
 	reloadAll();
+	
+	if(open){
+		return;
+	}	
 	
 	connect();
 	
@@ -42,7 +46,7 @@ function chatterbox() {
 	    }
 	});
 	
-
+	open=true;
 	
 	
 }
