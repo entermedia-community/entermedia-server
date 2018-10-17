@@ -89,7 +89,7 @@ function connect() {
         var id = message.messageid;
         message.id = id;
         var existing = jQuery("#chatter-message-" + id);
-        if(existing){
+        if(existing.length){
         	return;
         }
 		var chatter = jQuery('div[data-channel="' + channel + '"]');		
