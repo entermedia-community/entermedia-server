@@ -90,7 +90,7 @@
   	   	    $presetquery.addSortBy("ordering");
   	   	    #set( $results = $presetsearcher.search($presetquery) )
  -->
-  			<select name="${item.id}.presetid.value">
+  			<select class="form-control" name="${item.id}.presetid.value">
   	   	    <option value="preview">[[Preview Only]]</option>
   	   	    #if( $candownload)
   	   	    <option value="0">[[Original]]</option>
@@ -124,6 +124,6 @@
 	
 </table>
 	<div id="itemsave"></div>
-	<input class="btn small" style="float: right; margin-top: 20px;" type="submit" value="[[Next]]" />
+	<input class="btn btn-primary" style="float: right; margin-top: 20px;" type="submit" value="[[Next]]" />
 </div>
 </div>
