@@ -679,19 +679,43 @@ td.checkbox input, th.firstheader input {
 .emnav li:first-child .navbutton { 
 	margin-left:0;
 }
-.emnav .librarycollectionpicker {
-	padding-left: 10px;
+.emnav .librarycollectionpicker,
+.emnav .nav-quicksearch {
+	position:relative;
+	border-left: 1px solid #309ABA;
+    margin-left: 10px;
 }
-.emnav .librarypicker {
-	padding:5px 10px 0 0;
-	width: 240px;
-	float:left;
+.emnav .nav-quicksearch .input-group {
+	margin-left: 10px;
 }
-.emnav .nav-form {
-	padding:5px 10px 0 0;
-	width: 280px;
+.emnav .librarypicker, 
+.emnav .collectionpicker {
+	margin-left:10px;
+	width:250px;
+	display:inline-block;
+	
 }
+.emnav .collectionpicker .select2 {
+	margin-right:22px;
+}
+.emnav .nav-collectionsearch {
+	position:absolute;
+	right:0;
+	top:0;	
+	height: 36px;
+	display:block;
+}
+.emnav .nav-collectionsearch {
+	line-height: 28px;
 
+}
+.emnav .input-group-addon {
+	background-color: #fff;
+	border:1px solid #e9ecef!important
+}
+.emnav .input-group-addon i {
+	cursor: pointer;
+}
 .emsubnav .dropdown:hover>.dropdown-menu {
   display: block;
 }
