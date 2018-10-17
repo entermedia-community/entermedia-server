@@ -56,7 +56,7 @@ function clear(){
 
 function scrollToChat(){
 	$('.chatterbox-body-inside').animate({
-		scrollTop: $('.chatterbox-body-inside').get(0).scrollHeight}, 2000); 
+		scrollTop: $('.chatterbox-body-inside').get(0).scrollHeight}, 5); 
 	
 	
 }

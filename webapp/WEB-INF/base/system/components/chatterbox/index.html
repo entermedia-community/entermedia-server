@@ -4,7 +4,7 @@
 	  	<div class="chatterbox-body">
 	  		<div class="chatterbox-body-inside">
 				<div class="chatterbox-message-list" >
-				  #foreach($message in $messages.getPageOfHits())
+				  #foreach($message in $messages)
 			
 				  #set($type = $message.type)
 				  $context.putPageValue("chat", $message)
