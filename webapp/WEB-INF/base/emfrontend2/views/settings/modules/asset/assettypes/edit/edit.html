@@ -15,8 +15,8 @@ $context.putPageValue("view", $view)
 	<input name="origURL"  type="hidden" value="$!origURL" />
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
 
-<input class="btn" type="submit" value="[[Save]]" />
-<a class="btn red" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">[[Delete]]</a>
+<input class="btn btn-primary" type="submit" value="[[Save]]" />
+<a class="btn btn-danger" href="./delete.html?searchtype=$searcher.searchType&id=$data.id">[[Delete]]</a>
 <div id="messagearea">$!message
 </div>
 </form>
