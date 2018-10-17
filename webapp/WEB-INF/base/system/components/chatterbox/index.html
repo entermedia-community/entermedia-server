@@ -5,7 +5,7 @@
 	  		<div class="chatterbox-body-inside">
 				<div class="chatterbox-message-list" >
 				  #foreach($message in $messages.getPageOfHits())
-				  <div id="chatter-message-$messageid">
+			
 				  #set($type = $message.type)
 				  $context.putPageValue("chat", $message)
 				  #if(!$type)
@@ -14,7 +14,7 @@
 				
 				 	$pages.include("$apphome/components/chatterbox/types/${type}.html", $context)
 				 
-				  </div>
+				 
 				  #end
 				</div>
 			</div>

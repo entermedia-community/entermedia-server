@@ -101,7 +101,7 @@ function connect() {
 		});
 	
         scrollToChat();
-        
+        play();
     }; 
 
 }
@@ -159,6 +159,18 @@ function cancelKeepAlive() {
         clearTimeout(timerId);  
     }  
 }
+
+function play(){
+	var app = jQuery("#application");
+	var apphome = app.data("home") + app.data("apphome");
+	var urls =  apphome + "/components/chatterbox/stairs.wav";
+
+	var snd = new Audio(urls); // buffers automatically when created
+	snd.play();
+	
+	
+}
+
 
 
 
