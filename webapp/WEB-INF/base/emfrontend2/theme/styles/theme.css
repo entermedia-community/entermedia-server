@@ -98,6 +98,7 @@ body {
     padding: .275rem .75rem;
     font-size: 1rem;
     line-height: 1.3;
+    width: auto;
 }
 select.form-control:not([size]):not([multiple]) {
     height: calc(2rem);
@@ -679,19 +680,43 @@ td.checkbox input, th.firstheader input {
 .emnav li:first-child .navbutton { 
 	margin-left:0;
 }
-.emnav .librarycollectionpicker {
-	padding-left: 10px;
+.emnav .librarycollectionpicker,
+.emnav .nav-quicksearch {
+	position:relative;
+	border-left: 1px solid #309ABA;
+    margin-left: 10px;
 }
-.emnav .librarypicker {
-	padding:5px 10px 0 0;
-	width: 240px;
-	float:left;
+.emnav .nav-quicksearch .input-group {
+	margin-left: 10px;
 }
-.emnav .nav-form {
-	padding:5px 10px 0 0;
-	width: 280px;
+.emnav .librarypicker, 
+.emnav .collectionpicker {
+	margin-left:10px;
+	width:250px;
+	display:inline-block;
+	
 }
+.emnav .collectionpicker .select2 {
+	margin-right:22px;
+}
+.emnav .nav-collectionsearch {
+	position:absolute;
+	right:0;
+	top:0;	
+	height: 36px;
+	display:block;
+}
+.emnav .nav-collectionsearch {
+	line-height: 28px;
 
+}
+.emnav .input-group-addon {
+	background-color: #fff;
+	border:1px solid #e9ecef!important
+}
+.emnav .input-group-addon i {
+	cursor: pointer;
+}
 .emsubnav .dropdown:hover>.dropdown-menu {
   display: block;
 }
@@ -2131,10 +2156,6 @@ span.folder {
     margin-top: 33px;
     margin-right: 20px;
 }
-.scan .btn, .delete .btn {
-    text-align: center;
-    width: 60px;
-}
 .delete {
     margin-top: -8px;
     float: right;
@@ -3124,4 +3145,8 @@ a.collectionbox.favorite
     padding-top: 10px;
     background: url('../images/attachments-icon.png') left 7px no-repeat;
     margin: 0 3px;
+}
+
+.select2-results__option[aria-selected] {
+    word-break: break-word;
 }

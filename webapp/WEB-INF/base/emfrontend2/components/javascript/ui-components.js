@@ -412,6 +412,12 @@ uiload = function() {
 						});
 	});
 	
+	lQuery(".submitform").livequery("click", function()
+			{
+				var theform = $(this).closest('form');
+				theform.submit();
+	});
+	
 	
 	lQuery("a.emdialog").livequery("click",
 			function(event) 

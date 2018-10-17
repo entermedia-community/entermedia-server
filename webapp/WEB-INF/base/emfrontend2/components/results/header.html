@@ -134,7 +134,7 @@
 				</li>								
 				<li class="resultsnavtitem">
 						#set ($alldetails = $searcher.getUserPropertyDetails() )
-						<select  onchange='return addColumn(jQuery(this).val())' name="addcolumn" >
+						<select  class="form-control" onchange='return addColumn(jQuery(this).val())' name="addcolumn" >
 							<option>[[Add Column]]</option>
 							#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 							#end
@@ -166,7 +166,7 @@
 		#end
 		#if(!$edit || $edit == "false"  )
 			<li class="resultsnavtitem">
-				<select name="resultview" id="selectresultview" class="smalldropdown" 
+				<select class="form-control" name="resultview" id="selectresultview" class="smalldropdown" 
 					data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()">
 				#set( $types = $mediaarchive.getList("resulttype"))
 				#foreach($type in $types)
