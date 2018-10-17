@@ -1011,6 +1011,8 @@ public class ProjectManager implements CatalogEnabled {
 		// reload profile?
 		inProfile.getViewCategories().add(librarynode); // Make sure I am in the list of users for the library
 		userlibrary.setValue("viewusers", user.getId());
+		userlibrary.setValue("privatelibrary",true);
+
 		userlibrary.setValue("categoryid", librarynode.getId());
 		inArchive.getSearcher("library").saveData(userlibrary, null);
 
