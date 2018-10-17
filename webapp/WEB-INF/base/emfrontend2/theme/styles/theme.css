@@ -140,6 +140,13 @@ h3 {
     vertical-align: middle;
 }
 
+select + .select2-container {
+  width: 100% !important;
+}
+.select2-container {
+	z-index: 20000;
+}
+
 
 
 /**MainContent*/
@@ -720,6 +727,9 @@ td.checkbox input, th.firstheader input {
 .emsubnav .dropdown:hover>.dropdown-menu {
   display: block;
 }
+.emnav .select2-container {
+	z-index: 5000;
+}
 
 .emsubnav .dropdown>.dropdown-toggle:active {
     pointer-events: none;
@@ -736,8 +746,24 @@ td.checkbox input, th.firstheader input {
 
 .listautocomplete {width: 100%;} /* General?? */
 
+.collectionshome {
+	border:1px solid #efefef;
+	margin-bottom:20px;
+	min-height: 152px;
+}
 
-
+.collectionshomeresults {
+	padding:10px;
+}
+.collectionshome-header { 
+	background-color: #efefef;
+	height: 40px;
+	padding:4px 10px;
+	}
+.collectionshome-header h3 {
+	margin:0;
+	line-height: 32px;
+}
 
 
 /*Advanced Search Sidebar*/
@@ -772,12 +798,7 @@ td.checkbox input, th.firstheader input {
   table-layout: fixed;
 }
 
-select + .select2-container {
-  width: 100% !important;
-}
-.select2-container {
-	z-index: 20000;
-}
+
 
 
 
@@ -943,7 +964,7 @@ select + .select2-container {
 #application .collectionshomecontent { padding:20px; }
 .card-collections { 
 	float:left; 
-	width:280px; 
+	width:290px; 
 	height:90px; 
 	margin: 0 10px 10px 0; 
 	}
@@ -952,9 +973,19 @@ select + .select2-container {
 	padding: 2px 0 0 24px; 
 	line-height:20px; 
 	background:url('../images/icons/box.png') top 2px left 0 no-repeat;
-	display: block;
+	display: inline-block;
 	}
 
+.card-body {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card-name {
+
+    
+    
+}
 /*Tabs on Results Page*/
 
 .results-header { border-bottom:1px solid #a8dae4;}
@@ -1088,7 +1119,6 @@ label.error {
     color:red;
 }
 
-
 #main-media-viewer { height: calc(100% - 36px);}
 
 /*Asset Panel*/
@@ -1111,6 +1141,7 @@ label.error {
 .assetpanel-content {
 	padding: 20px;
 	min-height: 200px;
+	height: 100%;
 	background-color:#d3d3d3;
 	margin-top:10px;
 }
@@ -1150,6 +1181,10 @@ label.error {
 .assetpanel-header .media-player-mini { 
 	background-color: #565656;
 }
+.assetpanel-header .media-player-mini .col-thumb {
+	max-width: 280px;
+
+	}
 .assetpanel-separator {
 	border-top:1px solid #bfbfbf; 
 	margin-top:10px; 
@@ -1159,6 +1194,7 @@ label.error {
 .assetpanel-editmetadata,
 .assetpanel-chatterbox { 
 	display: table-row;
+	
 }
 .assetpanel-editmetadata .emtabs li.emtabselected {
 	background-color: #efefef;
@@ -1177,6 +1213,7 @@ label.error {
 }
 .assetpanel-content-chatterbox {
 		padding:0 20px 20px;
+		height:100%;
 }
 .assetpanel-chatterbox-header { 
 	display: table-row;

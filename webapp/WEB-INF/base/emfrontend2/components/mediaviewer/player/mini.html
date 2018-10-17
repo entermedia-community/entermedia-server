@@ -7,7 +7,7 @@
 		</div>
 	#else            
         <div class="row">
-        	<div class="col-sm-2">
+        	<div class="col-3 col-thumb">
             <div class="media-thumbnail">
                 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
                 #if( !$thumbsize )
@@ -34,7 +34,7 @@
 					    </div>
 					#end
             </div>
-        	<div class="col-sm-9">
+        	<div class="col">
             <div class="media-info">
                 <div class="media-info-primary">
                     <strong>$asset</strong> 
