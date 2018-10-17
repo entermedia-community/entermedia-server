@@ -33,7 +33,7 @@ public class ChatModule extends BaseMediaModule {
 		
 		Searcher chats = archive.getSearcher("chatterbox");
 		
-		HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search(inReq);
+		HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search();
 		inReq.putPageValue("messages", recent);
 		
 		
