@@ -385,7 +385,6 @@ html, body, #application, #emcontainer {
 } 
 #sub-nav ul.resultsnavright  li a {
 	display:block;
-	line-height:34px;
 	text-decoration: none;
 	padding:0 15px;
 }
@@ -402,6 +401,12 @@ html, body, #application, #emcontainer {
 }
 .resultsnavtitem {
 	padding:12px 5px 0;
+}
+.resultsnavtitem .form-control { 
+	line-height: 1;
+    padding: .15rem;
+    font-size: 0.8rem;
+    height: 1.5rem!important;
 }
 
 
@@ -751,7 +756,6 @@ td.checkbox input, th.firstheader input {
 	margin-bottom:20px;
 	min-height: 152px;
 }
-
 .collectionshomeresults {
 	padding:10px;
 }
@@ -2075,7 +2079,7 @@ span.drag-and-drop {
     background: url('../images/folder.png') 15px 8px no-repeat;
     width: 280px;
     height: 102px;
-    float: left;
+    
     position: relative;
 }
 #folders .folder.module {
@@ -2193,11 +2197,6 @@ span.folder {
     margin-top: 33px;
     margin-right: 20px;
 }
-.delete {
-    margin-top: -8px;
-    float: right;
-    margin-right: 20px;
-}
 
 .switch {
     background: url('../images/switch.png') 0 -31px no-repeat;
@@ -2267,7 +2266,7 @@ form .field {
     color: #666;
     font-style: italic;
     font-size: 11px;
-    margin: -6px 0 0 0;
+    
 }
 .fields h3 {
     display: none;

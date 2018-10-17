@@ -1,35 +1,35 @@
 <label>[[External Import Path]]</label>
-<input type="hidden" name="field" value="externalpath" />
-<input class="field" name="externalpath.value" value="$!data.externalpath" />
+<input type="hidden" name="form-control" value="externalpath" />
+<input class="form-control" name="externalpath.value" value="$!data.externalpath" />
 <div class="note">[[Optional: Local disk drive, path, url, or Windows Share that will be mounted.]] /media/marketing_drive</div> 
 
 <label>[[Internal Category Path]]</label>
-<input type="hidden" name="field" value="subfolder" />
+<input type="hidden" name="form-control" value="subfolder" />
 #set( $subfolder = $context.getRequestParameter("subfolder"))
 #if( !$subfolder )
 #set( $subfolder = $!data.subfolder )
 #end
-<input class="field" name="subfolder.value" value="$!subfolder" />
+<input class="form-control" name="subfolder.value" value="$!subfolder" />
 <div class="note">[[Required: The path to the category location such as: ]] Marketing_Drive</div> 
 
 <label>[[Include Filters]]</label>
-<input type="hidden" name="field" value="includes" />
-<textarea class="field" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
+<input type="hidden" name="form-control" value="includes" />
+<textarea class="form-control" name="includes.value" cols="45" rows="3" >$!data.includes</textarea>
 <div class="note">[[comma delimited]] *.jpg,*/Completed/*</div> 
 
 <label>[[Exclude Filter]]</label>
-<input type="hidden" name="field" value="excludes" />
-<textarea class="field" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old, *_tmp*#end</textarea>
+<input type="hidden" name="form-control" value="excludes" />
+<textarea class="form-control" name="excludes.value" cols="45" rows="3" >#if ($data.excludes)$data.excludes#else*/.*,*/Thumbs.db,*.old, *_tmp*#end</textarea>
 <div class="note">[[comma or new line delimited]] */.*,*/Thumbs.db,*.old </div> 
 
 <label>[[Attachment Filter]]</label>
-<input type="hidden" name="field" value="attachmenttrigger" />
-<textarea class="field" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
+<input type="hidden" name="form-control" value="attachmenttrigger" />
+<textarea class="form-control" name="attachmenttrigger.value" cols="45" rows="3" >$!data.attachmenttrigger</textarea>
 <div class="note">[[Files in attachment folder that will trigger auto creation of attachments. Comma or New line delimited]] */Fonts,*/attachments.txt</div> 
 
 
 <div class="clearfix" style="margin-bottom: 20px;">
-<input type="hidden" name="field" value="monitortree" /> 
+<input type="hidden" name="form-control" value="monitortree" /> 
 <input type="checkbox" style="float: left;"   name="monitortree.value" value="true" #if($data.getValue("monitortree")) checked #end />
 <label style="float: left; margin: 16px 0 0 10px; width: 200px;">[[Live Monitor the file system for changes in real time. For less than 100,000 files]]</label> 
 </div>
