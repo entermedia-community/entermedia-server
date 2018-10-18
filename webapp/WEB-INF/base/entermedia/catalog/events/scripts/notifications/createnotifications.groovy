@@ -30,15 +30,29 @@ public void init(){
 			}
 			long days = parser.parse(policy.renewalperiod);
 			Date target = new Date(System.currentTimeMillis() +  days);
+			asset.setValue("renewaldate", new Date());
+			searcher.saveData(asset);
+			
 			current.setValue("senddate", target);
 			current.setValue("notificationsubject", "Asset Renewal Request");
 			current.setValue("notificationtype", "assetrenew");
 			Data user = archive.getData("user", asset.get("renewalrecipient"));
-			if(user == null){
-				log.info("User : " + asset.get("renewalrecpient") + "Not found when trying to create renewal notification.  Check asset ${asset.id}");
-				return;
+			
+			if(user == null) {
+				String email = archive.getCatalogSettingValue("renewalrecipient");
+				if(email == null) {
+					log.info("User : " + asset.get("renewalrecpient") + "Not found when trying to create renewal notification.  Check asset ${asset.id}");
+					return;
+					
+				} else {
+					current.setValue("notificationemails", email);
+					
+				}
 			}
-			current.setValue("notificationemails", user.get("email"));
+			else {
+		
+				current.setValue("notificationemails", user.get("email"));
+			}
 			notifications.saveData(current);
 			 
 			

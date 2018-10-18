@@ -688,6 +688,11 @@
    <property id="renewalpolicy" datatype="list" editable="true" index="true" stored="true"   type="list">Renewal Policy 
  
   </property>  
+  <property id="renewaldate" datatype="date" editable="true" index="true" stored="true"   >Renewal Date </property>
+  <property id="assetexpired" datatype="boolean" editable="true" index="true" stored="true"  isbadge="true">Asset Expired </property>
+  
+  
+  
     <property id="geotiff"  index="true" stored="true" viewtype="textarea" >Geotiff Data 
  
   </property>  

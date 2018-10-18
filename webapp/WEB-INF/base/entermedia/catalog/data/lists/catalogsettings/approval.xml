@@ -1,5 +1,6 @@
 <properties>
 	
 	<property id="requestapproveremail" value="">Default Request for Approval Admin Email</property>
+		<property id="renewalrecipient" value="">Default Receipient for Asset Approval Notifications</property>
 	
 </properties>

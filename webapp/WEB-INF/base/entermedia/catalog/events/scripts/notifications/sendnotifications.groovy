@@ -18,6 +18,8 @@ public void init(){
 	Date now = new Date();
 	HitTracker pendingnotifications = notificationsearcher.query().before("senddate", now).exact("notificationstatus", "pending").search();
 	ArrayList tosave = new ArrayList();
+	
+	
 	pendingnotifications.each{
 		Data hit = notificationsearcher.loadData(it);
 		if(dispatchEmail(archive, context, hit)){
@@ -25,6 +27,7 @@ public void init(){
 		hit.setValue("notificationstatus", "sent");
 		tosave.add(hit);
 		}
+		
 		
 	}
 
