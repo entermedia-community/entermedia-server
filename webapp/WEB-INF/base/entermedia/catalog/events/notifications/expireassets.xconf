@@ -1,9 +1,9 @@
 <page>
 	<property name="virtual">true</property>
-	<property name="eventname">Send Pending Renewal Notifications</property>	
+	<property name="eventname">Flag Expired Assets</property>	
 	<path-action name="Script.run" allowduplicates="true" >
 		<script>
-			/${catalogid}/events/scripts/notifications/sendnotifications.groovy
+			/${catalogid}/events/scripts/notifications/expireassets.groovy
 		</script>
 	</path-action>
 </page>
