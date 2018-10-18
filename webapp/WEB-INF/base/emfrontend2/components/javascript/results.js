@@ -55,6 +55,7 @@ $(document).ready(function(url,params)
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
+		jQuery('.assetproperties').trigger('click');
 	});
 	
 	lQuery("a.selectpage").livequery( 'click', function() 

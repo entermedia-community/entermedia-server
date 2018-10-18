@@ -176,6 +176,9 @@ public class ChatConnection extends Endpoint implements  MessageHandler.Partial<
 //		}
 		try {
 //			message = message.replaceAll("null", "\"null\"");
+			if(inData.length() == 0) {
+				return;
+			}
 			JSONObject map = (JSONObject) getJSONParser().parse(new StringReader(message));
 			String command = (String) map.get("command");
 			
