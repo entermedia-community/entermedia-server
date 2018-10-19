@@ -4,7 +4,11 @@
 			#set($map = $data.getValue($detail.getId()))
 			#set($dlocale = $context.getLanguage() )
 			#set($language_count = 0)
-			<div class="languageselector pull-left">
+			<div class="languagesadd">
+				<a class="languagesavebtn" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id="" title="[[Add Language]]">
+				<i class="fas fa-plus"></i></a>
+			</div>
+			<div class="languagesfield">
 				#foreach($locale in $languages)
 					#set($localval = $map.getText($locale.id))
 					#if($localval && $localval != "")
@@ -17,15 +21,13 @@
 				#set($language_count = $language_count+1)
 				$pages.include("$apphome/components/xml/types/language/extralanguage.html?detailid=${detail.id}&count=$language_count&languagecode=$dlocale",$context)
 				#end
-				<div id="languagesextra_${detail.id}" data-count='$language_count' ></div> 
+				<div id="languagesextra_${detail.id}" data-count='$language_count' ></div>	 
 			</div>
 			
-			<div style="padding: 5px 0" class="float-left">
-				<a class="languagesavebtn" href="$home$apphome/components/xml/types/language/extralanguage.html" targetdiv="languagesextra_${detail.id}" data-detailid="${detail.id}" id="" title="[[Add Language]]"><img src="$home$themeprefix/images/icons/addgray.png"></a>
-			</div>
+			<div class="clearfix" ></div>
 			
 	</div>
-	<div class="clearfix" ></div>
+	
 #elseif( $detail.isKeywordMap() )
 <div class="${detail.id}-kwmap kwmap-field">
 			#set($map = $data.getValue($detail.getId()))
