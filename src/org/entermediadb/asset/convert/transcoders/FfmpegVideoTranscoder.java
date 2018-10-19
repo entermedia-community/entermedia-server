@@ -2,6 +2,7 @@ package org.entermediadb.asset.convert.transcoders;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -9,6 +10,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.convert.BaseTranscoder;
 import org.entermediadb.asset.convert.ConvertInstructions;
 import org.entermediadb.asset.convert.ConvertResult;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
@@ -184,6 +186,14 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 				comm.add(width + "x" + height);
 			}
 
+			for (Iterator iterator = inStructions.getPresetParameters().iterator(); iterator.hasNext();)
+			{
+				Data param = (Data) iterator.next();
+				String value = param.get("value");
+				comm.add( value);
+			}
+			
+			
 			//640x360 853x480 704x480 = 480p
 			/*
 			 * Here is a two pass mp4 convertion with mp3 audio The second pass
