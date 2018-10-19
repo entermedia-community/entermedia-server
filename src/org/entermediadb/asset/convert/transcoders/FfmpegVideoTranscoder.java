@@ -186,12 +186,6 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 				comm.add(width + "x" + height);
 			}
 
-			for (Iterator iterator = inStructions.getPresetParameters().iterator(); iterator.hasNext();)
-			{
-				Data param = (Data) iterator.next();
-				String value = param.get("value");
-				comm.add( value);
-			}
 			
 			
 			//640x360 853x480 704x480 = 480p
