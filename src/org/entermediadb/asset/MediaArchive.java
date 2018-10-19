@@ -2040,6 +2040,10 @@ public class MediaArchive implements CatalogEnabled
 	public Collection getBadges(MultiValued inRow)
 	{
 		Collection badges = inRow.getValues("badge");
+		HitTracker chats = getSearcher("chatterbox").query().match("channel", "asset"+ inRow.getId()).match("type","message").search();
+		if(chats.size() > 0) {	
+			badges.add("haschats");
+		}
 		if (badges != null && !badges.isEmpty())
 		{
 			String id = inRow.get("badge"); //text version of the ids
@@ -2063,12 +2067,7 @@ public class MediaArchive implements CatalogEnabled
 				}
 				Collections.sort(b);
 
-				HitTracker chats = getSearcher("chatterbox").query().match("channel", "asset"+ inRow.getId()).match("type","message").search();
-				if(chats.size() > 0) {
-					Data badge = getData("badge", "haschats");
-
-					b.add(badge);
-				}
+				
 				
 				
 				getCacheManager().put("badges", id, b);
