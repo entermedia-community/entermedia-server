@@ -983,26 +983,36 @@ td.checkbox input, th.firstheader input {
 
 /*Collections Home Page*/
 #application .collectionshomecontent { padding:20px; }
+
 .card-collections { 
 	float:left; 
-	width:290px; 
+	width:190px; 
 	height:90px; 
-	margin: 0 10px 10px 0; 
-	}
-.collectionshomecontent .card-collections:last-child { margin:0; }
+	margin: 0 20px 20px 0;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 1);
+    border: 1px solid #aaa; 
+    text-align: center;
+}
 .collectionbox {
-	padding: 2px 0 0 24px; 
+	padding: 4px; 
 	line-height:20px; 
-	background:url('../images/icons/box.png') top 2px left 0 no-repeat;
-	display: inline-block;
-	}
-
+	background-color: rgba(20, 20, 20, 0.4);
+	color: white;
+	display: block;
+	margin-top: 34px;
+	font-weight: bold;	
+}
+.collectionbox:hover
+{
+	color: white;
+}
 .card-body {
     white-space: nowrap; 
     overflow: hidden;
     text-overflow: ellipsis;
 }
 .card-name {
+
 
     
     
@@ -1157,7 +1167,7 @@ label.error {
     display: block!important;
     width: 80%;
     height: 100%;
-    background-color:#d3d3d3;
+    background-color:#cecece;
 }
 .assetpanel-content {
 	padding: 20px;
@@ -1171,7 +1181,11 @@ label.error {
 	    position: absolute;
 	    left:10px;
 	    top:10px;
+<<<<<<< Updated upstream
 	    width: 260px;
+=======
+	    width: 290px;
+>>>>>>> Stashed changes
 	    height: calc(100% - 20px);
 	}
 	.assetpanel-content {
@@ -1180,6 +1194,7 @@ label.error {
 		min-height: 200px;
 		height: calc(100% - 20px);
 		overflow: hidden;
+		background-color: #ccc;
 	}
 	.assetpanel-content-chatterbox {
 		min-height: 200px;
@@ -1207,7 +1222,6 @@ label.error {
 
 	}
 .assetpanel-separator {
-	border-top:1px solid #bfbfbf; 
 	margin-top:10px; 
 	height: 10px; 
 	display: table-row;
@@ -3227,3 +3241,5 @@ a.collectionbox.favorite
 .select2-results__option[aria-selected] {
     word-break: break-word;
 }
+
+

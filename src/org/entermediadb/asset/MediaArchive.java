@@ -334,7 +334,11 @@ public class MediaArchive implements CatalogEnabled
 	{
 		return (Asset) getAssetSearcher().query().or().exact("sourcepath", inSourcePath).exact("archivesourcepath", inSourcePath).searchOne();
 	}
-
+	/**
+	 * @deprecated see asLinkToPreview
+	 * @param inSourcePath
+	 * @return
+	 */
 	public String asLinkToPreview(String inSourcePath)
 	{
 		return getCatalogHome() + "/downloads/preview/cache/" + inSourcePath + "/preview.jpg";
@@ -1013,8 +1017,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return getCatalogHome() + "/downloads/preview/" + inSize + "/" + inSourcePath + "/thumb.jpg";
 	}
-
-	public String getLinkToSize(Asset inAsset, String inSize)
+	public String getLinkToSize(Data inAsset, String inSize)
 	{
 		if( inAsset == null)
 		{
@@ -1022,7 +1025,7 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return getLinkToSize(inAsset.getSourcePath(), inSize);
 	}
-
+	
 	public void removeGeneratedImages(Asset inAsset)
 	{
 		removeGeneratedImages(inAsset, false);
@@ -2177,6 +2180,10 @@ public class MediaArchive implements CatalogEnabled
 
 	public String asLinkToPreview(Data inAsset, String inGeneratedName)
 	{
+		if( inAsset == null)
+		{
+			return null;
+		}
 		String cdnprefix = getCatalogSettingValue("cdn_prefix");
 		String finalroot = null;
 		if (cdnprefix == null)

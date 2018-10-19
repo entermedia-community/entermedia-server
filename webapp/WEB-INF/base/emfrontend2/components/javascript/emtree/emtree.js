@@ -246,7 +246,6 @@ $(document).ready(function()
 				return false;
 	} );
 
-	
 	lQuery(".treecontext #renamenode").livequery('click', function(event) {
 				event.stopPropagation();
 				var node = getNode(this);
