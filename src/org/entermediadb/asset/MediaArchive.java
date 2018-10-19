@@ -2057,14 +2057,29 @@ public class MediaArchive implements CatalogEnabled
 					}
 					else
 					{
+
 						b.add(badge);
 					}
 				}
 				Collections.sort(b);
+
+				HitTracker chats = getSearcher("chatterbox").query().match("channel", "asset"+ inRow.getId()).match("type","message").search();
+				if(chats.size() > 0) {
+					Data badge = getData("badge", "haschats");
+
+					b.add(badge);
+				}
+				
+				
 				getCacheManager().put("badges", id, b);
 			}
 			return b;
 		}
+		
+		
+		
+		
+		
 		return null;
 	}
 
