@@ -106,6 +106,10 @@ public class FfmpegVideoTranscoder extends BaseTranscoder
 			setValue("profile:a", null, inStructions, comm); // aac_low (default) aac_main
 			setValue("filter:a", null, inStructions, comm); //audiofilters (channelmap, volume, ...) 
 
+			setValue("max_muxing_queue_size", null, inStructions, comm); // 0=auto, but leave some cores for the server's workload
+
+			
+			
 			//comm.add("-aspect");
 			//comm.add("640:480");
 
