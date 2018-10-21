@@ -22,7 +22,10 @@ $context.putPageValue("cdn",$cdnprefix)
 #if( !$opentab)
 	#if( $canmetadatageneral )
 		#set( $opentab = "viewproperties")
+	#else
+		#set( $opentab = "viewpreview")
 	#end
+	
 #end
 
 <div id="main-media-container" style="height: 100%;">
