@@ -658,7 +658,8 @@ checkScroll = function()
 			   	{
 				   var jdata = $(data);
 				   var code = $(".masonry-grid",jdata).html();
-				   $(".masonry-grid",resultsdiv).append(code);
+				   //$(".masonry-grid",resultsdiv).append(code);
+				   $(resultsdiv).append(code);
 				   gridResize();
 				   $(document).trigger("domchanged");
 				   stopautoscroll = false; 
