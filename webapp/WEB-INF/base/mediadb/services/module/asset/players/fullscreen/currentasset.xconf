@@ -5,4 +5,10 @@
 	</path-action>
 	<layout />
 	<inner-layout />
+	
+	<permission name="convert">
+		<userprofile property="convert" equals="true" />
+	</permission>
+
+	
 </page>

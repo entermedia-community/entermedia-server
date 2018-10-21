@@ -35,6 +35,14 @@ $context.putPageValue("cdn",$cdnprefix)
 	#end
 	#if($opentab == "viewpreview")
 		$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
+#if( $next )
+	#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
+	#if( $preloadtype == "image")
+		#set($tpath = $mediaarchive.asLinkToPreview($next, "image1024x768.jpg"))
+		<div style="display:none;"><img src="$tpath" /></div>
+	#end
+#end
+		
 	#elseif($opentab == "viewproperties")
 		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
 	#elseif($opentab == "viewcollaborate")

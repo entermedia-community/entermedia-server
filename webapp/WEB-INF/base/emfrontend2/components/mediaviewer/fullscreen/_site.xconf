@@ -25,6 +25,11 @@
 		</and>
 	</permission>	
 
+	<permission name="convert">
+		<userprofile property="convert" equals="true" />
+	</permission>
+
+
 	<property name="section">details</property>
 	
 	<permission name="editasset">
