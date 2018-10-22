@@ -1191,11 +1191,7 @@ label.error {
 	    position: absolute;
 	    left:10px;
 	    top:10px;
-<<<<<<< Updated upstream
-	    width: 260px;
-=======
 	    width: 290px;
->>>>>>> Stashed changes
 	    height: calc(100% - 20px);
 	}
 	.assetpanel-content {
