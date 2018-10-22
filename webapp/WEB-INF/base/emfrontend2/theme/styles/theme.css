@@ -1191,7 +1191,7 @@ label.error {
 	    position: absolute;
 	    left:10px;
 	    top:10px;
-	    width: 290px;
+	    width: 280px;
 	    height: calc(100% - 20px);
 	}
 	.assetpanel-content {
@@ -2914,7 +2914,7 @@ a.collectionbox.favorite
 }
 .assetpanel-sidebar .gallery-thumb.active-asset
 {
-	background-color: #d3d3d3;
+	background-color: #ccc;
 	border-bottom: solid 1px #a3a3a3;
 	border-top: solid 1px #a3a3a3;
 	
