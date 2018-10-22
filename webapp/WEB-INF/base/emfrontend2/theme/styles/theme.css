@@ -1160,7 +1160,7 @@ label.error {
     color:red;
 }
 
-#main-media-viewer { height: calc(100% - 36px);}
+#main-media-viewer { height: calc(100% - 32px);}
 
 /*Asset Panel*/
 .assetpanel-container {
@@ -1180,25 +1180,24 @@ label.error {
     background-color:#cecece;
 }
 .assetpanel-content {
-	padding: 20px;
+	padding: 14px 16px;
 	min-height: 200px;
 	height: 100%;
 	background-color:#d3d3d3;
-	margin-top:10px;
 }
 @media (min-width: 992px) {
 	.assetpanel-sidebar {
 	    position: absolute;
-	    left:10px;
-	    top:10px;
-	    width: 280px;
-	    height: calc(100% - 20px);
+	    left:0;
+	    top:0;
+	    width: 240px;
+		box-shadow: 5px 0 5px -5px #333;
+	  /*  height: calc(100% - 20px);*/
 	}
 	.assetpanel-content {
-		margin-left: 280px;
-		margin-right:10px;
+		margin-left: 240px;
 		min-height: 200px;
-		height: calc(100% - 20px);
+		/*height: calc(100% - 20px);*/
 		overflow: hidden;
 		background-color: #ccc;
 	}
@@ -1744,15 +1743,15 @@ label.error {
 .em2tabs li a {
 	display: block;
     padding: .5rem 1.2rem;
-    background-color: #c1c1c1;
+    background-color: #e1e1e1;
     text-align: center;
-    color: #444;
+    color: #666;
     text-decoration: none;
     font-weight: 700;
 }
 .em2tabs li a:hover {
-	background-color: #cacaca;
-	color:#333;
+	background-color:  rgba(10, 10, 10, 0.1);
+	color:#000;
 }
 .em2tabs-tab-content {
 	background: #efefef;
@@ -1763,7 +1762,7 @@ label.error {
 .em2tabs li.emtabselected a
 {
 	color:#000;
-	background-color: #EFEFEF;
+	background-color: #efefef;
 }
 .em2tabs-tab-content .table .cellrow {
     padding: 10px 10px;
@@ -2890,39 +2889,40 @@ a.collectionbox.favorite
 .assetpanel-sidebar .carousel {
 	height: 100%;
 	overflow-y: auto;
-	background-color: #E3E3E3;
+	background-color: #e1e1e1;
 }
 .assetpanel-sidebar .gallery-item {
 	display: block;
-	padding:10px;
-	margin:10px;
+	padding:25px 10px;
 	text-align:center;
-	margin-left:25px;
-
 }
 .assetpanel-sidebar .gallery-item-title {
 	overflow: hidden; 
-    text-overflow: ellipsis;
     display: block;
-    white-space: nowrap;
+    height: 28px;
+    padding:4px 8px;
+    background-color:  rgba(20, 20, 20, 0.6);
+    color:#efefef;
 }
-.assetpanel-sidebar .gallery-item-checkbox {
-    top: calc(50% - 20px);
-    position: absolute;
-    left: 25px;
 
+.gallery-item-title .selectionbox {
+	margin: 4px 12px 0 0;
+	float: left;
 }
-.assetpanel-sidebar .gallery-thumb.active-asset
-{
-	background-color: #ccc;
-	border-bottom: solid 1px #a3a3a3;
-	border-top: solid 1px #a3a3a3;
-	
+.gallery-item-title label {
+	line-height:20px;
+	display: block;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	overflow: hidden;
+}
+.assetpanel-sidebar .gallery-thumb.active-asset {
+	background-color: #efefef;
 }
 
 .assetpanel-sidebar .gallery-thumb {
-	border-bottom: solid 1px #c1c1c1;
-	border-top: solid 1px #cacaca;
+	background-color:#cacaca;
+	
 }
 
 .assetpanel-sidebar .gallery-thumb a
@@ -2932,7 +2932,10 @@ a.collectionbox.favorite
 .assetpanel-sidebar .gallery-thumb:hover {
 	background-color: #d0e6ef;
 }
-
+.assetpanel-sidebar .gallery-thumb:hover .gallery-item-title {
+	color:#fff;
+	background-color: rgba(20, 20, 20, 0.6);
+	}
 
 .page-title {
     text-align: center;
