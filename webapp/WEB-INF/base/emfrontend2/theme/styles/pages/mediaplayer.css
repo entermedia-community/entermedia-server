@@ -390,14 +390,16 @@ color: #fff;
 }
 
 #footermenu li.footermenu {
-	font-size:.65rem;
+	font-size: 1rem;
+	color:#fff;
+	line-height:32px;
 	font-weight: normal;
 	padding: 0 2% 0 2%;
 	float:left;
 	display:block;
 }
 
-#footermenu .gotoarrows { font-size: 2em; }
+#footermenu .gotoarrows { font-size: 1.5rem; }
 #footermenu .gotoarrows span { cursor:pointer;} 
 #footermenu .gotoarrows span:hover { color:#fff; }
 
@@ -428,23 +430,6 @@ color: #fff;
 #footermenu li a {
 	color: white;	
 	display:block;
-}
-
-
-#footermenu .expandmenu 
-{
-	font-size: 1.5em;
-		margin-top: 4px;
-	
-	color:#FFF;
-}
-
-#footermenu .dropdown-toggle
-{
-	font-size: 1.5em;
-		margin-top: 4px;
-	
-	color:#FFF;
 }
 
 

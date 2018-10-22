@@ -5,7 +5,8 @@
 			#if($hits.isSelectedOnPage(${hit.id})) checked #end
 			data-dataid="${hit.id}" />
 	</div>
-	#end #if( $canviewvoting )
+	#end 
+	#if( $canviewvoting )
 	<div class="assetVoteTool">
 		<div class="votebox" id="votebox${hit.id}">
 			$pages.include("$apphome/components/voting/status.html",$context)</div>

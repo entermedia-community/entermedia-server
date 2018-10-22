@@ -1,4 +1,4 @@
-<div id="stacked-pdf-thumbnail-sidebar" class="hidden-xs" style="width:200px;">
+<div id="stacked-pdf-thumbnail-sidebar" class="hidden-xs">
 
     #set($currentpreview = $context.findValue('currentpreview'))
     #set($pagenum = $context.findValue('pagenum'))
@@ -32,15 +32,6 @@
             #end
 
             <ul>
-                <li id="prevfive">
-                #if ($page > 0 )
-                    
-                         #set ($pageholder = $page + 1)
-                         #set( $prevthumb = $pageholder - 1)
-                         #set( $prevthumb = $prevthumb * 5 - 4)
-                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid">&lt;&lt; [[Previous Five]] </a>                         
-                #end
-                </li>
                     
                 #set( $start = $page*5) 
                 #set($end = $start + 4)
@@ -55,22 +46,29 @@
                         #set( $page = $page + 1)
                         <a href="#" onclick='$("li").removeClass("current");$(this).closest("li").addClass("current");$("#mainimage").attr("src", "$!cdn$home/${mediadbappid}/services/module/asset/downloads/preview/extralarge/${urlenc}/preview.png?pagenum=$!page")'>
                             <div class="emdropshadow">
-       							<img class="emdropshadow" src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${urlenc}/preview.jpg?pagenum=$page" />
+       							<img src="$home/${applicationid}/views/modules/asset/downloads/preview/documentcrop/${urlenc}/preview.jpg?pagenum=$page" />
        						</div>	
-                            <p><span>$page</span></p>
+                            <div class="pdf-page-number">$page</div>
                         </a>
                     </li>
                 #end
                 #set ($pageholder = $page + 1)
-                <li id="nextfive">
+                <li class="next-pages">
+                #if ($page > 0 )
+                    
+                         #set ($pageholder = $page + 1)
+                         #set( $prevthumb = $pageholder - 1)
+                         #set( $prevthumb = $prevthumb * 5 - 4)
+                        <a class="ajax next-pages-prev" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$prevthumb&hitssessionid=$hitssessionid" style="#if ( $pageholder * 5 < $totalpages) margin-right:10px; #end"><i class="fas fa-caret-left"></i> [[Previous Five]] </a>                         
+                #end
                 #if ( $pageholder * 5 < $totalpages)
                     #set( $nextthumb = $pageholder + 1)
                     #set( $nextthumb = $nextthumb * 5 - 4)
-                    
-                        <a class="ajax" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] >> </a>
+                        <a class="ajax  next-pages-next" targetdiv="stacked-pdf-thumbnail-sidebar" href="$home${context.getPage().getPath()}?assetid=${asset.getId()}&pagenum=$nextthumb&hitssessionid=$hitssessionid"> [[Next Five]] <i class="fas fa-caret-right"></i></a>
                 #end
                 </li>
             </ul>
+            <div class="clearfix"></div>
             #if(!$currentpreview)
             	#set( $currentpreview = 1)
             #end

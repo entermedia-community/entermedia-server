@@ -1009,14 +1009,14 @@ td.checkbox input, th.firstheader input {
     border: 1px solid #aaa; 
     text-align: center;
 }
-.collectionbox {
+.card-collections .collectionbox {
 	padding: 4px; 
 	line-height:20px; 
 	background-color: rgba(20, 20, 20, 0.6);
 	color: white;
 	display: block;
 	margin-top: 34px;
-	font-weight: bold;	
+	font-weight: 700;
 }
 .collectionbox:hover, .collectionbox:visited
 
@@ -1321,6 +1321,152 @@ label.error {
 .chatterbox-inputarea-inside .chatter-text {
 	padding:.2rem .75rem;
 }
+.assetpanel-document {
+	height: 100%;
+}
+
+.assetpanel-document .assetpanel-content {
+	background-color: #000;
+	color:#fff;
+	text-align: center;
+}
+
+
+#pdf-thumbnail-sidebar {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    text-align: center;
+    vertical-align: top;
+}
+#pdf-thumbnail-sidebar ul {
+    padding: 0;
+    margin: 0;
+}
+#pdf-thumbnail-sidebar ul li {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    position:relative;
+}
+#pdf-thumbnail-sidebar ul li a {
+    display: block;
+}
+#pdf-thumbnail-sidebar ul li a .emdropshadow {
+    margin:25px 0;
+}
+#pdf-thumbnail-sidebar ul li a .pdf-page-number {
+	overflow: hidden; 
+    display: block;
+    height: 28px;
+    padding:4px 8px;
+    background-color:  rgba(20, 20, 20, 0.6);
+    color:#efefef;
+    text-align:center;
+}
+#pdf-thumbnail-sidebar ul li.current a,
+#pdf-thumbnail-sidebar ul li a:hover,
+#pdf-thumbnail-sidebar ul li.current a:hover {
+	background-color: #d0e6ef;
+}
+#pdf-thumbnail-sidebar ul li.current:after {
+    content: '';
+    display: block;
+    float: left;
+    position: absolute;
+    border-left: 12px solid #d0e6ef;
+    border-top: 60px solid transparent;
+    border-bottom: 60px solid transparent;
+    top: 0px;
+    left: 100%;
+    z-index: 10;
+    padding: 0;
+    margin: 0;
+}
+#pdf-thumbnail-sidebar ul li.current:hover:after { 
+	border-left: 12px solid #d0e6ef;
+}
+#pdf-thumbnail-sidebar .next-pages a {
+	display: inline-block;
+	line-height: 2;
+	padding:2px 8px;
+	font-weight: bold;
+}
+#pdf-thumbnail-sidebar .next-pages-prev {
+	float:left;
+}
+#pdf-thumbnail-sidebar .next-pages-next {
+	float:right;
+}
+#pdf-viewer-container {
+    margin: 0;
+    padding: 0;
+}
+#jumpto p {
+    color: #fff;
+    line-height: 2;
+    text-align: center;
+    margin:0 auto;
+}
+#jumpto #pagejumper {
+    width: 30px;
+    padding: 2px 4px;
+    line-height:16px;
+    border-radius: 3px;
+    border: 1px solid #444;
+    position: relative;
+    top: 1px;
+    margin-right: 1px;
+    text-align: center;
+}
+#jumpto .btn {
+    padding: 2px 6px;
+    height: 24px;
+}
+
+#pdf-viewier-container {
+    position: realtive;
+}
+#pdf-viewer-container #prevpage {
+    position: absolute;
+    left: 30px;
+    bottom: 44%;
+    background: url('../images/pdf-prev-page.png');
+    opacity: 0.2;
+    display: block;
+    width: 50px;
+    height: 100px;
+}
+#pdf-viewer-container #nextpage {
+    position: absolute;
+    right: 30px;
+    bottom: 44%;
+    background: url('../images/pdf-next-page.png');
+    opacity: 0.2;
+    display: block;
+    width: 50px;
+    height: 100px;
+}
+#pdf-viewer-container #prevpage:hover, #pdf-viewer-container #nextpage:hover {
+    opacity: 0.3;
+}
+#prevfive, #nextfive {
+    height: 25px;
+}
+#prevfive a, #nextfive a {
+    color: #666;
+}
+#prevfive {
+    border-bottom: 1px solid #eee;
+}
+#nextfive {
+    border-top: 1px solid #eee;
+}
+
+
+
+
+
 
 /*Module: Assets*/
 .asset-menu {

@@ -35,14 +35,13 @@ $context.putPageValue("cdn",$cdnprefix)
 	#end
 	#if($opentab == "viewpreview")
 		$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
-#if( $next )
-	#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
-	#if( $preloadtype == "image")
-		#set($tpath = $mediaarchive.asLinkToPreview($next, "image1024x768.jpg"))
-		<div style="display:none;"><img src="$tpath" /></div>
-	#end
-#end
-		
+		#if( $next )
+			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
+			#if( $preloadtype == "image")
+				#set($tpath = $mediaarchive.asLinkToPreview($next, "image1024x768.jpg"))
+				<div style="display:none;"><img src="$tpath" /></div>
+			#end
+		#end
 	#elseif($opentab == "viewproperties")
 		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
 	#elseif($opentab == "viewcollaborate")
@@ -85,7 +84,7 @@ $context.putPageValue("cdn",$cdnprefix)
 			</li>
 			#end
 			#if( !$previewonly )
-			 <li class="footermenu">
+			 <li class="footermenu bottomtab">
    <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
    <ul class="dropdown-menu">
    #set($moduleid = "asset")
@@ -172,7 +171,7 @@ $context.putPageValue("cdn",$cdnprefix)
     #end
     
 			 #if($candownload || $canconvert)
-				<li class="footermenu" >		
+				<li class="footermenu bottomtab" >		
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]</a>
    <ul class="dropdown-menu">
 						#if( !$cdnprefix )
@@ -199,9 +198,9 @@ $context.putPageValue("cdn",$cdnprefix)
 			 #end
 		  
 			#if(  $asset.getFileFormat()  == "pdf")
-			<li>
+			<li class="footermenu bottomtab" >
 			    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
-	            	<span class="fas fa-blackboard"> </span> [[View PDF]]
+	            	<span class="fas fa-file-alt"> </span> [[View PDF]]
 	            </a>
             </li> 
 			#end

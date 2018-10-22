@@ -1,42 +1,43 @@
-<div id="pdfviewer">
+<div id="pdfviewerXX" class="assetpanel-document">
+<div class="assetpanel-container">
+<div class="assetpanel-sidebar">
+	
+	#set( $pagenum = $context.getRequestParameter("pagenum") )
+	
+	#if( !$pagenum)
+	 #set( $pagenum = 1 )
+	#end 
+	
+	#set( $name = $context.getRequestParameter("name") )
+	#set ( $urlenc = $url_util.encode($asset.sourcepath))
+	#set($totalpages = $numberutils.toInt($asset.pages))
+	
+	#if( $totalpages > 1 )
+		$pages.include("/${mediadbappid}/services/module/asset/players/large2/pages.html",$context)
+         <div id="jumpto">
+              <form id="jumptoform" class="ajaxform" targetdiv="pdfviewer" data-totalpages="$totalpages" action="$home$page.getPath()">
+              	<p><span>[[Jump To Page]] (1 - $totalpages):</span></p>
+				<p>
+                 <input  type="hidden" name="assetid" value="$!asset.getId()" />
+                 <input  type="hidden" name="name" value="$name" />
+                 <input  type="hidden" name="hitssessionid" value="$!hitssessionid" />
+                 <input  type="hidden" name="oemaxlevel" value="1" />
+                 <input  type="hidden" name="hidenav" value="$hidenav" />
+                ## <input type="submit" id="gotopage" class="btn" value="Go" />
+                 <a href="#" class="jumpto-left" ><span class="fas fa-caret-left"></span></a>
+                 <input id="pagejumper" name="pagenum" value="$!pagenum" >
+                 <a href="#" class="jumpto-right" ><span class="fas fa-caret-right"></span></a>
+                 </p>
+              </form>
+          </div>                
+	      #end
 
-#set( $pagenum = $context.getRequestParameter("pagenum") )
-
-#if( !$pagenum)
- #set( $pagenum = 1 )
-#end 
-
-#set( $name = $context.getRequestParameter("name") )
-#set ( $urlenc = $url_util.encode($asset.sourcepath))
-#set($totalpages = $numberutils.toInt($asset.pages))
-
-<div style="color:#fff; text-align:center;">
-[[Click to drag. Mouse wheel to zoom]]
+	##$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcarousel.html",$context)
 </div>
-
-<div id="mainholder row" >
-	<div class="col-sm-2 col-lg-1">
-		#if( $totalpages > 1 )
-					$pages.include("/${mediadbappid}/services/module/asset/players/large/pages.html",$context)
-	               <div id="jumpto" class="row">
-	                    <form id="jumptoform" class="ajaxform" targetdiv="pdfviewer" data-totalpages="$totalpages" action="$home$page.getPath()">
-	                    	<p><span>[[Jump To Page]] (1 - $totalpages)</span></p>
-				<p style="vertical-align: text-bottom;">
-	                       <input id="pagejumper" name="pagenum" value="$!pagenum" >
-	                       <input  type="hidden" name="assetid" value="$!asset.getId()" />
-	                       <input  type="hidden" name="name" value="$name" />
-	                       <input  type="hidden" name="hitssessionid" value="$!hitssessionid" />
-	                       <input  type="hidden" name="oemaxlevel" value="1" />
-	                       <input  type="hidden" name="hidenav" value="$hidenav" />
-	                      ## <input type="submit" id="gotopage" class="btn" value="Go" />
-	                       <a href="#" class="jumpto-left" ><span class="glyphicon glyphicon-triangle-left" style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
-	                       <a href="#" class="jumpto-right" ><span class="glyphicon glyphicon-triangle-right " style="color: rgb(200, 200, 200);font-size:1.8em;"></span></a>
-	                       </p>
-	                    </form>
-	                </div>                
-	         #end
-	</div>
-	<div class="col-sm-10"> 
+<div class="assetpanel-content">
+	<div class="assetpanel-content-inside">
+		[[Click to drag. Mouse wheel to zoom]]
+		
 		<div id="mainimageholder"> 
 			#set( $size = "image1500x1500.png")
 			#if( $mediaarchive.isCatalogSettingTrue("uselegacypreview") )
@@ -45,8 +46,14 @@
 			#set($tpath = $mediaarchive.asLinkToPreview($asset, $size))
 		
 			<img id="mainimage" src="$tpath?pagenum=$!pagenum" alt="$!asset.name" />
-		</div>		
+		</div>	
 	</div>
+	
+</div>
 </div>
 
+
+<div>
+
 </div>
+
