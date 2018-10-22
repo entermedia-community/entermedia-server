@@ -774,7 +774,13 @@ td.checkbox input, th.firstheader input {
 	min-height: 152px;
 }
 .collectionshomeresults {
-	padding:0px;
+	padding:20px;
+	position:relative;
+}
+.collectionshomeform {
+	position: absolute;
+	top:25px;
+	right: 25px;
 }
 .collectionshome-header { 
 	background-color: #efefef;
@@ -1022,10 +1028,11 @@ td.checkbox input, th.firstheader input {
     text-overflow: ellipsis;
 }
 .card-name {
-
-
-    
-    
+    line-height: 20px;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 /*Tabs on Results Page*/
 
