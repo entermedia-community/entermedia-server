@@ -46,10 +46,10 @@ $context.putPageValue("showtoolbar", "false")
 		<div class="pull-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}" data-assetid="$hit.id" data-next="$!next.getId()" data-previous="$!previous.getId()" data-width="$assetwidth" data-height="$assetheight">
 		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
 		    	    <div class="grid-thumbimage"> 
-		    	    	#if( $type =="audio")
+		    	    	#if(!$type || $type =="audio")
 		    	    		#set( $type = "mime" )
 		    	    	#end
-		        	   $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+		        	   $pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
 		        	</div>
 		    	</a>
 		      <div class="caption type${type}">

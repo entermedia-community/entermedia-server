@@ -14,7 +14,13 @@
 	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
 		<div class="emthumbimage em$thumbsize assetdraggable"
 			data-assetid="${hit.id}" title="$sourcepath">
-			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)</div>
+			
+			#if(!$type)
+   	    		#set( $type = "default" )
+   	    	#end
+			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
+			$pages.include("$apphome/components/results/badges.html", $context)
+		</div>
 	</a> 
 	#if( $showcaption )
 	<div class="gallery-caption">

@@ -18,7 +18,7 @@ $context.putPageValue("showtoolbar", "false")
     #set( $details = $mediaarchive.getAssetSearcher().getDetailsForView("asset/resultstable",$context.getUserProfile()) )
     $context.putPageValue("details",$details)
 
-<div class="masonry-grid" data-maxheight="$!mediaarchive.getCatalogSettingValue("stacked_gallery_imagesize")"  >
+<div class="masonry-grid" data-maxheight="$!mediaarchive.getCatalogSettingValue('stacked_gallery_imagesize')"  >
  	#set( $rootid = $hits.sessionId )
     #set($count = 0)
     #set( $viewerlink = $content.get("assetviewerlink") )
@@ -47,7 +47,8 @@ $context.putPageValue("showtoolbar", "false")
 		    	    	#elseif( $type =="video")
 		    	    		#set( $type = "videothumbnail" )
 		    	    	#end
-		        	   $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+		        	    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
+		        	   	$pages.include("$apphome/components/results/badges.html", $context)
 		        	</div>
 		    	</a>
 		      <div class="caption">

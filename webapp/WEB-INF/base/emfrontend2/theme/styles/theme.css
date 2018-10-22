@@ -603,9 +603,10 @@ html, body, #application, #emcontainer {
 .emresultstable tr td.thumbnail {
     width: 130px;
     text-align: center;
-    padding: 0 10px;
+    padding: 1px 10px;
     background-color: transparent;
-    border: 0px;
+    
+    position:relative;
 }
 .emdata .tableheader,
 #emcontainer #emselectable #tableheader {
@@ -2900,6 +2901,7 @@ a.collectionbox.favorite
 }
 .assetpanel-sidebar .gallery-item {
 	display: block;
+	position:relative;
 	padding:25px 10px;
 	text-align:center;
 }
@@ -3070,47 +3072,7 @@ a.collectionbox.favorite
     text-decoration: underline;
 }
 
-.assetVoteTool {
-    display: inline-block;
-    position: relative;
-    float:right;
-    height:0px;
 
-}
-.assetVoteTool .votebox 
-{
-   background: white;
-    border-left: 1px solid #DDD;
-     border-bottom: 1px solid #DDD;
-    padding: 2px 0px 0 3px;
-    position: relative;
-    top: 0px;
-    height: 27px;
-    display: block;
-    border-radius: 0 5px 0 5px;
-}
-
-.assetVoteTool .star {
-    display: block;
-    width: 26px;
-    margin: 0 5px 0 3px;
-    font-size: 120%;
-    color:#afafaf;
-}
-.assetVoteTool .votecounter {
-	 text-decoration: none;
-	 margin-right: 5px;
-}
-.assetVoteTool .star:hover, 
-.assetVoteTool .star.full {
-      color:#FEDC71;
-}
-.assetVoteTool a {
-    color: #3490B2;
-}
-.assetVoteTool a:hover {
-    text-decoration: underline;
-}
 
 .ui-datepicker-trigger {
 	margin-left:10px;
