@@ -774,7 +774,7 @@ td.checkbox input, th.firstheader input {
 	min-height: 152px;
 }
 .collectionshomeresults {
-	padding:10px;
+	padding:0px;
 }
 .collectionshome-header { 
 	background-color: #efefef;
@@ -968,11 +968,17 @@ td.checkbox input, th.firstheader input {
 	position: relative;
 	margin-right: 10px;
 }
+
 .opencollections .collectionbox {
-	margin-right: 12px;
+	padding: 2px 0 0 24px;
+	margin: 0px; 
+	line-height:21px; 
+	background:url('../images/icons/box.png') top 2px left 0 no-repeat;
+	display: inline-block;
 }
-.opencollections a:hover {
+.opencollections a:hover, .opencollections a:visited{
 	text-decoration: none;
+	color: black;
 }
 .collectionicons {
     position: absolute;
@@ -980,7 +986,10 @@ td.checkbox input, th.firstheader input {
     top:0;
 }
 
-
+.librarycollectiondroparea.selected,.librarycollectiondroparea:hover 
+{
+	background-color: #ccc;
+}
 /*Collections Home Page*/
 #application .collectionshomecontent { padding:20px; }
 
@@ -996,13 +1005,14 @@ td.checkbox input, th.firstheader input {
 .collectionbox {
 	padding: 4px; 
 	line-height:20px; 
-	background-color: rgba(20, 20, 20, 0.4);
+	background-color: rgba(20, 20, 20, 0.6);
 	color: white;
 	display: block;
 	margin-top: 34px;
 	font-weight: bold;	
 }
-.collectionbox:hover
+.collectionbox:hover, .collectionbox:visited
+
 {
 	color: white;
 }
@@ -3032,7 +3042,7 @@ a.collectionbox.favorite
 }
 
 #createnewarea { padding: 10px 5px;}
-.collectionnew { display:block; text-decoration:underline; }
+.collectionnew { display:block; text-decoration:none; }
 #createnewarea input[type="text"] { width: 150px; margin-bottom:5px;}
 
 
