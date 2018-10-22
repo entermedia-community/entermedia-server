@@ -42,60 +42,55 @@ public class PullManager implements CatalogEnabled
 	protected NodeManager fieldNodeManager;
 	protected String fieldCatalogId;
 	OutputFiller filler = new OutputFiller();
+
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
 	}
-
 
 	public void setCatalogId(String inCatalogId)
 	{
 		fieldCatalogId = inCatalogId;
 	}
 
-
 	public NodeManager getNodeManager()
 	{
 		return fieldNodeManager;
 	}
-
 
 	public void setNodeManager(NodeManager inNodeManager)
 	{
 		fieldNodeManager = inNodeManager;
 	}
 
-
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
 	}
 
-
 	public void setSearcherManager(SearcherManager inSearcherManager)
 	{
 		fieldSearcherManager = inSearcherManager;
 	}
-	
+
 	public HitTracker listRecentChanges(String inType, String inLastpulldate)
 	{
-			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-			QueryBuilder builder = searcher.query().exact("importstatus","complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
-			if( inLastpulldate != null)
-			{
-				Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
-				builder.after("recordmodificationdate", startingfrom);
-			}
-			HitTracker hits = builder.search();
-			if( !hits.isEmpty() )
-			{
-				hits.enableBulkOperations();
-				log.info("Found changes " + hits.size());
-			}
-			return hits;
+		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
+		QueryBuilder builder = searcher.query().exact("importstatus", "complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
+		if (inLastpulldate != null)
+		{
+			Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
+			builder.after("recordmodificationdate", startingfrom);
+		}
+		HitTracker hits = builder.search();
+		if (!hits.isEmpty())
+		{
+			hits.enableBulkOperations();
+			log.info("Found changes " + hits.size());
+		}
+		return hits;
 
 	}
-
 
 	public long processPullQueue(MediaArchive inArchive)
 	{
@@ -109,14 +104,14 @@ public class PullManager implements CatalogEnabled
 			{
 				Data node = (Data) iterator.next();
 				String url = node.get("baseurl");
-				if( url != null)
+				if (url != null)
 				{
 					long time = System.currentTimeMillis();
-					time = time  - 10000L; //Buffer
+					time = time - 10000L; //Buffer
 					Date now = new Date(time);
 					HttpRequestBuilder connection = new HttpRequestBuilder();
 					Map params = new HashMap();
-					if( node.get("entermediakey") != null)
+					if (node.get("entermediakey") != null)
 					{
 						params.put("entermedia.key", node.get("entermediakey"));
 					}
@@ -125,17 +120,20 @@ public class PullManager implements CatalogEnabled
 						log.error("entermediakey is required");
 						continue;
 					}
-					if( node.get("lastpulldate") != null)
+					if (node.get("lastpulldate") != null)
 					{
 						Object dateob = node.getValue("lastpulldate");
 						Date pulldate = null;
-						if(dateob instanceof String){
+						if (dateob instanceof String)
+						{
 							pulldate = DateStorageUtil.getStorageUtil().parseFromStorage((String) dateob);
-						} else{
-							 pulldate = (Date)node.getValue("lastpulldate");	
 						}
-						
-						if( pulldate.after(now))
+						else
+						{
+							pulldate = (Date) node.getValue("lastpulldate");
+						}
+
+						if (pulldate.after(now))
 						{
 							log.info("We just ran a pull within last 10 seconds");
 							continue;
@@ -143,18 +141,18 @@ public class PullManager implements CatalogEnabled
 						params.put("lastpulldate", node.get("lastpulldate")); //Tostring
 					}
 					params.put("searchtype", "asset"); //Loop over all of the types
-					if( inArchive.getAssetSearcher().getAllHits().isEmpty() )
+					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
 					{
 						log.info("Doing a full download");
 						params.put("fulldownload", "true");
 					}
-					
+
 					long ok = downloadPages(inArchive, connection, node, params);
-					if( ok != -1 )
+					if (ok != -1)
 					{
 						node.setValue("lastpulldate", now);
-						getSearcherManager().getSearcher(inArchive.getCatalogId(),"editingcluster").saveData(node);
-					}	
+						getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
+					}
 					else
 					{
 						//error downloading
@@ -163,7 +161,7 @@ public class PullManager implements CatalogEnabled
 				}
 			}
 		}
-		catch ( Exception ex )
+		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
@@ -180,73 +178,68 @@ public class PullManager implements CatalogEnabled
 		link.append("entermedia.key=");
 		link.append(params.get("entermedia.key"));
 		link.append("&lastpulldate=");
-		if( params.get("lastpulldate") != null)
+		if (params.get("lastpulldate") != null)
 		{
 			link.append(params.get("lastpulldate"));
 		}
 		link.append("&searchtype=");
 		link.append(params.get("searchtype"));
 		log.info("Checking: " + url + link);
-		HttpResponse response2 = connection.sharedPost(url , params);
-		StatusLine sl = response2.getStatusLine();           
+		HttpResponse response2 = connection.sharedPost(url, params);
+		StatusLine sl = response2.getStatusLine();
 		if (sl.getStatusCode() != 200)
 		{
 			node.setProperty("lasterrormessage", "Could not download " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-			node.setValue("lasterrordate",new Date()); 
-			getSearcherManager().getSearcher(inArchive.getCatalogId(),"editingcluster").saveData(node);
+			node.setValue("lasterrordate", new Date());
+			getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 			log.error("Initial data server error " + sl);
 			return -1;
 		}
 		String returned = EntityUtils.toString(response2.getEntity());
 		//log.info("returned:" + returned);
-		Map parsed = (Map)new JSONParser().parse(returned);
+		Map parsed = (Map) new JSONParser().parse(returned);
 		boolean skipgenerated = (boolean) Boolean.parseBoolean(node.get("skipgenerated"));
 		boolean skiporiginal = (boolean) Boolean.parseBoolean(node.get("skiporiginal"));
 
 		long assetcount = 0;
 		int page = 1;
-		Map response = (Map)parsed.get("response");
-		String ok = (String)response.get("status");
-		if( ok != null && ok.equals("ok") )
+		Map response = (Map) parsed.get("response");
+		String ok = (String) response.get("status");
+		if (ok != null && ok.equals("ok"))
 		{
 			Collection saved = importChanges(inArchive, returned, parsed);
 			assetcount = assetcount + saved.size();
-			if(!skipgenerated) {
 
-			downloadGeneratedFiles(inArchive,connection,node,params,parsed);
-			}
-			if(!skiporiginal) {
-				//TODO:   Need the asset
-			}
-			
-			int pages = Integer.parseInt( response.get("pages").toString() );
+			downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
+
+			int pages = Integer.parseInt(response.get("pages").toString());
 			//loop over pages
-			String hitssessionid = (String)response.get("hitssessionid");
+			String hitssessionid = (String) response.get("hitssessionid");
 			params.put("hitssessionid", hitssessionid);
 			for (int count = 2; count <= pages; count++)
 			{
 				url = baseurl + "/mediadb/services/cluster/nextpage.json";
-		
-				params.put("page",String.valueOf( count));
-				
+
+				params.put("page", String.valueOf(count));
+
 				log.info("next page: " + url + link + "&page=" + count + "&hitssessionid=" + hitssessionid);
-				response2 = connection.sharedPost(url , params);
-				sl = response2.getStatusLine();           
+				response2 = connection.sharedPost(url, params);
+				sl = response2.getStatusLine();
 				if (sl.getStatusCode() != 200)
 				{
 					node.setProperty("lasterrormessage", sl.getStatusCode() + " " + sl.getReasonPhrase());
-					node.setValue("lasterrordate",new Date()); 
+					node.setValue("lasterrordate", new Date());
 
-					getSearcherManager().getSearcher(inArchive.getCatalogId(),"editingcluster").saveData(node);
+					getSearcherManager().getSearcher(inArchive.getCatalogId(), "editingcluster").saveData(node);
 					log.error("Page server error " + sl);
 					return -1;
 				}
 				returned = EntityUtils.toString(response2.getEntity());
 				//log.info("Got page of json: " + returned);
-				parsed = (Map)new JSONParser().parse(returned);
-				response = (Map)parsed.get("response");
-				ok = (String)response.get("status");
-				if( ok != null && !ok.equals("ok") )
+				parsed = (Map) new JSONParser().parse(returned);
+				response = (Map) parsed.get("response");
+				ok = (String) response.get("status");
+				if (ok != null && !ok.equals("ok"))
 				{
 					log.error("Page could not be loaded " + returned);
 					return -1;
@@ -254,84 +247,79 @@ public class PullManager implements CatalogEnabled
 				log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
 				saved = importChanges(inArchive, returned, parsed);
 				assetcount = assetcount + saved.size();
-				if(!skipgenerated) {
-					downloadGeneratedFiles(inArchive,connection,node,params,parsed);
-				}
-				if(!skiporiginal) {
-					downloadGeneratedFiles(inArchive,connection,node,params,parsed);
-				}
+				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skipgenerated);
 
 			}
 			return assetcount;
 		}
-		else if ( ok != null && ok.equals("empty") )
+		else if (ok != null && ok.equals("empty"))
 		{
 			//No changes found
 			return 0;
 		}
-		else 
+		else
 		{
 			log.error("Initial data could not be loaded " + returned);
 			return -1;
 		}
 	}
 
-
-	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpRequestBuilder inConnection, Data node, Map inParams, Map parsed)
+	protected void downloadGeneratedFiles(MediaArchive inArchive, HttpRequestBuilder inConnection, Data node, Map inParams, Map parsed, boolean skipgenerated, boolean skiporiginal)
 	{
 		String url = node.get("baseurl");
 		try
 		{
 			//How do I get the sourcepath list?
-			Collection changes = (Collection)parsed.get("generated");
-			if(changes == null || changes.isEmpty())
+			Collection changes = (Collection) parsed.get("generated");
+			if (changes == null || changes.isEmpty())
 			{
 				return;
 			}
 			for (Iterator iterator2 = changes.iterator(); iterator2.hasNext();)
 			{
 				Map changed = (Map) iterator2.next();
-				String sourcepath = (String)changed.get("sourcepath");
+				String sourcepath = (String) changed.get("sourcepath");
 				//List generated media and compare it
-				
-				Collection files = (Collection)changed.get("files");
-				if( files != null)
+				if (!skipgenerated)
 				{
-					if( files.isEmpty() )
+					Collection files = (Collection) changed.get("files");
+					if (files != null)
 					{
-						log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());
-						return;
-					}
-					for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
-					{
-						Map filelisting = (Map) iterator3.next();
-						//Compare timestamps
-						String filename = (String)filelisting.get("filename");
-						String lastmodified = (String)filelisting.get("lastmodified");
-						long datetime = Long.parseLong(lastmodified);
-						//TODO:remove any milliseconds? Does this match rsync?
-						
-						ContentItem found = inArchive.getContent( "/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath + "/" + filename);
-						if( !found.exists() || found.getLastModified() != datetime)
+						if (files.isEmpty())
 						{
-							//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
-							//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
-							String path = url + URLUtilities.encode("/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename );
-							HttpResponse genfile = inConnection.sharedPost(path, inParams);
-							StatusLine filestatus = genfile.getStatusLine();           
-							if (filestatus.getStatusCode() != 200)
+							log.debug("No thumbs :" + sourcepath + " on " + parsed.toString());
+							return;
+						}
+						for (Iterator iterator3 = files.iterator(); iterator3.hasNext();)
+						{
+							Map filelisting = (Map) iterator3.next();
+							//Compare timestamps
+							String filename = (String) filelisting.get("filename");
+							String lastmodified = (String) filelisting.get("lastmodified");
+							long datetime = Long.parseLong(lastmodified);
+							//TODO:remove any milliseconds? Does this match rsync?
+
+							ContentItem found = inArchive.getContent("/WEB-INF/data/" + inArchive.getCatalogId() + "/generated/" + sourcepath + "/" + filename);
+							if (!found.exists() || found.getLastModified() != datetime)
 							{
-								log.error("Could not download generated " + filestatus + " " + path);
-								continue;
-							}
-							
+								//http://em9dev.entermediadb.org/openinstitute/mediadb/services/module/asset/downloads/preset/Collections/Cincinnati%20-%20Flying%20Pigs/Flying%20Pig%20Marathon/Business%20Pig.jpg/image1024x768.jpg?cache=false
+								//String fullURL = url + "/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename;
+								String path = url + URLUtilities.encode("/mediadb/services/module/asset/downloads/generated/" + sourcepath + "/" + filename + "/" + filename);
+								HttpResponse genfile = inConnection.sharedPost(path, inParams);
+								StatusLine filestatus = genfile.getStatusLine();
+								if (filestatus.getStatusCode() != 200)
+								{
+									log.error("Could not download generated " + filestatus + " " + path);
+									continue;
+								}
+
 								//Save to local file
 								log.info("Saving :" + sourcepath + "/" + filename + " URL:" + path);
 								InputStream stream = genfile.getEntity().getContent();
-//								InputStreamItem item  = new InputStreamItem();
-//								item.setAbsolutePath(found.getAbsolutePath());
-//								item.setInputStream(genfile.getEntity().getContent());
-//								inArchive.getPageManager().getRepository().put(item);
+								//								InputStreamItem item  = new InputStreamItem();
+								//								item.setAbsolutePath(found.getAbsolutePath());
+								//								item.setInputStream(genfile.getEntity().getContent());
+								//								inArchive.getPageManager().getRepository().put(item);
 								//Change the timestamp to match
 								File tosave = new File(found.getAbsolutePath());
 								tosave.getParentFile().mkdirs();
@@ -340,14 +328,22 @@ public class PullManager implements CatalogEnabled
 								filler.close(stream);
 								filler.close(fos);
 								tosave.setLastModified(datetime);
-						}	
+							}
+						}
 					}
+				}
+
+				if (!skiporiginal)
+				{
+					Asset asset = inArchive.getAssetBySourcePath(sourcepath);
+					File file = getFile(asset);
+					downloadOriginal(inArchive, asset, file, true);
 				}
 			}
 		}
-		catch ( Exception ex)
+		catch (Exception ex)
 		{
-			log.error("Could not download files " + url , ex);
+			log.error("Could not download files " + url, ex);
 		}
 	}
 
@@ -360,9 +356,9 @@ public class PullManager implements CatalogEnabled
 			//array = new JsonUtil().parseArray("results", returned);
 			JSONParser parser = new JSONParser();
 			JSONObject everything = (JSONObject) parser.parse(returned);
-			
+
 			JSONArray jsonarray = (JSONArray) everything.get("results");
-			
+
 			inArchive.getAssetSearcher().saveJson(jsonarray);
 			log.info("saved " + jsonarray.size() + " changed asset ");
 			return jsonarray;
@@ -372,12 +368,13 @@ public class PullManager implements CatalogEnabled
 			log.info("Error parsing following content: " + returned);
 			throw new OpenEditException(e);
 		}
-		
-		
+
 	}
 
 	/**
-	 * Should this be in realtime? Maybe we should have as database journal to track local edits and push them out slowly...yes!
+	 * Should this be in realtime? Maybe we should have as database journal to
+	 * track local edits and push them out slowly...yes!
+	 * 
 	 * @param inType
 	 * @param inAssetIds
 	 */
@@ -392,17 +389,17 @@ public class PullManager implements CatalogEnabled
 			{
 				Data node = (Data) iterator.next();
 				HitTracker hits = searcher.query().ids(inAssetIds).exact("mastereditclusterid", node.getId()).search();
-				if( !hits.isEmpty())
+				if (!hits.isEmpty())
 				{
 					String url = node.get("baseurl");
-					if( url != null)
+					if (url != null)
 					{
 						Map params = new HashMap();
-						if( node.get("entermediadkey") != null)
+						if (node.get("entermediadkey") != null)
 						{
 							params.put("entermediadkey", node.get("entermediadkey"));
 						}
-						if( node.get("lastpulldate") != null)
+						if (node.get("lastpulldate") != null)
 						{
 							params.put("lastpulldate", node.get("lastpulldate"));
 						}
@@ -413,20 +410,20 @@ public class PullManager implements CatalogEnabled
 						{
 							SearchHitData data = (SearchHitData) iterator2.next();
 							jsonbody.append(data.toJsonString());
-							if( iterator2.hasNext() )
+							if (iterator2.hasNext())
 							{
 								jsonbody.append(",");
 							}
 						}
 						jsonbody.append("]");
 						params.put("changes", jsonbody.toString());
-						
+
 						HttpResponse response2 = builder.post(url + "/mediadb/services/cluster/savechanges.json", params);
-						StatusLine sl = response2.getStatusLine();           
+						StatusLine sl = response2.getStatusLine();
 						if (sl.getStatusCode() != 200)
 						{
 							node.setProperty("lasterrormessage", "Could not push changes " + sl.getStatusCode() + " " + sl.getReasonPhrase());
-							getSearcherManager().getSearcher(getCatalogId(),"editingcluster").saveData(node);
+							getSearcherManager().getSearcher(getCatalogId(), "editingcluster").saveData(node);
 							log.error("Could not save changes to remote server " + url + " " + sl.getStatusCode() + " " + sl.getReasonPhrase());
 							continue;
 						}
@@ -434,20 +431,18 @@ public class PullManager implements CatalogEnabled
 				}
 			}
 		}
-		catch ( Exception ex )
+		catch (Exception ex)
 		{
 			throw new OpenEditException(ex);
 		}
 	}
 
-
 	public ContentItem downloadOriginal(MediaArchive inArchive, Asset inAsset, File inFile, boolean ifneeded)
 	{
-		
+
 		Data node = (Data) inArchive.getSearcher("editingcluster").searchByField("clustername", inAsset.get("mastereditclusterid"));
 		String url = node.get("baseurl");
-		
-		
+
 		FileItem item = new FileItem(inFile);
 
 		String path = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
@@ -465,54 +460,47 @@ public class PullManager implements CatalogEnabled
 			long size = inAsset.getLong("filesize");
 			if (item.getLength() != size)
 			{
-				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" +  URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
+				String finalurl = url + "/mediadb/services/module/asset/downloads/originals/" + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
 				HttpRequestBuilder connection = new HttpRequestBuilder();
 				Map params = new HashMap();
-				if( node.get("entermediakey") != null)
+				if (node.get("entermediakey") != null)
 				{
 					params.put("entermedia.key", node.get("entermediakey"));
 				}
-				
+
 				HttpResponse genfile = connection.sharedPost(finalurl, params);
-				StatusLine filestatus = genfile.getStatusLine();           
+				StatusLine filestatus = genfile.getStatusLine();
 				if (filestatus.getStatusCode() != 200)
 				{
 					log.error("Could not download generated " + filestatus + " " + path + "Full URL: " + finalurl);
 					return null;
 				}
-				
-					//Save to local file
-					try
-					{
-						log.info("Saving :" + inAsset.getSourcePath() + "/" + inAsset.getName() + " URL:" + path);
-						InputStream stream = genfile.getEntity().getContent();
 
-						inFile.getParentFile().mkdirs();
-						FileOutputStream fos = new FileOutputStream(inFile);
-						filler.fill(stream, fos);
-						filler.close(stream);
-						filler.close(fos);
-						//inFile.setLastModified(datetime);
-					}
-					catch (Exception e)
-					{
-						// TODO Auto-generated catch block
+				//Save to local file
+				try
+				{
+					log.info("Saving :" + inAsset.getSourcePath() + "/" + inAsset.getName() + " URL:" + path);
+					InputStream stream = genfile.getEntity().getContent();
+
+					inFile.getParentFile().mkdirs();
+					FileOutputStream fos = new FileOutputStream(inFile);
+					filler.fill(stream, fos);
+					filler.close(stream);
+					filler.close(fos);
+					//inFile.setLastModified(datetime);
+				}
+				catch (Exception e)
+				{
+					// TODO Auto-generated catch block
 					throw new OpenEditException(e);
-					}
-				
-				
-				
-				
-				
+				}
+
 			}
 		}
-		
+
 		return item;
-		
 
-		
 	}
-
 
 	public InputStream getOriginalDocumentStream(MediaArchive inArchive, Asset inAsset)
 	{
@@ -523,21 +511,20 @@ public class PullManager implements CatalogEnabled
 			String finalurl = url + URLUtilities.encode(inArchive.asLinkToOriginal(inAsset));
 			HttpRequestBuilder connection = new HttpRequestBuilder();
 			Map params = new HashMap();
-			if( node.get("entermediakey") != null)
+			if (node.get("entermediakey") != null)
 			{
 				params.put("entermedia.key", node.get("entermediakey"));
 			}
-			
+
 			HttpResponse genfile = connection.sharedPost(finalurl, params);
 			return genfile.getEntity().getContent();
 		}
 		catch (Exception e)
 		{
 			// TODO Auto-generated catch block
-		throw new OpenEditException(e);
+			throw new OpenEditException(e);
 		}
 
-		
 	}
 
 	protected File getFile(Asset inAsset)
@@ -551,10 +538,7 @@ public class PullManager implements CatalogEnabled
 			path = path + "/" + primaryname;
 		}
 		return new File(inAsset.getMediaArchive().getPageManager().getPage(path).getContentItem().getAbsolutePath());
-		
-		
-	}
-	
 
+	}
 
 }
