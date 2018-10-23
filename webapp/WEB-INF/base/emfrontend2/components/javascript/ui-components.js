@@ -20,10 +20,12 @@ uiload = function() {
 	var app = $("#application");
 	var apphome = app.data("home") + app.data("apphome");
 	var themeprefix = app.data("home") + app.data("themeprefix");
-
+	
 	//https://github.com/select2/select2/issues/600	
 	//$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 	$.fn.select2.defaults.set( "theme", "bootstrap4" );
+	$.fn.modal.Constructor.prototype._enforceFocus = function() {}; //Select2 on Modals
+
 	
 	
 	lQuery('#module-dropdown').livequery("click", function(e){
@@ -52,7 +54,7 @@ uiload = function() {
 		if( parent.length )
 		{
 			dropdownParent = parent;
-			console.log("found modal parent, skipping");
+			//console.log("found modal parent, skipping");
 			//https://github.com/select2/select2-bootstrap-theme/issues/41
 		}
 		else
@@ -1026,14 +1028,15 @@ uiload = function() {
 			
 			var dropdownParent = $("body");
 			var parent = theinput.closest(".modal-dialog");
+			var parent = theinput.parent();
 			if( parent.length )
 			{
 				dropdownParent = parent;
-				console.log("found modal parent");
+				//console.log("found modal parent");
 			}
 			else
 			{
-				console.log("use body parent");
+				//console.log("use body parent");
 			}
 			//var value = theinput.val();
 			theinput.select2({
