@@ -1,6 +1,9 @@
 #set ($view = $context.getRequestParameter("view"))
 #set ($label = $context.getRequestParameter("label"))
 #set ($id = $context.getRequestParameter("id"))
+#set ($module = $context.findValue("module"))
+#set ($viewid = $url_util.getPathUtilities().extractFileName($view) )
+
 <div id="${view}editor">
 #if( !$catalogid )
 	#set( $catalogid = $mediaarchive.getCatalogId() )
@@ -39,6 +42,8 @@ $context.putPageValue("searchtype", $searchtype)
 	#set($multiedit = true)
 #end
 
+
+
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 
 	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="${view}editor" method="post" action="$home$editpath?oemaxlevel=1" >
@@ -50,6 +55,7 @@ $context.putPageValue("searchtype", $searchtype)
 		
 		<input type="hidden" name="view" value="$view" />
 		<input type="hidden" name="label" value="$label" />
+		<input type="hidden" name="module" value="$module" />
 		
 		#if( $searchtype == "asset" )
 ##			<input type="hidden" name="field" value="assetid" />
@@ -62,11 +68,19 @@ $context.putPageValue("searchtype", $searchtype)
 		<div id="default-fields">
 			$pages.include("/$applicationid/components/xml/detaileditor-2.html?multiedit=$multiedit", $context)
 		</div>
-		<p class="btns">
+		<div class="btns">
 			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).submit();" value="[[Save values]]"/>
 			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="${view}editor" href="$home$apphome/components/detaileditor/generic.html?searchtype=$searcher.searchType&view=$view&id=$!data.id&assetid=$asset.id$label=$label&oemaxlevel=1">[[Cancel]]</a>
-			
-		</p>
+			#if( $caneditmetadatasetup  )
+				#if ( $view.contains("$asset.assettype") )
+					#set ( $type = $asset.assettype )
+				#end
+				<div class="float-right edit-metadata-fields">
+					 <a class=" btn btn-sm btn-light" href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"><i class="fas fa-cog"></i> [[Edit View]]</a>
+				</div>
+				<div class="clearfix"></div>
+			#end
+		</div>
 	</form>
 
 #else
@@ -89,18 +103,20 @@ $context.putPageValue("searchtype", $searchtype)
 			##set( $plugin = $pages.getPage("$pluginpath"))
 			<h2>$context.getText($viewlabel)</h2>
 	#end
-	
+	<div id="default-fields" class="previewonly">
 	#if ($showit)
 	
 		#set( $foundone = false)
 		#set( $assetdetails = $searcher.getDetailsForView($view, $context.getUserProfile()) )
-		<table class="table table-striped">
+
+		 	
 		$context.putPageValue("details",$assetdetails)
    		$context.putPageValue("searcher",$searcher)
    		
    		## TODO: USE THIS !$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
-
 		
+		<div class="container-fluid">
+		<div class="row">
 		#foreach( $detail in $assetdetails )
 			#set( $value = false)
 			
@@ -112,41 +128,46 @@ $context.putPageValue("searchtype", $searchtype)
 			
 			#if( $value && $value != "" || $detail.dataType == "searchjoin") 
 				#set( $foundone = true)
-				<tr>
-					<td class="emdatafield">
+				<div class="col-md-6">
+					<label class="emdatafield" >
 						$detail.getText($context)
-					</td>
-				<td class="emdatafieldvalue ">					
-					$!context.putPageValue("val",$value)
-					$context.putPageValue("showalllanguagevalues",false)
-					
-					$!context.putPageValue("detail",$detail)
-					$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
-		
-					</td>
-				</tr>
+					</label>
+					<div class="emdatafieldvalue ">					
+						$!context.putPageValue("val",$value)
+						$context.putPageValue("showalllanguagevalues",false)
+						
+						$!context.putPageValue("detail",$detail)
+						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
+					</div>
+				</div>
 			#end
 		#end ##foreach loop
-		</table>
+		</div>
+		</div>
 		#if( !$foundone )
-    		<div class="table" id="default-fields">
-        		<div class="cellrow">
                     <div style="padding: 15px 0; text-align: center; color: #aaa;">
-    			        [[No Data has yet been entered.]]
+    			        [[No data has yet been entered]]
     			   </div>
-    			</div>
-    		</div>
 		#end
 		
 		#if($caneditasset && $caneditmetadatageneral && !$print.equals("true"))
-			<p class="btns"><a class="ajax btn btn-sm btn-primary" targetdiv="${view}editor" 
+			<div class="btns">
+			<a class="ajax btn btn-sm btn-primary" targetdiv="${view}editor" 
 			href="$home$apphome/components/detaileditor/generic.html?catalogid=$catalogid&searchtype=$searcher.searchType&id=$!data.id&view=$view&assetid=$!asset.id&edit=1&oemaxlevel=1" >[[Edit ]]</a>
-			</p>
-		#else
-			
+			#if( $caneditmetadatasetup  )
+				#if ( $view.contains("$asset.assettype") )
+					#set ( $type = $asset.assettype )
+				#end
+				<div class="float-right edit-metadata-fields">
+					 <a class=" btn btn-sm btn-light" href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"><i class="fas fa-cog"></i> [[Edit View]]</a>
+				</div>
+				<div class="clearfix"></div>
+			#end
+			</div>
 		#end
+		</div>
 	#else ##showit
-         [[No data has been entered.]]
+         [[No data has yet been entered]]
 	#end
 
 #end ##edit
