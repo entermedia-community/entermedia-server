@@ -442,7 +442,7 @@ public class PullManager implements CatalogEnabled
 
 		Data node = (Data) inArchive.getSearcher("editingcluster").searchByField("clustername", inAsset.get("mastereditclusterid"));
 		String url = node.get("baseurl");
-
+		inFile.getParentFile().mkdirs();
 		FileItem item = new FileItem(inFile);
 
 		String path = "/WEB-INF/data" + inArchive.getCatalogHome() + "/originals/";
