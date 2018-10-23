@@ -53,13 +53,14 @@
                       	#end
                   	#end
                   	#set( $listid =  $content.tab )
+                  	
                   #if ($content.subtab)
                        <div id="eml-tab-subnav">
                            <ul>
-                               #set( $screens = $searcherManager.query($catalogid,$listid).all().sort("name").search() )
+                               #set( $screens = $searcherManager.query($catalogid, $listid).all().sort("name").search() )
                                #foreach($screen in $screens)
                                <li #if( $content.subtab == "$screen.id" ) class="current" #end>
-                                   <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$screen </a>
+                                   <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"> $context.getText($screen) </a>
                                </li>
                                #end
                            </ul>

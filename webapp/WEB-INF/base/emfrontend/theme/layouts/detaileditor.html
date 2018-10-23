@@ -7,7 +7,7 @@
 	#end
 
     #set( $moduleid = $context.findValue("module") )
-    #set ( $hitssessionid = $context.findValue("hitssessionid") )
+    #set( $hitssessionid = $context.findValue("hitssessionid") )
     #macro (displaydetails $filename $label $assetid $view $print)
 	    $context.putPageValue("view", $view)
 	    #if ($print && $print == "true")
@@ -83,7 +83,7 @@
                                     #set( $screens = $searcherManager.query($catalogid,$listid).all().sort("name").search() )
                                     #foreach($screen in $screens)
                                     <li #if( $content.subtab == "$screen.id" ) class="current" #end>
-                                        <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$context.getText($screen.getName()) </a>
+                                        <a  href="$home$apphome${screen.path}?assetid=$asset.id&hitssessionid=$!hits.getSessionId()"><!-- <img  src="$home$themeprefix/images/icons/${screen.icon}.png"> -->$context.getText($screen) </a>
                                     </li>
                                     #end
                                 </ul>
