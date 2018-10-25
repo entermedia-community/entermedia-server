@@ -155,23 +155,59 @@ select + .select2-container {
 
 
 /**Header**/
+#header .navbar {
+	padding:0!important;
+}
+#header .navbar {
+
+}
+#header .navbar-toggler {
+	padding:.15rem .5rem;
+	font-size:1rem; 
+	background-color: #2680A0;
+	margin:5px 3px;
+	right: 0;
+    top: 0;
+    position: absolute;
+    z-index:1001;
+}
+#header .navbar-collapse.show .navbar-nav {
+	margin-top:10px;
+}
+#header .navbar-collapse.show .dropdown-menu {
+	background-color: transparent;
+	border:0 none;
+	padding:0;
+	background:rgba(0,0,0,0.2);
+	border-radius:0;
+}
+#header .navbar-collapse.show .dropdown-item {
+	border-bottom:1px solid #efefef;
+	color:#fff;
+}
+
 #header .navlinks {
     float: right;
-    background: #2790B0;
+    background-color: #2790B0;
     border-radius: 0 0 5px 5px;
     padding: 1px 10px 5px 10px;
     color: #59bbd9;
-    line-height:1.2;
+    z-index:1000;
 }
 #header .navlinks>ul { list-style: none; margin:0; padding: 0;}
-#header .navlinks>ul li { float:left; padding:1px 8px; border-left:1px solid #fff; font-size:90%;}
-#header .navlinks>ul li.first { border-left: none;}
+#header .navlinks>ul li {
+    border:0 none;
+    border-top:1px solid #fff;
+    line-height:2.2;
+}
+#header .navlinks>ul li.first { border:0 none;}
 #header ul.dropdown-menu li { float: none;}
 #header ul.dropdown-menu li a,#header ul.dropdown-menu li a:hover  { color:#111;}
 #header .navlinks li>a {
     position: relative;
     color: #fff;
     padding: 0 5px;
+    display: block;
 }
 #header .navlinks li>a:hover {
     color: #fff;
@@ -187,9 +223,13 @@ select + .select2-container {
 .emheader { height: 100px; }
 .emheader .logocontainer { float: left; padding: 20px 20px 0 20px;}
 
-.emheader-right {
-	float:right;
+@media (min-width: 768px) {
+	.emheader-right {
+		float:right;
+	}
+	#header .navlinks>ul li { float:left; padding:1px 8px;border:0 none; border-left:1px solid #fff; font-size:90%; line-height:1.2;}
 }
+
 #headerstatusarea
 {
 	float:right;
@@ -695,18 +735,28 @@ td.checkbox input, th.firstheader input {
 
 
 /*Emshare Nav Bar*/
-.emnav .navbutton {
+.navbutton {
 	display:block;
-	line-height: 24px;
-	padding:5px 20px!important;
+	line-height: 22px;
+	padding:4px 8px!important;
 	text-decoration:none;
-	margin-left: 10px;
-	border-radius: 6px;
+	margin-left: 8px;
+	border-radius: 4px;
+	font-size: .9rem;
 }
-.emnav .navbutton:hover {
+@media (min-width: 768px) {
+	.navbutton {
+		line-height: 24px;
+		padding:5px 20px!important;
+		margin-left: 10px;
+		border-radius: 6px;
+		font-size: 1rem;
+	}	
+}
+.navbutton:hover {
 	text-decoration:none;
 }
-.emnav li:first-child .navbutton { 
+li:first-child .navbutton { 
 	margin-left:0;
 }
 .emnav .librarycollectionpicker,
@@ -723,7 +773,9 @@ td.checkbox input, th.firstheader input {
 	margin-left:10px;
 	width:250px;
 	display:inline-block;
-	
+}
+.emnav .nav-form {
+	display: inline-block;
 }
 .emnav .collectionpicker .select2 {
 	margin-right:22px;
@@ -746,6 +798,11 @@ td.checkbox input, th.firstheader input {
 .emnav .input-group-addon i {
 	cursor: pointer;
 }
+.emnav .form-control {
+		padding: .175rem .75rem;
+		line-height: 1rem;
+		font-size:0.9rem;
+}
 .emsubnav .dropdown:hover>.dropdown-menu {
   display: block;
 }
@@ -759,12 +816,53 @@ td.checkbox input, th.firstheader input {
 .emsubnav .dropdown-menu {
 	border-top:0 none;
 }
+.emnav .select2-container {
+	z-index: 100;
+}
 
 @media (max-width: 768px) {
 	.emnav .collectionpicker {
 		min-width: 140px;
 	}	
+	.navbar-quicksearch {
+		position: absolute;
+    	left: 0;
+    	z-index: 10;
+	}
+	.emnav .librarypicker, .emnav .collectionpicker {
+    	margin-left: 8px;
+    	width: 180px;
+    
+	}
+	.emnav .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+    	line-height: 1.15rem;
+	}
+	.emnav .select2-container--bootstrap4 .select2-selection--single {
+    	height: calc(1.25rem + 2px)!important;
+	}
+	.emnav .select2-container--bootstrap4 .select2-selection__clear {
+	    width: 1em;
+	    height: 1em;
+	    line-height: 1em;
+	    padding-left: .3em;
+	    margin-top: .1em;
+	    margin-right: .1em;
+	}
+	.emnav .input-group-addon {
+    	padding: .175rem .5rem;
+    	font-size: 0.9rem;
+	}
+	
+	 .emnav .nav-quicksearch {
+    	border-left: 0 none;
+    	padding-top: 4px;
+    	width: 360px;
+	}
 }
+.quicksearch-toggler {}
+
+
+
 
 .listautocomplete {width: 100%;} /* General?? */
 
