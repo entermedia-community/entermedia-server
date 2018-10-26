@@ -52,7 +52,15 @@ public class BaseSearchQueryFilter implements SearchQueryFilter
 			}
 			else
 			{
-				filter = NULL; 
+				if(getSearcherManager().getModuleManager().doesBeanExist(inSearcher.getSearchType() + "SearchQueryFilter")) {
+					
+				
+				filter = (SearchQueryFilter)getSearcherManager().getModuleManager().getBean(inSearcher.getCatalogId(),inSearcher.getSearchType() + "SearchQueryFilter" );
+				} else {
+			
+				
+					filter = NULL; 
+				}
 			}
 			getCacheManager().put("searchfilters",inSearcher.getSearchType(),filter);
 		}
