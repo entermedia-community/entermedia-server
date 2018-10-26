@@ -2148,4 +2148,10 @@
 	<bean id="ChatModule" class="org.entermediadb.websocket.chat.ChatModule" >
 	</bean>	
 	
+	<bean id="PostModule" class="org.entermediadb.posts.PostModule" >
+	</bean>	
+	
+	<bean id="postData" class="org.entermediadb.posts.PostData"  scope="prototype">
+	</bean>	
+	
 </beans>
