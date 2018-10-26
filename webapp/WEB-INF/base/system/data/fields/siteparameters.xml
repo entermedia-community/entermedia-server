@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<properties> 
+  <property id="id" editable="true" stored="true" index="true"   >
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[ID]]></language>  
+      <language id="es"><![CDATA[identificación]]></language>  
+      <language id="fr"><![CDATA[ID]]></language> 
+    </name> 
+  </property>  
+  <property id="parametername" editable="true" stored="true" index="true"   >
+    <name> 
+      <language id="en"><![CDATA[Parameter Name]]></language>  
+    </name> 
+  </property>  
+  <property id="parametervalue" editable="true" stored="true" index="true"   >
+    <name> 
+      <language id="en"><![CDATA[Parameter Name]]></language>  
+    </name> 
+  </property>  
+  <property id="siteid" editable="true" listid="site" datatype="list" stored="true" index="true">Site</property>	
+  
+</properties>

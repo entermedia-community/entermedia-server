@@ -330,4 +330,15 @@
 		
     </bean>
 	
+		
+	<bean id="siteManager" class="org.openedit.servlet.SiteManager" >
+		<property name="searcherManager">
+			<ref bean="searcherManager" />
+		</property>
+		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		
+	</bean>
+	<bean id="siteData" class="org.openedit.servlet.SiteData" scope="prototype">
+	</bean>
+	
 </beans>
