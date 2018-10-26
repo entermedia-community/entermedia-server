@@ -2,4 +2,5 @@
 	<property id="name" />
 	<property id="rootpath"/>	
 	<property id="catalogid" datatype="text"/>	
+	<property id="domains" />	
 </properties>
