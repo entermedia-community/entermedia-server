@@ -331,7 +331,7 @@
     </bean>
 	
 		
-	<bean id="siteManager" class="org.openedit.servlet.SiteManager" >
+	<bean id="virtualSiteManager" class="org.openedit.servlet.SiteManager" >
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
