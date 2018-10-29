@@ -1,0 +1,10 @@
+<properties>
+	
+	<property id="nodepulltypes" value="category|librarycollection|asset">Tables to pull from remote nodes</property>
+
+	
+
+
+
+
+</properties>

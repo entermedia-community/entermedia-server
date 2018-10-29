@@ -92,7 +92,7 @@ public class PullManager implements CatalogEnabled
 
 	}
 
-	public long processPullQueue(MediaArchive inArchive)
+	public long processPullQueue(MediaArchive inArchive, String inSearchType)
 	{
 		//Connect to all the nodes
 		//Run a search based on las time I pulled it down
@@ -140,14 +140,14 @@ public class PullManager implements CatalogEnabled
 						}
 						params.put("lastpulldate", node.get("lastpulldate")); //Tostring
 					}
-					params.put("searchtype", "asset"); //Loop over all of the types
+					params.put("searchtype", inSearchType); //Loop over all of the types
 					if (inArchive.getAssetSearcher().getAllHits().isEmpty())
 					{
 						log.info("Doing a full download");
 						params.put("fulldownload", "true");
 					}
 
-					long ok = downloadPages(inArchive, connection, node, params);
+					long ok = downloadPages(inArchive, connection, node, params, inSearchType);
 					if (ok != -1)
 					{
 						node.setValue("lastpulldate", now);
@@ -168,7 +168,7 @@ public class PullManager implements CatalogEnabled
 		return totalcount;
 	}
 
-	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params) throws Exception
+	protected long downloadPages(MediaArchive inArchive, HttpRequestBuilder connection, Data node, Map params, String inSearchType) throws Exception
 	{
 		String baseurl = node.get("baseurl");
 		//add origiginal support
@@ -207,11 +207,11 @@ public class PullManager implements CatalogEnabled
 		String ok = (String) response.get("status");
 		if (ok != null && ok.equals("ok"))
 		{
-			Collection saved = importChanges(inArchive, returned, parsed);
+			Collection saved = importChanges(inArchive, returned, parsed,inSearchType);
 			assetcount = assetcount + saved.size();
-
+			if("asset".equals(inSearchType)) {
 			downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skiporiginal);
-
+			}
 			int pages = Integer.parseInt(response.get("pages").toString());
 			//loop over pages
 			String hitssessionid = (String) response.get("hitssessionid");
@@ -245,9 +245,12 @@ public class PullManager implements CatalogEnabled
 					return -1;
 				}
 				log.info("Downloading page " + count + " of " + pages + " pages. assets count:" + assetcount);
-				saved = importChanges(inArchive, returned, parsed);
+				saved = importChanges(inArchive, returned, parsed,inSearchType);
 				assetcount = assetcount + saved.size();
+				if("asset".equals(inSearchType)) {
+
 				downloadGeneratedFiles(inArchive, connection, node, params, parsed, skipgenerated, skipgenerated);
+				}
 
 			}
 			return assetcount;
@@ -347,7 +350,7 @@ public class PullManager implements CatalogEnabled
 		}
 	}
 
-	protected Collection importChanges(MediaArchive inArchive, String returned, Map parsed)
+	protected Collection importChanges(MediaArchive inArchive, String returned, Map parsed, String inSearchType)
 	{
 		//I dont want to edit the json in any way, so using original
 		Collection array;
@@ -359,7 +362,7 @@ public class PullManager implements CatalogEnabled
 
 			JSONArray jsonarray = (JSONArray) everything.get("results");
 
-			inArchive.getAssetSearcher().saveJson(jsonarray);
+			inArchive.getSearcher(inSearchType).saveJson(jsonarray);
 			log.info("saved " + jsonarray.size() + " changed asset ");
 			return jsonarray;
 		}
@@ -472,7 +475,7 @@ public class PullManager implements CatalogEnabled
 				StatusLine filestatus = genfile.getStatusLine();
 				if (filestatus.getStatusCode() != 200)
 				{
-					log.error("Could not download generated " + filestatus + " " + path + "Full URL: " + finalurl);
+					log.error("Could not download original " + filestatus + " " + path + "Full URL: " + finalurl);
 					return null;
 				}
 

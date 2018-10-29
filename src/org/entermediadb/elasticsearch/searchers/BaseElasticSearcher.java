@@ -85,6 +85,8 @@ import org.entermediadb.elasticsearch.ElasticNodeManager;
 import org.entermediadb.elasticsearch.ElasticSearchQuery;
 import org.entermediadb.elasticsearch.SearchHitData;
 import org.entermediadb.location.Position;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseSearcher;
@@ -2909,6 +2911,46 @@ public class BaseElasticSearcher extends BaseSearcher
 			}
 			inFields.put(detail.getId(), num);
 		}
+	}
+
+	
+	public void saveJson(Collection inJsonArray)
+	{
+		JSONParser parser = new JSONParser();
+
+		ArrayList errors = new ArrayList();
+		BulkProcessor processor = getElasticNodeManager().getBulkProcessor(errors);
+
+		try
+		{
+			for (Iterator iterator = inJsonArray.iterator(); iterator.hasNext();)
+			{
+				JSONObject json = (JSONObject) iterator.next();
+				
+				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
+				req.source(json.toJSONString());
+				//log.info("savinng " + json);
+				//Parse the json and save it with id
+			
+				String id = (String)json.get("id");
+				if( id != null)
+				{
+					req.id(id);
+				}
+				processor.add(req);
+			}
+			processor.flush();
+			processor.awaitClose(5, TimeUnit.MINUTES);
+		}
+		catch (Exception e)
+		{
+			errors.add("Could not save " + e);
+		}
+		if(errors.size() > 0) 
+		{
+			
+		}
+
 	}
 
 }
