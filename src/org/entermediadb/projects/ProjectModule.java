@@ -23,8 +23,10 @@ import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -278,10 +280,10 @@ public class ProjectModule extends BaseMediaModule {
 		inReq.putSessionValue(sessionId, all);
 	}
 
-	public Data loadCollection(WebPageRequest inReq) {
+	public LibraryCollection loadCollection(WebPageRequest inReq) {
 		String collectionid = loadCollectionId(inReq);
 		if (collectionid != null) {
-			Data collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
+			LibraryCollection collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
 			inReq.putPageValue("librarycol", collection);
 			return collection;
 		}
@@ -1098,5 +1100,37 @@ Server ProjectModule.uploadFile
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		desktop.openRemoteFolder(archive, col);
 		
+	}
+	
+	public void searchCategories(WebPageRequest inPageRequest) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inPageRequest);
+		ProjectManager manager = getProjectManager(inPageRequest);
+		
+		Category category = archive.getCategory(inPageRequest);
+		inPageRequest.putPageValue("category",category);
+		inPageRequest.putPageValue("selectedcategory",category);
+		LibraryCollection librarycol = loadCollection(inPageRequest);
+		
+		QueryBuilder  q = archive.getAssetSearcher().query().exact("category-exact",category.getId());
+		
+		boolean canedit = manager.canEditCollection(inPageRequest, librarycol);
+		if (!canedit) 
+		{
+			q.orgroup("editstatus", "6");
+		}
+		
+		HitTracker tracker =  q.search(inPageRequest);
+		if( tracker != null)
+		{
+				tracker.setDataSource(archive.getCatalogId() + "/categories/" + category.getId());
+				if(librarycol != null){
+					tracker.getSearchQuery().setProperty("collectionid", librarycol.getId());
+				}
+				tracker.getSearchQuery().setProperty("categoryid", category.getId());
+				tracker.setPage(1);
+
+		}
+	
 	}
 }
