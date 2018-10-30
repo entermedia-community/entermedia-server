@@ -31,6 +31,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.hittracker.SearchQuery;
 
 public class ElasticHitTracker extends HitTracker
 {
@@ -573,6 +574,15 @@ public class ElasticHitTracker extends HitTracker
 		
 		
 	}
-	
+
+	public HitTracker copy()
+	{
+		SearchQuery q = getSearchQuery().copy();
+		ElasticHitTracker selecteddata = (ElasticHitTracker)getSearcher().search(q);
+		selecteddata.fieldChunks = fieldChunks;
+		selecteddata.fieldPage = fieldPage;
+		selecteddata.setHitsPerPage(getHitsPerPage());
+		return selecteddata;
+	}
 	
 }
