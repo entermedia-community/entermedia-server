@@ -452,13 +452,15 @@ body.widthless1000 #pdf-thumbnail-sidebar
 
 
 }
-.bottomtab.tabselected
+#footermenu li.bottomtab.tabselected
 {
-	background-color: #666;
+	background-color: #ccc;
+	color: #212529;
 }
-.bottomtab:hover
+#footermenu li.bottomtab:hover
 {
-	background-color: #666;
+	background-color: #ccc;
+	color: #212529;
 }
 
 .bottomtab

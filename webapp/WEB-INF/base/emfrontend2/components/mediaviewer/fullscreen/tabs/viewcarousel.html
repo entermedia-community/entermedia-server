@@ -8,9 +8,9 @@
         
         <div class="carousel-inner">
             <div class="carousel-items">
-				#set($pagecount = $hits.getHitsPerPage())
-				$hits.setHitsPerPage(4)		
-				#foreach($hit in $hits.getPageOfHits())
+				#set($hits2 = $hits.copy())
+				$hits2.setHitsPerPageHeight($context.getRequestParameter("pageheight"),132)
+				#foreach($hit in $hits2.getPageOfHits())
 					#set( $count = $related.getPage()+-1 )
 					#set( $count = $count*$related.getHitsPerPage() )	
         			#set( $count = ${foreach.count} + $count )
@@ -23,10 +23,9 @@
 			
 				    #set( $editlink = $content.get("asseteditlink") )
 					#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
-				<div class="gallery-thumb #if($asset.id == $hit.id) active-asset #end " id="gallery-${hit.id}">
+				<div class="gallery-thumb #if($asset.id == $hit.id || $hits.isSelected($hit.id)) active-asset #end " id="gallery-${hit.id}">
         		<div class="">
         			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hit.name}"   href="#" >
-          			
           				$context.putPageValue("hit", $hit)
           				$context.putPageValue("assetid", $hit.id)
 						$context.putPageValue("count", $count)

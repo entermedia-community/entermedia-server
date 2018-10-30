@@ -255,6 +255,8 @@ $(document).ready(function(url,params)
 		{
 			params.pagenum = pagenum;
 		}
+		params.pageheight =  $(window).height() - 100;
+
 		$.get(link, params, function(data) 
 		{
 			
