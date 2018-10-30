@@ -79,6 +79,12 @@ public class TaskModule extends BaseMediaModule
 //			{
 //				userq.addChildQuery(builder.getQuery());
 //			}
+			Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
+			if( filter != null && !filter.isEmpty())
+			{
+				userq.addOrsGroup("goaltrackercolumn", filter);
+			}
+			
 			all = searcher.cachedSearch(inReq, userq);
 		}
 		
@@ -781,7 +787,12 @@ public class TaskModule extends BaseMediaModule
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
 		builder.match("userlikes", "*").sort("owner").sort("userlikes");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-		
+		Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
+		if( filter != null && !filter.isEmpty())
+		{
+			builder.orgroup("goaltrackercolumn", filter);
+		}
+
 		HitTracker likes = builder.search();
 
 		sortIntoColumns(inReq, archive, likes);

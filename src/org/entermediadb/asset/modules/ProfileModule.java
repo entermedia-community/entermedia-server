@@ -314,7 +314,48 @@ public class ProfileModule extends MediaArchiveModule
 		prof.setProperty(field, value);
 		getUserProfileManager().saveUserProfile(prof);
 	}
-
+	public void addPreferenceValue(WebPageRequest inReq)
+	{
+		String field = inReq.getRequestParameter("profilepreference");
+		if (field == null)
+		{
+			return;
+		}
+		UserProfile prof = loadUserProfile(inReq);
+		String value = inReq.getRequestParameter("profilepreference.value");
+		if( value == null)
+		{
+			return;
+		}
+		Collection values = prof.getValues(field);
+		if( values != null && values.contains(value) )
+		{
+			return;
+		}
+		prof.addValue(field, value);
+		getUserProfileManager().saveUserProfile(prof);
+	}
+	public void removePreferenceValue(WebPageRequest inReq)
+	{
+		String field = inReq.getRequestParameter("profilepreference");
+		if (field == null)
+		{
+			return;
+		}
+		UserProfile prof = loadUserProfile(inReq);
+		String value = inReq.getRequestParameter("profilepreference.value");
+		if( value == null)
+		{
+			return;
+		}
+		Collection values = prof.getValues(field);
+		if( values != null && !values.contains(value) )
+		{
+			return;
+		}
+		prof.removeValue(field, value);
+		getUserProfileManager().saveUserProfile(prof);
+	}
 	public void saveProperties(WebPageRequest inReq)
 	{
 		String[] fields = inReq.getRequestParameters("field");
