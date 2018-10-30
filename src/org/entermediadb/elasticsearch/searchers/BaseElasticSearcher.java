@@ -1792,6 +1792,8 @@ public class BaseElasticSearcher extends BaseSearcher
 //			{
 				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
 				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId());
+				content.field("recordmodificationdate", new Date());
+
 //			}
 //		}
 	}
