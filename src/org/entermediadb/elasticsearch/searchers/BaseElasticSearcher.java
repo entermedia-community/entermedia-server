@@ -1785,17 +1785,17 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected void updateMasterClusterId(PropertyDetails details, Data inData, XContentBuilder content) throws IOException
 	{
 
-//		PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
-//		if (hasmaster != null)
-//		{
-//			if (inData.getValue("mastereditclusterid") == null)
-//			{
+		PropertyDetail hasmaster = details.getDetail("mastereditclusterid");
+		if (hasmaster != null)
+		{
+			if (inData.getValue("mastereditclusterid") == null)
+			{
 				//Add nodeidmaster = dsfsd, also keep track of record edited timestamps
 				content.field("mastereditclusterid", getElasticNodeManager().getLocalClusterId());
 				content.field("recordmodificationdate", new Date());
 
-//			}
-//		}
+			}
+		}
 	}
 
 	public void deleteAll(Collection inBuffer, User inUser)
