@@ -2927,7 +2927,7 @@ public class BaseElasticSearcher extends BaseSearcher
 			{
 				JSONObject json = (JSONObject) iterator.next();
 				
-				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type("asset");
+				IndexRequest req = Requests.indexRequest(getElasticIndexId()).type(getSearchType());
 				req.source(json.toJSONString());
 				//log.info("savinng " + json);
 				//Parse the json and save it with id
