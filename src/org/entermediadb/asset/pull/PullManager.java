@@ -76,8 +76,15 @@ public class PullManager implements CatalogEnabled
 	public HitTracker listRecentChanges(String inType, String inLastpulldate)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-		QueryBuilder builder = searcher.query().exact("importstatus", "complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
-		if (inLastpulldate != null)
+		QueryBuilder builder = null;
+		if(inType.equals("asset")) {
+			builder = searcher.query().exact("importstatus", "complete").exact("mastereditclusterid", getNodeManager().getLocalClusterId());
+		} else {
+			 builder = searcher.query().exact("mastereditclusterid", getNodeManager().getLocalClusterId());
+
+		}
+		//TODO:  support this on all tables
+		if ("asset".equals(inType) && inLastpulldate != null)
 		{
 			Date startingfrom = DateStorageUtil.getStorageUtil().parseFromStorage(inLastpulldate);
 			builder.after("recordmodificationdate", startingfrom);
