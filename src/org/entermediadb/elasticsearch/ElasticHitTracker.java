@@ -579,8 +579,8 @@ public class ElasticHitTracker extends HitTracker
 	{
 		SearchQuery q = getSearchQuery().copy();
 		ElasticHitTracker selecteddata = (ElasticHitTracker)getSearcher().search(q);
-		selecteddata.fieldChunks = fieldChunks;
-		selecteddata.fieldPage = fieldPage;
+		//selecteddata.fieldChunks = fieldChunks;
+		selecteddata.setPage( fieldPage );
 		selecteddata.setHitsPerPage(getHitsPerPage());
 		return selecteddata;
 	}
