@@ -111,7 +111,7 @@
 }
 .emtabs 
 {
-	margin-left: 20px;
+/*	margin-left: 20px;*/
 	
 }
 .emtabs li
@@ -158,6 +158,18 @@
 {
 	padding-right: 5px
 }
+@media (max-width: 1024px) {
+	.emtabs li a
+	{
+	  padding: 4px 4px;
+	}
+	.emtabs li
+	{
+		margin-left: 0px;
+
+	}
+}
+
 #homelayout div.collectionheaderleft {
     width: 250px;
     float: left;
@@ -408,8 +420,9 @@ color: #fff;
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
-    max-width: 200px;
+    max-width: 170px;
 }
+
 #footermenu .dropdown-menu a {
 	color:#000;
 	font-size:90%;

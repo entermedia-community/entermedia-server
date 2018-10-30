@@ -736,7 +736,7 @@ td.checkbox input, th.firstheader input {
 
 /*Emshare Nav Bar*/
 .navbutton {
-	display:block;
+	/*display:block;*/
 	line-height: 22px;
 	padding:4px 8px!important;
 	text-decoration:none;
@@ -820,12 +820,13 @@ li:first-child .navbutton {
 	z-index: 100;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
 	.emnav .collectionpicker {
 		min-width: 140px;
 	}	
 	.navbar-quicksearch {
 		position: absolute;
+		display:none;
     	left: 0;
     	z-index: 10;
 	}
@@ -1135,7 +1136,12 @@ li:first-child .navbutton {
 /*Tabs on Results Page*/
 
 .results-header { border-bottom:1px solid #a8dae4;}
-.results-header-left { font-size:0.8rem; padding:5px; width:50%;}
+.results-header-left { font-size:0.8rem; padding:5px; }
+@media (min-width: 768px) {
+	.results-header-left { 
+		width:50%;
+	}
+}
 .results-header .breadcrumbs { }
 .results-header-tabs { padding:5px 5px 0 0;}
 .results-header-tabs .emtabs li { margin-bottom:-1px;}

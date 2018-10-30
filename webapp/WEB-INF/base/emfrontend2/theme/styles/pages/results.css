@@ -483,9 +483,9 @@ div.masonry-grid-cell .grid-thumbimage img.imagethumb
  line-height:0p !important;
 }
 
-.masonry-grid
+.masonry-grid.row
 {
-
+margin:0;
 background-color: #eee;
 }
 
