@@ -177,7 +177,7 @@ $(document).ready(function(url,params)
 					img.css("margin-top","0px");
 				}	
 			}
-			img.css("height", avheight);
+			//img.css("height", avheight);
 			
 		}
 		else
@@ -255,6 +255,8 @@ $(document).ready(function(url,params)
 		{
 			params.pagenum = pagenum;
 		}
+		params.pageheight =  $(window).height() - 100;
+
 		$.get(link, params, function(data) 
 		{
 			
@@ -262,7 +264,7 @@ $(document).ready(function(url,params)
 			
 			var container = $("#main-media-container");
 			container.replaceWith(data);
-			overlayResize();
+			//overlayResize();
 			var div = $("#main-media-viewer");
 			var id = div.data("previous");
 			enable(id,".goleftclick span");
@@ -272,11 +274,8 @@ $(document).ready(function(url,params)
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
 			$("#gallery-" + assetid).addClass("active-asset");
-			
-			
-
 		});
-		
+		$(document).trigger("domchanged");
 		
 		
 	}
@@ -788,7 +787,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		showAsset(id);
 		saveProfileProperty("assetopentab","viewpreview",function(){});
 	});
-
+/*
 	lQuery('div.assetproperties').livequery('click',function(e)
 	{
 		e.preventDefault();
@@ -816,5 +815,22 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		var link = $(this).data("link");
 		div.load( link, options);
 		saveProfileProperty("assetopentab","viewcollaborate",function(){});
+
+	});
+*/	
+	//Make this generic?
+	
+	lQuery('div.assettab').livequery('click',function(e) {
+				e.preventDefault();
+				$(".bottomtab").removeClass("tabselected");
+				$(this).closest(".bottomtab").addClass("tabselected");
+
+				var div = $("#main-media-viewer" );
+				var options = div.data();
+
+				var link = $(this).data("link");
+				div.load( link, options);
+				var assettab = $(this).data("assettab");
+				saveProfileProperty("assetopentab",assettab,function(){});
 
 	});

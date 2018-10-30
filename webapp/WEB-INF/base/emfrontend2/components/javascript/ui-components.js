@@ -64,20 +64,7 @@ uiload = function() {
 				allowClear: true,
 				minimumInputLength : 0,
 				dropdownParent: dropdownParent,
-	//			dropdownCssClass: 'custom-dropdown'
-	//			}).on("select2:opening", 
-	//			    function(){
-	//			        dropdownParent.removeAttr("tabindex");
-	//				}).on("select2:close", 
-	//				    function(){ 
-	//				        //dropdownParent.attr("tabindex", "-1");
-	//				    });
 			});	
-			
-	//		theinput.on('select2:open', function(e){
-	//		    $('.custom-dropdown').parent().css('z-index', 99999);
-	//		});
-	//		dropdownParent.removeAttr("tabindex");
 		}
 	
 	});
@@ -254,8 +241,7 @@ uiload = function() {
 	}
 	//deprecated, use data-confirm
 	lQuery(".confirm").livequery('click',
-			function(e)
-			{
+			function(e) {
 				var inText = $(this).attr("confirm");
 				if( !inText )
 				{
@@ -273,8 +259,7 @@ uiload = function() {
 		);
 	
 	lQuery(".uibutton").livequery(
-			function()
-			{
+			function() {
 				$(this).button();
 			}
 	);
@@ -418,6 +403,13 @@ uiload = function() {
 			{
 				var theform = $(this).closest('form');
 				theform.submit();
+	});
+	
+	lQuery(".quicksearch-toggler").livequery("click", function()
+			{
+				var navbar = $(this).data('target');
+				$('#'+navbar).toggle();
+				
 	});
 	
 	
@@ -1311,15 +1303,15 @@ $.fn.equalHeights = function(px) {
 
 $(document).ready(function() 
 { 
-	var resizecss = function()
+	/*var resizecss = function()
 	{
 		//Old stuff?
-		/*
-		w1 = ( $('#main').width() - $('#left-col').width() - 41 );
-		$('#right-col .liquid-sizer').width(w1);
-		w2 = ( $('#data').width() - 40 );
-		$('#asset-data').width(w2);
-		*/
+	
+		//w1 = ( $('#main').width() - $('#left-col').width() - 41 );
+		//$('#right-col .liquid-sizer').width(w1);
+		//w2 = ( $('#data').width() - 40 );
+		//$('#asset-data').width(w2);
+		//
 		var body = $("body");
 		
 		$('.cols-main').equalHeights();
@@ -1343,10 +1335,13 @@ $(document).ready(function()
 		var height = $(window).height();
 		$(".autoheightless40").height(height - 40)		
 		
-	};
-	$(window).on('resize',	resizecss );
-	resizecss();
+	};*/
+	//$(window).on('resize',	resizecss );
+	//resizecss();
 	
 	uiload();
 
 }); 
+
+
+
