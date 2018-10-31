@@ -11,6 +11,7 @@
 	<th>[[Folder]]</th>
 	<th>[[Catalog]]</th>
 	<th>[[Snapshots]]</th>
+	<th>[[Domain]]</th>
 </tr>
 #foreach( $site in $sortedlist ) 
  <tr data-id="$site.id" >
@@ -28,6 +29,10 @@ $cat
 #set( $snaps = $searcherManager.query("system","sitesnapshot").match("site",$site.id ).search() )
 $!snaps.size()
 </td>
+<td valign="top" style="white-space: nowrap;">
+#esc($site.get("domains"))
+</td>
+
 #end
 </table>
 </form>
