@@ -1,0 +1,21 @@
+<div class="assetpanel-container">
+<div class="assetpanel-sidebar">
+	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcarousel.html",$context)
+</div>
+<div class="assetpanel-content">
+	<div class="assetpanel-content-inside">
+		<div class="assetpanel-header"">
+			#if( !$asset.importstatus || $asset.importstatus != "complete" )
+		  		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
+		  	#else
+		  		$pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
+		  	#end
+		</div>
+		<div class="assetpanel-separator"></div>
+		<div class="assetpanel-editmetadata">
+		$pages.include("/$applicationid/views/modules/asset/editor/conversions/index.html")
+		</div>
+	</div>
+	
+</div>
+</div>
