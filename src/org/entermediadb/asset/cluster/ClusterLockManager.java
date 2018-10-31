@@ -103,7 +103,7 @@ public class ClusterLockManager implements LockManager, Shutdownable
 			Iterator iter = tracker.iterator();
 			if (!iter.hasNext())
 			{
-				throw new OpenEditException("Searching by sourcepath not working" + inPath);
+				throw new OpenEditException("Searching by sourcepath not working" + inPath  + "Catalog ID was : " + inSearcher.getCatalogId());
 			}
 			Data first = (Data) iter.next();
 			if (first.get("version") != lock.getVersion())
