@@ -49,15 +49,28 @@ public class BaseMediaModule extends BaseModule
 		
 		String applicationid = inReq.findValue("applicationid");
 		inReq.putPageValue("applicationid", applicationid);
+		String siteid = inReq.findValue("siteid");
+
+		String sitehome = null;
 		String apphome = null;
 		if( sitedata != null)
 		{
 			apphome = sitedata.getAppHome(applicationid);
+			sitehome = "";
 		}
 		else
 		{
 			apphome = "/" + applicationid;
+			if( siteid != null)
+			{
+				sitehome = "/" + siteid;
+			}
+			else
+			{
+				sitehome = "";
+			}
 		}
+		inReq.putPageValue("sitehome", sitehome);
 		inReq.putPageValue("apphome", apphome);
 		
 		String prefix = inReq.getContentProperty("themeprefix");

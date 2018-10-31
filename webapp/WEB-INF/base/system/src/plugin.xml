@@ -335,7 +335,7 @@
 		<property name="searcherManager">
 			<ref bean="searcherManager" />
 		</property>
-		<property name="cacheManager"><ref bean="cacheManager"/></property>
+		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
 		
 	</bean>
 	<bean id="siteData" class="org.openedit.servlet.SiteData" scope="prototype">
