@@ -8,6 +8,7 @@ import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.modules.BaseModule;
 import org.openedit.profile.UserProfile;
+import org.openedit.servlet.SiteData;
 import org.openedit.users.GroupSearcher;
 import org.openedit.users.UserManager;
 import org.openedit.users.UserSearcher;
@@ -44,11 +45,20 @@ public class BaseMediaModule extends BaseModule
 
 	public String loadApplicationId(WebPageRequest inReq) throws Exception
 	{
+		SiteData sitedata = (SiteData)inReq.getPageValue("sitedata");
+		
 		String applicationid = inReq.findValue("applicationid");
 		inReq.putPageValue("applicationid", applicationid);
-		inReq.putPageValue("apphome", "/" + applicationid);
-
-		
+		String apphome = null;
+		if( sitedata != null)
+		{
+			apphome = sitedata.getAppHome(applicationid);
+		}
+		else
+		{
+			apphome = "/" + applicationid;
+		}
+		inReq.putPageValue("apphome", apphome);
 		
 		String prefix = inReq.getContentProperty("themeprefix");
 		UserProfile profile = inReq.getUserProfile();
