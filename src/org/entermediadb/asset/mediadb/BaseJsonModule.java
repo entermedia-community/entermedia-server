@@ -246,7 +246,7 @@ public class BaseJsonModule extends BaseMediaModule
 					}
 					else
 					{
-						JSONObject object = (JSONObject)it;
+						Map object = (Map)it;
 						String val = (String)object.get("id");
 						//log.info("In VALUE: ${val}");
 						ids.add(val);
