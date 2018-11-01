@@ -237,19 +237,22 @@ $(document).ready(function(url,params)
 	
 	showAsset = function(assetid,pagenum)
 	{
-		var resultsdiv = $("#resultsdiv");
+		
+		var mainmedia = $("#main-media-viewer");
 		if( !pagenum )
 		{
-			pagenum = resultsdiv.data("pagenum"); 
+			pagenum = mainmedia.data("pagenum"); 
 		}
 		var hidden = getOverlay();
-		var link = resultsdiv.data("assettemplate");
+
+		//Not needed?
+		var link = $("#resultsdiv").data("assettemplate");
 		if( link == null )
 		{
 			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
 		}
 		
-		var hitssessionid = resultsdiv.data("hitssessionid");
+		var hitssessionid = mainmedia.data("hitssessionid");
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
@@ -264,22 +267,36 @@ $(document).ready(function(url,params)
 			
 			var container = $("#main-media-container");
 			container.replaceWith(data);
-			//overlayResize();
-			var div = $("#main-media-viewer");
-			var id = div.data("previous");
+			var id = mainmedia.data("previous");
 			enable(id,".goleftclick span");
-			id = div.data("next");
+			enable(id,"#leftpage");
+			id = mainmedia.data("next");
 			enable(id,".gorightclick span");
+			enable(id,"#rightpage");
 		    $(document).trigger("domchanged");
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
 			$("#gallery-" + assetid).addClass("active-asset");
 		});
 		$(document).trigger("domchanged");
-		
+	}
+	showPage = function(pagenum,next)
+	{
+		var mainmedia = $("#main-media-viewer");
+		var assetid;
+		if( next )
+		{
+			pagenum = pagenum + 1; 
+			assetid = next
+		}
+		else
+		{
+			pagenum = pagenum - 1; 
+			assetid = prev
+		}
+		showAsset(assetid,pagenum);
 		
 	}
-	
 	initKeyBindings = function(hidden)
 	{
 		$(document).keyup(function(e) 
@@ -307,7 +324,6 @@ $(document).ready(function(url,params)
 		        	var id = div.data("previous");
 		        	if( id )
 		        	{
-			        	//showOverlayDiv(id);
 			        	showAsset(id);
 			        }		        	
 		        break;
@@ -416,6 +432,22 @@ $(document).ready(function(url,params)
 		var id = div.data("next");
 		showAsset(id);
 	});
+
+	lQuery('.carousel-indicators li#leftpage').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("previous");
+		showAsset(id);
+	});
+	lQuery('.carousel-indicators li#rightpage').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("next");
+		showAsset(id);
+	});	
+	
 	
 	lQuery("#main-media").livequery("swipeleft",function(){
 		

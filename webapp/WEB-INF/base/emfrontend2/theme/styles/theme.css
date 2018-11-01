@@ -3187,14 +3187,15 @@ a.collectionbox.favorite
 }
 .assetpanel-sidebar .gallery-thumb.active-asset {
 	background-color: #ccc;
-	border-right: 1px solid #ccc;
+	border-right: 0px solid #ccc;
+	border-left: 8px solid #565656;
 	opacity: 1;
 	filter: alpha(opacity=100);
 }
 
 .assetpanel-sidebar .gallery-thumb {
 	background-color:#e1e1e1;
-	border-right: 8px solid #565656;
+	border-left: 8px solid #565656;
 	border-bottom: 8px solid #565656;
 	opacity: 0.4;
 	filter: alpha(opacity=40);
@@ -3493,4 +3494,40 @@ a.collectionbox.favorite
     word-break: break-word;
 }
 
+.carousel-indicators {
+    position: absolute;
+    right: 0;
+    bottom: 10px;
+    left: 0;
+    z-index: 15;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding-left: 0;
+    margin-right: 0;
+    margin-left: 0;
+    list-style: none;
+}
 
+.carousel-indicators li {
+    position: relative;
+    -ms-flex: 0 1 auto;
+    flex: 0 1 auto;
+    width: 30px;
+    height: 30px;
+    margin-right: 3px;
+    margin-left: 3px;
+    text-indent: 0px;
+    text-align:center;
+    background-color: rgba(255,255,255,.3);
+}
+
+ /**   Xvisibility:hidden; */
+
+.carousel-indicators li#leftpage:hover, .carousel-indicators li#rightpage:hover
+{
+	background-color: #efefef;
+	cursor:pointer;
+	
+}

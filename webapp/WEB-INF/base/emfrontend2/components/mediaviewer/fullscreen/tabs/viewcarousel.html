@@ -1,20 +1,17 @@
-
-<ol class="carousel-indicators">
-            <li data-target="#carouselExampleIndicators" data-slide-to="0" class="active"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="1"></li>
-            <li data-target="#carouselExampleIndicators" data-slide-to="2"></li>
-        </ol>
     <div id="carouselExampleControls" class="carousel vert slide" data-ride="carousel" >
-        
         <div class="carousel-inner">
             <div class="carousel-items">
-				#set($hits2 = $hits.copy())
-				$hits2.setHitsPerPageHeight($context.getRequestParameter("pageheight"),132)
-				#foreach($hit in $hits2.getPageOfHits())
-					#set( $count = $related.getPage()+-1 )
-					#set( $count = $count*$related.getHitsPerPage() )	
+            	
+				#set( $selectedindex = 1)
+				$hits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),132)
+				#foreach($hit in $hits.getPageOfHits())
+					#set( $count = $hits.getPage()+-1 )
+					#set( $count = $count*$hits.getHitsPerPage() )	
         			#set( $count = ${foreach.count} + $count )
         			$context.putPageValue("hitindex",$count )
+        			#if($asset.id == $hit.id )
+        				#set($selectedindex = $count)
+					#end        			
         			#set ($sourcepath = $hit.sourcepath)    		
         			#set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
         			$context.putPageValue("type", $type)
@@ -44,3 +41,9 @@
           </div>
         </div>
     </div>
+    <ol class="carousel-indicators">
+            <li style="padding:4px;" id="leftpage"><i class="fas fa-arrow-left" ></i></li>
+            <li style="padding:4px;width:120px;" >$selectedindex of $hits.size()</li>
+            <li style="padding:4px;" id="rightpage"><i class="fas fa-arrow-right"></i></li>
+    </ol>
+    

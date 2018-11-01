@@ -16,6 +16,7 @@ import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.PageAction;
 import org.openedit.users.User;
@@ -334,6 +335,24 @@ public class MediaArchiveModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		archive.clearCaches();
 	}
-
+	public Asset getAssetAndPage(WebPageRequest inReq)
+	{
+		Asset asset = getAsset(inReq);
+		String hitssessionid = inReq.getRequestParameter("hitssessionid");
+		//Find this on this tracker and match up the page
+		HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
+		if( tracker != null)
+		{
+			int index = tracker.indexOfId(asset.getId());
+			if( index < 1)
+			{
+				index = 1;
+			}
+			double page = (double)index / (double)tracker.getHitsPerPage();
+			int gotopage = (int)page + 1;
+			tracker.setPage(gotopage);
+		}
+		return asset;
+	}
 }
 
