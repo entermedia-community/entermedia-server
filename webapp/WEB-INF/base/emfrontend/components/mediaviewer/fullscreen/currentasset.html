@@ -1,3 +1,5 @@
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
@@ -6,6 +8,7 @@
 $context.putPageValue("cdn",$cdnprefix)
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
+#set( $hits = $context.getSessionValue($hitssessionid))
 #set( $index = $hits.indexOfId($asset.id))
 #set( $previous = false )
 #set( $previous = $hits.previous($index))
@@ -13,8 +16,7 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $next = $hits.next($index))       
 
 <div id="main-media-container">
-<div id="main-media-viewer" data-assetid="$asset.id" data-pagenum="$hits.getPage()"  data-hitssessionid="$hits.getSessionId()"
-	data-next="$!next.getId()" data-previous="$!previous.getId()" data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage()" >
+<div id="main-media-viewer" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()" >
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
@@ -42,7 +44,6 @@ $context.putPageValue("cdn",$cdnprefix)
 				#end
 			 </il>
 			 #if($candownload || $canconvert)
-			 	#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 				<li id="download-select" >		
 					<div class="dropup">
 						<a class="" href="#" data-toggle="dropdown" expanded="true" > <span class="glyphicon glyphicon-download" style="color: #fff;"> </span>  [[Downloads]]
@@ -51,7 +52,6 @@ $context.putPageValue("cdn",$cdnprefix)
 						#if( !$cdnprefix )
 							#set( $cdnprefix = $context.siteRoot )
 						#end
-						
 						<ul class="dropdown-menu dropup">
 								
 									 #if($candownload)				
