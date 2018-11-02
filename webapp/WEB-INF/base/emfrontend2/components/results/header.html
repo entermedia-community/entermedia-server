@@ -130,7 +130,7 @@
 			#if( $canedittablecolumns )
 			#if( $edit )
 				<li>
-					<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+					<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
 				</li>								
 				<li class="resultsnavtitem">
 						#set ($alldetails = $searcher.getUserPropertyDetails() )
@@ -148,7 +148,7 @@
 				</li>	
 			#else 
 				<li >
-					<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
+					<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
 				</li>
 			#end	
 			#end								

@@ -3,7 +3,7 @@
 
 #set( $showfields = $context.getRequestParameter("showfields"))
 #if( $showfields )
-<h2>[[Data Search]]</h2>
+<h2 class="settings-title">[[Data Search]]</h2>
 
 <form action="$action">
 	<input type="hidden" name="catalogid" value="$catalogid"/>
@@ -16,8 +16,9 @@
 	</select>
 </form>
 #else
-<h2>$currentsearch</h2>
+<h2 class="settings-title">$currentsearch</h2>
 #end
+<div class="clearfix"></div>
 
 #set( $datatab = $content.datatab )
 <div class="tabnav">

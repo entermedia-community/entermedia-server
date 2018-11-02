@@ -81,7 +81,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
 					#if( $edit)
-						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="Remove" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$searchhome/addremovecolumns.html?oemaxlevel=1&searchtype=${moduleid}&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
 					
 					#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))

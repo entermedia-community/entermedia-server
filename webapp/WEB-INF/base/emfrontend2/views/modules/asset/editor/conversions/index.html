@@ -1,68 +1,16 @@
-<style>
-h1{
-	font-family:Arial,Helvetica,sans-serif;
-	font-size:24px;
-	color:black;
-}   
-h2{
-	font-family:Arial,Helvetica,sans-serif;
-	font-size:22px;
-	color:black;
-}
-.h2e {
-	display: inline-block;
-  	margin: 0px 20px;
-  	color:#686868;
-}
-h3{
-	font-family:Arial,Helvetica,sans-serif;
-	font-size:20px;
-	margin: 0 20px 20px;
-}
-.h3e {
-	display: inline-block;
-  	margin: 0px 20px;
-  	
-}
-.h3e a{
-	color:#003399;
-	text-decoration: underline;
-}
-h4{
-	font-family:Arial,Helvetica,sans-serif;
-	font-size:18px;
-	margin: 0 20px 20px;
-}
-p{
-	font-family:Arial,Helvetica,sans-serif;
-	font-size:14px;
-}
-
-.info {
-    font-size: 12px;
-    color: #666;
-    background: #eee;
-    border: 1px solid #ddd;
-    padding: 10px;
-    margin: 15px 0px;
-    /*text-align: center;*/
-}
-</style>
-
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
-
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 
-<div class="info">
+<div class="conversionsheader">
 <h2>[[Image Editor]]</h2>
 
 #if($canviewassetedit)
-<a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
+	<a class="btn btn-sm btn-secondary" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
 #end
-<a class="btn" href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
+<a class="btn btn-sm btn-secondary" href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
 
-##<a class="btn">[[Rotate]]</a>
-
+##<a class="btn btn-sm btn-secondary">[[Rotate]]</a>
+<hr>
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
 		[[Replace Image]]: <input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
 		<input type="hidden" name="unzip" value="false" />
@@ -86,6 +34,7 @@ $context.putPageValue("results", $results)
 
 $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
 
+<div class="conversionsall" >
 #foreach ($result in $results)
 
 
@@ -100,12 +49,8 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 	#else
 		#set($show = true)
 	#end
-	
-	
-	
-	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
-<div class="info" >
 
+	#if($conversionUtil.doesExist($catalogid, $asset.id,$asset.sourcePath, $result.id) && $show)
 		<!-- include name + info -->
 		#set($dimension = $conversionUtil.getConvertPresetDimension($catalogid,$result.id))
 		#set($height = $mathtool.toInteger($dimension.getHeight()))
@@ -147,7 +92,8 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 	</div>
 	#end
 
-#end
+#end  ##foreach
+</div>
 
 $context.putPageValue("asset",$asset)
 #if($newpreset)
@@ -173,7 +119,7 @@ $(document).ready(function(){
 [[You can specify custom width, height or formats. For example, a large PDF]]:
 </p>
 <div style="width: 550px">
-<p ><i>
-$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
-</p>
+	<p ><i>
+	$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
+	</p>
 </div>
