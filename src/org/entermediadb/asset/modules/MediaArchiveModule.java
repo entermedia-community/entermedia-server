@@ -11,6 +11,7 @@ import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.ConvertStatus;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.asset.util.MathUtils;
 import org.entermediadb.error.EmailErrorHandler;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -348,8 +349,12 @@ public class MediaArchiveModule extends BaseMediaModule
 			{
 				index = 1;
 			}
-			double page = (double)index / (double)tracker.getHitsPerPage();
-			int gotopage = (int)page + 1;
+			double page = (double)(index + 1) / (double)tracker.getHitsPerPage();
+			int gotopage = MathUtils.roundUp(page);
+			if( gotopage > tracker.getTotalPages() )
+			{
+				gotopage = tracker.getTotalPages() - 1;
+			}
 			tracker.setPage(gotopage);
 		}
 		return asset;

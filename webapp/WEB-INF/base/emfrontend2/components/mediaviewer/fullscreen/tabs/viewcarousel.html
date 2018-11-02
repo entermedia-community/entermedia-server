@@ -3,7 +3,7 @@
             <div class="carousel-items">
             	
 				#set( $selectedindex = 1)
-				$hits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),132)
+				$hits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
 				#foreach($hit in $hits.getPageOfHits())
 					#set( $count = $hits.getPage()+-1 )
 					#set( $count = $count*$hits.getHitsPerPage() )	

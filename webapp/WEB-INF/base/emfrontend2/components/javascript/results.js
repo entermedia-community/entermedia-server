@@ -239,24 +239,33 @@ $(document).ready(function(url,params)
 	{
 		
 		var mainmedia = $("#main-media-viewer");
+		var resultsdiv = $("#resultsdiv");
 		if( !pagenum )
 		{
 			pagenum = mainmedia.data("pagenum"); 
+			if( !pagenum )
+			{
+				pagenum = resultsdiv.data("pagenum");
+			}
 		}
 		var hidden = getOverlay();
 
 		//Not needed?
-		var link = $("#resultsdiv").data("assettemplate");
+		var link = resultsdiv.data("assettemplate");
 		if( link == null )
 		{
 			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
 		}
 		
 		var hitssessionid = mainmedia.data("hitssessionid");
+		if( !hitssessionid )
+		{
+			hitssessionid = resultsdiv.data("hitssessionid");
+		}
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
-			params.pagenum = pagenum;
+			params.pagenum = pagenum; //Do we use this for anything?
 		}
 		params.pageheight =  $(window).height() - 100;
 
@@ -279,23 +288,6 @@ $(document).ready(function(url,params)
 			$("#gallery-" + assetid).addClass("active-asset");
 		});
 		$(document).trigger("domchanged");
-	}
-	showPage = function(pagenum,next)
-	{
-		var mainmedia = $("#main-media-viewer");
-		var assetid;
-		if( next )
-		{
-			pagenum = pagenum + 1; 
-			assetid = next
-		}
-		else
-		{
-			pagenum = pagenum - 1; 
-			assetid = prev
-		}
-		showAsset(assetid,pagenum);
-		
 	}
 	initKeyBindings = function(hidden)
 	{
@@ -437,14 +429,14 @@ $(document).ready(function(url,params)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
-		var id = div.data("previous");
+		var id = div.data("previouspage");
 		showAsset(id);
 	});
 	lQuery('.carousel-indicators li#rightpage').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
-		var id = div.data("next");
+		var id = div.data("nextpage");
 		showAsset(id);
 	});	
 	

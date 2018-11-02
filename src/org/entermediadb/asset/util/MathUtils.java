@@ -245,4 +245,9 @@ public String percent(String inVal){
 		}
 		return (Double)inObject;
 	}
+	
+	public static int roundUp(double d) 
+	{
+	      return (d > (int) d) ? (int) d + 1 : (int) d;
+	 }
 }
