@@ -29,8 +29,8 @@
 			<div style="position: relative;">
 				#if( $canedittablecolumns )
 				<div id="table-edit-outside">
-					#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}t&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1"> <img style="position: relative; top: -1px;" title="[[Edit Columns]]" src="$home$themeprefix/images/edit.gif" /></a>
-					#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+					#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}t&hitssessionid=$hits.getSessionId()&editheader=true&oemaxlevel=1"> <i class="fas fa-edit"></i></a>
+					#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$content.searchhome/results.html?searchtype=${module.id}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><i class="fas fa-times"></i></a>
 					<div id="column-editor">
 						<div id="column-editor-content">
 							#set ($alldetails = $searcher.getUserPropertyDetails() )

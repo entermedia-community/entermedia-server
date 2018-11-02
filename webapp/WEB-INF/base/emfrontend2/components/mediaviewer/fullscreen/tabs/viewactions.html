@@ -13,7 +13,10 @@
 		</div>
 		<div class="assetpanel-separator"></div>
 		<div class="assetpanel-editmetadata">
-		$pages.include("/$applicationid/views/modules/asset/editor/conversions/index.html")
+		#set($actions= $context.getRequestParameter("actions"))
+		#if ($actions)
+			$pages.include("/$applicationid/views/modules/asset/editor/$actions/index.html")
+		#end
 		</div>
 	</div>
 	

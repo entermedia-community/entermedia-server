@@ -59,8 +59,8 @@ $hitssessionid
 				<div style="position: relative;">
 					#if( $canedittablecolumns )
 					<div id="table-edit-outside">
-						#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <img style="position: relative; top: -1px;" title="Edit Columns" src="$home$themeprefix/images/edit.gif" /></a>
-						#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><img title="Cancel" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+						#if( !$edit ) <a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+						#else <a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
 						<div id="column-editor">
 							<div id="column-editor-content">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )

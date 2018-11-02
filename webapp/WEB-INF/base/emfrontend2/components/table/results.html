@@ -22,17 +22,17 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 					#if( $canedittablecolumns )
 					<div id="table-edit-outside">
 						#if( !$edit ) 
-						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true"> <img  title="[[Edit Columns]]" src="/assets/emshare/theme/images/edit.gif"></a>
+						<a class="ajax" targetdiv="$targetdiv" href="${resultsLink}&editheader=true"><i class="fas fa-edit"></i></a>
 						#else 
 							<div id="column-editor-content">
 								#set ($alldetails = $searcher.getUserPropertyDetails() )
-								<select  class="addremovecolumns" name="addcolumn" >
+								<select  class="addremovecolumns form-control form-control-sm" name="addcolumn" >
 									<option>[[Add Column]]</option>
 									#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 									#end
 								</select>
 								
-						<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><img title="[[Cancel]]" style="position: relative; top: -1px;" src="$home$themeprefix/images/delete.gif" /></a>
+						<a class="ajax table-edit-close" targetdiv="$targetdiv" href="$searchhome/results.html?searchtype=${hits.searchType}&hitssessionid=$hits.getSessionId()&editheader=false&oemaxlevel=1"><i class="fas fa-times"></i></a>
 							</div>
 						#end
 					</div>
@@ -63,7 +63,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 				#text( $detail.name )
 				#if( $edit)
 					<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" 
-						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><img title="[[Remove]]" src="$home$themeprefix/images/navigation/deletesm.png" /></a>
+						href="$home$apphome/components/table/addremovecolumns.html?oemaxlevel=1&searchtype=$hits.searchType&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
 				
 				#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))

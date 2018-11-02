@@ -44,7 +44,7 @@ $context.putPageValue("hits",$hits)
 			<li style="float: right;">
 				<div style="position: relative;">
 					<a class="table-edit-close">
-						<select name="resultview" id="selectresultview" class="smalldropdown" 
+						<select name="resultview" id="selectresultview" class="form-control form-control-sm" 
 							data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()" data-hitsperpage="$hits.getHitsPerPage()">
 #set( $types = $mediaarchive.getList("resulttype"))
 #foreach($type in $types)

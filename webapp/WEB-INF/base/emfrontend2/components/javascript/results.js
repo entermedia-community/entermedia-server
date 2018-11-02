@@ -237,23 +237,35 @@ $(document).ready(function(url,params)
 	
 	showAsset = function(assetid,pagenum)
 	{
+		
+		var mainmedia = $("#main-media-viewer");
 		var resultsdiv = $("#resultsdiv");
 		if( !pagenum )
 		{
-			pagenum = resultsdiv.data("pagenum"); 
+			pagenum = mainmedia.data("pagenum"); 
+			if( !pagenum )
+			{
+				pagenum = resultsdiv.data("pagenum");
+			}
 		}
 		var hidden = getOverlay();
+
+		//Not needed?
 		var link = resultsdiv.data("assettemplate");
 		if( link == null )
 		{
 			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
 		}
 		
-		var hitssessionid = resultsdiv.data("hitssessionid");
+		var hitssessionid = mainmedia.data("hitssessionid");
+		if( !hitssessionid )
+		{
+			hitssessionid = resultsdiv.data("hitssessionid");
+		}
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
-			params.pagenum = pagenum;
+			params.pagenum = pagenum; //Do we use this for anything?
 		}
 		params.pageheight =  $(window).height() - 100;
 
@@ -264,22 +276,19 @@ $(document).ready(function(url,params)
 			
 			var container = $("#main-media-container");
 			container.replaceWith(data);
-			//overlayResize();
-			var div = $("#main-media-viewer");
-			var id = div.data("previous");
+			var id = mainmedia.data("previous");
 			enable(id,".goleftclick span");
-			id = div.data("next");
+			enable(id,"#leftpage");
+			id = mainmedia.data("next");
 			enable(id,".gorightclick span");
+			enable(id,"#rightpage");
 		    $(document).trigger("domchanged");
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
 			$("#gallery-" + assetid).addClass("active-asset");
 		});
 		$(document).trigger("domchanged");
-		
-		
 	}
-	
 	initKeyBindings = function(hidden)
 	{
 		$(document).keyup(function(e) 
@@ -307,7 +316,6 @@ $(document).ready(function(url,params)
 		        	var id = div.data("previous");
 		        	if( id )
 		        	{
-			        	//showOverlayDiv(id);
 			        	showAsset(id);
 			        }		        	
 		        break;
@@ -416,6 +424,22 @@ $(document).ready(function(url,params)
 		var id = div.data("next");
 		showAsset(id);
 	});
+
+	lQuery('.carousel-indicators li#leftpage').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("previouspage");
+		showAsset(id);
+	});
+	lQuery('.carousel-indicators li#rightpage').livequery('click',function(e)
+	{
+		e.preventDefault();
+		var div = $("#main-media-viewer" );
+		var id = div.data("nextpage");
+		showAsset(id);
+	});	
+	
 	
 	lQuery("#main-media").livequery("swipeleft",function(){
 		

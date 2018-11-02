@@ -1,5 +1,5 @@
-#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
-#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
+#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
 #if( !$type )
 	No template for $type
@@ -8,7 +8,6 @@
 $context.putPageValue("cdn",$cdnprefix)
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
-#set( $hits = $context.getSessionValue($hitssessionid))
 #set( $index = $hits.indexOfId($asset.id))
 #set( $previous = false )
 #set( $previous = $hits.previous($index))
@@ -27,9 +26,11 @@ $context.putPageValue("cdn",$cdnprefix)
 	#end
 	
 #end
-
+#set( $hitssessionid = $hits.getSessionId())
 <div id="main-media-container" style="height: 100%;">
-<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
+<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()"
+data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage()" >
+>
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
@@ -98,7 +99,7 @@ $context.putPageValue("cdn",$cdnprefix)
 			   <ul class="dropdown-menu">
 			   	<li>
 			   	<div class="expandmenu assettab" 
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewconversions.html" title="[[Conversions]]"
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
 						data-assettab="viewconversions" >
 					[[Conversions]]
 					</div>
@@ -185,7 +186,10 @@ $context.putPageValue("cdn",$cdnprefix)
 		    </li>
 		    #end
     
+    	#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
 			 #if($candownload || $canconvert)
+			  
+			
 				<li class="footermenu bottomtab" >		
 	<a href="#" class="dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]</a>
    <ul class="dropdown-menu">

@@ -117,26 +117,18 @@
 .emtabs li
 {
 	float: left;
-	margin-left: 6px;
-	border: 1px solid #a3c8d4;
+	margin-left: 5px;
   	position: relative;
   	margin-top: 0px;
   	overflow: hidden;
 }
-.emtabs li a
-
-{
-  background-color: #efefef;
-  color: #666;
+.emtabs li a {
   padding: 4px 8px;
   display: block;
 }
 .emtabs li a:hover
 {
 	text-decoration: none;
-	color:#000;
-	background-color: #c1c1c1;
-
 }
 .emtabs li.emtab a
 {
@@ -150,9 +142,6 @@
 .emtabs li.emtabselected a
 {
 	text-decoration: none;
-	color:#000;
-	background-color: #fff;
-
 }
 .emtabs li.ui-state-default a
 {

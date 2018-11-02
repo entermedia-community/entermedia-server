@@ -1269,7 +1269,37 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		inReq.putPageValue("additionals", additionals.toString());
 		inReq.putPageValue("searcher", getSearcherManager().getListSearcher(detail));
 	}
+	public HitTracker loadHitsCopy(WebPageRequest inReq) throws Exception
+	{
+		String hitssessionidCopy = inReq.getRequestParameter("hitssessionid");
+		String hitssessionidOriginal = null; 
+		String copyprefix = inReq.findValue("copyprefix");
+		if( hitssessionidCopy.startsWith(copyprefix))
+		{
+			hitssessionidOriginal = hitssessionidCopy.substring(copyprefix.length());
+		}
+		else
+		{
+			hitssessionidOriginal = hitssessionidCopy;
+			hitssessionidCopy = copyprefix + hitssessionidOriginal;
+		}
+		HitTracker trackerCopy = (HitTracker)inReq.getSessionValue(hitssessionidCopy);
+		HitTracker trackerOriginal = (HitTracker)inReq.getSessionValue(hitssessionidOriginal);
 
+		if( trackerOriginal == null)
+		{
+			return null;
+		}
+		if( trackerCopy == null || !trackerCopy.getQuery().equals(trackerOriginal.getQuery()))
+		{
+			trackerCopy = trackerOriginal.copy();
+			trackerCopy.setSessionId(hitssessionidCopy);
+			inReq.putSessionValue(hitssessionidCopy,trackerCopy);
+		}
+		inReq.putPageValue(trackerCopy.getHitsName(), trackerCopy);
+		inReq.setRequestParameter("hitssessionid",hitssessionidCopy);
+		return trackerCopy;
+	}
 	public HitTracker loadHits(WebPageRequest inReq) throws Exception
 	{
 		HitTracker hits = null;

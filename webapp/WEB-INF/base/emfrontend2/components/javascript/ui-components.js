@@ -1,4 +1,8 @@
-//EMfrontend2 
+//EMfrontend2
+var app = $("#application");
+var apphome = app.data("home") + app.data("apphome");
+var themeprefix = app.data("home") + app.data("themeprefix");
+
 formatHitCountResult = function(inRow)
 {
 	return inRow[1];
@@ -17,14 +21,87 @@ function getRandomColor() {
 
 uiload = function() {
 
-	var app = $("#application");
-	var apphome = app.data("home") + app.data("apphome");
-	var themeprefix = app.data("home") + app.data("themeprefix");
+
 	
 	//https://github.com/select2/select2/issues/600	
 	//$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 	$.fn.select2.defaults.set( "theme", "bootstrap4" );
 	$.fn.modal.Constructor.prototype._enforceFocus = function() {}; //Select2 on Modals
+	var columnsheight = $("body").height() - 260;
+	$("#main").css("min-height", columnsheight );
+	if( $.fn.tablesorter )
+	{
+		$("#tablesorter").tablesorter();
+	}
+	if( $.fn.selectmenu )
+	{
+		lQuery('.uidropdown select').livequery(
+				function()
+				{
+					$(this).selectmenu({style:'dropdown'});
+				}
+		);
+	}
+	
+	var browserlanguage =  app.data("browserlanguage");
+	if( browserlanguage == undefined )
+	{
+		browserlanguage = "";
+	}
+	if( $.datepicker )
+	{
+		$.datepicker.setDefaults($.extend({
+			showOn: 'button',
+			buttonImage: themeprefix + '/entermedia/images/cal.gif',
+			buttonImageOnly: true,
+			changeMonth: true,
+			changeYear: true, 
+			yearRange: '1900:2050'
+		}, $.datepicker.regional[browserlanguage]));  //Move this to the layout?
+		
+		lQuery("input.datepicker").livequery( function() 
+			{
+			var targetid = $(this).data("targetid");
+			$(this).datepicker( {
+				altField: "#"+ targetid,
+				altFormat: "yy-mm-dd", 
+				yearRange: '1900:2050'
+			});
+					
+			var current = $("#" + targetid).val();
+			if(current != undefined)
+			{
+				//alert(current);
+				var date;
+				if( current.indexOf("-") > 0) //this is the standard
+				{
+					current = current.substring(0,10);
+					//2012-09-17 09:32:28 -0400
+					date = $.datepicker.parseDate('yy-mm-dd', current);
+				}
+				else
+				{
+					date = $.datepicker.parseDate('mm/dd/yy', current); //legacy support
+				}
+				$(this).datepicker("setDate", date );					
+			}
+			$(this).blur(function()
+			{
+				var val = $(this).val();
+				if( val == "")
+				{
+					$("#" + targetid).val("");
+				}
+			});
+		});
+	}
+	if( $.fn.minicolors )
+	{
+		$(".color-picker").minicolors({
+						defaultValue: '',
+						letterCase: 'uppercase'
+					});
+	}
 
 	
 	
@@ -177,68 +254,7 @@ uiload = function() {
 		);
 	
 	
-	if( $.fn.selectmenu )
-	{
-		lQuery('.uidropdown select').livequery(
-				function()
-				{
-					$(this).selectmenu({style:'dropdown'});
-				}
-		);
-	}
 	
-	var browserlanguage =  app.data("browserlanguage");
-	if( browserlanguage == undefined )
-	{
-		browserlanguage = "";
-	}
-	if( $.datepicker )
-	{
-		$.datepicker.setDefaults($.extend({
-			showOn: 'button',
-			buttonImage: themeprefix + '/entermedia/images/cal.gif',
-			buttonImageOnly: true,
-			changeMonth: true,
-			changeYear: true, 
-			yearRange: '1900:2050'
-		}, $.datepicker.regional[browserlanguage]));  //Move this to the layout?
-		
-		lQuery("input.datepicker").livequery( function() 
-			{
-			var targetid = $(this).data("targetid");
-			$(this).datepicker( {
-				altField: "#"+ targetid,
-				altFormat: "yy-mm-dd", 
-				yearRange: '1900:2050'
-			});
-					
-			var current = $("#" + targetid).val();
-			if(current != undefined)
-			{
-				//alert(current);
-				var date;
-				if( current.indexOf("-") > 0) //this is the standard
-				{
-					current = current.substring(0,10);
-					//2012-09-17 09:32:28 -0400
-					date = $.datepicker.parseDate('yy-mm-dd', current);
-				}
-				else
-				{
-					date = $.datepicker.parseDate('mm/dd/yy', current); //legacy support
-				}
-				$(this).datepicker("setDate", date );					
-			}
-			$(this).blur(function()
-			{
-				var val = $(this).val();
-				if( val == "")
-				{
-					$("#" + targetid).val("");
-				}
-			});
-		});
-	}
 	//deprecated, use data-confirm
 	lQuery(".confirm").livequery('click',
 			function(e) {
@@ -284,10 +300,7 @@ uiload = function() {
 			}
 		);
 	
-	if( $.fn.tablesorter )
-	{
-		$("#tablesorter").tablesorter();
-	}
+
 
 	lQuery(".ajaxchange select").livequery(
 			function()
@@ -1125,13 +1138,7 @@ uiload = function() {
 		}
 	});		
 
-	if( $.fn.minicolors )
-	{
-		$(".color-picker").minicolors({
-						defaultValue: '',
-						letterCase: 'uppercase'
-					});
-	}	
+		
 	
 	lQuery(".sidebarsubmenu").livequery("click", function(e){
 		e.stopPropagation();
@@ -1284,7 +1291,9 @@ uiload = function() {
 		});
 	});
 	
-}
+//}
+	
+}//uiload
 
 $.fn.equalHeights = function(px) {
 	$(this).each(function(){
