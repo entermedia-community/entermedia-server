@@ -138,6 +138,7 @@ uiload = function() {
 		{
 			theinput = theinput.select2({
 				theme: "bootstrap4",
+				placeholder : '',
 				allowClear: true,
 				minimumInputLength : 0,
 				dropdownParent: dropdownParent,
