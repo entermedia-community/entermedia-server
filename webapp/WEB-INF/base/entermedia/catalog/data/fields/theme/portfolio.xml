@@ -118,7 +118,7 @@
     </name> 
   </property>  
   <!-- navigation color -->  
-  <property id="navbackgroundpath" index="true" stored="true" editable="true" note="Overrides Colors" keyword="false" filter="false" sortable="true">Nav Background Path 
+  <property id="navbackgroundpath" index="true" stored="true" editable="true" note="Overrides Colors" keyword="false" filter="false" sortable="true">Navbar Background Path 
     <name> 
       <language id="de"><![CDATA[nav Hintergrund Pfad]]></language>  
       <language id="en"><![CDATA[Nav Background Path]]></language>  
@@ -126,96 +126,112 @@
       <language id="fr"><![CDATA[Nav Chemin de fond]]></language> 
     </name> 
   </property>  
-  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Color 
+  <property id="navcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Color 
     <name> 
       <language id="de"><![CDATA[Navigations Farbe]]></language>  
-      <language id="en"><![CDATA[Navigation Color]]></language>  
+      <language id="en"><![CDATA[Navbar Color]]></language>  
       <language id="es"><![CDATA[color Navegacion]]></language>  
-      <language id="fr"><![CDATA[Navigation Couleur]]></language> 
+      <language id="fr"><![CDATA[Navbar Couleur]]></language> 
     </name> 
   </property>  
-  <property id="navcolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Color Gradient 
+  <property id="navcolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Color Gradient 
     <name> 
-      <language id="de"><![CDATA[Navigation Farbverlauf]]></language>  
-      <language id="en"><![CDATA[Navigation Color Gradient]]></language>  
+      <language id="de"><![CDATA[Navbar Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Navbar Color Gradient]]></language>  
       <language id="es"><![CDATA[Gradiente de color de navegación]]></language>  
-      <language id="fr"><![CDATA[Navigation Dégradé de couleur]]></language> 
+      <language id="fr"><![CDATA[Navbar Dégradé de couleur]]></language> 
     </name> 
   </property>  
-  <property id="navfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Font Color 
+  <property id="navfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Font Color 
     <name> 
-      <language id="de"><![CDATA[Navigation Schriftfarbe]]></language>  
-      <language id="en"><![CDATA[Navigation Font Color]]></language>  
+      <language id="de"><![CDATA[Navbar Schriftfarbe]]></language>  
+      <language id="en"><![CDATA[Navbar Font Color]]></language>  
       <language id="es"><![CDATA[Color de fuente de navegación]]></language>  
-      <language id="fr"><![CDATA[Navigation Couleur de police]]></language> 
+      <language id="fr"><![CDATA[Navbar Couleur de police]]></language> 
     </name> 
   </property>  
-  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Hover Font Color 
+  <property id="navhoverfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Font Hover Color 
     <name> 
-      <language id="de"><![CDATA[Navigation schweben Schriftfarbe]]></language>  
-      <language id="en"><![CDATA[Navigation Hover Font Color]]></language>  
+      <language id="de"><![CDATA[Navbar schweben Schriftfarbe]]></language>  
+      <language id="en"><![CDATA[Navbar Font Hover Color]]></language>  
       <language id="es"><![CDATA[Navegación de la libración Color de fuente]]></language>  
-      <language id="fr"><![CDATA[Navigation Hover Couleur de police]]></language> 
+      <language id="fr"><![CDATA[Navbar Hover Couleur de police]]></language> 
     </name> 
   </property>  
-  <property id="navdropdownbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Dropdown Background Color 
+  <property id="navdropdownbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Dropdown Background Color 
     <name> 
-      <language id="de"><![CDATA[Navigation Dropdown-Hintergrundfarbe]]></language>  
-      <language id="en"><![CDATA[Navigation Dropdown Background Color]]></language>  
+      <language id="de"><![CDATA[Navbar Dropdown-Hintergrundfarbe]]></language>  
+      <language id="en"><![CDATA[Navbar Dropdown Background Color]]></language>  
       <language id="es"><![CDATA[Navegación desplegable Color de fondo]]></language>  
-      <language id="fr"><![CDATA[Contexte de navigation Dropdown Couleur]]></language> 
+      <language id="fr"><![CDATA[Contexte de Navbar Dropdown Couleur]]></language> 
     </name> 
   </property>  
-  <!-- navigation button color -->  
-  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Color 
+  <!-- Navbar button color -->  
+  <property id="navbuttoncolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Color 
     <name> 
-      <language id="de"><![CDATA[Navigationstaste Farbe]]></language>  
-      <language id="en"><![CDATA[Navigation Button Color]]></language>  
+      <language id="de"><![CDATA[Navbarstaste Farbe]]></language>  
+      <language id="en"><![CDATA[Navbar Button Color]]></language>  
       <language id="es"><![CDATA[Navegación color del botón]]></language>  
-      <language id="fr"><![CDATA[Bouton de navigation couleur]]></language> 
+      <language id="fr"><![CDATA[Bouton de Navbar couleur]]></language> 
     </name> 
   </property>  
-  <property id="navbuttoncolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Color Gradient 
+  <property id="navbuttoncolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Color Gradient 
     <name> 
-      <language id="de"><![CDATA[Navigationstaste Farbverlauf]]></language>  
-      <language id="en"><![CDATA[Navigation Button Color Gradient]]></language>  
+      <language id="de"><![CDATA[Navbarstaste Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Navbar Button Color Gradient]]></language>  
       <language id="es"><![CDATA[Botón de navegación Gradiente de color]]></language>  
-      <language id="fr"><![CDATA[Bouton de navigation Dégradé de couleur]]></language> 
+      <language id="fr"><![CDATA[Bouton de Navbar Dégradé de couleur]]></language> 
     </name> 
   </property>  
-  <property id="navbuttonbordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Border 
+  <property id="navbuttonbordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Border 
     <name> 
-      <language id="de"><![CDATA[Navigationstaste Grenze]]></language>  
-      <language id="en"><![CDATA[Navigation Button Border]]></language>  
+      <language id="de"><![CDATA[Navbarstaste Grenze]]></language>  
+      <language id="en"><![CDATA[Navbar Button Border]]></language>  
       <language id="es"><![CDATA[Frontera botón de navegación]]></language>  
-      <language id="fr"><![CDATA[Bouton de navigation Border]]></language> 
-    </name> 
-  </property>  
-  <!-- navigation font hover-->  
-  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Hover Button Color 
-    <name> 
-      <language id="de"><![CDATA[Navigation Hoverschaltfläche Farbe]]></language>  
-      <language id="en"><![CDATA[Navigation Hover Button Color]]></language>  
-      <language id="es"><![CDATA[Navegación de la libración del color del botón]]></language>  
-      <language id="fr"><![CDATA[Bouton de navigation Hover Couleur]]></language> 
-    </name> 
-  </property>  
-  <property id="navbuttonhovercolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Hover Button Color Gradient 
-    <name> 
-      <language id="de"><![CDATA[Navigation Hoverschaltfläche Farbverlauf]]></language>  
-      <language id="en"><![CDATA[Navigation Hover Button Color Gradient]]></language>  
-      <language id="es"><![CDATA[Botón de navegación de la libración del gradiente del color]]></language>  
-      <language id="fr"><![CDATA[Navigation bouton sensitif Dégradé de couleur]]></language> 
+      <language id="fr"><![CDATA[Bouton de Navbar Border]]></language> 
     </name> 
   </property>
-  <property id="navbuttonhoverbordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Button Border 
+    <property id="navbuttontext" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Text 
     <name> 
-      <language id="de"><![CDATA[Navigationstaste Grenze]]></language>  
-      <language id="en"><![CDATA[Navigation Hover Button Border]]></language>  
+      <language id="de"><![CDATA[Navbarstaste Farbe]]></language>  
+      <language id="en"><![CDATA[Navbar Button Text]]></language>  
+      <language id="es"><![CDATA[Navegación color del botón]]></language>  
+      <language id="fr"><![CDATA[Bouton de Navbar couleur]]></language> 
+    </name> 
+  </property>  
+  <!-- Navbar font hover-->  
+  <property id="navbuttonhovercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Hover Color 
+    <name> 
+      <language id="de"><![CDATA[Navbar Hoverschaltfläche Farbe]]></language>  
+      <language id="en"><![CDATA[Navbar Button Hover Color]]></language>  
+      <language id="es"><![CDATA[Navegación de la libración del color del botón]]></language>  
+      <language id="fr"><![CDATA[Bouton de Navbar Hover Couleur]]></language> 
+    </name> 
+  </property>  
+  <property id="navbuttonhovercolorgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Hover Gradient 
+    <name> 
+      <language id="de"><![CDATA[Navbar Hoverschaltfläche Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Navbar Button Hover Gradient]]></language>  
+      <language id="es"><![CDATA[Botón de navegación de la libración del gradiente del color]]></language>  
+      <language id="fr"><![CDATA[Navbar bouton sensitif Dégradé de couleur]]></language> 
+    </name> 
+  </property>
+  <property id="navbuttonhoverbordercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Hover Border 
+    <name> 
+      <language id="de"><![CDATA[Navbarstaste Grenze]]></language>  
+      <language id="en"><![CDATA[Navbar Button HoverBorder]]></language>  
       <language id="es"><![CDATA[Frontera botón de navegación]]></language>  
-      <language id="fr"><![CDATA[Bouton de navigation Border]]></language> 
+      <language id="fr"><![CDATA[Bouton de Navbar Border]]></language> 
     </name> 
   </property>    
+      <property id="navbuttontexthover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Text Hover
+    <name> 
+      <language id="de"><![CDATA[Navbarstaste Farbe]]></language>  
+      <language id="en"><![CDATA[Navbar Button Text Hover]]></language>  
+      <language id="es"><![CDATA[Navegación color del botón]]></language>  
+      <language id="fr"><![CDATA[Bouton de Navbar couleur]]></language> 
+    </name> 
+  </property>  
   <!-- left column -->  
   <property id="leftcolumnnavcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Color 
     <name> 
@@ -240,6 +256,11 @@
       <language id="es"><![CDATA[Columna de la izquierda Color de fondo]]></language>  
       <language id="fr"><![CDATA[Contexte colonne de gauche Couleur]]></language> 
     </name> 
+  </property> 
+    <property id="leftcolumnbackgroundgradient" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Background Gradient
+    <name> 
+      <language id="en"><![CDATA[Left Column Background Color Gradient]]></language>  
+    </name> 
   </property>  
   <property id="leftcolumnnavfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Font Color 
     <name> 
@@ -250,12 +271,24 @@
     </name> 
   </property>  
   <!-- navigation links -->  
-  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navigation Links Background Color 
+  <property id="navlinksbackgroundcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Top Nav Links Background Color 
     <name> 
-      <language id="de"><![CDATA[Navigationslinks Hintergrundfarbe]]></language>  
-      <language id="en"><![CDATA[Navigation Links Background Color]]></language>  
+      <language id="de"><![CDATA[Top Nav Hintergrundfarbe]]></language>  
+      <language id="en"><![CDATA[Top Nav Links Background Color]]></language>  
       <language id="es"><![CDATA[Vínculos de exploración Color de fondo]]></language>  
       <language id="fr"><![CDATA[Navigation Links Couleur de fond]]></language> 
+    </name> 
+  </property> 
+  <property id="navlinkfontcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Top Nav Links Color 
+    <name> 
+        
+      <language id="en"><![CDATA[Top Nav Links Font Color]]></language>  
+    </name> 
+  </property>
+  <property id="navlinkfontcolorhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Top Nav Links Hover Color 
+    <name> 
+        
+      <language id="en"><![CDATA[Navigation Links Font Hover Color]]></language>  
     </name> 
   </property>  
   <!-- table header -->  
@@ -272,6 +305,22 @@
       <language id="de"><![CDATA[Tabellenkopf Farbverlauf]]></language>  
       <language id="en"><![CDATA[Table Header Color Gradient]]></language>  
       <language id="es"><![CDATA[Tabla Jefe del color del gradiente]]></language>  
+      <language id="fr"><![CDATA[Tableau Header Dégradé de couleur]]></language> 
+    </name> 
+  </property>
+   <property id="tableheaderfont" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Header Font 
+    <name> 
+      <language id="de"><![CDATA[Tabellenkopf Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Table Header Font]]></language>  
+      <language id="es"><![CDATA[Tabla Font]]></language>  
+      <language id="fr"><![CDATA[Tableau Header Dégradé de couleur]]></language> 
+    </name> 
+  </property> 
+  <property id="tableheaderfonthover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Header Font Hover
+    <name> 
+      <language id="de"><![CDATA[Tabellenkopf Farbverlauf]]></language>  
+      <language id="en"><![CDATA[Table Header Font Hover]]></language>  
+      <language id="es"><![CDATA[Tabla Font]]></language>  
       <language id="fr"><![CDATA[Tableau Header Dégradé de couleur]]></language> 
     </name> 
   </property>  
@@ -320,6 +369,14 @@
     <name> 
       <language id="de"><![CDATA[Tabelle Menü Schriftfarbe]]></language>  
       <language id="en"><![CDATA[Table Menu Font Color]]></language>  
+      <language id="es"><![CDATA[Menú Tabla Color de fuente]]></language>  
+      <language id="fr"><![CDATA[Table Menu Font Color]]></language> 
+    </name> 
+  </property>  
+  <property id="tablemenufontcolorhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Table Menu Font Hover Color 
+    <name> 
+      <language id="de"><![CDATA[Tabelle Menü Schriftfarbe]]></language>  
+      <language id="en"><![CDATA[Table Menu Font Hover Color]]></language>  
       <language id="es"><![CDATA[Menú Tabla Color de fuente]]></language>  
       <language id="fr"><![CDATA[Table Menu Font Color]]></language> 
     </name> 

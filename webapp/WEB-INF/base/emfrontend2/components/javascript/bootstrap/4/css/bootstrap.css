@@ -1746,11 +1746,6 @@ pre code {
   background-color: rgba(0, 0, 0, 0.075);
 }
 
-.table .thead-dark th {
-  color: #fff;
-  background-color: #212529;
-  border-color: #32383e;
-}
 
 .table .thead-light th {
   color: #495057;

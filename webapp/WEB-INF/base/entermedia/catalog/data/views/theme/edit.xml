@@ -62,30 +62,37 @@
   <property id="navbuttoncolor" />
   <property id="navbuttoncolorgradient" />
   <property id="navbuttonbordercolor" />
+  <property id="navbuttontext" />
   
   <!-- navigation font hover (new)-->
   <property id="navhoverfont" />
   <property id="navhoverfontsize" />
-  <property id="navhoverfontcolor" />
   <property id="navhoverfontopacity" />
 
   <!-- end navigation font hover -->
   <property id="navbuttonhovercolor" />
   <property id="navbuttonhovercolorgradient" />
   <property id="navbuttonhoverbordercolor" />
+  <property id="navbuttontexthover" />
   
   <!-- navigation links -->
   <property id="navlinksbackgroundcolor" />
+  <property id="navlinkfontcolor" />
+  <property id="navlinkfontcolorhover" />
+  
   
   <!-- left column -->
+  <property id="leftcolumnbackgroundcolor"/>
+  <property id="leftcolumnbackgroundgradient"/>
   <property id="leftcolumnnavcolor" />
   <property id="leftcolumnnavcolorgradient" />
-  <property id="leftcolumnbackgroundcolor"/>
   <property id="leftcolumnnavfontcolor"/>
   
   <!-- table header -->
   <property id="tableheadercolor" />
   <property id="tableheadercolorgradient" />
+  <property id="tableheaderfont" />
+  <property id="tableheaderfonthover" />
   
   <!-- table colors -->
   <property id="tablebordercolor" />
@@ -93,8 +100,9 @@
 
   <property id="tablemenubackgroundcolor" />
   <property id="tablemenubackgroundcolorgradient" />
-  <property id="tablemenuhovercolor" />
   <property id="tablemenufontcolor" />
+  <property id="tablemenuhovercolor" />
+  <property id="tablemenufontcolorhover" />
 
   <!-- widget border color -->
   <property id="widgetbordercolor" />

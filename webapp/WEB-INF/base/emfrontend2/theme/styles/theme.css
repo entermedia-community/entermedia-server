@@ -1,21 +1,20 @@
 /*Color*/
-#header .navlinks {
+#header .navlinks,
+#header .dropdown-menu,
+#header .navlinks .dropdown-item {
     background-color: #666666;
     color: #fff;
 }
-#header .dropdown-menu {
-    background-color: #666666;
-    color: #fff;
+#header .navlinks .dropdown-item:hover,
+#header .navlinks .dropdown-item:active {
+	color: #eee;
+	background-color:rgba(0,0,0,0.2);
 }
-#header .dropdown-item, #header .dropdown-menu  {
-	
+#header .navlinks li>a {
     color: #eee;
 }
-#header .dropdown-item:hover,
-#header .dropdown-item:active {
-    color: #666;
-    background-color: #f8f9fa;
-    
+#header .navlinks li a:hover {
+    color: #fff;
 }
 .emnav,
 .table #tableheader,
@@ -68,14 +67,13 @@
 	color:#333;
 }
 .emnav .navtabs li a.navtabitem:hover,
-#sub-nav a:hover,
-#sub-nav li:hover a {
+#sub-nav a.nav-item:hover {
 	color:#333;
 	background-color: #C4C4C4;
 }
-#sub-nav .dropdown-item:hover {
-	background-color:#8E8E8E;
-	color:#fff;
+.emsubnav .dropdown-item:hover,
+#sub-nav li a.drompdown-item:hover {
+	background-color:rgba(0,0,0,0.2);
 }
 .col-sidebar {
     background: #d5d5d5; /* Old browsers */
@@ -157,8 +155,7 @@
 .emtabs li a:hover,
 #eml-tab-subnav ul li a:hover
 {
-	color:#333;
-	background-color: #C4C4C4;
+background-color:rgba(0,0,0,0.5);
 	text-decoration: none;
 }
 .emtabs li.emtabselected a {
@@ -181,7 +178,8 @@ tr.emborderhover td,
 .search-list li.current a.search-href, 
 .sidebar-list li.current a,
 .search-list li:hover a.search-href, 
-.sidebar-list a:hover 
+.sidebar-list a:hover,
+.emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover
 {
 	background-color: #c9e8f2;
 }
@@ -326,15 +324,12 @@ select + .select2-container {
 	padding:0;
 }
 #header ul.dropdown-menu li { float: none;}
-#header ul.dropdown-menu li a,#header ul.dropdown-menu li a:hover  { color:#111;}
 #header .navlinks li>a {
     position: relative;
-    color: #fff;
     padding: 0 5px;
     display: block;
 }
 #header .navlinks li>a:hover {
-    color: #fff;
     text-decoration: none;
 }
 #header .navlinks>ul li.dropdown:last-child .dropdown-menu {
@@ -728,7 +723,7 @@ html, body, #application {
 	cursor:pointer;
 }
 #main-results-table th.sortable.currentsort {
-    box-shadow: inset 0px 0px 8px 2px rgba(0, 0, 0, 0.25);
+    box-shadow: inset 0px 0px 2px 1px rgba(0, 0, 0, 0.15);
 }
 #main-results-table th.sortable div span.sorticon {
     font-size: 16px;
@@ -765,8 +760,6 @@ html, body, #application {
     width: 130px;
     text-align: center;
     padding: 1px 10px;
-    background-color: transparent;
-    
     position:relative;
 }
 
@@ -1091,12 +1084,6 @@ td.checkbox input, th.firstheader input {
     width: 15px;
     padding: 10px;
     text-align: center;
-}
-.emtree .checkbox .field,
-.emtree .treerow:hover,
-.emtree .treerow.selected,
-.emtree .treerow.selected:hover {
-    background-color: #c9e8f2;
 }
 .emtree ul li div span a.btn {
     line-height: 11px;
@@ -2192,7 +2179,7 @@ table.greytxt {
     width: 100%;
 }
 .eml-tab-content, .eml-full-content {
-    padding:20px 0;
+    padding:20px;
 }
 .eml-content-title {
 	height: 42px;

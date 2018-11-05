@@ -29,7 +29,7 @@
 		<table class="emdata table table-striped table-hover" id="main-results-table" 
 		 data-hitssessionid="$datalist.sessionId" data-origURL="$!origURL" data-catalogid="$searcher.catalogId" data-searchtype="$searcher.searchType" >
 		 <thead>
-			<tr id="tableheader" class="thead-dark">
+			<tr id="tableheader">
 			#set( $sortby = $datalist.getSearchQuery().getSortBy() )
 			#foreach( $detail in $details )
 			<th align="left" nowrap class="sortable #if( $edit)editcolumnheader #end #if( $sortby.startsWith($detail.getId() ) ) currentsort #if( $sortby.endsWith("Up") ) up #else down #end #end" id="$detail.id" data-fieldid="$detail.id">
