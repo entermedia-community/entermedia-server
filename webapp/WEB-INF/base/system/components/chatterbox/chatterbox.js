@@ -58,10 +58,13 @@ function clear(){
 }
 
 
-function scrollToChat(){
-	$('.chatterbox-body-inside').animate({
-		scrollTop: $('.chatterbox-body-inside').get(0).scrollHeight}, 500); 
-	
+function scrollToChat()
+{
+	var inside = $('.chatterbox-body-inside');
+	if( inside.length > 0 )
+	{
+		inside.animate({ scrollTop: inside.get(0).scrollHeight}, 500); 
+	}
 	
 }
 

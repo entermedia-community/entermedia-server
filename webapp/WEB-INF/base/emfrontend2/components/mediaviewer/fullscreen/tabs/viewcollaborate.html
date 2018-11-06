@@ -1,21 +1,20 @@
-
-
-
-
-
-
 <div class="assetpanel-container">
 <div class="assetpanel-sidebar">
 	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcarousel.html",$context)
 </div>
 <div class="assetpanel-content">
-	<div class="assetpanel-content-inside">
-		
-		<div class="assetpanel-chatterbox chatterbox" data-assetid="$asset.id" data-channel="asset${asset.id}" data-user="${user.id}" data-catalogid="${catalogid}"></div>
-	</div>
-</div>
-</div>
 
+    <div class="row">
+        <div class="col-md-6" >
+		$pages.include("$apphome/components/annotations2/annotation.html")
+		</div>
+    	<div class="col-md-6" >
+		<div class="assetpanel-content-inside">
+			<div class="assetpanel-chatterbox chatterbox" data-assetid="$asset.id" data-channel="asset${asset.id}" data-user="${user.id}" data-catalogid="${catalogid}"></div>
+		</div>
+		</div>
+	</div>	
+</div>
 
 <script type="text/javascript">
 

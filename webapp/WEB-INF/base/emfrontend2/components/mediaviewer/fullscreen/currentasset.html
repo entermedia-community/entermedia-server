@@ -8,6 +8,11 @@
 $context.putPageValue("cdn",$cdnprefix)
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
+#if( !$hits )
+#set( $hits = $collectionassets )
+$context.putPageValue("hits",$hits)
+#end
+
 #set( $index = $hits.indexOfId($asset.id))
 #set( $previous = false )
 #set( $previous = $hits.previous($index))
@@ -28,7 +33,7 @@ $context.putPageValue("cdn",$cdnprefix)
 #end
 #set( $hitssessionid = $hits.getSessionId())
 <div id="main-media-container" style="height: 100%;">
-<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()"
+<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$!hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()"
 data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage()" >
 >
 	#if( !$mediadbappid)

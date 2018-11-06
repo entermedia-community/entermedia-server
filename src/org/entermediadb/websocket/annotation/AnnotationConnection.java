@@ -27,7 +27,7 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 	protected String fieldCollectionId;
 	protected String fieldCatalogId;
 	protected JSONParser fieldJSONParser;
-	protected AnnotationServer fieldAnnotationServer;
+	protected AnnotationManager fieldAnnotationManager;
 	protected ModuleManager fieldModuleManager;
 	
 	public ModuleManager getModuleManager()
@@ -51,7 +51,7 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 	 
 	@Override
 	public void onClose(Session session, CloseReason closeReason) {
-		getAnnotationServer().removeConnection(this);
+		getAnnotationManager().removeConnection(this);
 		super.onClose(session, closeReason);
 	}
    @Override
@@ -66,7 +66,6 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 //       }
        
        String catalogid = session.getPathParameters().get("catalogid");
-       String collectionid = session.getPathParameters().get("collectionid");
 //        
 //       if( getModuleManager() == null)
 //       {
@@ -83,27 +82,26 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
         }
     	setModuleManager(modulemanager);
     	
-        AnnotationServer server = (AnnotationServer) modulemanager.getBean("system","annotationServer");
-        fieldAnnotationServer = server;
+        AnnotationManager server = (AnnotationManager) modulemanager.getBean("system","annotationManager");
+        fieldAnnotationManager = server;
         
      	remoteEndpointBasic = session.getBasicRemote();
    		fieldCatalogId = catalogid;
-   		fieldCollectionId = collectionid;
        
        //ws://localhost:8080/entermedia/services/websocket/echoProgrammatic?catalogid=emsite/catalog&collectionid=102
        
        //TODO: Load from spring0
        //AnnotationConnection connection = new AnnotationConnection(getSearcherManager(),catalogid, collectionid,http,remoteEndpointBasic, this);
-       getAnnotationServer().addConnection(this);	
+       getAnnotationManager().addConnection(this);	
        session.addMessageHandler(this);
      //  session.addMessageHandler(new EchoMessageHandlerBinary(remoteEndpointBasic));
    }
 	
 	
-	public AnnotationServer getAnnotationServer()
+	public AnnotationManager getAnnotationManager()
 	{
 		
-		return fieldAnnotationServer;
+		return fieldAnnotationManager;
 	}
 	
 	public JSONParser getJSONParser()
@@ -134,6 +132,10 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 			return;
 		}
 		String message = getBufferedMessage().toString();
+		if( message != null && message.isEmpty())
+		{
+			return; //Ping?
+		}
 		fieldBufferedMessage = null;
 		
 //		if (remoteEndpointBasic != null)
@@ -146,22 +148,21 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 			JSONObject map = (JSONObject)getJSONParser().parse(new StringReader(message));
 			String command = (String)map.get("command");
 			String catalogid = (String)map.get("catalogid");
-			String collectionid = (String)map.get("collectionid");
 			String assetid = (String)map.get("assetid");
 			
 			if ("server.loadAnnotatedAsset".equals(command)) //Return all the annotation on this asset
 			{
-				getAnnotationServer().loadAnnotatedAsset(this,catalogid, collectionid,assetid);
+				getAnnotationManager().loadAnnotatedAsset(this,catalogid,assetid);
 			}
 			else if ("annotation.modified".equals(command))
 			{
 //				JSONObject obj = new JSONObject();
-				getAnnotationServer().annotationModified(this, map, message, catalogid, collectionid,assetid);
+				getAnnotationManager().annotationModified(this, map, message, catalogid,assetid);
 			}
 			else if ("annotation.removed".equals(command))
 			{
 //				JSONObject obj = new JSONObject();
-				getAnnotationServer().annotationRemoved(this, map, message, catalogid, collectionid,assetid);
+				getAnnotationManager().annotationRemoved(this, map, message, catalogid, assetid);
 			}
 			else if ("annotation.added".equals(command)) //Return all the annotation on this asset
 			{
@@ -171,7 +172,7 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 				//command.annotationdata
 				//obj.put("stuff", "array of annotations");
 				//remoteEndpointBasic.sendText(message);
-				getAnnotationServer().annotationAdded(this, map, message, catalogid, collectionid,assetid);
+				getAnnotationManager().annotationAdded(this, map, message, catalogid, assetid);
 			}
 		}
 		catch (Exception e)

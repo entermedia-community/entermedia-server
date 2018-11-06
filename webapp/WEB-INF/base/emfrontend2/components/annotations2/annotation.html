@@ -1,0 +1,39 @@
+<div id="annotationarea" class="em-workspace" data-catalogid="$catalogid" data-assetid="$asset.id">
+	$pages.include("$apphome/components/annotations2/svg/svg-definitions.tpl.html")
+	<script type="text/javascript" src="${apphome}/components/javascript/fabric/dist/fabric.js">  </script>
+	<script type="text/javascript" src="${apphome}/components/javascript/colorpicker-master/jquery.colorpicker.js">  </script>
+	<script type="text/javascript" src="${apphome}/components/annotations/vendor/lodash/lodash.js">  </script>
+	<script type="text/javascript" src="${apphome}/components/annotations2/FabricModel.js">  </script>
+ 	<script type="text/javascript" src="${apphome}/components/annotations2/AnnotationEditor.js">  </script>
+ 	<script type="text/javascript" src="${apphome}/components/annotations2/main.js">  </script>
+
+ 	<link rel="stylesheet" type="text/css" href="${apphome}/components/annotations2/css/annotations.css" />
+	<div id="annotation-holder">
+	<h4 class="jangular-render" style="float:left;margin:0px">$asset.name</h4>
+	 	   <ul id="annotation-toolbar" class="annotations-toolbar" >
+	               <!-- try to reference the right object -->
+	       	
+	        <li ng-click="annotationEditor.fabricModel.selectTool('move')" id="movetool">
+	            <svg class="icon icon-move" ><use xlink:href="#icon-move"></use></svg>
+	        </li>
+	        <li ng-click="annotationEditor.fabricModel.selectTool('draw')" id="drawtool">
+	            <svg class="icon icon-draw" ><use xlink:href="#icon-draw"></use></svg>
+	        </li>
+	        <li ng-click="annotationEditor.fabricModel.setShapeTypeFromUi('rectangle')" id="rectangletool">
+	            <svg class="icon icon-rectangle" ><use xlink:href="#icon-rectangle" ></use></svg>
+	        </li>
+	        <li ng-show="shapeToolType == 'circle'" ng-click="annotationEditor.fabricModel.setShapeTypeFromUi('circle')" id="circletool">
+	            <svg class="icon icon-circle" ><use xlink:href="#icon-circle"></use></svg>
+	        </li>
+	        <li id="colortoolbararea" ng-click="annotationEditor.showColorPicker('color')" class="last colorpicker-li">
+	            <input type="hidden" id="color-hidden-input" class="colorpicker-input" value="{{userColor}}" size="7">
+	            <div colorpicker-position="bottom" colorpicker class="clearfix">
+	            	<svg fill="{{userColor}}" class="icon icon-colorpicker" ><use xlink:href="#icon-colorpicker"></use></svg>
+	            </div>
+	        </li>
+	    </ul>
+           <div class="canvas-holder">
+               <canvas id="annotation_canvas" class="annotations-canvas" width="100%" height="500"></canvas>
+           </div>
+	</div>
+</div>

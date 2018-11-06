@@ -4,9 +4,6 @@
 		<property name="copyprefix">assetdialog</property>
 	</path-action>
 	<path-action name="MediaArchiveModule.getAssetAndPage"  />
-	<layout />
-	
-	<inner-layout />
 	
 
 </page>

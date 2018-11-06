@@ -37,9 +37,9 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.util.DateStorageUtil;
 
-public class AnnotationServer  {
+public class AnnotationManager  {
 
-	private static final Log log = LogFactory.getLog(AnnotationServer.class);
+	private static final Log log = LogFactory.getLog(AnnotationManager.class);
 
 	 private static final Set<AnnotationConnection> connections =
 	            new CopyOnWriteArraySet<AnnotationConnection>();
@@ -93,10 +93,10 @@ public class AnnotationServer  {
 		fieldCacheManager = inCacheManager;
 	}
 
-    public void annotationModified(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid, String inCollectionId, String inAssetId)
+    public void annotationModified(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
 	{
     	//TODO: update our map
-    	JSONObject obj = loadAnnotatedAsset(catalogid,inCollectionId,inAssetId);
+    	JSONObject obj = loadAnnotatedAsset(catalogid,inAssetId);
 		List annotations = (List)obj.get("annotations");
 		JSONObject annotation = (JSONObject)command.get("annotationdata");
 		String id = (String)annotation.get("id");
@@ -115,7 +115,7 @@ public class AnnotationServer  {
 				{
 					annotations.add(annotation);
 				}
-				saveAnnotationData(catalogid, inCollectionId, inAssetId, annotation);
+				saveAnnotationData(catalogid,  inAssetId, annotation);
 				break;
 			}
 		}
@@ -127,15 +127,15 @@ public class AnnotationServer  {
 		}
 	}
     
-	public void annotationAdded(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid, String inCollectionId, String inAssetId)
+	public void annotationAdded(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
 	{
-		JSONObject obj = loadAnnotatedAsset(catalogid,inCollectionId,inAssetId);
+		JSONObject obj = loadAnnotatedAsset(catalogid,inAssetId);
 		Collection annotations = (Collection)obj.get("annotations");
 		
 		JSONObject annotation = (JSONObject)command.get("annotationdata");
 		annotations.add(annotation);
 		
-		saveAnnotationData(catalogid,inCollectionId,inAssetId, annotation);
+		saveAnnotationData(catalogid,inAssetId, annotation);
 		
 		for (Iterator iterator = connections.iterator(); iterator.hasNext();)
 		{
@@ -144,7 +144,7 @@ public class AnnotationServer  {
 		}
 	}
     
-	protected void saveAnnotationData(String inCatalogid, String inCollectionId, String inAssetId, JSONObject inAnnotation)
+	protected void saveAnnotationData(String inCatalogid,  String inAssetId, JSONObject inAnnotation)
 	{
 		String annotationid = (String)inAnnotation.get("id");
 		
@@ -156,7 +156,6 @@ public class AnnotationServer  {
 		}
 		
 		data.setProperty("id", annotationid);
-		data.setProperty("collectionid", inCollectionId);
 		data.setProperty("assetid", inAssetId);
 		data.setProperty("date", (String)inAnnotation.get("date"));
 		data.setProperty("user", (String)inAnnotation.get("user"));
@@ -176,9 +175,9 @@ public class AnnotationServer  {
 		searcher.saveData(data, null);
 		
 	}
-	public void annotationRemoved(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid, String inCollectionId, String inAssetId)
+	public void annotationRemoved(AnnotationConnection annotationConnection, JSONObject command, String message, String catalogid,  String inAssetId)
 	{
-		JSONObject obj = loadAnnotatedAsset(catalogid,inCollectionId,inAssetId);
+		JSONObject obj = loadAnnotatedAsset(catalogid,inAssetId);
 		Collection annotations = (Collection)obj.get("annotations");
 		
 		String removed = (String)command.get("annotationid");
@@ -203,19 +202,19 @@ public class AnnotationServer  {
 	}
 	
 	
-	public void loadAnnotatedAsset(AnnotationConnection annotationConnection, String catalogid, String inCollectionId, String inAssetId)
+	public void loadAnnotatedAsset(AnnotationConnection annotationConnection, String catalogid, String inAssetId)
 	{
 		JSONObject newcommand = new JSONObject(); //Get this from our map of annotatedAssets
 		newcommand.put("command", "asset.loaded");
 		
-		JSONObject asset = loadAnnotatedAsset(catalogid,inCollectionId, inAssetId);
+		JSONObject asset = loadAnnotatedAsset(catalogid, inAssetId);
 		newcommand.put("annotatedAssetJson", asset);
 		
 		annotationConnection.sendMessage(newcommand);
 	}
-	protected JSONObject loadAnnotatedAsset(String inCatalogId, String inCollection, String inAssetId)
+	public JSONObject loadAnnotatedAsset(String inCatalogId,  String inAssetId)
 	{
-    	JSONObject obj = (JSONObject)getCacheManager().get(CACHENAME, inCatalogId + inCollection + inAssetId);
+    	JSONObject obj = (JSONObject)getCacheManager().get(CACHENAME, inCatalogId + inAssetId);
 		if( obj == null)
 		{
 			//Goto database and load it?
@@ -226,19 +225,19 @@ public class AnnotationServer  {
 			assetData.put("sourcepath",asset.getSourcePath());
 			assetData.put("name", asset.getName());
 			obj.put("assetData",assetData);
-			List annotations = loadAnnotations(inCatalogId,inCollection,inAssetId);
+			List annotations = loadAnnotations(inCatalogId,inAssetId);
 			obj.put("annotations", annotations);
 			
 			obj.put("users", new ArrayList());
 			obj.put("annotationIndex", new Integer(1));
-			getCacheManager().put(CACHENAME, inCatalogId + inCollection + inAssetId, obj);
+			getCacheManager().put(CACHENAME, inCatalogId + inAssetId, obj);
 		}
 		return obj;
 	}
-	protected List loadAnnotations(String inCatalogId, String inCollection, String inAssetId)
+	protected List loadAnnotations(String inCatalogId,  String inAssetId)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "annotation");
-		HitTracker hits = searcher.query().match("assetid", inAssetId).match("collectionid", inCollection).search();
+		HitTracker hits = searcher.query().match("assetid", inAssetId).search();
 		
 		List list = new ArrayList();
 		for (Iterator iterator = hits.iterator(); iterator.hasNext();)

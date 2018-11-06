@@ -1833,7 +1833,6 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
-	<bean id="AnnotationModule" class="modules.annotations.AnnotationModule" />
 	<bean id="AdvancedAssetEditModule" class="modules.assets.AdvancedAssetEditModule" />
 	<bean id="ConvertModule" class="modules.convert.ConvertModule" />
 	
@@ -2130,10 +2129,13 @@
  	<bean id="projectGoal" class="org.entermediadb.tasks.ProjectGoal" scope="prototype">
  	</bean>
 
- 	<bean id="annotationServer" class="org.entermediadb.websocket.annotation.AnnotationServer" scope="prototype">
+ 	<bean id="annotationManager" class="org.entermediadb.websocket.annotation.AnnotationManager" scope="prototype">
 	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
+ 	</bean>
+ 	
+ 	<bean id="AnnotationModule" class="org.entermediadb.asset.modules.AnnotationModule" >
  	</bean>
 
  	<bean id="desktopManager" class="org.entermediadb.desktops.DesktopManager" >

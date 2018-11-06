@@ -6,7 +6,7 @@ import javax.websocket.HandshakeResponse;
 import javax.websocket.server.HandshakeRequest;
 import javax.websocket.server.ServerEndpointConfig;
 
-import org.entermediadb.websocket.annotation.AnnotationServer;
+import org.entermediadb.websocket.annotation.AnnotationManager;
 import org.openedit.ModuleManager;
 
 public class ModuleManagerLoader extends ServerEndpointConfig.Configurator
