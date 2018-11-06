@@ -10,10 +10,14 @@ public class PostModule extends BaseMediaModule
 	{
 		String path  = inReq.getPath();
 		
-		String sitehome = (String)inReq.getPageValue("sitehome");
-		//String apphome = (String)inReq.getPageValue("apphome");
+		String apphome = (String)inReq.getPageValue("apphome");
 		
-		String sourceppath = path.substring(sitehome.length()+1, path.length());
+		String sitehome = (String)inReq.getPageValue("sitehome");
+		if( sitehome.isEmpty() )
+		{
+			apphome = apphome.substring(sitehome.length() + 1,apphome.length());
+		}
+		String sourceppath = path.substring(apphome.length()+1, path.length());
 		//getSearcherManager().getCacheManager()
 		String catalogid = inReq.findValue("catalogid");
 		//TODO: Cache this
