@@ -13,7 +13,7 @@ public class PostModule extends BaseMediaModule
 		if(siteid != null)
 		{
 			String path  = inReq.getPath();
-			path = path.substring(path.indexOf("/"), path.length());
+			path = path.substring(siteid.length()+2, path.length());
 			//getSearcherManager().getCacheManager()
 			String catalogid = inReq.findValue("catalogid");
 			//TODO: Cache this
