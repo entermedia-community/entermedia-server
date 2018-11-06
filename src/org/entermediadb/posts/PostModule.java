@@ -13,36 +13,35 @@ public class PostModule extends BaseMediaModule
 		String sitehome = (String) inReq.getPageValue("sitehome");
 		String apphome = (String)inReq.getPageValue("apphome");
 
+		apphome = apphome.substring(sitehome.length() + 1,apphome.length());
+
 		
-		if( sitehome.isEmpty() )
-		{
-			apphome = apphome.substring(sitehome.length() + 1,apphome.length());
-		}
-		String sourceppath = path.substring(apphome.length()+1, path.length());
+		String 	sourcepath = path.substring(path.indexOf(apphome),path.length());
+		
 		//getSearcherManager().getCacheManager()
 		String catalogid = inReq.findValue("catalogid");
 		//TODO: Cache this
 		//TODO: Fallback? Use the actual page
 		Searcher searcher = getSearcherManager().getSearcher(catalogid, "postdata");
-		PostData post = (PostData) searcher.query().exact("sourcepath", sourceppath).searchOne();
+		PostData post = (PostData) searcher.query().exact("sourcepath", sourcepath).searchOne();
 		if (post == null)
 		{
-			if (path.endsWith("index.html"))
+			if (sourcepath.endsWith("index.html"))
 			{
-				path = path.substring(0, path.length() - 10);
+				sourcepath = sourcepath.substring(0, sourcepath.length() - 10);
 			}
 		}
 		
-		post = (PostData) searcher.query().exact("sourcepath", path).searchOne();
+		post = (PostData) searcher.query().exact("sourcepath", sourcepath).searchOne();
 
-		if (post == null)
-		{
-			post = (PostData) searcher.createNewData();
-			//post.setValue("siteid", siteid);
-			post.setValue("sourcepath", sourceppath);
-			post.setValue("maincontent", "Hello World");
-			searcher.saveData(post);
-		}
+//		if (post == null)
+//		{
+//			post = (PostData) searcher.createNewData();
+//			//post.setValue("siteid", siteid);
+//			post.setValue("sourcepath", sourceppath);
+//			post.setValue("maincontent", "Hello World");
+//			searcher.saveData(post);
+//		}
 		inReq.putPageValue("postdata", post);
 		//Load up a $sitehome and $postdata 
 	}
