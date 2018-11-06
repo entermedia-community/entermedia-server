@@ -1,4 +1,4 @@
-<div id="annotationarea" class="em-workspace" data-catalogid="$catalogid" data-assetid="$asset.id">
+<div id="annotationarea" class="em-workspace" data-catalogid="$catalogid" data-assetid="$asset.id" data-userid="$user.id" data-usercolor="#ff8e8e">
 	$pages.include("$apphome/components/annotations2/svg/svg-definitions.tpl.html")
 	<script type="text/javascript" src="${apphome}/components/javascript/fabric/dist/fabric.js">  </script>
 	<script type="text/javascript" src="${apphome}/components/javascript/colorpicker-master/jquery.colorpicker.js">  </script>
@@ -13,19 +13,19 @@
 	 	   <ul id="annotation-toolbar" class="annotations-toolbar" >
 	               <!-- try to reference the right object -->
 	       	
-	        <li ng-click="annotationEditor.fabricModel.selectTool('move')" id="movetool">
+	        <li onclick="scope.annotationEditor.fabricModel.selectTool('move')" id="movetool">
 	            <svg class="icon icon-move" ><use xlink:href="#icon-move"></use></svg>
 	        </li>
-	        <li ng-click="annotationEditor.fabricModel.selectTool('draw')" id="drawtool">
+	        <li onclick="scope.annotationEditor.fabricModel.selectTool('draw')" id="drawtool">
 	            <svg class="icon icon-draw" ><use xlink:href="#icon-draw"></use></svg>
 	        </li>
-	        <li ng-click="annotationEditor.fabricModel.setShapeTypeFromUi('rectangle')" id="rectangletool">
+	        <li onclick="scope.annotationEditor.fabricModel.setShapeTypeFromUi('rectangle')" id="rectangletool">
 	            <svg class="icon icon-rectangle" ><use xlink:href="#icon-rectangle" ></use></svg>
 	        </li>
-	        <li ng-show="shapeToolType == 'circle'" ng-click="annotationEditor.fabricModel.setShapeTypeFromUi('circle')" id="circletool">
+	        <li ng-show="shapeToolType == 'circle'" onclick="scope.annotationEditor.fabricModel.setShapeTypeFromUi('circle')" id="circletool">
 	            <svg class="icon icon-circle" ><use xlink:href="#icon-circle"></use></svg>
 	        </li>
-	        <li id="colortoolbararea" ng-click="annotationEditor.showColorPicker('color')" class="last colorpicker-li">
+	        <li id="colortoolbararea" onclick="scope.annotationEditor.showColorPicker('color')" class="last colorpicker-li">
 	            <input type="hidden" id="color-hidden-input" class="colorpicker-input" value="{{userColor}}" size="7">
 	            <div colorpicker-position="bottom" colorpicker class="clearfix">
 	            	<svg fill="{{userColor}}" class="icon icon-colorpicker" ><use xlink:href="#icon-colorpicker"></use></svg>

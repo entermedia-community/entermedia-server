@@ -150,11 +150,7 @@ public class AnnotationConnection  extends Endpoint implements MessageHandler.Pa
 			String catalogid = (String)map.get("catalogid");
 			String assetid = (String)map.get("assetid");
 			
-			if ("server.loadAnnotatedAsset".equals(command)) //Return all the annotation on this asset
-			{
-				getAnnotationManager().loadAnnotatedAsset(this,catalogid,assetid);
-			}
-			else if ("annotation.modified".equals(command))
+			if ("annotation.modified".equals(command))
 			{
 //				JSONObject obj = new JSONObject();
 				getAnnotationManager().annotationModified(this, map, message, catalogid,assetid);

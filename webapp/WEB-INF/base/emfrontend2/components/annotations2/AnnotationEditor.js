@@ -119,12 +119,12 @@ var AnnotationEditor = function(scope) {
 			this.fabricModel.setBackgroundImage(url);
 
 		},
-		renderAnnotatedAsset: function(inAnnotatedAsset)
+		renderAnnotatedAsset: function()
 		{	
 			var editor = this;
 			// need to go through annotations and put them on the newly instantiated canvas
 			// this is safe to do now because the only place this is called is in loading from network
-
+			var inAnnotatedAsset = this.currentAnnotatedAsset;
 			this.scope.annotations = inAnnotatedAsset.annotations;
 			editor.fabricModel.clearCanvas();
 
@@ -132,85 +132,13 @@ var AnnotationEditor = function(scope) {
 			{
 				editor.addAnnotationToCanvas(annotation);
 			});
-			/*
-			// Maybe this entire function is not necessary.
-			// I put the enlivening code into a new function called 'refreshAnnotation'
-			// Right now all this really does is renderAll and refresh the tab
-			
-			var editor = this;
-			this.scope.annotations = inAnnotatedAsset.annotations;
-			editor.fabricModel.clearCanvas();
-			$.each(this.scope.annotations, function(index, annotation)
-			{
-				var oldAnnotations = annotation.fabricObjects;
-				// annotation.fabricObjects = [];
-				if (annotation.isLive())
-				{
-					$.each(oldAnnotations, function(index, item)
-					{
-						// annotation.fabricObjects.push(item);
-						item.annotationid = annotation.id;
-						editor.fabricModel.canvas.addInternal(item);
-					});
-				} 
-				else 
-				{
-					fabric.util.enlivenObjects(oldAnnotations, function(group)
-						{
-						 if (editor.getAnnotationById(annotation.id) == null)
-						 {
-							 origRenderOnAddRemove = editor.scope.fabricModel.canvas.renderOnAddRemove
-							 editor.scope.fabricModel.canvas.renderOnAddRemove = false
-							 $.each(group, function(index, item) {
-							 	 //item.junk = "21412124";
-								 annotation.fabricObjects[index] = item;
-								 item.annotationid = annotation.id;
-							     editor.scope.fabricModel.canvas.addInternal(item);
-							 });
-							 editor.scope.fabricModel.canvas.renderOnAddRemove = origRenderOnAddRemove;
-						 }
-						});
-				}
-
-				// below code might be needed for recreating objects from JSON data
-				// currently the whole objects are saved rather than parsed
-
-				
-			});
-			*/
 			editor.fabricModel.canvas.renderAll();
-			jAngular.render("#annotationarea", scope); 
-
-			// it seems like we trash the data when we render, thus may need to update the active status post-render
-
-			///TODO Mark the ones that have annotations on it
-			$("a.thumb").each(function()
-				{
-					var element = $(this);
-					if (element.attr("id") == "thumb" + inAnnotatedAsset.assetData.id)
-					{
-						element.parent().addClass("active");
-					}
-					else
-					{
-						element.parent().removeClass("active");
-					}
-				}
-			);
-			
-			// jAngular.render("#annotationlist"); // shouldn't have to do this
-			// this method also needs to clear the canvas and comments and update from the persisted data
-			// DONE: Clear canvas state, refresh with AnnotatedAsset data
-			// DONE: Clear comments, refresh with AnnotatedAsset data
-			// TODO: above two things with server persisted data instead of client for when page is refreshed
-		
-		
 		}
 		,
 		createNewAnnotation: function(annotatedAsset)
 		{
 			var annot = new Annotation();
-			annot.user = this.userData.userid;
+			annot.user = scope.userid;
 			annot.assetid = annotatedAsset.assetData.id;
 			annot.id = Math.floor(Math.random() * 100000000).toString();
 			annot.indexCount = annotatedAsset.nextIndex();
@@ -331,7 +259,9 @@ var AnnotationEditor = function(scope) {
 					  .done(function( json ) 
 					  {
 						editor.setCurrentAnnotatedAsset(json);
-						editor.loadSelectors();					  
+						editor.loadSelectors();					
+						editor.fabricModel.selectTool("draw");
+						editor.renderAnnotatedAsset();  
 					  }).fail(function( jqxhr, textStatus, error ) {
 					    var err = textStatus + ", " + error;
 					    console.log( "Request Failed: " + err );
@@ -376,8 +306,7 @@ var AnnotationEditor = function(scope) {
 						var anonasset = editor.currentAnnotatedAsset;
 						
 						// we only want to push the annotation if it doesn't already exist
-						var newannotation = new Annotation(data);
-
+						var newannotation = new Annotation(command.annotationdata);
 						var existing = anonasset.getAnnotationById(newannotation.id);
 
 						if (existing == null)
@@ -407,7 +336,7 @@ var AnnotationEditor = function(scope) {
 						
 						var modifiedAnnotation = new Annotation(command.annotationdata);
 
-						var modasset = editor.currentAnnotatedAsset();
+						var modasset = editor.currentAnnotatedAsset;
 						var foundAnnotationIndex = modasset.getAnnotationIndexById(modifiedAnnotation.id);
 						modasset.annotations[foundAnnotationIndex] = modifiedAnnotation;
 						
