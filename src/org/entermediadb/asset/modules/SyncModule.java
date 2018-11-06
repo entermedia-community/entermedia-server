@@ -212,7 +212,8 @@ public class SyncModule extends BaseMediaModule
 			
 		}
 		
-		
+		archive.getCategorySearcher().clearIndex();
+		archive.getCategoryArchive().clearCategories();
 		
 
 	}
