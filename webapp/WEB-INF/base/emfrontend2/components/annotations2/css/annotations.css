@@ -82,7 +82,7 @@ Below css from old highlights.css
   margin: 0;
   background: #f1f1f1;
   width: 44px;
-  height: 36px;
+  height: 40px;
   line-height: 36px;
   border: 1px solid #ccc;
   border-right: none;
@@ -100,9 +100,9 @@ Below css from old highlights.css
 }
 .em-workspace .annotations-toolbar li .icon {
   float: left;
-  width: 20px;
-  height: 20px;
-  margin: 7px 11px;
+  width: 32px;
+  height: 32px;
+  margin: 3px 5px;
   
 }
 .em-workspace .annotations-toolbar li .additional-info {

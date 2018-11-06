@@ -62,37 +62,6 @@ var AnnotationEditor = function(scope) {
 					
 		}
 		,
-		toggleCommentEdit: function(annotationid)
-		{
-			var annotation = this.currentAnnotatedAsset.getAnnotationById(annotationid);
-			var html = $("#annotation-template").html();
-			
-			$("#annotation" + annotationid).html(html); //replace div
-			var localscope = this.scope.createScope();
-			localscope.annotation = annotation;
-			jAngular.render("#annotation" + annotationid, localscope);
-		}
-		,
-		saveComment: function(annotationid)
-		{
-			var annotation = this.currentAnnotatedAsset.getAnnotationById(annotationid);
-		
-			var comment = $("#annotation" + annotationid + " .user-comment-input").val();
-		
-			annotation.comment = comment;
-			
-			//update UI?
-			
-			//jAngular.render("#annotationlist", scope); //changed
-			this.notifyAnnotationModified(annotation);
-		
-		}
-		,
-		cancelComment: function(annotationid)
-		{
-			jAngular.render("#annotationlist", scope); //changed
-		}
-		,
 		createAnnotatedAsset: function(inAssetJson)
 		{
 			var aa = new AnnotatedAsset();
@@ -112,7 +81,7 @@ var AnnotationEditor = function(scope) {
 		setCurrentAnnotatedAsset: function(annotatedAssetData)
 		{
 			this.currentAnnotatedAsset = this.createAnnotatedAsset(annotatedAssetData);
-			var url = this.scope.apphome + "/views/modules/asset/downloads/preview/extralarge/" + this.currentAnnotatedAsset.assetData.sourcepath + "/image.jpg";
+			var url = this.scope.apphome + "/views/modules/asset/downloads/preview/large/" + this.currentAnnotatedAsset.assetData.sourcepath + "/image.jpg";
 			
 			this.fabricModel.clearCanvas();
 
@@ -224,6 +193,22 @@ var AnnotationEditor = function(scope) {
 			return outAsset;
 		}
 		,
+		deleteAnnotations: function()
+		{
+			var editor = this;
+			editor.currentAnnotatedAsset.annotations = [];
+			var canvasObjects = editor.fabricModel.canvas.getObjects().slice();
+			$.each(canvasObjects, function(index, item)
+			{
+				editor.fabricModel.canvas.remove(item);
+			});
+			editor.fabricModel.canvas.renderAll();
+			
+			var command = SocketCommand("removeall");
+			editor.sendSocketCommand( command,this.scope.assetid );
+			
+		}
+		,
 		connect : function()
 		{
 			//socket initialization
@@ -297,6 +282,7 @@ var AnnotationEditor = function(scope) {
 					//We can ignore non-loaded assets
 					if( editor.currentAnnotatedAsset.assetData.id != assetid )
 					{
+						console.log("Event for another asset, ignoreing:" + assetid );
 						return;
 					}
 					
@@ -352,6 +338,11 @@ var AnnotationEditor = function(scope) {
 						editor.removeAnnotationFromCanvas(assetid,annotationid);
 						scope.annotations = editor.currentAnnotatedAsset.annotations;
 					}
+					else if (command.command == "removeall")
+					{
+						editor.deleteAnnotations();
+					}
+					
 				};
 			this.connection = connection; // connection lives on the editor. more explicit
 			}
