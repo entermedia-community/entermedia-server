@@ -1541,6 +1541,7 @@ label.error {
 	height: 100%;
 	width: 100%;
 	display:table;
+	padding:0;
 }
 .chatterbox-body {
 	display: table-row;
