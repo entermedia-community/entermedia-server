@@ -5,6 +5,7 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
+import org.openedit.users.User;
 
 public class PostModule extends BaseMediaModule
 {
@@ -60,14 +61,24 @@ public class PostModule extends BaseMediaModule
 		
 		post = (PostData) searcher.query().exact("sourcepath", sourcepath).searchOne();
 
-//		if (post == null)
-//		{
-//			post = (PostData) searcher.createNewData();
-//			//post.setValue("siteid", siteid);
-//			post.setValue("sourcepath", sourceppath);
-//			post.setValue("maincontent", "Hello World");
-//			searcher.saveData(post);
-//		}
+		if (post == null && inReq.getUser() != null)
+		{
+			//TODO: Check they are in post edit mode
+			String mode = inReq.getUser().get("oe_edit_mode");
+			if("postedit".equals(mode))
+			{
+				post = (PostData) searcher.createNewData();
+				//post.setValue("siteid", siteid);
+				post.setValue("sourcepath", sourcepath);
+				post.setValue("maincontent", "");
+				searcher.saveData(post);
+			}
+		}
+		else
+		{
+			//TODO: send 404
+		}
+		//TODO: Set mod time
 		inReq.putPageValue("postdata", post);
 		//Load up a $sitehome and $postdata 
 	}
