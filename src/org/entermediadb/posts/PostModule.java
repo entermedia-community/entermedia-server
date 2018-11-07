@@ -12,7 +12,7 @@ public class PostModule extends BaseMediaModule
 	
 	public void loadPost(WebPageRequest inReq)
 	{
-		String sourcepath = inReq.getContentProperty("sourcepath");
+		String sourcepath = inReq.getContentProperty("postsourcepath");
 		if(sourcepath == null)
 		{
 			sourcepath = loadFromAppHome(inReq);
