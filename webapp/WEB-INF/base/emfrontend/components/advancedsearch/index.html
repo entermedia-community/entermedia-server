@@ -100,6 +100,7 @@ $context.putPageValue("idprefix","search")
 			#end
 		#end	
 	</select>
+#if($cansearchjoins)
 	<select class="select2" name="field" onChange="jQuery('#searchaddfield').submit();">
 		<option value="">[[Collection]]</option>
 		#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
@@ -114,6 +115,7 @@ $context.putPageValue("idprefix","search")
 		<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
 		#end
 	</select>
+#end
 <div class="pull-right">
 	<a class="ajax" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
 </div>	
