@@ -5,7 +5,6 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
-import org.openedit.users.User;
 
 public class PostModule extends BaseMediaModule
 {
@@ -13,36 +12,10 @@ public class PostModule extends BaseMediaModule
 	
 	public void loadPost(WebPageRequest inReq)
 	{
-		String path = inReq.getPath();
-
-		String sitehome = (String) inReq.getPageValue("sitehome");
-		String apphome = (String)inReq.getPageValue("apphome");
-		if( apphome == null)
+		String sourcepath = inReq.getContentProperty("sourcepath");
+		if(sourcepath == null)
 		{
-			log.info("Loading post from base? no apphome set");
-			return;
-		}
-		String 	sourcepath = null;
-		if( apphome.equals(sitehome))
-		{
-			sourcepath = path.substring(apphome.length() + 1);
-		}
-		else if( apphome.startsWith(sitehome))
-		{
-			String apphomeending = apphome.substring(sitehome.length() + 1,apphome.length());
-	
-			int loc = path.indexOf(apphomeending);
-			if( loc == -1)
-			{
-				log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
-				return;			
-			}
-			sourcepath = path.substring(loc,path.length());
-		}
-		else
-		{
-			log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
-			return;			
+			sourcepath = loadFromAppHome(inReq);
 		}
 		
 		//getSearcherManager().getCacheManager()
@@ -81,5 +54,41 @@ public class PostModule extends BaseMediaModule
 		//TODO: Set mod time
 		inReq.putPageValue("postdata", post);
 		//Load up a $sitehome and $postdata 
+	}
+
+	protected String loadFromAppHome(WebPageRequest inReq)
+	{
+		String path = inReq.getPath();
+
+		String sitehome = (String) inReq.getPageValue("sitehome");
+		String apphome = (String)inReq.getPageValue("apphome");
+		if( apphome == null)
+		{
+			log.info("Loading post from base? no apphome set");
+			return null;
+		}
+		String 	sourcepath = null;
+		if( apphome.equals(sitehome))
+		{
+			sourcepath = path.substring(apphome.length() + 1);
+		}
+		else if( apphome.startsWith(sitehome))
+		{
+			String apphomeending = apphome.substring(sitehome.length() + 1,apphome.length());
+	
+			int loc = path.indexOf(apphomeending);
+			if( loc == -1)
+			{
+				log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
+				return null;			
+			}
+			sourcepath = path.substring(loc,path.length());
+		}
+		else
+		{
+			log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
+			return null;			
+		}
+		return sourcepath;
 	}
 }
