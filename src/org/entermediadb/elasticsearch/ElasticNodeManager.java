@@ -888,13 +888,16 @@ public class ElasticNodeManager extends BaseNodeManager implements Shutdownable
 		getSearcherManager().getCacheManager().clearAll();
 		
 		String id = toId(inCatalogId);
-		List mappedtypes = getMappedTypes(id);
+	
+		
+		PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
+		List mappedtypes = archive.listSearchTypes();
 
+		
 		String newindex = null;
 		String searchtype = null;
 		try
 		{
-			PropertyDetailsArchive archive = getSearcherManager().getPropertyDetailsArchive(inCatalogId);
 			archive.clearCache();
 			getPageManager().clearCache();
 			getSearcherManager().getCacheManager().clearAll();
