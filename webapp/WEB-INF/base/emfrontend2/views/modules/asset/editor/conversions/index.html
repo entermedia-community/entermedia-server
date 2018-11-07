@@ -1,25 +1,26 @@
+<div id="asset-editor-container">
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 
 <div class="conversionsheader">
-<h2>[[Image Editor]]</h2>
+<h2>[[Asset Conversions]]</h2>
 
 #if($canviewassetedit)
 	<a class="btn btn-sm btn-secondary" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
 #end
-<a class="btn btn-sm btn-secondary" href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
+<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1"href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
 
 ##<a class="btn btn-sm btn-secondary">[[Rotate]]</a>
 <hr>
 <form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
-		[[Replace Image]]: <input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
-		<input type="hidden" name="unzip" value="false" />
-		<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
-		<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
-		<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
-		<input type="submit" id="finishbutton" value="[[Upload]]" >
+	[[Replace Image]]: <input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+	<input type="hidden" name="unzip" value="false" />
+	<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
+	<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
+	<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
+	<input type="submit" id="finishbutton" value="[[Upload]]" >
 </form>
-
+<hr>
 </div>
 #set($mediadbappid=$mediaarchive.getMediaDbId())
 #set($newpreset = $context.findValue("newpreset"))
@@ -34,10 +35,19 @@ $context.putPageValue("results", $results)
 
 $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire.html", $context)
 
-<div class="conversionsall" >
+<div class="conversionsall emdata" >
+<table class="table table-striped table-hover tabe-conversions">
+<thead>
+	<tr class="tableheader">
+		<th>[[Description]]</th>
+		<th>[[Size]]</th>
+		<th>[[Status]]</th>
+		<th>[[Actions]]</th>
+	</tr>
+</thead>
 #foreach ($result in $results)
-
-
+	$context.putPageValue("presetdata",$result)
+	#set($presetdata = $result)
 	#set($cancrop = $conversionUtil.canCrop($catalogid,$result.id,$asset.id))
 	#if(!$cancrop)
 		#if( $mediaarchive.isCatalogSettingTrue("preventupscaling"))
@@ -60,39 +70,57 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 		
 		#set($aspectratio = $conversionUtil.getConvertPresetAspectRatio($dimension))
 		#set($description = $conversionUtil.getConvertPresetParameter($catalogid,$result.id,"imagelocation"))
+		<tr>
+		<td>
+		$result.name
+		</td>
+		<td>
 		#if ($height && $height > 0 && $width && $width > 0)
-			<h2>$result.name  <span class="h2e">${width}x${height}</span>  <span class="h2e">[[Aspect Ratio]]: $aspectratio</span></h2>
+			<span class="h2e">${width}x${height}</span>  <span class="h2e">[[Aspect Ratio]]: $aspectratio</span>
 			###if($description && $description!="") <span style="font-size:smaller;">$description</span> #end
-		#else
-			<h2>$result.name</h2>
 		#end
 		#set($description = "")
-	
-		
+		</td>
+		<td>
 		<!-- include modify -->
-		$context.putPageValue("presetdata",$result)
 		#if( $canviewconversions )
 			$pages.include("$apphome/views/modules/asset/editor/conversions/modify.html", $context)
 		#end
+		</td>
+		<td>
+		##ACTIONS
+		#if( $presetdata.id != "0" )
+		<a class="emdialog btn btn-sm btn-secondary"  data-width="1000" data-height="600"  title="[[Select File]]" href="$home$apphome/views/modules/asset/editor/conversions/upload.html?assetid=${asset.id}&presetid=${presetdata.id}">Upload</a>
+		#end
+		#if($canviewassetedit && $presetdata.id)
+		#set($cancrop = $conversionUtil.canCrop($catalogid,$presetdata.id,$asset.id))
+			#if($cancrop)
+			<a class="btn btn-sm btn-secondary previewcrop-btn" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=${asset.id}&presetid=${presetdata.id}&displaywidth=800">Crop</a>
+			#end
+			
+		#end
+		
+		##SHARE
 		#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $result.id))
 		#if($isready)
 			<!--  include share -->
 			$pages.include("$apphome/views/modules/asset/editor/conversions/share.html", $context)
-			#if( $canviewconversions )
-				#if(!$cancrop)
-					<span style="font-size:smaller;margin: 0 20px 20px;">[[Image is too small to crop to the desired crop dimension]]</span>
-				#end
-			#end	
+
 			<!-- include submit to fatwire -->
 			#if($result.publishtofatwire == "true") 
 				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofatwire.html", $context)
 			#end	
 				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
 		#end
-	</div>
+		#if(!$cancrop)
+					<div style="font-size:smaller;margin:5px 0 0 0;">[[Image is too small to crop to the desired crop dimension]]</div>
+			#end
+		</td>
+		</tr>
 	#end
 
 #end  ##foreach
+</table>
 </div>
 
 $context.putPageValue("asset",$asset)
@@ -118,8 +146,9 @@ $(document).ready(function(){
 <p>
 [[You can specify custom width, height or formats. For example, a large PDF]]:
 </p>
-<div style="width: 550px">
-	<p ><i>
+<p>
+	<i>
 	$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
-	</p>
+	
+</p>
 </div>

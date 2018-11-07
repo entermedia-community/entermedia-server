@@ -844,7 +844,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 */	
 	//Make this generic?
 	
-	lQuery('div.assettab').livequery('click',function(e) {
+	lQuery('a.assettab').livequery('click',function(e) {
 				e.preventDefault();
 				$(".bottomtab").removeClass("tabselected");
 				$(this).closest(".bottomtab").addClass("tabselected");
@@ -856,5 +856,9 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 				div.load( link, options);
 				var assettab = $(this).data("assettab");
 				saveProfileProperty("assetopentab",assettab,function(){});
+				var assettabactions = $(this).data("assettabactions");
+				if (assettabactions) {
+					saveProfileProperty("assetopentabactions",assettabactions,function(){});
+				}
 
 	});

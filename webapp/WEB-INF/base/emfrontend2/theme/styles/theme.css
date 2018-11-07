@@ -179,11 +179,11 @@ tr.emborderhover td,
 .sidebar-list li.current a,
 .search-list li:hover a.search-href, 
 .sidebar-list a:hover,
-.emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover
+.emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
+.cat-list .cat-row:hover
 {
 	background-color: #c9e8f2;
 }
-
 
 
 
@@ -226,6 +226,7 @@ select.form-control:not([size]):not([multiple]) {
 	width:200px;
 	margin-right: 10px;
 	display:inline-block;
+	height: calc(1.8rem);
 	}
 .form-control.datepicker {
     width: 240px;
@@ -250,7 +251,23 @@ h3 {
 .dropdown-menu {
 	padding:0;
 }
+.dropdown-submenu {
+  position: relative;
+}
 
+.dropdown-submenu a::after {
+  transform: rotate(-90deg);
+  position: absolute;
+  right: 6px;
+  top: .8em;
+}
+
+.dropdown-submenu .dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-left: .1rem;
+  margin-right: .1rem;
+}
 #emcontent { position: relative;}
 #emfooter {   
 	bottom: 0;
@@ -1370,7 +1387,7 @@ label.error {
     display: block;
     color:red;
 }
-
+#main-media-container { height: 100%;}
 #main-media-viewer { height: calc(100% - 32px);}
 
 /*Asset Panel*/
@@ -1396,6 +1413,11 @@ label.error {
 	height: 100%;
 	background-color:#d3d3d3;
 }
+.assetpanel-content-inside {
+	height: 100%;
+	width: 100%;
+	display:table;
+}
 @media (min-width: 992px) {
 	.assetpanel-sidebar {
 	    position: absolute;
@@ -1408,7 +1430,7 @@ label.error {
 	.assetpanel-content {
 		margin-left: 190px;
 		min-height: 200px;
-		/*height: calc(100% - 20px);*/
+		height: calc(100% - 20px);
 		overflow: hidden;
 		background-color: #ccc;
 	}
@@ -1419,11 +1441,7 @@ label.error {
 	}
 }
 
-.assetpanel-content-inside {
-	height: 100%;
-	width: 100%;
-	display:table;
-}
+
 
 .assetpanel-header {
 	display: table-row;
@@ -1442,10 +1460,14 @@ label.error {
 	height: 10px; 
 	display: table-row;
 }
-.assetpanel-editmetadata,
+.assetpanel-editor,
 .assetpanel-chatterbox { 
 	display: table-row;
 	
+	
+}
+.assetpanel-editorinner {
+	position: relative;
 }
 
 .em2tabs-tab-content {
@@ -1462,36 +1484,53 @@ label.error {
 .editor-panel {
 	margin:0!important;
 }
-.assetpanel-editmetadata #default-fields {
+.assetpanel-assetpanel-editor #default-fields {
 	/*padding-top:10px;*/
 }
-.assetpanel-editmetadata #default-fields .col-md-6 {
+.assetpanel-editor #default-fields .col-md-6 {
 	padding-top:10px;
 	padding-bottom:10px;
 }
-.assetpanel-editmetadata #default-fields .emdatafield {
+.assetpanel-editor #default-fields .emdatafield {
 	font-weight: 700;
 }
-.assetpanel-editmetadata #default-fields.previewonly .emdatafield {
+.assetpanel-editor #default-fields.previewonly .emdatafield {
 	background-color: #e1e1e1;
     display: block;
     line-height: 1.8;
     padding: 5px 8px
 }
-.assetpanel-editmetadata #default-fields.previewonly .emdatafieldvalue  {
+.assetpanel-editor #default-fields.previewonly .emdatafieldvalue  {
 	padding:0 8px;
 }
 
-.assetpanel-editmetadata .btns {
-	padding:10px;
-	margin:10px;
-	border-top:1px solid #cacaca;
+.assetpanel-editor .btns {
+	padding:15px 0;
+	margin:10px 0;
+	border-top:1px solid #c0c0c0;
 }
-
+.assettab-box {
+	background-color: #efefef;
+}
+.alert-save {    
+    width: 300px;
+    height:50px;
+    position:absolute;
+    text-align:center;
+     margin: auto;
+     top: 0;
+     right: 0;
+     bottom: 0;
+     left: 0;
+    z-index:25000;
+}
 .assetpanel-chatterbox-header { 
 	display: table-row;
 	height: 50px;
 	padding: 0 20px;
+}
+.tab-pane {
+	position: relative;
 }
 .assetpanel-chatterbox-card {
 	height: 100%;
@@ -1535,6 +1574,13 @@ label.error {
 }
 .chatterbox-inputarea-inside .chatter-text {
 	padding:.2rem .75rem;
+}
+
+.tabe-conversions {
+	background-color: #efefef;
+}
+.tabe-conversions td {
+	height: 52px;
 }
 .assetpanel-document {
 	height: 100%;
@@ -3517,9 +3563,7 @@ a.collectionbox.favorite
     list-style: none;
     
 }
-.cat-list .cat-row:hover {
-	background-color:#efefef;
-}
+
 .cat-list .cat-row .category {
     padding-left: 18px;
     padding-top: 0px;

@@ -395,15 +395,26 @@ color: #fff;
 	color:#fff;
 	line-height:32px;
 	font-weight: normal;
-	padding: 0 2% 0 2%;
 	float:left;
 	display:block;
 }
-
 #footermenu .gotoarrows { font-size: 1.5rem; }
 #footermenu .gotoarrows span { cursor:pointer;} 
 #footermenu .gotoarrows span:hover { color:#fff; }
 
+#footermenu li a {
+	color: white;	
+	display:block;
+}
+#footermenu .expandmenu {
+	padding:0 20px;
+}
+#footermenu li.tabselected a.expandmenu,
+#footermenu .expandmenu:hover {
+	text-decoration: none;
+		background-color: #ccc;
+	color: #212529;
+}
 #footermenu li.bottomtab .assetpreview {
     overflow: hidden; 
     text-overflow: ellipsis;
@@ -417,7 +428,8 @@ color: #fff;
 	font-size:90%;
 	padding: 2px 6px;
 }
-#footermenu .dropdown-menu a:hover {
+#footermenu .dropdown-menu a:hover,
+#footermenu .dropdown-submenu:hover>a {
 	background-color: #a8a8a8;
 	text-decoration: none;
 }
@@ -429,10 +441,6 @@ color: #fff;
 	display: inline;
 }  
 
-#footermenu li a {
-	color: white;	
-	display:block;
-}
 
 
 body.widthless1000 #pdf-thumbnail-sidebar 
@@ -440,11 +448,6 @@ body.widthless1000 #pdf-thumbnail-sidebar
 	/*display: none;*/
 
 
-}
-#footermenu li.bottomtab.tabselected
-{
-	background-color: #ccc;
-	color: #212529;
 }
 #footermenu li.bottomtab:hover
 {
