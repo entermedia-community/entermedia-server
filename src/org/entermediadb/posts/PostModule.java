@@ -1,22 +1,48 @@
 package org.entermediadb.posts;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.modules.BaseMediaModule;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 
 public class PostModule extends BaseMediaModule
 {
+	private static final Log log = LogFactory.getLog(PostModule.class);
+	
 	public void loadPost(WebPageRequest inReq)
 	{
 		String path = inReq.getPath();
 
 		String sitehome = (String) inReq.getPageValue("sitehome");
 		String apphome = (String)inReq.getPageValue("apphome");
-
-		apphome = apphome.substring(sitehome.length() + 1,apphome.length());
-
-		
-		String 	sourcepath = path.substring(path.indexOf(apphome),path.length());
+		if( apphome == null)
+		{
+			log.info("Loading post from base? no apphome set");
+			return;
+		}
+		String 	sourcepath = null;
+		if( apphome.equals(sitehome))
+		{
+			sourcepath = path.substring(apphome.length() + 1);
+		}
+		else if( apphome.startsWith(sitehome))
+		{
+			String apphomeending = apphome.substring(sitehome.length() + 1,apphome.length());
+	
+			int loc = path.indexOf(apphomeending);
+			if( loc == -1)
+			{
+				log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
+				return;			
+			}
+			sourcepath = path.substring(loc,path.length());
+		}
+		else
+		{
+			log.info("apphome and sitehome are not compatible: sitehome" + sitehome + " apphome:" + apphome);
+			return;			
+		}
 		
 		//getSearcherManager().getCacheManager()
 		String catalogid = inReq.findValue("catalogid");
