@@ -8,12 +8,12 @@
 #end
 
 #if($displayconversions)
-<form method="post" action="$home$apphome/views/modules/asset/editor/conversions/index.html">
+<form method="post" class="ajaxform" targetdiv="asset-editor-container" action="$home$apphome/views/modules/asset/editor/conversions/index.html">
 	<input type="hidden" id="assetid" name="assetid" value="$asset.id"/>
 	<input type="hidden" id="sourcepath" name="sourcepath" value="$asset.sourcePath"/>
 	<input type="hidden" id="field" name="field" value="presetid"/>
 	<label for="preset.value">[[Create New Conversion]]:</label>
-	<select name="presetid.value" id="newpreset">
+	<select name="presetid.value" id="newpreset" class="form-control form-control-sm">
 	#foreach ($result in $results)
 	
 	
@@ -38,8 +38,6 @@
 		#end
 	#end
 	</select>
-	<input class="thickbox btn" type="submit" value="[[Create]]" style="margin: 5px;" />
+	<input class="btn btn-sm btn-secondary" type="submit" value="[[Create]]" style="margin: 5px;" />
 </form>
 #end
-
-

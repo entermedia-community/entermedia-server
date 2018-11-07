@@ -17,10 +17,38 @@ lQuery("#annotation-holder").livequery(function()
 	
 	var editor = new AnnotationEditor(scope);
 	scope.add("annotationEditor",editor);
-	jAngular.addScope("annoscope",scope);
+	//jAngular.addScope("annoscope",scope);
 	
 	editor.loadModels();
 	
-	$("#annotation-toolbar li").livequery
+	lQuery("#annotation-toolbar li").livequery('click', function()
+	{
+		var id = $(this).attr("id");
+		if( id == "movetool")
+		{
+			editor.fabricModel.selectTool('move');
+		}
+		else if( id == "drawtool")
+		{
+			editor.fabricModel.selectTool('draw');
+		}
+		else if( id == "rectangletool")
+		{
+			editor.fabricModel.setShapeTypeFromUi('rectangle');
+		}
+		else if( id == "circletool")
+		{
+			editor.fabricModel.setShapeTypeFromUi('circle');
+		}
+		else if( id == "colortoolbararea")
+		{
+			editor.colorPicker.colorpicker('open');
+		}
+		else if( id == "deletetool")
+		{
+			editor.deleteAnnotations();
+		}
+		
+	});
 
 });

@@ -68,6 +68,9 @@ $context.putPageValue("searchtype", $searchtype)
 		<div id="default-fields">
 			$pages.include("/$applicationid/components/xml/detaileditor-2.html?multiedit=$multiedit", $context)
 		</div>
+		<div class="container-fluid">
+ 		<div class="row">
+ 		<div class="col">
 		<div class="btns">
 			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).submit();" value="[[Save values]]"/>
 			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="${view}editor" href="$home$apphome/components/detaileditor/generic.html?searchtype=$searcher.searchType&view=$view&id=$!data.id&assetid=$asset.id$label=$label&oemaxlevel=1">[[Cancel]]</a>
@@ -80,6 +83,9 @@ $context.putPageValue("searchtype", $searchtype)
 				</div>
 				<div class="clearfix"></div>
 			#end
+		</div>
+		</div>
+		</div>
 		</div>
 	</form>
 

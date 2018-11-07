@@ -1,5 +1,6 @@
 #set ($view = "asset/geolocation")
 #set ($id = $context.getRequestParameter("id"))
+<h2>[[Asset Geolocation]]</h2>
 <div style="padding: 20px;">
     <div id="${view}editor">
     #if( !$catalogid )
@@ -57,9 +58,11 @@
     		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
     		</div>
     		#if( $caneditasset )
-    			<input class="btn right" style="margin-top: -30px;" type="button" 
+    		<div class="btns">
+    			<input class="btn btn-sm btn-primary" type="button" 
     				onclick="jQuery(this.form).submit();"
     			value="[[Save Values]]"/>
+    			</div>
     		#end	
     	</form>
     	

@@ -32,10 +32,9 @@ $context.putPageValue("hits",$hits)
 	
 #end
 #set( $hitssessionid = $hits.getSessionId())
-<div id="main-media-container" style="height: 100%;">
-<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$!hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()"
+<div id="main-media-container">
+<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
 data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage()" >
->
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
@@ -52,8 +51,12 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
 	#elseif($opentab == "viewcollaborate")
 		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html")
-	#elseif($opentab == "viewconversions")
-		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewconversions.html")
+	#elseif($opentab == "viewactions")
+		#set( $opentabactions = $userprofile.get("assetopentabactions"))
+		#if (!$opentabactions)
+			#set($opentabactions = "conversions")
+		#end
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
 	#end
 </div>
 <div id="footerbase">
@@ -70,27 +73,27 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 				
 			</li>
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
-				<div class="expandmenu assetpreview" 
+				<a class="expandmenu assetpreview" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html" title="[[View $asset]]" >
 				<i class="fas fa-expand"></i> $asset
-				</div>
+				</a>
 			 </il>
 			 #if( !$previewonly && $canmetadatageneral )
 			 <li class="footermenu bottomtab #if($opentab == "viewproperties")tabselected#end">
-				<div class="expandmenu assettab" 
+				<a class="expandmenu assettab" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html" title="[[View Metadata]]"
 					data-assettab="viewproperties" >
 				<i class="fas fa-info-circle"></i> [[Properties]]
-				</div>
+				</a>
 			</li>
 			#end
 			#if( !$previewonly )
 			 <li class="footermenu bottomtab #if($opentab == "viewcollaborate")tabselected#end">
-				<div class="expandmenu assettab" 
+				<a class="expandmenu assettab" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]"
 					data-assettab="viewcollaborate" >
 				<i class="fas fa-comment-alt"></i> [[Collabotate]]
-				</div>
+				</a>
 			</li>
 			#end
 			
@@ -100,14 +103,78 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 			##Will be gone once we move all Actions to Tabs:
 			#if( !$previewonly )
 			<li class="footermenu bottomtab">
-			   <a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
 			   <ul class="dropdown-menu">
+			    	#if($candeleteasset)
+	                 <li>
+	                     #if ( $asset.getId().startsWith("multiedit:") )
+	                         <a class="emdialog"   href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete Assets]]</a>
+	                     #else
+	                         <a class="emdialog"  href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id">[[Delete]]</a>
+	                     #end
+	                 </li>
+	                 #end
+	                 #if ( $canshareasset )
+   					 <li class="dropdown-submenu"><a href="#" class="dropdown-item dropdown-toggle">[[Share]]</a>
+   				        <ul class="dropdown-menu">
+	   						#if ($canpublish)
+	                       <li>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
+	                       </li>
+	                       	#end
+	                       	#if( $canemaillink )
+	                       <li>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/views/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
+	                       </li>
+	                       	#end
+	                       	#if( $canembedasset && !$multi)
+	                       <li>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id" >[[Embed]]</a>
+	                       </li>
+	                       	#end
+	                       	#if ( $canaddtoproject )
+							<li id="add-to-collection">
+								<a class="dropdown-item ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a>
+							</li>
+							#end
+                       </ul>
+                    </li>
+                    #end
 			   	<li>
-			   	<div class="expandmenu assettab" 
+			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
-						data-assettab="viewconversions" >
+						data-assettab="viewactions"
+						data-assettabactions="conversions" >
 					[[Conversions]]
-					</div>
+					</a>
+			   	</li>
+			   	<a class="assettab" 
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=categorize" title="[[Categories]]"
+						data-assettab="viewactions"
+						data-assettabactions="categorize" >
+					[[Categories]]
+					</a>
+			   	</li>
+			   	<a class="assettab" 
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
+						data-assettab="viewactions"
+						data-assettabactions="map" >
+					[[Map]]
+					</a>
+			   	</li>
+			   	<a class="assettab" 
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
+						data-assettab="viewactions"
+						data-assettabactions="attachments" >
+					[[Attachments]]
+					</a>
+			   	</li>
+			   	<a class="assettab" 
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=converthistory" title="[[History]]"
+						data-assettab="viewactions"
+						data-assettabactions="converthistory" >
+					[[History]]
+					</a>
 			   	</li>
 				    #set($moduleid = "asset")
 					#set( $sourcepath = $asset.getSourcePath() )
@@ -179,11 +246,11 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 							#end
 							#if( !$ismulti || $inmultiok )
 								#set ($href = "$apphome/views/modules/asset/editor/${link.folder}/index.html")
-								<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end $link.id">
-									<a title="$context.getText($text)" href="$home$href?$args" targetdiv="detaileditor" #if($target) target="$target" #end >
-									<span class="text">$context.getText($text)</span>
-									</a>
-								</li>
+								##<li id="detaileditor-${link.id}" class="#if($tab == "$link.id") current #end $link.id">
+								##	<a title="$context.getText($text)" href="$home$href?$args" targetdiv="detaileditor" #if($target) target="$target" #end >
+								##	<span class="text">$context.getText($text)</span>
+								##	</a>
+								##</li>
 							#end
 						#end
 					#end
@@ -196,7 +263,7 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 			  
 			
 				<li class="footermenu bottomtab" >		
-	<a href="#" class="dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]</a>
+	<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]</a>
    <ul class="dropdown-menu">
 						#if( !$cdnprefix )
 							#set( $cdnprefix = $context.siteRoot )

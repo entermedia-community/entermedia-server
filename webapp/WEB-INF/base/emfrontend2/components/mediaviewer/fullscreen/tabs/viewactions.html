@@ -12,11 +12,13 @@
 		  	#end
 		</div>
 		<div class="assetpanel-separator"></div>
-		<div class="assetpanel-editmetadata">
-		#set($actions= $context.getRequestParameter("actions"))
-		#if ($actions)
-			$pages.include("/$applicationid/views/modules/asset/editor/$actions/index.html")
-		#end
+		<div class="assetpanel-editor">
+			<div class="assetpanel-editorinner">
+			#set($action = $context.getRequestParameter("action"))
+			#if ($action)
+				$pages.include("/$applicationid/views/modules/asset/editor/$action/index.html")
+			#end
+			</div>
 		</div>
 	</div>
 	

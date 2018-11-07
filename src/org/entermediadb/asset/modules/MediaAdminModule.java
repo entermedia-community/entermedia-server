@@ -18,6 +18,7 @@ import org.entermediadb.workspace.WorkspaceManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.node.Node;
@@ -667,5 +668,20 @@ public class MediaAdminModule extends BaseMediaModule
 		createSiteSnapshot(inReq);
 		
 	}
+	public void clearCaches(WebPageRequest inReq)
+	{
+		 CacheManager cache = (CacheManager)getModuleManager().getBean("cacheManager");
+		 if( cache != null)
+		 {
+			 cache.clearAll();
+		 }
+		 cache = (CacheManager)getModuleManager().getBean("timedCacheManager");
+		 if( cache != null)
+		 {
+			 cache.clearAll();
+		 }
+		 
+	}
+	
 	
 }
