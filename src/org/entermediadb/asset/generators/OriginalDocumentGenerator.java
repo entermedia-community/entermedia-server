@@ -57,7 +57,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
 			int endslash = sourcePath.indexOf("/");
 			//String collectionid = sourcePath.substring(0, endslash); ignore it
-			sourcePath = sourcePath.substring(endslash);
+			sourcePath = sourcePath.substring(endslash + 1);
 		}
 		else
 		{
