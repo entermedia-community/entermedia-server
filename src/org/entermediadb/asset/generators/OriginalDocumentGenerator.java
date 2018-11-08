@@ -118,7 +118,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 			in = archive.getOriginalDocumentStream(asset);
 			if (in == null)
 			{
-				throw new OpenEditException("Could not find original document path");
+				throw new OpenEditException("Could not find original document path " + asset.getSourcePath() );
 			}
 		}
 		catch (Exception e)
