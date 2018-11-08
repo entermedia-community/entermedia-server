@@ -31,9 +31,12 @@
 ($hits.getSelectionSize()/$hits.size())
 #end</a>
 	<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
+			#if(!$canforcebasiccollections)
+	
 	#if( $librarycol && $caneditdata )
 		<a class="dropdown-item emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a>
     	<a class="dropdown-item emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a>
+    #end
     #end	
     #if ( $canviewbasket  )
 		#if($order)

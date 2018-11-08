@@ -94,6 +94,7 @@
 				</div>
 			</li>
 		#end
+				#if(!$canforcebasiccollections)
 		
 			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
 				<li class="nav-item dropdown">
@@ -106,6 +107,7 @@
 							<a class="dropdown-item confirm" href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
 						#end
 				</li>
+				#end
 				#end
 		
   		#set( $edit = $context.getRequestParameter("editheader") )

@@ -96,7 +96,7 @@ $context.putPageValue("hits",$hits)
 				</ul>
 			</li>
 		#end
-		
+		#if(!$canforcebasiccollections)
 			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
 				<li><a>[[Collection]]</a>	
 				<ul>
@@ -111,7 +111,7 @@ $context.putPageValue("hits",$hits)
 				</ul>
 				</li>
 				#end
-		
+		#end
   		#set( $edit = $context.getRequestParameter("editheader") )
 			<li>
 				$pages.include("$apphome/components/results/selected/index.html",$context)
