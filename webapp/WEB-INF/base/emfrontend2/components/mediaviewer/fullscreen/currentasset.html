@@ -1,5 +1,5 @@
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-
+#set( $collectionid = $context.getRequestParameter("collectionid") )
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
 #if( !$type )
 	No template for $type
@@ -129,7 +129,7 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 	                       	#end
 	                       	#if( $canembedasset && !$multi)
 	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id" >[[Embed]]</a>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Embed]]</a>
 	                       </li>
 	                       	#end
 	                       	#if ( $canaddtoproject )

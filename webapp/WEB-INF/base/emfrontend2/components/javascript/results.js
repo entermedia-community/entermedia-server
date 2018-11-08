@@ -269,6 +269,12 @@ $(document).ready(function(url,params)
 		}
 		params.pageheight =  $(window).height() - 100;
 
+		var collectionid = $("#collectiontoplevel").data("collectionid");
+		if( collectionid )
+		{
+			params.collectionid = collectionid;
+		}
+
 		$.get(link, params, function(data) 
 		{
 			

@@ -50,7 +50,19 @@ public class OriginalDocumentGenerator extends FileGenerator
 
 		String assetrootfolder = inPage.get("assetrootfolder");
 		Boolean watermark = (Boolean) inReq.getPageValue("canforcewatermark");
-		String sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
+		String sourcePath = null;
+		String collectionidinpath = inPage.get("collectionidinpath");
+		if( Boolean.parseBoolean(collectionidinpath))
+		{
+			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
+			int endslash = sourcePath.indexOf("/");
+			//String collectionid = sourcePath.substring(0, endslash); ignore it
+			sourcePath = sourcePath.substring(endslash);
+		}
+		else
+		{
+			sourcePath = inPage.getPath().substring(assetrootfolder.length() + 1);
+		}
 		if (watermark != null && watermark.booleanValue())
 		{
 //			ConvertGenerator generator = (ConvertGenerator) getModuleManager().getBean("convertArchiveDocument");
