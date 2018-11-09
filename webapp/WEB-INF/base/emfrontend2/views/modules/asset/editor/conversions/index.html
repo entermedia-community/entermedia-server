@@ -6,9 +6,11 @@
 <h2>[[Asset Conversions]]</h2>
 
 #if($canviewassetedit)
-	<a class="btn btn-sm btn-secondary" href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
+	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+	   href="$home$apphome/views/modules/asset/editor/conversions/previewcrop.html?assetid=$asset.id&presetid=largeimage&noaspect=true&savetoall=true">[[Crop]]</a>
 #end
-<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1"href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
+	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
+   	   href="$home$apphome/views/modules/asset/editor/conversions/reloadthumbs.html?assetid=$asset.id">[[Reload Original Thumbnails]]</a>
 
 ##<a class="btn btn-sm btn-secondary">[[Rotate]]</a>
 <hr>
@@ -113,8 +115,8 @@ $pages.include("$apphome/views/modules/asset/editor/conversions/sendalltofatwire
 				$pages.include("$apphome/views/modules/asset/editor/conversions/submittofalcon.html", $context)
 		#end
 		#if(!$cancrop)
-					<div style="font-size:smaller;margin:5px 0 0 0;">[[Image is too small to crop to the desired crop dimension]]</div>
-			#end
+			<div style="font-size:smaller;margin:5px 0 0 0;">[[Image is too small to crop to the desired crop dimension]]</div>
+		#end
 		</td>
 		</tr>
 	#end

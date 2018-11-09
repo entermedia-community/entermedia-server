@@ -7,6 +7,11 @@
 $context.putPageValue("showalllanguagevalues",true)
 <div class="em2tabs-tabcontainer">
 <ul class="emtabs em2tabs" data-defaulttab="tabgeneral" data-targetdiv="assetpanel-tab-content">
+<li>
+ 	<a id="tabsummary" 
+ 	data-layouts="1"  
+ 	href="$apphome/views/modules/asset/editor/generalinformation/summary.html?viewid=$viewpath&edit=$!caneditasset&assetid=${asset.id}">[[Summary]]</a>
+</li>
 #foreach( $viewpath in $views.keySet() )
  	#set( $target = $views.get($viewpath) )
  	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
@@ -22,7 +27,7 @@ $context.putPageValue("showalllanguagevalues",true)
 				#set( $firstviewpath = $viewpath)
 				#set( $firsttarget = $target)
 			#end
-			<li class="">
+			<li>
 			 	<a id="tab$target.id" data-layouts="1"  
 			 	href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$viewpath&edit=$!caneditasset&assetid=${asset.id}">$label</a>
 			</li>

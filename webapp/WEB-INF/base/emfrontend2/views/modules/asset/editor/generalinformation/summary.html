@@ -1,0 +1,21 @@
+#foreach( $viewpath in $views.keySet() )
+ 	#set( $target = $views.get($viewpath) )
+ 	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+       #if("$!permissionvalue" == "" || $permissionvalue == true)
+		#if( $target.rendertype != "table" )
+			##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+			#set( $filename = "generic.html" )
+			#set( $label = $target.name)
+			#set( $assetid = $asset.id)
+			#set( $view = $viewpath)
+			
+			#if(!$firstviewpath)
+				#set( $firstviewpath = $viewpath)
+				#set( $firsttarget = $target)
+			#end
+			$pages.include("$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$viewpath&edit=$!caneditasset&assetid=${asset.id}")
+		#end
+	#end
+	#set($permissionvalue = "")
+	
+#end

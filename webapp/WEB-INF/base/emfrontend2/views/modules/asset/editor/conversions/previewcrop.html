@@ -111,10 +111,12 @@
 		<div class="clearfix"></div>
 		#set( $savetoall = $context.getRequestParameter("savetoall"))
 		#if( $savetoall)
-		    <form id="coords" class="coords" method="post"  targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
+		    <form id="coords" class="coords ajaxform" method="post"  targetdiv="asset-editor-container" action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
+		    <input type="hidden" name="oemaxlevel" value="1"/>
 		#else
-			    <form id="coords" class="coords" method="post" targetdiv="submit-crop" action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
+			<form id="coords" class="coords ajaxform" method="post" targetdiv="asset-editor-container" action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
 		#end    
+			<input type="hidden" name="oemaxlevel" value="1"/>
 		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
 		    <input class="clearable" type="hidden" size="4" id="y1" name="y1.value" />
 		    <input class="clearable" type="hidden" size="4" id="x2" name="x2.value" />
