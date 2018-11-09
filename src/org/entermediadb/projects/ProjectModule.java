@@ -292,7 +292,7 @@ public class ProjectModule extends BaseMediaModule {
 
 	protected String loadCollectionId(WebPageRequest inReq) 
 	{
-		String collectionid = inReq.getRequestParameter("collectionid");
+		String collectionid = inReq.findValue("collectionid");
 		if (collectionid == null) {
 			collectionid = inReq.getRequestParameter("librarycollection");
 			if (collectionid == null) 

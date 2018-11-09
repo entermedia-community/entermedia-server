@@ -32,6 +32,11 @@
 
     <preset id="streamserver" display="false" generatedoutputfile="video.flv"  outputfile="video.flv"  outputextension="jpg"  fileexportformat="${shortfilename}video.flv" transcoderid="wowza" extension="flv" inputtype="streaming" onimport="false" ordering="14">Streaming Video</preset>
 
+
+    <preset id="widesscreencrop" guid="imagewidesscreencrop"  generatedoutputfile="image1920x500cropped.jpg" outputextension="jpg" display="true" fileexportformat="${shortfilename}1920x500cropped.jpg" transcoderid="imagemagick" extension="jpg" inputtype="image" onimport="true"  ordering="05" enforceaspectratio="true" >Widescreen Banner Crop</preset>
+
+
+
     <!-- 
     <preset id="preview" generatedoutputfile="preview-rhozet.mp4" fileexportformat="${shortfilename}LQ.mp4" transcoderid="rhozet" extension="mp4" guid="21F5E3B8-FD4D-452A-A351-173FCC26FA0E" inputtype="video" ordering="01">Video Rhozet LQ MP4</preset>
     <preset id="rhozet-test" generatedoutputfile="h264rhozet.mp4" fileexportformat="${shortfilename}HQ.mp4" transcoderid="rhozet" extension="mp4"  inputtype="video" guid="4247D9B0-5E89-4397-B2C3-6B2E4771BC4C" ordering="01">Video Rhozet HQ MP4</preset>      

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Random;
 
 import org.openedit.OpenEditException;
 
@@ -35,6 +36,15 @@ public class MathUtils
 		return 0;
 		
 	}
+	
+	
+	public int getRandomValue(int inMax) {
+		Random rand = new Random();
+		int  n = rand.nextInt(inMax);
+		return n;
+	}
+	
+	
 	public float getPercentage(int inSoFar, int inTotal)
 	{
 		BigDecimal now= new BigDecimal(inSoFar);

@@ -4,6 +4,9 @@
   <preset id="imagemediumsmall" >Image Medium Small</preset>
   <preset id="imagepreview" >Preview Extra Large</preset>
   <preset id="imagelarge" >Image Large</preset>
+  <preset id="imagewidesscreencrop" >Image Widescreen Crop</preset>
+  
+  
   <preset id="documentlarge" >Document Large</preset>
   
   <preset id="imagecrop" >Image Crop</preset>
