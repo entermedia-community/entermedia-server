@@ -1587,20 +1587,24 @@ label.error {
 .assetpanel-assetpanel-editor #default-fields {
 	/*padding-top:10px;*/
 }
-.assetpanel-editor #default-fields .col-md-6 {
+.assetpanel-editor #default-fields .col-md-6,
+.previewonlyrow .col-md-6
+ {
 	padding-top:10px;
 	padding-bottom:10px;
 }
 .assetpanel-editor #default-fields .emdatafield {
 	font-weight: 700;
 }
-.assetpanel-editor #default-fields.previewonly .emdatafield {
+.assetpanel-editor #default-fields.previewonly .emdatafield,
+.previewonly .emdatafield {
 	background-color: #e1e1e1;
     display: block;
     line-height: 1.8;
     padding: 5px 8px
 }
-.assetpanel-editor #default-fields.previewonly .emdatafieldvalue  {
+.assetpanel-editor #default-fields.previewonly .emdatafieldvalue,
+.previewonly .emdatafieldvalue  {
 	padding:0 8px;
 }
 
@@ -1608,6 +1612,12 @@ label.error {
 	padding:15px 0;
 	margin:10px 0;
 	border-top:1px solid #c0c0c0;
+}
+.summarytab {
+	padding:20px 0;
+}
+.summarytab .category a {
+	text-decoration: underline;
 }
 .assettab-box {
 	background-color: #efefef;
@@ -1866,8 +1876,8 @@ label.error {
 	float:none;
 }
 .media-player-mini  { background-color: #000; color:#fff; text-align: center;}
-.media-player-mini  a { color:#afafaf; text-decoration: none;}
-.media-player-mini  a:hover { color:#ffffff;  text-decoration: none;}
+.media-info-primary  a { color:#afafaf; text-decoration: none;}
+.media-info-primary  a:hover { color:#ffffff;  text-decoration: none;}
 
 .media-player { text-align: center;}
 .media-player .media-info { text-align: center; padding:5px; font-size:90%}
@@ -2262,10 +2272,12 @@ label.error {
 	display: block;
     padding: .5rem 1.2rem;
     background-color: #e1e1e1;
+    border-right:1px solid #6f6f6f;
     text-align: center;
     color: #666;
     text-decoration: none;
     font-weight: 700;
+    box-shadow:inset 0 10px 10px -10px rgba(0,0,0,0.5);
 }
 .em2tabs li a:hover {
 	background-color:  rgba(10, 10, 10, 0.1);
@@ -2975,11 +2987,14 @@ div#folders.add .folder {
     margin-top: 5px;
     margin-right: 10px;
 }
-h2 {
-    margin-top: 0;
-}
 #geomap .emdatafield {
     display: none;
+}
+#geomap table,
+#geomap tr,
+#geomap td {
+	background: none!important;
+	border:0 none;
 }
 #advanced-dm-search {
     padding: 5px 0;
@@ -3659,7 +3674,8 @@ a.collectionbox.favorite
 }
 
 .cat-list .cat-row {
-    padding: 7px 0;
+    padding-top: 7px;
+    padding-bottom: 7px;
     border-bottom: 1px solid #eee;
     list-style: none;
     
