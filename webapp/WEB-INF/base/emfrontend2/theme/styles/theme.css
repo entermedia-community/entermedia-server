@@ -182,7 +182,9 @@ tr.emborderhover td,
 .search-list li:hover a.search-href, 
 .sidebar-list a:hover,
 .emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
-.cat-list .cat-row:hover
+.cat-list .cat-row:hover,
+.filters-sidebar li:hover,
+.filters-sidebar-selected li:hover
 {
 	background-color: #c9e8f2;
 }
@@ -462,8 +464,16 @@ html, body, #application {
 	list-style: none; 
 	font-size:85%;
 }
+.filters-sidebar li,
+.filters-sidebar-selected li {
+		padding:1px 4px ;
 
-
+	}
+.filters-sidebar li a,
+.filters-sidebar-selected li a {
+	display: block;
+	text-decoration: none;
+}
 
 /*Widget*/
 .ui-widget {
