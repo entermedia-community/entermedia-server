@@ -24,6 +24,10 @@
 
 [[or]] 
 <span class="btn btn-sm btn-primary btn-default btn-file">
-    [[Choose a File]] <input type="file" name="file.${detail.getId()}">
+    [[Choose a File]] <input type="file" name="file.${detail.getId()}" id="${detail.id}-file" onchange='$("#${detail.id}-file-info").html($(this).val());'>
 </span>
-##<input class="render-choose-file" type="file" name="file.${detail.getId()}" />
+<span id="${detail.id}-file-info" style="font-size:90%"></span>
+##<input class="render-choose-file btn-btn-sm btn-primary" type="file" name="file.${detail.getId()}" />
+
+
+

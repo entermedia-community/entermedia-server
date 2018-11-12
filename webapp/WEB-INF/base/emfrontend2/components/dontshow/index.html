@@ -18,20 +18,17 @@
  <ul>
  ##<h4>Selected</h4>
 	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
-			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
+		#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
 		#if($librarycol)
 		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
 				href="$home$apphome/views/modules/librarycollection/filter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=3" >$selectedfilter
 				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>
-				 #else
+	    #else
 		
 		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
-				href="$home$apphome/views/search/filter.html?removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >$selectedfilter
+				href="$home$apphome/views/search/filter.html?removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" > $selectedfilter.getText($context)
 				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>	
-		
-		
-				 
-				 #end
+		 #end
 	#end
 	</ul>
 </div>
