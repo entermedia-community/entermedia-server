@@ -79,22 +79,33 @@ public class TaskModule extends BaseMediaModule
 //			{
 //				userq.addChildQuery(builder.getQuery());
 //			}
-			Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
-			if( filter != null && !filter.isEmpty())
+			String searchall = inReq.findValue("searchall");
+			if ( Boolean.parseBoolean( searchall) )
 			{
-				userq.addOrsGroup("goaltrackercolumn", filter);
+				//Search all
+				//goaltrackercolumns
 			}
-			
+			else
+			{
+				Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
+				if( filter != null && !filter.isEmpty())
+				{
+					userq.addOrsGroup("goaltrackercolumn", filter);
+				}
+			}
 			all = searcher.cachedSearch(inReq, userq);
 		}
 		
-		sortIntoColumns(inReq, archive, all);
+		Map results = sortIntoColumns(inReq, archive, all);
 		
-		inReq.putPageValue("goalhits", all); //Not needed?
+		inReq.putPageValue("goalhits", all); 
+		List keys = new ArrayList(results.keySet());
+		Collections.sort(keys);
+		inReq.putPageValue("projectids", keys); 
 		
 	}
 
-	private void sortIntoColumns(WebPageRequest inReq, MediaArchive archive, HitTracker all)
+	private Map sortIntoColumns(WebPageRequest inReq, MediaArchive archive, HitTracker all)
 	{
 		Searcher searcher = archive.getSearcher("projectgoal");
 
@@ -131,6 +142,40 @@ public class TaskModule extends BaseMediaModule
 			Collections.sort(values);
 			inReq.putPageValue("goalhits" + p, values);
 		}
+		return priorities;
+		
+	}	
+	protected Map sortIntoPriorities(WebPageRequest inReq, MediaArchive archive, HitTracker all)
+	{
+		Searcher searcher = archive.getSearcher("projectgoal");
+
+		Map priorities = new HashMap();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			ProjectGoal goal = (ProjectGoal)searcher.loadData(hit);
+			Collection likes = goal.getValues("userlikes");
+			for (Iterator iterator2 = likes.iterator(); iterator2.hasNext();)
+			{
+				String userlike = (String) iterator2.next();
+				List values = (List)priorities.get(userlike);
+				if( values == null)
+				{
+					values = new ArrayList();
+					priorities.put(userlike,values);
+				}
+				values.add(goal);
+			}
+		}
+		
+		for (Iterator iterator = priorities.keySet().iterator(); iterator.hasNext();)
+		{
+			String p = (String) iterator.next();
+			List values = (List)priorities.get(p);
+			Collections.sort(values);
+			inReq.putPageValue("goalhits" + p, values);
+		}
+		return priorities;
 	}	
 	/*
 	public void loadGoals(WebPageRequest inReq) throws Exception
@@ -787,16 +832,27 @@ public class TaskModule extends BaseMediaModule
 		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
 		builder.match("userlikes", "*").sort("owner").sort("userlikes");
 		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
-		Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
-		if( filter != null && !filter.isEmpty())
-		{
-			builder.orgroup("goaltrackercolumn", filter);
-		}
+//		Collection filter = inReq.getUserProfile().getValues("goaltrackercolumns");
+//		if( filter != null && !filter.isEmpty())
+//		{
+//			builder.orgroup("goaltrackercolumn", filter);
+//		}
 
 		HitTracker likes = builder.search();
 
-		sortIntoColumns(inReq, archive, likes);
-
+		Map priorities = sortIntoPriorities(inReq, archive, likes);
+		List users = new ArrayList();
+		for (Iterator iterator = priorities.keySet().iterator(); iterator.hasNext();)
+		{
+			String userid = (String) iterator.next();
+			User user = archive.getUser(userid);
+			if( user != null)
+			{
+				users.add(user);
+			}
+		}
+		Collections.sort(users);
+		inReq.putPageValue("users", users);
 	}
 	
 	public void toggleGoalLike(WebPageRequest inReq)
@@ -842,5 +898,22 @@ public class TaskModule extends BaseMediaModule
 		archive.saveData("projectgoal",selectedgoal);
 		
 	}
+
+	public void loadTask(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String taskid = inReq.getRequestParameter("id");
+		Data task = archive.getData("goaltask",taskid);
+		if( task != null)
+		{
+			String goalid = task.get("projectgoal");
+			
+			Data goal =  archive.getData("projectgoal",goalid);
+			inReq.putPageValue("selectedgoal", goal);
+			inReq.putPageValue("task", task);
+		}
+		
+	}		
+
 	
 }

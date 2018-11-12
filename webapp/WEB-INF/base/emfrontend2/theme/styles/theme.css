@@ -42,7 +42,9 @@
 #tableheader a:hover {
 	color:#fff;
 }
-
+.col-content {
+	background-color: #fff;
+}
 .emnav .navtabs .navtabitem {
 	color:#fff;
 	background-color:#8E8E8E;
@@ -180,14 +182,16 @@ tr.emborderhover td,
 .search-list li:hover a.search-href, 
 .sidebar-list a:hover,
 .emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
-.cat-list .cat-row:hover
+.cat-list .cat-row:hover,
+.filters-sidebar li:hover,
+.filters-sidebar-selected li:hover
 {
 	background-color: #c9e8f2;
 }
 
 
 
-/*Boostrap Overwrites*/
+/*Bootsrap Overwrites*/
 body {
   font-size: 0.9rem;
 }
@@ -218,7 +222,25 @@ a {
     font-size: 1rem;
     line-height: 1.3;
 }
- 
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    text-align: right;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: inherit;
+    display: block;
+}
 select.form-control:not([size]):not([multiple]) {
     height: calc(2rem);
 }
@@ -442,8 +464,16 @@ html, body, #application {
 	list-style: none; 
 	font-size:85%;
 }
+.filters-sidebar li,
+.filters-sidebar-selected li {
+		padding:1px 4px ;
 
-
+	}
+.filters-sidebar li a,
+.filters-sidebar-selected li a {
+	display: block;
+	text-decoration: none;
+}
 
 /*Widget*/
 .ui-widget {
@@ -1121,7 +1151,7 @@ td.checkbox input, th.firstheader input {
     font-size: 11px;
     margin-top: -2px;
 }
-.actions {
+.emtree .actions {
     float: right;
     display: none;
     margin-right: 15px;
@@ -1174,6 +1204,104 @@ td.checkbox input, th.firstheader input {
     right: 0px;
 }
 
+
+/* ATTACHMENTS STYLES */
+
+#attachments-container {
+    display: table;
+    width: 100%;
+    border-bottom: 1px solid #eee;
+}
+#attachmenttree {
+    display: table-cell;
+    vertical-align: top;
+}
+#preview-pane {
+    border-left: 1px solid #E2EFF4;
+    width: 210px;
+    text-align: center;
+    height: 30px;
+    background: #fff;
+    display: table-cell;
+}
+#attachmenttree ul {
+    margin: 0;
+    padding: 0;
+}
+#attachmenttree ul li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-weight: bold;
+    color: #444;
+    font-size: 11px;
+}
+#attachmenttree ul li div {
+    padding: 0 0 0 20px;
+    border-bottom: 1px solid #E2EFF4;
+    height: 34px;
+    line-height: 34px;
+    display: block;
+    cursor: pointer;
+}
+#attachmenttree ul li div.selected, .emtree ul li div.selected {
+    background: #c9e8f2;
+}
+#attachmenttree ul li div.selected:hover, .emtree ul li div.selected:hover {
+    background: #c9e8f2;
+}
+#attachmenttree ul li div:hover {
+    background: #c9e8f2;
+}
+#attachmenttree ul li div span a.btn {
+    line-height: 11px;
+    margin-left: 5px;
+}
+#attachmenttree ul li div span input[type="text"] {
+    padding: 5px 10px 3px 10px;
+}
+#attachmenttree ul li div:hover .actions {
+    display: inline;
+}
+#attachmenttree ul li div .actions a {
+    float: left;
+    margin-left: 5px;
+    opacity: 0.7;
+    line-height: 22px;
+}
+#attachmenttree ul li div .actions a:hover {
+    opacity: 1.0;
+}
+#attachmenttree ul li div .actions a.add {
+    background: url('../images/add.gif') 0 11px no-repeat;
+    width: 15px;
+}
+#attachmenttree ul li div .actions a.edit {
+    background: url('../images/edit.gif') 0 11px no-repeat;
+    width: 15px;
+}
+#attachmenttree ul li div .actions a.delete {
+    background: url('../images/delete.gif') 0 11px no-repeat;
+    width: 15px;
+    margin-right: 0;
+    margin-top: 0;
+}
+#attachmenttree ul li div .actions a.add-folder {
+    background: url('../images/add-folder.gif') 0 11px no-repeat;
+    width: 15px;
+}
+#attachmenttree ul li div .actions a.upload-file {
+    background: url('../images/add-upload.gif') 0 11px no-repeat;
+    width: 15px;
+}
+#attachmenttree ul li div .actions a.download-folder {
+    background: url('../images/download-folder.gif') 0 11px no-repeat;
+    width: 15px;
+}
+#attachmenttree ul li div .actions a.download-file {
+    background: url('../images/download-file.gif') 0 11px no-repeat;
+    width: 15px;
+}
 
 
 
@@ -1430,7 +1558,6 @@ label.error {
 	.assetpanel-content {
 		margin-left: 190px;
 		min-height: 200px;
-		height: calc(100% - 20px);
 		overflow: hidden;
 		background-color: #ccc;
 	}
@@ -1468,6 +1595,7 @@ label.error {
 }
 .assetpanel-editorinner {
 	position: relative;
+	overflow-y: auto;
 }
 
 .em2tabs-tab-content {
@@ -1487,20 +1615,24 @@ label.error {
 .assetpanel-assetpanel-editor #default-fields {
 	/*padding-top:10px;*/
 }
-.assetpanel-editor #default-fields .col-md-6 {
+.assetpanel-editor #default-fields .col-md-6,
+.previewonlyrow .col-md-6
+ {
 	padding-top:10px;
 	padding-bottom:10px;
 }
 .assetpanel-editor #default-fields .emdatafield {
 	font-weight: 700;
 }
-.assetpanel-editor #default-fields.previewonly .emdatafield {
+.assetpanel-editor #default-fields.previewonly .emdatafield,
+.previewonly .emdatafield {
 	background-color: #e1e1e1;
     display: block;
     line-height: 1.8;
     padding: 5px 8px
 }
-.assetpanel-editor #default-fields.previewonly .emdatafieldvalue  {
+.assetpanel-editor #default-fields.previewonly .emdatafieldvalue,
+.previewonly .emdatafieldvalue  {
 	padding:0 8px;
 }
 
@@ -1508,6 +1640,12 @@ label.error {
 	padding:15px 0;
 	margin:10px 0;
 	border-top:1px solid #c0c0c0;
+}
+.summarytab {
+	padding:20px 0;
+}
+.summarytab .category a {
+	text-decoration: underline;
 }
 .assettab-box {
 	background-color: #efefef;
@@ -1653,6 +1791,7 @@ label.error {
 	line-height: 2;
 	padding:2px 8px;
 	font-weight: bold;
+	font-size:82%;b
 }
 #pdf-thumbnail-sidebar .next-pages-prev {
 	float:left;
@@ -1766,8 +1905,8 @@ label.error {
 	float:none;
 }
 .media-player-mini  { background-color: #000; color:#fff; text-align: center;}
-.media-player-mini  a { color:#afafaf; text-decoration: none;}
-.media-player-mini  a:hover { color:#ffffff;  text-decoration: none;}
+.media-info-primary  a { color:#afafaf; text-decoration: none;}
+.media-info-primary  a:hover { color:#ffffff;  text-decoration: none;}
 
 .media-player { text-align: center;}
 .media-player .media-info { text-align: center; padding:5px; font-size:90%}
@@ -2162,10 +2301,12 @@ label.error {
 	display: block;
     padding: .5rem 1.2rem;
     background-color: #e1e1e1;
+    border-right:1px solid #6f6f6f;
     text-align: center;
     color: #666;
     text-decoration: none;
     font-weight: 700;
+    box-shadow:inset 0 10px 10px -10px rgba(0,0,0,0.5);
 }
 .em2tabs li a:hover {
 	background-color:  rgba(10, 10, 10, 0.1);
@@ -2875,11 +3016,14 @@ div#folders.add .folder {
     margin-top: 5px;
     margin-right: 10px;
 }
-h2 {
-    margin-top: 0;
-}
 #geomap .emdatafield {
     display: none;
+}
+#geomap table,
+#geomap tr,
+#geomap td {
+	background: none!important;
+	border:0 none;
 }
 #advanced-dm-search {
     padding: 5px 0;
@@ -3559,7 +3703,8 @@ a.collectionbox.favorite
 }
 
 .cat-list .cat-row {
-    padding: 7px 0;
+    padding-top: 7px;
+    padding-bottom: 7px;
     border-bottom: 1px solid #eee;
     list-style: none;
     

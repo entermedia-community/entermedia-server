@@ -1,5 +1,5 @@
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-
+#set( $collectionid = $context.getRequestParameter("collectionid") )
 #set( $type = $mediaarchive.getMediaPlayerType($asset))
 #if( !$type )
 	No template for $type
@@ -33,8 +33,16 @@ $context.putPageValue("hits",$hits)
 #end
 #set( $hitssessionid = $hits.getSessionId())
 <div id="main-media-container">
-<div id="main-media-viewer" data-opentab="$opentab" data-hitssessionid="$hitssessionid" data-searchtype="asset" data-oemaxlevel="1" data-editable="$caneditasset" data-assetid="$asset.id" data-next="$!next.getId()" data-previous="$!previous.getId()">
-data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage()" >
+<div id="main-media-viewer" 
+data-opentab="$opentab" 
+data-hitssessionid="$hitssessionid" 
+data-searchtype="asset" 
+data-oemaxlevel="1" 
+data-editable="$caneditasset" 
+data-assetid="$asset.id" data-next="$!next.getId()" 
+data-previous="$!previous.getId()"
+data-previouspage="$!hits.idOnPreviousPage()" 
+data-nextpage="$!hits.idOnNextPage()" >
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
@@ -73,8 +81,10 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 				
 			</li>
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
-				<a class="expandmenu assetpreview" 
-					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html" title="[[View $asset]]" >
+				<a class="expandmenu assetpreview assettab" 
+					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html"
+					data-assettab="viewpreview"
+					title="[[View $asset]]" >
 				<i class="fas fa-expand"></i> $asset
 				</a>
 			 </il>
@@ -129,7 +139,7 @@ data-previouspage="$!hits.idOnPreviousPage()" data-nextpage="$!hits.idOnNextPage
 	                       	#end
 	                       	#if( $canembedasset && !$multi)
 	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id" >[[Embed]]</a>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id&collectionid=$!collectionid" >[[Embed]]</a>
 	                       </li>
 	                       	#end
 	                       	#if ( $canaddtoproject )

@@ -29,10 +29,13 @@
 ($hits.getSelectionSize()/$hits.size())
 #end</a>
 	<ul>
-	#if( $librarycol && $caneditdata )
+		#if(!$canforcebasiccollections)
+	
+#if( $librarycol && $caneditdata )
 		<li><a class="emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a></li>
     	<li><a class="emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a></li>
     #end	
+#end
     #if ( $canviewbasket  )
 		#if($order)
 			<li><a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a></li>

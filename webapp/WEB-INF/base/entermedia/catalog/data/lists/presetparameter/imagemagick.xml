@@ -46,6 +46,20 @@
   <parameter id="imagecrop1" parameterdata="imagecrop" value="110" >prefwidth</parameter> 
   <parameter id="imagecrop2" parameterdata="imagecrop" value="62" >prefheight</parameter> 
 
+
+  <parameter id="imagewidecrop1" parameterdata="imagewidesscreencrop" value="1920" >prefwidth</parameter> 
+  <parameter id="imagewidecrop2" parameterdata="imagewidesscreencrop" value="500" >prefheight</parameter> 
+  <data name="crop" value="true" parameterdata="imagewidesscreencrop" id="widecropcroptrueff"/>
+
+
+
+<parameter id="imagewidecrop3" parameterdata="widesscreencrop" value="1920" >prefwidth</parameter> 
+  <parameter id="imagewidecrop4" parameterdata="widesscreencrop" value="500" >prefheight</parameter> 
+  <data name="crop" value="true" parameterdata="widesscreencrop" id="widecropcroptrue"/>
+
+
+
+
   <parameter id="imagecmyk1" parameterdata="imagecmyk" value="1024" >prefwidth</parameter> 
   <parameter id="imagecmyk2" parameterdata="imagecmyk" value="768" >prefheight</parameter> 
   <parameter id="imagecmyk3" parameterdata="imagecmyk" value="CMYK" >colorspace</parameter> 

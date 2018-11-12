@@ -1,3 +1,5 @@
+<div id="asset-editor-container">
+<h2>[[Asset Convert History]]</h2>
 ##  $pages"converthistory/conversions.html" "$asset.id" "conversions/details" $print)
  
 #set( $searchtype = "conversiontask")
@@ -13,9 +15,9 @@
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
   
 
-  <div class="tab-actions">
-	<a class="btn emdialog" href="$home$apphome/views/modules/asset/editor/converthistory/reloadthumbs.html?assetid=$asset.id">Re-Convert</a>
+  <div class="btns">
+	<a class="btn btn-sm btn-primary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" href="$home$apphome/views/modules/asset/editor/converthistory/reloadthumbs.html?assetid=$asset.id">[[Re-Convert]]</a>
 	##<a class="btn emdialog" href="$home$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue now</a>
 	
 </div>
-  
+ </div>

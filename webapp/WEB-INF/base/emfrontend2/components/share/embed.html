@@ -93,6 +93,15 @@
 <a href="$downloadlink">$downloadlink</a>
 </p>
 
+#set( $collectionid = $context.getRequestParameter("collectionid"))
+#if( $collectionid )
+<p class="hyphenate"> 
+#set( $collectionlink = "$home/${mediadbappid}/services/module/librarycollection/downloads/originals/${collectionid}/$asset.getSourcePath()/$asset.getMediaName()")
+<strong>[[Collection Share]]</strong><br> 
+<a href="$collectionlink" target="_blank" >$collectionlink</a>
+</p>
+#end
+
 </div>
 </div>
 

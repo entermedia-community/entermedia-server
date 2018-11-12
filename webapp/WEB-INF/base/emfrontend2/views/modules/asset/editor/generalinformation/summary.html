@@ -1,0 +1,75 @@
+#set($hitssessionid = $hits.sessionId )
+$context.putPageValue("showalllanguagevalues",true)
+<div class="summarytab">
+<div class="container-fluid ">
+<div class="row">
+		<div class="col-8">
+			#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
+			#foreach( $viewpath in $views.keySet() )
+			 
+				#set( $target = $views.get($viewpath) )
+				 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+			        #if("$!permissionvalue" == "" || $permissionvalue == true)
+			     
+					#if( !$target.rendertable )
+						##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
+						$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
+						$context.putPageValue("data",$asset)	
+						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
+						
+						$context.putPageValue("view",$viewpath)
+						<h4>$context.getText($target.toString())</h4>
+							<div class="asset-data-detail previewonly">
+							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
+						</div>
+					#end
+				#end
+                #set($permissionvalue = "")
+				
+			#end
+	</div>					
+			<div class="col-4">
+				#set( $libraries = $asset.getLibraries())
+				#if( $libraries.size() > 0)
+    				<h4>[[Libraries]]</h4>
+    				<div class="asset-data-detail">
+    				<div class="emtable">
+            				#foreach($library in $libraries)
+            					 #set( $division = $mediaarchive.getData("division",$library.division ) )
+            					 #if($division)
+            					 	#set($ldata = "$division.getName($context.locale) / $library.getName($context.locale)" )
+            					 #else
+            					 	#set($ldata = $library.getName($context.locale) )
+            					 #end
+            					<a href="$home$apphome/views/modules/library/view/view.html?id=$library.getId()" class="row tag">$ldata</a>
+            			
+            				#end
+    					</div>
+    				</div>
+					<h4>[[Collections]]</h4>
+						<div class="asset-data-detail">
+							#foreach ($collection in $asset.getCollections())
+								 <a class="librarylabel" href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="collection">$collection</a>
+							#end
+						</div>
+				#end						
+
+				<h4>[[Categories]]</h4>
+					<div class="asset-data-detail">
+					<div  id="cat-list" class="cat-list">
+					#foreach ($category in $asset.categories)
+						<div  class="cat-row">
+						<div  class="category">						
+						#foreach( $parent in $category.getParentCategoriesFrom(1))
+						#if( ${foreach.count} > 1) \ #end
+						<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
+						#end
+						</div>
+						</div>
+					#end
+					</div>
+					</div>
+			</div>	
+	
+</div></div>
+</div>

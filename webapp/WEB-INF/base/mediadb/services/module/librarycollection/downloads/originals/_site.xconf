@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+
+	<property name="assetrootfolder">/${applicationid}/services/module/librarycollection/downloads/originals</property>
+	<property name="sourcepathhasfilename">true</property>
+	<property name="collectionidinpath">true</property>
+	<property name="virtual">true</property>
+	
+	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
+	<path-action name="Admin.allowViewing" alltypes="true">
+		<login-path>/${applicationid}/authentication/nopermission.jpg</login-path>
+	</path-action>
+	
+	<permission name="view">
+	<or>
+		 <userprofile property="download" equals="true" />
+		 <action name="ProjectModule.checkViewCollection" /> 
+	</or>
+	</permission>
+
+	<generator name="originalDownloadGenerator"/>
+	
+		
+</page>

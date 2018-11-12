@@ -1129,9 +1129,9 @@ public class ProjectManager implements CatalogEnabled {
 
 	public boolean canViewCollection(WebPageRequest inReq, String inCollectionid) {
 		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
-		if (collection != null) {
-			User user = inReq.getUser();
-
+		User user = inReq.getUser();
+		if (collection != null) 
+		{
 			String ownerid = collection.get("owner");
 			if (ownerid != null && ownerid.equals(inReq.getUserName())) {
 				return true;
@@ -1185,6 +1185,10 @@ public class ProjectManager implements CatalogEnabled {
 			// }
 			//
 			// }
+		}
+		if( user == null )
+		{
+			return false;
 		}
 		return true;
 	}

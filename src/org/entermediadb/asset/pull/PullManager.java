@@ -76,7 +76,7 @@ public class PullManager implements CatalogEnabled
 	public HitTracker listRecentChanges(String inType, String inLastpulldate)
 	{
 		Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), inType);
-		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaarchive");
+		MediaArchive archive = (MediaArchive) getSearcherManager().getModuleManager().getBean(getCatalogId(), "mediaArchive");
 		QueryBuilder builder = null;
 		if(inType.equals("asset")) {
 			if(archive.isCatalogSettingTrue("syncalways")) {

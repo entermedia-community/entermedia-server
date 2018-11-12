@@ -290,11 +290,27 @@ public class ProjectModule extends BaseMediaModule {
 		return null;
 	}
 
-	protected String loadCollectionId(WebPageRequest inReq) {
-		String collectionid = inReq.getRequestParameter("collectionid");
+	protected String loadCollectionId(WebPageRequest inReq) 
+	{
+		String collectionid = inReq.findValue("collectionid");
 		if (collectionid == null) {
 			collectionid = inReq.getRequestParameter("librarycollection");
-			if (collectionid == null) {
+			if (collectionid == null) 
+			{
+				String collectionidinpath = inReq.getContentProperty("collectionidinpath");
+				if( Boolean.parseBoolean(collectionidinpath))
+				{
+					String assetrootfolder = inReq.getContentProperty("assetrootfolder");
+					String ending = inReq.getPath().substring(assetrootfolder.length() + 1);
+					int endslash = ending.indexOf("/");
+					if( endslash > -1)
+					{
+						collectionid = ending.substring(0, endslash);
+					}
+				}	
+			}
+			if( collectionid == null)
+			{
 				collectionid = inReq.getRequestParameter("id");
 				if (collectionid == null) {
 					Data coll = (Data) inReq.getPageValue("librarycol");

@@ -6,9 +6,12 @@
 <div id="collectiontoplevel" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 
 	<div style="float:left;" class="collectionheader">
-		$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
+		#if(!$canforcebasiccollections)
+                 $pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
+#end
 	</div>
-		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
+		#if(!$canforcebasiccollections)
+	<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
 		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Assets]]</a></li>
 		  #if( ( $caneditdata || $librarycol.isVisibility("2") ) && $librarycol.hasPendingAssets() )
 		  <li class="ui-corner-top"><a id="approvaltab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/pending/${librarycol.getId()}.html" >[[Pending]]</a></li>
@@ -37,6 +40,7 @@
 		  <li class="ui-corner-top" ><a id="settingstab" data-allwaysloadpage="true"  href="$editlink" >[[Properties]]</a></li>
 #end
 		</ul>
+#end
 		<div class="clearfix"></div>
 		<div  id="collection-tab-content" >
 		  <div class="tab-pane" id="loadedpanel" >
