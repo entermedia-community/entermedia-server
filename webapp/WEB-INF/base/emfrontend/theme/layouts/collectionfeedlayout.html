@@ -33,7 +33,9 @@
 		  <li class="ui-corner-top" ><a id="permissionstab" href="$link" >[[Permissions]]</a></li>
     #end
 	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+ #if($caneditdata )
 		  <li class="ui-corner-top" ><a id="settingstab" data-allwaysloadpage="true"  href="$editlink" >[[Properties]]</a></li>
+#end
 		</ul>
 		<div class="clearfix"></div>
 		<div  id="collection-tab-content" >
