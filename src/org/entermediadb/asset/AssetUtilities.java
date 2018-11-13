@@ -31,20 +31,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 {
 	protected MetaDataReader fieldMetaDataReader;
 	protected DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss Z");// TODO: use it8l
-	protected boolean fieldIncludeCategories = true;
 	private static final Log log = LogFactory.getLog(AssetUtilities.class);
 
 	protected FileUtils fieldFileUtils = new FileUtils();
-
-	public boolean isIncludeCategories()
-	{
-		return fieldIncludeCategories;
-	}
-
-	public void setIncludeCategories(boolean inIncludeCategories)
-	{
-		fieldIncludeCategories = inIncludeCategories;
-	}
 
 	public MetaDataReader getMetaDataReader()
 	{
@@ -95,7 +84,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, String sourcePath, User inUser)
 	{
-		return populateAsset(asset, inContent, inArchive, isIncludeCategories(), sourcePath, inUser);
+		boolean assigncategory = inArchive.isCatalogSettingTrue("assigncategoryonupload");
+
+		return populateAsset(asset, inContent, inArchive, assigncategory, sourcePath, inUser);
 	}
 
 	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, boolean inCludeCategories, String sourcePath, User inUser)
