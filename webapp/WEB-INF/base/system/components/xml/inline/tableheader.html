@@ -25,8 +25,17 @@
 	#set( $sortby = $hits.getSearchQuery().getSortBy() )
 	#foreach( $detail in $details)
 	
-		<th  class="table-sortable changesort #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" data-sort="$detail.id#if($sortby.endsWith("Up"))up#elsedown#end">
-					
+		#if($sortby.startsWith($detail.getId()) )
+			#if($sortby.endsWith("Up"))
+				#set( $sortid = "${detail.id}Down")
+			#else
+				#set( $sortid = "${detail.id}Up")
+			#end
+		#else
+			#set( $sortid = "${detail.id}Up")
+		#end
+		
+		<th  class="table-sortable changesort #if( $sortby.startsWith($detail.getId() ) ) currentsort #if($sortby.endsWith("Up"))up #else down#end #end" id="th-$detail.id" data-sort="$sortid">
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
 					#if($edit)
