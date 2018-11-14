@@ -20,11 +20,7 @@ function getRandomColor() {
 
 
 uiload = function() {
-
-
-	
 	//https://github.com/select2/select2/issues/600	
-	//$.fn.modal.Constructor.prototype.enforceFocus = function() {};
 	$.fn.select2.defaults.set( "theme", "bootstrap4" );
 	$.fn.modal.Constructor.prototype._enforceFocus = function() {}; //Select2 on Modals
 	var columnsheight = $("body").height() - 260;
@@ -1314,16 +1310,26 @@ uiload = function() {
 	
 //}
 	
+	$('.cols-main').equalHeights();
+	
 }//uiload
 
 $.fn.equalHeights = function(px) {
 	$(this).each(function(){
 		var currentTallest = 0;
 		$(this).children().each(function(i){
-			if ($(this).height() > currentTallest) { currentTallest = $(this).height(); }
+			if ($(this).next().hasClass("col-sidebar-inner")) {
+				//is sidebar
+				var thecol = $(this).next();
+			}
+			else {
+				var thecol = $(this);
+			}
+			if (thecol.height() > currentTallest) { currentTallest = thecol.height(); }
 		});
     if (!px && Number.prototype.pxToEm) currentTallest = currentTallest.pxToEm(); //use ems unless px is specified
 		// for ie6, set height since min-height isn't supported
+    	currentTallest = currentTallest + 10;
 		if (typeof(document.body.style.minHeight) === "undefined") { $(this).children().css({'height': currentTallest}); }
 		$(this).children().css({'min-height': currentTallest}); 
 	});
@@ -1333,41 +1339,6 @@ $.fn.equalHeights = function(px) {
 
 $(document).ready(function() 
 { 
-	/*var resizecss = function()
-	{
-		//Old stuff?
-	
-		//w1 = ( $('#main').width() - $('#left-col').width() - 41 );
-		//$('#right-col .liquid-sizer').width(w1);
-		//w2 = ( $('#data').width() - 40 );
-		//$('#asset-data').width(w2);
-		//
-		var body = $("body");
-		
-		$('.cols-main').equalHeights();
-
-		//TODO: use bootrap css?
-		body.removeClass("widthless100").removeClass("widthless500").removeClass("widthless1000");
-		
-		var width = $(window).width();
-		if( width < 100 )
-		{
-			body.addClass("widthless100");
-		}
-		else if( width < 500 )
-		{
-			body.addClass("widthless500");
-		}
-		else if( width < 1000 )
-		{
-			body.addClass("widthless1000");
-		}
-		var height = $(window).height();
-		$(".autoheightless40").height(height - 40)		
-		
-	};*/
-	//$(window).on('resize',	resizecss );
-	//resizecss();
 	
 	uiload();
 

@@ -82,9 +82,13 @@
 
 ##set crop link
 #set($cropinputlink = "$home$apphome/views/modules/asset/downloads/preview/cropinput/${asset.sourcepath}/image1024x768.jpg?cache=false")
+
+<script id="jcrop" src="/${applicationid}/components/javascript/jcrop/js/jquery.Jcrop.min.js" />
+
+
 <div style="padding:10px;">
 <div id="infopanel">
-			<h2>[[Instructions]]</h2>
+			<h2>[Crop Instructions]]</h2>
 			<ul>
 				<li>[[Select the]] <strong>[[crop-box selector]]</strong> [[shown on the large image, and manipulate its size and location. A small preview of the resulting crop will appear on the Preview Panel above.]]</li>
 				##<li>[[To see a preview of the resulting crop, select the image in the Preview Panel. The cropped image will be shown as a ${width}px x ${height}px image.]]</li>
@@ -95,7 +99,7 @@
 	<div class="jc-demo-box">
 				##<label id="dimension"></label>
 		<div class="display-full" >
-			<img id="target" src="$cropinputlink" alt="Crop Area" style="display:none;"/>
+			<img id="target" src="$cropinputlink" alt="[[Crop Area]]" style="display:none;"/>
 		</div>
 		<div id="preview-panel" class="display-container"   >
 			<div class="preview-container">
@@ -111,10 +115,18 @@
 		<div class="clearfix"></div>
 		#set( $savetoall = $context.getRequestParameter("savetoall"))
 		#if( $savetoall)
-		    <form id="coords" class="coords ajaxform" method="post"  targetdiv="asset-editor-container" action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
+		    <form id="coords" 
+		    		class="coords ajaxform" 
+		    		method="post"  
+		    		targetdiv="asset-editor-container" 
+		    		action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
 		    <input type="hidden" name="oemaxlevel" value="1"/>
 		#else
-			<form id="coords" class="coords ajaxform" method="post" targetdiv="asset-editor-container" action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
+			<form id="coords" 
+					class="coords ajaxform" 
+					method="post" 
+					targetdiv="asset-editor-container" 
+					action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
 		#end    
 			<input type="hidden" name="oemaxlevel" value="1"/>
 		    <input class="clearable" type="hidden" size="4" id="x1" name="x1.value" />
@@ -137,8 +149,8 @@
 		    <input type="hidden" name="force.value" value="true"/>
 		    <input type="hidden" name="assetid.value" value="${asset.id}"/>
 		    <input type="hidden" name="assetid" value="${asset.id}"/>
-		    <div style="margin:10px 0;">
-			    <input class="btn" type="submit" name="submitbutton" value="[[Submit]]" style="margin: 5px;" />
+		    <div class="btns">
+			    <input class="btn btn-sm btn-primary" type="submit" name="submitbutton" value="[[Submit]]"  />
 			</div>
 		</form>
 		
@@ -155,70 +167,8 @@
 #set($preview_info_width_offset = $img_width + 24)
 #set($preview_info_top = $preview_img_height_offset + 176 )
 
-<style>
-.jcrop-holder #preview-panel {
-  width: ${preview_img_width}px;
-  height: ${preview_img_height_offset}px;
-  display: block;
-  position: absolute;
-  z-index: 2000;
-  top: -6px;
-  left: ${preview_img_width_offset}px;
-  padding: 6px;
-  border: 1px rgba(0,0,0,.4) solid;
-  background-color: white;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-}
-.jc-demo-box #infopanel {
-  padding: 6px;
-  border: 1px rgba(0,0,0,.4) solid;
-  background-color: white;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-}
-#preview-panel .preview-container {
-  width: ${preview_img_width}px;
-  height: ${preview_img_height}px;
-  overflow: hidden;
-}
-.display-container{
-  
-  padding: 6px;
-  
-  border: 1px rgba(0,0,0,.4) solid;
-  background-color: white;
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-  -webkit-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-  -moz-box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-  box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.2);
-  text-align:center;
-  float:left;
-}
-.display-full {
-	float:left;
-	padding:0 20px 20px 0;
-}
-.preview-labels {
-	margin:10px 0px; 
-	padding:0px;
-	text-align:center;
-}
-</style>
 #set($forceaspect = $conversionUtil.isEnforceAspectRatio($mediaarchive,$presetid))
-
 <script>
-
 $("img").on("load", function() {
 	var id = $(this).attr("id");
 	if (id == "target"){

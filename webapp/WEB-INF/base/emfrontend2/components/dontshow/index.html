@@ -1,7 +1,7 @@
 #set( $searcher = $hits.getSearcher())
 #set( $searchtype = $searcher.getSearchType())
 
-<div class="ui-widget uipanel" id="left-col-search" >
+<div class="ui-widget uipanel" id="left-col-filters" >
 <div  #if($userprofile.minimizefilterscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" 
       #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
       #else class="ui-widget-header" #end 
@@ -10,10 +10,12 @@
 </div>
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
  
- <ul id="filters-sidebar-selected">
+ 
  #if( $hits.getSearchQuery().hasFilters() )
+ <div class="filters-sidebar-selected">
  ##<h4>Selected</h4>
-	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
+ <ul id="filters-sidebar-selected">
+ 	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
 			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
 		#if($librarycol)
 		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
@@ -54,7 +56,9 @@
 
 #if( $viewpermission )
 	#if(!$hits.isChildFacetSelected($type))
+	<div  class="filters-sidebar">
 	<h4>$type.getName($context.getLocale())</h4>
+	
 	<ul class="filters-sidebar">
 	#foreach($entry in $type.children)
 		#if( ${foreach.count} == 10 )
@@ -69,6 +73,7 @@
 		</li>
 	#end
 	</ul>
+	</div>
     #end
 #end
 #end

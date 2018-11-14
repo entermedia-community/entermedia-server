@@ -2,8 +2,8 @@
 #if(!$assetid)
 #set( $assetid = $hit.id )
 #end
-<div id="assettoggle$assetid" class="assettoggle$assetid gallery-field-basket">
-
+<div id="assettoggle$assetid">
+<div class="assettoggle gallery-field-basket">
 	<a class="updatebasket" targetdiv="assettoggle$assetid" href="$home$apphome/components/basket/toggleitem.html?assetid=$assetid">
 	#if($orderManager.isAssetInOrder($catalogid, $order, $assetid) )
 	    <span class="tooltip remove-from-basket" title="[[Remove from Cart]]"><i class="fas fa-minus-square"></i></span>
@@ -11,4 +11,5 @@
 	    <span class="tooltip" title="[[Add to Cart]]"><i class="fas fa-plus-square"></i></span>
 	#end
 	</a>
+</div>
 </div>
