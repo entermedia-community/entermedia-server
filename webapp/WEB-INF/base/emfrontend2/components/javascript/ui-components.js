@@ -1318,9 +1318,9 @@ $.fn.equalHeights = function(px) {
 	$(this).each(function(){
 		var currentTallest = 0;
 		$(this).children().each(function(i){
-			if ($(this).next().hasClass("col-sidebar-inner")) {
-				//is sidebar
-				var thecol = $(this).next();
+			if ($(this).children(0) && $(this).children(0).hasClass("col-sidebar-inner")) {
+				//is sidebar use inner conatiner
+				var thecol = $(this).children(0);
 			}
 			else {
 				var thecol = $(this);
@@ -1329,7 +1329,6 @@ $.fn.equalHeights = function(px) {
 		});
     if (!px && Number.prototype.pxToEm) currentTallest = currentTallest.pxToEm(); //use ems unless px is specified
 		// for ie6, set height since min-height isn't supported
-    	currentTallest = currentTallest + 10;
 		if (typeof(document.body.style.minHeight) === "undefined") { $(this).children().css({'height': currentTallest}); }
 		$(this).children().css({'min-height': currentTallest}); 
 	});

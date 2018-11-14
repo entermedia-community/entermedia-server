@@ -87,10 +87,16 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5d5d5', endColorstr='#A2A2A2',GradientType=1 ); /* IE6-9 */
 	
 }
+.col-sidebar-inner {
+	padding-bottom: 1px;
+}
 .col-sidebar-detaileditor {
 	background-color: #edf0f1;
 	webkit-box-shadow: -1px 0 0 #d8dddf inset;
     box-shadow: -1px 0 0 #d8dddf inset;
+}
+.collectionshomecontent {
+	background-color: #d5d5d5;
 }
 .ui-widget-header {
 	border:1px solid #434343;
