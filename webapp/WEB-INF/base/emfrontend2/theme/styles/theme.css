@@ -1032,6 +1032,8 @@ td.checkbox input, th.firstheader input {
 
 .listautocomplete {width: 100%;} /* General?? */
 
+
+/*Collections Home Page*/
 .collectionshome {
 	border:1px solid #efefef;
 	margin-bottom:20px;
@@ -1042,11 +1044,7 @@ td.checkbox input, th.firstheader input {
 	position:relative;
 	background-color: #fefefe;
 }
-.collectionshomeform {
-	position: absolute;
-	top:25px;
-	right: 25px;
-}
+
 .collectionshome-header { 
 	background-color: #efefef;
 	height: 40px;
@@ -1055,6 +1053,83 @@ td.checkbox input, th.firstheader input {
 .collectionshome-header h3 {
 	margin:0;
 	line-height: 32px;
+}
+
+#application .collectionshomecontent { 
+	padding:20px; 
+}
+.collectionshomeform-container {
+	text-align:center;
+	padding:30px 10px;
+	
+}
+.collectionshomeform {
+	display: inline-block;
+	width:90%;
+}
+@media (min-width: 768px) {
+	.collectionshomeform {
+			width:500px;
+	}
+}
+.collectionshomeform .form-control {
+	width:100%;
+
+	}
+.collectionshomeform .input-group-addon {
+	border:1px solid #e9ecef;
+	}
+.collectionshomeresults {
+	text-align: center;
+}
+.card-collections { 
+	float:none;
+	display: inline-block; 
+	border: 0 none; 
+	margin: 0 10px;
+	width:140px;
+    
+}
+.card-collections .card-collections-thumb {
+	width:120px; 
+	height:120px; 
+	margin:0 auto;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    border: 1px solid #aaa;
+    border-radius: 50%;
+}
+.card-collections .collectionbox {
+	padding: 4px; 
+	line-height:20px; 
+	background-color: rgba(20, 20, 20, 0.5);
+	display: block;
+	margin-top: 24px;
+	font-weight: 700;
+}
+.card-collections a .collectionbox {
+	color: #efefef;
+}
+
+.card-collections a:hover .collectionbox ,
+.card-collections a:hover {
+	color: white;
+	text-decoration: none;
+}
+.card-collections a:hover .card-collections-thumb {
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.8);
+}
+.card-body {
+    white-space: nowrap; 
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.card-name {
+	text-align: center;
+    line-height: 20px;
+    display: block;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 
@@ -1353,44 +1428,7 @@ td.checkbox input, th.firstheader input {
 {
 	background-color: #ccc;
 }
-/*Collections Home Page*/
-#application .collectionshomecontent { padding:20px; }
 
-.card-collections { 
-	float:left; 
-	width:190px; 
-	height:90px; 
-	margin: 0 20px 20px 0;
-	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 1);
-    border: 1px solid #aaa; 
-    text-align: center;
-}
-.card-collections .collectionbox {
-	padding: 4px; 
-	line-height:20px; 
-	background-color: rgba(20, 20, 20, 0.6);
-	color: white;
-	display: block;
-	margin-top: 34px;
-	font-weight: 700;
-}
-.collectionbox:hover, .collectionbox:visited
-
-{
-	color: white;
-}
-.card-body {
-    white-space: nowrap; 
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-.card-name {
-    line-height: 20px;
-    display: block;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    overflow: hidden;
-}
 /*Tabs on Results Page*/
 .results-header-left { font-size:0.85rem; padding:10px; }
 @media (min-width: 768px) {
