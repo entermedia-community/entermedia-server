@@ -739,7 +739,7 @@ gridResize = function()
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		cell.css("margin",cellpadding/2 + "px");
+		cell.css("margin",cellpadding/4 + "px");
 		//cell.css("padding",cellpadding);
 		var w = cell.data("width");
 		var	h = cell.data("height");
@@ -817,54 +817,30 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		showAsset(id);
 		saveProfileProperty("assetopentab","viewpreview",function(){});
 	});
-/*
-	lQuery('div.assetproperties').livequery('click',function(e)
-	{
-		e.preventDefault();
-		$(".bottomtab").removeClass("tabselected");
-		$(this).closest(".bottomtab").addClass("tabselected");
-
-		var div = $("#main-media-viewer" );
-		var options = div.data();
-
-		var link = $(this).data("link");
-		div.load( link, options);
-		saveProfileProperty("assetopentab","viewproperties",function(){});
-	});
-	
-	
-	lQuery('div.assetcollaborate').livequery('click',function(e)
-	{
-		e.preventDefault();
-		$(".bottomtab").removeClass("tabselected");
-		$(this).closest(".bottomtab").addClass("tabselected");
-
-		var div = $("#main-media-viewer" );
-		var options = div.data();
-
-		var link = $(this).data("link");
-		div.load( link, options);
-		saveProfileProperty("assetopentab","viewcollaborate",function(){});
-
-	});
-*/	
-	//Make this generic?
 	
 	lQuery('a.assettab').livequery('click',function(e) {
-				e.preventDefault();
-				$(".bottomtab").removeClass("tabselected");
-				$(this).closest(".bottomtab").addClass("tabselected");
+		e.preventDefault();
+		$(".bottomtab").removeClass("tabselected");
+		$(this).closest(".bottomtab").addClass("tabselected");
 
-				var div = $("#main-media-viewer" );
-				var options = div.data();
-
-				var link = $(this).data("link");
-				div.load( link, options);
-				var assettab = $(this).data("assettab");
-				saveProfileProperty("assetopentab",assettab,function(){});
-				var assettabactions = $(this).data("assettabactions");
-				if (assettabactions) {
-					saveProfileProperty("assetopentabactions",assettabactions,function(){});
-				}
+		var div = $("#main-media-viewer" );
+		var options = div.data();
+		
+		if (assettab=='viewpreview') {
+			var id = div.data("assetid");
+			showAsset(id);
+		}
+		else {
+			var link = $(this).data("link");
+			div.load(link, options);
+		}
+		
+		var assettab = $(this).data("assettab");
+		saveProfileProperty("assetopentab",assettab,function(){});
+		
+		var assettabactions = $(this).data("assettabactions");
+		if (assettabactions) {
+			saveProfileProperty("assetopentabactions",assettabactions,function(){});
+		}
 
 	});

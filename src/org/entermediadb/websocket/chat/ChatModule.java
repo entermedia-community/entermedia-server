@@ -38,7 +38,20 @@ public class ChatModule extends BaseMediaModule {
 		
 		
 	}
-	
+	public void loadLastPageOfChats(WebPageRequest inReq){
+		
+		MediaArchive archive = getMediaArchive(inReq);
+		
+		String channel = inReq.findValue("channel");
+		
+		Searcher chats = archive.getSearcher("chatterbox");
+		
+		HitTracker recent = chats.query().match("channel", channel).sort("dateUp").search(inReq);
+		recent.setPage(recent.getTotalPages());
+		inReq.putPageValue("messages", recent);
+		
+		
+	}
 	
 	
 }

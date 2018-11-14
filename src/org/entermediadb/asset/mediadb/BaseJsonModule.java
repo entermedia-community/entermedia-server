@@ -13,6 +13,7 @@ import org.entermediadb.asset.modules.BaseMediaModule;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
@@ -197,11 +198,8 @@ public class BaseJsonModule extends BaseMediaModule
 		for (Iterator iterator = inputdata.keySet().iterator(); iterator.hasNext();)
 		{
 			String key = (String) iterator.next();
-			if("categorypath".equalsIgnoreCase(key)) {
-				continue;
-			}
 			Object value = inputdata.get(key);
-			log.info("Got " + inputdata + " from JSON");
+			//log.info("Got " + inputdata + " from JSON");
 			
 			PropertyDetail detail = searcher.getDetail(key);
 			if( detail != null && detail.isMultiLanguage())
@@ -292,7 +290,14 @@ public class BaseJsonModule extends BaseMediaModule
 						}
 					}
 					rsearcher.saveData(remote, null);
-					inData.setProperty(key, targetid);
+					if( detail.isMultiValue() )
+					{
+						((MultiValued)inData).addValue(key, targetid);
+					}
+					else
+					{
+						inData.setProperty(key, targetid);
+					}
 			}
 			
 			else

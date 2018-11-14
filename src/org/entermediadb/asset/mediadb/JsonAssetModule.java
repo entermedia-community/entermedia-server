@@ -219,8 +219,19 @@ public class JsonAssetModule extends BaseJsonModule {
 			asset.setProperty("sourcepath", sourcepath);
 			asset.setProperty("assetaddeddate", DateStorageUtil.getStorageUtil().formatForStorage(new Date()));
 		}
-		if (request!=null) {
-			populateJsonData(request, searcher, asset);
+		if (request!=null) 
+		{
+			Map remaining = new HashMap(request);
+			remaining.remove("categorypath");
+			remaining.remove("category-exact");
+			remaining.remove("category");
+			populateJsonData(remaining, searcher, asset);
+			
+			Map categories = (Map)request.get("category");
+			if( categories != null)
+			{
+				log.info("Ignoring category ids, use categorypath " + categories );
+			}
 		}
 
 		
@@ -239,6 +250,9 @@ public class JsonAssetModule extends BaseJsonModule {
 			Category cat = archive.createCategoryPath(path);
 			asset.addCategory(cat);
 		}
+		
+		
+		
 		
 		importer.saveAsset(archive, inReq.getUser(), asset);
 

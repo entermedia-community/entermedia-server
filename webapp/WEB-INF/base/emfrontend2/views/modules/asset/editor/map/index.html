@@ -1,3 +1,4 @@
+<div id="asset-editor-container">
 #set ($view = "asset/geolocation")
 #set ($id = $context.getRequestParameter("id"))
 <h2>[[Asset Geolocation]]</h2>
@@ -37,8 +38,9 @@
     #else 
     
     #end
-    	<form name="formedit$view" id="formedit$view" targetdiv="${view}editor" method="post" action="$home$apphome/views/modules/asset/editor/map/save.html" >
-    
+    	<form name="formedit$view" id="formedit$view"  class="ajaxform" targetdiv="asset-editor-container" 
+    			method="post" action="$home$apphome/views/modules/asset/editor/map/save.html" >
+    		<input type="hidden" name="oemaxlevel" value="1"/>
     		<input type="hidden" name="saveasnew" value="false" />
     		<input type="hidden" name="save" value="true" />
     		<input type="hidden" name="catalogid" value="$!catalogid" />
@@ -55,7 +57,7 @@
     		$context.putPageValue("view",$view)	
     		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
     		<div id="geomap">
-    		$pages.include("/$applicationid/components/xml/detaileditorcss.html", $context)
+    		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
     		</div>
     		#if( $caneditasset )
     		<div class="btns">
@@ -72,4 +74,5 @@
     <p class="info">[[Search for a location, drag the icon to the correct place and click the save button. Double left-click to zoom in, double right-click to zoom out]].</p>
 	#end
 	
+</div>
 </div>
