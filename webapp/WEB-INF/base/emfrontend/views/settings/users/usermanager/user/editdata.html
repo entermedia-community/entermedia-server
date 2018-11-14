@@ -26,9 +26,26 @@
 
 
 			#if( $message || $errors)
-				<div class="common-success">
-					$context.getText($message)  $!errors
-				</div>
+				
+#if ($errors)
+
+	#if($regexerror)
+
+
+<div class="alert alert-danger" role="alert">$regexerror</div>
+
+
+	
+	#else
+
+	<div class="alert alert-danger">
+	<p>Sorry - unable to change password at this time.  If this persists, please talk to your system administrator</p>
+	</div>
+	
+#end#end
+
+
+
 			#end
 
 

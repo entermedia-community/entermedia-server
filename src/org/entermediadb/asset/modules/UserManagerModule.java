@@ -14,6 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.email.PostMail;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.modules.admin.users.PasswordMismatchException;
@@ -21,6 +22,7 @@ import org.entermediadb.modules.admin.users.PropertyContainerManipulator;
 import org.entermediadb.modules.admin.users.Question;
 import org.entermediadb.modules.admin.users.QuestionArchive;
 import org.openedit.BaseWebPageRequest;
+import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
@@ -769,6 +771,8 @@ public class UserManagerModule extends BaseMediaModule
 	{
 		String password = inReq.getRequestParameter( "password" );
 		String retypedPassword = inReq.getRequestParameter( "retypedPassword" );
+		
+		
 		if(password == null || retypedPassword == null)
 		{
 			inReq.putPageValue("errors", "novalues");
@@ -776,6 +780,26 @@ public class UserManagerModule extends BaseMediaModule
 		}
 		if (password.equals( retypedPassword ))
 		{
+		
+			MediaArchive archive = getMediaArchive(inReq);
+			if(archive != null) {
+				Data regex = archive.getCatalogSetting("passwordregex");
+				if(regex != null) {
+					String value = regex.get("value");
+					 if(!password.matches(value)) {
+						 String label = regex.getName();
+				         inReq.putPageValue("errors", "regex");
+
+						 inReq.putPageValue("regexerror", label);
+						 return;
+					 }
+				}
+				
+				
+			}
+			
+			
+			
 			User user = getUser( inReq );
 			User target = inReq.getUser();
 			if( !user.getId().equals(target.getId()  ))
