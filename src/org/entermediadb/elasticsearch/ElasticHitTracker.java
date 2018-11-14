@@ -69,7 +69,7 @@ public class ElasticHitTracker extends HitTracker
 	{
 
 	}
-
+	
 	public ElasticHitTracker(Client inClient, SearchRequestBuilder builder, QueryBuilder inTerms, int inHitsPerPage)
 	{
 		setElasticClient(inClient);
@@ -489,6 +489,8 @@ public class ElasticHitTracker extends HitTracker
 			}
 			getSearcheRequestBuilder().setAggregations(new HashMap());
 		}
+		
+		
 		return topfacets;
 	}
 

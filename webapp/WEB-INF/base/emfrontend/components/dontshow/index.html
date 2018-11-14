@@ -1,4 +1,6 @@
 #set( $searcher = $hits.getSearcher())
+#set( $searchtype = $searcher.getSearchType())
+
 <div class="ui-widget uipanel" id="left-col-search" >
 <div  #if($userprofile.minimizefilterscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" 
       #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
@@ -42,7 +44,9 @@
 
 #end
 
-#foreach($type in $facets )
+#foreach($item in $searcher.getDetailsForView("${searchtype}/${searchtype}facets") )
+#set($type = $hits.findFilterNode($item.id))
+#if($type)
 #set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
 #ifnull($viewpermission)
 	#set( $viewpermission = true)
@@ -66,6 +70,7 @@
 	#end
 	</ul>
     #end
+#end
 #end
 #end
     <input type="hidden" name="catalogid" value="$!catalogid" />

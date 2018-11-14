@@ -308,16 +308,37 @@ public class BaseElasticSearcher extends BaseSearcher
 
 		Set allFilters = new HashSet();
 
-		for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-			if (detail.isFilter())
+		
+		
+		List facets = getDetailsForView(getSearchType() + "/" + getSearchType() + "facets");
+		
+		if(facets != null && facets.size() > 0) {
+			for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 			{
-				allFilters.add(detail);
-
+				PropertyDetail detail = (PropertyDetail) iterator.next();
+			
+					allFilters.add(detail);
+	
+			
 			}
+		
 		}
+		else {
 
+			
+				for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
+				{
+					PropertyDetail detail = (PropertyDetail) iterator.next();
+					if (detail.isFilter())
+					{
+						allFilters.add(detail);
+		
+					}
+				}
+		}
+		
+		
+		
 		for (Iterator iterator = inQuery.getExtraFacets().iterator(); iterator.hasNext();)
 		{
 			String detail = (String) iterator.next();

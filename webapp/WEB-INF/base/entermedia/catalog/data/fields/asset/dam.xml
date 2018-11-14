@@ -50,9 +50,9 @@
     </name> 
   </property>  
   <!-- Allow searching 
-	<property id="libraries"  filter="true" type="list" viewtype="libraries" listid="library"   searchcomponent="librarysearch"   editable="true"  stored="true" index="true" sort="name" foreignkeyid="project">Libraries</property>
+	<property id="libraries"   type="list" viewtype="libraries" listid="library"   searchcomponent="librarysearch"   editable="true"  stored="true" index="true" sort="name" foreignkeyid="project">Libraries</property>
 	-->  
-  <property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list" filter="true" sort="name"  type="list">Asset Type 
+  <property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sort="name"  type="list">Asset Type 
     <name> 
       <language id="de"><![CDATA[Asset Type]]></language>  
       <language id="en"><![CDATA[Asset Type]]></language>  
@@ -264,7 +264,7 @@
     </name> 
   </property>  
   <!-- Uploading -->  
-  <property id="fileformat" filter="true" index="true" stored="true" viewtype="list" editable="true" externalid="File Type"  sortable="true">File Format 
+  <property id="fileformat"  index="true" stored="true" viewtype="list" editable="true" externalid="File Type"  sortable="true">File Format 
     <name> 
       <language id="de"><![CDATA[Datei Format]]></language>  
       <language id="en"><![CDATA[File Format]]></language>  
@@ -272,7 +272,7 @@
       <language id="fr"><![CDATA[Format du fichier]]></language> 
     </name> 
   </property>  
-  <property id="filesize" filter="true" index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size"  editable="false" type="number">File Size 
+  <property id="filesize"  index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size"  editable="false" type="number">File Size 
     <name> 
       <language id="de"><![CDATA[Dateigröße]]></language>  
       <language id="en"><![CDATA[File Size]]></language>  
@@ -321,7 +321,7 @@
     </name> 
   </property>  
   <!--  should be a date -->  
-  <property id="assetaddeddate" filter="true" editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch"  type="date">Uploaded Date 
+  <property id="assetaddeddate"  editable="false" index="true" stored="true" datatype="date" viewtype="time" searchcomponent="datesearch"  type="date">Uploaded Date 
     <name> 
       <language id="de"><![CDATA[uploaded Datum]]></language>  
       <language id="en"><![CDATA[Uploaded Date]]></language>  
@@ -661,25 +661,25 @@
   
   
   
-  <property id="audiobitrate"  index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+  <property id="audiobitrate"  index="true" internalfield="false" editable="true" isbadge="false" required="false"  multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
     <name>
       <language id="en"><![CDATA[Audio Bit Rate]]></language>
     </name>
   </property>
   
   
-    <property id="audiobytespersec"  index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+    <property id="audiobytespersec"  index="true" internalfield="false" editable="true" isbadge="false" required="false"  multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
     <name>
       <language id="en"><![CDATA[Audio Bytes Per Second Rate]]></language>
     </name>
   </property>
   
-  <property id="audiosamplerate"  index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+  <property id="audiosamplerate"  index="true" internalfield="false" editable="true" isbadge="false" required="false"  multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
     <name>
       <language id="en"><![CDATA[Audio Sample Rate]]></language>
     </name>
   </property>
-  <property id="videobitrate"  index="true" internalfield="false" editable="true" isbadge="false" required="false" filter="false" multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
+  <property id="videobitrate"  index="true" internalfield="false" editable="true" isbadge="false" required="false"  multilanguage="false" autocreatefromexif="false" keyword="true" writenametoexif="false">New
     <name>
       <language id="en"><![CDATA[Video Bitrate]]></language>
     </name>

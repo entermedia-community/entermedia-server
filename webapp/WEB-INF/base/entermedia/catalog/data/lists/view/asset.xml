@@ -20,6 +20,7 @@
 	<property id="csvexport" moduleid="asset" systemdefined="true" byassettype="false" ordering="90">Metadata CSV Export</property>
 	<property id="share" moduleid="asset" systemdefined="true" byassettype="false" ordering="90">Asset Share fields</property>
 	<property id="gallerycell" moduleid="asset" systemdefined="true" byassettype="false" ordering="90">Gallery Cell Metadata</property>
+	<property id="assetfacets" moduleid="asset" systemdefined="true" byassettype="false" ordering="90">Asset Filters</property>
 	
 	<!--   <data id="assetgeo" name="GEo" moduleid="asset" ordering="1424280647932" rendertype="table" rendertable="assetlocation" renderexternalid="assetid" rendercustomview="map" recordstatus="deleted"/>
 	 -->  
