@@ -567,8 +567,16 @@ public class GoogleManager implements CatalogEnabled {
 			
 			String input= "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg";
 			
+					
 			Page inputpage= archive.getPageManager().getPage(input);
-			
+			if(!inputpage.exists()) {
+				 input= "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.png";
+					 inputpage= archive.getPageManager().getPage(input);
+
+			}
+			if(!inputpage.exists()) {
+				return null;
+			}
 			
 			File file = new File(inputpage.getContentItem().getAbsolutePath());
 		    byte[] encoded = Base64.encodeBase64(FileUtils.readFileToByteArray(file));

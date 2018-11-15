@@ -22,6 +22,9 @@ public void runit()
 		Asset asset = mediaArchive.getAsset(it.id);
 		
 		JsonObject object = manager.processImage(asset);
+		if(object == null) {
+			return;
+		}
 		
 		JsonObject responselist = object.getAsJsonArray("responses").get(0);
 		JsonArray labels = responselist.getAsJsonArray("labelAnnotations");
