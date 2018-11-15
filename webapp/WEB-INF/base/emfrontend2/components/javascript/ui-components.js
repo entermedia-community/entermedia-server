@@ -1318,12 +1318,12 @@ $.fn.equalHeights = function(px) {
 	$(this).each(function(){
 		var currentTallest = 0;
 		$(this).children().each(function(i){
+			var thecol = $(this);
 			if ($(this).children(0) && $(this).children(0).hasClass("col-sidebar-inner")) {
-				//is sidebar use inner conatiner
-				var thecol = $(this).children(0);
-			}
-			else {
-				var thecol = $(this);
+				//is sidebar, verify inner content
+				if ($(this).children(0).height() > $(this).height()) {
+					thecol = $(this).children(0);
+				}
 			}
 			if (thecol.height() > currentTallest) { currentTallest = thecol.height(); }
 		});

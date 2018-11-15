@@ -1,5 +1,5 @@
 #if( $librarycol )
-
+<div class="collection-container">
 <div id="collectiontoplevel" class="results-header" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 
 	<div class="results-header-left float-md-left">
@@ -42,12 +42,12 @@
 	</div>
 	<div class="clearfix"></div>
 </div>
-<div  id="collection-tab-content">
+<div  id="collection-tab-content" class="colletion-content">
 		<div class="tab-pane" id="loadedpanel" >
 	  		$pages.includeContent()
 	  	</div>
 </div>
-
+</div>
 #else
 $pages.includeContent()
 #end

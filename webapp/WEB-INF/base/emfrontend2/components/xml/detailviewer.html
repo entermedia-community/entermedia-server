@@ -34,9 +34,13 @@
 	#set( $val = $data.get($detail.getId()) )
 	#if(  $val && $val.length() > 0 )
 		<div class="col-md-6">
+			<div class="row">
+			<div class="col-4">
 			<label class="emdatafield" >
 				$detail.getText($context)
 			</label>
+			</div>
+			<div class="col-8">
 			<div class="emdatafieldvalue ">					
 				$!context.putPageValue("val",$val)
 				$context.putPageValue("showalllanguagevalues",false)
@@ -44,6 +48,10 @@
 				$!context.putPageValue("detail",$detail)
 				$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
 			</div>
+			</div>
+			</div>
+			
+			
 		</div> 
 		
 	#end

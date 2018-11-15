@@ -9,23 +9,20 @@
 	#set($nextpage = "default")
 #end
 
-<div class="ui-widget uipanel" style="padding: 0 10px 10px 10px;">
-		    <div class="ui-widget-header">[[Upload Media]]</div>
-		    <div class="ui-widget-content">
-
-			<div id="uploadarea" data-nextpage="${nextpage}">
-			       <div class="padding">
-			        	#if( $browser.isHtml5Browser() )
-			        	
-			        		$pages.include("$apphome/components/upload/types/html5.html",$context)
-			        	
-			        	#else
-			        
-			        		$pages.include("$apphome/components/upload/types/simpler.html",$context)
-			        	
-			        	#end	
-			        </div>
-			</div>
-</div>			
+<div id="uploadarea" data-nextpage="${nextpage}">
+       
+        	#if( $browser.isHtml5Browser() )
+        	
+        		$pages.include("$apphome/components/upload/types/html5.html",$context)
+        	
+        	#else
+        
+        		$pages.include("$apphome/components/upload/types/simpler.html",$context)
+        	
+        	#end	
+       
+</div>
+<div class="btns">
 <a class="ajax btn btn-sm btn-secondary" style="margin:10px 0;" targetdiv="createmediapanel" href="$home$apphome/components/createmedia/start.html">[[Go Back]]</a>
+</div>
 			

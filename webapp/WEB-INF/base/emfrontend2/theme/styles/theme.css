@@ -70,6 +70,14 @@
 #sub-nav a { 
 	color:#333;
 }
+#sub-nav a.btn-checkout {
+   	background-color: #9F9F9F;
+   	color: #eee;	
+}
+#sub-nav a.btn-checkout:hover {
+   	background-color: #9F9F9F;
+   	color: #fff;	
+}
 .emnav .navtabs li a.navtabitem:hover,
 #sub-nav a.nav-item:hover {
 	color:#333;
@@ -179,6 +187,12 @@ background-color:rgba(0,0,0,0.5);
 	background-color: #fff;
 	color:#333;
 }
+#collection-tab-content .tab-paneX {
+	background-color: #D5D5D5;
+}
+.table-striped {
+	background-color: #fff;
+}
 /*TR Hovers*/
 tr.emborderhover td,
 .opencollections ul li:hover,
@@ -192,7 +206,8 @@ tr.emborderhover td,
 .emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
 .cat-list .cat-row:hover,
 .filters-sidebar li:hover,
-.filters-sidebar-selected li:hover
+.filters-sidebar-selected li:hover,
+.list-hover:hover
 {
 	background-color: #c9e8f2;
 }
@@ -1465,8 +1480,14 @@ td.checkbox input, th.firstheader input {
 .widget-header-right i { opacity: 0.6; top:0; margin-left:3px; }
 .widget-header-right i:hover { opacity: 1; }
 
-#right-sidebar .btn-lg {
-	width:100%;
+.uploadinstructions {
+	text-align: center;
+}
+.col-upload-left .btn-lg {
+	width:95%;
+	text-align: center;
+	margin:5px auto;
+	line-height: 2rem;
 }
 div#drop-area .drop-over {
     margin: 0 auto;
@@ -1503,25 +1524,23 @@ div#drop-area .drop-over {
     margin: 0;
     color: #444;
 }
-.up-files-list li:hover a {
-    background: #f3f3f3;
-}
+
 .up-files-list li a .name {
-    width: 270px;
+    width: 70%;
     overflow: hidden; 
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
+    color:#666;
 }
 .up-files-list li a .size {
     color: #3DAACD;
     font-size: 10px;
-    width: 86px;
+    width: 30%;
     text-align: right;
     display: inline-block;
     float: right;
     margin-top: 1px; 
-    margin-right:3px;
 }
 .up-files-list li a .uploadstatus {
     font-style: italic;
@@ -1662,25 +1681,40 @@ label.error {
 .assetpanel-assetpanel-editor #default-fields {
 	/*padding-top:10px;*/
 }
-.assetpanel-editor #default-fields .col-md-6,
-.previewonlyrow .col-md-6
+.assetpanel-editor #default-fields .col-md-6
  {
 	padding-top:10px;
 	padding-bottom:10px;
 }
-.assetpanel-editor #default-fields .emdatafield {
-	font-weight: 700;
+.emdatafield {
+	font-weight: normal;
+	color:#606060;
+	margin-bottom: .3rem;
 }
-.assetpanel-editor #default-fields.previewonly .emdatafield,
-.previewonly .emdatafield {
-	background-color: #e1e1e1;
+.assetpanel-editor #default-fields.previewonly .emdatafield {
     display: block;
     line-height: 1.8;
-    padding: 5px 8px
+    padding: 0;
+    text-align: left;
+}
+.previewonlyrow .col-md-6
+ {
+	padding-top:10px;
+	padding-bottom:1px;
+	border-bottom:1px solid #fefefe;
+}
+.previewonly .emdatafield {
+    display: block;
+    line-height: 1.8;
+    padding: 0;
+    text-align: right;
 }
 .assetpanel-editor #default-fields.previewonly .emdatafieldvalue,
 .previewonly .emdatafieldvalue  {
 	padding:0 8px;
+}
+.previewonlyrow {
+	margin-bottom: 40px;
 }
 .assetpanel-editor .emdatafieldvalue-readonly {
 	border: 1px solid #ced4da;
@@ -1704,6 +1738,21 @@ label.error {
 .summarytab .category a {
 	text-decoration: underline;
 }
+.summarytab .emlist {
+	margin-bottom: 20px;
+}
+.summarytab .list-library,
+.summarytab .list-collection {
+	display: block;
+	line-height: 1.8;
+	padding: 0 8px;
+	text-decoration: none;
+}
+.summarytab .list-library i,
+.summarytab .list-collection i {
+	margin-right: 8px;
+
+	}
 .assettab-box {
 	background-color: #efefef;
 }
@@ -2009,6 +2058,17 @@ label.error {
     background: url(../images/icons/check.png) left center no-repeat;
 }
 
+.collection-container {
+	display: table;
+	width:100%;
+	height: 100%;
+}
+.collection-container .results-header{
+	display: table-row;
+}
+.collection-container .colletion-content {
+	display: table-row;
+}
 
 /*Modules*/
 .main-info { 
@@ -3369,8 +3429,6 @@ ul.embuttons li a span {
     line-height: 37px;
     height: 37px;
     margin-top: 3px;
-   	background-color: #088c25;
-   	color: white;
    	font-size: 14px !important;
    	margin-right: 50px;
 }
@@ -3765,9 +3823,9 @@ a.collectionbox.favorite
 }
 
 .cat-list .cat-row .category {
-    padding-left: 18px;
+    padding-left: 22px;
     padding-top: 0px;
-    background: url('../images/folder-closed.gif') left 2px no-repeat;
+    background: url('../images/folder-closed.gif') 6px 2px no-repeat;
     margin: 0 10px 0 0 ;
     position:relative;
 }

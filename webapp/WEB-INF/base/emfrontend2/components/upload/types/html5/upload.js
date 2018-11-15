@@ -63,10 +63,12 @@ var uploadid;
 // wait for the DOM to be loaded 
 $(document).ready(function() 
 {	
+	
 	home = $("#application").data("home") + $("#application").data("apphome"); 
 	lQuery('#filePicker').livequery('click',function(e){
-        $('#upload_field').trigger('click');
-        e.preventDefault(); 
+		e.preventDefault(); 
+		$('#upload_field').trigger('click');
+        
      });
 
 	lQuery("#startbutton").livequery('click',function(e) 

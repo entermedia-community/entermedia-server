@@ -113,12 +113,7 @@
   		#set( $edit = $context.getRequestParameter("editheader") )
 			
 		$pages.include("$apphome/components/results/selected/index.html",$context)
-			
 		
-		</ul>
-		
-		
-		<ul class="resultsnavright">
 		#if ( $canviewbasket )
 			#if($order)
 				<li class="nav-item">
@@ -126,6 +121,12 @@
 				</li>
 			#end
 		#end
+		
+		</ul>
+		
+		
+		<ul class="resultsnavright">
+
 		
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
