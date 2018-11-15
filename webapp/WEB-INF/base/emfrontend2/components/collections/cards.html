@@ -1,4 +1,5 @@
-#foreach( $hit in $hits.getPageOfHits() )
+
+#foreach( $hit in $hits )
 	  #set( $asset = $mediaarchive.query("asset").match("category",$hit.rootcategory).searchOne() )
 	  #set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
 	<div class="card card-mini card-collections">
