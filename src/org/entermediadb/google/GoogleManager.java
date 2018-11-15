@@ -3,6 +3,7 @@ package org.entermediadb.google;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -10,6 +11,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,6 +21,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -32,18 +36,17 @@ import org.dom4j.Element;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
-import org.entermediadb.projects.LibraryCollection;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
-import org.openedit.data.PropertyDetail;
 import org.openedit.entermedia.util.EmTokenResponse;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
+import org.openedit.util.HttpMimeBuilder;
 import org.openedit.util.HttpRequestBuilder;
 import org.openedit.util.OutputFiller;
 import org.openedit.util.URLUtilities;
@@ -546,6 +549,100 @@ public class GoogleManager implements CatalogEnabled {
 
 	public void setXmlUtil(XmlUtil inXmlUtil) {
 		fieldXmlUtil = inXmlUtil;
+	}
+	
+	
+	
+	public JsonObject processImage( Asset inAsset) {
+		//https://cloud.google.com/vision/docs/
+		
+		//AIzaSyAwcJ1JZFqud2yZ0rR6cI5_1iRtXgAtPGY
+		try {
+			MediaArchive archive = getMediaArchive();
+			
+			String googleapikey = archive.getCatalogSettingValue("googleapikey");
+			
+			String url = "https://vision.googleapis.com/v1/images:annotate?key=" + googleapikey;
+			
+			
+			String input= "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg";
+			
+			Page inputpage= archive.getPageManager().getPage(input);
+			
+			
+			File file = new File(inputpage.getContentItem().getAbsolutePath());
+		    byte[] encoded = Base64.encodeBase64(FileUtils.readFileToByteArray(file));
+			
+			
+			JsonObject request = new JsonObject();
+			JsonArray requestlist = new JsonArray();
+			request.add("requests", requestlist);
+			JsonObject data = new JsonObject();
+			requestlist.add(data);
+
+			JsonObject image = new JsonObject();
+			image.addProperty("content", new String(new String(encoded, StandardCharsets.US_ASCII)));
+			data.add("image", image);
+			
+			
+			
+			JsonArray features = new JsonArray();
+			data.add("features", features);
+			
+			JsonObject type = new JsonObject();
+			type.addProperty("type", "LABEL_DETECTION");
+			features.add(type);
+			
+			
+			type = new JsonObject();
+			type.addProperty("type", "OBJECT_LOCALIZATION");
+			features.add(type);
+			
+			type = new JsonObject();
+			type.addProperty("type", "LANDMARK_DETECTION");
+			features.add(type);
+			
+			
+			
+			
+			
+			
+			HttpMimeBuilder build = new HttpMimeBuilder();
+			
+			HttpPost post = new HttpPost(url);
+			post.setEntity(new StringEntity(request.toString(), "UTF-8"));
+			
+			CloseableHttpClient httpclient;
+			httpclient = HttpClients.createDefault();
+			
+			HttpResponse resp= httpclient.execute(post);
+			
+			if (resp.getStatusLine().getStatusCode() != 200) {
+				log.info("Google Server error returned " + resp.getStatusLine().getStatusCode() + ":"
+						+ resp.getStatusLine().getReasonPhrase());
+				String returned = EntityUtils.toString(resp.getEntity());
+				log.info(returned);
+				return null;
+			}
+			
+			
+			HttpEntity entity = resp.getEntity();
+			String content = IOUtils.toString(entity.getContent());
+			JsonParser parser = new JsonParser();
+			JsonElement elem = parser.parse(content);
+			// log.info(content);
+			JsonObject json = elem.getAsJsonObject();
+			return json;
+			
+			
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			throw new OpenEditException(e);
+		}
+		
+		
+		
 	}
 	
 	

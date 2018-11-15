@@ -6,6 +6,14 @@
   <!--  property id="google-fetch-url" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Fetch URL</property -->  
   <!-- property id="google-thumb-url" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Fetch URL</property -->  
   <property id="google-view-link" internalfield="false" index="true" stored="true"  indextype="not_analyzed" editable="false" sortable="true">Google Drive URL</property>  
- 
+
+  <property id="googletagged" internalfield="false" index="true" stored="true"  editable="true" type="boolean">Has been tagged by google</property>  
+  
+  
+     
+  
+   <property id="googlekeywords" viewtype="tageditor" defaultoperation="andgroup" index="true" stored="true" editable="true" indextype="analyzed" analyzer="tags"   sortable="true"> 
+   Google Tags
+  </property>  
   
 </page>
