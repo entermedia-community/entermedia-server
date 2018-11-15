@@ -285,7 +285,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				{
 					if(value != null) {
 					value = value.toLowerCase();
-					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value)  || value.contains("cymk"))
+					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value)  || value.contains("cmyk"))
 					{
 						inAsset.setProperty("colorspace", "4");
 					}
