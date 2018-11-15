@@ -283,6 +283,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 				else if( "ColorMode".equals(key) ||  "ColorComponents".equals(key) || "ColorSpaceData".equals(key) || "SwatchGroupsColorantsMode".equals(key) )
 				{
+					log.info("Colourspace Found: " + key);
 					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value) )
 					{
 						inAsset.setProperty("colorspace", "4");
