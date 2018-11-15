@@ -173,7 +173,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 				String key = m.group(1);
 				String value = m.group(2);
-				log.info(key + " = " + value);
+				//log.info(key + " = " + value);
 				
 				if (key == null || value == null || value.isEmpty() )
 				{
@@ -281,16 +281,19 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						inAsset.setProperty("colorspace", "4");
 					}
 				}
-				else if( "ColorMode".equals(key) ||  "ColorComponents".equals(key) || "ColorSpaceData".equals(key) || "SwatchGroupsColorantsMode".equals(key) )
+				else if( "ColorMode".equals(key) ||  "ColorComponents".equals(key) || "ColorSpaceData".equals(key) || "SwatchGroupsColorantsMode".equals(key) || "SwatchColorantMode".equals(key) )
 				{
-					log.info("Colourspace Found: " + key);
-					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value) )
+					if(value != null) {
+					value = value.toLowerCase();
+					if( "CMYK".equalsIgnoreCase(value) ||  "4".equalsIgnoreCase(value)  || value.contains("cymk"))
 					{
 						inAsset.setProperty("colorspace", "4");
 					}
 					else if( "ColorMode".equals(key) )
 					{
 						//? useful
+					}
+					
 					}
 				}
 				else if ("GPSLatitude".equals(key))
