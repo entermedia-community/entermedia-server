@@ -173,7 +173,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 				}
 				String key = m.group(1);
 				String value = m.group(2);
-				//log.info(key + " = " + value);
+				log.info(key + " = " + value);
 				
 				if (key == null || value == null || value.isEmpty() )
 				{
