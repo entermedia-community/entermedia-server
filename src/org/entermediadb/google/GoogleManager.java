@@ -556,7 +556,7 @@ public class GoogleManager implements CatalogEnabled {
 	public JsonObject processImage( Asset inAsset) {
 		//https://cloud.google.com/vision/docs/
 		
-		//AIzaSyAwcJ1JZFqud2yZ0rR6cI5_1iRtXgAtPGY
+
 		try {
 			MediaArchive archive = getMediaArchive();
 			
