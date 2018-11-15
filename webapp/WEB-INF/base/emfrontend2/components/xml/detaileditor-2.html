@@ -60,7 +60,9 @@
 		#if( $editrow )	
 			$pages.include("$xmledithome/detailedit.html", $context)
 		#else  ##NOT EDITABLE
-			$pages.include("$xmledithome/detailreadonly.html", $context) 
+			<div class="emdatafieldvalue-readonly">
+			$pages.include("$xmledithome/detailreadonly.html", $context)
+			</div> 
 		#end
 		#if ( $detail.note )
 			<span class="detail-note">$context.getText($detail.note.toString())<span>

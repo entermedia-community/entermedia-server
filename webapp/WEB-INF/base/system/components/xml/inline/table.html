@@ -35,5 +35,9 @@ $context.putPageValue("details",$details)
 
 $pages.include("$apphome/components/xml/inline/pages.html",$context)
 #else
+	<table  class="table table-striped" >
+		<tr class="data-editor"></tr>
+	</table>	
+
 <p class="info" style="margin: 20px;">[[No results found]]</p>
 #end

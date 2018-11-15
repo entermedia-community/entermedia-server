@@ -15,11 +15,20 @@ public class AutoLoginByHeader extends BaseAutoLogin implements AutoLoginProvide
 
 	protected AutoLoginResult autoLoginFromRequest(WebPageRequest inRequest)
 	{
-		String username = inRequest.getRequest().getRemoteUser();
+		String header = inRequest.getContentProperty("autologinheader");
+		log.info("Found: " + header);
+		if( header == null)
+		{
+			return null;
+		}
+		
+		String username = inRequest.getRequest().getHeader(header);
+		log.info("Found user: " + username);
 		if (username == null)
 		{
 			return null;
 		}
+		
 		UserManager userManager = getUserManager(inRequest);
 		User user = userManager.getUser(username);
 		String catalogid = inRequest.findValue("catalogid");
