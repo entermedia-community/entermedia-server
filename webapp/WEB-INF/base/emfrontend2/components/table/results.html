@@ -54,6 +54,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 #end
 
 <table  id="main-results-table" class="emdata table table-striped table-hover emresultstable"  data-clickpath="$clickpath"  data-viewpostfix="$!viewpostfix" data-hitssessionid="$!existingrecords.sessionId" data-runcommand="$clickruncommand">
+	<thead>
 	<tr class="tableheader">
 	#foreach( $detail in $details )
 	
@@ -77,6 +78,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 	 </th>
 	#end
 	</tr>
+	</thead>
 	<tbody ng-foreach="hit in dataresults">
 		#foreach( $hit in $hits.getPageOfHits() )
 			<tr  #if($candelete != "false") rowid="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">

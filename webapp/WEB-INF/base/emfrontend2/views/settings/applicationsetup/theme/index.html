@@ -1,4 +1,4 @@
-<div style="padding-top: 10px">
+<div style="position:relative">
 
 <div id="editlayout" >
 #set($searcher = $mediaarchive.getSearcher("theme"))
@@ -44,20 +44,23 @@
 		<link rel="stylesheet" type="text/css" href="$home$apphome/theme/styles/custom.css?cache=false" />
 	
 	#if( $data )
-	<form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/theme/save.html"  enctype="multipart/form-data">
-		<input name="save" type="hidden" value="true" />
-		<input name="id" type="hidden" value="$data.id" />
-		<input name="themeid" type="hidden" value="$data.id" />
-		
-		<input name="searchtype" type="hidden" value="theme" />
-		<div class="themeeditor">
-		$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+		#if ($message) 
+		<div class="alert alert-success fader alert-save" role="alert" style="bottom: initial;">
+		$message
 		</div>
-		<input type="submit" value="[[Save]]" class="btn btn-primary" />
-		<div id="messagearea">$!message
-	</div>
-	</form>
-	
+		#end
+		<form id="dataeditor" method="post" action="$home$apphome/views/settings/applicationsetup/theme/save.html"  enctype="multipart/form-data">
+			<input name="save" type="hidden" value="true" />
+			<input name="id" type="hidden" value="$data.id" />
+			<input name="themeid" type="hidden" value="$data.id" />
+			
+			<input name="searchtype" type="hidden" value="theme" />
+			<div class="themeeditor">
+			$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+			</div>
+			<input type="submit" value="[[Save]]" class="btn btn-primary" />
+		</form>
+		
 	#end
 	
 	</div>

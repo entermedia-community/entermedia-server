@@ -96,7 +96,7 @@
 	
 }
 .col-sidebar-inner {
-	padding-bottom: 1px;
+	padding: 1px 0;
 }
 .col-sidebar-detaileditor {
 	background-color: #edf0f1;
@@ -1074,7 +1074,7 @@ td.checkbox input, th.firstheader input {
 	padding:20px; 
 }
 .collectionshomeform-container {
-	text-align:center;
+	text-align:right;
 	padding:30px 10px;
 	
 }
@@ -3883,3 +3883,4 @@ a.collectionbox.favorite
 .themeeditor .emdatafield {
 	width: 300px!important;
 }
+
