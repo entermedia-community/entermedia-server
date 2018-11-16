@@ -8,16 +8,11 @@
 $context.putPageValue("cdn",$cdnprefix)
 #set( $mediadbappid=$mediaarchive.getMediaDbId())
 
-#if( !$hits )
-#set( $hits = $collectionassets )
-$context.putPageValue("hits",$hits)
-#end
-
-#set( $index = $hits.indexOfId($asset.id))
+#set( $index = $dialoghits.indexOfId($asset.id))
 #set( $previous = false )
-#set( $previous = $hits.previous($index))
+#set( $previous = $dialoghits.previous($index))
 #set( $next = false )
-#set( $next = $hits.next($index))       
+#set( $next = $dialoghits.next($index))       
 #set( $previewonly = $context.getPageValue("previewonly"))
 #if( !$previewonly)
 	#set( $previewonly = false)
@@ -31,8 +26,9 @@ $context.putPageValue("hits",$hits)
 	#end
 	
 #end
-#set( $hitssessionid = $hits.getSessionId())
-#set( $hitssessionidorig = $hitssessionid.replace("assetdialog","") )
+$dialoghits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
+#set( $hitssessionid = $dialoghits.getSessionId())
+
 <div id="main-media-container">
 <div id="main-media-viewer" 
 data-opentab="$opentab" 
@@ -42,8 +38,8 @@ data-oemaxlevel="1"
 data-editable="$caneditasset" 
 data-assetid="$asset.id" data-next="$!next.getId()" 
 data-previous="$!previous.getId()"
-data-previouspage="$!hits.idOnPreviousPage()" 
-data-nextpage="$!hits.idOnNextPage()" >
+data-previouspage="$!dialoghits.idOnPreviousPage()" 
+data-nextpage="$!dialoghits.idOnNextPage()" >
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
 	#end
@@ -230,11 +226,11 @@ data-nextpage="$!hits.idOnNextPage()" >
                  <li>
 					#if ( $asset.getId().startsWith("multiedit:") )
 						#if($canmultidelete)                 
-                     		<a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionidorig">
+                     		<a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionid">
 	                     [[Delete Selected Assets]]</a>
 	                    #end 
                      #else
-                     <a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionidorig">
+                     <a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionid">
 	                     [[Delete Asset]]</a>
                      #end
                      </a>
@@ -246,7 +242,7 @@ data-nextpage="$!hits.idOnNextPage()" >
 					#if( $parenthits )
 						#set( $rootid = $parenthits.sessionId )
 					#else
-						#set( $rootid = $hits.sessionId )
+						#set( $rootid = $dialoghits.sessionId )
 					#end
 				   	#set( $searcher = $searcherManager.getSearcher($catalogid,"detaileditormenu") )
 					#set( $query = $searcher.createSearchQuery().append("moduleid",$moduleid) )

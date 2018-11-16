@@ -1,7 +1,8 @@
 <page>
 	<path-action name="MediaArchiveModule.getAsset"  />
-	<path-action name="DataEditModule.loadHits"  >
+	<path-action name="DataEditModule.loadHitsCopy"  >
 		<property name="searchtype">asset</property>
+		<property name="hitsname">dialoghits</property>
 	</path-action>
 	<layout />
 	<inner-layout />

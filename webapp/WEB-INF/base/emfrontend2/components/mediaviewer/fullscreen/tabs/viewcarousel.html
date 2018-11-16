@@ -3,10 +3,9 @@
             <div class="carousel-items">
             	
 				#set( $selectedindex = 1)
-				$hits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
-				#foreach($hit in $hits.getPageOfHits())
-					#set( $count = $hits.getPage()+-1 )
-					#set( $count = $count*$hits.getHitsPerPage() )	
+				#foreach($hit in $dialoghits.getPageOfHits())
+					#set( $count = $dialoghits.getPage()+-1 )
+					#set( $count = $count*$dialoghits.getHitsPerPage() )	
         			#set( $count = ${foreach.count} + $count )
         			$context.putPageValue("hitindex",$count )
         			#if($asset.id == $hit.id )
@@ -20,7 +19,7 @@
 			
 				    #set( $editlink = $content.get("asseteditlink") )
 					#set( $click = "$home$editlink?assetid=$hit.id&categoryid=$catid&hitssessionid=$rootid" )
-				<div class="gallery-thumb #if($asset.id == $hit.id || $hits.isSelected($hit.id)) active-asset #end " id="gallery-${hit.id}">
+				<div class="gallery-thumb #if($asset.id == $hit.id || $dialoghits.isSelected($hit.id)) active-asset #end " id="gallery-${hit.id}">
         		<div class="">
         			<a class="stackedplayer gallery-item" data-assetid="$hit.id" title="${hit.name}"   href="#" >
           				$context.putPageValue("hit", $hit)
@@ -31,7 +30,7 @@
 						$pages.include("$apphome/components/results/badges.html", $context)	
           			</a>
           			<div class="gallery-item-title">
-          			<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($hits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
+          			<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($dialoghits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
  					<label for="selectionbox_${hit.id}" class="">${hit.name}</label>
  					</div>
         		</div>
@@ -43,7 +42,7 @@
     </div>
     <ol class="carousel-indicators">
             <li style="padding:4px;" id="leftpage"><i class="fas fa-arrow-left" ></i></li>
-            <li style="padding:4px;width:120px;" >$selectedindex of $hits.size()</li>
+            <li style="padding:4px;width:120px;" >$selectedindex of $dialoghits.size()</li>
             <li style="padding:4px;" id="rightpage"><i class="fas fa-arrow-right"></i></li>
     </ol>
     

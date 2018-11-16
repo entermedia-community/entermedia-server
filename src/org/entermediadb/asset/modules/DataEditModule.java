@@ -1271,33 +1271,27 @@ protected Element loadViewElement(XmlFile file, String toremove)
 	}
 	public HitTracker loadHitsCopy(WebPageRequest inReq) throws Exception
 	{
-		String hitssessionidCopy = inReq.getRequestParameter("hitssessionid");
-		String hitssessionidOriginal = null; 
-		String copyprefix = inReq.findValue("copyprefix");
-		if( hitssessionidCopy.startsWith(copyprefix))
-		{
-			hitssessionidOriginal = hitssessionidCopy.substring(copyprefix.length());
-		}
-		else
-		{
-			hitssessionidOriginal = hitssessionidCopy;
-			hitssessionidCopy = copyprefix + hitssessionidOriginal;
-		}
-		HitTracker trackerCopy = (HitTracker)inReq.getSessionValue(hitssessionidCopy);
+		String  hitssessionidOriginal = inReq.getRequestParameter("hitssessionid");
 		HitTracker trackerOriginal = (HitTracker)inReq.getSessionValue(hitssessionidOriginal);
-
 		if( trackerOriginal == null)
 		{
 			return null;
 		}
-		if( trackerCopy == null || !trackerCopy.getQuery().equals(trackerOriginal.getQuery()))
+		String othername = inReq.findValue("hitsname");
+		
+		String hitssessionidCopy = othername + trackerOriginal.getSearchQuery().getResultType() + trackerOriginal.getCatalogId(); 
+		
+		HitTracker trackerCopy = (HitTracker)inReq.getSessionValue(hitssessionidCopy);
+
+		if( trackerCopy == null 
+				||	!trackerCopy.getQuery().equals(trackerOriginal.getQuery()) 
+				||	!trackerCopy.getIndexId().equals( trackerOriginal.getIndexId() ) )
 		{
 			trackerCopy = trackerOriginal.copy();
-			trackerCopy.setSessionId(hitssessionidCopy);
-			inReq.putSessionValue(hitssessionidCopy,trackerCopy);
+			trackerCopy.getSearchQuery().setHitsName(othername);
+			inReq.putSessionValue(trackerCopy.getSessionId(),trackerCopy);
 		}
 		inReq.putPageValue(trackerCopy.getHitsName(), trackerCopy);
-		inReq.setRequestParameter("hitssessionid",hitssessionidCopy);
 		return trackerCopy;
 	}
 	public HitTracker loadHits(WebPageRequest inReq) throws Exception

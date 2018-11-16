@@ -57,19 +57,7 @@
 		   title="[[Add to Favorites]]"  
 		   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 	#end
-	
 
-	#if ($canmetadatageneral && $canmultiedit)
-  		#set($multi = $hits.getSelectionSize() > 1)
-  		#if ($multi)
-  			#set($link = "editall.html")
-  			#set($text = "[[Multi Edit]]")
-  		#else
-  			#set($link = "index.html")
-  			#set($text = "[[Edit Asset]]")
-  		#end
-		<a class="dropdown-item " href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
-	#end
 	#if($canexportdata)
     	
 	<a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
