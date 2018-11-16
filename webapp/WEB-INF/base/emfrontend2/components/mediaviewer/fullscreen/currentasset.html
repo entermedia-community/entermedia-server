@@ -170,19 +170,24 @@ data-nextpage="$!hits.idOnNextPage()" >
 				  </li>
 			 #end
             
-						##Will be gone once we move all Actions to Tabs:
+						
 			#if( !$previewonly )
 			<li class="footermenu bottomtab">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
 			   <ul class="dropdown-menu">
+			   
+			   #if($canviewconversions)
 			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
 						data-assettab="viewactions"
 						data-assettabactions="conversions" >
-					[[Conversions]]
+					[[Conversions]] 
 					</a>
 			   	</li>
+			   	#end
+			   	#if($caneditassetcategories)
+			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=categorize" title="[[Categories]]"
 						data-assettab="viewactions"
@@ -190,6 +195,9 @@ data-nextpage="$!hits.idOnNextPage()" >
 					[[Categories]]
 					</a>
 			   	</li>
+			   	#end
+			   	#if ($canviewmap)
+			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
 						data-assettab="viewactions"
@@ -197,6 +205,9 @@ data-nextpage="$!hits.idOnNextPage()" >
 					[[Map]]
 					</a>
 			   	</li>
+			   	#end
+			   	#if($canviewattachments)
+			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
 						data-assettab="viewactions"
@@ -204,6 +215,9 @@ data-nextpage="$!hits.idOnNextPage()" >
 					[[Attachments]]
 					</a>
 			   	</li>
+			   	#end
+			   	#if($canconverthistory)
+			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=converthistory" title="[[History]]"
 						data-assettab="viewactions"
@@ -211,6 +225,7 @@ data-nextpage="$!hits.idOnNextPage()" >
 					[[History]]
 					</a>
 			   	</li>
+			   	#end
 		    	#if($candeleteasset)
                  <li>
 					#if ( $asset.getId().startsWith("multiedit:") )

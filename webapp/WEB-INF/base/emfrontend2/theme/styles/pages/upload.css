@@ -82,11 +82,6 @@
 	background-color: #FFFFCC;
 	overflow: hidden;
 }
-/* Error */
-.red {
-	border: solid 1px #B50000;
-	background-color: #FFEBEB;
-}
 
 /* Current */
 .green {

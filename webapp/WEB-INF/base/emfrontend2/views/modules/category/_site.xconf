@@ -2,7 +2,7 @@
 
 <page>
 
-	<property name="fallbackdirectory">/emshare2/views/modules/default</property>
+	<property name="fallbackdirectory">/emfrontend2/views/modules/default</property>
 	<property name="module">category</property>
 	<property name="enforcesecurity">true</property>
   

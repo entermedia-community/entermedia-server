@@ -1208,10 +1208,10 @@ td.checkbox input, th.firstheader input {
 .emtree .arrow {
 	position:absolute;
 	width:12px;
-	padding-left:2px;
+	padding-left:12px;
 	font-size:130%;
-	left:10px;
-	top:3px;
+	
+	top:4px;
 }
 .emtree .name {
 	margin-left:12px;

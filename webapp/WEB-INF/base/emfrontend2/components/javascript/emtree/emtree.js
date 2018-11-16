@@ -41,14 +41,20 @@ $(document).ready(function()
 		
 		var prefix = tree.data("url-prefix");
 		var targetdiv = tree.data("targetdiv");
+		var maxlevel = tree.data("maxlevelclick");
+		if(maxlevel ==  undefined || maxlevel == "" )
+		{
+			maxlevel = 2;
+		}
 		if(targetdiv ==  undefined || targetdiv == "" )
 		{
 			targetdiv = "searchlayout";
+			maxlevel = 3;
 		}
 		if( prefix)
 		{
 			var postfix = tree.data("url-postfix");
-			gotopage(tree,node,prefix, postfix);
+			gotopage(tree,node,maxlevel,prefix, postfix);
 		}
 		else
 		{
@@ -64,15 +70,8 @@ $(document).ready(function()
 		$(document).trigger(event);
 	});
 	
-	gotopage = function(tree, node, prefix, postfix)
+	gotopage = function(tree, node, maxlevel, prefix, postfix)
 	{
-
-		var params = $(tree).closest(".treeclickparameters").data();
-		if( params == undefined )
-		{
-			params = new Array();
-		}
-
 		var treeholder = $("div#categoriescontent");
 		var toplocation =  parseInt( treeholder.scrollTop() );
 		var leftlocation =  parseInt( treeholder.scrollLeft() );
@@ -80,7 +79,7 @@ $(document).ready(function()
 		if(targetdiv ==  undefined || targetdiv == "" )
 		{
 			targetdiv = "searchlayout";
-			params['oemaxlevel'] = 3;
+			maxlevel = 3;
 		}
 		
 		var nodeid = node.data('nodeid');
@@ -94,17 +93,18 @@ $(document).ready(function()
 		
 		var depth = node.data('depth');
 		
-		params['tree-name'] = tree.data("treename");
-		params['nodeID'] = nodeid;
-		params['treetoplocation'] = toplocation;
-		params['treeleftlocation'] = leftlocation;
-		params['depth'] = depth;
-		
-		$.get(prefix + nodeid + postfix,
-				params,	
+		jQuery.get(prefix + nodeid + postfix,
+				{
+					'oemaxlevel':maxlevel,
+					'tree-name':tree.data("treename"),
+					'nodeID':nodeid,							
+					'treetoplocation':toplocation,
+					'treeleftlocation':leftlocation,
+					'depth': depth
+				},	
 				function(data) 
 				{
-					var cell = $("#" + targetdiv); //view-picker-content
+					var cell = jQuery("#" + targetdiv); //view-picker-content
 					//console.log(cell);
 					cell.replaceWith(data);
 					//cell.html(data);
@@ -225,6 +225,7 @@ $(document).ready(function()
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
 				var nodeid = node.data('nodeid');
+				var maxlevel = 2;
 				
 				//http://localhost:8080/assets/emshare/components/createmedia/upload/index.html?collectionid=AVgCmUw-cmJZ6_qmM-9u
 				var url = tree.data("home") + "/components/createmedia/upload/index.html?";
@@ -234,7 +235,7 @@ $(document).ready(function()
 				if( collectionid )
 				{
 					postfix = "&collectionid=" + collectionid;
-					gotopage(tree,node,url,postfix);
+					gotopage(tree,node,maxlevel,url,postfix);
 				}
 				else
 				{
