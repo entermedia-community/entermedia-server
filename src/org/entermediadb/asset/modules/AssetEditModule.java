@@ -463,9 +463,11 @@ public class AssetEditModule extends BaseMediaModule
 	{
 		AssetEditor editor = getAssetEditor(inContext);
 		String[] assetIds = inContext.getRequestParameters("assetid");
-		
+		if( assetIds == null)
+		{
+			return;
+		}
 		Asset asset;
-		
 		
 		HitTracker tracker = editor.getMediaArchive().getAssetSearcher().loadHits(inContext);
 		
@@ -489,6 +491,7 @@ public class AssetEditModule extends BaseMediaModule
 							editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 						}
 						editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
+						log.info("Asset has been deleted by user " + inContext.getUserName() + " assetid:" + asset.getId() + " sourcepath: " + asset.getSourcePath() + " original: " + ok);
 					}
 				} 
 				catch (Exception e)
@@ -513,6 +516,7 @@ public class AssetEditModule extends BaseMediaModule
 						editor.getMediaArchive().getAssetManager().removeOriginal(asset);
 					}
 					editor.getMediaArchive().fireMediaEvent("deleted", inContext.getUser(), asset);
+					log.info("Asset has been deleted by user " + inContext.getUserName() + " assetid:" + asset.getId() + " sourcepath: " + asset.getSourcePath() + " original: " + ok);
 				}
 			}
 		}

@@ -76,7 +76,7 @@
 	<a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
 #end
 	#if($canmultidelete)	    
- 		<a class="emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a>
+ 		<a class="emdialog" href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a>
    	#end    	
 #if($canprintpreview)
     	 <a href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>

@@ -344,6 +344,14 @@ public class MediaArchiveModule extends BaseMediaModule
 		HitTracker tracker = (HitTracker)inReq.getSessionValue(hitssessionid);
 		if( tracker != null)
 		{
+			//Asset could be deleted
+			if( asset == null)
+			{
+				MediaArchive archive = getMediaArchive(inReq);
+				String assetid = tracker.idOnThisPage();
+				asset = archive.getAsset(assetid);
+			}
+			
 			int index = tracker.indexOfId(asset.getId());
 			if( index < 1)
 			{

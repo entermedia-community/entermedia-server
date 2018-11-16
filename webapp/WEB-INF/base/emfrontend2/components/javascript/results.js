@@ -436,14 +436,20 @@ $(document).ready(function(url,params)
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("previouspage");
-		showAsset(id);
+		if( id )
+		{
+			showAsset(id);
+		}
 	});
 	lQuery('.carousel-indicators li#rightpage').livequery('click',function(e)
 	{
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("nextpage");
-		showAsset(id);
+		if( id )
+		{
+			showAsset(id);
+		}
 	});	
 	
 	

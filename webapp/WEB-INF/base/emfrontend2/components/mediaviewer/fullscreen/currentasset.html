@@ -32,6 +32,7 @@ $context.putPageValue("hits",$hits)
 	
 #end
 #set( $hitssessionid = $hits.getSessionId())
+#set( $hitssessionidorig = $hitssessionid.replace("assetdialog","") )
 <div id="main-media-container">
 <div id="main-media-viewer" 
 data-opentab="$opentab" 
@@ -85,7 +86,7 @@ data-nextpage="$!hits.idOnNextPage()" >
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html"
 					data-assettab="viewpreview"
 					title="[[View $asset]]" >
-				<i class="fas fa-expand"></i> $asset
+				<i class="fas fa-expand"></i> Viewer
 				</a>
 			 </il>
 			 #if( !$previewonly && $canmetadatageneral )
@@ -106,28 +107,12 @@ data-nextpage="$!hits.idOnNextPage()" >
 				</a>
 			</li>
 			#end
-			
-			
-	
-			
-			##Will be gone once we move all Actions to Tabs:
-			#if( !$previewonly )
-			<li class="footermenu bottomtab">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
+			#if ( $canshareasset )
+            <li class="footermenu bottomtab">
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Share]]">
+			   	 <span class="fas fa-share-alt"></span> [[Share]]</a>
 			   <ul class="dropdown-menu">
-			    	#if($candeleteasset)
-	                 <li>
-	                     #if ( $asset.getId().startsWith("multiedit:") )
-	                         <a class="emdialog"   href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}">[[Delete Assets]]</a>
-	                     #else
-	                         <a class="emdialog"  href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=$asset.id">[[Delete]]</a>
-	                     #end
-	                 </li>
-	                 #end
-	                 #if ( $canshareasset )
-   					 <li class="dropdown-submenu"><a href="#" class="dropdown-item dropdown-toggle">[[Share]]</a>
-   				        <ul class="dropdown-menu">
-	   						#if ($canpublish)
+   							#if ($canpublish)
 	                       <li>
 	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true"   href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
 	                       </li>
@@ -147,9 +132,49 @@ data-nextpage="$!hits.idOnNextPage()" >
 								<a class="dropdown-item ajax" targetdivinner="shareOptionsContainer" href="#">[[Add to Project]]</a>
 							</li>
 							#end
-                       </ul>
-                    </li>
-                    #end
+             </ul>
+             </li>
+             #end
+    		#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
+			#if($candownload && $asset.getFileFormat()  == "pdf")
+			<li class="footermenu bottomtab" >
+			    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+	            	<span class="fas fa-file-alt"> </span> [[View PDF]]
+	            </a>
+            </li> 
+			#end
+			#if($candownload || $canconvert)
+				<li class="footermenu bottomtab" >		
+	<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
+   <ul class="dropdown-menu">
+						#if( !$cdnprefix )
+							#set( $cdnprefix = $context.siteRoot )
+						#end
+								
+									 #if($candownload)				
+										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
+									#end	
+									#if($canconvert)
+
+									#if( $type )
+									#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
+									#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").named("convertpresets").search($context) )
+									#end
+									
+										#foreach($result in $results )						
+												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
+										#end
+									#end
+								</ul>
+					   
+				  </li>
+			 #end
+            
+						##Will be gone once we move all Actions to Tabs:
+			#if( !$previewonly )
+			<li class="footermenu bottomtab">
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
+			   <ul class="dropdown-menu">
 			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
@@ -186,6 +211,20 @@ data-nextpage="$!hits.idOnNextPage()" >
 					[[History]]
 					</a>
 			   	</li>
+		    	#if($candeleteasset)
+                 <li>
+					#if ( $asset.getId().startsWith("multiedit:") )
+						#if($canmultidelete)                 
+                     		<a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionidorig">
+	                     [[Delete Selected Assets]]</a>
+	                    #end 
+                     #else
+                     <a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionidorig">
+	                     [[Delete Asset]]</a>
+                     #end
+                     </a>
+                 </li>
+                 #end
 				    #set($moduleid = "asset")
 					#set( $sourcepath = $asset.getSourcePath() )
 					
@@ -268,43 +307,6 @@ data-nextpage="$!hits.idOnNextPage()" >
 		    </li>
 		    #end
     
-    	#set( $originalpath = $mediaarchive.asLinkToOriginal($asset) )	
-			 #if($candownload || $canconvert)
-			  
-			
-				<li class="footermenu bottomtab" >		
-	<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Downloads]]</a>
-   <ul class="dropdown-menu">
-						#if( !$cdnprefix )
-							#set( $cdnprefix = $context.siteRoot )
-						#end
-								
-									 #if($candownload)				
-										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
-									#end	
-									#if($canconvert)
-
-									#if( $type )
-									#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-									#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").named("convertpresets").search($context) )
-									#end
-									
-										#foreach($result in $results )						
-												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
-										#end
-									#end
-								</ul>
-					   
-				  </li>
-			 #end
-		  
-			#if(  $asset.getFileFormat()  == "pdf")
-			<li class="footermenu bottomtab" >
-			    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
-	            	<span class="fas fa-file-alt"> </span> [[View PDF]]
-	            </a>
-            </li> 
-			#end
 		</ul>
 	</div>
 </div>

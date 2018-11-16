@@ -1,0 +1,7 @@
+<page>
+	<path-action name="MediaArchiveModule.getAsset"  />
+
+	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
+
+	 <inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout> 
+</page>
