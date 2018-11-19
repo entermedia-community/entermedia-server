@@ -39,6 +39,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
 import org.openedit.data.BaseData;
 import org.openedit.entermedia.util.EmTokenResponse;
@@ -177,7 +178,7 @@ public class GoogleManager implements CatalogEnabled {
 
 	}
 
-	protected void saveFile(Data authinfo, Asset inAsset) throws Exception {
+	public File saveFile(Data authinfo, Asset inAsset) throws Exception {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 
 		// GET
@@ -212,7 +213,7 @@ public class GoogleManager implements CatalogEnabled {
 		inAsset.setProperty("previewstatus", "converting");
 		getMediaArchive().saveAsset(inAsset);
 		getMediaArchive().fireMediaEvent("assetimported", null, inAsset); // Run custom scripts?
-
+		return output;
 		// if( assettype != null && assettype.equals("embedded") )
 		// {
 		// current.setValue("assettype","embedded");
@@ -324,12 +325,12 @@ public class GoogleManager implements CatalogEnabled {
 		return accesstoken;
 	}
 
-	public void syncAssets(Data inAuthinfo) {
+	public Results syncAssets(Data inAuthinfo) {
 		try {
 			Results results = listDriveFiles(inAuthinfo, "root");
 			processResults(inAuthinfo, "Drive", results);
-			getMediaArchive().fireSharedMediaEvent("conversions/runconversions"); // this will save the asset as
-																					// imported
+			getMediaArchive().fireSharedMediaEvent("conversions/runconversions"); // this will save the asset as// imported
+			return results;
 		} catch (Exception ex) {
 			throw new OpenEditException(ex);
 		}
@@ -810,6 +811,12 @@ public class GoogleManager implements CatalogEnabled {
 		// current.setValue("assettype","embedded");
 		// }
 
+	}
+
+	public void uploadToDrive(Data inAuthInfo, Asset inAsset, File file) {
+			
+		
+		
 	}
 
 //	public void publishToYoutube(Asset inAsset, ContentItem inContentItem)
