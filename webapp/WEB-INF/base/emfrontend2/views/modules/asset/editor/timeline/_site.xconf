@@ -1,21 +1,5 @@
 <page>
-	<inner-layout>/${applicationid}/views/modules/asset/editor/timeline/innerlayout.html</inner-layout>
-	<property name="hidepreview">true</property>
-<property name="fullwidth">true</property>
-
 	<property name="hidemenu">false</property>
-		<property name="showshare">true</property>
+	<property name="showshare">true</property>
 	<property name="clientroot">/${applicationid}/views/modules/asset/editor/timeline</property>
-
-<path-action name="TimelineModule.loadTimeline" />
-
-<script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />
- 
-  <script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/timeline.js" />
-  	<style id="closedcaptionplayercss" href="/${applicationid}/theme/styles/timeline/timeslider.css" />
-  	<style id="videoplayer-css" href="/${applicationid}/theme/styles/timeline/timeline.css"/>
-  
-  
-  		<property name="assettab">viewtimeline</property>
-  
 </page>

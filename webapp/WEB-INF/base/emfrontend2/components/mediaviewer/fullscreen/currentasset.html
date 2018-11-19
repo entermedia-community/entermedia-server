@@ -169,7 +169,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 						
 			#if( !$previewonly )
 			<li class="footermenu bottomtab">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
+			   <span class="fas fa-edit"></span> [[Actions]]</a>
 			   <ul class="dropdown-menu">
 			   
 		    	#if( $canviewconversions )
@@ -183,7 +184,15 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			   	</li>
 			   	#end
 			   	#if($type == "video")
-			   		#if(viewtimeline)
+			   		#if($canviewtimeline)
+			   			<li>
+					   	<a class="assettab" 
+								data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=timeline" title="[[Timeline]]"
+								data-assettab="viewactions"
+								data-assettabactions="timeline" >
+							[[Timeline]]
+							</a>
+					   	</li>
 			   		#end
 			   	#end
 		    	#if( $caneditassetcategories )

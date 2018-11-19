@@ -1,10 +1,10 @@
-
 #set( $sourcepath = $asset.sourcepath )
 #set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
 #set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
-#set( $clientroot = $context.getContentProperty("clientroot") )
-
+##set( $clientroot = $context.getContentProperty("clientroot") )
+#set( $clientroot = $content.getPageValue("clientroot") )
+$clientroot
 <div class="" style="padding: 10px; background-color:#eee;">	
 			$pages.include("$clientroot/details/video.html")
 
