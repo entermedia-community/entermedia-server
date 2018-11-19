@@ -687,12 +687,37 @@ public class BaseOrderManager implements OrderManager {
 		return assetids;
 	}
 
-	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination)
+	
+	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination) {
+		return createPublishQueue(archive, inUser, inAsset, inPresetId, inPublishDestination, true);
+	}
+	
+	public Data createPublishQueue(MediaArchive archive, User inUser, Asset inAsset, String inPresetId, String inPublishDestination, boolean force)
 	{
 
 		String publishstatus = "new";
 		Searcher publishQueueSearcher = archive.getSearcher("publishqueue");
-		Data publishqeuerow = publishQueueSearcher.createNewData();
+		Data publishqeuerow = null;
+		
+		if(force) {
+			publishqeuerow = publishQueueSearcher.createNewData();
+		} else {
+			publishqeuerow = publishQueueSearcher.query().exact("assetid", inAsset.getId()).exact("presetid", inPresetId).exact("publishdestination", inPublishDestination).searchOne();
+			if(publishqeuerow != null) {
+				if("complete".equals(publishqeuerow.get("status"))){
+					return publishqeuerow;
+				} else if("error".equals(publishqeuerow.get("status"))) {
+					publishqeuerow.setValue("status", "new");
+				}
+				else {
+				
+					publishqeuerow =  publishQueueSearcher.createNewData();
+				}
+			} else {
+				publishqeuerow =  publishQueueSearcher.createNewData();
+
+			}
+		}
 
 		publishqeuerow.setProperty("assetid", inAsset.getId());
 		publishqeuerow.setProperty("assetsourcepath", inAsset.getSourcePath() );
