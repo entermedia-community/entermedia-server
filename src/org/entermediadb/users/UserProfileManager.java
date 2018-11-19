@@ -258,6 +258,7 @@ public class UserProfileManager
 		//log.info("Searching categories");
 
 		QueryBuilder querybuilder = searcher.query().or()
+			.match("ownerid", inUserprofile.getUserId())
 			.orgroup("viewgroups", groupids)
 			.orgroup("viewonlygroups",groupids)
 			.exact("viewonlyroles", roleid)
