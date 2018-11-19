@@ -58,13 +58,15 @@ public class librarycollectionSearchQueryFilter implements SearchQueryFilter
 //		}
 		
 		Set allowedcats = new HashSet(profile.getViewCategories());
-		Collection allowed = archive.listPublicCategories();
-		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
+		for (Iterator iterator = archive.listPublicCategories().iterator(); iterator.hasNext();)
 		{
 			Category publiccat = (Category) iterator.next();
 			allowedcats.add(publiccat);
 		}
-		
+		if( allowedcats.isEmpty() )
+		{
+			allowedcats.add("NONE");
+		}
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
 				.notgroup("parentcategories", catshidden)

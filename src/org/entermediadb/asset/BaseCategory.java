@@ -859,6 +859,21 @@ public class BaseCategory extends BaseData implements Category
 		return value;
 	}
 
+	public Collection findValues(String inString)
+	{
+		Collection value = getValues(inString);
+		if(value != null)
+		{
+			return value;
+		}
+		
+		if(getParentCategory() != null)
+		{
+			value = getParentCategory().findValues(inString);
+		}
+		return value;
+	}
+
 
 	/* (non-Javadoc)
 	 * @see org.entermediadb.asset.Category2#hasLoadedParent()

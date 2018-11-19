@@ -4,6 +4,9 @@
 #set ($catalogid = $context.getRequestParameter('catalogid'))
 #set ($searchtype = $context.getRequestParameter('searchtype')) ##product
 #set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+#if(!$fieldname)
+	#set ($fieldname = $detail.getId() )
+#end
 #set ($view = $context.getRequestParameter('view')) 
 
 <div id="listdetail_$fieldname" class="listdetailpicker" data-rendertype="multiselect">

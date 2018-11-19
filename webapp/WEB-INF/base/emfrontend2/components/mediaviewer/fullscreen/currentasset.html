@@ -169,10 +169,10 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 						
 			#if( !$previewonly )
 			<li class="footermenu bottomtab">
-			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Edit Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
+			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> <span class="fas fa-edit"></span> [[Actions]]</a>
 			   <ul class="dropdown-menu">
 			   
-			   #if($canviewconversions)
+		    	#if( $canviewconversions )
 			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
@@ -182,7 +182,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 					</a>
 			   	</li>
 			   	#end
-			   	#if($caneditassetcategories)
+		    	#if( $caneditassetcategories )
 			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=categorize" title="[[Categories]]"
@@ -192,37 +192,44 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 					</a>
 			   	</li>
 			   	#end
-			   	#if ($canviewmap)
+		    	#if( $canviewmap)
 			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=map" title="[[Map]]"
 						data-assettab="viewactions"
 						data-assettabactions="map" >
-					[[Map]]
+					[[Map]] 
 					</a>
 			   	</li>
 			   	#end
-			   	#if($canviewattachments)
+			   	
+		    	#if( $canviewattachments )
 			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=attachments" title="[[Attachments]]"
 						data-assettab="viewactions"
 						data-assettabactions="attachments" >
-					[[Attachments]]
+					[[Attachments]] 
 					</a>
 			   	</li>
 			   	#end
-			   	#if($canconverthistory)
+			   	#set($pname = "canconverthistory")
+			   	#set( $permission = false)
+			   	#set( $permission = "$!context.getPageValue($pname)")
+		    	#if( $permission != false )
 			   	<li>
 			   	<a class="assettab" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=converthistory" title="[[History]]"
 						data-assettab="viewactions"
 						data-assettabactions="converthistory" >
-					[[History]]
+					[[History]] 
 					</a>
 			   	</li>
 			   	#end
-		    	#if($candeleteasset)
+			   	#set($pname = "candeleteasset")
+			   	#set( $permission = false)
+			   	#set( $permission = "$!context.getPageValue($pname)")
+		    	#if( $permission != false )
                  <li>
 					#if ( $asset.getId().startsWith("multiedit:") )
 						#if($canmultidelete)                 

@@ -984,15 +984,13 @@ td.checkbox input, th.firstheader input {
 .emsubnav .dropdown:hover>.dropdown-menu {
   display: block;
 }
-.emnav .select2-container {
-	z-index: 5000;
+.emnav .select2-container,
+#advsearchpanel .select2-container {
+	z-index: 100;
 }
 
 .emsubnav .dropdown>.dropdown-toggle:active {
     pointer-events: none;
-}
-.emnav .select2-container {
-	z-index: 100;
 }
 .navbar-quicksearch {
 	float: left;
@@ -1712,6 +1710,7 @@ label.error {
 .assetpanel-editor #default-fields.previewonly .emdatafieldvalue,
 .previewonly .emdatafieldvalue  {
 	padding:0 8px;
+	word-wrap: break-word;
 }
 .previewonlyrow {
 	margin-bottom: 40px;
@@ -3884,3 +3883,6 @@ a.collectionbox.favorite
 	width: 300px!important;
 }
 
+.detail-note {
+	font-size:.9rem; color:#606060;
+}
