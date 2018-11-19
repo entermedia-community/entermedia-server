@@ -711,6 +711,11 @@
       <language id="en"><![CDATA[ETag]]></language>
     </name>
   </property> 
-  
+
+  <property id="haschat" index="true" stored="true" editable="true" datatype="boolean" isbadge="true" > 
+    <name>
+      <language id="en"><![CDATA[Has Chat]]></language>
+    </name>
+  </property>   
   
 </page>

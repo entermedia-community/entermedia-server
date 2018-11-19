@@ -155,6 +155,19 @@ public class ChatServer
 		chat.setValue("type", "message");
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
+		
+		String assetid = (String)inMap.get("assetid");
+		if( assetid != null)
+		{
+			Asset asset = archive.getAsset( assetid);
+			if( asset != null && !asset.isPropertyTrue("haschat"))
+			{
+				asset.setValue("haschat", true);
+				archive.saveAsset(asset);
+			}
+			
+		}
+
 
 	}
 

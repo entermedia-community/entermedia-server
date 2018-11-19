@@ -4,6 +4,6 @@
     <data id="asset_editstatus_7" >Deleted</data>
     <data id="asset_duplicate_true" >Duplicate</data>
     <data id="asset_assetexpired_true" >Asset is Expired</data>
-        <data id="haschats" >Chats</data>
+    <data id="asset_haschat_true" >Chats</data>
     
 </datas>                                                                                                                                                                                                    
