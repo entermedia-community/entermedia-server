@@ -84,8 +84,8 @@
 	background-color: #C4C4C4;
 }
 .emsubnav .dropdown-item:hover,
-#sub-nav li a.drompdown-item:hover {
-	background-color:rgba(0,0,0,0.2);
+#sub-nav li a.dropdown-item:hover {
+	background-color:rgba(0,0,0,0.2)!important;
 }
 .col-sidebar {
     background: #d5d5d5; /* Old browsers */
@@ -402,7 +402,7 @@ select + .select2-container {
 	padding:.25rem 1rem;
 	font-size:0.8rem;
 }
-.emheader { height: 100px; }
+.emheader { min-height: 100px; }
 .emheader .logocontainer { float: left; padding: 20px 20px 0 20px;}
 
 @media (min-width: 768px) {
@@ -470,7 +470,7 @@ html, body, #application {
 
 /*Sidebar*/
 .col-sidebar {  }
-.col-sidebar h2 { margin: 0 0 10px 10px; }
+.col-sidebar h2 { margin:15px 20px; font-size: 1.6rem; }
 .col-sidebar .ui-widget {
 	margin:20px 20px;	
 } 
