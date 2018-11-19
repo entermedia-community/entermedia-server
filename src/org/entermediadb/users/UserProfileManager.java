@@ -15,6 +15,7 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
+import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
@@ -230,7 +231,6 @@ public class UserProfileManager
 
 	protected void loadLibraries(UserProfile inUserprofile, String inCatalogId)
 	{
-		Set<String> all = new HashSet<String>();
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "category");
 
 		Collection groupids = new ArrayList();
@@ -257,10 +257,14 @@ public class UserProfileManager
 		}
 		//log.info("Searching categories");
 
-		HitTracker categories = searcher.query().or().
-			orgroup("viewgroups", groupids).
-			match("viewroles", roleid).
-			match("viewusers", inUserprofile.getUserId()).search();
+		QueryBuilder querybuilder = searcher.query().or()
+			.orgroup("viewgroups", groupids)
+			.orgroup("viewonlygroups",groupids)
+			.exact("viewonlyroles", roleid)
+			.exact("viewroles", roleid)
+			.exact("viewusers", inUserprofile.getUserId() );
+		
+		HitTracker categories = querybuilder.search();
 
 		//log.info("Checking modules found " + categories.size());
 

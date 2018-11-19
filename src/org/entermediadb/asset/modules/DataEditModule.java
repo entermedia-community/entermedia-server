@@ -1285,9 +1285,23 @@ protected Element loadViewElement(XmlFile file, String toremove)
 
 		if( trackerCopy == null 
 				||	!trackerCopy.getQuery().equals(trackerOriginal.getQuery()) 
-				||	!trackerCopy.getIndexId().equals( trackerOriginal.getIndexId() ) )
+				||	!trackerCopy.getIndexId().equals( trackerOriginal.getIndexId() ) 
+				||  trackerCopy.getSelectionSize() != trackerOriginal.getSelectionSize()
+		)
 		{
 			trackerCopy = trackerOriginal.copy();
+			if(trackerOriginal.hasSelections() )
+			{
+				if( trackerOriginal.isAllSelected() )
+				{
+					trackerCopy.selectAll();
+				}
+				else
+				{
+					ArrayList all = new ArrayList( trackerOriginal.getSelections() );
+					trackerCopy.setSelections(all);
+				}
+			}
 			trackerCopy.getSearchQuery().setHitsName(othername);
 			inReq.putSessionValue(trackerCopy.getSessionId(),trackerCopy);
 		}

@@ -1116,9 +1116,37 @@ public class ProjectManager implements CatalogEnabled {
 			}
 
 			UserProfile profile = inReq.getUserProfile();
-			if (profile != null && profile.getViewCategories() != null) {
-				for (Category cat : profile.getViewCategories()) {
-					if (root.hasParent(cat.getId())) {
+			if (profile != null && profile.getViewCategories() != null) 
+			{
+				for (Category cat : profile.getViewCategories()) 
+				{
+					if (root.hasParent(cat.getId())) 
+					{
+						Collection vals = cat.findValues("viewonlygroups");
+						if( vals != null)
+						{
+							for (Iterator iterator = vals.iterator(); iterator.hasNext();)
+							{
+								String groupid = (String) iterator.next();
+								if( profile.isInGroup(groupid) )
+								{
+									return false;
+								}
+							}
+						}
+						vals = cat.findValues("viewonlyroles");
+						if( vals != null)
+						{
+							for (Iterator iterator = vals.iterator(); iterator.hasNext();)
+							{
+								String roleid = (String) iterator.next();
+								if( profile.isInRole(roleid) )
+								{
+									return false;
+								}
+							}
+						}
+						
 						return true;
 					}
 				}

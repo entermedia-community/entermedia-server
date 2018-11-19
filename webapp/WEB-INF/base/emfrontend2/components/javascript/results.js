@@ -256,12 +256,7 @@ $(document).ready(function(url,params)
 		{
 			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
 		}
-		
-		var hitssessionid = mainmedia.data("hitssessionid");
-		if( !hitssessionid )
-		{
-			hitssessionid = resultsdiv.data("hitssessionid");
-		}
+		var	hitssessionid = resultsdiv.data("hitssessionid");
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
 		if( pagenum != null )
 		{
