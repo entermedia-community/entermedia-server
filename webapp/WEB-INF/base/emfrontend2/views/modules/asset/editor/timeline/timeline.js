@@ -56,26 +56,28 @@ $(document).ready(function()
 	}
 	parseTimeFromText = function(inText)
 	{
-		var seconds = 0;
-		var parts = inText.split(":");
-		if( parts.length == 1)
-		{
-			seconds =  parseFloat(parts[0]);
+		if (typeof inText !== 'undefined' && inText != '') {
+			var seconds = 0;
+			var parts = inText.split(":");
+			if( parts.length == 1)
+			{
+				seconds =  parseFloat(parts[0]);
+			}
+			if( parts.length == 2)
+			{
+				var totals = 60 * parseFloat(parts[0]);
+				totals = totals +  parseFloat(parts[1]);
+				seconds = totals;
+			}	
+			if( parts.length == 3)
+			{
+				var totals =  60 * 60 * parseFloat(parts[0]);				
+				totals = totals +  60 * parseFloat(parts[1]);
+				totals = totals +  parseFloat(parts[2]);
+				seconds = totals;
+			}	
+			return seconds * 1000;
 		}
-		if( parts.length == 2)
-		{
-			var totals = 60 * parseFloat(parts[0]);
-			totals = totals +  parseFloat(parts[1]);
-			seconds = totals;
-		}	
-		if( parts.length == 3)
-		{
-			var totals =  60 * 60 * parseFloat(parts[0]);				
-			totals = totals +  60 * parseFloat(parts[1]);
-			totals = totals +  parseFloat(parts[2]);
-			seconds = totals;
-		}	
-		return seconds * 1000;
 	}
 
 	videoclip.on("timeupdate",function(e)
@@ -197,10 +199,12 @@ $(document).ready(function()
 		{
 			var selected = $(".selectedclip");
 			var start = selected.data("timecodestart");
-			video.currentTime = parseFloat(start);
-			video.play();
-			link.text(link.data("stoptext"));
-			link.addClass("playing");
+			if (typeof start!== 'undefined') {
+				video.currentTime = parseFloat(start);
+				video.play();
+				link.text(link.data("stoptext"));
+				link.addClass("playing");
+			}
 		}
 	});
 	
@@ -216,7 +220,7 @@ $(document).ready(function()
 		$("#timelinemetadata").append(template);
 		template.show();
 		//This copies the UI into the current selection
-		$("#cliplabel\\.value").val("");
+		$("#cliplabel.value").val("");
 		var done = parseTimeToText(video.currentTime);
 		$("#timecodestart-value").val(done);
 

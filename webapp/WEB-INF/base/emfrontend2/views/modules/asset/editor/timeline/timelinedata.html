@@ -1,4 +1,4 @@
-#set( $clientroot = $context.getContentProperty("clientroot") )
+#set( $clientroot = $page.get("clientroot") )
 
 <div id="timelinemetadata" data-ratio="$timeline.getPxToTimeRatio()" 
 	data-savelink="$home$clientroot/saveclips.json" data-assetid="$asset.id" style="margin:0 10px;">

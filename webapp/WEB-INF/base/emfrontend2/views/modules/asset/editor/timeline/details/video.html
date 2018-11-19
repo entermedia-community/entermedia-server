@@ -2,9 +2,10 @@
 #set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
 #set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
-#set( $clientroot = $context.getContentProperty("clientroot") )
+#set( $clientroot = $page.get("clientroot") )
+
 <div class="row">
-<div class="col-sm-7">
+<div class="col" style="max-width: 550px">
 	<div id="video-container" style="float:left;">
 	<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
 		<section id='cuePlayer' style="padding:6px;">
@@ -16,7 +17,7 @@
 	</div>									
 </div>
 </div>
-<div class="col-sm-5">
+<div class="col-sm-4">
 $pages.include("$apphome/views/modules/asset/editor/timeline/details/edit.html", $context)
 </div>
 </div>
