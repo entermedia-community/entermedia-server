@@ -3,8 +3,8 @@
 #set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 ##set( $clientroot = $context.getContentProperty("clientroot") )
-#set( $clientroot = $page.getPageValue("clientroot") )
-$page
+#set( $clientroot = $page.get("clientroot") )
+
 
 <div class="" style="padding: 10px; background-color:#eee;">	
 			$pages.include("$clientroot/details/video.html")
