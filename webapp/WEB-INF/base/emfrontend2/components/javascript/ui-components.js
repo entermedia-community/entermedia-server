@@ -1308,6 +1308,8 @@ uiload = function() {
 		  return false;
 	});
 	
+
+	
 //}
 	
 	$('.cols-main').equalHeights();

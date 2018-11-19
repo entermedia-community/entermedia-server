@@ -3816,7 +3816,7 @@ a.collectionbox.favorite
 .cat-list .cat-row {
     padding-top: 7px;
     padding-bottom: 7px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px dotted #ccc;
     list-style: none;
     
 }
