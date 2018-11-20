@@ -1,4 +1,4 @@
-var connection;
+var chatconnection;
 var open = false;
 
 function chatterbox() {	
@@ -24,14 +24,14 @@ function chatterbox() {
 	    var json = JSON.stringify(data);
 	    content.value="";
 	    
-	    if(connection.readyState === connection.CLOSED  ){
+	    if(chatconnection.readyState === chatconnection.CLOSED  ){
 	    	connect();
 	    	//IF we do a reconnect render the whole page
 	    
 	    
 	    }
 
-	    connection.send(json);
+	    chatconnection.send(json);
 		
 	}
 	);
@@ -80,14 +80,14 @@ function connect() {
     var protocol = location.protocol;
 
     if (protocol === "https:") {
-    	connection = new WebSocket("wss://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID);	
+    	chatconnection = new WebSocket("wss://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID);	
     } else{
-    	connection = new WebSocket("ws://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID );
+    	chatconnection = new WebSocket("ws://" +location.host  +  "/entermedia/services/websocket/org/entermediadb/websocket/chat/ChatConnection?sessionid=" + tabID );
     }
     
     keepAlive(); 
        
-    connection.onmessage = function(event) {
+    chatconnection.onmessage = function(event) {
     	
     	var app = jQuery("#application");
     	var apphome = app.data("home") + app.data("apphome");
@@ -147,12 +147,12 @@ var wasconnected;
 
 function keepAlive() { 
     var timeout = 20000;  
-    if (connection.readyState == connection.OPEN) {  
+    if (chatconnection.readyState == chatconnection.OPEN) {  
     	wasconencted = true;
-    	connection.send('');  
+    	chatconnection.send('');  
     }
     
-    if (connection.readyState === connection.CLOSED) {  
+    if (chatconnection.readyState === chatconnection.CLOSED) {  
     	connect();
     	reloadAll();
     }
