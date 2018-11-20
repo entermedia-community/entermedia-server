@@ -2,9 +2,13 @@
 #set( $searchtype = $searcher.getSearchType())
 
 <div class="ui-widget uipanel" id="left-col-filters" >
-<div  #if($userprofile.minimizefilterscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" 
-      #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
-      #else class="ui-widget-header" #end 
+<div  #if($userprofile.minimizefilterscontent == "false" && $cantogglesidebar) 
+		class="ui-widget-header sidetoggle expanded" 
+      #elseif($cantogglesidebar) 
+      	class="ui-widget-header sidetoggle minimized" 
+      #else 
+      	class="ui-widget-header" 
+      #end 
       data-target="filterscontent">
 	<span class="widget-header-title">[[Filters]]</span>
 </div>
@@ -20,16 +24,14 @@
 		#if($librarycol)
 		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
 				href="$home$apphome/views/modules/librarycollection/filter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=3" >$selectedfilter
-				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>
-				 #else
+				 <span class="filterclose fas fa-times"></span>
+				 </a></li>
+			#else
 		
-		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
+			<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
 				href="$home$apphome/views/search/filter.html?removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >$context.getText($selectedfilter)   
-				 <span style="float: right; margin-top: -2px; margin-right: 5px;" class="ui-icon ui-icon-closethick"></span></a></li>	
-		
-		
-				 
-				 #end
+				 <span class="filterclose fas fa-times"></span></a></li>	
+			#end
 	#end
 #end	
 </ul>
@@ -86,7 +88,9 @@
     <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
 </form>
 
-</div></div>
+</div>
+</div>
+</div>
 	
 
 

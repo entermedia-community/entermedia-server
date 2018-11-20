@@ -3,7 +3,7 @@
 				<div  #if($userprofile.minimizecategoriescontent == "false" && $cantogglesidebar) 
 							class="ui-widget-header sidetoggle expanded" 
 				      #elseif($cantogglesidebar) 
-				      		class="ui-widget-header sidetoggle" 
+				      		class="ui-widget-header sidetoggle minimized" 
 				      #else 
 				      		class="ui-widget-header" 
 				      #end 
@@ -19,18 +19,3 @@
 				</div>
 			</div>
 #end
-<!-- 
-<script>
-	$(document).ready(function() { 
-		var width = $('#emcategoryinlineinner').width();
-		$('#emcategoryinline .dTreeNodeSel').css('width', width);
-		$('.emtreehover').css('width', width);
-	});
-	
-	$('.treerowinside a').click(function(){
-		var width = $('#emcategoryinlineinner').width();
-		$('#emcategoryinline .dTreeNodeSel').css('width', width);
-		$('.emtreehover').css('width', width);
-	});
-</script>
- -->
