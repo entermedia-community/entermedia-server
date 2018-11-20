@@ -516,6 +516,9 @@ html, body, #application {
     font-size: 13px;
     border-radius: 5px 5px 0 0;
 }
+.ui-widget-header.minimized {
+border-radius: 5px;
+}
 .ui-widget-header a {
 	text-decoration:none;
 }
@@ -760,7 +763,9 @@ html, body, #application {
 	margin-right:5px;
 	width:120px;
 }
-
+.languagesaddform .languageselector .select2-selection__clear {
+	display:none;
+}
 .languagesaddform .languageinput 
 {
 	float:left;	
@@ -769,7 +774,7 @@ html, body, #application {
 	height: 30px;
 }
 
-#languagesextra_headline .languagesaddform {
+.languagesaddform {
 	margin-top:10px;
 }
 
@@ -1417,9 +1422,21 @@ td.checkbox input, th.firstheader input {
 .opencollections ul li:last-child:hover { background-color: transparent; padding-top: 10px;}
 .opencollections .collectionrow {
 	position: relative;
-	margin-right: 10px;
 }
-
+.collectionclose,
+.filterclose {
+	opacity: 0.5;
+    filter: alpha(opacity=50);
+}
+.collectionclose:hover,
+.filterclose:hover {
+	opacity: 1;
+    filter: alpha(opacity=100);
+}
+.filterclose {
+	float: right;
+	line-height: 1rem!important;
+}
 .opencollections .collectionbox {
 	padding: 2px 0 0 24px;
 	margin: 0px; 
@@ -1477,6 +1494,10 @@ td.checkbox input, th.firstheader input {
 }
 .widget-header-right i { opacity: 0.6; top:0; margin-left:3px; }
 .widget-header-right i:hover { opacity: 1; }
+
+.minimized .widget-header-right {
+	display:none;
+}
 
 .uploadinstructions {
 	text-align: center;

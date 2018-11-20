@@ -1,8 +1,12 @@
 #if ( $canviewopencollections)
 <div class="ui-widget uipanel" id="left-col-opencollections" >
-	<div  #if($userprofile.minimizeopencollectionscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" 
-		  #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
-		  #else class="ui-widget-header" #end 
+	<div  #if($userprofile.minimizeopencollectionscontent == "false" && $cantogglesidebar) 
+			class="ui-widget-header sidetoggle expanded" 
+		  #elseif($cantogglesidebar) 
+		  	class="ui-widget-header sidetoggle minimized" 
+		  #else 
+		  	class="ui-widget-header" 
+		  #end 
 		data-target="opencollectionscontent">
 		<span class="widget-header-title">[[ Collections]]</span>
 		<span class="widget-header-right">
@@ -51,17 +55,17 @@
 					 	data-collectionname="${collection.getName()}">
 					 	$collection.getName() ($collection.getAssetCount())
 					</a>
-##					<div class="collectionicons">
-##						<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" 
-##							class="collectionclose ajax" targetdiv="left-col-opencollections" title="[[Close Collection]]">
-##							<span class="closecollection fas fa-times " data-collectionid="${collection.getId()}"></span>
-##						</a>
-##					</div>
+					<div class="collectionicons">
+						<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" 
+							class="collectionclose ajax" targetdiv="left-col-opencollections" title="[[Close Collection]]">
+							<span class="closecollection fas fa-times " data-collectionid="${collection.getId()}"></span>
+						</a>
+					</div>
 				 </div>
 			</li>
 		#end
 		#if ($canaddnewcollection)
-		<li class="newcollectiondroparea">
+		<li class="newcollectiondroparea" style="border-bottom:0 none;'">
 			<div id="opencollectioncreatenewarea">
  				<a id="newCollection" class="ajax collectionnew btn btn-xs btn-secondary" 
 					   targetdivinner="opencollectioncreatenewarea" data-oemaxlevel="1"

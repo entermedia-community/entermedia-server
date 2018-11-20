@@ -1,9 +1,13 @@
 #if( $canviewcategorynavcollections || $canviewcategorynav)
 	#if ( $librarycol )
 		<div class="ui-widget uipanel" id="left-col-libraries" >
-			<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) class="ui-widget-header sidetoggle expanded" 
-				  #elseif($cantogglesidebar) class="ui-widget-header sidetoggle" 
-				  #else class="ui-widget-header" #end 
+			<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) 
+					class="ui-widget-header sidetoggle expanded" 
+				  #elseif($cantogglesidebar) 
+				  	class="ui-widget-header sidetoggle minimized" 
+				  #else 
+				  	class="ui-widget-header" 
+				  #end 
 				  data-target="projectscontent">
 					<span class="widget-header-title">
 					<span class="widget-header-right">
@@ -19,3 +23,4 @@
 		</div>
 	#end
 #end
+

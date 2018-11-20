@@ -865,12 +865,7 @@ onloadselectors = function()
 			}
 		);
 		
-		$(".sidetoggle.expanded").each(
-			function()
-			{
-				$(this).find(".ui-widget-toggle").toggleClass("fa-angle-left");
-			}
-		);
+
 		
 		
 		
@@ -1129,6 +1124,7 @@ emcomponents = function() {
 					function() {
 						$("#" + target).slideToggle("fast");
 						div.toggleClass("expanded");
+						div.toggleClass("minimized");
 						div.find(".ui-widget-toggle").toggleClass("fa-angle-left");
 					}
 				);
