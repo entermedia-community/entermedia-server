@@ -18,8 +18,8 @@ $context.putPageValue("showalllanguagevalues",true)
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						
 						$context.putPageValue("view",$viewpath)
-						<h4>$context.getText($target.toString())</h4>
-							<div class="asset-data-detail previewonly">
+						<div class="asset-data-detail previewonly assetpanel-editor-box">
+							<h4>$context.getText($target.toString())</h4>
 							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
 					#end
@@ -31,8 +31,9 @@ $context.putPageValue("showalllanguagevalues",true)
 			<div class="col-4">
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
+    				
+    				<div class="asset-data-detail assetpanel-editor-box" >
     				<h4>[[Libraries]]</h4>
-    				<div class="asset-data-detail">
     				<div class="emlist">
             				#foreach($library in $libraries)
             					 #set( $division = $mediaarchive.getData("division",$library.division ) )
@@ -46,8 +47,9 @@ $context.putPageValue("showalllanguagevalues",true)
             				#end
     					</div>
     				</div>
-					<h4>[[Collections]]</h4>
-						<div class="asset-data-detail">
+					
+						<div class="asset-data-detail assetpanel-editor-box">
+						<h4>[[Collections]]</h4>
 						<div class="emlist">
 							#foreach ($collection in $asset.getCollections())
 								 <a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="list-collection list-hover"><i class="fas fa-box"></i> $collection</a>
@@ -56,8 +58,9 @@ $context.putPageValue("showalllanguagevalues",true)
 						</div>
 				#end						
 
-				<h4>[[Categories]]</h4>
-					<div class="asset-data-detail">
+				
+					<div class="asset-data-detail assetpanel-editor-box">
+					<h4>[[Categories]]</h4>
 					<div  id="cat-list" class="cat-list">
 					#foreach ($category in $asset.categories)
 						<div  class="cat-row">

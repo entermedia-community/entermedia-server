@@ -1,4 +1,5 @@
  <div class="alert alert-secondary chatterbox-chat" role="alert" id="chatter-message-$chat.id">
-<strong> $mediaarchive.getUser($chat.user)</strong>  $!chat.message  <span class="badge badge-pill badge-primary float-right">$context.getDateTime($chat.date)</span>
+<strong> $mediaarchive.getUser($chat.user)</strong>  $!chat.message  
+<span class="badge badge-pill badge-primary float-right message-time">$context.getDateTime($chat.date)</span>
 				 
 </div>

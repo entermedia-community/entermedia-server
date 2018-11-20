@@ -6,12 +6,12 @@
 	<div class="assetpanel-content-inside">
 
 		<div class="assetpanel-editor">
-			<div class="assetpanel-editorinner">
+			
 			#set($action = $context.getRequestParameter("action"))
 			#if ($action)
 				$pages.include("/$applicationid/views/modules/asset/editor/$action/index.html")
 			#end
-			</div>
+			
 		</div>
 	</div>
 	

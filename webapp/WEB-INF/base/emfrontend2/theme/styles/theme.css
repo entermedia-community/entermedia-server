@@ -1600,7 +1600,7 @@ label.error {
     background-color:#cecece;
 }
 .assetpanel-content {
-	padding: 14px 16px;
+	padding: 15px;
 	min-height: 200px;
 	height: 100%;
 	background-color:#d3d3d3;
@@ -1657,11 +1657,21 @@ label.error {
 	
 	
 }
+.assetpanel-editortitle {
+	height: 45px;
+	overflow: hidden;
+}
+.assetpanel-editortitle h2 {
+	margin:0;
+}
 .assetpanel-editorinner {
 	position: relative;
 	overflow-y: auto;
+	height: calc(100% - 45px);
 }
-
+.asset-editor-actions-container {
+	height: 100%;
+}
 .em2tabs-tab-content {
 	height: calc(100% - 40px);
 }
@@ -1701,6 +1711,16 @@ label.error {
 	padding-bottom:1px;
 	border-bottom:1px solid #fefefe;
 }
+.assetpanel-editor-box {
+	background-color: #fff;
+	padding:10px;
+}
+.summarytab .assetpanel-editor-box {
+	margin-bottom: 10px;
+}
+.summarytab .col-4 {
+	padding-left: 0;
+}
 .previewonly .emdatafield {
     display: block;
     line-height: 1.8;
@@ -1728,8 +1748,7 @@ label.error {
 
 .assetpanel-editor .btns {
 	padding:15px 0;
-	margin:10px 0;
-	border-top:1px solid #c0c0c0;
+
 }
 .summarytab {
 	padding:20px 0;
@@ -1810,6 +1829,12 @@ label.error {
 	/*
 	position:relative;
 	height: 100%;*/
+}
+.chatterbox-message-list .alert {
+	padding:.5rem .75rem;
+}
+.chatterbox-message-list .message-time {
+	font-size:0.7rem;
 }
 .chatterbox-chat {
 	/*
@@ -3140,6 +3165,13 @@ div#folders.add .folder {
 #geomap td {
 	background: none!important;
 	border:0 none;
+	margin:0;
+}
+.assetpanel-geomap {
+	min-height: calc(100% - 40px);
+}
+.assetpanel-geomap .emdatafieldvalue {
+	padding:0!important;
 }
 #advanced-dm-search {
     padding: 5px 0;

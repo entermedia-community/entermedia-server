@@ -1,8 +1,12 @@
-<div id="asset-editor-container">
+<div class="assetpanel-editortitle">
+<h2>[[Asset Geolocation]]</h2>
+</div>
+<div class="assetpanel-editorinner">
+<div id="asset-editor-container" class="asset-editor-actions-container">
 #set ($view = "asset/geolocation")
 #set ($id = $context.getRequestParameter("id"))
-<h2>[[Asset Geolocation]]</h2>
-<div style="padding: 20px;">
+
+<div class="assetpanel-geomap assetpanel-editor-box">
     <div id="${view}editor">
     #if( !$catalogid )
     	#set( $catalogid = $mediaarchive.getCatalogId() )
@@ -64,15 +68,16 @@
     			<input class="btn btn-sm btn-primary" type="button" 
     				onclick="jQuery(this.form).submit();"
     			value="[[Save Values]]"/>
-    			</div>
+    		</div>
     		#end	
     	</form>
-    	
+    	<div class="clearfix"></div>
     </div>
     
 	#if( $content.isPropertyTrue("showinfo") )
     <p class="info">[[Search for a location, drag the icon to the correct place and click the save button. Double left-click to zoom in, double right-click to zoom out]].</p>
 	#end
 	
+</div>
 </div>
 </div>

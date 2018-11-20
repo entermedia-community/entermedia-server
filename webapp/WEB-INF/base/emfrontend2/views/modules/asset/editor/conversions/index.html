@@ -1,9 +1,13 @@
+<div class="assetpanel-editortitle">
+<h2>[[Asset Conversions]]</h2>
+</div>
+<div class="assetpanel-editorinner">
 <div id="asset-editor-container">
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 #set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
 
 <div class="conversionsheader">
-<h2>[[Asset Conversions]]</h2>
+
 
 #if($canviewassetedit)
 	<a class="btn btn-sm btn-secondary ajax" targetdivinner="asset-editor-container" data-oemaxlevel="1" 
@@ -15,12 +19,16 @@
 ##<a class="btn btn-sm btn-secondary">[[Rotate]]</a>
 <hr>
 <form id="uploadform" class="ajaxform" targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$home${apphome}/views/modules/asset/editor/conversions/customthumb.html">
-	[[Replace Image]]: <input type="file" size="50"  style="color: white; background-color: #2D2C2C;" name="file.0">
+	<span class="btn btn-sm btn-secondary btn-default btn-file">
+	    [[Replace Image]] <input type="file" name="file.0" id="file0-file" onchange='$("#file0-file-info").html($(this).val());'>
+	</span>
+	<span id="file0-file-info" style="font-size:90%"></span>
+	##[[Replace Image]]:<input type="file" size="50" name="file.0">
 	<input type="hidden" name="unzip" value="false" />
 	<input type="hidden" name="sourcepath" value="$!context.getRequestParameter('assetid')" />
 	<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')" />
 	<input type="hidden" name="presetid" value="$!context.getRequestParameter('presetid')" />
-	<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-secondary" >
+	<input type="submit" id="finishbutton" value="[[Upload]]" class="btn btn-sm btn-primary" >
 </form>
 <hr>
 </div>
@@ -154,4 +162,5 @@ $(document).ready(function(){
 	$cdnprefix$home/$mediadbappid/services/module/asset/downloads/preview/cache/$asset.sourcePath/image2000x2000.pdf </i>
 	
 </p>
+</div>
 </div>

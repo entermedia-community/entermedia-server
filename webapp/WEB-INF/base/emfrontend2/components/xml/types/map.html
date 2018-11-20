@@ -1,0 +1,134 @@
+#set ($searchtype = $context.getRequestParameter('searchtype')) ##product
+#set ($fieldname = $context.getRequestParameter('fieldname')) ##lastmodified
+#set ($view = $context.getRequestParameter('view')) 
+<!--  This would have the point details in it -->
+
+      <p style="text-align: right; margin-bottom: 10px;">
+        <input type="text" size="60" id="${detail.id}_address" class="form-control form-control-sm"  />
+        <input class="btn btn-sm btn-primary" type="button" id="${detail.id}_search" value="Search"  />
+      </p>
+     
+
+<div id="${detail.id}_map" align style="width: 100%; height:360px; margin-bottom: 15px;"></div>
+   #set($latandlong = $data.getValue($detail.getId()))
+   
+   #set( $lat = $latandlong.getLatitude() )
+   #set( $lng = $latandlong.getLongitude() )
+   #set($icon = $mediaarchive.getData("geoicon", $data.geoicon))
+   
+   #set($lanlng = "")
+   #if ($lat && $lng)
+   	#set($lanlng = "$lat,$lng")
+   #end
+   [[Position]]: <input type="text" id="${detail.id}_latandlong" class="form-control form-control-sm" size="40" name="${detail.id}.value" value="$!latlng"/>
+
+<script type="text/javascript">
+
+function getLatLngFromString(ll) {
+    var latlng = ll.split(/, ?/)
+    return new google.maps.LatLng(parseFloat(latlng[0]), parseFloat(latlng[1])); 
+}
+
+initialize = function() 
+{
+var parentheight = $(".assetpanel-geomap").height();
+if (typeof parentheight !== 'undefined') {
+	var mapheight = (jQuery(".assetpanel-geomap").height()-100);
+	
+	jQuery('#${detail.id}_map').height(mapheight);
+}
+#if($latandlong)
+ var centerloc = getLatLngFromString('$lat,$lng');
+#else
+ var centerloc = getLatLngFromString('$mediaarchive.getCatalogSettingValue("startinglatlong")');
+#end
+ var map = new google.maps.Map(jQuery('#${detail.id}_map')[0], {
+    #if( $latandlong )
+    zoom: 8
+    #else
+    zoom: 2
+    #end,
+    center:centerloc,
+    mapTypeControl: true,
+    mapTypeControlOptions: {
+      style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
+      mapTypeIds: ['roadmap', 'terrain']
+    }
+  });
+
+     var marker = new google.maps.Marker({
+		position: getLatLngFromString('$lat,$lng'),
+		draggable: true, 
+		bounds: true,
+        map: map,
+	    #if($icon)
+		icon: '$icon.url',
+		#end
+        title: '$asset.getName()'
+     });
+     
+     
+     google.maps.event.addListener(marker, 'dragend', function(event)
+	    {
+	    	console.log(marker.getPosition());
+            jQuery('#${detail.id}_latandlong').val(marker.getPosition().lat()+ "," + marker.getPosition().lng());
+		});
+
+
+	jQuery('#${detail.id}_search').click(dosearch);
+	jQuery('#${detail.id}_address').keypress(function(e)
+	{
+		if (e.keyCode == 13) 
+		{
+			dosearch()
+		}
+	});
+			
+		
+}
+
+dosearch = function () 
+{
+	var address = jQuery('#${detail.id}_address').val();
+
+	$('#${detail.id}_map').gmap('search', { 'address': address }, function(results, status) 
+	{
+	    if ( status === 'OK' ) 
+	    {
+	    	$('#${detail.id}_map').gmap('clear', 'markers');
+	    	
+	    	$('#${detail.id}_map').gmap('addMarker', 
+	          {
+	    		'position': results[0].geometry.location, 
+	    		'draggable': true, 
+	    		'bounds': true
+	    	  }).dragend(function(event) 
+	    	  		{
+	    		 	
+	    		  
+	              
+	              jQuery('#${detail.id}_latandlong').val(event.latLng.lat() + "," + event.latLng.lng());
+	                
+	    	  		}
+	    	  ).click(function() 
+	    	   {
+	    		//$('#${detail.id}_map').gmap('openInfoWindow', {'content': 'Hello World!'}, this);
+	    	});
+
+	    	$('#${detail.id}_map').gmap('get', 'map').panTo(results[0].geometry.location);
+	       $('#${detail.id}_map').gmap('option', 'zoom', 12);
+
+ 		
+          jQuery('#${detail.id}_latandlong').val(results[0].geometry.location.lat() + "," + results[0].geometry.location.lng());
+
+	    }
+	});
+	
+}
+
+initialize(); //Onload?
+$(window).resize(function() {
+  google.maps.event.trigger(map, "resize");
+});
+
+</script>

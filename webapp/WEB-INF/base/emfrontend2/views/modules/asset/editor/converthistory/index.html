@@ -1,5 +1,9 @@
-<div id="asset-editor-container">
+<div class="assetpanel-editortitle">
 <h2>[[Asset Convert History]]</h2>
+</div>
+<div class="assetpanel-editorinner">
+<div id="asset-editor-container" class=" assetpanel-editor-box">
+
 ##  $pages"converthistory/conversions.html" "$asset.id" "conversions/details" $print)
  
 #set( $searchtype = "conversiontask")
@@ -20,4 +24,5 @@ $pages.include("$apphome/components/detaileditor/generictable.html?$args", $cont
 	##<a class="btn emdialog" href="$home$apphome/views/settings/events/triggers/run.html?forcerun=true&runpath=$cataloghome/events/conversions/runconversions.html&assetid=$asset.getId()">Process Conversion Queue now</a>
 	
 </div>
+ </div>
  </div>
