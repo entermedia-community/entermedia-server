@@ -1,0 +1,9 @@
+<page>
+	<property name="eventname">Flush Server Objects</property>	
+	<property name="eventdescription">Runs Java garbage collection and Finalization</property>	
+	<property name="period">1d</property>
+	<property name="startingfrommidnight">3h</property>
+	<path-action name="Script.run">
+		<script>/${catalogid}/events/scripts/utils/flushserver.groovy</script>
+	</path-action>
+</page>

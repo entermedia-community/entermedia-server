@@ -99,6 +99,30 @@ public String percent(String inVal){
 		return 0;
 		
 	}
+	public static double divide(double intop, int inbottom)
+	{
+		BigDecimal top = new BigDecimal(intop);
+		BigDecimal bottom = new BigDecimal(inbottom);
+		if( bottom.doubleValue() > 0)
+		{
+			BigDecimal percentage=top.divide(bottom,5,RoundingMode.HALF_UP);
+			return percentage.doubleValue();
+		}
+		return 0;
+	}
+	public static double divide(int intop, int inbottom)
+	{
+		BigDecimal top = new BigDecimal(intop);
+		BigDecimal bottom = new BigDecimal(inbottom);
+		if( bottom.doubleValue() > 0)
+		{
+			BigDecimal percentage=top.divide(bottom,5,RoundingMode.HALF_UP);
+			return percentage.doubleValue();
+		}
+		return 0;
+		
+	}
+
 	public static String toString(double inD, int inDigits)
 	{
 		BigDecimal top = new BigDecimal(inD);
