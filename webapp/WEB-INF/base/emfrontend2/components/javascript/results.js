@@ -826,22 +826,29 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 
 		var div = $("#main-media-viewer" );
 		var options = div.data();
+		var assettab = $(this).data("assettab");
 		
 		if (assettab=='viewpreview') {
 			var id = div.data("assetid");
 			showAsset(id);
+			saveProfileProperty("assetopentab",assettab,function(){});
+		}
+		else if (assettab=='multiedit') {
+			var link = $(this).data("link");
+			div.load(link, options);
 		}
 		else {
 			var link = $(this).data("link");
 			div.load(link, options);
+			saveProfileProperty("assetopentab",assettab,function(){});
+			var assettabactions = $(this).data("assettabactions");
+			if (assettabactions) {
+				saveProfileProperty("assetopentabactions",assettabactions,function(){});
+			}
 		}
 		
-		var assettab = $(this).data("assettab");
-		saveProfileProperty("assetopentab",assettab,function(){});
 		
-		var assettabactions = $(this).data("assettabactions");
-		if (assettabactions) {
-			saveProfileProperty("assetopentabactions",assettabactions,function(){});
-		}
-
+		
+		
+		
 	});
