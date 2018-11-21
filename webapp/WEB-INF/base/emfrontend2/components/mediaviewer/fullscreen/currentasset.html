@@ -59,6 +59,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
 	#elseif($opentab == "viewcollaborate")
 		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html")
+	#elseif($opentab == "multiedit")
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html")
 	#elseif($opentab == "viewactions")
 		#set( $opentabactions = $userprofile.get("assetopentabactions"))
 		#if (!$opentabactions)
