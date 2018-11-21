@@ -1306,6 +1306,7 @@ protected Element loadViewElement(XmlFile file, String toremove)
 			inReq.putSessionValue(trackerCopy.getSessionId(),trackerCopy);
 		}
 		inReq.putPageValue(trackerCopy.getHitsName(), trackerCopy);
+		inReq.setRequestParameter("hitssessionid",trackerCopy.getSessionId());
 		return trackerCopy;
 	}
 	public HitTracker loadHits(WebPageRequest inReq) throws Exception

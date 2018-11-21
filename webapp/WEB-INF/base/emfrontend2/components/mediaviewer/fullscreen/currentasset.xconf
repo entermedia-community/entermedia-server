@@ -4,6 +4,5 @@
 		<property name="hitsname">dialoghits</property>
 	</path-action>
 	<path-action name="MediaArchiveModule.getAssetAndPage"  />
-	
 
 </page>

@@ -364,6 +364,10 @@ public class MediaArchiveModule extends BaseMediaModule
 				gotopage = tracker.getTotalPages() - 1;
 			}
 			tracker.setPage(gotopage);
+			
+			//Setup Multi-Edit?
+			
+			
 		}
 		return asset;
 	}

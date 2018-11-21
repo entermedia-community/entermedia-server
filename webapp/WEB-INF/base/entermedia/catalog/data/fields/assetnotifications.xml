@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+
+  <property id="id" index="true" stored="true" editable="true" internalfield="true"  >Id 
+    <name> 
+      <language id="de"><![CDATA[Ich würde]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Carné de identidad]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="creationdate" index="true" stored="true" editable="true"  type="date" datatype="date" >
+    <name> 
+      <language id="de"><![CDATA[Erstellungsdatum]]></language>  
+      <language id="en"><![CDATA[Created Date]]></language>  
+      <language id="es"><![CDATA[Fecha de creación]]></language>  
+      <language id="fr"><![CDATA[Date de création]]></language> 
+    </name> 
+  </property>  
+  <property id="userid" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" > 
+    <name> 
+      <language id="de"><![CDATA[Owner]]></language>  
+      <language id="en"><![CDATA[Owner]]></language>  
+      <language id="es"><![CDATA[Propietario]]></language>  
+      <language id="fr"><![CDATA[Propriétaire]]></language> 
+    </name> 
+  </property>  
+  <property id="assetid" index="true" stored="true" type="list" listid="asset" viewtype="text" keyword="false" filter="false" editable="false" sortable="true">Asset Id 
+    <name> 
+      <language id="de"><![CDATA[Asset-ID]]></language>  
+      <language id="en"><![CDATA[Asset Id]]></language>  
+      <language id="es"><![CDATA[identificación del activo]]></language>  
+      <language id="fr"><![CDATA[ID Item]]></language> 
+    </name> 
+  </property> 
+  <property id="isnotified" internalfield="true" datatype="boolean" index="true" stored="true" editable="true"   type="boolean"> 
+    <name> 
+      <language id="en"><![CDATA[Is Notified]]></language>  
+    </name> 
+  </property>  
+</properties>
