@@ -8,11 +8,12 @@
 				      		class="ui-widget-header" 
 				      #end 
 				      data-target="categoriescontent">
-					  <span class="widget-header-title">[[Categories]]</span>
+					   <span class="widget-header-title">[[Categories]]</span>
 					   <span class="widget-header-setup">
 						<a class="emdialog sidebarsubmenu" data-hidefooter="true" data-width="1000" data-height="600"  title="[[Select Category]]" href="$home$apphome/components/categories/search/searchcategory.html">
-						<i class="fas fa-search"></i></a>
-				</span>
+						<i class="fas fa-search"></i>
+						</a>
+					   </span>
 				</div>
 				<div  class="ui-widget-content  ui-widget-content-wide categories-widget categories-navigation" id="categoriescontent" #if($userprofile.minimizecategoriescontent == "true" && $cantogglesidebar) style="display: none;" #end>
 					$pages.include("$apphome/components/categories/inline.html")

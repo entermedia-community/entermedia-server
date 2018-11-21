@@ -89,13 +89,13 @@ getSessionValue = function(key) {
 
 outlineSelectionCol = function(event, ui)
 {
-	$(this).addClass("selected");
+	//$(this).addClass("selected");
 	$(this).addClass("dragoverselected");
 }
 	
 unoutlineSelectionCol = function(event, ui)
 {
-	$(this).removeClass("selected");
+	//$(this).removeClass("selected");
 	$(this).removeClass("dragoverselected");
 }
 
@@ -807,7 +807,7 @@ onloadselectors = function()
 										{
 											node.append("<span class='fader'>&nbsp;+" + data + "</span>");
 											node.find(".fader").fadeOut(3000);
-											node.removeClass("selected");
+											node.removeClass("dragoverselected");
 										}
 								);		
 							}

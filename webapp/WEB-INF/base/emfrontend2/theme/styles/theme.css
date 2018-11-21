@@ -476,13 +476,13 @@ html, body, #application {
 	max-width: 100%;
 	}
 
-.filters-sidebar h4 { margin:0; font-size:95%; font-weight:bold; }
+.filters-sidebar h4 { margin:0; font-size:.9rem; font-weight:bold; }
 .filters-sidebar ul,
 .filters-sidebar-selected ul { 
 	margin:0 0 10px;
 	padding:0;
 	list-style: none; 
-	font-size:85%;
+	font-size:.8rem;
 }
 .filters-sidebar li,
 .filters-sidebar-selected li {
@@ -535,6 +535,8 @@ border-radius: 5px;
 	background: #ffffff;
 	color: #333333;
 	padding:10px;
+	
+	font-size:.8rem;
 }
 .ui-widget-content-wide {
 	padding: 0;
@@ -1195,7 +1197,6 @@ td.checkbox input, th.firstheader input {
     margin: 0;
     padding: 0;
     color: #444;
-    font-size: 11px;
 }
 .emtree ul li div.treerow {
 	position: relative;
@@ -1204,7 +1205,8 @@ td.checkbox input, th.firstheader input {
     display: block;
     cursor: pointer;
     white-space: no-wrap;
-    border-bottom: 1px solid #E2EFF4;
+    border:1px solid #fff;
+    
 }
 .emtree .arrow {
 	position:absolute;
@@ -1217,6 +1219,7 @@ td.checkbox input, th.firstheader input {
 .emtree .name {
 	margin-left:12px;
 	padding-left:32px;
+	display: inline-block;
 }
 .emtree .name.folder {
     background: url(../images/folder-closed.gif) 14px -1px no-repeat;
@@ -1224,6 +1227,9 @@ td.checkbox input, th.firstheader input {
 .emtree span.folder {
     white-space: nowrap;
     padding-right: 20px;
+}
+.emtree .name .fader {
+	font-weight: bold;
 }
 .emtree .checkbox {
     position: absolute;
@@ -1240,9 +1246,7 @@ td.checkbox input, th.firstheader input {
     margin-left: 5px;
 }
 .emtree .createnodetree { padding: 10px 0;}
-.treerow.dragoverselected {
-	background-color: #868e96;
-	color:#333;
+.emtree ul li div.treerow.dragoverselected {
 	border:1px dashed #999;
 }
 
@@ -1412,8 +1416,8 @@ td.checkbox input, th.firstheader input {
 }
 .opencollections ul li {
     list-style-type: none;
-    padding: 5px 4px 10px;
-    border-bottom: 1px solid #ddd;
+    padding: 4px 4px 8px;
+    border-bottom: 1px solid #eee;
     word-wrap: break-word;
 }
 .opencollections ul li:last-child { padding-top: 10px;}
@@ -1465,7 +1469,7 @@ td.checkbox input, th.firstheader input {
 	}
 }
 .results-header .breadcrumbs { }
-.results-header-tabs { padding:12px 5px 0 0;}
+.results-header-tabs { padding:18px 5px 0 0;}
 .results-header-tabs .emtabs li { margin-bottom:-1px;}
 
 .publishtabcontainer { padding: 20px; border-top:1px solid #efefef;}
@@ -3888,6 +3892,14 @@ a.collectionbox.favorite
     background: url('../images/attachments-icon.png') left 7px no-repeat;
     margin: 0 3px;
 }
+.breadcrumbs {
+	line-height: 27px;
+}
+.collectioncrumbs .category {
+    background: url('../images/icons/box.png') top 3px left 0px no-repeat;
+    padding-left: 22px;
+    
+} 
 
 .select2-results__option[aria-selected] {
     word-break: break-word;

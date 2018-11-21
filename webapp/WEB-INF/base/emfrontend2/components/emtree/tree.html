@@ -33,9 +33,13 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 				#else
 					$cat.name
 				#end
-				<b class="catcount">
-				#if($cat.hasCountData()) ($cat.getCount()) #end
-				</b>
+				
+				#if($cat.hasCountData())
+				<b class="catcount"> 
+				($cat.getCount())
+				</b> 
+				#end
+				
 				</div>
 			</div>
 		#if($haschildren && $expanded)

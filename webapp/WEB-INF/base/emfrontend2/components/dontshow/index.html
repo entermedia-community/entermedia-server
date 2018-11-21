@@ -13,82 +13,82 @@
 	<span class="widget-header-title">[[Filters]]</span>
 </div>
 <div  class="ui-widget-content" id="filterscontent" #if($userprofile.minimizefilterscontent == "true" && $cantogglesidebar) style="display: none;" #end>
- 
- 
- #if( $hits.getSearchQuery().hasFilters() )
- <div class="filters-sidebar-selected">
- ##<h4>Selected</h4>
- <ul id="filters-sidebar-selected">
- 	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
+	#if( $hits.getSearchQuery().hasFilters() )
+	 <div class="filters-sidebar-selected">
+	 ##<h4>Selected</h4>
+	 <ul id="filters-sidebar-selected">
+	 	#foreach( $selectedfilter in $hits.getSearchQuery().getFilters() )
 			#set( $detail = $searcher.getDetail($selectedfilter.getId() ) )
-		#if($librarycol)
-		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
-				href="$home$apphome/views/modules/librarycollection/filter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=3" >$selectedfilter
-				 <span class="filterclose fas fa-times"></span>
-				 </a></li>
+			#if($librarycol)
+				<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
+					href="$home$apphome/views/modules/librarycollection/filter.html?collectionid=$!librarycol.getId()&removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=3" >$selectedfilter
+					 <span class="filterclose fas fa-times"></span></a>
+				 </li>
 			#else
-		
-			<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
+		  		<li><a class="ajax" title="$detail.getText($context)" targetdivinner="main" 
 				href="$home$apphome/views/search/filter.html?removefilter=$selectedfilter.getId()&hitssessionid=$!hits.sessionId&searchtype=$searcher.searchType&oemaxlevel=2" >$context.getText($selectedfilter)   
-				 <span class="filterclose fas fa-times"></span></a></li>	
+				 <span class="filterclose fas fa-times"></span></a>
+				 </li>	
 			#end
-	#end
-#end	
-</ul>
-
-#set($facets = $hits.getFilterOptions())
-#if( $librarycol)
-<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
-    <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
-    <input type="hidden" name="oemaxlevel" value="3" />
-
-#else
-<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
-    <input type="hidden" name="oemaxlevel" value="2" />
-
-#end
-
-#foreach($item in $searcher.getDetailsForView("${searchtype}/${searchtype}facets") )
-#set($type = $hits.findFilterNode($item.id))
-#if($type)
-#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
-#ifnull($viewpermission)
-	#set( $viewpermission = true)
-#end
-
-#if( $viewpermission )
-	#if(!$hits.isChildFacetSelected($type))
-	<div  class="filters-sidebar">
-	<h4>$type.getName($context.getLocale())</h4>
-	
-	<ul class="filters-sidebar">
-	#foreach($entry in $type.children)
-		#if( ${foreach.count} == 10 )
-		</ul>
-		<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="[[Show More]]" data-hidelabel="[[Show Less]]"><span>[[Show More]]</span></a>
-		<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
 		#end
-		<li>
-			<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#">
-			<span> $entry.getText($context) ($entry.count)</span>
-			</a>
-		</li>
-	#end
 	</ul>
 	</div>
-    #end
-#end
-#end
-#end
-    <input type="hidden" name="catalogid" value="$!catalogid" />
-    <input type="hidden" name="searchtype" value="$searcher.searchType" />
-    <input type="hidden" id="filtertype" name="filtertype" value="" />
-    <input type="hidden" id="filtervalue" name="filtervalue" value="" />
-    <input type="hidden" id="filterlabel" name="filterlabel" value="" />
-    <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
-</form>
+	#end	
+	
+	#set($facets = $hits.getFilterOptions())
+	
+	#if( $librarycol)
+		<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+	    <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
+	    <input type="hidden" name="oemaxlevel" value="3" />
+	
+	#else
+		<form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/search/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
+	    <input type="hidden" name="oemaxlevel" value="2" />
+	
+	#end
+	
+	#foreach($item in $searcher.getDetailsForView("${searchtype}/${searchtype}facets") )
+		#set($type = $hits.findFilterNode($item.id))
+		#if($type)
+			#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
+			#ifnull($viewpermission)
+				#set( $viewpermission = true)
+			#end
+	
+			#if( $viewpermission )
+				#if(!$hits.isChildFacetSelected($type))
+					<div  class="filters-sidebar">
+					<h4>$type.getName($context.getLocale())</h4>
+					
+					<ul class="filters-sidebar">
+					#foreach($entry in $type.children)
+						#if( ${foreach.count} == 10 )
+							</ul>
+							<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="[[Show More]]" data-hidelabel="[[Show Less]]"><span>[[Show More]]</span></a>
+							<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
+						#end
+						<li>
+							<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#">
+							<span> $entry.getText($context) ($entry.count)</span>
+							</a>
+						</li>
+					#end
+					</ul>
+					</div>
+		    	#end  ##hits
+			#end  ##permission
+		#end 
+	#end ##foreach
+	    <input type="hidden" name="catalogid" value="$!catalogid" />
+	    <input type="hidden" name="searchtype" value="$searcher.searchType" />
+	    <input type="hidden" id="filtertype" name="filtertype" value="" />
+	    <input type="hidden" id="filtervalue" name="filtervalue" value="" />
+	    <input type="hidden" id="filterlabel" name="filterlabel" value="" />
+	    <input type="hidden" name="hitssessionid" value="$!hits.sessionId" /> ##TODO: reload on ajax reloads
+	</form>
+	
 
-</div>
 </div>
 </div>
 	

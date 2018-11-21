@@ -3,15 +3,12 @@
 
 
 <div id="crumbs" class="breadcrumbs">
-<div  class="collectioncrumbs">
 <div class="category">					
 	#foreach( $parent in $category.getParentCategoriesFrom(1))
 	#if( ${foreach.count} > 1) \ #end
 	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}&nodeID=${parent.id}">$parent</a>
 	#end
 </div>
-</div>
-
 </div>
 #if( !$librarycol)
 #set($collection = $mediaarchive.getSearcher("librarycollection").query().match("rootcategory",$categoryid).searchOne())
