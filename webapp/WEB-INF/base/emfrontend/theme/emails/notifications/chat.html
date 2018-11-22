@@ -1,0 +1,19 @@
+Hi $sendto,
+
+#if( $notifications.size() > 1 )
+  Some comments have been made on the following assets:
+#else
+  Some comments have been made on the following asset:
+#end
+
+#foreach( $asset in $notifications.getAssets() )
+  <div>
+    <h3>$asset</h3>
+    <div style="margin-bottom:40px"><img alt="" class="rounded-circle img-fluid" src="$asset.sourcepath" /></div>
+  </div>
+  #foreach( $message in $notifications.getMessages($asset) )
+    <div>
+      <b>$context.getDate($message.date) - $mediaarchive.getUser($message.user)</b> <i>$message.message</i>
+    </div>
+  #end
+#end
