@@ -2156,7 +2156,7 @@
 	<bean id="postData" class="org.entermediadb.posts.PostData"  scope="prototype">
 	</bean>	
 
-	<bean id="NotificationModule" class="org.entermediadb.modules.NotificationModule" >
+	<bean id="NotificationModule" class="org.entermediadb.modules.notification.NotificationModule" >
 	</bean>	
 		
 </beans>
