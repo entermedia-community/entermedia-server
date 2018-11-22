@@ -1,7 +1,9 @@
 <tr id="tableheader">
 #if( $showtoolbar )
 	<th class="firstheader" id="th-checkbox">
-		
+		<div id="th-checkbox-left">
+			<input name="pagetoggle" type="checkbox" #if($hits.isPageSelected()) checked #end />
+		</div>
 		<div id="th-checkbox-right">
 	    <div class="anchor">
     	    <div class="select-dropdown-open down"></div>
@@ -12,9 +14,7 @@
     	    </ul>
     	</div>
     	</div>
-    	<div id="th-checkbox-left">
-			<input name="pagetoggle" type="checkbox" #if($hits.isPageSelected()) checked #end />
-		</div>
+    	
 	</th>
 #end	
 

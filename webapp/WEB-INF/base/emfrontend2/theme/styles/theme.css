@@ -809,18 +809,30 @@ border-radius: 5px;
 }
 #main-results-table .firstheader {
     width: 28px;
-    text-align: right;
+    text-align: left;
 }
 #emcontainer #emselectable #main-results-table tr td {
     text-align: left;
     border-left: 1px dashed #E2EFF4;
     padding: 0 10px;
 }
-#th-checkbox-left, #th-checkbox-right {float: right; width:15px;height:18px; margin:2px 2px 0 0;}
+
+#th-checkbox-right {
+		display:inline-block;
+		height:18px;
+		width:10px; 
+		margin:0 2px 0 0;
+		}
+#th-checkbox-left {
+		display:inline-block;
+		width:15px;
+		height:18px;
+		margin:0 0 0 7px;
+}
 #th-checkbox-left input { margin: 0; }
-#th-checkbox-right .anchor { margin-top:5px;} 
+#th-checkbox-right .anchor { padding-top:5px; } 
 .select-dropdown-open {
-    width: 15px;
+    width: 10px;
     height: 10px;
    
 }
@@ -841,14 +853,15 @@ border-radius: 5px;
 
 .rowclick { cursor: pointer;}
 .select-dropdown-open.down {
-    background: url('../images/sort-desc.png') 5px 0 no-repeat;
+    background: url('../images/sort-desc.png') 0 0 no-repeat;
 }
 .select-dropdown-open.up {
-    background: url('../images/sort-asc.png') 5px 0 no-repeat;
+    background: url('../images/sort-asc.png') 0 0 no-repeat;
 }
 .select-dropdown {
     position: absolute;
-    background: #f7f7f7 url('../images/top-shadow.png') center -1px repeat-x;
+    background-color: #f7f7f7;
+    color:#333;
     border: 1px solid #bbb;
     border-top: none;
     box-shadow: 0 1px 4px 2px rgba(0,0,0,0.1);
@@ -872,11 +885,14 @@ td.checkbox input, th.firstheader input {
     text-align: left;
     display: block;
     padding: 5px 10px;
-    color: #444;
+    color: #444!important;
     text-shadow: none;
     font-weight: normal !important;
 }
-
+.select-dropdown li a:hover {
+	text-decoration: none;
+	background-color:rgba(0,0,0,0.2); 
+}
 
 .treecontext {
 	top:0px; 
