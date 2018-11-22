@@ -14,6 +14,16 @@
       <language id="en"><![CDATA[channel]]></language> 
     </name> 
   </property>  
+  <property id="channeltype" index="true" deleted="true" editable="true" stored="true" type="list" >
+    <name> 
+      <language id="en"><![CDATA[Channel Type]]></language> 
+    </name> 
+  </property>  
+  <property id="messagetype" index="true" deleted="true" editable="true" stored="true" type="list" >
+    <name> 
+      <language id="en"><![CDATA[<Message Type]]></language> 
+    </name> 
+  </property>  
   <property id="message" index="true" deleted="true" editable="true" stored="true">New
     <name> 
       <language id="en"><![CDATA[message]]></language> 

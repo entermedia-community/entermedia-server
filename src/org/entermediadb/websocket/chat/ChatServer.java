@@ -152,7 +152,7 @@ public class ChatServer
 		chat.setValue("message", inMap.get("content"));
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
-		chat.setValue("type", "message");
+		chat.setValue("channeltype", inMap.get("channeltype"));
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 		
@@ -187,7 +187,8 @@ public class ChatServer
 		chat.setValue("message", inMap.get("content"));
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
-		chat.setValue("type", "approved");
+		chat.setValue("messagetype", "approved");
+		chat.setValue("channeltype","asset"); 
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());
 
@@ -210,7 +211,8 @@ public class ChatServer
 		chat.setValue("message", inMap.get("content"));
 		chat.setValue("user", inMap.get("user"));
 		chat.setValue("channel", inMap.get("channel"));
-		chat.setValue("type", "rejected");
+		chat.setValue("channeltype","asset"); 
+		chat.setValue("messagetype", "rejected");
 		chat.setValue("collectionid", collectionid);
 		chats.saveData(chat);
 		inMap.put("messageid", chat.getId());

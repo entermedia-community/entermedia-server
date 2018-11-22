@@ -16,25 +16,33 @@ import org.openedit.WebPageRequest;
 import org.openedit.locks.Lock;
 import org.openedit.users.User;
 
-public class NotificationModule extends BaseMediaModule {
+public class NotificationModule extends BaseMediaModule
+{
+	public NotificationModule()
+	{
+		// TODO Auto-generated constructor stub
+	}
 
-	// Every 30 minutes go look for chat records. Add to notification queue with a
-	// boolean status
-	public void sendChatNotifications(WebPageRequest inReq) {
-		// 1. Lock this operation
-		// 2. Track last check date in settings?
-		// 3.
-		// For everyuser on this assets collections
-		// Save target user and asset
+	//Every 30 minutes go look for chat records. Add to notification queue with a boolean status
+	public void sendChatNotifications(WebPageRequest inReq)
+	{
+		//1. Lock this operation
+		//2. Track last check date in settings?
+		//3. 
+		//For everyuser on this assets collections
+		//Save target user and asset
 
 		MediaArchive archive = getMediaArchive(inReq);
 		Lock lock = archive.getLockManager().lockIfPossible("notificationemails", "module");
-		if (lock == null) {
+		if (lock == null)
+		{
 			return;
 		}
-		try {
+		try
+		{
 			MultiValued event = (MultiValued) archive.query("eventmanager").id("notificationemails").searchOne();
-			if (event == null) {
+			if (event == null)
+			{
 				event = (MultiValued) archive.getSearcher("eventmanager").createNewData();
 				event.setId("notificationemails");
 				event.setName("Notification Tracker");
@@ -45,10 +53,13 @@ public class NotificationModule extends BaseMediaModule {
 			Date today = new Date();
 			// Check the search
 			Collection hits = null;
-			if (startingfrom != null) {
-				hits = archive.query("chatterbox").between("date", startingfrom, today).search();
-			} else {
-				hits = archive.query("chatterbox").before("date", today).search();
+			if (startingfrom != null)
+			{
+				hits = archive.query("chatterbox").exact("channeltype", "asset").between("date", startingfrom, today).search();
+			}
+			else
+			{
+				hits = archive.query("chatterbox").exact("channeltype", "asset").before("date", today).search();
 			}
 
 			Map users = loadUserMessages(archive, hits);
@@ -56,15 +67,18 @@ public class NotificationModule extends BaseMediaModule {
 			sendEmails(archive, users);
 			event.setValue("lastrandate", today);
 			archive.saveData("eventmanager", event);
-		} finally {
+		}
+		finally
+		{
 			archive.releaseLock(lock);
 		}
 	}
 
-	private void sendEmails(MediaArchive inArchive, Map inUsers) {
-		String templatePage = "/" + inArchive.getCatalogSettingValue("events_notify_app")
-				+ "/theme/emails/notifications/chat.html";
-		for (Iterator iterator = inUsers.keySet().iterator(); iterator.hasNext();) {
+	private void sendEmails(MediaArchive inArchive, Map inUsers)
+	{
+		String templatePage = "/" + inArchive.getCatalogSettingValue("events_notify_app") + "/theme/emails/notifications/chat.html";
+		for (Iterator iterator = inUsers.keySet().iterator(); iterator.hasNext();)
+		{
 			String userid = (String) iterator.next();
 			UserChats chats = (UserChats) inUsers.get(userid);
 			User user = inArchive.getUser(userid);
@@ -80,52 +94,61 @@ public class NotificationModule extends BaseMediaModule {
 
 	}
 
-	protected Map loadUserMessages(MediaArchive archive, Collection hits) {
+	protected Map loadUserMessages(MediaArchive archive, Collection hits)
+	{
 		Map users = new HashMap();
 
-		for (Iterator iterator = hits.iterator(); iterator.hasNext();) {
+		for (Iterator iterator = hits.iterator(); iterator.hasNext();)
+		{
 			Data message = (Data) iterator.next();
 			String assetid = message.get("channel");
 			Asset asset = archive.getAsset(assetid);
 
 			// Make sure the owner is notified
-			if (asset != null) {
-				String owner = asset.get("owner");
-				if ( owner != null )
+			if (asset == null)
+			{
+				continue;
+			}
+			
+			String owner = asset.get("owner");
+			if (owner != null)
+			{
+				UserChats userchats = loadChats(owner, users);
+				userchats.addAssetMessage(asset, message);
+			}
+
+			Collection allmessages = archive.query("chatterbox").exact("channel", assetid).exact("channeltype", "asset").search();
+
+			// Look for anyone else in the chat table
+			for (Iterator iterator2 = allmessages.iterator(); iterator2.hasNext();)
+			{
+				Data othermessage = (Data) iterator2.next();
+				String otherowner = othermessage.get("user");
+				UserChats moreuserchats = loadChats(otherowner, users);
+				moreuserchats.addAssetMessage(asset, message);
+			}
+
+			// Check for any collection followers
+			Collection shares = archive.query("librarycollectionshares").orgroup("librarycollection", asset.getCollections()).search();
+			for (Iterator iterator2 = shares.iterator(); iterator2.hasNext();)
+			{
+				Data follower = (Data) iterator2.next();
+				String userid = follower.get("followeruser");
+				if (userid != null)
 				{
-					UserChats userchats = loadChats(owner, users);
-					userchats.addAssetMessage(asset, message);
-				}
-
-				Collection allmessages = archive.query("chatterbox").exact("channel", assetid).search();
-
-				// Look for anyone else in the chat table
-				for (Iterator iterator2 = allmessages.iterator(); iterator2.hasNext();) {
-					Data othermessage = (Data) iterator2.next();
-					String otherowner = othermessage.get("user");
-					UserChats moreuserchats = loadChats(otherowner, users);
+					UserChats moreuserchats = loadChats(userid, users);
 					moreuserchats.addAssetMessage(asset, message);
-				}
-
-				// Check for any collection followers
-				Collection shares = archive.query("librarycollectionshares")
-						.orgroup("librarycollection", asset.getCollections()).search();
-				for (Iterator iterator2 = shares.iterator(); iterator2.hasNext();) {
-					Data follower = (Data) iterator2.next();
-					String userid = follower.get("followeruser");
-					if (userid != null) {
-						UserChats moreuserchats = loadChats(userid, users);
-						moreuserchats.addAssetMessage(asset, message);
-					}
 				}
 			}
 		}
 		return users;
 	}
 
-	protected UserChats loadChats(String owner, Map users) {
+	protected UserChats loadChats(String owner, Map users)
+	{
 		UserChats userchats = (UserChats) users.get(owner);
-		if (userchats != null) {
+		if (userchats != null)
+		{
 			userchats = new UserChats();
 			userchats.setUserId(owner);
 		}

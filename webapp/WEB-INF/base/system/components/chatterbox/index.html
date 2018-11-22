@@ -6,7 +6,7 @@
 				<div class="chatterbox-message-list" >
 				  #foreach($message in $messages)
 			
-				  #set($type = $message.type)
+				  #set($type = $message.messagetype)
 				  $context.putPageValue("chat", $message)
 				  #if(!$type)
 				  #set($type = "default")
