@@ -1,3 +1,6 @@
+#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
+
 #if( !$hits )
 	#set( $hits = $collectionassets)
 	
@@ -30,40 +33,21 @@
 		$context.putPageValue("order",$order)
 	#end
 #end
+
+
 <div id="resultsheader">
 <div id="sub-nav" class="emsubnav">
 	<ul class="resultsnav">
 		#set ($enabled=$hits.getSelectionSize() > 0)
 		
 		<li>
-			<a class="nav-btn" href="#" id="lefttoggle"><i class="fas fa-list"></i> [[CATEGORIES]]</a>
+			
+			<a class="nav-btn lefttoggle" href="#" id="lefttoggle">
+			<i class="fas fa-chevron-circle-left closebar #if ($leftbarstatus!=false) show #end"></i>
+			<span class="openbar #if ($leftbarstatus!=false) hidden #end"><i class="fas fa-list"></i> [[CATEGORIES]]</a></span>
 		</li>
 		
-		#if( $candownload || $canconvert || $candownloadfpo )
-			#if( $librarycol )
-				$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
-			#end
-			#if( $enabled )
-				<li class="nav-item">
-					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-					<a class="nav-link" href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
-					
-					#else
-					<a class="nav-link" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
-					#end
-				</li>	
-			#else
-				<li class="nav-item">
-					<a class="nav-link" href="#">[[Download]]</a>
-				</li>	
-			#end
-		#end
-
-		#if($candeleteasset && $canmultiedit && $canquickdelete)
-	 		<li class="nav-item">
-	 			<a class="nav-link emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a>
-	 			</li>
-	   	#end    	
+		  	
 
 	
 		#if($canpublish || $canemaillink )
@@ -128,10 +112,15 @@
 		
 		</ul>
 		
+
+		
 		
 		<ul class="resultsnavright">
 			<li>
-				<a class="nav-btn" href="#" id="filterstoggle"><i class="fas fa-sliders-h"></i> [[FILTERS]]</a>
+				<a class="nav-btn filterstoggle" href="#" id="filterstoggle">
+				<i class="fas fa-chevron-circle-right closebar #if ($filtersbarstatus!=false) show #end"></i>
+				<span class="openbar #if ($filtersbarstatus!=false) hidden #end"><i class="fas fa-sliders-h"></i> [[FILTERS]]</span> 
+				</a>
 			</li>
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')

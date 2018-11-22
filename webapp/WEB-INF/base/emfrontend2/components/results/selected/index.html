@@ -3,20 +3,20 @@
 	<div class="dropdown-menu" aria-labelledby="navbarSelectionsDropdown">
 	  	<a class="dropdown-item ajax selectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a>
     	<a class="dropdown-item ajax  selectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a>
- #if( !$hits.isShowOnlySelected() )
-		<a class="dropdown-item" 
-			title="[[View Selections]]"
-			href="$home$apphome/views/search/index.html?assetshowonlyselections=true&hitssessionid=$hits.getSessionId()&page=1">
-				[[Show Only Selections]]</a>
-#else				
-		<a class="dropdown-item #if($hits.isShowOnlySelected()) active #end"
-			title="[[Show All]]"
-			href="$home$apphome/views/search/index.html?assetshowonlyselections=false&hitssessionid=$hits.getSessionId()">
-				[[Show All Results]]</a>
-#end		
-#if( $hits.getSelectionSize() > 0)
-    	<a class="dropdown-item ajax deselectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a>
-#end
+		 #if( !$hits.isShowOnlySelected() )
+				<a class="dropdown-item" 
+					title="[[View Selections]]"
+					href="$home$apphome/views/search/index.html?assetshowonlyselections=true&hitssessionid=$hits.getSessionId()&page=1">
+						[[Show Only Selections]]</a>
+		#else				
+				<a class="dropdown-item #if($hits.isShowOnlySelected()) active #end"
+					title="[[Show All]]"
+					href="$home$apphome/views/search/index.html?assetshowonlyselections=false&hitssessionid=$hits.getSessionId()">
+						[[Show All Results]]</a>
+		#end		
+		#if( $hits.getSelectionSize() > 0)
+		    	<a class="dropdown-item ajax deselectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a>
+		#end
 	</div>
 </li>
 
@@ -24,52 +24,74 @@
 #if( $hits.hasSelections() )
 
 <li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
-#if( $hits.isShowOnlySelected() )
-([[All]] $hits.getSelectionSize())
-#else 
-($hits.getSelectionSize()/$hits.size())
-#end</a>
-	<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
-			#if(!$canforcebasiccollections)
-	
-	#if( $librarycol && $caneditdata )
-		<a class="dropdown-item emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a>
-    	<a class="dropdown-item emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a>
-    #end
-    #end	
-    #if ( $canviewbasket  )
-		#if($order)
-			<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a>
-		#else
-			<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Cart]]</a>
+	<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
+	#if( $hits.isShowOnlySelected() )
+	([[All]] $hits.getSelectionSize())
+	#else 
+	($hits.getSelectionSize()/$hits.size())
+	#end</a>
+		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
+				#if(!$canforcebasiccollections)
+		
+		#if( $librarycol && $caneditdata )
+			<a class="dropdown-item emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a>
+	    	<a class="dropdown-item emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a>
+	    #end
+	    #end	
+	    #if ( $canviewbasket  )
+			#if($order)
+				<a class="dropdown-item updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove From Cart]]</a>
+			#else
+				<a class="dropdown-item updatebasket" targetdiv="basket-paint"  href="$home$apphome/components/basket/addselection.html?hitssessionid=$hits.getSessionId()" ">[[Add To Cart]]</a>
+			#end
 		#end
-	#end
-	#if( $canaddnewcollection )
-		<a class="dropdown-item emdialog" 
-		   data-hidefooter="true" 
-		   title="[[Add to Collection]]"  
-		   href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a>
-	#end
+		#if( $canaddnewcollection )
+			<a class="dropdown-item emdialog" 
+			   data-hidefooter="true" 
+			   title="[[Add to Collection]]"  
+			   href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a>
+		#end
+		
+		#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
+			<a class="dropdown-item " 
+			   title="[[Add to Favorites]]"  
+			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
+		#end
 	
-	#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
-		<a class="dropdown-item " 
-		   title="[[Add to Favorites]]"  
-		   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
-	#end
+		#if($canexportdata)
+			<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
+			<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
+		#end
+		#if($canmultidelete)	    
+	 		<a class="dropdown-item emdialog" href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a>
+	   	#end    	
+		#if($canprintpreview)
+	    	 <a class="dropdown-item" href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
+		#end
+		#if( $candownload || $canconvert || $candownloadfpo )
+			#if( $librarycol )
+				$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
+			#end
+			#if( $enabled )
+				
+					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+					<a class="dropdown-item" href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+					
+					#else
+					<a class="dropdown-item" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
+					#end
+					
+			#else
+				
+					<a class="dropdown-item" href="#">[[Download]]</a>
+					
+			#end
+		#end
 
-	#if($canexportdata)
-    	
-	<a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
-	<a href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
-#end
-	#if($canmultidelete)	    
- 		<a class="emdialog" href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a>
-   	#end    	
-#if($canprintpreview)
-    	 <a href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
-#end
-	</div>
+		#if($candeleteasset && $canmultiedit && $canquickdelete)
+	 			<a class="dropdown-item emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a>
+	   	#end  
+		</div>
 	
 </li>
 #end

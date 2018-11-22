@@ -67,7 +67,7 @@
 
 .emsubnav, .emsubnav .dropdown-menu { 
 	color:#333;
-	background-color: #D5D5D5;
+	background-color: #bbb;
 }
 #sub-nav a { 
 	color:#333;
@@ -86,13 +86,15 @@
 	background-color:rgba(0,0,0,0.2)!important;
 }
 .emsubnav .nav-btn,
-#sub-nav .nav-btn {
-	background-color: #007bff;
+#sub-nav .nav-btn,
+.col-sidebar-header h2 {
+	background-color: #6FB353!important;
 	color:#efefef;
 }
 .emsubnav .nav-btn:hover,
-#sub-nav .nav-btn:hover {
-	background-color: #0061c9!important;
+#sub-nav .nav-btn:hover,
+.col-sidebar-header h2:hover {
+	background-color: #56994c!important;
 	color:#fff!important;
 }
 .col-sidebar {
@@ -145,8 +147,9 @@
 	
 }
 .emselectable {
-	border-left:1px solid #fff;
+/*	border-left:1px solid #fff;
 	border-right:1px solid #fff;
+	*/
 }
 .emresultstable th { 
 	color:#fff; font-weight:bold;
@@ -168,6 +171,15 @@
 	border-color:#000;
 	color:#fff;
 }
+.badge-primary {
+	background-color: #6FB353!important;
+	color:#efefef;
+}
+.badge-primary:hover {
+	background-color: #56994c!important;
+	color:#fff!important;
+}
+
 /*Mediaplayer*/
 .emtabs li a,
 #eml-tab-subnav ul li a
@@ -344,7 +356,9 @@ select + .select2-container {
 
 
 /**MainContent*/
-#application #emcontainer { padding: 0 2px; }
+#application #emcontainer { 
+	padding: 0; 
+	}
 
 
 
@@ -447,6 +461,9 @@ html, body, #application {
 	height: 100%;
 	
 }
+.cols-main {
+	position:relative;
+}
 .col-sidebar {
 	position: fixed;
     top: 0;
@@ -464,7 +481,13 @@ html, body, #application {
 .col-content-main {
 	transition: 0.2s;
 	box-shadow: 5px 0 5px -6px #333, -5px 0 5px -6px #333;
-	
+	margin:0;
+}
+.col-content-main.leftopen {
+	margin-left:250px;
+}
+.col-content-main.filtersopen {
+	margin-right:250px;
 }
 @media (min-width: 992px) {
 	.col-sidebar {
@@ -498,6 +521,9 @@ html, body, #application {
     overflow-x: hidden; 
     transition: 0.2s;
 }
+.col-left.leftopen {
+	width:250px;
+}
 .col-filters {
 	height: 100%;
     width: 0; 
@@ -508,6 +534,9 @@ html, body, #application {
     background-color: #111; 
     overflow-x: hidden; 
     transition: 0.2s;
+}
+.col-filters.filtersopen {
+	width:250px;
 }
 
 .col-sidebar {  }
@@ -542,8 +571,6 @@ html, body, #application {
 .col-sidebar-header h2 {
 	height: 45px;
 	line-height:45px;
-	color:#fff;
-	background-color: #0061c9;
 	text-align: center;
 	font-size: 0.9rem;
 	font-weight:bold;
@@ -598,6 +625,19 @@ html, body, #application {
 
 .filter-box-options a.filter-current {
 	color:#fff;
+}
+
+.lefttoggle, .filterstoggle {
+	cursor: pointer;
+}
+.filtered .clearfilters {
+	padding:0 5px;
+	text-decoration: underline;
+	font-size:.7rem;
+	display:inline-block;
+}
+.filtered .badge {
+	margin:0 5px;
 }
 
 /*Widget*/
@@ -746,6 +786,17 @@ border-radius: 5px;
     padding: .15rem;
     font-size: 0.8rem;
     height: 1.5rem!important;
+}
+
+.filtered {
+	display: block;
+	background-color:#D5D5D5;
+	text-align:center;
+	height: 45px;
+	padding:10px;
+	 margin-left: auto;
+  margin-right: auto;
+  border-bottom: 1px solid #999;
 }
 
 
@@ -1075,6 +1126,7 @@ td.checkbox input, th.firstheader input {
 .emnav .nav-quicksearch .input-group {
 	margin-left: 15px;
 	padding-top:2px;
+	width: 400px;
 }
 .emnav .librarypicker, 
 .emnav .collectionpicker {

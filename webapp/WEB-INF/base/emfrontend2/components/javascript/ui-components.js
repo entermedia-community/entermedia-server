@@ -1245,38 +1245,44 @@ uiload = function() {
 
 	$('.cols-main').equalHeights();
 
-	lQuery('#filterstoggle').livequery("click", function(e) {
+	lQuery('.filterstoggle').livequery("click", function(e) {
 		e.preventDefault();
-		var col = $("#col-filters");
-		if ($(col).hasClass("filtersopen")) {
+		if ($("#col-filters").hasClass("filtersopen")) {
 			//close
-			$(this).html('<i class="fas fa-sliders-h"></i> Filters');
-			$(col).width("0").removeClass("filtersopen");
-			$("#maincontent").css("margin-right","0");
+			$("#filterstoggle").find('.closebar').hide();
+			$("#filterstoggle").find('.openbar').show();
+			$("#col-filters").removeClass("filtersopen");
+			$("#maincontent").removeClass("filtersopen");
+			saveProfileProperty("filtersbarstatus",false,function(){});
 		}
 		else {
 			//open
-			$(this).html('<i class="fas fa-chevron-circle-right"></i>');
-			$(col).width("250px").addClass("filtersopen");
-			$("#maincontent").css("margin-right","250px");
+			$("#filterstoggle").find('.closebar').show();
+			$("#filterstoggle").find('.openbar').hide();
+			$("#col-filters").addClass("filtersopen");
+			$("#maincontent").addClass("filtersopen");
+			saveProfileProperty("filtersbarstatus",true,function(){});
 		}
 		return false;
 		return false;
 	});
-	lQuery('#lefttoggle').livequery("click", function(e) {
+	lQuery('.lefttoggle').livequery("click", function(e) {
 		e.preventDefault();
-		var col = $("#col-left");
-		if ($(col).hasClass("leftopen")) {
+		if ($("#col-left").hasClass("leftopen")) {
 			//close
-			$(this).html('<i class="fas fa-list"></i> Categories');
-			$(col).width("0").removeClass("leftopen");
-			$("#maincontent").css("margin-left","0");
+			$("#lefttoggle").find('.closebar').hide();
+			$("#lefttoggle").find('.openbar').show();
+			$("#col-left").removeClass("leftopen");
+			$("#maincontent").removeClass("leftopen");
+			saveProfileProperty("leftbarstatus",false,function(){});
 		}
 		else {
 			//open
-			$(this).html('<i class="fas fa-chevron-circle-left"></i>');
-			$(col).width("250px").addClass("leftopen");
-			$("#maincontent").css("margin-left","250px");
+			$("#lefttoggle").find('.closebar').show();
+			$("#lefttoggle").find('.openbar').hide();
+			$("#col-left").addClass("leftopen");
+			$("#maincontent").addClass("leftopen");
+			saveProfileProperty("leftbarstatus",true,function(){});
 		}
 		return false;
 	});
