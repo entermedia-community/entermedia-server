@@ -46,6 +46,7 @@ public class UserChats
 		Asset existing = (Asset) fieldAssets.get(inAsset.getId());
 		if (existing == null)
 		{
+			existing = inAsset;
 			fieldAssets.put(inAsset.getId(), inAsset);
 		}
 		Collection existingmessages = (Collection) fieldAssetMessages.get(existing.getId());

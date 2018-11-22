@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<properties> 
+<properties  beanname="dataSearcher"> 
   <property id="date" index="true" filter="false" deleted="true" datatype="date" editable="false" stored="true" sortable="true" keyword="false">New
     <name> 
       <language id="de"><![CDATA[Datum]]></language>  

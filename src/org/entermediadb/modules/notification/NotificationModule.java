@@ -76,6 +76,7 @@ public class NotificationModule extends BaseMediaModule
 
 	private void sendEmails(MediaArchive inArchive, Map inUsers)
 	{
+		///theme/emails/notifications/chat.html
 		String templatePage = "/" + inArchive.getCatalogSettingValue("events_notify_app") + "/theme/emails/notifications/chat.html";
 		for (Iterator iterator = inUsers.keySet().iterator(); iterator.hasNext();)
 		{
@@ -147,10 +148,11 @@ public class NotificationModule extends BaseMediaModule
 	protected UserChats loadChats(String owner, Map users)
 	{
 		UserChats userchats = (UserChats) users.get(owner);
-		if (userchats != null)
+		if (userchats == null)
 		{
 			userchats = new UserChats();
 			userchats.setUserId(owner);
+			users.put(owner,userchats);
 		}
 		return userchats;
 	}
