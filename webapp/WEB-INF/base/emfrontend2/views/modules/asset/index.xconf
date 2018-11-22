@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <page>  
-	<inner-layout>/${applicationid}/theme/layouts/searchlayout.html</inner-layout>
+	<inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
 
 	<property name="dataroot">/${catalogid}/side/search</property>
  	<property name="assetrootfolder">/${catalogid}/assets</property>

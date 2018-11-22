@@ -34,10 +34,14 @@
 <div id="sub-nav" class="emsubnav">
 	<ul class="resultsnav">
 		#set ($enabled=$hits.getSelectionSize() > 0)
-	
+		
+		<li>
+			<a class="nav-btn" href="#" id="lefttoggle"><i class="fas fa-list"></i> [[CATEGORIES]]</a>
+		</li>
+		
 		#if( $candownload || $canconvert || $candownloadfpo )
 			#if( $librarycol )
-			$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
+				$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
 			#end
 			#if( $enabled )
 				<li class="nav-item">
@@ -94,7 +98,7 @@
 				</div>
 			</li>
 		#end
-				#if(!$canforcebasiccollections)
+		#if(!$canforcebasiccollections)
 		
 			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
 				<li class="nav-item dropdown">
@@ -108,7 +112,7 @@
 						#end
 				</li>
 				#end
-				#end
+		#end
 		
   		#set( $edit = $context.getRequestParameter("editheader") )
 			
@@ -126,8 +130,9 @@
 		
 		
 		<ul class="resultsnavright">
-
-		
+			<li>
+				<a class="nav-btn" href="#" id="filterstoggle"><i class="fas fa-sliders-h"></i> [[FILTERS]]</a>
+			</li>
 		#set ($resultview = $userprofile.get('resultview'))
 		#if (!$resultview || $resultview == 'table')
 			#if( $canedittablecolumns )
@@ -193,7 +198,10 @@
 				<li ><a class="updatebasket btn-checkout emdialog" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout]]</a></li>				
 			#end
 		#end
+		
+		##Filters
 
+		
 	</ul>
 </div>
 </div>
