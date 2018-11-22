@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties beanname="dataSearcher"> 
+  <property id="id" index="true" editable="true" keyword="true">
+    <name> 
+      <language id="en"><![CDATA[id]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" editable="true" keyword="true">
+    <name> 
+      <language id="en"><![CDATA[Name]]></language> 
+    </name> 
+  </property>  
+  <property id="notes" index="true" editable="true" keyword="true">
+    <name> 
+      <language id="en"><![CDATA[Notes]]></language> 
+    </name> 
+  </property>  
+  <property id="lastrandate" index="true" editable="true" keyword="true" internalfield="false" isbadge="false" required="false" filter="false" multilanguage="false" datatype="date" autocreatefromexif="false" writenametoexif="false">
+    <name>
+      <language id="en"><![CDATA[Last Ran Date]]></language>
+    </name>
+  </property>  
+<!-- 
+
+TODO: Add lastrannodeid?
+Add logs?
+
+  <property id="notificationproperties" index="true" keyword="true" stored="true" editable="true" datatype="objectarray" viewtype="notificationproperties"> 
+    <name> 
+      <language id="en">Properties</language>  
+    </name> 
+    <property id="key" index="true" stored="true" editable="true">key</property>
+    <property id="value" index="true" stored="true" editable="true">Value</property>   
+  </property>
+   -->
+   
+</properties>

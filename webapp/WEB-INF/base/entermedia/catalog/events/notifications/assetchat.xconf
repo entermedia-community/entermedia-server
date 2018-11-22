@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Asset Chat Notification</property>	
+	<property name="eventdescription">Emails users about chats</property>	
+	<property name="period">30m</property>
+	<property name="startingfrommidnight">0</property>
+	<path-action name="NotificationModule.sendChatNotifications" />
+</page>
