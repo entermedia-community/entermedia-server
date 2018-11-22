@@ -1,4 +1,4 @@
-	<div id="vieweditorarea">
+<div id="vieweditorarea">
 
 #set($viewid = $context.getRequestParameter("viewid"))
 #set( $assettype = $context.getRequestParameter("assettype") )
@@ -10,8 +10,6 @@
 #set( $viewpath = $context.getRequestParameter("viewpath") )
 
 #set( $viewsroot = $content.viewsroot )
-
-
 <ul  viewid="$viewid" catalogid="$catalogid" searchtype="$moduleid" assettype="$assettype" viewpath="$viewpath" path="$home$viewsroot/movefields.html">
 
 	
