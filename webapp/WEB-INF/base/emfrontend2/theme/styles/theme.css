@@ -216,6 +216,7 @@ background-color:rgba(0,0,0,0.5);
 }
 .table-striped {
 	background-color: #fff;
+	border-left:1px solid #e9ecef;
 }
 /*TR Hovers*/
 tr.emborderhover td,
@@ -479,14 +480,13 @@ html, body, #application {
 }
 .col-content-main {
 	transition: 0.2s;
-	box-shadow: 5px 0 5px -6px #333, -5px 0 5px -6px #333;
 	margin:0;
 }
 .col-content-main.leftopen {
-	margin-left:250px;
+	margin-left:220px;
 }
 .col-content-main.filtersopen {
-	margin-right:250px;
+	margin-right:220px;
 }
 @media (min-width: 992px) {
 	.col-sidebar {
@@ -513,21 +513,21 @@ html, body, #application {
 	height: 100%;
     width: 0; 
     position: absolute; 
-    z-index: 1; 
+    /*z-index: 1;*/ 
     top: 0; 
     left: 0;
-    background-color: #d5d5d5; 
+    background-color: #fff; 
     overflow-x: hidden; 
     transition: 0.2s;
 }
 .col-left.leftopen {
-	width:250px;
+	width:220px;
 }
 .col-filters {
 	height: 100%;
     width: 0; 
     position: absolute; 
-    z-index: 1; 
+    /*z-index: 1;*/ 
     top: 0; 
     right: 0;
     background-color: #111; 
@@ -535,7 +535,15 @@ html, body, #application {
     transition: 0.2s;
 }
 .col-filters.filtersopen {
-	width:250px;
+	width:220px;
+}
+
+
+.cols-librarycollection .col-filters,
+.cols-librarycollection .col-left,
+.cols-category .col-filters,
+.cols-category .col-left {
+	top:47px;
 }
 
 .col-sidebar {  }
@@ -582,7 +590,6 @@ html, body, #application {
 
 .col-left .emtree {
 	background-color: #fff;
-	border-right:1px solid #999;
 }
 
 
@@ -628,6 +635,10 @@ html, body, #application {
 
 .lefttoggle, .filterstoggle {
 	cursor: pointer;
+}
+.lefttoggleclose, 
+.filterstoggleclose {
+	padding:0 8px;
 }
 .filtered .clearfilters {
 	padding:0 5px;
@@ -740,7 +751,6 @@ border-radius: 5px;
 	float:left;
 } 
 #sub-nav ul.resultsnav  li a {
-	display:block;
 	text-decoration: none;
 	padding:0 15px;
 }
@@ -756,7 +766,6 @@ border-radius: 5px;
 	height:34px;
 } 
 #sub-nav ul.resultsnavright  li a {
-	display:block;
 	text-decoration: none;
 	padding:0 15px;
 }
@@ -1646,6 +1655,17 @@ td.checkbox input, th.firstheader input {
 
 .publishtabcontainer { padding: 20px; border-top:1px solid #efefef;}
 
+.results-header  .opencollection-btn {
+	margin-left:10px;
+	background-color: #f8f9fa;
+	padding:5px 8px;
+	font-weight: bold;
+}
+.results-header  .opencollection-btn:hover {
+	text-decoration: none;
+	background-color: #dae0e5;
+	}
+
 
 /*Upload*/
 .col-upload-option { width:240px; text-align:center; background-color:#efefef; margin:0 0 5px 5px;}
@@ -1849,13 +1869,8 @@ label.error {
 .assetpanel-editor {
 	background-color: #565656;
 	color:#efefef;
-	
-}
-.assetpanel-editor,
-.assetpanel-chatterbox { 
-	display: table-row;
-	
-	
+	padding:15px;
+	height: 100%;	
 }
 .assetpanel-editortitle {
 	height: 45px;
@@ -1887,7 +1902,7 @@ label.error {
 	margin:0!important;
 }
 .assetpanel-editor .summarytab {
-	padding:15px 10px;
+	padding:5px 0px;
 }
 .assetpanel-editor .col-md-6
  {
@@ -2011,6 +2026,9 @@ label.error {
 	width: 100%;
 	display:table;
 	padding:0;
+}
+.assetpanel-chatterbox {
+	display:table-row;
 }
 .chatterbox-body {
 	display: table-row;
@@ -2304,6 +2322,7 @@ label.error {
 }
 .collection-container .results-header{
 	display: table-row;
+	height: 47px;
 }
 .collection-container .colletion-content {
 	display: table-row;
@@ -2720,7 +2739,9 @@ label.error {
     display: block;
     font-weight: normal;
 }
-
+#sub-nav li a.hide {
+	display: none;
+}
 
 table.greytxt {
     width: 100%;
@@ -3384,6 +3405,7 @@ div#folders.add .folder {
 }
 .assetpanel-geomap {
 	min-height: calc(100% - 40px);
+	margin-bottom: 0;
 }
 .assetpanel-geomap .emdatafieldvalue {
 	padding:0!important;
