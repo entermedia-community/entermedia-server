@@ -4,16 +4,8 @@
 </div>
 <div class="assetpanel-content">
 	<div class="assetpanel-content-inside">
-		<div class="assetpanel-header"">
-			#if( !$asset.importstatus || $asset.importstatus != "complete" )
-		  		$pages.include("$apphome/components/convertqueue/importstatusplayer.html?assetid=${asset.id}",$context)
-		  	#else
-		  		$pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
-		  	#end
-		</div>
-		<div class="assetpanel-separator"></div>
+  		##$pages.include("$apphome/components/mediaviewer/player/mini.html",$context)
 		<div class="assetpanel-editor">
-			
 			$pages.include("/$applicationid/views/modules/asset/editor/generalinformation/index.html")
 			
 		</div>

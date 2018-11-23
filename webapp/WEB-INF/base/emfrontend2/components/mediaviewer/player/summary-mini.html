@@ -1,0 +1,46 @@
+#set($totalpages = $numberutils.toInt($asset.pages))
+#set ( $hitssessionid = $context.findValue("hitssessionid"))
+<div id="mediaplayer" class="media-player-mini">
+	#if( $asset.getId().startsWith("multiedit:") )
+	    <div class="media-info">
+	    	<div class="primary" style="text-align: center">[[Editing across]] $asset.size() [[assets]]</div>
+		</div>
+	#else     
+	
+	
+	<div class="media-thumbnail">
+		#set( $type = $mediaarchive.getMediaRenderType($asset.fileformat))
+		#if( !$thumbsize )
+    		#set( $thumbsize  = "mediumplus" )
+		#end
+		$context.putPageValue("thumbsize",$thumbsize)
+		#if ( $type == "image" || $type == "document" )
+			#set ( $urlutils = $context.getPageValue("url_util"))
+			#if ($urlutils)
+				#set ( $sourcepath = $urlutils.encode($asset.sourcepath))
+				#set ( $sourcepath = $sourcepath.replace("%2F", "/") )
+			#else
+				#set ( $sourcepath = $asset.sourcepath)
+			#end
+ 			#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
+ 			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+		#else
+   			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+		#end 
+	</div>
+            
+    #set( $views = $mediaarchive.getAssetStatsManager().getViewsForAsset($asset))
+    <a href="$home$apphome/views/modules/asset/editor/historypreviews/index.html?assetid=$asset.id&hitssessionid=$hitssessionid" class="views" title="$views [[Asset Views]]"><i class="fas fa-eye"></i> $views</a>
+    #if ($totalpages > 1) 
+         	<a class="propertyset" propertyname="maximize_player" propertyvalue="true" targetdiv="detaileditor" href="$home$apphome/views/assets/$asset.sourcepath/index.html?hitssessionid=$hitssessionid&oemaxlevel=2">($totalpages [[Pages]])</a> 
+    #end
+    #if ($attachmentcount > 0)
+       	<a href="$home$apphome/views/modules/asset/editor/attachments/index.html?assetid=$asset.id&hitssessionid=$!{hitssessionid}" class="attachments">$attachmentcount<span>&nbsp;</span></a>
+    #end
+    #if ( $canviewvoting )
+	    <div id="assetVoteCount" class="media-info-icons">
+        	$pages.include("$apphome/views/modules/asset/editor/voting/index.html", $context)
+   		</div>
+	#end
+	#end 
+</div>

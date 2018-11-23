@@ -808,20 +808,9 @@ max-width:200px;
 }
 #assetVoteCount .star {
     display: inline-block;
-    margin: 0px 2px 0 2;
-    color:#eee;
-    font-size:120%;
-    line-height: 1;
 }
 #assetVoteCount .star.full {
     color:#FEDC71;
-}
-#assetVoteCount a {
-    color: #3490B2;
-    text-decoration: none;
-}
-#assetVoteCount a:hover {
-    text-decoration: none;
 }
 #assetVoteCount .voting-label { 
 	line-height: 1.5;
