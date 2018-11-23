@@ -2,6 +2,7 @@ package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -21,7 +22,6 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.openedit.Data;
@@ -32,6 +32,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.UserFilters;
 
 public class ElasticHitTracker extends HitTracker
 {
@@ -44,7 +45,14 @@ public class ElasticHitTracker extends HitTracker
 	protected Client fieldElasticClient;
 	protected int fieldLastPageLoaded;
 	protected SearcherManager fieldSearcherManager;
+
+	public ElasticUserFilters getUserFilters()
+	{
+		return (ElasticUserFilters) getSearchQuery().getUserFilters();
+	}
+
 	
+
 	public SearcherManager getSearcherManager()
 	{
 		return fieldSearcherManager;
@@ -171,12 +179,26 @@ public class ElasticHitTracker extends HitTracker
 						log.info(error);
 						throw new OpenEditException(error);
 					}
+					
+					boolean added = false;
+					
+					
+					ElasticUserFilters filters = getUserFilters();
+					if(filters == null && (getSearchQuery().isFilter() || getSearchQuery().isEndUserSearch())) {
+						filters = (ElasticUserFilters) getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(), "userFilters");
+						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
+						added = true;
+					
+					}
+					if(filters != null)
+					{
+						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
+						added = true;
+					}
 					if (!isUseServerCursor() || fieldLastScrollId == null || chunk == 0) //todo: Allow scrolling for iterators
 					{
-						if (fieldLastPullTime == -1)
-						{
-							refreshFilters(); //This seems like it should only be done once?
-						}
+						
+					
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
 						if( getSearchQuery().hasFilters() )
 						{
@@ -203,7 +225,6 @@ public class ElasticHitTracker extends HitTracker
 						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
 					}
 					setLastPageLoaded(inChunk);
-					fieldLastPullTime = now;
 
 					if (getChunks().size() > 30)   //TODO: Keep the pages near us
 					{
@@ -213,19 +234,35 @@ public class ElasticHitTracker extends HitTracker
 					}
 					getChunks().put(chunk, response);
 					
-					if( getSearchQuery().isEndUserSearch() || getSearchQuery().isFilter() )
-					{
-						if( fieldFilterOptions == null )
+					
+						if( added )
 						{
-						  getFilterOptions();
+							filters.setFilterOptions(getSearchType(), getSearchQuery(), response);
 						  getSearcheRequestBuilder().setAggregations(new HashMap());
 						}
-					}
+					
 				}
 			}
 		}
 		return response;
 	}
+	
+	@Override
+	public List<FilterNode> getFilterOptions()
+	{
+		
+		ElasticUserFilters filters = getUserFilters();
+		if(filters == null && (getSearchQuery().isFilter() || getSearchQuery().isEndUserSearch())) {
+			filters = (ElasticUserFilters) getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(), "userFilters");
+		
+		}
+		if(filters != null) {
+			return filters.getFilterOptions(getSearchType(), getSearchQuery());
+		}
+		return Collections.EMPTY_LIST;
+	}
+	
+	
 	@Override
 	public int indexOfId(String inId)
 	{
@@ -413,86 +450,7 @@ public class ElasticHitTracker extends HitTracker
 		return response.getAggregations();
 	}
 	
-	@Override
-	protected List loadFacetsFromResults() //parse em
-	{
-		List topfacets = new ArrayList();
-		SearchResponse response = getSearchResponse(0);
-		//TODO: Should save the response and only load it if someone needs the data
-		if (response.getAggregations() != null)
-		{
-			if( log.isDebugEnabled() )
-			{
-				log.info(response.toString());
-			}
-			Aggregations facets = response.getAggregations();
-
-			for (Iterator iterator = facets.iterator(); iterator.hasNext();)
-			{
-				Object agg = iterator.next();
-				if (agg instanceof Terms)
-				{
-					Terms f = (Terms) agg;
-
-					//				Collection<Terms.Bucket> buckets = terms.getBuckets();
-					//				assertThat(buckets.size(), equalTo(3));
-
-					if (f.getBuckets().size() > 0)
-					{
-						FilterNode parent = new FilterNode();
-						parent.setId(f.getName());
-						parent.setName(f.getName());
-						PropertyDetail detail = getSearcher().getDetail(f.getName());
-						if (detail != null)
-						{
-							parent.setValue("name", detail.getElementData().getLanguageMap("name"));
-						}
-						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
-						{
-
-							//	org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
-							org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket) iterator2.next();
-
-							long count = entry.getDocCount();
-							String term = entry.getKeyAsString();
-							//log.info("term " + parent.getName()  + " \\" + term);
-							FilterNode child = new FilterNode();
-							child.setId(term);
-							child.setPropertyDetail(detail);
-							if (detail != null && detail.isList())
-							{
-								Data data = getSearcher().getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), term);
-								if (data != null)
-								{
-									//child.setName(data.getName());
-									
-									child.setProperties(data.getProperties());
-								}
-								else
-								{
-									//child.setName(term);
-									continue;
-								}
-							}
-							else
-							{
-								child.setName(term);
-								
-							}
-
-							child.setProperty("count", String.valueOf(count));
-							parent.addChild(child);
-						}
-						topfacets.add(parent);
-					}
-				}
-			}
-			getSearcheRequestBuilder().setAggregations(new HashMap());
-		}
-		
-		
-		return topfacets;
-	}
+	
 
 	public void invalidate()
 	{
@@ -502,6 +460,9 @@ public class ElasticHitTracker extends HitTracker
 
 	public void refreshFilters()
 	{
+		
+		
+		
 		if (getSearchQuery().hasFilters())
 		{
 			BoolQueryBuilder bool = QueryBuilders.boolQuery();

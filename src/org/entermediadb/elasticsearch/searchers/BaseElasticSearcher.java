@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -89,12 +88,14 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
+import org.openedit.cache.CacheManager;
 import org.openedit.data.BaseSearcher;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetails;
 import org.openedit.data.SearchData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.ChildFilter;
+import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.GeoFilter;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
@@ -121,6 +122,17 @@ public class BaseElasticSearcher extends BaseSearcher
 	protected boolean fieldCheckVersions;
 	protected boolean fieldRefreshSaves = true;
 	protected long fieldIndexId = System.currentTimeMillis();
+	protected CacheManager fieldCacheManager;
+	
+	public CacheManager getCacheManager()
+	{
+		return fieldCacheManager;
+	}
+
+	public void setCacheManager(CacheManager inCacheManager)
+	{
+		fieldCacheManager = inCacheManager;
+	}
 
 	public boolean isRefreshSaves()
 	{
@@ -237,17 +249,10 @@ public class BaseElasticSearcher extends BaseSearcher
 			search.setQuery(terms);
 			// search.
 			addSorts(inQuery, search);
-			if (inQuery.isEndUserSearch() || inQuery.isFilter())
-			{
-				addFacets(inQuery, search);
-			}
-
-			// addAggregations(inQuery, search);
-
-			//			 "_source": {
-			//		        "include": [ "obj1.*", "obj2.*" ],
-			//		        "exclude": [ "*.description" ]
-			//		    },
+			
+			addSearcherTerms(inQuery, search);
+			
+			
 
 			search.setFetchSource(null, "description");
 			ElasticHitTracker hits = new ElasticHitTracker(getClient(), search, terms, inQuery.getHitsPerPage());
@@ -281,6 +286,12 @@ public class BaseElasticSearcher extends BaseSearcher
 		}
 	}
 
+	protected void addSearcherTerms(SearchQuery inQuery, SearchRequestBuilder inSearch)
+	{
+		// TODO Auto-generated method stub
+		
+	}
+
 	// protected void addQueryFilters(SearchQuery inQuery, QueryBuilder inTerms)
 	// {
 	//
@@ -303,120 +314,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	//
 	//
 
-	protected void addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
-	{
-
-		Set allFilters = new HashSet();
-
-		
-		
-		List facets = getDetailsForView(getSearchType() + "/" + getSearchType() + "facets");
-		
-		if(facets != null && facets.size() > 0) {
-			for (Iterator iterator = facets.iterator(); iterator.hasNext();)
-			{
-				PropertyDetail detail = (PropertyDetail) iterator.next();
-			
-					allFilters.add(detail);
 	
-			
-			}
-		
-		}
-		else {
-
-			
-				for (Iterator iterator = getPropertyDetails().iterator(); iterator.hasNext();)
-				{
-					PropertyDetail detail = (PropertyDetail) iterator.next();
-					if (detail.isFilter())
-					{
-						allFilters.add(detail);
-		
-					}
-				}
-		}
-		
-		
-		
-		for (Iterator iterator = inQuery.getExtraFacets().iterator(); iterator.hasNext();)
-		{
-			String detail = (String) iterator.next();
-			PropertyDetail facet = getDetail(detail);
-			if (facet != null)
-			{
-				allFilters.add(facet);
-			}
-
-		}
-		for (Iterator iterator = allFilters.iterator(); iterator.hasNext();)
-		{
-			PropertyDetail detail = (PropertyDetail) iterator.next();
-
-			if (detail.isDate())
-			{
-				DateHistogramBuilder builder = new DateHistogramBuilder(detail.getId() + "_breakdown_day");
-				builder.field(detail.getId());
-				builder.interval(DateHistogramInterval.DAY);
-				builder.order(Order.KEY_DESC);
-				//	String timezone = TimeZone.getDefault().getID();
-				//		builder.timeZone(timezone);
-				inSearch.addAggregation(builder);
-
-				builder = new DateHistogramBuilder(detail.getId() + "_breakdown_week");
-				builder.field(detail.getId());
-				//	builder.timeZone(timezone);
-
-				builder.interval(DateHistogramInterval.WEEK);
-				builder.order(Order.COUNT_DESC);
-
-				inSearch.addAggregation(builder);
-
-			}
-
-			else if (detail.isNumber())
-			{
-				SumBuilder b = new SumBuilder(detail.getId() + "_sum");
-				b.field(detail.getId());
-				inSearch.addAggregation(b);
-
-				AvgBuilder avg = new AvgBuilder(detail.getId() + "_avg");
-				avg.field(detail.getId());
-
-			}
-			else if (detail.isList() || detail.isBoolean() || detail.isMultiValue())
-			{
-				if (detail.isViewType("tageditor"))
-				{
-					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
-					inSearch.addAggregation(b);
-				}
-				else
-				{
-
-					AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId()).size(100);
-					inSearch.addAggregation(b);
-
-				}
-			}
-			else
-			{
-				AggregationBuilder b = AggregationBuilders.terms(detail.getId()).field(detail.getId() + ".exact").size(100);
-				inSearch.addAggregation(b);
-			}
-
-		}
-
-		// For reports, we can pass in a custom aggregation from a script or
-		// somewhere
-
-		if (inQuery.getAggregation() != null)
-		{
-			inSearch.addAggregation((AbstractAggregationBuilder) inQuery.getAggregation());
-
-		}
-
-	}
 
 	@SuppressWarnings("rawtypes")
 

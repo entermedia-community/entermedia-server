@@ -1,6 +1,21 @@
+Upload
+<form action="/media/services/rest/upload.xml" enctype="multipart/form-data" method="post">
+	<p>
+		catalogid <input name="catalogid" type="text" value="assets/catalog" /><br />
+		assetid&nbsp;<input name="sourcepath" type="text" value="somefile.wmv" /><br />
+		<br />
+		file <input name="file" type="file" /><br />
+		<br />
+		<input type="submit" />
+	</p>
+</form>
+
+
+
+Upload Primary
 <form action="/media/services/rest/attachments/uploadprimary.xml" enctype="multipart/form-data" method="post">
 	<p>
-		catalogid <input name="catalogid" type="text" value="media/catalogs/public" /><br />
+		catalogid <input name="catalogid" type="text" value="assets/catalog" /><br />
 		assetid&nbsp;<input name="assetid" type="text" value="" /><br />
 		<br />
 		file <input name="file" type="file" /><br />
