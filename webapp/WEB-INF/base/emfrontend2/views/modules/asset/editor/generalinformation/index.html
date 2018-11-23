@@ -5,46 +5,8 @@
 #end  
 
 $context.putPageValue("showalllanguagevalues",true)
-<div class="em2tabs-tabcontainer">
-<ul class="emtabs em2tabs" data-defaulttab="tabsummary" data-targetdiv="assetpanel-tab-content">
-<li>
- 	<a id="tabsummary" 
- 	data-layouts="1"  
- 	href="$apphome/views/modules/asset/editor/generalinformation/summary.html?assetid=${asset.id}">[[Summary]]</a>
-</li>
 
-
-#foreach( $viewpath in $views.keySet() )
- 	#set( $target = $views.get($viewpath) )
- 	#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
-       #if("$!permissionvalue" == "" || $permissionvalue == true)
-		#if( $target.rendertype != "table" )
-			##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
-			#set( $filename = "generic.html" )
-			#set( $label = $target.name)
-			#set( $assetid = $asset.id)
-			#set( $view = $viewpath)
-			
-			#if(!$firstviewpath)
-				#set( $firstviewpath = $viewpath)
-				#set( $firsttarget = $target)
-			#end
-			<li>
-			 	<a id="tab$target.id" data-layouts="1"  
-			 	href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$viewpath&edit=$!caneditasset&assetid=${asset.id}">$label</a>
-			</li>
-		#end
-	#end
-	#set($permissionvalue = "")
+<div class="tab-pane" id="tabsummarypanel">
+$pages.include("$apphome/views/modules/asset/editor/generalinformation/summary.html?assetid=${asset.id}")
+</div>
 	
-#end	 
-</ul>
-</div>
-<div id="assetpanel-tab-content" class="em2tabs-tab-content">
-	<div class="tab-pane" id="tabsummarypanel">
-	$pages.include("$apphome/views/modules/asset/editor/generalinformation/summary.html?assetid=${asset.id}")
-	</div>
-	##<div class="tab-pane" id="tab${firsttarget.id}panel">
-	##$pages.include("$apphome/views/modules/asset/editor/generalinformation/editform.html?viewid=$firstviewpath&edit=$!caneditasset&assetid=${asset.id}")
-	##</div>
-</div>

@@ -1,10 +1,13 @@
-Hi $sendto,
+<h2>[[EnterMedia - Asset comment notification]]</h2>
+
+Hi $sendto,<br/><br/>
 
 #if( $notifications.size() > 1 )
   Some comments have been made on the following assets:
 #else
   Some comments have been made on the following asset:
 #end
+<br/><br/>
 
 #foreach( $asset in $notifications.getAssets() )
   <div>
@@ -13,7 +16,7 @@ Hi $sendto,
   </div>
   #foreach( $message in $notifications.getMessages($asset) )
     <div>
-      <b>$context.getDate($message.date) - $mediaarchive.getUser($message.user)</b> <i>$message.message</i>
+      <b>$context.getDate($message.date) - $archive.getUser($message.user): </b> <i>$message.message</i>
     </div>
   #end
 #end

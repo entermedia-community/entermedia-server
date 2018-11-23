@@ -4,22 +4,24 @@ $context.putPageValue("showalllanguagevalues",true)
 <div class="container-fluid ">
 <div class="row">
 		<div class="col-8">
-			#set( $archive = $searcherManager.getPropertyDetailsArchive($catalogid) )
 			#foreach( $viewpath in $views.keySet() )
 			 
 				#set( $target = $views.get($viewpath) )
-				 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+				#set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
 			        #if("$!permissionvalue" == "" || $permissionvalue == true)
 			     
 					#if( !$target.rendertable )
-						##displaydetails("generic.html" $target.name "$asset.id" $viewpath $print)
 						$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
 						$context.putPageValue("data",$asset)	
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
-						
 						$context.putPageValue("view",$viewpath)
+						
 						<div class="asset-data-detail previewonly assetpanel-editor-box">
-							<h4>$context.getText($target.toString())</h4>
+							<h4>$context.getText($target.toString()) 
+								<a href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewpath=$viewpath&edit=$!caneditasset&assetid=${asset.id}" 
+								   class="detail-edit-icon float-right emdialog"
+								   data-hidefooter="true"
+								   data-width="900"><i class="fas fa-edit"></i></a></h4>
 							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
 					#end
@@ -29,6 +31,9 @@ $context.putPageValue("showalllanguagevalues",true)
 			#end
 	</div>					
 			<div class="col-4">
+			
+				$pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
+			
 				#set( $libraries = $asset.getLibraries())
 				#if( $libraries.size() > 0)
     				

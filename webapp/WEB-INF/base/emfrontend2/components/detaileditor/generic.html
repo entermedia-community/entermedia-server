@@ -65,7 +65,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<input type="hidden" name="id" value="$!data.id" />
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
-		<div id="default-fields">
+		<div id="default-fields" class="fields-editor">
 			$pages.include("/$applicationid/components/xml/detaileditor-2.html?multiedit=$multiedit", $context)
 		</div>
 		<div class="container-fluid">

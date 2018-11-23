@@ -17,7 +17,7 @@ $context.putPageValue("cdn",$cdnprefix)
 #if( !$previewonly)
 	#set( $previewonly = false)
 #end
-#set( $opentab = $userprofile.get("assetopentab"))
+
 #if( !$opentab)
 	#if( $canmetadatageneral )
 		#set( $opentab = "viewproperties")

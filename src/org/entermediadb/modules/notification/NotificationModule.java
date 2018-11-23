@@ -88,6 +88,7 @@ public class NotificationModule extends BaseMediaModule
 			Map<String, Object> objects = new HashMap<String, Object>();
 			objects.put("notifications", chats);
 			objects.put("sendto", user);
+			objects.put("archive", inArchive);
 			templatemail.send(objects);
 
 			// TODO: update the status page on the user
