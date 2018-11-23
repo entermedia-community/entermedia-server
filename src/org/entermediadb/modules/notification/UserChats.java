@@ -2,12 +2,15 @@ package org.entermediadb.modules.notification;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.entermediadb.asset.Asset;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 
 public class UserChats
 {
@@ -74,8 +77,29 @@ public class UserChats
 	public Collection getMessages(String inAssetId)
 	{
 		Collection existingmessages = (Collection) fieldAssetMessages.get(inAssetId);
+		existingmessages = sort(existingmessages);
 		//TODO: Sort by date
 		return existingmessages;
 	}
 
+	protected Collection sort(Collection messages)
+	{
+		ArrayList sorted = new ArrayList(messages);
+		sorted.sort(new Comparator<MultiValued>()
+		{
+			@Override
+			public int compare(MultiValued inO1, MultiValued inO2)
+			{
+				//sort by date
+				Date date1 = (Date)inO1.getDate("date");
+				Date date2 = (Date)inO2.getDate("date");
+				if( date1 != null && date2 != null)
+				{
+					return date1.compareTo(date2);
+				}
+				return 0;
+			}
+		});
+		return sorted;
+	}
 }
