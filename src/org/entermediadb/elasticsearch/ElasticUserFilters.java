@@ -79,31 +79,13 @@ public class ElasticUserFilters implements UserFilters
 		fieldUserProfile = inUserProfile;
 	}
 
-
-	
-	
-//	List facets = getPropertyDetailsArchive().getView(inSearchType, inSearchType + "/" + inSearchType + "facets", getUserProfile());
-//
-//	if (facets != null && facets.size() > 0)
-//	{
-//		for (Iterator iterator = facets.iterator(); iterator.hasNext();)
-//		{
-//			PropertyDetail detail = (PropertyDetail) iterator.next();
-//			//	if (detail.isFilter())
-//			//		{
-//			allFilters.add(detail);
-//			//	}
-//
-//		}
-//
-//	}
-
-	
-	
-	
-	
-
-	
+	public void addFilterOptions(String inSearchType, SearchQuery inQuery, List<FilterNode> inFilters)
+	{
+		if (inQuery.getMainInput() != null)
+		{
+			getCacheManager().put("facethits" + inSearchType, inQuery.getMainInput(), inFilters);
+		}
+	}
 
 	public List<FilterNode> getFilterOptions(String inSearchType, SearchQuery inQuery)
 	{
