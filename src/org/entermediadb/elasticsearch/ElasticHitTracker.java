@@ -190,11 +190,11 @@ public class ElasticHitTracker extends HitTracker
 						added = true;
 					
 					}
-					if(filters != null)
-					{
-						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
-						added = true;
-					}
+//					if(filters != null)
+//					{
+//						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
+//						added = true;
+//					}
 					if (!isUseServerCursor() || fieldLastScrollId == null || chunk == 0) //todo: Allow scrolling for iterators
 					{
 						

@@ -1,15 +1,11 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.elasticsearch.action.ActionRequestBuilder;
-import org.elasticsearch.action.search.SearchRequest;
 import org.elasticsearch.action.search.SearchRequestBuilder;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
@@ -109,10 +105,10 @@ public class ElasticUserFilters implements UserFilters
 				for (Iterator iterator = facets.iterator(); iterator.hasNext();)
 				{
 					PropertyDetail detail = (PropertyDetail) iterator.next();
-				//	if (detail.isFilter())
-			//		{
-						allFilters.add(detail);
-				//	}
+					//	if (detail.isFilter())
+					//		{
+					allFilters.add(detail);
+					//	}
 
 				}
 
@@ -275,15 +271,20 @@ public class ElasticUserFilters implements UserFilters
 
 	public List<FilterNode> getFilterOptions(String inSearchType, SearchQuery inQuery)
 	{
-		Object object = getCacheManager().get("facethits" + inSearchType, inQuery.getMainInput());
-		return (List<FilterNode>) object;
+		if (inQuery.getMainInput() != null)
+		{
+			Object object = getCacheManager().get("facethits" + inSearchType, inQuery.getMainInput());
+			return (List<FilterNode>) object;
+		}
+		else
+		{
+			return null;
+		}
 
 	}
-	
-	
-	
-	
-	public void clear(String inSearchType) {
+
+	public void clear(String inSearchType)
+	{
 		getCacheManager().clear("facethits" + inSearchType);
 	}
 
