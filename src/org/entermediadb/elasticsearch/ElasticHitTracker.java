@@ -22,6 +22,7 @@ import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.aggregations.Aggregations;
 import org.elasticsearch.search.aggregations.bucket.histogram.Histogram;
+import org.elasticsearch.search.aggregations.bucket.terms.Terms;
 import org.elasticsearch.search.aggregations.metrics.avg.Avg;
 import org.elasticsearch.search.aggregations.metrics.sum.Sum;
 import org.openedit.Data;
@@ -45,12 +46,10 @@ public class ElasticHitTracker extends HitTracker
 	protected Client fieldElasticClient;
 	protected int fieldLastPageLoaded;
 	protected SearcherManager fieldSearcherManager;
-
-	public ElasticUserFilters getUserFilters()
-	{
-		return (ElasticUserFilters) getSearchQuery().getUserFilters();
-	}
-
+	protected List fieldTopfacets ;
+	
+	
+	
 	
 
 	public SearcherManager getSearcherManager()
@@ -180,16 +179,15 @@ public class ElasticHitTracker extends HitTracker
 						throw new OpenEditException(error);
 					}
 					
-					boolean added = false;
 					
 					
-					ElasticUserFilters filters = getUserFilters();
-					if(filters == null && (getSearchQuery().isFilter() || getSearchQuery().isEndUserSearch())) {
-						filters = (ElasticUserFilters) getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(), "userFilters");
-						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
-						added = true;
-					
-					}
+//					ElasticUserFilters filters = getUserFilters();
+//					if(filters == null && (getSearchQuery().isFilter())) {
+//						filters = (ElasticUserFilters) getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(), "userFilters");
+//						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
+//						added = true;
+//					
+//					}
 //					if(filters != null)
 //					{
 //						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
@@ -234,12 +232,16 @@ public class ElasticHitTracker extends HitTracker
 					}
 					getChunks().put(chunk, response);
 					
-					
-						if( added )
-						{
-							filters.setFilterOptions(getSearchType(), getSearchQuery(), response);
-						  getSearcheRequestBuilder().setAggregations(new HashMap());
-						}
+					if(response.getAggregations() != null && fieldTopfacets == null) {
+						fieldTopfacets = new ArrayList();
+						loadFilterOptions(response);
+					    getSearcheRequestBuilder().setAggregations(new HashMap());
+					} else {
+						fieldTopfacets = new ArrayList();
+					    getSearcheRequestBuilder().setAggregations(new HashMap());
+
+					}
+						
 					
 				}
 			}
@@ -247,20 +249,97 @@ public class ElasticHitTracker extends HitTracker
 		return response;
 	}
 	
-	@Override
-	public List<FilterNode> getFilterOptions()
+	
+	public List getFilterOptions()
 	{
 		
-		ElasticUserFilters filters = getUserFilters();
-		if(filters == null && (getSearchQuery().isFilter() || getSearchQuery().isEndUserSearch())) {
-			filters = (ElasticUserFilters) getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(), "userFilters");
-		
+		if (fieldTopfacets == null)
+		{
+			getSearchResponse(0);//This will cause the aggregations to be loaded
+			
 		}
-		if(filters != null) {
-			return filters.getFilterOptions(getSearchType(), getSearchQuery());
-		}
-		return Collections.EMPTY_LIST;
+
+		return fieldTopfacets;
 	}
+
+
+
+
+
+	public void loadFilterOptions(SearchResponse response) //parse em
+	{
+		
+		//TODO: Should save the response and only load it if someone needs the data
+		if (response.getAggregations() != null)
+		{
+			
+			Aggregations facets = response.getAggregations();
+
+			for (Iterator iterator = facets.iterator(); iterator.hasNext();)
+			{
+				Object agg = iterator.next();
+				if (agg instanceof Terms)
+				{
+					Terms f = (Terms) agg;
+
+					//				Collection<Terms.Bucket> buckets = terms.getBuckets();
+					//				assertThat(buckets.size(), equalTo(3));
+
+					if (f.getBuckets().size() > 0)
+					{
+						FilterNode parent = new FilterNode();
+						parent.setId(f.getName());
+						parent.setName(f.getName());
+						PropertyDetail detail = getSearcher().getDetail(f.getName());
+						if (detail != null)
+						{
+							parent.setValue("name", detail.getElementData().getLanguageMap("name"));
+						}
+						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
+						{
+
+							//	org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.StringTerms.Bucket) iterator2.next();
+							org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket entry = (org.elasticsearch.search.aggregations.bucket.terms.Terms.Bucket) iterator2.next();
+
+							long count = entry.getDocCount();
+							String term = entry.getKeyAsString();
+							//log.info("term " + parent.getName()  + " \\" + term);
+							FilterNode child = new FilterNode();
+							child.setId(term);
+							child.setPropertyDetail(detail);
+							if (detail != null && detail.isList())
+							{
+								Data data = getSearcherManager().getData(detail.getListCatalogId(), detail.getListId(), term);
+								if (data != null)
+								{
+									//child.setName(data.getName());
+
+									child.setProperties(data.getProperties());
+								}
+								else
+								{
+									//child.setName(term);
+									continue;
+								}
+							}
+							else
+							{
+								child.setName(term);
+
+							}
+
+							child.setProperty("count", String.valueOf(count));
+							parent.addChild(child);
+						}
+						fieldTopfacets.add(parent);
+					}
+				}
+			}
+		}
+
+	}
+	
+
 	
 	
 	@Override
@@ -458,7 +537,7 @@ public class ElasticHitTracker extends HitTracker
 		fieldFilterOptions = null;
 	}
 
-	public void refreshFilters()
+	public void applyFilters()
 	{
 		
 		

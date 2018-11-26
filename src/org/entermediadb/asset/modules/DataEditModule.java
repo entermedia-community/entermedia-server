@@ -38,6 +38,7 @@ import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.ListHitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
+import org.openedit.hittracker.UserFilters;
 import org.openedit.page.Page;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
@@ -1982,6 +1983,22 @@ protected Element loadViewElement(XmlFile file, String toremove)
 		
 		
 	}
+	
+	public void loadFacetsForUser(WebPageRequest inReq) {
+
+		
+		
+//		if(inQuery.isEndUserSearch()) {
+//			UserFilters filters = (UserFilters) inPageRequest.getSessionValue(getSearchType() + getCatalogId()+ "userFilters");
+//			if(filters == null) {
+//				filters = (UserFilters) getModuleManager().getBean(getCatalogId(), "userFilters", false);
+//				filters.setUserProfile(usersettings);
+//				inPageRequest.putSessionValue(getSearchType() + getCatalogId()+ "userFilters", filters);
+//			}
+//			
+//		}
+	}
+	
 	
 	
 }
