@@ -1966,11 +1966,15 @@ label.error {
 
 .assetpanel-editor .cat-list a {
 	color:#ccc;
-	text-decoration: underline;
+	text-decoration: none;
 }
 .assetpanel-editor .cat-list a:hover {
 	color:#fff;
 	text-decoration: underline;
+}
+.assetpanel-editor .table-striped {
+	color:#333;
+	border:1px solid #fff;
 }
 .summarytab .list-library,
 .summarytab .list-collection {
@@ -1985,7 +1989,7 @@ label.error {
 
 	}
 .assettab-box {
-	background-color: #efefef;
+	/*background-color: #efefef;*/
 }
 .summarytab .media-player-mini  {  margin-bottom:20px; }
 .summarytab .emthumbholder {
@@ -4062,9 +4066,10 @@ a.collectionbox.favorite
 .cat-list .cat-row {
     padding-top: 7px;
     padding-bottom: 7px;
-    border-bottom: 1px dotted #ccc;
     list-style: none;
-    
+}
+.cat-list .cat-row:hover {
+	background-color:rgba(0,0,0,0.2);
 }
 
 .cat-list .cat-row .category {

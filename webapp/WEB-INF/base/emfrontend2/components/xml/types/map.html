@@ -128,7 +128,9 @@ dosearch = function ()
 
 initialize(); //Onload?
 $(window).resize(function() {
-  google.maps.event.trigger(map, "resize");
+	if (typeof map !== 'undefined') {
+  		google.maps.event.trigger(map, "resize");
+	}
 });
 
 </script>

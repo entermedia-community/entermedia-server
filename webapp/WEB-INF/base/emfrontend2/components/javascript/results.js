@@ -822,8 +822,8 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 	lQuery('a.assettab').livequery('click',function(e) {
 		e.preventDefault();
 		$(".bottomtab").removeClass("tabselected");
+		$(".bottomtabactions a").removeClass("dropdown-current");
 		$(this).closest(".bottomtab").addClass("tabselected");
-
 		var div = $("#main-media-viewer" );
 		var options = div.data();
 		var assettab = $(this).data("assettab");
@@ -843,6 +843,11 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			saveProfileProperty("assetopentab",assettab,function(){});
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
+				$(this).addClass("dropdown-current");
+				var label = $(this).data("assettabname");
+				if (label) {
+					$('.bottomtabactionstext').text(label);
+				}
 				saveProfileProperty("assetopentabactions",assettabactions,function(){});
 			}
 		}

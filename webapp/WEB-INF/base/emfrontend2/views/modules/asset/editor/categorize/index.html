@@ -11,8 +11,8 @@
 	<input name="save" value="true" type="hidden" />
 	#set( $val = $asset.get("category-exact"))
 	<input name="field" value="category-exact" type="hidden" />
-<div class="container-fluid">
-<div class="row">
+
+<div class="row  no-gutters">
 <div class="col-6 assettab-box">
 
 
@@ -26,13 +26,13 @@
 			$context.putPageValue("existing", $val)
 			#end
 			$context.putPageValue("detail", $mediaarchive.getAssetSearcher().getDetail("category-exact"))
-			<div  style="padding:10px 15px 20px;">
+			
 			$pages.include("$apphome/components/xml/types/category.html?longform=true", $context)
-			</div>
+			
 
 </div>
 </div>
-</div>
+
 	<div class="btns">
 		<input class="btn btn-sm btn-primary" type="submit" value="[[Save Categories]]" />
 	</div>
