@@ -429,7 +429,8 @@ color: #fff;
 	padding: 2px 6px;
 }
 #footermenu .dropdown-menu a:hover,
-#footermenu .dropdown-submenu:hover>a {
+#footermenu .dropdown-submenu:hover>a,
+#footermenu .dropdown-menu a.dropdown-current {
 	background-color: #a8a8a8;
 	text-decoration: none;
 }
