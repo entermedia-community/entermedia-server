@@ -1727,7 +1727,7 @@ div#drop-area .drop-over {
 .up-files-list li {
     padding:0;
     margin: 0;
-    border-bottom: 1px solid #ddd;
+    clear:both;
     list-style: none;
     position: relative;
 }
@@ -2292,7 +2292,8 @@ label.error {
 .media-likes .liked {color:#fff;}
 
 .media-player .video-js { margin: 0 auto;}
-
+.media-player .vjs-tech, 
+.vjs-poster { background-color: #333!important;}
 
 .card-box-asset-preview { padding:20px;}
 .card-box-asset-preview ul { list-style: none; margin: 0 0 20px 0; padding: 0;}
