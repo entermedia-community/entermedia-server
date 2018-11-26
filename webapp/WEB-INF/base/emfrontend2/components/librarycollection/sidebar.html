@@ -1,26 +1,6 @@
 #if( $canviewcategorynavcollections || $canviewcategorynav)
 	#if ( $librarycol )
-		<div class="ui-widget uipanel" id="left-col-libraries" >
-			<div  #if($userprofile.minimizeprojectscontent == "false" && $cantogglesidebar) 
-					class="ui-widget-header sidetoggle expanded" 
-				  #elseif($cantogglesidebar) 
-				  	class="ui-widget-header sidetoggle minimized" 
-				  #else 
-				  	class="ui-widget-header" 
-				  #end 
-				  data-target="projectscontent">
-					<span class="widget-header-title">
-					<span class="widget-header-right">
-					<a class="sidebarsubmenu"  title="[[View Category]]" 
-					href="$home$apphome/views/modules/category/categorysearch.html?categoryid=$librarycol.getCategory().getId()&nodeID=$librarycol.getCategory().getId()">
-					</a>
-					</span>
-					[[Categories]]</span>
-			</div>
-			<div  class="ui-widget-content" style="padding:0px" id="librarycollectioncontent" >
-				$pages.include("$apphome/components/librarycollection/tree.html")
-			</div>
-		</div>
+		$pages.include("$apphome/components/librarycollection/tree.html")
 	#end
 #end
 

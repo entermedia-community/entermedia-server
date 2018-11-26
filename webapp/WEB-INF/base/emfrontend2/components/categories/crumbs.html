@@ -8,18 +8,18 @@
 	#if( ${foreach.count} > 1) \ #end
 	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}&nodeID=${parent.id}">$parent</a>
 	#end
+
+	#if( !$librarycol)
+		#set($collection = $mediaarchive.getSearcher("librarycollection").query().match("rootcategory",$categoryid).searchOne())
+		#if($collection)
+			<a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="opencollection-btn" >[[Open Collection]]</span></a>
+		#end
+	#end
+
+
 </div>
+
 </div>
-#if( !$librarycol)
-#set($collection = $mediaarchive.getSearcher("librarycollection").query().match("rootcategory",$categoryid).searchOne())
-#if($collection)
-<div style="float:right; height:33px; background: #EEE; padding: 2px 15px 0px 10px;margin-left: 30px;margin-top:-20px">
-<a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="librarylabel " style="width:100%">
-					 	<span> [[Open Collection]]</span>
-					</a>
-</div>
-#end
-#end
 #if($librarycol.projectstatus)
 <strong> ($mediaarchive.getData("projectstatus", $librarycol.projectstatus))</strong>
 #end

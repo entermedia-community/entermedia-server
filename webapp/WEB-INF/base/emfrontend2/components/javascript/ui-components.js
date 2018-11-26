@@ -1249,41 +1249,47 @@ uiload = function() {
 		e.preventDefault();
 		if ($("#col-filters").hasClass("filtersopen")) {
 			//close
-			$("#filterstoggle").find('.closebar').hide();
-			$("#filterstoggle").find('.openbar').show();
 			$("#col-filters").removeClass("filtersopen");
 			$("#maincontent").removeClass("filtersopen");
-			saveProfileProperty("filtersbarstatus",false,function(){});
+			saveProfileProperty("filtersbarstatus",false,function(){
+				$(window).trigger( "resize" );
+			});
 		}
 		else {
 			//open
-			$("#filterstoggle").find('.closebar').show();
-			$("#filterstoggle").find('.openbar').hide();
 			$("#col-filters").addClass("filtersopen");
 			$("#maincontent").addClass("filtersopen");
-			saveProfileProperty("filtersbarstatus",true,function(){});
+			saveProfileProperty("filtersbarstatus",true,function(){
+				$(window).trigger( "resize" );
+			});
 		}
-		return false;
+		
+		$("#filterstoggle").toggleClass("hide");
+		
 		return false;
 	});
 	lQuery('.lefttoggle').livequery("click", function(e) {
-		e.preventDefault();
+		//e.preventDefault();
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
-			$("#lefttoggle").find('.closebar').hide();
-			$("#lefttoggle").find('.openbar').show();
 			$("#col-left").removeClass("leftopen");
 			$("#maincontent").removeClass("leftopen");
-			saveProfileProperty("leftbarstatus",false,function(){});
+			//$(window).trigger( "resize" );
+			saveProfileProperty("leftbarstatus",false,function(){
+				$(window).trigger( "resize" );
+			});
 		}
 		else {
 			//open
-			$("#lefttoggle").find('.closebar').show();
-			$("#lefttoggle").find('.openbar').hide();
 			$("#col-left").addClass("leftopen");
 			$("#maincontent").addClass("leftopen");
-			saveProfileProperty("leftbarstatus",true,function(){});
+			//$(window).trigger( "resize" );
+			saveProfileProperty("leftbarstatus",true,function(){
+				$(window).trigger( "resize" );
+			});
 		}
+		
+		$("#lefttoggle").toggleClass("hide");
 		return false;
 	});
 

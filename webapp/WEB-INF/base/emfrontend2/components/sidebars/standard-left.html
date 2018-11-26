@@ -1,4 +1,39 @@
 <div>
-	$pages.include("$apphome/components/categories/sidebar-left.html", $context) 
+#if( $canviewcategorynav )
+	<div class="col-sidebar-header">
+		<h2 class="lefttoggle">
+		<a class="nav-btn lefttoggleclose float-right" href="#">
+			<i class="fas fa-chevron-circle-left closebar"></i>
+		</a>
+		<i class="fas fa-list"></i> [[CATEGORIES]]	</h2>
+	</div>
+	
+	
+	#if(!$librarycol)
+		#set( $selectedcollection = $context.getRequestParameter("collectionid"))
+		#if( $selectedcollection)
+			#set($librarycol = $mediaarchive.getData("librarycollection",$selectedcollection))
+			$context.putPageValue("librarycol",$librarycol)
+		#end	
+	#end
+	#set( $selectedlibraryid = $context.getRequestParameter("selectedlibrary"))
+	#if($selectedlibraryid)
+		#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+		$context.putPageValue("selectedlibrary",$selectedlibrary)
+	#elseif( $librarycol )
+		#set( $selectedlibraryid = $librarycol.get("library") )
+		#set($selectedlibrary = $mediaarchive.getData("library",$selectedlibraryid))
+		$context.putPageValue("selectedlibrary",$selectedlibrary)
+	#end
+	
+	#if( $librarycol)
+		$pages.include("$apphome/components/librarycollection/sidebar.html",$context)
+	#else
+		$pages.include("$apphome/components/categories/sidebar-left.html", $context) 
+	#end
+	
+	
+	
+#end 
 	<div class="clearfix"></div>
 </div>

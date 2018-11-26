@@ -740,7 +740,7 @@ gridResize = function()
 	$(".masonry-grid .masonry-grid-cell").each(function()
 	{		
 		var cell = $(this);
-		cell.css("margin",cellpadding/4 + "px");
+		cell.css("margin",cellpadding/2 + "px");
 		//cell.css("padding",cellpadding);
 		var w = cell.data("width");
 		var	h = cell.data("height");

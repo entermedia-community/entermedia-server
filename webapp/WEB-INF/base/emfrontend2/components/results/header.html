@@ -41,10 +41,8 @@
 		#set ($enabled=$hits.getSelectionSize() > 0)
 		
 		<li>
-			
-			<a class="nav-btn lefttoggle" href="#" id="lefttoggle">
-			<i class="fas fa-chevron-circle-left closebar #if ($leftbarstatus!=false) show #end"></i>
-			<span class="openbar #if ($leftbarstatus!=false) hidden #end"><i class="fas fa-list"></i> [[CATEGORIES]]</a></span>
+			<a class="nav-btn lefttoggle #if ($leftbarstatus!=false) hide #end" href="#" id="lefttoggle">
+			<span class="openbar "><i class="fas fa-list"></i> [[CATEGORIES]]</a></span>
 		</li>
 		
 		  	
@@ -117,9 +115,8 @@
 		
 		<ul class="resultsnavright">
 			<li>
-				<a class="nav-btn filterstoggle" href="#" id="filterstoggle">
-				<i class="fas fa-chevron-circle-right closebar #if ($filtersbarstatus!=false) show #end"></i>
-				<span class="openbar #if ($filtersbarstatus!=false) hidden #end"><i class="fas fa-sliders-h"></i> [[FILTERS]]</span> 
+				<a class="nav-btn filterstoggle #if ($filtersbarstatus!=false) hide #end" href="#" id="filterstoggle">
+				<span class="openbar"><i class="fas fa-sliders-h"></i> [[FILTERS]]</span> 
 				</a>
 			</li>
 		#set ($resultview = $userprofile.get('resultview'))
