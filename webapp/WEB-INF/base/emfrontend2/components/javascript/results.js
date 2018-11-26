@@ -830,8 +830,8 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		
 		if (assettab=='viewpreview') {
 			var id = div.data("assetid");
-			showAsset(id);
 			saveProfileProperty("assetopentab",assettab,function(){});
+			showAsset(id);
 		}
 		else if (assettab=='multiedit') {
 			var link = $(this).data("link");
