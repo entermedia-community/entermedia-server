@@ -396,9 +396,14 @@ uiload = function() {
 				modaldialog.load(link, options, function() {
 					$(".modal-lg").css("min-width", width + "px");
 					// $(".modal-lg").css("min-height",height + "px" );
-
+					
+					var modalkeyboard = true;
+					var noesc = dialog.data("noesc");
+					if (noesc != null && noesc == true) {
+						 modalkeyboard = false;
+					}
 					modaldialog.modal({
-						keyboard : true,
+						keyboard : modalkeyboard,
 						backdrop : true,
 						"show" : true
 					});
@@ -430,6 +435,11 @@ uiload = function() {
 								':input:visible:first').focus();
 					}
 				});
+				
+				//Close drodpown if exists
+				if ($(this).closest('.dropdown-menu').length !== 0) {
+					$(this).closest('.dropdown-menu').removeClass('show');
+				}
 
 				event.preventDefault();
 				return false;

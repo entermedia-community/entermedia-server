@@ -292,6 +292,8 @@ $(document).ready(function(url,params)
 	}
 	initKeyBindings = function(hidden)
 	{
+		//Do we need keyup at all?
+		/*
 		$(document).keyup(function(e) 
 		{
 			if( !hidden.is(":visible") )
@@ -300,12 +302,19 @@ $(document).ready(function(url,params)
 			}
 			switch(e.which) {
 		        case 27: // esc
-		       	 hideOverlayDiv(getOverlay());
+		        	if ($('#modals').hasClass('show')) {
+		        		//Close modal only
+		        		$('#modals').modal('hide');
+		        		e.stopPropagation();
+		        	}
+		        	else{
+		        		hideOverlayDiv(getOverlay());
+		        	}
 		        break;
 			    
 			    default: return; 
 		     }
-		});	
+		});*/	
 		$(document).keydown(function(e) {
 			if( !hidden.is(":visible") )
 			{
@@ -333,7 +342,14 @@ $(document).ready(function(url,params)
 		        // TODO: background window.scrollTo the .masonry-grid-cell we view, so we can reload hits
 		        
 		        case 27: // esc
-		         	 hideOverlayDiv(getOverlay());
+		        	if ($('#modals').hasClass('show')) {
+		        		//Close modal only
+		        		$('#modals').modal('hide');
+		        		e.stopPropagation();
+		        	}
+		        	else{
+		        		hideOverlayDiv(getOverlay());
+		        	}
 		        break;
 		
 		
