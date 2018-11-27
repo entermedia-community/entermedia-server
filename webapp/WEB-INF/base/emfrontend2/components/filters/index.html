@@ -31,7 +31,8 @@
 	
 	$context.putPageValue("idprefix","search")
 	
-		<table class="advancedsearchtable">
+	
+		
 			#foreach( $detail in $details)
 				$context.putPageValue("detail", $detail)
 				$context.putPageValue("searchform", true)
@@ -42,8 +43,8 @@
 					$pages.include("/${applicationid}/components/filters/section.html", $context)
 				#end
 			#end
-			<tr>
-				<td class="advancedsearchtable-submit">
+			
+			
 					#if( $librarycol.rootcategory )
 						<input type="hidden" name="field" value="category" />
 						<input type="hidden" name="operation" value="exact" />
@@ -68,10 +69,7 @@
 					</div>
 				    
 					
-				</td>
-			</tr>
-		</table>
-		
+			
 		#set ($resultview = $userprofile.get('resultview'))
 		
 		#if( !$resultview )
