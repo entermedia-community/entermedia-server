@@ -295,6 +295,7 @@ public class ElasticHitTracker extends HitTracker
 						if (detail != null)
 						{
 							parent.setValue("name", detail.getElementData().getLanguageMap("name"));
+							parent.setPropertyDetail(detail);
 						}
 						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
 						{

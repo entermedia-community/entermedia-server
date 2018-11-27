@@ -1,15 +1,14 @@
-#set($type = $userfiltervalues.get($detail.id))
-$type
-#if($type)
+#if($filternode)
 	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
 	#ifnull($viewpermission)
 		#set( $viewpermission = true)
 	#end
+	
 	#if( $viewpermission )
 			<div class="filter-box">
-		<div class="filter-box-header"><span class="toggle-filter"><i class="fas fa-caret-down"></i></span> $type.getName($context.getLocale()) </div>
+		<div class="filter-box-header"><span class="toggle-filter"><i class="fas fa-caret-down"></i></span> $filternode.getName($context.getLocale()) </div>
 		<div class="filter-box-options">
-			#if ($type.children >10)
+			#if ($filternode.children >10)
 				##select2
 				<select  id="$csslistid" name="${fieldname}.value" 
 						class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
@@ -18,14 +17,15 @@ $type
 						data-searchtype= '$searchtype'
 						onchange="if( typeof updatelisteners == 'function' )updatelisteners('$catalogid','$searchtype','$!view','$fieldname');" 
 					>
-				#foreach($entry in $type.children)
+				#foreach($entry in $filternode.children)
 					<option value="$key" #if( $value && $key == $value ) selected #end>#esc($label)</option>
 				#end
 				</select>
 			#else
-				#checkboxes
-				#foreach($entry in $type.children)
-				<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
+				##checkboxes
+				
+				#foreach($entry in $filternode.children)
+				<a class="addfilter" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
 				<i class="fas fa-check-square"></i>
 				<span> $entry.getText($context) </span>
 				</a>

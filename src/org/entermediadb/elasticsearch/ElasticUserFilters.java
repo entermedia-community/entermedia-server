@@ -96,10 +96,11 @@ public class ElasticUserFilters implements UserFilters
 		if (inQuery.getMainInput() != null)
 		{
 			List<FilterNode> list = (List<FilterNode>)getCacheManager().get("facethits" + inSearcher.getSearchType(), inQuery.getMainInput());
-			if( list == null)
+			if( list == null || true)
 			{
-				List<PropertyDetail> view = getPropertyDetailsArchive().getView(inSearcher.getSearchType(),inSearcher.getSearchType() + "/" + inSearcher.getSearchType() + "facets", getUserProfile());
-				if( view == null || view.isEmpty() )
+				List<PropertyDetail> view = getPropertyDetailsArchive().getView(  //assetadvancedfilter
+						inSearcher.getSearchType(),inSearcher.getSearchType() + "/" + inSearcher.getSearchType() + "advancedfilter", getUserProfile());
+				if( view != null && !view.isEmpty() )
 				{
 					List facets = new ArrayList<PropertyDetail>();
 					for (Iterator iterator = view.iterator(); iterator.hasNext();)
@@ -113,7 +114,11 @@ public class ElasticUserFilters implements UserFilters
 					
 					HitTracker all = (HitTracker)inSearcher.query().facets(facets).freeform("description", inQuery.getMainInput()).search();
 					list = all.getFilterOptions();
-				}				
+				}	
+				else
+				{
+					list = java.util.Collections.EMPTY_LIST;
+				}
 				getCacheManager().put("facethits" + inSearcher.getSearchType(), inQuery.getMainInput(), list);
 			}
 			return list;
