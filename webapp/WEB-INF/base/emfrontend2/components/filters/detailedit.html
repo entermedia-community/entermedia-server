@@ -2,8 +2,7 @@
 	
 	
 
-<tr>
-	<td id="detail_${detail.id}" valign="middle">
+	<div id="detail_${detail.id}" valign="middle">
 	<div class="form-group">
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 
@@ -52,19 +51,28 @@
 		#if ($detail.isFilter())
 			$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
 		#else
-		  	<label class="emsearchfield"> 
-			#if ($edit == "true")
-				<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
-				<i class="fas fa-times"></i>
-				</a>
-			#end
-			$!detail.getText($context) #if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
-			</label>
+		<div class="filter-box">
+		<div class="filter-box-header">
+			<span class="toggle-filter"><i class="fas fa-caret-down"></i></span> $!detail.getText($context) 
+		</div>
+		<div class="filter-box-options">
 			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
+		</div>
+		</div>
+		  	 
+			##if ($edit == "true")
+			##	<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
+			##	<i class="fas fa-times"></i>
+			##	</a>
+			##end
+			## 
+			##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
+			
+			
 		#end
 		</div>
-	</td>
-</tr>
+	</div>
+
 
 
 

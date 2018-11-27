@@ -594,11 +594,22 @@ html, body, #application {
 	background-color: #fff;
 }
 
+.filters-edit-icon {
+	float: right;
+	padding:5px;
+}
+
+.filters-edit-icon a {
+	color:#999;
+}
+.filters-edit-icon a:hover {
+	color:#fff;
+}
 
 .filter-box {
 	color:#efefef;
 	border-bottom:1px solid #efefef;
-	margin:30px 25px;
+	margin:30px 15px;
 }
 .filter-box a,
 .filter-box a:visited {
@@ -633,6 +644,24 @@ html, body, #application {
 
 .filter-box-options a.filter-current {
 	color:#fff;
+}
+
+.filter-box-options .select2-container--bootstrap4 .select2-selection {
+	background-color: #333!important;
+	color:#eee!important;
+	border: 1px solid #999!important;
+}
+
+.filter-box-options .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
+	border-color:#eee  transparent transparent;
+}
+
+.filter-box-options .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+	color:#efefef;
+}
+
+.filter-box-options .select2-container--bootstrap4 .select2-selection__clear {
+	color:#333;
 }
 
 .lefttoggle, .filterstoggle {
