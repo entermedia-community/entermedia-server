@@ -964,11 +964,6 @@ border-radius: 5px;
 	height: 30px;
 }
 
-.languagesaddform {
-	margin-top:10px;
-}
-
-
 /*Results Table*/
 #main-results-table th,
 .emresultstable th,
@@ -1937,8 +1932,6 @@ label.error {
 }
 .assetpanel-editor .col-md-6
  {
-	padding-top:10px;
-	padding-bottom:10px;
 }
 .assetpanel-editor .col-4 {
 	padding-left: 0;
@@ -1961,7 +1954,8 @@ label.error {
 .assetpanel-editor .detail-edit-icon:hover {
 	color:#fff;
 }
-.assetpanel-editor .emdatafield {
+.asset-data-preview .row { margin-bottom: 10px; }
+.asset-data-preview .emdatafield {
 	font-weight: normal;
 	color:#bbb;
 	margin-bottom: .3rem;
@@ -1970,21 +1964,19 @@ label.error {
     padding: 0;
     text-align: right;
 }
-.assetpanel-editor .emdatafieldvalue  {
+.asset-data-preview .emdatafieldvalue  {
 	font-size: 1.1rem;
 	padding:0 8px;
 	word-wrap: break-word;
 }
-.previewonlyrow {
-	margin-bottom: 40px;
-}
+
 .assetpanel-editor .emdatafieldvalue-readonly {
-	border: 1px solid #ced4da;
+	border: 1px solid #999;
     border-radius: .25rem;
     padding: .275rem .75rem;
     font-size: 1rem;
     line-height: 1.3;
-    background-color: #eaeaea;
+    background-color: #666;
     min-height: 30px;
 }
 .fields-editor .emdatafieldvalue  {
@@ -2024,7 +2016,7 @@ label.error {
 }
 .summarytab .media-player-mini  {  margin-bottom:20px; }
 .summarytab .emthumbholder {
-	width:510px;
+	/*width:510px;*/
 	height: 350px;
 	margin:0 auto;
 	text-align: center;

@@ -4,6 +4,7 @@ $context.putPageValue("showalllanguagevalues",true)
 <div class="container-fluid ">
 <div class="row">
 		<div class="col-8">
+			<div id="asset-detail-editor">
 			#foreach( $viewpath in $views.keySet() )
 			 
 				#set( $target = $views.get($viewpath) )
@@ -16,10 +17,11 @@ $context.putPageValue("showalllanguagevalues",true)
 						$context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 						$context.putPageValue("view",$viewpath)
 						
-						<div class="asset-data-detail previewonly assetpanel-editor-box">
+						<div class="asset-data-detail asset-data-preview assetpanel-editor-box">
 							<h4>$context.getText($target.toString()) 
-								<a href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewpath=$viewpath&edit=$!caneditasset&assetid=${asset.id}" 
-								   class="detail-edit-icon float-right emdialog"
+								<a href="$apphome/views/modules/asset/editor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}" 
+								   class="detail-edit-icon float-right ajax"
+								   data-targetdiv="asset-detail-editor"
 								   data-hidefooter="true"
 								   data-width="900"><i class="fas fa-edit"></i></a></h4>
 							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
@@ -29,6 +31,7 @@ $context.putPageValue("showalllanguagevalues",true)
                 #set($permissionvalue = "")
 				
 			#end
+			</div>
 	</div>					
 			<div class="col-4">
 			

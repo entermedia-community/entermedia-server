@@ -1,11 +1,4 @@
-#set ($print = $context.getRequestParameter("print"))
-
-#if( $print && $print == "true")
-  <h2 class="section">[[General Information]]</h2>
-#end  
-
 $context.putPageValue("showalllanguagevalues",true)
-
 <div class="tab-pane" id="tabsummarypanel">
 $pages.include("$apphome/views/modules/asset/editor/generalinformation/summary.html?assetid=${asset.id}")
 </div>

@@ -34,7 +34,7 @@ $context.putPageValue("searchtype", $searchtype)
 
 #set ( $openview = $context.getRequestParameter("openview") )
 #set ( $edit = $context.getRequestParameter("edit") )
-#set ($editpath = $context.getRequestParameter("editorpath"))
+#set ( $editpath = $context.getRequestParameter("editorpath"))
 #if(!$editpath)
 	#set( $editpath = "${page.directory}/genericsave.html" )
 #end
@@ -42,11 +42,15 @@ $context.putPageValue("searchtype", $searchtype)
 	#set($multiedit = true)
 #end
 
+#set( $viewlabel = $searcher.getViewLabel($view) )
+<h4>$context.getText($viewlabel)
+<a class="detail-edit-icon float-right ajax" href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"><i class="fas fa-cog"></i></a>
+</h4>
 
 
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 
-	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="${view}editor" method="post" action="$home$editpath?oemaxlevel=1" >
+	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="tabsummarypanel" method="post" action="$home$editpath?oemaxlevel=1" >
 	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input type="hidden" name="save" value="true" />
@@ -73,14 +77,12 @@ $context.putPageValue("searchtype", $searchtype)
  		<div class="col">
 		<div class="btns">
 			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).submit();" value="[[Save values]]"/>
-			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="${view}editor" href="$home$apphome/components/detaileditor/generic.html?searchtype=$searcher.searchType&view=$view&id=$!data.id&assetid=$asset.id$label=$label&oemaxlevel=1">[[Cancel]]</a>
+			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="tabsummarypanel" 
+				href="/$applicationid/views/modules/asset/editor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id">[[Cancel]]</a>
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )
 				#end
-				<div class="float-right edit-metadata-fields">
-					 <a class=" btn btn-sm btn-light" href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"><i class="fas fa-cog"></i> [[Edit View]]</a>
-				</div>
 				<div class="clearfix"></div>
 			#end
 		</div>
@@ -167,9 +169,6 @@ $context.putPageValue("searchtype", $searchtype)
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )
 				#end
-				<div class="float-right edit-metadata-fields">
-					 <a class=" btn btn-sm btn-light" href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"><i class="fas fa-cog"></i> [[Edit View]]</a>
-				</div>
 				<div class="clearfix"></div>
 			#end
 			</div>
