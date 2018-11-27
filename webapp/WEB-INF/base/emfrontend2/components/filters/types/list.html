@@ -1,4 +1,4 @@
-#set($type = $hits.findFilterNode($detail.id))
+#set($type = $userfiltervalues.get($detail.id))
 $type
 #if($type)
 	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
