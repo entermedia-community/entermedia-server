@@ -223,7 +223,8 @@ public class ElasticHitTracker extends HitTracker
 						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
 					}
 					setLastPageLoaded(inChunk);
-
+					fieldLastPullTime = now;
+					
 					if (getChunks().size() > 30)   //TODO: Keep the pages near us
 					{
 						SearchResponse first = getChunks().get(0);
