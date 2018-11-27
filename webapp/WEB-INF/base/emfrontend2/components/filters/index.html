@@ -1,0 +1,144 @@
+<div id="advsearchpanel">
+<div class="tanmodule" >
+	#set( $view = "asset/advancedsearch")
+	#set( $searcher = $mediaarchive.getAssetSearcher())
+	
+	$context.putPageValue("view", $view)
+	$context.putPageValue("searcher", $searcher)
+	
+	#set($usestartswith = $page.isPropertyTrue('usestartswith'))
+	$context.putPageValue("usestartswith",$usestartswith)
+	$context.putPageValue("caneditlists",false)
+				
+	
+	#set( $edit = $context.getRequestParameter("editadvsearch"))
+	#if( $edit)
+	$context.putPageValue("edit",$edit)
+	#end
+	
+	#if( $librarycol)
+		<form  name="advancedsearch" action="$home$apphome/views/modules/librarycollection/search.html" class="em-widget-content" method="POST">
+		<input name="collectionid" type="hidden" value="$librarycol.getId()">
+	#else
+		<form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content" method="POST">
+	#end
+	##We need 2 things passed in: $searcher, $view or $searcher $details
+	#if (!$details && $userprofile)
+		#set ($details = $searcher.getDetailsForView($view, $userprofile))
+	#else
+		#set ($details = $searcher.getDetailsForView($view))
+	#end
+	
+	$context.putPageValue("idprefix","search")
+	
+		<table class="advancedsearchtable">
+			#foreach( $detail in $details)
+				$context.putPageValue("detail", $detail)
+				$context.putPageValue("searchform", true)
+		
+				#if ($detail.isLeaf())
+					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+				#else
+					$pages.include("/${applicationid}/components/filters/section.html", $context)
+				#end
+			#end
+			<tr>
+				<td class="advancedsearchtable-submit">
+					#if( $librarycol.rootcategory )
+						<input type="hidden" name="field" value="category" />
+						<input type="hidden" name="operation" value="exact" />
+						<input type="hidden" name="category.value" value="$librarycol.rootcategory" />
+						<input type="hidden" name="collectionid" value="$librarycol.getId()" />
+					#elseif( $selectedlibrary.categoryid )
+						<input type="hidden" name="field" value="category" />
+						<input type="hidden" name="operation" value="exact" />
+						<input type="hidden" name="category.value" value="$selectedlibrary.categoryid" />
+						<input type="hidden" name="selectedlibrary" value="$selectedlibrary.getId()" />
+					#end
+				
+					<input type="hidden" name="customproperty" value="userinputsearch"/>
+					<input type="hidden" name="userinputsearch.value" value="true"/>
+					<div class="row btns-advancedsearch">
+						<div class="col-sm-6">
+							<a class="btn btn-sm btn-light" href="$home$apphome/views/modules/asset/index.html?assetclearresults=true&assetclearselection=true&clearfilters=true">[[Clear]]</a>
+						</div>
+						<div class="col-sm-6 text-right">
+							<input class="btn btn-sm btn-primary" type="submit" value="[[Search]]" />
+						</div>
+					</div>
+				    
+					
+				</td>
+			</tr>
+		</table>
+		
+		#set ($resultview = $userprofile.get('resultview'))
+		
+		#if( !$resultview )
+		<input type="hidden" name="resultstype" value="table" />
+		#end
+		
+		</form>
+		
+		#if ($edit == "true")
+		
+		##TODO: Pass this view name in
+		#set ($alldetails = $searcher.getUserPropertyDetails() )
+		<div class="advancedsearcheditform">
+		<strong>[[Edit Advanced Search Form]]:</strong>
+		<form id="searchaddfield" class="ajaxform" targetdiv="advsearchpanel" action="$home$apphome/components/advancedsearch/addfield.html" method="post">
+		
+			<input type="hidden" name="oemaxlevel" value="1"/>
+			<input type="hidden" name="editadvsearch" value="true"/>
+			<input type="hidden" name="view" value="$view"/>
+			<input type="hidden" name="catalogid" value="$searcher.getCatalogId()"/>
+			<input type="hidden" name="searchtype" value="$searcher.getSearchType()"/>
+			<div class="form-group">
+			<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
+				<option value="">[[Asset]]</option>
+				#foreach( $detail in $alldetails)
+					#if($detail.isLeaf())
+					<option value="$detail.id" style="margin-left: 10px;">$detail.getText($context)</option>
+					#else							
+						<optgroup label="$detail.title"></optgroup>
+						#foreach($child in $detail)
+						<option value="$child.id" style="margin-left: 10px;">$child.getText($context)</option>
+						#end
+					#end
+				#end	
+			</select>
+			</div>
+			<div class="form-group">
+			<select class="form-control" name="field" onChange="jQuery('#searchaddfield').submit();">
+				<option value="">[[Collection]]</option>
+				#set( $librarydetails = $mediaarchive.getSearcher("librarycollection").getUserPropertyDetails() )
+				#foreach( $detail in $librarydetails)
+				<option value="librarycollection.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
+				#end
+			</select>
+			</div>
+			<div class="form-group">
+			<select  class="form-control"  name="field" onChange="jQuery('#searchaddfield').submit();">
+				<option value="">[[Library]]</option>
+				#set( $librarydetails = $mediaarchive.getSearcher("library").getUserPropertyDetails() )
+				#foreach( $detail in $librarydetails)
+				<option value="library.${detail.id}" style="margin-left: 10px;">$detail.getText($context)</option>
+				#end
+			</select>
+			</div>
+		<div class="form-group">
+			<a class="ajax btn btn-sm btn-secondary" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
+		</div>	
+		</form>
+		</div>
+		#end
+	
+		<script type="text/javascript">
+			deleteField = function(inType,inFieldId)
+			{
+				var params = 'oemaxlevel=1&editadvsearch=true&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
+				jQuery('#advsearchpanel').load("$home$apphome/components/advancedsearch/deletefield.html?" + params)
+			}
+		</script>
+	</div>
+</div>

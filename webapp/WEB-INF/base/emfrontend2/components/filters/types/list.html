@@ -1,0 +1,39 @@
+#set($type = $hits.findFilterNode($detail.id))
+#if($type)
+	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
+	#ifnull($viewpermission)
+		#set( $viewpermission = true)
+	#end
+
+	#if( $viewpermission )
+			<div class="filter-box">
+		<div class="filter-box-header"><span class="toggle-filter"><i class="fas fa-caret-down"></i></span> $type.getName($context.getLocale()) </div>
+		<div class="filter-box-options">
+			#foreach($entry in $type.children)
+				#if( ${foreach.count} == 10 )
+					
+					<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="[[Show More]]" data-hidelabel="[[Show Less]]"><span>[[Show More]]</span></a>
+					
+				#end
+				
+				##TODO if more than 10 childs select2, less than 10 check boxes
+				
+					<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
+					<span> $entry.getText($context) </span>
+					
+					</a>
+				
+			#end
+			
+			##<a href="" class="filter-current"><i class="fas fa-check-square"></i> Date</a>
+			##<a href=""><i class="far fa-square"></i> Name</a>
+			
+		</div>
+	</div>
+		
+	#end  ##permission
+#end 
+
+
+
+	
