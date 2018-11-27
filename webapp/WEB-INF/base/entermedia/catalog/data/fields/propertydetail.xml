@@ -114,7 +114,7 @@
       <language id="fr"><![CDATA[Utilisé dans les mots-clés]]></language> 
     </name> 
   </property>  
- <!-- 
+  
   <property id="filter" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Used in Filters 
     <name> 
       <language id="de"><![CDATA[in Filtern verwendet]]></language>  
@@ -123,7 +123,6 @@
       <language id="fr"><![CDATA[Utilisé dans les Filtres]]></language> 
     </name> 
   </property>
-   -->
      
   <property id="multilanguage" type="boolean" editable="true" stored="true" index="true" keyword="false" filter="false" >Mutlilanguage Enabled 
     <name> 
