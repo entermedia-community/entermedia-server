@@ -33,7 +33,7 @@
       <language id="fr"><![CDATA[Localisation]]></language> 
     </name> 
   </property>  
-  <property id="isfolder" datatype="boolean" index="true" stored="true" editable="true"   type="boolean">Folder Based 
+  <property id="isfolder" datatype="boolean" index="true" stored="true" editable="true" filter="true"  type="boolean">
     <name> 
       <language id="de"><![CDATA[Ordner basierend]]></language>  
       <language id="en"><![CDATA[Folder Based]]></language>  
@@ -52,7 +52,7 @@
   <!-- Allow searching 
 	<property id="libraries"   type="list" viewtype="libraries" listid="library"   searchcomponent="librarysearch"   editable="true"  stored="true" index="true" sort="name" foreignkeyid="project">Libraries</property>
 	-->  
-  <property id="assettype" datatype="list" editable="true" index="true" stored="true" viewtype="list"  sort="name"  type="list">Asset Type 
+  <property id="assettype" datatype="list" editable="true" index="true" stored="true" filter="true" viewtype="list"  sort="name"  type="list">Asset Type 
     <name> 
       <language id="de"><![CDATA[Asset Type]]></language>  
       <language id="en"><![CDATA[Asset Type]]></language>  
@@ -171,7 +171,7 @@
       <language id="fr"><![CDATA[Espace couleur]]></language> 
     </name> 
   </property>  
-  <property id="colortype" index="true" stored="true" viewtype="list" datatype="list" externalid="Color Space Data"   editable="false" type="list">Color Type 
+  <property id="colortype" index="true" stored="true" viewtype="list" datatype="list" externalid="Color Space Data" filter="true"   editable="false" type="list">Color Type 
     <name> 
       <language id="de"><![CDATA[Farbtyp]]></language>  
       <language id="en"><![CDATA[Color Type]]></language>  
@@ -329,7 +329,7 @@
       <language id="fr"><![CDATA[Date de publication]]></language> 
     </name> 
   </property>  
-  <property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" keyword="true" stored="true" editable="true" >Owner 
+  <property id="owner" index="true" viewtype="user" type="list" listcatalogid="system" listid="user" filter="true"  keyword="true" stored="true" editable="true" >Owner 
     <name> 
       <language id="de"><![CDATA[Owner]]></language>  
       <language id="en"><![CDATA[Owner]]></language>  
@@ -350,7 +350,7 @@
       <language id="en"><![CDATA[Thumbnail File]]></language>  
     </name> 
   </property>  
-  <property id="importstatus" index="true" stored="true" datatype="list" listid="assetimportstatus" editable="true"   type="list">Import Status 
+  <property id="importstatus" index="true" stored="true" datatype="list" listid="assetimportstatus" editable="true" filter="true"   type="list">Import Status 
     <name> 
       <language id="de"><![CDATA[Import Status]]></language>  
       <language id="en"><![CDATA[Import Status]]></language>  
@@ -365,7 +365,7 @@
   
   
     
-  <property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" listid="assetpreviewstatus" datatype="list"   type="list">Preview Status 
+  <property id="previewstatus" index="true" stored="true" editable="true" viewtype="list" filter="true"  listid="assetpreviewstatus" datatype="list"   type="list">Preview Status 
     <name> 
       <language id="de"><![CDATA[Vorschau-Status]]></language>  
       <language id="en"><![CDATA[Preview Status]]></language>  
@@ -373,7 +373,7 @@
       <language id="fr"><![CDATA[Status de la prévisualisation]]></language> 
     </name> 
   </property>  
-  <property id="editstatus" index="true" stored="true" editable="true" listid="asseteditstatus" datatype="list" isbadge="true"  type="list"> 
+  <property id="editstatus" index="true" stored="true" editable="true" listid="asseteditstatus" filter="true"  datatype="list" isbadge="true"  type="list"> 
     <name> 
       <language id="de"><![CDATA[Edit Status]]></language>  
       <language id="en"><![CDATA[Edit Status]]></language>  
@@ -422,7 +422,7 @@
       <language id="fr"><![CDATA[Mots-clés additionnels]]></language> 
     </name> 
   </property>  
-  <property id="purpose" index="true" stored="true" editable="true" viewtype="multiselect" datatype="list"  type="list">
+  <property id="purpose" index="true" stored="true" editable="true" viewtype="multiselect" filter="true"  datatype="list"  type="list">
     <name> 
       <language id="de"><![CDATA[Zweck]]></language>  
       <language id="en"><![CDATA[Purpose]]></language>  
@@ -462,7 +462,7 @@
     <property id="timecodeend" index="true" stored="true" editable="true" datatype="number">End Time</property>   
   </property>
      -->
-  <property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="ethnicitydetailed"   type="list">General Ethnicity 
+  <property id="ethnicity" datatype="list" editable="true" index="true" stored="true" viewtype="list" filter="true"  listchild="ethnicitydetailed"   type="list">General Ethnicity 
     <name> 
       <language id="de"><![CDATA[allgemeine Ethnizität]]></language>  
       <language id="en"><![CDATA[General Ethnicity]]></language>  
@@ -470,7 +470,7 @@
       <language id="fr"><![CDATA[Appartenance ethnique]]></language> 
     </name> 
   </property>  
-  <property id="ethnicitydetailed" foreignkeyid="ethnicity" datatype="list" index="true" stored="true" editable="true" viewtype="list"   type="list">Specific Ethnicity 
+  <property id="ethnicitydetailed" foreignkeyid="ethnicity" datatype="list" index="true" stored="true" filter="true"  editable="true" viewtype="list"   type="list">Specific Ethnicity 
     <name> 
       <language id="de"><![CDATA[spezifische ethnische Zugehörigkeit]]></language>  
       <language id="en"><![CDATA[Specific Ethnicity]]></language>  
@@ -478,7 +478,7 @@
       <language id="fr"><![CDATA[Spécificitée ethnique]]></language> 
     </name> 
   </property>  
-  <property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list" sort="textUp"   type="list">Language 
+  <property id="language" index="true" stored="true" editable="true" viewtype="list" datatype="list"  filter="true" sort="textUp"   type="list">Language 
     <name> 
       <language id="de"><![CDATA[Sprache]]></language>  
       <language id="en"><![CDATA[Language]]></language>  
@@ -486,7 +486,7 @@
       <language id="fr"><![CDATA[Langue]]></language> 
     </name> 
   </property>  
-  <property id="viewpoint" datatype="list" editable="true" index="true" stored="true"   type="list">Asset Viewpoint 
+  <property id="viewpoint" datatype="list" editable="true" index="true" stored="true" filter="true"   type="list">Asset Viewpoint 
     <name> 
       <language id="de"><![CDATA[Asset-Sicht]]></language>  
       <language id="en"><![CDATA[Asset Viewpoint]]></language>  
@@ -494,7 +494,7 @@
       <language id="fr"><![CDATA[Point de vue item]]></language> 
     </name> 
   </property>  
-  <property id="region" datatype="list" editable="true" index="true" stored="true" viewtype="list" listchild="country"   type="list">Region 
+  <property id="region" datatype="list" editable="true" index="true" stored="true" viewtype="list" filter="true"  listchild="country"   type="list">Region 
     <name> 
       <language id="de"><![CDATA[Region]]></language>  
       <language id="en"><![CDATA[Region]]></language>  
@@ -502,7 +502,7 @@
       <language id="fr"><![CDATA[Region]]></language> 
     </name> 
   </property>  
-  <property id="country" foreignkeyid="region" datatype="list" index="true" stored="true" editable="true" viewtype="list" listchild="state"   type="list">Country 
+  <property id="country" foreignkeyid="region" datatype="list" index="true" stored="true" editable="true" filter="true"  viewtype="list" listchild="state"   type="list">Country 
     <name> 
       <language id="de"><![CDATA[Land]]></language>  
       <language id="en"><![CDATA[Country]]></language>  
@@ -510,7 +510,7 @@
       <language id="fr"><![CDATA[Pays]]></language> 
     </name> 
   </property>  
-  <property id="state" foreignkeyid="country" datatype="list" index="true" stored="true" editable="true" viewtype="list"   type="list">State 
+  <property id="state" foreignkeyid="country" datatype="list" index="true" stored="true" editable="true" filter="true" viewtype="list"   type="list">State 
     <name> 
       <language id="de"><![CDATA[Bundesland]]></language>  
       <language id="en"><![CDATA[State]]></language>  
@@ -518,7 +518,7 @@
       <language id="fr"><![CDATA[État]]></language> 
     </name> 
   </property>  
-  <property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" externalid="XMP-xmpRights:Marked"   sortable="true"> 
+  <property id="copyrightstatus" editable="true" index="true" stored="true" type="list" viewtype="list" filter="true"  externalid="XMP-xmpRights:Marked"   sortable="true"> 
     <name> 
       <language id="de"><![CDATA[Copyright Status]]></language>  
       <language id="en"><![CDATA[Copyright Status]]></language>  
@@ -534,13 +534,13 @@
       <language id="fr"><![CDATA[Notification droit d&#39;auteur]]></language> 
     </name> 
   </property>  
-  <property id="rightsusageinstructions" editable="true" index="true" stored="true" externalid="XMP-xmpRights:UsageTerms"   sortable="true">
+  <property id="rightsusageinstructions" editable="true" index="true" stored="true" filter="true" externalid="XMP-xmpRights:UsageTerms"   sortable="true">
     <name> 
       <language id="en"><![CDATA[Rights Usage Instructions]]></language>  
       <language id="es"><![CDATA[Derechos de Uso Instruciones]]></language>  
     </name> 
   </property>  
-  <property id="rightsusageterms" editable="true" isbadge="true" index="true" type="list" stored="true"   sortable="true">
+  <property id="rightsusageterms" editable="true" isbadge="true" index="true" type="list" stored="true" filter="true"   sortable="true">
     <name> 
       <language id="de"><![CDATA[Rights Usage Terms]]></language>  
       <language id="en"><![CDATA[Rights Usage Terms]]></language>  
@@ -556,7 +556,7 @@
       <language id="fr"><![CDATA[Instructions]]></language> 
     </name> 
   </property>  
-  <property id="publisheds3" internalfield="true" datatype="boolean" index="true" stored="true" editable="true"   type="boolean">Published S3 
+  <property id="publisheds3" internalfield="true" datatype="boolean" index="true" stored="true" editable="true" filter="true"   type="boolean">Published S3 
     <name> 
       <language id="de"><![CDATA[veröffentlicht s3]]></language>  
       <language id="en"><![CDATA[Published S3]]></language>  
@@ -597,7 +597,7 @@
 	<property id="episode" keyword="true" datatype="list" editable="true" index="true" stored="true" foreignkeyid="showtitle"   >Episode</property>
 	<property id="watermark" keyword="true" datatype="list" editable="true" index="true" stored="true" listcatalogid="system"  listid="group"  >Watermark</property>
  	-->  
-  <property id="contenttype" keyword="true" datatype="list" editable="true" index="true" stored="true"  type="list">Content Type 
+  <property id="contenttype" keyword="true" datatype="list" editable="true" index="true" stored="true" filter="true"   type="list">Content Type 
     <name> 
       <language id="de"><![CDATA[Inhaltstyp]]></language>  
       <language id="en"><![CDATA[Content Type]]></language>  
@@ -613,7 +613,7 @@
       <language id="fr"><![CDATA[MD5 Valeur Hex]]></language> 
     </name> 
   </property>  
-  <property id="duplicate" index="true" editable="true" type="boolean"  isbadge="true"  stored="true"  sortable="true">
+  <property id="duplicate" index="true" editable="true" type="boolean"  isbadge="true"  stored="true" filter="true"  sortable="true">
     <name> 
       <language id="de"><![CDATA[doppelte Vermögens]]></language>  
       <language id="en"><![CDATA[Duplicate Asset]]></language>  
@@ -621,7 +621,7 @@
       <language id="fr"><![CDATA[Doublon]]></language> 
     </name> 
   </property>  
-  <property id="retentionpolicy" datatype="list" listid="retentionrules" editable="true" index="true" stored="true"   type="list">Retention Policy 
+  <property id="retentionpolicy" datatype="list" listid="retentionrules" editable="true" index="true" stored="true" filter="true"   type="list">Retention Policy 
     <name> 
       <language id="de"><![CDATA[Aufbewahrungsrichtlinie]]></language>  
       <language id="en"><![CDATA[Retention Policy]]></language>  
@@ -712,7 +712,7 @@
     </name>
   </property> 
 
-  <property id="haschat" index="true" stored="true" editable="true" datatype="boolean" isbadge="true" > 
+  <property id="haschat" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
     <name>
       <language id="en"><![CDATA[Has Chat]]></language>
     </name>

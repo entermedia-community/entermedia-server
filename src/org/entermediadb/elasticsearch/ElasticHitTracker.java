@@ -223,7 +223,8 @@ public class ElasticHitTracker extends HitTracker
 						response = getElasticClient().prepareSearchScroll(getLastScrollId()).setScroll(new TimeValue(SCROLL_CACHE_TIME)).execute().actionGet();
 					}
 					setLastPageLoaded(inChunk);
-
+					fieldLastPullTime = now;
+					
 					if (getChunks().size() > 30)   //TODO: Keep the pages near us
 					{
 						SearchResponse first = getChunks().get(0);
@@ -294,6 +295,7 @@ public class ElasticHitTracker extends HitTracker
 						if (detail != null)
 						{
 							parent.setValue("name", detail.getElementData().getLanguageMap("name"));
+							parent.setPropertyDetail(detail);
 						}
 						for (Iterator iterator2 = f.getBuckets().iterator(); iterator2.hasNext();)
 						{

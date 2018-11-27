@@ -533,6 +533,8 @@ html, body, #application {
     background-color: #111; 
     overflow-x: hidden; 
     transition: 0.2s;
+    
+    color:#eee;
 }
 .col-filters.filtersopen {
 	width:220px;

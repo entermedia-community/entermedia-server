@@ -1,29 +1,18 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 
-import org.elasticsearch.action.search.SearchRequestBuilder;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.aggregations.AbstractAggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilder;
-import org.elasticsearch.search.aggregations.AggregationBuilders;
-import org.elasticsearch.search.aggregations.Aggregations;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramBuilder;
-import org.elasticsearch.search.aggregations.bucket.histogram.DateHistogramInterval;
-import org.elasticsearch.search.aggregations.bucket.histogram.Histogram.Order;
-import org.elasticsearch.search.aggregations.bucket.terms.Terms;
-import org.elasticsearch.search.aggregations.metrics.avg.AvgBuilder;
-import org.elasticsearch.search.aggregations.metrics.sum.SumBuilder;
-import org.openedit.Data;
 import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
+import org.openedit.data.Searcher;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.UserFilters;
 import org.openedit.profile.UserProfile;
@@ -79,20 +68,60 @@ public class ElasticUserFilters implements UserFilters
 		fieldUserProfile = inUserProfile;
 	}
 
-	public void addFilterOptions(String inSearchType, SearchQuery inQuery, List<FilterNode> inFilters)
+	public void addFilterOptions(Searcher inSearcher, SearchQuery inQuery, List<FilterNode> inFilters)
 	{
 		if (inQuery.getMainInput() != null)
 		{
-			getCacheManager().put("facethits" + inSearchType, inQuery.getMainInput(), inFilters);
+			getCacheManager().put("facethits" + inSearcher.getSearchType(), inQuery.getMainInput(), inFilters);
 		}
 	}
+	public Map getFilterValues(Searcher inSearcher, SearchQuery inQuery)
+	{
+		List <FilterNode> nodes = getFilterOptions(inSearcher, inQuery);
+		Map options = new HashMap();
+		if( nodes != null)
+		{
+			for (Iterator iterator = nodes.iterator(); iterator.hasNext();)
+			{
+				FilterNode filterNode = (FilterNode) iterator.next();
+				options.put(filterNode.getPropertyDetail().getId(), filterNode);
+			}
+		}
+		return options;
+		
+	}
 
-	public List<FilterNode> getFilterOptions(String inSearchType, SearchQuery inQuery)
+	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery)
 	{
 		if (inQuery.getMainInput() != null)
 		{
-			Object object = getCacheManager().get("facethits" + inSearchType, inQuery.getMainInput());
-			return (List<FilterNode>) object;
+			List<FilterNode> list = (List<FilterNode>)getCacheManager().get("facethits" + inSearcher.getSearchType(), inQuery.getMainInput());
+			if( list == null || true)
+			{
+				List<PropertyDetail> view = getPropertyDetailsArchive().getView(  //assetadvancedfilter
+						inSearcher.getSearchType(),inSearcher.getSearchType() + "/" + inSearcher.getSearchType() + "advancedfilter", getUserProfile());
+				if( view != null && !view.isEmpty() )
+				{
+					List facets = new ArrayList<PropertyDetail>();
+					for (Iterator iterator = view.iterator(); iterator.hasNext();)
+					{
+						PropertyDetail	detail = (PropertyDetail) iterator.next();
+						if( detail.isFilter())
+						{
+							facets.add(detail);
+						}
+					}
+					
+					HitTracker all = (HitTracker)inSearcher.query().facets(facets).freeform("description", inQuery.getMainInput()).search();
+					list = all.getFilterOptions();
+				}	
+				else
+				{
+					list = java.util.Collections.EMPTY_LIST;
+				}
+				getCacheManager().put("facethits" + inSearcher.getSearchType(), inQuery.getMainInput(), list);
+			}
+			return list;
 		}
 		else
 		{
@@ -101,6 +130,7 @@ public class ElasticUserFilters implements UserFilters
 
 	}
 
+	
 	public void clear(String inSearchType)
 	{
 		getCacheManager().clear("facethits" + inSearchType);

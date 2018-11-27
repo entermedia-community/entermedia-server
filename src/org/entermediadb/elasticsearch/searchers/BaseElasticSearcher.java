@@ -294,29 +294,7 @@ public class BaseElasticSearcher extends BaseSearcher
 	
 	public boolean addFacets(SearchQuery inQuery, SearchRequestBuilder inSearch)
 	{
-		
-	
-
-	
-
-		Set allFilters = new HashSet();
-
-		
-		
-		
-			
-			for (Iterator iterator = inQuery.getFacets().iterator(); iterator.hasNext();)
-			{
-				String detail = (String) iterator.next();
-				PropertyDetail facet = getPropertyDetailsArchive().getPropertyDetails(getSearchType()).getDetail(detail);
-				if (facet != null)
-				{
-					allFilters.add(facet);
-				}
-
-			}
-		
-		for (Iterator iterator = allFilters.iterator(); iterator.hasNext();)
+		for (Iterator iterator = inQuery.getFacets().iterator(); iterator.hasNext();)
 		{
 			PropertyDetail detail = (PropertyDetail) iterator.next();
 

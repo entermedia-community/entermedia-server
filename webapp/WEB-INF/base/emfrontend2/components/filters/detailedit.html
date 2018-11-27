@@ -5,15 +5,6 @@
 <tr>
 	<td id="detail_${detail.id}" valign="middle">
 	<div class="form-group">
-	  	<label class="emsearchfield"> 
-			#if ($edit == "true")
-				<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
-				<i class="fas fa-times"></i>
-				</a>
-			#end
-			$!detail.getText($context) #if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
-		</label>
-		
 		<input name="field" value="$searcher.getCatalogId():$view:${detail.getId()}" type="hidden">
 
 		#set( $viewtype = $detail.searchcomponent )
@@ -57,9 +48,18 @@
 			$context.putPageValue("data",$hits.getSearchQuery())
 		#end	
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
-		#if ($term.isFilter())
+		
+		#if ($detail.isFilter())
 			$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
 		#else
+		  	<label class="emsearchfield"> 
+			#if ($edit == "true")
+				<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
+				<i class="fas fa-times"></i>
+				</a>
+			#end
+			$!detail.getText($context) #if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
+			</label>
 			$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
 		#end
 		</div>

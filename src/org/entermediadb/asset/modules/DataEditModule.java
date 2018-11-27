@@ -1980,28 +1980,31 @@ public class DataEditModule extends BaseMediaModule
 
 	public void loadFacetsForUser(WebPageRequest inReq) throws Exception
 	{
-
-		Searcher searcher = loadSearcher(inReq);
-		HitTracker hits = searcher.loadHits(inReq);
-		SearchQuery query = hits.getSearchQuery();
-		
-		if (query.isEndUserSearch())
+		String name = inReq.findValue("hitsname");
+		if(name == null)
 		{
-			UserFilters filters = (UserFilters) inReq.getSessionValue(searcher.getSearchType()+ searcher.getCatalogId() + "userFilters");
-			if (filters == null)
-			{
-				filters = (UserFilters) getModuleManager().getBean(searcher.getCatalogId(), "userFilters", false);
-				filters.setUserProfile(inReq.getUserProfile());
-				inReq.putSessionValue(searcher.getSearchType() + searcher.getCatalogId() + "userFilters", filters);
-				List<FilterNode> list = filters.getFilterOptions(searcher.getSearchType(), query);
-				if(list == null) {
-					list = hits.getFilterOptions();
-					filters.addFilterOptions(searcher.getSearchType(), query, list);
-				}
-			}
-			inReq.putPageValue(searcher.getSearchType() + "filterset", filters);
-			
+			name= "hits";
 		}
+
+		HitTracker hits = (HitTracker)inReq.getPageValue(name);
+		if( hits != null)
+		{
+			SearchQuery query = hits.getSearchQuery();
+			if (query.isEndUserSearch())
+			{
+				Searcher searcher = hits.getSearcher();
+				UserFilters filters = (UserFilters) inReq.getSessionValue(searcher.getSearchType()+ searcher.getCatalogId() + "userFilters");
+				if (filters == null)
+				{
+					filters = (UserFilters) getModuleManager().getBean(searcher.getCatalogId(), "userFilters", false);
+					filters.setUserProfile(inReq.getUserProfile());
+					inReq.putSessionValue(hits.getSearchType() + searcher.getCatalogId() + "userFilters", filters);
+				}
+				inReq.putPageValue("userfilters", filters);
+				Map values = filters.getFilterValues(searcher,query);
+				inReq.putPageValue("userfiltervalues", values);
+			}
+		}	
 
 	}
 
