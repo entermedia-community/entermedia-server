@@ -44,7 +44,9 @@ $context.putPageValue("searchtype", $searchtype)
 
 #set( $viewlabel = $searcher.getViewLabel($view) )
 <h4>$context.getText($viewlabel)
-<a class="detail-edit-icon float-right" href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"><i class="fas fa-cog"></i></a>
+<a class="detail-edit-icon float-right btn btn-sm"
+   href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
+   title="[[Configure View]]"><i class="fas fa-cog"></i></a>
 </h4>
 
 

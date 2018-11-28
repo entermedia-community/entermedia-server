@@ -248,7 +248,7 @@ a {
 .btn {
 	cursor:pointer;
 	padding: .275rem .75rem;
-    font-size: 0.7rem; 		
+    font-size: 0.8rem; 		
 }
 .btn-xs {
     padding: .25rem .35rem;
@@ -1891,11 +1891,7 @@ label.error {
 	max-width: 280px;
 
 	}
-.assetpanel-separator {
-	margin-top:10px; 
-	height: 10px; 
-	display: table-row;
-}
+
 .assetpanel-editor {
 	background-color: #565656;
 	color:#efefef;
@@ -1915,6 +1911,62 @@ label.error {
 	overflow-y: auto;
 	height: calc(100% - 45px);
 }
+.assetpanel-editor .btn-primary {
+	color: #FFFFFF;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #333333;
+	*background-color: #333333;
+	background-image: -moz-linear-gradient(top, #696969, #333333);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#696969), to(#333333));
+	background-image: -webkit-linear-gradient(top, #696969, #333333);
+	background-image: -o-linear-gradient(top, #696969, #333333);
+	background-image: linear-gradient(to bottom, #696969, #333333);
+	background-repeat: repeat-x;
+	border-color: #333333;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#696969', endColorstr='#333333', GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+.assetpanel-editor .btn-primary:hover,
+.assetpanel-editor .btn-primary:focus,
+.assetpanel-editor .btn-primary:active,
+.assetpanel-editor .btn-primary.active,
+.assetpanel-editor .btn-primary.disabled,
+.assetpanel-editor .btn-primary[disabled] {
+	color: #FFFFFF;
+	background: none;
+	background-color: #333333;
+	*background-color: #003bb3;
+}
+
+.assetpanel-editor .btn-secondary {
+	color: #FFFFFF;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #434343;
+	*background-color: #434343;
+	background-image: -moz-linear-gradient(top, #606060, #434343);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#606060), to(#434343));
+	background-image: -webkit-linear-gradient(top, #606060, #434343);
+	background-image: -o-linear-gradient(top, #606060, #434343);
+	background-image: linear-gradient(to bottom, #606060, #434343);
+	background-repeat: repeat-x;
+	border-color: #434343;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#606060', endColorstr='#434343', GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
+}
+.assetpanel-editor .btn-secondary:hover,
+.assetpanel-editor .btn-secondary:focus,
+.assetpanel-editor .btn-secondary:active,
+.assetpanel-editor .btn-secondary.active,
+.assetpanel-editor .btn-secondary.disabled,
+.assetpanel-editor .btn-secondary[disabled] {
+	color: #FFFFFF;
+	background: none;
+	background-color: #434343;
+	*background-color: #003bb3;
+}
+
 .asset-editor-actions-container {
 	height: 100%;
 }
@@ -1946,18 +1998,36 @@ label.error {
 }
 .assetpanel-editor h4 {
 	color: #bbb;
-	padding:6px 10px 5px;
+	padding:5px 10px 7px;
 	background-color: #333;
 	text-transform: uppercase;
 	font-size: 1.1rem;
 }
 .assetpanel-editor .detail-edit-icon {
-	font-size:0.8em;
+	font-size:0.7em;
 	line-height:1.4;
-	color:#ccc;
+	padding:2px 6px;
+	text-transform:none;
+
+	color: #bbb;
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+	background-color: #262626;
+	*background-color: #262626;
+	background-image: -moz-linear-gradient(top, #333333, #262626);
+	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#262626));
+	background-image: -webkit-linear-gradient(top, #333333, #262626);
+	background-image: -o-linear-gradient(top, #333333, #262626);
+	background-image: linear-gradient(to bottom, #333333, #262626);
+	background-repeat: repeat-x;
+	border-color: #262626;
+	border-color: rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.1) rgba(0, 0, 0, 0.25);
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333', endColorstr='#262626', GradientType=0);
+	filter: progid:DXImageTransform.Microsoft.gradient(enabled=false);
 }
 .assetpanel-editor .detail-edit-icon:hover {
 	color:#fff;
+	background: none;
+	background-color: #262626;
 }
 .asset-data-preview .row { margin-bottom: 10px; }
 .asset-data-preview .emdatafield {
