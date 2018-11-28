@@ -372,6 +372,7 @@ color: #fff;
 }
 
 #footerbase { 
+	height:32px;
 	position: absolute;
 	width: 100%;
 	bottom:0px;
@@ -382,8 +383,9 @@ color: #fff;
 
 #footermenu {
 	width: 100%;
+	height:32px;
 	list-style: none;
-	height: 30px;
+	
 }
 #footermenu ul{
 	margin: 0;
@@ -398,9 +400,15 @@ color: #fff;
 	float:left;
 	display:block;
 }
-#footermenu .gotoarrows { font-size: 1.5rem; }
-#footermenu .gotoarrows span { cursor:pointer;} 
-#footermenu .gotoarrows span:hover { color:#fff; }
+#footermenu .gotoarrows { font-size: 1.6rem; padding: 0 2px; cursor:pointer; }
+#footermenu .goleftclick { padding-left: 8px;}
+#footermenu .gorightclick { padding-right: 8px;}
+#footermenu .gotoarrows { color:#777;} 
+#footermenu .gotoarrows:hover { color:#777; }
+
+#footermenu .gotoarrows.arrowenabled { color:#ccc;} 
+#footermenu .gotoarrows.arrowenabled:hover { color:#fff; }
+
 
 #footermenu li a {
 	color: white;	
@@ -424,14 +432,16 @@ color: #fff;
 }
 
 #footermenu .dropdown-menu a {
-	color:#000;
+	color:#333;
 	font-size:90%;
-	padding: 2px 6px;
+	padding: 2px 12px;
 }
 #footermenu .dropdown-menu a:hover,
 #footermenu .dropdown-submenu:hover>a,
 #footermenu .dropdown-menu a.dropdown-current {
-	background-color: #a8a8a8;
+	background-color: #bbb;
+	color:#000;
+	border-bottom:1px solid #999;
 	text-decoration: none;
 }
 #footermenu  .dropdown-menu {
@@ -450,8 +460,8 @@ body.widthless1000 #pdf-thumbnail-sidebar
 
 
 }
-#footermenu li.bottomtab:hover
-{
+#footermenu li.bottomtab:hover,
+#footermenu li.bottomtab:hover a.dropdown-toggle {
 	background-color: #ccc;
 	color: #212529;
 }
@@ -460,9 +470,8 @@ body.widthless1000 #pdf-thumbnail-sidebar
 {
 	cursor: pointer;
 	text-align: center;
-	border-left: 1px solid black;
-	border-right: 1px solid black;
-	height: 32px;
+	border-right: 1px solid #666;
+
 }
 
 

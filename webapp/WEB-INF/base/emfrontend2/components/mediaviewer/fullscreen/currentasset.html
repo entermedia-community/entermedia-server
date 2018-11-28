@@ -73,12 +73,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 		<ul>
 			
 			<li class="footermenu">
-				<div class="goleftclick gotoarrows" >
-				<span class="fas fa-caret-left overlay-nav gocaret"></span>
-				</div>	
-				<div class="gorightclick gotoarrows" >
-				<span class="fas fa-caret-right overlay-nav gocaret"></span>
-				</div>	
+				<div class="goleftclick gotoarrows" id="goleftclick" data-enabled="false"><span class="fas fa-caret-left overlay-nav gocaret"></span></div>	
+				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
 				
 			</li>
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	

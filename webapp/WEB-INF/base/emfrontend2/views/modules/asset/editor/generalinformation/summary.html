@@ -23,7 +23,8 @@ $context.putPageValue("showalllanguagevalues",true)
 								   class="detail-edit-icon float-right ajax"
 								   data-targetdiv="asset-detail-editor"
 								   data-hidefooter="true"
-								   data-width="900"><i class="fas fa-edit"></i></a></h4>
+								   data-width="900"
+								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i></a></h4>
 							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
 					#end

@@ -206,15 +206,17 @@ $(document).ready(function(url,params)
 	{
 			if( inData == "")
 			{
-				$(inSpan).css("color","#222");
-				$(inSpan).data("enabled",false);
-				//$(inSpan).css("visibility","hidden");
+				$(inSpan).addClass("arrowdisabled");
+				$(inSpan).data("enabled","false");
+				$(inSpan).attr("data-enabled","false");
+				
 			}
 			else
 			{
-				$(inSpan).css("color","rgb(200,200,200)");
-				$(inSpan).data("enabled",true);
-				$(inSpan).css("visibility","visible");
+				$(inSpan).addClass("arrowenabled");
+				$(inSpan).data("enabled","true");
+				$(inSpan).attr("data-enabled","true");
+				
 			}
 	}
 	
@@ -279,12 +281,17 @@ $(document).ready(function(url,params)
 			
 			var container = $("#main-media-container");
 			container.replaceWith(data);
-			var id = mainmedia.data("previous");
-			enable(id,".goleftclick span");
-			enable(id,"#leftpage");
-			id = mainmedia.data("next");
-			enable(id,".gorightclick span");
-			enable(id,"#rightpage");
+			var div = $("#main-media-viewer");
+			var id = div.data("previous");
+			if (typeof id != 'undefined') {
+				enable(id,".goleftclick");
+				enable(id,"#leftpage");
+			}
+			id = div.data("next");
+			if (typeof id != 'undefined') {
+				enable(id,".gorightclick");
+				enable(id,"#rightpage");
+			}
 		    $(document).trigger("domchanged");
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
@@ -324,7 +331,7 @@ $(document).ready(function(url,params)
 			}
 		    switch(e.which) {
 		        case 37: // left
-					var div = $("#main-media-viewer" );
+					var div = $("#main-media-viewer");
 		        	var id = div.data("previous");
 		        	if( id )
 		        	{
@@ -432,7 +439,10 @@ $(document).ready(function(url,params)
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("previous");
-		showAsset(id);
+		var enabled = $(this).parent().data("enabled");
+		if (id && enabled) {
+			showAsset(id);
+		}
 
 	});
 	
@@ -441,7 +451,10 @@ $(document).ready(function(url,params)
 		e.preventDefault();
 		var div = $("#main-media-viewer" );
 		var id = div.data("next");
-		showAsset(id);
+		var enabled = $(this).parent().data("enabled");
+		if (id && enabled) {
+			showAsset(id);
+		}
 	});
 
 	lQuery('.carousel-indicators li#leftpage').livequery('click',function(e)
