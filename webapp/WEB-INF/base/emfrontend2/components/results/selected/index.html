@@ -1,5 +1,13 @@
 <li class="nav-item dropdown">
-<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarSelectionsDropdown">[[Selections]]</a>
+<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarSelectionsDropdown">
+#if( $hits.isShowOnlySelected() )
+	[[Showing Selected]] ($hits.getSelectionSize()/$hits.size())
+#elseif( $hits.hasSelections()) 
+	($hits.getSelectionSize()) [[Selected]]
+#else
+	[[Select]]
+#end
+</a>
 	<div class="dropdown-menu" aria-labelledby="navbarSelectionsDropdown">
 	  	<a class="dropdown-item ajax selectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a>
     	<a class="dropdown-item ajax  selectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a>
@@ -25,11 +33,7 @@
 
 <li class="nav-item dropdown">
 	<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
-	#if( $hits.isShowOnlySelected() )
-	([[All]] $hits.getSelectionSize())
-	#else 
-	($hits.getSelectionSize()/$hits.size())
-	#end</a>
+	</a>
 		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
 				#if(!$canforcebasiccollections)
 		
@@ -52,16 +56,23 @@
 			   href="$home$apphome/components/opencollections/searchcollection.html?hitssessionid=$hits.getSessionId()&searchtype=asset">[[Add To Collection]]</a>
 		#end
 		
+		#if(!$canforcebasiccollections)
+			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
+				 #if( $caneditdata)
+					<a class="dropdown-item confirm" href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
+				#end
+				#if( $canaddnewcollection)
+					<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]">[[Copy Collection]]</a>
+				 #end
+			#end
+		#end
+		
 		#if( $canaddtofavorites && $librarycol.id != "${user.id}-favorites" )
 			<a class="dropdown-item " 
 			   title="[[Add to Favorites]]"  
 			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 		#end
 	
-		#if($canexportdata)
-			<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
-			<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
-		#end
 		#if($canmultidelete)	    
 	 		<a class="dropdown-item emdialog" href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a>
 	   	#end    	

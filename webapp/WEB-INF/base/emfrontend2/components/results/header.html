@@ -46,31 +46,35 @@
 		</li>
 		
 		  	
+		$pages.include("$apphome/components/results/selected/index.html",$context)
 
 	
-		#if($canpublish || $canemaillink )
-			<li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Share]]</a>
-				#if( $enabled )
+		#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
+		  <li class="nav-item dropdown">
+			<a class="nav-link dropdown-toggle" href="#" id="navbarSharehDropdown" role="button" data-toggle="dropdown" 
+				aria-haspopup="true" aria-expanded="false">[[Share]]</a>
 				<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
+			#if($canpublish || $canemaillink )				
 					#if( $canemaillink )
 						<a class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
 					#end
 					#if( $canpublish)
 						<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
 					#end
-#if( $canquickgallery)
+					#if( $canquickgallery)
 						<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
 					#end
+			#end
+			#if($canexportdata)
+				<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&searchtype=asset">[[Export results]]</a>
+				<a class="dropdown-item" href="$home$apphome/views/modules/asset/export/download/export_asset.csv?hitssessionid=$hits.sessionId&friendly=true&searchtype=asset&view=asset/resultstable">[[Export results (friendly)]]</a>
+			#end		
 				</div>
-				#end
 			</li>
 		#end
 		
-		#if($canquickpublish )
-
-		#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
-		
+		#if($enabled && $canquickpublish )
+			#set($quickpublishlist = $mediaarchive.getList("quickpublish"))
 		<li class="nav-item">
 			<a class="nav-link" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
 				<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
@@ -80,25 +84,9 @@
 				</div>
 			</li>
 		#end
-		#if(!$canforcebasiccollections)
-		
-			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
-				<li class="nav-item dropdown">
-					<a class="nav-link dropdown-toggle" href="#" id="navbarCollectionsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Collection]]</a>	
-					<div class="dropdown-menu" aria-labelledby="navbarCollectionsDropdown">
-						#if( $canaddnewcollection)
-							<a class="dropdown-item emdialog" href="$home$apphome/views/modules/librarycollection/copycollection.html?collectionid=$librarycol.getId()" title="[[Create a copy of this collection]]">[[Copy Collection]]</a>
-						 #end
-						 #if( $caneditdata)
-							<a class="dropdown-item confirm" href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
-						#end
-				</li>
-				#end
-		#end
 		
   		#set( $edit = $context.getRequestParameter("editheader") )
 			
-		$pages.include("$apphome/components/results/selected/index.html",$context)
 		
 		#if ( $canviewbasket )
 			#if($order)
