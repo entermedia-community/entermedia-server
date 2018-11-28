@@ -221,6 +221,7 @@ $(document).ready(function(url,params)
 	hideOverlayDiv = function(inOverlay)
 	{
 		stopautoscroll = false;
+		 $("body").css({ overflow: 'auto' })
 		inOverlay.hide();
 		var lastscroll = getOverlay().data("lastscroll");
 		$(window).scrollTop( lastscroll );
@@ -229,6 +230,7 @@ $(document).ready(function(url,params)
 	showOverlayDiv = function(inOverlay)
 	{
 		stopautoscroll = true;
+		 $("body").css({ overflow: 'hidden' })
 		inOverlay.show();
 		var lastscroll = $(window).scrollTop();
 		getOverlay().data("lastscroll",lastscroll);

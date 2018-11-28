@@ -141,7 +141,7 @@
 .select2-selection__choice  /* Selected Tag Style in Select2 Objects*/ 
 {
 	color: #fff!important;
-    background-color: #007bff;
+    background-color: #6FB353;
 }
 .table #tableheader {
 	
@@ -938,6 +938,10 @@ border-radius: 5px;
 .languagesadd a {
 	line-height: 2rem;
 	display: inline-block;
+	color:#eee;
+}
+.languagesadd a:hover {
+	color:#fff;
 }
 .languagesfield {
 	float:left;
@@ -1841,7 +1845,7 @@ label.error {
     background-color:#cecece;
 }
 .assetpanel-content {
-	padding: 15px;
+	padding: 15px 10px 15px 15px;
 	min-height: 200px;
 	height: 100%;
 	background-color:#d3d3d3;
@@ -1897,6 +1901,7 @@ label.error {
 	color:#efefef;
 	padding:15px;
 	height: 100%;	
+	overflow-y:auto;
 }
 .assetpanel-editortitle {
 	height: 45px;
