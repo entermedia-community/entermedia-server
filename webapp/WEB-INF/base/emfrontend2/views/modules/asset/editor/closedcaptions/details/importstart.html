@@ -1,4 +1,4 @@
-#set( $clientroot = $context.getContentProperty("clientroot") )
+#set( $clientroot = $page.get("clientroot") )
 		<form name="vttupload" id="vttupload" method="post"  class="ajaxform" data-oemaxlevel="1" data-userparent="true" targetdiv="closedcaptioneditor"
 		 enctype="multipart/form-data" action="$clientroot/importfinish.html">
 	 	 <input type="hidden" name="assetid" value="$asset.id"> 

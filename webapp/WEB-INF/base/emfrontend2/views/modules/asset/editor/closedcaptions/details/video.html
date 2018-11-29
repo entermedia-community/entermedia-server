@@ -2,30 +2,28 @@
 #set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
 #set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
-#set( $clientroot = $context.getContentProperty("clientroot") )
+#set( $clientroot = $page.get("clientroot") )
 <div class="row">
-<div class="col-sm-7">
-	<div id="video-container" style="float:left;">
-		<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
-			<section id='cuePlayer' style="padding:6px;">
-				<video id="videoclip" preload="no" controls="true" webkit-playsinline poster="$thumb" style="width:100%">
-					<source src="$source" type="video/mp4" />
-					<source src="$webmsource" type="video/webm" />
-				  #if( $tracks && !$tracks.isEmpty() )
-			       #foreach( $track in $tracks)
-				      <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
-				      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
-				      	#if( $context.getLanguage() == ${track.sourcelang})	 default #end>
-			      	#end
-			      #end
-		</video>
-					
-				</video>
-		   </section>
-		</div>									
+	<div class="col-sm-6">
+		<div id="video-container" style="float:left;">
+			<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
+				<section id='cuePlayer' style="padding:6px;">
+					<video id="videoclip" preload="no" controls="true" webkit-playsinline poster="$thumb" style="width:100%">
+						<source src="$source" type="video/mp4" />
+						<source src="$webmsource" type="video/webm" />
+						  #if( $tracks && !$tracks.isEmpty() )
+					       #foreach( $track in $tracks)
+						      <track label="$track.sourcelang subtitles" kind="subtitles" srclang="$track.sourcelang" 
+						      	src="$!cdn$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${track.sourcelang}.vtt"
+						      	#if( $context.getLanguage() == ${track.sourcelang})	 default #end />
+					      	#end
+					      #end
+					</video>
+			   </section>
+			</div>									
+		</div>
 	</div>
-</div>
-<div class="col-sm-5">
-$pages.include("${clientroot}/details/edit.html", $context)
-</div>
+	<div class="col-sm-5">
+		$pages.include("${clientroot}/details/edit.html", $context)
+	</div>
 </div>

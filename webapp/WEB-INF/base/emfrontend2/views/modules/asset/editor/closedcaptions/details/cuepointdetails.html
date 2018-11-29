@@ -25,15 +25,15 @@
     	<input name="origURL"  type="hidden" value="$!origURL" />
     	
     	$context.putPageValue("view", $viewpath)
-$caneditdata 
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set ( $moduleid = $context.findValue("module") )
-#if($caneditdata) 
-$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
-#else
-##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
-$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
-#end
+		$caneditdata 
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set ( $moduleid = $context.findValue("module") )
+		#if($caneditdata) 
+		$pages.include("/$applicationid/components/xml/detaileditor.html", $context)
+		#else
+		##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
+		$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
+		#end
     
     
     

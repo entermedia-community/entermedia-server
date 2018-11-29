@@ -182,6 +182,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			   		[[Conversions]]
 			   #elseif ($opentabactions=='timeline')
 			   		[[Timeline]]
+			   #elseif ($opentabactions=='closedcaptions')
+			   		[[Closed Captions]]
 			   #elseif ($opentabactions=='categorize')
 			   		[[Categories]]
 			   #elseif ($opentabactions=='map')
@@ -217,6 +219,17 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 								data-assettabactions="timeline"
 								data-assettabname="[[Timeline]]" >
 							[[Timeline]]
+							</a>
+					   	</li>
+			   		#end
+			   		#if($canviewclosedcaptions)
+			   			<li>
+					   	<a class="assettab #if($opentabactions=='closedcaptions') dropdown-current #end" 
+								data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=closedcaptions" title="[[Closed Captions]]"
+								data-assettab="viewactions"
+								data-assettabactions="closedcaptions"
+								data-assettabname="[[Timeline]]" >
+							[[Closed Captions]]
 							</a>
 					   	</li>
 			   		#end
