@@ -74,8 +74,9 @@
 		#end
 	
 		#if($canmultidelete)	    
-	 		<a class="dropdown-item emdialog" href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()">[[Delete Assets]]</a>
-	   	#end    	
+	 		<a class="dropdown-item emdialog" 
+	 		href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?hitssessionid=$hits.getSessionId()&collectionid=$!librarycol.getId()">[[Delete Assets]]</a>
+	   	#end    
 		#if($canprintpreview)
 	    	 <a class="dropdown-item" href="$home$apphome/views/modules/asset/editor/printpreview/printselections.html?hitssessionid=$hits.getSessionId()">[[Print Assets]]</a>
 		#end
@@ -99,9 +100,7 @@
 			#end
 		#end
 
-		#if($candeleteasset && $canmultiedit && $canquickdelete)
-	 			<a class="dropdown-item emdialog" href="$home$apphome/views/modules/asset/editor/delete/index.html?assetid=multiedit:hitsassetmedia/catalogs/public&hitssessionid=$hits.getSessionId()">[[Delete]]</a>
-	   	#end  
+
 		</div>
 	
 </li>
