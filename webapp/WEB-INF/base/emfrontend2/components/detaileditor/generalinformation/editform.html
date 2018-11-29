@@ -1,0 +1,7 @@
+#set( $viewpath = $context.getRequestParameter("viewpath"))
+#set( $assetid = $asset.id)
+
+$context.putPageValue("finished",$finished)
+
+
+$pages.include("$apphome/components/detaileditor/generic.html?assetid=$asset.id&label=$label&view=$viewpath&module=asset", $context)

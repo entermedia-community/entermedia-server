@@ -42,8 +42,8 @@ $context.putPageValue("searchtype", $searchtype)
 	#set($multiedit = true)
 #end
 
-#set( $viewlabel = $searcher.getViewLabel($view) )
-<h4>$context.getText($viewlabel)
+#set( $viewdata = $searcher.getViewData($view) )
+<h4>$context.getText($viewdata) 
 <a class="detail-edit-icon float-right btn btn-sm"
    href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
    title="[[Configure View]]"><i class="fas fa-cog"></i></a>
@@ -80,7 +80,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<div class="btns">
 			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).submit();" value="[[Save values]]"/>
 			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="tabsummarypanel" 
-				href="/$applicationid/views/modules/asset/editor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id">[[Cancel]]</a>
+				href="/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id">[[Cancel]]</a>
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )

@@ -7,4 +7,6 @@
 		<pagevalue name="caneditasset" equals="true"/>
 	</permission>
 
+	<path-action name="AssetEditModule.getAsset"/>
+
 </page>
