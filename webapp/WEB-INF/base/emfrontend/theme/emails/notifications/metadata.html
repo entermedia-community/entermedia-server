@@ -1,0 +1,22 @@
+<h2>[[EnterMedia - Asset edition notification]]</h2>
+
+Hi $sendto,<br/><br/>
+
+#if( $metadatas.size() > 1 )
+  Some metadatas have been edited on the following assets:
+#else
+  Some metadatas have been edited on the following asset:
+#end
+<br/><br/>
+
+#foreach( $asset in $metadatas.getAssets() )
+  <div>
+    <h3>$asset</h3>
+    <div style="margin-bottom:40px"><img alt="" class="rounded-circle img-fluid" src="$asset.sourcepath" /></div>
+  </div>
+  #foreach( $metadata in $metadatas.getMetadatas($asset) )
+    <div>
+      <b>$context.getDate($metadata.date) - $archive.getUser($metadata.user): </b> <i>$metadata.details</i>
+    </div>
+  #end
+#end

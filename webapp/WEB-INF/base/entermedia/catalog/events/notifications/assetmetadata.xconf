@@ -1,0 +1,7 @@
+<page>
+	<property name="eventname">Asset Metadata Notification</property>	
+	<property name="eventdescription">Emails users about metadata edition</property>	
+	<property name="period">30m</property>
+	<property name="startingfrommidnight">0</property>
+	<path-action name="NotificationModule.sendMetadataNotifications" />
+</page>
