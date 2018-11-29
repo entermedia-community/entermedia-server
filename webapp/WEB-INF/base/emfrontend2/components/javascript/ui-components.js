@@ -21,8 +21,12 @@ uiload = function() {
 	$.fn.select2.defaults.set("theme", "bootstrap4");
 	$.fn.modal.Constructor.prototype._enforceFocus = function() {
 	}; // Select2 on Modals
-	var columnsheight = $("body").height() - 260;
-	$("#main").css("min-height", columnsheight);
+	
+	resizecolumns()
+	
+	
+
+	
 	if ($.fn.tablesorter) {
 		$("#tablesorter").tablesorter();
 	}
@@ -1254,7 +1258,7 @@ uiload = function() {
 				return false;
 			});
 
-	$('.cols-main').equalHeights();
+	$('.cols-mainX').equalHeights();
 
 	lQuery('.filterstoggle').livequery("click", function(e) {
 		e.preventDefault();
@@ -1306,6 +1310,7 @@ uiload = function() {
 
 }// uiload
 
+/*
 $.fn.equalHeights = function(px) {
 	$(this).each(
 			function() {
@@ -1315,7 +1320,7 @@ $.fn.equalHeights = function(px) {
 							var thecol = $(this);
 							if ($(this).children(0)
 									&& $(this).children(0).hasClass(
-											"col-sidebar-inner")) {
+											"sidebar-inner")) {
 								// is sidebar, verify inner content
 								if ($(this).children(0).height() > $(this)
 										.height()) {
@@ -1342,9 +1347,25 @@ $.fn.equalHeights = function(px) {
 			});
 	return this;
 }
+*/
+
+var resizecolumns = function() {
+	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height() + $(".filtered").height();
+	console.log(allheights);
+	var columnsheight = $("body").height() - allheights;
+	$(".sidebar-inner").each(function(){
+		if ($(this).height() > columnsheight) {
+			columnsheight = $(this).height;
+		}
+	});
+	$(".col-main").css("min-height", columnsheight);
+	
+}
 
 $(document).ready(function() {
-
 	uiload();
+});
 
+$(window).on('resize',function(){
+	resizecolumns();
 });

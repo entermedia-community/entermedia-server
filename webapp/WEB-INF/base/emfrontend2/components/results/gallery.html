@@ -41,10 +41,11 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 		        #set ( $count = $count + 1)
 		    #end
 		</div>
+	</div>
 	$pages.include("$apphome/components/results/pages.html",$context)
 #end
 #if ( $hits.totalPages == 0 )
-	<p class="info" style="margin: 20px;">
+	<p class="info" style="padding:20px; margin:0;">
 	[[No results found.]]
 	</p>
 #end
@@ -72,5 +73,5 @@ jQuery("input[name=pagetoggle]").click(function () {
    
 });
 </script>   
-</div>
+
 </div>

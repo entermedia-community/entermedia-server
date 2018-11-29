@@ -105,8 +105,8 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5d5d5', endColorstr='#A2A2A2',GradientType=1 ); /* IE6-9 */
 	
 }
-.col-sidebar-inner {
-	padding: 1px 0;
+.sidebar-inner {
+	
 }
 .col-sidebar-detaileditor {
 	background-color: #edf0f1;
@@ -458,11 +458,14 @@ html, body, #application {
 }
 .mainlayoutcontainer {
 	position:relative;
-	height: 100%;
+	/*height: 100%;*/
 	
 }
 .cols-main {
 	position:relative;
+}
+.col-main {
+	min-height: 800px;
 }
 .col-sidebar {
 	position: fixed;
@@ -503,8 +506,8 @@ html, body, #application {
 	}
 }
 .emfooter {
-	clear:both;
-	padding:50px 0 10px;
+	padding:15px 0;
+	background-color: #ccc;
 }
 
 /*Sidebars*/
@@ -605,11 +608,13 @@ html, body, #application {
 .filters-edit-icon a:hover {
 	color:#fff;
 }
-
+.col-filters .form-group {
+	padding-bottom: 1px;
+}
 .filter-box {
 	color:#efefef;
 	border-bottom:1px solid #efefef;
-	margin:30px 15px;
+	margin:30px 15px 0px;
 }
 .filter-box a,
 .filter-box a:visited {
@@ -645,7 +650,9 @@ html, body, #application {
 .filter-box-options a.filter-current {
 	color:#fff;
 }
-
+.filter-box-options label {
+	margin: 0;
+}
 .filter-box-options .select2-container--bootstrap4 .select2-selection {
 	background-color: #333!important;
 	color:#eee!important;
@@ -1433,7 +1440,7 @@ td.checkbox input, th.firstheader input {
 	display: inline-block;
 }
 .emtree .name.folder {
-    background: url(../images/folder-closed.gif) 14px -1px no-repeat;
+    background: url(../images/folder-closed.gif) 14px 2px no-repeat;
 }
 .emtree span.folder {
     white-space: nowrap;
@@ -3778,13 +3785,13 @@ img {
 }
 
 .footer-p, .footer-p a {
-    font-size: 12px;
-    color: #aaa;
+    font-size: 0.8rem;
+    color: #333;
     text-decoration: none;
-    margin-top:10px;
 }
 .footer-p a:hover {
-    color: #777;
+    color: #111;
+    text-decoration: underline;
 }
 
 ul.embuttons li a span {

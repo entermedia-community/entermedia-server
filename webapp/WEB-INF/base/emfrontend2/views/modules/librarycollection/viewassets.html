@@ -17,18 +17,16 @@ $context.putPageValue("hideheader", "true")
 ###always go to index - don't care about resultview
 
 #if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
-
-
-$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
-
-<script type="text/javascript">
-	jQuery(document).ready(function(){
-		jQuery("#poptrigger").trigger("click");
-	});
-</script>
+	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
+	
+	<script type="text/javascript">
+		jQuery(document).ready(function(){
+			jQuery("#poptrigger").trigger("click");
+		});
+	</script>
 
 #else
-<div id="viewassets">	
-		$pages.include("$apphome/components/results/index.html",$context)
-</div>
+	<div id="viewassets">	
+			$pages.include("$apphome/components/results/index.html",$context)
+	</div>
 #end

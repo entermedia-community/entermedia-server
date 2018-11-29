@@ -43,12 +43,13 @@
 				#if ($detail.isLeaf())
 					#if ($detail.isFilter())
 						#set($filternode = $userfiltervalues.get($detail.id))
-						#if($filternode && !$filternode.isEmpty())
+						
+						#if($filternode && !$filternode.isEmpty() && $filternode.children.size() > 1)
 							$context.putPageValue("filternode",$filternode)
 							$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
 						#end	
 					#else
-					$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
+						$pages.include("/${applicationid}/components/filters/detailedit.html", $context)
 					#end
 				#else
 					$pages.include("/${applicationid}/components/filters/section.html", $context)
