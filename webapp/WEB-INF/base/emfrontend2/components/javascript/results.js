@@ -288,6 +288,14 @@ $(document).ready(function(url,params)
 		{
 			params.collectionid = collectionid;
 		}
+		//Removes any prev video container
+		if ($('#videopreview').length) {
+			videojs('videopreview').dispose();
+		}
+		if ($('#videoplayerfull').length) {
+			videojs('videoplayerfull').dispose();
+		}
+		
 
 		$.get(link, params, function(data) 
 		{
@@ -752,7 +760,7 @@ checkScroll = function()
 
 gridResize = function() 
 {
-	console.log("resized grid");
+	//console.log("resized grid");
 	var grid = $(".masonry-grid");
 	if( grid.length == 0 )
 	{

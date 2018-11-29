@@ -1258,7 +1258,6 @@ uiload = function() {
 				return false;
 			});
 
-	$('.cols-mainX').equalHeights();
 
 	lQuery('.filterstoggle').livequery("click", function(e) {
 		e.preventDefault();
@@ -1351,7 +1350,6 @@ $.fn.equalHeights = function(px) {
 
 var resizecolumns = function() {
 	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height() + $(".filtered").height();
-	console.log(allheights);
 	var columnsheight = $("body").height() - allheights;
 	$(".sidebar-inner").each(function(){
 		if ($(this).height() > columnsheight) {

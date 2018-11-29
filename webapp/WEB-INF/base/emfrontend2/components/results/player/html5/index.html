@@ -19,7 +19,7 @@
 
 ##Add back full screen button, Autoplay and escape handling
 <div id="playarea-$hit.id" class="player">
-	<video id="video-$hit.id" class="video-js" width="480" height="320"
+	<video id="videoplayerfull" class="video-js" width="480" height="320"
 		poster='$thumb'
 		#if( $autoplay && $autoplay == "true") autoplay #end
 		#if( $loop && $loop == "true") loop #end
@@ -42,5 +42,5 @@
 	</video>
 </div>
 <script>
-	var myPlayer = videojs('video-$hit.id');
+	var myPlayer = videojs('videoplayerfull');
 </script>
