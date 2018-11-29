@@ -14,6 +14,7 @@ import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
 import org.openedit.hittracker.UserFilters;
 import org.openedit.profile.UserProfile;
 
@@ -75,6 +76,10 @@ public class ElasticUserFilters implements UserFilters
 			getCacheManager().put("facethits" + inSearcher.getSearchType(), inQuery.getMainInput(), inFilters);
 		}
 	}
+	public Map getFilterValues(HitTracker inHits)
+	{
+		return getFilterValues(inHits.getSearcher(), inHits.getSearchQuery());
+	}
 	public Map getFilterValues(Searcher inSearcher, SearchQuery inQuery)
 	{
 		List <FilterNode> nodes = getFilterOptions(inSearcher, inQuery);
@@ -90,7 +95,10 @@ public class ElasticUserFilters implements UserFilters
 		return options;
 		
 	}
-
+	public List<FilterNode> getFilterOptions(HitTracker inHits)
+	{
+		return getFilterOptions(inHits.getSearcher(), inHits.getSearchQuery());
+	}
 	public List<FilterNode> getFilterOptions(Searcher inSearcher, SearchQuery inQuery)
 	{
 		if (inQuery.getMainInput() != null)
@@ -98,8 +106,7 @@ public class ElasticUserFilters implements UserFilters
 			List<FilterNode> list = (List<FilterNode>)getCacheManager().get("facethits" + inSearcher.getSearchType(), inQuery.getMainInput());
 			if( list == null || true)
 			{
-				List<PropertyDetail> view = getPropertyDetailsArchive().getView(  //assetadvancedfilter
-						inSearcher.getSearchType(),inSearcher.getSearchType() + "/" + inSearcher.getSearchType() + "advancedfilter", getUserProfile());
+				List<PropertyDetail> view = getFilterView(inSearcher);
 				if( view != null && !view.isEmpty() )
 				{
 					List facets = new ArrayList<PropertyDetail>();
@@ -127,9 +134,30 @@ public class ElasticUserFilters implements UserFilters
 		{
 			return null;
 		}
-
 	}
 
+	protected List<PropertyDetail> getFilterView(Searcher inSearcher)
+	{
+		List<PropertyDetail> view = getPropertyDetailsArchive().getView(  //assetadvancedfilter
+				inSearcher.getSearchType(),inSearcher.getSearchType() + "/" + inSearcher.getSearchType() + "advancedfilter", getUserProfile());
+		return view;
+	}
+	public List getFilteredTerms(HitTracker inHits)
+	{
+		List terms = new ArrayList();
+		SearchQuery inQuery = inHits.getSearchQuery();
+		List<PropertyDetail> view = getFilterView(inHits.getSearcher());
+		for (Iterator iterator = view.iterator(); iterator.hasNext();)
+		{
+			PropertyDetail propertyDetail = (PropertyDetail) iterator.next();
+			Term term = inQuery.getTermByDetailId(propertyDetail.getId());
+			if( term != null)
+			{
+				terms.add(term);
+			}
+		}
+		return terms;
+	}
 	
 	public void clear(String inSearchType)
 	{

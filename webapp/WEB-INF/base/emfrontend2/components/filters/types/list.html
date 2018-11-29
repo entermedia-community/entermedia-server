@@ -5,6 +5,7 @@
 	#end
 	
 	#if( $viewpermission )
+		#set( $fieldname = $detail.getId() )
 		<div class="filter-box">
 		<div class="filter-box-header"><span class="toggle-filter"><i class="fas fa-caret-down"></i></span> $filternode.getName($context.getLocale()) </div>
 		<div class="filter-box-options">
@@ -22,16 +23,13 @@
 				#end
 				</select>
 			#else
-				##checkboxes
-				#set ($first = true)
+
 				#foreach($entry in $filternode.children)
 				<a class="addfilter #if ($first) filter-current #end" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-				<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
+				##<i class="fas  #if ($first) fa-check-square #else fa-square #end"></i>
+				<input type="checkbox" name="${fieldname}.value" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
 				<span> $entry.getText($context) </span>
 				</a>
-					#if ($first)
-					#set ($first = false)
-					#end
 				#end
 			#end
 			

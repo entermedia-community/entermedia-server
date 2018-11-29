@@ -311,6 +311,7 @@ uiload = function() {
 					},
 					success : function(result, status, xhr, $form) {
 						$("#" + targetdiv).replaceWith(result);
+						$(window).trigger( "resize" );
 					},
 					data : {
 						oemaxlevel : oemaxlevel

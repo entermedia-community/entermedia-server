@@ -131,6 +131,21 @@ $(document).ready(function(url,params)
 		
 	});
 
+	lQuery("#filterform").livequery(function() 
+	{
+		var form = $(this);
+		$('select',form).on('select2:select', function() 
+		{
+		    form.trigger("submit");
+		});
+		
+		$('input[type=checkbox]',form).change( function() 
+		{
+		    form.trigger("submit");
+		});
+		
+		
+	});
 	overlayResize = function()
 	{
 		var img = $("#hiddenoverlay #main-media");
@@ -737,7 +752,7 @@ checkScroll = function()
 
 gridResize = function() 
 {
-	
+	console.log("resized stuff");
 	var grid = $(".masonry-grid");
 	if( grid.length == 0 )
 	{

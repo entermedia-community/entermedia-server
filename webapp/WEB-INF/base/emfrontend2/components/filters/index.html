@@ -16,12 +16,17 @@
 	$context.putPageValue("edit",$edit)
 	#end
 	
+	<form  name="filterform" id="filterform" class="em-widget-content ajaxform" data-targetdiv="filteredresults" data-oemaxlevel="2" method="POST"  
 	#if( $librarycol)
-		<form  name="advancedsearch" action="$home$apphome/views/modules/librarycollection/search.html" class="em-widget-content" method="POST">
-		<input name="collectionid" type="hidden" value="$librarycol.getId()">
+		action="$home$apphome/views/modules/librarycollection/search.html" >
 	#else
-		<form  name="advancedsearch" action="$home$apphome/views/search/search.html" class="em-widget-content" method="POST">
+		action="$home$apphome/views/search/search.html" >
 	#end
+		
+	#if( $librarycol)
+		<input name="collectionid" type="hidden" value="$librarycol.getId()">
+	#end
+	
 	##We need 2 things passed in: $searcher, $view or $searcher $details
 	#if (!$details && $userprofile)
 		#set ($details = $searcher.getDetailsForView($view, $userprofile))

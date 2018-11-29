@@ -1,0 +1,19 @@
+<div class="filtered">
+#if( $hits.getSearchQuery().hasMainInput() )
+<strong>Searching for:</strong>  "<em>$hits.getSearchQuery().getMainInput()</em>"
+#end
+##TODO Loop over the view and show them here if they match
+#set( $terms = $userfilters.getFilteredTerms($hits) )
+#foreach( $term in $terms)
+<a href="" class="badge badge-light">$term.getDetail() : 
+	#foreach( $val in $term.getValueCollection() ) 
+		#if( $foreach.count > 1) or #end
+		#if($term.getDetail().isList())
+			$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
+		#end 
+	#end <i class="fas fa-times"></i></a>
+#end
+#if( !$terms.isEmpty() )
+<a href="" class="clearfilters">Clear Filters</a>
+#end
+</div>

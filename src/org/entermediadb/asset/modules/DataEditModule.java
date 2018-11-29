@@ -2001,7 +2001,7 @@ public class DataEditModule extends BaseMediaModule
 					inReq.putSessionValue(hits.getSearchType() + searcher.getCatalogId() + "userFilters", filters);
 				}
 				inReq.putPageValue("userfilters", filters);
-				Map values = filters.getFilterValues(searcher,query);
+				Map values = filters.getFilterValues(hits);
 				inReq.putPageValue("userfiltervalues", values);
 			}
 		}	
