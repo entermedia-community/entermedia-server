@@ -3,13 +3,8 @@
 #set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("librarycollection/librarycollectionresultstable", $userprofile))
-
 $context.putPageValue("details",$details)
-$context.putPageValue("clickpath","")
-$context.putPageValue("viewpostfix",".html")
-$context.putPageValue("clickruncommand","closecollection")
 $context.putPageValue("module","librarycollection")
 $pages.include("${apphome}/components/table/results.html", $context)
 
 </div>
-

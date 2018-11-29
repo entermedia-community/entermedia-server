@@ -179,8 +179,6 @@ public class ElasticHitTracker extends HitTracker
 						throw new OpenEditException(error);
 					}
 					
-					
-					
 //					ElasticUserFilters filters = getUserFilters();
 //					if(filters == null && (getSearchQuery().isFilter())) {
 //						filters = (ElasticUserFilters) getSearcher().getSearcherManager().getModuleManager().getBean(getCatalogId(), "userFilters");
@@ -193,25 +191,19 @@ public class ElasticHitTracker extends HitTracker
 //						filters.addFacets(getSearchType(), getSearchQuery(), getSearcheRequestBuilder());
 //						added = true;
 //					}
+					if (fieldLastPullTime == -1)
+					{
+						applyFilters(); //this should only be done once
+					}
 					if (!isUseServerCursor() || fieldLastScrollId == null || chunk == 0) //todo: Allow scrolling for iterators
 					{
-						
-					
 						getSearcheRequestBuilder().setFrom(start).setSize(size).setExplain(false);
-						if( getSearchQuery().hasFilters() )
-						{
-							
-						}
 						
 						if (isUseServerCursor())
 						{
 							getSearcheRequestBuilder().setScroll(new TimeValue(SCROLL_CACHE_TIME));
 						}
 						response = getSearcheRequestBuilder().execute().actionGet();
-						 
-						
-						
-						
 						setLastScrollId(response.getScrollId());
 						//log.info(getSearcher().getSearchType() + hashCode() + " search chunk: " + inChunk + " start from:" +  start );
 					}
@@ -233,17 +225,17 @@ public class ElasticHitTracker extends HitTracker
 					}
 					getChunks().put(chunk, response);
 					
-					if(response.getAggregations() != null && fieldTopfacets == null) {
+					if(fieldTopfacets == null && response.getAggregations() != null ) 
+					{
 						fieldTopfacets = new ArrayList();
-						loadFilterOptions(response);
+						loadFilterOptions(response); //This will load the data
 					    getSearcheRequestBuilder().setAggregations(new HashMap());
-					} else {
-						fieldTopfacets = new ArrayList();
-					    getSearcheRequestBuilder().setAggregations(new HashMap());
-
 					}
-						
-					
+					else
+					{
+						fieldTopfacets = new ArrayList();
+					    getSearcheRequestBuilder().setAggregations(new HashMap());
+					}
 				}
 			}
 		}
@@ -541,9 +533,6 @@ public class ElasticHitTracker extends HitTracker
 
 	public void applyFilters()
 	{
-		
-		
-		
 		if (getSearchQuery().hasFilters())
 		{
 			BoolQueryBuilder bool = QueryBuilders.boolQuery();

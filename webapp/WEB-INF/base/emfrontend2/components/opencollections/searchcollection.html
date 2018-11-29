@@ -49,13 +49,12 @@
 	</div>
 </div>	
 </div>
-
 <script>
 lQuery("#collectionresults .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
 	#if(  $hits && $hits.getSelectionSize() > 0 )	
-		 #var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId' ;
+		var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId';
 	#else	
 	    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
 	#end   

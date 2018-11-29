@@ -264,7 +264,6 @@ public class BaseElasticSearcher extends BaseSearcher
 			hits.setIndexId(getIndexId());
 			hits.setSearcher(this);
 			hits.setSearchQuery(inQuery);
-			hits.applyFilters();
 			// Infinite loop check
 			if (getSearcherManager().getShowSearchLogs(getCatalogId()))
 			{

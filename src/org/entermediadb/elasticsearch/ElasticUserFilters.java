@@ -1,12 +1,12 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.openedit.cache.CacheManager;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.PropertyDetailsArchive;
 import org.openedit.data.Searcher;
@@ -22,18 +22,33 @@ public class ElasticUserFilters implements UserFilters
 {
 
 	protected UserProfile fieldUserProfile;
-	protected CacheManager fieldCacheManager;
+	protected Map fieldValues;
 
-	public CacheManager getCacheManager()
+	public Map getValues()
 	{
-		return fieldCacheManager;
+		if (fieldValues == null)
+		{
+			fieldValues = new HashMap(2);
+		}
+
+		return fieldValues;
 	}
 
-	public void setCacheManager(CacheManager inCacheManager)
+	class IndexValues
 	{
-		fieldCacheManager = inCacheManager;
+		String fieldIndexId;
+		List<FilterNode> fieldValues;
+		long fieldCreatedOn = System.currentTimeMillis();
+		public boolean isExpired()
+		{
+			if( System.currentTimeMillis() > fieldCreatedOn + (1000l * 60l * 5l) ) //5 minutes
+			{
+				return true;
+			}
+			return false;
+		}
+		
 	}
-
 	protected PropertyDetailsArchive fieldPropertyDetailsArchive;
 	protected SearcherManager fieldSearcherManager;
 
@@ -69,13 +84,13 @@ public class ElasticUserFilters implements UserFilters
 		fieldUserProfile = inUserProfile;
 	}
 
-	public void addFilterOptions(Searcher inSearcher, SearchQuery inQuery, List<FilterNode> inFilters)
-	{
-		if (inQuery.getMainInput() != null)
-		{
-			getCacheManager().put("facethits" + inSearcher.getSearchType(), inQuery.getMainInput(), inFilters);
-		}
-	}
+//	public void addFilterOptions(Searcher inSearcher, SearchQuery inQuery, List<FilterNode> inFilters)
+//	{
+//		if (inQuery.getMainInput() != null)
+//		{
+//			getCacheManager().put(inQuery.getMainInput(), inFilters);
+//		}
+//	}
 	public Map getFilterValues(HitTracker inHits)
 	{
 		return getFilterValues(inHits.getSearcher(), inHits.getSearchQuery());
@@ -103,9 +118,12 @@ public class ElasticUserFilters implements UserFilters
 	{
 		if (inQuery.getMainInput() != null)
 		{
-			List<FilterNode> list = (List<FilterNode>)getCacheManager().get("facethits" + inSearcher.getSearchType(), inQuery.getMainInput());
-			if( list == null || true)
+			String key = inSearcher.getSearchType() + inQuery.getMainInput();
+			IndexValues values = (IndexValues)getValues().get(key);
+			if( values == null || values.fieldIndexId != inSearcher.getIndexId() || values.isExpired() ) //|| true)
 			{
+				values = new IndexValues();
+				values.fieldIndexId = inSearcher.getIndexId();
 				List<PropertyDetail> view = getFilterView(inSearcher);
 				if( view != null && !view.isEmpty() )
 				{
@@ -120,15 +138,15 @@ public class ElasticUserFilters implements UserFilters
 					}
 					
 					HitTracker all = (HitTracker)inSearcher.query().facets(facets).freeform("description", inQuery.getMainInput()).search();
-					list = all.getFilterOptions();
+					values.fieldValues = all.getFilterOptions();
 				}	
 				else
 				{
-					list = java.util.Collections.EMPTY_LIST;
+					values.fieldValues = java.util.Collections.EMPTY_LIST;
 				}
-				getCacheManager().put("facethits" + inSearcher.getSearchType(), inQuery.getMainInput(), list);
+				getValues().put(key, values);
 			}
-			return list;
+			return values.fieldValues;
 		}
 		else
 		{
@@ -161,7 +179,7 @@ public class ElasticUserFilters implements UserFilters
 	
 	public void clear(String inSearchType)
 	{
-		getCacheManager().clear("facethits" + inSearchType);
+		getValues().clear();
 	}
 
 }

@@ -46,14 +46,13 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 
 <div  class="tableholder">
 #set( $xmledithome = "$apphome/components/xml")    
-<div id="emselectable" class="emselectable" data-searchtype="$searchtype" data-editpath="$home$editpath?$args&edit=true&oemaxlevel=1" data-targetdiv="${viewid}editor">
 #set( $sortby = $hits.getSearchQuery().getSortBy() )
 #set( $edit = $context.getRequestParameter("editheader"))
 #if( !$edit || $edit == "false")
 #set( $edit = false)
 #end
 
-<table  id="main-results-table" class="emdata table table-striped table-hover emresultstable"  data-clickpath="$clickpath"  data-viewpostfix="$!viewpostfix" data-hitssessionid="$!existingrecords.sessionId" data-runcommand="$clickruncommand">
+<table  id="main-results-table" class="emdata table table-striped table-hover emresultstable" >
 	<thead>
 	<tr class="tableheader">
 	#foreach( $detail in $details )
@@ -79,7 +78,7 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 	#end
 	</tr>
 	</thead>
-	<tbody ng-foreach="hit in dataresults">
+	<tbody>
 		#foreach( $hit in $hits.getPageOfHits() )
 			<tr  #if($candelete != "false") rowid="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
 			#foreach( $detail in $details)
@@ -102,6 +101,4 @@ $pages.include("${apphome}/components/table/pages.html", $context)
 [[No results found]]
 #end
 
-
-</div>
 </div>
