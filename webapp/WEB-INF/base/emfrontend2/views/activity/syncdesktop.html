@@ -31,6 +31,41 @@ View local Path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
 </div>
 #end
 
+#if($show && $librarycol.lockedby)
+<form  name="archiveassets" id="archiveassets" 
+   method="post" action="$home$apphome/views/modules/librarycollection/lock.html"
+   style="padding-top: 20px;"
+   >
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+	<input type="hidden" name="lock" value="false" />
+
+	
+<div  class="alert alert-primary" role="alert">
+<input class="btn" type="submit" id="archiveassetsbutton" value="[[UnLock Collection]]">	 
+
+</div>
+</form>
+#else
+<form  name="archiveassets" id="archiveassets" 
+   method="post" action="$home$apphome/views/modules/librarycollection/lock.html"
+   style="padding-top: 20px;"
+   >
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+	<input type="hidden" name="lock" value="true" />
+
+	
+<div  class="alert alert-primary" role="alert">
+<input class="btn" type="submit" id="archiveassetsbutton" value="[[Lock Collection]]">	 
+
+</div>
+</form>
+
+
+
+
+#end
+
+
 #if($desktop.isEdited($librarycol.getName()) )
 <form  name="archiveassets" id="archiveassets" 
    method="post" action="$home$apphome/views/modules/librarycollection/desktopimportstart.html"
@@ -70,7 +105,7 @@ View local Path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
 		<input type="hidden" name="lockcollection" value="true" />
  	
 	<div  class="alert alert-primary" role="alert">
-	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download]]">
+	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download and Lock Collection]]">
 	</input>
 
 <i class="fas fa-info-circle"></i></i> 

@@ -607,6 +607,19 @@ public class ProjectModule extends BaseMediaModule {
 		inReq.putPageValue("desktop",desktop);
 	}
 	
+	
+	public void changeLock(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		String collectionid = loadCollectionId(inReq);
+		boolean lock = Boolean.parseBoolean(inReq.getRequestParameter("lockcollection"));
+		if(lock) {
+			archive.updateAndSave("librarycollection", collectionid, "lockedby", inReq.getUserName());
+		} else {
+			archive.updateAndSave("librarycollection", collectionid, "lockedby", null);
+		}
+		
+	}
+	
 	public void exportCollection(WebPageRequest inReq) {
 		MediaArchive archive = getMediaArchive(inReq);
 		ProjectManager manager = getProjectManager(inReq);
