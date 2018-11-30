@@ -879,7 +879,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		$(".bottomtab").removeClass("tabselected");
 		$(".bottomtabactions a").removeClass("dropdown-current");
 		$(this).closest(".bottomtab").addClass("tabselected");
-		var div = $("#main-media-viewer" );
+		var div = $("#main-media-viewer");
 		var options = div.data();
 		var assettab = $(this).data("assettab");
 		
