@@ -3,6 +3,7 @@
 	<property id="general" moduleid="asset" systemdefined="false" byassettype="true" ordering="10">General</property>
 	<property id="fileproperties" moduleid="asset"  systemdefined="false" byassettype="true"  ordering="20">File Properties</property>
 	
+	<property id="assetadvancedfilter" moduleid="asset" systemdefined="true" byassettype="false" ordering="9">Side Filters</property>
 	<property id="advancedsearch" moduleid="asset"  systemdefined="true" byassettype="false" ordering="10">Advanced Search</property>
 	<property id="previewstatus" moduleid="asset"  systemdefined="true" byassettype="true"  ordering="20">Preview Status</property>
 	<property id="singleupload" moduleid="asset"  systemdefined="true" byassettype="true" ordering="30">Single Upload</property>

@@ -14,6 +14,12 @@
 	#end <i class="fas fa-times"></i></a>
 #end
 #if( !$terms.isEmpty() )
-<a href="" class="clearfilters">Clear Filters</a>
+<a class="clearfilters" 
+#if( $librarycol )
+	href="$home$apphome/views/modules/librarycollection/index.html?collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true">
+#else
+	href="$home$apphome/views/modules/asset/index.html?assetclearresults=true&assetclearselection=true&clearfilters=true">
+#end
+[[Clear]]</a>
 #end
 </div>

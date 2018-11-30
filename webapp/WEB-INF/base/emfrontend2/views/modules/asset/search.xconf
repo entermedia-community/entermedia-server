@@ -1,5 +1,13 @@
 <page>
 
+	<inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
+	<property name="hitsname">hits</property>
+	<property name="searchtype">asset</property>
+	<path-action name="DataEditModule.loadPageOfSearch" />
+	<property name="sortby">assetaddeddateDown</property>
+
+
+
 	<path-action name="DataEditModule.search">		
 		<property name="fireevent">true</property>
 	</path-action>
