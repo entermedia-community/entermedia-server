@@ -8,9 +8,10 @@
 		#set($action = $context.getRequestParameter("action"))
 		#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/views/modules/asset/editor/$action/index.html"))
 
-		#if($action == "closedcaptions")
+		#if($action == "closedcaptions" || $action == "timeline")
 			#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/components/$action/index.html"))
 		#end
+		
 		<div class="assetpanel-editor"> $targetpage.getScriptPaths(true)
 		#foreach( $script in $targetpage.getScriptPaths(true) )
 			<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script">  </script>

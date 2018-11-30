@@ -29,33 +29,7 @@ $context.putPageValue("cdn",$cdnprefix)
 	#end
 	
 #end
-#if($opentab == "viewpreview")
-		$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
-		#if( $next )
-			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
-			#if( $preloadtype == "image")
-				#set($tpath = $mediaarchive.asLinkToPreview($next, "image1024x768.jpg"))
-				<div style="display:none;"><img src="$tpath" /></div>
-			#end
-		#end
-#elseif($opentab == "viewproperties")
-	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
-#elseif($opentab == "viewcollaborate")
-	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html")
-#elseif($opentab == "multiedit")
-	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html")
-#elseif($opentab == "viewactions")
-	#set( $opentabactions = $userprofile.get("assetopentabactions"))
-	#if ( $type !='video')
-		#if($opentabactions == 'timeline' || $opentabactions == 'closedcaptions')
-			##Back to Preview
-			#set( $opentab = "viewproperties")
-		#end
-	#elseif (!$opentabactions)
-		#set($opentabactions = "conversions")
-	#end
-	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
-#end
+
 
 
 $dialoghits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
@@ -73,6 +47,34 @@ data-previouspage="$!dialoghits.idOnPreviousPage()"
 data-nextpage="$!dialoghits.idOnNextPage()" >
 	#if( !$mediadbappid)
 		<p style="color: white;">[[mediadbappid not defined in datamanager]]</p>
+	#end
+	
+	#if($opentab == "viewpreview")
+		$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
+		#if( $next )
+			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
+			#if( $preloadtype == "image")
+				#set($tpath = $mediaarchive.asLinkToPreview($next, "image1024x768.jpg"))
+				<div style="display:none;"><img src="$tpath" /></div>
+			#end
+		#end
+	#elseif($opentab == "viewproperties")
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewproperties.html")
+	#elseif($opentab == "viewcollaborate")
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html")
+	#elseif($opentab == "multiedit")
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html")
+	#elseif($opentab == "viewactions")
+		#set( $opentabactions = $userprofile.get("assetopentabactions"))
+		#if ( $type !='video')
+			#if($opentabactions == 'timeline' || $opentabactions == 'closedcaptions')
+				##Back to Preview
+				#set( $opentab = "viewproperties")
+			#end
+		#elseif (!$opentabactions)
+			#set($opentabactions = "conversions")
+		#end
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
 	#end
 	
 </div>
