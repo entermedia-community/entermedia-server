@@ -637,7 +637,12 @@ public class ProjectModule extends BaseMediaModule {
 //		infolder = infolder + "/" + stamp + "/";
 
 		manager.downloadCollectionToClient(inReq, archive, collectionid);
-
+		
+		
+		boolean lock = Boolean.parseBoolean(inReq.getRequestParameter("lockcollection"));
+		if(lock) {
+			archive.updateAndSave("librarycollection", collectionid, "lockedby", inReq.getUserName());
+		}
 		
 		//inReq.putPageValue("exportpath", infolder);
 

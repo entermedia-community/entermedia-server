@@ -2227,4 +2227,14 @@ public class MediaArchive implements CatalogEnabled
 		getSearcher(inString).saveData(inSelectedgoal);
 	}
 
+	public void updateAndSave(String searchtype, String dataid, String key, String value)
+	{
+		Data target = getData(searchtype, dataid);
+		if(target != null) {
+			target.setValue(key, value);
+			saveData(searchtype, target);
+		}
+		
+	}
+
 }
