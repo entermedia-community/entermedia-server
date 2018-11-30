@@ -1,5 +1,9 @@
 
-<div id="exportpath" class="alert alert-success"> 
-	  <strong>[[Lock changed]]</strong>
+
+#if($librarycol.lockedby)
+
+<div class="alert alert-warning" role="alert">
+ [[This collection is currently locked by]] $mediaarchive.getUser($librarycol.lockedby)
 </div>
+#end
 $pages.include("$apphome/views/modules/librarycollection/viewassets.html")
