@@ -1,6 +1,7 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -162,9 +163,17 @@ public class ElasticUserFilters implements UserFilters
 	}
 	public List getFilteredTerms(HitTracker inHits)
 	{
+		if( inHits == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
 		List terms = new ArrayList();
 		SearchQuery inQuery = inHits.getSearchQuery();
 		List<PropertyDetail> view = getFilterView(inHits.getSearcher());
+		if( view == null)
+		{
+			return Collections.EMPTY_LIST;
+		}
 		for (Iterator iterator = view.iterator(); iterator.hasNext();)
 		{
 			PropertyDetail propertyDetail = (PropertyDetail) iterator.next();
