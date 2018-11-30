@@ -150,6 +150,7 @@
 /*	border-left:1px solid #fff;
 	border-right:1px solid #fff;
 	*/
+	overflow-x: auto;
 }
 .emresultstable th { 
 	color:#fff; font-weight:bold;
