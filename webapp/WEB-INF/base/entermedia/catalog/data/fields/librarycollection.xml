@@ -163,7 +163,7 @@
     </name> 
   </property>  
   
-    <property id="featuredcollection" index="true" type="boolean" internalfield="true" keyword="false" filter="false" editable="true" > 
+  <property id="featuredcollection" index="true" type="boolean" keyword="false" filter="false" editable="true" > 
     <name> 
       <language id="en"><![CDATA[Featured]]></language>  
     </name> 

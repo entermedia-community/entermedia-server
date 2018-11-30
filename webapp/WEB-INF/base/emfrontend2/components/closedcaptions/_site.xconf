@@ -1,0 +1,12 @@
+<page>
+	<property name="assettab">viewclosedcaptions</property>
+	<property name="hidepreview">true</property>
+	<property name="fullwidth">true</property>
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="TimelineModule.loadCaptionEditor" />
+	<style id="closedcaptionplayercss" href="/${applicationid}/theme/styles/timeline/timeslider.css" />
+	<style id="videoplayer-css" href="/${applicationid}/theme/styles/timeline/timeline.css" />
+	<script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />
+  	<script id="closedcaptionplayer" src="/${applicationid}/views/modules/asset/editor/closedcaptions/closedcaptions.js" />
+  
+</page>

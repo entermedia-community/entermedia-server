@@ -1,0 +1,18 @@
+#set( $clientroot = "/${applicationid}/components/closedcaptions" )
+
+	<form name="vttupload" id="vttupload" method="post"  class="ajaxform" data-oemaxlevel="1" targetdiv="closedcaptioneditor"
+		  action="$clientroot/details/autotranslate.html">
+	 	<input type="hidden" name="selectedlang" value="$selectedlang"> 
+	 	<input type="hidden" name="assetid" value="$asset.id"> 
+		 
+		<p>[[Translate your closed captions to]]</p>
+		#set($languages = $mediaarchive.getList("locale"))
+		<select class="select2 lenguagepicker" name="targetlang" >
+				#foreach($locale in $languages)
+				<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
+				#end
+		</select>
+		 <p>Note: This will overwrite existing captions in this language</p>
+	</form>
+
+	

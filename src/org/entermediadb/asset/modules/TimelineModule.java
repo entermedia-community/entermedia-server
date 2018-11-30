@@ -361,6 +361,11 @@ public class TimelineModule extends BaseMediaModule
 	}
 	public void loadCaptionEditor(WebPageRequest inReq)
 	{
+		Timeline timeline = (Timeline)inReq.getPageValue("timeline");
+		if( timeline != null )
+		{
+			return;
+		}
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		Searcher captionsearcher = archive.getSearcher("videotrack");
@@ -385,7 +390,7 @@ public class TimelineModule extends BaseMediaModule
 		{
 			return;
 		}
-		Timeline timeline = new Timeline();
+		timeline = new Timeline();
 		long mili = Math.round( videolength*1000d );
 		timeline.setLength(mili);
 		timeline.setPxWidth(1200);

@@ -1,0 +1,36 @@
+#set( $clientroot = "/${applicationid}/components/closedcaptions" )
+
+<div class="clipedit">
+	<div style="margin-bottom:20px;">
+		<h4>
+			[[Transcribing Tools]]
+		</h4>
+		<div id="closedcaptiondetails" style=" padding:0 20px 20px;">
+			<p>[[Select the language you are working in]]</p>
+			#set($languages = $mediaarchive.getList("locale"))
+			<form name="Swaplang" id="langform" action="$clientroot/switchlang.html" >
+				<input type="hidden" name="assetid" value="$asset.id" />
+				<select class="select2 lenguagepicker form-control form-control-sm" id="languages" name="selectedlang" data-count="$count" data-detailid="${detailid}">
+					#foreach($locale in $languages)
+						<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
+					#end
+				</select>
+			</form>
+		</div>
+	</div>
+
+<p>[[Press tab to start/stop  the video]]</p>
+	
+	<div id="warningarea" class="alert alert-warning " role="alert" style="margin-top:4px;display:none;">
+	  <strong>[[Note]]:</strong> [[unsaved changes to timeline]]
+	</div>
+	<br><br>
+		<a href="$clientroot/details/autotranscribedialog.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-primary" style="margin-left:0px;" >[[Automatic Captions]]</a> 
+		<a href="$clientroot/details/autotranslatedialog.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-primary" style="margin-left:0px;" >[[Automatic Translate]]</a> 
+	<br><br>
+		<a href="$clientroot/details/importstart.html?assetid=$asset.id&selectedlang=$selectedlang"  data-width="90%" data-height="90%"  class="emdialog btn btn-primary" style="margin-left:0px;" >Import Captions (VTT file)</a> 
+		<a  href="$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/closedcaption-${selectedlang}.vtt" class="btn btn-primary" style="margin-left:0px;" >Export</a> 
+	<br><br>
+		<a id="removeclip" class="btn btn-danger ajax" targetdiv="closedcaptioneditor" data-confirm="[[Are you sure?]]" href="$clientroot/details/delete.html?assetid=$asset.id&selectedlang=$selectedlang" >[[Delete]]</a>
+	
+</div>
