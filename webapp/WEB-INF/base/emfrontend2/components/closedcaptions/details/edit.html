@@ -8,9 +8,9 @@
 		<div id="closedcaptiondetails" style=" padding:0 20px 20px;">
 			<p>[[Select the language you are working in]]</p>
 			#set($languages = $mediaarchive.getList("locale"))
-			<form name="Swaplang" id="langform" action="$clientroot/switchlang.html" >
+			<form name="Swaplang" id="langform" action="$clientroot/switchlang.html" style="max-width:300px;" >
 				<input type="hidden" name="assetid" value="$asset.id" />
-				<select class="select2 lenguagepicker form-control form-control-sm" id="languages" name="selectedlang" data-count="$count" data-detailid="${detailid}">
+				<select class="select2 lenguagepicker form-control form-control-sm" id="languages" name="selectedlang" data-count="$count" data-detailid="${detailid}" >	 
 					#foreach($locale in $languages)
 						<option value="$!locale.id" #if($selectedlang==$!locale.id) selected="selected" #end>$!locale</option>
 					#end
@@ -19,8 +19,6 @@
 		</div>
 	</div>
 
-<p>[[Press tab to start/stop  the video]]</p>
-	
 	<div id="warningarea" class="alert alert-warning " role="alert" style="margin-top:4px;display:none;">
 	  <strong>[[Note]]:</strong> [[unsaved changes to timeline]]
 	</div>

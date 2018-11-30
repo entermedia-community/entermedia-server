@@ -1,0 +1,4 @@
+<page>
+	<property name="hidemenu">false</property>
+	<property name="showshare">true</property>
+</page>

@@ -1,0 +1,13 @@
+<page>
+	<inner-layout>/${applicationid}/views/modules/asset/editor/timeline/innerlayout.html</inner-layout>
+	<property name="hidepreview">true</property>
+	<property name="fullwidth">true</property>
+
+	<property name="hidemenu">false</property>
+	<property name="showshare">true</property>
+	<property name="clientroot">/${applicationid}/views/modules/asset/editor/timeline</property>
+
+	<page-action name="TimelineModule.loadTimeline" />
+  	<property name="assettab">viewtimeline</property>
+
+</page>

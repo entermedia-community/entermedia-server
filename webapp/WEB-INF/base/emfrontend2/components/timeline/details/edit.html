@@ -1,0 +1,29 @@
+<div class="clipedit" style="width:100%;;margin:0px 0 20px;">
+	<div style="margin-bottom:20px;">
+		<div style="background-color: #666; color: white; padding: 4px;">
+			[[Clip Details]]
+			
+		</div>
+		<div id="clipdetails" style="margin:-2 0 0 10px; padding:20px;background-color: #f8f8f8;  border-color: #e7e7e7; ">
+			#set($detail =	$searcher.getPropertyDetails().getDetail("clips")) 
+			$context.putPageValue("detail",$detail)
+			$context.putPageValue("searcher",$searcher)
+			$pages.include("/$applicationid/components/xml/detailedit.html", $context)
+			<div class="btns">
+			<a id="playclip" data-playtext="[[Play]]"  data-stoptext="[[Stop]]"  href="#" class="btn btn-success btn-disabled" >[[Play]]</a>
+			<a id="removeclip" href="#" class="btn btn-danger btn-disabled" >[[Remove]]</a>
+			<a id="downloadclip" href="#" class="btn btn-success btn-disabled">[[Download Clip]]</a>
+			</div>
+		</div>
+	</div>
+	
+	<a id="addnewcopy" href="#" class="btn btn-success" style="margin-left:0px;" >[[Add New]]</a>
+	<a id="removetime" href="#" class="btn btn-success" style="margin-left:0px;" >-</a>
+	<a id="addtime" href="#" class="btn btn-success" style="margin-left:0px;" >+</a>
+	<a id="savetimeline" href="#" class="btn btn-success btn-disabled" style="float:right" >[[Save Timeline]]</a>
+	<a id="cancel" href="$home$apphome/views/modules/asset/editor/timeline/index.html?assetid=$asset.getId()&hitssessionid=hitsassetassets/catalog" class="btn btn-secondary btn-disabled" style="float:right;margin-right: 10px;" >[[Cancel]]</a>
+	
+	<div id="warningarea" class="alert alert-warning " role="alert" style="margin-top:4px;display:none;">
+	  <strong>[[Note]]:</strong> [[unsaved changes to timeline]]
+	</div>
+</div>
