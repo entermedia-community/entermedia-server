@@ -16,9 +16,9 @@
 #if( !$terms.isEmpty() )
 <a class="clearfilters" 
 #if( $librarycol )
-	href="$home$apphome/views/modules/librarycollection/index.html?collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true">
+	href="$home$apphome/views/modules/librarycollection/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true">
 #else
-	href="$home$apphome/views/modules/asset/index.html?assetclearresults=true&assetclearselection=true&clearfilters=true">
+	href="$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&assetclearresults=true&assetclearselection=true&clearfilters=true">
 #end
 [[Clear]]</a>
 #end
