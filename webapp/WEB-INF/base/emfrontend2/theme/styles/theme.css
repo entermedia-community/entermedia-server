@@ -4257,4 +4257,8 @@ a.collectionbox.favorite
 
 .timelineviewer {
 	background-color: #efefef;
+	overflow:auto;padding-top:10px;margin-top:10px	
+}
+.iconbarcontainer {
+	background-color: #000;
 }

@@ -5,7 +5,7 @@
 #set( $clientroot = "/${applicationid}/components/closedcaptions" )
 
 <div class="row">
-	<div class="col-sm-6">
+	<div class="col" style="max-width: 550px">
 		<div id="video-container" >
 			<div class="video-holder" id="showcaseclient" data-clientroot="$clientroot" data-dataid="$asset.id">
 				<section id='cuePlayer' style="padding:6px;">
@@ -24,7 +24,7 @@
 			</div>									
 		</div>
 	</div>
-	<div class="col-sm-6">
+	<div class="col-sm-5 col-xl-4">
 		$pages.include("${clientroot}/details/edit.html", $context)
 	</div>
 </div>

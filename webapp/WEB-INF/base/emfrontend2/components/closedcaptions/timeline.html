@@ -24,8 +24,8 @@
 		<div class="bg" style="width:${added}px"></div>
 		</div>
 	</div>
-	
-	<div class="iconbar" style="width:${added}px;margin-top:30px; height: 66px; background-color:#000;position:relative;">
+	<div class="iconbarcontainer">
+	<div class="iconbar" style="width:100%; margin-top:30px; height: 66px;position:relative;">
 	#set( $space = 15*8)	
 	#set( $added = 60)
 	#foreach($block in $timeline.getTicks())
@@ -38,4 +38,7 @@
 
 	#end
 	</div>
+	</div>
 </div>
+
+
