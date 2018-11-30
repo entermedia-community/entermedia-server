@@ -1,0 +1,21 @@
+<form name="csvproductupload" method="post" enctype="multipart/form-data" action="./importfinish.html">
+	 	 <input type="hidden" size="25" name="assetid" value="$asset.id"> 
+	 
+	 
+	 <input type="file" size="25" name="file"> 
+	 <input type=submit value="Import" />
+	 
+	 
+</form>
+
+#set($captionsearcher = $mediaarchive.getSearcher("videotrack"))
+
+#set($tracks = $captionsearcher.query().exact("assetid", $asset.getId()).search())
+<ul>
+#foreach($track in $tracks)
+#set( $track = $captionsearcher.loadData($track) )
+<li><a href="$home/${mediadbappid}/services/module/asset/players/closedcaption/${asset.id}/${asset.name}-${track.sourcelang}.vtt">$track.sourcelang Closed Caption</a>
+</li>
+#end
+</ul>
+

@@ -6,9 +6,11 @@
 	<div class="assetpanel-content-inside">
 
 		<div class="assetpanel-editor">
-			
 			#set($action = $context.getRequestParameter("action"))
-			#if ($action)
+			$action
+			#if($action == "closedcaptions")
+				$pages.include("/$applicationid/components/$action/index.html")
+			#elseif ($action)
 				$pages.include("/$applicationid/views/modules/asset/editor/$action/index.html")
 			#end
 			
