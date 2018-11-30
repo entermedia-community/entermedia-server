@@ -37,11 +37,13 @@ public void runit()
 		labels.each{
 			String tag = it.description.getAsString();
 			asset.addValue("googlekeywords", tag);
+			asset.setValue("googletagged", "true");
 		}
 		JsonArray others = responselist.getAsJsonArray("localizedObjectAnnotations");
 		others.each { 
 			String tag = it.name.getAsString();
 			asset.addValue("googlekeywords", tag);
+			asset.setValue("googletagged", "true");
 			
 		}
 		
