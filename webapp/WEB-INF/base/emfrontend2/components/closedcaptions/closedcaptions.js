@@ -1,3 +1,22 @@
+var initclosedcaptions = function() 
+{
+	
+	
+	var app = $("#application");
+	var apphome = app.data("home") + app.data("apphome");
+	var themeprefix = app.data("home")	+ app.data("themeprefix");
+
+	var video = $("#videoclip");
+	video = video[0]; 
+	
+	var inTime = video.currentTime;
+	$("#captionend").text(parseTimeToText(inTime));
+	
+	var link = $("#playtab");
+	
+	var starttime = 0;
+	
+	
 	zeroPad = function(num, numZeros) 
 	{
 	    var n = Math.abs(num);
@@ -6,10 +25,10 @@
 	    if( num < 0 ) {
 	        zeroString = '-' + zeroString;
 	    }
-	
+
 	    return zeroString+n;
 	}
-	
+
 	parseTimeToText = function(inTime)
 	{
 			var justseconds = Math.floor(inTime);
@@ -24,22 +43,6 @@
 			var done = m + ":" + s + "." + millis;
 			return done;
 	}
-
-$(document).ready(function() 
-{
-	var app = $("#application");
-	var apphome = app.data("home") + app.data("apphome");
-	var themeprefix = app.data("home")	+ app.data("themeprefix");
-
-	var video = $("#videoclip");
-	video = video[0]; 
-	
-	var inTime = video.currentTime;
-	$("#captionend").text(parseTimeToText(inTime));
-	
-	var link = $("#playtab");
-	
-	var starttime = 0;
 
 	startchunk = function()
 	{
@@ -125,13 +128,13 @@ $(document).ready(function()
 		
 	});
 	
-	$(".lenguagepicker").on("change",function(e)
+	lQuery(".lenguagepicker").livequery("change",function(e)
 	{
 		var selected = $(this);
 		$("#langform").submit();
 	});
 	
-	$("#videoclip").on("timeupdate",function(e)
+	lQuery("#videoclip").livequery("timeupdate",function(e)
 	{
 		var link = $("#playtab");
 		if( video.paused )
@@ -189,7 +192,6 @@ $(document).ready(function()
 		return false;
 	});
 
-
 	selectClip = function(div)
 	{
 		var div = $(div).closest(".data-selection");
@@ -216,7 +218,6 @@ $(document).ready(function()
 		$("#captionend").text(parseTimeToText(ending/1000));
 		
 	}
-
 	
 	lQuery(".data-selection").livequery("click",function(e)
 	{
@@ -224,6 +225,4 @@ $(document).ready(function()
 		selectClip(this);
 		updateDetails();
 	});	
-	
-		
-});
+};
