@@ -6,5 +6,8 @@
 <path-action name="Script.run" alltypes="true" >
 		<script>/${catalogid}/events/scripts/asset/applygooglevision.groovy</script>
 	</path-action>
+				<property name="enabled">true</property>
+	
+			<property name="period">1m</property>
 		
 </page>

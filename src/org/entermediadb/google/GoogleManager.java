@@ -645,7 +645,11 @@ public class GoogleManager implements CatalogEnabled
 			MediaArchive archive = getMediaArchive();
 
 			String googleapikey = archive.getCatalogSettingValue("googleapikey");
-
+			if(googleapikey == null || googleapikey.isEmpty()) {
+				log.info("Must specify google api key");
+				return null;
+			}
+			
 			String url = "https://vision.googleapis.com/v1/images:annotate?key=" + googleapikey;
 
 			String input = "/WEB-INF/data/" + archive.getCatalogId() + "/generated/" + inAsset.getSourcePath() + "/image1024x768.jpg";

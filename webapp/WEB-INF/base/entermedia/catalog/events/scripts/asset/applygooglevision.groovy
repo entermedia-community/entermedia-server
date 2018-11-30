@@ -16,6 +16,12 @@ public void runit()
 
 	GoogleManager manager = mediaArchive.getBean("googleManager");
 	
+	String googleapikey = archive.getCatalogSettingValue("googleapikey");
+	if(googleapikey == null || googleapikey.isEmpty()) {
+		log.info("Must specify google api key");
+		return null;
+	}
+	
 	HitTracker hits = mediaArchive.getAssetSearcher().query().match("googletagged", "false").search();
 	hits.each{
 		Data hit = it;
