@@ -1,4 +1,10 @@
 <page>
 	<property name="hidemenu">false</property>
 	<property name="showshare">true</property>
+	
+	<path-action name="MediaArchiveModule.getAsset"  />
+	<path-action name="TimelineModule.loadTimeline" />
+	
+	<script id="cues" src="/${applicationid}/components/javascript/jquery.cuepoint.js" />
+	<script id="videoplayer" src="/${applicationid}/components/timeline/timeline.js" />
 </page>

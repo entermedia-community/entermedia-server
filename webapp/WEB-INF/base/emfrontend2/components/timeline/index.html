@@ -5,20 +5,25 @@
 	#set( $source = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.mp4" )
 	#set( $webmsource = "$home/${applicationid}/views/modules/asset/downloads/converted/cache/${sourcepath}/video.webm" )
 	#set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
-	#set( $clientroot = $page.get("clientroot") )
 	$context.putPageValue("timeline", $timeline)
 	
 	
-	<script id="videoplayer" src="/${applicationid}/views/modules/asset/editor/timeline/timeline.js"></script>
 	
-	<div class="" style="">	
+	
+	
 		$pages.include("$clientroot/details/video.html")
 		#set( $timecodejump = $page.get("timecodejump"))
-		<div id="timelineviewer" class="" 
+
+		<div class="row">
+		<div class="col-sm-12">	
+		<div id="timelineviewer" class=" timelineviewer" 
 			data-sourcepath="$asset.sourcepath" data-assetname="$asset.name" data-timecodejump="$!timecodejump" data-mediadb="$mediaarchive.getMediaDbId()" 
 			style="overflow:auto;padding-top:10px;margin-top:10px	">
 				$pages.include("$clientroot/timelinedata.html", $context)
 				$pages.include("$clientroot/timeline.html", $context)
 		</div>
-	</div>
+		</div>
+		</div>
+		
+
 #end

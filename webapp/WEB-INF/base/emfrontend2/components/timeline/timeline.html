@@ -1,5 +1,5 @@
 #set($timeline = $context.getPageValue("timeline"))
-<div id="timeline">
+<div id="timeline" class="timelinecontainer">
 	<div id="slider123" class="time-slider" style="height: 45px;">
 		<div class="ruler" style="height: 66px;">
 		#set( $added = 0)		
@@ -25,18 +25,20 @@
 		<div class="bg" style="width:${added}px"></div>
 		</div>
 	</div>
-	
-	<div class="iconbar" style="width:${added}px;margin-top:30px; height: 66px; background-color:#000;position:relative;">
+	<div class="iconbarcontainer">
+	<div class="iconbar" style="width:100%; ;margin-top:30px; height: 66px; position:relative;">
 	#set( $space = 15*8)	
 	#set( $added = 60)
 	#foreach($block in $timeline.getTicks())
 
 		#if( $block.showThumb() )
 			<div  style="position:absolute;left: ${added}px; top:2px;">
-			<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/></div>
+			<img src="$home${apphome}/views/modules/asset/downloads/preview/crop/${asset.sourcepath}/thumb.jpg?timeoffset=$block.getSeconds()&assetid=$asset.id" title="$block.getLabel()"/>
+			</div>
 			#set( $added = $added + $space)
 		#end
 
 	#end
+	</div>
 	</div>
 </div>

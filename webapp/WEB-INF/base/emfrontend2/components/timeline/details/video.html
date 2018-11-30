@@ -4,6 +4,7 @@
 #set( $thumb = "$home/${applicationid}/views/modules/asset/downloads/preview/large/${sourcepath}/thumb.jpg" )
 #set( $clientroot = "/${applicationid}/components/timeline" )
 
+
 <div class="row">
 <div class="col" style="max-width: 550px">
 	<div id="video-container" style="float:left;">
@@ -17,7 +18,7 @@
 	</div>									
 </div>
 </div>
-<div class="col-sm-4">
-$pages.include("$apphome/views/modules/asset/editor/timeline/details/edit.html", $context)
+<div class="col-sm-5">
+	$pages.include("$clientroot/details/edit.html", $context)
 </div>
 </div>
