@@ -16,7 +16,7 @@ public void runit()
 
 	GoogleManager manager = mediaArchive.getBean("googleManager");
 	
-	String googleapikey = archive.getCatalogSettingValue("googleapikey");
+	String googleapikey = mediaArchive.getCatalogSettingValue("googleapikey");
 	if(googleapikey == null || googleapikey.isEmpty()) {
 		log.info("Must specify google api key");
 		return null;
