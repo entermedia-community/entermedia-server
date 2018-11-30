@@ -7,7 +7,7 @@
      "assettype": "article",     "keywords": ["animals","bird"],        
      "longcaption": "TEST",      "creator":{  
       	"id":"billmoyers1",     	"firstname":"Bill",     	"lastname":"Moyers"         },   
-     "category": {         "id": "index"     },     "editstatus": 6 }]]></samplerequest>
+          "editstatus": 6 }]]></samplerequest>
   </endpoint>  
   <endpoint id="createasset" name="Fetch External Asset" url="/${applicationid}/services/module/asset/data/create" module="asset" docsection="moduleasset" httpmethod="POST"> 
     <samplerequest><![CDATA[{

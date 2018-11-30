@@ -101,9 +101,13 @@ public class OauthModule extends BaseMediaModule
 				{
 					prompt = "";
 				}
+				String state = inReq.findValue("state");
+				if (state == null)
+				{
+					state = "";
+				}
 				
-				
-				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
+				OAuthClientRequest request = OAuthClientRequest.authorizationProvider(OAuthProviderType.GOOGLE).setParameter("state", state).setParameter("prompt", prompt).setClientId(authinfo.get("clientid")).setRedirectURI(redirect).setParameter("access_type", "offline").setResponseType("code").setScope(requestedpermissions).buildQueryMessage();
 
 				String locationUri = request.getLocationUri();
 				inReq.redirect(locationUri);
@@ -193,9 +197,9 @@ public class OauthModule extends BaseMediaModule
 			String code = oar.getCode();
 			//GOOGLE
 
-			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).setCode(code).buildBodyMessage();
+			OAuthClientRequest request = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(redirect).setParameter("state", "test").setCode(code).buildBodyMessage();
 			//	OAuthClientRequest refreshtoken = OAuthClientRequest.tokenProvider(OAuthProviderType.GOOGLE).setGrantType(GrantType.AUTHORIZATION_CODE).setClientId(authinfo.get("clientid")).setClientSecret(authinfo.get("clientsecret")).setRedirectURI(siteroot + "/" + appid + authinfo.get("redirecturi")).setCode(code).buildBodyMessage();
-
+			String state = inReq.getRequestParameter("state");
 			try
 			{
 
@@ -209,6 +213,10 @@ public class OauthModule extends BaseMediaModule
 				// final OAuthAccessTokenResponse oAuthResponse = oAuthClient.accessToken(request);
 				String accessToken = oAuthResponse.getAccessToken();
 				String refresh = oAuthResponse.getRefreshToken();
+				
+				inReq.putPageValue("accessToken", accessToken);
+				inReq.putPageValue("refresh", refresh);
+				inReq.putPageValue("oauthresponse", oAuthResponse);
 				boolean systemwide = Boolean.parseBoolean(inReq.findValue("systemwide"));
 
 				if (refresh != null && systemwide)
@@ -229,7 +237,10 @@ public class OauthModule extends BaseMediaModule
 				String email = (String) data.get("email");
 				String firstname = (String) data.get("given_name");
 				String lastname = (String) data.get("family_name");
+				inReq.putPageValue("googledata", data);
+				inReq.putPageValue("useraccount", email);
 				boolean autocreate = Boolean.parseBoolean(authinfo.get("autocreateusers"));
+				
 				handleLogin(inReq, email, firstname, lastname, true, autocreate, authinfo, refresh, null);
 
 			}

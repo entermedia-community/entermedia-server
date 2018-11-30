@@ -25,7 +25,8 @@ public class GoogleModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		Data authinfo = archive.getData("oauthprovider", "google");
 		log.info("Running syncAssets");
-		getGoogleManager(inReq).syncAssets(authinfo);
+		String token = getGoogleManager(inReq).getAccessToken(authinfo);
+		getGoogleManager(inReq).syncAssets(token, "Drive", true);
 
 	}
 

@@ -24,7 +24,16 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 		return (GoogleManager)getMediaArchive().getModuleManager().getBean(getMediaArchive().getCatalogId(),"googleManager");
 	}
 	
-	
+	protected String getAccessToken() {
+		try
+		{
+			return getGoogleManager().getUserAccessToken(getConfig(), "hotfolder");
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException (e);
+		}
+	}
 	
 	
 
@@ -40,7 +49,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	protected File download(Asset inAsset, File file)
 	{
 		try {
-			return getGoogleManager().saveFile(getConfig(), inAsset);
+			return getGoogleManager().saveFile(getAccessToken(), inAsset);
 		} catch (Exception e) {
 			throw new OpenEditException(e);
 		}
@@ -48,7 +57,7 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 
 	protected void upload(Asset inAsset, File file)
 	{
-		getGoogleManager().uploadToDrive(getConfig(), inAsset, file);
+		getGoogleManager().uploadToDrive(getAccessToken(), inAsset, file);
 	}
 
 	
@@ -162,14 +171,18 @@ public class GoogleDriveAssetSource extends BaseAssetSource
 	@Override
 	public void saveConfig()
 	{
-		//Save aws properties file
+		saveMount();
 				
 	}
 
 	@Override
 	public int importAssets(String inBasepath)
 	{
-		Results r= getGoogleManager().syncAssets(getConfig());
+		String subfolder = getConfig().get("subfolder");
+		if(subfolder == null) {
+			subfolder = getName();
+		}
+		Results r= getGoogleManager().syncAssets(getAccessToken(), subfolder, false);
 		return r.getFiles().size();
 	}
 

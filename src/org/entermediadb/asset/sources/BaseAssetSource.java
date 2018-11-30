@@ -18,9 +18,14 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.importer.FolderMonitor;
 import org.openedit.Data;
 import org.openedit.MultiValued;
+import org.openedit.WebServer;
 import org.openedit.data.PropertyDetail;
 import org.openedit.data.Searcher;
+import org.openedit.page.manage.PageManager;
 import org.openedit.repository.ContentItem;
+import org.openedit.repository.Repository;
+import org.openedit.repository.filesystem.FileRepository;
+import org.openedit.repository.filesystem.XmlVersionRepository;
 import org.openedit.users.User;
 import org.openedit.util.DateStorageUtil;
 import org.openedit.util.EmStringUtils;
@@ -109,6 +114,10 @@ public abstract class BaseAssetSource implements AssetSource
 	protected MediaArchive fieldMediaArchive;
 	protected MultiValued fieldConfig;
 	protected FolderMonitor fieldFolderMonitor;
+
+	protected PageManager fieldPageManager;
+
+	protected WebServer fieldWebServer;
 	
 	public MultiValued getConfig()
 	{
@@ -339,6 +348,99 @@ public abstract class BaseAssetSource implements AssetSource
 		}
 
 		return new File(abpath);
+	}
+
+
+
+	public WebServer getWebServer()
+	{
+		return fieldWebServer;
+	}
+
+
+
+	public void setWebServer(WebServer inWebServer)
+	{
+		fieldWebServer = inWebServer;
+	}
+
+
+
+	public PageManager getPageManager()
+	{
+		return fieldPageManager;
+	}
+
+
+
+	public void setPageManager(PageManager inPageManager)
+	{
+		fieldPageManager = inPageManager;
+	}
+
+
+
+	public void saveMount()
+	{
+		//remove any old hot folders for this catalog
+		getWebServer().reloadMounts();
+	
+		String external = getConfig().get("externalpath");
+	
+		List configs = new ArrayList(getPageManager().getRepositoryManager().getRepositories());
+		for (Iterator iterator = configs.iterator(); iterator.hasNext();)
+		{
+			Repository config = (Repository) iterator.next();
+			if( config.getExternalPath().equals(external))
+			{
+				getPageManager().getRepositoryManager().removeRepository(config.getPath());
+			}
+		}
+	
+		if( external != null )
+		{
+			String originalpath = "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/originals";
+			String toplevelfolder =  getConfig().get("subfolder");
+			
+			String	type = "mount";
+			String fullpath = originalpath + "/" + toplevelfolder;
+			//String versioncontrol = folder.get("versioncontrol");
+			Repository created = createRepo(type);
+			created.setPath(fullpath);
+			created.setExternalPath(external);
+			created.setFilterIn(getConfig().get("includes"));
+			created.setFilterOut(getConfig().get("excludes"));
+			//add varliables
+			/*
+			for (Iterator iterator2 = folder.keySet().iterator(); iterator2.hasNext();) {
+				
+				String key = (String) iterator2.next();
+				created.setProperty(key, (String) folder.get(key)); //
+			}
+			*/
+			configs = getPageManager().getRepositoryManager().getRepositories();
+			configs.add(created);
+		}	
+		//TODO: Make the folder? Thats on loading
+		
+		getWebServer().saveMounts(configs);
+	}
+
+
+
+	protected Repository createRepo(String inType)
+	{
+		Repository repo;
+		if("version".equals(inType) )
+		{
+			repo = new XmlVersionRepository();
+			repo.setRepositoryType("versionRepository");
+		}
+		else
+		{
+			repo = new FileRepository();
+		}
+		return repo;
 	}
 	
 }

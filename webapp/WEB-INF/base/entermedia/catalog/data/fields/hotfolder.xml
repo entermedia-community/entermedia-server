@@ -133,7 +133,21 @@
       <language id="fr"><![CDATA[Commande]]></language>
     </name>
   </property>
+   <property id="refreshtoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">OAUTH refresh token 
+   
+  </property>  
   
+   <property id="expiresin" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true" type="long" datatype="long">OAUTH refresh expiration
+   
+  </property> 
+  
+  
+   <property id="httprequesttoken" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">HTTP Temp token 
+   
+  </property>  
+  <property id="accesstokentime" type="date" index="true" stored="true" editable="true" keyword="false" filter="false" sortable="true">Access Token Creation Time 
+   
+  </property>  
     
   <!-- Move to system settings -->  
   <!--    

@@ -1,5 +1,5 @@
 <page>
-	<property name="eventname">Sync Google Drive</property>	
+	<property name="eventname">Apply Google Vision</property>	
 
 	<property name="virtual">true</property>
 	

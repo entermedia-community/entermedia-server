@@ -725,6 +725,8 @@
 
 	<bean id="s3AssetSource" class="org.entermediadb.asset.sources.S3CmdAssetSource"
 		scope="prototype">
+				<property name="webServer"><ref bean="WebServer" /></property>		
+		
 			<property name="folderMonitor">
 				<ref bean="folderMonitor" />
 			</property>
@@ -733,9 +735,25 @@
 			</property>
 	</bean>
 
+	<bean id="googledriveAssetSource" class="org.entermediadb.asset.sources.GoogleDriveAssetSource"
+		scope="prototype">
+				<property name="webServer"><ref bean="WebServer" /></property>		
+		
+			<property name="googleManager">
+				<ref bean="googleManager" />
+			</property>
+			<property name="pageManager">
+				<ref bean="pageManager" />
+			</property>
+	</bean>
+
+
+
+
 
 <bean id="entermediaAssetSource" class="org.entermediadb.asset.sources.EntermediaAssetSource"
 		scope="prototype">
+					<property name="webServer"><ref bean="WebServer" /></property>		
 			
 	</bean>
 

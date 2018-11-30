@@ -3,5 +3,9 @@
 	<path-action name="OauthModule.login">
 		<property name="provider">google</property>
 	</path-action>
+	<path-action name="HotFolderModule.attachCredentials"/>
+	
+	
+	
 <property name="systemwide">true</property>
 </page>

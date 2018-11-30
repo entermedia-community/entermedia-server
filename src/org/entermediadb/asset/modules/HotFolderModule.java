@@ -7,6 +7,7 @@ import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.sources.AssetSource;
 import org.entermediadb.scripts.ScriptLogger;
 import org.openedit.Data;
+import org.openedit.MultiValued;
 import org.openedit.WebPageRequest;
 import org.openedit.data.Searcher;
 
@@ -81,4 +82,37 @@ public class HotFolderModule extends BaseMediaModule
 		int found = archive.getAssetManager().importHotFolder(source, null);
 		inReq.putPageValue("found", found);
 	}
+	
+	
+	public void attachCredentials(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+
+		String state = inReq.getRequestParameter("state");
+		if(state == null) {
+			return;
+			
+		}
+		if(state.startsWith("hotfolder")) {
+			String folderid = state.substring("hotfolder".length());
+			Data folder = archive.getData("hotfolder", folderid);
+			if(folder != null) {
+				folder.setValue("accesstoken", inReq.getPageValue("accessToken"));
+				folder.setValue("refreshtoken", inReq.getPageValue("refresh"));				
+				folder.setValue("useraccount", inReq.getPageValue("useraccount"));				
+				folder.setValue("googleconnected", true);
+			}
+			archive.saveData("hotfolder", folder);		
+			AssetSource source = archive.getAssetManager().getSourceById(folderid);
+			source.setConfig((MultiValued) folder);
+		}
+		
+		
+		
+		
+		
+	}
+	
+	
+	
+	
 }

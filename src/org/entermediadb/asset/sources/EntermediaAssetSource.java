@@ -1,6 +1,5 @@
 package org.entermediadb.asset.sources;
 
-
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
@@ -8,12 +7,12 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
-import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.pull.PullManager;
 import org.openedit.ModuleManager;
+import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
+import org.openedit.data.BaseData;
 import org.openedit.repository.ContentItem;
-import org.openedit.repository.filesystem.FileItem;
 import org.openedit.users.User;
 
 public class EntermediaAssetSource extends BaseAssetSource
@@ -23,12 +22,11 @@ public class EntermediaAssetSource extends BaseAssetSource
 	protected PullManager fieldPullManager;
 	private static final Log log = LogFactory.getLog(EntermediaAssetSource.class);
 
-
 	public PullManager getPullManager()
 	{
 		if (fieldPullManager == null)
 		{
-			fieldPullManager = (PullManager) getMediaArchive().getBean("pullManager");			
+			fieldPullManager = (PullManager) getMediaArchive().getBean("pullManager");
 		}
 
 		return fieldPullManager;
@@ -39,12 +37,23 @@ public class EntermediaAssetSource extends BaseAssetSource
 		fieldPullManager = inPullManager;
 	}
 
-
+	@Override
+	public MultiValued getConfig()
+	{
+		return new BaseData();
+	}
 	
+	@Override
+	public String getName()
+	{
+		// TODO Auto-generated method stub
+		return "Remote Entermedia";
+	}
+
 	@Override
 	public InputStream getOriginalDocumentStream(Asset inAsset) throws OpenEditException
 	{
-		return getPullManager().getOriginalDocumentStream(getMediaArchive(),inAsset);
+		return getPullManager().getOriginalDocumentStream(getMediaArchive(), inAsset);
 	}
 
 	public ContentItem getOriginalContent(Asset inAsset, boolean downloadifNeeded)
@@ -54,15 +63,15 @@ public class EntermediaAssetSource extends BaseAssetSource
 		return getPullManager().downloadOriginal(getMediaArchive(), inAsset, getFile(inAsset), downloadifNeeded);
 	}
 
-
-
 	@Override
-	public boolean handles(Asset inAsset) {
-		
+	public boolean handles(Asset inAsset)
+	{
+
 		String localid = getMediaArchive().getNodeManager().getLocalClusterId();
 		String clusterid = inAsset.get("mastereditclusterid");
-		
-		if(clusterid != null && !clusterid.equals(localid) ) {
+
+		if (clusterid != null && !clusterid.equals(localid))
+		{
 			log.info("Asset : " + inAsset.getId() + " is from cluster: " + clusterid + " Handling it.");
 			return true;
 		}
@@ -114,7 +123,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 	@Override
 	public int importAssets(String inBasepath)
 	{
-		return (int)getPullManager().processPullQueue(getMediaArchive(), "asset");
+		return (int) getPullManager().processPullQueue(getMediaArchive(), "asset");
 	}
 
 	@Override
@@ -137,8 +146,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 		return getOriginalContent(inAsset, true);
 
 	}
-	
-	
+
 	protected File getFile(Asset inAsset)
 	{
 		String path = "/WEB-INF/data" + getMediaArchive().getCatalogHome() + "/originals/";
@@ -150,11 +158,7 @@ public class EntermediaAssetSource extends BaseAssetSource
 			path = path + "/" + primaryname;
 		}
 		return new File(getMediaArchive().getPageManager().getPage(path).getContentItem().getAbsolutePath());
-		
-		
+
 	}
-	
-	
-	
 
 }
