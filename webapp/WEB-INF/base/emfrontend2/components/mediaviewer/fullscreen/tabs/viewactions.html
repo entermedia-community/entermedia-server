@@ -5,15 +5,20 @@
 <div class="assetpanel-content">
 	<div class="assetpanel-content-inside">
 
-		<div class="assetpanel-editor">
-			#set($action = $context.getRequestParameter("action"))
-			$action
-			#if($action == "closedcaptions")
-				$pages.include("/$applicationid/components/$action/index.html")
-			#elseif ($action)
-				$pages.include("/$applicationid/views/modules/asset/editor/$action/index.html")
-			#end
-			
+		#set($action = $context.getRequestParameter("action"))
+		#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/views/modules/asset/editor/$action/index.html"))
+
+		#if($action == "closedcaptions")
+			#set( $targetpage = $mediaarchive.getPageManager().getPage("/$applicationid/components/$action/index.html"))
+		#end
+		<div class="assetpanel-editor"> $targetpage.getScriptPaths(true)
+		#foreach( $script in $targetpage.getScriptPaths(true) )
+			<script type="text/javascript" src="#if(!$script.startsWith("http"))$home#end$script">  </script>
+		#end
+		#foreach( $style in $targetpage.getStylePaths(true) )
+			<link rel="stylesheet" type="text/css" href="#if(!$style.startsWith("http"))$home#end$style" />
+		#end
+		$pages.include($targetpage,$context)
 		</div>
 	</div>
 	

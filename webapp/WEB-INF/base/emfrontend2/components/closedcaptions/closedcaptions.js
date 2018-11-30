@@ -10,25 +10,7 @@ var initclosedcaptions = function()
 	video = video[0]; 
 	
 	var inTime = video.currentTime;
-	$("#captionend").text(parseTimeToText(inTime));
 	
-	var link = $("#playtab");
-	
-	var starttime = 0;
-	
-	
-	zeroPad = function(num, numZeros) 
-	{
-	    var n = Math.abs(num);
-	    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
-	    var zeroString = Math.pow(10,zeros).toString().substr(1);
-	    if( num < 0 ) {
-	        zeroString = '-' + zeroString;
-	    }
-
-	    return zeroString+n;
-	}
-
 	parseTimeToText = function(inTime)
 	{
 			var justseconds = Math.floor(inTime);
@@ -43,7 +25,28 @@ var initclosedcaptions = function()
 			var done = m + ":" + s + "." + millis;
 			return done;
 	}
+	zeroPad = function(num, numZeros) 
+	{
+	    var n = Math.abs(num);
+	    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+	    var zeroString = Math.pow(10,zeros).toString().substr(1);
+	    if( num < 0 ) {
+	        zeroString = '-' + zeroString;
+	    }
 
+	    return zeroString+n;
+	}
+	
+	
+	$("#captionend").text(parseTimeToText(inTime));
+	
+	var link = $("#playtab");
+	
+	var starttime = 0;
+	
+	
+
+	
 	startchunk = function()
 	{
 	    video.play();
@@ -226,3 +229,9 @@ var initclosedcaptions = function()
 		updateDetails();
 	});	
 };
+console.log("Loaded");
+$(window).on('tabready',function()
+{
+	console.log("Loaded.ready");
+	initclosedcaptions();
+});
