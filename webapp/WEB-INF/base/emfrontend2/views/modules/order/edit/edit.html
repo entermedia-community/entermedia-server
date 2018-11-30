@@ -87,7 +87,7 @@
 <div style="display: none;">
   <form id="emailform" class="ajaxform" targetdiv="itemsent" name="emailform" action="$home$apphome/views/modules/order/edit/sendnotification.html">
     <input type="hidden" name="to" value="$owner.email"/>
-    <input type="submit" name="Send Notificaiton Email" value="[[Send Notification]]"/>
+    <input type="submit" name="Send Notification Email" value="[[Send Notification]]"/>
     <input type="hidden" name="id" value="$order.id"/>
     
     
@@ -97,7 +97,7 @@
 
 <script type="text/javascript">
 
-jQuery("#approveall").livequery("click", function (e) {
+lQuery("#approveall").livequery("click", function (e) {
 	jQuery("#itemsave .statusfield").val("approved");
 	$("#itemsave #list-checkoutstatus").val("approved").trigger("change", true);
 	
@@ -105,12 +105,12 @@ jQuery("#approveall").livequery("click", function (e) {
 	jQuery("#itemsave").trigger("submit");
 	return false;
 } );
-jQuery("#sendnotification").livequery("click", function (e) {
+lQuery("#sendnotification").livequery("click", function (e) {
 	jQuery("#emailform").submit();
 	return false;
 } );
 
-jQuery("#rejectall").livequery("click", function () {
+lQuery("#rejectall").livequery("click", function () {
 	jQuery("#itemsave .statusfield").val("rejected");
 	jQuery("#itemsave #list-checkoutstatus").val("rejected").trigger("change", true);
 	jQuery("#itemsave").submit();

@@ -43,6 +43,8 @@
 	       #set($statuslist = $searcherManager.getList($catalogid, "orderitem/approval"))
 	      
 	       	<select class="statusfield" name="${item.id}.status.value">
+	      		 <option  value=""></option>
+	      		 
 	      		 #foreach($status in $statuslist)
 	       	  			<option #if($item.get("status") == $status.id) selected #end value="$status.id">$status</option>
        		
