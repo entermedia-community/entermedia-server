@@ -1,5 +1,5 @@
 <page>
-	<path-action name="MediaArchiveModule.getAsset"  />
-	<path-action name="TimelineModule.loadCaptionEditor" />
+	<page-action name="MediaArchiveModule.getAsset"  />
+	<page-action name="TimelineModule.loadCaptionEditor" />
   
 </page>

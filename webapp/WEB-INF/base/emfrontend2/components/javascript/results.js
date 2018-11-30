@@ -319,6 +319,7 @@ $(document).ready(function(url,params)
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
 			$("#gallery-" + assetid).addClass("active-asset");
+			$(window).trigger("tabready");
 		});
 		$(document).trigger("domchanged");
 	}
@@ -889,11 +890,17 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 		}
 		else if (assettab=='multiedit') {
 			var link = $(this).data("link");
-			div.load(link, options);
+			div.load(link, options, function()
+			{
+				$(window).trigger("tabready");
+			});
 		}
 		else {
 			var link = $(this).data("link");
-			div.load(link, options);
+			div.load(link, options, function()
+			{
+				$(window).trigger("tabready");
+			});
 			saveProfileProperty("assetopentab",assettab,function(){});
 			var assettabactions = $(this).data("assettabactions");
 			if (assettabactions) {
