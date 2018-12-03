@@ -322,7 +322,14 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		}
 		else
 		{
+			String output = execresult.getStandardOut();
+			if(output != null && output.contains("warning/tiff.c")) {
+				result.setComplete(true);
+				log.info("Convert complete in:" + (System.currentTimeMillis() - start) + " " + inOutFile.getName());
+				result.setOk(true);
+			}else {
 			result.setError(execresult.getStandardOut());
+			}
 		}
 		return result;
 	}
@@ -334,7 +341,6 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			com.add("-background");
 			com.add("white");
 			com.add("-flatten");
-		
 		
 		}
 		else if ("svg".equals(ext)) //add svg support; include transparency
