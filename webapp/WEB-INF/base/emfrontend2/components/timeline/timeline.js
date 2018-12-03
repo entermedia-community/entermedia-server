@@ -1,16 +1,4 @@
-function zeroPad(num, numZeros) {
-    var n = Math.abs(num);
-    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
-    var zeroString = Math.pow(10,zeros).toString().substr(1);
-    if( num < 0 ) {
-        zeroString = '-' + zeroString;
-    }
-
-    return zeroString+n;
-}
-
-
-$(document).ready(function() 
+var inittimeline = function() 
 {
 	var app = $("#application");
 	var apphome = app.data("home") + app.data("apphome");
@@ -19,7 +7,18 @@ $(document).ready(function()
 	$("#clipdetails :input").prop('disabled', true);
 
 	var videoclip = $("#videoclip");
-	var video = videoclip[0]; 
+	var video = videoclip[0];
+	
+	function zeroPad(num, numZeros) {
+	    var n = Math.abs(num);
+	    var zeros = Math.max(0, numZeros - Math.floor(n).toString().length );
+	    var zeroString = Math.pow(10,zeros).toString().substr(1);
+	    if( num < 0 ) {
+	        zeroString = '-' + zeroString;
+	    }
+
+	    return zeroString+n;
+	}
 
 	copyStartTime = function()
 	{
@@ -153,7 +152,7 @@ $(document).ready(function()
 		
 	});
 	
-	lQuery("#cliplabel\\.value").livequery("keyup", function()
+	lQuery("#cliplabel.value").livequery("keyup", function()
 	{
 		updateSelectedClip();		
 	});
@@ -236,7 +235,7 @@ $(document).ready(function()
 		
 		
 		updateDetails();
-		$("#cliplabel\\.value").focus();
+		$("#cliplabel.value").focus();
 				
 	});
 	
@@ -317,7 +316,7 @@ $(document).ready(function()
 	//Saved the selected data
 	updateSelectedClip = function()
 	{
-		var text = $("#cliplabel\\.value").val();
+		var text = $("#cliplabel.value").val();
 
 		var selected = $(".selectedclip");
 		var cell = $(".selectedclip .timecell");
@@ -349,10 +348,10 @@ $(document).ready(function()
 	{
 		var selected = $(".selectedclip");
 	
-		console.log("Enabled");	
+			
 		$("#clipdetails :input").prop('disabled', false);
 		
-		$("#cliplabel\\.value").val( selected.data("cliplabel") );
+		$("#cliplabel.value").val( selected.data("cliplabel") );
 		var decstart = selected.data("timecodestart");
 		decstart = parseFloat(decstart);
 		var start = parseTimeToText( decstart / 1000 );
@@ -548,7 +547,15 @@ $(document).ready(function()
 	}
 	
 	
-});	
+};
+
+$(window).on('tabready',function()
+{
+	inittimeline();
+});
+
+
+
 
 
 

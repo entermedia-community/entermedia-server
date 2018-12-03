@@ -1,10 +1,8 @@
 <div class="assetpanel-container">
 		#set($action = $context.getRequestParameter("action"))
-#if($action != "closedcaptions")
 <div class="assetpanel-sidebar">
 	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcarousel.html",$context)
 </div>
-#end
 <div class="assetpanel-content">
 	<div class="assetpanel-content-inside">
 

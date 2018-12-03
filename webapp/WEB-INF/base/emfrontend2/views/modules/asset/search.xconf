@@ -7,7 +7,6 @@
 	<property name="sortby">assetaddeddateDown</property>
 
 
-
 	<path-action name="DataEditModule.search">		
 		<property name="fireevent">true</property>
 	</path-action>

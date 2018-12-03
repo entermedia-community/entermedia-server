@@ -214,9 +214,6 @@
     border-top: 5px solid #000;
 }
 
-.hidden {
-    display: none;
-}
 
 form.addnewtimeline label {
     font-weight: normal;
