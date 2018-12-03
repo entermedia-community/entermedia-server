@@ -333,7 +333,9 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			com.add("-background");
 			com.add("white");
+			if(!"png".equals(ext)) {
 			com.add("-flatten");
+			}
 		}
 		else if ("svg".equals(ext)) //add svg support; include transparency
 		{
