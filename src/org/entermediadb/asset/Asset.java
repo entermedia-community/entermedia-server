@@ -625,6 +625,20 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		}
 		return null;
 	}
+	
+	public String getDetectedFileFormat()
+	{
+		
+		
+		String format = get("detectedfileformat");
+		if(format == null) {
+			format = getFileFormat();
+		}
+		return format;
+	}
+
+	
+	
 
 	public String getAttachmentByType(String inType)
 	{

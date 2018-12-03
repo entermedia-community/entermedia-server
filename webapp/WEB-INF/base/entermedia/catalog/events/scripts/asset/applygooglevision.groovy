@@ -18,7 +18,7 @@ public void runit()
 	
 	String googleapikey = mediaArchive.getCatalogSettingValue("googleapikey");
 	if(googleapikey == null || googleapikey.isEmpty()) {
-		log.info("Must specify google api key");
+	//	log.info("Must specify google api key");
 		return null;
 	}
 	

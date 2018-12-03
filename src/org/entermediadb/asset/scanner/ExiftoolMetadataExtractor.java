@@ -251,6 +251,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					{
 						inAsset.setProperty("fileformat", value.toLowerCase());
 					}
+					inAsset.setProperty("detectedfileformat", value.toLowerCase());
 				}
 				else if ("Subject".equals(key) || "Keyword".equals(key) || "Keywords".equals(key))
 				{

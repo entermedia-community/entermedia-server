@@ -23,7 +23,7 @@ public class FfmpegMetadataExtractor extends MetadataExtractor
 	
 	public boolean extractData(MediaArchive inArchive, ContentItem inFile, Asset inAsset)
 	{
-		String mediatype = inArchive.getMediaRenderType(inAsset.getFileFormat());
+		String mediatype = inArchive.getMediaRenderType(inAsset.getDetectedFileFormat());
 		if( "video".equals(mediatype ) || "audio".equals(mediatype)) 
 		{
 			//Run it again

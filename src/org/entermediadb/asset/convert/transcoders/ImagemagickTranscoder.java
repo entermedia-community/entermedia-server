@@ -51,7 +51,7 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			{
 				tmpinput = asset.getFileFormat();
 			}
-			ext = asset.getFileFormat();
+			ext = asset.getDetectedFileFormat();
 			if (ext == null)
 			{
 				ext = tmpinput;
@@ -333,9 +333,9 @@ public class ImagemagickTranscoder extends BaseTranscoder
 		{
 			com.add("-background");
 			com.add("white");
-			if(!"png".equals(ext)) {
 			com.add("-flatten");
-			}
+		
+		
 		}
 		else if ("svg".equals(ext)) //add svg support; include transparency
 		{
