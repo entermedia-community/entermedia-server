@@ -13,4 +13,11 @@
 	<row id="12"  webeventlistener="logger" action="asset/deleted" ></row>	
 	<row id="11"  webeventlistener="logger" action="hotfolder/update" ></row>	
 	
+	
+	<row id="user1"  webeventlistener="logger" action="userprofile/edit" ></row>	
+	<row id="user2"  webeventlistener="logger" action="user/edit" ></row>	
+	
+	
+	
+	
 </rows>

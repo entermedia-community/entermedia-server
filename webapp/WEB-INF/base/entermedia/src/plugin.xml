@@ -1458,7 +1458,9 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-			
+			<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	
 	</bean>
 	<bean id="baseUser"	class="org.openedit.users.BaseUser"	scope="prototype" >
@@ -1480,7 +1482,9 @@
 			<ref bean="moduleManager" />
 		</property>
 		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
-		
+		<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	</bean>
 
 	<bean id="elasticLockSearcher" class="org.entermediadb.elasticsearch.searchers.LockSearcher" scope="prototype">
@@ -1525,6 +1529,9 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 		<property name="prefix"><value>users</value></property>
 		<property name="newDataName"><value>userProfile</value></property>
+		<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	</bean>
 	<bean id="elasticUserProfileSearcher" class="org.entermediadb.elasticsearch.searchers.BaseElasticSearcher" scope="prototype">
 		<property name="elasticNodeManager">
@@ -1537,6 +1544,9 @@
 			<ref bean="searcherManager" />
 		</property>
 		<property name="newDataName"><value>userProfile</value></property>		
+		<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	</bean>
 	
 	<bean id="elasticXmlOrderItemSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticXmlFileSearcher" scope="prototype">

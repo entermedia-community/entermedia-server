@@ -844,26 +844,27 @@ public class UserManagerModule extends BaseMediaModule
 		{
 			checkAdminPermission(inReq);
 		}
-		getPropertyContainerManipulator().updateProperties( inReq.getParameterMap(),
-		user.getProperties() );
+		
 
 		//TODO: Why is this needed? Simplify
 		Map params = inReq.getParameterMap();
-		if (params.containsKey("field"))
-		{
-			String[] fields = (String[]) params.get("field");
-			for (int i = 0; i < fields.length; i++)
-			{
-				if (fields[i].equals("enabled"))
-				{
-					user.setEnabled(Boolean.parseBoolean((String) params.get("enabled.value")));
-					break;
-				}
-			}
+		String[] fields = (String[]) params.get("field");
+		String enabled = inReq.getRequestParameter("enabled.value");
+		
+			
+		
+		getUserSearcher(inReq).saveDetails(inReq, fields, user, user.getId());
+		if(enabled!= null) {
+			user.setEnabled(Boolean.parseBoolean(enabled));
 		}
+		getUserSearcher(inReq).saveData( user ,inReq.getUser());
+		
+		
+	
 		inReq.putPageValue("status","Saved");
 		inReq.putPageValue("saved",true);
-		getUserSearcher(inReq).saveData( user ,inReq.getUser());
+		
+		
 		String catalogid = inReq.findValue("catalogid");
 		if( user.getId().equals(  inReq.getUser().getId() ) )
 		{
