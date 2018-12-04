@@ -46,7 +46,7 @@ public class BaseSearchSecurity implements SearchSecurity
 		if( filter == null)
 		{
 			//Look up in the database a cache for this filter type
-			Data config = getSearcherManager().getData(inSearcher.getCatalogId(), "searchfilter",inSearcher.getSearchType());
+			Data config = getSearcherManager().getData(inSearcher.getCatalogId(), "searchsecurity",inSearcher.getSearchType());
 			if( config != null)
 			{
 				String beanname = config.get("beanname");
