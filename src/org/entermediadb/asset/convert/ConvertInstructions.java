@@ -30,10 +30,21 @@ public class ConvertInstructions
 	public static final String NULL = "null";
 	protected boolean fieldStreaming = false;
 	protected OutputStream fieldOutputStream;
+	protected Page fieldImageProfile;
 	
 	
 	
 	
+	public Page getImageProfile()
+	{
+		return fieldImageProfile;
+	}
+
+	public void setImageProfile(Page inImageProfile)
+	{
+		fieldImageProfile = inImageProfile;
+	}
+
 	public OutputStream getOutputStream() {
 		return fieldOutputStream;
 	}
@@ -738,6 +749,8 @@ public class ConvertInstructions
 	{
 		setProperty("outputrendertype", inType);
 	}
+
+	
 
 	
 }

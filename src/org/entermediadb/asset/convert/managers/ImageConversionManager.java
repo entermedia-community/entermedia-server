@@ -8,6 +8,7 @@ import org.entermediadb.asset.convert.ConvertResult;
 import org.entermediadb.asset.convert.MediaTranscoder;
 import org.entermediadb.asset.convert.transcoders.CMYKTranscoder;
 import org.entermediadb.asset.convert.transcoders.WaterMarkTranscoder;
+import org.openedit.page.Page;
 import org.openedit.repository.ContentItem;
 
 public class ImageConversionManager extends BaseConversionManager
@@ -86,6 +87,12 @@ public class ImageConversionManager extends BaseConversionManager
         		inStructions.setInputFile(input);
         	}
     	}
+    	
+    	Page alternativeprofile = findProfileForAsset(inStructions);
+    	if(alternativeprofile != null) {
+    		inStructions.setImageProfile(alternativeprofile);
+    	}
+    	
     	ConvertResult result = super.transcode(inStructions);
     	if(inStructions.isWatermark())
     	{
@@ -98,6 +105,27 @@ public class ImageConversionManager extends BaseConversionManager
 
 
 	
+	private Page findProfileForAsset(ConvertInstructions inStructions)
+	{
+		String profiledescip = inStructions.getAsset().get("colorprofiledescription"); 
+		if(profiledescip == null) {
+			profiledescip = "";
+		}
+    	
+    	
+    	if( profiledescip.contains("ProPhoto") ) {
+			
+		
+				Page profile = getMediaArchive().getPageManager().getPage("/system/components/conversions/ProPhoto.icc");
+		
+			
+			return profile;
+			
+		}
+    	return null;
+	}
+
+
 	private ContentItem makeIndd(MediaTranscoder inExiftoolThumbTranscoder, ConvertInstructions inStructions)
 	{
 		Asset asset = inStructions.getAsset();

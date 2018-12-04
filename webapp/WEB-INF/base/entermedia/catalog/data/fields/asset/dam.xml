@@ -442,6 +442,7 @@
     </name> 
     <property id="cliplabel" index="true" keyword="true" stored="true" editable="true" >
     <name> 
+    
       <language id="en"><![CDATA[Clip Label]]></language>  
     </name> 
     </property>

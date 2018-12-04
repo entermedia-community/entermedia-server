@@ -23,6 +23,8 @@ public class ImagemagickTranscoder extends BaseTranscoder
 
 	public String getPathtoProfile()
 	{
+		
+		
 		if (fieldPathToProfile == null)
 		{
 			Page profile = getPageManager().getPage("/system/components/conversions/tinysRGB.icc");
@@ -274,10 +276,15 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			else
 			{
-				if(!(asset.get("colorprofiledescription")!= null && asset.get("colorprofiledescription").contains("ProPhoto"))) {
 					com.add("-strip"); //This removes the extra profile info   TODO: Get rid of this fix
-					setValue("profile", getPathtoProfile(), inStructions, com);
-				}
+					String profilepath = null;
+					if(inStructions.getImageProfile() != null) {
+						profilepath = inStructions.getImageProfile().getContentItem().getAbsolutePath();
+					} else {
+						profilepath = getPathtoProfile();
+					}
+					setValue("profile", profilepath, inStructions, com);
+				
 			}
 		}
 		com.add("-auto-orient");

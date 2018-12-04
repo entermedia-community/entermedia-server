@@ -355,10 +355,16 @@ public abstract class BaseConversionManager implements ConversionManager
 			return null;
 		}
 		String colorspace = inStructions.getAsset().get("colorspace");
-		if( "4".equals( colorspace ) ||  "5".equals(colorspace ))
+		String profiledescip = inStructions.getAsset().get("colorprofiledescription"); 
+		if(profiledescip == null) {
+			profiledescip = "";
+		}
+		ContentItem originalDocument = inStructions.getOriginalDocument();
+		Asset asset = inStructions.getAsset();
+
+		if( "4".equals( colorspace ) ||  "5".equals(colorspace ) )
 		{
 			
-			ContentItem originalDocument = inStructions.getOriginalDocument();
 			boolean exists = originalDocument.exists();
 			if( inStructions.isCrop() || !exists ) //Let it use the standard 1020x768
 			{
@@ -366,7 +372,6 @@ public abstract class BaseConversionManager implements ConversionManager
 			}
 //			if( !isCMYKProfile(inInputFile) )
 //			{
-				Asset asset = inStructions.getAsset();
 				ContentItem custom = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb." + format);
 				if( !custom.exists() )
 				{
@@ -374,11 +379,42 @@ public abstract class BaseConversionManager implements ConversionManager
 					instructions.setForce(true);
 					instructions.setInputFile(originalDocument);
 					instructions.setOutputFile(custom);
+					instructions.setProperty("skipprofile", "true");
 					imTranscoder.convert(instructions);
 				}
 				return custom;
 //			}
 		}
+		
+		if( profiledescip.contains("ProPhoto") ) {
+			
+			ContentItem custom = getMediaArchive().getContent( "/WEB-INF/data/" + getMediaArchive().getCatalogId() + "/generated/" + asset.getSourcePath() + "/customthumb." + format);
+
+			if( !custom.exists() )
+			{
+				ConvertInstructions instructions = createInstructions(asset);
+				instructions.setForce(true);
+				Page profile = getMediaArchive().getPageManager().getPage("/system/components/conversions/ProPhoto.icc");
+				instructions.setImageProfile(profile);
+				instructions.setInputFile(originalDocument);
+				instructions.setProperty("skipprofile", "true");
+				MediaTranscoder transcoder = findTranscoder(instructions);
+				instructions.setOutputFile(custom);
+
+				transcoder.convert(instructions);
+			}    	
+			
+			return custom;
+
+			
+			
+			
+		}
+
+		
+		
+		
+		
 		return null;
 	}
 
