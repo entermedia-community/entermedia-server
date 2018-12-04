@@ -5,6 +5,9 @@
 
 	<property name="dataroot">/${catalogid}/side/search</property>
  	<property name="assetrootfolder">/${catalogid}/assets</property>
+	<path-action name="DataEditModule.changeFilters">
+		<property name="searchtype">${module}</property>
+	</path-action>	
 	<path-action name="DataEditModule.loadOrSearch">
 		<property name="searchtype">${module}</property>
 	</path-action>	

@@ -14,16 +14,16 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
-import org.openedit.data.SearchQueryFilter;
+import org.openedit.data.SearchSecurity;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.users.User;
 
-public class assetSearchQueryFilter implements SearchQueryFilter
+public class assetSearchSecurity implements SearchSecurity
 {
-	private static final Log log = LogFactory.getLog(assetSearchQueryFilter.class);
+	private static final Log log = LogFactory.getLog(assetSearchSecurity.class);
 
 	protected ModuleManager fieldModuleManager;
 
@@ -44,7 +44,7 @@ public class assetSearchQueryFilter implements SearchQueryFilter
 	 * are explicidly on that collection NOT in Collections marked private ) )
 	 * 
 	 */
-	public SearchQuery attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
+	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
 	{
 		
 		if (!inQuery.isEndUserSearch())

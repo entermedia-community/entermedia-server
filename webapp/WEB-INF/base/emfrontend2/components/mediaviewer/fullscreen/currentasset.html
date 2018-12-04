@@ -1,8 +1,9 @@
 #set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
 #set( $collectionid = $context.getRequestParameter("collectionid") )
-#set( $type = $mediaarchive.getMediaPlayerType($asset))
-#if( !$type )
-	No template for $type
+#set( $rendertype = $mediaarchive.getMediaRenderType($asset))
+#set( $playertype = $mediaarchive.getMediaPlayerType($asset))
+#if( !$playertype )
+	No template for $playertype
 #end
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
 $context.putPageValue("cdn",$cdnprefix)
@@ -27,9 +28,18 @@ $context.putPageValue("cdn",$cdnprefix)
 	#else
 		#set( $opentab = "viewpreview")
 	#end
-	
 #end
 
+#if($opentab == "viewactions")
+ #set( $opentabactions = $userprofile.get("assetopentabactions"))
+
+ #if($opentabactions == "closedcaptions" || $opentabactions == "timeline")
+	#if( $rendertype != "video")
+		#set( $opentab = "viewproperties")
+		#set( $opentabactions = false)
+	#end
+ #end
+#end
 
 
 $dialoghits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
@@ -65,16 +75,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 	#elseif($opentab == "multiedit")
 		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html")
 	#elseif($opentab == "viewactions")
-		#set( $opentabactions = $userprofile.get("assetopentabactions"))
-		#if ( $type !='video')
-			#if($opentabactions == 'timeline' || $opentabactions == 'closedcaptions')
-				##Back to Preview
-				#set( $opentab = "viewproperties")
-			#end
-		#elseif (!$opentabactions)
-			#set($opentabactions = "conversions")
-		#end
-		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$!opentabactions")
 	#end
 	
 </div>
@@ -168,9 +169,9 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 						#end	
 						#if($canconvert)
 
-						#if( $type )
+						#if( $rendertype )
 						#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
-						#set( $results = $searcher.query().exact("inputtype",$type).sort("ordering").named("convertpresets").search($context) )
+						#set( $results = $searcher.query().exact("inputtype",$rendertype).sort("ordering").named("convertpresets").search($context) )
 						#end
 						
 							#foreach($result in $results )						
@@ -220,7 +221,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 					</a>
 			   	</li>
 			   	#end
-			   	#if(!$ismulti && $type == "video")
+			   	#if(!$ismulti && $rendertype == "video")
 			   		#if($canviewtimeline)
 			   			<li>
 					   	<a class="assettab #if($opentabactions=='timeline') dropdown-current #end" 
@@ -354,11 +355,10 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 							#set( $permission = false)
 						#end
 						
-						#set( $type = $mediaarchive.getMediaRenderType($asset))
-						#if( $permission && $link.id == "viewtimeline" &&  !($type == "video" || $type == "audio"))
+						#if( $permission && $link.id == "viewtimeline" &&  !($rendertype == "video" || $rendertype == "audio"))
 							#set( $permission = false)
 						#end
-						#if( $permission && $link.id == "viewclosedcaptions" && !($type == "video" || $type == "audio"))
+						#if( $permission && $link.id == "viewclosedcaptions" && !($rendertype == "video" || $rendertype == "audio"))
 							#set( $permission = false)
 						#end
 				

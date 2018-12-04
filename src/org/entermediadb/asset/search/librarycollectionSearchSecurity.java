@@ -11,16 +11,16 @@ import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.WebPageRequest;
-import org.openedit.data.SearchQueryFilter;
+import org.openedit.data.SearchSecurity;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.profile.UserProfile;
 
-public class librarycollectionSearchQueryFilter implements SearchQueryFilter
+public class librarycollectionSearchSecurity implements SearchSecurity
 {
-	private static final Log log = LogFactory.getLog(librarycollectionSearchQueryFilter.class);
+	private static final Log log = LogFactory.getLog(librarycollectionSearchSecurity.class);
 
-	public SearchQuery attachFilter(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
+	public SearchQuery attachSecurity(WebPageRequest inPageRequest, Searcher inSearcher, SearchQuery inQuery)
 	{
 		boolean enabled = inQuery.isEndUserSearch();
 		//log.info( "security filer enabled "  + enabled );
