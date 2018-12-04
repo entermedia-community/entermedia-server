@@ -274,8 +274,10 @@ public class ImagemagickTranscoder extends BaseTranscoder
 			}
 			else
 			{
-				com.add("-strip"); //This removes the extra profile info   TODO: Get rid of this fix
-				setValue("profile", getPathtoProfile(), inStructions, com);
+				if(!(asset.get("colorprofiledescription")!= null && asset.get("colorprofiledescription").contains("ProPhoto"))) {
+					com.add("-strip"); //This removes the extra profile info   TODO: Get rid of this fix
+					setValue("profile", getPathtoProfile(), inStructions, com);
+				}
 			}
 		}
 		com.add("-auto-orient");

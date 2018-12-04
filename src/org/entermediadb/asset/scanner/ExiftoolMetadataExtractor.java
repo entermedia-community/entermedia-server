@@ -275,6 +275,17 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 					
 					inAsset.setProperty("colorspace", value);
 				}
+				
+				else if ("ProfileDescription".equals(key))
+				{
+					
+					
+					inAsset.setProperty("colorprofiledescription", value);
+				}
+				
+				
+				
+				
 				else if ( "PhotometricInterpretation".equals(key) )
 				{
 					if( "5".equalsIgnoreCase(value) )

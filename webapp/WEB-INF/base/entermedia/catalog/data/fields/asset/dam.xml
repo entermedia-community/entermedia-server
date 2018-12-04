@@ -106,6 +106,8 @@
       <language id="fr"><![CDATA[Compression]]></language> 
     </name> 
   </property>  
+  <property id="colorprofiledescription" externalid="ProfileDescription" index="true" stored="true" datatype="text"   editable="false" type="text">Profile Description
+  </property>  
   <property id="artist" externalid="Artist" index="true" stored="true" datatype="text"   editable="false" type="text">Artist 
     <name> 
       <language id="de"><![CDATA[Künstler]]></language>  
@@ -271,7 +273,10 @@
       <language id="es"><![CDATA[Formato de archivo]]></language>  
       <language id="fr"><![CDATA[Format du fichier]]></language> 
     </name> 
-  </property>  
+  </property>
+   <property id="detectedfileformat"  index="true" stored="true" viewtype="list" editable="true" externalid="File Type"  sortable="true">Detected File Format 
+   
+  </property>    
   <property id="filesize"  index="true" stored="true" datatype="number" viewtype="filesize" searchcomponent="numbersearch" externalid="File Size"  editable="false" type="number">File Size 
     <name> 
       <language id="de"><![CDATA[Dateigröße]]></language>  
