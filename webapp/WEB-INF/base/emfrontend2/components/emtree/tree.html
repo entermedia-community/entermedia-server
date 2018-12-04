@@ -23,11 +23,13 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 		#set( $isselected = $render.isNodeSelected($cat))
 		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth" data-categoryname="$cat.name">
 			#set( $checked = $render.isIdSelected($cat.id) )
-			#set ( $padding = (10 * ($depth - 1)) )
-			<div class="treerow categorydroparea #if( $isselected ) selected #end #if( $checked) idchecked #end" 
+			#set ( $padding = (10 * ($depth - 1)) + 5 )
+			<div class="treerow categorydroparea #if( $isselected ) cat-current #end #if( $checked) idchecked #end" 
 			     style="padding-left: ${padding}px" title="id: $cat.id">
-				#if($haschildren)<div class="arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>#end 
-				<div id="${cat.id}_display" class="name folder #if($haschildren) leaf #end" title="$cat.getCategoryPath()" >
+				#if($haschildren)
+					<div class="cat-arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>
+				#end 
+				<div id="${cat.id}_display" class="cat-name cat-folder #if($haschildren) cat-leaf #end" title="$cat.getCategoryPath()" >
 				#if( $cat.getCounts() > 0)
 					<b>$cat.name</b> 
 				#else
@@ -35,12 +37,16 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 				#end
 				
 				#if($cat.hasCountData())
-				<b class="catcount"> 
+				<b class="cat-count"> 
 				($cat.getCount())
 				</b> 
 				#end
 				
+				
 				</div>
+				#if($caneditcategorytree || $editcategories)
+				<a href="#" class="cat-menu" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
+				#end
 			</div>
 		#if($haschildren && $expanded)
 		   <ul class="open" > <!-- Open with $cat.name $children.size() -->

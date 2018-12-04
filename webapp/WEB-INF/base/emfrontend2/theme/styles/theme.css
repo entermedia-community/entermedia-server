@@ -230,6 +230,7 @@ tr.emborderhover td,
 .search-list li:hover a.search-href, 
 .sidebar-list a:hover,
 .emtree .checkbox .field, .emtree .treerow:hover, .emtree .treerow.selected, .emtree .treerow.selected:hover,
+.emtree .cat-current,
 .filters-sidebar li:hover,
 .filters-sidebar-selected li:hover,
 .list-hover:hover
@@ -1416,40 +1417,56 @@ td.checkbox input, th.firstheader input {
     margin: 0;
     padding: 0;
     color: #444;
+    word-wrap:break-word;
 }
 .emtree ul li div.treerow {
 	position: relative;
-    padding: 7px 0 7px 10px;
+    padding: 4px 0 4px 10px;
     min-height: 28px;
     display: block;
     cursor: pointer;
-    white-space: no-wrap;
+    
     border:1px solid #fff;
     
 }
-.emtree .arrow {
+.emtree .cat-arrow {
 	position:absolute;
-	width:12px;
-	padding-left:12px;
-	font-size:130%;
-	
+	width:14px;
+	font-size:16px;
 	top:4px;
 }
-.emtree .name {
-	margin-left:12px;
+.emtree .cat-arrow .fa-caret-right {
+	padding-left:4px;
+}
+.emtree .cat-name {
 	padding-left:32px;
+	width: calc(100% - 20px);
 	display: inline-block;
 }
-.emtree .name.folder {
+.emtree .cat-name.cat-folder {
     background: url(../images/folder-closed.gif) 14px 2px no-repeat;
 }
-.emtree span.folder {
-    white-space: nowrap;
-    padding-right: 20px;
+.emtree .cat-folder {
+    /*white-space: nowrap;*/
 }
-.emtree .name .fader {
+.emtree .cat-name .cat-fader {
 	font-weight: bold;
 }
+.emtree .cat-menu {
+	float:right;
+	margin-right: 6px;
+	padding:0 4px;
+	color:#666;
+	display: none;
+}
+.treerow:hover .cat-menu,
+.treerow.selected .cat-menu {
+	display: inline-block;
+} 
+.emtree .cat-menu:hover {
+	color:#000;
+}
+
 .emtree .checkbox {
     position: absolute;
     height: 7px;
@@ -2070,17 +2087,48 @@ label.error {
 
 }
 
-.assetpanel-editor .cat-list a {
+
+.assetpanel-editor .emlist a {
 	color:#ccc;
 	text-decoration: none;
 }
-.assetpanel-editor .cat-list a:hover {
+.assetpanel-editor .emlist a:hover {
 	color:#fff;
 	text-decoration: underline;
 }
+
 .assetpanel-editor .table-striped {
 	color:#333;
 	border:1px solid #fff;
+}
+.emlist {
+    padding: 0;
+    margin: 0 0 10px;
+}
+
+.emlist .list-row {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    list-style: none;
+}
+.emlist .list-row:hover {
+	background-color:rgba(0,0,0,0.2);
+}
+
+.emlist .list-row .category {
+    padding-left: 22px;
+    padding-top: 0px;
+    background: url('../images/folder-closed.gif') 6px 2px no-repeat;
+    margin: 0 10px 0 0 ;
+    position:relative;
+}
+
+
+.cat-list .list-row .asset {
+    padding-left: 18px;
+    padding-top: 10px;
+    background: url('../images/attachments-icon.png') left 7px no-repeat;
+    margin: 0 3px;
 }
 .summarytab .list-library,
 .summarytab .list-collection {
@@ -2100,7 +2148,7 @@ label.error {
 .summarytab .media-player-mini  {  margin-bottom:20px; }
 .summarytab .emthumbholder {
 	/*width:510px;*/
-	height: 350px;
+	min-height: 150px;
 	margin:0 auto;
 	text-align: center;
 	overflow: hidden;
@@ -3138,7 +3186,7 @@ span.drag-and-drop {
 #folders .folder.module {
     background: url('../images/module.png') 20px 8px no-repeat;
 }
-.folder:after {
+.cat-folder:after {
     content: '';
     width: 46px;
     height: 46px;
@@ -3160,27 +3208,27 @@ span.drag-and-drop {
 	margin-right:10px;
 	margin-top:40px;
 }
-.folder .name {
+.cat-folder .cat-name {
     position: relative;
     top: 35px;
     left: 135px;
     width: 300px;
     line-height: 1;
 }
-.folder:hover .alias, .folder:hover .path {
+.cat-folder:hover .alias, .folder:hover .path {
     color: #3DAACD;
 }
-span.folder {
-    white-space: nowrap;
-    padding-right: 20px;
+.cat-folder {
+    /*
+    padding-right: 20px;*/
 }
-.folder .alias {
+.cat-folder .alias {
     font-weight: bold;
     color: #000;
     font-size: 16px;
     margin-top: -4px;
 }
-.folder .path {
+.cat-folder .path {
     font-size: 12px;
     color: #999;
 }
@@ -4165,35 +4213,7 @@ a.collectionbox.favorite
 	overflow-y:auto; 
 }
 
-.cat-list {
-    padding: 0;
-    margin: 0 0 10px;
-}
 
-.cat-list .cat-row {
-    padding-top: 7px;
-    padding-bottom: 7px;
-    list-style: none;
-}
-.cat-list .cat-row:hover {
-	background-color:rgba(0,0,0,0.2);
-}
-
-.cat-list .cat-row .category {
-    padding-left: 22px;
-    padding-top: 0px;
-    background: url('../images/folder-closed.gif') 6px 2px no-repeat;
-    margin: 0 10px 0 0 ;
-    position:relative;
-}
-
-
-.cat-list .cat-row .asset {
-    padding-left: 18px;
-    padding-top: 10px;
-    background: url('../images/attachments-icon.png') left 7px no-repeat;
-    margin: 0 3px;
-}
 .breadcrumbs {
 	line-height: 27px;
 }

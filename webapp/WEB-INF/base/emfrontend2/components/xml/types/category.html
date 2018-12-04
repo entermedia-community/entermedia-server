@@ -18,11 +18,11 @@
 	
 	#if( $existing && !$existing.trim().isEmpty() )
 	 	#set ($existing = $existing.replace("||","|"))
-	    <ul class="cat-list" >
+	    <ul class="cat-list emlist" >
 		#foreach($categoryid in $existing.split("\s*\|\s*"))
 			#set($category  = $mediaarchive.getCategory($categoryid))
 			#if($category)
-			<li class="cat-row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
+			<li class="list-row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
 					<div class="category ">					
 #foreach( $parent in $category.getParentCategoriesFrom(1))
 #if( ${foreach.count} > 1) \ #end
