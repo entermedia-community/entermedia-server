@@ -1,0 +1,68 @@
+<div id="createmediapanellayout" style="padding:20px;">
+#set( $collectionid = $context.getRequestParameter("collectionid") )
+#set( $nodeID = $context.getRequestParameter("nodeID") )
+
+<div class="row" style="">
+   <div class="col-3">
+   	<div style="background-color: yellow">
+  		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid&nodeID=$!nodeID">
+      <img  src="$home$apphome/components/createmedia/upload/add.png" style="height: 100px; float:left;">
+      <div class="caption">
+        <h3>[[Upload Media]]</h3>
+        <p>[[Upload media from local file system or camera]]</p>
+      </div>
+       </a>
+   	</div>
+
+#if( $collectionid && $cancopycategory)
+	<div >
+  		<a class="ajax btnthumbnail"  targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/copycategory/index.html?collectionid=$!collectionid">
+      <img  src="$home$apphome/components/createmedia/copycategory/add.png" style="height: 100px; float:left;">
+      <div class="caption">
+        <h3>[[Copy Categories]]</h3>
+        <p>[[Copy existing folder or categories]]</p>
+      </div>
+       </a>
+    </div>
+#end
+
+  #if( $cancreatenewrecord)
+  <div>
+  <a  class="ajax btnthumbnail" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/url/start.html?collectionid=$!collectionid" >
+      <img  src="$apphome/components/createmedia/url/add.png" style="height: 100px; float:left;">
+      <div class="caption">
+        <h3>[[Add Remote Media]]</h3>
+        <p>[[Create media assets from a URL or Embed code]]</p>
+      </div>
+   </a>
+   </div>
+  <div >
+   <a  class="ajax btnthumbnail" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/data/newdatastart.html?collectionid=$!collectionid">  
+	<img  src="$apphome/components/createmedia/data/add.png" style="height: 100px; float:left;">  
+	 <div class="caption">
+        <h3>[[Create Data Record]]</h3>
+        <p>[[Create empty data records then attach media later]]</p>
+      </div>
+	</a>       
+    </div>
+  #end
+  #if( $cancreatelivemedia)
+  <div >
+  <a  class="ajax" targetdivinner="createmediapanel" href="$home$apphome/components/createmedia/video/newvideostart.html?collectionid=$!collectionid" >
+     <div class="btnthumbnail">
+       <img  src="$apphome/components/createmedia/video/add.png" style="height: 100px; float:left;">
+       <div class="caption">
+        <h3>[[Live Video Stream]]</h3>
+        <p>[[Make a live stream recording from your webcam]]</p>
+      </div>
+    </div>
+   </a>  
+   </div> 
+  #end  
+  </div>
+  <div id="createmediapanel" class="col-8">
+    	$pages.include("$apphome/components/createmedia/upload/index.html?collectionid=$!collectionid&nodeID=$!nodeID")
+	</div>  
+  
+</div>
+</div>
