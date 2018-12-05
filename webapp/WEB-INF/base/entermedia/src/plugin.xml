@@ -1458,7 +1458,9 @@
 		<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>
-			
+			<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	
 	</bean>
 	<bean id="baseUser"	class="org.openedit.users.BaseUser"	scope="prototype" >
@@ -1480,7 +1482,9 @@
 			<ref bean="moduleManager" />
 		</property>
 		<property name="cacheManager"><ref bean="timedCacheManager"/></property>
-		
+		<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	</bean>
 
 	<bean id="elasticLockSearcher" class="org.entermediadb.elasticsearch.searchers.LockSearcher" scope="prototype">
@@ -1525,6 +1529,9 @@
 		<property name="sourcePathCreator"><ref bean="chunkySourcePathCreator"/></property>		
 		<property name="prefix"><value>users</value></property>
 		<property name="newDataName"><value>userProfile</value></property>
+		<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	</bean>
 	<bean id="elasticUserProfileSearcher" class="org.entermediadb.elasticsearch.searchers.BaseElasticSearcher" scope="prototype">
 		<property name="elasticNodeManager">
@@ -1537,6 +1544,9 @@
 			<ref bean="searcherManager" />
 		</property>
 		<property name="newDataName"><value>userProfile</value></property>		
+		<property name="eventManager">
+			<ref bean="eventManager" />
+		</property>
 	</bean>
 	
 	<bean id="elasticXmlOrderItemSearcher" class="org.entermediadb.elasticsearch.searchers.ElasticXmlFileSearcher" scope="prototype">
@@ -1931,7 +1941,7 @@
 	
 	<bean id="VizOnepublisher" class="org.entermediadb.asset.publish.publishers.vizonepublisher"  lazy-init="default"/>
 	
-	<bean id="searchQueryFilter" class="org.entermediadb.asset.search.BaseSearchQueryFilter"  lazy-init="default">
+	<bean id="searchSecurity" class="org.entermediadb.asset.search.BaseSearchSecurity"  lazy-init="default">
 		<property name="cacheManager">
 			<ref bean="timedCacheManager" />
 		</property>
@@ -1939,9 +1949,9 @@
 			<ref bean="searcherManager" />
 		</property>
 	</bean>
-	<bean  id="librarySearchQueryFilter" class="org.entermediadb.asset.search.librarySearchQueryFilter" lazy-init="default" />
-	<bean  id="librarycollectionSearchQueryFilter" class="org.entermediadb.asset.search.librarycollectionSearchQueryFilter" lazy-init="default" />
-	<bean  id="assetSearchQueryFilter" class="org.entermediadb.asset.search.assetSearchQueryFilter" lazy-init="default" >
+	<bean  id="librarySearchSecurity" class="org.entermediadb.asset.search.librarySearchSecurity" lazy-init="default" />
+	<bean  id="librarycollectionSearchSecurity" class="org.entermediadb.asset.search.librarycollectionSearchSecurity" lazy-init="default" />
+	<bean  id="assetSearchSecurity" class="org.entermediadb.asset.search.assetSearchSecurity" lazy-init="default" >
 	<property name="moduleManager">
 			<ref bean="moduleManager" />
 		</property>

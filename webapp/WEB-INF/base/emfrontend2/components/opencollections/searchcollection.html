@@ -9,6 +9,8 @@
 	<div class="alert alert-info">
   		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
 	</div>
+#elseif($assetid)	
+	
 #end	
 	<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresults.html">
 	
@@ -53,13 +55,15 @@
 lQuery("#collectionresults .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
-	#if(  $hits && $hits.getSelectionSize() > 0 )	
+	#set($hitsselected = $hits.getSelectionSize())
+	#if(  $hits &&  $hitsselected > 0 )	
 		var nextpage = '$home$apphome/views/modules/librarycollection/media/addtocollection.html?collectionid=' + rowid + '&hitssessionid=$hits.sessionId';
 	#else	
 	    var nextpage = '$home$apphome/views/modules/librarycollection/media/' + rowid + '.html';
 	#end   
 	//$("#left-col-opencollections").load(nextpage);
-	window.location.href = nextpage;
+	console.log(${hitsselected});
+	//window.location.href = nextpage;
 
 
 });

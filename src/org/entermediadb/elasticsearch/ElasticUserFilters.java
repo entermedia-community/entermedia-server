@@ -1,8 +1,8 @@
 package org.entermediadb.elasticsearch;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -189,6 +189,17 @@ public class ElasticUserFilters implements UserFilters
 	public void clear(String inSearchType)
 	{
 		getValues().clear();
+	}
+
+	@Override
+	public void flagUserFilters(HitTracker inHits)
+	{
+		Collection terms = getFilteredTerms(inHits);
+		for (Iterator iterator = terms.iterator(); iterator.hasNext();)
+		{
+			Term term = (Term) iterator.next();
+			term.setUserFilter(true);
+		}
 	}
 
 }

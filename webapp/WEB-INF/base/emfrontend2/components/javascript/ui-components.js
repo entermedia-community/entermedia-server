@@ -685,7 +685,7 @@ uiload = function() {
 										}
 									});
 						}
-						console.log(theinput);
+						//console.log(theinput);
 
 						if (theinput.data("quicksearched") == true) {
 							var strLength = theinput.val().length * 2;
@@ -918,6 +918,13 @@ uiload = function() {
 		});
 		return false;
 	});
+	
+	lQuery(".createmedia-btn").livequery('click', function(e) {
+		$(".createmedia-tab").removeClass("createmedia-selected");
+		$(this).closest(".createmedia-tab").addClass("createmedia-selected");
+	});
+	
+	
 
 	lQuery("select.listautocomplete")
 			.livequery(
@@ -1349,11 +1356,15 @@ $.fn.equalHeights = function(px) {
 */
 
 var resizecolumns = function() {
-	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height() + $(".filtered").height();
+	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
+	if ($(".filtered").height()) {
+		allheights += $(".filtered").height();
+	}
 	var columnsheight = $("body").height() - allheights;
 	$(".sidebar-inner").each(function(){
-		if ($(this).height() > columnsheight) {
-			columnsheight = $(this).height;
+		var thisheight = $(this).height();
+		if (thisheight > columnsheight) {
+			columnsheight = thisheight;
 		}
 	});
 	$(".col-main").css("min-height", columnsheight);

@@ -3,9 +3,8 @@
 <div id="collectiontoplevel" class="results-header" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 
 	<div class="results-header-left float-md-left collectioncrumbs">
-				#if(!$canforcebasiccollections)
-		
-		$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
+		#if(!$canforcebasiccollections)
+			$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
 		#end
 	</div>
 	<div class="results-header-tabs float-md-right">
@@ -15,16 +14,13 @@
 			#if( $caneditdata && $canimportworkspace )
 				<li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Revisions]]</a></li>
 		  	#end
-			#if( $caneditdata || $librarycol.isVisibility("2") )
-				  #if($canviewupload || $canimportworkspace || $cancopycategory)
-					#if($librarycol.projectstatus != "finalized")		
-				  		<li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
-					#end
-				  #end
-			#end	  
-		    #if($caneditdata && $canassetannotate )
-				  <li class="ui-corner-top"><a  id="emannotationstab" data-alwaysreloadpage="true" href="$apphome/views/modules/librarycollection/annotate.html?collectionid=${librarycol.getId()}" >[[Annotate]]</a></li>
-			#end 
+			## #if( $caneditdata || $librarycol.isVisibility("2") )
+			##	  #if($canviewupload || $canimportworkspace || $cancopycategory)
+			##		#if($librarycol.projectstatus != "finalized")		
+			##	  		<li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
+			##		#end
+			##	  #end
+			## #end	  
 			#if($caneditdata && $cansharecollection)
 				  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
 				  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Followers]]</a></li>

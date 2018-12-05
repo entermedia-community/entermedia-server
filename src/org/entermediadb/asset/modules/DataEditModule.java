@@ -2003,6 +2003,7 @@ public class DataEditModule extends BaseMediaModule
 				inReq.putPageValue("userfilters", filters);
 				Map values = filters.getFilterValues(hits);
 				inReq.putPageValue("userfiltervalues", values);
+				filters.flagUserFilters(hits);
 			}
 		}	
 

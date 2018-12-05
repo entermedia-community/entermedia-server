@@ -5,7 +5,13 @@
 ##TODO Loop over the view and show them here if they match
 #set( $terms = $userfilters.getFilteredTerms($hits) )
 #foreach( $term in $terms)
-<a href="" class="badge badge-light">$term.getDetail() : 
+<a
+#if( $librarycol )
+	href="$home$apphome/views/modules/librarycollection/viewassets.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&removeterm=$term.getId()"
+#else
+	href="$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()"
+#end
+	class="badge badge-light">$term.getDetail() : 
 	#foreach( $val in $term.getValueCollection() ) 
 		#if( $foreach.count > 1) or #end
 		#if($term.getDetail().isList())

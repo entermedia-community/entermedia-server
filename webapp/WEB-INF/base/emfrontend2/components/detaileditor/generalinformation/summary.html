@@ -58,20 +58,35 @@ $context.putPageValue("showalllanguagevalues",true)
 					#set( $collections = $asset.getCollections())
 					#if( $collections.size() > 0 )
 						<div class="asset-data-detail assetpanel-editor-box">
-						<h4>[[Collections]]</h4>
+						<h4>[[Collections]]
+						#if( $canaddnewcollection )
+						<a href="$home$apphome/components/opencollections/searchcollection.html?searchtype=asset&assetid=${asset.id}" 
+								   class="detail-edit-icon float-right  btn btn-xs emdialog"
+								   data-noesc="true"
+								   title="[[Edit Collections]]"><i class="fas fa-plus"></i></a>
+						#end</h4>
 						<div class="emlist">
 							#foreach ($collection in $asset.getCollections())
-								 <a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="list-collection list-hover"><i class="fas fa-box"></i> $collection</a>
+								<div  class="list-row">
+								 <a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="list-collection"><i class="fas fa-box"></i>$collection</a>
+								 </div>
 							#end
 						</div>
 						</div>
 					#end
 					
 					<div class="asset-data-detail assetpanel-editor-box">
-					<h4>[[Categories]]</h4>
-					<div  id="cat-list" class="cat-list">
+					<h4>[[Categories]]
+					#if( $caneditassetcategories )
+					<a href="$home$apphome/components/opencollections/searchcollection.html?searchtype=asset&assetid=${asset.id}" 
+								   class="detail-edit-icon float-right btn btn-xs emdialog"
+								   data-noesc="true"
+								   title="[[Edit Categories]]"><i class="fas fa-plus"></i></a>
+					#end
+					</h4>
+					<div  id="cat-list" class="emlist">
 					#foreach ($category in $asset.categories)
-						<div  class="cat-row">
+						<div  class="list-row">
 						<div  class="category">						
 						#foreach( $parent in $category.getParentCategoriesFrom(1))
 						#if( ${foreach.count} > 1) \ #end

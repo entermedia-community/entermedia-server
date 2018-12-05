@@ -1,0 +1,10 @@
+<rows>
+
+	<row id="6"  webeventlistener="logger" action="user/authentication" ></row>
+
+	<row id="user2"  webeventlistener="logger" action="user/edit" ></row>	
+	
+	
+	
+	
+</rows>

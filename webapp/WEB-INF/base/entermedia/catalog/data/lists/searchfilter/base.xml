@@ -1,7 +1,0 @@
-<properties>
-
-	<property id="asset" beanname="assetSearchQueryFilter" />
-	<property id="library" beanname="librarySearchQueryFilter" />
-	<property id="librarycollection" beanname="librarycollectionSearchQueryFilter" />
-	
-</properties>

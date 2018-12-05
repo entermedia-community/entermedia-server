@@ -11,16 +11,11 @@
 	<div class="filters-edit-icon">
 	<a href=""><i class="fas fa-cog"></i></a>
 	</div>
-	
-	
 	$pages.include("$apphome/components/filters/index.html", $context)
-	
-
-
-	
-	
-	
-	
 	<div class="clearfix"></div>
+	
+	#if ( $canviewopencollections )
+		$pages.include("$apphome/components/opencollections/sidebar.html",$context)
+	#end
 </div>
 #end

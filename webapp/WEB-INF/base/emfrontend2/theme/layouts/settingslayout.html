@@ -1,7 +1,7 @@
 <div class="cols-main" id="settingslayout">
 #set( $tab = $context.findValue("tab") )
-<div class="col-sidebar" id="leftsidebar">
-<div class="col-sidebar-inner">
+<div class="col-main col-sidebar" id="leftsidebar">
+<div class="sidebar-inner">
      		#set ($lastselected = $content.module )
  			#if(!$lastselected)
  				#set($lastselected = $userprofile.last_selected_module )
@@ -66,7 +66,7 @@
 
 </div>
 
-<div class="col-content" id="maincontent">
+<div class="col-main col-content" id="maincontent">
 	<div class="settings">
 		$pages.includeContent()
 	</div>

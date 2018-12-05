@@ -9,6 +9,10 @@
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
     </path-action>
+	<path-action name="DataEditModule.changeFilters">
+		<property name="searchtype">${module}</property>
+	</path-action>	
+
 	<path-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</path-action>

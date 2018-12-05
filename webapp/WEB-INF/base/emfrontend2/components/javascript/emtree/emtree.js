@@ -1,7 +1,7 @@
 $(document).ready(function() 
 { 
 	//Open and close the tree
-	lQuery('.emtree-widget ul li div .arrow').livequery('click', function(event){
+	lQuery('.emtree-widget ul li div .cat-arrow').livequery('click', function(event){
 			event.stopPropagation();
 			var tree = $(this).closest(".emtree");
 			var node = $(this).closest('.noderow');
@@ -9,16 +9,17 @@ $(document).ready(function()
 			var depth = node.data('depth');
 			$('.emtree ul li div').removeClass('selected');
 			
+			
 			var home = $(this).closest(".emtree").data("home");
 			
-			if ( $(this).find('.arrow').hasClass('down') )
+			if ( $(this).find('.cat-arrow').hasClass('down') )
 			{
-				$(this).find('.arrow').removeClass('down');				
+				$(this).find('.cat-arrow').removeClass('down');				
 			}
 			else 
 			{ 
 				//Open it. add a UL
-				$(this).find('.arrow').addClass('down');				
+				$(this).find('.cat-arrow').addClass('down');				
 			}
 			
 			tree.find(nodeid + "_add").remove();
@@ -30,13 +31,13 @@ $(document).ready(function()
 	});
 
 	//Select a node
-	lQuery('.emtree-widget ul li div .name').livequery('click', function(event) 
+	lQuery('.emtree-widget ul li div .cat-name').livequery('click', function(event) 
 	{
 		event.stopPropagation();
-		$('.emtree ul li div').removeClass('selected');
+		$('.emtree ul li div').removeClass('selected cat-current');
 		var tree = $(this).closest(".emtree");
 		var node = $(this).closest('.noderow');
-		$("div:first",node).addClass('selected');
+		$("div:first",node).addClass('cat-current');
 		var nodeid = node.data('nodeid');	
 		
 		var prefix = tree.data("url-prefix");
@@ -324,37 +325,60 @@ function getPosition(e) {
     y: posy
   }
 }
+
+  var contextmenu = function(item, e){
+	  	var noderow = item;
+	  //var noderow = $(this); // LI is the think that has context .find("> .noderow");
+	  	var pos = getPosition(e);
+		var xPos = pos.x;
+		var yPos = pos.y - 10;
+		$(".categorydroparea").removeClass('selected');
+		noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
+		var emtreediv = noderow.closest(".emtree");
+		
+		//console.log(noderow);
+		
+		var treename = emtreediv.data("treename"); 
+		var $contextMenu = $( "#" + treename + "contextMenu");
+		if( $contextMenu.length > 0 )
+		{
+			e.preventDefault();
+			$contextMenu.data("selectednoderow",noderow);
+			$contextMenu.css({
+			  display: "block",
+			      left: xPos,
+			      top: yPos
+			    });
+			e.stopPropagation();
+			return false;
+		}	
+  }
 	
 	
-  $("body").on("contextmenu", ".noderow", function(e) 
-  {
-  	var noderow = $(this); // LI is the think that has context .find("> .noderow");
-  	var pos = getPosition(e);
-	var xPos = pos.x;
-	var yPos = pos.y - 10;
-	noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
-	var emtreediv = noderow.closest(".emtree");
-	
-	
-	var treename = emtreediv.data("treename"); 
-	var $contextMenu = $( "#" + treename + "contextMenu");
-	if( $contextMenu.length > 0 )
-	{
-		$contextMenu.data("selectednoderow",noderow);
-		$contextMenu.css({
-		  display: "block",
-		      left: xPos,
-		      top: yPos
-		    });
-		return false;
-	}	
+  $("body").on("contextmenu", ".noderow", function(e) {
+	  contextmenu($(this), e);
+  });
+  lQuery('.cat-menu').livequery('click', function(e) {
+	  contextmenu($(this).closest(".noderow"), e);
   });
 		  
   lQuery('body').livequery('click', function () {
      	var $contextMenu = $(".treecontext");
      	$contextMenu.hide();
-     	$(".categorydroparea:first").removeClass('selected');     	
+     	$(".categorydroparea").removeClass('selected');     	
     });
+  
+  $(document).keydown(function(e) {
+	    switch(e.which) {
+	        case 27: // esc
+	        	var $contextMenu = $(".treecontext");
+	         	$contextMenu.hide();
+	         	$(".categorydroparea").removeClass('selected');
+	        break;
+	        default: return; // exit this handler for other keys
+	    }
+	    e.preventDefault();
+  });
 
 	//end document ready
 	

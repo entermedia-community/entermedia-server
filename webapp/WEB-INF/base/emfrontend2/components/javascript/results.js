@@ -237,6 +237,12 @@ $(document).ready(function(url,params)
 	
 	hideOverlayDiv = function(inOverlay)
 	{
+		//Stop/Dispose Videos
+		$('.video-js, .video-player').each(function () {
+			if (this.id) {
+				videojs(this.id).dispose();
+			}
+		});
 		stopautoscroll = false;
 		 $("body").css({ overflow: 'auto' })
 		inOverlay.hide();
@@ -288,13 +294,12 @@ $(document).ready(function(url,params)
 		{
 			params.collectionid = collectionid;
 		}
-		//Removes any prev video container
-		if ($('#videopreview').length) {
-			videojs('videopreview').dispose();
-		}
-		if ($('#videoplayerfull').length) {
-			videojs('videoplayerfull').dispose();
-		}
+		//Stop/Dispose Videos
+		$('.video-js, .video-player').each(function () {
+			if (this.id) {
+				videojs(this.id).dispose();
+			}
+		});
 		
 
 		$.get(link, params, function(data) 
@@ -743,8 +748,8 @@ checkScroll = function()
 			   	{
 				   var jdata = $(data);
 				   var code = $(".masonry-grid",jdata).html();
-				   //$(".masonry-grid",resultsdiv).append(code);
-				   $(resultsdiv).append(code);
+				   $(".masonry-grid",resultsdiv).append(code);
+				   //$(resultsdiv).append(code);
 				   gridResize();
 				   $(document).trigger("domchanged");
 				   stopautoscroll = false; 

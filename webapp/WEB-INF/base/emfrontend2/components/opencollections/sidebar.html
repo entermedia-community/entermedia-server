@@ -1,19 +1,20 @@
 #if ( $canviewopencollections)
-<div class="ui-widget uipanel" id="left-col-opencollections" >
-	<div  #if($userprofile.minimizeopencollectionscontent == "false" && $cantogglesidebar) 
-			class="ui-widget-header sidetoggle expanded" 
-		  #elseif($cantogglesidebar) 
-		  	class="ui-widget-header sidetoggle minimized" 
-		  #else 
-		  	class="ui-widget-header" 
-		  #end 
+<div class="sidebar-component" id="left-col-opencollections" >
+	<div  class=" sidebar-component-header sidetoggle"
 		data-target="opencollectionscontent">
-		<span class="widget-header-title">[[ Collections]]</span>
-		<span class="widget-header-right">
+		<i class="fas 
+		#if($userprofile.minimizeopencollectionscontent == "false") 
+				 fa-caret-down 
+		  	#else 
+		  		 fa-caret-right 
+		  	#end 
+		 caret"></i>
+		<span>[[Recent Collections]]</span>
+		<span class="float-right component-actions" #if($userprofile.minimizeopencollectionscontent == "true") style="display: none;" #end>
 			<a class="emdialog sidebarsubmenu" title="[[Collection Search]]" data-hidefooter="true" data-width="900" href="$home$apphome/components/opencollections/searchcollection.html"><i class="fas fa-search"></i></a>
 		</span>
 	</div>
-	<div  class="ui-widget-content"  id="opencollectionscontent" #if($userprofile.minimizeopencollectionscontent == "true" && $cantogglesidebar) style="display: none;" #end>
+	<div  class="sidebar-component-content"  id="opencollectionscontent" #if($userprofile.minimizeopencollectionscontent == "true") style="display: none;" #end>
 
 	<div class="opencollections">
 	<ul>
@@ -65,9 +66,9 @@
 			</li>
 		#end
 		#if ($canaddnewcollection)
-		<li class="newcollectiondroparea" style="border-bottom:0 none;'">
+		<li class="newcollectiondroparea" style="text-align: right;">
 			<div id="opencollectioncreatenewarea">
- 				<a id="newCollection" class="ajax collectionnew btn btn-xs btn-secondary" 
+ 				<a id="newCollection" class="ajax collectionnew btn btn-xs btn-filters" 
 					   targetdivinner="opencollectioncreatenewarea" data-oemaxlevel="1"
 					   href="$home$apphome/components/opencollections/addnewchild.html?libraryid=$context.getUserName()" >
 					   [[Create New]]
