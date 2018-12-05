@@ -918,6 +918,13 @@ uiload = function() {
 		});
 		return false;
 	});
+	
+	lQuery(".createmedia-btn").livequery('click', function(e) {
+		$(".createmedia-tab").removeClass("createmedia-selected");
+		$(this).closest(".createmedia-tab").addClass("createmedia-selected");
+	});
+	
+	
 
 	lQuery("select.listautocomplete")
 			.livequery(

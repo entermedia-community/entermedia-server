@@ -113,7 +113,8 @@
 	webkit-box-shadow: -1px 0 0 #d8dddf inset;
     box-shadow: -1px 0 0 #d8dddf inset;
 }
-.collectionshomecontent {
+.collectionshomecontent,
+.createmediapanel {
 	background-color: #d5d5d5;
 }
 .ui-widget-header {
@@ -3850,6 +3851,30 @@ table.stackedplayertable tbody tr
     line-height: 1;
 }
 
+.createmediapanel {
+	padding:20px;
+}
+.createmedia-tab {
+	padding:10px 10px;
+	border-bottom:1px solid #efefef;
+}
+.createmedia-selected {
+	background-color: #fff;
+}
+.createmediacontent {
+	background-color: #fff;
+	padding:20px;
+	min-height: 480px;
+}
+.createmedia-caption {
+	margin-left:135px;
+}
+.createmedia-icon {
+	float:left;
+	width:120px;
+	text-align: center;
+	overflow: hidden;
+}
 
 #createmediapanel .btnthumbnail {
 	background-color: transparent;
