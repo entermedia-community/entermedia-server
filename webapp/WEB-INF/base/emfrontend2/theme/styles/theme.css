@@ -709,10 +709,9 @@ html, body, #application {
     font-weight: bold;
     padding: 4px 6px 4px 10px;
     font-size: 0.9rem;
-    border-radius: 5px 5px 0 0;
 }
 .ui-widget-header.minimized {
-border-radius: 5px;
+
 }
 .ui-widget-header a {
 	text-decoration:none;
