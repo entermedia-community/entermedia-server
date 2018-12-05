@@ -1,26 +1,34 @@
 #set($view= $context.getRequestParameter("view"))
-#if ( $hits && $hits.size() > 0 )
 #if( $context.getUserProfile() )
-		#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
-	#else
-		#set ($details = $searcher.getDetailsForView($view))
-		
-	#end
-	#if( !$details)
-		No details available for this view.  Please configure your view settings.	
+	#set ($details = $searcher.getDetailsForView($view, $context.getUserProfile()))
+#else
+	#set ($details = $searcher.getDetailsForView($view))
+#end
 
-	#end
+#if( !$details)
+	No details available for this view.  Please configure your view settings.	
+#end
 $context.putPageValue("details",$details)
+<div class="row">
+<div class="col-4">
+<form id="searchquery" class="autosubmitform query-component" onsubmit="refreshTable(); return false;">
+	#foreach( $detail in $details)
+		$context.putPageValue("detail", $detail)
+		$context.putPageValue("searchform", true)
 
-
-
-
+		#if ($detail.isLeaf())
+			$pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
+		#else
+			$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
+		#end
+	#end
+</form>
+</div>
+<div class="col">
+#if ( $hits && $hits.size() > 0 )
 	<table  class="table table-striped" >
-	
-	
-	
-			$pages.include("$apphome/components/xml/inline/tableheader.html",$context)
-<tr class="data-editor"></tr>
+		$pages.include("$apphome/components/xml/inline/tableheader.html",$context)
+		<tr class="data-editor"></tr>
 			#foreach( $hit in $hits.getPageOfHits() )
 				
 				$context.putPageValue("hit", $hit)
@@ -30,14 +38,13 @@ $context.putPageValue("details",$details)
 
 			#end
 	</table>
-
-<p>$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
-
-$pages.include("$apphome/components/xml/inline/pages.html",$context)
+	<p>$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
+	$pages.include("$apphome/components/xml/inline/pages.html",$context)
 #else
 	<table  class="table table-striped" >
 		<tr class="data-editor"></tr>
 	</table>	
-
-<p class="info" style="margin: 20px;">[[No results found]]</p>
+	<p class="info" style="margin: 20px;">[[No results found]]</p>
 #end
+</div>
+</div>

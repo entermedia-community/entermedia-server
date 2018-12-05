@@ -131,7 +131,7 @@ $(document).ready(function(url,params)
 		
 	});
 
-	lQuery("#filterform").livequery(function() 
+	lQuery(".autosubmitform").livequery(function() 
 	{
 		var form = $(this);
 		$('select',form).on('select2:select', function() 

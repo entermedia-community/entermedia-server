@@ -16,7 +16,7 @@
 	$context.putPageValue("edit",$edit)
 	#end
 	
-	<form  name="filterform" id="filterform" class="em-widget-content ajaxform" data-targetdiv="filteredresults" method="POST"  
+	<form  name="filterform" id="filterform" class="autosubmitform em-widget-content ajaxform" data-targetdiv="filteredresults" method="POST"  
 	#if( $librarycol)
 		data-oemaxlevel="3" 
 		action="$home$apphome/views/modules/librarycollection/search.html" >
