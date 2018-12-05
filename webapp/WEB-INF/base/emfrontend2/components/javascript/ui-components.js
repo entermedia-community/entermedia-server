@@ -685,7 +685,7 @@ uiload = function() {
 										}
 									});
 						}
-						console.log(theinput);
+						//console.log(theinput);
 
 						if (theinput.data("quicksearched") == true) {
 							var strLength = theinput.val().length * 2;
