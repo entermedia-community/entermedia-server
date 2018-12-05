@@ -65,9 +65,11 @@
 	color:#fff;
 }
 
-.emsubnav, .emsubnav .dropdown-menu { 
+.emsubnav,
+.emsubnav .dropdown:hover, 
+.emsubnav .dropdown-menu { 
 	color:#333;
-	background-color: #bbb;
+	background-color: #bcbcbc;
 }
 #sub-nav a { 
 	color:#333;
@@ -83,7 +85,7 @@
 
 .emsubnav .dropdown-item:hover,
 #sub-nav li a.dropdown-item:hover {
-	background-color:rgba(0,0,0,0.2)!important;
+	background-color:rgba(0,0,0,0.1)!important;
 }
 .emsubnav .nav-btn,
 #sub-nav .nav-btn,
@@ -114,7 +116,8 @@
     box-shadow: -1px 0 0 #d8dddf inset;
 }
 .collectionshomecontent,
-.createmediapanel {
+.createmediapanel,
+.emsubnav {
 	background-color: #d5d5d5;
 }
 .ui-widget-header {
@@ -203,7 +206,7 @@ background-color:rgba(0,0,0,0.5);
 }
 .emtabs li.emtabselected a {
 	color:#333;
-	background-color: #bbb;
+	background-color: #d5d5d5;
 }
 #eml-tab-subnav {
 	background-color: #C4C4C4;
@@ -651,7 +654,7 @@ html, body, #application {
 }
 
 .filter-box-options {
-	padding:0 20px 20px;
+	padding:0 20px 0;
 }
 .filter-box-options a,
 .filter-box-options a:visited {
@@ -1173,7 +1176,7 @@ td.checkbox input, th.firstheader input {
 }
 .emnav .navtabitem {
 	display:block;
-	
+	position:relative;
 	padding: 8px 16px 10px;
 	text-align: center;
 	border-radius: 4px 4px 0 0;

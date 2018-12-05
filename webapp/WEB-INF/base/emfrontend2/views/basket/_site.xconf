@@ -7,6 +7,7 @@
 	<property name="showaddselections">false</property>
   	<property name="showremoveselections">true</property>
   	<property name="section">basket</property>
+  	<property name="sectiontab">basket</property>
   	<property name="module">asset</property>
   	
   	<inner-layout>/${applicationid}/theme/layouts/searchlayout.html</inner-layout>

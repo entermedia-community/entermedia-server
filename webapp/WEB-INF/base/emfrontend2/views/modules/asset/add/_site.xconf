@@ -1,5 +1,5 @@
 <page>
 
 	<inner-layout>${themeprefix}/layouts/application.html</inner-layout>
-
+	<property name="sectiontab">assetadd</property>
 </page>

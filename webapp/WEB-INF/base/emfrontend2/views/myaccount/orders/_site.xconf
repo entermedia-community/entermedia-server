@@ -1,5 +1,5 @@
 <page>
 
 <property name="tab">orders</property>
-
+<property name="sectiontab">myorders</property>
 </page>
