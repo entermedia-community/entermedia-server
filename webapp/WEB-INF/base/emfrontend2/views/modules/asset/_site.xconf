@@ -6,7 +6,7 @@
 	<!--TODO: Remove the need for this -->
 	<property name="searchtype">${module}</property>
 	<property name="sectiontitle">Assets</property>
-	
+	<property name="sectiontab">assets</property>
 	<permission name="viewmediaviewer">
 		<boolean value="true" />
 	</permission>
