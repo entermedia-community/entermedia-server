@@ -89,12 +89,19 @@
 		
   		#set( $edit = $context.getRequestParameter("editheader") )
 			
+		## Already in actions
+		## #if ( $canviewbasket )
+		##	#if($order)
+		##		<li class="nav-item">
+		##			<a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a>
+		##		</li>
+		##	#end
+		## #end
+		
 		
 		#if ( $canviewbasket )
 			#if($order)
-				<li class="nav-item">
-					<a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a>
-				</li>
+				<li ><a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a></li>				
 			#end
 		#end
 		
@@ -169,11 +176,7 @@
 			#end
 		#end	
 
-		#if ( $canviewbasket )
-			#if($order)
-				<li ><a class="updatebasket btn-checkout emdialog" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout]]</a></li>				
-			#end
-		#end
+
 		
 		##Filters
 

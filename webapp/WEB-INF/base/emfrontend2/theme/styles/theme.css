@@ -339,6 +339,9 @@ h3 {
   margin-left: .1rem;
   margin-right: .1rem;
 }
+.dropdown-toggle::after {
+	vertical-align:0.1em;
+}
 #emcontent { position: relative;}
 #emfooter {   
 	bottom: 0;
@@ -1134,6 +1137,7 @@ td.checkbox input, th.firstheader input {
 }
 .emnav .navtabitem {
 	display:block;
+	
 	padding: 8px 16px 10px;
 	text-align: center;
 	border-radius: 4px 4px 0 0;
@@ -1154,11 +1158,27 @@ td.checkbox input, th.firstheader input {
 	padding:0;
 	list-style: none;
 	float:right;
+	position:relative;
 }
 .emnav .navrighttabitem i {
 	font-size:1.2rem;
 	line-height: 1.5;
-	padding:2px 8px;
+	padding:2px 12px;
+}
+.emnav .notification {
+    position: absolute;
+    background-color: #FB404B;
+    text-align: center;
+    border-radius: 10px;
+    min-width: 18px;
+    padding: 0 5px;
+    height: 18px;
+    font-size: 12px;
+    color: #FFFFFF;
+    font-weight: bold;
+    line-height: 18px;
+    top: -2px;
+    right: 0px;
 }
 .emnav .librarycollectionpicker,
 .emnav .nav-quicksearch {
@@ -2901,7 +2921,10 @@ label.error {
 #sub-nav li a.hide {
 	display: none;
 }
-
+#sub-nav .nav-link-cart {
+	font-weight: bold;
+	background-color:rgba(0,0,0,0.1);
+}
 table.greytxt {
     width: 100%;
 }
