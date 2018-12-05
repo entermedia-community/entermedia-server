@@ -1125,7 +1125,8 @@ emcomponents = function() {
 						$("#" + target).slideToggle("fast");
 						div.toggleClass("expanded");
 						div.toggleClass("minimized");
-						div.find(".ui-widget-toggle").toggleClass("fa-angle-left");
+						div.find(".caret").toggleClass("fa-caret-right");
+						div.find(".component-actions").toggle();
 					}
 				);
 			}
