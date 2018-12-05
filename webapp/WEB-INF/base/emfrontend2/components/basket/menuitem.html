@@ -1,6 +1,6 @@
 <div id="basket-paint" data-href="$home$apphome/components/basket/menuitem.html" >
 #set($colSize = $orderitems.size() )
-<a  class="navrighttabitem"  href="$home$apphome/views/basket/index.html" title="#if($colSize > 0)$colSize [[assets]]#end">
+<a  class="navrighttabitem"  href="$home$apphome/views/basket/index.html" title="#if($colSize > 0)$colSize #if($colSize > 1) [[assets]] #else [[asset]]#end #end">
 <i class="fas fa-shopping-cart"></i>
 #if($colSize > 0)<span class="notification">$colSize</span>#end
 <span class="navtabsright-text">[[Cart]] #if($colSize > 0)($colSize)#end</span></a>

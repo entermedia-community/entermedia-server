@@ -1349,11 +1349,15 @@ $.fn.equalHeights = function(px) {
 */
 
 var resizecolumns = function() {
-	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height() + $(".filtered").height();
+	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
+	if ($(".filtered").height()) {
+		allheights += $(".filtered").height();
+	}
 	var columnsheight = $("body").height() - allheights;
 	$(".sidebar-inner").each(function(){
-		if ($(this).height() > columnsheight) {
-			columnsheight = $(this).height;
+		var thisheight = $(this).height();
+		if (thisheight > columnsheight) {
+			columnsheight = thisheight;
 		}
 	});
 	$(".col-main").css("min-height", columnsheight);
