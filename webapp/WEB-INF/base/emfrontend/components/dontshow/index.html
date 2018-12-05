@@ -32,7 +32,7 @@
 #end	
 </ul>
 
-#set($facets = $hits.getFilterOptions())
+#set( $terms = $userfilters.getFilteredTerms($hits) )
 #if( $librarycol)
 <form class="ajaxform" targetdiv="searchlayout" action="$home$apphome/views/modules/librarycollection/filter.html" target="_parent" name="dontshow" id="dontshow" valign="middle">
     <input type="hidden" name="collectionid" value="$!librarycol.getId()" />
@@ -45,7 +45,7 @@
 #end
 
 #foreach($item in $searcher.getDetailsForView("${searchtype}/${searchtype}facets") )
-#set($type = $hits.findFilterNode($item.id))
+#set($type = $userfiltervalues.get($item.id))
 #if($type)
 #set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
 #ifnull($viewpermission)
@@ -53,7 +53,6 @@
 #end
 
 #if( $viewpermission )
-	#if(!$hits.isChildFacetSelected($type))
 	<h4>$type.getName($context.getLocale())</h4>
 	<ul class="filters-sidebar">
 	#foreach($entry in $type.children)
@@ -62,15 +61,16 @@
 		<a class="toggle-visible morelink" href="#" data-targetdiv="showmore${type.getId()}" data-showlabel="[[Show More]]" data-hidelabel="[[Show Less]]"><span>[[Show More]]</span></a>
 		<ul id="showmore${type.getId()}" class="filters-sidebar morefilters">
 		#end
+		#if( !$hits.getSearchQuery().isFilterSelected($type.id, $entry.id) )
 		<li>
 			<a class="addfilter" data-filtertype="$type.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#">
 			<span> $entry.getText($context) ($entry.count)</span>
 			</a>
 		</li>
+		#end
 	#end
 	</ul>
     #end
-#end
 #end
 #end
     <input type="hidden" name="catalogid" value="$!catalogid" />

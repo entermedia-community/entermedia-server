@@ -2,6 +2,6 @@
 
 <page>
 
-<path-action name="DataEditModule.loadFacetsForUser"/>
+<page-action name="DataEditModule.loadFacetsForUser"/>
 
 </page>

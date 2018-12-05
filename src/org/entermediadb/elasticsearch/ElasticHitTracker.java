@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,6 +35,8 @@ import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
 import org.openedit.hittracker.UserFilters;
+
+import com.vividsolutions.jts.index.bintree.Node;
 
 public class ElasticHitTracker extends HitTracker
 {
@@ -537,11 +540,32 @@ public class ElasticHitTracker extends HitTracker
 		{
 			BoolQueryBuilder bool = QueryBuilders.boolQuery();
 			bool.must(getTerms());
+			HashMap ors = new HashMap();
+			Set<String> filterids = new HashSet();
 			for (Iterator iterator = getSearchQuery().getFilters().iterator(); iterator.hasNext();)
 			{
 				FilterNode node = (FilterNode) iterator.next();
-				QueryBuilder term = QueryBuilders.matchQuery(node.getId(), node.get("value"));
-				bool.must(term);
+				filterids.add(node.getId());
+			}
+			
+			for (Iterator iterator = filterids.iterator(); iterator.hasNext();)
+			{
+				String filterid = (String) iterator.next();
+				ArrayList <FilterNode> nodes = getSearchQuery().getNodesForType(filterid);
+				if(nodes.size() == 1) {
+					FilterNode node = nodes.get(0);
+					QueryBuilder term = QueryBuilders.matchQuery(filterid, node.get("value"));
+					bool.must(term);
+				} else if(nodes.size() >1) {
+					List ids = new ArrayList();
+					for (Iterator iterator2 = nodes.iterator(); iterator2.hasNext();)
+					{
+						FilterNode node = (FilterNode) iterator2.next();
+						ids.add(node.get("value"));
+					}
+					QueryBuilder term =QueryBuilders.termsQuery(filterid, ids);
+					bool.must(term);
+				}
 			}
 			getSearcheRequestBuilder().setQuery(bool);
 		}
