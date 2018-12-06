@@ -252,7 +252,8 @@ tr.emborderhover td,
 .emtree .cat-current,
 .filters-sidebar li:hover,
 .filters-sidebar-selected li:hover,
-.list-hover:hover
+.list-hover:hover,
+.emrowselected
 {
 	background-color: #c9e8f2;
 }
@@ -334,6 +335,9 @@ h3 {
 }
 .modal {
 	z-index: 25000;
+}
+.modal-backdrop {
+	z-index: 24999;
 }
 .modal-title {
 	display: inline-block;
