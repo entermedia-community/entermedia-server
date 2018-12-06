@@ -165,7 +165,7 @@ public class ChatServer
 				asset.setValue("haschat", true);
 				archive.saveAsset(asset);
 			}
-			User user = archive.getUser((String)inMap.get("user"));
+			User user = archive.getUser((String)inMap.get("user").toString());
 			archive.fireMediaEvent("assetchat", user,asset );
 		}
 	}
