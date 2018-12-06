@@ -2,13 +2,13 @@
 #header .navlinks,
 #header .dropdown-menu,
 #header .navlinks .dropdown-item {
-    background-color: #666666;
+    background-color: #8E8E8E;
     color: #fff;
 }
 #header .navlinks .dropdown-item:hover,
 #header .navlinks .dropdown-item:active {
 	color: #eee;
-	background-color:rgba(0,0,0,0.2);
+	background-color:rgba(0,0,0,0.1);
 }
 #header .navlinks li>a {
     color: #eee;
@@ -47,20 +47,23 @@
 	background-color: #fff;
 }
 .emnav .navtabs .navtabitem {
-	color:#fff;
+	color:#efefef;
 	background-color:#8E8E8E;
 	box-shadow: inset 0 10px 10px -10px rgba(0,0,0,0.5);
+}
+.emnav .navtabitem:hover {
+	background-color:#6E6E6E;
+	color:#fff;
 }
 .emnav .navtabs li.navactive a.navtabitem,
 #side-nav-inner ul li.current a {
 	color:#333;
+	background: none;
 	background-color:#D5D5D5;
 }
-.emnav .navtabsright li a,
 .nav-collectionsearch {
 	color:#d5d5d5;
 }
-.emnav .navtabsright a:hover,
 .nav-collectionsearch {
 	color:#fff;
 }
@@ -101,11 +104,13 @@
 	color:#fff;
 }
 .col-sidebar {
-    background: #d5d5d5; /* Old browsers */
-	background: -moz-linear-gradient(left, #d5d5d5 79%, #A2A2A2 100%); /* FF3.6-15 */
-	background: -webkit-linear-gradient(left, #d5d5d5 79%,#A2A2A2 100%); /* Chrome10-25,Safari5.1-6 */
-	background: linear-gradient(to right, #d5d5d5 79%,#A2A2A2 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5d5d5', endColorstr='#A2A2A2',GradientType=1 ); /* IE6-9 */
+    background-color: #d5d5d5; /* Old browsers */
+    /*
+	background: -moz-linear-gradient(left, #d5d5d5 79%, #A2A2A2 100%); 
+	background: -webkit-linear-gradient(left, #d5d5d5 79%,#A2A2A2 100%); 
+	background: linear-gradient(to right, #d5d5d5 79%,#A2A2A2 100%); 
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d5d5d5', endColorstr='#A2A2A2',GradientType=1 ); 
+	*/
 	
 }
 .sidebar-inner {
@@ -118,7 +123,8 @@
 }
 .collectionshomecontent,
 .createmediapanel,
-.emsubnav {
+.emsubnav,
+.emfooter  {
 	background-color: #d5d5d5;
 }
 .ui-widget-header {
@@ -524,7 +530,6 @@ html, body, #application {
 }
 .emfooter {
 	padding:15px 0;
-	background-color: #ccc;
 }
 
 /*Sidebars*/
@@ -3872,7 +3877,7 @@ table.stackedplayertable tbody tr
 }
 
 .createmediapanel {
-	padding:20px;
+	padding:30px 20px;
 }
 .createmedia-tab {
 	padding:10px 10px;
