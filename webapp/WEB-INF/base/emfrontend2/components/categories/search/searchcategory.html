@@ -23,11 +23,11 @@
 	<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
 			[[Parent]] 
 		</div>
-	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;overflow-x:auto;width:300px">  
+	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;max-height:600px; overflow-y:auto; width:300px">  
 		$pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&editabletree=true&clearselection=true",$context)
 	</div>
 </td>
-<td>
+<td style="vertical-align: top;">
 	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
 			[[Category Search]] 
 		</div>
@@ -42,9 +42,9 @@
 
 var paintselected = function()
 {
-#foreach($categoryid in $categories.split("\s*\|\s*"))
-$('[data-id="${categoryid}"]').addClass("emrowselected");
-#end
+	#foreach($categoryid in $categories.split("\s*\|\s*"))
+	$('[data-id="${categoryid}"]').addClass("emrowselected");
+	#end
 };
 
 $(document).on("emtreeselect",function(event) 

@@ -363,8 +363,13 @@ $(document).ready(function(url,params)
 			{
 				return;
 			}
+			var target  = e.target;
+			if ($(target).is('input') || $(target).is('.form-control') ) {
+				return;
+			}
 		    switch(e.which) {
 		        case 37: // left
+		        	
 					var div = $("#main-media-viewer");
 		        	var id = div.data("previous");
 		        	if( id )
@@ -374,6 +379,7 @@ $(document).ready(function(url,params)
 		        break;
 		
 				case 39: // right
+					
 					var div = $("#main-media-viewer" );
 		        	var id = div.data("next");
 		        	if( id )
