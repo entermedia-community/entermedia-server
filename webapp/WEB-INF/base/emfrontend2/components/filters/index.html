@@ -1,4 +1,4 @@
-<div id="advsearchpanel">
+<div id="advfilterpanel" >
 <div class="tanmodule" >
 	#set( $view = "asset/assetadvancedfilter")
 	#set( $searcher = $mediaarchive.getAssetSearcher())
@@ -11,7 +11,7 @@
 	$context.putPageValue("caneditlists",false)
 				
 	
-	#set( $edit = $context.getRequestParameter("editadvsearch"))
+	#set( $edit = $context.getRequestParameter("editfilters"))
 	#if( $edit)
 	$context.putPageValue("edit",$edit)
 	#end
@@ -91,7 +91,7 @@
 		#set ($alldetails = $searcher.getUserPropertyDetails() )
 		<div class="advancedsearcheditform">
 		<strong>[[Edit Advanced Search Form]]:</strong>
-		<form id="searchaddfield" class="ajaxform" targetdiv="advsearchpanel" action="$home$apphome/components/advancedsearch/addfield.html" method="post">
+		<form id="searchaddfield" class="ajaxform" targetdiv="advfilterpanel" action="$home$apphome/components/filters/addfield.html" method="post">
 		
 			<input type="hidden" name="oemaxlevel" value="1"/>
 			<input type="hidden" name="editadvsearch" value="true"/>
@@ -132,7 +132,7 @@
 			</select>
 			</div>
 		<div class="form-group">
-			<a class="ajax btn btn-sm btn-secondary" targetdiv="advsearchpanel" href="$home$apphome/components/advancedsearch/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
+			<a class="ajax btn btn-sm btn-secondary" targetdiv="advsearchpanel" href="$home$apphome/components/filters/index.html?oemaxlevel=1&editadvsearch=false&searchtype=$searcher.getSearchType()&catalogid=$searcher.getCatalogId()&view=$view">[[Done]]</a>
 		</div>	
 		</form>
 		</div>
@@ -142,7 +142,7 @@
 			deleteField = function(inType,inFieldId)
 			{
 				var params = 'oemaxlevel=1&editadvsearch=true&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
-				jQuery('#advsearchpanel').load("$home$apphome/components/advancedsearch/deletefield.html?" + params)
+				jQuery('#advsearchpanel').load("$home$apphome/components/filters/deletefield.html?" + params)
 			}
 		</script>
 	</div>
