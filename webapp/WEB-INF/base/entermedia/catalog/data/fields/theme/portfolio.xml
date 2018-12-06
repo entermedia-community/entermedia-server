@@ -224,7 +224,7 @@
       <language id="fr"><![CDATA[Bouton de Navbar Border]]></language> 
     </name> 
   </property>    
-      <property id="navbuttontexthover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Text Hover
+  <property id="navbuttontexthover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Navbar Button Text Hover
     <name> 
       <language id="de"><![CDATA[Navbarstaste Farbe]]></language>  
       <language id="en"><![CDATA[Navbar Button Text Hover]]></language>  
@@ -232,6 +232,27 @@
       <language id="fr"><![CDATA[Bouton de Navbar couleur]]></language> 
     </name> 
   </property>  
+  <property id="contenthighlightcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+    <name> 
+      <language id="en"><![CDATA[Highlight Color]]></language>  
+    </name> 
+  </property>  
+  <property id="contenthighlightbackground" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+    <name> 
+      <language id="en"><![CDATA[Highlight Background Color]]></language>  
+    </name> 
+  </property>  
+    <property id="contenthighlightcolorhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+    <name> 
+      <language id="en"><![CDATA[Highlight Color Hover]]></language>  
+    </name> 
+  </property>  
+  <property id="contenthighlightbackgroundhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+    <name> 
+      <language id="en"><![CDATA[Highlight Background Color Hover]]></language>  
+    </name> 
+  </property> 
+  
   <!-- left column -->  
   <property id="leftcolumnnavcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Color 
     <name> 

@@ -34,7 +34,7 @@
 					 	class="collectionbox #if ($selected ) selected #end favorite"  
 					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">
-					 	[[Favorites]] ($collection.getAssetCount())
+					 	<i class="fas fa-star"></i>  [[Favorites]] ($collection.getAssetCount())
 					</a>
 				 </div>
 			</li>
@@ -54,7 +54,7 @@
 					 	class="collectionbox #if ($selected ) selected #end"  
 					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">
-					 	$collection.getName() ($collection.getAssetCount())
+					 	<i class="fas fa-th-large"></i> $collection.getName() ($collection.getAssetCount())
 					</a>
 					<div class="collectionicons">
 						<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" 

@@ -9,7 +9,7 @@
       <language id="fr"><![CDATA[ID Catalogue]]></language> 
     </name> 
   </property>  
-  <property id="dataid" index="true" keyword="true" filter="false" stored="false" editable="true" sortable="true">New 
+  <property id="dataid" index="true" keyword="true" filter="false" stored="true" editable="true" sortable="true">New 
     <name> 
       <language id="en"><![CDATA[dataid]]></language> 
     </name> 

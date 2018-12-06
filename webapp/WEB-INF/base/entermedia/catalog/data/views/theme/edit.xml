@@ -122,4 +122,12 @@
   <property id="systemfromemailname" />
   
 
+  <property id="contenthighlightcolor" />
+  <property id="contenthighlightbackground" />
+  
+  <property id="contenthighlightcolorhover" />
+  <property id="contenthighlightbackgroundhover" />
+  
+
+
 </properties>

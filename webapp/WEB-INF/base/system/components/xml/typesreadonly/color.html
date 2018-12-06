@@ -1,0 +1,29 @@
+##API -
+## $detail
+## $searcher
+## $val
+## $searcherManager
+
+#if(!$val && $detail.rendermask && $data)
+	#set($label = $searcherManager.getValue($detail.getListCatalogId(), $detail.render, $data.properties))
+	#esc( $label )
+#elseif($detail.isMultiLanguage())
+		#set($map = $data.getValue($detail.getId()))
+		#if( $showalllanguagevalues )
+			#set($languages = $mediaarchive.getList("locale"))
+			#foreach($locale in $languages)
+				#set( $lval = false ) #set( $lval = $map.getText($locale.id) )
+				#if($lval) $locale:$lval <br> #end 
+			#end
+		#else
+			$!map.getText($context.language)
+		#end
+#elseif( $detail.isKeywordMap() )
+	#set($map = $data.getValue($detail.getId()))
+	#foreach($keyid in $map.keySet())
+		#set( $lval = false ) #set( $lval = $map.get($keyid) )
+		#if($lval) $keyid:$lval <br>#end 
+	#end		
+#else
+	#esc($!val)	
+#end

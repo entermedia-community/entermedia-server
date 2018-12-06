@@ -1,9 +1,13 @@
 #set( $categoryid = $context.getRequestParameter("categoryid"))
 #set( $category = $mediaarchive.getCategory($categoryid))
+#set( $moduleid = $context.findValue("module") )
 
 
 <div id="crumbs" class="breadcrumbs">
-<div class="category">					
+<div class="category">		
+	#if($moduleid=='librarycollection')
+	<i class="fas fa-th-large"></i> 
+	#end			
 	#foreach( $parent in $category.getParentCategoriesFrom(1))
 	#if( ${foreach.count} > 1) \ #end
 	<a  href="$home$apphome/views/modules/category/categorysearch.html?categoryid=${parent.id}&nodeID=${parent.id}">$parent</a>
