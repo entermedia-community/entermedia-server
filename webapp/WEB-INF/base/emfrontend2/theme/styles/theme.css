@@ -91,15 +91,15 @@
 
 .emsubnav .nav-btn,
 .col-sidebar-header h2,
-.emresultstable .badge-primary {
+.badge-tags,
+.badge-categories {
 	background-color: #6FB353;
 	color:#efefef;
 }
 .emsubnav .nav-btn:hover,
 .col-sidebar-header h2:hover,
-.emresultstable .badge-primary:hover,
-.emresultstable .badge-primary[href]:focus, 
-.emresultstable .badge-primary[href]:hover {
+.badge-tags:hover,
+.badge-categories:hover {
 	background-color: #56994c;
 	color:#fff;
 }
@@ -188,6 +188,7 @@
 .btn.focus, .btn:focus {
     box-shadow: 0 0 0 0.1rem rgba(255,255,255,.5);
 }
+
 .badge-primary {
 	background-color: #444;
 	color:#efefef;

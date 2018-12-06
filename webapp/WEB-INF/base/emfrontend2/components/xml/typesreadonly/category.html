@@ -8,7 +8,7 @@
 			#set( $row = $mediaarchive.getCategory($type) )
 		    #if( $row )
 		      <a href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${row.getId()}&nodeID=${row.id}"
-		      class="badge badge-primary">#esc($row.getName())</a> 
+		      class="badge badge-categories">#esc($row.getName())</a> 
 		    #end 
 		#end	
 	</div>

@@ -232,26 +232,73 @@
       <language id="fr"><![CDATA[Bouton de Navbar couleur]]></language> 
     </name> 
   </property>  
-  <property id="contenthighlightcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+ 
+  
+  
+  <property id="sidebarheadercolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
     <name> 
-      <language id="en"><![CDATA[Highlight Color]]></language>  
+      <language id="en"><![CDATA[Sidebars Header Font Color]]></language>  
     </name> 
   </property>  
-  <property id="contenthighlightbackground" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+  <property id="sidebarheaderbackground" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
     <name> 
-      <language id="en"><![CDATA[Highlight Background Color]]></language>  
+      <language id="en"><![CDATA[Sidebars Header Background]]></language>  
     </name> 
   </property>  
-    <property id="contenthighlightcolorhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+    <property id="sidebarheadercolorhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
     <name> 
-      <language id="en"><![CDATA[Highlight Color Hover]]></language>  
+      <language id="en"><![CDATA[Sidebars Header Font Color Hover]]></language>  
     </name> 
   </property>  
-  <property id="contenthighlightbackgroundhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+  <property id="sidebarheaderbackgroundhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
     <name> 
-      <language id="en"><![CDATA[Highlight Background Color Hover]]></language>  
+      <language id="en"><![CDATA[Sidebars Header Background Hover]]></language>  
     </name> 
   </property> 
+  
+  
+    <property id="badgetagscolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+    <name> 
+      <language id="en"><![CDATA[Badge Tags Color]]></language>  
+    </name> 
+  </property>  
+  <property id="badgetagsbackground" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+    <name> 
+      <language id="en"><![CDATA[Badge Tags Background]]></language>  
+    </name> 
+  </property>  
+    <property id="badgetagscolorhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+    <name> 
+      <language id="en"><![CDATA[Badge Tags Color Hover]]></language>  
+    </name> 
+  </property>  
+  <property id="badgetagsbackgroundhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+    <name> 
+      <language id="en"><![CDATA[Badge Tags Background Hover]]></language>  
+    </name> 
+  </property>
+  
+      <property id="badgecategoriescolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+    <name> 
+      <language id="en"><![CDATA[Badge Categories Color]]></language>  
+    </name> 
+  </property>  
+  <property id="badgecategoriesbackground" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+    <name> 
+      <language id="en"><![CDATA[Badge Categories Background]]></language>  
+    </name> 
+  </property>  
+    <property id="badgecategoriescolorhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Color
+    <name> 
+      <language id="en"><![CDATA[Badge Categories Color Hover]]></language>  
+    </name> 
+  </property>  
+  <property id="badgecategoriesbackgroundhover" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Highlight Background Color
+    <name> 
+      <language id="en"><![CDATA[Badge Categories Background Hover]]></language>  
+    </name> 
+  </property>
+  
   
   <!-- left column -->  
   <property id="leftcolumnnavcolor" index="true" stored="true" editable="true" viewtype="color" keyword="false" filter="false" sortable="true">Left Column Navigation Color 

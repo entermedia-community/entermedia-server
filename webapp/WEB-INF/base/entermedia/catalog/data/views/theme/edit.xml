@@ -121,13 +121,25 @@
   <property id="systemfromemail" />
   <property id="systemfromemailname" />
   
-
-  <property id="contenthighlightcolor" />
-  <property id="contenthighlightbackground" />
-  
-  <property id="contenthighlightcolorhover" />
-  <property id="contenthighlightbackgroundhover" />
+  <!-- Emshare2 Only -->
   
 
+  <property id="sidebarheadercolor" />
+  <property id="sidebarheaderbackground" />
+  
+  <property id="sidebarheadercolorhover" />
+  <property id="sidebarheaderbackgroundhover" />
+  
+  <property id="badgetagscolor" />
+  <property id="badgetagsbackground" />
+  
+  <property id="badgetagscolorhover" />
+  <property id="badgetagsbackgroundhover" />
+  
+    <property id="badgecategoriescolor" />
+  <property id="badgecategoriesbackground" />
+  
+  <property id="badgecategoriescolorhover" />
+  <property id="badgecategoriesbackgroundhover" />
 
 </properties>
