@@ -19,7 +19,7 @@
 		#end 
 	#end <i class="fas fa-times"></i></a>
 #end
-#if( !$terms.isEmpty() )
+#if( $hits.getSearchQuery().hasMainInput() || !$terms.isEmpty() )
 <a class="clearfilters" 
 #if( $librarycol )
 	href="$home$apphome/views/modules/librarycollection/index.html?hitssessionid=$hits.getSessionId()&collectionid=$librarycol.getId()&assetclearresults=true&clearfilters=true">
