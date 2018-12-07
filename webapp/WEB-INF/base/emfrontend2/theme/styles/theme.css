@@ -124,7 +124,8 @@
 .collectionshomecontent,
 .createmediapanel,
 .emsubnav,
-.emfooter  {
+.emfooter,
+.main-info   {
 	background-color: #d5d5d5;
 }
 .ui-widget-header {
@@ -2578,7 +2579,6 @@ label.error {
 .main-info { 
 	padding:20px;
 	border-bottom:1px solid #ccc;
-	background-color: #f8f8f8;
 	}
 .editholder {
 	background-color: #efefef;
@@ -3852,6 +3852,12 @@ table.stackedplayertable tbody tr
 	cursor:pointer;
 }
 
+.table-clickable td {
+	cursor: pointer;
+}
+table.table-padding tbody td {
+	padding:4px 12px;
+}
 
 
 .main-info .primary {

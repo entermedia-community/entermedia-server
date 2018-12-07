@@ -4,7 +4,7 @@
 	</div>
 	<div class="editbody">
 
-<table>		
+<table id="shared-asset-table" class="table table-striped download-table" style="margin:30px 0;" >
 		#foreach( $item in $orderitems )
 			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
 			$context.putPageValue("asset", $asset)
@@ -12,13 +12,13 @@
 			$context.setRequestParameter("sourcepath", $asset.sourcepath)					
 			$pages.include("${apphome}/views/activity/row.html", $context)
 		#end
-		</table>
-		<a href="cancel.html">[[Cancel Checked]]</a> |
+</table>
+		<a href="cancel.html" class="btn btn-sm btn-secondary">[[Cancel Checked]]</a> 
 		
-		<a href="submitorder.html?orderid=$order.getId()">[[Resubmit Order]]</a>
+		<a href="submitorder.html?orderid=$order.getId()"  class="btn btn-sm btn-secondary">[[Resubmit Order]]</a>
 	
-	| 
-		<a href="vieworder.html?orderid=$order.getId()">[[Refresh]]</a>
+	
+		<a href="vieworder.html?orderid=$order.getId()"  class="btn btn-sm btn-secondary">[[Refresh]]</a>
 	
 	</div>
 	<div id="itemsave"></div>

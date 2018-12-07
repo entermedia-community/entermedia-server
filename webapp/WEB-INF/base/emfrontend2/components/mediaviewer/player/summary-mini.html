@@ -22,10 +22,13 @@
 			#else
 				#set ( $sourcepath = $asset.sourcepath)
 			#end
+ 			
  			#set( $link = "/${applicationid}/views/modules/asset/downloads/preview/extralarge/$sourcepath/${asset}.jpg")
+ 			
  			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
 		#else
    			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context) 
+   			
 		#end 
 		
 	</div>

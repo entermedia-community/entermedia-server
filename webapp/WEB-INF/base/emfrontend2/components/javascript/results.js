@@ -575,7 +575,7 @@ $(document).ready(function(url,params)
 		if(clicked.attr("noclick") =="true") {
 			return true;
 		}
-		if( $(e.target).is("input") )
+		if( $(e.target).is("input") || $(e.target).is("a"))
 		{
 			return true;
 		}
@@ -590,6 +590,22 @@ $(document).ready(function(url,params)
 		 
 	});
 	
+	lQuery('.showasset').livequery('click',function(e)
+	{
+		var clicked = $(this);
+		if(clicked.attr("noclick") =="true") {
+			return true;
+		}
+		
+		e.preventDefault();
+		e.stopPropagation()
+		
+		var assetid = clicked.data("assetid");
+		
+		showAsset(assetid);
+		 
+	});
+
 	
 	
 	lQuery("#hiddenoverlay .overlay-close").livequery('click',function(e)

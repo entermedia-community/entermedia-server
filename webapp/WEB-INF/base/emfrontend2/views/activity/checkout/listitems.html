@@ -1,8 +1,6 @@
-
-<div >
 #set( $status = $order.get("checkoutstatus") )
 
-	<table id="shared-asset-table" class="striped download-table" >
+<table id="shared-asset-table" class="table table-striped download-table" >
 
 #set( $downloadall = false)
 #set( $cdnprefix = $mediaarchive.getCatalogSettingValue("cdn_prefix") )
@@ -18,7 +16,7 @@
 	#set( $click = "$home$apphome/views/modules/asset/editor/index.html?hitssessionid=$rootid&assetid=${asset.getId()}&orderid=$order.id" )
 
 	<tr>
-	<td class="asset-thumb">		
+	<td class="asset-thumb" style="width:120px; padding:5px;">		
 		$context.putPageValue("asset", $asset)
 		$context.putPageValue("item", $item)
 		$context.setRequestParameter("sourcepath", $sourcepath)					
@@ -33,7 +31,7 @@
 			#set( $rootid = $hits.sessionId )
 		#end
 		
-			<a href="$click" alt="$asset" name="$asset" style="text-decoration: none;">
+			<a class="showasset" data-assetid="$asset.id"  href="#" alt="$asset" name="$asset" style="text-decoration: none;">
 		
 			#set( $type = $mediaarchive.getMediaRenderType($asset.fileFormat))
 			#if(!$type)
@@ -50,7 +48,7 @@
 	$context.putPageValue("searcher",$searcherManager.getSearcher($catalogid,"asset") )	
 	$context.putPageValue("view","asset/downloaddetails")	
 	$context.putPageValue("data",$asset)
-	$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true", $context)
+	$pages.include("/$applicationid/components/xml/detaileditorcss.html?detailsreadonly=true", $context)
 
 	</td>
 	#set( $publishqueueid = $item.get("publishqueueid"))
@@ -72,9 +70,9 @@
 				<td>
 					#if($asset.googleid && $asset.googledownloadurl)
 					<!-- Google puts quotes on the returned data so the href is correct below.   -->
-						<a class="btn small" href="$asset.googledownloadurl">[[Download]]</a>
+						<a class="btn btn-sm btn-primary" href="$asset.googledownloadurl">[[Download]]</a>
 					#elseif($asset.googleid && $asset.linkurl)
-						<a class="btn small" href=$asset.linkurl>[[Download]]</a>
+						<a class="btn btn-sm btn-primary" href=$asset.linkurl>[[Download]]</a>
 					#else
 						#set ($originalpath = $mediaarchive.asLinkToOriginal($asset) )
 						
@@ -82,7 +80,7 @@
 							[[Pending]]
 						#else
 							#if($item.status == "approved")
-						<a class="btn small" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
+						<a class="btn btn-sm btn-secondary" href="/${mediadbappid}/services/module/asset/downloads/orders/originals/#urlencode($originalpath)?orderid=${order.id}">[[Download]]</a>
 						#else
 						[[Not Approved for Download]] 
 						#end
@@ -99,7 +97,7 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/orders/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
+					<a class="btn btn-sm btn-secondary" href="$cdnprefix$home/$mediadbappid/services/module/asset/orders/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end
@@ -110,4 +108,3 @@
 	#end
 	
 </table>
-</div>

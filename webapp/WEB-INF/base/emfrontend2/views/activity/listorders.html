@@ -5,7 +5,7 @@
 #set( $details = $ordersearcher.getDetailsForView("order/activityresults",$context.getUserProfile() ) ) 
 
 <div id="emselectable" >
-<table class="emresultscontent table table-striped table-hover" > 
+<table class="emresultscontent emresultstable table table-striped table-hover table-clickable table-padding" > 
 <tr id="tableheader">
 #foreach( $detail in $details)
 	<th >$detail.text</th>

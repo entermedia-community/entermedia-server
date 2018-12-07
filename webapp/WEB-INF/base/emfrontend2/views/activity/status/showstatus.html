@@ -29,8 +29,8 @@
 		<td width="200">
 			#set($statuses = $searcherManager.getList($catalogid, "order/userstatus"))
 			<div class="listdetailpicker">
-			<div style="" >
-			<select name="userstatus.value" style="width:190px; height:24px">
+			
+			<select name="userstatus.value" class="form-control form-control-sm">
 				<option value="">[[Change Status]]</option>
 				#set( $recentstatus = false )
 				#set( $recentstatus = $order.historyuserstatus )
@@ -38,13 +38,15 @@
 					<option value="$status.id" #if( $recentstatus == $status.id) selected #end>$status</option>
 				#end
 			</select>
-			</div>
+			
 			</div>
 			
 		</td>
-		<td><textarea style="width: 95%;" rows="2"  name="note.value" class="commentinput"></textarea></td>
+		<td>
+			<input type="text" class="form-control" name="note.value" class="commentinput" />
+			</td>
 		<td style=" width:100px">
-			<a href="#" onclick='jQuery("#addordercomment").submit();' class="btn ">[[Save]]</a>
+			<a href="#" onclick='jQuery("#addordercomment").submit();' class="btn btn-sm btn-primary">[[Save]]</a>
 		</td>
 	</tr></table>
 	<br>
