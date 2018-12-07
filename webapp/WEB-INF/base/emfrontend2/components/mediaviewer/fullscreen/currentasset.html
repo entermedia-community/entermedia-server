@@ -60,7 +60,9 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 	#end
 	
 	#if($opentab == "viewpreview")
-		$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
+		##$pages.include("/${mediadbappid}/services/module/asset/players/large2/${type}.html", $context)
+		$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html",$context)
+		
 		#if( $next )
 			#set( $preloadtype = $mediaarchive.getMediaPlayerType($next))
 			#if( $preloadtype == "image")

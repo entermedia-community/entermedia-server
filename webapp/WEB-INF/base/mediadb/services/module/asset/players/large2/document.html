@@ -1,4 +1,4 @@
-<div id="pdfviewerXX" class="assetpanel-document">
+<div id="pdfviewer" class="assetpanel-document">
 <div class="assetpanel-container">
 <div class="assetpanel-sidebar">
 	
@@ -45,7 +45,7 @@
 			#end			
 			#set($tpath = $mediaarchive.asLinkToPreview($asset, $size))
 		
-			<img id="mainimage" src="$tpath?pagenum=$!pagenum" alt="$!asset.name" />
+			<img id="mainimage" class="zoomable" src="$tpath?pagenum=$!pagenum" alt="$!asset.name" />
 		</div>	
 	</div>
 	

@@ -1118,6 +1118,7 @@ uiload = function() {
 								.bind(
 										'mousewheel DOMMouseScroll',
 										function(event) {
+											
 											var mainimage = $("#mainimage");
 											if ($("#hiddenoverlay").css(
 													"display") == "none") {
@@ -1138,41 +1139,54 @@ uiload = function() {
 											} else {
 												// scroll down
 												var w = mainimage.width();
-												mainimage.width(w - zoom);
-												var left = mainimage.position().left
-														+ zoom / 2;
-												mainimage.css({
-													"left" : left + "px"
-												});
+												if (w>100) {
+													mainimage.width(w - zoom);
+													var left = mainimage.position().left
+															+ zoom / 2;
+													mainimage.css({
+														"left" : left + "px"
+													});
+												}
 												return false;
 											}
 										});
 
 						mainimage.on("mousedown", function(event) {
-							clickspot = event;
-							imageposition = mainimage.position();
-							console.log(event);
+							console.log($(event.target));
+							if ($(event.target).is(".zoomable")) {
+								clickspot = event;
+								imageposition = mainimage.position();
+							}
 							return false;
 						});
 
 						mainimage.on("mouseup", function(event) {
 							clickspot = false;
+							var mainimage = $("#mainimage");
+							mainimage.removeClass('imagezooming');
 							return false;
+						});
+						
+						$(document).on("contextmenu", function(event){
+								clickspot = false;
 						});
 
 						mainimage.on("mousemove", function(event) {
 							// if( isMouseDown() )
+							
 							if (clickspot) {
+								console.log(clickspot.pageX);
 								var changetop = clickspot.pageY - event.pageY;
 								var changeleft = clickspot.pageX - event.pageX;
 
 								var left = imageposition.left - changeleft;
 								var top = imageposition.top - changetop;
-
-								$(this).css({
+								var mainimage = $("#mainimage");
+								mainimage.css({
 									"left" : left + "px",
 									"top" : top + "px"
 								});
+								mainimage.addClass('imagezooming');
 							}
 						});
 
