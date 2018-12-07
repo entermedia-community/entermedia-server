@@ -740,7 +740,8 @@ html, body, #application {
 	cursor: pointer;
 }
 .lefttoggleclose, 
-.filterstoggleclose {
+.filterstoggleclose,
+.sidebarheaderactions {
 	padding:0 8px;
 }
 .filtered .clearfilters {
