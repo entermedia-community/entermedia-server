@@ -337,16 +337,23 @@ uiload = function() {
 	lQuery("form.autosubmit").livequery(function() {
 		var form = $(this);
 		var targetdiv = form.data('targetdiv');
-		$("form.autosubmit select").change(function() {
+		$("select",form).change(function() {
 			$(form).ajaxSubmit({
 				target : "#" + targetdiv
 			});
 		});
-		$("form.autosubmit input").on("keyup", function() {
+		$("input",form).on("keyup", function() {
 			$(form).ajaxSubmit({
 				target : "#" + targetdiv
 			});
 		});
+		$('input[type="file"]',form).on("change", function() {
+			$(form).ajaxSubmit({
+				target : "#" + targetdiv
+			});
+		});
+		
+		
 
 	});
 

@@ -7,12 +7,13 @@
 	#set( $filesource = $asset.sourcepath )
 #end
 #set( $attachmentroot = $content.attachmentroot )
-<form id="uploadform" name="wizard" method="post" enctype="multipart/form-data" action="$home${attachmentroot}/uploadfile-finish.html" >
+<form id="uploadform" class="ajaxform autosubmit" data-targetdiv="asset-editor-container" name="wizard" method="post" enctype="multipart/form-data" action="$home${attachmentroot}/uploadfile-finish.html" >
 
 #set( $path = "/WEB-INF/data/$catalogid/originals/$filesource/" )
-<input  class="field uploadfile" type="file" multiple name="file"  onchange="form.submit()"/> 
+<input  class="field uploadfile" type="file" multiple name="file"  /> 
 <input type="hidden" id="path" name="path" value="$path" size="35" /> 
 <input type="hidden" id="assetid" name="assetid" value="$!asset.id"/>
+<input type="hidden" id="assetid" name="oemaxlevel" value="1"/>
 
 <a id="${file.id}" class="cancel btn">Cancel</a>
 
