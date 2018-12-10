@@ -1,5 +1,4 @@
 <page>
 <path-action name="ConvertStatusModule.addConvertRequest" />
 <path-action name="ConvertStatusModule.rerunSmallerThumbnails" />
-<path-action name="ConvertStatusModule.reloadIndex" />
 </page>

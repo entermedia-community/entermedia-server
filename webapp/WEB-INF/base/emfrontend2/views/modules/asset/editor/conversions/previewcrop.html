@@ -88,7 +88,6 @@
 
 <div style="padding:10px;">
 <div id="infopanel">
-			<h2>[Crop Instructions]]</h2>
 			<ul>
 				<li>[[Select the]] <strong>[[crop-box selector]]</strong> [[shown on the large image, and manipulate its size and location. A small preview of the resulting crop will appear on the Preview Panel above.]]</li>
 				##<li>[[To see a preview of the resulting crop, select the image in the Preview Panel. The cropped image will be shown as a ${width}px x ${height}px image.]]</li>
@@ -111,6 +110,9 @@
 				<label>[[Preview Panel]]</label>
 				<label id="dimension"></label>
 			</div>
+			 <div class="btns">
+			    <input class="btn btn-sm btn-primary" type="submit" form="coords" name="submitbutton" value="[[Submit]]"  />
+			</div>
 		</div>
 		<div class="clearfix"></div>
 		#set( $savetoall = $context.getRequestParameter("savetoall"))
@@ -120,12 +122,11 @@
 		    		method="post"  
 		    		targetdiv="asset-editor-container" 
 		    		action="$home$apphome/views/modules/asset/editor/conversions/customcrop.html">
-		    <input type="hidden" name="oemaxlevel" value="1"/>
 		#else
 			<form id="coords" 
 					class="coords ajaxform" 
 					method="post" 
-					targetdiv="asset-editor-container" 
+					data-targetdiv="asset-editor-container" 
 					action="$home$apphome/views/modules/asset/editor/conversions/submitcrop.html">
 		#end    
 			<input type="hidden" name="oemaxlevel" value="1"/>
@@ -149,9 +150,7 @@
 		    <input type="hidden" name="force.value" value="true"/>
 		    <input type="hidden" name="assetid.value" value="${asset.id}"/>
 		    <input type="hidden" name="assetid" value="${asset.id}"/>
-		    <div class="btns">
-			    <input class="btn btn-sm btn-primary" type="submit" name="submitbutton" value="[[Submit]]"  />
-			</div>
+		   
 		</form>
 		
 		
