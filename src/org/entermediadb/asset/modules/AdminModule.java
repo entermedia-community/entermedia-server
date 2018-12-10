@@ -373,6 +373,10 @@ public class AdminModule extends BaseModule
 		String account = inReq.getRequestParameter("accountname");
 		String password = inReq.getRequestParameter("password");
 
+		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+			account = account.toLowerCase();
+		}
+		
 		if (account == null && inReq.getRequest() != null && inReq.getSessionValue("fullOriginalEntryPage") == null)
 		{
 			String referrer = inReq.getRequest().getHeader("REFERER");
@@ -424,6 +428,9 @@ public class AdminModule extends BaseModule
 	public boolean authenticate(WebPageRequest inReq) throws Exception
 	{
 		String account = inReq.getRequestParameter("id");
+		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+			account = account.toLowerCase();
+		}
 		String password = inReq.getRequestParameter("password");
 		UserManager userManager = getUserManager(inReq);
 		User user = userManager.getUser(account);
@@ -624,6 +631,9 @@ public class AdminModule extends BaseModule
 	public void loadEnterMediaKey(WebPageRequest inReq)
 	{
 		String account = inReq.getRequestParameter("id");
+		if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+			account = account.toLowerCase();
+		}
 		String password = inReq.getRequestParameter("password");
 		UserManager userManager = getUserManager(inReq);
 		User user = userManager.getUser(account);
@@ -731,6 +741,9 @@ public class AdminModule extends BaseModule
 		if (inReq.getUser() == null)
 		{
 			String username = inReq.getRequestParameter("accountname");
+			if(Boolean.parseBoolean(inReq.findValue("forcelowercaseusername"))) {
+				username = username.toLowerCase();
+			}
 			String password = inReq.getRequestParameter("password");
 			if (password == null)
 			{
