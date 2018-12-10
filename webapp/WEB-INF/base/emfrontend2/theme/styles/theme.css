@@ -642,7 +642,7 @@ html, body, #application {
 .filter-box,
 .sidebar-component {
 	color:#efefef;
-	margin:30px 15px 0px;
+	margin:20px 15px 0px;
 }
 .filter-box a,
 .filter-box a:visited {
@@ -663,6 +663,7 @@ html, body, #application {
 	margin-right: 8px;
 	width:10px;
 	text-align: right;
+	cursor:pointer;
 }
 .sidebar-component-header a {
 	color:#999;
@@ -1466,7 +1467,7 @@ td.checkbox input, th.firstheader input {
 }
 .advancedsearchtable label { display: block;}
 
-.advancedsearcheditform { background-color: #efefef; padding:5px;}
+.advancedsearcheditform { background-color: #333; padding:15px;}
 
 .btns-advancedsearch .btn-sm {
 	height: 30px;

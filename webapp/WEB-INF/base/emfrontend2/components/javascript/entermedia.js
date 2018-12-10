@@ -22,7 +22,7 @@ toggleUserProperty = function(property, onsuccess) {
 	app = $("#application");
 	home =  app.data("home");
 	apphome = home + app.data("apphome");
-	
+	console.log("Saving: "+property);
 	jQuery.ajax(
 			{
 				url:  apphome + "/components/userprofile/toggleprofileproperty.html?field=" + property,
@@ -1126,6 +1126,7 @@ emcomponents = function() {
 						div.toggleClass("expanded");
 						div.toggleClass("minimized");
 						div.find(".caret").toggleClass("fa-caret-right");
+						div.find(".caret").toggleClass("fa-caret-down");
 						div.find(".component-actions").toggle();
 					}
 				);
