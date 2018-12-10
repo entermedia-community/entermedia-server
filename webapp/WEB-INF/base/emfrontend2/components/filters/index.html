@@ -139,10 +139,11 @@
 		#end
 	
 		<script type="text/javascript">
-			deleteField = function(inType,inFieldId)
-			{
+			deleteFilterField = function(inType,inFieldId)
+			{	
+				console.log('delete field');
 				var params = 'oemaxlevel=1&editadvsearch=true&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
-				jQuery('#advsearchpanel').load("$home$apphome/components/filters/deletefield.html?" + params)
+				jQuery('#advfilterpanel').load("$home$apphome/components/filters/deletefield.html?" + params)
 			}
 		</script>
 	</div>

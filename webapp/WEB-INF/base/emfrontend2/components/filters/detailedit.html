@@ -65,27 +65,19 @@
 					</span> 
 					
 					$!detail.getText($context)
+					#if ($edit == "true")
+						<a class="float-right" title="[[Delete Filter]]" href="#" onclick="javascript:deleteFilterField('${detail.getSearchType()}','${detail.id}'); return false;">
+						<i class="fas fa-times"></i>
+						</a>
+					#end
+					 
+					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
 			</div>
 			<div class="filter-box-options" id="filterbox${detail.getId()}" #if($selectedpreference == "true") style="display: none;" #end>
 			#if ($detail.isFilter())
 				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
 			#else
-				
-				
-				
-					$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
-				
-				
-				  	 
-					##if ($edit == "true")
-					##	<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
-					##	<i class="fas fa-times"></i>
-					##	</a>
-					##end
-					## 
-					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
-					
-				
+				$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
 			#end
 			</div>
 		</div>
