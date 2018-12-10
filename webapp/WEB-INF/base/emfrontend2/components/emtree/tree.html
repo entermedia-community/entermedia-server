@@ -126,6 +126,9 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 ##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Cut]]</a></li>      
 ##      <li><a tabindex="-1" href="#" class="dropdown-item" style="enabled:false">[[Paste]]</a></li>
     </ul>
+   #if($canaddnewcollection)
+		<a id="collectionidaddbycategory" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
+	#end
   </div>
   #end
 
