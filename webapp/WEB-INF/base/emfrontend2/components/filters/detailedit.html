@@ -47,29 +47,48 @@
 			$context.putPageValue("data",$hits.getSearchQuery())
 		#end	
 		<input name="${detail.getId()}.searchtype" value="${detail.getSearchType()}" type="hidden" />
-		
-		#if ($detail.isFilter())
-			$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
-		#else
-			<div class="filter-box">
+		<div class="filter-box">
 			<div class="filter-box-header">
-				<span class="toggle-filter"><i class="fas fa-caret-down"></i></span> $!detail.getText($context) 
+					<span class="toggle-filter sidetoggle" data-target="filterbox${detail.getId()}">
+					<i class="caret fas 
+							#set($minimized = $detail.getId())
+							#set($preference = '#set($selectedpreference = ' + '$userprofile.' + 'minimizefilterbox' + $minimized + ')')
+							#evaluate($preference)
+							#ifnull($selectedpreference)
+							#set($selectedpreference = "false")
+							#end
+							#if($selectedpreference == "false") 
+								 fa-caret-down 
+						  	#else 
+						  		 fa-caret-right 
+						  	#end"></i>
+					</span> 
+					
+					$!detail.getText($context)
 			</div>
-			<div class="filter-box-options">
-				$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
-			</div>
-			</div>
-			  	 
-				##if ($edit == "true")
-				##	<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
-				##	<i class="fas fa-times"></i>
-				##	</a>
-				##end
-				## 
-				##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
+			<div class="filter-box-options" id="filterbox${detail.getId()}" #if($selectedpreference == "true") style="display: none;" #end>
+			#if ($detail.isFilter())
+				$pages.include("/${applicationid}/components/filters/types/${viewtype}.html?search=true", $context)
+			#else
 				
-			
-		#end
+				
+				
+					$pages.include("/${applicationid}/components/xml/types/${viewtype}.html?search=true", $context)
+				
+				
+				  	 
+					##if ($edit == "true")
+					##	<a href="#" onclick="javascript:deleteField('${detail.getSearchType()}','${detail.id}'); return false;">
+					##	<i class="fas fa-times"></i>
+					##	</a>
+					##end
+					## 
+					##if ($edit == "true" && $detail.searchType)   (${detail.searchType} ) #end
+					
+				
+			#end
+			</div>
+		</div>
 		</div>
 	</div>
 
