@@ -22,7 +22,9 @@
 
 #set( $detailid = $detail.getId().replace('.','-') )
 
-<select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"  class="listautocomplete form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" data-searchfield="$searchfield" data-searchtype="$detail.listId" 
+<select name="${detail.getId()}.value"  id="list-${detailid}${idcount}value"  
+		class="listautocomplete form-control detail-select #if($detail.isRequired() && !$multiedit && !$searchfrom) required #end" 
+		data-searchfield="$searchfield" data-searchtype="$detail.listId" 
 	data-listcatalogid="$detail.listCatalogId" data-foreignkeyid="$!detail.foreignkeyid" data-placeholder="$detail.getText($context)" data-sortby="$!detail.sort">
 #if( $foundrow )
   <option value="$!val" selected="selected">#esc($label)</option>
@@ -65,4 +67,6 @@
 
 #end
 #end
+
+
 

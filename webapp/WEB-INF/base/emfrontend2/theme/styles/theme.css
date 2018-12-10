@@ -683,24 +683,40 @@ html, body, #application {
 	padding:5px;
 	line-height: 1.2;
 	color:#999;
+	cursor: pointer;
 }
 .filter-box-options a:hover {
 	text-decoration: none;
 	color:#efefef;
 }
-
+.filter-box-options a label,
+.filter-box-options a input {
+	cursor: pointer;
+}
 .filter-box-options a.filter-current {
 	color:#fff;
 }
 .filter-box-options label {
 	margin: 0;
 }
+.filter-box-options .form-control { 
+	padding:.125rem .5rem;
+}
+.filter-box .select2-container {
+	z-index:2;
+}
+.filter-box .select2-container--open {
+	z-index:3;
+}
+.filter-box-options select.form-control:not([size]):not([multiple]) {
+	height: calc(1.8rem);
+}
+.filter-box-options .form-control,
 .filter-box-options .select2-container--bootstrap4 .select2-selection {
 	background-color: #333!important;
 	color:#eee!important;
 	border: 1px solid #999!important;
 }
-
 .filter-box-options .select2-container--bootstrap4 .select2-selection--single .select2-selection__arrow b {
 	border-color:#eee  transparent transparent;
 }
@@ -711,6 +727,16 @@ html, body, #application {
 
 .filter-box-options .select2-container--bootstrap4 .select2-selection__clear {
 	color:#333;
+}
+.filter-box-options .form-control.datepicker {
+	width:110px;
+}
+.filter-box-options .dateinputbox {
+	display:block;
+	padding-top:5px;
+}
+.filter-box-options .ui-datepicker-trigger {
+	margin-left:5px;
 }
 .btn-filters {
 	
@@ -795,7 +821,7 @@ html, body, #application {
 	color: #333333;
 	padding:10px;
 	
-	font-size:.8rem;
+	/*font-size:.8rem;*/
 }
 .ui-widget-content-wide {
 	padding: 0;
@@ -838,7 +864,16 @@ html, body, #application {
 	opacity: 0.7;
 }
 
-
+.ui-autocomplete.ui-widget-content {
+	padding:0;
+}
+.ui-autocomplete .ui-menu-item-wrapper {
+	padding:6px;
+}
+.ui-autocomplete .ui-menu-item-wrapper:hover,
+ .ui-autocomplete .ui-state-active {
+	background-color:#ccc;color:#333;
+}
 
 
 
@@ -1468,6 +1503,12 @@ td.checkbox input, th.firstheader input {
 .advancedsearchtable label { display: block;}
 
 .advancedsearcheditform { background-color: #333; padding:15px;}
+.advancedsearcheditform select.form-control:not([size]):not([multiple]) {
+	height: calc(1.8rem)
+}
+.advancedsearcheditform .form-control {
+	padding:0.175rem .5rem;
+}
 
 .btns-advancedsearch .btn-sm {
 	height: 30px;
@@ -3830,7 +3871,7 @@ table.table-striped tbody td.emdatafield { width:220px; padding:5px 8px;}
 select.is-invalid~.select2-container--bootstrap4 .select2-selection{border-color:#dc3545}select.is-valid~.select2-container--bootstrap4 .select2-selection{border-color:#28a745}
 .select2-container--bootstrap4 .select2-dropdown{border-color:#ced4da;border-top:none;border-top-left-radius:0;border-top-right-radius:0}
 .select2-container--bootstrap4 .select2-dropdown .select2-results__option[aria-selected=true]{background-color:#e9ecef}
-.select2-container--bootstrap4 .select2-results__option--highlighted,.select2-container--bootstrap4 .select2-results__option--highlighted.select2-results__option[aria-selected=true]{background-color:#007bff;color:#f8f9fa}
+.select2-container--bootstrap4 .select2-results__option--highlighted,.select2-container--bootstrap4 .select2-results__option--highlighted.select2-results__option[aria-selected=true] {background-color:#ccc;color:#333}
 .select2-container--bootstrap4 .select2-results__option[role=group]{padding:0}.select2-container--bootstrap4 .select2-results__group{padding:6px;display:list-item;color:#6c757d}
 .select2-container--bootstrap4 .select2-selection__clear{width:1.2em;height:1.2em;line-height:1.15em;padding-left:.3em;margin-top:.4em;border-radius:100%;background-color:#d7d7d7;color:#f8f9fa;float:right;margin-right:.3em;}
 .select2-container--bootstrap4 .select2-selection__clear:hover{background-color:#343a40}

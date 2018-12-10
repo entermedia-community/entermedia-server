@@ -29,7 +29,7 @@
 		<option value="before365" #if( $op && $op == "before365" )selected #end>[[Past year]]</option>
 	</select>
 	
-	<span id="dateinput${inputid}" >
+	<span id="dateinput${inputid}" class="dateinputbox" >
 
 	</span>
 	
@@ -51,9 +51,9 @@
 			var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><input type="text" class="datepicker form-control" data-targetid="datebox${inputid}" /> ';
 			var twoinputs = '<input name="${inputname}.after"  id="dateafter${inputid}" value="$!after" size="8" type="hidden"> \
 						<input type="text" class="datepicker form-control" data-targetid="dateafter${inputid}" value="$!after" size="8" /> \
-						<br />   \
+						 \
 						<input name="${inputname}.before"  id="datebefore${inputid}" value="$!before" size="8" type="hidden">  \
-						<input type="text" class="datepicker form-control" data-targetid="datebefore${inputid}" value="$!before" size="8" /> ';
+						<input type="text" class="datepicker form-control" style="margin-top:5px" data-targetid="datebefore${inputid}" value="$!before" size="8" /> ';
 
 
 			if( value < 3 )

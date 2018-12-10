@@ -979,6 +979,7 @@ uiload = function() {
 							// var value = theinput.val();
 							theinput
 									.select2({
+										theme : "bootstrap4",
 										placeholder : defaulttext,
 										allowClear : true,
 										minimumInputLength : 0,
