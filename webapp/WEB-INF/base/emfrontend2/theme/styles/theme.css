@@ -4267,9 +4267,9 @@ a.collectionbox.favorite
 .btns { padding:15px 0;}
 
 /* Collection drop */
+.dragoverselected,
 .opencollections li.dragoverselected, 
 .opencollections li.dragoverselected a {
-	
 	background-color:#ccc;
 	color:#333;
 }

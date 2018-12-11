@@ -657,6 +657,7 @@ onloadselectors = function()
 						}
 						,
 						revert: 'invalid',
+						containment: '#emcontainer',
 						zIndex: 100000,
 					}
 				);
