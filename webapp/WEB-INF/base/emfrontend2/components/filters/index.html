@@ -1,4 +1,14 @@
-<div id="advfilterpanel" >
+#set( $edit = $context.getRequestParameter("editfilters"))
+#if( $edit)
+	$context.putPageValue("edit",$edit)
+#end
+
+<div id="advfilterpanel" class="advfilterpanel" >
+#if( !$edit )
+	<div class="filters-edit-icon">
+		<a class="ajax" data-targetdiv="advfilterpanel" href="$apphome/components/filters/index.html?editfilters=true&oemaxlevel=1"><i class="fas fa-cog"></i></a>
+	</div>
+#end
 <div class="tanmodule" >
 	#set( $view = "asset/assetadvancedfilter")
 	#set( $searcher = $mediaarchive.getAssetSearcher())
@@ -11,10 +21,7 @@
 	$context.putPageValue("caneditlists",false)
 				
 	
-	#set( $edit = $context.getRequestParameter("editfilters"))
-	#if( $edit)
-	$context.putPageValue("edit",$edit)
-	#end
+
 	
 	<form  name="filterform" id="filterform" class="autosubmitform em-widget-content ajaxform" data-targetdiv="filteredresults" method="POST"  
 	#if( $librarycol)
@@ -45,6 +52,7 @@
 				$context.putPageValue("searchform", true)
 				#if ($detail.isLeaf())
 					#if ($detail.isFilter())
+						
 						#set($filternode = $userfiltervalues.get($detail.id))
 						$context.putPageValue("filternode",$filternode)
 						#if(($edit == "true") || ($filternode && !$filternode.isEmpty() && $filternode.children.size() > 1))

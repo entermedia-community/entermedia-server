@@ -16,6 +16,8 @@
 		#if( $foreach.count > 1) or #end
 		#if($term.getDetail().isList())
 			$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
+		#else
+			$term.getValue()
 		#end 
 	#end <i class="fas fa-times"></i></a>
 #end

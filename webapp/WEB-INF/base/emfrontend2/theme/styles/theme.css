@@ -624,7 +624,7 @@ html, body, #application {
 .col-left .emtree {
 	background-color: #fff;
 }
-
+.advfilterpanel { padding-top:1px;}
 .filters-edit-icon {
 	float: right;
 	padding:5px;
@@ -642,7 +642,7 @@ html, body, #application {
 .filter-box,
 .sidebar-component {
 	color:#efefef;
-	margin:20px 15px 0px;
+	margin:15px 15px 0px;
 }
 .filter-box a,
 .filter-box a:visited {
