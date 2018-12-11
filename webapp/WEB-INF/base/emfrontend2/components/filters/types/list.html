@@ -12,7 +12,7 @@
 			#if ($filternode.children.size() > 1)
 				##select2
 				<select  id="${fieldname}select2" name="${fieldname}.value" 
-						class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end select2-hidden-accessible" 
+						class="listdropdown choose-select detail-select form-control autosubmited #if($detail.isRequired() && !$multiedit) required #end" 
 						listid="${fieldname}filter" 
 						data-listid="${fieldname}filter" 
 						data-searchtype= '$searchtype'
