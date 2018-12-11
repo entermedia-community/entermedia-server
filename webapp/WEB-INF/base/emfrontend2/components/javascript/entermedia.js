@@ -649,14 +649,15 @@ onloadselectors = function()
 							 var n = $("input.selectionbox:checked").length;
 							 if( n > 1 )
 							 {
-									cloned.append('<div class="dragcount">+' + n + '</div>');
+									cloned.append('<div class="dragcount emnotify">+' + n + '</div>');
 								 
 							 }
 							
 							return cloned;
 						}
 						,
-						revert: 'invalid'
+						revert: 'invalid',
+						zIndex: 100000,
 					}
 				);
 				/*
@@ -805,7 +806,7 @@ onloadselectors = function()
 										},
 										function(data) 
 										{
-											node.append("<span class='fader'>&nbsp;+" + data + "</span>");
+											node.append("<span class='fader emnotify'>&nbsp;+" + data + "</span>");
 											node.find(".fader").fadeOut(3000);
 											node.removeClass("dragoverselected");
 										}

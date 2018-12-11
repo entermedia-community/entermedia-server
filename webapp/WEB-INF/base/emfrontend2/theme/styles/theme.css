@@ -92,7 +92,8 @@
 .emsubnav .nav-btn,
 .col-sidebar-header h2,
 .badge-tags,
-.badge-categories {
+.badge-categories,
+.emnotify {
 	background-color: #6FB353;
 	color:#efefef;
 }
@@ -157,12 +158,6 @@
 }
 .table #tableheader {
 	
-}
-.emselectable {
-/*	border-left:1px solid #fff;
-	border-right:1px solid #fff;
-	*/
-	overflow-x: auto;
 }
 .emresultstable th { 
 	color:#fff; font-weight:bold;
@@ -238,7 +233,10 @@ background-color:rgba(0,0,0,0.5);
 }
 .table-striped {
 	background-color: #fff;
-	border-left:1px solid #e9ecef;
+	border-left:1px solid #dedede;
+}
+table.table-striped tbody td {
+	border-bottom:1px solid #dedede;
 }
 /*TR Hovers*/
 tr.emborderhover td,
@@ -375,12 +373,30 @@ h3 {
 .table td, .table th {
     vertical-align: middle;
 }
-
+.emselectable {
+	overflow-x: auto;
+	margin-bottom:20px;
+}
+.emselectable .table-striped {
+	margin-bottom:0;
+}
 select + .select2-container {
   width: 100% !important;
 }
 .select2-container {
 	z-index: 20000;
+}
+
+.emnotify {
+    position: absolute;
+    text-align: center;
+    border-radius: 10px;
+    min-width: 16px;
+    padding: 1px 4px;
+    height: 1.2rem;
+    font-size: 1rem;
+    font-weight: bold;
+    line-height: 18px;
 }
 
 
@@ -861,7 +877,8 @@ html, body, #application {
 	
 }
 .ui-draggable-dragging {
-	opacity: 0.7;
+	opacity: 0.9;
+	border: 0 none!important;
 }
 
 .ui-autocomplete.ui-widget-content {
@@ -1580,6 +1597,10 @@ td.checkbox input, th.firstheader input {
 	padding:0 4px;
 	color:#666;
 	display: none;
+}
+.emtree .emnotify {
+    top: 6px;
+    right: 3px;
 }
 .treerow:hover .cat-menu,
 .treerow.selected .cat-menu {
@@ -3882,7 +3903,6 @@ table.table-striped tbody td
 {
 	padding: 0px 10px;
 	font-size: 0.9rem;
-	border-bottom:1px solid #D3D3D3;
 }
 tableheader th {
 	text-shadow: 0 1px 0 rgba(0,0,0,0.2);
@@ -4247,10 +4267,11 @@ a.collectionbox.favorite
 .btns { padding:15px 0;}
 
 /* Collection drop */
-.librarylabels ul li.dragoverselected, .dragoverselected
-{
-	border: 1px dashed #aaa;
+.opencollections li.dragoverselected, 
+.opencollections li.dragoverselected a {
+	
 	background-color:#ccc;
+	color:#333;
 }
 
 .librarylabels ul li.selected
