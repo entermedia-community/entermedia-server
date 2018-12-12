@@ -34,6 +34,7 @@ $(document).ready(function()
 	lQuery('.emtree-widget ul li div .cat-name').livequery('click', function(event) 
 	{
 		event.stopPropagation();
+		console.log('selected');
 		$('.emtree ul li div').removeClass('selected cat-current');
 		var tree = $(this).closest(".emtree");
 		var node = $(this).closest('.noderow');
@@ -93,6 +94,8 @@ $(document).ready(function()
 		var home = tree.data("home");
 		
 		var depth = node.data('depth');
+		
+		window.location.hash = "category-"+nodeid;
 		
 		jQuery.get(prefix + nodeid + postfix,
 				{

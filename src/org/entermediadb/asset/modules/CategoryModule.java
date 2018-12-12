@@ -188,6 +188,12 @@ public class CategoryModule extends BaseMediaModule
 	}
 	public void selectNodes(WebPageRequest inReq)
 	{
+		String toggle = inReq.getRequestParameter("toggle");
+		if (Boolean.parseBoolean(toggle))
+		{
+			return;
+		}
+		
 		WebTree tree =  getCatalogTree(inReq);
 		//check param data
 		String cats = inReq.getRequestParameter("categories");

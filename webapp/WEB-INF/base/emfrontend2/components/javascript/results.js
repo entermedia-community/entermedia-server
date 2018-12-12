@@ -268,6 +268,8 @@ $(document).ready(function(url,params)
 	showAsset = function(assetid,pagenum)
 	{
 		
+		
+		
 		var mainmedia = $("#main-media-viewer");
 		var resultsdiv = $("#resultsdiv");
 		if( !pagenum )
@@ -299,6 +301,9 @@ $(document).ready(function(url,params)
 		{
 			params.collectionid = collectionid;
 		}
+		
+		window.location.hash = 'asset-'+assetid;
+		
 		//Stop/Dispose Videos
 		$('.video-js, .video-player').each(function () {
 			if (this.id) {
@@ -686,6 +691,17 @@ $(document).ready(function(url,params)
 	  function() { 
 	    	gridResize();
 	  }, false);
+	
+	
+	
+	var hash = window.location.hash;
+	
+	if (hash && hash.startsWith('#asset-')){
+		var assetid = hash.substring(7,hash.length);
+		if (assetid) {
+			showAsset(assetid);
+		}
+	}
 	
 });        //document ready
         
