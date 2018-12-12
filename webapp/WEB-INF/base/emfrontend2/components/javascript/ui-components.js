@@ -1,7 +1,4 @@
 //EMfrontend2
-var app = $("#application");
-var apphome = app.data("home") + app.data("apphome");
-var themeprefix = app.data("home") + app.data("themeprefix");
 
 formatHitCountResult = function(inRow) {
 	return inRow[1];
@@ -39,27 +36,32 @@ uiload = function() {
 	}
 
 	var browserlanguage = app.data("browserlanguage");
-	if (browserlanguage == undefined) {
-		browserlanguage = "";
+	if (browserlanguage == undefined || browserlanguage == "") {
+		browserlanguage = "en";
 	}
+	
+	
+	
 	if ($.datepicker) {
-		$.datepicker.setDefaults($.extend({
-			showOn : 'button',
-			buttonImage : themeprefix + '/entermedia/images/cal.gif',
-			buttonImageOnly : true,
-			changeMonth : true,
-			changeYear : true,
-			yearRange : '1900:2050'
-		}, $.datepicker.regional[browserlanguage])); // Move this to the
-														// layout?
-
 		lQuery("input.datepicker").livequery(function() {
+			console.log(themeprefix);
+			$.datepicker.setDefaults( $.datepicker.regional[browserlanguage] );
+			$.datepicker.setDefaults($.extend({
+				showOn : 'button',
+				buttonImage :  themeprefix + '/entermedia/images/cal.gif',
+				buttonImageOnly : true,
+				changeMonth : true,
+				changeYear : true,
+				yearRange : '1900:2050'
+			})); // Move this to the Layouts?
+			
 			var targetid = $(this).data("targetid");
 			$(this).datepicker({
 				altField : "#" + targetid,
 				altFormat : "yy-mm-dd",
 				yearRange : '1900:2050'
 			});
+			
 
 			var current = $("#" + targetid).val();
 			if (current != undefined) {
@@ -83,7 +85,8 @@ uiload = function() {
 				}
 			});
 		});
-	}
+	}//datepicker
+	
 	if ($.fn.minicolors) {
 		$(".color-picker").minicolors({
 			defaultValue : '',
@@ -1382,14 +1385,25 @@ var resizecolumns = function() {
 	if ($(".filtered").height()) {
 		allheights += $(".filtered").height();
 	}
+	
 	var columnsheight = $("body").height() - allheights;
-	$(".sidebar-inner").each(function(){
+	
+	$(".cols-main").each(function(){
 		var thisheight = $(this).height();
+		if ($(this).children(0)	&& $(this).children(0).hasClass("sidebar-inner")) {
+			thisheight = $(this).children(0).height();
+		}
+		
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
 		}
 	});
 	$(".col-main").css("min-height", columnsheight);
+	
+	if ($(".results-header").height()) {
+		var resultsheader = $(".results-header").height();
+		$(".col-content-main").css("min-height", columnsheight + resultsheader);
+	}
 	
 }
 
