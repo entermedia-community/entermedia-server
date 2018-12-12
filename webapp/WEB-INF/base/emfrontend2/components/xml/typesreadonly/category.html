@@ -7,7 +7,7 @@
 			#set( $row = false )
 			#set( $row = $mediaarchive.getCategory($type) )
 		    #if( $row )
-		      <a href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${row.getId()}&nodeID=${row.id}"
+		      <a href="$home$apphome/views/modules/asset/categorysearch.html?selectedcategory=${row.getId()}&nodeID=${row.id}"
 		      class="badge badge-categories">#esc($row.getName())</a> 
 		    #end 
 		#end	
@@ -15,6 +15,6 @@
 #elseif( $val)
 	#set( $row = $mediaarchive.getCategory($val) )
     #if( $row )
-      <a href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${row.getId()}&nodeID=${row.id}">#esc($row.getName())</a>
+      <a href="$home$apphome/views/modules/asset/categorysearch.html?selectedcategory=${row.getId()}&nodeID=${row.id}">#esc($row.getName())</a>
     #end 
 #end	

@@ -3,6 +3,13 @@
 <strong>Searching for:</strong>  "<em>$hits.getSearchQuery().getMainInput()</em>"
 #end
 ##TODO Loop over the view and show them here if they match
+
+#if( $category )
+	<a
+	href="$home$apphome/views/modules/asset/index.html"
+	class="badge badge-light">$category <i class="fas fa-times"></i></a>
+#end
+
 #set( $terms = $userfilters.getFilteredTerms($hits) )
 #foreach( $term in $terms)
 <a

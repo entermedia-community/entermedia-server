@@ -95,7 +95,14 @@ $(document).ready(function()
 		
 		var depth = node.data('depth');
 		
-		window.location.hash = "category-"+nodeid;
+		//window.location.hash = "category-"+nodeid;
+		var url = document.location.href;
+		url = url + "?category-"+nodeid;
+		
+		///views/modules/assets/categorysearch.html?selectedcategory=AWdglYgKAPC6HdjLzP_x&nodeID=AWdglYgKAPC6HdjLzP_x
+		//collection view?
+		
+		history.pushState({}, null, url);
 		
 		jQuery.get(prefix + nodeid + postfix,
 				{
