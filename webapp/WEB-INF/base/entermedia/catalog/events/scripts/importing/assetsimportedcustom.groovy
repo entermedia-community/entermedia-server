@@ -38,17 +38,17 @@ public void readProjectData()
 	manager.saveAssetTypes(hits, true);
 
 	//TODO: Move this to AssetUtilities
-	boolean assigncategory = mediaArchive.isCatalogSettingTrue("assigncategoryonupload");
-	if(assigncategory) {
-		hits.each{
-			Asset current = it;
-			Category defaultcat = mediaArchive.getCategorySearcher().createCategoryPath(current.sourcePath);
-			
-			current.clearCategories();
-			current.addCategory(defaultcat);
-			mediaArchive.saveAsset(current, context.getUser());
-		}
-	}	
+//	boolean assigncategory = mediaArchive.isCatalogSettingTrue("assigncategoryonupload");
+//	if(assigncategory) {
+//		hits.each{
+//			Asset current = it;
+//			Category defaultcat = mediaArchive.getCategorySearcher().createCategoryPath(current.sourcePath);
+//			
+//			current.clearCategories();
+//			current.addCategory(defaultcat);
+//			mediaArchive.saveAsset(current, context.getUser());
+//		}
+//	}	
 	
 	//Look for collections and libraries
 	LibraryManager librarymanager = new LibraryManager();

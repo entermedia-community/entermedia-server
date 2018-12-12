@@ -855,8 +855,9 @@ public class AssetEditModule extends BaseMediaModule
 	protected void createAssetsFromPages(List<ContentItem> inPages, WebPageRequest inReq)
 	{
 		final MediaArchive archive = getMediaArchive(inReq);
-		final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
-		
+		//final boolean createCategories = Boolean.parseBoolean( inReq.findValue("assetcreateuploadcategories"));
+		boolean assigncategory = archive.isCatalogSettingTrue("assigncategoryonupload");
+
 		final Map metadata = readMetaData(inReq,archive,"");
 		final String currentcollection = (String)metadata.get("collectionid");
 
@@ -878,14 +879,14 @@ public class AssetEditModule extends BaseMediaModule
 			{
 				public void run()
 				{
-					saveFilesAndImport(archive, currentcollection, createCategories, metadata, pages, user);
+					saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
 				}
 			};
 			manager.execute("importing",runthis);
 		}
 		else
 		{
-			Collection tracker = saveFilesAndImport(archive, currentcollection, createCategories, metadata, pages, user);
+			Collection tracker = saveFilesAndImport(archive, currentcollection, assigncategory, metadata, pages, user);
 			inReq.putPageValue("assets", tracker);
 		}
 	}

@@ -84,9 +84,9 @@ public class AssetUtilities //TODO: Rename to AssetManager
 
 	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, String sourcePath, User inUser)
 	{
-		boolean assigncategory = inArchive.isCatalogSettingTrue("assigncategoryonupload");
+		//boolean assigncategory = inArchive.isCatalogSettingTrue("assigncategoryoningest");
 
-		return populateAsset(asset, inContent, inArchive, assigncategory, sourcePath, inUser);
+		return populateAsset(asset, inContent, inArchive, true, sourcePath, inUser);
 	}
 
 	public Asset populateAsset(Asset asset, ContentItem inContent, final MediaArchive inArchive, boolean inCludeCategories, String sourcePath, User inUser)
