@@ -21,7 +21,9 @@ public class EventLogger implements WebEventListener
 		for (Iterator iterator = inEvent.keySet().iterator(); iterator
 				.hasNext();) {
 			String key = (String) iterator.next();
-			entry.setValue(key, inEvent.get(key));
+			if(!"id".equals(key)) {
+				entry.setValue(key, inEvent.get(key));
+			}
 		}
 		entry.setValue("date", inEvent.getDate());
 		searcher.saveData(entry, null);
