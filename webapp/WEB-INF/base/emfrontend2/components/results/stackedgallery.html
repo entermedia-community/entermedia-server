@@ -60,7 +60,7 @@ $context.putPageValue("showtoolbar", "false")
 		</div>
         #set ( $count = $count + 1)
     #end
-    <div class="clearfix"></div>
+    
 </div>	
 #end
 #if ( $hits.totalPages == 0 )
@@ -68,5 +68,6 @@ $context.putPageValue("showtoolbar", "false")
 	[[No results found.]]
 	</p>
 #end
+<div class="clearfix"></div>
 </div>
 

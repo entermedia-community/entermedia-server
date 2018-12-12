@@ -1389,6 +1389,7 @@ var resizecolumns = function() {
 	var columnsheight = $("body").height() - allheights;
 	
 	$(".cols-main").each(function(){
+		console.log($(this));
 		var thisheight = $(this).height();
 		if ($(this).children(0)	&& $(this).children(0).hasClass("sidebar-inner")) {
 			thisheight = $(this).children(0).height();
@@ -1398,11 +1399,11 @@ var resizecolumns = function() {
 			columnsheight = thisheight;
 		}
 	});
-	$(".col-main").css("min-height", columnsheight);
+	$(".col-main").css("height", columnsheight);
 	
 	if ($(".results-header").height()) {
 		var resultsheader = $(".results-header").height();
-		$(".col-content-main").css("min-height", columnsheight + resultsheader);
+		$(".col-content-main").css("height", columnsheight + resultsheader + "px");
 	}
 	
 }

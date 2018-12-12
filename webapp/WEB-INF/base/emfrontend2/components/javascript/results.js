@@ -793,7 +793,7 @@ checkScroll = function()
 
 gridResize = function() 
 {
-	//console.log("resized grid");
+	console.log("resized grid");
 	var grid = $(".masonry-grid");
 	if( grid.length == 0 )
 	{
