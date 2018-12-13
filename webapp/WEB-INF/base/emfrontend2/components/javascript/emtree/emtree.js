@@ -95,14 +95,22 @@ $(document).ready(function()
 		
 		var depth = node.data('depth');
 		
-		//window.location.hash = "category-"+nodeid;
-		var url = document.location.href;
-		url = url + "?category-"+nodeid;
-		
 		///views/modules/assets/categorysearch.html?selectedcategory=AWdglYgKAPC6HdjLzP_x&nodeID=AWdglYgKAPC6HdjLzP_x
 		//collection view?
 		
-		history.pushState({}, null, url);
+		var reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
+		
+		var collectionid = $("#collectiontoplevel").data("collectionid");
+		if( collectionid )
+		{
+			reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid;
+		}
+		var hitssessionid = $('#resultsdiv').data('hitssessionid');
+		if( hitssessionid )
+		{
+			reloadurl = reloadurl + "&hitssessionid=" + hitssessionid;
+		}
+		history.pushState({}, null, reloadurl);
 		
 		jQuery.get(prefix + nodeid + postfix,
 				{

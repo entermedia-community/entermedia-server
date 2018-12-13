@@ -48,7 +48,28 @@ public class MediaSearchModule extends BaseMediaModule
 			tracker.getSearchQuery().setProperty("categoryid", catid);
 		}
 	}
-
+	public void showCategory(WebPageRequest inReq) throws Exception
+	{
+		//Look for a hitsessionid and make sure this category is in there
+		MediaArchive archive = getMediaArchive(inReq);
+		Category category = archive.getCategory(inReq);
+		inReq.putPageValue("category",category);
+		inReq.putPageValue("selectedcategory",category);
+		
+		HitTracker hits = archive.getAssetSearcher().loadHits(inReq);
+		if (hits == null)
+		{
+			hits = archive.getAssetSearcher().searchCategories(inReq, category);
+			hits.getSearchQuery().setProperty("userinputsearch", "true"); //So it caches
+		}
+		else if( hits.getSearchQuery().getDetail("category") == null)
+		{
+			hits.getSearchQuery().addExact("category",category.getId());
+			hits.invalidate();
+			hits = archive.getAssetSearcher().cachedSearch(inReq, hits.getSearchQuery());
+		}
+		
+	}
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
