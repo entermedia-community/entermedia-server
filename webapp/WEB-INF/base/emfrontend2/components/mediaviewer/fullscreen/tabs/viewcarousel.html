@@ -8,7 +8,7 @@
 				    	#set  ( $ismultimode = false)     
 				    #end
 				#set( $selectedindex = 1)
-				$dialoghis.setPage($dialoghits.pageOfId($asset.id))
+				$!dialoghis.setPage($dialoghits.pageOfId($asset.id))
 				#foreach($hit in $dialoghits.getPageOfHits())
 					#set( $count = $dialoghits.getPage()+-1 )
 					#set( $count = $count*$dialoghits.getHitsPerPage() )	
