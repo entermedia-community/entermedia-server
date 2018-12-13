@@ -1,44 +1,60 @@
 #if( $librarycol )
 <div class="collection-container">
-<div id="collectiontoplevel" class="results-header" data-collectionid='$librarycol.getId()' data-catalogid='$catalogid'>
 
-	<div class="results-header-left float-md-left collectioncrumbs">
-		#if(!$canforcebasiccollections)
-			$pages.include("$apphome/components/categories/crumbs.html?categoryid=$librarycol.rootcategory")
-		#end
+<div class="collection-header">
+
+	<div class="collection-header-back">
+		<a href="$home$apphome" title="[[Collections]]"><i class="fas fa-chevron-left"></i></a>
 	</div>
-	<div class="results-header-tabs float-md-right">
-		#if(!$canforcebasiccollections)
-		<ul class="ui-tabs-nav nav pull-right emtabs" data-defaulttab="$content.defaulttab" data-targetdiv="collection-tab-content" >
-		  <li class="ui-corner-top"><a id="mediatab" data-layouts="2" data-alwaysreloadpage="true"   href="$apphome/views/modules/librarycollection/media/${librarycol.getId()}.html" >[[Assets]]</a></li>
-			#if( $caneditdata && $canimportworkspace )
-				<li class="ui-corner-top"><a id="publishtab" data-layouts="1" data-allwaysloadpage="true"   href="$apphome/views/modules/librarycollection/publish.html?collectionid=${librarycol.getId()}" >[[Revisions]]</a></li>
-		  	#end
-			## #if( $caneditdata || $librarycol.isVisibility("2") )
-			##	  #if($canviewupload || $canimportworkspace || $cancopycategory)
-			##		#if($librarycol.projectstatus != "finalized")		
-			##	  		<li class="ui-corner-top" ><a id="addmediatab"  data-allwaysloadpage="true"  href="$home$apphome/components/createmedia/start.html?collectionid=${librarycol.getId()}" >[[Add Media]]</a></li>
-			##		#end
-			##	  #end
-			## #end	  
-			#if($caneditdata && $cansharecollection)
-				  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
-				  <li class="ui-corner-top"><a  id="sharetab"  href="$link" >[[Followers]]</a></li>
-				   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
-				  <li class="ui-corner-top" ><a id="permissionstab" href="$link" >[[Permissions]]</a></li>
-		    #end
+	#set( $asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
+	
+	<div class="card card-mini card-collections">
+	 <div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+	</div>
+	
+	<div class="collection-header-name">
+	<h1>${librarycol}</h1>
+	</div>
+	
+	<div class="collection-header-actions">
+	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
+	<i class="fas fa-caret-down"></i></a>
+		<div class="dropdown-menu">
+			#if($caneditdata || $cansharecollection)
+			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" >[[Followers]]</a>
+			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" >[[Permissions]]</a>
+		   	#end
 			#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
-		  	<li class="ui-corner-top" ><a id="settingstab" data-allwaysloadpage="true"  href="$editlink" >[[Properties]]</a></li>
-		</ul>
-		#end
+		 	<a class="dropdown-item emdialog" id="settingstab" data-allwaysloadpage="true"  href="$editlink" >[[Properties]]</a>
+		</div>
 	</div>
-	<div class="clearfix"></div>
+	
 </div>
-<div  id="collection-tab-content" class="colletion-content">
-		<div class="tab-pane" id="loadedpanel" >
-	  		$pages.includeContent()
-	  	</div>
+
+
+<div id="filteredresults">
+#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
+#set( $module = $content.module)
+
+<div class="cols-main #if ($module) cols-$module #end" id="searchlayout">
+	<div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end" id="col-left">
+		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
+	</div>
+	<div class="col-main col-content-main #if ($leftbarstatus!=false) leftopen #end #if ($filtersbarstatus!=false) filtersopen #end " id="maincontent">
+	    	$pages.includeContent()
+	</div>
+	<div class="col-main col-filters #if($filtersbarstatus!=false) filtersopen #end" id="col-filters">
+		$pages.include("$apphome/components/filters/sidebar.html", $context)
+	</div>
 </div>
+</div>
+
+
+
 </div>
 #else
 $pages.includeContent()

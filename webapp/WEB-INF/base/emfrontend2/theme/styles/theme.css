@@ -256,7 +256,13 @@ tr.emborderhover td,
 {
 	background-color: #c9e8f2;
 }
-
+.dropdown-item:focus, .dropdown-item:hover {
+    color: #333;
+    background-color: #ccc;
+}
+.dropdown-noarrow:after {
+	border:0 none;
+}
 
 
 /*Bootsrap Overwrites*/
@@ -954,10 +960,10 @@ html, body, #application {
 	background-color:#D5D5D5;
 	text-align:center;
 	height: 45px;
-	padding:10px;
+	
 	 margin-left: auto;
   margin-right: auto;
-  border-bottom: 1px solid #999;
+
 }
 
 
@@ -1861,7 +1867,7 @@ td.checkbox input, th.firstheader input {
 .results-header-tabs { padding:18px 5px 0 0;}
 .results-header-tabs .emtabs li { margin-bottom:-1px;}
 
-.publishtabcontainer { padding: 20px; border-top:1px solid #efefef;}
+
 
 .results-header  .opencollection-btn {
 	margin-left:10px;
@@ -1874,7 +1880,71 @@ td.checkbox input, th.firstheader input {
 	background-color: #dae0e5;
 	}
 
+.collection-header {
+	background-color: #d5d5d5;
+	padding:10px;
+	height: 80px;
+	z-index:3;
+}
+.collection-header .card-collections {
+	background: none;
+	float:left;
+	width:65px;
+	margin:0 10px 0 10px;
+}
+.collection-header .card-collections-thumb {
+	width:60px; 
+	height:60px; 
+	margin:0 auto;
+	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.4);
+    border: 1px solid #aaa;
+    border-radius: 50%;
+}
+.collection-header-name {
+	float:left;
+	padding:10px;
+	max-width:400px;
+	overflow: hidden; 
+	text-overflow: ellipsis;
+    
+    white-space: nowrap;
+    
+}
+.collection-header-name h1{
+	font-size: 2rem;
 
+	}
+.collection-header-actions {
+	float:left;
+	padding:15px 10px 0 10px;
+	font-size:1.3rem;
+}
+.collection-header-back {
+	float:left;
+	padding:15px 10px 0 10px;
+	font-size:1.3rem;
+}
+.collection-container .filtered {
+	position:absolute;
+	top:-40px;
+	left:0;
+	right:0;
+	background: none;
+	z-index:2;
+	width:600px;
+	word-wrap:break-word;
+}	
+.collection-container .col-left,
+.collection-container .col-filters {
+	top:0;
+	margin-top:0;
+}
+.emsubnav {
+	border-top:1px solid #999;
+} 
+	
+	
+	
 /*Upload*/
 .col-upload-option { width:240px; text-align:center; background-color:#efefef; margin:0 0 5px 5px;}
 

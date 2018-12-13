@@ -4,4 +4,6 @@
 			<idname>collectionid</idname>
 			<searchtype>librarycollection</searchtype>
     </page-action>
+    
+    <inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
 </page>
