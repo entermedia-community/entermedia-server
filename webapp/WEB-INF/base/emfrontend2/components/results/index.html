@@ -1,3 +1,7 @@
+<div id="emresultscontent" >
+
+$pages.include("$apphome/components/filters/filters-selected.html", $context)
+
 #set ($resultview = $userprofile.get('resultview'))
 #if (!$resultview || $resultview == 'table')
 	$context.putPageValue("showhover", "false")
@@ -14,9 +18,9 @@
 	$context.putPageValue("showcaption", "true")
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
-	<div id="emresultscontent">
+	
 	$pages.include("$apphome/components/results/hierarchy.html", $context)
-	</div>
+	
 #elseif ($resultview == "stackedgallery")
 	$context.putPageValue("showcaption", false)
 	$context.putPageValue("showhover", "false")
@@ -24,9 +28,9 @@
 	$context.putPageValue("showcaption", "false")
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
-	<div id="emresultscontent">
+	
 	$pages.include("$apphome/components/results/stackedgallery.html", $context)
-	</div>	
+		
 #elseif ($resultview == "map")
 	$context.putPageValue("showcaption", false)
 	$context.putPageValue("showhover", "false")
@@ -34,11 +38,9 @@
 	$context.putPageValue("showcaption", "false")
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
-	<div id="emresultscontent">
+	
 	$pages.include("$apphome/components/results/map.html", $context)
-	</div>	
-
-
+	
 
 #else
 	$context.putPageValue("showcaption", true)
@@ -47,8 +49,9 @@
 	$context.putPageValue("showcaption", "true")
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", "false" )
-	<div id="emresultscontent" >
+	
 	$pages.include("$apphome/components/results/gallery.html", $context)
-	</div>
+	
 #end
-<div class="clearfix"></div>
+
+</div>	

@@ -506,8 +506,10 @@ html, body, #application {
 	/*height: 100%;*/
 	
 }
-.cols-main {
+.cols-main,
+.results-header {
 	position:relative;
+	background-color: #d5d5d5;
 }
 .col-main {
 	min-height: 800px;
@@ -561,7 +563,7 @@ html, body, #application {
     width: 0; 
     position: absolute; 
     /*z-index: 1;*/ 
-    top: 0; 
+    top: 45px; 
     left: 0;
     background-color: #fff; 
     overflow-x: hidden; 
@@ -575,7 +577,7 @@ html, body, #application {
     width: 0; 
     position: absolute; 
     /*z-index: 1;*/ 
-    top: 0; 
+    top: 45px; 
     right: 0;
     background-color: #111; 
     transition: 0.2s;
@@ -639,10 +641,10 @@ html, body, #application {
 .col-left .emtree {
 	background-color: #fff;
 }
-.advfilterpanel { padding-top:1px;}
+.advfilterpanel { padding-top:1px; position:relative;}
 .filters-edit-icon {
-	float: right;
-	padding:5px;
+	text-align:right;
+	padding:5px 5px 0;
 }
 
 .filters-edit-icon a {
@@ -876,7 +878,7 @@ html, body, #application {
 	
 }
 .ui-draggable-dragging {
-	opacity: 0.9;
+	opacity: 0.8;
 	border: 0 none!important;
 }
 

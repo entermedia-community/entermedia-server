@@ -652,7 +652,6 @@ onloadselectors = function()
 									cloned.append('<div class="dragcount emnotify">+' + n + '</div>');
 								 
 							 }
-							
 							return cloned;
 						}
 						,
@@ -688,7 +687,7 @@ onloadselectors = function()
 							 var n = $("input.selectionbox:checked").length;
 							 if( n > 1 )
 							 {
-									cloned.append('<div class="dragcount">+' + n + '</div>');
+									cloned.append('<div class="dragcount emnotify">+' + n + '</div>');
 								 
 							 }
 							

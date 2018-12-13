@@ -38,10 +38,10 @@ $context.putPageValue("showtoolbar", "false")
         #set($assetheight = $mediaarchive.getRealImageHeight($hit))
         #set($click = "$home$viewerlink?hitssessionid=${hits.getSessionId()}&assetid=${hit.id}")
         
-		<div class="float-left masonry-grid-cell stackedplayer-cell" id="gallerycell_${hit.id}"
+		<div class="float-left masonry-grid-cell stackedplayer-cell assetdraggable" id="gallerycell_${hit.id}"
 			 data-assetid="$hit.id" data-width="$assetwidth" data-height="$assetheight">
-		    	<a class="stackedplayer imagearea" id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
-		    	    <div class="grid-thumbimage assetdraggable">
+		    	<a class="stackedplayer imagearea " id="clickid${hit.id}"  data-assetid="$hit.id" href="#">
+		    	    <div class="grid-thumbimage " data-assetid="$hit.id">
 		    	    	#if(!$type || $type =="audio")
 		    	    		#set( $type = "mime" )
 		    	    	#elseif( $type =="video")

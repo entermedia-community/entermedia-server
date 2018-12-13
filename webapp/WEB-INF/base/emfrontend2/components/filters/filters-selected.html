@@ -4,7 +4,7 @@
 #end
 ##TODO Loop over the view and show them here if they match
 
-#if( $category )
+#if( !$librarycol &&  $category )
 	<a
 	href="$home$apphome/views/modules/asset/index.html"
 	class="badge badge-light">$category <i class="fas fa-times"></i></a>
