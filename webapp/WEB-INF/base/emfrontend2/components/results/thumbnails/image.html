@@ -37,7 +37,7 @@
 	
 	#set($tpath = $mediaarchive.asLinkToPreview($hit, $imagesize))
 	<div class="thumbimagecontainer">
-		<img class="imagethumb assetdragdrop assetdraggable img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="$hit.name"
+		<img class="imagethumb img-fluid" sourcepath="$sourcepath" catalogid="$catalogid" assetid="$hit.id" alt="" title="$hit.name"
 		draggable="true"  data-sourcepath="$sourcepath" data-name="$hit.name" 		
 		src="$tpath" border="0" />
 	</div>	
