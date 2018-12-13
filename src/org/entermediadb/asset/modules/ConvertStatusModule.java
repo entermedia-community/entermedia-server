@@ -111,10 +111,6 @@ public class ConvertStatusModule extends BaseMediaModule
 		//TODO: should do some scaling math based on the input file it selects and the numbers we got so there is no loss in quality
 		
 		
-		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
-			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getPath() + "/image1024x768.jpg");
-			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
-		}
 		
 		String hasheight = instructions.get("cropheight");
 		if(hasheight != null && (instructions.getMaxScaledSize().getHeight() > 768 || instructions.getMaxScaledSize().getWidth() > 1024)) {
@@ -157,6 +153,10 @@ public class ConvertStatusModule extends BaseMediaModule
 			
 			
 			
+		}
+		if("image1024x768.jpg".equals(preset.get("generatedoutputfile"))){
+			Page s1024 = getPageManager().getPage("/WEB-INF/data/" + archive.getCatalogId()	+ "/generated/" + asset.getPath() + "/image1024x768.jpg");
+			instructions.setInputFile(s1024.getContentItem());//So it doesn't go back to the original when cropping 
 		}
 		
 		
