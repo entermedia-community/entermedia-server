@@ -14,7 +14,7 @@
 #set($viewid = $context.getRequestParameter("viewid"))
 
 #set( $args = "parentid=$asset.id&assetid=$asset.id&catalogid=$mediaarchive.getCatalogId()&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&listid=$!listid&listexternalid=$!listexternalid&permissionname=$permissionname&view=$view")
-#set( $args = "$args&selectlink=$home$content.searchhome/editor/converthistory/index.html")
+#set( $args = "$args&selectlink=$home$apphome/views/modules/asset/editor/converthistory/index.html")
 
 $pages.include("$apphome/components/detaileditor/generictable.html?$args", $context)
   
