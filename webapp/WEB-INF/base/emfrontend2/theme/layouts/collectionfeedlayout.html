@@ -1,5 +1,5 @@
 #if( $librarycol )
-<div class="collection-container">
+<div id="filteredresults" class="collection-container">
 
 <div class="collection-header">
 
@@ -35,7 +35,8 @@
 </div>
 
 
-<div id="filteredresults">
+
+<div>
 #set( $leftbarstatus = $userprofile.get("leftbarstatus"))
 #set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
 #set( $module = $content.module)
@@ -52,7 +53,6 @@
 	</div>
 </div>
 </div>
-
 
 
 </div>

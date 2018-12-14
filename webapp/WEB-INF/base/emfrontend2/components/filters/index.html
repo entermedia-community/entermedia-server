@@ -25,13 +25,13 @@
 	
 	<form  name="filterform" id="filterform" class="autosubmitform em-widget-content ajaxform" data-targetdiv="filteredresults" method="POST"  
 	#if( $librarycol)
-		data-oemaxlevel="3" 
-		action="$home$apphome/views/modules/librarycollection/search.html" >
+		data-oemaxlevel="2" 
+		action="$home$apphome/views/modules/librarycollection/search.html" 
 	#else
 		data-oemaxlevel="2" 
-		action="$home$apphome/views/search/search.html" >
+		action="$home$apphome/views/search/search.html" 
 	#end
-		
+	>
 	#if( $librarycol)
 		<input name="collectionid" type="hidden" value="$librarycol.getId()">
 	#end
