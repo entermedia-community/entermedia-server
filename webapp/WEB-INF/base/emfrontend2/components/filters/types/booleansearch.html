@@ -1,0 +1,28 @@
+
+#if($filternode)
+	#set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )
+	#ifnull($viewpermission)
+		#set( $viewpermission = true)
+	#end
+	
+	#if( $viewpermission )
+		#set( $fieldname = $detail.getId() )
+		#set($entry = $filternode.children[1])
+		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
+		<input type="radio" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+		<label for="$entry.getId()${fieldname}_val"> [[Yes]] </label>
+		</a>
+		#set($entry = $filternode.children[0])
+		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
+		<input type="radio" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
+		<label for="$entry.getId()${fieldname}_val"> [[No]] </label>
+		</a>
+		
+
+		
+	#end  ##permission
+#end 
+
+
+
+	

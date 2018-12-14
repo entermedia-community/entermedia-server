@@ -23,6 +23,12 @@
 		#if( $foreach.count > 1) or #end
 		#if($term.getDetail().isList())
 			$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
+		#elseif($term.getDetail().isBoolean())
+			#if($term.getValue() == 1)
+				[[Yes]]
+			#else
+				[[No]]
+			#end
 		#else
 			$term.getValue()
 		#end 
