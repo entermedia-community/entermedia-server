@@ -8,14 +8,14 @@
 	#if( $viewpermission )
 		#set( $fieldname = $detail.getId() )
 		#set($entry = $filternode.children[1])
-		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-		<input type="radio" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
-		<label for="$entry.getId()${fieldname}_val"> [[Yes]] </label>
+		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="true" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
+		<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="true" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"true") ) checked #end />
+		<label for="$entry.getId()${fieldname}_val"> [[True]] </label>
 		</a>
 		#set($entry = $filternode.children[0])
-		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="$entry.getId()" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
-		<input type="radio" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="$entry.getId()" #if( $hits.getSearchQuery().hasTermValue($filternode.id,$entry.getId()) ) checked #end />
-		<label for="$entry.getId()${fieldname}_val"> [[No]] </label>
+		<a class="addfilter #if ($first) filter-current #end radiofilter" data-filtertype="$filternode.getId()" data-filtervalue="false" data-filterlabel="$entry.getText($context)" href="#" title="($entry.count)">
+		<input type="checkbox" name="${fieldname}.value" id="$entry.getId()${fieldname}_val" value="false" #if( $hits.getSearchQuery().hasTermValue($filternode.id,"false") ) checked #end />
+		<label for="$entry.getId()${fieldname}_val"> [[False]] </label>
 		</a>
 		
 

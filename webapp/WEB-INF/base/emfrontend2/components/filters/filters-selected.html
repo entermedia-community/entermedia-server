@@ -24,10 +24,10 @@
 		#if($term.getDetail().isList())
 			$context.getText( $mediaarchive.getData($term.getDetail().getListId(),$val) )
 		#elseif($term.getDetail().isBoolean())
-			#if($term.getValue() == 1)
-				[[Yes]]
+			#if($term.getValue() == "true")
+				[[True]]
 			#else
-				[[No]]
+				[[False]]
 			#end
 		#else
 			$term.getValue()
