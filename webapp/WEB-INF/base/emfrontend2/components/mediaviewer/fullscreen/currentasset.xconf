@@ -4,5 +4,6 @@
 		<property name="hitsname">dialoghits</property>
 	</path-action>
 	<path-action name="MediaArchiveModule.getAssetAndPage"  />
+	<path-action name="ProjectModule.listConnectedDesktop"/>
 
 </page>

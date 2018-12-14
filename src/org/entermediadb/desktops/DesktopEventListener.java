@@ -2,6 +2,7 @@ package org.entermediadb.desktops;
 
 import java.util.Map;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
 
@@ -18,6 +19,8 @@ public interface DesktopEventListener
 	public void downloadFolders(MediaArchive inArchive,LibraryCollection inCollection, Map inRoot);
 
 	public void replacedWithNewDesktop(Desktop inDesktop);
+
+	public void openAsset(MediaArchive inArchive, Asset inAsset);
 	
 
 }

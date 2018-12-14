@@ -5,17 +5,15 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
 import org.openedit.ModuleManager;
-import org.openedit.MultiValued;
-import org.openedit.hittracker.HitTracker;
 
 public class Desktop
 {
@@ -218,5 +216,12 @@ public class Desktop
 	public void replacedWithNewDesktop(Desktop inDesktop)
 	{
 		getDesktopListener().replacedWithNewDesktop(inDesktop);
+	}
+
+	public void openFile(MediaArchive inArchive, String inAssetid)
+	{
+		Asset asset = inArchive.getAsset(inAssetid);
+		getDesktopListener().openAsset(inArchive, asset);
+		
 	}
 }

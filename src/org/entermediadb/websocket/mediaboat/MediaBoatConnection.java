@@ -14,6 +14,7 @@ import javax.websocket.Session;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.desktops.Desktop;
 import org.entermediadb.desktops.DesktopEventListener;
@@ -344,6 +345,31 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 	}
 
 	
+	public void openAsset(MediaArchive inArchive, Asset inAsset)
+	{
+		JSONObject command = new JSONObject();
+		command.put("command", "openasset");
+		command.put("catalogid",inArchive.getCatalogId());
+		command.put("mediadbid",inArchive.getMediaDbId());
+		command.put("assetid",inAsset.getId());
+		command.put("filename",inAsset.getName());
+
+		long time = inAsset.getDate("assetmodificationdate").getTime();
+		if (time > 0)
+		{
+			command.put("assetmodificationdate", String.valueOf(time));
+		}
+
+		String urlroot = inArchive.asLinkToOriginal(inAsset);
+		command.put("url",urlroot);
+
+		sendMessage(command);
+	}
+	
+	
+	
+	
+	
 	@Override
 	public void importFiles(MediaArchive inArchive,LibraryCollection inCollection,String path) {
 		JSONObject command = new JSONObject();
@@ -356,6 +382,8 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		sendMessage(command);
 		
 	}
+	
+	
 
 	public void uploadFile(String inPath, Map inVariables)
 	{
@@ -383,5 +411,7 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 		sendMessage(command);
 
 	}
+
+	
 
 }

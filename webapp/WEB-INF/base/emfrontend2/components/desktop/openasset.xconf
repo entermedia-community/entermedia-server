@@ -1,0 +1,6 @@
+<page>
+	<path-action name="ProjectModule.desktopOpenAsset"/>
+
+   
+	<inner-layout>${themeprefix}/layouts/dialoglayout.html</inner-layout>	
+</page>

@@ -1136,6 +1136,21 @@ Server ProjectModule.uploadFile
 		
 	}
 	
+	
+	public void desktopOpenAsset(WebPageRequest inReq)
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		String assetid = inReq.getRequestParameter("assetid");
+		ProjectManager manager = getProjectManager(inReq);
+
+		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+		desktop.openFile(archive, assetid);
+		
+	}
+	
+	
+	
+	
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);

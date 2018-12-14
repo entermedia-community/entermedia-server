@@ -103,6 +103,18 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
 				
 			</li>
+			#if( $desktop )
+<li id="desktoptools" class="footermenu" >
+	<a targetdiv="nowhere" href="$home$apphome/components/desktop/openasset.html?assetid=$asset.id" class="ajax " title="Launch File Locally" data-hidefooter="true" >
+		[[Open File Locally]]
+		#if( $desktop.isBusy())<img src="$apphome/components/javascript/upload/jquery-file-upload/img/loading.gif" width="20" />#end</a>
+</li>
+#end
+
+
+			
+			
+			
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
 				<a class="expandmenu assetpreview assettab" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html"
