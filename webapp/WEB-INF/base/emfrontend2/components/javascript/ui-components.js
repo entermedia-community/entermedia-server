@@ -40,11 +40,8 @@ uiload = function() {
 		browserlanguage = "en";
 	}
 	
-	
-	
 	if ($.datepicker) {
 		lQuery("input.datepicker").livequery(function() {
-			console.log(themeprefix);
 			$.datepicker.setDefaults( $.datepicker.regional[browserlanguage] );
 			$.datepicker.setDefaults($.extend({
 				showOn : 'button',
@@ -1387,9 +1384,8 @@ var resizecolumns = function() {
 	}
 	
 	var columnsheight = $("body").height() - allheights;
-	
-	$(".cols-main").each(function(){
-		console.log($(this));
+	var sidebartop = 0;
+	$(".col-main").each(function(){
 		var thisheight = $(this).height();
 		if ($(this).children(0)	&& $(this).children(0).hasClass("sidebar-inner")) {
 			thisheight = $(this).children(0).height();
@@ -1398,12 +1394,12 @@ var resizecolumns = function() {
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
 		}
+		sidebartop = parseInt($(this).css("top"));
 	});
 	$(".col-main").css("height", columnsheight);
 	
-	if ($(".results-header").height()) {
-		var resultsheader = $(".results-header").height();
-		$(".col-content-main").css("height", columnsheight + resultsheader + "px");
+	if (sidebartop>0) {
+		$(".col-content-main").css("height", columnsheight + sidebartop + "px");
 	}
 	
 }

@@ -1123,14 +1123,18 @@ emcomponents = function() {
 				var target = $(this).data("target");
 				toggleUserProperty("minimize" + target,
 					function() {
-						$("#" + target).slideToggle("fast");
+						$("#" + target).slideToggle("fast",function(){
+							$(window).trigger( "resize" );
+						});
 						div.toggleClass("expanded");
 						div.toggleClass("minimized");
 						div.find(".caret").toggleClass("fa-caret-right");
 						div.find(".caret").toggleClass("fa-caret-down");
 						div.find(".component-actions").toggle();
+						
 					}
 				);
+				
 			}
 	);
 	

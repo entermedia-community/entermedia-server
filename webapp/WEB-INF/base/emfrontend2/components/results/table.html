@@ -52,9 +52,10 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 </div>
 </div>	
-<p class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</p>
-
+<div class="clearfix"></div>
+<div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
 $pages.include("$apphome/components/results/pages.html",$context)
+<div class="clearfix"></div>
 #else
 <p class="info" style="margin: 20px;">[[No results found]]</p>
 #end

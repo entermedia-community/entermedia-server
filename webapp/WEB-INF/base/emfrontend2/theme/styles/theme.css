@@ -543,6 +543,7 @@ html, body, #application {
 .col-content-main {
 	transition: 0.2s;
 	margin:0;
+	
 }
 .col-content-main.leftopen {
 	margin-left:220px;
