@@ -3903,7 +3903,7 @@ div#folders.add .folder {
 
 
 
-.settings-table { border-bottom: 1px solid #6663;}
+.settings-table { border: 1px solid #6663;}
 .settings-table td { padding:3px 5px;}
 .settings-table .form-control,
 .settings-table .select2-search__field { 

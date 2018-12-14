@@ -1,24 +1,3 @@
 #set( $editlink = "$apphome/views/modules/librarycollection/edit/index.html?id=${librarycol.getId()}&viewid=librarycollectiongeneral&viewpath=librarycollection/librarycollectiongeneral&searchtype=librarycollection")
-
 $pages.include($editlink)
 
-#if( !$librarycol.isVisibility("3") )
-
-$pages.include("$apphome/views/modules/librarycollection/sharelinks.html", $context)
-
-#end
-
-#if( $caneditdata && $canviewsettings)
-
-
-		<p>$librarycol.getCategory().getCategoryPath() </p>
-		#set( $mediadbappid = $mediaarchive.getMediaDbId() )
-		
-		#if( $exists )
-		
-		#else
-			<a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html?subfolder=$librarycol.getCategory().getCategoryPath()">[[Create Hotfolder]]</a>
-	#end
-
-
-#end

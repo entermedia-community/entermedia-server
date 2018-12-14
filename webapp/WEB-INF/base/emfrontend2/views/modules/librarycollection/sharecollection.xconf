@@ -1,0 +1,9 @@
+<page>
+    <page-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<idname>collectionid</idname>
+			<searchtype>librarycollection</searchtype>
+    </page-action>
+    
+    <inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+</page>
