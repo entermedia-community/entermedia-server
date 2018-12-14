@@ -353,7 +353,13 @@ h3 {
 .dropdown-submenu {
   position: relative;
 }
-
+.dropdown-item {
+	padding:.25rem 1rem;
+}
+.dropdown-item-icon {
+	padding-right:5px;
+	font-size:.80em;
+}
 .dropdown-submenu a::after {
   transform: rotate(-90deg);
   position: absolute;
