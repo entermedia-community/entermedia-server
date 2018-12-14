@@ -108,27 +108,31 @@ $!webtree.getTreeRenderer().selectNodes($selectednodes)
 #if($caneditcategorytree || $editcategories)
 <div id="${treename}contextMenu" class="dropdown clearfix treecontext"  data-treename="$treename">
     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-#if( $editable )
-      <li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Create Category]]</a></li>
-      <li><a id="renamenode" tabindex="-1" href="#" class="dropdown-item">[[Rename]]</a></li>
-      <li><a id="deletenode" tabindex="-1" href="#" class="dropdown-item">[[Delete]]</a></li>
-      #if($canaddnewcollection)
-      <li><a id="createcollection" tabindex="-1" href="#" class="dropdown-item">[[Create Collection]]</a></li>
-      #end
-#end      
+    #if( $editable )
+    	<li><a id="createnode" tabindex="-1" href="#" class="dropdown-item">[[Add Child]]</a></li>
+    #end
+    #if( $canviewupload)
+      	
+      	<li><a id="" tabindex="-1" href="$apphome/views/upload/create/createnewstart.html" data-cancelsubmit="false" class="dropdown-item emdialog">[[Upload]]</a></li>
+      	<li class="divider"></li>
+    #end
+	#if( $editable )
+		#if($canaddnewcollection)
+      		<li><a id="createcollection" tabindex="-1" href="#" class="dropdown-item">[[Create Collection]]</a></li>
+      		<li class="divider"></li>
+    	#end
+      	
+      	<li><a id="renamenode" tabindex="-1" href="#" class="dropdown-item">[[Rename]]</a></li>
+      	<li><a id="deletenode" tabindex="-1" href="#" class="dropdown-item">[[Delete]]</a></li>
+      	
+	#end      
       <li><a id="nodeproperties" tabindex="-1" href="#" class="dropdown-item">[[Properties]]</a></li>
       
-      #if( $canviewupload)
-      <li class="divider"></li>
-      <li><a id="" tabindex="-1" href="$apphome/views/upload/create/createnewstart.html" data-cancelsubmit="false" class="dropdown-item emdialog">[[Add Media]]</a></li>
-      #end
+      
 ##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Copy]]</a></li>
 ##      <li><a tabindex="-1" href="#" class="dropdown-item">[[Cut]]</a></li>      
 ##      <li><a tabindex="-1" href="#" class="dropdown-item" style="enabled:false">[[Paste]]</a></li>
     </ul>
-   #if($canaddnewcollection)
-		<a id="collectionidaddbycategory" href="$home$apphome/components/libraries/pickcollectionaddnew.html?searchtype=librarycollection&targetdiv=collectionpicker" title="[[Add Collection]]" class="emdialog" style="display:none" >[[add]]</a>
-	#end
   </div>
   #end
 

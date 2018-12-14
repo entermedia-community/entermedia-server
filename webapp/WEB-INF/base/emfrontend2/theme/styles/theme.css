@@ -1237,7 +1237,9 @@ td.checkbox input, th.firstheader input {
 	display:block;
 }
 
-
+.treecontext .divider {
+	border-bottom:1px solid #ddd;
+}
 
 
 

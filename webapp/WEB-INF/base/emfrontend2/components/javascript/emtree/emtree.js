@@ -328,15 +328,19 @@ function getPosition(e) {
 
   if (!e) var e = window.event;
 
-  if (e.pageX || e.pageY) {
-    posx = e.pageX;
-    posy = e.pageY;
-  } else if (e.clientX || e.clientY) {
-    posx = e.clientX + document.body.scrollLeft + 
+  if (e.clientX || e.clientY) {
+   /* posx = e.clientX + document.body.scrollLeft + 
                        document.documentElement.scrollLeft;
     posy = e.clientY + document.body.scrollTop + 
                        document.documentElement.scrollTop;
+                       */
+	  posx = e.clientX;
+	  posy = e.clientY;
   }
+  else if (e.pageX || e.pageY) {
+	    posx = e.pageX;
+	    posy = e.pageY;
+	  } 
 
   return {
     x: posx,
@@ -348,8 +352,10 @@ function getPosition(e) {
 	  	var noderow = item;
 	  //var noderow = $(this); // LI is the think that has context .find("> .noderow");
 	  	var pos = getPosition(e);
+	  	console.log(e);
 		var xPos = pos.x;
 		var yPos = pos.y - 10;
+		
 		$(".categorydroparea").removeClass('selected');
 		noderow.find("> .categorydroparea").addClass('selected'); //Keep it highlighted
 		var emtreediv = noderow.closest(".emtree");
