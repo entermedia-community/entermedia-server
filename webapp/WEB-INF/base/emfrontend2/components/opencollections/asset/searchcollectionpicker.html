@@ -1,0 +1,65 @@
+<div id="emcontainer">
+<div  id="search-collections" >
+	<div id="searcharea" >
+	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
+	$context.putPageValue("searcher",$searcher)
+	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
+
+#if( $hits && $hits.getSelectionSize() > 0)	
+	<div class="alert alert-info">
+  		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
+	</div>
+#elseif($assetid)	
+	
+#end	
+	<form id="colsearchform" class="ajaxform"  data-targetdiv="assetcollectionresults" 
+		action="$home$apphome/components/opencollections/asset/listassetcollections.html">
+	
+		<input type="hidden" name="searchtype" value="librarycollection" />
+		<input type="hidden" name="sortby" value="name" />
+		<input id="collectionid" type="hidden" name="collectionid" />
+		<input type="hidden" name="assetid" value="$asset.id" />
+		<table>
+		<tr>
+		<td width="100%">
+		<div  class="row inlinesearch" >
+		$context.putPageValue("autocomplete","off")
+			#foreach( $detail in $details)
+			<div class="col">
+					$context.putPageValue("detail", $detail)
+					$pages.include("/${applicationid}/components/advancedsearch/detaileditinline.html", $context)
+			</div>
+			#if( $counter == 4)
+				</div>
+				<div  class="row" >
+			#end	
+			#end
+		</div>	
+		</td>
+		#if($canaddnewcollection)
+		<td >
+			<a class="ajax btn btn-sm btn-primary" style="white-space: nowrap; margin:-10px 0 0 5px;" data-targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
+				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hits.sessionId">[[New Collection]]</a>
+		</td>
+		#end
+		</tr>
+		</table>
+	</form>
+	
+	
+	<div id="collectionresults">
+	$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
+	</div>
+	
+	</div>
+</div>	
+</div>
+<script>
+lQuery("#collectionresults .rowclick").livequery("click", function(e) {
+	$(this).closest(".modal").modal("hide");
+	var rowid = $(this).attr("rowid");
+	$("#collectionid").val(rowid);
+	$("#colsearchform").trigger("submit");
+
+});
+</script>

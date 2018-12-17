@@ -1,0 +1,24 @@
+<div id="assetcollectionresults">
+#set( $collections = $asset.getCollections())
+#if( $collections.size() > 0 )
+	<div class="asset-data-detail assetpanel-editor-box">
+	<h4>[[Collections]]
+	#if( $caneditassetcategories )
+	<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
+			   class="detail-edit-icon float-right  btn btn-xs emdialog"
+			   data-noesc="true"
+			   title="[[Add Collection]]"><i class="fas fa-plus"></i></a>
+	#end</h4>
+	<div class="emlist">
+		#foreach ($collection in $asset.getCollections())
+			<div  class="list-row">
+			 <a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="list-collection"><i class="fas fa-box"></i>$collection</a>
+			 #if( $caneditassetcategories )
+			 	<a class="ajax pull-right"  data-targetdiv="assetcollectionresults" href="$home$apphome/components/opencollections/asset/removeasset.html?assetid=$asset.id&collectionid=$collection.id">x</a>
+			 #end
+			 </div>
+		#end
+	</div>
+	</div>
+#end
+</div>

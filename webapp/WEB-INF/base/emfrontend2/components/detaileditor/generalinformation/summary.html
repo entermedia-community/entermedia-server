@@ -54,34 +54,17 @@ $context.putPageValue("showalllanguagevalues",true)
             				#end
     					</div>
     				</div>
-				#end						
-					#set( $collections = $asset.getCollections())
-					#if( $collections.size() > 0 )
-						<div class="asset-data-detail assetpanel-editor-box">
-						<h4>[[Collections]]
-						#if( $canaddnewcollection )
-						<a href="$home$apphome/components/opencollections/searchcollection.html?searchtype=asset&assetid=${asset.id}" 
-								   class="detail-edit-icon float-right  btn btn-xs emdialog"
-								   data-noesc="true"
-								   title="[[Edit Collections]]"><i class="fas fa-plus"></i></a>
-						#end</h4>
-						<div class="emlist">
-							#foreach ($collection in $asset.getCollections())
-								<div  class="list-row">
-								 <a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="list-collection"><i class="fas fa-box"></i>$collection</a>
-								 </div>
-							#end
-						</div>
-						</div>
-					#end
+				#end	
+					$pages.include("$apphome/components/opencollections/asset/listassetcollections.html",$context)
 					
 					<div class="asset-data-detail assetpanel-editor-box">
 					<h4>[[Categories]]
 					#if( $caneditassetcategories )
-					<a href="$home$apphome/components/opencollections/searchcollection.html?searchtype=asset&assetid=${asset.id}" 
-								   class="detail-edit-icon float-right btn btn-xs emdialog"
-								   data-noesc="true"
-								   title="[[Edit Categories]]"><i class="fas fa-plus"></i></a>
+					<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&amp;clearselection=&amp;action=/assets/emshare/components/xml/types/category.html&amp;detailid=category-exact" 
+					   class="detail-edit-icon float-right btn btn-xs emdialog"
+					   data-cancelsubmit="true" data-parameterdata="categoryvalues"
+					   data-noesc="true"
+					   title="[[Add Category]]"><i class="fas fa-plus"></i></a>
 					#end
 					</h4>
 					<div  id="cat-list" class="emlist">
