@@ -1,20 +1,23 @@
-<ul id="folders" class="fwlist">
+<ul id="modules" class="fwlist">
     
     #set ( $modules = $searcherManager.getList($catalogid, "module") )
    
         #foreach ( $module in $modules )
     <li>
-        <a href="$home$apphome/views/settings/modules/${module.id}/info/module-setup.html?id=$module.id&field=last_selected_module&last_selected_module.value=${module.id}" class="folder module">      <div class="name">      <div style="margin-top: 8px" class="alias" title="Alias">$module</div>            </div>        </a>
+        <div  class="module">
+        <a href="$home$apphome/views/settings/modules/${module.id}/info/module-setup.html?id=$module.id&field=last_selected_module&last_selected_module.value=${module.id}">
+              <div class="modules-name">      <div style="margin-top: 8px" class="alias" title="Alias">$module</div>            </div>        
+        </a>
        
         <div class="scan">
-             <a class="btn" href="$home$apphome/views/modules/${module.id}/index.html">Data</a>
+             <a class="btn btn-sm btn-primary" href="$home$apphome/views/modules/${module.id}/index.html">Data</a>
+        </div>
         </div>
     </li>
     #end
     
-    <li class="add">
-            <div class="folder module"></div>
-            <a class="btn right" href="$home$apphome/views/settings/modules/setup/add-new-module.html">Add Module</a>
+    <li class="add" style="padding:20px 0; text-align:right">
+            <a class="btn btn-sm btn-primary" href="$home$apphome/views/settings/modules/setup/add-new-module.html">[[Add Module]]</a>
     </li>
     
     <!-- 

@@ -3415,8 +3415,11 @@ span.drag-and-drop {
     height: 102px;
     position: relative;
 }
-#folders .folder.module {
+#modules .module {
     background: url('../images/module.png') 20px 8px no-repeat;
+    padding:20px 0 0 140px;
+    height: 102px;
+    position: relative;
 }
 #folders .folder a:hover {
 	text-decoration: none;
@@ -3424,7 +3427,8 @@ span.drag-and-drop {
 #folders .folder a:hover .alias {
 	text-decoration: underline;
 }
-#folders .alias {
+#folders .alias,
+#modules .alias {
 	font-weight: bold;
 	font-size:1.2rem;
 }
@@ -3562,7 +3566,8 @@ li.add {
 #folders .folder-header {
 	    background-color: #d5d5d5;
 }
-.folders-name {
+#folders .folders-name,
+#modules .modules-name {
 	float:left;
 }
 .folders-actions {
