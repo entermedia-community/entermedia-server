@@ -3411,13 +3411,25 @@ span.drag-and-drop {
 }
 #folders .folder {
     background: url('../images/folder.png') 15px 8px no-repeat;
-    width: 280px;
+    padding:20px 140px 0 0;
     height: 102px;
-    
     position: relative;
 }
 #folders .folder.module {
     background: url('../images/module.png') 20px 8px no-repeat;
+}
+#folders .folder a:hover {
+	text-decoration: none;
+}
+#folders .folder a:hover .alias {
+	text-decoration: underline;
+}
+#folders .alias {
+	font-weight: bold;
+	font-size:1.2rem;
+}
+#folders .path {
+	font-size: .9rem;
 }
 .cat-folder:after {
     content: '';
@@ -3447,13 +3459,6 @@ span.drag-and-drop {
     left: 135px;
     width: 300px;
     line-height: 1;
-}
-.cat-folder:hover .alias, .folder:hover .path {
-    color: #3DAACD;
-}
-.cat-folder {
-    /*
-    padding-right: 20px;*/
 }
 .cat-folder .alias {
     font-weight: bold;
@@ -3543,22 +3548,29 @@ span.drag-and-drop {
     background: url('../images/switch.png') 0 0 no-repeat;
 }
 li.add {
-    background-color: #fefaea !important;
+    border-bottom:0 none;
 }
 .add a {
     margin: 38px 20px 0 0;
 }
-div#folders .folder {
-    background-color: #f7f7f7;
-    border-bottom: 1px solid #ccc;
-   
-    width: 100%;
-}
-div#folders .path, div#folders .alias {
-    width: 100%;
-}
+#folders .folder {
 
-element.style {
+    border-bottom: 1px solid #ccc;
+    padding-left:140px;
+    width: 100%;
+}
+#folders .folder-header {
+	    background-color: #d5d5d5;
+}
+.folders-name {
+	float:left;
+}
+.folders-actions {
+	padding-top:30px;
+}
+.folders-name h3 {
+	margin:0;
+	padding-top:5px;
 }
 .fields .field {
     width: 300px;
@@ -3577,7 +3589,7 @@ form .field {
     border: 1px solid #CCC;
 }
 .fields {
-    margin: 30px 30px;
+    padding: 10px 30px 20px;
 }
 .fields .note + input.btn {
     margin-top: 20px;
@@ -3618,12 +3630,6 @@ form .field {
 }
 .fields .field.short {
     width: 300px;
-}
-#folders.add {
-    background: none;
-}
-div#folders.add .folder {
-    background-color: #fefaea;
 }
 .fields input[type="checkbox"] {
     margin: 20px 0 0 0;

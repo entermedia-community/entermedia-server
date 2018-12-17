@@ -1,9 +1,7 @@
 <div class="em-rounded" id="orderdialog">
 	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
 	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
-	#set($owner = $userManager.getUser($order.userid))
 	
-	<h3>Publish To Server</h3>
 	
 <form class="validate ajaxformXX" data-targetdivXX="orderdialog" id="usereditform" method="post" action="$home$apphome/views/activity/publish/step2.html">
 #set($searcher = $searcherManager.getSearcher($catalogid, "order"))
@@ -24,6 +22,6 @@ $context.putPageValue("view", "order/publishform")
 <br/>
 $pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
  
-<input class="btn btn-sm btn-primary" style="margin-left: 300px;" type="submit" name="submit" value="Next"/> 
+<input class="btn btn-sm btn-primary" type="submit" name="submit" value="Next"/> 
 
 </form>

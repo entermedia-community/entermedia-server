@@ -4,25 +4,29 @@
 	#foreach($source in $sources )
 		#set( $folder = $source.getConfig() )
 	<li class="auto">
-		<a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id" class="folder">
+		<div class="folder">
+		<a href="$home$apphome/views/settings/modules/asset/hotfolders/folder-setup.html?id=$folder.id">
 			<div class="name">
-				<div class="alias" title="Alias">$folder.name</div>
+				<div class="alias" title="Alias">$folder.name
+				#if( $folder.enabled )
+				 <span class="path" >(Enabled: $folder.enabled)</span> 
+				#end
+				</div>
 				#if( $folder.subfolder )
 				<div class="path" title="$folder.subfolder">Path: $folder.subfolder</div> 
 				#end
-				#if( $folder.enabled )
-				<div class="path" >Enabled: $folder.enabled</div> 
-				#end
+				
 				
 				<div class="last-activity">Fully Scanned: $!context.getDateTime($folder.lastscanstart)</div>
 				
 			</div>
 		</a>
+		</div>
 	</li>
 	#end
 	
 	<li class="add">
-			<div class="folder"></div>
+			
 
 			<a class="btn btn-sm btn-primary float-right" href="$home$apphome/views/settings/modules/asset/hotfolders/add-new-folder.html">Add Hot Folder</a>
 			
