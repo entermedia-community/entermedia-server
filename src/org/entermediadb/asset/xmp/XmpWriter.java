@@ -28,8 +28,8 @@ public class XmpWriter {
 	protected Exec fieldExec;
 
 	public void addKeyword(String inKeyword, List<String> inComm) {
-		inComm.add("-Subject-=" + inKeyword);
-		inComm.add("-Subject+=" + inKeyword);
+	//	inComm.add("-Subject-=" + inKeyword);
+		inComm.add("-Subject=" + inKeyword);
 	}
 
 	public boolean writeTag(String inTag, String inValue, File inFile) {
@@ -66,8 +66,22 @@ public class XmpWriter {
 		boolean ok = false;
 		try {
 			List<String> comm = createCommand(inArchive);
-			addSaveFields(inArchive, inAsset, comm, inExtraDetails);
+//			if(clearkeywords) {
+//				comm.add("-Subject=");
+//				comm.add("-subject=");
+//				comm.add("-keywords=");
+//				comm.add("-XMP-dc:Subject=");
+//				comm.add(path);
+//				ok = runExec(comm);
+//
+//
+//			}
+			 comm = createCommand(inArchive);
+			comm.add("-Keywords=");
 			comm.add("-Subject=");
+			comm.add("-XMP-dc:Subject=");
+			addSaveFields(inArchive, inAsset, comm, inExtraDetails);
+			
 
 			
 			addSaveKeywords(inAsset.getKeywords(), comm);
@@ -86,7 +100,7 @@ public class XmpWriter {
 
 	}
 
-	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset, HashMap inExtraDetails) throws Exception {
+	public boolean saveMetadata(MediaArchive inArchive, Asset inAsset, HashMap inExtraDetails, boolean clearkeywords) throws Exception {
 		ContentItem item = inArchive.getOriginalContent(inAsset);
 
 		return saveMetadata(inArchive, item, inAsset, inExtraDetails);

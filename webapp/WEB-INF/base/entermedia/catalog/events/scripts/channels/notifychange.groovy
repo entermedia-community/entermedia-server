@@ -1,4 +1,4 @@
-package librarycollection;
+package channels;
 
 import org.apache.commons.collections.IteratorUtils
 import org.apache.commons.collections.MapUtils
