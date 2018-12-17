@@ -352,7 +352,11 @@ uiload = function() {
 				target : "#" + targetdiv
 			});
 		});
-		
+		$('input[type="checkbox"]',form).on("change", function() {
+			$(form).ajaxSubmit({
+				target : "#" + targetdiv
+			});
+		});
 		
 
 	});
