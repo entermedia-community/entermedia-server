@@ -371,6 +371,24 @@ onloadselectors = function()
 			});
 	
 	
+	
+	lQuery(".desktop-send").livequery("click", function(){
+		var button = jQuery(this);
+		var data = button.data();
+	    var json = JSON.stringify(data);
+	    jQuery.ajax(
+				{
+					url: apphome + "/components/desktop/sendcommand.html?command=" + json
+				}
+		);
+	
+	    
+	}
+	);
+	
+	
+	
+	
 	//move this to the settings.js or someplace similar 
 	lQuery(".addmygroupusers").livequery( function() 
 			{

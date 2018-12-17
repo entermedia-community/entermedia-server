@@ -28,6 +28,7 @@ import org.openedit.data.SaveableData;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.modules.translations.LanguageMap;
+import org.openedit.users.User;
 import org.openedit.util.PathUtilities;
 
 /**
@@ -44,6 +45,22 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 
 	public Asset()
 	{
+	}
+	
+	
+	public boolean isLocked() {
+		if(get("lockedby") != null && get("lockedby").length() >0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+	
+	public User getLockOwner() {
+		if(isLocked()) {
+			return getMediaArchive().getUser(get("lockedby"));
+		}
+		return null;
 	}
 
 	public boolean isFolder()
@@ -884,6 +901,17 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 		} else {
 			return false;
 		}
+	}
+
+
+	public void toggleLock(User inUser)
+	{
+		if(isLocked()) {
+			setValue("lockedby", null);
+		} else {
+			setValue("lockedby", inUser.getId());
+		}
+		
 	}
 	
 	

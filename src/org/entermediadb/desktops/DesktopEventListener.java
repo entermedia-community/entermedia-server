@@ -22,5 +22,7 @@ public interface DesktopEventListener
 
 	public void openAsset(MediaArchive inArchive, Asset inAsset);
 	
+	
+	public void sendCommand(MediaArchive inArchive, Map inCommandData);
 
 }

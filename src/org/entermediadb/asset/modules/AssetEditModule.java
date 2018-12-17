@@ -2090,5 +2090,18 @@ Change Collections to be normal categories path s and make createTree look at th
 	}
 	
 	
+	public void toggleAssetLock(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		Asset asset = getAsset(inReq);
+		
+		asset.toggleLock(inReq.getUser());
+		archive.saveAsset(asset);
+		
+		
+		
+		
+	}
+	
+	
 	
 }

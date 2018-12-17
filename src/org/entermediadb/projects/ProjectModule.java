@@ -19,6 +19,8 @@ import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.desktops.Desktop;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.openedit.Data;
 import org.openedit.MultiValued;
 import org.openedit.OpenEditException;
@@ -1147,6 +1149,33 @@ Server ProjectModule.uploadFile
 		desktop.openFile(archive, assetid);
 		
 	}
+	
+	
+	
+	public void sendDesktopCommand(WebPageRequest inReq)
+	{
+		try
+		{
+			MediaArchive archive = getMediaArchive(inReq);
+			String commands = inReq.getRequestParameter("command");
+			ProjectManager manager = getProjectManager(inReq);
+
+			Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
+			JSONParser parser = new JSONParser();
+			JSONObject command = (JSONObject) parser.parse(commands);
+			
+			desktop.sendCommand(archive, command);
+		}
+		catch (Exception e)
+		{
+			throw new OpenEditException(e);
+		}
+		
+	}
+	
+	
+	
+	
 	
 	
 	

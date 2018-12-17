@@ -13,6 +13,7 @@ import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.projects.LibraryCollection;
 import org.json.simple.JSONObject;
+import org.openedit.Data;
 import org.openedit.ModuleManager;
 
 public class Desktop
@@ -222,6 +223,12 @@ public class Desktop
 	{
 		Asset asset = inArchive.getAsset(inAssetid);
 		getDesktopListener().openAsset(inArchive, asset);
+		
+	}
+
+	public void sendCommand(MediaArchive inArchive, JSONObject inCommand)
+	{
+		getDesktopListener().sendCommand(inArchive, inCommand);
 		
 	}
 }

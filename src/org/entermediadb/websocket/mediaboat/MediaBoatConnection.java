@@ -412,6 +412,14 @@ public class MediaBoatConnection  extends Endpoint implements MessageHandler.Par
 
 	}
 
+	@Override
+	public void sendCommand(MediaArchive inArchive, Map inCommandData)
+	{
+		JSONObject command = new JSONObject(inCommandData);
+		sendMessage(command);
+		
+	}
+
 	
 
 }
