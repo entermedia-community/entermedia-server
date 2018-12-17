@@ -1147,6 +1147,13 @@ Server ProjectModule.uploadFile
 
 		Desktop desktop = manager.getDesktopManager().getDesktop(inReq.getUserName());
 		desktop.openFile(archive, assetid);
+		Asset asset = getAsset(inReq);
+		
+		
+		if(!asset.isLocked()) {
+		asset.toggleLock(inReq.getUser());
+		archive.saveAsset(asset);
+		}
 		
 	}
 	
