@@ -11,17 +11,21 @@
 $context.putPageValue("details",$details)
 <div class="row">
 <div class="col-4">
-<form id="searchquery" class="autosubmitform query-component" onsubmit="refreshTable(); return false;">
+<form id="searchquery" class="query-component" onsubmit="refreshTable(); return false;">
 	#foreach( $detail in $details)
 		$context.putPageValue("detail", $detail)
 		$context.putPageValue("searchform", true)
-
-		#if ($detail.isLeaf())
-			$pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
-		#else
-			$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
-		#end
+		#set( $value = "$!hits.getSearchQuery().getInput($detail.id)" )
+		#set( $values = $hits.getSearchQuery().getInputs($detail.id) )		
+		#set( $term = $hits.getSearchQuery().getTermByDetailId($detail.id) )
+		$context.putPageValue("term",$term)			
+		$context.putPageValue("val",$value)
+		$context.putPageValue("values",$values)
+		$context.putPageValue("data",$hits.getSearchQuery())
+		$pages.include("/${applicationid}/components/advancedsearch/detailedit.html", $context)
+		
 	#end
+	<input type="submit" />	
 </form>
 </div>
 <div class="col">
