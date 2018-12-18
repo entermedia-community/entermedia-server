@@ -1861,6 +1861,10 @@ td.checkbox input, th.firstheader input {
     position: absolute;
     right: 0px;
     top:0;
+    display: none;
+}
+.collectionrow:hover .collectionicons {
+	display: inline-block;
 }
 
 .librarycollectiondroparea.selected,.librarycollectiondroparea:hover 
@@ -2346,6 +2350,7 @@ label.error {
     padding-top: 7px;
     padding-bottom: 7px;
     list-style: none;
+    position:relative
 }
 .emlist .list-row:hover {
 	background-color:rgba(0,0,0,0.2);
@@ -2359,6 +2364,15 @@ label.error {
     position:relative;
 }
 
+.list-delete {
+	position:absolute;
+	right:6px;
+	top:8px;
+	display:none;
+}
+.list-row:hover .list-delete {
+	display: inline-block;
+}
 
 .cat-list .list-row .asset {
     padding-left: 18px;
