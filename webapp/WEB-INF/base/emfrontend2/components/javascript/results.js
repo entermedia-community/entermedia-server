@@ -255,6 +255,12 @@ $(document).ready(function(url,params)
 		stopautoscroll = false;
 		 $("body").css({ overflow: 'auto' })
 		inOverlay.hide();
+		 
+		 var reloadparent =  window.location.href.split('#')[0];
+		 if (typeof reloadparent != 'undefined') {
+			 window.location = reloadparent;
+		 }
+
 		var lastscroll = getOverlay().data("lastscroll");
 		$(window).scrollTop( lastscroll );
 	}
