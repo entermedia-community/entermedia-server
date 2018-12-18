@@ -22,7 +22,7 @@ $context.putPageValue("showalllanguagevalues",true)
 								<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}" 
 								   class="detail-edit-icon float-right ajax btn btn-xs"
 								   data-targetdiv="edit-${target.getId()}"
-								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> Edit</a></h4>
+								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[ Edit]]</a></h4>
 							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
 					#end
@@ -55,9 +55,10 @@ $context.putPageValue("showalllanguagevalues",true)
     					</div>
     				</div>
 				#end	
-					$pages.include("$apphome/components/opencollections/asset/listassetcollections.html",$context)
+				
+				$pages.include("$apphome/components/opencollections/asset/listassetcollections.html",$context)
 					
-					<div class="asset-data-detail assetpanel-editor-box">
+				<div class="asset-data-detail assetpanel-editor-box">
 					<h4>[[Categories]]
 					#if( $caneditassetcategories )
 					<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&amp;clearselection=&amp;action=/assets/emshare/components/xml/types/category.html&amp;detailid=category-exact" 
@@ -76,10 +77,15 @@ $context.putPageValue("showalllanguagevalues",true)
 						<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
 						#end
 						</div>
+						#if( $caneditassetcategories )
+					 	<a class="ajax list-delete"  data-targetdiv="assetcollectionresults" href="#">
+					 	<i class="fas fa-times"></i></a>
+					 #end
 						</div>
 					#end
+					
 					</div>
-					</div>
+				</div>
 			</div>	
 	
 </div></div>
