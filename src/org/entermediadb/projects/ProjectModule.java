@@ -806,7 +806,8 @@ public class ProjectModule extends BaseMediaModule {
 		String comment = inReq.getRequestParameter("comment");
 		int count = manager.approveSelection(inReq, hits, collectionid, inReq.getUser(), comment);
 		inReq.putPageValue("approved", count);
-
+		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
+		searcher.loadHits(inReq);
 	}
 
 	public void rejectSelection(WebPageRequest inReq) {
@@ -816,6 +817,8 @@ public class ProjectModule extends BaseMediaModule {
 		String comment = inReq.getRequestParameter("comment");
 		int count = manager.rejectSelection(inReq, hits, collectionid, inReq.getUser(), comment);
 		inReq.putPageValue("rejected", count);
+		Searcher searcher = getMediaArchive(inReq).getAssetSearcher();
+		searcher.loadHits(inReq);
 
 	}
 
