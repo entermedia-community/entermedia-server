@@ -300,6 +300,12 @@ a {
     position: relative;
     overflow: hidden;
 }
+.btn-sm {
+	line-height: 1.2;
+}
+.form-check-label-right {
+	padding:0 25px 0 0;
+}
 .btn-file input[type=file] {
     position: absolute;
     top: 0;
@@ -2676,8 +2682,19 @@ label.error {
 	padding: 0 5px; 
 	}
 .media-player-mini  a:hover { color:#fff;  text-decoration: none;}
-
+.media-player-mini .dropdown-menu {
+	background-color: #434343;
+}
+.media-player-mini .dropdown-item:focus, 
+.media-player-mini .dropdown-item:hover {
+	background-color: #666;
+}
 .media-info-icons { display: inline-block;}
+
+.assetlockedinput {
+	display: inline-block;
+	padding:2px 0 0 0;
+}
 
 .media-player { text-align: center;}
 .media-player .media-info { text-align: center; padding:5px; font-size:90%}
