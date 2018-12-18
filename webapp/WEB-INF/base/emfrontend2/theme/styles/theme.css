@@ -2695,6 +2695,9 @@ label.error {
 	display: inline-block;
 	padding:2px 0 0 0;
 }
+.assetlocked i {
+	font-size:.8em;
+}
 
 .media-player { text-align: center;}
 .media-player .media-info { text-align: center; padding:5px; font-size:90%}
