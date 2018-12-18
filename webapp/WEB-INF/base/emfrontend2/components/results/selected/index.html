@@ -84,13 +84,15 @@
 			#if( $librarycol )
 				$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
 			#end
-			#if( $enabled )
+		#set ($enabled=$hits.getSelectionSize() > 0)
+			
+#if( $enabled )
 				
 					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
 					<a class="dropdown-item" href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
 					
 					#else
-					<a class="dropdown-item" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}" class="emdialog" data-hidefooter="true" >[[Download]]</a>
+					<a class="dropdown-item emdialog" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
 					#end
 					
 			#else
