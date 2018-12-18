@@ -1,6 +1,7 @@
 <div style="margin: 20px;">
     <p>[[Are you sure you want to delete?]]</p>
 	#set( $collectionid = $context.getRequestParameter("collectionid") )
+	#set( $nodeID = $context.getRequestParameter("nodeID") )
     #if( $collectionid)
     <form name="deleteoption" id="deleteoption" action="$home$apphome/views/modules/librarycollection/deleteassets.html">
     #else
@@ -8,6 +9,7 @@
     #end
     <input name="hitssessionid" value='$!context.getRequestParameter("hitssessionid")' type="hidden" />
     <input name="collectionid" value="$!collectionid" type="hidden" />
+    <input name="nodeID" value="$!nodeID" type="hidden" />
     <input name="assetid" value="$asset.id" type="hidden" />
     <input name="cache" value="false" type="hidden" />
     <p><input type="checkbox" name="deleteoriginal" value="true" /> [[Also delete original]]</p>

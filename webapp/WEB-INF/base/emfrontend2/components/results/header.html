@@ -3,7 +3,6 @@
 
 #if( !$hits )
 	#set( $hits = $collectionassets)
-	
 	$context.putPageValue("hits",$hits)
 #end
 
@@ -24,8 +23,15 @@
 		$context.putPageValue("caneditdata",$caneditdata)
 	#end
 	#set( $catid = $hits.getInput("categoryid") )
+	
+	#set( $nodeID = $context.getRequestParameter("nodeID"))
+	#if (!$catid && $nodeID)
+		#set( $catid = $nodeID )
+	#end
+	$context.putPageValue("catid",$catid)
 	#if( $catid && !$category)
-	#set( $category = $mediaarchive.getData("category",$catid) )
+		
+		#set( $category = $mediaarchive.getData("category",$catid) )
 	#end
 	#set( $orderid = $hits.getInput("orderid") )
 	#if( $orderid)
