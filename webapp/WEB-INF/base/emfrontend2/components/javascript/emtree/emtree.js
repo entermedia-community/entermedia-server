@@ -258,8 +258,8 @@ $(document).ready(function()
 				}
 				else
 				{
-					url = tree.data("home") + "/views/upload/create/createnewstart.html?" + "nodeID=" + nodeid;
-					document.location.href = url;
+					url = tree.data("home") + "/views/modules/asset/add/start.html?" + "nodeID=" + nodeid;
+					document.location.href = url; 
 				}
 				
 						
