@@ -2194,8 +2194,9 @@
 		
 	</bean>
 
-	
-	
+	<bean id="categoryCollectionCache" class="org.entermediadb.webui.tree.CategoryCollectionCache" scope="prototype">
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+	</bean>
 	
 		
 </beans>

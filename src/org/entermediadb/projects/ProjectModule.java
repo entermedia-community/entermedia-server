@@ -18,6 +18,7 @@ import org.entermediadb.asset.upload.FileUpload;
 import org.entermediadb.asset.upload.FileUploadItem;
 import org.entermediadb.asset.upload.UploadRequest;
 import org.entermediadb.desktops.Desktop;
+import org.entermediadb.webui.tree.CategoryCollectionCache;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -1220,5 +1221,12 @@ Server ProjectModule.uploadFile
 
 		}
 	
+	}
+	
+	public void getCategoryCollectionCache(WebPageRequest inPageRequest) throws Exception
+	{
+		String catalogid = inPageRequest.findValue("categoryid");
+		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);
+		inPageRequest.putPageValue("categoryCollectionCache", cache);
 	}
 }
