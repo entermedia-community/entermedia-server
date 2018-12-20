@@ -9,24 +9,25 @@ import java.util.Set;
 
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.xmldb.CategorySearcher;
+import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.data.SearcherManager;
 import org.openedit.hittracker.HitTracker;
 
-public class CategoryCollectionCache
+public class CategoryCollectionCache implements CatalogEnabled
 {
 	protected Map fieldCategoryRoots;
 	protected SearcherManager fieldSearcherManager;
-	protected String fieldCategoryId;
+	protected String fieldCatalogId;
 	
-	public String getCategoryId()
+	public String getCatalogId()
 	{
-		return fieldCategoryId;
+		return fieldCatalogId;
 	}
 
-	public void setCategoryId(String inCategoryId)
+	public void setCatalogId(String inCategoryId)
 	{
-		fieldCategoryId = inCategoryId;
+		fieldCatalogId = inCategoryId;
 	}
 
 	public SearcherManager getSearcherManager()
@@ -53,7 +54,7 @@ public class CategoryCollectionCache
 
 	protected void loadRoots()
 	{
-		HitTracker all = getSearcherManager().query(getCategoryId(), "librarycollection").all().search();
+		HitTracker all = getSearcherManager().query(getCatalogId(), "librarycollection").all().search();
 		all.setHitsPerPage(1000);
 		Set categoryids = new HashSet();
 		for (Iterator iterator = all.getPageOfHits().iterator(); iterator.hasNext();)
@@ -65,7 +66,7 @@ public class CategoryCollectionCache
 				categoryids.add(rootid);
 			}
 		}
-		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCategoryId(), "category");
+		CategorySearcher searcher = (CategorySearcher)getSearcherManager().getSearcher(getCatalogId(), "category");
 		
 		for (Iterator iterator = categoryids.iterator(); iterator.hasNext();)
 		{
