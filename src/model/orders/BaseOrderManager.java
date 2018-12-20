@@ -738,7 +738,7 @@ public class BaseOrderManager implements OrderManager {
 			ContentItem item = archive.getOriginalContent(inAsset);
 			if( item.exists() )
 			{
-				publishstatus = "complete";
+				publishstatus = "new";
 			}
 			else
 			{
