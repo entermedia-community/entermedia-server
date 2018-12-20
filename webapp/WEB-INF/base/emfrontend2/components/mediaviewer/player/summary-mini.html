@@ -48,30 +48,32 @@
 		   		</div>
 			#end
 			#end 
-					#if( $desktop )
-					<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
+			#if( $desktop )
+			<div class="btn-group" role="group" aria-label="Button group with nested dropdown">
 		 
-		  <div class="btn-group" role="group">
-		    <button id="btnGroupDrop1" type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-		      Mediaboat
-		    </button>
-		    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
-		      <a class="dropdown-item ajax" targetdiv="nowhere"  href="$home$apphome/components/desktop/openasset.html?assetid=$asset.id&lock=true">Open File</a>
-		      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-replace="true" data-filename="${asset.name}">Replace from Desktop</a>
-		      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-replace="false" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-filename="${asset.name}">Create copy from Desktop</a>
-		      
-		    </div>
-		    
-		    
-		  </div>
+			  <div class="btn-group" role="group">
+			    <button id="btnGroupDrop1" type="button" class="btn btn-sm btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+			      Mediaboat</button>
+			    <div class="dropdown-menu" aria-labelledby="btnGroupDrop1">
+			      <a class="dropdown-item ajax" targetdiv="nowhere"  href="$home$apphome/components/desktop/openasset.html?assetid=$asset.id&lock=true">[[Open File]]</a>
+			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-replace="true" data-filename="${asset.name}">[[Replace from Desktop]]</a>
+			      <a class="dropdown-item desktop-send" href="#" data-assetid="${asset.id}" data-replace="false" data-command="singleupload" data-catalogid="${catalogid}" data-mediadb="${mediadbappid}" data-filename="${asset.name}">[[Create copy from Desktop]]</a>
+			      
+			    </div>
+			    
+			    
+			  </div>
 		   
-		</div>
-					
-			
-		#end
-					     Lock: <form name="lockform" class="autosubmit ajaxform" action="$home$apphome/components/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
-					     <input type="hidden" name="assetid" value="${asset.id}"/>
-					      <input class="togglelock" type="checkbox" #if($asset.isLocked()) checked #end/> #if($asset.isLocked()) ( $asset.getLockOwner() ) #end </form>
+			</div>
+			#end
+		<form name="lockform" class="autosubmit ajaxform" action="$home$apphome/components/mediaviewer/player/summary-mini.html?oemaxlevel=1" data-targetdiv="summary-mini" >
+		<input type="hidden" name="assetid" value="${asset.id}"/>
+		<div class="assetlocked">
+			<label for="assetlocked" class="form-check-label-right">[[Lock Asset]]:</label>
+			<input id="assetlocked" class="togglelock form-check-input" type="checkbox" #if($asset.isLocked()) checked #end /> 
+			#if($asset.isLocked()) ( <i class="fas fa-user"></i> $asset.getLockOwner() ) #end
+		</div> 
+		</form>
 			
 		</div>	
 </div>

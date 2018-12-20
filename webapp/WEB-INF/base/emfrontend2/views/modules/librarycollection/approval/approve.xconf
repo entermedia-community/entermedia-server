@@ -1,8 +1,15 @@
 <page>
-<path-action name="DataEditModule.loadHits">
-	<searchtype>asset</searchtype>
-</path-action>
-<path-action name="ProjectModule.approveSelection" />
+	<path-action name="DataEditModule.loadHits">
+		<searchtype>asset</searchtype>
+	</path-action>
+	<property name="hitsname">hits</property>
+	<property name="virtual">true</property>
+	
+	<path-action name="ProjectModule.approveSelection" />
 
-
+    <path-action name="DataEditModule.loadData" >
+			<pageval>librarycol</pageval>
+			<idname>collectionid</idname>
+			<searchtype>librarycollection</searchtype>
+    </path-action>
 </page>

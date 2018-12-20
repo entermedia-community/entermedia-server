@@ -195,6 +195,51 @@ runajaxonthis = function(inlink,e)
 	}
 	var useparent = inlink.data("useparent");
 
+	var setparam = inlink.data("setparam");
+	var paramvalue = inlink.data("setvalue");
+
+	if( setparam )
+	{
+		var url = window.location.href;
+		if( url.indexOf("?") > -1 )
+		{
+			if( url.indexOf(setparam + "=") > -1 )
+			{
+				//replace value
+				var urlparts = url.split("?");
+				url = urlparts[0] + "?";
+				var params = urlparts[1].split("&");
+				var isfirst = true;
+				for (var i = 0; i < params.length; i++) 
+				{
+					var val = params[i];
+					if( val.indexOf(setparam) > -1 )
+					{
+						val = setparam + "=" + paramvalue;
+					}
+					if( isfirst )
+					{
+						url = url + val;
+						isfirst = false;
+					}
+					else
+					{
+						url = url + "&" + val;
+					}
+				}
+			}
+			else
+			{
+				url = url + "&" + setparam + "=" + paramvalue;
+			}
+		}
+		else
+		{
+			url = url + "?" + setparam + "=" + paramvalue;
+		}
+		history.pushState({}, null, url);
+	}
+
 	var options = inlink.data();
 	
 	if( targetDiv)

@@ -456,3 +456,5 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
         "discovery.zen.minimum_master_nodes" : "2"
     }
 }'
+
+curl -XGET 'http://localhost:9200/_cat/master?v' 

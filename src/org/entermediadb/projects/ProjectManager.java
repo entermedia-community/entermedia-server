@@ -41,6 +41,7 @@ import org.openedit.event.WebEvent;
 import org.openedit.hittracker.FilterNode;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.hittracker.Term;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -494,19 +495,8 @@ public class ProjectManager implements CatalogEnabled {
 			return null;
 		}
 		Searcher searcher = archive.getAssetSearcher();
+		
 		HitTracker all = null;
-		// if( assetsearch instanceof LuceneSearchQuery)
-		// {
-		// SearchQuery collectionassetsearch =
-		// archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
-		// assetsearch.addJoinFilter(collectionassetsearch,"asset",false,"librarycollectionasset","id");
-		//// all = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);
-		// all = archive.getAssetSearcher().search(assetsearch);
-		// }
-		// else
-		// {
-		// SearchQuery collectionassetsearch =
-		// archive.getSearcher("librarycollectionasset").query().match("librarycollection",collectionid).getQuery();
 		SearchQuery assetsearch = searcher.addStandardSearchTerms(inReq);
 		Category root = getRootCategory(archive, collectionid);
 		if (root == null) {
@@ -540,10 +530,27 @@ public class ProjectManager implements CatalogEnabled {
 			assetsearch.setSortBy("assetaddeddateDown");
 		}
 		assetsearch.setProperty("collectionid", collectionid);
-		assetsearch.setHitsName("collectionassets");
+		//assetsearch.setHitsName("collectionassets");
 
 		assetsearch.setEndUserSearch(true);
 
+		//The old tracker does not have the same hitsname so it's cached diferently
+		
+//		HitTracker oldtracker = searcher.loadHits(inReq,"hits");
+//		if( oldtracker != null)
+//		{
+//			//This is the new way
+//			for (Iterator iterator = oldtracker.getSearchQuery().getUserFilters().iterator(); iterator.hasNext();)
+//			{
+//				Term term = (Term) iterator.next();
+//				//see if it's already in there
+//				if( assetsearch.getTermByDetailId(term.getDetail().getId()) == null )
+//				{
+//					assetsearch.addTerm(term);
+//				}
+//			}
+//		}
+		
 		all = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);
 
 		if (inShowOnlyEditStatus != null && inShowOnlyEditStatus.equals("1")) {
