@@ -1604,7 +1604,7 @@ td.checkbox input, th.firstheader input {
 }
 .emtree .cat-name {
 	padding-left:32px;
-	width: calc(100% - 20px);
+	width: calc(100% - 40px);
 	display: inline-block;
 }
 .emtree .cat-name.cat-folder {
@@ -1616,9 +1616,9 @@ td.checkbox input, th.firstheader input {
 .emtree .cat-name .cat-fader {
 	font-weight: bold;
 }
-.emtree .cat-menu {
+.emtree .cat-options {
 	float:right;
-	margin-right: 6px;
+	margin-right: 2px;
 	padding:0 4px;
 	color:#666;
 	display: none;
@@ -1627,11 +1627,11 @@ td.checkbox input, th.firstheader input {
     top: 6px;
     right: 3px;
 }
-.treerow:hover .cat-menu,
-.treerow.selected .cat-menu {
+.treerow:hover .cat-options,
+.treerow.selected .cat-options {
 	display: inline-block;
 } 
-.emtree .cat-menu:hover {
+.emtree .cat-options:hover {
 	color:#000;
 }
 

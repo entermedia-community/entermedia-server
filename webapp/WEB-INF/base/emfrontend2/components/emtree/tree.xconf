@@ -1,7 +1,8 @@
 <page>
 
-	<page-action name="CategoryModule.getCatalogTree">
-	</page-action>
+	<page-action name="ProjectModule.getCategoryCollectionCache" />
+	
+	<page-action name="CategoryModule.getCatalogTree" />
 	
 	<!-- property name="categoryPickerTreeroot">mount2</property -->
 
@@ -9,6 +10,9 @@
 	
 	
 	<page-action name="CategoryModule.selectNodes" />
+	
+	
+	
 
 	<inner-layout/>
 </page>
