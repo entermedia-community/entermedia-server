@@ -1,7 +1,7 @@
 <div id="emresultscontent" >
 
 $pages.include("$apphome/components/filters/filters-selected.html", $context)
-
+<div class="pushcontent">
 #set ($resultview = $userprofile.get('resultview'))
 #if (!$resultview || $resultview == 'table')
 	$context.putPageValue("showhover", "false")
@@ -54,3 +54,4 @@ $pages.include("$apphome/components/filters/filters-selected.html", $context)
 	
 #end
 </div>	
+</div>

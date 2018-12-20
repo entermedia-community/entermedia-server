@@ -1320,7 +1320,8 @@ uiload = function() {
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
 			$("#col-left").removeClass("leftopen");
-			$("#maincontent").removeClass("leftopen");
+			//$("#maincontent").removeClass("leftopen");
+			$('.pushcontent').animate({marginLeft: "-=220px"});
 			//$(window).trigger( "resize" );
 			saveProfileProperty("leftbarstatus",false,function(){
 				$(window).trigger( "resize" );
@@ -1330,6 +1331,7 @@ uiload = function() {
 			//open
 			$("#col-left").addClass("leftopen");
 			$("#maincontent").addClass("leftopen");
+			$('.pushcontent').animate({marginLeft: "+=220px"});
 			//$(window).trigger( "resize" );
 			saveProfileProperty("leftbarstatus",true,function(){
 				$(window).trigger( "resize" );
@@ -1382,6 +1384,13 @@ $.fn.equalHeights = function(px) {
 */
 
 var resizecolumns = function() {
+	//makethem same top
+	var sidebarsposition = $("#resultsdiv").position();
+	if (typeof sidebarsposition != undefined) {
+		var sudebarstop = sidebarsposition.top;
+		$('.col-filters').css('top',sudebarstop + 'px');
+		$('.col-left').css('top',sudebarstop + 'px');
+	}
 	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
 	if ($(".filtered").height()) {
 		allheights += $(".filtered").height();

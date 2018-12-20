@@ -24,17 +24,17 @@
 		
 		##Collection 
 		#set( $iscollection = $categoryCollectionCache.isPartOfCollection($cat))
-		
+		##set( $iscollection = false)
 		
 		<li id="${cat.id}_row" class="noderow categorydraggable" data-nodeid="$cat.id" data-depth="$depth" data-categoryname="$cat.name">
 			#set( $checked = $render.isIdSelected($cat.id) )
 			#set ( $padding = (10 * ($depth - 1)) + 5 )
-			<div class="treerow categorydroparea #if( $isselected ) cat-current #end #if( $checked) idchecked #end" 
+			<div class="treerow categorydroparea #if( $isselected ) cat-current #end #if( $checked) idchecked #end #if($expanded) expanded #end" 
 			     style="padding-left: ${padding}px" title="id: $cat.id">
 				#if($haschildren)
 					<div class="cat-arrow" title="[[Expand ]] $cat.name"><i class="fas #if($expanded) fa-caret-down #else fa-caret-right #end "></i></div>
 				#end 
-				<div id="${cat.id}_display" class="cat-name cat-folder #if($haschildren) cat-leaf #end" title="$cat.getCategoryPath()" >
+				<div id="${cat.id}_display" class="cat-name #if($iscollection) cat-collection #else cat-folder #end #if($haschildren) cat-leaf #end" title="$cat.getCategoryPath()" >
 				#if( $cat.getCounts() > 0)
 					<b>$cat.name</b> 
 				#else
@@ -52,10 +52,9 @@
 				<a href="#" class="cat-menu cat-options" title="$cat.name"><i class="fas fa-ellipsis-v"></i></a>
 				#end
 				
-				#if($iscollection)
-				$iscollection
-				<a  class="cat-collection cat-options" title="[[Open Collection]]" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=$collection.id"><i class="fas fa-box"></i></a>
-				#end
+				##if($iscollection)
+				##<a  class="cat-collection cat-options" title="[[Open Collection]]" href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=$collection.id"><i class="fas fa-box"></i></a>
+				##end
 			</div>
 		#if($haschildren && $expanded)
 		   <ul class="open" > <!-- Open with $cat.name $children.size() -->

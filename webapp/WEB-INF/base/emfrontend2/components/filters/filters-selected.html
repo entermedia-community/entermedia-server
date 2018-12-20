@@ -1,4 +1,48 @@
-<div class="filtered">
+#if( !$librarycol && $category ) 
+	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
+#end
+#if( $librarycol )	
+<div class="collection-header">
+
+	<div class="collection-header-back">
+		<a href="$home$apphome" title="[[Collections]]"><i class="fas fa-chevron-left"></i></a>
+	</div>
+	#set( $asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
+	
+	<div class="card card-mini card-collections">
+	 <div class="card-collections-thumb" style='background-image: url("${link}")'></div>
+	</div>
+	
+	<div class="collection-header-name">
+	<h1>${librarycol}</h1>
+	</div>
+	
+	<div class="collection-header-actions">
+	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
+	<i class="fas fa-caret-down"></i></a>
+		<div class="dropdown-menu">
+			#if($caneditdata)
+			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
+			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
+			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Permissions]]</a>
+		   	#end
+			#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+		 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+		 	#if($cansharecollection && !$librarycol.isVisibility("3") )
+			 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
+			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>
+		 	#end
+		</div>
+	</div>
+	
+</div>
+#end
+
+
+
+<div class="filtered #if( $librarycol ) filteredinresults #end">
 #if( $hits.getSearchQuery().hasMainInput() )
 <strong>Searching for:</strong>  "<em>$hits.getSearchQuery().getMainInput()</em>"
 #end

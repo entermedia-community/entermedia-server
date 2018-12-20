@@ -531,6 +531,7 @@ html, body, #application {
 }
 .col-main {
 	min-height: 800px;
+	position:relative;
 }
 .col-sidebar {
 	position: fixed;
@@ -552,7 +553,10 @@ html, body, #application {
 	
 }
 .col-content-main.leftopen {
-	margin-left:220px;
+/*	margin-left:220px;*/
+}
+.pushcontent {
+	;
 }
 .col-content-main.filtersopen {
 	margin-right:220px;
@@ -612,7 +616,7 @@ html, body, #application {
 .cols-librarycollection .col-left,
 .cols-category .col-filters,
 .cols-category .col-left {
-	margin-top:47px;
+
 }
 
 .col-sidebar {  }
@@ -1608,7 +1612,13 @@ td.checkbox input, th.firstheader input {
 	display: inline-block;
 }
 .emtree .cat-name.cat-folder {
-    background: url(../images/folder-closed.gif) 14px 2px no-repeat;
+    background: url(../images/folder.svg) 14px 2px no-repeat;
+}
+.emtree .expanded .cat-name.cat-folder {
+	background: url(../images/folder-open.gif) 14px 2px no-repeat;
+}
+.emtree .cat-name.cat-collection {
+    background: url(../images/collection.png) 14px 2px no-repeat;
 }
 .emtree .cat-folder {
     /*white-space: nowrap;*/
@@ -1946,9 +1956,9 @@ td.checkbox input, th.firstheader input {
 	padding:15px 10px 0 10px;
 	font-size:1.3rem;
 }
-.collection-container .filtered {
+.filteredinresults {
 	position:absolute;
-	top:-40px;
+	top:40px;
 	left:0;
 	right:0;
 	background: none;
@@ -3141,6 +3151,7 @@ label.error {
 }
 #eml-tab-subnav ul, #sub-nav, .tree-header {
     display: block;
+    position:relative;
     height: 45px;
     width: 100%;
     margin: 0;
