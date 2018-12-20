@@ -1,25 +1,24 @@
 #if( $hits )
-
-$context.putPageValue("showhover", "false")
-$context.putPageValue("showcaption", "true")
-$context.putPageValue("hideheader", "true")
-
-#if(!$category)
-	#set($categoryid = $context.getRequestParameter("categoryid"))
-	#if($categoryid)
-		#set($category = $mediaarchive.getData("category",$categoryid))
-		#if($category)
-			$context.putPageValue("category",$category)
+	$context.putPageValue("showhover", "false")
+	$context.putPageValue("showcaption", "true")
+	$context.putPageValue("hideheader", "true")
+	
+	#if(!$category)
+		#set($categoryid = $context.getRequestParameter("categoryid"))
+		#if($categoryid)
+			#set($category = $mediaarchive.getData("category",$categoryid))
+			#if($category)
+				$context.putPageValue("category",$category)
+			#end
 		#end
 	#end
-#end
-
-###always go to index - don't care about resultview
-$pages.include("$apphome/components/results/index.html",$context)
-
+	
+	###always go to index - don't care about resultview
+	<div id="emresultscontainer" >
+	$pages.include("$apphome/components/results/index.html",$context)
+	</div>
 
 
 #else
-
-$pages.include("$apphome/views/modules/asset/search/all.html")
+	$pages.include("$apphome/views/modules/asset/search/all.html")
 #end

@@ -316,11 +316,11 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
                  <li>
 					#if ( $ismulti )
 						#if($canmultidelete)                 
-                     		<a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionid">
+                     		<a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?collectionid=$!collectionid&hitssessionid=$!hitssessionid">
 	                     [[Delete Selected Assets]]</a>
 	                    #end 
                     #else
-                     <a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&hitssessionid=$!hitssessionid">
+                     <a class="emdialog"   href="$home$apphome/components/mediaviewer/fullscreen/delete/index.html?assetid=$asset.id&collectionid=$!collectionid&hitssessionid=$!hitssessionid">
 	                     [[Delete Asset]]</a>
                      #end
                      </a>

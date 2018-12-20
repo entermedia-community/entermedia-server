@@ -37,7 +37,7 @@ $(document).ready(function(url,params)
 						 
 			$.get(href, args, function(data) 
 			{
-				$("#resultsdiv").html(data);
+				$("#emresultscontainer").html(data);
 				$(window).trigger( "resize" );
 			});
 		});
@@ -307,9 +307,12 @@ $(document).ready(function(url,params)
 		params.pageheight =  $(window).height() - 100;
 
 		var collectionid = $("#collectiontoplevel").data("collectionid");
-		if( collectionid )
+		if(!collectionid )
 		{
-			params.collectionid = collectionid;
+			collectionid = resultsdiv.data("collectionid");
+			if (collectionid) {
+				params.collectionid = collectionid;
+			}
 		}
 		
 		window.location.hash = 'asset-'+assetid;

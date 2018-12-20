@@ -26,7 +26,8 @@ $context.putPageValue("hits",$hits)
 	#end
 #end	
 <div id="resultsheader">
-	<ul id="sub-nav" class="search-views">
+	<div id="sub-nav" class="emsubnav">
+	<ul class="resultsnavright">
 		
 		#set ($enabled=$hits.getSelectionSize() > 0)
 	
@@ -41,22 +42,16 @@ $context.putPageValue("hits",$hits)
 			#end
 		#end
 		#if(!$edit || $edit == "false"  )
-			<li style="float: right;">
-				<div style="position: relative;">
-					<a class="table-edit-close">
-						<select name="resultview" id="selectresultview" class="form-control form-control-sm" 
-							data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()" data-hitsperpage="$hits.getHitsPerPage()">
-#set( $types = $mediaarchive.getList("resulttype"))
-#foreach($type in $types)
+			<li class="resultsnavtitem">
+					<select name="resultview" id="selectresultview" class="form-control" 
+						data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()" data-hitsperpage="$hits.getHitsPerPage()">
+						#set( $types = $mediaarchive.getList("resulttype"))
+						#foreach($type in $types)
 							<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
-#end
-##							<option value="gallery" #if( $resultview == "gallery") selected #end>[[Gallery]]</option>
-##							<option value="stackedgallery" #if( $resultview == "stackedgallery") selected #end>[[Stacked]]</option>
-##							<option value="hierarchy" #if( $resultview == "hierarchy") selected #end>[[Folders]]</option>
-						</select>
-					</a>
-				</div>
+						#end
+					</select>
 			</li>
 		#end	
 	</ul>
+	</div>
 </div>
