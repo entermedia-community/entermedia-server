@@ -127,25 +127,25 @@
 			#if( $canedittablecolumns )
 			#if( $edit )
 				<li>
-					<a class="ajax table-edit-close" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+					<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
 				</li>								
-				<li class="resultsnavtitem">
+				<li class="resultsnavtitem" style="min-width:180px">
 						#set ($alldetails = $searcher.getUserPropertyDetails() )
-						<select  class="form-control" onchange='return addColumn(jQuery(this).val())' name="addcolumn" >
+						<select  class="form-control form-control-sm select2"  onchange='return addColumn(jQuery(this).val())' name="addcolumn" data-allowclear="false" >
 							<option>[[Add Column]]</option>
 							#foreach( $detail in $alldetails) <option value="$detail.id">$detail.getText($context)</option>
 							#end
 						</select>
 						<script type="text/javascript">
 							function addColumn(inId) {
-								jQuery('#emresultscontent').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+								jQuery('#resultsdiv').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
 								return false;	
 							}
 						</script>
 				</li>	
 			#else 
 				<li >
-					<a class="ajax" id="table-editor" targetdiv="emresultscontent" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+					<a class="ajax" id="table-editor" targetdiv="resultsdiv" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
 				</li>
 			#end	
 			#end								

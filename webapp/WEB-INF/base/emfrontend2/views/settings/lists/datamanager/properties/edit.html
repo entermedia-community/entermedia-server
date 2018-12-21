@@ -43,15 +43,15 @@ $context.putPageValue("searcher",$mediaarchive.getSearcher("propertydetail"))
 $pages.include("$apphome/components/xml/detaileditor.html", $context)
 
 <div id="advanced" style="display: none;">
-<h3>Advanced Options</h3>
+<h3 class="settings-title">[[Advanced Options]]</h3>
 $context.putPageValue("view", "propertydetail/advanced")
 $pages.include("$apphome/components/xml/detaileditor.html", $context)
 
 </div>
 </div>
 
-
-<input class="btn btn-sm btn-primary right" style="margin-right: 10px;" type="submit" value="Save" />
+<div class="" style="padding:10px 5px;">
+<input class="btn btn-sm btn-primary right" style="margin-right: 10px;" type="submit" value="[[Save]]" />
 
 
 
@@ -61,9 +61,9 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 </div>	
 #end
 
-<a class="btn btn-sm btn-secondary" style="margin-right: 10px;" id="viewadvanced">View Advanced Options</a>
+<a class="btn btn-sm btn-secondary" style="margin-right: 10px;" id="viewadvanced">[[View Advanced Options]]</a>
 <a class="btn btn-sm btn-danger red"  href="remove.html?id=$!property.id&catalogid=$catalogid&searchtype=$searcher.getSearchType()">[[Delete Field]]</a>
-
+</div>
 
 </form>
 

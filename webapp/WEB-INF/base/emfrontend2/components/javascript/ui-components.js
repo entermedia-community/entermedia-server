@@ -103,8 +103,12 @@ uiload = function() {
 	});
 	lQuery("select.select2").livequery(function() {
 		var input = $(this);
+		var allowClear = $(this).data('allowclear');
+		if (allowClear == undefined)  {
+			allowClear = true;
+		}
 		input.select2({
-			allowClear : true
+			allowClear : allowClear
 		});
 	});
 
@@ -1348,44 +1352,7 @@ uiload = function() {
 
 }// uiload
 
-/*
-$.fn.equalHeights = function(px) {
-	$(this).each(
-			function() {
-				var currentTallest = 0;
-				$(this).children().each(
-						function(i) {
-							var thecol = $(this);
-							if ($(this).children(0)
-									&& $(this).children(0).hasClass(
-											"sidebar-inner")) {
-								// is sidebar, verify inner content
-								if ($(this).children(0).height() > $(this)
-										.height()) {
-									thecol = $(this).children(0);
-								}
-							}
-							if (thecol.height() > currentTallest) {
-								currentTallest = thecol.height();
-							}
-						});
-				if (!px && Number.prototype.pxToEm)
-					currentTallest = currentTallest.pxToEm(); // use ems
-																// unless px is
-																// specified
-				// for ie6, set height since min-height isn't supported
-				if (typeof (document.body.style.minHeight) === "undefined") {
-					$(this).children().css({
-						'height' : currentTallest
-					});
-				}
-				$(this).children().css({
-					'min-height' : currentTallest
-				});
-			});
-	return this;
-}
-*/
+
 
 var resizecolumns = function() {
 	//makethem same top
@@ -1413,7 +1380,7 @@ var resizecolumns = function() {
 		}
 		sidebartop = parseInt($(this).css("top"));
 	});
-	$(".col-main").css("height", columnsheight);
+	$(".col-main").css("min-height", columnsheight);
 	
 	if (sidebartop>0) {
 		$(".col-content-main").css("height", columnsheight + sidebartop + "px");
