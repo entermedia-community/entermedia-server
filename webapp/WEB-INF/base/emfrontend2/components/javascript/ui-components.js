@@ -1294,6 +1294,7 @@ uiload = function() {
 
 	lQuery('.filterstoggle').livequery("click", function(e) {
 		e.preventDefault();
+		$("#filterstoggle").toggleClass("hide");
 		if ($("#col-filters").hasClass("filtersopen")) {
 			//close
 			$("#col-filters").removeClass("filtersopen");
@@ -1311,34 +1312,37 @@ uiload = function() {
 			});
 		}
 		
-		$("#filterstoggle").toggleClass("hide");
+		
 		
 		return false;
 	});
 	lQuery('.lefttoggle').livequery("click", function(e) {
-		//e.preventDefault();
+		e.preventDefault();
+		$("#lefttoggle").toggleClass("hide");
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
-			$("#col-left").removeClass("leftopen");
-			//$("#maincontent").removeClass("leftopen");
-			$('.pushcontent').animate({marginLeft: "-=220px"});
-			//$(window).trigger( "resize" );
+			$('.pushcontent').animate({marginLeft: "-=220px"}, function() {
+				$("#col-left").removeClass("leftopen");
+				$("#maincontent").removeClass("leftopen");
+				
+			});
 			saveProfileProperty("leftbarstatus",false,function(){
 				$(window).trigger( "resize" );
 			});
 		}
 		else {
+			
 			//open
-			$("#col-left").addClass("leftopen");
-			$("#maincontent").addClass("leftopen");
-			$('.pushcontent').animate({marginLeft: "+=220px"});
-			//$(window).trigger( "resize" );
+			$('.pushcontent').animate({marginLeft: "+=220px"}, function() {
+				$("#col-left").addClass("leftopen");
+				$("#maincontent").addClass("leftopen");
+			});
 			saveProfileProperty("leftbarstatus",true,function(){
 				$(window).trigger( "resize" );
 			});
 		}
 		
-		$("#lefttoggle").toggleClass("hide");
+		
 		return false;
 	});
 

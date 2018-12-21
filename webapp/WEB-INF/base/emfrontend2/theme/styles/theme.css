@@ -421,6 +421,7 @@ select + .select2-container {
 /**MainContent*/
 #application #emcontainer { 
 	padding: 0; 
+	overflow: hidden;
 	}
 
 
@@ -1601,7 +1602,7 @@ td.checkbox input, th.firstheader input {
 	position:absolute;
 	width:14px;
 	font-size:16px;
-	top:4px;
+	top:2px;
 }
 .emtree .cat-arrow .fa-caret-right {
 	padding-left:4px;
@@ -1612,14 +1613,18 @@ td.checkbox input, th.firstheader input {
 	display: inline-block;
 }
 .emtree .cat-name.cat-folder {
-    background: url(../images/folder.svg) 14px 2px no-repeat;
+    background: url(../images/folder-closed.png) 14px 2px no-repeat;
 }
 .emtree .expanded .cat-name.cat-folder {
-	background: url(../images/folder-open.gif) 14px 2px no-repeat;
+	background: url(../images/folder-open.png) 14px 2px no-repeat;
 }
 .emtree .cat-name.cat-collection {
-    background: url(../images/collection.png) 14px 2px no-repeat;
+    background: url(../images/folder-collection-closed.png) 14px 2px no-repeat;
 }
+.emtree .expanded .cat-name.cat-collection {
+    background: url(../images/folder-collection-open.png) 14px 2px no-repeat;
+}
+
 .emtree .cat-folder {
     /*white-space: nowrap;*/
 }
@@ -2375,7 +2380,7 @@ label.error {
 .emlist .list-row .category {
     padding-left: 22px;
     padding-top: 0px;
-    background: url('../images/folder-closed.gif') 6px 2px no-repeat;
+    background: url('../images/folder-closed.png') 6px 2px no-repeat;
     margin: 0 10px 0 0 ;
     position:relative;
 }
