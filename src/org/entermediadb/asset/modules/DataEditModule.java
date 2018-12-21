@@ -1847,7 +1847,8 @@ public class DataEditModule extends BaseMediaModule
 
 		}
 		inReq.setRequestParameter("save", "true");
-
+		String path = inReq.getRequestParameter("page");
+		log.info("Saving HTML content size:" + content.length() + " path:" + path + " user:" + inReq.getUserName());
 		saveData(inReq);
 
 	}
