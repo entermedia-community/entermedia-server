@@ -324,6 +324,17 @@ a {
 select.form-control:not([size]):not([multiple]) {
     height: calc(2rem);
 }
+select.form-control-sm:not([size]):not([multiple]) {
+    height: calc(1.7rem);
+        padding: .175rem .75rem;
+        line-height: 1.1;
+}
+.resultsnavtitem .select2-container--bootstrap4 .select2-selection--single {
+	height: calc(1.25rem + 2px)!important
+}
+.resultsnavtitem  .select2-container--bootstrap4 .select2-selection--single .select2-selection__rendered {
+	line-height: 1.5;
+}
 .form-control-sm {
 	width:200px;
 	margin-right: 10px;
@@ -590,7 +601,7 @@ html, body, #application {
     top: 45px; 
     left: 0;
     background-color: #fff; 
-    overflow-x: hidden; 
+/*    overflow-x: hidden;*/ 
     transition: 0.2s;
 }
 .col-left.leftopen {
@@ -1613,16 +1624,16 @@ td.checkbox input, th.firstheader input {
 	display: inline-block;
 }
 .emtree .cat-name.cat-folder {
-    background: url(../images/folder-closed.png) 14px 2px no-repeat;
+    background: url(../images/folder-blue-closed.png) 14px 2px no-repeat;
 }
 .emtree .expanded .cat-name.cat-folder {
-	background: url(../images/folder-open.png) 14px 2px no-repeat;
+	background: url(../images/folder-blue-open.png) 14px 2px no-repeat;
 }
 .emtree .cat-name.cat-collection {
-    background: url(../images/folder-collection-closed.png) 14px 2px no-repeat;
+    background: url(../images/folder-closed.png) 14px 2px no-repeat;
 }
 .emtree .expanded .cat-name.cat-collection {
-    background: url(../images/folder-collection-open.png) 14px 2px no-repeat;
+    background: url(../images/folder-open.png) 14px 2px no-repeat;
 }
 
 .emtree .cat-folder {
@@ -1840,8 +1851,14 @@ td.checkbox input, th.firstheader input {
 }
 .opencollections ul li:last-child { padding-top: 10px;}
 .opencollections ul li:last-child:hover { background-color: transparent; padding-top: 10px;}
-.opencollections .collectionrow {
+.opencollections .collectionrow{
 	position: relative;
+    background: url(../images/folder-closed.png) 0 4px no-repeat;
+    padding-left:20px
+}
+.opencollections .collectionrowfavorite {
+	background: none;
+	padding-left:0;
 }
 .collectionclose,
 .filterclose {
@@ -2380,7 +2397,7 @@ label.error {
 .emlist .list-row .category {
     padding-left: 22px;
     padding-top: 0px;
-    background: url('../images/folder-closed.png') 6px 2px no-repeat;
+    background: url('../images/folder-blue-closed.png') 6px 2px no-repeat;
     margin: 0 10px 0 0 ;
     position:relative;
 }
@@ -2404,10 +2421,12 @@ label.error {
 .summarytab .list-library,
 .summarytab .list-collection {
 	display: block;
+	background: url(../images/folder-closed.png) 6px 4px no-repeat;
+    padding-left:26px;
 	line-height: 1.8;
-	padding: 0 8px;
 	text-decoration: none;
 }
+
 .summarytab .list-library i,
 .summarytab .list-collection i {
 	margin-right: 8px;

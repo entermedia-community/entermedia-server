@@ -29,7 +29,7 @@
 				data-collectionid="$collection.getId()"
 				data-targetdiv="left-col-opencollections"
 			>
-				<div class="collectionrow">
+				<div class="collectionrow collectionrowfavorite">
 					<a  href="$home$apphome/views/modules/librarycollection/media/index.html?collectionid=${collection.getId()}&clearselection=true" 
 					 	class="collectionbox #if ($selected ) selected #end favorite"  
 					 	title="$!{collection}"
@@ -54,7 +54,7 @@
 					 	class="collectionbox #if ($selected ) selected #end"  
 					 	title="$!{collection}"
 					 	data-collectionname="${collection.getName()}">
-					 	<i class="fas fa-th-large"></i> $collection.getName() ($collection.getAssetCount())
+					 	$collection.getName() ($collection.getAssetCount())
 					</a>
 					<div class="collectionicons">
 						<a href="$home$apphome/components/opencollections/closecollection.html?collectionid=${collection.getId()}" 
