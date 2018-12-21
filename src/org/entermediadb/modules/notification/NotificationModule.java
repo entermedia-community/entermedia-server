@@ -20,6 +20,8 @@ import org.openedit.WebPageRequest;
 import org.openedit.locks.Lock;
 import org.openedit.users.User;
 
+import com.fasterxml.jackson.databind.ser.std.UUIDSerializer;
+
 public class NotificationModule extends BaseMediaModule
 {
 	
@@ -200,18 +202,25 @@ public class NotificationModule extends BaseMediaModule
 			// Make sure the owner is notified
 			if (asset == null)
 			{
+				log.info("No asset: " + assetid);
 				continue;
 			}
 			
 			String owner = asset.get("owner");
 			if (owner != null)
 			{
+				log.info("Owner: " + owner);
 				UserChats userchats = loadChats(owner, users);
+				log.info("Got " + userchats.getMessages(asset).size() +  "messages to send to " + owner);
 				userchats.addAssetMessage(asset, message);
 			}
 
 			Collection allmessages = archive.query("chatterbox").exact("channel", assetid).exact("channeltype", "asset").search();
 
+			if ( allmessages != null)
+			{
+				log.info("Got " + allmessages.size() +  "messages for other users member of the chat");
+			}
 			// Look for anyone else in the chat table
 			for (Iterator iterator2 = allmessages.iterator(); iterator2.hasNext();)
 			{
@@ -223,6 +232,14 @@ public class NotificationModule extends BaseMediaModule
 
 			// Check for any collection followers
 			Collection shares = archive.query("librarycollectionshares").orgroup("librarycollection", asset.getCollections()).search();
+			if (shares != null)
+			{
+				log.info("Got " + shares.size() +  "messages for collection's followers");
+			}
+			else
+			{
+				log.info("No collection followers");
+			}
 			for (Iterator iterator2 = shares.iterator(); iterator2.hasNext();)
 			{
 				Data follower = (Data) iterator2.next();
