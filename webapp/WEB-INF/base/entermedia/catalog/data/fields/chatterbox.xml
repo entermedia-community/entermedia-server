@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <properties  beanname="dataSearcher"> 
-  <property id="date" index="true" filter="false" deleted="true" datatype="date" editable="false" stored="true" sortable="true" keyword="false">New
+  <property id="date" index="true" filter="false"  datatype="date" editable="false" stored="true" sortable="true" keyword="false">
     <name> 
       <language id="de"><![CDATA[Datum]]></language>  
       <language id="en"><![CDATA[Date]]></language>  
@@ -9,27 +9,27 @@
       <language id="fr"><![CDATA[Date]]></language> 
     </name> 
   </property>  
-  <property id="channel" index="true" deleted="true" editable="true" stored="true" indextype="not_analyzed">New
+  <property id="channel" index="true"  editable="true" stored="true" indextype="not_analyzed">
     <name> 
       <language id="en"><![CDATA[channel]]></language> 
     </name> 
   </property>  
-  <property id="channeltype" index="true" deleted="true" editable="true" stored="true" type="list" >
+  <property id="channeltype" index="true"  editable="true" stored="true" type="list" >
     <name> 
       <language id="en"><![CDATA[Channel Type]]></language> 
     </name> 
   </property>  
-  <property id="messagetype" index="true" deleted="true" editable="true" stored="true" type="list" >
+  <property id="messagetype" index="true"  editable="true" stored="true" type="list" >
     <name> 
       <language id="en"><![CDATA[<Message Type]]></language> 
     </name> 
   </property>  
-  <property id="message" index="true" deleted="true" editable="true" stored="true">New
+  <property id="message" index="true"  editable="true" stored="true">
     <name> 
       <language id="en"><![CDATA[message]]></language> 
     </name> 
   </property>  
-  <property id="user" index="true" filter="false" deleted="true" editable="false" stored="true" viewtype="user" sortable="true" keyword="false" datatype="list">New
+  <property id="user" index="true" filter="false"  editable="false" stored="true" viewtype="user" sortable="true" keyword="false" datatype="list">
     <name>
       <language id="de"><![CDATA[Benutzername]]></language>
       <language id="en"><![CDATA[User Name]]></language>
