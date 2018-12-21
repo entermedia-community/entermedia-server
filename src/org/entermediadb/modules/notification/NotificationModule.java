@@ -77,6 +77,9 @@ public class NotificationModule extends BaseMediaModule
 			if ( users == null || users.size() == 0)
 			{
 				log.info("No Messages loaded");				
+				log.info("hits: " + hits.size());
+				log.info("messages: " + users!=null?users.size():"null");
+				log.info("startingfrom: " + startingfrom);
 			}
 			else
 			{
