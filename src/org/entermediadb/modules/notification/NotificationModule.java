@@ -6,9 +6,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.asset.modules.BaseMediaModule;
+import org.entermediadb.asset.modules.DataEditModule;
 import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.email.WebEmail;
 import org.openedit.Data;
@@ -19,6 +22,9 @@ import org.openedit.users.User;
 
 public class NotificationModule extends BaseMediaModule
 {
+	
+	private static final Log log = LogFactory.getLog(NotificationModule.class);
+
 	public NotificationModule()
 	{
 		// TODO Auto-generated constructor stub
@@ -37,6 +43,7 @@ public class NotificationModule extends BaseMediaModule
 		Lock lock = archive.getLockManager().lockIfPossible("notificationemails", "module");
 		if (lock == null)
 		{
+			log.error("Could not lock chat notificationemails");
 			return;
 		}
 		try
@@ -56,15 +63,25 @@ public class NotificationModule extends BaseMediaModule
 			Collection hits = null;
 			if (startingfrom != null)
 			{
+				log.info("Getting hits with last ran date");
 				hits = archive.query("chatterbox").exact("channeltype", "asset").between("date", startingfrom, today).search();
 			}
 			else
 			{
+				log.info("Getting hits without last ran date");
 				hits = archive.query("chatterbox").exact("channeltype", "asset").before("date", today).search();
 			}
 
 			Map users = loadUserMessages(archive, hits);
 
+			if ( users == null || users.size() == 0)
+			{
+				log.info("No Messages loaded");				
+			}
+			else
+			{
+				log.info("Messages loaded");				
+			}
 			sendEmails(archive, users, "chat");
 			event.setValue("lastrandate", today);
 			archive.saveData("eventmanager", event);
@@ -87,6 +104,7 @@ public class NotificationModule extends BaseMediaModule
 		Lock lock = archive.getLockManager().lockIfPossible("notificationemails", "module");
 		if (lock == null)
 		{
+			log.error("Could not lock metadata notificationemails");
 			return;
 		}
 		try
