@@ -1,3 +1,4 @@
 <page>
-	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
+<layout />
+	<inner-layout />
 </page>
