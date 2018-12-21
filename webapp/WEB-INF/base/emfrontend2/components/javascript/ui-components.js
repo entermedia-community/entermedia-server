@@ -1357,18 +1357,20 @@ uiload = function() {
 var resizecolumns = function() {
 	//makethem same top
 	var sidebarsposition = $("#resultsdiv").position();
+	var sidebarstop = 0;
 	if (typeof sidebarsposition != "undefined") {
-		var sudebarstop = sidebarsposition.top;
-		$('.col-filters').css('top',sudebarstop + 'px');
-		$('.col-left').css('top',sudebarstop + 'px');
+		sidebarstop = sidebarsposition.top;
+		$('.col-filters').css('top',sidebarstop + 'px');
+		$('.col-left').css('top',sidebarstop + 'px');
 	}
 	var allheights  = $("#header").height() + $("#EMnav").height() + $("#footer").height();
 	if ($(".filtered").height()) {
 		allheights += $(".filtered").height();
 	}
 	
+
 	var columnsheight = $("body").height() - allheights;
-	var sidebartop = 0;
+	var sidebartop = 1;
 	$(".col-main").each(function(){
 		var thisheight = $(this).height();
 		if ($(this).children(0)	&& $(this).children(0).hasClass("sidebar-inner")) {
@@ -1378,13 +1380,11 @@ var resizecolumns = function() {
 		if (thisheight > columnsheight) {
 			columnsheight = thisheight;
 		}
-		sidebartop = parseInt($(this).css("top"));
 	});
-	$(".col-main").css("min-height", columnsheight);
+	$(".col-main").css("height", columnsheight);
+	console.log(sidebarstop);
+	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	
-	if (sidebartop>0) {
-		$(".col-content-main").css("height", columnsheight + sidebartop + "px");
-	}
 	
 }
 

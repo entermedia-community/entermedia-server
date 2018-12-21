@@ -601,7 +601,7 @@ html, body, #application {
     top: 45px; 
     left: 0;
     background-color: #fff; 
-    overflow-x: hidden; 
+/*    overflow-x: hidden;*/ 
     transition: 0.2s;
 }
 .col-left.leftopen {
