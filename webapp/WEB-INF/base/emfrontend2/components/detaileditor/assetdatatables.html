@@ -4,20 +4,29 @@
 #set($hitssessionid = $context.findValue("hitssessionid"))
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
-#set($query = $viewsearcher.createSearchQuery().append("moduleid",$moduleid).append("systemdefined","false").append("rendertype","table") )
+#set($query = $viewsearcher.createSearchQuery().append("moduleid","asset").append("systemdefined","false").append("rendertype","table") )
 $!query.addSortBy("ordering")   
 #set($views = $viewsearcher.search($query))
 
 $context.putPageValue("view", $viewpath)
 #set( $data = $asset)
 $context.putPageValue("data",$asset)
-
+$views.size()
 #foreach( $target in $views)            
  #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
                        #if("$!permissionvalue" == "" || $permissionvalue == true)
+
 #if($target.rendertable)
-      <li #if($viewid == $target.id) class="current" #end byassettype="true">
-          <a class="tab ajax tooltip" title="$target" targetdiv="detaileditor"  href="$home$apphome/views/modules/${moduleid}/edit/moduletable.html?oemaxlevel=3&id=${data.id}&assetid=$data.id&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}">
+    
+				 
+    
+      <li class="footermenu bottomtab #if($viewid == $target.id) tabselected #end " byassettype="true">
+          <a class="expandmenu  assettab" 
+          title="$target"
+           data-link="$home$apphome/views/modules/${moduleid}/edit/moduletable.html?oemaxlevel=3&id=${data.id}&assetid=$data.id&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}"
+           data-assettab="viewtable"
+           
+           >
 	          <span class="icon"></span><span class="text">$target</span>
           </a>
       </li>
@@ -25,4 +34,6 @@ $context.putPageValue("data",$asset)
       #end
       #set($permission = "")
 #end
-      <li class="divider"></li>
+
+
+
