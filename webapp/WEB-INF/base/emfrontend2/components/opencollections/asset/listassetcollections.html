@@ -12,7 +12,7 @@
 	<div class="emlist">
 		#foreach ($collection in $asset.getCollections())
 			<div  class="list-row">
-			 <a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="list-collection"><i class="fas fa-box"></i>$collection</a>
+			 <a href="$home$apphome/views/modules/librarycollection/media/${collection.getId()}.html" class="list-collection">$collection</a>
 			 #if( $caneditassetcategories )
 			 	<a class="ajax list-delete"  data-targetdiv="assetcollectionresults" href="$home$apphome/components/opencollections/asset/removeasset.html?assetid=$asset.id&collectionid=$collection.id">
 			 	<i class="fas fa-times"></i></a>
