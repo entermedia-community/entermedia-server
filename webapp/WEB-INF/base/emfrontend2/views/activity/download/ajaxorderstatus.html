@@ -3,7 +3,7 @@ $pages.include("$apphome/views/activity/download/listitems.html")
 	
 #elseif( $order.orderstatus == "error" )
 
-Error
+[[Error]]
 
 $!order.orderstatusdetail
 
@@ -11,7 +11,7 @@ $pages.include("$apphome/views/activity/download/listitems.html")
 
 #else
 
-<div id="status$order.id" class="ajaxstatus" ajaxpath="$home$apphome/views/activity/download/ajaxorderstatus.html?orderid=$order.id" period="2000">
+<div id="status$order.id" class="ajaxstatus" ajaxpath="$home$apphome/views/activity/download/ajaxorderstatus.html?orderid=$orderid" period="2000">
 
 [[Preparing files for download]]
 

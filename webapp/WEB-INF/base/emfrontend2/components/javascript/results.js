@@ -253,14 +253,18 @@ $(document).ready(function(url,params)
 			}
 		});
 		stopautoscroll = false;
-		 $("body").css({ overflow: 'auto' })
+		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
-		 
-		 var reloadparent =  window.location.href.split('#')[0];
-		 if (typeof reloadparent != 'undefined') {
-			 window.location = reloadparent;
-		 }
-
+		var reloadonhide =  $(inOverlay).data('reloadonclose');
+		if (reloadonclose == undefined) {
+			reloadonclose = true;
+		}
+		if (reloadonclose) {
+			var reloadparent =  window.location.href.split('#')[0];
+			if (typeof reloadparent != 'undefined') {
+				 window.location = reloadparent;
+			}
+		}
 		var lastscroll = getOverlay().data("lastscroll");
 		$(window).scrollTop( lastscroll );
 	}
