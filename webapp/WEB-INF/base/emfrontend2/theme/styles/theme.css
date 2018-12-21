@@ -555,8 +555,8 @@ html, body, #application {
 .col-content-main.leftopen {
 /*	margin-left:220px;*/
 }
-.pushcontent {
-	;
+.leftopen .pushcontent {
+	margin-left:220px;
 }
 .col-content-main.filtersopen {
 	margin-right:220px;

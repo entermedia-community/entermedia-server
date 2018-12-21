@@ -1386,7 +1386,7 @@ $.fn.equalHeights = function(px) {
 var resizecolumns = function() {
 	//makethem same top
 	var sidebarsposition = $("#resultsdiv").position();
-	if (typeof sidebarsposition != undefined) {
+	if (typeof sidebarsposition != "undefined") {
 		var sudebarstop = sidebarsposition.top;
 		$('.col-filters').css('top',sudebarstop + 'px');
 		$('.col-left').css('top',sudebarstop + 'px');
