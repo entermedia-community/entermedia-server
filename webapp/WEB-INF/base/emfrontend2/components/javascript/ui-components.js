@@ -1367,7 +1367,6 @@ var resizecolumns = function() {
 	if ($(".filtered").height()) {
 		allheights += $(".filtered").height();
 	}
-	
 
 	var columnsheight = $("body").height() - allheights;
 	var sidebartop = 1;
@@ -1381,8 +1380,7 @@ var resizecolumns = function() {
 			columnsheight = thisheight;
 		}
 	});
-	$(".col-main").css("height", columnsheight);
-	console.log(sidebarstop);
+	$(".col-filters, .col-left").css("height", columnsheight);
 	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	
 	

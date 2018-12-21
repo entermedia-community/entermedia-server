@@ -281,9 +281,7 @@ $(document).ready(function(url,params)
 	
 	showAsset = function(assetid,pagenum)
 	{
-		
-		
-		
+
 		var mainmedia = $("#main-media-viewer");
 		var resultsdiv = $("#resultsdiv");
 		if( !pagenum )
