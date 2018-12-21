@@ -76,7 +76,7 @@ public class NotificationModule extends BaseMediaModule
 
 			Map users = loadUserMessages(archive, hits);
 
-			if ( users == null || users.size() == 0)
+			if ( users == null || (users != null && users.size() == 0))
 			{
 				log.info("No Messages loaded");				
 				log.info("hits: " + hits.size());
