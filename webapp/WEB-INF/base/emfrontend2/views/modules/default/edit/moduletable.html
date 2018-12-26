@@ -43,12 +43,11 @@ $context.putPageValue("canedittable", $caneditdata)
 
 
 #if( $searchtype == "librarycollection")
-#set( $args = "$args&viewdetailspath=$apphome/views/modules/librarycollection/media/")
+	#set( $args = "$args&viewdetailspath=$apphome/views/modules/librarycollection/media/")
 #end
+
 #if($viewdata.rendercustomview)
-$pages.include("$searchhome/edit/table/${viewdata.rendercustomview}.html?$args", $context)
-
+	$pages.include("$searchhome/edit/table/${viewdata.rendercustomview}.html?$args", $context)
 #else
-$pages.include("$searchhome/edit/table/generictable.html?$args", $context)
-
+	$pages.include("$searchhome/edit/table/generictable.html?$args", $context)
 #end

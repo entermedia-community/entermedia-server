@@ -52,7 +52,7 @@
 #if( $showit )
 <div id="${viewid}editor" >
 	#if( !$edit || $edit == "false")
-	$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
+		$pages.include("/$applicationid/components/xml/table.html?$args&passalong=$passalong",$context)
 	#if( !$parser.parseBoolean($edit) && ($caneditdata || $caneditasset) && !$print.equals("true"))
 	
 	<div class="addnew-generic">
@@ -78,17 +78,17 @@
 		#set($themodule = false )
 		#set($themodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
 		<div style="padding: 10px;">
-				<a href="$home$viewdetailspath${id}.html"><div class="largeicon" title="[[see more details]]"><i class="fas fa-external-link-alt"></i> [[View In $themodule]]	</div> </a>
+				<a href="$home$viewdetailspath${id}.html">
+				<div class="largeicon" title="[[see more details]]"><i class="fas fa-external-link-alt"></i> [[View In $themodule]]	</div> 
+				</a>
 		</div>
 		#end
-		
-
 		  $pages.include("/$applicationid/components/xml/detaileditor.html",$context)
 		</div>
 		<div style="margin: 20px 0 0">
 			<input class="btn btn-sm btn-primary "  type="submit" value="[[Save Values]]"/>
-			<a class="btn btn-sm btn-danger ajax" data-confirm="[[Are you sure?]]" style="margin-left:10px;" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
 			<a class="btn btn-sm btn-secondary ajax" style="margin-left: 10px;" targetdiv='${viewid}editor' href="$home$editpath?$args&edit=false&oemaxlevel=1">[[Cancel]]</a>
+			<a class="btn btn-sm btn-danger float-right ajax" data-confirm="[[Are you sure?]]" style="" targetdiv='${viewid}editor' href="$home${page.directory}/table-deleterow.html?delete=true&$args&edit=false&oemaxlevel=1&id=$id">[[Delete]]</a>
 		</div>
 
 		<input name="field" type="hidden" value="$fieldexternalid" />

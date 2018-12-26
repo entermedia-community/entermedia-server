@@ -328,7 +328,7 @@ uiload = function() {
 
 				var findmodal = form.closest(".modal");
 				if (findmodal && findmodal.modal) {
-					findmodal.modal("hide");
+					//findmodal.modal("hide");
 				}
 
 				var reset = form.data("reset")
@@ -539,7 +539,18 @@ uiload = function() {
 				emselectable.find('.emneedselection').each(function() {
 					clicked.removeAttr('disabled');
 				});
-				form.submit();
+				//form.submit();
+				var targetdiv = form.data("targetdiv");
+				if ((typeof targetdiv) != "undefined") {
+					$(form).ajaxSubmit({
+						target : "#" + targetdiv
+					});
+				} else {
+					$(form).trigger("submit");
+				}
+				if (form.hasClass("autoclose")) {
+					form.closest(".modal").modal("hide");
+				}
 			} else if (url != undefined) {
 				if (url == "") {
 					return true;

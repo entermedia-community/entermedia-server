@@ -146,7 +146,7 @@
 	
 	#else
 	
-	<form name="editrow" method="post" class="ajaxform" targetdiv="${viewid}editor" action="$home$link?$passalongdec">
+	<form name="editrow" method="post" class="ajaxform" targetdiv="${viewid}editor"  data-targetdiv="${viewid}editor"action="$home$link?$passalongdec">
 	
 	#set($fieldname = $context.getRequestParameter("fieldname"))
 	#if (!$fieldname)

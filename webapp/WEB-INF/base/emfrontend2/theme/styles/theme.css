@@ -1171,12 +1171,17 @@ html, body, #application {
     width: 28px;
     text-align: left;
 }
-#emcontainer #emselectable #main-results-table tr td {
+.emselectable #main-results-table tr {
+	cursor:pointer;
+}
+.emselectable #main-results-table tr td {
     text-align: left;
     border-left: 1px dashed #E2EFF4;
-    padding: 0 10px;
+    padding: 2px 10px;
 }
-
+.emselectable pre {
+	margin:0;
+}
 #th-checkbox-right {
 		display:inline-block;
 		height:18px;
