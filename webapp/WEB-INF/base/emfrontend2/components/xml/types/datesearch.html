@@ -46,6 +46,15 @@
 		#set($before = $context.getRequestParameter("${inputname}.before"))
 	#end
 	
+	##Verify filters Value
+	#if(!$after || !$before)
+		#if($val)
+			#set($dates = $val.split("\-"))
+			#set($after = $dates[0].trim())
+			#set($before = $dates[1].trim())
+		#end
+	#end
+	
 	
 	<script type="text/javascript">
 		updateDateInput${inputid} = function(value)
