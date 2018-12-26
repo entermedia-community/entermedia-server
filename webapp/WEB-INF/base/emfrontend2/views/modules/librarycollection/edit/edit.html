@@ -40,14 +40,14 @@ $context.putPageValue("viewid", $view.id)
     	
     	$context.putPageValue("view", $viewpath)
 
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set ( $moduleid = $context.findValue("module") )
-#if($caneditdata)
-$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
-#else
-##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
-$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
-#end
+	#set( $origURL = $context.getRequestParameter("origURL" ) )
+	#set ( $moduleid = $context.findValue("module") )
+	#if($caneditdata)
+		$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
+	#else
+		##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
+		$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
+	#end
     #if($caneditdata)
     <input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
     #end
