@@ -62,7 +62,7 @@
 #else
 	href="$home$apphome/views/modules/asset/index.html?hitssessionid=$hits.getSessionId()&removeterm=$term.getId()"
 #end
-	class="badge badge-light">$term.getDetail() : 
+	class="badge badge-light">$term.getDetail(): 
 	#foreach( $val in $term.getValueCollection() ) 
 		#if( $foreach.count > 1) or #end
 		#if($term.getDetail().isList())
@@ -73,9 +73,23 @@
 			#else
 				[[False]]
 			#end
-		#else
+		#elseif($term.getDetail().isDate())
+			#set($op = $term.operation)
+			#if($op == "afterdate")
+				[[After]]:
+			#elseif($op == "beforedate")
+				[[Before]]:
+			#elseif($op == "betweendates")
+				[[Between]]:
+			#end
+			
 			$term.getValue()
-		#end 
+		#else
+			
+			$term.getValue()
+		#end
+		
+		 
 	#end <i class="fas fa-times"></i></a>
 #end
 #if( $hits.getSearchQuery().hasMainInput() || !$terms.isEmpty() )

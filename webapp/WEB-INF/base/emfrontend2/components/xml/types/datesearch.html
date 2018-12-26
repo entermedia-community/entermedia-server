@@ -1,10 +1,11 @@
 #set( $inputname = "${detail.id}" )
 #if($catalogid)
-#set ($inputid = "${detail.id}${catalogid}")
+	#set ($inputid = "${detail.id}${catalogid}")
 #else
-#set($inputid="${detail.id}")
+	#set($inputid="${detail.id}")
 #end
 #set ($inputid = $inputid.replaceAll("/",""))
+
 #if ($detail.get("daterange")=="true")
 	<input name="operation" type="hidden" value="after" />
 	<input name="${inputname}.value"  id="datevalue${inputid}before" 
@@ -17,11 +18,12 @@
 	<input type="text" class="datepicker " data-targetid="datebox${inputid}after" value="$!val" size="8" /> 
 #else
 
-	#set( $op = $term.getParameter("op") )
+	#set( $op = $term.operation )
+	
 	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" class="form-control">
 		<option value="equals" >[[Equals]]</option>
-		<option value="after" #if( $op && $op == "after" )selected #end>[[After Date]]</option>
-		<option value="before" #if( $op && $op == "before" )selected #end >[[Before Date]]</option>
+		<option value="after" #if( $op && $op == "afterdate" )selected #end>[[After Date]]</option>
+		<option value="before" #if( $op && $op == "beforedate" )selected #end >[[Before Date]]</option>
 		<option value="betweendates" #if( $op && $op == "betweendates" )selected #end >[[Between]]</option>
 		<option value="before1" #if( $op && $op == "before1" )selected #end>[[Past 24 hours]]</option>
 		<option value="before7" #if( $op && $op == "before7" )selected #end>[[Past week]]</option>
@@ -48,6 +50,7 @@
 	<script type="text/javascript">
 		updateDateInput${inputid} = function(value)
 		{
+			var form = $("#dateinput${inputid}").closest('form');
 			var oneinput = 	'<input name="${inputname}.value"  id="datebox${inputid}" value="$!val" size="8" type="hidden"><input type="text" class="datepicker form-control" data-targetid="datebox${inputid}" /> ';
 			var twoinputs = '<input name="${inputname}.after"  id="dateafter${inputid}" value="$!after" size="8" type="hidden"> \
 						<input type="text" class="datepicker form-control" data-targetid="dateafter${inputid}" value="$!after" size="8" /> \
@@ -61,15 +64,36 @@
 				$("#dateinput${inputid}").html(oneinput);
 				//valueblock.style.display='block';
 				//rangeblock.style.display='none';
+				if ($(form).hasClass("autosubmitform")) {
+					$('input[type=text]',form).change( function() 
+					{
+					    form.trigger("submit");
+					});
+				}
 			}
 			else if ( value == 3 )
 			{
 				$("#dateinput${inputid}").html(twoinputs);
+				if ($(form).hasClass("autosubmitform")) {
+					$('input[type=text]',form).change( function() 
+					{
+					    //verify both inputs not empty
+					    if ($("#datebefore${inputid}").val() != '' && $("#dateafter${inputid}").val() != '') {
+							form.trigger("submit");
+					    }
+					});
+				}
+				
 			}
 			else
 			{
 				$("#dateinput${inputid}").html("");
+				if ($(form).hasClass("autosubmitform")) {
+				    form.trigger("submit");
+				}
 			}
+			
+
 		}
 		updateDateInput${inputid}(document.getElementById('operation${inputid}').selectedIndex);
 	</script>

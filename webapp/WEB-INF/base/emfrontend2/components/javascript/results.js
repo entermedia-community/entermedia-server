@@ -131,30 +131,35 @@ $(document).ready(function(url,params)
 		
 	});
 
+	autosubmitformtriggers = function(form) {
+		if ($(form).hasClass("autosubmitform")) {
+			$('select',form).on('select2:select', function() 
+			{
+			    form.trigger("submit");
+			});
+			
+			$('input[type=checkbox]',form).change( function() 
+			{
+			    form.trigger("submit");
+			});
+			$('input[type=radio]',form).change( function() 
+					{
+					    form.trigger("submit");
+					});
+	
+			$('input[type=text]',form).change( function() 
+			{
+			    form.trigger("submit");
+			});
+		}
+	}
+	
 	lQuery(".autosubmitform").livequery(function() 
 	{
-		var form = $(this);
-		$('select',form).on('select2:select', function() 
-		{
-		    form.trigger("submit");
-		});
-		
-		$('input[type=checkbox]',form).change( function() 
-		{
-		    form.trigger("submit");
-		});
-		$('input[type=radio]',form).change( function() 
-				{
-				    form.trigger("submit");
-				});
-
-		$('input[type=text]',form).change( function() 
-		{
-		    form.trigger("submit");
-		});
-		
-		
+		autosubmitformtriggers($(this));
+				
 	});
+	
 	overlayResize = function()
 	{
 		var img = $("#hiddenoverlay #main-media");
