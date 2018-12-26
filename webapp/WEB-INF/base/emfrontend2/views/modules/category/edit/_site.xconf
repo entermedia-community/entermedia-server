@@ -8,7 +8,7 @@
 			<searchtype>category</searchtype>
     </path-action>
     
-  	<inner-layout>/${applicationid}/theme/layouts/categorylayout.html</inner-layout>
+  	
     
     <property name="defaulttab">settingstab</property>
 </page>

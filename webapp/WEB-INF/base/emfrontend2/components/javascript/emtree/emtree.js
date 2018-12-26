@@ -229,13 +229,15 @@ $(document).ready(function()
 	}
 	lQuery(".treecontext #nodeproperties").livequery('click', function(event) 
 	{
-				event.stopPropagation();
+				//event.stopPropagation();
 				var node = getNode(this);
 				var tree = node.closest(".emtree");
 				var nodeid = node.data('nodeid');
-				var link = tree.data("home") + "/views/modules/category/edit/edit.html?categoryid=" + nodeid + "&id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral"; 
-				document.location = link;
-				return false;
+				var link = tree.data("home") + "/views/modules/category/edit/edit.html?categoryid=" + nodeid + "&id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral";
+				$(this).attr('href',link);
+				emdialog($(this), event);
+				//document.location = link;
+				//return false;
 	} );
 
 	lQuery(".treecontext #addmedia").livequery('click', function(event) 
@@ -352,7 +354,6 @@ function getPosition(e) {
 	  	var noderow = item;
 	  //var noderow = $(this); // LI is the think that has context .find("> .noderow");
 	  	var pos = getPosition(e);
-	  	console.log(e);
 		var xPos = pos.x;
 		var yPos = pos.y - 10;
 		
