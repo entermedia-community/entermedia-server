@@ -8,6 +8,8 @@
 			<property name="searchtype">settingsgroup</property>
 	</path-action>
 	
+	<path-action name="ProjectModule.redirectToCollection"/>
+	
 	<path-action name="DataEditModule.loadData" >
 			<pageval>librarycol</pageval>
 			<searchtype>${module}</searchtype>
