@@ -260,7 +260,7 @@ $(document).ready(function(url,params)
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
-		var reloadonhide =  $(inOverlay).data('reloadonclose');
+		var reloadonclose =  $(inOverlay).data('reloadonclose');
 		if (reloadonclose == undefined) {
 			reloadonclose = true;
 		}

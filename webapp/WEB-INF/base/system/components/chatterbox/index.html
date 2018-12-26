@@ -33,14 +33,14 @@
 					  </button>
 					  <div class="dropdown-menu" aria-labelledby="dropdownChatterMenuActions">
 							#if(!$asset.editstatus.equals("6"))
-							<a class="dropdown-item chatter-send" href="#" data-command="approveasset">Approve</a>&nbsp;
+							<a class="dropdown-item chatter-send" href="#" data-command="approveasset">[[Approve]]</a>
 							#end
 							
 							#if(!$asset.editstatus.equals("rejected"))
 							
-						    <a class="dropdown-item chatter-send" href="#" data-command="rejectasset">Reject</a> &nbsp;
+						    <a class="dropdown-item chatter-send" href="#" data-command="rejectasset">[[Reject]]</a>
 						    #end
-						  ##  <a class="dropdown-item" href="#"data-command="replaceasset">Replace</a>
+						  ##  <a class="dropdown-item" href="#"data-command="replaceasset">[[Replace]]</a>
 					  </div>
 					  </div>
 					</div>
