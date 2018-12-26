@@ -383,87 +383,93 @@ uiload = function() {
 
 	});
 
-	lQuery("a.emdialog").livequery(
-			"click",
-			function(event) {
-				event.stopPropagation();
-				var dialog = $(this);
-				var hidescrolling = dialog.data("hidescrolling");
+	
+	
+	emdialog = function(dialog, event) {
+		event.stopPropagation();
+		var dialog = dialog;
+		var hidescrolling = dialog.data("hidescrolling");
 
-				var width = dialog.data("width");
-				if (!width) {
-					width = "800";
-				}
+		var width = dialog.data("width");
+		if (!width) {
+			width = "800";
+		}
 
-				var id = "modals";
-				var modaldialog = $("#" + id);
-				if (modaldialog.length == 0) {
-					$("body").append(
-							'<div class="modal " tabindex="-1" id="' + id
-									+ '" style="display:none" ></div>');
-					modaldialog = $("#" + id);
-				}
-				var link = dialog.attr("href");
+		var id = "modals";
+		var modaldialog = $("#" + id);
+		if (modaldialog.length == 0) {
+			$("body").append(
+					'<div class="modal " tabindex="-1" id="' + id
+							+ '" style="display:none" ></div>');
+			modaldialog = $("#" + id);
+		}
+		var link = dialog.attr("href");
 
-				var options = dialog.data();
-				var param = dialog.data("parameterdata");
-				if (param) {
-					var element = $("#" + param);
-					var name = element.prop("name");
-					options[name] = element.val();
-				}
+		var options = dialog.data();
+		var param = dialog.data("parameterdata");
+		if (param) {
+			var element = $("#" + param);
+			var name = element.prop("name");
+			options[name] = element.val();
+		}
 
-				modaldialog.load(link, options, function() {
-					$(".modal-lg").css("min-width", width + "px");
-					// $(".modal-lg").css("min-height",height + "px" );
-					
-					var modalkeyboard = true;
-					var noesc = dialog.data("noesc");
-					if (noesc != null && noesc == true) {
-						 modalkeyboard = false;
-					}
-					modaldialog.modal({
-						keyboard : modalkeyboard,
-						backdrop : true,
-						"show" : true
-					});
-					// fix submit button
-					var justok = dialog.data("cancelsubmit");
-					if (justok != null) {
-						$(".modal-footer #submitbutton", modaldialog).hide();
-					} else {
-						var id = $("form", modaldialog).attr("id");
-						$("#submitbutton", modaldialog).attr("form", id);
-					}
-					var title = dialog.attr("title");
-					if (title == null) {
-						title = dialog.text();
-					}
-					$(".modal-title", modaldialog).text(title);
-					var hidefooter = dialog.data("hidefooter");
-					if (hidefooter != null) {
-						$(".modal-footer", modaldialog).hide();
-					}
-					var focuselement = dialog.data("focuson");
-
-					if (focuselement) {
-						console.log(focuselement);
-						var elmnt = document.getElementById(focuselement);
-						elmnt.scrollIntoView();
-					} else {
-						$('form', modaldialog).find('*').filter(
-								':input:visible:first').focus();
-					}
-				});
-				
-				//Close drodpown if exists
-				if ($(this).closest('.dropdown-menu').length !== 0) {
-					$(this).closest('.dropdown-menu').removeClass('show');
-				}
-
-				event.preventDefault();
-				return false;
+		modaldialog.load(link, options, function() {
+			$(".modal-lg").css("min-width", width + "px");
+			// $(".modal-lg").css("min-height",height + "px" );
+			
+			var modalkeyboard = true;
+			var noesc = dialog.data("noesc");
+			if (noesc != null && noesc == true) {
+				 modalkeyboard = false;
+			}
+			modaldialog.modal({
+				keyboard : modalkeyboard,
+				backdrop : true,
+				"show" : true
 			});
+			// fix submit button
+			var justok = dialog.data("cancelsubmit");
+			if (justok != null) {
+				$(".modal-footer #submitbutton", modaldialog).hide();
+			} else {
+				var id = $("form", modaldialog).attr("id");
+				$("#submitbutton", modaldialog).attr("form", id);
+			}
+			var title = dialog.attr("title");
+			if (title == null) {
+				title = dialog.text();
+			}
+			$(".modal-title", modaldialog).text(title);
+			var hidefooter = dialog.data("hidefooter");
+			if (hidefooter != null) {
+				$(".modal-footer", modaldialog).hide();
+			}
+			var focuselement = dialog.data("focuson");
+
+			if (focuselement) {
+				console.log(focuselement);
+				var elmnt = document.getElementById(focuselement);
+				elmnt.scrollIntoView();
+			} else {
+				$('form', modaldialog).find('*').filter(
+						':input:visible:first').focus();
+			}
+		});
+		
+		//Close drodpown if exists
+		if (dialog.closest('.dropdown-menu').length !== 0) {
+			dialog.closest('.dropdown-menu').removeClass('show');
+		}
+
+		event.preventDefault();
+		return false;
+	}
+	
+	
+	lQuery("a.emdialog").livequery(
+			"click", function(event) {
+				emdialog($(this), event);
+	});
 
 	lQuery('.emrowpicker table td').livequery("click", function(event) {
 		event.preventDefault();
