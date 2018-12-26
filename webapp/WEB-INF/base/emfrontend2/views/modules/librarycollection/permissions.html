@@ -68,24 +68,22 @@ $context.putPageValue("data", $data )
     	<input name="collectionid" type="hidden" value="$librarycol.getId()" />
     	$context.putPageValue("view", "$searcher.searchType/$viewid")
 
-#set( $origURL = $context.getRequestParameter("origURL" ) )
-#set ( $moduleid = $context.findValue("module") )
-#if($caneditdata)
+		#set( $origURL = $context.getRequestParameter("origURL" ) )
+		#set ( $moduleid = $context.findValue("module") )
+		#if($caneditdata)
+			$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
 
-$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
-
-#else
-
-$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
-#end
-#if( !$context.getRequestParameter("preview") )
-    #if($caneditdata)
-    <input class="btn btn-sm btn-primary"  type="submit" value="[[Save]]" />
-    #end
-    #if($caneditdata || $candelete)	
-    <a class="btn btn-sm btn-danger ajax" targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-left: 10px;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
-    #end
-#end   
+		#else
+			$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
+		#end
+		#if( !$context.getRequestParameter("preview") )
+		    #if($caneditdata)
+		    <input class="btn btn-sm btn-primary"  type="submit" value="[[Save]]" />
+		    #end
+		    #if($caneditdata || $candelete)	
+		    <a class="btn btn-sm btn-danger ajax" targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-left: 10px;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
+		    #end
+		#end   
     </form>
     </div>
 	</div>
