@@ -597,17 +597,18 @@ html, body, #application {
 
 .col-left {
 	height: 100%;
-    width: 0; 
+    width: 220px; 
     position: absolute; 
     /*z-index: 1;*/ 
     top: 45px; 
-    left: 0;
+    left: -220px;
     background-color: #fff; 
 /*    overflow-x: hidden;*/ 
     transition: 0.2s;
 }
 .col-left.leftopen {
-	width:220px;
+	
+	left:0;
 }
 .col-filters {
 	height: 100%;

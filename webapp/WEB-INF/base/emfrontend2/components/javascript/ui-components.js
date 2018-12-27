@@ -1342,28 +1342,26 @@ uiload = function() {
 		$("#lefttoggle").toggleClass("hide");
 		if ($("#col-left").hasClass("leftopen")) {
 			//close
+			$("#col-left").animate({left: "-220px"},100);
 			$('.pushcontent').animate({marginLeft: "-=220px"}, function() {
 				$("#col-left").removeClass("leftopen");
-				$("#maincontent").removeClass("leftopen");
-				
 			});
+			
 			saveProfileProperty("leftbarstatus",false,function(){
 				$(window).trigger( "resize" );
 			});
 		}
 		else {
-			
 			//open
+			$("#col-left").animate({left: "0"},100);
 			$('.pushcontent').animate({marginLeft: "+=220px"}, function() {
 				$("#col-left").addClass("leftopen");
-				$("#maincontent").addClass("leftopen");
 			});
+			
 			saveProfileProperty("leftbarstatus",true,function(){
 				$(window).trigger( "resize" );
 			});
 		}
-		
-		
 		return false;
 	});
 
@@ -1398,6 +1396,7 @@ var resizecolumns = function() {
 		}
 	});
 	$(".col-filters, .col-left").css("height", columnsheight);
+	$(".col-sidebar, .col-content").css("height", columnsheight);
 	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	
 	

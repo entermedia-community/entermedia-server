@@ -1,19 +1,5 @@
-<div id="filteredresults">
-#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
-#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
-#set( $module = $content.module)
-
-##$pages.include("$apphome/components/filters/filters-selected.html", $context)
-
-<div class="cols-main #if ($module) cols-$module #end" id="searchlayout">
-	<div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end" id="col-left">
-		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
-	</div>
-	<div class="col-main col-content-main #if ($leftbarstatus!=false) leftopen #end #if ($filtersbarstatus!=false) filtersopen #end " id="maincontent">
+<div class="searchlayout" id="searchlayout">
+	<div class="" id="maincontent">
 	    	$pages.includeContent()
 	</div>
-	<div class="col-main col-filters #if($filtersbarstatus!=false) filtersopen #end" id="col-filters">
-		$pages.include("$apphome/components/filters/sidebar.html", $context)
-	</div>
-</div>
 </div>
