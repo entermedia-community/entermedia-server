@@ -340,6 +340,8 @@ select.form-control-sm:not([size]):not([multiple]) {
 	margin-right: 10px;
 	display:inline-block;
 	height: calc(1.8rem);
+	padding:.215rem .35rem;
+	font-size: .9rem;
 	}
 .form-control.datepicker {
     width: 240px;

@@ -64,8 +64,8 @@
                 [[Custom Render Type]]
             	<select name="rendertype.value">
             		<option value="default"></option>
-            		<option value="table" #if($view.rendertable) selected #end>One to Many</option>
-            		<option value="external" #if($view.rendertype == "external") selected #end>One to One</option>
+            		<option value="table" #if($view.rendertable) selected #end>[[One to Many]]</option>
+            		<option value="external" #if($view.rendertype == "external") selected #end>[[One to One]]</option>
             	</select>
             </div>
 
@@ -113,13 +113,13 @@
 
             </div>
             #set($editpath = $context.findValue("editPath"))
-            <a class="ajax btn" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
+            <a class="ajax btn btn-sm btn-primary" targetdiv="permissionedit" href="$home$apphome/views/settings/modules/${moduleid}/permissions/xml/edit.html?name=view-${viewid}&editPath=$editpath">[[Edit Permissions]]</a>
 <div id="permissionedit"></div>
             
             <div class="hr" style="margin: 5px 0 0 0"></div>
-            <input class="btn right" style="margin-top: 10px;" type="submit" value="[[Save]]" />
+            <input class="btn btn-sm btn-primary" style="margin-top: 10px;" type="submit" value="[[Save]]" />
             #if($candevelop)
-            <a class="btn" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
+            <a class="btn btn-sm btn-primary" href="$home$viewsroot/makedefault.html?id=$viewid&viewid=$viewid&viewpath=$viewpath&save=true&searchtype=view">[[Make Default]]</a>
             #end
         </form>
 	    </div>

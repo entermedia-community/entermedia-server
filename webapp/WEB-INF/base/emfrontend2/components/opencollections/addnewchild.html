@@ -1,14 +1,14 @@
-<form name="adder" class="ajaxform" targetdiv="left-col-opencollections" action="$home$apphome/components/opencollections/addchildfinish.html"> 
+<form name="adder" class="ajaxform form-inline" targetdiv="left-col-opencollections" action="$home$apphome/components/opencollections/addchildfinish.html"> 
 	<input type="hidden" name="save" value="true"  />
 	<input type="hidden" name="searchtype" value="librarycollection"  />
 	<input type="hidden" name="searchtype" value="librarycollection"  />
 	<input type="hidden" name="field" value="name" />
-	<input type="text" name="name.value"  class="initialtext form-control form-control-sm" style="width:150px" placeholder="[[Enter Name]]" />
+	<input type="text" name="name.value"  class="initialtext form-control form-control-sm" style="width:122px" placeholder="[[Enter Name]]" />
 	<input type="hidden" name="field" value="library"  />
 	<input type="hidden" name="library.value" value="$!context.getRequestParameter('libraryid')"  />
 	<input type="hidden" name="assetid" value="$!context.getRequestParameter('assetid')"  />
 	<input type="hidden" name="hitssessionid" value="$!context.getRequestParameter('hitssessionid')"  />
 	<input type="hidden" name="field" value="owner"  />
 	<input type="hidden" name="owner.value" value="$!context.getUserName()"  />
-	<input class="btn btn-sm" type="submit" value="[[Add]]" />
+	<input class="btn btn-sm btn-primary" type="submit" value="[[Add]]" />
 </form>
