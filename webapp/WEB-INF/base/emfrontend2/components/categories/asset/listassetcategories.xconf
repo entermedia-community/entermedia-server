@@ -1,0 +1,5 @@
+<page>
+	<page-action name="ProjectModule.getCategoryCollectionCache" />
+	<path-action name="CategoryEditModule.addCategoryToAsset"  />
+	<path-action name="MediaArchiveModule.getAsset"  />
+</page>

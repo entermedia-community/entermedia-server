@@ -2410,6 +2410,13 @@ label.error {
     margin: 0 10px 0 0 ;
     position:relative;
 }
+.emlist .list-row .cat-category {
+    background: url('../images/folder-blue-closed.png') 6px 2px no-repeat;
+}
+.emlist .list-row .cat-collection {
+    background: url('../images/folder-closed.png') 6px 2px no-repeat;
+}
+
 
 .list-delete {
 	position:absolute;

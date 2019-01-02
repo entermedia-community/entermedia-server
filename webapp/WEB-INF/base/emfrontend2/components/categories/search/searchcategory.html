@@ -17,6 +17,8 @@
 	#set( $categories = $context.getRequestParameter("category-exact.values") )
 #end	
 
+#set( $assetid = $context.getRequestParameter("assetid") )
+
 <div id="search-catgories">
 <table width="100%">
 <tr><td style="width:30%;padding-right:6px;vertical-align: top;">
@@ -30,7 +32,7 @@
 <td style="vertical-align: top;">
 	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
 			[[Category Search]] 
-		</div>
+	</div>
 	<div id="searchareacontent" >
 	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index&existingcategories=$!categories",$context)
 	</div>
@@ -69,6 +71,14 @@ $(".pickedcategoryform").submit(function(event)
 		event.preventDefault();
 		console.log("submit action $action to $targetdiv");
 		var params = {};
+		#if ($assetid && $detailid == 'categoryid')
+			params["assetid"] =  "$assetid";
+		console.log(params["assetid"]);
+			params["${detailid}"] =  $("#selectedcategories").val();
+		#else
+			params["${detailid}.value"] =  $("#selectedcategories").val();
+			params["detailid"] = "$detailid";
+		#end
 		params["${detailid}.value"] =  $("#selectedcategories").val();
 		params["detailid"] = "$detailid";
 		#if( $pickone )

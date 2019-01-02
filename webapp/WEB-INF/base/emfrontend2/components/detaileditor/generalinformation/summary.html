@@ -56,36 +56,9 @@ $context.putPageValue("showalllanguagevalues",true)
     				</div>
 				#end	
 				
-				$pages.include("$apphome/components/opencollections/asset/listassetcollections.html",$context)
+				##$pages.include("$apphome/components/opencollections/asset/listassetcollections.html",$context)
 					
-				<div class="asset-data-detail assetpanel-editor-box">
-					<h4>[[Categories]]
-					#if( $caneditassetcategories )
-					<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&amp;clearselection=&amp;action=/assets/emshare/components/xml/types/category.html&amp;detailid=category-exact" 
-					   class="detail-edit-icon float-right btn btn-xs emdialog"
-					   data-cancelsubmit="true" data-parameterdata="categoryvalues"
-					   data-noesc="true"
-					   title="[[Add Category]]"><i class="fas fa-plus"></i></a>
-					#end
-					</h4>
-					<div  id="cat-list" class="emlist">
-					#foreach ($category in $asset.categories)
-						<div  class="list-row">
-						<div  class="category">						
-						#foreach( $parent in $category.getParentCategoriesFrom(1))
-						#if( ${foreach.count} > 1) \ #end
-						<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
-						#end
-						</div>
-						#if( $caneditassetcategories )
-					 	<a class="ajax list-delete"  data-targetdiv="assetcollectionresults" href="#">
-					 	<i class="fas fa-times"></i></a>
-					 #end
-						</div>
-					#end
-					
-					</div>
-				</div>
+				$pages.include("$apphome/components/categories/asset/listassetcategories.html",$context)
 			</div>	
 	
 </div></div>
