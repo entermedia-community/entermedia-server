@@ -13,13 +13,15 @@
 	#if( $caneditassetcategories )
 	<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetcategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=${existingcategories}&amp;assetid=${asset.id}&amp;action=$apphome/components/categories/asset/listassetcategories.html" 
 	   class="detail-edit-icon float-right btn btn-xs emdialog"
-	   data-cancelsubmit="true" data-parameterdata="categoryvalues"
+	   data-cancelsubmit="true" 
+	   data-parameterdata="categoryvalues"
 	   data-noesc="true"
 	   title="[[Add Category]]"><i class="fas fa-plus"></i> [[Add Category]]</a>
 	#end
 	#if( $caneditassetcategories )
 	<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
 			   class="detail-edit-icon float-right  btn btn-xs emdialog"
+			   data-cancelsubmit="true" 
 			   data-noesc="true"
 			   title="[[Add Collection]]"><i class="fas fa-plus"></i> [[Add Collection]]</a>
 	#end
