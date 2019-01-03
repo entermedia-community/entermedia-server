@@ -720,7 +720,7 @@ html, body, #application {
 }
 .filter-box-header i,
 .sidebar-component-header i.caret {
-	margin-right: 8px;
+	margin:0 2px 0 4px;
 	width:10px;
 	text-align: right;
 	cursor:pointer;
@@ -735,7 +735,7 @@ html, body, #application {
 }
 
 .filter-box-options {
-	padding:0 20px 0;
+	padding:0 0 0 20px;
 }
 .filter-box-options a,
 .filter-box-options a:visited {
@@ -797,6 +797,28 @@ html, body, #application {
 }
 .filter-box-options .ui-datepicker-trigger {
 	margin-left:5px;
+}
+#detail_category .filter-box-options {
+	padding: 0;
+}
+.filter-box-options .list-row {
+	font-size:.95em;
+}
+.filter-box-options .list-row:hover {
+	background-color: #333!important;
+	color:#eee!important;
+	}
+.filter-box-options .list-row:hover a {
+	color:#eee!important;
+	}
+.filter-box-options .category a {
+	padding:0 3px;
+	display:inline-block;
+	
+}
+#detail_category .btn {
+	display: inline-block;
+	float:right;
 }
 .btn-filters {
 	
@@ -1855,15 +1877,15 @@ td.checkbox input, th.firstheader input {
 }
 .opencollections ul li {
     list-style-type: none;
-    padding: 4px 4px 8px;
+    padding: 4px 0 4px;
     word-wrap: break-word;
 }
 .opencollections ul li:last-child { padding-top: 10px;}
 .opencollections ul li:last-child:hover { background-color: transparent; padding-top: 10px;}
 .opencollections .collectionrow{
 	position: relative;
-    background: url(../images/folder-closed.png) 0 4px no-repeat;
-    padding-left:20px
+    background: url(../images/folder-closed.png) 2px 4px no-repeat;
+    padding-left:22px
 }
 .opencollections .collectionrowfavorite {
 	background: none;
@@ -1908,9 +1930,12 @@ td.checkbox input, th.firstheader input {
     position: absolute;
     right: 0px;
     top:0;
+    padding-right:2px;
     display: none;
 }
-.collectionrow:hover .collectionicons {
+.collectionrow:hover .collectionicons,
+.list-row:hover .collectionicons
+ {
 	display: inline-block;
 }
 

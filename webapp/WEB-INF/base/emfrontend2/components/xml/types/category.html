@@ -4,7 +4,7 @@
 #set( $detailid = $detail.id)
 #end
 
-<div id="addcategory" >
+<div id="addcategory" data-autosubmit="true">
 	#set ($existing = $context.getRequestParameter("${detailid}.value") )
 	#if(!$existing)
 		#set ($existing = $val)
@@ -24,10 +24,10 @@
 			#if($category)
 			<li class="list-row categorydraggable ui-draggable ui-draggable-handle collectionBox" data-nodeid="$categoryid" data-categoryname="$category.getName()">
 					<div class="category ">					
-#foreach( $parent in $category.getParentCategoriesFrom(1))
-#if( ${foreach.count} > 1) \ #end
-<a  href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${category.id}&nodeID=${category.id}">$parent</a>
-#end
+					#foreach( $parent in $category.getParentCategoriesFrom(1))
+					#if( ${foreach.count} > 1) \ #end
+					<a  href="$home$apphome/views/modules/category/categorysearch.html?selectedcategory=${category.id}&nodeID=${category.id}">$parent</a>
+					#end
 				<div class="collectionicons">
 						<a href="#" title="[[Remove]]">
 							<span class="closecategory fas fa-times" data-categoryid="$categoryid"></span>
@@ -41,9 +41,13 @@
 	#end
 
    <input type="hidden" name="operation" value="orsgroup" />
-   	<input type="hidden" id="categoryvalues" name="${detailid}.value" value="$!existing" class="#if($detail.isRequired() && !$multiedit) required #end"  />
+   <input type="hidden" id="categoryvalues" name="${detailid}.value" value="$!existing" class="#if($detail.isRequired() && !$multiedit) required #end"  />
    
-   <a class="emdialog btn btn-xs btn-secondary" href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&detailid=$detailid" data-cancelsubmit="true" data-width="900" data-parameterdata="categoryvalues">[[Pick Categories]]</a>
+   <a class="emdialog btn btn-xs btn-secondary" 
+   		href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&detailid=$detailid" 
+   		data-cancelsubmit="true" 
+   		data-width="900" 
+   		data-parameterdata="categoryvalues">[[Pick Categories]]</a>
 
 <script>
 
