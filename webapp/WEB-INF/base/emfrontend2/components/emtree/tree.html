@@ -1,5 +1,5 @@
-#set($treename = $context.getRequestParameter("tree-name") )
-#set($webtree = $context.getPageValue($treename) )
+#set( $treename = $context.getRequestParameter("tree-name") )
+#set( $webtree = $context.getPageValue($treename) )
 
 #set( $showinput = $webtree.getTreeRenderer().isAllowSelections() )
 #set( $editable = $webtree.getTreeRenderer().isEditable() )

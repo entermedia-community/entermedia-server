@@ -5,12 +5,11 @@ $context.putPageValue("hits",$results)
 $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("category/searchcategory", $userprofile))
 	<form id="autosubmitfilter" name="autosubmitfilter" class="autosubmit" autocomplete="off"  data-targetdiv="categoryresults" action="$home$apphome/components/categories/search/searchpath.html">
-		
-			<input type="hidden" name="searchtype" value="category" />
-			<input type="hidden" name="sortby" value="categorypathUp" />
-			<input type="hidden" name="field" value="parents" />
-			<input type="hidden" name="operation" value="exact" />
-			<input type="hidden" name="parents.value" id="parentfilter" value="$nodeID" />
+		<input type="hidden" name="searchtype" value="category" />
+		<input type="hidden" name="sortby" value="categorypathUp" />
+		<input type="hidden" name="field" value="parents" />
+		<input type="hidden" name="operation" value="exact" />
+		<input type="hidden" name="parents.value" id="parentfilter" value="$nodeID" />
 		<table class="inlinesearch" style="margin:0 4px 10px;width:100%;" >
 			<tr>
 			#foreach( $detail in $details)
@@ -21,16 +20,14 @@ $context.putPageValue("searcher",$searcher)
 			#end
 			</tr>
 		</table>
-		
-		</form>
+	</form>
 
-#set( $existingcategories = $context.getRequestParameter("existingcategories"))			
-		
+
 	<form class="pickedcategoryform emmultivalue" action="$home$apphome/views/categories/index.html">
 		<div id="categoryresults">
 			$pages.include("./searchpath.html", $context)
 		</div>
-			<input name="categoryid" class="emselectedrow" type="hidden" id="selectedcategories" value="$!existingcategories" />
-			<input name="nodeID" class="emselectedrow" type="hidden" />
+		<input name="categoryid" class="emselectedrow" type="hidden" id="selectedcategories" value="$!selectedcategories" />
+		<input name="nodeID" class="emselectedrow" type="hidden" />
 	</form>
 

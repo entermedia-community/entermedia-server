@@ -2,11 +2,10 @@
 #set( $targetdiv = $context.getRequestParameter("targetdiv") )
 #set( $detailid = $context.getRequestParameter("detailid") )
 #if(!$detailid)
-#set( $detailid = "category") 
+	#set( $detailid = "category") 
 #end
 
 #set( $pickone = $context.getRequestParameter("pickone") )
-##Always pickone and close if not defined
 #if (!$pickone)
 	#set( $pickone = true )
 #end
@@ -20,6 +19,16 @@
 #if(!$categories)
 	#set( $categories = $context.getRequestParameter("category-exact.values") )
 #end	
+#if(!$categories)
+	#set( $categories = $context.getRequestParameter("existingcategories") )
+#end
+
+#set( $multivalue = $context.getRequestParameter("multivalue") )
+#if(!$multivalue)
+	#set( $selectedcategories = $categories )
+	$context.putPageValue("selectedcategories",$selectedcategories)
+#end
+
 
 #set( $assetid = $context.getRequestParameter("assetid") )
 
@@ -29,7 +38,7 @@
 	<div class="emsearchfield" style="background-color: #eee; padding:6px"> 
 			[[Parent]] 
 		</div>
-	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;max-height:600px; overflow-y:auto; width:300px">  
+	<div class="assetdropcategory assetdropcategorymove" style="padding:0px;max-height:600px;overflow-y:auto;width:300px">  
 		$pages.include("$apphome/components/emtree/tree.html?tree-name=categoryPickerTree&editabletree=true&clearselection=true",$context)
 	</div>
 </td>
@@ -37,8 +46,8 @@
 	<div class="emsearchfield" style="background-color: #eee; padding:6px; margin-bottom:4px"> 
 			[[Category Search]] 
 	</div>
-	<div id="searchareacontent" >
-	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index&existingcategories=$!categories",$context)
+	<div id="searchareacontent" > 
+	$pages.include("$apphome/components/categories/search/searchcategoryfilter.html?nodeID=index",$context)
 	</div>
 
 </td></tr>	
@@ -49,7 +58,7 @@
 var paintselected = function()
 {
 	#foreach($categoryid in $categories.split("\s*\|\s*"))
-	$('[data-id="${categoryid}"]').addClass("emrowselected");
+	$('[data-resultsnodeid="${categoryid}"]').addClass("emrowselected");
 	#end
 };
 
@@ -72,19 +81,18 @@ $(".pickedcategoryform").submit(function(event)
 {
 	//append to a list of categories from the calling area?
 	#if( $action )
+		//debugger;
 		event.preventDefault();
 		var params = {};
+		params["detailid"] = "$detailid";
 		#if ($assetid && $detailid == 'categoryid')
 			params["assetid"] =  "$assetid";
-			//console.log(params["assetid"]);
 			params["${detailid}"] =  $("#selectedcategories").val();
 		#else
 			params["${detailid}.value"] =  $("#selectedcategories").val();
-			params["detailid"] = "$detailid";
 		#end
-		params["${detailid}.value"] =  $("#selectedcategories").val();
-		params["detailid"] = "$detailid";
 		params["oemaxlevel"] = "1";
+
 		#if( $pickone )
 			params["id"] =  $("#selectedcategories").val();
 			$("#$targetdiv").load("$action", params, function() {

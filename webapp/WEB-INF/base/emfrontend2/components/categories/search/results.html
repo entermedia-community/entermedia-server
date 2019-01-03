@@ -1,5 +1,4 @@
-	
-		<div id="categoryresults">
+<div id="categoryresults">
 <div id="emresultscontent">
 
 #set( $searcher = $mediaarchive.getSearcher("category") )
@@ -27,7 +26,7 @@ $context.putPageValue("viewpostfix",".html")
 			<tr  #if($candelete != "false") data-id="$hit.id" #end class="rowclick #if($selectedid == $hit.id) emhighlight #end">
 			#foreach( $detail in $details)
 				#if( ${foreach.count} == 1)
-				<td class="category categorydraggable ui-draggable ui-draggable-handle" style="padding:.20rem .75rem" data-nodeid="$hit.id" data-categoryname="$hit.name">
+				<td class="category categorydraggable ui-draggable ui-draggable-handle" style="padding:.20rem .75rem" data-resultsnodeid="$hit.id" data-categoryname="$hit.name">
 				#else
 				<td style="padding:.20rem .75rem;">
 				#end

@@ -1,37 +1,47 @@
+#set($existingcategories = "")
+#foreach ($category in $asset.categories)
+	#set($existingcategories = $existingcategories+$category.id+"%7C")
+#end
+#if ($existingcategories)
+	#set($existingcategorieslenght = $existingcategories.length() - 3)
+	#set($existingcategories = $existingcategories.substring(0, $existingcategorieslenght))  
+#end
+
 <div id="assetccategoryresults">
 <div class="asset-data-detail assetpanel-editor-box">
-					<h4>[[Locations]]
-					#if( $caneditassetcategories )
-					<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetccategoryresults&amp;clearselection=&amp;pickone=true&amp;detailid=categoryid&amp;assetid=${asset.id}&amp;action=$apphome/components/categories/asset/listassetcategories.html" 
-					   class="detail-edit-icon float-right btn btn-xs emdialog"
-					   data-cancelsubmit="true" data-parameterdata="categoryvalues"
-					   data-noesc="true"
-					   title="[[Add Category]]"><i class="fas fa-plus"></i> [[Add Category]]</a>
-					#end
-					#if( $caneditassetcategories )
-					<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
-							   class="detail-edit-icon float-right  btn btn-xs emdialog"
-							   data-noesc="true"
-							   title="[[Add Collection]]"><i class="fas fa-plus"></i> [[Add Collection]]</a>
-					#end
-					</h4>
-					<div  id="cat-list" class="emlist">
-					#foreach ($category in $asset.categories)
-					#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
-						<div  class="list-row">
-						<div  class="category #if($iscollection) cat-collection #else cat-category #end">						
-						#foreach( $parent in $category.getParentCategoriesFrom(1))
-						#if( ${foreach.count} > 1) \ #end
-						<a  style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
-						#end
-						</div>
-						#if( $caneditassetcategories )
-					 	<a class="ajax list-delete"  data-targetdiv="assetcollectionresults" href="#">
-					 	<i class="fas fa-times"></i></a>
-					 #end
-						</div>
-					#end
-					
-					</div>
-				</div>
+	<h4>[[Locations]]
+	#if( $caneditassetcategories )
+	<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetccategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=${existingcategories}&amp;assetid=${asset.id}&amp;action=$apphome/components/categories/asset/listassetcategories.html" 
+	   class="detail-edit-icon float-right btn btn-xs emdialog"
+	   data-cancelsubmit="true" data-parameterdata="categoryvalues"
+	   data-noesc="true"
+	   title="[[Add Category]]"><i class="fas fa-plus"></i> [[Add Category]]</a>
+	#end
+	#if( $caneditassetcategories )
+	<a href="$home$apphome/components/opencollections/asset/searchcollectionpicker.html?assetid=$asset.id" 
+			   class="detail-edit-icon float-right  btn btn-xs emdialog"
+			   data-noesc="true"
+			   title="[[Add Collection]]"><i class="fas fa-plus"></i> [[Add Collection]]</a>
+	#end
+	</h4>
+
+	<div  id="cat-list" class="emlist">
+	#foreach ($category in $asset.categories)
+	#set( $iscollection = $categoryCollectionCache.isPartOfCollection($category))
+		<div  class="list-row">
+		<div  class="category #if($iscollection) cat-collection #else cat-category #end">						
+		#foreach( $parent in $category.getParentCategoriesFrom(1))
+			#if( ${foreach.count} > 1) \ #end
+			<a style="padding:0px 4px 4px 4px;" href="$home$apphome/views/categories/${parent.id}.html">$parent</a>
+		#end
+		</div>
+		#if( $caneditassetcategories )
+		 	<a class="ajax list-delete"  data-targetdiv="assetcollectionresults" href="#">
+		 	<i class="fas fa-times"></i></a>
+	 	#end
+		</div>
+	#end
+	
+	</div>
+</div>
 </div>
