@@ -32,6 +32,14 @@ toggleUserProperty = function(property, onsuccess) {
 	
 }
 
+
+
+
+
+
+
+
+
 saveProfileProperty = function(property, value,onsuccess) {
 	app = $("#application");
 	home =  app.data("home");
@@ -392,6 +400,30 @@ onloadselectors = function()
 	
 	lQuery("a.updatebasket").livequery('click', updatebasket);
 //	$("a.updatebasketonasset").livequery('click', updatebasketonasset);
+	
+	
+	lQuery(".em-delete").livequery('click', function(e){
+		var data = jQuery(this).data();
+		var target = jQuery(this).data("target");
+		jQuery.ajax(
+				{
+					url: apphome + "/components/data/delete.html",
+					data: data,
+					success: function()
+					{
+						jQuery(target).fadeOut();
+					}
+				}
+			);
+	     e.preventDefault();
+
+		
+	});
+
+	
+	
+	
+	
 	
 	lQuery("a.propertyset").livequery('click', 
 			function(e)

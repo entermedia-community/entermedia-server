@@ -1,5 +1,8 @@
  <div class="alert alert-secondary chatterbox-chat" role="alert" id="chatter-message-$chat.id">
 <strong> $mediaarchive.getUser($chat.user)</strong>  $!chat.message  
+				 #if($candeletecomments)
+				<a data-id="${chat.id}" data-target="#chatter-message-$chat.id" data-searchtype="chatterbox" class="em-delete badge badge-pill badge-primary float-right" href="#">  X  </a>
+				#end
 <span class="badge badge-pill badge-primary float-right message-time">$context.getDateTime($chat.date)</span>
 				 
 </div>

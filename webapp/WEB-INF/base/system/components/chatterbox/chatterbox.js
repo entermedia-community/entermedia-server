@@ -105,6 +105,7 @@ function connect() {
 
 		jQuery.get( urls, message, function( data ) {
 			listarea.append( data );
+			$(document).trigger("domchanged");
 		});
 	
         scrollToChat();
