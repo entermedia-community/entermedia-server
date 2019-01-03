@@ -18,9 +18,7 @@ $context.putPageValue("cdn",$cdnprefix)
 #if( !$previewonly)
 	#set( $previewonly = false)
 #end
-#if ( $asset.id.startsWith("multiedit:") )
-    #set  ( $ismulti = true)
-#end
+#set( $ismulti = $asset.id.startsWith("multiedit:"))
 #set( $opentab = $userprofile.get("assetopentab"))
 #if( !$opentab)
 	#if( $canmetadatageneral )
@@ -28,6 +26,9 @@ $context.putPageValue("cdn",$cdnprefix)
 	#else
 		#set( $opentab = "viewpreview")
 	#end
+#end
+#if( $ismulti )
+	#set( $opentab = "viewproperties")
 #end
 
 #if($opentab == "viewactions")
@@ -103,12 +104,6 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 				<div class="gorightclick gotoarrows" id="gorightclick"  data-enabled="false" ><span class="fas fa-caret-right overlay-nav gocaret"></span></div>	
 				
 			</li>
-	
-
-
-			
-			
-			
 			<li  class="footermenu bottomtab #if($opentab == "viewpreview")tabselected#end">	
 				<a class="expandmenu assetpreview assettab" 
 					data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewpreview.html"
@@ -145,7 +140,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 					#end
 				#end
 			#end
-			#if ( $canshareasset )
+			#if ( $canshareasset && !$ismulti )
             <li class="footermenu bottomtab">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Share]]">
 			   	 <span class="fas fa-share-alt"></span> [[Share]]</a>
@@ -209,7 +204,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			 #end
             #end
 						
-			#if( !$previewonly )
+			#if( !$previewonly 	&& !$ismulti)
 			<li class="footermenu bottomtab bottomtabactions #if($opentabactions) tabselected #end">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
 			   <span class="fas fa-edit"></span>
@@ -272,17 +267,6 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 					   	</li>
 			   		#end
 			   	#end
-		    	#if( $caneditassetcategories )
-			   	<li>
-			   	<a class="assettab #if($opentabactions=='categorize') dropdown-current #end" 
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=categorize" title="[[Categories]]"
-						data-assettab="viewactions"
-						data-assettabactions="categorize"
-						data-assettabname="[[Categories]]" >
-					[[Categories]]
-					</a>
-			   	</li>
-			   	#end
 		    	#if(!$ismulti && $canviewmap)
 			   	<li>
 			   	<a class="assettab #if($opentabactions=='map') dropdown-current #end" 
@@ -306,7 +290,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 					</a>
 			   	</li>
 			   	#end
-		    	#if( $canconverthistory )
+		    	#if( !$ismulti && $canconverthistory )
 			   	<li>
 			   		<a class="assettab #if($opentabactions=='converthistory') dropdown-current #end" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=converthistory" title="[[History]]"
