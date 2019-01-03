@@ -35,8 +35,7 @@
 	<a class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="navbarActionsDropdown">[[Actions]]
 	</a>
 		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
-				#if(!$canforcebasiccollections)
-		
+		#if(!$canforcebasiccollections)
 		#if( $librarycol && $caneditdata )
 			<a class="dropdown-item emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a>
 	    	<a class="dropdown-item emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a>
@@ -72,6 +71,13 @@
 			   title="[[Add to Favorites]]"  
 			   href="$home$apphome/views/modules/librarycollection/media/addselections.html?hitssessionid=$hits.getSessionId()&searchtype=asset&collectionid=${user.id}-favorites">[[Add To Favorites]]</a>
 		#end
+		#if ($canmetadatageneral && $canmultiedit)
+  		#if ($hits.getSelectionSize() > 1)
+  			#set($link = "editall.html")
+  			#set($text = "[[Multi Edit]] $hits.getSelectionSize()")
+			<a id="multiedit-menu" class="dropdown-item" href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text</a>
+  		#end
+		#end
 	
 		#if($canmultidelete)	    
 	 		<a class="dropdown-item emdialog" 
@@ -87,20 +93,15 @@
 		#set ($enabled=$hits.getSelectionSize() > 0)
 			
 #if( $enabled )
-				
-					#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-					<a class="dropdown-item" href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
-					
-					#else
-					<a class="dropdown-item emdialog" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
-					#end
-					
-			#else
-				
-					<a class="dropdown-item" href="#">[[Download]]</a>
-					
-			#end
-		#end
+	#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
+		<a class="dropdown-item" href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+	#else
+		<a class="dropdown-item emdialog" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+	#end
+#else		
+	<a class="dropdown-item" href="#">[[Download]]</a>
+#end
+#end
 
 
 		</div>

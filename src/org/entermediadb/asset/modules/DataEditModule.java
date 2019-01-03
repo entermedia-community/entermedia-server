@@ -1270,7 +1270,10 @@ public class DataEditModule extends BaseMediaModule
 
 		HitTracker trackerCopy = (HitTracker) inReq.getSessionValue(hitssessionidCopy);
 
-		if (trackerCopy == null || !trackerCopy.getQuery().equals(trackerOriginal.getQuery()) || !trackerCopy.getIndexId().equals(trackerOriginal.getIndexId()) || trackerCopy.getSelectionSize() != trackerOriginal.getSelectionSize())
+		if (trackerCopy == null ||
+				!trackerCopy.getQuery().equals(trackerOriginal.getQuery()) ||
+				!trackerCopy.getIndexId().equals(trackerOriginal.getIndexId()) ||
+				trackerCopy.getSelectionSize() != trackerOriginal.getSelectionSize())
 		{
 			trackerCopy = trackerOriginal.copy();
 			if (trackerOriginal.hasSelections())

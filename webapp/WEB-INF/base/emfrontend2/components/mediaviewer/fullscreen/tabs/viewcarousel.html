@@ -36,7 +36,7 @@
 						$pages.include("$apphome/components/results/badges.html", $context)	
           			</a>
           			<div class="gallery-item-title">
-          			<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($dialoghits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
+          			##<input type="checkbox" class="selectionbox" id="selectionbox_${hit.id}" name="count" value="" #if($dialoghits.isSelected(${hit.id})) checked #end data-dataid="${hit.id}" /> 
  					<label for="selectionbox_${hit.id}" class="">${hit.name}</label>
  					</div>
         		</div>

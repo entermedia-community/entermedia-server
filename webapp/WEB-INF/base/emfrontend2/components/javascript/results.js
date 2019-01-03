@@ -267,7 +267,7 @@ $(document).ready(function(url,params)
 		if (reloadonclose) {
 			var reloadparent =  window.location.href.split('#')[0];
 			if (typeof reloadparent != 'undefined') {
-				 window.location = reloadparent;
+				 window.location = reloadparent;  //TODO: Use Ajax?
 			}
 		}
 		var lastscroll = getOverlay().data("lastscroll");
@@ -353,8 +353,24 @@ $(document).ready(function(url,params)
 		    $(document).trigger("domchanged");
 			$(window).trigger( "resize" );
 			$(".gallery-thumb").removeClass("active-asset");
-			$("#gallery-" + assetid).addClass("active-asset");
-			$(window).trigger("tabready");
+			
+			if( assetid.indexOf("multiedit:") > -1 )
+			{
+				var link = $("#multiedittab").data("link");
+				var mainmedia2 = $("#main-media-viewer");
+			
+				var options = mainmedia2.data();
+				mainmedia2.load(link, options, function()
+				{
+					$(window).trigger("tabready");
+				});
+			}
+			else
+			{
+				$("#gallery-" + assetid).addClass("active-asset");
+				$(window).trigger("tabready");
+			}
+			
 		});
 		$(document).trigger("domchanged");
 	}
@@ -612,7 +628,6 @@ $(document).ready(function(url,params)
 		var assetid = row.data("rowid");
 		
 		showAsset(assetid);
-		 
 	});
 	
 	lQuery('.showasset').livequery('click',function(e)
@@ -628,9 +643,14 @@ $(document).ready(function(url,params)
 		var assetid = clicked.data("assetid");
 		
 		showAsset(assetid);
-		 
 	});
 
+	lQuery('a#multiedit-menu').livequery('click',function(e)
+	{
+		e.preventDefault();
+		showAsset("multiedit:dialoghitsassetassets/catalog",1);
+		return false;
+	});
 	
 	
 	lQuery("#hiddenoverlay .overlay-close").livequery('click',function(e)
