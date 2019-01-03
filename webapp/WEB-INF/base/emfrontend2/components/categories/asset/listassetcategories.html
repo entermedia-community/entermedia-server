@@ -7,11 +7,11 @@
 	#set($existingcategories = $existingcategories.substring(0, $existingcategorieslenght))  
 #end
 
-<div id="assetccategoryresults">
+<div id="assetcategoryresults">
 <div class="asset-data-detail assetpanel-editor-box">
 	<h4>[[Locations]]
 	#if( $caneditassetcategories )
-	<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetccategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=${existingcategories}&amp;assetid=${asset.id}&amp;action=$apphome/components/categories/asset/listassetcategories.html" 
+	<a href="$apphome/components/categories/search/searchcategory.html?targetdiv=assetcategoryresults&amp;multivalue=false&amp;pickone=true&amp;detailid=categoryid&amp;existingcategories=${existingcategories}&amp;assetid=${asset.id}&amp;action=$apphome/components/categories/asset/listassetcategories.html" 
 	   class="detail-edit-icon float-right btn btn-xs emdialog"
 	   data-cancelsubmit="true" data-parameterdata="categoryvalues"
 	   data-noesc="true"
