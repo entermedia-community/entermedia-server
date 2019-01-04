@@ -187,7 +187,7 @@ public class BaseMediaModule extends BaseModule
 		return asset;
 	}
 	
-	public Searcher loadSearcher(WebPageRequest inReq) throws Exception
+	public Searcher loadSearcher(WebPageRequest inReq)
 	{
 		// Load by url
 		// catalogid/type.html

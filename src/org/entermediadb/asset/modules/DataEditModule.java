@@ -1996,21 +1996,28 @@ public class DataEditModule extends BaseMediaModule
 			SearchQuery query = hits.getSearchQuery();
 			if (query.isEndUserSearch())
 			{
-				Searcher searcher = hits.getSearcher();
-				UserFilters filters = (UserFilters) inReq.getSessionValue(searcher.getSearchType()+ searcher.getCatalogId() + "userFilters");
-				if (filters == null)
-				{
-					filters = (UserFilters) getModuleManager().getBean(searcher.getCatalogId(), "userFilters", false);
-					filters.setUserProfile(inReq.getUserProfile());
-					inReq.putSessionValue(hits.getSearchType() + searcher.getCatalogId() + "userFilters", filters);
-				}
-				inReq.putPageValue("userfilters", filters);
+				UserFilters filters = loadUserFilters(inReq);
 				Map values = filters.getFilterValues(hits);
 				inReq.putPageValue("userfiltervalues", values);
 				filters.flagUserFilters(hits);
 			}
 		}	
 
+	}
+
+	private UserFilters loadUserFilters(WebPageRequest inReq)
+	{
+		Searcher searcher = loadSearcher(inReq);
+		UserFilters filters = (UserFilters) inReq.getSessionValue(searcher.getSearchType()+ searcher.getCatalogId() + "userFilters");
+		if (filters == null)
+		{
+			filters = (UserFilters) getModuleManager().getBean(searcher.getCatalogId(), "userFilters", false);
+			filters.setUserProfile(inReq.getUserProfile());
+			inReq.putSessionValue(searcher.getSearchType() + searcher.getCatalogId() + "userFilters", filters);
+		}
+		inReq.putPageValue("userfilters", filters);
+
+		return filters;
 	}
 
 }
