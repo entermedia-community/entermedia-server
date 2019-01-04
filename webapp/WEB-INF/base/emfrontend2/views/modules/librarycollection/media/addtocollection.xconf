@@ -1,6 +1,6 @@
 <page>
-
-
 	<path-action name="ProjectModule.addAssetToCollection" />
-	 
+	<path-action name="ProjectModule.searchForAssetsOnCollection">
+		<searchtype>librarycollection</searchtype>
+	</path-action>	 
 </page>

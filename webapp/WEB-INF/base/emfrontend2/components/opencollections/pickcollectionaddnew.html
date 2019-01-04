@@ -1,12 +1,17 @@
 #set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
 #set( $searchtype = $context.getRequestParameter("searchtype"))
-#set( $action = "$home$apphome/views/modules/librarycollection/createcollection.html")
-	
-<form name="adder" id="adder" class="validate-inputs ajaxform" targetdiv="emcontainer" action="$action">
+#set( $assetid = $context.getRequestParameter("assetid"))
+#if( $assetid)
+#set( $action = "$home$apphome/components/opencollections/asset/createcollection.html")
+#else
+#set( $action = "$home$apphome/components/opencollections/createcollection.html")
+#end
+<form name="adder" id="adder" class="validate-inputs ajaxform" targetdiv="search-collections" action="$action">
 <input type="hidden" name="save" value="true" />
 <input type="hidden" name="searchtype" value="$searchtype" />
 <input type="hidden" name="field" value="owner" />
 <input type="hidden" name="owner.value" value="$!user.getId()" />
+<input type="hidden" name="assetid" value="$!assetid" />
 
 <input type="hidden" name="hitssessionid" value="$!hitssessionid" />
 

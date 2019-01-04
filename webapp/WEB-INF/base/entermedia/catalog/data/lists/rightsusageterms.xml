@@ -3,7 +3,7 @@
   <rightsusageterms id="30days" name="30 days" fatwirevalue="30"></rightsusageterms>
   <rightsusageterms id="60days" name="60 Days" fatwirevalue="60"></rightsusageterms>
   <rightsusageterms id="90days" name="90 days" fatwirevalue="90"></rightsusageterms>
-  <rightsusageterms id="assigned" name="Assignment (was shot for us and can remain with the story indef)" fatwirevalue="-1"></rightsusageterms>
+  <rightsusageterms id="assigned" name="Assignment (was shot for us)" fatwirevalue="-1"></rightsusageterms>
   <rightsusageterms id="free" name="Free (Handout)" fatwirevalue="0" default="true"></rightsusageterms>
-  <rightsusageterms id="unlimited" name="Unlimited RF (royalty free stock, can remain attached indef)" fatwirevalue="-2"></rightsusageterms>
+  <rightsusageterms id="unlimited" name="Unlimited Royalty Free" fatwirevalue="-2"></rightsusageterms>
 </properties>

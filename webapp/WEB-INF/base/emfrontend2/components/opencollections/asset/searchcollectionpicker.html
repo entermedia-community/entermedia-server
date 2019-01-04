@@ -1,4 +1,3 @@
-<div id="emcontainer">
 <div  id="search-collections" >
 	<div id="searcharea" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
@@ -18,7 +17,7 @@
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
 		<input id="collectionid" type="hidden" name="collectionid" />
-		<input type="hidden" name="assetid" value="$asset.id" />
+		<input type="hidden" name="assetid" value="$!asset.id" />
 		<table>
 		<tr>
 		<td width="100%">
@@ -39,7 +38,7 @@
 		#if($canaddnewcollection)
 		<td >
 			<a class="ajax btn btn-sm btn-primary" style="white-space: nowrap; margin:-10px 0 0 5px;" data-targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
-				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hits.sessionId">[[New Collection]]</a>
+				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hits.sessionId&assetid=$asset.id">[[New Collection]]</a>
 		</td>
 		#end
 		</tr>
@@ -53,7 +52,7 @@
 	
 	</div>
 </div>	
-</div>
+AJAX
 <script>
 lQuery("#collectionresults .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
@@ -63,3 +62,4 @@ lQuery("#collectionresults .rowclick").livequery("click", function(e) {
 
 });
 </script>
+</div>

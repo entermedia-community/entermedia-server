@@ -1,11 +1,13 @@
 <page>
-
+	<path-action name="DataEditModule.saveData"/>	
 	<inner-layout />
+	<path-action name="DataEditModule.loadHits" >
+		<property name="searchtype">asset</property>
+	</path-action>	
 	<property name="enforcesecurity">true</property>
 	<page-action name="DataEditModule.search" >
 		<property name="searchtype">librarycollection</property>
 		<property name="sortby">name</property>
-		<property name="hitsname">collhits</property>
+		<property name="hitsname">collhits</property>		
 	</page-action>
-
 </page>
