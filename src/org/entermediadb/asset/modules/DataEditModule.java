@@ -2005,7 +2005,7 @@ public class DataEditModule extends BaseMediaModule
 
 	}
 
-	private UserFilters loadUserFilters(WebPageRequest inReq)
+	public UserFilters loadUserFilters(WebPageRequest inReq)
 	{
 		Searcher searcher = loadSearcher(inReq);
 		UserFilters filters = (UserFilters) inReq.getSessionValue(searcher.getSearchType()+ searcher.getCatalogId() + "userFilters");

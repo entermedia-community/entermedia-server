@@ -43,7 +43,7 @@
     <input type="hidden" name="oemaxlevel" value="2" />
 
 #end
-
+#set($userfiltervalues =  $userfilters.getFilterValues($hits))
 #foreach($item in $searcher.getDetailsForView("${searchtype}/${searchtype}facets") )
 #set($type = $userfiltervalues.get($item.id))
 #if($type)
