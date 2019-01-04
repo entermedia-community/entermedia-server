@@ -263,6 +263,10 @@ tr.emborderhover td,
 .dropdown-noarrow:after {
 	border:0 none;
 }
+.ajaxstatus {
+	padding:10px;
+	background-color:#f1f1f1;
+}
 
 
 /*Bootsrap Overwrites*/
@@ -1880,8 +1884,8 @@ td.checkbox input, th.firstheader input {
     padding: 4px 0 4px;
     word-wrap: break-word;
 }
-.opencollections ul li:last-child { padding-top: 10px;}
-.opencollections ul li:last-child:hover { background-color: transparent; padding-top: 10px;}
+.opencollections ul li:last-child {  padding: 10px 0;}
+.opencollections ul li:last-child:hover { background-color: transparent;}
 .opencollections .collectionrow{
 	position: relative;
     background: url(../images/folder-closed.png) 2px 4px no-repeat;
