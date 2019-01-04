@@ -232,7 +232,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			   <ul class="dropdown-menu">
 
 			   
-		    	#if( !$ismulti && $canviewconversions )
+		    	#if( !$ismulti && $canviewconversions   && $canviewassetedit)
 			   	<li>
 			   	<a class="assettab #if($opentabactions=='conversions') dropdown-current #end" 
 						data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=conversions" title="[[Conversions]]"
