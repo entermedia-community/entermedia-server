@@ -13,8 +13,11 @@ $context.putPageValue("cdn",$cdnprefix)
 #set( $previous = false )
 #set( $previous = $dialoghits.previous($index))
 #set( $next = false )
-#set( $next = $dialoghits.next($index))       
+#set( $next = $dialoghits.next($index))  
+
+##This is used to make a readonly version for mediadb
 #set( $previewonly = $context.getPageValue("previewonly"))
+
 #if( !$previewonly)
 	#set( $previewonly = false)
 #end
