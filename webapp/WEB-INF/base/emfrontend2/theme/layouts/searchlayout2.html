@@ -12,11 +12,15 @@
 	    	$pages.includeContent()
 	</div>
 	<div class="col-main col-filters #if($filtersbarstatus!=false) filtersopen #end" id="col-filters">
+		<div class="col-main-inner">
 		$pages.include("$apphome/components/filters/sidebar.html", $context)
+		</div>
 	</div>
 </div>
 </div>
 
 <div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end" id="col-left">
+	<div class="col-main-inner">
 		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
+	</div>
 </div>

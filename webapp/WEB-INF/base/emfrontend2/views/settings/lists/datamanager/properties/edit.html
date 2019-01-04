@@ -1,9 +1,9 @@
 #set( $dataroot = $content.dataroot )
 <div class="tab-actions">
-	<strong>Editing $!property.name</strong>
-	<div style="float:right;">
+	<strong>[[Editing]] $!property.name</strong>
+	<div style="float:right">
 	#if($detail.isList() || $detail.isMultiValue())
-		<a class="btn btn-xs btn-primary" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">Edit Values</a>
+		<a class="btn btn-xs btn-primary" href="$apphome/views/settings/lists/datamanager/list/index.html?searchtype=$detail.listId">[[Edit Values]]</a>
 	#end
 [[Current Field]]:
 	<select id="proptomodify" name="proptomodify" onchange="loadPropertyEdit($(this).val());" style="margin-top: 6px; width: 80px;" >
@@ -13,6 +13,7 @@
 			#end
 		</select>
 	</div>
+	<div class="clearfix"></div>
 </div>
 #set($viewid = $context.getRequestParameter("viewid"))
 
@@ -46,7 +47,7 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 <h3 class="settings-title">[[Advanced Options]]</h3>
 $context.putPageValue("view", "propertydetail/advanced")
 $pages.include("$apphome/components/xml/detaileditor.html", $context)
-
+<div class="clearfix"></div>
 </div>
 </div>
 
@@ -66,18 +67,20 @@ $pages.include("$apphome/components/xml/detaileditor.html", $context)
 </div>
 
 </form>
-
+</div>
 <script>
     $('#viewadvanced').click(function(){
         if ( $(this).hasClass('show') ) {
             $('#advanced').hide();
             $(this).html('View Advanced Options');
             $(this).removeClass('show');
+            
         } else {
             $('#advanced').show();
             $(this).html('Hide Advanced Options');
             $(this).addClass('show');
-        }  
+        }
+        $(window).trigger("resize");
     });
 
 	loadPropertyEdit = function(selectedid) {

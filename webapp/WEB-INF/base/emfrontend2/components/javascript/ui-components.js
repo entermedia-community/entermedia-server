@@ -1387,7 +1387,7 @@ var resizecolumns = function() {
 	var sidebartop = 1;
 	$(".col-main").each(function(){
 		var thisheight = $(this).height();
-		if ($(this).children(0)	&& $(this).children(0).hasClass("sidebar-inner")) {
+		if ($(this).children(0)	&& $(this).children(0).hasClass("col-main-inner")) {
 			thisheight = $(this).children(0).height();
 		}
 		
@@ -1396,7 +1396,7 @@ var resizecolumns = function() {
 		}
 	});
 	$(".col-filters, .col-left").css("height", columnsheight);
-	$(".col-sidebar, .col-content").css("height", columnsheight);
+	$(".col-sidebar").css("height", columnsheight);
 	$(".col-content-main").css("min-height", columnsheight + sidebarstop + "px");
 	
 	
