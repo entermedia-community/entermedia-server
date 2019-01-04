@@ -1,18 +1,18 @@
-<div id="emcontainer">
 <div  id="search-collections" >
 	<div id="searcharea" >
 	#set( $searcher = $mediaarchive.getSearcher("librarycollection") )
 	$context.putPageValue("searcher",$searcher)
 	#set ($details = $searcher.getDetailsForView("librarycollection/librarysearchcollection", $userprofile))
-
+#set( $hitssessionid = $context.getRequestParameter("hitssessionid"))
+#if( $hitssessionid)
+#set( $hits = $context.getSessionValue($hitssessionid))
 #if( $hits && $hits.getSelectionSize() > 0)	
 	<div class="alert alert-info">
   		<strong>[[Adding]]</strong> $hits.getSelectionSize() [[assets to collection]]
 	</div>
-#elseif($assetid)	
-	
 #end	
-	<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresults" action="$home$apphome/components/opencollections/searchcollectionresults.html">
+#end
+	<form  id="colsearchform" class="autosubmit"  data-targetdiv="collectionresultsdialog" action="$home$apphome/components/opencollections/searchcollectionresults.html">
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
@@ -36,7 +36,7 @@
 		#if($canaddnewcollection)
 		<td >
 			<a class="ajax btn btn-sm btn-primary" style="white-space: nowrap; margin:-10px 0 0 5px;" targetdiv="colsearchform" data-searchtype="librarycollection" data-oemaxlevel="1" 
-				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hits.sessionId">[[New Collection]]</a>
+				href="$home$apphome/components/opencollections/pickcollectionaddnew.html?hitssessionid=$!hitssessionid">[[New Collection]]</a>
 		</td>
 		#end
 		</tr>
@@ -44,15 +44,13 @@
 	</form>
 	
 	
-	<div id="collectionresults">
+	<div id="collectionresultsdialog">
 	$pages.include("$apphome/components/opencollections/searchcollectionresults.html",$context)
 	</div>
 	
 	</div>
-</div>	
-</div>
 <script>
-lQuery("#collectionresults .rowclick").livequery("click", function(e) {
+lQuery("#collectionresultsdialog .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
 	#set($hitsselected = $hits.getSelectionSize())
@@ -68,3 +66,4 @@ lQuery("#collectionresults .rowclick").livequery("click", function(e) {
 
 });
 </script>
+</div>	

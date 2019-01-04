@@ -5,6 +5,7 @@ $context.putPageValue("searcher",$searcher)
 #set ($details = $searcher.getDetailsForView("librarycollection/librarycollectionresultstable", $userprofile))
 $context.putPageValue("details",$details)
 $context.putPageValue("module","librarycollection")
+$context.putPageValue("hits",$collhits)
 $pages.include("${apphome}/components/table/results.html", $context)
 
 </div>
