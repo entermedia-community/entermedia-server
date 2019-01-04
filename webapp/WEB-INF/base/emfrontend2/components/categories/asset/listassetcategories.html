@@ -1,3 +1,5 @@
+<div id="assetcategoryresults">
+
 #set($existingcategories = "")
 #foreach ($category in $asset.categories)
 	#set($existingcategories = $existingcategories+$category.id+"%7C")
@@ -7,7 +9,6 @@
 	#set($existingcategories = $existingcategories.substring(0, $existingcategorieslenght))  
 #end
 
-<div id="assetcategoryresults">
 <div class="asset-data-detail assetpanel-editor-box">
 	<h4>[[Locations]]
 	#if( $caneditassetcategories )
@@ -38,7 +39,7 @@
 		#end
 		</div>
 		#if( $caneditassetcategories )
-		 	<a class="ajax list-delete"  data-targetdiv="assetcollectionresults" href="#">
+		 	<a class="ajax list-delete"  data-targetdiv="assetcategoryresults" href="$home$apphome/components/categories/asset/removeassetcategory.html?assetid=${asset.id}&categoryid=${category.id}" >
 		 	<i class="fas fa-times"></i></a>
 	 	#end
 		</div>
