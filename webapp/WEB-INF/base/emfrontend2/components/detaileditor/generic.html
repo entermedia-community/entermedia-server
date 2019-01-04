@@ -34,7 +34,7 @@ $context.putPageValue("searchtype", $searchtype)
 
 #set ( $openview = $context.getRequestParameter("openview") )
 #set ( $edit = $context.getRequestParameter("edit") )
-#set ( $editpath = $context.getRequestParameter("editorpath"))
+#set ( $editpath = $context.getRequestParameter("editpath"))
 #if(!$editpath)
 	#set( $editpath = "${page.directory}/genericsave.html" )
 #end
@@ -51,10 +51,15 @@ $context.putPageValue("searchtype", $searchtype)
 
 
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
-
-	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="tabsummarypanel" method="post" action="$home$editpath?oemaxlevel=1" >
+	
+	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
+	#if (!$targetdiv)
+		#set( $targetdiv = "tabsummarypanel")
+	#end
+	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$home$editpath" >
 	
 		<input type="hidden" name="saveasnew" value="false" />
+		<input name="oemaxlevel" type="hidden" value="1" />
 		<input type="hidden" name="save" value="true" />
 		<input type="hidden" name="catalogid" value="$!catalogid" />
 		<input type="hidden" name="searchtype" value="$searcher.getSearchType()" />
@@ -68,7 +73,26 @@ $context.putPageValue("searchtype", $searchtype)
 ##			<input type="hidden" name="assetid.value" value="$asset.getId()" />
 			<input type="hidden" name="assetid" value="$asset.getId()" />
 		#end
-		<input type="hidden" name="id" value="$!data.id" />
+		
+		##Generic Tables
+		#set ($parentid = $context.getRequestParameter("parentid"))
+		#set ($fieldexternalid = $context.getRequestParameter("fieldexternalid"))
+		#set ($fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
+		#if($fieldexternalid)
+			<input type="hidden" name="field" value="$fieldexternalid" />
+			<input type="hidden" name="${fieldexternalid}.value" type="hidden" value="$parentid" />
+			<input type="hidden" name="parentid" value="$parentid" />
+			<input type="hidden" name="viewpath" value="$view" />
+			<input type="hidden" name="viewid" value="$viewid" />
+			<input type="hidden" name="fieldexternalid" value="$fieldexternalid" />
+			<input type="hidden" name="fieldexternalvalue" value="$fieldexternalvalue" />
+			<input type="hidden" name="permissionname" value="$!permissionname" />
+			<input type="hidden" name="jumptomodule" value="$!jumptomodule" />
+		#end
+		#if ($data.id)
+			<input type="hidden" name="id" value="$!data.id" />
+		#end
+		
 		$context.putPageValue("view",$view)	
 		$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
 		<div id="default-fields" class="fields-editor">
@@ -79,8 +103,14 @@ $context.putPageValue("searchtype", $searchtype)
  		<div class="col">
 		<div class="btns">
 			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).submit();" value="[[Save values]]"/>
-			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="tabsummarypanel" 
+			#if ($targetdiv == "tabsummarypanel")
+			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
 				href="/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id">[[Cancel]]</a>
+			#else
+			#set( $args = "id=$id&candelete=$candelete&editpath=$editpath&parentid=$parentid&jumptomodule=$!jumptomodule&catalogid=$catalogid&searchtype=$searchtype&fieldexternalid=$fieldexternalid&fieldexternalvalue=$fieldexternalvalue&viewid=$viewid&viewpath=$view&permissionname=$!permissionname&hitssessionid=$!hitssessionid&selectlink=$!link")
+			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
+				href="$home$editpath?oemaxlevel=1&${args}">[[Cancel]]</a>
+			#end
 			#if( $caneditmetadatasetup  )
 				#if ( $view.contains("$asset.assettype") )
 					#set ( $type = $asset.assettype )

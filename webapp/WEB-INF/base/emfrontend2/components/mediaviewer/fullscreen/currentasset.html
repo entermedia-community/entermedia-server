@@ -95,6 +95,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 		#else
 			$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewactions.html?action=$opentabactions")
 		#end
+	#elseif($opentab=="viewtable")
+		#set( $opentabassettable = $userprofile.get("assetopentabassettable"))
 	#end
 	
 </div>

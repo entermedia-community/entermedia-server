@@ -1,18 +1,18 @@
+#set($hitssessionid = $context.getRequestParameter('hitssessionid'))
 #set($viewid = $context.getRequestParameter("viewid"))
 #set($viewpath = $context.getRequestParameter("viewpath"))
 #set($moduleid = $context.findValue("module"))
-#set($hitssessionid = $context.getRequestParameter('hitssessionid'))
 #set($searchhome = $context.findValue("searchhome"))
-
 
 #set($viewsearcher = $searcherManager.getSearcher($catalogid, "view"))
 #set( $viewdata = $viewsearcher.searchById($viewid))
+$context.putPageValue("viewtitle", $viewdata)
 
 #set( $searchtype = $viewdata.rendertable )
 #set( $fieldexternalid = $viewdata.renderexternalid)
 
 #set( $permissionname = "canedit${searchtype}")
-#set ( $id = $context.getRequestParameter("id") )
+#set( $id = $context.getRequestParameter("id") )
 
 #if ( !$id )
     #set ( $id = $data.id )
@@ -31,9 +31,7 @@ $context.putPageValue("canedittable", $caneditdata)
 #set($ismodule = $searcherManager.getData($catalogid, "module", $searchtype ) )
 #set($jumptomodule = $context.getRequestParameter("jumptomodule"))
 
-
 #if(!$jumptomodule && $ismodule && $viewdata.linktomodule == "true" )
-	
 	#set( $jumptomodule = true ) <!--  This isn't working very well...  -->
 #end
 
@@ -43,7 +41,7 @@ $context.putPageValue("canedittable", $caneditdata)
 
 
 #if( $searchtype == "librarycollection")
-#set( $args = "$args&viewdetailspath=$apphome/views/modules/librarycollection/media/")
+	#set( $args = "$args&viewdetailspath=$apphome/views/modules/librarycollection/media/")
 #end
 
 
@@ -52,18 +50,29 @@ $context.putPageValue("canedittable", $caneditdata)
 	$pages.include("$apphome/components/mediaviewer/fullscreen/tabs/viewcarousel.html",$context)
 </div>
 <div class="assetpanel-content">
-
-    <div class="row" style="height: 100%">
-      
-
-#if($viewdata.rendercustomview)
-$pages.include("$searchhome/edit/table/${viewdata.rendercustomview}.html?$args", $context)
-
-#else
-$pages.include("$searchhome/edit/table/generictable.html?$args", $context)
-
-#end
-      
+	<div class="assetpanel-content-inside">
+		<div class="assetpanel-editor">
+		<div class="tab-pane" id="tabsummarypanel">
+		<div class="summarytab">
+			<div class="container-fluid ">
+			<div class="row">
+					<div class="col-8">
+						<div id="asset-detail-editor">
+							#if($viewdata.rendercustomview)
+								$pages.include("$searchhome/edit/table/${viewdata.rendercustomview}.html?$args", $context)
+							#else
+								$pages.include("$searchhome/edit/table/generictable.html?$args", $context)
+							#end
+						</div>
+					</div>
+					<div class="col-4">
+						$pages.include("$apphome/components/mediaviewer/player/summary-mini.html",$context)
+					</div>
+			</div>
+			</div>
+			</div>
+			</div>
+      	</div>
 	</div>	
 </div>
 </div>

@@ -11,29 +11,37 @@ $!query.addSortBy("ordering")
 $context.putPageValue("view", $viewpath)
 #set( $data = $asset)
 $context.putPageValue("data",$asset)
-$views.size()
-#foreach( $target in $views)            
- #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
-                       #if("$!permissionvalue" == "" || $permissionvalue == true)
 
-#if($target.rendertable)
-    
-				 
-    
-      <li class="footermenu bottomtab #if($viewid == $target.id) tabselected #end " byassettype="true">
-          <a class="expandmenu  assettab" 
-          title="$target"
-           data-link="$home$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${data.id}&assetid=$data.id&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}"
-           data-assettab="viewtable"
-           
-           >
-	          <span class="icon"></span><span class="text">$target</span>
-          </a>
-      </li>
-      #end
-      #end
-      #set($permission = "")
-#end
 
+
+<li class="footermenu bottomtab #if($viewid == $target.id) tabselected #end " byassettype="true">
+    <a class="expandmenu dropdown-toggle" 
+     data-toggle="dropdown"
+     title="[[Relationships]]"
+     data-assettab="viewtable"
+     >
+     <i class="fas fa-table"></i> [[Relationships]]
+    </a>
+    <ul class="dropdown-menu">
+	#foreach( $target in $views)            
+	 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+	 #if("$!permissionvalue" == "" || $permissionvalue == true)
+		 #if($target.rendertable)
+		       <li>
+		          <a class="assettab #if($opentabassettable == $target.id) dropdown-current #end"
+		          title="$target"
+		           data-link="$home$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${data.id}&assetid=$data.id&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}"
+		           data-assettab="viewtable"
+		           data-assettable="$target.id"
+		           >
+			         $target
+		          </a>
+		      </li>
+		  #end
+	  #end
+	 #set($permission = "")
+	#end
+	</ul>
+</li>
 
 

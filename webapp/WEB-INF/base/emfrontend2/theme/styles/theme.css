@@ -2328,8 +2328,9 @@ label.error {
 .assetpanel-editor .summarytab {
 	padding:5px 0px;
 }
-.assetpanel-editor .col-md-6
+.assetpanel-editor .col-8
  {
+ padding-left: 0;
 }
 .assetpanel-editor .col-4 {
 	padding-left: 0;
@@ -2415,7 +2416,14 @@ label.error {
 
 .assetpanel-editor .table-striped {
 	color:#333;
-	border:1px solid #fff;
+	border:1px solid #999;
+}
+.assetpanel-editor .table-striped thead th,
+.assetpanel-editor .table-striped tbody td {
+	border-bottom:1px solid #999;
+}
+.assetpanel-editor .table-striped {
+	background-color: #efefef;
 }
 .emlist {
     padding: 0;
@@ -2563,9 +2571,7 @@ label.error {
 	padding:.2rem .75rem;
 }
 
-.tabe-conversions {
-	background-color: #efefef;
-}
+
 .tabe-conversions td {
 	height: 52px;
 }
