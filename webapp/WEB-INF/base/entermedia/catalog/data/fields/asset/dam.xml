@@ -724,4 +724,17 @@
     </name>
   </property>   
   
+  <property id="lockedby" index="true"  editable="true" stored="true" listid="user" type="list" >
+    <name>
+      <language id="en"><![CDATA[Locked By User]]></language>
+    </name>
+  </property>
+ 
+  <property id="islocked" index="true" stored="true" editable="true" datatype="boolean" filter="true"  isbadge="true" > 
+    <name>
+      <language id="en"><![CDATA[Is Locked]]></language>
+    </name>
+  </property>   
+  
+  
 </page>

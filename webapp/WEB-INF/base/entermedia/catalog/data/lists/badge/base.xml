@@ -5,5 +5,6 @@
     <data id="asset_duplicate_true" >Duplicate</data>
     <data id="asset_assetexpired_true" >Asset is Expired</data>
     <data id="asset_haschat_true" >Chats</data>
+     <data id="asset_islocked_true" >Locked</data>
     
 </datas>                                                                                                                                                                                                    

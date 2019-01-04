@@ -27,9 +27,10 @@
 			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
 			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Collection Permissions]]"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Permissions]]</a>
-		   	#end
-			#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
 		 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+		   	#end
+			
 		 	#if($cansharecollection && !$librarycol.isVisibility("3") )
 			 	#set( $editlink = "$home$apphome/views/modules/librarycollection/sharecollection.html?collectionid=${librarycol.getId()}")
 			 	<a class="dropdown-item emdialog" data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Sharing Collection]]"><i class="dropdown-item-icon fas fa-share-alt"></i> [[Sharing]]</a>

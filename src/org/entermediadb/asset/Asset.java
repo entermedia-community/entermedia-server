@@ -176,6 +176,9 @@ public class Asset extends SearchHitData implements MultiValued, SaveableData
 				return categorylist;
 			} 
 		}
+		if("islocked".equals(inAttribute)) {
+			return isLocked();
+		}
 
 		return super.getValue(inAttribute);
 
