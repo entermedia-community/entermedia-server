@@ -12,7 +12,6 @@
 			<searchtype>category</searchtype>
     </path-action>
   
-    <inner-layout>/${applicationid}/theme/layouts/categorylayout.html</inner-layout>
 
 
    <permission name="delete">

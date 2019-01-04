@@ -1,4 +1,5 @@
-#Fri Sep 21 13:32:18 EDT 2018
+#
+#Mon Dec 10 13:44:50 EST 2018
 Share=Teilen
 Manager=Manager
 closed=geschlossen
@@ -6,11 +7,11 @@ There\ was\ a\ problem\ completing\ this\ request=Es gab ein Problem beim Abschl
 Related\ Media=verwandte Medien
 My\ Account=mein Konto
 Desktops=Desktops
-Selected\ Media=ausgewählte Medien
-open=geöffnet
+Selected\ Media=ausgew\u00E4hlte Medien
+open=ge\u00F6ffnet
 Media=Medien
 Applications=Anwendungen
-Attachments=Anhänge
+Attachments=Anh\u00E4nge
 Ok=Ok
 Active\ Conversions=aktive Konversationen
 System\ Settings=Systemeinstellungen
@@ -18,11 +19,11 @@ Annotations=Anmerkungen
 Language=Sprache
 Logout=Logout
 Asset\ is\ missing=Datei fehlt
-Dashboard=Instrumententafel
 Reports=Berichte
+Dashboard=Instrumententafel
 Login=Einloggen
-Close=Schließen
+Close=Schlie\u00DFen
+Add\ Media=Medien hinzuf\u00FCgen
 Settings=Einstellungen
-Add\ Media=Medien hinzufügen
+Pending\ Orders=ausstehende Bestellungen
 Approvals=Zulassungen
-
