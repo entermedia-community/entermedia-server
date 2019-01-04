@@ -14,6 +14,8 @@ function chatterbox() {
 	
 	connect();
 	
+	
+	
 	lQuery(".chatter-send").livequery("click", function(){
 		var button = jQuery(this);
 		var chatter = button.closest(".chatterbox");
@@ -30,7 +32,10 @@ function chatterbox() {
 	    
 	    
 	    }
-
+	    var toggle = button.data("toggle");
+	    if(toggle == true){
+	    	jQuery(".chatter-toggle").toggle();
+	    }
 	    chatconnection.send(json);
 		
 	}
