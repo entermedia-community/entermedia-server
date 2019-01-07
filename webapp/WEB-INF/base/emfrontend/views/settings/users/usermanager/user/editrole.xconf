@@ -2,6 +2,7 @@
 
 	<path-action name="DataEditModule.saveData"/>
 	<path-action name="User.loadUserProperties" />
+		<path-action name="ProfileModule.clearProfile"/>
 	
 	<property name="oemaxlevel">1</property>
 </page>
