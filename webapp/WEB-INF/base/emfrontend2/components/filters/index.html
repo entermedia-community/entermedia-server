@@ -64,9 +64,9 @@
 			</div>
 			<div class="filter-box-options" id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
 				#set ($alldetails = $searcher.getUserPropertyDetails() )
-				<select  class="form-control form-control-sm select2"  name="" data-allowclear="false" >
+				<select  class="form-control form-control-sm select2 autosubmited"  name="assetsortby" data-allowclear="false" >
 					#foreach( $detail in $alldetails) 
-						<option value="$detail.id">$detail.getText($context)</option>
+						<option value="$detail.id" #if($hits.isSortedBy($detail.id)) selected="selected" #end>$detail.getText($context)</option>
 					#end
 				</select>
 			</div>
