@@ -702,36 +702,33 @@ public class TaskModule extends BaseMediaModule
 		}
 		//Search for all tasks with updated dates?
 		GregorianCalendar cal = new GregorianCalendar();
-		//cal.set(Calendar.DAY_OF_MONTH, 1);
+		String monthsback = inReq.getRequestParameter("monthsback");
+		if( monthsback == null)
+		{
+			monthsback = "0";
+		}
+		int count = Integer.parseInt(monthsback);
+		cal.set(Calendar.DAY_OF_MONTH,1);
+		cal.add(Calendar.MONTH, 0 - count);
+		inReq.putPageValue("monthsback", count+1);
 		cal.set(Calendar.HOUR_OF_DAY, 0);
 		cal.set(Calendar.MINUTE, 0);
-		int week = cal.get(Calendar.WEEK_OF_YEAR);
-		week = week - 4;
-		cal.set(Calendar.WEEK_OF_YEAR,week);
-		String monthsback = inReq.getRequestParameter("monthsback");
-		if( monthsback != null)
-		{
-			int count = Integer.parseInt(monthsback);
-			//cal.add(Calendar.MONTH, 0 - count);
-			week = week - (count*4);
-			cal.set(Calendar.WEEK_OF_YEAR,week);
-			inReq.putPageValue("monthsback", count+1);
-		}
-		else
-		{
-			inReq.putPageValue("monthsback", 1);
-		}
+		cal.set(Calendar.SECOND, 0);
 		inReq.putPageValue("since", cal.getTime());
 		Searcher tasksearcher = archive.getSearcher("goaltask");
 		Date start = cal.getTime();
-		week = week + 5;
-		cal.set(Calendar.WEEK_OF_YEAR,week);
-
+		int days = Calendar.getInstance().getActualMaximum(Calendar.DAY_OF_MONTH);
+		cal.set(Calendar.MINUTE, 59);
+		cal.set(Calendar.HOUR_OF_DAY, 23);
+		cal.add(Calendar.DAY_OF_MONTH,days - 1);
+		
 		Date onemonth = cal.getTime();
 		String rootid = "tasks" + collection.getId();
-
 		HitTracker all = tasksearcher.query().exact("projectdepartmentparents",rootid)
 				.match("completedby", "*").between("completedon", start,onemonth).sort("completedonDown").search();
+
+//		HitTracker all = tasksearcher.query()
+//				.between("completedon", start,onemonth).sort("completedonDown").search();
 		log.info("Query: " + all.getSearchQuery());
 			
 		Map byperson = new HashMap();
