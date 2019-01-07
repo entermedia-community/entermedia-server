@@ -575,4 +575,14 @@ public class ProfileModule extends MediaArchiveModule
 			getUserProfileManager().saveUserProfile(userProfile);
 		}
 	}
+	
+	
+	public void clearProfile(WebPageRequest inReq) {
+		MediaArchive archive = getMediaArchive(inReq);
+		String id = inReq.getRequestParameter("userid");
+		getUserProfileManager().clearProfile(archive.getCatalogId(), id);
+	}
+	
+	
+	
 }

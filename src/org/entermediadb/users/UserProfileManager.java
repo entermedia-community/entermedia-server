@@ -338,6 +338,7 @@ public class UserProfileManager
 
 	public void setRoleOnUser(String inCatalogId, User inNewuser, String inRole)
 	{
+		
 		Searcher searcher = getSearcherManager().getSearcher(inCatalogId, "userprofile");
 		UserProfile userprofile = (UserProfile) searcher.searchById(inNewuser.getId());
 		if(userprofile == null)
@@ -352,6 +353,12 @@ public class UserProfileManager
 		}
 		userprofile.setProperty("settingsgroup", inRole);
 		searcher.saveData(userprofile);
+		clearProfile(inCatalogId, inNewuser.getId());
+	}
+
+	public void clearProfile(String inCatalogId, String id) {
+		MediaArchive mediaArchive = getMediaArchive(inCatalogId);
+		mediaArchive.getCacheManager().remove("userprofile", id);
 		
 	}
 }

@@ -82,6 +82,7 @@
       <language id="fr"><![CDATA[remoteroot]]></language> 
     </name> 
   </property>  
+ 
   <property id="autocreateusers" index="true" stored="true" editable="true" type="boolean" internalfield="false" datatype="boolean" keyword="false" filter="false" sortable="true">Auto create new users 
     <name> 
       <language id="de"><![CDATA[Auto schaffen neue Benutzer]]></language>  
@@ -90,6 +91,7 @@
       <language id="fr"><![CDATA[Auto créer de nouveaux utilisateurs]]></language> 
     </name> 
   </property>  
+ <!-- 
   <property id="newusersettingsgroup" index="true" stored="true" editable="true" type="list" listid="settingsgroup" internalfield="false" keyword="false" filter="false" sortable="true">Role for new users 
     <name> 
       <language id="de"><![CDATA[Rolle für neue Benutzer]]></language>  
@@ -97,7 +99,8 @@
       <language id="es"><![CDATA[Papel para los nuevos usuarios]]></language>  
       <language id="fr"><![CDATA[Rôle pour les nouveaux utilisateurs]]></language> 
     </name> 
-  </property>  
+  </property>
+   -->  
   <property id="alloweddomains" index="true" stored="true" editable="true" internalfield="false" keyword="false" filter="false" sortable="true">List of allowed domains, comma seperated
     <name>
       <language id="de"><![CDATA[Liste der zulässigen Domänen, durch Komma getrennt]]></language>
