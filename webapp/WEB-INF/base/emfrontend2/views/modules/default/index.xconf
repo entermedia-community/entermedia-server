@@ -4,6 +4,5 @@
 </path-action>
 <page-action name="ProfileModule.saveProperties"/>
 <property name="tab">profile</property>
-<property name="hitssessionid">hits${module}${catalogid}</property>
 
 </page>

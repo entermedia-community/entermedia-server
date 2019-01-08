@@ -270,11 +270,7 @@ public class BaseAssetSearcher extends BaseSearcher implements AssetSearcher
 		}
 		else
 		{
-			String sort = inReq.getRequestParameter("sortby");
-			if( sort != null)
-			{
-				query.addSortBy(sort);
-			}
+			addSorts(inReq, query);
 			return cachedSearch(inReq, query);
 		}
 	}

@@ -15,6 +15,7 @@
 	<path-action name="ProjectModule.addOpenCollection" />
 	<path-action name="ProjectModule.loadOpenCollections"/>
 	
+	
 	<path-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>
 	</path-action>
