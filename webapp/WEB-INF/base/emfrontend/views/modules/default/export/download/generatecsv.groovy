@@ -30,7 +30,7 @@ if(detaillist != null){
 	}
 } 
 else{
-	//log.info("here " + context.findValue("view"));
+	log.info("here " + context.findValue("view"));
 	
 	if(context.findValue("view")){
 		details = searcher.getDetailsForView(context.findValue("view"), context.getUserProfile());
@@ -64,7 +64,7 @@ for (Iterator iterator = details.iterator(); iterator.hasNext();)
 		count++;
 }
 writer.writeNext(headers);
-	log.info("about to start: " + hits.size());
+	log.info("about to start: " + hits.size() + details);
 Iterator i = null;
 if(hits.getSelectedHits().size() == 0){
 	i = hits.iterator();
