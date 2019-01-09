@@ -44,7 +44,7 @@
 
 #end
 #set($userfiltervalues =  $userfilters.getFilterValues($hits))
-#foreach($item in $searcher.getDetailsForView("${searchtype}/${searchtype}facets") )
+#foreach($item in $searcher.getDetailsForView("${searchtype}/${searchtype}advancedfilter") )
 #set($type = $userfiltervalues.get($item.id))
 #if($type)
 #set( $viewpermission = $context.getPageValue("canviewfilter${type.getId()}") )

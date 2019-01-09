@@ -378,8 +378,9 @@ public abstract class BaseConversionManager implements ConversionManager
 					ConvertInstructions instructions = createInstructions(asset);
 					instructions.setForce(true);
 					instructions.setInputFile(originalDocument);
-					instructions.setOutputFile(custom);
 					instructions.setProperty("skipprofile", "true");
+					instructions.setOutputFile(custom);
+
 					imTranscoder.convert(instructions);
 				}
 				return custom;
