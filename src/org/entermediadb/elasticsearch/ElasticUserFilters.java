@@ -94,6 +94,9 @@ public class ElasticUserFilters implements UserFilters
 //	}
 	public Map getFilterValues(HitTracker inHits)
 	{
+		if(inHits == null) {
+			return new HashMap();
+		}
 		Map filterValues = getFilterValues(inHits.getSearcher(), inHits.getSearchQuery());
 		return filterValues;
 	}

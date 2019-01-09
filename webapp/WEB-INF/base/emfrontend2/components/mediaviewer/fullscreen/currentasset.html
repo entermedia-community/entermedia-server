@@ -21,7 +21,8 @@ $context.putPageValue("cdn",$cdnprefix)
 #if( !$previewonly)
 	#set( $previewonly = false)
 #end
-#set( $ismulti = $asset.id.startsWith("multiedit:"))
+#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+
 #set( $opentab = $userprofile.get("assetopentab"))
 #if( !$opentab)
 	#if( $canmetadatageneral )
@@ -127,15 +128,16 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 				</a>
 			</li>
 			#end
-				
+							#if (!$ismulti)
+				<div class="hidemulti">
 						$pages.include("$apphome/components/detaileditor/assetdatatables.html",$context)
-			
-			
+			</div>
+			#end
 			
 			#if (!$ismulti)
 				#if( !$previewonly )
 					#if ($canviewcomments || $canassetannotate)
-					 <li class="footermenu bottomtab #if($opentab == "viewcollaborate")tabselected#end">
+					 <li class="footermenu hidemulti bottomtab #if($opentab == "viewcollaborate")tabselected#end">
 						<a class="expandmenu assettab" 
 							data-link="$apphome/components/mediaviewer/fullscreen/tabs/viewcollaborate.html" title="[[Collaborate]]"
 							data-assettab="viewcollaborate" >
@@ -146,7 +148,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 				#end
 			#end
 			#if ( $canshareasset && !$ismulti )
-            <li class="footermenu bottomtab">
+            <li class="footermenu bottomtab hidemulti">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Share]]">
 			   	 <span class="fas fa-share-alt"></span> [[Share]]</a>
 			   <ul class="dropdown-menu">
@@ -183,7 +185,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			#end
 			#if (!$ismulti)
 			#if($candownload || $canconvert)
-				<li class="footermenu bottomtab" >		
+				<li class="footermenu bottomtab hidemulti" >		
 					<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
 					   <ul class="dropdown-menu">
 						#if( !$cdnprefix )
@@ -210,7 +212,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
             #end
 						
 			#if( !$previewonly 	&& !$ismulti)
-			<li class="footermenu bottomtab bottomtabactions #if($opentabactions) tabselected #end">
+			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentabactions) tabselected #end">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
 			   <span class="fas fa-edit"></span>
 			   <span class="bottomtabactionstext"> 
@@ -322,8 +324,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
                  #end
                  #if( $canmultiedit )
                  <li>
-                 	<a class="assettab" id="multiedittab"
-						data-link="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html?assetid=$asset.id&hitssessionid=$!hitssessionid" title="[[Multiedit]]"
+                 	<a onclick="jQuery('.hidemulti').hide();" class="assettab" id="multiedittab"
+						data-link="$apphome/components/mediaviewer/fullscreen/tabs/multiedit.html?assetid=multi:$!hitssessionid&hitssessionid=$!hitssessionid&multi=true" title="[[Multiedit]]"
 						data-assettab="multiedit">
 					[[Multiedit]] 
 					</a>

@@ -1,6 +1,6 @@
 <page>
 
-	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
+	<page-action name="AssetEditModule.createMultiEditDataFromSelections"/>
 
 
 </page>
