@@ -1,3 +1,4 @@
 <page>
  <path-action name="DataEditModule.changeSort"/> 
+ <inner-layout/>
 </page>

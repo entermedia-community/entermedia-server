@@ -17,7 +17,7 @@
 	<div class="collection-header-name">
 	<h1>${librarycol}</h1>
 	</div>
-	
+	#if($caneditdata || ($cansharecollection && !$librarycol.isVisibility("3")) )
 	<div class="collection-header-actions">
 	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
 	<i class="fas fa-caret-down"></i></a>
@@ -37,6 +37,7 @@
 		 	#end
 		</div>
 	</div>
+	#end
 	
 </div>
 #end

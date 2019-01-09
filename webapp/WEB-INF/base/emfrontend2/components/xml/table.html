@@ -18,6 +18,7 @@
 #set( $fieldexternalid = $context.getRequestParameter("fieldexternalid"))
 #set( $fieldexternalvalue = $context.getRequestParameter("fieldexternalvalue"))
 #set ($hitssessionid = $context.getRequestParameter("hitssessionid"))
+
 #set( $moduleid = $context.findValue("module") )
 
 #set ($catalogId = $context.getRequestParameter("catalogid") )
@@ -31,9 +32,9 @@
 	#set ( $sortby = $context.findValue("sortby"))
 	$!query.addSortBy($sortby)
 	#set( $existingrecords = $joinsearcher.search($query) )
-     
-	
+    
 #end
+
 
 #set ($id = $context.getRequestParameter("id"))
 
@@ -103,8 +104,9 @@
         $('th.sortable').on({
             click: function(){
                 var id = $(this).attr('id');
-                var path = "$home$apphome/components/xml/columnsort.html?oemaxlevel=1&$args&sortby="
-                if ( $(this).hasClass('currentsort') ) {
+                var path = "$home$apphome/components/xml/columnsort.html?$args&sortby="
+              	
+                		if ( $(this).hasClass('currentsort') ) {
                     if ( $(this).hasClass('up') ) {
                         jQuery('#${viewid}editor').load( path + id + 'Down');
                     } else {
@@ -166,5 +168,4 @@
 #if($candelete != "false")
 </div>
 #end
-
 </div>
