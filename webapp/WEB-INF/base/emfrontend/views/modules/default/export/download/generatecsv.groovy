@@ -34,7 +34,7 @@ else{
 	
 	if(context.findValue("view")){
 		details = searcher.getDetailsForView(context.findValue("view"), context.getUserProfile());
-		log.info("view" + context.findValue("view"));
+		log.info("view" + context.findValue("view") + context.getUserProfile());
 	} 
 	else{
 		
