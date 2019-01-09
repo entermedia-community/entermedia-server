@@ -177,6 +177,31 @@ public class TaskModule extends BaseMediaModule
 		}
 		return priorities;
 	}	
+	
+	protected Map sortIntoTypes(WebPageRequest inReq, MediaArchive archive, HitTracker all)
+	{
+		Searcher searcher = archive.getSearcher("projectgoal");
+
+		Map types = new HashMap();
+		for (Iterator iterator = all.iterator(); iterator.hasNext();)
+		{
+			Data hit = (Data) iterator.next();
+			ProjectGoal goal = (ProjectGoal)searcher.loadData(hit);
+			String type = goal.get("tickettype");
+			if( type== null)
+			{
+				type="undefined";
+			}
+			List values = (List)types.get(type);
+			if( values == null)
+			{
+				values = new ArrayList();
+				types.put(type,values);
+			}
+			values.add(goal);
+		}
+		return types;
+	}
 	/*
 	public void loadGoals(WebPageRequest inReq) throws Exception
 	{
@@ -912,5 +937,35 @@ public class TaskModule extends BaseMediaModule
 		
 	}		
 
+	public void loadTickets(WebPageRequest inReq) throws Exception
+	{
+		MediaArchive archive = getMediaArchive(inReq);
+		Searcher searcher = archive.getSearcher("projectgoal");
+		LibraryCollection collection = (LibraryCollection)inReq.getPageValue("librarycol");
+		if( collection == null)
+		{
+			log.info("Collection not found");
+			return;
+		}
+	
+		QueryBuilder builder = searcher.query().exact("collectionid", collection.getId());
+		builder.match("userlikes", "*").sort("tickettype");
+		builder.notgroup("projectstatus", Arrays.asList("closed","completed"));
+		HitTracker likes = builder.search();
+		log.info(builder.getQuery().toQuery() + " " + likes.size());
+
+		Map tickets = sortIntoTypes(inReq, archive, likes);
+		List types = new ArrayList();
+		for (Iterator iterator = tickets.keySet().iterator(); iterator.hasNext();)
+		{
+			String id = (String) iterator.next();
+			Data type = archive.getData("tickettype",id);
+			types.add(type);
+		}
+		Collections.sort(types);
+		inReq.putPageValue("tickets", tickets);
+		inReq.putPageValue("tickettypes", types);
+	}
+	
 	
 }
