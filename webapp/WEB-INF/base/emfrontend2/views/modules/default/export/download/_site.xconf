@@ -1,5 +1,7 @@
 <page>
 	   <page-action name="PageValue.loadPageVariable"  bean="searcherManager" alltypes="true"/>
+			<page-action name="Admin.createUserSession" alltypes="true"/>
+	
 	<page-action name="ProfileModule.loadUserProfile" alltypes="true"/>
 	
 	<page-action name="Script.run" alltypes="true" >
