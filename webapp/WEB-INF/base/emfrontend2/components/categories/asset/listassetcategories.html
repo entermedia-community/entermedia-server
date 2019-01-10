@@ -9,6 +9,14 @@
 	#set($existingcategories = $existingcategories.substring(0, $existingcategorieslenght))  
 #end
 
+
+#set( $ismulti = $asset.id.startsWith("multiedit:") || $context.getRequestParameter("multi") == "true")
+#if($ismulti)
+
+$pages.include("$apphome/views/modules/asset/editor/categorize/index.html", $context)
+
+
+#else
 <div class="asset-data-detail assetpanel-editor-box">
 	<h4>[[Locations]]
 	#if( $caneditassetcategories )
@@ -48,3 +56,5 @@
 	</div>
 </div>
 </div>
+
+#end
