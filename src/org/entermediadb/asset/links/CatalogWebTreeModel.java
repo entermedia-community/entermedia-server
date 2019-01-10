@@ -179,7 +179,7 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 			for (Iterator iterator2 = viewableparents.iterator(); iterator2.hasNext();)
 			{
 				Category specificchild = (Category) iterator2.next();
-				if( specificchild.hasParent(inCat.getId()))
+				if( inCat.hasParent(specificchild.getId()))
 				{
 					return true;
 				}
