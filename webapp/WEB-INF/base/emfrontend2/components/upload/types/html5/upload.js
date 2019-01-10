@@ -30,7 +30,7 @@ var uploadid;
 	         	$("#uploadinstructionsafter").hide();
 	        	var startb = $("#startbutton");
 	        	$(startb).text("Upload");
-    			$(startb).removeAttr('disabled');
+    			$(startb).prop('disabled', false);
 	        	$("#uploadinstructionsafter").show();
 	        	$(".showonselect").show();
 	        	
@@ -74,13 +74,18 @@ $(document).ready(function()
 	lQuery("#startbutton").livequery('click',function(e) 
     {
     	e.preventDefault(); 
+    	if ($(this).prop("disabled")) {
+    		return;
+    	}
     	var valid = $("#uploaddata").validate().form();
     	if(!valid){
     		return;
     	}
     	$(this).text("Uploading");
+    	
     	$(this).attr('disabled', 'disabled');
-    	 $("#viewassetsbtn").attr('disabled', 'disabled');
+    	//$(this).prop('disabled', true);
+    	$("#viewassetsbtn").attr('disabled', 'disabled');
     	$("#upload_field").triggerHandler("html5_upload.start");
     	
     });
@@ -140,7 +145,7 @@ $(document).ready(function()
 	         onStart: function(event, total, files) 
 	         {
 	        	 //$(".uploadinstructions").hide();
-        	  	 console.log("On start " + files.length );
+        	  	 //console.log("On start " + files.length );
 	        	 var completed = $("#up-files-list li").clone();
 			    $("#up-files-list").empty();
 
@@ -188,7 +193,9 @@ $(document).ready(function()
 	        	{
 	        			var startb = $("#startbutton");
 	        			var complete = startb.data("complete");
+	        			
 	        			$(startb).text(complete);
+	        			$(startb).prop('disabled', 'disabled');
     				    allfiles = new Array();
     				   
 		   				var completed = $("#up-files-list-completed li span");
@@ -202,7 +209,7 @@ $(document).ready(function()
     				   var viewassets = $("#viewassetsbtn");
 	        		   viewassets.removeAttr('disabled');
     				   
-    				   $("#autofinishbutton").trigger("click");
+    				   //$("#autofinishbutton").trigger("click");
     				   //$(".media_results_tab").data("tabloaded",false);
 	        	}
 	

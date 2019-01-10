@@ -2105,6 +2105,7 @@ div#drop-area .drop-over {
     clear:both;
     list-style: none;
     position: relative;
+    border-bottom:1px dotted #aaa;
 }
 .up-files-list li a {
     padding: 7px 0px 3px 5px;
@@ -2119,25 +2120,27 @@ div#drop-area .drop-over {
     text-overflow: ellipsis;
     display: inline-block;
     white-space: nowrap;
-    color:#666;
+    color:#333;
 }
 .up-files-list li a .size {
-    color: #3DAACD;
-    font-size: 10px;
-    width: 30%;
     text-align: right;
+    font-size: .7rem;
     display: inline-block;
     float: right;
     margin-top: 1px; 
 }
 .up-files-list li a .uploadstatus {
     font-style: italic;
-    color: #3DAACD;
-    font-size: 10px;
+    font-size: .7rem;
     text-align: right;
     display: inline-block;
     float: right;
     margin-top: 1px; 
+    padding-right:6px;
+    font-weight: bold;
+}
+.up-files-list li.uploadprogressrow {
+	padding: 0 5px;
 }
 .up-files-list li .delete-row, .up-files-list li:hover .delete-row {
     background: url('../images/iconset-10x10.png') 20px 10px;
@@ -2157,7 +2160,7 @@ div#drop-area .drop-over {
 .up-files-list li .uploadprogress {
     background: rgba(113, 206, 113, 0.2);
     display: block;
-    height: 32px;
+    height: 100%;
     position: absolute;
     top: 0;
     left: 0;
