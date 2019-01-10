@@ -50,7 +50,7 @@ public void writeAsset(MediaArchive archive,XmpWriter writer, Asset asset)
 	if( archive.isTagSync(asset.getFileFormat() ) )
 		{
 			HashMap additionaldetail = new HashMap();
-			boolean didSave = writer.saveMetadata(archive, asset, additionaldetail);
+			boolean didSave = writer.saveMetadata(archive, asset, additionaldetail, true);
 			if(!didSave){
 				log.info("Failed to write metadata for asset " + asset.getId());
 			
