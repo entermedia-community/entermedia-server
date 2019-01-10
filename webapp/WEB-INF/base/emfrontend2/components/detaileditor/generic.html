@@ -4,7 +4,7 @@
 #set ($module = $context.findValue("module"))
 #set ($viewid = $url_util.getPathUtilities().extractFileName($view) )
 
-<div id="${view}editor">
+<div id="edit-${viewid}">
 #if( !$catalogid )
 	#set( $catalogid = $mediaarchive.getCatalogId() )
 #end
