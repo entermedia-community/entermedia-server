@@ -129,7 +129,8 @@
 .main-info   {
 	background-color: #d5d5d5;
 }
-.ui-widget-header {
+.ui-widget-header,
+.list-group-item.active {
 	border:1px solid #434343;
 	background: #434343;
 	color: #fff;
@@ -267,6 +268,8 @@ tr.emborderhover td,
 	padding:10px;
 	background-color:#f1f1f1;
 }
+
+
 
 
 /*Bootsrap Overwrites*/
@@ -1167,11 +1170,12 @@ html, body, #application {
 #main-results-table th,
 .emresultstable th,
 .emdata th { 
-	padding:3px 3px; 
+	padding:0px 3px; 
 	border-top:0 none;
 	border-right:1px solid #fff;
 	white-space: nowrap;
-	font-size:90%;
+	font-size:0.8rem;
+	line-height:2;
 	position:relative;
 	text-align: center;
 	}
@@ -1191,7 +1195,7 @@ html, body, #application {
 #main-results-table th.sortable div span.sorticon {
     font-size: 16px;
     float: right;
-    margin-top: 2px;
+    margin-top: 5px;
     margin-right: 8px;
     position: absolute;
     right: 0;
@@ -1221,10 +1225,10 @@ html, body, #application {
 		display:inline-block;
 		width:15px;
 		height:18px;
-		margin:0 0 0 7px;
+		margin:3px 0 0 7px;
 }
 #th-checkbox-left input { margin: 0; }
-#th-checkbox-right .anchor { padding-top:5px; } 
+#th-checkbox-right .anchor { padding:8px 0 0 3px; } 
 .select-dropdown-open {
     width: 10px;
     height: 10px;
@@ -1421,7 +1425,7 @@ td.checkbox input, th.firstheader input {
 }
 .emnav .select2-container,
 #advsearchpanel .select2-container {
-	z-index: 100;
+	z-index: 1;
 }
 
 .emsubnav .dropdown>.dropdown-toggle:active {
@@ -1567,7 +1571,7 @@ td.checkbox input, th.firstheader input {
 	box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.8);
 }
 .card-body {
-    white-space: nowrap; 
+    /*white-space: nowrap;*/ 
     overflow: hidden;
     text-overflow: ellipsis;
 }
@@ -3969,12 +3973,7 @@ form .field {
 #dm-container {
     overflow-x: scroll;
 }
-.liquid-sizer {
 
-}
-.liquid-sizer h2 {
-    margin: 0 20px 20px 20px;
-}
 #embody #emcontainer .settings table tr td:first-child, #meta-no-margin table tr td:first-child {
     padding: 4px 10px 4px 20px !important;
 }
@@ -4111,13 +4110,13 @@ select.is-invalid~.select2-container--bootstrap4 .select2-selection{border-color
 
 table.table-striped tbody td 
 {
-	padding: 0px 10px;
+	padding: 5px 10px;
 	font-size: 0.9rem;
 }
 tableheader th {
 	text-shadow: 0 1px 0 rgba(0,0,0,0.2);
 	font-weight: bold;
-	font-size: 11px;
+	font-size: 1rem;
 }
 
 table.stackedplayertable tbody tr
@@ -4125,7 +4124,8 @@ table.stackedplayertable tbody tr
 	cursor:pointer;
 }
 
-.table-clickable td {
+.table-clickable td,
+#emselectable table tbody tr {
 	cursor: pointer;
 }
 table.table-padding tbody td {
@@ -4675,4 +4675,14 @@ a.collectionbox.favorite
 }
 .iconbarcontainer {
 	background-color: #000;
+}
+.dashboardcontainer {
+	padding-bottom:20px;
+}
+.dashboardcontainer h2 {
+	padding:15px 0 20px;
+}
+
+.dashboard .card {
+	margin-bottom:20px;
 }

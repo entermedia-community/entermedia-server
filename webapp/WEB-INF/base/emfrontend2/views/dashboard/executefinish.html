@@ -1,33 +1,28 @@
 <div class="container-fluid">
 <div class="page-header">
-  <h1> <small>$report</small></h1>
+  <h2>$report</h2>
 </div>
 
 <div class="row ">
 
 <div class="col-md-3 ">
-<div class="panel panel-default">
-    <div class="panel-heading">Filters  
+<div class="card panel-default">
+    <div class="card-header">[[Filters]]  
 #set( $viewpath = "${reportsearcher.searchType}/${reportsearcher.searchType}advancedsearch")    
- <a 
-  href="$home$apphome/views/settings/lists/datamanager/views/index.html?viewid=${reportsearcher.searchType}advancedsearch&viewpath=$viewpath&searchtype=${reportsearcher.searchType}">
-    <i class="glyphicon glyphicon-edit pull-right"></i></a>
+ <a href="$home$apphome/views/settings/lists/datamanager/views/index.html?viewid=${reportsearcher.searchType}advancedsearch&viewpath=$viewpath&searchtype=${reportsearcher.searchType}">
+    <i class="fas fa-cog float-right"></i></a>
     
   </div>
-  <div class="panel-body">
-$pages.include("./execute.html", $context)
-
-
-</div>
+  <div class="card-body">$pages.include("./execute.html", $context)</div>
 </div>
 </div>
 
 
 <div class="col-md-9 ">
-<div class="panel panel-default">
-    <div class="panel-heading">Results 
+<div class="card panel-default">
+    <div class="card-header">[[Results]] 
   </div>
-  <div class="panel-body">
+  <div class="card-body">
 $pages.include("/${applicationid}/components/reports/types/${report.outputtype}.html")
 </div></div></div>
 

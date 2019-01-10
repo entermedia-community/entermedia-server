@@ -30,14 +30,9 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 
 <div class="tablecontainer">
 
-<div class="editholder" style="margin-top: 0;">
- <div id="messagearea"> </div>
 
-###if( $canviewmodulesettings ) 
-##  <a id="editboxlink" class="ir  emdialog" data-width="700" href="$home$apphome/views/settings/modules/$moduleid/metadata/viewssystem/indexdialog.html?viewid=${moduleid}resultstable&viewpath=${moduleid}/${moduleid}resultstable">Edit</a>
-###end  
+<div id="messagearea"> </div>
 
-</div>
 <div id="emselectable" >
 
 
@@ -48,6 +43,9 @@ $pages.include("${searchhome}/resultsactions.html",$context)
 #if($content.isPropertyTrue("showactions"))
 
 	<th class="firstheader" id="th-checkbox">
+	<div id="th-checkbox-left">
+		<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end  />
+		</div>
 	<div id="th-checkbox-right">
 	    <div class="anchor">
     	    <div class="select-dropdown-open down"></div>
@@ -59,9 +57,7 @@ $pages.include("${searchhome}/resultsactions.html",$context)
     	</div>
     	</div>
     	
-    	<div id="th-checkbox-left">
-		<input name="pagetoggle" type="checkbox" #if($hits.isAllSelected()) checked #end  />
-		</div>
+    	
 	</th>
 
 

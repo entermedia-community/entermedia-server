@@ -70,7 +70,8 @@ var myChart = new Chart(ctx, {
 	#if($child.get("count") != 0)
 	<li class="list-group-item">
 	
-	<b> $context.getSearchDate($child.toString()) </b> : Overall Edits: $child.get("count")	<a class=" pull-right" href="$home$apphome/views/modules/asseteditLog/fieldsearch.html?field=date&date.value=${context.getSearchDate($child.toString())}&operation=equals">View Details</a><br/>
+	<b> $context.getSearchDate($child.toString()) </b> : [[Overall Edits]]: $child.get("count")	
+	<a class="float-right btn btn-xs btn-light" href="$home$apphome/views/modules/asseteditLog/fieldsearch.html?field=date&date.value=${context.getSearchDate($child.toString())}&operation=equals">View Details</a><br/>
 	 
 	</li>
 	#end

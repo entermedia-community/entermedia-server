@@ -22,14 +22,17 @@ $context.putPageValue("hits", $hits)
 
 <div id="searchplugin" class="modules-layout">
 	<div class="col-main col-sidebar" id="leftsidebar">
-		<div class="sidebar-inner">
+	<div class="col-main-inner">
+		
 		#set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 		<h2>$module</h2>
+		 
 		$pages.include("${searchhome}/sidebar/standard.html",$context)
 		<div class="clearfix"></div>
-		</div>
+		
 	</div>
-	<div class="col-main col-content" class="module-inner">
+	</div>
+	<div class="col-main col-content col-content-main" class="module-inner">
 				<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="$moduleid" data-searchhome="$home$content.searchhome" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
 							<div id="resultsarea">
 								<div id="resultslist">

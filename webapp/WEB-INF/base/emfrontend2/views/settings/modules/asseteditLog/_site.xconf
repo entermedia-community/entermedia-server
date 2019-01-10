@@ -2,5 +2,5 @@
 
 <page>
   <property name="module">asseteditLog</property>
-  <property name="fallbackdirectory">/emshare/views/settings/modules/default</property>
+  <property name="fallbackdirectory">/${aaplicationid}/views/settings/modules/default</property>
 </page>

@@ -1,3 +1,4 @@
+
 <div id="advsearchpanel">
 <div class="tanmodule" >
 	#set( $view = "asset/advancedsearch")
@@ -31,7 +32,7 @@
 	
 	$context.putPageValue("idprefix","search")
 	
-		<table class="advancedsearchtable">
+		<div class="advancedsearchtable">
 			#foreach( $detail in $details)
 				$context.putPageValue("detail", $detail)
 				$context.putPageValue("searchform", true)
@@ -42,8 +43,8 @@
 					$pages.include("/${applicationid}/components/advancedsearch/section.html", $context)
 				#end
 			#end
-			<tr>
-				<td class="advancedsearchtable-submit">
+			
+				<div class="advancedsearchtable-submit">
 					#if( $librarycol.rootcategory )
 						<input type="hidden" name="field" value="category" />
 						<input type="hidden" name="operation" value="exact" />
@@ -68,9 +69,9 @@
 					</div>
 				    
 					
-				</td>
-			</tr>
-		</table>
+				</div>
+			
+		</div>
 		
 		#set ($resultview = $userprofile.get('resultview'))
 		

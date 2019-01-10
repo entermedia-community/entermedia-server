@@ -1,6 +1,6 @@
-<tr class="emsearchfieldrow">
-	<td id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
-		<div class="emsearchfield"> 
+<div class="form-group">
+	<div id="detail_${detail.id}" align="left" valign="middle" class="emsearchfieldvalue" nowrap >
+		<div class=""> 
 	#if ($edit == "true")
 		<a href="#" onclick="javascript:deleteField('$detail.id'); return false;">
 		<img src="$home$apphome/theme/images/navigation/deletesm.png"/>
@@ -54,6 +54,5 @@
 		#end	
 		
 		$pages.include("/${applicationid}/components/xml/types/${viewtype}.html", $context)
-	</td>
-</tr>
-
+</div>
+</div>

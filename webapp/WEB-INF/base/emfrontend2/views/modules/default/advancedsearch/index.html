@@ -33,20 +33,20 @@ $context.putPageValue("edit",$edit)
 $context.putPageValue("idprefix","search")
 
 
-<table 	 width="100%">
+<div>
 	#foreach( $detail in $details)
 		$context.putPageValue("detail", $detail)
 		#if ($detail.isLeaf())
 			$pages.include("$searchhome/advancedsearch/detailedit.html", $context)
 		#else
-			$pages.include("$searchhome//advancedsearch/section.html", $context)
+			$pages.include("$searchhome/advancedsearch/section.html", $context)
 		#end
 	#end
-	<td class="submit"><input class="btn btn-sm btn-primary" type="submit" value="[[Search]]" />
-	</td>
-	</tr>
+	<div>
+		<input class="btn btn-sm btn-primary" type="submit" value="[[Search]]" />
+	</div>
 	
-</table>
+</div>
 
 #set ($resultview = $userprofile.get('resultview'))
 
