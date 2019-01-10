@@ -1,28 +1,34 @@
 #set($view = "assetreadmetadata")
 #set($hitssessionid = $context.findValue("hitssessionid"))
-<form name="formedit$view" id="formedit$view" class="ajaxform showwaiting"  targetdiv="${view}editor" method="post" action="$home$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1" >
+<div style="border-top:1px solid #333; padding-top:20px">
+<div class="float-left">
+<form name="formedit$view" id="formedit$view" class="ajaxform showwaiting"  targetdiv="assetreadmetadataeditor" method="post" action="$home$apphome/views/modules/asset/editor/edit/metadata/read.html?oemaxlevel=1" >
 	<input type="hidden" name="field" value="assetid" />
 	<input type="hidden" name="assetid.value" value="$asset.getId()" />
 	<input type="hidden" name="assetid" value="$asset.getId()" />
 	<input type="hidden" name="force" value="true" />
 	$context.putPageValue("view",$view)
 	$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
-	<p class="btns" align="right">
-		<span id="${view}editor"></span> &nbsp;&nbsp;&nbsp;
-		<input class="btn btn-sm btn-secondary" type="button" onclick="jQuery(this.form).submit();" value="[[Read Metadata]]"/>
-	</p>
+
+		<a  class="btn btn-sm btn-secondary submitform"><i class="fas fa-upload"></i> [[Read Metadata]]</a>
+		&nbsp;
+		<span id="assetreadmetadataeditor"></span>
 </form>
-
-
-<form name="formedit$view" id="formedit$view" class="ajaxform showwaiting" targetdiv="${view}editor" method="post" action="$home$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1" >
+</div>
+<div class="float-left" style="margin-left: 10px;">
+<form name="formedit$view" id="formedit$view" class="ajaxform showwaiting" targetdiv="assetwritemetadataeditor" method="post" action="$home$apphome/views/modules/asset/editor/edit/metadata/write.html?oemaxlevel=1" >
 	<input type="hidden" name="field" value="assetid" />
 	<input type="hidden" name="assetid.value" value="$asset.getId()" />
 	<input type="hidden" name="assetid" value="$asset.getId()" />
 	<input type="hidden" name="force" value="true" />
 	$context.putPageValue("view",$view)
 	$context.putPageValue("origURL", "$apphome/assets/${asset.sourcePath}.html")
-	<p class="btns" align="right">
-		<span id="${view}editor"></span> &nbsp;&nbsp;&nbsp;
-		<input class="btn btn-sm btn-secondary" type="button" onclick="jQuery(this.form).submit();" value="[[Rewrite Metadata]]"/>
-	</p>
+	
+		<a class="btn btn-sm btn-secondary submitform" ><i class="fas fa-download"></i> [[Rewrite Metadata]]</a>
+		&nbsp;
+		<span id="assetwritemetadataeditor"></span>
+	
 </form>
+</div>
+<div class="clearfix"></div>
+</div>
