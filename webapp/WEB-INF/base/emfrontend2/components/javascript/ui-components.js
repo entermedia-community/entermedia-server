@@ -302,7 +302,7 @@ uiload = function() {
 				if (form.hasClass("showwaiting")) {
 					var app = $("#application");
 					var apphome = app.data("home") + app.data("apphome");
-					$("#" + targetdiv).append(
+					$("#" + targetdiv).html(
 							'<img src="' + apphome
 									+ '/theme/images/ajax-loader.gif">');
 				}
@@ -318,7 +318,7 @@ uiload = function() {
 						// $("#" + targetdiv).replaceWith(data);
 					},
 					success : function(result, status, xhr, $form) {
-						$("#" + targetdiv).replaceWith(result);
+						$("#" + targetdiv).html(result);
 						$(window).trigger( "resize" );
 					},
 					data : {
