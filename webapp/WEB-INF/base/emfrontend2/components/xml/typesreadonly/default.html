@@ -14,8 +14,11 @@
 		#if( $showalllanguagevalues )
 			#set($languages = $mediaarchive.getList("locale"))
 			#foreach($locale in $languages)
-				#set( $lval = false ) #set( $lval = $map.getText($locale.id) )
-				#if($lval) $locale:$lval <br> #end 
+				#set( $lval = false ) 
+				#set( $lval = $map.getText($locale.id) )
+				#if($lval) 
+					<div class="emdatafieldvaluelanguages"><span class="emdatafieldvaluelocale">$locale:</span> $lval</div> 
+				#end 
 			#end
 		#else
 			$!map.getText($context.language)
