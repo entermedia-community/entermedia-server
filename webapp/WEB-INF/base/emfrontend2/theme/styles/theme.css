@@ -2328,8 +2328,10 @@ label.error {
 
 }
 .assetpanel-content-chatterbox {
-		padding:0 20px 20px;
+		padding:0 0 20px;
 		height:100%;
+		width:100%;
+		display:table;
 }
 
 .editor-panel {
@@ -2549,6 +2551,7 @@ label.error {
 }
 .chatterbox-body {
 	display: table-row;
+	background-color: #fff;
 }
 .chatterbox-inputarea {
 	height: 36px;
@@ -2558,7 +2561,7 @@ label.error {
 	overflow-y: auto;
 	height: 100%;
 	
-	background-color: #fff;
+	
 	padding:10px 20px;
 }
 
