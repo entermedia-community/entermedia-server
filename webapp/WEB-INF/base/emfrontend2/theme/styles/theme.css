@@ -2202,7 +2202,9 @@ label.error {
 .assetpanel-content-inside {
 	height: 100%;
 	width: 100%;
-	display:table;
+	/*display:table;*/
+	background-color: #565656;
+	color:#efefef;
 }
 @media (min-width: 992px) {
 	.assetpanel-sidebar {
@@ -2242,11 +2244,11 @@ label.error {
 	}
 
 .assetpanel-editor {
-	background-color: #565656;
-	color:#efefef;
+	
 	padding:15px;
 	height: 100%;	
 	overflow-y:auto;
+	
 }
 .assetpanel-editortitle {
 	height: 45px;
