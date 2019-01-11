@@ -1,4 +1,6 @@
 <page>
+<path-action name="DataEditModule.changeFilters">
+</path-action>
 <path-action name="DataEditModule.search">
 	<searchtype>${module}</searchtype>
 </path-action>
