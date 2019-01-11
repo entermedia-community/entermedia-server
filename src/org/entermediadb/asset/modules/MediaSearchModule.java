@@ -83,6 +83,9 @@ public class MediaSearchModule extends BaseMediaModule
 			Category category = archive.getCategory(catid);
 			inReq.putPageValue("category", category);
 		}
+		
+		inReq.setRequestParameter("nodeID", catid);
+
 	}
 	
 	
