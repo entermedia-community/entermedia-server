@@ -68,8 +68,27 @@ public class MediaSearchModule extends BaseMediaModule
 			hits.invalidate();
 			hits = archive.getAssetSearcher().cachedSearch(inReq, hits.getSearchQuery());
 		}
-		
+		hits.getSearchQuery().setProperty("selectedcategory", category.getId());
 	}
+	
+	public void loadHitsCategory(WebPageRequest inReq) throws Exception
+	{
+		//Look for a hitsessionid and make sure this category is in there
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker hits = (HitTracker) inReq.getPageValue("hits");
+		
+		
+		String catid = hits.getInput("selectedcategory");
+		if(catid != null) {
+			Category category = archive.getCategory(catid);
+			inReq.putPageValue("category", category);
+		}
+	}
+	
+	
+	
+	
+	
 	public void searchCategories(WebPageRequest inPageRequest) throws Exception
 	{
 		MediaArchive archive = getMediaArchive(inPageRequest);
@@ -106,6 +125,8 @@ public class MediaSearchModule extends BaseMediaModule
 			prefs.setProperty("lastcatalog", archive.getCatalogId());
 			//prefs.save();
 		}
+		tracker.getSearchQuery().setProperty("selectedcategory", category.getId());
+
 	}
 	/**
 	 * not used

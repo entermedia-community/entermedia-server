@@ -8,6 +8,8 @@
 	<xpath-action name="DataEditModule.changeFilters">
 		<property name="searchtype">${module}</property>
 	</xpath-action>	
+	
+	
 	<path-action name="DataEditModule.loadOrSearch">
 		<property name="searchtype">${module}</property>
 	</path-action>	
@@ -15,5 +17,5 @@
 	<property name="hitsname">hits</property>
 		
 	<path-action name="DataEditModule.search" cancel="true"/>
-	
+	<path-action name="MediaSearchModule.loadHitsCategory"/>
 </page>
