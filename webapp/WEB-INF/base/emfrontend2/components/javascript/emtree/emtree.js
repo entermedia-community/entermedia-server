@@ -100,9 +100,10 @@ $(document).ready(function()
 		
 		var reloadurl = home + "/views/modules/asset/showcategory.html?nodeID=" + nodeid;
 		
-		var collectionid = $("#collectiontoplevel").data("collectionid");
+		var collectionid = $("#resultsdiv").data("collectionid");
 		if( collectionid )
 		{
+			
 			reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid;
 		}
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');

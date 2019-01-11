@@ -16,7 +16,7 @@
 	
 		<input type="hidden" name="searchtype" value="librarycollection" />
 		<input type="hidden" name="sortby" value="name" />
-		<input id="collectionid" type="hidden" name="collectionid" />
+		<input id="submitcollectionid" type="hidden" name="collectionid" />
 		<input type="hidden" name="assetid" value="$!asset.id" />
 		<table>
 		<tr>
@@ -52,12 +52,12 @@
 	
 	</div>
 </div>	
-AJAX
+
 <script>
 lQuery("#collectionresults .rowclick").livequery("click", function(e) {
 	$(this).closest(".modal").modal("hide");
 	var rowid = $(this).attr("rowid");
-	$("#collectionid").val(rowid);
+	$("#submitcollectionid").val(rowid);
 	$("#colsearchform").trigger("submit");
 
 });

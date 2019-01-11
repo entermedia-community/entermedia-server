@@ -51,7 +51,11 @@ $(document).ready(function(url,params)
 		
 		//console.log("searchtype" + searchtype);
 		var dataid = $(this).data('dataid');
-		refreshdiv( home + "/components/results/toggle.html", {dataid:dataid, searchtype: searchtype, hitssessionid: hitssessionid });
+		var data = $('#resultsdiv').data();
+		
+		data['dataid'] = dataid;
+		
+		refreshdiv( home + "/views/modules/" + searchtype + "/results/toggle.html", data);
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
