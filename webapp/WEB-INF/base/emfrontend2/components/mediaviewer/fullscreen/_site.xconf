@@ -10,12 +10,10 @@
 	</permission>	
 
 	<permission name="view">
-		<and>
-		<userprofile property="view" equals="true" />
-	
+		
 			<pagevalue name="canviewasset" equals="true"/>
 		
-		</and>
+		
 	</permission>	
 
 	<permission name="download">

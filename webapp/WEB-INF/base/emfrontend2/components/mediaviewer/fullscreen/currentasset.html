@@ -129,10 +129,12 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			</li>
 			#end
 							#if (!$ismulti)
+
+							
 				<div class="hidemulti">
 						$pages.include("$apphome/components/detaileditor/assetdatatables.html",$context)
 			</div>
-			#end
+						#end
 			
 			#if (!$ismulti)
 				#if( !$previewonly )
@@ -211,7 +213,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			 #end
             #end
 						
-			#if( !$previewonly 	&& !$ismulti)
+			#if($user && ( !$previewonly 	&& !$ismulti))
 			<li class="footermenu bottomtab bottomtabactions hidemulti #if($opentabactions) tabselected #end">
 			   <a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" title="[[Actions Menu]]"> 
 			   <span class="fas fa-edit"></span>

@@ -11,8 +11,18 @@ $!query.addSortBy("ordering")
 $context.putPageValue("view", $viewpath)
 #set( $data = $asset)
 $context.putPageValue("data",$asset)
+#set($show = false)
+	#foreach( $target in $views)            
+	 #set($permissionvalue = $context.getPageValue("canview-${target.getId()}"))
+	 #if($user && ("$!permissionvalue" == "" || $permissionvalue == true))
+	 	#set($show = true)
+	 
+	#end
+
+#end
 
 
+#if($show)
 
 <li class="footermenu bottomtab #if($viewid == $target.id) tabselected #end " byassettype="true">
     <a class="expandmenu dropdown-toggle" 
@@ -45,3 +55,4 @@ $context.putPageValue("data",$asset)
 </li>
 
 
+#end
