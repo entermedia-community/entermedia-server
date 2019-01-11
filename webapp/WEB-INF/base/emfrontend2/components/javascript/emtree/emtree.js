@@ -236,9 +236,9 @@ $(document).ready(function()
 				var nodeid = node.data('nodeid');
 				var link = tree.data("home") + "/views/modules/category/edit/edit.html?categoryid=" + nodeid + "&id=" + nodeid + "&viewid=categorygeneral&viewpath=category/categorygeneral";
 				$(this).attr('href',link);
-				emdialog($(this), event);
-				//document.location = link;
-				//return false;
+				//emdialog($(this), event);
+				document.location = link;
+				return false;
 	} );
 
 	lQuery(".treecontext #addmedia").livequery('click', function(event) 
