@@ -252,15 +252,17 @@ $(document).ready(function(url,params)
 				
 			}
 	}
-	
-	hideOverlayDiv = function(inOverlay)
-	{
+	disposevideos = function(){
 		//Stop/Dispose Videos
 		$('.video-js, .video-player').each(function () {
 			if (this.id) {
 				videojs(this.id).dispose();
 			}
 		});
+	}
+	hideOverlayDiv = function(inOverlay)
+	{
+		disposevideos();
 		stopautoscroll = false;
 		$("body").css({ overflow: 'auto' })
 		inOverlay.hide();
@@ -328,12 +330,7 @@ $(document).ready(function(url,params)
 		
 		window.location.hash = 'asset-'+assetid;
 		
-		//Stop/Dispose Videos
-		$('.video-js, .video-player').each(function () {
-			if (this.id) {
-				videojs(this.id).dispose();
-			}
-		});
+		disposevideos();
 		
 
 		$.get(link, params, function(data) 
@@ -988,6 +985,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			});
 		}
 		else {
+			disposevideos();
 			var link = $(this).data("link");
 			div.load(link, options, function()
 			{
@@ -1014,8 +1012,7 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 			}
 		}
 		
-		
-		
-		
-		
 	});
+	
+	
+	
