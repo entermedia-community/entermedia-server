@@ -24,13 +24,13 @@ $context.putPageValue("data",$asset)
 
 #if($show)
 
-<li class="footermenu bottomtab #if($viewid == $target.id) tabselected #end " byassettype="true">
+<li class="footermenu bottomtab #if($opentab == 'viewtable') tabselected #end " byassettype="true">
     <a class="expandmenu dropdown-toggle" 
      data-toggle="dropdown"
      title="[[Relationships]]"
      data-assettab="viewtable"
      >
-     <i class="fas fa-table"></i> [[Relationships]]
+     <i class="fas fa-table"></i> [[Relationships]] 
     </a>
     <ul class="dropdown-menu">
 	#foreach( $target in $views)            
@@ -42,7 +42,7 @@ $context.putPageValue("data",$asset)
 		          title="$target"
 		           data-link="$home$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${data.id}&assetid=$data.id&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}"
 		           data-assettab="viewtable"
-		           data-assettable="$target.id"
+		           data-assettabtable="$target.id"
 		           >
 			         $target
 		          </a>

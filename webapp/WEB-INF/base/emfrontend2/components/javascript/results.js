@@ -1003,6 +1003,15 @@ computeRow = function(row,fixedheight,totalavailablew,sofarusedw,cellpadding)
 				}
 				saveProfileProperty("assetopentabactions",assettabactions,function(){});
 			}
+			var assettabtable = $(this).data("assettabtable");
+			if (assettabtable) {
+				$(this).addClass("dropdown-current");
+				var label = $(this).data("assettabname");
+				if (label) {
+					$('.bottomtabactionstext').text(label);
+				}
+				saveProfileProperty("assetopentabassettable",assettabtable,function(){});
+			}
 		}
 		
 		

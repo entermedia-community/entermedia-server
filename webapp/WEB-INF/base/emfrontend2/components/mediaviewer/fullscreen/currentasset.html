@@ -31,6 +31,7 @@ $context.putPageValue("cdn",$cdnprefix)
 		#set( $opentab = "viewpreview")
 	#end
 #end
+
 #if( $ismulti )
 	#set( $opentab = "viewproperties")
 #end
@@ -45,7 +46,7 @@ $context.putPageValue("cdn",$cdnprefix)
 	#end
  #end
 #end
-
+$context.putPageValue("opentab",$opentab)
 
 $dialoghits.setHitsPerPageHeight($context.getRequestParameter("pageheight"),150)
 #set( $hitssessionid = $dialoghits.getSessionId())
@@ -98,6 +99,9 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 		#end
 	#elseif($opentab=="viewtable")
 		#set( $opentabassettable = $userprofile.get("assetopentabassettable"))
+		#if($opentabassettable)
+			$pages.include("$home$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${asset.id}&assetid=$asset.id&viewid=$opentabassettable&viewpath=asset/$opentabassettable&hitssessionid=${hitssessionid}",$context)
+		#end
 	#end
 	
 </div>
