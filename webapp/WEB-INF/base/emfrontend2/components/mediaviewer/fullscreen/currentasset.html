@@ -186,7 +186,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
             </li> 
 			#end
 			#if (!$ismulti)
-			#if($candownload || $canconvert)
+			#if($candownload || $canconvert || $candownloadfpo)
 				<li class="footermenu bottomtab hidemulti" >		
 					<a href="#" class="expandmenu dropdown-toggle" data-toggle="dropdown" expanded="true" > <span class="fas fa-download"></span>  [[Download]]</a>
 					   <ul class="dropdown-menu">
@@ -196,8 +196,9 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 								
 						 #if($candownload)				
 							<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
-						#end	
-						#if($canconvert)
+						#end
+						
+						#if($canconvert || $candownloadfpo)
 
 						#if( $rendertype )
 						#set( $searcher = $mediaarchive.searcherManager.getSearcher($catalogid, "convertpreset"))
@@ -205,7 +206,26 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 						#end
 						
 							#foreach($result in $results )						
+									#set($ok = false)
+						#if($canconvert && $candownloadfpo)
+							#set($ok = true) 
+						#elseif ($canconvert && $result.watermark != "true")
+							#set($ok = true) 
+						#elseif($candownloadfpo && $result.watermark == "true")
+							#set($ok = true) 
+						#end
+						#if($result.id == "0" && $candownload)
+							#set($ok = true) 
+						#end
+						#if($result.id == "0" && !$candownload)
+							#set($ok = false) 
+						#end
+						#if($ok)
+									
+									
+									
 									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
+									#end
 							#end
 						#end
 					</ul>
