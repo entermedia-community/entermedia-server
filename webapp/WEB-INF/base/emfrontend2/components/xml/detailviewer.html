@@ -1,3 +1,4 @@
+
 #set( $xmledithome = $context.getPageProperty("xmledithome"))
 #set( $readonly = "true" )
 
@@ -41,9 +42,9 @@
 			</label>
 			</div>
 			<div class="col-8">
-			<div class="emdatafieldvalue ">					
+			<div class="emdatafieldvalue">					
 				$!context.putPageValue("val",$val)
-				$context.putPageValue("showalllanguagevalues",false)
+				$context.putPageValue("showalllanguagevalues",true)
 				
 				$!context.putPageValue("detail",$detail)
 				$pages.include("$apphome/components/xml/detailreadonly.html", $context) 

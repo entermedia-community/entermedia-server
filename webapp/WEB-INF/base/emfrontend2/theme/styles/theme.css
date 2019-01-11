@@ -1148,6 +1148,7 @@ html, body, #application {
 }
 .languagesaddform {
 	height: 30px;
+	margin-bottom: 5px;
 }
 .languagesaddform .languageselector
 {
@@ -2384,7 +2385,7 @@ label.error {
 	color:#bbb;
 	margin-bottom: .3rem;
     display: block;
-    line-height: 1.8;
+    line-height: 2;
     padding: 0;
     text-align: right;
 }
@@ -2393,7 +2394,13 @@ label.error {
 	padding:0 8px;
 	word-wrap: break-word;
 }
-
+.asset-data-preview .emdatafieldvaluelanguages {
+	padding-bottom:10px
+}
+.asset-data-preview .emdatafieldvaluelocale {
+	color:#bbb;
+	font-size: .9rem;
+}
 .assetpanel-editor .emdatafieldvalue-readonly {
 	border: 1px solid #999;
     border-radius: .25rem;
