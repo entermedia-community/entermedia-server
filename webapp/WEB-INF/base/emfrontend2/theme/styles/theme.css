@@ -769,6 +769,17 @@ html, body, #application {
 .filter-box-options .form-control { 
 	padding:.125rem .5rem;
 }
+.filter-box-options .custom-select {
+    background: #fff url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 4 5'%3E%3Cpath fill='%23EEE' d='M2 0L0 2h4zm0 5L0 3h4z'/%3E%3C/svg%3E") no-repeat right .75rem center;
+    background-size:8px 10px;
+}
+.select-items div,.select-selected {
+  color: #ffffff;
+  padding: 8px 16px;
+  border: 1px solid transparent;
+  border-color: transparent transparent rgba(0, 0, 0, 0.1) transparent;
+  cursor: pointer;
+}
 .filter-box .select2-container {
 	z-index:2;
 }
@@ -3944,6 +3955,10 @@ form .field {
 	background: none!important;
 	border:0 none;
 	margin:0;
+}
+.mapbubble h3 {
+	font-size:1rem;
+	margin:10px 0;
 }
 .assetpanel-geomap {
 	min-height: calc(100% - 40px);

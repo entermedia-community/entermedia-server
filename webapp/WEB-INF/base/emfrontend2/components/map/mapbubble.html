@@ -1,15 +1,15 @@
 #set( $asset = $mediaarchive.getAsset($context.getRequestParameter("id")) )    
-
+<div class="mapbubble">
 <h3>$asset </h3>
-
-				  <a class="thumbnail  " href="$home$apphome/views/modules/asset/editor/viewer/index.html?assetid=$asset.id" >
-				   <img class="media-object" src="$home$apphome/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg" alt="$owner">
-				  </a>
-				  
+		  <a class=" stackedplayer " data-assetid="$asset.id"  href="#" >
+		   <img class="media-object" src="$home$apphome/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg" alt="$asset">
+		  </a>
+</div>		  
 				
 			
 		 
 		 
 		 
 		 
+		
 		

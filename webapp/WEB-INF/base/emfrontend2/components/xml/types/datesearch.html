@@ -20,7 +20,7 @@
 	#set( $op = $term.getParameter("op") )
 
 	
-	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" class="form-control">
+	<select name="operation" id="operation${inputid}" onchange="updateDateInput${inputid}(this.selectedIndex);" class="form-control custom-select">
 		<option value="equals" >[[Equals]]</option>
 		<option value="after" #if( $op && $op == "afterdate" )selected #end>[[After Date]]</option>
 		<option value="before" #if( $op && $op == "beforedate" )selected #end >[[Before Date]]</option>
