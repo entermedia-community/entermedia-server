@@ -65,13 +65,13 @@
 			<div class="filter-box-options" id="filterboxsorting" #if($minimizedfilterbox) style="display: none;" #end>
 				#set ($alldetails = $searcher.getUserPropertyDetails() )
 				<div style="width:145px; display: inline-block;">
-				<select  class="form-control form-control-sm select2 autosubmited" name="assetsortby" data-allowclear="false" style="" >
+				<select  data-sortup="$hits.searchQuery.isSortUp()" class="form-control form-control-sm select2 autosubmited" name="assetsortby" id="assetsortby" data-allowclear="false" style="" >
 					#foreach( $detail in $alldetails) 
-						<option value="$detail.id" #if($hits.isSortedBy($detail.id)) selected="selected" #end>$detail.getText($context)</option>
+						<option data-detailid="${detail.id}" value="$detail.id" #if($hits.isSortedBy($detail.id)) selected="selected" #end>$detail.getText($context)</option>
 					#end
 				</select>
 				</div>
-				<a href="" class=" float-right"><i class="fas fa-sort-alpha-down" style="padding-top:5px"></i></a>
+				<a href="" class=" float-right" ><i class="filterschangesort fas #if($hits.searchQuery.isSortUp()) fa-sort-alpha-up #else fa-sort-alpha-down #end" style="padding-top:5px"></i></a>
 			</div>
 		</div>
 			
@@ -184,6 +184,7 @@
 		<script type="text/javascript">
 			deleteFilterField = function(inType,inFieldId)
 			{	
+				alert("Am I doing anything? Said Chris");
 				console.log('delete field');
 				var params = 'oemaxlevel=1&editadvsearch=true&view=$view&catalogid=$searcher.getCatalogId()&searchtype=' + inType + "&field=" + inFieldId;
 				jQuery('#advfilterpanel').load("$home$apphome/components/filters/deletefield.html?" + params)

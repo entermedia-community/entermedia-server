@@ -43,6 +43,31 @@ $(document).ready(function(url,params)
 		});
 		
 	});
+	
+	lQuery(".filterschangesort").livequery("click", function(){
+		var dropdown = $("#assetsortby");
+		var up = dropdown.data("sortup");
+		var selected = dropdown.find(":selected");
+		var id = selected.data("detailid");
+		if(up){
+			selected.attr("value", id + "Down");
+			$(this).removeClass("fa-sort-alpha-up");
+			$(this).addClass("fa-sort-alpha-down");
+			
+			dropdown.data("sortup", false);
+		} else{
+			selected.attr("value", id + "Up");
+			$(this).removeClass("fa-sort-alpha-down");
+			$(this).addClass("fa-sort-alpha-up");
+			dropdown.data("sortup", true);
+		}
+		
+		selected.closest("form").submit();
+		return false;
+	});
+	
+	
+	
 		
 	lQuery("input.selectionbox").livequery("change", function(e) 
 	{
