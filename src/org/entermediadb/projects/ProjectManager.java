@@ -1106,7 +1106,8 @@ public class ProjectManager implements CatalogEnabled {
 	}
 	protected Boolean canEditCollection(WebPageRequest inReq, LibraryCollection collection)
 	{
-		if (collection != null) {
+		if (collection != null) 
+		{
 			String ownerid = collection.get("owner");
 			if (ownerid != null && ownerid.equals(inReq.getUserName())) {
 				return true;
@@ -1127,6 +1128,7 @@ public class ProjectManager implements CatalogEnabled {
 			{
 				for (Category cat : profile.getViewCategories()) 
 				{
+					boolean wasview = false;
 					if (root.hasParent(cat.getId())) 
 					{
 						Collection vals = cat.findValues("viewonlygroups");
@@ -1137,23 +1139,31 @@ public class ProjectManager implements CatalogEnabled {
 								String groupid = (String) iterator.next();
 								if( profile.isInGroup(groupid) )
 								{
-									return false;
+									wasview = true;
+									break;
 								}
 							}
 						}
-						vals = cat.findValues("viewonlyroles");
-						if( vals != null)
+						if( !wasview )
 						{
-							for (Iterator iterator = vals.iterator(); iterator.hasNext();)
+							vals = cat.findValues("viewonlyroles");
+							if( vals != null)
 							{
-								String roleid = (String) iterator.next();
-								if( profile.isInRole(roleid) )
+								for (Iterator iterator = vals.iterator(); iterator.hasNext();)
 								{
-									return false;
+									String roleid = (String) iterator.next();
+									if( profile.isInRole(roleid) )
+									{
+										wasview = true;
+										break;
+									}
 								}
 							}
 						}
-						
+						if(wasview)
+						{
+							continue;
+						}
 						return true;
 					}
 				}
@@ -1161,9 +1171,17 @@ public class ProjectManager implements CatalogEnabled {
 		}
 		return false;
 	}
-
-	public boolean canViewCollection(WebPageRequest inReq, String inCollectionid) {
+	public boolean canViewCollection(WebPageRequest inReq, String inCollectionid) 
+	{
 		LibraryCollection collection = getLibraryCollection(getMediaArchive(), inCollectionid);
+		if( collection == null)
+		{
+			return false;
+		}
+		return canViewCollection(inReq, collection);
+	}
+	public boolean canViewCollection(WebPageRequest inReq, LibraryCollection collection)
+	{
 		User user = inReq.getUser();
 		if (collection != null) 
 		{

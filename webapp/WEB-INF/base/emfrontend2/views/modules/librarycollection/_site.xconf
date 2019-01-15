@@ -13,12 +13,10 @@
 	<property name="uploadtab">single</property>
 
 	<permission name="editdata">
-		<or>
-			<group name="administrators" />
-			<action name="ProjectModule.canEditCollection" />
-		</or>
+		<action name="ProjectModule.canEditCollection" />
 	</permission>
-		<path-action name="ProfileModule.changeResultView"/>
+	
+	<path-action name="ProfileModule.changeResultView"/>
 	
  <path-action name="ProjectModule.listConnectedDesktop"/>
 

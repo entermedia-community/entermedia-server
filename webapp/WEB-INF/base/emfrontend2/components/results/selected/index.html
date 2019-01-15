@@ -36,7 +36,7 @@
 	</a>
 		<div class="dropdown-menu" aria-labelledby="navbarActionsDropdown">
 		#if(!$canforcebasiccollections)
-		#if( ($librarycol && $caneditdata) || $caneditallassets )
+		#if( $caneditcollection || $caneditallassets )
 			<a class="dropdown-item emdialog" title="[[Approve Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmapprove.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Approve]]</a>
 	    	<a class="dropdown-item emdialog" title="[[Reject Pending]]" href="$home$apphome/views/modules/librarycollection/approval/confirmreject.html?hitssessionid=$hits.sessionId&collectionid=$!librarycol.getId()">[[Reject]]</a>
 	    #end
@@ -56,8 +56,8 @@
 		#end
 		
 		#if(!$canforcebasiccollections)
-			#if( $librarycol && ( $canaddnewcollection || $caneditdata ) )
-				 #if( $caneditdata)
+			#if( $librarycol && ( $canaddnewcollection || $caneditcollection ) )
+				 #if( $caneditcollection)
 					<a class="dropdown-item confirm" href="$home$apphome/views/modules/librarycollection/removefromcollection.html?hitssessionid=$!hits.getSessionId()&collectionid=$!librarycol.getId()" title="[[Edit one or more selected records]]" confirm="[[Remove from collection?]]" >[[Remove from Collection]]</a>
 				#end
 				#if( $canaddnewcollection)

@@ -91,19 +91,22 @@ $(document).ready(function(url,params)
 		  var home = $('#application').data('home');
 		  var apphome = $('#application').data('apphome');
 		  var hitssessionid = $('#resultsdiv').data('hitssessionid');
+		   var options = $('#resultsdiv').data();
+		   options.oemaxlevel = 1;
 		   
 		   var status = $('input[name=pagetoggle]').is(':checked');
 		   if(status)
 		   {
-			   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"page"});
+			   options.action = "page";
+			   refreshdiv( home + apphome + "/components/results/togglepage.html", options);
 			   $('.selectionbox').prop('checked', true);
 	       }
 	       else
 	       {
-	    	   refreshdiv( home + apphome + "/components/results/togglepage.html", {oemaxlevel:1, hitssessionid: hitssessionid, action:"pagenone"});         
+	       	   options.action = "pagenone";
+	    	   refreshdiv( home + apphome + "/components/results/togglepage.html", options);  
 	   	       $('.selectionbox').prop('checked', false);  
 	   	   }
-		   //$("#select-dropdown-open").click();
 	});
 	
 	

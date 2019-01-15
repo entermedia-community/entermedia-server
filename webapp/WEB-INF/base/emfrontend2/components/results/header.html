@@ -12,16 +12,6 @@
 #end
  
 #if($hits)
-	#set( $collectionid = $hits.getInput("collectionid") )
-	#if( $collectionid && !$librarycol)
-	
-		#set( $librarycol = $mediaarchive.getData("librarycollection",$collectionid) )
-		$context.putPageValue("librarycol",$librarycol)
-		
-	#end
-	
-	
-	
 	#set( $catid = $hits.getInput("categoryid") )
 	
 	#set( $nodeID = $context.getRequestParameter("nodeID"))

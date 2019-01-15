@@ -245,8 +245,8 @@ public class ProjectModule extends BaseMediaModule {
 			return;
 		}
 
-		Object caneditdata = inReq.getPageValue("caneditdata");
-		all.getSearchQuery().setValue("caneditdata", caneditdata);
+		//Object caneditdata = inReq.getPageValue("caneditdata");
+		//all.getSearchQuery().setValue("caneditdata", caneditdata);
 		all.selectAll();
 		// String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
@@ -777,15 +777,27 @@ public class ProjectModule extends BaseMediaModule {
 
 	public boolean checkViewCollection(WebPageRequest inReq) {
 		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		return manager.canViewCollection(inReq, collectionid);
-
+		LibraryCollection collection = loadCollection(inReq);
+		
+		boolean canview = manager.canViewCollection(inReq, collection);
+		if( canview )
+		{
+			inReq.putPageValue("librarycol",collection);
+		}
+		return canview;
 	}
 
 	public Boolean canEditCollection(WebPageRequest inReq) {
 		ProjectManager manager = getProjectManager(inReq);
-		String collectionid = loadCollectionId(inReq);
-		return manager.canEditCollection(inReq, collectionid);
+		LibraryCollection collection = loadCollection(inReq);
+		boolean caneditcollection =  manager.canEditCollection(inReq, collection);
+		
+		if( caneditcollection )
+		{
+			inReq.putPageValue("librarycol",collection);
+		}
+		inReq.putPageValue("caneditcollection", caneditcollection);
+		return caneditcollection;
 	}
 	//
 	// public void loadCategoriesOnCollections(WebPageRequest inReq)
