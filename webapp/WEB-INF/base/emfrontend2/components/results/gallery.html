@@ -1,4 +1,8 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-category="$!category.getId()" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
+data-category="$!category.getId()" 
+data-pagenum="$hits.getPage()"  
+data-collectionid="$!librarycol.getId()"
+data-totalpages="$hits.getTotalPages()">
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")

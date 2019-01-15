@@ -1,4 +1,9 @@
-<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" data-searchtype="librarycollection" data-searchhome="$home$apphome/components/table" data-pagenum="$hits.getPage()"  data-totalpages="$hits.getTotalPages()">
+<div id="resultsdiv" data-hitssessionid="$hits.getSessionId()" 
+	data-searchtype="librarycollection" 
+	data-searchhome="$home$apphome/components/table" 
+	data-pagenum="$hits.getPage()"  
+	data-collectionid="$!librarycol.getId()"
+	data-totalpages="$hits.getTotalPages()">
 #if(!$details)
 #set( $view = "${hits.getSearchType()}/${hits.getSearchType()}resultstable" )
 #set ($details = $hits.getSearcher().getDetailsForView($view, $userprofile))
