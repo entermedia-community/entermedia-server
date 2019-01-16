@@ -19,7 +19,7 @@
 						<a class="dropdown-toggle" href="#" data-toggle="dropdown">$module [[Settings]]</a>
 						<div class="dropdown-menu">
 						#foreach ( $amodule in $userprofile.getModules() )
-								<a class="dropdown-item" href="$urlbase/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
+								<a class="dropdown-item" href="$home$apphome/views/settings/modules/${amodule.id}/index.html?field=last_selected_module&last_selected_module.value=${amodule.id}">$amodule</a>
 							#end
 						</div>
 					</div>

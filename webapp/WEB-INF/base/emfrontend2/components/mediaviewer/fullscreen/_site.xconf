@@ -1,4 +1,5 @@
 <page>
+	<path-action name="MediaArchiveModule.getAssetAndPage"  />
 
 	
 	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->

@@ -228,6 +228,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 									
 									#set($url = $mediaarchive.asLinkToDownload($asset, $result))
 									
+								<li><a href="$url">$result.name</a></li>
+									
 									<li><a href="$url">$result.name</a></li>
 									#end
 							#end

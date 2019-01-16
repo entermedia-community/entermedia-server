@@ -1,6 +1,17 @@
 <page>
 	<path-action name="AssetEditModule.createMultiEditDataFromSelections"/>
+	<path-action name="MediaArchiveModule.getAsset"  />
 
+<path-action name="Admin.loadPermissions"/>
+	<path-action name="Admin.allowViewing" />
+
+<permission name="editasset">
+		<or>
+			<group name="administrators" />
+			<userprofile property="editallassets" equals="true" />
+			<action name="AssetControlModule.canEditAsset" />
+		</or>
+	</permission>
 
 <path-action name="DataEditModule.loadHits"/>
 </page>

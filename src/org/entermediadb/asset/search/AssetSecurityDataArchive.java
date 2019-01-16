@@ -292,6 +292,11 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		{
 			return true;
 		}
+		String owner = inAsset.get("owner");
+		if( owner != null && inUser != null && owner.equals(inUser.getId()))
+		{
+			return true;
+		}
 		Collection<Category> exactcategories = inAsset.getCategories();
 		if (inProfile != null)
 		{
@@ -307,11 +312,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 				}
 			}	
 		}
-		String owner = inAsset.get("owner");
-		if( owner != null && inUser != null && owner.equals(inUser.getId()))
-		{
-			return true;
-		}
+	
 		// tmp.put("asset.owner", );
 		if( "view".equals(inType))
 		{

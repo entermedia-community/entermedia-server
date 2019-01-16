@@ -99,11 +99,19 @@ public class AssetControlModule extends BaseMediaModule
 	public Boolean canEditAsset(WebPageRequest inReq)
 	{
 		Asset asset = (Asset)inReq.getPageValue("asset"); 
+		MediaArchive archive = getMediaArchive(inReq);
+
+		if(asset == null) {
+			String assetid = inReq.findValue("assetid");
+			if(assetid != null) {
+				asset = archive.getAsset(assetid);
+
+			}
+		}
 		if(asset == null)
 		{
 			return false;
 		}
-		MediaArchive archive = getMediaArchive(inReq);
 		Boolean cando = archive.getAssetSecurityArchive().canDo(archive,inReq.getUser(),inReq.getUserProfile(),"edit",asset);
 		return cando;
 	}

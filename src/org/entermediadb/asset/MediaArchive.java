@@ -2203,7 +2203,7 @@ public class MediaArchive implements CatalogEnabled
 //			searcher.saveData(prefix);
 //			getCacheManager().clear("catalogsettings");
 		}
-		String sourcepath = URLUtilities.encode(inAsset.getSourcePath());
+		String sourcepath = inAsset.getSourcePath();
 
 		if (inGeneratedName.contains("."))
 		{
@@ -2214,6 +2214,8 @@ public class MediaArchive implements CatalogEnabled
 			finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/preview/"+ inGeneratedName +"/" + sourcepath + "/thumb.jpg";
 
 		}
+		 finalroot = URLUtilities.urlEscape(finalroot);
+
 		return finalroot;
 
 	}
@@ -2250,11 +2252,11 @@ public class MediaArchive implements CatalogEnabled
 //			searcher.saveData(prefix);
 //			getCacheManager().clear("catalogsettings");
 		}
-		String sourcepath = URLUtilities.encode(inAsset.getSourcePath());
+		String sourcepath = inAsset.getSourcePath();
 		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
 		
 		finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/createpreset/" + sourcepath + "/" + generatedfilename;
-		 finalroot = URLUtilities.encode(finalroot);
+		 finalroot = URLUtilities.urlEscape(finalroot);
 		return finalroot;
 
 	}
