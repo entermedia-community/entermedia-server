@@ -249,6 +249,7 @@ public class EMPushManager extends BasePushManager implements PushManager
 		for (Iterator iterator = inAssetsSaved.iterator(); iterator.hasNext();)
 		{
 			Asset asset = (Asset) iterator.next();
+			log.info("Pushing: " + asset.getId());
 			uploadGenerated(inArchive, null, asset, tosave);
 		}
 		inArchive.getAssetSearcher().saveAllData(tosave, null);

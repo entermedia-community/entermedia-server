@@ -177,7 +177,7 @@ public abstract class BasePushManager  implements PushManager{
 	
 	
 		HitTracker hits = inArchive.getAssetSearcher().search(query);
-		log.info("Found "+ hits.size() +" Ready to be pushed");
+		//log.info("Found "+ hits.size() +" Ready to be pushed");
 		return hits;
 	}
 
