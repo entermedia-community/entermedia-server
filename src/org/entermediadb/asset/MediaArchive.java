@@ -2217,6 +2217,51 @@ public class MediaArchive implements CatalogEnabled
 		return finalroot;
 
 	}
+	
+	
+	public String asLinkToDownload(Data inAsset, Data inPreset)
+	{
+		
+	//	<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
+
+		if( inAsset == null)
+		{
+			return null;
+		}
+		String cdnprefix = getCatalogSettingValue("cdn_prefix");
+		String finalroot = null;
+		if (cdnprefix == null)
+		{
+			RequestUtils rutil = (RequestUtils) getModuleManager().getBean("requestUtils");
+			cdnprefix = rutil.getSiteRoot();
+			if( cdnprefix.contains("localhost"))
+			{
+				cdnprefix = "";
+			}
+//			//TODO: Look up the home variable?
+//			Searcher searcher = getSearcherManager().getSearcher(getCatalogId(), "catalogsettings");
+//			Data prefix = (Data)searcher.searchById("cdn_prefix");
+//			if( prefix == null)
+//			{
+//				prefix = searcher.createNewData();
+//				prefix.setId("cdn_prefix");
+//			}
+//			prefix.setValue("value", cdnprefix);
+//			searcher.saveData(prefix);
+//			getCacheManager().clear("catalogsettings");
+		}
+		String sourcepath = URLUtilities.encode(inAsset.getSourcePath());
+		String generatedfilename = inPreset.get("generatedoutputfile") + "/" + inAsset.getName() + "-" + inPreset.get("generatedoutputfile");
+		
+		finalroot = cdnprefix + "/" + getMediaDbId() + "/services/module/asset/downloads/createpreset/" + sourcepath + "/" + generatedfilename;
+		 finalroot = URLUtilities.encode(finalroot);
+		return finalroot;
+
+	}
+	
+	
+	
+	
 
 	public boolean isCatalogSettingTrue(String string) {
 		String catalogSettingValue = getCatalogSettingValue(string);

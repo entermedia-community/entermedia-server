@@ -226,9 +226,9 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 						#end
 						#if($ok)
 									
+									#set($url = $mediaarchive.asLinkToDownload($asset, $result))
 									
-									
-									<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
+									<li><a href="$url">$result.name</a></li>
 									#end
 							#end
 						#end
