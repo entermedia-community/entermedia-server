@@ -2425,6 +2425,14 @@ label.error {
     background-color: #666;
     min-height: 30px;
 }
+.emdatafieldurl {
+	color:#ddd;
+	text-decoration:underline;
+}
+.emdatafieldurl:hover {
+	color:#fefefe;
+	text-decoration:underline;
+}
 .fields-editor .emdatafieldvalue  {
 	margin-bottom: 15px;
 }
