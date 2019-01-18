@@ -21,96 +21,96 @@
 
 #if($desktop.isEdited($librarycol.getName()) )
 
-<div  class="alert alert-primary" role="alert">
-	<p id="openpath">
-	 <a class="btn ajax" data-targetdiv="openpathhidden" 
-	 	href="$apphome/views/activity/syncdesktop-open.html?collectionid=${librarycol.getId()}">Open Folder</a>
-	<i class="fas fa-info-circle"></i>
-View local Path: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
-</p>
-</div>
+
+	<div id="openpath">
+	<p>[[View local Path]]: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/</p>
+	 <a class="btn btn-sm btn-primary ajax" data-targetdiv="openpathhidden" 
+	 	href="$apphome/views/activity/syncdesktop-open.html?collectionid=${librarycol.getId()}">[[Open Local Folder]]</a>
+		
+	</div>
+
+<hr>
 #end
+
+
 
 #if($show && $librarycol.lockedby)
 <form  name="archiveassets" id="archiveassets" 
    method="post" action="$home$apphome/views/modules/librarycollection/lock.html"
-   style="padding-top: 20px;"
+   style="padding-top:10px;"
    >
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
 	<input type="hidden" name="lockcollection" value="false" />
 
 	
-<div  class="alert alert-primary" role="alert">
-<input class="btn" type="submit" id="archiveassetsbutton" value="[[Unlock Collection]]">	 
-
-</div>
+	<div  class="alert alert-warning" role="alert">
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Unlock Collection]]">	 
+	</div>
 </form>
 #else
 <form  name="archiveassets" id="archiveassets" 
    method="post" action="$home$apphome/views/modules/librarycollection/lock.html"
-   style="padding-top: 20px;"
+   style="padding-top: 10px;"
    >
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
 	<input type="hidden" name="lockcollection" value="true" />
 
 	
-<div  class="alert alert-primary" role="alert">
-<input class="btn" type="submit" id="archiveassetsbutton" value="[[Lock Collection]]">	 
-
-</div>
+	<div  class="alert alert-warning" role="alert">
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Lock Collection]]">	 
+	
+	</div>
 </form>
-
-
-
-
 #end
 
 
 #if($desktop.isEdited($librarycol.getName()) )
 <form  name="archiveassets" id="archiveassets" 
    method="post" action="$home$apphome/views/modules/librarycollection/desktopimportstart.html"
-   style="padding-top: 20px;"
+   style="padding-top: 10px;"
    >
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
 
 	
-<div  class="alert alert-primary" role="alert">
-<input class="btn" type="submit" id="archiveassetsbutton" value="[[Upload]]">	 
-
-	<i class="fas fa-info-circle"></i></i> [[Uploads your local work folder into this collection]]
-</div>
+	<div  class="alert alert-warning" role="alert">
+	<p><i class="fas fa-info-circle"></i> [[Uploads your local work folder into this collection]]</p>
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Upload]]">	 
+	
+	</div>
 </form>
 #end
 
 
 <form  name="download" id="download" 
-   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html">
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html"
+   style="padding-top: 10px;">
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
-	 	
-	<div  class="alert alert-primary" role="alert">
-	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download]]">
-	</input>
-
-<i class="fas fa-info-circle"></i></i> 
-	Warning: Replaces local files with contents of this collection
-	</p>
+	<div  class="alert alert-warning" role="alert">
+		<p><i class="fas fa-info-circle"></i> 
+		[[Warning]]: [[Replaces local files with contents of this collection]]
+		</p>
+		<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Download]]">
 	</div>
 	
 	
 </form>
 
 <form  name="download" id="download" 
-   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html">
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html"
+   style="padding-top: 10px;">
 	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
 		<input type="hidden" name="lockcollection" value="true" />
  	
-	<div  class="alert alert-primary" role="alert">
-	<input class="btn" type="submit" id="archiveassetsbutton" value="[[Download and Lock Collection]]">
-	</input>
-
-<i class="fas fa-info-circle"></i></i> 
-	Warning: Replaces local files with contents of this collection
+	<div  class="alert alert-warning" role="alert">
+	<p>
+	<i class="fas fa-info-circle"></i>
+	[[Warning]]: [[Replaces local files with contents of this collection]]
 	</p>
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Download and Lock Collection]]">
+	
+
+
+	
 	</div>
 	
 	

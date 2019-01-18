@@ -265,7 +265,7 @@ tr.emborderhover td,
 	border:0 none;
 }
 .ajaxstatus {
-	padding:10px;
+	font-weight:bold;	
 	background-color:#f1f1f1;
 }
 
@@ -2588,6 +2588,12 @@ label.error {
      left: 0;
     z-index:25000;
 }
+.alert-save-top {
+	width: 40%;
+	top:10px;
+	bottom:inherit;
+
+	}
 .assetpanel-chatterbox-header { 
 	display: table-row;
 	height: 50px;

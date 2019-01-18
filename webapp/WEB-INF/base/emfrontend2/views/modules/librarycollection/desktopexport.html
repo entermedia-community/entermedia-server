@@ -1,8 +1,8 @@
 #if( $desktop.isBusy() )
 <div id="desktopresults" class="ajaxstatus" data-ajaxpath="$page.getPath()?collectionid=$!{librarycol.getId()}&oemaxlevel=1">
 	
-<div id="exportpath" class="alert alert-success"> ##use ajaxreloading to monitor this?
-	  <strong>Download started</strong> to  $desktop.getDesktopId(): ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
+<div id="exportpath" class="alert alert-success alert-save alert-save-top"  role="alert"> ##use ajaxreloading to monitor this?
+	  <strong>[[Download started]]</strong> [[to]]  $desktop.getDesktopId(): ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/
 </div>
 	
 $pages.include("$apphome/views/modules/librarycollection/viewassets.html")
@@ -10,9 +10,8 @@ $pages.include("$apphome/views/modules/librarycollection/viewassets.html")
 </div>
 
 #else
-
-<div id="exportpath" class="alert alert-success"> 
-	  <strong>Download Sync complete</strong>
+<div id="exportpath" class="alert alert-success fader alert-save alert-save-top" role="alert">
+	  <strong>[[Download Sync complete]]</strong>
 </div>
 
 
