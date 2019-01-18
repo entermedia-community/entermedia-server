@@ -1,24 +1,26 @@
-#set( $attachmentroot = $content.attachmentroot )
+#set( $attachmentroot = "$apphome/views/modules/asset/editor/attachments" )
+	
+
 #if( $file )	
 	#set( $parentsourcepath = "${file.parentsourcepath}" )
 	#set( $name = $file.name)
 #end
-	 
-	#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/${file.name}200x200.jpg" )
+	 <div class="attachment-preview-img">
+		#set( $generated = "/WEB-INF/data/${catalogid}/generated/$parentsourcepath/${file.name}200x200.jpg" )
 		#if ( $file.isfolder == "false" )
-		<a class="thickbox" href="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/${parentsourcepath}/${file.name}/preview.jpg"
-		title="">
+		##<a class="" href="$home/${applicationid}/views/modules/asset/downloads/preview/extralarge/${parentsourcepath}/${file.name}/preview.jpg" title="">
 			<img src="$home/${applicationid}/views/modules/asset/downloads/preview/thumb/${parentsourcepath}/${file.name}/thumb.jpg" />
 		#else
 			<div class="preview folder"></div>
 		#end
 
-		<p class="name">#if ( $name ) $name #else  [[Click on a file name to view details about that file]] #end</p>
+		<p class="attachment-name">#if ( $name ) $name #else  [[Click on a file name to view details about that file]] #end</p>
 		
 		#if ( $file.isfolder == "false" )
-		</a>
+		##</a>
 		#end
-	</a>
+	
+	</div>
 $context.putPageValue("data",$file)	
 $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )	
 	
@@ -28,21 +30,23 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 			  #set ($view = "asset/assettype/default/general")
 			#end
 			$context.putPageValue("view",$view)	
+			$context.putPageValue("detailviewercolumns",1)
+			
 			$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 			
 #if ( $file.isfolder != "false" )
 
 #else
 <div id="primary-options" style="margin-top: 0; margin-bottom: 10px;">
-<a href="$home$apphome/views/modules/asset/editor/attachments/changeattachment.html?filename=${file.name}&assetid=$asset.id" 
-	class="btn  tooltip" title="[[Set this asset as the primary download.]]" style="width: 60px; text-align: center;" >[[Primary]]</a>
+<a href="$attachmentroot/changeattachment.html?filename=${file.name}&assetid=$asset.id" 
+	class="btn btn-sm btn-primary ajax" targetdiv="asset-editor-container" title="[[Set this asset as the primary download.]]"  >[[Primary]]</a>
 
 </div>
 #end
 
 #set( $editPath = "/WEB-INF/data/$catalogid/originals/$parentsourcepath/${file.name}" )
 
-$pages.include("./revisionslink.html?editPath=$editPath&parentsourcepath=$parentsourcepath", $context)
+$pages.include("$attachmentroot/revisionslink.html?editPath=$editPath&parentsourcepath=$parentsourcepath", $context)
 
 #if( $asset.assettype && $archive.viewExists("asset/assettype/$asset.assettype/fileproperties") )
   #set ($view = "asset/assettype/$asset.assettype/fileproperties")

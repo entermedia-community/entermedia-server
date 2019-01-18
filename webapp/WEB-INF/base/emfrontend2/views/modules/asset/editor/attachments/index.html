@@ -1,42 +1,35 @@
-<div id="asset-editor-container" class=" assetpanel-editor-box">
+<div id="asset-editor-container">
 
 <div class="assetpanel-editortitle">
-<h2>[[Asset Attachments]]</h2>
+	<h2>[[Asset Attachments]]</h2>
 </div>
 
 <div class="assetpanel-editorinner">
 
     #if($asset.isFolder())
-    	<div class="container-fluid">
-    		<div class="row">
-    			<div class="col-10">
-    				<div  id="attachments-tree">
-    					$pages.include("$home$apphome/views/modules/asset/editor/attachments/files.html",$context)
-    				</div>
-    			</div>
-    			<div class="col-2">
-	    			#if($content.isPropertyTrue("showfilesdisplay"))
-						<div id="attachments-display">
-						
-							$pages.include("$home$apphome/views/modules/asset/editor/attachments/files-display.html",$context)
-						</div>
-					#end
-    			</div>
-    		</div>
-    	</div>
+
+		<div  id="attachments-tree">
+			$pages.include("$home$apphome/views/modules/asset/editor/attachments/files.html",$context)
+		</div>
 			
+    			##<div class="col-2">
+				##		<div id="attachments-display">
+				##			$pages.include("$home$apphome/views/modules/asset/editor/attachments/files-display.html",$context)
+				##		</div>
+    			##</div>
+
 	#else ##isfolder check
-		<p style="margin-top: 25px; text-align: center;">This is currently a file-based record, which does not allow for attachments.  
+		<p style="margin-top: 25px; text-align: center;">[[This is currently a file-based record, which does not allow for attachments]].  
 		#if($caneditasset)
 			<br />You can convert this asset by clicking the link below.<br /><br />
 			#set($params = $context.getRequestParamsAsList())
-			<a class="btn btn-sm btn-primary ajax" targetdivinner="asset-editor-container" 
-			href="$home$apphome/views/modules/asset/editor/attachments/convert.html?$params">Convert this to a Folder-Based Record</a>
+			<a class="btn btn-sm btn-primary ajax" targetdiv="asset-editor-container" 
+			href="$home$apphome/views/modules/asset/editor/attachments/convert.html?$params">[[Convert this to a Folder-Based Record]]</a>
 			
 			</p>
 			
 		#else
-			<p>You do not have sufficient permissions to convert this to a folder-based record.</p>
+			<p>[[You do not have sufficient permissions to convert this to a folder-based record]].</p>
 		#end	
 	#end
 </div>

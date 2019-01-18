@@ -1,18 +1,25 @@
 #set( $attachmentroot = "$apphome/views/modules/asset/editor/attachments" )
+$context.putPageValue("attachmentroot",$attachmentroot)	
 
 #set( $path = "/WEB-INF/data/$catalogid/originals/$asset.sourcepath/" )
 
 #macro(showattachments $parentfolder $depth) 
-
 		#set ( $depth = $depth + 1)
+		#set ( $paddinginit = $padding )
 		#set ( $padding = (15 * $depth) )
 		#set( $files = $attachmentManager.listChildren($context, $mediaarchive, $parentfolder ) )
 		#foreach($file in $files)
 			#set( $filesource  = "${file.parentsourcepath}/${file.name}")
-			   <li class="noderow" id="${file.id}_row" data-nodeid="$file.id"><div style="padding-left: ${padding}px"><span class="#if ( $file.isfolder == 'true' )arrow down #end"></span>
-			   #if ( $file.isfolder == "true" ) 
-			   	<span id="${file.id}_display" class="name folder #if($isleaf) leaf #end" fileid="${file.id}">$file.name</span></span><span id="${file.id}_edit" class="name folder" style="display:none;">
-			   	<input class="field" type="text" value="$file.name" id="${file.id}_edit_field" /><a class="editsave btn">Save</a><a id="${file.id}" class="editcancel btn">[[Cancel]]</a></span>
+			   <li class="noderow" id="${file.id}_row" data-nodeid="$file.id">
+			   <div style="padding-left: ${padding}px">
+			   	<span class="#if ( $file.isfolder == 'true' )arrow down fas fa-caret-down #end"></span>
+			   	#if ( $file.isfolder == "true" ) 
+			   	<span id="${file.id}_display" class="name folder #if($isleaf) leaf #end" fileid="${file.id}">$file.name</span>
+			   	<span id="${file.id}_edit" class="name folder" style="display:none;">
+			   		<input class="field" type="text" value="$file.name" id="${file.id}_edit_field" />
+			   		<a class="editsave btn btn-sm btn-primary">[[Save]]</a>
+			   		<a id="${file.id}" class="editcancel btn  btn-sm btn-primary">[[Cancel]]</a>
+			   	</span>
 			   #else
 			   	#set( $subpath = $attachmentManager.parseFileSubPath($asset.sourcepath, ${file.parentsourcepath}, $file.name) )
 			    <span class="name $!file.fileformat" fileid="${file.id}" sourcepath="$filesource" >$file.name #if ( $asset.primaryFile == $subpath )<span class="small">([[Primary File]])</span>#end #if ( $asset.primaryThumb == $subpath )<span class="small">([[Primary Thumbnail]])</span>#end</span>
@@ -33,41 +40,56 @@
 						<ul class="open" > ##use cookies to open/close them?
 						  #showattachments($filesource , $depth)
 					   </ul>
+					   #set ( $padding = $paddinginit )
 					#end
 			   </li>
 			  #if ( $file.isfolder == "true" )
 			  	<li id="${file.id}_add-folder" style="display: none;">
-			  		<div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="[[New Folder]]" id="${file.id}_new" /><a data-parent="${file.id}" class="addfoldersave btn">[[Save]]</a><a id="${file.id}" class="cancel btn">[[Cancel]]</a></span></div>
+			  		<div class="selected new" style="padding:10px 0 ;">
+			  		<span class="name folder">
+			  		<input class="clearfield" type="text" value="[[New Folder]]" id="${file.id}_new" />
+			  		<a data-parent="${file.id}" class="addfoldersave btn btn-sm btn-primary">[[Save]]</a>
+			  		<a id="${file.id}" class="cancel btn btn-sm btn-primary">[[Cancel]]</a></span></div>
 			  	</li>
 			 	<li id="${file.id}_upload-file" style="display: none;"></li>
 			  #end	 	
 		#end
 #end
 <div class="tab-actions" style="text-align: right;">
-    <a class="btn ajax" targetdivinner="right-col" href="$home$attachmentroot/reload.html?sourcepath=$asset.sourcePath&oemaxlevel=2">[[Reload Files]]</a>
+    <a class="btn btn-sm btn-primary ajax" targetdivinner="right-col" href="$home$attachmentroot/reload.html?sourcepath=$asset.sourcePath&oemaxlevel=2" title="[[Reload Files]]"><i class="fas fa-redo-alt"></i> [[Reload Files]]</a>
 </div>
-	<div  class="ui-widget-content categories-widget no-padding-for-real of-visible" style="border: none; box-shadow: none;">
+	<div  class="attachments-content no-padding-for-real of-visible">
 		<div id="attachments-container">
-			<div id="attachmenttree" class="emtree attachments">
+			<div id="attachmenttree" class="emtree attachments-list">
 					<ul class="open" >
 						<li class="noderow" id="toplevel_row" data-nodeid="toplevel" >
-							<div style="padding-left: 20px"><span class="arrow down"></span><span class="name folder" fileid="toplevel" sourcepath="$filesource" >[[Attachments]]</span>
+							<div style="padding-left: 20px">
+								<span class="arrow down fas fa-caret-down  "></span>
+								<span class="name folder" fileid="toplevel" sourcepath="$filesource" > [[Attachments]]</span>
 								<span class="actions">
 			   						<a class="download-folder click-link ir tooltip" title="[[Download Folder]]" id="toplevel" href="$home$attachmentroot/zip/${asset.name}-attachments.zip?path=$path&stripfolders=$path">[[Download Folder]]</a>
 									<a class="add-folder ir tooltip" title="[[Add a new Folder]]" id="toplevel">[[Add New Folder]]</a>
 									<a class="upload-file ir tooltip" title="[[Upload a new File]]" id="toplevel">[[Upload New File]]</a>
-									<a class="edit ir nope">[[Edit]]</a><a class="delete ir nope" data-parent="toplevel">[[Delete]]</a></span>
+									##<a class="edit ir nope">[[Edit]]</a>
+									<a class="delete ir nope" data-parent="toplevel">[[Delete]]</a></span>
 							</div>
 							<ul class="open" >							
 								#showattachments($asset.sourcePath, 1)
 							</ul>
 						</li>
-					 	<li id="toplevel_add-folder" style="display: none;"><div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="[[New Folder]]" id="toplevel_new" /><a data-parent="toplevel" class="addfoldersave btn">[[Save]]</a><a id="toplevel" class="cancel btn">[[Cancel]]</a></span></div></li>
+					 	<li id="toplevel_add-folder" style="display: none;">
+						 	<div class="selected new" style=" padding:10px 15px;">
+						 	<span class="name folder">
+						 	<input class="clearfield form-control form-control-sm" type="text" value="[[New Folder]]" id="toplevel_new" />
+						 	<a data-parent="toplevel" class="addfoldersave btn btn-sm btn-primary">[[Save]]</a>
+						 	<a id="toplevel" class="cancel btn btn-sm btn-primary">[[Cancel]]</a></span>
+						 	</div>
+					 	</li>
 					 	<li id="toplevel_upload-file" style="display: none;"></li>
 					 </ul>	
 			</div>
-		<div id="preview-pane">
-		$pages.include("$attachmentroot/details.html")	
+		<div id="preview-pane" class="attachments-preview">
+		$pages.include("$attachmentroot/details.html", $context)	
 		</div>
 		</div>
 	</div>
@@ -82,11 +104,13 @@
 			
 			if ( $(this).find('.arrow').hasClass('down') )
 			{
-				$(this).find('.arrow').removeClass('down');
+				$(this).find('.arrow').removeClass('down fa-caret-down');
+				$(this).find('.arrow').addClass('fa-caret-right');
 			}
 			else 
 			{
-				$(this).find('.arrow').addClass('down');
+				$(this).find('.arrow').removeClass('fa-caret-right');
+				$(this).find('.arrow').addClass('down fa-caret-down');
 			}
 			var file = $(this).find('.name');
 			file = $(file);
@@ -141,9 +165,9 @@
 					   jQuery.get("$home$apphome/views/settings/modules/asset/metadata/categories/expandnode.html?nodeID=" + node);
 					}
 				} else {
-					$("#" + id + "_row > div").prepend('<span class="arrow down" id="newarrow"></span>');
+					$("#" + id + "_row > div").prepend('<span class="arrow down fas fa-caret-down" id="newarrow"></span>');
 					$("#" + id + "_row").find('> ul').toggle('fast');
-					$("#" + id + "_row > div .arrow").addClass('down');
+					$("#" + id + "_row > div .arrow").addClass('down  fa-caret-down');
 				}
 				
 				$("#" + id + "_add-folder").show("fast");

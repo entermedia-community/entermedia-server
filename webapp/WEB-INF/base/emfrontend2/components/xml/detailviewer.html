@@ -19,6 +19,14 @@
 	#end
 #end	
 
+#if(!$detailviewercolumns)
+	#set($detailviewercolumns = 2)
+#end
+#set($detailviewercolumnclass = 6)
+#if($detailviewercolumns == 1)
+	#set($detailviewercolumnclass = 12)
+#end
+
 <div class="container-fluid">
 <div class="row ">
 #foreach( $detail in $details )
@@ -34,24 +42,25 @@
 	#set($val = false)
 	#set( $val = $data.get($detail.getId()) )
 	#if(  $val && $val.length() > 0 )
-		<div class="col-md-6">
-			<div class="row">
-			<div class="col-4">
-			<label class="emdatafield" >
-				$detail.getText($context)
-			</label>
+		<div class="col-md-$detailviewercolumnclass">
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-4">
+					<label class="emdatafield" >
+						$detail.getText($context)
+					</label>
+					</div>
+					<div class="col-8">
+					<div class="emdatafieldvalue">					
+						$!context.putPageValue("val",$val)
+						$context.putPageValue("showalllanguagevalues",true)
+						
+						$!context.putPageValue("detail",$detail)
+						$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
+					</div>
+					</div>
+				</div>
 			</div>
-			<div class="col-8">
-			<div class="emdatafieldvalue">					
-				$!context.putPageValue("val",$val)
-				$context.putPageValue("showalllanguagevalues",true)
-				
-				$!context.putPageValue("detail",$detail)
-				$pages.include("$apphome/components/xml/detailreadonly.html", $context) 
-			</div>
-			</div>
-			</div>
-			
 			
 		</div> 
 		
