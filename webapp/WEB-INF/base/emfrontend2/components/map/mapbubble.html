@@ -1,8 +1,8 @@
 #set( $asset = $mediaarchive.getAsset($context.getRequestParameter("id")) )    
-<div class="mapbubble">
+<div class="mapbubblef">
 <h3>$asset </h3>
-		  <a class=" stackedplayer " data-assetid="$asset.id"  href="#" >
-		   <img class="media-object" src="$home$apphome/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg" alt="$asset">
+		  <a class=" stackedplayer# " data-assetid="$asset.id"  href="$home$apphome/views/modules/asset/index.html?hitssessionid=hitsassetassets/catalog#asset-${asset.id}" onclick="document.location.reload();">
+		   <img class="media-object#" src="$home$apphome/views/modules/asset/downloads/preview/thumb/$asset.sourcepath/thumb.jpg" alt="$asset">
 		  </a>
 </div>		  
 				
@@ -11,5 +11,4 @@
 		 
 		 
 		 
-		
 		

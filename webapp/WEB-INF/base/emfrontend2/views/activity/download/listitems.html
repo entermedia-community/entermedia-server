@@ -85,7 +85,7 @@
 				</td>
 				<td align="right">
 						#set($convertpreset = $searcherManager.getData($catalogid, "convertpreset", $presetid ) )
-					<a class="btn small" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}">[[Download]]</a>
+					<a class="btn small" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/generated/${asset.sourcepath}/${convertpreset.generatedoutputfile}/${publishqueue.exportname}?orderid=${order.id}")">[[Download]]</a>
 							#set( $downloadall = true)
 				</td>
 			#end
