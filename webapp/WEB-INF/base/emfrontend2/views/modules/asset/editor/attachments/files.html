@@ -45,7 +45,11 @@ $context.putPageValue("attachmentroot",$attachmentroot)
 			   </li>
 			  #if ( $file.isfolder == "true" )
 			  	<li id="${file.id}_add-folder" style="display: none;">
-			  		<div class="selected new"><span class="name folder"><input class="clearfield" type="text" value="[[New Folder]]" id="${file.id}_new" /><a data-parent="${file.id}" class="addfoldersave btn">[[Save]]</a><a id="${file.id}" class="cancel btn">[[Cancel]]</a></span></div>
+			  		<div class="selected new" style="padding:10px 0 ;">
+			  		<span class="name folder">
+			  		<input class="clearfield" type="text" value="[[New Folder]]" id="${file.id}_new" />
+			  		<a data-parent="${file.id}" class="addfoldersave btn btn-sm btn-primary">[[Save]]</a>
+			  		<a id="${file.id}" class="cancel btn btn-sm btn-primary">[[Cancel]]</a></span></div>
 			  	</li>
 			 	<li id="${file.id}_upload-file" style="display: none;"></li>
 			  #end	 	
@@ -73,8 +77,9 @@ $context.putPageValue("attachmentroot",$attachmentroot)
 								#showattachments($asset.sourcePath, 1)
 							</ul>
 						</li>
-					 	<li id="toplevel_add-folder" style="display: none; padding:10px 15px;">
-						 	<div class="selected new"><span class="name folder">
+					 	<li id="toplevel_add-folder" style="display: none;">
+						 	<div class="selected new" style=" padding:10px 15px;">
+						 	<span class="name folder">
 						 	<input class="clearfield form-control form-control-sm" type="text" value="[[New Folder]]" id="toplevel_new" />
 						 	<a data-parent="toplevel" class="addfoldersave btn btn-sm btn-primary">[[Save]]</a>
 						 	<a id="toplevel" class="cancel btn btn-sm btn-primary">[[Cancel]]</a></span>
@@ -104,7 +109,7 @@ $context.putPageValue("attachmentroot",$attachmentroot)
 			}
 			else 
 			{
-				$(this).find('.arrow').removeClass('fa-caret-down');
+				$(this).find('.arrow').removeClass('fa-caret-right');
 				$(this).find('.arrow').addClass('down fa-caret-down');
 			}
 			var file = $(this).find('.name');

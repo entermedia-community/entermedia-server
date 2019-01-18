@@ -38,8 +38,8 @@ $context.putPageValue("searcher",$mediaarchive.getAssetSearcher() )
 
 #else
 <div id="primary-options" style="margin-top: 0; margin-bottom: 10px;">
-<a href="$home$apphome/views/modules/asset/editor/attachments/changeattachment.html?filename=${file.name}&assetid=$asset.id" 
-	class="btn btn-sm btn-primary" title="[[Set this asset as the primary download.]]"  >[[Primary]]</a>
+<a href="$attachmentroot/changeattachment.html?filename=${file.name}&assetid=$asset.id" 
+	class="btn btn-sm btn-primary ajax" targetdiv="asset-editor-container" title="[[Set this asset as the primary download.]]"  >[[Primary]]</a>
 
 </div>
 #end
