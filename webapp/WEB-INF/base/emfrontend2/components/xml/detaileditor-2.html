@@ -21,11 +21,21 @@
 <div id="allerrors">
 </div>
 
+#if(!$detailviewercolumns)
+	#set($detailviewercolumns = 2)
+#end
+#set($detailviewercolumnclass = "col-lg-12 col-xl-6")
+#if($detailviewercolumns == 1)
+	#set($detailviewercolumnclass = "col-12")
+#end
+
+
+
 <div class="container-fluid">
  <div class="row">
  #foreach( $detail in $details )
  	
- 	<div class="col-lg-12 col-xl-6">
+ 	<div class="$detailviewercolumnclass">
 	#set( $val = false )
 	#set( $target = "${detail.id}.value" )
 	#set( $val = $context.getRequestParameter($target) )					

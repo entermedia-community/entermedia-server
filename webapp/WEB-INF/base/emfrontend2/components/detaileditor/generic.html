@@ -1,8 +1,13 @@
 #set ($view = $context.getRequestParameter("view"))
+#set ($viewpath = $context.getRequestParameter("viewpath"))
 #set ($label = $context.getRequestParameter("label"))
 #set ($id = $context.getRequestParameter("id"))
 #set ($module = $context.findValue("module"))
 #set ($viewid = $url_util.getPathUtilities().extractFileName($view) )
+#set ($columns = $context.getRequestParameter("columns"))
+#if ($columns)
+	$context.putPageValue("detailviewercolumns",$columns)
+#end
 
 <div id="edit-${viewid}">
 #if( !$catalogid )
@@ -47,8 +52,13 @@ $context.putPageValue("searchtype", $searchtype)
 <a class="detail-edit-icon float-right btn btn-sm"
    href="$home$apphome/views/settings/modules/${module}/metadata/views/index.html?viewid=${viewid}&viewpath=${view}&assettype=$!type"
    title="[[Configure View]]"><i class="fas fa-cog"></i></a>
+   
+##<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}&columns=1" 
+##	class="detail-edit-icon float-right ajax btn btn-xs"
+##	data-targetdiv="edit-$viewid"
+##	title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-bars"></i></a>
 </h4>
-
+##th-large
 
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 	

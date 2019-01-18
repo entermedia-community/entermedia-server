@@ -25,7 +25,13 @@
 		#else 
 			#set($language_textbox = ${detailid} + "." + ${languages[0].id}) 
 		#end
-		<input type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" value="$!map.getText($languagecode)" >
+		#set($textarearows = 3)
+		#set($val = $map.getText($languagecode))
+		#if($val.length() > 200)
+			#set($textarearows = 5)
+		#end
+		<textarea  type="text" class="form-control langvalue #if($count == "1" && $detail.isRequired() && !$multiedit) required #end " name="${detailid}.${languagecode}.value" cols="40" rows="$textarearows" >#esc($val)</textarea>
+		
 	</div>
 	<div class='clearfix'></div>	
 </div>

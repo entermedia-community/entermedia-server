@@ -1158,7 +1158,7 @@ html, body, #application {
 	margin-left:20px;
 }
 .languagesaddform {
-	height: 30px;
+	min-height: 30px;
 	margin-bottom: 5px;
 }
 .languagesaddform .languageselector
@@ -1175,7 +1175,7 @@ html, body, #application {
 	float:left;	
 	margin-left:140px;
 	width:calc(100% - 140px);
-	height: 30px;
+	min-height: 30px;
 }
 
 /*Results Table*/
