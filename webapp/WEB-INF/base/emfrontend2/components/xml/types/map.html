@@ -20,7 +20,15 @@
    #if ($lat && $lng)
    	#set($lanlng = "$lat,$lng")
    #end
-   [[Position]]: <input type="text" id="${detail.id}_latandlong" class="form-control form-control-sm" size="40" name="${detail.id}.value" value="$!latlng"/>
+   <div class="container-fluid">
+   <div class="row no-gutters">
+   <div class="col-md-6">
+   <div class="float-left assetpanel-content-label">[[Position]]:</div>
+    <div class="float-left"><input type="text" id="${detail.id}_latandlong" class="form-control" size="40" name="${detail.id}.value" value="$!latlng"/>
+    </div>
+   </div>
+   </div>
+   </div>
 
 <script type="text/javascript">
 
