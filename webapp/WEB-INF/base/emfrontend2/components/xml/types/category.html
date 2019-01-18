@@ -41,7 +41,12 @@
 	#end
 
    <input type="hidden" name="operation" value="orsgroup" />
-   <input type="hidden" id="categoryvalues" name="${detailid}.value" value="$!existing" class="#if($detail.isRequired() && !$multiedit) required #end"  />
+
+
+	##Bug Ajax forms dont validate hidden fields ever. So make it 1px wide
+   	<input style="visibility: hidden;width:1px" id="categoryvalues" name="${detailid}.value" value="$!existing" class="#if($detail.isRequired() && !$multiedit) required requiredfield #end"  />
+	
+
    
    <a class="emdialog btn btn-xs btn-secondary" 
    		href="$home$apphome/components/categories/search/searchcategory.html?targetdiv=addcategory&clearselection=$!clear&action=$page.path&detailid=$detailid" 
