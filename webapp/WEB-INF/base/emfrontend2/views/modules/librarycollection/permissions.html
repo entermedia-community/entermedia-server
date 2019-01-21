@@ -1,51 +1,8 @@
 <div class="publishtabcontainer">
-	
-
 
 #set( $selectedlibrary = $librarycol.getLibrary() )
 #set( $categoryid = $librarycol.getRootCategoryId())
 
-#set( $visible = $librarycol.visibility )
-
-#set( $category = $librarycol.getCategory() )
-#if( $category && $category.getParentCategory() )
-
-	#set( $parent = $category.getParentCategory() )
-	#set( $users = $parent.findValue("viewusers") )
-	#set( $groups = $parent.findValue("viewgroups"))
-	#set( $roles = $parent.findValue("viewroles"))
-#if( $users || $groups || $roles )
-<h4>[[Folder Permissions]]</h4>
-
-
-	#if( $users ) [[Users]]: <br>
-		<div style="padding:20px;background:#EEE;font-weight:bold;">
-		#foreach( $auser in $users)
-			$!userManager.getScreenName($auser) <br>
-		#end
-		</div>
-	#end
-	
-	#if( $groups) [[Groups]]: <br>
-		<div style="padding:20px;background:#EEE;font-weight:bold;">
-		#foreach( $group in $groups)
-			$!userManager.getGroup($group) <br>
-		#end
-		</div>
-	#end
-	
-	
-	#if( $roles ) [[Roles]]: <br>
-		<div style="padding:20px;background:#EEE;font-weight:bold;">
-		#foreach( $role in $roles)
-		$!mediaarchive.getData("settingsgroup",$role) <br>
-		#end
-		</div>
-	#end
-	<br><br>
-#end
-
-#end
 		
 #set( $mediadbappid = $mediaarchive.getMediaDbId() )
 
@@ -86,9 +43,46 @@ $context.putPageValue("data", $data )
 		#end   
     </form>
     </div>
-	</div>
-	##<a href="$home$apphome/views/modules/library/permissions.html?selectedlibrary=$selectedlibrary.getId()">[[View Library Permissions]]</a>
+</div>
+
+#set( $category = $librarycol.getCategory() )
+#if( $category && $category.getParentCategory() )
+
+	#set( $parent = $category.getParentCategory() )
+	#set( $users = $parent.findValue("viewusers") )
+	#set( $groups = $parent.findValue("viewgroups"))
+	#set( $roles = $parent.findValue("viewroles"))
+#if( $users || $groups || $roles )
+<h4>[[Parent Users]]</h4>
+
+
+	#if( $users ) [[Users]]: <br>
+		<div style="padding:20px;background:#EEE;font-weight:bold;">
+		#foreach( $auser in $users)
+			$!userManager.getScreenName($auser) <br>
+		#end
+		</div>
+	#end
+	
+	#if( $groups) [[Groups]]: <br>
+		<div style="padding:20px;background:#EEE;font-weight:bold;">
+		#foreach( $group in $groups)
+			$!userManager.getGroup($group) <br>
+		#end
+		</div>
+	#end
 	
 	
+	#if( $roles ) [[Roles]]: <br>
+		<div style="padding:20px;background:#EEE;font-weight:bold;">
+		#foreach( $role in $roles)
+		$!mediaarchive.getData("settingsgroup",$role) <br>
+		#end
+		</div>
+	#end
+	<br><br>
+#end
+
+#end	
 	
-	
+</div>

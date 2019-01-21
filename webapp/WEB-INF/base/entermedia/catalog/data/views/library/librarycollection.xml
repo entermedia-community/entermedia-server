@@ -3,7 +3,6 @@
 <root>
   <property id="name"/>
   <property id="owner"/>
-  <property id="visibility"/>
   <property id="rootcategory"/>
   <property id="creationdate" />
 
