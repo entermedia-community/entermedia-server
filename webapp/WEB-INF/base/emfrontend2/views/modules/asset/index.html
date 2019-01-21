@@ -1,18 +1,19 @@
+#if(!$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if($categoryid)
+		#set($category = $mediaarchive.getData("category",$categoryid))
+		#if($category)
+			$context.putPageValue("category",$category)
+		#end
+	#end
+#end
+
 #if( $hits )
 	$context.putPageValue("showhover", "false")
 	$context.putPageValue("showcaption", "true")
 	$context.putPageValue("hideheader", "true")
 	
-	#if(!$category)
-		#set($categoryid = $context.getRequestParameter("categoryid"))
-		#if($categoryid)
-			#set($category = $mediaarchive.getData("category",$categoryid))
-			#if($category)
-				$context.putPageValue("category",$category)
-			#end
-		#end
-	#end
-	
+
 	###always go to index - don't care about resultview
 	<div id="emresultscontainer" >
 	$pages.include("$apphome/components/results/index.html",$context)

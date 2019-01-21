@@ -1,3 +1,16 @@
+#if(!$category)
+	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if(!$categoryid)
+		#set($categoryid = $context.getRequestParameter("category.value"))
+	#end
+	#if($categoryid)
+		#set($category = $mediaarchive.getData("category",$categoryid))
+		#if($category)
+			$context.putPageValue("category",$category)
+		#end
+	#end
+#end
+
 #if( !$librarycol && $category ) 
 	#set( $librarycol = $mediaarchive.query("librarycollection").orgroup("rootcategory",$category.getParentCategories()).searchOne() )
 #end
@@ -17,6 +30,7 @@
 	</div>
 	<div class="col-main col-filters #if($filtersbarstatus!=false) filtersopen #end" id="col-filters">
 		<div class="col-main-inner">
+		
 		$pages.include("$apphome/components/filters/sidebar.html", $context)
 		</div>
 	</div>
@@ -25,6 +39,7 @@
 #if( $canviewcategorynav || ( $librarycol && $canviewcategorynavcollections ) )
 <div class="col-main col-left #if ($leftbarstatus!=false) leftopen #end" id="col-left">
 	<div class="col-main-inner">
+	
 		$pages.include("$apphome/components/sidebars/standard-left.html", $context)
 	</div>
 </div>
