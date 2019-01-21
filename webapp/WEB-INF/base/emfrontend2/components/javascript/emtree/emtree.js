@@ -420,7 +420,8 @@ repaintEmTree = function (tree) {
 			"tree-name": tree.data("treename"),
 			"url-prefix":tree.data("url-prefix"),
 			"url-postfix":tree.data("url-postfix"),
-			"targetdiv":tree.data("targetdiv")
+			"targetdiv":tree.data("targetdiv"),
+			"maxlevelclick":tree.data("maxlevelclick")
 		};
 	
 	tree.closest("#treeholder").load(home +  "/components/emtree/tree.html", options, function()
