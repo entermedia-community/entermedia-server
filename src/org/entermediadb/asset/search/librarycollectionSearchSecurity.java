@@ -49,7 +49,7 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 
 		MediaArchive archive = (MediaArchive) inPageRequest.getPageValue("mediaarchive");
 
-		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories()); //The ones I cant see
+//		Collection<Category> catshidden = archive.listHiddenCategories(profile.getViewCategories()); //The ones I cant see
 //		HashSet toshow = new HashSet(profile.getCollectionIds());
 //		for (Iterator iterator = catshidden.iterator(); iterator.hasNext();)
 //		{
@@ -58,6 +58,8 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 //		}
 		
 		Set allowedcats = new HashSet(profile.getViewCategories());
+
+		//@deprecate this code
 		for (Iterator iterator = archive.listPublicCategories().iterator(); iterator.hasNext();)
 		{
 			Category publiccat = (Category) iterator.next();
@@ -69,7 +71,7 @@ public class librarycollectionSearchSecurity implements SearchSecurity
 		}
 		SearchQuery child = inSearcher.query()
 				.orgroup("parentcategories",allowedcats)
-				.notgroup("parentcategories", catshidden)
+				//.notgroup("parentcategories", catshidden)
 				.notgroup("collectiontype", Arrays.asList("0","2"))
 				.getQuery();
 		inQuery.addChildQuery(child);

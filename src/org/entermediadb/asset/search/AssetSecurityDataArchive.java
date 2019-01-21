@@ -307,30 +307,30 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 				{
 					if (cat.hasParentCategory(allowedcats))
 					{
+						//TODO: Check for "edit" as an option?
 						return true;
 					}
 				}
 			}	
 		}
 	
-		// tmp.put("asset.owner", );
+		
 		if( "view".equals(inType))
 		{
-			Collection<Category> publiccategories = inArchive.listHiddenCategories();
-			for (Category cat : exactcategories)
-			{
-				for (Iterator iterator = publiccategories.iterator(); iterator.hasNext();)
-				{
-					Category publiccategory = (Category)iterator.next();
-					if (cat.hasParent(publiccategory.getId()))
-					{
-						return false;
-					}					
-				}
-			}
+//			Collection<Category> publiccategories = inArchive.listHiddenCategories();
+//			for (Category cat : exactcategories)
+//			{
+//				for (Iterator iterator = publiccategories.iterator(); iterator.hasNext();)
+//				{
+//					Category publiccategory = (Category)iterator.next();
+//					if (cat.hasParent(publiccategory.getId()))
+//					{
+//						return false;
+//					}					
+//				}
+//			}
 			return true;
 		}
-		
 		return false;
 		/*
 		 * Collection allowed = getAccessList(inArchive, inType, inAsset);
