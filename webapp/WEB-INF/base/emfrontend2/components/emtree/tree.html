@@ -104,8 +104,15 @@
 #set( $maxlevelclick = $context.getRequestParameter("maxlevelclick" ) )
 
 <div id="treeholder" data-treetoplocation="$!top" data-treeleftlocation="$!left" >
-	<div id="${treename}tree" class="emtree emtree-widget" data-home="$home$apphome" data-treename="$treename" data-rootnodeid="$rootcategory.getId()"
-		data-editable="$editable" data-url-prefix="$!prefix" data-url-postfix="$!postfix" data-targetdiv="$!targetdiv" data-maxlevelclick="$!maxlevelclick"
+	<div id="${treename}tree" class="emtree emtree-widget" 
+		data-home="$home$apphome" 
+		data-treename="$treename" 
+		data-rootnodeid="$rootcategory.getId()"
+		data-editable="$editable" 
+		data-url-prefix="$!prefix" 
+		data-url-postfix="$!postfix" 
+		data-targetdiv="$!targetdiv" 
+		data-maxlevelclick="$!maxlevelclick"
 		>
 			<ul  class="open" >
 			#showtreecategories2($rootcategory, 1)

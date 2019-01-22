@@ -78,16 +78,6 @@
       <language id="fr"><![CDATA[Groupes]]></language> 
     </name> 
   </property>  
-  <property id="viewonlygroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system" type="list">
-    <name> 
-      <language id="en"><![CDATA[View Only Groups]]></language>  
-    </name> 
-  </property>  
-  <property id="viewonlyroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"    type="list">Roles
-    <name>
-      <language id="en"><![CDATA[View Only Roles]]></language>
-    </name>
-  </property> 
   <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"    type="list">Roles
     <name>
       <language id="de"><![CDATA[Rollen]]></language>

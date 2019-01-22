@@ -1955,18 +1955,22 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 
-	public Collection<Data> listHiddenCollections()
-	{
-		Searcher search = getSearcher("librarycollection");
-		Collection visibility = (Collection) getCacheManager().get("hiddencollection", search.getIndexId()); //Expires after 5 min
-		if (visibility == null)
-		{
-			visibility = getSearcher("librarycollection").query().exact("visibility", "3").search();
-			getCacheManager().put("hiddencollection", search.getIndexId(), visibility);
-		}
-		return visibility;
-	}
+//	public Collection<Data> listHiddenCollections()
+//	{
+//		Searcher search = getSearcher("librarycollection");
+//		Collection visibility = (Collection) getCacheManager().get("hiddencollection", search.getIndexId()); //Expires after 5 min
+//		if (visibility == null)
+//		{
+//			visibility = getSearcher("librarycollection").query().exact("visibility", "3").search();
+//			getCacheManager().put("hiddencollection", search.getIndexId(), visibility);
+//		}
+//		return visibility;
+//	}
 
+	/**
+	 * @deprecated use view category view permissions
+	 * 
+	 */
 	public Collection<Data> listPublicCollections()
 	{
 		Searcher search = getSearcher("librarycollection");
@@ -1978,7 +1982,10 @@ public class MediaArchive implements CatalogEnabled
 		}
 		return visibility;
 	}
-
+	/**
+	 * @deprecated use view category
+	 * 
+	 */
 	public Collection<Category> listPublicCategories()
 	{
 		Searcher search = getSearcher("librarycollection");
@@ -2006,8 +2013,9 @@ public class MediaArchive implements CatalogEnabled
 		return categories;
 
 	}
+/*
+ * 	public Collection<Category> listHiddenCategories()
 
-	public Collection<Category> listHiddenCategories()
 	{
 		Searcher search = getSearcher("librarycollection");
 		Collection<Category> categories = (Collection) getCacheManager().get("hiddencollectioncategories", search.getIndexId()); //Expires after 5 min
@@ -2033,7 +2041,8 @@ public class MediaArchive implements CatalogEnabled
 		return categories;
 
 	}
-
+   */
+	/*
 	public Collection<Category> listHiddenCategories(Collection<Category> inViewCategories)
 	{
 		Collection<Category> all = listHiddenCategories();
@@ -2061,7 +2070,7 @@ public class MediaArchive implements CatalogEnabled
 
 		return filtered;
 	}
-
+	*/
 	public QueryBuilder query(String inSearchType)
 	{
 		return getSearcher(inSearchType).query();

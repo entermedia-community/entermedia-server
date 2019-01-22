@@ -3,7 +3,6 @@
 <root>
   <property id="name" />
   <property id="library" />
-  <property id="visibility" />
   <property id="notes" />
   <property id="owner" />
   <property id="rootcategory" />

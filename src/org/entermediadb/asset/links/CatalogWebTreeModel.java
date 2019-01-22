@@ -172,7 +172,9 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 		 
 		Collection<Category> viewableparents = getUserProfile().getViewCategories();
 
-		Collection<Category> privatecats = getMediaArchive().listHiddenCategories();
+		/*
+		 * Collection<Category> privatecats = getMediaArchive().listHiddenCategories();
+		 
 		for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
 		{
 			Category hiddencategory = (Category)iterator.next();
@@ -189,13 +191,14 @@ public class CatalogWebTreeModel extends BaseTreeModel implements CatalogEnabled
 				return false;
 			}
 		}
+		*/
 		
 		//In case it's new system TODO: Is this needed?
 		if(inCat.findValue("viewusers") == null && inCat.findValue("viewgroups") == null && inCat.findValue("viewroles") == null )
 		{
 			return true;
 		}
-		Set allowed = new HashSet(getMediaArchive().listPublicCategories() );
+		Set allowed = new HashSet(getMediaArchive().listPublicCategories() );  //deprate this
 		allowed.addAll(viewableparents);
 		
 		for (Iterator iterator = allowed.iterator(); iterator.hasNext();)
