@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<properties> 
+  <property id="value" index="true" filter="false" deleted="false" editable="true" stored="true" sortable="true" keyword="false">New
+    <name> 
+      <language id="de"><![CDATA[Wert]]></language>  
+      <language id="en"><![CDATA[Value]]></language>  
+      <language id="es"><![CDATA[Valor]]></language>  
+      <language id="fr"><![CDATA[Valeur]]></language> 
+    </name> 
+  </property>  
+  <property id="name" index="true" multilanguage="true" filter="false" deleted="false" editable="true" stored="true" sortable="true" keyword="false">New
+    <name> 
+      <language id="de"><![CDATA[Identität]]></language>  
+      <language id="en"><![CDATA[Name]]></language>  
+      <language id="es"><![CDATA[Nombre]]></language>  
+      <language id="fr"><![CDATA[Identité]]></language> 
+    </name> 
+  </property>  
+  <property id="id" index="true" filter="false" internalfield="true" deleted="false" editable="true" stored="true" sortable="true" keyword="false">New
+    <name> 
+      <language id="de"><![CDATA[Id]]></language>  
+      <language id="en"><![CDATA[Id]]></language>  
+      <language id="es"><![CDATA[Id]]></language>  
+      <language id="fr"><![CDATA[Id]]></language> 
+    </name> 
+  </property>  
+  <property id="datapermission" index="true" editable="true" stored="true" internalfield="false" isbadge="false" required="false" multilanguage="false" listid="datapermisions" deleted="false" autocreatefromexif="false" writenametoexif="false" filter="false" datatype="list" keyword="false">New
+    <name>
+      <language id="en"><![CDATA[datapermission]]></language>
+    </name>
+  </property> 
+</properties>
