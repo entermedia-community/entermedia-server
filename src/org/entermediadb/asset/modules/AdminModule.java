@@ -266,6 +266,11 @@ public class AdminModule extends BaseModule
 			limited = inReq.getCurrentAction().getChildValue("permissions");
 		}
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
+		
+		
+		
+		
+		
 	}
 
 	//We will see if we use this or not. Actions may want to handle it themself

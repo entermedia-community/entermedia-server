@@ -33,11 +33,15 @@ public class DataPermissionModule extends BaseMediaModule
 	public Permission loadPermission(WebPageRequest inReq) throws Exception
 	{
 		String id = inReq.getRequestParameter("id");
+		String datapermission = inReq.findValue("datapermission");
 		MediaArchive archive = getMediaArchive(inReq);
 			
 		if( id != null)
 		{
 			Permission permission = loadOrCreatePermission(archive,id,id); 
+			if(datapermission != null) {
+				permission.setValue("datapermission", datapermission);
+			}
 			inReq.putPageValue("permission", permission);
 			return permission;
 		}
@@ -519,6 +523,22 @@ public class DataPermissionModule extends BaseMediaModule
 	}
 	
 	
-	
+	public void loadPermissions(WebPageRequest inReq) {
+//		String permissiontype = inReq.findValue("permissiontype");
+//		MediaArchive archive = getMediaArchive(inReq);
+//		HitTracker <Data> permissions = archive.query("datapermissions").exact("permissiontype", permissiontype).search();
+//		for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
+//		{
+//			Data permission = (Data) iterator.next();
+//			
+//			Permission per = archive.getPermission(permission.getId());
+//			if(per != null) {
+//			boolean value = per.passes(inReq);
+//			inReq.putPageValue("can" + per.getName(), Boolean.valueOf(value));
+//			}	
+//			
+//		}
+//		
+	}
 
 }

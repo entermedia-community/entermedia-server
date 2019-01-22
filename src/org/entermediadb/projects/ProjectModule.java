@@ -30,6 +30,7 @@ import org.openedit.data.QueryBuilder;
 import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.hittracker.SearchQuery;
+import org.openedit.page.Permission;
 import org.openedit.profile.UserProfile;
 import org.openedit.repository.ContentItem;
 import org.openedit.users.User;
@@ -290,17 +291,14 @@ public class ProjectModule extends BaseMediaModule {
 			inReq.putPageValue("librarycol", collection);
 			return collection;
 		}
-		return null;
-	}
-
-	
-	public LibraryCollection loadCollectionPermissions(WebPageRequest inReq) {
-		LibraryCollection collection = loadCollection(inReq);
 		
+		loadPermissions(inReq);
 		return null;
 	}
 
 	
+	
+
 	
 	protected String loadCollectionId(WebPageRequest inReq) 
 	{
@@ -1250,4 +1248,34 @@ Server ProjectModule.uploadFile
 		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);
 		inPageRequest.putPageValue("categoryCollectionCache", cache);
 	}
+	
+	
+	
+	
+	public void loadPermissions(WebPageRequest inReq) {
+		String permissiontype = inReq.findValue("permissiontype"); //librarycolleciton
+		LibraryCollection collection = loadCollection(inReq);
+		if(collection == null) {
+			return;
+		}
+		MediaArchive archive = getMediaArchive(inReq);
+		HitTracker <Data> permissions = archive.query("datapermissions").exact("permissiontype", permissiontype).search();
+		for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
+		{
+			Data permission = (Data) iterator.next();
+			
+			Permission per = archive.getPermission(permissiontype + "-" + collection.getId() + "-" +  permission.getId());
+			
+			if(per != null) {
+			boolean value = per.passes(inReq);
+			inReq.putPageValue("can" + permission.getId(), Boolean.valueOf(value));
+			}	
+			
+		}
+		
+	}
+	
+	
+	
+	
 }

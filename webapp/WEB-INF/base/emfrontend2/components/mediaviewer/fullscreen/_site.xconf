@@ -2,42 +2,12 @@
 	<path-action name="MediaArchiveModule.getAssetAndPage"  />
 
 	
-	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
-	<permission name="viewasset">
-		<or>
-			<action name="AssetControlModule.canViewAsset" />
-			<action name="OrderModule.canViewAsset"/>
-		</or>
-	</permission>	
-
-	<permission name="view">
-		
-			<pagevalue name="canviewasset" equals="true"/>
-		
-		
-	</permission>	
-
-	<permission name="download">
-		<and>
-			<userprofile property="download" equals="true" />
-			<pagevalue name="canviewasset" equals="true"/>
-		</and>
-	</permission>	
-
-	<permission name="convert">
-		<userprofile property="convert" equals="true" />
-	</permission>
-
-
+	
 	<property name="section">details</property>
 	
-	<permission name="editasset">
-		<or>
-			<group name="administrators" />
-			<userprofile property="editallassets" equals="true" />
-			<action name="AssetControlModule.canEditAsset" />
-		</or>
-	</permission>
 	
+	<path-action name="ProjectModule.loadPermissions">
+		<property name="permissiontype">librarycollection</property>
+	</path-action>
 	
 </page>

@@ -33,7 +33,7 @@
 	#if( !$permission  )
 	[[Default]]
 	#elseif($permission.toString() == "false")
-	
+	[[Nobody]]
 	#elseif( $permission.toString() == "true" || $permission.toString() == "" )
 	[[Anyone]]
 	#else

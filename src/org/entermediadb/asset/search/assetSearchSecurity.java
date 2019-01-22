@@ -134,19 +134,19 @@ public class assetSearchSecurity implements SearchSecurity
 			}
 			required.addChildQuery(orchild);
 
-			//Also add to this list public collections
-			Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
-//			Collection<String> notshown = new ArrayList<String>();
-//			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
+//			//Also add to this list public collections
+//			Collection<Category> privatecats = mediaArchive.listHiddenCategories(profile.getViewCategories());  //Cant be hidden and public at the same time
+////			Collection<String> notshown = new ArrayList<String>();
+////			for (Iterator iterator = privatecats.iterator(); iterator.hasNext();)
+////			{
+////				Category cat = (Category) iterator.next();
+////				notshown.add(cat.getId());
+////			}
+//			//child.addMatches("id", "*");
+//			if (!privatecats.isEmpty())
 //			{
-//				Category cat = (Category) iterator.next();
-//				notshown.add(cat.getId());
+//				required.addNots("category", privatecats); //Hidden categories that Im not part of
 //			}
-			//child.addMatches("id", "*");
-			if (!privatecats.isEmpty())
-			{
-				required.addNots("category", privatecats); //Hidden categories that Im not part of
-			}
 			
 			inQuery.setSecurityAttached(true);
 			if (!required.isEmpty())

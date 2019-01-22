@@ -1,5 +1,7 @@
 #set( $moduleid = $context.findValue("module") )
 ${permissionid}
+$permission.toString()
+
 <div id="permissionedit" class="ui-widget">
 	<div class="ui-widget-header"><span class="widget-header-title">Permissions Editor</span></div>
 	<div class="ui-widget-content" style="padding-top: 20px; ">
@@ -10,6 +12,8 @@ ${permissionid}
 
 <form method="post" name="permissiontype"  class="ajaxform" data-targetdiv="permissionedit" action="$home$apphome/views/modules/${moduleid}/datapermissions/addgroup.html">
 	<input type="hidden" name="id" value="${permissionid}"/>
+		<input type="hidden" name="datapermission" value="${permdata.id}"/>
+	
 	<select name="addgroup" class="form-control" style="width:200px; margin-right:5px; float:left;">
 		<option value=""></option>
 		<option value="true">Anyone</option>
@@ -62,7 +66,7 @@ ${permissionid}
 
 </div>
 #else
-$pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html")
+$pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html?id=${permissionid}")
 #end
 
 </div>

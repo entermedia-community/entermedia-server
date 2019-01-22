@@ -5,6 +5,7 @@
 #set( $list = $searcherManager.getList("system","conditiontypes"))
 
 #set( $traverse = $context.getRequestParameter("traverse"))
+#set( $id = $context.getRequestParameter("id"))
 
 <p><strong>[[Add Condition]]:</strong><p>	
 	<select name="selecttype$permission.name" id="selecttype$permission.name" class="form-control" style="width:200px; float:left; margin-left:5px;" >
@@ -21,7 +22,7 @@
 	{
 		var theselect = document.getElementById("selecttype" + inName );
 		var conditiontype = theselect.options[theselect.selectedIndex].value;
-		$('#edit'+inName).load('$home$content.permissionrootpath/addnewfinish.html?editPath=$editPath&name='+ inName + '&traverse=' + inTraverse + "&conditiontype=" + conditiontype + "&oemaxlevel=1");
+		$('#edit'+inName).load('$home$content.permissionrootpath/addnewfinish.html?id=$id&name='+ inName + '&traverse=' + inTraverse + "&conditiontype=" + conditiontype + "&oemaxlevel=1");
 	}
 	//The parent javascript has showpath
 </script>

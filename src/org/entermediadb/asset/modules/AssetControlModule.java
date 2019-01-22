@@ -12,9 +12,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.Asset;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.projects.LibraryCollection;
 import org.openedit.Data;
 import org.openedit.WebPageRequest;
 import org.openedit.hittracker.HitTracker;
+import org.openedit.page.Permission;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
@@ -47,6 +49,7 @@ public class AssetControlModule extends BaseMediaModule
 		{	
 			log.error("No sourcepath passed in " + inReq);
 		}
+		loadAssetCollectionPermissions(inReq);
 	}
 	
 	public Boolean canViewAsset(WebPageRequest inReq)
@@ -71,6 +74,45 @@ public class AssetControlModule extends BaseMediaModule
 		return cando;
 	}
 	
+	
+	
+	
+	protected void loadAssetCollectionPermissions(WebPageRequest inReq) {
+		String permissiontype = "librarycollection";
+		MediaArchive archive = getMediaArchive(inReq);
+		LibraryCollection collection = (LibraryCollection) inReq.getPageValue("librarycol");
+		if(collection == null) {
+			
+			String collectionid = inReq.findValue("collectionid");
+			if(collectionid == null) {
+				return;
+			}
+			collection = (LibraryCollection) archive.getData("librarycollection", collectionid);
+			if(collection == null) {
+				return;
+			}
+			
+		}
+		HitTracker <Data> permissions = archive.query("datapermissions").exact("permissiontype", permissiontype).search();
+		for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
+		{
+			Data permission = (Data) iterator.next();
+			
+			Permission per = archive.getPermission(permissiontype + "-" + collection.getId() + "-" +  permission.getId());
+			
+			if(per != null) {
+			boolean value = per.passes(inReq);
+			inReq.putPageValue("can" + permission.getId(), Boolean.valueOf(value));
+			}	
+			
+		}
+		
+	}
+	
+	
+	
+	
+	
 	public void resetPermissions(WebPageRequest inReq){
 		MediaArchive archive = getMediaArchive(inReq);
 
@@ -94,6 +136,9 @@ public class AssetControlModule extends BaseMediaModule
 		archive.getAssetSearcher().saveAllData(assets, null);
 
 	}
+	
+	
+	
 	
 	
 	public Boolean canEditAsset(WebPageRequest inReq)

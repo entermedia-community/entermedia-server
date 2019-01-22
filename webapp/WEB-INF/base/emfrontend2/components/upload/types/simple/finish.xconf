@@ -14,7 +14,7 @@
 
 	<!-- Need to check for invites, may tweak the viewasset permission -->
 	<path-action name="MediaArchiveModule.getAsset"  />
-
+<!--
 	<path-action name="Admin.loadPermissions"/>
 	<path-action name="Admin.allowViewing" />
 	<!-- <path-action name="CommentModule.loadComments" />  -->
@@ -25,7 +25,7 @@
 			<action name="AssetControlModule.canViewAsset" />
 		</or>
 	</permission>
-	
+	-->
 	<style id="detaileditor" href="/${applicationid}/theme/styles/pages/detaileditor.css" />
 	
 	<property name="section">details</property>
