@@ -31,7 +31,7 @@ public class ConvertInstructions
 	protected boolean fieldStreaming = false;
 	protected OutputStream fieldOutputStream;
 	protected Page fieldImageProfile;
-	
+	protected boolean forceoutputfile = false;
 	
 	
 	
@@ -242,6 +242,7 @@ public class ConvertInstructions
 
 	public void setOutputFile(ContentItem inOutputFile)
 	{
+		
 		fieldOutputFile = inOutputFile;
 	}
 

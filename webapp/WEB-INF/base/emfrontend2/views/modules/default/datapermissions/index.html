@@ -1,0 +1,55 @@
+#set( $moduleid = $context.findValue("module") )
+
+<div id="allpermissions">
+
+<div id="emselectable" >
+
+<form name="permissionsform" class="ajaxform" data-targetdiv="allpermissions" action="$home$apphome/views/modules/${moduleid}/datapermissions/edit.html">
+<table class="table table-striped emdata">		
+	<thead>
+	<tr class="tableheader"><th>Name</th>
+	<th>Rule</th>
+	</thead>
+	<tbody>
+	#set( $section = "none")
+	#foreach($perm in $permissions)
+	
+	#if( $perm.permissiontype != "internal")
+		#if( $section != $perm.permissiontype )
+			<tr class="sectionlevel">
+			<td colspan="2" style="height: 35px; line-height: 35px;">
+				$!searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
+			</td>
+			</tr>
+		#set( $section = $perm.permissiontype)
+			
+		#end
+		<tr data-id="${moduleid}-${data.id}-${perm.id}" data-permissionid="$perm.id" >
+			<td title="$perm.caption">$context.getText($perm.name)
+			<td> 
+			#set( $permission = false )
+			#set( $permission = $mediaarchive.getPermission("${moduleid}-${data.id}-${perm.id}") )
+	
+	#if( !$permission  )
+	[[Default]]
+	#elseif($permission.toString() == "false")
+	
+	#elseif( $permission.toString() == "true" || $permission.toString() == "" )
+	[[Anyone]]
+	#else
+	$permission
+	#end
+			</td>
+		</tr>
+	#end	
+#end
+</tbody>
+</table>
+	
+
+</form>
+</div>
+
+<div id="editpermission" style="min-width:500px;">
+</div>
+</div>

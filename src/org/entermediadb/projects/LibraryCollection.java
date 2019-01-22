@@ -1,5 +1,8 @@
 package org.entermediadb.projects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.entermediadb.asset.Category;
 import org.entermediadb.asset.MediaArchive;
 import org.openedit.CatalogEnabled;
@@ -7,6 +10,8 @@ import org.openedit.Data;
 import org.openedit.ModuleManager;
 import org.openedit.data.BaseData;
 import org.openedit.data.SaveableData;
+import org.openedit.page.Permission;
+import org.openedit.util.strainer.FilterReader;
 
 public class LibraryCollection extends BaseData implements SaveableData, CatalogEnabled
 {
@@ -15,7 +20,14 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	protected int fieldAssetCount;
 	protected String fieldCatalogId;
 	protected ModuleManager fieldModuleManager;
+	protected FilterReader fieldFilterReader;
+	protected List fieldPermissions;
 
+	
+	public void setPermissions(List inPermissions)
+	{
+		fieldPermissions = inPermissions;
+	}
 	public String getCatalogId()
 	{
 		return fieldCatalogId;
@@ -130,5 +142,32 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 		Object found = getMediaArchive().getAssetSearcher().query().orgroup("editstatus", "1|rejected").exact("category", getRootCategoryId()).searchOne();
 		return found != null;
 	}
+	
+	
+	public Permission getPermission(String inPermission) {
+		Data target = getMediaArchive().getData("datapermissions", "librarycollection-" + getId() + "-"+ inPermission);
+		if(target == null) {
+			return null;
+		}
+		String xml = target.get("value");
+		if(xml == null) {
+			return null;
+		}
+		return getMediaArchive().getPermission(inPermission, xml);	
+	
+	}
+	
+	public List getPermissions() {
+		if (fieldPermissions == null)
+		{
+			fieldPermissions = new ArrayList();
+			
+		}
+
+		return fieldPermissions;
+	}
+	
+	
+	
 
 }

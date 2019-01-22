@@ -1,5 +1,5 @@
 #macro(uuencode $invalue)$!url_util.encode($invalue)#end
-#macro(urlencode $invalue)$!url_util.urlEscape($invalue)#end
+#macro(urlencode $invalue)$!url_util.encode($invalue)#end
 #macro(urlescape $invalue)$!url_util.urlEscape($invalue)#end
 
 #macro(esc $invalue)$!url_util.xmlEscape($invalue)#end

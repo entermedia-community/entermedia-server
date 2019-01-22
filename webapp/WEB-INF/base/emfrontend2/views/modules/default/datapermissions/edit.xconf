@@ -1,0 +1,4 @@
+<page>
+  <path-action name="DataPermissionModule.loadPermissionForEdit" />
+  	 <inner-layout /> 
+</page>

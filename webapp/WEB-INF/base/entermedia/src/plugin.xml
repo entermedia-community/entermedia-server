@@ -161,6 +161,9 @@
 
 	<bean id="PermissionModule" class="org.entermediadb.asset.modules.PermissionModule">
 	</bean>
+	
+	<bean id="DataPermissionModule" class="org.entermediadb.asset.modules.DataPermissionModule">
+	</bean>
 
 
 	<bean id="PathEventModule" class="org.entermediadb.asset.modules.PathEventModule">

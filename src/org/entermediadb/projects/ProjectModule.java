@@ -293,6 +293,15 @@ public class ProjectModule extends BaseMediaModule {
 		return null;
 	}
 
+	
+	public LibraryCollection loadCollectionPermissions(WebPageRequest inReq) {
+		LibraryCollection collection = loadCollection(inReq);
+		
+		return null;
+	}
+
+	
+	
 	protected String loadCollectionId(WebPageRequest inReq) 
 	{
 		String collectionid = inReq.findValue("collectionid");

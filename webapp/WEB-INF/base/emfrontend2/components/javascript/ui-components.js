@@ -539,7 +539,7 @@ uiload = function() {
 			// var url = emselectable.data("clickpath");
 			var url = table.data("clickpath");
 			var form = emselectable.find("form");
-
+			var data = row.data();
 			if (form.length > 0) {
 				emselectable.find('#emselectedrow').val(id);
 				emselectable.find('.emneedselection').each(function() {
@@ -549,7 +549,9 @@ uiload = function() {
 				var targetdiv = form.data("targetdiv");
 				if ((typeof targetdiv) != "undefined") {
 					$(form).ajaxSubmit({
-						target : "#" + targetdiv
+						target : "#" + targetdiv, 
+						data:data
+						
 					});
 				} else {
 					$(form).trigger("submit");

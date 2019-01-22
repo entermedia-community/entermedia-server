@@ -1,0 +1,3 @@
+<page>
+  <path-action name="DataPermissionModule.loadPermissionsByType" />
+</page>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<page>
+<path-action name="DataEditModule.loadSearcherForEdit" >
+		<property name="searchtype">${module}</property>
+	</path-action>
+	<property name="permissionrootpath">/${applicationid}/views/modules/${module}/datapermissions/xml</property>
+	<property name="subtab">${module}permissions</property>
+	<property name="tab">${module}permissions</property>
+
+  <property name="permissiontype">${module}</property>
+  	<inner-layout>/${applicationid}/theme/layouts/dialoglayout.html</inner-layout>
+  
+</page>

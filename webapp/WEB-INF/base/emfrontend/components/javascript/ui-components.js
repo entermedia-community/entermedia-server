@@ -549,6 +549,7 @@ uiload = function() {
 		}
 		var emselectable = clicked.closest("#emselectable");
 		var row = $(clicked.closest("tr"));
+		var data = row.data();
 		if ( row.hasClass("thickbox") )
 		{
 			var href = row.data("href");
