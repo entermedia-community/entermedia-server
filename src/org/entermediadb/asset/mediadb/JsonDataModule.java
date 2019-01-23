@@ -58,6 +58,32 @@ public class JsonDataModule extends BaseJsonModule
 			{
 				inReq.setRequestParameter(it.get("field") + ".value", (String)it.get("value"));
 			}
+			
+			// handle all other options here...
+			if(it.get("before") != null) {
+				inReq.setRequestParameter(it.get("field") + ".before", (String)it.get("before"));
+
+			}
+			if(it.get("after") != null) {
+				inReq.setRequestParameter(it.get("field") + ".after", (String)it.get("after"));
+
+			}
+			
+			if(it.get("highval") != null) {
+				inReq.setRequestParameter(it.get("field") + ".highval", (String)it.get("highval"));
+
+			}
+			
+			if(it.get("lowval") != null) {
+				inReq.setRequestParameter(it.get("field") + ".lowval", (String)it.get("lowval"));
+
+			}
+		//	String highval = inPageRequest.getRequestParameter(field.getId() + ".highval");
+	//		String lowval = inPageRequest.getRequestParameter(field.getId() + ".lowval");
+			
+//			String[] beforeStrings = inPageRequest.getRequestParameters(field.getId() + ".before");
+//			String[] afterStrings = inPageRequest.getRequestParameters(field.getId() + ".after");
+
 		}
 
 		String[] fieldarray = fields.toArray(new String[fields.size()]);
