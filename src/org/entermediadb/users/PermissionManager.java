@@ -123,16 +123,17 @@ public class PermissionManager implements CatalogEnabled
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
-			Permission per = getPermission(inModuleid + "-" + data.getId());
+			Permission per = findPermission(inModuleid, inParentFolderId, inDataId, data.getId());
 			if( per != null)
 			{
-				Boolean systemwide = (Boolean)inReq.getPageValue("can" + per.get("permissionid"));
+				String permissionid = data.getId();
+				Boolean systemwide = (Boolean)inReq.getPageValue("can" + permissionid);
 				if( systemwide == null || systemwide == false)  //Option
 				{
 					boolean value = per.passes(inReq);
 					if( value )
 					{
-						inReq.putPageValue("can" + per.get("permissionid"), Boolean.valueOf(value));
+						inReq.putPageValue("can" + permissionid, Boolean.valueOf(value));
 					}
 				}
 			}
@@ -166,11 +167,11 @@ public class PermissionManager implements CatalogEnabled
 			Data data = (Data) iterator.next();
 			
 			//Specific Asset specific
-			Permission per = getPermission(inDataType + "-" + inSpecificRow + "-" +  data.getId());
+			Permission per = findPermission(inDataType, null, inSpecificRow, data.getId());
 			if( per == null)
 			{
 				//CollectionID specific
-				per = getPermission(inDataType + "-parent-" + inParentFolderId + "-" +  data.getId()); //TODO: Search
+				 per = findPermission(inDataType, inParentFolderId, inSpecificRow, data.getId());
 			}
 			if( per != null)
 			{
@@ -224,6 +225,25 @@ public class PermissionManager implements CatalogEnabled
 		return getPermission(inPermission, xml);
 
 	}
+	
+	public Permission findPermission(String inModule, String inFolder, String inData, String inPermissionId ) {
+		
+		
+		Searcher searcher = getSearcher("custompermissions");
+		
+		
+			Data target = (Data) searcher.query().ignoreEmpty().exact("module", inModule).exact("folder", inFolder).exact("dataid", inData).exact("datapermission", inPermissionId).searchOne();
+			if(target != null) {
+				Permission permission = getPermission(target.getId());
+				return permission;
+			}
+		
+return null;		
+		
+		
+	}
+	
+	
 
 	public void savePermission( Permission inPermission)
 	{
@@ -235,6 +255,13 @@ public class PermissionManager implements CatalogEnabled
 			target.setId(inPermission.getId());
 		}
 
+		for (Iterator iterator = inPermission.getMap().keySet().iterator(); iterator.hasNext();)
+		{
+		String key = (String) iterator.next();
+			Object val = (Object) inPermission.getValue(key);
+			target.setValue(key, val);
+			
+		}
 		Document doc = DocumentHelper.createDocument();
 		XMLConfiguration configuration = new XMLConfiguration("root");
 
@@ -244,6 +271,7 @@ public class PermissionManager implements CatalogEnabled
 		target.setValue("value", xml);
 
 		custompermissions.saveData(target);
+		inPermission.setId(target.getId());
 
 	}
 	private Searcher getSearcher(String inSearchType)

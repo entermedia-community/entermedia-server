@@ -24,13 +24,13 @@
 		#set( $section = $perm.permissiontype)
 			
 		#end
-		<tr data-id="${moduleid}-${data.id}-${perm.id}" data-permissionid="$perm.id" >
+		#set( $permission = $mediaarchive.getPermissionManager().findPermission(${moduleid},null,${data.id},${perm.id}) )
+	
+		<tr data-dataid="${data.id}"  data-id="${data.id}" data-permissionid="$perm.id" data-currentpermission="$!permission.id">
 			<td title="$perm.caption">$context.getText($perm.name)
 			<td> 
-			#set( $permission = false )
-			#set( $permission = $mediaarchive.getPermission("${moduleid}-${data.id}-${perm.id}") )
 	
-	#if( !$permission  )
+	#if( !$permission.id  )
 	[[Default]]
 	#elseif($permission.toString() == "false")
 	[[Nobody]]

@@ -25,9 +25,20 @@
       <language id="fr"><![CDATA[Id]]></language> 
     </name> 
   </property>  
-  <property id="datapermission" index="true" editable="true" stored="true" internalfield="false" isbadge="false" required="false" multilanguage="false" listid="datapermisions" deleted="false" autocreatefromexif="false" writenametoexif="false" filter="false" datatype="list" keyword="false">New
-    <name>
-      <language id="en"><![CDATA[datapermission]]></language>
-    </name>
+  <property id="datapermission" index="true" editable="true" stored="true" internalfield="false" isbadge="false" required="false" multilanguage="false" listid="datapermisions" deleted="false" autocreatefromexif="false" writenametoexif="false" filter="false" datatype="list" keyword="false">Permission to Override
   </property> 
+  
+   <property id="parentfolder" index="true" editable="true" stored="true" internalfield="false" isbadge="false" required="false" multilanguage="false" deleted="false" autocreatefromexif="false" writenametoexif="false" filter="false" datatype="list" keyword="false">Parent Folder
+    
+  </property> 
+   <property id="module" index="true" editable="true" stored="true" internalfield="false" isbadge="false" required="false" multilanguage="false" deleted="false" autocreatefromexif="false" writenametoexif="false" filter="false" datatype="list" keyword="false">Module
+    
+  </property> 
+  
+  
+   <property id="dataid" index="true" editable="true" stored="true" internalfield="false" isbadge="false" required="false" multilanguage="false"  deleted="false" autocreatefromexif="false" writenametoexif="false" filter="false" datatype="list" keyword="false">Data ID
+    
+  </property>
+  
+  
 </properties>

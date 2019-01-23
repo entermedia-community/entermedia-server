@@ -62,9 +62,11 @@ public class DataEditModule extends BaseMediaModule
 		{
 			throw new OpenEditException("No searcher found");
 		}
+		
 		String paramname = inReq.getRequestParameter("paramname");
 		if (paramname == null)
 		{
+		
 			paramname = "id";
 		}
 		String id = inReq.getRequestParameter(paramname);

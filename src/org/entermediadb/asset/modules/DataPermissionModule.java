@@ -62,20 +62,18 @@ public class DataPermissionModule extends BaseMediaModule
 	
 	public Permission loadPermission(WebPageRequest inReq) throws Exception
 	{
-		String id = inReq.getRequestParameter("id");
+		String id = inReq.getRequestParameter("currentpermission");
 		String datapermission = inReq.findValue("datapermission");
 		MediaArchive archive = getMediaArchive(inReq);
 			
-		if( id != null)
-		{
+		
 			Permission permission = loadOrCreatePermission(archive,id,id); 
 			if(datapermission != null) {
 				permission.setValue("datapermission", datapermission);
 			}
 			inReq.putPageValue("permission", permission);
 			return permission;
-		}
-		return null;
+		
 	}
 	
 	private Permission loadOrCreatePermission(MediaArchive inArchive,  String id, String inName)
@@ -96,7 +94,9 @@ public class DataPermissionModule extends BaseMediaModule
 			{
 				
 			}
+			if(id != null) {
 			per.setId(id);
+			}
 			permission = per;
 		}
 		return permission;
@@ -333,7 +333,13 @@ public class DataPermissionModule extends BaseMediaModule
 				gf.setGroupId(type);
 				root.addFilter(gf);
 			}
+			String fields[] =inReq.getRequestParameters("field");
+			archive.getSearcher("custompermissions").updateData(inReq, fields, permission);
+			
 			savePermission(archive, permission);
+			inReq.putPageValue("permission", permission);
+			String id = permission.getId();
+			inReq.setRequestParameter("currentpermission", id);
 		}
 	}	
 //	public void addCondition(WebPageRequest inReq) throws Exception
@@ -428,6 +434,8 @@ public class DataPermissionModule extends BaseMediaModule
 	
 	public void loadPermissionForEdit(WebPageRequest inReq)
 	{
+		MediaArchive archive = getMediaArchive(inReq);
+
 		String permissiontype = inReq.findValue("permissiontype");
 		if(permissiontype == null) {
 			permissiontype = inReq.findValue("searchtype");
@@ -438,17 +446,24 @@ public class DataPermissionModule extends BaseMediaModule
 
 		}
 
-		MediaArchive archive = getMediaArchive(inReq);
-		String id = inReq.getRequestParameter("id");
+		
+	
+		String dataid = inReq.findValue("dataid");
+		if(permissiontype != null && dataid != null) {
+			Data data = archive.getData(permissiontype, dataid);
+			if(data != null) {
+				inReq.putPageValue("data",data);
+			}
+		}
+		
 		String permissionid = inReq.getRequestParameter("permissionid");
-
+		String currentid = inReq.getRequestParameter("currentpermission");
 		Data target =archive.getData("datapermissions",  permissionid);
 		inReq.putPageValue("permdata", target);
 		
-		
-		Permission perm = loadOrCreatePermission(archive,id,id);
+		Permission perm = loadOrCreatePermission(archive,currentid,currentid);
 		inReq.putPageValue("permission", perm);
-		inReq.putPageValue("permissionid", id);
+		inReq.putPageValue("permissionid", permissionid);
 
 		HitTracker groups  = getUserManager(inReq).getGroups();
 		Boolean simple = Boolean.TRUE;

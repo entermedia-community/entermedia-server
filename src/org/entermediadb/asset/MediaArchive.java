@@ -41,6 +41,7 @@ import org.entermediadb.email.TemplateWebEmail;
 import org.entermediadb.error.EmailErrorHandler;
 import org.entermediadb.events.PathEventManager;
 import org.entermediadb.projects.ProjectManager;
+import org.entermediadb.users.PermissionManager;
 import org.openedit.CatalogEnabled;
 import org.openedit.Data;
 import org.openedit.ModuleManager;
@@ -2295,5 +2296,13 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 
+	public PermissionManager getPermissionManager()
+	{
+		PermissionManager manager = (PermissionManager) getModuleManager().getBean(getCatalogId(), "permissionManager");
+		return manager;
+	}
+	
+	
+	
 
 }

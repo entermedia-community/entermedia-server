@@ -1,9 +1,7 @@
 #set( $moduleid = $context.findValue("module") )
-${permissionid}
-$permission.toString()
 
 <div id="permissionedit" class="ui-widget">
-	<div class="ui-widget-header"><span class="widget-header-title">Permissions Editor</span></div>
+	<div class="ui-widget-header"><span class="widget-header-title">Permissions Editor - $data</span></div>
 	<div class="ui-widget-content" style="padding-top: 20px; ">
 
 <p>$permdata.name - $!permdata.caption</p>
@@ -11,8 +9,18 @@ $permission.toString()
 	<label><b>[[Allow:]]</b></label>
 
 <form method="post" name="permissiontype"  class="ajaxform" data-targetdiv="permissionedit" action="$home$apphome/views/modules/${moduleid}/datapermissions/addgroup.html">
-	<input type="hidden" name="id" value="${permissionid}"/>
-		<input type="hidden" name="datapermission" value="${permdata.id}"/>
+	<input type="hidden" name="datapermission.value" value="${permdata.id}"/>
+	<input type="hidden" name="module.value" value="${moduleid}"/>
+	<input type="hidden" name="dataid.value" value="${data.id}"/>
+	<input type="hidden" name="field" value="datapermission" />
+	<input type="hidden" name="field" value="module" />
+	<input type="hidden" name="field" value="dataid" />
+	
+	<input type="hidden" name="permissionid" value="${permdata.id}"/>
+	<input type="hidden" name="dataid" value="${data.id}"/>
+	<input type="hidden" name="currentpermission" value="$!permission.id"/>
+	
+	
 	
 	<select name="addgroup" class="form-control" style="width:200px; margin-right:5px; float:left;">
 		<option value=""></option>
@@ -48,7 +56,7 @@ $permission.toString()
 	#set( $count = 0 )
 	#foreach( $group in $selgroups )
 		<tr>
-		<td>$group</td><td> <a class="ajax" targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/removegroup.html?traverse=0/$count&id=$permdata.id&editPath=$editPath"><img src="$home/system/images/toolbar/deletefile.gif" /></a></td>
+		<td>$group</td><td> <a class="ajax" targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/removegroup.html?traverse=0/$count&id=$permission.id"><img src="$home/system/images/toolbar/deletefile.gif" /></a></td>
 		#set( $count = $count + 1 )
 		</tr>
 	#end
@@ -71,7 +79,7 @@ $pages.include("$apphome/views/modules/${moduleid}/datapermissions/xml/edit.html
 
 </div>
 
-<a class="ajax btn btn-sm btn-secondary"  targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/reset.html?id=$permdata.id&editPath=$editPath">Reset to defaults</a>
+<a class="ajax btn btn-sm btn-secondary"  targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/reset.html?id=$permission.id">Reset to defaults</a>
 
 </div>
 
