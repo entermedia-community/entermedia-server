@@ -39,18 +39,26 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
     <data id="moduleassetfiltersearch" name="List Search Filters" httpmethod="POST" url="/${applicationid}/services/module/asset/search" docsection="moduleasset"> 
     <samplerequest><![CDATA[
     	{
-    	    "page": "1", 
-    	    "hitsperpage":"20",
-    	    "showfilters":"true",
-            "query": 
-            {
-            	"terms":[{
-	            	"field": "id",
-					"operator": "matches",
-					"value": "*"
-				}]
-	         }
-	        } 
+  "page": "1",
+  "hitsperpage": "20",
+  "showfilters": "true",
+  "query": {
+    "terms": [
+      {
+        "field": "id",
+        "operator": "matches",
+        "value": "*"
+      },
+ {
+        "field": "assetaddeddate",
+        "operator": "betweendates",
+        "before": "01/01/2025",
+        "after": "01/01/2015"
+
+      }
+    ]
+  }
+}
 	      ]]></samplerequest> 
   </data>  
 
