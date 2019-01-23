@@ -1,5 +1,5 @@
 <permissions name="Collection Permission Overrides">
-	<permission id="editdata" permissiontype="librarycollection" name="Collection Edit Permissions" description="Overrides the default edit permssions for collections" ordering="300" />	
+	<permission moduleid="librarycollection" id="editdata" permissiontype="librarycollection" name="Collection Edit Permissions" description="Overrides the default edit permssions for collections" ordering="300" />	
 	
 </permissions>
 

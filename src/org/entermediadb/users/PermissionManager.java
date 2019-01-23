@@ -160,7 +160,7 @@ public class PermissionManager implements CatalogEnabled
 		//Use a 5 min Cache
 		Collection<Permission> rules = new ArrayList();
 		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
-				exact("permissiontype", inDataType).search();
+				exact("moduleid", inDataType).search();
 
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
 		{
@@ -171,7 +171,7 @@ public class PermissionManager implements CatalogEnabled
 			if( per == null)
 			{
 				//CollectionID specific
-				 per = findPermission(inDataType, inParentFolderId, inSpecificRow, data.getId());
+				 per = findPermission(inDataType, inParentFolderId, null, data.getId());
 			}
 			if( per != null)
 			{
@@ -232,7 +232,7 @@ public class PermissionManager implements CatalogEnabled
 		Searcher searcher = getSearcher("custompermissions");
 		
 		
-			Data target = (Data) searcher.query().ignoreEmpty().exact("module", inModule).exact("folder", inFolder).exact("dataid", inData).exact("datapermission", inPermissionId).searchOne();
+			Data target = (Data) searcher.query().ignoreEmpty().exact("moduleid", inModule).exact("parentfolderid", inFolder).exact("dataid", inData).exact("datapermission", inPermissionId).searchOne();
 			if(target != null) {
 				Permission permission = getPermission(target.getId());
 				return permission;

@@ -144,18 +144,18 @@ public class LibraryCollection extends BaseData implements SaveableData, Catalog
 	}
 	
 	
-	public Permission getPermission(String inPermission) {
-		Data target = getMediaArchive().getData("datapermissions", "librarycollection-" + getId() + "-"+ inPermission);
-		if(target == null) {
-			return null;
-		}
-		String xml = target.get("value");
-		if(xml == null) {
-			return null;
-		}
-		return getMediaArchive().getPermission(inPermission, xml);	
-	
-	}
+//	public Permission getPermission(String inPermission) {
+//		Data target = getMediaArchive().getData("datapermissions", "librarycollection-" + getId() + "-"+ inPermission);
+//		if(target == null) {
+//			return null;
+//		}
+//		String xml = target.get("value");
+//		if(xml == null) {
+//			return null;
+//		}
+//		return getMediaArchive().getPermission(inPermission, xml);	
+//	
+//	}
 	
 	public List getPermissions() {
 		if (fieldPermissions == null)

@@ -35,7 +35,7 @@ public class DataPermissionModule extends BaseMediaModule
 		{
 			catid = "system";
 		}
-		String parametername = inReq.findValue("parametername"); //librarycolleciton
+		String parametername = inReq.findValue("parameterid"); //librarycolleciton
 		if( parametername != null)
 		{
 			String id = inReq.getRequestParameter(parametername);
