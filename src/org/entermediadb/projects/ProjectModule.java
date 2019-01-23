@@ -284,21 +284,16 @@ public class ProjectModule extends BaseMediaModule {
 		inReq.putSessionValue(sessionId, all);
 	}
 
-	public LibraryCollection loadCollection(WebPageRequest inReq) {
+	public LibraryCollection loadCollection(WebPageRequest inReq) 
+	{
 		String collectionid = loadCollectionId(inReq);
 		if (collectionid != null) {
 			LibraryCollection collection = getProjectManager(inReq).getLibraryCollection(getMediaArchive(inReq), collectionid);
 			inReq.putPageValue("librarycol", collection);
 			return collection;
 		}
-		
-		loadPermissions(inReq);
 		return null;
 	}
-
-	
-	
-
 	
 	protected String loadCollectionId(WebPageRequest inReq) 
 	{
@@ -1248,34 +1243,6 @@ Server ProjectModule.uploadFile
 		CategoryCollectionCache cache = (CategoryCollectionCache)getModuleManager().getBean(catalogid, "categoryCollectionCache",true);
 		inPageRequest.putPageValue("categoryCollectionCache", cache);
 	}
-	
-	
-	
-	
-	public void loadPermissions(WebPageRequest inReq) {
-		String permissiontype = inReq.findValue("permissiontype"); //librarycolleciton
-		LibraryCollection collection = loadCollection(inReq);
-		if(collection == null) {
-			return;
-		}
-		MediaArchive archive = getMediaArchive(inReq);
-		HitTracker <Data> permissions = archive.query("datapermissions").exact("permissiontype", permissiontype).search();
-		for (Iterator iterator = permissions.iterator(); iterator.hasNext();)
-		{
-			Data permission = (Data) iterator.next();
-			
-			Permission per = archive.getPermission(permissiontype + "-" + collection.getId() + "-" +  permission.getId());
-			
-			if(per != null) {
-			boolean value = per.passes(inReq);
-			inReq.putPageValue("can" + permission.getId(), Boolean.valueOf(value));
-			}	
-			
-		}
-		
-	}
-	
-	
 	
 	
 }

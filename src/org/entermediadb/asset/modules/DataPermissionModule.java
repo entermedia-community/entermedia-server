@@ -1,23 +1,19 @@
 package org.entermediadb.asset.modules;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.entermediadb.asset.MediaArchive;
+import org.entermediadb.users.PermissionManager;
 import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.config.Configuration;
 import org.openedit.config.XMLConfiguration;
-import org.openedit.data.Searcher;
 import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
-import org.openedit.page.PageProperty;
-import org.openedit.page.PageSettings;
 import org.openedit.page.Permission;
 import org.openedit.users.Group;
 import org.openedit.util.strainer.BooleanFilter;
@@ -29,6 +25,40 @@ import org.openedit.util.strainer.OrFilter;
 public class DataPermissionModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(DataPermissionModule.class);
+
+	
+	public void loadCustomModulePermissions(WebPageRequest inReq) 
+	{
+		String moduleid = inReq.findValue("module"); //librarycolleciton
+		String catid = inReq.findValue("catalogid");
+		if (catid == null)
+		{
+			catid = "system";
+		}
+		String parametername = inReq.findValue("parametername"); //librarycolleciton
+		if( parametername != null)
+		{
+			String id = inReq.getRequestParameter(parametername);
+			if( id != null)
+			{
+				PermissionManager manager = getPermissionManager(catid);
+				String parentparameterid = inReq.findValue("parentparameterid"); //librarycolleciton
+				String parentvalue = inReq.getRequestParameter(parentparameterid);
+				manager.loadModulePermissions(moduleid,parentvalue,id,inReq);
+			}
+		}
+		
+	}
+
+
+
+	protected PermissionManager getPermissionManager(String catid)
+	{
+		PermissionManager manager = (PermissionManager) getModuleManager().getBean(catid, "permissionManager");
+		return manager;
+	}
+	
+
 	
 	public Permission loadPermission(WebPageRequest inReq) throws Exception
 	{
@@ -50,7 +80,9 @@ public class DataPermissionModule extends BaseMediaModule
 	
 	private Permission loadOrCreatePermission(MediaArchive inArchive,  String id, String inName)
 	{
-		Permission permission = inArchive.getPermission(id);// need stuff here...
+		PermissionManager manager = getPermissionManager(inArchive.getCatalogId());
+
+		Permission permission = manager.getPermission(id);// need stuff here...
 		if( permission == null )
 		{
 			Permission per = new Permission();
@@ -171,7 +203,9 @@ public class DataPermissionModule extends BaseMediaModule
 
 	protected void savePermission(MediaArchive archive, Permission permission) throws OpenEditException
 	{
-		archive.savePermission(permission);
+		PermissionManager manager = getPermissionManager(archive.getCatalogId());
+
+		manager.savePermission(permission);
 	}
 	
 	public void removeCondition(WebPageRequest inReq) throws Exception
@@ -516,7 +550,9 @@ public class DataPermissionModule extends BaseMediaModule
 				}
 			
 			}
-			archive.savePermission(permission);
+			PermissionManager manager = getPermissionManager(archive.getCatalogId());
+
+			manager.savePermission(permission);
 			
 			
 		}

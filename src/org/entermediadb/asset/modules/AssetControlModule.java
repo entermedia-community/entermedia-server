@@ -20,7 +20,11 @@ import org.openedit.page.Permission;
 import org.openedit.users.Group;
 import org.openedit.users.User;
 import org.openedit.users.UserManager;
-
+/**
+ * @deprecated not used. See  AdminModule.loadCustomModulePermissions
+ * @author shanti
+ *
+ */
 public class AssetControlModule extends BaseMediaModule 
 {
 	
@@ -49,7 +53,7 @@ public class AssetControlModule extends BaseMediaModule
 		{	
 			log.error("No sourcepath passed in " + inReq);
 		}
-		loadAssetCollectionPermissions(inReq);
+		//loadAssetCollectionPermissions(inReq);
 	}
 	
 	public Boolean canViewAsset(WebPageRequest inReq)
@@ -75,7 +79,7 @@ public class AssetControlModule extends BaseMediaModule
 	}
 	
 	
-	
+	/*
 	
 	protected void loadAssetCollectionPermissions(WebPageRequest inReq) {
 		String permissiontype = "librarycollection";
@@ -109,7 +113,7 @@ public class AssetControlModule extends BaseMediaModule
 		
 	}
 	
-	
+	*/
 	
 	
 	

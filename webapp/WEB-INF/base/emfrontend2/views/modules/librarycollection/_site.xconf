@@ -12,13 +12,13 @@
 	
 	<property name="uploadtab">single</property>
 
-	<permission name="editdata">
-		<action name="ProjectModule.canEditCollection" />
-	</permission>
-	
 	<path-action name="ProfileModule.changeResultView"/>
 	
- <path-action name="ProjectModule.listConnectedDesktop"/>
+	<path-action name="ProjectModule.listConnectedDesktop"/>
+
+	<path-action name="DataPermissionModule.loadCustomModulePermissions">
+		<property name="parametername">collectionid</property>
+	</path-action>
 
 
 

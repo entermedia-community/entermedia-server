@@ -263,10 +263,6 @@
 	<bean id="executorManager" class="org.openedit.util.ExecutorManager" >
 	</bean>
 
-	<bean id="permissionManager" class="org.openedit.page.PermissionManager" scope="prototype" >
-		<property name="searcherManager"><ref bean="searcherManager"/></property>
-	</bean>
-
 	<bean id="cacheManager" class="org.openedit.cache.CacheManager"  >
 	
 	</bean>

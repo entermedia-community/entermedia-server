@@ -22,21 +22,23 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.entermediadb.asset.MediaArchive;
 import org.entermediadb.authenticate.AutoLoginProvider;
 import org.entermediadb.authenticate.AutoLoginResult;
 import org.entermediadb.authenticate.AutoLoginWithCookie;
 import org.entermediadb.users.AllowViewing;
 import org.entermediadb.users.PasswordHelper;
+import org.entermediadb.users.PermissionManager;
+import org.openedit.Data;
 import org.openedit.OpenEditException;
 import org.openedit.WebPageRequest;
 import org.openedit.config.Configuration;
 import org.openedit.data.SearcherManager;
-import org.openedit.modules.BaseModule;
+import org.openedit.hittracker.HitTracker;
 import org.openedit.page.Page;
 import org.openedit.page.PageRequestKeys;
 import org.openedit.page.PageStreamer;
 import org.openedit.page.Permission;
-import org.openedit.page.PermissionManager;
 import org.openedit.page.manage.PageManager;
 import org.openedit.users.Group;
 import org.openedit.users.GroupSearcher;
@@ -54,7 +56,7 @@ import org.openedit.util.URLUtilities;
  * @author Eric Galluzzo
  * @author Matt Avery, mavery@einnovation.com
  */
-public class AdminModule extends BaseModule
+public class AdminModule extends BaseMediaModule
 {
 	private static final Log log = LogFactory.getLog(AdminModule.class);
 	protected static final String TIMESTAMP = "tstamp";
@@ -266,13 +268,9 @@ public class AdminModule extends BaseModule
 			limited = inReq.getCurrentAction().getChildValue("permissions");
 		}
 		manager.loadPermissions(inReq, inReq.getContentPage(), limited);
-		
-		
-		
-		
-		
 	}
-
+	
+	
 	//We will see if we use this or not. Actions may want to handle it themself
 	public void permissionRedirect(WebPageRequest inReq) throws OpenEditException
 	{
@@ -336,31 +334,6 @@ public class AdminModule extends BaseModule
 				inReq.putPageValue("oe-exception", "Account already exists with address " + email);
 			}
 		}
-	}
-
-	protected UserManager getUserSearcher(WebPageRequest inReq)
-	{
-		return (UserManager) getUserManager(inReq).getUserSearcher();
-	}
-
-	protected UserManager getUserManager(WebPageRequest inReq)
-	{
-		String catalogid = inReq.findValue("catalogid");
-		if( catalogid == null)
-		{
-			catalogid = "system";
-		}
-		return (UserManager) getModuleManager().getBean(catalogid, "userManager");
-	}
-
-	protected GroupSearcher getGroupSearcher(WebPageRequest inReq)
-	{
-		String catalogid = inReq.findValue("catalogid");
-		if( catalogid == null)
-		{
-			catalogid = "system";
-		}
-		return (GroupSearcher) getSearcherManager().getSearcher(catalogid, "group");
 	}
 
 	/*

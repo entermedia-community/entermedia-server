@@ -2201,6 +2201,11 @@
 	<bean id="categoryCollectionCache" class="org.entermediadb.webui.tree.CategoryCollectionCache" scope="prototype">
 		<property name="searcherManager"><ref bean="searcherManager"/></property>
 	</bean>
-	
+
+	<bean id="permissionManager" class="org.entermediadb.users.PermissionManager" scope="prototype" >
+		<property name="searcherManager"><ref bean="searcherManager"/></property>
+		<property name="filterReader"><ref bean="filterReader"/></property>	
+	</bean>
+
 		
 </beans>

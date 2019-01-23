@@ -128,24 +128,6 @@ public class MediaArchive implements CatalogEnabled
 	protected CacheManager fieldCacheManager;
 	protected OrderManager fieldOrderManager;
 	protected UserManager fieldUserManager;
-	protected FilterReader fieldFilterReader;
-	protected FilterWriter fieldFilterWriter;
-
-	public FilterReader getFilterReader()
-	{
-		if (fieldFilterReader == null)
-		{
-			fieldFilterReader = (FilterReader) getModuleManager().getBean("filterReader");
-
-		}
-
-		return fieldFilterReader;
-	}
-
-	public void setFilterReader(FilterReader inFilterReader)
-	{
-		fieldFilterReader = inFilterReader;
-	}
 
 	public CacheManager getCacheManager()
 	{
@@ -2313,86 +2295,5 @@ public class MediaArchive implements CatalogEnabled
 
 	}
 
-	public Permission getPermission(String inId, String inPermissionXml)
-	{
-
-		try
-		{
-			Document doc = DocumentHelper.parseText(inPermissionXml);
-			Element permissionconf = doc.getRootElement().element("permission");
-			XMLConfiguration rootConfig = new XMLConfiguration();
-			rootConfig.populate(permissionconf);
-			Filter filter = getFilterReader().readFilterCollection(rootConfig, inId);
-			Permission per = new Permission();
-			per.setName(inId);
-			per.setRootFilter(filter);
-			per.setId(inId);
-			//per.setPath(inPageConfig.getPath());
-			return per;
-		}
-		catch (OpenEditException e)
-		{
-			throw (e);
-		}
-		catch (DocumentException e)
-		{
-			throw new OpenEditException(e);
-		}
-	}
-
-	public Permission getPermission(String inPermission)
-	{
-		Data target = getData("custompermissions", inPermission);
-		if (target == null)
-		{
-			return null;
-		}
-		String xml = target.get("value");
-		if (xml == null)
-		{
-			return null;
-		}
-
-		return getPermission(inPermission, xml);
-
-	}
-
-	public void savePermission( Permission inPermission)
-	{
-		Searcher custompermissions = getSearcher("custompermissions");
-		Data target = (Data) custompermissions.searchById(inPermission.getId());
-		if (target == null)
-		{
-			target = custompermissions.createNewData();
-			target.setId(inPermission.getId());
-		}
-
-		Document doc = DocumentHelper.createDocument();
-		XMLConfiguration configuration = new XMLConfiguration("root");
-
-		getFilterWriter().writeFilterCollection(inPermission, configuration);
-
-		String xml = configuration.asXml().asXML();
-		target.setValue("value", xml);
-
-		custompermissions.saveData(target);
-
-	}
-
-	public FilterWriter getFilterWriter()
-	{
-		if (fieldFilterWriter == null)
-		{
-			fieldFilterWriter = new FilterWriter();
-
-		}
-
-		return fieldFilterWriter;
-	}
-
-	public void setFilterWriter(FilterWriter inFilterWriter)
-	{
-		fieldFilterWriter = inFilterWriter;
-	}
 
 }
