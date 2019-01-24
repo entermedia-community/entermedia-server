@@ -1,5 +1,7 @@
 package org.entermediadb.asset.generators;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -51,6 +53,14 @@ public class ConvertGenerator extends FileGenerator
 		if (sourcePath == null)
 		{
 			sourcePath = archive.getSourcePathForPage(inReq);
+		}
+		try
+		{
+			sourcePath = URLDecoder.decode(sourcePath, "UTF-8");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+		throw new OpenEditException(e);
 		}
 		
 //		outputype = outputype.toLowerCase();
