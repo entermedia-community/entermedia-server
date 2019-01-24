@@ -245,8 +245,15 @@ public class BaseMediaModule extends BaseModule
 		
 	}
 	public UserManager getUserManager(WebPageRequest inReq){
-		MediaArchive archive = getMediaArchive(inReq);
-		return archive.getUserManager();
+		String catalogid = inReq.findValue("catalogid");
+		if(catalogid != null) {
+			return  (UserManager) getModuleManager().getBean( catalogid, "userManager");
+
+		} else {
+			return  (UserManager) getModuleManager().getBean( "userManager");
+
+		}
+
 		
 	}
 	
