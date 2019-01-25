@@ -87,7 +87,7 @@ public class OriginalDocumentGenerator extends FileGenerator
 				//throw new OpenEditException("No asset with source path " + sourcePath);
 			}
 		}
-	    inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=" + asset.getName());
+	  //  inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=" + asset.getName()); This didn't work properly.
 
 		String filename = asset.getSourcePath();
 		if (asset.isFolder() && asset.getPrimaryFile() != null)
