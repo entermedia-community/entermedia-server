@@ -198,6 +198,11 @@
 	color:#fff;
 }
 
+
+.hyphenate {
+   word-break:break-word;
+}
+
 /*Mediaplayer*/
 .emtabs li a,
 #eml-tab-subnav ul li a
