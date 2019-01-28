@@ -6,7 +6,7 @@
 $context.putPageValue("showtoolbar",  $showtoolbar)
 
 #if( $hideheader &&  $hideheader == "false")
-$pages.include("$apphome/components/results/header.html",$context) 
+$pages.include("$componenthome/results/header.html",$context) 
 #end
 
 #if( !$thumbsize )
@@ -37,7 +37,7 @@ $pages.include("$apphome/components/results/header.html",$context)
                 $context.putPageValue("click", $click)
                 $context.putPageValue("sourcepath", $sourcepath)
                 
-                $pages.include("$apphome/components/results/gallery-cell.html", $context)
+                $pages.include("$componenthome/results/gallery-cell.html", $context)
                 
                 #set ( $count = $count + 1)
                 
@@ -46,7 +46,7 @@ $pages.include("$apphome/components/results/header.html",$context)
     
 </ul>
 
-    $pages.include("$apphome/components/results/pages.html",$context)
+    $pages.include("$componenthome/results/pages.html",$context)
 
     #end
 #if ( $hits.totalPages == 0 )

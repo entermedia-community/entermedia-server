@@ -1,6 +1,8 @@
 $(document).ready(function(url,params) 
 { 
-	var home = $('#application').data('home') + $('#application').data('apphome');
+	var appdiv = $('#application');
+	var home = appdiv.data('home') + appdiv.data('apphome');
+	var componenthome = appdiv.data('home') + appdiv.data('componenthome');
 
 	var refreshdiv = function(url,params)
 	{
@@ -17,10 +19,10 @@ $(document).ready(function(url,params)
 		{
 			var originalhitsperpage = select.data("hitsperpage");
 			if(originalhitsperpage){
-				var href = home  +  "/components/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
+				var href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1&cache=false&hitsperpage=" + originalhitsperpage;
 			}
 			else{
-				var href = home  +  "/components/results/changeresultview.html?oemaxlevel=1";
+				var href = componenthome  +  "/results/changeresultview.html?oemaxlevel=1";
 			}
 			var args = { hitssessionid: select.data("hitssessionid") ,
 						 searchtype:  select.data("searchtype") ,
@@ -71,16 +73,12 @@ $(document).ready(function(url,params)
 		
 	lQuery("input.selectionbox").livequery("change", function(e) 
 	{
-		var hitssessionid = $('#resultsdiv').data('hitssessionid');
-		var searchtype = $('#resultsdiv').data('searchtype');
-		
-		//console.log("searchtype" + searchtype);
 		var dataid = $(this).data('dataid');
 		var data = $('#resultsdiv').data();
 		
 		data['dataid'] = dataid;
 		
-		refreshdiv( home + "/views/modules/" + searchtype + "/results/toggle.html", data);
+		refreshdiv( componenthome + "/results/toggle.html", data);
 		if(typeof(refreshSelections) != 'undefined'){
 			refreshSelections();
 		}
@@ -123,13 +121,13 @@ $(document).ready(function(url,params)
 		   if(status)
 		   {
 			   options.action = "page";
-			   refreshdiv( home + apphome + "/components/results/togglepage.html", options);
+			   refreshdiv( componenthome + "/results/togglepage.html", options);
 			   $('.selectionbox').prop('checked', true);
 	       }
 	       else
 	       {
 	       	   options.action = "pagenone";
-	    	   refreshdiv( home + apphome + "/components/results/togglepage.html", options);  
+	    	   refreshdiv( componenthome + "/results/togglepage.html", options);  
 	   	       $('.selectionbox').prop('checked', false);  
 	   	   }
 	});
@@ -150,13 +148,12 @@ $(document).ready(function(url,params)
 		
 		e.stopPropagation();
 		
-		var searchhome = $('#resultsdiv').data('searchhome');
 		  
 		var dataid = $(this).data("dataid");
 		var sessionid = $(this).data("hitssessionid");
 		
 		
-		$.get(searchhome + "/selections/toggle.html", {dataid:dataid, hitssessionid:sessionid});
+		$.get(componenthome + "/moduleresults/selections/toggle.html", {dataid:dataid, hitssessionid:sessionid});
 		
 			
 		return;
@@ -337,7 +334,7 @@ $(document).ready(function(url,params)
 		var link = resultsdiv.data("assettemplate");
 		if( link == null )
 		{
-			 link = home + "/components/mediaviewer/fullscreen/currentasset.html";	
+			 link = componenthome + "/mediaviewer/fullscreen/currentasset.html";	
 		}
 		var	hitssessionid = resultsdiv.data("hitssessionid");
 		var params = {embed:true,assetid:assetid,hitssessionid:hitssessionid,oemaxlevel:1};
@@ -486,7 +483,7 @@ $(document).ready(function(url,params)
 			var href = grid.data("viewertemplate");
 			if( href == null )
 			{
-				 href = home + "/components/mediaviewer/fullscreen/index.html";	
+				 href = componenthome + "/mediaviewer/fullscreen/index.html";	
 			}
 			
 			$.ajax({ url:href,async: false, data: {oemaxlevel:1}, success: function(data) {
@@ -778,10 +775,11 @@ $(document).ready(function(url,params)
 //TODO: remove this. using ajax Used for modules
 togglehits =  function(action)
 {
-	var searchhome = $('#resultsdiv').data('searchhome');
-	var sessionid = $('#resultsdiv').data("hitssessionid");
+	var data = $('#resultsdiv').data();
+	data.oemaxlevel = 1;
+	data.action = action;
 
-	$.get(searchhome + "/selections/togglepage.html", {oemaxlevel:1, hitssessionid:sessionid, action:action});         
+	$.get(componenthome + "/moduleresults/selections/togglepage.html", data);         
        if(action == 'all' || action== 'page'){
     	   $('.moduleselectionbox').attr('checked','checked');
         }else{
@@ -846,7 +844,7 @@ checkScroll = function()
 		   var home = $('#application').data('home') + $('#application').data('apphome');
 		   console.log("Loading page: #" + page +" - " + home);
 		   
-		   var link = home + "/components/results/stackedgallery.html";
+		   var link = componenthome + "/results/stackedgallery.html";
 	//			   	async: false,
 
 		   $.ajax({

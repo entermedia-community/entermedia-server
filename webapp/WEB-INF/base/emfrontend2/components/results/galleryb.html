@@ -30,7 +30,7 @@ $context.putPageValue("showtoolbar", "false")
 		<div class="thumbnail pull-left" id="cell${catalogid}_${hit.id}" style="width:210px;min-height:240px;margin:10px" >
 		    	<a class="hovering" href="$click">
 		    	    <div class="emthumbimage em$thumbsize assetdraggable" data-assetid="${hit.id}" title="$sourcepath"> 
-		        	    $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+		        	    $pages.include("$componenthome/results/thumbnails/${type}.html", $context)             
 		        	</div>
 		    	</a>
 		      <div class="caption">
@@ -43,7 +43,7 @@ $context.putPageValue("showtoolbar", "false")
         #set ( $count = $count + 1)
     #end
 </div>	
-	$pages.include("$apphome/components/results/pages.html",$context)
+	$pages.include("$componenthome/results/pages.html",$context)
 #end
 #if ( $hits.totalPages == 0 )
 	<p class="info" style="margin: 20px;">

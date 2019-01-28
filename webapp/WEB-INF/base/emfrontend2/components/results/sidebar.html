@@ -12,7 +12,7 @@
 $related.setPage($pageval)
 #end
 #if( $hideheader &&  $hideheader == "false")
-    $pages.include("$apphome/components/results/header.html",$context) 
+    $pages.include("$componenthome/results/header.html",$context) 
     #end
     
     $context.putPageValue("assetrootfolder", "/$catalogid/assets")
@@ -55,7 +55,7 @@ $related.setPage($pageval)
         			$context.putPageValue("clink", $clink)
         			$context.putPageValue("thumbsize",$thumbsize)
         			<a href="$click" class="sidebar-image">
-        				$pages.include("$apphome/components/results/thumbnails/small.html",$context)				
+        				$pages.include("$componenthome/results/thumbnails/small.html",$context)				
         			</a>	
         			<a class="sidebar-caption" style="display: none;" href="$click">		
         				<span href="$click">

@@ -37,7 +37,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 				#if( $showcaption ) style="vertical-align:bottom;" #end 
 				#if($showhover != false) hover="true" #end >			
 
-				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
+				$pages.include("$componenthome/results/thumbnails/${type}.html", $context)				
 
 			</div>
 			</a>			
@@ -62,7 +62,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 				</a>
 			#end
 			#if( $showbasket ) 
-				$pages.include("$apphome/components/basket/toggleitem.html?assetid=$hit.id",$context)
+				$pages.include("$componenthome/basket/toggleitem.html?assetid=$hit.id",$context)
 			#end
 			
 			

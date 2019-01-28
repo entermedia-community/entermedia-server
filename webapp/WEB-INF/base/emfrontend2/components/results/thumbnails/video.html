@@ -8,7 +8,7 @@
 
 
 #if($thumbsize != "mediumplus")
-	$pages.include("$apphome/components/results/thumbnails/image.html", $context)	
+	$pages.include("$componenthome/results/thumbnails/image.html", $context)	
 #else
 	#set( $embed = $context.getRequestParameter("embed") )
 	#set( $autoplay = $context.getRequestParameter("autoplay") )

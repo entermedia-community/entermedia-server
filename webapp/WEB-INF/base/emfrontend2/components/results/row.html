@@ -7,8 +7,8 @@
 	</td>
 #end	
 	<td class="resultstablecell thumbnail assetdraggable" data-assetid="${hit.id}" >
-		$pages.include("$apphome/components/results/thumbnails/small.html",$context)	
-		$pages.include("$apphome/components/results/badges.html", $context)
+		$pages.include("$componenthome/results/thumbnails/small.html",$context)	
+		$pages.include("$componenthome/results/badges.html", $context)
 	</td>
 
 #foreach( $detail in $details)
@@ -33,7 +33,7 @@
 	$!context.putPageValue("val",$value)	
 	$!context.putPageValue("data",$hit)
 	<td  class="resultstablecell $detail.id">
-		$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+		$pages.include("$componenthome/xml/detailreadonly.html", $context)
 	</td>	
 #end	
  </tr>   

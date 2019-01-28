@@ -6,7 +6,7 @@ data-collectionid="$!librarycol.getId()"
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
-	$pages.include("$apphome/components/results/mapheader.html",$context) 
+	$pages.include("$componenthome/results/mapheader.html",$context) 
 #end
 
 #set( $n = $hits.setHitsPerPage(1000))
@@ -41,7 +41,7 @@ $('#map').gmap({
 			'position': '$!location.getValue("geo_point").getLatitude(), $location.getValue("geo_point").getLongitude()'		    
 	 	}).click(function() {
 	 		var location = this;
-	 		jQuery.get("$apphome/components/map/mapbubble.html?id=$location.id", function (content){
+	 		jQuery.get("$componenthome/map/mapbubble.html?id=$location.id", function (content){
 	 			$('#map').gmap('openInfoWindow', {'content': content}, location);
 
 	 		});

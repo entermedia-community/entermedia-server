@@ -83,6 +83,25 @@ public class BaseMediaModule extends BaseModule
 		return applicationid;
 	}
 
+	public String loadComponentHome(WebPageRequest inReq) throws Exception
+	{
+		String applicationid = loadApplicationId(inReq);
+
+		String moduleid = inReq.findValue("module");
+		
+		String componenthome = null;
+		if(moduleid == null)
+		{
+			componenthome = "/" + applicationid + "/components";
+		}
+		else
+		{
+			componenthome = "/" + applicationid + "/views/modules/" + moduleid + "/components";
+		}
+		inReq.putPageValue("componenthome", componenthome);
+		return componenthome;
+	}
+	
 	public MediaArchive getMediaArchive(String inCatalogid)
 	{
 		if (inCatalogid == null)

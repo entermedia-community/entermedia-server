@@ -36,7 +36,7 @@
 	<ul class="resultsnav">
 		#set ($enabled=$hits.getSelectionSize() > 0)
 		#if( $librarycol )
-			$pages.include("$apphome/components/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
+			$pages.include("$componenthome/desktop/menu.html?collectionid=$librarycol.getId()",$context)				
 			#end
 		<li>
 			<a class="nav-btn lefttoggle #if ($leftbarstatus!=false) hide #end" href="#" id="lefttoggle">
@@ -44,7 +44,7 @@
 		</li>
 		
 		  	
-		$pages.include("$apphome/components/results/selected/index.html",$context)
+		$pages.include("$componenthome/results/selected/index.html",$context)
 
 	
 		#if( $enabled && ($canpublish || $canemaillink || $canexportdata ) )
@@ -89,7 +89,7 @@
 		## #if ( $canviewbasket )
 		##	#if($order)
 		##		<li class="nav-item">
-		##			<a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/components/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a>
+		##			<a class="updatebasket" data-action="remove" targetdiv="basket-paint"  href="$home$componenthome/basket/removeselection.html?hitssessionid=$hits.getSessionId()" ">[[Remove]]</a>
 		##		</li>
 		##	#end
 		## #end
@@ -117,7 +117,7 @@
 			#if( $canedittablecolumns )
 			#if( $edit )
 				<li>
-					<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
+					<a class="ajax table-edit-close" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader="><i class="fas fa-times"></i></a>
 				</li>								
 				<li class="resultsnavtitem" style="min-width:180px">
 						#set ($alldetails = $searcher.getUserPropertyDetails() )
@@ -128,14 +128,14 @@
 						</select>
 						<script type="text/javascript">
 							function addColumn(inId) {
-								jQuery('#resultsdiv').load("$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
+								jQuery('#resultsdiv').load("$home$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&addcolumn=" + inId);
 								return false;	
 							}
 						</script>
 				</li>	
 			#else 
 				<li >
-					<a class="ajax" id="table-editor" targetdiv="resultsdiv" href="$home$apphome/components/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
+					<a class="ajax" id="table-editor" targetdiv="resultsdiv" href="$home$componenthome/results/table.html?searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true"> <i class="fas fa-edit"></i></a>
 				</li>
 			#end	
 			#end								
@@ -164,7 +164,7 @@
 			</li>
 			#if( $hits && $hits.size() > 0)
 				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
-					$pages.include("$apphome/components/results/pages.html",$context)
+					$pages.include("$componenthome/results/pages.html",$context)
 				</li>	
 				<li class="resultsnavtitem hidden-sm-xs hidden-xs hidden-sm hidden-md">
 					<span class="text">[[Results]] $hits.getPageStart() - $hits.getPageEnd() [[of]] $hits.size() </span>

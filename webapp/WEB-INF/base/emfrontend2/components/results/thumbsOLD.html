@@ -1,11 +1,11 @@
 <div id="emresultscontent">
 
 #if( !$hideheader )
-$pages.include("$apphome/components/results/header.html",$context)
+$pages.include("$componenthome/results/header.html",$context)
 #end
 
 <div style="float:right;">
-	$pages.include("$apphome/components/results/pages.html",$context)
+	$pages.include("$componenthome/results/pages.html",$context)
 </div>
 
 #macro( showStars $incount) 
@@ -63,7 +63,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 				selected
 				#end			
 
-				$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)				
+				$pages.include("$componenthome/results/thumbnails/${type}.html", $context)				
 
 			</div>
 			</a>			
@@ -105,7 +105,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 </table>
 #if($hits.getPageOfHits().size() > 6)
 <div style="float:right;">
-	$pages.include("$apphome/components/results/pages.html",$context)
+	$pages.include("$componenthome/results/pages.html",$context)
 </div>
 #end
 #if ( $hits.totalPages == 0 )

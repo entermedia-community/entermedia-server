@@ -6,7 +6,7 @@ data-totalpages="$hits.getTotalPages()">
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
-	$pages.include("$apphome/components/results/header.html",$context) 
+	$pages.include("$componenthome/results/header.html",$context) 
 #end
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
@@ -40,13 +40,13 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 		        $context.putPageValue("click", $click)
 		        $context.putPageValue("sourcepath", $sourcepath)
 		        
-		        $pages.include("$apphome/components/results/gallery-cell.html", $context)
+		        $pages.include("$componenthome/results/gallery-cell.html", $context)
 		        
 		        #set ( $count = $count + 1)
 		    #end
 		</div>
 	</div>
-	$pages.include("$apphome/components/results/pages.html",$context)
+	$pages.include("$componenthome/results/pages.html",$context)
 #end
 #if ( $hits.totalPages == 0 )
 	<p class="info" style="padding:20px; margin:0;">
@@ -60,18 +60,18 @@ toggleHit =  function(div, count, sessionid)
     if (!e) var e = window.event;
     e.cancelBubble = true;
     if (e.stopPropagation) e.stopPropagation();
-    jQuery(this).load("$home$apphome/components/results/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
-    jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
+    jQuery(this).load("$home$componenthome/results/toggle.html", {count:count, sessionid:"$hits.getSessionId()"});
+    jQuery('#messagearea').load("$home$componenthome/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()"});
     return false;
 }
 jQuery("input[name=pagetoggle]").click(function () {
     var status = jQuery('input[name=pagetoggle]').is(':checked');
     if(status){
-        jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
+        jQuery('#messagearea').load("$home$componenthome/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"all"});         
         jQuery('.selectionbox').attr('checked','checked');
         }
         else{
-            jQuery('#messagearea').load("$home$apphome/components/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
+            jQuery('#messagearea').load("$home$componenthome/results/togglepage.html", {oemaxlevel:1, hitssessionid:"$hits.getSessionId()", action:"none"});         
             jQuery('.selectionbox').removeAttr('checked');  
         }
    

@@ -1,6 +1,6 @@
 <div id="emresultscontent" >
 
-$pages.include("$apphome/components/filters/filters-selected.html", $context)
+$pages.include("$componenthome/filters/filters-selected.html", $context)
 <div class="pushcontent">
 #set ($resultview = $userprofile.get('resultview'))
 #if (!$resultview || $resultview == 'table')
@@ -10,7 +10,7 @@ $pages.include("$apphome/components/filters/filters-selected.html", $context)
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
 	$context.putPageValue("resultstype", "table" )
-	$pages.include("$apphome/components/results/table.html", $context)
+	$pages.include("$componenthome/results/table.html", $context)
 #elseif ($resultview == "hierarchy")
 	$context.putPageValue("showcaption", true)
 	$context.putPageValue("showhover", "false")
@@ -19,7 +19,7 @@ $pages.include("$apphome/components/filters/filters-selected.html", $context)
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
 	
-	$pages.include("$apphome/components/results/hierarchy.html", $context)
+	$pages.include("$componenthome/results/hierarchy.html", $context)
 	
 #elseif ($resultview == "stackedgallery")
 	$context.putPageValue("showcaption", false)
@@ -29,7 +29,7 @@ $pages.include("$apphome/components/filters/filters-selected.html", $context)
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
 	
-	$pages.include("$apphome/components/results/stackedgallery.html", $context)
+	$pages.include("$componenthome/results/stackedgallery.html", $context)
 		
 #elseif ($resultview == "map")
 	$context.putPageValue("showcaption", false)
@@ -39,7 +39,7 @@ $pages.include("$apphome/components/filters/filters-selected.html", $context)
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", false )
 	
-	$pages.include("$apphome/components/results/map.html", $context)
+	$pages.include("$componenthome/results/map.html", $context)
 	
 
 #else
@@ -50,7 +50,7 @@ $pages.include("$apphome/components/filters/filters-selected.html", $context)
 	$context.putPageValue("hideheader", "false")
 	$context.putPageValue("pickable", "false" )
 	
-	$pages.include("$apphome/components/results/gallery.html", $context)
+	$pages.include("$componenthome/results/gallery.html", $context)
 	
 #end
 </div>	

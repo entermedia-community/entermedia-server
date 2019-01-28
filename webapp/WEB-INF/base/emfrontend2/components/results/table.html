@@ -1,6 +1,6 @@
 <div id="resultsdiv" class="tableresults" 
 		data-hitssessionid="$hits.getSessionId()" 
-		data-searchhome="$home$apphome/components/results"
+		data-searchhome="$home$componenthome/results"
 		data-category="$!category.getId()"
 		data-collectionid="$!librarycol.getId()" 
 		data-searchtype="asset" 
@@ -12,7 +12,7 @@ $context.putPageValue("showtoolbar",  $showtoolbar)
 $context.putPageValue("showcaption", $page.isPropertyTrue("showcaption"))
 $context.putPageValue("resultstype", $context.getRequestParameter("resultstype"))
 #if( $showtoolbar )
-$pages.include("$apphome/components/results/header.html",$context)
+$pages.include("$componenthome/results/header.html",$context)
 #end
 
 $context.putPageValue("assetrootfolder", "/$catalogid/assets")
@@ -44,7 +44,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 
 
 	<table id="main-results-table" class="table table-striped emresultstable stackedplayertable" >
-			$pages.include("$apphome/components/results/tableheader.html",$context)
+			$pages.include("$componenthome/results/tableheader.html",$context)
 			#set($count = 0)
 			#foreach( $hit in $hits.getPageOfHits() )
 				$context.putPageValue("hit", $hit)
@@ -60,7 +60,7 @@ $context.putPageValue("assetrootfolder", "/$catalogid/assets")
 </div>	
 <div class="clearfix"></div>
 <div class="resultsnumber">$!hits.getPageStart() - $!hits.getPageEnd()  [[of]] $!hits.total</div>
-$pages.include("$apphome/components/results/pages.html",$context)
+$pages.include("$componenthome/results/pages.html",$context)
 <div class="clearfix"></div>
 #else
 <p class="info" style="margin: 20px;">[[No results found]]</p>

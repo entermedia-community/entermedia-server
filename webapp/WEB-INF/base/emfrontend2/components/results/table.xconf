@@ -6,6 +6,6 @@
 <property name="showhover">false</property>
 <property name="thumbsize">crop</property>
 <property name="showcaption">true</property>
-<property name="showtoolbar">false</property>
+<property name="showtoolbar">true</property>
   
 </page>

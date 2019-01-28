@@ -8,9 +8,9 @@
 	    <div class="anchor">
     	    <div class="select-dropdown-open down"></div>
     	    <ul class="select-dropdown" style="display: none;">
-    	        <li><a class="ajax selectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
-    	        <li><a class="ajax  selectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
-    	        <li><a class="ajax  deselectpage" targetdiv="resultsheader" href="$home$apphome/components/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
+    	        <li><a class="ajax selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=page">[[Select This Page]]</a></li>
+    	        <li><a class="ajax  selectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=all">[[Select All Results]]</a></li>
+    	        <li><a class="ajax  deselectpage" targetdiv="resultsheader" href="$home$componenthome/results/togglepage.html?oemaxlevel=1&hitssessionid=$hits.getSessionId()&action=none">[[Deselect All]]</a></li>
     	    </ul>
     	</div>
     	</div>
@@ -31,7 +31,7 @@
 			<div id="$detail.id" hitssessionid="$hits.getSessionId()"  editing="$edit" class="headerdraggable headerdroppable"> 
 					#text( $detail.name )
 					#if($edit)
-						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$apphome/components/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
+						<a class="baseemenableonhover ajax edit-table-header" targetdivinner="resultsdiv" href="$home$componenthome/results/addremovecolumns.html?oemaxlevel=1&searchtype=asset&hitssessionid=$hits.getSessionId()&editheader=true&removecolumn=$detail.id"><i class="fas fa-times"></i></a>
 					#elseif ($sortby.startsWith($detail.getId()))
 		 				#if($sortby.endsWith("Up"))
 		 					#set($sorticon="up")

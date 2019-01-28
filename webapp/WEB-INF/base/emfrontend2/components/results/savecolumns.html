@@ -1,6 +1,6 @@
 #set($searchtype = $searcher.getSearchType() )
 #if( $searchtype == "asset")
-$pages.include("$apphome/components/results/table.html")
+$pages.include("$componenthome/results/table.html")
 #else
 $pages.include("$apphome/views/modules/${searchtype}/results.html")
 #end

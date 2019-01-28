@@ -6,11 +6,11 @@
        <img class="mimethumb  emnothumbnail" style="height:64px" src="$!cdn$home$thumbpath" border="0"/>
        </div>
    #elseif( $hit.previewstatus != "2" && $hit.previewstatus != "exif" && $hit.previewstatus != "1" && $hit.previewstatus != "generated")
-       $pages.include("$apphome/components/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
+       $pages.include("$componenthome/convertqueue/previewstatus.html?assetid=$!{hit.id}",$context)
    #else   
        #set( $type = $mediaarchive.getMediaRenderType($hit.fileformat))
        #if( $type == "audio" || $type == "default")
-           $pages.include("$apphome/components/results/thumbnails/${type}.html", $context)             
+           $pages.include("$componenthome/results/thumbnails/${type}.html", $context)             
        #else
 	     	#set($tabletarget = $mediaarchive.getCatalogSettingValue("tablethumbnail"))
 	    	#if($tabletarget)

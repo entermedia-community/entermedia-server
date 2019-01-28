@@ -9,7 +9,7 @@
 	#if( $canviewvoting )
 	<div class="assetVoteTool">
 		<div class="votebox" id="votebox${hit.id}">
-			$pages.include("$apphome/components/voting/status.html",$context)</div>
+			$pages.include("$componenthome/voting/status.html",$context)</div>
 	</div>
 	#end 
 	<a class="hovering stackedplayer" href="$click"  data-assetid="$hit.id">
@@ -19,8 +19,8 @@
 			#if(!$type)
    	    		#set( $type = "default" )
    	    	#end
-			$pages.include("$apphome/components/results/thumbnails/${type}.html", $context)
-			$pages.include("$apphome/components/results/badges.html", $context)
+			$pages.include("$componenthome/results/thumbnails/${type}.html", $context)
+			$pages.include("$componenthome/results/badges.html", $context)
 		</div>
 	</a> 
 	#if( $showcaption )
@@ -29,7 +29,7 @@
 			<a href="$click" class="stackedplayer"  data-assetid="$hit.id"> #if($hit.assettitle) $hit.assettitle #else $hit.getName($context.locale) #end</a>
 		</div>
 		#if($canviewbasket)
-		$pages.include("$apphome/components/basket/toggleitem.html", $context)
+		$pages.include("$componenthome/basket/toggleitem.html", $context)
 		#end
 	</div>
 	#end
