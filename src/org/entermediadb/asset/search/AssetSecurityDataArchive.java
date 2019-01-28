@@ -286,7 +286,7 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 	{
 		if (inAsset == null)
 		{
-			return false;
+			return true; //TODO: Deal with this better
 		}
 //		if (inUser != null && inUser.isInGroup("administrators"))
 //		{
@@ -319,19 +319,22 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 		
 		if( "view".equals(inType))
 		{
-//			Collection<Category> publiccategories = inArchive.listHiddenCategories();
-//			for (Category cat : exactcategories)
-//			{
-//				for (Iterator iterator = publiccategories.iterator(); iterator.hasNext();)
-//				{
-//					Category publiccategory = (Category)iterator.next();
-//					if (cat.hasParent(publiccategory.getId()))
-//					{
-//						return false;
-//					}					
-//				}
-//			}
-			return true;
+			Collection<Category> exactcategories = inAsset.getCategories();
+			if (inProfile != null)
+			{
+				Collection<Category> allowedcats = inProfile.getViewCategories();
+				if( allowedcats != null)
+				{
+					for (Category cat : exactcategories)
+					{
+						if (cat.hasParentCategory(allowedcats))
+						{
+							//TODO: Check for "edit" as an option?
+							return true;
+						}
+					}
+				}	
+			}
 		}
 		return false;
 		/*

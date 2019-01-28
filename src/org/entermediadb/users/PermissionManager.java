@@ -25,8 +25,6 @@ import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.FilterWriter;
 
-import jline.internal.Log;
-
 public class PermissionManager implements CatalogEnabled
 {
 	protected SearcherManager fieldSearcherManager;
