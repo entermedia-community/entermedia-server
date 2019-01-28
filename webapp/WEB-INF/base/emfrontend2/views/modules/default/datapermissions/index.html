@@ -7,8 +7,12 @@
 <form name="permissionsform" class="ajaxform" data-targetdiv="allpermissions" action="$home$apphome/views/modules/${moduleid}/datapermissions/edit.html">
 <table class="table table-striped emdata">		
 	<thead>
-	<tr class="tableheader"><th>Name</th>
+	<tr class="tableheader">
+	<th>Type</th>
+	<th>Name</th>
+	<th>Description</th>
 	<th>Rule</th>
+	</tr>
 	</thead>
 	<tbody>
 	#set( $section = "none")
@@ -17,7 +21,7 @@
 	#if( $perm.permissiontype != "internal")
 		#if( $section != $perm.permissiontype )
 			<tr class="sectionlevel">
-			<td colspan="2" style="height: 35px; line-height: 35px;">
+			<td colspan="4" style="height: 35px; line-height: 35px;">
 				$!searcherManager.getData($catalogid,"permissiontype",$perm.permissiontype)
 			</td>
 			</tr>
@@ -28,15 +32,17 @@
 		#set( $permission = $mediaarchive.getPermissionManager().findPermission(${perm.moduleid},${data.id},null,${perm.id}) )
 	
 		<tr data-dataid="${data.id}"  data-id="${data.id}" data-permissionid="$perm.id" data-currentpermission="$!permission.id">
-			<td title="$perm.caption">$context.getText($perm.name) 
-			<td> 
-	
-	#if( !$permission.id  )
+			#set( $module = $searcherManager.getData($catalogid,"module",${perm.moduleid}) )
+			<td>$module</td>
+			<td title="$perm.caption">$context.getText($perm.name)</td> 
+			<td>$!perm.caption</td>
+		<td>
+	#if( !$permission.id || $permission.toString() == "" )
 	[[Default]]
 	#elseif($permission.toString() == "false")
 	[[Nobody]]
-	#elseif( $permission.toString() == "true" || $permission.toString() == "" )
-	[[Anyone]]
+	#elseif( $permission.toString() == "true" )
+	[[Enabled]]
 	#else
 	$permission
 	#end
