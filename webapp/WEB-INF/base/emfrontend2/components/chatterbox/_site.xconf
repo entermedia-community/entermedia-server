@@ -1,3 +1,12 @@
 <page>
 	<property name="fallbackdirectory">/system/components/chatterbox</property>
+	
+	
+	<path-action name="DataPermissionModule.loadCustomModulePermissions">
+		<property name="module">asset</property>
+		<property name="parameterid">assetid</property>
+		<property name="parentparameterid">collectionid</property>
+	</path-action>
+	
+	
 </page>
