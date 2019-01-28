@@ -24,7 +24,8 @@ $context.putPageValue("showalllanguagevalues",true)
 								<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}" 
 								   class="detail-edit-icon float-right ajax btn btn-xs"
 								   data-targetdiv="edit-${target.getId()}"
-								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>#end</h4>
+								   title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-edit"></i> [[Edit]]</a>
+							#end</h4>
 								 
 							$pages.include("/$applicationid/components/xml/detailviewer.html", $context)
 						</div>
@@ -33,8 +34,9 @@ $context.putPageValue("showalllanguagevalues",true)
                 #set($permissionvalue = "")
 				
 			#end
-			
-			$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+			#if($caneditasset)
+				$pages.include("/$applicationid/views/modules/asset/editor/edit/metadata/assetreadmetadata.html")
+			#end
 			</div>
 	</div>					
 			<div class="col-4">
