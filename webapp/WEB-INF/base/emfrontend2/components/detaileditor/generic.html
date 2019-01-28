@@ -59,14 +59,14 @@ $context.putPageValue("searchtype", $searchtype)
 ##	title="[[Edit]] $context.getText($target.toString())"><i class="fas fa-bars"></i></a>
 </h4>
 ##th-large
-
+$edit
 #if (($edit && $edit != "false") || ($openview && $openview == $view))
 	
 	#set( $targetdiv = $context.getRequestParameter("targetdiv"))
 	#if (!$targetdiv)
 		#set( $targetdiv = "tabsummarypanel")
 	#end
-	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$home$editpath" >
+	<form name="formedit$view" id="formedit$view" class="ajaxform" targetdiv="$!targetdiv" method="post" action="$home$editpath" data-includesearchcontext="true">
 	
 		<input type="hidden" name="saveasnew" value="false" />
 		<input name="oemaxlevel" type="hidden" value="1" />
@@ -77,6 +77,7 @@ $context.putPageValue("searchtype", $searchtype)
 		<input type="hidden" name="view" value="$view" />
 		<input type="hidden" name="label" value="$label" />
 		<input type="hidden" name="module" value="$module" />
+				<input type="hidden" name="collectionid" value="$!collectionid" />
 		
 		#if( $searchtype == "asset" )
 ##			<input type="hidden" name="field" value="assetid" />
@@ -112,7 +113,7 @@ $context.putPageValue("searchtype", $searchtype)
  		<div class="row">
  		<div class="col">
 		<div class="btns">
-			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).submit();" value="[[Save values]]"/>
+			<input class="btn btn-sm btn-primary" type="button"	onclick="jQuery(this.form).trigger('submit');" value="[[Save values]]"/>
 			#if ($targetdiv == "tabsummarypanel")
 			<a class="ajax btn btn-sm btn-secondary" style="margin-right:10px;" targetdiv="$targetdiv" 
 				href="/$applicationid/components/detaileditor/generalinformation/index.html?oemaxlevel=1&assetid=$asset.id">[[Cancel]]</a>
@@ -200,7 +201,7 @@ $context.putPageValue("searchtype", $searchtype)
     			   </div>
 		#end
 		
-		#if($caneditasset && $caneditmetadatageneral && !$print.equals("true"))
+		#if(($caneditasset || $caneditallassets) && $caneditmetadatageneral && !$print.equals("true"))
 		<div class="container-fluid">
 		<div class="row">
 		<div class="col">

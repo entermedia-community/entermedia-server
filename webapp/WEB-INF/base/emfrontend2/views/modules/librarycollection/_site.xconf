@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <page>
+		<path-action name="DataPermissionModule.loadCustomModulePermissions">
+		<property name="parametername">collectionid</property>
+	</path-action>
+	
 	<property name="fallbackdirectory">/WEB-INF/base/emfrontend2/views/modules/default</property>
     <property name="module">librarycollection</property>
     
@@ -16,9 +20,6 @@
 	
 	<path-action name="ProjectModule.listConnectedDesktop"/>
 
-	<path-action name="DataPermissionModule.loadCustomModulePermissions">
-		<property name="parametername">collectionid</property>
-	</path-action>
 
 
 
