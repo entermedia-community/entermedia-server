@@ -311,6 +311,21 @@ uiload = function() {
 					oemaxlevel = 1;
 				}
 
+				var data;
+				if(form.data("includesearchcontext") == true){
+					data = jQuery("#resultsdiv").data();
+				}
+				
+				else{
+				
+					data = form.data();
+				} 
+				
+				data.oemaxlevel = oemaxlevel;
+
+				
+				
+				
 				form.ajaxSubmit({
 					error : function(data) {
 						alert("error");
@@ -321,9 +336,7 @@ uiload = function() {
 						$("#" + targetdiv).html(result);
 						$(window).trigger( "resize" );
 					},
-					data : {
-						oemaxlevel : oemaxlevel
-					}
+					data : data
 				});
 
 				var findmodal = form.closest(".modal");
