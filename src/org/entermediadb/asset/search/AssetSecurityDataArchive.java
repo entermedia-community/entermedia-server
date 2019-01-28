@@ -286,33 +286,35 @@ public class AssetSecurityDataArchive implements AssetSecurityArchive
 	{
 		if (inAsset == null)
 		{
-			return true;
+			return false;
 		}
-		if (inUser != null && inUser.isInGroup("administrators"))
-		{
-			return true;
-		}
+//		if (inUser != null && inUser.isInGroup("administrators"))
+//		{
+//			return true;
+//		}
 		String owner = inAsset.get("owner");
 		if( owner != null && inUser != null && owner.equals(inUser.getId()))
 		{
 			return true;
 		}
-		Collection<Category> exactcategories = inAsset.getCategories();
-		if (inProfile != null)
-		{
-			Collection<Category> allowedcats = inProfile.getViewCategories();
-			if( allowedcats != null)
-			{
-				for (Category cat : exactcategories)
-				{
-					if (cat.hasParentCategory(allowedcats))
-					{
-						//TODO: Check for "edit" as an option?
-						return true;
-					}
-				}
-			}	
-		}
+		
+		//View
+//		Collection<Category> exactcategories = inAsset.getCategories();
+//		if (inProfile != null)
+//		{
+//			Collection<Category> allowedcats = inProfile.getViewCategories();
+//			if( allowedcats != null)
+//			{
+//				for (Category cat : exactcategories)
+//				{
+//					if (cat.hasParentCategory(allowedcats))
+//					{
+//						//TODO: Check for "edit" as an option?
+//						return true;
+//					}
+//				}
+//			}	
+//		}
 	
 		
 		if( "view".equals(inType))
