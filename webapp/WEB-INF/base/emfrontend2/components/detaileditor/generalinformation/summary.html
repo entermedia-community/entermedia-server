@@ -18,10 +18,9 @@ $context.putPageValue("showalllanguagevalues",true)
 						$context.putPageValue("view",$viewpath)
 						
 						<div id="edit-${target.getId()}" class="asset-data-detail asset-data-preview assetpanel-editor-box">
-
+							
 							<h4>$context.getText($target.toString()) 
-																#if($caneditasset)
-								
+																#if($caneditasset )
 								<a href="$apphome/components/detaileditor/generalinformation/editform.html?viewpath=$viewpath&oemaxlevel=1&edit=$!caneditasset&assetid=${asset.id}" 
 								   class="detail-edit-icon float-right ajax btn btn-xs"
 								   data-targetdiv="edit-${target.getId()}"

@@ -28,7 +28,7 @@
 		#set( $permission = $mediaarchive.getPermissionManager().findPermission(${perm.moduleid},${data.id},null,${perm.id}) )
 	
 		<tr data-dataid="${data.id}"  data-id="${data.id}" data-permissionid="$perm.id" data-currentpermission="$!permission.id">
-			<td title="$perm.caption">$context.getText($perm.name) ${perm.moduleid}
+			<td title="$perm.caption">$context.getText($perm.name) 
 			<td> 
 	
 	#if( !$permission.id  )
