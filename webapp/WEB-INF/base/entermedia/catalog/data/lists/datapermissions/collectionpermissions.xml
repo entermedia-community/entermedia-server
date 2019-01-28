@@ -1,5 +1,7 @@
 <permissions name="Collection Permission Overrides">
-	<permission moduleid="librarycollection" id="editdata" permissiontype="librarycollection" name="Collection Edit Permissions" description="Overrides the default edit permssions for collections" ordering="300" />	
+	<permission moduleid="librarycollection" id="editdata" permissiontype="librarycollection" name="Collection Edit Permissions" description="Overrides the default edit permssions for collections" ordering="500" />	
+		<permission moduleid="librarycollection" id="multidelete" permissiontype="librarycollection" name="Multi-Delete" description="Enables removal of selected assets, and the option to remove the original." ordering="500"/>
+		<permission  moduleid="librarycollection" id="multiedit" permissiontype="librarycollection" name="Multiple Files" description="Enables various actions across multiple assets simultaneously." ordering="500" />
 	
 </permissions>
 

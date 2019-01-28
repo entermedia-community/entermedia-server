@@ -10,9 +10,6 @@
 	<permission moduleid="asset" id="publish" permissiontype="librarycollection" name="Publish" description="Enables the publishing of an asset to a specified set of servers." ordering="306"/>
 	<permission moduleid="asset" id="shareasset" permissiontype="librarycollection" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share."  ordering="308"/>
 	<permission moduleid="asset" id="sharetosocialmedia" permissiontype="librarycollection" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook." ordering="310"/>
-	
-	
-
 	<permission moduleid="asset" id="viewconversions" permissiontype="librarycollection" name="Conversions" description="View Conversions and Cropping Tool" ordering="318"/>
 	<permission moduleid="asset" id="embedasset" permissiontype="librarycollection" name="Embedding" description="Enables and embed button that provides HTML code for an asset." ordering="320"/>
 	<permission moduleid="asset" id="quickpublish" permissiontype="librarycollection" name="Quick Publish" description="Enables the quick publish menu for rapidly publishing assets" ordering="322"/>
@@ -24,7 +21,9 @@
 
 	<permission moduleid="asset" id="viewattachments" permissiontype="librarycollection" name="Attachments" description="Enables access to attachments associated with an asset." ordering="356"/>
 	
-	<permission moduleid="asset" id="viewcollaborate" permissiontype="librarycollection" name="Comments" description="Enables Collaboration Tool" ordering="358"/>
+	<permission moduleid="asset" id="viewcomments" permissiontype="librarycollection" name="View Comments" description="Enables Collaboration Tool" ordering="358"/>
+	<permission moduleid="asset" id="comment" permissiontype="librarycollection" name="Add Comments" description="Enables Collaboration Tool" ordering="358"/>
+	<permission moduleid="asset" id="deletecomment" permissiontype="librarycollection" name="Delete Comments" description="Enables Collaboration Tool" ordering="358"/>
 	
 	<permission moduleid="asset" id="showbadge" permissiontype="librarycollection" name="Show Badge" description="Enables view the badges on Thumbnails ." ordering="360" />
 
