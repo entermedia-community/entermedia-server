@@ -425,7 +425,7 @@ public class DataPermissionModule extends BaseMediaModule
 		MediaArchive archive = getMediaArchive(inReq);
 		
 		//we are going to load a searcher and a list of permissions
-		HitTracker hits  = archive.getSearcher("datapermissions").query().exact("permissiontype", permissiontype).search();
+		HitTracker hits  = archive.getSearcher("datapermissions").query().exact("permissiontype", permissiontype).sort("ordering").search();
 		inReq.putPageValue("permissions", hits);
 		//this will get shown with edit button
 
