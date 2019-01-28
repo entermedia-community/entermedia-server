@@ -34,7 +34,6 @@
 	<permission moduleid="asset" id="showonlyapprovedassets" permissiontype="librarycollection" name="View Only Approved Assets" description="Show only approved assets for users (or assets owned by them)" ordering="366"/>
 
 	<permission moduleid="asset" id="editasset" permissiontype="librarycollection" name="Edit All Assets In Collection" description="Allow editing of assets in this collection" ordering="339" />
-	<permission moduleid="asset" id="viewasset" permissiontype="librarycollection" name="View All Assets in collection" description="Allow viewing of assets in this collection" ordering="339" />
 
 
 		
