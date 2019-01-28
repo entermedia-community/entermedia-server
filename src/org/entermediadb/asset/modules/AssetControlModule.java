@@ -68,14 +68,24 @@ public class AssetControlModule extends BaseMediaModule
 				return true;
 			}
 		}
+		
 		MediaArchive archive = getMediaArchive(inReq);
-		if( asset == null )
-		{
-			asset = archive.getAssetBySourcePath(inReq.getPage());
+
+		if(asset == null) {
+			String assetid = inReq.findValue("assetid");
+			if(assetid != null) {
+				asset = archive.getAsset(assetid);
+
+			}
 		}
-		//MediaArchive inArchive, User inUser, UserProfile inProfile, String inType, Asset inAsset
+		if(asset == null)
+		{
+			return false;
+		}
 		Boolean cando = archive.getAssetSecurityArchive().canDo(archive,inReq.getUser(),inReq.getUserProfile(),"view",asset);
 		return cando;
+		
+		
 	}
 	
 	
