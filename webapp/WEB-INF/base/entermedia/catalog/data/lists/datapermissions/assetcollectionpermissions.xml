@@ -39,7 +39,7 @@
 	<permission moduleid="asset"  id="download" permissiontype="librarycollection" name="Download Original" description="Enables downloading of the original asset." ordering="245"/>
 	<permission moduleid="asset"  id="downloadfpo" permissiontype="librarycollection" name="Download FPO" description="Enables downloading of the watermarked asset." ordering="250"/>
 	
-	<permission moduleid="asset"  id="showpendingassets" permissiontype="librarycollection" name="Approved Assets" description="Show pending assets for users (or assets owned by them)" ordering="366"/>
+	<permission moduleid="asset"  id="showpendingassets" permissiontype="librarycollection" name="Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="366"/>
 	
 		
 	
