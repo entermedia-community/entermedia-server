@@ -30,7 +30,6 @@
 	<permission moduleid="asset" id="viewtimeline" permissiontype="librarycollection" name="Video Timeline" description="Enables access to video clips and metadata" ordering="361" />
 	<permission moduleid="asset" id="viewclosedcaptions" permissiontype="librarycollection" name="Closed Captions" description="Closed Caption Support" ordering="362" />
 
-	<permission moduleid="asset" id="showonlyapprovedassets" permissiontype="librarycollection" name="View Only Approved Assets" description="Show only approved assets for users (or assets owned by them)" ordering="366"/>
 
 	<permission moduleid="asset" id="editasset" permissiontype="librarycollection" name="Edit All Assets In Collection" description="Allow editing of assets in this collection" ordering="339" />
 
