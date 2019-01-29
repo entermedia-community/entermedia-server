@@ -42,19 +42,19 @@ $context.putPageValue("viewid", $view.id)
 
 	#set( $origURL = $context.getRequestParameter("origURL" ) )
 	#set ( $moduleid = $context.findValue("module") )
-	#if($caneditdata)
+	#if($caneditcollection)
 		$pages.include("/$applicationid/components/xml/detaileditor.html?longform=true", $context)
 	#else
 		##$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=true", $context)
 		$pages.include("/$applicationid/components/xml/detaileditor.html?detailsreadonly=true&alwaysshow=false", $context)
 	#end
-    #if($caneditdata)
+    #if($caneditcollection)
     <input class="btn btn-sm btn-primary" type="submit" value="[[Save]]" />
     #end
     #if( $caneditmetadatasetup )
 	 <a class="btn btn-sm btn-light float-right" href="$home$apphome/views/settings/modules/${searcher.searchType}/metadata/views/index.html?viewid=$viewid&viewpath=$viewpath"><i class="fas fa-cog"></i></a>
 	#end
-    #if($caneditdata || $candelete)	
+    #if($caneditcollection || $candelete)	
     <a class="btn btn-sm btn-danger ajax float-right" style="margin-right: 10px;" data-targetdiv="editlayout" data-confirm="[[Are you sure]]?" style="margin-righ:10px;" href="$home$content.searchhome/edit/delete.html?id=$data.id&catalogid=$searcher.catalogId&searchtype=$searcher.searchType&viewid=$viewid&viewpath=$viewpath&oemaxlevel=1" style="margin: 20px 20px 0 0;">[[Delete]]</a>
     #end
     </form>

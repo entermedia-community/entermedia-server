@@ -1123,51 +1123,51 @@ public class ProjectManager implements CatalogEnabled {
 				root = collection.getCategory();
 			}
 
-			UserProfile profile = inReq.getUserProfile();
-			if (profile != null && profile.getViewCategories() != null) 
-			{
-				for (Category cat : profile.getViewCategories()) 
-				{
-					boolean wasview = false;
-					if (root.hasParent(cat.getId())) 
-					{
-						Collection vals = cat.findValues("viewonlygroups");
-						if( vals != null)
-						{
-							for (Iterator iterator = vals.iterator(); iterator.hasNext();)
-							{
-								String groupid = (String) iterator.next();
-								if( profile.isInGroup(groupid) )
-								{
-									wasview = true;
-									break;
-								}
-							}
-						}
-						if( !wasview )
-						{
-							vals = cat.findValues("viewonlyroles");
-							if( vals != null)
-							{
-								for (Iterator iterator = vals.iterator(); iterator.hasNext();)
-								{
-									String roleid = (String) iterator.next();
-									if( profile.isInRole(roleid) )
-									{
-										wasview = true;
-										break;
-									}
-								}
-							}
-						}
-						if(wasview)
-						{
-							continue;
-						}
-						return true;
-					}
-				}
-			}
+//			UserProfile profile = inReq.getUserProfile();
+//			if (profile != null && profile.getViewCategories() != null) 
+//			{
+//				for (Category cat : profile.getViewCategories()) 
+//				{
+//					boolean wasview = false;
+//					if (root.hasParent(cat.getId())) 
+//					{
+//						Collection vals = cat.findValues("viewonlygroups");
+//						if( vals != null)
+//						{
+//							for (Iterator iterator = vals.iterator(); iterator.hasNext();)
+//							{
+//								String groupid = (String) iterator.next();
+//								if( profile.isInGroup(groupid) )
+//								{
+//									wasview = true;
+//									break;
+//								}
+//							}
+//						}
+//						if( !wasview )
+//						{
+//							vals = cat.findValues("viewonlyroles");
+//							if( vals != null)
+//							{
+//								for (Iterator iterator = vals.iterator(); iterator.hasNext();)
+//								{
+//									String roleid = (String) iterator.next();
+//									if( profile.isInRole(roleid) )
+//									{
+//										wasview = true;
+//										break;
+//									}
+//								}
+//							}
+//						}
+//						if(wasview)
+//						{
+//							continue;
+//						}
+//						return true;
+//					}
+//				}
+//			}
 		}
 		return false;
 	}

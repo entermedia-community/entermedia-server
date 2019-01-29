@@ -17,12 +17,12 @@
 	<div class="collection-header-name">
 	<h1>${librarycol}</h1>
 	</div>
-	#if($caneditdata || ($cansharecollection && !$librarycol.isVisibility("3")) )
+###	#if($caneditcollection || ($cansharecollection && !$librarycol.isVisibility("3")) )
 	<div class="collection-header-actions">
 	<a href="#" class="dropdown-toggle dropdown-noarrow" data-toggle="dropdown" title="[[Collection Actions]]">
 	<i class="fas fa-caret-down"></i></a>
 		<div class="dropdown-menu">
-			#if($caneditdata)
+			#if($caneditcollection)
 			  #set( $link = "$home$apphome/views/modules/librarycollection/share.html?collectionid=${librarycol.getId()}")
 			  <a class="dropdown-item emdialog"  id="sharetab"  href="$link" data-hidefooter="true" title="[[Collection Followers]]"><i class="dropdown-item-icon fas fa-user-friends"></i> [[Followers]]</a>
 			   #set( $link = "$home$apphome/views/modules/librarycollection/permissions.html?collectionid=${librarycol.getId()}")
@@ -33,6 +33,11 @@
 
 			  <a class="dropdown-item emdialog" id="permissionstab" href="$link" data-hidefooter="true" title="[[Custom Permissions]] (${librarycol})"><i class="dropdown-item-icon fas fa-user-lock"></i> [[Custom Permissions]]</a>
 
+		   	#else
+		   	
+		   	#set( $editlink = "$home$apphome/views/modules/librarycollection/edit/settings.html?collectionid=${librarycol.getId()}")
+		 	<a class="dropdown-item emdialog"  data-allwaysloadpage="true" data-hidefooter="true"   href="$editlink" title="[[Collection Properties]]"><i class="dropdown-item-icon fas fa-cogs"></i> [[Properties]]</a>
+		   	
 		   	#end
 			
 		 	#if($cansharecollection && !$librarycol.isVisibility("3") )
@@ -41,7 +46,7 @@
 		 	#end
 		</div>
 	</div>
-	#end
+###	#end
 	
 </div>
 #end

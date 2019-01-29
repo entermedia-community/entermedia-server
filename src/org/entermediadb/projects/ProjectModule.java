@@ -263,9 +263,9 @@ public class ProjectModule extends BaseMediaModule {
 		}
 		ProjectManager manager = getProjectManager(inReq);
 
-		boolean canedit = manager.canEditCollection(inReq, collectionid);
+		Boolean caneditdata = (Boolean) inReq.getPageValue("caneditcollection");
 		String editstatus = "6";
-		if (canedit) {
+		if (caneditdata) {
 			editstatus = null;
 		}
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, editstatus);
@@ -275,8 +275,7 @@ public class ProjectModule extends BaseMediaModule {
 		if (Boolean.parseBoolean(inReq.findValue("alwaysresetpage"))) {
 			all.setPage(1);
 		}
-		Object caneditdata = inReq.getPageValue("caneditdata");
-		all.getSearchQuery().setValue("caneditdata", caneditdata);
+		all.getSearchQuery().setValue("caneditcollection", caneditdata);
 
 		// String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);
@@ -1217,8 +1216,9 @@ Server ProjectModule.uploadFile
 		
 		QueryBuilder  q = archive.getAssetSearcher().query().exact("category-exact",category.getId());
 		
-		boolean canedit = manager.canEditCollection(inPageRequest, librarycol);
-		if (!canedit) 
+		Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
+		
+		if (!caneditdata) 
 		{
 			q.orgroup("editstatus", "6");
 		}

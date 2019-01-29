@@ -22,6 +22,7 @@ import org.openedit.data.SearchData;
 import org.openedit.data.Searcher;
 import org.openedit.data.ValuesMap;
 import org.openedit.modules.translations.LanguageMap;
+import org.openedit.util.DateStorageUtil;
 
 public class SearchHitData extends BaseData implements Data, MultiValued, SaveableData,SearchData 
 {
@@ -170,6 +171,7 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 
 		if (getSearchHit() != null) {
 			SearchHitField field = getSearchHit().field(key);
+			Map fields = getSearchHit().getFields();
 			if (field != null) {
 				value = field.getValue();
 			}
@@ -181,6 +183,8 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 		
 		if (value == null && getSearchData() != null) {
 			value = getSearchData().get(key);
+			
+			
 			if (value instanceof Map) {
 				Map map = (Map)value;
 				if(map.isEmpty()){
@@ -188,7 +192,9 @@ public class SearchHitData extends BaseData implements Data, MultiValued, Saveab
 				}
 			}
 			
-			
+			if(detail != null && detail.isDate() && value instanceof String) {
+				return DateStorageUtil.getStorageUtil().parseFromStorage((String) value);
+			}
 			
 			
 			if( detail != null && detail.isGeoPoint() && value instanceof Map)

@@ -104,7 +104,7 @@ $(document).ready(function()
 		if( collectionid )
 		{
 			
-			reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid;
+			reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid + "&collectionid=" + collectionid;
 		}
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		if( hitssessionid )
@@ -120,7 +120,8 @@ $(document).ready(function()
 					'nodeID':nodeid,							
 					'treetoplocation':toplocation,
 					'treeleftlocation':leftlocation,
-					'depth': depth
+					'depth': depth,
+					'collectionid': collectionid
 				},	
 				function(data) 
 				{

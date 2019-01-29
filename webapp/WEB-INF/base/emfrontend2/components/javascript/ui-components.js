@@ -314,14 +314,15 @@ uiload = function() {
 				var data;
 				if(form.data("includesearchcontext") == true){
 					data = jQuery("#resultsdiv").data();
+					data.oemaxlevel = oemaxlevel;
+
 				}
 				
 				else{
 				
-					data = form.data();
+					data = {oemaxlevel:oemaxlevel};
 				} 
 				
-				data.oemaxlevel = oemaxlevel;
 
 				
 				

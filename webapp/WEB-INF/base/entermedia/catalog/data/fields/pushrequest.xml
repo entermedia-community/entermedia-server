@@ -41,7 +41,7 @@
       <language id="fr"><![CDATA[Statut]]></language> 
     </name> 
   </property>  
-  <property id="percentage" index="true" stored="true" keyword="false" filter="false" editable="false" sortable="true">Push Percentage 
+  <property id="percentage" index="true" stored="true" keyword="false" filter="false" editable="false" datatype="double" sortable="true">Push Percentage 
     <name> 
       <language id="de"><![CDATA[Push-Prozentsatz]]></language>  
       <language id="en"><![CDATA[Push Percentage]]></language>  

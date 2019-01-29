@@ -17,6 +17,7 @@
 			<permission id="viewcategorynavcollections" permissiontype="library" name="View Folders in Collections" description="Enables users to view folders inside collections" ordering="255"/>
 			<permission id="searchjoins" permissiontype="library" name="Enable advanced search joins" description="Enables users to search fields from Collections and Libraries when searching assets" ordering="255"/>
 	<permission id="forcebasiccollections" permissiontype="library" name="Forces a simple, stripped down view of collections" description="Forces a more simplistic view of collections for users" ordering="255"/>
+		<permission id="editcollection" permissiontype="library" name="Edit All Collections" description="Edit All Collections" ordering="530"/>
 	
 </permissions>
 	 

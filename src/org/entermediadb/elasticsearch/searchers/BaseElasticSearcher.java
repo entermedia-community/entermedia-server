@@ -716,6 +716,8 @@ public class BaseElasticSearcher extends BaseSearcher
 		if (detail.isDate())
 		{
 			jsonproperties = jsonproperties.field("type", "date");
+			jsonproperties = jsonproperties.field("store", "true");
+			
 			// "date_detection" : 0
 			// jsonproperties = jsonproperties.field("format",
 			// "yyyy-MM-dd HH:mm:ss Z");
