@@ -65,7 +65,7 @@
   <property id="viewusers" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="user" listcatalogid="system"    type="list">Users 
     <name> 
       <language id="de"><![CDATA[Benutzer]]></language>  
-      <language id="en"><![CDATA[Edit Users]]></language>  
+      <language id="en"><![CDATA[Users]]></language>  
       <language id="es"><![CDATA[usuarios]]></language>  
       <language id="fr"><![CDATA[Utilisateurs]]></language> 
     </name> 
@@ -73,7 +73,7 @@
   <property id="viewgroups" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="group" listcatalogid="system"    type="list">Groups 
     <name> 
       <language id="de"><![CDATA[Gruppen]]></language>  
-      <language id="en"><![CDATA[Edit Groups]]></language>  
+      <language id="en"><![CDATA[Groups]]></language>  
       <language id="es"><![CDATA[grupos]]></language>  
       <language id="fr"><![CDATA[Groupes]]></language> 
     </name> 
@@ -81,7 +81,7 @@
   <property id="viewroles" editable="true" index="true" stored="true" viewtype="multiselect" datatype="list" listid="settingsgroup"    type="list">Roles
     <name>
       <language id="de"><![CDATA[Rollen]]></language>
-      <language id="en"><![CDATA[Edit Roles]]></language>
+      <language id="en"><![CDATA[Roles]]></language>
       <language id="es"><![CDATA[Roles]]></language>
       <language id="fr"><![CDATA[Rôles]]></language>
     </name>
