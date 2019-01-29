@@ -290,7 +290,7 @@ a {
     font-size: 0.8rem; 		
 }
 .btn-xs {
-    padding: .25rem .35rem;
+  /*  padding: .25rem .35rem;*/
     font-size: .725rem;
     font-weight: normal;
     line-height: 1;
@@ -340,6 +340,13 @@ select.form-control-sm:not([size]):not([multiple]) {
     height: calc(1.7rem);
         padding: .175rem .75rem;
         line-height: 1.1;
+}
+.input-group-addon {
+	padding:0;
+}
+.input-group-addon a {
+	display:block;
+	padding:.25rem .5rem;
 }
 .resultsnavtitem .select2-container--bootstrap4 .select2-selection--single {
 	height: calc(1.25rem + 2px)!important
@@ -850,7 +857,6 @@ html, body, #application {
 	color: #eee;
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
 	background-color: #262626;
-	*background-color: #262626;
 	background-image: -moz-linear-gradient(top, #333333, #262626);
 	background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#333333), to(#262626));
 	background-image: -webkit-linear-gradient(top, #333333, #262626);
@@ -896,7 +902,7 @@ html, body, #application {
     font-size: 1rem;
 }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
-    font-size: 11px;
+/*    font-size: 11px;*/
 }
 .ui-widget-header {
     font-weight: bold;
@@ -914,7 +920,7 @@ html, body, #application {
 .ui-widget textarea,
 .ui-widget button, 
 .ui-widget a.btn-sm {
-	font-size: 11px;
+	/*font-size: 11px;*/
 	line-height:1.5;
 }
 .ui-widget.ui-widget-content {
@@ -1401,6 +1407,9 @@ td.checkbox input, th.firstheader input {
 	margin-left: 15px;
 	padding-top:2px;
 	width: 400px;
+}
+.emnav .nav-quicksearch .form-control:focus {
+	box-shadow:none;
 }
 .emnav .librarypicker, 
 .emnav .collectionpicker {
@@ -2487,7 +2496,10 @@ label.error {
 	padding:15px 0;
 
 }
-
+.fields-editor .emdatafieldvalue .form-control:focus {
+	box-shadow: 0 0 0 0.15rem rgba(255,255,255,.15);
+	border-color: #ccc;
+}
 
 .assetpanel-editor .emlist a {
 	color:#ccc;

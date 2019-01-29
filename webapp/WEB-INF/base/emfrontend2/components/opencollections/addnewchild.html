@@ -1,4 +1,5 @@
-<form name="adder" class="ajaxform form-inline" targetdiv="left-col-opencollections" action="$home$apphome/components/opencollections/addchildfinish.html"> 
+<form name="adder" class="ajaxform form-inline" 
+	targetdiv="left-col-opencollections-container" action="$home$apphome/components/opencollections/addchildfinish.html"> 
 	<input type="hidden" name="save" value="true"  />
 	<input type="hidden" name="searchtype" value="librarycollection"  />
 	<input type="hidden" name="searchtype" value="librarycollection"  />
@@ -10,5 +11,5 @@
 	<input type="hidden" name="hitssessionid" value="$!context.getRequestParameter('hitssessionid')"  />
 	<input type="hidden" name="field" value="owner"  />
 	<input type="hidden" name="owner.value" value="$!context.getUserName()"  />
-	<input class="btn btn-sm btn-primary" type="submit" value="[[Add]]" />
+	<input class="btn btn-sm btn-primary btn-filters" type="submit" value="[[Add]]" />
 </form>
