@@ -1,6 +1,5 @@
 #set( $apphome = "/${order.applicationid}")
 <p>[[Hello]],</p>
-<br />
 <p>$userManager.getScreenName( $order.userid ) [[has shared some assets with you]].
 #if($order.sharenote)
 [[Below is a note that was attached]]:</p>
@@ -29,12 +28,12 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 #set($orderitems = $mediaarchive.getSearcher("orderitem").query().exact("orderid", $order.id).search())
 <hr />
 <p>[[Below is a list of assets available at the link above]]:</p>
-<table cellspacing="0" cellpadding="0" width="100%">		
-	<tr>
-	<th>[[Title]]</th>
-	<th>[[File Name]]</th>
-	<th>[[Asset Type]]</th>
-	<th>[[Format]]</th>
+<table cellspacing="0" cellpadding="0" width="100%" style="margin-bottom:20px;">		
+	<tr style="background-color:#555; color:#eee;">
+	<th style="padding:5px">[[Title]]</th>
+	<th style="padding:5px">[[File Name]]</th>
+	<th style="padding:5px">[[Asset Type]]</th>
+	<th style="padding:5px">[[Format]]</th>
 	</tr>
 
 	#foreach( $item in $orderitems )
@@ -42,17 +41,17 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 		$context.putPageValue("asset", $asset)
 		$context.putPageValue("item", $item)
 		$context.setRequestParameter("sourcepath", $asset.sourcepath)					
-		<tr>
-		<td>
+		<tr style="background-color:rgba(0,0,0,.05); ">
+		<td style="padding:5px">
 			$!asset.assettitle
 		</td>
-		<td>
+		<td style="padding:5px">
 			$!asset.name
 		</td>
-		<td>
+		<td style="padding:5px">
 			$!searcherManager.getData($catalogid,"assettype",$asset.assettype).getName($context.getLocale())
 		</td>
-		<td>
+		<td style="padding:5px">
 		    #set($val=$context.getRequestParameter("${item.id}.presetid.value"))
 		    #if( !$val)
 				#set( $val = $item.get("presetid") )		    	
@@ -63,6 +62,7 @@ $context.siteRoot$home$apphome/views/activity/email/emailedassets.html?orderid=$
 			#else
 				[[Online Preview]]
 			#end	
+			</td>
 		</tr>
 	#end
 </table>

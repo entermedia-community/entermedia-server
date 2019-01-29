@@ -902,7 +902,7 @@ html, body, #application {
     font-size: 1rem;
 }
 .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button {
-    font-size: 11px;
+/*    font-size: 11px;*/
 }
 .ui-widget-header {
     font-weight: bold;
@@ -920,7 +920,7 @@ html, body, #application {
 .ui-widget textarea,
 .ui-widget button, 
 .ui-widget a.btn-sm {
-	font-size: 11px;
+	/*font-size: 11px;*/
 	line-height:1.5;
 }
 .ui-widget.ui-widget-content {

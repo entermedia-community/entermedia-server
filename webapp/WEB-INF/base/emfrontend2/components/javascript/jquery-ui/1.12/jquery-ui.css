@@ -362,8 +362,9 @@ body .ui-tooltip {
 works properly when clicked or hovered */
 html .ui-button.ui-state-disabled:hover,
 html .ui-button.ui-state-disabled:active {
-	border: 1px solid #666666;
-	background: #555555 url("images/ui-bg_glass_20_555555_1x400.png") 50% 50% repeat-x;
+	border: 1px solid #ccc;
+	/*background: #555555 url("images/ui-bg_glass_20_555555_1x400.png") 50% 50% repeat-x;*/
+	background-color:#666;
 	font-weight: bold;
 	color: #eeeeee;
 }
@@ -387,7 +388,7 @@ a:visited.ui-button,
 .ui-button:focus {
 	
 	background: none;
-	background-color: #6FB353;
+	background-color: #000;
 	font-weight: bold;
 	color: #ffffff;
 }
