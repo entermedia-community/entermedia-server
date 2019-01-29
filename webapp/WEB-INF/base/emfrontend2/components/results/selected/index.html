@@ -75,7 +75,7 @@
   		#if ($hits.getSelectionSize() > 1)
   			#set($link = "editall.html")
   			#set($text = "[[Multi Edit]] $hits.getSelectionSize()")
-			<a id="multiedit-menu" class="dropdown-item" href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text $canmultiedit</a>
+			<a id="multiedit-menu" class="dropdown-item" href="$home$apphome/views/modules/asset/editor/multiedit/$link?hitssessionid=$!hits.getSessionId()" title="[[Edit selected records]]">$text </a>
   		#end
 		#end
 	
