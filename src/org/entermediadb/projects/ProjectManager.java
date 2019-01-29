@@ -513,7 +513,9 @@ public class ProjectManager implements CatalogEnabled {
 		}
 
 		if (inShowOnlyEditStatus != null) {
-			assetsearch.addOrsGroup("editstatus", inShowOnlyEditStatus);
+			SearchQuery child = searcher.createSearchQuery();
+			child.addOrsGroup("editstatus", inShowOnlyEditStatus);
+			assetsearch.addChildQuery(child);
 		}
 
 		String sort = (String) root.findValue("assetsort");

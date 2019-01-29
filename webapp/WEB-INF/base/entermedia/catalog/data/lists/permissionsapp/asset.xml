@@ -47,7 +47,7 @@
 	<permission id="viewclosedcaptions" permissiontype="asset" name="Closed Captions" description="Closed Caption Support" ordering="362" />
 	<permission id="quickgallery" permissiontype="asset" name="Create a Gallery" description="Enables the creation of a shareable gallery" ordering="363" />
 	
-	<permission id="showpendingassets" permissiontype="asset" name="Approved Assets" description="Show pending assets for users (or assets owned by them)" ordering="366"/>
+	<permission id="showpendingassets" permissiontype="asset" name="Show Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="366"/>
 
 		
 	<!-- 
