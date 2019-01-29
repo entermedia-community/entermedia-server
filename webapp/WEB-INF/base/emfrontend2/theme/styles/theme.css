@@ -341,6 +341,13 @@ select.form-control-sm:not([size]):not([multiple]) {
         padding: .175rem .75rem;
         line-height: 1.1;
 }
+.input-group-addon {
+	padding:0;
+}
+.input-group-addon a {
+	display:block;
+	padding:.25rem .5rem;
+}
 .resultsnavtitem .select2-container--bootstrap4 .select2-selection--single {
 	height: calc(1.25rem + 2px)!important
 }
@@ -1401,6 +1408,9 @@ td.checkbox input, th.firstheader input {
 	margin-left: 15px;
 	padding-top:2px;
 	width: 400px;
+}
+.emnav .nav-quicksearch .form-control:focus {
+	box-shadow:none;
 }
 .emnav .librarypicker, 
 .emnav .collectionpicker {
@@ -2487,7 +2497,10 @@ label.error {
 	padding:15px 0;
 
 }
-
+.fields-editor .emdatafieldvalue .form-control:focus {
+	box-shadow: 0 0 0 0.15rem rgba(255,255,255,.15);
+	border-color: #ccc;
+}
 
 .assetpanel-editor .emlist a {
 	color:#ccc;
