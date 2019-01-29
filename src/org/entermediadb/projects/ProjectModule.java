@@ -265,7 +265,7 @@ public class ProjectModule extends BaseMediaModule {
 
 		Boolean caneditdata = (Boolean) inReq.getPageValue("caneditcollection");
 		String editstatus = "6";
-		if (caneditdata) {
+		if (caneditdata != null && caneditdata) {
 			editstatus = null;
 		}
 		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, editstatus);
