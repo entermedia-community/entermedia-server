@@ -153,8 +153,12 @@
 		#end
 		#if(!$edit || $edit == "false"  )
 			<li class="resultsnavtitem">
-				<select class="form-control" name="resultview" id="selectresultview" class="smalldropdown" 
-					data-hitssessionid="$hits.getSessionId()" data-searchtype="asset" data-page="$hits.getPage()" data-showremoveselections="$showremoveselections" data-collectionid="$!librarycol.getId()">
+				<select class="form-control" name="resultview" id="selectresultview"  
+					data-hitssessionid="$hits.getSessionId()" 
+					data-searchtype="asset" 
+					data-page="$hits.getPage()" 
+					data-showremoveselections="$showremoveselections" 
+					data-collectionid="$!librarycol.getId()">
 				#set( $types = $mediaarchive.getList("resulttype"))
 				#foreach($type in $types)
 					<option value="$type.getId()" #if( $resultview == "$type.getId()") selected #end>$type.getName($context.locale)</option>
