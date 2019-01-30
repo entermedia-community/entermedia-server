@@ -159,4 +159,9 @@
     </name> 
   </property>
  
+ 
+   <property id="collectionimage" index="true" stored="true" editable="true" type="list" viewtype="asset" listid="asset" internalfield="false" datatype="list" sourcepath="collections/${id}">Image</property>  
+ 
+ 
+ 
 </properties>

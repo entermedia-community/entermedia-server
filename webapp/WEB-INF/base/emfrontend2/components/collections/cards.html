@@ -1,6 +1,9 @@
-
 #foreach( $hit in $hits )
-	  #set( $asset = $mediaarchive.query("asset").match("category",$hit.rootcategory).searchOne() )
+	#if($hit.collectionimage)
+#set($asset = $mediaarchive.getAsset($hit.collectionimage))
+#else
+  #set( $asset = $mediaarchive.query("asset").match("category",$hit.rootcategory).searchOne() )
+#end
 	  #set( $link = $mediaarchive.asLinkToPreview($asset,"image200x200.jpg"))
 	<div class="card card-mini card-collections">
 	<a href="$apphome/views/modules/librarycollection/media/index.html?selectedlibrary=&collectionid=${hit.id}" 

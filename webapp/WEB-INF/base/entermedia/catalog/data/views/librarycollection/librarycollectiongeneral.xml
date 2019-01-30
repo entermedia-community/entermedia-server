@@ -7,5 +7,6 @@
   <property id="owner" />
   <property id="rootcategory" />
   <property id="featuredcollection" />
+     <property id="collectionimage" />  
   
 </root>
