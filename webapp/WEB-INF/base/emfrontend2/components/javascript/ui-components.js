@@ -1334,8 +1334,7 @@ uiload = function() {
 		$("#filterstoggle").toggleClass("hide");
 		if ($("#col-filters").hasClass("filtersopen")) {
 			//close
-			$("#col-filters").removeClass("filtersopen");
-			$("#maincontent").removeClass("filtersopen");
+			$(".col-main").removeClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",false,function(){
 				$(window).trigger( "resize" );
 			});
@@ -1343,7 +1342,7 @@ uiload = function() {
 		else {
 			//open
 			$("#col-filters").addClass("filtersopen");
-			$("#maincontent").addClass("filtersopen");
+			$(".col-main").addClass("filtersopen");
 			saveProfileProperty("filtersbarstatus",true,function(){
 				$(window).trigger( "resize" );
 			});
@@ -1360,7 +1359,7 @@ uiload = function() {
 			//close
 			$("#col-left").animate({left: "-220px"},100);
 			$('.pushcontent').animate({marginLeft: "-=220px"}, function() {
-				$("#col-left").removeClass("leftopen");
+				$(".col-main").removeClass("leftopen");
 			});
 			
 			saveProfileProperty("leftbarstatus",false,function(){
@@ -1371,7 +1370,7 @@ uiload = function() {
 			//open
 			$("#col-left").animate({left: "0"},100);
 			$('.pushcontent').animate({marginLeft: "+=220px"}, function() {
-				$("#col-left").addClass("leftopen");
+				$(".col-main").addClass("leftopen");
 			});
 			
 			saveProfileProperty("leftbarstatus",true,function(){

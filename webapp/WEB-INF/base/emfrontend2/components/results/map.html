@@ -6,7 +6,7 @@ data-collectionid="$!librarycol.getId()"
 #set( $showtoolbar = $page.isPropertyTrue("showtoolbar"))
 $context.putPageValue("showtoolbar",  $showtoolbar)
 #if( $hideheader &&  $hideheader != "true")
-	$pages.include("$componenthome/results/mapheader.html",$context) 
+	$pages.include("$componenthome/results/header.html",$context) 
 #end
 
 #set( $n = $hits.setHitsPerPage(1000))

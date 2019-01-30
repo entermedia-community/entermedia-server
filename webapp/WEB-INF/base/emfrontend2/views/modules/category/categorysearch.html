@@ -1,3 +1,6 @@
+#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
+
 #if(!$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
 	#if(!$categoryid)
