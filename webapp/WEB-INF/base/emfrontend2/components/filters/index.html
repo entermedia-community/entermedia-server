@@ -23,12 +23,12 @@
 	
 
 	
-	<form  name="filterform" id="filterform" class="autosubmitform em-widget-content ajaxform" data-targetdiv="searchlayout" method="POST"  
+	<form  name="filterform" id="filterform" class="autosubmitform em-widget-content ajaxform" data-targetdiv="main" method="POST"  
 	#if( $librarycol)
-		data-oemaxlevel="2" 
+		data-oemaxlevel="1" 
 		action="$home$apphome/views/modules/librarycollection/search.html" 
 	#else
-		data-oemaxlevel="2" 
+		data-oemaxlevel="1" 
 		action="$home$apphome/views/search/search.html" 
 	#end
 	>
