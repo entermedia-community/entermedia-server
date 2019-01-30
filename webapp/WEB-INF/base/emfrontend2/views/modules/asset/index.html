@@ -1,5 +1,8 @@
 #if(!$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
+	#if(!$categoryid)
+		#set($categoryid = $context.getRequestParameter("category.value"))
+	#end
 	#if($categoryid)
 		#set($category = $mediaarchive.getData("category",$categoryid))
 		#if($category)
@@ -7,7 +10,7 @@
 		#end
 	#end
 #end
-
+ 
 #if( $hits )
 	$context.putPageValue("showhover", "false")
 	$context.putPageValue("showcaption", "true")
@@ -15,11 +18,12 @@
 	
 
 	###always go to index - don't care about resultview
-	<div id="emresultscontainer" >
+	<div id="emresultscontainer" > 
 	$pages.include("$apphome/components/results/index.html",$context)
 	</div>
 
 
-#else
+#else 
+
 	$pages.include("$apphome/views/modules/asset/search/all.html")
 #end
