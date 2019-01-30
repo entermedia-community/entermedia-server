@@ -1,6 +1,9 @@
 $context.putPageValue("showhover", "false")
 $context.putPageValue("showcaption", "true")
 $context.putPageValue("hideheader", "true")
+#set( $leftbarstatus = $userprofile.get("leftbarstatus"))
+#set( $filtersbarstatus = $userprofile.get("filtersbarstatus"))
+
 
 #if(!$category)
 	#set($categoryid = $context.getRequestParameter("categoryid"))
