@@ -1,5 +1,5 @@
 var chatconnection;
-var open = false;
+var chatopen = false;
 
 function chatterbox() {	
 	
@@ -8,7 +8,7 @@ function chatterbox() {
 
 	reloadAll();
 	
-	if(open){
+	if(chatopen){
 		return;
 	}	
 	
@@ -51,7 +51,7 @@ function chatterbox() {
 	    }
 	});
 	
-	open=true;
+	chatopen=true;
 	
 	
 }

@@ -9,7 +9,9 @@
 	#set($resultsPage = "$resultsPage&page")
 	#set($thispage = $hits.getPage())
 	
-	#set($targetdiv = "emresultscontent")
+	#set($targetdiv = "searchlayout")
+	
+	
 	<div class="pages">
 		<ul>
 			#if( $hits.prevPage() )
