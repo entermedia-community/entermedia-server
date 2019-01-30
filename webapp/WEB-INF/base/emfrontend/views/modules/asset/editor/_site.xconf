@@ -22,6 +22,8 @@
 	<!-- If a user knows the URL they can view a preview to speed up thumbnail loading-->
 	<permission name="viewasset">
 		<or>
+					<group id="administrators"/>
+		
 			<action name="AssetControlModule.canViewAsset" />
 			<action name="OrderModule.canViewAsset"/>
 		</or>
@@ -29,7 +31,8 @@
 
 	<permission name="view">
 		<and>
-		<userprofile property="view" equals="true" />
+			<group id="administrators"/>
+			<userprofile property="view" equals="true" />
 	
 			<pagevalue name="canviewasset" equals="true"/>
 		
