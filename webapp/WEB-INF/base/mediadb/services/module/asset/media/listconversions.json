@@ -6,7 +6,7 @@
 	"response":
 		{
             "status":"ok",
-   			"original": "$origUrl",
+   			"original": "#urlencode($origUrl)",
             
 			"totalhits" : "$hits.size()",
 			"searchtype" : "presetdata",
@@ -35,8 +35,9 @@
 	"outputfile":#jesc($outputfile),
 	#set( $url = "$home$apphome/services/module/asset/downloads/preset/${asset.sourcepath}/${preset.generatedoutputfile}")
 #end	
-	"url":"$url",
-	"downloadurl":"$home$apphome/services/module/asset/downloads/generated/${asset.sourcepath}/${preset.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $preset)?includemetadata=true",
+#set($downloadurl = "$home$apphome/services/module/asset/downloads/generated/${asset.sourcepath}/${preset.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $preset)" )
+	"url":"#urlencode($url)",
+	"downloadurl":"#urlencode($downloadurl)",
 	#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$asset.id,$asset.sourcePath, $preset.id))
 	"iscomplete":"$isready"}#end
 

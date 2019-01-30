@@ -55,8 +55,12 @@
 			"outputfile":#jesc($outputfile),
 			#set( $url = "$home$apphome/services/module/asset/downloads/preset/${hit.sourcepath}/${preset.generatedoutputfile}")
 			#end	
-			"url":"$url",
-			"downloadurl":"$home$apphome/services/module/asset/downloads/generated/${hit.sourcepath}/${preset.generatedoutputfile}/$mediaarchive.asExportFileName($hit, $preset)?includemetadata=true",
+
+
+#set($downloadurl = "$home$apphome/services/module/asset/downloads/generated/${asset.sourcepath}/${preset.generatedoutputfile}/$mediaarchive.asExportFileName($asset, $preset)" )
+	"url":"#urlencode($url)",
+	"downloadurl":"#urlencode($downloadurl)",
+
 			#set($isready = $conversionUtil.isConvertPresetReady($catalogid,$hit.id,$hit.sourcePath, $preset.id))
 			"iscomplete":"$isready"
 		
