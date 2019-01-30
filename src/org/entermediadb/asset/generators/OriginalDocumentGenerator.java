@@ -2,6 +2,9 @@ package org.entermediadb.asset.generators;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,6 +90,25 @@ public class OriginalDocumentGenerator extends FileGenerator
 				//throw new OpenEditException("No asset with source path " + sourcePath);
 			}
 		}
+		
+		
+		try
+		{
+			String fileName = URLEncoder.encode(asset.getName(), "UTF-8");
+			//fileName = URLDecoder.decode(fileName, "ISO8859_1");
+			//inReq.getResponse().setContentType("application/x-msdownload");
+		    
+			//fileName=fileName.replaceAll(";", "/;");
+			
+			//inReq.getResponse().setHeader("Content-Disposition: attachment; filename*=us-ascii'en-us'"+ fileName);
+			fileName.replace("\"", "/\"");
+			inReq.getResponse().setHeader("Content-disposition", "attachment; filename*=utf-8''\""+ fileName +"\"");
+		}
+		catch (UnsupportedEncodingException e)
+		{
+			throw new OpenEditException(e);
+		}
+		
 	  //  inReq.getResponse().setHeader("Content-Disposition", "attachment; filename=" + asset.getName()); This didn't work properly.
 
 		String filename = asset.getSourcePath();
