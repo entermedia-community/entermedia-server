@@ -12,10 +12,5 @@
 
 	<!-- jcrop tool -->
   
-	<permission name="view">
-		<not>
-			<pagevalue name="canviewasset" equals="false" />
-		</not>
-	</permission>
-
+	
 </page>

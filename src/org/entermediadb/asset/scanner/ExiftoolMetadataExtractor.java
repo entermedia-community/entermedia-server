@@ -345,7 +345,7 @@ public class ExiftoolMetadataExtractor extends MetadataExtractor
 						if (m.find())
 						{
 							Searcher searcher = inArchive.getSearcherManager().getSearcher(property.getListCatalogId(), property.getListId());
-							Data lookup = (Data) searcher.searchByField("name", value);
+							Data lookup = (Data) searcher.query().exact("name", value).searchOne();
 							if (lookup != null)
 							{
 								inAsset.setProperty(property.getId(), lookup.getId());

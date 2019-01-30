@@ -30,13 +30,16 @@
 	</permission>	
 
 	<permission name="view">
-		<and>
+	<or>
 			<group id="administrators"/>
-			<userprofile property="view" equals="true" />
 	
+		<and>
+	
+			<userprofile property="view" equals="true" />
 			<pagevalue name="canviewasset" equals="true"/>
 		
 		</and>
+		</or>
 	</permission>	
 
 	<permission name="download">
