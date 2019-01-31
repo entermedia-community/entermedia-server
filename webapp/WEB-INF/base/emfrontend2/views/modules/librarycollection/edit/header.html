@@ -5,12 +5,12 @@
 #if( !$searchtype)
 	#set( $searchtype = $moduleid)
 #end
-<div id="default-top" class="clearfix" style="margin: -20px 0 20px 0; border-top: 1px solid #ddd;">
+<div id="default-top" class="clearfix" style=" border-top: 1px solid #ddd;">
     #set($module = $searcherManager.getData($catalogid, "module", $moduleid ) )
 	#set($searcher = $searcherManager.getSearcher($catalogid,$module))
 	#set($details = $searcher.getDetailsForView("${moduleid}/${module.id}headerdetail"))
     
-      <div class="main-info" style="padding-bottom: 20px; margin-top: 20px;">
+      <div class="main-info" style="padding-bottom: 20px;">
       	#foreach($detail in $details)     	
         	#set($val = $data.get($detail.id))
         	
@@ -32,7 +32,7 @@
 	    #end
       	</div>
       	#if( $data && $data.getId().startsWith("multiedit:") && $hits )
-			<h3>Editing  $hits.getSelectionSize() records</h3>
+			<h3>[[Editing]]  $hits.getSelectionSize() records</h3>
 		#end	
 </div>
 

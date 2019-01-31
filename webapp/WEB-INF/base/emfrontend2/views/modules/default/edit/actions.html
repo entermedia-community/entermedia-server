@@ -24,7 +24,7 @@
                     #if($previous)
                          <li><a  #if( $caneditdata )  href="$home$content.searchhome/edit/edit.html?id=${previous.id}&hitssessionid=${hitssessionid}&viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #else href="$home$content.searchhome/view/view.html?id=${previous.id}&hitssessionid=${hitssessionid}&$viewid=${viewid}&viewpath=${viewpath}&assettype=$!type&searchtype=$moduleid" #end><<</a></li>
                     #end
-                         <li><a href="$home$content.searchhome/results.html?&hitssessionid=${hitssessionid}">$hits.size() Results</a></li>
+                         <li><a href="$home$content.searchhome/index.html?&hitssessionid=${hitssessionid}">$hits.size() [[Results]]</a></li>
                       
                     #if($next)
                         $context.putPageValue("hits", $hits)
