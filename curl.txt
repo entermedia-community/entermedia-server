@@ -459,7 +459,7 @@ curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
 
 curl -XGET 'http://localhost:9200/_cat/master?v' 
 
-curl -XPUT 'http://localhost:9200/_cluster/settings' -d '
+curl -XPUT 'http://localhost:9200/_cluster/settings' -d '{
     "transient" : {
         "cluster.routing.allocation.disk.watermark.low" : "5gb",
         "cluster.routing.allocation.disk.watermark.high" : "2gb"
