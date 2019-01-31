@@ -11,7 +11,7 @@
 	<path-action name="Admin.allowViewing" />
     
     
-  	<inner-layout>/${applicationid}/theme/layouts/librarylayout.html</inner-layout>
+  	<inner-layout>${searchhome}/edit/innerlayout.html</inner-layout>
     
     <property name="defaulttab">settingstab</property>
 </page>

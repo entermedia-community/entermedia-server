@@ -21,5 +21,7 @@
     		<action name="ProjectModule.checkViewCollection" />
     </permission>
 	 <path-action name="DataEditModule.loadPageOfSearch"/>
+	 
+	 <inner-layout>/${applicationid}/theme/layouts/searchlayout2.html</inner-layout>
 	
 </page>
