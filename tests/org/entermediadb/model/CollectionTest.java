@@ -53,7 +53,7 @@ public class CollectionTest extends BaseEnterMediaTest
 
 		WebPageRequest req = getFixture().createPageRequest();
 		
-		HitTracker assets = manager.loadAssetsInCollection(req, getMediaArchive(), collection.getId(),null);
+		HitTracker assets = manager.loadAssetsInCollection(req, getMediaArchive(), collection.getId());
 		assertEquals(1, assets.size());
 		
 	}
