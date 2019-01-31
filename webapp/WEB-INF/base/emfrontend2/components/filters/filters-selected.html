@@ -7,7 +7,13 @@
 	<div class="collection-header-back">
 		<a href="$home$apphome" title="[[Collections]]"><i class="fas fa-chevron-left"></i></a>
 	</div>
-	#set( $asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+	
+	#if($librarycol.collectionimage)
+#set($asset = $mediaarchive.getAsset($librarycol.collectionimage))
+#else
+#set( $asset = $mediaarchive.query("asset").match("category",$librarycol.rootcategory).searchOne() )
+#end
+
 	#set( $link = $mediaarchive.asLinkToPreview($asset,"image110x62cropped.jpg"))
 	
 	<div class="card card-mini card-collections">
