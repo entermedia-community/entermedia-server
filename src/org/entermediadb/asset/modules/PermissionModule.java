@@ -24,6 +24,7 @@ import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.GroupFilter;
 import org.openedit.util.strainer.OrFilter;
+import org.openedit.util.strainer.SettingsGroupFilter;
 
 public class PermissionModule extends BaseMediaModule
 {
@@ -297,9 +298,9 @@ public class PermissionModule extends BaseMediaModule
 					root = new OrFilter();
 					permission.setRootFilter(root);
 				}
-				GroupFilter gf = new GroupFilter();
+				SettingsGroupFilter gf = new SettingsGroupFilter();
 				String groupid = type.substring("settingsgroup.".length());
-				gf.setGroupId(type);
+				gf.setGroupId(groupid);
 				root.addFilter(gf);
 			}
 			savePermission(permission);

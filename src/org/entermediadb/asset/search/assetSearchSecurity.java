@@ -119,6 +119,13 @@ public class assetSearchSecurity implements SearchSecurity
 			{
 				orchild.addExact("owner", user.getId());
 			}
+			if(!inPageRequest.hasPermission("showpendingassets")) {
+				SearchQuery hidependingchild = inSearcher.createSearchQuery();
+				hidependingchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
+				hidependingchild.addExact("editstatus", "6");
+				orchild.addChildQuery(hidependingchild);
+			}
+			
 			
 			//Have clients use the category tree to give permissions as they do now on categories for visibility
 			if( inPageRequest.hasPermission("showonlyapprovedassets"))

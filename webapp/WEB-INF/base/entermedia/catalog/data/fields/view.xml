@@ -57,7 +57,7 @@
       <language id="fr"><![CDATA[Type de rendu]]></language> 
     </name> 
   </property>  
-  <property id="rendertable" index="true" stored="true" keyword="false" filter="false" editable="false" >Table 
+  <property id="rendertable" index="true" stored="true" keyword="false" filter="false" editable="true" >Table 
     <name> 
       <language id="de"><![CDATA[Tabelle]]></language>  
       <language id="en"><![CDATA[Table]]></language>  
@@ -65,7 +65,7 @@
       <language id="fr"><![CDATA[Tableau]]></language> 
     </name> 
   </property>  
-  <property id="renderexternalid" index="true" stored="true" keyword="false" filter="false" editable="false" >Table External ID 
+  <property id="renderexternalid" index="true" stored="true" keyword="false" filter="false" editable="true" >Table External ID 
     <name> 
       <language id="de"><![CDATA[Tabelle externe ID]]></language>  
       <language id="en"><![CDATA[Table External ID]]></language>  
@@ -73,7 +73,7 @@
       <language id="fr"><![CDATA[Tableau ID externe]]></language> 
     </name> 
   </property>  
-  <property id="rendercustomview" index="true" stored="true" keyword="false" filter="false" editable="false" >Renderer Custom View
+  <property id="rendercustomview" index="true" stored="true" keyword="false" filter="false" editable="true" >Renderer Custom View
     <name>
       <language id="de"><![CDATA[Renderer benutzerdefinierte Ansicht]]></language>
       <language id="en"><![CDATA[Renderer Custom View]]></language>

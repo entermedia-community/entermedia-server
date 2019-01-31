@@ -52,9 +52,11 @@
 #if( $issimple == "true" )
 
 <div id="editsimple" style="padding:20px 0" >
-<p><b>[[Allowed Groups]]:</b></p>
 <div style="padding: 5px 10px;">
-#if( $selgroups.size() > 0 )	
+#if( $selgroups.size() > 0 || $selroles.size() > 0)	
+#if($selgroups.size() > 0)
+<p><b>[[Allowed Groups]]:</b></p>
+
 	<table class="table table-striped">
 	#set( $count = 0 )
 	#foreach( $group in $selgroups )
@@ -63,7 +65,38 @@
 		#set( $count = $count + 1 )
 		</tr>
 	#end
+	
+	
+	
 	</table>
+#end
+	
+	
+
+#if($selroles.size() > 0)
+<p><b>[[Allowed Roles]]:</b></p>
+
+	<table class="table table-striped">
+	#set( $count = 0 )
+	#foreach( $group in $selroles )
+		<tr>
+		<td>$group</td><td> <a class="ajax" targetdiv="permissionedit" href="$home$apphome/views/modules/${moduleid}/datapermissions/removegroup.html?traverse=0/$count&id=$permission.id"><img src="$home/system/images/toolbar/deletefile.gif" /></a></td>
+		#set( $count = $count + 1 )
+		</tr>
+	#end
+	
+	
+	
+	</table>
+#end
+
+
+	
+	
+	
+	
+	
+	
 #else
 	#if( !$permission || $permission.toString() == "false" )
 		Nobody

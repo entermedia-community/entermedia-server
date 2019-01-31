@@ -21,6 +21,7 @@ import org.openedit.util.strainer.Filter;
 import org.openedit.util.strainer.FilterReader;
 import org.openedit.util.strainer.GroupFilter;
 import org.openedit.util.strainer.OrFilter;
+import org.openedit.util.strainer.SettingsGroupFilter;
 
 public class DataPermissionModule extends BaseMediaModule
 {
@@ -328,9 +329,9 @@ public class DataPermissionModule extends BaseMediaModule
 					root = new OrFilter();
 					permission.setRootFilter(root);
 				}
-				GroupFilter gf = new GroupFilter();
+				SettingsGroupFilter gf = new SettingsGroupFilter();
 				String groupid = type.substring("settingsgroup.".length());
-				gf.setGroupId(type);
+				gf.setGroupId(groupid);
 				root.addFilter(gf);
 			}
 			String fields[] =inReq.getRequestParameters("field");
@@ -476,6 +477,8 @@ public class DataPermissionModule extends BaseMediaModule
 		else
 		{
 			List selgroups = new ArrayList();
+			List selroles = new ArrayList();
+			
 			if( perm != null)
 			{
 				Filter top = perm.getRootFilter();
@@ -496,6 +499,14 @@ public class DataPermissionModule extends BaseMediaModule
 									{
 										selgroups.add(group);
 									}
+								} else if(filters[j] instanceof SettingsGroupFilter)
+								{
+									String gid = ((SettingsGroupFilter)filters[j]).getGroupId();
+									Data group = (Group)getUserManager(inReq).getGroup(gid);
+									if( group != null)
+									{
+										selroles.add(group);
+									}
 								}
 								else
 								{
@@ -511,6 +522,8 @@ public class DataPermissionModule extends BaseMediaModule
 				}			
 			}
 			inReq.putPageValue("selgroups", selgroups );
+			inReq.putPageValue("selroles", selroles );
+
 			groups.removeAll(selgroups);
 		}
 		inReq.putPageValue("issimple", String.valueOf(simple ));
