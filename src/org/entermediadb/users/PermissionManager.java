@@ -144,13 +144,14 @@ public class PermissionManager implements CatalogEnabled
 		for (Iterator iterator = custompermissions.iterator(); iterator.hasNext();)
 		{
 			Permission per = (Permission) iterator.next();
-			Boolean systemwide = (Boolean)inReq.getPageValue("can" + per.get("permissionid"));
+			String permid = per.get("permissionid");
+			Boolean systemwide = (Boolean)inReq.getPageValue("can" + permid);
 			if( systemwide == null || !systemwide )
 			{
 				boolean value = per.passes(inReq);
 				if( value )
 				{
-					inReq.putPageValue("can" + per.get("permissionid"), Boolean.valueOf(value));
+					inReq.putPageValue("can" + permid, Boolean.valueOf(value));
 				}
 			}	
 		}

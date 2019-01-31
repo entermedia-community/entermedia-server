@@ -4,6 +4,14 @@
 	<path-action name="Admin.autoLogin" alltypes="true" />	
 	<path-action name="ProfileModule.loadUserProfile" alltypes="true"/>
 	
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true">
+		<property name="module">asset</property>
+		<property name="parameterid">assetid</property>
+		<property name="parentparameterid">collectionid</property>
+	</path-action>
+	
+	
+	
 	<path-action name="Admin.loadPermissions"  alltypes="true">
 		<permissions>view viewasset download forcewatermarkasset</permissions>
 	</path-action>

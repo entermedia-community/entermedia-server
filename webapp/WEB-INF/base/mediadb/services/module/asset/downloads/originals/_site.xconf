@@ -9,12 +9,22 @@
 	<path-action name="MediaArchiveModule.forceDownload" alltypes="true" />
 	
 	<path-action name="AssetControlModule.loadAssetPermissions" alltypes="true" />
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" alltypes="true">
+		<property name="module">asset</property>
+		<property name="parameterid">assetid</property>
+		<property name="parentparameterid">collectionid</property>
+	</path-action>
+	
+	
+	
 	<path-action name="Admin.allowViewing" alltypes="true">
 		<login-path>/${applicationid}/authentication/logon.html</login-path>
 	</path-action>
 	
 	<permission name="view">
 	<or>
+			<pagevalue name="candownload" equals="true"/>
+	
 		   <userprofile property="download" equals="true" />
 		<action name="OrderModule.canViewAsset" />
 	</or>

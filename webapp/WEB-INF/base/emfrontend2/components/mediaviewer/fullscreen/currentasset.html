@@ -199,7 +199,7 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 						#end
 								
 						 #if($candownload)				
-							<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
+							<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath?collectionid=${collectionid}&assetid=$asset.getId()">[[Original File]]</a></li>
 						#end
 						
 						#if($canconvert || $candownloadfpo)
@@ -228,9 +228,8 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 									
 									#set($url = $mediaarchive.asLinkToDownload($asset, $result))
 									
-								<li><a href="$url">$result.name</a></li>
+								<li><a href="$url?collectionid=${collectionid}">$result.name</a></li>
 									
-									<li><a href="$url">$result.name</a></li>
 									#end
 							#end
 						#end
