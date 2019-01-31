@@ -20,6 +20,14 @@
 			<action name="ProjectModule.canEditCollection" />
 		</or>
 	</permission>
+	
+	<permission name="editcollection">
+		<or>
+			<group name="administrators" />
+			<action name="ProjectModule.canEditCollection" />
+		</or>
+	</permission>
+	
 		<path-action name="ProfileModule.changeResultView"/>
 	
  <path-action name="ProjectModule.listConnectedDesktop"/>
