@@ -1627,6 +1627,9 @@ public class MediaArchive implements CatalogEnabled
 
 	public String asExportFileName(User inUser, Data inAsset, Data inPreset)
 	{
+		if(inAsset == null || inPreset == null) {
+			return null;
+		}
 		String format = inPreset.get("fileexportformat");
 		if (format == null)
 		{

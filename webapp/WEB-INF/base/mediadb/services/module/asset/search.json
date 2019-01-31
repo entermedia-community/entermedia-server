@@ -51,7 +51,7 @@
 			#if( $preset.getId() == "0")
 				#set( $url = "$home$apphome/services/module/asset/downloads/originals/${hit.sourcepath}/$hit.getMediaName()")
 			#else
-			####set( $outputfile = "${preset.generatedoutputfile}/$mediaarchive.asExportFileName($hit, $preset)")
+			#set( $outputfile = "${preset.generatedoutputfile}/$mediaarchive.asExportFileName($hit, $preset)")
 			"outputfile":#jesc($outputfile),
 			#set( $url = "$home$apphome/services/module/asset/downloads/preset/${hit.sourcepath}/${preset.generatedoutputfile}")
 			#end	
