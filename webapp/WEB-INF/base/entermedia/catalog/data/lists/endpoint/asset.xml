@@ -40,6 +40,7 @@ If you include a "fetchurl" parameter, EnterMedia will download the file at that
     <samplerequest><![CDATA[
     	{
   "page": "1",
+  "dateformat":"dd/MM/yyyy",
   "hitsperpage": "20",
   "showfilters": "true",
   "query": {
