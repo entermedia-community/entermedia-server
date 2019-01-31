@@ -241,7 +241,7 @@ public class ProjectModule extends BaseMediaModule {
 			return;
 		}
 		ProjectManager manager = getProjectManager(inReq);
-		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, "1|rejected");
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		if (all == null) {
 			return;
 		}
@@ -263,31 +263,15 @@ public class ProjectModule extends BaseMediaModule {
 		}
 		ProjectManager manager = getProjectManager(inReq);
 
-		Boolean caneditdata = (Boolean) inReq.getPageValue("caneditcollection");
-		String editstatus = null;
-		if (caneditdata != null)
-		{
-			if( !caneditdata )
-			{
-				Boolean showpendingassets = (Boolean) inReq.getPageValue("canshowpendingassets");
-				if(showpendingassets == null || !showpendingassets)
-				{
-					editstatus = "6";
-				}
-			}
-		}
-		else
-		{
-			editstatus = "6";
-		}
-		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid, editstatus);
+		
+		HitTracker all = manager.loadAssetsInCollection(inReq, archive, collectionid);
 		if (all == null) {
 			return;
 		}
 		if (Boolean.parseBoolean(inReq.findValue("alwaysresetpage"))) {
 			all.setPage(1);
 		}
-		all.getSearchQuery().setValue("caneditcollection", caneditdata);
+		//all.getSearchQuery().setValue("caneditcollection", caneditdata);
 
 		// String hitsname = inReq.findValue("hitsname");
 		inReq.putPageValue("hits", all);

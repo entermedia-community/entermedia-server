@@ -119,22 +119,37 @@ public class assetSearchSecurity implements SearchSecurity
 			{
 				orchild.addExact("owner", user.getId());
 			}
-			if(!inPageRequest.hasPermission("showpendingassets")) {
-				SearchQuery hidependingchild = inSearcher.createSearchQuery();
-				hidependingchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
-				hidependingchild.addExact("editstatus", "6");
-				orchild.addChildQuery(hidependingchild);
-			}
 			
 			
-			//Have clients use the category tree to give permissions as they do now on categories for visibility
-			if( inPageRequest.hasPermission("showonlyapprovedassets"))
+			Boolean caneditdata = (Boolean) inPageRequest.getPageValue("caneditcollection");
+			String editstatus = null;
+			if (caneditdata != null)
 			{
+				if( !caneditdata )
+				{
+					Boolean showpendingassets = (Boolean) inPageRequest.getPageValue("canshowpendingassets");
+					if(showpendingassets == null || !showpendingassets)
+					{
+						editstatus = "6";
+					}
+				}
+			}
+			
+			
+			
+			if(editstatus == null && (!inPageRequest.hasPermission("showpendingassets") ||inPageRequest.hasPermission("showonlyapprovedassets") )) {
+				editstatus="6";
+			}
+			
+			if(editstatus != null) {
+				//OWNERS can always see their assets (from orchild.addExact))
 				SearchQuery hidependingchild = inSearcher.createSearchQuery();
 				hidependingchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for
-				hidependingchild.addExact("editstatus", "6");
+				hidependingchild.addExact("editstatus", editstatus);
+				
 				orchild.addChildQuery(hidependingchild);
-			}
+			}			
+		
 			else
 			{
 				orchild.addOrsGroup(inSearcher.getDetail("category"), ids); //Only shows what people have asked for

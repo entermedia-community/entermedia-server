@@ -489,8 +489,8 @@ public class ProjectManager implements CatalogEnabled {
 	// return hits;
 	// }
 	//
-	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid,
-			String inShowOnlyEditStatus) {
+	public HitTracker loadAssetsInCollection(WebPageRequest inReq, MediaArchive archive, String collectionid
+			) {
 		if (collectionid == null) {
 			return null;
 		}
@@ -512,11 +512,11 @@ public class ProjectManager implements CatalogEnabled {
 			assetsearch.addExact("category", root.getId());
 		}
 
-		if (inShowOnlyEditStatus != null) {
-			SearchQuery child = searcher.createSearchQuery();
-			child.addOrsGroup("editstatus", inShowOnlyEditStatus);
-			assetsearch.addChildQuery(child);
-		}
+//		if (inShowOnlyEditStatus != null) {
+//			SearchQuery child = searcher.createSearchQuery();
+//			child.addOrsGroup("editstatus", inShowOnlyEditStatus);
+//			assetsearch.addChildQuery(child);
+//		}
 
 		String sort = (String) root.findValue("assetsort");
 		if (sort != null) {
@@ -555,9 +555,9 @@ public class ProjectManager implements CatalogEnabled {
 		
 		all = archive.getAssetSearcher().cachedSearch(inReq, assetsearch);
 
-		if (inShowOnlyEditStatus != null && inShowOnlyEditStatus.equals("1")) {
-			all.selectAll();
-		}
+//		if (inShowOnlyEditStatus != null && inShowOnlyEditStatus.equals("1")) {
+//			all.selectAll();
+//		}
 		// Is this needed?
 		String hpp = inReq.getRequestParameter("page");
 		if (hpp != null) {
