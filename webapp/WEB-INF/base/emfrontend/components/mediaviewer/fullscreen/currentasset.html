@@ -54,12 +54,13 @@ $context.putPageValue("cdn",$cdnprefix)
 						#end
 						<ul class="dropdown-menu dropup">
 								
-									 #if($candownload)				
-										<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath">[[Original File]]</a></li>
+									 #if($candownload)	
+									 			
+										<li><a href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/originals/$originalpath")">[[Original File]]</a></li>
 									#end	
 									#if($canconvert)
 										#foreach($result in $results )						
-												<li><a href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}">$result.name</a></li>
+												<li><a href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/createpreset/${asset.sourcepath}/${result.generatedoutputfile}/${asset.name}-${result.generatedoutputfile}")">$result.name</a></li>
 										#end
 									#end
 								</ul>
@@ -68,7 +69,7 @@ $context.putPageValue("cdn",$cdnprefix)
 			 #end
 		  <li>
 	#if(  $asset.getFileFormat()  == "pdf")
-		    <a data-assetid="${asset.id}" target="_new" href="$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath" >
+		    <a data-assetid="${asset.id}" target="_new" href="#urlencode("$cdnprefix$home/$mediadbappid/services/module/asset/downloads/vieworiginal/$originalpath")" >
             	<span class="glyphicon glyphicon-blackboard" style="color: #fff;"> </span> [[View PDF]]
             </a> 
 	#end

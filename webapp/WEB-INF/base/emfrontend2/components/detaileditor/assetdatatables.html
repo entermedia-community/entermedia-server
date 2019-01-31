@@ -40,7 +40,7 @@ $context.putPageValue("data",$asset)
 		       <li>
 		          <a class="assettab #if($opentabassettable == $target.id) dropdown-current #end"
 		          title="$target"
-		           data-link="$home$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${data.id}&assetid=$data.id&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=${hitssessionid}"
+		           data-link="$home$apphome/views/modules/asset/edit/moduletable.html?oemaxlevel=3&id=${data.id}&assetid=$data.id&viewid=$target.id&viewpath=$moduleid/$target.id&hitssessionid=$!{hitssessionid}"
 		           data-assettab="viewtable"
 		           data-assettabtable="$target.id"
 		           >
