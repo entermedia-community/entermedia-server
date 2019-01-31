@@ -4792,3 +4792,8 @@ a.collectionbox.favorite
 .dashboard .card {
 	margin-bottom:20px;
 }
+
+
+#editlayout .btns {
+	padding:15px 10px;
+}
