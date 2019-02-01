@@ -236,9 +236,12 @@ public class ElasticUserSearcher extends BaseElasticSearcher implements UserSear
 			if(user != null &&  user.getPassword() != null){
 				createContentBuilder(getPropertyDetails(), user);
 			} else{
+				if(user != null) {
 				log.info("User " + user.getId() + " Had no password.  Please set one.");
-				
+				}
 			}
+				
+			
 		}
 		
 		
