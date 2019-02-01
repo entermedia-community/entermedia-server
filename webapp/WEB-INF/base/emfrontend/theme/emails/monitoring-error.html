@@ -18,7 +18,7 @@
 		#if ($monitored.isdisk == "true")
 			#foreach($partition in $monitored.getValue("partitions"))
 				#if($partition.isIsOverloaded() == true)
-					[[The following instance's partition is running out of disk space]]: <b>$partition.getName()</b> <b>${partition.getFreePartitionSpace()}Mb</b> [[remaining of]] <b>${partition.getUsablePartitionSpace()}Mb</b>.<br/><br/>
+					[[The following instance's partition is running out of disk space]]: <b>$partition.getName()</b> <b>${partition.getUsablePartitionSpace()}Mb</b> [[remaining of]] <b>${partition.getFreePartitionSpace()}Mb</b>.<br/><br/>
 				#end
 			#end
 		#end
