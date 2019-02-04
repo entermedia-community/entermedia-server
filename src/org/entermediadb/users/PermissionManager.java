@@ -148,7 +148,7 @@ public class PermissionManager implements CatalogEnabled
 		}
 		
 		Collection custompermissions = loadCustomPermissionRules(inModuleid,inParentFolderId,inDataId);
-
+		log.info("Checking : " + custompermissions );
 		for (Iterator iterator = custompermissions.iterator(); iterator.hasNext();)
 		{
 			Permission per = (Permission) iterator.next();
@@ -160,6 +160,7 @@ public class PermissionManager implements CatalogEnabled
 				if( value )
 				{
 					inReq.putPageValue("can" + permid, Boolean.valueOf(value));
+					log.info("added custom permission: " + "can" + permid +  Boolean.valueOf(value));
 				}
 			}	
 		}
