@@ -15,6 +15,14 @@
 	<path-action name="ProjectModule.addOpenCollection" />
 	<path-action name="ProjectModule.loadOpenCollections"/>
 	
+	<!-- We do need the asset permissions here-->
+	
+	<path-action name="DataPermissionModule.loadCustomModulePermissions" allowduplicates="true">
+		<property name="module">asset</property>
+		<property name="parameterid">assetid</property>
+		<property name="parentparameterid">collectionid</property>
+	</path-action>
+	
 	
 	<path-action name="ProjectModule.searchForAssetsOnCollection">
 		<searchtype>librarycollection</searchtype>

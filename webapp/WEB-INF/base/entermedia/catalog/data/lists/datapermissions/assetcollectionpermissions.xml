@@ -40,7 +40,7 @@
 	
 	<permission moduleid="asset"  id="showpendingassets" permissiontype="librarycollection" name="Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="366"/>
 	
-	<permission moduleid="asset"  id="forcewatermarkasset" permissiontype="librarycollection" name="Force Watermarks on Assets" description="Force Watermarks" ordering="366"/>
+	<permission moduleid="asset"  id="showunwatermarkedassets" permissiontype="librarycollection" name="Allow assets to be viewed without watermarks" description="Allow assets to be viewed without Watermarks" ordering="366"/>
 		
 	
 </permissions>

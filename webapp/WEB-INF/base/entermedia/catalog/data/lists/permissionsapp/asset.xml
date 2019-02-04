@@ -9,7 +9,6 @@
 	<permission id="publish" permissiontype="asset" name="Publish" description="Enables the publishing of an asset to a specified set of servers." ordering="306"/>
 	<permission id="shareasset" permissiontype="asset" name="Share" description="Enables the share button. Parent of email, embed, publish and social media share."  ordering="308"/>
 	<permission id="sharetosocialmedia" permissiontype="asset" name="Social Media Share" description="Enables sharing to social networks such as Twitter or Facebook." ordering="310"/>
-	<permission id="forcewatermarkasset" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset." ordering="312"/>
 	<permission id="printpreview" permissiontype="asset" name="Print" description="Allows printing of asset and asset metadata." ordering="314"/>
 	<permission id="viewfatwire" permissiontype="asset" name="View Fatwire Status" description="Shows Fatwire Status." ordering="316"/>
 	<permission id="viewconversions" permissiontype="asset" name="Conversions" description="View Conversions and Cropping Tool" ordering="318"/>
@@ -48,9 +47,12 @@
 	<permission id="quickgallery" permissiontype="asset" name="Create a Gallery" description="Enables the creation of a shareable gallery" ordering="363" />
 	
 	<permission id="showpendingassets" permissiontype="asset" name="Show Pending Assets" description="Show pending assets for users (or assets owned by them)" ordering="366"/>
+	<permission id="showunwatermarkedassets" permissiontype="asset" name="Show Unwatermarked Assets" description="Show assets without a watermark applied" ordering="366"/>
 
 		
 	<!-- 
+		<permission id="forcewatermarkasset" permissiontype="asset" name="Watermark" description="Enables watermarking of all downloadable versions of an asset." ordering="312"/>
+	
 	<preference id="relateassets" name="Create Asset Relationships" description="Enable creation and modification of asset relation"/>	
 	<permission id="editassetcategories" name="Edit Categories" description="Edit Asset Categories"/>
 
