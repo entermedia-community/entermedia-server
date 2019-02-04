@@ -141,7 +141,7 @@ public class PermissionManager implements CatalogEnabled
 					if( value )
 					{
 						inReq.putPageValue("can" + permissionid, Boolean.valueOf(value));
-						log.info("added custom permission: " + "can" + permissionid +  Boolean.valueOf(value));
+						log.info("added module permission: " + "can" + permissionid +  Boolean.valueOf(value));
 					}
 				}
 			}
@@ -171,7 +171,7 @@ public class PermissionManager implements CatalogEnabled
 		Collection<Permission> rules = new ArrayList();
 		HitTracker <Data> modulepermissions = getSearcherManager().query(getCatalogId(), "datapermissions").
 				exact("moduleid", inDataType).search();
-
+		log.info("searching based on " + inDataType +":"+":"+ inParentFolderId +":"+ inSpecificRow);
 		for (Iterator iterator = modulepermissions.iterator(); iterator.hasNext();)
 		{
 			Data data = (Data) iterator.next();
