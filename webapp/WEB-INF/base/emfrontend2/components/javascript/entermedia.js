@@ -986,6 +986,7 @@ autoheight = function(container)
 showajaxstatus = function(uid)
 {
 	//for each asset on the page reload it's status
+	console.log(uid);
 	var cell = $("#" + uid);
 	if( cell )
 	{
@@ -997,7 +998,7 @@ showajaxstatus = function(uid)
 		//console.log("Loading " + path );
 		if( path && path.length > 1)
 		{
-			jQuery.get(path, {}, function(data) 
+			jQuery.get(path,  function(data) 
 			{
 				cell.replaceWith(data); //jQuery will reinit this class
 			});

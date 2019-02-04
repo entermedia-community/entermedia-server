@@ -1,0 +1,7 @@
+#set($type = $order.ordertype)
+
+#if($pages.doesExist("$apphome/views/modules/asset/activity/details/type/${type}.html"))
+	$pages.include("$apphome/views/modules/asset/activity/details/type/${type}.html", $context)
+#else
+	$pages.include("$apphome/views/modules/asset/activity/details/type/default.html", $context)
+#end

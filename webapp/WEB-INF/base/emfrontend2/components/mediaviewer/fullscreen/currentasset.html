@@ -160,12 +160,12 @@ data-nextpage="$!dialoghits.idOnNextPage()" >
 			   <ul class="dropdown-menu">
    							#if ($canpublish)
 	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a>
 	                       </li>
 	                       	#end
 	                       	#if( $canemaillink )
 	                       <li>
-	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
+	                           <a  class="dropdown-item  emdialog"  data-hidefooter="true" data-noesc="true"   href="$home$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a>
 	                       </li>
 	                       	#end
 	                       	#if( $canembedasset && !$multi)

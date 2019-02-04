@@ -56,13 +56,13 @@
 					<div class="dropdown-menu" aria-labelledby="navbarShareDropdown">
 				#if($canpublish || $canemaillink )				
 						#if( $canemaillink )
-							<a class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
+							<a class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/emailassets.html?hitssessionid=$!hits.getSessionId()" >[[Email Assets]]</a>
 						#end
 						#if( $canpublish)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
+							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/publishassets.html?hitssessionid=$!hits.getSessionId()" >[[Publish Assets to Server]]</a>
 						#end
 						#if( $canquickgallery)
-							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
+							<a  class="dropdown-item emdialog" data-hidefooter="true" href="$home$apphome/views/modules/asset/activity/creategallerycollection.html?hitssessionid=$!hits.getSessionId()" >[[Create a shareable gallery]]</a>
 						#end
 				#end
 				#if($canexportdata)
@@ -79,7 +79,7 @@
 				<a class="nav-link" href="#" id="navbarPublishDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">[[Publish]]</a>
 					<div class="dropdown-menu" aria-labelledby="navbarPublishDropdown">
 						#foreach($item in $quickpublishlist)
-							<a class="dropdown-item" href="$home$apphome/views/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
+							<a class="dropdown-item" href="$home$apphome/views/modules/asset/activity/publish/quickpublish.html?hitssessionid=$!hits.getSessionId()&quickid=$item.id"   >$item.name</a>
 						#end
 					</div>
 				</li>
@@ -91,7 +91,7 @@
 		
 			#if ( $canviewbasket )
 				#if($order)
-					<li ><a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a></li>				
+					<li ><a class="updatebasket emdialog nav-link-cart" data-action="remove" targetdiv="basket-paint"  href="$home$apphome/views/modules/asset/activity/checkout/accept.html?orderid=${order.id}" title="[[Checkout your Cart]]">[[Checkout Cart]] <i class="fas fa-caret-right"></i></a></li>				
 				#end
 			#end
 		#end

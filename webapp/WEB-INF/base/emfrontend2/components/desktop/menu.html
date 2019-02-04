@@ -1,7 +1,7 @@
 
 #if( $desktop )
 <li id="desktoptools" class="nav-item ajaxstatus" data-ajaxpath="$page.getPath()?collectionid=$!{librarycol.getId()}">
-	<a href="$home$apphome/views/activity/syncdesktop.html?collectionid=$!{librarycol.getId()}" class="emdialog" title="Sync $desktop.getDesktopId()" data-hidefooter="true" >
+	<a href="$home$apphome/views/modules/asset/activity/syncdesktop.html?collectionid=$!{librarycol.getId()}" class="emdialog" title="Sync $desktop.getDesktopId()" data-hidefooter="true" >
 		<i class="fas fa-sync-alt"></i> [[Sync]]#if($desktop.isEdited($librarycol.getName()) )#end 
 		#if( $desktop.isBusy()) <img src="$apphome/components/javascript/upload/jquery-file-upload/img/loading.gif" width="20" />#end</a>
 </li>

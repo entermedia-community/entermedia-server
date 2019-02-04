@@ -1,0 +1,25 @@
+<div class="em-rounded" id="orderdialog">
+	#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+	#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+	
+	
+<form class="validate ajaxformXX" data-targetdivXX="orderdialog" id="usereditform" method="post" action="$home$apphome/views/modules/asset/activity/publish/step2.html">
+#set($searcher = $searcherManager.getSearcher($catalogid, "order"))
+$context.putPageValue("searcher", $searcher)	 
+$context.putPageValue("data", $order)	 
+$context.putPageValue("view", "order/publishform")	
+<input type="hidden" name="view" value="order/publishform"/>
+<input type="hidden" name="searchtype" value="order"/>
+<input type="hidden" name="catalogid" value="$catalogid"/>
+<input type="hidden" name="orderid" value="$order.id"/>
+<input type="hidden" name="field" value="presetid"/>
+<input type="hidden" name="field" value="publishdestination"/>
+<input type="hidden" name="newuserstatus" value="exportrequested"/>
+
+<input type="hidden" name="field" value="ordertype" />
+<input type="hidden" name="ordertype.value" value="export" />
+$pages.include("/${applicationid}/components/xml/detaileditor.html", $context)
+ 
+<input class="btn btn-primary float-right" type="submit" name="submit" value="[[Next]]"/> 
+
+</form>

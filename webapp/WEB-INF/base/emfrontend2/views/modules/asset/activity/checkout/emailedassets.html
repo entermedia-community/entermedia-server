@@ -1,0 +1,7 @@
+#if( $expired )
+	[[This share has expired]]. 
+#end
+
+#if( $canviewassets || !$expired )
+	$pages.include("$apphome/views/modules/asset/activity/checkout/listitems.html")
+#end

@@ -1,0 +1,47 @@
+#if( $orders.size() > 0 )
+
+#set( $ordersearcher = $searcherManager.getSearcher($catalogid,"order") )
+
+#set( $details = $ordersearcher.getDetailsForView("order/activityresults",$context.getUserProfile() ) ) 
+
+<div id="emselectable" >
+<table class="emresultscontent emresultstable table table-striped table-hover table-clickable table-padding" > 
+<tr id="tableheader">
+#foreach( $detail in $details)
+	<th >$detail.text</th>
+#end
+
+
+</tr>
+#foreach( $order in $orders )
+	#set( $order = $ordersearcher.loadData($order) )
+#set( $userstatus = false )
+#set( $userstatus = $searcherManager.getData($catalogid,"order/userstatus",$order.historyuserstatus ))
+	<tr rowid="$order.id">
+	#foreach( $detail in $details)
+		$!context.putPageValue("detail",$detail)
+		#if( $detail.id == "historyuserstatus" && $userstatus)
+		<td class="statuscolumn"> <span style="color:$userstatus.color;">$!userstatus</span></td>
+		#else
+		<td>		
+			#set( $value = false)
+			#set( $value = $order.get($detail.id) )
+			#if( $value)
+			$!context.putPageValue("val",$value)		
+			$pages.include("$apphome/components/xml/detailreadonly.html", $context)
+			#end
+		</td>
+		#end
+	#end
+	</tr>
+#end
+</table>
+<form name="pickorder" action="$home$apphome/views/modules/asset/activity/details/vieworder.html">
+<input name="orderid" id="emselectedrow" type="hidden" />
+</form>
+
+</div>
+
+#else
+<p class="info" style="margin: 20px;">[[No Activity Found]]</p>
+#end

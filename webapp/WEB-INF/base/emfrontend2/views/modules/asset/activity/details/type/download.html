@@ -1,0 +1,10 @@
+#if( $order.orderstatus == "complete" )
+
+<h2>[[Order Complete]]</h2>
+	
+
+#end
+
+$!order.orderstatusdetail
+
+$pages.include("$apphome/views/modules/asset/activity/download/listitems.html")

@@ -28,6 +28,7 @@
 	#set( $outputfile = "${preset.outputfile}/$mediaarchive.asExportFileName($asset, $preset)")
 	#set( $url = "$home$apphome/services/module/asset/downloads/generatedpreview/${asset.sourcepath}/$outputfile")
 #end	
+
 	"path":#jesc($url)
 },
 "asset": { 

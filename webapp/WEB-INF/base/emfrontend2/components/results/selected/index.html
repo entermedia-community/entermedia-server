@@ -94,9 +94,9 @@
 			
 #if( $enabled )
 	#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-		<a class="dropdown-item" href="$home$apphome/views/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+		<a class="dropdown-item" href="$home$apphome/views/modules/asset/activity/customdownloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
 	#else
-		<a class="dropdown-item emdialog" href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
+		<a class="dropdown-item emdialog" href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()&collectionid=$!{librarycol.getId()}"  data-hidefooter="true" >[[Download]]</a>
 	#end
 #else		
 	<a class="dropdown-item" href="#">[[Download]]</a>

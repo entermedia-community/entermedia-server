@@ -1,7 +1,7 @@
 #set( $defaultwordpresspublisher = $mediaarchive.getCatalogSettingValue("defaultwordpresspublisher") )
 #if( $defaultwordpresspublisher )
 <div id="sendfile$presetdata.id">
-<form class="ajaxform" targetdiv="sendfile$presetdata.id" method="post" action="$home$apphome/views/activity/publish/fullpublish.html">
+<form class="ajaxform" targetdiv="sendfile$presetdata.id" method="post" action="$home$apphome/views/modules/asset/activity/publish/fullpublish.html">
 	<input type="hidden" id="oemaxlevel" name="oemaxlevel" value="1"/>
 	<input type="hidden" id="publishassetid" name="publishassetid" value="$asset.id"/>
 	<input type="hidden" id="presetid" name="presetid" value="$presetdata.id"/>

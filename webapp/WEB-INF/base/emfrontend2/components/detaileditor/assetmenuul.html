@@ -29,13 +29,13 @@
 			#end
 			#if($candownload || $canconvert || $candownloadfpo)
 				#if( $asset.getId().startsWith("multiedit:") )
-					<li><a href="$home$apphome/views/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
+					<li><a href="$home$apphome/views/modules/asset/activity/downloadassets.html?hitssessionid=$!hits.getSessionId()" >[[Download]]</a></li>
 				#else
 	 				<li>
 						#if($mediaarchive.isCatalogSettingTrue("preventupscaling")) 
-							<a href="$home$apphome/views/activity/customdownloadassets.html?assetid=$asset.id"  data-hidefooter="true" >[[Download]]</a>
+							<a href="$home$apphome/views/modules/asset/activity/customdownloadassets.html?assetid=$asset.id"  data-hidefooter="true" >[[Download]]</a>
 						#else
-							<a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
+							<a class="emdialog" data-hidefooter="true"  href="$home$apphome/views/modules/asset/activity/downloadassets.html?assetid=$asset.id">[[Download]]</a></li>
 						#end
 				#end
 			#end
@@ -55,10 +55,10 @@
     <li><a href="#" class="dropdown-toggle" data-toggle="dropdown" title="[[Share Menu]]">[[Share]]</a>
     	<ul class="dropdown-menu">
 			#if ($canpublish)
-               	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/views/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a></li>
+               	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/views/modules/asset/activity/publishassets.html?assetid=$asset.id" >[[Publish]]</a></li>
                #end
                #if( $canemaillink )
-               	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/views/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a></li>
+               	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/views/modules/asset/activity/emailassets.html?assetid=$asset.id" >[[Email]]</a></li>
                #end
                #if( $canembedasset && !$multi)
                	<li><a class="emdialog"  data-hidefooter="true"   href="$home$apphome/components/share/embed.html?assetid=$asset.id" >[[Embed]]</a></li>

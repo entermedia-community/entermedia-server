@@ -1,0 +1,144 @@
+<form class="validate" id="usereditform" method="post" action="$home$apphome/views/modules/asset/activity/publish/processorder.html">
+	<div class="emrounded">
+	<input type="hidden" name="searchtype" value="order"/>
+	<input type="hidden" name="catalogid" value="$catalogid"/>
+	<input type="hidden" name="orderid" value="$order.id"/>
+	<input type="hidden" name="invaliditems" value="$!invaliditems" />
+		<div>
+			#set($publishtype = $!searcherManager.getData($catalogid,"publishdestination",$order.publishdestination))
+			
+			<h4>Publishing to $publishtype</h4>
+			
+			#set($filetypes = [])
+			#if ($publishtype.publishtype == "youtube")
+				<input type="hidden" name="field" value="assetfield">
+			#end
+			
+			#foreach( $item in $orderitems )
+				#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+				#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
+				#set($filetype = $searcherManager.getData($catalogid,"assettype",$asset.assettype))
+				#if(!$filetype)
+					#set($filetype="[[None]]")
+				#end
+				#set( $omit = $invaliditems.contains("${asset.id}"))
+				#set($found = false)
+				#foreach( $ft in $filetypes)
+
+					#set( $ftname = $filetype.getName($context.getLocale()) )
+					#if ($ft.get(0).equals($ftname))
+						
+						#set($num = $numberutils.toInt("${ft.get(1)}"))
+						#set($num = $num + 1)
+						#set($null = $ft.set(1,"$num"))
+						#set($found = true)
+						#break
+					#end
+				#end
+				#if(!$found)
+					#set( $ftname = $filetype.getName($context.getLocale()) )
+					#set($null = $filetypes.add([$ftname,"1",$fileformat,"${omit}",$filetype.getId()]))
+				#end
+				##add hidden inputs
+				<input type="hidden" name="itemid" value="$item.id"/>
+				<input type="hidden" name="field" value="presetid"/>
+				<input type="hidden" name="${item.id}.presetid.value" />
+				<input type="hidden" name="field" value="itemfiletype"/>
+				<input type="hidden" name="${item.id}.itemfiletype.value" value="$filetype.getName($context.getLocale())"/>
+				##add extra variables for specific publishers
+				#if ($publishtype.publishtype == "youtube")
+					<input type="hidden" name="assetfield.value" value="${asset.id}">
+				#elseif ($publishtype.publishtype == "fatwire")
+					#set($homeurl = "${context.siteRoot}${home}${apphome}")
+					#set($username = $context.getUserName())
+					<input type="hidden" name="presetfield" value="homeurl">
+					<input type="hidden" name="${item.id}.homeurl.value" value="${homeurl}">
+					<input type="hidden" name="presetfield" value="username">
+					<input type="hidden" name="${item.id}.username.value" value="${username}">
+				#end
+			#end
+			<table id="shared-asset-table" class="striped download-table" width="100%" >
+			#foreach( $ft in $filetypes)
+				#set($filetype = $ft.get(0))
+				#set($num = $ft.get(1))
+				#set($fileformat = $ft.get(2))
+				#set($omit = $ft.get(3))
+				#set($ftid = $ft.get(4))
+				
+				##include header if youtube
+				#if($publishtype.publishtype == "youtube")
+				<tr>
+					<th>&nbsp;</th>
+					<th>YouTube [[Category]]</th>
+					<th>[[Format]]</th>
+				</tr>
+				#end
+				<tr>
+					<td>
+						<input type="hidden" name="field" value="filetype"/>
+						<input type="hidden" name="filetype.value" value="$filetype"/>
+						#if($omit == "true")
+							Selected $num $filetype
+						#else
+							Publishing $num $filetype
+						#end
+					</td>
+					#if($omit == "true")
+					<td colspan="2">
+						$context.putPageValue("publisher",$publishtype)
+						$context.putPageValue("filetype",$filetype)
+						$pages.include("./publishererror.html",$context)
+					</td>
+					#else
+					#if ($publishtype.publishtype == "youtube")
+						<td style="text-align: center;">	
+							$pages.include("./youtubecategoryselector.html")
+						</td>
+					#end
+					<td>
+						<input type="hidden" name="field" value="presetid"/>
+						#set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
+					  	#set($presetquery = $presetsearcher.createSearchQuery() )
+						#set($null = $presetquery.setAndTogether(false))
+						#set( $rendertype = false)
+					    #set( $rendertype = $mediaarchive.getMediaRenderType($fileformat) )
+					    
+					    #if($publishtype.publishtype == "fatwire")
+					    	#set( $null = $presetquery.setAndTogether(true) )
+			  	   	    	#set( $null = $presetquery.append("publishtofatwire","true"))
+			  	   	    	#if( $rendertype )
+			  	   	    		#set( $null = $presetquery.append("inputtype",$rendertype))
+			  	   	    	#end
+			  	   	    #else
+			  	   	    	#set( $null = $presetquery.setAndTogether(false) )
+				  	   	    #if( $rendertype )
+					  	   	    #set( $null = $presetquery.addExact("inputtype",$rendertype) )
+				  	   	    #end
+				  	   	    #set( $null = $presetquery.addExact("inputtype","all") )
+				  	   	#end
+						
+						#set($null = $presetquery.addSortBy("ordering"))
+						#set( $results = $presetsearcher.search($presetquery) )
+						#if($canconvert || $candownloadfpo)
+					  		<select name="${ftid}.presetid.value">
+							#foreach ($preset in $results)
+								<option value="$preset.id">$preset</option>
+							#end
+						</select>
+						#else
+							<input type="hidden" name="$filetype.getName($context.getLocale()).presetid.value" value="0">
+						#end	
+					</td>
+					#end
+					</td>
+				</tr>
+			#end
+			</table>
+		</div>
+	</div>
+#if($invaliditems.size() == $orderitems.size())
+	<input class="btn small" style="float: right" type="button" value="[[Cancel]]" onclick="window.history.back()"/>
+#else
+	<input class="btn small" style="float: right" type="submit" value="[[Next]]" />
+#end
+</form>     

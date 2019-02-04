@@ -1,0 +1,124 @@
+<div class="em-rounded" style="margin:20px;">
+	#if( !$order )
+		[[Session expired, Reload browser]]
+	#end
+	#if( $order.userid != $context.getUserName() )
+	[[Invalid order, username does not match]]
+	#else
+	
+		#set($orderitemsearcher = $searcherManager.getSearcher($catalogid, "orderitem"))
+		#set($ordersearcher = $searcherManager.getSearcher($catalogid, "order"))
+		
+	<form class="validate" id="usereditform"  method="get" 
+	
+	onSubmit='$("#submitbutton").attr("disabled","disabled");$("#submitbutton").val("[[Processing]]...");'
+	
+	action="$home$apphome/views/modules/asset/activity/download/processorder.html">
+	#set($searcher = $searcherManager.getSearcher($catalogid, "order"))
+	$context.putPageValue("searcher", $searcher)	 
+	$context.putPageValue("data", $order)	 
+	$context.putPageValue("view", "order/downloadform")	
+	<input type="hidden" name="view" value="order/downloadform"/>
+	<input type="hidden" name="searchtype" value="order"/>
+	<input type="hidden" name="catalogid" value="$catalogid"/>
+	<input type="hidden" name="orderid" value="$order.id"/>
+	<input type="hidden" name="newuserstatus" value="downloadrequested"/>
+
+	<input type="hidden" name="field" value="collectionid"/>
+	<input type="hidden" name="collectionid.value" value="$!context.getRequestParameter('collectionid')"/>
+
+	<input type="hidden" name="field" value="publishdestination" />
+	<input type="hidden" name="publishdestination.value" value="$mediaarchive.getCatalogSettingValue("downloadpublisher")" /> ## 0 is http 1 is aspera
+	
+	<input type="hidden" name="field" value="ordertype" />
+	<input type="hidden" name="ordertype.value" value="download" />
+		#if($canconvert)
+		<p><strong>[[Please choose a download format for each type of asset.]]</strong></p>
+		#end
+		$orderitems.size() Items
+		#set($filetypes = [])
+		#foreach( $item in $orderitems )
+			#set( $asset = $mediaarchive.getAssetBySourcePath($item.assetsourcepath))
+			#set($fileformat = $asset.fileformat) ##need to get an example fileformat for each filetype
+			#if($fileformat)
+				#set( $rendertypeid = $mediaarchive.getMediaRenderType($fileformat) )
+			#else
+			#set( $rendertypeid = "none" )
+			#end
+			
+			#set($found = false)
+			#foreach( $ft in $filetypes)		   ##TODO: This is ugly in-line code. replace with objects
+				#if ($ft.get(0).equals($rendertypeid))
+					#set($num = $numberutils.toInt("${ft.get(1)}"))
+					#set($num = $num + 1)
+					#set($null = $ft.set(1,"$num"))
+					#set($found = true)
+					#break
+				#end
+			#end
+			#if(!$found)
+				#set($null = $filetypes.add([$rendertypeid,"1"]))
+			#end
+			<input type="hidden" name="itemid" value="$item.id"/>
+		#end
+		
+		<table id="shared-asset-table" class="striped download-table" width="100%" >
+		#foreach( $ft in $filetypes)
+			#set($rendertypeid = $ft.get(0))
+			#set($num = $ft.get(1))
+			<tr>
+				<td>
+				<input type="hidden" name="field" value="rendertype"/>
+				<input type="hidden" name="rendertype.value" value="${rendertypeid}"/>
+				#set($rendertype = $searcherManager.getData($catalogid,"rendertype",$rendertypeid))
+				
+				[[Downloading]] $num $rendertype
+				</td>
+				<td>
+				<input type="hidden" name="field" value="presetid"/>
+				#set($presetsearcher = $searcherManager.getSearcher($catalogid, "convertpreset") )
+			  	#set($presetquery = $presetsearcher.createSearchQuery() )
+				#set($null = $presetquery.setAndTogether(false))
+		   	    #set($null = $presetquery.addExact("inputtype",$rendertypeid))
+				#set($null = $presetquery.addExact("inputtype","all"))
+				#set($null = $presetquery.addSortBy("ordering"))
+				#set( $results = $presetsearcher.search($presetquery) )
+				#if($canconvert || $candownloadfpo) 
+			  		<select name="${rendertypeid}.presetid.value">
+					#foreach ($preset in $results)
+						#set($ok = false)
+						#if($canconvert && $candownloadfpo)
+							#set($ok = true) 
+						#elseif ($canconvert && $preset.watermark != "true")
+							#set($ok = true) 
+						#elseif($candownloadfpo && $preset.watermark == "true")
+							#set($ok = true) 
+						#end
+						#if($preset.id == "0" && $candownload)
+							#set($ok = true) 
+						#end
+						#if($preset.id == "0" && !$candownload)
+							#set($ok = false) 
+						#end
+						#if($ok)
+						<option value="$preset.id">$preset
+						#end
+						#set($ok = false)
+						</option>
+					#end
+				</select>
+				#else
+			  		<input type="hidden" name="${rendertypeid}.presetid.value" value="0">
+				#end
+				</td>
+			</tr>
+		#end
+		</table>
+	
+	<div style="text-align: right">
+		<input class="btn btn-sm btn-primary" id="submitbutton" type="submit" name="submit" value="[[Next]]"/> 
+	</div>
+	<div id="itemsave"></div>
+	</form>
+	#end
+</div>

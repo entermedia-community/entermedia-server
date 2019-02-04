@@ -1,0 +1,128 @@
+#set( $collectionid = $context.getRequestParameter("collectionid"))
+#if($collectionid)
+
+<div style="padding: 0 20px 20px 20px;">
+	#set( $librarycol = $mediaarchive.getData("librarycollection", $collectionid) )
+	#set( $library = $mediaarchive.getData("library",$librarycol.get("library") ) )
+
+
+#if($librarycol.lockedby)
+
+<div class="alert alert-warning" role="alert">
+ [[This collection is currently locked by]] $mediaarchive.getUser($librarycol.lockedby)
+</div>
+#end
+#set($show = true)
+
+#if($librarycol.lockedby && $librarycol.lockedby != $context.getUserName())
+#set($show = false)
+#end
+#if($show)
+
+#if($desktop.isEdited($librarycol.getName()) )
+
+
+	<div id="openpath">
+	<p>[[View local Path]]: ${desktop.getHomeFolder()}/EnterMedia/${librarycol.getName()}/</p>
+	 <a class="btn btn-sm btn-primary ajax" data-targetdiv="openpathhidden" 
+	 	href="$apphome/views/modules/asset/activity/syncdesktop-open.html?collectionid=${librarycol.getId()}">[[Open Local Folder]]</a>
+		
+	</div>
+
+<hr>
+#end
+
+
+
+#if($show && $librarycol.lockedby)
+<form  name="archiveassets" id="archiveassets" 
+   method="post" action="$home$apphome/views/modules/librarycollection/lock.html"
+   style="padding-top:10px;"
+   >
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+	<input type="hidden" name="lockcollection" value="false" />
+
+	
+	<div  class="alert alert-warning" role="alert">
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Unlock Collection]]">	 
+	</div>
+</form>
+#else
+<form  name="archiveassets" id="archiveassets" 
+   method="post" action="$home$apphome/views/modules/librarycollection/lock.html"
+   style="padding-top: 10px;"
+   >
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+	<input type="hidden" name="lockcollection" value="true" />
+
+	
+	<div  class="alert alert-warning" role="alert">
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Lock Collection]]">	 
+	
+	</div>
+</form>
+#end
+
+
+#if($desktop.isEdited($librarycol.getName()) )
+<form  name="archiveassets" id="archiveassets" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopimportstart.html"
+   style="padding-top: 10px;"
+   >
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+
+	
+	<div  class="alert alert-warning" role="alert">
+	<p><i class="fas fa-info-circle"></i> [[Uploads your local work folder into this collection]]</p>
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Upload]]">	 
+	
+	</div>
+</form>
+#end
+
+
+<form  name="download" id="download" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html"
+   style="padding-top: 10px;">
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+	<div  class="alert alert-warning" role="alert">
+		<p><i class="fas fa-info-circle"></i> 
+		[[Warning]]: [[Replaces local files with contents of this collection]]
+		</p>
+		<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Download]]">
+	</div>
+	
+	
+</form>
+
+<form  name="download" id="download" 
+   method="post" action="$home$apphome/views/modules/librarycollection/desktopexportstart.html"
+   style="padding-top: 10px;">
+	<input type="hidden" name="collectionid" value="${librarycol.getId()}" />
+		<input type="hidden" name="lockcollection" value="true" />
+ 	
+	<div  class="alert alert-warning" role="alert">
+	<p>
+	<i class="fas fa-info-circle"></i>
+	[[Warning]]: [[Replaces local files with contents of this collection]]
+	</p>
+	<input class="btn btn-sm btn-primary" type="submit" id="archiveassetsbutton" value="[[Download and Lock Collection]]">
+	
+
+
+	
+	</div>
+	
+	
+</form>
+
+
+
+
+</div>
+
+#end
+#else
+
+
+#end

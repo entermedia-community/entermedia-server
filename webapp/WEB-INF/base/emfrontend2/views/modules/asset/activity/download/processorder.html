@@ -1,0 +1,10 @@
+#if ($order.id)
+	#set($orderid = $order.id)
+#else
+	#set($orderid = $context.getRequestParameter("orderid"))
+#end
+$orderid
+$context.putPageValue("orderid", $orderid)
+#if ($orderid)
+	$pages.include("$apphome/views/modules/asset/activity/download/ajaxorderstatus.html",$context)
+#end
