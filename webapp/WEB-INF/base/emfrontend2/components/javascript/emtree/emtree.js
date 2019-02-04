@@ -105,6 +105,7 @@ $(document).ready(function()
 		{
 			
 			reloadurl = home + "/views/modules/librarycollection/category/" + collectionid + "/index.html?nodeID=" + nodeid + "&collectionid=" + collectionid;
+			reloadurl = home + "/views/modules/librarycollection/media/index.html?collectionid=" + collectionid + "&nodeID=" + nodeid;
 		}
 		var hitssessionid = $('#resultsdiv').data('hitssessionid');
 		if( hitssessionid )

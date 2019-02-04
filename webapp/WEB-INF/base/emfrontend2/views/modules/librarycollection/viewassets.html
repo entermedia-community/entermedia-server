@@ -7,16 +7,19 @@ $context.putPageValue("collectionid", $librarycol.getId())
 #set( $downloads = $downloadsearcher.query().match("librarycollection",$librarycol.getId()).sort("date").search() )
 
 #if(!$category)
+
 	#set($categoryid = $context.getRequestParameter("categoryid"))
-	#if($categoryid)
-		#set($category = $mediaarchive.getData("category",$categoryid))
-		#if($category)
-			$context.putPageValue("category",$category)
-		#end
+	#if (!$categoryid)
+		#set($categoryid = $context.getRequestParameter("nodeID"))
 	#end
+	#if(!$categoryid)
+		#set($categoryid = $context.getRequestParameter("category.value"))
+	#end
+	
 #end
 
-###always go to index - don't care about resultview
+
+
 
 #if($hits.size() == 0 && $mediaarchive.isCatalogSettingTrue("autopopulatecollections"))
 	$pages.include("$apphome/components/createmedia/copycategory/index.html?autorun=true", $context)
@@ -28,7 +31,7 @@ $context.putPageValue("collectionid", $librarycol.getId())
 	</script>
 
 #else
-	<div id="emresultscontainer">	
-			$pages.include("$componenthome/results/index.html",$context)
+	<div id="emresultscontainer" > 
+	$pages.include("$apphome/components/results/index.html",$context)
 	</div>
 #end
